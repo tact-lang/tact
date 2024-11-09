@@ -77,23 +77,76 @@ import {
 
 class UndefinedValueSignal extends Error {}
 
-type ValueWithStatus = {
-    value: Value;
-    deleted: boolean;
-};
+/*
+This corresponds to the following lattice:
 
-function markAsUndeleted(val: Value): ValueWithStatus {
-    return { value: val, deleted: false };
+         any_value
+      /      |      \
+  val1     val2      val3 ........
+     \       |       /
+          no_value
+*/
+type LatticeValue =
+    | {
+          value: Value;
+          kind: "value";
+      }
+    | {
+          kind: "any_value"; // This is the top element
+      }
+    | {
+          kind: "no_value"; // This is the bottom element
+      };
+
+function toLatticeValue(val: Value | undefined): LatticeValue {
+    if (val !== undefined) {
+        return { value: val, kind: "value" };
+    } else {
+        return anyValue;
+    }
 }
 
-const defaultDeletedStatus: ValueWithStatus = { value: null, deleted: true };
+function eqLatticeValues(val1: LatticeValue, val2: LatticeValue): boolean {
+    if (val1.kind === "value" && val2.kind === "value") {
+        return eqValues(val1.value, val2.value);
+    } else {
+        return val1.kind === val2.kind;
+    }
+}
 
-export class ConstantPropagationAnalyzer extends InterpreterInterface<
-    Value | undefined
-> {
-    protected cancel_assignments = false;
+const anyValue: LatticeValue = { kind: "any_value" };
+
+function joinLatticeValues(
+    val1: LatticeValue,
+    val2: LatticeValue,
+): LatticeValue {
+    if (val1.kind === "any_value" || val2.kind === "any_value") {
+        return anyValue;
+    } else if (val1.kind === "no_value") {
+        return val2;
+    } else if (val2.kind === "no_value") {
+        return val1;
+    } else {
+        const commonSubValue = extractCommonSubValue(val1.value, val2.value);
+        if (commonSubValue !== undefined) {
+            return toLatticeValue(commonSubValue);
+        } else {
+            return anyValue;
+        }
+    }
+}
+
+function copyLatticeValue(val: LatticeValue): LatticeValue {
+    if (val.kind !== "value") {
+        return val;
+    } else {
+        return toLatticeValue(copyValue(val.value));
+    }
+}
+
+export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeValue> {
     protected interpreter: TactInterpreter;
-    protected envStack: EnvironmentStack<ValueWithStatus>;
+    protected envStack: EnvironmentStack<LatticeValue>;
     protected context: CompilerContext;
     protected config: InterpreterConfig;
 
@@ -104,16 +157,12 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
         super();
         this.context = context;
         this.config = config;
-        this.envStack = new EnvironmentStack(this.copyValueAndStatus);
+        this.envStack = new EnvironmentStack(copyLatticeValue);
         this.interpreter = new TactInterpreter(context, config);
     }
 
-    protected copyValueAndStatus(val: ValueWithStatus): ValueWithStatus {
-        return { value: copyValue(val.value), deleted: val.deleted };
-    }
-
     public startAnalysis() {
-        this.envStack = new EnvironmentStack(this.copyValueAndStatus);
+        this.envStack = new EnvironmentStack(copyLatticeValue);
 
         // Process all functions
         for (const f of getAllStaticFunctions(this.context)) {
@@ -147,10 +196,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
                     }
                 }
 
-                this.envStack.setNewBinding(
-                    "self",
-                    markAsUndeleted(selfStruct),
-                );
+                this.envStack.setNewBinding("self", toLatticeValue(selfStruct));
 
                 this.interpretInitDef(t.init.ast);
             }
@@ -168,10 +214,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
                     }
                 }
 
-                this.envStack.setNewBinding(
-                    "self",
-                    markAsUndeleted(selfStruct),
-                );
+                this.envStack.setNewBinding("self", toLatticeValue(selfStruct));
 
                 this.interpretReceiver(r.ast);
             }
@@ -189,11 +232,11 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
 
                     this.envStack.setNewBinding(
                         "self",
-                        markAsUndeleted(selfStruct),
+                        toLatticeValue(selfStruct),
                     );
                 } else {
                     // reset the self variable
-                    this.envStack.setNewBinding("self", defaultDeletedStatus);
+                    this.envStack.setNewBinding("self", anyValue);
                 }
 
                 if (m.ast.kind === "function_def") {
@@ -212,7 +255,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
     public interpretFunctionDef(ast: AstFunctionDef) {
         // The arguments are all undetermined.
         const argNames = ast.params.map((param) => idText(param.name));
-        const argValues = ast.params.map((_) => defaultDeletedStatus);
+        const argValues = ast.params.map((_) => anyValue);
 
         this.envStack.executeInNewEnvironment(
             () => {
@@ -229,7 +272,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
     public interpretInitDef(ast: AstContractInit) {
         // The arguments are all undetermined.
         const argNames = ast.params.map((param) => idText(param.name));
-        const argValues = ast.params.map((_) => defaultDeletedStatus);
+        const argValues = ast.params.map((_) => anyValue);
 
         this.envStack.executeInNewEnvironment(
             () => {
@@ -258,7 +301,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
                     () => {
                         this.executeStatements(ast.statements);
                     },
-                    { names: [argName], values: [defaultDeletedStatus] },
+                    { names: [argName], values: [anyValue] },
                 );
 
                 break;
@@ -292,20 +335,21 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
 
     /* Required but not used methods end here */
 
-    public interpretName(ast: AstId): Value | undefined {
-        return this.prepareForStandardInterpreter(() =>
-            this.interpreter.interpretName(ast),
+    public interpretName(ast: AstId): LatticeValue {
+        return toLatticeValue(
+            this.prepareForStandardInterpreter(() =>
+                this.interpreter.interpretName(ast),
+            ),
         );
     }
 
-    public interpretMethodCall(ast: AstMethodCall): Value | undefined {
+    public interpretMethodCall(ast: AstMethodCall): LatticeValue {
         // For the moment do not analyze.
-
         // Just evaluate all the arguments
         this.interpretExpression(ast.self);
         ast.args.forEach((expr) => this.interpretExpression(expr), this);
 
-        // Also, if the method is a mutates function, the assigned path should be undetermined.
+        // Also, if the method is a mutates function, the assigned path should become undetermined.
         const path = tryExtractPath(ast.self);
         if (path !== null) {
             const src = getExpType(this.context, ast.self);
@@ -319,7 +363,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
                         this.updateBinding(
                             path,
                             ast.self,
-                            undefined,
+                            anyValue,
                             ast.self.loc,
                         );
                     }
@@ -327,7 +371,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
 
                 const f = srcT.functions.get(idText(ast.method))?.isMutating;
                 if (f) {
-                    this.updateBinding(path, ast.self, undefined, ast.self.loc);
+                    this.updateBinding(path, ast.self, anyValue, ast.self.loc);
                 }
             }
 
@@ -335,109 +379,136 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
                 if (MapFunctions.has(idText(ast.method))) {
                     // Treat all API functions as black boxes
                     // Hence, their self parameter could be mutated
-                    this.updateBinding(path, ast.self, undefined, ast.self.loc);
+                    this.updateBinding(path, ast.self, anyValue, ast.self.loc);
                 }
             }
         }
         // If the ast.self is not a path expression, i.e., it has the form: a.b.f().g()...
         // then there is nothing to update in the environment because a.b.f().g() is not a full path to a variable.
 
-        // Since we are not analyzing the function, just return undefined.
-        return undefined;
+        // Since we are not analyzing the function, just return not assigned.
+        return anyValue;
     }
 
-    public interpretInitOf(ast: AstInitOf): Value | undefined {
+    public interpretInitOf(ast: AstInitOf): LatticeValue {
         // Currently not supported.
 
         // Just evaluate the arguments, but do nothing else
         ast.args.forEach((expr) => this.interpretExpression(expr), this);
 
-        return undefined;
+        return anyValue;
     }
 
-    public interpretNull(ast: AstNull): Value | undefined {
-        return this.prepareForStandardInterpreter(() =>
-            this.interpreter.interpretNull(ast),
+    public interpretNull(ast: AstNull): LatticeValue {
+        return toLatticeValue(
+            this.prepareForStandardInterpreter(() =>
+                this.interpreter.interpretNull(ast),
+            ),
         );
     }
 
-    public interpretBoolean(ast: AstBoolean): Value | undefined {
-        return this.prepareForStandardInterpreter(() =>
-            this.interpreter.interpretBoolean(ast),
+    public interpretBoolean(ast: AstBoolean): LatticeValue {
+        return toLatticeValue(
+            this.prepareForStandardInterpreter(() =>
+                this.interpreter.interpretBoolean(ast),
+            ),
         );
     }
 
-    public interpretNumber(ast: AstNumber): Value | undefined {
-        return this.prepareForStandardInterpreter(() =>
-            this.interpreter.interpretNumber(ast),
+    public interpretNumber(ast: AstNumber): LatticeValue {
+        return toLatticeValue(
+            this.prepareForStandardInterpreter(() =>
+                this.interpreter.interpretNumber(ast),
+            ),
         );
     }
 
-    public interpretString(ast: AstString): Value | undefined {
-        return this.prepareForStandardInterpreter(() =>
-            this.interpreter.interpretString(ast),
+    public interpretString(ast: AstString): LatticeValue {
+        return toLatticeValue(
+            this.prepareForStandardInterpreter(() =>
+                this.interpreter.interpretString(ast),
+            ),
         );
     }
 
-    public interpretUnaryOp(ast: AstOpUnary): Value | undefined {
+    public interpretUnaryOp(ast: AstOpUnary): LatticeValue {
         const operandEvaluator = () => {
             const result = this.interpretExpression(ast.operand);
-            if (result === undefined) {
+            if (result.kind !== "value") {
                 throw new UndefinedValueSignal();
             }
-            return result;
+            return result.value;
         };
 
-        return this.prepareForStandardInterpreter(() =>
-            this.interpreter.evalUnaryOp(ast, operandEvaluator),
+        return toLatticeValue(
+            this.prepareForStandardInterpreter(() =>
+                this.interpreter.evalUnaryOp(ast, operandEvaluator),
+            ),
         );
     }
 
-    public interpretBinaryOp(ast: AstOpBinary): Value | undefined {
+    public interpretBinaryOp(ast: AstOpBinary): LatticeValue {
         const leftValue = this.interpretExpression(ast.left);
 
-        if (leftValue !== undefined) {
+        if (leftValue.kind === "value") {
             const rightEvaluator = () => {
                 const result = this.interpretExpression(ast.right);
-                if (result === undefined) {
+                if (result.kind !== "value") {
                     throw new UndefinedValueSignal();
                 }
-                return result;
+                return result.value;
             };
 
-            return this.prepareForStandardInterpreter(() =>
-                this.interpreter.evalBinaryOp(ast, leftValue, rightEvaluator),
+            return toLatticeValue(
+                this.prepareForStandardInterpreter(() =>
+                    this.interpreter.evalBinaryOp(
+                        ast,
+                        leftValue.value,
+                        rightEvaluator,
+                    ),
+                ),
             );
         } else {
             // Keep going executing the right operand
             this.interpretExpression(ast.right);
-            // But return undefined
-            return undefined;
+            // But return not assigned
+            return anyValue;
         }
     }
 
-    public interpretConditional(ast: AstConditional): Value | undefined {
-        // Collect the true and false branches.
-        const trueBranch = () => this.interpretExpression(ast.thenBranch);
-        const falseBranch = () => this.interpretExpression(ast.elseBranch);
-
+    public interpretConditional(ast: AstConditional): LatticeValue {
         // Attempt to evaluate the condition
-        let condition = this.interpretExpression(ast.condition);
+        const condition = this.interpretExpression(ast.condition);
 
-        // If the condition produced a value, transform it to boolean.
-        if (condition !== undefined) {
-            condition = ensureBoolean(condition, ast.condition.loc);
-        }
-
-        return this.processConditionalExpressionBranches(
-            trueBranch,
-            falseBranch,
-            condition,
+        // Simulate the true and false branches.
+        // We always need to analyze both branches to capture FunC behavior, even if only
+        // one branch is taken ultimately.
+        const trueEnv = this.envStack.simulate(() =>
+            this.interpretExpression(ast.thenBranch),
         );
+        const falseEnv = this.envStack.simulate(() =>
+            this.interpretExpression(ast.elseBranch),
+        );
+
+        // If the condition produced a value, take the corresponding environment.
+        // If not, join the two environments.
+        if (condition.kind === "value") {
+            if (ensureBoolean(condition.value, ast.condition.loc)) {
+                this.envStack.setCurrentEnvironment(trueEnv.env);
+                return trueEnv.val;
+            } else {
+                this.envStack.setCurrentEnvironment(falseEnv.env);
+                return falseEnv.val;
+            }
+        } else {
+            this.envStack.setCurrentEnvironment(
+                joinEnvironments([trueEnv.env, falseEnv.env]),
+            );
+            return joinLatticeValues(trueEnv.val, falseEnv.val);
+        }
     }
 
-    public interpretStructInstance(ast: AstStructInstance): Value | undefined {
-        // This is just a copy of the standard interpreter
+    public interpretStructInstance(ast: AstStructInstance): LatticeValue {
         const structTy = getType(this.context, ast.type);
 
         // Since linter does not like removing dynamic keys from objects using the "delete" operator
@@ -466,8 +537,8 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
         // field because it is now undetermined.
         const finalMap = ast.args.reduce((resObj, fieldWithInit) => {
             const val = this.interpretExpression(fieldWithInit.initializer);
-            if (val !== undefined) {
-                resObj.set(idText(fieldWithInit.field), val);
+            if (val.kind === "value") {
+                resObj.set(idText(fieldWithInit.field), val.value);
             } else {
                 // Delete it, just in case a default value was added
                 resObj.delete(idText(fieldWithInit.field));
@@ -475,68 +546,51 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
             return resObj;
         }, resultWithDefaultFields);
 
-        return Object.fromEntries(finalMap);
+        return toLatticeValue(Object.fromEntries(finalMap));
     }
 
-    public interpretFieldAccess(ast: AstFieldAccess): Value | undefined {
+    public interpretFieldAccess(ast: AstFieldAccess): LatticeValue {
         const val = this.interpretExpression(ast.aggregate);
-        if (val !== undefined) {
+        if (val.kind === "value") {
             // The typechecker already made all the checks,
             // so, val is ensured to be struct-like.
-            const structValue = val as StructValue;
-
-            if (idText(ast.field) in structValue) {
-                return structValue[idText(ast.field)];
-            } else {
-                // The analyzer works with partially constructed structs, so,
-                // simply return undefined
-                return undefined;
-            }
+            const structValue = val.value as StructValue;
+            return toLatticeValue(structValue[idText(ast.field)]);
         }
-        return undefined;
+        return val;
     }
 
-    public interpretStaticCall(ast: AstStaticCall): Value | undefined {
+    public interpretStaticCall(ast: AstStaticCall): LatticeValue {
         // For the moment, do not analyze. I need to find a way to handle recursive calls,
         // it is tricky.
 
         // Just evaluate the arguments
         ast.args.forEach((expr) => this.interpretExpression(expr), this);
-        return undefined;
+        return anyValue;
     }
 
     public interpretLetStatement(ast: AstStatementLet) {
         const val = this.analyzeTopLevelExpression(ast.expression);
-        // In case the cancel_assignments flag is active, treat the expression
-        // as failed, since the assigned variable will be treated as undetermined.
-        this.storeNewBinding(
-            ast.name,
-            this.cancel_assignments ? undefined : val,
-        );
+        this.storeNewBinding(ast.name, val);
     }
 
     public interpretDestructStatement(ast: AstStatementDestruct): void {
-        const rawVal = this.analyzeTopLevelExpression(ast.expression);
+        const val = this.analyzeTopLevelExpression(ast.expression);
 
-        if (rawVal !== undefined) {
+        if (val.kind === "value") {
             // Typechecker ensures val is a struct-like object (contracts and traits treated as structs by analyzer).
-            const valStruct = rawVal as StructValue;
-            // There is no need to do further checks because the analyzer works with partial structs
+            const valStruct = val.value as StructValue;
+
             for (const [field, name] of ast.identifiers.values()) {
                 const val = valStruct[idText(field)];
                 // No need to check for wildcard name "_" because the environment stack handles it
 
-                // In case the cancel_assignments flag is active, treat the expression
-                // as failed, since the assigned variable will be treated as undetermined.
-                this.storeNewBinding(
-                    name,
-                    this.cancel_assignments ? undefined : val,
-                );
+                this.storeNewBinding(name, toLatticeValue(val));
             }
         } else {
             // All the names in the destruct statement are undetermined
             for (const [_, name] of ast.identifiers.values()) {
-                this.storeNewBinding(name, undefined);
+                this.storeNewBinding(name, anyValue);
             }
         }
     }
@@ -545,19 +599,9 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
         const fullPath = tryExtractPath(ast.path);
 
         if (fullPath !== null && fullPath.length > 0) {
-            // Need to try evaluation of expression. If this fails,
-            // "undefined" is the final value
-
             const val = this.analyzeTopLevelExpression(ast.expression);
 
-            // In case the cancel_assignments flag is active, treat the expression
-            // as failed, since the assigned variable will be treated as undetermined.
-            this.updateBinding(
-                fullPath,
-                ast.path,
-                this.cancel_assignments ? undefined : val,
-                ast.loc,
-            );
+            this.updateBinding(fullPath, ast.path, val, ast.loc);
         } else {
             throwInternalCompilerError(
                 "assignments allow path expressions only",
@@ -570,10 +614,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
         const fullPath = tryExtractPath(ast.path);
 
         if (fullPath !== null && fullPath.length > 0) {
-            // Need to try evaluation of expressions. If at any point this fails,
-            // "undefined" is the final value
-
-            let currentPathValue: Value | undefined = undefined;
+            let currentPathValue: LatticeValue = anyValue;
 
             // In an assignment, the path is either a field access or an id
             if (ast.path.kind === "field_access") {
@@ -587,35 +628,33 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
                 );
             }
 
-            if (currentPathValue !== undefined) {
+            if (currentPathValue.kind === "value") {
                 const updateExprEvaluator = () => {
                     const result = this.interpretExpression(ast.expression);
-                    if (result === undefined) {
+                    if (result.kind !== "value") {
                         throw new UndefinedValueSignal();
                     }
-                    return result;
+                    return result.value;
                 };
 
                 const newVal = this.prepareForStandardInterpreter(() =>
                     this.interpreter.evalBinaryOpInAugmentedAssign(
                         ast,
-                        currentPathValue,
+                        currentPathValue.value,
                         updateExprEvaluator,
                     ),
                 );
-                // In case the cancel_assignments flag is active, treat the expression
-                // as failed, since the assigned variable will be treated as undetermined.
                 this.updateBinding(
                     fullPath,
                     ast.path,
-                    this.cancel_assignments ? undefined : newVal,
+                    toLatticeValue(newVal),
                     ast.loc,
                 );
             } else {
                 // Keep going executing the update expression operand
                 this.interpretExpression(ast.expression);
                 // But assign undefined
-                this.updateBinding(fullPath, ast.path, undefined, ast.loc);
+                this.updateBinding(fullPath, ast.path, anyValue, ast.loc);
             }
         } else {
             throwInternalCompilerError(
@@ -651,8 +690,8 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
         let condition: boolean | undefined = undefined;
 
         // If the condition produced a value, transform it to boolean.
-        if (conditionValue !== undefined) {
-            condition = ensureBoolean(conditionValue, ast.condition.loc);
+        if (conditionValue.kind === "value") {
+            condition = ensureBoolean(conditionValue.value, ast.condition.loc);
         }
 
         this.processConditionBranches(trueBranch, falseBranch, condition);
@@ -674,39 +713,18 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
             this.executeStatements(ast.statements);
         };
 
-        // Simulate the loop body as if it executes once
-        // This is necessary to emulate the behavior of FunC analyzer
-        this.envStack.simulate(loopBodyBranch);
+        // Simulate the loop body as if it executes once.
+        // This is necessary to emulate the behavior of FunC
+        this.envStack.simulateInNewEnvironment(loopBodyBranch);
 
         // Since it is not known if the map expression is empty or not,
-        // it is required to take both branches.
+        // it is time to compute the fix-point of the loop
 
-        // We need to do a worst case analysis:
-
-        // Make assigned variables undetermined
-        const cancelledVarsEnv = this.envStack.simulate(() => {
-            const prevAssignment = this.cancel_assignments;
-            try {
-                this.cancel_assignments = true;
-                loopBodyBranch();
-            } finally {
-                this.cancel_assignments = prevAssignment;
-            }
-        });
-
-        // Starting with the environment in the previous step, run the loop branch again
-        // but this time not making variables undetermined
-        const loopEnv = this.envStack.simulate(
-            loopBodyBranch,
-            cancelledVarsEnv.env,
-        );
-
-        // Join the two environments: the "do nothing" branch is represented
-        // by the current environment.
-        this.joinIntoCurrentStack([
-            loopEnv.env,
+        const finalEnv = this.computeLoopEnv(
             this.envStack.getCurrentEnvironment(),
-        ]);
+            loopBodyBranch,
+        );
+        this.envStack.setCurrentEnvironment(finalEnv);
     }
 
     public interpretRepeatStatement(ast: AstStatementRepeat) {
@@ -717,8 +735,11 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
 
         // If it produced a value, transform it to integer
         // and execute the loop body
-        if (iterationsValue !== undefined) {
-            iterations = ensureRepeatInt(iterationsValue, ast.iterations.loc);
+        if (iterationsValue.kind === "value") {
+            iterations = ensureRepeatInt(
+                iterationsValue.value,
+                ast.iterations.loc,
+            );
         }
 
         this.processRepeatBranches(ast.statements, iterations);
@@ -733,29 +754,33 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
 
     public interpretTryStatement(ast: AstStatementTry) {
         // Simulate the try branch
-        const tryEnv = this.envStack.simulate(() => {
+        const tryEnv = this.envStack.simulateInNewEnvironment(() => {
             this.executeStatements(ast.statements);
         });
 
         // Join the try branch and the "empty catch" branch.
         // The later is represented by the current environment
-        this.joinIntoCurrentStack([
-            tryEnv.env,
-            this.envStack.getCurrentEnvironment(),
-        ]);
+        this.envStack.setCurrentEnvironment(
+            joinEnvironments([
+                tryEnv.env,
+                this.envStack.getCurrentEnvironment(),
+            ]),
+        );
     }
 
     public interpretTryCatchStatement(ast: AstStatementTryCatch) {
         // Simulate the try and catch branches
-        const tryEnv = this.envStack.simulate(() => {
+        const tryEnv = this.envStack.simulateInNewEnvironment(() => {
             this.executeStatements(ast.statements);
         });
-        const catchEnv = this.envStack.simulate(() => {
+        const catchEnv = this.envStack.simulateInNewEnvironment(() => {
             this.executeStatements(ast.catchStatements);
         });
 
         // Join the try and catch branches
-        this.joinIntoCurrentStack([tryEnv.env, catchEnv.env]);
+        this.envStack.setCurrentEnvironment(
+            joinEnvironments([tryEnv.env, catchEnv.env]),
+        );
     }
 
     public interpretUntilStatement(ast: AstStatementUntil): void {
@@ -768,11 +793,11 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
         let condition: boolean | undefined = undefined;
 
         // If it produced a value, transform it to boolean
-        if (conditionValue !== undefined) {
-            condition = ensureBoolean(conditionValue, ast.condition.loc);
+        if (conditionValue.kind === "value") {
+            condition = ensureBoolean(conditionValue.value, ast.condition.loc);
         }
 
-        this.processUntilBranches(ast.statements, condition);
+        this.processUntilBranches(ast.statements, ast.condition, condition);
     }
 
     public interpretWhileStatement(ast: AstStatementWhile) {
@@ -783,48 +808,48 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
 
         // If it produced a value, transform it to boolean
         // and execute the loop body.
-        if (conditionValue !== undefined) {
-            condition = ensureBoolean(conditionValue, ast.condition.loc);
+        if (conditionValue.kind === "value") {
+            condition = ensureBoolean(conditionValue.value, ast.condition.loc);
         }
 
-        this.processWhileBranches(ast.statements, condition);
+        this.processWhileBranches(ast.statements, ast.condition, condition);
     }
 
-    public storeNewBinding(id: AstId, exprValue: Value | undefined) {
+    private storeNewBinding(id: AstId, exprValue: LatticeValue) {
         // If exprValue is undefined, then the variable is undetermined.
-        if (exprValue !== undefined) {
+        if (exprValue.kind === "value") {
             // Make a copy of exprValue, because everything is assigned by value
             this.envStack.setNewBinding(
                 idText(id),
-                markAsUndeleted(copyValue(exprValue)),
+                toLatticeValue(copyValue(exprValue.value)),
             );
         } else {
-            this.envStack.setNewBinding(idText(id), defaultDeletedStatus);
+            this.envStack.setNewBinding(idText(id), exprValue);
         }
     }
 
-    public updateBinding(
+    private updateBinding(
         path: AstId[],
         pathExpr: AstExpression,
-        exprValue: Value | undefined,
+        exprValue: LatticeValue,
         src: SrcInfo,
     ) {
-        if (exprValue !== undefined) {
+        if (exprValue.kind === "value") {
             // Typechecking ensures that there is at least one element in path
             if (path.length === 1) {
                 // Make a copy of exprValue, because everything is assigned by value
                 this.envStack.updateBinding(
                     idText(path[0]!),
-                    markAsUndeleted(copyValue(exprValue)),
+                    toLatticeValue(copyValue(exprValue.value)),
                 );
             } else {
                 const baseVal = this.interpretName(path[0]!);
                 let currentStruct: StructValue = {};
                 const pathTypes = this.extractPathTypes(pathExpr);
 
-                if (baseVal !== undefined) {
+                if (baseVal.kind === "value") {
                     // Typechecking ensures that path[0] is a struct-like object (contract/traits are treated as structs by the analyzer).
-                    currentStruct = baseVal as StructValue;
+                    currentStruct = baseVal.value as StructValue;
                 } else {
                     // Create a partially constructed struct-like object.
                     currentStruct["$tactStruct"] = pathTypes[0]!;
@@ -850,21 +875,17 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
                 }
 
                 // Store the constructed struct
-                this.storeNewBinding(path[0]!, baseStruct);
+                this.storeNewBinding(path[0]!, toLatticeValue(baseStruct));
                 // And now proceed as in the standard interpreter
                 this.prepareForStandardInterpreter(() => {
-                    this.interpreter.updateBinding(path, exprValue, src);
+                    this.interpreter.updateBinding(path, exprValue.value, src);
                 });
             }
         } else {
             // Because the value is undefined, the full path is undetermined
 
             if (path.length === 1) {
-                // Remove the binding
-                this.envStack.updateBinding(
-                    idText(path[0]!),
-                    defaultDeletedStatus,
-                );
+                this.envStack.updateBinding(idText(path[0]!), exprValue);
             } else {
                 // We will need to delete the last field of the last struct in the path[0..length-2] in case path[0..length-2] is defined.
                 // Since the linter does not allow deleting dynamic keys from objects using the "delete" operator,
@@ -885,12 +906,12 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
                 // the full path is going to be undetermined anyway.
                 const baseVal = this.interpretName(path[0]!);
 
-                if (baseVal === undefined) {
+                if (baseVal.kind !== "value") {
                     return;
                 }
 
                 // Typechecking ensures that path[0] is a struct-like object (contract/traits are treated as structs by the analyzer).
-                let currentStruct = baseVal as StructValue;
+                let currentStruct = baseVal.value as StructValue;
                 const pathNames = path.map(idText);
 
                 if (!(pathNames[1]! in currentStruct)) {
@@ -910,7 +931,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
                     const finalStruct = Object.fromEntries(filteredEntries);
                     this.envStack.updateBinding(
                         pathNames[0]!,
-                        markAsUndeleted(finalStruct),
+                        toLatticeValue(finalStruct),
                     );
                     return;
                 }
@@ -950,9 +971,9 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
         }
     }
 
-    protected analyzeTopLevelExpression(
-        expr: AstExpression,
-    ): Value | undefined {
+    // Here, the partial evaluator is needed to detect some symbolic cases of
+    // division by zero.
+    private analyzeTopLevelExpression(expr: AstExpression): LatticeValue {
         try {
             this.interpreter.setEnvironmentStack(
                 new WrapperStack(this.envStack),
@@ -964,9 +985,10 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
                     this.interpreter,
                 );
                 if (isValue(result)) {
-                    return extractValue(result as AstValue);
+                    return toLatticeValue(extractValue(result as AstValue));
+                } else {
+                    return anyValue;
                 }
-                throw new UndefinedValueSignal();
             });
             this.envStack.setCurrentEnvironment(result.env);
             return result.val;
@@ -976,14 +998,11 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
                     return this.interpretExpression(expr);
                 }
             }
-            if (e instanceof UndefinedValueSignal) {
-                return this.interpretExpression(expr);
-            }
             throw e;
         }
     }
 
-    protected prepareForStandardInterpreter<T>(code: () => T): T | undefined {
+    private prepareForStandardInterpreter<T>(code: () => T): T | undefined {
         try {
             this.interpreter.setEnvironmentStack(
                 new WrapperStack(this.envStack),
@@ -1003,59 +1022,29 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
         }
     }
 
-    protected processConditionalExpressionBranches(
-        trueBranch: () => Value | undefined,
-        falseBranch: () => Value | undefined,
-        condition?: boolean,
-    ): Value | undefined {
-        // Simulate the true and false branches
-        const trueEnv = this.envStack.simulate(trueBranch);
-        const falseEnv = this.envStack.simulate(falseBranch);
-
-        // If the condition is actually defined, take the corresponding environment.
-        // If not, join the two environments with respect to the current environment.
-        if (condition !== undefined) {
-            if (condition) {
-                this.updateCurrentStack(trueEnv.env);
-                return trueEnv.val;
-            } else {
-                this.updateCurrentStack(falseEnv.env);
-                return falseEnv.val;
-            }
-        } else {
-            this.joinIntoCurrentStack([trueEnv.env, falseEnv.env]);
-            // We return undefined if the values from each branch are different
-            if (trueEnv.val === undefined || falseEnv.val === undefined) {
-                // Independently of the value of the branches, if at least one is undefined,
-                // the final result will be undefined
-                return undefined;
-            } else if (eqValues(trueEnv.val, falseEnv.val)) {
-                return trueEnv.val;
-            } else {
-                return undefined;
-            }
-        }
-    }
-
     protected processConditionBranches(
         trueBranch: () => void,
         falseBranch: () => void,
         condition?: boolean,
     ): void {
         // Simulate the true and false branches
-        const trueEnv = this.envStack.simulate(trueBranch);
-        const falseEnv = this.envStack.simulate(falseBranch);
+        // We need to analyze both branches to emulate FunC,
+        // independently of the branch that ends up executing.
+        const trueEnv = this.envStack.simulateInNewEnvironment(trueBranch);
+        const falseEnv = this.envStack.simulateInNewEnvironment(falseBranch);
 
         // If the condition is actually defined, take the corresponding environment.
-        // If not, join the two environments with respect to the current environment.
+        // If not, join the two environments.
         if (condition !== undefined) {
             if (condition) {
-                this.updateCurrentStack(trueEnv.env);
+                this.envStack.setCurrentEnvironment(trueEnv.env);
             } else {
-                this.updateCurrentStack(falseEnv.env);
+                this.envStack.setCurrentEnvironment(falseEnv.env);
             }
         } else {
-            this.joinIntoCurrentStack([trueEnv.env, falseEnv.env]);
+            this.envStack.setCurrentEnvironment(
+                joinEnvironments([trueEnv.env, falseEnv.env]),
+            );
         }
     }
 
@@ -1068,372 +1057,116 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
         };
 
         // Simulate the loop body as if it executes once
-        // This is necessary to emulate the behavior of FunC analyzer
-        this.envStack.simulate(repeatBodyBranch);
+        // This is necessary to emulate the behavior of FunC
+        const oneIterEnv =
+            this.envStack.simulateInNewEnvironment(repeatBodyBranch);
 
         if (iterations !== undefined) {
             if (iterations > 0) {
                 if (iterations <= this.config.maxLoopIterations) {
                     // Actually execute the loop and set the resulting environment
-                    const finalEnv = this.envStack.simulate(() => {
-                        for (let i = 1n; i <= iterations; i++) {
-                            repeatBodyBranch();
-                        }
-                    });
-                    this.updateCurrentStack(finalEnv.env);
-                } else {
-                    // Take the loop body branch, but do it using a worst case analysis
-                    // because it is not possible to execute all the iterations
-
-                    // First, run the loop branch but making undetermined any variable that gets assigned
-                    const cancelledVarsEnv = this.envStack.simulate(() => {
-                        const prevAssignment = this.cancel_assignments;
-                        try {
-                            this.cancel_assignments = true;
-                            repeatBodyBranch();
-                        } finally {
-                            this.cancel_assignments = prevAssignment;
-                        }
-                    });
-
-                    // Starting with the environment in the previous step, run the loop branch again
-                    // but this time not making variables undetermined
-                    const finalEnv = this.envStack.simulate(
-                        repeatBodyBranch,
-                        cancelledVarsEnv.env,
+                    const finalEnv = this.envStack.simulateInNewEnvironment(
+                        () => {
+                            for (let i = 1n; i <= iterations; i++) {
+                                repeatBodyBranch();
+                            }
+                        },
                     );
+                    this.envStack.setCurrentEnvironment(finalEnv.env);
+                } else {
+                    // Take the loop body branch, compute the fix-point starting from
+                    // the environment that resulted from executing the loop once
 
-                    this.updateCurrentStack(finalEnv.env);
+                    const finalEnv = this.computeLoopEnv(
+                        oneIterEnv.env,
+                        repeatBodyBranch,
+                    );
+                    this.envStack.setCurrentEnvironment(finalEnv);
                 }
             }
             // Take the "do nothing" branch. In other words, leave the environment as currently is
         } else {
-            // Take both branches
-
-            // For the loop branch, we need to do a worst case analysis:
-
-            // Make assigned variables undetermined
-            const cancelledVarsEnv = this.envStack.simulate(() => {
-                const prevAssignment = this.cancel_assignments;
-                try {
-                    this.cancel_assignments = true;
-                    repeatBodyBranch();
-                } finally {
-                    this.cancel_assignments = prevAssignment;
-                }
-            });
-
-            // Starting with the environment in the previous step, run the loop branch again
-            // but this time not making variables undetermined
-            const loopEnv = this.envStack.simulate(
-                repeatBodyBranch,
-                cancelledVarsEnv.env,
-            );
-
-            // Join the two environments: the "do nothing" branch is represented
-            // by the current environment.
-            this.joinIntoCurrentStack([
-                loopEnv.env,
+            // Take both branches, compute the fix-point starting from
+            // the current environment (i.e., the "do nothing" environment)
+            const finalEnv = this.computeLoopEnv(
                 this.envStack.getCurrentEnvironment(),
-            ]);
+                repeatBodyBranch,
+            );
+            this.envStack.setCurrentEnvironment(finalEnv);
         }
     }
 
     protected processUntilBranches(
         statements: AstStatement[],
+        conditionAst: AstExpression,
         condition?: boolean,
     ) {
         const loopBodyBranch = () => {
             this.executeStatements(statements);
+            // After executing the body, we need to execute the condition again.
+            this.interpretExpression(conditionAst);
         };
 
         if (condition !== undefined) {
             if (!condition) {
-                // Take the loop body branch, but do it using a worst case analysis
-                // because the number of iterations is unknown
-
-                // First, run the loop branch but making undetermined any variable that gets assigned
-                const cancelledVarsEnv = this.envStack.simulate(() => {
-                    const prevAssignment = this.cancel_assignments;
-                    try {
-                        this.cancel_assignments = true;
-                        loopBodyBranch();
-                    } finally {
-                        this.cancel_assignments = prevAssignment;
-                    }
-                });
-
-                // Starting with the environment in the previous step, run the loop branch again
-                // but this time not making variables undetermined
-                const finalEnv = this.envStack.simulate(
+                // Take the loop body branch, compute the fix-point starting from a second iteration of the loop
+                const twiceLoopEnv =
+                    this.envStack.simulateInNewEnvironment(loopBodyBranch);
+                const finalEnv = this.computeLoopEnv(
+                    twiceLoopEnv.env,
                     loopBodyBranch,
-                    cancelledVarsEnv.env,
                 );
-
-                this.updateCurrentStack(finalEnv.env);
+                this.envStack.setCurrentEnvironment(finalEnv);
             }
             // Take the "do nothing" branch. In other words, leave the environment as currently is
         } else {
-            // Take both branches
-
-            // For the loop branch, we need to do a worst case analysis:
-
-            // Make assigned variables undetermined
-            const cancelledVarsEnv = this.envStack.simulate(() => {
-                const prevAssignment = this.cancel_assignments;
-                try {
-                    this.cancel_assignments = true;
-                    loopBodyBranch();
-                } finally {
-                    this.cancel_assignments = prevAssignment;
-                }
-            });
-
-            // Starting with the environment in the previous step, run the loop branch again
-            // but this time not making variables undetermined
-            const loopEnv = this.envStack.simulate(
-                loopBodyBranch,
-                cancelledVarsEnv.env,
-            );
-
-            // Join the two environments: the "do nothing" branch is represented
-            // by the current environment.
-            this.joinIntoCurrentStack([
-                loopEnv.env,
+            // Take both branches, compute the fix-point starting from
+            // the current environment (i.e., the "do nothing" environment)
+            const finalEnv = this.computeLoopEnv(
                 this.envStack.getCurrentEnvironment(),
-            ]);
+                loopBodyBranch,
+            );
+            this.envStack.setCurrentEnvironment(finalEnv);
         }
     }
 
     protected processWhileBranches(
         statements: AstStatement[],
+        conditionAst: AstExpression,
         condition?: boolean,
     ) {
         const loopBodyBranch = () => {
             this.executeStatements(statements);
+            // After executing the body, we need to execute the condition again.
+            this.interpretExpression(conditionAst);
         };
 
         // Simulate the loop body as if it executes once
         // This is necessary to emulate the behavior of FunC analyzer
-        this.envStack.simulate(loopBodyBranch);
+        const oneIterEnv =
+            this.envStack.simulateInNewEnvironment(loopBodyBranch);
 
         if (condition !== undefined) {
             if (condition) {
-                // Take the loop body branch, but do it using a worst case analysis
-                // because the number of iterations is unknown
+                // Take the loop body branch, compute the fix-point starting from the environment
+                // that resulted from executing the loop once
 
-                // First, run the loop branch but making undetermined any variable that gets assigned
-                const cancelledVarsEnv = this.envStack.simulate(() => {
-                    const prevAssignment = this.cancel_assignments;
-                    try {
-                        this.cancel_assignments = true;
-                        loopBodyBranch();
-                    } finally {
-                        this.cancel_assignments = prevAssignment;
-                    }
-                });
-
-                // Starting with the environment in the previous step, run the loop branch again
-                // but this time not making variables undetermined
-                const finalEnv = this.envStack.simulate(
+                const finalEnv = this.computeLoopEnv(
+                    oneIterEnv.env,
                     loopBodyBranch,
-                    cancelledVarsEnv.env,
                 );
-
-                this.updateCurrentStack(finalEnv.env);
+                this.envStack.setCurrentEnvironment(finalEnv);
             }
             // Take the "do nothing" branch. In other words, leave the environment as currently is
         } else {
-            // Take both branches
-
-            // For the loop branch, we need to do a worst case analysis:
-
-            // Make assigned variables undetermined
-            const cancelledVarsEnv = this.envStack.simulate(() => {
-                const prevAssignment = this.cancel_assignments;
-                try {
-                    this.cancel_assignments = true;
-                    loopBodyBranch();
-                } finally {
-                    this.cancel_assignments = prevAssignment;
-                }
-            });
-
-            // Starting with the environment in the previous step, run the loop branch again
-            // but this time not making variables undetermined
-            const loopEnv = this.envStack.simulate(
-                loopBodyBranch,
-                cancelledVarsEnv.env,
-            );
-
-            // Join the two environments: the "do nothing" branch is represented
-            // by the current environment.
-            this.joinIntoCurrentStack([
-                loopEnv.env,
+            // Take both branches, compute the fix-point starting from
+            // the current environment (i.e., the "do nothing" environment)
+            const finalEnv = this.computeLoopEnv(
                 this.envStack.getCurrentEnvironment(),
-            ]);
-        }
-    }
-
-    /**
-     * Takes the origin stack and updates it with values in the target stack. It only updates those variables that exist
-     * in both stacks.
-     *
-     * The procedure assumes that both stacks have the same number of environments. This should be true if opening
-     * environment nodes is only done through the method envStack.executeInNewEnvironment.
-     *
-     * Returns the updated stack.
-     *
-     */
-    protected updateOriginStackIntoTarget(
-        origin: Environment<ValueWithStatus>,
-        target: Environment<ValueWithStatus>,
-    ): Environment<ValueWithStatus> {
-        // Intersect the keys in the values map of the origin with those in the target
-        let keys = new Set(origin.values.keys());
-        keys = keys.intersection(new Set(target.values.keys()));
-
-        // Of the surviving keys, set the values as found in the target environment
-        const finalNames: Map<string, ValueWithStatus> = new Map();
-
-        for (const key of keys) {
-            finalNames.set(key, target.values.get(key)!);
-        }
-
-        let newOriginParent: Environment<ValueWithStatus> | undefined =
-            undefined;
-
-        // Now update the parent origin environment
-        if (origin.parent !== undefined && target.parent !== undefined) {
-            newOriginParent = this.updateOriginStackIntoTarget(
-                origin.parent,
-                target.parent,
+                loopBodyBranch,
             );
-        } else if (
-            (origin.parent === undefined && target.parent !== undefined) ||
-            (origin.parent !== undefined && target.parent === undefined)
-        ) {
-            // This should not happen. This is a programmer's error
-            throwInternalCompilerError(
-                "Cannot update origin environment stack into target stack because they have different lengths.",
-            );
+            this.envStack.setCurrentEnvironment(finalEnv);
         }
-
-        return { values: finalNames, parent: newOriginParent };
-    }
-
-    protected updateCurrentStack(env: Environment<ValueWithStatus>) {
-        const newEnv = this.updateOriginStackIntoTarget(
-            this.envStack.getCurrentEnvironment(),
-            env,
-        );
-        // Update the current environment with the final values
-        this.envStack.setCurrentEnvironment(newEnv);
-    }
-
-    /**
-     * Joins the target stacks into the origin stack.
-     * The procedure assumes that the origin and target stacks have the same number of environments. This should be true if opening
-     * environment nodes is only done through the method envStack.executeInNewEnvironment.
-     *
-     * Returns the updated stack after the targets have been joined into it.
-     * @param origin
-     * @param targets
-     * @returns
-     */
-    protected joinTargetsIntoOrigin(
-        origin: Environment<ValueWithStatus>,
-        targets: Environment<ValueWithStatus>[],
-    ): Environment<ValueWithStatus> {
-        // Intersect the keys in the values map using the origin as base
-        let keys = new Set(origin.values.keys());
-        for (const env of targets) {
-            keys = keys.intersection(new Set(env.values.keys()));
-        }
-
-        // For those names that survived in keys, keep those that
-        // have the same value in all the provided targets
-        const finalNames: Map<string, ValueWithStatus> = new Map();
-
-        const pivotEnv = targets.pop();
-
-        if (pivotEnv !== undefined) {
-            // Fill the initial values as found in the pivot environment
-            for (const key of keys) {
-                finalNames.set(key, pivotEnv.values.get(key)!); // key is ensured to be in pivotEnv because keys is the intersection of all envs.
-            }
-
-            // Now, extract the common values with respect to each of the target environments
-            l_key: for (const key of keys) {
-                for (const env of targets) {
-                    const currentVal = finalNames.get(key)!; // key is ensured to be in finalNames because finalNames was initialized with set "keys"
-                    const alternativeVal = env.values.get(key)!; // key is ensured to be in env because keys is the intersection of all envs.
-
-                    // If either the current or the alternative have been deleted, the final value is deleted
-                    if (currentVal.deleted || alternativeVal.deleted) {
-                        finalNames.set(key, defaultDeletedStatus);
-                        // There is no need to keep checking for the rest of the target environments
-                        // because the key as already undetermined, independently of the value of the rest
-                        // of the target environments. So, just move to the next key.
-                        continue l_key;
-                    }
-
-                    // Here, it is ensured that currentVal and alternativeVal are marked as not deleted.
-                    const commonSubValue = extractCommonSubValue(
-                        currentVal.value,
-                        alternativeVal.value,
-                    );
-                    if (commonSubValue !== undefined) {
-                        finalNames.set(key, markAsUndeleted(commonSubValue));
-                    } else {
-                        // The values have no common sub-part or sub-structure, so, it is as if the value is deleted
-                        finalNames.set(key, defaultDeletedStatus);
-                        // There is no need to keep checking for the rest of the target environments
-                        // because the key as already undetermined, independently of the value of the rest
-                        // of the target environments. So, just move to the next key.
-                        continue l_key;
-                    }
-                }
-            }
-
-            // Put the pivot environment back into the targets
-            targets.push(pivotEnv);
-        }
-
-        let newOriginParent: Environment<ValueWithStatus> | undefined =
-            undefined;
-
-        const targetParents = targets.map((env) => env.parent);
-
-        // Now join the parent environments
-        if (
-            origin.parent !== undefined &&
-            targetParents.every((env) => env !== undefined)
-        ) {
-            newOriginParent = this.joinTargetsIntoOrigin(
-                origin.parent,
-                targetParents,
-            );
-        } else if (
-            (origin.parent !== undefined &&
-                targetParents.some((env) => env === undefined)) ||
-            (origin.parent === undefined &&
-                targetParents.every((env) => env !== undefined))
-        ) {
-            // This should not happen. This is a programmer's error
-            throwInternalCompilerError(
-                "Cannot join target environment stacks into origin stack because they have different lengths.",
-            );
-        }
-        return { values: finalNames, parent: newOriginParent };
-    }
-
-    protected joinIntoCurrentStack(envs: Environment<ValueWithStatus>[]) {
-        const newEnv = this.joinTargetsIntoOrigin(
-            this.envStack.getCurrentEnvironment(),
-            envs,
-        );
-        this.envStack.setCurrentEnvironment(newEnv);
     }
 
     protected extractPathTypes(path: AstExpression): string[] {
@@ -1463,6 +1196,130 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<
                 path.loc,
             );
         }
+    }
+
+    /* Computes the fix-point starting from startEnv by executing the loopCode repeatedly until the
+     * environment changes no more.
+     */
+    protected computeLoopEnv(
+        startEnv: Environment<LatticeValue>,
+        loopCode: () => void,
+    ): Environment<LatticeValue> {
+        const finalEnv = this.envStack.simulateInNewEnvironment(() => {
+            let equalEnvs = false;
+            while (!equalEnvs) {
+                const prevEnv = this.envStack.getCurrentEnvironment();
+                const loopEnv = this.envStack.simulate(loopCode).env;
+                const newEnv = joinEnvironments([prevEnv, loopEnv]);
+                this.envStack.setCurrentEnvironment(newEnv);
+                equalEnvs = eqEnvironments(prevEnv, newEnv);
+            }
+        }, startEnv);
+        return finalEnv.env;
+    }
+}
+
+/**
+ * Joins the target environments (including their ancestor environments).
+ * The procedure assumes that the target environments have the same number of ancestor environments. This should be true if opening
+ * environment nodes is only done through the method envStack.executeInNewEnvironment.
+ */
+function joinEnvironments(
+    targets: Environment<LatticeValue>[],
+): Environment<LatticeValue> {
+    const pivotEnv = targets.pop();
+
+    if (pivotEnv === undefined) {
+        return { values: new Map() };
+    }
+
+    // Intersect the keys in the values map using the pivot as base
+    let keys = new Set(pivotEnv.values.keys());
+    for (const env of targets) {
+        keys = keys.intersection(new Set(env.values.keys()));
+    }
+
+    // For those names that survived in keys, keep those that
+    // have the same value in all the provided targets
+    const finalNames: Map<string, LatticeValue> = new Map();
+
+    // Fill the initial values as found in the pivot environment
+    for (const key of keys) {
+        finalNames.set(key, pivotEnv.values.get(key)!); // key is ensured to be in pivotEnv because keys is the intersection of all envs.
+    }
+
+    // Now, join the values of all the target environments, for each key.
+    for (const key of keys) {
+        // key is ensured to be in finalNames because finalNames was initialized with set "keys"
+        let currentVal = finalNames.get(key)!;
+
+        for (const env of targets) {
+            const alternativeVal = env.values.get(key)!; // key is ensured to be in env because keys is the intersection of all envs.
+
+            currentVal = joinLatticeValues(currentVal, alternativeVal);
+        }
+
+        finalNames.set(key, currentVal);
+    }
+
+    // Put the pivot environment back into the targets
+    targets.push(pivotEnv);
+
+    // Now, time to join the parent environments
+
+    let joinedParents: Environment<LatticeValue> | undefined = undefined;
+
+    const targetParents = targets
+        .map((env) => env.parent)
+        .filter((env) => env !== undefined);
+
+    // Sanity check
+    if (targetParents.length !== 0 && targetParents.length !== targets.length) {
+        // This should not happen. This is a programmer's error
+        throwInternalCompilerError(
+            "Cannot join target environments because they have different ancestor lengths.",
+        );
+    }
+
+    // Now join the parent environments
+    if (targetParents.length > 0) {
+        joinedParents = joinEnvironments(targetParents);
+    }
+
+    return { values: finalNames, parent: joinedParents };
+}
+
+function eqEnvironments(
+    env1: Environment<LatticeValue>,
+    env2: Environment<LatticeValue>,
+): boolean {
+    const map1 = env1.values;
+    const map2 = env2.values;
+
+    if (map1.size !== map2.size) {
+        return false;
+    }
+
+    for (const [key, val1] of map1) {
+        if (!map2.has(key)) {
+            return false;
+        }
+        const val2 = map2.get(key)!;
+        if (!eqLatticeValues(val1, val2)) {
+            return false;
+        }
+    }
+
+    // Up to here, the maps are equal, now check that the ancestor environments are also equal
+    const parent1 = env1.parent;
+    const parent2 = env2.parent;
+
+    if (parent1 !== undefined && parent2 !== undefined) {
+        return eqEnvironments(parent1, parent2);
+    } else if (parent1 === undefined && parent2 === undefined) {
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -1508,26 +1365,26 @@ function extractCommonSubValue(val1: Value, val2: Value): Value | undefined {
 }
 
 class WrapperStack extends EnvironmentStack<Value> {
-    private env: EnvironmentStack<ValueWithStatus>;
+    private env: EnvironmentStack<LatticeValue>;
 
-    constructor(env: EnvironmentStack<ValueWithStatus>) {
+    constructor(env: EnvironmentStack<LatticeValue>) {
         super(copyValue);
         this.env = env;
     }
 
     // Overwrite all the public methods and just pass the logic to the private environment
     public setNewBinding(name: string, val: Value) {
-        this.env.setNewBinding(name, markAsUndeleted(val));
+        this.env.setNewBinding(name, toLatticeValue(val));
     }
 
     public updateBinding(name: string, val: Value) {
-        this.env.updateBinding(name, markAsUndeleted(val));
+        this.env.updateBinding(name, toLatticeValue(val));
     }
 
     public getBinding(name: string): Value | undefined {
         const binding = this.env.getBinding(name);
-        if (binding !== undefined) {
-            return binding.deleted ? undefined : binding.value;
+        if (binding !== undefined && binding.kind === "value") {
+            return binding.value;
         } else {
             return undefined;
         }
@@ -1535,7 +1392,7 @@ class WrapperStack extends EnvironmentStack<Value> {
 
     public selfInEnvironment(): boolean {
         const binding = this.env.getBinding("self");
-        return binding !== undefined ? !binding.deleted : false;
+        return binding !== undefined ? binding.kind === "value" : false;
     }
 
     public executeInNewEnvironment<T>(
@@ -1545,7 +1402,7 @@ class WrapperStack extends EnvironmentStack<Value> {
             values: [],
         },
     ): T {
-        const wrappedValues = initialBindings.values.map(markAsUndeleted);
+        const wrappedValues = initialBindings.values.map(toLatticeValue);
         return this.env.executeInNewEnvironment(code, {
             ...initialBindings,
             values: wrappedValues,
@@ -1556,11 +1413,29 @@ class WrapperStack extends EnvironmentStack<Value> {
         _code: () => T,
         _startEnv: Environment<Value> = { values: new Map() },
     ): { env: Environment<Value>; val: T } {
-        // Should not be used by the standard interpreter: the main problem is that _startEnv cannot receive as default the current env
-        // this.env, because we should not remove the deleted flag in each entry of this.env.
         throwInternalCompilerError(
-            "simulate method in WrapperStack should not be used by the standard Tact " +
-                "interpreter because its behavior cannot be properly defined.",
+            "simulate method is currently not supported in WrapperStack",
+        );
+    }
+
+    public simulateInNewEnvironment<T>(
+        _code: () => T,
+        _startEnv: Environment<Value> = { values: new Map() },
+    ): { env: Environment<Value>; val: T } {
+        throwInternalCompilerError(
+            "simulateInNewEnvironment method is currently not supported in WrapperStack",
+        );
+    }
+
+    public setCurrentEnvironment(_env: Environment<Value>) {
+        throwInternalCompilerError(
+            "setCurrentEnvironment method is currently not supported in WrapperStack",
+        );
+    }
+
+    public getCurrentEnvironment(): Environment<Value> {
+        throwInternalCompilerError(
+            "getCurrentEnvironment method is currently not supported in WrapperStack",
         );
     }
 }

@@ -121,22 +121,24 @@ export function eqValues(val1: Value, val2: Value): boolean {
             val2 !== null &&
             "$tactStruct" in val2
         ) {
-            const keys1 = Object.keys(val1);
-            const keys2 = Object.keys(val2);
+            const map1 = new Map(Object.entries(val1));
+            const map2 = new Map(Object.entries(val2));
 
-            if (
-                !(
-                    keys1.length === keys2.length &&
-                    keys1.every((key) => key in keys2)
-                )
-            ) {
+            if (map1.size !== map2.size) {
                 return false;
             }
 
-            const entries2 = new Map(Object.entries(val2));
-            return Object.entries(val1).every(([key, value]) =>
-                eqValues(value, entries2.get(key)!),
-            );
+            for (const [key, val1] of map1) {
+                if (!map2.has(key)) {
+                    return false;
+                }
+                const val2 = map2.get(key)!;
+                if (!eqValues(val1, val2)) {
+                    return false;
+                }
+            }
+
+            return true;
         } else {
             return false;
         }
