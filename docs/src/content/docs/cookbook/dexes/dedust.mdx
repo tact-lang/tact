@@ -77,7 +77,7 @@ struct SwapParams {
 message(0xea06185d) NativeSwap {
     // Unique identifier used to trace transactions across multiple contracts and to prevent replay attacks
     // Defaults to 0, which means Native Vault will handle this for us
-    queryId: Int as uint64;
+    queryId: Int as uint64 = 0;
 
     // Toncoin amount for the swap
     amount: Int as coins;
@@ -102,7 +102,7 @@ fun swapToncoinForUSDT(swapAmount: Int) {
         body: NativeSwap{
             amount: swapAmount,
             // Address of the swap pool, which is the TON/USDT pair in this case
-            poolAddress: ("EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs"),
+            poolAddress: address("EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs"),
             // Set of parameters relevant for the whole swap
             swapParams: SwapParams{}, // use defaults
         }.toCell(),
