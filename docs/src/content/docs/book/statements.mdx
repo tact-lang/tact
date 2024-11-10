@@ -3,6 +3,8 @@ title: Statements
 description: "This page lists all the statements in Tact, which can appear anywhere in the function bodies"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 The following statements can appear anywhere in the [function](/book/functions) body.
 
 ## `let` statement {#let}
@@ -93,6 +95,157 @@ value += 5;     // augmented assignment (one of the many, see below)
 :::note
 
   Read more about assignment and augmented assignment in their dedicated section: [assignment operators](/book/operators#assignment).
+
+:::
+
+## Destructuring assignment
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+The destructuring assignment is a concise way to unpack [Structs][s] and [Messages][m] into distinct variables. It mirrors the [instantiation syntax](/book/expressions#instantiation), but instead of creating a new [Struct][s] or [Message][m] it binds every field or some of the fields to their respective variables.
+
+The syntax is derived from the [`let` statement](#let), and instead of specifying the variable name directly it involves specifying the structure type on the left side of the [assignment operator `={:tact}`](/book/operators#assignment), which corresponds to the structure type of the value on the right side.
+
+```tact {6}
+// Definition of Example
+struct Example { number: Int }
+
+// An arbitrary helper function
+fun get42(): Example { return Example { number: 42 } }
+
+fun basic() {
+    // Basic syntax of destructuring assignment (to the left of "="):
+    let Example { number } = get42();
+    //  -------   ------     -------
+    //  ↑         ↑          ↑
+    //  |         |          gives the Example Struct
+    //  |         definition of "number" variable, derived
+    //  |         from the field "number" in Example Struct
+    //  target structure type "Example"
+    //  to destructure fields from
+
+    // Same as above, but with an instantiation
+    // to showcase how destructuring syntax mirrors it:
+    let Example { number } = Example { number: 42 };
+    //                       ----------------------
+    //                       ↑
+    //                       instantiation of Example Struct
+
+    // Above examples of syntax are roughly equivalent
+    // to the following series of statements:
+    let example = Example { number: 42 };
+    let number = example.number;
+}
+```
+
+Just like in [instantiation](/book/expressions#instantiation), the trailing comma is allowed.
+
+```tact
+struct Example { number: Int }
+
+fun trailblazing() {
+    let Example {
+        number,     // trailing comma inside variable list
+    } = Example {
+        number: 42, // trailing comma inside field list
+    };
+}
+```
+
+:::note
+
+  [Augmented assignment operators](/book/operators#augmented-assignment) do not make sense for such assignments and will therefore be reported as parsing errors:
+
+  ```tact
+  struct Example { number: Int }
+  fun get42(): Example { return Example { number: 42 } }
+
+  fun basic() {
+      let Example { number } += get42();
+      //                     ^ this will result in the parse error:
+      //                     expected "="
+  }
+  ```
+
+:::
+
+To create a binding under a different variable name, specify it after the semicolon `:{:tact}`.
+
+```tact
+// Similar definition, but this time field is called "field", not "number"
+struct Example { field: Int }
+
+fun naming(s: Example) {
+    let Example { field: varFromField } = s;
+    //                   ------------     ↑
+    //                   ↑                |
+    //                   |                instance of Example Struct, received
+    //                   |                as a parameter of the function "naming"
+    //                   definition of "varFromField" variable, derived
+    //                   from the field "field" in Example Struct
+}
+```
+
+Note, that the order of bindings doesn't matter — all the fields retain their values and types under their names no matter the order in which they stand in their definition in the respective [Struct][s] or [Message][m].
+
+```tact
+// "first" goes first, then goes "second"
+struct Two { first: Int; second: String }
+
+fun order(s: Two) {
+    let Two { second, first } = s;
+    //        ------  -----
+    //        ↑       ↑
+    //        |       this variable will be of type Int,
+    //        |       same as the "first" field on Struct Two
+    //        this variable will be of type String,
+    //        same as the "second" field in Struct Two
+}
+```
+
+Destructuring assignment is exhaustive and requires specifying all the fields as variables. To deliberately ignore some of the fields, use an underscore `_{:tact}`, which discards the considered field's value. Note, that such wildcard variable name `_{:tact}` cannot be accessed:
+
+```tact
+// "first" goes first, then goes "second"
+struct Two { first: Int; second: String }
+
+fun discard(s: Two) {
+    let Two { second: _, first } = s;
+    //              ---
+    //              ↑
+    //              discards the "second" field, only taking the "first"
+}
+```
+
+To completely ignore the rest of the fields, use `..` at the end of the list:
+
+```tact
+struct Many { one: Int; two: Int; three: Int; fans: Int }
+
+fun ignore(s: Many) {
+    let Many { fans, .. } = s;
+    //               --
+    //               ↑
+    //               ignores all the unspecified fields,
+    //               defining only "fans"
+}
+```
+
+:::caution
+
+  At the moment, destructuring of nested [Structs][s] or [Messages][m] isn't allowed. That is, the following won't work:
+
+  ```tact
+  struct First { nested: Second }
+  struct Second { field: Int }
+
+  fun example() {
+      let prep = First { nested: Second { field: 42 } };
+      let First { nested: { field: thing } } = prep;
+      //                  ^ this will result in the parse error:
+      //                  expected "_", "A".."Z", or "a".."z"
+  }
+  ```
 
 :::
 
@@ -415,3 +568,5 @@ foreach (_, _ in quartiles) {
 :::
 
 [int]: /book/integers
+[s]: /book/structs-and-messages#structs
+[m]: /book/structs-and-messages#messages
