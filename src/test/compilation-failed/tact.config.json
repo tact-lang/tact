@@ -231,11 +231,6 @@
       "name": "sha256-expects-string-or-slice",
       "path": "./contracts/sha256-expects-string-or-slice.tact",
       "output": "./contracts/output"
-    },
-    {
-      "name": "const-eval-sha256-too-large",
-      "path": "./contracts/const-eval-sha256-too-large.tact",
-      "output": "./contracts/output"
     }
   ]
 }

@@ -259,11 +259,13 @@ fun sha256(data: String): Int;
 
 Computes and returns the [SHA-256][sha-2] hash as a $256$-bit unsigned [`Int{:tact}`][int] from a passed [`Slice{:tact}`][slice] or [`String{:tact}`][p] `data`.
 
-In case `data` is a [`String{:tact}`][p] it should have a number of bits divisible by $8$, and in case it's a [`Slice{:tact}`][slice] it must **also** have no references (i.e. only up to $1023$ bits of data in total). This function tries to resolve constant string values in [compile-time](/ref/core-comptime) whenever possible.
+In case `data` is a [`String{:tact}`][p] it should have a number of bits divisible by $8$, and in case it's a [`Slice{:tact}`][slice] it must **also** have no references (i.e. only up to $1023$ bits of data in total). This function tries to resolve constant string values at [compile-time](/ref/core-comptime) whenever possible.
 
 :::caution
 
-  If there are more than $128$ bytes in the provided [`String{:tact}`][p] or [`Slice{:tact}`][slice], a compilation error is raised if the compiler can track it, and if not — the hashes of such long arguments would be the same on TON, which might cause collisions. Prefer to hash smaller arguments to prevent such cases.
+  If the [`String{:tact}`][p] value cannot be resolved during [compilation time](/ref/core-comptime), then the hash is calculated at runtime by the [TVM][tvm] itself. Note, that hashing strings with more than $128$ bytes by the [TVM][tvm] can cause collisions if their first $128$ bytes are the same.
+
+  Therefore, prefer using statically known strings whenever possible. When in doubt, use strings of up to $128$ bytes long.
 
 :::
 
@@ -281,5 +283,6 @@ sha256(someVariableElsewhere); // will try to resolve at compile-time,
 [int]: /book/integers
 [slice]: /book/cells#slices
 
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [ed]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
 [sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard

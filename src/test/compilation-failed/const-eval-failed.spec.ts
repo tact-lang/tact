@@ -198,9 +198,4 @@ describe("fail-const-eval", () => {
         errorMessage:
             "Cannot evaluate expression to a constant: ascii string cannot be empty",
     });
-    itShouldNotCompile({
-        testName: "const-eval-sha256-too-large",
-        errorMessage:
-            "Cannot evaluate expression to a constant: data is too large for sha256 hash, expected up to 128 bytes, got 129",
-    });
 });

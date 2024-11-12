@@ -1076,13 +1076,6 @@ export class Interpreter {
                     );
                 }
                 const str = ensureString(expr, ast.args[0]!.loc);
-                const dataSize = Buffer.from(str).length;
-                if (dataSize > 128) {
-                    throwErrorConstEval(
-                        `data is too large for sha256 hash, expected up to 128 bytes, got ${dataSize}`,
-                        ast.loc,
-                    );
-                }
                 return BigInt("0x" + sha256_sync(str).toString("hex"));
             }
             case "emptyMap": {

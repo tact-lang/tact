@@ -386,13 +386,6 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                     // If const-eval did succeed
                     if (str !== undefined) {
-                        const dataSize = Buffer.from(str).length;
-                        if (dataSize > 128) {
-                            throwCompilationError(
-                                `data is too large for sha256 hash, expected up to 128 bytes, got ${dataSize}`,
-                                ref,
-                            );
-                        }
                         return BigInt(
                             "0x" + sha256_sync(str).toString("hex"),
                         ).toString(10);
