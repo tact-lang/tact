@@ -6,8 +6,6 @@ describe("abi/global.ts errors", () => {
         __DANGER_resetNodeId();
     });
 
-    // TODO: fixme
-
     itShouldNotCompile({
         testName: "sha256-expects-string-or-slice",
         errorMessage: "sha256 expects string or slice argument",

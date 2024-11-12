@@ -106,6 +106,16 @@ describe("intrinsics", () => {
             ),
         ).toBe(sha256("sometest"));
         expect(await contract.getGetHash4("wallet")).toBe(sha256("wallet"));
+        const longString =
+            "------------------------------------------------------------------------------------------------------------------------------129";
+        expect(await contract.getGetHashLongComptime()).toBe(
+            sha256(longString),
+        );
+        // NOTE: The discrepancy here is expected, since SHA256U operates only on the first 128 bytes
+        expect(
+            (await contract.getGetHashLongRuntime(longString)) !==
+                sha256(longString),
+        ).toBe(true);
 
         // Check `slice`
         expect(
