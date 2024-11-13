@@ -212,13 +212,22 @@ Tact {
                     | "+" ExpressionUnary --plus
                     | "!" ExpressionUnary --not
                     | "~" ExpressionUnary --bitwiseNot
-                    | ExpressionPrimary
+                    | ExpressionPostfix
 
     // Order is important
-    ExpressionPrimary = ExpressionUnboxNotNull
+    ExpressionPostfix = ExpressionUnboxNotNull
                       | ExpressionMethodCall
                       | ExpressionFieldAccess
-                      | ExpressionStaticCall
+                      | ExpressionPrimary
+
+    ExpressionUnboxNotNull = ExpressionPostfix "!!"
+
+    ExpressionFieldAccess = ExpressionPostfix "." id ~"("
+
+    ExpressionMethodCall = ExpressionPostfix "." id Arguments
+
+    // Order is important
+    ExpressionPrimary = ExpressionStaticCall
                       | ExpressionParens
                       | ExpressionStructInstance
                       | integerLiteral
@@ -229,12 +238,6 @@ Tact {
                       | stringLiteral
 
     ExpressionParens = "(" Expression ")"
-
-    ExpressionUnboxNotNull = ExpressionPrimary "!!"
-
-    ExpressionFieldAccess = ExpressionPrimary "." id ~"("
-
-    ExpressionMethodCall = ExpressionPrimary "." id Arguments
 
     ExpressionStructInstance = typeId "{" ListOf<StructFieldInitializer, ","> ","? "}"
 

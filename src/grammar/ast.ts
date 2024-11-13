@@ -378,19 +378,22 @@ export type AstBouncedMessageType = {
 //
 
 export type AstExpression =
+    | AstExpressionPrimary
     | AstOpBinary
     | AstOpUnary
-    | AstFieldAccess
-    | AstNumber
-    | AstId
-    | AstBoolean
+    | AstConditional;
+
+export type AstExpressionPrimary =
     | AstMethodCall
+    | AstFieldAccess
     | AstStaticCall
     | AstStructInstance
+    | AstNumber
+    | AstBoolean
+    | AstId
     | AstNull
     | AstInitOf
     | AstString
-    | AstConditional;
 
 export type AstBinaryOperation =
     | "+"

@@ -45,138 +45,205 @@ export const ppAstType = makeVisitor<A.AstType>()({
 // Expressions
 //
 
-export const precedenceMap: Readonly<Record<A.AstBinaryOperation, number>> = {
-    "||": 1,
-    "&&": 2,
-    "|": 3,
-    "^": 4,
-    "&": 5,
-    "==": 6,
-    "!=": 6,
-    "<": 7,
-    ">": 7,
-    "<=": 7,
-    ">=": 7,
-    "+": 8,
-    "-": 8,
-    "*": 9,
-    "/": 9,
-    "%": 9,
-    "<<": 11,
-    ">>": 11,
+export const unaryOperatorType: Record<A.AstUnaryOperation, 'post' | 'pre'> = {
+    "+": 'pre',
+    "-": 'pre',
+    "!": 'pre',
+    "~": 'pre',
+
+    "!!": 'post',
+};
+
+export const checkPostfix = (operator: A.AstUnaryOperation) => unaryOperatorType[operator] === 'post';
+
+
+/**
+ * Description of precedence of certain type of AST node
+ */
+export type Precedence = {
+    /**
+     * Add parentheses around `code` if in this `parent` position we need brackets
+     * @param check Position-checking function from parent
+     * @param code Code to put parentheses around
+     * @returns 
+     */
+    brace: (position: (childPrecedence: number) => boolean, code: string) => string;
+    /**
+     * Create a position-checking function for positions where grammar rule recurses
+     * For example in `foo = "+" foo | bar` this should be used for `foo`
+     * In case of `"+" "+" bar` input, this won't put parentheses around inner
+     * `"+" bar`
+     */
+    self: (childPrecedence: number) => boolean;
+    /**
+     * Create a position-checking function for positions where grammar rule uses
+     * a higher-priority grammar rule
+     * For example in `foo = foo "-" bar | bar` this should be used for `bar`
+     * This enforces parentheses in expressions such as `x - (y - z)` where
+     * both operators have same precedence, but right-hand size is allowed to
+     * be an operator of the same precedence only if there were `()`
+     */
+    child: (childPrecedence: number) => boolean;
 };
 
 /**
- * Returns precedence used in unary/binary operations.
- * Lower number means higher precedence
+ * Given numeric value of precedence, where higher values stand for higher binding power,
+ * create a helper object for precedence checking
  */
-export const getPrecedence = makeVisitor<A.AstExpression>()({
-    op_binary: ({ op }) => precedenceMap[op],
-    conditional: () => 0,
-    static_call: () => 0,
-    method_call: () => 0,
-    op_unary: () => 10,
-    id: () => 11,
-    field_access: () => 11,
-    number: () => 11,
-    boolean: () => 11,
-    struct_instance: () => 11,
-    null: () => 11,
-    init_of: () => 11,
-    string: () => 11,
+export const makePrecedence = (myPrecedence: number): Precedence => ({
+    brace: (position, code) => position(myPrecedence) ? `(${code})` : code,
+    self: (childPrecedence) => childPrecedence < myPrecedence,
+    child: (childPrecedence) => childPrecedence <= myPrecedence,
 });
+
+// Least binding operator
+export const lowestPrecedence = makePrecedence(0);
+
+export const conditionalPrecedence = makePrecedence(5);
+
+export const binaryPrecedence: Readonly<Record<A.AstBinaryOperation, Precedence>> = {
+    "||": makePrecedence(10),
+
+    "&&": makePrecedence(20),
+
+    "|": makePrecedence(30),
+
+    "^": makePrecedence(40),
+
+    "&": makePrecedence(50),
+
+    "==": makePrecedence(60),
+    "!=": makePrecedence(60),
+
+    "<": makePrecedence(70),
+    ">": makePrecedence(70),
+    "<=": makePrecedence(70),
+    ">=": makePrecedence(70),
+
+    "<<": makePrecedence(80),
+    ">>": makePrecedence(80),
+
+    "+": makePrecedence(90),
+    "-": makePrecedence(90),
+
+    "*": makePrecedence(100),
+    "/": makePrecedence(100),
+    "%": makePrecedence(100),
+};
+
+export const prefixPrecedence = makePrecedence(110);
+
+// Used by postfix unary !!, method calls and field accesses
+export const postfixPrecedence = makePrecedence(120);
+
+
+/**
+ * Expression printer takes an expression and a function from parent AST node printer that checks
+ * whether expressions with given precedence should be parenthesized in parent context
+ */
+export type ExprPrinter<T> = (expr: T) => (check: (childPrecedence: number) => boolean) => string;
+
+/**
+ * Wrapper for AST nodes that should never be parenthesized, and thus do not require information
+ * about the position they're printed in
+ * 
+ * Takes a regular printer function and returns corresponding ExprPrinter that ignores all
+ * position and precedence information
+ */
+export const ppLeaf =
+    <T>(printer: (t: T) => string): ExprPrinter<T> =>
+    (node) => () => printer(node);
+
+
+export const ppExprArgs = (args: A.AstExpression[]) =>  args.map((arg) => ppAstExpression(arg)).join(", ");
 
 export const ppAstStructFieldInit = (
     param: A.AstStructFieldInitializer,
 ): string => `${ppAstId(param.field)}: ${ppAstExpression(param.initializer)}`;
 
-export const ppExprArgs: ExprPrinter<A.AstExpression[]> =
-    (args) => (currPrecedence) =>
-        args.map((arg) => ppAstExpression(arg, currPrecedence)).join(", ");
-
-type ExprPrinter<T> = (expr: T) => (currPrecedence: number) => string;
-
-export const ppAstOpBinary: ExprPrinter<A.AstOpBinary> =
-    ({ left, op, right }) =>
-    (currPrecedence) =>
-        `${ppAstExpression(left, currPrecedence)} ${op} ${ppAstExpression(right, currPrecedence)}`;
-
-export const ppAstOpUnary: ExprPrinter<A.AstOpUnary> =
-    ({ op, operand }) =>
-    (currPrecedence) =>
-        `${op}${ppAstExpression(operand, currPrecedence)}`;
-
-export const ppAstFieldAccess: ExprPrinter<A.AstFieldAccess> =
-    ({ aggregate, field }) =>
-    (currPrecedence) =>
-        `${ppAstExpression(aggregate, currPrecedence)}.${ppAstId(field)}`;
-
-export const ppAstMethodCall: ExprPrinter<A.AstMethodCall> =
-    ({ self, method, args }) =>
-    (currPrecedence) =>
-        `${ppAstExpression(self, currPrecedence)}.${ppAstId(method)}(${ppExprArgs(args)(currPrecedence)})`;
-
-export const ppAstStaticCall: ExprPrinter<A.AstStaticCall> =
-    ({ function: func, args }) =>
-    (currPrecedence) =>
-        `${ppAstId(func)}(${ppExprArgs(args)(currPrecedence)})`;
-
-export const ppAstInitOf: ExprPrinter<A.AstInitOf> =
-    ({ contract, args }) =>
-    (currPrecedence) =>
-        `initOf ${ppAstId(contract)}(${ppExprArgs(args)(currPrecedence)})`;
-
-export const ppAstConditional: ExprPrinter<A.AstConditional> =
-    ({ condition, thenBranch, elseBranch }) =>
-    (currPrecedence) =>
-        `${ppAstExpression(condition, currPrecedence)} ? ${ppAstExpression(thenBranch, currPrecedence)} : ${ppAstExpression(elseBranch, currPrecedence)}`;
 
 export const ppAstStructInstance = ({ type, args }: A.AstStructInstance) =>
     `${ppAstId(type)}{${args.map((x) => ppAstStructFieldInit(x)).join(", ")}}`;
+
+export const ppAstInitOf = ({ contract, args }: A.AstInitOf) =>
+    `initOf ${ppAstId(contract)}(${ppExprArgs(args)})`;
+
 export const ppAstNumber = A.astNumToString;
 export const ppAstBoolean = ({ value }: A.AstBoolean) => value.toString();
-export const ppAstString = ({ value }: A.AstString) => `"${value}"`;
-export const ppAstNull = (_expr: A.AstNull) => "null";
 export const ppAstId = ({ text }: A.AstId) => text;
+export const ppAstNull = (_expr: A.AstNull) => "null";
+export const ppAstString = ({ value }: A.AstString) => `"${value}"`;
 
-export const ppLeaf =
-    <T>(printer: (t: T) => string) =>
-    (node: T) =>
-    (): string =>
-        printer(node);
+export const ppAstStaticCall = ({ function: func, args }: A.AstStaticCall) => {
+    return `${ppAstId(func)}(${ppExprArgs(args)})`;
+};
 
-export const ppAstExpressionVisitor = makeVisitor<A.AstExpression>()({
-    op_binary: ppAstOpBinary,
-    op_unary: ppAstOpUnary,
-    field_access: ppAstFieldAccess,
-    method_call: ppAstMethodCall,
-    static_call: ppAstStaticCall,
-    init_of: ppAstInitOf,
-    conditional: ppAstConditional,
+
+export const ppAstMethodCall: ExprPrinter<A.AstMethodCall> = ({ self: object, method, args }) => (position) => {
+    const { brace, self } = postfixPrecedence;
+    return brace(position, `${ppAstExpressionNested(object)(self)}.${ppAstId(method)}(${ppExprArgs(args)})`);
+};
+
+export const ppAstFieldAccess: ExprPrinter<A.AstFieldAccess> = ({ aggregate, field }) => (position) => {
+    const { brace, self } = postfixPrecedence;
+    return brace(position, `${ppAstExpressionNested(aggregate)(self)}.${ppAstId(field)}`);
+};
+
+export const ppAstOpUnary: ExprPrinter<A.AstOpUnary> =
+    ({ op, operand }) =>
+    (position) => {
+        const isPostfix = checkPostfix(op);
+        const { brace, self } = isPostfix ? postfixPrecedence : prefixPrecedence;
+        const code = ppAstExpressionNested(operand)(self);
+        return brace(position, isPostfix ? `${code}${op}` : `${op}${code}`);
+    };
+
+export const ppAstOpBinary: ExprPrinter<A.AstOpBinary> =
+    ({ left, op, right }) =>
+    (position) => {
+        const { brace, self, child } = binaryPrecedence[op];
+        const leftCode = ppAstExpressionNested(left)(self);
+        const rightCode = ppAstExpressionNested(right)(child);
+        return brace(position, `${leftCode} ${op} ${rightCode}`);
+    };
+
+export const ppAstConditional: ExprPrinter<A.AstConditional> =
+    ({ condition, thenBranch, elseBranch }) =>
+    (position) => {
+        const { brace, self, child } = conditionalPrecedence;
+        const conditionCode = ppAstExpressionNested(condition)(child);
+        const thenCode = ppAstExpressionNested(thenBranch)(child);
+        const elseCode = ppAstExpressionNested(elseBranch)(self);
+        return brace(position, `${conditionCode} ? ${thenCode} : ${elseCode}`);
+    };
+
+export const ppAstExpressionNested = makeVisitor<A.AstExpression>()({
     struct_instance: ppLeaf(ppAstStructInstance),
     number: ppLeaf(ppAstNumber),
     boolean: ppLeaf(ppAstBoolean),
-    string: ppLeaf(ppAstString),
-    null: ppLeaf(ppAstNull),
     id: ppLeaf(ppAstId),
+    null: ppLeaf(ppAstNull),
+    init_of: ppLeaf(ppAstInitOf),
+    string: ppLeaf(ppAstString),
+    static_call: ppLeaf(ppAstStaticCall),
+
+    method_call: ppAstMethodCall,
+    field_access: ppAstFieldAccess,
+
+    op_unary: ppAstOpUnary, // x2
+
+    op_binary: ppAstOpBinary,
+
+    conditional: ppAstConditional,
 });
 
-export const ppAstExpression = (
-    expr: A.AstExpression,
-    parentPrecedence: number = 0,
-): string => {
-    const currPrecedence = getPrecedence(expr);
-
-    const result = ppAstExpressionVisitor(expr)(currPrecedence);
-
-    const needParens =
-        parentPrecedence > 0 &&
-        currPrecedence > 0 &&
-        currPrecedence < parentPrecedence;
-
-    return needParens ? `(${result})` : result;
+export const ppAstExpression = (expr: A.AstExpression): string => {
+    return ppAstExpressionNested(expr)(lowestPrecedence.child);
 };
 
+/**
+ * An intermediate language that is only concerned of spacing and identation
+ */
 type Context<U> = {
     /**
      * Line of code with \n implied
@@ -214,28 +281,53 @@ type Context<U> = {
     }) => readonly U[];
 };
 
+/**
+ * Generates line of code with indentation, given desired indentation level of outer scope
+ */
 type LevelFn = (level: number) => string;
+
+/**
+ * Result of printing an expression is an array of rows, parameterized over indentation
+ * of outer scope
+ */
 type ContextModel = readonly LevelFn[];
 
+/**
+ * Concatenates an array of printing results, so that last line of each expression is merged
+ * with first line of next expression
+ * 
+ * Typically used to generate multiline indented code as part of single-line expression
+ * 
+ * Roughly, `concat(["while (true)"], [" "], ["{", "...", "}"]) = ["while (true) {", "...", "}"]`
+ */
 const concat = ([head, ...tail]: readonly ContextModel[]): ContextModel => {
+    // If we're concatenating an empty array, the result is always empty
     if (isUndefined(head)) {
         return [];
     }
+    // Create a copy of first printing result, where we'll accumulate other results
     const init = [...head];
+    // Recursively concatenate all printing results except for first
     const next = concat(tail);
+    // Take last line of first printing result
     const last = init.pop();
+    // If first printing result has no lines, return concatenation result of all others
     if (isUndefined(last)) {
         return next;
     }
+    // Get first line on concanated printing results starting with second
     const [nextHead, ...nextTail] = next;
+    // If they all concatenated into an array of 0 lines, just return first printing result
     if (isUndefined(nextHead)) {
         return head;
     }
+    // Otherwise merge results by setting 
     return [...init, (level) => last(level) + nextHead(0), ...nextTail];
 };
 
 const createContext = (spaces: number): Context<ContextModel> => {
     const row = (s: string) => [
+        // Empty lines are not indented
         (level: number) => s === "" ? s : " ".repeat(level * spaces) + s,
     ];
     const block = (rows: readonly ContextModel[]) => rows.flat();
@@ -270,9 +362,14 @@ const createContext = (spaces: number): Context<ContextModel> => {
     return ctx;
 };
 
+/**
+ * Prints AST node of type `T` into an intermediate language of row of type `U`
+ * 
+ * We enforce `U` to be a generic argument so that no implementation can (ab)use
+ * the fact it's a string and generate some indentation without resorting to
+ * methods of `Context`.
+ */
 type Printer<T> = (item: T) => <U>(ctx: Context<U>) => U;
-
-type Functional = A.AstFunctionDef | A.AstAsmFunctionDef | A.AstFunctionDecl;
 
 export const ppAstModule: Printer<A.AstModule> =
     ({ imports, items }) =>
@@ -511,7 +608,7 @@ export const ppAstFunctionSignature = ({
     attributes,
     return: retTy,
     params,
-}: Functional): string => {
+}: A.AstFunctionDef | A.AstAsmFunctionDef | A.AstFunctionDecl): string => {
     const argsCode = params
         .map(({ name, type }) => `${ppAstId(name)}: ${ppAstType(type)}`)
         .join(", ");
