@@ -74,6 +74,31 @@ asm extends fun beginParse(self: Cell): Slice { CTOS }
 
 asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
 
+/// Extension function for the `Slice`. Available since Tact 1.5.0.
+///
+/// Preloads the next reference from the `Slice` as a `Cell`. Doesn't modify the original `Slice`.
+///
+/// Attempts to preload such reference `Cell` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+///
+/// Attempts to preload more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
+/// ```tact
+/// let s1: Slice = beginCell().storeRef(emptyCell()).asSlice();
+/// let fizz: Cell = s1.preloadRef(); // didn't modify s1
+///
+/// let s2: Slice = beginCell()
+///     .storeRef(emptyCell())
+///     .storeRef(s1.asCell())
+///     .asSlice();
+/// let ref1: Cell = s2.preloadRef();
+/// let ref2: Cell = s2.preloadRef();
+/// ref1 == ref2; // true
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#slicepreloadref
+/// * https://docs.tact-lang.org/book/exit-codes
+///
 asm extends fun preloadRef(self: Slice): Cell { PLDREF }
 
 // special treatment in Func compiler, so not replaced with asm "LDSLICEX"
