@@ -260,7 +260,7 @@ export const ppAstExpression = (expr: A.AstExpression): string => {
 };
 
 /**
- * An intermediate language that is only concerned of spacing and identation
+ * An intermediate language that is only concerned of spacing and indentation
  */
 type Context<U> = {
     /**
@@ -333,7 +333,7 @@ const concat = ([head, ...tail]: readonly ContextModel[]): ContextModel => {
     if (isUndefined(last)) {
         return next;
     }
-    // Get first line on concanated printing results starting with second
+    // Get first line on concatenated printing results starting with second
     const [nextHead, ...nextTail] = next;
     // If they all concatenated into an array of 0 lines, just return first printing result
     if (isUndefined(nextHead)) {
