@@ -839,6 +839,9 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     typed_parameter: () => {
         throw new Error("Not implemented");
     },
+    destruct_end: () => {
+        throw new Error("Not implemented");
+    },
 
     module: ppAstModule,
     struct_decl: ppAstStruct,
