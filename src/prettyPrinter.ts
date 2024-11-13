@@ -62,7 +62,7 @@ export const precedenceMap: Readonly<Record<A.AstBinaryOperation, number>> = {
     "*": 9,
     "/": 9,
     "%": 9,
-    "<<": 11, // BUG?
+    "<<": 11,
     ">>": 11,
 };
 
@@ -217,28 +217,27 @@ type Context<U> = {
 type LevelFn = (level: number) => string;
 type ContextModel = readonly LevelFn[];
 
-const emptyLine = Object.freeze(new Array<LevelFn>());
+const concat = ([head, ...tail]: readonly ContextModel[]): ContextModel => {
+    if (isUndefined(head)) {
+        return [];
+    }
+    const init = [...head];
+    const next = concat(tail);
+    const last = init.pop();
+    if (isUndefined(last)) {
+        return next;
+    }
+    const [nextHead, ...nextTail] = next;
+    if (isUndefined(nextHead)) {
+        return head;
+    }
+    return [...init, (level) => last(level) + nextHead(0), ...nextTail];
+};
+
 const createContext = (spaces: number): Context<ContextModel> => {
     const row = (s: string) => [
-        (level: number) => " ".repeat(level * spaces) + s,
+        (level: number) => s === "" ? s : " ".repeat(level * spaces) + s,
     ];
-    const concat = (rows: readonly ContextModel[]): ContextModel => {
-        const [head, ...tail] = rows;
-        if (isUndefined(head)) {
-            return [];
-        }
-        const next = concat(tail);
-        const init = [...head];
-        const last = init.pop();
-        if (isUndefined(last)) {
-            return next;
-        }
-        const [nextHead, ...nextTail] = next;
-        if (isUndefined(nextHead)) {
-            return head;
-        }
-        return [...init, (level) => last(level) + nextHead(level), ...nextTail];
-    };
     const block = (rows: readonly ContextModel[]) => rows.flat();
     const indent = (rows: readonly ContextModel[]) =>
         block(rows).map((f) => (level: number) => f(level + 1));
@@ -257,7 +256,7 @@ const createContext = (spaces: number): Context<ContextModel> => {
     }) => {
         return intercalate(
             groupBy(items, getTag).map((group) => list(group, print)),
-            emptyLine,
+            row(''),
         );
     };
     const ctx: Context<ContextModel> = {
@@ -293,7 +292,6 @@ export const ppAstModule: Printer<A.AstModule> =
         ]);
     };
 
-// BUG with }
 export const ppAstStruct: Printer<A.AstStructDecl> =
     ({ name, fields }) =>
     (c) =>
@@ -337,6 +335,7 @@ export const ppAstPrimitiveTypeDecl: Printer<A.AstPrimitiveTypeDecl> =
 export const ppAstFunctionDef: Printer<A.AstFunctionDef> = (node) => (c) =>
     c.concat([
         c.row(ppAstFunctionSignature(node)),
+        c.row(' '),
         ppStatementBlock(node.statements)(c),
     ]);
 
@@ -416,7 +415,7 @@ export const ppAstMessage: Printer<A.AstMessageDecl> =
     (c) => {
         const prefixCode =
             opcode !== null ? `(${A.astNumToString(opcode)})` : "";
-        // BUG with }
+
         return c.concat([
             c.row(`message${prefixCode} ${ppAstId(name)} `),
             c.braced(c.list(fields, ppAstFieldDecl)),
@@ -553,7 +552,7 @@ export const ppAstFuncId = (func: A.AstFuncId): string => func.text;
 //
 
 export const ppStatementBlock: Printer<A.AstStatement[]> = (stmts) => (c) =>
-    c.braced(c.list(stmts, ppAstStatement));
+    c.braced(stmts.length === 0 ? [c.row('')] : c.list(stmts, ppAstStatement));
 
 export const ppAsmInstructionsBlock: Printer<A.AstAsmInstruction[]> =
     (instructions) => (c) =>
@@ -720,10 +719,10 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     bounced_message_type: exprNode(ppAstType),
     struct_field_initializer: exprNode(ppAstStructFieldInit),
     destruct_mapping: () => {
-        throw new Error("BUG");
+        throw new Error("Not implemented");
     },
     typed_parameter: () => {
-        throw new Error("BUG");
+        throw new Error("Not implemented");
     },
 
     module: ppAstModule,
