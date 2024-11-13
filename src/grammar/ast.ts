@@ -393,7 +393,7 @@ export type AstExpressionPrimary =
     | AstId
     | AstNull
     | AstInitOf
-    | AstString
+    | AstString;
 
 export type AstBinaryOperation =
     | "+"
