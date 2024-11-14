@@ -111,7 +111,7 @@ describe("intrinsics", () => {
         expect(await contract.getGetHashLongComptime()).toBe(
             sha256(longString),
         );
-        // NOTE: The discrepancy here is expected, since SHA256U operates only on the first 128 bytes
+        // NOTE: The discrepancy here is expected, since SHA256U operates only on the first 127 bytes
         expect(
             (await contract.getGetHashLongRuntime(longString)) !==
                 sha256(longString),
