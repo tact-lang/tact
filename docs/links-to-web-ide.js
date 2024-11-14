@@ -75,7 +75,7 @@ export default function remarkLinksToWebIDE() {
           // Constructing opening <a> tag
           [
             // Open the tag
-            '<a',
+            '<a data-pagefind-ignore="all"',
             // Make links opened in new tab
             'target="_blank"',
             // Set styles

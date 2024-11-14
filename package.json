@@ -22,7 +22,7 @@
     "release": "yarn clean && yarn build && yarn coverage && yarn release-it --npm.yarn1",
     "lint": "yarn eslint .",
     "lint:schema": "ajv validate -s schemas/configSchema.json -d tact.config.json",
-    "fmt": "yarn prettier -w .",
+    "fmt": "yarn prettier -l -w .",
     "fmt:check": "yarn prettier --check .",
     "spell": "yarn cspell --no-progress \"**\"",
     "knip": "knip",

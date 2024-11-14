@@ -92,6 +92,14 @@ contract IntrinsicsTester {
         return sha256(src);
     }
 
+    get fun getHashLongComptime(): Int {
+        return sha256("------------------------------------------------------------------------------------------------------------------------------129");
+    }
+
+    get fun getHashLongRuntime(src: String): Int {
+        return sha256(src);
+    }
+
     receive("emit_1") {
         emit("Hello world".asComment());
     }
