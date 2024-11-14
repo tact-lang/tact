@@ -72,19 +72,21 @@ export type Precedence = {
         code: string,
     ) => string;
     /**
-     * Create a position-checking function for positions where grammar rule recurses
-     * For example in `foo = "+" foo | bar` this should be used for `foo`
-     * In case of `"+" "+" bar` input, this won't put parentheses around inner
-     * `"+" bar`
+     * Used in positions where grammar rule mentions itself
+     *
+     * Passed down when a position allows same unparenthesized operator
+     * For example, on left side of addition we can use another addition without
+     * parentheses: `1 + 2 + 3` means `(1 + 2) + 3`. Thus for left-associative
+     * operators we pass `self` to their left argument printer.
      */
     self: (childPrecedence: number) => boolean;
     /**
-     * Create a position-checking function for positions where grammar rule uses
-     * a higher-priority grammar rule
-     * For example in `foo = foo "-" bar | bar` this should be used for `bar`
-     * This enforces parentheses in expressions such as `x - (y - z)` where
-     * both operators have same precedence, but right-hand size is allowed to
-     * be an operator of the same precedence only if there were `()`
+     * Used in positions where grammar rule mentions other rule
+     *
+     * Passed down when a position disallows same unparenthesized operator
+     * For example, on the right side of subtraction we can't use another subtraction
+     * without parentheses: `1 - (2 - 3)` is not the same as `(1 - 2) - 3`. Thus for
+     * left-associative operators we pass `child` to their right argument printer.
      */
     child: (childPrecedence: number) => boolean;
 };
@@ -102,44 +104,44 @@ export const makePrecedence = (myPrecedence: number): Precedence => ({
 // Least binding operator
 export const lowestPrecedence = makePrecedence(0);
 
-export const conditionalPrecedence = makePrecedence(5);
+export const conditionalPrecedence = makePrecedence(20);
 
 export const binaryPrecedence: Readonly<
     Record<A.AstBinaryOperation, Precedence>
 > = {
-    "||": makePrecedence(10),
+    "||": makePrecedence(30),
 
-    "&&": makePrecedence(20),
+    "&&": makePrecedence(40),
 
-    "|": makePrecedence(30),
+    "|": makePrecedence(50),
 
-    "^": makePrecedence(40),
+    "^": makePrecedence(60),
 
-    "&": makePrecedence(50),
+    "&": makePrecedence(70),
 
-    "==": makePrecedence(60),
-    "!=": makePrecedence(60),
+    "==": makePrecedence(80),
+    "!=": makePrecedence(80),
 
-    "<": makePrecedence(70),
-    ">": makePrecedence(70),
-    "<=": makePrecedence(70),
-    ">=": makePrecedence(70),
+    "<": makePrecedence(90),
+    ">": makePrecedence(90),
+    "<=": makePrecedence(90),
+    ">=": makePrecedence(90),
 
-    "<<": makePrecedence(80),
-    ">>": makePrecedence(80),
+    "<<": makePrecedence(100),
+    ">>": makePrecedence(100),
 
-    "+": makePrecedence(90),
-    "-": makePrecedence(90),
+    "+": makePrecedence(110),
+    "-": makePrecedence(110),
 
-    "*": makePrecedence(100),
-    "/": makePrecedence(100),
-    "%": makePrecedence(100),
+    "*": makePrecedence(120),
+    "/": makePrecedence(120),
+    "%": makePrecedence(120),
 };
 
-export const prefixPrecedence = makePrecedence(110);
+export const prefixPrecedence = makePrecedence(140);
 
 // Used by postfix unary !!, method calls and field accesses
-export const postfixPrecedence = makePrecedence(120);
+export const postfixPrecedence = makePrecedence(150);
 
 /**
  * Expression printer takes an expression and a function from parent AST node printer that checks
@@ -294,6 +296,12 @@ type Context<U> = {
      */
     grouped: <T, V>(options: {
         items: readonly T[];
+        /**
+         * Items with the same tag are displayed without extra empty line between them
+         *
+         * Use NaN for tag whenever items should always be displayed with empty line,
+         * because NaN !== NaN
+         */
         getTag: (t: T) => V;
         print: Printer<T>;
     }) => readonly U[];
