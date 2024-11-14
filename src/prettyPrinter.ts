@@ -248,7 +248,7 @@ export const ppAstExpressionNested = makeVisitor<A.AstExpression>()({
     method_call: ppAstMethodCall,
     field_access: ppAstFieldAccess,
 
-    op_unary: ppAstOpUnary, // x2
+    op_unary: ppAstOpUnary,
 
     op_binary: ppAstOpBinary,
 
@@ -339,7 +339,7 @@ const concat = ([head, ...tail]: readonly ContextModel[]): ContextModel => {
     if (isUndefined(nextHead)) {
         return head;
     }
-    // Otherwise merge results by setting
+    // Otherwise concatenate results, leaving indent only in front of the merged line
     return [...init, (level) => last(level) + nextHead(0), ...nextTail];
 };
 
