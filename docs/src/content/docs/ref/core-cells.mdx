@@ -22,7 +22,7 @@ import { Badge } from '@astrojs/starlight/components';
 ## beginCell
 
 ```tact
-fun beginCell(): Builder
+fun beginCell(): Builder;
 ```
 
 Creates a new empty [`Builder{:tact}`][builder].
@@ -634,15 +634,45 @@ Attempts to load more data than [`Slice{:tact}`][slice] contains throw an except
 Usage examples:
 
 ```tact
-let s: Slice = beginCell().storeRef(emptyCell()).asSlice();
-let fizz: Cell = s.loadRef();
+let s1: Slice = beginCell().storeRef(emptyCell()).asSlice();
+let fizz: Cell = s1.loadRef();
 
-let s: Slice = beginCell()
+let s2: Slice = beginCell()
     .storeRef(emptyCell())
-    .storeRef(emptyCell())
+    .storeRef(s1.asCell())
     .asSlice();
-let ref1: Cell = s.loadRef();
-let ref2: Cell = s.loadRef();
+let ref1: Cell = s2.loadRef();
+let ref2: Cell = s2.loadRef();
+ref1 == ref2; // false
+```
+
+## Slice.preloadRef
+
+```tact
+extends fun preloadRef(self: Slice): Cell;
+```
+
+Extension function for the [`Slice{:tact}`][slice].
+
+Preloads the next reference from the [`Slice{:tact}`][slice] as a [`Cell{:tact}`][cell]. Doesn't modify the original [`Slice{:tact}`][slice].
+
+Attempts to preload such reference [`Cell{:tact}`][cell] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to preload more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage examples:
+
+```tact
+let s1: Slice = beginCell().storeRef(emptyCell()).asSlice();
+let fizz: Cell = s1.preloadRef(); // didn't modify s1
+
+let s2: Slice = beginCell()
+    .storeRef(emptyCell())
+    .storeRef(s1.asCell())
+    .asSlice();
+let ref1: Cell = s2.preloadRef();
+let ref2: Cell = s2.preloadRef();
+ref1 == ref2; // true
 ```
 
 ## Slice.refs

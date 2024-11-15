@@ -1,0 +1,279 @@
+---
+title: 数学
+---
+
+各种数学辅助功能
+
+## 分钟
+
+```tact
+fun min(x: Int, y: Int)：Int；
+```
+
+计算并返回两个 [`Int{:tact}`][int]值 `x` 和 `y` 的 [最小值](https://en.wikipedia.org/wiki/Maximum_and_minimum)。
+
+使用示例
+
+```tact
+min(1, 2); // 1
+min(2, 2); // 2
+min(007, 3); // 3
+min(0x45, 3_0_0); // 69, nice
+// ↑ ↑
+// 69 300
+```
+
+## 最大
+
+```tact
+fun max(x: Int, y: Int)：Int；
+```
+
+计算并返回两个 [`Int{:tact}`][int]值 `x` 和 `y` 的 [最大值](https://en.wikipedia.org/wiki/Maximum_and_minimum)。
+
+使用示例
+
+```tact
+max(1, 2); // 2
+max(2, 2); // 2
+max(007, 3); // 7
+max(0x45, 3_0_0); // 300
+// ↑ ↑
+// 69 300
+```
+
+## 腹肌
+
+```tact
+fun abs(x: Int)：Int
+```
+
+计算并返回[`Int{:tact}`][int]值 `x` 的[绝对值](https://en.wikipedia.org/wiki/Absolute_value)。
+
+使用示例
+
+```tact
+abs(42); // 42
+abs(-42); // 42
+abs(-(-(-42))); // 42
+```
+
+## log
+
+```tact
+fun log(num: Int, base: Int)：Int；
+```
+
+计算并返回数字 `num` $> 0$ 以 `base` $≥1$ 为底的 [logarithm](https://en.wikipedia.org/wiki/Logarithm) 值。 结果[四舍五入](https://en.wikipedia.org/wiki/Rounding#Rounding_down)。 传入一个非正数`num`值或`base`小于 $1$ 会产生错误[退出代码 5](/book/exit-codes#5)：整数超出预期范围"。
+
+使用示例
+
+```tact
+log(1000, 10); // 3, 因为 10^3 是 1000
+// ↑ ↑ ↑
+// num base base num
+
+log(1001, 10); // 3
+log(999, 10); // 2
+try {
+  log(-1000, 10)；// 抛出退出代码 5，因为数值不是正数
+}
+log(1024, 2); // 10
+try {
+  log(1024, -2); // 抛出退出代码 5，因为基数小于 1
+}
+```
+
+:::note
+
+  请注意，如果只需要获取以 $2$为底的对数，请使用 [`log2(){:tact}`](#log2)函数，因为它更省油。
+
+:::
+
+## log2
+
+```tact
+fun log2(num: Int)：Int；
+```
+
+类似于 [`log(){:tact}`](#log)，但将 `base` 设为 $2$。
+
+使用示例
+
+```tact
+log2(1024); // 10，因为 2^10 是 1024
+// ↑ ↑
+// num base₂ num
+```
+
+:::note
+
+  为了减少 gas 用量，当您只需要获取以 $2$为底的对数时，最好使用该函数，而不是调用 [`log(){:tact}`](#log)。
+
+:::
+
+## pow
+
+```tact
+fun pow(base: Int, exp: Int)：Int；
+```
+
+计算并返回涉及两个数的 [幂级数](https://en.wikipedia.org/wiki/Exponentiation)："基数 "和指数（或_幂_）"exp"。 指数 `exp` 必须是非负数，否则将产生[退出代码 5](/book/exit-codes#5)错误：`整数超出预期范围`。
+
+请注意，该函数在运行时和［编译时］（/ref/core-comptime）均有效。
+
+使用示例
+
+```tact
+contract Example {
+    // 持久状态变量
+    p23: Int = pow(2, 3); // 将 2 提升到三次幂，即 8
+    one：Int = pow(5, 0); // 将 5 提升到 0 的幂次，总是产生 1
+                          // 在编译时工作！
+
+    // 内部消息接收器，接受消息 ExtMsg
+    receive() {
+        pow(self.p23, self.one + 1); // 64，运行时也有效！
+        pow(0, -1); // ERROR！退出代码 5：整数超出预期范围
+    }
+}
+```
+
+:::note
+
+  注意，如果只需要获取 $2$的幂，请使用 [`pow2(){:tact}`](#pow2)函数，因为它更省油。
+
+:::
+
+:::note
+
+  仅在编译时有效的函数列表：[API 编译时间](/ref/core-comptime)。
+
+:::
+
+## pow2
+
+```tact
+fun pow2(exp: Int)：Int；
+```
+
+与 [`pow(){:tact}`](#pow) 类似，但将 `base` 设为 $2$。 在运行时和［编译时］（/ref/core-comptime）均可使用。
+
+使用示例
+
+```tact
+contract Example {
+    // 持久状态变量
+    p23: Int = pow2(3); // 将 2 提升到三次幂，即 8
+    one：Int = pow2(0); // 将 2 提升到 0 的幂，总是产生 1
+                        // 在编译时工作！
+
+    // 内部消息接收器，接受消息 ExtMsg
+    receive() {
+        pow2(self.one + 1); // 4，运行时也有效！
+        pow2(-1); // ERROR！退出代码 5：整数超出预期范围
+    }
+}
+```
+
+:::note
+
+  为了减少 gas 用量，当您只需要获取 $2$的幂时，最好使用该函数，而不是调用 [`pow(){:tact}`](#pow) 。
+
+:::
+
+:::note
+
+  仅在编译时有效的函数列表：[API 编译时间](/ref/core-comptime)。
+
+:::
+
+## checksignature
+
+```tact
+fun checkSignature(hash: Int, signature: Slice, public_key: Int)：Bool；
+```
+
+使用由 $256$-bit unsigned [`Int{:tact}`][int]表示的 "公钥 "检查 $256$-bit unsigned [`Int{:tact}`][int]"哈希 "的[Ed25519][ed]"签名"。 签名必须包含至少 $512$ 位数据，但只使用前 $512$ 位。
+
+如果签名有效，则返回 `true{:tact}`，否则返回 `false{:tact}`。
+
+使用示例
+
+```tact {19-24}
+message ExtMsg {
+    signature：Slice;
+    data：Cell;
+}
+
+contract Showcase {
+    // Persistent state variables
+    pub：Int as uint256; // 公钥为 256 位无符号 Int
+
+    // 构造函数 init()，初始化所有变量
+    init(pub: Int) {
+        self.pub = pub; // 契约初始化时存储公钥
+    } // 外部消息接收器接受消息 ExtMsg
+
+    // 外部消息接收器，接受消息 ExtMsg
+    external(msg: ExtMsg) {
+        let hash：Int = beginCell().storeRef(msg.data).endCell().hash();
+        let check：Bool = checkSignature(hash, msg.signature, self.pub);
+        // ---- ------------- --------
+        // ↑ ↑
+        // | | public_key，存储在我们的合约中
+        // | signature，从接收到的消息中获取
+        // hash，使用接收到的消息中的数据计算
+        // ... 后续逻辑...
+    }
+}
+```
+
+## 检查数据签名
+
+```tact
+fun checkDataSignature(data: Slice, signature: Slice, public_key: Int)：Bool；
+```
+
+使用 "公钥 "检查 "数据 "的[Ed25519][ed]"签名"，类似于[`checkSignature(){:tact}`](#checksignature)。 如果 `data` 的位长不能被 $8$整除，该函数将产生错误[退出代码 9](/book/exit-codes#9)：单元格下溢。 验证本身是间接进行的：根据 "数据 "的[SHA-256][sha-2] 哈希值进行验证。
+
+如果签名有效，则返回 `true{:tact}`，否则返回 `false{:tact}`。
+
+使用示例
+
+```tact
+让 data：Slice = ...;
+let signature：Slice = ...;
+let publicKey：Int = ...;
+
+let check：Bool = checkSignature(data, signature, publicKey)；
+```
+
+## sha256
+
+```tact
+fun sha256(data: Slice)：
+fun sha256(data: String)：Int；
+```
+
+从传递的 [`片{:tact}`][片] 或 [`字符串{:tact}`][p]`数据`计算[SHA-256][sha-2] 哈希值，并以 $256$-bit 无符号 [`Int{:tact}`][int]的形式返回。
+
+如果 `data` 是一个 [`字符串{:tact}`][p]，它的位数应能被 $8$除，如果它是一个 [`片{:tact}`][片]，它也必须\*\*\*没有引用（即总共最多只有 1023 位数据）。
+
+该函数尽可能在 [编译时](/ref/core-comptime) 解析常量字符串值。
+
+使用示例
+
+```tact
+sha256(beginCell().asSlice());
+sha256("Hello, world!"); // 将在编译时解析
+sha256(someVariableElsewhere); // 将尝试在编译时解析，
+                               // 并回退到运行时评估
+```
+
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
+[一片]: /book/cells#slices
+[编辑]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
+[屏蔽-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard

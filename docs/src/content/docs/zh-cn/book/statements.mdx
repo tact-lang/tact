@@ -1,0 +1,416 @@
+---
+title: 发言
+---
+
+以下语句可出现在 [function](/book/functions) 主体的任何位置。
+
+## `let`语句 {#let}
+
+`let{:tact}` 语句允许声明局部变量和 [block](#block)-scoped 变量。
+
+在 Tact 中，声明一个局部变量总是需要一个初始值。但是，也可以省略类型标注，Tact 会尝试从初始值推断类型：
+
+```tact
+let value：Int = 123; // 包含类型和值的完整声明
+let vInferred = 123; // 推断类型 Int
+
+let vExplicitCtx：Context = context(); // 显式类型 Context，内置结构
+let vCtx = context(); // 推断类型 Context
+```
+
+请注意，`null{:tact}`的初始值既可以指具有任意 `K{:tact}`和 `V{:tact}`类型的空[`map<K, V>{:tact}`](/book/maps)，也可以指故意不为[optional](/book/optionals)类型设置任何其他值。 这就是为什么在声明 [optional](/book/optionals) 或 [`map<K, V>{:tact}`](/book/maps)时，需要明确指定类型，因为无法推断：
+
+```tact
+let vOptional: Int? = null; // explicit type Int or null
+let vOptInt = 42; // implicit type Int
+vOptInt = null; // CompILATION ERROR!
+
+let vMap: map<Int, Int> = emptyMap(); // explicit type map<Int, Int>
+let vMapWithSerialization: map<Int as uint8, Int as uint8> = emptyMap()；
+```
+
+用下划线 `_{:tact}` 命名局部变量时，其值将被视为未使用并丢弃。 当你不需要某个函数的返回值（有副作用），并想明确地将变量标记为未使用时，这种方法就很有用。 注意，不能访问通配符变量名 `_{:tact}`：
+
+```tact
+let _ = someFunctionWithSideEffects(); // with type inference
+let _: map<Int, Int> = emptyMap(); // with explicit type
+
+dump(_); // COMPILATION ERROR！无法访问 _
+```
+
+## `return` 语句 {#return}
+
+`return{:tact}` 语句结束 [function](/book/functions) 的执行，并指定要返回给 [function](/book/functions) 调用者的值。
+
+```tact
+// Simple wrapper over stdlib function now()
+fun getTimeFromNow(offset: Int): Int {
+    return now() + offset;
+}
+```
+
+## block
+
+块语句用于组合零个或多个语句。 块由一对大括号（"大括号"、`{}{:tact}`）分隔，包含一个由零个或多个语句和声明组成的列表。
+
+某些语句，如 [`let{:tact}`](#let) 或 [`return{:tact}`](#return)，必须以结束分号 `;{:tact}` 结束。 不过，语块中最后一条语句的分号是可选的，可以省略。
+
+```tact
+{ // <- 块的开始
+    // 任意语句：
+    let value：Int = 2 + 2;
+    dump(value);
+}// <- 程序块的结束
+
+{ dump(2 + 2) }// 一个只有一条语句的代码块，
+                // 省略了最后也是唯一的分号
+
+{
+    let nah = 3 * 3 * 3; // 一个有两条语句的代码块，
+    let yay = nah + 42 // 但没有最后的分号
+}
+```
+
+## 表达
+
+表达式语句是一种表达式，用于预期需要语句的地方。 表达式被求值后，其结果将被丢弃--因此，它只适用于有副作用的表达式，如执行函数或更新变量。
+
+```tact
+dump(2 + 2); // stdlib 函数
+```
+
+## 任务
+
+赋值语句使用 [赋值运算符](/book/operators#assignment) (`={:tact}`)或 [增强赋值运算符](/book/operators#augmented-assignment) (赋值与运算相结合)：
+
+```tact
+let value：Int; // 声明
+value = 5; // 赋值
+value += 5; // 增强赋值（众多赋值之一，见下文）
+```
+
+:::note
+
+  有关赋值和增强赋值的更多信息，请参阅其专门章节：[赋值运算符](/book/operators#assignment)。
+
+:::
+
+## 分支机构
+
+控制代码流
+
+### `if...else` {#if-else}
+
+:::caution
+
+  需要使用大括号（代码块）！
+
+:::
+
+在执行 `if...else{:tact}` 语句时，首先会对指定条件进行评估。 如果结果值为 `true{:tact}`，则执行下面的语句块。 否则，如果条件评估结果为 `false{:tact}`，将执行可选的 `else{:tact}` 块。 如果缺少 `else{:tact}` 块，则什么也不会发生，执行仍将继续。
+
+常规 `if{:tact}` 语句：
+
+```tact
+// condition
+// ↓
+if (true) { // consequence, when condition is true
+    dump(2 + 2);
+}
+```
+
+`else{:tact}` 块：
+
+```tact
+// condition
+// ↓
+if (2 + 2 == 4) {
+    // consequence, when condition is true
+    dump(true);
+} else {
+    // alternative, when condition is false
+    dump(false);
+}
+```
+
+使用嵌套的 `if...else{:tact}`：
+
+```tact
+// condition
+// ↓
+if (2 + 2 == 3) {
+    // consequence, when condition is true
+    dump("3?");
+//        condition2
+//        ↓
+} else if (2 + 2 == 4) {
+    // another consequence, when condition2 is true
+    dump(true);
+} else {
+    // alternative, when both condition and condition2 are false
+    dump(false);
+}
+```
+
+:::note
+
+  Tact 也有一个三元表达式 `?:{:tact}`，在本书前面已有介绍：[三元表达式](/book/operators#ternary)。
+
+:::
+
+### `try...catch` {#try-catch}
+
+`try...catch{:tact}`语句由一个 `try{:tact}`块和一个可选的 `catch{:tact}`块组成，它接收一个 [`Int{:tact}`][int][退出代码](/book/exit-codes)作为唯一参数。 首先执行 `try{:tact}`块中的代码，如果失败，则执行`catch{:tact}`块中的代码，并尽可能回滚`try{:tact}` 块中的更改。
+
+:::note
+
+  请注意，某些 TVM 状态参数（如编码页和 gas 计数器）不会回滚。 也就是说，`try{:tact}`程序块中的所有 gas 使用量都将被考虑在内，而改变 gas 限值的操作码的效果也将被保留。
+
+:::
+
+常规 `try{:tact}` 语句：
+
+```tact
+fun braveAndTrue() {
+    // 让我们尝试做一些错误的事情
+    try {
+        nativeThrow(42); // 抛出退出代码 42
+    } // 下面的内容将被执行，因为上面的错误代码被封装在 try 块中 dump(42); }
+
+    // 下面的代码将被执行，因为上面的错误代码被封装在一个 try 块中
+    dump(42);
+}
+```
+
+用 `catch (e){:tact}` 块：
+
+```tact
+fun niceCatch() {
+    // 让我们尝试做一些错误的事情
+    try {
+        nativeThrow(42); // 抛出退出代码 42
+    } catch (err) {
+        dump(err); // 这将转储捕获的退出代码，即 42
+    }
+}
+```
+
+使用嵌套的 `try...catch{:tact}`：
+
+```tact
+try {
+    // Preparing an x equal to 0, in such a way that Tact compiler won't realize it (yet!)
+    let xs: Slice = beginCell().storeUint(0, 1).endCell().beginParse();
+    let x: Int = xs.loadUint(1); // 0
+
+    try {
+        throw(101);     // 1. throws with exit code 101
+    } catch (err) {     // 2. catches the error and captures its exit code (101) as err
+        return err / x; // 3. divides err by x, which is zero, throwing with exit code 4
+    }
+
+} catch (err) {         // 4. catches the new error and captures its exit code (4) as err
+    //   ^^^ this works without name collisions because the previous err
+    //       has a different scope and is only visible inside the previous catch block
+
+    dump(err);          // 5. dumps the last caught exit code (4)
+}
+```
+
+请注意，与 [`let{:tact}` 语句](#let)类似，在 `catch (){:tact}` 子句中捕获的[退出代码](/book/exit-codes)可以通过指定下划线 `_{:tact}` 来丢弃：
+
+```tact
+try {
+    throw(42);
+} catch (_) {
+    dump("I don't know the exit code anymore");
+}
+```
+
+:::note
+
+  在专用页面上阅读更多有关退出代码的信息：[图书中的出口代码](/book/exit-codes)。
+
+:::
+
+## 循环
+
+有条件地多次重复某些代码块。
+
+### `repeat` {#repeat-loop}
+
+`repeat复{:tact}`循环执行指定次数的代码块。重复次数应该是一个正的 $32$ 位 [`Int{:tact}`][int]，范围从 $1$ 到 $2^{31} - 1$。如果数值大于这个范围，将出现 [exit code 5](/book/exit-codes#5)，“Integer out of the expected range ”的错误。
+
+如果指定的重复次数等于 $0$ 或包含范围 $-2^{256}$ 至 $-1$ 中的任何负数，则忽略该值，不执行代码块。
+
+```tact
+let twoPow: Int = 1;
+
+// Repeat exactly 10 times
+repeat (10) {
+    twoPow *= 2;
+}
+
+// Skipped
+repeat (-1) {
+    twoPow *= 3333;
+}
+
+twoPow; // 1024
+```
+
+### `while` {#while-loop}
+
+只要给定条件为 `true{:tact}`，`while{:tact}` 循环就会继续执行代码块。
+
+在下面的示例中，每次迭代时，`x` 的值都会递减 $1$，因此循环将运行 $10$ 次：
+
+```tact
+let x: Int = 10;
+while(x > 0) {
+  x = x - 1;
+}
+```
+
+### `do...until` {#do-until-loop}
+
+`do...until{:tact}`循环是一个后测试循环，它至少执行一次代码块，然后继续执行，直到给定条件变为 `true{:tact}`。
+
+在下面的示例中，每次迭代时，`x` 的值都会递减 $1$，因此循环将运行 $10$ 次：
+
+```tact
+let x: Int = 10;
+do {
+  x = x - 1;  # do something no matter at least one time
+} until (x <= 0);
+```
+
+### `foreach` {#foreach-loop}
+
+`foreach{:tact}` 循环按顺序对 [`map<K, V>{:tact}`](/book/maps) 类型的键值对（条目）进行操作：从 map 的最小键到最大键。
+
+该循环为给定映射中的每个条目执行一个代码块，每次迭代都会捕获键和值。 当您事先不知道地图中有多少个条目，或不想明确地使用地图的 [`.get(){:tact}`](/book/maps#get) [method](/book/functions#extension-function) 查找每个条目时，这将非常方便。
+
+请注意，每次迭代时捕获的键和值对的名称是任意的，可以是任何有效的 Tact 标识符，只要它们是当前作用域的新标识符即可。 最常见的选项是k "和 "v"，或 "key "和 "value"。
+
+在下面的示例中，地图 `cells` 有 $4$ 个条目，因此循环将运行 $4$ 次：
+
+```tact
+// 空地图
+let cells: map<Int, Cell> = emptyMap();
+
+// 设置四个条目
+cells.set(1, beginCell().storeUint(100, 16).endCell());
+cells.set(2, beginCell().storeUint(200, 16).endCell());
+cells.set(3, beginCell().storeUint(300, 16).endCell());
+cells.set(4, beginCell().storeUint(400, 16).endCell());
+
+// 用于求数值总和的变量
+let sum：Int = 0;
+
+// 对于单元格映射中的每个键和值对，执行：
+foreach (key, value in cells) { // or just k, v
+    let s：Slice = value.beginParse(); // 将单元格转换为 Slice
+    sum += s.loadUint(16); // Slice 值的总和
+}
+dump(sum); // 1000
+```
+
+还可以遍历合约存储中的映射，以及作为 [Struct](/book/structs-and-messages#structs) 或 [Message](/book/structs-and-messages#messages) 类型实例成员的映射：
+
+```tact
+import "@stdlib/deploy";
+
+struct Fizz { oh_my: map<Int, Int> }
+message Buzz { oh_my: map<Int, Int> }
+
+contract Iterated {
+    oh_my: map<Int, Int>;
+
+    receive("call to iterate！") {
+        let oh_my: map<Int, Int> = emptyMap();
+        oh_my.set(0, 42);
+        oh_my.set(1, 27);
+
+        self.oh_my = oh_my; // 将本地 map 赋值给存储空间
+        let fizz = Fizz{ oh_my }; // 字段双关语
+        let buzz = Buzz{ oh_my }; // 字段双关语
+
+        // 遍历合同存储空间中的 map
+        foreach (key, value in self.oh_my) {
+            // ...
+        }
+
+        // 遍历 Struct Fizz 实例的 map 成员
+        foreach (key, value in fizz.oh_my) {
+            // ...
+        }
+
+        // 遍历 Message Buzz 实例的 map 成员
+        foreach (key, value in buzz.oh_my) {
+            // ...
+        }
+    }
+}
+```
+
+请注意，与 [`let{:tact}` 语句](#let)类似，可以通过指定下划线 `_{:tact}` 来丢弃捕获的键或值（或两者）：
+
+```tact
+// 空地图
+let quartiles: map<Int, Int> = emptyMap();
+
+// 设置一些条目
+quartiles.set(1, 25);
+quartiles.set(2, 50);
+quartiles.set(3, 75);
+
+// 丢弃捕获的键
+// 不在地图本身中修改它们
+foreach (_, value in quartiles) {}
+
+// 丢弃捕获的值
+// 不在映射本身中修改它们
+foreach (key, _ in quartiles) {}
+
+// 丢弃键和值
+// 不在 map 本身中修改它们
+foreach (_, _ in quartiles) {
+    // 不能通过 _ 访问，但可以进行所需的操作
+    // n 次，其中 n 是当前 map 的长度
+}
+```
+
+:::caution
+
+  请注意，目前 `foreach{:tact}` 只适用于明确提供的映射标识符和嵌套标识符结构，如 `foo.bar.targetMap{:tact}` 或 `self.baz.targetMap{:tact}`。 也就是说，从函数中返回一个映射并试图遍历其条目是行不通的：
+
+```tact
+foreach (k, v in emptyMap()) {
+// ^ 这将给出以下错误信息：
+// foreach 只允许在路径表达式（
+// 即标识符）或直接合同/结构/消息访问序列（
+// 如 "self.foo "或 "self.structure.field"）的映射上运行
+}
+```
+
+  试图遍历函数返回的 [Struct](/book/structs-and-messages#structs)的 map 成员也是行不通的，因为函数调用是一种表达式，而不是标识符或嵌套标识符访问：
+
+```tact
+foreach (k, v in genCoolStruct().map) {
+// ^ 这将给出以下错误信息：
+// foreach 只允许在路径表达式（
+// 即标识符）或直接合同/结构/消息访问序列（
+// 如 "self.foo "或 "self.structure.field"）的映射上使用
+}
+```
+
+:::
+
+:::note
+
+  有关其他循环示例，请参阅[循环示例](https://tact-by-example.org/04-loops)。
+
+:::
+
+[initOf]: /book/integers

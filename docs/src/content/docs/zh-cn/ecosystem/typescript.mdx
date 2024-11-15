@@ -1,0 +1,9 @@
+---
+title: Typescript 库
+---
+
+Tact 语言内置了对 `ton` 和 `ton-core` 类型脚本库的支持。编译器会自动为这些库生成代码，您可以使用 [@tact-lang/emulator](https://github.com/tact-lang/tact-emulator), [@ton-community/sandbox](https://github.com/ton-community/sandbox) 等库。
+
+## Typescript 中的契约
+
+编译器会为项目中的每个合约生成名为 `{project}_{contract}.ts` 的文件，其中包含随时可用的强类型封装器，以便在任何环境下使用合约：测试、部署等。

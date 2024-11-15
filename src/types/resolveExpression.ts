@@ -38,6 +38,7 @@ import { GlobalFunctions } from "../abi/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
 import { throwInternalCompilerError } from "../errors";
 import { StructFunctions } from "../abi/struct";
+import { prettyPrint } from "../prettyPrinter";
 
 const store = createContextStore<{
     ast: AstExpression;
@@ -62,7 +63,10 @@ export function registerExpType(
         if (typeRefEquals(ex.description, description)) {
             return ctx;
         }
-        throwInternalCompilerError(`Expression ${exp.id} already has a type`);
+        throwInternalCompilerError(
+            `Expression ${prettyPrint(exp)} with exp.id = ${exp.id} already has registered type "${printTypeRef(ex.description)}" but the typechecker is trying to re-register it as "${printTypeRef(description)}"`,
+            exp.loc,
+        );
     }
     return store.set(ctx, exp.id, { ast: exp, description });
 }

@@ -4,10 +4,8 @@ env:
   HUSKY: 0
 
 on:
-  push:
-    branches: ["main"]
   pull_request:
-    branches: ["main"]
+    branches: ["**"]
   workflow_dispatch:
 
 jobs:
@@ -23,6 +21,29 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Setup Node.js 18 for backwards compat tests
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          # without caching
+
+      - name: Backwards compat tests
+        run: |
+          # Temporarily ignore engines
+          yarn config set ignore-engines true
+          # Install dependencies, gen and build the compiler
+          yarn install
+          yarn clean
+          yarn gen
+          yarn build
+          # Test some specific things for backwards compatibility.
+          # It's important to restrain from using too much of Node.js 22+ features
+          # until it goes into maintenance LTS state and majority of users catches up
+          yarn jest -t 'isSubsetOf'
+          # Clean-up
+          yarn cleanall
+          yarn config delete ignore-engines
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3

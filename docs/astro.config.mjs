@@ -14,6 +14,9 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
+// Adds links to Web IDE from code blocks
+import remarkLinksToWebIDE from './links-to-web-ide';
+
 // Adds syntax highlighting for inline code blocks
 import rehypeInlineCodeHighlighting from './inline-code-highlighting';
 
@@ -26,7 +29,7 @@ export default defineConfig({
 	outDir: './dist', // default, just to be sure
 	site: 'https://docs.tact-lang.org',
 	markdown: {
-		remarkPlugins: [remarkHeadingId, remarkMath],
+		remarkPlugins: [remarkHeadingId, remarkMath, remarkLinksToWebIDE],
 		rehypePlugins: [
 			rehypeHeadingIds,
 			[rehypeAutolinkHeadings, {

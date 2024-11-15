@@ -1018,7 +1018,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
         typeId,
         _lparen,
         identifiers,
-        _optTrailingComma,
+        endOfIdentifiers,
         _rparen,
         _equals,
         expression,
@@ -1043,6 +1043,8 @@ semantics.addOperation<AstNode>("astOfStatement", {
                     ]);
                     return map;
                 }, new Map<string, [AstId, AstId]>()),
+            ignoreUnspecifiedFields:
+                endOfIdentifiers.astOfExpression().ignoreUnspecifiedFields,
             expression: expression.astOfExpression(),
             loc: createRef(this),
         });
@@ -1188,6 +1190,20 @@ semantics.addOperation<AstNode>("astOfExpression", {
             kind: "destruct_mapping",
             field: idFrom.astOfExpression(),
             name: id.astOfExpression(),
+            loc: createRef(this),
+        });
+    },
+    EndOfIdentifiers_regular(_comma) {
+        return createAstNode({
+            kind: "destruct_end",
+            ignoreUnspecifiedFields: false,
+            loc: createRef(this),
+        });
+    },
+    EndOfIdentifiers_ignoreUnspecifiedFields(_comma, _dotDot) {
+        return createAstNode({
+            kind: "destruct_end",
+            ignoreUnspecifiedFields: true,
             loc: createRef(this),
         });
     },

@@ -1,0 +1,78 @@
+---
+title: OTP-002：合同 ABI
+sidebar:
+  order: 2
+---
+
+ABI 定义了如何与智能合约通信。 它包含有关合同接收器、数据结构等的信息。
+
+## 动机
+
+ABI 是一种重要工具，允许开发人员生成方便的绑定和用户界面等。 最好的消费用途之一就是使用 DAO，并能在签署交易之前确认它到底要做什么。
+
+## 指南
+
+本 OTP 基于 TLB+ 中定义的类型，建议在阅读本 OTP 之前先了解这些类型。
+
+## 规格
+
+ABI 是一个 JSON 文件：
+
+```json
+{
+  "name": "MyContract",
+  "types": [
+    {
+      "name": "MyRequest",
+      "header": 12315123,
+      "fields": [
+        {
+          "name": "queryId",
+          "type": {
+            "kind": "simple",
+            "type": "int",
+            "optional": false,
+            "format": "uint256"
+          }
+        }
+      ]
+    }
+  ],
+  "receivers": [
+    { "type": "binary", "kind": "internal", "name": "MyRequest" },
+    { "type": "binary", "kind": "internal" },
+    { "type": "comment", "kind": "internal", "comment": "Vote!" },
+    { "type": "comment", "kind": "internal" },
+    { "type": "empty", "kind": "internal" }
+  ],
+  "getters": [
+    { "name": "getOwner", "type": "address", "args": [] },
+    {
+      "name": "getBalance",
+      "type": "coins",
+      "args": [
+        {
+          "name": "invested",
+          "type": {
+            "kind": "simple",
+            "type": "uint",
+            "format": "coins"
+          }
+        }
+      ]
+    }
+  ],
+  "errors": {
+    "123": "Error description",
+    "124": "Division by zero"
+  }
+}
+```
+
+## 缺点
+
+- ABI 的二进制和紧凑表示法可能会更好，但目前并不重要。
+
+## 现有技术
+
+- OTP-001，是对本 OTP 的补充。

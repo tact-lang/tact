@@ -89,6 +89,7 @@
     "rangle",
     "rawslice",
     "renamer",
+    "replaceget",
     "rparen",
     "rugpull",
     "rugpulled",
@@ -113,6 +114,7 @@
     "uintptr",
     "uninit",
     "unixfs",
+    "varuint",
     "workchain",
     "xffff",
     "привет"

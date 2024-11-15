@@ -1,0 +1,172 @@
+---
+title: 函数及其类型
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Tact 中的功能可以用不同的方式定义：
+
+- 全局静态函数
+- 扩展功能
+- 可变函数
+- 本地功能
+- 接收器功能
+- 获取器功能
+
+除了 [接收器函数](#receiver-functions)，所有函数的定义（参数列表）和调用（参数列表）都可以使用逗号：
+
+```tact
+fun foo(
+    a: Int, // 允许在参数列表中使用逗号拖尾
+) {}
+
+fun bar() {
+    foo(
+        5, // 也允许在参数列表中使用逗号拖尾！
+    );
+}
+```
+
+## 全局静态函数
+
+您可以在程序的任何地方定义全局函数：
+
+```tact
+fun pow(a: Int, c: Int): Int {
+  let res: Int = 1;
+  repeat(c) {
+    res = res * a;
+  }
+  return res;
+}
+```
+
+## 虚拟和抽象函数
+
+如果 [traits](/book/types#traits) 有 `virtual{:tact}` 关键字，则可以使用 `override{:tact}` 允许继承 [traits](/book/types#traits) 的合约修改内部函数。 函数也可以标记为 `抽象{:tact}`，在这种情况下，继承合约必须定义其实现：
+
+```tact
+trait FilterTrait with Ownable {
+    // Virtual functions can be overridden by users of this trait
+    virtual fun filterMessage(): Bool {
+        return sender() != self.owner;
+    }
+
+    abstract fun specialFilter(): Bool;
+}
+
+contract Filter with FilterTrait {
+    // Overriding default behavior of the FilterTrait
+    override fun filterMessage(): Bool {
+        return true;
+    }
+
+    override fun specialFilter(): Bool {
+        return true;
+    }
+}
+```
+
+## 扩展功能
+
+扩展函数允许你为任何可能的类型实现扩展。
+
+> **警告**
+> 第一个参数的名称必须名为 `self`，该参数的类型必须是你要扩展的类型。
+
+```tact
+extends fun customPow(self: Int, c: Int): Int {
+    let res: Int = 1;
+    repeat(c) {
+        res *= self;
+    }
+    return res;
+}
+```
+
+## 可变函数
+
+可变函数是对数值进行变异，用执行结果代替数值。 要执行突变，函数必须改变 `self` 值。
+
+```tact
+extends mutates fun customPow(self: Int, c: Int) {
+    let res: Int = 1;
+    repeat(c) {
+        res *= self;
+    }
+    self = res;
+}
+```
+
+## 本地功能
+
+本地函数是 FunC 函数的直接绑定：
+
+> **注**
+> 本地函数也可以是可变函数和扩展函数。
+
+```tact
+@name(store_uint)
+native storeUint(s: Builder, value: Int, bits: Int): Builder;
+
+@name(load_int)
+extends mutates native loadInt(self: Slice, l: Int): Int;
+```
+
+## Receiver functions
+
+接收器函数是负责在合约中接收信息的特殊函数，只能在合约或特质中定义。
+
+```tact
+contract Treasure {
+    // This means that this contract can receive the comment "Increment" and this function would be called for such messages
+    receive("Increment") {
+        self.counter += 1;
+    }
+}
+```
+
+## 获取器函数
+
+获取器函数定义智能合约上的获取器，只能在合约或特征中定义。
+
+```tact
+contract Treasure {
+    get fun counter(): Int {
+        return self.counter;
+    }
+}
+```
+### 明确解决方法 ID 碰撞问题
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+与 TVM 合约中的其他函数一样，getters 也有其*独特*的相关函数选择器，即一些整数 ID（称为*方法 ID*）。
+其中一些整数是为内部目的保留的，例如 -4, -3, -2, -1, 0 是保留 ID，而 
+常规函数（合约内部函数，不可从外部调用）通常由从 1 开始的后续（小）整数编号。
+默认情况下，获取器有相关的方法 ID，这些 ID 是使用 [CRC16](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) 算法从名称中导出的，具体如下：
+`crc16(<function_name>) & 0xffff) | 0x10000`。
+有时，这可能会使名称不同的获取器获得相同的方法 ID。
+如果出现这种情况，您可以重命名合约中的某些获取器，或
+以编译时表达式的形式手动指定获取器的方法 ID：
+
+```tact
+contract ManualMethodId {
+    const methodId: Int = 16384 + 42;
+
+    get(self.methodId) fun methodId1(): Int {
+        return self.methodId;
+    }
+
+    get(crc32("crc32") + 42 & 0x3ffff | 0x4000)
+    fun methodId2(): Int {
+        return 0;
+    }
+}
+```
+
+请注意，*不能*使用 TVM 保留的方法 ID，也不能使用某些初始正整数，因为编译器会将其用作函数选择器。
+
+用户指定的方法 ID 是 19 位有符号整数，因此可以使用从 $-2^{18}$ 到 $-5$ 以及从 $2^{14}$ 到 $2^{18}$ 的整数。- 1$.
+
+此外，还有一些方法 ID 是为 Tact 编译器在编译过程中插入的获取器保留的，它们是 113617、115390 和 121275。
