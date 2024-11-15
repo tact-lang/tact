@@ -6,17 +6,6 @@ on:
     types: [created]
 
 jobs:
-  dump_contexts_to_log:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dump event context
-        env:
-          EVENT_CONTEXT: ${{ toJson(github.event) }}
-        run: echo "$EVENT_CONTEXT"
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
   build:
     name: Telegram
     runs-on: ubuntu-latest
@@ -28,7 +17,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           format: Markdown
-          # this might go wrong, because `title` can have arbitrary markdown
+          # this might go wrong, because `title` and `body` can have arbitrary markdown
           message: |
             ✏️ [${{ github.event.comment.user.login }}](${{ github.event.comment.html_url }}): ${{ github.event.comment.body }}
             🔀 ${{ github.event.issue.title }}
