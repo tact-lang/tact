@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`expression-simplification should fail expression simplification for interpreter-called-when-no-contract 1`] = `
+"<unknown>:6:9: Cannot evaluate expression to a constant: divisor expression must be non-zero
+Line 6, col 9:
+  5 | fun blowup(v: Int) {
+> 6 |     1 / v;
+              ^
+  7 | }
+"
+`;

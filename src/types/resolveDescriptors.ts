@@ -2007,9 +2007,32 @@ export function getStaticFunction(
     return r;
 }
 
-export function replaceStaticFunctions(ctx: CompilerContext, newFunctions: Map<string, FunctionDescription>): CompilerContext {
+export function replaceStaticConstants(
+    ctx: CompilerContext,
+    newConstants: Map<string, ConstantDescription>,
+): CompilerContext {
+    for (const [name, constDesc] of newConstants) {
+        ctx = staticConstantsStore.set(ctx, name, constDesc);
+    }
+    return ctx;
+}
+
+export function replaceStaticFunctions(
+    ctx: CompilerContext,
+    newFunctions: Map<string, FunctionDescription>,
+): CompilerContext {
     for (const [name, funcDesc] of newFunctions) {
-        ctx = staticFunctionsStore.set(ctx, name, funcDesc)
+        ctx = staticFunctionsStore.set(ctx, name, funcDesc);
+    }
+    return ctx;
+}
+
+export function replaceTypes(
+    ctx: CompilerContext,
+    newTypes: Map<string, TypeDescription>,
+): CompilerContext {
+    for (const [name, typeDesc] of newTypes) {
+        ctx = store.set(ctx, name, typeDesc);
     }
     return ctx;
 }

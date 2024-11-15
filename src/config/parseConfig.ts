@@ -34,6 +34,15 @@ export const optionsSchema = z
          */
         interfacesGetter: z.boolean().optional(),
         /**
+         * If set to true, skips the Tact code optimization phase.
+         */
+        skipTactOptimizationPhase: z.boolean().optional(),
+        /**
+         * If set to true, dumps the code produced by the Tact code optimization phase.
+         * In case the optimization phase is skipped, this option is ignored.
+         */
+        dumpOptimizedTactCode: z.boolean().optional(),
+        /**
          * Experimental options that might be removed in the future. Use with caution!
          */
         experimental: z

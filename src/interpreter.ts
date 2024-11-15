@@ -960,7 +960,7 @@ export class Interpreter {
                 if (foundContractConst.value !== undefined) {
                     return foundContractConst.value;
                 } else {
-                    throwErrorConstEval(
+                    throwNonFatalErrorConstEval(
                         `cannot evaluate declared contract/trait constant ${idTextErr(ast.field)} as it does not have a body`,
                         ast.field.loc,
                     );

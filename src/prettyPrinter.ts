@@ -784,6 +784,8 @@ export function prettyPrint(node: AstNode): string {
             return pp.ppAstStructFieldInit(node);
         case "import":
             return pp.ppAstImport(node);
+        case "asm_function_def":
+            return pp.ppAstAsmFunctionDef(node);
         default:
             throwInternalCompilerError(
                 `Unsupported AST type: ${JSONbig.stringify(node, null, 2)}`,
