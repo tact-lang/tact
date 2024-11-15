@@ -14,8 +14,8 @@ jobs:
       - name: Send telegram message on push
         uses: appleboy/telegram-action@v1.0.0
         with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
+          to: ${{ secrets.TELEGRAM_ISSUE_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_ISSUE_TOKEN }}
           format: Markdown
           # this might go wrong, because `title` and `body` can have arbitrary markdown
           message: |
