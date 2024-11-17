@@ -82,7 +82,7 @@ asm extends fun refs(self: Builder): Int { BREFS }
 
 asm extends fun bits(self: Builder): Int { BBITS }
 
-asm fun builderDepth(builder: Builder): Int { BDEPTH }
+asm extends fun depth(self: Builder): Int { BDEPTH }
 
 //
 // Slice
@@ -175,7 +175,7 @@ asm extends fun firstBits(self: Slice, len: Int): Slice { SDCUTFIRST }
 
 asm extends fun sliceLast(self: Slice, len: Int): Slice { SDCUTLAST }
 
-asm fun sliceDepth(slice: Slice): Int { SDEPTH }
+asm extends fun depth(self: Slice): Int { SDEPTH }
 
 //
 // Slice size
@@ -233,5 +233,5 @@ asm fun computeDataSize(cell: Cell, maxCells: Int): DataSize { CDATASIZE TRIPLE 
 
 asm fun computeSliceDataSize(slice: Slice, maxCells: Int): DataSize { SDATASIZE TRIPLE }
 
-asm fun cellDepth(cell: Cell): Int { CDEPTH }
+asm extends fun depth(self: Cell): Int { CDEPTH }
 

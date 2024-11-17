@@ -686,4 +686,4 @@ int get_simple_forward_fee(int workchain, int bits, int cells) asm(cells bits wo
 int get_original_fwd_fee(int workchain, int fwd_fee) asm(fwd_fee workchain) "GETORIGINALFWDFEE";
 int my_storage_due() asm "DUEPAYMENT";
 
-tuple get_fee_cofigs() asm "UNPACKEDCONFIGTUPLE";
+tuple get_fee_configs() asm "UNPACKEDCONFIGTUPLE";
