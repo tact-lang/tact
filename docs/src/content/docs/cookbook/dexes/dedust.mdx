@@ -75,8 +75,8 @@ struct SwapParams {
 ```tact
 /// https://docs.dedust.io/reference/tlb-schemes#message-swap
 message(0xea06185d) NativeSwap {
-    // Unique identifier used to trace transactions across multiple contracts and to prevent replay attacks
-    // Defaults to 0, which means Native Vault will handle this for us
+    // Unique identifier used to trace transactions across multiple contracts
+    // Defaults to 0, which means we don't mark messages to trace their chains
     queryId: Int as uint64 = 0;
 
     // Toncoin amount for the swap
@@ -144,16 +144,15 @@ message(0xe3a0d482) JettonSwapPayload {
     swapParams: SwapParams;
 }
 
-fun swapJetton() {
-    // NOTE: Calculate wallet address of Jetton for the target user
-    let targetJettonWalletAddress = address("");
-
+/// NOTE: To calculate and provide Jetton wallet address for the target user,
+///       make sure to check links after this code snippet
+fun swapJetton(targetJettonWalletAddress: Address) {
     send(SendParameters{
         to: targetJettonWalletAddress,
         value: ton("0.3"),
         body: JettonTransfer{
-            // Unique identifier used to trace transactions across multiple contracts and to prevent replay attacks
-            // Defaults to 0, which means Native Vault will handle this for us
+            // Unique identifier used to trace transactions across multiple contracts
+            // Set to 0, which means we don't mark messages to trace their chains
             queryId: 0,
             // Jetton amount for the swap
             amount: 10, // NOTE: change to yours
@@ -206,11 +205,16 @@ message(0xf8a7ea5) JettonTransfer {
 }
 ```
 
+:::note[Useful links:]
+
+  [Retrieving Jetton wallet address in TON Docs](https://docs.ton.org/develop/dapps/asset-processing/jettons#retrieving-jetton-wallet-addresses-for-a-given-user)\
+  [How to calculate user's Jetton wallet address (offline)?](https://docs.ton.org/v3/guidelines/dapps/cookbook#how-to-calculate-users-jetton-wallet-address-offline)
+
+:::
+
 ## Liquidity Provisioning
 
 To provide liquidity to a particular DeDust pool, you must provide both assets. The pool will then issue special _LP tokens_ to the depositor's address.
-
-Due to the limitations of TON, it is not possible to perform two simultaneous transfers. Therefore, the balances of user deposits must be held until LP tokens are distributed.
 
 Read more about liquidity provisioning in the [DeDust documentation](https://docs.dedust.io/docs/liquidity-provisioning).
 
@@ -251,9 +255,9 @@ message(0x40e108d6) JettonDepositLiquidity {
 
 /// https://docs.dedust.io/reference/tlb-schemes#message-deposit_liquidity
 message(0xd55e4686) NativeDepositLiquidity {
-    // Unique identifier used to trace transactions across multiple contracts and to prevent replay attacks
-    // Defaults to 0, which means Native Vault will handle this for us
-    queryId: Int as uint64;
+    // Unique identifier used to trace transactions across multiple contracts
+    // Defaults to 0, which means we don't mark messages to trace their chains
+    queryId: Int as uint64 = 0;
 
     // Toncoin amount for the deposit
     amount: Int as coins;
