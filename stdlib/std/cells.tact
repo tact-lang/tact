@@ -221,8 +221,6 @@ inline fun emptySlice(): Slice {
     return emptyCell().asSlice();
 }
 
-asm fun stringHash(data: Slice): Int { SHA256U }
-
 struct DataSize {
     cells: Int;
     bits: Int;
