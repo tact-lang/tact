@@ -62,3 +62,12 @@ native pow(base: Int, exp: Int): Int;
 asm fun pow2(exp: Int): Int { POW2 }
 
 asm fun sign(x: Int): Int { SGN }
+
+// floor(x*y/2^z)
+asm fun mulrshift(x: Int, y: Int, z: Int): Int { MULRSHIFT }
+
+// round(x*y/2^z)
+asm fun mulrshift_round(x: Int, y: Int, z: Int): Int { MULRSHIFTR }
+
+// ceil(x*y/2^z)
+asm fun mulrshift_ceil(x: Int, y: Int, z: Int): Int { MULRSHIFTC }
