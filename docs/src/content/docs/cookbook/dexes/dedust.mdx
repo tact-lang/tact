@@ -375,8 +375,8 @@ extends fun build(self: Asset): Cell {
 
     if (self.type == AssetTypeJetton) {
         return assetBuilder
-            .storeUint(self.workchain!!, 8)
-            .storeUint(self.address!!, 256)
+            .storeUint(self.workchain, 8)
+            .storeUint(self.address, 256)
             .endCell();
     }
 
