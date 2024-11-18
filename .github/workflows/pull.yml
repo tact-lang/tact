@@ -1,0 +1,23 @@
+name: Pull request
+on:
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  build:
+    name: Telegram
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send telegram message on push
+        uses: appleboy/telegram-action@v1.0.0
+        continue-on-error: true
+        with:
+          to: ${{ secrets.TELEGRAM_ISSUE_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_ISSUE_TOKEN }}
+          format: Markdown
+          # this might go wrong, because `title` can have arbitrary markdown
+          message: |
+            🍰 [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
+            🌲 ${{ github.repository }}
+            👤 ${{ github.actor }}
+            🔀 ${{ github.event.pull_request.base.label }} <- ${{ github.event.pull_request.head.label }}
