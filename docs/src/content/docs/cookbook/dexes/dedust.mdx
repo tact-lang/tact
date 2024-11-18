@@ -72,6 +72,10 @@ struct SwapParams {
 
 ### Swap Toncoin for any Jetton
 
+:::note
+The guides below use the [Jetton vault](https://docs.dedust.io/docs/concepts#vault). To obtain its address for your Jetton, refer to [this guide](https://docs.dedust.io/docs/swaps#step-1-find-the-vault-scale).
+:::
+
 ```tact
 /// https://docs.dedust.io/reference/tlb-schemes#message-swap
 message(0xea06185d) NativeSwap {
@@ -157,7 +161,7 @@ fun swapJetton(targetJettonWalletAddress: Address) {
             // Jetton amount for the swap
             amount: 10, // NOTE: change to yours
             // Address of the Jetton vault to the send message to
-            destination: address("EQDa4VOnTYlLvDJ0gZjNYm5PXfSmmtL6Vs6A_CZEtXCNICq_"),
+            destination: address("kQDcUuH4xhKejjilZAIeGuBh5JRWpzbVDcO9Qfh_Q_K4q9vk"),
             // Where to return the exceeding funds
             responseDestination: myAddress(),
             forwardTonAmount: ton("0.25"),
