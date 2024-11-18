@@ -1,5 +1,5 @@
 import { CompilerContext } from "../context";
-import { TactConstEvalError } from "../errors";
+import { TactConstEvalError, throwInternalCompilerError } from "../errors";
 import {
     AstCondition,
     AstContractDeclaration,
@@ -7,14 +7,18 @@ import {
     AstStatement,
     AstTraitDeclaration,
     AstTypeDecl,
+    AstValue,
     cloneAstNode,
     idText,
+    isValue,
+    SrcInfo,
 } from "../grammar/ast";
 import { Interpreter } from "../interpreter";
 import {
     getAllStaticConstants,
     getAllStaticFunctions,
     getAllTypes,
+    getType,
     replaceStaticConstants,
     replaceStaticFunctions,
     replaceTypes,
@@ -27,6 +31,7 @@ import {
     InitDescription,
     ReceiverDescription,
     TypeDescription,
+    TypeRef,
     Value,
 } from "../types/types";
 import { makeValueExpression } from "./util";
@@ -101,7 +106,7 @@ export function simplify_expressions(ctx: CompilerContext): CompilerContext {
      *
      * - Indirectly in the "ast" property of the TypeDescription. Contrary to the previous case,
      *   the fields, constants and methods in the ast property are NOT coalesced. This means, for example,
-     *   that the methods in a TypeDescription of a contract will be methods that are actually
+     *   that the methods in a TypeDescription's ast of a contract will be methods that are actually
      *   declared in the contract and not in some trait that the contract inherits from.
      *
      * The above means that we will need to process the properties in TypeDescription first,
@@ -615,13 +620,13 @@ function process_expression(
     ctx: CompilerContext,
     interpreter: Interpreter,
 ): { expr: AstExpression; ctx: CompilerContext } {
-    const value = tryExpression(expr, interpreter);
+    const value = tryExpressionSimplification(expr, interpreter);
     let newExpr = expr;
     if (value !== undefined) {
         try {
-            newExpr = makeValueExpression(value);
+            newExpr = makeValueExpression(value, expr.loc);
             // Register the new expression in the context
-            ctx = registerExpType(ctx, newExpr, getExpType(ctx, expr));
+            ctx = registerAllSubExpTypes(ctx, newExpr, getExpType(ctx, expr));
         } catch (_) {
             // This means that transforming the value into an AST node is
             // unsupported or it failed to register the type of the expression.
@@ -632,7 +637,7 @@ function process_expression(
     return { expr: newExpr, ctx: ctx };
 }
 
-function tryExpression(
+function tryExpressionSimplification(
     expr: AstExpression,
     interpreter: Interpreter,
 ): Value | undefined {
@@ -646,5 +651,50 @@ function tryExpression(
             }
         }
         throw e;
+    }
+}
+
+function registerAllSubExpTypes(ctx: CompilerContext, expr: AstValue, expType: TypeRef): CompilerContext {
+    switch(expr.kind) {
+        case "boolean":
+        case "number":
+        case "string":
+        case "null": {
+            ctx = registerExpType(ctx, expr, expType);
+            break;
+        }
+        case "struct_instance": {
+            ctx = registerExpType(ctx, expr, expType);
+
+            const structFields = getType(ctx, expr.type).fields;
+            const fieldTypes: Map<string, TypeRef> = new Map();
+            
+            for (const field of structFields) {
+                fieldTypes.set(field.name, field.type);
+            }
+
+            for (const fieldValue of expr.args) {
+                // Typechecking ensures that each field in the struct instance has a type
+                const fieldType = fieldTypes.get(idText(fieldValue.field));
+                if (fieldType === undefined) {
+                    throwInternalCompilerError(`Field ${idText(fieldValue.field)} does not have a declared type in struct ${idText(expr.type)}.`, fieldValue.loc);
+                }
+                ctx = registerAllSubExpTypes(ctx, ensureAstValue(fieldValue.initializer, fieldValue.loc), fieldType);
+            }
+        }
+    }
+    return ctx;
+}
+
+function ensureAstValue(expr: AstExpression, src: SrcInfo): AstValue {
+    switch(expr.kind) {
+        case "boolean":
+        case "null":
+        case "number":
+        case "string":
+        case "struct_instance":
+            return expr;
+        default:
+            throwInternalCompilerError(`Expressions of kind ${expr.kind} are not ASTValues.`, src);
     }
 }

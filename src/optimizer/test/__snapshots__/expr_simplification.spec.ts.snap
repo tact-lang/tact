@@ -9,3 +9,176 @@ Line 6, col 9:
   7 | }
 "
 `;
+
+exports[`expression-simplification should pass expression simplification for interpreter-simplifies-when-no-contract 1`] = `
+[
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v + 10",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "v + 10 + 3",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "3 + 7",
+    "Int",
+  ],
+  [
+    "A {a: v + 10 + 3, b: 3 + 7}",
+    "A",
+  ],
+  [
+    "s",
+    "A",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "B {nested: s, c: true}",
+    "B",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "exprFun1(0)",
+    "A",
+  ],
+  [
+    "exprFun1(0).a",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "exprFun1(2)",
+    "A",
+  ],
+  [
+    "exprFun2(exprFun1(2))",
+    "B",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "exprFun1(1)",
+    "A",
+  ],
+  [
+    "exprFun2(exprFun1(1))",
+    "B",
+  ],
+  [
+    "exprFun2(exprFun1(1)).nested",
+    "A",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "exprFun1(2)",
+    "A",
+  ],
+  [
+    "exprFun2(exprFun1(2))",
+    "B",
+  ],
+  [
+    "exprFun2(exprFun1(2)).c",
+    "Bool",
+  ],
+  [
+    "c1",
+    "Int",
+  ],
+  [
+    "exprFun1(c1)",
+    "A",
+  ],
+  [
+    "exprFun1(c1).a",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "exprFun1(c1).a > 0",
+    "Bool",
+  ],
+  [
+    "exprFun2(exprFun1(2)).c || exprFun1(c1).a > 0",
+    "Bool",
+  ],
+  [
+    "13",
+    "Int",
+  ],
+  [
+    "B { nested: A { a: 15, b: 10 }, c: true }",
+    "B",
+  ],
+  [
+    "A { a: 15, b: 10 }",
+    "A",
+  ],
+  [
+    "15",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+  [
+    "A { a: 14, b: 10 }",
+    "A",
+  ],
+  [
+    "14",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "true",
+    "Bool",
+  ],
+]
+`;

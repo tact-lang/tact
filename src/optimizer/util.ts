@@ -9,7 +9,7 @@ import {
     AstStructFieldInitializer,
     idText,
 } from "../grammar/ast";
-import { dummySrcInfo } from "../grammar/grammar";
+import { dummySrcInfo, SrcInfo } from "../grammar/grammar";
 import { throwInternalCompilerError } from "../errors";
 import { StructValue, Value } from "../types/types";
 
@@ -36,11 +36,16 @@ export function extractValue(ast: AstValue): Value {
     }
 }
 
-export function makeValueExpression(value: Value): AstValue {
+export function makeValueExpression(value: Value, baseSrc: SrcInfo = dummySrcInfo): AstValue {
+    const valueString = valueToString(value);
+    // Keep all the info of the original source, but force the contents to have the 
+    // new expression.
+    const newSrc = new SrcInfo({...baseSrc.interval, contents: valueString}, baseSrc.file, baseSrc.origin);
+
     if (value === null) {
         const result = createAstNode({
             kind: "null",
-            loc: dummySrcInfo,
+            loc: newSrc,
         });
         return result as AstValue;
     }
@@ -48,7 +53,7 @@ export function makeValueExpression(value: Value): AstValue {
         const result = createAstNode({
             kind: "string",
             value: value,
-            loc: dummySrcInfo,
+            loc: newSrc,
         });
         return result as AstValue;
     }
@@ -57,7 +62,7 @@ export function makeValueExpression(value: Value): AstValue {
             kind: "number",
             base: 10,
             value: value,
-            loc: dummySrcInfo,
+            loc: newSrc,
         });
         return result as AstValue;
     }
@@ -65,7 +70,7 @@ export function makeValueExpression(value: Value): AstValue {
         const result = createAstNode({
             kind: "boolean",
             value: value,
-            loc: dummySrcInfo,
+            loc: newSrc,
         });
         return result as AstValue;
     }
@@ -75,31 +80,58 @@ export function makeValueExpression(value: Value): AstValue {
             .map(([name, val]) => {
                 return createAstNode({
                     kind: "struct_field_initializer",
-                    field: makeIdExpression(name),
-                    initializer: makeValueExpression(val),
-                    loc: dummySrcInfo,
+                    field: makeIdExpression(name, baseSrc),
+                    initializer: makeValueExpression(val, baseSrc),
+                    loc: newSrc,
                 }) as AstStructFieldInitializer;
             });
         const result = createAstNode({
             kind: "struct_instance",
-            type: makeIdExpression(value["$tactStruct"] as string),
+            type: makeIdExpression(value["$tactStruct"] as string, baseSrc),
             args: fields,
-            loc: dummySrcInfo,
+            loc: newSrc,
         });
         return result as AstValue;
     }
+    value;
     throwInternalCompilerError(
-        `addresses, cells, and comment values are not supported as AST nodes at the moment.`,
+        "addresses, cells, slices, and comment values are not supported as AST nodes at the moment.",
     );
 }
 
-function makeIdExpression(name: string): AstId {
+function makeIdExpression(name: string, baseSrc: SrcInfo): AstId {
     const result = createAstNode({
         kind: "id",
         text: name,
-        loc: dummySrcInfo,
+        loc: baseSrc,
     });
     return result as AstId;
+}
+
+export function valueToString(value: Value): string {
+    if (value === null) {
+        return "null";
+    }
+    if (typeof value === "string") {
+        return value;
+    }
+    if (typeof value === "bigint") {
+        return value.toString();
+    }
+    if (typeof value === "boolean") {
+        return value.toString();
+    }
+    if (typeof value === "object" && "$tactStruct" in value) {
+        const fields = Object.entries(value)
+            .filter(([name, _]) => name !== "$tactStruct")
+            .map(([name, val]) => {
+                return `${name}: ${valueToString(val)}`
+            }).join(", ");
+        return `${value["$tactStruct"]} { ${fields} }`;
+    }
+    throwInternalCompilerError(
+        "Transformation of addresses, cells, slices or comment values into strings is not supported at the moment.",
+    );
 }
 
 export function makeUnaryExpression(
