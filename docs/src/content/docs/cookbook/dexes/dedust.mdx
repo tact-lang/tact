@@ -435,9 +435,8 @@ message(0xf8a7ea5) JettonTransfer {
 
 ### Withdraw liquidity
 
-To withdraw liquidity, burning LP tokens is required. You can refer to examples of Jetton burning in the [respective section of Jettons Cookbook page](/cookbook/jettons#burning-jetton).
-However more TONs than for the usual burn should be attached. Too small number of attached tons may cause LP tokens to be burned, but liquidity from the pool will not be sent (or will be sent partially).
-So anyone should consider to attach at least 0.5 TON. Excesses will be returned.
+To withdraw liquidity, burning LP tokens is required. You can refer to examples of Jetton burning in the [respective section of Jettons Cookbook page](/cookbook/jettons#burning-jetton). However, more Toncoins should be added than for the normal burn, since adding too few may result in LP tokens being burned, but no (or only partial) liquidity being sent from the pool. Therefore, consider attaching at least $0.5$ Toncoin — excess amount will be returned.
+
 :::tip[Hey there!]
 
 Didn't find your favorite example of DeDust interaction? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
