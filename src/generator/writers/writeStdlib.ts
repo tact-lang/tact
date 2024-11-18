@@ -1133,6 +1133,32 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
+    ctx.fun(`__tact_log2_floor_unsafe`, () => {
+        ctx.signature(`int __tact_log2_floor_unsafe(int num)`);
+        ctx.context("stdlib");
+        ctx.asm("", "UBITSIZE");
+    });
+
+    ctx.fun(`__tact_sqrt`, () => {
+        ctx.signature(`int __tact_sqrt(int num)`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`
+                if (num == 0) { return 0; }
+                int s = ${ctx.used("__tact_log2_floor_unsafe")}(num);
+                int x = (s == 1 ? (num - 1) / 2 + 1 : 1 << ((s + 1) / 2));
+
+                do {
+                    int q = (muldivc(num, 1, x) - x) / 2;
+                    x += q;
+                } until (q == 0);
+
+                return x;
+            `);
+        });
+    });
+
     // generate dict operations for all combinations of key/value types
     for (const key of keyTypes) {
         for (const val of valTypes) {

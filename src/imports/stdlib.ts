@@ -361,7 +361,8 @@ files['std/math.tact'] =
     'bmFtZShfX3RhY3RfcG93KQpuYXRpdmUgcG93KGJhc2U6IEludCwgZXhwOiBJbnQpOiBJbnQ7Cgphc20gZnVuIHBvdzIoZXhwOiBJbnQpOiBJbnQgeyBQT1cyIH0KCmFz' +
     'bSBmdW4gc2lnbih4OiBJbnQpOiBJbnQgeyBTR04gfQoKLy8gZmxvb3IoeCp5LzJeeikKYXNtIGZ1biBtdWxyc2hpZnQoeDogSW50LCB5OiBJbnQsIHo6IEludCk6IElu' +
     'dCB7IE1VTFJTSElGVCB9CgovLyByb3VuZCh4KnkvMl56KQphc20gZnVuIG11bHJzaGlmdF9yb3VuZCh4OiBJbnQsIHk6IEludCwgejogSW50KTogSW50IHsgTVVMUlNI' +
-    'SUZUUiB9CgovLyBjZWlsKHgqeS8yXnopCmFzbSBmdW4gbXVscnNoaWZ0X2NlaWwoeDogSW50LCB5OiBJbnQsIHo6IEludCk6IEludCB7IE1VTFJTSElGVEMgfQo=';
+    'SUZUUiB9CgovLyBjZWlsKHgqeS8yXnopCmFzbSBmdW4gbXVscnNoaWZ0X2NlaWwoeDogSW50LCB5OiBJbnQsIHo6IEludCk6IEludCB7IE1VTFJTSElGVEMgfQoKQG5h' +
+    'bWUoX190YWN0X3NxcnQpCm5hdGl2ZSBzcXJ0KG51bTogSW50KTogSW50Owo=';
 files['std/primitives.tact'] =
     'cHJpbWl0aXZlIEludDsKcHJpbWl0aXZlIEJvb2w7CnByaW1pdGl2ZSBCdWlsZGVyOwpwcmltaXRpdmUgU2xpY2U7CnByaW1pdGl2ZSBDZWxsOwpwcmltaXRpdmUgQWRk' +
     'cmVzczsKcHJpbWl0aXZlIFN0cmluZzsKcHJpbWl0aXZlIFN0cmluZ0J1aWxkZXI7';

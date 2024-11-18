@@ -71,3 +71,6 @@ asm fun mulrshift_round(x: Int, y: Int, z: Int): Int { MULRSHIFTR }
 
 // ceil(x*y/2^z)
 asm fun mulrshift_ceil(x: Int, y: Int, z: Int): Int { MULRSHIFTC }
+
+@name(__tact_sqrt)
+native sqrt(num: Int): Int;
