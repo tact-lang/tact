@@ -283,8 +283,8 @@ struct Asset {
     // Specify 1 for Jetton and then you must set non-null values for the following fields
     type: Int as uint4;
 
-    workchain: Int as uint8;
-    address: Int as uint256;
+    workchain: Int as uint8 = 0; // Both this zeroes will be removed during .build() function. Only type will remain.
+    address: Int as uint256 = 0; 
 }
 
 const PoolTypeVolatile: Int = 0;
