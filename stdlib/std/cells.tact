@@ -173,7 +173,7 @@ asm extends fun skipLastBits(self: Slice, len: Int): Slice { SDSKIPLAST }
 
 asm extends fun firstBits(self: Slice, len: Int): Slice { SDCUTFIRST }
 
-asm extends fun sliceLast(self: Slice, len: Int): Slice { SDCUTLAST }
+asm extends fun lastBits(self: Slice, len: Int): Slice { SDCUTLAST }
 
 asm extends fun depth(self: Slice): Int { SDEPTH }
 
@@ -227,9 +227,9 @@ struct DataSize {
     refs: Int;
 }
 
-asm fun computeDataSize(cell: Cell, maxCells: Int): DataSize { CDATASIZE TRIPLE }
+asm extends fun computeDataSize(self: Cell, maxCells: Int): DataSize { CDATASIZE TRIPLE }
 
-asm fun computeSliceDataSize(slice: Slice, maxCells: Int): DataSize { SDATASIZE TRIPLE }
+asm extends fun computeDataSize(self: Slice, maxCells: Int): DataSize { SDATASIZE TRIPLE }
 
 asm extends fun depth(self: Cell): Int { CDEPTH }
 
