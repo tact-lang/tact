@@ -45,7 +45,7 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     // Error Codes
     w.write(`# Error Codes`);
     Object.entries(abi.errors!).forEach(([t, abiError]) => {
-        w.write(`${t}: ${abiError.message}`);
+        w.write(`* ${t}: ${abiError.message}`);
     });
     w.append();
 
