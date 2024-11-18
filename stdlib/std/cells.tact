@@ -221,6 +221,8 @@ inline fun emptySlice(): Slice {
     return emptyCell().asSlice();
 }
 
+asm fun addressNone(): Address { b{00} PUSHSLICE }
+
 struct DataSize {
     cells: Int;
     bits: Int;

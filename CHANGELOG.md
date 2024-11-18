@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs: `preloadRef` method for the `Slice` type: PR [#1044](https://github.com/tact-lang/tact/pull/1044)
 - Docs: added DeDust cookbook: PR [#954](https://github.com/tact-lang/tact/pull/954)
 - Docs: described the limit for deeply nested expressions: PR [#1101](https://github.com/tact-lang/tact/pull/1101)
-- New functions in stdlib from `stdlib.fc` and `math.fc`: `Builder.depth`, `Slice.skipLastBits`, `Slice.firstBits`, `Slice.lastBits`, `Slice.depth`, `Cell.computeDataSize`, `Slice.computeDataSize`, `Cell.depth`, `curLt`, `blockLt`, `setGasLimit`, `getSeed`, `setSeed`, `myCode`, `sign`, `mulrshift`, `mulrshift_round`, `mulrshift_ceil`, `sqrt`: PR [#986](https://github.com/tact-lang/tact/pull/986)
+- New functions in stdlib from `stdlib.fc` and `math.fc`: `Builder.depth`, `Slice.skipLastBits`, `Slice.firstBits`, `Slice.lastBits`, `Slice.depth`, `Cell.computeDataSize`, `Slice.computeDataSize`, `Cell.depth`, `curLt`, `blockLt`, `setGasLimit`, `getSeed`, `setSeed`, `myCode`, `sign`, `mulrshift`, `mulrshift_round`, `mulrshift_ceil`, `sqrt`, `addressNone`: PR [#986](https://github.com/tact-lang/tact/pull/986)
 
 ### Changed
 
