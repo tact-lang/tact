@@ -30,10 +30,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optional types for `self` argument in `extends mutates` functions are now allowed: PR [#854](https://github.com/tact-lang/tact/pull/854)
 - Docs: complete overhaul of the exit codes page: PR [#978](https://github.com/tact-lang/tact/pull/978)
 - Docs: enhanced Jettons Cookbook page: PR [#944](https://github.com/tact-lang/tact/pull/944)
+- Error codes in the report are now formatted as a list: PR [#1051](https://github.com/tact-lang/tact/pull/1051)
 
 ### Fixed
 
-- Collisions in getter method ids are now handled and reported properly: PR [#875](https://github.com/tact-lang/tact/pull/875)
+- Collisions in getter method ids are now handled and reported properly: PR [#875](https://github.com/tact-lang/tact/pull/875), PR [#1052](https://github.com/tact-lang/tact/pull/1052)
 - Docs: layout of tables, syntax highlighting, Chinese translations of sidebar separators: PR [#916](https://github.com/tact-lang/tact/pull/916)
 - Non-null struct fields after null ones are treated correctly in Sandbox tests after updating `@ton/core` to 0.59.0: PR [#933](https://github.com/tact-lang/tact/pull/933)
 - Prevent inline code snippets from changing their background color: PR [#935](https://github.com/tact-lang/tact/pull/935)
