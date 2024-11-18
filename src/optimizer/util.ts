@@ -36,11 +36,18 @@ export function extractValue(ast: AstValue): Value {
     }
 }
 
-export function makeValueExpression(value: Value, baseSrc: SrcInfo = dummySrcInfo): AstValue {
+export function makeValueExpression(
+    value: Value,
+    baseSrc: SrcInfo = dummySrcInfo,
+): AstValue {
     const valueString = valueToString(value);
-    // Keep all the info of the original source, but force the contents to have the 
+    // Keep all the info of the original source, but force the contents to have the
     // new expression.
-    const newSrc = new SrcInfo({...baseSrc.interval, contents: valueString}, baseSrc.file, baseSrc.origin);
+    const newSrc = new SrcInfo(
+        { ...baseSrc.interval, contents: valueString },
+        baseSrc.file,
+        baseSrc.origin,
+    );
 
     if (value === null) {
         const result = createAstNode({
@@ -93,7 +100,6 @@ export function makeValueExpression(value: Value, baseSrc: SrcInfo = dummySrcInf
         });
         return result as AstValue;
     }
-    value;
     throwInternalCompilerError(
         "addresses, cells, slices, and comment values are not supported as AST nodes at the moment.",
     );
@@ -108,7 +114,7 @@ function makeIdExpression(name: string, baseSrc: SrcInfo): AstId {
     return result as AstId;
 }
 
-export function valueToString(value: Value): string {
+function valueToString(value: Value): string {
     if (value === null) {
         return "null";
     }
@@ -125,9 +131,10 @@ export function valueToString(value: Value): string {
         const fields = Object.entries(value)
             .filter(([name, _]) => name !== "$tactStruct")
             .map(([name, val]) => {
-                return `${name}: ${valueToString(val)}`
-            }).join(", ");
-        return `${value["$tactStruct"]} { ${fields} }`;
+                return `${name}: ${valueToString(val)}`;
+            })
+            .join(", ");
+        return `${value["$tactStruct"] as string} { ${fields} }`;
     }
     throwInternalCompilerError(
         "Transformation of addresses, cells, slices or comment values into strings is not supported at the moment.",

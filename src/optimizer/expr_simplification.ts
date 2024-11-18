@@ -10,7 +10,6 @@ import {
     AstValue,
     cloneAstNode,
     idText,
-    isValue,
     SrcInfo,
 } from "../grammar/ast";
 import { Interpreter } from "../interpreter";
@@ -654,8 +653,12 @@ function tryExpressionSimplification(
     }
 }
 
-function registerAllSubExpTypes(ctx: CompilerContext, expr: AstValue, expType: TypeRef): CompilerContext {
-    switch(expr.kind) {
+function registerAllSubExpTypes(
+    ctx: CompilerContext,
+    expr: AstValue,
+    expType: TypeRef,
+): CompilerContext {
+    switch (expr.kind) {
         case "boolean":
         case "number":
         case "string":
@@ -668,7 +671,7 @@ function registerAllSubExpTypes(ctx: CompilerContext, expr: AstValue, expType: T
 
             const structFields = getType(ctx, expr.type).fields;
             const fieldTypes: Map<string, TypeRef> = new Map();
-            
+
             for (const field of structFields) {
                 fieldTypes.set(field.name, field.type);
             }
@@ -677,9 +680,16 @@ function registerAllSubExpTypes(ctx: CompilerContext, expr: AstValue, expType: T
                 // Typechecking ensures that each field in the struct instance has a type
                 const fieldType = fieldTypes.get(idText(fieldValue.field));
                 if (fieldType === undefined) {
-                    throwInternalCompilerError(`Field ${idText(fieldValue.field)} does not have a declared type in struct ${idText(expr.type)}.`, fieldValue.loc);
+                    throwInternalCompilerError(
+                        `Field ${idText(fieldValue.field)} does not have a declared type in struct ${idText(expr.type)}.`,
+                        fieldValue.loc,
+                    );
                 }
-                ctx = registerAllSubExpTypes(ctx, ensureAstValue(fieldValue.initializer, fieldValue.loc), fieldType);
+                ctx = registerAllSubExpTypes(
+                    ctx,
+                    ensureAstValue(fieldValue.initializer, fieldValue.loc),
+                    fieldType,
+                );
             }
         }
     }
@@ -687,7 +697,7 @@ function registerAllSubExpTypes(ctx: CompilerContext, expr: AstValue, expType: T
 }
 
 function ensureAstValue(expr: AstExpression, src: SrcInfo): AstValue {
-    switch(expr.kind) {
+    switch (expr.kind) {
         case "boolean":
         case "null":
         case "number":
@@ -695,6 +705,9 @@ function ensureAstValue(expr: AstExpression, src: SrcInfo): AstValue {
         case "struct_instance":
             return expr;
         default:
-            throwInternalCompilerError(`Expressions of kind ${expr.kind} are not ASTValues.`, src);
+            throwInternalCompilerError(
+                `Expressions of kind ${expr.kind} are not ASTValues.`,
+                src,
+            );
     }
 }
