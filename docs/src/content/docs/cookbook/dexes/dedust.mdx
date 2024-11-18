@@ -248,11 +248,11 @@ message(0x40e108d6) JettonDepositLiquidity {
     // Target amount of the second asset
     targetBalances1: Int as coins;
 
-    // Custom payload to attack to the transaction if the provisioning is successful
+    // Custom payload attached to the transaction if the provisioning is successful
     // Defaults to `null`, which means no payload
     fulfillPayload: Cell? = null;
 
-    // Custom payload to attack to the transaction if the provisioning is rejected
+    // Custom payload attached to the transaction if the provisioning is rejected
     // Defaults to `null`, which means no payload
     rejectPayload: Cell? = null;
 }
@@ -283,8 +283,8 @@ struct Asset {
     // Specify 1 for Jetton and then you must set non-null values for the following fields
     type: Int as uint4;
 
-    workchain: Int? as uint8 = null;
-    address: Int? as uint256 = null;
+    workchain: Int as uint8;
+    address: Int as uint256;
 }
 
 const PoolTypeVolatile: Int = 0;
@@ -436,7 +436,8 @@ message(0xf8a7ea5) JettonTransfer {
 ### Withdraw liquidity
 
 To withdraw liquidity, burning LP tokens is required. You can refer to examples of Jetton burning in the [respective section of Jettons Cookbook page](/cookbook/jettons#burning-jetton).
-
+However more TONs than for the usual burn should be attached. Too small number of attached tons may cause LP tokens to be burned, but liquidity from the pool will not be sent (or will be sent partially).
+So anyone should consider to attach at least 0.5 TON. Excesses will be returned.
 :::tip[Hey there!]
 
 Didn't find your favorite example of DeDust interaction? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
