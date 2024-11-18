@@ -106,7 +106,7 @@ fun swapToncoinForUSDT(swapAmount: Int) {
         body: NativeSwap{
             amount: swapAmount,
             // Address of the swap pool, which is the TON/USDT pair in this case
-            poolAddress: address("EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs"),
+            poolAddress: address("EQA-X_yo3fzzbDbJ_0bzFWKqtRuZFIRa1sJsveZJ1YpViO3r"),
             // Set of parameters relevant for the whole swap
             swapParams: SwapParams{}, // use defaults
         }.toCell(),
@@ -161,7 +161,7 @@ fun swapJetton(targetJettonWalletAddress: Address) {
             // Jetton amount for the swap
             amount: 10, // NOTE: change to yours
             // Address of the Jetton vault to the send message to
-            destination: address("kQDcUuH4xhKejjilZAIeGuBh5JRWpzbVDcO9Qfh_Q_K4q9vk"),
+            destination: address("EQAYqo4u7VF0fa4DPAebk4g9lBytj2VFny7pzXR0trjtXQaO"),
             // Where to return the exceeding funds
             responseDestination: myAddress(),
             forwardTonAmount: ton("0.25"),
@@ -301,7 +301,7 @@ const TonProvideLpGas: Int = ton("0.15");
 // In real-world scenarios, it's more reliable to calculate this address on-chain or save it during initialization to prevent any issues
 fun provideLiquidity(myJettonWalletAddress: Address) {
     let jettonMasterRaw = parseStdAddress(
-        address("kQDkRHlWaibL7Tww48T6xAUFevPflca7i8TIiQTacBmnDOrb")
+        address("EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs")
         .asSlice()
     );
 
@@ -335,7 +335,7 @@ fun provideLiquidity(myJettonWalletAddress: Address) {
             queryId: 42,
             amount: jettonAmount,
             // Jetton Vault
-            destination: address("kQDcUuH4xhKejjilZAIeGuBh5JRWpzbVDcO9Qfh_Q_K4q9vk"),
+            destination: address("EQAYqo4u7VF0fa4DPAebk4g9lBytj2VFny7pzXR0trjtXQaO"),
             responseDestination: myAddress(),
             forwardTonAmount: JettonProvideLpGasFwd,
             forwardPayload: jettonDepositBody,
