@@ -9,7 +9,7 @@ Functions in Tact could be defined in different ways:
 
 * Global static function
 * Extension functions
-* Mutable functions
+* Mutation functions
 * Native functions
 * Receiver functions
 * Getter functions
@@ -85,9 +85,9 @@ extends fun customPow(self: Int, c: Int): Int {
 }
 ```
 
-## Mutable functions
+## Mutation functions
 
-Mutable functions are performing mutation of a value replacing it with an execution result. To perform mutation, the function must change the `self` value.
+Mutation functions are performing mutation of a value replacing it with an execution result. To perform mutation, the function must change the `self` value.
 
 ```tact
 extends mutates fun customPow(self: Int, c: Int) {
