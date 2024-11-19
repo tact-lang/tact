@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New CSpell dictionaries: TVM instructions and adjusted list of Fift words: PR [#881](https://github.com/tact-lang/tact/pull/881)
 - Docs: the `description` property to the frontmatter of the each page for better SEO: PR [#916](https://github.com/tact-lang/tact/pull/916)
 - Docs: Google Analytics tags per every page: PR [#921](https://github.com/tact-lang/tact/pull/921)
-- Docs: Added NFTs cookbook: PR [#958](https://github.com/tact-lang/tact/pull/958)
+- Docs: added NFTs cookbook: PR [#958](https://github.com/tact-lang/tact/pull/958)
 - Ability to specify a compile-time method ID expression for getters: PR [#922](https://github.com/tact-lang/tact/pull/922) and PR [#932](https://github.com/tact-lang/tact/pull/932)
 - Destructuring of structs and messages: PR [#856](https://github.com/tact-lang/tact/pull/856), PR [#964](https://github.com/tact-lang/tact/pull/964), PR [#969](https://github.com/tact-lang/tact/pull/969)
 - Docs: automatic links to Web IDE from all code blocks: PR [#994](https://github.com/tact-lang/tact/pull/994)
@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `replace` and `replaceGet` methods for the `Map` type: PR [#941](https://github.com/tact-lang/tact/pull/941)
 - Utility for logging errors in code that was supposed to be unreachable: PR [#991](https://github.com/tact-lang/tact/pull/991)
 - Docs: `preloadRef` method for the `Slice` type: PR [#1044](https://github.com/tact-lang/tact/pull/1044)
+- Docs: added DeDust cookbook: PR [#954](https://github.com/tact-lang/tact/pull/954)
 
 ### Changed
 
