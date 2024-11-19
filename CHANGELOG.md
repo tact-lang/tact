@@ -49,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- `asm` functions now support full range of Fift-asm syntax: PR [#855](https://github.com/tact-lang/tact/pull/855)
+- `asm` functions now support full range of Fift-asm syntax: PR [#855](https://github.com/tact-lang/tact/pull/855), PR [#1061](https://github.com/tact-lang/tact/pull/1061)
 
 - Fix `npm` installations of Tact compiler or any of the packages depending on it by hiding unnecessary post-install runs of `husky`: PR [#870](https://github.com/tact-lang/tact/pull/870)
 
