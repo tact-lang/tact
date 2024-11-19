@@ -9,7 +9,7 @@ Additionally, Tact compiler has a versatile set of standard libraries, which com
 
 :::caution
 
-  NOTE: All imported code is combined together with yours, so it's important to avoid name collisions and always double-check the sources!
+  All imported code is combined together with yours, so it's important to avoid name collisions and always double-check the sources!
 
 :::
 
@@ -39,7 +39,7 @@ import "./relative/path/to/the/target/func/file.fc";
 import "../subfolder/imported/func/file.fc";
 ```
 
-But in order to use functions from such file, one has to declare them as `native` functions first. For example, when standard library [@stdlib/dns](/ref/stdlib-dns) uses a `dns.fc` FunC file, it maps FunC functions to Tact ones like so:
+But in order to use functions from such file, one has to declare them as `native` functions first. For example, when standard library [`@stdlib/dns`](/ref/stdlib-dns) uses a `dns.fc` FunC file, it maps FunC functions to Tact ones like so:
 
 ```tact
 // FunC code located in a file right next to the current Tact one:
@@ -49,6 +49,14 @@ import "./dns.fc";
 @name(dns_string_to_internal)
 native dnsStringToInternal(str: String): Slice?;
 ```
+
+## Import Fift code
+
+Tact does not allow you to import Fift code using the `import{:tact}` keyword. However, you can write almost any Fift code in [`asm{:tact}` functions](/book/functions#asm). The only limitations compared to writing `.fif` files come from trying to redefine the right brace `}`, using it out of place or otherwise messing with it.
+
+Note, that the `Fift.fif` and `Asm.fif` libraries are imported and accessible by default, so you must not include those yourself.
+
+Read more about `asm{:tact}` functions in their dedicated section: [Assembly functions](/book/functions#asm).
 
 ## Standard libraries
 
