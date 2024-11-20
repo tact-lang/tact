@@ -50,14 +50,6 @@ import "./dns.fc";
 native dnsStringToInternal(str: String): Slice?;
 ```
 
-## Import Fift code
-
-Tact does not allow you to import Fift code using the `import{:tact}` keyword. However, you can write almost any Fift code in [`asm{:tact}` functions](/book/functions#asm). The only limitations compared to writing `.fif` files come from trying to redefine the right brace `}`, using it out of place or otherwise messing with it.
-
-Note, that the `Fift.fif` and `Asm.fif` libraries are imported and accessible by default, so you must not include those yourself.
-
-Read more about `asm{:tact}` functions in their dedicated section: [Assembly functions](/book/functions#asm).
-
 ## Standard libraries
 
 See [Standard libraries overview](/ref/standard-libraries).
