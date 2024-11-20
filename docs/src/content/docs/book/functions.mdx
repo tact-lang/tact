@@ -175,7 +175,7 @@ Since the bodies of `asm{:tact}` functions do not contain Tact statements, any d
 asm fun identity(x: Int): Int { }
 
 /// COMPILATION ERROR!
-/// The `boc` is not recognized as a parameter,
+/// The `BOC` is not recognized as a parameter,
 /// but instead is interpreted as a non-existent TVM instruction
 asm fun bocchiThe(BOC: Cell): Cell { BOC }
 
@@ -222,7 +222,7 @@ asm(-> 1 0) extends mutates fun asmLoadCoins(self: Slice): Int { LDVARUINT16 }
 //     and not as bottom-up representation of stack values
 
 // Changing the order of return values while explicitly stating
-// the default order of arguments
+// the default order of arguments as it is
 asm(self len -> 1 0) extends fun asmLoadInt(self: Slice, len: Int): SliceInt { LDIX }
 
 // Used to map onto values placed by LDIX on the stack in reversed order
