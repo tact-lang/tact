@@ -480,8 +480,54 @@ export const ppAstAsmFunctionDef: Printer<A.AstAsmFunctionDef> =
             c.row(
                 `asm${ppAsmShuffle(node.shuffle)} ${ppAstFunctionSignature(node)} `,
             ),
-            ppAsmInstructionsBlock(node.instructions)(c),
+            ppAsmExpressionsBlock(node.expressions)(c),
         ]);
+
+// NOTE: ok, I might need some help here...
+export const ppAstAsmExpressionList: Printer<A.AstAsmExpressionList> =
+    (node) => (c) => {
+        // c.list(),
+    };
+
+export const ppAstExpressionNested = makeVisitor<A.AstAsmExpression>()({
+    asm_expr_list: ppLeaf(ppAstAsmExpressionList),
+    asm_expr_def: ppLeaf(ppAstAsmExpressionDef),
+    asm_string: ppLeaf(ppAstAsmString),
+    asm_hex: ppLeaf(ppAstAsmHex),
+    asm_bin: ppLeaf(ppAstAsmBin),
+    asm_control_reg: ppLeaf(ppAstAsmControlReg),
+    asm_stack_reg: ppLeaf(ppAstAsmStackReg),
+    asm_number: ppLeaf(ppAstAsmNumber),
+    asm_instruction: ppLeaf(ppAstAsmInstruction),
+});
+
+export const ppAstAsmExpression = (expr: A.AstAsmExpression): string => {
+    return ppAstAsmExpressionNested(expr)(lowestPrecedence.child);
+};
+
+// export const ppAstExpressionNested = makeVisitor<A.AstExpression>()({
+//     struct_instance: ppLeaf(ppAstStructInstance),
+//     number: ppLeaf(ppAstNumber),
+//     boolean: ppLeaf(ppAstBoolean),
+//     id: ppLeaf(ppAstId),
+//     null: ppLeaf(ppAstNull),
+//     init_of: ppLeaf(ppAstInitOf),
+//     string: ppLeaf(ppAstString),
+//     static_call: ppLeaf(ppAstStaticCall),
+
+//     method_call: ppAstMethodCall,
+//     field_access: ppAstFieldAccess,
+
+//     op_unary: ppAstOpUnary,
+
+//     op_binary: ppAstOpBinary,
+
+//     conditional: ppAstConditional,
+// });
+
+// export const ppAstExpression = (expr: A.AstExpression): string => {
+//     return ppAstExpressionNested(expr)(lowestPrecedence.child);
+// };
 
 export const ppAstNativeFunction: Printer<A.AstNativeFunctionDecl> =
     ({ name, nativeName, params, return: retTy, attributes }) =>
@@ -677,9 +723,9 @@ export const ppAstFuncId = (func: A.AstFuncId): string => func.text;
 export const ppStatementBlock: Printer<A.AstStatement[]> = (stmts) => (c) =>
     c.braced(stmts.length === 0 ? [c.row("")] : c.list(stmts, ppAstStatement));
 
-export const ppAsmInstructionsBlock: Printer<A.AstAsmInstruction[]> =
-    (instructions) => (c) =>
-        c.braced(instructions.map(c.row));
+export const ppAsmExpressionsBlock: Printer<A.AstAsmExpression[]> =
+    (expressions) => (c) =>
+        c.braced(expressions.map(c.row));
 
 export const ppAstStatementLet: Printer<A.AstStatementLet> =
     ({ type, name, expression }) =>

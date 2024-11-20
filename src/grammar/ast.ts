@@ -57,15 +57,118 @@ export type AstAsmFunctionDef = {
     name: AstId;
     return: AstType | null;
     params: AstTypedParameter[];
-    instructions: AstAsmInstruction[];
+    expressions: AstAsmExpression[];
     id: number;
     loc: SrcInfo;
 };
 
-export type AstAsmInstruction = string;
 export type AstAsmShuffle = {
     args: AstId[];
     ret: AstNumber[];
+};
+
+// NOTE: should it be added to AstNode?
+export type AstAsmExpression =
+    | AstAsmExpressionDef
+    | AstAsmExpressionList
+    | AstAsmPrimitive;
+
+/** `{ AstAsmExpression* } : AstAsmInstruction` */
+export type AstAsmExpressionDef = {
+    kind: "asm_expr_def";
+    expressions: AstAsmExpression[];
+    name: AstAsmInstruction;
+    loc: SrcInfo;
+};
+
+/** `{ AstAsmExpression* }` */
+export type AstAsmExpressionList = {
+    kind: "asm_expr_list";
+    expressions: AstAsmExpression[];
+    loc: SrcInfo;
+};
+
+export type AstAsmPrimitive =
+    | AstAsmString
+    | AstAsmHex
+    | AstAsmBin
+    | AstAsmControlReg
+    | AstAsmStackReg
+    | AstAsmNumber
+    | AstAsmInstruction;
+
+/** `"..."` */
+export type AstAsmString = {
+    kind: "asm_string";
+    value: string;
+    loc: SrcInfo;
+};
+
+/** `x{babe...cafe_}` */
+export type AstAsmHex = {
+    kind: "asm_hex";
+    /**
+     * Stores everything inside braces `{}` as is
+     *
+     * NOTE: May (?) be changed to bigint or even removed in favor of changed AstAsmNumber
+     */
+    value: string;
+    /** Does it have an _ right before the } or not? */
+    isPadded: boolean;
+    loc: SrcInfo;
+};
+
+/** `b{0101...0101}` */
+export type AstAsmBin = {
+    kind: "asm_bin";
+    /**
+     * Stores everything inside braces `{}` as is
+     *
+     * NOTE: May (?) be changed to bigint or even removed in favor of changed AstAsmNumber
+     */
+    value: string;
+    loc: SrcInfo;
+};
+
+/** `c0`, `c1`, ..., `c15` */
+export type AstAsmControlReg = {
+    kind: "asm_control_reg";
+    value: bigint;
+    loc: SrcInfo;
+};
+
+/**
+ * `s0`, `s1`, ..., `s15`
+ * or `i s()`,
+ * where i ∈ [0, 255]
+ */
+export type AstAsmStackReg = {
+    kind: "asm_stack_reg";
+    value: bigint;
+    /**
+     * Is it either of `s0`, `s1`, ..., `s15`?
+     * If not, then it's `i s()`, where i ∈ [0, 255]
+     */
+    isLiteral: boolean;
+    loc: SrcInfo;
+};
+
+/** NOTE: can later be aliased to Tact number literals */
+export type AstAsmNumber = {
+    kind: "asm_number";
+    value: bigint;
+    loc: SrcInfo;
+};
+
+export function astAsmNumberToString(n: AstAsmNumber): string {
+    return n.value.toString(10);
+}
+
+/** `MYCODE`, `ADDRSHIFT#MOD`, `IF:`, `XCHG3_l`, `2SWAP`, `-ROT`, etc. */
+export type AstAsmInstruction = {
+    kind: "asm_instruction";
+    text: string;
+    loc: SrcInfo;
 };
 
 export type AstFunctionDecl = {
@@ -507,7 +610,9 @@ export type AstFuncId = {
     loc: SrcInfo;
 };
 
-export function idText(ident: AstId | AstFuncId | AstTypeId): string {
+export function idText(
+    ident: AstId | AstFuncId | AstTypeId | AstAsmInstruction,
+): string {
     return ident.text;
 }
 

@@ -22,7 +22,7 @@ Tact {
     ModuleFunction = FunctionDefinition
                    | AsmFunction
 
-    AsmFunction = "asm" AsmShuffle? FunctionAttribute* fun id Parameters (":" Type)? "{" AsmInstruction* "}"
+    AsmFunction = "asm" AsmShuffle? FunctionAttribute* fun id Parameters (":" Type)? "{" AsmExpression* "}"
 
     ModuleConstant = ConstantDefinition
 
@@ -99,21 +99,30 @@ Tact {
              | external "(" Parameter? ")" "{" Statement* "}" --externalRegular
              | external "(" stringLiteral ")" "{" Statement* "}" --externalComment
 
-    AsmInstruction = "[" &#whiteSpace AsmInstruction* "]" &#whiteSpace --internal
-                   | "{" &#whiteSpace AsmInstruction* "}" &#whiteSpace --list
-                   | "({)" &#whiteSpace AsmInstruction* "(})" &#whiteSpace --listNoStateCheck
-                   | ("abort\"" | ".\"" | "+\"" | "\"") (~"\"" any)* "\"" &#whiteSpace --string
-                   | "'" &#whiteSpace asmInstruction --tick
-                   | "char" &#whiteSpace (~whiteSpace any) &#whiteSpace --char
-                   | ("x{" | "B{") ~#whiteSpace hexDigit* ~#whiteSpace ("_" ~#whiteSpace)? "}" &#whiteSpace --hexLiteral
-                   | "b{" ~#whiteSpace binDigit* ~#whiteSpace "}" &#whiteSpace --binLiteral
-                   | asmInstruction --custom
+    // FIXME: prettyPrinter.ts → writeFunction.ts, hash.ts, compare.ts
+    AsmExpression = "{" AsmExpression* "}" ":" asmInstruction --definition
+                  | "{" AsmExpression* "}" --list
+                  | asmPrimitive
 
-    // Instructions exclude some begin and end words to ensure correct parse
-    asmInstruction = ~(("[" | "]" | "{" | "}" | "({)" | "(})") ~asmWord) asmWord
+    // Various instructions not forming a block
+    asmPrimitive = "\"" (~"\"" any)* "\"" --string
+                 | "x{" hexDigit* "_"? "}" --hex
+                 | "b{" binDigit* "}" --bin
+                 | "c" digit digit? --controlRegister
+                 | "s" digit digit? --stackRegister
+                 | digit digit? digit? whiteSpace+ "s()" --stackRegister255
+                 | "-"? digit+ --number
+                 | asmInstruction --custom
 
-    // A chunk of non-whitespace characters forms a word in Fift
-    asmWord = (~whiteSpace any)+
+    // To ensure correct parse,
+    // 1. instructions cannot contain braces
+    // 2. and cannot be braces themselves
+    asmInstruction = ~(("{" | "}") ~asmWord) asmWord
+
+    // Additionally, the minimal word length is 2 characters,
+    // not including the optional minus at the start
+    asmWord = "-"? asmWordPart asmWordPart+
+    asmWordPart = (letterAscii | digit | "_" | "#" | ":")
 
     Statement = StatementLet
               | StatementBlock

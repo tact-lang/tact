@@ -24,6 +24,7 @@ import {
     AstConstantDef,
     AstNumberBase,
     AstId,
+    AstAsmExpression,
 } from "./ast";
 import { throwParseError, throwSyntaxError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
@@ -344,7 +345,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         _optColon,
         optReturnType,
         _lbrace,
-        asmInstructions,
+        asmExpressions,
         _rbrace,
     ) {
         const shuffle = optAsmShuffle.children[0]?.astsOfAsmShuffle() ?? {
@@ -363,8 +364,8 @@ semantics.addOperation<AstNode>("astOfItem", {
             name: funId.astOfExpression(),
             return: unwrapOptNode(optReturnType, (t) => t.astOfType()),
             params: funParameters.astsOfList(),
-            instructions: asmInstructions.children.map((s) =>
-                s.astOfAsmInstruction(),
+            expressions: asmExpressions.children.map((s) =>
+                s.astOfAsmExpression(),
             ),
             loc: createRef(this),
         });
@@ -502,65 +503,49 @@ semantics.addOperation<AstNode>("astOfItem", {
     },
 });
 
-// Beginnings of the possible future AST for Fift-asm
-semantics.addOperation<string>("astOfAsmInstruction", {
+// Assembly expressions and primitives
+semantics.addOperation<AstAsmExpression>("astOfAsmExpression", {
     asmInstruction(word) {
-        return word.sourceString;
+        return {
+            kind: "asm_instruction",
+            text: word.sourceString,
+            loc: createRef(this),
+        };
     },
-    AsmInstruction(instruction) {
-        return instruction.astOfAsmInstruction();
+    AsmExpression(expression) {
+        return expression.astOfAsmExpression();
     },
-    AsmInstruction_custom(instruction) {
-        return instruction.astOfAsmInstruction();
+    AsmExpression_definition(_lbrace, expressions, _rbrace, _colon, name) {
+        return {
+            kind: "asm_expr_def",
+            expressions: expressions.children.map((e) =>
+                e.astOfAsmExpression(),
+            ),
+            name: name.astOfAsmExpression(),
+            loc: createRef(this),
+        };
     },
-    AsmInstruction_internal(
-        _leftBracket,
-        _ws1,
-        instructions,
-        _rightBracket,
-        _ws2,
-    ) {
-        return [
-            "[",
-            instructions.children.map((s) => s.astOfAsmInstruction()).join(" "),
-            "]",
-        ].join(" ");
+    AsmExpression_list(_lbrace, expressions, _rbrace) {
+        return {
+            kind: "asm_expr_list",
+            expressions: expressions.children.map((e) =>
+                e.astOfAsmExpression(),
+            ),
+            loc: createRef(this),
+        };
     },
-    AsmInstruction_list(_lbrace, _ws1, instructions, _rbrace, _ws2) {
-        return [
-            "{",
-            instructions.children.map((s) => s.astOfAsmInstruction()).join(" "),
-            "}",
-        ].join(" ");
+    asmPrimitive(primitive) {
+        return primitive.astOfAsmExpression();
     },
-    AsmInstruction_listNoStateCheck(
-        _lbrace,
-        _ws1,
-        instructions,
-        _rbrace,
-        _ws2,
-    ) {
-        return [
-            "({)",
-            instructions.children.map((s) => s.astOfAsmInstruction()).join(" "),
-            "(})",
-        ].join(" ");
+    asmPrimitive_string(_startQuotationMark, string, _endQuotationMark) {
+        // TODO(grammar.ts): perform checks for inner contents of the string
+        return {
+            kind: "asm_string",
+            value: string.sourceString,
+            loc: createRef(this),
+        };
     },
-    AsmInstruction_string(
-        startQuotationMarkWord,
-        string,
-        _endQuotationMark,
-        _ws,
-    ) {
-        return `${startQuotationMarkWord.sourceString}${string.sourceString}"`;
-    },
-    AsmInstruction_tick(_singleQuote, _ws1, instruction) {
-        return `' ${instruction.sourceString}`;
-    },
-    AsmInstruction_char(_word, _ws1, char, _ws2) {
-        return `char ${char.sourceString}`;
-    },
-    AsmInstruction_hexLiteral(prefix, digits, optUnderscore, _rbrace, _ws) {
+    asmPrimitive_hex(_prefix, digits, optUnderscore, _rbrace) {
         const length = digits.numChildren;
         const underscore = unwrapOptNode(optUnderscore, (t) => t.sourceString);
         if (length > 128) {
@@ -569,9 +554,14 @@ semantics.addOperation<string>("astOfAsmInstruction", {
                 createRef(this),
             );
         }
-        return `${prefix.sourceString}${digits.sourceString}${underscore ?? ""}}`;
+        return {
+            kind: "asm_hex",
+            value: digits.sourceString,
+            isPadded: underscore === null ? false : true,
+            loc: createRef(this),
+        };
     },
-    AsmInstruction_binLiteral(_prefix, digits, _rbrace, _ws) {
+    asmPrimitive_bin(_prefix, digits, _rbrace) {
         const length = digits.numChildren;
         if (length > 128) {
             throwSyntaxError(
@@ -579,7 +569,110 @@ semantics.addOperation<string>("astOfAsmInstruction", {
                 createRef(this),
             );
         }
-        return `b{${digits.sourceString}}`;
+        return {
+            kind: "asm_bin",
+            value: digits.sourceString,
+            loc: createRef(this),
+        };
+    },
+    asmPrimitive_controlRegister(_prefix, digit, optDigit) {
+        const secondDigit = unwrapOptNode(optDigit, (t) => t);
+        let number = bigintOfIntLiteral(digit);
+        if (secondDigit !== null) {
+            number = number * 10n + bigintOfIntLiteral(secondDigit);
+        }
+        if (number > 15) {
+            throwSyntaxError(
+                `The control register c${number.toString(10)} doesn't exist`,
+                createRef(this),
+            );
+        }
+        return {
+            kind: "asm_control_reg",
+            value: number,
+            loc: createRef(this),
+        };
+    },
+    asmPrimitive_stackRegister(_prefix, digit, optDigit) {
+        const secondDigit = unwrapOptNode(optDigit, (t) => t);
+        let number = bigintOfIntLiteral(digit);
+        if (secondDigit !== null) {
+            number = number * 10n + bigintOfIntLiteral(secondDigit);
+        }
+        if (number > 15) {
+            throwSyntaxError(
+                `The stack register literal s${number.toString(10)} doesn't exist. Perhaps you meant to write "${number.toString(10)} s()" instead?`,
+                createRef(this),
+            );
+        }
+        return {
+            kind: "asm_stack_reg",
+            isLiteral: true,
+            value: number,
+            loc: createRef(this),
+        };
+    },
+    asmPrimitive_stackRegister255(
+        digit,
+        optSecondDigit,
+        optThirdDigit,
+        _ws,
+        _sParentheses,
+    ) {
+        const secondDigit = unwrapOptNode(optSecondDigit, (t) => t);
+        const thirdDigit = unwrapOptNode(optThirdDigit, (t) => t);
+        let number = bigintOfIntLiteral(digit);
+        if (thirdDigit !== null) {
+            if (secondDigit === null) {
+                throwInternalCompilerError(
+                    "The second digit was null while the third wasn't",
+                );
+            }
+            number =
+                number * 100n +
+                bigintOfIntLiteral(secondDigit) * 10n +
+                bigintOfIntLiteral(thirdDigit);
+        } else if (secondDigit !== null) {
+            number = number * 10n + bigintOfIntLiteral(secondDigit);
+        }
+        if (number > 255) {
+            throwSyntaxError(
+                `The stack register ${number.toString(10)} s() doesn't exist`,
+                createRef(this),
+            );
+        }
+        return {
+            kind: "asm_stack_reg",
+            isLiteral: false,
+            value: number,
+            loc: createRef(this),
+        };
+    },
+    // TODO: write the last things here, then fix the asm generation
+    // TODO: then, fix the prettyPrinter -- leave stuff as is, don't print
+    // TODO: hash.ts and compare.ts too, somehow...
+    asmPrimitive_number(optNeg, digits) {
+        const negate = unwrapOptNode(optNeg, (t) => t);
+        let number = bigintOfIntLiteral(digits);
+        if (negate !== null) {
+            number *= -1n;
+        }
+        return {
+            kind: "asm_number",
+            value: number,
+            loc: createRef(this),
+        };
+    },
+    // function astOfNumber(node: Node): AstNode {
+    //     return createAstNode({
+    //         kind: "number",
+    //         base: baseOfIntLiteral(node),
+    //         value: bigintOfIntLiteral(node),
+    //         loc: createRef(node),
+    //     });
+    // }
+    asmPrimitive_custom(instruction) {
+        return instruction.astOfAsmExpression();
     },
 });
 

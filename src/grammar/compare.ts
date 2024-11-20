@@ -51,7 +51,7 @@ import {
     AstNode,
     AstFuncId,
     AstAsmFunctionDef,
-    AstAsmInstruction,
+    AstAsmExpression,
     AstDestructMapping,
     AstStatementDestruct,
 } from "./ast";
@@ -850,8 +850,8 @@ export class AstComparator {
     }
 
     private compareAsmInstructions(
-        instructions1: AstAsmInstruction[],
-        instructions2: AstAsmInstruction[],
+        instructions1: AstAsmExpression[],
+        instructions2: AstAsmExpression[],
     ): boolean {
         if (instructions1.length !== instructions2.length) {
             return false;

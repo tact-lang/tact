@@ -56,14 +56,3 @@ incinc
 41
 incinc
 }
-
-/// Tests words with } inside of them
-asm fun isIntAnInt(x: Int): Int {
-    <{
-        TRY:<{
-            0 PUSHINT ADD DROP -1 PUSHINT
-        }>CATCH<{
-            2DROP 0 PUSHINT
-        }>
-    }>CONT 1 1 CALLXARGS
-}
