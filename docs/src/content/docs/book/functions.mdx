@@ -128,7 +128,7 @@ extends mutates native loadInt(self: Slice, l: Int): Int;
 
 :::
 
-Assembly functions (or `asm{:tact}` functions for short) are module-level functions that allow writing [Fift and TVM assembly](https://docs.ton.org/v3/documentation/smart-contracts/fift/fift-and-tvm-assembly) directly in Tact. Unlike all other functions, their bodies consist only of [Fift words][fift] and [TVM instructions][tvm-instructions], and don't use any [Tact statements](/book/statements).
+Assembly functions (or `asm{:tact}` functions for short) are module-level functions that allow writing [TVM][tvm] assembly directly in Tact. Unlike all other functions, their bodies consist only of [TVM instructions][tvm-instructions], and don't use any [Tact statements](/book/statements).
 
 ```tact
 // all assembly functions must start with "asm" keyword
@@ -136,57 +136,28 @@ Assembly functions (or `asm{:tact}` functions for short) are module-level functi
    asm fun answer(): Int { 42 INT }
 //                         ------
 //                         Notice, that the body contains
-//                         only Fift words or TVM instructions
+//                         only of numbers, strings and TVM instructions
 ```
 
 ### Caveats {#asm-caveats}
 
-The difference between Fift words and TVM instructions is that words are processed and computed at [compile-time](/ref/core-comptime), while instructions are converted to opcodes and embedded into the contract as part of its code. They are also visually different: TVM instructions are almost all uppercase.
+[TVM instructions][tvm-instructions] are case-sensitive and are always written in upper case (capital letters).
 
 ```tact
-/// Defines ++ word to be used elsewhere
-asm fun definePlusPlus() {
-    {   // Fift word, opens the definition of a new word
-    INC // TVM instruction, increment
-    }   // Fift word, closes the definition of a new word
-    :   // Fift word, assigns the resulting definition
-    ++  // A name for the new Fift word
-}
+/// ERROR!
+asm fun bad1(): Cell { mycode }
 
-/// Increments an Int and requires the `definePlusPlus()` to be called
-/// at least once prior to calling this function!
-asm fun inc(x: Int): Int { ++ }
-//                         --
-//                         Fift word, that is substituted with
-//                         INC instruction at compile-time,
-//                         which is then executed at run-time
-//                         with the "x" as a parameter
+/// ERROR!
+asm fun bad2(): Cell { MyCoDe }
 
-/// Computes the Answer to Ultimate Question of Life, Universe and Everything
-fun answer(): Int {
-    // Since Fift allows silent shadowing,
-    // defining ++ multiple times over is possible,
-    // but beware — you can totally break anything
-    // that way if not careful enough with the names
-    definePlusPlus();
-    definePlusPlus();
-    definePlusPlus();
-
-    // Now, let's use the ++
-    return inc(41); // 42
-}
+/// 👍
+asm fun good(): Cell { MYCODE }
 ```
 
-:::caution
-
-  Prefer to use _only_ [TVM instructions][tvm-instructions] only and _never_ define new Fift words or use existing ones, since it's very easy to confuse compile-time and run-time execution and forget which stack is used where and when — Fift's or TVM's.
-
-:::
-
-It is not necessary to enclose TVM instructions in double quotes. On the contrary, they are interpreted by Fift as strings, which is probably _not_ what you want:
+It is not necessary to enclose TVM instructions in double quotes. On the contrary, they are then interpreted as strings, which is probably _not_ what you want:
 
 ```tact
-// Puts the string "MYCODE" on Fift's stack at compile-time,
+// Pushes the string "MYCODE" onto the compile-time stack,
 // where it gets discarded even before the compute phase starts
 asm fun wrongMyCode() { "MYCODE" }
 
@@ -197,29 +168,40 @@ asm fun myCode(): Cell { MYCODE }
 
 The syntax for parameters and return values is the same as for other function kinds, but there is one caveat — argument values are pushed to the stack before the function body is executed, and return values are what's left on the stack afterward.
 
-Since the bodies of `asm{:tact}` functions do not contain Tact statements, any direct references to parameters in function bodies will be recognized as Fift words, which can easily lead to very obscure error messages.
+Since the bodies of `asm{:tact}` functions do not contain Tact statements, any direct references to parameters in function bodies will be recognized as [TVM][tvm] instructions, which can easily lead to very obscure error messages.
 
 ```tact
 /// Simply returns back the value of `x`
 asm fun identity(x: Int): Int { }
 
 /// COMPILATION ERROR!
-/// You could've thought that you're providing the value of `boc` to the function
-/// and receiving it back, but actually there's a builtin Fift word `boc` which is
-/// being used instead.
-/// The `boc` would not be recognized as a parameter
-/// even if such word didn't exist in Fift!
-asm fun bocchiThe(boc: Cell): Cell { boc }
+/// The `boc` is not recognized as a parameter,
+/// but instead is interpreted as a non-existent TVM instruction
+asm fun bocchiThe(BOC: Cell): Cell { BOC }
 
-/// Loads a signed `l`-bit integer from Slice `s`,
+/// Loads a signed `len`-bit integer from Slice `s`,
 /// and returns it with the remainder of `s`
-asm fun sliceLoadInt(s: Slice, l: Int): IntSlice { LDIX }
+asm fun sliceLoadInt(s: Slice, len: Int): IntSlice { LDIX }
 //                   ↑         ↑
-//                   |         Placed on the stack last
-//                   Placed on the stack first
+//                   |         Pushed last, sits on top of the stack
+//                   Pushed first, sits on the bottom of the stack
 
-// Used to map onto values placed by LDIX on the stack
+/// Maps onto values placed by LDIX on the stack
 struct IntSlice { a: Int; b: Slice }
+//                ↑       ↑
+//                |       Pushed last, sits on top of the stack
+//                Pushed first, sits on the bottom of the stack
+```
+
+The return values are provided bottom-up from the stack and the unused values are discarded.
+
+```tact
+// Same function as before, but now we don't use the `IntSlice` Struct
+// and instead only take one value from the stack (going bottom-up)
+asm fun sliceLoadInt(s: Slice, len: Int): Int { LDIX }
+//                                        ↑
+//                                        captures the Int value, discarding
+//                                        the Slice one produced by LDIX instruction
 ```
 
 ### Arrangements {#asm-arrangements}
@@ -227,19 +209,29 @@ struct IntSlice { a: Int; b: Slice }
 Sometimes it's useful to change the order of arguments pushed to the stack or the order of return values. You can do that with `asm{:tact}` arrangements in the following manner:
 
 ```tact
-// Changing the order of arguments to match the STDICT signature
+// Changing the order of arguments to match the STDICT signature:
+// `c` will be pushed first and get on the bottom of the stack,
+// while `self` will be pushed last and get on top of the stack
 asm(c self) extends fun asmStoreDict(self: Builder, c: Cell?): Builder { STDICT }
 
 // Changing the order of return values of LDVARUINT16,
-// capturing only the 2nd one as the return value of the whole function
+// capturing only the last one as the return value of the whole function
 asm(-> 1 0) extends mutates fun asmLoadCoins(self: Slice): Int { LDVARUINT16 }
+//     ---
+//     Notice, that return values are best thought as tuples with indexed access into them
+//     and not as bottom-up representation of stack values
 
-// Changing the order of argument and return values
-asm(self len -> 1 0) extends fun asmLoadInt(self: Slice, l: Int): SliceInt { LDIX }
+// Changing the order of return values while explicitly stating
+// the default order of arguments
+asm(self len -> 1 0) extends fun asmLoadInt(self: Slice, len: Int): SliceInt { LDIX }
 
-// Used to map onto values placed by LDIX on the stack in reverse order
+// Used to map onto values placed by LDIX on the stack in reversed order
 struct SliceInt { a: Slice; b: Int }
+```
 
+Putting the above all together we get:
+
+```tact
 fun showcase() {
     let b = beginCell()
         .storeCoins(42)
@@ -257,8 +249,8 @@ fun showcase() {
 The following attributes can be specified:
 
 * `inline{:tact}` — does nothing, since assembly functions cannot be inlined yet.
-* [`extends{:tact}`](#extension-function) — makes it the [extension function](#extension-function).
-* [`mutates{:tact}`](#mutation-functions) (along with [`extends{:tact}`](#extension-function)) — makes it the [extension mutation function](#mutation-functions).
+* [`extends{:tact}`](#extension-function) — makes it an [extension function](#extension-function).
+* [`mutates{:tact}`](#mutation-functions) (along with [`extends{:tact}`](#extension-function)) — makes it an [extension mutation function](#mutation-functions).
 
 Those attributes _cannot_ be specified:
 
@@ -280,7 +272,7 @@ asm extends mutates fun skipBits(self: Slice, l: Int) {
 
 :::note[Useful links:]
 
-  [Fift language overview in TON Docs][fift]\
+  [TVM overview in TON Docs][tvm]\
   [List of TVM instructions in TON Docs][tvm-instructions]
 
 :::
@@ -345,4 +337,3 @@ Since method IDs are $19$-bit signed integers and some of them are reserved, onl
 
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [tvm-instructions]: https://docs.ton.org/v3/documentation/tvm/instructions
-[fift]: https://docs.ton.org/v3/documentation/smart-contracts/fift/overview
