@@ -186,18 +186,24 @@ asm fun sliceLoadInt(s: Slice, len: Int): IntSlice { LDIX }
 //                   |         Pushed last, sits on top of the stack
 //                   Pushed first, sits on the bottom of the stack
 
-/// Maps onto values placed by LDIX on the stack
+/// Mapped onto values placed by LDIX on the stack
 struct IntSlice { a: Int; b: Slice }
 //                ↑       ↑
-//                |       Pushed last, sits on top of the stack
-//                Pushed first, sits on the bottom of the stack
+//                |       Result pushed last by LDIX,
+//                |       sits on top of the stack
+//                Result pushed first by LDIX,
+//                sits on the bottom of the stack
 ```
 
-The return values are provided bottom-up from the stack and the unused values are discarded.
+Thus, when the results are popped from the stack, the [Struct][struct] fields are filled from right to left: the top stack value is mapped to the last field, the second-to-top value is mapped to the second-to-last field, and so on.
+
+Note, that when using [Structs][struct] as the return type, you must map all stack values onto respective Struct fields, otherwise an error with [exit code 7](/book/exit-codes#7) will be thrown: `Type check error`.
+
+If you only need the bottom value from the stack, it is possible to specify a [primitive type][p] as the return value instead:
 
 ```tact
 // Same function as before, but now we don't use the `IntSlice` Struct
-// and instead only take one value from the stack (going bottom-up)
+// and instead only take the bottom result sitting in the stack
 asm fun sliceLoadInt(s: Slice, len: Int): Int { LDIX }
 //                                        ↑
 //                                        captures the Int value, discarding
@@ -333,6 +339,8 @@ Unlike getters, method IDs for [internal functions](/book/contracts#internal-fun
 
 Since method IDs are $19$-bit signed integers and some of them are reserved, only the inclusive ranges from $-2^{18}$ to $-5$ and from $2^{14}$ to $2^{18} - 1$ are free to be used by users. To avoid collisions, it's recommended to specify method IDs only in these ranges, avoiding the method IDs of Tact-specific getters mentioned above.
 
+[p]: /book/types#primitive-types
+[struct]: /book/structs-and-messages#structs
 [slice]: /book/cells#slices
 
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
