@@ -1743,44 +1743,6 @@ return result;",
   },
   {
     "code": {
-      "code": "UBITSIZE",
-      "kind": "asm",
-      "shuffle": "",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_log2_floor_unsafe",
-    "signature": "int __tact_log2_floor_unsafe(int num)",
-  },
-  {
-    "code": {
-      "code": "if (num == 0) { return 0; }
-int s = __tact_log2_floor_unsafe(num);
-int x = (s == 1 ? (num - 1) / 2 + 1 : 1 << ((s + 1) / 2));
-
-do {
-    int q = (muldivc(num, 1, x) - x) / 2;
-    x += q;
-} until (q == 0);
-
-return x;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_log2_floor_unsafe",
-    },
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_sqrt",
-    "signature": "int __tact_sqrt(int num)",
-  },
-  {
-    "code": {
       "code": "var (r, ok) = __tact_dict_get(d, kl, k);
 if (ok) {
     return r;
@@ -6207,44 +6169,6 @@ return result;",
   },
   {
     "code": {
-      "code": "UBITSIZE",
-      "kind": "asm",
-      "shuffle": "",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_log2_floor_unsafe",
-    "signature": "int __tact_log2_floor_unsafe(int num)",
-  },
-  {
-    "code": {
-      "code": "if (num == 0) { return 0; }
-int s = __tact_log2_floor_unsafe(num);
-int x = (s == 1 ? (num - 1) / 2 + 1 : 1 << ((s + 1) / 2));
-
-do {
-    int q = (muldivc(num, 1, x) - x) / 2;
-    x += q;
-} until (q == 0);
-
-return x;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_log2_floor_unsafe",
-    },
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_sqrt",
-    "signature": "int __tact_sqrt(int num)",
-  },
-  {
-    "code": {
       "code": "var (r, ok) = __tact_dict_get(d, kl, k);
 if (ok) {
     return r;
@@ -10668,44 +10592,6 @@ return result;",
     },
     "name": "__tact_pow",
     "signature": "int __tact_pow(int base, int exp)",
-  },
-  {
-    "code": {
-      "code": "UBITSIZE",
-      "kind": "asm",
-      "shuffle": "",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_log2_floor_unsafe",
-    "signature": "int __tact_log2_floor_unsafe(int num)",
-  },
-  {
-    "code": {
-      "code": "if (num == 0) { return 0; }
-int s = __tact_log2_floor_unsafe(num);
-int x = (s == 1 ? (num - 1) / 2 + 1 : 1 << ((s + 1) / 2));
-
-do {
-    int q = (muldivc(num, 1, x) - x) / 2;
-    x += q;
-} until (q == 0);
-
-return x;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_log2_floor_unsafe",
-    },
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_sqrt",
-    "signature": "int __tact_sqrt(int num)",
   },
   {
     "code": {
