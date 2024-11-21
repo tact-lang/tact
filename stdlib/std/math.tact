@@ -63,6 +63,10 @@ asm fun pow2(exp: Int): Int { POW2 }
 
 asm fun sign(x: Int): Int { SGN }
 
+asm fun divc(x: Int, y: Int): Int { DIVC }
+
+asm fun muldivc(x: Int, y: Int, z: Int): Int { MULDIVC }
+
 // floor(x*y/2^z)
 asm fun mulShiftRight(x: Int, y: Int, z: Int): Int { MULRSHIFT }
 
@@ -72,5 +76,20 @@ asm fun mulShiftRightRound(x: Int, y: Int, z: Int): Int { MULRSHIFTR }
 // ceil(x*y/2^z)
 asm fun mulShiftRightCeil(x: Int, y: Int, z: Int): Int { MULRSHIFTC }
 
-@name(__tact_sqrt)
-native sqrt(num: Int): Int;
+fun sqrt(num: Int): Int {
+    if (num == 0) {
+        return 0;
+    }
+
+    let s: Int = log2(num);
+    let x: Int = (s == 1 ? (num - 1) / 2 + 1 : 1 << ((s + 1) / 2));
+
+    let q: Int = 0;
+
+    do {
+        q = (divc(num, x) - x) / 2;
+        x += q;
+    } until (q == 0);
+
+    return x;
+}
