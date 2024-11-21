@@ -64,13 +64,13 @@ asm fun pow2(exp: Int): Int { POW2 }
 asm fun sign(x: Int): Int { SGN }
 
 // floor(x*y/2^z)
-asm fun mulrshift(x: Int, y: Int, z: Int): Int { MULRSHIFT }
+asm fun mulShiftRight(x: Int, y: Int, z: Int): Int { MULRSHIFT }
 
 // round(x*y/2^z)
-asm fun mulrshift_round(x: Int, y: Int, z: Int): Int { MULRSHIFTR }
+asm fun mulShiftRightRound(x: Int, y: Int, z: Int): Int { MULRSHIFTR }
 
 // ceil(x*y/2^z)
-asm fun mulrshift_ceil(x: Int, y: Int, z: Int): Int { MULRSHIFTC }
+asm fun mulShiftRightCeil(x: Int, y: Int, z: Int): Int { MULRSHIFTC }
 
 @name(__tact_sqrt)
 native sqrt(num: Int): Int;
