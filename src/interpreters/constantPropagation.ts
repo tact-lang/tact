@@ -349,7 +349,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
         this.interpretExpression(ast.self);
         ast.args.forEach((expr) => this.interpretExpression(expr), this);
 
-        // Also, if the method is a mutates function, the assigned path should become undetermined.
+        // Also, if the method is a mutation function, the assigned path should become undetermined.
         const path = tryExtractPath(ast.self);
         if (path !== null) {
             const src = getExpType(this.context, ast.self);
@@ -386,7 +386,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
         // If the ast.self is not a path expression, i.e., it has the form: a.b.f().g()...
         // then there is nothing to update in the environment because a.b.f().g() is not a full path to a variable.
 
-        // Since we are not analyzing the function, just return not assigned.
+        // Since we are not analyzing the function, just return that it could have produced any value.
         return anyValue;
     }
 
@@ -450,6 +450,8 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
     public interpretBinaryOp(ast: AstOpBinary): LatticeValue {
         const leftValue = this.interpretExpression(ast.left);
 
+        // Process the rest of the operators, they do not short-circuit
+
         if (leftValue.kind === "value") {
             const rightEvaluator = () => {
                 const result = this.interpretExpression(ast.right);
@@ -469,9 +471,22 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
                 ),
             );
         } else {
-            // Keep going executing the right operand
-            this.interpretExpression(ast.right);
-            // But return not assigned
+            // Operators || and && must be processed differently, because they short-circuit.
+            // Essentially, || and && produce two potential branches, because the left operand is undetermined.
+            // One branch is the "do nothing" branch, and the other one is the processing of the right operand.
+            if (ast.op === "||" || ast.op === "&&") {
+                const rightEnv = this.envStack.simulate(() => this.interpretExpression(ast.right)).env;
+
+                // Join the environments
+                this.envStack.setCurrentEnvironment(
+                    joinEnvironments([rightEnv, this.envStack.getCurrentEnvironment()]),
+                );
+            } else {
+                // The rest of the operators do not short-circuit, so simply process the right operand
+                this.interpretExpression(ast.right);
+            }
+            
+            // Since the left operand is undetermined, the whole operation is undetermined
             return anyValue;
         }
     }
@@ -651,9 +666,21 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
                     ast.loc,
                 );
             } else {
-                // Keep going executing the update expression operand
-                this.interpretExpression(ast.expression);
-                // But assign undefined
+                // As was the case with binary operators, the || and && short-circuit, so 
+                // we need to do branch analysis on them.
+                if (ast.op === "||" || ast.op === "&&") {
+                    const rightEnv = this.envStack.simulate(() => this.interpretExpression(ast.expression)).env;
+    
+                    // Join the environments
+                    this.envStack.setCurrentEnvironment(
+                        joinEnvironments([rightEnv, this.envStack.getCurrentEnvironment()]),
+                    );
+                } else {
+                    // The rest of the operators do not short-circuit, so simply process the expression
+                    this.interpretExpression(ast.expression);
+                }
+
+                // Since originally the path was undetermined, the final result of the operator is undetermined
                 this.updateBinding(fullPath, ast.path, anyValue, ast.loc);
             }
         } else {
