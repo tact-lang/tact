@@ -1313,7 +1313,7 @@ function joinEnvironments(
     }
 
     // Intersect the keys in the values map using the pivot as base
-    let intersectedKeys = pivotEnv.values.keys().toArray();
+    let intersectedKeys = [...pivotEnv.values.keys()];
     for (const env of targets) {
         const targetKeys = new Set(env.values.keys());
         intersectedKeys = intersectedKeys.filter((key) => targetKeys.has(key));
