@@ -1313,24 +1313,27 @@ function joinEnvironments(
     }
 
     // Intersect the keys in the values map using the pivot as base
-    let keys = new Set(pivotEnv.values.keys());
+    let keys = pivotEnv.values.keys();
     for (const env of targets) {
-        keys = keys.intersection(new Set(env.values.keys()));
+        const targetKeys = new Set(env.values.keys());
+        keys = keys.filter((key) => targetKeys.has(key));
     }
+    const intersectedKeys = new Set(keys);
 
-    // For those names that survived in keys, keep those that
+    // For those variables that survived in intersectedKeys, keep those that
     // have the same value in all the provided targets
-    const finalNames: Map<string, LatticeValue> = new Map();
 
-    // Fill the initial values as found in the pivot environment
-    for (const key of keys) {
-        finalNames.set(key, pivotEnv.values.get(key)!); // key is ensured to be in pivotEnv because keys is the intersection of all envs.
+    const finalVars: Map<string, LatticeValue> = new Map();
+
+    // First, fill the initial values as found in the pivot environment
+    for (const key of intersectedKeys) {
+        finalVars.set(key, pivotEnv.values.get(key)!); // key is ensured to be in pivotEnv because keys is the intersection of all envs.
     }
 
     // Now, join the values of all the target environments, for each key.
-    for (const key of keys) {
-        // key is ensured to be in finalNames because finalNames was initialized with set "keys"
-        let currentVal = finalNames.get(key)!;
+    for (const key of intersectedKeys) {
+        // key is ensured to be in finalVars because finalVars was initialized with set "intersectedKeys"
+        let currentVal = finalVars.get(key)!;
 
         for (const env of targets) {
             const alternativeVal = env.values.get(key)!; // key is ensured to be in env because keys is the intersection of all envs.
@@ -1338,7 +1341,7 @@ function joinEnvironments(
             currentVal = joinLatticeValues(currentVal, alternativeVal);
         }
 
-        finalNames.set(key, currentVal);
+        finalVars.set(key, currentVal);
     }
 
     // Put the pivot environment back into the targets
@@ -1365,7 +1368,7 @@ function joinEnvironments(
         joinedParents = joinEnvironments(targetParents);
     }
 
-    return { values: finalNames, parent: joinedParents };
+    return { values: finalVars, parent: joinedParents };
 }
 
 function eqEnvironments(
