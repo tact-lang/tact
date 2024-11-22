@@ -144,6 +144,27 @@ function copyLatticeValue(val: LatticeValue): LatticeValue {
     }
 }
 
+// The following constants store all the ABI functions known by the analyzer.
+// We need to keep them like this because ABI functions are not registered
+// in the CompilerContext, and so, it is not possible to determine which
+// ABI functions are mutation functions and which are not.
+// So, we need to state that info explicitly.
+
+const knownStructABIFunctions = ["toCell", "fromCell", "toSlice", "fromSlice"];
+const knownStructABIMutationFunctions: string[] = [];
+const knownMapABIFunctions = [
+    "set",
+    "get",
+    "del",
+    "asCell",
+    "isEmpty",
+    "exists",
+    "deepEquals",
+    "replace",
+    "replaceGet",
+];
+const knownMapABIMutationFunctions = ["set", "del", "replace", "replaceGet"];
+
 export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeValue> {
     protected interpreter: TactInterpreter;
     protected envStack: EnvironmentStack<LatticeValue>;
@@ -162,6 +183,25 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
     }
 
     public startAnalysis() {
+        // Check that the ABI Functions known by the analyzer are still the ones in StructFunctions and MapFunctions
+        if (
+            StructFunctions.size !== knownStructABIFunctions.length ||
+            knownStructABIFunctions.some((name) => !StructFunctions.has(name))
+        ) {
+            throwInternalCompilerError(
+                "There are new Struct ABI functions unknown to the Constant Propagation Analyzer. Please add them to the Constant Propagation Analyzer.",
+            );
+        }
+
+        if (
+            MapFunctions.size !== knownMapABIFunctions.length ||
+            knownMapABIFunctions.some((name) => !MapFunctions.has(name))
+        ) {
+            throwInternalCompilerError(
+                "There are new Map ABI functions unknown to the Constant Propagation Analyzer. Please add them to the Constant Propagation Analyzer.",
+            );
+        }
+
         this.envStack = new EnvironmentStack(copyLatticeValue);
 
         // Process all functions
@@ -344,12 +384,14 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
     }
 
     public interpretMethodCall(ast: AstMethodCall): LatticeValue {
-        // For the moment do not analyze.
-        // Just evaluate all the arguments
+        // For the moment do not analyze. Just treat all mutation function calls as black boxes
+        // that could assign to their self argument any value.
+
+        // Also, evaluate all the arguments, just to check for errors.
         this.interpretExpression(ast.self);
         ast.args.forEach((expr) => this.interpretExpression(expr), this);
 
-        // Also, if the method is a mutation function, the assigned path should become undetermined.
+        // Now, undefine the path if assigned by a mutation function
         const path = tryExtractPath(ast.self);
         if (path !== null) {
             const src = getExpType(this.context, ast.self);
@@ -357,9 +399,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
             if (src.kind === "ref") {
                 const srcT = getType(this.context, src.name);
                 if (srcT.kind === "struct") {
-                    if (StructFunctions.has(idText(ast.method))) {
-                        // Treat all API functions as black boxes
-                        // Hence, their self parameter could be mutated
+                    if (idText(ast.method) in knownStructABIMutationFunctions) {
                         this.updateBinding(
                             path,
                             ast.self,
@@ -376,9 +416,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
             }
 
             if (src.kind === "map") {
-                if (MapFunctions.has(idText(ast.method))) {
-                    // Treat all API functions as black boxes
-                    // Hence, their self parameter could be mutated
+                if (idText(ast.method) in knownMapABIMutationFunctions) {
                     this.updateBinding(path, ast.self, anyValue, ast.self.loc);
                 }
             }
