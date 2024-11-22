@@ -68,25 +68,7 @@ export type AstAsmShuffle = {
 };
 
 // NOTE: should it be added to AstNode?
-export type AstAsmExpression =
-    | AstAsmExpressionDef
-    | AstAsmExpressionList
-    | AstAsmPrimitive;
-
-/** `{ AstAsmExpression* } : AstAsmInstruction` */
-export type AstAsmExpressionDef = {
-    kind: "asm_expr_def";
-    expressions: AstAsmExpression[];
-    name: AstAsmInstruction;
-    loc: SrcInfo;
-};
-
-/** `{ AstAsmExpression* }` */
-export type AstAsmExpressionList = {
-    kind: "asm_expr_list";
-    expressions: AstAsmExpression[];
-    loc: SrcInfo;
-};
+export type AstAsmExpression = AstAsmPrimitive;
 
 export type AstAsmPrimitive =
     | AstAsmString
@@ -138,16 +120,16 @@ export type AstAsmControlReg = {
 };
 
 /**
- * `s0`, `s1`, ..., `s15`
- * or `i s()`,
- * where i ∈ [0, 255]
+ * `s0`, `s1`, ..., `s255`
  */
 export type AstAsmStackReg = {
     kind: "asm_stack_reg";
     value: bigint;
     /**
-     * Is it either of `s0`, `s1`, ..., `s15`?
-     * If not, then it's `i s()`, where i ∈ [0, 255]
+     * Whether there's a single literal for expressing this stack register in FunC/Fift?
+     *
+     * Single literals are written like `s0`, `s1`, ..., `s15`,
+     * while other stack registers are expressed as `i s()`, where i ∈ [0, 255]
      */
     isLiteral: boolean;
     loc: SrcInfo;

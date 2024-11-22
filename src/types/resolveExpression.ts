@@ -498,7 +498,7 @@ function resolveStaticCall(
             ) !== undefined
         ) {
             throwCompilationError(
-                `Static function ${idTextErr(exp.function)} does not exist. Perhaps you meant to call ".${idText(exp.function)}(...)" extension function?`,
+                `Static function ${idTextErr(exp.function)} does not exist. Perhaps you meant to call ".${idText(exp.function)}(...)" or "self.${idText(exp.function)}(...)"?`,
                 exp.loc,
             );
         }

@@ -99,30 +99,40 @@ Tact {
              | external "(" Parameter? ")" "{" Statement* "}" --externalRegular
              | external "(" stringLiteral ")" "{" Statement* "}" --externalComment
 
-    // FIXME: prettyPrinter.ts → writeFunction.ts, hash.ts, compare.ts
-    AsmExpression = "{" AsmExpression* "}" ":" asmInstruction --definition
-                  | "{" AsmExpression* "}" --list
+    // FIXME: prettyPrinter.ts + writeFunction.ts, hash.ts, compare.ts
+    AsmExpression = "{" (~"}" any)* "}" --listWithHelpfulErrorMessage // used only for error messages
                   | asmPrimitive
 
-    // Various instructions not forming a block
-    asmPrimitive = "\"" (~"\"" any)* "\"" --string
-                 | "x{" hexDigit* "_"? "}" --hex
-                 | "b{" binDigit* "}" --bin
-                 | "c" digit digit? --controlRegister
-                 | "s" digit digit? --stackRegister
-                 | digit digit? digit? whiteSpace+ "s()" --stackRegister255
-                 | "-"? digit+ --number
-                 | asmInstruction --custom
+    // Various primitives and instructions not forming a block
+    asmPrimitive = asmString
+                 | asmHex
+                 | asmBin
+                 | asmControlReg
+                 | asmStackReg
+                 | asmStackReg256
+                 | asmNumber
+                 | asmInstruction
+
+    // It's here mostly to provide better error messages
+    // for people coming from FunC/Fift background
+    asmString      (string)                 = "\"" (~"\"" any)* "\""
+    asmHex         (hex bitstring)          = "x{" hexDigit* "_"? "}"
+    asmBin         (binary bitstring)       = "b{" binDigit* "}"
+    asmControlReg  (control register)       = "c" digit digit?
+    asmStackReg    (stack register)         = "s" digit digit? digit?
+    // It's here mostly to provide better error messages
+    // for people coming from FunC/Fift background,
+    // gently guiding them towards simpler s0...s255 syntax
+    asmStackReg256 (indexed stack register) = digit digit? digit? whiteSpace+ "s()"
+    asmNumber      (number)                 = "-"? digit+
 
     // To ensure correct parse,
     // 1. instructions cannot contain braces
     // 2. and cannot be braces themselves
-    asmInstruction = ~(("{" | "}") ~asmWord) asmWord
-
-    // Additionally, the minimal word length is 2 characters,
-    // not including the optional minus at the start
-    asmWord = "-"? asmWordPart asmWordPart+
-    asmWordPart = (letterAscii | digit | "_" | "#" | ":")
+    asmInstruction (an instruction) = ~(("{" | "}") ~asmWord) asmWord
+    asmWord = "-"? asmWordPart+
+    // NOTE: We can limit this further to letterAsciiUC, then add optional "l"? by the end.
+    asmWordPart = letterAscii | digit | "_" | "#" | ":"
 
     Statement = StatementLet
               | StatementBlock

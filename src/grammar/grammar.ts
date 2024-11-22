@@ -515,37 +515,32 @@ semantics.addOperation<AstAsmExpression>("astOfAsmExpression", {
     AsmExpression(expression) {
         return expression.astOfAsmExpression();
     },
-    AsmExpression_definition(_lbrace, expressions, _rbrace, _colon, name) {
-        return {
-            kind: "asm_expr_def",
-            expressions: expressions.children.map((e) =>
-                e.astOfAsmExpression(),
-            ),
-            name: name.astOfAsmExpression(),
-            loc: createRef(this),
-        };
-    },
-    AsmExpression_list(_lbrace, expressions, _rbrace) {
-        return {
-            kind: "asm_expr_list",
-            expressions: expressions.children.map((e) =>
-                e.astOfAsmExpression(),
-            ),
-            loc: createRef(this),
-        };
+    AsmExpression_listWithHelpfulErrorMessage(_lbrace, _any, _rbrace) {
+        throwSyntaxError(
+            'The Fift\'s word list syntax "{ ... }" is not supported',
+            createRef(this),
+        );
     },
     asmPrimitive(primitive) {
         return primitive.astOfAsmExpression();
     },
-    asmPrimitive_string(_startQuotationMark, string, _endQuotationMark) {
-        // TODO(grammar.ts): perform checks for inner contents of the string
+    asmString(_startQuotationMark, string, _endQuotationMark) {
+        // A best-effor check to inform the user of errors in translation
+        // of TVM instructions between FunC (or other languages) and Tact
+        const src = string.sourceString;
+        if (src.match(/^-?[A-Z0-9_#:]+l?$/) !== null) {
+            throwSyntaxError(
+                `The instruction "${src}" doesn't exist, did you mean ${src}?`,
+                createRef(this),
+            );
+        }
         return {
             kind: "asm_string",
             value: string.sourceString,
             loc: createRef(this),
         };
     },
-    asmPrimitive_hex(_prefix, digits, optUnderscore, _rbrace) {
+    asmHex(_prefix, digits, optUnderscore, _rbrace) {
         const length = digits.numChildren;
         const underscore = unwrapOptNode(optUnderscore, (t) => t.sourceString);
         if (length > 128) {
@@ -561,7 +556,7 @@ semantics.addOperation<AstAsmExpression>("astOfAsmExpression", {
             loc: createRef(this),
         };
     },
-    asmPrimitive_bin(_prefix, digits, _rbrace) {
+    asmBin(_prefix, digits, _rbrace) {
         const length = digits.numChildren;
         if (length > 128) {
             throwSyntaxError(
@@ -575,7 +570,7 @@ semantics.addOperation<AstAsmExpression>("astOfAsmExpression", {
             loc: createRef(this),
         };
     },
-    asmPrimitive_controlRegister(_prefix, digit, optDigit) {
+    asmControlReg(_prefix, digit, optDigit) {
         const secondDigit = unwrapOptNode(optDigit, (t) => t);
         let number = bigintOfIntLiteral(digit);
         if (secondDigit !== null) {
@@ -593,32 +588,7 @@ semantics.addOperation<AstAsmExpression>("astOfAsmExpression", {
             loc: createRef(this),
         };
     },
-    asmPrimitive_stackRegister(_prefix, digit, optDigit) {
-        const secondDigit = unwrapOptNode(optDigit, (t) => t);
-        let number = bigintOfIntLiteral(digit);
-        if (secondDigit !== null) {
-            number = number * 10n + bigintOfIntLiteral(secondDigit);
-        }
-        if (number > 15) {
-            throwSyntaxError(
-                `The stack register literal s${number.toString(10)} doesn't exist. Perhaps you meant to write "${number.toString(10)} s()" instead?`,
-                createRef(this),
-            );
-        }
-        return {
-            kind: "asm_stack_reg",
-            isLiteral: true,
-            value: number,
-            loc: createRef(this),
-        };
-    },
-    asmPrimitive_stackRegister255(
-        digit,
-        optSecondDigit,
-        optThirdDigit,
-        _ws,
-        _sParentheses,
-    ) {
+    asmStackReg(_prefix, digit, optSecondDigit, optThirdDigit) {
         const secondDigit = unwrapOptNode(optSecondDigit, (t) => t);
         const thirdDigit = unwrapOptNode(optThirdDigit, (t) => t);
         let number = bigintOfIntLiteral(digit);
@@ -635,23 +605,26 @@ semantics.addOperation<AstAsmExpression>("astOfAsmExpression", {
         } else if (secondDigit !== null) {
             number = number * 10n + bigintOfIntLiteral(secondDigit);
         }
-        if (number > 255) {
+        if (number > 255n || number < 0n) {
             throwSyntaxError(
-                `The stack register ${number.toString(10)} s() doesn't exist`,
+                `The stack register s${number.toString(10)} doesn't exist`,
                 createRef(this),
             );
         }
         return {
             kind: "asm_stack_reg",
-            isLiteral: false,
+            isLiteral: number < 16n ? true : false,
             value: number,
             loc: createRef(this),
         };
     },
-    // TODO: write the last things here, then fix the asm generation
-    // TODO: then, fix the prettyPrinter -- leave stuff as is, don't print
-    // TODO: hash.ts and compare.ts too, somehow...
-    asmPrimitive_number(optNeg, digits) {
+    asmStackReg256(digit, optSecondDigit, optThirdDigit, _ws, _literal) {
+        throwSyntaxError(
+            `The "i s()" syntax is deprecated in favor of using one of the "s0", "s1", ..., "s255" stack registers`,
+            createRef(this),
+        );
+    },
+    asmNumber(optNeg, digits) {
         const negate = unwrapOptNode(optNeg, (t) => t);
         let number = bigintOfIntLiteral(digits);
         if (negate !== null) {
@@ -662,17 +635,6 @@ semantics.addOperation<AstAsmExpression>("astOfAsmExpression", {
             value: number,
             loc: createRef(this),
         };
-    },
-    // function astOfNumber(node: Node): AstNode {
-    //     return createAstNode({
-    //         kind: "number",
-    //         base: baseOfIntLiteral(node),
-    //         value: bigintOfIntLiteral(node),
-    //         loc: createRef(node),
-    //     });
-    // }
-    asmPrimitive_custom(instruction) {
-        return instruction.astOfAsmExpression();
     },
 });
 
