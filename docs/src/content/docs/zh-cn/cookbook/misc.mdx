@@ -1,0 +1,37 @@
+---
+title: 杂项
+---
+
+各种利基范例，这些范例还没有专门的页面，但非常有用和有趣。
+
+## 如何抛出错误
+
+当我们不知道要多久执行一次特定操作时，合约中的 `throw(){:tact}` 函数就非常有用。
+
+它允许有意的异常或错误处理，从而导致当前事务的终止，并恢复该事务中的任何状态更改。
+
+```tact
+let number: Int = 198;
+
+// 无论如何都会触发错误
+throw(36);
+
+// 只有当数字大于 50 时才会触发错误
+nativeThrowIf(35, number > 50);
+
+// 只有当数字不等于 198 时才会触发错误
+nativeThrowUnless(39, number == 198)；
+```
+
+:::note[Useful links:]
+
+  [核心库中的 `throw(){:tact}`](/ref/core-debug#throw)/
+  [Tact-By-Example中的错误](https://tact-by-example.org/03-errors)
+
+:::
+
+:::tip[Hey there!]
+
+  没有找到您最喜欢的利基工作范例？ 您有很酷的实施方案吗？ [欢迎投稿！](https://github.com/tact-lang/tact/issues)
+
+:::

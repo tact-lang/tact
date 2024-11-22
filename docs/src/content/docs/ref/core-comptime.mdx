@@ -3,6 +3,8 @@ title: Compile-time
 description: "Various compile-time global functions from the Core library of Tact"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 This page lists all the built-in [global static functions](/book/functions#global-static-functions), which are evaluated at the time of building the Tact project and cannot work with non-constant, run-time data. These functions are commonly referred to as "compile-time functions".
 
 ## address
@@ -11,7 +13,7 @@ This page lists all the built-in [global static functions](/book/functions#globa
 fun address(s: String): Address;
 ```
 
-A compile-time function that converts a [`String{:tact}`][p] with an address into the [`Address{:tact}`][p] type.
+A compile-time function that converts a [`String{:tact}`][p] with an address into the [`Address{:tact}`][p] type and embeds it into the contract.
 
 Usage example:
 
@@ -23,28 +25,141 @@ contract Example {
 }
 ```
 
+:::note
+
+  The `address("...Address..."){:tact}` in Tact is equivalent to `"...Address..."a{:func}` in FunC.
+
+:::
+
 ## cell
 
 ```tact
 fun cell(bocBase64: String): Cell;
 ```
 
-A compile-time function that embeds a base64-encoded [BoC](https://docs.ton.org/develop/data-formats/cell-boc#bag-of-cells) `bocBase64` as a [`Cell{:tact}`][cell] into the contract.
+A compile-time function that embeds a base64-encoded [BoC][boc] `bocBase64` as a [`Cell{:tact}`][cell] into the contract.
+
+Usage examples:
+
+```tact
+contract Example {
+    // Persistent state variables
+    stored: Cell =
+        // Init package for Wallet V3R1 as a base64-encoded BoC
+        cell("te6cckEBAQEAYgAAwP8AIN0gggFMl7qXMO1E0NcLH+Ck8mCDCNcYINMf0x/TH/gjE7vyY+1E0NMf0x/T/9FRMrryoVFEuvKiBPkBVBBV+RDyo/gAkyDXSpbTB9QC+wDo0QGkyMsfyx/L/8ntVD++buA="); // works at compile-time!
+}
+```
+
+## slice
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun slice(bocBase64: String): Slice;
+```
+
+A compile-time function that embeds a base64-encoded [BoC][boc] `bocBase64` as a [`Slice{:tact}`][slice] into the contract.
+
+Usage examples:
+
+```tact
+contract Example {
+    // Persistent state variables
+    stored: Slice =
+        // Works at compile-time!
+        slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw="); // Hello world!
+}
+```
+
+## rawSlice
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun rawSlice(hex: String): Slice;
+```
+
+A compile-time function that converts `hex` [`String{:tact}`][p] with hex-encoded and optionally bit-padded contents as a [`Slice{:tact}`][slice] into the contract.
+
+Contents are bit-padded if there's an underscore `_` at the very end of [`String{:tact}`][p]. The padding removes all the trailing zeros and the last $1$ bit before them:
+
+```tact
+// Not bit-padded
+rawSlice("4a").loadUint(8); // 74, or 1001010 in binary
+
+// Bit-padded
+rawSlice("4a_").loadUint(6); // 18, or 10010 in binary
+```
+
+Note, that this function is limited and only allows to specify up to $1023$ bits.
 
 Usage example:
 
 ```tact
 contract Example {
     // Persistent state variables
-    storedCell: Cell =
-        // Init package for Wallet V3R1 as a base64-encoded BoC
-        cell("te6cckEBAQEAYgAAwP8AIN0gggFMl7qXMO1E0NcLH+Ck8mCDCNcYINMf0x/TH/gjE7vyY+1E0NMf0x/T/9FRMrryoVFEuvKiBPkBVBBV+RDyo/gAkyDXSpbTB9QC+wDo0QGkyMsfyx/L/8ntVD++buA="); // works at compile-time!
+    stored: Slice =
+        rawSlice("000DEADBEEF000");  // CS{Cell{03f...430} bits: 588..644; refs: 1..1}
+    bitPadded: Slice =
+        rawSlice("000DEADBEEF000_"); // CS{Cell{03f...e14} bits: 36..79; refs: 0..0}
 }
 ```
 
-:::note[Useful links:]
+:::note
 
-  [Bag of Cells in TON Docs](https://docs.ton.org/develop/data-formats/cell-boc#bag-of-cells)
+  The `rawSlice("...Hex contents..."){:tact}` in Tact is equivalent to `"...Hex contents..."s{:func}` in FunC.
+
+:::
+
+## ascii
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun ascii(str: String): Int;
+```
+
+A compile-time function that concatenates the hexadecimal values of the characters in `str` into one and embeds the resulting [`Int{:tact}`][int] into the contract. Only works for strings that occupy up to $32$ bytes, which allows to represent up to $32$ [ASCII codes](https://en.wikipedia.org/wiki/ASCII#Control_code_chart) or up to $8$ $4$-byte [Unicode code points](https://en.wikipedia.org/wiki/List_of_Unicode_characters).
+
+Usage example:
+
+```tact
+contract Example {
+    // Persistent state variables
+    a: Int = ascii("a");            // 97 or 0x61, one byte in total
+    zap: Int = ascii("⚡");         // 14850721 or 0xE29AA1, 3 bytes in total
+    doubleZap: Int = ascii("⚡⚡"); // 249153768823457 or 0xE29AA1E29AA1, 6 bytes in total
+}
+```
+
+:::note
+
+  The `ascii("...String contents..."){:tact}` in Tact is equivalent to `"...String contents..."u{:func}` in FunC.
+
+:::
+
+## crc32
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun crc32(str: String): Int;
+```
+
+A compile-time function that computes a checksum using [CRC-32](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) algorithm and embeds the resulting [`Int{:tact}`][int] value into the contract.
+
+Usage example:
+
+```tact
+contract Example {
+    // Persistent state variables
+    checksum: Int = crc32("000DEADBEEF000"); // 1821923098
+}
+```
+
+:::note
+
+  The `crc32("...String contents..."){:tact}` in Tact is equivalent to `"...String contents..."c{:func}` in FunC.
 
 :::
 
@@ -61,9 +176,9 @@ Usage example:
 ```tact
 contract Example {
     // Persistent state variables
-    one: Int = ton("1");            // 10^9 nanoToncoins, which is equal to one Toncoin
-    pointOne: Int = ton("0.1");     // 10^8 nanoToncoins, which is equal to 0.1 Toncoin
-    nano: Int = ton("0.000000001"); // 1 nanoToncoin, which is equal to 10^-9 Toncoins
+    one: Int = ton("1");            // one Toncoin, which is equivalent to 10^9 nanoToncoins
+    pointOne: Int = ton("0.1");     // 0.1 Toncoin, which is equivalent to 10^8 nanoToncoins
+    nano: Int = ton("0.000000001"); // 10^-9 Toncoins, which is equivalent to 1 nanoToncoin
                                     // works at compile-time!
 }
 ```
@@ -72,3 +187,8 @@ contract Example {
 [bool]: /book/types#booleans
 [int]: /book/integers
 [cell]: /book/cells#cells
+[slice]: /book/cells#slices
+
+[boc]: /book/cells#cells-boc
+
+[crc]: https://en.wikipedia.org/wiki/Cyclic_redundancy_check

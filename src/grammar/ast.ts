@@ -326,6 +326,7 @@ export type AstStatementDestruct = {
     type: AstTypeId;
     /** field name -> [field id, local id] */
     identifiers: Map<string, [AstId, AstId]>;
+    ignoreUnspecifiedFields: boolean;
     expression: AstExpression;
     id: number;
     loc: SrcInfo;
@@ -377,19 +378,22 @@ export type AstBouncedMessageType = {
 //
 
 export type AstExpression =
+    | AstExpressionPrimary
     | AstOpBinary
     | AstOpUnary
-    | AstFieldAccess
-    | AstNumber
-    | AstId
-    | AstBoolean
+    | AstConditional;
+
+export type AstExpressionPrimary =
     | AstMethodCall
+    | AstFieldAccess
     | AstStaticCall
     | AstStructInstance
+    | AstNumber
+    | AstBoolean
+    | AstId
     | AstNull
     | AstInitOf
-    | AstString
-    | AstConditional;
+    | AstString;
 
 export type AstBinaryOperation =
     | "+"
@@ -592,6 +596,13 @@ export type AstDestructMapping = {
     loc: SrcInfo;
 };
 
+export type AstDestructEnd = {
+    kind: "destruct_end";
+    ignoreUnspecifiedFields: boolean;
+    id: number;
+    loc: SrcInfo;
+};
+
 export type AstNumber = {
     kind: "number";
     base: AstNumberBase;
@@ -709,6 +720,7 @@ export type AstReceiverKind =
 export type AstNode =
     | AstFuncId
     | AstDestructMapping
+    | AstDestructEnd
     | AstExpression
     | AstStatement
     | AstTypeDecl

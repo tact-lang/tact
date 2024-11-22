@@ -126,6 +126,7 @@ export function cloneNode<T extends AstNode>(src: T): T {
     } else if (src.kind === "statement_foreach") {
         return cloneAstNode({
             ...src,
+            map: cloneNode(src.map),
             statements: src.statements.map(cloneNode),
         });
     } else if (src.kind === "function_def") {

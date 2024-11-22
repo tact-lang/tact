@@ -1,0 +1,23 @@
+name: Comment
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+jobs:
+  build:
+    name: Telegram
+    runs-on: ubuntu-latest
+    if: ${{ github.event.issue.pull_request }}
+    steps:
+      - name: Send telegram message on push
+        uses: appleboy/telegram-action@v1.0.0
+        with:
+          to: ${{ secrets.TELEGRAM_ISSUE_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_ISSUE_TOKEN }}
+          format: Markdown
+          # this might go wrong, because `title` and `body` can have arbitrary markdown
+          message: |
+            ✏️ [${{ github.event.comment.user.login }}](${{ github.event.comment.html_url }}): ${{ github.event.comment.body }}
+            🔀 ${{ github.event.issue.title }}

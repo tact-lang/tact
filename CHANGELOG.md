@@ -13,9 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New CSpell dictionaries: TVM instructions and adjusted list of Fift words: PR [#881](https://github.com/tact-lang/tact/pull/881)
 - Docs: the `description` property to the frontmatter of the each page for better SEO: PR [#916](https://github.com/tact-lang/tact/pull/916)
 - Docs: Google Analytics tags per every page: PR [#921](https://github.com/tact-lang/tact/pull/921)
-- Docs: Added NFTs cookbook: PR [#958](https://github.com/tact-lang/tact/pull/958)
+- Docs: added NFTs cookbook: PR [#958](https://github.com/tact-lang/tact/pull/958)
 - Ability to specify a compile-time method ID expression for getters: PR [#922](https://github.com/tact-lang/tact/pull/922) and PR [#932](https://github.com/tact-lang/tact/pull/932)
-- Destructuring of structs and messages: PR [#856](https://github.com/tact-lang/tact/pull/856)
+- Destructuring of structs and messages: PR [#856](https://github.com/tact-lang/tact/pull/856), PR [#964](https://github.com/tact-lang/tact/pull/964), PR [#969](https://github.com/tact-lang/tact/pull/969)
+- Docs: automatic links to Web IDE from all code blocks: PR [#994](https://github.com/tact-lang/tact/pull/994)
+- The `SendDefaultMode` send mode constant to the standard library: PR [#1010](https://github.com/tact-lang/tact/pull/1010)
+- Docs: initial semi-automated Chinese translation of the documentation: PR [#942](https://github.com/tact-lang/tact/pull/942)
+- The `replace` and `replaceGet` methods for the `Map` type: PR [#941](https://github.com/tact-lang/tact/pull/941)
+- Utility for logging errors in code that was supposed to be unreachable: PR [#991](https://github.com/tact-lang/tact/pull/991)
+- Docs: `preloadRef` method for the `Slice` type: PR [#1044](https://github.com/tact-lang/tact/pull/1044)
+- Docs: added DeDust cookbook: PR [#954](https://github.com/tact-lang/tact/pull/954)
 
 ### Changed
 
@@ -23,14 +30,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optional types for `self` argument in `extends mutates` functions are now allowed: PR [#854](https://github.com/tact-lang/tact/pull/854)
 - Docs: complete overhaul of the exit codes page: PR [#978](https://github.com/tact-lang/tact/pull/978)
 - Docs: enhanced Jettons Cookbook page: PR [#944](https://github.com/tact-lang/tact/pull/944)
+- Error codes in the report are now formatted as a list: PR [#1051](https://github.com/tact-lang/tact/pull/1051)
 
 ### Fixed
 
-- Collisions in getter method ids are now handled and reported properly: PR [#875](https://github.com/tact-lang/tact/pull/875)
+- Collisions in getter method ids are now handled and reported properly: PR [#875](https://github.com/tact-lang/tact/pull/875), PR [#1052](https://github.com/tact-lang/tact/pull/1052)
 - Docs: layout of tables, syntax highlighting, Chinese translations of sidebar separators: PR [#916](https://github.com/tact-lang/tact/pull/916)
 - Non-null struct fields after null ones are treated correctly in Sandbox tests after updating `@ton/core` to 0.59.0: PR [#933](https://github.com/tact-lang/tact/pull/933)
 - Prevent inline code snippets from changing their background color: PR [#935](https://github.com/tact-lang/tact/pull/935)
 - Docs: correctly handle next and previous page links at the bottom of the pages when there's a separator item in the sidebar: PR [#949](https://github.com/tact-lang/tact/pull/949)
+- Docs: compilation of examples in `data-structures.mdx` and across Cookbook: PR [#917](https://github.com/tact-lang/tact/pull/917)
+- `as coins` map value serialization type is now handled correctly: PR [#987](https://github.com/tact-lang/tact/pull/987)
+- Type checking for `foreach` loops in trait methods: PR [#1017](https://github.com/tact-lang/tact/pull/1017)
+- The `sha256()` function no longer throws on statically known strings of any length: PR [#907](https://github.com/tact-lang/tact/pull/907)
 
 ### Release contributors
 
@@ -72,7 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `deepEquals` method for the `Map` type: PR [#637](https://github.com/tact-lang/tact/pull/637), PR [#939](https://github.com/tact-lang/tact/pull/939)
 - `asm` bodies for module-level functions: PR [#769](https://github.com/tact-lang/tact/pull/769), PR [#825](https://github.com/tact-lang/tact/pull/825)
 - Corresponding stdlib functions for new TVM instructions from 2023.07 and 2024.04 upgrades: PR [#331](https://github.com/tact-lang/tact/pull/331). Added the `storeBuilder` extension function and `gasConsumed`, `getComputeFee`, `getStorageFee`, `getForwardFee`, `getSimpleComputeFee`, `getSimpleForwardFee`, `getOriginalFwdFee`, `myStorageDue` functions.
-- `slice`, `rawSlice`, `ascii` and `crc32` built-in functions: PR [#787](https://github.com/tact-lang/tact/pull/787), PR [#799](https://github.com/tact-lang/tact/pull/799)
+- `slice`, `rawSlice`, `ascii` and `crc32` built-in functions: PR [#787](https://github.com/tact-lang/tact/pull/787), PR [#799](https://github.com/tact-lang/tact/pull/799), PR [#951](https://github.com/tact-lang/tact/pull/951)
 - `Builder.storeMaybeRef`, `parseStdAddress` and `parseVarAddress` stdlib functions: PR [#793](https://github.com/tact-lang/tact/pull/793), PR [#950](https://github.com/tact-lang/tact/pull/950)
 - The compiler development guide: PR [#833](https://github.com/tact-lang/tact/pull/833)
 - Constant evaluator now uses an interpreter: PR [#664](https://github.com/tact-lang/tact/pull/664). This allows calls to user-defined functions and references to declared global constants.

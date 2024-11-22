@@ -620,6 +620,7 @@ type MapSerializerDescrKey =
     | { kind: "address" };
 type MapSerializerDescrValue =
     | { kind: "int" | "uint"; bits: number }
+    | { kind: "varuint"; length: number }
     | { kind: "boolean" }
     | { kind: "address" }
     | { kind: "cell" }
@@ -664,6 +665,9 @@ function getValueParser(src: MapSerializerDescrValue) {
             } else {
                 return `Dictionary.Values.BigUint(${src.bits})`;
             }
+        }
+        case "varuint": {
+            return `Dictionary.Values.BigVarUint(${src.length})`;
         }
         case "address": {
             return "Dictionary.Values.Address()";
@@ -739,7 +743,7 @@ const map: Serializer<MapSerializerDescr> = {
                 ) {
                     value = { kind: "uint", bits: 256 };
                 } else if (src.valueFormat === "coins") {
-                    value = { kind: "uint", bits: 124 };
+                    value = { kind: "varuint", length: 4 };
                 }
             }
             if (src.value === "address") {
@@ -809,6 +813,10 @@ const map: Serializer<MapSerializerDescr> = {
                     }
                 }
                 break;
+            case "varuint": {
+                valueT = `bigint`;
+                break;
+            }
             case "boolean":
                 {
                     valueT = `boolean`;

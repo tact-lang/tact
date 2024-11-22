@@ -475,17 +475,22 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
             // Essentially, || and && produce two potential branches, because the left operand is undetermined.
             // One branch is the "do nothing" branch, and the other one is the processing of the right operand.
             if (ast.op === "||" || ast.op === "&&") {
-                const rightEnv = this.envStack.simulate(() => this.interpretExpression(ast.right)).env;
+                const rightEnv = this.envStack.simulate(() =>
+                    this.interpretExpression(ast.right),
+                ).env;
 
                 // Join the environments
                 this.envStack.setCurrentEnvironment(
-                    joinEnvironments([rightEnv, this.envStack.getCurrentEnvironment()]),
+                    joinEnvironments([
+                        rightEnv,
+                        this.envStack.getCurrentEnvironment(),
+                    ]),
                 );
             } else {
                 // The rest of the operators do not short-circuit, so simply process the right operand
                 this.interpretExpression(ast.right);
             }
-            
+
             // Since the left operand is undetermined, the whole operation is undetermined
             return anyValue;
         }
@@ -666,14 +671,19 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
                     ast.loc,
                 );
             } else {
-                // As was the case with binary operators, the || and && short-circuit, so 
+                // As was the case with binary operators, the || and && short-circuit, so
                 // we need to do branch analysis on them.
                 if (ast.op === "||" || ast.op === "&&") {
-                    const rightEnv = this.envStack.simulate(() => this.interpretExpression(ast.expression)).env;
-    
+                    const rightEnv = this.envStack.simulate(() =>
+                        this.interpretExpression(ast.expression),
+                    ).env;
+
                     // Join the environments
                     this.envStack.setCurrentEnvironment(
-                        joinEnvironments([rightEnv, this.envStack.getCurrentEnvironment()]),
+                        joinEnvironments([
+                            rightEnv,
+                            this.envStack.getCurrentEnvironment(),
+                        ]),
                     );
                 } else {
                     // The rest of the operators do not short-circuit, so simply process the expression
