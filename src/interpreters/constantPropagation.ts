@@ -399,7 +399,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
             if (src.kind === "ref") {
                 const srcT = getType(this.context, src.name);
                 if (srcT.kind === "struct") {
-                    if (idText(ast.method) in knownStructABIMutationFunctions) {
+                    if (knownStructABIMutationFunctions.includes(idText(ast.method))) {
                         this.updateBinding(
                             path,
                             ast.self,
@@ -416,7 +416,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
             }
 
             if (src.kind === "map") {
-                if (idText(ast.method) in knownMapABIMutationFunctions) {
+                if (knownMapABIMutationFunctions.includes(idText(ast.method))) {
                     this.updateBinding(path, ast.self, anyValue, ast.self.loc);
                 }
             }
