@@ -1313,12 +1313,11 @@ function joinEnvironments(
     }
 
     // Intersect the keys in the values map using the pivot as base
-    let keys = pivotEnv.values.keys();
+    let intersectedKeys = pivotEnv.values.keys().toArray();
     for (const env of targets) {
         const targetKeys = new Set(env.values.keys());
-        keys = keys.filter((key) => targetKeys.has(key));
+        intersectedKeys = intersectedKeys.filter((key) => targetKeys.has(key));
     }
-    const intersectedKeys = new Set(keys);
 
     // For those variables that survived in intersectedKeys, keep those that
     // have the same value in all the provided targets
@@ -1332,7 +1331,7 @@ function joinEnvironments(
 
     // Now, join the values of all the target environments, for each key.
     for (const key of intersectedKeys) {
-        // key is ensured to be in finalVars because finalVars was initialized with set "intersectedKeys"
+        // key is ensured to be in finalVars because finalVars was initialized with "intersectedKeys"
         let currentVal = finalVars.get(key)!;
 
         for (const env of targets) {
