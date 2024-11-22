@@ -1419,9 +1419,10 @@ function extractCommonSubValue(val1: Value, val2: Value): Value | undefined {
             val2 !== null &&
             "$tactStruct" in val2
         ) {
-            const val1Keys = new Set(Object.keys(val1));
+            // Compute the intersection of their keys
+            const val1Keys = Object.keys(val1);
             const val2Keys = new Set(Object.keys(val2));
-            const commonKeys = val1Keys.intersection(val2Keys);
+            const commonKeys = val1Keys.filter((key) => val2Keys.has(key));
             // Since "$tactStruct" is in both val1 and val2,
             // commonKeys contains at least "$tactStruct".
 
