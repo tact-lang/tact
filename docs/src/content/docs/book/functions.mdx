@@ -128,43 +128,59 @@ extends mutates native loadInt(self: Slice, l: Int): Int;
 
 :::
 
-Assembly functions (or `asm{:tact}` functions for short) are module-level functions that allow writing [TVM][tvm] assembly directly in Tact. Unlike all other functions, their bodies consist only of [TVM instructions][tvm-instructions], and don't use any [Tact statements](/book/statements).
+Assembly functions (or asm functions for short) are module-level functions that allow you to write [Tact assembly](#asm-tact). Unlike all other functions, their bodies consist only of [TVM instructions][tvm-instructions] and [some other primitives](#asm-tact), and don't use any [Tact statements](/book/statements).
 
 ```tact
 // all assembly functions must start with "asm" keyword
 // ↓
    asm fun answer(): Int { 42 INT }
 //                         ------
-//                         Notice, that the body contains
-//                         only of numbers, strings and TVM instructions
+//                         Notice, that the body contains only of
+//                         TVM instructions and some primitives,
+//                         like numbers or bitstrings
 ```
 
-### Caveats {#asm-caveats}
+### Tact assembly {#asm-tact}
 
-[TVM instructions][tvm-instructions] are case-sensitive and are always written in upper case (capital letters).
+Since [TVM][tvm] is a stack machine, writing assembly for it means manipulating the stack entries with [TVM instructions][tvm-instructions]. However, many instructions require the use of additional primitives, such as numbers or bitstrings. All needed primitives are provided in the Tact assembly, whose syntax looks familiar to Fift, but is much more minimal and comfortable to use.
+
+Except for comments, everything in `asm{:tact}` function bodies must be separated by spaces or newline characters.
 
 ```tact
-/// ERROR!
-asm fun bad1(): Cell { mycode }
+asm fun theLegendOfAsmTactina() {
+    // String literals, useful for debug instructions
+    "Anything inside double-quotes that's not a double-quote"
 
-/// ERROR!
-asm fun bad2(): Cell { MyCoDe }
+    // Hex bitstrings with optional padding via _,
+    // which are represented by Slices without references
+    // with up to 1023 data bits
+    x{babecafe_}
 
-/// 👍
-asm fun good(): Cell { MYCODE }
+    // Binary bitstrings, which are like their hex counterparts,
+    // but do not have the optional padding
+    b{0101}
+
+    // Number literals, represented by Int values on TVM
+    42 -13
+
+    // TVM control registers
+    c0 // c0, c1, ..., c15
+
+    // TVM stack registers
+    s0 // s0, s1, ..., s255
+
+    // TVM instructions themselves
+    MYCODE // without wrapping in double-quotes "..."!
+}
 ```
 
-It is not necessary to enclose TVM instructions in double quotes. On the contrary, they are then interpreted as strings, which is probably _not_ what you want:
+:::caution
 
-```tact
-// Pushes the string "MYCODE" onto the compile-time stack,
-// where it gets discarded even before the compute phase starts
-asm fun wrongMyCode() { "MYCODE" }
+  The `i s()` syntax for referring to stack registers beyond the $0 - 15$ range is deprecated and recognized as an error. Whenever you see `[ii] s()` in the [TVM instructions list][tvm-instructions], use one of `s0`, `s1`, ..., `s255` instead.
 
-// Invokes the TVM instruction MYCODE during the compute phase,
-// which returns the contract code as a Cell
-asm fun myCode(): Cell { MYCODE }
-```
+:::
+
+### Stack calling conventions {#asm-calling}
 
 The syntax for parameters and return values is the same as for other function kinds, but there is one caveat — argument values are pushed to the stack before the function body is executed, and return values are what's left on the stack afterward.
 
@@ -210,9 +226,35 @@ asm fun sliceLoadInt(s: Slice, len: Int): Int { LDIX }
 //                                        the Slice one produced by LDIX instruction
 ```
 
+### Stack registers {#asm-stack-registers}
+
+The so-called _stack registers_ are conventional way of referring to the values at the top of the stack. In total, there are $256$ stack registers, i.e. values held on the stack at any given time. You can refer to any of them using any of `s0`, `s1`, ..., `s255`.
+
+Register `s0` is the value at the top of the stack, register `s1` is the value immediately after it, and so on, until we reach the bottom of the stack, represented by `s255`, i.e. the $256$th stack register. When a value `x` is pushed onto a stack, it becomes the new `s0`. At the same time, old `s0` becomes new `s1`, old `s1` — new `s2`, and so on.
+
+```tact
+asm fun takeSecond(a: Int, b: Int): Int {
+    //             ↑       ↑
+    //             |       Pushed last, sits on top of the stack
+    //             Pushed first, sits second from the top of the stack
+
+    // Now, let's swap the s0 (top of the stack) with s1 (second-to-top):
+    s1 XCHG0
+
+    // Then, let's drop the value from the top of the stack
+    DROP
+
+    // At the end, we have only one value on the stack, which is b
+}
+
+fun showcase() {
+    takeFirst(5, 10); // 10, i.e. b
+}
+```
+
 ### Arrangements {#asm-arrangements}
 
-Sometimes it's useful to change the order of arguments pushed to the stack or the order of return values. You can do that with `asm{:tact}` arrangements in the following manner:
+Often times it's useful to change the order of arguments pushed to the stack or the order of return values without referring to stack registers in the body. You can do that with `asm{:tact}` arrangements in the following manner:
 
 ```tact
 // Changing the order of arguments to match the STDICT signature:
@@ -223,9 +265,11 @@ asm(c self) extends fun asmStoreDict(self: Builder, c: Cell?): Builder { STDICT 
 // Changing the order of return values of LDVARUINT16,
 // capturing only the last one as the return value of the whole function
 asm(-> 1 0) extends mutates fun asmLoadCoins(self: Slice): Int { LDVARUINT16 }
-//     ---
-//     Notice, that return values are best thought as tuples with indexed access into them
-//     and not as bottom-up representation of stack values
+//     ↑ ↑
+//     | Value of the stack register 0,
+//     | which is the topmost value in the stack
+//     Value of the stack register 1,
+//     which is second-to-top value in the stack
 
 // Changing the order of return values while explicitly stating
 // the default order of arguments as it is
@@ -233,11 +277,8 @@ asm(self len -> 1 0) extends fun asmLoadInt(self: Slice, len: Int): SliceInt { L
 
 // Used to map onto values placed by LDIX on the stack in reversed order
 struct SliceInt { a: Slice; b: Int }
-```
 
-Putting the above all together we get:
-
-```tact
+// Putting the above all together we get:
 fun showcase() {
     let b = beginCell()
         .storeCoins(42)
@@ -248,6 +289,33 @@ fun showcase() {
     let coins = s.asmLoadCoins(); // 42
     let sliceInt = s.asmLoadInt(10); // Slice remainder and 27
 }
+```
+
+### Caveats {#asm-caveats}
+
+[TVM instructions][tvm-instructions] are case-sensitive and are always written in upper case (capital letters).
+
+```tact
+/// ERROR!
+asm fun bad1(): Cell { mycode }
+
+/// ERROR!
+asm fun bad2(): Cell { MyCoDe }
+
+/// 👍
+asm fun good(): Cell { MYCODE }
+```
+
+It is not necessary to enclose [TVM instructions][tvm-instructions] in double quotes. On the contrary, they are then interpreted as strings, which is probably _not_ what you want:
+
+```tact
+// Pushes the string "MYCODE" onto the compile-time stack,
+// where it gets discarded even before the compute phase starts
+asm fun wrongMyCode() { "MYCODE" }
+
+// Invokes the TVM instruction MYCODE during the compute phase,
+// which returns the contract code as a Cell
+asm fun myCode(): Cell { MYCODE }
 ```
 
 ### Attributes {#asm-attributes}
