@@ -515,7 +515,7 @@ semantics.addOperation<AstAsmExpression>("astOfAsmExpression", {
     AsmExpression(expression) {
         return expression.astOfAsmExpression();
     },
-    AsmExpression_listWithHelpfulErrorMessage(_lbrace, _any, _rbrace) {
+    AsmExpression_list(_lbrace, _any, _rbrace) {
         throwSyntaxError(
             'The Fift\'s word list syntax "{ ... }" is not supported',
             createRef(this),
@@ -525,7 +525,7 @@ semantics.addOperation<AstAsmExpression>("astOfAsmExpression", {
         return primitive.astOfAsmExpression();
     },
     asmString(_startQuotationMark, string, _endQuotationMark) {
-        // A best-effor check to inform the user of errors in translation
+        // A best-effort check to inform the user of errors in translation
         // of TVM instructions between FunC (or other languages) and Tact
         const src = string.sourceString;
         if (src.match(/^-?[A-Z0-9_#:]+l?$/) !== null) {
@@ -618,7 +618,7 @@ semantics.addOperation<AstAsmExpression>("astOfAsmExpression", {
             loc: createRef(this),
         };
     },
-    asmStackReg256(digit, optSecondDigit, optThirdDigit, _ws, _literal) {
+    asmStackReg256(_digit, _optSecondDigit, _optThirdDigit, _ws, _literal) {
         throwSyntaxError(
             `The "i s()" syntax is deprecated in favor of using one of the "s0", "s1", ..., "s255" stack registers`,
             createRef(this),

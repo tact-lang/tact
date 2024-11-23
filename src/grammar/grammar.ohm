@@ -100,7 +100,7 @@ Tact {
              | external "(" stringLiteral ")" "{" Statement* "}" --externalComment
 
     // FIXME: prettyPrinter.ts + writeFunction.ts, hash.ts, compare.ts
-    AsmExpression = "{" (~"}" any)* "}" --listWithHelpfulErrorMessage // used only for error messages
+    AsmExpression = "{" (~"}" any)* "}" --list // used only for error messages
                   | asmPrimitive
 
     // Various primitives and instructions not forming a block
@@ -111,7 +111,7 @@ Tact {
                  | asmStackReg
                  | asmStackReg256
                  | asmNumber
-                 | asmInstruction
+                 | asmInstruction // must be last
 
     // It's here mostly to provide better error messages
     // for people coming from FunC/Fift background
@@ -124,15 +124,15 @@ Tact {
     // for people coming from FunC/Fift background,
     // gently guiding them towards simpler s0...s255 syntax
     asmStackReg256 (indexed stack register) = digit digit? digit? whiteSpace+ "s()"
-    asmNumber      (number)                 = "-"? digit+
+    asmNumber      (number)                 = "-"? digit+ ~(letterAscii | "_" | "#" | ":")
 
-    // To ensure correct parse,
-    // 1. instructions cannot contain braces
-    // 2. and cannot be braces themselves
-    asmInstruction (an instruction) = ~(("{" | "}") ~asmWord) asmWord
-    asmWord = "-"? asmWordPart+
-    // NOTE: We can limit this further to letterAsciiUC, then add optional "l"? by the end.
-    asmWordPart = letterAscii | digit | "_" | "#" | ":"
+    // To ensure correct parse:
+    // 1. Instructions cannot contain braces
+    // 2. Cannot be braces themselves
+    // 3. Cannot contain lowercase letters, except for the very last position
+    asmInstruction (TVM instruction) = ~(("{" | "}") ~asmWord) asmWord
+    asmWord = "-"? asmWordPart+ "l"?
+    asmWordPart = letterAsciiUC | digit | "_" | "#" | ":"
 
     Statement = StatementLet
               | StatementBlock
