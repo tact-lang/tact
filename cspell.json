@@ -115,6 +115,7 @@
     "uintptr",
     "uninit",
     "unixfs",
+    "varuint",
     "workchain",
     "xffff",
     "привет"

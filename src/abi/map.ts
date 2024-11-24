@@ -160,6 +160,10 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     } else if (self.valueAs?.startsWith("uint")) {
                         vBits = parseInt(self.valueAs.slice(4), 10);
                         vKind = "uint";
+                    } else if (self.valueAs?.startsWith("coins")) {
+                        vKind = "coins";
+                        ctx.used(`__tact_dict_set_${kind}_${vKind}`);
+                        return `${resolved[0]}~__tact_dict_set_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]})`;
                     }
                     ctx.used(`__tact_dict_set_${kind}_${vKind}`);
                     return `${resolved[0]}~__tact_dict_set_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
@@ -226,6 +230,10 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     } else if (self.valueAs?.startsWith("uint")) {
                         vBits = parseInt(self.valueAs.slice(4), 10);
                         vKind = "uint";
+                    } else if (self.valueAs?.startsWith("coins")) {
+                        vKind = "coins";
+                        ctx.used(`__tact_dict_get_${kind}_${vKind}`);
+                        return `__tact_dict_get_${kind}_${vKind}(${resolved[0]}, ${bits}, ${resolved[1]})`;
                     }
                     ctx.used(`__tact_dict_get_${kind}_${vKind}`);
                     return `__tact_dict_get_${kind}_${vKind}(${resolved[0]}, ${bits}, ${resolved[1]}, ${vBits})`;
@@ -571,6 +579,10 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     } else if (self.valueAs?.startsWith("uint")) {
                         vBits = parseInt(self.valueAs.slice(4), 10);
                         vKind = "uint";
+                    } else if (self.valueAs?.startsWith("coins")) {
+                        vKind = "coins";
+                        ctx.used(`__tact_dict_replace_${kind}_${vKind}`);
+                        return `${resolved[0]}~__tact_dict_replace_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]})`;
                     }
                     ctx.used(`__tact_dict_replace_${kind}_${vKind}`);
                     return `${resolved[0]}~__tact_dict_replace_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
@@ -649,6 +661,10 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                     } else if (self.valueAs?.startsWith("uint")) {
                         vBits = parseInt(self.valueAs.slice(4), 10);
                         vKind = "uint";
+                    } else if (self.valueAs?.startsWith("coins")) {
+                        vKind = "coins";
+                        ctx.used(`__tact_dict_replaceget_${kind}_${vKind}`);
+                        return `${resolved[0]}~__tact_dict_replaceget_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]})`;
                     }
                     ctx.used(`__tact_dict_replaceget_${kind}_${vKind}`);
                     return `${resolved[0]}~__tact_dict_replaceget_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vBits})`;

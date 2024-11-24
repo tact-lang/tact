@@ -1,4 +1,4 @@
-import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
+import { Address, beginCell, BitString, Cell, Slice, toNano } from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
 import * as crc32 from "crc-32";
 import { evalConstantExpression } from "./constEval";
@@ -1068,17 +1068,14 @@ export class Interpreter {
             }
             case "sha256": {
                 ensureFunArity(1, ast.args, ast.loc);
-                const str = ensureString(
-                    this.interpretExpression(ast.args[0]!),
-                    ast.args[0]!.loc,
-                );
-                const dataSize = Buffer.from(str).length;
-                if (dataSize > 128) {
-                    throwErrorConstEval(
-                        `data is too large for sha256 hash, expected up to 128 bytes, got ${dataSize}`,
+                const expr = this.interpretExpression(ast.args[0]!);
+                if (expr instanceof Slice) {
+                    throwNonFatalErrorConstEval(
+                        "slice argument is currently not supported",
                         ast.loc,
                     );
                 }
+                const str = ensureString(expr, ast.args[0]!.loc);
                 return BigInt("0x" + sha256_sync(str).toString("hex"));
             }
             case "emptyMap": {
@@ -1463,14 +1460,6 @@ export class Interpreter {
                     val,
                 )}`,
                 ast.expression.loc,
-            );
-        }
-        if (ast.identifiers.size !== Object.keys(val).length - 1) {
-            throwErrorConstEval(
-                `destructuring assignment expected ${Object.keys(val).length - 1} fields, but got ${
-                    ast.identifiers.size
-                }`,
-                ast.loc,
             );
         }
 

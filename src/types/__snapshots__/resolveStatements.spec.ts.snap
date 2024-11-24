@@ -577,6 +577,66 @@ Line 8, col 13:
 "
 `;
 
+exports[`resolveStatements should fail statements for getter-collision-with-reserved_opt1 1`] = `
+"<unknown>:10:9: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
+Line 10, col 9:
+   9 | 
+> 10 |     get(115390) fun _lazy_deployment_completed(): String{
+               ^~~~~~
+  11 |         return "not ok";
+"
+`;
+
+exports[`resolveStatements should fail statements for getter-collision-with-reserved_opt2 1`] = `
+"<unknown>:10:9: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
+Line 10, col 9:
+   9 | 
+> 10 |     get(121275) fun _get_abi_ipfs(): Int{
+               ^~~~~~
+  11 |         return 123;
+"
+`;
+
+exports[`resolveStatements should fail statements for getter-collision-with-reserved_opt3 1`] = `
+"<unknown>:10:9: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
+Line 10, col 9:
+   9 | 
+> 10 |     get(113617) fun _supported_interfaces(): String{
+               ^~~~~~
+  11 |         return "ok";
+"
+`;
+
+exports[`resolveStatements should fail statements for getter-collision-with-reserved1 1`] = `
+"<unknown>:10:5: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
+Line 10, col 5:
+   9 | 
+> 10 |     get fun lazy_deployment_completed(): String{
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  11 |         return "not ok";
+"
+`;
+
+exports[`resolveStatements should fail statements for getter-collision-with-reserved2 1`] = `
+"<unknown>:10:5: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
+Line 10, col 5:
+   9 | 
+> 10 |     get fun get_abi_ipfs(): Int{
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  11 |         return 123;
+"
+`;
+
+exports[`resolveStatements should fail statements for getter-collision-with-reserved3 1`] = `
+"<unknown>:10:5: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
+Line 10, col 5:
+   9 | 
+> 10 |     get fun supported_interfaces(): String{
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  11 |         return "ok";
+"
+`;
+
 exports[`resolveStatements should fail statements for getter-collision-with-trait 1`] = `
 "<unknown>:4:13: Method ID collision: getter 'pko' has the same method ID 103057 as getter 'getter1'
 Pick a different getter name or explicit method ID to avoid collisions
@@ -939,12 +999,12 @@ Line 16, col 29:
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-existing 1`] = `
-"<unknown>:15:22: Field '"d"' not found in type 'S'
-Line 15, col 22:
+"<unknown>:15:19: Field '"d"' not found in type 'S'
+Line 15, col 19:
   14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S { a, b, c, d: e } = s;
-                            ^
-  16 |     return a + b + c + e;
+> 15 |     let S { a, b, d: e } = s;
+                         ^
+  16 |     return a + b + e;
 "
 `;
 
@@ -959,12 +1019,12 @@ Line 15, col 16:
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-existing-punned2 1`] = `
-"<unknown>:15:22: Field '"d"' not found in type 'S'
-Line 15, col 22:
+"<unknown>:15:19: Field '"d"' not found in type 'S'
+Line 15, col 19:
   14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S { a, b, c, d } = s;
-                            ^
-  16 |     return a + b + c + d;
+> 15 |     let S { a, b, d } = s;
+                         ^
+  16 |     return a + b + d;
 "
 `;
 
@@ -972,9 +1032,9 @@ exports[`resolveStatements should fail statements for stmt-destructuring-fields-
 "<unknown>:15:12: Field '"_"' not found in type 'S'
 Line 15, col 12:
   14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S {_, b} =  s;
+> 15 |     let S {_, b, c} =  s;
                   ^
-  16 |     return b;
+  16 |     return b + c;
 "
 `;
 
@@ -995,6 +1055,26 @@ Line 16, col 16:
 > 16 |     let S { a: x, b: b, c: c } = s;
                       ^
   17 |     return x + b + c;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-wrong-count 1`] = `
+"<unknown>:15:5: Expected 3 fields, but got 2
+Line 15, col 5:
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S { a, b } = s;
+           ^~~~~~~~~~~~~~~~~~~
+  16 |     return a + b;
+"
+`;
+
+exports[`resolveStatements should fail statements for stmt-destructuring-fields-wrong-count2 1`] = `
+"<unknown>:15:5: Expected 3 fields, but got 4
+Line 15, col 5:
+  14 |     let s = S{ a: 1, b: 2, c: 3 };
+> 15 |     let S { a, b, c, d } = s;
+           ^~~~~~~~~~~~~~~~~~~~~~~~~
+  16 |     return a + b + c + d;
 "
 `;
 

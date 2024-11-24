@@ -65,6 +65,7 @@ type TestValues = {
     valueUint8: bigint;
     valueUint42: bigint;
     valueUint256: bigint;
+    valueCoins: bigint;
     valueBool: boolean;
     valueCell: Cell;
     valueAddress: Address;
@@ -105,6 +106,7 @@ const testCases: TestCase[] = [
             valueUint8: 255n,
             valueUint42: 123_456_789n,
             valueUint256: 999_999_999_999n,
+            valueCoins: 100_000_000n,
             valueBool: true,
             valueCell: beginCell().storeUint(42, 32).endCell(),
             valueAddress: randomAddress(0, "address"),
@@ -137,6 +139,7 @@ const testCases: TestCase[] = [
             valueUint8: 0n, // Min unsigned int
             valueUint42: 0n, // Min unsigned int
             valueUint256: 0n, // Min unsigned int
+            valueCoins: 0n,
             valueBool: false,
             valueCell: beginCell()
                 .storeUint(2n ** 32n - 1n, 32)
@@ -171,6 +174,7 @@ const testCases: TestCase[] = [
             valueUint8: 1n,
             valueUint42: 1n,
             valueUint256: 1n,
+            valueCoins: 1n,
             valueBool: false,
             valueCell: beginCell().storeUint(0, 32).endCell(),
             valueAddress: randomAddress(0, "address"),
@@ -203,6 +207,7 @@ const testCases: TestCase[] = [
             valueUint8: 128n, // Middle value
             valueUint42: 2n ** 41n, // Large power of 2
             valueUint256: 2n ** 255n, // Large power of 2
+            valueCoins: 2n ** 120n - 1n,
             valueBool: true,
             valueCell: beginCell()
                 .storeUint(2n ** 31n, 32)
@@ -591,6 +596,7 @@ describe("MapTestContract", () => {
                 valueUint8: null,
                 valueUint42: null,
                 valueUint256: null,
+                valueCoins: null,
                 valueBool: null,
                 valueCell: null,
                 valueAddress: null,
@@ -680,6 +686,7 @@ describe("MapTestContract", () => {
                 valueUint8: null,
                 valueUint42: null,
                 valueUint256: null,
+                valueCoins: null,
                 valueBool: null,
                 valueCell: null,
                 valueAddress: null,
@@ -767,6 +774,7 @@ describe("MapTestContract", () => {
                 valueUint8: null,
                 valueUint42: null,
                 valueUint256: null,
+                valueCoins: null,
                 valueBool: null,
                 valueCell: null,
                 valueAddress: null,
@@ -862,6 +870,7 @@ describe("MapTestContract", () => {
                 valueUint8: null,
                 valueUint42: null,
                 valueUint256: null,
+                valueCoins: null,
                 valueBool: null,
                 valueCell: null,
                 valueAddress: null,
@@ -1504,6 +1513,7 @@ describe("MapTestContract", () => {
                 valueUint8: null,
                 valueUint42: null,
                 valueUint256: null,
+                valueCoins: null,
                 valueBool: null,
                 valueCell: null,
                 valueAddress: null,
@@ -1578,6 +1588,7 @@ describe("MapTestContract", () => {
                     valueUint8: null,
                     valueUint42: null,
                     valueUint256: null,
+                    valueCoins: null,
                     valueBool: null,
                     valueCell: null,
                     valueAddress: null,
@@ -1672,6 +1683,7 @@ describe("MapTestContract", () => {
                     valueUint8: null,
                     valueUint42: null,
                     valueUint256: null,
+                    valueCoins: null,
                     valueBool: null,
                     valueCell: null,
                     valueAddress: null,
@@ -1764,6 +1776,7 @@ describe("MapTestContract", () => {
                     valueUint8: null,
                     valueUint42: null,
                     valueUint256: null,
+                    valueCoins: null,
                     valueBool: null,
                     valueCell: null,
                     valueAddress: null,
@@ -1830,6 +1843,7 @@ describe("MapTestContract", () => {
                 values.valueUint8,
                 values.valueUint42,
                 values.valueUint256,
+                values.valueCoins,
                 values.valueBool,
                 values.valueCell,
                 values.valueAddress,
@@ -1873,6 +1887,7 @@ describe("MapTestContract", () => {
                 values.valueUint8,
                 values.valueUint42,
                 values.valueUint256,
+                values.valueCoins,
                 values.valueBool,
                 values.valueCell,
                 values.valueAddress,
@@ -1966,6 +1981,7 @@ describe("MapTestContract", () => {
                     valueUint8: null,
                     valueUint42: null,
                     valueUint256: null,
+                    valueCoins: null,
                     valueBool: null,
                     valueCell: null,
                     valueAddress: null,
@@ -2032,6 +2048,7 @@ describe("MapTestContract", () => {
                 values.valueUint8,
                 values.valueUint42,
                 values.valueUint256,
+                values.valueCoins,
                 values.valueBool,
                 values.valueCell,
                 values.valueAddress,
@@ -2076,6 +2093,7 @@ describe("MapTestContract", () => {
                     values.valueUint8,
                     values.valueUint42,
                     values.valueUint256,
+                    values.valueCoins,
                     values.valueBool,
                     values.valueCell,
                     values.valueAddress,

@@ -23,7 +23,7 @@ import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { ops } from "./ops";
 import { freshIdentifier } from "./freshIdentifier";
 import { idTextErr, throwInternalCompilerError } from "../../errors";
-import { prettyPrintAsmShuffle } from "../../prettyPrinter";
+import { ppAsmShuffle } from "../../prettyPrinter";
 
 export function writeCastedExpression(
     expression: AstExpression,
@@ -580,7 +580,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                     args: fAst.shuffle.args.map((id) => idOfText(funcIdOf(id))),
                 };
                 ctx.asm(
-                    prettyPrintAsmShuffle(asmShuffleEscaped),
+                    ppAsmShuffle(asmShuffleEscaped),
                     fAst.instructions.join(" "),
                 );
             });
