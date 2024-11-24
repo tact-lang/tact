@@ -142,6 +142,8 @@ Assembly functions (or asm functions for short) are module-level functions that 
 
 ### Tact assembly {#asm-tact}
 
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
 Since [TVM][tvm] is a stack machine, writing assembly for it means manipulating the stack entries with [TVM instructions][tvm-instructions]. However, many instructions require the use of additional primitives, such as numbers or bitstrings. All needed primitives are provided in the Tact assembly, whose syntax looks familiar to Fift, but is much more minimal and comfortable to use.
 
 Except for comments, everything in `asm{:tact}` function bodies must be separated by spaces or newline characters.
@@ -176,7 +178,7 @@ asm fun theLegendOfAsmTactina() {
 
 :::caution
 
-  The `i s()` syntax for referring to stack registers beyond the $0 - 15$ range is deprecated and recognized as an error. Whenever you see `[ii] s()` in the [TVM instructions list][tvm-instructions], use one of `s0`, `s1`, ..., `s255` instead.
+  The `i s()` syntax for referring to stack registers beyond the $0 - 15$ range is deprecated and recognized as an error in Tact 1.6. Whenever you see `[ii] s()` in the [TVM instructions list][tvm-instructions], use one of `s0`, `s1`, ..., `s255` instead.
 
 :::
 
