@@ -90,21 +90,30 @@ throw(1);
 
 ## Insecure random numbers
 
-Note that [`random()`](/ref/core-random#random) function is pseudo-random and depends on [logical time](https://docs.ton.org/develop/smart-contracts/guidelines/message-delivery-guarantees#what-is-a-logical-time). A hacker can predict random by brute-forcing the logical time in the current block.
+Generating truly secure random numbers in TON is challenging. The [`random()`](/ref/core-random#random) function is pseudo-random and depends on [logical time](https://docs.ton.org/develop/smart-contracts/guidelines/message-delivery-guarantees#what-is-a-logical-time). A hacker can predict random by brute-forcing the logical time in the current block.
 
 ##### Do's ✅
 
-There is no fully reliable and secure method for random number generation in TON. For critical applications like lotteries or gambling, it is recommended to either avoid relying on on-chain solutions or implement custom methods for generating randomness.
+- For critical applications **avoid relying solely on on-chain solutions**.
+- Use [`random()`](/ref/core-random#random) with randomized logical time to enhance security by making predictions harder for attackers without Validator Node access. However, note that it is **still not entirely foolproof**.
+- Consider using the **commit-and-disclose scheme**:
+  1. Participants generate random numbers off-chain and send their hashes to the contract.
+  2. Once all hashes are received, participants disclose their original numbers.
+  3. Combine the disclosed numbers (e.g., summing them) to produce a secure random value.
+
+For more details, refer to the [Secure Random number generation](https://docs.ton.org/v3/guidelines/smart-contracts/security/random-number-generation).
 
 ##### Don'ts ❌
 
-Don't use random function.
+Don't rely on random function.
 
 ```tact
 if (random(1, 10) == 7) {
   ... send reward ...
 }
 ```
+
+Don't use randomization in `external_message` receivers, as it remains vulnerable even with randomizing logical time.
 
 
 ## Optimized message handling
