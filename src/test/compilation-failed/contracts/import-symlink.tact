@@ -1,0 +1,4 @@
+import "./symlink";
+
+contract Test { }
+
