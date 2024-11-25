@@ -227,8 +227,8 @@ Replay protection is a security mechanism to prevent an attacker from reusing a 
 
 ##### Do's ✅
 
-Always include and validate a unique identifier, like seqno, to differentiate messages. Update the identifier after successful processing to prevent duplicates.
-
+Always include and validate a unique identifier, like `seqno`, to differentiate messages. Update the identifier after successful processing to prevent duplicates.
+Alternatively, you can implement replay protection, as done in [Highload V3](https://github.com/ton-blockchain/highload-wallet-contract-v3/blob/main/contracts/highload-wallet-v3.func#L60), which is not based on seqno.
 ```tact
 message Msg {
     newMessage: Cell;
