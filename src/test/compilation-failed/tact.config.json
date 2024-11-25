@@ -226,6 +226,11 @@
       "name": "scope-const-shadows-stdlib-ident",
       "path": "./contracts/scope-const-shadows-stdlib-ident.tact",
       "output": "./contracts/output"
+    },
+    {
+      "name": "import-symlink",
+      "path": "./contracts/import-symlink.tact",
+      "output": "./contracts/output"
     }
   ]
 }
