@@ -6,6 +6,12 @@ title: Security Best Practices
 
 In Tact smart contracts there are various anti-patterns and potential attacks developers need to be cautious of. These can impact the security, efficiency, and correctness of the contracts. Below, are covered both common anti-patterns and attacks specific to Tact smart contracts.
 
+This article is based on the following resources. For a deeper understanding, refer to
+
+* [Smart contracts guidelines](https://docs.ton.org/v3/guidelines/smart-contracts/guidelines)
+* [Secure Smart Contract Programming](https://docs.ton.org/v3/guidelines/smart-contracts/security/secure-programming)
+* [FunC Security Best Practices](https://github.com/slowmist/Toncoin-Smart-Contract-Security-Best-Practices/blob/main/README.md)
+
 ## Send sensitive data on chain
 
 The whole smart contract computation is transparent and if you had some confidential values in runtime these could be retrieved with a simple emulation.
