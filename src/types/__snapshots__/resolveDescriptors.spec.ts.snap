@@ -565,6 +565,16 @@ Line 4, col 8:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for trait-circular-deps 1`] = `
+"<unknown>:3:1: Circular dependency detected for type "A"
+Line 3, col 1:
+  2 | 
+> 3 | trait A with B {}
+      ^~~~~~~~~~~~~~~~~
+  4 | trait B with A {}
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for trait-duplicates-in-trait-list 1`] = `
 "<unknown>:7:1: The list of inherited traits for trait "Test" has duplicates
 Line 7, col 1:

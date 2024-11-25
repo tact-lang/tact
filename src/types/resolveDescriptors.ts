@@ -1782,7 +1782,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 types.get(name)!.ast.loc,
             );
         }
-        processing.has(name);
+        processing.add(name);
 
         // Process dependencies first
         const dependencies = Array.from(types.values()).filter((v) =>
