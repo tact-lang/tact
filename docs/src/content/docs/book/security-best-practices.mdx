@@ -347,7 +347,7 @@ contract JettonDefaultWallet {
 ## Transaction and phases
 
 The computational phase executes the code of smart contracts and only then the actions are performed (sending messages, code modification, changing libraries, and others) and state of contract is updated.
-That's mean if compute phase fails [registers](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers) `c4` (“persistent data”) and `c5` (“actions”) won't be updated. But it is possibly to manually save their state via [`commit(){:tact}`](ref/core-advanced/#commit).
+That's mean if compute phase fails [registers](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers) `c4` (“persistent data”) and `c5` (“actions”) won't be updated. But it is possibly to manually save their state via [`commit(){:tact}`](/ref/core-advanced/#commit).
 
 ## Return gas excesses carefully
 
