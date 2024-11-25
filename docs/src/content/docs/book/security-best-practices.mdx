@@ -349,7 +349,7 @@ message Vote {
     votes: Int as int32;
 }
 
-message(0xd53276db) Exceeses {}
+message(0xd53276db) Excesses {}
 
 contract Sample {
     votes: Int as uint32 = 0;
@@ -361,7 +361,7 @@ contract Sample {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            body: Exceeses{}.toCell(),
+            body: Excesses{}.toCell(),
         });
     }
 }
@@ -374,7 +374,7 @@ message Vote {
     votes: Int as int32;
 }
 
-message(0xd53276db) Exceeses {}
+message(0xd53276db) Excesses {}
 
 contract Sample {
     votes: Int as uint32 = 0;
@@ -382,7 +382,7 @@ contract Sample {
     receive(msg: Vote) {
         self.votes += msg.votes;
 
-        self.notify(Exceeses{}.toCell());
+        self.notify(Excesses{}.toCell());
     }
 }
 ```
@@ -429,7 +429,7 @@ contract AnotherContract {
 
     receive(msg: TakeMoney) {
         require(sender() == self.oneContractAddress, "Invalid money provider!");
-        // do smth with money
+        // Money processing
     }
 }
 ```
