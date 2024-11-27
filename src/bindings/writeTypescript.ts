@@ -202,7 +202,7 @@ export function writeTypescript(
             });
         }
     });
-    w.append(`};`);
+    w.append(`}`);
     w.append();
 
     //map <int, Error> to generate ABI later.
@@ -213,12 +213,12 @@ export function writeTypescript(
         if (abi.errors) {
             Object.entries(abi.errors).forEach(([k, abiError]) => {
                 w.append(
-                    `    ${k}: { message: \`${abiError.message.replaceAll("`", "\\`")}\` },`,
+                    `${k}: { message: \`${abiError.message.replaceAll("`", "\\`")}\` },`,
                 );
             });
         }
     });
-    w.append(`};`);
+    w.append(`}`);
     w.append();
 
     // Types
