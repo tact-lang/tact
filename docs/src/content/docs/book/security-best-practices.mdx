@@ -128,8 +128,10 @@ message Sample {
     parsedField: Slice;
 }
 
-receive(msg: Sample) {
-    // Process msg.parsedField directly
+contract Example {
+    receive(msg: Sample) {
+        // Process msg.parsedField directly
+    }
 }
 ```
 
@@ -138,13 +140,13 @@ receive(msg: Sample) {
 Avoid parsing strings from human-readable formats into binary structures **on-chain**, as this increases computational overhead and gas costs.
 
 ```tact
-message Sample {
-    field: String;
-}
+message Sample { field: String }
 
-receive(msg: Sample) {
-    // Parsing occurs on-chain, which is inefficient
-    let parsed = field.fromBase64();
+contract Example {
+    receive(msg: Sample) {
+        // Parsing occurs on-chain, which is inefficient
+        let parsed = field.fromBase64();
+    }
 }
 ```
 
@@ -155,11 +157,9 @@ Be careful with the `Out of gas error`. It cannot be handled, so try to pre-calc
 ##### Do's ✅
 
 ```tact
-message Vote {
-    votes: Int as int32;
-}
+message Vote { votes: Int as int32 }
 
-contract Sample2 {
+contract Example {
     const voteGasUsage = 10000; // precompute with tests
 
     receive(msg: Vote) {
@@ -360,7 +360,7 @@ Return excesses using a [Message][message] with `0xd53276db` opcode.
 
 ```tact
 message(0xd53276db) Excesses {}
-message Vote { votes: Int as int32; }
+message Vote { votes: Int as int32 }
 
 contract Sample {
     votes: Int as uint32 = 0;
@@ -378,14 +378,11 @@ contract Sample {
 }
 ```
 
-Also, you can leverage [`notify():{tact}`](/ref/core-base/#self-notify) or [`forward():{tact}`](/ref/core-base/#self-forward) standard functions.
+Also, you can leverage [`notify(){:tact}`](/ref/core-base/#self-notify) or [`forward(){:tact}`](/ref/core-base/#self-forward) standard functions.
 
 ```tact
-message Vote {
-    votes: Int as int32;
-}
-
 message(0xd53276db) Excesses {}
+message Vote { votes: Int as int32 }
 
 contract Sample {
     votes: Int as uint32 = 0;
@@ -409,12 +406,8 @@ Thus, any on-chain communication is asynchronous and done by sending and receivi
 Exchange messages to pull data from other contract.
 
 ```tact
-message ProvideMoney {
-}
-
-message TakeMoney {
-    money: Int as coins;
-}
+message ProvideMoney {}
+message TakeMoney { money: Int as coins }
 
 contract OneContract {
     money: Int as coins;
