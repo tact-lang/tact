@@ -21,7 +21,7 @@ Various niche, dangerous or unstable features which can produce unexpected resul
 fun gasConsumed(): Int;
 ```
 
-Returns the [nanoToncoin](/book/integers#nanotoncoin) [`Int{:tact}`][int] amount of [gas][gas] consumed by [TVM][tvm] in the current transaction so far. The resulting value includes the cost of calling this function.
+Returns the [nanoToncoin][nanotoncoin] [`Int{:tact}`][int] amount of [gas][gas] consumed by [TVM][tvm] in the current transaction so far. The resulting value includes the cost of calling this function.
 
 Usage example:
 
@@ -43,7 +43,7 @@ let gas: Int = gasConsumed();
 fun myStorageDue(): Int;
 ```
 
-Returns the [nanoToncoin](/book/integers#nanotoncoin) [`Int{:tact}`][int] amount of the accumulated [storage fee][storage-fee] debt. Storage fees are deducted from the incoming message value before the new contract balance is calculated.
+Returns the [nanoToncoin][nanotoncoin] [`Int{:tact}`][int] amount of the accumulated [storage fee][storage-fee] debt. Storage fees are deducted from the incoming message value before the new contract balance is calculated.
 
 Usage example:
 
@@ -66,9 +66,9 @@ let debt: Int = myStorageDue();
 fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool): Int;
 ```
 
-Calculates and returns the [storage fee][storage-fee] in [nanoToncoins](/book/integers#nanotoncoin) [`Int{:tact}`][int] for storing a contract with a given number of `cells` and `bits` for a number of `seconds`. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from the [config param 18 of TON Blockchain](https://docs.ton.org/develop/howto/blockchain-configs#param-18).
+Calculates and returns the [storage fee][storage-fee] in [nanoToncoins][nanotoncoin] [`Int{:tact}`][int] for storing a contract with a given number of `cells` and `bits` for a number of `seconds`. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from the [config param 18 of TON Blockchain](https://docs.ton.org/develop/howto/blockchain-configs#param-18).
 
-Note, that the values of `cells` and `bits` are taken modulo their maximum values plus $1$. That is, specifying values higher than those listed in [account state limits (`max_acc_state_cells` and `max_acc_state_bits`)](/book/exit-codes#50) will have the same result as with specifying the exact limits. In addition, make sure you take [deduplication of cells with the same hash][deduplication] into account.
+Note, that the values of `cells` and `bits` are taken modulo their maximum values plus $1$. That is, specifying values higher than those listed in [account state limits (`max_acc_state_cells` and `max_acc_state_bits`)](/book/exit-codes#50) will have the same result as with specifying the exact limits. In addition, make sure you take into account the [deduplication of cells with the same hash][deduplication].
 
 Attempts to specify negative number of `cells`, `bits` or `seconds` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -101,7 +101,7 @@ let fee: Int = getStorageFee(1_000, 1_000, 1_000, false);
 fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int;
 ```
 
-Calculates and returns the [compute fee][compute-fee] in [nanoToncoins](/book/integers#nanotoncoin) [`Int{:tact}`][int] for a transaction that consumed `gasUsed` amount of [gas][gas]. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from the [config param 20 for the masterchain and config param 21 for the basechain][param-20-21] of TON Blockchain.
+Calculates and returns the [compute fee][compute-fee] in [nanoToncoins][nanotoncoin] [`Int{:tact}`][int] for a transaction that consumed `gasUsed` amount of [gas][gas]. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from the [config param 20 for the masterchain and config param 21 for the basechain][param-20-21] of TON Blockchain.
 
 When the `gasUsed` is less than a certain threshold called [`flat_gas_limit`][param-20-21], there's a minimum price to pay based on the value of [`flat_gas_price`][param-20-21]. The less gas is used below this threshold, the higher the minimum price will be. See the example for [`getSimpleComputeFee(){:tact}`](#getsimplecomputefee) to derive that threshold.
 
@@ -163,7 +163,7 @@ extends fun readForwardFee(self: Context): Int;
 
 Extension function for the [`Context{:tact}`](/ref/core-common#context).
 
-Reads [forward fee](https://docs.ton.org/develop/smart-contracts/guidelines/processing) and returns it as [`Int{:tact}`][int] amount of [nanoToncoins](/book/integers#nanotoncoin).
+Reads [forward fee](https://docs.ton.org/develop/smart-contracts/guidelines/processing) and returns it as [`Int{:tact}`][int] amount of [nanoToncoins][nanotoncoin].
 
 Usage example:
 
@@ -185,13 +185,13 @@ let fwdFee: Int = context().readForwardFee();
 fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int;
 ```
 
-Calculates and returns the [forward fee][forward-fee] in [nanoToncoins](/book/integers#nanotoncoin) [`Int{:tact}`][int] for an outgoing message consisting of a given number of `cells` and `bits`. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from the [config param 24 for the masterchain and config param 25 for the basechain][param-24-25] of TON Blockchain.
+Calculates and returns the [forward fee][forward-fee] in [nanoToncoins][nanotoncoin] [`Int{:tact}`][int] for an outgoing message consisting of a given number of `cells` and `bits`. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from the [config param 24 for the masterchain and config param 25 for the basechain][param-24-25] of TON Blockchain.
 
 If both the source and the destination addresses are in the [basechain][basechain], then specify `isMasterchain` as `false{:tact}`. Otherwise, specify `true{:tact}`.
 
-Note, that the values of `cells` and `bits` are taken modulo their maximum values plus $1$. That is, specifying values higher than those listed in [account state limits (`max_msg_cells` and `max_msg_bits`)](/book/exit-codes#50) will have the same result as with specifying the exact limits. In addition, make sure you take [deduplication of cells with the same hash][deduplication] into account.
+Note, that the values of `cells` and `bits` are taken modulo their maximum values plus $1$. That is, specifying values higher than those listed in [account state limits (`max_msg_cells` and `max_msg_bits`)](/book/exit-codes#50) will have the same result as with specifying the exact limits.
 
-However, regardless of the values of `cells` and `bits`, this function always adds the minimum price based on the value of [`lump_price`][param-24-25]. See the example for [`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee) to derive it.
+However, regardless of the values of `cells` and `bits`, this function always adds the minimum price based on the value of [`lump_price`][param-24-25]. See the example for [`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee) to derive it. In addition, make sure you take into account the [deduplication of cells with the same hash][deduplication], since for example the root cell and its data bits don't count towards the forward fee and are covered by the [`lump_price`][param-24-25].
 
 Attempts to specify negative number of `cells` or `bits` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -212,6 +212,7 @@ let fee: Int = getForwardFee(1_000, 1_000, false);
 
   [Forward fee in TON Docs][forward-fee]\
   [Forward fee calculation in TON Docs][forward-fee-calc]\
+  [`CDATASIZEQ` instruction for computing the number of distinct cells, data bits and refs in a `Cell{:tact}`](https://docs.ton.org/v3/documentation/tvm/instructions#F940)\
   [`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee)\
   [`getOriginalFwdFee(){:tact}`](#getoriginalfwdfee)
 
@@ -253,9 +254,9 @@ let lumpPrice = fee - feeNoLump;
 fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int;
 ```
 
-Calculates and returns the so-called _original_ [forward fee][forward-fee] in [nanoToncoins](/book/integers#nanotoncoin) [`Int{:tact}`][int] for an outgoing message based on the `fwdFee` obtained from the incoming message. If both the source and the destination addresses are in the [basechain][basechain], then specify `isMasterchain` as `false{:tact}`. Otherwise, specify `true{:tact}`.
+Calculates and returns the so-called _original_ [forward fee][forward-fee] in [nanoToncoins][nanotoncoin] [`Int{:tact}`][int] for an outgoing message based on the `fwdFee` obtained from the incoming message. If both the source and the destination addresses are in the [basechain][basechain], then specify `isMasterchain` as `false{:tact}`. Otherwise, specify `true{:tact}`.
 
-This function is useful when the outgoing message depends heavily on the structure of the incoming message, so much so that you cannot fully predict the fee using [`getForwardFee(){:tact}`](#getforwardfee) alone.
+This function is useful when the outgoing message depends heavily on the structure of the incoming message, so much so that you cannot fully predict the fee using [`getForwardFee(){:tact}`](#getforwardfee) alone. Even if you could, calculating the exact fee with [nanoToncoin][nanotoncoin]-level precision can be very expensive, so the approximation given by this function is often good enough.
 
 Attempts to specify a negative value of `fwdFee` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -445,7 +446,7 @@ fun nativeSendMessage(cell: Cell, mode: Int);
 fun nativeReserve(amount: Int, mode: Int);
 ```
 
-Calls native `raw_reserve` function with specified amount and mode. The `raw_reserve` is a function that creates an output action to reserve a specific amount of [nanoToncoins](/book/integers#nanotoncoin) from the remaining balance of the account.
+Calls native `raw_reserve` function with specified amount and mode. The `raw_reserve` is a function that creates an output action to reserve a specific amount of [nanoToncoins][nanotoncoin] from the remaining balance of the account.
 
 It has the following signature in FunC:
 
@@ -454,10 +455,10 @@ raw_reserve(int amount, int mode) impure asm "RAWRESERVE";
 ```
 
 The function takes two arguments:
-* `amount`: The number of [nanoToncoins](/book/integers#nanotoncoin) to reserve.
+* `amount`: The number of [nanoToncoins][nanotoncoin] to reserve.
 * `mode`: Determines the reservation behavior.
 
-Function `raw_reserve` is roughly equivalent to creating an outbound message carrying the specified `amount` of [nanoToncoins](/book/integers#nanotoncoin) (or `b` $-$ `amount` [nanoToncoins](/book/integers#nanotoncoin), where `b` is the remaining balance) to oneself. This ensures that subsequent output actions cannot spend more money than the remainder.
+Function `raw_reserve` is roughly equivalent to creating an outbound message carrying the specified `amount` of [nanoToncoins][nanotoncoin] (or `b` $-$ `amount` [nanoToncoins][nanotoncoin], where `b` is the remaining balance) to oneself. This ensures that subsequent output actions cannot spend more money than the remainder.
 
 It's possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience there's a set of constants which you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on base modes and optional flags.
 
@@ -473,9 +474,9 @@ The resulting `mode` value can have the following base modes:
 
 Mode value | Constant name                 | Description
 ---------: | :---------------------------- | -----------
-$0$        | `ReserveExact{:tact}`         | Reserves exactly the specified `amount` of [nanoToncoins](/book/integers#nanotoncoin).
-$1$        | `ReserveAllExcept{:tact}`     | Reserves all, but the specified `amount` of [nanoToncoins](/book/integers#nanotoncoin).
-$2$        | `ReserveAtMost{:tact}`        | Reserves at most the specified `amount` of [nanoToncoins](/book/integers#nanotoncoin).
+$0$        | `ReserveExact{:tact}`         | Reserves exactly the specified `amount` of [nanoToncoins][nanotoncoin].
+$1$        | `ReserveAllExcept{:tact}`     | Reserves all, but the specified `amount` of [nanoToncoins][nanotoncoin].
+$2$        | `ReserveAtMost{:tact}`        | Reserves at most the specified `amount` of [nanoToncoins][nanotoncoin].
 
 ### Optional flags {#nativereserve-optional-flags}
 
@@ -582,6 +583,7 @@ parsedVarAddr.address.loadUint(123); // 345
 [s]: /book/structs-and-messages#structs
 [masterchain]: /book/masterchain
 [cell-hash]: /ref/core-cell#cellhash
+[nanotoncoin]: /book/integers#nanotoncoin
 
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [basechain]: https://docs.ton.org/v3/concepts/ton-blockchain/smart-contract-addresses#address-components

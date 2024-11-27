@@ -52,7 +52,7 @@ asm fun myStorageDue(): Int { DUEPAYMENT }
 ///
 /// Calculates and returns the storage fee in nanoToncoins `Int` for storing a contract with a given number of `cells` and `bits` for a number of `seconds`. Uses the prices of the masterchain if `isMasterchain` is `true`, otherwise the prices of the basechain. The current prices are obtained from the config param 18 of TON Blockchain.
 ///
-/// Note, that the values of `cells` and `bits` are taken modulo their maximum values plus 1. That is, specifying values higher than those listed in account state limits (`max_acc_state_cells` and `max_acc_state_bits`) will have the same result as with specifying the exact limits. In addition, make sure you take deduplication of cells with the same hash into account.
+/// Note, that the values of `cells` and `bits` are taken modulo their maximum values plus 1. That is, specifying values higher than those listed in account state limits (`max_acc_state_cells` and `max_acc_state_bits`) will have the same result as with specifying the exact limits. In addition, make sure you take into account the deduplication of cells with the same hash.
 ///
 /// Attempts to specify negative number of `cells`, `bits` or `seconds` throw an exception with exit code 5: `Integer out of expected range`.
 ///
@@ -112,9 +112,9 @@ asm fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEES
 ///
 /// If both the source and the destination addresses are in the basechain, then specify `isMasterchain` as `false`. Otherwise, specify `true`.
 ///
-/// Note, that the values of `cells` and `bits` are taken modulo their maximum values plus 1. That is, specifying values higher than those listed in account state limits (`max_msg_cells` and `max_msg_bits`) will have the same result as with specifying the exact limits. In addition, make sure you take deduplication of cells with the same hash into account.
+/// Note, that the values of `cells` and `bits` are taken modulo their maximum values plus 1. That is, specifying values higher than those listed in account state limits (`max_msg_cells` and `max_msg_bits`) will have the same result as with specifying the exact limits.
 ///
-/// However, regardless of the values of `cells` and `bits`, this function always adds the minimum price based on the value of `lump_price`. See the example for [`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee) to derive it.
+/// However, regardless of the values of `cells` and `bits`, this function always adds the minimum price based on the value of `lump_price`. See the example for [`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee) to derive it. In addition, make sure you take into account the deduplication of cells with the same hash, since for example the root cell and its data bits don't count towards the forward fee and are covered by the `lump_price`.
 ///
 /// Attempts to specify negative number of `cells` or `bits` throw an exception with exit code 5: `Integer out of expected range`.
 ///
@@ -155,7 +155,7 @@ asm fun getSimpleForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { G
 ///
 /// Calculates and returns the so-called _original_ forward fee in nanoToncoins `Int` for an outgoing message based on the `fwdFee` obtained from the incoming message. If both the source and the destination addresses are in the basechain, then specify `isMasterchain` as `false`. Otherwise, specify `true`.
 ///
-/// This function is useful when the outgoing message depends heavily on the structure of the incoming message, so much so that you cannot fully predict the fee using `getForwardFee()` alone.
+/// This function is useful when the outgoing message depends heavily on the structure of the incoming message, so much so that you cannot fully predict the fee using `getForwardFee()` alone. Even if you could, calculating the exact fee with nanoToncoin-level precision can be very expensive, so the approximate value given by this function is often good enough.
 ///
 /// Attempts to specify a negative value of `fwdFee` throw an exception with exit code 5: `Integer out of expected range`.
 ///
