@@ -192,6 +192,20 @@ export function writeTypescript(
     }
 
     // Errors
+    // Map, so user can do something like ExitCodes["Stack Overflow"]
+    w.append(`const ${abi.name}_errorMessages: { [key: string]: number } = {`);
+    w.inIndent(() => {
+        if (abi.errors) {
+            Object.entries(abi.errors).forEach(([k, abiError]) => {
+                const escapedMessage = abiError.message.replaceAll('"', '\\"');
+                w.append(`    "${escapedMessage}": ${k},`);
+            });
+        }
+    });
+    w.append(`};`);
+    w.append();
+
+    //map <int, Error> to generate ABI later.
     w.append(
         `const ${abi.name}_errors: { [key: number]: { message: string } } = {`,
     );
@@ -199,12 +213,12 @@ export function writeTypescript(
         if (abi.errors) {
             Object.entries(abi.errors).forEach(([k, abiError]) => {
                 w.append(
-                    `${k}: { message: \`${abiError.message.replaceAll("`", "\\`")}\` },`,
+                    `    ${k}: { message: \`${abiError.message.replaceAll("`", "\\`")}\` },`,
                 );
             });
         }
     });
-    w.append(`}`);
+    w.append(`};`);
     w.append();
 
     // Types
@@ -217,6 +231,23 @@ export function writeTypescript(
         }
     });
     w.append(`]`);
+
+    //Opcodes
+    //So user can use them in sandbox tests
+    w.append("export abstract class Opcodes {");
+    w.inIndent(() => {
+        if (abi.types) {
+            for (const t of abi.types) {
+                if (t.header) {
+                    const hexString =
+                        "0x" + t.header.toString(16).padStart(8, "0");
+                    w.append("static " + t.name + " = " + hexString);
+                }
+            }
+        }
+    });
+    w.append(`}`);
+
     w.append();
 
     const getterNames: Map<string, string> = new Map();
@@ -272,42 +303,51 @@ export function writeTypescript(
 
         if (init) {
             w.append(
-                `static async init(${writeArguments(init.args).join(", ")}) {`,
+                `static async init<T extends ${abi.name}>(` +
+                    `this: new (address: Address, init?: { code: Cell, data: Cell }) => T,` +
+                    `${writeArguments(init.args).join(", ")}) {`,
             );
             w.inIndent(() => {
                 w.append(
-                    `return await ${abi.name}_init(${init!.args.map((v) => v.name).join(", ")});`,
+                    `const init = await ${abi.name}_init(${init.args.map((v) => v.name).join(", ")});`,
                 );
+                w.append(`return new this(contractAddress(0, init), init);`);
             });
             w.append(`}`);
             w.append();
 
             w.append(
-                `static async fromInit(${writeArguments(init.args).join(", ")}) {`,
+                `static async fromInit<T extends ${abi.name}>(` +
+                    `this: new (address: Address, init?: { code: Cell, data: Cell }) => T,` +
+                    `${writeArguments(init.args).join(", ")}) {`,
             );
             w.inIndent(() => {
                 w.append(
-                    `const init = await ${abi.name}_init(${init!.args.map((v) => v.name).join(", ")});`,
+                    `const init = await ${abi.name}_init(${init.args.map((v) => v.name).join(", ")});`,
                 );
                 w.append(`const address = contractAddress(0, init);`);
-                w.append(`return new ${abi.name}(address, init);`);
+                w.append(`return new this(address, init);`);
             });
             w.append(`}`);
             w.append();
         }
 
-        w.append(`static fromAddress(address: Address) {`);
+        w.append(
+            `static fromAddress<T extends ${abi.name}>(` +
+                `this: new (address: Address, init?: { code: Cell, data: Cell }) => T, ` +
+                `address: Address) {`,
+        );
         w.inIndent(() => {
-            w.append(`return new ${abi.name}(address);`);
+            w.append(`return new this(address);`);
         });
         w.append(`}`);
         w.append();
 
-        w.append(`readonly address: Address; `);
+        w.append(`readonly address: Address;`);
         w.append(`readonly init?: { code: Cell, data: Cell };`);
         w.append(`readonly abi: ContractABI = {`);
         w.inIndent(() => {
-            w.append(`types:  ${abi.name}_types,`);
+            w.append(`types: ${abi.name}_types,`);
             w.append(`getters: ${abi.name}_getters,`);
             w.append(`receivers: ${abi.name}_receivers,`);
             w.append(`errors: ${abi.name}_errors,`);
@@ -315,7 +355,7 @@ export function writeTypescript(
         w.append(`};`);
         w.append();
         w.append(
-            `private constructor(address: Address, init?: { code: Cell, data: Cell }) {`,
+            `constructor(address: Address, init?: { code: Cell, data: Cell }) {`,
         );
         w.inIndent(() => {
             w.append("this.address = address;");
@@ -323,7 +363,6 @@ export function writeTypescript(
         });
         w.append("}");
         w.append();
-
         // Internal receivers
         if (
             abi.receivers &&
