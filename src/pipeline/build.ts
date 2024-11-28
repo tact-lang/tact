@@ -21,6 +21,7 @@ import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
 import { idText } from "../grammar/ast";
 import { TactErrorCollection } from "../errors";
+import { dump_tact_code, optimize_tact } from "../optimizer/optimization_phase";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -84,6 +85,37 @@ export async function build(args: {
     if (config.mode === "checkOnly") {
         logger.info("✔️ Syntax and type checking succeeded.");
         return { ok: true, error: [] };
+    }
+
+    // Run high level optimization phase, if active in the options.
+    if (
+        config.options?.skipTactOptimizationPhase === undefined ||
+        !config.options.skipTactOptimizationPhase
+    ) {
+        try {
+            if (config.options?.dumpOptimizedTactCode) {
+                // Dump the code before optimization
+                dump_tact_code(
+                    ctx,
+                    config.output +
+                        `/${config.name}_unoptimized_tact_dump.tact`,
+                );
+            }
+
+            ctx = optimize_tact(ctx);
+
+            if (config.options?.dumpOptimizedTactCode) {
+                // Dump the code after optimization
+                dump_tact_code(
+                    ctx,
+                    config.output + `/${config.name}_optimized_tact_dump.tact`,
+                );
+            }
+        } catch (e) {
+            logger.error("Tact code optimization failed.");
+            logger.error(e as Error);
+            return { ok: false, error: [e as Error] };
+        }
     }
 
     // Compile contracts
