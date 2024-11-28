@@ -693,7 +693,7 @@ If you're overwhelmed by the testing setup of [Blueprint][bp] or just want to te
    ```json filename="package.json" {3}
    {
      "scripts": {
-       "lab": "blueprint build 1>/dev/null && yarn test -t plays"
+       "lab": "blueprint build --all 1>/dev/null && yarn test -t plays"
      }
    }
    ```
@@ -703,7 +703,7 @@ If you're overwhelmed by the testing setup of [Blueprint][bp] or just want to te
    ```json filename="package.json" {3-4}
    {
      "scripts": {
-       "build": "blueprint build | out-null",
+       "build": "blueprint build --all | out-null",
        "lab": "yarn build && yarn test -t plays"
      }
    }
