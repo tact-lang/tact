@@ -665,7 +665,7 @@ struct ProvideLiquidityAdditionalData {
 const FeeSingleSideProvideLpToncoin: Int = ton("0.01") + ton("0.8");
 ```
 
-### Withdraw liquidly
+### Withdraw liquidity
 
 To withdraw liquidity, burning LP tokens is required. You can refer to examples of Jetton burning in the [respective section of Jettons Cookbook page](/cookbook/jettons#burning-jetton). However, more Toncoins should be added than for the normal burn, since adding too few may result in LP tokens being burned, but no (or only partial) liquidity being sent from the pool. Therefore, consider attaching at least $0.5$ Toncoin — excess amount will be returned.
 
