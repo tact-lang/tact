@@ -1,0 +1,443 @@
+---
+title: Security best practices
+description: "Several anti-patterns and potential attack vectors, as well as best practices, that Tact smart contract developers should be aware of"
+---
+
+[//]: # (✅❌)
+
+There are several anti-patterns and potential attack vectors that Tact smart contract developers should be aware of. These can affect the security, efficiency, and correctness of the contracts. Below we discuss the do's and don'ts specific to writing and maintaining secure Tact smart contracts.
+
+For a deeper understanding, refer to the following resources:
+
+* [Smart contracts guidelines in TON Docs](https://docs.ton.org/v3/guidelines/smart-contracts/guidelines)
+* [Secure Smart Contract Programming in TON Docs](https://docs.ton.org/v3/guidelines/smart-contracts/security/secure-programming)
+* [FunC Security Best Practices in GitHub repo](https://github.com/slowmist/Toncoin-Smart-Contract-Security-Best-Practices/blob/main/README.md)
+
+## Send sensitive data on-chain
+
+The entire smart contract computation is transparent, and if you had some confidential values at run-time, they could be retrieved with a simple emulation.
+
+##### Do's ✅
+
+Do **not** send or store sensitive data on-chain.
+
+##### Don'ts ❌
+
+```tact
+import "@stdlib/deploy";
+
+message Login {
+    privateKey: Int as uint256;
+    signature: Slice;
+    data: Slice;
+}
+
+contract Test with Deployable {
+    receive(msg: Login) {
+        let publicKey = getPublicKey(msg.privateKey);
+
+        require(checkDataSignature(msg.data, msg.signature, publicKey), "Invalid signature!");
+    }
+}
+```
+
+## Misuse of signed integers
+
+Unsigned integers are safer because they prevent most errors by design, while signed integers can have unpredictable consequences if not used carefully. Therefore, signed integers should be used only when absolutely necessary.
+
+##### Do's ✅
+
+Prefer to use unsigned integers unless signed integers are required.
+
+##### Don'ts ❌
+
+The following is an example of the incorrect use of a signed integer. In the `Vote{:tact}` [Message][message], the type of the `votes` field is `Int as int32{:tact}`, which is a $32$-bit singed integer. This can lead to spoofing if the attacker sends the negative number of votes instead of a positive one.
+
+```tact
+message Vote { votes: Int as int32 }
+
+contract Sample {
+    votes: Int as uint32 = 0;
+
+    receive(msg: Vote) {
+        self.votes += msg.votes;
+    }
+}
+```
+
+## Invalid throw values
+
+[Exit codes](/book/exit-codes) $0$ and $1$ indicate normal execution of the compute phase of the transaction. Execution can be unexpectedly aborted by calling a [`throw(){:tact}`](/ref/core-debug#throw) or [similar functions](/ref/core-debug) directly with exit codes $0$ and $1$. This can make debugging very difficult since such aborted execution would be indistinguishable from a normal one.
+
+##### Do's ✅
+
+Prefer to use the [`require(){:tact}`](/ref/core-debug#require) function to state expectations.
+
+```tact
+require(isDataValid(msg.data), "Invalid data!");
+```
+
+##### Don'ts ❌
+
+Don't throw $0$ or $1$ directly.
+
+```tact
+throw(0);
+throw(1);
+```
+
+## Insecure random numbers
+
+Generating truly secure random numbers in TON is challenging. The [`random()`](/ref/core-random#random) function is pseudo-random and depends on [logical time](https://docs.ton.org/develop/smart-contracts/guidelines/message-delivery-guarantees#what-is-a-logical-time). A hacker can predict the randomized number by [brute-forcing](https://en.wikipedia.org/wiki/Brute-force_attack) the logical time in the current block.
+
+##### Do's ✅
+
+* For critical applications **avoid relying solely on on-chain solutions**.
+
+* Use [`random(){:tact}`](/ref/core-random#random) with randomized logical time to enhance security by making predictions harder for attackers without access to a validator node. Note, however, that it is still **not entirely foolproof**.
+
+* Consider using the **commit-and-disclose scheme**:
+  1. Participants generate random numbers off-chain and send their hashes to the contract.
+  2. Once all hashes are received, participants disclose their original numbers.
+  3. Combine the disclosed numbers (e.g., summing them) to produce a secure random value.
+
+For more details, refer to the [Secure Random number generation page in TON Docs](https://docs.ton.org/v3/guidelines/smart-contracts/security/random-number-generation).
+
+##### Don'ts ❌
+
+Don't rely on the [`random(){:tact}`](/ref/core-random#random) function.
+
+```tact
+if (random(1, 10) == 7) {
+  ... send reward ...
+}
+```
+
+Don't use randomization in `external_message` receivers, as it remains vulnerable even with randomizing logical time.
+
+## Optimized message handling
+
+String parsing from human-friendly formats into machine-readable binary structures should be done **off-chain**. This approach ensures that only optimized and compact messages are sent to the blockchain, minimizing computational and storage costs while avoiding unnecessary gas overhead.
+
+##### Do's ✅
+
+Perform string parsing from human-readable formats into machine-readable binary structures **off-chain** to keep the contract efficient.
+
+```tact
+message Sample {
+    parsedField: Slice;
+}
+
+contract Example {
+    receive(msg: Sample) {
+        // Process msg.parsedField directly
+    }
+}
+```
+
+##### Don'ts ❌
+
+Avoid parsing strings from human-readable formats into binary structures **on-chain**, as this increases computational overhead and gas costs.
+
+```tact
+message Sample { field: String }
+
+contract Example {
+    receive(msg: Sample) {
+        // Parsing occurs on-chain, which is inefficient
+        let parsed = field.fromBase64();
+    }
+}
+```
+
+## Gas limitation
+
+Be careful with the `Out of gas error`. It cannot be handled, so try to pre-calculate the gas consumption for each receiver [using tests](/book/debug#tests) whenever possible. This will help to avoid wasting extra gas because the transaction will fail anyway.
+
+##### Do's ✅
+
+```tact
+message Vote { votes: Int as int32 }
+
+contract Example {
+    const voteGasUsage = 10000; // precompute with tests
+
+    receive(msg: Vote) {
+        require(context().value > getComputeFee(self.voteGasUsage, false), "Not enough gas!");
+    }
+}
+```
+
+## Identity validation
+
+Always validate the identity of the sender if your contract logic revolves around trusted senders. This can be done using the [`Ownable{:tact}`](/ref/stdlib-ownable) trait or using [state init](/book/expressions#initof) validation. You can read more about [Jetton validation](/cookbook/jettons#accepting-jetton-transfer) and [NFT validation](/cookbook/nfts#accepting-nft-ownership-assignment).
+
+##### Do's ✅
+
+Use the [`Ownable{:tact}`](/ref/stdlib-ownable) trait.
+
+```tact
+import "@stdlib/ownable";
+
+contract Counter with Ownable {
+    owner: Address;
+    val: Int as uint32;
+
+    init() {
+        self.owner = address("OWNER_ADDRESS");
+        self.val = 0;
+    }
+
+    receive("admin-double") {
+        self.requireOwner();
+        self.val = self.val * 2;
+    }
+}
+```
+
+##### Don'ts ❌
+
+Don't execute a message without validating the sender's identity!
+
+```tact
+contract Example with Deployable {
+    myJettonWalletAddress: Address;
+    myJettonAmount: Int as coins = 0;
+
+    init(jettonWalletCode: Cell, jettonMasterAddress: Address) {
+        self.myJettonWalletAddress = calculateJettonWalletAddress(
+            myAddress(),
+            jettonMasterAddress,
+            jettonWalletCode,
+        );
+    }
+
+    receive(msg: JettonTransferNotification) {
+        self.myJettonAmount += msg.amount;
+    }
+}
+```
+
+## Replay protection
+
+Replay protection is a security mechanism that prevents an attacker from reusing a previous message. More information about replay protection can be found on the [External messages page in TON Docs](https://docs.ton.org/develop/smart-contracts/guidelines/external-messages).
+
+##### Do's ✅
+
+To differentiate messages, always include and validate a unique identifier, such as `seqno`. Update the identifier after successful processing to avoid duplicates.
+
+Alternatively, you can implement a replay protection similar to the one in the [highload v3 wallet](https://github.com/ton-blockchain/highload-wallet-contract-v3/blob/main/contracts/highload-wallet-v3.func#L60), which is not based on `seqno`.
+
+```tact
+message Msg {
+    newMessage: Cell;
+    signature: Slice;
+}
+
+struct DataToVerify {
+    seqno: Int as uint64;
+    message: Cell;
+}
+
+contract Sample {
+    publicKey: Int as uint256;
+    seqno: Int as uint64;
+
+    init(publicKey: Int, seqno: Int) {
+        self.publicKey = publicKey;
+        self.seqno = seqno;
+    }
+
+    external(msg: Msg) {
+        require(checkDataSignature(DataToVerify{
+            seqno: self.seqno,
+            message: msg.newMessage
+        }.toSlice(), msg.signature, self.publicKey), "Invalid signature");
+        acceptMessage();
+        self.seqno += 1;
+        nativeSendMessage(msg.newMessage, 0);
+    }
+}
+```
+
+##### Don'ts ❌
+
+Do not rely on signature verification without the inclusion of a sequence number. Messages without replay protection can be resent by attackers because there is nothing to distinguish a valid original message from a replayed one.
+
+```tact
+message Msg {
+    newMessage: Cell;
+    signature: Slice;
+}
+
+contract Sample {
+    publicKey: Int as uint256;
+
+    init(publicKey: Int, seqno: Int) {
+        self.publicKey = publicKey;
+    }
+
+    external(msg: Msg) {
+        require(checkDataSignature(msg.toSlice(), msg.signature, self.publicKey), "Invalid signature");
+        acceptMessage();
+        nativeSendMessage(msg.newMessage, 0);
+    }
+}
+```
+
+## Race condition of messages
+
+A message cascade can be processed over many blocks. Assume that while one message flow is running, an attacker can initiate a second message flow in parallel. That is, if a property was checked at the beginning, such as whether the user has enough tokens, do not assume that it will still be satisfied at the third stage in the same contract.
+
+## Handle/Send bounced messages
+
+Send messages with the bounce flag set to `true{:tact}`, which is a default for the [`send(){:tact}`](/ref/core-common#send) function. Messages bounce when the execution of a contract has failed. You may want to deal with this by rolling back the state of the contract by wrapping code in [`try...catch{:tact}`](/book/statements#try-catch) statements and some additional processing depending on your logic.
+
+##### Do's ✅
+
+Handle bounced messages via a [bounced message receiver](/book/bounced/#bounced-message-receiver) to correctly react to failed messages.
+
+```tact
+contract JettonDefaultWallet {
+    const minTonsForStorage: Int = ton("0.01");
+    const gasConsumption: Int = ton("0.01");
+
+    balance: Int;
+    owner: Address;
+    master: Address;
+
+    init(master: Address, owner: Address) {
+        self.balance = 0;
+        self.owner = owner;
+        self.master = master;
+    }
+
+    receive(msg: TokenBurn) {
+        let ctx: Context = context();
+        require(ctx.sender == self.owner, "Invalid sender");
+
+        self.balance = self.balance - msg.amount;
+        require(self.balance >= 0, "Invalid balance");
+
+        let fwdFee: Int = ctx.readForwardFee();
+        require(ctx.value > fwdFee + 2 * self.gasConsumption + self.minTonsForStorage, "Invalid value - Burn");
+
+        send(SendParameters{
+            to: self.master,
+            value: 0,
+            mode: SendRemainingValue,
+            bounce: true,
+            body: TokenBurnNotification{
+                queryId: msg.queryId,
+                amount: msg.amount,
+                owner: self.owner,
+                response_destination: self.owner
+            }.toCell()
+        });
+    }
+
+    bounced(src: bounced<TokenBurnNotification>) {
+        self.balance = self.balance + src.amount;
+    }
+}
+```
+
+## Transaction and phases
+
+From [Sending messages page](/book/send#outbound-message-processing) of the Book:
+
+> Each transaction on TON Blockchain consists of multiple phases. Outbound messages are evaluated in compute phase, but are **not** sent in that phase. Instead, they're queued in order of appearance for the action phase, where all actions listed in compute phase, like outbound messages or reserve requests, are executed.
+
+Hence, if the compute phase fails, [registers](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers) `c4` (persistent data) and `c5` (actions) won't be updated. However, it is possible to manually save their state using [`commit(){:tact}`](/ref/core-advanced/#commit) function.
+
+## Return gas excesses carefully
+
+If excess gas is not returned to the sender, the funds will accumulate in your contracts over time. Nothing terrible in principle, just a suboptimal practice. You can add a function to rake out excess, but popular contracts like TON Jetton still return to the sender with the [Message][message] with `0xd53276db` opcode.
+
+##### Do's ✅
+
+Return excesses using a [Message][message] with `0xd53276db` opcode.
+
+```tact
+message(0xd53276db) Excesses {}
+message Vote { votes: Int as int32 }
+
+contract Sample {
+    votes: Int as uint32 = 0;
+
+    receive(msg: Vote) {
+        self.votes += msg.votes;
+
+        send(SendParameters{
+            to: sender(),
+            value: 0,
+            mode: SendRemainingValue | SendIgnoreErrors,
+            body: Excesses{}.toCell(),
+        });
+    }
+}
+```
+
+Also, you can leverage [`notify(){:tact}`](/ref/core-base/#self-notify) or [`forward(){:tact}`](/ref/core-base/#self-forward) standard functions.
+
+```tact
+message(0xd53276db) Excesses {}
+message Vote { votes: Int as int32 }
+
+contract Sample {
+    votes: Int as uint32 = 0;
+
+    receive(msg: Vote) {
+        self.votes += msg.votes;
+
+        self.notify(Excesses{}.toCell());
+    }
+}
+```
+
+## Pulling data from other contract
+
+Contracts in the blockchain can reside in separate shards, processed by other set of validators, meaning that one contract cannot pull data from other contracts. That is, no contract can call a [getter function](/book/functions#getter-functions)) from other contracts.
+
+Thus, any on-chain communication is asynchronous and done by sending and receiving messages.
+
+##### Do's ✅
+
+Exchange messages to pull data from other contract.
+
+```tact
+message ProvideMoney {}
+message TakeMoney { money: Int as coins }
+
+contract OneContract {
+    money: Int as coins;
+
+    init(money: Int) {
+        self.money = money;
+    }
+
+    receive(msg: ProvideMoney) {
+        self.reply(TakeMoney{money: self.money}.toCell());
+    }
+}
+
+contract AnotherContract {
+    oneContractAddress: Address;
+
+    init(oneContractAddress: Address) {
+        self.oneContractAddress = oneContractAddress;
+    }
+
+    receive("get money") {
+        self.forward(self.oneContractAddress, ProvideMoney{}.toCell(), false, null);
+    }
+
+    receive(msg: TakeMoney) {
+        require(sender() == self.oneContractAddress, "Invalid money provider!");
+        // Money processing
+    }
+}
+```
+
+[struct]: /book/structs-and-messages#structs
+[message]: /book/structs-and-messages#messages
