@@ -49,10 +49,12 @@ asm fun abs(x: Int): Int { ABS }
 
 asm fun now(): Int { NOW }
 
+// floor(log2(num))
 asm fun log2(num: Int): Int {
     DUP 5 THROWIFNOT UBITSIZE DEC
 }
 
+// floor(log(num, base))
 @name(__tact_log)
 native log(num: Int, base: Int): Int;
 
@@ -63,8 +65,10 @@ asm fun pow2(exp: Int): Int { POW2 }
 
 asm fun sign(x: Int): Int { SGN }
 
+// ceil(x/y)
 asm fun divc(x: Int, y: Int): Int { DIVC }
 
+// ceil(x*y/z)
 asm fun muldivc(x: Int, y: Int, z: Int): Int { MULDIVC }
 
 // floor(x*y/2^z)
@@ -76,6 +80,7 @@ asm fun mulShiftRightRound(x: Int, y: Int, z: Int): Int { MULRSHIFTR }
 // ceil(x*y/2^z)
 asm fun mulShiftRightCeil(x: Int, y: Int, z: Int): Int { MULRSHIFTC }
 
+// round(sqrt(num))
 fun sqrt(num: Int): Int {
     if (num == 0) {
         return 0;
