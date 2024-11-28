@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Utility for logging errors in code that was supposed to be unreachable: PR [#991](https://github.com/tact-lang/tact/pull/991)
 - Docs: `preloadRef` method for the `Slice` type: PR [#1044](https://github.com/tact-lang/tact/pull/1044)
 - Docs: added DeDust cookbook: PR [#954](https://github.com/tact-lang/tact/pull/954)
+- Docs: described the limit for deeply nested expressions: PR [#1101](https://github.com/tact-lang/tact/pull/1101)
 
 ### Changed
 
