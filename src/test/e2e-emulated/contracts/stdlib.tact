@@ -58,4 +58,70 @@ contract StdlibTest {
     get fun parseVarAddress(slice: Slice): VarAddress {
         return parseVarAddress(slice);
     }
+
+    get fun builderDepth(bl: Builder): Int {
+        return bl.depth();
+    }
+
+    get fun skipLastBits(sc: Slice, n: Int): Slice {
+        return sc.skipLastBits(n);
+    }
+
+    get fun firstBits(sc: Slice, n: Int): Slice {
+        return sc.firstBits(n);
+    }
+
+    get fun lastBits(sc: Slice, n: Int): Slice {
+        return sc.lastBits(n);
+    }
+
+    get fun sliceDepth(sc: Slice): Int {
+        return sc.depth();
+    }
+
+    get fun addressNone(): Address? {
+        return addressNone();
+    }
+
+    get fun computeDataSizeCell(c: Cell, maxCells: Int): DataSize {
+        return c.computeDataSize(maxCells);
+    }
+
+    get fun computeDataSizeSlice(sc: Slice, maxCells: Int): DataSize {
+        return sc.computeDataSize(maxCells);
+    }
+
+    get fun cellDepth(c: Cell): Int {
+        return c.depth();
+    }
+
+    get fun curLt(): Int {
+        return curLt();
+    }
+
+    get fun blockLt(): Int {
+        return blockLt();
+    }
+
+    get fun setGasLimit(gl: Int): Int {
+        setGasLimit(gl);
+        let x = 0;
+        repeat (100) {
+            x += 1;
+        }
+        return gasConsumed();
+    }
+
+    get fun getSeed(): Int {
+        return getSeed();
+    }
+
+    get fun setSeed(seed: Int): Int {
+        setSeed(seed);
+        return getSeed();
+    }
+
+    get fun myCode(): Cell {
+        return myCode();
+    }
 }
