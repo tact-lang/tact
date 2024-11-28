@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-
+- Abstract classes in the generated Typescript code contain a list of opcodes and errors for easy use in tests. PR [#1100](https://github.com/tact-lang/tact/pull/1100)
 - `&&=`, `||=`, `>>=` and `<<=` augmented assignment operators: PR [#853](https://github.com/tact-lang/tact/pull/853)
 - New CSpell dictionaries: TVM instructions and adjusted list of Fift words: PR [#881](https://github.com/tact-lang/tact/pull/881)
 - Docs: the `description` property to the frontmatter of the each page for better SEO: PR [#916](https://github.com/tact-lang/tact/pull/916)
@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Generated Typescript class with wrappers for smart contract makes it more convenient to inherit from it. PR [#1100](https://github.com/tact-lang/tact/pull/1100)
 - The `parseImports` function now returns AST import nodes instead of raw strings: PR [#966](https://github.com/tact-lang/tact/pull/966)
 - Optional types for `self` argument in `extends mutates` functions are now allowed: PR [#854](https://github.com/tact-lang/tact/pull/854)
 - Docs: complete overhaul of the exit codes page: PR [#978](https://github.com/tact-lang/tact/pull/978)
