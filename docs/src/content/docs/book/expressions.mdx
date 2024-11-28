@@ -5,6 +5,25 @@ description: "This page lists all the expressions in Tact"
 
 Every operator in Tact forms an expression, but there's much more to uncover as Tact offers a wide range of expressive options to choose from.
 
+:::note
+
+  The current maximum allowed nesting level of expressions is $83$. An attempt to write a deeper expression will result in a compilation error:
+
+  ```tact
+  fun elegantWeaponsForCivilizedAge(): Int {
+      return
+      ((((((((((((((((((((((((((((((((
+          ((((((((((((((((((((((((((((((((
+              (((((((((((((((((((( // 84 parens, compilation error!
+                  42
+              ))))))))))))))))))))
+          ))))))))))))))))))))))))))))))))
+      ))))))))))))))))))))))))))))))));
+  }
+  ```
+
+:::
+
 ## Literals
 
 Literals represent values in Tact. These are fixed values—not variables—that you _literally_ provide in your code. All literals in Tact are expressions themselves.
