@@ -96,12 +96,12 @@ describe("fail-const-eval", () => {
     itShouldNotCompile({
         testName: "const-eval-shl-invalid-bits1",
         errorMessage:
-            "Cannot evaluate expression to a constant: the number of bits shifted ('257') must be within [0..256] range",
+            "the number of bits shifted ('257') must be within [0..256] range",
     });
     itShouldNotCompile({
         testName: "const-eval-shl-invalid-bits2",
         errorMessage:
-            "Cannot evaluate expression to a constant: the number of bits shifted ('-1') must be within [0..256] range",
+            "the number of bits shifted ('-1') must be within [0..256] range",
     });
     itShouldNotCompile({
         testName: "const-eval-unboxing-null",

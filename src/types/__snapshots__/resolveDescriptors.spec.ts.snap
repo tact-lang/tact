@@ -81,7 +81,7 @@ Line 4, col 17:
 `;
 
 exports[`resolveDescriptors should fail descriptors for const-eval-overflow 1`] = `
-"<unknown>:8:26: Cannot evaluate expression to a constant: the number of bits shifted ('-1073741824') must be within [0..256] range
+"<unknown>:8:26: the number of bits shifted ('-1073741824') must be within [0..256] range
 Line 8, col 26:
   7 | 
 > 8 | const a: Int = 1 + (1 >> -1073741824);

@@ -16,7 +16,11 @@ import {
     idText,
     isWildcard,
 } from "../grammar/ast";
-import { idTextErr, throwCompilationError } from "../errors";
+import {
+    idTextErr,
+    TactConstEvalError,
+    throwCompilationError,
+} from "../errors";
 import { CompilerContext, createContextStore } from "../context";
 import {
     getAllTypes,
@@ -38,6 +42,8 @@ import { GlobalFunctions } from "../abi/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
 import { throwInternalCompilerError } from "../errors";
 import { StructFunctions } from "../abi/struct";
+import { evalConstantExpression } from "../constEval";
+import { ensureInt } from "../interpreter";
 
 const store = createContextStore<{
     ast: AstExpression;
@@ -219,6 +225,28 @@ function resolveBinaryOp(
                         exp.loc,
                     );
                 }
+                // poor man's constant propagation analysis (very local)
+                // it works only in the case when the right-hand side is a constant expression
+                // and does not have any variables
+                if (exp.op === ">>" || exp.op === "<<") {
+                    try {
+                        const valBits = ensureInt(
+                            evalConstantExpression(exp.right, ctx),
+                            exp.right.loc,
+                        );
+                        if (0n > valBits || valBits > 256n) {
+                            throwCompilationError(
+                                `the number of bits shifted ('${valBits}') must be within [0..256] range`,
+                                exp.right.loc,
+                            );
+                        }
+                    } catch (error) {
+                        if (!(error instanceof TactConstEvalError)) {
+                            throw error;
+                        }
+                    }
+                }
+
                 resolved = { kind: "ref", name: "Int", optional: false };
             }
             break;
