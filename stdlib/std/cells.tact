@@ -221,7 +221,7 @@ inline fun emptySlice(): Slice {
     return emptyCell().asSlice();
 }
 
-asm fun addressNone(): Address { b{00} PUSHSLICE }
+asm fun addressNone(): Address? { b{00} PUSHSLICE }
 
 struct DataSize {
     cells: Int;
@@ -229,9 +229,9 @@ struct DataSize {
     refs: Int;
 }
 
-asm extends fun computeDataSize(self: Cell, maxCells: Int): DataSize { CDATASIZE TRIPLE }
+asm extends fun computeDataSize(self: Cell, maxCells: Int): DataSize { CDATASIZE }
 
-asm extends fun computeDataSize(self: Slice, maxCells: Int): DataSize { SDATASIZE TRIPLE }
+asm extends fun computeDataSize(self: Slice, maxCells: Int): DataSize { SDATASIZE }
 
 asm extends fun depth(self: Cell): Int { CDEPTH }
 
