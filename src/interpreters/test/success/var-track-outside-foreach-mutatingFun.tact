@@ -7,12 +7,15 @@ extends mutates fun mutateFun(self: Int) {
 
 contract Test {
 
+    // Currently, the analyzer does not track map mutations using the set or replace-like functions. 
+
     get fun foo(v: Int): Int {
         let a: Int = 5;
         let xMap: map<Int,Int> = emptyMap();
-        foreach (k, val in xMap) {    // Currently, the analyzer cannot determine if a map is empty or not           
-            a = 10 + k;               // because it does not track map mutations using the set function.  
-            a = 5;                    // So, it will treat foreach loops as if their number of iterations is undetermined.
+        xMap.set(1,1);                // Map becomes undetermined
+        foreach (k, val in xMap) {          
+            a = 10 + k;               
+            a = 5;                    
             a.mutateFun();            // The analyzer treats mutating functions as black boxes. "a" becomes undetermined at this point.
         }                             
         return 1 / (a - 5);           // If loop executes or not, not all paths assign a = 5. 

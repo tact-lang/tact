@@ -4,7 +4,7 @@ trait BaseTrait {}
 contract Test {
 
     get fun foo(v: Int): Int {
-        let a: Int = 5;
+        let a: Int = 7;
         let x: Int = 0;
         try {
             x += v;                  

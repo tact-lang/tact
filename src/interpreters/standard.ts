@@ -508,6 +508,13 @@ abstract class AbstractInterpreter<T> extends InterpreterInterface<T> {
             this,
         );
 
+        return this.interpretStaticCallWithArguments(ast, argValues);
+    }
+
+    public interpretStaticCallWithArguments(
+        ast: AstStaticCall,
+        argValues: T[],
+    ): T {
         const builtinResult = this.evalBuiltin(ast, argValues);
         if (builtinResult !== undefined) {
             return builtinResult;

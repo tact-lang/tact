@@ -18,7 +18,6 @@ import {
     AstFunctionDef,
     AstStatementAugmentedAssign,
     AstStatementLet,
-    AstStatement,
     AstStatementAssign,
     tryExtractPath,
     AstCondition,
@@ -76,6 +75,7 @@ import {
 } from "./standard";
 
 class UndefinedValueSignal extends Error {}
+class InterruptedBranch extends Error {}
 
 /*
 This corresponds to the following lattice:
@@ -170,6 +170,11 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
     protected envStack: EnvironmentStack<LatticeValue>;
     protected context: CompilerContext;
     protected config: InterpreterConfig;
+
+    // Make this flag false to deactivate the imitation of weird FunC behaviors.
+    // Note that making the flag true does not capture ALL weird FunC behaviors,
+    // it only captures KNOWN behaviors so far, discovered through trial-and-error.
+    protected imitateFunCBehaviors: boolean = false;
 
     constructor(
         context: CompilerContext = new CompilerContext(),
@@ -297,12 +302,15 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
         const argNames = ast.params.map((param) => idText(param.name));
         const argValues = ast.params.map((_) => anyValue);
 
-        this.envStack.executeInNewEnvironment(
-            () => {
-                this.executeStatements(ast.statements);
-            },
-            { names: argNames, values: argValues },
-        );
+        // Analyze while ignoring any returns
+        this.catchReturns(() => {
+            this.envStack.executeInNewEnvironment(
+                () => {
+                    this.executeStatements(ast.statements);
+                },
+                { names: argNames, values: argValues },
+            );
+        });
     }
 
     public interpretAsmFunctionDef(_ast: AstAsmFunctionDef) {
@@ -314,12 +322,15 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
         const argNames = ast.params.map((param) => idText(param.name));
         const argValues = ast.params.map((_) => anyValue);
 
-        this.envStack.executeInNewEnvironment(
-            () => {
-                this.executeStatements(ast.statements);
-            },
-            { names: argNames, values: argValues },
-        );
+        // Analyze while ignoring any returns
+        this.catchReturns(() => {
+            this.envStack.executeInNewEnvironment(
+                () => {
+                    this.executeStatements(ast.statements);
+                },
+                { names: argNames, values: argValues },
+            );
+        });
     }
 
     public interpretNativeFunctionDecl(_ast: AstNativeFunctionDecl) {
@@ -337,12 +348,15 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
             case "external-simple": {
                 // The only argument is undetermined.
                 const argName = idText(ast.selector.param.name);
-                this.envStack.executeInNewEnvironment(
-                    () => {
-                        this.executeStatements(ast.statements);
-                    },
-                    { names: [argName], values: [anyValue] },
-                );
+                // Analyze while ignoring any returns
+                this.catchReturns(() => {
+                    this.envStack.executeInNewEnvironment(
+                        () => {
+                            this.executeStatements(ast.statements);
+                        },
+                        { names: [argName], values: [anyValue] },
+                    );
+                });
 
                 break;
             }
@@ -351,8 +365,11 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
             case "internal-comment":
             case "internal-fallback":
                 // These do not have a named argument
-                this.envStack.executeInNewEnvironment(() => {
-                    this.executeStatements(ast.statements);
+                // Analyze while ignoring any returns
+                this.catchReturns(() => {
+                    this.envStack.executeInNewEnvironment(() => {
+                        this.executeStatements(ast.statements);
+                    });
                 });
                 break;
         }
@@ -384,7 +401,8 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
     }
 
     public interpretMethodCall(ast: AstMethodCall): LatticeValue {
-        // For the moment do not analyze. Just treat all mutation function calls as black boxes
+        // For the moment, the standard interpreter does not implement method calls.
+        // So, the analyzer will treat mutation function calls as black boxes
         // that could assign to their self argument any value.
 
         // Also, evaluate all the arguments, just to check for errors.
@@ -428,7 +446,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
         // If the ast.self is not a path expression, i.e., it has the form: a.b.f().g()...
         // then there is nothing to update in the environment because a.b.f().g() is not a full path to a variable.
 
-        // Since we are not analyzing the function, just return that it could have produced any value.
+        // Since we are not executing the function, just return that it could have produced any value.
         return anyValue;
     }
 
@@ -542,27 +560,24 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
         // Attempt to evaluate the condition
         const condition = this.interpretExpression(ast.condition);
 
-        // Simulate the true and false branches.
-        // We always need to analyze both branches to capture FunC behavior, even if only
-        // one branch is taken ultimately.
-        const trueEnv = this.envStack.simulate(() =>
-            this.interpretExpression(ast.thenBranch),
-        );
-        const falseEnv = this.envStack.simulate(() =>
-            this.interpretExpression(ast.elseBranch),
-        );
-
         // If the condition produced a value, take the corresponding environment.
         // If not, join the two environments.
         if (condition.kind === "value") {
             if (ensureBoolean(condition.value, ast.condition.loc)) {
-                this.envStack.setCurrentEnvironment(trueEnv.env);
-                return trueEnv.val;
+                const trueVal = this.interpretExpression(ast.thenBranch);
+                return trueVal;
             } else {
-                this.envStack.setCurrentEnvironment(falseEnv.env);
-                return falseEnv.val;
+                const falseVal = this.interpretExpression(ast.elseBranch);
+                return falseVal;
             }
         } else {
+            const trueEnv = this.envStack.simulate(() =>
+                this.interpretExpression(ast.thenBranch),
+            );
+            const falseEnv = this.envStack.simulate(() =>
+                this.interpretExpression(ast.elseBranch),
+            );
+
             this.envStack.setCurrentEnvironment(
                 joinEnvironments([trueEnv.env, falseEnv.env]),
             );
@@ -623,11 +638,29 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
     }
 
     public interpretStaticCall(ast: AstStaticCall): LatticeValue {
-        // For the moment, do not analyze. I need to find a way to handle recursive calls,
-        // it is tricky.
+        // Static calls do not change contract state. Therefore, it is safe to call
+        // them in the standard interpreter even if they fail, because any
+        // change they carry out will be in their local environment that gets discarded
+        // once the call finishes.
 
-        // Just evaluate the arguments
-        ast.args.forEach((expr) => this.interpretExpression(expr), this);
+        // Evaluate the arguments
+        const argLatticeValues = ast.args.map(
+            (expr) => this.interpretExpression(expr),
+            this,
+        );
+        // Call the function only if all the arguments evaluated to a value
+        if (argLatticeValues.every((val) => val.kind === "value")) {
+            const argValues = argLatticeValues.map((val) => val.value);
+            return toLatticeValue(
+                this.prepareForStandardInterpreter(() =>
+                    this.interpreter.interpretStaticCallWithArguments(
+                        ast,
+                        argValues,
+                    ),
+                ),
+            );
+        }
+        // Not every argument evaluated to a value. The call is undetermined.
         return anyValue;
     }
 
@@ -766,14 +799,42 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
 
         // Attempt to evaluate the condition
         const conditionValue = this.analyzeTopLevelExpression(ast.condition);
-        let condition: boolean | undefined = undefined;
 
-        // If the condition produced a value, transform it to boolean.
-        if (conditionValue.kind === "value") {
-            condition = ensureBoolean(conditionValue.value, ast.condition.loc);
+        // Weird FunC behavior: execute both branches irrespective of the condition
+        if (this.imitateFunCBehaviors) {
+            this.catchReturns(
+                () => this.envStack.simulateInNewEnvironment(trueBranch).env,
+            );
+            this.catchReturns(
+                () => this.envStack.simulateInNewEnvironment(falseBranch).env,
+            );
         }
 
-        this.processConditionBranches(trueBranch, falseBranch, condition);
+        if (conditionValue.kind === "value") {
+            // Take the corresponding branch, according to the condition
+            const condition = ensureBoolean(
+                conditionValue.value,
+                ast.condition.loc,
+            );
+
+            if (condition) {
+                this.envStack.executeInNewEnvironment(trueBranch);
+            } else {
+                this.envStack.executeInNewEnvironment(falseBranch);
+            }
+        } else {
+            // Take both branches, and join environments for those that were not cancelled
+            const trueEnv = this.catchReturns(
+                () => this.envStack.simulateInNewEnvironment(trueBranch).env,
+            );
+            const falseEnv = this.catchReturns(
+                () => this.envStack.simulateInNewEnvironment(falseBranch).env,
+            );
+
+            this.envStack.setCurrentEnvironment(
+                this.cancelEnvironmentsOrJoin(trueEnv, falseEnv),
+            );
+        }
     }
 
     public interpretExpressionStatement(ast: AstStatementExpression) {
@@ -783,45 +844,103 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
 
     public interpretForEachStatement(ast: AstStatementForEach) {
         // Attempt to evaluate the map expression.
-        // Currently, the analyzer does not trace the
-        // set method for maps. Therefore, it is not safe
-        // to attempt to determine if the map expression is empty or not.
-        this.analyzeTopLevelExpression(ast.map);
+        const mapValue = this.analyzeTopLevelExpression(ast.map);
 
         const loopBodyBranch = () => {
             this.executeStatements(ast.statements);
         };
 
-        // Simulate the loop body as if it executes once.
-        // This is necessary to emulate the behavior of FunC
-        this.envStack.simulateInNewEnvironment(loopBodyBranch);
+        // Weird FunC behavior: Always execute the loop body at least once
+        if (this.imitateFunCBehaviors) {
+            this.catchReturns(
+                () =>
+                    this.envStack.simulateInNewEnvironment(loopBodyBranch).env,
+            );
+        }
 
-        // Since it is not known if the map expression is empty or not,
-        // it is time to compute the fix-point of the loop
+        if (mapValue.kind === "value") {
+            if (mapValue.value !== null) {
+                // In theory, it could be possible to actually iterate the map here, but I still do not know how to do such thing :)
+                // So, for the moment, compute the fix-point starting in the environment obtained after one iteration of the loop
+                // with key and value unknown.
+                const oneIterEnv =
+                    this.envStack.simulateInNewEnvironment(loopBodyBranch).env;
 
-        const finalEnv = this.computeLoopEnv(
-            this.envStack.getCurrentEnvironment(),
-            loopBodyBranch,
-        );
-        this.envStack.setCurrentEnvironment(finalEnv);
+                const finalEnv = this.computeLoopEnv(
+                    oneIterEnv,
+                    loopBodyBranch,
+                );
+                this.envStack.setCurrentEnvironment(finalEnv);
+            } else {
+                // Map is empty, do nothing
+            }
+        } else {
+            // Compute fix-point starting from the current environment
+            const finalEnv = this.computeLoopEnv(
+                this.envStack.getCurrentEnvironment(),
+                loopBodyBranch,
+            );
+            this.envStack.setCurrentEnvironment(finalEnv);
+        }
     }
 
     public interpretRepeatStatement(ast: AstStatementRepeat) {
         // Attempt to evaluate the iterations
         const iterationsValue = this.analyzeTopLevelExpression(ast.iterations);
 
-        let iterations: bigint | undefined = undefined;
+        const repeatBodyBranch = () => {
+            this.executeStatements(ast.statements);
+        };
 
-        // If it produced a value, transform it to integer
-        // and execute the loop body
-        if (iterationsValue.kind === "value") {
-            iterations = ensureRepeatInt(
-                iterationsValue.value,
-                ast.iterations.loc,
+        // Weird FunC behavior: Always execute the loop body at least once
+        if (this.imitateFunCBehaviors) {
+            this.catchReturns(
+                () =>
+                    this.envStack.simulateInNewEnvironment(repeatBodyBranch)
+                        .env,
             );
         }
 
-        this.processRepeatBranches(ast.statements, iterations);
+        if (iterationsValue.kind === "value") {
+            const iterations = ensureRepeatInt(
+                iterationsValue.value,
+                ast.iterations.loc,
+            );
+
+            if (iterations > 0) {
+                if (iterations <= this.config.maxLoopIterations) {
+                    // Actually execute the loop and set the resulting environment
+                    this.envStack.executeInNewEnvironment(() => {
+                        for (let i = 1n; i <= iterations; i++) {
+                            repeatBodyBranch();
+                        }
+                    });
+                } else {
+                    // Compute the fix-point starting from
+                    // the environment that resulted from executing the loop once.
+                    const oneIterEnv =
+                        this.envStack.simulateInNewEnvironment(
+                            repeatBodyBranch,
+                        ).env;
+
+                    const finalEnv = this.computeLoopEnv(
+                        oneIterEnv,
+                        repeatBodyBranch,
+                    );
+                    this.envStack.setCurrentEnvironment(finalEnv);
+                }
+            } else {
+                // Do nothing
+            }
+        } else {
+            // Take both branches, compute the fix-point starting from
+            // the current environment (i.e., the "do nothing" environment)
+            const finalEnv = this.computeLoopEnv(
+                this.envStack.getCurrentEnvironment(),
+                repeatBodyBranch,
+            );
+            this.envStack.setCurrentEnvironment(finalEnv);
+        }
     }
 
     public interpretReturnStatement(ast: AstStatementReturn) {
@@ -829,36 +948,46 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
         if (ast.expression !== null) {
             this.analyzeTopLevelExpression(ast.expression);
         }
+        // Interrupt the current branch
+        throw new InterruptedBranch();
     }
 
     public interpretTryStatement(ast: AstStatementTry) {
         // Simulate the try branch
-        const tryEnv = this.envStack.simulateInNewEnvironment(() => {
-            this.executeStatements(ast.statements);
-        });
+        const tryEnv = this.catchReturns(
+            () =>
+                this.envStack.simulateInNewEnvironment(() => {
+                    this.executeStatements(ast.statements);
+                }).env,
+        );
 
         // Join the try branch and the "empty catch" branch.
-        // The later is represented by the current environment
         this.envStack.setCurrentEnvironment(
-            joinEnvironments([
-                tryEnv.env,
+            this.cancelEnvironmentsOrJoin(
+                tryEnv,
                 this.envStack.getCurrentEnvironment(),
-            ]),
+            ),
         );
     }
 
     public interpretTryCatchStatement(ast: AstStatementTryCatch) {
         // Simulate the try and catch branches
-        const tryEnv = this.envStack.simulateInNewEnvironment(() => {
-            this.executeStatements(ast.statements);
-        });
-        const catchEnv = this.envStack.simulateInNewEnvironment(() => {
-            this.executeStatements(ast.catchStatements);
-        });
+        const tryEnv = this.catchReturns(
+            () =>
+                this.envStack.simulateInNewEnvironment(() => {
+                    this.executeStatements(ast.statements);
+                }).env,
+        );
+        const catchEnv = this.catchReturns(
+            () =>
+                this.envStack.simulateInNewEnvironment(() => {
+                    this.executeStatements(ast.catchStatements);
+                }).env,
+        );
 
         // Join the try and catch branches
         this.envStack.setCurrentEnvironment(
-            joinEnvironments([tryEnv.env, catchEnv.env]),
+            this.cancelEnvironmentsOrJoin(tryEnv, catchEnv),
         );
     }
 
@@ -869,29 +998,107 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
         // Attempt to evaluate the condition
         const conditionValue = this.analyzeTopLevelExpression(ast.condition);
 
-        let condition: boolean | undefined = undefined;
+        const loopBodyBranch = () => {
+            this.executeStatements(ast.statements);
+            // After executing the body, we need to execute the condition again.
+            this.interpretExpression(ast.condition);
+        };
 
-        // If it produced a value, transform it to boolean
         if (conditionValue.kind === "value") {
-            condition = ensureBoolean(conditionValue.value, ast.condition.loc);
-        }
+            const condition = ensureBoolean(
+                conditionValue.value,
+                ast.condition.loc,
+            );
 
-        this.processUntilBranches(ast.statements, ast.condition, condition);
+            if (!condition) {
+                // Take the loop body branch, compute the fix-point starting from a second iteration of the loop
+                // but ignore returns at this moment
+                const twiceLoopEnv =
+                    this.envStack.simulateInNewEnvironment(loopBodyBranch).env;
+
+                const finalEnv = this.computeLoopEnv(
+                    twiceLoopEnv,
+                    loopBodyBranch,
+                );
+                this.envStack.setCurrentEnvironment(finalEnv);
+            } else {
+                // Take the "do nothing" branch. In other words, leave the environment as currently is
+            }
+        } else {
+            // Take both branches, compute the fix-point starting from
+            // the current environment (i.e., the "do nothing" environment)
+            const finalEnv = this.computeLoopEnv(
+                this.envStack.getCurrentEnvironment(),
+                loopBodyBranch,
+            );
+            this.envStack.setCurrentEnvironment(finalEnv);
+        }
     }
 
     public interpretWhileStatement(ast: AstStatementWhile) {
         // Attempt to evaluate the condition
         const conditionValue = this.analyzeTopLevelExpression(ast.condition);
 
-        let condition: boolean | undefined = undefined;
+        const loopBodyBranch = () => {
+            this.executeStatements(ast.statements);
+            // After executing the body, we need to execute the condition again.
+            this.interpretExpression(ast.condition);
+        };
 
-        // If it produced a value, transform it to boolean
-        // and execute the loop body.
-        if (conditionValue.kind === "value") {
-            condition = ensureBoolean(conditionValue.value, ast.condition.loc);
+        // Weird FunC behavior: Always execute the loop body at least once
+        if (this.imitateFunCBehaviors) {
+            this.catchReturns(
+                () =>
+                    this.envStack.simulateInNewEnvironment(loopBodyBranch).env,
+            );
         }
 
-        this.processWhileBranches(ast.statements, ast.condition, condition);
+        if (conditionValue.kind === "value") {
+            const condition = ensureBoolean(
+                conditionValue.value,
+                ast.condition.loc,
+            );
+
+            if (condition) {
+                // Take the loop body branch.
+
+                if (this.imitateFunCBehaviors) {
+                    // In theory, a more precise analysis
+                    // would compute the fix-point starting from
+                    // the environment that resulted from executing the loop once.
+                    // However, FunC starts the analysis from the environment existing BEFORE
+                    // executing the loop, ignoring the fact that the loop WILL
+                    // be taken at least once.
+                    const finalEnv = this.computeLoopEnv(
+                        this.envStack.getCurrentEnvironment(),
+                        loopBodyBranch,
+                    );
+                    this.envStack.setCurrentEnvironment(finalEnv);
+                } else {
+                    // Execute the loop at least once. The resulting environment
+                    // will be the start of the fix-point computation.
+                    const oneIterEnv =
+                        this.envStack.simulateInNewEnvironment(
+                            loopBodyBranch,
+                        ).env;
+                    const finalEnv = this.computeLoopEnv(
+                        oneIterEnv,
+                        loopBodyBranch,
+                    );
+                    this.envStack.setCurrentEnvironment(finalEnv);
+                }
+            } else {
+                // Take the "do nothing" branch. In other words, leave the environment as currently is
+            }
+        } else {
+            // Take both branches, compute the fix-point starting from
+            // the current environment (i.e., the "do nothing" environment)
+            const finalEnv = this.computeLoopEnv(
+                this.envStack.getCurrentEnvironment(),
+                loopBodyBranch,
+            );
+            this.envStack.setCurrentEnvironment(finalEnv);
+        }
     }
 
     private storeNewBinding(id: AstId, exprValue: LatticeValue) {
@@ -1101,153 +1308,6 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
         }
     }
 
-    protected processConditionBranches(
-        trueBranch: () => void,
-        falseBranch: () => void,
-        condition?: boolean,
-    ): void {
-        // Simulate the true and false branches
-        // We need to analyze both branches to emulate FunC,
-        // independently of the branch that ends up executing.
-        const trueEnv = this.envStack.simulateInNewEnvironment(trueBranch);
-        const falseEnv = this.envStack.simulateInNewEnvironment(falseBranch);
-
-        // If the condition is actually defined, take the corresponding environment.
-        // If not, join the two environments.
-        if (condition !== undefined) {
-            if (condition) {
-                this.envStack.setCurrentEnvironment(trueEnv.env);
-            } else {
-                this.envStack.setCurrentEnvironment(falseEnv.env);
-            }
-        } else {
-            this.envStack.setCurrentEnvironment(
-                joinEnvironments([trueEnv.env, falseEnv.env]),
-            );
-        }
-    }
-
-    protected processRepeatBranches(
-        statements: AstStatement[],
-        iterations?: bigint,
-    ) {
-        const repeatBodyBranch = () => {
-            this.executeStatements(statements);
-        };
-
-        // Simulate the loop body as if it executes once
-        // This is necessary to emulate the behavior of FunC
-        const oneIterEnv =
-            this.envStack.simulateInNewEnvironment(repeatBodyBranch);
-
-        if (iterations !== undefined) {
-            if (iterations > 0) {
-                if (iterations <= this.config.maxLoopIterations) {
-                    // Actually execute the loop and set the resulting environment
-                    const finalEnv = this.envStack.simulateInNewEnvironment(
-                        () => {
-                            for (let i = 1n; i <= iterations; i++) {
-                                repeatBodyBranch();
-                            }
-                        },
-                    );
-                    this.envStack.setCurrentEnvironment(finalEnv.env);
-                } else {
-                    // Take the loop body branch, compute the fix-point starting from
-                    // the environment that resulted from executing the loop once
-
-                    const finalEnv = this.computeLoopEnv(
-                        oneIterEnv.env,
-                        repeatBodyBranch,
-                    );
-                    this.envStack.setCurrentEnvironment(finalEnv);
-                }
-            }
-            // Take the "do nothing" branch. In other words, leave the environment as currently is
-        } else {
-            // Take both branches, compute the fix-point starting from
-            // the current environment (i.e., the "do nothing" environment)
-            const finalEnv = this.computeLoopEnv(
-                this.envStack.getCurrentEnvironment(),
-                repeatBodyBranch,
-            );
-            this.envStack.setCurrentEnvironment(finalEnv);
-        }
-    }
-
-    protected processUntilBranches(
-        statements: AstStatement[],
-        conditionAst: AstExpression,
-        condition?: boolean,
-    ) {
-        const loopBodyBranch = () => {
-            this.executeStatements(statements);
-            // After executing the body, we need to execute the condition again.
-            this.interpretExpression(conditionAst);
-        };
-
-        if (condition !== undefined) {
-            if (!condition) {
-                // Take the loop body branch, compute the fix-point starting from a second iteration of the loop
-                const twiceLoopEnv =
-                    this.envStack.simulateInNewEnvironment(loopBodyBranch);
-                const finalEnv = this.computeLoopEnv(
-                    twiceLoopEnv.env,
-                    loopBodyBranch,
-                );
-                this.envStack.setCurrentEnvironment(finalEnv);
-            }
-            // Take the "do nothing" branch. In other words, leave the environment as currently is
-        } else {
-            // Take both branches, compute the fix-point starting from
-            // the current environment (i.e., the "do nothing" environment)
-            const finalEnv = this.computeLoopEnv(
-                this.envStack.getCurrentEnvironment(),
-                loopBodyBranch,
-            );
-            this.envStack.setCurrentEnvironment(finalEnv);
-        }
-    }
-
-    protected processWhileBranches(
-        statements: AstStatement[],
-        conditionAst: AstExpression,
-        condition?: boolean,
-    ) {
-        const loopBodyBranch = () => {
-            this.executeStatements(statements);
-            // After executing the body, we need to execute the condition again.
-            this.interpretExpression(conditionAst);
-        };
-
-        // Simulate the loop body as if it executes once
-        // This is necessary to emulate the behavior of FunC analyzer
-        const oneIterEnv =
-            this.envStack.simulateInNewEnvironment(loopBodyBranch);
-
-        if (condition !== undefined) {
-            if (condition) {
-                // Take the loop body branch, compute the fix-point starting from the environment
-                // that resulted from executing the loop once
-
-                const finalEnv = this.computeLoopEnv(
-                    oneIterEnv.env,
-                    loopBodyBranch,
-                );
-                this.envStack.setCurrentEnvironment(finalEnv);
-            }
-            // Take the "do nothing" branch. In other words, leave the environment as currently is
-        } else {
-            // Take both branches, compute the fix-point starting from
-            // the current environment (i.e., the "do nothing" environment)
-            const finalEnv = this.computeLoopEnv(
-                this.envStack.getCurrentEnvironment(),
-                loopBodyBranch,
-            );
-            this.envStack.setCurrentEnvironment(finalEnv);
-        }
-    }
-
     protected extractPathTypes(path: AstExpression): string[] {
         function buildStep(parentTypes: string[], expType: TypeRef): string[] {
             if (expType.kind === "ref" || expType.kind === "ref_bounced") {
@@ -1284,24 +1344,58 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
         startEnv: Environment<LatticeValue>,
         loopCode: () => void,
     ): Environment<LatticeValue> {
-        const finalEnv = this.envStack.simulateInNewEnvironment(() => {
+        const loopEnv = this.envStack.simulateInNewEnvironment(() => {
             let equalEnvs = false;
             while (!equalEnvs) {
                 const prevEnv = this.envStack.getCurrentEnvironment();
-                const loopEnv = this.envStack.simulate(loopCode).env;
-                const newEnv = joinEnvironments([prevEnv, loopEnv]);
+                const loopEnv = this.catchReturns(
+                    () => this.envStack.simulate(loopCode).env,
+                );
+                const newEnv = this.cancelEnvironmentsOrJoin(loopEnv, prevEnv);
                 this.envStack.setCurrentEnvironment(newEnv);
                 equalEnvs = eqEnvironments(prevEnv, newEnv);
             }
-        }, startEnv);
-        return finalEnv.env;
+        }, startEnv).env;
+        return loopEnv;
+    }
+
+    protected cancelEnvironmentsOrJoin(
+        env1: Environment<LatticeValue> | undefined,
+        env2: Environment<LatticeValue> | undefined,
+    ): Environment<LatticeValue> {
+        if (env1 === undefined && env2 === undefined) {
+            throw new InterruptedBranch();
+        } else if (env1 !== undefined && env2 === undefined) {
+            return env1;
+        } else if (env1 === undefined && env2 !== undefined) {
+            return env2;
+        } else if (env1 !== undefined && env2 !== undefined) {
+            return joinEnvironments([env1, env2]);
+        } else {
+            // This case is impossible
+            throwInternalCompilerError("Impossible case.");
+        }
+    }
+
+    protected catchReturns<T>(code: () => T): T | undefined {
+        try {
+            return code();
+        } catch (e) {
+            if (e instanceof InterruptedBranch) {
+                return undefined;
+            }
+            throw e;
+        }
     }
 }
 
 /**
  * Joins the target environments (including their ancestor environments).
  * The procedure assumes that the target environments have the same number of ancestor environments. This should be true if opening
- * environment nodes is only done through the method envStack.executeInNewEnvironment.
+ * environment nodes is only done through the methods envStack.executeInNewEnvironment or envStack.simulateInNewEnvironment.
+ *
+ * TODO: Make this function receive exactly two environment targets. There is no instance in the code where the full generality of an array
+ * of targets occurs. This will simplify the code.
  */
 function joinEnvironments(
     targets: Environment<LatticeValue>[],

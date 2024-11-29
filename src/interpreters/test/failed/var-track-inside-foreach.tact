@@ -3,12 +3,15 @@ trait BaseTrait {}
 
 contract Test {
 
+    // Currently, the analyzer does not track map mutations using the set or replace-like functions. 
+
     get fun foo(v: Int): Int {
         let a: Int = 5;
         let xMap: map<Int,Int> = emptyMap();
-        foreach (k, val in xMap) {             // Currently, the analyzer cannot determine if a map is empty or not           
-            return 1 / (a - 5);                // because it does not track map mutations using the set function.  
-        }                                      // So, it will treat foreach loops as if their number of iterations is undetermined.
-        return 0;                              // In case the loop executes, it will produce a division by zero.
+        xMap.set(1,1);                         // This will simply make the map undetermined.
+        foreach (k, val in xMap) {               
+            return 1 / (a - 5);                // The branch inside the loop produces a division by zero.
+        }                                      
+        return 0;                              
     }
 }

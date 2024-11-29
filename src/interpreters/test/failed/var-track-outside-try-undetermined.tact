@@ -12,4 +12,4 @@ contract Test {
         }                                
         return 1 / (a - 5);    // Independently if the try successfully executes or not, all paths lead to a = 5.
     }                          // Hence, division by zero. Note that the catch is empty, which means that variable
-}                              // a remains unchanged (meaning a = 5 also) if the catch executes.
+}                              // "a" remains unchanged (meaning a = 5 also).
