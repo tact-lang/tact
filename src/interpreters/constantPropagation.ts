@@ -1391,8 +1391,6 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
 
 /**
  * Joins the target environments (including their ancestor environments).
- * The procedure assumes that the target environments have the same number of ancestor environments. This should be true if opening
- * environment nodes is only done through the methods envStack.executeInNewEnvironment or envStack.simulateInNewEnvironment.
  */
 function joinEnvironments(
     target1: Environment<LatticeValue>,
