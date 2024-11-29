@@ -98,6 +98,25 @@ Parentheses (also can be called round brackets, `(){:tact}`) are more of a punct
 5 * (5 - 2); // 15
 ```
 
+:::note
+
+  The current maximum allowed nesting level of expressions is $83$. An attempt to write a deeper expression will result in a compilation error:
+
+  ```tact
+  fun elegantWeaponsForCivilizedAge(): Int {
+      return
+      ((((((((((((((((((((((((((((((((
+          ((((((((((((((((((((((((((((((((
+              (((((((((((((((((((( // 84 parens, compilation error!
+                  42
+              ))))))))))))))))))))
+          ))))))))))))))))))))))))))))))))
+      ))))))))))))))))))))))))))))))));
+  }
+  ```
+
+:::
+
 ## Unary
 
 Unary here means that they are applied only to one operand of the given expression. All unary operators, except for the [non-null assertion](#unary-non-null-assert), are of the same [precedence](#precedence).
