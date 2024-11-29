@@ -541,10 +541,10 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
 
                 // Join the environments
                 this.envStack.setCurrentEnvironment(
-                    joinEnvironments([
+                    joinEnvironments(
                         rightEnv,
                         this.envStack.getCurrentEnvironment(),
-                    ]),
+                    ),
                 );
             } else {
                 // The rest of the operators do not short-circuit, so simply process the right operand
@@ -579,7 +579,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
             );
 
             this.envStack.setCurrentEnvironment(
-                joinEnvironments([trueEnv.env, falseEnv.env]),
+                joinEnvironments(trueEnv.env, falseEnv.env),
             );
             return joinLatticeValues(trueEnv.val, falseEnv.val);
         }
@@ -755,10 +755,10 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
 
                     // Join the environments
                     this.envStack.setCurrentEnvironment(
-                        joinEnvironments([
+                        joinEnvironments(
                             rightEnv,
                             this.envStack.getCurrentEnvironment(),
-                        ]),
+                        ),
                     );
                 } else {
                     // The rest of the operators do not short-circuit, so simply process the expression
@@ -1370,7 +1370,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
         } else if (env1 === undefined && env2 !== undefined) {
             return env2;
         } else if (env1 !== undefined && env2 !== undefined) {
-            return joinEnvironments([env1, env2]);
+            return joinEnvironments(env1, env2);
         } else {
             // This case is impossible
             throwInternalCompilerError("Impossible case.");
@@ -1393,75 +1393,54 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
  * Joins the target environments (including their ancestor environments).
  * The procedure assumes that the target environments have the same number of ancestor environments. This should be true if opening
  * environment nodes is only done through the methods envStack.executeInNewEnvironment or envStack.simulateInNewEnvironment.
- *
- * TODO: Make this function receive exactly two environment targets. There is no instance in the code where the full generality of an array
- * of targets occurs. This will simplify the code.
  */
 function joinEnvironments(
-    targets: Environment<LatticeValue>[],
+    target1: Environment<LatticeValue>,
+    target2: Environment<LatticeValue>,
 ): Environment<LatticeValue> {
-    const pivotEnv = targets.pop();
-
-    if (pivotEnv === undefined) {
-        return { values: new Map() };
-    }
-
-    // Intersect the keys in the values map using the pivot as base
-    let intersectedKeys = [...pivotEnv.values.keys()];
-    for (const env of targets) {
-        const targetKeys = new Set(env.values.keys());
-        intersectedKeys = intersectedKeys.filter((key) => targetKeys.has(key));
-    }
+    // Intersect the keys in the target's values map
+    const target2Keys = new Set(target2.values.keys());
+    const intersectedKeys = [...target1.values.keys()].filter((key) =>
+        target2Keys.has(key),
+    );
 
     // For those variables that survived in intersectedKeys, keep those that
-    // have the same value in all the provided targets
+    // have the same value in the provided targets
 
     const finalVars: Map<string, LatticeValue> = new Map();
 
-    // First, fill the initial values as found in the pivot environment
     for (const key of intersectedKeys) {
-        finalVars.set(key, pivotEnv.values.get(key)!); // key is ensured to be in pivotEnv because keys is the intersection of all envs.
-    }
-
-    // Now, join the values of all the target environments, for each key.
-    for (const key of intersectedKeys) {
-        // key is ensured to be in finalVars because finalVars was initialized with "intersectedKeys"
-        let currentVal = finalVars.get(key)!;
-
-        for (const env of targets) {
-            const alternativeVal = env.values.get(key)!; // key is ensured to be in env because keys is the intersection of all envs.
-
-            currentVal = joinLatticeValues(currentVal, alternativeVal);
-        }
-
+        // key is ensured to be in target1 and target2 because intersectedKeys is the intersection of targets.
+        const target1Val = target1.values.get(key)!;
+        const target2Val = target2.values.get(key)!;
+        const currentVal = joinLatticeValues(target1Val, target2Val);
         finalVars.set(key, currentVal);
     }
 
-    // Put the pivot environment back into the targets
-    targets.push(pivotEnv);
-
     // Now, time to join the parent environments
 
-    let joinedParents: Environment<LatticeValue> | undefined = undefined;
-
-    const targetParents = targets
-        .map((env) => env.parent)
-        .filter((env) => env !== undefined);
-
-    // Sanity check
-    if (targetParents.length !== 0 && targetParents.length !== targets.length) {
-        // This should not happen. This is a programmer's error
+    // The join is defined only if both targets have a parent or none has one.
+    if (
+        (target1.parent === undefined && target2.parent !== undefined) ||
+        (target1.parent !== undefined && target2.parent === undefined)
+    ) {
         throwInternalCompilerError(
             "Cannot join target environments because they have different ancestor lengths.",
         );
     }
 
-    // Now join the parent environments
-    if (targetParents.length > 0) {
-        joinedParents = joinEnvironments(targetParents);
-    }
+    // Here it is ensured that both targets have a parent or none has.
 
-    return { values: finalVars, parent: joinedParents };
+    // Now join the parent environments
+    if (target1.parent !== undefined && target2.parent !== undefined) {
+        return {
+            values: finalVars,
+            parent: joinEnvironments(target1.parent, target2.parent),
+        };
+    } else {
+        // Both targets do not have a parent
+        return { values: finalVars };
+    }
 }
 
 function eqEnvironments(
