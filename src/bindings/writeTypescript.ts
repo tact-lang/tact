@@ -352,7 +352,12 @@ export function writeTypescript(
                                 r.message.text !== null &&
                                 r.message.text !== undefined
                             ) {
-                                receivers.push(`'${r.message.text}'`);
+                                // since we are using single quotes, escape them in the message name
+                                const escaped = r.message.text.replace(
+                                    /'/g,
+                                    "\\'",
+                                );
+                                receivers.push(`'${escaped}'`);
                             } else {
                                 receivers.push(`string`);
                             }
@@ -419,9 +424,12 @@ export function writeTypescript(
                                     });
                                     w.append(`}`);
                                 } else {
-                                    w.append(
-                                        `if (message === '${msg.text}') {`,
+                                    // since we are using single quotes, escape them in the message name
+                                    const escaped = msg.text.replace(
+                                        /'/g,
+                                        "\\'",
                                     );
+                                    w.append(`if (message === '${escaped}') {`);
                                     w.inIndent(() => {
                                         w.append(
                                             `body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();`,
