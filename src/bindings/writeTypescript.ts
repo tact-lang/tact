@@ -352,9 +352,7 @@ export function writeTypescript(
                                 r.message.text !== null &&
                                 r.message.text !== undefined
                             ) {
-                                receivers.push(
-                                    `"${JSON.stringify(r.message.text).slice(1, -1)}"`,
-                                );
+                                receivers.push(JSON.stringify(r.message.text));
                             } else {
                                 receivers.push(`string`);
                             }
@@ -422,7 +420,7 @@ export function writeTypescript(
                                     w.append(`}`);
                                 } else {
                                     w.append(
-                                        `if (message === "${JSON.stringify(msg.text).slice(1, -1)}") {`,
+                                        `if (message === ${JSON.stringify(msg.text)}) {`,
                                     );
                                     w.inIndent(() => {
                                         w.append(
