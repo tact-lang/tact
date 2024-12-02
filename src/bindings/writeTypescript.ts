@@ -352,12 +352,9 @@ export function writeTypescript(
                                 r.message.text !== null &&
                                 r.message.text !== undefined
                             ) {
-                                // since we are using single quotes, escape them in the message name
-                                const escaped = r.message.text.replace(
-                                    /'/g,
-                                    "\\'",
+                                receivers.push(
+                                    `"${JSON.stringify(r.message.text).slice(1, -1)}"`,
                                 );
-                                receivers.push(`'${escaped}'`);
                             } else {
                                 receivers.push(`string`);
                             }
@@ -424,12 +421,9 @@ export function writeTypescript(
                                     });
                                     w.append(`}`);
                                 } else {
-                                    // since we are using single quotes, escape them in the message name
-                                    const escaped = msg.text.replace(
-                                        /'/g,
-                                        "\\'",
+                                    w.append(
+                                        `if (message === "${JSON.stringify(msg.text).slice(1, -1)}") {`,
                                     );
-                                    w.append(`if (message === '${escaped}') {`);
                                     w.inIndent(() => {
                                         w.append(
                                             `body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();`,
