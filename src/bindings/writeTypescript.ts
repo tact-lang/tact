@@ -352,7 +352,7 @@ export function writeTypescript(
                                 r.message.text !== null &&
                                 r.message.text !== undefined
                             ) {
-                                receivers.push(`'${r.message.text}'`);
+                                receivers.push(JSON.stringify(r.message.text));
                             } else {
                                 receivers.push(`string`);
                             }
@@ -420,7 +420,7 @@ export function writeTypescript(
                                     w.append(`}`);
                                 } else {
                                     w.append(
-                                        `if (message === '${msg.text}') {`,
+                                        `if (message === ${JSON.stringify(msg.text)}) {`,
                                     );
                                     w.inIndent(() => {
                                         w.append(
