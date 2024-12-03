@@ -81,7 +81,7 @@ Line 10, col 5:
 `;
 
 exports[`resolveStatements should fail statements for bounced-type-is-smaller 1`] = `
-"<unknown>:23:22: Maximum size of the bounced message is 224 bytes, but the "c" field cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes
+"<unknown>:23:22: Maximum size of the bounced message is 224 bytes, but the "c" field of type "A" cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes
 Line 23, col 22:
   22 |     let y: Bool = src.b;
 > 23 |     let z: Int = src.c;
@@ -1239,7 +1239,7 @@ Line 9, col 5:
 `;
 
 exports[`resolveStatements should fail statements for usage-of-bounced-field-in-type-that-is-too-big 1`] = `
-"<unknown>:14:29: Maximum size of the bounced message is 224 bytes, but the "amount" field cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes
+"<unknown>:14:29: Maximum size of the bounced message is 224 bytes, but the "amount" field of type "Withdraw" cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes
 Line 14, col 29:
   13 |         self.balance += msg.data; // ok
 > 14 |         self.balance += msg.amount;
@@ -1249,7 +1249,7 @@ Line 14, col 29:
 `;
 
 exports[`resolveStatements should fail statements for usage-of-bounced-field-in-type-that-is-too-big-2 1`] = `
-"<unknown>:26:29: Maximum size of the bounced message is 224 bytes, but the "amount" field cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes
+"<unknown>:26:29: Maximum size of the bounced message is 224 bytes, but the "amount" field of type "Withdraw" cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes
 Line 26, col 29:
   25 | 
 > 26 |         self.balance += msg.amount;
@@ -1259,7 +1259,7 @@ Line 26, col 29:
 `;
 
 exports[`resolveStatements should fail statements for usage-of-bounced-field-that-is-too-big 1`] = `
-"<unknown>:12:29: Maximum size of the bounced message is 224 bytes, but the "amount" field cannot fit into it because its too big, so it cannot be accessed. Reduce the type of this field so that it fits into 224 bytes
+"<unknown>:12:29: Maximum size of the bounced message is 224 bytes, but the "amount" field of type "Withdraw" cannot fit into it because its too big, so it cannot be accessed. Reduce the type of this field so that it fits into 224 bytes
 Line 12, col 29:
   11 |     bounced(msg: bounced<Withdraw>){
 > 12 |         self.balance += msg.amount;

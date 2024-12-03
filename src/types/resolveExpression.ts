@@ -458,13 +458,13 @@ function resolveFieldAccess(
             if (field !== undefined) {
                 if (srcT.fields.length == 1) {
                     throwCompilationError(
-                        `Maximum size of the bounced message is 224 bytes, but the ${idTextErr(exp.field)} field cannot fit into it because its too big, so it cannot be accessed. Reduce the type of this field so that it fits into 224 bytes`,
+                        `Maximum size of the bounced message is 224 bytes, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it because its too big, so it cannot be accessed. Reduce the type of this field so that it fits into 224 bytes`,
                         exp.field.loc,
                     );
                 }
 
                 throwCompilationError(
-                    `Maximum size of the bounced message is 224 bytes, but the ${idTextErr(exp.field)} field cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes`,
+                    `Maximum size of the bounced message is 224 bytes, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes`,
                     exp.field.loc,
                 );
             }
