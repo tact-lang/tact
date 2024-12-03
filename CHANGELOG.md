@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs: complete overhaul of the exit codes page: PR [#978](https://github.com/tact-lang/tact/pull/978)
 - Docs: enhanced Jettons Cookbook page: PR [#944](https://github.com/tact-lang/tact/pull/944)
 - Error codes in the report are now formatted as a list: PR [#1051](https://github.com/tact-lang/tact/pull/1051)
+- Clarify error message for bounced types from which accessed a field that does not fit in 224 bytes: PR [#1111](https://github.com/tact-lang/tact/pull/1111)
 
 ### Fixed
 
