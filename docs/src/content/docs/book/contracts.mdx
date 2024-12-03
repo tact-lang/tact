@@ -122,6 +122,12 @@ export const compile: CompilerConfig = {
 
 In addition to that, [`tact.config.json`](/book/config) may still be used in [Blueprint][bp] projects. In such cases values specified in [`tact.config.json`](/book/config) act as default unless modified in the `wrappers/`.
 
+:::note
+
+  If you have the `separateCompilables` option set to `true{:typescript}` in the [`blueprint.config.ts`][bp-config], then the `.compile.ts` files will be located in the `compilables/` directory and **not** in `wrappers/`.
+
+:::
+
 :::caution
 
   Be aware that adding an interface does not guarantee that the contract actually implements any particular functionality, or that it implements it in any particular way. It's just an off-chain, verifiable promise that a contract _might_ have some specific code in it. It's up to you to trust, but verify, such claims.
@@ -352,3 +358,4 @@ contract Functions {
 [trait]: /book/types#traits
 
 [bp]: https://github.com/ton-org/blueprint
+[bp-config]: https://github.com/ton-org/blueprint/tree/main?tab=readme-ov-file#configuration

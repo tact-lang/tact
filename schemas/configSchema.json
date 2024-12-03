@@ -19,7 +19,7 @@
           },
           "path": {
             "type": "string",
-            "description": "Path to the project's Tact file. You can only specify one Tact file per project.\n\nIn Blueprint, `path` is superseded by the `target` field in `wrappers/ContractName.compile.ts`.",
+            "description": "Path to the project's Tact file. You can only specify one Tact file per project.\n\nIn Blueprint, `path` is superseded by the `target` field in `wrappers/ContractName.compile.ts` by default, or in `compilables/ContractName.compile.ts` if you have `separateCompilables` the option set in the `blueprint.config.ts`.",
             "examples": ["./path/to/contract.tact"]
           },
           "output": {
@@ -29,7 +29,7 @@
           },
           "options": {
             "type": "object",
-            "description": "Compilation options for the project.\n\nIn Blueprint, they act as default unless modified in `wrappers/ContractName.compile.ts`.",
+            "description": "Compilation options for the project.\n\nIn Blueprint, they act as default unless modified in `wrappers/ContractName.compile.ts` by default, or in `compilables/ContractName.compile.ts` if you have `separateCompilables` the option set in the `blueprint.config.ts`.",
             "properties": {
               "debug": {
                 "type": "boolean",
