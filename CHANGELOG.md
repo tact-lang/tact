@@ -49,6 +49,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Release contributors
 
+## [1.5.3] - 2024-11-28
+
+### Changed
+
+- Replaced `Set.isSubsetOf()` with `isSubsetOf()` to support Node.js ≥18 and <22: PR [#1009](https://github.com/tact-lang/tact/pull/1009)
+
+### Release contributors
+
+- [Novus Nota](https://github.com/novusnota)
+
 ## [1.5.2] - 2024-09-25
 
 ### Fixed
