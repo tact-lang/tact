@@ -26,12 +26,7 @@ import {
     hasStaticConstant,
     hasStaticFunction,
 } from "./resolveDescriptors";
-import {
-    FieldDescription,
-    printTypeRef,
-    TypeRef,
-    typeRefEquals,
-} from "./types";
+import { printTypeRef, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
@@ -419,16 +414,30 @@ function resolveFieldAccess(
     }
 
     // Find field
-    let fields: FieldDescription[];
-
     const srcT = getType(ctx, src.name);
 
-    fields = srcT.fields;
-    if (src.kind === "ref_bounced") {
-        fields = fields.slice(0, srcT.partialFieldCount);
+    const fieldIndex = srcT.fields.findIndex((v) => eqNames(v.name, exp.field));
+    const field = srcT.fields.at(fieldIndex);
+
+    // If we found a field of bounced<T>, check if the field doesn't fit in 224 bytes and cannot be accessed
+    if (
+        src.kind === "ref_bounced" &&
+        field &&
+        fieldIndex >= srcT.partialFieldCount
+    ) {
+        if (srcT.fields.length === 1) {
+            throwCompilationError(
+                `Maximum size of the bounced message is 224 bytes, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it because its too big, so it cannot be accessed. Reduce the type of this field so that it fits into 224 bytes`,
+                exp.field.loc,
+            );
+        }
+
+        throwCompilationError(
+            `Maximum size of the bounced message is 224 bytes, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes`,
+            exp.field.loc,
+        );
     }
 
-    const field = fields.find((v) => eqNames(v.name, exp.field));
     const cst = srcT.constants.find((v) => eqNames(v.name, exp.field));
     if (!field && !cst) {
         const typeStr =
@@ -446,26 +455,6 @@ function resolveFieldAccess(
                 throwCompilationError(
                     `Type ${typeStr} does not have a field named "${exp.field.text}", did you mean "${exp.field.text}()" instead?`,
                     exp.loc,
-                );
-            }
-        }
-
-        // If it is bounced<T>, check all fields of T
-        if (src.kind === "ref_bounced") {
-            const field = srcT.fields.find((v) => eqNames(v.name, exp.field));
-
-            // If it has field, it means that this field doesn't fit into bounced message
-            if (field !== undefined) {
-                if (srcT.fields.length == 1) {
-                    throwCompilationError(
-                        `Maximum size of the bounced message is 224 bytes, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it because its too big, so it cannot be accessed. Reduce the type of this field so that it fits into 224 bytes`,
-                        exp.field.loc,
-                    );
-                }
-
-                throwCompilationError(
-                    `Maximum size of the bounced message is 224 bytes, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes`,
-                    exp.field.loc,
                 );
             }
         }
