@@ -104,6 +104,12 @@ In addition to that, [`tact.config.json`](/book/config) may still be used in [Bl
 
 :::note
 
+  If you have the `separateCompilables` option set to `true{:typescript}` in the [`blueprint.config.ts`][bp-config], then the `.compile.ts` files will be located in the `compilables/` directory and **not** in `wrappers/`.
+
+:::
+
+:::note
+
   Read more about configuration and [`tact.config.json`](/book/config) file: [Configuration](/book/config).\
   See how to use [`dump(){:tact}`][dump] for debugging: [Debug with `dump(){:tact}`](#tests-dump).
 
@@ -725,5 +731,6 @@ If you're overwhelmed by the testing setup of [Blueprint][bp] or just want to te
 
 [tg]: https://t.me/tactlang
 [bp]: https://github.com/ton-org/blueprint
+[bp-config]: https://github.com/ton-org/blueprint/tree/main?tab=readme-ov-file#configuration
 [sb]: https://github.com/ton-org/sandbox
 [jest]: https://jestjs.io
