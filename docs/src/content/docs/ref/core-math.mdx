@@ -46,7 +46,7 @@ max(0x45, 3_0_0); // 300
 ## abs
 
 ```tact
-fun abs(x: Int): Int
+fun abs(x: Int): Int;
 ```
 
 Computes and returns the [absolute value](https://en.wikipedia.org/wiki/Absolute_value) of the [`Int{:tact}`][int] value `x`.
@@ -65,7 +65,7 @@ abs(-(-(-42))); // 42
 fun log(num: Int, base: Int): Int;
 ```
 
-Computes and returns the [logarithm](https://en.wikipedia.org/wiki/Logarithm) of a number `num` $> 0$ to the base `base` $≥ 1$. Results are [rounded down](https://en.wikipedia.org/wiki/Rounding#Rounding_down). Passing a non-positive `num` value or a `base` less than $1$ throws an error with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Computes and returns the [logarithm](https://en.wikipedia.org/wiki/Logarithm) of a number `num` $> 0$ to the base `base` $≥ 1$. Results are [rounded down][round-down]. Passing a non-positive `num` value or a `base` less than $1$ throws an error with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage examples:
 
@@ -286,3 +286,6 @@ sha256(someVariableElsewhere); // will try to resolve at compile-time,
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [ed]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
 [sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
+
+[round-up]: https://en.wikipedia.org/wiki/Rounding#Rounding_up
+[round-down]: https://en.wikipedia.org/wiki/Rounding#Rounding_down

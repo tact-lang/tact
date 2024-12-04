@@ -183,7 +183,7 @@ contract ItsSoOver {
 
 ### 4: Integer overflow {#4}
 
-If the value in calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, or there's an attempt to [divide](/book/operators#binary-divide) or [modulo](/book/operators#binary-modulo) by zero, an error with exit code $4$ is thrown: `Integer overflow`.
+If the [value in calculation](/book/integers#operations) goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, or there's an attempt to [divide](/book/operators#binary-divide) or [modulo](/book/operators#binary-modulo) by zero, an error with exit code $4$ is thrown: `Integer overflow`.
 
 ```tact
 let x = -pow(2, 255) - pow(2, 255); // -2^{256}
@@ -213,9 +213,9 @@ try {
 // division (/) by a negative number or modulo (%) by zero
 ```
 
-### 5: Integer out of range {#5}
+### 5: Integer out of expected range {#5}
 
-Range check error — some integer is out of its expected range. I.e. any attempt to store an unexpected amount of data or specify an out-of-bounds value throws an error with exit code $5$: `Integer out of range`.
+Range check error — [some integer](/book/integers#operations) is out of its expected range. I.e. any attempt to store an unexpected amount of data or specify an out-of-bounds value throws an error with exit code $5$: `Integer out of expected range`.
 
 Examples of specifying an out-of-bounds value:
 
