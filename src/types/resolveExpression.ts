@@ -417,7 +417,7 @@ function resolveFieldAccess(
     const srcT = getType(ctx, src.name);
 
     const fieldIndex = srcT.fields.findIndex((v) => eqNames(v.name, exp.field));
-    const field = fieldIndex != -1 ? srcT.fields.at(fieldIndex) : undefined;
+    const field = fieldIndex != -1 ? srcT.fields[fieldIndex] : undefined;
 
     // If we found a field of bounced<T>, check if the field doesn't fit in 224 bytes and cannot be accessed
     if (
