@@ -31,7 +31,7 @@ let gas: Int = gasConsumed();
 
 :::note[Useful links:]
 
-  [Gas in TON Docs](https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees#gas)
+  [Gas in TON Docs][gas]
 
 :::
 
@@ -68,7 +68,7 @@ fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool): Int
 
 Calculates and returns the [storage fee][storage-fee] in [nanoToncoins][nanotoncoin] [`Int{:tact}`][int] for storing a contract with a given number of `cells` and `bits` for a number of `seconds`. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from the [config param 18 of TON Blockchain](https://docs.ton.org/develop/howto/blockchain-configs#param-18).
 
-Note, that the values of `cells` and `bits` are taken modulo their maximum values plus $1$. That is, specifying values higher than those listed in [account state limits (`max_acc_state_cells` and `max_acc_state_bits`)](/book/exit-codes#50) will have the same result as with specifying the exact limits. In addition, make sure you take into account the [deduplication of cells with the same hash][deduplication].
+Note, that specifying values of `cells` and `bits` higher than their maximum values listed in [account state limits (`max_acc_state_cells` and `max_acc_state_bits`)](/book/exit-codes#50) will have the same result as with specifying the exact limits. In addition, make sure you take into account the [deduplication of cells with the same hash][deduplication].
 
 Attempts to specify negative number of `cells`, `bits` or `seconds` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -189,7 +189,7 @@ Calculates and returns the [forward fee][forward-fee] in [nanoToncoins][nanotonc
 
 If both the source and the destination addresses are in the [basechain][basechain], then specify `isMasterchain` as `false{:tact}`. Otherwise, specify `true{:tact}`.
 
-Note, that the values of `cells` and `bits` are taken modulo their maximum values plus $1$. That is, specifying values higher than those listed in [account state limits (`max_msg_cells` and `max_msg_bits`)](/book/exit-codes#50) will have the same result as with specifying the exact limits.
+Note, that specifying values of `cells` and `bits` higher than their maximum values listed in [account state limits (`max_msg_cells` and `max_msg_bits`)](/book/exit-codes#50) will have the same result as with specifying the exact limits.
 
 However, regardless of the values of `cells` and `bits`, this function always adds the minimum price based on the value of [`lump_price`][param-24-25]. See the example for [`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee) to derive it. In addition, make sure you take into account the [deduplication of cells with the same hash][deduplication], since for example the root cell and its data bits don't count towards the forward fee and are covered by the [`lump_price`][param-24-25].
 
@@ -276,31 +276,27 @@ let origFee: Int = getOriginalFwdFee(fee, false);
 
 :::
 
-## getConfigParam
+## setGasLimit
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
-fun getConfigParam(id: Int): Cell?;
+fun setGasLimit(limit: Int);
 ```
 
-Loads a [configuration parameter](https://docs.ton.org/develop/howto/blockchain-configs) of TON Blockchain by its `id` number.
+Sets the [`gas_limit`][param-20-21] to the [`Int{:tact}`][int] `limit` and resets the [`gas_credit`][param-20-21] to $0$. Note, that specifying the `limit` higher than the maximum allowed value of $2^{63} - 1$ will have the same result as with specifying that exact maximum or calling [`acceptMessage(){:tact}`](#acceptmessage).
 
-Usage examples:
+Attempts to specify a negative or insufficient value of `limit` will cause an exception with [exit code -14](/book/exit-codes#-14): `Out of gas error`.
+
+Usage example:
 
 ```tact
-// Parameter 0, address of a special smart contract that stores the blockchain's configuration
-let configAddrAsCell: Cell = getConfigParam(0)!!;
-
-// Parameter 18, configuration for determining the prices for data storage
-let dataStorageFeeConfig: Cell = getConfigParam(18)!!;
+setGasLimit(42000);
 ```
 
 :::note
 
-  Standard library [`@stdlib/config`](/ref/stdlib-config) provides two related helper functions:\
-  [`getConfigAddress(){:tact}`](/ref/stdlib-config#getconfigaddress) for retrieving config [`Address{:tact}`][p]\
-  [`getElectorAddress(){:tact}`](/ref/stdlib-config#getconfigaddress) for retrieving elector [`Address{:tact}`][p]
-
-  Read more about other parameters: [Config Parameters in TON Docs](https://docs.ton.org/develop/howto/blockchain-configs).
+  For more details, see: [Accept Message Effects in TON Docs](https://docs.ton.org/develop/smart-contracts/guidelines/accept).
 
 :::
 
@@ -310,7 +306,7 @@ let dataStorageFeeConfig: Cell = getConfigParam(18)!!;
 fun acceptMessage();
 ```
 
-Agrees to buy some gas to finish the current transaction. This action is required to process external messages, which bring no value (hence no gas) with themselves.
+Agrees to buy some [gas][gas] to finish the current transaction by setting the [`gas_limit`][param-20-21] to its maximum allowed value of $2^{63} - 1$ and resetting the [`gas_credit`][param-20-21] to $0$. This action is required to process external messages, which bring no value (hence no gas) with themselves.
 
 Usage example:
 
@@ -342,13 +338,153 @@ contract Timeout {
 fun commit();
 ```
 
-Commits the current state of [registers](https://docs.ton.org/learn/tvm-instructions/tvm-overview#control-registers) `c4` ("persistent data") and `c5` ("actions"), so that the current execution is considered "successful" with the saved values even if an exception in compute phase is thrown later.
+Commits the current state of [registers][registers] `c4` ("persistent data") and `c5` ("actions"), so that the current execution is considered "successful" with the saved values even if an exception in compute phase is thrown later.
 
 Usage example:
 
 ```tact {1}
 commit();  // now, transaction is considered "successful"
 throw(42); // and this won't fail it
+```
+
+## myCode
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun myCode(): Cell;
+```
+
+Returns the smart contract code [`Cell{:tact}`][cell] obtained from the `c7` [register][registers].
+
+Usage example:
+
+```tact
+let code: Cell = myCode();
+```
+
+## getConfigParam
+
+```tact
+fun getConfigParam(id: Int): Cell?;
+```
+
+Loads a [configuration parameter](https://docs.ton.org/develop/howto/blockchain-configs) of TON Blockchain by its `id` number.
+
+Usage examples:
+
+```tact
+// Parameter 0, address of a special smart contract that stores the blockchain's configuration
+let configAddrAsCell: Cell = getConfigParam(0)!!;
+
+// Parameter 18, configuration for determining the prices for data storage
+let dataStorageFeeConfig: Cell = getConfigParam(18)!!;
+```
+
+:::note
+
+  Standard library [`@stdlib/config`](/ref/stdlib-config) provides two related helper functions:\
+  [`getConfigAddress(){:tact}`](/ref/stdlib-config#getconfigaddress) for retrieving config [`Address{:tact}`][p]\
+  [`getElectorAddress(){:tact}`](/ref/stdlib-config#getconfigaddress) for retrieving elector [`Address{:tact}`][p]
+
+  Read more about other parameters: [Config Parameters in TON Docs](https://docs.ton.org/develop/howto/blockchain-configs).
+
+:::
+
+## getSeed
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun getSeed(): Int;
+```
+
+Generates and returns an unsigned $256$-bit [`Int{:tact}`][int] [seed][seed] for the random number generator. The resulting seed is commonly used with the [`setSeed(){:tact}`](#setseed) and [`nativeRandomize(){:tact}`](#nativerandomize) functions.
+
+Usage example:
+
+```tact
+let seed: Int = getSeed();
+setSeed(seed); // from now on the results of pseudorandom number generator
+               // are completely determined by the seed, which can be handy in tests,
+               // but must not be used in production code!
+```
+
+:::note[Useful links:]
+
+  [Random seed in Wikipedia][seed]\
+  [`setSeed(){:tact}`](#setseed)\
+  [`nativeRandomize(){:tact}`](#nativerandomize)
+
+:::
+
+## setSeed
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun setSeed(seed: Int);
+```
+
+Sets the [seed][seed] of the random number generator to the unsigned $256$-bit [`Int{:tact}`][int] `seed` which can be obtained with the [`getSeed(){:tact}`](#getseed) function.
+
+Attempts to specify a negative value of `seed` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage example:
+
+```tact
+let seed: Int = getSeed();
+setSeed(seed); // from now on the results of pseudorandom number generator
+               // are completely determined by the seed, which can be handy in tests,
+               // but must not be used in production code!
+```
+
+:::note[Useful links:]
+
+  [Random seed in Wikipedia][seed]\
+  [`getSeed(){:tact}`](#getseed)
+
+:::
+
+## curLt
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun curLt(): Int;
+```
+
+Returns the [`Int{:tact}`][int] value of the [logical time][lt] of the current transaction.
+
+Usage example:
+
+```tact
+let lt: Int = curLt();
+nativeRandomize(lt); // equivalent to calling nativeRandomizeLt()
+```
+
+:::note[Useful links:]
+
+  [Random seed in Wikipedia][seed]\
+  [`nativeRandomize{:tact}`](#nativerandomize)\
+  [`nativeRandomizeLt{:tact}`](#nativerandomizelt)
+
+:::
+
+## blockLt
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun blockLt(): Int;
+```
+
+Returns the [`Int{:tact}`][int] value of the [logical time][lt] of the current block.
+
+Usage example:
+
+```tact
+let time: Int = blockLt();
 ```
 
 ## nativePrepareRandom
@@ -372,14 +508,23 @@ nativePrepareRandom(); // prepare the RNG
 fun nativeRandomize(x: Int);
 ```
 
-Randomizes the pseudo-random number generator with the specified seed `x`.
+Randomizes the pseudorandom number generator with the specified unsigned $256$-bit [`Int{:tact}`][int] `x` by mixing it with the current [seed][seed]. The new seed is the unsigned $256$-bit [`Int{:tact}`][int] value of the [SHA-256][sha-2] hash of concatenated old seed and `x` in their $32$-byte strings [big-endian](https://en.wikipedia.org/wiki/Endianness) representation.
+
+Attempts to specify a negative value of `x` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage example:
 
 ```tact
-nativeRandomize();          // now, random numbers are less predictable
-let idk: Int = randomInt(); // ???, it's random!
+nativeRandomize(42);        // now, random numbers are less predictable
+let idk: Int = randomInt(); // ???, it's random,
+                            // but the seed was adjusted deterministically!
 ```
+
+:::note[Useful links:]
+
+  [Random seed in Wikipedia][seed]
+
+:::
 
 ## nativeRandomizeLt
 
@@ -387,7 +532,7 @@ let idk: Int = randomInt(); // ???, it's random!
 fun nativeRandomizeLt();
 ```
 
-Randomizes the random number generator with the current [logical time](https://docs.ton.org/develop/smart-contracts/guidelines/message-delivery-guarantees#what-is-a-logical-time).
+Randomizes the random number generator with the [logical time][lt] of the current transaction. Equivalent to calling `nativeRandomize(curLt()){:tact}`.
 
 Usage example:
 
@@ -397,6 +542,14 @@ nativeRandomizeLt();        // now, random numbers are unpredictable for users,
                             // as they determine the seed of the current block.
 let idk: Int = randomInt(); // ???, it's random!
 ```
+
+:::note[Useful links:]
+
+  [Random seed in Wikipedia][seed]\
+  [`nativeRandomize{:tact}`](#nativerandomize)\
+  [`curLt(){:tact}`](#curlt)
+
+:::
 
 ## nativeRandom
 
@@ -579,6 +732,7 @@ parsedVarAddr.address.loadUint(123); // 345
 [p]: /book/types#primitive-types
 [bool]: /book/types#booleans
 [int]: /book/integers
+[cell]: /book/cells#cells
 [slice]: /book/cells#slices
 [s]: /book/structs-and-messages#structs
 [masterchain]: /book/masterchain
@@ -588,6 +742,7 @@ parsedVarAddr.address.loadUint(123); // 345
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [basechain]: https://docs.ton.org/v3/concepts/ton-blockchain/smart-contract-addresses#address-components
 [deduplication]: https://docs.ton.org/v3/documentation/data-formats/tlb/library-cells
+[registers]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#control-registers
 
 [storage-fee]: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees-low-level#storage-fee
 [storage-fee-calc]: https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation#storage-fee
@@ -600,3 +755,7 @@ parsedVarAddr.address.loadUint(123); // 345
 [forward-fee]: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/forward-fees
 [forward-fee-calc]: https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation#forward-fee
 [param-24-25]: https://docs.ton.org/v3/documentation/network/configs/blockchain-configs#param-24-and-25
+
+[lt]: https://docs.ton.org/v3/documentation/smart-contracts/message-management/messages-and-transactions#what-is-a-logical-time
+[seed]: https://en.wikipedia.org/wiki/Random_seed
+[sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
