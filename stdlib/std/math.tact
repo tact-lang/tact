@@ -49,10 +49,12 @@ asm fun abs(x: Int): Int { ABS }
 
 asm fun now(): Int { NOW }
 
+// floor(log2(num))
 asm fun log2(num: Int): Int {
     DUP 5 THROWIFNOT UBITSIZE DEC
 }
 
+// floor(log(num, base))
 @name(__tact_log)
 native log(num: Int, base: Int): Int;
 
@@ -60,3 +62,39 @@ native log(num: Int, base: Int): Int;
 native pow(base: Int, exp: Int): Int;
 
 asm fun pow2(exp: Int): Int { POW2 }
+
+asm fun sign(x: Int): Int { SGN }
+
+// ceil(x/y)
+asm fun divc(x: Int, y: Int): Int { DIVC }
+
+// ceil(x*y/z)
+asm fun muldivc(x: Int, y: Int, z: Int): Int { MULDIVC }
+
+// floor(x*y/2^z)
+asm fun mulShiftRight(x: Int, y: Int, z: Int): Int { MULRSHIFT }
+
+// round(x*y/2^z)
+asm fun mulShiftRightRound(x: Int, y: Int, z: Int): Int { MULRSHIFTR }
+
+// ceil(x*y/2^z)
+asm fun mulShiftRightCeil(x: Int, y: Int, z: Int): Int { MULRSHIFTC }
+
+// round(sqrt(num))
+fun sqrt(num: Int): Int {
+    if (num == 0) {
+        return 0;
+    }
+
+    let s: Int = log2(num);
+    let x: Int = (s == 1 ? (num - 1) / 2 + 1 : 1 << ((s + 1) / 2));
+
+    let q: Int = 0;
+
+    do {
+        q = (divc(num, x) - x) / 2;
+        x += q;
+    } until (q == 0);
+
+    return x;
+}

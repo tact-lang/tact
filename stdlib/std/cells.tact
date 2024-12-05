@@ -82,6 +82,8 @@ asm extends fun refs(self: Builder): Int { BREFS }
 
 asm extends fun bits(self: Builder): Int { BBITS }
 
+asm extends fun depth(self: Builder): Int { BDEPTH }
+
 //
 // Slice
 //
@@ -167,6 +169,14 @@ asm extends mutates fun skipBits(self: Slice, l: Int) { SDSKIPFIRST }
 
 asm extends fun endParse(self: Slice) { ENDS }
 
+asm extends fun skipLastBits(self: Slice, len: Int): Slice { SDSKIPLAST }
+
+asm extends fun firstBits(self: Slice, len: Int): Slice { SDCUTFIRST }
+
+asm extends fun lastBits(self: Slice, len: Int): Slice { SDCUTLAST }
+
+asm extends fun depth(self: Slice): Int { SDEPTH }
+
 //
 // Slice size
 //
@@ -210,3 +220,18 @@ inline fun emptyCell(): Cell {
 inline fun emptySlice(): Slice {
     return emptyCell().asSlice();
 }
+
+asm fun addressNone(): Address? { b{00} PUSHSLICE }
+
+struct DataSize {
+    cells: Int;
+    bits: Int;
+    refs: Int;
+}
+
+asm extends fun computeDataSize(self: Cell, maxCells: Int): DataSize { CDATASIZE }
+
+asm extends fun computeDataSize(self: Slice, maxCells: Int): DataSize { SDATASIZE }
+
+asm extends fun depth(self: Cell): Int { CDEPTH }
+
