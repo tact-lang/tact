@@ -1,0 +1,3238 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-assignments 1`] = `
+"<unknown>:12:14: Cannot evaluate expression: divisor must be non-zero
+Line 12, col 14:
+  11 |         b += a + 3;              // 9
+> 12 |         1 / (b - 9);             // Division by zero
+                    ^~~~~
+  13 |         return 0;
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-global-function 1`] = `
+"<unknown>:18:17: Cannot evaluate expression: divisor must be non-zero
+Line 18, col 17:
+  17 |     }
+> 18 |     return 1 / (a - 20);   // The only surviving path is a = 20. Division by zero.
+                       ^~~~~~
+  19 | }                           
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-init 1`] = `
+"<unknown>:34:13: Cannot evaluate expression: divisor must be non-zero
+Line 34, col 13:
+  33 |         self.g.Bb = 0;
+> 34 |         1 / self.g.Bb;                // Division by zero.
+                   ^~~~~~~~~
+  35 |     }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-initof-1 1`] = `
+"<unknown>:9:18: Cannot evaluate expression: divisor must be non-zero
+Line 9, col 18:
+   8 |     init(v: Int) {
+>  9 |         self.a / self.a;    // Division by zero
+                        ^~~~~~
+  10 |     }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-initof-2 1`] = `
+"<unknown>:12:9: Cannot evaluate expression: divisor must be non-zero
+Line 12, col 9:
+  11 |         self.a = 0;
+> 12 |         v / self.a;    // Division by zero
+               ^~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-inside-do-until 1`] = `
+"<unknown>:10:25: Cannot evaluate expression: divisor must be non-zero
+Line 10, col 25:
+   9 |         do {                             
+> 10 |             return 1 / (a - 5);          // Since the loop executes at least once, and a = 5,
+                               ^~~~~
+  11 |         } until (x > 0);                 // a division by zero will occur.                        
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-inside-foreach 1`] = `
+"<unknown>:13:25: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 25:
+  12 |         foreach (k, val in xMap) {               
+> 13 |             return 1 / (a - 5);                // The branch inside the loop produces a division by zero.
+                               ^~~~~
+  14 |         }                                      
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-inside-repeat 1`] = `
+"<unknown>:10:25: Cannot evaluate expression: divisor must be non-zero
+Line 10, col 25:
+   9 |         repeat (x) {                     
+> 10 |             return 1 / (a - 5);          // Loop executes at least once: division by zero
+                               ^~~~~
+  11 |         }                                
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-inside-try 1`] = `
+"<unknown>:11:25: Cannot evaluate expression: divisor must be non-zero
+Line 11, col 25:
+  10 |             x += v;                  
+> 11 |             return 1 / (a - 5);          // If try reaches the end, it would produce a division by zero
+                               ^~~~~
+  12 |         }                                
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-inside-try-catch 1`] = `
+"<unknown>:13:25: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 25:
+  12 |         } catch (e) {
+> 13 |             return 1 / (a - 5);     // If an error occurs during the try (for example, if v = 0),
+                               ^~~~~
+  14 |         }                           // the catch would produce a division by zero.                        
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-inside-while 1`] = `
+"<unknown>:10:25: Cannot evaluate expression: divisor must be non-zero
+Line 10, col 25:
+   9 |         while (x >= 0) {                  
+> 10 |             return 1 / (a - 5);          // Loop executes at least once: division by zero
+                               ^~~~~
+  11 |         }                                
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-null-dereference 1`] = `
+"<unknown>:14:12: Cannot evaluate expression: non-null value expected but got null
+Line 14, col 12:
+  13 |     a!!;             // OK
+> 14 |     return b!!;      // Null dereference
+                  ^
+  15 | }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-do-until-no-iterations 1`] = `
+"<unknown>:12:21: Cannot evaluate expression: divisor must be non-zero
+Line 12, col 21:
+  11 |         } until (x >= 0);                                
+> 12 |         return 1 / (a - 6);        // Loop does not execute more than once. Hence, after the loop, a = 6,
+                           ^~~~~
+  13 |     }                              // which means division by zero.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-do-until-undetermined 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         } until (v > 0);   // v does not have a value at compile time                     
+> 13 |         return 1 / (a - 5);         // Unknown if loop executes. But if it does or not, all paths lead to a = 5,
+                           ^~~~~
+  14 |     }                               // which means division by zero after the loop.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-do-until-undetermined_nested-return-inside 1`] = `
+"<unknown>:26:21: Cannot evaluate expression: divisor must be non-zero
+Line 26, col 21:
+  25 |         } until (v > 0);   // v does not have a value at compile time                     
+> 26 |         return 1 / (a - 5);      // Line A
+                           ^~~~~
+  27 |     }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-do-until-with-iterations 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         } until (x > 0);                                
+> 14 |         return 1 / (a - 10);        // Loop executes more than once. Hence, but after each loop iteration, a = 10,
+                           ^~~~~~
+  15 |     }                               // which means division by zero.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-foreach-no-iterations 1`] = `
+"<unknown>:15:21: Cannot evaluate expression: divisor must be non-zero
+Line 15, col 21:
+  14 |         }                             
+> 15 |         return 1 / (a - 5);           // Hence: a = 5, there is a division by zero.
+                           ^~~~~
+  16 |     }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-foreach-undetermined 1`] = `
+"<unknown>:16:21: Cannot evaluate expression: divisor must be non-zero
+Line 16, col 21:
+  15 |         }                             
+> 16 |         return 1 / (a - 5);           // If loop executes or not, all possible paths assign a = 5. Hence, there is a division by zero.
+                           ^~~~~
+  17 |     }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-foreach-undetermined_nested-return-inside 1`] = `
+"<unknown>:28:21: Cannot evaluate expression: divisor must be non-zero
+Line 28, col 21:
+  27 |         }                             
+> 28 |         return 1 / (a - 5);           // Line A
+                           ^~~~~
+  29 |     }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-foreach-undetermined_return-inside 1`] = `
+"<unknown>:17:21: Cannot evaluate expression: divisor must be non-zero
+Line 17, col 21:
+  16 |         }                             
+> 17 |         return 1 / (a - 5);           // So, if program reaches here: a = 5, which means division by zero.
+                           ^~~~~
+  18 |     }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-if-else-false-branch 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }
+> 13 |         return 1 / (a - 3);   // Division by zero, because condition in the if is false at compile time,                             
+                           ^~~~~
+  14 |     }                         // which means that a = 3 after the conditional.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-if-else-true-branch 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }
+> 13 |         return 1 / (a - 10);   // Division by zero, because condition in the if is true at compile time,                             
+                           ^~~~~~
+  14 |     }                          // which means that a = 10 after the conditional.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-if-else-undetermined 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }
+> 13 |         return 1 / (a - 5);   // Division by zero, even though condition cannot be determined at compile time
+                           ^~~~~
+  14 |     }                        // all branches inside the if also assign a = 5.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-if-else-undetermined-no-assign-false-branch 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         }
+> 14 |         return 1 / (a - 5);   // Division by zero, even though condition cannot be determined at compile time
+                           ^~~~~
+  15 |     }                         // all paths before the return lead to a = 5.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-if-else-undetermined-no-assign-true-branch 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         }
+> 14 |         return 1 / (a - 5);   // Division by zero, even though condition cannot be determined at compile time
+                           ^~~~~
+  15 |     }                         // all paths before the return lead to a = 5.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-if-elseif-else-undetermined_return-inside 1`] = `
+"<unknown>:17:21: Cannot evaluate expression: divisor must be non-zero
+Line 17, col 21:
+  16 |         }
+> 17 |         return 1 / (a - 10);   // Division by zero, 
+                           ^~~~~~
+  18 |     }                         
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-if-elseif-false-branch 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }
+> 13 |         return 1 / (a - 3);   // Division by zero, because conditions can be determined at compile time,                             
+                           ^~~~~
+  14 |     }                         // which means that a = 3 after the conditional.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-if-elseif-true-branch 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }
+> 13 |         return 1 / (a - 10);   // Division by zero, because conditions can be determined at compile time,                              
+                           ^~~~~~
+  14 |     }                          // which means that a = 10 after the conditional.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-if-elseif-undetermined 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }
+> 13 |         return 1 / (a - 5);   // Division by zero, even though condition cannot be determined at compile time
+                           ^~~~~
+  14 |     }                         // all branches inside the if also assign a = 5.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-if-elseif-undetermined-no-assign-false-branch 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         }
+> 14 |         return 1 / (a - 5);   // Division by zero, even though condition cannot be determined at compile time
+                           ^~~~~
+  15 |     }                         // all paths before the return lead to a = 5.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-if-elseif-undetermined-no-assign-true-branch 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         }
+> 14 |         return 1 / (a - 5);   // Division by zero, even though condition cannot be determined at compile time
+                           ^~~~~
+  15 |     }                         // all paths before the return lead to a = 5.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-if-false 1`] = `
+"<unknown>:11:21: Cannot evaluate expression: divisor must be non-zero
+Line 11, col 21:
+  10 |         }
+> 11 |         return 1 / (a - 5);   // Division by zero, because condition in the if is false at compile time,                             
+                           ^~~~~
+  12 |     }                         // which means that a = 5 after the conditional.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-if-true 1`] = `
+"<unknown>:11:21: Cannot evaluate expression: divisor must be non-zero
+Line 11, col 21:
+  10 |         }
+> 11 |         return 1 / (a - 10);   // Division by zero, because condition in the if is true at compile time,                             
+                           ^~~~~~
+  12 |     }                          // which means that a = 10 after the conditional.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-if-undetermined 1`] = `
+"<unknown>:11:21: Cannot evaluate expression: divisor must be non-zero
+Line 11, col 21:
+  10 |         }
+> 11 |         return 1 / (a - 5);   // Division by zero, even though condition cannot be determined at compile time
+                           ^~~~~
+  12 |     }                        // the branch inside the if also assigns a = 5.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-repeat-no-iterations 1`] = `
+"<unknown>:12:21: Cannot evaluate expression: divisor must be non-zero
+Line 12, col 21:
+  11 |         }                                
+> 12 |         return 1 / (a - 5);         // Loop does not execute. Hence, after the loop, a = 5,
+                           ^~~~~
+  13 |     }                               // which means division by zero.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-repeat-undetermined 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }                                
+> 13 |         return 1 / (a - 5);         // Unknown if loop executes. But if it does or not, all paths lead to a = 5,
+                           ^~~~~
+  14 |     }                               // which means division by zero after the loop.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-repeat-undetermined_nested-return-inside 1`] = `
+"<unknown>:26:21: Cannot evaluate expression: divisor must be non-zero
+Line 26, col 21:
+  25 |         }                                
+> 26 |         return 1 / (a - 5);         // Line A
+                           ^~~~~
+  27 |     }                               
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-repeat-undetermined_return-inside 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         }                                
+> 14 |         return 1 / (a - 5);         // So, a = 5
+                           ^~~~~
+  15 |                                     
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-repeat-with-iterations 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }                                
+> 13 |         return 1 / (a - 3);         // Loop executes. After each iteration, a = 3,
+                           ^~~~~
+  14 |     }                               // which means division by zero after the loop.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-repeat-with-iterations_explicit-loop-run 1`] = `
+"<unknown>:12:21: Cannot evaluate expression: divisor must be non-zero
+Line 12, col 21:
+  11 |         }                           // Analyzer will explicitly run repeats only if below or equal to the current limit at 2 ^ 12 = 4096 times.
+> 12 |         return 1 / (a - 105);         
+                           ^~~~~~~
+  13 |     }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-try-catch-undetermined 1`] = `
+"<unknown>:15:21: Cannot evaluate expression: divisor must be non-zero
+Line 15, col 21:
+  14 |         }                           
+> 15 |         return 1 / (a - 5);    // Independently if the try successfully executes or not, all paths lead to a = 5.
+                           ^~~~~
+  16 |     }                          // Hence, division by zero. Note that if the catch executes, it also assigns a = 5.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-try-catch-undetermined_return-inside-1 1`] = `
+"<unknown>:16:21: Cannot evaluate expression: divisor must be non-zero
+Line 16, col 21:
+  15 |         }                           
+> 16 |         return 1 / (a - 8);    // If the program reaches this line, it means that it must have executed the catch by failing the try, 
+                           ^~~~~
+  17 |     }                          // otherwise the return would have executed inside the try. Hence, division by zero.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-try-catch-undetermined_return-inside-2 1`] = `
+"<unknown>:16:21: Cannot evaluate expression: divisor must be non-zero
+Line 16, col 21:
+  15 |         }                      // variable "a" CANNOT be 8     
+> 16 |         return 1 / (a - 5);    // If the program reaches this line, it means that it must have executed the try successfully, 
+                           ^~~~~
+  17 |     }                          // otherwise the return would have executed inside the catch. Hence, division by zero.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-try-undetermined 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }                                
+> 13 |         return 1 / (a - 5);    // Independently if the try successfully executes or not, all paths lead to a = 5.
+                           ^~~~~
+  14 |     }                          // Hence, division by zero. Note that the catch is empty, which means that variable
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-try-undetermined_return-inside 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         }                                
+> 14 |         return 1 / (a - 7);    // If the program reaches this line, it means that it must have failed the try, otherwise 
+                           ^~~~~
+  15 |     }                          // the return inside the try would have executed. Note that the catch is empty, which means that variable
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-while-no-iterations 1`] = `
+"<unknown>:12:21: Cannot evaluate expression: divisor must be non-zero
+Line 12, col 21:
+  11 |         }                                
+> 12 |         return 1 / (a - 5);         // Loop does not execute. Hence, after the loop, a = 5,
+                           ^~~~~
+  13 |     }                               // which means division by zero.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-while-undetermined 1`] = `
+"<unknown>:13:21: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 21:
+  12 |         }                                
+> 13 |         return 1 / (a - 5);         // Unknown if loop executes. But if it does or not, all paths lead to a = 5,
+                           ^~~~~
+  14 |     }                               // which means division by zero after the loop.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-while-undetermined_nested-return-inside 1`] = `
+"<unknown>:19:21: Cannot evaluate expression: divisor must be non-zero
+Line 19, col 21:
+  18 |         }                                
+> 19 |         return 1 / (a - 10);         // Hence, the loop fix-point contains a = 10. Division by zero
+                           ^~~~~~
+  20 |     }                               
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-while-undetermined_return-inside 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         }                                
+> 14 |         return 1 / (a - 5);         // Unknown if loop executes. But if it does or not, the branch inside the loop gets cancelled
+                           ^~~~~
+  15 |                                     // because of the return. Hence, the fix-point will remain at the starting environment, with a = 5,
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-outside-while-with-iterations 1`] = `
+"<unknown>:14:21: Cannot evaluate expression: divisor must be non-zero
+Line 14, col 21:
+  13 |         }                                
+> 14 |         return 1 / (a - 3);         // Loop executes. After each iteration, a = 3,
+                           ^~~~~
+  15 |     }                               // which means division by zero after the loop.
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-overflow-1 1`] = `
+"<unknown>:13:12: Cannot evaluate expression: integer '115792089237316195423570985008687907853269984665640564039457584007913129639936' does not fit into TVM Int type
+Line 13, col 12:
+  12 | 
+> 13 |     return n << exponent;      // Overflow reported: 1 * 2^256
+                  ^~~~~~~~~~~~~
+  14 | }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-overflow-2 1`] = `
+"<unknown>:12:18: Cannot evaluate expression: integer '115792089237316195423570985008687907853269984665640564039457584007913129639936' does not fit into TVM Int type
+Line 12, col 18:
+  11 |         exponent += 1;              
+> 12 |         result = n << exponent;     // Reported overflow in the 10th iteration.
+                        ^~~~~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-short-circuit-and 1`] = `
+"<unknown>:13:17: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 17:
+  12 |     let c: Bool = b && a.mutator();    // Since && short-circuits, "a" remains with value a = 10
+> 13 |     return 1 / (a - 10);               // Division by zero.
+                       ^~~~~~
+  14 | }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-short-circuit-or 1`] = `
+"<unknown>:13:17: Cannot evaluate expression: divisor must be non-zero
+Line 13, col 17:
+  12 |     let c: Bool = b || a.mutator();    // Since || short-circuits, "a" remains with value a = 10
+> 13 |     return 1 / (a - 10);               // Division by zero.
+                       ^~~~~~
+  14 | }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-static-calls 1`] = `
+"<unknown>:28:10: Cannot evaluate expression: divisor must be non-zero
+Line 28, col 10:
+  27 |     let zero: Int = 0;
+> 28 |     a /= min_int(factorial(b), zero);    // Division by zero
+                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+  29 | }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-structs 1`] = `
+"<unknown>:35:13: Cannot evaluate expression: divisor must be non-zero
+Line 35, col 13:
+  34 |         1 / a.Ab.Bc;                  // OK.
+> 35 |         1 / a.Ab.Bb;                  // Division by zero.
+                   ^~~~~~~
+  36 |         return 0;
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-structs-in-parameter 1`] = `
+"<unknown>:30:20: Cannot evaluate expression: divisor must be non-zero
+Line 30, col 20:
+  29 |         let b = self;              // The only determined field in b is b.f.Ca.Ab.Bc
+> 30 |         return 1 / b.f.Ca.Ab.Bc;   // Division by zero.
+                          ^~~~~~~~~~~~
+  31 |     }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-ternary-conditional-operator 1`] = `
+"<unknown>:56:17: Cannot evaluate expression: divisor must be non-zero
+Line 56, col 17:
+  55 |     1 / (c.Ab.Ba - 3);              // OK, because c.Ab.Ba is undetermined.
+> 56 |     return 1 / (c.Ab.Bc - 1);       // Division by zero
+                       ^~~~~~~~~~~
+  57 | }
+"
+`;
+
+exports[`constant-propagation should fail constant propagation analysis for var-track-ternary-conditional-operator-and-destruct 1`] = `
+"<unknown>:54:17: Cannot evaluate expression: divisor must be non-zero
+Line 54, col 17:
+  53 |     1 / (Ba - 3);              // OK, because Ba is undetermined.
+> 54 |     return 1 / (Bc - 1);       // Division by zero
+                       ^~~~~~
+  55 | }
+"
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-inside-foreach 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "xMap",
+    "map<Int, Int>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-inside-if 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a > 5",
+    "Bool",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-inside-if-else-false-branch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a >= 5",
+    "Bool",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-inside-if-else-true-branch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a > 5",
+    "Bool",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-inside-repeat 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-inside-while 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x > 0",
+    "Bool",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-do-until 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "v > 0",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v - v",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "v - v + 6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-do-until-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "v > 0",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-foreach 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "xMap",
+    "map<Int, Int>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "xMap.set(1,1)",
+    "<void>",
+  ],
+  [
+    "xMap",
+    "map<Int, Int>",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "k",
+    "Int",
+  ],
+  [
+    "10 + k",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-foreach-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "xMap",
+    "map<Int, Int>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "xMap.set(1,1)",
+    "<void>",
+  ],
+  [
+    "xMap",
+    "map<Int, Int>",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "k",
+    "Int",
+  ],
+  [
+    "10 + k",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-else 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-else-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-else-no-assign-false-branch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-else-no-assign-false-branch-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-else-no-assign-true-branch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-else-no-assign-true-branch-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-elseif 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-elseif-else 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "x > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "a - 7",
+    "Int",
+  ],
+  [
+    "1 / (a - 7)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-elseif-else_return-inside 1`] = `
+[
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "v > 0",
+    "Bool",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v < 10",
+    "Bool",
+  ],
+  [
+    "v > 0 && v < 10",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "x >= 10",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "20",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "a - 7",
+    "Int",
+  ],
+  [
+    "1 / (a - 7)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-elseif-else-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "x > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-elseif-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-elseif-no-assign-false-branch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v > 5",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-elseif-no-assign-false-branch-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v > 5",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-elseif-no-assign-true-branch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-elseif-no-assign-true-branch-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-if-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-repeat 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v - v",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "v - v + 6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-repeat-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-repeat-with-iterations_return-inside 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "1048576",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v - v",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "v - v + 3",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "a - 3",
+    "Int",
+  ],
+  [
+    "1 / (a - 3)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-try 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "x - x",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "x - x + 6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-try-catch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "x - x",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "x - x + 6",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-try-catch-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-try-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-while 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "v > 0",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v - v",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "v - v + 6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-while-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "v > 0",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-outside-while-with-iterations_return-inside 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "x >= 10",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v - v",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "v - v + 3",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "a - 3",
+    "Int",
+  ],
+  [
+    "1 / (a - 3)",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-short-circuit-and 1`] = `
+[
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "b",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutator()",
+    "Bool",
+  ],
+  [
+    "b && a.mutator()",
+    "Bool",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a - 10",
+    "Int",
+  ],
+  [
+    "1 / (a - 10)",
+    "Int",
+  ],
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "false",
+    "Bool",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for var-track-short-circuit-or 1`] = `
+[
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "b",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutator()",
+    "Bool",
+  ],
+  [
+    "b || a.mutator()",
+    "Bool",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a - 10",
+    "Int",
+  ],
+  [
+    "1 / (a - 10)",
+    "Int",
+  ],
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "false",
+    "Bool",
+  ],
+]
+`;
