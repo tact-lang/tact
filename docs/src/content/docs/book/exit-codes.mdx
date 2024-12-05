@@ -126,7 +126,7 @@ This is an alternative exit code for the successful execution of the [compute ph
 
 ### 2: Stack underflow {#2}
 
-If some operation consumed more elements than there were on the stacks, the error with exit code $2$ is thrown: `Stack underflow`.
+If some operation consumed more elements than there were on the stack, the error with exit code $2$ is thrown: `Stack underflow`.
 
 ```tact
 asm fun drop() { DROP }
@@ -156,12 +156,12 @@ If there are too many elements copied into a closure continuation or stored on t
 ```tact
 // Remember kids, don't try to overflow the stack at home!
 asm fun stackOverflow() {
-    <{
-    }>CONT // c
-    0 SETNUMARGS // c'
-    2 PUSHINT // c' 2
-    SWAP // 2 c'
-    1 -1 SETCONTARGS // <- this blows up
+    x{} SLICE        // s
+    BLESS            // c
+    0 SETNUMARGS     // c'
+    2 PUSHINT        // c' 2
+    SWAP             // 2 c'
+    1 -1 SETCONTARGS // ← this blows up
 }
 
 contract ItsSoOver {
