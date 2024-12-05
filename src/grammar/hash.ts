@@ -23,7 +23,7 @@ import {
     AstFieldDecl,
     AstNode,
     AstAsmFunctionDef,
-    AstAsmInstruction,
+    AstAsmExpression,
 } from "./ast";
 import { createHash } from "crypto";
 import { throwInternalCompilerError } from "../errors";
@@ -312,7 +312,7 @@ export class AstHasher {
         return hashedStatements.join("|");
     }
 
-    private hashInstructions(instructions: AstAsmInstruction[]): string {
+    private hashInstructions(instructions: AstAsmExpression[]): string {
         return instructions.join("|");
     }
 
