@@ -91,7 +91,7 @@ fun sqrt(num: Int): Int;
 
 Computes the [square root](https://en.wikipedia.org/wiki/Square_root) of the [`Int{:tact}`][int] value `num`. Returns the result rounded to the nearest integer. If there are two equally close integers, rounding is done toward the even one.
 
-Attempts to specify negative value of `num` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify a negative value of `num` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage examples:
 
@@ -160,7 +160,7 @@ Computes and returns the [rounded down][round-down] result of `(x * y) / z{:tact
 
 If the value in calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
 
-Attempts to specify negative value of `z` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify a negative value of `z` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage examples:
 
@@ -300,7 +300,7 @@ contract Example {
 
 :::note
 
-  Note, that if you only need to obtain powers of $2$, use the [`pow2(){:tact}`](#pow2) function, as it's more gas-efficient.
+  If you only need to obtain powers of $2$, use the [`pow2(){:tact}`](#pow2) function, as it's more gas-efficient.
 
 :::
 

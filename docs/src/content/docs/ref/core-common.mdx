@@ -3,6 +3,8 @@ title: Common
 description: "Commonly used global static functions from the Core library of Tact"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 List of the most commonly used built-in [global static functions](/book/functions#global-static-functions).
 
 ## Contextual
@@ -125,6 +127,10 @@ Creates a new [`Address{:tact}`][p] based on the [`chain` id](https://ton-blockc
 
 This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
 
+Attempts to specify an invalid `chain` ID (not $-1$ or $0$) throw an exception with [exit code 136](/book/exit-codes#136): `Invalid address`.
+
+Attempts to specify an `chain` ID pointing to the masterchain ($-1$) without [masterchain support](/book/masterchain) enabled throw an exception with [exit code 137](/book/exit-codes#137): `Masterchain support is not enabled for this contract`.
+
 Usage example:
 
 ```tact
@@ -135,12 +141,6 @@ let oldTonFoundationAddr: Address =
     //         |  sha-256 hash of contract's init package (StateInit)
     //         chain id: 0 is a workchain, -1 is a masterchain
 ```
-
-:::caution
-
-  This method throws an error with [exit code 136](/book/exit-codes#136) if `chain` is invalid or with [exit code 137](/book/exit-codes#137) if `chain` points to the masterchain ($-1$) without [masterchain support](/book/masterchain) enabled.
-
-:::
 
 :::note[Useful links:]
 
@@ -172,6 +172,10 @@ fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address;
 
 Computes smart contract's [`Address{:tact}`][p] based on the `chain` id, contract's `code` and contract's initial state `data`. Use [`initOf{:tact}`](/book/expressions#initof) expression to obtain initial `code` and initial `data` of a given contract.
 
+Attempts to specify an invalid `chain` ID (not $-1$ or $0$) throw an exception with [exit code 136](/book/exit-codes#136): `Invalid address`.
+
+Attempts to specify an `chain` ID pointing to the masterchain ($-1$) without [masterchain support](/book/masterchain) enabled throw an exception with [exit code 137](/book/exit-codes#137): `Masterchain support is not enabled for this contract`.
+
 Usage example:
 
 ```tact
@@ -179,16 +183,17 @@ let initPkg: StateInit = initOf SomeContract();
 let hereBeDragons: Address = contractAddressExt(0, initPkg.code, initPkg.data);
 ```
 
-:::caution
+### addressNone
 
-  This method throws an error with [exit code 136](/book/exit-codes#136) if `chain` is invalid or with [exit code 137](/book/exit-codes#137) if `chain` points to the masterchain ($-1$) without [masterchain support](/book/masterchain) enabled.
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
-:::
+```tact
+fun addressNone(): Address?;
+```
 
 :::note
 
-  For this function to work, the compiler option `debug` has to be set to `true{:tact}` for the current project in the [configuration file](/book/config).\
-  Read more about debugging on the dedicated page: [Debugging](/book/debug).
+  TODO: awaits resolution of [those comments](https://github.com/tact-lang/tact/pull/986#discussion_r1865450023).
 
 :::
 
