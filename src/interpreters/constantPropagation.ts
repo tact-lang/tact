@@ -99,7 +99,7 @@ type LatticeValue =
       };
 
 function toLatticeValue(val: Value | undefined): LatticeValue {
-    if (val !== undefined) {
+    if (typeof val !== "undefined") {
         return { value: val, kind: "value" };
     } else {
         return anyValue;
@@ -144,15 +144,15 @@ function copyLatticeValue(val: LatticeValue): LatticeValue {
     }
 }
 
-// The following constants store all the ABI functions known by the analyzer.
-// We need to keep them like this because ABI functions are not registered
+// The following constants store all the builtin functions known by the analyzer.
+// We need to keep them like this because builtin functions are not registered
 // in the CompilerContext, and so, it is not possible to determine which
-// ABI functions are mutation functions and which are not.
+// builtin functions are mutation functions and which are not.
 // So, we need to state that info explicitly.
 
-const knownStructABIFunctions = ["toCell", "fromCell", "toSlice", "fromSlice"];
-const knownStructABIMutationFunctions: string[] = [];
-const knownMapABIFunctions = [
+const knownStructBuiltInFunctions = ["toCell", "fromCell", "toSlice", "fromSlice"];
+const knownStructBuiltInMutationFunctions: string[] = [];
+const knownMapBuiltInFunctions = [
     "set",
     "get",
     "del",
@@ -163,7 +163,7 @@ const knownMapABIFunctions = [
     "replace",
     "replaceGet",
 ];
-const knownMapABIMutationFunctions = ["set", "del", "replace", "replaceGet"];
+const knownMapBuiltInMutationFunctions = ["set", "del", "replace", "replaceGet"];
 
 export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeValue> {
     protected interpreter: TactInterpreter;
@@ -188,22 +188,22 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
     }
 
     public startAnalysis() {
-        // Check that the ABI Functions known by the analyzer are still the ones in StructFunctions and MapFunctions
+        // Check that the builtin Functions known by the analyzer are still the ones in StructFunctions and MapFunctions
         if (
-            StructFunctions.size !== knownStructABIFunctions.length ||
-            knownStructABIFunctions.some((name) => !StructFunctions.has(name))
+            StructFunctions.size !== knownStructBuiltInFunctions.length ||
+            knownStructBuiltInFunctions.some((name) => !StructFunctions.has(name))
         ) {
             throwInternalCompilerError(
-                "There are new Struct ABI functions unknown to the Constant Propagation Analyzer. Please add them to the Constant Propagation Analyzer.",
+                "There are new Struct builtin functions unknown to the Constant Propagation Analyzer. Please add them to the Constant Propagation Analyzer.",
             );
         }
 
         if (
-            MapFunctions.size !== knownMapABIFunctions.length ||
-            knownMapABIFunctions.some((name) => !MapFunctions.has(name))
+            MapFunctions.size !== knownMapBuiltInFunctions.length ||
+            knownMapBuiltInFunctions.some((name) => !MapFunctions.has(name))
         ) {
             throwInternalCompilerError(
-                "There are new Map ABI functions unknown to the Constant Propagation Analyzer. Please add them to the Constant Propagation Analyzer.",
+                "There are new Map builtin functions unknown to the Constant Propagation Analyzer. Please add them to the Constant Propagation Analyzer.",
             );
         }
 
@@ -217,8 +217,10 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
                 this.interpretNativeFunctionDecl(f.ast);
             } else if (f.ast.kind === "asm_function_def") {
                 this.interpretAsmFunctionDef(f.ast);
-            } else {
+            } else if (f.ast.kind === "function_decl") {
                 this.interpretFunctionDecl(f.ast);
+            } else {
+                // error here
             }
         }
 
@@ -250,6 +252,9 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
             // receivers and functions. They will all need a fresh self
             // that includes all the constants.
 
+            // We could join the code of all receivers and then
+            // compute a fix-point (as if the join was the inside of a loop).
+
             // Process receivers
             for (const r of t.receivers) {
                 const selfStruct: StructValue = { $tactStruct: t.name };
@@ -266,7 +271,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
 
             // Process methods
             for (const m of t.functions.values()) {
-                if (t.kind === "contract" || t.kind === "trait") {
+                if (t.kind === "contract") {
                     // Attach a self variable
                     const selfStruct: StructValue = { $tactStruct: t.name };
                     for (const c of t.constants) {
@@ -279,6 +284,8 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
                         "self",
                         toLatticeValue(selfStruct),
                     );
+                } else if (t.kind === "trait") {
+                    // Do not analyze trait
                 } else {
                     // reset the self variable
                     this.envStack.setNewBinding("self", anyValue);
@@ -290,8 +297,10 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
                     this.interpretNativeFunctionDecl(m.ast);
                 } else if (m.ast.kind === "asm_function_def") {
                     this.interpretAsmFunctionDef(m.ast);
-                } else {
+                } else if (m.ast.kind === "function_decl") {
                     this.interpretFunctionDecl(m.ast);
+                } else {
+                    // Error here
                 }
             }
         }
@@ -418,7 +427,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
                 const srcT = getType(this.context, src.name);
                 if (srcT.kind === "struct") {
                     if (
-                        knownStructABIMutationFunctions.includes(
+                        knownStructBuiltInMutationFunctions.includes(
                             idText(ast.method),
                         )
                     ) {
@@ -438,7 +447,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
             }
 
             if (src.kind === "map") {
-                if (knownMapABIMutationFunctions.includes(idText(ast.method))) {
+                if (knownMapBuiltInMutationFunctions.includes(idText(ast.method))) {
                     this.updateBinding(path, ast.self, anyValue, ast.self.loc);
                 }
             }
