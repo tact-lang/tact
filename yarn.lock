@@ -2354,7 +2354,7 @@ cspell-trie-lib@8.16.0:
     "@cspell/cspell-types" "8.16.0"
     gensequence "^7.0.0"
 
-cspell@^8.8.3:
+cspell@^8.16.0:
   version "8.16.0"
   resolved "https://registry.npmjs.org/cspell/-/cspell-8.16.0.tgz#1897d123f8854304bc84ac332590c730e93c5123"
   integrity sha512-U6Up/4nODE+Ca+zqwZXTgBioGuF2JQHLEUIuoRJkJzAZkIBYDqrMXM+zdSL9E39+xb9jAtr9kPAYJf1Eybgi9g==
