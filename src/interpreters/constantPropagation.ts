@@ -387,6 +387,8 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
     /* These methods are required by the interpreter interface, but are not used by the analyzer.
        They are already subsumed by the startAnalysis method. */
 
+       // Add internal compiler error for all these functions
+
     public interpretConstantDef(_ast: AstConstantDef) {}
 
     public interpretStructDecl(_ast: AstStructDecl) {}
@@ -518,8 +520,6 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
 
     public interpretBinaryOp(ast: AstOpBinary): LatticeValue {
         const leftValue = this.interpretExpression(ast.left);
-
-        // Process the rest of the operators, they do not short-circuit
 
         if (leftValue.kind === "value") {
             const rightEvaluator = () => {
