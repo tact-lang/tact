@@ -1,6 +1,10 @@
 import { evalConstantExpression } from "./constEval";
 import { CompilerContext } from "./context";
-import { TactConstEvalError, TactParseError } from "./errors";
+import {
+    TactConstEvalError,
+    TactParseError,
+    throwInternalCompilerError,
+} from "./errors";
 import {
     AstAsmFunctionDef,
     AstBoolean,
@@ -96,6 +100,8 @@ export abstract class InterpreterInterface<T> {
             case "trait":
                 this.interpretTrait(ast);
                 break;
+            default:
+                throwInternalCompilerError("Unrecognized module item kind");
         }
     }
 
@@ -147,6 +153,8 @@ export abstract class InterpreterInterface<T> {
                 return this.interpretFieldAccess(ast);
             case "static_call":
                 return this.interpretStaticCall(ast);
+            default:
+                throwInternalCompilerError("Unrecognized expression kind");
         }
     }
 
@@ -217,6 +225,8 @@ export abstract class InterpreterInterface<T> {
             case "statement_while":
                 this.interpretWhileStatement(ast);
                 break;
+            default:
+                throwInternalCompilerError("Unrecognized statement kind");
         }
     }
 

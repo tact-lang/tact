@@ -128,7 +128,7 @@ function joinLatticeValues(
         return val1;
     } else {
         const commonSubValue = extractCommonSubValue(val1.value, val2.value);
-        if (commonSubValue !== undefined) {
+        if (typeof commonSubValue !== "undefined") {
             return toLatticeValue(commonSubValue);
         } else {
             return anyValue;
@@ -150,20 +150,26 @@ function copyLatticeValue(val: LatticeValue): LatticeValue {
 // builtin functions are mutation functions and which are not.
 // So, we need to state that info explicitly.
 
-const knownStructBuiltInFunctions = ["toCell", "fromCell", "toSlice", "fromSlice"];
+const knownStructBuiltInNonMutationFunctions = [
+    "toCell",
+    "fromCell",
+    "toSlice",
+    "fromSlice",
+];
 const knownStructBuiltInMutationFunctions: string[] = [];
-const knownMapBuiltInFunctions = [
-    "set",
+const knownMapBuiltInNonMutationFunctions = [
     "get",
-    "del",
     "asCell",
     "isEmpty",
     "exists",
     "deepEquals",
+];
+const knownMapBuiltInMutationFunctions = [
+    "set",
+    "del",
     "replace",
     "replaceGet",
 ];
-const knownMapBuiltInMutationFunctions = ["set", "del", "replace", "replaceGet"];
 
 export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeValue> {
     protected interpreter: TactInterpreter;
@@ -189,15 +195,25 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
 
     public startAnalysis() {
         // Check that the builtin Functions known by the analyzer are still the ones in StructFunctions and MapFunctions
+        const knownStructBuiltInFunctions =
+            knownStructBuiltInNonMutationFunctions.concat(
+                knownStructBuiltInMutationFunctions,
+            );
         if (
             StructFunctions.size !== knownStructBuiltInFunctions.length ||
-            knownStructBuiltInFunctions.some((name) => !StructFunctions.has(name))
+            knownStructBuiltInFunctions.some(
+                (name) => !StructFunctions.has(name),
+            )
         ) {
             throwInternalCompilerError(
                 "There are new Struct builtin functions unknown to the Constant Propagation Analyzer. Please add them to the Constant Propagation Analyzer.",
             );
         }
 
+        const knownMapBuiltInFunctions =
+            knownMapBuiltInNonMutationFunctions.concat(
+                knownMapBuiltInMutationFunctions,
+            );
         if (
             MapFunctions.size !== knownMapBuiltInFunctions.length ||
             knownMapBuiltInFunctions.some((name) => !MapFunctions.has(name))
@@ -211,16 +227,25 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
 
         // Process all functions
         for (const f of getAllStaticFunctions(this.context)) {
-            if (f.ast.kind === "function_def") {
-                this.interpretFunctionDef(f.ast);
-            } else if (f.ast.kind === "native_function_decl") {
-                this.interpretNativeFunctionDecl(f.ast);
-            } else if (f.ast.kind === "asm_function_def") {
-                this.interpretAsmFunctionDef(f.ast);
-            } else if (f.ast.kind === "function_decl") {
-                this.interpretFunctionDecl(f.ast);
-            } else {
-                // error here
+            switch (f.ast.kind) {
+                case "function_def": {
+                    this.interpretFunctionDef(f.ast);
+                    break;
+                }
+                case "native_function_decl": {
+                    this.interpretNativeFunctionDecl(f.ast);
+                    break;
+                }
+                case "asm_function_def": {
+                    this.interpretAsmFunctionDef(f.ast);
+                    break;
+                }
+                case "function_decl": {
+                    this.interpretFunctionDecl(f.ast);
+                    break;
+                }
+                default:
+                    throwInternalCompilerError("Unrecognized function kind.");
             }
         }
 
@@ -231,14 +256,14 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
                 // Prepare the self struct (contracts are treated as structs by the analyzer)
                 const selfStruct: StructValue = { $tactStruct: t.name };
                 for (const f of t.fields) {
-                    if (f.default !== undefined) {
+                    if (typeof f.default !== "undefined") {
                         selfStruct[f.name] = f.default;
                     }
                 }
 
                 // Include also the constants
                 for (const c of t.constants) {
-                    if (c.value !== undefined) {
+                    if (typeof c.value !== "undefined") {
                         selfStruct[c.name] = c.value;
                     }
                 }
@@ -252,14 +277,16 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
             // receivers and functions. They will all need a fresh self
             // that includes all the constants.
 
-            // We could join the code of all receivers and then
+            // TODO: Join the code of all receivers and then
             // compute a fix-point (as if the join was the inside of a loop).
+            // The objective is to have initial values
+            // for the contract fields when entering a contract method or receiver.
 
             // Process receivers
             for (const r of t.receivers) {
                 const selfStruct: StructValue = { $tactStruct: t.name };
                 for (const c of t.constants) {
-                    if (c.value !== undefined) {
+                    if (typeof c.value !== "undefined") {
                         selfStruct[c.name] = c.value;
                     }
                 }
@@ -275,7 +302,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
                     // Attach a self variable
                     const selfStruct: StructValue = { $tactStruct: t.name };
                     for (const c of t.constants) {
-                        if (c.value !== undefined) {
+                        if (typeof c.value !== "undefined") {
                             selfStruct[c.name] = c.value;
                         }
                     }
@@ -285,22 +312,34 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
                         toLatticeValue(selfStruct),
                     );
                 } else if (t.kind === "trait") {
-                    // Do not analyze trait
+                    // Skip the analysis for traits
+                    continue;
                 } else {
                     // reset the self variable
                     this.envStack.setNewBinding("self", anyValue);
                 }
 
-                if (m.ast.kind === "function_def") {
-                    this.interpretFunctionDef(m.ast);
-                } else if (m.ast.kind === "native_function_decl") {
-                    this.interpretNativeFunctionDecl(m.ast);
-                } else if (m.ast.kind === "asm_function_def") {
-                    this.interpretAsmFunctionDef(m.ast);
-                } else if (m.ast.kind === "function_decl") {
-                    this.interpretFunctionDecl(m.ast);
-                } else {
-                    // Error here
+                switch (m.ast.kind) {
+                    case "function_def": {
+                        this.interpretFunctionDef(m.ast);
+                        break;
+                    }
+                    case "native_function_decl": {
+                        this.interpretNativeFunctionDecl(m.ast);
+                        break;
+                    }
+                    case "asm_function_def": {
+                        this.interpretAsmFunctionDef(m.ast);
+                        break;
+                    }
+                    case "function_decl": {
+                        this.interpretFunctionDecl(m.ast);
+                        break;
+                    }
+                    default:
+                        throwInternalCompilerError(
+                            "Unrecognized function kind.",
+                        );
                 }
             }
         }
@@ -381,25 +420,45 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
                     });
                 });
                 break;
+            default:
+                throwInternalCompilerError(
+                    "Non exhaustive receiver kind checks.",
+                );
         }
     }
 
     /* These methods are required by the interpreter interface, but are not used by the analyzer.
        They are already subsumed by the startAnalysis method. */
 
-       // Add internal compiler error for all these functions
+    public interpretConstantDef(_ast: AstConstantDef) {
+        throwInternalCompilerError(
+            "interpretConstantDef should not be called.",
+        );
+    }
 
-    public interpretConstantDef(_ast: AstConstantDef) {}
+    public interpretStructDecl(_ast: AstStructDecl) {
+        throwInternalCompilerError("interpretStructDecl should not be called.");
+    }
 
-    public interpretStructDecl(_ast: AstStructDecl) {}
+    public interpretMessageDecl(_ast: AstMessageDecl) {
+        throwInternalCompilerError(
+            "interpretMessageDecl should not be called.",
+        );
+    }
 
-    public interpretMessageDecl(_ast: AstMessageDecl) {}
+    public interpretPrimitiveTypeDecl(_ast: AstPrimitiveTypeDecl) {
+        throwInternalCompilerError(
+            "interpretPrimitiveTypeDecl should not be called.",
+        );
+    }
 
-    public interpretPrimitiveTypeDecl(_ast: AstPrimitiveTypeDecl) {}
+    public interpretContract(_ast: AstContract) {
+        throwInternalCompilerError("interpretContract should not be called.");
+    }
 
-    public interpretContract(_ast: AstContract) {}
-
-    public interpretTrait(_ast: AstTrait) {}
+    public interpretTrait(_ast: AstTrait) {
+        throwInternalCompilerError("interpretTrait should not be called.");
+    }
 
     /* Required but not used methods end here */
 
@@ -449,7 +508,11 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
             }
 
             if (src.kind === "map") {
-                if (knownMapBuiltInMutationFunctions.includes(idText(ast.method))) {
+                if (
+                    knownMapBuiltInMutationFunctions.includes(
+                        idText(ast.method),
+                    )
+                ) {
                     this.updateBinding(path, ast.self, anyValue, ast.self.loc);
                 }
             }
@@ -605,7 +668,7 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
 
         const resultWithDefaultFields = structTy.fields.reduce(
             (resObj, field) => {
-                if (field.default !== undefined) {
+                if (typeof field.default !== "undefined") {
                     resObj.set(field.name, field.default);
                 } else {
                     if (field.type.kind === "ref" && field.type.optional) {
@@ -1372,13 +1435,13 @@ export class ConstantPropagationAnalyzer extends InterpreterInterface<LatticeVal
         env1: Environment<LatticeValue> | undefined,
         env2: Environment<LatticeValue> | undefined,
     ): Environment<LatticeValue> {
-        if (env1 === undefined && env2 === undefined) {
+        if (typeof env1 === "undefined" && typeof env2 === "undefined") {
             throw new InterruptedBranch();
-        } else if (env1 !== undefined && env2 === undefined) {
+        } else if (typeof env1 !== "undefined" && typeof env2 === "undefined") {
             return env1;
-        } else if (env1 === undefined && env2 !== undefined) {
+        } else if (typeof env1 === "undefined" && typeof env2 !== "undefined") {
             return env2;
-        } else if (env1 !== undefined && env2 !== undefined) {
+        } else if (typeof env1 !== "undefined" && typeof env2 !== "undefined") {
             return joinEnvironments(env1, env2);
         } else {
             // This case is impossible
@@ -1428,8 +1491,10 @@ function joinEnvironments(
 
     // The join is defined only if both targets have a parent or none has one.
     if (
-        (target1.parent === undefined && target2.parent !== undefined) ||
-        (target1.parent !== undefined && target2.parent === undefined)
+        (typeof target1.parent === "undefined" &&
+            typeof target2.parent !== "undefined") ||
+        (typeof target1.parent !== "undefined" &&
+            typeof target2.parent === "undefined")
     ) {
         throwInternalCompilerError(
             "Cannot join target environments because they have different ancestor lengths.",
@@ -1439,7 +1504,10 @@ function joinEnvironments(
     // Here it is ensured that both targets have a parent or none has.
 
     // Now join the parent environments
-    if (target1.parent !== undefined && target2.parent !== undefined) {
+    if (
+        typeof target1.parent !== "undefined" &&
+        typeof target2.parent !== "undefined"
+    ) {
         return {
             values: finalVars,
             parent: joinEnvironments(target1.parent, target2.parent),
@@ -1475,9 +1543,12 @@ function eqEnvironments(
     const parent1 = env1.parent;
     const parent2 = env2.parent;
 
-    if (parent1 !== undefined && parent2 !== undefined) {
+    if (typeof parent1 !== "undefined" && typeof parent2 !== "undefined") {
         return eqEnvironments(parent1, parent2);
-    } else if (parent1 === undefined && parent2 === undefined) {
+    } else if (
+        typeof parent1 === "undefined" &&
+        typeof parent2 === "undefined"
+    ) {
         return true;
     } else {
         return false;
@@ -1510,7 +1581,7 @@ function extractCommonSubValue(val1: Value, val2: Value): Value | undefined {
 
             for (const key of commonKeys) {
                 const commonVal = extractCommonSubValue(val1[key]!, val2[key]!);
-                if (commonVal !== undefined) {
+                if (typeof commonVal !== "undefined") {
                     result[key] = commonVal;
                 }
             }
@@ -1545,7 +1616,7 @@ class WrapperStack extends EnvironmentStack<Value> {
 
     public getBinding(name: string): Value | undefined {
         const binding = this.env.getBinding(name);
-        if (binding !== undefined && binding.kind === "value") {
+        if (typeof binding !== "undefined" && binding.kind === "value") {
             return binding.value;
         } else {
             return undefined;
@@ -1554,7 +1625,9 @@ class WrapperStack extends EnvironmentStack<Value> {
 
     public selfInEnvironment(): boolean {
         const binding = this.env.getBinding("self");
-        return binding !== undefined ? binding.kind === "value" : false;
+        return typeof binding !== "undefined"
+            ? binding.kind === "value"
+            : false;
     }
 
     public executeInNewEnvironment<T>(

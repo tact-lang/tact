@@ -146,7 +146,7 @@ export class EnvironmentStack<V> {
 
         let newParent: Environment<V> | undefined = undefined;
 
-        if (env.parent !== undefined) {
+        if (typeof env.parent !== "undefined") {
             newParent = this.copyEnvironment(env.parent);
         }
 
@@ -155,7 +155,7 @@ export class EnvironmentStack<V> {
 
     private findBindingMap(name: string): Map<string, V> | undefined {
         let env: Environment<V> | undefined = this.currentEnv;
-        while (env !== undefined) {
+        while (typeof env !== "undefined") {
             if (env.values.has(name)) {
                 return env.values;
             } else {
@@ -227,7 +227,7 @@ export class EnvironmentStack<V> {
     public updateBinding(name: string, val: V) {
         if (name !== WILDCARD_NAME) {
             const bindings = this.findBindingMap(name);
-            if (bindings !== undefined) {
+            if (typeof bindings !== "undefined") {
                 bindings.set(name, val);
             }
         }
@@ -245,7 +245,7 @@ export class EnvironmentStack<V> {
             return undefined;
         }
         const bindings = this.findBindingMap(name);
-        if (bindings !== undefined) {
+        if (typeof bindings !== "undefined") {
             return bindings.get(name);
         } else {
             return undefined;
@@ -253,7 +253,7 @@ export class EnvironmentStack<V> {
     }
 
     public selfInEnvironment(): boolean {
-        return this.findBindingMap("self") !== undefined;
+        return typeof this.findBindingMap("self") !== "undefined";
     }
 
     /*
@@ -432,7 +432,7 @@ abstract class AbstractInterpreter<T> extends InterpreterInterface<T> {
         );
 
         const builtinResult = this.evalBuiltinOnSelf(ast, selfValue, argValues);
-        if (builtinResult !== undefined) {
+        if (typeof builtinResult !== "undefined") {
             return builtinResult;
         }
 
@@ -516,7 +516,7 @@ abstract class AbstractInterpreter<T> extends InterpreterInterface<T> {
         argValues: T[],
     ): T {
         const builtinResult = this.evalBuiltin(ast, argValues);
-        if (builtinResult !== undefined) {
+        if (typeof builtinResult !== "undefined") {
             return builtinResult;
         }
 
@@ -931,7 +931,7 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
     public lookupBinding(name: AstId): Value {
         if (hasStaticConstant(this.context, idText(name))) {
             const constant = getStaticConstant(this.context, idText(name));
-            if (constant.value !== undefined) {
+            if (typeof constant.value !== "undefined") {
                 return constant.value;
             } else {
                 this.emitFieldOrIdError(
@@ -941,7 +941,7 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
             }
         }
         const variableBinding = this.envStack.getBinding(idText(name));
-        if (variableBinding !== undefined) {
+        if (typeof variableBinding !== "undefined") {
             return variableBinding;
         }
         this.emitFieldOrIdError("cannot evaluate a variable", name.loc);
@@ -1057,7 +1057,7 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
         // or null for uninitialized optional fields
         const resultWithDefaultFields: StructValue = structTy.fields.reduce(
             (resObj, field) => {
-                if (field.default !== undefined) {
+                if (typeof field.default !== "undefined") {
                     resObj[field.name] = field.default;
                 } else {
                     if (field.type.kind === "ref" && field.type.optional) {
@@ -1100,14 +1100,14 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
                     contractTypeDescription.constants.find((constId) =>
                         eqNames(ast.field, constId.name),
                     );
-                if (foundContractConst === undefined) {
+                if (typeof foundContractConst === "undefined") {
                     // not a constant, e.g. `self.storageVariable`
                     this.emitFieldOrIdError(
                         "cannot evaluate non-constant self field access",
                         ast.aggregate.loc,
                     );
                 }
-                if (foundContractConst.value !== undefined) {
+                if (typeof foundContractConst.value !== "undefined") {
                     return foundContractConst.value;
                 } else {
                     this.emitFieldOrIdError(
@@ -1463,7 +1463,7 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
                 } catch (e) {
                     if (e instanceof ReturnSignal) {
                         const val = e.getValue();
-                        if (val !== undefined) {
+                        if (typeof val !== "undefined") {
                             return val;
                         }
                         // The function executed a return without a value.
@@ -1524,7 +1524,7 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
             }
             const v = val[idText(field)];
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            if (v === undefined) {
+            if (typeof v === "undefined") {
                 this.emitFieldOrIdError(
                     `destructuring assignment expected field ${idTextErr(
                         field,
@@ -1569,7 +1569,7 @@ export class TactInterpreter extends AbstractInterpreter<Value> {
 
         // Look up the first identifier
         const baseStruct = this.envStack.getBinding(idText(path[0]!));
-        if (baseStruct !== undefined) {
+        if (typeof baseStruct !== "undefined") {
             // The typechecker ensures that baseStruct is a contract or a struct,
             // which are treated identically by the interpreter as StructValues
 

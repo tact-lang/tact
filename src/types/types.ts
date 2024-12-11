@@ -168,11 +168,12 @@ export function copyValue(val: Value): Value {
         }
         return result;
     } else if (Address.isAddress(val)) {
-        return val; // What is the proper way to copy an Address?
+        return val; // Addresses are immutable (they freeze their fields in their constructor)
     } else if (val instanceof Cell) {
-        return val; // What is the proper way to copy a Cell?
+        return val; // Cells are immutable (they freeze their fields in their constructor)
     } else if (val instanceof Slice) {
-        return val.clone(); // Is this the proper way of copying a Slice?
+        return val.clone(); // This will make a copy of the slice from the point it is
+        // currently reading (this is compatible with the way "asCell" works in the eqValues method)
     } else {
         // These are atomic values. There is no need to copy them
         return val;
