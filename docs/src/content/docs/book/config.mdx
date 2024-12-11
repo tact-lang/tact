@@ -62,7 +62,7 @@ In [Blueprint][bp], `name` refers to the name of the contract itself.
 
 Path to the project's Tact file. You can only specify one Tact file per project.
 
-In [Blueprint][bp], `path` is superseded by the `target` field in `wrappers/ContractName.compile.ts`.
+In [Blueprint][bp], `path` is superseded by the `target` field in `wrappers/ContractName.compile.ts` by default, or in `compilables/ContractName.compile.ts` if you have `separateCompilables` the option set in the [`blueprint.config.ts`][bp-config].
 
 ```json filename="tact.config.json" {5}
 {
@@ -97,7 +97,7 @@ In [Blueprint][bp], `output` is not used and all generated files are always plac
 
 Compilation options for the project.
 
-In [Blueprint][bp], they act as default unless modified in `wrappers/ContractName.compile.ts`.
+In [Blueprint][bp], they act as default unless modified in `wrappers/ContractName.compile.ts` by default, or in `compilables/ContractName.compile.ts` if you have `separateCompilables` the option set in the [`blueprint.config.ts`][bp-config].
 
 ```json filename="tact.config.json" {7,11}
 {
@@ -413,3 +413,4 @@ In [Blueprint][bp], `mode` is always set to `"full"{:json}` and cannot be overwr
 ```
 
 [bp]: https://github.com/ton-org/blueprint
+[bp-config]: https://github.com/ton-org/blueprint/tree/main?tab=readme-ov-file#configuration

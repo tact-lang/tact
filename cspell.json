@@ -26,6 +26,8 @@
     "cleanall",
     "codegen",
     "comptime",
+    "Compilables",
+    "compilables",
     "Daniil",
     "decompilation",
     "decompile",

@@ -34,6 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs: complete overhaul of the exit codes page: PR [#978](https://github.com/tact-lang/tact/pull/978)
 - Docs: enhanced Jettons Cookbook page: PR [#944](https://github.com/tact-lang/tact/pull/944)
 - Error codes in the report are now formatted as a list: PR [#1051](https://github.com/tact-lang/tact/pull/1051)
+- Clarify error message for bounced types from which accessed a field that does not fit in 224 bytes: PR [#1111](https://github.com/tact-lang/tact/pull/1111)
+- Docs: note that `compilables/` can sometimes be used over `wrappers/` in Blueprint projects: PR [#1112](https://github.com/tact-lang/tact/pull/1112)
 
 ### Fixed
 
@@ -46,8 +48,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `as coins` map value serialization type is now handled correctly: PR [#987](https://github.com/tact-lang/tact/pull/987)
 - Type checking for `foreach` loops in trait methods: PR [#1017](https://github.com/tact-lang/tact/pull/1017)
 - The `sha256()` function no longer throws on statically known strings of any length: PR [#907](https://github.com/tact-lang/tact/pull/907)
+- TypeScript wrappers generation for messages with single quote: PR [#1106](https://github.com/tact-lang/tact/pull/1106)
 
 ### Release contributors
+
+## [1.5.3] - 2024-11-28
+
+### Changed
+
+- Replaced `Set.isSubsetOf()` with `isSubsetOf()` to support Node.js ≥18 and <22: PR [#1009](https://github.com/tact-lang/tact/pull/1009)
+
+### Release contributors
+
+- [Novus Nota](https://github.com/novusnota)
 
 ## [1.5.2] - 2024-09-25
 
