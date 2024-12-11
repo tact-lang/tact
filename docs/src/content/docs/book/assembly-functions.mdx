@@ -1,0 +1,506 @@
+---
+title: Assembly functions
+description: "Advanced module-level functions that allow writing TVM instructions directly in the Tact assembly"
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+:::caution
+
+  These are very advanced functions that require experience and vigilance in both definitions and usage. The logical errors in them are extremely hard to spot, the error messages are abysmal, and type checking isn't currently provided by Tact.
+
+  That said, if you know what you're doing, they can offer you the smallest possible gas usage, the best performance and the most control over [TVM][tvm] execution. Remember — with great power comes great responsibility.
+
+:::
+
+Assembly functions (or asm functions for short) are module-level functions that allow you to write [Tact assembly](#asm-tact). Unlike all other functions, their bodies consist only of [TVM instructions][tvm-instructions] and [some other primitives](#asm-tact), and don't use any [Tact statements](/book/statements).
+
+```tact
+// all assembly functions must start with "asm" keyword
+// ↓
+   asm fun answer(): Int { 42 INT }
+//                         ------
+//                         Notice, that the body contains only of
+//                         TVM instructions and some primitives,
+//                         like numbers or bitstrings
+```
+
+## Tact assembly {#tact}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+Since [TVM][tvm] is a stack machine, writing assembly for it means manipulating the stack entries with [TVM instructions][tvm-instructions]. However, many instructions require the use of additional primitives, such as numbers or bitstrings. All needed primitives are provided in the Tact assembly, whose syntax looks familiar to Fift, but is much more minimal and comfortable to use.
+
+Except for comments, everything in `asm{:tact}` function bodies must be separated by spaces or newline characters.
+
+```tact
+asm fun theLegendOfAsmTactina() {
+    // String literals, useful for debug instructions
+    "Anything inside double-quotes that's not a double-quote"
+
+    // Hex bitstrings with optional padding via _,
+    // which are represented by Slices without references
+    // with up to 1023 data bits
+    x{babecafe_}
+
+    // Binary bitstrings, which are like their hex counterparts,
+    // but do not have the optional padding
+    b{0101}
+
+    // Number literals, represented by Int values on TVM
+    42 -13
+
+    // TVM control registers
+    c0 // c0, c1, ..., c15
+
+    // TVM stack registers
+    s0 // s0, s1, ..., s255
+
+    // TVM instructions themselves
+    MYCODE // without wrapping in double-quotes "..."!
+}
+```
+
+:::caution
+
+  The `i s()` syntax for referring to stack registers beyond the $0 - 15$ range is deprecated and recognized as an error in Tact 1.6 and onward. Whenever you see `[ii] s()` in the [TVM instructions list][tvm-instructions], use one of `s0`, `s1`, ..., `s255` instead.
+
+:::
+
+## Stack calling conventions {#calling}
+
+The syntax for parameters and return values is the same as for other function kinds, but there is one caveat — argument values are pushed to the stack before the function body is executed, and return values are what's left on the stack afterward.
+
+That is, the first parameter is pushed to the stack first, the second one second, and so on, so that the first parameter is at the bottom of the stack and the last one at the top.
+
+```tact
+asm extends fun storeCoins(self: Builder, value: Int): Builder {
+    //                     ↑              ↑
+    //                     |              Pushed last, sits on top of the stack
+    //                     Pushed first, sits on the bottom of the stack
+
+    // Stores the value of type `Int as coins` into the Builder,
+    // taking the Builder from the bottom of the stack
+    // and Int from the top of the stack,
+    // producing a new Builder back
+    STVARUINT16
+}
+```
+
+Since the bodies of `asm{:tact}` functions do not contain Tact statements, any direct references to parameters in function bodies will be recognized as [TVM][tvm] instructions, which can easily lead to very obscure error messages.
+
+```tact
+/// Simply returns back the value of `x`
+asm fun identity(x: Int): Int { }
+
+/// COMPILATION ERROR!
+/// The `BOC` is not recognized as a parameter,
+/// but instead is interpreted as a non-existent TVM instruction
+asm fun bocchiThe(BOC: Cell): Cell { BOC }
+```
+
+TODO: Return the written back here
+
+## Stack registers {#stack-registers}
+
+The so-called _stack registers_ are conventional way of referring to the values at the top of the stack. In total, there are $256$ stack registers, i.e. values held on the stack at any given time. You can refer to any of them using any of `s0`, `s1`, ..., `s255`.
+
+Register `s0` is the value at the top of the stack, register `s1` is the value immediately after it, and so on, until we reach the bottom of the stack, represented by `s255`, i.e. the $256$th stack register. When a value `x` is pushed onto a stack, it becomes the new `s0`. At the same time, old `s0` becomes new `s1`, old `s1` — new `s2`, and so on.
+
+```tact
+asm fun takeSecond(a: Int, b: Int): Int {
+    //             ↑       ↑
+    //             |       Pushed last, sits on top of the stack
+    //             Pushed first, sits second from the top of the stack
+
+    // Now, let's swap the s0 (top of the stack) with s1 (second-to-top)
+
+    // Before │ After
+    // ───────┼───────
+    // s0 = b │ s0 = a
+    // s1 = a │ s1 = b
+    SWAP
+
+    // Then, let's drop the value from the top of the stack
+
+    // Before │ After
+    // ───────┼───────
+    // s0 = a │ s0 = b
+    // s1 = b │ s1 is now either some value deeper or just blank
+    DROP
+
+    // At the end, we have only one value on the stack, which is b
+    // Thus, it is captured by our return type `Int`
+}
+
+fun showcase() {
+    takeSecond(5, 10); // 10, i.e. b
+}
+```
+
+:::caution
+
+  Attempts to access an empty stack register, i.e. one with no value at the time of access, throw an exception with [exit code 2](/book/exit-codes#2): `Stack underflow`.
+
+  More about stack limits: [Limitations](#limitations).
+
+:::
+
+## Arrangements {#arrangements}
+
+Often times it's useful to change the order of arguments pushed to the stack or the order of return values without referring to stack registers in the body. You can do that with `asm{:tact}` arrangements in the following manner:
+
+```tact
+// Changing the order of arguments to match the STDICT signature:
+// `c` will be pushed first and get on the bottom of the stack,
+// while `self` will be pushed last and get on top of the stack
+asm(c self) extends fun asmStoreDict(self: Builder, c: Cell?): Builder { STDICT }
+
+// Changing the order of return values of LDVARUINT16 instruction,
+// since originally it would place the modified Slice on top of the stack
+asm(-> 1 0) extends fun asmLoadCoins(self: Slice): SliceInt { LDVARUINT16 }
+//     ↑ ↑
+//     | Value of the stack register 0,
+//     | which is the topmost value in the stack
+//     Value of the stack register 1,
+//     which is second-to-top value in the stack
+// And the return type `SliceInt`,
+// which is the following Struct:
+struct SliceInt { s: Slice; val: Int }
+
+// Changing the order of return values compared to the stack
+// and switching the order of arguments as well
+asm(s len -> 1 0) extends fun asmLoadInt(len: Int, s: Slice): SliceInt { LDIX }
+//           ↑ ↑
+//           | Value of the stack register 0,
+//           | which is the topmost value in the stack
+//           Value of the stack register 1,
+//           which is second-to-top value in the stack
+
+// Putting the above all together we get:
+fun showcase() {
+    let b = beginCell()
+        .storeCoins(42)
+        .storeInt(27, 10)
+        .asmStoreDict(emptyMap());
+
+    let s = b.asSlice();
+    let si: SliceInt = s.asmLoadCoins();
+    s = si.s; // assigning the modified Slice
+    let coins = si.val; // 42
+    let si2: SliceInt = s.asmLoadInt(10); // Slice remainder and 27
+}
+```
+
+Note, that arrangements do not drop or discard any values — they only manipulate the order of arguments and return values as those are declared. This means, for example, that arrangement cannot access values from the stack that are not captured by the return type of the assembly function.
+
+That said, there's a [caveat to `mutates` attribute and asm arrangements](#caveats-mutates), so be sure to read about it later.
+
+## Limitations {#limitations}
+
+At any given time, the number of values on the stack will be in the inclusive range from $0$ to $256$. Going beyond this range will cause exceptions to be thrown.
+
+Attempts to drop the number of stack values below $0$ throw an exception with [exit code 2](/book/exit-codes#2): `Stack underflow`.
+
+```tact
+asm fun drop() { DROP }
+
+fun exitCode2() {
+    // Drops way more elements from the stack
+    // than there were before, causing an underflow
+    repeat (100) { drop() }
+}
+```
+
+Attempts to push more than $256$ values onto the stack or have more than $256$ values stored there throw an exception with [exit code 3](/book/exit-codes#3): `Stack overflow`.
+
+```tact
+asm fun stackOverflow() {
+    x{} SLICE        // s
+    BLESS            // c
+    0 SETNUMARGS     // c'
+    2 PUSHINT        // c' 2
+    SWAP             // 2 c'
+    1 -1 SETCONTARGS // ← this blows up
+}
+
+fun exitCode3() {
+    // Overflows the inner stack of a continuation
+    stackOverflow();
+}
+```
+
+## Caveats {#caveats}
+
+### Case sensitivity {#caveats-case}
+
+[TVM instructions][tvm-instructions] are case-sensitive and are always written in upper case (capital letters).
+
+```tact
+/// ERROR!
+asm fun bad1(): Cell { mycode }
+
+/// ERROR!
+asm fun bad2(): Cell { MyCoDe }
+
+/// 👍
+asm fun good(): Cell { MYCODE }
+```
+
+### No double quotes needed {#caveats-quotes}
+
+It is not necessary to enclose [TVM instructions][tvm-instructions] in double quotes. On the contrary, they are then interpreted as strings, which is probably _not_ what you want:
+
+```tact
+// Pushes the string "MYCODE" onto the compile-time stack,
+// where it gets discarded even before the compute phase starts
+asm fun wrongMyCode() { "MYCODE" }
+
+// Invokes the TVM instruction MYCODE during the compute phase,
+// which returns the contract code as a Cell
+asm fun myCode(): Cell { MYCODE }
+```
+
+### `mutates` consumes an extra value {#caveats-mutates}
+
+Specifying a [`mutates{:tact}`](/book/functions#mutation-functions) attribute, i.e. defining a mutation function, makes the assembly function consume one more value deeper into the stack than the declared return values. Consider the following example:
+
+```tact
+asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
+```
+
+There, `LDREF` instruction produces two stack entries: a [`Cell{:tact}`][cell] and a modified [`Slice{:tact}`][slice] in that order, with the [`Slice{:tact}`][slice] pushed on top of the stack. Then, the arrangement `-> 1 0{:tact}` inverses those values, making the [`Cell{:tact}`][cell] sit on top of the stack.
+
+Finally, the [`mutates{:tact}`](/book/functions#mutation-functions) attribute makes the function consume the deepest value on the stack, i.e. [`Slice{:tact}`][slice], and assign it to `self{:tact}`, while returning the [`Cell{:tact}`][cell] value to the caller.
+
+Overall, [`mutates{:tact}`](/book/functions#mutation-functions) attribute can be useful in some cases, but you must stay vigilant when using it with assembly functions.
+
+:::caution
+
+  If the type of the deepest value on the stack won't match the type of `self{:tact}`, then an exception with [exit code 7](/book/exit-codes#7) will be thrown: `Type check error`.
+
+:::
+
+### Don't rely on initial stack values {#caveats-initial}
+
+The [TVM][tvm] places a couple of values onto its stack upon initialization, and those values are based on the [event that caused the transaction][tvm-init]. In other languages you might've had to rely on their order and types, while in Tact it's done for you.
+
+Moreover, these initial stack values may differ from [what's described in TON Docs][tvm-init] and are **not** to be touched in Tact unless you want to cause a spontaneous [exit code 7](/book/exit-codes#7): `Type check error` somewhere near the end of your function bodies.
+
+Therefore, to access details such as the amount of [nanoToncoins](/book/integers#nanotoncoin) in a message or the [`Address{:tact}`][p] of the sender it's strongly recommended to call the [`context(){:tact}`](/ref/core-common#context) or [`sender(){:tact}`](/ref/core-common#sender) functions instead of attempting to look for those values on the stack.
+
+## Debugging {#debugging}
+
+The number of values the stack has at any given time is called the _depth_, and it's accessible via the [`DEPTH`](https://docs.ton.org/v3/documentation/tvm/instructions#68) instruction. It's quite handy for seeing the number of values before and after calling the assembly functions you're debugging, and can be used within asm logic.
+
+```tact
+asm fun depth(): Int { DEPTH }
+```
+
+To see both the stack depth and the values on it, there's a function in the Core library of Tact: [`dumpStack(){:tact}`](/ref/core-debug#dumpstack). It's great for keeping track of the stack while debugging, although it's computationally expensive and only prints values, not returns them, so use it sparingly and only when testing.
+
+Read more about debugging Tact contracts on the dedicated page: [Debugging](/book/debug).
+
+## Attributes {#attributes}
+
+The following attributes can be specified:
+
+* `inline{:tact}` — does nothing, since assembly functions cannot be inlined yet.
+* [`extends{:tact}`](/book/functions#extension-function) — makes it an [extension function](/book/functions#extension-function).
+* [`mutates{:tact}`](/book/functions#mutation-functions) (along with [`extends{:tact}`](/book/functions#extension-function)) — makes it an [extension mutation function](/book/functions#mutation-functions).
+
+Those attributes _cannot_ be specified:
+
+* `abstract{:tact}` — assembly functions must have a body defined.
+* `virtual{:tact}` and `override{:tact}` — assembly functions cannot be defined within a contract or a trait.
+* [`get{:tact}`](/book/functions#getter-functions) — assembly functions cannot be [getters](/book/functions#getter-functions).
+
+```tact
+/// `Builder.storeCoins()` extension function
+asm extends fun storeCoins(self: Builder, value: Int): Builder {
+    STVARUINT16
+}
+
+/// `Slice.skipBits()` extension mutation function
+asm extends mutates fun skipBits(self: Slice, l: Int) {
+    SDSKIPFIRST
+}
+```
+
+## Interesting examples {#examples}
+
+On the [TVM instructions][tvm-instructions] page, you may have noticed that the "signatures" of instructions are written in a special form called _stack notation_, which describes the state of the stack before and after the given instruction is executed.
+
+For example, `x y - z` describes an instruction that grabs two values `x` and `y` from the stack, with `y` at the top of the stack and `x` second to the top, and then pushes the result `z` onto the stack. Notice that other values deeper down the stack are not accessed.
+
+That notation omits the type info and only implicitly describes the state of stack registers, so for the following examples we'll use a different one, combining the notions of parameters and return values with the stack notation like this:
+
+```tact
+//   The types of parameters
+//   |      |       and types of return values are shown
+//   ↓      ↓       ↓
+// x:Int, y:Int → z:Int — all comma-separated
+// ————————————————————
+// s1     s0    → s0
+// ↑      ↑       ↑
+// And the stack registers are shown too,
+// which helps visually map them onto parameters and return values
+```
+
+When there are literals involved, they'll be shown as is. Additionally, when values on the stack do not represent the parameters or [Struct][struct] fields of the return type, only their type is given.
+
+### keccak256
+
+```tact
+// Computes and returns the Keccak-256 hash as an 256-bit unsigned `Int`
+// from a passed `Slice` `s`. Uses the Ethereum-compatible implementation.
+asm fun keccak256(s: Slice): Int {
+    // s:Slice → s:Slice, 1
+    // —————————————————————
+    // s0      → s1       s0
+    ONE
+
+    // s:Slice, 1  → h:Int
+    // ———————————————————
+    // s1       s0 → s0
+    HASHEXT_KECCAK256
+}
+```
+
+The [`HASHEXT_KECCAK512`](https://docs.ton.org/v3/documentation/tvm/instructions#F90404), [`HASHEXT_SHA256`](https://docs.ton.org/v3/documentation/tvm/instructions#F90400), [`HASHEXT_SHA512`](https://docs.ton.org/v3/documentation/tvm/instructions#F90401) and [`HASHEXT_BLAKE2B`](https://docs.ton.org/v3/documentation/tvm/instructions#F90402) instructions can be used in the similar manner, with respect to different number of return values. In addition, all of those can also work with values of type [`Builder{:tact}`][builder].
+
+:::note[Useful links:]
+
+  [`HASHEXT_KECCAK256`](https://docs.ton.org/v3/documentation/tvm/instructions#F90403)\
+  [Reference Keccak-256 implementation](https://keccak.team/index.html)
+
+:::
+
+### isUint8
+
+Mapping onto a single instruction by itself is inefficient if the values they place onto the stack can vary depending on some conditions. That's because one cannot map them to Tact types directly and often needs to some additional stack manipulations prior or post to their execution.
+
+Since this is often the case for the "quiet" versions of instructions, the recommendation is to prefer their non-quiet alternatives. Usually, non-quiet versions throw exceptions and are consistent in their return values, while quiet ones push $-1$ or other values onto the stack, thus varying the number or the type of their result values.
+
+For the simpler cases such as this example, it's convenient to do all the stack manipulations within the same function.
+
+```tact
+// Checks if the given `Int` `val` is in
+// the inclusive range from 0 to 255
+asm fun isUint8(val: Int): Bool {
+    // val:Int → val:Int or NaN
+    // ————————————————————————
+    // s0      → s0
+    8 QUFITS
+
+    // val:Int or NaN → Bool
+    // —————————————————————
+    // s0             → s0
+    ISNAN
+
+    // Since ISNAN gives true when the `val` NaN,
+    // i.e. when the `val` did not fit into the uint8 range,
+    // we need to flip it
+
+    // Bool → Bool
+    // ———————————
+    // s0   → s0
+    NOT // could've used 0 EQINT too
+}
+
+fun showcase() {
+    isUint8(55);            // true
+    isUint8(-55);           // false
+    isUint8(pow(2, 8));     // false
+    isUint8(pow(2, 8) - 1); // true
+}
+```
+
+### ecrecover
+
+This example shows one possible way to work with partially captured results from the stack, getting the omitted ones later.
+
+```tact
+// Recovers a public key from the signature like its done on Bitcoin or Ethereum
+//
+// Takes the 256-bit unsigned integer `hash` and the 65-byte signature of:
+// * 8-bit unsigned integer `v`
+// * and 256-bit unsigned integers `r` and `s`
+//
+// Returns `null` on failure, or `EcrecoverKey` structure on success
+fun ecrecover(hash: Int, v: Int, r: Int, s: Int): EcrecoverKey? {
+    let successful = _ecrecoverExecute(hash, v, r, s);
+    if (successful) {
+        return _ecrecoverSuccess();
+    } else {
+        return null;
+    }
+}
+
+// The 65-byte public key returned by `ecrecover()` in case of success,
+// which consists of the 8-bit unsigned integer `h`
+// and 256-bit unsigned integers `x1` and `x2`
+struct EcrecoverKey {
+    h: Int as uint8;
+    x1: Int as uint256;
+    x2: Int as uint256;
+}
+
+// Underlying assembly function that does the work
+// and only captures the topmost value from the stack
+//
+// Since the `ECRECOVER` instruction places the 0 on top of the stack
+// in case of failure and -1 in case of success,
+// this maps nicely onto the Bool type
+asm fun _ecrecoverExecute(hash: Int, v: Int, r: Int, s: Int): Bool { ECRECOVER }
+
+// Simply captures the values from the stack
+// if the call to `ecrecoverExecute()` was successful
+asm fun _ecrecoverSuccess(): EcrecoverKey { }
+```
+
+### onchainSha256
+
+This example extends the [`ecrecover(){:tact}`](#ecrecover) one and adds more complex stack management and interaction with Tact statements such as loops.
+
+```tact
+// Calculates and returns the SHA-256 hash
+// as a 256-bit unsigned `Int` of the given `data`.
+// Unlike the `sha256()` function from the Core library,
+// this one works purely on-chain (at runtime), hashing the strings completely
+// rather than just their first 1023 bits of data like `sha256()` does.
+fun onchainSha256(data: String): Int {
+    _onchainShaPush(data);
+    while (_onchainShaShouldProceed()) {
+        _onchainShaOperate();
+    }
+    return _onchainShaHashExt();
+}
+
+// Helper assembly functions,
+// each manipulating the stack in their own ways
+// in different parts of the `onchainSha256()` function
+asm fun _onchainShaPush(data: String) { ONE }
+asm fun _onchainShaShouldProceed(): Bool { OVER SREFS 0 NEQINT }
+asm fun _onchainShaOperate() { OVER LDREF s0 POP CTOS s0 s1 XCHG INC }
+asm fun _onchainShaHashExt(): Int { HASHEXT_SHA256 }
+```
+
+:::note[Useful links:]
+
+  [TVM overview in TON Docs][tvm]\
+  [List of TVM instructions in TON Docs][tvm-instructions]
+
+:::
+
+[p]: /book/types#primitive-types
+[struct]: /book/structs-and-messages#structs
+[cell]: /book/cells#cells
+[builder]: /book/cells#builders
+[slice]: /book/cells#slices
+
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
+[tvm-instructions]: https://docs.ton.org/v3/documentation/tvm/instructions
+[tvm-init]: https://docs.ton.org/v3/documentation/tvm/tvm-initialization#stack

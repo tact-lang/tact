@@ -9,8 +9,10 @@ Functions in Tact could be defined in different ways:
 
 * Global static function
 * Extension functions
-* Mutable functions
+* Mutation functions
 * Native functions
+* [Assembly functions](#asm)
+* [Internal functions](/book/contracts#internal-functions)
 * Receiver functions
 * Getter functions
 
@@ -85,9 +87,9 @@ extends fun customPow(self: Int, c: Int): Int {
 }
 ```
 
-## Mutable functions
+## Mutation functions
 
-Mutable functions are performing mutation of a value replacing it with an execution result. To perform mutation, the function must change the `self` value.
+Mutation functions are performing mutation of a value replacing it with an execution result. To perform mutation, the function must change the `self` value.
 
 ```tact
 extends mutates fun customPow(self: Int, c: Int) {
@@ -104,7 +106,7 @@ extends mutates fun customPow(self: Int, c: Int) {
 Native functions are direct bindings of FunC functions:
 
 > **Note**
-> Native functions could be also mutable and extension ones.
+> Native functions could also be mutation and extension ones.
 
 ```tact
 @name(store_uint)
@@ -113,6 +115,12 @@ native storeUint(s: Builder, value: Int, bits: Int): Builder;
 @name(load_int)
 extends mutates native loadInt(self: Slice, l: Int): Int;
 ```
+
+## Assembly functions, `asm` {#asm}
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+Read more about them on their dedicated page: [Assembly functions](/book/assembly-functions).
 
 ## Receiver functions
 
@@ -144,32 +152,32 @@ contract Treasure {
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
-As other functions in TVM contracts, getters have their *unique* associated function selectors which are some integers ids (called *method IDs*).
-Some of those integers are reserved for internal purposes, e.g. -4, -3, -2, -1, 0 are reserved IDs and 
-regular functions (internal to a contract and not callable from outside) are usually numbered by subsequent (small) integers starting from 1.
-By default, getters have associated method IDs that are derived from their names using the [CRC16](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) algorithm as follows:
-`crc16(<function_name>) & 0xffff) | 0x10000`.
-Sometimes this can get you the same method ID for getters with different names.
-If this happens, you can either rename some of the contract's getters or
-specify the getter's method ID manually as a compile-time expression like so:
+Like other functions in TON contracts, getters have their _unique_ associated function selectors, which are $19$-bit signed integer identifiers commonly called _method IDs_.
+
+Method IDs of getters are derived from their names using the [CRC16](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) algorithm as follows: `(crc16(<function_name>) & 0xffff) | 0x10000`. In addition, Tact compiler conditionally reserves some method IDs for use in [getters of supported interfaces](/book/contracts#interfaces), namely: $113617$ for `supported_interfaces`, $115390$ for `lazy_deployment_completed`, and $121275$ for `get_abi_ipfs`.
+
+Sometimes, getters with different names end up with the same method ID. If this happens, you can either rename some of the getters or manually specify the method ID as a [compile-time](/ref/core-comptime) expression like so:
 
 ```tact
 contract ManualMethodId {
     const methodId: Int = 16384 + 42;
 
-    get(self.methodId) fun methodId1(): Int {
+    get(self.methodId)
+    fun methodId1(): Int {
         return self.methodId;
     }
 
     get(crc32("crc32") + 42 & 0x3ffff | 0x4000)
     fun methodId2(): Int {
-        return 0;
+        return crc32("crc32") + 42 & 0x3ffff | 0x4000;
     }
 }
 ```
 
-Note that you *cannot* use method IDs that are reserved by TVM and you cannot use some initial positive integers because those will be used as function selectors by the compiler.
+Unlike getters, method IDs for [internal functions](/book/contracts#internal-functions) and some special functions are obtained sequentially: integers in the inclusive range from $-4$ to $0$ are given to [certain message handlers](https://docs.ton.org/v3/documentation/smart-contracts/func/docs/functions#special-function-names), while internal functions are numbered with method IDs starting at $1$ and going up to $2^{14} - 1$ inclusive.
 
-User-specified method IDs are 19-bit signed integers, so you can use integers from $-2^{18}$ to $-5$ and from $2^{14}$ to $2^{18} - 1$.
+Since method IDs are $19$-bit signed integers and some of them are reserved, only the inclusive ranges from $-2^{18}$ to $-5$ and from $2^{14}$ to $2^{18} - 1$ are free to be used by users. To avoid collisions, it's recommended to specify method IDs only in these ranges, avoiding the method IDs of Tact-specific getters mentioned above.
 
-Also, a few method IDs are reserved for the usage by the getters the Tact compiler can insert during compilation, those are 113617, 115390, 121275.
+[p]: /book/types#primitive-types
+[struct]: /book/structs-and-messages#structs
+[slice]: /book/cells#slices
