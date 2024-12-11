@@ -18,13 +18,13 @@ import {
 import { ExpressionTransformer } from "./optimizer/types";
 import { StandardOptimizer } from "./optimizer/standardOptimizer";
 import {
-    Interpreter,
-    InterpreterConfig,
     ensureInt,
     evalBinaryOp,
     evalUnaryOp,
-    throwNonFatalErrorConstEval,
-} from "./interpreter";
+    InterpreterConfig,
+    TactInterpreter,
+} from "./interpreters/standard";
+import { throwNonFatalErrorConstEval } from "./interpreters/util";
 
 // Utility Exception class to interrupt the execution
 // of functions that cannot evaluate a tree fully into a value.
@@ -46,21 +46,30 @@ function partiallyEvalUnaryOp(
     operand: AstExpression,
     source: SrcInfo,
     ctx: CompilerContext,
+    interpreter: TactInterpreter,
 ): AstExpression {
     if (operand.kind === "number" && op === "-") {
         // emulating negative integer literals
-        return makeValueExpression(ensureInt(-operand.value, source));
+        return makeValueExpression(
+            ensureInt(-operand.value, source),
+            operand.loc,
+        );
     }
 
-    const simplOperand = partiallyEvalExpression(operand, ctx);
+    const simplOperand = partiallyEvalExpression(operand, ctx, interpreter);
 
     if (isValue(simplOperand)) {
         const valueOperand = extractValue(simplOperand as AstValue);
-        const result = evalUnaryOp(op, valueOperand, simplOperand.loc, source);
+        const result = evalUnaryOp(
+            op,
+            () => valueOperand,
+            simplOperand.loc,
+            source,
+        );
         // Wrap the value into a Tree to continue simplifications
-        return makeValueExpression(result);
+        return makeValueExpression(result, source);
     } else {
-        const newAst = makeUnaryExpression(op, simplOperand);
+        const newAst = makeUnaryExpression(op, simplOperand, source);
         return optimizer.applyRules(newAst);
     }
 }
@@ -71,8 +80,9 @@ function partiallyEvalBinaryOp(
     right: AstExpression,
     source: SrcInfo,
     ctx: CompilerContext,
+    interpreter: TactInterpreter,
 ): AstExpression {
-    const leftOperand = partiallyEvalExpression(left, ctx);
+    const leftOperand = partiallyEvalExpression(left, ctx, interpreter);
 
     if (isValue(leftOperand)) {
         // Because of short-circuiting, we must delay evaluation of the right operand
@@ -84,7 +94,11 @@ function partiallyEvalBinaryOp(
                 valueLeftOperand,
                 // We delay the evaluation of the right operand inside a continuation
                 () => {
-                    const rightOperand = partiallyEvalExpression(right, ctx);
+                    const rightOperand = partiallyEvalExpression(
+                        right,
+                        ctx,
+                        interpreter,
+                    );
                     if (isValue(rightOperand)) {
                         // If the right operand reduces to a value, then we can let the function
                         // evalBinaryOp finish its normal execution by returning the value
@@ -104,12 +118,17 @@ function partiallyEvalBinaryOp(
                 source,
             );
 
-            return makeValueExpression(result);
+            return makeValueExpression(result, source);
         } catch (e) {
             if (e instanceof PartiallyEvaluatedTree) {
                 // The right operand did not evaluate to a value. Hence,
                 // time to symbolically simplify the full tree.
-                const newAst = makeBinaryExpression(op, leftOperand, e.tree);
+                const newAst = makeBinaryExpression(
+                    op,
+                    leftOperand,
+                    e.tree,
+                    source,
+                );
                 return optimizer.applyRules(newAst);
             } else {
                 throw e;
@@ -119,8 +138,13 @@ function partiallyEvalBinaryOp(
         // Since the left operand does not reduce to a value, no immediate short-circuiting will occur.
         // Hence, we can partially evaluate the right operand and let the rules
         // simplify the tree.
-        const rightOperand = partiallyEvalExpression(right, ctx);
-        const newAst = makeBinaryExpression(op, leftOperand, rightOperand);
+        const rightOperand = partiallyEvalExpression(right, ctx, interpreter);
+        const newAst = makeBinaryExpression(
+            op,
+            leftOperand,
+            rightOperand,
+            source,
+        );
         return optimizer.applyRules(newAst);
     }
 }
@@ -130,7 +154,7 @@ export function evalConstantExpression(
     ctx: CompilerContext,
     interpreterConfig?: InterpreterConfig,
 ): Value {
-    const interpreter = new Interpreter(ctx, interpreterConfig);
+    const interpreter = new TactInterpreter(ctx, interpreterConfig);
     const result = interpreter.interpretExpression(ast);
     return result;
 }
@@ -138,13 +162,15 @@ export function evalConstantExpression(
 export function partiallyEvalExpression(
     ast: AstExpression,
     ctx: CompilerContext,
-    interpreterConfig?: InterpreterConfig,
+    interpreter: TactInterpreter = new TactInterpreter(ctx),
 ): AstExpression {
-    const interpreter = new Interpreter(ctx, interpreterConfig);
     switch (ast.kind) {
         case "id":
             try {
-                return makeValueExpression(interpreter.interpretName(ast));
+                return makeValueExpression(
+                    interpreter.interpretName(ast),
+                    ast.loc,
+                );
             } catch (e) {
                 if (e instanceof TactConstEvalError) {
                     if (!e.fatal) {
@@ -156,7 +182,10 @@ export function partiallyEvalExpression(
             }
         case "method_call":
             // Does not partially evaluate at the moment. Will attempt to fully evaluate
-            return makeValueExpression(interpreter.interpretMethodCall(ast));
+            return makeValueExpression(
+                interpreter.interpretMethodCall(ast),
+                ast.loc,
+            );
         case "init_of":
             throwNonFatalErrorConstEval(
                 "initOf is not supported at this moment",
@@ -168,11 +197,24 @@ export function partiallyEvalExpression(
         case "boolean":
             return ast;
         case "number":
-            return makeValueExpression(interpreter.interpretNumber(ast));
+            return makeValueExpression(
+                interpreter.interpretNumber(ast),
+                ast.loc,
+            );
         case "string":
-            return makeValueExpression(interpreter.interpretString(ast));
-        case "op_unary":
-            return partiallyEvalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
+            return makeValueExpression(
+                interpreter.interpretString(ast),
+                ast.loc,
+            );
+        case "op_unary": // The fact that we are passing the interpreter around, probably signals
+            // that the partial evaluator itself is an instance of an abstract interpreter
+            return partiallyEvalUnaryOp(
+                ast.op,
+                ast.operand,
+                ast.loc,
+                ctx,
+                interpreter,
+            );
         case "op_binary":
             return partiallyEvalBinaryOp(
                 ast.op,
@@ -180,20 +222,31 @@ export function partiallyEvalExpression(
                 ast.right,
                 ast.loc,
                 ctx,
+                interpreter,
             );
         case "conditional":
             // Does not partially evaluate at the moment. Will attempt to fully evaluate
-            return makeValueExpression(interpreter.interpretConditional(ast));
+            return makeValueExpression(
+                interpreter.interpretConditional(ast),
+                ast.loc,
+            );
         case "struct_instance":
             // Does not partially evaluate at the moment. Will attempt to fully evaluate
             return makeValueExpression(
                 interpreter.interpretStructInstance(ast),
+                ast.loc,
             );
         case "field_access":
             // Does not partially evaluate at the moment. Will attempt to fully evaluate
-            return makeValueExpression(interpreter.interpretFieldAccess(ast));
+            return makeValueExpression(
+                interpreter.interpretFieldAccess(ast),
+                ast.loc,
+            );
         case "static_call":
             // Does not partially evaluate at the moment. Will attempt to fully evaluate
-            return makeValueExpression(interpreter.interpretStaticCall(ast));
+            return makeValueExpression(
+                interpreter.interpretStaticCall(ast),
+                ast.loc,
+            );
     }
 }

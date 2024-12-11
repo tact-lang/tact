@@ -6,13 +6,13 @@ import {
     eqExpressions,
     isValue,
 } from "../../grammar/ast";
-import { parseExpression } from "../../grammar/grammar";
+import { dummySrcInfo, parseExpression } from "../../grammar/grammar";
 import { extractValue, makeValueExpression } from "../util";
 import { partiallyEvalExpression } from "../../constEval";
 import { CompilerContext } from "../../context";
 import { ExpressionTransformer, Rule } from "../types";
 import { AssociativeRule3 } from "../associative";
-import { evalBinaryOp, evalUnaryOp } from "../../interpreter";
+import { evalBinaryOp, evalUnaryOp } from "../../interpreters/standard";
 
 const MAX: string =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";
@@ -373,11 +373,10 @@ function dummyEval(ast: AstExpression): AstExpression {
             newNode = cloneAstNode(ast);
             newNode.operand = dummyEval(ast.operand);
             if (isValue(newNode.operand)) {
+                const operandValue = extractValue(newNode.operand as AstValue);
                 return makeValueExpression(
-                    evalUnaryOp(
-                        ast.op,
-                        extractValue(newNode.operand as AstValue),
-                    ),
+                    evalUnaryOp(ast.op, () => operandValue),
+                    dummySrcInfo,
                 );
             }
             return newNode;
@@ -393,6 +392,7 @@ function dummyEval(ast: AstExpression): AstExpression {
                         extractValue(newNode.left as AstValue),
                         () => valR,
                     ),
+                    dummySrcInfo,
                 );
             }
             return newNode;

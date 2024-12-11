@@ -1,6 +1,11 @@
 import { toNano } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { ReservedContractErrorsTester as TestContract } from "./contracts/output/tact-reserved-contract-errors_ReservedContractErrorsTester";
+import {
+    ExitCode128,
+    ExitCode136,
+    ExitCode137,
+    ReservedContractErrorsTester as TestContract,
+} from "./contracts/output/tact-reserved-contract-errors_ReservedContractErrorsTester";
 import "@ton/test-utils";
 
 describe("Tact-reserved contract errors", () => {
@@ -84,12 +89,33 @@ async function testReservedExitCode(
     expect(code).toBeGreaterThanOrEqual(128);
     expect(code).toBeLessThan(256);
     expect([128, 130, 132, 134, 136, 137]).toContain(code);
-    type testedExitCodes = "128" | "130" | "132" | "134" | "136" | "137";
+    type testedExitCodes =
+        | ExitCode128
+        | "130"
+        | "132"
+        | "134"
+        | ExitCode136
+        | ExitCode137;
 
     const sendResult = await contract.send(
         treasure.getSender(),
         { value: toNano("10") },
-        code.toString(10) as testedExitCodes,
+        code === 128
+            ? {
+                  $$type: "ExitCode128",
+                  gotcha: null,
+              }
+            : code === 136
+              ? {
+                    $$type: "ExitCode136",
+                    unsupportedChainId: 1n,
+                }
+              : code === 137
+                ? {
+                      $$type: "ExitCode137",
+                      masterchainId: -1n,
+                  }
+                : (code.toString(10) as testedExitCodes),
     );
 
     expect(sendResult.transactions).toHaveTransaction({

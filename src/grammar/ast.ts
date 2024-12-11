@@ -649,7 +649,12 @@ export type AstNull = {
     loc: SrcInfo;
 };
 
-export type AstValue = AstNumber | AstBoolean | AstNull | AstString;
+export type AstValue =
+    | AstNumber
+    | AstBoolean
+    | AstNull
+    | AstString
+    | AstStructInstance;
 
 export type AstConstantAttribute =
     | { type: "virtual"; loc: SrcInfo }
