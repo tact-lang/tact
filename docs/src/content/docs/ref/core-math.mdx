@@ -3,6 +3,8 @@ title: Math
 description: "Various math helper functions from the Core library of Tact"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 Various math helper functions.
 
 ## min
@@ -46,7 +48,7 @@ max(0x45, 3_0_0); // 300
 ## abs
 
 ```tact
-fun abs(x: Int): Int
+fun abs(x: Int): Int;
 ```
 
 Computes and returns the [absolute value](https://en.wikipedia.org/wiki/Absolute_value) of the [`Int{:tact}`][int] value `x`.
@@ -59,13 +61,169 @@ abs(-42);       // 42
 abs(-(-(-42))); // 42
 ```
 
+## sign
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun sign(x: Int): Int;
+```
+
+Computes and returns the sign of the [`Int{:tact}`][int] value `x`. Produces $1$ if the `x` is positive, $-1$ if the `x` is negative, and $0$ if the `x` is $0$.
+
+Usage examples:
+
+```tact
+sign(42);        // 1
+sign(-42);       // -1
+sign(-(-42));    // 1
+sign(-(-(-42))); // -1
+sign(0);         // 0
+```
+
+## sqrt
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun sqrt(num: Int): Int;
+```
+
+Computes the [square root](https://en.wikipedia.org/wiki/Square_root) of the [`Int{:tact}`][int] value `num`. Returns the result rounded to the nearest integer. If there are two equally close integers, rounding is done toward the even one.
+
+Attempts to specify a negative value of `num` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage examples:
+
+```tact
+sqrt(4);  // 2
+sqrt(3);  // 2
+sqrt(2);  // 1
+sqrt(1);  // 1
+sqrt(0);  // 0
+sqrt(-1); // ERROR! Exit code 5: Integer out of expected range
+```
+
+## divc
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun divc(x: Int, y: Int): Int;
+```
+
+Computes and returns the [rounded up][round-up] result of division of the [`Int{:tact}`][int] `x` by the [`Int{:tact}`][int] `y`.
+
+Attempts to divide by `y` equal to $0$ throw an exception with [exit code 4](/book/exit-codes#4): `Integer overflow`.
+
+Usage examples:
+
+```tact
+divc(4, 2);  // 2
+divc(3, 2);  // 2
+divc(-4, 2); // -2
+divc(-3, 2); // -1
+```
+
+## muldivc
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun muldivc(x: Int, y: Int, z: Int): Int;
+```
+
+Computes and returns the [rounded up][round-up] result of `(x * y) / z{:tact}`.
+
+If the value in calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, or if there's an attempt to divide by `z` equal to $0$, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
+
+Usage examples:
+
+```tact
+muldivc(4, 1, 2);  // 2
+muldivc(3, 1, 2);  // 2
+muldivc(-4, 1, 2); // -2
+muldivc(-3, 1, 2); // -1
+muldivc(-3, 0, 2); // 0
+muldivc(-3, 0, 0); // ERROR! Exit code 4: Integer overflow
+```
+
+## mulShiftRight
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun mulShiftRight(x: Int, y: Int, z: Int): Int;
+```
+
+Computes and returns the [rounded down][round-down] result of `(x * y) / z{:tact}`. It is a more gas-efficient equivalent of doing the [bitwise shift right](/book/operators#binary-bitwise-shift-right) on the result of multiplication of [`Int{:tact}`][int] `x` times [`Int{:tact}`][int] `y`, where [`Int{:tact}`][int] `z` is the right operand of the shift.
+
+If the value in calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
+
+Attempts to specify a negative value of `z` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage examples:
+
+```tact
+mulShiftRight(5, 5, 2);  // 6
+mulShiftRight(5, 5, 1);  // 12
+mulShiftRight(5, 5, 0);  // 25
+mulShiftRight(5, 5, -1); // ERROR! Exit code 5: Integer out of expected range
+```
+
+## mulShiftRightRound
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun mulShiftRightRound(x: Int, y: Int, z: Int): Int;
+```
+
+Similar to [`mulShiftRight(){:tact}`](#mulshiftright), but instead of [rounding down][round-down], the result value is rounded to the nearest integer. If there are two equally close integers, rounding is done toward the even one.
+
+If the value in calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
+
+Attempts to specify negative value of `z` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage examples:
+
+```tact
+mulShiftRightRound(5, 5, 2);  // 6
+mulShiftRightRound(5, 5, 1);  // 13
+mulShiftRightRound(5, 5, 0);  // 25
+mulShiftRightRound(5, 5, -1); // ERROR! Exit code 5: Integer out of expected range
+```
+
+## mulShiftRightCeil
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun mulShiftRightCeil(x: Int, y: Int, z: Int): Int;
+```
+
+Similar to [`mulShiftRight(){:tact}`](#mulshiftright), but instead of [rounding down][round-down], the result value is [rounded up][round-up].
+
+If the value in calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
+
+Attempts to specify negative value of `z` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage examples:
+
+```tact
+mulShiftRightCeil(5, 5, 2);  // 7
+mulShiftRightCeil(5, 5, 1);  // 13
+mulShiftRightCeil(5, 5, 0);  // 25
+mulShiftRightCeil(5, 5, -1); // ERROR! Exit code 5: Integer out of expected range
+```
+
 ## log
 
 ```tact
 fun log(num: Int, base: Int): Int;
 ```
 
-Computes and returns the [logarithm](https://en.wikipedia.org/wiki/Logarithm) of a number `num` $> 0$ to the base `base` $≥ 1$. Results are [rounded down](https://en.wikipedia.org/wiki/Rounding#Rounding_down). Passing a non-positive `num` value or a `base` less than $1$ throws an error with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Computes and returns the [logarithm](https://en.wikipedia.org/wiki/Logarithm) of a number `num` $> 0$ to the base `base` $≥ 1$. Results are [rounded down][round-down]. Passing a non-positive `num` value or a `base` less than $1$ throws an error with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage examples:
 
@@ -142,7 +300,7 @@ contract Example {
 
 :::note
 
-  Note, that if you only need to obtain powers of $2$, use the [`pow2(){:tact}`](#pow2) function, as it's more gas-efficient.
+  If you only need to obtain powers of $2$, use the [`pow2(){:tact}`](#pow2) function, as it's more gas-efficient.
 
 :::
 
@@ -286,3 +444,6 @@ sha256(someVariableElsewhere); // will try to resolve at compile-time,
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [ed]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
 [sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
+
+[round-up]: https://en.wikipedia.org/wiki/Rounding#Rounding_up
+[round-down]: https://en.wikipedia.org/wiki/Rounding#Rounding_down

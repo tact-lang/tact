@@ -507,5 +507,63 @@ describe("math", () => {
         expect(await contract.getAugmentedShiftRight(2n, 1n)).toBe(1n);
         expect(await contract.getAugmentedShiftRight(4n, 2n)).toBe(1n);
         expect(await contract.getAugmentedShiftRight(16n, 3n)).toBe(2n);
+
+        // sign
+        expect(await contract.getSign(123n)).toBe(1n);
+        expect(await contract.getSign(-123n)).toBe(-1n);
+        expect(await contract.getSign(0n)).toBe(0n);
+
+        // divc: ceil(x/y)
+        expect(await contract.getDivc(123n, 123n)).toBe(1n);
+        expect(await contract.getDivc(123n, 124n)).toBe(1n);
+        expect(await contract.getDivc(0n, 123n)).toBe(0n);
+        expect(await contract.getDivc(123n, 122n)).toBe(2n);
+
+        // muldivc: ceil(x*y/z)
+        expect(await contract.getMuldivc(123n, 123n, 123n)).toBe(123n);
+        expect(await contract.getMuldivc(100n, 100n, 10001n)).toBe(1n);
+        expect(await contract.getMuldivc(100n, 100n, 10000n)).toBe(1n);
+        expect(await contract.getMuldivc(100n, 100n, 9999n)).toBe(2n);
+        expect(await contract.getMuldivc(100n, 0n, 1n)).toBe(0n);
+
+        // mulShiftRight: floor(x*y/2^z)
+        expect(await contract.getMulShiftRight(2n, 4n, 3n)).toBe(1n);
+        expect(await contract.getMulShiftRight(2n, 4n, 2n)).toBe(2n);
+        expect(await contract.getMulShiftRight(2n, 4n, 1n)).toBe(4n);
+        expect(await contract.getMulShiftRight(2n, 4n, 0n)).toBe(8n);
+        expect(await contract.getMulShiftRight(1n, 6n, 0n)).toBe(6n);
+        expect(await contract.getMulShiftRight(1n, 6n, 3n)).toBe(0n);
+
+        // mulShiftRightRound: round(x*y/2^z)
+        expect(await contract.getMulShiftRightRound(2n, 4n, 3n)).toBe(1n);
+        expect(await contract.getMulShiftRightRound(2n, 4n, 2n)).toBe(2n);
+        expect(await contract.getMulShiftRightRound(2n, 4n, 1n)).toBe(4n);
+        expect(await contract.getMulShiftRightRound(2n, 4n, 0n)).toBe(8n);
+        expect(await contract.getMulShiftRightRound(1n, 6n, 0n)).toBe(6n);
+        expect(await contract.getMulShiftRightRound(1n, 4n, 3n)).toBe(1n);
+        expect(await contract.getMulShiftRightRound(1n, 3n, 3n)).toBe(0n);
+
+        // mulShiftRightCeil: ceil(x*y/2^z)
+        expect(await contract.getMulShiftRightCeil(2n, 4n, 3n)).toBe(1n);
+        expect(await contract.getMulShiftRightCeil(2n, 4n, 2n)).toBe(2n);
+        expect(await contract.getMulShiftRightCeil(2n, 4n, 1n)).toBe(4n);
+        expect(await contract.getMulShiftRightCeil(2n, 4n, 0n)).toBe(8n);
+        expect(await contract.getMulShiftRightCeil(1n, 6n, 0n)).toBe(6n);
+        expect(await contract.getMulShiftRightCeil(1n, 7n, 3n)).toBe(1n);
+        expect(await contract.getMulShiftRightCeil(1n, 4n, 3n)).toBe(1n);
+        expect(await contract.getMulShiftRightCeil(1n, 3n, 3n)).toBe(1n);
+
+        // sqrt: round(sqrt(num))
+        for (let num = 0n; num <= 100n; num++) {
+            // console.log(`sqrt(${num}) = ${await contract.getSqrt(num)}`);
+            expect(await contract.getSqrt(num)).toBe(
+                BigInt(Math.round(Math.sqrt(Number(num)))),
+            );
+        }
+        for (let num = -3n; num < 0n; num++) {
+            await expect(contract.getSqrt(num)).rejects.toThrow(
+                "Unable to execute get method. Got exit_code: 5",
+            );
+        }
     });
 });
