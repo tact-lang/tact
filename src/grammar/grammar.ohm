@@ -22,7 +22,7 @@ Tact {
     ModuleFunction = FunctionDefinition
                    | AsmFunction
 
-    AsmFunction = "asm" AsmShuffle? FunctionAttribute* fun id Parameters (":" Type)? "{" AsmInstruction* "}"
+    AsmFunction = "asm" AsmShuffle? FunctionAttribute* fun id Parameters (":" Type)? "{" AsmExpression* "}"
 
     ModuleConstant = ConstantDefinition
 
@@ -99,21 +99,40 @@ Tact {
              | external "(" Parameter? ")" "{" Statement* "}" --externalRegular
              | external "(" stringLiteral ")" "{" Statement* "}" --externalComment
 
-    AsmInstruction = "[" &#whiteSpace AsmInstruction* "]" &#whiteSpace --internal
-                   | "{" &#whiteSpace AsmInstruction* "}" &#whiteSpace --list
-                   | "({)" &#whiteSpace AsmInstruction* "(})" &#whiteSpace --listNoStateCheck
-                   | ("abort\"" | ".\"" | "+\"" | "\"") (~"\"" any)* "\"" &#whiteSpace --string
-                   | "'" &#whiteSpace asmInstruction --tick
-                   | "char" &#whiteSpace (~whiteSpace any) &#whiteSpace --char
-                   | ("x{" | "B{") ~#whiteSpace hexDigit* ~#whiteSpace ("_" ~#whiteSpace)? "}" &#whiteSpace --hexLiteral
-                   | "b{" ~#whiteSpace binDigit* ~#whiteSpace "}" &#whiteSpace --binLiteral
-                   | asmInstruction --custom
+    // FIXME: prettyPrinter.ts + writeFunction.ts, hash.ts, compare.ts
+    AsmExpression = "{" (~"}" any)* "}" --list // used only for error messages
+                  | asmPrimitive
 
-    // Instructions exclude some begin and end words to ensure correct parse
-    asmInstruction = ~(("[" | "]" | "{" | "}" | "({)" | "(})") ~asmWord) asmWord
+    // Various primitives and instructions not forming a block
+    asmPrimitive = asmString
+                 | asmHex
+                 | asmBin
+                 | asmControlReg
+                 | asmStackReg
+                 | asmStackReg256
+                 | asmNumber
+                 | asmInstruction // must be last
 
-    // A chunk of non-whitespace characters forms a word in Fift
-    asmWord = (~whiteSpace any)+
+    // It's here mostly to provide better error messages
+    // for people coming from FunC/Fift background
+    asmString      (string)                 = "\"" (~"\"" any)* "\""
+    asmHex         (hex bitstring)          = "x{" hexDigit* "_"? "}"
+    asmBin         (binary bitstring)       = "b{" binDigit* "}"
+    asmControlReg  (control register)       = "c" digit digit?
+    asmStackReg    (stack register)         = "s" digit digit? digit?
+    // It's here mostly to provide better error messages
+    // for people coming from FunC/Fift background,
+    // gently guiding them towards simpler s0...s255 syntax
+    asmStackReg256 (indexed stack register) = digit digit? digit? whiteSpace+ "s()"
+    asmNumber      (number)                 = "-"? digit+ ~(letterAscii | "_" | "#" | ":")
+
+    // To ensure correct parse:
+    // 1. Instructions cannot contain braces
+    // 2. Cannot be braces themselves
+    // 3. Cannot contain lowercase letters, except for the very last position
+    asmInstruction (TVM instruction) = ~(("{" | "}") ~asmWord) asmWord
+    asmWord = "-"? asmWordPart+ "l"?
+    asmWordPart = letterAsciiUC | digit | "_" | "#" | ":"
 
     Statement = StatementLet
               | StatementBlock
