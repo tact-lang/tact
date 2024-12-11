@@ -209,6 +209,24 @@ let fizz: Builder = b.storeBit(true);  // writes 1
 let buzz: Builder = b.storeBit(false); // writes 0
 ```
 
+## Builder.storeBuilder
+
+```tact
+extends fun storeBuilder(self: Builder, cell: Builder): Builder;
+```
+
+Extension function for the [`Builder{:tact}`][builder].
+
+Appends all data from a [`Builder{:tact}`][builder] `cell` to the copy of the [`Builder{:tact}`][builder]. Returns that copy.
+
+Usage example:
+
+```tact
+let b: Builder = beginCell().storeCoins(42);
+let fizz: Builder = beginCell().storeBuilder(b);
+b.endCell() == fizz.endCell(); // true
+```
+
 ## Builder.storeSlice
 
 ```tact

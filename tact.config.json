@@ -422,6 +422,14 @@
       "output": "./src/test/e2e-emulated/contracts/output"
     },
     {
+      "name": "text-message-receivers",
+      "path": "./src/test/e2e-emulated/contracts/text-message-receivers.tact",
+      "output": "./src/test/e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
       "name": "tact-reserved-contract-errors",
       "path": "./src/test/exit-codes/contracts/tact-reserved-contract-errors.tact",
       "output": "./src/test/exit-codes/contracts/output",
