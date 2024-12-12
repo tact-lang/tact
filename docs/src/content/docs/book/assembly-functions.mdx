@@ -15,7 +15,7 @@ import { Badge } from '@astrojs/starlight/components';
 
 :::
 
-Assembly functions (or asm functions for short) are module-level functions that allow you to write [Tact assembly](#asm-tact). Unlike all other functions, their bodies consist only of [TVM instructions][tvm-instructions] and [some other primitives](#asm-tact), and don't use any [Tact statements](/book/statements).
+Assembly functions (or asm functions for short) are module-level functions that allow you to write [Tact assembly](#tact). Unlike all other functions, their bodies consist only of [TVM instructions][tvm-instructions] and [some other primitives](#tact), and don't use any [Tact statements](/book/statements).
 
 ```tact
 // all assembly functions must start with "asm" keyword
@@ -52,10 +52,10 @@ asm fun theLegendOfAsmTactina() {
     // Number literals, represented by Int values on TVM
     42 -13
 
-    // TVM control registers
+    // TVM control registers, which can be referred to in some instructions
     c0 // c0, c1, ..., c15
 
-    // TVM stack registers
+    // TVM stack registers, which can be referred to in some instructions
     s0 // s0, s1, ..., s255
 
     // TVM instructions themselves
@@ -150,7 +150,13 @@ fun showcase() {
 
 ## Arrangements {#arrangements}
 
-Often times it's useful to change the order of arguments pushed to the stack or the order of return values without referring to stack registers in the body. You can do that with `asm{:tact}` arrangements in the following manner:
+Often times it's useful to change the order of arguments pushed to the stack or the order of return values without referring to stack registers in the body. You can do this with `asm{:tact}` arrangements — with them, the evaluation flow of the assembly function can be thought of in these $5$ steps:
+
+1. Function takes arguments in the order specified by the parameters.
+2. If an argument arrangement is present, arguments are reordered before being pushed to the stack.
+3. Function body, consisting of [TVM instructions][tvm-instructions] and [primitives](#tact), is executed.
+4. If a result arrangement is present, resulting values are reordered on the stack.
+5. The resulting values are captured (partially or fully) by the return type of the function.
 
 ```tact
 // Changing the order of arguments to match the STDICT signature:
@@ -172,7 +178,7 @@ struct SliceInt { s: Slice; val: Int }
 
 // Changing the order of return values compared to the stack
 // and switching the order of arguments as well
-asm(s len -> 1 0) extends fun asmLoadInt(len: Int, s: Slice): SliceInt { LDIX }
+asm(s len -> 1 0) fun asmLoadInt(len: Int, s: Slice): SliceInt { LDIX }
 //           ↑ ↑
 //           | Value of the stack register 0,
 //           | which is the topmost value in the stack
@@ -187,16 +193,16 @@ fun showcase() {
         .asmStoreDict(emptyMap());
 
     let s = b.asSlice();
-    let si: SliceInt = s.asmLoadCoins();
+    let si: SliceInt = s.asmLoadCoins(); // Slice remainder and 42
     s = si.s; // assigning the modified Slice
     let coins = si.val; // 42
-    let si2: SliceInt = s.asmLoadInt(10); // Slice remainder and 27
+    let si2: SliceInt = asmLoadInt(10, s); // Slice remainder and 27
 }
 ```
 
 Note, that arrangements do not drop or discard any values — they only manipulate the order of arguments and return values as those are declared. This means, for example, that arrangement cannot access values from the stack that are not captured by the return type of the assembly function.
 
-That said, there's a [caveat to `mutates` attribute and asm arrangements](#caveats-mutates), so be sure to read about it later.
+That said, there's a [caveat to `mutates{:tact}` attribute and asm arrangements](#caveats-mutates).
 
 ## Limitations {#limitations}
 
@@ -214,7 +220,7 @@ fun exitCode2() {
 }
 ```
 
-Attempts to push more than $256$ values onto the stack or have more than $256$ values stored there throw an exception with [exit code 3](/book/exit-codes#3): `Stack overflow`.
+Attempts to push more than $256$ values onto the stack or to have more than $256$ values stored there throw an exception with [exit code 3](/book/exit-codes#3): `Stack overflow`. This upper limit applies to the [TVM][tvm] stack itself, corresponding to the [return continuation in register `c0`](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers), but different [continuations](https://docs.ton.org/v3/documentation/tvm/tvm-overview#tvm-is-a-stack-machine) may have a different upper limit of values on their inner stacks.
 
 ```tact
 asm fun stackOverflow() {
@@ -285,9 +291,13 @@ Overall, [`mutates{:tact}`](/book/functions#mutation-functions) attribute can be
 
 ### Don't rely on initial stack values {#caveats-initial}
 
-The [TVM][tvm] places a couple of values onto its stack upon initialization, and those values are based on the [event that caused the transaction][tvm-init]. In other languages you might've had to rely on their order and types, while in Tact it's done for you.
+The [TVM][tvm] places a couple of values onto its stack upon initialization, and those values are based on the [event that caused the transaction][tvm-init]. In other languages you might've had to rely on their order and types, while in Tact the parsing is done for you. Thus, in Tact these initial stack values are different from [what's described in TON Docs][tvm-init].
 
-Moreover, these initial stack values may differ from [what's described in TON Docs][tvm-init] and are **not** to be touched in Tact unless you want to cause a spontaneous [exit code 7](/book/exit-codes#7): `Type check error` somewhere near the end of your function bodies.
+:::caution
+
+  The initial elements placed on the stack during the [TVM initialization][tvm-init] and altered by Tact **must** remain on the stack until the end of the function body and be the only values present there. If they don't, an exception with [exit code 7](/book/exit-codes#7) is thrown: `Type check error`.
+
+:::
 
 Therefore, to access details such as the amount of [nanoToncoins](/book/integers#nanotoncoin) in a message or the [`Address{:tact}`][p] of the sender it's strongly recommended to call the [`context(){:tact}`](/ref/core-common#context) or [`sender(){:tact}`](/ref/core-common#sender) functions instead of attempting to look for those values on the stack.
 
@@ -369,11 +379,38 @@ asm fun keccak256(s: Slice): Int {
 }
 ```
 
-The [`HASHEXT_KECCAK512`](https://docs.ton.org/v3/documentation/tvm/instructions#F90404), [`HASHEXT_SHA256`](https://docs.ton.org/v3/documentation/tvm/instructions#F90400), [`HASHEXT_SHA512`](https://docs.ton.org/v3/documentation/tvm/instructions#F90401) and [`HASHEXT_BLAKE2B`](https://docs.ton.org/v3/documentation/tvm/instructions#F90402) instructions can be used in the similar manner, with respect to different number of return values. In addition, all of those can also work with values of type [`Builder{:tact}`][builder].
+The [`HASHEXT_SHA256`](https://docs.ton.org/v3/documentation/tvm/instructions#F90400) and [`HASHEXT_BLAKE2B`](https://docs.ton.org/v3/documentation/tvm/instructions#F90402) instructions can be used in the similar manner, with respect to different number of return values. In addition, all of those can also work with values of type [`Builder{:tact}`][builder].
+
+The [`HASHEXT_KECCAK512`](https://docs.ton.org/v3/documentation/tvm/instructions#F90404) and [`HASHEXT_SHA512`](https://docs.ton.org/v3/documentation/tvm/instructions#F90401), however, put a tuple of two integers on the stack instead of putting two separate integers there. Because of that, you'd need to also add the `UNPAIR` instruction right after them.
+
+```tact
+// Computes and returns the Keccak-512 hash in two 256-bit unsigned `Int`
+// values from a passed `Slice` `s`. Uses the Ethereum-compatible implementation.
+asm fun keccak256(s: Slice): Hash512 {
+    // s:Slice → s:Slice, 1
+    // —————————————————————
+    // s0      → s1       s0
+    ONE
+
+    // s:Slice, 1  → Tuple(h1:Int, h2:Int)
+    // ———————————————————————————————————
+    // s1       s0 → s0
+    HASHEXT_KECCAK512
+
+    // Tuple(h1:Int, h2:Int) → h1:Int, h2:Int
+    // —————————————————————————————————————
+    // s0                    → s1      s2
+    UNPAIR // could've used UNTUPLE in a more general case too
+}
+
+// Helper Struct
+struct Hash512 { h1: Int; h2: Int }
+```
 
 :::note[Useful links:]
 
   [`HASHEXT_KECCAK256`](https://docs.ton.org/v3/documentation/tvm/instructions#F90403)\
+  [`HASHEXT_KECCAK512`](https://docs.ton.org/v3/documentation/tvm/instructions#F90404)\
   [Reference Keccak-256 implementation](https://keccak.team/index.html)
 
 :::
