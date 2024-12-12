@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs: `preloadRef` method for the `Slice` type: PR [#1044](https://github.com/tact-lang/tact/pull/1044)
 - Docs: added DeDust cookbook: PR [#954](https://github.com/tact-lang/tact/pull/954)
 - Docs: described the limit for deeply nested expressions: PR [#1101](https://github.com/tact-lang/tact/pull/1101)
+- Docs: added a link to the article by CertiK to Security best practices page: PR [#1185](https://github.com/tact-lang/tact/pull/1185)
 
 ### Changed
 
