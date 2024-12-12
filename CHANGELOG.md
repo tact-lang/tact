@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added security best practices: PR [#1070](https://github.com/tact-lang/tact/pull/1070)
 - Added automatic links to Web IDE from all code blocks: PR [#994](https://github.com/tact-lang/tact/pull/994)
 - Added initial semi-automated Chinese translation of the documentation: PR [#942](https://github.com/tact-lang/tact/pull/942)
-- `preloadRef` method for the `Slice` type: PR [#1044](https://github.com/tact-lang/tact/pull/1044)
+- Documented `preloadRef` method for the `Slice` type: PR [#1044](https://github.com/tact-lang/tact/pull/1044)
 - Added DeDust cookbook: PR [#954](https://github.com/tact-lang/tact/pull/954)
 - Described the limit for deeply nested expressions: PR [#1101](https://github.com/tact-lang/tact/pull/1101)
 - Completely overhauled the exit codes page: PR [#978](https://github.com/tact-lang/tact/pull/978)
@@ -53,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed handling of next and previous page links at the bottom of the pages when there's a separator item in the sidebar: PR [#949](https://github.com/tact-lang/tact/pull/949)
 - Enabled compilation of examples in `data-structures.mdx` and across Cookbook: PR [#917](https://github.com/tact-lang/tact/pull/917)
 - Removed the Programmatic API page due to frequent changes. To use the API, please refer to the compiler sources: PR [#1184](https://github.com/tact-lang/tact/pull/1184)
+- Added a link to the article by CertiK to Security best practices page: PR [#1185](https://github.com/tact-lang/tact/pull/1185)
 
 ### Release contributors
 
