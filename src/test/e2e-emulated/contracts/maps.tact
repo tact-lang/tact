@@ -21,6 +21,10 @@ struct GetAllMapsResult {
     int_uint42: Int?;
     int_uint256: Int?;
     int_coins: Int?;
+    int_varint16: Int?;
+    int_varint32: Int?;
+    int_varuint16: Int?;
+    int_varuint32: Int?;
     int_bool: Bool?;
     int_cell: Cell?;
     int_address: Address?;
@@ -34,6 +38,10 @@ struct GetAllMapsResult {
     int8_uint42: Int?;
     int8_uint256: Int?;
     int8_coins: Int?;
+    int8_varint16: Int?;
+    int8_varint32: Int?;
+    int8_varuint16: Int?;
+    int8_varuint32: Int?;
     int8_bool: Bool?;
     int8_cell: Cell?;
     int8_address: Address?;
@@ -47,6 +55,10 @@ struct GetAllMapsResult {
     int42_uint42: Int?;
     int42_uint256: Int?;
     int42_coins: Int?;
+    int42_varint16: Int?;
+    int42_varint32: Int?;
+    int42_varuint16: Int?;
+    int42_varuint32: Int?;
     int42_bool: Bool?;
     int42_cell: Cell?;
     int42_address: Address?;
@@ -60,6 +72,10 @@ struct GetAllMapsResult {
     int256_uint42: Int?;
     int256_uint256: Int?;
     int256_coins: Int?;
+    int256_varint16: Int?;
+    int256_varint32: Int?;
+    int256_varuint16: Int?;
+    int256_varuint32: Int?;
     int256_bool: Bool?;
     int256_cell: Cell?;
     int256_address: Address?;
@@ -73,6 +89,10 @@ struct GetAllMapsResult {
     uint8_uint42: Int?;
     uint8_uint256: Int?;
     uint8_coins: Int?;
+    uint8_varint16: Int?;
+    uint8_varint32: Int?;
+    uint8_varuint16: Int?;
+    uint8_varuint32: Int?;
     uint8_bool: Bool?;
     uint8_cell: Cell?;
     uint8_address: Address?;
@@ -86,6 +106,10 @@ struct GetAllMapsResult {
     uint42_uint42: Int?;
     uint42_uint256: Int?;
     uint42_coins: Int?;
+    uint42_varint16: Int?;
+    uint42_varint32: Int?;
+    uint42_varuint16: Int?;
+    uint42_varuint32: Int?;
     uint42_bool: Bool?;
     uint42_cell: Cell?;
     uint42_address: Address?;
@@ -99,6 +123,10 @@ struct GetAllMapsResult {
     uint256_uint42: Int?;
     uint256_uint256: Int?;
     uint256_coins: Int?;
+    uint256_varint16: Int?;
+    uint256_varint32: Int?;
+    uint256_varuint16: Int?;
+    uint256_varuint32: Int?;
     uint256_bool: Bool?;
     uint256_cell: Cell?;
     uint256_address: Address?;
@@ -113,6 +141,10 @@ struct GetAllMapsResult {
     address_uint42: Int?;
     address_uint256: Int?;
     address_coins: Int?;
+    address_varint16: Int?;
+    address_varint32: Int?;
+    address_varuint16: Int?;
+    address_varuint32: Int?;
     address_bool: Bool?;
     address_cell: Cell?;
     address_address: Address?;
@@ -129,6 +161,10 @@ struct ReplaceAllMapsResult {
     int_uint42: Bool;
     int_uint256: Bool;
     int_coins: Bool;
+    int_varint16: Bool;
+    int_varint32: Bool;
+    int_varuint16: Bool;
+    int_varuint32: Bool;
     int_bool: Bool;
     int_cell: Bool;
     int_address: Bool;
@@ -142,6 +178,10 @@ struct ReplaceAllMapsResult {
     int8_uint42: Bool;
     int8_uint256: Bool;
     int8_coins: Bool;
+    int8_varint16: Bool;
+    int8_varint32: Bool;
+    int8_varuint16: Bool;
+    int8_varuint32: Bool;
     int8_bool: Bool;
     int8_cell: Bool;
     int8_address: Bool;
@@ -155,6 +195,10 @@ struct ReplaceAllMapsResult {
     int42_uint42: Bool;
     int42_uint256: Bool;
     int42_coins: Bool;
+    int42_varint16: Bool;
+    int42_varint32: Bool;
+    int42_varuint16: Bool;
+    int42_varuint32: Bool;
     int42_bool: Bool;
     int42_cell: Bool;
     int42_address: Bool;
@@ -168,6 +212,10 @@ struct ReplaceAllMapsResult {
     int256_uint42: Bool;
     int256_uint256: Bool;
     int256_coins: Bool;
+    int256_varint16: Bool;
+    int256_varint32: Bool;
+    int256_varuint16: Bool;
+    int256_varuint32: Bool;
     int256_bool: Bool;
     int256_cell: Bool;
     int256_address: Bool;
@@ -181,6 +229,10 @@ struct ReplaceAllMapsResult {
     uint8_uint42: Bool;
     uint8_uint256: Bool;
     uint8_coins: Bool;
+    uint8_varint16: Bool;
+    uint8_varint32: Bool;
+    uint8_varuint16: Bool;
+    uint8_varuint32: Bool;
     uint8_bool: Bool;
     uint8_cell: Bool;
     uint8_address: Bool;
@@ -194,6 +246,10 @@ struct ReplaceAllMapsResult {
     uint42_uint42: Bool;
     uint42_uint256: Bool;
     uint42_coins: Bool;
+    uint42_varint16: Bool;
+    uint42_varint32: Bool;
+    uint42_varuint16: Bool;
+    uint42_varuint32: Bool;
     uint42_bool: Bool;
     uint42_cell: Bool;
     uint42_address: Bool;
@@ -207,6 +263,10 @@ struct ReplaceAllMapsResult {
     uint256_uint42: Bool;
     uint256_uint256: Bool;
     uint256_coins: Bool;
+    uint256_varint16: Bool;
+    uint256_varint32: Bool;
+    uint256_varuint16: Bool;
+    uint256_varuint32: Bool;
     uint256_bool: Bool;
     uint256_cell: Bool;
     uint256_address: Bool;
@@ -221,6 +281,10 @@ struct ReplaceAllMapsResult {
     address_uint42: Bool;
     address_uint256: Bool;
     address_coins: Bool;
+    address_varint16: Bool;
+    address_varint32: Bool;
+    address_varuint16: Bool;
+    address_varuint32: Bool;
     address_bool: Bool;
     address_cell: Bool;
     address_address: Bool;
@@ -237,6 +301,10 @@ struct ReplaceGetAllMapsResult {
     int_uint42: Int?;
     int_uint256: Int?;
     int_coins: Int?;
+    int_varint16: Int?;
+    int_varint32: Int?;
+    int_varuint16: Int?;
+    int_varuint32: Int?;
     int_bool: Bool?;
     int_cell: Cell?;
     int_address: Address?;
@@ -250,6 +318,10 @@ struct ReplaceGetAllMapsResult {
     int8_uint42: Int?;
     int8_uint256: Int?;
     int8_coins: Int?;
+    int8_varint16: Int?;
+    int8_varint32: Int?;
+    int8_varuint16: Int?;
+    int8_varuint32: Int?;
     int8_bool: Bool?;
     int8_cell: Cell?;
     int8_address: Address?;
@@ -263,6 +335,10 @@ struct ReplaceGetAllMapsResult {
     int42_uint42: Int?;
     int42_uint256: Int?;
     int42_coins: Int?;
+    int42_varint16: Int?;
+    int42_varint32: Int?;
+    int42_varuint16: Int?;
+    int42_varuint32: Int?;
     int42_bool: Bool?;
     int42_cell: Cell?;
     int42_address: Address?;
@@ -276,6 +352,10 @@ struct ReplaceGetAllMapsResult {
     int256_uint42: Int?;
     int256_uint256: Int?;
     int256_coins: Int?;
+    int256_varint16: Int?;
+    int256_varint32: Int?;
+    int256_varuint16: Int?;
+    int256_varuint32: Int?;
     int256_bool: Bool?;
     int256_cell: Cell?;
     int256_address: Address?;
@@ -289,6 +369,10 @@ struct ReplaceGetAllMapsResult {
     uint8_uint42: Int?;
     uint8_uint256: Int?;
     uint8_coins: Int?;
+    uint8_varint16: Int?;
+    uint8_varint32: Int?;
+    uint8_varuint16: Int?;
+    uint8_varuint32: Int?;
     uint8_bool: Bool?;
     uint8_cell: Cell?;
     uint8_address: Address?;
@@ -302,6 +386,10 @@ struct ReplaceGetAllMapsResult {
     uint42_uint42: Int?;
     uint42_uint256: Int?;
     uint42_coins: Int?;
+    uint42_varint16: Int?;
+    uint42_varint32: Int?;
+    uint42_varuint16: Int?;
+    uint42_varuint32: Int?;
     uint42_bool: Bool?;
     uint42_cell: Cell?;
     uint42_address: Address?;
@@ -315,6 +403,10 @@ struct ReplaceGetAllMapsResult {
     uint256_uint42: Int?;
     uint256_uint256: Int?;
     uint256_coins: Int?;
+    uint256_varint16: Int?;
+    uint256_varint32: Int?;
+    uint256_varuint16: Int?;
+    uint256_varuint32: Int?;
     uint256_bool: Bool?;
     uint256_cell: Cell?;
     uint256_address: Address?;
@@ -329,6 +421,10 @@ struct ReplaceGetAllMapsResult {
     address_uint42: Int?;
     address_uint256: Int?;
     address_coins: Int?;
+    address_varint16: Int?;
+    address_varint32: Int?;
+    address_varuint16: Int?;
+    address_varuint32: Int?;
     address_bool: Bool?;
     address_cell: Cell?;
     address_address: Address?;
@@ -345,6 +441,10 @@ struct ExistsAllMapsResult {
     int_uint42: Bool;
     int_uint256: Bool;
     int_coins: Bool;
+    int_varint16: Bool;
+    int_varint32: Bool;
+    int_varuint16: Bool;
+    int_varuint32: Bool;
     int_bool: Bool;
     int_cell: Bool;
     int_address: Bool;
@@ -358,6 +458,10 @@ struct ExistsAllMapsResult {
     int8_uint42: Bool;
     int8_uint256: Bool;
     int8_coins: Bool;
+    int8_varint16: Bool;
+    int8_varint32: Bool;
+    int8_varuint16: Bool;
+    int8_varuint32: Bool;
     int8_bool: Bool;
     int8_cell: Bool;
     int8_address: Bool;
@@ -371,6 +475,10 @@ struct ExistsAllMapsResult {
     int42_uint42: Bool;
     int42_uint256: Bool;
     int42_coins: Bool;
+    int42_varint16: Bool;
+    int42_varint32: Bool;
+    int42_varuint16: Bool;
+    int42_varuint32: Bool;
     int42_bool: Bool;
     int42_cell: Bool;
     int42_address: Bool;
@@ -384,6 +492,10 @@ struct ExistsAllMapsResult {
     int256_uint42: Bool;
     int256_uint256: Bool;
     int256_coins: Bool;
+    int256_varint16: Bool;
+    int256_varint32: Bool;
+    int256_varuint16: Bool;
+    int256_varuint32: Bool;
     int256_bool: Bool;
     int256_cell: Bool;
     int256_address: Bool;
@@ -397,6 +509,10 @@ struct ExistsAllMapsResult {
     uint8_uint42: Bool;
     uint8_uint256: Bool;
     uint8_coins: Bool;
+    uint8_varint16: Bool;
+    uint8_varint32: Bool;
+    uint8_varuint16: Bool;
+    uint8_varuint32: Bool;
     uint8_bool: Bool;
     uint8_cell: Bool;
     uint8_address: Bool;
@@ -410,6 +526,10 @@ struct ExistsAllMapsResult {
     uint42_uint42: Bool;
     uint42_uint256: Bool;
     uint42_coins: Bool;
+    uint42_varint16: Bool;
+    uint42_varint32: Bool;
+    uint42_varuint16: Bool;
+    uint42_varuint32: Bool;
     uint42_bool: Bool;
     uint42_cell: Bool;
     uint42_address: Bool;
@@ -423,6 +543,10 @@ struct ExistsAllMapsResult {
     uint256_uint42: Bool;
     uint256_uint256: Bool;
     uint256_coins: Bool;
+    uint256_varint16: Bool;
+    uint256_varint32: Bool;
+    uint256_varuint16: Bool;
+    uint256_varuint32: Bool;
     uint256_bool: Bool;
     uint256_cell: Bool;
     uint256_address: Bool;
@@ -437,6 +561,10 @@ struct ExistsAllMapsResult {
     address_uint42: Bool;
     address_uint256: Bool;
     address_coins: Bool;
+    address_varint16: Bool;
+    address_varint32: Bool;
+    address_varuint16: Bool;
+    address_varuint32: Bool;
     address_bool: Bool;
     address_cell: Bool;
     address_address: Bool;
@@ -453,6 +581,10 @@ struct IsEmptyAllMapsResult {
     int_uint42: Bool;
     int_uint256: Bool;
     int_coins: Bool;
+    int_varint16: Bool;
+    int_varint32: Bool;
+    int_varuint16: Bool;
+    int_varuint32: Bool;
     int_bool: Bool;
     int_cell: Bool;
     int_address: Bool;
@@ -466,6 +598,10 @@ struct IsEmptyAllMapsResult {
     int8_uint42: Bool;
     int8_uint256: Bool;
     int8_coins: Bool;
+    int8_varint16: Bool;
+    int8_varint32: Bool;
+    int8_varuint16: Bool;
+    int8_varuint32: Bool;
     int8_bool: Bool;
     int8_cell: Bool;
     int8_address: Bool;
@@ -479,6 +615,10 @@ struct IsEmptyAllMapsResult {
     int42_uint42: Bool;
     int42_uint256: Bool;
     int42_coins: Bool;
+    int42_varint16: Bool;
+    int42_varint32: Bool;
+    int42_varuint16: Bool;
+    int42_varuint32: Bool;
     int42_bool: Bool;
     int42_cell: Bool;
     int42_address: Bool;
@@ -492,6 +632,10 @@ struct IsEmptyAllMapsResult {
     int256_uint42: Bool;
     int256_uint256: Bool;
     int256_coins: Bool;
+    int256_varint16: Bool;
+    int256_varint32: Bool;
+    int256_varuint16: Bool;
+    int256_varuint32: Bool;
     int256_bool: Bool;
     int256_cell: Bool;
     int256_address: Bool;
@@ -505,6 +649,10 @@ struct IsEmptyAllMapsResult {
     uint8_uint42: Bool;
     uint8_uint256: Bool;
     uint8_coins: Bool;
+    uint8_varint16: Bool;
+    uint8_varint32: Bool;
+    uint8_varuint16: Bool;
+    uint8_varuint32: Bool;
     uint8_bool: Bool;
     uint8_cell: Bool;
     uint8_address: Bool;
@@ -518,6 +666,10 @@ struct IsEmptyAllMapsResult {
     uint42_uint42: Bool;
     uint42_uint256: Bool;
     uint42_coins: Bool;
+    uint42_varint16: Bool;
+    uint42_varint32: Bool;
+    uint42_varuint16: Bool;
+    uint42_varuint32: Bool;
     uint42_bool: Bool;
     uint42_cell: Bool;
     uint42_address: Bool;
@@ -531,6 +683,10 @@ struct IsEmptyAllMapsResult {
     uint256_uint42: Bool;
     uint256_uint256: Bool;
     uint256_coins: Bool;
+    uint256_varint16: Bool;
+    uint256_varint32: Bool;
+    uint256_varuint16: Bool;
+    uint256_varuint32: Bool;
     uint256_bool: Bool;
     uint256_cell: Bool;
     uint256_address: Bool;
@@ -545,6 +701,10 @@ struct IsEmptyAllMapsResult {
     address_uint42: Bool;
     address_uint256: Bool;
     address_coins: Bool;
+    address_varint16: Bool;
+    address_varint32: Bool;
+    address_varuint16: Bool;
+    address_varuint32: Bool;
     address_bool: Bool;
     address_cell: Bool;
     address_address: Bool;
@@ -561,6 +721,10 @@ struct AsCellAllMapsResult {
     int_uint42: Cell?;
     int_uint256: Cell?;
     int_coins: Cell?;
+    int_varint16: Cell?;
+    int_varint32: Cell?;
+    int_varuint16: Cell?;
+    int_varuint32: Cell?;
     int_bool: Cell?;
     int_cell: Cell?;
     int_address: Cell?;
@@ -574,6 +738,10 @@ struct AsCellAllMapsResult {
     int8_uint42: Cell?;
     int8_uint256: Cell?;
     int8_coins: Cell?;
+    int8_varint16: Cell?;
+    int8_varint32: Cell?;
+    int8_varuint16: Cell?;
+    int8_varuint32: Cell?;
     int8_bool: Cell?;
     int8_cell: Cell?;
     int8_address: Cell?;
@@ -587,6 +755,10 @@ struct AsCellAllMapsResult {
     int42_uint42: Cell?;
     int42_uint256: Cell?;
     int42_coins: Cell?;
+    int42_varint16: Cell?;
+    int42_varint32: Cell?;
+    int42_varuint16: Cell?;
+    int42_varuint32: Cell?;
     int42_bool: Cell?;
     int42_cell: Cell?;
     int42_address: Cell?;
@@ -600,6 +772,10 @@ struct AsCellAllMapsResult {
     int256_uint42: Cell?;
     int256_uint256: Cell?;
     int256_coins: Cell?;
+    int256_varint16: Cell?;
+    int256_varint32: Cell?;
+    int256_varuint16: Cell?;
+    int256_varuint32: Cell?;
     int256_bool: Cell?;
     int256_cell: Cell?;
     int256_address: Cell?;
@@ -613,6 +789,10 @@ struct AsCellAllMapsResult {
     uint8_uint42: Cell?;
     uint8_uint256: Cell?;
     uint8_coins: Cell?;
+    uint8_varint16: Cell?;
+    uint8_varint32: Cell?;
+    uint8_varuint16: Cell?;
+    uint8_varuint32: Cell?;
     uint8_bool: Cell?;
     uint8_cell: Cell?;
     uint8_address: Cell?;
@@ -626,6 +806,10 @@ struct AsCellAllMapsResult {
     uint42_uint42: Cell?;
     uint42_uint256: Cell?;
     uint42_coins: Cell?;
+    uint42_varint16: Cell?;
+    uint42_varint32: Cell?;
+    uint42_varuint16: Cell?;
+    uint42_varuint32: Cell?;
     uint42_bool: Cell?;
     uint42_cell: Cell?;
     uint42_address: Cell?;
@@ -639,6 +823,10 @@ struct AsCellAllMapsResult {
     uint256_uint42: Cell?;
     uint256_uint256: Cell?;
     uint256_coins: Cell?;
+    uint256_varint16: Cell?;
+    uint256_varint32: Cell?;
+    uint256_varuint16: Cell?;
+    uint256_varuint32: Cell?;
     uint256_bool: Cell?;
     uint256_cell: Cell?;
     uint256_address: Cell?;
@@ -653,6 +841,10 @@ struct AsCellAllMapsResult {
     address_uint42: Cell?;
     address_uint256: Cell?;
     address_coins: Cell?;
+    address_varint16: Cell?;
+    address_varint32: Cell?;
+    address_varuint16: Cell?;
+    address_varuint32: Cell?;
     address_bool: Cell?;
     address_cell: Cell?;
     address_address: Cell?;
@@ -683,6 +875,10 @@ message SetAllMaps {
     valueUint42: Int?;
     valueUint256: Int?;
     valueCoins: Int?;
+    valueVarint16: Int?;
+    valueVarint32: Int?;
+    valueVaruint16: Int?;
+    valueVaruint32: Int?;
     valueBool: Bool?;
     valueCell: Cell?;
     valueAddress: Address?;
@@ -721,6 +917,10 @@ message ReplaceAllMaps {
     valueUint42: Int?;
     valueUint256: Int?;
     valueCoins: Int?;
+    valueVarint16: Int?;
+    valueVarint32: Int?;
+    valueVaruint16: Int?;
+    valueVaruint32: Int?;
     valueBool: Bool?;
     valueCell: Cell?;
     valueAddress: Address?;
@@ -747,6 +947,10 @@ message ReplaceGetAllMaps {
     valueUint42: Int?;
     valueUint256: Int?;
     valueCoins: Int?;
+    valueVarint16: Int?;
+    valueVarint32: Int?;
+    valueVaruint16: Int?;
+    valueVaruint32: Int?;
     valueBool: Bool?;
     valueCell: Cell?;
     valueAddress: Address?;
@@ -776,6 +980,10 @@ contract MapTestContract {
     int_uint42: map<Int, Int as uint42>;
     int_uint256: map<Int, Int as uint256>;
     int_coins: map<Int, Int as coins>;
+    int_varint16: map<Int, Int as varint16>;
+    int_varint32: map<Int, Int as varint32>;
+    int_varuint16: map<Int, Int as varuint16>;
+    int_varuint32: map<Int, Int as varuint32>;
     int_bool: map<Int, Bool>;
     int_cell: map<Int, Cell>;
     int_address: map<Int, Address>;
@@ -793,6 +1001,10 @@ contract MapTestContract {
     int8_uint42: map<Int as int8, Int as uint42>;
     int8_uint256: map<Int as int8, Int as uint256>;
     int8_coins: map<Int as int8, Int as coins>;
+    int8_varint16: map<Int as int8, Int as varint16>;
+    int8_varint32: map<Int as int8, Int as varint32>;
+    int8_varuint16: map<Int as int8, Int as varuint16>;
+    int8_varuint32: map<Int as int8, Int as varuint32>;
     int8_bool: map<Int as int8, Bool>;
     int8_cell: map<Int as int8, Cell>;
     int8_address: map<Int as int8, Address>;
@@ -810,6 +1022,10 @@ contract MapTestContract {
     int42_uint42: map<Int as int42, Int as uint42>;
     int42_uint256: map<Int as int42, Int as uint256>;
     int42_coins: map<Int as int42, Int as coins>;
+    int42_varint16: map<Int as int42, Int as varint16>;
+    int42_varint32: map<Int as int42, Int as varint32>;
+    int42_varuint16: map<Int as int42, Int as varuint16>;
+    int42_varuint32: map<Int as int42, Int as varuint32>;
     int42_bool: map<Int as int42, Bool>;
     int42_cell: map<Int as int42, Cell>;
     int42_address: map<Int as int42, Address>;
@@ -827,6 +1043,10 @@ contract MapTestContract {
     int256_uint42: map<Int as int256, Int as uint42>;
     int256_uint256: map<Int as int256, Int as uint256>;
     int256_coins: map<Int as int256, Int as coins>;
+    int256_varint16: map<Int as int256, Int as varint16>;
+    int256_varint32: map<Int as int256, Int as varint32>;
+    int256_varuint16: map<Int as int256, Int as varuint16>;
+    int256_varuint32: map<Int as int256, Int as varuint32>;
     int256_bool: map<Int as int256, Bool>;
     int256_cell: map<Int as int256, Cell>;
     int256_address: map<Int as int256, Address>;
@@ -844,6 +1064,10 @@ contract MapTestContract {
     uint8_uint42: map<Int as uint8, Int as uint42>;
     uint8_uint256: map<Int as uint8, Int as uint256>;
     uint8_coins: map<Int as uint8, Int as coins>;
+    uint8_varint16: map<Int as uint8, Int as varint16>;
+    uint8_varint32: map<Int as uint8, Int as varint32>;
+    uint8_varuint16: map<Int as uint8, Int as varuint16>;
+    uint8_varuint32: map<Int as uint8, Int as varuint32>;
     uint8_bool: map<Int as uint8, Bool>;
     uint8_cell: map<Int as uint8, Cell>;
     uint8_address: map<Int as uint8, Address>;
@@ -861,6 +1085,10 @@ contract MapTestContract {
     uint42_uint42: map<Int as uint42, Int as uint42>;
     uint42_uint256: map<Int as uint42, Int as uint256>;
     uint42_coins: map<Int as uint42, Int as coins>;
+    uint42_varint16: map<Int as uint42, Int as varint16>;
+    uint42_varint32: map<Int as uint42, Int as varint32>;
+    uint42_varuint16: map<Int as uint42, Int as varuint16>;
+    uint42_varuint32: map<Int as uint42, Int as varuint32>;
     uint42_bool: map<Int as uint42, Bool>;
     uint42_cell: map<Int as uint42, Cell>;
     uint42_address: map<Int as uint42, Address>;
@@ -878,6 +1106,10 @@ contract MapTestContract {
     uint256_uint42: map<Int as uint256, Int as uint42>;
     uint256_uint256: map<Int as uint256, Int as uint256>;
     uint256_coins: map<Int as uint256, Int as coins>;
+    uint256_varint16: map<Int as uint256, Int as varint16>;
+    uint256_varint32: map<Int as uint256, Int as varint32>;
+    uint256_varuint16: map<Int as uint256, Int as varuint16>;
+    uint256_varuint32: map<Int as uint256, Int as varuint32>;
     uint256_bool: map<Int as uint256, Bool>;
     uint256_cell: map<Int as uint256, Cell>;
     uint256_address: map<Int as uint256, Address>;
@@ -895,6 +1127,10 @@ contract MapTestContract {
     address_uint42: map<Address, Int as uint42>;
     address_uint256: map<Address, Int as uint256>;
     address_coins: map<Address, Int as coins>;
+    address_varint16: map<Address, Int as varint16>;
+    address_varint32: map<Address, Int as varint32>;
+    address_varuint16: map<Address, Int as varuint16>;
+    address_varuint32: map<Address, Int as varuint32>;
     address_bool: map<Address, Bool>;
     address_cell: map<Address, Cell>;
     address_address: map<Address, Address>;
@@ -914,6 +1150,10 @@ contract MapTestContract {
         self.int_uint42.set(msg.keyInt, msg.valueUint42);
         self.int_uint256.set(msg.keyInt, msg.valueUint256);
         self.int_coins.set(msg.keyInt, msg.valueCoins);
+        self.int_varint16.set(msg.keyInt, msg.valueVarint16);
+        self.int_varint32.set(msg.keyInt, msg.valueVarint32);
+        self.int_varuint16.set(msg.keyInt, msg.valueVaruint16);
+        self.int_varuint32.set(msg.keyInt, msg.valueVaruint32);
         self.int_bool.set(msg.keyInt, msg.valueBool);
         self.int_cell.set(msg.keyInt, msg.valueCell);
         self.int_address.set(msg.keyInt, msg.valueAddress);
@@ -927,6 +1167,10 @@ contract MapTestContract {
         self.int8_uint42.set(msg.keyInt8, msg.valueUint42);
         self.int8_uint256.set(msg.keyInt8, msg.valueUint256);
         self.int8_coins.set(msg.keyInt8, msg.valueCoins);
+        self.int8_varint16.set(msg.keyInt8, msg.valueVarint16);
+        self.int8_varint32.set(msg.keyInt8, msg.valueVarint32);
+        self.int8_varuint16.set(msg.keyInt8, msg.valueVaruint16);
+        self.int8_varuint32.set(msg.keyInt8, msg.valueVaruint32);
         self.int8_bool.set(msg.keyInt8, msg.valueBool);
         self.int8_cell.set(msg.keyInt8, msg.valueCell);
         self.int8_address.set(msg.keyInt8, msg.valueAddress);
@@ -940,6 +1184,10 @@ contract MapTestContract {
         self.int42_uint42.set(msg.keyInt42, msg.valueUint42);
         self.int42_uint256.set(msg.keyInt42, msg.valueUint256);
         self.int42_coins.set(msg.keyInt42, msg.valueCoins);
+        self.int42_varint16.set(msg.keyInt42, msg.valueVarint16);
+        self.int42_varint32.set(msg.keyInt42, msg.valueVarint32);
+        self.int42_varuint16.set(msg.keyInt42, msg.valueVaruint16);
+        self.int42_varuint32.set(msg.keyInt42, msg.valueVaruint32);
         self.int42_bool.set(msg.keyInt42, msg.valueBool);
         self.int42_cell.set(msg.keyInt42, msg.valueCell);
         self.int42_address.set(msg.keyInt42, msg.valueAddress);
@@ -953,6 +1201,10 @@ contract MapTestContract {
         self.int256_uint42.set(msg.keyInt256, msg.valueUint42);
         self.int256_uint256.set(msg.keyInt256, msg.valueUint256);
         self.int256_coins.set(msg.keyInt256, msg.valueCoins);
+        self.int256_varint16.set(msg.keyInt256, msg.valueVarint16);
+        self.int256_varint32.set(msg.keyInt256, msg.valueVarint32);
+        self.int256_varuint16.set(msg.keyInt256, msg.valueVaruint16);
+        self.int256_varuint32.set(msg.keyInt256, msg.valueVaruint32);
         self.int256_bool.set(msg.keyInt256, msg.valueBool);
         self.int256_cell.set(msg.keyInt256, msg.valueCell);
         self.int256_address.set(msg.keyInt256, msg.valueAddress);
@@ -966,6 +1218,10 @@ contract MapTestContract {
         self.uint8_uint42.set(msg.keyUint8, msg.valueUint42);
         self.uint8_uint256.set(msg.keyUint8, msg.valueUint256);
         self.uint8_coins.set(msg.keyUint8, msg.valueCoins);
+        self.uint8_varint16.set(msg.keyUint8, msg.valueVarint16);
+        self.uint8_varint32.set(msg.keyUint8, msg.valueVarint32);
+        self.uint8_varuint16.set(msg.keyUint8, msg.valueVaruint16);
+        self.uint8_varuint32.set(msg.keyUint8, msg.valueVaruint32);
         self.uint8_bool.set(msg.keyUint8, msg.valueBool);
         self.uint8_cell.set(msg.keyUint8, msg.valueCell);
         self.uint8_address.set(msg.keyUint8, msg.valueAddress);
@@ -979,6 +1235,10 @@ contract MapTestContract {
         self.uint42_uint42.set(msg.keyUint42, msg.valueUint42);
         self.uint42_uint256.set(msg.keyUint42, msg.valueUint256);
         self.uint42_coins.set(msg.keyUint42, msg.valueCoins);
+        self.uint42_varint16.set(msg.keyUint42, msg.valueVarint16);
+        self.uint42_varint32.set(msg.keyUint42, msg.valueVarint32);
+        self.uint42_varuint16.set(msg.keyUint42, msg.valueVaruint16);
+        self.uint42_varuint32.set(msg.keyUint42, msg.valueVaruint32);
         self.uint42_bool.set(msg.keyUint42, msg.valueBool);
         self.uint42_cell.set(msg.keyUint42, msg.valueCell);
         self.uint42_address.set(msg.keyUint42, msg.valueAddress);
@@ -992,6 +1252,10 @@ contract MapTestContract {
         self.uint256_uint42.set(msg.keyUint256, msg.valueUint42);
         self.uint256_uint256.set(msg.keyUint256, msg.valueUint256);
         self.uint256_coins.set(msg.keyUint256, msg.valueCoins);
+        self.uint256_varint16.set(msg.keyUint256, msg.valueVarint16);
+        self.uint256_varint32.set(msg.keyUint256, msg.valueVarint32);
+        self.uint256_varuint16.set(msg.keyUint256, msg.valueVaruint16);
+        self.uint256_varuint32.set(msg.keyUint256, msg.valueVaruint32);
         self.uint256_bool.set(msg.keyUint256, msg.valueBool);
         self.uint256_cell.set(msg.keyUint256, msg.valueCell);
         self.uint256_address.set(msg.keyUint256, msg.valueAddress);
@@ -1006,6 +1270,10 @@ contract MapTestContract {
         self.address_uint42.set(msg.keyAddress, msg.valueUint42);
         self.address_uint256.set(msg.keyAddress, msg.valueUint256);
         self.address_coins.set(msg.keyAddress, msg.valueCoins);
+        self.address_varint16.set(msg.keyAddress, msg.valueVarint16);
+        self.address_varint32.set(msg.keyAddress, msg.valueVarint32);
+        self.address_varuint16.set(msg.keyAddress, msg.valueVaruint16);
+        self.address_varuint32.set(msg.keyAddress, msg.valueVaruint32);
         self.address_bool.set(msg.keyAddress, msg.valueBool);
         self.address_cell.set(msg.keyAddress, msg.valueCell);
         self.address_address.set(msg.keyAddress, msg.valueAddress);
@@ -1022,6 +1290,10 @@ contract MapTestContract {
         self.int_uint42.del(msg.keyInt);
         self.int_uint256.del(msg.keyInt);
         self.int_coins.del(msg.keyInt);
+        self.int_varint16.del(msg.keyInt);
+        self.int_varint32.del(msg.keyInt);
+        self.int_varuint16.del(msg.keyInt);
+        self.int_varuint32.del(msg.keyInt);
         self.int_bool.del(msg.keyInt);
         self.int_cell.del(msg.keyInt);
         self.int_address.del(msg.keyInt);
@@ -1035,6 +1307,10 @@ contract MapTestContract {
         self.int8_uint42.del(msg.keyInt8);
         self.int8_uint256.del(msg.keyInt8);
         self.int8_coins.del(msg.keyInt8);
+        self.int8_varint16.del(msg.keyInt8);
+        self.int8_varint32.del(msg.keyInt8);
+        self.int8_varuint16.del(msg.keyInt8);
+        self.int8_varuint32.del(msg.keyInt8);
         self.int8_bool.del(msg.keyInt8);
         self.int8_cell.del(msg.keyInt8);
         self.int8_address.del(msg.keyInt8);
@@ -1048,6 +1324,10 @@ contract MapTestContract {
         self.int42_uint42.del(msg.keyInt42);
         self.int42_uint256.del(msg.keyInt42);
         self.int42_coins.del(msg.keyInt42);
+        self.int42_varint16.del(msg.keyInt42);
+        self.int42_varint32.del(msg.keyInt42);
+        self.int42_varuint16.del(msg.keyInt42);
+        self.int42_varuint32.del(msg.keyInt42);
         self.int42_bool.del(msg.keyInt42);
         self.int42_cell.del(msg.keyInt42);
         self.int42_address.del(msg.keyInt42);
@@ -1061,6 +1341,10 @@ contract MapTestContract {
         self.int256_uint42.del(msg.keyInt256);
         self.int256_uint256.del(msg.keyInt256);
         self.int256_coins.del(msg.keyInt256);
+        self.int256_varint16.del(msg.keyInt256);
+        self.int256_varint32.del(msg.keyInt256);
+        self.int256_varuint16.del(msg.keyInt256);
+        self.int256_varuint32.del(msg.keyInt256);
         self.int256_bool.del(msg.keyInt256);
         self.int256_cell.del(msg.keyInt256);
         self.int256_address.del(msg.keyInt256);
@@ -1074,6 +1358,10 @@ contract MapTestContract {
         self.uint8_uint42.del(msg.keyUint8);
         self.uint8_uint256.del(msg.keyUint8);
         self.uint8_coins.del(msg.keyUint8);
+        self.uint8_varint16.del(msg.keyUint8);
+        self.uint8_varint32.del(msg.keyUint8);
+        self.uint8_varuint16.del(msg.keyUint8);
+        self.uint8_varuint32.del(msg.keyUint8);
         self.uint8_bool.del(msg.keyUint8);
         self.uint8_cell.del(msg.keyUint8);
         self.uint8_address.del(msg.keyUint8);
@@ -1087,6 +1375,10 @@ contract MapTestContract {
         self.uint42_uint42.del(msg.keyUint42);
         self.uint42_uint256.del(msg.keyUint42);
         self.uint42_coins.del(msg.keyUint42);
+        self.uint42_varint16.del(msg.keyUint42);
+        self.uint42_varint32.del(msg.keyUint42);
+        self.uint42_varuint16.del(msg.keyUint42);
+        self.uint42_varuint32.del(msg.keyUint42);
         self.uint42_bool.del(msg.keyUint42);
         self.uint42_cell.del(msg.keyUint42);
         self.uint42_address.del(msg.keyUint42);
@@ -1100,6 +1392,10 @@ contract MapTestContract {
         self.uint256_uint42.del(msg.keyUint256);
         self.uint256_uint256.del(msg.keyUint256);
         self.uint256_coins.del(msg.keyUint256);
+        self.uint256_varint16.del(msg.keyUint256);
+        self.uint256_varint32.del(msg.keyUint256);
+        self.uint256_varuint16.del(msg.keyUint256);
+        self.uint256_varuint32.del(msg.keyUint256);
         self.uint256_bool.del(msg.keyUint256);
         self.uint256_cell.del(msg.keyUint256);
         self.uint256_address.del(msg.keyUint256);
@@ -1114,6 +1410,10 @@ contract MapTestContract {
         self.address_uint42.del(msg.keyAddress);
         self.address_uint256.del(msg.keyAddress);
         self.address_coins.del(msg.keyAddress);
+        self.address_varint16.del(msg.keyAddress);
+        self.address_varint32.del(msg.keyAddress);
+        self.address_varuint16.del(msg.keyAddress);
+        self.address_varuint32.del(msg.keyAddress);
         self.address_bool.del(msg.keyAddress);
         self.address_cell.del(msg.keyAddress);
         self.address_address.del(msg.keyAddress);
@@ -1121,7 +1421,7 @@ contract MapTestContract {
     }
 
     receive(msg: ReplaceAllMaps) {
-        // Integer Key Maps
+        // Replace operations analogous to coins, now including varint16, varint32, varuint16, varuint32
         self.int_int.replace(msg.keyInt, msg.valueInt);
         self.int_int8.replace(msg.keyInt, msg.valueInt8);
         self.int_int42.replace(msg.keyInt, msg.valueInt42);
@@ -1130,6 +1430,10 @@ contract MapTestContract {
         self.int_uint42.replace(msg.keyInt, msg.valueUint42);
         self.int_uint256.replace(msg.keyInt, msg.valueUint256);
         self.int_coins.replace(msg.keyInt, msg.valueCoins);
+        self.int_varint16.replace(msg.keyInt, msg.valueVarint16);
+        self.int_varint32.replace(msg.keyInt, msg.valueVarint32);
+        self.int_varuint16.replace(msg.keyInt, msg.valueVaruint16);
+        self.int_varuint32.replace(msg.keyInt, msg.valueVaruint32);
         self.int_bool.replace(msg.keyInt, msg.valueBool);
         self.int_cell.replace(msg.keyInt, msg.valueCell);
         self.int_address.replace(msg.keyInt, msg.valueAddress);
@@ -1143,6 +1447,10 @@ contract MapTestContract {
         self.int8_uint42.replace(msg.keyInt8, msg.valueUint42);
         self.int8_uint256.replace(msg.keyInt8, msg.valueUint256);
         self.int8_coins.replace(msg.keyInt8, msg.valueCoins);
+        self.int8_varint16.replace(msg.keyInt8, msg.valueVarint16);
+        self.int8_varint32.replace(msg.keyInt8, msg.valueVarint32);
+        self.int8_varuint16.replace(msg.keyInt8, msg.valueVaruint16);
+        self.int8_varuint32.replace(msg.keyInt8, msg.valueVaruint32);
         self.int8_bool.replace(msg.keyInt8, msg.valueBool);
         self.int8_cell.replace(msg.keyInt8, msg.valueCell);
         self.int8_address.replace(msg.keyInt8, msg.valueAddress);
@@ -1156,6 +1464,10 @@ contract MapTestContract {
         self.int42_uint42.replace(msg.keyInt42, msg.valueUint42);
         self.int42_uint256.replace(msg.keyInt42, msg.valueUint256);
         self.int42_coins.replace(msg.keyInt42, msg.valueCoins);
+        self.int42_varint16.replace(msg.keyInt42, msg.valueVarint16);
+        self.int42_varint32.replace(msg.keyInt42, msg.valueVarint32);
+        self.int42_varuint16.replace(msg.keyInt42, msg.valueVaruint16);
+        self.int42_varuint32.replace(msg.keyInt42, msg.valueVaruint32);
         self.int42_bool.replace(msg.keyInt42, msg.valueBool);
         self.int42_cell.replace(msg.keyInt42, msg.valueCell);
         self.int42_address.replace(msg.keyInt42, msg.valueAddress);
@@ -1169,6 +1481,10 @@ contract MapTestContract {
         self.int256_uint42.replace(msg.keyInt256, msg.valueUint42);
         self.int256_uint256.replace(msg.keyInt256, msg.valueUint256);
         self.int256_coins.replace(msg.keyInt256, msg.valueCoins);
+        self.int256_varint16.replace(msg.keyInt256, msg.valueVarint16);
+        self.int256_varint32.replace(msg.keyInt256, msg.valueVarint32);
+        self.int256_varuint16.replace(msg.keyInt256, msg.valueVaruint16);
+        self.int256_varuint32.replace(msg.keyInt256, msg.valueVaruint32);
         self.int256_bool.replace(msg.keyInt256, msg.valueBool);
         self.int256_cell.replace(msg.keyInt256, msg.valueCell);
         self.int256_address.replace(msg.keyInt256, msg.valueAddress);
@@ -1182,6 +1498,10 @@ contract MapTestContract {
         self.uint8_uint42.replace(msg.keyUint8, msg.valueUint42);
         self.uint8_uint256.replace(msg.keyUint8, msg.valueUint256);
         self.uint8_coins.replace(msg.keyUint8, msg.valueCoins);
+        self.uint8_varint16.replace(msg.keyUint8, msg.valueVarint16);
+        self.uint8_varint32.replace(msg.keyUint8, msg.valueVarint32);
+        self.uint8_varuint16.replace(msg.keyUint8, msg.valueVaruint16);
+        self.uint8_varuint32.replace(msg.keyUint8, msg.valueVaruint32);
         self.uint8_bool.replace(msg.keyUint8, msg.valueBool);
         self.uint8_cell.replace(msg.keyUint8, msg.valueCell);
         self.uint8_address.replace(msg.keyUint8, msg.valueAddress);
@@ -1195,6 +1515,10 @@ contract MapTestContract {
         self.uint42_uint42.replace(msg.keyUint42, msg.valueUint42);
         self.uint42_uint256.replace(msg.keyUint42, msg.valueUint256);
         self.uint42_coins.replace(msg.keyUint42, msg.valueCoins);
+        self.uint42_varint16.replace(msg.keyUint42, msg.valueVarint16);
+        self.uint42_varint32.replace(msg.keyUint42, msg.valueVarint32);
+        self.uint42_varuint16.replace(msg.keyUint42, msg.valueVaruint16);
+        self.uint42_varuint32.replace(msg.keyUint42, msg.valueVaruint32);
         self.uint42_bool.replace(msg.keyUint42, msg.valueBool);
         self.uint42_cell.replace(msg.keyUint42, msg.valueCell);
         self.uint42_address.replace(msg.keyUint42, msg.valueAddress);
@@ -1208,6 +1532,10 @@ contract MapTestContract {
         self.uint256_uint42.replace(msg.keyUint256, msg.valueUint42);
         self.uint256_uint256.replace(msg.keyUint256, msg.valueUint256);
         self.uint256_coins.replace(msg.keyUint256, msg.valueCoins);
+        self.uint256_varint16.replace(msg.keyUint256, msg.valueVarint16);
+        self.uint256_varint32.replace(msg.keyUint256, msg.valueVarint32);
+        self.uint256_varuint16.replace(msg.keyUint256, msg.valueVaruint16);
+        self.uint256_varuint32.replace(msg.keyUint256, msg.valueVaruint32);
         self.uint256_bool.replace(msg.keyUint256, msg.valueBool);
         self.uint256_cell.replace(msg.keyUint256, msg.valueCell);
         self.uint256_address.replace(msg.keyUint256, msg.valueAddress);
@@ -1222,6 +1550,10 @@ contract MapTestContract {
         self.address_uint42.replace(msg.keyAddress, msg.valueUint42);
         self.address_uint256.replace(msg.keyAddress, msg.valueUint256);
         self.address_coins.replace(msg.keyAddress, msg.valueCoins);
+        self.address_varint16.replace(msg.keyAddress, msg.valueVarint16);
+        self.address_varint32.replace(msg.keyAddress, msg.valueVarint32);
+        self.address_varuint16.replace(msg.keyAddress, msg.valueVaruint16);
+        self.address_varuint32.replace(msg.keyAddress, msg.valueVaruint32);
         self.address_bool.replace(msg.keyAddress, msg.valueBool);
         self.address_cell.replace(msg.keyAddress, msg.valueCell);
         self.address_address.replace(msg.keyAddress, msg.valueAddress);
@@ -1229,7 +1561,7 @@ contract MapTestContract {
     }
 
     receive(msg: ReplaceGetAllMaps) {
-        // Integer Key Maps
+        // Similar to above, but calling replaceGet
         self.int_int.replaceGet(msg.keyInt, msg.valueInt);
         self.int_int8.replaceGet(msg.keyInt, msg.valueInt8);
         self.int_int42.replaceGet(msg.keyInt, msg.valueInt42);
@@ -1238,6 +1570,10 @@ contract MapTestContract {
         self.int_uint42.replaceGet(msg.keyInt, msg.valueUint42);
         self.int_uint256.replaceGet(msg.keyInt, msg.valueUint256);
         self.int_coins.replaceGet(msg.keyInt, msg.valueCoins);
+        self.int_varint16.replaceGet(msg.keyInt, msg.valueVarint16);
+        self.int_varint32.replaceGet(msg.keyInt, msg.valueVarint32);
+        self.int_varuint16.replaceGet(msg.keyInt, msg.valueVaruint16);
+        self.int_varuint32.replaceGet(msg.keyInt, msg.valueVaruint32);
         self.int_bool.replaceGet(msg.keyInt, msg.valueBool);
         self.int_cell.replaceGet(msg.keyInt, msg.valueCell);
         self.int_address.replaceGet(msg.keyInt, msg.valueAddress);
@@ -1251,6 +1587,10 @@ contract MapTestContract {
         self.int8_uint42.replaceGet(msg.keyInt8, msg.valueUint42);
         self.int8_uint256.replaceGet(msg.keyInt8, msg.valueUint256);
         self.int8_coins.replaceGet(msg.keyInt8, msg.valueCoins);
+        self.int8_varint16.replaceGet(msg.keyInt8, msg.valueVarint16);
+        self.int8_varint32.replaceGet(msg.keyInt8, msg.valueVarint32);
+        self.int8_varuint16.replaceGet(msg.keyInt8, msg.valueVaruint16);
+        self.int8_varuint32.replaceGet(msg.keyInt8, msg.valueVaruint32);
         self.int8_bool.replaceGet(msg.keyInt8, msg.valueBool);
         self.int8_cell.replaceGet(msg.keyInt8, msg.valueCell);
         self.int8_address.replaceGet(msg.keyInt8, msg.valueAddress);
@@ -1264,6 +1604,10 @@ contract MapTestContract {
         self.int42_uint42.replaceGet(msg.keyInt42, msg.valueUint42);
         self.int42_uint256.replaceGet(msg.keyInt42, msg.valueUint256);
         self.int42_coins.replaceGet(msg.keyInt42, msg.valueCoins);
+        self.int42_varint16.replaceGet(msg.keyInt42, msg.valueVarint16);
+        self.int42_varint32.replaceGet(msg.keyInt42, msg.valueVarint32);
+        self.int42_varuint16.replaceGet(msg.keyInt42, msg.valueVaruint16);
+        self.int42_varuint32.replaceGet(msg.keyInt42, msg.valueVaruint32);
         self.int42_bool.replaceGet(msg.keyInt42, msg.valueBool);
         self.int42_cell.replaceGet(msg.keyInt42, msg.valueCell);
         self.int42_address.replaceGet(msg.keyInt42, msg.valueAddress);
@@ -1277,6 +1621,10 @@ contract MapTestContract {
         self.int256_uint42.replaceGet(msg.keyInt256, msg.valueUint42);
         self.int256_uint256.replaceGet(msg.keyInt256, msg.valueUint256);
         self.int256_coins.replaceGet(msg.keyInt256, msg.valueCoins);
+        self.int256_varint16.replaceGet(msg.keyInt256, msg.valueVarint16);
+        self.int256_varint32.replaceGet(msg.keyInt256, msg.valueVarint32);
+        self.int256_varuint16.replaceGet(msg.keyInt256, msg.valueVaruint16);
+        self.int256_varuint32.replaceGet(msg.keyInt256, msg.valueVaruint32);
         self.int256_bool.replaceGet(msg.keyInt256, msg.valueBool);
         self.int256_cell.replaceGet(msg.keyInt256, msg.valueCell);
         self.int256_address.replaceGet(msg.keyInt256, msg.valueAddress);
@@ -1290,6 +1638,10 @@ contract MapTestContract {
         self.uint8_uint42.replaceGet(msg.keyUint8, msg.valueUint42);
         self.uint8_uint256.replaceGet(msg.keyUint8, msg.valueUint256);
         self.uint8_coins.replaceGet(msg.keyUint8, msg.valueCoins);
+        self.uint8_varint16.replaceGet(msg.keyUint8, msg.valueVarint16);
+        self.uint8_varint32.replaceGet(msg.keyUint8, msg.valueVarint32);
+        self.uint8_varuint16.replaceGet(msg.keyUint8, msg.valueVaruint16);
+        self.uint8_varuint32.replaceGet(msg.keyUint8, msg.valueVaruint32);
         self.uint8_bool.replaceGet(msg.keyUint8, msg.valueBool);
         self.uint8_cell.replaceGet(msg.keyUint8, msg.valueCell);
         self.uint8_address.replaceGet(msg.keyUint8, msg.valueAddress);
@@ -1303,6 +1655,10 @@ contract MapTestContract {
         self.uint42_uint42.replaceGet(msg.keyUint42, msg.valueUint42);
         self.uint42_uint256.replaceGet(msg.keyUint42, msg.valueUint256);
         self.uint42_coins.replaceGet(msg.keyUint42, msg.valueCoins);
+        self.uint42_varint16.replaceGet(msg.keyUint42, msg.valueVarint16);
+        self.uint42_varint32.replaceGet(msg.keyUint42, msg.valueVarint32);
+        self.uint42_varuint16.replaceGet(msg.keyUint42, msg.valueVaruint16);
+        self.uint42_varuint32.replaceGet(msg.keyUint42, msg.valueVaruint32);
         self.uint42_bool.replaceGet(msg.keyUint42, msg.valueBool);
         self.uint42_cell.replaceGet(msg.keyUint42, msg.valueCell);
         self.uint42_address.replaceGet(msg.keyUint42, msg.valueAddress);
@@ -1316,6 +1672,10 @@ contract MapTestContract {
         self.uint256_uint42.replaceGet(msg.keyUint256, msg.valueUint42);
         self.uint256_uint256.replaceGet(msg.keyUint256, msg.valueUint256);
         self.uint256_coins.replaceGet(msg.keyUint256, msg.valueCoins);
+        self.uint256_varint16.replaceGet(msg.keyUint256, msg.valueVarint16);
+        self.uint256_varint32.replaceGet(msg.keyUint256, msg.valueVarint32);
+        self.uint256_varuint16.replaceGet(msg.keyUint256, msg.valueVaruint16);
+        self.uint256_varuint32.replaceGet(msg.keyUint256, msg.valueVaruint32);
         self.uint256_bool.replaceGet(msg.keyUint256, msg.valueBool);
         self.uint256_cell.replaceGet(msg.keyUint256, msg.valueCell);
         self.uint256_address.replaceGet(msg.keyUint256, msg.valueAddress);
@@ -1330,6 +1690,10 @@ contract MapTestContract {
         self.address_uint42.replaceGet(msg.keyAddress, msg.valueUint42);
         self.address_uint256.replaceGet(msg.keyAddress, msg.valueUint256);
         self.address_coins.replaceGet(msg.keyAddress, msg.valueCoins);
+        self.address_varint16.replaceGet(msg.keyAddress, msg.valueVarint16);
+        self.address_varint32.replaceGet(msg.keyAddress, msg.valueVarint32);
+        self.address_varuint16.replaceGet(msg.keyAddress, msg.valueVaruint16);
+        self.address_varuint32.replaceGet(msg.keyAddress, msg.valueVaruint32);
         self.address_bool.replaceGet(msg.keyAddress, msg.valueBool);
         self.address_cell.replaceGet(msg.keyAddress, msg.valueCell);
         self.address_address.replaceGet(msg.keyAddress, msg.valueAddress);
@@ -1364,6 +1728,10 @@ contract MapTestContract {
             int_uint42: self.int_uint42.get(keyInt),
             int_uint256: self.int_uint256.get(keyInt),
             int_coins: self.int_coins.get(keyInt),
+            int_varint16: self.int_varint16.get(keyInt),
+            int_varint32: self.int_varint32.get(keyInt),
+            int_varuint16: self.int_varuint16.get(keyInt),
+            int_varuint32: self.int_varuint32.get(keyInt),
             int_bool: self.int_bool.get(keyInt),
             int_cell: self.int_cell.get(keyInt),
             int_address: self.int_address.get(keyInt),
@@ -1377,6 +1745,10 @@ contract MapTestContract {
             int8_uint42: self.int8_uint42.get(keyInt8),
             int8_uint256: self.int8_uint256.get(keyInt8),
             int8_coins: self.int8_coins.get(keyInt8),
+            int8_varint16: self.int8_varint16.get(keyInt8),
+            int8_varint32: self.int8_varint32.get(keyInt8),
+            int8_varuint16: self.int8_varuint16.get(keyInt8),
+            int8_varuint32: self.int8_varuint32.get(keyInt8),
             int8_bool: self.int8_bool.get(keyInt8),
             int8_cell: self.int8_cell.get(keyInt8),
             int8_address: self.int8_address.get(keyInt8),
@@ -1390,6 +1762,10 @@ contract MapTestContract {
             int42_uint42: self.int42_uint42.get(keyInt42),
             int42_uint256: self.int42_uint256.get(keyInt42),
             int42_coins: self.int42_coins.get(keyInt42),
+            int42_varint16: self.int42_varint16.get(keyInt42),
+            int42_varint32: self.int42_varint32.get(keyInt42),
+            int42_varuint16: self.int42_varuint16.get(keyInt42),
+            int42_varuint32: self.int42_varuint32.get(keyInt42),
             int42_bool: self.int42_bool.get(keyInt42),
             int42_cell: self.int42_cell.get(keyInt42),
             int42_address: self.int42_address.get(keyInt42),
@@ -1403,6 +1779,10 @@ contract MapTestContract {
             int256_uint42: self.int256_uint42.get(keyInt256),
             int256_uint256: self.int256_uint256.get(keyInt256),
             int256_coins: self.int256_coins.get(keyInt256),
+            int256_varint16: self.int256_varint16.get(keyInt256),
+            int256_varint32: self.int256_varint32.get(keyInt256),
+            int256_varuint16: self.int256_varuint16.get(keyInt256),
+            int256_varuint32: self.int256_varuint32.get(keyInt256),
             int256_bool: self.int256_bool.get(keyInt256),
             int256_cell: self.int256_cell.get(keyInt256),
             int256_address: self.int256_address.get(keyInt256),
@@ -1416,6 +1796,10 @@ contract MapTestContract {
             uint8_uint42: self.uint8_uint42.get(keyUint8),
             uint8_uint256: self.uint8_uint256.get(keyUint8),
             uint8_coins: self.uint8_coins.get(keyUint8),
+            uint8_varint16: self.uint8_varint16.get(keyUint8),
+            uint8_varint32: self.uint8_varint32.get(keyUint8),
+            uint8_varuint16: self.uint8_varuint16.get(keyUint8),
+            uint8_varuint32: self.uint8_varuint32.get(keyUint8),
             uint8_bool: self.uint8_bool.get(keyUint8),
             uint8_cell: self.uint8_cell.get(keyUint8),
             uint8_address: self.uint8_address.get(keyUint8),
@@ -1429,6 +1813,10 @@ contract MapTestContract {
             uint42_uint42: self.uint42_uint42.get(keyUint42),
             uint42_uint256: self.uint42_uint256.get(keyUint42),
             uint42_coins: self.uint42_coins.get(keyUint42),
+            uint42_varint16: self.uint42_varint16.get(keyUint42),
+            uint42_varint32: self.uint42_varint32.get(keyUint42),
+            uint42_varuint16: self.uint42_varuint16.get(keyUint42),
+            uint42_varuint32: self.uint42_varuint32.get(keyUint42),
             uint42_bool: self.uint42_bool.get(keyUint42),
             uint42_cell: self.uint42_cell.get(keyUint42),
             uint42_address: self.uint42_address.get(keyUint42),
@@ -1442,6 +1830,10 @@ contract MapTestContract {
             uint256_uint42: self.uint256_uint42.get(keyUint256),
             uint256_uint256: self.uint256_uint256.get(keyUint256),
             uint256_coins: self.uint256_coins.get(keyUint256),
+            uint256_varint16: self.uint256_varint16.get(keyUint256),
+            uint256_varint32: self.uint256_varint32.get(keyUint256),
+            uint256_varuint16: self.uint256_varuint16.get(keyUint256),
+            uint256_varuint32: self.uint256_varuint32.get(keyUint256),
             uint256_bool: self.uint256_bool.get(keyUint256),
             uint256_cell: self.uint256_cell.get(keyUint256),
             uint256_address: self.uint256_address.get(keyUint256),
@@ -1456,6 +1848,10 @@ contract MapTestContract {
             address_uint42: self.address_uint42.get(keyAddress),
             address_uint256: self.address_uint256.get(keyAddress),
             address_coins: self.address_coins.get(keyAddress),
+            address_varint16: self.address_varint16.get(keyAddress),
+            address_varint32: self.address_varint32.get(keyAddress),
+            address_varuint16: self.address_varuint16.get(keyAddress),
+            address_varuint32: self.address_varuint32.get(keyAddress),
             address_bool: self.address_bool.get(keyAddress),
             address_cell: self.address_cell.get(keyAddress),
             address_address: self.address_address.get(keyAddress),
@@ -1480,6 +1876,10 @@ contract MapTestContract {
         valueUint42: Int,
         valueUint256: Int,
         valueCoins: Int,
+        valueVarint16: Int,
+        valueVarint32: Int,
+        valueVaruint16: Int,
+        valueVaruint32: Int,
         valueBool: Bool,
         valueCell: Cell,
         valueAddress: Address,
@@ -1495,6 +1895,10 @@ contract MapTestContract {
             int_uint42: self.int_uint42.replace(keyInt, valueUint42),
             int_uint256: self.int_uint256.replace(keyInt, valueUint256),
             int_coins: self.int_coins.replace(keyInt, valueCoins),
+            int_varint16: self.int_varint16.replace(keyInt, valueVarint16),
+            int_varint32: self.int_varint32.replace(keyInt, valueVarint32),
+            int_varuint16: self.int_varuint16.replace(keyInt, valueVaruint16),
+            int_varuint32: self.int_varuint32.replace(keyInt, valueVaruint32),
             int_bool: self.int_bool.replace(keyInt, valueBool),
             int_cell: self.int_cell.replace(keyInt, valueCell),
             int_address: self.int_address.replace(keyInt, valueAddress),
@@ -1508,6 +1912,10 @@ contract MapTestContract {
             int8_uint42: self.int8_uint42.replace(keyInt8, valueUint42),
             int8_uint256: self.int8_uint256.replace(keyInt8, valueUint256),
             int8_coins: self.int8_coins.replace(keyInt8, valueCoins),
+            int8_varint16: self.int8_varint16.replace(keyInt8, valueVarint16),
+            int8_varint32: self.int8_varint32.replace(keyInt8, valueVarint32),
+            int8_varuint16: self.int8_varuint16.replace(keyInt8, valueVaruint16),
+            int8_varuint32: self.int8_varuint32.replace(keyInt8, valueVaruint32),
             int8_bool: self.int8_bool.replace(keyInt8, valueBool),
             int8_cell: self.int8_cell.replace(keyInt8, valueCell),
             int8_address: self.int8_address.replace(keyInt8, valueAddress),
@@ -1521,6 +1929,10 @@ contract MapTestContract {
             int42_uint42: self.int42_uint42.replace(keyInt42, valueUint42),
             int42_uint256: self.int42_uint256.replace(keyInt42, valueUint256),
             int42_coins: self.int42_coins.replace(keyInt42, valueCoins),
+            int42_varint16: self.int42_varint16.replace(keyInt42, valueVarint16),
+            int42_varint32: self.int42_varint32.replace(keyInt42, valueVarint32),
+            int42_varuint16: self.int42_varuint16.replace(keyInt42, valueVaruint16),
+            int42_varuint32: self.int42_varuint32.replace(keyInt42, valueVaruint32),
             int42_bool: self.int42_bool.replace(keyInt42, valueBool),
             int42_cell: self.int42_cell.replace(keyInt42, valueCell),
             int42_address: self.int42_address.replace(keyInt42, valueAddress),
@@ -1534,6 +1946,10 @@ contract MapTestContract {
             int256_uint42: self.int256_uint42.replace(keyInt256, valueUint42),
             int256_uint256: self.int256_uint256.replace(keyInt256, valueUint256),
             int256_coins: self.int256_coins.replace(keyInt256, valueCoins),
+            int256_varint16: self.int256_varint16.replace(keyInt256, valueVarint16),
+            int256_varint32: self.int256_varint32.replace(keyInt256, valueVarint32),
+            int256_varuint16: self.int256_varuint16.replace(keyInt256, valueVaruint16),
+            int256_varuint32: self.int256_varuint32.replace(keyInt256, valueVaruint32),
             int256_bool: self.int256_bool.replace(keyInt256, valueBool),
             int256_cell: self.int256_cell.replace(keyInt256, valueCell),
             int256_address: self.int256_address.replace(keyInt256, valueAddress),
@@ -1547,6 +1963,10 @@ contract MapTestContract {
             uint8_uint42: self.uint8_uint42.replace(keyUint8, valueUint42),
             uint8_uint256: self.uint8_uint256.replace(keyUint8, valueUint256),
             uint8_coins: self.uint8_coins.replace(keyUint8, valueCoins),
+            uint8_varint16: self.uint8_varint16.replace(keyUint8, valueVarint16),
+            uint8_varint32: self.uint8_varint32.replace(keyUint8, valueVarint32),
+            uint8_varuint16: self.uint8_varuint16.replace(keyUint8, valueVaruint16),
+            uint8_varuint32: self.uint8_varuint32.replace(keyUint8, valueVaruint32),
             uint8_bool: self.uint8_bool.replace(keyUint8, valueBool),
             uint8_cell: self.uint8_cell.replace(keyUint8, valueCell),
             uint8_address: self.uint8_address.replace(keyUint8, valueAddress),
@@ -1560,6 +1980,10 @@ contract MapTestContract {
             uint42_uint42: self.uint42_uint42.replace(keyUint42, valueUint42),
             uint42_uint256: self.uint42_uint256.replace(keyUint42, valueUint256),
             uint42_coins: self.uint42_coins.replace(keyUint42, valueCoins),
+            uint42_varint16: self.uint42_varint16.replace(keyUint42, valueVarint16),
+            uint42_varint32: self.uint42_varint32.replace(keyUint42, valueVarint32),
+            uint42_varuint16: self.uint42_varuint16.replace(keyUint42, valueVaruint16),
+            uint42_varuint32: self.uint42_varuint32.replace(keyUint42, valueVaruint32),
             uint42_bool: self.uint42_bool.replace(keyUint42, valueBool),
             uint42_cell: self.uint42_cell.replace(keyUint42, valueCell),
             uint42_address: self.uint42_address.replace(keyUint42, valueAddress),
@@ -1573,6 +1997,10 @@ contract MapTestContract {
             uint256_uint42: self.uint256_uint42.replace(keyUint256, valueUint42),
             uint256_uint256: self.uint256_uint256.replace(keyUint256, valueUint256),
             uint256_coins: self.uint256_coins.replace(keyUint256, valueCoins),
+            uint256_varint16: self.uint256_varint16.replace(keyUint256, valueVarint16),
+            uint256_varint32: self.uint256_varint32.replace(keyUint256, valueVarint32),
+            uint256_varuint16: self.uint256_varuint16.replace(keyUint256, valueVaruint16),
+            uint256_varuint32: self.uint256_varuint32.replace(keyUint256, valueVaruint32),
             uint256_bool: self.uint256_bool.replace(keyUint256, valueBool),
             uint256_cell: self.uint256_cell.replace(keyUint256, valueCell),
             uint256_address: self.uint256_address.replace(keyUint256, valueAddress),
@@ -1587,6 +2015,10 @@ contract MapTestContract {
             address_uint42: self.address_uint42.replace(keyAddress, valueUint42),
             address_uint256: self.address_uint256.replace(keyAddress, valueUint256),
             address_coins: self.address_coins.replace(keyAddress, valueCoins),
+            address_varint16: self.address_varint16.replace(keyAddress, valueVarint16),
+            address_varint32: self.address_varint32.replace(keyAddress, valueVarint32),
+            address_varuint16: self.address_varuint16.replace(keyAddress, valueVaruint16),
+            address_varuint32: self.address_varuint32.replace(keyAddress, valueVaruint32),
             address_bool: self.address_bool.replace(keyAddress, valueBool),
             address_cell: self.address_cell.replace(keyAddress, valueCell),
             address_address: self.address_address.replace(keyAddress, valueAddress),
@@ -1611,6 +2043,10 @@ contract MapTestContract {
         valueUint42: Int,
         valueUint256: Int,
         valueCoins: Int,
+        valueVarint16: Int,
+        valueVarint32: Int,
+        valueVaruint16: Int,
+        valueVaruint32: Int,
         valueBool: Bool,
         valueCell: Cell,
         valueAddress: Address,
@@ -1626,6 +2062,10 @@ contract MapTestContract {
             int_uint42: self.int_uint42.replaceGet(keyInt, valueUint42),
             int_uint256: self.int_uint256.replaceGet(keyInt, valueUint256),
             int_coins: self.int_coins.replaceGet(keyInt, valueCoins),
+            int_varint16: self.int_varint16.replaceGet(keyInt, valueVarint16),
+            int_varint32: self.int_varint32.replaceGet(keyInt, valueVarint32),
+            int_varuint16: self.int_varuint16.replaceGet(keyInt, valueVaruint16),
+            int_varuint32: self.int_varuint32.replaceGet(keyInt, valueVaruint32),
             int_bool: self.int_bool.replaceGet(keyInt, valueBool),
             int_cell: self.int_cell.replaceGet(keyInt, valueCell),
             int_address: self.int_address.replaceGet(keyInt, valueAddress),
@@ -1639,6 +2079,10 @@ contract MapTestContract {
             int8_uint42: self.int8_uint42.replaceGet(keyInt8, valueUint42),
             int8_uint256: self.int8_uint256.replaceGet(keyInt8, valueUint256),
             int8_coins: self.int8_coins.replaceGet(keyInt8, valueCoins),
+            int8_varint16: self.int8_varint16.replaceGet(keyInt8, valueVarint16),
+            int8_varint32: self.int8_varint32.replaceGet(keyInt8, valueVarint32),
+            int8_varuint16: self.int8_varuint16.replaceGet(keyInt8, valueVaruint16),
+            int8_varuint32: self.int8_varuint32.replaceGet(keyInt8, valueVaruint32),
             int8_bool: self.int8_bool.replaceGet(keyInt8, valueBool),
             int8_cell: self.int8_cell.replaceGet(keyInt8, valueCell),
             int8_address: self.int8_address.replaceGet(keyInt8, valueAddress),
@@ -1652,6 +2096,10 @@ contract MapTestContract {
             int42_uint42: self.int42_uint42.replaceGet(keyInt42, valueUint42),
             int42_uint256: self.int42_uint256.replaceGet(keyInt42, valueUint256),
             int42_coins: self.int42_coins.replaceGet(keyInt42, valueCoins),
+            int42_varint16: self.int42_varint16.replaceGet(keyInt42, valueVarint16),
+            int42_varint32: self.int42_varint32.replaceGet(keyInt42, valueVarint32),
+            int42_varuint16: self.int42_varuint16.replaceGet(keyInt42, valueVaruint16),
+            int42_varuint32: self.int42_varuint32.replaceGet(keyInt42, valueVaruint32),
             int42_bool: self.int42_bool.replaceGet(keyInt42, valueBool),
             int42_cell: self.int42_cell.replaceGet(keyInt42, valueCell),
             int42_address: self.int42_address.replaceGet(keyInt42, valueAddress),
@@ -1665,6 +2113,10 @@ contract MapTestContract {
             int256_uint42: self.int256_uint42.replaceGet(keyInt256, valueUint42),
             int256_uint256: self.int256_uint256.replaceGet(keyInt256, valueUint256),
             int256_coins: self.int256_coins.replaceGet(keyInt256, valueCoins),
+            int256_varint16: self.int256_varint16.replaceGet(keyInt256, valueVarint16),
+            int256_varint32: self.int256_varint32.replaceGet(keyInt256, valueVarint32),
+            int256_varuint16: self.int256_varuint16.replaceGet(keyInt256, valueVaruint16),
+            int256_varuint32: self.int256_varuint32.replaceGet(keyInt256, valueVaruint32),
             int256_bool: self.int256_bool.replaceGet(keyInt256, valueBool),
             int256_cell: self.int256_cell.replaceGet(keyInt256, valueCell),
             int256_address: self.int256_address.replaceGet(keyInt256, valueAddress),
@@ -1678,6 +2130,10 @@ contract MapTestContract {
             uint8_uint42: self.uint8_uint42.replaceGet(keyUint8, valueUint42),
             uint8_uint256: self.uint8_uint256.replaceGet(keyUint8, valueUint256),
             uint8_coins: self.uint8_coins.replaceGet(keyUint8, valueCoins),
+            uint8_varint16: self.uint8_varint16.replaceGet(keyUint8, valueVarint16),
+            uint8_varint32: self.uint8_varint32.replaceGet(keyUint8, valueVarint32),
+            uint8_varuint16: self.uint8_varuint16.replaceGet(keyUint8, valueVaruint16),
+            uint8_varuint32: self.uint8_varuint32.replaceGet(keyUint8, valueVaruint32),
             uint8_bool: self.uint8_bool.replaceGet(keyUint8, valueBool),
             uint8_cell: self.uint8_cell.replaceGet(keyUint8, valueCell),
             uint8_address: self.uint8_address.replaceGet(keyUint8, valueAddress),
@@ -1691,6 +2147,10 @@ contract MapTestContract {
             uint42_uint42: self.uint42_uint42.replaceGet(keyUint42, valueUint42),
             uint42_uint256: self.uint42_uint256.replaceGet(keyUint42, valueUint256),
             uint42_coins: self.uint42_coins.replaceGet(keyUint42, valueCoins),
+            uint42_varint16: self.uint42_varint16.replaceGet(keyUint42, valueVarint16),
+            uint42_varint32: self.uint42_varint32.replaceGet(keyUint42, valueVarint32),
+            uint42_varuint16: self.uint42_varuint16.replaceGet(keyUint42, valueVaruint16),
+            uint42_varuint32: self.uint42_varuint32.replaceGet(keyUint42, valueVaruint32),
             uint42_bool: self.uint42_bool.replaceGet(keyUint42, valueBool),
             uint42_cell: self.uint42_cell.replaceGet(keyUint42, valueCell),
             uint42_address: self.uint42_address.replaceGet(keyUint42, valueAddress),
@@ -1704,6 +2164,10 @@ contract MapTestContract {
             uint256_uint42: self.uint256_uint42.replaceGet(keyUint256, valueUint42),
             uint256_uint256: self.uint256_uint256.replaceGet(keyUint256, valueUint256),
             uint256_coins: self.uint256_coins.replaceGet(keyUint256, valueCoins),
+            uint256_varint16: self.uint256_varint16.replaceGet(keyUint256, valueVarint16),
+            uint256_varint32: self.uint256_varint32.replaceGet(keyUint256, valueVarint32),
+            uint256_varuint16: self.uint256_varuint16.replaceGet(keyUint256, valueVaruint16),
+            uint256_varuint32: self.uint256_varuint32.replaceGet(keyUint256, valueVaruint32),
             uint256_bool: self.uint256_bool.replaceGet(keyUint256, valueBool),
             uint256_cell: self.uint256_cell.replaceGet(keyUint256, valueCell),
             uint256_address: self.uint256_address.replaceGet(keyUint256, valueAddress),
@@ -1718,6 +2182,10 @@ contract MapTestContract {
             address_uint42: self.address_uint42.replaceGet(keyAddress, valueUint42),
             address_uint256: self.address_uint256.replaceGet(keyAddress, valueUint256),
             address_coins: self.address_coins.replaceGet(keyAddress, valueCoins),
+            address_varint16: self.address_varint16.replaceGet(keyAddress, valueVarint16),
+            address_varint32: self.address_varint32.replaceGet(keyAddress, valueVarint32),
+            address_varuint16: self.address_varuint16.replaceGet(keyAddress, valueVaruint16),
+            address_varuint32: self.address_varuint32.replaceGet(keyAddress, valueVaruint32),
             address_bool: self.address_bool.replaceGet(keyAddress, valueBool),
             address_cell: self.address_cell.replaceGet(keyAddress, valueCell),
             address_address: self.address_address.replaceGet(keyAddress, valueAddress),
@@ -1745,6 +2213,10 @@ contract MapTestContract {
             int_uint42: self.int_uint42.exists(keyInt),
             int_uint256: self.int_uint256.exists(keyInt),
             int_coins: self.int_coins.exists(keyInt),
+            int_varint16: self.int_varint16.exists(keyInt),
+            int_varint32: self.int_varint32.exists(keyInt),
+            int_varuint16: self.int_varuint16.exists(keyInt),
+            int_varuint32: self.int_varuint32.exists(keyInt),
             int_bool: self.int_bool.exists(keyInt),
             int_cell: self.int_cell.exists(keyInt),
             int_address: self.int_address.exists(keyInt),
@@ -1758,6 +2230,10 @@ contract MapTestContract {
             int8_uint42: self.int8_uint42.exists(keyInt8),
             int8_uint256: self.int8_uint256.exists(keyInt8),
             int8_coins: self.int8_coins.exists(keyInt8),
+            int8_varint16: self.int8_varint16.exists(keyInt8),
+            int8_varint32: self.int8_varint32.exists(keyInt8),
+            int8_varuint16: self.int8_varuint16.exists(keyInt8),
+            int8_varuint32: self.int8_varuint32.exists(keyInt8),
             int8_bool: self.int8_bool.exists(keyInt8),
             int8_cell: self.int8_cell.exists(keyInt8),
             int8_address: self.int8_address.exists(keyInt8),
@@ -1771,6 +2247,10 @@ contract MapTestContract {
             int42_uint42: self.int42_uint42.exists(keyInt42),
             int42_uint256: self.int42_uint256.exists(keyInt42),
             int42_coins: self.int42_coins.exists(keyInt42),
+            int42_varint16: self.int42_varint16.exists(keyInt42),
+            int42_varint32: self.int42_varint32.exists(keyInt42),
+            int42_varuint16: self.int42_varuint16.exists(keyInt42),
+            int42_varuint32: self.int42_varuint32.exists(keyInt42),
             int42_bool: self.int42_bool.exists(keyInt42),
             int42_cell: self.int42_cell.exists(keyInt42),
             int42_address: self.int42_address.exists(keyInt42),
@@ -1784,6 +2264,10 @@ contract MapTestContract {
             int256_uint42: self.int256_uint42.exists(keyInt256),
             int256_uint256: self.int256_uint256.exists(keyInt256),
             int256_coins: self.int256_coins.exists(keyInt256),
+            int256_varint16: self.int256_varint16.exists(keyInt256),
+            int256_varint32: self.int256_varint32.exists(keyInt256),
+            int256_varuint16: self.int256_varuint16.exists(keyInt256),
+            int256_varuint32: self.int256_varuint32.exists(keyInt256),
             int256_bool: self.int256_bool.exists(keyInt256),
             int256_cell: self.int256_cell.exists(keyInt256),
             int256_address: self.int256_address.exists(keyInt256),
@@ -1797,6 +2281,10 @@ contract MapTestContract {
             uint8_uint42: self.uint8_uint42.exists(keyUint8),
             uint8_uint256: self.uint8_uint256.exists(keyUint8),
             uint8_coins: self.uint8_coins.exists(keyUint8),
+            uint8_varint16: self.uint8_varint16.exists(keyUint8),
+            uint8_varint32: self.uint8_varint32.exists(keyUint8),
+            uint8_varuint16: self.uint8_varuint16.exists(keyUint8),
+            uint8_varuint32: self.uint8_varuint32.exists(keyUint8),
             uint8_bool: self.uint8_bool.exists(keyUint8),
             uint8_cell: self.uint8_cell.exists(keyUint8),
             uint8_address: self.uint8_address.exists(keyUint8),
@@ -1810,6 +2298,10 @@ contract MapTestContract {
             uint42_uint42: self.uint42_uint42.exists(keyUint42),
             uint42_uint256: self.uint42_uint256.exists(keyUint42),
             uint42_coins: self.uint42_coins.exists(keyUint42),
+            uint42_varint16: self.uint42_varint16.exists(keyUint42),
+            uint42_varint32: self.uint42_varint32.exists(keyUint42),
+            uint42_varuint16: self.uint42_varuint16.exists(keyUint42),
+            uint42_varuint32: self.uint42_varuint32.exists(keyUint42),
             uint42_bool: self.uint42_bool.exists(keyUint42),
             uint42_cell: self.uint42_cell.exists(keyUint42),
             uint42_address: self.uint42_address.exists(keyUint42),
@@ -1823,6 +2315,10 @@ contract MapTestContract {
             uint256_uint42: self.uint256_uint42.exists(keyUint256),
             uint256_uint256: self.uint256_uint256.exists(keyUint256),
             uint256_coins: self.uint256_coins.exists(keyUint256),
+            uint256_varint16: self.uint256_varint16.exists(keyUint256),
+            uint256_varint32: self.uint256_varint32.exists(keyUint256),
+            uint256_varuint16: self.uint256_varuint16.exists(keyUint256),
+            uint256_varuint32: self.uint256_varuint32.exists(keyUint256),
             uint256_bool: self.uint256_bool.exists(keyUint256),
             uint256_cell: self.uint256_cell.exists(keyUint256),
             uint256_address: self.uint256_address.exists(keyUint256),
@@ -1837,6 +2333,10 @@ contract MapTestContract {
             address_uint42: self.address_uint42.exists(keyAddress),
             address_uint256: self.address_uint256.exists(keyAddress),
             address_coins: self.address_coins.exists(keyAddress),
+            address_varint16: self.address_varint16.exists(keyAddress),
+            address_varint32: self.address_varint32.exists(keyAddress),
+            address_varuint16: self.address_varuint16.exists(keyAddress),
+            address_varuint32: self.address_varuint32.exists(keyAddress),
             address_bool: self.address_bool.exists(keyAddress),
             address_cell: self.address_cell.exists(keyAddress),
             address_address: self.address_address.exists(keyAddress),
@@ -1855,6 +2355,10 @@ contract MapTestContract {
             int_uint42: self.int_uint42.isEmpty(),
             int_uint256: self.int_uint256.isEmpty(),
             int_coins: self.int_coins.isEmpty(),
+            int_varint16: self.int_varint16.isEmpty(),
+            int_varint32: self.int_varint32.isEmpty(),
+            int_varuint16: self.int_varuint16.isEmpty(),
+            int_varuint32: self.int_varuint32.isEmpty(),
             int_bool: self.int_bool.isEmpty(),
             int_cell: self.int_cell.isEmpty(),
             int_address: self.int_address.isEmpty(),
@@ -1868,6 +2372,10 @@ contract MapTestContract {
             int8_uint42: self.int8_uint42.isEmpty(),
             int8_uint256: self.int8_uint256.isEmpty(),
             int8_coins: self.int8_coins.isEmpty(),
+            int8_varint16: self.int8_varint16.isEmpty(),
+            int8_varint32: self.int8_varint32.isEmpty(),
+            int8_varuint16: self.int8_varuint16.isEmpty(),
+            int8_varuint32: self.int8_varuint32.isEmpty(),
             int8_bool: self.int8_bool.isEmpty(),
             int8_cell: self.int8_cell.isEmpty(),
             int8_address: self.int8_address.isEmpty(),
@@ -1881,6 +2389,10 @@ contract MapTestContract {
             int42_uint42: self.int42_uint42.isEmpty(),
             int42_uint256: self.int42_uint256.isEmpty(),
             int42_coins: self.int42_coins.isEmpty(),
+            int42_varint16: self.int42_varint16.isEmpty(),
+            int42_varint32: self.int42_varint32.isEmpty(),
+            int42_varuint16: self.int42_varuint16.isEmpty(),
+            int42_varuint32: self.int42_varuint32.isEmpty(),
             int42_bool: self.int42_bool.isEmpty(),
             int42_cell: self.int42_cell.isEmpty(),
             int42_address: self.int42_address.isEmpty(),
@@ -1894,6 +2406,10 @@ contract MapTestContract {
             int256_uint42: self.int256_uint42.isEmpty(),
             int256_uint256: self.int256_uint256.isEmpty(),
             int256_coins: self.int256_coins.isEmpty(),
+            int256_varint16: self.int256_varint16.isEmpty(),
+            int256_varint32: self.int256_varint32.isEmpty(),
+            int256_varuint16: self.int256_varuint16.isEmpty(),
+            int256_varuint32: self.int256_varuint32.isEmpty(),
             int256_bool: self.int256_bool.isEmpty(),
             int256_cell: self.int256_cell.isEmpty(),
             int256_address: self.int256_address.isEmpty(),
@@ -1907,6 +2423,10 @@ contract MapTestContract {
             uint8_uint42: self.uint8_uint42.isEmpty(),
             uint8_uint256: self.uint8_uint256.isEmpty(),
             uint8_coins: self.uint8_coins.isEmpty(),
+            uint8_varint16: self.uint8_varint16.isEmpty(),
+            uint8_varint32: self.uint8_varint32.isEmpty(),
+            uint8_varuint16: self.uint8_varuint16.isEmpty(),
+            uint8_varuint32: self.uint8_varuint32.isEmpty(),
             uint8_bool: self.uint8_bool.isEmpty(),
             uint8_cell: self.uint8_cell.isEmpty(),
             uint8_address: self.uint8_address.isEmpty(),
@@ -1920,6 +2440,10 @@ contract MapTestContract {
             uint42_uint42: self.uint42_uint42.isEmpty(),
             uint42_uint256: self.uint42_uint256.isEmpty(),
             uint42_coins: self.uint42_coins.isEmpty(),
+            uint42_varint16: self.uint42_varint16.isEmpty(),
+            uint42_varint32: self.uint42_varint32.isEmpty(),
+            uint42_varuint16: self.uint42_varuint16.isEmpty(),
+            uint42_varuint32: self.uint42_varuint32.isEmpty(),
             uint42_bool: self.uint42_bool.isEmpty(),
             uint42_cell: self.uint42_cell.isEmpty(),
             uint42_address: self.uint42_address.isEmpty(),
@@ -1933,6 +2457,10 @@ contract MapTestContract {
             uint256_uint42: self.uint256_uint42.isEmpty(),
             uint256_uint256: self.uint256_uint256.isEmpty(),
             uint256_coins: self.uint256_coins.isEmpty(),
+            uint256_varint16: self.uint256_varint16.isEmpty(),
+            uint256_varint32: self.uint256_varint32.isEmpty(),
+            uint256_varuint16: self.uint256_varuint16.isEmpty(),
+            uint256_varuint32: self.uint256_varuint32.isEmpty(),
             uint256_bool: self.uint256_bool.isEmpty(),
             uint256_cell: self.uint256_cell.isEmpty(),
             uint256_address: self.uint256_address.isEmpty(),
@@ -1947,6 +2475,10 @@ contract MapTestContract {
             address_uint42: self.address_uint42.isEmpty(),
             address_uint256: self.address_uint256.isEmpty(),
             address_coins: self.address_coins.isEmpty(),
+            address_varint16: self.address_varint16.isEmpty(),
+            address_varint32: self.address_varint32.isEmpty(),
+            address_varuint16: self.address_varuint16.isEmpty(),
+            address_varuint32: self.address_varuint32.isEmpty(),
             address_bool: self.address_bool.isEmpty(),
             address_cell: self.address_cell.isEmpty(),
             address_address: self.address_address.isEmpty(),
@@ -1965,6 +2497,10 @@ contract MapTestContract {
             int_uint42: self.int_uint42.asCell(),
             int_uint256: self.int_uint256.asCell(),
             int_coins: self.int_coins.asCell(),
+            int_varint16: self.int_varint16.asCell(),
+            int_varint32: self.int_varint32.asCell(),
+            int_varuint16: self.int_varuint16.asCell(),
+            int_varuint32: self.int_varuint32.asCell(),
             int_bool: self.int_bool.asCell(),
             int_cell: self.int_cell.asCell(),
             int_address: self.int_address.asCell(),
@@ -1978,6 +2514,10 @@ contract MapTestContract {
             int8_uint42: self.int8_uint42.asCell(),
             int8_uint256: self.int8_uint256.asCell(),
             int8_coins: self.int8_coins.asCell(),
+            int8_varint16: self.int8_varint16.asCell(),
+            int8_varint32: self.int8_varint32.asCell(),
+            int8_varuint16: self.int8_varuint16.asCell(),
+            int8_varuint32: self.int8_varuint32.asCell(),
             int8_bool: self.int8_bool.asCell(),
             int8_cell: self.int8_cell.asCell(),
             int8_address: self.int8_address.asCell(),
@@ -1991,6 +2531,10 @@ contract MapTestContract {
             int42_uint42: self.int42_uint42.asCell(),
             int42_uint256: self.int42_uint256.asCell(),
             int42_coins: self.int42_coins.asCell(),
+            int42_varint16: self.int42_varint16.asCell(),
+            int42_varint32: self.int42_varint32.asCell(),
+            int42_varuint16: self.int42_varuint16.asCell(),
+            int42_varuint32: self.int42_varuint32.asCell(),
             int42_bool: self.int42_bool.asCell(),
             int42_cell: self.int42_cell.asCell(),
             int42_address: self.int42_address.asCell(),
@@ -2004,6 +2548,10 @@ contract MapTestContract {
             int256_uint42: self.int256_uint42.asCell(),
             int256_uint256: self.int256_uint256.asCell(),
             int256_coins: self.int256_coins.asCell(),
+            int256_varint16: self.int256_varint16.asCell(),
+            int256_varint32: self.int256_varint32.asCell(),
+            int256_varuint16: self.int256_varuint16.asCell(),
+            int256_varuint32: self.int256_varuint32.asCell(),
             int256_bool: self.int256_bool.asCell(),
             int256_cell: self.int256_cell.asCell(),
             int256_address: self.int256_address.asCell(),
@@ -2017,6 +2565,10 @@ contract MapTestContract {
             uint8_uint42: self.uint8_uint42.asCell(),
             uint8_uint256: self.uint8_uint256.asCell(),
             uint8_coins: self.uint8_coins.asCell(),
+            uint8_varint16: self.uint8_varint16.asCell(),
+            uint8_varint32: self.uint8_varint32.asCell(),
+            uint8_varuint16: self.uint8_varuint16.asCell(),
+            uint8_varuint32: self.uint8_varuint32.asCell(),
             uint8_bool: self.uint8_bool.asCell(),
             uint8_cell: self.uint8_cell.asCell(),
             uint8_address: self.uint8_address.asCell(),
@@ -2030,6 +2582,10 @@ contract MapTestContract {
             uint42_uint42: self.uint42_uint42.asCell(),
             uint42_uint256: self.uint42_uint256.asCell(),
             uint42_coins: self.uint42_coins.asCell(),
+            uint42_varint16: self.uint42_varint16.asCell(),
+            uint42_varint32: self.uint42_varint32.asCell(),
+            uint42_varuint16: self.uint42_varuint16.asCell(),
+            uint42_varuint32: self.uint42_varuint32.asCell(),
             uint42_bool: self.uint42_bool.asCell(),
             uint42_cell: self.uint42_cell.asCell(),
             uint42_address: self.uint42_address.asCell(),
@@ -2043,6 +2599,10 @@ contract MapTestContract {
             uint256_uint42: self.uint256_uint42.asCell(),
             uint256_uint256: self.uint256_uint256.asCell(),
             uint256_coins: self.uint256_coins.asCell(),
+            uint256_varint16: self.uint256_varint16.asCell(),
+            uint256_varint32: self.uint256_varint32.asCell(),
+            uint256_varuint16: self.uint256_varuint16.asCell(),
+            uint256_varuint32: self.uint256_varuint32.asCell(),
             uint256_bool: self.uint256_bool.asCell(),
             uint256_cell: self.uint256_cell.asCell(),
             uint256_address: self.uint256_address.asCell(),
@@ -2057,6 +2617,10 @@ contract MapTestContract {
             address_uint42: self.address_uint42.asCell(),
             address_uint256: self.address_uint256.asCell(),
             address_coins: self.address_coins.asCell(),
+            address_varint16: self.address_varint16.asCell(),
+            address_varint32: self.address_varint32.asCell(),
+            address_varuint16: self.address_varuint16.asCell(),
+            address_varuint32: self.address_varuint32.asCell(),
             address_bool: self.address_bool.asCell(),
             address_cell: self.address_cell.asCell(),
             address_address: self.address_address.asCell(),
