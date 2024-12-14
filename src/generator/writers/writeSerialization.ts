@@ -143,14 +143,17 @@ function writeSerializerField(
             }
             return;
         }
-        case "coins": {
+        case "varint16":
+        case "varuint16":
+        case "varint32":
+        case "varuint32": {
             if (op.optional) {
                 ctx.append(
-                    `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_coins(${fieldName}) : build_${gen}.store_int(false, 1);`,
+                    `build_${gen} = ~ null?(${fieldName}) ? build_${gen}.store_int(true, 1).store_${op.kind}(${fieldName}) : build_${gen}.store_int(false, 1);`,
                 );
             } else {
                 ctx.append(
-                    `build_${gen} = build_${gen}.store_coins(${fieldName});`,
+                    `build_${gen} = build_${gen}.store_${op.kind}(${fieldName});`,
                 );
             }
             return;
@@ -489,13 +492,16 @@ function writeFieldParser(
             }
             return;
         }
-        case "coins": {
+        case "varint16":
+        case "varint32":
+        case "varuint16":
+        case "varuint32": {
             if (op.optional) {
                 ctx.append(
-                    `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_coins() : null();`,
+                    `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_${op.kind}() : null();`,
                 );
             } else {
-                ctx.append(`${varName} = sc_${gen}~load_coins();`);
+                ctx.append(`${varName} = sc_${gen}~load_${op.kind}();`);
             }
             return;
         }

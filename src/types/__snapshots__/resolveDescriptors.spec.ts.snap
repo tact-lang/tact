@@ -9079,6 +9079,2780 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
 
 exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 2`] = `[]`;
 
+exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait {
+    
+},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": null,
+          "id": 11,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": m1: map<Int, Int as varint16>,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": m1,
+            "text": "m1",
+          },
+          "type": {
+            "id": 10,
+            "keyStorageType": null,
+            "keyType": {
+              "id": 7,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as varint16>,
+            "valueStorageType": {
+              "id": 9,
+              "kind": "id",
+              "loc": varint16,
+              "text": "varint16",
+            },
+            "valueType": {
+              "id": 8,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        {
+          "as": null,
+          "id": 17,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": m2: map<Int, Int as varint32>,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": m2,
+            "text": "m2",
+          },
+          "type": {
+            "id": 16,
+            "keyStorageType": null,
+            "keyType": {
+              "id": 13,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as varint32>,
+            "valueStorageType": {
+              "id": 15,
+              "kind": "id",
+              "loc": varint32,
+              "text": "varint32",
+            },
+            "valueType": {
+              "id": 14,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": null,
+              "type": "get",
+            },
+          ],
+          "id": 54,
+          "kind": "function_def",
+          "loc": get fun test1(): Int {
+        let m1: map<Int, Int as varint16> = emptyMap();
+        m1.set(1, 2);
+        self.m1.set(1, 2);
+        return m1.get(1) + self.m1.get(1);
+    },
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "loc": test1,
+            "text": "test1",
+          },
+          "params": [],
+          "return": {
+            "id": 19,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 25,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 26,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 27,
+              "kind": "statement_let",
+              "loc": let m1: map<Int, Int as varint16> = emptyMap();,
+              "name": {
+                "id": 20,
+                "kind": "id",
+                "loc": m1,
+                "text": "m1",
+              },
+              "type": {
+                "id": 24,
+                "keyStorageType": null,
+                "keyType": {
+                  "id": 21,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int as varint16>,
+                "valueStorageType": {
+                  "id": 23,
+                  "kind": "id",
+                  "loc": varint16,
+                  "text": "varint16",
+                },
+                "valueType": {
+                  "id": 22,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 30,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 31,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 32,
+                "kind": "method_call",
+                "loc": m1.set(1, 2),
+                "method": {
+                  "id": 29,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "id": 28,
+                  "kind": "id",
+                  "loc": m1,
+                  "text": "m1",
+                },
+              },
+              "id": 33,
+              "kind": "statement_expression",
+              "loc": m1.set(1, 2);,
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 38,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 39,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 40,
+                "kind": "method_call",
+                "loc": self.m1.set(1, 2),
+                "method": {
+                  "id": 37,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "aggregate": {
+                    "id": 34,
+                    "kind": "id",
+                    "loc": self,
+                    "text": "self",
+                  },
+                  "field": {
+                    "id": 35,
+                    "kind": "id",
+                    "loc": m1,
+                    "text": "m1",
+                  },
+                  "id": 36,
+                  "kind": "field_access",
+                  "loc": self.m1,
+                },
+              },
+              "id": 41,
+              "kind": "statement_expression",
+              "loc": self.m1.set(1, 2);,
+            },
+            {
+              "expression": {
+                "id": 52,
+                "kind": "op_binary",
+                "left": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 44,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 45,
+                  "kind": "method_call",
+                  "loc": m1.get(1),
+                  "method": {
+                    "id": 43,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "id": 42,
+                    "kind": "id",
+                    "loc": m1,
+                    "text": "m1",
+                  },
+                },
+                "loc": m1.get(1) + self.m1.get(1),
+                "op": "+",
+                "right": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 50,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 51,
+                  "kind": "method_call",
+                  "loc": self.m1.get(1),
+                  "method": {
+                    "id": 49,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "aggregate": {
+                      "id": 46,
+                      "kind": "id",
+                      "loc": self,
+                      "text": "self",
+                    },
+                    "field": {
+                      "id": 47,
+                      "kind": "id",
+                      "loc": m1,
+                      "text": "m1",
+                    },
+                    "id": 48,
+                    "kind": "field_access",
+                    "loc": self.m1,
+                  },
+                },
+              },
+              "id": 53,
+              "kind": "statement_return",
+              "loc": return m1.get(1) + self.m1.get(1);,
+            },
+          ],
+        },
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": null,
+              "type": "get",
+            },
+          ],
+          "id": 91,
+          "kind": "function_def",
+          "loc": get fun test2(): Int {
+        let m2: map<Int, Int as varint32> = emptyMap();
+        m2.set(1, 2);
+        self.m2.set(1, 2);
+        return m2.get(1) + self.m2.get(1);
+    },
+          "name": {
+            "id": 55,
+            "kind": "id",
+            "loc": test2,
+            "text": "test2",
+          },
+          "params": [],
+          "return": {
+            "id": 56,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 62,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 63,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 64,
+              "kind": "statement_let",
+              "loc": let m2: map<Int, Int as varint32> = emptyMap();,
+              "name": {
+                "id": 57,
+                "kind": "id",
+                "loc": m2,
+                "text": "m2",
+              },
+              "type": {
+                "id": 61,
+                "keyStorageType": null,
+                "keyType": {
+                  "id": 58,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int as varint32>,
+                "valueStorageType": {
+                  "id": 60,
+                  "kind": "id",
+                  "loc": varint32,
+                  "text": "varint32",
+                },
+                "valueType": {
+                  "id": 59,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 67,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 68,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 69,
+                "kind": "method_call",
+                "loc": m2.set(1, 2),
+                "method": {
+                  "id": 66,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "id": 65,
+                  "kind": "id",
+                  "loc": m2,
+                  "text": "m2",
+                },
+              },
+              "id": 70,
+              "kind": "statement_expression",
+              "loc": m2.set(1, 2);,
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 75,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 76,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 77,
+                "kind": "method_call",
+                "loc": self.m2.set(1, 2),
+                "method": {
+                  "id": 74,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "aggregate": {
+                    "id": 71,
+                    "kind": "id",
+                    "loc": self,
+                    "text": "self",
+                  },
+                  "field": {
+                    "id": 72,
+                    "kind": "id",
+                    "loc": m2,
+                    "text": "m2",
+                  },
+                  "id": 73,
+                  "kind": "field_access",
+                  "loc": self.m2,
+                },
+              },
+              "id": 78,
+              "kind": "statement_expression",
+              "loc": self.m2.set(1, 2);,
+            },
+            {
+              "expression": {
+                "id": 89,
+                "kind": "op_binary",
+                "left": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 81,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 82,
+                  "kind": "method_call",
+                  "loc": m2.get(1),
+                  "method": {
+                    "id": 80,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "id": 79,
+                    "kind": "id",
+                    "loc": m2,
+                    "text": "m2",
+                  },
+                },
+                "loc": m2.get(1) + self.m2.get(1),
+                "op": "+",
+                "right": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 87,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 88,
+                  "kind": "method_call",
+                  "loc": self.m2.get(1),
+                  "method": {
+                    "id": 86,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "aggregate": {
+                      "id": 83,
+                      "kind": "id",
+                      "loc": self,
+                      "text": "self",
+                    },
+                    "field": {
+                      "id": 84,
+                      "kind": "id",
+                      "loc": m2,
+                      "text": "m2",
+                    },
+                    "id": 85,
+                    "kind": "field_access",
+                    "loc": self.m2,
+                  },
+                },
+              },
+              "id": 90,
+              "kind": "statement_return",
+              "loc": return m2.get(1) + self.m2.get(1);,
+            },
+          ],
+        },
+      ],
+      "id": 92,
+      "kind": "contract",
+      "loc": contract Main {
+    m1: map<Int, Int as varint16>;
+    m2: map<Int, Int as varint32>;
+
+    get fun test1(): Int {
+        let m1: map<Int, Int as varint16> = emptyMap();
+        m1.set(1, 2);
+        self.m1.set(1, 2);
+        return m1.get(1) + self.m1.get(1);
+    }
+
+    get fun test2(): Int {
+        let m2: map<Int, Int as varint32> = emptyMap();
+        m2.set(1, 2);
+        self.m2.set(1, 2);
+        return m2.get(1) + self.m2.get(1);
+    }
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": Main,
+        "text": "Main",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "m1",
+          "type": {
+            "key": "int",
+            "keyFormat": undefined,
+            "kind": "dict",
+            "value": "int",
+            "valueFormat": "varint16",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 11,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": m1: map<Int, Int as varint16>,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": m1,
+            "text": "m1",
+          },
+          "type": {
+            "id": 10,
+            "keyStorageType": null,
+            "keyType": {
+              "id": 7,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as varint16>,
+            "valueStorageType": {
+              "id": 9,
+              "kind": "id",
+              "loc": varint16,
+              "text": "varint16",
+            },
+            "valueType": {
+              "id": 8,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": m1: map<Int, Int as varint16>,
+        "name": "m1",
+        "type": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "varint16",
+        },
+      },
+      {
+        "abi": {
+          "name": "m2",
+          "type": {
+            "key": "int",
+            "keyFormat": undefined,
+            "kind": "dict",
+            "value": "int",
+            "valueFormat": "varint32",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 17,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": m2: map<Int, Int as varint32>,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": m2,
+            "text": "m2",
+          },
+          "type": {
+            "id": 16,
+            "keyStorageType": null,
+            "keyType": {
+              "id": 13,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as varint32>,
+            "valueStorageType": {
+              "id": 15,
+              "kind": "id",
+              "loc": varint32,
+              "text": "varint32",
+            },
+            "valueType": {
+              "id": 14,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "default": undefined,
+        "index": 1,
+        "loc": m2: map<Int, Int as varint32>,
+        "name": "m2",
+        "type": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "varint32",
+        },
+      },
+    ],
+    "functions": Map {
+      "test1" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": null,
+              "type": "get",
+            },
+          ],
+          "id": 54,
+          "kind": "function_def",
+          "loc": get fun test1(): Int {
+        let m1: map<Int, Int as varint16> = emptyMap();
+        m1.set(1, 2);
+        self.m1.set(1, 2);
+        return m1.get(1) + self.m1.get(1);
+    },
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "loc": test1,
+            "text": "test1",
+          },
+          "params": [],
+          "return": {
+            "id": 19,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 25,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 26,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 27,
+              "kind": "statement_let",
+              "loc": let m1: map<Int, Int as varint16> = emptyMap();,
+              "name": {
+                "id": 20,
+                "kind": "id",
+                "loc": m1,
+                "text": "m1",
+              },
+              "type": {
+                "id": 24,
+                "keyStorageType": null,
+                "keyType": {
+                  "id": 21,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int as varint16>,
+                "valueStorageType": {
+                  "id": 23,
+                  "kind": "id",
+                  "loc": varint16,
+                  "text": "varint16",
+                },
+                "valueType": {
+                  "id": 22,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 30,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 31,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 32,
+                "kind": "method_call",
+                "loc": m1.set(1, 2),
+                "method": {
+                  "id": 29,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "id": 28,
+                  "kind": "id",
+                  "loc": m1,
+                  "text": "m1",
+                },
+              },
+              "id": 33,
+              "kind": "statement_expression",
+              "loc": m1.set(1, 2);,
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 38,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 39,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 40,
+                "kind": "method_call",
+                "loc": self.m1.set(1, 2),
+                "method": {
+                  "id": 37,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "aggregate": {
+                    "id": 34,
+                    "kind": "id",
+                    "loc": self,
+                    "text": "self",
+                  },
+                  "field": {
+                    "id": 35,
+                    "kind": "id",
+                    "loc": m1,
+                    "text": "m1",
+                  },
+                  "id": 36,
+                  "kind": "field_access",
+                  "loc": self.m1,
+                },
+              },
+              "id": 41,
+              "kind": "statement_expression",
+              "loc": self.m1.set(1, 2);,
+            },
+            {
+              "expression": {
+                "id": 52,
+                "kind": "op_binary",
+                "left": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 44,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 45,
+                  "kind": "method_call",
+                  "loc": m1.get(1),
+                  "method": {
+                    "id": 43,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "id": 42,
+                    "kind": "id",
+                    "loc": m1,
+                    "text": "m1",
+                  },
+                },
+                "loc": m1.get(1) + self.m1.get(1),
+                "op": "+",
+                "right": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 50,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 51,
+                  "kind": "method_call",
+                  "loc": self.m1.get(1),
+                  "method": {
+                    "id": 49,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "aggregate": {
+                      "id": 46,
+                      "kind": "id",
+                      "loc": self,
+                      "text": "self",
+                    },
+                    "field": {
+                      "id": 47,
+                      "kind": "id",
+                      "loc": m1,
+                      "text": "m1",
+                    },
+                    "id": 48,
+                    "kind": "field_access",
+                    "loc": self.m1,
+                  },
+                },
+              },
+              "id": 53,
+              "kind": "statement_return",
+              "loc": return m1.get(1) + self.m1.get(1);,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "test1",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "Main",
+          "optional": false,
+        },
+      },
+      "test2" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": null,
+              "type": "get",
+            },
+          ],
+          "id": 91,
+          "kind": "function_def",
+          "loc": get fun test2(): Int {
+        let m2: map<Int, Int as varint32> = emptyMap();
+        m2.set(1, 2);
+        self.m2.set(1, 2);
+        return m2.get(1) + self.m2.get(1);
+    },
+          "name": {
+            "id": 55,
+            "kind": "id",
+            "loc": test2,
+            "text": "test2",
+          },
+          "params": [],
+          "return": {
+            "id": 56,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 62,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 63,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 64,
+              "kind": "statement_let",
+              "loc": let m2: map<Int, Int as varint32> = emptyMap();,
+              "name": {
+                "id": 57,
+                "kind": "id",
+                "loc": m2,
+                "text": "m2",
+              },
+              "type": {
+                "id": 61,
+                "keyStorageType": null,
+                "keyType": {
+                  "id": 58,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int as varint32>,
+                "valueStorageType": {
+                  "id": 60,
+                  "kind": "id",
+                  "loc": varint32,
+                  "text": "varint32",
+                },
+                "valueType": {
+                  "id": 59,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 67,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 68,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 69,
+                "kind": "method_call",
+                "loc": m2.set(1, 2),
+                "method": {
+                  "id": 66,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "id": 65,
+                  "kind": "id",
+                  "loc": m2,
+                  "text": "m2",
+                },
+              },
+              "id": 70,
+              "kind": "statement_expression",
+              "loc": m2.set(1, 2);,
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 75,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 76,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 77,
+                "kind": "method_call",
+                "loc": self.m2.set(1, 2),
+                "method": {
+                  "id": 74,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "aggregate": {
+                    "id": 71,
+                    "kind": "id",
+                    "loc": self,
+                    "text": "self",
+                  },
+                  "field": {
+                    "id": 72,
+                    "kind": "id",
+                    "loc": m2,
+                    "text": "m2",
+                  },
+                  "id": 73,
+                  "kind": "field_access",
+                  "loc": self.m2,
+                },
+              },
+              "id": 78,
+              "kind": "statement_expression",
+              "loc": self.m2.set(1, 2);,
+            },
+            {
+              "expression": {
+                "id": 89,
+                "kind": "op_binary",
+                "left": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 81,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 82,
+                  "kind": "method_call",
+                  "loc": m2.get(1),
+                  "method": {
+                    "id": 80,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "id": 79,
+                    "kind": "id",
+                    "loc": m2,
+                    "text": "m2",
+                  },
+                },
+                "loc": m2.get(1) + self.m2.get(1),
+                "op": "+",
+                "right": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 87,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 88,
+                  "kind": "method_call",
+                  "loc": self.m2.get(1),
+                  "method": {
+                    "id": 86,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "aggregate": {
+                      "id": 83,
+                      "kind": "id",
+                      "loc": self,
+                      "text": "self",
+                    },
+                    "field": {
+                      "id": 84,
+                      "kind": "id",
+                      "loc": m2,
+                      "text": "m2",
+                    },
+                    "id": 85,
+                    "kind": "field_access",
+                    "loc": self.m2,
+                  },
+                },
+              },
+              "id": 90,
+              "kind": "statement_return",
+              "loc": return m2.get(1) + self.m2.get(1);,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "test2",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "Main",
+          "optional": false,
+        },
+      },
+    },
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 94,
+        "kind": "contract_init",
+        "loc": contract Main {
+    m1: map<Int, Int as varint16>;
+    m2: map<Int, Int as varint32>;
+
+    get fun test1(): Int {
+        let m1: map<Int, Int as varint16> = emptyMap();
+        m1.set(1, 2);
+        self.m1.set(1, 2);
+        return m1.get(1) + self.m1.get(1);
+    }
+
+    get fun test2(): Int {
+        let m2: map<Int, Int as varint32> = emptyMap();
+        m2.set(1, 2);
+        self.m2.set(1, 2);
+        return m2.get(1) + self.m2.get(1);
+    }
+},
+        "params": [],
+        "statements": [],
+      },
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "Main",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {
+    
+},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 51099,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait {
+    
+},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": null,
+          "id": 11,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": m1: map<Int, Int as varuint16>,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": m1,
+            "text": "m1",
+          },
+          "type": {
+            "id": 10,
+            "keyStorageType": null,
+            "keyType": {
+              "id": 7,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as varuint16>,
+            "valueStorageType": {
+              "id": 9,
+              "kind": "id",
+              "loc": varuint16,
+              "text": "varuint16",
+            },
+            "valueType": {
+              "id": 8,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        {
+          "as": null,
+          "id": 17,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": m2: map<Int, Int as varuint32>,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": m2,
+            "text": "m2",
+          },
+          "type": {
+            "id": 16,
+            "keyStorageType": null,
+            "keyType": {
+              "id": 13,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as varuint32>,
+            "valueStorageType": {
+              "id": 15,
+              "kind": "id",
+              "loc": varuint32,
+              "text": "varuint32",
+            },
+            "valueType": {
+              "id": 14,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": null,
+              "type": "get",
+            },
+          ],
+          "id": 54,
+          "kind": "function_def",
+          "loc": get fun test1(): Int {
+        let m1: map<Int, Int as varuint16> = emptyMap();
+        m1.set(1, 2);
+        self.m1.set(1, 2);
+        return m1.get(1) + self.m1.get(1);
+    },
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "loc": test1,
+            "text": "test1",
+          },
+          "params": [],
+          "return": {
+            "id": 19,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 25,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 26,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 27,
+              "kind": "statement_let",
+              "loc": let m1: map<Int, Int as varuint16> = emptyMap();,
+              "name": {
+                "id": 20,
+                "kind": "id",
+                "loc": m1,
+                "text": "m1",
+              },
+              "type": {
+                "id": 24,
+                "keyStorageType": null,
+                "keyType": {
+                  "id": 21,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int as varuint16>,
+                "valueStorageType": {
+                  "id": 23,
+                  "kind": "id",
+                  "loc": varuint16,
+                  "text": "varuint16",
+                },
+                "valueType": {
+                  "id": 22,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 30,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 31,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 32,
+                "kind": "method_call",
+                "loc": m1.set(1, 2),
+                "method": {
+                  "id": 29,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "id": 28,
+                  "kind": "id",
+                  "loc": m1,
+                  "text": "m1",
+                },
+              },
+              "id": 33,
+              "kind": "statement_expression",
+              "loc": m1.set(1, 2);,
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 38,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 39,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 40,
+                "kind": "method_call",
+                "loc": self.m1.set(1, 2),
+                "method": {
+                  "id": 37,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "aggregate": {
+                    "id": 34,
+                    "kind": "id",
+                    "loc": self,
+                    "text": "self",
+                  },
+                  "field": {
+                    "id": 35,
+                    "kind": "id",
+                    "loc": m1,
+                    "text": "m1",
+                  },
+                  "id": 36,
+                  "kind": "field_access",
+                  "loc": self.m1,
+                },
+              },
+              "id": 41,
+              "kind": "statement_expression",
+              "loc": self.m1.set(1, 2);,
+            },
+            {
+              "expression": {
+                "id": 52,
+                "kind": "op_binary",
+                "left": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 44,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 45,
+                  "kind": "method_call",
+                  "loc": m1.get(1),
+                  "method": {
+                    "id": 43,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "id": 42,
+                    "kind": "id",
+                    "loc": m1,
+                    "text": "m1",
+                  },
+                },
+                "loc": m1.get(1) + self.m1.get(1),
+                "op": "+",
+                "right": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 50,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 51,
+                  "kind": "method_call",
+                  "loc": self.m1.get(1),
+                  "method": {
+                    "id": 49,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "aggregate": {
+                      "id": 46,
+                      "kind": "id",
+                      "loc": self,
+                      "text": "self",
+                    },
+                    "field": {
+                      "id": 47,
+                      "kind": "id",
+                      "loc": m1,
+                      "text": "m1",
+                    },
+                    "id": 48,
+                    "kind": "field_access",
+                    "loc": self.m1,
+                  },
+                },
+              },
+              "id": 53,
+              "kind": "statement_return",
+              "loc": return m1.get(1) + self.m1.get(1);,
+            },
+          ],
+        },
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": null,
+              "type": "get",
+            },
+          ],
+          "id": 91,
+          "kind": "function_def",
+          "loc": get fun test2(): Int {
+        let m2: map<Int, Int as varuint32> = emptyMap();
+        m2.set(1, 2);
+        self.m2.set(1, 2);
+        return m2.get(1) + self.m2.get(1);
+    },
+          "name": {
+            "id": 55,
+            "kind": "id",
+            "loc": test2,
+            "text": "test2",
+          },
+          "params": [],
+          "return": {
+            "id": 56,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 62,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 63,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 64,
+              "kind": "statement_let",
+              "loc": let m2: map<Int, Int as varuint32> = emptyMap();,
+              "name": {
+                "id": 57,
+                "kind": "id",
+                "loc": m2,
+                "text": "m2",
+              },
+              "type": {
+                "id": 61,
+                "keyStorageType": null,
+                "keyType": {
+                  "id": 58,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int as varuint32>,
+                "valueStorageType": {
+                  "id": 60,
+                  "kind": "id",
+                  "loc": varuint32,
+                  "text": "varuint32",
+                },
+                "valueType": {
+                  "id": 59,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 67,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 68,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 69,
+                "kind": "method_call",
+                "loc": m2.set(1, 2),
+                "method": {
+                  "id": 66,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "id": 65,
+                  "kind": "id",
+                  "loc": m2,
+                  "text": "m2",
+                },
+              },
+              "id": 70,
+              "kind": "statement_expression",
+              "loc": m2.set(1, 2);,
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 75,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 76,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 77,
+                "kind": "method_call",
+                "loc": self.m2.set(1, 2),
+                "method": {
+                  "id": 74,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "aggregate": {
+                    "id": 71,
+                    "kind": "id",
+                    "loc": self,
+                    "text": "self",
+                  },
+                  "field": {
+                    "id": 72,
+                    "kind": "id",
+                    "loc": m2,
+                    "text": "m2",
+                  },
+                  "id": 73,
+                  "kind": "field_access",
+                  "loc": self.m2,
+                },
+              },
+              "id": 78,
+              "kind": "statement_expression",
+              "loc": self.m2.set(1, 2);,
+            },
+            {
+              "expression": {
+                "id": 89,
+                "kind": "op_binary",
+                "left": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 81,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 82,
+                  "kind": "method_call",
+                  "loc": m2.get(1),
+                  "method": {
+                    "id": 80,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "id": 79,
+                    "kind": "id",
+                    "loc": m2,
+                    "text": "m2",
+                  },
+                },
+                "loc": m2.get(1) + self.m2.get(1),
+                "op": "+",
+                "right": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 87,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 88,
+                  "kind": "method_call",
+                  "loc": self.m2.get(1),
+                  "method": {
+                    "id": 86,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "aggregate": {
+                      "id": 83,
+                      "kind": "id",
+                      "loc": self,
+                      "text": "self",
+                    },
+                    "field": {
+                      "id": 84,
+                      "kind": "id",
+                      "loc": m2,
+                      "text": "m2",
+                    },
+                    "id": 85,
+                    "kind": "field_access",
+                    "loc": self.m2,
+                  },
+                },
+              },
+              "id": 90,
+              "kind": "statement_return",
+              "loc": return m2.get(1) + self.m2.get(1);,
+            },
+          ],
+        },
+      ],
+      "id": 92,
+      "kind": "contract",
+      "loc": contract Main {
+    m1: map<Int, Int as varuint16>;
+    m2: map<Int, Int as varuint32>;
+
+    get fun test1(): Int {
+        let m1: map<Int, Int as varuint16> = emptyMap();
+        m1.set(1, 2);
+        self.m1.set(1, 2);
+        return m1.get(1) + self.m1.get(1);
+    }
+
+    get fun test2(): Int {
+        let m2: map<Int, Int as varuint32> = emptyMap();
+        m2.set(1, 2);
+        self.m2.set(1, 2);
+        return m2.get(1) + self.m2.get(1);
+    }
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": Main,
+        "text": "Main",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "m1",
+          "type": {
+            "key": "int",
+            "keyFormat": undefined,
+            "kind": "dict",
+            "value": "uint",
+            "valueFormat": "varuint16",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 11,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": m1: map<Int, Int as varuint16>,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": m1,
+            "text": "m1",
+          },
+          "type": {
+            "id": 10,
+            "keyStorageType": null,
+            "keyType": {
+              "id": 7,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as varuint16>,
+            "valueStorageType": {
+              "id": 9,
+              "kind": "id",
+              "loc": varuint16,
+              "text": "varuint16",
+            },
+            "valueType": {
+              "id": 8,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": m1: map<Int, Int as varuint16>,
+        "name": "m1",
+        "type": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "varuint16",
+        },
+      },
+      {
+        "abi": {
+          "name": "m2",
+          "type": {
+            "key": "int",
+            "keyFormat": undefined,
+            "kind": "dict",
+            "value": "uint",
+            "valueFormat": "varuint32",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 17,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": m2: map<Int, Int as varuint32>,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": m2,
+            "text": "m2",
+          },
+          "type": {
+            "id": 16,
+            "keyStorageType": null,
+            "keyType": {
+              "id": 13,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+            "kind": "map_type",
+            "loc": map<Int, Int as varuint32>,
+            "valueStorageType": {
+              "id": 15,
+              "kind": "id",
+              "loc": varuint32,
+              "text": "varuint32",
+            },
+            "valueType": {
+              "id": 14,
+              "kind": "type_id",
+              "loc": Int,
+              "text": "Int",
+            },
+          },
+        },
+        "default": undefined,
+        "index": 1,
+        "loc": m2: map<Int, Int as varuint32>,
+        "name": "m2",
+        "type": {
+          "key": "Int",
+          "keyAs": null,
+          "kind": "map",
+          "value": "Int",
+          "valueAs": "varuint32",
+        },
+      },
+    ],
+    "functions": Map {
+      "test1" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": null,
+              "type": "get",
+            },
+          ],
+          "id": 54,
+          "kind": "function_def",
+          "loc": get fun test1(): Int {
+        let m1: map<Int, Int as varuint16> = emptyMap();
+        m1.set(1, 2);
+        self.m1.set(1, 2);
+        return m1.get(1) + self.m1.get(1);
+    },
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "loc": test1,
+            "text": "test1",
+          },
+          "params": [],
+          "return": {
+            "id": 19,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 25,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 26,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 27,
+              "kind": "statement_let",
+              "loc": let m1: map<Int, Int as varuint16> = emptyMap();,
+              "name": {
+                "id": 20,
+                "kind": "id",
+                "loc": m1,
+                "text": "m1",
+              },
+              "type": {
+                "id": 24,
+                "keyStorageType": null,
+                "keyType": {
+                  "id": 21,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int as varuint16>,
+                "valueStorageType": {
+                  "id": 23,
+                  "kind": "id",
+                  "loc": varuint16,
+                  "text": "varuint16",
+                },
+                "valueType": {
+                  "id": 22,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 30,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 31,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 32,
+                "kind": "method_call",
+                "loc": m1.set(1, 2),
+                "method": {
+                  "id": 29,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "id": 28,
+                  "kind": "id",
+                  "loc": m1,
+                  "text": "m1",
+                },
+              },
+              "id": 33,
+              "kind": "statement_expression",
+              "loc": m1.set(1, 2);,
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 38,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 39,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 40,
+                "kind": "method_call",
+                "loc": self.m1.set(1, 2),
+                "method": {
+                  "id": 37,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "aggregate": {
+                    "id": 34,
+                    "kind": "id",
+                    "loc": self,
+                    "text": "self",
+                  },
+                  "field": {
+                    "id": 35,
+                    "kind": "id",
+                    "loc": m1,
+                    "text": "m1",
+                  },
+                  "id": 36,
+                  "kind": "field_access",
+                  "loc": self.m1,
+                },
+              },
+              "id": 41,
+              "kind": "statement_expression",
+              "loc": self.m1.set(1, 2);,
+            },
+            {
+              "expression": {
+                "id": 52,
+                "kind": "op_binary",
+                "left": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 44,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 45,
+                  "kind": "method_call",
+                  "loc": m1.get(1),
+                  "method": {
+                    "id": 43,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "id": 42,
+                    "kind": "id",
+                    "loc": m1,
+                    "text": "m1",
+                  },
+                },
+                "loc": m1.get(1) + self.m1.get(1),
+                "op": "+",
+                "right": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 50,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 51,
+                  "kind": "method_call",
+                  "loc": self.m1.get(1),
+                  "method": {
+                    "id": 49,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "aggregate": {
+                      "id": 46,
+                      "kind": "id",
+                      "loc": self,
+                      "text": "self",
+                    },
+                    "field": {
+                      "id": 47,
+                      "kind": "id",
+                      "loc": m1,
+                      "text": "m1",
+                    },
+                    "id": 48,
+                    "kind": "field_access",
+                    "loc": self.m1,
+                  },
+                },
+              },
+              "id": 53,
+              "kind": "statement_return",
+              "loc": return m1.get(1) + self.m1.get(1);,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "test1",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "Main",
+          "optional": false,
+        },
+      },
+      "test2" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": get,
+              "methodId": null,
+              "type": "get",
+            },
+          ],
+          "id": 91,
+          "kind": "function_def",
+          "loc": get fun test2(): Int {
+        let m2: map<Int, Int as varuint32> = emptyMap();
+        m2.set(1, 2);
+        self.m2.set(1, 2);
+        return m2.get(1) + self.m2.get(1);
+    },
+          "name": {
+            "id": 55,
+            "kind": "id",
+            "loc": test2,
+            "text": "test2",
+          },
+          "params": [],
+          "return": {
+            "id": 56,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+          "statements": [
+            {
+              "expression": {
+                "args": [],
+                "function": {
+                  "id": 62,
+                  "kind": "id",
+                  "loc": emptyMap,
+                  "text": "emptyMap",
+                },
+                "id": 63,
+                "kind": "static_call",
+                "loc": emptyMap(),
+              },
+              "id": 64,
+              "kind": "statement_let",
+              "loc": let m2: map<Int, Int as varuint32> = emptyMap();,
+              "name": {
+                "id": 57,
+                "kind": "id",
+                "loc": m2,
+                "text": "m2",
+              },
+              "type": {
+                "id": 61,
+                "keyStorageType": null,
+                "keyType": {
+                  "id": 58,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+                "kind": "map_type",
+                "loc": map<Int, Int as varuint32>,
+                "valueStorageType": {
+                  "id": 60,
+                  "kind": "id",
+                  "loc": varuint32,
+                  "text": "varuint32",
+                },
+                "valueType": {
+                  "id": 59,
+                  "kind": "type_id",
+                  "loc": Int,
+                  "text": "Int",
+                },
+              },
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 67,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 68,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 69,
+                "kind": "method_call",
+                "loc": m2.set(1, 2),
+                "method": {
+                  "id": 66,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "id": 65,
+                  "kind": "id",
+                  "loc": m2,
+                  "text": "m2",
+                },
+              },
+              "id": 70,
+              "kind": "statement_expression",
+              "loc": m2.set(1, 2);,
+            },
+            {
+              "expression": {
+                "args": [
+                  {
+                    "base": 10,
+                    "id": 75,
+                    "kind": "number",
+                    "loc": 1,
+                    "value": 1n,
+                  },
+                  {
+                    "base": 10,
+                    "id": 76,
+                    "kind": "number",
+                    "loc": 2,
+                    "value": 2n,
+                  },
+                ],
+                "id": 77,
+                "kind": "method_call",
+                "loc": self.m2.set(1, 2),
+                "method": {
+                  "id": 74,
+                  "kind": "id",
+                  "loc": set,
+                  "text": "set",
+                },
+                "self": {
+                  "aggregate": {
+                    "id": 71,
+                    "kind": "id",
+                    "loc": self,
+                    "text": "self",
+                  },
+                  "field": {
+                    "id": 72,
+                    "kind": "id",
+                    "loc": m2,
+                    "text": "m2",
+                  },
+                  "id": 73,
+                  "kind": "field_access",
+                  "loc": self.m2,
+                },
+              },
+              "id": 78,
+              "kind": "statement_expression",
+              "loc": self.m2.set(1, 2);,
+            },
+            {
+              "expression": {
+                "id": 89,
+                "kind": "op_binary",
+                "left": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 81,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 82,
+                  "kind": "method_call",
+                  "loc": m2.get(1),
+                  "method": {
+                    "id": 80,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "id": 79,
+                    "kind": "id",
+                    "loc": m2,
+                    "text": "m2",
+                  },
+                },
+                "loc": m2.get(1) + self.m2.get(1),
+                "op": "+",
+                "right": {
+                  "args": [
+                    {
+                      "base": 10,
+                      "id": 87,
+                      "kind": "number",
+                      "loc": 1,
+                      "value": 1n,
+                    },
+                  ],
+                  "id": 88,
+                  "kind": "method_call",
+                  "loc": self.m2.get(1),
+                  "method": {
+                    "id": 86,
+                    "kind": "id",
+                    "loc": get,
+                    "text": "get",
+                  },
+                  "self": {
+                    "aggregate": {
+                      "id": 83,
+                      "kind": "id",
+                      "loc": self,
+                      "text": "self",
+                    },
+                    "field": {
+                      "id": 84,
+                      "kind": "id",
+                      "loc": m2,
+                      "text": "m2",
+                    },
+                    "id": 85,
+                    "kind": "field_access",
+                    "loc": self.m2,
+                  },
+                },
+              },
+              "id": 90,
+              "kind": "statement_return",
+              "loc": return m2.get(1) + self.m2.get(1);,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": true,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "test2",
+        "origin": "user",
+        "params": [],
+        "returns": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "Main",
+          "optional": false,
+        },
+      },
+    },
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 94,
+        "kind": "contract_init",
+        "loc": contract Main {
+    m1: map<Int, Int as varuint16>;
+    m2: map<Int, Int as varuint32>;
+
+    get fun test1(): Int {
+        let m1: map<Int, Int as varuint16> = emptyMap();
+        m1.set(1, 2);
+        self.m1.set(1, 2);
+        return m1.get(1) + self.m1.get(1);
+    }
+
+    get fun test2(): Int {
+        let m2: map<Int, Int as varuint32> = emptyMap();
+        m2.set(1, 2);
+        self.m2.set(1, 2);
+        return m2.get(1) + self.m2.get(1);
+    }
+},
+        "params": [],
+        "statements": [],
+      },
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "Main",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {
+    
+},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 51099,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 2`] = `[]`;
+
 exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1`] = `
 [
   {
