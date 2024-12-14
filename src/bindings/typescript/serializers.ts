@@ -192,6 +192,77 @@ const coinsSerializer: Serializer<{ optional: boolean }> = {
     },
 };
 
+const varIntSerializer: Serializer<{
+    format: "varint16" | "varint32" | "varuint16" | "varuint32";
+    optional: boolean;
+}> = {
+    tsType(v) {
+        if (v.optional) {
+            return "bigint | null";
+        } else {
+            return "bigint";
+        }
+    },
+    tsLoad(v, slice, field, w) {
+        const loader =
+            v.format === "varint16" || v.format === "varint32"
+                ? "loadVarIntBig"
+                : "loadVarUintBig";
+        const length =
+            v.format === "varint16" || v.format === "varuint16" ? 2 : 4;
+        if (v.optional) {
+            w.append(
+                `let ${field} = ${slice}.loadBit() ? ${slice}.${loader}(${length}) : null;`,
+            );
+        } else {
+            w.append(`let ${field} = ${slice}.${loader}(${length});`);
+        }
+    },
+    tsLoadTuple(v, reader, field, w) {
+        if (v.optional) {
+            w.append(`let ${field} = ${reader}.readBigNumberOpt();`);
+        } else {
+            w.append(`let ${field} = ${reader}.readBigNumber();`);
+        }
+    },
+    tsStore(v, builder, field, w) {
+        const storer =
+            v.format === "varint16" || v.format === "varint32"
+                ? "storeVarInt"
+                : "storeVarUint";
+        const length =
+            v.format === "varint16" || v.format === "varuint16" ? 2 : 4;
+        if (v.optional) {
+            w.append(
+                `if (${field} !== null && ${field} !== undefined) { ${builder}.storeBit(true).${storer}(${field}, ${length}); } else { ${builder}.storeBit(false); }`,
+            );
+        } else {
+            w.append(`${builder}.${storer}(${field}, ${length});`);
+        }
+    },
+    tsStoreTuple(v, to, field, w) {
+        w.append(`${to}.writeNumber(${field});`);
+    },
+    abiMatcher(src) {
+        if (src.kind === "simple") {
+            if (src.type === "int" || src.type === "uint") {
+                if (
+                    src.format === "varint16" ||
+                    src.format === "varint32" ||
+                    src.format === "varuint16" ||
+                    src.format === "varuint32"
+                ) {
+                    return {
+                        format: src.format,
+                        optional: src.optional ? src.optional : false,
+                    };
+                }
+            }
+        }
+        return null;
+    },
+};
+
 const boolSerializer: Serializer<{ optional: boolean }> = {
     tsType(v) {
         if (v.optional) {
@@ -621,6 +692,7 @@ type MapSerializerDescrKey =
 type MapSerializerDescrValue =
     | { kind: "int" | "uint"; bits: number }
     | { kind: "varuint"; length: number }
+    | { kind: "varint"; length: number }
     | { kind: "boolean" }
     | { kind: "address" }
     | { kind: "cell" }
@@ -668,6 +740,9 @@ function getValueParser(src: MapSerializerDescrValue) {
         }
         case "varuint": {
             return `Dictionary.Values.BigVarUint(${src.length})`;
+        }
+        case "varint": {
+            return `Dictionary.Values.BigVarInt(${src.length})`;
         }
         case "address": {
             return "Dictionary.Values.Address()";
@@ -732,6 +807,10 @@ const map: Serializer<MapSerializerDescr> = {
                     src.valueFormat === undefined
                 ) {
                     value = { kind: "int", bits: 257 };
+                } else if (src.valueFormat === "varint16") {
+                    value = { kind: "varint", length: 4 };
+                } else if (src.valueFormat === "varint32") {
+                    value = { kind: "varint", length: 5 };
                 }
             }
             if (src.value === "uint") {
@@ -744,6 +823,10 @@ const map: Serializer<MapSerializerDescr> = {
                     value = { kind: "uint", bits: 256 };
                 } else if (src.valueFormat === "coins") {
                     value = { kind: "varuint", length: 4 };
+                } else if (src.valueFormat === "varuint16") {
+                    value = { kind: "varuint", length: 4 };
+                } else if (src.valueFormat === "varuint32") {
+                    value = { kind: "varuint", length: 5 };
                 }
             }
             if (src.value === "address") {
@@ -813,7 +896,8 @@ const map: Serializer<MapSerializerDescr> = {
                     }
                 }
                 break;
-            case "varuint": {
+            case "varuint":
+            case "varint": {
                 valueT = `bigint`;
                 break;
             }
@@ -869,6 +953,7 @@ export const serializers: Serializer<any>[] = [
     intSerializer,
     uintSerializer,
     coinsSerializer,
+    varIntSerializer,
     boolSerializer,
     addressSerializer,
     cellSerializer,

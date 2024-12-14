@@ -270,6 +270,19 @@ describe("structs", () => {
             exitCode: 9,
         });
 
+        {
+            const sendResult = await contract.send(
+                treasure.getSender(),
+                { value: toNano("10") },
+                "exampleVarIntegers",
+            );
+            expect(sendResult.transactions).toHaveTransaction({
+                from: treasure.address,
+                to: contract.address,
+                success: true,
+            });
+        }
+
         expect(await contract.getLongStruct15Test()).toMatchSnapshot();
         expect(await contract.getLongStruct16Test()).toMatchSnapshot();
         expect(await contract.getLongStruct32Test()).toMatchSnapshot();
