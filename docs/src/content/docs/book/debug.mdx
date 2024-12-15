@@ -165,6 +165,12 @@ it('should deploy', async () => {
 
 ### Debug with `dump()` {#tests-dump}
 
+:::note
+
+  Calling [`dump(){:tact}`][dump] is computationally expensive and consumes a lot of gas. Be sure to always supply enough Toncoins in your tests to avoid [exit code -14](/book/exit-codes#-14).
+
+:::
+
 To see results of [`dump(){:tact}`][dump] function calls and use ["printf debugging"](#approach) approach, one has to:
 
 1. Put calls to [`dump(){:tact}`][dump] and other [common debugging functions](#debug-functions) in relevant places of the code.
