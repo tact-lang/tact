@@ -108,6 +108,78 @@ export function showValue(val: Value): string {
     }
 }
 
+export function eqValues(val1: Value, val2: Value): boolean {
+    if (val1 === null) {
+        return val2 === null;
+    } else if (val1 instanceof CommentValue) {
+        return val2 instanceof CommentValue
+            ? val1.comment === val2.comment
+            : false;
+    } else if (typeof val1 === "object" && "$tactStruct" in val1) {
+        if (
+            typeof val2 === "object" &&
+            val2 !== null &&
+            "$tactStruct" in val2
+        ) {
+            const map1 = new Map(Object.entries(val1));
+            const map2 = new Map(Object.entries(val2));
+
+            if (map1.size !== map2.size) {
+                return false;
+            }
+
+            for (const [key, val1] of map1) {
+                if (!map2.has(key)) {
+                    return false;
+                }
+                const val2 = map2.get(key)!;
+                if (!eqValues(val1, val2)) {
+                    return false;
+                }
+            }
+
+            return true;
+        } else {
+            return false;
+        }
+    } else if (Address.isAddress(val1)) {
+        return Address.isAddress(val2) ? val1.equals(val2) : false;
+    } else if (val1 instanceof Cell) {
+        return val2 instanceof Cell ? val1.equals(val2) : false;
+    } else if (val1 instanceof Slice) {
+        return val2 instanceof Slice
+            ? val1.asCell().equals(val2.asCell())
+            : false;
+    } else {
+        return val1 === val2;
+    }
+}
+
+export function copyValue(val: Value): Value {
+    if (val === null) {
+        return null;
+    } else if (val instanceof CommentValue) {
+        return new CommentValue(val.comment);
+    } else if (typeof val === "object" && "$tactStruct" in val) {
+        const result: StructValue = {};
+
+        for (const [key, value] of Object.entries(val)) {
+            result[key] = copyValue(value);
+        }
+        return result;
+    } else if (Address.isAddress(val)) {
+        return val; // Addresses are immutable (they freeze their fields in their constructor)
+    } else if (val instanceof Cell) {
+        return val; // Cells are immutable (they freeze their fields in their constructor)
+    } else if (val instanceof Slice) {
+        return val.clone(); // This will make a copy of the slice from the point it is
+        // currently reading (this is compatible with the way "asCell" works in the eqValues method)
+    } else {
+        // These are atomic values. There is no need to copy them
+        return val;
+    }
+}
+
 export type FieldDescription = {
     name: string;
     index: number;
