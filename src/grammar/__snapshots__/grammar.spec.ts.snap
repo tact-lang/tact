@@ -6475,66 +6475,6 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
 }
 `;
 
-exports[`grammar should parse single-line-comments 1`] = `
-{
-  "id": 9,
-  "imports": [],
-  "items": [
-    {
-      "attributes": [],
-      "id": 4,
-      "initializer": {
-        "base": 10,
-        "id": 3,
-        "kind": "number",
-        "loc": 42,
-        "value": 42n,
-      },
-      "kind": "constant_def",
-      "loc": const x: Int = 42;,
-      "name": {
-        "id": 1,
-        "kind": "id",
-        "loc": x,
-        "text": "x",
-      },
-      "type": {
-        "id": 2,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-    {
-      "attributes": [],
-      "id": 8,
-      "initializer": {
-        "base": 10,
-        "id": 7,
-        "kind": "number",
-        "loc": 42,
-        "value": 42n,
-      },
-      "kind": "constant_def",
-      "loc": const y: Int = 42;,
-      "name": {
-        "id": 5,
-        "kind": "id",
-        "loc": y,
-        "text": "y",
-      },
-      "type": {
-        "id": 6,
-        "kind": "type_id",
-        "loc": Int,
-        "text": "Int",
-      },
-    },
-  ],
-  "kind": "module",
-}
-`;
-
 exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
 {
   "id": 72,

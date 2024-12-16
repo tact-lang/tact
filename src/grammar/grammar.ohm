@@ -403,7 +403,7 @@ Tact {
 
     comment = multiLineComment | singleLineComment
 
-    lineTerminator = "\n" | "\r" | "\u2028" | "\u2029" | "\u000C" | "\u000B"
+    lineTerminator = "\n" | "\r" | "\u2028" | "\u2029"
 
     multiLineComment = "/*" (~"*/" any)* "*/"
 
