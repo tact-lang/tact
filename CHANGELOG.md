@@ -55,6 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enabled compilation of examples in `data-structures.mdx` and across Cookbook: PR [#917](https://github.com/tact-lang/tact/pull/917)
 - Removed the Programmatic API page due to frequent changes. To use the API, please refer to the compiler sources: PR [#1184](https://github.com/tact-lang/tact/pull/1184)
 - Added a link to the article by CertiK to Security best practices page: PR [#1185](https://github.com/tact-lang/tact/pull/1185)
+- Added a note on `dump()` being computationally expensive: PR [#1189](https://github.com/tact-lang/tact/pull/1189)
 
 ### Release contributors
 
