@@ -101,6 +101,8 @@ message Add {
 }
 ```
 
+### Message opcodes
+
 Messages are almost the same thing as [Structs](#structs) with the only difference that Messages have a 32-bit integer header in their serialization containing their unique numeric id, commonly referred to as an _opcode_ (operation code). This allows Messages to be used with [receivers](/book/receive) since the contract can tell different types of messages apart based on this id.
 
 Tact automatically generates those unique ids (opcodes) for every received Message, but this can be manually overwritten:
@@ -113,6 +115,14 @@ message(0x7362d09c) TokenNotification {
 ```
 
 This is useful for cases where you want to handle certain opcodes of a given smart contract, such as [Jetton standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md). The short-list of opcodes this contract is able to process is [given here in FunC](https://github.com/ton-blockchain/token-contract/blob/main/ft/op-codes.fc). They serve as an interface to the smart contract.
+
+A message opcode can be any compile-time (constant) expression which evaluates to a strictly positive integer that fits into 32-bits, so the following is also a valid message declaration:
+
+```tact
+message((crc32("Tact") + 42) & 0xFFFF_FFFF) MsgWithExprOpcode {
+    field: Int as uint4;
+}
+```
 
 :::note
 

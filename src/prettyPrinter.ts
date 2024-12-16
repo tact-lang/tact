@@ -537,7 +537,7 @@ export const ppAstMessage: Printer<A.AstMessageDecl> =
     ({ name, opcode, fields }) =>
     (c) => {
         const prefixCode =
-            opcode !== null ? `(${A.astNumToString(opcode)})` : "";
+            opcode !== null ? `(${ppAstExpression(opcode)})` : "";
 
         return c.concat([
             c.row(`message${prefixCode} ${ppAstId(name)} `),

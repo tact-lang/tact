@@ -44,7 +44,7 @@ struct IntFields {
     i257: Int as int257;
 }
 
-message(0xea01f46a) UintFields {
+message(0xea01f469 + 1) UintFields {
     u1: Int as uint1;
     u2: Int as uint2;
     u3: Int as uint3;

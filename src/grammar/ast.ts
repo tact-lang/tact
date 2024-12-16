@@ -119,7 +119,7 @@ export type AstStructDecl = {
 export type AstMessageDecl = {
     kind: "message_decl";
     name: AstId;
-    opcode: AstNumber | null;
+    opcode: AstExpression | null;
     fields: AstFieldDecl[];
     id: number;
     loc: SrcInfo;
