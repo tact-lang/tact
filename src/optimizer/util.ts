@@ -10,9 +10,11 @@ import {
     idText,
 } from "../grammar/ast";
 import { dummySrcInfo, SrcInfo } from "../grammar/grammar";
-import { throwInternalCompilerError } from "../errors";
 import { StructValue, Value } from "../types/types";
 
+export class UnsupportedOperation extends Error {}
+
+// TODO: This method will disappear once Value type is refactored: issue #1190
 export function extractValue(ast: AstValue): Value {
     switch (ast.kind) {
         case "null":
@@ -36,6 +38,7 @@ export function extractValue(ast: AstValue): Value {
     }
 }
 
+// TODO: This method will disappear once Value type is refactored: issue #1190
 export function makeValueExpression(
     value: Value,
     baseSrc: SrcInfo = dummySrcInfo,
@@ -100,7 +103,8 @@ export function makeValueExpression(
         });
         return result as AstValue;
     }
-    throwInternalCompilerError(
+    // TODO: These types will be included once the Value type gets refactored.
+    throw new UnsupportedOperation(
         "addresses, cells, slices, and comment values are not supported as AST nodes at the moment.",
     );
 }
@@ -127,6 +131,7 @@ function valueToString(value: Value): string {
     if (typeof value === "boolean") {
         return value.toString();
     }
+    // TODO: This code will change once Value type gets refactored: issue 1190
     if (typeof value === "object" && "$tactStruct" in value) {
         const fields = Object.entries(value)
             .filter(([name, _]) => name !== "$tactStruct")
@@ -136,7 +141,8 @@ function valueToString(value: Value): string {
             .join(", ");
         return `${value["$tactStruct"] as string} { ${fields} }`;
     }
-    throwInternalCompilerError(
+    // TODO: These types will be included once the Value type gets refactored: issue 1190
+    throw new UnsupportedOperation(
         "Transformation of addresses, cells, slices or comment values into strings is not supported at the moment.",
     );
 }

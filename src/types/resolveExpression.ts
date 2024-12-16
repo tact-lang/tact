@@ -53,6 +53,14 @@ export function getExpType(ctx: CompilerContext, exp: AstExpression) {
     return t.description;
 }
 
+export function getExpTypeById(ctx: CompilerContext, id: number) {
+    const t = store.get(ctx, id);
+    if (!t) {
+        throwInternalCompilerError(`Expression ${id} not found`);
+    }
+    return t.description;
+}
+
 export function registerExpType(
     ctx: CompilerContext,
     exp: AstExpression,

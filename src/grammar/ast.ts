@@ -1,3 +1,4 @@
+import { throwInternalCompilerError } from "../errors";
 import { dummySrcInfo, SrcInfo } from "./grammar";
 
 export type AstModule = {
@@ -917,6 +918,71 @@ export function isValue(ast: AstExpression): boolean {
         case "field_access":
         case "static_call":
             return false;
+        default:
+            throwInternalCompilerError("Unrecognized AstExpression");
+    }
+}
+
+export function isAstExpression(ast: AstNode): ast is AstExpression {
+    switch (ast.kind) {
+        case "null":
+        case "boolean":
+        case "number":
+        case "string":
+        case "id":
+        case "struct_instance":
+        case "method_call":
+        case "init_of":
+        case "op_unary":
+        case "op_binary":
+        case "conditional":
+        case "field_access":
+        case "static_call":
+            return true;
+
+        case "asm_function_def":
+        case "bounced_message_type":
+        case "constant_decl":
+        case "constant_def":
+        case "contract":
+        case "contract_init":
+        case "destruct_end":
+        case "destruct_mapping":
+        case "field_decl":
+        case "func_id":
+        case "function_attribute":
+        case "function_decl":
+        case "function_def":
+        case "import":
+        case "map_type":
+        case "message_decl":
+        case "module":
+        case "native_function_decl":
+        case "optional_type":
+        case "primitive_type_decl":
+        case "receiver":
+        case "statement_assign":
+        case "statement_augmentedassign":
+        case "statement_condition":
+        case "statement_destruct":
+        case "statement_expression":
+        case "statement_foreach":
+        case "statement_let":
+        case "statement_repeat":
+        case "statement_return":
+        case "statement_try":
+        case "statement_try_catch":
+        case "statement_until":
+        case "statement_while":
+        case "struct_decl":
+        case "struct_field_initializer":
+        case "trait":
+        case "type_id":
+        case "typed_parameter":
+            return false;
+
+        default:
+            throwInternalCompilerError("Unrecognized AstNode");
     }
 }
 

@@ -6,7 +6,8 @@ import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { getAllExpressionTypes } from "../../types/resolveExpression";
 import { resolveStatements } from "../../types/resolveStatements";
 import { loadCases } from "../../utils/loadCases";
-import { simplify_expressions } from "../expr_simplification";
+import { simplifyAllExpressions } from "../expr-simplification";
+import { prepareAstForOptimization } from "../optimization-phase";
 
 describe("expression-simplification", () => {
     beforeEach(() => {
@@ -22,8 +23,9 @@ describe("expression-simplification", () => {
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx);
             ctx = resolveStatements(ctx);
-            ctx = simplify_expressions(ctx);
-            expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
+            const optCtx = prepareAstForOptimization(ctx, true);
+            simplifyAllExpressions(optCtx);
+            expect(getAllExpressionTypes(optCtx.ctx)).toMatchSnapshot();
         });
     }
     for (const r of loadCases(__dirname + "/failed/")) {
@@ -36,8 +38,9 @@ describe("expression-simplification", () => {
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx);
             ctx = resolveStatements(ctx);
+            const optCtx = prepareAstForOptimization(ctx, true);
             expect(() => {
-                simplify_expressions(ctx);
+                simplifyAllExpressions(optCtx);
             }).toThrowErrorMatchingSnapshot();
         });
     }

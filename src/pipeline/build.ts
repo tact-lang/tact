@@ -20,8 +20,13 @@ import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
 import { idText } from "../grammar/ast";
-import { TactErrorCollection } from "../errors";
-import { dump_tact_code, optimize_tact } from "../optimizer/optimization_phase";
+import { TactErrorCollection, throwInternalCompilerError } from "../errors";
+import {
+    dumpTactCode,
+    optimizeTact,
+    prepareAstForOptimization,
+    updateCompilerContext,
+} from "../optimizer/optimization-phase";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -87,35 +92,44 @@ export async function build(args: {
         return { ok: true, error: [] };
     }
 
-    // Run high level optimization phase, if active in the options.
-    if (
+    // Prepare ast for optimization phase (true = do it, false = skip it)
+    const doOptimizationFlag =
         config.options?.skipTactOptimizationPhase === undefined ||
-        !config.options.skipTactOptimizationPhase
-    ) {
+        !config.options.skipTactOptimizationPhase;
+
+    const optimizationCtx = prepareAstForOptimization(ctx, doOptimizationFlag);
+
+    // Dump the code before optimization phase
+    if (config.options?.dumpCodeBeforeAndAfterTactOptimizationPhase) {
+        dumpTactCode(
+            optimizationCtx.originalAst,
+            config.output + `/${config.name}-unoptimized-tact-dump.tact`,
+        );
+    }
+
+    // Run high level optimization phase
+    if (doOptimizationFlag) {
         try {
-            if (config.options?.dumpOptimizedTactCode) {
-                // Dump the code before optimization
-                dump_tact_code(
-                    ctx,
-                    config.output +
-                        `/${config.name}_unoptimized_tact_dump.tact`,
-                );
-            }
-
-            ctx = optimize_tact(ctx);
-
-            if (config.options?.dumpOptimizedTactCode) {
-                // Dump the code after optimization
-                dump_tact_code(
-                    ctx,
-                    config.output + `/${config.name}_optimized_tact_dump.tact`,
-                );
-            }
+            optimizeTact(optimizationCtx);
+            ctx = updateCompilerContext(optimizationCtx);
         } catch (e) {
-            logger.error("Tact code optimization failed.");
-            logger.error(e as Error);
-            return { ok: false, error: [e as Error] };
+            // TODO: e is not an Error in general. Change interface of logger.
+            if (e instanceof Error) {
+                logger.error("Tact code optimization failed.");
+                logger.error(e);
+                return { ok: false, error: [e] };
+            } else {
+                throwInternalCompilerError("Not an instance of Error");
+            }
         }
+    }
+
+    // Dump the code after optimization phase
+    if (config.options?.dumpCodeBeforeAndAfterTactOptimizationPhase) {
+        dumpTactCode(
+            optimizationCtx.modifiedAst,
+            config.output + `/${config.name}-optimized-tact-dump.tact`,
+        );
     }
 
     // Compile contracts

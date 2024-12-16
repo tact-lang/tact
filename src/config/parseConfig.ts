@@ -38,10 +38,9 @@ export const optionsSchema = z
          */
         skipTactOptimizationPhase: z.boolean().optional(),
         /**
-         * If set to true, dumps the code produced by the Tact code optimization phase.
-         * In case the optimization phase is skipped, this option is ignored.
+         * If set to true, dumps the code produced before and after the Tact code optimization phase.
          */
-        dumpOptimizedTactCode: z.boolean().optional(),
+        dumpCodeBeforeAndAfterTactOptimizationPhase: z.boolean().optional(),
         /**
          * Experimental options that might be removed in the future. Use with caution!
          */

@@ -61,10 +61,10 @@
                 "default": false,
                 "description": "False by default. If set to true, skips the Tact code optimization phase."
               },
-              "dumpOptimizedTactCode": {
+              "dumpCodeBeforeAndAfterTactOptimizationPhase": {
                 "type": "boolean",
                 "default": false,
-                "description": "False by default. If set to true, dumps the code produced by the Tact code optimization phase. In case the optimization phase is skipped, this option is ignored."
+                "description": "False by default. If set to true, dumps the code produced before and after the Tact code optimization phase."
               },
               "experimental": {
                 "type": "object",

@@ -141,6 +141,82 @@ exports[`expression-simplification should pass expression simplification for int
     "Bool",
   ],
   [
+    "v + 10",
+    "Int",
+  ],
+  [
+    "v + 10 + 3",
+    "Int",
+  ],
+  [
+    "3 + 7",
+    "Int",
+  ],
+  [
+    "A {a: v + 10 + 3, b: 3 + 7}",
+    "A",
+  ],
+  [
+    "B {nested: s, c: true}",
+    "B",
+  ],
+  [
+    "exprFun1(0)",
+    "A",
+  ],
+  [
+    "exprFun1(0).a",
+    "Int",
+  ],
+  [
+    "exprFun1(2)",
+    "A",
+  ],
+  [
+    "exprFun2(exprFun1(2))",
+    "B",
+  ],
+  [
+    "exprFun1(1)",
+    "A",
+  ],
+  [
+    "exprFun2(exprFun1(1))",
+    "B",
+  ],
+  [
+    "exprFun2(exprFun1(1)).nested",
+    "A",
+  ],
+  [
+    "exprFun1(2)",
+    "A",
+  ],
+  [
+    "exprFun2(exprFun1(2))",
+    "B",
+  ],
+  [
+    "exprFun2(exprFun1(2)).c",
+    "Bool",
+  ],
+  [
+    "exprFun1(c1)",
+    "A",
+  ],
+  [
+    "exprFun1(c1).a",
+    "Int",
+  ],
+  [
+    "exprFun1(c1).a > 0",
+    "Bool",
+  ],
+  [
+    "exprFun2(exprFun1(2)).c || exprFun1(c1).a > 0",
+    "Bool",
+  ],
+  [
     "13",
     "Int",
   ],
