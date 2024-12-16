@@ -191,8 +191,8 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
             kind: "message_decl",
             name: typeId.astOfType(),
             fields: fields.astsOfList(),
-            opcode: unwrapOptNode(optIntMsgId, (number) =>
-                number.astOfExpression(),
+            opcode: unwrapOptNode(optIntMsgId, (msgId) =>
+                msgId.astOfExpression(),
             ),
             loc: createRef(this),
         });
