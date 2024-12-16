@@ -113,17 +113,13 @@ export class AstRenamer {
 
     public renameModuleItems(items: AstModuleItem[]): AstModuleItem[] {
         // Give new names to module-level elements.
-        let renamedItems = items.map((item) => this.changeItemName(item));
-
-        if (this.sort) {
-            renamedItems.map((item) => this.sortAttributes(item));
-        }
-
-        // Apply renaming to the contents of these elements.
-        renamedItems = renamedItems.map((item) =>
-            this.renameModuleItemContents(item),
+        const renamedItems = items.map((item) =>
+            this.renameModuleItemContents(
+                this.sort
+                    ? this.sortAttributes(this.changeItemName(item))
+                    : this.changeItemName(item),
+            ),
         );
-
         return this.sort ? this.sortModuleItems(renamedItems) : renamedItems;
     }
 
