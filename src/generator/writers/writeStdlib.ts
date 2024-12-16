@@ -1122,7 +1122,17 @@ export function writeStdlib(ctx: WriterContext): void {
 const keyTypes = ["slice", "uint", "int"] as const;
 type KeyType = (typeof keyTypes)[number];
 
-const valTypes = ["slice", "int", "uint", "cell", "coins"] as const;
+const valTypes = [
+    "slice",
+    "int",
+    "uint",
+    "cell",
+    "coins",
+    "varint16",
+    "varint32",
+    "varuint16",
+    "varuint32",
+] as const;
 type ValType = (typeof valTypes)[number];
 
 function getSignatureKeyType(key: KeyType): KeyType {
@@ -1130,7 +1140,7 @@ function getSignatureKeyType(key: KeyType): KeyType {
 }
 
 function getSignatureValueType(value: ValType): ValType {
-    return value === "uint" || value === "coins" ? "int" : value;
+    return value === "slice" || value === "cell" ? value : "int";
 }
 
 function genTactDictGet(
@@ -1162,6 +1172,14 @@ function genTactDictGet(
                 return "r~load_int(vl)";
             case "coins":
                 return "r~load_coins()";
+            case "varint16":
+                return "r~load_varint16()";
+            case "varint32":
+                return "r~load_varint32()";
+            case "varuint16":
+                return "r~load_varuint16()";
+            case "varuint32":
+                return "r~load_varuint32()";
         }
     };
     const valBitsArg = () => {
@@ -1169,6 +1187,10 @@ function genTactDictGet(
             case "slice":
             case "cell":
             case "coins":
+            case "varint16":
+            case "varint32":
+            case "varuint16":
+            case "varuint32":
                 return "";
             case "uint":
             case "int":
@@ -1233,6 +1255,10 @@ function genTactDictSet(
             case "slice":
             case "cell":
             case "coins":
+            case "varint16":
+            case "varint32":
+            case "varuint16":
+            case "varuint32":
                 return "";
             case "uint":
             case "int":
@@ -1254,12 +1280,24 @@ function genTactDictSet(
         .on("int", "int")(() => "(idict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ())")
         .on("int", "uint")(() => "(idict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ())")
         .on("int", "coins")(() => "(idict_set_builder(d, kl, k, begin_cell().store_coins(v)), ())")
+        .on("int", "varint16")(() => "(idict_set_builder(d, kl, k, begin_cell().store_varint16(v)), ())")
+        .on("int", "varint32")(() => "(idict_set_builder(d, kl, k, begin_cell().store_varint32(v)), ())")
+        .on("int", "varuint16")(() => "(idict_set_builder(d, kl, k, begin_cell().store_varuint16(v)), ())")
+        .on("int", "varuint32")(() => "(idict_set_builder(d, kl, k, begin_cell().store_varuint32(v)), ())")
         .on("uint", "int")(() => "(udict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ())")
         .on("uint", "uint")(() => "(udict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ())")
         .on("uint", "coins")(() => "(udict_set_builder(d, kl, k, begin_cell().store_coins(v)), ())")
+        .on("uint", "varint16")(() => "(udict_set_builder(d, kl, k, begin_cell().store_varint16(v)), ())")
+        .on("uint", "varint32")(() => "(udict_set_builder(d, kl, k, begin_cell().store_varint32(v)), ())")
+        .on("uint", "varuint16")(() => "(udict_set_builder(d, kl, k, begin_cell().store_varuint16(v)), ())")
+        .on("uint", "varuint32")(() => "(udict_set_builder(d, kl, k, begin_cell().store_varuint32(v)), ())")
         .on("slice", "int")(() => "(dict_set_builder(d, kl, k, begin_cell().store_int(v, vl)), ())")
         .on("slice", "uint")(() => "(dict_set_builder(d, kl, k, begin_cell().store_uint(v, vl)), ())")
         .on("slice", "coins")(() => "(dict_set_builder(d, kl, k, begin_cell().store_coins(v)), ())")
+        .on("slice", "varint16")(() => "(dict_set_builder(d, kl, k, begin_cell().store_varint16(v)), ())")
+        .on("slice", "varint32")(() => "(dict_set_builder(d, kl, k, begin_cell().store_varint32(v)), ())")
+        .on("slice", "varuint16")(() => "(dict_set_builder(d, kl, k, begin_cell().store_varuint16(v)), ())")
+        .on("slice", "varuint32")(() => "(dict_set_builder(d, kl, k, begin_cell().store_varuint32(v)), ())")
         .on("int", "cell")(() => "(idict_set_ref(d, kl, k, v), ())")
         .on("uint", "cell")(() => "(udict_set_ref(d, kl, k, v), ())")
         .on("int", "slice")(() => "(idict_set(d, kl, k, v), ())")
@@ -1298,6 +1336,10 @@ function genTactDictGetMin(
             case "slice":
             case "cell":
             case "coins":
+            case "varint16":
+            case "varint32":
+            case "varuint16":
+            case "varuint32":
                 return "";
             case "uint":
             case "int":
@@ -1309,14 +1351,26 @@ function genTactDictGetMin(
         .on("int", "int")(() => "idict_get_min?")
         .on("int", "uint")(() => "idict_get_min?")
         .on("int", "coins")(() => "idict_get_min?")
+        .on("int", "varint16")(() => "idict_get_min?")
+        .on("int", "varint32")(() => "idict_get_min?")
+        .on("int", "varuint16")(() => "idict_get_min?")
+        .on("int", "varuint32")(() => "idict_get_min?")
         .on("int", "slice")(() => "idict_get_min?")
         .on("uint", "int")(() => "udict_get_min?")
         .on("uint", "uint")(() => "udict_get_min?")
         .on("uint", "coins")(() => "udict_get_min?")
+        .on("uint", "varint16")(() => "udict_get_min?")
+        .on("uint", "varint32")(() => "udict_get_min?")
+        .on("uint", "varuint16")(() => "udict_get_min?")
+        .on("uint", "varuint32")(() => "udict_get_min?")
         .on("uint", "slice")(() => "udict_get_min?")
         .on("slice", "int")(() => ctx.used("__tact_dict_min"))
         .on("slice", "uint")(() => ctx.used("__tact_dict_min"))
         .on("slice", "coins")(() => ctx.used("__tact_dict_min"))
+        .on("slice", "varint16")(() => ctx.used("__tact_dict_min"))
+        .on("slice", "varint32")(() => ctx.used("__tact_dict_min"))
+        .on("slice", "varuint16")(() => ctx.used("__tact_dict_min"))
+        .on("slice", "varuint32")(() => ctx.used("__tact_dict_min"))
         .on("slice", "slice")(() => ctx.used("__tact_dict_min"))
         .on("int", "cell")(() => "idict_get_min_ref?")
         .on("uint", "cell")(() => "udict_get_min_ref?")
@@ -1330,6 +1384,14 @@ function genTactDictGetMin(
                 return "value~load_uint(vl)";
             case "coins":
                 return "value~load_coins()";
+            case "varint16":
+                return "value~load_varint16()";
+            case "varint32":
+                return "value~load_varint32()";
+            case "varuint16":
+                return "value~load_varuint16()";
+            case "varuint32":
+                return "value~load_varuint32()";
             case "slice":
             case "cell":
                 return "value";
@@ -1366,6 +1428,10 @@ function genTactDictGetNext(
             case "slice":
             case "cell":
             case "coins":
+            case "varint16":
+            case "varint32":
+            case "varuint16":
+            case "varuint32":
                 return "";
             case "uint":
             case "int":
@@ -1390,6 +1456,14 @@ function genTactDictGetNext(
                 return "value~load_uint(vl)";
             case "coins":
                 return "value~load_coins()";
+            case "varint16":
+                return "value~load_varint16()";
+            case "varint32":
+                return "value~load_varint32()";
+            case "varuint16":
+                return "value~load_varuint16()";
+            case "varuint32":
+                return "value~load_varuint32()";
             case "slice":
                 return "value";
             case "cell":
@@ -1433,6 +1507,10 @@ function genTactDictReplace(
             case "slice":
             case "cell":
             case "coins":
+            case "varint16":
+            case "varint32":
+            case "varuint16":
+            case "varuint32":
                 return "";
             case "uint":
             case "int":
@@ -1454,12 +1532,24 @@ function genTactDictReplace(
         .on("int", "int")(() => "idict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))")
         .on("int", "uint")(() => "idict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))")
         .on("int", "coins")(() => "idict_replace_builder?(d, kl, k, begin_cell().store_coins(v))")
+        .on("int", "varint16")(() => "idict_replace_builder?(d, kl, k, begin_cell().store_varint16(v))")
+        .on("int", "varint32")(() => "idict_replace_builder?(d, kl, k, begin_cell().store_varint32(v))")
+        .on("int", "varuint16")(() => "idict_replace_builder?(d, kl, k, begin_cell().store_varuint16(v))")
+        .on("int", "varuint32")(() => "idict_replace_builder?(d, kl, k, begin_cell().store_varuint32(v))")
         .on("uint", "int")(() => "udict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))")
         .on("uint", "uint")(() => "udict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))")
         .on("uint", "coins")(() => "udict_replace_builder?(d, kl, k, begin_cell().store_coins(v))")
+        .on("uint", "varint16")(() => "udict_replace_builder?(d, kl, k, begin_cell().store_varint16(v))")
+        .on("uint", "varint32")(() => "udict_replace_builder?(d, kl, k, begin_cell().store_varint32(v))")
+        .on("uint", "varuint16")(() => "udict_replace_builder?(d, kl, k, begin_cell().store_varuint16(v))")
+        .on("uint", "varuint32")(() => "udict_replace_builder?(d, kl, k, begin_cell().store_varuint32(v))")
         .on("slice", "int")(() => "dict_replace_builder?(d, kl, k, begin_cell().store_int(v, vl))")
         .on("slice", "uint")(() => "dict_replace_builder?(d, kl, k, begin_cell().store_uint(v, vl))")
         .on("slice", "coins")(() => "dict_replace_builder?(d, kl, k, begin_cell().store_coins(v))")
+        .on("slice", "varint16")(() => "dict_replace_builder?(d, kl, k, begin_cell().store_varint16(v))")
+        .on("slice", "varint32")(() => "dict_replace_builder?(d, kl, k, begin_cell().store_varint32(v))")
+        .on("slice", "varuint16")(() => "dict_replace_builder?(d, kl, k, begin_cell().store_varuint16(v))")
+        .on("slice", "varuint32")(() => "dict_replace_builder?(d, kl, k, begin_cell().store_varuint32(v))")
         .on("int", "cell")(() => "idict_replace_ref?(d, kl, k, v)")
         .on("uint", "cell")(() => "udict_replace_ref?(d, kl, k, v)")
         .on("int", "slice")(() => "idict_replace?(d, kl, k, v)")
@@ -1498,6 +1588,10 @@ function genTactDictReplaceGet(
             case "slice":
             case "cell":
             case "coins":
+            case "varint16":
+            case "varint32":
+            case "varuint16":
+            case "varuint32":
                 return "";
             case "uint":
             case "int":
@@ -1520,12 +1614,24 @@ function genTactDictReplaceGet(
         .on("int", "int")(() => "d~idict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())")
         .on("int", "uint")(() => "d~idict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())")
         .on("int", "coins")(() => "d~idict_replaceget?(kl, k, begin_cell().store_coins(v).end_cell().begin_parse())")
+        .on("int", "varint16")(() => "d~idict_replaceget?(kl, k, begin_cell().store_varint16(v).end_cell().begin_parse())")
+        .on("int", "varint32")(() => "d~idict_replaceget?(kl, k, begin_cell().store_varint32(v).end_cell().begin_parse())")
+        .on("int", "varuint16")(() => "d~idict_replaceget?(kl, k, begin_cell().store_varuint16(v).end_cell().begin_parse())")
+        .on("int", "varuint32")(() => "d~idict_replaceget?(kl, k, begin_cell().store_varuint32(v).end_cell().begin_parse())")
         .on("uint", "int")(() => "d~udict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())")
         .on("uint", "uint")(() => "d~udict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())")
         .on("uint", "coins")(() => "d~udict_replaceget?(kl, k, begin_cell().store_coins(v).end_cell().begin_parse())")
+        .on("uint", "varint16")(() => "d~udict_replaceget?(kl, k, begin_cell().store_varint16(v).end_cell().begin_parse())")
+        .on("uint", "varint32")(() => "d~udict_replaceget?(kl, k, begin_cell().store_varint32(v).end_cell().begin_parse())")
+        .on("uint", "varuint16")(() => "d~udict_replaceget?(kl, k, begin_cell().store_varuint16(v).end_cell().begin_parse())")
+        .on("uint", "varuint32")(() => "d~udict_replaceget?(kl, k, begin_cell().store_varuint32(v).end_cell().begin_parse())")
         .on("slice", "int")(() => "d~dict_replaceget?(kl, k, begin_cell().store_int(v, vl).end_cell().begin_parse())")
         .on("slice", "uint")(() => "d~dict_replaceget?(kl, k, begin_cell().store_uint(v, vl).end_cell().begin_parse())")
         .on("slice", "coins")(() => "d~dict_replaceget?(kl, k, begin_cell().store_coins(v).end_cell().begin_parse())")
+        .on("slice", "varint16")(() => "d~dict_replaceget?(kl, k, begin_cell().store_varint16(v).end_cell().begin_parse())")
+        .on("slice", "varint32")(() => "d~dict_replaceget?(kl, k, begin_cell().store_varint32(v).end_cell().begin_parse())")
+        .on("slice", "varuint16")(() => "d~dict_replaceget?(kl, k, begin_cell().store_varuint16(v).end_cell().begin_parse())")
+        .on("slice", "varuint32")(() => "d~dict_replaceget?(kl, k, begin_cell().store_varuint32(v).end_cell().begin_parse())")
         .on("int", "cell")(() => "d~idict_replaceget_ref?(kl, k, v)")
         .on("uint", "cell")(() => "d~udict_replaceget_ref?(kl, k, v)")
         .on("int", "slice")(() => "d~idict_replaceget?(kl, k, v)")
@@ -1544,6 +1650,14 @@ function genTactDictReplaceGet(
                 return "old~load_int(vl)";
             case "coins":
                 return "old~load_coins()";
+            case "varint16":
+                return "old~load_varint16()";
+            case "varint32":
+                return "old~load_varint32()";
+            case "varuint16":
+                return "old~load_varuint16()";
+            case "varuint32":
+                return "old~load_varuint32()";
         }
     };
     ctx.fun(`__tact_dict_replaceget_${key}_${value}`, () => {
