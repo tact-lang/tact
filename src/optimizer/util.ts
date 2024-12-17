@@ -2,11 +2,11 @@ import {
     AstExpression,
     AstUnaryOperation,
     AstBinaryOperation,
-    createAstNode,
     AstValue,
     isValue,
+    FactoryAst,
 } from "../grammar/ast";
-import { dummySrcInfo } from "../grammar/grammar";
+import { dummySrcInfo } from "../grammar";
 import { throwInternalCompilerError } from "../errors";
 import { Value } from "../types/types";
 
@@ -25,71 +25,81 @@ export function extractValue(ast: AstValue): Value {
     }
 }
 
-export function makeValueExpression(value: Value): AstValue {
-    if (value === null) {
-        const result = createAstNode({
-            kind: "null",
-            loc: dummySrcInfo,
-        });
-        return result as AstValue;
+export const getAstUtil = ({ createNode }: FactoryAst) => {
+    function makeValueExpression(value: Value): AstValue {
+        if (value === null) {
+            const result = createNode({
+                kind: "null",
+                loc: dummySrcInfo,
+            });
+            return result as AstValue;
+        }
+        if (typeof value === "string") {
+            const result = createNode({
+                kind: "string",
+                value: value,
+                loc: dummySrcInfo,
+            });
+            return result as AstValue;
+        }
+        if (typeof value === "bigint") {
+            const result = createNode({
+                kind: "number",
+                base: 10,
+                value: value,
+                loc: dummySrcInfo,
+            });
+            return result as AstValue;
+        }
+        if (typeof value === "boolean") {
+            const result = createNode({
+                kind: "boolean",
+                value: value,
+                loc: dummySrcInfo,
+            });
+            return result as AstValue;
+        }
+        throwInternalCompilerError(
+            `structs, addresses, cells, and comment values are not supported at the moment.`,
+        );
     }
-    if (typeof value === "string") {
-        const result = createAstNode({
-            kind: "string",
-            value: value,
-            loc: dummySrcInfo,
-        });
-        return result as AstValue;
-    }
-    if (typeof value === "bigint") {
-        const result = createAstNode({
-            kind: "number",
-            base: 10,
-            value: value,
-            loc: dummySrcInfo,
-        });
-        return result as AstValue;
-    }
-    if (typeof value === "boolean") {
-        const result = createAstNode({
-            kind: "boolean",
-            value: value,
-            loc: dummySrcInfo,
-        });
-        return result as AstValue;
-    }
-    throwInternalCompilerError(
-        `structs, addresses, cells, and comment values are not supported at the moment.`,
-    );
-}
 
-export function makeUnaryExpression(
-    op: AstUnaryOperation,
-    operand: AstExpression,
-): AstExpression {
-    const result = createAstNode({
-        kind: "op_unary",
-        op: op,
-        operand: operand,
-        loc: dummySrcInfo,
-    });
-    return result as AstExpression;
-}
+    function makeUnaryExpression(
+        op: AstUnaryOperation,
+        operand: AstExpression,
+    ): AstExpression {
+        const result = createNode({
+            kind: "op_unary",
+            op: op,
+            operand: operand,
+            loc: dummySrcInfo,
+        });
+        return result as AstExpression;
+    }
 
-export function makeBinaryExpression(
-    op: AstBinaryOperation,
-    left: AstExpression,
-    right: AstExpression,
-): AstExpression {
-    const result = createAstNode({
-        kind: "op_binary",
-        op: op,
-        left: left,
-        right: right,
-        loc: dummySrcInfo,
-    });
-    return result as AstExpression;
-}
+    function makeBinaryExpression(
+        op: AstBinaryOperation,
+        left: AstExpression,
+        right: AstExpression,
+    ): AstExpression {
+        const result = createNode({
+            kind: "op_binary",
+            op: op,
+            left: left,
+            right: right,
+            loc: dummySrcInfo,
+        });
+        return result as AstExpression;
+    }
+
+    return {
+        makeValueExpression,
+        makeUnaryExpression,
+        makeBinaryExpression,
+    };
+};
+
+export type AstUtil = ReturnType<typeof getAstUtil>;
 
 // Checks if the top level node is an unary op node
 export function checkIsUnaryOpNode(ast: AstExpression): boolean {

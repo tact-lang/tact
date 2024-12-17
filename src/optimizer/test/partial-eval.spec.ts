@@ -1,18 +1,18 @@
 import {
     AstExpression,
+    FactoryAst,
     AstValue,
-    __DANGER_resetNodeId,
-    cloneAstNode,
     eqExpressions,
+    getAstFactory,
     isValue,
 } from "../../grammar/ast";
-import { parseExpression } from "../../grammar/grammar";
-import { extractValue, makeValueExpression } from "../util";
-import { partiallyEvalExpression } from "../../constEval";
+import { AstUtil, extractValue, getAstUtil } from "../util";
+import { getOptimizer } from "../../constEval";
 import { CompilerContext } from "../../context";
 import { ExpressionTransformer, Rule } from "../types";
 import { AssociativeRule3 } from "../associative";
 import { evalBinaryOp, evalUnaryOp } from "../../interpreter";
+import { getParser } from "../../grammar";
 
 const MAX: string =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";
@@ -315,15 +315,21 @@ const booleanExpressions = [
 
 function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
-        expect(
-            eqExpressions(
-                partiallyEvalExpression(
-                    parseExpression(original),
-                    new CompilerContext(),
-                ),
-                dummyEval(parseExpression(simplified)),
-            ),
-        ).toBe(true);
+        const ast = getAstFactory();
+        const { parseExpression } = getParser(ast);
+        const util = getAstUtil(ast);
+        const { partiallyEvalExpression } = getOptimizer(util);
+        const originalValue = partiallyEvalExpression(
+            parseExpression(original),
+            new CompilerContext(),
+        );
+        const simplifiedValue = dummyEval(
+            parseExpression(simplified),
+            ast,
+            util,
+        );
+        const areMatching = eqExpressions(originalValue, simplifiedValue);
+        expect(areMatching).toBe(true);
     });
 }
 
@@ -333,12 +339,19 @@ function testExpressionWithOptimizer(
     optimizer: ExpressionTransformer,
 ) {
     it(`should simplify ${original} to ${simplified}`, () => {
-        expect(
-            eqExpressions(
-                optimizer.applyRules(dummyEval(parseExpression(original))),
-                dummyEval(parseExpression(simplified)),
-            ),
-        ).toBe(true);
+        const ast = getAstFactory();
+        const { parseExpression } = getParser(ast);
+        const util = getAstUtil(ast);
+        const originalValue = optimizer.applyRules(
+            dummyEval(parseExpression(original), ast, util),
+        );
+        const simplifiedValue = dummyEval(
+            parseExpression(simplified),
+            ast,
+            util,
+        );
+        const areMatching = eqExpressions(originalValue, simplifiedValue);
+        expect(areMatching).toBe(true);
     });
 }
 
@@ -347,101 +360,115 @@ function testExpressionWithOptimizer(
 // The reason for doing this is that the partial evaluator will actually simplify constant
 // expressions. So, when comparing for equality of expressions, we also need to simplify
 // constant expressions.
-function dummyEval(ast: AstExpression): AstExpression {
-    let newNode: AstExpression;
-    switch (ast.kind) {
-        case "null":
-            return ast;
-        case "boolean":
-            return ast;
-        case "number":
-            return ast;
-        case "string":
-            return ast;
-        case "id":
-            return ast;
-        case "method_call":
-            newNode = cloneAstNode(ast);
-            newNode.args = ast.args.map(dummyEval);
-            newNode.self = dummyEval(ast.self);
-            return newNode;
-        case "init_of":
-            newNode = cloneAstNode(ast);
-            newNode.args = ast.args.map(dummyEval);
-            return newNode;
-        case "op_unary":
-            newNode = cloneAstNode(ast);
-            newNode.operand = dummyEval(ast.operand);
-            if (isValue(newNode.operand)) {
-                return makeValueExpression(
-                    evalUnaryOp(
-                        ast.op,
-                        extractValue(newNode.operand as AstValue),
-                    ),
-                );
+function dummyEval(
+    ast: AstExpression,
+    { cloneNode }: FactoryAst,
+    { makeValueExpression }: AstUtil,
+): AstExpression {
+    const recurse = (ast: AstExpression): AstExpression => {
+        switch (ast.kind) {
+            case "null":
+                return ast;
+            case "boolean":
+                return ast;
+            case "number":
+                return ast;
+            case "string":
+                return ast;
+            case "id":
+                return ast;
+            case "method_call": {
+                const newNode = cloneNode(ast);
+                newNode.args = ast.args.map(recurse);
+                newNode.self = recurse(ast.self);
+                return newNode;
             }
-            return newNode;
-        case "op_binary":
-            newNode = cloneAstNode(ast);
-            newNode.left = dummyEval(ast.left);
-            newNode.right = dummyEval(ast.right);
-            if (isValue(newNode.left) && isValue(newNode.right)) {
-                const valR = extractValue(newNode.right as AstValue);
-                return makeValueExpression(
-                    evalBinaryOp(
-                        ast.op,
-                        extractValue(newNode.left as AstValue),
-                        () => valR,
-                    ),
-                );
+            case "init_of": {
+                const newNode = cloneNode(ast);
+                newNode.args = ast.args.map(recurse);
+                return newNode;
             }
-            return newNode;
-        case "conditional":
-            newNode = cloneAstNode(ast);
-            newNode.thenBranch = dummyEval(ast.thenBranch);
-            newNode.elseBranch = dummyEval(ast.elseBranch);
-            return newNode;
-        case "struct_instance":
-            newNode = cloneAstNode(ast);
-            newNode.args = ast.args.map((param) => {
-                const newParam = cloneAstNode(param);
-                newParam.initializer = dummyEval(param.initializer);
-                return newParam;
-            });
-            return newNode;
-        case "field_access":
-            newNode = cloneAstNode(ast);
-            newNode.aggregate = dummyEval(ast.aggregate);
-            return newNode;
-        case "static_call":
-            newNode = cloneAstNode(ast);
-            newNode.args = ast.args.map(dummyEval);
-            return newNode;
-    }
+            case "op_unary": {
+                const newNode = cloneNode(ast);
+                newNode.operand = recurse(ast.operand);
+                if (isValue(newNode.operand)) {
+                    return makeValueExpression(
+                        evalUnaryOp(
+                            ast.op,
+                            extractValue(newNode.operand as AstValue),
+                        ),
+                    );
+                }
+                return newNode;
+            }
+            case "op_binary": {
+                const newNode = cloneNode(ast);
+                newNode.left = recurse(ast.left);
+                newNode.right = recurse(ast.right);
+                if (isValue(newNode.left) && isValue(newNode.right)) {
+                    const valR = extractValue(newNode.right as AstValue);
+                    return makeValueExpression(
+                        evalBinaryOp(
+                            ast.op,
+                            extractValue(newNode.left as AstValue),
+                            () => valR,
+                        ),
+                    );
+                }
+                return newNode;
+            }
+            case "conditional": {
+                const newNode = cloneNode(ast);
+                newNode.thenBranch = recurse(ast.thenBranch);
+                newNode.elseBranch = recurse(ast.elseBranch);
+                return newNode;
+            }
+            case "struct_instance": {
+                const newNode = cloneNode(ast);
+                newNode.args = ast.args.map((param) => {
+                    const newParam = cloneNode(param);
+                    newParam.initializer = recurse(param.initializer);
+                    return newParam;
+                });
+                return newNode;
+            }
+            case "field_access": {
+                const newNode = cloneNode(ast);
+                newNode.aggregate = recurse(ast.aggregate);
+                return newNode;
+            }
+            case "static_call": {
+                const newNode = cloneNode(ast);
+                newNode.args = ast.args.map(recurse);
+                return newNode;
+            }
+        }
+    };
+
+    return recurse(ast);
 }
 
 // A dummy optimizer to test specific rules
-class ParameterizableDummyOptimizer extends ExpressionTransformer {
+class ParameterizableDummyOptimizer implements ExpressionTransformer {
     private rules: Rule[];
 
-    constructor(rules: Rule[]) {
-        super();
+    public util: AstUtil;
+
+    constructor(rules: Rule[], Ast: FactoryAst) {
+        this.util = getAstUtil(Ast);
 
         this.rules = rules;
     }
 
-    public applyRules(ast: AstExpression): AstExpression {
+    public applyRules = (ast: AstExpression): AstExpression => {
         return this.rules.reduce(
             (prev, rule) => rule.applyRule(prev, this),
             ast,
         );
-    }
+    };
 }
 
 describe("partial-evaluator", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
     additiveExpressions.forEach((test) => {
         testExpression(test.original, test.simplified);
     });
@@ -452,13 +479,14 @@ describe("partial-evaluator", () => {
         testExpression(test.original, test.simplified);
     });
 
-    // For the following cases, we need an optimizer that only
-    // uses the associative rule 3.
-    const optimizer = new ParameterizableDummyOptimizer([
-        new AssociativeRule3(),
-    ]);
-
     associativeRuleExpressions.forEach((test) => {
+        // For the following cases, we need an optimizer that only
+        // uses the associative rule 3.
+        const optimizer = new ParameterizableDummyOptimizer(
+            [new AssociativeRule3()],
+            getAstFactory(),
+        );
+
         testExpressionWithOptimizer(test.original, test.simplified, optimizer);
     });
 

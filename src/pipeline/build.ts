@@ -19,8 +19,9 @@ import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
-import { idText } from "../grammar/ast";
+import { FactoryAst, getAstFactory, idText } from "../grammar/ast";
 import { TactErrorCollection } from "../errors";
+import { getParser, Parser } from "../grammar";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -52,12 +53,16 @@ export async function build(args: {
     project: VirtualFileSystem;
     stdlib: string | VirtualFileSystem;
     logger?: ILogger;
+    parser?: Parser;
+    ast?: FactoryAst;
 }): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
     const { config, project } = args;
     const stdlib =
         typeof args.stdlib === "string"
             ? createVirtualFileSystem(args.stdlib, files)
             : args.stdlib;
+    const ast: FactoryAst = args.ast ?? getAstFactory();
+    const parser: Parser = args.parser ?? getParser(ast);
     const logger: ILogger = args.logger ?? new Logger();
 
     // Configure context
@@ -70,7 +75,7 @@ export async function build(args: {
 
     // Precompile
     try {
-        ctx = precompile(ctx, project, stdlib, config.path);
+        ctx = precompile(ctx, project, stdlib, config.path, parser, ast);
     } catch (e) {
         logger.error(
             config.mode === "checkOnly" || config.mode === "funcOnly"

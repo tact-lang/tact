@@ -1,5 +1,6 @@
-import { AstFunctionAttribute, SrcInfo } from "./ast";
+import { AstFunctionAttribute } from "./ast";
 import { throwCompilationError } from "../errors";
+import { SrcInfo } from "./src-info";
 
 export function checkFunctionAttributes(
     isAbstract: boolean,

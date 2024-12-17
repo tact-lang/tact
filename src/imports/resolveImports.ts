@@ -1,4 +1,4 @@
-import { ItemOrigin, parseImports } from "../grammar/grammar";
+import { ItemOrigin, Parser } from "../grammar";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { throwCompilationError } from "../errors";
 import { resolveLibrary } from "./resolveLibrary";
@@ -7,6 +7,7 @@ export function resolveImports(args: {
     entrypoint: string;
     project: VirtualFileSystem;
     stdlib: VirtualFileSystem;
+    parser: Parser;
 }) {
     //
     // Load stdlib and entrypoint
@@ -40,7 +41,7 @@ export function resolveImports(args: {
     const processed: Set<string> = new Set();
     const pending: { code: string; path: string; origin: ItemOrigin }[] = [];
     function processImports(source: string, path: string, origin: ItemOrigin) {
-        const imp = parseImports(source, path, origin);
+        const imp = args.parser.parseImports(source, path, origin);
         for (const i of imp) {
             const importPath = i.path.value;
             // Resolve library

@@ -1,5 +1,5 @@
 import { CompilerContext } from "../context";
-import { SrcInfo } from "../grammar/grammar";
+import { SrcInfo } from "../grammar";
 import { TypeRef } from "../types/types";
 import { WriterContext } from "../generator/Writer";
 import { ops } from "../generator/writers/ops";

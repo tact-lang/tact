@@ -1,4 +1,5 @@
-import { dummySrcInfo, SrcInfo } from "./grammar";
+import { dummySrcInfo } from "./grammar";
+import { SrcInfo } from "./src-info";
 
 export type AstModule = {
     kind: "module";
@@ -758,17 +759,22 @@ export function tryExtractPath(path: AstExpression): AstId[] | null {
 type DistributiveOmit<T, K extends keyof any> = T extends any
     ? Omit<T, K>
     : never;
-let nextId = 1;
-export function createAstNode(src: DistributiveOmit<AstNode, "id">): AstNode {
-    return Object.freeze(Object.assign({ id: nextId++ }, src));
-}
-export function cloneAstNode<T extends AstNode>(src: T): T {
-    return { ...src, id: nextId++ };
-}
 
-export function __DANGER_resetNodeId() {
-    nextId = 1;
-}
+export const getAstFactory = () => {
+    let nextId = 1;
+    function createNode(src: DistributiveOmit<AstNode, "id">): AstNode {
+        return Object.freeze(Object.assign({ id: nextId++ }, src));
+    }
+    function cloneNode<T extends AstNode>(src: T): T {
+        return { ...src, id: nextId++ };
+    }
+    return {
+        createNode,
+        cloneNode,
+    };
+};
+
+export type FactoryAst = ReturnType<typeof getAstFactory>;
 
 // Test equality of AstExpressions.
 export function eqExpressions(
@@ -914,5 +920,3 @@ export function isValue(ast: AstExpression): boolean {
             return false;
     }
 }
-
-export { SrcInfo };
