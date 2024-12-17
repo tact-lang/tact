@@ -323,7 +323,11 @@ function testExpression(original: string, simplified: string) {
             parseExpression(original),
             new CompilerContext(),
         );
-        const simplifiedValue = dummyEval(parseExpression(simplified), ast, util);
+        const simplifiedValue = dummyEval(
+            parseExpression(simplified),
+            ast,
+            util,
+        );
         const areMatching = eqExpressions(originalValue, simplifiedValue);
         expect(areMatching).toBe(true);
     });
@@ -338,8 +342,14 @@ function testExpressionWithOptimizer(
         const ast = getAstSchema();
         const { parseExpression } = getParser(ast);
         const util = getAstUtil(ast);
-        const originalValue = optimizer.applyRules(dummyEval(parseExpression(original), ast, util));
-        const simplifiedValue = dummyEval(parseExpression(simplified), ast, util);
+        const originalValue = optimizer.applyRules(
+            dummyEval(parseExpression(original), ast, util),
+        );
+        const simplifiedValue = dummyEval(
+            parseExpression(simplified),
+            ast,
+            util,
+        );
         const areMatching = eqExpressions(originalValue, simplifiedValue);
         expect(areMatching).toBe(true);
     });
@@ -350,7 +360,11 @@ function testExpressionWithOptimizer(
 // The reason for doing this is that the partial evaluator will actually simplify constant
 // expressions. So, when comparing for equality of expressions, we also need to simplify
 // constant expressions.
-function dummyEval(ast: AstExpression, { cloneAstNode }: AstSchema, { makeValueExpression }: AstUtil): AstExpression {
+function dummyEval(
+    ast: AstExpression,
+    { cloneAstNode }: AstSchema,
+    { makeValueExpression }: AstUtil,
+): AstExpression {
     const recurse = (ast: AstExpression): AstExpression => {
         switch (ast.kind) {
             case "null":
@@ -451,7 +465,7 @@ class ParameterizableDummyOptimizer implements ExpressionTransformer {
             (prev, rule) => rule.applyRule(prev, this),
             ast,
         );
-    }
+    };
 }
 
 describe("partial-evaluator", () => {

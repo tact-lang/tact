@@ -47,12 +47,17 @@ export const getOptimizer = (util: AstUtil) => {
             // emulating negative integer literals
             return util.makeValueExpression(ensureInt(-operand.value, source));
         }
-    
+
         const simplOperand = partiallyEvalExpression(operand, ctx);
-    
+
         if (isValue(simplOperand)) {
             const valueOperand = extractValue(simplOperand as AstValue);
-            const result = evalUnaryOp(op, valueOperand, simplOperand.loc, source);
+            const result = evalUnaryOp(
+                op,
+                valueOperand,
+                simplOperand.loc,
+                source,
+            );
             // Wrap the value into a Tree to continue simplifications
             return util.makeValueExpression(result);
         } else {
@@ -69,18 +74,21 @@ export const getOptimizer = (util: AstUtil) => {
         ctx: CompilerContext,
     ): AstExpression {
         const leftOperand = partiallyEvalExpression(left, ctx);
-    
+
         if (isValue(leftOperand)) {
             // Because of short-circuiting, we must delay evaluation of the right operand
             const valueLeftOperand = extractValue(leftOperand as AstValue);
-    
+
             try {
                 const result = evalBinaryOp(
                     op,
                     valueLeftOperand,
                     // We delay the evaluation of the right operand inside a continuation
                     () => {
-                        const rightOperand = partiallyEvalExpression(right, ctx);
+                        const rightOperand = partiallyEvalExpression(
+                            right,
+                            ctx,
+                        );
                         if (isValue(rightOperand)) {
                             // If the right operand reduces to a value, then we can let the function
                             // evalBinaryOp finish its normal execution by returning the value
@@ -99,13 +107,17 @@ export const getOptimizer = (util: AstUtil) => {
                     right.loc,
                     source,
                 );
-    
+
                 return util.makeValueExpression(result);
             } catch (e) {
                 if (e instanceof PartiallyEvaluatedTree) {
                     // The right operand did not evaluate to a value. Hence,
                     // time to symbolically simplify the full tree.
-                    const newAst = util.makeBinaryExpression(op, leftOperand, e.tree);
+                    const newAst = util.makeBinaryExpression(
+                        op,
+                        leftOperand,
+                        e.tree,
+                    );
                     return optimizer.applyRules(newAst);
                 } else {
                     throw e;
@@ -116,7 +128,11 @@ export const getOptimizer = (util: AstUtil) => {
             // Hence, we can partially evaluate the right operand and let the rules
             // simplify the tree.
             const rightOperand = partiallyEvalExpression(right, ctx);
-            const newAst = util.makeBinaryExpression(op, leftOperand, rightOperand);
+            const newAst = util.makeBinaryExpression(
+                op,
+                leftOperand,
+                rightOperand,
+            );
             return optimizer.applyRules(newAst);
         }
     }
@@ -130,7 +146,9 @@ export const getOptimizer = (util: AstUtil) => {
         switch (ast.kind) {
             case "id":
                 try {
-                    return util.makeValueExpression(interpreter.interpretName(ast));
+                    return util.makeValueExpression(
+                        interpreter.interpretName(ast),
+                    );
                 } catch (e) {
                     if (e instanceof TactConstEvalError) {
                         if (!e.fatal) {
@@ -142,7 +160,9 @@ export const getOptimizer = (util: AstUtil) => {
                 }
             case "method_call":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return util.makeValueExpression(interpreter.interpretMethodCall(ast));
+                return util.makeValueExpression(
+                    interpreter.interpretMethodCall(ast),
+                );
             case "init_of":
                 throwNonFatalErrorConstEval(
                     "initOf is not supported at this moment",
@@ -154,9 +174,13 @@ export const getOptimizer = (util: AstUtil) => {
             case "boolean":
                 return ast;
             case "number":
-                return util.makeValueExpression(interpreter.interpretNumber(ast));
+                return util.makeValueExpression(
+                    interpreter.interpretNumber(ast),
+                );
             case "string":
-                return util.makeValueExpression(interpreter.interpretString(ast));
+                return util.makeValueExpression(
+                    interpreter.interpretString(ast),
+                );
             case "op_unary":
                 return partiallyEvalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
             case "op_binary":
@@ -169,7 +193,9 @@ export const getOptimizer = (util: AstUtil) => {
                 );
             case "conditional":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return util.makeValueExpression(interpreter.interpretConditional(ast));
+                return util.makeValueExpression(
+                    interpreter.interpretConditional(ast),
+                );
             case "struct_instance":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
                 return util.makeValueExpression(
@@ -177,10 +203,14 @@ export const getOptimizer = (util: AstUtil) => {
                 );
             case "field_access":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return util.makeValueExpression(interpreter.interpretFieldAccess(ast));
+                return util.makeValueExpression(
+                    interpreter.interpretFieldAccess(ast),
+                );
             case "static_call":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return util.makeValueExpression(interpreter.interpretStaticCall(ast));
+                return util.makeValueExpression(
+                    interpreter.interpretStaticCall(ast),
+                );
         }
     }
 
@@ -201,4 +231,4 @@ export function evalConstantExpression(
     return result;
 }
 
-export type Optimizer = ReturnType<typeof getOptimizer>
+export type Optimizer = ReturnType<typeof getOptimizer>;

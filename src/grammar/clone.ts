@@ -1,7 +1,10 @@
 import { AstNode, AstSchema } from "./ast";
 import { throwInternalCompilerError } from "../errors";
 
-export function cloneNode<T extends AstNode>(src: T, { cloneAstNode }: AstSchema): T {
+export function cloneNode<T extends AstNode>(
+    src: T,
+    { cloneAstNode }: AstSchema,
+): T {
     const recurse = <T extends AstNode>(src: T): T => {
         if (src.kind === "boolean") {
             return cloneAstNode(src);
@@ -176,7 +179,7 @@ export function cloneNode<T extends AstNode>(src: T, { cloneAstNode }: AstSchema
                 type: cloneAstNode(src.type),
             });
         }
-    
+
         throwInternalCompilerError(`Not implemented for ${src.kind}`);
     };
 

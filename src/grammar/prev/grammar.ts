@@ -1,10 +1,4 @@
-import {
-    Node,
-    IterationNode,
-    NonterminalNode,
-    grammar,
-    Grammar,
-} from "ohm-js";
+import { Node, IterationNode, NonterminalNode, grammar, Grammar } from "ohm-js";
 import tactGrammar from "./grammar.ohm-bundle";
 import { throwInternalCompilerError } from "../../errors";
 import {
@@ -1482,54 +1476,59 @@ semantics.addOperation<AstNode>("astOfExpression", {
 });
 
 export const getParser = (ast: AstSchema) => {
-    function parse(
-        src: string,
-        path: string,
-        origin: ItemOrigin,
-    ): AstModule {
-        return withContext({
-            currentFile: path,
-            origin,
-            createAstNode: ast.createAstNode,
-        }, () => {
-            const matchResult = tactGrammar.match(src);
-            if (matchResult.failed()) {
-                throwParseError(matchResult, path, origin);
-            }
-            return semantics(matchResult).astOfModule();
-        });
+    function parse(src: string, path: string, origin: ItemOrigin): AstModule {
+        return withContext(
+            {
+                currentFile: path,
+                origin,
+                createAstNode: ast.createAstNode,
+            },
+            () => {
+                const matchResult = tactGrammar.match(src);
+                if (matchResult.failed()) {
+                    throwParseError(matchResult, path, origin);
+                }
+                return semantics(matchResult).astOfModule();
+            },
+        );
     }
-    
+
     function parseExpression(sourceCode: string): AstExpression {
-        return withContext({
-            currentFile: null,
-            origin: 'user',
-            createAstNode: ast.createAstNode,
-        }, () => {
-            const matchResult = tactGrammar.match(sourceCode, "Expression");
-            if (matchResult.failed()) {
-                throwParseError(matchResult, "", "user");
-            }
-            return semantics(matchResult).astOfExpression();
-        });
+        return withContext(
+            {
+                currentFile: null,
+                origin: "user",
+                createAstNode: ast.createAstNode,
+            },
+            () => {
+                const matchResult = tactGrammar.match(sourceCode, "Expression");
+                if (matchResult.failed()) {
+                    throwParseError(matchResult, "", "user");
+                }
+                return semantics(matchResult).astOfExpression();
+            },
+        );
     }
-    
+
     function parseImports(
         src: string,
         path: string,
         origin: ItemOrigin,
     ): AstImport[] {
-        return withContext({
-            currentFile: path,
-            origin,
-            createAstNode: ast.createAstNode,
-        }, () => {
-            const matchResult = tactGrammar.match(src, "JustImports");
-            if (matchResult.failed()) {
-                throwParseError(matchResult, path, origin);
-            }
-            return semantics(matchResult).astOfJustImports();
-        });
+        return withContext(
+            {
+                currentFile: path,
+                origin,
+                createAstNode: ast.createAstNode,
+            },
+            () => {
+                const matchResult = tactGrammar.match(src, "JustImports");
+                if (matchResult.failed()) {
+                    throwParseError(matchResult, path, origin);
+                }
+                return semantics(matchResult).astOfJustImports();
+            },
+        );
     }
 
     return {
@@ -1539,4 +1538,4 @@ export const getParser = (ast: AstSchema) => {
     };
 };
 
-export type Parser = ReturnType<typeof getParser>
+export type Parser = ReturnType<typeof getParser>;

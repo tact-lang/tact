@@ -32,7 +32,6 @@ export class StandardOptimizer implements ExpressionTransformer {
     private rules: PrioritizedRule[];
 
     constructor(public util: AstUtil) {
-
         this.rules = [
             { priority: 0, rule: new AssociativeRule1() },
             { priority: 1, rule: new AssociativeRule2() },
@@ -66,5 +65,5 @@ export class StandardOptimizer implements ExpressionTransformer {
                 prioritizedRule.rule.applyRule(prev, this),
             ast,
         );
-    }
+    };
 }

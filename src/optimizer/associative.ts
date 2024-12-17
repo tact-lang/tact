@@ -25,7 +25,12 @@ type TransformData = {
     safetyCondition: boolean;
 };
 
-type Transform = (x1: AstExpression, c1: Value, c2: Value, util: AstUtil) => TransformData;
+type Transform = (
+    x1: AstExpression,
+    c1: Value,
+    c2: Value,
+    util: AstUtil,
+) => TransformData;
 
 /* A simple wrapper function to transform the right value in a binary operator to a continuation
    so that we can call the evaluation function in the interpreter module

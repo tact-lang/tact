@@ -51,7 +51,10 @@ export function getRawAST(ctx: CompilerContext): AstStore {
  * Parses multiple Tact source files into AST modules.
  * @public
  */
-export function parseModules(sources: TactSource[], parser: Parser): AstModule[] {
+export function parseModules(
+    sources: TactSource[],
+    parser: Parser,
+): AstModule[] {
     return sources.map((source) =>
         parser.parse(source.code, source.path, source.origin),
     );
@@ -71,7 +74,9 @@ export function openContext(
     parser: Parser,
     parsedModules?: AstModule[],
 ): CompilerContext {
-    const modules = parsedModules ? parsedModules : parseModules(sources, parser);
+    const modules = parsedModules
+        ? parsedModules
+        : parseModules(sources, parser);
     const types: AstTypeDecl[] = [];
     const functions: (
         | AstNativeFunctionDecl

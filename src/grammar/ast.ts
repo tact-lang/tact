@@ -773,7 +773,7 @@ export const getAstSchema = () => {
     };
 };
 
-export type AstSchema = ReturnType<typeof getAstSchema>
+export type AstSchema = ReturnType<typeof getAstSchema>;
 
 // Test equality of AstExpressions.
 export function eqExpressions(
