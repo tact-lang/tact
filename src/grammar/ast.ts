@@ -1,5 +1,4 @@
-import { dummySrcInfo } from "./grammar";
-import { SrcInfo } from "./src-info";
+import { dummySrcInfo, SrcInfo } from "./src-info";
 
 export type AstModule = {
     kind: "module";

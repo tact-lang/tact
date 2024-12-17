@@ -1,4 +1,4 @@
-import { Node, IterationNode, NonterminalNode, grammar, Grammar } from "ohm-js";
+import { Node, IterationNode, NonterminalNode } from "ohm-js";
 import tactGrammar from "./grammar.ohm-bundle";
 import { throwInternalCompilerError } from "../errors";
 import {
@@ -22,11 +22,7 @@ import { throwParseError, throwSyntaxError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
 import { checkFunctionAttributes } from "./checkFunctionAttributes";
 import { checkConstAttributes } from "./checkConstAttributes";
-import { ItemOrigin, SrcInfo } from "./src-info";
-
-const DummyGrammar: Grammar = grammar("Dummy { DummyRule = any }");
-const DUMMY_INTERVAL = DummyGrammar.match("").getInterval();
-export const dummySrcInfo: SrcInfo = new SrcInfo(DUMMY_INTERVAL, null, "user");
+import { ItemOrigin, OhmSrcInfo, SrcInfo } from "./src-info";
 
 type Context = {
     origin: ItemOrigin | null;
@@ -56,7 +52,7 @@ function createRef(s: Node): SrcInfo {
         throwInternalCompilerError("Parser context was not initialized");
     }
 
-    return new SrcInfo(s.source, context.currentFile, context.origin);
+    return new OhmSrcInfo(s.source, context.currentFile, context.origin);
 }
 
 const createNode: FactoryAst["createNode"] = (...args) => {

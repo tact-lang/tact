@@ -1,3 +1,3 @@
-export { dummySrcInfo, getParser, Parser } from "./grammar";
+export { getParser, Parser } from "./grammar";
 
-export { ItemOrigin, SrcInfo } from "./src-info";
+export { dummySrcInfo, ItemOrigin, SrcInfo } from "./src-info";

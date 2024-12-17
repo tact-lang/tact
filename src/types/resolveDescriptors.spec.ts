@@ -10,9 +10,10 @@ import { openContext } from "../grammar/store";
 import { featureEnable } from "../config/features";
 import { getParser, SrcInfo } from "../grammar";
 import { getAstFactory } from "../grammar/ast";
+import { OhmSrcInfo } from "../grammar/src-info";
 
 expect.addSnapshotSerializer({
-    test: (src) => src instanceof SrcInfo,
+    test: (src) => src instanceof OhmSrcInfo,
     print: (src) => (src as SrcInfo).contents,
 });
 

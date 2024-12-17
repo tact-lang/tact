@@ -1,10 +1,10 @@
 import { AstModule, getAstFactory } from "./ast";
 import { loadCases } from "../utils/loadCases";
 import { getParser } from "./grammar";
-import { SrcInfo } from "./src-info";
+import { OhmSrcInfo, SrcInfo } from "./src-info";
 
 expect.addSnapshotSerializer({
-    test: (src) => src instanceof SrcInfo,
+    test: (src) => src instanceof OhmSrcInfo,
     print: (src) => (src as SrcInfo).contents,
 });
 
