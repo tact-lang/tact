@@ -3,7 +3,7 @@ import { throwInternalCompilerError } from "../errors";
 
 export function cloneNode<T extends AstNode>(
     src: T,
-    { cloneNode: cloneNode }: FactoryAst,
+    { cloneNode }: FactoryAst,
 ): T {
     const recurse = <T extends AstNode>(src: T): T => {
         if (src.kind === "boolean") {

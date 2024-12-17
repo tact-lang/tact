@@ -362,7 +362,7 @@ function testExpressionWithOptimizer(
 // constant expressions.
 function dummyEval(
     ast: AstExpression,
-    { cloneNode: cloneNode }: FactoryAst,
+    { cloneNode }: FactoryAst,
     { makeValueExpression }: AstUtil,
 ): AstExpression {
     const recurse = (ast: AstExpression): AstExpression => {

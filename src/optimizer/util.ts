@@ -25,7 +25,7 @@ export function extractValue(ast: AstValue): Value {
     }
 }
 
-export const getAstUtil = ({ createNode: createNode }: FactoryAst) => {
+export const getAstUtil = ({ createNode }: FactoryAst) => {
     function makeValueExpression(value: Value): AstValue {
         if (value === null) {
             const result = createNode({
