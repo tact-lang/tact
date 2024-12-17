@@ -1,4 +1,4 @@
-import { AstExpression, AstSchema } from "../grammar/ast";
+import { AstExpression } from "../grammar/ast";
 import {
     AddSelf,
     AddZero,
