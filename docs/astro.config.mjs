@@ -186,7 +186,6 @@ export default defineConfig({
 						{ slug: 'book/upgrades' },
 						{ slug: 'book/import' },
 						{ slug: 'book/config' },
-						{ slug: 'book/masterchain' },
 						{ slug: 'book/func' },
 						{ slug: 'book/security-best-practices' },
 					],

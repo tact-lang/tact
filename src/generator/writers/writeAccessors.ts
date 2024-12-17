@@ -212,21 +212,10 @@ export function writeAccessors(
                         t.kind === "primitive_type_decl" &&
                         t.name === "Address"
                     ) {
-                        if (f.type.optional) {
-                            vars.push(
-                                `${resolveFuncType(f.type, ctx)} v'${f.name}`,
-                            );
-                            out.push(
-                                `null?(v'${f.name}) ? null() : ${ctx.used(`__tact_verify_address`)}(v'${f.name})`,
-                            );
-                        } else {
-                            vars.push(
-                                `${resolveFuncType(f.type, ctx)} v'${f.name}`,
-                            );
-                            out.push(
-                                `${ctx.used(`__tact_verify_address`)}(v'${f.name})`,
-                            );
-                        }
+                        vars.push(
+                            `${resolveFuncType(f.type, ctx)} v'${f.name}`,
+                        );
+                        out.push(`v'${f.name}`);
                         continue;
                     }
                 }

@@ -74,7 +74,6 @@ import {
     showValue,
 } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
-import { enabledMasterchain } from "./config/features";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -1228,15 +1227,6 @@ export class Interpreter {
                                 ast.loc,
                             );
                         }
-                        if (
-                            !enabledMasterchain(this.context) &&
-                            address.workChain !== 0
-                        ) {
-                            throwErrorConstEval(
-                                `address ${str} is from masterchain which is not enabled for this contract`,
-                                ast.loc,
-                            );
-                        }
                         return address;
                     } catch (_) {
                         throwErrorConstEval(
@@ -1264,12 +1254,6 @@ export class Interpreter {
                 if (wc !== 0n && wc !== -1n) {
                     throwErrorConstEval(
                         `expected workchain of an address to be equal 0 or -1, received: ${wc}`,
-                        ast.loc,
-                    );
-                }
-                if (!enabledMasterchain(this.context) && wc !== 0n) {
-                    throwErrorConstEval(
-                        `${wc}:${addr.toString("hex")} address is from masterchain which is not enabled for this contract`,
                         ast.loc,
                     );
                 }

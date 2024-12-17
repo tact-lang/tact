@@ -36,11 +36,6 @@
                 "default": false,
                 "description": "False by default. If set to true, enables debug output of a contract and allows usage of `dump()` function, which is useful for debugging purposes. With this option enabled, the contract will report that it was compiled in debug mode using the supported_interfaces method.\n\nRead more on debugging Tact code: https://docs.tact-lang.org/book/debug."
               },
-              "masterchain": {
-                "type": "boolean",
-                "default": false,
-                "description": "False by default. If set to true, enables masterchain support.\n\nRead more about masterchain: https://docs.tact-lang.org/book/masterchain."
-              },
               "external": {
                 "type": "boolean",
                 "default": false,

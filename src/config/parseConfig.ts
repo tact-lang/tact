@@ -10,12 +10,6 @@ export const optionsSchema = z
          */
         debug: z.boolean().optional(),
         /**
-         * If set to true, enables masterchain support.
-         *
-         * Read more: https://docs.tact-lang.org/book/masterchain
-         */
-        masterchain: z.boolean().optional(),
-        /**
          * If set to true, enables support of external message receivers.
          *
          * Read more: https://docs.tact-lang.org/book/external

@@ -33,11 +33,11 @@ describe("benchmarks", () => {
                     .description as TransactionDescriptionGeneric
             ).computePhase as TransactionComputeVm
         ).gasUsed;
-        expect(gasUsed).toMatchInlineSnapshot(`3648n`);
+        expect(gasUsed).toMatchInlineSnapshot(`3146n`);
 
         // Verify code size
         const codeSize = functions.init!.code.toBoc().length;
-        expect(codeSize).toMatchInlineSnapshot(`281`);
+        expect(codeSize).toMatchInlineSnapshot(`241`);
     });
 
     it("benchmark functions (inline)", async () => {
@@ -57,10 +57,10 @@ describe("benchmarks", () => {
                     .description as TransactionDescriptionGeneric
             ).computePhase as TransactionComputeVm
         ).gasUsed;
-        expect(gasUsed).toMatchInlineSnapshot(`3517n`);
+        expect(gasUsed).toMatchInlineSnapshot(`3015n`);
 
         // Verify code size
         const codeSize = functionsInline.init!.code.toBoc().length;
-        expect(codeSize).toMatchInlineSnapshot(`274`);
+        expect(codeSize).toMatchInlineSnapshot(`234`);
     });
 });
