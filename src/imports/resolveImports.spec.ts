@@ -1,6 +1,7 @@
 import { resolveImports } from "./resolveImports";
 import { createNodeFileSystem } from "../vfs/createNodeFileSystem";
 import path from "path";
+import { getParser } from "../grammar/prev";
 
 describe("resolveImports", () => {
     it("should resolve imports", () => {
@@ -14,6 +15,7 @@ describe("resolveImports", () => {
             project,
             stdlib,
             entrypoint: "./main.tact",
+            parser: getParser(),
         });
         expect(resolved).toMatchObject({
             func: [

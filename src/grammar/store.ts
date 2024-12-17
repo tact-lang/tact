@@ -8,7 +8,7 @@ import {
 } from "./ast";
 import { throwInternalCompilerError } from "../errors";
 import { CompilerContext, createContextStore } from "../context";
-import { ItemOrigin, parse } from "./grammar";
+import { ItemOrigin, Parser } from "./prev";
 
 /**
  * @public
@@ -51,9 +51,9 @@ export function getRawAST(ctx: CompilerContext): AstStore {
  * Parses multiple Tact source files into AST modules.
  * @public
  */
-export function parseModules(sources: TactSource[]): AstModule[] {
+export function parseModules(sources: TactSource[], parser: Parser): AstModule[] {
     return sources.map((source) =>
-        parse(source.code, source.path, source.origin),
+        parser.parse(source.code, source.path, source.origin),
     );
 }
 
@@ -68,9 +68,10 @@ export function openContext(
     ctx: CompilerContext,
     sources: TactSource[],
     funcSources: { code: string; path: string }[],
+    parser: Parser,
     parsedModules?: AstModule[],
 ): CompilerContext {
-    const modules = parsedModules ? parsedModules : parseModules(sources);
+    const modules = parsedModules ? parsedModules : parseModules(sources, parser);
     const types: AstTypeDecl[] = [];
     const functions: (
         | AstNativeFunctionDecl

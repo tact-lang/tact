@@ -1,7 +1,7 @@
 //type Test = { expr: string; isValue: boolean };
 
 import { __DANGER_resetNodeId, isValue } from "../ast";
-import { parseExpression } from "../grammar";
+import { getParser } from "../prev";
 
 const valueExpressions: string[] = [
     "1",
@@ -52,6 +52,7 @@ const notValueExpressions: string[] = [
 ];
 
 function testIsValue(expr: string, testResult: boolean) {
+    const { parseExpression } = getParser();
     expect(isValue(parseExpression(expr))).toBe(testResult);
 }
 

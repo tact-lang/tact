@@ -15,7 +15,7 @@ import {
     AstAsmFunctionDef,
     AstNumber,
 } from "../grammar/ast";
-import { dummySrcInfo, ItemOrigin } from "../grammar/grammar";
+import { dummySrcInfo, ItemOrigin } from "../grammar/prev";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";

@@ -1,6 +1,6 @@
-import { parse } from "./grammar";
-import { AstModule, SrcInfo, __DANGER_resetNodeId } from "./ast";
-import { loadCases } from "../utils/loadCases";
+import { AstModule, SrcInfo, __DANGER_resetNodeId } from "../ast";
+import { loadCases } from "../../utils/loadCases";
+import { getParser } from "./grammar";
 
 expect.addSnapshotSerializer({
     test: (src) => src instanceof SrcInfo,
@@ -13,8 +13,9 @@ describe("grammar", () => {
     });
 
     // Test parsing of known Fift projects, wrapped in asm functions of Tact
-    for (const r of loadCases(__dirname + "/test-asm/")) {
+    for (const r of loadCases(__dirname + "/../test-asm/")) {
         it("should parse " + r.name, () => {
+            const { parse } = getParser();
             const parsed: AstModule | undefined = parse(
                 r.code,
                 "<unknown>",
@@ -26,14 +27,16 @@ describe("grammar", () => {
         });
     }
 
-    for (const r of loadCases(__dirname + "/test/")) {
+    for (const r of loadCases(__dirname + "/../test/")) {
         it("should parse " + r.name, () => {
+            const { parse } = getParser();
             expect(parse(r.code, "<unknown>", "user")).toMatchSnapshot();
         });
     }
 
-    for (const r of loadCases(__dirname + "/test-failed/")) {
+    for (const r of loadCases(__dirname + "/../test-failed/")) {
         it("should fail " + r.name, () => {
+            const { parse } = getParser();
             expect(() =>
                 parse(r.code, "<unknown>", "user"),
             ).toThrowErrorMatchingSnapshot();

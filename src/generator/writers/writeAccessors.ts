@@ -1,6 +1,6 @@
 import { contractErrors } from "../../abi/errors";
 import { maxTupleSize } from "../../bindings/typescript/writeStruct";
-import { ItemOrigin } from "../../grammar/grammar";
+import { ItemOrigin } from "../../grammar/prev";
 import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";

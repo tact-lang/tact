@@ -8,6 +8,7 @@ import { writeExpression } from "./writeExpression";
 import { openContext } from "../../grammar/store";
 import { resolveStatements } from "../../types/resolveStatements";
 import { CompilerContext } from "../../context";
+import { getParser } from "../../grammar/prev";
 
 const code = `
 
@@ -76,6 +77,7 @@ describe("writeExpression", () => {
             new CompilerContext(),
             [{ code: code, path: "<unknown>", origin: "user" }],
             [],
+            getParser(),
         );
         ctx = resolveDescriptors(ctx);
         ctx = resolveStatements(ctx);

@@ -6,13 +6,13 @@ import {
     eqExpressions,
     isValue,
 } from "../../grammar/ast";
-import { parseExpression } from "../../grammar/grammar";
 import { extractValue, makeValueExpression } from "../util";
 import { partiallyEvalExpression } from "../../constEval";
 import { CompilerContext } from "../../context";
 import { ExpressionTransformer, Rule } from "../types";
 import { AssociativeRule3 } from "../associative";
 import { evalBinaryOp, evalUnaryOp } from "../../interpreter";
+import { getParser } from "../../grammar/prev";
 
 const MAX: string =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";
@@ -315,6 +315,7 @@ const booleanExpressions = [
 
 function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
+        const { parseExpression } = getParser();
         expect(
             eqExpressions(
                 partiallyEvalExpression(
@@ -333,6 +334,7 @@ function testExpressionWithOptimizer(
     optimizer: ExpressionTransformer,
 ) {
     it(`should simplify ${original} to ${simplified}`, () => {
+        const { parseExpression } = getParser();
         expect(
             eqExpressions(
                 optimizer.applyRules(dummyEval(parseExpression(original))),

@@ -5,7 +5,7 @@ import {
     enabledIpfsAbiGetter,
     enabledMasterchain,
 } from "../../config/features";
-import { ItemOrigin } from "../../grammar/grammar";
+import { ItemOrigin } from "../../grammar/prev";
 import { InitDescription, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { funcIdOf, funcInitIdOf } from "./id";

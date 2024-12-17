@@ -1,5 +1,4 @@
 import {
-    Interval as RawInterval,
     Node,
     IterationNode,
     NonterminalNode,
@@ -7,7 +6,7 @@ import {
     Grammar,
 } from "ohm-js";
 import tactGrammar from "./grammar.ohm-bundle";
-import { throwInternalCompilerError } from "../errors";
+import { throwInternalCompilerError } from "../../errors";
 import {
     AstAugmentedAssignOperation,
     AstConstantAttribute,
@@ -24,51 +23,16 @@ import {
     AstConstantDef,
     AstNumberBase,
     AstId,
-} from "./ast";
-import { throwParseError, throwSyntaxError } from "../errors";
+} from "../ast";
+import { throwParseError, throwSyntaxError } from "../../errors";
 import { checkVariableName } from "./checkVariableName";
 import { checkFunctionAttributes } from "./checkFunctionAttributes";
 import { checkConstAttributes } from "./checkConstAttributes";
+import { SrcInfo } from "./src-info";
 
 export type ItemOrigin = "stdlib" | "user";
 
 let ctx: { origin: ItemOrigin } | null;
-
-/**
- * Information about source code location (file and interval within it)
- * and the source code contents.
- */
-export class SrcInfo {
-    readonly #interval: RawInterval;
-    readonly #file: string | null;
-    readonly #origin: ItemOrigin;
-
-    constructor(
-        interval: RawInterval,
-        file: string | null,
-        origin: ItemOrigin,
-    ) {
-        this.#interval = interval;
-        this.#file = file;
-        this.#origin = origin;
-    }
-
-    get file() {
-        return this.#file;
-    }
-
-    get contents() {
-        return this.#interval.contents;
-    }
-
-    get interval() {
-        return this.#interval;
-    }
-
-    get origin() {
-        return this.#origin;
-    }
-}
 
 const DummyGrammar: Grammar = grammar("Dummy { DummyRule = any }");
 const DUMMY_INTERVAL = DummyGrammar.match("").getInterval();
@@ -1493,49 +1457,59 @@ semantics.addOperation<AstNode>("astOfExpression", {
     },
 });
 
-export function parse(
-    src: string,
-    path: string,
-    origin: ItemOrigin,
-): AstModule {
-    return inFile(path, () => {
-        const matchResult = tactGrammar.match(src);
-        if (matchResult.failed()) {
-            throwParseError(matchResult, path, origin);
-        }
-        ctx = { origin };
-        try {
-            return semantics(matchResult).astOfModule();
-        } finally {
-            ctx = null;
-        }
-    });
-}
-
-export function parseExpression(sourceCode: string): AstExpression {
-    const matchResult = tactGrammar.match(sourceCode, "Expression");
-    if (matchResult.failed()) {
-        throwParseError(matchResult, "", "user");
+export const getParser = () => {
+    function parse(
+        src: string,
+        path: string,
+        origin: ItemOrigin,
+    ): AstModule {
+        return inFile(path, () => {
+            const matchResult = tactGrammar.match(src);
+            if (matchResult.failed()) {
+                throwParseError(matchResult, path, origin);
+            }
+            ctx = { origin };
+            try {
+                return semantics(matchResult).astOfModule();
+            } finally {
+                ctx = null;
+            }
+        });
     }
-    ctx = { origin: "user" };
-    return semantics(matchResult).astOfExpression();
-}
-
-export function parseImports(
-    src: string,
-    path: string,
-    origin: ItemOrigin,
-): AstImport[] {
-    return inFile(path, () => {
-        const matchResult = tactGrammar.match(src, "JustImports");
+    
+    function parseExpression(sourceCode: string): AstExpression {
+        const matchResult = tactGrammar.match(sourceCode, "Expression");
         if (matchResult.failed()) {
-            throwParseError(matchResult, path, origin);
+            throwParseError(matchResult, "", "user");
         }
-        ctx = { origin };
-        try {
-            return semantics(matchResult).astOfJustImports();
-        } finally {
-            ctx = null;
-        }
-    });
-}
+        ctx = { origin: "user" };
+        return semantics(matchResult).astOfExpression();
+    }
+    
+    function parseImports(
+        src: string,
+        path: string,
+        origin: ItemOrigin,
+    ): AstImport[] {
+        return inFile(path, () => {
+            const matchResult = tactGrammar.match(src, "JustImports");
+            if (matchResult.failed()) {
+                throwParseError(matchResult, path, origin);
+            }
+            ctx = { origin };
+            try {
+                return semantics(matchResult).astOfJustImports();
+            } finally {
+                ctx = null;
+            }
+        });
+    }
+
+    return {
+        parse,
+        parseExpression,
+        parseImports,
+    };
+};
+
+export type Parser = ReturnType<typeof getParser>

@@ -2,7 +2,7 @@ import { MatchResult } from "ohm-js";
 import path from "path";
 import { cwd } from "process";
 import { AstFuncId, AstId, AstTypeId, SrcInfo } from "./grammar/ast";
-import { ItemOrigin } from "./grammar/grammar";
+import { ItemOrigin } from "./grammar/prev";
 
 export class TactError extends Error {
     readonly loc?: SrcInfo;

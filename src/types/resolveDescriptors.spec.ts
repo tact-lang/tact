@@ -9,6 +9,7 @@ import { SrcInfo, __DANGER_resetNodeId } from "../grammar/ast";
 import { loadCases } from "../utils/loadCases";
 import { openContext } from "../grammar/store";
 import { featureEnable } from "../config/features";
+import { getParser } from "../grammar/prev";
 
 expect.addSnapshotSerializer({
     test: (src) => src instanceof SrcInfo,
@@ -25,6 +26,7 @@ describe("resolveDescriptors", () => {
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
+                getParser(),
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx);
@@ -39,6 +41,7 @@ describe("resolveDescriptors", () => {
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
+                getParser(),
             );
             ctx = featureEnable(ctx, "external");
             expect(() => {

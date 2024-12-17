@@ -6,6 +6,7 @@ import { openContext } from "../grammar/store";
 import { resolveStatements } from "./resolveStatements";
 import { CompilerContext } from "../context";
 import { featureEnable } from "../config/features";
+import { getParser } from "../grammar/prev";
 
 describe("resolveStatements", () => {
     beforeEach(() => {
@@ -17,6 +18,7 @@ describe("resolveStatements", () => {
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
+                getParser(),
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx);
@@ -30,6 +32,7 @@ describe("resolveStatements", () => {
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
+                getParser(),
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx);

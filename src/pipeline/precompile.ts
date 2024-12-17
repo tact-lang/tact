@@ -8,19 +8,21 @@ import { resolveSignatures } from "../types/resolveSignatures";
 import { resolveImports } from "../imports/resolveImports";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { AstModule } from "../grammar/ast";
+import { Parser } from "../grammar/prev";
 
 export function precompile(
     ctx: CompilerContext,
     project: VirtualFileSystem,
     stdlib: VirtualFileSystem,
     entrypoint: string,
+    parser: Parser,
     parsedModules?: AstModule[],
 ) {
     // Load all sources
-    const imported = resolveImports({ entrypoint, project, stdlib });
+    const imported = resolveImports({ entrypoint, project, stdlib, parser });
 
     // Add information about all the source code entries to the context
-    ctx = openContext(ctx, imported.tact, imported.func, parsedModules);
+    ctx = openContext(ctx, imported.tact, imported.func, parser, parsedModules);
 
     // First load type descriptors and check that
     //       they all have valid signatures

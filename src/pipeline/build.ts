@@ -21,6 +21,7 @@ import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
 import { idText } from "../grammar/ast";
 import { TactErrorCollection } from "../errors";
+import { getParser, Parser } from "../grammar/prev";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -51,6 +52,7 @@ export async function build(args: {
     config: ConfigProject;
     project: VirtualFileSystem;
     stdlib: string | VirtualFileSystem;
+    parser?: Parser,
     logger?: ILogger;
 }): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
     const { config, project } = args;
@@ -58,6 +60,7 @@ export async function build(args: {
         typeof args.stdlib === "string"
             ? createVirtualFileSystem(args.stdlib, files)
             : args.stdlib;
+    const parser: Parser = args.parser ?? getParser();
     const logger: ILogger = args.logger ?? new Logger();
 
     // Configure context
@@ -70,7 +73,7 @@ export async function build(args: {
 
     // Precompile
     try {
-        ctx = precompile(ctx, project, stdlib, config.path);
+        ctx = precompile(ctx, project, stdlib, config.path, parser);
     } catch (e) {
         logger.error(
             config.mode === "checkOnly" || config.mode === "funcOnly"

@@ -1,5 +1,5 @@
-import { AstConstantAttribute, SrcInfo } from "./ast";
-import { throwSyntaxError } from "../errors";
+import { AstConstantAttribute, SrcInfo } from "../ast";
+import { throwSyntaxError } from "../../errors";
 
 export function checkConstAttributes(
     isAbstract: boolean,

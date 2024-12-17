@@ -14,6 +14,7 @@ import { writeParser, writeSerializer } from "./writeSerialization";
 import { writeStdlib } from "./writeStdlib";
 import { openContext } from "../../grammar/store";
 import { writeAccessors } from "./writeAccessors";
+import { getParser } from "../../grammar/prev";
 
 const code = `
 primitive Int;
@@ -65,6 +66,7 @@ describe("writeSerialization", () => {
                 new CompilerContext(),
                 [{ code, path: "<unknown>", origin: "user" }],
                 [],
+                getParser(),
             );
             ctx = resolveDescriptors(ctx);
             ctx = resolveAllocations(ctx);

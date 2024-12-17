@@ -1,7 +1,7 @@
 import fs from "fs";
 import { __DANGER_resetNodeId } from "../grammar/ast";
 import { prettyPrint } from "../prettyPrinter";
-import { parse } from "../grammar/grammar";
+import { getParser } from "../grammar/prev";
 import { join } from "path";
 import { trimTrailingCR, CONTRACTS_DIR } from "./util";
 import * as assert from "assert";
@@ -14,6 +14,7 @@ describe("formatter", () => {
             if (!dentry.isFile()) {
                 return;
             }
+            const { parse } = getParser();
             const filePath = join(CONTRACTS_DIR, dentry.name);
             const src = trimTrailingCR(fs.readFileSync(filePath, "utf-8"));
             const ast = parse(src, filePath, "user");
@@ -34,6 +35,7 @@ describe("formatter", () => {
             if (!dentry.isFile()) {
                 return;
             }
+            const { parse } = getParser();
             const filePath = join(CONTRACTS_DIR, dentry.name);
             const src = fs.readFileSync(filePath, "utf-8");
             const ast = parse(src, filePath, "user");
