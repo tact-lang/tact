@@ -1,4 +1,4 @@
-import { grammar, Grammar, Interval as RawInterval } from "ohm-js";
+import { Interval as RawInterval } from "ohm-js";
 
 export type ItemOrigin = "stdlib" | "user";
 
@@ -59,9 +59,24 @@ class SrcInfo implements AbstractSrcInfo {
     }
 }
 
-const DummyGrammar: Grammar = grammar("Dummy { DummyRule = any }");
-const DUMMY_INTERVAL = DummyGrammar.match("").getInterval();
-export const dummySrcInfo: SrcInfo = new SrcInfo(DUMMY_INTERVAL, null, "user");
+export const dummySrcInfo: AbstractSrcInfo = {
+    contents: '',
+    file: null,
+    interval: {
+        contents: '',
+        startIdx: 0,
+        endIdx: 0,
+        getLineAndColumn: () => ({
+            colNum: 1,
+            lineNum: 1,
+            toString: () => {
+                throw new Error();
+            },
+        }),
+        getLineAndColumnMessage: () => 'Line 1, col 1:\n> 1 | \n      ^\n',
+    },
+    origin: 'user',
+};
 
 // Rename is here so that OhmSrcInfo is called SrcInfo in snapshots, as it previously did
 export { AbstractSrcInfo as SrcInfo, SrcInfo as OhmSrcInfo };
