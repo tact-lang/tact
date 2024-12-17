@@ -1,11 +1,11 @@
 import fs from "fs";
-import { __DANGER_resetNodeId } from "../grammar/ast";
 import { join } from "path";
 import { AstRenamer } from "../grammar/rename";
 import { prettyPrint } from "../prettyPrinter";
 import { trimTrailingCR, CONTRACTS_DIR } from "./util";
 import * as assert from "assert";
 import { getParser } from "../grammar/prev";
+import { getAstSchema } from "../grammar/ast";
 
 const EXPECTED_DIR = join(CONTRACTS_DIR, "renamer-expected");
 
@@ -16,7 +16,8 @@ describe("renamer", () => {
             if (!dentry.isFile()) {
                 return;
             }
-            const { parse } = getParser();
+            const ast = getAstSchema();
+            const { parse } = getParser(ast);
             const expectedFilePath = join(EXPECTED_DIR, dentry.name);
             const expected = fs.readFileSync(expectedFilePath, "utf-8");
             const filePath = join(CONTRACTS_DIR, dentry.name);

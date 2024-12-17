@@ -2,6 +2,7 @@ import { resolveImports } from "./resolveImports";
 import { createNodeFileSystem } from "../vfs/createNodeFileSystem";
 import path from "path";
 import { getParser } from "../grammar/prev";
+import { getAstSchema } from "../grammar/ast";
 
 describe("resolveImports", () => {
     it("should resolve imports", () => {
@@ -11,11 +12,12 @@ describe("resolveImports", () => {
         const stdlib = createNodeFileSystem(
             path.resolve(__dirname, "__testdata", "stdlib"),
         );
+        const ast = getAstSchema();
         const resolved = resolveImports({
             project,
             stdlib,
             entrypoint: "./main.tact",
-            parser: getParser(),
+            parser: getParser(ast),
         });
         expect(resolved).toMatchObject({
             func: [

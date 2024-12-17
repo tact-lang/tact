@@ -1,4 +1,4 @@
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { getAstSchema } from "../../grammar/ast";
 import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
@@ -46,18 +46,15 @@ contract Contract2 {
 `;
 
 describe("resolveFuncType", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-
     it("should process primitive types", () => {
+        const ast = getAstSchema();
         let ctx = openContext(
             new CompilerContext(),
             [{ code: primitiveCode, path: "<unknown>", origin: "user" }],
             [],
-            getParser(),
+            getParser(ast),
         );
-        ctx = resolveDescriptors(ctx);
+        ctx = resolveDescriptors(ctx, ast);
         const wCtx = new WriterContext(ctx, "Contract1");
         expect(
             resolveFuncType(
@@ -119,13 +116,14 @@ describe("resolveFuncType", () => {
     });
 
     it("should process contract and struct types", () => {
+        const ast = getAstSchema();
         let ctx = openContext(
             new CompilerContext(),
             [{ code: primitiveCode, path: "<unknown>", origin: "user" }],
             [],
-            getParser(),
+            getParser(ast),
         );
-        ctx = resolveDescriptors(ctx);
+        ctx = resolveDescriptors(ctx, ast);
         const wCtx = new WriterContext(ctx, "Contract1");
         expect(
             resolveFuncType(

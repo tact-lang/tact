@@ -1,4 +1,3 @@
-import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { CompilerContext } from "../../context";
 import {
     getAllocation,
@@ -15,6 +14,7 @@ import { writeStdlib } from "./writeStdlib";
 import { openContext } from "../../grammar/store";
 import { writeAccessors } from "./writeAccessors";
 import { getParser } from "../../grammar/prev";
+import { getAstSchema } from "../../grammar/ast";
 
 const code = `
 primitive Int;
@@ -57,18 +57,16 @@ struct C {
 `;
 
 describe("writeSerialization", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
     for (const s of ["A", "B", "C"]) {
         it("should write serializer for " + s, () => {
+            const ast = getAstSchema();
             let ctx = openContext(
                 new CompilerContext(),
                 [{ code, path: "<unknown>", origin: "user" }],
                 [],
-                getParser(),
+                getParser(ast),
             );
-            ctx = resolveDescriptors(ctx);
+            ctx = resolveDescriptors(ctx, ast);
             ctx = resolveAllocations(ctx);
             const wCtx = new WriterContext(ctx, s);
             writeStdlib(wCtx);

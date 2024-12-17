@@ -5,7 +5,6 @@ import {
     AstNativeFunctionDecl,
     AstNode,
     AstType,
-    createAstNode,
     idText,
     AstId,
     eqNames,
@@ -18,6 +17,7 @@ import {
     AstMapType,
     AstTypeId,
     AstAsmFunctionDef,
+    AstSchema,
 } from "../grammar/ast";
 import { traverse } from "../grammar/iterators";
 import {
@@ -264,7 +264,7 @@ function uidForName(name: string, types: Map<string, TypeDescription>) {
     return uid;
 }
 
-export function resolveDescriptors(ctx: CompilerContext) {
+export function resolveDescriptors(ctx: CompilerContext, Ast: AstSchema) {
     const types: Map<string, TypeDescription> = new Map();
     const staticFunctions: Map<string, FunctionDescription> = new Map();
     const staticConstants: Map<string, ConstantDescription> = new Map();
@@ -1422,7 +1422,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (!t.init) {
                 t.init = {
                     params: [],
-                    ast: createAstNode({
+                    ast: Ast.createAstNode({
                         kind: "contract_init",
                         params: [],
                         statements: [],
@@ -1626,7 +1626,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         name: contractOrTrait.name,
                         optional: false,
                     },
-                    ast: cloneNode(traitFunction.ast),
+                    ast: cloneNode(traitFunction.ast, Ast),
                 });
             }
 
@@ -1697,7 +1697,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 // Register constant
                 contractOrTrait.constants.push({
                     ...traitConstant,
-                    ast: cloneNode(traitConstant.ast),
+                    ast: cloneNode(traitConstant.ast, Ast),
                 });
             }
 
@@ -1764,7 +1764,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
                 contractOrTrait.receivers.push({
                     selector: f.selector,
-                    ast: cloneNode(f.ast),
+                    ast: cloneNode(f.ast, Ast),
                 });
             }
 

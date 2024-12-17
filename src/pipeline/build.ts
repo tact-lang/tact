@@ -19,7 +19,7 @@ import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
-import { idText } from "../grammar/ast";
+import { AstSchema, getAstSchema, idText } from "../grammar/ast";
 import { TactErrorCollection } from "../errors";
 import { getParser, Parser } from "../grammar/prev";
 
@@ -52,15 +52,17 @@ export async function build(args: {
     config: ConfigProject;
     project: VirtualFileSystem;
     stdlib: string | VirtualFileSystem;
-    parser?: Parser,
     logger?: ILogger;
+    parser?: Parser;
+    ast?: AstSchema;
 }): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
     const { config, project } = args;
     const stdlib =
         typeof args.stdlib === "string"
             ? createVirtualFileSystem(args.stdlib, files)
             : args.stdlib;
-    const parser: Parser = args.parser ?? getParser();
+    const ast: AstSchema = args.ast ?? getAstSchema();
+    const parser: Parser = args.parser ?? getParser(ast);
     const logger: ILogger = args.logger ?? new Logger();
 
     // Configure context
@@ -73,7 +75,7 @@ export async function build(args: {
 
     // Precompile
     try {
-        ctx = precompile(ctx, project, stdlib, config.path, parser);
+        ctx = precompile(ctx, project, stdlib, config.path, parser, ast);
     } catch (e) {
         logger.error(
             config.mode === "checkOnly" || config.mode === "funcOnly"

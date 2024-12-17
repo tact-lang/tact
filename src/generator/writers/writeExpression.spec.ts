@@ -1,4 +1,3 @@
-import { __DANGER_resetNodeId } from "../../grammar/ast";
 import {
     getStaticFunction,
     resolveDescriptors,
@@ -9,6 +8,7 @@ import { openContext } from "../../grammar/store";
 import { resolveStatements } from "../../types/resolveStatements";
 import { CompilerContext } from "../../context";
 import { getParser } from "../../grammar/prev";
+import { getAstSchema } from "../../grammar/ast";
 
 const code = `
 
@@ -69,17 +69,15 @@ const golden: string[] = [
 ];
 
 describe("writeExpression", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
     it("should write expression", () => {
+        const ast = getAstSchema();
         let ctx = openContext(
             new CompilerContext(),
             [{ code: code, path: "<unknown>", origin: "user" }],
             [],
-            getParser(),
+            getParser(ast),
         );
-        ctx = resolveDescriptors(ctx);
+        ctx = resolveDescriptors(ctx, ast);
         ctx = resolveStatements(ctx);
         const main = getStaticFunction(ctx, "main");
         if (main.ast.kind !== "function_def") {

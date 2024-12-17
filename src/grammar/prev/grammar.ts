@@ -18,11 +18,11 @@ import {
     AstReceiverKind,
     AstString,
     AstType,
-    createAstNode,
     AstImport,
     AstConstantDef,
     AstNumberBase,
     AstId,
+    AstSchema,
 } from "../ast";
 import { throwParseError, throwSyntaxError } from "../../errors";
 import { checkVariableName } from "./checkVariableName";
@@ -32,24 +32,48 @@ import { SrcInfo } from "./src-info";
 
 export type ItemOrigin = "stdlib" | "user";
 
-let ctx: { origin: ItemOrigin } | null;
-
 const DummyGrammar: Grammar = grammar("Dummy { DummyRule = any }");
 const DUMMY_INTERVAL = DummyGrammar.match("").getInterval();
 export const dummySrcInfo: SrcInfo = new SrcInfo(DUMMY_INTERVAL, null, "user");
 
-let currentFile: string | null = null;
+type Context = {
+    origin: ItemOrigin | null;
+    currentFile: string | null;
+    createAstNode: AstSchema["createAstNode"] | null;
+};
 
-function inFile<T>(path: string, callback: () => T) {
-    currentFile = path;
-    const r = callback();
-    currentFile = null;
-    return r;
-}
+const defaultContext: Context = Object.freeze({
+    createAstNode: null,
+    currentFile: null,
+    origin: null,
+});
+
+let context: Context = defaultContext;
+
+const withContext = <T>(ctx: Context, callback: () => T): T => {
+    try {
+        context = ctx;
+        return callback();
+    } finally {
+        context = defaultContext;
+    }
+};
 
 function createRef(s: Node): SrcInfo {
-    return new SrcInfo(s.source, currentFile, ctx!.origin);
+    if (context.origin === null) {
+        throwInternalCompilerError("Parser context was not initialized");
+    }
+
+    return new SrcInfo(s.source, context.currentFile, context.origin);
 }
+
+const createAstNode: AstSchema["createAstNode"] = (...args) => {
+    if (context.createAstNode === null) {
+        throwInternalCompilerError("Parser context was not initialized");
+    }
+
+    return context.createAstNode(...args);
+};
 
 // helper to unwrap optional grammar elements (marked with "?")
 // ohm-js represents those essentially as lists (IterationNodes)
@@ -1457,33 +1481,37 @@ semantics.addOperation<AstNode>("astOfExpression", {
     },
 });
 
-export const getParser = () => {
+export const getParser = (ast: AstSchema) => {
     function parse(
         src: string,
         path: string,
         origin: ItemOrigin,
     ): AstModule {
-        return inFile(path, () => {
+        return withContext({
+            currentFile: path,
+            origin,
+            createAstNode: ast.createAstNode,
+        }, () => {
             const matchResult = tactGrammar.match(src);
             if (matchResult.failed()) {
                 throwParseError(matchResult, path, origin);
             }
-            ctx = { origin };
-            try {
-                return semantics(matchResult).astOfModule();
-            } finally {
-                ctx = null;
-            }
+            return semantics(matchResult).astOfModule();
         });
     }
     
     function parseExpression(sourceCode: string): AstExpression {
-        const matchResult = tactGrammar.match(sourceCode, "Expression");
-        if (matchResult.failed()) {
-            throwParseError(matchResult, "", "user");
-        }
-        ctx = { origin: "user" };
-        return semantics(matchResult).astOfExpression();
+        return withContext({
+            currentFile: null,
+            origin: 'user',
+            createAstNode: ast.createAstNode,
+        }, () => {
+            const matchResult = tactGrammar.match(sourceCode, "Expression");
+            if (matchResult.failed()) {
+                throwParseError(matchResult, "", "user");
+            }
+            return semantics(matchResult).astOfExpression();
+        });
     }
     
     function parseImports(
@@ -1491,17 +1519,16 @@ export const getParser = () => {
         path: string,
         origin: ItemOrigin,
     ): AstImport[] {
-        return inFile(path, () => {
+        return withContext({
+            currentFile: path,
+            origin,
+            createAstNode: ast.createAstNode,
+        }, () => {
             const matchResult = tactGrammar.match(src, "JustImports");
             if (matchResult.failed()) {
                 throwParseError(matchResult, path, origin);
             }
-            ctx = { origin };
-            try {
-                return semantics(matchResult).astOfJustImports();
-            } finally {
-                ctx = null;
-            }
+            return semantics(matchResult).astOfJustImports();
         });
     }
 

@@ -1,5 +1,6 @@
 import { featureEnable } from "./config/features";
 import { CompilerContext } from "./context";
+import { getAstSchema } from "./grammar/ast";
 import { getParser } from "./grammar/prev";
 import files from "./imports/stdlib";
 import { createVirtualFileSystem, TactError, VirtualFileSystem } from "./main";
@@ -36,12 +37,13 @@ export function check(args: {
     ctx = featureEnable(ctx, "masterchain"); // Enable masterchain flag to avoid masterchain-specific errors
     ctx = featureEnable(ctx, "external"); // Enable external messages flag to avoid external-specific errors
 
-    const parser = getParser();
+    const ast = getAstSchema();
+    const parser = getParser(ast);
 
     // Execute check
     const items: CheckResultItem[] = [];
     try {
-        precompile(ctx, args.project, stdlib, args.entrypoint, parser);
+        precompile(ctx, args.project, stdlib, args.entrypoint, parser, ast);
     } catch (e) {
         if (e instanceof TactError) {
             items.push({

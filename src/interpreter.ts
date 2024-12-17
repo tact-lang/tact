@@ -31,6 +31,7 @@ import {
     AstOpBinary,
     AstOpUnary,
     AstPrimitiveTypeDecl,
+    AstSchema,
     AstStatement,
     AstStatementAssign,
     AstStatementAugmentedAssign,
@@ -51,6 +52,7 @@ import {
     AstTrait,
     AstUnaryOperation,
     eqNames,
+    getAstSchema,
     idText,
     isSelfId,
 } from "./grammar/ast";
@@ -598,7 +600,11 @@ class EnvironmentStack {
     }
 }
 
-export function parseAndEvalExpression(sourceCode: string, parser: Parser = getParser()): EvalResult {
+export function parseAndEvalExpression(
+    sourceCode: string,
+    ast: AstSchema = getAstSchema(),
+    parser: Parser = getParser(ast),
+): EvalResult {
     try {
         const ast = parser.parseExpression(sourceCode);
         const constEvalResult = evalConstantExpression(

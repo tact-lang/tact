@@ -7,7 +7,7 @@ import { resolveErrors } from "../types/resolveErrors";
 import { resolveSignatures } from "../types/resolveSignatures";
 import { resolveImports } from "../imports/resolveImports";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
-import { AstModule } from "../grammar/ast";
+import { AstModule, AstSchema } from "../grammar/ast";
 import { Parser } from "../grammar/prev";
 
 export function precompile(
@@ -16,6 +16,7 @@ export function precompile(
     stdlib: VirtualFileSystem,
     entrypoint: string,
     parser: Parser,
+    ast: AstSchema,
     parsedModules?: AstModule[],
 ) {
     // Load all sources
@@ -26,7 +27,7 @@ export function precompile(
 
     // First load type descriptors and check that
     //       they all have valid signatures
-    ctx = resolveDescriptors(ctx);
+    ctx = resolveDescriptors(ctx, ast);
 
     // This creates TLB-style type definitions
     ctx = resolveSignatures(ctx);
