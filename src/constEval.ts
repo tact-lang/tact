@@ -19,7 +19,7 @@ import {
     evalUnaryOp,
     throwNonFatalErrorConstEval,
 } from "./interpreter";
-import { SrcInfo } from "./grammar/prev";
+import { SrcInfo } from "./grammar";
 
 // Utility Exception class to interrupt the execution
 // of functions that cannot evaluate a tree fully into a value.

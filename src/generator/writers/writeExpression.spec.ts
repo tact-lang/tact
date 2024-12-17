@@ -7,7 +7,7 @@ import { writeExpression } from "./writeExpression";
 import { openContext } from "../../grammar/store";
 import { resolveStatements } from "../../types/resolveStatements";
 import { CompilerContext } from "../../context";
-import { getParser } from "../../grammar/prev";
+import { getParser } from "../../grammar";
 import { getAstSchema } from "../../grammar/ast";
 
 const code = `

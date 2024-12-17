@@ -8,7 +8,7 @@ import { resolveSignatures } from "../types/resolveSignatures";
 import { resolveImports } from "../imports/resolveImports";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { AstModule, AstSchema } from "../grammar/ast";
-import { Parser } from "../grammar/prev";
+import { Parser } from "../grammar";
 
 export function precompile(
     ctx: CompilerContext,

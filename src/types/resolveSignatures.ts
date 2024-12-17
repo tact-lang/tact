@@ -17,7 +17,7 @@ import { throwCompilationError } from "../errors";
 import { AstNumber, AstReceiver } from "../grammar/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 import { sha256_sync } from "@ton/crypto";
-import { dummySrcInfo } from "../grammar/prev";
+import { dummySrcInfo } from "../grammar";
 import { ensureInt } from "../interpreter";
 import { evalConstantExpression } from "../constEval";
 

@@ -6,7 +6,7 @@ import { resolveStatements } from "../types/resolveStatements";
 import { CompilerContext } from "../context";
 import { resolveSignatures } from "../types/resolveSignatures";
 import path from "path";
-import { getParser } from "../grammar/prev";
+import { getParser } from "../grammar";
 import { getAstSchema } from "../grammar/ast";
 
 const stdlibPath = path.resolve(__dirname, "../../stdlib/std/primitives.tact");

@@ -1,5 +1,5 @@
 import fs from "fs";
-import { getParser } from "../grammar/prev";
+import { getParser } from "../grammar";
 import { join } from "path";
 import { AstComparator } from "../grammar/compare";
 import { CONTRACTS_DIR } from "./util";

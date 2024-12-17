@@ -1,6 +1,6 @@
 import { Node, IterationNode, NonterminalNode, grammar, Grammar } from "ohm-js";
 import tactGrammar from "./grammar.ohm-bundle";
-import { throwInternalCompilerError } from "../../errors";
+import { throwInternalCompilerError } from "../errors";
 import {
     AstAugmentedAssignOperation,
     AstConstantAttribute,
@@ -17,8 +17,8 @@ import {
     AstNumberBase,
     AstId,
     AstSchema,
-} from "../ast";
-import { throwParseError, throwSyntaxError } from "../../errors";
+} from "./ast";
+import { throwParseError, throwSyntaxError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
 import { checkFunctionAttributes } from "./checkFunctionAttributes";
 import { checkConstAttributes } from "./checkConstAttributes";

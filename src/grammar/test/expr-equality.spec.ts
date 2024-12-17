@@ -1,5 +1,5 @@
 import { eqExpressions, getAstSchema } from "../ast";
-import { getParser } from "../prev";
+import { getParser } from "../";
 
 type Test = { expr1: string; expr2: string; equality: boolean };
 

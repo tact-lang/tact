@@ -21,7 +21,7 @@ import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
 import { AstSchema, getAstSchema, idText } from "../grammar/ast";
 import { TactErrorCollection } from "../errors";
-import { getParser, Parser } from "../grammar/prev";
+import { getParser, Parser } from "../grammar";
 
 export function enableFeatures(
     ctx: CompilerContext,

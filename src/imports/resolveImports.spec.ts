@@ -1,7 +1,7 @@
 import { resolveImports } from "./resolveImports";
 import { createNodeFileSystem } from "../vfs/createNodeFileSystem";
 import path from "path";
-import { getParser } from "../grammar/prev";
+import { getParser } from "../grammar";
 import { getAstSchema } from "../grammar/ast";
 
 describe("resolveImports", () => {

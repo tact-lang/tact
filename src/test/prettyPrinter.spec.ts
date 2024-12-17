@@ -1,6 +1,6 @@
 import fs from "fs";
 import { prettyPrint } from "../prettyPrinter";
-import { getParser } from "../grammar/prev";
+import { getParser } from "../grammar";
 import { join } from "path";
 import { trimTrailingCR, CONTRACTS_DIR } from "./util";
 import * as assert from "assert";

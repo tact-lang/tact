@@ -4,7 +4,7 @@ import { AstRenamer } from "../grammar/rename";
 import { prettyPrint } from "../prettyPrinter";
 import { trimTrailingCR, CONTRACTS_DIR } from "./util";
 import * as assert from "assert";
-import { getParser } from "../grammar/prev";
+import { getParser } from "../grammar";
 import { getAstSchema } from "../grammar/ast";
 
 const EXPECTED_DIR = join(CONTRACTS_DIR, "renamer-expected");

@@ -13,7 +13,7 @@ import { writeParser, writeSerializer } from "./writeSerialization";
 import { writeStdlib } from "./writeStdlib";
 import { openContext } from "../../grammar/store";
 import { writeAccessors } from "./writeAccessors";
-import { getParser } from "../../grammar/prev";
+import { getParser } from "../../grammar";
 import { getAstSchema } from "../../grammar/ast";
 
 const code = `

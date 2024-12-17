@@ -6,7 +6,7 @@ import {
     isValue,
     AstSchema,
 } from "../grammar/ast";
-import { dummySrcInfo } from "../grammar/prev";
+import { dummySrcInfo } from "../grammar";
 import { throwInternalCompilerError } from "../errors";
 import { Value } from "../types/types";
 

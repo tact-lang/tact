@@ -1,7 +1,7 @@
 import { featureEnable } from "./config/features";
 import { CompilerContext } from "./context";
 import { getAstSchema } from "./grammar/ast";
-import { getParser } from "./grammar/prev";
+import { getParser } from "./grammar";
 import files from "./imports/stdlib";
 import { createVirtualFileSystem, TactError, VirtualFileSystem } from "./main";
 import { precompile } from "./pipeline/precompile";

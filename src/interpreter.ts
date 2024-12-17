@@ -56,7 +56,7 @@ import {
     idText,
     isSelfId,
 } from "./grammar/ast";
-import { SrcInfo, dummySrcInfo, Parser, getParser } from "./grammar/prev";
+import { SrcInfo, dummySrcInfo, Parser, getParser } from "./grammar";
 import { divFloor, modFloor } from "./optimizer/util";
 import {
     getStaticConstant,

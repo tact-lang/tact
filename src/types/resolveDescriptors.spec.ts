@@ -8,7 +8,7 @@ import { resolveSignatures } from "./resolveSignatures";
 import { loadCases } from "../utils/loadCases";
 import { openContext } from "../grammar/store";
 import { featureEnable } from "../config/features";
-import { getParser, SrcInfo } from "../grammar/prev";
+import { getParser, SrcInfo } from "../grammar";
 import { getAstSchema } from "../grammar/ast";
 
 expect.addSnapshotSerializer({

@@ -1,5 +1,5 @@
-import { AstModule, getAstSchema } from "../ast";
-import { loadCases } from "../../utils/loadCases";
+import { AstModule, getAstSchema } from "./ast";
+import { loadCases } from "../utils/loadCases";
 import { getParser } from "./grammar";
 import { SrcInfo } from "./src-info";
 
@@ -10,7 +10,7 @@ expect.addSnapshotSerializer({
 
 describe("grammar", () => {
     // Test parsing of known Fift projects, wrapped in asm functions of Tact
-    for (const r of loadCases(__dirname + "/../test-asm/")) {
+    for (const r of loadCases(__dirname + "/test-asm/")) {
         it("should parse " + r.name, () => {
             const ast = getAstSchema();
             const { parse } = getParser(ast);
@@ -25,7 +25,7 @@ describe("grammar", () => {
         });
     }
 
-    for (const r of loadCases(__dirname + "/../test/")) {
+    for (const r of loadCases(__dirname + "/test/")) {
         it("should parse " + r.name, () => {
             const ast = getAstSchema();
             const { parse } = getParser(ast);
@@ -33,7 +33,7 @@ describe("grammar", () => {
         });
     }
 
-    for (const r of loadCases(__dirname + "/../test-failed/")) {
+    for (const r of loadCases(__dirname + "/test-failed/")) {
         it("should fail " + r.name, () => {
             const ast = getAstSchema();
             const { parse } = getParser(ast);

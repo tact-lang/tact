@@ -1,4 +1,4 @@
-import { throwCompilationError } from "../../errors";
+import { throwCompilationError } from "../errors";
 import { SrcInfo } from "./src-info";
 
 export function checkVariableName(name: string, loc: SrcInfo) {

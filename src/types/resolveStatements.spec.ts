@@ -5,7 +5,7 @@ import { openContext } from "../grammar/store";
 import { resolveStatements } from "./resolveStatements";
 import { CompilerContext } from "../context";
 import { featureEnable } from "../config/features";
-import { getParser } from "../grammar/prev";
+import { getParser } from "../grammar";
 import { getAstSchema } from "../grammar/ast";
 
 describe("resolveStatements", () => {

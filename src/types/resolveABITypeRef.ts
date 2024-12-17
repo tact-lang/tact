@@ -21,7 +21,7 @@ import {
 import { TypeRef } from "./types";
 import { CompilerContext } from "../context";
 import { getType } from "./resolveDescriptors";
-import { SrcInfo } from "../grammar/prev";
+import { SrcInfo } from "../grammar";
 
 type FormatDef = Record<
     string,

@@ -4,7 +4,7 @@ import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
 import { openContext } from "../../grammar/store";
 import { CompilerContext } from "../../context";
-import { getParser } from "../../grammar/prev";
+import { getParser } from "../../grammar";
 
 const primitiveCode = `
 primitive Int;

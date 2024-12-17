@@ -1,7 +1,7 @@
 //type Test = { expr: string; isValue: boolean };
 
 import { getAstSchema, isValue } from "../ast";
-import { getParser } from "../prev";
+import { getParser } from "../";
 
 const valueExpressions: string[] = [
     "1",

@@ -1,5 +1,5 @@
-import { AstConstantAttribute } from "../ast";
-import { throwSyntaxError } from "../../errors";
+import { AstConstantAttribute } from "./ast";
+import { throwSyntaxError } from "../errors";
 import { SrcInfo } from "./src-info";
 
 export function checkConstAttributes(

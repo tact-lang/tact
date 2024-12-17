@@ -1,5 +1,5 @@
-import { AstFunctionAttribute } from "../ast";
-import { throwCompilationError } from "../../errors";
+import { AstFunctionAttribute } from "./ast";
+import { throwCompilationError } from "../errors";
 import { SrcInfo } from "./src-info";
 
 export function checkFunctionAttributes(
