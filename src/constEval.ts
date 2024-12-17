@@ -2,7 +2,6 @@ import { CompilerContext } from "./context";
 import {
     AstBinaryOperation,
     AstExpression,
-    SrcInfo,
     AstUnaryOperation,
     AstValue,
     isValue,
@@ -25,6 +24,7 @@ import {
     evalUnaryOp,
     throwNonFatalErrorConstEval,
 } from "./interpreter";
+import { SrcInfo } from "./grammar/prev";
 
 // Utility Exception class to interrupt the execution
 // of functions that cannot evaluate a tree fully into a value.

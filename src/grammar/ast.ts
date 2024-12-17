@@ -914,5 +914,3 @@ export function isValue(ast: AstExpression): boolean {
             return false;
     }
 }
-
-export { SrcInfo };

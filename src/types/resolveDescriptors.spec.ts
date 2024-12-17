@@ -5,11 +5,11 @@ import {
     resolveDescriptors,
 } from "./resolveDescriptors";
 import { resolveSignatures } from "./resolveSignatures";
-import { SrcInfo, __DANGER_resetNodeId } from "../grammar/ast";
+import { __DANGER_resetNodeId } from "../grammar/ast";
 import { loadCases } from "../utils/loadCases";
 import { openContext } from "../grammar/store";
 import { featureEnable } from "../config/features";
-import { getParser } from "../grammar/prev";
+import { getParser, SrcInfo } from "../grammar/prev";
 
 expect.addSnapshotSerializer({
     test: (src) => src instanceof SrcInfo,

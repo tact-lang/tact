@@ -1,6 +1,7 @@
-import { AstModule, SrcInfo, __DANGER_resetNodeId } from "../ast";
+import { AstModule, __DANGER_resetNodeId } from "../ast";
 import { loadCases } from "../../utils/loadCases";
 import { getParser } from "./grammar";
+import { SrcInfo } from "./src-info";
 
 expect.addSnapshotSerializer({
     test: (src) => src instanceof SrcInfo,
