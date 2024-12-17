@@ -1422,7 +1422,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             if (!t.init) {
                 t.init = {
                     params: [],
-                    ast: Ast.createAstNode({
+                    ast: Ast.createNode({
                         kind: "contract_init",
                         params: [],
                         statements: [],

@@ -25,17 +25,17 @@ export function extractValue(ast: AstValue): Value {
     }
 }
 
-export const getAstUtil = ({ createAstNode }: FactoryAst) => {
+export const getAstUtil = ({ createNode: createNode }: FactoryAst) => {
     function makeValueExpression(value: Value): AstValue {
         if (value === null) {
-            const result = createAstNode({
+            const result = createNode({
                 kind: "null",
                 loc: dummySrcInfo,
             });
             return result as AstValue;
         }
         if (typeof value === "string") {
-            const result = createAstNode({
+            const result = createNode({
                 kind: "string",
                 value: value,
                 loc: dummySrcInfo,
@@ -43,7 +43,7 @@ export const getAstUtil = ({ createAstNode }: FactoryAst) => {
             return result as AstValue;
         }
         if (typeof value === "bigint") {
-            const result = createAstNode({
+            const result = createNode({
                 kind: "number",
                 base: 10,
                 value: value,
@@ -52,7 +52,7 @@ export const getAstUtil = ({ createAstNode }: FactoryAst) => {
             return result as AstValue;
         }
         if (typeof value === "boolean") {
-            const result = createAstNode({
+            const result = createNode({
                 kind: "boolean",
                 value: value,
                 loc: dummySrcInfo,
@@ -68,7 +68,7 @@ export const getAstUtil = ({ createAstNode }: FactoryAst) => {
         op: AstUnaryOperation,
         operand: AstExpression,
     ): AstExpression {
-        const result = createAstNode({
+        const result = createNode({
             kind: "op_unary",
             op: op,
             operand: operand,
@@ -82,7 +82,7 @@ export const getAstUtil = ({ createAstNode }: FactoryAst) => {
         left: AstExpression,
         right: AstExpression,
     ): AstExpression {
-        const result = createAstNode({
+        const result = createNode({
             kind: "op_binary",
             op: op,
             left: left,

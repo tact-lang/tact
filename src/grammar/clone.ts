@@ -3,39 +3,39 @@ import { throwInternalCompilerError } from "../errors";
 
 export function cloneNode<T extends AstNode>(
     src: T,
-    { cloneAstNode }: FactoryAst,
+    { cloneNode: cloneNode }: FactoryAst,
 ): T {
     const recurse = <T extends AstNode>(src: T): T => {
         if (src.kind === "boolean") {
-            return cloneAstNode(src);
+            return cloneNode(src);
         } else if (src.kind === "id") {
-            return cloneAstNode(src);
+            return cloneNode(src);
         } else if (src.kind === "null") {
-            return cloneAstNode(src);
+            return cloneNode(src);
         } else if (src.kind === "number") {
-            return cloneAstNode(src);
+            return cloneNode(src);
         } else if (src.kind === "string") {
-            return cloneAstNode(src);
+            return cloneNode(src);
         } else if (src.kind === "statement_assign") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 path: recurse(src.path),
                 expression: recurse(src.expression),
             });
         } else if (src.kind === "statement_augmentedassign") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 path: recurse(src.path),
                 expression: recurse(src.expression),
             });
         } else if (src.kind === "statement_let") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
-                type: src.type ? cloneAstNode(src.type) : null,
+                type: src.type ? cloneNode(src.type) : null,
                 expression: recurse(src.expression),
             });
         } else if (src.kind === "statement_condition") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 condition: recurse(src.condition),
                 trueStatements: src.trueStatements.map(recurse),
@@ -45,138 +45,138 @@ export function cloneNode<T extends AstNode>(
                 elseif: src.elseif ? recurse(src.elseif) : null,
             });
         } else if (src.kind === "struct_field_initializer") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 initializer: recurse(src.initializer),
             });
         } else if (src.kind === "statement_expression") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 expression: recurse(src.expression),
             });
         } else if (src.kind === "op_binary") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 left: recurse(src.left),
                 right: recurse(src.right),
             });
         } else if (src.kind === "op_unary") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 operand: recurse(src.operand),
             });
         } else if (src.kind === "struct_instance") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 args: src.args.map(recurse),
             });
         } else if (src.kind === "method_call") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 self: recurse(src.self),
                 args: src.args.map(recurse),
             });
         } else if (src.kind === "field_access") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 aggregate: recurse(src.aggregate),
             });
         } else if (src.kind === "static_call") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 args: src.args.map(recurse),
             });
         } else if (src.kind === "conditional") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 condition: recurse(src.condition),
                 thenBranch: recurse(src.thenBranch),
                 elseBranch: recurse(src.elseBranch),
             });
         } else if (src.kind === "statement_return") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 expression: src.expression ? recurse(src.expression) : null,
             });
         } else if (src.kind === "statement_repeat") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 iterations: recurse(src.iterations),
                 statements: src.statements.map(recurse),
             });
         } else if (src.kind === "statement_until") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 condition: recurse(src.condition),
                 statements: src.statements.map(recurse),
             });
         } else if (src.kind === "statement_while") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 condition: recurse(src.condition),
                 statements: src.statements.map(recurse),
             });
         } else if (src.kind === "statement_try") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 statements: src.statements.map(recurse),
             });
         } else if (src.kind === "statement_try_catch") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 statements: src.statements.map(recurse),
                 catchStatements: src.catchStatements.map(recurse),
             });
         } else if (src.kind === "statement_foreach") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 map: recurse(src.map),
                 statements: src.statements.map(recurse),
             });
         } else if (src.kind === "function_def") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
-                return: src.return ? cloneAstNode(src.return) : null,
+                return: src.return ? cloneNode(src.return) : null,
                 statements: src.statements.map(recurse),
                 params: src.params.map(recurse),
             });
         } else if (src.kind === "function_decl") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
-                return: src.return ? cloneAstNode(src.return) : null,
+                return: src.return ? cloneNode(src.return) : null,
                 params: src.params.map(recurse),
             });
         } else if (src.kind === "native_function_decl") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
-                return: src.return ? cloneAstNode(src.return) : null,
+                return: src.return ? cloneNode(src.return) : null,
                 params: src.params.map(recurse),
             });
         } else if (src.kind === "receiver") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 statements: src.statements.map(recurse),
             });
         } else if (src.kind === "typed_parameter") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
-                type: cloneAstNode(src.type),
+                type: cloneNode(src.type),
             });
         } else if (src.kind === "init_of") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
                 args: src.args.map(recurse),
             });
         } else if (src.kind === "constant_def") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
-                type: cloneAstNode(src.type),
+                type: cloneNode(src.type),
                 initializer: recurse(src.initializer),
             });
         } else if (src.kind === "constant_decl") {
-            return cloneAstNode({
+            return cloneNode({
                 ...src,
-                type: cloneAstNode(src.type),
+                type: cloneNode(src.type),
             });
         }
 

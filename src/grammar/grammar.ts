@@ -31,11 +31,11 @@ export const dummySrcInfo: SrcInfo = new SrcInfo(DUMMY_INTERVAL, null, "user");
 type Context = {
     origin: ItemOrigin | null;
     currentFile: string | null;
-    createAstNode: FactoryAst["createAstNode"] | null;
+    createNode: FactoryAst["createNode"] | null;
 };
 
 const defaultContext: Context = Object.freeze({
-    createAstNode: null,
+    createNode: null,
     currentFile: null,
     origin: null,
 });
@@ -59,12 +59,12 @@ function createRef(s: Node): SrcInfo {
     return new SrcInfo(s.source, context.currentFile, context.origin);
 }
 
-const createAstNode: FactoryAst["createAstNode"] = (...args) => {
-    if (context.createAstNode === null) {
+const createNode: FactoryAst["createNode"] = (...args) => {
+    if (context.createNode === null) {
         throwInternalCompilerError("Parser context was not initialized");
     }
 
-    return context.createAstNode(...args);
+    return context.createNode(...args);
 };
 
 // helper to unwrap optional grammar elements (marked with "?")
@@ -81,7 +81,7 @@ const semantics = tactGrammar.createSemantics();
 
 semantics.addOperation<AstNode>("astOfModule", {
     Module(imports, items) {
-        return createAstNode({
+        return createNode({
             kind: "module",
             imports: imports.children.map((item) => item.astOfImport()),
             items: items.children.map((item) => item.astOfModuleItem()),
@@ -98,7 +98,7 @@ semantics.addOperation<AstNode>("astOfImport", {
                 createRef(path),
             );
         }
-        return createAstNode({
+        return createNode({
             kind: "import",
             path: pathAST,
             loc: createRef(this),
@@ -115,7 +115,7 @@ semantics.addOperation<AstImport[]>("astOfJustImports", {
 semantics.addOperation<AstNode>("astOfModuleItem", {
     PrimitiveTypeDecl(_primitive_kwd, typeId, _semicolon) {
         checkVariableName(typeId.sourceString, createRef(typeId));
-        return createAstNode({
+        return createNode({
             kind: "primitive_type_decl",
             name: typeId.astOfType(),
             loc: createRef(this),
@@ -135,7 +135,7 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
         _semicolon,
     ) {
         checkVariableName(tactId.sourceString, createRef(tactId));
-        return createAstNode({
+        return createNode({
             kind: "native_function_decl",
             attributes: funAttributes.children.map((a) =>
                 a.astOfFunctionAttributes(),
@@ -149,7 +149,7 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
     },
     StructDecl_regular(_structKwd, typeId, _lbrace, fields, _rbrace) {
         checkVariableName(typeId.sourceString, createRef(typeId));
-        return createAstNode({
+        return createNode({
             kind: "struct_decl",
             name: typeId.astOfType(),
             fields: fields.astsOfList(),
@@ -167,7 +167,7 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
         _rbrace,
     ) {
         checkVariableName(typeId.sourceString, createRef(typeId));
-        return createAstNode({
+        return createNode({
             kind: "message_decl",
             name: typeId.astOfType(),
             fields: fields.astsOfList(),
@@ -188,7 +188,7 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
         _rbrace,
     ) {
         checkVariableName(contractId.sourceString, createRef(contractId));
-        return createAstNode({
+        return createNode({
             kind: "contract",
             name: contractId.astOfExpression(),
             attributes: attributes.children.map((ca) =>
@@ -212,7 +212,7 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
         _rbrace,
     ) {
         checkVariableName(traitId.sourceString, createRef(traitId));
-        return createAstNode({
+        return createNode({
             kind: "trait",
             name: traitId.astOfExpression(),
             attributes: attributes.children.map((ca) =>
@@ -256,7 +256,7 @@ semantics.addOperation<AstNode>("astOfItem", {
             a.astOfConstAttribute(),
         ) as AstConstantAttribute[];
         checkConstAttributes(false, attributes, createRef(this));
-        return createAstNode({
+        return createNode({
             kind: "constant_def",
             name: constId.astOfExpression(),
             type: constType.astOfType(),
@@ -277,7 +277,7 @@ semantics.addOperation<AstNode>("astOfItem", {
             a.astOfConstAttribute(),
         ) as AstConstantAttribute[];
         checkConstAttributes(true, attributes, createRef(this));
-        return createAstNode({
+        return createNode({
             kind: "constant_decl",
             name: constId.astOfExpression(),
             type: constType.astOfType(),
@@ -304,7 +304,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         ) as AstFunctionAttribute[];
         checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(false, attributes, createRef(this));
-        return createAstNode({
+        return createNode({
             kind: "function_def",
             attributes,
             name: funId.astOfExpression(),
@@ -336,7 +336,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         ) as AstFunctionAttribute[];
         checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(false, attributes, createRef(this));
-        return createAstNode({
+        return createNode({
             kind: "asm_function_def",
             shuffle,
             attributes,
@@ -363,7 +363,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         ) as AstFunctionAttribute[];
         checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(true, attributes, createRef(this));
-        return createAstNode({
+        return createNode({
             kind: "function_decl",
             attributes,
             name: funId.astOfExpression(),
@@ -373,7 +373,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         });
     },
     ContractInit(_initKwd, initParameters, _lbrace, initBody, _rbrace) {
-        return createAstNode({
+        return createNode({
             kind: "contract_init",
             params: initParameters.astsOfList(),
             statements: initBody.children.map((s) => s.astOfStatement()),
@@ -396,7 +396,7 @@ semantics.addOperation<AstNode>("astOfItem", {
                   param: optParam.astOfDeclaration(),
               }
             : { kind: "internal-fallback" };
-        return createAstNode({
+        return createNode({
             kind: "receiver",
             selector,
             statements: receiverBody.children.map((s) => s.astOfStatement()),
@@ -412,7 +412,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         receiverBody,
         _rbrace,
     ) {
-        return createAstNode({
+        return createNode({
             kind: "receiver",
             selector: {
                 kind: "internal-comment",
@@ -431,7 +431,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         receiverBody,
         _rbrace,
     ) {
-        return createAstNode({
+        return createNode({
             kind: "receiver",
             selector: { kind: "bounce", param: parameter.astOfDeclaration() },
             statements: receiverBody.children.map((s) => s.astOfStatement()),
@@ -454,7 +454,7 @@ semantics.addOperation<AstNode>("astOfItem", {
                   param: optParam.astOfDeclaration(),
               }
             : { kind: "external-fallback" };
-        return createAstNode({
+        return createNode({
             kind: "receiver",
             selector,
             statements: receiverBody.children.map((s) => s.astOfStatement()),
@@ -470,7 +470,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         receiverBody,
         _rbrace,
     ) {
-        return createAstNode({
+        return createNode({
             kind: "receiver",
             selector: {
                 kind: "external-comment",
@@ -700,7 +700,7 @@ semantics.addOperation<AstNode>("astOfDeclaration", {
         _optEq,
         optInitializer,
     ) {
-        return createAstNode({
+        return createNode({
             kind: "field_decl",
             name: id.astOfExpression(),
             type: type.astOfType() as AstType,
@@ -713,7 +713,7 @@ semantics.addOperation<AstNode>("astOfDeclaration", {
     },
     Parameter(id, _colon, type) {
         checkVariableName(id.sourceString, createRef(id));
-        return createAstNode({
+        return createNode({
             kind: "typed_parameter",
             name: id.astOfExpression(),
             type: type.astOfType(),
@@ -721,7 +721,7 @@ semantics.addOperation<AstNode>("astOfDeclaration", {
         });
     },
     StructFieldInitializer_full(fieldId, _colon, initializer) {
-        return createAstNode({
+        return createNode({
             kind: "struct_field_initializer",
             field: fieldId.astOfExpression(),
             initializer: initializer.astOfExpression(),
@@ -729,7 +729,7 @@ semantics.addOperation<AstNode>("astOfDeclaration", {
         });
     },
     StructFieldInitializer_punned(fieldId) {
-        return createAstNode({
+        return createNode({
             kind: "struct_field_initializer",
             field: fieldId.astOfExpression(),
             initializer: fieldId.astOfExpression(),
@@ -753,7 +753,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
     ) {
         checkVariableName(id.sourceString, createRef(id));
 
-        return createAstNode({
+        return createNode({
             kind: "statement_let",
             name: id.astOfExpression(),
             type: unwrapOptNode(optType, (t) => t.astOfType()),
@@ -762,7 +762,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
         });
     },
     StatementReturn(_returnKwd, optExpression, _optSemicolonIfLastStmtInBlock) {
-        return createAstNode({
+        return createNode({
             kind: "statement_return",
             expression: unwrapOptNode(optExpression, (e) =>
                 e.astOfExpression(),
@@ -771,7 +771,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
         });
     },
     StatementExpression(expression, _optSemicolonIfLastStmtInBlock) {
-        return createAstNode({
+        return createNode({
             kind: "statement_expression",
             expression: expression.astOfExpression(),
             loc: createRef(this),
@@ -784,7 +784,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
         _optSemicolonIfLastStmtInBlock,
     ) {
         if (operator.sourceString === "=") {
-            return createAstNode({
+            return createNode({
                 kind: "statement_assign",
                 path: lvalue.astOfExpression(),
                 expression: expression.astOfExpression(),
@@ -834,7 +834,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
                         "Unreachable augmented assignment operator.",
                     );
             }
-            return createAstNode({
+            return createNode({
                 kind: "statement_augmentedassign",
                 path: lvalue.astOfExpression(),
                 op,
@@ -844,7 +844,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
         }
     },
     StatementCondition_noElse(_ifKwd, condition, _lbrace, thenBlock, _rbrace) {
-        return createAstNode({
+        return createNode({
             kind: "statement_condition",
             condition: condition.astOfExpression(),
             trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
@@ -864,7 +864,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
         elseBlock,
         _rbraceElse,
     ) {
-        return createAstNode({
+        return createNode({
             kind: "statement_condition",
             condition: condition.astOfExpression(),
             trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
@@ -882,7 +882,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
         _elseKwd,
         elseifClause,
     ) {
-        return createAstNode({
+        return createNode({
             kind: "statement_condition",
             condition: condition.astOfExpression(),
             trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
@@ -900,7 +900,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
         loopBody,
         _rbrace,
     ) {
-        return createAstNode({
+        return createNode({
             kind: "statement_while",
             condition: condition.astOfExpression(),
             statements: loopBody.children.map((s) => s.astOfStatement()),
@@ -916,7 +916,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
         loopBody,
         _rbrace,
     ) {
-        return createAstNode({
+        return createNode({
             kind: "statement_repeat",
             iterations: iterations.astOfExpression(),
             statements: loopBody.children.map((s) => s.astOfStatement()),
@@ -934,7 +934,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
         _rparen,
         _optSemicolonIfLastStmtInBlock,
     ) {
-        return createAstNode({
+        return createNode({
             kind: "statement_until",
             condition: condition.astOfExpression(),
             statements: loopBody.children.map((s) => s.astOfStatement()),
@@ -942,7 +942,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
         });
     },
     StatementTry_noCatch(_tryKwd, _lbraceTry, tryBlock, _rbraceTry) {
-        return createAstNode({
+        return createNode({
             kind: "statement_try",
             statements: tryBlock.children.map((s) => s.astOfStatement()),
             loc: createRef(this),
@@ -961,7 +961,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
         catchBlock,
         _rbraceCatch,
     ) {
-        return createAstNode({
+        return createNode({
             kind: "statement_try_catch",
             statements: tryBlock.children.map((s) => s.astOfStatement()),
             catchName: exitCodeId.astOfExpression(),
@@ -984,7 +984,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
     ) {
         checkVariableName(keyId.sourceString, createRef(keyId));
         checkVariableName(valueId.sourceString, createRef(valueId));
-        return createAstNode({
+        return createNode({
             kind: "statement_foreach",
             keyName: keyId.astOfExpression(),
             valueName: valueId.astOfExpression(),
@@ -1004,7 +1004,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
         expression,
         _semicolon,
     ) {
-        return createAstNode({
+        return createNode({
             kind: "statement_destruct",
             type: typeId.astOfType(),
             identifiers: identifiers
@@ -1033,7 +1033,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
 
 semantics.addOperation<AstNode>("astOfType", {
     typeId(firstTactTypeIdCharacter, restOfTactTypeId) {
-        return createAstNode({
+        return createNode({
             kind: "type_id",
             text:
                 firstTactTypeIdCharacter.sourceString +
@@ -1042,7 +1042,7 @@ semantics.addOperation<AstNode>("astOfType", {
         });
     },
     Type_optional(typeId, _questionMark) {
-        return createAstNode({
+        return createNode({
             kind: "optional_type",
             typeArg: typeId.astOfType(),
             loc: createRef(this),
@@ -1063,7 +1063,7 @@ semantics.addOperation<AstNode>("astOfType", {
         optValueStorageType,
         _rangle,
     ) {
-        return createAstNode({
+        return createNode({
             kind: "map_type",
             keyType: keyTypeId.astOfType(),
             keyStorageType: unwrapOptNode(optKeyStorageType, (t) =>
@@ -1077,7 +1077,7 @@ semantics.addOperation<AstNode>("astOfType", {
         });
     },
     Type_bounced(_bouncedKwd, _langle, typeId, _rangle) {
-        return createAstNode({
+        return createNode({
             kind: "bounced_message_type",
             messageType: typeId.astOfType(),
             loc: createRef(this),
@@ -1105,7 +1105,7 @@ function baseOfIntLiteral(node: NonterminalNode): AstNumberBase {
 }
 
 function astOfNumber(node: Node): AstNode {
-    return createAstNode({
+    return createNode({
         kind: "number",
         base: baseOfIntLiteral(node),
         value: bigintOfIntLiteral(node),
@@ -1127,38 +1127,38 @@ semantics.addOperation<AstNode>("astOfExpression", {
         return astOfNumber(this);
     },
     boolLiteral(boolValue) {
-        return createAstNode({
+        return createNode({
             kind: "boolean",
             value: boolValue.sourceString === "true",
             loc: createRef(this),
         });
     },
     id(firstTactIdCharacter, restOfTactId) {
-        return createAstNode({
+        return createNode({
             kind: "id",
             text: firstTactIdCharacter.sourceString + restOfTactId.sourceString,
             loc: createRef(this),
         });
     },
     funcId(firstFuncIdCharacter, restOfFuncId) {
-        return createAstNode({
+        return createNode({
             kind: "func_id",
             text: firstFuncIdCharacter.sourceString + restOfFuncId.sourceString,
             loc: createRef(this),
         });
     },
     null(_nullKwd) {
-        return createAstNode({ kind: "null", loc: createRef(this) });
+        return createNode({ kind: "null", loc: createRef(this) });
     },
     stringLiteral(_startQuotationMark, string, _endQuotationMark) {
-        return createAstNode({
+        return createNode({
             kind: "string",
             value: string.sourceString,
             loc: createRef(this),
         });
     },
     DestructItem_punned(id) {
-        return createAstNode({
+        return createNode({
             kind: "destruct_mapping",
             field: id.astOfExpression(),
             name: id.astOfExpression(),
@@ -1166,7 +1166,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     DestructItem_regular(idFrom, _colon, id) {
-        return createAstNode({
+        return createNode({
             kind: "destruct_mapping",
             field: idFrom.astOfExpression(),
             name: id.astOfExpression(),
@@ -1174,21 +1174,21 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     EndOfIdentifiers_regular(_comma) {
-        return createAstNode({
+        return createNode({
             kind: "destruct_end",
             ignoreUnspecifiedFields: false,
             loc: createRef(this),
         });
     },
     EndOfIdentifiers_ignoreUnspecifiedFields(_comma, _dotDot) {
-        return createAstNode({
+        return createNode({
             kind: "destruct_end",
             ignoreUnspecifiedFields: true,
             loc: createRef(this),
         });
     },
     ExpressionAdd_add(left, _plus, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "+",
             left: left.astOfExpression(),
@@ -1197,7 +1197,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionAdd_sub(left, _minus, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "-",
             left: left.astOfExpression(),
@@ -1206,7 +1206,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionMul_div(left, _slash, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "/",
             left: left.astOfExpression(),
@@ -1215,7 +1215,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionMul_mul(left, _star, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "*",
             left: left.astOfExpression(),
@@ -1224,7 +1224,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionMul_rem(left, _percent, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "%",
             left: left.astOfExpression(),
@@ -1233,7 +1233,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionEquality_eq(left, _equalsEquals, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "==",
             left: left.astOfExpression(),
@@ -1242,7 +1242,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionEquality_not(left, _bangEquals, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "!=",
             left: left.astOfExpression(),
@@ -1251,7 +1251,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionCompare_gt(left, _rangle, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: ">",
             left: left.astOfExpression(),
@@ -1260,7 +1260,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionCompare_gte(left, _rangleEquals, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: ">=",
             left: left.astOfExpression(),
@@ -1269,7 +1269,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionCompare_lt(left, _langle, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "<",
             left: left.astOfExpression(),
@@ -1278,7 +1278,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionCompare_lte(left, _langleEquals, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "<=",
             left: left.astOfExpression(),
@@ -1287,7 +1287,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionOr_or(left, _pipePipe, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "||",
             left: left.astOfExpression(),
@@ -1296,7 +1296,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionAnd_and(left, _ampersandAmpersand, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "&&",
             left: left.astOfExpression(),
@@ -1305,7 +1305,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionBitwiseShift_shr(left, _rangleRangle, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: ">>",
             left: left.astOfExpression(),
@@ -1314,7 +1314,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionBitwiseShift_shl(left, _langleLangle, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "<<",
             left: left.astOfExpression(),
@@ -1323,7 +1323,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionBitwiseAnd_bitwiseAnd(left, _ampersand, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "&",
             left: left.astOfExpression(),
@@ -1332,7 +1332,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionBitwiseOr_bitwiseOr(left, _pipe, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "|",
             left: left.astOfExpression(),
@@ -1341,7 +1341,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionBitwiseXor_bitwiseXor(left, _caret, right) {
-        return createAstNode({
+        return createNode({
             kind: "op_binary",
             op: "^",
             left: left.astOfExpression(),
@@ -1352,7 +1352,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
 
     // Unary
     ExpressionUnary_plus(_plus, operand) {
-        return createAstNode({
+        return createNode({
             kind: "op_unary",
             op: "+",
             operand: operand.astOfExpression(),
@@ -1360,7 +1360,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionUnary_minus(_minus, operand) {
-        return createAstNode({
+        return createNode({
             kind: "op_unary",
             op: "-",
             operand: operand.astOfExpression(),
@@ -1368,7 +1368,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionUnary_not(_bang, operand) {
-        return createAstNode({
+        return createNode({
             kind: "op_unary",
             op: "!",
             operand: operand.astOfExpression(),
@@ -1376,7 +1376,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionUnary_bitwiseNot(_tilde, operand) {
-        return createAstNode({
+        return createNode({
             kind: "op_unary",
             op: "~",
             operand: operand.astOfExpression(),
@@ -1387,7 +1387,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         return expression.astOfExpression();
     },
     ExpressionUnboxNotNull(operand, _bangBang) {
-        return createAstNode({
+        return createNode({
             kind: "op_unary",
             op: "!!",
             operand: operand.astOfExpression(),
@@ -1396,7 +1396,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
     },
 
     ExpressionFieldAccess(source, _dot, fieldId) {
-        return createAstNode({
+        return createNode({
             kind: "field_access",
             aggregate: source.astOfExpression(),
             field: fieldId.astOfExpression(),
@@ -1404,7 +1404,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionMethodCall(source, _dot, methodId, methodArguments) {
-        return createAstNode({
+        return createNode({
             kind: "method_call",
             self: source.astOfExpression(),
             method: methodId.astOfExpression(),
@@ -1413,7 +1413,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionStaticCall(functionId, functionArguments) {
-        return createAstNode({
+        return createNode({
             kind: "static_call",
             function: functionId.astOfExpression(),
             args: functionArguments.astsOfList(),
@@ -1437,7 +1437,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
             );
         }
 
-        return createAstNode({
+        return createNode({
             kind: "struct_instance",
             type: typeId.astOfType(),
             args: structFields
@@ -1447,7 +1447,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         });
     },
     ExpressionInitOf(_initOfKwd, contractId, initArguments) {
-        return createAstNode({
+        return createNode({
             kind: "init_of",
             contract: contractId.astOfExpression(),
             args: initArguments.astsOfList(),
@@ -1463,7 +1463,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
         _colon,
         elseExpression,
     ) {
-        return createAstNode({
+        return createNode({
             kind: "conditional",
             condition: condition.astOfExpression(),
             thenBranch: thenExpression.astOfExpression(),
@@ -1479,7 +1479,7 @@ export const getParser = (ast: FactoryAst) => {
             {
                 currentFile: path,
                 origin,
-                createAstNode: ast.createAstNode,
+                createNode: ast.createNode,
             },
             () => {
                 const matchResult = tactGrammar.match(src);
@@ -1496,7 +1496,7 @@ export const getParser = (ast: FactoryAst) => {
             {
                 currentFile: null,
                 origin: "user",
-                createAstNode: ast.createAstNode,
+                createNode: ast.createNode,
             },
             () => {
                 const matchResult = tactGrammar.match(sourceCode, "Expression");
@@ -1517,7 +1517,7 @@ export const getParser = (ast: FactoryAst) => {
             {
                 currentFile: path,
                 origin,
-                createAstNode: ast.createAstNode,
+                createNode: ast.createNode,
             },
             () => {
                 const matchResult = tactGrammar.match(src, "JustImports");

@@ -362,7 +362,7 @@ function testExpressionWithOptimizer(
 // constant expressions.
 function dummyEval(
     ast: AstExpression,
-    { cloneAstNode }: FactoryAst,
+    { cloneNode: cloneNode }: FactoryAst,
     { makeValueExpression }: AstUtil,
 ): AstExpression {
     const recurse = (ast: AstExpression): AstExpression => {
@@ -378,18 +378,18 @@ function dummyEval(
             case "id":
                 return ast;
             case "method_call": {
-                const newNode = cloneAstNode(ast);
+                const newNode = cloneNode(ast);
                 newNode.args = ast.args.map(recurse);
                 newNode.self = recurse(ast.self);
                 return newNode;
             }
             case "init_of": {
-                const newNode = cloneAstNode(ast);
+                const newNode = cloneNode(ast);
                 newNode.args = ast.args.map(recurse);
                 return newNode;
             }
             case "op_unary": {
-                const newNode = cloneAstNode(ast);
+                const newNode = cloneNode(ast);
                 newNode.operand = recurse(ast.operand);
                 if (isValue(newNode.operand)) {
                     return makeValueExpression(
@@ -402,7 +402,7 @@ function dummyEval(
                 return newNode;
             }
             case "op_binary": {
-                const newNode = cloneAstNode(ast);
+                const newNode = cloneNode(ast);
                 newNode.left = recurse(ast.left);
                 newNode.right = recurse(ast.right);
                 if (isValue(newNode.left) && isValue(newNode.right)) {
@@ -418,27 +418,27 @@ function dummyEval(
                 return newNode;
             }
             case "conditional": {
-                const newNode = cloneAstNode(ast);
+                const newNode = cloneNode(ast);
                 newNode.thenBranch = recurse(ast.thenBranch);
                 newNode.elseBranch = recurse(ast.elseBranch);
                 return newNode;
             }
             case "struct_instance": {
-                const newNode = cloneAstNode(ast);
+                const newNode = cloneNode(ast);
                 newNode.args = ast.args.map((param) => {
-                    const newParam = cloneAstNode(param);
+                    const newParam = cloneNode(param);
                     newParam.initializer = recurse(param.initializer);
                     return newParam;
                 });
                 return newNode;
             }
             case "field_access": {
-                const newNode = cloneAstNode(ast);
+                const newNode = cloneNode(ast);
                 newNode.aggregate = recurse(ast.aggregate);
                 return newNode;
             }
             case "static_call": {
-                const newNode = cloneAstNode(ast);
+                const newNode = cloneNode(ast);
                 newNode.args = ast.args.map(recurse);
                 return newNode;
             }

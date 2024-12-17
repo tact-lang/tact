@@ -762,15 +762,15 @@ type DistributiveOmit<T, K extends keyof any> = T extends any
 
 export const getAstFactory = () => {
     let nextId = 1;
-    function createAstNode(src: DistributiveOmit<AstNode, "id">): AstNode {
+    function createNode(src: DistributiveOmit<AstNode, "id">): AstNode {
         return Object.freeze(Object.assign({ id: nextId++ }, src));
     }
-    function cloneAstNode<T extends AstNode>(src: T): T {
+    function cloneNode<T extends AstNode>(src: T): T {
         return { ...src, id: nextId++ };
     }
     return {
-        createAstNode,
-        cloneAstNode,
+        createNode,
+        cloneNode,
     };
 };
 
