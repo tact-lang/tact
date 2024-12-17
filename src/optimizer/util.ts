@@ -4,7 +4,7 @@ import {
     AstBinaryOperation,
     AstValue,
     isValue,
-    AstSchema,
+    FactoryAst,
 } from "../grammar/ast";
 import { dummySrcInfo } from "../grammar";
 import { throwInternalCompilerError } from "../errors";
@@ -25,7 +25,7 @@ export function extractValue(ast: AstValue): Value {
     }
 }
 
-export const getAstUtil = ({ createAstNode }: AstSchema) => {
+export const getAstUtil = ({ createAstNode }: FactoryAst) => {
     function makeValueExpression(value: Value): AstValue {
         if (value === null) {
             const result = createAstNode({

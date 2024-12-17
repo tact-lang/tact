@@ -1,4 +1,4 @@
-import { eqExpressions, getAstSchema } from "../ast";
+import { eqExpressions, getAstFactory } from "../ast";
 import { getParser } from "../";
 
 type Test = { expr1: string; expr2: string; equality: boolean };
@@ -366,7 +366,7 @@ const initOfExpressions: Test[] = [
 ];
 
 function testEquality(expr1: string, expr2: string, equal: boolean) {
-    const ast = getAstSchema();
+    const ast = getAstFactory();
     const { parseExpression } = getParser(ast);
     expect(eqExpressions(parseExpression(expr1), parseExpression(expr2))).toBe(
         equal,

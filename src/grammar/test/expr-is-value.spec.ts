@@ -1,6 +1,6 @@
 //type Test = { expr: string; isValue: boolean };
 
-import { getAstSchema, isValue } from "../ast";
+import { getAstFactory, isValue } from "../ast";
 import { getParser } from "../";
 
 const valueExpressions: string[] = [
@@ -52,7 +52,7 @@ const notValueExpressions: string[] = [
 ];
 
 function testIsValue(expr: string, testResult: boolean) {
-    const ast = getAstSchema();
+    const ast = getAstFactory();
     const { parseExpression } = getParser(ast);
     expect(isValue(parseExpression(expr))).toBe(testResult);
 }

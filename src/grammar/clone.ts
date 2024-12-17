@@ -1,9 +1,9 @@
-import { AstNode, AstSchema } from "./ast";
+import { AstNode, FactoryAst } from "./ast";
 import { throwInternalCompilerError } from "../errors";
 
 export function cloneNode<T extends AstNode>(
     src: T,
-    { cloneAstNode }: AstSchema,
+    { cloneAstNode }: FactoryAst,
 ): T {
     const recurse = <T extends AstNode>(src: T): T => {
         if (src.kind === "boolean") {

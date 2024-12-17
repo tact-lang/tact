@@ -1,6 +1,6 @@
 import { featureEnable } from "./config/features";
 import { CompilerContext } from "./context";
-import { getAstSchema } from "./grammar/ast";
+import { getAstFactory } from "./grammar/ast";
 import { getParser } from "./grammar";
 import files from "./imports/stdlib";
 import { createVirtualFileSystem, TactError, VirtualFileSystem } from "./main";
@@ -37,7 +37,7 @@ export function check(args: {
     ctx = featureEnable(ctx, "masterchain"); // Enable masterchain flag to avoid masterchain-specific errors
     ctx = featureEnable(ctx, "external"); // Enable external messages flag to avoid external-specific errors
 
-    const ast = getAstSchema();
+    const ast = getAstFactory();
     const parser = getParser(ast);
 
     // Execute check

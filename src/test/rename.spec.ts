@@ -5,7 +5,7 @@ import { prettyPrint } from "../prettyPrinter";
 import { trimTrailingCR, CONTRACTS_DIR } from "./util";
 import * as assert from "assert";
 import { getParser } from "../grammar";
-import { getAstSchema } from "../grammar/ast";
+import { getAstFactory } from "../grammar/ast";
 
 const EXPECTED_DIR = join(CONTRACTS_DIR, "renamer-expected");
 
@@ -16,7 +16,7 @@ describe("renamer", () => {
             if (!dentry.isFile()) {
                 return;
             }
-            const ast = getAstSchema();
+            const ast = getAstFactory();
             const { parse } = getParser(ast);
             const expectedFilePath = join(EXPECTED_DIR, dentry.name);
             const expected = fs.readFileSync(expectedFilePath, "utf-8");

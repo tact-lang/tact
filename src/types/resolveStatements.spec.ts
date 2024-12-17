@@ -6,12 +6,12 @@ import { resolveStatements } from "./resolveStatements";
 import { CompilerContext } from "../context";
 import { featureEnable } from "../config/features";
 import { getParser } from "../grammar";
-import { getAstSchema } from "../grammar/ast";
+import { getAstFactory } from "../grammar/ast";
 
 describe("resolveStatements", () => {
     for (const r of loadCases(__dirname + "/stmts/")) {
         it("should resolve statements for " + r.name, () => {
-            const Ast = getAstSchema();
+            const Ast = getAstFactory();
             let ctx = openContext(
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
@@ -26,7 +26,7 @@ describe("resolveStatements", () => {
     }
     for (const r of loadCases(__dirname + "/stmts-failed/")) {
         it("should fail statements for " + r.name, () => {
-            const Ast = getAstSchema();
+            const Ast = getAstFactory();
             let ctx = openContext(
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],

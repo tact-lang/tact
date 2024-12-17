@@ -7,7 +7,7 @@ import { resolveErrors } from "../types/resolveErrors";
 import { resolveSignatures } from "../types/resolveSignatures";
 import { resolveImports } from "../imports/resolveImports";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
-import { AstModule, AstSchema } from "../grammar/ast";
+import { AstModule, FactoryAst } from "../grammar/ast";
 import { Parser } from "../grammar";
 
 export function precompile(
@@ -16,7 +16,7 @@ export function precompile(
     stdlib: VirtualFileSystem,
     entrypoint: string,
     parser: Parser,
-    ast: AstSchema,
+    ast: FactoryAst,
     parsedModules?: AstModule[],
 ) {
     // Load all sources

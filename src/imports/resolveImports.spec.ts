@@ -2,7 +2,7 @@ import { resolveImports } from "./resolveImports";
 import { createNodeFileSystem } from "../vfs/createNodeFileSystem";
 import path from "path";
 import { getParser } from "../grammar";
-import { getAstSchema } from "../grammar/ast";
+import { getAstFactory } from "../grammar/ast";
 
 describe("resolveImports", () => {
     it("should resolve imports", () => {
@@ -12,7 +12,7 @@ describe("resolveImports", () => {
         const stdlib = createNodeFileSystem(
             path.resolve(__dirname, "__testdata", "stdlib"),
         );
-        const ast = getAstSchema();
+        const ast = getAstFactory();
         const resolved = resolveImports({
             project,
             stdlib,

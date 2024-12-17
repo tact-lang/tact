@@ -16,7 +16,7 @@ import {
     AstConstantDef,
     AstNumberBase,
     AstId,
-    AstSchema,
+    FactoryAst,
 } from "./ast";
 import { throwParseError, throwSyntaxError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
@@ -31,7 +31,7 @@ export const dummySrcInfo: SrcInfo = new SrcInfo(DUMMY_INTERVAL, null, "user");
 type Context = {
     origin: ItemOrigin | null;
     currentFile: string | null;
-    createAstNode: AstSchema["createAstNode"] | null;
+    createAstNode: FactoryAst["createAstNode"] | null;
 };
 
 const defaultContext: Context = Object.freeze({
@@ -59,7 +59,7 @@ function createRef(s: Node): SrcInfo {
     return new SrcInfo(s.source, context.currentFile, context.origin);
 }
 
-const createAstNode: AstSchema["createAstNode"] = (...args) => {
+const createAstNode: FactoryAst["createAstNode"] = (...args) => {
     if (context.createAstNode === null) {
         throwInternalCompilerError("Parser context was not initialized");
     }
@@ -1473,7 +1473,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
     },
 });
 
-export const getParser = (ast: AstSchema) => {
+export const getParser = (ast: FactoryAst) => {
     function parse(src: string, path: string, origin: ItemOrigin): AstModule {
         return withContext(
             {

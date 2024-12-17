@@ -17,7 +17,7 @@ import {
     AstMapType,
     AstTypeId,
     AstAsmFunctionDef,
-    AstSchema,
+    FactoryAst,
 } from "../grammar/ast";
 import { traverse } from "../grammar/iterators";
 import {
@@ -264,7 +264,7 @@ function uidForName(name: string, types: Map<string, TypeDescription>) {
     return uid;
 }
 
-export function resolveDescriptors(ctx: CompilerContext, Ast: AstSchema) {
+export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     const types: Map<string, TypeDescription> = new Map();
     const staticFunctions: Map<string, FunctionDescription> = new Map();
     const staticConstants: Map<string, ConstantDescription> = new Map();

@@ -9,7 +9,7 @@ import { loadCases } from "../utils/loadCases";
 import { openContext } from "../grammar/store";
 import { featureEnable } from "../config/features";
 import { getParser, SrcInfo } from "../grammar";
-import { getAstSchema } from "../grammar/ast";
+import { getAstFactory } from "../grammar/ast";
 
 expect.addSnapshotSerializer({
     test: (src) => src instanceof SrcInfo,
@@ -19,7 +19,7 @@ expect.addSnapshotSerializer({
 describe("resolveDescriptors", () => {
     for (const r of loadCases(__dirname + "/test/")) {
         it("should resolve descriptors for " + r.name, () => {
-            const Ast = getAstSchema();
+            const Ast = getAstFactory();
             let ctx = openContext(
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
@@ -35,7 +35,7 @@ describe("resolveDescriptors", () => {
     }
     for (const r of loadCases(__dirname + "/test-failed/")) {
         it("should fail descriptors for " + r.name, () => {
-            const Ast = getAstSchema();
+            const Ast = getAstFactory();
             let ctx = openContext(
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],

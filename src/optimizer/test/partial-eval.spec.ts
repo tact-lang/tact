@@ -1,9 +1,9 @@
 import {
     AstExpression,
-    AstSchema,
+    FactoryAst,
     AstValue,
     eqExpressions,
-    getAstSchema,
+    getAstFactory,
     isValue,
 } from "../../grammar/ast";
 import { AstUtil, extractValue, getAstUtil } from "../util";
@@ -315,7 +315,7 @@ const booleanExpressions = [
 
 function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
-        const ast = getAstSchema();
+        const ast = getAstFactory();
         const { parseExpression } = getParser(ast);
         const util = getAstUtil(ast);
         const { partiallyEvalExpression } = getOptimizer(util);
@@ -339,7 +339,7 @@ function testExpressionWithOptimizer(
     optimizer: ExpressionTransformer,
 ) {
     it(`should simplify ${original} to ${simplified}`, () => {
-        const ast = getAstSchema();
+        const ast = getAstFactory();
         const { parseExpression } = getParser(ast);
         const util = getAstUtil(ast);
         const originalValue = optimizer.applyRules(
@@ -362,7 +362,7 @@ function testExpressionWithOptimizer(
 // constant expressions.
 function dummyEval(
     ast: AstExpression,
-    { cloneAstNode }: AstSchema,
+    { cloneAstNode }: FactoryAst,
     { makeValueExpression }: AstUtil,
 ): AstExpression {
     const recurse = (ast: AstExpression): AstExpression => {
@@ -454,7 +454,7 @@ class ParameterizableDummyOptimizer implements ExpressionTransformer {
 
     public util: AstUtil;
 
-    constructor(rules: Rule[], Ast: AstSchema) {
+    constructor(rules: Rule[], Ast: FactoryAst) {
         this.util = getAstUtil(Ast);
 
         this.rules = rules;
@@ -484,7 +484,7 @@ describe("partial-evaluator", () => {
         // uses the associative rule 3.
         const optimizer = new ParameterizableDummyOptimizer(
             [new AssociativeRule3()],
-            getAstSchema(),
+            getAstFactory(),
         );
 
         testExpressionWithOptimizer(test.original, test.simplified, optimizer);

@@ -1,4 +1,4 @@
-import { getAstSchema } from "../../grammar/ast";
+import { getAstFactory } from "../../grammar/ast";
 import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
@@ -47,7 +47,7 @@ contract Contract2 {
 
 describe("resolveFuncType", () => {
     it("should process primitive types", () => {
-        const ast = getAstSchema();
+        const ast = getAstFactory();
         let ctx = openContext(
             new CompilerContext(),
             [{ code: primitiveCode, path: "<unknown>", origin: "user" }],
@@ -116,7 +116,7 @@ describe("resolveFuncType", () => {
     });
 
     it("should process contract and struct types", () => {
-        const ast = getAstSchema();
+        const ast = getAstFactory();
         let ctx = openContext(
             new CompilerContext(),
             [{ code: primitiveCode, path: "<unknown>", origin: "user" }],

@@ -8,7 +8,7 @@ import { openContext } from "../../grammar/store";
 import { resolveStatements } from "../../types/resolveStatements";
 import { CompilerContext } from "../../context";
 import { getParser } from "../../grammar";
-import { getAstSchema } from "../../grammar/ast";
+import { getAstFactory } from "../../grammar/ast";
 
 const code = `
 
@@ -70,7 +70,7 @@ const golden: string[] = [
 
 describe("writeExpression", () => {
     it("should write expression", () => {
-        const ast = getAstSchema();
+        const ast = getAstFactory();
         let ctx = openContext(
             new CompilerContext(),
             [{ code: code, path: "<unknown>", origin: "user" }],

@@ -14,7 +14,7 @@ import { writeStdlib } from "./writeStdlib";
 import { openContext } from "../../grammar/store";
 import { writeAccessors } from "./writeAccessors";
 import { getParser } from "../../grammar";
-import { getAstSchema } from "../../grammar/ast";
+import { getAstFactory } from "../../grammar/ast";
 
 const code = `
 primitive Int;
@@ -59,7 +59,7 @@ struct C {
 describe("writeSerialization", () => {
     for (const s of ["A", "B", "C"]) {
         it("should write serializer for " + s, () => {
-            const ast = getAstSchema();
+            const ast = getAstFactory();
             let ctx = openContext(
                 new CompilerContext(),
                 [{ code, path: "<unknown>", origin: "user" }],

@@ -31,7 +31,7 @@ import {
     AstOpBinary,
     AstOpUnary,
     AstPrimitiveTypeDecl,
-    AstSchema,
+    FactoryAst,
     AstStatement,
     AstStatementAssign,
     AstStatementAugmentedAssign,
@@ -52,7 +52,7 @@ import {
     AstTrait,
     AstUnaryOperation,
     eqNames,
-    getAstSchema,
+    getAstFactory,
     idText,
     isSelfId,
 } from "./grammar/ast";
@@ -602,7 +602,7 @@ class EnvironmentStack {
 
 export function parseAndEvalExpression(
     sourceCode: string,
-    ast: AstSchema = getAstSchema(),
+    ast: FactoryAst = getAstFactory(),
     parser: Parser = getParser(ast),
 ): EvalResult {
     try {

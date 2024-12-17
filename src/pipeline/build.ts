@@ -19,7 +19,7 @@ import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
-import { AstSchema, getAstSchema, idText } from "../grammar/ast";
+import { FactoryAst, getAstFactory, idText } from "../grammar/ast";
 import { TactErrorCollection } from "../errors";
 import { getParser, Parser } from "../grammar";
 
@@ -54,14 +54,14 @@ export async function build(args: {
     stdlib: string | VirtualFileSystem;
     logger?: ILogger;
     parser?: Parser;
-    ast?: AstSchema;
+    ast?: FactoryAst;
 }): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
     const { config, project } = args;
     const stdlib =
         typeof args.stdlib === "string"
             ? createVirtualFileSystem(args.stdlib, files)
             : args.stdlib;
-    const ast: AstSchema = args.ast ?? getAstSchema();
+    const ast: FactoryAst = args.ast ?? getAstFactory();
     const parser: Parser = args.parser ?? getParser(ast);
     const logger: ILogger = args.logger ?? new Logger();
 

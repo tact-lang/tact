@@ -4,7 +4,7 @@ import { join } from "path";
 import { AstComparator } from "../grammar/compare";
 import { CONTRACTS_DIR } from "./util";
 import * as assert from "assert";
-import { getAstSchema } from "../grammar/ast";
+import { getAstFactory } from "../grammar/ast";
 
 describe("comparator", () => {
     it.each(fs.readdirSync(CONTRACTS_DIR, { withFileTypes: true }))(
@@ -15,7 +15,7 @@ describe("comparator", () => {
             }
             const filePath = join(CONTRACTS_DIR, dentry.name);
             const src = fs.readFileSync(filePath, "utf-8");
-            const Ast = getAstSchema();
+            const Ast = getAstFactory();
             const { parse } = getParser(Ast);
             const ast1 = parse(src, filePath, "user");
             const ast2 = parse(src, filePath, "user");

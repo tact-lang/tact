@@ -7,7 +7,7 @@ import { CompilerContext } from "../context";
 import { resolveSignatures } from "../types/resolveSignatures";
 import path from "path";
 import { getParser } from "../grammar";
-import { getAstSchema } from "../grammar/ast";
+import { getAstFactory } from "../grammar/ast";
 
 const stdlibPath = path.resolve(__dirname, "../../stdlib/std/primitives.tact");
 const stdlib = fs.readFileSync(stdlibPath, "utf-8");
@@ -63,7 +63,7 @@ contract Sample {
 
 describe("resolveAllocation", () => {
     it("should write program", () => {
-        const ast = getAstSchema();
+        const ast = getAstFactory();
         let ctx = openContext(
             new CompilerContext(),
             [

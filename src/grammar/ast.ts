@@ -760,7 +760,7 @@ type DistributiveOmit<T, K extends keyof any> = T extends any
     ? Omit<T, K>
     : never;
 
-export const getAstSchema = () => {
+export const getAstFactory = () => {
     let nextId = 1;
     function createAstNode(src: DistributiveOmit<AstNode, "id">): AstNode {
         return Object.freeze(Object.assign({ id: nextId++ }, src));
@@ -774,7 +774,7 @@ export const getAstSchema = () => {
     };
 };
 
-export type AstSchema = ReturnType<typeof getAstSchema>;
+export type FactoryAst = ReturnType<typeof getAstFactory>;
 
 // Test equality of AstExpressions.
 export function eqExpressions(
