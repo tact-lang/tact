@@ -22,9 +22,7 @@ import { throwParseError, throwSyntaxError } from "../../errors";
 import { checkVariableName } from "./checkVariableName";
 import { checkFunctionAttributes } from "./checkFunctionAttributes";
 import { checkConstAttributes } from "./checkConstAttributes";
-import { SrcInfo } from "./src-info";
-
-export type ItemOrigin = "stdlib" | "user";
+import { ItemOrigin, SrcInfo } from "./src-info";
 
 const DummyGrammar: Grammar = grammar("Dummy { DummyRule = any }");
 const DUMMY_INTERVAL = DummyGrammar.match("").getInterval();

@@ -230,5 +230,3 @@ export function evalConstantExpression(
     const result = interpreter.interpretExpression(ast);
     return result;
 }
-
-export type Optimizer = ReturnType<typeof getOptimizer>;
