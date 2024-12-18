@@ -59,20 +59,14 @@ const syntaxErrorSchema = <T, U>(
 
 export const parserErrorSchema = (display: ErrorDisplay<string>) => ({
     ...syntaxErrorSchema(display, (message) => (source: SrcInfo) => {
-        throw new TactCompilationError(
-            `${locationStr(source)}${message}\n${source.interval.getLineAndColumnMessage()}`,
-            source,
-        );
+        throw new TactCompilationError(display.at(source, message), source);
     }),
     generic: (matchResult: MatchResult, path: string, origin: ItemOrigin) => {
         const interval = matchResult.getInterval();
         const source = getSrcInfoFromOhm(interval, path, origin);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const message = `Expected ${(matchResult as any).getExpectedText()}\n`;
-        throw new TactCompilationError(
-            `${locationStr(source)}${message}\n${interval.getLineAndColumnMessage()}`,
-            source,
-        );
+        throw new TactCompilationError(display.at(source, message), source);
     },
 });
 
