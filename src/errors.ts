@@ -1,9 +1,7 @@
-import { MatchResult } from "ohm-js";
 import path from "path";
 import { cwd } from "process";
 import { AstFuncId, AstId, AstTypeId } from "./grammar/ast";
-import { ItemOrigin, SrcInfo } from "./grammar";
-import { getSrcInfoFromOhm } from "./grammar/src-info";
+import { SrcInfo } from "./grammar";
 
 export class TactError extends Error {
     readonly loc?: SrcInfo;
@@ -13,19 +11,8 @@ export class TactError extends Error {
     }
 }
 
-export class TactParseError extends TactError {
-    constructor(message: string, loc: SrcInfo) {
-        super(message, loc);
-    }
-}
-
-export class TactSyntaxError extends TactError {
-    constructor(message: string, loc: SrcInfo) {
-        super(message, loc);
-    }
-}
-
-/// This will be split at least into two categories: typechecking and codegen errors
+// Any regular compilation error shown to user:
+// parsing, typechecking, code generation
 export class TactCompilationError extends TactError {
     constructor(message: string, loc?: SrcInfo) {
         super(message, loc);
@@ -46,7 +33,7 @@ export class TactConstEvalError extends TactCompilationError {
     }
 }
 
-function locationStr(sourceInfo: SrcInfo): string {
+export function locationStr(sourceInfo: SrcInfo): string {
     if (sourceInfo.file) {
         const loc = sourceInfo.interval.getLineAndColumn() as {
             lineNum: number;
@@ -57,28 +44,6 @@ function locationStr(sourceInfo: SrcInfo): string {
     } else {
         return "";
     }
-}
-
-export function throwParseError(
-    matchResult: MatchResult,
-    path: string,
-    origin: ItemOrigin,
-): never {
-    const interval = matchResult.getInterval();
-    const source = getSrcInfoFromOhm(interval, path, origin);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const message = `Parse error: expected ${(matchResult as any).getExpectedText()}\n`;
-    throw new TactParseError(
-        `${locationStr(source)}${message}\n${interval.getLineAndColumnMessage()}`,
-        source,
-    );
-}
-
-export function throwSyntaxError(message: string, source: SrcInfo): never {
-    throw new TactSyntaxError(
-        `Syntax error: ${locationStr(source)}${message}\n${source.interval.getLineAndColumnMessage()}`,
-        source,
-    );
 }
 
 export function throwCompilationError(
@@ -128,8 +93,6 @@ export function idTextErr(
 
 export type TactErrorCollection =
     | Error
-    | TactParseError
-    | TactSyntaxError
     | TactCompilationError
     | TactInternalCompilerError
     | TactConstEvalError;

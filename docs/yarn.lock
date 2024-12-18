@@ -273,20 +273,10 @@
   resolved "https://registry.npmjs.org/@babel/helper-plugin-utils/-/helper-plugin-utils-7.25.9.tgz#9cbdd63a9443a2c92a725cca7ebca12cc8dd9f46"
   integrity sha512-kSMlyUVdWe25rEsRGviIgOWnoT/nfABVWlqt9N19/dIPWViAOW2s9wznP5tURbs/IDuNk4gPy3YdYRgH3uxhBw==
 
-"@babel/helper-string-parser@^7.25.7":
-  version "7.25.7"
-  resolved "https://registry.npmjs.org/@babel/helper-string-parser/-/helper-string-parser-7.25.7.tgz#d50e8d37b1176207b4fe9acedec386c565a44a54"
-  integrity sha512-CbkjYdsJNHFk8uqpEkpCvRs3YRp9tY6FmFY7wLMSYuGYkrdUi7r2lc4/wqsvlHoMznX3WJ9IP8giGPq68T/Y6g==
-
 "@babel/helper-string-parser@^7.25.9":
   version "7.25.9"
   resolved "https://registry.npmjs.org/@babel/helper-string-parser/-/helper-string-parser-7.25.9.tgz#1aabb72ee72ed35789b4bbcad3ca2862ce614e8c"
   integrity sha512-4A/SCr/2KLd5jrtOMFzaKjVtAei3+2r/NChoBNoZ3EyP/+GlhoaEGoWOZUmFmoITP7zOJyHIMm+DYRd8o3PvHA==
-
-"@babel/helper-validator-identifier@^7.25.7":
-  version "7.25.7"
-  resolved "https://registry.npmjs.org/@babel/helper-validator-identifier/-/helper-validator-identifier-7.25.7.tgz#77b7f60c40b15c97df735b38a66ba1d7c3e93da5"
-  integrity sha512-AM6TzwYqGChO45oiuPqwL2t20/HdMC1rTPAesnBCgPCSF1x3oN9MVUwQV2iyz4xqWrctwK5RNC8LV22kaQCNYg==
 
 "@babel/helper-validator-identifier@^7.25.9":
   version "7.25.9"
@@ -367,16 +357,7 @@
     debug "^4.3.1"
     globals "^11.1.0"
 
-"@babel/types@^7.0.0", "@babel/types@^7.20.7", "@babel/types@^7.25.4", "@babel/types@^7.25.6":
-  version "7.25.8"
-  resolved "https://registry.npmjs.org/@babel/types/-/types-7.25.8.tgz#5cf6037258e8a9bcad533f4979025140cb9993e1"
-  integrity sha512-JWtuCu8VQsMladxVz/P4HzHUGCAwpuqacmowgXFs5XjxIgKuNjnLokQzuVjlTvIzODaDmpjT3oxcC48vyk9EWg==
-  dependencies:
-    "@babel/helper-string-parser" "^7.25.7"
-    "@babel/helper-validator-identifier" "^7.25.7"
-    to-fast-properties "^2.0.0"
-
-"@babel/types@^7.25.9", "@babel/types@^7.26.0":
+"@babel/types@^7.0.0", "@babel/types@^7.20.7", "@babel/types@^7.25.4", "@babel/types@^7.25.6", "@babel/types@^7.25.9", "@babel/types@^7.26.0":
   version "7.26.0"
   resolved "https://registry.npmjs.org/@babel/types/-/types-7.26.0.tgz#deabd08d6b753bc8e0f198f8709fb575e31774ff"
   integrity sha512-Z/yiTPj+lDVnF7lWeKCIJzaIkI0vYO87dMpZ4bg4TDrFe4XXLFWL1TbXU27gBP3QccxV9mZICCrnjnYlJjXHOA==
@@ -1205,9 +1186,9 @@
   integrity sha512-b7/qPqgIl+lMzkQ8fJt51SfguB396xbIIR+VZ3YrL2tLuyifDJ1wL5mEm+ddmHxJ2Fki340paPcDan9en5OmAw==
 
 "@rollup/pluginutils@^5.1.3":
-  version "5.1.3"
-  resolved "https://registry.npmjs.org/@rollup/pluginutils/-/pluginutils-5.1.3.tgz#3001bf1a03f3ad24457591f2c259c8e514e0dbdf"
-  integrity sha512-Pnsb6f32CD2W3uCaLZIzDmeFyQ2b8UWMFI7xtwUezpcGBDVDW6y9XgAWIlARiGAo6eNF5FK5aQTr0LFyNyqq5A==
+  version "5.1.4"
+  resolved "https://registry.npmjs.org/@rollup/pluginutils/-/pluginutils-5.1.4.tgz#bb94f1f9eaaac944da237767cdfee6c5b2262d4a"
+  integrity sha512-USm05zrsFxYLPdWWq+K3STlWiT/3ELn3RcV5hJMghpeAIhxfsUIg6mt12CBJBInWMV4VneoV7SfGv8xIwo2qNQ==
   dependencies:
     "@types/estree" "^1.0.0"
     estree-walker "^2.0.2"
@@ -1293,68 +1274,39 @@
   resolved "https://registry.npmjs.org/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.24.0.tgz#0574d7e87b44ee8511d08cc7f914bcb802b70818"
   integrity sha512-fbMkAF7fufku0N2dE5TBXcNlg0pt0cJue4xBRE2Qc5Vqikxr4VCgKj/ht6SMdFcOacVA9rqF70APJ8RN/4vMJw==
 
-"@shikijs/core@1.22.0":
-  version "1.22.0"
-  resolved "https://registry.npmjs.org/@shikijs/core/-/core-1.22.0.tgz#74e5d4485e5f7afa85109e322b42e400686f92bb"
-  integrity sha512-S8sMe4q71TJAW+qG93s5VaiihujRK6rqDFqBnxqvga/3LvqHEnxqBIOPkt//IdXVtHkQWKu4nOQNk0uBGicU7Q==
+"@shikijs/core@1.24.2":
+  version "1.24.2"
+  resolved "https://registry.npmjs.org/@shikijs/core/-/core-1.24.2.tgz#6308697f84a5029983885d0a7651d1667444bbce"
+  integrity sha512-BpbNUSKIwbKrRRA+BQj0BEWSw+8kOPKDJevWeSE/xIqGX7K0xrCZQ9kK0nnEQyrzsUoka1l81ZtJ2mGaCA32HQ==
   dependencies:
-    "@shikijs/engine-javascript" "1.22.0"
-    "@shikijs/engine-oniguruma" "1.22.0"
-    "@shikijs/types" "1.22.0"
+    "@shikijs/engine-javascript" "1.24.2"
+    "@shikijs/engine-oniguruma" "1.24.2"
+    "@shikijs/types" "1.24.2"
     "@shikijs/vscode-textmate" "^9.3.0"
     "@types/hast" "^3.0.4"
     hast-util-to-html "^9.0.3"
 
-"@shikijs/core@1.23.1":
-  version "1.23.1"
-  resolved "https://registry.npmjs.org/@shikijs/core/-/core-1.23.1.tgz#911473e672e4f2d15ca36b28b28179c0959aa7af"
-  integrity sha512-NuOVgwcHgVC6jBVH5V7iblziw6iQbWWHrj5IlZI3Fqu2yx9awH7OIQkXIcsHsUmY19ckwSgUMgrqExEyP5A0TA==
+"@shikijs/engine-javascript@1.24.2":
+  version "1.24.2"
+  resolved "https://registry.npmjs.org/@shikijs/engine-javascript/-/engine-javascript-1.24.2.tgz#af5920fdd76765d04dc5ec1a65cc77e355d6ceed"
+  integrity sha512-EqsmYBJdLEwEiO4H+oExz34a5GhhnVp+jH9Q/XjPjmBPc6TE/x4/gD0X3i0EbkKKNqXYHHJTJUpOLRQNkEzS9Q==
   dependencies:
-    "@shikijs/engine-javascript" "1.23.1"
-    "@shikijs/engine-oniguruma" "1.23.1"
-    "@shikijs/types" "1.23.1"
+    "@shikijs/types" "1.24.2"
     "@shikijs/vscode-textmate" "^9.3.0"
-    "@types/hast" "^3.0.4"
-    hast-util-to-html "^9.0.3"
+    oniguruma-to-es "0.7.0"
 
-"@shikijs/engine-javascript@1.22.0":
-  version "1.22.0"
-  resolved "https://registry.npmjs.org/@shikijs/engine-javascript/-/engine-javascript-1.22.0.tgz#2e5db29f0421755492f5279f8224ef7a7f907a29"
-  integrity sha512-AeEtF4Gcck2dwBqCFUKYfsCq0s+eEbCEbkUuFou53NZ0sTGnJnJ/05KHQFZxpii5HMXbocV9URYVowOP2wH5kw==
+"@shikijs/engine-oniguruma@1.24.2":
+  version "1.24.2"
+  resolved "https://registry.npmjs.org/@shikijs/engine-oniguruma/-/engine-oniguruma-1.24.2.tgz#90924001a17a2551a2a9073aed4af3767ce68b1b"
+  integrity sha512-ZN6k//aDNWRJs1uKB12pturKHh7GejKugowOFGAuG7TxDRLod1Bd5JhpOikOiFqPmKjKEPtEA6mRCf7q3ulDyQ==
   dependencies:
-    "@shikijs/types" "1.22.0"
-    "@shikijs/vscode-textmate" "^9.3.0"
-    oniguruma-to-js "0.4.3"
-
-"@shikijs/engine-javascript@1.23.1":
-  version "1.23.1"
-  resolved "https://registry.npmjs.org/@shikijs/engine-javascript/-/engine-javascript-1.23.1.tgz#0f634bea22cb14f471835b7b5f1da66bc34bd359"
-  integrity sha512-i/LdEwT5k3FVu07SiApRFwRcSJs5QM9+tod5vYCPig1Ywi8GR30zcujbxGQFJHwYD7A5BUqagi8o5KS+LEVgBg==
-  dependencies:
-    "@shikijs/types" "1.23.1"
-    "@shikijs/vscode-textmate" "^9.3.0"
-    oniguruma-to-es "0.4.1"
-
-"@shikijs/engine-oniguruma@1.22.0":
-  version "1.22.0"
-  resolved "https://registry.npmjs.org/@shikijs/engine-oniguruma/-/engine-oniguruma-1.22.0.tgz#74c661fac4cd1f08f2c09b5d6e2fd2a6720d0401"
-  integrity sha512-5iBVjhu/DYs1HB0BKsRRFipRrD7rqjxlWTj4F2Pf+nQSPqc3kcyqFFeZXnBMzDf0HdqaFVvhDRAGiYNvyLP+Mw==
-  dependencies:
-    "@shikijs/types" "1.22.0"
+    "@shikijs/types" "1.24.2"
     "@shikijs/vscode-textmate" "^9.3.0"
 
-"@shikijs/engine-oniguruma@1.23.1":
-  version "1.23.1"
-  resolved "https://registry.npmjs.org/@shikijs/engine-oniguruma/-/engine-oniguruma-1.23.1.tgz#c6c34c9152cf90c1ee75fcdbd124253c8ad0635f"
-  integrity sha512-KQ+lgeJJ5m2ISbUZudLR1qHeH3MnSs2mjFg7bnencgs5jDVPeJ2NVDJ3N5ZHbcTsOIh0qIueyAJnwg7lg7kwXQ==
-  dependencies:
-    "@shikijs/types" "1.23.1"
-    "@shikijs/vscode-textmate" "^9.3.0"
-
-"@shikijs/types@1.22.0":
-  version "1.22.0"
-  resolved "https://registry.npmjs.org/@shikijs/types/-/types-1.22.0.tgz#d2a572381395c9308b472c8199b8e0289753b9ad"
-  integrity sha512-Fw/Nr7FGFhlQqHfxzZY8Cwtwk5E9nKDUgeLjZgt3UuhcM3yJR9xj3ZGNravZZok8XmEZMiYkSMTPlPkULB8nww==
+"@shikijs/types@1.24.2":
+  version "1.24.2"
+  resolved "https://registry.npmjs.org/@shikijs/types/-/types-1.24.2.tgz#770313a0072a7c14ab1a130a36d02df7e4d87375"
+  integrity sha512-bdeWZiDtajGLG9BudI0AHet0b6e7FbR0EsE4jpGaI0YwHm/XJunI9+3uZnzFtX65gsyJ6ngCIWUfA4NWRPnBkQ==
   dependencies:
     "@shikijs/vscode-textmate" "^9.3.0"
     "@types/hast" "^3.0.4"
@@ -1589,12 +1541,7 @@ acorn-jsx@^5.0.0:
   resolved "https://registry.npmjs.org/acorn-jsx/-/acorn-jsx-5.3.2.tgz"
   integrity sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==
 
-acorn@^8.0.0, acorn@^8.12.1:
-  version "8.12.1"
-  resolved "https://registry.npmjs.org/acorn/-/acorn-8.12.1.tgz"
-  integrity sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==
-
-acorn@^8.14.0:
+acorn@^8.0.0, acorn@^8.12.1, acorn@^8.14.0:
   version "8.14.0"
   resolved "https://registry.npmjs.org/acorn/-/acorn-8.14.0.tgz#063e2c70cac5fb4f6467f0b11152e04c682795b0"
   integrity sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==
@@ -1682,10 +1629,10 @@ astro-expressive-code@^0.38.3:
   dependencies:
     rehype-expressive-code "^0.38.3"
 
-astro@4.16.14:
-  version "4.16.14"
-  resolved "https://registry.npmjs.org/astro/-/astro-4.16.14.tgz#a3c1a4f6e904d9b28229ea903c9e125449a89e9d"
-  integrity sha512-2IuLkIp4idyspugq+F52rHZyNqHHi2AdQzuKp3SGytg/YAm50dNeWhP/7l+enjgWZLloLq5xsH5gVQpoDFoyFg==
+astro@4.16.17:
+  version "4.16.17"
+  resolved "https://registry.npmjs.org/astro/-/astro-4.16.17.tgz#058f222c3633704b909e8621fd90b86d40072c71"
+  integrity sha512-OuD+BP7U6OqQLKtZ/FJkU2S+TOlifxS/OKUbZOb5p6y+LLBa1J3zHRJrIl7DUSq6eXY+9wSWwbJpD9JS+lqhxA==
   dependencies:
     "@astrojs/compiler" "^2.10.3"
     "@astrojs/internal-helpers" "0.4.1"
@@ -1702,7 +1649,7 @@ astro@4.16.14:
     aria-query "^5.3.2"
     axobject-query "^4.1.0"
     boxen "8.0.1"
-    ci-info "^4.0.0"
+    ci-info "^4.1.0"
     clsx "^2.1.1"
     common-ancestor-path "^1.0.1"
     cookie "^0.7.2"
@@ -1724,7 +1671,7 @@ astro@4.16.14:
     http-cache-semantics "^4.1.1"
     js-yaml "^4.1.0"
     kleur "^4.1.5"
-    magic-string "^0.30.12"
+    magic-string "^0.30.14"
     magicast "^0.3.5"
     micromatch "^4.0.8"
     mrmime "^2.0.0"
@@ -1736,15 +1683,15 @@ astro@4.16.14:
     prompts "^2.4.2"
     rehype "^13.0.2"
     semver "^7.6.3"
-    shiki "^1.22.2"
+    shiki "^1.23.1"
     tinyexec "^0.3.1"
     tsconfck "^3.1.4"
     unist-util-visit "^5.0.0"
     vfile "^6.0.3"
-    vite "^5.4.10"
-    vitefu "^1.0.3"
+    vite "^5.4.11"
+    vitefu "^1.0.4"
     which-pm "^3.0.0"
-    xxhash-wasm "^1.0.2"
+    xxhash-wasm "^1.1.0"
     yargs-parser "^21.1.1"
     zod "^3.23.8"
     zod-to-json-schema "^3.23.5"
@@ -1942,10 +1889,10 @@ chownr@^1.1.1:
   resolved "https://registry.npmjs.org/chownr/-/chownr-1.1.4.tgz"
   integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
 
-ci-info@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.npmjs.org/ci-info/-/ci-info-4.0.0.tgz"
-  integrity sha512-TdHqgGf9odd8SXNuxtUBVx8Nv+qZOejE6qyqiy5NtbYYQOeFa6zmHkxlPzmaLxWWHsU6nJmB7AETdVPi+2NBUg==
+ci-info@^4.0.0, ci-info@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.npmjs.org/ci-info/-/ci-info-4.1.0.tgz#92319d2fa29d2620180ea5afed31f589bc98cf83"
+  integrity sha512-HutrvTNsF48wnxkzERIXOe5/mlcfFcbfCmwcg6CJnizbSue78AbDt+1cgl26zwn61WFxhcPykPfZrbqjGmBb4A==
 
 clear-module@^4.1.2:
   version "4.1.2"
@@ -3216,10 +3163,10 @@ lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
-magic-string@^0.30.12:
-  version "0.30.12"
-  resolved "https://registry.npmjs.org/magic-string/-/magic-string-0.30.12.tgz#9eb11c9d072b9bcb4940a5b2c2e1a217e4ee1a60"
-  integrity sha512-Ea8I3sQMVXr8JhN4z+H/d8zwo+tYDgHE9+5G4Wnrwhs0gaK9fXTKx0Tw5Xwsd/bCPTTZNRAdpyzvoeORe9LYpw==
+magic-string@^0.30.14:
+  version "0.30.17"
+  resolved "https://registry.npmjs.org/magic-string/-/magic-string-0.30.17.tgz#450a449673d2460e5bbcfba9a61916a1714c7453"
+  integrity sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==
   dependencies:
     "@jridgewell/sourcemap-codec" "^1.5.0"
 
@@ -3988,21 +3935,14 @@ onetime@^7.0.0:
   dependencies:
     mimic-function "^5.0.0"
 
-oniguruma-to-es@0.4.1:
-  version "0.4.1"
-  resolved "https://registry.npmjs.org/oniguruma-to-es/-/oniguruma-to-es-0.4.1.tgz#112fbcd5fafe4f635983425a6db88f3e2de37107"
-  integrity sha512-rNcEohFz095QKGRovP/yqPIKc+nP+Sjs4YTHMv33nMePGKrq/r2eu9Yh4646M5XluGJsUnmwoXuiXE69KDs+fQ==
+oniguruma-to-es@0.7.0:
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/oniguruma-to-es/-/oniguruma-to-es-0.7.0.tgz#999fe7df1e6acae4507e2d77afc6de4fc8533116"
+  integrity sha512-HRaRh09cE0gRS3+wi2zxekB+I5L8C/gN60S+vb11eADHUaB/q4u8wGGOX3GvwvitG8ixaeycZfeoyruKQzUgNg==
   dependencies:
     emoji-regex-xs "^1.0.0"
-    regex "^5.0.0"
-    regex-recursion "^4.2.1"
-
-oniguruma-to-js@0.4.3:
-  version "0.4.3"
-  resolved "https://registry.npmjs.org/oniguruma-to-js/-/oniguruma-to-js-0.4.3.tgz"
-  integrity sha512-X0jWUcAlxORhOqqBREgPMgnshB7ZGYszBNspP+tS9hPD3l13CdaXcHbgImoHUHlrvGx/7AvFEkTRhAGYh+jzjQ==
-  dependencies:
-    regex "^4.3.2"
+    regex "^5.0.2"
+    regex-recursion "^4.3.0"
 
 ora@^8.1.1:
   version "8.1.1"
@@ -4283,10 +4223,10 @@ regenerator-runtime@^0.14.0:
   resolved "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.14.1.tgz"
   integrity sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==
 
-regex-recursion@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.npmjs.org/regex-recursion/-/regex-recursion-4.2.1.tgz#024ee28593b8158e568307b99bf1b7a3d5ea31e9"
-  integrity sha512-QHNZyZAeKdndD1G3bKAbBEKOSSK4KOHQrAJ01N1LJeb0SoH4DJIeFhp0uUpETgONifS4+P3sOgoA1dhzgrQvhA==
+regex-recursion@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.npmjs.org/regex-recursion/-/regex-recursion-4.3.0.tgz#32c3a42a57d78bf2d0c83875074c2f7ebaf2a4f6"
+  integrity sha512-5LcLnizwjcQ2ALfOj95MjcatxyqF5RPySx9yT+PaXu3Gox2vyAtLDjHB8NTJLtMGkvyau6nI3CfpwFCjPUIs/A==
   dependencies:
     regex-utilities "^2.3.0"
 
@@ -4295,10 +4235,12 @@ regex-utilities@^2.3.0:
   resolved "https://registry.npmjs.org/regex-utilities/-/regex-utilities-2.3.0.tgz#87163512a15dce2908cf079c8960d5158ff43280"
   integrity sha512-8VhliFJAWRaUiVvREIiW2NXXTmHs4vMNnSzuJVhscgmGav3g9VDxLrQndI3dZZVVdp0ZO/5v0xmX516/7M9cng==
 
-regex@^4.3.2:
-  version "4.3.2"
-  resolved "https://registry.npmjs.org/regex/-/regex-4.3.2.tgz"
-  integrity sha512-kK/AA3A9K6q2js89+VMymcboLOlF5lZRCYJv3gzszXFHBr6kO6qLGzbm+UIugBEV8SMMKCTR59txoY6ctRHYVw==
+regex@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.npmjs.org/regex/-/regex-5.0.2.tgz#291d960467e6499a79ceec022d20a4e0df67c54f"
+  integrity sha512-/pczGbKIQgfTMRV0XjABvc5RzLqQmwqxLHdQao2RTXPk+pmTXB2P0IaUHYdYyk412YLwUIkaeMd5T+RzVgTqnQ==
+  dependencies:
+    regex-utilities "^2.3.0"
 
 regex@^5.0.0:
   version "5.0.2"
@@ -4680,15 +4622,15 @@ sharp@^0.33.3:
     "@img/sharp-win32-ia32" "0.33.5"
     "@img/sharp-win32-x64" "0.33.5"
 
-shiki@^1.10.3, shiki@^1.22.0:
-  version "1.22.0"
-  resolved "https://registry.npmjs.org/shiki/-/shiki-1.22.0.tgz#45d1dfff0e03a598af70e2ec8592f14ef07827b4"
-  integrity sha512-/t5LlhNs+UOKQCYBtl5ZsH/Vclz73GIqT2yQsCBygr8L/ppTdmpL4w3kPLoZJbMKVWtoG77Ue1feOjZfDxvMkw==
+shiki@^1.1.7, shiki@^1.10.3, shiki@^1.22.0, shiki@^1.23.1:
+  version "1.24.2"
+  resolved "https://registry.npmjs.org/shiki/-/shiki-1.24.2.tgz#9db5b2ebe452d24769377c733ae1944f996ad584"
+  integrity sha512-TR1fi6mkRrzW+SKT5G6uKuc32Dj2EEa7Kj0k8kGqiBINb+C1TiflVOiT9ta6GqOJtC4fraxO5SLUaKBcSY38Fg==
   dependencies:
-    "@shikijs/core" "1.22.0"
-    "@shikijs/engine-javascript" "1.22.0"
-    "@shikijs/engine-oniguruma" "1.22.0"
-    "@shikijs/types" "1.22.0"
+    "@shikijs/core" "1.24.2"
+    "@shikijs/engine-javascript" "1.24.2"
+    "@shikijs/engine-oniguruma" "1.24.2"
+    "@shikijs/types" "1.24.2"
     "@shikijs/vscode-textmate" "^9.3.0"
     "@types/hast" "^3.0.4"
 
@@ -4930,11 +4872,6 @@ tinyexec@^0.3.1:
   resolved "https://registry.npmjs.org/tinyexec/-/tinyexec-0.3.1.tgz#0ab0daf93b43e2c211212396bdb836b468c97c98"
   integrity sha512-WiCJLEECkO18gwqIp6+hJg0//p23HXp4S+gGtAKu3mI2F2/sXC4FvHvXvB0zJVVaTPhx1/tOwdbRsa1sOBIKqQ==
 
-to-fast-properties@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/to-fast-properties/-/to-fast-properties-2.0.0.tgz"
-  integrity sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==
-
 to-regex-range@^5.0.1:
   version "5.0.1"
   resolved "https://registry.npmjs.org/to-regex-range/-/to-regex-range-5.0.1.tgz"
@@ -5122,7 +5059,7 @@ vfile@^6.0.0, vfile@^6.0.2, vfile@^6.0.3:
     "@types/unist" "^3.0.0"
     vfile-message "^4.0.0"
 
-vite@^5.4.10:
+vite@^5.4.11:
   version "5.4.11"
   resolved "https://registry.npmjs.org/vite/-/vite-5.4.11.tgz#3b415cd4aed781a356c1de5a9ebafb837715f6e5"
   integrity sha512-c7jFQRklXua0mTzneGW9QVyxFjUgwcihC4bXEtujIo2ouWCe1Ajt/amn2PCxYnhYfd5k09JX3SB7OYWFKYqj8Q==
@@ -5133,10 +5070,10 @@ vite@^5.4.10:
   optionalDependencies:
     fsevents "~2.3.3"
 
-vitefu@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/vitefu/-/vitefu-1.0.3.tgz#0467c75ee2be951c35246605b7fdbdbfd03b65d1"
-  integrity sha512-iKKfOMBHob2WxEJbqbJjHAkmYgvFDPhuqrO82om83S8RLk+17FtyMBfcyeH8GqD0ihShtkMW/zzJgiA51hCNCQ==
+vitefu@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/vitefu/-/vitefu-1.0.4.tgz#8e0355362d2f64c499cbb22d5dbc3184d02c9a2d"
+  integrity sha512-y6zEE3PQf6uu/Mt6DTJ9ih+kyJLr4XcSgHR2zUkM8SWDhuixEJxfJ6CZGMHh1Ec3vPLoEA0IHU5oWzVqw8ulow==
 
 volar-service-css@0.0.62:
   version "0.0.62"
@@ -5353,10 +5290,10 @@ xdg-basedir@^5.1.0:
   resolved "https://registry.npmjs.org/xdg-basedir/-/xdg-basedir-5.1.0.tgz"
   integrity sha512-GCPAHLvrIH13+c0SuacwvRYj2SxJXQ4kaVTT5xgL3kPrz56XxkF21IGhjSE1+W0aw7gpBWRGXLCPnPby6lSpmQ==
 
-xxhash-wasm@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/xxhash-wasm/-/xxhash-wasm-1.0.2.tgz"
-  integrity sha512-ibF0Or+FivM9lNrg+HGJfVX8WJqgo+kCLDc4vx6xMeTce7Aj+DLttKbxxRR/gNLSAelRc1omAPlJ77N/Jem07A==
+xxhash-wasm@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/xxhash-wasm/-/xxhash-wasm-1.1.0.tgz#ffe7f0b98220a4afac171e3fb9b6d1f8771f015e"
+  integrity sha512-147y/6YNh+tlp6nd/2pWq38i9h6mz/EuQ6njIrmW8D1BS5nCqs0P6DG+m6zTGnNz5I+uhZ0SHxBs9BsPrwcKDA==
 
 y18n@^5.0.5:
   version "5.0.8"
@@ -5420,9 +5357,9 @@ yocto-queue@^1.1.1:
   integrity sha512-b4JR1PFR10y1mKjhHY9LaGo6tmrgjit7hxVIeAmyMw3jegXR4dhYqLaQF5zMXZxY7tLpMyJeLjr1C4rLmkVe8g==
 
 zod-to-json-schema@^3.23.5:
-  version "3.23.5"
-  resolved "https://registry.npmjs.org/zod-to-json-schema/-/zod-to-json-schema-3.23.5.tgz#ec23def47dcafe3a4d640eba6a346b34f9a693a5"
-  integrity sha512-5wlSS0bXfF/BrL4jPAbz9da5hDlDptdEppYfe+x4eIJ7jioqKG9uUxOwPzqof09u/XeVdrgFu29lZi+8XNDJtA==
+  version "3.24.1"
+  resolved "https://registry.npmjs.org/zod-to-json-schema/-/zod-to-json-schema-3.24.1.tgz#f08c6725091aadabffa820ba8d50c7ab527f227a"
+  integrity sha512-3h08nf3Vw3Wl3PK+q3ow/lIil81IT2Oa7YpQyUUDsEWbXveMesdfK1xBd2RhCkynwZndAxixji/7SYJJowr62w==
 
 zod-to-ts@^1.2.0:
   version "1.2.0"

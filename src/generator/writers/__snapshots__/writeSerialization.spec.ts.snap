@@ -59,34 +59,13 @@ exports[`writeSerialization should write serializer for A 1`] = `
   },
   {
     "code": {
-      "code": "throw_unless(136, address.slice_bits() == 267);
-var h = address.preload_uint(11);
-throw_if(137, h == 1279);
-throw_unless(136, h == 1024);
-return address;",
+      "code": "slice raw = cs~load_msg_addr();
+return (cs, raw);",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
     "depends": Set {},
-    "flags": Set {
-      "impure",
-      "inline",
-    },
-    "name": "__tact_verify_address",
-    "signature": "slice __tact_verify_address(slice address)",
-  },
-  {
-    "code": {
-      "code": "slice raw = cs~load_msg_addr();
-return (cs, __tact_verify_address(raw));",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_verify_address",
-    },
     "flags": Set {
       "inline",
     },
@@ -97,7 +76,7 @@ return (cs, __tact_verify_address(raw));",
     "code": {
       "code": "if (cs.preload_uint(2) != 0) {
     slice raw = cs~load_msg_addr();
-    return (cs, __tact_verify_address(raw));
+    return (cs, raw);
 } else {
     cs~skip_bits(2);
     return (cs, null());
@@ -106,9 +85,7 @@ return (cs, __tact_verify_address(raw));",
     },
     "comment": null,
     "context": "stdlib",
-    "depends": Set {
-      "__tact_verify_address",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
@@ -117,14 +94,12 @@ return (cs, __tact_verify_address(raw));",
   },
   {
     "code": {
-      "code": "return b.store_slice(__tact_verify_address(address));",
+      "code": "return b.store_slice(address);",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
-    "depends": Set {
-      "__tact_verify_address",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
@@ -160,14 +135,12 @@ b = b.store_uint(0, 1);
 b = b.store_int(chain, 8);
 b = b.store_uint(hash, 256);
 var addr = b.end_cell().begin_parse();
-return __tact_verify_address(addr);",
+return addr;",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
-    "depends": Set {
-      "__tact_verify_address",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
@@ -4318,13 +4291,12 @@ return $C$_to_tuple($C$_not_null(v)); ",
   {
     "code": {
       "code": "var (cell v'a, cell v'b, slice v'c, slice v'd, int v'e, int v'f, int v'g, slice v'h) = __tact_tuple_destroy_8(v);
-return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, __tact_verify_address(v'h));",
+return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:C",
     "depends": Set {
-      "__tact_verify_address",
       "__tact_tuple_destroy_8",
     },
     "flags": Set {
@@ -4485,34 +4457,13 @@ exports[`writeSerialization should write serializer for B 1`] = `
   },
   {
     "code": {
-      "code": "throw_unless(136, address.slice_bits() == 267);
-var h = address.preload_uint(11);
-throw_if(137, h == 1279);
-throw_unless(136, h == 1024);
-return address;",
+      "code": "slice raw = cs~load_msg_addr();
+return (cs, raw);",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
     "depends": Set {},
-    "flags": Set {
-      "impure",
-      "inline",
-    },
-    "name": "__tact_verify_address",
-    "signature": "slice __tact_verify_address(slice address)",
-  },
-  {
-    "code": {
-      "code": "slice raw = cs~load_msg_addr();
-return (cs, __tact_verify_address(raw));",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_verify_address",
-    },
     "flags": Set {
       "inline",
     },
@@ -4523,7 +4474,7 @@ return (cs, __tact_verify_address(raw));",
     "code": {
       "code": "if (cs.preload_uint(2) != 0) {
     slice raw = cs~load_msg_addr();
-    return (cs, __tact_verify_address(raw));
+    return (cs, raw);
 } else {
     cs~skip_bits(2);
     return (cs, null());
@@ -4532,9 +4483,7 @@ return (cs, __tact_verify_address(raw));",
     },
     "comment": null,
     "context": "stdlib",
-    "depends": Set {
-      "__tact_verify_address",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
@@ -4543,14 +4492,12 @@ return (cs, __tact_verify_address(raw));",
   },
   {
     "code": {
-      "code": "return b.store_slice(__tact_verify_address(address));",
+      "code": "return b.store_slice(address);",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
-    "depends": Set {
-      "__tact_verify_address",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
@@ -4586,14 +4533,12 @@ b = b.store_uint(0, 1);
 b = b.store_int(chain, 8);
 b = b.store_uint(hash, 256);
 var addr = b.end_cell().begin_parse();
-return __tact_verify_address(addr);",
+return addr;",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
-    "depends": Set {
-      "__tact_verify_address",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
@@ -8744,13 +8689,12 @@ return $C$_to_tuple($C$_not_null(v)); ",
   {
     "code": {
       "code": "var (cell v'a, cell v'b, slice v'c, slice v'd, int v'e, int v'f, int v'g, slice v'h) = __tact_tuple_destroy_8(v);
-return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, __tact_verify_address(v'h));",
+return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:C",
     "depends": Set {
-      "__tact_verify_address",
       "__tact_tuple_destroy_8",
     },
     "flags": Set {
@@ -8911,34 +8855,13 @@ exports[`writeSerialization should write serializer for C 1`] = `
   },
   {
     "code": {
-      "code": "throw_unless(136, address.slice_bits() == 267);
-var h = address.preload_uint(11);
-throw_if(137, h == 1279);
-throw_unless(136, h == 1024);
-return address;",
+      "code": "slice raw = cs~load_msg_addr();
+return (cs, raw);",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
     "depends": Set {},
-    "flags": Set {
-      "impure",
-      "inline",
-    },
-    "name": "__tact_verify_address",
-    "signature": "slice __tact_verify_address(slice address)",
-  },
-  {
-    "code": {
-      "code": "slice raw = cs~load_msg_addr();
-return (cs, __tact_verify_address(raw));",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_verify_address",
-    },
     "flags": Set {
       "inline",
     },
@@ -8949,7 +8872,7 @@ return (cs, __tact_verify_address(raw));",
     "code": {
       "code": "if (cs.preload_uint(2) != 0) {
     slice raw = cs~load_msg_addr();
-    return (cs, __tact_verify_address(raw));
+    return (cs, raw);
 } else {
     cs~skip_bits(2);
     return (cs, null());
@@ -8958,9 +8881,7 @@ return (cs, __tact_verify_address(raw));",
     },
     "comment": null,
     "context": "stdlib",
-    "depends": Set {
-      "__tact_verify_address",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
@@ -8969,14 +8890,12 @@ return (cs, __tact_verify_address(raw));",
   },
   {
     "code": {
-      "code": "return b.store_slice(__tact_verify_address(address));",
+      "code": "return b.store_slice(address);",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
-    "depends": Set {
-      "__tact_verify_address",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
@@ -9012,14 +8931,12 @@ b = b.store_uint(0, 1);
 b = b.store_int(chain, 8);
 b = b.store_uint(hash, 256);
 var addr = b.end_cell().begin_parse();
-return __tact_verify_address(addr);",
+return addr;",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
-    "depends": Set {
-      "__tact_verify_address",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
@@ -13173,13 +13090,12 @@ return $C$_to_tuple($C$_not_null(v)); ",
   {
     "code": {
       "code": "var (cell v'a, cell v'b, slice v'c, slice v'd, int v'e, int v'f, int v'g, slice v'h) = __tact_tuple_destroy_8(v);
-return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, __tact_verify_address(v'h));",
+return (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h);",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:C",
     "depends": Set {
-      "__tact_verify_address",
       "__tact_tuple_destroy_8",
     },
     "flags": Set {

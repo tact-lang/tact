@@ -1,6 +1,19 @@
-message TestMessage {
-    address: Address;
-    address2: Address?;
+// not reusing previously used 136 and 137 exit codes
+// because Tact reserves the codes from 128 to 255
+// and now this is user-land checks 
+const InvalidAddressExitCode: Int = 1136;
+const MasterchainNotEnabled: Int = 1137;
+
+fun verifyAddress(addr: Address, enabledMasterChain: Bool) {
+    let addrSlice = addr.asSlice();
+    nativeThrowUnless(InvalidAddressExitCode, addrSlice.bits() == 267);
+    let h = addrSlice.preloadUint(11);
+    if (enabledMasterChain) {
+        nativeThrowUnless(InvalidAddressExitCode, (h == 1024) || (h == 1279));
+    } else {
+        nativeThrowIf(MasterchainNotEnabled, h == 1279);
+        nativeThrowUnless(InvalidAddressExitCode, h == 1024);
+    }
 }
 
 contract MasterchainTester {
@@ -9,27 +22,11 @@ contract MasterchainTester {
         
     }
     
-    receive("Deploy") {
-        // Deploy
+    receive("DeployToWorkchain") {
+        verifyAddress(sender(), false);
     }
 
-    receive(message: TestMessage) {
-        // Should fail for non-masterchain
-    }
-
-    get fun createAddress(chain: Int, hash: Int): Address {
-        return newAddress(chain, hash);
-    }
-
-    get fun parseAddress(src: Slice): Address {
-        return src.loadAddress();
-    }
-
-    get fun serializeAddress(src: Address): Bool {
-        return true; // NOTE: src is unused but still have to be checked
-    }
-
-    get fun handleStruct(src: TestMessage): Bool {
-        return true; // NOTE: src is unused but still have to be checked
+    receive("DeployToMasterchain") {
+        verifyAddress(sender(), true);
     }
 }
