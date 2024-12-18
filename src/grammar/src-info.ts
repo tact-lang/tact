@@ -4,13 +4,13 @@ import { throwInternalCompilerError } from "../errors";
 
 export type ItemOrigin = "stdlib" | "user";
 
-export type LineAndColumnInfo = {
+type LineAndColumnInfo = {
     lineNum: number;
     colNum: number;
     toString(...ranges: number[][]): string;
 };
 
-export type Interval = {
+type Interval = {
     contents: string;
     getLineAndColumnMessage(): string;
     getLineAndColumn(): LineAndColumnInfo;
@@ -236,7 +236,7 @@ const errorPrinter = getErrorPrinter({
     contextLines: 1,
 });
 
-export const getSrcInfo = (
+const getSrcInfo = (
     sourceString: string,
     startIdx: number,
     endIdx: number,
