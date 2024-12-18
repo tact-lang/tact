@@ -4,8 +4,8 @@ import * as crc32 from "crc-32";
 import { evalConstantExpression } from "./constEval";
 import { CompilerContext } from "./context";
 import {
+    TactCompilationError,
     TactConstEvalError,
-    TactParseError,
     idTextErr,
     throwConstEvalError,
     throwInternalCompilerError,
@@ -613,7 +613,7 @@ export function parseAndEvalExpression(
         return { kind: "ok", value: constEvalResult };
     } catch (error) {
         if (
-            error instanceof TactParseError ||
+            error instanceof TactCompilationError ||
             error instanceof TactConstEvalError
         )
             return { kind: "error", message: error.message };
