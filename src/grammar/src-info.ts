@@ -46,6 +46,13 @@ export interface SrcInfo {
     toJSON: () => object;
 }
 
+export const srcInfoEqual = (left: SrcInfo, right: SrcInfo): boolean => {
+    return left.file === right.file &&
+        left.interval.contents === right.interval.contents &&
+        left.interval.startIdx === right.interval.startIdx &&
+        left.interval.endIdx === right.interval.endIdx;
+};
+
 const isEndline = (s: string) => s === "\n";
 
 const repeat = (s: string, n: number): string => new Array(n + 1).join(s);
