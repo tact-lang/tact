@@ -24,9 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optional types for `self` argument in `extends mutates` functions are now allowed: PR [#854](https://github.com/tact-lang/tact/pull/854)
 - Error codes in the report are now formatted as a list: PR [#1051](https://github.com/tact-lang/tact/pull/1051)
 - Clarify error message for bounced types from which accessed a field that does not fit in 224 bytes: PR [#1111](https://github.com/tact-lang/tact/pull/1111)
-- Do not automatically validate all addresses when receiving/sending messages or using address manipulating functions: PR [#XXX](https://github.com/tact-lang/tact/pull/XXX)
-- Remove `enabledMasterchain` compiler config option from `tact.config.json`: PR [#XXX](https://github.com/tact-lang/tact/pull/XXX)
-- Remove `org.ton.chain.any.v0` interface: PR [#XXX](https://github.com/tact-lang/tact/pull/XXX)
+- Do not automatically validate all addresses when receiving/sending messages or using address manipulating functions: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
+- Remove `enabledMasterchain` compiler config option from `tact.config.json`: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
+- Remove `org.ton.chain.any.v0` interface: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
 
 ### Fixed
 
