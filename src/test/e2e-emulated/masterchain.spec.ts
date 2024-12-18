@@ -17,7 +17,7 @@ describe("masterchain", () => {
     // Deployment and simple message receiving
     //
 
-    it("should deploy to the workchain", async () => {
+    it("should deploy to workchain", async () => {
         const contract = blockchain.openContract(
             await MasterchainTester.fromInit(),
         );
@@ -36,7 +36,7 @@ describe("masterchain", () => {
         });
     });
 
-    it("should not deploy to the workchain from masterchain", async () => {
+    it("should not deploy to workchain from masterchain", async () => {
         const treasure = await blockchain.treasury("treasure", {
             workchain: -1,
         });
@@ -59,7 +59,7 @@ describe("masterchain", () => {
         });
     });
 
-    it("should deploy to the workchain from masterchain when masterchain enabled", async () => {
+    it("should deploy to masterchain from masterchain", async () => {
         const treasure = await blockchain.treasury("treasure", {
             workchain: -1,
         });
