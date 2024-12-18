@@ -4,7 +4,7 @@ title: 数学
 
 各种数学辅助功能
 
-## 分钟
+## min
 
 ```tact
 fun min(x: Int, y: Int)：Int；
@@ -23,7 +23,7 @@ min(0x45, 3_0_0); // 69, nice
 // 69 300
 ```
 
-## 最大
+## max
 
 ```tact
 fun max(x: Int, y: Int)：Int；
@@ -42,7 +42,7 @@ max(0x45, 3_0_0); // 300
 // 69 300
 ```
 
-## 腹肌
+## abs
 
 ```tact
 fun abs(x: Int)：Int
@@ -64,7 +64,7 @@ abs(-(-(-42))); // 42
 fun log(num: Int, base: Int)：Int；
 ```
 
-计算并返回数字 `num` $> 0$ 以 `base` $≥1$ 为底的 [logarithm](https://en.wikipedia.org/wiki/Logarithm) 值。 结果[四舍五入](https://en.wikipedia.org/wiki/Rounding#Rounding_down)。 传入一个非正数`num`值或`base`小于 $1$ 会产生错误[退出代码 5](/book/exit-codes#5)：整数超出预期范围"。
+计算并返回数字 `num` $> 0$ 以 `base` $≥1$ 为底的 [logarithm](https://en.wikipedia.org/wiki/Logarithm) 值。 结果[四舍五入](https://en.wikipedia.org/wiki/Rounding#Rounding_down)。 传入一个非正数`num`值或`base`小于 $1$ 会产生错误[退出代码 5](/zh-cn/book/exit-codes#5)：整数超出预期范围"。
 
 使用示例
 
@@ -118,7 +118,7 @@ log2(1024); // 10，因为 2^10 是 1024
 fun pow(base: Int, exp: Int)：Int；
 ```
 
-计算并返回涉及两个数的 [幂级数](https://en.wikipedia.org/wiki/Exponentiation)："基数 "和指数（或_幂_）"exp"。 指数 `exp` 必须是非负数，否则将产生[退出代码 5](/book/exit-codes#5)错误：`整数超出预期范围`。
+计算并返回涉及两个数的 [幂级数](https://en.wikipedia.org/wiki/Exponentiation)："基数 "和指数（或_幂_）"exp"。 指数 `exp` 必须是非负数，否则将产生[退出代码 5](/zh-cn/book/exit-codes#5)错误：`整数超出预期范围`。
 
 请注意，该函数在运行时和［编译时］（/ref/core-comptime）均有效。
 
@@ -147,7 +147,7 @@ contract Example {
 
 :::note
 
-  仅在编译时有效的函数列表：[API 编译时间](/ref/core-comptime)。
+  仅在编译时有效的函数列表：[API 编译时间](/zh-cn/ref/core-comptime)。
 
 :::
 
@@ -184,11 +184,11 @@ contract Example {
 
 :::note
 
-  仅在编译时有效的函数列表：[API 编译时间](/ref/core-comptime)。
+  仅在编译时有效的函数列表：[API 编译时间](/zh-cn/ref/core-comptime)。
 
 :::
 
-## checksignature
+## checkSignature
 
 ```tact
 fun checkSignature(hash: Int, signature: Slice, public_key: Int)：Bool；
@@ -229,13 +229,13 @@ contract Showcase {
 }
 ```
 
-## 检查数据签名
+## checkDataSignature
 
 ```tact
 fun checkDataSignature(data: Slice, signature: Slice, public_key: Int)：Bool；
 ```
 
-使用 "公钥 "检查 "数据 "的[Ed25519][ed]"签名"，类似于[`checkSignature(){:tact}`](#checksignature)。 如果 `data` 的位长不能被 $8$整除，该函数将产生错误[退出代码 9](/book/exit-codes#9)：单元格下溢。 验证本身是间接进行的：根据 "数据 "的[SHA-256][sha-2] 哈希值进行验证。
+使用 "公钥 "检查 "数据 "的[Ed25519][ed]"签名"，类似于[`checkSignature(){:tact}`](#checksignature)。 如果 `data` 的位长不能被 $8$整除，该函数将产生错误[退出代码 9](/zh-cn/book/exit-codes#9)：单元格下溢。 验证本身是间接进行的：根据 "数据 "的[SHA-256][sha-2] 哈希值进行验证。
 
 如果签名有效，则返回 `true{:tact}`，否则返回 `false{:tact}`。
 
@@ -260,7 +260,7 @@ fun sha256(data: String)：Int；
 
 如果 `data` 是一个 [`字符串{:tact}`][p]，它的位数应能被 $8$除，如果它是一个 [`片{:tact}`][片]，它也必须\*\*\*没有引用（即总共最多只有 1023 位数据）。
 
-该函数尽可能在 [编译时](/ref/core-comptime) 解析常量字符串值。
+该函数尽可能在 [编译时](/zh-cn/ref/core-comptime) 解析常量字符串值。
 
 使用示例
 
@@ -271,9 +271,9 @@ sha256(someVariableElsewhere); // 将尝试在编译时解析，
                                // 并回退到运行时评估
 ```
 
-[p]: /book/types#primitive-types
-[bool]: /book/types#booleans
-[int]: /book/integers
-[一片]: /book/cells#slices
+[p]: /zh-cn/book/types#primitive-types
+[bool]: /zh-cn/book/types#booleans
+[int]: /zh-cn/book/integers
+[一片]: /zh-cn/book/cells#slices
 [编辑]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
 [屏蔽-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard

@@ -4,7 +4,7 @@ title: 标准图书馆概述
 
 有些库（也称为标准库或 stdlibs）与 Tact 编译器捆绑在一起，但不会自动包含到项目中，除非明确指定。
 
-要导入任何标准库，请使用[`import{:tact}`关键字](/book/import)，然后在[字符串][p]中输入该库的名称，像这样：
+要导入任何标准库，请使用[`import{:tact}`关键字](/zh-cn/book/import)，然后在[字符串][p]中输入该库的名称，像这样：
 
 ```tact
 // 这将把 @stdlib/deploy 中的所有内容纳入代码库：
@@ -22,23 +22,23 @@ import "@stdlib/deploy"；
 | [`@stdlib/ownable`][5]   | 所有权管理的特质。                                               | [`可拥有{:tact}`][拥有]，[`可拥有可转让{:tact}`][拥有]                                |
 | [`@stdlib/stoppable`][6] | 允许合同停止的特征。 需要 [@stdlib/ownable][5]。                     | [`Stoppable{:tact}`][stp]，[`Resumable{:tact}`][res]。                    |
 
-[1]: /ref/stdlib-config
-[gca]: /ref/stdlib-config#getconfigaddress
-[gea]: /ref/stdlib-config#getelectoraddress
-[2]: /ref/stdlib-content
-[库克]: /ref/stdlib-content#createoffchaincontent
-[3]: /ref/stdlib-deploy
-[描写]: /ref/stdlib-deploy#deployable
-[fcd]: /ref/stdlib-deploy#factorydeployable
-[4]: /ref/stdlib-dns
-[dnsr]: /ref/stdlib-dns#dnsresolver
-[dnsi]: /ref/stdlib-dns#dnsinternalverify
-[5]: /ref/stdlib-ownable
-[拥有]: /ref/stdlib-ownable#ownable
-[拥有]: /ref/stdlib-ownable#ownabletransferable
-[6]: /ref/stdlib-stoppable
-[stp]: /ref/stdlib-stoppable#stoppable
-[重新]: /ref/stdlib-stoppable#resumable
-[p]: /book/types#primitive-types
-[电池]: /book/cells#cells
+[1]: /zh-cn/ref/stdlib-config
+[gca]: /zh-cn/ref/stdlib-config#getconfigaddress
+[gea]: /zh-cn/ref/stdlib-config#getelectoraddress
+[2]: /zh-cn/ref/stdlib-content
+[库克]: /zh-cn/ref/stdlib-content#createoffchaincontent
+[3]: /zh-cn/ref/stdlib-deploy
+[描写]: /zh-cn/ref/stdlib-deploy#deployable
+[fcd]: /zh-cn/ref/stdlib-deploy#factorydeployable
+[4]: /zh-cn/ref/stdlib-dns
+[dnsr]: /zh-cn/ref/stdlib-dns#dnsresolver
+[dnsi]: /zh-cn/ref/stdlib-dns#dnsinternalverify
+[5]: /zh-cn/ref/stdlib-ownable
+[拥有]: /zh-cn/ref/stdlib-ownable#ownable
+[拥有]: /zh-cn/ref/stdlib-ownable#ownabletransferable
+[6]: /zh-cn/ref/stdlib-stoppable
+[stp]: /zh-cn/ref/stdlib-stoppable#stoppable
+[重新]: /zh-cn/ref/stdlib-stoppable#resumable
+[p]: /zh-cn/book/types#primitive-types
+[电池]: /zh-cn/book/cells#cells
 [dns]: https://docs.ton.org/participate/web3/dns

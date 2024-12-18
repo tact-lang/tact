@@ -4,7 +4,7 @@ title: 地图
 
 import { Badge } from '@astrojs/starlight/components';
 
-[复合类型](/book/types#composite-types) `map<K, V>{:tact}` 用于将 `K{:tact}` 类型的键与 `V{:tact}` 类型的相应值关联起来。
+[复合类型](/zh-cn/book/types#composite-types) `map<K, V>{:tact}` 用于将 `K{:tact}` 类型的键与 `V{:tact}` 类型的相应值关联起来。
 
 例如，`map<Int, Int>{:tact}` 的键和值使用 [`英特{:tact}`][英特] 类型：
 
@@ -14,7 +14,7 @@ struct IntToInt {
 }
 ```
 
-## 允许的类型
+## 允许的类型 {#allowed-types}
 
 允许的密钥类型
 
@@ -24,24 +24,24 @@ struct IntToInt {
 允许的值类型：
 
 - [`Int{:tact}`][int]。
-- [`Bool{:tact}`](/book/types#booleans)
+- [`Bool{:tact}`](/zh-cn/book/types#booleans)
 - [`单元格{:tact}`][单元格]
 - [`地址{:tact}`][p]
-- [结构](/book/structs-and-messages#structs)
-- [消息](/book/structs-and-messages#messages)
+- [结构](/zh-cn/book/structs-and-messages#structs)
+- [消息](/zh-cn/book/structs-and-messages#messages)
 
 ## 业务
 
 ### 声明，`emptyMap()` {#emptymap}
 
-作为[局部变量](/book/statements#let)，使用标准库的 `emptyMap(){:tact}` 函数：
+作为[局部变量](/zh-cn/book/statements#let)，使用标准库的 `emptyMap(){:tact}` 函数：
 
 ```tact
 let fizz: map<Int, Int> = emptyMap();
 let fizz: map<Int, Int> = null; // 与前一行相同，但描述性较弱
 ```
 
-作为 [持久状态变量](/book/contracts#variables)：
+作为 [持久状态变量](/zh-cn/book/contracts#variables)：
 
 ```tact
 contract Example {
@@ -52,11 +52,11 @@ contract Example {
 }
 ```
 
-请注意，类型为 `map<K, V>{:tact}` 的 [持久状态变量](/book/contracts#variables) 默认为空，不需要默认值，也不需要在 [`init(){:tact}` 函数](/book/contracts#init-function)中进行初始化。
+请注意，类型为 `map<K, V>{:tact}` 的 [持久状态变量](/zh-cn/book/contracts#variables) 默认为空，不需要默认值，也不需要在 [`init(){:tact}` 函数](/zh-cn/book/contracts#init-function)中进行初始化。
 
 ### 设置值，`.set()` {#set}
 
-要设置或替换键下的值，请调用 `.set(){:tact}` [方法](/book/functions#extension-function)，所有地图都可以使用该方法。
+要设置或替换键下的值，请调用 `.set(){:tact}` [方法](/zh-cn/book/functions#extension-function)，所有地图都可以使用该方法。
 
 ```tact
 // 空 map
@@ -72,7 +72,7 @@ fizz.set(7, 68); // 键 7 现在指向值 68
 
 ### 获取值，`.get()` {#get}
 
-通过调用 `.get(){:tact}` [方法](/book/functions#extension-function)，检查是否在地图中找到了键，所有地图都可以访问该方法。 如果键丢失，则返回 `null{:tact}`；如果键找到，则返回值。
+通过调用 `.get(){:tact}` [方法](/zh-cn/book/functions#extension-function)，检查是否在地图中找到了键，所有地图都可以访问该方法。 如果键丢失，则返回 `null{:tact}`；如果键找到，则返回值。
 
 ```tact
 // Empty map
@@ -97,7 +97,7 @@ if (gotButUnsure != null) {
 
 ### 删除条目，`.del()` {#del}
 
-要删除单个键值对（单个条目），请使用 `.del(){:tact}` [方法](/book/functions#extension-function)。 如果删除成功，则返回 `true{:tact}`，否则返回 `false{:tact}`。
+要删除单个键值对（单个条目），请使用 `.del(){:tact}` [方法](/zh-cn/book/functions#extension-function)。 如果删除成功，则返回 `true{:tact}`，否则返回 `false{:tact}`。
 
 ```tact
 // 空 map
@@ -138,7 +138,7 @@ fizz = null; // 与上一行相同，但描述性较弱
 
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
 
-映射上的 `.exists(){:tact}` [方法](/book/functions#extension-function)，如果给定键下的值在映射中存在，则返回 `true{:tact}`，否则返回 `false{:tact}`。
+映射上的 `.exists(){:tact}` [方法](/zh-cn/book/functions#extension-function)，如果给定键下的值在映射中存在，则返回 `true{:tact}`，否则返回 `false{:tact}`。
 
 ```tact
 let fizz: map<Int, Int> = emptyMap();
@@ -165,7 +165,7 @@ if (fizz.get(1 / 2) != null) { // also true, but consumes more gas
 
 ### 检查是否为空，`.isEmpty()` {#isempty}
 
-地图上的 `.isEmpty(){:tact}` [方法](/book/functions#extension-function) 如果地图为空，则返回 `true{:tact}`，否则返回 `false{:tact}`：
+地图上的 `.isEmpty(){:tact}` [方法](/zh-cn/book/functions#extension-function) 如果地图为空，则返回 `true{:tact}`，否则返回 `false{:tact}`：
 
 ```tact
 let fizz: map<Int, Int> = emptyMap();
@@ -183,7 +183,7 @@ if (fizz == null) {
 
 ### 转换为 `Cell`, `.asCell()` {#ascell}
 
-在地图上使用 `.asCell(){:tact}` [方法](/book/functions#extension-function)，将其所有值转换为 [`单元格{:tact}`][单元格] 类型。 请注意，[`Cell{:tact}`][单元格] 类型最多只能存储 1023 位，因此将更大的映射转换为单元格会导致错误。
+在地图上使用 `.asCell(){:tact}` [方法](/zh-cn/book/functions#extension-function)，将其所有值转换为 [`单元格{:tact}`][单元格] 类型。 请注意，[`Cell{:tact}`][单元格] 类型最多只能存储 1023 位，因此将更大的映射转换为单元格会导致错误。
 
 例如，这种方法适用于在回复正文中直接发送小地图：
 
@@ -212,7 +212,7 @@ contract Example {
 
 ### 遍历条目 {#traverse}
 
-要遍历地图条目，有一个 [`foreach{:tact}`](/book/statements#foreach-loop)循环语句：
+要遍历地图条目，有一个 [`foreach{:tact}`](/zh-cn/book/statements#foreach-loop)循环语句：
 
 ```tact
 // Empty map
@@ -228,7 +228,7 @@ foreach (key, value in fizz) {
 }
 ```
 
-了解更多相关信息：[`foreach{:tact}` loop in Book→Statements](/book/statements#foreach-loop).
+了解更多相关信息：[`foreach{:tact}` loop in Book→Statements](/zh-cn/book/statements#foreach-loop).
 
 请注意，也可以将映射作为简单数组使用，只要定义一个 `map<Int, V>{:tact}`，键为 [`Int{:tact}`][int] 类型，值为任何允许的 `V{:tact}` 类型，并跟踪单独变量中的项数即可：
 
@@ -285,7 +285,7 @@ contract Iteration {
 
 :::caution
 
-  请注意，手动记录项目数或检查此类地图的长度非常容易出错，一般不建议使用。 相反，请尝试将您的地图封装到 [Struct](/book/structs-and-messages#structs) 中，并在其上定义 [extension functions](/book/functions#extension-function) 。 参见 Cookbook 中的示例：[如何使用包裹在 Struct 中的 map 来模拟数组](/cookbook/data-structures#array)。
+  请注意，手动记录项目数或检查此类地图的长度非常容易出错，一般不建议使用。 相反，请尝试将您的地图封装到 [Struct](/zh-cn/book/structs-and-messages#structs) 中，并在其上定义 [extension functions](/zh-cn/book/functions#extension-function) 。 参见 Cookbook 中的示例：[如何使用包裹在 Struct 中的 map 来模拟数组](/zh-cn/cookbook/data-structures#array)。
 
 :::
 
@@ -294,14 +294,14 @@ contract Iteration {
   本例改编自 [howardpen9/while-example-tact](https://github.com/howardpen9/while-example-tact/blob/de5807fcd20dba5f6a3748d112511477fb22bfcc/contracts/awesome.tact#L19C10-L19C10).
 
   查看 Cookbook 中有关 map 使用的其他示例：\
-  [如何使用包裹在 Struct 中的 map 来模拟堆栈](/cookbook/data-structures#stack)\
-  [如何使用包裹在 Struct 中的 map 来模拟循环缓冲区](/cookbook/data-structures#circular-buffer)
+  [如何使用包裹在 Struct 中的 map 来模拟堆栈](/zh-cn/cookbook/data-structures#stack)\
+  [如何使用包裹在 Struct 中的 map 来模拟循环缓冲区](/zh-cn/cookbook/data-structures#circular-buffer)
 
 :::
 
 ## 序列化
 
-可以对映射键、值或两者进行[整数序列化](/zh-cn/book/integers#serialization-types)，以[保留空间并降低存储成本](/book/integers#serialization)：
+可以对映射键、值或两者进行[整数序列化](/zh-cn/book/integers#serialization-types)，以[保留空间并降低存储成本](/zh-cn/book/integers#serialization)：
 
 ```tact
 struct SerializedMapInside {
@@ -313,7 +313,7 @@ struct SerializedMapInside {
 
 :::note
 
-  了解其他序列化选项：[与 FunC 兼容](/book/func#convert-serialization)。
+  了解其他序列化选项：[与 FunC 兼容](/zh-cn/book/func#convert-serialization)。
 
 :::
 
@@ -357,6 +357,6 @@ contract Example {
   TODO：添加对分片页面的引用，如： https://github.com/tact-lang/tact-docs/issues/155
 */}
 
-[p]: /book/types#primitive-types
-[int]: /book/integers
-[电池]: /book/cells#cells
+[p]: /zh-cn/book/types#primitive-types
+[int]: /zh-cn/book/integers
+[电池]: /zh-cn/book/cells#cells

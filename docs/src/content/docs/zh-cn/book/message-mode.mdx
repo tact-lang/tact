@@ -23,9 +23,9 @@ title: Message `mode`
 | $+16$      | SendBounceIfActionFail | 如果在操作阶段出现任何错误，则退回交易。 Has no effect if flag $+2$, SendIgnoreErrors is used.                                             |
 | $+32$      | SendDestroyIfZero      | Current account must be destroyed if its resulting balance is zero (often used with mode $128$, SendRemainingBalance). |
 
-## 将模式与标志相结合
+## 将模式与标志相结合 {#combining-modes-with-flags}
 
-要为 `SendParameters{:tact}` 的 `mode` 字段创建 [`Int{:tact}`][int] 值，只需通过 [bitwise OR](/book/operators#binary-bitwise-or) 运算将基本模式与可选标记结合起来。
+要为 `SendParameters{:tact}` 的 `mode` 字段创建 [`Int{:tact}`][int] 值，只需通过 [bitwise OR](/zh-cn/book/operators#binary-bitwise-or) 运算将基本模式与可选标记结合起来。
 
 例如，如果您想分别发送普通信息和支付转账费用，请使用模式 $0$（默认）和标志 $+1$，以获得 `mode` $= 1$，这等同于使用 `SendPayGasSeparately{:tact}` 常量。
 
@@ -46,7 +46,7 @@ send(SendParameters{
 
 :::caution
 
-  请注意，虽然可以将（[`+{:tact}`](/book/operators#binary-add)）基本模式与可选标志一起添加，但由于可能会出现多余的值，因此不鼓励这样做。 请使用位wise OR ([`|{:tact}`](/book/operators#binary-bitwise-or))，因为它是为处理此类标志和对 `mode` 的位操作而设计的。
+  请注意，虽然可以将（[`+{:tact}`](/zh-cn/book/operators#binary-add)）基本模式与可选标志一起添加，但由于可能会出现多余的值，因此不鼓励这样做。 请使用位wise OR ([`|{:tact}`](/zh-cn/book/operators#binary-bitwise-or))，因为它是为处理此类标志和对 `mode` 的位操作而设计的。
 
 :::
 
@@ -56,4 +56,4 @@ send(SendParameters{
 
 :::
 
-[int]: /book/integers
+[int]: /zh-cn/book/integers
