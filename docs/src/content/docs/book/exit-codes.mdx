@@ -650,7 +650,7 @@ try {
 
 <Badge text="Removed since Tact 1.6" variant="tip" size="medium"/><p/>
 
-Any attempts to point to masterchain (ID $-1$) or otherwise interact with it without enabling masterchain support throw an exception with exit code $137$: `Masterchain support is not enabled for this contract`.
+Prior to removal, any attempts to point to masterchain (ID $-1$) or otherwise interact with it without enabling masterchain support were throwing an exception with exit code $137$: `Masterchain support is not enabled for this contract`.
 
 ```tact
 let masterchainID = -1;
