@@ -3,6 +3,8 @@ title: Exit codes
 description: "An exit code is a 32-bit signed integer, which indicates whether the compute or action phase of the transaction was successful, and if not — holds the code of the exception occurred"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 Each transaction on TON Blockchain consists of [multiple phases](https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases). An _exit code_ is a $32$-bit signed integer, which indicates whether the [compute](#compute) or [action](#action) phase of the transaction was successful, and if not — holds the code of the exception occurred. Each exit code represents its own exception or resulting state of the transaction.
 
 Exit codes $0$ and $1$ indicate normal (successful) execution of the [compute phase](#compute). Exit (or [result](#action)) code $0$ indicates normal (successful) execution of the [action phase](#action). Any other exit code indicates that a certain exception has occurred and that the transaction wasn't successful in one way or another, i.e. transaction was reverted or the inbound message has bounced back.
@@ -60,8 +62,8 @@ Exit code     | Origin                              | Brief description
 [$133$](#133) | Tact compiler ([Compute phase][c])  | Contract stopped. Reserved, but never thrown.
 [$134$](#134) | Tact compiler ([Compute phase][c])  | Invalid argument.
 [$135$](#135) | Tact compiler ([Compute phase][c])  | Code of a contract was not found.
-[$136$](#136) | Tact compiler ([Compute phase][c])  | Invalid address.
-[$137$](#137) | Tact compiler ([Compute phase][c])  | Masterchain support is not enabled for this contract.
+~~[$136$](#136)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Invalid address.~~ Removed since Tact 1.6
+~~[$137$](#137)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Masterchain support is not enabled for this contract.~~ Removed since Tact 1.6
 
 :::note
 
@@ -526,7 +528,7 @@ If the configuration is absent, default values are:
 * `ext_msg_limits.max_depth` is equal to $2^{9}$ — maximum external message [depth](/book/cells#cells-representation).
 * `max_acc_state_cells` is equal to $2^{16}$ — maximum number of [cells][cell] that an account state can occupy.
 * `max_acc_state_bits` is equal to $2^{16} * 1023$ — maximum account state size in bits.
-* `max_acc_public_libraries` is equal to $2^{8}$ — maximum number of [library reference cells](/book/cells#cells-kinds) that an account state can use on the [masterchain](/book/masterchain).
+* `max_acc_public_libraries` is equal to $2^{8}$ — maximum number of [library reference cells](/book/cells#cells-kinds) that an account state can use on the masterchain.
 * `defer_out_queue_size_limit` is equal to $2^{8}$ — maximum number of outbound messages to be queued (regards validators and collators).
 
 ## Tact compiler
@@ -623,10 +625,12 @@ If the code of the contract doesn't match the one saved in TypeScript wrappers, 
 
 ### 136: Invalid address {#136}
 
+<Badge text="Removed since Tact 1.6" variant="tip" size="medium"/><p/>
+
 A value of type [`Address{:tact}`][p] is valid in Tact when:
 
 * It occupies $267$ bits: $11$ bits for the chain ID prefix and $256$ bits for the [address itself](https://docs.ton.org/learn/overviews/addresses#address-of-smart-contract).
-* It belongs to either: basechain (ID $0$) or masterchain (ID $-1$), with the latter requiring [masterchain support](/book/masterchain#support) to be enabled.
+* It belongs to either basechain (ID $0$) or masterchain (ID $-1$).
 
 If the [`Address{:tact}`][p] isn't valid, the error with exit code $136$ will be thrown: `Invalid address`.
 
@@ -644,7 +648,9 @@ try {
 
 ### 137: Masterchain support is not enabled for this contract {#137}
 
-Any attempts to point to masterchain (ID $-1$) or otherwise interact with it without [enabling masterchain support](/book/masterchain#support) throw an exception with exit code $137$: `Masterchain support is not enabled for this contract`.
+<Badge text="Removed since Tact 1.6" variant="tip" size="medium"/><p/>
+
+Prior to removal, any attempts to point to masterchain (ID $-1$) or otherwise interact with it without enabling masterchain support were throwing an exception with exit code $137$: `Masterchain support is not enabled for this contract`.
 
 ```tact
 let masterchainID = -1;

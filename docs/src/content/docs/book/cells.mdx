@@ -21,7 +21,7 @@ Kinds (or subtypes) of all cells are encoded by an integer between $-1$ and $255
 
 [TVM][tvm] currently supports the following exotic cell subtypes:
 * [Pruned branch cell][c-pruned], with subtype encoded as $1$ — they represent deleted subtrees of cells.
-* [Library reference cell][c-library], with subtype encoded as $2$ — they are used for storing libraries, and usually, in [masterchain](/book/masterchain) contexts.
+* [Library reference cell][c-library], with subtype encoded as $2$ — they are used for storing libraries, and usually, in [masterchain][masterchain] contexts.
 * [Merkle proof cell][c-mproof], with subtype encoded as $3$ — they are used for verifying that certain portions of other cell's tree data belong to the full tree.
 * [Merkle update cell][c-mupdate], with subtype encoded as $4$ — they always have two references and behave like a [Merkle proof][mproof] for both of them.
 
@@ -40,6 +40,7 @@ Kinds (or subtypes) of all cells are encoded by an integer between $-1$ and $255
 [c-mproof]: https://docs.ton.org/develop/data-formats/exotic-cells#merkle-proof
 [c-mupdate]: https://docs.ton.org/develop/data-formats/exotic-cells#merkle-update
 [mproof]: https://docs.ton.org/develop/data-formats/exotic-cells#simple-proof-verifying-example
+[masterchain]: https://docs.ton.org/v3/documentation/smart-contracts/shards/shards-intro#masterchain
 
 ### Levels {#cells-levels}
 

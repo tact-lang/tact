@@ -1,5 +1,5 @@
 import { Address, beginCell, Cell, toNano } from "@ton/core";
-import { enabledDebug, enabledMasterchain } from "../config/features";
+import { enabledDebug } from "../config/features";
 import {
     writeAddress,
     writeCell,
@@ -162,14 +162,6 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         `Address ${str} invalid address`,
                         ref,
                     );
-                }
-                if (!enabledMasterchain(ctx.ctx)) {
-                    if (address.workChain !== 0) {
-                        throwCompilationError(
-                            `Address ${str} from masterchain are not enabled for this contract`,
-                            ref,
-                        );
-                    }
                 }
 
                 // Generate address

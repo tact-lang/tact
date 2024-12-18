@@ -33,7 +33,6 @@ export function enableFeatures(
     }
     const features = [
         { option: config.options.debug, name: "debug" },
-        { option: config.options.masterchain, name: "masterchain" },
         { option: config.options.external, name: "external" },
         { option: config.options.experimental?.inline, name: "inline" },
         { option: config.options.ipfsAbiGetter, name: "ipfsAbiGetter" },
