@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Do not automatically validate all addresses when receiving/sending messages or using address manipulating functions: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
 - Remove `enabledMasterchain` compiler config option from `tact.config.json`: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
 - Remove `org.ton.chain.any.v0` interface: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
+- Tact does not anymore store the code of the parent contract in the system cell with all the child contract codes used in `initOf` to reduce gas fees: PR [#1212](https://github.com/tact-lang/tact/pull/1212)
 
 ### Fixed
 

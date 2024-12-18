@@ -45,7 +45,7 @@ export function writeTypescript(
     abi: ContractABI,
     init?: {
         code: string;
-        system: string;
+        system: string | null;
         args: ABIArgument[];
         prefix?:
             | {
@@ -171,11 +171,13 @@ export function writeTypescript(
         w.inIndent(() => {
             // Code references
             w.append(`const __code = Cell.fromBase64('${init.code}');`);
-            w.append(`const __system = Cell.fromBase64('${init.system}');`);
-
-            // Stack
             w.append("let builder = beginCell();");
-            w.append(`builder.storeRef(__system);`);
+
+            if (init.system !== null) {
+                w.append(`const __system = Cell.fromBase64('${init.system}');`);
+                w.append(`builder.storeRef(__system);`);
+            }
+
             if (init.prefix) {
                 w.append(
                     `builder.storeUint(${init.prefix.value}, ${init.prefix.bits});`,

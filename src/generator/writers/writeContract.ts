@@ -35,7 +35,10 @@ export function writeStorageOps(
             ctx.append(`slice $sc = get_data().begin_parse();`);
 
             // Load context
-            ctx.append(`__tact_context_sys = $sc~load_ref();`);
+            if (type.dependsOn.length > 0) {
+                ctx.append(`__tact_child_contract_codes = $sc~load_ref();`);
+            }
+
             ctx.append(`int $loaded = $sc~load_int(1);`);
 
             // Load data
@@ -78,7 +81,9 @@ export function writeStorageOps(
             ctx.append(`builder b = begin_cell();`);
 
             // Persist system cell
-            ctx.append(`b = b.store_ref(__tact_context_sys);`);
+            if (type.dependsOn.length > 0) {
+                ctx.append(`b = b.store_ref(__tact_child_contract_codes);`);
+            }
 
             // Persist deployment flag
             ctx.append(`b = b.store_int(true, 1);`);
@@ -156,12 +161,9 @@ export function writeInit(
     });
 
     ctx.fun(ops.contractInitChild(t.name, ctx), () => {
-        const args = [
-            `cell sys'`,
-            ...init.params.map(
-                (v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name),
-            ),
-        ];
+        const args = init.params.map(
+            (v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name),
+        );
         const sig = `(cell, cell) ${ops.contractInitChild(t.name, ctx)}(${args.join(", ")})`;
         ctx.signature(sig);
         if (enabledInline(ctx.ctx)) {
@@ -169,33 +171,62 @@ export function writeInit(
         }
         ctx.context("type:" + t.name + "$init");
         ctx.body(() => {
-            ctx.write(`
-                slice sc' = sys'.begin_parse();
-                cell source = sc'~load_dict();
-                cell contracts = new_dict();
-
-                ;; Contract Code: ${t.name}
-                cell mine = ${ctx.used(`__tact_dict_get_code`)}(source, ${t.uid});
-                contracts = ${ctx.used(`__tact_dict_set_code`)}(contracts, ${t.uid}, mine);
-            `);
-
-            // Copy contracts code
-            for (const c of t.dependsOn) {
-                ctx.append();
+            ctx.append(";; Build init code cell");
+            ctx.append();
+            if (t.name === ctx.name) {
+                // The contract wants to deploy its copy
                 ctx.write(`
-                ;; Contract Code: ${c.name}
-                cell code_${c.uid} = __tact_dict_get_code(source, ${c.uid});
-                contracts = ${ctx.used(`__tact_dict_set_code`)}(contracts, ${c.uid}, code_${c.uid});
-            `);
+                    ;; Contract Code: ${t.name}
+                    cell init_code = my_code();
+                `);
+                ctx.append();
+                ctx.append(";; Build init data cell");
+                ctx.append();
+                ctx.append("builder b = begin_cell();");
+                if (t.dependsOn.length > 0) {
+                    ctx.append("b = b.store_ref(__tact_child_contract_codes);");
+                }
+            } else {
+                ctx.write(`
+                    slice sc' = __tact_child_contract_codes.begin_parse();
+                    cell source = sc'~load_dict();
+                `);
+                ctx.write(`
+                    ;; Contract Code: ${t.name}
+                    cell init_code = ${ctx.used("__tact_dict_get_code")}(source, ${t.uid});
+                    `);
+                ctx.append();
+                ctx.append(";; Build init data cell");
+                if (t.dependsOn.length > 0) {
+                    ctx.write(`
+                        cell contracts = new_dict();
+                    `);
+                }
+                // Copy contracts code
+                for (const c of t.dependsOn) {
+                    ctx.append();
+                    ctx.append(`;; Contract Code: ${c.name}`);
+                    if (c.name === ctx.name) {
+                        ctx.append(
+                            `contracts = ${ctx.used("__tact_dict_set_code")}(contracts, ${c.uid}, my_code());`,
+                        );
+                    } else {
+                        ctx.write(`
+                        cell code_${c.uid} = ${ctx.used("__tact_dict_get_code")}(source, ${c.uid});
+                        contracts = ${ctx.used("__tact_dict_set_code")}(contracts, ${c.uid}, code_${c.uid});
+                        `);
+                    }
+                }
+                ctx.append();
+                ctx.append("builder b = begin_cell();");
+                if (t.dependsOn.length > 0) {
+                    ctx.append(
+                        `b = b.store_ref(begin_cell().store_dict(contracts).end_cell());`,
+                    );
+                }
             }
 
-            // Build cell
-            ctx.append();
-            ctx.append(`;; Build cell`);
-            ctx.append(`builder b = begin_cell();`);
-            ctx.append(
-                `b = b.store_ref(begin_cell().store_dict(contracts).end_cell());`,
-            );
+            // store initialization bit and contract variables
             ctx.append(`b = b.store_int(false, 1);`);
             const args =
                 t.init!.params.length > 0
@@ -211,7 +242,7 @@ export function writeInit(
             ctx.append(
                 `b = ${ops.writer(funcInitIdOf(t.name), ctx)}(${args});`,
             );
-            ctx.append(`return (mine, b.end_cell());`);
+            ctx.append(`return (init_code, b.end_cell());`);
         });
     });
 }
