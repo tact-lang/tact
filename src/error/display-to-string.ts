@@ -2,24 +2,8 @@
  * Render error message to string for compiler CLI
  */
 
-import { relative } from "path";
-import { cwd } from "process";
-import { SrcInfo } from "../grammar";
 import { ErrorDisplay } from "./display";
-
-const locationStr = (sourceInfo: SrcInfo): string => {
-    if (!sourceInfo.file) {
-        return "";
-    }
-
-    const loc = sourceInfo.interval.getLineAndColumn() as {
-        lineNum: number;
-        colNum: number;
-    };
-
-    const file = relative(cwd(), sourceInfo.file);
-    return `${file}:${loc.lineNum}:${loc.colNum}: `;
-};
+import { locationStr } from "../errors";
 
 export const displayToString: ErrorDisplay<string> = {
     text: (text) => text,
