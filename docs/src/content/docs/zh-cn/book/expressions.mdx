@@ -8,7 +8,7 @@ Tact 中的每个运算符都能构成一个表达式，但 Tact 还提供了更
 
 字面表示 Tact 中的值。 这些是固定值，而不是变量，是您在代码中实际提供的。 Tact 中的所有字面量都是表达式本身。
 
-您还可以调用定义在某些 [基元类型][p]上的 [扩展函数](/book/functions#extension-function)，这些 [基元类型][p] 与字面值相对应：
+您还可以调用定义在某些 [基元类型][p]上的 [扩展函数](/zh-cn/book/functions#extension-function)，这些 [基元类型][p] 与字面值相对应：
 
 ```tact
 // 在整数字面量上调用为 Int 定义的 toString() 函数：
@@ -20,15 +20,15 @@ Tact 中的每个运算符都能构成一个表达式，但 Tact 还提供了更
 
 ### Integer literals
 
-整数字面可以用[十进制](/book/integers#decimal)（基 $10$）、[十六进制](/book/integers#hexadecimal)（基 $16$）、[八进制](/book/integers#octal)（基 $8$）和[二进制](/book/integers#binary)（基 $2$）符号书写：
+整数字面可以用[十进制](/zh-cn/book/integers#decimal)（基 $10$）、[十六进制](/zh-cn/book/integers#hexadecimal)（基 $16$）、[八进制](/zh-cn/book/integers#octal)（基 $8$）和[二进制](/zh-cn/book/integers#binary)（基 $2$）符号书写：
 
-- 一个 [_decimal_ integer](/book/integers#decimal) 字面量是一串数字（$\mathrm{0 - 9}$）。
+- 一个 [_decimal_ integer](/zh-cn/book/integers#decimal) 字面量是一串数字（$\mathrm{0 - 9}$）。
 
-- 前导 $\mathrm{0x}$（或 $\mathrm{0X}$）表示[十六进制整数](/book/integers#hexadecimal) 字面量。 它们可以包括数字（$\mathrm{0 - 9}$）和字母 $\mathrm{a - f}$ 和 $\mathrm{A - F}$。 请注意，字符的大小写不会改变其值。 因此：$\mathrm{0xa}$ = $\mathrm{0xA}$ = $10$ 和 $\mathrm{0xf}$ = $\mathrm{0xF}$ = $15$。
+- 前导 $\mathrm{0x}$（或 $\mathrm{0X}$）表示[十六进制整数](/zh-cn/book/integers#hexadecimal) 字面量。 它们可以包括数字（$\mathrm{0 - 9}$）和字母 $\mathrm{a - f}$ 和 $\mathrm{A - F}$。 请注意，字符的大小写不会改变其值。 因此：$\mathrm{0xa}$ = $\mathrm{0xA}$ = $10$ 和 $\mathrm{0xf}$ = $\mathrm{0xF}$ = $15$。
 
-- 前导 $\mathrm{0o}$（或 $\mathrm{0O}$）表示 [octal integer](/book/integers#octal) 字面量。 它们只能包括数字 $\mathrm{0 - 7}$。
+- 前导 $\mathrm{0o}$（或 $\mathrm{0O}$）表示 [octal integer](/zh-cn/book/integers#octal) 字面量。 它们只能包括数字 $\mathrm{0 - 7}$。
 
-- 前导 $\mathrm{0b}$（或 $\mathrm{0B}$）表示 [二进制整数](/book/integers#binary) 字面量。 它们只能包括数字 $0$ 和 $1$。
+- 前导 $\mathrm{0b}$（或 $\mathrm{0B}$）表示 [二进制整数](/zh-cn/book/integers#binary) 字面量。 它们只能包括数字 $0$ 和 $1$。
 
 :::caution
   需要注意的是，在 Tact 中，以 $0$ 为前导的整数字面量仍被视为小数，而在 JavaScript/TypeScript 中，以 $0$ 为前导的整数字面量表示八进制！
@@ -50,18 +50,18 @@ Tact 中的每个运算符都能构成一个表达式，但 Tact 还提供了更
 0b01111001_01101111_01110101_00100000_01100001_01110010_01100101_00100000_01100001_01110111_01100101_01110011_01101111_01101101_01100101
 ```
 
-有关整数和 [`Int{:tact}`](/book/integers)类型的更多信息，请访问专门页面：[整数](/book/integers)。
+有关整数和 [`Int{:tact}`](/zh-cn/book/integers)类型的更多信息，请访问专门页面：[整数](/zh-cn/book/integers)。
 
 ### Boolean literals
 
-[`Bool{:tact}`](/book/types#booleans)类型只有两个字面值：`true{:tact}`和`false{:tact}`。
+[`Bool{:tact}`](/zh-cn/book/types#booleans)类型只有两个字面值：`true{:tact}`和`false{:tact}`。
 
 ```tact
 true == true;
 true != false；
 ```
 
-有关布尔和 [`Bool{:tact}`](/book/types#booleans)类型的更多信息，请参阅专门章节：[布尔](/book/types#booleans)。
+有关布尔和 [`Bool{:tact}`](/zh-cn/book/types#booleans)类型的更多信息，请参阅专门章节：[布尔](/zh-cn/book/types#booleans)。
 
 ### String literals
 
@@ -127,7 +127,7 @@ Tact 字符串支持一系列从反斜杠字符开始的[转义序列](https://e
 
   阅读更多关于字符串和[`字符串{:tact}`][p]类型：\
   [书中的原始类型][p]\
-  [参考资料中的字符串和字符串构造器](/ref/core-strings)的内容
+  [参考资料中的字符串和字符串构造器](/zh-cn/ref/core-strings)的内容
 
 :::
 
@@ -143,15 +143,15 @@ if (var != null) {
 }
 ```
 
-有关使用 `null{:tact}`的更多信息，请访问专门页面：[选项](/book/optionals)。
+有关使用 `null{:tact}`的更多信息，请访问专门页面：[选项](/zh-cn/book/optionals)。
 
 ## Identifiers
 
-标识符是代码中的一串字符，用于标识[变量](/book/statements#let)、[常量](/book/constants)、[映射](/book/maps)和[函数](/book/functions)，以及[结构][s]、[消息][m]、[契约](/book/contracts)、[特质](/book/types#traits)或它们的字段和方法。 标识符区分大小写，不加引号。
+标识符是代码中的一串字符，用于标识[变量](/zh-cn/book/statements#let)、[常量](/zh-cn/book/constants)、[映射](/zh-cn/book/maps)和[函数](/zh-cn/book/functions)，以及[结构][s]、[消息][m]、[契约](/zh-cn/book/contracts)、[特质](/zh-cn/book/types#traits)或它们的字段和方法。 标识符区分大小写，不加引号。
 
 在 Tact 中，标识符可以包含拉丁小写字母 (`a-z`)、拉丁大写字母 (`A-Z`)、下划线 (`_`)和数字 ($\mathrm{0 - 9}$)，但不能以数字开头。 标识符与 [字符串]（#string-literals）的区别在于，字符串是数据，而标识符是代码的一部分。
 
-请注意，当[基元类型][p]的标识符以大写字母开头时。 已使用定义的 [复合类型](/book/types#composite-types)，如 [Structs][s] 和 [Messages][m] 也必须大写。
+请注意，当[基元类型][p]的标识符以大写字母开头时。 已使用定义的 [复合类型](/zh-cn/book/types#composite-types)，如 [Structs][s] 和 [Messages][m] 也必须大写。
 
 ## Instantiation
 
@@ -201,7 +201,7 @@ fun example()：Int {
 
 ## Extension function call
 
-[扩展函数](/book/functions#extension-function)仅在特定类型中定义。 它们的调用方式类似于许多其他语言中的方法调用：
+[扩展函数](/zh-cn/book/functions#extension-function)仅在特定类型中定义。 它们的调用方式类似于许多其他语言中的方法调用：
 
 ```tact
 42.toString(); // toString() 是针对 Int 类型定义的 stdlib 函数。
@@ -209,7 +209,7 @@ fun example()：Int {
 
 ## Static function call
 
-在函数体的任何位置，都可以调用全局 [static function](/book/functions#global-static-functions) 或 [contract](/book/contracts) 的内部函数：
+在函数体的任何位置，都可以调用全局 [static function](/zh-cn/book/functions#global-static-functions) 或 [contract](/zh-cn/book/contracts) 的内部函数：
 
 ```tact
 contract ExampleContract {
@@ -226,7 +226,7 @@ contract ExampleContract {
 
 ## `initOf`
 
-表达式 `initOf{:tact}` 计算 [contract](/book/contracts) 的初始状态 (`StateInit{:tact}`)：
+表达式 `initOf{:tact}` 计算 [contract](/zh-cn/book/contracts) 的初始状态 (`StateInit{:tact}`)：
 
 ```tact
 // 合同的 init() 函数的参数值
@@ -247,10 +247,10 @@ initOf ExampleContract(
 
 | 现场  | 类型                  | 说明                                                |
 | :-- | :------------------ | :------------------------------------------------ |
-| 代码  | [`单元格{:tact}`][单元格] | [合同](/book/contracts)的初始代码（编译后的字节码                 |
-| 数据  | [`单元格{:tact}`][单元格] | [合同](/book/contracts)的初始数据（合同的 `init(){:tact}`函数参数 |
+| 代码  | [`单元格{:tact}`][单元格] | [合同](/zh-cn/book/contracts)的初始代码（编译后的字节码                 |
+| 数据  | [`单元格{:tact}`][单元格] | [合同](/zh-cn/book/contracts)的初始数据（合同的 `init(){:tact}`函数参数 |
 
-[p]: /book/types#primitive-types
-[cell]: /book/cells#cells
-[s]: /book/structs-and-messages#structs
-[m]: /book/structs-and-messages#messages
+[p]: /zh-cn/book/types#primitive-types
+[cell]: /zh-cn/book/cells#cells
+[s]: /zh-cn/book/structs-and-messages#structs
+[m]: /zh-cn/book/structs-and-messages#messages

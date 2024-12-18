@@ -2,7 +2,7 @@
 title: 发言
 ---
 
-以下语句可出现在 [function](/book/functions) 主体的任何位置。
+以下语句可出现在 [function](/zh-cn/book/functions) 主体的任何位置。
 
 ## `let`语句 {#let}
 
@@ -18,7 +18,7 @@ let vExplicitCtx：Context = context(); // 显式类型 Context，内置结构
 let vCtx = context(); // 推断类型 Context
 ```
 
-请注意，`null{:tact}`的初始值既可以指具有任意 `K{:tact}`和 `V{:tact}`类型的空[`map<K, V>{:tact}`](/book/maps)，也可以指故意不为[optional](/book/optionals)类型设置任何其他值。 这就是为什么在声明 [optional](/book/optionals) 或 [`map<K, V>{:tact}`](/book/maps)时，需要明确指定类型，因为无法推断：
+请注意，`null{:tact}`的初始值既可以指具有任意 `K{:tact}`和 `V{:tact}`类型的空[`map<K, V>{:tact}`](/zh-cn/book/maps)，也可以指故意不为[optional](/zh-cn/book/optionals)类型设置任何其他值。 这就是为什么在声明 [optional](/zh-cn/book/optionals) 或 [`map<K, V>{:tact}`](/zh-cn/book/maps)时，需要明确指定类型，因为无法推断：
 
 ```tact
 let vOptional: Int? = null; // explicit type Int or null
@@ -40,7 +40,7 @@ dump(_); // COMPILATION ERROR！无法访问 _
 
 ## `return` 语句 {#return}
 
-`return{:tact}` 语句结束 [function](/book/functions) 的执行，并指定要返回给 [function](/book/functions) 调用者的值。
+`return{:tact}` 语句结束 [function](/zh-cn/book/functions) 的执行，并指定要返回给 [function](/zh-cn/book/functions) 调用者的值。
 
 ```tact
 // Simple wrapper over stdlib function now()
@@ -81,7 +81,7 @@ dump(2 + 2); // stdlib 函数
 
 ## 任务
 
-赋值语句使用 [赋值运算符](/book/operators#assignment) (`={:tact}`)或 [增强赋值运算符](/book/operators#augmented-assignment) (赋值与运算相结合)：
+赋值语句使用 [赋值运算符](/zh-cn/book/operators#assignment) (`={:tact}`)或 [增强赋值运算符](/zh-cn/book/operators#augmented-assignment) (赋值与运算相结合)：
 
 ```tact
 let value：Int; // 声明
@@ -91,7 +91,7 @@ value += 5; // 增强赋值（众多赋值之一，见下文）
 
 :::note
 
-  有关赋值和增强赋值的更多信息，请参阅其专门章节：[赋值运算符](/book/operators#assignment)。
+  有关赋值和增强赋值的更多信息，请参阅其专门章节：[赋值运算符](/zh-cn/book/operators#assignment)。
 
 :::
 
@@ -154,13 +154,13 @@ if (2 + 2 == 3) {
 
 :::note
 
-  Tact 也有一个三元表达式 `?:{:tact}`，在本书前面已有介绍：[三元表达式](/book/operators#ternary)。
+  Tact 也有一个三元表达式 `?:{:tact}`，在本书前面已有介绍：[三元表达式](/zh-cn/book/operators#ternary)。
 
 :::
 
 ### `try...catch` {#try-catch}
 
-`try...catch{:tact}`语句由一个 `try{:tact}`块和一个可选的 `catch{:tact}`块组成，它接收一个 [`Int{:tact}`][int][退出代码](/book/exit-codes)作为唯一参数。 首先执行 `try{:tact}`块中的代码，如果失败，则执行`catch{:tact}`块中的代码，并尽可能回滚`try{:tact}` 块中的更改。
+`try...catch{:tact}`语句由一个 `try{:tact}`块和一个可选的 `catch{:tact}`块组成，它接收一个 [`Int{:tact}`][int][退出代码](/zh-cn/book/exit-codes)作为唯一参数。 首先执行 `try{:tact}`块中的代码，如果失败，则执行`catch{:tact}`块中的代码，并尽可能回滚`try{:tact}` 块中的更改。
 
 :::note
 
@@ -217,7 +217,7 @@ try {
 }
 ```
 
-请注意，与 [`let{:tact}` 语句](#let)类似，在 `catch (){:tact}` 子句中捕获的[退出代码](/book/exit-codes)可以通过指定下划线 `_{:tact}` 来丢弃：
+请注意，与 [`let{:tact}` 语句](#let)类似，在 `catch (){:tact}` 子句中捕获的[退出代码](/zh-cn/book/exit-codes)可以通过指定下划线 `_{:tact}` 来丢弃：
 
 ```tact
 try {
@@ -229,7 +229,7 @@ try {
 
 :::note
 
-  在专用页面上阅读更多有关退出代码的信息：[图书中的出口代码](/book/exit-codes)。
+  在专用页面上阅读更多有关退出代码的信息：[图书中的出口代码](/zh-cn/book/exit-codes)。
 
 :::
 
@@ -239,7 +239,7 @@ try {
 
 ### `repeat` {#repeat-loop}
 
-`repeat复{:tact}`循环执行指定次数的代码块。重复次数应该是一个正的 $32$ 位 [`Int{:tact}`][int]，范围从 $1$ 到 $2^{31} - 1$。如果数值大于这个范围，将出现 [exit code 5](/book/exit-codes#5)，“Integer out of the expected range ”的错误。
+`repeat复{:tact}`循环执行指定次数的代码块。重复次数应该是一个正的 $32$ 位 [`Int{:tact}`][int]，范围从 $1$ 到 $2^{31} - 1$。如果数值大于这个范围，将出现 [exit code 5](/zh-cn/book/exit-codes#5)，“Integer out of the expected range ”的错误。
 
 如果指定的重复次数等于 $0$ 或包含范围 $-2^{256}$ 至 $-1$ 中的任何负数，则忽略该值，不执行代码块。
 
@@ -287,9 +287,9 @@ do {
 
 ### `foreach` {#foreach-loop}
 
-`foreach{:tact}` 循环按顺序对 [`map<K, V>{:tact}`](/book/maps) 类型的键值对（条目）进行操作：从 map 的最小键到最大键。
+`foreach{:tact}` 循环按顺序对 [`map<K, V>{:tact}`](/zh-cn/book/maps) 类型的键值对（条目）进行操作：从 map 的最小键到最大键。
 
-该循环为给定映射中的每个条目执行一个代码块，每次迭代都会捕获键和值。 当您事先不知道地图中有多少个条目，或不想明确地使用地图的 [`.get(){:tact}`](/book/maps#get) [method](/book/functions#extension-function) 查找每个条目时，这将非常方便。
+该循环为给定映射中的每个条目执行一个代码块，每次迭代都会捕获键和值。 当您事先不知道地图中有多少个条目，或不想明确地使用地图的 [`.get(){:tact}`](/zh-cn/book/maps#get) [method](/zh-cn/book/functions#extension-function) 查找每个条目时，这将非常方便。
 
 请注意，每次迭代时捕获的键和值对的名称是任意的，可以是任何有效的 Tact 标识符，只要它们是当前作用域的新标识符即可。 最常见的选项是k "和 "v"，或 "key "和 "value"。
 
@@ -316,7 +316,7 @@ foreach (key, value in cells) { // or just k, v
 dump(sum); // 1000
 ```
 
-还可以遍历合约存储中的映射，以及作为 [Struct](/book/structs-and-messages#structs) 或 [Message](/book/structs-and-messages#messages) 类型实例成员的映射：
+还可以遍历合约存储中的映射，以及作为 [Struct](/zh-cn/book/structs-and-messages#structs) 或 [Message](/zh-cn/book/structs-and-messages#messages) 类型实例成员的映射：
 
 ```tact
 import "@stdlib/deploy";
@@ -394,7 +394,7 @@ foreach (k, v in emptyMap()) {
 }
 ```
 
-  试图遍历函数返回的 [Struct](/book/structs-and-messages#structs)的 map 成员也是行不通的，因为函数调用是一种表达式，而不是标识符或嵌套标识符访问：
+  试图遍历函数返回的 [Struct](/zh-cn/book/structs-and-messages#structs)的 map 成员也是行不通的，因为函数调用是一种表达式，而不是标识符或嵌套标识符访问：
 
 ```tact
 foreach (k, v in genCoolStruct().map) {
@@ -413,4 +413,4 @@ foreach (k, v in genCoolStruct().map) {
 
 :::
 
-[initOf]: /book/integers
+[initOf]: /zh-cn/book/integers

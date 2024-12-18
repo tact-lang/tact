@@ -39,7 +39,7 @@ message FactoryDeploy {
 
 ## 特质
 
-### 可部署
+### Deployable
 
 最简单的特质 `可部署{:tact}`，通过为[Deploy](#deploy)消息实现一个简单的接收器，为部署提供了一个方便的统一机制。
 
@@ -67,7 +67,7 @@ contract ExampleContract with Deployable {
 }
 ```
 
-### 工厂可部署
+### FactoryDeployable
 
 Trait `FactoryDeployable{:tact}` 为连锁部署提供了方便的统一机制。
 

@@ -7,18 +7,18 @@ TON 智能合约中的算术运算始终使用整数，从不使用浮点数，�
 `Int{:tact}` 是一个 257 位的有符号整数类型。
 它能够存储 $-2^{256}$ 和 $2^{256} - 1$ 之间的整数。
 
-## 符号
+## 符号 {#notation}
 
-Tact 支持以各种方式将 `Int{:tact}` 的基元值写成 [整数字面量](/book/expressions#integer-literals)。
+Tact 支持以各种方式将 `Int{:tact}` 的基元值写成 [整数字面量](/zh-cn/book/expressions#integer-literals)。
 
 大多数符号允许在数字之间添加下划线 (`_`)，但下列符号除外：
 
 - 字符串表示法，如 [纳吨](#nanotoncoin) 案例所示。
-- 带前导零的十进制数 $0$。一般不鼓励使用，参见 [下文](#十进制)。
+- 带前导零的十进制数 $0$。一般不鼓励使用，参见 [下文](#decimal)。
 
 此外，**不允许**在 $4\_\_2$ 中连续使用多个下划线，或在 $42\_$ 中使用尾部下划线。
 
-### 十进制
+### 十进制 {#decimal}
 
 最常见、最常用的数字表示方法，使用[十进制数字系统](https://en.wikipedia.org/wiki/Decimal)： $123456789$。  
 您可以使用下划线（`_`）来提高可读性： $123\_456\_789$ 等于 $123456789$。
@@ -28,32 +28,32 @@ Tact 支持以各种方式将 `Int{:tact}` 的基元值写成 [整数字面量](
   注意，**强烈建议**使用这种带前导零的符号，因为可能会与 TypeScript 中的八进制整数字面混淆，而 TypeScript 通常与 Tact 一起用于开发和测试合约。
 :::
 
-### 十六进制
+### 十六进制 {#hexadecimal}
 
 使用[十六进制数字系统](https://en.wikipedia.org/wiki/Hexadecimal)表示数字，用 $\mathrm{0x}$（或 $\mathrm{0X}$）前缀表示：$\mathrm{0xFFFFFFFFF}$。
 使用下划线（`_`）提高可读性：$\mathrm{0xFFF\_FFFF\_FFF}$ 等于 $\mathrm{0xFFFFFFFFF}$。
 
-### 八进制
+### 八进制 {#octal}
 
 使用[八进制数字系统](https://en.wikipedia.org/wiki/Octal)表示数字，用 $\mathrm{0o}$（或 $\mathrm{0O}$）前缀表示：$\mathrm{0o777777777}$。
 使用下划线（`_`）提高可读性：$\mathrm{0o777\_777\_777}$ 等于 $\mathrm{0o777777777}$。
 
-### 二进制
+### 二进制 {#binary}
 
 使用[二进制数字系统](https://en.wikipedia.org/wiki/Binary_number)表示数字，用 $\mathrm{0b}$（或 $\mathrm{0B}$）前缀表示：$\mathrm{0b111111111}$。
 使用下划线（`_`）提高可读性：$\mathrm{0b111\_111\_111}$ 等于 $\mathrm{0b111111111}$。
 
-### NanoToncoin
+### NanoToncoin {#nanotoncoin}
 
 美元的算术运算需要在圆点后保留两位小数，这两位小数用于美分的计算。但是，如果我们只能用整数来表示数字 \$$1.25$，我们该如何表示呢？解决的办法是直接使用 _cents_。这样，\$$1.25$ 就变成了 $125$ 美分。我们只需记住最右边的两位数代表小数点后的数字。
 
 同样，在使用 TON 区块链的主要货币 Toncoin 时，需要九位小数，而不是两位小数。可以说，纳米通币是通币的 $\frac{1}{10^{9}}$。
 
-因此，$1.25$ Toncoin 的数量，可以用 Tact 表示为 [`ton("1.25"){:tact}`](/ref/core-comptime#ton)，实际上就是数字 $1250000000$。我们把这些数字称为 _纳米吨币_（或 _纳米吨_），而不是 _美分_。
+因此，$1.25$ Toncoin 的数量，可以用 Tact 表示为 [`ton("1.25"){:tact}`](/zh-cn/ref/core-comptime#ton)，实际上就是数字 $1250000000$。我们把这些数字称为 _纳米吨币_（或 _纳米吨_），而不是 _美分_。
 
-## 序列化
+## 序列化 {#serialization}
 
-将 `Int{:tact}` 值编码为持久状态（[contracts](/book/contracts) 和 [traits](/book/types#traits) 的字段）时，通常最好使用比 $257$-bits 更小的表示形式，以降低[存储成本](https://docs.ton.org/develop/smart-contracts/fees#storage-fee)。 这些表示法的使用也被称为 "序列化"，因为它们代表了 TON 区块链运行的本地[TL-B][tlb]类型。
+将 `Int{:tact}` 值编码为持久状态（[contracts](/zh-cn/book/contracts) 和 [traits](/zh-cn/book/types#traits) 的字段）时，通常最好使用比 $257$-bits 更小的表示形式，以降低[存储成本](https://docs.ton.org/develop/smart-contracts/fees#storage-fee)。 这些表示法的使用也被称为 "序列化"，因为它们代表了 TON 区块链运行的本地[TL-B][tlb]类型。
 
 持久状态大小在状态变量的每个声明中都会在 `as{:tact}`关键字后指定：
 
@@ -70,7 +70,7 @@ contract SerializationExample {
 }
 ```
 
-整数序列化也适用于 [Structs](/book/structs and-messages#structs) 和 [Messages](/book/structs and-messages#messages) 的字段，以及 [maps](/book/maps) 的键/值类型：
+整数序列化也适用于 [Structs](/zh-cn/book/structs and-messages#structs) 和 [Messages](/zh-cn/book/structs and-messages#messages) 的字段，以及 [maps](/zh-cn/book/maps) 的键/值类型：
 
 ```tact
 struct StSerialization {
@@ -109,7 +109,7 @@ message MsgSerialization {
 
 ### 变量 `coins` 类型 {#serialization-coins}
 
-在 Tact 中，`coins{:tact}` 是[TL-B][tlb]表示法中[`VarUInteger 16`][varuint]的别名，即根据存储给定整数所需的最佳字节数，它的位长是可变的，通常用于存储[nanoToncoin](/book/integers#nanotoncoin)金额。
+在 Tact 中，`coins{:tact}` 是[TL-B][tlb]表示法中[`VarUInteger 16`][varuint]的别名，即根据存储给定整数所需的最佳字节数，它的位长是可变的，通常用于存储[nanoToncoin](/zh-cn/book/integers#nanotoncoin)金额。
 
 这种序列化格式包括两个 [TL-B 字段](https://docs.ton.org/develop/data-formats/tl-b-language#field-definitions)：
 
@@ -146,11 +146,11 @@ struct Scrooge {
 
 :::note
 
-  点击此处阅读有关序列化的更多信息：[与 FunC 兼容](/book/func#convert-serialization)
+  点击此处阅读有关序列化的更多信息：[与 FunC 兼容](/zh-cn/book/func#convert-serialization)
 
 :::
 
-## 业务
+## 业务 {#operations}
 
 所有数字的运行时计算都是在 257 位完成的，因此 [溢出](https://en.wikipedia.org/wiki/Integer_overflow) 非常罕见。 不过，如果任何数学运算出现溢出，就会抛出异常，事务也会失败。 可以说，Tact 的数学默认是安全的。
 
@@ -175,7 +175,7 @@ contract ComputeErrorsOhNo with Deployable {
 }
 ```
 
-这里，"oneByte" 被序列化为 [`uint8`](#serialization-types)，只占用一个字节，范围从 $0$ 到 $2^8 - 1$，即 $255$。在运行时计算中使用时，不会发生溢出，所有计算结果都是 $257$ 位有符号整数。但是，就在我们决定将 `tmp` 的值存储回 `oneByte` 的那一刻，我们收到了一个错误，[退出代码 5](/book/exit-codes#5)，错误信息如下：整数超出预期范围。
+这里，"oneByte" 被序列化为 [`uint8`](#serialization-types)，只占用一个字节，范围从 $0$ 到 $2^8 - 1$，即 $255$。在运行时计算中使用时，不会发生溢出，所有计算结果都是 $257$ 位有符号整数。但是，就在我们决定将 `tmp` 的值存储回 `oneByte` 的那一刻，我们收到了一个错误，[退出代码 5](/zh-cn/book/exit-codes#5)，错误信息如下：整数超出预期范围。
 
 :::caution
   因此，在使用序列化时，对数字要**非常**小心，并始终仔细检查计算结果。
