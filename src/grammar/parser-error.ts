@@ -1,6 +1,6 @@
 import { MatchResult } from "ohm-js";
 import { ErrorDisplay } from "../error/display";
-import { locationStr, TactCompilationError } from "../errors";
+import { TactCompilationError } from "../errors";
 import { getSrcInfoFromOhm, ItemOrigin, SrcInfo } from "./src-info";
 
 const attributeSchema =
