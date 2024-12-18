@@ -90,51 +90,32 @@ function checkVariableName(name: string, loc: SrcInfo) {
     }
 }
 
-function checkConstAttributes(
-    isAbstract: boolean,
-    attributes: AstConstantAttribute[],
-    loc: SrcInfo,
-) {
-    const k: Set<string> = new Set();
-    for (const a of attributes) {
-        if (k.has(a.type)) {
-            err().duplicateConstantAttribute(a.type)(a.loc);
+const checkAttributes =
+    (kind: "constant" | "function") =>
+    (
+        isAbstract: boolean,
+        attributes: (AstConstantAttribute | AstFunctionAttribute)[],
+        loc: SrcInfo,
+    ) => {
+        const { duplicate, tooAbstract, notAbstract } = err()[kind];
+        const k: Set<string> = new Set();
+        for (const a of attributes) {
+            if (k.has(a.type)) {
+                duplicate(a.type)(a.loc);
+            }
+            k.add(a.type);
         }
-        k.add(a.type);
-    }
-    if (isAbstract) {
-        if (!k.has("abstract")) {
-            err().constantNotAbstract()(loc);
+        if (isAbstract && !k.has("abstract")) {
+            notAbstract()(loc);
         }
-    } else {
-        if (k.has("abstract")) {
-            err().constantIsAbstract()(loc);
+        if (!isAbstract && k.has("abstract")) {
+            tooAbstract()(loc);
         }
-    }
-}
+    };
 
-function checkFunctionAttributes(
-    isAbstract: boolean,
-    attrs: AstFunctionAttribute[],
-    loc: SrcInfo,
-) {
-    const k: Set<string> = new Set();
-    for (const a of attrs) {
-        if (k.has(a.type)) {
-            err().duplicateFunctionAttribute(a.type)(a.loc);
-        }
-        k.add(a.type);
-    }
-    if (isAbstract) {
-        if (!k.has("abstract")) {
-            err().functionNotAbstract()(loc);
-        }
-    } else {
-        if (k.has("abstract")) {
-            err().functionIsAbstract()(loc);
-        }
-    }
-}
+const checkConstAttributes = checkAttributes("constant");
+
+const checkFunctionAttributes = checkAttributes("function");
 
 const semantics = tactGrammar.createSemantics();
 
@@ -285,7 +266,9 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
     ModuleConstant(constant) {
         const astConstDef: AstConstantDef = constant.astOfItem();
         if (astConstDef.attributes.length !== 0) {
-            err().topLevelConstantWithAttribute()(astConstDef.attributes[0]!.loc);
+            err().topLevelConstantWithAttribute()(
+                astConstDef.attributes[0]!.loc,
+            );
         }
         return astConstDef;
     },
@@ -597,14 +580,14 @@ semantics.addOperation<string>("astOfAsmInstruction", {
         const length = digits.numChildren;
         const underscore = unwrapOptNode(optUnderscore, (t) => t.sourceString);
         if (length > 128) {
-            err().literalTooLongHex()(createRef(this));
+            err().literalTooLong()(createRef(this));
         }
         return `${prefix.sourceString}${digits.sourceString}${underscore ?? ""}}`;
     },
     AsmInstruction_binLiteral(_prefix, digits, _rbrace, _ws) {
         const length = digits.numChildren;
         if (length > 128) {
-            err().literalTooLongBin()(createRef(this));
+            err().literalTooLong()(createRef(this));
         }
         return `b{${digits.sourceString}}`;
     },
@@ -706,7 +689,7 @@ semantics.addOperation<AstNode[]>("astsOfList", {
             params.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            err().extraneousCommaParams()(createRef(optTrailingComma));
+            err().extraneousComma()(createRef(optTrailingComma));
         }
         return params.asIteration().children.map((p) => p.astOfDeclaration());
     },
@@ -715,7 +698,7 @@ semantics.addOperation<AstNode[]>("astsOfList", {
             args.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            err().extraneousCommaArgs()(createRef(optTrailingComma));
+            err().extraneousComma()(createRef(optTrailingComma));
         }
         return args.asIteration().children.map((arg) => arg.astOfExpression());
     },
@@ -1053,7 +1036,9 @@ semantics.addOperation<AstNode>("astOfStatement", {
                 .children.reduce((map, item) => {
                     const destructItem = item.astOfExpression();
                     if (map.has(destructItem.field.text)) {
-                        err().duplicateField(destructItem.field.text)(destructItem.loc);
+                        err().duplicateField(destructItem.field.text)(
+                            destructItem.loc,
+                        );
                     }
                     map.set(destructItem.field.text, [
                         destructItem.field,
@@ -1469,7 +1454,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
             structFields.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            err().extraneousCommaParams()(createRef(optTrailingComma));
+            err().extraneousComma()(createRef(optTrailingComma));
         }
 
         return createNode({

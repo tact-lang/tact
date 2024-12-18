@@ -47,10 +47,12 @@ export interface SrcInfo {
 }
 
 export const srcInfoEqual = (left: SrcInfo, right: SrcInfo): boolean => {
-    return left.file === right.file &&
+    return (
+        left.file === right.file &&
         left.interval.contents === right.interval.contents &&
         left.interval.startIdx === right.interval.startIdx &&
-        left.interval.endIdx === right.interval.endIdx;
+        left.interval.endIdx === right.interval.endIdx
+    );
 };
 
 const isEndline = (s: string) => s === "\n";

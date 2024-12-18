@@ -19,14 +19,14 @@ const locationStr = (sourceInfo: SrcInfo): string => {
 
     const file = relative(cwd(), sourceInfo.file);
     return `${file}:${loc.lineNum}:${loc.colNum}: `;
-}
+};
 
 export const displayToString: ErrorDisplay<string> = {
     text: (text) => text,
     sub: (parts, ...subst) => {
         const [head, ...tail] = parts;
         if (!head) {
-            return '';
+            return "";
         }
         return tail.reduce((acc, part, index) => {
             const sub = subst[index];
@@ -37,5 +37,4 @@ export const displayToString: ErrorDisplay<string> = {
     at: (loc, body) => {
         return `${locationStr(loc)}${body}\n${loc.interval.getLineAndColumnMessage()}`;
     },
-    // type: (type) => String(type),
 };
