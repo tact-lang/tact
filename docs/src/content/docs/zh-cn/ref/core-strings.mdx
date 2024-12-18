@@ -6,7 +6,7 @@ title: 字符串和字符串构造器
 
 要以省 gas 的方式连接字符串，请使用 [`字符串生成器{:tact}`][p]。
 
-要直接使用 [`字符串{:tact}`][p]字面量，请参阅：[字符串字面量](/book/expressions#string-literals)。
+要直接使用 [`字符串{:tact}`][p]字面量，请参阅：[字符串字面量](/zh-cn/book/expressions#string-literals)。
 
 ## beginString
 
@@ -144,7 +144,7 @@ extends fun toSlice(self: StringBuilder)：Slice；
 
 [`字符串生成器{:tact}`][p]的扩展函数。
 
-从 [`StringBuilder{:tact}`][p]返回一个组装好的 [`单元格{:tact}`][单元格] 作为 [`片{:tact}`][片]。 别名为 [`self.toCell().asSlice(){:tact}`](/ref/core-cells#cellasslice)。
+从 [`StringBuilder{:tact}`][p]返回一个组装好的 [`单元格{:tact}`][单元格] 作为 [`片{:tact}`][片]。 别名为 [`self.toCell().asSlice(){:tact}`](/zh-cn/ref/core-cells#cellasslice)。
 
 使用示例
 
@@ -180,7 +180,7 @@ fizz == buzz; // true, 但要小心，因为并非总是如此。
 
 :::note
 
-  查看 `String.asSlice{:tact}` 函数如何实际使用：[如何将 `String` 转换为 `Int`](/cookbook/type-conversion#how-to-convert-a-string-to-an-int).
+  查看 `String.asSlice{:tact}` 函数如何实际使用：[如何将 `String` 转换为 `Int`](/zh-cn/cookbook/type-conversion#how-to-convert-a-string-to-an-int).
 
 :::
 
@@ -219,7 +219,7 @@ extends fun fromBase64(self: String)：Slice；
 
 请注意，该函数是有限制的，只能从给定的 [`字符串{:tact}`][p] 中获取前 $1023$ 位数据，当 [`字符串{:tact}`][p] 较大（即包含超过 $1023$ 位数据）时，不会抛出异常。
 
-如果给定的 [`String{:tact}`][p] 包含不属于 Base64 集的字符，则会出现[退出代码 134](/book/exit-codes#134)异常："无效参数"。
+如果给定的 [`String{:tact}`][p] 包含不属于 Base64 集的字符，则会出现[退出代码 134](/zh-cn/book/exit-codes#134)异常："无效参数"。
 
 使用示例
 
@@ -265,7 +265,7 @@ extends fun fromBase64(self: Slice)：Slice；
 
 请注意，该函数是有限制的，只能从给定的 [`片{:tact}`][片] 中获取前 $1023$ 位数据，如果 [`片{:tact}`][片] 有更多数据（即有任何引用），则不会抛出异常。
 
-如果给定的 [`Slice{:tact}`][p]包含不属于 Base64 集的字符，将产生[退出代码 134](/book/exit-codes#134)异常："无效参数"。
+如果给定的 [`Slice{:tact}`][p]包含不属于 Base64 集的字符，将产生[退出代码 134](/zh-cn/book/exit-codes#134)异常："无效参数"。
 
 使用示例
 
@@ -300,7 +300,7 @@ extends fun toFloatString(self: Int, digits: Int)：String；
 
 使用小数的[定点表示](https://en.wikipedia.org/wiki/Fixed-point_arithmetic)从[`Int{:tact}`][int]值返回[`String{:tact}`][p]，其中`self`是数字的有效部分，`digits`是小数部分的位数。
 
-更确切地说，"digits "是 $10^{-\mathrm{digits}}$ 表达式的指数化参数，它给出了实际 [`Int{:tact}`][int]值乘以后所代表的小数。 参数 `digits` 必须在封闭区间内：$0 <$ `digits` $< 78$，否则会出现 [exit code 134](/book/exit-codes#134)异常："无效参数"。
+更确切地说，"digits "是 $10^{-\mathrm{digits}}$ 表达式的指数化参数，它给出了实际 [`Int{:tact}`][int]值乘以后所代表的小数。 参数 `digits` 必须在封闭区间内：$0 <$ `digits` $< 78$，否则会出现 [exit code 134](/zh-cn/book/exit-codes#134)异常："无效参数"。
 
 使用示例
 
@@ -318,7 +318,7 @@ extends fun toCoinsString(self: Int)：String；
 
 使用小数的[定点表示法](https://en.wikipedia.org/wiki/Fixed-point_arithmetic)从[`Int{:tact}`][int]值返回[`String{:tact}`][p]。 别名为 `self.toFloatString(9){:tact}`。
 
-用于用字符串表示 [纳米通币](/book/integers#nanotoncoin) [`Int{:tact}`][int]值。
+用于用字符串表示 [纳米通币](/zh-cn/book/integers#nanotoncoin) [`Int{:tact}`][int]值。
 
 使用示例
 
@@ -347,8 +347,8 @@ extends fun toString(self: Address)：String；
 let fizz：String = community.toString()；
 ```
 
-[p]: /book/types#primitive-types
-[bool]: /book/types#booleans
-[int]: /book/integers
-[电池]: /book/cells#cells
-[一片]: /book/cells#slices
+[p]: /zh-cn/book/types#primitive-types
+[bool]: /zh-cn/book/types#booleans
+[int]: /zh-cn/book/integers
+[电池]: /zh-cn/book/cells#cells
+[一片]: /zh-cn/book/cells#slices

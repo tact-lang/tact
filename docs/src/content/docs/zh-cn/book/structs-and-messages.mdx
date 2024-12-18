@@ -2,7 +2,7 @@
 title: 结构和信息
 ---
 
-Tact 支持许多专为智能合约使用而定制的 [原始数据类型](/book/types#primitive-types)。 不过，使用单独的存储方式往往会变得繁琐，因此有 [Structs](#structs) 和 [Messages](#messages)可以将类型组合在一起。
+Tact 支持许多专为智能合约使用而定制的 [原始数据类型](/zh-cn/book/types#primitive-types)。 不过，使用单独的存储方式往往会变得繁琐，因此有 [Structs](#structs) 和 [Messages](#messages)可以将类型组合在一起。
 
 :::caution
 
@@ -116,7 +116,7 @@ message(0x7362d09c) TokenNotification {
 :::note
 
   更深入的信息请参见：
-  [Convert received messages to `op` operations](/book/func#convert-received-messages-to-op-operations)\
+  [Convert received messages to `op` operations](/zh-cn/book/func#convert-received-messages-to-op-operations)\
   [Internal message body layout in TON Docs](https://docs.ton.org/develop/smart-contracts/guidelines/internal-messages#internal-message-body)\
   [Messages of the Jetton implementation in Tact](https://github.com/howardpen9/jetton-implementation-in-tact/blob/9eee917877a92af218002874a9f2bd3f9c619229/sources/messages.tact)\
   [Jetton Standard in Tact on Tact-by-Example](https://tact-by-example.org/07-jetton-standard)
@@ -127,7 +127,7 @@ message(0x7362d09c) TokenNotification {
 
 ### 实例化
 
-创建 [Struct](#structs) 和 [Message](#messages) 实例类似于 [function calls](/book/expressions#static-function-call)，但需要用大括号 `{}{:tact}`（大括号）代替小括号 `(){:tact}`指定参数：
+创建 [Struct](#structs) 和 [Message](#messages) 实例类似于 [function calls](/zh-cn/book/expressions#static-function-call)，但需要用大括号 `{}{:tact}`（大括号）代替小括号 `(){:tact}`指定参数：
 
 ```tact
 struct StA {
@@ -183,13 +183,13 @@ fun example() {
 
 :::note
 
-  因为实例化是 Tact 中的一个表达式，所以在相关页面中也有描述：[实例化表达式](/book/expressions#instantiation)。
+  因为实例化是 Tact 中的一个表达式，所以在相关页面中也有描述：[实例化表达式](/zh-cn/book/expressions#instantiation)。
 
 :::
 
 ### 转换为 `Cell`, `.toCell()` {#tocell}
 
-通过使用 `.toCell(){:tact}` [扩展函数](/book/functions#extension-function)，可以将任意 [Struct](#structs) 或 [Message](#messages) 转换为 [`单元格{:tact}`][单元格] 类型：
+通过使用 `.toCell(){:tact}` [扩展函数](/zh-cn/book/functions#extension-function)，可以将任意 [Struct](#structs) 或 [Message](#messages) 转换为 [`单元格{:tact}`][单元格] 类型：
 
 ```tact
 struct Big {
@@ -212,16 +212,16 @@ fun conversionFun() {
 :::note
 
   参见参考资料中的扩展函数：
-  [`Struct.toCell(){:tact}`](/ref/core-cells#structtocell)/
-  [`Message.toCell(){:tact}`](/ref/core-cells#messagetocell)。
+  [`Struct.toCell(){:tact}`](/zh-cn/ref/core-cells#structtocell)/
+  [`Message.toCell(){:tact}`](/zh-cn/ref/core-cells#messagetocell)。
 
 :::
 
 ### 从 `Cell` 或 `Slice` 获取，`.fromCell()` 和 `.fromSlice()` {#fromcellslice}
 
-无需通过一系列相关的 `.loadSomething(){:tact}` 函数调用来手动解析 [`Cell{:tact}`][cell] 或 [`Slice{:tact}`][slice]，而是可以使用 `.fromCell(){:tact}` 和 `.fromSlice(){:tact}` [扩展函数](/book/functions#extension-function)。这些扩展函数将所提供的 [`Cell{:tact}`][cell] 或 [`Slice{:tact}`][slice] 转换为所需的 [Struct](#structs) 或 [Message](#messages)。
+无需通过一系列相关的 `.loadSomething(){:tact}` 函数调用来手动解析 [`Cell{:tact}`][cell] 或 [`Slice{:tact}`][slice]，而是可以使用 `.fromCell(){:tact}` 和 `.fromSlice(){:tact}` [扩展函数](/zh-cn/book/functions#extension-function)。这些扩展函数将所提供的 [`Cell{:tact}`][cell] 或 [`Slice{:tact}`][slice] 转换为所需的 [Struct](#structs) 或 [Message](#messages)。
 
-这些扩展函数仅尝试根据 [Struct](#structs) 或 [Message](#messages) 的结构解析 [`Cell{:tact}`][cell] 或 [`Slice{:tact}`][slice]。如果布局不匹配，可能会抛出各种异常——确保用 [`try...catch{:tact}`](/book/statements#try-catch) 块封装代码，以防止意外结果。
+这些扩展函数仅尝试根据 [Struct](#structs) 或 [Message](#messages) 的结构解析 [`Cell{:tact}`][cell] 或 [`Slice{:tact}`][slice]。如果布局不匹配，可能会抛出各种异常——确保用 [`try...catch{:tact}`](/zh-cn/book/statements#try-catch) 块封装代码，以防止意外结果。
 
 ```tact
 struct Fizz { foo: Int }
@@ -292,10 +292,10 @@ fun lawTwo() {
 }
 ```
 
-[st-fc]: /ref/core-cells#structfromcell
-[st-fs]: /ref/core-cells#structfromslice
-[msg-fc]: /ref/core-cells#messagefromcell
-[msg-fs]: /ref/core-cells#messagefromslice
-[p]: /book/types#primitive-types
-[电池]: /book/cells#cells
-[一片]: /book/cells#slices
+[st-fc]: /zh-cn/ref/core-cells#structfromcell
+[st-fs]: /zh-cn/ref/core-cells#structfromslice
+[msg-fc]: /zh-cn/ref/core-cells#messagefromcell
+[msg-fs]: /zh-cn/ref/core-cells#messagefromslice
+[p]: /zh-cn/book/types#primitive-types
+[电池]: /zh-cn/book/cells#cells
+[一片]: /zh-cn/book/cells#slices
