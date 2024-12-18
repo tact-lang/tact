@@ -240,11 +240,11 @@ try {
 
 ### 6: Invalid opcode {#6}
 
-If you specify an instruction that is not defined in the current [TVM][tvm] version, an error with exit code $6$ is thrown: `Invalid opcode`.
+If you specify an instruction that is not defined in the current [TVM][tvm] version or try to set an unsupported [code page](https://docs.ton.org/v3/documentation/tvm/tvm-overview#tvm-state), an error with exit code $6$ is thrown: `Invalid opcode`.
 
 ```tact
-// No such thing
-asm fun invalidOpcode() { x{D7FF} @addop }
+// There's no such codepage, and attempt to set it fails
+asm fun invalidOpcode() { 42 SETCP }
 
 contract OpOp {
     receive("I solemnly swear that I'm up to no good") {

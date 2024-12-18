@@ -15,7 +15,7 @@ import { Badge } from '@astrojs/starlight/components';
 
 :::
 
-Assembly functions (or asm functions for short) are module-level functions that allow you to write [Tact assembly](#tact). Unlike all other functions, their bodies consist only of [TVM instructions][tvm-instructions] and [some other primitives](#tact), and don't use any [Tact statements](/book/statements).
+Assembly functions (or asm functions for short) are module-level functions that allow you to write [Tact assembly](#tact). Unlike all other functions, their bodies consist only of [TVM instructions](#tvm) and [some other primitives](#tact), and don't use any [Tact statements](/book/statements).
 
 ```tact
 // all assembly functions must start with "asm" keyword
@@ -24,8 +24,47 @@ Assembly functions (or asm functions for short) are module-level functions that 
 //                         ------
 //                         Notice, that the body contains only of
 //                         TVM instructions and some primitives,
-//                         like numbers or bitstrings
+//                         like numbers or bitstrings, which serve
+//                         as arguments to the instructions
 ```
+
+## TVM instructions {#tvm}
+
+In Tact, the term _TVM instruction_ refers to the command that is executed by the [TVM][tvm] during its run-time — the [compute phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase). Where possible, Tact will try to optimize their use for you, but it won't define new ones or introduce extraneous syntax for their [pre-processing](https://docs.ton.org/v3/documentation/smart-contracts/fift/fift-and-tvm-assembly). Instead, it is recommended to combine the best of Tact and TVM instructions, as shown in the [`onchainSha256(){:tact}` example](#onchainsha256) near the end of this page.
+
+Each [TVM instruction][tvm-instructions], when converted to its binary representation, is an opcode (operation code) to be executed by the [TVM][tvm] plus some optional arguments to it written immediately after. However, when writing instructions in `asm{:tact}` functions, the arguments, if any, are written before the instruction and are separated by spaces. This [reverse Polish notation (RPN)](https://en.wikipedia.org/wiki/Reverse_Polish_notation) syntax is intended to show the stack-based nature of [TVM][tvm].
+
+For example, the [`DROP2`](https://docs.ton.org/v3/documentation/tvm/instructions#5B) or its alias [`2DROP`](https://docs.ton.org/v3/documentation/tvm/instructions#5B), which drop (discard) two top values from the stack, have the same opcode prefix — `0x5B`, or `1011011` in binary.
+
+```tact
+/// Pushes `a` and `b` onto the stack, then immediately drops them from it
+asm fun discardTwo(a: Int, b: Int) { DROP2 }
+```
+
+The arguments to [TVM instructions][tvm-instructions] in Tact are called [primitives](#tact) — they don't manipulate the stack themselves and aren't pushed on it by themselves. Attempting to specify a primitive without the instruction that immediately consumes it will result in compilation errors.
+
+```tact
+/// COMPILATION ERROR!
+/// The 43 were meant to be an argument to some subsequent TVM instruction
+/// but there weren't found any
+asm fun bad(): Int { 43 }
+```
+
+For some instructions, the resulting opcode depends on the specified [primitive](#tact). For example, the [`PUSHINT`](https://docs.ton.org/v3/documentation/tvm/instructions#7i), or its shorter alias [`INT`](https://docs.ton.org/v3/documentation/tvm/instructions#7i), have the same opcode `0x7` if the specified number argument is in the inclusive range from $-5$ to $10$. However, if the number is greater than that, the opcode changes accordingly: [`0x80`](https://docs.ton.org/v3/documentation/tvm/instructions#80xx) for arguments in the inclusive range from $-128$ to $127$, [`0x81`](https://docs.ton.org/v3/documentation/tvm/instructions#81xxxx) for arguments in the inclusive range from $-2^{15}$ to $2^{15}$, and so on. For your convenience, all these variations of opcodes are described using the same instruction name, in this case `PUSHINT`.
+
+```tact
+asm fun push42(): Int {
+    // The following will be converted to 0x80 followed by 0x2A
+    // in their binary representation for execution by the TVM
+    42 PUSHINT
+}
+```
+
+:::note[Useful links:]
+
+  [List of TVM instructions in TON Docs][tvm-instructions]
+
+:::
 
 ## Tact assembly {#tact}
 
@@ -37,13 +76,17 @@ Except for comments, everything in `asm{:tact}` function bodies must be separate
 
 ```tact
 asm fun theLegendOfAsmTactina() {
-    // String literals, useful for debug instructions
+    // String literals, used in some debug instructions
     "Anything inside double-quotes that's not a double-quote"
 
     // Hex bitstrings with optional padding via _,
     // which are represented by Slices without references
     // with up to 1023 data bits
     x{babecafe_}
+
+    // Hex-encoded BoCs, which are like regular hex bitstrings,
+    // but have a much greater limit of bits up to the maximum account state size
+    c{DEADBEEF_}
 
     // Binary bitstrings, which are like their hex counterparts,
     // but do not have the optional padding
@@ -52,10 +95,10 @@ asm fun theLegendOfAsmTactina() {
     // Number literals, represented by Int values on TVM
     42 -13
 
-    // TVM control registers, which can be referred to in some instructions
+    // TVM control registers
     c0 // c0, c1, ..., c15
 
-    // TVM stack registers, which can be referred to in some instructions
+    // TVM stack registers
     s0 // s0, s1, ..., s255
 
     // TVM instructions themselves
@@ -67,13 +110,17 @@ asm fun theLegendOfAsmTactina() {
 
   The `i s()` syntax for referring to stack registers beyond the $0 - 15$ range is deprecated and recognized as an error in Tact 1.6 and onward. Whenever you see `[ii] s()` in the [TVM instructions list][tvm-instructions], use one of `s0`, `s1`, ..., `s255` instead.
 
+  Additionally, in Tact 1.6 and onward, the `B{...} B>boc` syntax is deprecated in favor of `c{...}` — whenever in the [TVM instructions list][tvm-instructions] you see an instruction that accepts `[ref]` argument, such as the [`PUSHREF`](https://docs.ton.org/v3/documentation/tvm/instructions#88), use `c{...}` instead.
+
 :::
 
-## Stack calling conventions {#calling}
+## Stack calling conventions {#conventions}
 
-The syntax for parameters and return values is the same as for other function kinds, but there is one caveat — argument values are pushed to the stack before the function body is executed, and return values are what's left on the stack afterward.
+The syntax for parameters and returns is the same as for other function kinds, but there is one caveat — argument values are pushed to the stack before the function body is executed, and return type is what's captured from the stack afterward.
 
-That is, the first parameter is pushed to the stack first, the second one second, and so on, so that the first parameter is at the bottom of the stack and the last one at the top.
+### Parameters {#conventions-parameters}
+
+The first parameter is pushed to the stack first, the second one second, and so on, so that the first parameter is at the bottom of the stack and the last one at the top.
 
 ```tact
 asm extends fun storeCoins(self: Builder, value: Int): Builder {
@@ -101,7 +148,94 @@ asm fun identity(x: Int): Int { }
 asm fun bocchiThe(BOC: Cell): Cell { BOC }
 ```
 
-TODO: Return the written back here
+The parameters of arbitrary [Struct][struct] types are distributed over their fields, recursively flattened as the arguments are pushed onto the stack. In particular, the value of the first field of the [Struct][struct] is pushed first, the second is pushed second, and so on, so that the value of the first field is at the bottom of the stack and the value of the last is at the top. If there are nested structures inside those [Structs][struct], they're flattened in the same manner.
+
+```tact
+// Struct with two fields of type Int
+struct AB { a: Int; b: Int }
+
+// This will produce the sum of two fields in the `AB` Struct
+asm fun sum(two: AB): Int { ADD }
+
+// Struct with two nested `AB` structs as its fields
+struct Nested { ab1: AB; ab2: AB }
+
+// This will multiply the sums of fields of nested `AB` Structs
+asm fun mulOfSums(n: Nested): Int { ADD -ROT ADD MUL }
+
+// Action!
+fun showcase() {
+    sum(AB{ a: 27, b: 50 }); // 77
+    //      ↑      ↑
+    //      |      Pushed last, sits on top of the stack
+    //      Pushed first, sits on the bottom of the stack
+
+    mulOfSums(Nested{ ab1: AB{ a: 1, b: 2 }, ab2: AB{ a: 3, b: 4 } }); // 21
+    //                         ↑     ↑                ↑     ↑
+    //                         |     |                |     Pushed last,
+    //                         |     |                |     sits on top of the stack
+    //                         |     |                Pushed second-to-last,
+    //                         |     |                sits below the top of the stack
+    //                         |     Pushed second,
+    //                         |     sits right above the bottom of the stack
+    //                         Pushed first, sits on the bottom of the stack
+}
+```
+
+### Returns {#conventions-returns}
+
+When present, return type of an assembly function attempts to capture relevant values from the resulting stack after the function execution and possible stack [arrangements](#arrangements). When not present, however, assembly function does not take any values from the stack.
+
+When present, an assembly function's return type attempts to grab relevant values from the resulting stack after the function execution and any [result arrangements](#arrangements). If the return type is not present, however, the assembly function does not take any values from the stack.
+
+```tact
+// Pushes `x` onto the stack, increments it there,
+// but does not capture the result, leaving it on the stack
+asm fun push(x: Int) { INC }
+```
+
+Specifying a [primitive type][p], such as an [`Int{:tact}`][int] or a [`Cell{:tact}`][cell], will make the assembly function pop the top value from the stack and produce it as a result. If the run-time type of the popped value doesn't match the specified return type, an exception with [exit code 7](/book/exit-codes#7) will be thrown: `Type check error`.
+
+```tact
+// CAUSES RUN-TIME ERROR!
+// Pushes `x` onto the stack, then tries to capture it as a Cell,
+// causing an exit code 7: Type check error
+asm fun push(x: Int): Cell { }
+```
+
+Just like in [parameters](#conventions-parameters), arbitrary [Struct][struct] return types are distributed across their fields and recursively flattened in exactly the same order. The only differences are that they now capture or pop values from the stack instead of pushing them onto the stack, and they do so in a right-to-left fashion — the last field of the [Struct][struct] pops the topmost value from the stack, the second-to-last pops the second to the top, and so on, so that the last field contains the value from the top of the stack and the first field contains the value from the bottom.
+
+```tact
+// Struct with two fields of type Int
+struct MinMax { minVal: Int; maxVal: Int }
+
+// Pushes `a` and `b` onto the stack,
+// then captures two values back via the `MinMax` Struct
+asm fun minmax(a: Int, b: Int): MinMax { MINMAX }
+```
+
+If the run-time type of some popped value doesn't match some specified field type of the [Struct][struct] or the nested [Structs][struct], if any, an exception with [exit code 7](/book/exit-codes#7) will be thrown: `Type check error`. Moreover, attempts to capture more values than there were on the stack throw an exception with [exit code 2](/book/exit-codes#2): `Stack underflow`.
+
+```tact
+// Struct with way too many fields for initial stack to handle
+struct Handler { f1: Int; f2: Int; f3: Int; f4: Int; f5: Int; f6: Int; f7: Int }
+
+// CAUSES RUN-TIME ERROR!
+// Tries to capture 7 values from the stack and map them onto the fields of `Handler`,
+// but there's just isn't that many values on the initial stack after TVM initialization,
+// which causes an exit code 2 to be thrown: Stack underflow
+asm fun overHandler(): Handler { }
+```
+
+As parameters and return values of assembly functions, [Structs][struct] can only have up to $16$ fields on each nested level. That is, you could go over $16$ fields in total if, for example, some of them were the nested structures, thus increasing the nesting level. Note that the outer parameters of the function also count as a nested level, so specifying a [Struct][struct] with more than $16$ fields as parameters or with more than $16$ parameters will cause compilation errors, especially in assembly functions.
+
+```tact
+// Seventeen fields
+struct S17 { f1:Int; f2:Int; f3:Int; f4:Int; f5:Int; f6:Int; f7:Int; f8:Int; f9:Int; f10:Int; f11:Int; f12:Int; f13:Int; f14:Int; f15: Int; f16: Int; f17: Int }
+
+// COMPILATION ERROR!
+asm fun chuckles(s: S17) { }
+```
 
 ## Stack registers {#stack-registers}
 
@@ -206,8 +340,6 @@ That said, there's a [caveat to `mutates{:tact}` attribute and asm arrangements]
 
 ## Limitations {#limitations}
 
-At any given time, the number of values on the stack will be in the inclusive range from $0$ to $256$. Going beyond this range will cause exceptions to be thrown.
-
 Attempts to drop the number of stack values below $0$ throw an exception with [exit code 2](/book/exit-codes#2): `Stack underflow`.
 
 ```tact
@@ -220,7 +352,7 @@ fun exitCode2() {
 }
 ```
 
-Attempts to push more than $256$ values onto the stack or to have more than $256$ values stored there throw an exception with [exit code 3](/book/exit-codes#3): `Stack overflow`. This upper limit applies to the [TVM][tvm] stack itself, corresponding to the [return continuation in register `c0`](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers), but different [continuations](https://docs.ton.org/v3/documentation/tvm/tvm-overview#tvm-is-a-stack-machine) may have a different upper limit of values on their inner stacks.
+Attempts to push more than $256$ values onto the stack at once throw an exception with [exit code 3](/book/exit-codes#3): `Stack overflow`. For example, this might happen when you specify a lot of nested [Structs][struct] as parameters to the assembly function. This upper limit applies to the [TVM][tvm] stack itself, corresponding to the [return continuation in register `c0`](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers), but different [continuations](https://docs.ton.org/v3/documentation/tvm/tvm-overview#tvm-is-a-stack-machine) may have a different upper limit of values on their inner stacks.
 
 ```tact
 asm fun stackOverflow() {
@@ -237,6 +369,8 @@ fun exitCode3() {
     stackOverflow();
 }
 ```
+
+Although there are only $256$ [stack registers](#stack-registers), the stack itself can have more than $256$ values on it in total. The deeper values won't be immediately accessible by any [TVM instructions][tvm-instructions], but they would be on the stack nonetheless.
 
 ## Caveats {#caveats}
 
@@ -506,8 +640,8 @@ This example extends the [`ecrecover(){:tact}`](#ecrecover) one and adds more co
 // Calculates and returns the SHA-256 hash
 // as a 256-bit unsigned `Int` of the given `data`.
 // Unlike the `sha256()` function from the Core library,
-// this one works purely on-chain (at runtime), hashing the strings completely
-// rather than just their first 1023 bits of data like `sha256()` does.
+// this one works purely on-chain (at runtime), hashing the strings completely,
+// whereas the `sha256()` reliably works only with their first 1023 bits of data
 fun onchainSha256(data: String): Int {
     _onchainShaPush(data);
     while (_onchainShaShouldProceed()) {
@@ -534,6 +668,7 @@ asm fun _onchainShaHashExt(): Int { HASHEXT_SHA256 }
 
 [p]: /book/types#primitive-types
 [struct]: /book/structs-and-messages#structs
+[int]: /book/integers
 [cell]: /book/cells#cells
 [builder]: /book/cells#builders
 [slice]: /book/cells#slices
