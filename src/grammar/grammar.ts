@@ -22,7 +22,7 @@ import { throwParseError, throwSyntaxError } from "../errors";
 import { checkVariableName } from "./checkVariableName";
 import { checkFunctionAttributes } from "./checkFunctionAttributes";
 import { checkConstAttributes } from "./checkConstAttributes";
-import { ItemOrigin, OhmSrcInfo, SrcInfo } from "./src-info";
+import { getSrcInfoFromOhm, ItemOrigin, SrcInfo } from "./src-info";
 
 type Context = {
     origin: ItemOrigin | null;
@@ -52,7 +52,7 @@ function createRef(s: Node): SrcInfo {
         throwInternalCompilerError("Parser context was not initialized");
     }
 
-    return new OhmSrcInfo(s.source, context.currentFile, context.origin);
+    return getSrcInfoFromOhm(s.source, context.currentFile, context.origin);
 }
 
 const createNode: FactoryAst["createNode"] = (...args) => {

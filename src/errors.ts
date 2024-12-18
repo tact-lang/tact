@@ -3,7 +3,7 @@ import path from "path";
 import { cwd } from "process";
 import { AstFuncId, AstId, AstTypeId } from "./grammar/ast";
 import { ItemOrigin, SrcInfo } from "./grammar";
-import { OhmSrcInfo } from "./grammar/src-info";
+import { getSrcInfoFromOhm } from "./grammar/src-info";
 
 export class TactError extends Error {
     readonly loc?: SrcInfo;
@@ -65,7 +65,7 @@ export function throwParseError(
     origin: ItemOrigin,
 ): never {
     const interval = matchResult.getInterval();
-    const source = new OhmSrcInfo(interval, path, origin);
+    const source = getSrcInfoFromOhm(interval, path, origin);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const message = `Parse error: expected ${(matchResult as any).getExpectedText()}\n`;
     throw new TactParseError(
