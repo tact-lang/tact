@@ -19,7 +19,7 @@ import {
 } from "./ast";
 import { AstSorter } from "./sort";
 import { AstHasher, AstHash } from "./hash";
-import { dummySrcInfo } from "./grammar";
+import { dummySrcInfo } from "./src-info";
 
 type GivenName = string;
 
