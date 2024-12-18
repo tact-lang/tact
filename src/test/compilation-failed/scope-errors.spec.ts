@@ -1,11 +1,6 @@
-import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { itShouldNotCompile } from "./util";
 
 describe("scope-errors", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-
     itShouldNotCompile({
         testName: "scope-const-shadows-stdlib-ident",
         errorMessage:

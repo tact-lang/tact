@@ -5,7 +5,6 @@ import {
     AstNativeFunctionDecl,
     AstNode,
     AstType,
-    createAstNode,
     idText,
     AstId,
     eqNames,
@@ -18,6 +17,7 @@ import {
     AstMapType,
     AstTypeId,
     AstAsmFunctionDef,
+    FactoryAst,
 } from "../grammar/ast";
 import { traverse } from "../grammar/iterators";
 import {
@@ -49,7 +49,7 @@ import { resolveABIType, intMapFormats } from "./resolveABITypeRef";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
-import { ItemOrigin } from "../grammar/grammar";
+import { ItemOrigin } from "../grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
@@ -264,7 +264,7 @@ function uidForName(name: string, types: Map<string, TypeDescription>) {
     return uid;
 }
 
-export function resolveDescriptors(ctx: CompilerContext) {
+export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     const types: Map<string, TypeDescription> = new Map();
     const staticFunctions: Map<string, FunctionDescription> = new Map();
     const staticConstants: Map<string, ConstantDescription> = new Map();
@@ -520,20 +520,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     `Struct ${idTextErr(a.name)} must have at least one field`,
                     a.loc,
                 );
-            }
-            if (a.kind === "message_decl" && a.opcode) {
-                if (a.opcode.value === 0n) {
-                    throwCompilationError(
-                        `Zero opcodes are reserved for text comments and cannot be used for message structs`,
-                        a.opcode.loc,
-                    );
-                }
-                if (a.opcode.value > 0xffff_ffff) {
-                    throwCompilationError(
-                        `Opcode of message ${idTextErr(a.name)} is too large: it must fit into 32 bits`,
-                        a.opcode.loc,
-                    );
-                }
             }
         }
 
@@ -1436,7 +1422,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (!t.init) {
                 t.init = {
                     params: [],
-                    ast: createAstNode({
+                    ast: Ast.createNode({
                         kind: "contract_init",
                         params: [],
                         statements: [],
@@ -1640,7 +1626,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         name: contractOrTrait.name,
                         optional: false,
                     },
-                    ast: cloneNode(traitFunction.ast),
+                    ast: cloneNode(traitFunction.ast, Ast),
                 });
             }
 
@@ -1711,7 +1697,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 // Register constant
                 contractOrTrait.constants.push({
                     ...traitConstant,
-                    ast: cloneNode(traitConstant.ast),
+                    ast: cloneNode(traitConstant.ast, Ast),
                 });
             }
 
@@ -1778,7 +1764,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
                 contractOrTrait.receivers.push({
                     selector: f.selector,
-                    ast: cloneNode(f.ast),
+                    ast: cloneNode(f.ast, Ast),
                 });
             }
 

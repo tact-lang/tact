@@ -189,7 +189,6 @@ export default defineConfig({
 						{ slug: 'book/config' },
 						{ slug: 'book/masterchain' },
 						{ slug: 'book/func' },
-						{ slug: 'book/programmatic' },
 						{ slug: 'book/security-best-practices' },
 					],
 				},

@@ -46,6 +46,8 @@ fun dump(arg);
 
 Prints the argument `arg` to the contract's debug console. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`, otherwise does nothing.
 
+This function is computationally expensive and consumes a lot of gas because it prints the location from which it was called, i.e. the filename, line and column numbers, and the original expression that was the `arg` argument.
+
 Can be applied to the following list of types and values:
 
 * [`Int{:tact}`][int]
@@ -61,7 +63,10 @@ Usage examples:
 
 ```tact
 // Int
-dump(42);
+dump(42); // prints:
+          // File filename.tact:2:1
+          // dump(42)
+          // 42
 
 // Bool
 dump(true);

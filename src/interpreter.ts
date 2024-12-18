@@ -31,6 +31,7 @@ import {
     AstOpBinary,
     AstOpUnary,
     AstPrimitiveTypeDecl,
+    FactoryAst,
     AstStatement,
     AstStatementAssign,
     AstStatementAugmentedAssign,
@@ -51,10 +52,11 @@ import {
     AstTrait,
     AstUnaryOperation,
     eqNames,
+    getAstFactory,
     idText,
     isSelfId,
 } from "./grammar/ast";
-import { SrcInfo, dummySrcInfo, parseExpression } from "./grammar/grammar";
+import { SrcInfo, dummySrcInfo, Parser, getParser } from "./grammar";
 import { divFloor, modFloor } from "./optimizer/util";
 import {
     getStaticConstant,
@@ -598,9 +600,13 @@ class EnvironmentStack {
     }
 }
 
-export function parseAndEvalExpression(sourceCode: string): EvalResult {
+export function parseAndEvalExpression(
+    sourceCode: string,
+    ast: FactoryAst = getAstFactory(),
+    parser: Parser = getParser(ast),
+): EvalResult {
     try {
-        const ast = parseExpression(sourceCode);
+        const ast = parser.parseExpression(sourceCode);
         const constEvalResult = evalConstantExpression(
             ast,
             new CompilerContext(),

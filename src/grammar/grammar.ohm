@@ -44,7 +44,7 @@ Tact {
     ConstantDeclaration = ConstantAttribute* const id ":" Type (";" | &"}")
 
     StructDecl = "struct" typeId "{" StructFields "}" --regular
-               | "message" ("(" integerLiteral ")")? typeId "{" StructFields "}" --message
+               | "message" ("(" Expression ")")? typeId "{" StructFields "}" --message
 
     StructField = FieldDecl
     StructFields = ListOf<StructField, ";"> ";"?

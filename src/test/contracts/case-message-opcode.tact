@@ -24,5 +24,11 @@ message MyMessageAuto {
     value: Int;
 }
 
+const DEADBEEF: Int = 0xdeadbeef;
+
+message(DEADBEEF + 1) MyMessageWithExprOpcode {
+    a: Int;
+}
+
 contract TestContract {
 }

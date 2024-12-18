@@ -4,8 +4,8 @@ coverage/
 **/output/
 src/test/**/output/
 src/func/funcfiftlib.js
-src/grammar/grammar.ohm*.ts
-src/grammar/grammar.ohm*.js
+**/grammar.ohm*.ts
+**/grammar.ohm*.js
 jest.setup.js
 jest.teardown.js
 /docs

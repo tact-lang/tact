@@ -1,5 +1,5 @@
-import { SrcInfo } from "./ast";
 import { throwCompilationError } from "../errors";
+import { SrcInfo } from "./src-info";
 
 export function checkVariableName(name: string, loc: SrcInfo) {
     if (name.startsWith("__gen")) {

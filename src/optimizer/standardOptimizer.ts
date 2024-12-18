@@ -23,16 +23,15 @@ import {
     AssociativeRule3,
 } from "./associative";
 import { Rule, ExpressionTransformer } from "./types";
+import { AstUtil } from "./util";
 
 type PrioritizedRule = { priority: number; rule: Rule };
 
 // This optimizer uses rules that preserve overflows in integer expressions.
-export class StandardOptimizer extends ExpressionTransformer {
+export class StandardOptimizer implements ExpressionTransformer {
     private rules: PrioritizedRule[];
 
-    constructor() {
-        super();
-
+    constructor(public util: AstUtil) {
         this.rules = [
             { priority: 0, rule: new AssociativeRule1() },
             { priority: 1, rule: new AssociativeRule2() },
@@ -60,11 +59,11 @@ export class StandardOptimizer extends ExpressionTransformer {
         this.rules.sort((r1, r2) => r1.priority - r2.priority);
     }
 
-    public applyRules(ast: AstExpression): AstExpression {
+    public applyRules = (ast: AstExpression): AstExpression => {
         return this.rules.reduce(
             (prev, prioritizedRule) =>
                 prioritizedRule.rule.applyRule(prev, this),
             ast,
         );
-    }
+    };
 }
