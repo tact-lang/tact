@@ -18,22 +18,22 @@ import {
     AstId,
     FactoryAst,
 } from "./ast";
-import { throwParseError, throwSyntaxError } from "../errors";
-import { checkVariableName } from "./checkVariableName";
-import { checkFunctionAttributes } from "./checkFunctionAttributes";
-import { checkConstAttributes } from "./checkConstAttributes";
 import { getSrcInfoFromOhm, ItemOrigin, SrcInfo } from "./src-info";
+import { parserErrorSchema, ParserErrors } from "./parser-error";
+import { displayToString } from "../error/display-to-string";
 
 type Context = {
     origin: ItemOrigin | null;
     currentFile: string | null;
     createNode: FactoryAst["createNode"] | null;
+    errorTypes: ParserErrors | null;
 };
 
 const defaultContext: Context = Object.freeze({
     createNode: null,
     currentFile: null,
     origin: null,
+    errorTypes: null,
 });
 
 let context: Context = defaultContext;
@@ -63,6 +63,14 @@ const createNode: FactoryAst["createNode"] = (...args) => {
     return context.createNode(...args);
 };
 
+const err = () => {
+    if (context.errorTypes === null) {
+        throwInternalCompilerError("Parser context was not initialized");
+    }
+
+    return context.errorTypes;
+};
+
 // helper to unwrap optional grammar elements (marked with "?")
 // ohm-js represents those essentially as lists (IterationNodes)
 function unwrapOptNode<T>(
@@ -72,6 +80,42 @@ function unwrapOptNode<T>(
     const optNode = optional.children[0] as Node | undefined;
     return optNode !== undefined ? f(optNode) : null;
 }
+
+function checkVariableName(name: string, loc: SrcInfo) {
+    if (name.startsWith("__gen")) {
+        err().reservedVarPrefix("__gen")(loc);
+    }
+    if (name.startsWith("__tact")) {
+        err().reservedVarPrefix("__tact")(loc);
+    }
+}
+
+const checkAttributes =
+    (kind: "constant" | "function") =>
+    (
+        isAbstract: boolean,
+        attributes: (AstConstantAttribute | AstFunctionAttribute)[],
+        loc: SrcInfo,
+    ) => {
+        const { duplicate, tooAbstract, notAbstract } = err()[kind];
+        const k: Set<string> = new Set();
+        for (const a of attributes) {
+            if (k.has(a.type)) {
+                duplicate(a.type)(a.loc);
+            }
+            k.add(a.type);
+        }
+        if (isAbstract && !k.has("abstract")) {
+            notAbstract()(loc);
+        }
+        if (!isAbstract && k.has("abstract")) {
+            tooAbstract()(loc);
+        }
+    };
+
+const checkConstAttributes = checkAttributes("constant");
+
+const checkFunctionAttributes = checkAttributes("function");
 
 const semantics = tactGrammar.createSemantics();
 
@@ -89,10 +133,7 @@ semantics.addOperation<AstNode>("astOfImport", {
     Import(_importKwd, path, _semicolon) {
         const pathAST = path.astOfExpression() as AstString;
         if (pathAST.value.includes("\\")) {
-            throwSyntaxError(
-                'Import path can\'t contain "\\"',
-                createRef(path),
-            );
+            err().importWithBackslash()(createRef(path));
         }
         return createNode({
             kind: "import",
@@ -225,8 +266,7 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
     ModuleConstant(constant) {
         const astConstDef: AstConstantDef = constant.astOfItem();
         if (astConstDef.attributes.length !== 0) {
-            throwSyntaxError(
-                `Module-level constants do not support attributes`,
+            err().topLevelConstantWithAttribute()(
                 astConstDef.attributes[0]!.loc,
             );
         }
@@ -540,20 +580,14 @@ semantics.addOperation<string>("astOfAsmInstruction", {
         const length = digits.numChildren;
         const underscore = unwrapOptNode(optUnderscore, (t) => t.sourceString);
         if (length > 128) {
-            throwSyntaxError(
-                "The hex bitstring has more than 128 digits",
-                createRef(this),
-            );
+            err().literalTooLong()(createRef(this));
         }
         return `${prefix.sourceString}${digits.sourceString}${underscore ?? ""}}`;
     },
     AsmInstruction_binLiteral(_prefix, digits, _rbrace, _ws) {
         const length = digits.numChildren;
         if (length > 128) {
-            throwSyntaxError(
-                "The binary bitstring has more than 128 digits",
-                createRef(this),
-            );
+            err().literalTooLong()(createRef(this));
         }
         return `b{${digits.sourceString}}`;
     },
@@ -655,10 +689,7 @@ semantics.addOperation<AstNode[]>("astsOfList", {
             params.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwSyntaxError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
+            err().extraneousComma()(createRef(optTrailingComma));
         }
         return params.asIteration().children.map((p) => p.astOfDeclaration());
     },
@@ -667,10 +698,7 @@ semantics.addOperation<AstNode[]>("astsOfList", {
             args.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwSyntaxError(
-                "Empty argument list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
+            err().extraneousComma()(createRef(optTrailingComma));
         }
         return args.asIteration().children.map((arg) => arg.astOfExpression());
     },
@@ -1008,8 +1036,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
                 .children.reduce((map, item) => {
                     const destructItem = item.astOfExpression();
                     if (map.has(destructItem.field.text)) {
-                        throwSyntaxError(
-                            `Duplicate destructuring field: '${destructItem.field.text}'`,
+                        err().duplicateField(destructItem.field.text)(
                             destructItem.loc,
                         );
                     }
@@ -1427,10 +1454,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
             structFields.source.contents === "" &&
             optTrailingComma.sourceString === ","
         ) {
-            throwSyntaxError(
-                "Empty parameter list should not have a dangling comma.",
-                createRef(optTrailingComma),
-            );
+            err().extraneousComma()(createRef(optTrailingComma));
         }
 
         return createNode({
@@ -1470,17 +1494,20 @@ semantics.addOperation<AstNode>("astOfExpression", {
 });
 
 export const getParser = (ast: FactoryAst) => {
+    const errorTypes = parserErrorSchema(displayToString);
+
     function parse(src: string, path: string, origin: ItemOrigin): AstModule {
         return withContext(
             {
                 currentFile: path,
                 origin,
                 createNode: ast.createNode,
+                errorTypes,
             },
             () => {
                 const matchResult = tactGrammar.match(src);
                 if (matchResult.failed()) {
-                    throwParseError(matchResult, path, origin);
+                    errorTypes.generic(matchResult, path, origin);
                 }
                 return semantics(matchResult).astOfModule();
             },
@@ -1493,11 +1520,12 @@ export const getParser = (ast: FactoryAst) => {
                 currentFile: null,
                 origin: "user",
                 createNode: ast.createNode,
+                errorTypes,
             },
             () => {
                 const matchResult = tactGrammar.match(sourceCode, "Expression");
                 if (matchResult.failed()) {
-                    throwParseError(matchResult, "", "user");
+                    errorTypes.generic(matchResult, "", "user");
                 }
                 return semantics(matchResult).astOfExpression();
             },
@@ -1514,11 +1542,12 @@ export const getParser = (ast: FactoryAst) => {
                 currentFile: path,
                 origin,
                 createNode: ast.createNode,
+                errorTypes,
             },
             () => {
                 const matchResult = tactGrammar.match(src, "JustImports");
                 if (matchResult.failed()) {
-                    throwParseError(matchResult, path, origin);
+                    errorTypes.generic(matchResult, path, origin);
                 }
                 return semantics(matchResult).astOfJustImports();
             },
