@@ -672,7 +672,10 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
 
     if (f.kind === "init_of") {
         const type = getType(wCtx.ctx, f.contract);
-        return `${ops.contractInitChild(idText(f.contract), wCtx)}(${["__tact_context_sys", ...f.args.map((a, i) => writeCastedExpression(a, type.init!.params[i]!.type, wCtx))].join(", ")})`;
+        const initArgs = f.args.map((a, i) =>
+            writeCastedExpression(a, type.init!.params[i]!.type, wCtx),
+        );
+        return `${ops.contractInitChild(idText(f.contract), wCtx)}(${initArgs.join(", ")})`;
     }
 
     //
