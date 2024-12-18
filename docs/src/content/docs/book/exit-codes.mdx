@@ -630,7 +630,7 @@ If the code of the contract doesn't match the one saved in TypeScript wrappers, 
 A value of type [`Address{:tact}`][p] is valid in Tact when:
 
 * It occupies $267$ bits: $11$ bits for the chain ID prefix and $256$ bits for the [address itself](https://docs.ton.org/learn/overviews/addresses#address-of-smart-contract).
-* It belongs to either: basechain (ID $0$) or masterchain (ID $-1$), with the latter requiring masterchain support to be enabled.
+* It belongs to either basechain (ID $0$) or masterchain (ID $-1$).
 
 If the [`Address{:tact}`][p] isn't valid, the error with exit code $136$ will be thrown: `Invalid address`.
 
