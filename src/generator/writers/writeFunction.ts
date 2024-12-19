@@ -285,17 +285,23 @@ export function writeStatement(
                     kind = "uint";
                 }
                 if (t.value === "Int") {
-                    let vBits = 257;
+                    let vBits = ", 257";
                     let vKind = "int";
                     if (t.valueAs?.startsWith("int")) {
-                        vBits = parseInt(t.valueAs.slice(3), 10);
+                        vBits = `, ${parseInt(t.valueAs.slice(3), 10)}`;
                     } else if (t.valueAs?.startsWith("uint")) {
-                        vBits = parseInt(t.valueAs.slice(4), 10);
+                        vBits = `, ${parseInt(t.valueAs.slice(4), 10)}`;
                         vKind = "uint";
+                    } else if (t.valueAs?.startsWith("coins")) {
+                        vBits = "";
+                        vKind = "coins";
+                    } else if (t.valueAs?.startsWith("var")) {
+                        vBits = "";
+                        vKind = t.valueAs;
                     }
 
                     ctx.append(
-                        `var (${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_${vKind}`)}(${path}, ${bits}, ${vBits});`,
+                        `var (${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_${vKind}`)}(${path}, ${bits}${vBits});`,
                     );
                     ctx.append(`while (${flag}) {`);
                     ctx.inIndent(() => {
@@ -303,7 +309,7 @@ export function writeStatement(
                             writeStatement(s, self, returns, ctx);
                         }
                         ctx.append(
-                            `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_${vKind}`)}(${path}, ${bits}, ${key}, ${vBits});`,
+                            `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_${vKind}`)}(${path}, ${bits}, ${key}${vBits});`,
                         );
                     });
                     ctx.append(`}`);
@@ -373,16 +379,22 @@ export function writeStatement(
             // Handle address key
             if (t.key === "Address") {
                 if (t.value === "Int") {
-                    let vBits = 257;
+                    let vBits = ", 257";
                     let vKind = "int";
                     if (t.valueAs?.startsWith("int")) {
-                        vBits = parseInt(t.valueAs.slice(3), 10);
+                        vBits = `, ${parseInt(t.valueAs.slice(3), 10)}`;
                     } else if (t.valueAs?.startsWith("uint")) {
-                        vBits = parseInt(t.valueAs.slice(4), 10);
+                        vBits = `, ${parseInt(t.valueAs.slice(4), 10)}`;
                         vKind = "uint";
+                    } else if (t.valueAs?.startsWith("coins")) {
+                        vBits = "";
+                        vKind = "coins";
+                    } else if (t.valueAs?.startsWith("var")) {
+                        vBits = "";
+                        vKind = t.valueAs;
                     }
                     ctx.append(
-                        `var (${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_${vKind}`)}(${path}, 267, ${vBits});`,
+                        `var (${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_${vKind}`)}(${path}, 267${vBits});`,
                     );
                     ctx.append(`while (${flag}) {`);
                     ctx.inIndent(() => {
@@ -390,7 +402,7 @@ export function writeStatement(
                             writeStatement(s, self, returns, ctx);
                         }
                         ctx.append(
-                            `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_${vKind}`)}(${path}, 267, ${key}, ${vBits});`,
+                            `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_${vKind}`)}(${path}, 267, ${key}${vBits});`,
                         );
                     });
                     ctx.append(`}`);
