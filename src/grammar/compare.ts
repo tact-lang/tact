@@ -850,8 +850,8 @@ export class AstComparator {
     }
 
     private compareAsmInstructions(
-        instructions1: AstAsmInstruction[],
-        instructions2: AstAsmInstruction[],
+        instructions1: readonly AstAsmInstruction[],
+        instructions2: readonly AstAsmInstruction[],
     ): boolean {
         if (instructions1.length !== instructions2.length) {
             return false;

@@ -677,7 +677,7 @@ export const ppAstFuncId = (func: A.AstFuncId): string => func.text;
 export const ppStatementBlock: Printer<A.AstStatement[]> = (stmts) => (c) =>
     c.braced(stmts.length === 0 ? [c.row("")] : c.list(stmts, ppAstStatement));
 
-export const ppAsmInstructionsBlock: Printer<A.AstAsmInstruction[]> =
+export const ppAsmInstructionsBlock: Printer<readonly A.AstAsmInstruction[]> =
     (instructions) => (c) =>
         c.braced(instructions.map(c.row));
 
