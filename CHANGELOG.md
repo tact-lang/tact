@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Type checking for `foreach` loops in trait methods: PR [#1017](https://github.com/tact-lang/tact/pull/1017)
 - The `sha256()` function no longer throws on statically known strings of any length: PR [#907](https://github.com/tact-lang/tact/pull/907)
 - TypeScript wrappers generation for messages with single quote: PR [#1106](https://github.com/tact-lang/tact/pull/1106)
+- `foreach` loops now properly handle `as coins` map value serialization type: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
 
 ### Docs
 
