@@ -119,6 +119,9 @@
     "uninit",
     "unixfs",
     "varuint",
+    "varint",
+    "storer",
+    "Ints",
     "workchain",
     "xffff",
     "привет"

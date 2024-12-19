@@ -6,44 +6,12 @@ import {
     MapTestContract$Data,
     SetAllMaps,
     DelAllMaps,
-    SomeStruct,
     ReplaceAllMaps,
     ReplaceGetAllMaps,
-} from "./contracts/output/maps_MapTestContract";
+} from "./contracts/output/maps2_MapTestContract";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Address, beginCell, Cell, Dictionary, toNano } from "@ton/core";
+import { Address, beginCell, Dictionary, toNano } from "@ton/core";
 import "@ton/test-utils";
-
-// Type Guard for SomeStruct
-function isSomeStruct(value: unknown): value is SomeStruct {
-    return (
-        typeof value === "object" &&
-        value !== null &&
-        "$$type" in value &&
-        (value as { $$type: string }).$$type === "SomeStruct" &&
-        "int" in value &&
-        "bool" in value &&
-        "address" in value &&
-        "a" in value &&
-        "b" in value &&
-        typeof (value as any).int === "bigint" &&
-        typeof (value as any).bool === "boolean" &&
-        (value as any).address instanceof Address &&
-        typeof (value as any).a === "bigint" &&
-        typeof (value as any).b === "bigint"
-    );
-}
-
-// Comparator for SomeStruct
-function compareStructs(a: SomeStruct, b: SomeStruct): boolean {
-    return (
-        a.int === b.int &&
-        a.bool === b.bool &&
-        a.address.equals(b.address) &&
-        a.a === b.a &&
-        a.b === b.b
-    );
-}
 
 // Type definitions for keys and values to make them type-safe
 type TestKeys = {
@@ -66,10 +34,6 @@ type TestValues = {
     valueUint42: bigint;
     valueUint256: bigint;
     valueCoins: bigint;
-    valueBool: boolean;
-    valueCell: Cell;
-    valueAddress: Address;
-    valueStruct: SomeStruct;
 };
 
 // Configuration for all maps
@@ -107,17 +71,6 @@ const testCases: TestCase[] = [
             valueUint42: 123_456_789n,
             valueUint256: 999_999_999_999n,
             valueCoins: 100_000_000n,
-            valueBool: true,
-            valueCell: beginCell().storeUint(42, 32).endCell(),
-            valueAddress: randomAddress(0, "address"),
-            valueStruct: {
-                $$type: "SomeStruct",
-                int: 321n,
-                bool: false,
-                address: randomAddress(0, "address"),
-                a: 10n,
-                b: -20n,
-            } as SomeStruct,
         },
     },
     {
@@ -140,19 +93,6 @@ const testCases: TestCase[] = [
             valueUint42: 0n, // Min unsigned int
             valueUint256: 0n, // Min unsigned int
             valueCoins: 0n,
-            valueBool: false,
-            valueCell: beginCell()
-                .storeUint(2n ** 32n - 1n, 32)
-                .endCell(),
-            valueAddress: randomAddress(0, "address"),
-            valueStruct: {
-                $$type: "SomeStruct",
-                int: -(2n ** 31n), // Min 32-bit signed int
-                bool: true,
-                address: randomAddress(0, "address"),
-                a: 2n ** 41n - 1n, // Max 42-bit signed int
-                b: -(2n ** 41n), // Min 42-bit signed int
-            } as SomeStruct,
         },
     },
     {
@@ -175,17 +115,6 @@ const testCases: TestCase[] = [
             valueUint42: 1n,
             valueUint256: 1n,
             valueCoins: 1n,
-            valueBool: false,
-            valueCell: beginCell().storeUint(0, 32).endCell(),
-            valueAddress: randomAddress(0, "address"),
-            valueStruct: {
-                $$type: "SomeStruct",
-                int: 0n,
-                bool: false,
-                address: randomAddress(0, "address"),
-                a: 0n,
-                b: 0n,
-            } as SomeStruct,
         },
     },
     {
@@ -208,19 +137,6 @@ const testCases: TestCase[] = [
             valueUint42: 2n ** 41n, // Large power of 2
             valueUint256: 2n ** 255n, // Large power of 2
             valueCoins: 2n ** 120n - 1n,
-            valueBool: true,
-            valueCell: beginCell()
-                .storeUint(2n ** 31n, 32)
-                .endCell(),
-            valueAddress: randomAddress(0, "address"),
-            valueStruct: {
-                $$type: "SomeStruct",
-                int: -42n, // Special number
-                bool: true,
-                address: randomAddress(0, "address"),
-                a: 2n ** 40n, // Large power of 2
-                b: -(2n ** 40n), // Large negative power of 2
-            } as SomeStruct,
         },
     },
 ];
@@ -245,10 +161,7 @@ const mapConfigs: MapConfig[] = [
     },
     { mapName: "int_uint42", key: "keyInt", value: "valueUint42" },
     { mapName: "int_uint256", key: "keyInt", value: "valueUint256" },
-    { mapName: "int_bool", key: "keyInt", value: "valueBool" },
-    { mapName: "int_cell", key: "keyInt", value: "valueCell" },
-    { mapName: "int_address", key: "keyInt", value: "valueAddress" },
-    { mapName: "int_struct", key: "keyInt", value: "valueStruct" },
+    { mapName: "int_coins", key: "keyInt", value: "valueCoins" },
 
     // int8_* Maps
     {
@@ -296,27 +209,9 @@ const mapConfigs: MapConfig[] = [
         keyTransform: (k: bigint) => Number(k),
     },
     {
-        mapName: "int8_bool",
+        mapName: "int8_coins",
         key: "keyInt8",
-        value: "valueBool",
-        keyTransform: (k: bigint) => Number(k),
-    },
-    {
-        mapName: "int8_cell",
-        key: "keyInt8",
-        value: "valueCell",
-        keyTransform: (k: bigint) => Number(k),
-    },
-    {
-        mapName: "int8_address",
-        key: "keyInt8",
-        value: "valueAddress",
-        keyTransform: (k: bigint) => Number(k),
-    },
-    {
-        mapName: "int8_struct",
-        key: "keyInt8",
-        value: "valueStruct",
+        value: "valueCoins",
         keyTransform: (k: bigint) => Number(k),
     },
 
@@ -338,10 +233,7 @@ const mapConfigs: MapConfig[] = [
     },
     { mapName: "int42_uint42", key: "keyInt42", value: "valueUint42" },
     { mapName: "int42_uint256", key: "keyInt42", value: "valueUint256" },
-    { mapName: "int42_bool", key: "keyInt42", value: "valueBool" },
-    { mapName: "int42_cell", key: "keyInt42", value: "valueCell" },
-    { mapName: "int42_address", key: "keyInt42", value: "valueAddress" },
-    { mapName: "int42_struct", key: "keyInt42", value: "valueStruct" },
+    { mapName: "int42_coins", key: "keyInt42", value: "valueCoins" },
 
     // int256_* Maps
     { mapName: "int256_int", key: "keyInt256", value: "valueInt" },
@@ -361,10 +253,7 @@ const mapConfigs: MapConfig[] = [
     },
     { mapName: "int256_uint42", key: "keyInt256", value: "valueUint42" },
     { mapName: "int256_uint256", key: "keyInt256", value: "valueUint256" },
-    { mapName: "int256_bool", key: "keyInt256", value: "valueBool" },
-    { mapName: "int256_cell", key: "keyInt256", value: "valueCell" },
-    { mapName: "int256_address", key: "keyInt256", value: "valueAddress" },
-    { mapName: "int256_struct", key: "keyInt256", value: "valueStruct" },
+    { mapName: "int256_coins", key: "keyInt256", value: "valueCoins" },
 
     // uint8_* Maps
     {
@@ -412,27 +301,9 @@ const mapConfigs: MapConfig[] = [
         keyTransform: (k: bigint) => Number(k),
     },
     {
-        mapName: "uint8_bool",
+        mapName: "uint8_coins",
         key: "keyUint8",
-        value: "valueBool",
-        keyTransform: (k: bigint) => Number(k),
-    },
-    {
-        mapName: "uint8_cell",
-        key: "keyUint8",
-        value: "valueCell",
-        keyTransform: (k: bigint) => Number(k),
-    },
-    {
-        mapName: "uint8_address",
-        key: "keyUint8",
-        value: "valueAddress",
-        keyTransform: (k: bigint) => Number(k),
-    },
-    {
-        mapName: "uint8_struct",
-        key: "keyUint8",
-        value: "valueStruct",
+        value: "valueCoins",
         keyTransform: (k: bigint) => Number(k),
     },
 
@@ -454,10 +325,7 @@ const mapConfigs: MapConfig[] = [
     },
     { mapName: "uint42_uint42", key: "keyUint42", value: "valueUint42" },
     { mapName: "uint42_uint256", key: "keyUint42", value: "valueUint256" },
-    { mapName: "uint42_bool", key: "keyUint42", value: "valueBool" },
-    { mapName: "uint42_cell", key: "keyUint42", value: "valueCell" },
-    { mapName: "uint42_address", key: "keyUint42", value: "valueAddress" },
-    { mapName: "uint42_struct", key: "keyUint42", value: "valueStruct" },
+    { mapName: "uint42_coins", key: "keyUint42", value: "valueCoins" },
 
     // uint256_* Maps
     { mapName: "uint256_int", key: "keyUint256", value: "valueInt" },
@@ -477,10 +345,7 @@ const mapConfigs: MapConfig[] = [
     },
     { mapName: "uint256_uint42", key: "keyUint256", value: "valueUint42" },
     { mapName: "uint256_uint256", key: "keyUint256", value: "valueUint256" },
-    { mapName: "uint256_bool", key: "keyUint256", value: "valueBool" },
-    { mapName: "uint256_cell", key: "keyUint256", value: "valueCell" },
-    { mapName: "uint256_address", key: "keyUint256", value: "valueAddress" },
-    { mapName: "uint256_struct", key: "keyUint256", value: "valueStruct" },
+    { mapName: "uint256_coins", key: "keyUint256", value: "valueCoins" },
 
     // address_* Maps
     { mapName: "address_int", key: "keyAddress", value: "valueInt" },
@@ -500,10 +365,7 @@ const mapConfigs: MapConfig[] = [
     },
     { mapName: "address_uint42", key: "keyAddress", value: "valueUint42" },
     { mapName: "address_uint256", key: "keyAddress", value: "valueUint256" },
-    { mapName: "address_bool", key: "keyAddress", value: "valueBool" },
-    { mapName: "address_cell", key: "keyAddress", value: "valueCell" },
-    { mapName: "address_address", key: "keyAddress", value: "valueAddress" },
-    { mapName: "address_struct", key: "keyAddress", value: "valueStruct" },
+    { mapName: "address_coins", key: "keyAddress", value: "valueCoins" },
 ];
 
 describe("MapTestContract", () => {
@@ -571,17 +433,7 @@ describe("MapTestContract", () => {
 
                     const actualValue = map.get(mapKey);
 
-                    if (expectedValue instanceof Cell) {
-                        expect(actualValue).toEqualCell(expectedValue);
-                    } else if (expectedValue instanceof Address) {
-                        expect(actualValue).toEqualAddress(expectedValue);
-                    } else if (isSomeStruct(expectedValue)) {
-                        expect(compareStructs(actualValue, expectedValue)).toBe(
-                            true,
-                        );
-                    } else {
-                        expect(actualValue).toEqual(expectedValue);
-                    }
+                    expect(actualValue).toEqual(expectedValue);
                 },
             );
 
@@ -597,10 +449,6 @@ describe("MapTestContract", () => {
                 valueUint42: null,
                 valueUint256: null,
                 valueCoins: null,
-                valueBool: null,
-                valueCell: null,
-                valueAddress: null,
-                valueStruct: null,
             };
 
             await contract.send(
@@ -659,17 +507,7 @@ describe("MapTestContract", () => {
 
                     const actualValue = map.get(mapKey);
 
-                    if (expectedValue instanceof Cell) {
-                        expect(actualValue).toEqualCell(expectedValue);
-                    } else if (expectedValue instanceof Address) {
-                        expect(actualValue).toEqualAddress(expectedValue);
-                    } else if (isSomeStruct(expectedValue)) {
-                        expect(compareStructs(actualValue, expectedValue)).toBe(
-                            true,
-                        );
-                    } else {
-                        expect(actualValue).toEqual(expectedValue);
-                    }
+                    expect(actualValue).toEqual(expectedValue);
                 },
             );
         }
@@ -687,10 +525,6 @@ describe("MapTestContract", () => {
                 valueUint42: null,
                 valueUint256: null,
                 valueCoins: null,
-                valueBool: null,
-                valueCell: null,
-                valueAddress: null,
-                valueStruct: null,
             };
 
             await contract.send(
@@ -748,17 +582,7 @@ describe("MapTestContract", () => {
 
                         const actualValue = map.get(mapKey);
 
-                        if (expectedValue instanceof Cell) {
-                            expect(actualValue).toEqualCell(expectedValue);
-                        } else if (expectedValue instanceof Address) {
-                            expect(actualValue).toEqualAddress(expectedValue);
-                        } else if (isSomeStruct(expectedValue)) {
-                            expect(
-                                compareStructs(actualValue, expectedValue),
-                            ).toBe(true);
-                        } else {
-                            expect(actualValue).toEqual(expectedValue);
-                        }
+                        expect(actualValue).toEqual(expectedValue);
                     },
                 );
             }
@@ -775,10 +599,6 @@ describe("MapTestContract", () => {
                 valueUint42: null,
                 valueUint256: null,
                 valueCoins: null,
-                valueBool: null,
-                valueCell: null,
-                valueAddress: null,
-                valueStruct: null,
             };
 
             await contract.send(
@@ -842,20 +662,7 @@ describe("MapTestContract", () => {
                         actualValue = valueTransform(actualValue);
                     }
 
-                    if (expectedValue instanceof Cell) {
-                        expect(actualValue).toEqualCell(expectedValue);
-                    } else if (expectedValue instanceof Address) {
-                        expect(actualValue).toEqualAddress(expectedValue);
-                    } else if (isSomeStruct(expectedValue)) {
-                        expect(
-                            compareStructs(
-                                actualValue as SomeStruct,
-                                expectedValue,
-                            ),
-                        ).toBe(true);
-                    } else {
-                        expect(actualValue).toEqual(expectedValue);
-                    }
+                    expect(actualValue).toEqual(expectedValue);
                 },
             );
 
@@ -871,10 +678,6 @@ describe("MapTestContract", () => {
                 valueUint42: null,
                 valueUint256: null,
                 valueCoins: null,
-                valueBool: null,
-                valueCell: null,
-                valueAddress: null,
-                valueStruct: null,
             };
 
             await contract.send(
@@ -972,20 +775,7 @@ describe("MapTestContract", () => {
                         actualValue = valueTransform(actualValue);
                     }
 
-                    if (expectedValue instanceof Cell) {
-                        expect(actualValue).toEqualCell(expectedValue);
-                    } else if (expectedValue instanceof Address) {
-                        expect(actualValue).toEqualAddress(expectedValue);
-                    } else if (isSomeStruct(expectedValue)) {
-                        expect(
-                            compareStructs(
-                                actualValue as SomeStruct,
-                                expectedValue,
-                            ),
-                        ).toBe(true);
-                    } else {
-                        expect(actualValue).toEqual(expectedValue);
-                    }
+                    expect(actualValue).toEqual(expectedValue);
                 },
             );
         }
@@ -1036,20 +826,7 @@ describe("MapTestContract", () => {
                             actualValue = valueTransform(actualValue);
                         }
 
-                        if (expectedValue instanceof Cell) {
-                            expect(actualValue).toEqualCell(expectedValue);
-                        } else if (expectedValue instanceof Address) {
-                            expect(actualValue).toEqualAddress(expectedValue);
-                        } else if (isSomeStruct(expectedValue)) {
-                            expect(
-                                compareStructs(
-                                    actualValue as SomeStruct,
-                                    expectedValue,
-                                ),
-                            ).toBe(true);
-                        } else {
-                            expect(actualValue).toEqual(expectedValue);
-                        }
+                        expect(actualValue).toEqual(expectedValue);
                     },
                 );
             }
@@ -1133,17 +910,7 @@ describe("MapTestContract", () => {
 
                     const actualValue = map.get(mapKey);
 
-                    if (expectedValue instanceof Cell) {
-                        expect(actualValue).toEqualCell(expectedValue);
-                    } else if (expectedValue instanceof Address) {
-                        expect(actualValue).toEqualAddress(expectedValue);
-                    } else if (isSomeStruct(expectedValue)) {
-                        expect(compareStructs(actualValue, expectedValue)).toBe(
-                            true,
-                        );
-                    } else {
-                        expect(actualValue).toEqual(expectedValue);
-                    }
+                    expect(actualValue).toEqual(expectedValue);
                 },
             );
 
@@ -1264,17 +1031,7 @@ describe("MapTestContract", () => {
 
                     const actualValue = map.get(mapKey);
 
-                    if (expectedValue instanceof Cell) {
-                        expect(actualValue).toEqualCell(expectedValue);
-                    } else if (expectedValue instanceof Address) {
-                        expect(actualValue).toEqualAddress(expectedValue);
-                    } else if (isSomeStruct(expectedValue)) {
-                        expect(compareStructs(actualValue, expectedValue)).toBe(
-                            true,
-                        );
-                    } else {
-                        expect(actualValue).toEqual(expectedValue);
-                    }
+                    expect(actualValue).toEqual(expectedValue);
                 },
             );
         }
@@ -1341,17 +1098,7 @@ describe("MapTestContract", () => {
 
                     const actualValue = map.get(mapKey);
 
-                    if (expectedValue instanceof Cell) {
-                        expect(actualValue).toEqualCell(expectedValue);
-                    } else if (expectedValue instanceof Address) {
-                        expect(actualValue).toEqualAddress(expectedValue);
-                    } else if (isSomeStruct(expectedValue)) {
-                        expect(compareStructs(actualValue, expectedValue)).toBe(
-                            true,
-                        );
-                    } else {
-                        expect(actualValue).toEqual(expectedValue);
-                    }
+                    expect(actualValue).toEqual(expectedValue);
                 },
             );
         }
@@ -1514,10 +1261,6 @@ describe("MapTestContract", () => {
                 valueUint42: null,
                 valueUint256: null,
                 valueCoins: null,
-                valueBool: null,
-                valueCell: null,
-                valueAddress: null,
-                valueStruct: null,
             };
             await contract.send(
                 treasury.getSender(),
@@ -1589,10 +1332,6 @@ describe("MapTestContract", () => {
                     valueUint42: null,
                     valueUint256: null,
                     valueCoins: null,
-                    valueBool: null,
-                    valueCell: null,
-                    valueAddress: null,
-                    valueStruct: null,
                 };
                 await contract.send(
                     treasury.getSender(),
@@ -1650,17 +1389,7 @@ describe("MapTestContract", () => {
 
                     const actualValue = map.get(mapKey);
 
-                    if (expectedValue instanceof Cell) {
-                        expect(actualValue).toEqualCell(expectedValue);
-                    } else if (expectedValue instanceof Address) {
-                        expect(actualValue).toEqualAddress(expectedValue);
-                    } else if (isSomeStruct(expectedValue)) {
-                        expect(compareStructs(actualValue, expectedValue)).toBe(
-                            true,
-                        );
-                    } else {
-                        expect(actualValue).toEqual(expectedValue);
-                    }
+                    expect(actualValue).toEqual(expectedValue);
 
                     // Serialize the map from allMaps to a Cell to compare with the response
                     const serializedMap = beginCell()
@@ -1684,10 +1413,6 @@ describe("MapTestContract", () => {
                     valueUint42: null,
                     valueUint256: null,
                     valueCoins: null,
-                    valueBool: null,
-                    valueCell: null,
-                    valueAddress: null,
-                    valueStruct: null,
                 };
                 await contract.send(
                     treasury.getSender(),
@@ -1749,17 +1474,7 @@ describe("MapTestContract", () => {
 
                         const actualValue = map.get(mapKey);
 
-                        if (expectedValue instanceof Cell) {
-                            expect(actualValue).toEqualCell(expectedValue);
-                        } else if (expectedValue instanceof Address) {
-                            expect(actualValue).toEqualAddress(expectedValue);
-                        } else if (isSomeStruct(expectedValue)) {
-                            expect(
-                                compareStructs(actualValue, expectedValue),
-                            ).toBe(true);
-                        } else {
-                            expect(actualValue).toEqual(expectedValue);
-                        }
+                        expect(actualValue).toEqual(expectedValue);
                     },
                 );
             }
@@ -1777,10 +1492,6 @@ describe("MapTestContract", () => {
                     valueUint42: null,
                     valueUint256: null,
                     valueCoins: null,
-                    valueBool: null,
-                    valueCell: null,
-                    valueAddress: null,
-                    valueStruct: null,
                 };
                 await contract.send(
                     treasury.getSender(),
@@ -1844,10 +1555,6 @@ describe("MapTestContract", () => {
                 values.valueUint42,
                 values.valueUint256,
                 values.valueCoins,
-                values.valueBool,
-                values.valueCell,
-                values.valueAddress,
-                values.valueStruct,
             );
 
             // Check that all return values are 'false'
@@ -1888,10 +1595,6 @@ describe("MapTestContract", () => {
                 values.valueUint42,
                 values.valueUint256,
                 values.valueCoins,
-                values.valueBool,
-                values.valueCell,
-                values.valueAddress,
-                values.valueStruct,
             );
 
             // Check that all return values are 'true'
@@ -1954,17 +1657,7 @@ describe("MapTestContract", () => {
 
                         const actualValue = map.get(mapKey);
 
-                        if (expectedValue instanceof Cell) {
-                            expect(actualValue).toEqualCell(expectedValue);
-                        } else if (expectedValue instanceof Address) {
-                            expect(actualValue).toEqualAddress(expectedValue);
-                        } else if (isSomeStruct(expectedValue)) {
-                            expect(
-                                compareStructs(actualValue, expectedValue),
-                            ).toBe(true);
-                        } else {
-                            expect(actualValue).toEqual(expectedValue);
-                        }
+                        expect(actualValue).toEqual(expectedValue);
                     },
                 );
             }
@@ -1982,10 +1675,6 @@ describe("MapTestContract", () => {
                     valueUint42: null,
                     valueUint256: null,
                     valueCoins: null,
-                    valueBool: null,
-                    valueCell: null,
-                    valueAddress: null,
-                    valueStruct: null,
                 };
                 await contract.send(
                     treasury.getSender(),
@@ -2049,10 +1738,6 @@ describe("MapTestContract", () => {
                 values.valueUint42,
                 values.valueUint256,
                 values.valueCoins,
-                values.valueBool,
-                values.valueCell,
-                values.valueAddress,
-                values.valueStruct,
             );
 
             // Check that all return values are 'null'
@@ -2094,10 +1779,6 @@ describe("MapTestContract", () => {
                     values.valueUint42,
                     values.valueUint256,
                     values.valueCoins,
-                    values.valueBool,
-                    values.valueCell,
-                    values.valueAddress,
-                    values.valueStruct,
                 );
 
             // Check that all return values are equal to the old values
@@ -2109,20 +1790,7 @@ describe("MapTestContract", () => {
                     actualValue = valueTransform(actualValue);
                 }
 
-                if (expectedValue instanceof Cell) {
-                    expect(actualValue).toEqualCell(expectedValue);
-                } else if (expectedValue instanceof Address) {
-                    expect(actualValue).toEqualAddress(expectedValue);
-                } else if (isSomeStruct(expectedValue)) {
-                    expect(
-                        compareStructs(
-                            actualValue as SomeStruct,
-                            expectedValue,
-                        ),
-                    ).toBe(true);
-                } else {
-                    expect(actualValue).toEqual(expectedValue);
-                }
+                expect(actualValue).toEqual(expectedValue);
             });
         }
     });

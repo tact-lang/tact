@@ -23,7 +23,7 @@ export type AllocationOperationType =
           optional: boolean;
       }
     | {
-          kind: "coins";
+          kind: "varint16" | "varint32" | "varuint16" | "varuint32";
           optional: boolean;
       }
     | {

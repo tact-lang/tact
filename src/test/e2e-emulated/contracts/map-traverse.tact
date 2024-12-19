@@ -41,6 +41,40 @@ contract MapTraverseTestContract {
         return sum1 + sum2;
     }
 
+    get fun test_int_coins(): Int {
+        let m: map<Int, Int as coins> = emptyMap();
+        m.set(1, 100);
+        m.set(2, 200);
+        m.set(3, 300);
+        m.set(4, 400);
+
+        let sum1: Int = 0;
+        let sum2: Int = 0;
+        foreach (k, v in m) {
+            sum1 += k;
+            sum2 += v;
+        }
+
+        return sum1 + sum2;
+    }
+
+    get fun test_int_varint16(): Int {
+        let m: map<Int, Int as varint16> = emptyMap();
+        m.set(1, 100);
+        m.set(2, 200);
+        m.set(3, 300);
+        m.set(4, 400);
+
+        let sum1: Int = 0;
+        let sum2: Int = 0;
+        foreach (k, v in m) {
+            sum1 += k;
+            sum2 += v;
+        }
+
+        return sum1 + sum2;
+    }
+
     get fun test_int_bool(): Int {
         let m: map<Int, Bool> = emptyMap();
         m.set(1, true);
@@ -126,6 +160,44 @@ contract MapTraverseTestContract {
 
     get fun test_address_int(): Int {
         let m: map<Address, Int> = emptyMap();
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873), 100);
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76874), 200);
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76875), 300);
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76876), 400);
+
+        let sum1: Int = 0;
+        let sum2: Int = 0;
+        foreach (k, v in m) {
+            let s: Slice = beginCell().storeAddress(k).endCell().beginParse();
+            s.skipBits(264);
+            sum1 += s.loadUint(3);
+            sum2 += v;
+        }
+        
+        return sum1 + sum2;
+    }
+
+    get fun test_address_coins(): Int {
+        let m: map<Address, Int as coins> = emptyMap();
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873), 100);
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76874), 200);
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76875), 300);
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76876), 400);
+
+        let sum1: Int = 0;
+        let sum2: Int = 0;
+        foreach (k, v in m) {
+            let s: Slice = beginCell().storeAddress(k).endCell().beginParse();
+            s.skipBits(264);
+            sum1 += s.loadUint(3);
+            sum2 += v;
+        }
+        
+        return sum1 + sum2;
+    }
+
+    get fun test_address_varint16(): Int {
+        let m: map<Address, Int as varint16> = emptyMap();
         m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873), 100);
         m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76874), 200);
         m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76875), 300);
