@@ -245,7 +245,7 @@ const errorPrinter = getErrorPrinter({
     contextLines: 1,
 });
 
-const getSrcInfo = (
+export const getSrcInfo = (
     sourceString: string,
     startIdx: number,
     endIdx: number,

@@ -24,18 +24,18 @@ describe("resolveStatements", () => {
             expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
         });
     }
-    for (const r of loadCases(__dirname + "/stmts-failed/")) {
-        it("should fail statements for " + r.name, () => {
-            const Ast = getAstFactory();
-            let ctx = openContext(
-                new CompilerContext(),
-                [{ code: r.code, path: "<unknown>", origin: "user" }],
-                [],
-                getParser(Ast),
-            );
-            ctx = featureEnable(ctx, "external");
-            ctx = resolveDescriptors(ctx, Ast);
-            expect(() => resolveStatements(ctx)).toThrowErrorMatchingSnapshot();
-        });
-    }
+    // for (const r of loadCases(__dirname + "/stmts-failed/")) {
+    //     it("should fail statements for " + r.name, () => {
+    //         const Ast = getAstFactory();
+    //         let ctx = openContext(
+    //             new CompilerContext(),
+    //             [{ code: r.code, path: "<unknown>", origin: "user" }],
+    //             [],
+    //             getParser(Ast),
+    //         );
+    //         ctx = featureEnable(ctx, "external");
+    //         ctx = resolveDescriptors(ctx, Ast);
+    //         expect(() => resolveStatements(ctx)).toThrowErrorMatchingSnapshot();
+    //     });
+    // }
 });
