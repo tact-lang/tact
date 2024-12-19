@@ -34,12 +34,16 @@ describe("map-traversal", () => {
     it("should implement map traversal correctly", async () => {
         // Check methods
         expect(await contract.getTestIntInt()).toEqual(1010n);
+        expect(await contract.getTestIntCoins()).toEqual(1010n);
+        expect(await contract.getTestIntVarint16()).toEqual(1010n);
         expect(await contract.getTestIntBool()).toEqual(12n);
         expect(await contract.getTestIntCell()).toEqual(1010n);
         expect(await contract.getTestIntAddress()).toEqual(28n);
         expect(await contract.getTestIntStruct()).toEqual(1010n);
 
         expect(await contract.getTestAddressInt()).toEqual(1018n);
+        expect(await contract.getTestAddressCoins()).toEqual(1018n);
+        expect(await contract.getTestAddressVarint16()).toEqual(1018n);
         expect(await contract.getTestAddressBool()).toEqual(20n);
         expect(await contract.getTestAddressCell()).toEqual(1018n);
         expect(await contract.getTestAddressAddress()).toEqual(26n);
