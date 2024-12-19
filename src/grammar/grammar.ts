@@ -1493,7 +1493,10 @@ semantics.addOperation<AstNode>("astOfExpression", {
     },
 });
 
-export const getParser = (ast: FactoryAst) => {
+export { getParser } from './next';
+
+// export
+const getParser = (ast: FactoryAst) => {
     const errorTypes = parserErrorSchema(displayToString);
 
     function parse(src: string, path: string, origin: ItemOrigin): AstModule {
