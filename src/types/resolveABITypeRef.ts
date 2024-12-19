@@ -45,6 +45,10 @@ const intFormats: FormatDef = {
     ...intOptions,
     int257: { type: "int", format: 257 },
     coins: { type: "uint", format: "coins" },
+    varint16: { type: "int", format: "varint16" },
+    varint32: { type: "int", format: "varint32" },
+    varuint16: { type: "uint", format: "varuint16" },
+    varuint32: { type: "uint", format: "varuint32" },
 };
 
 export const intMapFormats: FormatDef = { ...intFormats };
