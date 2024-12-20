@@ -15,7 +15,7 @@ import { Badge } from '@astrojs/starlight/components';
 
 :::
 
-Assembly functions (or asm functions for short) are module-level functions that allow you to write Tact assembly. Unlike all other functions, their bodies consist only of [TVM instructions](#tvm) and some other primitives, and don't use any [Tact statements](/book/statements).
+Assembly functions (or asm functions for short) are module-level functions that allow you to write Tact assembly. Unlike all other functions, their bodies consist only of [TVM instructions](#tvm) and some other primitives, and don't use any Tact [statements](/book/statements) or [expressions](/book/expressions).
 
 ```tact
 // all assembly functions must start with "asm" keyword
@@ -185,19 +185,19 @@ struct Handler { f1: Int; f2: Int; f3: Int; f4: Int; f5: Int; f6: Int; f7: Int }
 asm fun overHandler(): Handler { }
 ```
 
-As parameters and return values of assembly functions, [Structs][struct] can only have up to $16$ fields on each nested level. That is, you could go over $16$ fields in total if, for example, some of them were the nested structures, thus increasing the nesting level. Note that the outer parameters of the function also count as a nested level, so specifying a [Struct][struct] with more than $16$ fields as parameters or with more than $16$ parameters will cause compilation errors, especially in assembly functions.
+As parameters and return values of assembly functions, [Structs][struct] can only have up to $16$ fields. Each of these fields can in turn be declared as another [Struct][struct], where each of these nested structures can also only have up to $16$ fields. This process can be repeated until there would be a total of $256$ fields of [primitive types][p] due to the [assembly function limitations](#limitations). This restriction also applies to the parameter list of assembly functions — you can only declare up to $16$ parameters.
 
 ```tact
 // Seventeen fields
-struct S17 { f1:Int; f2:Int; f3:Int; f4:Int; f5:Int; f6:Int; f7:Int; f8:Int; f9:Int; f10:Int; f11:Int; f12:Int; f13:Int; f14:Int; f15: Int; f16: Int; f17: Int }
+struct S17 { f1:Int; f2:Int; f3:Int; f4:Int; f5:Int; f6:Int; f7:Int; f8:Int; f9:Int; f10:Int; f11:Int; f12:Int; f13:Int; f14:Int; f15:Int; f16:Int; f17:Int }
 
 // COMPILATION ERROR!
-asm fun chuckles(s: S17) { }
+asm fun chuckles(imInDanger: S17) { }
 ```
 
 ## Stack registers {#stack-registers}
 
-The so-called _stack registers_ are conventional way of referring to the values at the top of the stack. In total, there are $256$ stack registers, i.e. values held on the stack at any given time. You can refer to any of them using any of `s0`, `s1`, ..., `s255`.
+The so-called _stack registers_ are a way of referring to the values at the top of the stack. In total, there are $256$ stack registers, i.e. values held on the stack at any given time. You can specify any of them using any of `s0`, `s1`, ..., `s255`, but only if the certain [TVM][tvm] instruction expects it as an argument. Otherwise, their concept is meant for succinct descriptions of the effects of a particular [TVM][tvm] instruction in text or comments to the code, not in the code itself.
 
 Register `s0` is the value at the top of the stack, register `s1` is the value immediately after it, and so on, until we reach the bottom of the stack, represented by `s255`, i.e. the $256$th stack register. When a value `x` is pushed onto a stack, it becomes the new `s0`. At the same time, old `s0` becomes new `s1`, old `s1` — new `s2`, and so on.
 
@@ -250,12 +250,18 @@ Often times it's useful to change the order of arguments pushed to the stack or 
 4. If a result arrangement is present, resulting values are reordered on the stack.
 5. The resulting values are captured (partially or fully) by the return type of the function.
 
+The argument arrangement has the syntax `asm(arg2 arg1)`, where `arg1` and `arg2` are some arguments of the function in the order we want to push them onto the stack: `arg1` will be pushed first and get on the bottom of the stack, while `arg2` will be pushed last and get on top of the stack. Arrangements are not limited by two arguments and operate on all parameters of the function. If there are any parameters of arbitrary [Struct][struct] types, their arrangement is done prior to their flattening.
+
 ```tact
 // Changing the order of arguments to match the STDICT signature:
 // `c` will be pushed first and get on the bottom of the stack,
 // while `self` will be pushed last and get on top of the stack
 asm(c self) extends fun asmStoreDict(self: Builder, c: Cell?): Builder { STDICT }
+```
 
+The return arrangement has the syntax `asm(-> 1 0)`, where $1$ and $0$ are a left-to-right reordering of [stack registers](#stack-registers) `s1` and `s0` correspondingly: the contents of `s1` will be at the top of the stack, followed by the contents of `s0`. Arrangements are not limited by two return values and operate on captured values. If an arbitrary [Struct][struct] is specified as the return type, the arrangement is done with respect to their fields, mapping values on the stack to the recursively flattened [Struct][struct].
+
+```tact
 // Changing the order of return values of LDVARUINT16 instruction,
 // since originally it would place the modified Slice on top of the stack
 asm(-> 1 0) extends fun asmLoadCoins(self: Slice): SliceInt { LDVARUINT16 }
@@ -267,7 +273,11 @@ asm(-> 1 0) extends fun asmLoadCoins(self: Slice): SliceInt { LDVARUINT16 }
 // And the return type `SliceInt`,
 // which is the following Struct:
 struct SliceInt { s: Slice; val: Int }
+```
 
+Both argument and return arrangement can be combined together and written as follows: `asm(arg2 arg1 -> 1 0)`.
+
+```tact
 // Changing the order of return values compared to the stack
 // and switching the order of arguments as well
 asm(s len -> 1 0) fun asmLoadInt(len: Int, s: Slice): SliceInt { LDIX }
@@ -276,8 +286,19 @@ asm(s len -> 1 0) fun asmLoadInt(len: Int, s: Slice): SliceInt { LDIX }
 //           | which is the topmost value in the stack
 //           Value of the stack register 1,
 //           which is second-to-top value in the stack
+// And the return type `SliceInt`,
+// which is the following Struct:
+struct SliceInt { s: Slice; val: Int }
+```
 
-// Putting the above all together we get:
+Using all those re-arranged functions together we get:
+
+```tact
+asm(c self) extends fun asmStoreDict(self: Builder, c: Cell?): Builder { STDICT }
+asm(-> 1 0) extends fun asmLoadCoins(self: Slice): SliceInt { LDVARUINT16 }
+asm(s len -> 1 0) fun asmLoadInt(len: Int, s: Slice): SliceInt { LDIX }
+struct SliceInt { s: Slice; val: Int }
+
 fun showcase() {
     let b = beginCell()
         .storeCoins(42)
@@ -294,7 +315,9 @@ fun showcase() {
 
 Note, that arrangements do not drop or discard any values — they only manipulate the order of arguments and return values as those are declared. This means, for example, that arrangement cannot access values from the stack that are not captured by the return type of the assembly function.
 
-That said, there's a [caveat to `mutates{:tact}` attribute and asm arrangements](#caveats-mutates).
+Additionally,
+
+That said, there's a [caveat to `mutates{:tact}` attribute and `asm` arrangements](#caveats-mutates).
 
 ## Limitations {#limitations}
 
@@ -310,7 +333,7 @@ fun exitCode2() {
 }
 ```
 
-Attempts to push more than $256$ values onto the stack at once throw an exception with [exit code 3](/book/exit-codes#3): `Stack overflow`. For example, this might happen when you specify a lot of nested [Structs][struct] as parameters to the assembly function. This upper limit applies to the [TVM][tvm] stack itself, corresponding to the [return continuation in register `c0`](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers), but different [continuations](https://docs.ton.org/v3/documentation/tvm/tvm-overview#tvm-is-a-stack-machine) may have a different upper limit of values on their inner stacks.
+Attempts to push more than $256$ values onto the stack **at once** throw an exception with [exit code 3](/book/exit-codes#3): `Stack overflow`. For example, this might happen when you specify a lot of nested [Structs][struct] as parameters to the assembly function. This upper limit applies to the [TVM][tvm] stack itself, corresponding to the [return continuation in register `c0`](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers), but different [continuations](https://docs.ton.org/v3/documentation/tvm/tvm-overview#tvm-is-a-stack-machine) may have a different upper limit of values on their inner stacks.
 
 ```tact
 asm fun stackOverflow() {
@@ -328,7 +351,7 @@ fun exitCode3() {
 }
 ```
 
-Although there are only $256$ [stack registers](#stack-registers), the stack itself can have more than $256$ values on it in total. The deeper values won't be immediately accessible by any [TVM instructions][tvm-instructions], but they would be on the stack nonetheless.
+Although there are only $256$ [stack registers](#stack-registers), the stack itself can have more than $256$ values on it in total, which can happen if you push, say, one value at a time for $256$ times in a row. The deeper values won't be immediately accessible by any [TVM instructions][tvm-instructions], but they would be on the stack nonetheless.
 
 ## Caveats {#caveats}
 
@@ -392,6 +415,16 @@ The [TVM][tvm] places a couple of values onto its stack upon initialization, and
 :::
 
 Therefore, to access details such as the amount of [nanoToncoins](/book/integers#nanotoncoin) in a message or the [`Address{:tact}`][p] of the sender it's strongly recommended to call the [`context(){:tact}`](/ref/core-common#context) or [`sender(){:tact}`](/ref/core-common#sender) functions instead of attempting to look for those values on the stack.
+
+### No values are popped {#caveats-pop}
+
+The main stack of the [TVM][tvm] is the environment in which Tact-produced code operates. This means that there's no popping of values off the stack in the traditional sense of the word. The values are mapped, captured or "taken" by assembly functions, but they are still present on the stack during the execution.
+
+This is true for all functions, not just assembly functions — you just don't run into the stack problems or see the stack manipulations explicitly because Tact's type system and compile-time checks protect you from those worries.
+
+To illustrate this, there is a [`POP`](https://docs.ton.org/v3/documentation/tvm/instructions#3i) instruction that removes the topmost value and assigns it to the stack register at its current location. The value "popped" doesn't go anywhere else because there is nowhere else to go except the stack or [control registers](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers).
+
+And while it's possible to access control registers and pop values off the stack to them, it requires the use of special instructions and is not common in Tact-produced code. Unless explicitly done by the programmer, values are always on the stack.
 
 ## Debugging {#debugging}
 
