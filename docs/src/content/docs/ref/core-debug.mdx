@@ -5,11 +5,7 @@ description: "Various debugging functions from the Core library of Tact"
 
 List of functions commonly used for debugging smart contracts in Tact.
 
-:::note
-
-  Read more about debugging on the dedicated page: [Debugging](/book/debug).
-
-:::
+Read more about debugging on the dedicated page: [Debugging](/book/debug).
 
 ## require
 
@@ -110,24 +106,21 @@ dump(emit("msg".asComment())); // As emit() function doesn't return a value, dum
 fun dumpStack();
 ```
 
-Prints all the values of [persistent state variables](/book/contracts#variables) to the contract's debug console. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`, otherwise does nothing.
+Prints the total stack depth and up to $255$ of its values from the top to the contract's debug console. The values are positioned bottom-up: from the deepest value on the left to the topmost value on the right. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`, otherwise does nothing.
 
 Usage example:
 
-```tact {6}
-contract DumpsterFire {
-    var1: Int = 0;
-    var2: Int = 5;
-
-    receive() {
-        dumpStack(); // would print 0 5
-    }
-}
+```tact
+dumpStack(); // prints:
+             // File filename.tact:1:1
+             // dumpStack()
+             // stack(3 values) : 100000000 C{96...C7} 0
 ```
 
 :::note[Useful links:]
 
-  [Debug with `dump(){:tact}`](/book/debug#tests-dump)
+  [Debug with `dump(){:tact}`](/book/debug#tests-dump)\
+  [Assembly functions](/book/assembly-functions)
 
 :::
 
