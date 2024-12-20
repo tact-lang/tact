@@ -128,7 +128,7 @@ This is an alternative exit code for the successful execution of the [compute ph
 
 ### 2: Stack underflow {#2}
 
-If some operation consumed more elements than there were on the stacks, the error with exit code $2$ is thrown: `Stack underflow`.
+If some operation consumed more elements than there were on the stack, the error with exit code $2$ is thrown: `Stack underflow`.
 
 ```tact
 asm fun drop() { DROP }
@@ -153,17 +153,17 @@ contract Loot {
 
 ### 3: Stack overflow {#3}
 
-If there are too many elements copied into a closure continuation or stored on the stack, an error with exit code $3$ is thrown: `Stack overflow`. Occurs rarely, unless you're deep in [Fift and TVM assembly](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) trenches:
+If there are too many elements copied into a closure continuation, an error with exit code $3$ is thrown: `Stack overflow`. Occurs rarely, unless you're deep in [Fift and TVM assembly](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) trenches:
 
 ```tact
 // Remember kids, don't try to overflow the stack at home!
 asm fun stackOverflow() {
-    <{
-    }>CONT // c
-    0 SETNUMARGS // c'
-    2 PUSHINT // c' 2
-    SWAP // 2 c'
-    1 -1 SETCONTARGS // <- this blows up
+    x{} SLICE        // s
+    BLESS            // c
+    0 SETNUMARGS     // c'
+    2 PUSHINT        // c' 2
+    SWAP             // 2 c'
+    1 -1 SETCONTARGS // ← this blows up
 }
 
 contract ItsSoOver {
@@ -242,11 +242,11 @@ try {
 
 ### 6: Invalid opcode {#6}
 
-If you specify an instruction that is not defined in the current [TVM][tvm] version, an error with exit code $6$ is thrown: `Invalid opcode`.
+If you specify an instruction that is not defined in the current [TVM][tvm] version or try to set an unsupported [code page](https://docs.ton.org/v3/documentation/tvm/tvm-overview#tvm-state), an error with exit code $6$ is thrown: `Invalid opcode`.
 
 ```tact
-// No such thing
-asm fun invalidOpcode() { x{D7FF} @addop }
+// There's no such codepage, and attempt to set it fails
+asm fun invalidOpcode() { 42 SETCP }
 
 contract OpOp {
     receive("I solemnly swear that I'm up to no good") {

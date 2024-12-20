@@ -163,6 +163,7 @@ export default defineConfig({
 						{ slug: 'book/statements' },
 						{ slug: 'book/constants' },
 						{ slug: 'book/functions' },
+						{ slug: 'book/assembly-functions' },
 						{
 							label: 'Communication',
 							translations: { 'zh-CN': '交流' },
