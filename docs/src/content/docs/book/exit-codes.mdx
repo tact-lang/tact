@@ -153,7 +153,7 @@ contract Loot {
 
 ### 3: Stack overflow {#3}
 
-If there are too many elements copied into a closure continuation or stored on the stack, an error with exit code $3$ is thrown: `Stack overflow`. Occurs rarely, unless you're deep in [Fift and TVM assembly](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) trenches:
+If there are too many elements copied into a closure continuation, an error with exit code $3$ is thrown: `Stack overflow`. Occurs rarely, unless you're deep in [Fift and TVM assembly](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) trenches:
 
 ```tact
 // Remember kids, don't try to overflow the stack at home!

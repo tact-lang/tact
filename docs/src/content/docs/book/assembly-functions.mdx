@@ -331,7 +331,7 @@ fun exitCode2() {
 }
 ```
 
-Attempts to push more than $256$ values onto the stack **at once** throw an exception with [exit code 3](/book/exit-codes#3): `Stack overflow`. For example, this might happen when you specify a lot of nested [Structs][struct] as parameters to the assembly function. This upper limit applies to the [TVM][tvm] stack itself, corresponding to the [return continuation in register `c0`](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers), but different [continuations](https://docs.ton.org/v3/documentation/tvm/tvm-overview#tvm-is-a-stack-machine) may have a different upper limit of values on their inner stacks.
+The [TVM][tvm] stack itself has **no** limit on the total number of values, so you can theoretically push new values there until you run out of gas. However, various [continuations](https://docs.ton.org/v3/documentation/tvm/tvm-overview#tvm-is-a-stack-machine) may have a maximum number of values defined for their inner stacks, going over which will throw an exception with [exit code 3](/book/exit-codes#3): `stack overflow`.
 
 ```tact
 asm fun stackOverflow() {
@@ -349,7 +349,7 @@ fun exitCode3() {
 }
 ```
 
-Although there are only $256$ [stack registers](#stack-registers), the stack itself can have more than $256$ values on it in total, which can happen if you push, say, one value at a time for $256$ times in a row. The deeper values won't be immediately accessible by any [TVM instructions][tvm-instructions], but they would be on the stack nonetheless.
+Although there are only $256$ [stack registers](#stack-registers), the stack itself can have more than $256$ values on it in total. The deeper values won't be immediately accessible by any [TVM instructions][tvm-instructions], but they would be on the stack nonetheless.
 
 ## Caveats {#caveats}
 
