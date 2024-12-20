@@ -49,7 +49,7 @@ const initFormat = z.object({
         }),
         z.object({
             kind: z.literal("system-cell"),
-            system: z.string(),
+            system: z.string().nullable(),
         }),
     ]),
 });

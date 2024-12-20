@@ -56,7 +56,7 @@ describe("stdlib", () => {
                 .toString(),
         ).toBe(beginCell().storeBit(true).endCell().toString());
 
-        expect(await contract.getTvm_2023_07Upgrade()).toEqual(1355n);
+        expect(await contract.getTvm_2023_07Upgrade()).toEqual(1289n); // gas consumed
         expect(await contract.getTvm_2024_04Upgrade()).toEqual(82009144n);
 
         expect(

@@ -96,7 +96,7 @@ export async function writeProgram(
     const stdlibHeader = trimIndent(`
         global (int, slice, int, slice) __tact_context;
         global slice __tact_context_sender;
-        global cell __tact_context_sys;
+        global cell __tact_child_contract_codes;
         global int __tact_randomized;
     `);
 
