@@ -243,30 +243,38 @@ const boolSerializer: Serializer<{ optional: boolean }> = {
 const addressSerializer: Serializer<{ optional: boolean }> = {
     tsType(v) {
         if (v.optional) {
-            return "Address | null";
+            return "'none' | Address | ExternalAddress | null | undefined";
         } else {
-            return "Address";
+            return "'none' | Address | ExternalAddress";
         }
     },
     tsLoad(v, slice, field, w) {
         if (v.optional) {
-            w.append(`let ${field} = ${slice}.loadMaybeAddress();`);
+            w.append(`let ${field} = ${slice}.loadMaybeAddress1();`);
         } else {
-            w.append(`let ${field} = ${slice}.loadAddress();`);
+            w.append(`let ${field} = ${slice}.loadAddress1();`);
         }
     },
     tsLoadTuple(v, reader, field, w) {
         if (v.optional) {
-            w.append(`let ${field} = ${reader}.readAddressOpt();`);
+            w.append(`let ${field} = ${reader}.readAddressOpt1();`);
         } else {
-            w.append(`let ${field} = ${reader}.readAddress();`);
+            w.append(`let ${field} = ${reader}.readAddress1();`);
         }
     },
     tsStore(v, builder, field, w) {
-        w.append(`${builder}.storeAddress(${field});`);
+        if (v.optional) {
+            w.append(`${builder}.storeMaybeAddress1(${field});`);
+        } else {
+            w.append(`${builder}.storeAddress1(${field});`);
+        }
     },
     tsStoreTuple(v, to, field, w) {
-        w.append(`${to}.writeAddress(${field});`);
+        if (v.optional) {
+            w.append(`${to}.writeMaybeAddress1(${field});`);
+        } else {
+            w.append(`${to}.writeAddress1(${field});`);
+        }
     },
     abiMatcher(src) {
         if (src.kind === "simple") {
