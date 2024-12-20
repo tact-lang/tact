@@ -315,8 +315,6 @@ fun showcase() {
 
 Note, that arrangements do not drop or discard any values — they only manipulate the order of arguments and return values as those are declared. This means, for example, that arrangement cannot access values from the stack that are not captured by the return type of the assembly function.
 
-Additionally,
-
 That said, there's a [caveat to `mutates{:tact}` attribute and `asm` arrangements](#caveats-mutates).
 
 ## Limitations {#limitations}
@@ -415,16 +413,6 @@ The [TVM][tvm] places a couple of values onto its stack upon initialization, and
 :::
 
 Therefore, to access details such as the amount of [nanoToncoins](/book/integers#nanotoncoin) in a message or the [`Address{:tact}`][p] of the sender it's strongly recommended to call the [`context(){:tact}`](/ref/core-common#context) or [`sender(){:tact}`](/ref/core-common#sender) functions instead of attempting to look for those values on the stack.
-
-### No values are popped {#caveats-pop}
-
-The main stack of the [TVM][tvm] is the environment in which Tact-produced code operates. This means that there's no popping of values off the stack in the traditional sense of the word. The values are mapped, captured or "taken" by assembly functions, but they are still present on the stack during the execution.
-
-This is true for all functions, not just assembly functions — you just don't run into the stack problems or see the stack manipulations explicitly because Tact's type system and compile-time checks protect you from those worries.
-
-To illustrate this, there is a [`POP`](https://docs.ton.org/v3/documentation/tvm/instructions#3i) instruction that removes the topmost value and assigns it to the stack register at its current location. The value "popped" doesn't go anywhere else because there is nowhere else to go except the stack or [control registers](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers).
-
-And while it's possible to access control registers and pop values off the stack to them, it requires the use of special instructions and is not common in Tact-produced code. Unless explicitly done by the programmer, values are always on the stack.
 
 ## Debugging {#debugging}
 
