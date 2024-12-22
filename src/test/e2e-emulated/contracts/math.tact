@@ -425,5 +425,16 @@ contract MathTester with Deployable {
     get fun augmentedShiftRight(a: Int, b: Int): Int {
         a >>= b;
         return a;
+
+    // test FunC optimization bug
+    get fun shiftLeft0(i: Int): Bool {
+        let mask = 1 << i;
+        return mask == 1;
+    }
+
+    // test FunC optimization bug
+    get fun shiftRight0(i: Int): Bool {
+        let mask = 1 >> i;
+        return mask == 1;
     }
 }
