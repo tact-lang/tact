@@ -62,8 +62,8 @@ Exit code     | Origin                              | Brief description
 [$133$](#133) | Tact compiler ([Compute phase][c])  | Contract stopped. Reserved, but never thrown.
 [$134$](#134) | Tact compiler ([Compute phase][c])  | Invalid argument.
 [$135$](#135) | Tact compiler ([Compute phase][c])  | Code of a contract was not found.
-~~[$136$](#136)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Invalid address.~~ Removed since Tact 1.6
-~~[$137$](#137)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Masterchain support is not enabled for this contract.~~ Removed since Tact 1.6
+~~[$136$](#136)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Invalid address.~~ Removed since Tact 1.6 (not released yet)
+~~[$137$](#137)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Masterchain support is not enabled for this contract.~~ Removed since Tact 1.6 (not released yet)
 
 :::note
 
@@ -625,7 +625,7 @@ If the code of the contract doesn't match the one saved in TypeScript wrappers, 
 
 ### 136: Invalid address {#136}
 
-<Badge text="Removed since Tact 1.6" variant="tip" size="medium"/><p/>
+<Badge text="Removed since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
 
 A value of type [`Address{:tact}`][p] is valid in Tact when:
 
@@ -648,7 +648,7 @@ try {
 
 ### 137: Masterchain support is not enabled for this contract {#137}
 
-<Badge text="Removed since Tact 1.6" variant="tip" size="medium"/><p/>
+<Badge text="Removed since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
 
 Prior to removal, any attempts to point to masterchain (ID $-1$) or otherwise interact with it without enabling masterchain support were throwing an exception with exit code $137$: `Masterchain support is not enabled for this contract`.
 
