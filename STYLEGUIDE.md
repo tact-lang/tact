@@ -109,9 +109,9 @@ export const includes = <const K extends string>(
 
 ### Other considerations
 
-- **Beware of `${}`** in template strings. Any inlining succeds, and there won't be any compile-time errors even if it's a function `${(x: number) => x}`.
+- **Beware of `${}`** in template strings. Any inlining succeeds, and there won't be any compile-time errors even if it's a function `${(x: number) => x}`.
 - **Avoid `null`**. `typeof null === 'object'`, and there is `undefined` anyway.
 - **Avoid exceptions**. Exceptions are untyped.
 - **Avoid tuples**. TS gives them minimal distinction from arrays, and type system is broken around them. Occasionally for performance reasons tuples might be a better option than objects.
 - **Avoid `enum`**. It's equivalent to unions since 5.0, except generates boilerplate JS code. A version that doesn't generate extraneous code, `const enum`, is not properly supported by `babel`.
-- **Avoid iterators**. They're untypeable unless fixed in JS standard. Prefer generators. Prefer iterating with `for (... of ...)`.
+- **Avoid iterators**. They're untypable unless fixed in JS standard. Prefer generators. Prefer iterating with `for (... of ...)`.
