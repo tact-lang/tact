@@ -434,6 +434,8 @@ fun nativeSendMessage(cell: Cell, mode: Int);
 
 [Queues the message](/book/send#outbound-message-processing) to be sent by specifying the complete `cell` and the [message `mode`](/book/message-mode).
 
+Attempts to queue more than $255$ messages throw an exception with an [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
 :::note
 
   Prefer using a much more common and user-friendly [`send(){:tact}`](/ref/core-common#send) function unless you have a complex logic that can't be expressed otherwise.
@@ -465,6 +467,8 @@ It's possible to use raw [`Int{:tact}`][int] values and manually provide them fo
 :::caution
 
   Currently, `amount` must be a non-negative integer, and `mode` must be in the range $0..31$, inclusive.
+
+  Additionally, attempts to queue more than $255$ reservations in one transaction throw an exception with an [exit code 33](/book/exit-codes#33): `Action list is too long`.
 
 :::
 

@@ -52,6 +52,7 @@
     "getsimpleforwardfee",
     "gettest",
     "Héctor",
+    "heisenbugs",
     "infixl",
     "infixr",
     "initof",
@@ -66,6 +67,7 @@
     "Korshakov",
     "Laika",
     "langle",
+    "Liskov",
     "lparen",
     "lvalue",
     "lvalues",
@@ -107,7 +109,9 @@
     "Ston",
     "struct",
     "structs",
+    "styleguide",
     "subtyping",
+    "supertypes",
     "Tarjan",
     "testdata",
     "Topup",
@@ -118,6 +122,7 @@
     "uintptr",
     "uninit",
     "unixfs",
+    "untypable",
     "varuint",
     "workchain",
     "xffff",
@@ -126,7 +131,8 @@
   "ignoreRegExpList": [
     "\\b[xB]\\{[a-fA-F0-9]*_?\\}", // binary literals in Fift-asm
     "\\b0[xX][a-fA-F0-9_]*\\b", // hexadecimal numbers
-    "\\b(?:address|crc32|cell|slice|rawSlice)\\(\".+\"\\)" // some comptime functions
+    "\\b(?:address|crc32|cell|slice|rawSlice)\\(\".+\"\\)", // some comptime functions
+    "ince Tact " // regex in RELEASE.md
   ],
   "flagWords": [],
   "ignorePaths": [
