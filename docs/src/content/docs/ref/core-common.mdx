@@ -37,7 +37,7 @@ let iNeedADolla: Int = myBalance();
 
 :::caution
 
-  Beware, that [all message sending functions](/book/send) of Tact can change the _actual_ contract's balance, but they _won't_ update the value returned by this function.
+  Beware, that [all message sending functions](/book/send#message-sending-functions) of Tact can change the _actual_ contract's balance, but they _won't_ update the value returned by this function.
 
 :::
 
@@ -202,6 +202,8 @@ fun send(params: SendParameters);
 
 [Queues the message](/book/send#outbound-message-processing) to be sent using a [`SendParameters{:tact}`](/book/send) [Struct](/book/structs-and-messages#structs).
 
+Attempts to queue more than $255$ messages throw an exception with an [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
 Usage example:
 
 ```tact
@@ -227,6 +229,8 @@ fun emit(body: Cell);
 ```
 
 [Queues the message](/book/send#outbound-message-processing) `body` to be sent to the outer world with the purpose of logging and analyzing it later off-chain. The message does not have a recipient and is gas-efficient compared to using any other message sending functions of Tact.
+
+Attempts to queue more than $255$ messages throw an exception with an [exit code 33](/book/exit-codes#33): `Action list is too long`.
 
 Usage example:
 
