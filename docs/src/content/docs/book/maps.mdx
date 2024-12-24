@@ -31,6 +31,24 @@ Allowed value types:
 * [Struct](/book/structs-and-messages#structs)
 * [Message](/book/structs-and-messages#messages)
 
+## Serialization
+
+It's possible to do [integer serialization](/book/integers#common-serialization-types) of map keys, values or both to [preserve space and reduce storage costs](/book/integers#serialization):
+
+```tact
+struct SerializedMapInside {
+    // Both keys and values here would be serialized as 8-bit unsigned integers,
+    // thus preserving the space and reducing storage costs:
+    countersButCompact: map<Int as uint8, Int as uint8>;
+}
+```
+
+:::note
+
+  Read more about serialization in Tact: [Compatibility with FunC](/book/func#convert-serialization).
+
+:::
+
 ## Operations
 
 ### Declare, `emptyMap()` {#emptymap}
@@ -313,7 +331,9 @@ There, both maps are formed manually and both contain the same key-value pair. I
 
 ### Convert to a `Cell`, `.asCell()` {#ascell}
 
-Use `.asCell(){:tact}` [method](/book/functions#extension-function) on maps to convert all their values to a [`Cell{:tact}`][cell] type. Be mindful, that [`Cell{:tact}`][cell] type is able to store up to 1023 bits, so converting larger maps to the Cell will result in error.
+On [TVM][tvm], maps are represented as a [`Cell{:tact}`][cell] type and it's possible to construct and parse them directly. However, doing so is highly error-prone and quite messy, which is why Tact provides maps as a standalone composite type with many of the helper methods mentioned above.
+
+To cast maps back to the underlying [`Cell{:tact}`][cell] type, use the `.asCell(){:tact}` [method](/book/functions#extension-function). Since maps are initialized to `null{:tact}`, calling `.asCell(){:tact}` on a map with no values assigned will return `null{:tact}` and **not** an empty [`Cell{:tact}`][cell].
 
 As an example, this method is useful for sending small maps directly in the body of the reply:
 
@@ -335,7 +355,7 @@ contract Example {
     // Internal message receiver, which responds to empty messages
     receive() {
         // Here we're converting the map to a Cell and making a reply with it
-        self.reply(self.fizz.asCell());
+        self.reply(self.fizz.asCell()!!); // explicitly asserting that the map isn't null
     }
 }
 ```
@@ -429,24 +449,6 @@ It's often useful to set an upper-bound restriction on such maps, so that you [d
 
 :::
 
-## Serialization
-
-It's possible to do [integer serialization](/book/integers#common-serialization-types) of map keys, values or both to [preserve space and reduce storage costs](/book/integers#serialization):
-
-```tact
-struct SerializedMapInside {
-    // Both keys and values here would be serialized as 8-bit unsigned integers,
-    // thus preserving the space and reducing storage costs:
-    countersButCompact: map<Int as uint8, Int as uint8>;
-}
-```
-
-:::note
-
-  Read about other serialization options: [Compatibility with FunC](/book/func#convert-serialization).
-
-:::
-
 ## Limits and drawbacks
 
 While maps can be convenient to work with on a small scale, they cause a number of issues if the number of items is unbounded and map can significantly grow in size:
@@ -492,3 +494,4 @@ If you still need a large map or an unbound (infinitely large) map, it's better 
 [cell]: /book/cells#cells
 
 [hashmap]: https://docs.ton.org/develop/data-formats/tl-b-types#hashmap
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
