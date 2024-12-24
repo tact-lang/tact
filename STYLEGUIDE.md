@@ -56,6 +56,8 @@ export const includes = <const K extends string>(
 - **Tag fields on tagged unions absolutely have to be readonly.** By assigning into a tag field of a `A | B` union, we can narrow it to an `A` type while it will have `B` (or some arbitrary combination of `A` and `B`) at runtime.
 - **Arrays should be readonly**: `readonly string[]`
 - **Tuples should be readonly**: `readonly [string, number]`
+- **`Set` and `Map` should be readonly**: `env: ReadonlyMap<string, Type>`
+- **Clone arrays before `.sort()` or `.reverse()`**: `[...arr].sort()`
 - **Prefer freezing highly reused objects** with `Object.freeze`.
 - **Avoid `void` type.**
 
