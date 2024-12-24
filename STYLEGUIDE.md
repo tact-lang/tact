@@ -75,6 +75,7 @@ export const includes = <const K extends string>(
 - **Don't use `...` with objects**. It will require intersection types or inheritance to type. Prefer aggregation: `{ ...a, b }` → `{ a, b }`.
 - **Don't use `interface ... extends`**. There is no way to safely distinguish objects supporting parent and child interfaces at runtime.
   - Except where it's required to untie type recursion. For example `type Foo = A<Foo>` would only work as `interface Foo extends A<Foo> {}`
+- **Don't use objects as `Map`s**. Objects have a set of quirks: numeric keys get listed before string keys, key order is not guaranteed, keys can be inherited from `Object.prototype`, `__proto__` key can be used for prototype pollution exploits. Unless very high performance of hashmap is needed, or an object is statically defined, use `Map`.
 
 ### Don't use JS function "features"
 
