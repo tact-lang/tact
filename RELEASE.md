@@ -2,6 +2,10 @@
 
 - [ ] Improve the changelog for `vX.Y.Z`: grammar, wording, polishing
 - [ ] Make sure there are no open issues for the [vX.Y.Z milestone](https://github.com/tact-lang/tact/issues?q=is%3Aopen+is%3Aissue+milestone%3AvX.Y.Z) (except for the current one, of course)
+- [ ] Remove "(not released yet)" from docs:
+  - [ ] `cd docs` — important as to not change the texts elsewhere, such as in code comments
+  - [ ] `regex='([sS]ince Tact \d\.\d) \(not released yet\)'; rg "$regex" -r '$1'` (or similar with `grep`) — to preview the changes
+  - [ ] `regex='([sS]ince Tact \d\.\d) \(not released yet\)'; rg "$regex" -l | xargs sd "$regex" '$1'` (or similar with `grep` and `sed`) — to apply the changes
 - [ ] Bump Tact version in:
   - [ ] [`package.json`](./package.json) file
   - [ ] [CHANGELOG.md](./CHANGELOG.md): `Unreleased` -> `vX.Y.Z`
@@ -16,7 +20,6 @@
   $ git checkout vX.Y.Z
   $ yarn all && npm publish
   ```
-- [ ] Update [tact-docs](https://github.com/tact-lang/tact-docs) with the most recent Tact features (tracked in: )
 - [ ] Request or perform the plugins/parsers/tools updates and releases:
   - [ ] <https://github.com/tact-lang/tact-template> (tracked in: )
   - [ ] <https://github.com/tact-lang/tree-sitter-tact> (tracked in: )
