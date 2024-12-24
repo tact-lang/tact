@@ -262,7 +262,6 @@ export async function build(args: {
             Dictionary.Values.Cell(),
         );
         const ct = getType(ctx, contract);
-        depends.set(ct.uid, Cell.fromBoc(built[ct.name]!.codeBoc)[0]!); // Mine
         for (const c of ct.dependsOn) {
             const cd = built[c.name];
             if (!cd) {
@@ -273,7 +272,10 @@ export async function build(args: {
             }
             depends.set(c.uid, Cell.fromBoc(cd.codeBoc)[0]!);
         }
-        const systemCell = beginCell().storeDict(depends).endCell();
+        const systemCell =
+            ct.dependsOn.length > 0
+                ? beginCell().storeDict(depends).endCell()
+                : null;
 
         // Collect sources
         const sources: Record<string, string> = {};
@@ -309,7 +311,7 @@ export async function build(args: {
                 },
                 deployment: {
                     kind: "system-cell",
-                    system: systemCell.toBoc().toString("base64"),
+                    system: systemCell?.toBoc().toString("base64") ?? null,
                 },
             },
             sources,
