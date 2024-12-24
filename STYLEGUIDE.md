@@ -57,7 +57,7 @@ export const includes = <const K extends string>(
 - **Arrays should be readonly**: `readonly string[]`
 - **Tuples should be readonly**: `readonly [string, number]`
 - **`Set` and `Map` should be readonly**: `env: ReadonlyMap<string, Type>`
-- **Clone arrays before `.sort()` or `.reverse()`**: `[...arr].sort()`
+- **Clone arrays before `.sort()`, `.reverse()`, `.splice()`**: `[...arr].sort()`
 - **Prefer freezing highly reused objects** with `Object.freeze`.
 - **Avoid `void` type.**
 
