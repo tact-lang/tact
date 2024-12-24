@@ -80,15 +80,15 @@ export const includes = <const K extends string>(
 - **Don't use default parameters** `(x = 1) => {}`. See reasoning above.
 - **Don't use `...rest` parameters**. TypeScript doesn't have "mapped tuple types", so typing these will be problematic. In most cases passing an array would suffice, and would only take two more characters to type.
 - **Don't use `arguments`**. This is a worse version of `...rest` that isn't even an array.
-- Always use explicit function argument `.map((x) => foo(x))`
+- **Don't pass functions directly** to built-in functions `.map(foo)`. A good example of why this is a bad idea: `["10", "10", "10"].map(parseInt)`. Prefer `.map(x => foo(x))`.
 
-### Don't use OOP.
+### Don't use OOP
 
 - **Don't use methods**. Methods don't store reference to `this` in their closure, and take it from object _syntactically_, i.e. `x.f()` would use `x` as `this`. It means `const { f } = x; f();` will be a runtime error, and TypeScript would emit no error here at compile time.
 - **Don't use inheritance**. Overriding is allowed in JS, Liskov substitution is not guaranteed.
 - **Don't use `class`**. In TS `private` is only a type system feature, and all the private fields are globally accessible at runtime. Worse, created objects have part of their description in `prototype`, and can't be worked with as regular objects. If class is converted to regular function, all the fields are properly private, accessing them requires no `this.` prefix, and in most frequent case there is only one exposed method that can be returned directly.
 
-### Don't use funny types.
+### Don't use funny types
 
 - **Don't use conditional types**. These lack any theory behind them, and were meant to type legacy JS code.
 - **Don't use `Omit`, `Pick`, `Exclude` and `Extract`**. These are conditional types in disguise.
