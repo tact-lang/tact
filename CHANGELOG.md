@@ -60,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a link to the article by CertiK to Security best practices page: PR [#1185](https://github.com/tact-lang/tact/pull/1185)
 - Added a note on `dump()` being computationally expensive: PR [#1189](https://github.com/tact-lang/tact/pull/1189)
 - Fixed links in Chinese translation: PR [#1206](https://github.com/tact-lang/tact/pull/1206)
+- Added a note on 255 being the maximum number of messages that can be sent during action phase: PR [#1237](https://github.com/tact-lang/tact/pull/1237)
 
 ### Release contributors
 

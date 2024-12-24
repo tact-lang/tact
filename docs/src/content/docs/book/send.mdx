@@ -57,11 +57,16 @@ send(SendParameters{
 });
 ```
 
-The [optional flag](/book/message-mode#optional-flags) `SendIgnoreErrors{:tact}` means that even when an error occurs during message sending next messages would be sent anyway. **No error during the sending phase would revert a transaction.**
+The [optional flag](/book/message-mode#optional-flags) `SendIgnoreErrors{:tact}` means that if an error occurs during [message send](#outbound-message-processing), it will be ignored and the given message will be skipped. Message-related [action phase][phases] [exit codes](/book/exit-codes) that might be thrown without the `SendIgnoreErrors{:tact}` set are:
+
+* $36$: [`Invalid destination address in outbound message`](/book/exit-codes#36)
+* $37$: [`Not enough Toncoin`](/book/exit-codes#37)
+* $39$: [`Outbound message doesn't fit into a cell`](/book/exit-codes#39)
+* $40$: [`Cannot process a message`](/book/exit-codes#40)
 
 ## Send typed message
 
-To send a binary typed message you can use the following code:
+To send a typed message you can use the following code:
 
 ```tact
 let recipient: Address = address("...");
@@ -98,7 +103,7 @@ send(SendParameters{
 
 Each transaction on TON Blockchain consists of [multiple phases][phases]. Outbound messages are evaluated in [compute phase][compute], but are **not** sent in that phase. Instead, they're queued in order of appearance for the [action phase][phases], where all actions listed in [compute phase][compute], like outbound messages or [reserve requests](/ref/core-advanced#nativereserve), are executed.
 
-As all the values are computed in [compute phase][compute], all the fees computed by the end of it, and exceptions do not revert the transaction during [action phase][phases], outbound message sends can fail without bounce due to unsufficient [action fees](https://docs.ton.org/develop/howto/fees-low-level#action-fee) or [forward fees][fwdfee].
+As all the values are computed in [compute phase][compute], all the fees computed by the end of it, and exceptions do not revert the transaction during [action phase][phases], outbound message sends can fail without bounce due to insufficient [action fees](https://docs.ton.org/develop/howto/fees-low-level#action-fee) or [forward fees][fwdfee].
 
 Consider the following example:
 
@@ -132,17 +137,22 @@ There, the second message won't actually be sent:
 
 * When the second message is processed, contract tries to send $\mathrm{R}$ [nanoToncoins](/book/integers#nanotoncoin), but fails to do so because there is already a smaller amount left.
 
-:::note
+## Message sending limits
 
-  Read more about all message sending functions in the Reference:
-  * [`send(){:tact}`](/ref/core-common#send)
-  * [`emit(){:tact}`](/ref/core-common#emit)
-  * [`self.notify(){:tact}`](/ref/core-base#self-notify)
-  * [`self.reply(){:tact}`](/ref/core-base#self-reply)
-  * [`self.forward(){:tact}`](/ref/core-base#self-forward)
-  * [`nativeSendMessage(){:tact}`](/ref/core-advanced#nativesendmessage)
+In total, there could be no more than $255$ actions queued for execution, which means that the maximum allowed number of messages sent per transaction is $255$.
 
-:::
+Attempts to queue more throw an exception with an [exit code 33](/book/exit-codes#33) during [action phase][phases]: `Action list is too long`.
+
+## Message sending functions
+
+Read more about all message sending functions in the Reference:
+
+* [`send(){:tact}`](/ref/core-common#send)
+* [`emit(){:tact}`](/ref/core-common#emit)
+* [`self.notify(){:tact}`](/ref/core-base#self-notify)
+* [`self.reply(){:tact}`](/ref/core-base#self-reply)
+* [`self.forward(){:tact}`](/ref/core-base#self-forward)
+* [`nativeSendMessage(){:tact}`](/ref/core-advanced#nativesendmessage)
 
 [p]: /book/types#primitive-types
 [int]: /book/integers
