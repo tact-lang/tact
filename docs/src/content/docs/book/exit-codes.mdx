@@ -502,6 +502,12 @@ When processing the message, TON Blockchain tries to pack it according to the [r
 
 If there would not be enough funds to process all the cells in a message, the message is too large or its Merkle depth is too big, an error with exit code $40$ is thrown: `Cannot process a message`.
 
+:::note
+
+  If the [optional flag +2](/book/message-mode#optional-flags) is set, this error won't be thrown and the given message won't be sent.
+
+:::
+
 ### 41: Library reference is null {#41}
 
 If the library reference was required during library change action, but it was null, an error with exit code $41$ is thrown: `Library reference is null`.
