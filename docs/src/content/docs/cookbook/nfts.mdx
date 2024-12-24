@@ -333,7 +333,7 @@ fun composeCollectionMetadata(
     name: String,        // full name
     description: String, // text description of the NFT
     image: String,       // link to the image
-    // There could be other attributes, see:
+    // There could be other data, see:
     // https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes
 ): Cell {
     let dict: map<Int as uint256, Cell> = emptyMap();
@@ -342,9 +342,8 @@ fun composeCollectionMetadata(
     dict.set(sha256("image"), image.asMetadataCell());
 
     return beginCell()
-        .storeUint(0, 8)
-        .storeBit(true)
-        .storeRef(dict.asCell()!!)
+        .storeUint(0, 8)                // a null byte prefix
+        .storeMaybeRef(dict.asCell()!!) // 1 as a single bit, then a reference
         .endCell();
 }
 
@@ -364,6 +363,13 @@ inline extends fun asMetadataCell(self: String): Cell {
 }
 ```
 
+:::note[Useful links:]
+
+  [Token Data Standard in TEPs](https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes)\
+  [Off-chain NFT metadata by GetGems](https://github.com/getgems-io/nft-contracts/blob/main/docs/metadata.md)
+
+:::
+
 ### NFT Item {#onchain-metadata-nft-item}
 
 ```tact
@@ -372,7 +378,7 @@ fun composeItemMetadata(
     name: String,        // full name
     description: String, // text description of the NFT
     image: String,       // link to the image
-    // There could be other attributes, see:
+    // There could be other data, see:
     // https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes
 ): Cell {
     let dict: map<Int as uint256, Cell> = emptyMap();
@@ -381,9 +387,8 @@ fun composeItemMetadata(
     dict.set(sha256("image"), image.asMetadataCell());
 
     return beginCell()
-        .storeUint(0, 8)
-        .storeBit(true)
-        .storeRef(dict.asCell()!!)
+        .storeUint(0, 8)                // a null byte prefix
+        .storeMaybeRef(dict.asCell()!!) // 1 as a single bit, then a reference
         .endCell();
 }
 
@@ -402,6 +407,13 @@ inline extends fun asMetadataCell(self: String): Cell {
     return beginTailString().concat(self).toCell();
 }
 ```
+
+:::note[Useful links:]
+
+  [Token Data Standard in TEPs](https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes)\
+  [Off-chain NFT metadata by GetGems](https://github.com/getgems-io/nft-contracts/blob/main/docs/metadata.md)
+
+:::
 
 :::tip[Hey there!]
 
