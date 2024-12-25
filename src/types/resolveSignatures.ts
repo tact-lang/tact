@@ -33,6 +33,8 @@ export function resolveSignatures(ctx: CompilerContext) {
         if (type === "int") {
             if (typeof format === "number") {
                 return `int${format}`;
+            } else if (format === "varint16" || format === "varint32") {
+                return format;
             } else if (format !== null) {
                 throwInternalCompilerError(`Unsupported int format: ${format}`);
             }
@@ -42,6 +44,8 @@ export function resolveSignatures(ctx: CompilerContext) {
                 return `uint${format}`;
             } else if (format === "coins") {
                 return `coins`;
+            } else if (format === "varuint16" || format === "varuint32") {
+                return format;
             } else if (format !== null) {
                 throwInternalCompilerError(
                     `Unsupported uint format: ${format}`,

@@ -2344,6 +2344,510 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r~load_varint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_varint16",
+    "signature": "int __tact_dict_get_slice_varint16(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_varint16",
+    "signature": "(slice, int, int) __tact_dict_min_slice_varint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_varint16",
+    "signature": "(slice, int, int) __tact_dict_next_slice_varint16(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_varint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_varint16",
+    "signature": "(cell, ()) __tact_dict_set_slice_varint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_varint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_varint16",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_varint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_varint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_varint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_varint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r~load_varint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_varint32",
+    "signature": "int __tact_dict_get_slice_varint32(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_varint32",
+    "signature": "(slice, int, int) __tact_dict_min_slice_varint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_varint32",
+    "signature": "(slice, int, int) __tact_dict_next_slice_varint32(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_varint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_varint32",
+    "signature": "(cell, ()) __tact_dict_set_slice_varint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_varint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_varint32",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_varint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_varint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_varint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_varint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r~load_varuint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_varuint16",
+    "signature": "int __tact_dict_get_slice_varuint16(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_varuint16",
+    "signature": "(slice, int, int) __tact_dict_min_slice_varuint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_varuint16",
+    "signature": "(slice, int, int) __tact_dict_next_slice_varuint16(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_varuint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_varuint16",
+    "signature": "(cell, ()) __tact_dict_set_slice_varuint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_varuint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_varuint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_varuint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_varuint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r~load_varuint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_varuint32",
+    "signature": "int __tact_dict_get_slice_varuint32(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_varuint32",
+    "signature": "(slice, int, int) __tact_dict_min_slice_varuint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_varuint32",
+    "signature": "(slice, int, int) __tact_dict_next_slice_varuint32(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_varuint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_varuint32",
+    "signature": "(cell, ()) __tact_dict_set_slice_varuint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_varuint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_varuint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_varuint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_varuint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = udict_get?(d, kl, k);
 if (ok) {
     return r;
@@ -2914,6 +3418,462 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+if (ok) {
+    return r~load_varint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_uint_varint16",
+    "signature": "int __tact_dict_get_uint_varint16(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_varint16",
+    "signature": "(int, int, int) __tact_dict_min_uint_varint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_varint16",
+    "signature": "(int, int, int) __tact_dict_next_uint_varint16(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (udict_set_builder(d, kl, k, begin_cell().store_varint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_uint_varint16",
+    "signature": "(cell, ()) __tact_dict_set_uint_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_varint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_varint16",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~udict_delete_get?(kl, k) : d~udict_replaceget?(kl, k, begin_cell().store_varint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_varint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+if (ok) {
+    return r~load_varint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_uint_varint32",
+    "signature": "int __tact_dict_get_uint_varint32(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_varint32",
+    "signature": "(int, int, int) __tact_dict_min_uint_varint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_varint32",
+    "signature": "(int, int, int) __tact_dict_next_uint_varint32(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (udict_set_builder(d, kl, k, begin_cell().store_varint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_uint_varint32",
+    "signature": "(cell, ()) __tact_dict_set_uint_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_varint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_varint32",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~udict_delete_get?(kl, k) : d~udict_replaceget?(kl, k, begin_cell().store_varint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_varint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+if (ok) {
+    return r~load_varuint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_uint_varuint16",
+    "signature": "int __tact_dict_get_uint_varuint16(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_varuint16",
+    "signature": "(int, int, int) __tact_dict_min_uint_varuint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_varuint16",
+    "signature": "(int, int, int) __tact_dict_next_uint_varuint16(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (udict_set_builder(d, kl, k, begin_cell().store_varuint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_uint_varuint16",
+    "signature": "(cell, ()) __tact_dict_set_uint_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_varuint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~udict_delete_get?(kl, k) : d~udict_replaceget?(kl, k, begin_cell().store_varuint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+if (ok) {
+    return r~load_varuint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_uint_varuint32",
+    "signature": "int __tact_dict_get_uint_varuint32(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_varuint32",
+    "signature": "(int, int, int) __tact_dict_min_uint_varuint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_varuint32",
+    "signature": "(int, int, int) __tact_dict_next_uint_varuint32(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (udict_set_builder(d, kl, k, begin_cell().store_varuint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_uint_varuint32",
+    "signature": "(cell, ()) __tact_dict_set_uint_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_varuint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~udict_delete_get?(kl, k) : d~udict_replaceget?(kl, k, begin_cell().store_varuint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = idict_get?(d, kl, k);
 if (ok) {
     return r;
@@ -3481,6 +4441,462 @@ if (ok) {
     },
     "name": "__tact_dict_replaceget_int_coins",
     "signature": "(cell, (int)) __tact_dict_replaceget_int_coins(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+if (ok) {
+    return r~load_varint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_int_varint16",
+    "signature": "int __tact_dict_get_int_varint16(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_varint16",
+    "signature": "(int, int, int) __tact_dict_min_int_varint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_varint16",
+    "signature": "(int, int, int) __tact_dict_next_int_varint16(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (idict_set_builder(d, kl, k, begin_cell().store_varint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_int_varint16",
+    "signature": "(cell, ()) __tact_dict_set_int_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_varint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_varint16",
+    "signature": "(cell, (int)) __tact_dict_replace_int_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~idict_delete_get?(kl, k) : d~idict_replaceget?(kl, k, begin_cell().store_varint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_varint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+if (ok) {
+    return r~load_varint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_int_varint32",
+    "signature": "int __tact_dict_get_int_varint32(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_varint32",
+    "signature": "(int, int, int) __tact_dict_min_int_varint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_varint32",
+    "signature": "(int, int, int) __tact_dict_next_int_varint32(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (idict_set_builder(d, kl, k, begin_cell().store_varint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_int_varint32",
+    "signature": "(cell, ()) __tact_dict_set_int_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_varint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_varint32",
+    "signature": "(cell, (int)) __tact_dict_replace_int_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~idict_delete_get?(kl, k) : d~idict_replaceget?(kl, k, begin_cell().store_varint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_varint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+if (ok) {
+    return r~load_varuint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_int_varuint16",
+    "signature": "int __tact_dict_get_int_varuint16(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_varuint16",
+    "signature": "(int, int, int) __tact_dict_min_int_varuint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_varuint16",
+    "signature": "(int, int, int) __tact_dict_next_int_varuint16(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (idict_set_builder(d, kl, k, begin_cell().store_varuint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_int_varuint16",
+    "signature": "(cell, ()) __tact_dict_set_int_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_varuint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replace_int_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~idict_delete_get?(kl, k) : d~idict_replaceget?(kl, k, begin_cell().store_varuint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+if (ok) {
+    return r~load_varuint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_int_varuint32",
+    "signature": "int __tact_dict_get_int_varuint32(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_varuint32",
+    "signature": "(int, int, int) __tact_dict_min_int_varuint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_varuint32",
+    "signature": "(int, int, int) __tact_dict_next_int_varuint32(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (idict_set_builder(d, kl, k, begin_cell().store_varuint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_int_varuint32",
+    "signature": "(cell, ()) __tact_dict_set_int_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_varuint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replace_int_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~idict_delete_get?(kl, k) : d~idict_replaceget?(kl, k, begin_cell().store_varuint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_varuint32(cell d, int kl, int k, int v)",
   },
   {
     "code": {
@@ -6742,6 +8158,510 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r~load_varint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_varint16",
+    "signature": "int __tact_dict_get_slice_varint16(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_varint16",
+    "signature": "(slice, int, int) __tact_dict_min_slice_varint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_varint16",
+    "signature": "(slice, int, int) __tact_dict_next_slice_varint16(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_varint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_varint16",
+    "signature": "(cell, ()) __tact_dict_set_slice_varint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_varint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_varint16",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_varint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_varint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_varint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_varint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r~load_varint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_varint32",
+    "signature": "int __tact_dict_get_slice_varint32(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_varint32",
+    "signature": "(slice, int, int) __tact_dict_min_slice_varint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_varint32",
+    "signature": "(slice, int, int) __tact_dict_next_slice_varint32(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_varint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_varint32",
+    "signature": "(cell, ()) __tact_dict_set_slice_varint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_varint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_varint32",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_varint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_varint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_varint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_varint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r~load_varuint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_varuint16",
+    "signature": "int __tact_dict_get_slice_varuint16(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_varuint16",
+    "signature": "(slice, int, int) __tact_dict_min_slice_varuint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_varuint16",
+    "signature": "(slice, int, int) __tact_dict_next_slice_varuint16(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_varuint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_varuint16",
+    "signature": "(cell, ()) __tact_dict_set_slice_varuint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_varuint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_varuint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_varuint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_varuint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r~load_varuint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_varuint32",
+    "signature": "int __tact_dict_get_slice_varuint32(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_varuint32",
+    "signature": "(slice, int, int) __tact_dict_min_slice_varuint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_varuint32",
+    "signature": "(slice, int, int) __tact_dict_next_slice_varuint32(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_varuint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_varuint32",
+    "signature": "(cell, ()) __tact_dict_set_slice_varuint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_varuint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_varuint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_varuint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_varuint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = udict_get?(d, kl, k);
 if (ok) {
     return r;
@@ -7312,6 +9232,462 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+if (ok) {
+    return r~load_varint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_uint_varint16",
+    "signature": "int __tact_dict_get_uint_varint16(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_varint16",
+    "signature": "(int, int, int) __tact_dict_min_uint_varint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_varint16",
+    "signature": "(int, int, int) __tact_dict_next_uint_varint16(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (udict_set_builder(d, kl, k, begin_cell().store_varint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_uint_varint16",
+    "signature": "(cell, ()) __tact_dict_set_uint_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_varint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_varint16",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~udict_delete_get?(kl, k) : d~udict_replaceget?(kl, k, begin_cell().store_varint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_varint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+if (ok) {
+    return r~load_varint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_uint_varint32",
+    "signature": "int __tact_dict_get_uint_varint32(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_varint32",
+    "signature": "(int, int, int) __tact_dict_min_uint_varint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_varint32",
+    "signature": "(int, int, int) __tact_dict_next_uint_varint32(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (udict_set_builder(d, kl, k, begin_cell().store_varint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_uint_varint32",
+    "signature": "(cell, ()) __tact_dict_set_uint_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_varint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_varint32",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~udict_delete_get?(kl, k) : d~udict_replaceget?(kl, k, begin_cell().store_varint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_varint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+if (ok) {
+    return r~load_varuint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_uint_varuint16",
+    "signature": "int __tact_dict_get_uint_varuint16(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_varuint16",
+    "signature": "(int, int, int) __tact_dict_min_uint_varuint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_varuint16",
+    "signature": "(int, int, int) __tact_dict_next_uint_varuint16(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (udict_set_builder(d, kl, k, begin_cell().store_varuint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_uint_varuint16",
+    "signature": "(cell, ()) __tact_dict_set_uint_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_varuint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~udict_delete_get?(kl, k) : d~udict_replaceget?(kl, k, begin_cell().store_varuint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+if (ok) {
+    return r~load_varuint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_uint_varuint32",
+    "signature": "int __tact_dict_get_uint_varuint32(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_varuint32",
+    "signature": "(int, int, int) __tact_dict_min_uint_varuint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_varuint32",
+    "signature": "(int, int, int) __tact_dict_next_uint_varuint32(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (udict_set_builder(d, kl, k, begin_cell().store_varuint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_uint_varuint32",
+    "signature": "(cell, ()) __tact_dict_set_uint_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_varuint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~udict_delete_get?(kl, k) : d~udict_replaceget?(kl, k, begin_cell().store_varuint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = idict_get?(d, kl, k);
 if (ok) {
     return r;
@@ -7879,6 +10255,462 @@ if (ok) {
     },
     "name": "__tact_dict_replaceget_int_coins",
     "signature": "(cell, (int)) __tact_dict_replaceget_int_coins(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+if (ok) {
+    return r~load_varint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_int_varint16",
+    "signature": "int __tact_dict_get_int_varint16(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_varint16",
+    "signature": "(int, int, int) __tact_dict_min_int_varint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_varint16",
+    "signature": "(int, int, int) __tact_dict_next_int_varint16(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (idict_set_builder(d, kl, k, begin_cell().store_varint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_int_varint16",
+    "signature": "(cell, ()) __tact_dict_set_int_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_varint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_varint16",
+    "signature": "(cell, (int)) __tact_dict_replace_int_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~idict_delete_get?(kl, k) : d~idict_replaceget?(kl, k, begin_cell().store_varint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_varint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+if (ok) {
+    return r~load_varint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_int_varint32",
+    "signature": "int __tact_dict_get_int_varint32(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_varint32",
+    "signature": "(int, int, int) __tact_dict_min_int_varint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_varint32",
+    "signature": "(int, int, int) __tact_dict_next_int_varint32(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (idict_set_builder(d, kl, k, begin_cell().store_varint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_int_varint32",
+    "signature": "(cell, ()) __tact_dict_set_int_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_varint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_varint32",
+    "signature": "(cell, (int)) __tact_dict_replace_int_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~idict_delete_get?(kl, k) : d~idict_replaceget?(kl, k, begin_cell().store_varint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_varint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+if (ok) {
+    return r~load_varuint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_int_varuint16",
+    "signature": "int __tact_dict_get_int_varuint16(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_varuint16",
+    "signature": "(int, int, int) __tact_dict_min_int_varuint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_varuint16",
+    "signature": "(int, int, int) __tact_dict_next_int_varuint16(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (idict_set_builder(d, kl, k, begin_cell().store_varuint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_int_varuint16",
+    "signature": "(cell, ()) __tact_dict_set_int_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_varuint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replace_int_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~idict_delete_get?(kl, k) : d~idict_replaceget?(kl, k, begin_cell().store_varuint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+if (ok) {
+    return r~load_varuint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_int_varuint32",
+    "signature": "int __tact_dict_get_int_varuint32(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_varuint32",
+    "signature": "(int, int, int) __tact_dict_min_int_varuint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_varuint32",
+    "signature": "(int, int, int) __tact_dict_next_int_varuint32(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (idict_set_builder(d, kl, k, begin_cell().store_varuint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_int_varuint32",
+    "signature": "(cell, ()) __tact_dict_set_int_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_varuint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replace_int_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~idict_delete_get?(kl, k) : d~idict_replaceget?(kl, k, begin_cell().store_varuint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_varuint32(cell d, int kl, int k, int v)",
   },
   {
     "code": {
@@ -11140,6 +13972,510 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r~load_varint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_varint16",
+    "signature": "int __tact_dict_get_slice_varint16(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_varint16",
+    "signature": "(slice, int, int) __tact_dict_min_slice_varint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_varint16",
+    "signature": "(slice, int, int) __tact_dict_next_slice_varint16(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_varint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_varint16",
+    "signature": "(cell, ()) __tact_dict_set_slice_varint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_varint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_varint16",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_varint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_varint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_varint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_varint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r~load_varint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_varint32",
+    "signature": "int __tact_dict_get_slice_varint32(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_varint32",
+    "signature": "(slice, int, int) __tact_dict_min_slice_varint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_varint32",
+    "signature": "(slice, int, int) __tact_dict_next_slice_varint32(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_varint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_varint32",
+    "signature": "(cell, ()) __tact_dict_set_slice_varint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_varint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_varint32",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_varint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_varint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_varint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_varint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r~load_varuint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_varuint16",
+    "signature": "int __tact_dict_get_slice_varuint16(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_varuint16",
+    "signature": "(slice, int, int) __tact_dict_min_slice_varuint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_varuint16",
+    "signature": "(slice, int, int) __tact_dict_next_slice_varuint16(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_varuint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_varuint16",
+    "signature": "(cell, ()) __tact_dict_set_slice_varuint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_varuint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_varuint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_varuint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_varuint16(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = __tact_dict_get(d, kl, k);
+if (ok) {
+    return r~load_varuint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_slice_varuint32",
+    "signature": "int __tact_dict_get_slice_varuint32(cell d, int kl, slice k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_min(d, kl);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_min",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_slice_varuint32",
+    "signature": "(slice, int, int) __tact_dict_min_slice_varuint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = __tact_dict_next(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_next",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_slice_varuint32",
+    "signature": "(slice, int, int) __tact_dict_next_slice_varuint32(cell d, int kl, slice pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, ());
+} else {
+    return (dict_set_builder(d, kl, k, begin_cell().store_varuint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_slice_varuint32",
+    "signature": "(cell, ()) __tact_dict_set_slice_varuint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = __tact_dict_delete(d, kl, k);
+    return (r, (ok));
+} else {
+    return dict_replace_builder?(d, kl, k, begin_cell().store_varuint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_slice_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replace_slice_varuint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~__tact_dict_delete_get(kl, k) : d~dict_replaceget?(kl, k, begin_cell().store_varuint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {
+      "__tact_dict_delete_get",
+    },
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_slice_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_slice_varuint32(cell d, int kl, slice k, int v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = udict_get?(d, kl, k);
 if (ok) {
     return r;
@@ -11710,6 +15046,462 @@ if (ok) {
   },
   {
     "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+if (ok) {
+    return r~load_varint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_uint_varint16",
+    "signature": "int __tact_dict_get_uint_varint16(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_varint16",
+    "signature": "(int, int, int) __tact_dict_min_uint_varint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_varint16",
+    "signature": "(int, int, int) __tact_dict_next_uint_varint16(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (udict_set_builder(d, kl, k, begin_cell().store_varint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_uint_varint16",
+    "signature": "(cell, ()) __tact_dict_set_uint_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_varint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_varint16",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~udict_delete_get?(kl, k) : d~udict_replaceget?(kl, k, begin_cell().store_varint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_varint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+if (ok) {
+    return r~load_varint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_uint_varint32",
+    "signature": "int __tact_dict_get_uint_varint32(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_varint32",
+    "signature": "(int, int, int) __tact_dict_min_uint_varint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_varint32",
+    "signature": "(int, int, int) __tact_dict_next_uint_varint32(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (udict_set_builder(d, kl, k, begin_cell().store_varint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_uint_varint32",
+    "signature": "(cell, ()) __tact_dict_set_uint_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_varint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_varint32",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~udict_delete_get?(kl, k) : d~udict_replaceget?(kl, k, begin_cell().store_varint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_varint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+if (ok) {
+    return r~load_varuint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_uint_varuint16",
+    "signature": "int __tact_dict_get_uint_varuint16(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_varuint16",
+    "signature": "(int, int, int) __tact_dict_min_uint_varuint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_varuint16",
+    "signature": "(int, int, int) __tact_dict_next_uint_varuint16(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (udict_set_builder(d, kl, k, begin_cell().store_varuint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_uint_varuint16",
+    "signature": "(cell, ()) __tact_dict_set_uint_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_varuint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~udict_delete_get?(kl, k) : d~udict_replaceget?(kl, k, begin_cell().store_varuint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = udict_get?(d, kl, k);
+if (ok) {
+    return r~load_varuint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_uint_varuint32",
+    "signature": "int __tact_dict_get_uint_varuint32(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_uint_varuint32",
+    "signature": "(int, int, int) __tact_dict_min_uint_varuint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = udict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_uint_varuint32",
+    "signature": "(int, int, int) __tact_dict_next_uint_varuint32(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (udict_set_builder(d, kl, k, begin_cell().store_varuint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_uint_varuint32",
+    "signature": "(cell, ()) __tact_dict_set_uint_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = udict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return udict_replace_builder?(d, kl, k, begin_cell().store_varuint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_uint_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replace_uint_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~udict_delete_get?(kl, k) : d~udict_replaceget?(kl, k, begin_cell().store_varuint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_uint_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_uint_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
       "code": "var (r, ok) = idict_get?(d, kl, k);
 if (ok) {
     return r;
@@ -12277,6 +16069,462 @@ if (ok) {
     },
     "name": "__tact_dict_replaceget_int_coins",
     "signature": "(cell, (int)) __tact_dict_replaceget_int_coins(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+if (ok) {
+    return r~load_varint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_int_varint16",
+    "signature": "int __tact_dict_get_int_varint16(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_varint16",
+    "signature": "(int, int, int) __tact_dict_min_int_varint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_varint16",
+    "signature": "(int, int, int) __tact_dict_next_int_varint16(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (idict_set_builder(d, kl, k, begin_cell().store_varint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_int_varint16",
+    "signature": "(cell, ()) __tact_dict_set_int_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_varint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_varint16",
+    "signature": "(cell, (int)) __tact_dict_replace_int_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~idict_delete_get?(kl, k) : d~idict_replaceget?(kl, k, begin_cell().store_varint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_varint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_varint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+if (ok) {
+    return r~load_varint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_int_varint32",
+    "signature": "int __tact_dict_get_int_varint32(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_varint32",
+    "signature": "(int, int, int) __tact_dict_min_int_varint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_varint32",
+    "signature": "(int, int, int) __tact_dict_next_int_varint32(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (idict_set_builder(d, kl, k, begin_cell().store_varint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_int_varint32",
+    "signature": "(cell, ()) __tact_dict_set_int_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_varint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_varint32",
+    "signature": "(cell, (int)) __tact_dict_replace_int_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~idict_delete_get?(kl, k) : d~idict_replaceget?(kl, k, begin_cell().store_varint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_varint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_varint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+if (ok) {
+    return r~load_varuint16();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_int_varuint16",
+    "signature": "int __tact_dict_get_int_varuint16(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_varuint16",
+    "signature": "(int, int, int) __tact_dict_min_int_varuint16(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint16(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_varuint16",
+    "signature": "(int, int, int) __tact_dict_next_int_varuint16(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (idict_set_builder(d, kl, k, begin_cell().store_varuint16(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_int_varuint16",
+    "signature": "(cell, ()) __tact_dict_set_int_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_varuint16(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replace_int_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~idict_delete_get?(kl, k) : d~idict_replaceget?(kl, k, begin_cell().store_varuint16(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint16());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_varuint16",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_varuint16(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (r, ok) = idict_get?(d, kl, k);
+if (ok) {
+    return r~load_varuint32();
+} else {
+    return null();
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_get_int_varuint32",
+    "signature": "int __tact_dict_get_int_varuint32(cell d, int kl, int k)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_min?(d, kl);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_min_int_varuint32",
+    "signature": "(int, int, int) __tact_dict_min_int_varuint32(cell d, int kl)",
+  },
+  {
+    "code": {
+      "code": "var (key, value, flag) = idict_get_next?(d, kl, pivot);
+if (flag) {
+    return (key, value~load_varuint32(), flag);
+} else {
+    return (null(), null(), flag);
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_next_int_varuint32",
+    "signature": "(int, int, int) __tact_dict_next_int_varuint32(cell d, int kl, int pivot)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, ());
+} else {
+    return (idict_set_builder(d, kl, k, begin_cell().store_varuint32(v)), ());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_set_int_varuint32",
+    "signature": "(cell, ()) __tact_dict_set_int_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "if (null?(v)) {
+    var (r, ok) = idict_delete?(d, kl, k);
+    return (r, (ok));
+} else {
+    return idict_replace_builder?(d, kl, k, begin_cell().store_varuint32(v));
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replace_int_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replace_int_varuint32(cell d, int kl, int k, int v)",
+  },
+  {
+    "code": {
+      "code": "var (old, ok) = null?(v) ? d~idict_delete_get?(kl, k) : d~idict_replaceget?(kl, k, begin_cell().store_varuint32(v).end_cell().begin_parse());
+if (ok) {
+    return (d, old~load_varuint32());
+} else {
+    return (d, null());
+}",
+      "kind": "generic",
+    },
+    "comment": null,
+    "context": "stdlib",
+    "depends": Set {},
+    "flags": Set {
+      "inline",
+    },
+    "name": "__tact_dict_replaceget_int_varuint32",
+    "signature": "(cell, (int)) __tact_dict_replaceget_int_varuint32(cell d, int kl, int k, int v)",
   },
   {
     "code": {

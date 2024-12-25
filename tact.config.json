@@ -80,8 +80,13 @@
       "output": "./examples/output"
     },
     {
-      "name": "maps",
-      "path": "./src/test/e2e-emulated/contracts/maps.tact",
+      "name": "maps1",
+      "path": "./src/test/e2e-emulated/contracts/maps1.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "maps2",
+      "path": "./src/test/e2e-emulated/contracts/maps2.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
     },
     {

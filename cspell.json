@@ -124,6 +124,9 @@
     "unixfs",
     "untypable",
     "varuint",
+    "varint",
+    "storer",
+    "Ints",
     "workchain",
     "xffff",
     "привет"

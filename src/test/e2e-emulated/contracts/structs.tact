@@ -35,6 +35,13 @@ struct Coin {
     second: Int as uint32;
 }
 
+struct VarIntegers {
+    a: Int as varint16;
+    b: Int as varint32;
+    c: Int as varuint16;
+    d: Int as varuint32;
+}
+
 struct IntFields {
     i1: Int as int1;
     i2: Int as int2;
@@ -55,6 +62,10 @@ message(0xea01f469 + 1) UintFields {
 
 fun directParse(payload: Cell): Coin {
     return Coin.fromCell(payload);
+}
+
+fun directParseVarIntegers(payload: Cell): VarIntegers {
+    return VarIntegers.fromCell(payload);
 }
 
 struct LongStruct15 {
@@ -482,6 +493,21 @@ contract StructsTester {
         );
         dump(coin.first);
         dump(coin.second);
+    }
+
+    receive("exampleVarIntegers") {
+        let varInts = directParseVarIntegers(
+            beginCell()
+            .storeVarInt16(1)
+            .storeVarInt32(2)
+            .storeVarUint16(3)
+            .storeVarUint32(4)
+            .endCell()
+        );
+        dump(varInts.a);
+        dump(varInts.b);
+        dump(varInts.c);
+        dump(varInts.d);
     }
 
     get fun longStruct15Test(): LongStruct15 {

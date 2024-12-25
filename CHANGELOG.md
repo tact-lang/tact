@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `replace` and `replaceGet` methods for the `Map` type: PR [#941](https://github.com/tact-lang/tact/pull/941)
 - Utility for logging errors in code that was supposed to be unreachable: PR [#991](https://github.com/tact-lang/tact/pull/991)
 - Ability to specify a compile-time message opcode expression: PR [#1188](https://github.com/tact-lang/tact/pull/1188)
+- The `VarInt16`, `VarInt32`, `VarUint16`, `VarUint32` integer serialization types: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
 
 ### Changed
 
@@ -38,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Type checking for `foreach` loops in trait methods: PR [#1017](https://github.com/tact-lang/tact/pull/1017)
 - The `sha256()` function no longer throws on statically known strings of any length: PR [#907](https://github.com/tact-lang/tact/pull/907)
 - TypeScript wrappers generation for messages with single quote: PR [#1106](https://github.com/tact-lang/tact/pull/1106)
+- `foreach` loops now properly handle `as coins` map value serialization type: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
 
 ### Docs
 
