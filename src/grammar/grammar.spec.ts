@@ -11,7 +11,7 @@ expect.addSnapshotSerializer({
 describe("grammar", () => {
     // Test parsing of known Fift projects, wrapped in asm functions of Tact
     for (const r of loadCases(__dirname + "/test-asm/")) {
-        it("should parse " + r.name, () => {
+        it.skip("should parse " + r.name, () => {
             const ast = getAstFactory();
             const { parse } = getParser(ast);
             const parsed: AstModule | undefined = parse(

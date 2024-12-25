@@ -651,14 +651,11 @@ export type AstNull = {
 
 export type AstValue = AstNumber | AstBoolean | AstNull | AstString;
 
-export type AstConstantAttributeName = 
-    | "virtual"
-    | "override"
-    | "abstract"
+export type AstConstantAttributeName = "virtual" | "override" | "abstract";
 
 export type AstConstantAttribute = {
     type: AstConstantAttributeName;
-    loc: SrcInfo
+    loc: SrcInfo;
 };
 
 export type AstContractAttribute = {
@@ -672,7 +669,7 @@ export type AstFunctionAttributeGet = {
     type: "get";
     methodId: AstExpression | null;
     loc: SrcInfo;
-}
+};
 
 export type AstFunctionAttributeName =
     | "mutates"
@@ -680,13 +677,13 @@ export type AstFunctionAttributeName =
     | "virtual"
     | "abstract"
     | "override"
-    | "inline"
+    | "inline";
 
 export type AstFunctionAttributeRest = {
     kind: "function_attribute";
     type: AstFunctionAttributeName;
     loc: SrcInfo;
-}
+};
 
 export type AstFunctionAttribute =
     | AstFunctionAttributeGet

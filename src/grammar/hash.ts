@@ -312,7 +312,9 @@ export class AstHasher {
         return hashedStatements.join("|");
     }
 
-    private hashInstructions(instructions: readonly AstAsmInstruction[]): string {
+    private hashInstructions(
+        instructions: readonly AstAsmInstruction[],
+    ): string {
         return instructions.join("|");
     }
 

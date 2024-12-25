@@ -29,14 +29,14 @@ const getExpectedText = (expected: ReadonlySet<string>) => {
     for (const [idx, failure] of failures.entries()) {
         if (idx > 0) {
             if (idx === failures.length - 1) {
-                result.push(failures.length > 2 ? ', or ' : ' or ');
+                result.push(failures.length > 2 ? ", or " : " or ");
             } else {
-                result.push(', ');
+                result.push(", ");
             }
         }
         result.push(failure);
     }
-    return result.join('');
+    return result.join("");
 };
 
 export const syntaxErrorSchema = <T, U>(
@@ -77,7 +77,9 @@ export const syntaxErrorSchema = <T, U>(
             return handle(sub`bounced() cannot be used as fallback`);
         },
         noBouncedWithString: () => {
-            return handle(sub`bounced() cannot be used with a string literal name`);
+            return handle(
+                sub`bounced() cannot be used with a string literal name`,
+            );
         },
         noConstantDecl: () => {
             return handle(sub`Variable definition requires an initializer`);
@@ -87,6 +89,9 @@ export const syntaxErrorSchema = <T, U>(
         },
         expected: (expects: ReadonlySet<string>) => {
             return handle(text(`Expected ${getExpectedText(expects)}`));
+        },
+        invalidFuncId: () => {
+            return handle(sub`Invalid FunC identifier`);
         },
     };
 };

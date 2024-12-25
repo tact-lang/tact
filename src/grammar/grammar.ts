@@ -1493,7 +1493,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
     },
 });
 
-export { getParser } from './next';
+export { getParser } from "./next";
 
 // export
 const getParser = (ast: FactoryAst) => {
