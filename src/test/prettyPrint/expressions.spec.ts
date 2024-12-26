@@ -11,6 +11,7 @@ import {
     randomAstNull,
     randomAstStaticCall,
     randomAstStructInstance,
+    randomAstStructFieldInitializer,
 } from "../utils/expression/randomAst";
 
 describe("Pretty Print Expressions", () => {
@@ -28,7 +29,12 @@ describe("Pretty Print Expressions", () => {
         ["AstNull", randomAstNull()],
         ["AstInitOf", randomAstInitOf(expression())],
         ["AstStaticCall", randomAstStaticCall(expression())],
-        ["AstStructInstance", randomAstStructInstance(expression())],
+        [
+            "AstStructInstance",
+            randomAstStructInstance(
+                randomAstStructFieldInitializer(expression()),
+            ),
+        ],
     ];
 
     cases.forEach(([caseName, astGenerator]) => {

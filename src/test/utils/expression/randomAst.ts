@@ -160,7 +160,7 @@ export function randomAstStaticCall(
     );
 }
 
-function randomAstStructFieldInitializer(
+export function randomAstStructFieldInitializer(
     expression: fc.Arbitrary<AstExpression>,
 ): fc.Arbitrary<AstStructFieldInitializer> {
     return dummyAstNode(
@@ -173,13 +173,13 @@ function randomAstStructFieldInitializer(
 }
 
 export function randomAstStructInstance(
-    expression: fc.Arbitrary<AstExpression>,
+    structFieldInitializer: fc.Arbitrary<AstStructFieldInitializer>,
 ): fc.Arbitrary<AstStructInstance> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("struct_instance"),
             type: randomAstId(),
-            args: fc.array(randomAstStructFieldInitializer(expression)),
+            args: fc.array(structFieldInitializer),
         }),
     );
 }
