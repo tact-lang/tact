@@ -173,6 +173,12 @@ jobs:
         run: |
           tact -e '(1 + 2 * (pow(3,4) - 2) << 1 & 0x54 | 33 >> 1) * 2 + 2'
 
+      - name: CLI Test | Check TVM disassembler flag
+        if: runner.os != 'Windows'
+        run: |
+          tact bin/test/success.tact
+          tact --disasm success_HelloWorld.code.boc
+
       - name: Test compatibility with tact-template
         run: |
           git clone https://github.com/tact-lang/tact-template.git
