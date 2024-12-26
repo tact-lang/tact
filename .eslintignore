@@ -8,5 +8,6 @@ src/func/funcfiftlib.js
 **/grammar.ohm*.js
 src/grammar/next/grammar.ts
 jest.setup.js
+jest.globalSetup.js
 jest.teardown.js
 /docs
