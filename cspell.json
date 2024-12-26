@@ -133,7 +133,8 @@
     "Ints",
     "workchain",
     "xffff",
-    "привет"
+    "привет",
+    "letrec"
   ],
   "ignoreRegExpList": [
     "\\b[xB]\\{[a-fA-F0-9]*_?\\}", // binary literals in Fift-asm
