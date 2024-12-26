@@ -3,10 +3,16 @@ import {
     AstBoolean,
     AstConditional,
     AstExpression,
+    AstId,
+    AstInitOf,
+    AstNull,
     AstNumber,
     AstOpBinary,
     AstOpUnary,
+    AstStaticCall,
     AstString,
+    AstStructFieldInitializer,
+    AstStructInstance,
 } from "../../../grammar/ast";
 import { dummySrcInfo } from "../../../grammar/src-info";
 
@@ -108,6 +114,72 @@ export function randomAstConditional(
             condition: conditionExpression,
             thenBranch: thenBranchExpression,
             elseBranch: elseBranchExpression,
+        }),
+    );
+}
+
+function randomAstId(): fc.Arbitrary<AstId> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("id"),
+            text: fc.string().filter((text) => /^[A-Za-z_]+$/.test(text)),
+            // Rules for text value are in src/grammar/grammar.ohm
+        }),
+    );
+}
+
+export function randomAstNull(): fc.Arbitrary<AstNull> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("null"),
+        }),
+    );
+}
+
+export function randomAstInitOf(
+    expression: fc.Arbitrary<AstExpression>,
+): fc.Arbitrary<AstInitOf> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("init_of"),
+            contract: randomAstId(),
+            args: fc.array(expression),
+        }),
+    );
+}
+
+export function randomAstStaticCall(
+    expression: fc.Arbitrary<AstExpression>,
+): fc.Arbitrary<AstStaticCall> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("static_call"),
+            function: randomAstId(),
+            args: fc.array(expression),
+        }),
+    );
+}
+
+function randomAstStructFieldInitializer(
+    expression: fc.Arbitrary<AstExpression>,
+): fc.Arbitrary<AstStructFieldInitializer> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("struct_field_initializer"),
+            field: randomAstId(),
+            initializer: expression,
+        }),
+    );
+}
+
+export function randomAstStructInstance(
+    expression: fc.Arbitrary<AstExpression>,
+): fc.Arbitrary<AstStructInstance> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("struct_instance"),
+            type: randomAstId(),
+            args: fc.array(randomAstStructFieldInitializer(expression)),
         }),
     );
 }

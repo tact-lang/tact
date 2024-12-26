@@ -7,6 +7,10 @@ import {
     randomAstOpBinary,
     randomAstOpUnary,
     randomAstExpression,
+    randomAstInitOf,
+    randomAstNull,
+    randomAstStaticCall,
+    randomAstStructInstance,
 } from "../utils/expression/randomAst";
 
 describe("Pretty Print Expressions", () => {
@@ -21,6 +25,10 @@ describe("Pretty Print Expressions", () => {
         ],
         ["AstOpBinary", randomAstOpBinary(expression(), expression())],
         ["AstOpUnary", randomAstOpUnary(expression())],
+        ["AstNull", randomAstNull()],
+        ["AstInitOf", randomAstInitOf(expression())],
+        ["AstStaticCall", randomAstStaticCall(expression())],
+        ["AstStructInstance", randomAstStructInstance(expression())],
     ];
 
     cases.forEach(([caseName, astGenerator]) => {
