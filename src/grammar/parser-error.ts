@@ -103,7 +103,9 @@ export const syntaxErrorSchema = <T, U>(
             return handle(sub`FunC identifier cannot be a number`);
         },
         leadingZeroUnderscore: () => {
-            return handle(sub`Numbers with leading zeroes cannot use underscores for JS compatibility`);
+            return handle(
+                sub`Numbers with leading zeroes cannot use underscores for JS compatibility`,
+            );
         },
     };
 };

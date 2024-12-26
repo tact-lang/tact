@@ -14,7 +14,8 @@ type Inputs<I, T extends string> = I extends { [Z in T]: infer K }
         : never
     : never;
 type Outputs<O> = { [K in keyof O]: (input: never) => O[K] };
-type Handlers<I, O, T extends string> = Unwrap<Intersect<Inputs<I, T>>> & Outputs<O>;
+type Handlers<I, O, T extends string> = Unwrap<Intersect<Inputs<I, T>>> &
+    Outputs<O>;
 
 export const makeMakeVisitor =
     <T extends string>(tag: T) =>

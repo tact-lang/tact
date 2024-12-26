@@ -52,17 +52,95 @@ const parseId =
     cannot have two or more of such functions.
 */
 const reservedFuncIds: Set<string> = new Set([
-    "_", "#include", "#pragma", "[", "]", "{", "}", "?", ":", "+", "-", "*",
-    "/%", "/", "%", "~/", "^/", "~%", "^%", "<=>", "<=", "<", ">=", ">", "!=",
-    "==", "~>>", "~", "^>>", "^", "&", "|", "<<", ">>" , "=", "+=", "-=", "*=",
-    "/=", "%=", "~>>=", "~/=", "~%=", "^>>=", "^/=", "^%=", "^=", "<<=", ">>=",
-    "&=", "|=", "int", "cell", "builder", "slice", "cont", "tuple", "type",
-    "->", "forall", "return", "var", "repeat", "do", "while", "until", "try",
-    "catch", "ifnot", "if", "then", "elseifnot", "elseif", "else", "extern",
-    "global", "asm", "impure", "inline_ref", "inline", "auto_apply", "method_id",
-    "operator", "infixl", "infixr", "infix", "const",
+    "_",
+    "#include",
+    "#pragma",
+    "[",
+    "]",
+    "{",
+    "}",
+    "?",
+    ":",
+    "+",
+    "-",
+    "*",
+    "/%",
+    "/",
+    "%",
+    "~/",
+    "^/",
+    "~%",
+    "^%",
+    "<=>",
+    "<=",
+    "<",
+    ">=",
+    ">",
+    "!=",
+    "==",
+    "~>>",
+    "~",
+    "^>>",
+    "^",
+    "&",
+    "|",
+    "<<",
+    ">>",
+    "=",
+    "+=",
+    "-=",
+    "*=",
+    "/=",
+    "%=",
+    "~>>=",
+    "~/=",
+    "~%=",
+    "^>>=",
+    "^/=",
+    "^%=",
+    "^=",
+    "<<=",
+    ">>=",
+    "&=",
+    "|=",
+    "int",
+    "cell",
+    "builder",
+    "slice",
+    "cont",
+    "tuple",
+    "type",
+    "->",
+    "forall",
+    "return",
+    "var",
+    "repeat",
+    "do",
+    "while",
+    "until",
+    "try",
+    "catch",
+    "ifnot",
+    "if",
+    "then",
+    "elseifnot",
+    "elseif",
+    "else",
+    "extern",
+    "global",
+    "asm",
+    "impure",
+    "inline_ref",
+    "inline",
+    "auto_apply",
+    "method_id",
+    "operator",
+    "infixl",
+    "infixr",
+    "infix",
+    "const",
 ]);
-    
+
 const parseFuncId =
     ({ accessor, id, loc }: $ast.FuncId): Handler<A.AstFuncId> =>
     (ctx) => {
@@ -72,10 +150,10 @@ const parseFuncId =
         if (id.match(/^-?([0-9]+|0x[0-9a-fA-F]+)$/)) {
             ctx.err.numericFuncId()(loc);
         }
-        if (id.startsWith("\"") || id.startsWith("{-")) {
+        if (id.startsWith('"') || id.startsWith("{-")) {
             ctx.err.invalidFuncId()(loc);
         }
-        return ctx.ast.FuncId((accessor ?? '') + id, loc);
+        return ctx.ast.FuncId((accessor ?? "") + id, loc);
     };
 
 const baseMap = {
@@ -95,7 +173,11 @@ const prefixMap = {
 const parseIntegerLiteralValue =
     ({ $, digits, loc }: $ast.IntegerLiteral["value"]): Handler<A.AstNumber> =>
     (ctx) => {
-        if ($ === 'IntegerLiteralDec' && digits.startsWith('0') && digits.includes('_')) {
+        if (
+            $ === "IntegerLiteralDec" &&
+            digits.startsWith("0") &&
+            digits.includes("_")
+        ) {
             ctx.err.leadingZeroUnderscore()(loc);
         }
         const value = BigInt(prefixMap[$] + digits.replaceAll("_", ""));
@@ -183,33 +265,48 @@ const parseConditional =
     };
 
 const parseBinary =
-    ({ exprs: { head, tail } }: $ast.Binary<
+    ({
+        exprs: { head, tail },
+    }: $ast.Binary<
         Expression,
         A.AstBinaryOperation
     >): Handler<A.AstExpression> =>
     (ctx) => {
-        return tail.reduce(({ child, range }, { op, right }) => {
-            const merged = $.mergeLoc(range, $.mergeLoc(op.loc, right.loc));
-            return {
-                child: ctx.ast.OpBinary(op.name, child, parseExpression(right)(ctx), merged),
-                range: merged,
-            };
-        }, { child: parseExpression(head)(ctx), range: head.loc }).child;
+        return tail.reduce(
+            ({ child, range }, { op, right }) => {
+                const merged = $.mergeLoc(range, $.mergeLoc(op.loc, right.loc));
+                return {
+                    child: ctx.ast.OpBinary(
+                        op.name,
+                        child,
+                        parseExpression(right)(ctx),
+                        merged,
+                    ),
+                    range: merged,
+                };
+            },
+            { child: parseExpression(head)(ctx), range: head.loc },
+        ).child;
     };
 
 const parseUnary =
     ({ prefixes, expression }: $ast.Unary): Handler<A.AstExpression> =>
     (ctx) => {
-        return prefixes.reduceRight(({ child, range }, { name, loc }) => {
-            const merged = $.mergeLoc(loc, range);
-            return {
-                child: ctx.ast.OpUnary(name, child, merged),
-                range: merged,
-            };
-        }, { child: parseExpression(expression)(ctx), range: expression.loc }).child;
+        return prefixes.reduceRight(
+            ({ child, range }, { name, loc }) => {
+                const merged = $.mergeLoc(loc, range);
+                return {
+                    child: ctx.ast.OpUnary(name, child, merged),
+                    range: merged,
+                };
+            },
+            { child: parseExpression(expression)(ctx), range: expression.loc },
+        ).child;
     };
 
-type SuffixHandler = Handler<(child: A.AstExpression, loc: $.Loc) => A.AstExpression>;
+type SuffixHandler = Handler<
+    (child: A.AstExpression, loc: $.Loc) => A.AstExpression
+>;
 
 const parseSuffixUnboxNotNull =
     (_: $ast.SuffixUnboxNotNull): SuffixHandler =>
@@ -226,10 +323,19 @@ const parseSuffixCall =
         if (child.kind === "id") {
             return ctx.ast.StaticCall(child, paramsAst, loc);
         } else if (child.kind === "field_access") {
-            return ctx.ast.MethodCall(child.aggregate, child.field, paramsAst, loc);
+            return ctx.ast.MethodCall(
+                child.aggregate,
+                child.field,
+                paramsAst,
+                loc,
+            );
         } else {
             ctx.err.notCallable()(loc);
-            return ctx.ast.StaticCall(ctx.ast.Id("__invalid__", loc), paramsAst, loc);
+            return ctx.ast.StaticCall(
+                ctx.ast.Id("__invalid__", loc),
+                paramsAst,
+                loc,
+            );
         }
     };
 
@@ -250,13 +356,16 @@ const suffixVisitor: (node: $ast.suffix) => SuffixHandler =
 const parseSuffix =
     ({ expression, suffixes }: $ast.Suffix): Handler<A.AstExpression> =>
     (ctx) => {
-        return suffixes.reduce(({ child, range }, suffix) => {
-            const merged = $.mergeLoc(range, suffix.loc);
-            return {
-                child: suffixVisitor(suffix)(ctx)(child, merged),
-                range: merged,
-            };
-        }, { child: parseExpression(expression)(ctx), range: expression.loc }).child;
+        return suffixes.reduce(
+            ({ child, range }, suffix) => {
+                const merged = $.mergeLoc(range, suffix.loc);
+                return {
+                    child: suffixVisitor(suffix)(ctx)(child, merged),
+                    range: merged,
+                };
+            },
+            { child: parseExpression(expression)(ctx), range: expression.loc },
+        ).child;
     };
 
 const parseParens = ({ child }: $ast.Parens): Handler<A.AstExpression> => {
@@ -312,40 +421,53 @@ const parseStatementLet =
         );
     };
 
-const parsePunnedField = ({ name }: $ast.PunnedField): Handler<[A.AstId, A.AstId]> => ctx => {
-    return [parseId(name)(ctx), parseId(name)(ctx)];
-};
+const parsePunnedField =
+    ({ name }: $ast.PunnedField): Handler<[A.AstId, A.AstId]> =>
+    (ctx) => {
+        return [parseId(name)(ctx), parseId(name)(ctx)];
+    };
 
-const parseRegularField = ({ fieldName, varName }: $ast.RegularField): Handler<[A.AstId, A.AstId]> => ctx => {
-    return [parseId(fieldName)(ctx), parseId(varName)(ctx)];
-};
+const parseRegularField =
+    ({ fieldName, varName }: $ast.RegularField): Handler<[A.AstId, A.AstId]> =>
+    (ctx) => {
+        return [parseId(fieldName)(ctx), parseId(varName)(ctx)];
+    };
 
-const parseDestructItem: (node: $ast.destructItem) => Handler<[A.AstId, A.AstId]> =
-    makeVisitor<$ast.destructItem>()({
-        PunnedField: parsePunnedField,
-        RegularField: parseRegularField,
-    });
+const parseDestructItem: (
+    node: $ast.destructItem,
+) => Handler<[A.AstId, A.AstId]> = makeVisitor<$ast.destructItem>()({
+    PunnedField: parsePunnedField,
+    RegularField: parseRegularField,
+});
 
-const parseStatementDestruct = ({ type, fields, rest, init, loc }: $ast.StatementDestruct): Handler<A.AstStatementDestruct> => ctx => {
-    const ids: Map<string, [A.AstId, A.AstId]> = new Map();
-    for (const param of parseList(fields)) {
-        const pair = parseDestructItem(param)(ctx);
-        const [field] = pair;
-        const name = field.text;
-        if (ids.has(name)) {
-            ctx.err.duplicateField(name)(param.loc);
-        }
-        ids.set(name, pair);
-    }
-
-    return ctx.ast.StatementDestruct(
-        parseTypeId(type)(ctx),
-        ids,
-        rest.$ === 'RestArgument',
-        parseExpression(init)(ctx),
+const parseStatementDestruct =
+    ({
+        type,
+        fields,
+        rest,
+        init,
         loc,
-    );
-};
+    }: $ast.StatementDestruct): Handler<A.AstStatementDestruct> =>
+    (ctx) => {
+        const ids: Map<string, [A.AstId, A.AstId]> = new Map();
+        for (const param of parseList(fields)) {
+            const pair = parseDestructItem(param)(ctx);
+            const [field] = pair;
+            const name = field.text;
+            if (ids.has(name)) {
+                ctx.err.duplicateField(name)(param.loc);
+            }
+            ids.set(name, pair);
+        }
+
+        return ctx.ast.StatementDestruct(
+            parseTypeId(type)(ctx),
+            ids,
+            rest.$ === "RestArgument",
+            parseExpression(init)(ctx),
+            loc,
+        );
+    };
 
 const parseStatementBlock =
     (_node: $ast.StatementBlock): Handler<never> =>
