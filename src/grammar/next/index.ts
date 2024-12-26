@@ -1280,21 +1280,3 @@ export const getParser = (ast: A.FactoryAst) => {
         },
     };
 };
-
-// const code = `@name(0x0)
-// native idTest();
-// `;
-
-// const r = getParser(A.getAstFactory()).parse(
-//     code,
-//     "<unknown>",
-//     "user",
-// );
-
-// // const r = $.parse($.compile(G.Trait, G.space))(code);
-
-// // const r = $.parse($.compile($.seq(G.$Function, $.str(" }")), G.space))(`abstract fun foo() }`);
-
-// import { inspect } from 'util';
-// const log = (obj: unknown) => console.log(inspect(obj, { colors: true, depth: Infinity }));
-// log(r);

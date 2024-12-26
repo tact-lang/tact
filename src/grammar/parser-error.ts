@@ -88,7 +88,7 @@ export const syntaxErrorSchema = <T, U>(
             return handle(sub`Variable definition requires an initializer`);
         },
         noFunctionDecl: () => {
-            return handle(sub`Only full function defintions are allowed here`);
+            return handle(sub`Only full function definitions are allowed here`);
         },
         expected: (expects: ReadonlySet<string>) => {
             return handle(text(`Expected ${getExpectedText(expects)}`));
