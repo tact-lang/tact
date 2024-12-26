@@ -25,7 +25,7 @@ exports[`grammar should fail const-override 1`] = `
 Line 4, col 1:
   3 | 
 > 4 | override const Foo: Int = 42;
-      ^~~~~~~~
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 | 
 "
 `;
@@ -45,7 +45,7 @@ exports[`grammar should fail const-override-virtual 1`] = `
 Line 4, col 1:
   3 | 
 > 4 | override virtual const Foo: Int = 42;
-      ^~~~~~~~
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 | 
 "
 `;
@@ -55,7 +55,7 @@ exports[`grammar should fail const-virtual 1`] = `
 Line 4, col 1:
   3 | 
 > 4 | virtual const Foo: Int = 42;
-      ^~~~~~~
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 | 
 "
 `;
@@ -65,7 +65,7 @@ exports[`grammar should fail const-virtual-override 1`] = `
 Line 4, col 1:
   3 | 
 > 4 | virtual override const Foo: Int = 42;
-      ^~~~~~~
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   5 | 
 "
 `;
@@ -81,12 +81,11 @@ Line 4, col 9:
 `;
 
 exports[`grammar should fail contract-const-abstract 1`] = `
-"<unknown>:5:26: Expected "="
-
-Line 5, col 26:
+"<unknown>:5:3: Variable definition requires an initializer
+Line 5, col 3:
   4 | contract TestContract {
 > 5 |   abstract const Foo: Int;
-                               ^
+        ^~~~~~~~~~~~~~~~~~~~~~~~
   6 | }
 "
 `;
@@ -132,8 +131,7 @@ Line 5, col 11:
 `;
 
 exports[`grammar should fail contract-empty-traits-list-with-keyword 1`] = `
-"<unknown>:1:20: Expected "_", "A".."Z", or "a".."z"
-
+"<unknown>:1:20: Expected an identifier
 Line 1, col 20:
 > 1 | contract Name with {}
                          ^
@@ -142,8 +140,7 @@ Line 1, col 20:
 `;
 
 exports[`grammar should fail contract-getter-parens-no-method-id 1`] = `
-"<unknown>:2:9: Expected "\\"", "initOf", "null", "_", "A".."Z", "a".."z", "false", "true", "0", "1".."9", "0O", "0o", "0B", "0b", "0X", "0x", "(", "~", "!", "+", or "-"
-
+"<unknown>:2:9: Expected "!", "(", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", an identifier, digit, or type identifier
 Line 2, col 9:
   1 | contract Test {
 > 2 |     get() fun test(): Int {
@@ -153,7 +150,7 @@ Line 2, col 9:
 `;
 
 exports[`grammar should fail contract-init-trailing-comma-empty-params 1`] = `
-"<unknown>:2:10: Empty parameter list should not have a dangling comma
+"<unknown>:2:10: Expected ")" or an identifier
 Line 2, col 10:
   1 | contract Name {
 > 2 |     init(,) {}
@@ -163,8 +160,7 @@ Line 2, col 10:
 `;
 
 exports[`grammar should fail contract-trailing-comma-empty-traits-list 1`] = `
-"<unknown>:1:19: Expected "_", "A".."Z", or "a".."z"
-
+"<unknown>:1:19: Expected an identifier or not an identifier character
 Line 1, col 19:
 > 1 | contract Name with, {}
                         ^
@@ -173,8 +169,7 @@ Line 1, col 19:
 `;
 
 exports[`grammar should fail contract-with-imports 1`] = `
-"<unknown>:6:1: Expected end of input, "trait", "contract", "message", "struct", "const", "@name", "asm", "fun", or "primitive"
-
+"<unknown>:6:1: Expected "@interface", "@name", "abstract", "asm", "const", "contract", "extends", "fun", "get", "inline", "message", "mutates", "override", "primitive", "struct", "trait", or "virtual"
 Line 6, col 1:
   5 | // all imports must be at the very top of the file
 > 6 | import "@stdlib/not-allowed";
@@ -194,7 +189,7 @@ Line 15, col 19:
 `;
 
 exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
-"<unknown>:6:14: Empty parameter list should not have a dangling comma
+"<unknown>:6:14: Expected "!", "(", ")", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", an identifier, digit, or type identifier
 Line 6, col 14:
   5 | fun b(): Int {
 > 6 |     return a(,);
@@ -204,7 +199,7 @@ Line 6, col 14:
 `;
 
 exports[`grammar should fail expr-method-call-trailing-comma-no-args 1`] = `
-"<unknown>:2:24: Empty parameter list should not have a dangling comma
+"<unknown>:2:24: Expected "!", "(", ")", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", an identifier, digit, or type identifier
 Line 2, col 24:
   1 | fun another() {
 > 2 |     return 42.toString(,);
@@ -214,8 +209,7 @@ Line 2, col 24:
 `;
 
 exports[`grammar should fail funcid-native-fun-arith-operator 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: Reserved FunC identifier
 Line 1, col 7:
 > 1 | @name(/)
             ^
@@ -224,18 +218,16 @@ Line 1, col 7:
 `;
 
 exports[`grammar should fail funcid-native-fun-assign-operator 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: Reserved FunC identifier
 Line 1, col 7:
 > 1 | @name(^>>=)
-            ^
+            ^~~~
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-bitwise-operator 1`] = `
-"<unknown>:1:8: Expected not (a whiteSpace or "(" or ")" or "[" or "]" or "," or "." or ";" or "~") or "\`"
-
+"<unknown>:1:8: Expected "\`", not " ", not "(", not ")", not ",", not ".", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", not "\\t", or not "~"
 Line 1, col 8:
 > 1 | @name(~)
              ^
@@ -244,8 +236,7 @@ Line 1, col 8:
 `;
 
 exports[`grammar should fail funcid-native-fun-comma 1`] = `
-"<unknown>:1:19: Expected ")"
-
+"<unknown>:1:19: Expected not " ", not "(", not ",", not ".", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", not "\\t", or not "~"
 Line 1, col 19:
 > 1 | @name(send_message,then_terminate)
                         ^
@@ -254,28 +245,25 @@ Line 1, col 19:
 `;
 
 exports[`grammar should fail funcid-native-fun-comparison-operator 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: Reserved FunC identifier
 Line 1, col 7:
 > 1 | @name(<=>)
-            ^
+            ^~~
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-control-keyword 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: Reserved FunC identifier
 Line 1, col 7:
 > 1 | @name(elseifnot)
-            ^
+            ^~~~~~~~~
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-delimiter 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: Expected "\`", not " ", not "(", not ")", not ",", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", or not "\\t"
 Line 1, col 7:
 > 1 | @name([)
             ^
@@ -284,18 +272,16 @@ Line 1, col 7:
 `;
 
 exports[`grammar should fail funcid-native-fun-directive 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: Reserved FunC identifier
 Line 1, col 7:
 > 1 | @name(#include)
-            ^
+            ^~~~~~~~
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-dot 1`] = `
-"<unknown>:1:10: Expected ")"
-
+"<unknown>:1:10: Expected not " ", not "(", not ",", not ".", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", not "\\t", or not "~"
 Line 1, col 10:
 > 1 | @name(msg.sender)
                ^
@@ -304,38 +290,34 @@ Line 1, col 10:
 `;
 
 exports[`grammar should fail funcid-native-fun-keyword 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: Reserved FunC identifier
 Line 1, col 7:
 > 1 | @name(global)
-            ^
+            ^~~~~~
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-multiline-comments 1`] = `
-"<unknown>:1:7: Expected not ("\\"" or "{-")
-
+"<unknown>:1:7: Invalid FunC identifier
 Line 1, col 7:
 > 1 | @name({-aaa-})
-            ^
+            ^~~~~~~
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-number 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: FunC identifier cannot be a number
 Line 1, col 7:
 > 1 | @name(123)
-            ^
+            ^~~
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-number-decimal 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: FunC identifier cannot be a number
 Line 1, col 7:
 > 1 | @name(0)
             ^
@@ -344,48 +326,43 @@ Line 1, col 7:
 `;
 
 exports[`grammar should fail funcid-native-fun-number-hexadecimal 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: FunC identifier cannot be a number
 Line 1, col 7:
 > 1 | @name(0x0)
-            ^
+            ^~~
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-number-hexadecimal-2 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: FunC identifier cannot be a number
 Line 1, col 7:
 > 1 | @name(0xDEADBEEF)
-            ^
+            ^~~~~~~~~~
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-number-neg-decimal 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: FunC identifier cannot be a number
 Line 1, col 7:
 > 1 | @name(-1)
-            ^
+            ^~
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-number-neg-hexadecimal 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: FunC identifier cannot be a number
 Line 1, col 7:
 > 1 | @name(-0x0)
-            ^
+            ^~~~
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-only-underscore 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: Reserved FunC identifier
 Line 1, col 7:
 > 1 | @name(_)
             ^
@@ -394,8 +371,7 @@ Line 1, col 7:
 `;
 
 exports[`grammar should fail funcid-native-fun-parens 1`] = `
-"<unknown>:1:11: Expected ")"
-
+"<unknown>:1:11: Expected not " ", not "(", not ",", not ".", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", not "\\t", or not "~"
 Line 1, col 11:
 > 1 | @name(take(first)Entry)
                 ^
@@ -404,8 +380,7 @@ Line 1, col 11:
 `;
 
 exports[`grammar should fail funcid-native-fun-semicolons 1`] = `
-"<unknown>:1:9: Expected ")"
-
+"<unknown>:1:9: Expected not " ", not "(", not ",", not ".", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", not "\\t", or not "~"
 Line 1, col 9:
 > 1 | @name(pa;;in"\`aaa\`")
               ^
@@ -415,7 +390,6 @@ Line 1, col 9:
 
 exports[`grammar should fail funcid-native-fun-space 1`] = `
 "<unknown>:1:11: Expected ")"
-
 Line 1, col 11:
 > 1 | @name(foo foo)
                 ^
@@ -424,8 +398,7 @@ Line 1, col 11:
 `;
 
 exports[`grammar should fail funcid-native-fun-square-brackets 1`] = `
-"<unknown>:1:11: Expected ")"
-
+"<unknown>:1:11: Expected not " ", not "(", not ",", not ".", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", not "\\t", or not "~"
 Line 1, col 11:
 > 1 | @name(take[some]entry)
                 ^
@@ -434,28 +407,25 @@ Line 1, col 11:
 `;
 
 exports[`grammar should fail funcid-native-fun-string 1`] = `
-"<unknown>:1:7: Expected not ("\\"" or "{-")
-
+"<unknown>:1:7: Invalid FunC identifier
 Line 1, col 7:
 > 1 | @name("not_a_string)
-            ^
+            ^~~~~~~~~~~~~
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-type-keyword 1`] = `
-"<unknown>:1:7: Expected not a funcInvalidId or "\`"
-
+"<unknown>:1:7: Reserved FunC identifier
 Line 1, col 7:
 > 1 | @name(->)
-            ^
+            ^~
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-unclosed-parens 1`] = `
-"<unknown>:1:9: Expected ")"
-
+"<unknown>:1:9: Expected not " ", not "(", not ",", not ".", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", not "\\t", or not "~"
 Line 1, col 9:
 > 1 | @name(aa(bb)
               ^
@@ -464,8 +434,7 @@ Line 1, col 9:
 `;
 
 exports[`grammar should fail ident-cannot-be-if-reserved-word 1`] = `
-"<unknown>:2:9: Expected "A".."Z" or not a reservedWord
-
+"<unknown>:2:9: Expected an identifier or type identifier
 Line 2, col 9:
   1 | fun hello(): Int {
 > 2 |     let if: Int = 0;
@@ -542,8 +511,7 @@ Line 2, col 9:
 `;
 
 exports[`grammar should fail ident-struct-cannot-start-with-__gen 1`] = `
-"<unknown>:1:8: Expected "A".."Z"
-
+"<unknown>:1:8: Expected type identifier
 Line 1, col 8:
 > 1 | struct __genA {
              ^
@@ -552,7 +520,7 @@ Line 1, col 8:
 `;
 
 exports[`grammar should fail item-fun-non-void-trailing-comma-no-params 1`] = `
-"<unknown>:1:14: Empty parameter list should not have a dangling comma
+"<unknown>:1:14: Expected ")" or an identifier
 Line 1, col 14:
 > 1 | fun function(,) : Int {
                    ^
@@ -561,7 +529,7 @@ Line 1, col 14:
 `;
 
 exports[`grammar should fail item-fun-void-trailing-comma-no-params 1`] = `
-"<unknown>:1:14: Empty parameter list should not have a dangling comma
+"<unknown>:1:14: Expected ")" or an identifier
 Line 1, col 14:
 > 1 | fun function(,) {}
                    ^
@@ -570,16 +538,15 @@ Line 1, col 14:
 `;
 
 exports[`grammar should fail item-fun-without-body 1`] = `
-"<unknown>:1:20: Expected "{"
-
-Line 1, col 20:
+"<unknown>:1:1: Abstract function doesn't have abstract modifier
+Line 1, col 1:
 > 1 | fun testFunc(): Int;
-                         ^
+      ^~~~~~~~~~~~~~~~~~~~
 "
 `;
 
 exports[`grammar should fail item-native-fun-not-void-decl-trailing-comma-no-params 1`] = `
-"<unknown>:2:31: Empty parameter list should not have a dangling comma
+"<unknown>:2:31: Expected ")" or an identifier
 Line 2, col 31:
   1 | @name(native_name_2)
 > 2 | native testNativeFuncWithType(,): Int;
@@ -588,7 +555,7 @@ Line 2, col 31:
 `;
 
 exports[`grammar should fail item-native-fun-void-decl-trailing-comma-no-params 1`] = `
-"<unknown>:2:23: Empty parameter list should not have a dangling comma
+"<unknown>:2:23: Expected ")" or an identifier
 Line 2, col 23:
   1 | @name(native_name_1)
 > 2 | native testNativeFunc(,);
@@ -597,8 +564,7 @@ Line 2, col 23:
 `;
 
 exports[`grammar should fail items-asm-fun-1 1`] = `
-"<unknown>:1:5: Expected ")"
-
+"<unknown>:1:5: Expected ")", "->", or an identifier
 Line 1, col 5:
 > 1 | asm(1 0) extends fun loadCoins(self: Slice): Int {
           ^
@@ -607,8 +573,7 @@ Line 1, col 5:
 `;
 
 exports[`grammar should fail items-asm-fun-2 1`] = `
-"<unknown>:1:9: Expected ")", "->", "_", "A".."Z", or "a".."z"
-
+"<unknown>:1:9: Expected ")", "->", or an identifier
 Line 1, col 9:
 > 1 | asm(c b 42) extends fun storeDict(b: Builder, c: Cell) {
               ^
@@ -617,8 +582,7 @@ Line 1, col 9:
 `;
 
 exports[`grammar should fail items-asm-fun-3 1`] = `
-"<unknown>:1:14: Expected "0" or "1".."9"
-
+"<unknown>:1:14: Expected digit
 Line 1, col 14:
 > 1 | asm(s len -> len 1 0) extends fun loadInt(self: Slice, len: Int): Int {
                    ^
@@ -627,8 +591,7 @@ Line 1, col 14:
 `;
 
 exports[`grammar should fail items-asm-fun-4 1`] = `
-"<unknown>:1:7: Expected "0" or "1".."9"
-
+"<unknown>:1:7: Expected digit
 Line 1, col 7:
 > 1 | asm(->) extends fun loadInt(self: Slice, len: Int): Int {
             ^
@@ -637,8 +600,7 @@ Line 1, col 7:
 `;
 
 exports[`grammar should fail items-asm-fun-5 1`] = `
-"<unknown>:3:5: Expected end of input, "trait", "contract", "message", "struct", "const", "@name", "asm", "fun", or "primitive"
-
+"<unknown>:3:5: Expected "@interface", "@name", "abstract", "asm", "const", "contract", "extends", "fun", "get", "inline", "message", "mutates", "override", "primitive", "struct", "trait", or "virtual"
 Line 3, col 5:
   2 |     { INC } : }
 > 3 |     5 }
@@ -647,19 +609,8 @@ Line 3, col 5:
 "
 `;
 
-exports[`grammar should fail items-asm-fun-6 1`] = `
-"<unknown>:2:5: Bitstring has more than 128 digits
-Line 2, col 5:
-  1 | asm fun giganticBinary() {
-> 2 |     b{000000001111111100000000111111110000000011111111000000001111111100000000111111110000000011111111000000001111111100000000111111110}
-          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  3 | }
-"
-`;
-
 exports[`grammar should fail literal-dec-trailing-underscore 1`] = `
-"<unknown>:2:16: Expected a digit
-
+"<unknown>:2:16: Expected digit
 Line 2, col 16:
   1 | fun test_fun(): Int {
 > 2 |     return 123_;
@@ -669,8 +620,7 @@ Line 2, col 16:
 `;
 
 exports[`grammar should fail literal-double-underscore 1`] = `
-"<unknown>:2:20: Expected a digit
-
+"<unknown>:2:20: Expected digit
 Line 2, col 20:
   1 | fun test_fun(): Int {
 > 2 |     return 123_123__123;
@@ -680,8 +630,7 @@ Line 2, col 20:
 `;
 
 exports[`grammar should fail literal-hex-trailing-underscore 1`] = `
-"<unknown>:2:18: Expected a hexadecimal digit
-
+"<unknown>:2:18: Expected hexadecimal digit
 Line 2, col 18:
   1 | fun test_fun(): Int {
 > 2 |     return 0x123_;
@@ -691,8 +640,7 @@ Line 2, col 18:
 `;
 
 exports[`grammar should fail literal-no-underscore-after-0b 1`] = `
-"<unknown>:2:14: Expected "1" or "0"
-
+"<unknown>:2:14: Expected "0" or "1"
 Line 2, col 14:
   1 | fun test_fun(): Int {
 > 2 |     return 0b_00101010;
@@ -702,19 +650,17 @@ Line 2, col 14:
 `;
 
 exports[`grammar should fail literal-no-underscores-if-leading-zero 1`] = `
-"<unknown>:2:15: Expected "}" or ";"
-
-Line 2, col 15:
+"<unknown>:2:12: Numbers with leading zeroes cannot use underscores for JS compatibility
+Line 2, col 12:
   1 | fun test_fun(): Int {
 > 2 |     return 012_3;
-                    ^
+                 ^~~~~
   3 | }
 "
 `;
 
 exports[`grammar should fail literal-non-binary-digits 1`] = `
-"<unknown>:2:15: Expected "}" or ";"
-
+"<unknown>:2:15: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", "0", "1", ";", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "_", "|", "||", or "}"
 Line 2, col 15:
   1 | fun test_fun(): Int {
 > 2 |     return 0b123;
@@ -724,19 +670,17 @@ Line 2, col 15:
 `;
 
 exports[`grammar should fail literal-underscore-after-leading-zero 1`] = `
-"<unknown>:2:13: Expected "}" or ";"
-
-Line 2, col 13:
+"<unknown>:2:12: Numbers with leading zeroes cannot use underscores for JS compatibility
+Line 2, col 12:
   1 | fun test_fun(): Int {
 > 2 |     return 0_123;
-                  ^
+                 ^~~~~
   3 | }
 "
 `;
 
 exports[`grammar should fail struct-double-semicolon 1`] = `
-"<unknown>:2:19: Expected "}"
-
+"<unknown>:2:19: Expected "}" or an identifier
 Line 2, col 19:
   1 | // too many semicolons
 > 2 | struct A { x: Int;; }
@@ -746,8 +690,7 @@ Line 2, col 19:
 `;
 
 exports[`grammar should fail struct-missing-semicolon-between-fields 1`] = `
-"<unknown>:2:19: Expected "}", ";", "=", "as", or "?"
-
+"<unknown>:2:19: Expected ";", "=", "?", "as", or "}"
 Line 2, col 19:
   1 | // missing ; between fields
 > 2 | struct B { x: Int y: Int }
@@ -757,8 +700,7 @@ Line 2, col 19:
 `;
 
 exports[`grammar should fail struct-missing-semicolon-between-fields-with-initializer 1`] = `
-"<unknown>:2:24: Expected "}", ";", ".", "!!", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", or "||"
-
+"<unknown>:2:24: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", ";", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
 Line 2, col 24:
   1 | // missing ; between fields
 > 2 | struct B { x: Int = 42 y: Int }
@@ -778,8 +720,7 @@ Line 5, col 3:
 `;
 
 exports[`grammar should fail trait-empty-traits-list-with-keyword 1`] = `
-"<unknown>:1:17: Expected "_", "A".."Z", or "a".."z"
-
+"<unknown>:1:17: Expected an identifier
 Line 1, col 17:
 > 1 | trait Name with {}
                       ^
@@ -788,7 +729,7 @@ Line 1, col 17:
 `;
 
 exports[`grammar should fail trait-fun-non-void-trailing-comma-no-params 1`] = `
-"<unknown>:2:39: Empty parameter list should not have a dangling comma
+"<unknown>:2:39: Expected ")" or an identifier
 Line 2, col 39:
   1 | trait Test {
 > 2 |     abstract fun testAbstractWithType(,): Int;
@@ -798,7 +739,7 @@ Line 2, col 39:
 `;
 
 exports[`grammar should fail trait-fun-void-trailing-comma-no-params 1`] = `
-"<unknown>:2:31: Empty parameter list should not have a dangling comma
+"<unknown>:2:31: Expected ")" or an identifier
 Line 2, col 31:
   1 | trait Test {
 > 2 |     abstract fun testAbstract(,);
@@ -808,8 +749,7 @@ Line 2, col 31:
 `;
 
 exports[`grammar should fail trait-trailing-comma-empty-traits-list 1`] = `
-"<unknown>:1:16: Expected "_", "A".."Z", or "a".."z"
-
+"<unknown>:1:16: Expected an identifier or not an identifier character
 Line 1, col 16:
 > 1 | trait Name with, {}
                      ^
@@ -818,8 +758,7 @@ Line 1, col 16:
 `;
 
 exports[`grammar should fail type-ident-msg-should-be-capitalized 1`] = `
-"<unknown>:1:14: Expected "A".."Z"
-
+"<unknown>:1:14: Expected type identifier
 Line 1, col 14:
 > 1 | message(123) foo {
                    ^
@@ -828,8 +767,7 @@ Line 1, col 14:
 `;
 
 exports[`grammar should fail type-ident-struct-should-be-capitalized 1`] = `
-"<unknown>:1:8: Expected "A".."Z"
-
+"<unknown>:1:8: Expected type identifier
 Line 1, col 8:
 > 1 | struct lowercaseIdForType {
              ^
@@ -959,30 +897,30 @@ exports[`grammar should parse contract-getter-with-method-id 1`] = `
               "kind": "function_attribute",
               "loc": get(crc32("crc32") + 42 & 0x3ffff | 0x4000),
               "methodId": {
-                "id": 10,
+                "id": 12,
                 "kind": "op_binary",
                 "left": {
-                  "id": 8,
+                  "id": 10,
                   "kind": "op_binary",
                   "left": {
-                    "id": 6,
+                    "id": 8,
                     "kind": "op_binary",
                     "left": {
                       "args": [
                         {
-                          "id": 3,
+                          "id": 5,
                           "kind": "string",
                           "loc": "crc32",
                           "value": "crc32",
                         },
                       ],
                       "function": {
-                        "id": 2,
+                        "id": 4,
                         "kind": "id",
                         "loc": crc32,
                         "text": "crc32",
                       },
-                      "id": 4,
+                      "id": 6,
                       "kind": "static_call",
                       "loc": crc32("crc32"),
                     },
@@ -990,7 +928,7 @@ exports[`grammar should parse contract-getter-with-method-id 1`] = `
                     "op": "+",
                     "right": {
                       "base": 10,
-                      "id": 5,
+                      "id": 7,
                       "kind": "number",
                       "loc": 42,
                       "value": 42n,
@@ -1000,7 +938,7 @@ exports[`grammar should parse contract-getter-with-method-id 1`] = `
                   "op": "&",
                   "right": {
                     "base": 16,
-                    "id": 7,
+                    "id": 9,
                     "kind": "number",
                     "loc": 0x3ffff,
                     "value": 262143n,
@@ -1010,7 +948,7 @@ exports[`grammar should parse contract-getter-with-method-id 1`] = `
                 "op": "|",
                 "right": {
                   "base": 16,
-                  "id": 9,
+                  "id": 11,
                   "kind": "number",
                   "loc": 0x4000,
                   "value": 16384n,
@@ -1025,14 +963,14 @@ exports[`grammar should parse contract-getter-with-method-id 1`] = `
         return 0
     },
           "name": {
-            "id": 11,
+            "id": 2,
             "kind": "id",
             "loc": test,
             "text": "test",
           },
           "params": [],
           "return": {
-            "id": 12,
+            "id": 3,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -1464,7 +1402,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
       "loc": primitive Int;,
       "name": {
         "id": 1,
-        "kind": "type_id",
+        "kind": "id",
         "loc": Int,
         "text": "Int",
       },
@@ -1554,18 +1492,18 @@ exports[`grammar should parse contract-with-trait 1`] = `
       "declarations": [
         {
           "as": null,
-          "id": 16,
+          "id": 17,
           "initializer": null,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
-            "id": 14,
+            "id": 15,
             "kind": "id",
             "loc": b,
             "text": "b",
           },
           "type": {
-            "id": 15,
+            "id": 16,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -1579,20 +1517,20 @@ exports[`grammar should parse contract-with-trait 1`] = `
               "type": "override",
             },
           ],
-          "id": 21,
+          "id": 22,
           "kind": "function_def",
           "loc": override fun a(): Int {
         return b;
     },
           "name": {
-            "id": 17,
+            "id": 18,
             "kind": "id",
             "loc": a,
             "text": "a",
           },
           "params": [],
           "return": {
-            "id": 18,
+            "id": 19,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -1600,12 +1538,12 @@ exports[`grammar should parse contract-with-trait 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 19,
+                "id": 20,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
               },
-              "id": 20,
+              "id": 21,
               "kind": "statement_return",
               "loc": return b;,
             },
@@ -1629,7 +1567,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
       },
       "traits": [
         {
-          "id": 22,
+          "id": 14,
           "kind": "id",
           "loc": SomeTrait,
           "text": "SomeTrait",
@@ -1652,7 +1590,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
       "loc": primitive Int;,
       "name": {
         "id": 1,
-        "kind": "type_id",
+        "kind": "id",
         "loc": Int,
         "text": "Int",
       },
@@ -1742,18 +1680,18 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
       "declarations": [
         {
           "as": null,
-          "id": 16,
+          "id": 17,
           "initializer": null,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
-            "id": 14,
+            "id": 15,
             "kind": "id",
             "loc": b,
             "text": "b",
           },
           "type": {
-            "id": 15,
+            "id": 16,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -1767,20 +1705,20 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
               "type": "override",
             },
           ],
-          "id": 21,
+          "id": 22,
           "kind": "function_def",
           "loc": override fun a(): Int {
         return "hello world!";
     },
           "name": {
-            "id": 17,
+            "id": 18,
             "kind": "id",
             "loc": a,
             "text": "a",
           },
           "params": [],
           "return": {
-            "id": 18,
+            "id": 19,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -1788,12 +1726,12 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
           "statements": [
             {
               "expression": {
-                "id": 19,
+                "id": 20,
                 "kind": "string",
                 "loc": "hello world!",
                 "value": "hello world!",
               },
-              "id": 20,
+              "id": 21,
               "kind": "statement_return",
               "loc": return "hello world!";,
             },
@@ -1817,7 +1755,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
       },
       "traits": [
         {
-          "id": 22,
+          "id": 14,
           "kind": "id",
           "loc": SomeTrait,
           "text": "SomeTrait",
@@ -2012,12 +1950,12 @@ exports[`grammar should parse expr-arith-and-cmp 1`] = `
 
 exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
 {
-  "id": 27,
+  "id": 28,
   "imports": [],
   "items": [
     {
       "attributes": [],
-      "id": 26,
+      "id": 27,
       "kind": "function_def",
       "loc": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 123.add(10);
@@ -2038,7 +1976,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
       "statements": [
         {
           "expression": {
-            "id": 24,
+            "id": 25,
             "kind": "op_binary",
             "left": {
               "id": 13,
@@ -2114,7 +2052,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
             "loc": (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 123.add(10),
             "op": "||",
             "right": {
-              "id": 23,
+              "id": 24,
               "kind": "op_binary",
               "left": {
                 "id": 16,
@@ -2138,7 +2076,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
               "loc": some2 > 10 && some3 < 123.add(10),
               "op": "&&",
               "right": {
-                "id": 22,
+                "id": 23,
                 "kind": "op_binary",
                 "left": {
                   "id": 17,
@@ -2152,13 +2090,13 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
                   "args": [
                     {
                       "base": 10,
-                      "id": 20,
+                      "id": 21,
                       "kind": "number",
                       "loc": 10,
                       "value": 10n,
                     },
                   ],
-                  "id": 21,
+                  "id": 22,
                   "kind": "method_call",
                   "loc": 123.add(10),
                   "method": {
@@ -2178,7 +2116,7 @@ exports[`grammar should parse expr-arith-bool-cmp-method-call 1`] = `
               },
             },
           },
-          "id": 25,
+          "id": 26,
           "kind": "statement_return",
           "loc": return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < 123.add(10);,
         },
@@ -2350,12 +2288,12 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
 
 exports[`grammar should parse expr-chaining-unbox 1`] = `
 {
-  "id": 16,
+  "id": 18,
   "imports": [],
   "items": [
     {
       "attributes": [],
-      "id": 15,
+      "id": 17,
       "kind": "function_def",
       "loc": fun testFunc(m: map<Int, Int>): Int {
     return m.asCell()!!.hash();
@@ -2408,23 +2346,23 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
         {
           "expression": {
             "args": [],
-            "id": 13,
+            "id": 15,
             "kind": "method_call",
             "loc": m.asCell()!!.hash(),
             "method": {
-              "id": 12,
+              "id": 13,
               "kind": "id",
               "loc": hash,
               "text": "hash",
             },
             "self": {
-              "id": 11,
+              "id": 12,
               "kind": "op_unary",
               "loc": m.asCell()!!,
               "op": "!!",
               "operand": {
                 "args": [],
-                "id": 10,
+                "id": 11,
                 "kind": "method_call",
                 "loc": m.asCell(),
                 "method": {
@@ -2442,7 +2380,7 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
               },
             },
           },
-          "id": 14,
+          "id": 16,
           "kind": "statement_return",
           "loc": return m.asCell()!!.hash();,
         },
@@ -2810,12 +2748,12 @@ exports[`grammar should parse expr-conditional-with-let 1`] = `
 
 exports[`grammar should parse expr-fun-call 1`] = `
 {
-  "id": 29,
+  "id": 30,
   "imports": [],
   "items": [
     {
       "attributes": [],
-      "id": 28,
+      "id": 29,
       "kind": "function_def",
       "loc": fun testFunc(): Int {
     return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < abs(123.add(10));
@@ -2836,7 +2774,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
       "statements": [
         {
           "expression": {
-            "id": 26,
+            "id": 27,
             "kind": "op_binary",
             "left": {
               "id": 13,
@@ -2912,7 +2850,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
             "loc": (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < abs(123.add(10)),
             "op": "||",
             "right": {
-              "id": 25,
+              "id": 26,
               "kind": "op_binary",
               "left": {
                 "id": 16,
@@ -2936,7 +2874,7 @@ exports[`grammar should parse expr-fun-call 1`] = `
               "loc": some2 > 10 && some3 < abs(123.add(10)),
               "op": "&&",
               "right": {
-                "id": 24,
+                "id": 25,
                 "kind": "op_binary",
                 "left": {
                   "id": 17,
@@ -2952,13 +2890,13 @@ exports[`grammar should parse expr-fun-call 1`] = `
                       "args": [
                         {
                           "base": 10,
-                          "id": 21,
+                          "id": 22,
                           "kind": "number",
                           "loc": 10,
                           "value": 10n,
                         },
                       ],
-                      "id": 22,
+                      "id": 23,
                       "kind": "method_call",
                       "loc": 123.add(10),
                       "method": {
@@ -2982,14 +2920,14 @@ exports[`grammar should parse expr-fun-call 1`] = `
                     "loc": abs,
                     "text": "abs",
                   },
-                  "id": 23,
+                  "id": 24,
                   "kind": "static_call",
                   "loc": abs(123.add(10)),
                 },
               },
             },
           },
-          "id": 27,
+          "id": 28,
           "kind": "statement_return",
           "loc": return (0 + 1) * 10 / 20 != 10 * someId || some2 > 10 && some3 < abs(123.add(10));,
         },
@@ -3529,9 +3467,9 @@ exports[`grammar should parse items-asm-funs 1`] = `
       "attributes": [],
       "id": 6,
       "instructions": [
-        "1",
-        "INT",
-        "HASHEXT_KECCAK256",
+        "1
+    INT
+    HASHEXT_KECCAK256",
       ],
       "kind": "asm_function_def",
       "loc": asm fun keccak256(s: Slice): Int {
@@ -3820,8 +3758,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
       "attributes": [],
       "id": 43,
       "instructions": [
-        "x{02}",
-        "SDBEGINSQ",
+        "x{02} SDBEGINSQ",
       ],
       "kind": "asm_function_def",
       "loc": asm fun checkAndRemoveAddExtensionPrefix(self: Slice): Int {
@@ -3890,8 +3827,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
       "attributes": [],
       "id": 47,
       "instructions": [
-        ""Works!"",
-        "DEBUGSTR",
+        ""Works!" DEBUGSTR",
       ],
       "kind": "asm_function_def",
       "loc": asm fun debugStr1() {
@@ -3958,11 +3894,8 @@ exports[`grammar should parse items-asm-funs 1`] = `
       "attributes": [],
       "id": 54,
       "instructions": [
-        "{ INC }",
-        ":",
-        "incinc",
-        "41",
-        "incinc",
+        "{ INC } : incinc
+    41 incinc",
       ],
       "kind": "asm_function_def",
       "loc": asm fun createAndUseWord1(): Int {
@@ -3991,11 +3924,9 @@ exports[`grammar should parse items-asm-funs 1`] = `
       "attributes": [],
       "id": 57,
       "instructions": [
-        "{ INC }",
-        ":",
-        "incinc",
-        "41",
-        "incinc",
+        "{ INC
+}
+: incinc 41 incinc",
       ],
       "kind": "asm_function_def",
       "loc": asm fun createAndUseWord2(): Int { { INC
@@ -4024,11 +3955,13 @@ exports[`grammar should parse items-asm-funs 1`] = `
       "attributes": [],
       "id": 60,
       "instructions": [
-        "{ INC }",
-        ":",
-        "incinc",
-        "41",
-        "incinc",
+        "{
+INC
+}
+:
+incinc
+41
+incinc",
       ],
       "kind": "asm_function_def",
       "loc": asm fun createAndUseWord3(): Int {
@@ -4062,23 +3995,13 @@ incinc
       "attributes": [],
       "id": 66,
       "instructions": [
-        "<{",
-        "TRY:<{",
-        "0",
-        "PUSHINT",
-        "ADD",
-        "DROP",
-        "-1",
-        "PUSHINT",
-        "}>CATCH<{",
-        "2DROP",
-        "0",
-        "PUSHINT",
-        "}>",
-        "}>CONT",
-        "1",
-        "1",
-        "CALLXARGS",
+        "<{
+        TRY:<{
+            0 PUSHINT ADD DROP -1 PUSHINT
+        }>CATCH<{
+            2DROP 0 PUSHINT
+        }>
+    }>CONT 1 1 CALLXARGS",
       ],
       "kind": "asm_function_def",
       "loc": asm fun isIntAnInt(x: Int): Int {
@@ -4133,7 +4056,7 @@ incinc
 
 exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] = `
 {
-  "id": 111,
+  "id": 112,
   "imports": [],
   "items": [
     {
@@ -4488,7 +4411,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
     },
     {
       "attributes": [],
-      "id": 78,
+      "id": 79,
       "kind": "function_def",
       "loc": fun coverage(a: Int, b: Int) {
     let k: Int = a.extension(
@@ -4549,20 +4472,20 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
           "expression": {
             "args": [
               {
-                "id": 67,
+                "id": 68,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
               },
               {
                 "base": 10,
-                "id": 68,
+                "id": 69,
                 "kind": "number",
                 "loc": 4,
                 "value": 4n,
               },
             ],
-            "id": 69,
+            "id": 70,
             "kind": "method_call",
             "loc": a.extension(
         b,
@@ -4581,7 +4504,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
               "text": "a",
             },
           },
-          "id": 70,
+          "id": 71,
           "kind": "statement_let",
           "loc": let k: Int = a.extension(
         b,
@@ -4604,45 +4527,45 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
           "expression": {
             "args": [
               {
-                "id": 74,
+                "id": 75,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
               },
               {
-                "id": 75,
+                "id": 76,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
               },
             ],
             "function": {
-              "id": 73,
+              "id": 74,
               "kind": "id",
               "loc": anotherFunction,
               "text": "anotherFunction",
             },
-            "id": 76,
+            "id": 77,
             "kind": "static_call",
             "loc": anotherFunction(
         a,
         b,
     ),
           },
-          "id": 77,
+          "id": 78,
           "kind": "statement_let",
           "loc": let c: Int = anotherFunction(
         a,
         b,
     );,
           "name": {
-            "id": 71,
+            "id": 72,
             "kind": "id",
             "loc": c,
             "text": "c",
           },
           "type": {
-            "id": 72,
+            "id": 73,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -4652,7 +4575,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
     },
     {
       "attributes": [],
-      "id": 92,
+      "id": 93,
       "kind": "function_def",
       "loc": fun oneMoreFunction(
     a: Int,
@@ -4664,41 +4587,41 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
     );
 },
       "name": {
-        "id": 79,
+        "id": 80,
         "kind": "id",
         "loc": oneMoreFunction,
         "text": "oneMoreFunction",
       },
       "params": [
         {
-          "id": 83,
+          "id": 84,
           "kind": "typed_parameter",
           "loc": a: Int,
           "name": {
-            "id": 81,
+            "id": 82,
             "kind": "id",
             "loc": a,
             "text": "a",
           },
           "type": {
-            "id": 82,
+            "id": 83,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
           },
         },
         {
-          "id": 86,
+          "id": 87,
           "kind": "typed_parameter",
           "loc": b: Int,
           "name": {
-            "id": 84,
+            "id": 85,
             "kind": "id",
             "loc": b,
             "text": "b",
           },
           "type": {
-            "id": 85,
+            "id": 86,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -4706,7 +4629,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
         },
       ],
       "return": {
-        "id": 80,
+        "id": 81,
         "kind": "type_id",
         "loc": Int,
         "text": "Int",
@@ -4716,32 +4639,32 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
           "expression": {
             "args": [
               {
-                "id": 88,
+                "id": 89,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
               },
               {
-                "id": 89,
+                "id": 90,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
               },
             ],
             "function": {
-              "id": 87,
+              "id": 88,
               "kind": "id",
               "loc": anotherFunction,
               "text": "anotherFunction",
             },
-            "id": 90,
+            "id": 91,
             "kind": "static_call",
             "loc": anotherFunction(
         a,
         b,
     ),
           },
-          "id": 91,
+          "id": 92,
           "kind": "statement_return",
           "loc": return anotherFunction(
         a,
@@ -4754,7 +4677,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       "attributes": [],
       "declarations": [
         {
-          "id": 100,
+          "id": 101,
           "kind": "contract_init",
           "loc": init(
         arg1: Int,
@@ -4762,34 +4685,34 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
     ) {},
           "params": [
             {
-              "id": 96,
+              "id": 97,
               "kind": "typed_parameter",
               "loc": arg1: Int,
               "name": {
-                "id": 94,
+                "id": 95,
                 "kind": "id",
                 "loc": arg1,
                 "text": "arg1",
               },
               "type": {
-                "id": 95,
+                "id": 96,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
               },
             },
             {
-              "id": 99,
+              "id": 100,
               "kind": "typed_parameter",
               "loc": arg2: Int,
               "name": {
-                "id": 97,
+                "id": 98,
                 "kind": "id",
                 "loc": arg2,
                 "text": "arg2",
               },
               "type": {
-                "id": 98,
+                "id": 99,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
@@ -4799,7 +4722,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
           "statements": [],
         },
       ],
-      "id": 101,
+      "id": 102,
       "kind": "contract",
       "loc": contract TestContract {
     init(
@@ -4808,7 +4731,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
     ) {}
 },
       "name": {
-        "id": 93,
+        "id": 94,
         "kind": "id",
         "loc": TestContract,
         "text": "TestContract",
@@ -4817,7 +4740,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
     },
     {
       "attributes": [],
-      "id": 110,
+      "id": 111,
       "kind": "function_def",
       "loc": fun test() {
     let k: StateInit = initOf TestContract(
@@ -4826,7 +4749,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
     );
 },
       "name": {
-        "id": 102,
+        "id": 103,
         "kind": "id",
         "loc": test,
         "text": "test",
@@ -4839,46 +4762,46 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
             "args": [
               {
                 "base": 10,
-                "id": 106,
+                "id": 107,
                 "kind": "number",
                 "loc": 2,
                 "value": 2n,
               },
               {
                 "base": 10,
-                "id": 107,
+                "id": 108,
                 "kind": "number",
                 "loc": 3,
                 "value": 3n,
               },
             ],
             "contract": {
-              "id": 105,
+              "id": 106,
               "kind": "id",
               "loc": TestContract,
               "text": "TestContract",
             },
-            "id": 108,
+            "id": 109,
             "kind": "init_of",
             "loc": initOf TestContract(
         2,
         3,
     ),
           },
-          "id": 109,
+          "id": 110,
           "kind": "statement_let",
           "loc": let k: StateInit = initOf TestContract(
         2,
         3,
     );,
           "name": {
-            "id": 103,
+            "id": 104,
             "kind": "id",
             "loc": k,
             "text": "k",
           },
           "type": {
-            "id": 104,
+            "id": 105,
             "kind": "type_id",
             "loc": StateInit,
             "text": "StateInit",
@@ -6009,7 +5932,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
 },
       "name": {
         "id": 1,
-        "kind": "type_id",
+        "kind": "id",
         "loc": A,
         "text": "A",
       },
@@ -6043,7 +5966,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
         "loc": A { x: 1 },
         "type": {
           "id": 11,
-          "kind": "type_id",
+          "kind": "id",
           "loc": A,
           "text": "A",
         },
@@ -6135,7 +6058,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
     },
             "type": {
               "id": 19,
-              "kind": "type_id",
+              "kind": "id",
               "loc": A,
               "text": "A",
             },
@@ -6198,7 +6121,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
 },
       "name": {
         "id": 29,
-        "kind": "type_id",
+        "kind": "id",
         "loc": B,
         "text": "B",
       },
@@ -6254,7 +6177,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
 },
         "type": {
           "id": 39,
-          "kind": "type_id",
+          "kind": "id",
           "loc": B,
           "text": "B",
         },
@@ -6343,7 +6266,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
             "loc": B { x: 1, y: 5, },
             "type": {
               "id": 50,
-              "kind": "type_id",
+              "kind": "id",
               "loc": B,
               "text": "B",
             },
@@ -8065,7 +7988,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
 
 exports[`grammar should parse stmt-destructuring 1`] = `
 {
-  "id": 148,
+  "id": 126,
   "imports": [],
   "items": [
     {
@@ -8137,7 +8060,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
 },
       "name": {
         "id": 1,
-        "kind": "type_id",
+        "kind": "id",
         "loc": S,
         "text": "S",
       },
@@ -8191,7 +8114,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
 },
       "name": {
         "id": 12,
-        "kind": "type_id",
+        "kind": "id",
         "loc": M,
         "text": "M",
       },
@@ -8199,7 +8122,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
     },
     {
       "attributes": [],
-      "id": 147,
+      "id": 125,
       "kind": "function_def",
       "loc": fun testFunc(): Int {
     let s = S{ a: 1, b: 2, c: 3 };
@@ -8293,7 +8216,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             "loc": S{ a: 1, b: 2, c: 3 },
             "type": {
               "id": 23,
-              "kind": "type_id",
+              "kind": "id",
               "loc": S,
               "text": "S",
             },
@@ -8311,22 +8234,22 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 46,
+            "id": 42,
             "kind": "id",
             "loc": s,
             "text": "s",
           },
-          "id": 47,
+          "id": 43,
           "identifiers": Map {
             "a" => [
               {
-                "id": 36,
+                "id": 35,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
               },
               {
-                "id": 37,
+                "id": 36,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
@@ -8334,13 +8257,13 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
             "b" => [
               {
-                "id": 39,
+                "id": 37,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
               },
               {
-                "id": 40,
+                "id": 38,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
@@ -8348,13 +8271,13 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
             "c" => [
               {
-                "id": 42,
+                "id": 39,
                 "kind": "id",
                 "loc": c,
                 "text": "c",
               },
               {
-                "id": 43,
+                "id": 40,
                 "kind": "id",
                 "loc": c,
                 "text": "c",
@@ -8365,7 +8288,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           "kind": "statement_destruct",
           "loc": let S { a, b, c } = s;,
           "type": {
-            "id": 35,
+            "id": 41,
             "kind": "type_id",
             "loc": S,
             "text": "S",
@@ -8373,22 +8296,22 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 53,
+            "id": 47,
             "kind": "id",
             "loc": s,
             "text": "s",
           },
-          "id": 54,
+          "id": 48,
           "identifiers": Map {
             "a" => [
               {
-                "id": 49,
+                "id": 44,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
               },
               {
-                "id": 50,
+                "id": 45,
                 "kind": "id",
                 "loc": a1,
                 "text": "a1",
@@ -8399,7 +8322,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           "kind": "statement_destruct",
           "loc": let S { a: a1, .. } = s;,
           "type": {
-            "id": 48,
+            "id": 46,
             "kind": "type_id",
             "loc": S,
             "text": "S",
@@ -8407,22 +8330,22 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 60,
+            "id": 52,
             "kind": "id",
             "loc": s,
             "text": "s",
           },
-          "id": 61,
+          "id": 53,
           "identifiers": Map {
             "b" => [
               {
-                "id": 56,
+                "id": 49,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
               },
               {
-                "id": 57,
+                "id": 50,
                 "kind": "id",
                 "loc": b1,
                 "text": "b1",
@@ -8433,7 +8356,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           "kind": "statement_destruct",
           "loc": let S { b: b1, .. } = s;,
           "type": {
-            "id": 55,
+            "id": 51,
             "kind": "type_id",
             "loc": S,
             "text": "S",
@@ -8441,22 +8364,22 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 67,
+            "id": 57,
             "kind": "id",
             "loc": s,
             "text": "s",
           },
-          "id": 68,
+          "id": 58,
           "identifiers": Map {
             "c" => [
               {
-                "id": 63,
+                "id": 54,
                 "kind": "id",
                 "loc": c,
                 "text": "c",
               },
               {
-                "id": 64,
+                "id": 55,
                 "kind": "id",
                 "loc": c1,
                 "text": "c1",
@@ -8467,7 +8390,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           "kind": "statement_destruct",
           "loc": let S { c: c1, .. } = s;,
           "type": {
-            "id": 62,
+            "id": 56,
             "kind": "type_id",
             "loc": S,
             "text": "S",
@@ -8475,22 +8398,22 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 77,
+            "id": 64,
             "kind": "id",
             "loc": s,
             "text": "s",
           },
-          "id": 78,
+          "id": 65,
           "identifiers": Map {
             "a" => [
               {
-                "id": 70,
+                "id": 59,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
               },
               {
-                "id": 71,
+                "id": 60,
                 "kind": "id",
                 "loc": a2,
                 "text": "a2",
@@ -8498,13 +8421,13 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
             "b" => [
               {
-                "id": 73,
+                "id": 61,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
               },
               {
-                "id": 74,
+                "id": 62,
                 "kind": "id",
                 "loc": b2,
                 "text": "b2",
@@ -8515,7 +8438,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           "kind": "statement_destruct",
           "loc": let S { a: a2, b: b2, .. } = s;,
           "type": {
-            "id": 69,
+            "id": 63,
             "kind": "type_id",
             "loc": S,
             "text": "S",
@@ -8523,22 +8446,22 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 87,
+            "id": 71,
             "kind": "id",
             "loc": s,
             "text": "s",
           },
-          "id": 88,
+          "id": 72,
           "identifiers": Map {
             "a" => [
               {
-                "id": 80,
+                "id": 66,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
               },
               {
-                "id": 81,
+                "id": 67,
                 "kind": "id",
                 "loc": a3,
                 "text": "a3",
@@ -8546,13 +8469,13 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
             "c" => [
               {
-                "id": 83,
+                "id": 68,
                 "kind": "id",
                 "loc": c,
                 "text": "c",
               },
               {
-                "id": 84,
+                "id": 69,
                 "kind": "id",
                 "loc": c3,
                 "text": "c3",
@@ -8563,7 +8486,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           "kind": "statement_destruct",
           "loc": let S { a: a3, c: c3, .. } = s;,
           "type": {
-            "id": 79,
+            "id": 70,
             "kind": "type_id",
             "loc": S,
             "text": "S",
@@ -8571,22 +8494,22 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 97,
+            "id": 78,
             "kind": "id",
             "loc": s,
             "text": "s",
           },
-          "id": 98,
+          "id": 79,
           "identifiers": Map {
             "b" => [
               {
-                "id": 90,
+                "id": 73,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
               },
               {
-                "id": 91,
+                "id": 74,
                 "kind": "id",
                 "loc": b4,
                 "text": "b4",
@@ -8594,13 +8517,13 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
             "c" => [
               {
-                "id": 93,
+                "id": 75,
                 "kind": "id",
                 "loc": c,
                 "text": "c",
               },
               {
-                "id": 94,
+                "id": 76,
                 "kind": "id",
                 "loc": c4,
                 "text": "c4",
@@ -8611,7 +8534,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           "kind": "statement_destruct",
           "loc": let S { b: b4, c: c4, .. } = s;,
           "type": {
-            "id": 89,
+            "id": 77,
             "kind": "type_id",
             "loc": S,
             "text": "S",
@@ -8622,15 +8545,15 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             "args": [
               {
                 "field": {
-                  "id": 101,
+                  "id": 82,
                   "kind": "id",
                   "loc": a,
                   "text": "a",
                 },
-                "id": 103,
+                "id": 84,
                 "initializer": {
                   "base": 10,
-                  "id": 102,
+                  "id": 83,
                   "kind": "number",
                   "loc": 1,
                   "value": 1n,
@@ -8640,15 +8563,15 @@ exports[`grammar should parse stmt-destructuring 1`] = `
               },
               {
                 "field": {
-                  "id": 104,
+                  "id": 85,
                   "kind": "id",
                   "loc": b,
                   "text": "b",
                 },
-                "id": 106,
+                "id": 87,
                 "initializer": {
                   "base": 10,
-                  "id": 105,
+                  "id": 86,
                   "kind": "number",
                   "loc": 2,
                   "value": 2n,
@@ -8657,21 +8580,21 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                 "loc": b: 2,
               },
             ],
-            "id": 107,
+            "id": 88,
             "kind": "struct_instance",
             "loc": M{ a: 1, b: 2 },
             "type": {
-              "id": 100,
-              "kind": "type_id",
+              "id": 81,
+              "kind": "id",
               "loc": M,
               "text": "M",
             },
           },
-          "id": 108,
+          "id": 89,
           "kind": "statement_let",
           "loc": let m = M{ a: 1, b: 2 };,
           "name": {
-            "id": 99,
+            "id": 80,
             "kind": "id",
             "loc": m,
             "text": "m",
@@ -8680,22 +8603,22 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 117,
+            "id": 95,
             "kind": "id",
             "loc": m,
             "text": "m",
           },
-          "id": 118,
+          "id": 96,
           "identifiers": Map {
             "a" => [
               {
-                "id": 110,
+                "id": 90,
                 "kind": "id",
                 "loc": a,
                 "text": "a",
               },
               {
-                "id": 111,
+                "id": 91,
                 "kind": "id",
                 "loc": a_m,
                 "text": "a_m",
@@ -8703,13 +8626,13 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
             "b" => [
               {
-                "id": 113,
+                "id": 92,
                 "kind": "id",
                 "loc": b,
                 "text": "b",
               },
               {
-                "id": 114,
+                "id": 93,
                 "kind": "id",
                 "loc": b_m,
                 "text": "b_m",
@@ -8720,7 +8643,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           "kind": "statement_destruct",
           "loc": let M { a: a_m, b: b_m } = m;,
           "type": {
-            "id": 109,
+            "id": 94,
             "kind": "type_id",
             "loc": M,
             "text": "M",
@@ -8728,46 +8651,46 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         },
         {
           "expression": {
-            "id": 145,
+            "id": 123,
             "kind": "op_binary",
             "left": {
-              "id": 143,
+              "id": 121,
               "kind": "op_binary",
               "left": {
-                "id": 141,
+                "id": 119,
                 "kind": "op_binary",
                 "left": {
-                  "id": 139,
+                  "id": 117,
                   "kind": "op_binary",
                   "left": {
-                    "id": 137,
+                    "id": 115,
                     "kind": "op_binary",
                     "left": {
-                      "id": 135,
+                      "id": 113,
                       "kind": "op_binary",
                       "left": {
-                        "id": 133,
+                        "id": 111,
                         "kind": "op_binary",
                         "left": {
-                          "id": 131,
+                          "id": 109,
                           "kind": "op_binary",
                           "left": {
-                            "id": 129,
+                            "id": 107,
                             "kind": "op_binary",
                             "left": {
-                              "id": 127,
+                              "id": 105,
                               "kind": "op_binary",
                               "left": {
-                                "id": 125,
+                                "id": 103,
                                 "kind": "op_binary",
                                 "left": {
-                                  "id": 123,
+                                  "id": 101,
                                   "kind": "op_binary",
                                   "left": {
-                                    "id": 121,
+                                    "id": 99,
                                     "kind": "op_binary",
                                     "left": {
-                                      "id": 119,
+                                      "id": 97,
                                       "kind": "id",
                                       "loc": a,
                                       "text": "a",
@@ -8775,7 +8698,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                                     "loc": a + b,
                                     "op": "+",
                                     "right": {
-                                      "id": 120,
+                                      "id": 98,
                                       "kind": "id",
                                       "loc": b,
                                       "text": "b",
@@ -8784,7 +8707,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                                   "loc": a + b + c,
                                   "op": "+",
                                   "right": {
-                                    "id": 122,
+                                    "id": 100,
                                     "kind": "id",
                                     "loc": c,
                                     "text": "c",
@@ -8793,7 +8716,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                                 "loc": a + b + c + a1,
                                 "op": "+",
                                 "right": {
-                                  "id": 124,
+                                  "id": 102,
                                   "kind": "id",
                                   "loc": a1,
                                   "text": "a1",
@@ -8802,7 +8725,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                               "loc": a + b + c + a1 + b1,
                               "op": "+",
                               "right": {
-                                "id": 126,
+                                "id": 104,
                                 "kind": "id",
                                 "loc": b1,
                                 "text": "b1",
@@ -8811,7 +8734,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                             "loc": a + b + c + a1 + b1 + c1,
                             "op": "+",
                             "right": {
-                              "id": 128,
+                              "id": 106,
                               "kind": "id",
                               "loc": c1,
                               "text": "c1",
@@ -8820,7 +8743,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                           "loc": a + b + c + a1 + b1 + c1 + a2,
                           "op": "+",
                           "right": {
-                            "id": 130,
+                            "id": 108,
                             "kind": "id",
                             "loc": a2,
                             "text": "a2",
@@ -8829,7 +8752,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                         "loc": a + b + c + a1 + b1 + c1 + a2 + b2,
                         "op": "+",
                         "right": {
-                          "id": 132,
+                          "id": 110,
                           "kind": "id",
                           "loc": b2,
                           "text": "b2",
@@ -8838,7 +8761,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                       "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3,
                       "op": "+",
                       "right": {
-                        "id": 134,
+                        "id": 112,
                         "kind": "id",
                         "loc": a3,
                         "text": "a3",
@@ -8847,7 +8770,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                     "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3,
                     "op": "+",
                     "right": {
-                      "id": 136,
+                      "id": 114,
                       "kind": "id",
                       "loc": c3,
                       "text": "c3",
@@ -8856,7 +8779,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                   "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4,
                   "op": "+",
                   "right": {
-                    "id": 138,
+                    "id": 116,
                     "kind": "id",
                     "loc": b4,
                     "text": "b4",
@@ -8865,7 +8788,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
                 "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4,
                 "op": "+",
                 "right": {
-                  "id": 140,
+                  "id": 118,
                   "kind": "id",
                   "loc": c4,
                   "text": "c4",
@@ -8874,7 +8797,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
               "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m,
               "op": "+",
               "right": {
-                "id": 142,
+                "id": 120,
                 "kind": "id",
                 "loc": a_m,
                 "text": "a_m",
@@ -8883,13 +8806,13 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             "loc": a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m + b_m,
             "op": "+",
             "right": {
-              "id": 144,
+              "id": 122,
               "kind": "id",
               "loc": b_m,
               "text": "b_m",
             },
           },
-          "id": 146,
+          "id": 124,
           "kind": "statement_return",
           "loc": return a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m + b_m;,
         },
@@ -9732,7 +9655,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
 
 exports[`grammar should parse struct-field-punning 1`] = `
 {
-  "id": 28,
+  "id": 26,
   "imports": [],
   "items": [
     {
@@ -9784,7 +9707,7 @@ exports[`grammar should parse struct-field-punning 1`] = `
 },
       "name": {
         "id": 1,
-        "kind": "type_id",
+        "kind": "id",
         "loc": A,
         "text": "A",
       },
@@ -9841,7 +9764,7 @@ exports[`grammar should parse struct-field-punning 1`] = `
     },
     {
       "attributes": [],
-      "id": 27,
+      "id": 25,
       "initializer": {
         "args": [
           {
@@ -9851,9 +9774,9 @@ exports[`grammar should parse struct-field-punning 1`] = `
               "loc": x,
               "text": "x",
             },
-            "id": 22,
+            "id": 21,
             "initializer": {
-              "id": 21,
+              "id": 20,
               "kind": "id",
               "loc": x,
               "text": "x",
@@ -9863,14 +9786,14 @@ exports[`grammar should parse struct-field-punning 1`] = `
           },
           {
             "field": {
-              "id": 23,
+              "id": 22,
               "kind": "id",
               "loc": y,
               "text": "y",
             },
-            "id": 25,
+            "id": 23,
             "initializer": {
-              "id": 24,
+              "id": 22,
               "kind": "id",
               "loc": y,
               "text": "y",
@@ -9879,12 +9802,12 @@ exports[`grammar should parse struct-field-punning 1`] = `
             "loc": y,
           },
         ],
-        "id": 26,
+        "id": 24,
         "kind": "struct_instance",
         "loc": A { x, y },
         "type": {
           "id": 19,
-          "kind": "type_id",
+          "kind": "id",
           "loc": A,
           "text": "A",
         },
@@ -9943,7 +9866,7 @@ exports[`grammar should parse struct-msg-as 1`] = `
 },
       "name": {
         "id": 1,
-        "kind": "type_id",
+        "kind": "id",
         "loc": A,
         "text": "A",
       },
@@ -9982,7 +9905,7 @@ exports[`grammar should parse struct-msg-as 1`] = `
 },
       "name": {
         "id": 6,
-        "kind": "type_id",
+        "kind": "id",
         "loc": B,
         "text": "B",
       },
@@ -10033,7 +9956,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
 },
       "name": {
         "id": 1,
-        "kind": "type_id",
+        "kind": "id",
         "loc": A,
         "text": "A",
       },
@@ -10042,7 +9965,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
       "fields": [
         {
           "as": {
-            "id": 10,
+            "id": 11,
             "kind": "id",
             "loc": coins,
             "text": "coins",
@@ -10050,7 +9973,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
           "id": 12,
           "initializer": {
             "base": 10,
-            "id": 11,
+            "id": 10,
             "kind": "number",
             "loc": 1000,
             "value": 1000n,
@@ -10103,7 +10026,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
 },
       "name": {
         "id": 7,
-        "kind": "type_id",
+        "kind": "id",
         "loc": B,
         "text": "B",
       },
@@ -10146,7 +10069,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "loc": struct A { x: Int },
       "name": {
         "id": 1,
-        "kind": "type_id",
+        "kind": "id",
         "loc": A,
         "text": "A",
       },
@@ -10197,7 +10120,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "loc": struct B { x: Int; y: Int },
       "name": {
         "id": 6,
-        "kind": "type_id",
+        "kind": "id",
         "loc": B,
         "text": "B",
       },
@@ -10254,7 +10177,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "loc": struct C { x: Int; y: Int = 42 },
       "name": {
         "id": 14,
-        "kind": "type_id",
+        "kind": "id",
         "loc": C,
         "text": "C",
       },
@@ -10311,7 +10234,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "loc": struct D { x: Int = 42; y: Int },
       "name": {
         "id": 23,
-        "kind": "type_id",
+        "kind": "id",
         "loc": D,
         "text": "D",
       },
@@ -10343,7 +10266,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "loc": message E { x: Int },
       "name": {
         "id": 32,
-        "kind": "type_id",
+        "kind": "id",
         "loc": E,
         "text": "E",
       },
@@ -10395,7 +10318,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "loc": message F { x: Int; y: Int },
       "name": {
         "id": 37,
-        "kind": "type_id",
+        "kind": "id",
         "loc": F,
         "text": "F",
       },
@@ -10453,7 +10376,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "loc": message G { x: Int; y: Int = 42 },
       "name": {
         "id": 45,
-        "kind": "type_id",
+        "kind": "id",
         "loc": G,
         "text": "G",
       },
@@ -10511,7 +10434,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
       "loc": message G { x: Int = 42; y: Int },
       "name": {
         "id": 54,
-        "kind": "type_id",
+        "kind": "id",
         "loc": G,
         "text": "G",
       },
@@ -10626,7 +10549,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
       "loc": primitive Int;,
       "name": {
         "id": 1,
-        "kind": "type_id",
+        "kind": "id",
         "loc": Int,
         "text": "Int",
       },
@@ -10672,18 +10595,18 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
       "declarations": [
         {
           "as": null,
-          "id": 11,
+          "id": 12,
           "initializer": null,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
-            "id": 9,
+            "id": 10,
             "kind": "id",
             "loc": a,
             "text": "a",
           },
           "type": {
-            "id": 10,
+            "id": 11,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -10703,7 +10626,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
       },
       "traits": [
         {
-          "id": 12,
+          "id": 9,
           "kind": "id",
           "loc": OtherTrait,
           "text": "OtherTrait",
@@ -10715,18 +10638,18 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
       "declarations": [
         {
           "as": null,
-          "id": 17,
+          "id": 18,
           "initializer": null,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
-            "id": 15,
+            "id": 16,
             "kind": "id",
             "loc": b,
             "text": "b",
           },
           "type": {
-            "id": 16,
+            "id": 17,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -10746,7 +10669,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
       },
       "traits": [
         {
-          "id": 18,
+          "id": 15,
           "kind": "id",
           "loc": SomeTrait,
           "text": "SomeTrait",
@@ -10805,7 +10728,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
 },
       "name": {
         "id": 1,
-        "kind": "type_id",
+        "kind": "id",
         "loc": A,
         "text": "A",
       },
@@ -10852,7 +10775,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
 },
       "name": {
         "id": 8,
-        "kind": "type_id",
+        "kind": "id",
         "loc": B,
         "text": "B",
       },

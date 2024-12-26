@@ -1,6 +1,11 @@
-Module = space* imports:Import* items:moduleItem* !.;
+Module =
+    imports:Import*
+    items:moduleItem*;
 
-Import = keyword<"import"> path:StringLiteral ";";
+Import =
+    keyword<"import">
+    path:StringLiteral
+    ";";
 
 moduleItem
     = PrimitiveTypeDecl
@@ -26,13 +31,16 @@ traitItemDecl
     / Constant
     / storageVar;
 
-PrimitiveTypeDecl = keyword<"primitive"> name:TypeId ";";
+PrimitiveTypeDecl =
+    keyword<"primitive">
+    name:TypeId
+    ";";
 
 Function =
     attributes:FunctionAttribute*
     keyword<"fun">
     name:Id
-    parameters:parametersFormal
+    parameters:parameterList<Parameter>
     returnType:ascription?
     body:(FunctionDefinition / FunctionDeclaration);
 
@@ -46,22 +54,22 @@ AsmFunction =
     attributes:FunctionAttribute*
     keyword<"fun">
     name:Id
-    parameters:parametersFormal
+    parameters:parameterList<Parameter>
     returnType:ascription?
     "{"
-    instructions:#$assembly
+    instructions:assembly
     "}";
 
 shuffle = "(" ids:Id* to:("->" @IntegerLiteralDec+)? ")";
 
 NativeFunctionDecl =
     "@name" "("
-    nativeName:FuncId
+    nativeName:#FuncId
     ")"
     attributes:FunctionAttribute*
     keyword<"native">
     name:Id
-    parameters:parametersFormal
+    parameters:parameterList<Parameter>
     returnType:ascription?
     ";";
 
@@ -84,9 +92,20 @@ ConstantDeclaration = semicolon;
 
 storageVar = @FieldDecl semicolon;
 
-StructDecl = "struct" name:TypeId "{" fields:structFields "}";
+StructDecl =
+    "struct"
+    name:TypeId
+    "{"
+    fields:structFields
+    "}";
 
-MessageDecl = "message" opcode:("(" @IntegerLiteral ")")? name:TypeId "{" fields:structFields "}";
+MessageDecl =
+    "message"
+    opcode:("(" @expression ")")?
+    name:TypeId
+    "{"
+    fields:structFields
+    "}";
 
 structFields = @inter<FieldDecl, ";">? ";"?;
 
@@ -113,9 +132,12 @@ Trait =
     declarations:traitItemDecl*
     "}";
 
-inheritedTraits = keyword<"with"> @inter<Id, ","> ","?;
+inheritedTraits = keyword<"with"> @commaList<Id>;
 
-ContractInit = "init" parameters:parametersFormal body:statements;
+ContractInit =
+    "init"
+    parameters:parameterList<Parameter>
+    body:statements;
 
 ContractAttribute = "@interface" "(" name:StringLiteral ")";
 
@@ -137,9 +159,10 @@ Receiver = type:receiverType "(" param:receiverParam ")" body:statements;
 receiverType = "bounced" / keyword<"receive"> / keyword<"external">;
 receiverParam = @(Parameter / StringLiteral)?;
 
-assembly = assemblyTerm*;
-assemblyTerm
-    = "{" assembly "}"
+assembly = #$assemblySequence;
+assemblySequence = assemblyItem*;
+assemblyItem
+    = "{" assemblySequence "}"
     / comment
     / "\"" [^"]* "\""
     / (!(["{}] / "//" / "/*") .)+;
@@ -160,11 +183,12 @@ TypeMap =
     ","
     value:TypeId valueAs:asType?
     ">";
-TypeId = name:#$([A-Z] [a-z0-9_]i*);
+TypeId "type identifier" = name:#$([A-Z] [a-zA-Z0-9_]*);
 asType = keyword<"as"> @Id;
 
 statement
     = StatementLet
+    / StatementDestruct
     / StatementBlock
     / StatementReturn
     / StatementCondition
@@ -179,6 +203,7 @@ statement
 statements = "{" @statement* "}";
 
 StatementLet        = keyword<"let"> name:Id type:ascription? "=" init:expression semicolon;
+StatementDestruct   = keyword<"let"> type:TypeId "{" fields:inter<destructItem, ","> rest:optionalRest "}" "=" init:expression semicolon;
 StatementBlock      = body:statements;
 StatementReturn     = keyword<"return"> expression:expression? semicolon;
 StatementExpression = expression:expression semicolon;
@@ -194,6 +219,14 @@ augmentedOp = "||" / "&&" / ">>" / "<<" / [-+*/%|&^];
 FalseBranch = body:statements;
 semicolon = ";" / &"}";
 
+destructItem = RegularField / PunnedField;
+RegularField = fieldName:Id ":" varName:Id;
+PunnedField = name:Id;
+
+optionalRest = "," @RestArgument / NoRestArgument;
+RestArgument = "..";
+NoRestArgument = ","?;
+
 expression   = Conditional;
 
 Conditional  = head:or tail:("?" thenBranch:or ":" elseBranch:Conditional)?;
@@ -206,7 +239,7 @@ bitwiseAnd   = Binary<equality,     "&">;
 equality     = Binary<compare,      ("!=" / "==")>;
 compare      = Binary<bitwiseShift, ("<=" / "<" / ">=" / ">")>;
 bitwiseShift = Binary<add,          ("<<" / ">>")>;
-add          = Binary<mul,          (@"+" !"+" / @"-" !"-")>;
+add          = Binary<mul,          ("+" / "-")>;
 mul          = Binary<Unary,        [*/%]>;
 
 Unary        = prefixes:Operator<[-+!~]>* expression:Suffix;
@@ -221,7 +254,7 @@ suffix
     / SuffixFieldAccess;
 
 SuffixUnboxNotNull = "!!";
-SuffixCall = params:parametersPassed;
+SuffixCall = params:parameterList<expression>;
 SuffixFieldAccess = "." name:Id;
 
 // Order is important
@@ -240,37 +273,34 @@ Null = keyword<"null">;
 parens = "(" @expression ")";
 Parens = child:parens;
 
-StructInstance = type:TypeId "{" fields:inter<StructFieldInitializer, ",">? ","? "}";
-InitOf = keyword<"initOf"> name:Id params:parametersPassed;
+StructInstance = type:TypeId "{" fields:commaList<StructFieldInitializer>? "}";
+InitOf = keyword<"initOf"> name:Id params:parameterList<expression>;
 
 StructFieldInitializer = name:Id init:(":" @expression)?;
 
-parametersPassed = "(" @(@inter<expression, ","> ","?)? ")";
-parametersFormal = "(" @(@inter<Parameter, ","> ","?)? ")";
+parameterList<T> = "(" @commaList<T>? ")";
 Parameter = name:Id type:ascription;
+
+commaList<T> = @inter<T, ","> ","?;
 
 // order is important
 IntegerLiteral = value:(IntegerLiteralHex / IntegerLiteralBin / IntegerLiteralOct / IntegerLiteralDec);
 
-IntegerLiteralDec = digits:#$([1-9] ("_"? digit)* / "0" digit*);
-IntegerLiteralHex = digits:#("0" [x]i @$(hexDigit ("_"? hexDigit)*));
-IntegerLiteralBin = digits:#("0" [b]i @$([01] ("_"? [01])*));
-IntegerLiteralOct = digits:#("0" [o]i @$([0-7] ("_"? [0-7])*));
+IntegerLiteralDec = digits:#underscored<digit>;
+IntegerLiteralHex = digits:#("0" [xX] @underscored<hexDigit>);
+IntegerLiteralBin = digits:#("0" [bB] @underscored<[01]>);
+IntegerLiteralOct = digits:#("0" [oO] @underscored<[0-7]>);
+underscored<T> = $(T ("_"? T)*);
+digit "digit" = [0-9];
 
-idPart = [a-z0-9_]i;
-Id = name:#$(!reservedWord [a-z_]i idPart*);
+idPart "an identifier character" = [a-zA-Z0-9_];
+Id "an identifier" = name:#$(!reservedWord [a-zA-Z_] idPart*);
 
 // FunC identifiers, where `FuncId` stands for FunC function identifier
 // A plain identifier cannot be a number, a single underscore, an operator, a keyword or a compiler directive
 // See: https://github.com/ton-blockchain/ton/blob/master/crypto/func/keywords.cpp
 
-funcPlainId =
-    !("-"? (digit+ / "0x" hexDigit+) ")")
-    (!(whiteSpace / [()[\],.;~]) .)+;
-
-funcQuotedId = "`" (![`\n] .)+ "`";
-
-FuncId = !("\"" / "{-") accessor:[.~]? id:#$(funcQuotedId / funcPlainId);
+FuncId = accessor:[.~]? id:$("`" [^`\r\n]+ "`" / [^ \t\r\n()[\],.;~]+);
 
 // Boolean literals
 BoolLiteral = value:("true" / "false") !idPart;
@@ -284,13 +314,12 @@ escapeChar
     / "u" @$(hexDigit hexDigit hexDigit hexDigit)
     / "x" @$(hexDigit hexDigit);
 
-hexDigit = [0-9a-f]i;
-digit = [0-9];
+hexDigit "hexadecimal digit" = [0-9a-fA-F];
 
 keyword<T> = #(@T !idPart);
 
 // Order is important
-reservedWord = keyword<(
+reservedWord "reserved word" = keyword<(
     // extend and public are reserved for legacy reasons
     "extend" / "public" /
 
@@ -301,8 +330,7 @@ reservedWord = keyword<(
     "inline" / "const"
 )>;
 
-whiteSpace = [ \t\r\n];
-space = [ \t\r\n] / comment;
+space "space" = [ \t\r\n] / comment;
 comment = multiLineComment / singleLineComment;
 multiLineComment = "/*" @$(!"*/" .)* "*/";
 singleLineComment = "//" @$[^\r\n]*;

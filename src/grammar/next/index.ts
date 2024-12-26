@@ -67,6 +67,12 @@ const parseFuncId =
     ({ accessor, id, loc }: $ast.FuncId): Handler<A.AstFuncId> =>
     (ctx) => {
         if (reservedFuncIds.has(id)) {
+            ctx.err.reservedFuncId()(loc);
+        }
+        if (id.match(/^-?([0-9]+|0x[0-9a-fA-F]+)$/)) {
+            ctx.err.numericFuncId()(loc);
+        }
+        if (id.startsWith("\"") || id.startsWith("{-")) {
             ctx.err.invalidFuncId()(loc);
         }
         return ctx.ast.FuncId((accessor ?? '') + id, loc);
@@ -89,6 +95,9 @@ const prefixMap = {
 const parseIntegerLiteralValue =
     ({ $, digits, loc }: $ast.IntegerLiteral["value"]): Handler<A.AstNumber> =>
     (ctx) => {
+        if ($ === 'IntegerLiteralDec' && digits.startsWith('0') && digits.includes('_')) {
+            ctx.err.leadingZeroUnderscore()(loc);
+        }
         const value = BigInt(prefixMap[$] + digits.replaceAll("_", ""));
         return ctx.ast.Number(baseMap[$], value, loc);
     };
@@ -303,6 +312,41 @@ const parseStatementLet =
         );
     };
 
+const parsePunnedField = ({ name }: $ast.PunnedField): Handler<[A.AstId, A.AstId]> => ctx => {
+    return [parseId(name)(ctx), parseId(name)(ctx)];
+};
+
+const parseRegularField = ({ fieldName, varName }: $ast.RegularField): Handler<[A.AstId, A.AstId]> => ctx => {
+    return [parseId(fieldName)(ctx), parseId(varName)(ctx)];
+};
+
+const parseDestructItem: (node: $ast.destructItem) => Handler<[A.AstId, A.AstId]> =
+    makeVisitor<$ast.destructItem>()({
+        PunnedField: parsePunnedField,
+        RegularField: parseRegularField,
+    });
+
+const parseStatementDestruct = ({ type, fields, rest, init, loc }: $ast.StatementDestruct): Handler<A.AstStatementDestruct> => ctx => {
+    const ids: Map<string, [A.AstId, A.AstId]> = new Map();
+    for (const param of parseList(fields)) {
+        const pair = parseDestructItem(param)(ctx);
+        const [field] = pair;
+        const name = field.text;
+        if (ids.has(name)) {
+            ctx.err.duplicateField(name)(param.loc);
+        }
+        ids.set(name, pair);
+    }
+
+    return ctx.ast.StatementDestruct(
+        parseTypeId(type)(ctx),
+        ids,
+        rest.$ === 'RestArgument',
+        parseExpression(init)(ctx),
+        loc,
+    );
+};
+
 const parseStatementBlock =
     (_node: $ast.StatementBlock): Handler<never> =>
     () => {
@@ -479,6 +523,7 @@ const parseStatementAssign =
 const parseStatement: (node: $ast.statement) => Handler<A.AstStatement> =
     makeVisitor<$ast.statement>()({
         StatementLet: parseStatementLet,
+        StatementDestruct: parseStatementDestruct,
         StatementBlock: parseStatementBlock,
         StatementReturn: parseStatementReturn,
         StatementCondition: parseStatementCondition,
@@ -756,7 +801,7 @@ const parseAsmFunction =
             parseId(node.name)(ctx),
             node.returnType ? parseType(node.returnType)(ctx) : null,
             map(parseList(node.parameters), parseParameter)(ctx),
-            [node.instructions],
+            [node.instructions.trim()],
             node.loc,
         );
     };
@@ -921,7 +966,7 @@ const parseMessageDecl =
     (ctx) => {
         return ctx.ast.MessageDecl(
             parseId(name)(ctx),
-            opcode ? parseIntegerLiteral(opcode)(ctx) : null,
+            opcode ? parseExpression(opcode)(ctx) : null,
             map(parseList(fields), parseFieldDecl)(ctx),
             loc,
         );
@@ -1114,7 +1159,9 @@ export const getParser = (ast: A.FactoryAst) => {
     };
 };
 
-// const code = `trait Test { abstract fun foo() }`;
+// const code = `@name(0x0)
+// native idTest();
+// `;
 
 // const r = getParser(A.getAstFactory()).parse(
 //     code,

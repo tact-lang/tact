@@ -64,6 +64,9 @@ export const syntaxErrorSchema = <T, U>(
         duplicateField: (name: string) => {
             return handle(text(`Duplicate field destructuring: "${name}"`));
         },
+        restShouldBeLast: () => {
+            return handle(text(`Rest parameter should be last`));
+        },
         importWithBackslash: () => {
             return handle(sub`Import path can't contain "\\"`);
         },
@@ -92,6 +95,15 @@ export const syntaxErrorSchema = <T, U>(
         },
         invalidFuncId: () => {
             return handle(sub`Invalid FunC identifier`);
+        },
+        reservedFuncId: () => {
+            return handle(sub`Reserved FunC identifier`);
+        },
+        numericFuncId: () => {
+            return handle(sub`FunC identifier cannot be a number`);
+        },
+        leadingZeroUnderscore: () => {
+            return handle(sub`Numbers with leading zeroes cannot use underscores for JS compatibility`);
         },
     };
 };

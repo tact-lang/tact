@@ -143,7 +143,7 @@ export const getAstSchema = (
             }),
         MessageDecl: (
             name: A.AstId,
-            opcode: A.AstNumber | null,
+            opcode: A.AstExpression | null,
             fields: A.AstFieldDecl[],
             loc: Loc,
         ): A.AstMessageDecl =>
@@ -231,6 +231,21 @@ export const getAstSchema = (
                 kind: "statement_let",
                 name,
                 type,
+                expression,
+                loc: toSrcInfo(loc),
+            }),
+        StatementDestruct: (
+            type: A.AstTypeId,
+            identifiers: Map<string, [A.AstId, A.AstId]>,
+            ignoreUnspecifiedFields: boolean,
+            expression: A.AstExpression,
+            loc: Loc,
+        ): A.AstStatementDestruct =>
+            createNode<A.AstStatementDestruct>({
+                kind: "statement_destruct",
+                type,
+                identifiers,
+                ignoreUnspecifiedFields,
                 expression,
                 loc: toSrcInfo(loc),
             }),
