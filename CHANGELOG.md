@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Utility for logging errors in code that was supposed to be unreachable: PR [#991](https://github.com/tact-lang/tact/pull/991)
 - Ability to specify a compile-time message opcode expression: PR [#1188](https://github.com/tact-lang/tact/pull/1188)
 - The `VarInt16`, `VarInt32`, `VarUint16`, `VarUint32` integer serialization types: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
-- The `--disasm` CLI flag to expose Tact's TVM disassembler: PR [#1259](https://github.com/tact-lang/tact/pull/1259)
+- `unboc`: a standalone CLI utility to expose Tact's TVM disassembler: PR [#1259](https://github.com/tact-lang/tact/pull/1259)
 
 ### Changed
 

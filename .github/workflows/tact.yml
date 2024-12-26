@@ -177,7 +177,7 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           tact bin/test/success.tact
-          tact --disasm bin/test/success_HelloWorld.code.boc
+          unboc bin/test/success_HelloWorld.code.boc
 
       - name: Test compatibility with tact-template
         run: |

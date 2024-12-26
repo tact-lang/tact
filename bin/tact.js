@@ -1,12 +1,11 @@
 #!/usr/bin/env node
-/* eslint-disable @typescript-eslint/no-var-requires */
 
 const pkg = require("../package.json");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const main = require("../dist/node.js");
 const meowModule = import("meow");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { execFileSync } = require("child_process");
-const { decompileAll } = require("@tact-lang/opcode");
-const { readFileSync } = require("fs");
 
 void meowModule.then(
     /** @param meow {import('meow/build/index')} */
@@ -14,7 +13,7 @@ void meowModule.then(
         const cli = meow.default(
             `
     Usage
-      $ tact [...flags] (--config CONFIG | --disasm BOC-FILE | TACT-FILE)
+      $ tact [...flags] (--config CONFIG | FILE)
 
     Flags
       -c, --config CONFIG         Specify path to config file (tact.config.json)
@@ -23,7 +22,6 @@ void meowModule.then(
       --with-decompilation        Full compilation followed by decompilation of produced binary code
       --func                      Output intermediate FunC code and exit
       --check                     Perform syntax and type checking, then exit
-      --disasm BOC-FILE           Disassemble a BoC (bag of cells) file and output TVM instructions to stdout
       -e, --eval EXPRESSION       Evaluate a Tact expression and exit
       -v, --version               Print Tact compiler version and exit
       -h, --help                  Display this text and exit
@@ -64,7 +62,6 @@ void meowModule.then(
                         type: "string",
                         isMultiple: true,
                     },
-                    disasm: { type: "string" },
                     quiet: { shortFlag: "q", type: "boolean", default: false },
                     withDecompilation: { type: "boolean", default: false },
                     func: { type: "boolean", default: false },
@@ -117,18 +114,6 @@ void meowModule.then(
                     console.log(result.message);
                     process.exit(30);
                 }
-            }
-        }
-
-        if (cli.flags.disasm !== undefined) {
-            try {
-                const boc = readFileSync(cli.flags.disasm);
-                const disasmResult = decompileAll({ src: Buffer.from(boc) });
-                console.log(disasmResult);
-                process.exit(0);
-            } catch (error) {
-                console.error(error.message);
-                process.exit(30);
             }
         }
 
