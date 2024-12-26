@@ -191,7 +191,7 @@ export function randomAstStructInstance(
     return dummyAstNode(
         fc.record({
             kind: fc.constant("struct_instance"),
-            type: randomAstTypeId(),
+            type: randomAstId(),
             args: fc.array(structFieldInitializer),
         }),
     );
