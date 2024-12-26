@@ -1,26 +1,18 @@
 import fc from "fast-check";
-import { AstExpression, eqExpressions, getAstFactory } from "../../grammar/ast";
-import { prettyPrint } from "../../prettyPrinter";
-import { getParser } from "../../grammar";
 import {
-    randomAstConditional,
-    randomAstOpBinary,
-    randomAstOpUnary,
-    randomAstExpression,
+    randomAstBoolean,
+    randomAstNumber,
+    randomAstString,
 } from "../utils/expression/randomAst";
+import { getParser } from "../../grammar";
+import { getAstFactory, eqExpressions, AstExpression } from "../../grammar/ast";
+import { prettyPrint } from "../../prettyPrinter";
 
-describe("Pretty Print Expressions", () => {
-    // Max depth of the expression tree
-    const maxShrinks = 15;
-    const expression = () => randomAstExpression(maxShrinks);
-
+describe("Pretty Print Primitives", () => {
     const cases: [string, fc.Arbitrary<AstExpression>][] = [
-        [
-            "AstConditional",
-            randomAstConditional(expression(), expression(), expression()),
-        ],
-        ["AstOpBinary", randomAstOpBinary(expression(), expression())],
-        ["AstOpUnary", randomAstOpUnary(expression())],
+        ["AstBoolean", randomAstBoolean()],
+        ["AstNumber", randomAstNumber()],
+        ["AstString", randomAstString()],
     ];
 
     cases.forEach(([caseName, astGenerator]) => {
