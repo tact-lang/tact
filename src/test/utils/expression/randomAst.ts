@@ -1,0 +1,147 @@
+import fc from "fast-check";
+import {
+    AstBoolean,
+    AstConditional,
+    AstExpression,
+    AstNumber,
+    AstOpBinary,
+    AstOpUnary,
+    AstString,
+} from "../../../grammar/ast";
+import { dummySrcInfo } from "../../../grammar/src-info";
+
+function dummyAstNode<T>(
+    generator: fc.Arbitrary<T>,
+): fc.Arbitrary<T & { id: number; loc: typeof dummySrcInfo }> {
+    return generator.map((i) => ({
+        ...i,
+        id: 0,
+        loc: dummySrcInfo,
+    }));
+}
+
+export function randomAstBoolean(): fc.Arbitrary<AstBoolean> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("boolean"),
+            value: fc.boolean(),
+        }),
+    );
+}
+
+export function randomAstString(): fc.Arbitrary<AstString> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("string"),
+            value: fc.string(),
+        }),
+    );
+}
+
+export function randomAstNumber(): fc.Arbitrary<AstNumber> {
+    const values = [
+        ...Array.from({ length: 10 }, (_, i) => [BigInt(i), BigInt(-i)]).flat(),
+        ...Array.from({ length: 256 }, (_, i) => 1n ** BigInt(i)),
+    ];
+
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("number"),
+            base: fc.constantFrom(2, 8, 10, 16),
+            value: fc.oneof(...values.map((value) => fc.constant(value))),
+        }),
+    );
+}
+
+export function randomAstOpUnary(
+    operand: fc.Arbitrary<AstExpression>,
+): fc.Arbitrary<AstOpUnary> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("op_unary"),
+            op: fc.constantFrom("+", "-", "!", "!!", "~"),
+            operand: operand,
+        }),
+    );
+}
+export function randomAstOpBinary(
+    leftExpression: fc.Arbitrary<AstExpression>,
+    rightExpression: fc.Arbitrary<AstExpression>,
+): fc.Arbitrary<AstOpBinary> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("op_binary"),
+            op: fc.constantFrom(
+                "+",
+                "-",
+                "*",
+                "/",
+                "!=",
+                ">",
+                "<",
+                ">=",
+                "<=",
+                "==",
+                "&&",
+                "||",
+                "%",
+                "<<",
+                ">>",
+                "&",
+                "|",
+                "^",
+            ),
+            left: leftExpression,
+            right: rightExpression,
+        }),
+    );
+}
+
+export function randomAstConditional(
+    conditionExpression: fc.Arbitrary<AstExpression>,
+    thenBranchExpression: fc.Arbitrary<AstExpression>,
+    elseBranchExpression: fc.Arbitrary<AstExpression>,
+): fc.Arbitrary<AstConditional> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("conditional"),
+            condition: conditionExpression,
+            thenBranch: thenBranchExpression,
+            elseBranch: elseBranchExpression,
+        }),
+    );
+}
+
+export function randomAstExpression(
+    maxShrinks: number,
+): fc.Arbitrary<AstExpression> {
+    return fc.letrec<{
+        AstExpression: AstExpression;
+        AstOpUnary: AstOpUnary;
+        AstOpBinary: AstOpBinary;
+        AstConditional: AstConditional;
+    }>((tie) => ({
+        AstExpression: fc.oneof(
+            randomAstNumber(), // TODO: Expand this to include more expressions, look into AstExpressionPrimary
+            tie("AstOpUnary"),
+            tie("AstOpBinary"),
+            tie("AstConditional"),
+        ),
+        AstOpUnary: fc.limitShrink(
+            randomAstOpUnary(tie("AstExpression")),
+            maxShrinks,
+        ),
+        AstOpBinary: fc.limitShrink(
+            randomAstOpBinary(tie("AstExpression"), tie("AstExpression")),
+            maxShrinks,
+        ),
+        AstConditional: fc.limitShrink(
+            randomAstConditional(
+                tie("AstExpression"),
+                tie("AstExpression"),
+                tie("AstExpression"),
+            ),
+            maxShrinks,
+        ),
+    })).AstExpression;
+}
