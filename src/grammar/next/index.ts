@@ -5,9 +5,11 @@ import type { $ast } from "./grammar";
 import { TactCompilationError, throwInternalCompilerError } from "../../errors";
 import { SyntaxErrors, syntaxErrorSchema } from "../parser-error";
 import { AstSchema, getAstSchema } from "../ast-typed";
-import { makeVisitor } from "./util";
 import { getSrcInfo, ItemOrigin } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
+import { makeMakeVisitor } from "../../utils/tricks";
+
+const makeVisitor = makeMakeVisitor("$");
 
 type Context = {
     ast: AstSchema;
