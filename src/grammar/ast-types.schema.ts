@@ -1,53 +1,198 @@
 import * as A from "./ast";
+import { SrcInfo } from "./src-info";
 
-type Comparator<T> = (left: T, right: T) => boolean;
+const entries = Object.entries as <T>(o: T) => { [K in keyof T]: [K, T[K]] }[keyof T][];
+const values = Object.values as <T>(o: T) => T[keyof T][];
 
-interface Skhema {
-    unknown: () => Comparator<unknown>;
-    string: () => Comparator<string>;
-    number: () => Comparator<number>;
-    bigint: () => Comparator<bigint>;
-    boolean: () => Comparator<boolean>;
-    literal: <K extends string>(key: K) => Comparator<K>;
-    object: <T>(children: {
-        [K in keyof T]: Comparator<T[K]>;
-    }) => Comparator<T>;
-    literalUnion: <const T extends string | number>(keys: T[]) => Comparator<T>;
-    array: <T>(child: Comparator<T>) => Comparator<T[]>;
-    map: <T>(value: Comparator<T>) => Comparator<Map<string, T>>;
-    pair: <T, U>(t: Comparator<T>, u: Comparator<T>) => Comparator<[T, U]>;
-    nullable: <T>(child: Comparator<T>) => Comparator<T | null>;
-    disjointUnion: <K extends string, T>(
-        key: K,
-        children: { [K in keyof T]: Comparator<T[K] & Record<K, string>> },
-    ) => Comparator<T[keyof T]>;
-    lazy: <T>(child: () => Comparator<T>) => Comparator<T>;
+type Matcher<U> = {
+    fail: U;
+    path: (part: string, child: () => U) => U;
+    eps: U;
+    eq: <T>(left: T, right: T) => U;
+    short: (children: U[]) => U;
+    every: (children: U[]) => U;
+    some: (children: U[]) => U;
 }
 
-declare const z: Skhema;
+type Err = { path: string, left: unknown, right: unknown }
+type ErrMatcher = (path: string[]) => [boolean, Err[]];
 
-export const srcInfo = z.unknown();
+const getMatcher = (): Matcher<ErrMatcher> => ({
+    fail: path => [false, [{ path: path.join(''), left: undefined, right: undefined }]],
+    path: (part, child) => path => child()([...path, part]),
+    eps: () => [true, []],
+    eq: (l, r) => path => {
+        const res = l === r;
+        return [
+            res,
+            res ? [] : [{ path: path.join(''), left: l, right: r }],
+        ];
+    },
+    short: children => path => {
+        const results: Err[] = [];
+        const status = children.every(child => {
+            const [r, errors] = child(path);
+            results.push(...errors);
+            return r;
+        });
+        return [status, results];
+    },
+    every: children => path => {
+        const res = children.map(child => child(path));
+        return [
+            res.every(([res]) => res),
+            res.flatMap(([, errors]) => errors),
+        ];
+    },
+    some: children => path => {
+        let lastErrors: Err[] = [];
+        for (const child of children) {
+            const [r, errors] = child(path);
+            if (r) return [r, errors];
+            lastErrors = errors;
+        }
+        return [false, lastErrors];
+    },
+});
+
+type Type<U, T> = {
+    eq: (left: T, right: T) => U;
+}
+
+interface Schema<U> {
+    unknown: Type<U, unknown>;
+    string: Type<U, string>;
+    number: Type<U, number>;
+    bigint: Type<U, bigint>;
+    boolean: Type<U, boolean>;
+    literal: <K extends string>(key: K) => Type<U, K>;
+    object: <T>(children: {
+        [K in Extract<keyof T, string>]: Type<U, T[K]> & object;
+    }) => Type<U, T>;
+    literalUnion: <const T extends string | number>(keys: T[]) => Type<U, T>;
+    array: <T>(child: Type<U, T>) => Type<U, T[]>;
+    map: <T>(value: Type<U, T>) => Type<U, Map<string, T>>;
+    pair: <T, V>(t: Type<U, T>, u: Type<U, V>) => Type<U, [T, V]>;
+    nullable: <T>(child: Type<U, T>) => Type<U, T | null>;
+    disjointUnion: <K extends string, T>(
+        key: K,
+        children: {
+            [L in keyof T]: Type<U, T[L]>
+        }
+    ) => Type<U, T[keyof T]>;
+    lazy: <T>(child: () => Type<U, T>) => Type<U, T>;
+}
+
+const getSchema = <U>({ fail, path, eps, eq, short, every, some }: Matcher<U>): Schema<U> => {
+    const simpleType = <T>(): Type<U, T> => ({
+        eq,
+    });
+
+    const string = simpleType<string>();
+    const number = simpleType<number>();
+
+    return {
+        unknown: {
+            eq: () => eps,
+        },
+        string,
+        number,
+        bigint: simpleType<bigint>(),
+        boolean: simpleType<boolean>(),
+        literal: () => string,
+        literalUnion: () => ({
+            eq,
+        }),
+        object: children => ({
+            eq: (a, b) =>
+                typeof a !== 'object' || a === null ||
+                typeof b !== 'object' || b === null
+                ? fail
+                : every(entries(children).map(
+                    ([k, child]) => path(`.${k}`, () =>
+                        k in (a as any) && k in (b as any)
+                            ? child.eq(a[k], b[k])
+                            : fail)
+                )),
+        }),
+        array: child => ({
+            eq: (as, bs) => short([
+                path('.length', () => number.eq(as.length, bs.length)),
+                every([...as.entries()].map(([i, a]) => (
+                    path(`[${i}]`, () => {
+                        return bs[i] ? child.eq(a, bs[i]) : fail;
+                    })
+                )))
+            ]),
+        }),
+        map: child => ({
+            eq: (as, bs) => short([
+                path('.size', () => eq(as.size, bs.size)),
+                every([...as.entries()].map(([k, a]) => (
+                    path(`.get("${k}")`, () => {
+                        const b = bs.get(k);
+                        return b ? child.eq(a, b) : fail;
+                    })
+                )))
+            ])
+        }),
+        pair: (left, right) => ({
+            eq: ([al, ar], [bl, br]) => every([
+                path('[0]', () => left.eq(al, bl)),
+                path('[1]', () => right.eq(ar, br))
+            ]),
+        }),
+        nullable: child => ({
+            eq: (a, b) =>
+                a === null && b === null
+                    ? eq(a, b)
+                    : a !== null && b !== null
+                        ? child.eq(a, b)
+                        : fail
+        }),
+        disjointUnion: (key, children) => ({
+            eq: (a, b) => some(
+                values(children)
+                    .map((child) => child.eq(a, b)),
+            ),
+        }),
+        lazy: <T>(child: () => Type<U, T>) => {
+            let cache: Type<U, T> | undefined;
+            const getChild = () => cache ?? (cache = child());
+            return {
+                eq: (a: T, b: T) => getChild().eq(a, b),
+            };
+        },
+    };
+};
+
+const z = getSchema(getMatcher());
+type Comparator<T> = Type<ErrMatcher, T>
+
+export const srcInfo: Comparator<SrcInfo> = z.unknown;
+
+export const id = z.unknown;
 
 export const astString = z.object({
     kind: z.literal("string"),
-    value: z.string(),
-    id: z.number(),
+    value: z.string,
+    id,
     loc: srcInfo,
 });
 
 export const astId = z.object({
     kind: z.literal("id"),
-    text: z.string(),
-    id: z.number(),
+    text: z.string,
+    id,
     loc: srcInfo,
 });
 
-export const astAsmInstruction = z.string();
+export const astAsmInstruction = z.string;
 
 export const astFuncId = z.object({
     kind: z.literal("func_id"),
-    text: z.string(),
-    id: z.number(),
+    text: z.string,
+    id,
     loc: srcInfo,
 });
 
@@ -74,8 +219,8 @@ export const astAugmentedAssignOperation = z.literalUnion([
 
 export const astTypeId = z.object({
     kind: z.literal("type_id"),
-    text: z.string(),
-    id: z.number(),
+    text: z.string,
+    id,
     loc: srcInfo,
 });
 
@@ -85,27 +230,27 @@ export const astMapType = z.object({
     keyStorageType: z.nullable(astId),
     valueType: astTypeId,
     valueStorageType: z.nullable(astId),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
 export const astBouncedMessageType = z.object({
     kind: z.literal("bounced_message_type"),
     messageType: astTypeId,
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
 export const astBoolean = z.object({
     kind: z.literal("boolean"),
-    value: z.boolean(),
-    id: z.number(),
+    value: z.boolean,
+    id,
     loc: srcInfo,
 });
 
 export const astNull = z.object({
     kind: z.literal("null"),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -136,14 +281,14 @@ export const astDestructMapping = z.object({
     kind: z.literal("destruct_mapping"),
     field: astId,
     name: astId,
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
 export const astDestructEnd = z.object({
     kind: z.literal("destruct_end"),
-    ignoreUnspecifiedFields: z.boolean(),
-    id: z.number(),
+    ignoreUnspecifiedFields: z.boolean,
+    id,
     loc: srcInfo,
 });
 
@@ -152,8 +297,8 @@ export const astNumberBase = z.literalUnion([2, 8, 10, 16]);
 export const astNumber = z.object({
     kind: z.literal("number"),
     base: astNumberBase,
-    value: z.bigint(),
-    id: z.number(),
+    value: z.bigint,
+    id,
     loc: srcInfo,
 });
 
@@ -186,7 +331,7 @@ export const astFunctionAttributeRest = z.object({
 export const astImport = z.object({
     kind: z.literal("import"),
     path: astString,
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -229,7 +374,7 @@ export const astFunctionAttribute: Comparator<A.AstFunctionAttribute> =
 export const astOptionalType: Comparator<A.AstOptionalType> = z.object({
     kind: z.literal("optional_type"),
     typeArg: z.lazy(() => astType),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -244,7 +389,7 @@ export const astTypedParameter: Comparator<A.AstTypedParameter> = z.object({
     kind: z.literal("typed_parameter"),
     name: astId,
     type: astType,
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -253,7 +398,7 @@ export const astOpBinary: Comparator<A.AstOpBinary> = z.object({
     op: astBinaryOperation,
     left: astExpression,
     right: astExpression,
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -261,7 +406,7 @@ export const astOpUnary: Comparator<A.AstOpUnary> = z.object({
     kind: z.literal("op_unary"),
     op: astUnaryOperation,
     operand: astExpression,
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -270,7 +415,7 @@ export const astConditional: Comparator<A.AstConditional> = z.object({
     condition: astExpression,
     thenBranch: astExpression,
     elseBranch: astExpression,
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -279,7 +424,7 @@ export const astMethodCall: Comparator<A.AstMethodCall> = z.object({
     self: astExpression,
     method: astId,
     args: z.array(astExpression),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -287,7 +432,7 @@ export const astFieldAccess: Comparator<A.AstFieldAccess> = z.object({
     kind: z.literal("field_access"),
     aggregate: astExpression,
     field: astId,
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -295,7 +440,7 @@ export const astStaticCall: Comparator<A.AstStaticCall> = z.object({
     kind: z.literal("static_call"),
     function: astId,
     args: z.array(astExpression),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -304,7 +449,7 @@ export const astStructFieldInitializer: Comparator<A.AstStructFieldInitializer> 
         kind: z.literal("struct_field_initializer"),
         field: astId,
         initializer: astExpression,
-        id: z.number(),
+        id,
         loc: srcInfo,
     });
 
@@ -312,7 +457,7 @@ export const astStructInstance: Comparator<A.AstStructInstance> = z.object({
     kind: z.literal("struct_instance"),
     type: astId,
     args: z.array(astStructFieldInitializer),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -320,7 +465,7 @@ export const astInitOf: Comparator<A.AstInitOf> = z.object({
     kind: z.literal("init_of"),
     contract: astId,
     args: z.array(astExpression),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -423,7 +568,7 @@ export const astConstantDecl: Comparator<A.AstConstantDecl> = z.object({
     attributes: z.array(astConstantAttribute),
     name: astId,
     type: astType,
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -435,7 +580,7 @@ export const astAsmFunctionDef: Comparator<A.AstAsmFunctionDef> = z.object({
     return: z.nullable(astType),
     params: z.array(astTypedParameter),
     instructions: z.array(astAsmInstruction),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -447,7 +592,7 @@ export const astNativeFunctionDecl: Comparator<A.AstNativeFunctionDecl> =
         nativeName: astFuncId,
         params: z.array(astTypedParameter),
         return: z.nullable(astType),
-        id: z.number(),
+        id,
         loc: srcInfo,
     });
 
@@ -457,7 +602,7 @@ export const astConstantDef: Comparator<A.AstConstantDef> = z.object({
     name: astId,
     type: astType,
     initializer: astExpression,
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -467,7 +612,7 @@ export const astFieldDecl: Comparator<A.AstFieldDecl> = z.object({
     type: astType,
     initializer: z.nullable(astExpression),
     as: z.nullable(astId),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -476,14 +621,14 @@ export const astStatementLet: Comparator<A.AstStatementLet> = z.object({
     name: astId,
     type: z.nullable(astType),
     expression: astExpression,
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
 export const astStatementReturn: Comparator<A.AstStatementReturn> = z.object({
     kind: z.literal("statement_return"),
     expression: z.nullable(astExpression),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -491,7 +636,7 @@ export const astStatementExpression: Comparator<A.AstStatementExpression> =
     z.object({
         kind: z.literal("statement_expression"),
         expression: astExpression,
-        id: z.number(),
+        id,
         loc: srcInfo,
     });
 
@@ -499,7 +644,7 @@ export const astStatementAssign: Comparator<A.AstStatementAssign> = z.object({
     kind: z.literal("statement_assign"),
     path: astExpression,
     expression: astExpression,
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -509,14 +654,14 @@ export const astStatementAugmentedAssign: Comparator<A.AstStatementAugmentedAssi
         op: astAugmentedAssignOperation,
         path: astExpression,
         expression: astExpression,
-        id: z.number(),
+        id,
         loc: srcInfo,
     });
 
 export const astPrimitiveTypeDecl = z.object({
     kind: z.literal("primitive_type_decl"),
     name: astId,
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -524,7 +669,7 @@ export const astStructDecl: Comparator<A.AstStructDecl> = z.object({
     kind: z.literal("struct_decl"),
     name: astId,
     fields: z.array(astFieldDecl),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -533,7 +678,7 @@ export const astMessageDecl: Comparator<A.AstMessageDecl> = z.object({
     name: astId,
     opcode: z.nullable(astExpression),
     fields: z.array(astFieldDecl),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -543,14 +688,14 @@ export const astFunctionDecl: Comparator<A.AstFunctionDecl> = z.object({
     name: astId,
     return: z.nullable(astType),
     params: z.array(astTypedParameter),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
 export const astStatementTry = z.object({
     kind: z.literal("statement_try"),
     statements: z.array(astStatement),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -559,7 +704,7 @@ export const astStatementTryCatch = z.object({
     statements: z.array(astStatement),
     catchName: astId,
     catchStatements: z.array(astStatement),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -570,7 +715,7 @@ export const astFunctionDef: Comparator<A.AstFunctionDef> = z.object({
     return: z.nullable(astType),
     params: z.array(astTypedParameter),
     statements: z.array(astStatement),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -580,7 +725,7 @@ export const astContract: Comparator<A.AstContract> = z.object({
     traits: z.array(astId),
     attributes: z.array(astContractAttribute),
     declarations: z.array(astContractDeclaration),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -590,7 +735,7 @@ export const astTrait: Comparator<A.AstTrait> = z.object({
     traits: z.array(astId),
     attributes: z.array(astContractAttribute),
     declarations: z.array(astTraitDeclaration),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -598,7 +743,7 @@ export const astContractInit: Comparator<A.AstContractInit> = z.object({
     kind: z.literal("contract_init"),
     params: z.array(astTypedParameter),
     statements: z.array(astStatement),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -606,7 +751,7 @@ export const astReceiver: Comparator<A.AstReceiver> = z.object({
     kind: z.literal("receiver"),
     selector: astReceiverKind,
     statements: z.array(astStatement),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -616,7 +761,7 @@ export const astCondition: Comparator<A.AstCondition> = z.object({
     trueStatements: z.array(astStatement),
     falseStatements: z.nullable(z.array(astStatement)),
     elseif: z.nullable(z.lazy(() => astCondition)),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -624,7 +769,7 @@ export const astStatementWhile: Comparator<A.AstStatementWhile> = z.object({
     kind: z.literal("statement_while"),
     condition: astExpression,
     statements: z.array(astStatement),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -632,7 +777,7 @@ export const astStatementUntil: Comparator<A.AstStatementUntil> = z.object({
     kind: z.literal("statement_until"),
     condition: astExpression,
     statements: z.array(astStatement),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -640,7 +785,7 @@ export const astStatementRepeat: Comparator<A.AstStatementRepeat> = z.object({
     kind: z.literal("statement_repeat"),
     iterations: astExpression,
     statements: z.array(astStatement),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -650,7 +795,7 @@ export const astStatementForEach: Comparator<A.AstStatementForEach> = z.object({
     valueName: astId,
     map: astExpression,
     statements: z.array(astStatement),
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -658,9 +803,9 @@ export const astStatementDestruct = z.object({
     kind: z.literal("statement_destruct"),
     type: astTypeId,
     identifiers: z.map(z.pair(astId, astId)),
-    ignoreUnspecifiedFields: z.boolean(),
+    ignoreUnspecifiedFields: z.boolean,
     expression: astExpression,
-    id: z.number(),
+    id,
     loc: srcInfo,
 });
 
@@ -683,5 +828,5 @@ export const astModule: Comparator<A.AstModule> = z.object({
     kind: z.literal("module"),
     imports: z.array(astImport),
     items: z.array(astModuleItem),
-    id: z.number(),
+    id,
 });
