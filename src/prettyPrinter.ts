@@ -181,7 +181,7 @@ export const ppAstNumber = A.astNumToString;
 export const ppAstBoolean = ({ value }: A.AstBoolean) => value.toString();
 export const ppAstId = ({ text }: A.AstId) => text;
 export const ppAstNull = (_expr: A.AstNull) => "null";
-export const ppAstString = ({ value }: A.AstString) => `"${value}"`;
+export const ppAstString = ({ value }: A.AstString) => JSON.stringify(value);
 
 export const ppAstStaticCall = ({ function: func, args }: A.AstStaticCall) => {
     return `${ppAstId(func)}(${ppExprArgs(args)})`;
