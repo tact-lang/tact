@@ -138,3 +138,7 @@ export const makeMakeVisitor =
  * Make visitor for disjoint union (tagged union, discriminated union)
  */
 export const makeVisitor = makeMakeVisitor("kind");
+
+export const entries = Object.entries as <T>(o: T) => { [K in keyof T]: [K, T[K]] }[keyof T][];
+
+export const values = Object.values as <T>(o: T) => T[keyof T][];

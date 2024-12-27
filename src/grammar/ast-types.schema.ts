@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { entries } from "../utils/tricks";
 import * as A from "./ast";
 import { SrcInfo } from "./src-info";
-
-const entries = Object.entries as <T>(o: T) => { [K in keyof T]: [K, T[K]] }[keyof T][];
-const values = Object.values as <T>(o: T) => T[keyof T][];
 
 type Matcher<U> = {
     fail: U;
@@ -12,7 +10,6 @@ type Matcher<U> = {
     eq: <T>(left: T, right: T) => U;
     short: (children: U[]) => U;
     every: (children: U[]) => U;
-    some: (children: U[]) => U;
 }
 
 type Err = { path: string, left: unknown, right: unknown }
@@ -45,15 +42,6 @@ const getMatcher = (): Matcher<ErrMatcher> => ({
             res.every(([res]) => res),
             res.flatMap(([, errors]) => errors),
         ];
-    },
-    some: children => path => {
-        let lastErrors: Err[] = [];
-        for (const child of children) {
-            const [r, errors] = child(path);
-            if (r) return [r, errors];
-            lastErrors = errors;
-        }
-        return [false, lastErrors];
     },
 });
 
@@ -91,7 +79,7 @@ interface Schema {
     lazy: <T>(child: () => Comparator<T>) => Comparator<T>;
 }
 
-const getSchema = ({ fail, path, eps, eq, short, every, some }: Matcher<ErrMatcher>): Schema => {
+const getSchema = ({ fail, path, eps, eq, short, every }: Matcher<ErrMatcher>): Schema => {
     const simpleType = <T>(): Comparator<T> => ({
         eq,
     });
