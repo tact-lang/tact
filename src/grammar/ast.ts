@@ -57,7 +57,7 @@ export type AstAsmFunctionDef = {
     name: AstId;
     return: AstType | null;
     params: AstTypedParameter[];
-    instructions: readonly AstAsmInstruction[];
+    instructions: AstAsmInstruction[];
     id: number;
     loc: SrcInfo;
 };

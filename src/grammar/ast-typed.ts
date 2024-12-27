@@ -57,7 +57,7 @@ export const getAstSchema = (
             name: A.AstId,
             retType: A.AstType | null,
             params: A.AstTypedParameter[],
-            instructions: readonly A.AstAsmInstruction[],
+            instructions: A.AstAsmInstruction[],
             loc: Loc,
         ): A.AstAsmFunctionDef =>
             createNode<A.AstAsmFunctionDef>({
