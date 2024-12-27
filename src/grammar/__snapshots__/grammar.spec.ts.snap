@@ -81,7 +81,7 @@ Line 4, col 9:
 `;
 
 exports[`grammar should fail contract-const-abstract 1`] = `
-"<unknown>:5:3: Variable definition requires an initializer
+"<unknown>:5:3: Constant definition requires an initializer
 Line 5, col 3:
   4 | contract TestContract {
 > 5 |   abstract const Foo: Int;
@@ -131,7 +131,7 @@ Line 5, col 11:
 `;
 
 exports[`grammar should fail contract-empty-traits-list-with-keyword 1`] = `
-"<unknown>:1:20: Expected an identifier
+"<unknown>:1:20: Expected identifier
 Line 1, col 20:
 > 1 | contract Name with {}
                          ^
@@ -140,7 +140,7 @@ Line 1, col 20:
 `;
 
 exports[`grammar should fail contract-getter-parens-no-method-id 1`] = `
-"<unknown>:2:9: Expected "!", "(", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", an identifier, digit, or type identifier
+"<unknown>:2:9: Expected "!", "(", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
 Line 2, col 9:
   1 | contract Test {
 > 2 |     get() fun test(): Int {
@@ -150,7 +150,7 @@ Line 2, col 9:
 `;
 
 exports[`grammar should fail contract-init-trailing-comma-empty-params 1`] = `
-"<unknown>:2:10: Expected ")" or an identifier
+"<unknown>:2:10: Expected ")" or identifier
 Line 2, col 10:
   1 | contract Name {
 > 2 |     init(,) {}
@@ -160,7 +160,7 @@ Line 2, col 10:
 `;
 
 exports[`grammar should fail contract-trailing-comma-empty-traits-list 1`] = `
-"<unknown>:1:19: Expected an identifier or not an identifier character
+"<unknown>:1:19: Expected identifier or not identifier character
 Line 1, col 19:
 > 1 | contract Name with, {}
                         ^
@@ -189,7 +189,7 @@ Line 15, col 19:
 `;
 
 exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
-"<unknown>:6:14: Expected "!", "(", ")", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", an identifier, digit, or type identifier
+"<unknown>:6:14: Expected "!", "(", ")", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
 Line 6, col 14:
   5 | fun b(): Int {
 > 6 |     return a(,);
@@ -199,7 +199,7 @@ Line 6, col 14:
 `;
 
 exports[`grammar should fail expr-method-call-trailing-comma-no-args 1`] = `
-"<unknown>:2:24: Expected "!", "(", ")", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", an identifier, digit, or type identifier
+"<unknown>:2:24: Expected "!", "(", ")", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
 Line 2, col 24:
   1 | fun another() {
 > 2 |     return 42.toString(,);
@@ -227,16 +227,16 @@ Line 1, col 7:
 `;
 
 exports[`grammar should fail funcid-native-fun-bitwise-operator 1`] = `
-"<unknown>:1:8: Expected "\`", not " ", not "(", not ")", not ",", not ".", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", not "\\t", or not "~"
-Line 1, col 8:
+"<unknown>:1:7: Expected FunC identifier
+Line 1, col 7:
 > 1 | @name(~)
-             ^
+            ^
   2 | native idTest();
 "
 `;
 
 exports[`grammar should fail funcid-native-fun-comma 1`] = `
-"<unknown>:1:19: Expected not " ", not "(", not ",", not ".", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", not "\\t", or not "~"
+"<unknown>:1:19: Expected ")"
 Line 1, col 19:
 > 1 | @name(send_message,then_terminate)
                         ^
@@ -263,7 +263,7 @@ Line 1, col 7:
 `;
 
 exports[`grammar should fail funcid-native-fun-delimiter 1`] = `
-"<unknown>:1:7: Expected "\`", not " ", not "(", not ")", not ",", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", or not "\\t"
+"<unknown>:1:7: Expected FunC identifier
 Line 1, col 7:
 > 1 | @name([)
             ^
@@ -281,7 +281,7 @@ Line 1, col 7:
 `;
 
 exports[`grammar should fail funcid-native-fun-dot 1`] = `
-"<unknown>:1:10: Expected not " ", not "(", not ",", not ".", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", not "\\t", or not "~"
+"<unknown>:1:10: Expected ")"
 Line 1, col 10:
 > 1 | @name(msg.sender)
                ^
@@ -371,7 +371,7 @@ Line 1, col 7:
 `;
 
 exports[`grammar should fail funcid-native-fun-parens 1`] = `
-"<unknown>:1:11: Expected not " ", not "(", not ",", not ".", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", not "\\t", or not "~"
+"<unknown>:1:11: Expected ")"
 Line 1, col 11:
 > 1 | @name(take(first)Entry)
                 ^
@@ -380,7 +380,7 @@ Line 1, col 11:
 `;
 
 exports[`grammar should fail funcid-native-fun-semicolons 1`] = `
-"<unknown>:1:9: Expected not " ", not "(", not ",", not ".", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", not "\\t", or not "~"
+"<unknown>:1:9: Expected ")"
 Line 1, col 9:
 > 1 | @name(pa;;in"\`aaa\`")
               ^
@@ -398,7 +398,7 @@ Line 1, col 11:
 `;
 
 exports[`grammar should fail funcid-native-fun-square-brackets 1`] = `
-"<unknown>:1:11: Expected not " ", not "(", not ",", not ".", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", not "\\t", or not "~"
+"<unknown>:1:11: Expected ")"
 Line 1, col 11:
 > 1 | @name(take[some]entry)
                 ^
@@ -425,7 +425,7 @@ Line 1, col 7:
 `;
 
 exports[`grammar should fail funcid-native-fun-unclosed-parens 1`] = `
-"<unknown>:1:9: Expected not " ", not "(", not ",", not ".", not ";", not "[", not "\\"\\\\]\\"", not "\\n", not "\\r", not "\\t", or not "~"
+"<unknown>:1:9: Expected ")"
 Line 1, col 9:
 > 1 | @name(aa(bb)
               ^
@@ -434,7 +434,7 @@ Line 1, col 9:
 `;
 
 exports[`grammar should fail ident-cannot-be-if-reserved-word 1`] = `
-"<unknown>:2:9: Expected an identifier or type identifier
+"<unknown>:2:9: Expected capitalized identifier or identifier
 Line 2, col 9:
   1 | fun hello(): Int {
 > 2 |     let if: Int = 0;
@@ -511,7 +511,7 @@ Line 2, col 9:
 `;
 
 exports[`grammar should fail ident-struct-cannot-start-with-__gen 1`] = `
-"<unknown>:1:8: Expected type identifier
+"<unknown>:1:8: Expected capitalized identifier
 Line 1, col 8:
 > 1 | struct __genA {
              ^
@@ -520,7 +520,7 @@ Line 1, col 8:
 `;
 
 exports[`grammar should fail item-fun-non-void-trailing-comma-no-params 1`] = `
-"<unknown>:1:14: Expected ")" or an identifier
+"<unknown>:1:14: Expected ")" or identifier
 Line 1, col 14:
 > 1 | fun function(,) : Int {
                    ^
@@ -529,7 +529,7 @@ Line 1, col 14:
 `;
 
 exports[`grammar should fail item-fun-void-trailing-comma-no-params 1`] = `
-"<unknown>:1:14: Expected ")" or an identifier
+"<unknown>:1:14: Expected ")" or identifier
 Line 1, col 14:
 > 1 | fun function(,) {}
                    ^
@@ -546,7 +546,7 @@ Line 1, col 1:
 `;
 
 exports[`grammar should fail item-native-fun-not-void-decl-trailing-comma-no-params 1`] = `
-"<unknown>:2:31: Expected ")" or an identifier
+"<unknown>:2:31: Expected ")" or identifier
 Line 2, col 31:
   1 | @name(native_name_2)
 > 2 | native testNativeFuncWithType(,): Int;
@@ -555,7 +555,7 @@ Line 2, col 31:
 `;
 
 exports[`grammar should fail item-native-fun-void-decl-trailing-comma-no-params 1`] = `
-"<unknown>:2:23: Expected ")" or an identifier
+"<unknown>:2:23: Expected ")" or identifier
 Line 2, col 23:
   1 | @name(native_name_1)
 > 2 | native testNativeFunc(,);
@@ -564,7 +564,7 @@ Line 2, col 23:
 `;
 
 exports[`grammar should fail items-asm-fun-1 1`] = `
-"<unknown>:1:5: Expected ")", "->", or an identifier
+"<unknown>:1:5: Expected ")", "->", or identifier
 Line 1, col 5:
 > 1 | asm(1 0) extends fun loadCoins(self: Slice): Int {
           ^
@@ -573,7 +573,7 @@ Line 1, col 5:
 `;
 
 exports[`grammar should fail items-asm-fun-2 1`] = `
-"<unknown>:1:9: Expected ")", "->", or an identifier
+"<unknown>:1:9: Expected ")", "->", or identifier
 Line 1, col 9:
 > 1 | asm(c b 42) extends fun storeDict(b: Builder, c: Cell) {
               ^
@@ -680,7 +680,7 @@ Line 2, col 12:
 `;
 
 exports[`grammar should fail struct-double-semicolon 1`] = `
-"<unknown>:2:19: Expected "}" or an identifier
+"<unknown>:2:19: Expected "}" or identifier
 Line 2, col 19:
   1 | // too many semicolons
 > 2 | struct A { x: Int;; }
@@ -720,7 +720,7 @@ Line 5, col 3:
 `;
 
 exports[`grammar should fail trait-empty-traits-list-with-keyword 1`] = `
-"<unknown>:1:17: Expected an identifier
+"<unknown>:1:17: Expected identifier
 Line 1, col 17:
 > 1 | trait Name with {}
                       ^
@@ -729,7 +729,7 @@ Line 1, col 17:
 `;
 
 exports[`grammar should fail trait-fun-non-void-trailing-comma-no-params 1`] = `
-"<unknown>:2:39: Expected ")" or an identifier
+"<unknown>:2:39: Expected ")" or identifier
 Line 2, col 39:
   1 | trait Test {
 > 2 |     abstract fun testAbstractWithType(,): Int;
@@ -739,7 +739,7 @@ Line 2, col 39:
 `;
 
 exports[`grammar should fail trait-fun-void-trailing-comma-no-params 1`] = `
-"<unknown>:2:31: Expected ")" or an identifier
+"<unknown>:2:31: Expected ")" or identifier
 Line 2, col 31:
   1 | trait Test {
 > 2 |     abstract fun testAbstract(,);
@@ -749,7 +749,7 @@ Line 2, col 31:
 `;
 
 exports[`grammar should fail trait-trailing-comma-empty-traits-list 1`] = `
-"<unknown>:1:16: Expected an identifier or not an identifier character
+"<unknown>:1:16: Expected identifier or not identifier character
 Line 1, col 16:
 > 1 | trait Name with, {}
                      ^
@@ -758,7 +758,7 @@ Line 1, col 16:
 `;
 
 exports[`grammar should fail type-ident-msg-should-be-capitalized 1`] = `
-"<unknown>:1:14: Expected type identifier
+"<unknown>:1:14: Expected capitalized identifier
 Line 1, col 14:
 > 1 | message(123) foo {
                    ^
@@ -767,7 +767,7 @@ Line 1, col 14:
 `;
 
 exports[`grammar should fail type-ident-struct-should-be-capitalized 1`] = `
-"<unknown>:1:8: Expected type identifier
+"<unknown>:1:8: Expected capitalized identifier
 Line 1, col 8:
 > 1 | struct lowercaseIdForType {
              ^

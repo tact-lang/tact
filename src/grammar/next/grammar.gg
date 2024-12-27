@@ -183,7 +183,7 @@ TypeMap =
     ","
     value:TypeId valueAs:asType?
     ">";
-TypeId "type identifier" = name:#$([A-Z] [a-zA-Z0-9_]*);
+TypeId "capitalized identifier" = name:#$([A-Z] [a-zA-Z0-9_]*);
 asType = keyword<"as"> @Id;
 
 statement
@@ -293,14 +293,14 @@ IntegerLiteralOct = digits:#("0" [oO] @underscored<[0-7]>);
 underscored<T> = $(T ("_"? T)*);
 digit "digit" = [0-9];
 
-idPart "an identifier character" = [a-zA-Z0-9_];
-Id "an identifier" = name:#$(!reservedWord [a-zA-Z_] idPart*);
+idPart "identifier character" = [a-zA-Z0-9_];
+Id "identifier" = name:#$(!reservedWord [a-zA-Z_] idPart*);
 
 // FunC identifiers, where `FuncId` stands for FunC function identifier
 // A plain identifier cannot be a number, a single underscore, an operator, a keyword or a compiler directive
 // See: https://github.com/ton-blockchain/ton/blob/master/crypto/func/keywords.cpp
 
-FuncId = accessor:[.~]? id:$("`" [^`\r\n]+ "`" / [^ \t\r\n()[\],.;~]+);
+FuncId "FunC identifier" = accessor:[.~]? id:$("`" [^`\r\n]+ "`" / [^ \t\r\n()[\],.;~]+);
 
 // Boolean literals
 BoolLiteral = value:("true" / "false") !idPart;

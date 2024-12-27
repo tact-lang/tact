@@ -1,4 +1,4 @@
-import { AstModule, getAstFactory } from "./ast";
+import { getAstFactory } from "./ast";
 import { loadCases } from "../utils/loadCases";
 import { getParser } from "./grammar";
 import { SrcInfo, isSrcInfo } from "./src-info";
@@ -9,22 +9,6 @@ expect.addSnapshotSerializer({
 });
 
 describe("grammar", () => {
-    // Test parsing of known Fift projects, wrapped in asm functions of Tact
-    for (const r of loadCases(__dirname + "/test-asm/")) {
-        it.skip("should parse " + r.name, () => {
-            const ast = getAstFactory();
-            const { parse } = getParser(ast);
-            const parsed: AstModule | undefined = parse(
-                r.code,
-                "<unknown>",
-                "user",
-            );
-
-            // Don't produce snapshots
-            expect(parsed).toBeDefined();
-        });
-    }
-
     for (const r of loadCases(__dirname + "/test/")) {
         it("should parse " + r.name, () => {
             const ast = getAstFactory();

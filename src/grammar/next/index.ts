@@ -1,4 +1,4 @@
-import * as $ from "@langtools/runtime";
+import * as $ from "@tonstudio/parser-runtime";
 import * as A from "../ast";
 import * as G from "./grammar";
 import type { $ast } from "./grammar";
@@ -1244,7 +1244,11 @@ export const getParser = (ast: A.FactoryAst) => {
             },
         );
 
-        const result = $.parse($.compile(grammar, G.space))(src);
+        const result = $.parse({
+            grammar,
+            space: G.space,
+            text: src,
+        });
         if (result.$ === "error") {
             const { expected, position } = result.error;
             return err.expected(expected)({

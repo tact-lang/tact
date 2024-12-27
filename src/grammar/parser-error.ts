@@ -85,7 +85,7 @@ export const syntaxErrorSchema = <T, U>(
             );
         },
         noConstantDecl: () => {
-            return handle(sub`Variable definition requires an initializer`);
+            return handle(sub`Constant definition requires an initializer`);
         },
         noFunctionDecl: () => {
             return handle(sub`Only full function definitions are allowed here`);

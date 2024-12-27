@@ -3,7 +3,7 @@
  * We have this file so that the "current id" state would not be stored globally
  */
 
-import { Loc } from "@langtools/runtime";
+import { Loc } from "@tonstudio/parser-runtime";
 import * as A from "./ast";
 import { SrcInfo } from "./src-info";
 
