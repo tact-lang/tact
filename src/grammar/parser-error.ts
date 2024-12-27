@@ -108,5 +108,3 @@ export const syntaxErrorSchema = <T, U>(
 };
 
 export type SyntaxErrors<T> = ReturnType<typeof syntaxErrorSchema<unknown, T>>;
-
-

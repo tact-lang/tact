@@ -1,4 +1,4 @@
-import { getParser as getParserNext  } from "./next";
+import { getParser as getParserNext } from "./next";
 
 import { AstExpression, AstImport, AstModule, FactoryAst } from "./ast";
 
@@ -8,13 +8,17 @@ import { ItemOrigin } from "./src-info";
 export type Parser = {
     parse: (src: string, path: string, origin: ItemOrigin) => AstModule;
     parseExpression: (sourceCode: string) => AstExpression;
-    parseImports: (src: string, path: string, origin: ItemOrigin) => AstImport[];
+    parseImports: (
+        src: string,
+        path: string,
+        origin: ItemOrigin,
+    ) => AstImport[];
 };
 
 export const defaultParser = "new";
 
 export const getParser = (ast: FactoryAst, version: "old" | "new"): Parser => {
-    if (version === 'new') {
+    if (version === "new") {
         return getParserNext(ast);
     } else {
         return getParserPrev(ast);
