@@ -11,7 +11,7 @@ export type Parser = {
     parseImports: (src: string, path: string, origin: ItemOrigin) => AstImport[];
 };
 
-export const defaultParser = "old";
+export const defaultParser = "new";
 
 export const getParser = (ast: FactoryAst, version: "old" | "new"): Parser => {
     if (version === 'new') {
