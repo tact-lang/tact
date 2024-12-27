@@ -5,6 +5,7 @@ import { getParser } from "./grammar";
 import files from "./imports/stdlib";
 import { createVirtualFileSystem, TactError, VirtualFileSystem } from "./main";
 import { precompile } from "./pipeline/precompile";
+import { defaultParser } from "./grammar/grammar";
 
 export type CheckResultItem = {
     type: "error" | "warning";
@@ -37,7 +38,7 @@ export function check(args: {
     ctx = featureEnable(ctx, "external"); // Enable external messages flag to avoid external-specific errors
 
     const ast = getAstFactory();
-    const parser = getParser(ast);
+    const parser = getParser(ast, defaultParser);
 
     // Execute check
     const items: CheckResultItem[] = [];

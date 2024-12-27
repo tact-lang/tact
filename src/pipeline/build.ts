@@ -22,6 +22,7 @@ import { getCompilerVersion } from "./version";
 import { FactoryAst, getAstFactory, idText } from "../grammar/ast";
 import { TactErrorCollection } from "../errors";
 import { getParser, Parser } from "../grammar";
+import { defaultParser } from "../grammar/grammar";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -61,7 +62,7 @@ export async function build(args: {
             ? createVirtualFileSystem(args.stdlib, files)
             : args.stdlib;
     const ast: FactoryAst = args.ast ?? getAstFactory();
-    const parser: Parser = args.parser ?? getParser(ast);
+    const parser: Parser = args.parser ?? getParser(ast, config.options?.parser ?? defaultParser);
     const logger: ILogger = args.logger ?? new Logger();
 
     // Configure context

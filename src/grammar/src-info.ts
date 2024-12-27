@@ -1,5 +1,3 @@
-import { Interval as RawInterval } from "ohm-js";
-
 import { throwInternalCompilerError } from "../errors";
 
 export type ItemOrigin = "stdlib" | "user";
@@ -279,17 +277,6 @@ export const getSrcInfo = (
         origin,
         toJSON: () => ({}),
     };
-};
-
-/**
- * @deprecated
- */
-export const getSrcInfoFromOhm = (
-    { sourceString, startIdx, endIdx }: RawInterval,
-    file: string | null,
-    origin: ItemOrigin,
-): SrcInfo => {
-    return getSrcInfo(sourceString, startIdx, endIdx, file, origin);
 };
 
 export const dummySrcInfo: SrcInfo = getSrcInfo("", 0, 0, null, "user");

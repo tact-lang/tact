@@ -2,6 +2,7 @@
 
 import { getAstFactory, isValue } from "../ast";
 import { getParser } from "../";
+import { defaultParser } from "../grammar";
 
 const valueExpressions: string[] = [
     "1",
@@ -53,7 +54,7 @@ const notValueExpressions: string[] = [
 
 function testIsValue(expr: string, testResult: boolean) {
     const ast = getAstFactory();
-    const { parseExpression } = getParser(ast);
+    const { parseExpression } = getParser(ast, defaultParser);
     expect(isValue(parseExpression(expr))).toBe(testResult);
 }
 

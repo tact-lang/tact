@@ -7,6 +7,7 @@ import { CompilerContext } from "../context";
 import { featureEnable } from "../config/features";
 import { getParser } from "../grammar";
 import { getAstFactory } from "../grammar/ast";
+import { defaultParser } from "../grammar/grammar";
 
 describe("resolveStatements", () => {
     for (const r of loadCases(__dirname + "/stmts/")) {
@@ -16,7 +17,7 @@ describe("resolveStatements", () => {
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
-                getParser(Ast),
+                getParser(Ast, defaultParser),
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
@@ -31,7 +32,7 @@ describe("resolveStatements", () => {
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
-                getParser(Ast),
+                getParser(Ast, defaultParser),
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);

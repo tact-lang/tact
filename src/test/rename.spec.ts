@@ -6,6 +6,7 @@ import { trimTrailingCR, CONTRACTS_DIR } from "./util";
 import * as assert from "assert";
 import { getParser } from "../grammar";
 import { getAstFactory } from "../grammar/ast";
+import { defaultParser } from "../grammar/grammar";
 
 const EXPECTED_DIR = join(CONTRACTS_DIR, "renamer-expected");
 
@@ -17,7 +18,7 @@ describe("renamer", () => {
                 return;
             }
             const ast = getAstFactory();
-            const { parse } = getParser(ast);
+            const { parse } = getParser(ast, defaultParser);
             const expectedFilePath = join(EXPECTED_DIR, dentry.name);
             const expected = fs.readFileSync(expectedFilePath, "utf-8");
             const filePath = join(CONTRACTS_DIR, dentry.name);
