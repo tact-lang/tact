@@ -74,6 +74,7 @@ import {
     showValue,
 } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
+import { defaultParser } from "./grammar/grammar";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -602,7 +603,7 @@ class EnvironmentStack {
 export function parseAndEvalExpression(
     sourceCode: string,
     ast: FactoryAst = getAstFactory(),
-    parser: Parser = getParser(ast),
+    parser: Parser = getParser(ast, defaultParser),
 ): EvalResult {
     try {
         const ast = parser.parseExpression(sourceCode);

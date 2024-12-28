@@ -124,7 +124,7 @@ exports[`resolveAllocation should write program 1`] = `
         "loc": {},
         "name": {
           "id": 28,
-          "kind": "type_id",
+          "kind": "id",
           "loc": {},
           "text": "Point",
         },
@@ -311,7 +311,7 @@ exports[`resolveAllocation should write program 1`] = `
         "loc": {},
         "name": {
           "id": 36,
-          "kind": "type_id",
+          "kind": "id",
           "loc": {},
           "text": "Point2",
         },
@@ -520,7 +520,7 @@ exports[`resolveAllocation should write program 1`] = `
         "loc": {},
         "name": {
           "id": 20,
-          "kind": "type_id",
+          "kind": "id",
           "loc": {},
           "text": "Point3",
         },
@@ -1191,7 +1191,7 @@ exports[`resolveAllocation should write program 1`] = `
         "loc": {},
         "name": {
           "id": 41,
-          "kind": "type_id",
+          "kind": "id",
           "loc": {},
           "text": "Deep",
         },
@@ -1864,7 +1864,7 @@ exports[`resolveAllocation should write program 1`] = `
         "loc": {},
         "name": {
           "id": 76,
-          "kind": "type_id",
+          "kind": "id",
           "loc": {},
           "text": "Deep2",
         },

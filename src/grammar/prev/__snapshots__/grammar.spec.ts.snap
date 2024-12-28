@@ -647,16 +647,6 @@ Line 3, col 5:
 "
 `;
 
-exports[`grammar should fail items-asm-fun-6 1`] = `
-"<unknown>:2:5: Bitstring has more than 128 digits
-Line 2, col 5:
-  1 | asm fun giganticBinary() {
-> 2 |     b{000000001111111100000000111111110000000011111111000000001111111100000000111111110000000011111111000000001111111100000000111111110}
-          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  3 | }
-"
-`;
-
 exports[`grammar should fail literal-dec-trailing-underscore 1`] = `
 "<unknown>:2:16: Expected a digit
 

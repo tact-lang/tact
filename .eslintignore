@@ -6,6 +6,7 @@ src/test/**/output/
 src/func/funcfiftlib.js
 **/grammar.ohm*.ts
 **/grammar.ohm*.js
+src/grammar/next/grammar.ts
 jest.setup.js
 jest.teardown.js
 /docs

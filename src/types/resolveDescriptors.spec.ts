@@ -11,6 +11,7 @@ import { featureEnable } from "../config/features";
 import { getParser, SrcInfo } from "../grammar";
 import { getAstFactory } from "../grammar/ast";
 import { isSrcInfo } from "../grammar/src-info";
+import { defaultParser } from "../grammar/grammar";
 
 expect.addSnapshotSerializer({
     test: (src) => isSrcInfo(src),
@@ -25,7 +26,7 @@ describe("resolveDescriptors", () => {
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
-                getParser(Ast),
+                getParser(Ast, defaultParser),
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
@@ -41,7 +42,7 @@ describe("resolveDescriptors", () => {
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
-                getParser(Ast),
+                getParser(Ast, defaultParser),
             );
             ctx = featureEnable(ctx, "external");
             expect(() => {
