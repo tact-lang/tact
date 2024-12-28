@@ -248,6 +248,35 @@ If set to `true{:json}`, enables generation of a [getter](/book/contracts#getter
 
 :::
 
+#### `parser` {#options-parser}
+
+`"new"{:json}` by default.
+
+If set to `new{:json}`, Tact will compile with a new language parser.
+
+If set to `old{:json}`, Tact will compile with an old language parser.
+
+```json filename="tact.config.json" {8,14}
+{
+  "projects": [
+    {
+      "name": "some_prefix",
+      "path": "./contract.tact",
+      "output": "./contract_output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {
+        "debug": true
+      }
+    }
+  ]
+}
+```
+
 #### `experimental` {#options-experimental}
 
 Experimental options that might be removed in the future. Use with caution!

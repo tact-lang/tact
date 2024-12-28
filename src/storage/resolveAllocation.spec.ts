@@ -8,6 +8,7 @@ import { resolveSignatures } from "../types/resolveSignatures";
 import path from "path";
 import { getParser } from "../grammar";
 import { getAstFactory } from "../grammar/ast";
+import { defaultParser } from "../grammar/grammar";
 
 const stdlibPath = path.resolve(__dirname, "../../stdlib/std/primitives.tact");
 const stdlib = fs.readFileSync(stdlibPath, "utf-8");
@@ -71,7 +72,7 @@ describe("resolveAllocation", () => {
                 { code: src, path: "<unknown>", origin: "user" },
             ],
             [],
-            getParser(ast),
+            getParser(ast, defaultParser),
         );
         ctx = resolveDescriptors(ctx, ast);
         ctx = resolveSignatures(ctx);

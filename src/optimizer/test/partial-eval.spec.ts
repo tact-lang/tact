@@ -13,6 +13,7 @@ import { ExpressionTransformer, Rule } from "../types";
 import { AssociativeRule3 } from "../associative";
 import { evalBinaryOp, evalUnaryOp } from "../../interpreter";
 import { getParser } from "../../grammar";
+import { defaultParser } from "../../grammar/grammar";
 
 const MAX: string =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";
@@ -316,7 +317,7 @@ const booleanExpressions = [
 function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
         const ast = getAstFactory();
-        const { parseExpression } = getParser(ast);
+        const { parseExpression } = getParser(ast, defaultParser);
         const util = getAstUtil(ast);
         const { partiallyEvalExpression } = getOptimizer(util);
         const originalValue = partiallyEvalExpression(
@@ -340,7 +341,7 @@ function testExpressionWithOptimizer(
 ) {
     it(`should simplify ${original} to ${simplified}`, () => {
         const ast = getAstFactory();
-        const { parseExpression } = getParser(ast);
+        const { parseExpression } = getParser(ast, defaultParser);
         const util = getAstUtil(ast);
         const originalValue = optimizer.applyRules(
             dummyEval(parseExpression(original), ast, util),

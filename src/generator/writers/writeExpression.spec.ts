@@ -9,6 +9,7 @@ import { resolveStatements } from "../../types/resolveStatements";
 import { CompilerContext } from "../../context";
 import { getParser } from "../../grammar";
 import { getAstFactory } from "../../grammar/ast";
+import { defaultParser } from "../../grammar/grammar";
 
 const code = `
 
@@ -75,7 +76,7 @@ describe("writeExpression", () => {
             new CompilerContext(),
             [{ code: code, path: "<unknown>", origin: "user" }],
             [],
-            getParser(ast),
+            getParser(ast, defaultParser),
         );
         ctx = resolveDescriptors(ctx, ast);
         ctx = resolveStatements(ctx);

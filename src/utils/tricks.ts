@@ -106,23 +106,22 @@ type Intersect<T> = (T extends unknown ? (x: T) => 0 : never) extends (
  */
 type Unwrap<T> = T extends infer R ? { [K in keyof R]: R[K] } : never;
 
-type Inputs<I> = I extends { kind: infer K }
+type Inputs<I, T extends string> = I extends { [Z in T]: infer K }
     ? K extends string
         ? Record<K, (input: I) => unknown>
         : never
     : never;
 type Outputs<O> = { [K in keyof O]: (input: never) => O[K] };
-type Handlers<I, O> = Unwrap<Intersect<Inputs<I>>> & Outputs<O>;
+type Handlers<I, O, T extends string> = Unwrap<Intersect<Inputs<I, T>>> &
+    Outputs<O>;
 
-/**
- * Make visitor for disjoint union (tagged union, discriminated union)
- */
-export const makeVisitor =
+export const makeMakeVisitor =
+    <T extends string>(tag: T) =>
     <I>() =>
-    <O>(handlers: Handlers<I, O>) =>
-    (input: Extract<I, { kind: string }>): O[keyof O] => {
+    <O>(handlers: Handlers<I, O, T>) =>
+    (input: Extract<I, { [K in T]: string }>): O[keyof O] => {
         const handler = (handlers as Record<string, (input: I) => O[keyof O]>)[
-            input.kind
+            input[tag]
         ];
 
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -130,7 +129,12 @@ export const makeVisitor =
             return handler(input);
         } else {
             throwInternalCompilerError(
-                `Reached impossible case: ${input.kind}`,
+                `Reached impossible case: ${input[tag]}`,
             );
         }
     };
+
+/**
+ * Make visitor for disjoint union (tagged union, discriminated union)
+ */
+export const makeVisitor = makeMakeVisitor("kind");

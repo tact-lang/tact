@@ -323,6 +323,98 @@ contract Example {
 }
 ```
 
+## Onchain metadata creation
+
+### NFT Collection {#onchain-metadata-nft-collection}
+
+```tact
+/// https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes
+fun composeCollectionMetadata(
+    name: String,        // full name
+    description: String, // text description of the NFT
+    image: String,       // link to the image
+    // There could be other data, see:
+    // https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes
+): Cell {
+    let dict: map<Int as uint256, Cell> = emptyMap();
+    dict.set(sha256("name"), name.asMetadataCell());
+    dict.set(sha256("description"), description.asMetadataCell());
+    dict.set(sha256("image"), image.asMetadataCell());
+
+    return beginCell()
+        .storeUint(0, 8)                // a null byte prefix
+        .storeMaybeRef(dict.asCell()!!) // 1 as a single bit, then a reference
+        .endCell();
+}
+
+// Taking flight!
+fun poorMansLaunchPad() {
+    let collectionMetadata = composeCollectionMetadata(
+        "Best Collection",
+        "A very descriptive description describing the collection descriptively",
+        "...link to ipfs or somewhere trusted...",
+    );
+}
+
+// Prefixes the String with a single null byte and converts it to a Cell
+// The null byte prefix is used to express metadata in various standards, like NFT or Jetton
+inline extends fun asMetadataCell(self: String): Cell {
+    return beginTailString().concat(self).toCell();
+}
+```
+
+:::note[Useful links:]
+
+  [Token Data Standard in TEPs](https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes)\
+  [Off-chain NFT metadata by GetGems](https://github.com/getgems-io/nft-contracts/blob/main/docs/metadata.md)
+
+:::
+
+### NFT Item {#onchain-metadata-nft-item}
+
+```tact
+/// https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes
+fun composeItemMetadata(
+    name: String,        // full name
+    description: String, // text description of the NFT
+    image: String,       // link to the image
+    // There could be other data, see:
+    // https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes
+): Cell {
+    let dict: map<Int as uint256, Cell> = emptyMap();
+    dict.set(sha256("name"), name.asMetadataCell());
+    dict.set(sha256("description"), description.asMetadataCell());
+    dict.set(sha256("image"), image.asMetadataCell());
+
+    return beginCell()
+        .storeUint(0, 8)                // a null byte prefix
+        .storeMaybeRef(dict.asCell()!!) // 1 as a single bit, then a reference
+        .endCell();
+}
+
+// Taking flight!
+fun poorMansLaunchPad() {
+    let itemMetadata = composeItemMetadata(
+        "Best Item",
+        "A very descriptive description describing the item descriptively",
+        "...link to ipfs or somewhere trusted...",
+    );
+}
+
+// Prefixes the String with a single null byte and converts it to a Cell
+// The null byte prefix is used to express metadata in various standards, like NFT or Jetton
+inline extends fun asMetadataCell(self: String): Cell {
+    return beginTailString().concat(self).toCell();
+}
+```
+
+:::note[Useful links:]
+
+  [Token Data Standard in TEPs](https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#nft-metadata-attributes)\
+  [Off-chain NFT metadata by GetGems](https://github.com/getgems-io/nft-contracts/blob/main/docs/metadata.md)
+
+:::
+
 :::tip[Hey there!]
 
   Didn't find your favorite example of a NFT communication? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)

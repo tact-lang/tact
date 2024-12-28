@@ -1,7 +1,4 @@
-import { MatchResult } from "ohm-js";
 import { ErrorDisplay } from "../error/display";
-import { TactCompilationError } from "../errors";
-import { getSrcInfoFromOhm, ItemOrigin, SrcInfo } from "./src-info";
 
 const attributeSchema =
     (name: string) =>
@@ -23,7 +20,23 @@ const attributeSchema =
         },
     });
 
-const syntaxErrorSchema = <T, U>(
+const getExpectedText = (expected: ReadonlySet<string>) => {
+    const result: string[] = [];
+    const failures = [...expected].sort();
+    for (const [idx, failure] of failures.entries()) {
+        if (idx > 0) {
+            if (idx === failures.length - 1) {
+                result.push(failures.length > 2 ? ", or " : " or ");
+            } else {
+                result.push(", ");
+            }
+        }
+        result.push(failure);
+    }
+    return result.join("");
+};
+
+export const syntaxErrorSchema = <T, U>(
     display: ErrorDisplay<T>,
     handle: (t: T) => U,
 ) => {
@@ -48,26 +61,50 @@ const syntaxErrorSchema = <T, U>(
         duplicateField: (name: string) => {
             return handle(text(`Duplicate field destructuring: "${name}"`));
         },
+        restShouldBeLast: () => {
+            return handle(text(`Rest parameter should be last`));
+        },
         importWithBackslash: () => {
             return handle(sub`Import path can't contain "\\"`);
         },
         reservedVarPrefix: (prefix: string) => {
             return handle(text(`Variable name cannot start with "${prefix}"`));
         },
+        notCallable: () => {
+            return handle(sub`Expression is not callable`);
+        },
+        noBouncedWithoutArg: () => {
+            return handle(sub`bounced() cannot be used as fallback`);
+        },
+        noBouncedWithString: () => {
+            return handle(
+                sub`bounced() cannot be used with a string literal name`,
+            );
+        },
+        noConstantDecl: () => {
+            return handle(sub`Constant definition requires an initializer`);
+        },
+        noFunctionDecl: () => {
+            return handle(sub`Only full function definitions are allowed here`);
+        },
+        expected: (expects: ReadonlySet<string>) => {
+            return handle(text(`Expected ${getExpectedText(expects)}`));
+        },
+        invalidFuncId: () => {
+            return handle(sub`Invalid FunC identifier`);
+        },
+        reservedFuncId: () => {
+            return handle(sub`Reserved FunC identifier`);
+        },
+        numericFuncId: () => {
+            return handle(sub`FunC identifier cannot be a number`);
+        },
+        leadingZeroUnderscore: () => {
+            return handle(
+                sub`Numbers with leading zeroes cannot use underscores for JS compatibility`,
+            );
+        },
     };
 };
 
-export const parserErrorSchema = (display: ErrorDisplay<string>) => ({
-    ...syntaxErrorSchema(display, (message) => (source: SrcInfo) => {
-        throw new TactCompilationError(display.at(source, message), source);
-    }),
-    generic: (matchResult: MatchResult, path: string, origin: ItemOrigin) => {
-        const interval = matchResult.getInterval();
-        const source = getSrcInfoFromOhm(interval, path, origin);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const message = `Expected ${(matchResult as any).getExpectedText()}\n`;
-        throw new TactCompilationError(display.at(source, message), source);
-    },
-});
-
-export type ParserErrors = ReturnType<typeof parserErrorSchema>;
+export type SyntaxErrors<T> = ReturnType<typeof syntaxErrorSchema<unknown, T>>;

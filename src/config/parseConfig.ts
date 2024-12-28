@@ -28,6 +28,10 @@ export const optionsSchema = z
          */
         interfacesGetter: z.boolean().optional(),
         /**
+         * If set to "new", uses new parser. If set to "old", uses legacy parser. Default is "old".
+         */
+        parser: z.union([z.literal("new"), z.literal("old")]).optional(),
+        /**
          * Experimental options that might be removed in the future. Use with caution!
          */
         experimental: z

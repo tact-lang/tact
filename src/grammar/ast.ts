@@ -651,10 +651,12 @@ export type AstNull = {
 
 export type AstValue = AstNumber | AstBoolean | AstNull | AstString;
 
-export type AstConstantAttribute =
-    | { type: "virtual"; loc: SrcInfo }
-    | { type: "override"; loc: SrcInfo }
-    | { type: "abstract"; loc: SrcInfo };
+export type AstConstantAttributeName = "virtual" | "override" | "abstract";
+
+export type AstConstantAttribute = {
+    type: AstConstantAttributeName;
+    loc: SrcInfo;
+};
 
 export type AstContractAttribute = {
     type: "interface";
@@ -662,19 +664,30 @@ export type AstContractAttribute = {
     loc: SrcInfo;
 };
 
+export type AstFunctionAttributeGet = {
+    kind: "function_attribute";
+    type: "get";
+    methodId: AstExpression | null;
+    loc: SrcInfo;
+};
+
+export type AstFunctionAttributeName =
+    | "mutates"
+    | "extends"
+    | "virtual"
+    | "abstract"
+    | "override"
+    | "inline";
+
+export type AstFunctionAttributeRest = {
+    kind: "function_attribute";
+    type: AstFunctionAttributeName;
+    loc: SrcInfo;
+};
+
 export type AstFunctionAttribute =
-    | {
-          kind: "function_attribute";
-          type: "get";
-          methodId: AstExpression | null;
-          loc: SrcInfo;
-      }
-    | { kind: "function_attribute"; type: "mutates"; loc: SrcInfo }
-    | { kind: "function_attribute"; type: "extends"; loc: SrcInfo }
-    | { kind: "function_attribute"; type: "virtual"; loc: SrcInfo }
-    | { kind: "function_attribute"; type: "abstract"; loc: SrcInfo }
-    | { kind: "function_attribute"; type: "override"; loc: SrcInfo }
-    | { kind: "function_attribute"; type: "inline"; loc: SrcInfo };
+    | AstFunctionAttributeGet
+    | AstFunctionAttributeRest;
 
 export type AstTypedParameter = {
     kind: "typed_parameter";

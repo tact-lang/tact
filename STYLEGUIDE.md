@@ -1,4 +1,4 @@
-# Styleguide
+# TypeScript Styleguide
 
 Due to stringent security and correctness requirements we have to use a subset of TypeScript features that are known to be _less unsound_.
 
@@ -22,7 +22,7 @@ Prefer the most simple and basic language features.
 
 - **Don't use `as`**, except `as const`. It was meant for gradually typing legacy code, not for production use in TS-native projects. Often `x as T` actually was meant to be `const y: T = x;` or `x satisfies T`.
 - **Don't use `any`.** Its actual meaning is "completely disregard type errors here". Prefer `unknown` or `never`.
-- **Don't use guard types `x is T`.** These are just `as` in disguise. Might be used in very simple cases, such as ADT boilerplate.
+- **Don't use guard types `x is T`.** These are just `as` in disguise: `const foo = (x: 1 | 2): x is 1 => x === 2;`. Might be used in very simple cases, such as ADT boilerplate.
 - **Don't use overloading**. It's almost the same as intersection types, and intersection types are broken.
 - **Don't use `@ts-ignore`.** It's a worse version of `as` that can take TS compiler into an arbitrary incorrect state.
 - **Don't use `x!` operator.** It does no checks at runtime, and is essentially `x as NotNull<typeof x>`.
@@ -68,10 +68,10 @@ export const includes = <const K extends string>(
 
 ### Don't use JS object "features"
 
-- **Don't use optional fields** `foo?: Bar`. Every `?` doubles number of cases that should be tested. Eventually some combination of non-defined and undefined fields will be non-semantic.
+- **Don't use optional fields** `foo?: Bar`. Every `?` doubles number of cases that should be tested. Eventually some combination of non-defined and undefined fields will be non-semantic. Prefer at least an explicit `foo: Bar | undefined`, or better create a type with descriptive name to make it a proper tagged union.
 - _**Don't use optional fields**_. In JS there is a distinction between field that is not defined and a field that is `undefined` (sic). `'a' in {} === false`, `'a' in { a: undefined } === true`. TypeScript doesn't handle this properly in its type system.
 - **Don't use `Proxy`**. These break type safety, are incorrectly handled in debuggers, lead to very unexpected heisenbugs.
-- **Don't use `get` and `set`**. See `Proxy` above.
+- **Don't use `get` and `set`**. See `Proxy` above. Use explicit `getFoo` and `setFoo` functions, or just avoid mutable state.
 - **Don't use `...` with objects**. It will require intersection types or inheritance to type. Prefer aggregation: `{ ...a, b }` → `{ a, b }`.
 - **Don't use `interface ... extends`**. There is no way to safely distinguish objects supporting parent and child interfaces at runtime.
   - Except where it's required to untie type recursion. For example `type Foo = A<Foo>` would only work as `interface Foo extends A<Foo> {}`
@@ -112,9 +112,11 @@ export const includes = <const K extends string>(
 
 ### Other considerations
 
+- **Avoid unnecessary switch**. Switch statements require extra considerations for unexpected passthrough, are bulky, and take an extra function to make exhaustive checks work. Unless use of `switch` can be somehow rationalized, prefer `makeVisitor` from `src/utils/tricks.ts`.
+- **Avoid unnecessary bigint**. We have to work with `bigint`, because TVM supports ints of 257 bit length, but in rest of the code `bigint` would only cause issues with debugging it.
 - **Beware of `${}`** in template strings. Any inlining succeeds, and there won't be any compile-time errors even if it's a function `${(x: number) => x}`.
 - **Avoid `null`**. `typeof null === 'object'`, and there is `undefined` anyway.
-- **Avoid exceptions**. Exceptions are untyped.
+- **Avoid exceptions**. Exceptions are untyped. Pass error continuations explicitly `(onFooError: () => T) => T`. Example can be found in `src/grammar/parser-error.ts`.
 - **Avoid tuples**. TS gives them minimal distinction from arrays, and type system is broken around them. Occasionally for performance reasons tuples might be a better option than objects.
 - **Avoid `enum`**. It's equivalent to unions since 5.0, except generates boilerplate JS code. A version that doesn't generate extraneous code, `const enum`, is not properly supported by `babel`.
 - **Avoid iterators**. They're untypable unless fixed in JS standard. Prefer generators. Prefer iterating with `for (... of ...)`.
