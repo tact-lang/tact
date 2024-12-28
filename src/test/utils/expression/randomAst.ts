@@ -36,10 +36,13 @@ export function randomAstBoolean(): fc.Arbitrary<AstBoolean> {
 }
 
 export function randomAstString(): fc.Arbitrary<AstString> {
+    const escapeString = (s: string): string =>
+        s.replace("\\", "\\\\").replace('"', '\\"');
+
     return dummyAstNode(
         fc.record({
             kind: fc.constant("string"),
-            value: fc.string(),
+            value: fc.string().map((s) => escapeString(s)),
         }),
     );
 }
