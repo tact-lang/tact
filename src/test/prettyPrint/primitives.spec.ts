@@ -9,6 +9,9 @@ import { getAstFactory, eqExpressions, AstExpression } from "../../grammar/ast";
 import { prettyPrint } from "../../prettyPrinter";
 
 describe("Pretty Print Primitives", () => {
+    const astFactory = getAstFactory();
+    const parser = getParser(astFactory, "new");
+
     const cases: [string, fc.Arbitrary<AstExpression>][] = [
         ["AstBoolean", randomAstBoolean()],
         ["AstNumber", randomAstNumber()],
@@ -20,8 +23,6 @@ describe("Pretty Print Primitives", () => {
             fc.assert(
                 fc.property(astGenerator, (generatedAst) => {
                     const prettyBefore = prettyPrint(generatedAst);
-                    const astFactory = getAstFactory();
-                    const parser = getParser(astFactory, "new");
                     const parsedAst = parser.parseExpression(prettyBefore);
                     expect(eqExpressions(generatedAst, parsedAst)).toBe(true);
                 }),
