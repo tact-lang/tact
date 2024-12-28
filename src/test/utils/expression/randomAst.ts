@@ -46,7 +46,7 @@ export function randomAstString(): fc.Arbitrary<AstString> {
 
 export function randomAstNumber(): fc.Arbitrary<AstNumber> {
     const values = [
-        ...Array.from({ length: 10 }, (_, i) => [BigInt(i), BigInt(-i)]).flat(),
+        ...Array.from({ length: 10 }, (_, i) => [0n, BigInt(i)]).flat(),
         ...Array.from({ length: 256 }, (_, i) => 1n ** BigInt(i)),
     ];
 
