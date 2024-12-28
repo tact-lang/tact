@@ -1,0 +1,1695 @@
+!!! /home/user/repos/wbogatyrewa__tact-challenge/contracts/4.tact Errors differ
+Error: source:52:12: Expected ":"
+
+Line 52, col 12:
+  51 |   lockTime: Int as uint32;
+> 52 |   prevOwner?: Address;
+                  ^
+  53 |   nftAddress?: Address;
+
+Error: source:52:12: Expected ":"
+Line 52, col 12:
+  51 |   lockTime: Int as uint32;
+> 52 |   prevOwner?: Address;
+                  ^
+  53 |   nftAddress?: Address;
+
+
+!!! /home/user/repos/vpeopleonatank__learn-ton/SyntaxAndDataTypePart2/contracts/functions.tact Errors differ
+Error: source:31:13: Expected "_", "A".."Z", or "a".."z"
+
+Line 31, col 13:
+  30 | 
+> 31 |     bounced(){}
+                   ^
+  32 | 
+
+Error: source:31:5: bounced() cannot be used as fallback
+Line 31, col 5:
+  30 | 
+> 31 |     bounced(){}
+           ^~~~~~~~~~~
+  32 | 
+
+
+!!! /home/user/repos/vpeopleonatank__learn-ton/Inheritance/contracts/ownable_counter.tact Errors differ
+Error: source:25:27: Expected "{" or "with"
+
+Line 25, col 27:
+  24 | 
+> 25 | trait OwnableTransferable is Ownable {
+                                 ^
+  26 |     owner: Address;
+
+Error: source:25:27: Expected "with" or "{"
+Line 25, col 27:
+  24 | 
+> 25 | trait OwnableTransferable is Ownable {
+                                 ^
+  26 |     owner: Address;
+
+
+!!! /home/user/repos/talhareh__tact_smart_contract/contracts/ruffruff.tact Errors differ
+Error: source:66:33: Expected ")", ",", "==", "!=", ".", "!!", "-", "+", "%", "/", "*", "<=", "<", ">=", ">", ">>", "<<", "^", "&", "&&", "|", "?", or "||"
+
+Line 66, col 33:
+  65 |     receive(msg: JoinPool) {
+> 66 |         require(msg.amount == 1 ton, "Entry fee must be 1 TON");
+                                       ^
+  67 |         // Save participant's address and amount paid
+
+Error: source:66:33: Expected "!!", "!=", "%", "&", "&&", "(", ")", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", or "||"
+Line 66, col 33:
+  65 |     receive(msg: JoinPool) {
+> 66 |         require(msg.amount == 1 ton, "Entry fee must be 1 TON");
+                                       ^
+  67 |         // Save participant's address and amount paid
+
+
+!!! /home/user/repos/tact-lang__tact-vscode/samples/items-asm-func.tact AST mismatch
+[
+  { path: [32m'.items[0].instructions.length'[39m, left: [33m3[39m, right: [33m1[39m },
+  { path: [32m'.items[4].instructions.length'[39m, left: [33m2[39m, right: [33m1[39m },
+  { path: [32m'.items[6].instructions.length'[39m, left: [33m2[39m, right: [33m1[39m },
+  { path: [32m'.items[9].instructions.length'[39m, left: [33m5[39m, right: [33m1[39m },
+  { path: [32m'.items[10].instructions.length'[39m, left: [33m5[39m, right: [33m1[39m },
+  { path: [32m'.items[11].instructions.length'[39m, left: [33m5[39m, right: [33m1[39m },
+  { path: [32m'.items[12].instructions.length'[39m, left: [33m17[39m, right: [33m1[39m }
+]
+
+!!! /home/user/repos/tact-lang__tact-by-example/src/routes/(examples)/04-arrays/contract.tact Errors differ
+Error: source:47:13: Expected not a reservedWord
+
+Line 47, col 13:
+  46 | 
+> 47 |     get fun map(): map<Int, Int> {
+                   ^
+  48 |         return self.arr;
+
+Error: source:47:13: Expected identifier
+Line 47, col 13:
+  46 | 
+> 47 |     get fun map(): map<Int, Int> {
+                   ^
+  48 |         return self.arr;
+
+
+!!! /home/user/repos/tact-lang__contract-wallet/sources/contract.tact Errors differ
+Error: source:23:47: Expected ")" or not a reservedWord
+
+Line 23, col 47:
+  22 | 
+> 23 |     fun processTransfer(msg: WalletOperation, external: Bool) {
+                                                     ^
+  24 | 
+
+Error: source:23:47: Expected ")" or identifier
+Line 23, col 47:
+  22 | 
+> 23 |     fun processTransfer(msg: WalletOperation, external: Bool) {
+                                                     ^
+  24 | 
+
+
+!!! /home/user/repos/sudovag3__TAO/contracts/batch_sender_proxy.tact Errors differ
+Error: source:13:30: Expected "bounced", "map", or "A".."Z"
+
+Line 13, col 30:
+  12 | 
+> 13 |     init(id: Int, inputSend: sendInfo) {
+                                    ^
+  14 |         self.id = id;
+
+Error: source:13:30: Expected "bounced", "map", or capitalized identifier
+Line 13, col 30:
+  12 | 
+> 13 |     init(id: Int, inputSend: sendInfo) {
+                                    ^
+  14 |         self.id = id;
+
+
+!!! /home/user/repos/stevewoz1234567890__tact-script-in-Ton/tact_updated/sources/array.tact Errors differ
+Error: source:4:5: Expected "}"
+
+Line 4, col 5:
+  3 | struct Array {
+> 4 |     map: map<Address, Bool>;
+          ^
+  5 |     length: Int = 0;
+
+Error: source:4:5: Expected ";", "}", or identifier
+Line 4, col 5:
+  3 | struct Array {
+> 4 |     map: map<Address, Bool>;
+          ^
+  5 |     length: Int = 0;
+
+
+!!! /home/user/repos/stevewoz1234567890__tact-script-in-Ton/tact_updated/sources/contract.tact Errors differ
+Error: source:5:5: Expected "}"
+
+Line 5, col 5:
+  4 | struct Array {
+> 5 |     map: map<Address, Bool>;
+          ^
+  6 |     length: Int = 0;
+
+Error: source:5:5: Expected ";", "}", or identifier
+Line 5, col 5:
+  4 | struct Array {
+> 5 |     map: map<Address, Bool>;
+          ^
+  6 |     length: Int = 0;
+
+
+!!! /home/user/repos/stevewoz1234567890__tact-script-in-Ton/sources/NftCollection.tact Errors differ
+Error: source:5:5: Expected "}"
+
+Line 5, col 5:
+  4 | struct Array {
+> 5 |     map: map<Address, Bool>;
+          ^
+  6 |     length: Int = 0;
+
+Error: source:5:5: Expected ";", "}", or identifier
+Line 5, col 5:
+  4 | struct Array {
+> 5 |     map: map<Address, Bool>;
+          ^
+  6 |     length: Int = 0;
+
+
+!!! /home/user/repos/shelderme__tact-challenge-main/contracts/2.tact Errors differ
+Error: source:36:25: Expected "_", "A".."Z", or "a".."z"
+
+Line 36, col 25:
+  35 | 
+> 36 |     if (myBalance() > 0.01) {
+                               ^
+  37 |         send(SendParameters {
+
+Error: source:36:25: Expected identifier
+Line 36, col 25:
+  35 | 
+> 36 |     if (myBalance() > 0.01) {
+                               ^
+  37 |         send(SendParameters {
+
+
+!!! /home/user/repos/shekshuev__ton-learning/LESSON9/contracts/messages.tact Errors differ
+Error: source:22:26: Expected "}", ";", "=", "as", or "?"
+
+Line 22, col 26:
+  21 |     description: String;
+> 22 |     social_links: String [];
+                                ^
+  23 | }
+
+Error: source:22:26: Expected ";", "=", "?", "as", or "}"
+Line 22, col 26:
+  21 |     description: String;
+> 22 |     social_links: String [];
+                                ^
+  23 | }
+
+
+!!! /home/user/repos/shekshuev__ton-learning/LESSON3/contracts/integers.tact Errors differ
+Error: source:30:23: Expected "=" or "?"
+
+Line 30, col 23:
+  29 |     receive() {
+> 30 |         let int1: Int as uint128 = 3001;
+                             ^
+  31 |         let int2: Int as int32 = 57;
+
+Error: source:30:23: Expected "=" or "?"
+Line 30, col 23:
+  29 |     receive() {
+> 30 |         let int1: Int as uint128 = 3001;
+                             ^
+  31 |         let int2: Int as int32 = 57;
+
+
+!!! /home/user/repos/scrobot__ton-playground/contracts/addresses.tact Errors differ
+Error: source:7:22: Expected "<<=", ">>=", "&&=", "||=", "^=", "&=", "|=", "%=", "/=", "*=", "-=", "+=", "=", "}", or ";"
+
+Line 7, col 22:
+  6 |     init() {
+> 7 |         self.address2: Address = myAddress();
+                           ^
+  8 |         self.address3: Address = sender();
+
+Error: source:7:22: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", ";", "<", "<<", "<=", "=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 7, col 22:
+  6 |     init() {
+> 7 |         self.address2: Address = myAddress();
+                           ^
+  8 |         self.address3: Address = sender();
+
+
+!!! /home/user/repos/scrobot__ton-playground/contracts/constants.tact Errors differ
+Error: source:8:5: Expected "}", ";", ".", "!!", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", or "||"
+
+Line 8, col 5:
+  7 | 
+> 8 |     init() {
+          ^
+  9 |         let result = self.SOME + global
+
+Error: source:8:5: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", ";", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 8, col 5:
+  7 | 
+> 8 |     init() {
+          ^
+  9 |         let result = self.SOME + global
+
+
+!!! /home/user/repos/scrobot__ton-playground/contracts/integers.tact Errors differ
+Error: source:21:23: Expected "=" or "?"
+
+Line 21, col 23:
+  20 |     receive() {
+> 21 |         let some: Int as int32 = 3001;
+                             ^
+  22 |         let another: Int as int64 = 57;
+
+Error: source:21:23: Expected "=" or "?"
+Line 21, col 23:
+  20 |     receive() {
+> 21 |         let some: Int as int32 = 3001;
+                             ^
+  22 |         let another: Int as int64 = 57;
+
+
+!!! /home/user/repos/sadeeqrabiu__Tontest/contracts/send_coins.tact Errors differ
+Error: source:28:27: Expected ")"
+
+Line 28, col 27:
+  27 |         send(
+> 28 |             sendParameters{
+                                 ^
+  29 |               to: sender(),
+
+Error: source:28:27: Expected "!!", "!=", "%", "&", "&&", "(", ")", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", or "||"
+Line 28, col 27:
+  27 |         send(
+> 28 |             sendParameters{
+                                 ^
+  29 |               to: sender(),
+
+
+!!! /home/user/repos/rutujatechcode__DemoTon_contact/contracts/demo_contract.tact Errors differ
+Error: source:10:12: Expected ":"
+
+Line 10, col 12:
+   9 |     }
+> 10 |     recieve("increament"){
+                  ^
+  11 |       self.Counter = self.counter + 1;  
+
+Error: source:10:12: Expected ":"
+Line 10, col 12:
+   9 |     }
+> 10 |     recieve("increament"){
+                  ^
+  11 |       self.Counter = self.counter + 1;  
+
+
+!!! /home/user/repos/romanchechyotkin__ton/DataTypes/contracts/integers.tact Errors differ
+Error: source:18:23: Expected "=" or "?"
+
+Line 18, col 23:
+  17 |         // temporally
+> 18 |         let int1: Int as uint32 = 1;
+                             ^
+  19 |         let int2: Int as uint32 = 1;
+
+Error: source:18:23: Expected "=" or "?"
+Line 18, col 23:
+  17 |         // temporally
+> 18 |         let int1: Int as uint32 = 1;
+                             ^
+  19 |         let int2: Int as uint32 = 1;
+
+
+!!! /home/user/repos/romanchechyotkin__ton/DataTypes/contracts/strings.tact Errors differ
+Error: source:13:17: Expected "=" or ":"
+
+Line 13, col 17:
+  12 | 
+> 13 |         let s6L String = sb.toString();        
+                       ^
+  14 |     }
+
+Error: source:13:17: Expected ":" or "="
+Line 13, col 17:
+  12 | 
+> 13 |         let s6L String = sb.toString();        
+                       ^
+  14 |     }
+
+
+!!! /home/user/repos/ratonOfficial__JettonTempalte/contracts/jetton_master.tact Errors differ
+Error: source:6:19: Expected "}"
+
+Line 6, col 19:
+  5 | struct Metadata {
+> 6 |     symbol: String,
+                        ^
+  7 |     totalSupply: Int as coins;
+
+Error: source:6:19: Expected ";", "=", "?", "as", or "}"
+Line 6, col 19:
+  5 | struct Metadata {
+> 6 |     symbol: String,
+                        ^
+  7 |     totalSupply: Int as coins;
+
+
+!!! /home/user/repos/ratonOfficial__JettonTempalte/contracts/jetton_wallet.tact Errors differ
+Error: source:19:9: Expected "}", "let", "foreach", "try", "do", "repeat", "while", "if", "\"", "initOf", "null", not a reservedWord, "false", "true", "0", "1".."9", "0O", "0o", "0B", "0b", "0X", "0x", "A".."Z", "(", "~", "!", "+", "-", "return", or "{"
+
+Line 19, col 9:
+  18 |     receive(msg: Transfer) {
+> 19 |         receive(sender() == self.owner, "Access denied");
+               ^
+  20 |         require(self.balance >= msg.amount, "Insufficent balance"); 
+
+Error: source:19:9: Expected "!", "(", "+", "-", "0", "\"", "do", "false", "foreach", "if", "initOf", "let", "null", "repeat", "return", "true", "try", "while", "{", "}", "~", capitalized identifier, digit, or identifier
+Line 19, col 9:
+  18 |     receive(msg: Transfer) {
+> 19 |         receive(sender() == self.owner, "Access denied");
+               ^
+  20 |         require(self.balance >= msg.amount, "Insufficent balance"); 
+
+
+!!! /home/user/repos/pakhopav__crowd-funding-smart-contracts/contracts/first_contract.tact Errors differ
+Error: source:15:20: Expected "("
+
+Line 15, col 20:
+  14 | 
+> 15 |     get fun counter: Int {
+                          ^
+  16 |         return counter;
+
+Error: source:15:20: Expected "("
+Line 15, col 20:
+  14 | 
+> 15 |     get fun counter: Int {
+                          ^
+  16 |         return counter;
+
+
+!!! /home/user/repos/odilovweb__1dars-ton/firstLesson/contracts/first_contract.tact Errors differ
+Error: source:12:12: Expected ":"
+
+Line 12, col 12:
+  11 |     }
+> 12 |     recieve("increment"){
+                  ^
+  13 |         self.counter = self.counter +1;
+
+Error: source:12:12: Expected ":"
+Line 12, col 12:
+  11 |     }
+> 12 |     recieve("increment"){
+                  ^
+  13 |         self.counter = self.counter +1;
+
+
+!!! /home/user/repos/muyewei__jetton-implementation-in-tact/sources/jetton.tact Errors differ
+Error: source:151:28: Expected ")"
+
+Line 151, col 28:
+  150 |         // send fee
+> 151 |         send(sendParameters{
+                                   ^
+  152 |             to: msg.response_destination,
+
+Error: source:151:28: Expected "!!", "!=", "%", "&", "&&", "(", ")", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", or "||"
+Line 151, col 28:
+  150 |         // send fee
+> 151 |         send(sendParameters{
+                                   ^
+  152 |             to: msg.response_destination,
+
+
+!!! /home/user/repos/mohitchandel__the-ton-todo/contracts/ton_todo.tact Errors differ
+Error: source:6:5: Expected "}", "const", "fun", "external", "bounced", "receive", not a reservedWord, or "init"
+
+Line 6, col 5:
+  5 | 
+> 6 |     let id:Int = 0;
+          ^
+  7 | 
+
+Error: source:6:5: Expected "abstract", "bounced", "const", "extends", "external", "fun", "get", "init", "inline", "mutates", "override", "receive", "virtual", "}", or identifier
+Line 6, col 5:
+  5 | 
+> 6 |     let id:Int = 0;
+          ^
+  7 | 
+
+
+!!! /home/user/repos/lutianzhou001__laisee/contracts/router.tact Errors differ
+Error: source:11:51: Expected ")"
+
+Line 11, col 51:
+  10 | 
+> 11 |     init(owner: Address, seq: Int, whiteList: List<Address>){
+                                                         ^
+  12 |         self.seq = seq;
+
+Error: source:11:51: Expected ")", ",", or "?"
+Line 11, col 51:
+  10 | 
+> 11 |     init(owner: Address, seq: Int, whiteList: List<Address>){
+                                                         ^
+  12 |         self.seq = seq;
+
+
+!!! /home/user/repos/letodamian__jetton-swap/sources/contract.tact Errors differ
+Error: source:4:13: Expected ":"
+
+Line 4, col 13:
+  3 |     // Constants
+> 4 |     uint256 constant DECIMAL = 1e9;
+                  ^
+  5 | 
+
+Error: source:4:13: Expected ":"
+Line 4, col 13:
+  3 |     // Constants
+> 4 |     uint256 constant DECIMAL = 1e9;
+                  ^
+  5 | 
+
+
+!!! /home/user/repos/ldgalvarez__tact_contest/contracts/3.tact Errors differ
+Error: source:69:74: Expected ")"
+
+Line 69, col 74:
+  68 |   receive(msg: TokenNotification) {
+> 69 |     if(sender() == self.jettonAddressB || sender() == self.jettonAddressA,"");
+                                                                                ^
+  70 |     if(msg.from == self.owner){
+
+Error: source:69:74: Expected "!!", "!=", "%", "&", "&&", "(", ")", "*", "+", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", or "||"
+Line 69, col 74:
+  68 |   receive(msg: TokenNotification) {
+> 69 |     if(sender() == self.jettonAddressB || sender() == self.jettonAddressA,"");
+                                                                                ^
+  70 |     if(msg.from == self.owner){
+
+
+!!! /home/user/repos/kingsley-einstein__learning-tact/contracts/simple_database.tact Errors differ
+Error: source:12:25: Expected "}"
+
+Line 12, col 25:
+  11 |     self.owner = sender();
+> 12 |     self.users = Users{ map: emptyMap() };
+                               ^
+  13 |     self.users.MAX_SIZE = maxSize;
+
+Error: source:12:25: Expected "}" or identifier
+Line 12, col 25:
+  11 |     self.owner = sender();
+> 12 |     self.users = Users{ map: emptyMap() };
+                               ^
+  13 |     self.users.MAX_SIZE = maxSize;
+
+
+!!! /home/user/repos/kingsley-einstein__learning-tact/contracts/types/_.tact Errors differ
+Error: source:8:3: Expected "}"
+
+Line 8, col 3:
+  7 | struct Users {
+> 8 |   map: map<Int as uint256, User>;
+        ^
+  9 |   length: Int as uint256 = 0;
+
+Error: source:8:3: Expected ";", "}", or identifier
+Line 8, col 3:
+  7 | struct Users {
+> 8 |   map: map<Int as uint256, User>;
+        ^
+  9 |   length: Int as uint256 = 0;
+
+
+!!! /home/user/repos/jubbslineu__contract-test/contracts/protocol/toybuilder_sale.tact Errors differ
+Error: source:139:26: Expected "{", ".", "!!", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", or "||"
+
+Line 139, col 26:
+  138 |         if (indexBitmap == null) {
+> 139 |             if (flipBit) self.markAsMinted(index, bitOffset, null);
+                                 ^
+  140 |             return false;
+
+Error: source:139:26: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "{", "|", or "||"
+Line 139, col 26:
+  138 |         if (indexBitmap == null) {
+> 139 |             if (flipBit) self.markAsMinted(index, bitOffset, null);
+                                 ^
+  140 |             return false;
+
+
+!!! /home/user/repos/isopen__tact-challenge/contracts/5.tact Errors differ
+Error: source:84:16: Expected "<<=", ">>=", "&&=", "||=", "^=", "&=", "|=", "%=", "/=", "*=", "-=", "+=", "=", "}", or ";"
+
+Line 84, col 16:
+  83 |       // add nft to collection
+> 84 |       self.nfts[self.nftCounter] = msg.prevOwner;
+                      ^
+  85 |       self.nftCounter += 1;
+
+Error: source:84:16: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", ";", "<", "<<", "<=", "=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 84, col 16:
+  83 |       // add nft to collection
+> 84 |       self.nfts[self.nftCounter] = msg.prevOwner;
+                      ^
+  85 |       self.nftCounter += 1;
+
+
+!!! /home/user/repos/howardpen9__tact-test-boolean/sources/contract.tact Errors differ
+Error: source:2:35: Expected "_", "A".."Z", or "a".."z"
+
+Line 2, col 35:
+  1 | 
+> 2 | contract SampleTactContract with  {
+                                        ^
+  3 |     case_a: Bool; 
+
+Error: source:2:35: Expected identifier
+Line 2, col 35:
+  1 | 
+> 2 | contract SampleTactContract with  {
+                                        ^
+  3 |     case_a: Bool; 
+
+
+!!! /home/user/repos/gopak-Barvinok__third-lesson/contracts/addresses.tact Errors differ
+Error: source:6:5: Expected "}", ";", ".", "!!", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", or "||"
+
+Line 6, col 5:
+  5 |     a2: Address = address("UQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N")
+> 6 |     a3: Address;
+          ^
+  7 | 
+
+Error: source:6:5: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", ";", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 6, col 5:
+  5 |     a2: Address = address("UQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N")
+> 6 |     a3: Address;
+          ^
+  7 | 
+
+
+!!! /home/user/repos/gopak-Barvinok__third-lesson/contracts/third_contract.tact Errors differ
+Error: source:29:23: Expected "=" or "?"
+
+Line 29, col 23:
+  28 |     receive() {
+> 29 |         let int1: Int as uint128 = 3001;
+                             ^
+  30 |         let int2: Int as int32 = 57;
+
+Error: source:29:23: Expected "=" or "?"
+Line 29, col 23:
+  28 |     receive() {
+> 29 |         let int1: Int as uint128 = 3001;
+                             ^
+  30 |         let int2: Int as int32 = 57;
+
+
+!!! /home/user/repos/gopak-Barvinok__Lesson6/contracts/functions.tact Errors differ
+Error: source:30:13: Expected "_", "A".."Z", or "a".."z"
+
+Line 30, col 13:
+  29 | 
+> 30 |     bounced() {}
+                   ^
+  31 | 
+
+Error: source:30:5: bounced() cannot be used as fallback
+Line 30, col 5:
+  29 | 
+> 30 |     bounced() {}
+           ^~~~~~~~~~~~
+  31 | 
+
+
+!!! /home/user/repos/gopak-Barvinok__Lesson6/contracts/stoppable_counter.tact Errors differ
+Error: source:11:14: Expected "bounced", "map", or "A".."Z"
+
+Line 11, col 14:
+  10 |     owner: Address;
+> 11 |     stopped: bool;
+                    ^
+  12 | 
+
+Error: source:11:14: Expected "bounced", "map", or capitalized identifier
+Line 11, col 14:
+  10 |     owner: Address;
+> 11 |     stopped: bool;
+                    ^
+  12 | 
+
+
+!!! /home/user/repos/etondotfun__contracts/contracts/create-jetton.tact Errors differ
+Error: source:6:9: Expected ":"
+
+Line 6, col 9:
+  5 |     // Variables to store Jetton information
+> 6 |     var image: slice;
+              ^
+  7 |     var name: slice;
+
+Error: source:6:9: Expected ":"
+Line 6, col 9:
+  5 |     // Variables to store Jetton information
+> 6 |     var image: slice;
+              ^
+  7 |     var name: slice;
+
+
+!!! /home/user/repos/etondotfun__contracts/contracts/new.tact Errors differ
+Error: source:6:9: Expected ":"
+
+Line 6, col 9:
+  5 |     // Variables to store Jetton information
+> 6 |     var image: slice;
+              ^
+  7 |     var name: slice;
+
+Error: source:6:9: Expected ":"
+Line 6, col 9:
+  5 |     // Variables to store Jetton information
+> 6 |     var image: slice;
+              ^
+  7 |     var name: slice;
+
+
+!!! /home/user/repos/digkill__ton-contract-study/lesson3/contracts/addresses.tact Errors differ
+Error: source:15:19: Expected "\"", "initOf", "null", "_", "A".."Z", "a".."z", "false", "true", "0", "1".."9", "0O", "0o", "0B", "0b", "0X", "0x", "(", "~", "!", "+", or "-"
+
+Line 15, col 19:
+  14 |     init() {
+> 15 |         self.a3 = = newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+                         ^
+  16 | 
+
+Error: source:15:19: Expected "!", "(", "+", "-", "0", "\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+Line 15, col 19:
+  14 |     init() {
+> 15 |         self.a3 = = newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+                         ^
+  16 | 
+
+
+!!! /home/user/repos/digkill__ton-contract-study/lesson3/contracts/integers.tact Errors differ
+Error: source:29:23: Expected "=" or "?"
+
+Line 29, col 23:
+  28 |     receive() {
+> 29 |         let int1: Int as uint128 = 3001;
+                             ^
+  30 | let int2: Int as int32 = 57;
+
+Error: source:29:23: Expected "=" or "?"
+Line 29, col 23:
+  28 |     receive() {
+> 29 |         let int1: Int as uint128 = 3001;
+                             ^
+  30 | let int2: Int as int32 = 57;
+
+
+!!! /home/user/repos/danielbui12__ton-example/example-smct/contracts/datatype/addresses.tact Errors differ
+Error: source:15:19: Expected "\"", "initOf", "null", "_", "A".."Z", "a".."z", "false", "true", "0", "1".."9", "0O", "0o", "0B", "0b", "0X", "0x", "(", "~", "!", "+", or "-"
+
+Line 15, col 19:
+  14 |     init() {
+> 15 |         self.a3 = = newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+                         ^
+  16 | 
+
+Error: source:15:19: Expected "!", "(", "+", "-", "0", "\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+Line 15, col 19:
+  14 |     init() {
+> 15 |         self.a3 = = newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+                         ^
+  16 | 
+
+
+!!! /home/user/repos/danielbui12__ton-example/example-smct/contracts/datatype/integers.tact Errors differ
+Error: source:29:23: Expected "=" or "?"
+
+Line 29, col 23:
+  28 |     receive() {
+> 29 |         let int1: Int as uint128 = 3001;
+                             ^
+  30 |         let int2: Int as int32 = 57;
+
+Error: source:29:23: Expected "=" or "?"
+Line 29, col 23:
+  28 |     receive() {
+> 29 |         let int1: Int as uint128 = 3001;
+                             ^
+  30 |         let int2: Int as int32 = 57;
+
+
+!!! /home/user/repos/asdfghy365__debilizm/sources/contract.tact Errors differ
+Error: source:46:5: Expected "}"
+
+Line 46, col 5:
+  45 | struct BetArray {
+> 46 |     map: map<Int, BetDetails>;
+           ^
+  47 |     length: Int as uint32 = 0;
+
+Error: source:46:5: Expected ";", "}", or identifier
+Line 46, col 5:
+  45 | struct BetArray {
+> 46 |     map: map<Int, BetDetails>;
+           ^
+  47 |     length: Int as uint32 = 0;
+
+
+!!! /home/user/repos/andreyoralin__nftcol/contracts/nft_item.tact Errors differ
+Error: source:53:53: Expected "<<=", ">>=", "&&=", "||=", "^=", "&=", "|=", "%=", "/=", "*=", "-=", "+=", "=", "(", ".", "!!", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", "||", "}", or ";"
+
+Line 53, col 53:
+  52 |                 });
+> 53 |                 self.owner = msg.new_owner; current owner to the new_owner
+                                                           ^
+  54 |             } else if (msg.forward_amount > 0) { 
+
+Error: source:53:53: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", ";", "<", "<<", "<=", "=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 53, col 53:
+  52 |                 });
+> 53 |                 self.owner = msg.new_owner; current owner to the new_owner
+                                                           ^
+  54 |             } else if (msg.forward_amount > 0) { 
+
+
+!!! /home/user/repos/andrewlefs__first-contract3/contracts/addresses.tact Errors differ
+Error: source:15:19: Expected "\"", "initOf", "null", "_", "A".."Z", "a".."z", "false", "true", "0", "1".."9", "0O", "0o", "0B", "0b", "0X", "0x", "(", "~", "!", "+", or "-"
+
+Line 15, col 19:
+  14 |     init() {
+> 15 |         self.a3 = = newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+                         ^
+  16 | 
+
+Error: source:15:19: Expected "!", "(", "+", "-", "0", "\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+Line 15, col 19:
+  14 |     init() {
+> 15 |         self.a3 = = newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+                         ^
+  16 | 
+
+
+!!! /home/user/repos/andrewlefs__first-contract3/contracts/integers.tact Errors differ
+Error: source:29:23: Expected "=" or "?"
+
+Line 29, col 23:
+  28 |     receive() {
+> 29 |         let int1: Int as uint128 = 3001;
+                             ^
+  30 |         let int2: Int as int32 = 57;
+
+Error: source:29:23: Expected "=" or "?"
+Line 29, col 23:
+  28 |     receive() {
+> 29 |         let int1: Int as uint128 = 3001;
+                             ^
+  30 |         let int2: Int as int32 = 57;
+
+
+!!! /home/user/repos/alefmanvladimir__lesson7/contracts/ownable_counter.tact Errors differ
+Error: source:30:9: Expected "<<=", ">>=", "&&=", "||=", "^=", "&=", "|=", "%=", "/=", "*=", "-=", "+=", "=", ".", "!!", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", "||", "}", or ";"
+
+Line 30, col 9:
+  29 |         self.requireOwner()
+> 30 |         self.owner = msg.newOwner;
+               ^
+  31 |     }
+
+Error: source:30:9: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", ";", "<", "<<", "<=", "=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 30, col 9:
+  29 |         self.requireOwner()
+> 30 |         self.owner = msg.newOwner;
+               ^
+  31 |     }
+
+
+!!! /home/user/repos/alefmanvladimir__lesson6/contracts/functions.tact Errors differ
+Error: source:31:13: Expected "_", "A".."Z", or "a".."z"
+
+Line 31, col 13:
+  30 | 
+> 31 |     bounced(){}
+                   ^
+  32 | 
+
+Error: source:31:5: bounced() cannot be used as fallback
+Line 31, col 5:
+  30 | 
+> 31 |     bounced(){}
+           ^~~~~~~~~~~
+  32 | 
+
+
+!!! /home/user/repos/alefmanvladimir__lesson3/contracts/addresses.tact Errors differ
+Error: source:15:19: Expected "\"", "initOf", "null", "_", "A".."Z", "a".."z", "false", "true", "0", "1".."9", "0O", "0o", "0B", "0b", "0X", "0x", "(", "~", "!", "+", or "-"
+
+Line 15, col 19:
+  14 |     init() {
+> 15 |         self.a3 = = newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+                         ^
+  16 | 
+
+Error: source:15:19: Expected "!", "(", "+", "-", "0", "\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+Line 15, col 19:
+  14 |     init() {
+> 15 |         self.a3 = = newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+                         ^
+  16 | 
+
+
+!!! /home/user/repos/alefmanvladimir__lesson3/contracts/integers.tact Errors differ
+Error: source:29:23: Expected "=" or "?"
+
+Line 29, col 23:
+  28 |     receive() {
+> 29 |         let int1: Int as uint128 = 3001;
+                             ^
+  30 |         let int2: Int as int32 = 57;
+
+Error: source:29:23: Expected "=" or "?"
+Line 29, col 23:
+  28 |     receive() {
+> 29 |         let int1: Int as uint128 = 3001;
+                             ^
+  30 |         let int2: Int as int32 = 57;
+
+
+!!! /home/user/repos/XPLUSCOM__ton/contracts/NFT/model/struct.tact Errors differ
+Error: source:30:5: Expected "}", ";", "=", "as", or "?"
+
+Line 30, col 5:
+  29 |     phase1StartDate:Date
+> 30 |     phase1EndDate:Date
+           ^
+  31 | 
+
+Error: source:30:5: Expected ";", "=", "?", "as", or "}"
+Line 30, col 5:
+  29 |     phase1StartDate:Date
+> 30 |     phase1EndDate:Date
+           ^
+  31 | 
+
+
+!!! /home/user/repos/Ton-Dynasty__eventon/contracts/dummpy_publisher.tact Errors differ
+Error: source:20:18: Expected "bounced", "map", or "A".."Z"
+
+Line 20, col 18:
+  19 |     
+> 20 |     receive(msg: "") {
+                        ^
+  21 |         let sendPayload: Cell = beginCell()
+
+Error: source:20:18: Expected "bounced", "map", or capitalized identifier
+Line 20, col 18:
+  19 |     
+> 20 |     receive(msg: "") {
+                        ^
+  21 |         let sendPayload: Cell = beginCell()
+
+
+!!! /home/user/repos/Ton-Dynasty__eventon/contracts/common/error.tact Errors differ
+Error: source:1:1: Expected end of input
+
+Line 1, col 1:
+> 1 | 1000: Protocol hasn't been registered.
+      ^
+  2 | 1001: This Event ID does not exist.
+
+Error: source:1:1: Expected "@interface", "@name", "abstract", "asm", "const", "contract", "extends", "fun", "get", "import", "inline", "message", "mutates", "override", "primitive", "struct", "trait", or "virtual"
+Line 1, col 1:
+> 1 | 1000: Protocol hasn't been registered.
+      ^
+  2 | 1001: This Event ID does not exist.
+
+
+!!! /home/user/repos/Thackermahima__TON/Lesson9/contracts/nft_collection.tact Errors differ
+Error: source:101:15: Expected "A".."Z", "_", or "a".."z"
+
+Line 101, col 15:
+  100 | 
+> 101 |           let (name, description, imageUrl) = decodeMetadata(ctx.custom_payload);
+                      ^
+  102 | 
+
+Error: source:101:15: Expected capitalized identifier or identifier
+Line 101, col 15:
+  100 | 
+> 101 |           let (name, description, imageUrl) = decodeMetadata(ctx.custom_payload);
+                      ^
+  102 | 
+
+
+!!! /home/user/repos/Thackermahima__TON/Lesson8/contracts/todo_child.tact Errors differ
+Error: source:15:26: Expected ")", ",", or "?"
+
+Line 15, col 26:
+  14 | 
+> 15 |     init(parent: Address seqno: Int) {
+                                ^
+  16 |         self.parent = parent;
+
+Error: source:15:26: Expected ")", ",", or "?"
+Line 15, col 26:
+  14 | 
+> 15 |     init(parent: Address seqno: Int) {
+                                ^
+  16 |         self.parent = parent;
+
+
+!!! /home/user/repos/Thackermahima__TON/Lesson8/contracts/todo_parent.tact Errors differ
+Error: source:31:49: Expected "("
+
+Line 31, col 49:
+  30 |         send(SendParameters{
+> 31 |             to: contractAddress(initOf TodoChild{myAddress(), msg.seqno)),
+                                                       ^
+  32 |             body: InternalComplete{excess: sender()}.toCell(),
+
+Error: source:31:49: Expected "("
+Line 31, col 49:
+  30 |         send(SendParameters{
+> 31 |             to: contractAddress(initOf TodoChild{myAddress(), msg.seqno)),
+                                                       ^
+  32 |             body: InternalComplete{excess: sender()}.toCell(),
+
+
+!!! /home/user/repos/Thackermahima__TON/Lesson7/contracts/ownable_counter.tact Errors differ
+Error: source:30:9: Expected "<<=", ">>=", "&&=", "||=", "^=", "&=", "|=", "%=", "/=", "*=", "-=", "+=", "=", ".", "!!", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", "||", "}", or ";"
+
+Line 30, col 9:
+  29 |         self.requireOwner()
+> 30 |         self.owner = msg.newOwner;
+               ^
+  31 |     }
+
+Error: source:30:9: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", ";", "<", "<<", "<=", "=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 30, col 9:
+  29 |         self.requireOwner()
+> 30 |         self.owner = msg.newOwner;
+               ^
+  31 |     }
+
+
+!!! /home/user/repos/Thackermahima__TON/Lesson6/contracts/functions.tact Errors differ
+Error: source:30:13: Expected "_", "A".."Z", or "a".."z"
+
+Line 30, col 13:
+  29 | 
+> 30 |     bounced(){}
+                   ^
+  31 | 
+
+Error: source:30:5: bounced() cannot be used as fallback
+Line 30, col 5:
+  29 | 
+> 30 |     bounced(){}
+           ^~~~~~~~~~~
+  31 | 
+
+
+!!! /home/user/repos/Thackermahima__TON/Lesson2/FirstLesson/contracts/Integers.tact Errors differ
+Error: source:15:16: Expected "=" or "?"
+
+Line 15, col 16:
+  14 |   receive() {
+> 15 |     let i: Int as int8 = -12;
+                      ^
+  16 |     let init1: Int as uint128 = 1111;
+
+Error: source:15:16: Expected "=" or "?"
+Line 15, col 16:
+  14 |   receive() {
+> 15 |     let i: Int as int8 = -12;
+                      ^
+  16 |     let init1: Int as uint128 = 1111;
+
+
+!!! /home/user/repos/Thackermahima__TON/Lesson2/FirstLesson/contracts/addresses.tact Errors differ
+Error: source:17:12: Expected "<<=", ">>=", "&&=", "||=", "^=", "&=", "|=", "%=", "/=", "*=", "-=", "+=", "=", "(", ".", "!!", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", "||", "}", or ";"
+
+Line 17, col 12:
+  16 |       self.a5 = sender(); //get the address of the transaction sender 
+> 17 |       self a6 = newAddress(0, 0);
+                  ^
+  18 | 
+
+Error: source:17:12: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", ";", "<", "<<", "<=", "=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 17, col 12:
+  16 |       self.a5 = sender(); //get the address of the transaction sender 
+> 17 |       self a6 = newAddress(0, 0);
+                  ^
+  18 | 
+
+
+!!! /home/user/repos/Thackermahima__TON/Lesson2/FirstLesson/contracts/strings.tact Errors differ
+Error: source:8:16: Expected "=" or ":"
+
+Line 8, col 16:
+  7 |     init() {
+> 8 |         let i1 Int = -11122323;
+                     ^
+  9 |         let i2: Int = 6700900;
+
+Error: source:8:16: Expected ":" or "="
+Line 8, col 16:
+  7 |     init() {
+> 8 |         let i1 Int = -11122323;
+                     ^
+  9 |         let i2: Int = 6700900;
+
+
+!!! /home/user/repos/Shvandre__jetton-implementation/contracts/jetton_minter.tact AST mismatch
+[ { path: [32m'.items.length'[39m, left: [33m1[39m, right: [33m3[39m } ]
+
+!!! /home/user/repos/PouriaN__tact-challenge/contracts/2.tact Errors differ
+Error: source:16:9: Expected "A".."Z" or "("
+
+Line 16, col 9:
+  15 | 
+> 16 | message depositToOnwer {
+               ^
+  17 |   sender: Address;
+
+Error: source:16:9: Expected "(" or capitalized identifier
+Line 16, col 9:
+  15 | 
+> 16 | message depositToOnwer {
+               ^
+  17 |   sender: Address;
+
+
+!!! /home/user/repos/OxDV__smart-contract-for-ton-blockchain/contracts/send_ton.tact Errors differ
+Error: source:4:8: Expected "A".."Z"
+
+Line 4, col 8:
+  3 | 
+> 4 | message: Withdraw{
+             ^
+  5 |     amount: Int as coins;
+
+Error: source:4:8: Expected "(" or capitalized identifier
+Line 4, col 8:
+  3 | 
+> 4 | message: Withdraw{
+             ^
+  5 |     amount: Int as coins;
+
+
+!!! /home/user/repos/Oni-giri__JettonizedVault/contracts/vault.tact Errors differ
+Error: source:50:8: Expected ")"
+
+Line 50, col 8:
+  49 |         body: "Initializing self wallet contract".asComment()
+> 50 |       };
+              ^
+  51 |     );
+
+Error: source:50:8: Expected "!!", "!=", "%", "&", "&&", "(", ")", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", or "||"
+Line 50, col 8:
+  49 |         body: "Initializing self wallet contract".asComment()
+> 50 |       };
+              ^
+  51 |     );
+
+
+!!! /home/user/repos/Nex-TON__Nexton_Contracts/contracts/references/Inheritance(traits).tact Errors differ
+Error: source:39:33: Expected ":"
+
+Line 39, col 33:
+  38 |     owner: Address;
+> 39 |     override const ENABLE_RESET = false;
+                                       ^
+  40 | 
+
+Error: source:39:33: Expected ":"
+Line 39, col 33:
+  38 |     owner: Address;
+> 39 |     override const ENABLE_RESET = false;
+                                       ^
+  40 | 
+
+
+!!! /home/user/repos/Nex-TON__Nexton_Contracts/contracts/references/adresses.tact Errors differ
+Error: source:13:34: Expected ")"
+
+Line 13, col 34:
+  12 |     init() {
+> 13 |         self.a3 = newAddress(0, 0:17508070f840d5b670b177ae59d8cdb52930ebd3b46804be8161ff9304277a75);
+                                        ^
+  14 |         self.a4 = sender();
+
+Error: source:13:34: Expected "!!", "!=", "%", "&", "&&", "(", ")", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "B", "O", "X", "^", "_", "b", "o", "x", "|", "||", or digit
+Line 13, col 34:
+  12 |     init() {
+> 13 |         self.a3 = newAddress(0, 0:17508070f840d5b670b177ae59d8cdb52930ebd3b46804be8161ff9304277a75);
+                                        ^
+  14 |         self.a4 = sender();
+
+
+!!! /home/user/repos/Nex-TON__Nexton_Contracts/contracts/references/bools.tact Errors differ
+Error: source:12:9: Expected "}", ";", ".", "!!", "(", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", or "||"
+
+Line 12, col 9:
+  11 |         self.b2 = !self.b1
+> 12 |         self.b3 = false;
+               ^
+  13 |     }
+
+Error: source:12:9: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", ";", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 12, col 9:
+  11 |         self.b2 = !self.b1
+> 12 |         self.b3 = false;
+               ^
+  13 |     }
+
+
+!!! /home/user/repos/Nex-TON__Nexton_Contracts/contracts/references/functions.tact Errors differ
+Error: source:6:26: Expected "}"
+
+Line 6, col 26:
+  5 |         mode: SendRemainingValue + SendIgnoreErrors,
+> 6 |         body: mintJettons{
+                               ^
+  7 |             amount: _amount,
+
+Error: source:6:26: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 6, col 26:
+  5 |         mode: SendRemainingValue + SendIgnoreErrors,
+> 6 |         body: mintJettons{
+                               ^
+  7 |             amount: _amount,
+
+
+!!! /home/user/repos/Mr-Dm1try__ton-lessons/tact/03-types/contracts/integers.tact Errors differ
+Error: source:25:23: Expected "=" or "?"
+
+Line 25, col 23:
+  24 |     receive() {
+> 25 |         let int1: Int as int16 = 0;
+                             ^
+  26 |         // + - * / abs > < >= != == >> << % min max abs
+
+Error: source:25:23: Expected "=" or "?"
+Line 25, col 23:
+  24 |     receive() {
+> 25 |         let int1: Int as int16 = 0;
+                             ^
+  26 |         // + - * / abs > < >= != == >> << % min max abs
+
+
+!!! /home/user/repos/MaratGin__TonSmartContract/contracts/word_manager.tact Errors differ
+Error: source:31:5: Expected "{", ".", "!!", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", or "||"
+
+Line 31, col 5:
+  30 |         if (self.target == true)
+> 31 |     }
+           ^
+  32 | }
+
+Error: source:31:5: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "{", "|", or "||"
+Line 31, col 5:
+  30 |         if (self.target == true)
+> 31 |     }
+           ^
+  32 | }
+
+
+!!! /home/user/repos/MaarkSweet__Contracts-main/contracts/references/Inheritance(traits).tact Errors differ
+Error: source:39:33: Expected ":"
+
+Line 39, col 33:
+  38 |     owner: Address;
+> 39 |     override const ENABLE_RESET = false;
+                                       ^
+  40 | 
+
+Error: source:39:33: Expected ":"
+Line 39, col 33:
+  38 |     owner: Address;
+> 39 |     override const ENABLE_RESET = false;
+                                       ^
+  40 | 
+
+
+!!! /home/user/repos/MaarkSweet__Contracts-main/contracts/references/adresses.tact Errors differ
+Error: source:13:34: Expected ")"
+
+Line 13, col 34:
+  12 |     init() {
+> 13 |         self.a3 = newAddress(0, 0:17508070f840d5b670b177ae59d8cdb52930ebd3b46804be8161ff9304277a75);
+                                        ^
+  14 |         self.a4 = sender();
+
+Error: source:13:34: Expected "!!", "!=", "%", "&", "&&", "(", ")", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "B", "O", "X", "^", "_", "b", "o", "x", "|", "||", or digit
+Line 13, col 34:
+  12 |     init() {
+> 13 |         self.a3 = newAddress(0, 0:17508070f840d5b670b177ae59d8cdb52930ebd3b46804be8161ff9304277a75);
+                                        ^
+  14 |         self.a4 = sender();
+
+
+!!! /home/user/repos/MaarkSweet__Contracts-main/contracts/references/bools.tact Errors differ
+Error: source:12:9: Expected "}", ";", ".", "!!", "(", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", or "||"
+
+Line 12, col 9:
+  11 |         self.b2 = !self.b1
+> 12 |         self.b3 = false;
+               ^
+  13 |     }
+
+Error: source:12:9: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", ";", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 12, col 9:
+  11 |         self.b2 = !self.b1
+> 12 |         self.b3 = false;
+               ^
+  13 |     }
+
+
+!!! /home/user/repos/MaarkSweet__Contracts-main/contracts/references/functions.tact Errors differ
+Error: source:6:26: Expected "}"
+
+Line 6, col 26:
+  5 |         mode: SendRemainingValue + SendIgnoreErrors,
+> 6 |         body: mintJettons{
+                               ^
+  7 |             amount: _amount,
+
+Error: source:6:26: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 6, col 26:
+  5 |         mode: SendRemainingValue + SendIgnoreErrors,
+> 6 |         body: mintJettons{
+                               ^
+  7 |             amount: _amount,
+
+
+!!! /home/user/repos/Licensure-TMA__contract-manager/LicenseContract/contracts/main.tact Errors differ
+Error: source:35:5: Expected "}"
+
+Line 35, col 5:
+  34 | struct LicenseArray {
+> 35 |     map: map<Int, License>;
+           ^
+  36 |     length: Int as uint64 = 0;
+
+Error: source:35:5: Expected ";", "}", or identifier
+Line 35, col 5:
+  34 | struct LicenseArray {
+> 35 |     map: map<Int, License>;
+           ^
+  36 |     length: Int as uint64 = 0;
+
+
+!!! /home/user/repos/Laisky__HelloWorld/blockchain/ton/contracts/contract-wallet/sources/contract.tact Errors differ
+Error: source:23:47: Expected ")" or not a reservedWord
+
+Line 23, col 47:
+  22 | 
+> 23 |     fun processTransfer(msg: WalletOperation, external: Bool) {
+                                                     ^
+  24 | 
+
+Error: source:23:47: Expected ")" or identifier
+Line 23, col 47:
+  22 | 
+> 23 |     fun processTransfer(msg: WalletOperation, external: Bool) {
+                                                     ^
+  24 | 
+
+
+!!! /home/user/repos/LaimOr127__Ton_Tact_Ed/TACT_краткая теория/типы данных/addresses.tact Errors differ
+Error: source:15:19: Expected "\"", "initOf", "null", "_", "A".."Z", "a".."z", "false", "true", "0", "1".."9", "0O", "0o", "0B", "0b", "0X", "0x", "(", "~", "!", "+", or "-"
+
+Line 15, col 19:
+  14 |     init() {
+> 15 |         self.a3 = = newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+                         ^
+  16 | 
+
+Error: source:15:19: Expected "!", "(", "+", "-", "0", "\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+Line 15, col 19:
+  14 |     init() {
+> 15 |         self.a3 = = newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+                         ^
+  16 | 
+
+
+!!! /home/user/repos/LaimOr127__Ton_Tact_Ed/TACT_краткая теория/типы данных/integers.tact Errors differ
+Error: source:29:23: Expected "=" or "?"
+
+Line 29, col 23:
+  28 |     receive() {
+> 29 |         let int1: Int as uint128 = 3001;
+                             ^
+  30 |         let int2: Int as int32 = 57;
+
+Error: source:29:23: Expected "=" or "?"
+Line 29, col 23:
+  28 |     receive() {
+> 29 |         let int1: Int as uint128 = 3001;
+                             ^
+  30 |         let int2: Int as int32 = 57;
+
+
+!!! /home/user/repos/LaimOr127__Ton_Tact_Ed/TACT_краткая теория/синтаксис/functions.tact Errors differ
+Error: source:31:13: Expected "_", "A".."Z", or "a".."z"
+
+Line 31, col 13:
+  30 | 
+> 31 |     bounced(){}
+                   ^
+  32 | 
+
+Error: source:31:5: bounced() cannot be used as fallback
+Line 31, col 5:
+  30 | 
+> 31 |     bounced(){}
+           ^~~~~~~~~~~
+  32 | 
+
+
+!!! /home/user/repos/LaimOr127__Ton_Tact_Ed/TACT_краткая теория/наследование/ownable_counter.tact Errors differ
+Error: source:30:9: Expected "<<=", ">>=", "&&=", "||=", "^=", "&=", "|=", "%=", "/=", "*=", "-=", "+=", "=", ".", "!!", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", "||", "}", or ";"
+
+Line 30, col 9:
+  29 |         self.requireOwner()
+> 30 |         self.owner = msg.newOwner;
+               ^
+  31 |     }
+
+Error: source:30:9: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", ";", "<", "<<", "<=", "=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 30, col 9:
+  29 |         self.requireOwner()
+> 30 |         self.owner = msg.newOwner;
+               ^
+  31 |     }
+
+
+!!! /home/user/repos/HarshadBhosale__refund99/contracts/send_and_receive.tact Errors differ
+Error: source:9:13: Expected "\"" or ")"
+
+Line 9, col 13:
+   8 |     }
+>  9 |     receive('inc'){
+                   ^
+  10 |         self.counter += 1;
+
+Error: source:9:13: Expected ")", "\"", or identifier
+Line 9, col 13:
+   8 |     }
+>  9 |     receive('inc'){
+                   ^
+  10 |         self.counter += 1;
+
+
+!!! /home/user/repos/Gajesh2007__ton-by-example/send_ton/sources/contract.tact Errors differ
+Error: source:12:42: Expected ")"
+
+Line 12, col 42:
+  11 |     receive() {
+> 12 |         require(owner == context().sender;
+                                                ^
+  13 | 
+
+Error: source:12:42: Expected "!!", "!=", "%", "&", "&&", "(", ")", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", or "||"
+Line 12, col 42:
+  11 |     receive() {
+> 12 |         require(owner == context().sender;
+                                                ^
+  13 | 
+
+
+!!! /home/user/repos/Gajesh2007__ton-by-example/error/sources/contract.tact Errors differ
+Error: source:10:26: Expected "{"
+
+Line 10, col 26:
+   9 |  
+> 10 |     receive(text: String): Bool {
+                                ^
+  11 |         require(self.owner == context().sender, "Not Owner")
+
+Error: source:10:26: Expected "{"
+Line 10, col 26:
+   9 |  
+> 10 |     receive(text: String): Bool {
+                                ^
+  11 |         require(self.owner == context().sender, "Not Owner")
+
+
+!!! /home/user/repos/Gajesh2007__ton-by-example/constant/sources/contract.tact Errors differ
+Error: source:5:14: Expected ":"
+
+Line 5, col 14:
+  4 |     // Constant
+> 5 |     constant creator: String = "Gajesh Naik";
+                   ^
+  6 |     constant number: Int = 123455;
+
+Error: source:5:14: Expected ":"
+Line 5, col 14:
+  4 |     // Constant
+> 5 |     constant creator: String = "Gajesh Naik";
+                   ^
+  6 |     constant number: Int = 123455;
+
+
+!!! /home/user/repos/Gajesh2007__MasterChef/sources/contract.tact Errors differ
+Error: source:30:14: Expected ":"
+
+Line 30, col 14:
+  29 | 
+> 30 |     constant BONUS_MULTIPLIER: Int = 1;
+                    ^
+  31 | 
+
+Error: source:30:14: Expected ":"
+Line 30, col 14:
+  29 | 
+> 30 |     constant BONUS_MULTIPLIER: Int = 1;
+                    ^
+  31 | 
+
+
+!!! /home/user/repos/ELDEVODE__Learning-TON/contracts/addresses.tact Errors differ
+Error: source:6:33: Expected ")", "\"", "initOf", "null", "_", "A".."Z", "a".."z", "false", "true", "0", "1".."9", "0O", "0o", "0B", "0b", "0X", "0x", "(", "~", "!", "+", or "-"
+
+Line 6, col 33:
+  5 |     a1: Address = address("0QCvinJhp-M7CsVa6dLHBfLM4eVAwr7TZvrG-uoCp3w0Kl2u");
+> 6 |     a3: Address = newAddress(0, ${1:hash})
+                                      ^
+  7 |     init() {
+
+Error: source:6:33: Expected "!", "(", ")", "+", "-", "0", "\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+Line 6, col 33:
+  5 |     a1: Address = address("0QCvinJhp-M7CsVa6dLHBfLM4eVAwr7TZvrG-uoCp3w0Kl2u");
+> 6 |     a3: Address = newAddress(0, ${1:hash})
+                                      ^
+  7 |     init() {
+
+
+!!! /home/user/repos/DenysYeremenko__ton-smart-contract/contracts/first_contract.tact Errors differ
+Error: source:5:27: Expected "}" or ";"
+
+Line 5, col 27:
+  4 | 
+> 5 |     counter: Int as uint32,
+                                ^
+  6 | 
+
+Error: source:5:27: Expected ";", "=", or "}"
+Line 5, col 27:
+  4 | 
+> 5 |     counter: Int as uint32,
+                                ^
+  6 | 
+
+
+!!! /home/user/repos/DenisSoldugeev__ton-message-contract/contracts/bulk_adder.tact Errors differ
+Error: source:34:3: Expected "{"
+
+Line 34, col 3:
+  33 |   // Step 3
+> 34 |   receive(msg: CounterValue) {
+         ^
+  35 |     if(self.target > msg.amount) {
+
+Error: source:34:3: Expected "{"
+Line 34, col 3:
+  33 |   // Step 3
+> 34 |   receive(msg: CounterValue) {
+         ^
+  35 |     if(self.target > msg.amount) {
+
+
+!!! /home/user/repos/DavidLee9291__Tact_hack/contracts/nft_collection.tact Errors differ
+Error: source:18:1: Expected "}", "const", "fun", "external", "bounced", "receive", "_", "A".."Z", "a".."z", or "init"
+
+Line 18, col 1:
+  17 | 
+> 18 | <<<<<<< Updated upstream
+       ^
+  19 |     receive(msg: Mint){
+
+Error: source:18:1: Expected "abstract", "bounced", "const", "extends", "external", "fun", "get", "init", "inline", "mutates", "override", "receive", "virtual", "}", or identifier
+Line 18, col 1:
+  17 | 
+> 18 | <<<<<<< Updated upstream
+       ^
+  19 |     receive(msg: Mint){
+
+
+!!! /home/user/repos/DavidLee9291__Tact_hack/contracts/imports/messages.tact Errors differ
+Error: source:5:1: Expected end of input, "trait", "contract", "message", "struct", "const", "@name", "asm", "fun", or "primitive"
+
+Line 5, col 1:
+  4 | }
+> 5 | <<<<<<< Updated upstream
+      ^
+  6 | 
+
+Error: source:5:1: Expected "@interface", "@name", "abstract", "asm", "const", "contract", "extends", "fun", "get", "inline", "message", "mutates", "override", "primitive", "struct", "trait", or "virtual"
+Line 5, col 1:
+  4 | }
+> 5 | <<<<<<< Updated upstream
+      ^
+  6 | 
+
+
+!!! /home/user/repos/Cosmodude__Nexton/contracts/references/Inheritance(traits).tact Errors differ
+Error: source:39:33: Expected ":"
+
+Line 39, col 33:
+  38 |     owner: Address;
+> 39 |     override const ENABLE_RESET = false;
+                                       ^
+  40 | 
+
+Error: source:39:33: Expected ":"
+Line 39, col 33:
+  38 |     owner: Address;
+> 39 |     override const ENABLE_RESET = false;
+                                       ^
+  40 | 
+
+
+!!! /home/user/repos/Cosmodude__Nexton/contracts/references/adresses.tact Errors differ
+Error: source:13:34: Expected ")"
+
+Line 13, col 34:
+  12 |     init() {
+> 13 |         self.a3 = newAddress(0, 0:17508070f840d5b670b177ae59d8cdb52930ebd3b46804be8161ff9304277a75);
+                                        ^
+  14 |         self.a4 = sender();
+
+Error: source:13:34: Expected "!!", "!=", "%", "&", "&&", "(", ")", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "B", "O", "X", "^", "_", "b", "o", "x", "|", "||", or digit
+Line 13, col 34:
+  12 |     init() {
+> 13 |         self.a3 = newAddress(0, 0:17508070f840d5b670b177ae59d8cdb52930ebd3b46804be8161ff9304277a75);
+                                        ^
+  14 |         self.a4 = sender();
+
+
+!!! /home/user/repos/Cosmodude__Nexton/contracts/references/bools.tact Errors differ
+Error: source:12:9: Expected "}", ";", ".", "!!", "(", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", or "||"
+
+Line 12, col 9:
+  11 |         self.b2 = !self.b1
+> 12 |         self.b3 = false;
+               ^
+  13 |     }
+
+Error: source:12:9: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", "-", ".", "/", ";", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 12, col 9:
+  11 |         self.b2 = !self.b1
+> 12 |         self.b3 = false;
+               ^
+  13 |     }
+
+
+!!! /home/user/repos/Cosmodude__Nexton/contracts/references/functions.tact Errors differ
+Error: source:6:26: Expected "}"
+
+Line 6, col 26:
+  5 |         mode: SendRemainingValue + SendIgnoreErrors,
+> 6 |         body: mintJettons{
+                               ^
+  7 |             amount: _amount,
+
+Error: source:6:26: Expected "!!", "!=", "%", "&", "&&", "(", "*", "+", ",", "-", ".", "/", "<", "<<", "<=", "==", ">", ">=", ">>", "?", "^", "|", "||", or "}"
+Line 6, col 26:
+  5 |         mode: SendRemainingValue + SendIgnoreErrors,
+> 6 |         body: mintJettons{
+                               ^
+  7 |             amount: _amount,
+
+
+!!! /home/user/repos/ApplY3D__twa-test/contracts/sources/array.tact Errors differ
+Error: source:2:5: Expected "}"
+
+Line 2, col 5:
+  1 | struct Array {
+> 2 |     map: map<Int as uint16, Int>; // array of Int values as a map of Ints to Ints,
+          ^
+  3 |                                   // with serialization of its keys to uint16 to save space
+
+Error: source:2:5: Expected ";", "}", or identifier
+Line 2, col 5:
+  1 | struct Array {
+> 2 |     map: map<Int as uint16, Int>; // array of Int values as a map of Ints to Ints,
+          ^
+  3 |                                   // with serialization of its keys to uint16 to save space
+
+
+!!! /home/user/repos/ApplY3D__twa-test/contracts/sources/contract.tact Errors differ
+Error: source:73:32: Expected not a reservedWord
+
+Line 73, col 32:
+  72 |     get fun get_public_keys(): map<Int as uint16, Int> {
+> 73 |         return self.publicKeys.map;
+                                      ^
+  74 |     }
+
+Error: source:73:32: Expected identifier
+Line 73, col 32:
+  72 |     get fun get_public_keys(): map<Int as uint16, Int> {
+> 73 |         return self.publicKeys.map;
+                                      ^
+  74 |     }
+
+
+!!! /home/user/repos/0xTan1319__Ton-Jetton-Dex-Swap-Smart-Contract/sources/contract.tact Errors differ
+Error: source:4:13: Expected ":"
+
+Line 4, col 13:
+  3 |     // Constants
+> 4 |     uint256 constant DECIMAL = 1e9;
+                  ^
+  5 | 
+
+Error: source:4:13: Expected ":"
+Line 4, col 13:
+  3 |     // Constants
+> 4 |     uint256 constant DECIMAL = 1e9;
+                  ^
+  5 | 
+
+

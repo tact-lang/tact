@@ -21,7 +21,7 @@ const getMatcher = (): Matcher<ErrMatcher> => ({
     eps: () => [true, []],
     eq: (l, r) => path => {
         // console.log(path.join(''), l, r);
-        const res = l === r;
+        const res = l === r || l === 'type_id' && r === 'id';
         return [
             res,
             res ? [] : [{ path: path.join(''), left: l, right: r }],

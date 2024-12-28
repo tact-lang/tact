@@ -2,8 +2,8 @@ import * as fs from "fs/promises";
 import { join } from "path";
 import { getParser, Parser } from "./grammar";
 import { AstModule, getAstFactory } from "./ast";
-import { AstComparator } from "./compare";
 import { inspect } from "util";
+import { astModule } from "./ast-types.schema";
 
 const contractListFile = join(__dirname, "contracts.json");
 
@@ -58,21 +58,7 @@ const parseOrError =
     };
 
 const makeComparator = () => {
-    const comparator = AstComparator.make({
-        sort: false,
-        canonicalize: false,
-    });
-
-    return (result1: Result, result2: Result): boolean => {
-        return (
-            (result1.type === "ok" &&
-                result2.type === "ok" &&
-                comparator.compare(result1.ast, result2.ast)) ||
-            (result1.type === "error" &&
-                result2.type === "error" &&
-                result1.error === result2.error)
-        );
-    };
+    
 };
 
 const log = (obj: unknown) =>
@@ -80,22 +66,39 @@ const log = (obj: unknown) =>
 
 const main = async () => {
     // await findAllContracts();
-    const paths = (await getAllContracts()).slice(0, 5);
+    const paths = (await getAllContracts());
     const astFactory = getTestAstFactory();
     const oldParser = parseOrError(getParser(astFactory, "old"));
     const newParser = parseOrError(getParser(astFactory, "new"));
-    const compare = makeComparator();
 
     for (const path of paths) {
         const code = await fs.readFile(path, "utf-8");
         const oldResult = oldParser(code);
         const newResult = newParser(code);
-        const areSame = compare(oldResult, newResult);
-        if (!areSame) {
-            console.log(`Mismatch in ${path}`);
-            log(oldResult);
-            log(newResult);
-            console.log("");
+        if (oldResult.type === "ok") {
+            if (newResult.type === "ok") {
+                const [areMatching, errors] = astModule.eq(oldResult.ast, newResult.ast)([]);
+                if (!areMatching) {
+                    console.log('!!!', path, 'AST mismatch');
+                    log(errors);
+                    console.log('');
+                }
+            } else {
+                console.log('!!!', path, `Stopped parsing`);
+                console.log('');
+            }
+        } else {
+            if (newResult.type === "ok") {
+                console.log('!!!', path, `Started parsing`);
+                console.log('');
+            } else {
+                if (oldResult.error !== newResult.error) {
+                    console.log('!!!', path, `Errors differ`);
+                    console.log(oldResult.error);
+                    console.log(newResult.error);
+                    console.log('');
+                }
+            }
         }
     }
 };
