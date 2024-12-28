@@ -118,11 +118,21 @@ export function randomAstConditional(
     );
 }
 
+function randomAstTypeId(): fc.Arbitrary<AstId> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("id"),
+            text: fc.stringMatching(/^[A-Z][A-Za-z0-9_]*$/),
+            // Rules for text value are in src/grammar/grammar.ohm
+        }),
+    );
+}
+
 function randomAstId(): fc.Arbitrary<AstId> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("id"),
-            text: fc.string().filter((text) => /^[A-Za-z_]+$/.test(text)),
+            text: fc.stringMatching(/^[A-Za-z_][A-Za-z0-9_]*$/),
             // Rules for text value are in src/grammar/grammar.ohm
         }),
     );
@@ -178,7 +188,7 @@ export function randomAstStructInstance(
     return dummyAstNode(
         fc.record({
             kind: fc.constant("struct_instance"),
-            type: randomAstId(),
+            type: randomAstTypeId(),
             args: fc.array(structFieldInitializer),
         }),
     );
