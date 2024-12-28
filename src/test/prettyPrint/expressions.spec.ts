@@ -43,7 +43,7 @@ describe("Pretty Print Expressions", () => {
                 fc.property(astGenerator, (generatedAst) => {
                     const prettyBefore = prettyPrint(generatedAst);
                     const astFactory = getAstFactory();
-                    const parser = getParser(astFactory);
+                    const parser = getParser(astFactory, "new");
                     const parsedAst = parser.parseExpression(prettyBefore);
                     expect(eqExpressions(generatedAst, parsedAst)).toBe(true);
                 }),
