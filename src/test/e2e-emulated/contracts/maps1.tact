@@ -549,6 +549,88 @@ message ReplaceGetAllMaps {
     valueStruct: SomeStruct?;
 }
 
+message FromCellAllMaps {
+    // Integer (`Int`) Key Maps
+    int_varint16: Cell;
+    int_varint32: Cell;
+    int_varuint16: Cell;
+    int_varuint32: Cell;
+    int_bool: Cell;
+    int_cell: Cell;
+    int_address: Cell;
+    int_struct: Cell;
+
+    // Integer (`Int as int8`) Key Maps
+    int8_varint16: Cell;
+    int8_varint32: Cell;
+    int8_varuint16: Cell;
+    int8_varuint32: Cell;
+    int8_bool: Cell;
+    int8_cell: Cell;
+    int8_address: Cell;
+    int8_struct: Cell;
+
+    // Integer (`Int as int42`) Key Maps
+    int42_varint16: Cell;
+    int42_varint32: Cell;
+    int42_varuint16: Cell;
+    int42_varuint32: Cell;
+    int42_bool: Cell;
+    int42_cell: Cell;
+    int42_address: Cell;
+    int42_struct: Cell;
+
+    // Integer (`Int as int256`) Key Maps
+    int256_varint16: Cell;
+    int256_varint32: Cell;
+    int256_varuint16: Cell;
+    int256_varuint32: Cell;
+    int256_bool: Cell;
+    int256_cell: Cell;
+    int256_address: Cell;
+    int256_struct: Cell;
+
+    // Integer (`Int as uint8`) Key Maps
+    uint8_varint16: Cell;
+    uint8_varint32: Cell;
+    uint8_varuint16: Cell;
+    uint8_varuint32: Cell;
+    uint8_bool: Cell;
+    uint8_cell: Cell;
+    uint8_address: Cell;
+    uint8_struct: Cell;
+
+    // Integer (`Int as uint42`) Key Maps
+    uint42_varint16: Cell;
+    uint42_varint32: Cell;
+    uint42_varuint16: Cell;
+    uint42_varuint32: Cell;
+    uint42_bool: Cell;
+    uint42_cell: Cell;
+    uint42_address: Cell;
+    uint42_struct: Cell;
+
+    // Integer (`Int as uint256`) Key Maps
+    uint256_varint16: Cell;
+    uint256_varint32: Cell;
+    uint256_varuint16: Cell;
+    uint256_varuint32: Cell;
+    uint256_bool: Cell;
+    uint256_cell: Cell;
+    uint256_address: Cell;
+    uint256_struct: Cell;
+
+    // Address Key Maps
+    address_varint16: Cell;
+    address_varint32: Cell;
+    address_varuint16: Cell;
+    address_varuint32: Cell;
+    address_bool: Cell;
+    address_cell: Cell;
+    address_address: Cell;
+    address_struct: Cell;
+}
+
 message CheckNullReference {
     
 }
@@ -970,6 +1052,80 @@ contract MapTestContract {
         self.address_cell.replaceGet(msg.keyAddress, msg.valueCell);
         self.address_address.replaceGet(msg.keyAddress, msg.valueAddress);
         self.address_struct.replaceGet(msg.keyAddress, msg.valueStruct);
+    }
+
+    receive(msg: FromCellAllMaps) {
+        self.int_varint16.fromCell(msg.int_varint16);
+        self.int_varint32.fromCell(msg.int_varint32);
+        self.int_varuint16.fromCell(msg.int_varuint16);
+        self.int_varuint32.fromCell(msg.int_varuint32);
+        self.int_bool.fromCell(msg.int_bool);
+        self.int_cell.fromCell(msg.int_cell);
+        self.int_address.fromCell(msg.int_address);
+        self.int_struct.fromCell(msg.int_struct);
+
+        self.int8_varint16.fromCell(msg.int8_varint16);
+        self.int8_varint32.fromCell(msg.int8_varint32);
+        self.int8_varuint16.fromCell(msg.int8_varuint16);
+        self.int8_varuint32.fromCell(msg.int8_varuint32);
+        self.int8_bool.fromCell(msg.int8_bool);
+        self.int8_cell.fromCell(msg.int8_cell);
+        self.int8_address.fromCell(msg.int8_address);
+        self.int8_struct.fromCell(msg.int8_struct);
+
+        self.int42_varint16.fromCell(msg.int42_varint16);
+        self.int42_varint32.fromCell(msg.int42_varint32);
+        self.int42_varuint16.fromCell(msg.int42_varuint16);
+        self.int42_varuint32.fromCell(msg.int42_varuint32);
+        self.int42_bool.fromCell(msg.int42_bool);
+        self.int42_cell.fromCell(msg.int42_cell);
+        self.int42_address.fromCell(msg.int42_address);
+        self.int42_struct.fromCell(msg.int42_struct);
+
+        self.int256_varint16.fromCell(msg.int256_varint16);
+        self.int256_varint32.fromCell(msg.int256_varint32);
+        self.int256_varuint16.fromCell(msg.int256_varuint16);
+        self.int256_varuint32.fromCell(msg.int256_varuint32);
+        self.int256_bool.fromCell(msg.int256_bool);
+        self.int256_cell.fromCell(msg.int256_cell);
+        self.int256_address.fromCell(msg.int256_address);
+        self.int256_struct.fromCell(msg.int256_struct);
+
+        self.uint8_varint16.fromCell(msg.uint8_varint16);
+        self.uint8_varint32.fromCell(msg.uint8_varint32);
+        self.uint8_varuint16.fromCell(msg.uint8_varuint16);
+        self.uint8_varuint32.fromCell(msg.uint8_varuint32);
+        self.uint8_bool.fromCell(msg.uint8_bool);
+        self.uint8_cell.fromCell(msg.uint8_cell);
+        self.uint8_address.fromCell(msg.uint8_address);
+        self.uint8_struct.fromCell(msg.uint8_struct);
+
+        self.uint42_varint16.fromCell(msg.uint42_varint16);
+        self.uint42_varint32.fromCell(msg.uint42_varint32);
+        self.uint42_varuint16.fromCell(msg.uint42_varuint16);
+        self.uint42_varuint32.fromCell(msg.uint42_varuint32);
+        self.uint42_bool.fromCell(msg.uint42_bool);
+        self.uint42_cell.fromCell(msg.uint42_cell);
+        self.uint42_address.fromCell(msg.uint42_address);
+        self.uint42_struct.fromCell(msg.uint42_struct);
+
+        self.uint256_varint16.fromCell(msg.uint256_varint16);
+        self.uint256_varint32.fromCell(msg.uint256_varint32);
+        self.uint256_varuint16.fromCell(msg.uint256_varuint16);
+        self.uint256_varuint32.fromCell(msg.uint256_varuint32);
+        self.uint256_bool.fromCell(msg.uint256_bool);
+        self.uint256_cell.fromCell(msg.uint256_cell);
+        self.uint256_address.fromCell(msg.uint256_address);
+        self.uint256_struct.fromCell(msg.uint256_struct);
+
+        self.address_varint16.fromCell(msg.address_varint16);
+        self.address_varint32.fromCell(msg.address_varint32);
+        self.address_varuint16.fromCell(msg.address_varuint16);
+        self.address_varuint32.fromCell(msg.address_varuint32);
+        self.address_bool.fromCell(msg.address_bool);
+        self.address_cell.fromCell(msg.address_cell);
+        self.address_address.fromCell(msg.address_address);
+        self.address_struct.fromCell(msg.address_struct);
     }
 
     // ===============================

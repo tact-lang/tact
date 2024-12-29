@@ -549,6 +549,88 @@ message ReplaceGetAllMaps {
     valueCoins: Int?;
 }
 
+message FromCellAllMaps {
+    // Integer (`Int`) Key Maps
+    int_int: Cell;
+    int_int8: Cell;
+    int_int42: Cell;
+    int_int256: Cell;
+    int_uint8: Cell;
+    int_uint42: Cell;
+    int_uint256: Cell;
+    int_coins: Cell;
+
+    // Integer (`Int as int8`) Key Maps
+    int8_int: Cell;
+    int8_int8: Cell;
+    int8_int42: Cell;
+    int8_int256: Cell;
+    int8_uint8: Cell;
+    int8_uint42: Cell;
+    int8_uint256: Cell;
+    int8_coins: Cell;
+
+    // Integer (`Int as int42`) Key Maps
+    int42_int: Cell;
+    int42_int8: Cell;
+    int42_int42: Cell;
+    int42_int256: Cell;
+    int42_uint8: Cell;
+    int42_uint42: Cell;
+    int42_uint256: Cell;
+    int42_coins: Cell;
+
+    // Integer (`Int as int256`) Key Maps
+    int256_int: Cell;
+    int256_int8: Cell;
+    int256_int42: Cell;
+    int256_int256: Cell;
+    int256_uint8: Cell;
+    int256_uint42: Cell;
+    int256_uint256: Cell;
+    int256_coins: Cell;
+
+    // Unsigned Integer (`Int as uint8`) Key Maps
+    uint8_int: Cell;
+    uint8_int8: Cell;
+    uint8_int42: Cell;
+    uint8_int256: Cell;
+    uint8_uint8: Cell;
+    uint8_uint42: Cell;
+    uint8_uint256: Cell;
+    uint8_coins: Cell;
+
+    // Unsigned Integer (`Int as uint42`) Key Maps
+    uint42_int: Cell;
+    uint42_int8: Cell;
+    uint42_int42: Cell;
+    uint42_int256: Cell;
+    uint42_uint8: Cell;
+    uint42_uint42: Cell;
+    uint42_uint256: Cell;
+    uint42_coins: Cell;
+
+    // Unsigned Integer (`Int as uint256`) Key Maps
+    uint256_int: Cell;
+    uint256_int8: Cell;
+    uint256_int42: Cell;
+    uint256_int256: Cell;
+    uint256_uint8: Cell;
+    uint256_uint42: Cell;
+    uint256_uint256: Cell;
+    uint256_coins: Cell;
+
+    // Address Key Maps
+    address_int: Cell;
+    address_int8: Cell;
+    address_int42: Cell;
+    address_int256: Cell;
+    address_uint8: Cell;
+    address_uint42: Cell;
+    address_uint256: Cell;
+    address_coins: Cell;
+}
+
 message CheckNullReference {
     
 }
@@ -970,6 +1052,80 @@ contract MapTestContract {
         self.address_uint42.replaceGet(msg.keyAddress, msg.valueUint42);
         self.address_uint256.replaceGet(msg.keyAddress, msg.valueUint256);
         self.address_coins.replaceGet(msg.keyAddress, msg.valueCoins);
+    }
+
+    receive(msg: FromCellAllMaps) {
+        self.int_int.fromCell(msg.int_int);
+        self.int_int8.fromCell(msg.int_int8);
+        self.int_int42.fromCell(msg.int_int42);
+        self.int_int256.fromCell(msg.int_int256);
+        self.int_uint8.fromCell(msg.int_uint8);
+        self.int_uint42.fromCell(msg.int_uint42);
+        self.int_uint256.fromCell(msg.int_uint256);
+        self.int_coins.fromCell(msg.int_coins);
+
+        self.int8_int.fromCell(msg.int8_int);
+        self.int8_int8.fromCell(msg.int8_int8);
+        self.int8_int42.fromCell(msg.int8_int42);
+        self.int8_int256.fromCell(msg.int8_int256);
+        self.int8_uint8.fromCell(msg.int8_uint8);
+        self.int8_uint42.fromCell(msg.int8_uint42);
+        self.int8_uint256.fromCell(msg.int8_uint256);
+        self.int8_coins.fromCell(msg.int8_coins);
+
+        self.int42_int.fromCell(msg.int42_int);
+        self.int42_int8.fromCell(msg.int42_int8);
+        self.int42_int42.fromCell(msg.int42_int42);
+        self.int42_int256.fromCell(msg.int42_int256);
+        self.int42_uint8.fromCell(msg.int42_uint8);
+        self.int42_uint42.fromCell(msg.int42_uint42);
+        self.int42_uint256.fromCell(msg.int42_uint256);
+        self.int42_coins.fromCell(msg.int42_coins);
+
+        self.int256_int.fromCell(msg.int256_int);
+        self.int256_int8.fromCell(msg.int256_int8);
+        self.int256_int42.fromCell(msg.int256_int42);
+        self.int256_int256.fromCell(msg.int256_int256);
+        self.int256_uint8.fromCell(msg.int256_uint8);
+        self.int256_uint42.fromCell(msg.int256_uint42);
+        self.int256_uint256.fromCell(msg.int256_uint256);
+        self.int256_coins.fromCell(msg.int256_coins);
+
+        self.uint8_int.fromCell(msg.uint8_int);
+        self.uint8_int8.fromCell(msg.uint8_int8);
+        self.uint8_int42.fromCell(msg.uint8_int42);
+        self.uint8_int256.fromCell(msg.uint8_int256);
+        self.uint8_uint8.fromCell(msg.uint8_uint8);
+        self.uint8_uint42.fromCell(msg.uint8_uint42);
+        self.uint8_uint256.fromCell(msg.uint8_uint256);
+        self.uint8_coins.fromCell(msg.uint8_coins);
+
+        self.uint42_int.fromCell(msg.uint42_int);
+        self.uint42_int8.fromCell(msg.uint42_int8);
+        self.uint42_int42.fromCell(msg.uint42_int42);
+        self.uint42_int256.fromCell(msg.uint42_int256);
+        self.uint42_uint8.fromCell(msg.uint42_uint8);
+        self.uint42_uint42.fromCell(msg.uint42_uint42);
+        self.uint42_uint256.fromCell(msg.uint42_uint256);
+        self.uint42_coins.fromCell(msg.uint42_coins);
+
+        self.uint256_int.fromCell(msg.uint256_int);
+        self.uint256_int8.fromCell(msg.uint256_int8);
+        self.uint256_int42.fromCell(msg.uint256_int42);
+        self.uint256_int256.fromCell(msg.uint256_int256);
+        self.uint256_uint8.fromCell(msg.uint256_uint8);
+        self.uint256_uint42.fromCell(msg.uint256_uint42);
+        self.uint256_uint256.fromCell(msg.uint256_uint256);
+        self.uint256_coins.fromCell(msg.uint256_coins);
+
+        self.address_int.fromCell(msg.address_int);
+        self.address_int8.fromCell(msg.address_int8);
+        self.address_int42.fromCell(msg.address_int42);
+        self.address_int256.fromCell(msg.address_int256);
+        self.address_uint8.fromCell(msg.address_uint8);
+        self.address_uint42.fromCell(msg.address_uint42);
+        self.address_uint256.fromCell(msg.address_uint256);
+        self.address_coins.fromCell(msg.address_coins);
     }
 
     // ===============================
