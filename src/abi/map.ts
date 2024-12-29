@@ -369,6 +369,70 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
         },
     ],
     [
+        "fromCell",
+        {
+            name: "fromCell",
+            resolve(
+                ctx: CompilerContext,
+                args: (TypeRef | undefined)[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(
+                    args,
+                    2,
+                    "fromCell expects one argument",
+                    ref,
+                );
+
+                const [self, newCell] = args;
+                checkMapType(self, ref);
+
+                if (
+                    !newCell ||
+                    newCell.kind !== "ref" ||
+                    newCell.name !== "Cell"
+                ) {
+                    throwCompilationError(
+                        "fromCell expects a Cell as second argument",
+                        ref,
+                    );
+                }
+
+                return { kind: "void" };
+            },
+            generate(
+                ctx: WriterContext,
+                args: (TypeRef | undefined)[],
+                exprs: AstExpression[],
+                ref: SrcInfo,
+            ) {
+                checkArgumentsLength(
+                    args,
+                    2,
+                    "fromCell expects one argument",
+                    ref,
+                );
+
+                const [self, newCell] = args;
+                checkMapType(self, ref);
+
+                if (
+                    !newCell ||
+                    newCell.kind !== "ref" ||
+                    newCell.name !== "Cell"
+                ) {
+                    throwCompilationError(
+                        "fromCell expects a Cell as second argument",
+                        ref,
+                    );
+                }
+
+                const resolved = exprs.map((v) => writeExpression(v, ctx));
+                return `${resolved[0]} = ${resolved[1]}`;
+            },
+        },
+    ],
+    [
         "isEmpty",
         {
             name: "isEmpty",

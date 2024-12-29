@@ -360,6 +360,21 @@ contract Example {
 }
 ```
 
+### Convert from a `Cell`, `.fromCell()` {#fromcell}
+
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+To convert a [`Cell{:tact}`][cell] type back to a map, use the `.fromCell(){:tact}` [method](/book/functions#extension-function).
+
+```tact
+// Suppose we have a Cell
+let cell: Cell = ...;
+
+// And we want to initialize a map variable from it
+let fizz: map<Int, Int> = emptyMap();
+fizz.fromCell(cell);
+```
+
 ### Traverse over entries {#traverse}
 
 To iterate over map entries there is a [`foreach{:tact}`](/book/statements#foreach-loop) loop statement:
