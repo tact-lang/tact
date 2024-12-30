@@ -166,6 +166,8 @@
     "uncons",
     "uninit",
     "unixfs",
+    "varint",
+    "varuint",
     "vogons",
     "workchain",
     "workchain",
