@@ -835,6 +835,9 @@ export function __DANGER_resetNodeId() {
 }
 
 // Test equality of AstExpressions.
+// Note this is syntactical equality of expressions.
+// For example, two struct instances are equal if they have the same
+// type and same fields in the same order.
 export function eqExpressions(
     ast1: AstExpression,
     ast2: AstExpression,

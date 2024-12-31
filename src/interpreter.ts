@@ -142,6 +142,28 @@ export function ensureInt(val: AstLiteral): AstNumber {
     }
 }
 
+function ensureArgumentForEquality(val: AstLiteral): AstLiteral {
+    switch (val.kind) {
+        case "address":
+        case "boolean":
+        case "cell":
+        case "comment_value":
+        case "null":
+        case "number":
+        case "simplified_string":
+        case "slice":
+            return val;
+        case "struct_value":
+            throwErrorConstEval(
+                `struct ${showValue(val)} cannot be argument to == operator`,
+                val.loc,
+            );
+            break;
+        default:
+            throwInternalCompilerError("Unrecognized ast literal kind");
+    }
+}
+
 function ensureRepeatInt(val: AstLiteral): AstNumber {
     if (val.kind !== "number") {
         throwErrorConstEval(
@@ -392,7 +414,10 @@ export function evalBinaryOp(
                     source,
                 );
             }
-            const result = eqExpressions(valLeft, valR);
+            const valLeft_ = ensureArgumentForEquality(valLeft);
+            const valR_ = ensureArgumentForEquality(valR);
+
+            const result = eqExpressions(valLeft_, valR_); // Changed to equality testing (instead of ===) because cells, slices, address are equal by hashing
             return makeBooleanLiteral(result, source);
         }
         case "!=": {
@@ -410,7 +435,10 @@ export function evalBinaryOp(
                     source,
                 );
             }
-            const result = !eqExpressions(valLeft, valR);
+            const valLeft_ = ensureArgumentForEquality(valLeft);
+            const valR_ = ensureArgumentForEquality(valR);
+
+            const result = !eqExpressions(valLeft_, valR_); // Changed to equality testing (instead of ===) because cells, slices are equal by hashing
             return makeBooleanLiteral(result, source);
         }
         case "&&": {
