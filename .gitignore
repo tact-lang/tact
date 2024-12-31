@@ -10,3 +10,5 @@ output/
 **/grammar.ohm-bundle.d.ts
 src/func/funcfiftlib.wasm.js
 src/test/contracts/pretty-printer-output
+src/test/e2e-emulated/map-tests/build
+
