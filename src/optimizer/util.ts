@@ -1,67 +1,24 @@
+import { Address, Cell, Slice } from "@ton/core";
 import {
     AstExpression,
     AstUnaryOperation,
     AstBinaryOperation,
     createAstNode,
-    AstValue,
-    isValue,
+    isLiteral,
+    AstNumber,
+    AstBoolean,
+    AstSimplifiedString,
+    AstNull,
+    AstCell,
+    AstSlice,
+    AstAddress,
+    AstLiteral,
+    AstStructValue,
+    AstStructFieldValue,
+    AstId,
+    AstCommentValue,
 } from "../grammar/ast";
-import { dummySrcInfo } from "../grammar/grammar";
-import { throwInternalCompilerError } from "../errors";
-import { Value } from "../types/types";
-
-export function extractValue(ast: AstValue): Value {
-    switch (
-        ast.kind // Missing structs
-    ) {
-        case "null":
-            return null;
-        case "boolean":
-            return ast.value;
-        case "number":
-            return ast.value;
-        case "string":
-            return ast.value;
-    }
-}
-
-export function makeValueExpression(value: Value): AstValue {
-    if (value === null) {
-        const result = createAstNode({
-            kind: "null",
-            loc: dummySrcInfo,
-        });
-        return result as AstValue;
-    }
-    if (typeof value === "string") {
-        const result = createAstNode({
-            kind: "string",
-            value: value,
-            loc: dummySrcInfo,
-        });
-        return result as AstValue;
-    }
-    if (typeof value === "bigint") {
-        const result = createAstNode({
-            kind: "number",
-            base: 10,
-            value: value,
-            loc: dummySrcInfo,
-        });
-        return result as AstValue;
-    }
-    if (typeof value === "boolean") {
-        const result = createAstNode({
-            kind: "boolean",
-            value: value,
-            loc: dummySrcInfo,
-        });
-        return result as AstValue;
-    }
-    throwInternalCompilerError(
-        `structs, addresses, cells, and comment values are not supported at the moment.`,
-    );
-}
+import { dummySrcInfo, SrcInfo } from "../grammar/grammar";
 
 export function makeUnaryExpression(
     op: AstUnaryOperation,
@@ -91,6 +48,113 @@ export function makeBinaryExpression(
     return result as AstExpression;
 }
 
+export function makeNumberLiteral(n: bigint, loc: SrcInfo): AstNumber {
+    const result = createAstNode({
+        kind: "number",
+        base: 10,
+        value: n,
+        loc: loc,
+    });
+    return result as AstNumber;
+}
+
+export function makeBooleanLiteral(b: boolean, loc: SrcInfo): AstBoolean {
+    const result = createAstNode({
+        kind: "boolean",
+        value: b,
+        loc: loc,
+    });
+    return result as AstBoolean;
+}
+
+export function makeSimplifiedStringLiteral(
+    s: string,
+    loc: SrcInfo,
+): AstSimplifiedString {
+    const result = createAstNode({
+        kind: "simplified_string",
+        value: s,
+        loc: loc,
+    });
+    return result as AstSimplifiedString;
+}
+
+export function makeCommentLiteral(s: string, loc: SrcInfo): AstCommentValue {
+    const result = createAstNode({
+        kind: "comment_value",
+        value: s,
+        loc: loc,
+    });
+    return result as AstCommentValue;
+}
+
+export function makeNullLiteral(loc: SrcInfo): AstNull {
+    const result = createAstNode({
+        kind: "null",
+        loc: loc,
+    });
+    return result as AstNull;
+}
+
+export function makeCellLiteral(c: Cell, loc: SrcInfo): AstCell {
+    const result = createAstNode({
+        kind: "cell",
+        value: c,
+        loc: loc,
+    });
+    return result as AstCell;
+}
+
+export function makeSliceLiteral(s: Slice, loc: SrcInfo): AstSlice {
+    const result = createAstNode({
+        kind: "slice",
+        value: s,
+        loc: loc,
+    });
+    return result as AstSlice;
+}
+
+export function makeAddressLiteral(a: Address, loc: SrcInfo): AstAddress {
+    const result = createAstNode({
+        kind: "address",
+        value: a,
+        loc: loc,
+    });
+    return result as AstAddress;
+}
+
+export function makeStructFieldValue(
+    fieldName: string,
+    val: AstLiteral,
+    loc: SrcInfo,
+): AstStructFieldValue {
+    const result = createAstNode({
+        kind: "struct_field_value",
+        field: createAstNode({
+            kind: "id",
+            text: fieldName,
+            loc: loc,
+        }) as AstId,
+        initializer: val,
+        loc: loc,
+    });
+    return result as AstStructFieldValue;
+}
+
+export function makeStructValue(
+    fields: AstStructFieldValue[],
+    type: AstId,
+    loc: SrcInfo,
+): AstStructValue {
+    const result = createAstNode({
+        kind: "struct_value",
+        args: fields,
+        loc: loc,
+        type: type,
+    });
+    return result as AstStructValue;
+}
+
 // Checks if the top level node is an unary op node
 export function checkIsUnaryOpNode(ast: AstExpression): boolean {
     return ast.kind === "op_unary";
@@ -104,13 +168,13 @@ export function checkIsBinaryOpNode(ast: AstExpression): boolean {
 // Checks if top level node is a binary op node
 // with a value node on the right
 export function checkIsBinaryOp_With_RightValue(ast: AstExpression): boolean {
-    return ast.kind === "op_binary" ? isValue(ast.right) : false;
+    return ast.kind === "op_binary" ? isLiteral(ast.right) : false;
 }
 
 // Checks if top level node is a binary op node
 // with a value node on the left
 export function checkIsBinaryOp_With_LeftValue(ast: AstExpression): boolean {
-    return ast.kind === "op_binary" ? isValue(ast.left) : false;
+    return ast.kind === "op_binary" ? isLiteral(ast.left) : false;
 }
 
 // Checks if the top level node is the specified number

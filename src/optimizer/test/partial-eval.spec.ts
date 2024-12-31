@@ -1,18 +1,17 @@
 import {
     AstExpression,
-    AstValue,
     __DANGER_resetNodeId,
     cloneAstNode,
     eqExpressions,
-    isValue,
+    isLiteral,
 } from "../../grammar/ast";
 import { parseExpression } from "../../grammar/grammar";
-import { extractValue, makeValueExpression } from "../util";
 import { partiallyEvalExpression } from "../../constEval";
 import { CompilerContext } from "../../context";
 import { ExpressionTransformer, Rule } from "../types";
 import { AssociativeRule3 } from "../associative";
 import { evalBinaryOp, evalUnaryOp } from "../../interpreter";
+import { throwInternalCompilerError } from "../../errors";
 
 const MAX: string =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";
@@ -360,6 +359,18 @@ function dummyEval(ast: AstExpression): AstExpression {
             return ast;
         case "id":
             return ast;
+        case "address":
+            return ast;
+        case "cell":
+            return ast;
+        case "comment_value":
+            return ast;
+        case "simplified_string":
+            return ast;
+        case "slice":
+            return ast;
+        case "struct_value":
+            return ast; // No need to simplify: fields already simplified
         case "method_call":
             newNode = cloneAstNode(ast);
             newNode.args = ast.args.map(dummyEval);
@@ -372,28 +383,17 @@ function dummyEval(ast: AstExpression): AstExpression {
         case "op_unary":
             newNode = cloneAstNode(ast);
             newNode.operand = dummyEval(ast.operand);
-            if (isValue(newNode.operand)) {
-                return makeValueExpression(
-                    evalUnaryOp(
-                        ast.op,
-                        extractValue(newNode.operand as AstValue),
-                    ),
-                );
+            if (isLiteral(newNode.operand)) {
+                return evalUnaryOp(ast.op, newNode.operand, ast.loc);
             }
             return newNode;
         case "op_binary":
             newNode = cloneAstNode(ast);
             newNode.left = dummyEval(ast.left);
             newNode.right = dummyEval(ast.right);
-            if (isValue(newNode.left) && isValue(newNode.right)) {
-                const valR = extractValue(newNode.right as AstValue);
-                return makeValueExpression(
-                    evalBinaryOp(
-                        ast.op,
-                        extractValue(newNode.left as AstValue),
-                        () => valR,
-                    ),
-                );
+            if (isLiteral(newNode.left) && isLiteral(newNode.right)) {
+                const valR = newNode.right;
+                return evalBinaryOp(ast.op, newNode.left, () => valR, ast.loc);
             }
             return newNode;
         case "conditional":
@@ -417,6 +417,8 @@ function dummyEval(ast: AstExpression): AstExpression {
             newNode = cloneAstNode(ast);
             newNode.args = ast.args.map(dummyEval);
             return newNode;
+        default:
+            throwInternalCompilerError("Unrecognized expression kind");
     }
 }
 

@@ -1,4 +1,4 @@
-import { Address, beginCell, BitString, Cell, Slice, toNano } from "@ton/core";
+import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
 import * as crc32 from "crc-32";
 import { evalConstantExpression } from "./constEval";
@@ -11,8 +11,11 @@ import {
     throwInternalCompilerError,
 } from "./errors";
 import {
+    AstAddress,
     AstBinaryOperation,
     AstBoolean,
+    AstCell,
+    AstCommentValue,
     AstCondition,
     AstConditional,
     AstConstantDef,
@@ -22,6 +25,7 @@ import {
     AstFunctionDef,
     AstId,
     AstInitOf,
+    AstLiteral,
     AstMessageDecl,
     AstMethodCall,
     AstModuleItem,
@@ -31,6 +35,8 @@ import {
     AstOpBinary,
     AstOpUnary,
     AstPrimitiveTypeDecl,
+    AstSimplifiedString,
+    AstSlice,
     AstStatement,
     AstStatementAssign,
     AstStatementAugmentedAssign,
@@ -47,15 +53,31 @@ import {
     AstStaticCall,
     AstString,
     AstStructDecl,
+    AstStructFieldValue,
     AstStructInstance,
+    AstStructValue,
     AstTrait,
     AstUnaryOperation,
+    eqExpressions,
     eqNames,
     idText,
     isSelfId,
 } from "./grammar/ast";
 import { SrcInfo, dummySrcInfo, parseExpression } from "./grammar/grammar";
-import { divFloor, modFloor } from "./optimizer/util";
+import {
+    divFloor,
+    makeAddressLiteral,
+    makeBooleanLiteral,
+    makeCellLiteral,
+    makeCommentLiteral,
+    makeNullLiteral,
+    makeNumberLiteral,
+    makeSimplifiedStringLiteral,
+    makeSliceLiteral,
+    makeStructFieldValue,
+    makeStructValue,
+    modFloor,
+} from "./optimizer/util";
 import {
     getStaticConstant,
     getStaticFunction,
@@ -64,13 +86,7 @@ import {
     hasStaticFunction,
 } from "./types/resolveDescriptors";
 import { getExpType } from "./types/resolveExpression";
-import {
-    CommentValue,
-    StructValue,
-    TypeRef,
-    Value,
-    showValue,
-} from "./types/types";
+import { TypeRef, showValue } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
 import { enabledMasterchain } from "./config/features";
 
@@ -106,58 +122,58 @@ function throwErrorConstEval(msg: string, source: SrcInfo): never {
     );
 }
 type EvalResult =
-    | { kind: "ok"; value: Value }
+    | { kind: "ok"; value: AstLiteral }
     | { kind: "error"; message: string };
 
-export function ensureInt(val: Value, source: SrcInfo): bigint {
-    if (typeof val !== "bigint") {
+export function ensureInt(val: AstLiteral): AstNumber {
+    if (val.kind !== "number") {
         throwErrorConstEval(
             `integer expected, but got '${showValue(val)}'`,
-            source,
+            val.loc,
         );
     }
-    if (minTvmInt <= val && val <= maxTvmInt) {
+    if (minTvmInt <= val.value && val.value <= maxTvmInt) {
         return val;
     } else {
         throwErrorConstEval(
             `integer '${showValue(val)}' does not fit into TVM Int type`,
-            source,
+            val.loc,
         );
     }
 }
 
-function ensureRepeatInt(val: Value, source: SrcInfo): bigint {
-    if (typeof val !== "bigint") {
+function ensureRepeatInt(val: AstLiteral): AstNumber {
+    if (val.kind !== "number") {
         throwErrorConstEval(
             `integer expected, but got '${showValue(val)}'`,
-            source,
+            val.loc,
         );
     }
-    if (minRepeatStatement <= val && val <= maxRepeatStatement) {
+    if (minRepeatStatement <= val.value && val.value <= maxRepeatStatement) {
         return val;
     } else {
         throwErrorConstEval(
             `repeat argument must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)`,
-            source,
+            val.loc,
         );
     }
 }
 
-function ensureBoolean(val: Value, source: SrcInfo): boolean {
-    if (typeof val !== "boolean") {
+export function ensureBoolean(val: AstLiteral): AstBoolean {
+    if (val.kind !== "boolean") {
         throwErrorConstEval(
             `boolean expected, but got '${showValue(val)}'`,
-            source,
+            val.loc,
         );
     }
     return val;
 }
 
-function ensureString(val: Value, source: SrcInfo): string {
-    if (typeof val !== "string") {
+export function ensureSimplifiedString(val: AstLiteral): AstSimplifiedString {
+    if (val.kind !== "simplified_string") {
         throwErrorConstEval(
             `string expected, but got '${showValue(val)}'`,
-            source,
+            val.loc,
         );
     }
     return val;
@@ -187,107 +203,124 @@ function ensureMethodArity(
 
 export function evalUnaryOp(
     op: AstUnaryOperation,
-    valOperand: Value,
-    operandLoc: SrcInfo = dummySrcInfo,
-    source: SrcInfo = dummySrcInfo,
-): Value {
+    valOperand: AstLiteral,
+    source: SrcInfo,
+): AstLiteral {
     switch (op) {
         case "+":
-            return ensureInt(valOperand, operandLoc);
-        case "-":
-            return ensureInt(-ensureInt(valOperand, operandLoc), source);
-        case "~":
-            return ~ensureInt(valOperand, operandLoc);
-        case "!":
-            return !ensureBoolean(valOperand, operandLoc);
+            return ensureInt(valOperand);
+        case "-": {
+            const astNumber = ensureInt(valOperand);
+            const result = -astNumber.value;
+            return ensureInt(makeNumberLiteral(result, source));
+        }
+        case "~": {
+            const astNumber = ensureInt(valOperand);
+            const result = ~astNumber.value;
+            return makeNumberLiteral(result, source);
+        }
+        case "!": {
+            const astBoolean = ensureBoolean(valOperand);
+            const result = !astBoolean.value;
+            return makeBooleanLiteral(result, source);
+        }
         case "!!":
-            if (valOperand === null) {
+            if (valOperand.kind === "null") {
                 throwErrorConstEval(
                     "non-null value expected but got null",
-                    operandLoc,
+                    valOperand.loc,
                 );
             }
             return valOperand;
+        default:
+            throwInternalCompilerError("Unrecognized operand");
     }
 }
 
 export function evalBinaryOp(
     op: AstBinaryOperation,
-    valLeft: Value,
-    valRightContinuation: () => Value, // It needs to be a continuation, because some binary operators short-circuit
-    locLeft: SrcInfo = dummySrcInfo,
-    locRight: SrcInfo = dummySrcInfo,
-    source: SrcInfo = dummySrcInfo,
-): Value {
+    valLeft: AstLiteral,
+    valRightContinuation: () => AstLiteral, // It needs to be a continuation, because some binary operators short-circuit
+    source: SrcInfo,
+): AstLiteral {
     switch (op) {
-        case "+":
-            return ensureInt(
-                ensureInt(valLeft, locLeft) +
-                    ensureInt(valRightContinuation(), locRight),
-                source,
-            );
-        case "-":
-            return ensureInt(
-                ensureInt(valLeft, locLeft) -
-                    ensureInt(valRightContinuation(), locRight),
-                source,
-            );
-        case "*":
-            return ensureInt(
-                ensureInt(valLeft, locLeft) *
-                    ensureInt(valRightContinuation(), locRight),
-                source,
-            );
+        case "+": {
+            const astLeft = ensureInt(valLeft);
+            const astRight = ensureInt(valRightContinuation());
+            const result = astLeft.value + astRight.value;
+            return ensureInt(makeNumberLiteral(result, source));
+        }
+        case "-": {
+            const astLeft = ensureInt(valLeft);
+            const astRight = ensureInt(valRightContinuation());
+            const result = astLeft.value - astRight.value;
+            return ensureInt(makeNumberLiteral(result, source));
+        }
+        case "*": {
+            const astLeft = ensureInt(valLeft);
+            const astRight = ensureInt(valRightContinuation());
+            const result = astLeft.value * astRight.value;
+            return ensureInt(makeNumberLiteral(result, source));
+        }
         case "/": {
             // The semantics of integer division for TVM (and by extension in Tact)
             // is a non-conventional one: by default it rounds towards negative infinity,
             // meaning, for instance, -1 / 5 = -1 and not zero, as in many mainstream languages.
             // Still, the following holds: a / b * b + a % b == a, for all b != 0.
-            const r = ensureInt(valRightContinuation(), locRight);
-            if (r === 0n)
+
+            const astRight = ensureInt(valRightContinuation());
+            if (astRight.value === 0n)
                 throwErrorConstEval(
                     "divisor expression must be non-zero",
-                    locRight,
+                    astRight.loc,
                 );
-            return ensureInt(divFloor(ensureInt(valLeft, locLeft), r), source);
+            const astLeft = ensureInt(valLeft);
+            const result = divFloor(astLeft.value, astRight.value);
+            return ensureInt(makeNumberLiteral(result, source));
         }
         case "%": {
             // Same as for division, see the comment above
             // Example: -1 % 5 = 4
-            const r = ensureInt(valRightContinuation(), locRight);
-            if (r === 0n)
+            const astRight = ensureInt(valRightContinuation());
+            if (astRight.value === 0n)
                 throwErrorConstEval(
                     "divisor expression must be non-zero",
-                    locRight,
+                    astRight.loc,
                 );
-            return ensureInt(modFloor(ensureInt(valLeft, locLeft), r), source);
+            const astLeft = ensureInt(valLeft);
+            const result = modFloor(astLeft.value, astRight.value);
+            return ensureInt(makeNumberLiteral(result, source));
         }
-        case "&":
-            return (
-                ensureInt(valLeft, locLeft) &
-                ensureInt(valRightContinuation(), locRight)
-            );
-        case "|":
-            return (
-                ensureInt(valLeft, locLeft) |
-                ensureInt(valRightContinuation(), locRight)
-            );
-        case "^":
-            return (
-                ensureInt(valLeft, locLeft) ^
-                ensureInt(valRightContinuation(), locRight)
-            );
+        case "&": {
+            const astLeft = ensureInt(valLeft);
+            const astRight = ensureInt(valRightContinuation());
+            const result = astLeft.value & astRight.value;
+            return makeNumberLiteral(result, source);
+        }
+        case "|": {
+            const astLeft = ensureInt(valLeft);
+            const astRight = ensureInt(valRightContinuation());
+            const result = astLeft.value | astRight.value;
+            return makeNumberLiteral(result, source);
+        }
+        case "^": {
+            const astLeft = ensureInt(valLeft);
+            const astRight = ensureInt(valRightContinuation());
+            const result = astLeft.value ^ astRight.value;
+            return makeNumberLiteral(result, source);
+        }
         case "<<": {
-            const valNum = ensureInt(valLeft, locLeft);
-            const valBits = ensureInt(valRightContinuation(), locRight);
-            if (0n > valBits || valBits > 256n) {
+            const astNum = ensureInt(valLeft);
+            const astBits = ensureInt(valRightContinuation());
+            if (0n > astBits.value || astBits.value > 256n) {
                 throwErrorConstEval(
-                    `the number of bits shifted ('${valBits}') must be within [0..256] range`,
-                    locRight,
+                    `the number of bits shifted ('${astBits.value}') must be within [0..256] range`,
+                    astBits.loc,
                 );
             }
+            const result = astNum.value << astBits.value;
             try {
-                return ensureInt(valNum << valBits, source);
+                return ensureInt(makeNumberLiteral(result, source));
             } catch (e) {
                 if (e instanceof RangeError)
                     // this actually should not happen
@@ -299,19 +332,20 @@ export function evalBinaryOp(
             }
         }
         case ">>": {
-            const valNum = ensureInt(valLeft, locLeft);
-            const valBits = ensureInt(valRightContinuation(), locRight);
-            if (0n > valBits || valBits > 256n) {
+            const astNum = ensureInt(valLeft);
+            const astBits = ensureInt(valRightContinuation());
+            if (0n > astBits.value || astBits.value > 256n) {
                 throwErrorConstEval(
-                    `the number of bits shifted ('${valBits}') must be within [0..256] range`,
-                    locRight,
+                    `the number of bits shifted ('${astBits.value}') must be within [0..256] range`,
+                    astBits.loc,
                 );
             }
+            const result = astNum.value >> astBits.value;
             try {
-                return ensureInt(valNum >> valBits, source);
+                return ensureInt(makeNumberLiteral(result, source));
             } catch (e) {
                 if (e instanceof RangeError)
-                    // this is actually should not happen
+                    // this actually should not happen
                     throwErrorConstEval(
                         `integer does not fit into TVM Int type`,
                         source,
@@ -319,67 +353,85 @@ export function evalBinaryOp(
                 throw e;
             }
         }
-        case ">":
-            return (
-                ensureInt(valLeft, locLeft) >
-                ensureInt(valRightContinuation(), locRight)
-            );
-        case "<":
-            return (
-                ensureInt(valLeft, locLeft) <
-                ensureInt(valRightContinuation(), locRight)
-            );
-        case ">=":
-            return (
-                ensureInt(valLeft, locLeft) >=
-                ensureInt(valRightContinuation(), locRight)
-            );
-        case "<=":
-            return (
-                ensureInt(valLeft, locLeft) <=
-                ensureInt(valRightContinuation(), locRight)
-            );
+        case ">": {
+            const astLeft = ensureInt(valLeft);
+            const astRight = ensureInt(valRightContinuation());
+            const result = astLeft.value > astRight.value;
+            return makeBooleanLiteral(result, source);
+        }
+        case "<": {
+            const astLeft = ensureInt(valLeft);
+            const astRight = ensureInt(valRightContinuation());
+            const result = astLeft.value < astRight.value;
+            return makeBooleanLiteral(result, source);
+        }
+        case ">=": {
+            const astLeft = ensureInt(valLeft);
+            const astRight = ensureInt(valRightContinuation());
+            const result = astLeft.value >= astRight.value;
+            return makeBooleanLiteral(result, source);
+        }
+        case "<=": {
+            const astLeft = ensureInt(valLeft);
+            const astRight = ensureInt(valRightContinuation());
+            const result = astLeft.value <= astRight.value;
+            return makeBooleanLiteral(result, source);
+        }
         case "==": {
             const valR = valRightContinuation();
 
             // the null comparisons account for optional types, e.g.
             // a const x: Int? = 42 can be compared to null
             if (
-                typeof valLeft !== typeof valR &&
-                valLeft !== null &&
-                valR !== null
+                valLeft.kind !== valR.kind &&
+                valLeft.kind !== "null" &&
+                valR.kind !== "null"
             ) {
                 throwErrorConstEval(
                     "operands of `==` must have same type",
                     source,
                 );
             }
-            return valLeft === valR;
+            const result = eqExpressions(valLeft, valR);
+            return makeBooleanLiteral(result, source);
         }
         case "!=": {
             const valR = valRightContinuation();
-            if (typeof valLeft !== typeof valR) {
+
+            // Comparison to null should be checked as well
+            // otherwise it would give an error
+            if (
+                valLeft.kind !== valR.kind &&
+                valLeft.kind !== "null" &&
+                valR.kind !== "null"
+            ) {
                 throwErrorConstEval(
                     "operands of `!=` must have same type",
                     source,
                 );
             }
-            return valLeft !== valR;
+            const result = !eqExpressions(valLeft, valR);
+            return makeBooleanLiteral(result, source);
         }
-        case "&&":
-            return (
-                ensureBoolean(valLeft, locLeft) &&
-                ensureBoolean(valRightContinuation(), locRight)
-            );
-        case "||":
-            return (
-                ensureBoolean(valLeft, locLeft) ||
-                ensureBoolean(valRightContinuation(), locRight)
-            );
+        case "&&": {
+            const astLeft = ensureBoolean(valLeft);
+            const astRight = ensureBoolean(valRightContinuation());
+            const result = astLeft.value && astRight.value;
+            return makeBooleanLiteral(result, source);
+        }
+        case "||": {
+            const astLeft = ensureBoolean(valLeft);
+            const astRight = ensureBoolean(valRightContinuation());
+            const result = astLeft.value || astRight.value;
+            return makeBooleanLiteral(result, source);
+        }
     }
 }
 
-function interpretEscapeSequences(stringLiteral: string, source: SrcInfo) {
+function interpretEscapeSequences(
+    stringLiteral: string,
+    source: SrcInfo,
+): string {
     return stringLiteral.replace(
         /\\\\|\\"|\\n|\\r|\\t|\\v|\\b|\\f|\\u{([0-9A-Fa-f]{1,6})}|\\u([0-9A-Fa-f]{4})|\\x([0-9A-Fa-f]{2})/g,
         (match, unicodeCodePoint, unicodeEscape, hexEscape) => {
@@ -429,14 +481,14 @@ function interpretEscapeSequences(stringLiteral: string, source: SrcInfo) {
 }
 
 class ReturnSignal extends Error {
-    private value?: Value;
+    private value?: AstLiteral;
 
-    constructor(value?: Value) {
+    constructor(value?: AstLiteral) {
         super();
         this.value = value;
     }
 
-    public getValue(): Value | undefined {
+    public getValue(): AstLiteral | undefined {
         return this.value;
     }
 }
@@ -451,7 +503,7 @@ export type InterpreterConfig = {
 
 const WILDCARD_NAME: string = "_";
 
-type Environment = { values: Map<string, Value>; parent?: Environment };
+type Environment = { values: Map<string, AstLiteral>; parent?: Environment };
 
 class EnvironmentStack {
     private currentEnv: Environment;
@@ -460,7 +512,7 @@ class EnvironmentStack {
         this.currentEnv = { values: new Map() };
     }
 
-    private findBindingMap(name: string): Map<string, Value> | undefined {
+    private findBindingMap(name: string): Map<string, AstLiteral> | undefined {
         let env: Environment | undefined = this.currentEnv;
         while (env !== undefined) {
             if (env.values.has(name)) {
@@ -518,7 +570,7 @@ class EnvironmentStack {
     so that the return at line 5 (now in the environment a = 3) will 
     produce 3 * 2 = 6, and so on.
     */
-    public setNewBinding(name: string, val: Value) {
+    public setNewBinding(name: string, val: AstLiteral) {
         if (name !== WILDCARD_NAME) {
             this.currentEnv.values.set(name, val);
         }
@@ -531,7 +583,7 @@ class EnvironmentStack {
     to "val". If it does not find "name", the stack is unchanged.
     As a special case, name "_" is always ignored.
     */
-    public updateBinding(name: string, val: Value) {
+    public updateBinding(name: string, val: AstLiteral) {
         if (name !== WILDCARD_NAME) {
             const bindings = this.findBindingMap(name);
             if (bindings !== undefined) {
@@ -547,7 +599,7 @@ class EnvironmentStack {
     If it does not find "name", it returns undefined.
     As a special case, name "_" always returns undefined.
     */
-    public getBinding(name: string): Value | undefined {
+    public getBinding(name: string): AstLiteral | undefined {
         if (name === WILDCARD_NAME) {
             return undefined;
         }
@@ -575,7 +627,7 @@ class EnvironmentStack {
     */
     public executeInNewEnvironment<T>(
         code: () => T,
-        initialBindings: { names: string[]; values: Value[] } = {
+        initialBindings: { names: string[]; values: AstLiteral[] } = {
             names: [],
             values: [],
         },
@@ -765,7 +817,7 @@ export class Interpreter {
         );
     }
 
-    public interpretExpression(ast: AstExpression): Value {
+    public interpretExpression(ast: AstExpression): AstLiteral {
         switch (ast.kind) {
             case "id":
                 return this.interpretName(ast);
@@ -781,6 +833,16 @@ export class Interpreter {
                 return this.interpretNumber(ast);
             case "string":
                 return this.interpretString(ast);
+            case "comment_value":
+                return this.interpretCommentValue(ast);
+            case "simplified_string":
+                return this.interpretSimplifiedString(ast);
+            case "address":
+                return this.interpretAddress(ast);
+            case "cell":
+                return this.interpretCell(ast);
+            case "slice":
+                return this.interpretSlice(ast);
             case "op_unary":
                 return this.interpretUnaryOp(ast);
             case "op_binary":
@@ -789,14 +851,18 @@ export class Interpreter {
                 return this.interpretConditional(ast);
             case "struct_instance":
                 return this.interpretStructInstance(ast);
+            case "struct_value":
+                return this.interpretStructValue(ast);
             case "field_access":
                 return this.interpretFieldAccess(ast);
             case "static_call":
                 return this.interpretStaticCall(ast);
+            default:
+                throwInternalCompilerError("Unrecognized expression kind");
         }
     }
 
-    public interpretName(ast: AstId): Value {
+    public interpretName(ast: AstId): AstLiteral {
         if (hasStaticConstant(this.context, idText(ast))) {
             const constant = getStaticConstant(this.context, idText(ast));
             if (constant.value !== undefined) {
@@ -815,15 +881,14 @@ export class Interpreter {
         throwNonFatalErrorConstEval("cannot evaluate a variable", ast.loc);
     }
 
-    public interpretMethodCall(ast: AstMethodCall): Value {
+    public interpretMethodCall(ast: AstMethodCall): AstLiteral {
         switch (idText(ast.method)) {
             case "asComment": {
                 ensureMethodArity(0, ast.args, ast.loc);
-                const comment = ensureString(
+                const comment = ensureSimplifiedString(
                     this.interpretExpression(ast.self),
-                    ast.self.loc,
-                );
-                return new CommentValue(comment);
+                ).value;
+                return makeCommentLiteral(comment, ast.loc);
             }
             default:
                 throwNonFatalErrorConstEval(
@@ -833,104 +898,144 @@ export class Interpreter {
         }
     }
 
-    public interpretInitOf(ast: AstInitOf): Value {
+    public interpretInitOf(ast: AstInitOf): AstLiteral {
         throwNonFatalErrorConstEval(
             "initOf is not supported at this moment",
             ast.loc,
         );
     }
 
-    public interpretNull(_ast: AstNull): null {
-        return null;
+    public interpretNull(ast: AstNull): AstNull {
+        return ast;
     }
 
-    public interpretBoolean(ast: AstBoolean): boolean {
-        return ast.value;
+    public interpretBoolean(ast: AstBoolean): AstBoolean {
+        return ast;
     }
 
-    public interpretNumber(ast: AstNumber): bigint {
-        return ensureInt(ast.value, ast.loc);
+    public interpretNumber(ast: AstNumber): AstNumber {
+        return ensureInt(ast);
     }
 
-    public interpretString(ast: AstString): string {
-        return ensureString(
+    public interpretString(ast: AstString): AstSimplifiedString {
+        return makeSimplifiedStringLiteral(
             interpretEscapeSequences(ast.value, ast.loc),
             ast.loc,
         );
     }
 
-    public interpretUnaryOp(ast: AstOpUnary): Value {
+    public interpretCommentValue(ast: AstCommentValue): AstCommentValue {
+        return ast;
+    }
+
+    public interpretSimplifiedString(
+        ast: AstSimplifiedString,
+    ): AstSimplifiedString {
+        return ast;
+    }
+
+    public interpretAddress(ast: AstAddress): AstAddress {
+        return ast;
+    }
+
+    public interpretCell(ast: AstCell): AstCell {
+        return ast;
+    }
+
+    public interpretSlice(ast: AstSlice): AstSlice {
+        return ast;
+    }
+
+    public interpretUnaryOp(ast: AstOpUnary): AstLiteral {
         // Tact grammar does not have negative integer literals,
         // so in order to avoid errors for `-115792089237316195423570985008687907853269984665640564039457584007913129639936`
         // which is `-(2**256)` we need to have a special case for it
 
         if (ast.operand.kind === "number" && ast.op === "-") {
             // emulating negative integer literals
-            return ensureInt(-ast.operand.value, ast.loc);
+            return ensureInt(makeNumberLiteral(-ast.operand.value, ast.loc));
         }
 
         const valOperand = this.interpretExpression(ast.operand);
 
-        return evalUnaryOp(ast.op, valOperand, ast.operand.loc, ast.loc);
+        return evalUnaryOp(ast.op, valOperand, ast.loc);
     }
 
-    public interpretBinaryOp(ast: AstOpBinary): Value {
+    public interpretBinaryOp(ast: AstOpBinary): AstLiteral {
         const valLeft = this.interpretExpression(ast.left);
         const valRightContinuation = () => this.interpretExpression(ast.right);
 
-        return evalBinaryOp(
-            ast.op,
-            valLeft,
-            valRightContinuation,
-            ast.left.loc,
-            ast.right.loc,
-            ast.loc,
-        );
+        return evalBinaryOp(ast.op, valLeft, valRightContinuation, ast.loc);
     }
 
-    public interpretConditional(ast: AstConditional): Value {
+    public interpretConditional(ast: AstConditional): AstLiteral {
         // here we rely on the typechecker that both branches have the same type
-        const valCond = ensureBoolean(
-            this.interpretExpression(ast.condition),
-            ast.condition.loc,
-        );
-        if (valCond) {
+        const valCond = ensureBoolean(this.interpretExpression(ast.condition));
+        if (valCond.value) {
             return this.interpretExpression(ast.thenBranch);
         } else {
             return this.interpretExpression(ast.elseBranch);
         }
     }
 
-    public interpretStructInstance(ast: AstStructInstance): StructValue {
+    public interpretStructInstance(ast: AstStructInstance): AstStructValue {
         const structTy = getType(this.context, ast.type);
 
         // initialize the resulting struct value with
         // the default values for fields with initializers
         // or null for uninitialized optional fields
-        const resultWithDefaultFields: StructValue = structTy.fields.reduce(
-            (resObj, field) => {
-                if (field.default !== undefined) {
-                    resObj[field.name] = field.default;
-                } else {
-                    if (field.type.kind === "ref" && field.type.optional) {
-                        resObj[field.name] = null;
-                    }
+        const resultMap: Map<string, AstLiteral> = new Map();
+
+        for (const field of structTy.fields) {
+            if (typeof field.default !== "undefined") {
+                resultMap.set(field.name, field.default);
+            } else {
+                if (field.type.kind === "ref" && field.type.optional) {
+                    resultMap.set(field.name, makeNullLiteral(ast.loc));
                 }
-                return resObj;
-            },
-            { $tactStruct: idText(ast.type) } as StructValue,
-        );
+            }
+        }
 
         // this will override default fields set above
-        return ast.args.reduce((resObj, fieldWithInit) => {
-            resObj[idText(fieldWithInit.field)] = this.interpretExpression(
-                fieldWithInit.initializer,
+        for (const fieldWithInit of ast.args) {
+            const v = this.interpretExpression(fieldWithInit.initializer);
+            resultMap.set(idText(fieldWithInit.field), v);
+        }
+
+        // Create the field entries for the StructValue
+        // The previous loop ensures that the map resultMap cannot return
+        // undefined for each of the fields in ast.args
+        const structValueFields: AstStructFieldValue[] = [];
+        for (const [fieldName, fieldValue] of resultMap) {
+            // Find the source code declaration, if existent
+            const sourceField = ast.args.find(
+                (f) => idText(f.field) === fieldName,
             );
-            return resObj;
-        }, resultWithDefaultFields);
+            if (typeof sourceField !== "undefined") {
+                structValueFields.push(
+                    makeStructFieldValue(
+                        fieldName,
+                        fieldValue,
+                        sourceField.loc,
+                    ),
+                );
+            } else {
+                // Use as source code location the entire struct
+                structValueFields.push(
+                    makeStructFieldValue(fieldName, fieldValue, ast.loc),
+                );
+            }
+        }
+
+        return makeStructValue(structValueFields, ast.type, ast.loc);
     }
 
-    public interpretFieldAccess(ast: AstFieldAccess): Value {
+    public interpretStructValue(ast: AstStructValue): AstStructValue {
+        // Struct values are already simplified to their simplest form
+        return ast;
+    }
+
+    public interpretFieldAccess(ast: AstFieldAccess): AstLiteral {
         // special case for contract/trait constant accesses via `self.constant`
         // interpret "self" as a contract/trait access only if "self"
         // is not already assigned in the environment (this would mean
@@ -968,18 +1073,17 @@ export class Interpreter {
             }
         }
         const valStruct = this.interpretExpression(ast.aggregate);
-        if (
-            valStruct === null ||
-            typeof valStruct !== "object" ||
-            !("$tactStruct" in valStruct)
-        ) {
+        if (valStruct.kind !== "struct_value") {
             throwErrorConstEval(
                 `constant struct expected, but got ${showValue(valStruct)}`,
                 ast.aggregate.loc,
             );
         }
-        if (idText(ast.field) in valStruct) {
-            return valStruct[idText(ast.field)]!;
+        const field = valStruct.args.find(
+            (f) => idText(ast.field) === idText(f.field),
+        );
+        if (typeof field !== "undefined") {
+            return field.initializer;
         } else {
             // this cannot happen in a well-typed program
             throwInternalCompilerError(
@@ -989,18 +1093,19 @@ export class Interpreter {
         }
     }
 
-    public interpretStaticCall(ast: AstStaticCall): Value {
+    public interpretStaticCall(ast: AstStaticCall): AstLiteral {
         switch (idText(ast.function)) {
             case "ton": {
                 ensureFunArity(1, ast.args, ast.loc);
-                const tons = ensureString(
+                const tons = ensureSimplifiedString(
                     this.interpretExpression(ast.args[0]!),
-                    ast.args[0]!.loc,
                 );
                 try {
                     return ensureInt(
-                        BigInt(toNano(tons).toString(10)),
-                        ast.loc,
+                        makeNumberLiteral(
+                            BigInt(toNano(tons.value).toString(10)),
+                            ast.loc,
+                        ),
                     );
                 } catch (e) {
                     if (e instanceof Error && e.message === "Invalid number") {
@@ -1016,20 +1121,19 @@ export class Interpreter {
                 ensureFunArity(2, ast.args, ast.loc);
                 const valBase = ensureInt(
                     this.interpretExpression(ast.args[0]!),
-                    ast.args[0]!.loc,
                 );
                 const valExp = ensureInt(
                     this.interpretExpression(ast.args[1]!),
-                    ast.args[1]!.loc,
                 );
-                if (valExp < 0n) {
+                if (valExp.value < 0n) {
                     throwErrorConstEval(
-                        `${idTextErr(ast.function)} builtin called with negative exponent ${valExp}`,
+                        `${idTextErr(ast.function)} builtin called with negative exponent ${showValue(valExp)}`,
                         ast.loc,
                     );
                 }
                 try {
-                    return ensureInt(valBase ** valExp, ast.loc);
+                    const result = valBase.value ** valExp.value;
+                    return ensureInt(makeNumberLiteral(result, ast.loc));
                 } catch (e) {
                     if (e instanceof RangeError) {
                         // even TS bigint type cannot hold it
@@ -1045,16 +1149,16 @@ export class Interpreter {
                 ensureFunArity(1, ast.args, ast.loc);
                 const valExponent = ensureInt(
                     this.interpretExpression(ast.args[0]!),
-                    ast.args[0]!.loc,
                 );
-                if (valExponent < 0n) {
+                if (valExponent.value < 0n) {
                     throwErrorConstEval(
-                        `${idTextErr(ast.function)} builtin called with negative exponent ${valExponent}`,
+                        `${idTextErr(ast.function)} builtin called with negative exponent ${showValue(valExponent)}`,
                         ast.loc,
                     );
                 }
                 try {
-                    return ensureInt(2n ** valExponent, ast.loc);
+                    const result = 2n ** valExponent.value;
+                    return ensureInt(makeNumberLiteral(result, ast.loc));
                 } catch (e) {
                     if (e instanceof RangeError) {
                         // even TS bigint type cannot hold it
@@ -1069,31 +1173,36 @@ export class Interpreter {
             case "sha256": {
                 ensureFunArity(1, ast.args, ast.loc);
                 const expr = this.interpretExpression(ast.args[0]!);
-                if (expr instanceof Slice) {
+                if (expr.kind === "slice") {
                     throwNonFatalErrorConstEval(
                         "slice argument is currently not supported",
                         ast.loc,
                     );
                 }
-                const str = ensureString(expr, ast.args[0]!.loc);
-                return BigInt("0x" + sha256_sync(str).toString("hex"));
+                const str = ensureSimplifiedString(expr);
+                return makeNumberLiteral(
+                    BigInt("0x" + sha256_sync(str.value).toString("hex")),
+                    ast.loc,
+                );
             }
             case "emptyMap": {
                 ensureFunArity(0, ast.args, ast.loc);
-                return null;
+                return makeNullLiteral(ast.loc);
             }
             case "cell":
                 {
                     ensureFunArity(1, ast.args, ast.loc);
-                    const str = ensureString(
+                    const str = ensureSimplifiedString(
                         this.interpretExpression(ast.args[0]!),
-                        ast.args[0]!.loc,
                     );
                     try {
-                        return Cell.fromBase64(str);
+                        return makeCellLiteral(
+                            Cell.fromBase64(str.value),
+                            ast.loc,
+                        );
                     } catch (_) {
                         throwErrorConstEval(
-                            `invalid base64 encoding for a cell: ${str}`,
+                            `invalid base64 encoding for a cell: ${showValue(str)}`,
                             ast.loc,
                         );
                     }
@@ -1102,15 +1211,17 @@ export class Interpreter {
             case "slice":
                 {
                     ensureFunArity(1, ast.args, ast.loc);
-                    const str = ensureString(
+                    const str = ensureSimplifiedString(
                         this.interpretExpression(ast.args[0]!),
-                        ast.args[0]!.loc,
                     );
                     try {
-                        return Cell.fromBase64(str).asSlice();
+                        return makeSliceLiteral(
+                            Cell.fromBase64(str.value).asSlice(),
+                            ast.loc,
+                        );
                     } catch (_) {
                         throwErrorConstEval(
-                            `invalid base64 encoding for a cell: ${str}`,
+                            `invalid base64 encoding for a cell: ${showValue(str)}`,
                             ast.loc,
                         );
                     }
@@ -1119,20 +1230,19 @@ export class Interpreter {
             case "rawSlice":
                 {
                     ensureFunArity(1, ast.args, ast.loc);
-                    const str = ensureString(
+                    const str = ensureSimplifiedString(
                         this.interpretExpression(ast.args[0]!),
-                        ast.args[0]!.loc,
                     );
 
-                    if (!/^[0-9a-fA-F]*_?$/.test(str)) {
+                    if (!/^[0-9a-fA-F]*_?$/.test(str.value)) {
                         throwErrorConstEval(
-                            `invalid hex string: ${str}`,
+                            `invalid hex string: ${showValue(str)}`,
                             ast.loc,
                         );
                     }
 
                     // Remove underscores from the hex string
-                    const hex = str.replace("_", "");
+                    const hex = str.value.replace("_", "");
                     const paddedHex = hex.length % 2 === 0 ? hex : "0" + hex;
                     const buffer = Buffer.from(paddedHex, "hex");
 
@@ -1144,7 +1254,7 @@ export class Interpreter {
                     );
 
                     // Handle the case where the string ends with an underscore
-                    if (str.endsWith("_")) {
+                    if (str.value.endsWith("_")) {
                         const paddedBits = paddedBufferToBits(buffer);
 
                         // Ensure there's enough length to apply the offset
@@ -1168,17 +1278,19 @@ export class Interpreter {
                     }
 
                     // Return the constructed slice
-                    return beginCell().storeBits(bits).endCell().asSlice();
+                    return makeSliceLiteral(
+                        beginCell().storeBits(bits).endCell().asSlice(),
+                        ast.loc,
+                    );
                 }
                 break;
             case "ascii":
                 {
                     ensureFunArity(1, ast.args, ast.loc);
-                    const str = ensureString(
+                    const str = ensureSimplifiedString(
                         this.interpretExpression(ast.args[0]!),
-                        ast.args[0]!.loc,
                     );
-                    const hex = Buffer.from(str).toString("hex");
+                    const hex = Buffer.from(str.value).toString("hex");
                     if (hex.length > 64) {
                         throwErrorConstEval(
                             `ascii string is too long, expected up to 32 bytes, got ${Math.floor(hex.length / 2)}`,
@@ -1191,34 +1303,35 @@ export class Interpreter {
                             ast.loc,
                         );
                     }
-                    return BigInt("0x" + hex);
+                    return makeNumberLiteral(BigInt("0x" + hex), ast.loc);
                 }
                 break;
             case "crc32":
                 {
                     ensureFunArity(1, ast.args, ast.loc);
-                    const str = ensureString(
+                    const str = ensureSimplifiedString(
                         this.interpretExpression(ast.args[0]!),
-                        ast.args[0]!.loc,
                     );
-                    return BigInt(crc32.str(str) >>> 0); // >>> 0 converts to unsigned
+                    return makeNumberLiteral(
+                        BigInt(crc32.str(str.value) >>> 0),
+                        ast.loc,
+                    ); // >>> 0 converts to unsigned
                 }
                 break;
             case "address":
                 {
                     ensureFunArity(1, ast.args, ast.loc);
-                    const str = ensureString(
+                    const str = ensureSimplifiedString(
                         this.interpretExpression(ast.args[0]!),
-                        ast.args[0]!.loc,
                     );
                     try {
-                        const address = Address.parse(str);
+                        const address = Address.parse(str.value);
                         if (
                             address.workChain !== 0 &&
                             address.workChain !== -1
                         ) {
                             throwErrorConstEval(
-                                `${str} is invalid address`,
+                                `${showValue(str)} is invalid address`,
                                 ast.loc,
                             );
                         }
@@ -1227,14 +1340,14 @@ export class Interpreter {
                             address.workChain !== 0
                         ) {
                             throwErrorConstEval(
-                                `address ${str} is from masterchain which is not enabled for this contract`,
+                                `address ${showValue(str)} is from masterchain which is not enabled for this contract`,
                                 ast.loc,
                             );
                         }
-                        return address;
+                        return makeAddressLiteral(address, ast.loc);
                     } catch (_) {
                         throwErrorConstEval(
-                            `invalid address encoding: ${str}`,
+                            `invalid address encoding: ${showValue(str)}`,
                             ast.loc,
                         );
                     }
@@ -1244,14 +1357,10 @@ export class Interpreter {
                 ensureFunArity(2, ast.args, ast.loc);
                 const wc = ensureInt(
                     this.interpretExpression(ast.args[0]!),
-                    ast.args[0]!.loc,
-                );
+                ).value;
                 const addr = Buffer.from(
-                    ensureInt(
-                        this.interpretExpression(ast.args[1]!),
-                        ast.args[1]!.loc,
-                    )
-                        .toString(16)
+                    ensureInt(this.interpretExpression(ast.args[1]!))
+                        .value.toString(16)
                         .padStart(64, "0"),
                     "hex",
                 );
@@ -1267,7 +1376,10 @@ export class Interpreter {
                         ast.loc,
                     );
                 }
-                return new Address(Number(wc), addr);
+                return makeAddressLiteral(
+                    new Address(Number(wc), addr),
+                    ast.loc,
+                );
             }
             default:
                 if (hasStaticFunction(this.context, idText(ast.function))) {
@@ -1322,7 +1434,7 @@ export class Interpreter {
         functionCode: AstFunctionDef,
         args: AstExpression[],
         returns: TypeRef,
-    ): Value {
+    ): AstLiteral {
         // Evaluate the arguments in the current environment
         const argValues = args.map(this.interpretExpression, this);
         // Extract the parameter names
@@ -1376,7 +1488,7 @@ export class Interpreter {
                     // The function does not return a value.
                     // We rely on the typechecker so that the function is called as a statement.
                     // Hence, we can return a dummy null, since the null will be discarded anyway.
-                    return null;
+                    return makeNullLiteral(dummySrcInfo);
                 }
             },
             { names: paramNames, values: argValues },
@@ -1450,11 +1562,7 @@ export class Interpreter {
             }
         }
         const val = this.interpretExpression(ast.expression);
-        if (
-            val === null ||
-            typeof val !== "object" ||
-            !("$tactStruct" in val)
-        ) {
+        if (val.kind !== "struct_value") {
             throwErrorConstEval(
                 `destructuring assignment expected a struct, but got ${showValue(
                     val,
@@ -1463,13 +1571,15 @@ export class Interpreter {
             );
         }
 
+        // Keep a map of the fields in val for lookup
+        const valAsMap: Map<string, AstLiteral> = new Map();
+        val.args.forEach((f) => valAsMap.set(idText(f.field), f.initializer));
+
         for (const [field, name] of ast.identifiers.values()) {
             if (name.text === "_") {
                 continue;
             }
-            const v = val[idText(field)];
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-            if (v === undefined) {
+            if (!valAsMap.has(idText(field))) {
                 throwErrorConstEval(
                     `destructuring assignment expected field ${idTextErr(
                         field,
@@ -1477,6 +1587,7 @@ export class Interpreter {
                     ast.loc,
                 );
             }
+            const v = valAsMap.get(idText(field))!;
             this.envStack.setNewBinding(idText(name), v);
         }
     }
@@ -1507,8 +1618,6 @@ export class Interpreter {
                 ast.op,
                 currentPathValue,
                 updateVal,
-                ast.path.loc,
-                ast.expression.loc,
                 ast.loc,
             );
             this.envStack.updateBinding(idText(ast.path), newVal);
@@ -1523,9 +1632,8 @@ export class Interpreter {
     public interpretConditionStatement(ast: AstCondition) {
         const condition = ensureBoolean(
             this.interpretExpression(ast.condition),
-            ast.condition.loc,
         );
-        if (condition) {
+        if (condition.value) {
             this.envStack.executeInNewEnvironment(() => {
                 ast.trueStatements.forEach(this.interpretStatement, this);
             });
@@ -1547,9 +1655,8 @@ export class Interpreter {
     public interpretRepeatStatement(ast: AstStatementRepeat) {
         const iterations = ensureRepeatInt(
             this.interpretExpression(ast.iterations),
-            ast.iterations.loc,
         );
-        if (iterations > 0) {
+        if (iterations.value > 0) {
             // We can create a single environment for all the iterations in the loop
             // (instead of a fresh environment for each iteration)
             // because the typechecker ensures that variables do not leak outside
@@ -1557,7 +1664,7 @@ export class Interpreter {
             // loop be initialized, which means that we can overwrite its value in the environment
             // in each iteration.
             this.envStack.executeInNewEnvironment(() => {
-                for (let i = 1; i <= iterations; i++) {
+                for (let i = 1; i <= iterations.value; i++) {
                     ast.statements.forEach(this.interpretStatement, this);
                 }
             });
@@ -1611,9 +1718,8 @@ export class Interpreter {
                 // variables declared inside the loop.
                 condition = ensureBoolean(
                     this.interpretExpression(ast.condition),
-                    ast.condition.loc,
                 );
-            } while (!condition);
+            } while (!condition.value);
         });
     }
 
@@ -1632,9 +1738,8 @@ export class Interpreter {
                 // variables declared inside the loop.
                 condition = ensureBoolean(
                     this.interpretExpression(ast.condition),
-                    ast.condition.loc,
                 );
-                if (condition) {
+                if (condition.value) {
                     ast.statements.forEach(this.interpretStatement, this);
 
                     iterCount++;
@@ -1645,7 +1750,7 @@ export class Interpreter {
                         );
                     }
                 }
-            } while (condition);
+            } while (condition.value);
         });
     }
 }

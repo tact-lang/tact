@@ -53,6 +53,7 @@ import { ItemOrigin } from "../grammar/grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
+import { makeNullLiteral } from "../optimizer/util";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -2146,7 +2147,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
 
                             field.default =
                                 field.type.kind === "ref" && field.type.optional
-                                    ? null
+                                    ? makeNullLiteral(field.ast.loc)
                                     : undefined;
                         }
                     }

@@ -200,8 +200,7 @@ export function resolveSignatures(ctx: CompilerContext) {
                 // WILL NOT result in error
                 const opCode = ensureInt(
                     evalConstantExpression(t.ast.opcode, ctx),
-                    t.ast.opcode.loc,
-                );
+                ).value;
                 if (opCode === 0n) {
                     throwConstEvalError(
                         `Opcode of message ${idTextErr(t.ast.name)} is zero: those are reserved for text comments and cannot be used for message structs`,

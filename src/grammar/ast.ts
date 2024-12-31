@@ -1,4 +1,6 @@
+import { Address, Cell, Slice } from "@ton/core";
 import { dummySrcInfo, SrcInfo } from "./grammar";
+import { throwInternalCompilerError } from "../errors";
 
 export type AstModule = {
     kind: "module";
@@ -381,7 +383,8 @@ export type AstExpression =
     | AstExpressionPrimary
     | AstOpBinary
     | AstOpUnary
-    | AstConditional;
+    | AstConditional
+    | AstLiteral; // Should I place it here or in AstExpressionPrimary?
 
 export type AstExpressionPrimary =
     | AstMethodCall
@@ -649,7 +652,67 @@ export type AstNull = {
     loc: SrcInfo;
 };
 
-export type AstValue = AstNumber | AstBoolean | AstNull | AstString;
+export type AstLiteral =
+    | AstNumber
+    | AstBoolean
+    | AstNull
+    | AstSimplifiedString
+    | AstAddress
+    | AstCell
+    | AstSlice
+    | AstCommentValue
+    | AstStructValue;
+
+export type AstSimplifiedString = {
+    kind: "simplified_string";
+    value: string;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstAddress = {
+    kind: "address";
+    value: Address;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstCell = {
+    kind: "cell";
+    value: Cell;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstSlice = {
+    kind: "slice";
+    value: Slice;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstCommentValue = {
+    kind: "comment_value";
+    value: string;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstStructValue = {
+    kind: "struct_value";
+    type: AstId;
+    args: AstStructFieldValue[];
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstStructFieldValue = {
+    kind: "struct_field_value";
+    field: AstId;
+    initializer: AstLiteral;
+    id: number;
+    loc: SrcInfo;
+};
 
 export type AstConstantAttribute =
     | { type: "virtual"; loc: SrcInfo }
@@ -728,6 +791,7 @@ export type AstNode =
     | AstModule
     | AstNativeFunctionDecl
     | AstStructFieldInitializer
+    | AstStructFieldValue
     | AstType
     | AstContractInit
     | AstReceiver
@@ -790,16 +854,37 @@ export function eqExpressions(
             return ast1.value === (ast2 as AstString).value;
         case "id":
             return eqNames(ast1, ast2 as AstId);
+        case "address":
+            return ast1.value.equals((ast2 as AstAddress).value);
+        case "cell":
+            return ast1.value.equals((ast2 as AstCell).value);
+        case "slice":
+            return ast1.value
+                .asCell()
+                .equals((ast2 as AstSlice).value.asCell());
+        case "comment_value":
+            return ast1.value === (ast2 as AstCommentValue).value;
+        case "simplified_string":
+            return ast1.value === (ast2 as AstSimplifiedString).value;
+        case "struct_value":
+            return (
+                eqNames(ast1.type, (ast2 as AstStructValue).type) &&
+                eqArrays(
+                    ast1.args,
+                    (ast2 as AstStructValue).args,
+                    eqFieldValues,
+                )
+            );
         case "method_call":
             return (
                 eqNames(ast1.method, (ast2 as AstMethodCall).method) &&
                 eqExpressions(ast1.self, (ast2 as AstMethodCall).self) &&
-                eqExpressionArrays(ast1.args, (ast2 as AstMethodCall).args)
+                eqArrays(ast1.args, (ast2 as AstMethodCall).args, eqExpressions)
             );
         case "init_of":
             return (
                 eqNames(ast1.contract, (ast2 as AstInitOf).contract) &&
-                eqExpressionArrays(ast1.args, (ast2 as AstInitOf).args)
+                eqArrays(ast1.args, (ast2 as AstInitOf).args, eqExpressions)
             );
         case "op_unary":
             return (
@@ -830,7 +915,11 @@ export function eqExpressions(
         case "struct_instance":
             return (
                 eqNames(ast1.type, (ast2 as AstStructInstance).type) &&
-                eqParameterArrays(ast1.args, (ast2 as AstStructInstance).args)
+                eqArrays(
+                    ast1.args,
+                    (ast2 as AstStructInstance).args,
+                    eqFieldInitializers,
+                )
             );
         case "field_access":
             return (
@@ -843,12 +932,14 @@ export function eqExpressions(
         case "static_call":
             return (
                 eqNames(ast1.function, (ast2 as AstStaticCall).function) &&
-                eqExpressionArrays(ast1.args, (ast2 as AstStaticCall).args)
+                eqArrays(ast1.args, (ast2 as AstStaticCall).args, eqExpressions)
             );
+        default:
+            throwInternalCompilerError("Unrecognized expression kind");
     }
 }
 
-function eqParameters(
+function eqFieldInitializers(
     arg1: AstStructFieldInitializer,
     arg2: AstStructFieldInitializer,
 ): boolean {
@@ -858,16 +949,27 @@ function eqParameters(
     );
 }
 
-function eqParameterArrays(
-    arr1: AstStructFieldInitializer[],
-    arr2: AstStructFieldInitializer[],
+function eqFieldValues(
+    arg1: AstStructFieldValue,
+    arg2: AstStructFieldValue,
+): boolean {
+    return (
+        eqNames(arg1.field, arg2.field) &&
+        eqExpressions(arg1.initializer, arg2.initializer)
+    );
+}
+
+function eqArrays<T>(
+    arr1: T[],
+    arr2: T[],
+    eqElements: (elem1: T, elem2: T) => boolean,
 ): boolean {
     if (arr1.length !== arr2.length) {
         return false;
     }
 
     for (let i = 0; i < arr1.length; i++) {
-        if (!eqParameters(arr1[i]!, arr2[i]!)) {
+        if (!eqElements(arr1[i]!, arr2[i]!)) {
             return false;
         }
     }
@@ -875,34 +977,23 @@ function eqParameterArrays(
     return true;
 }
 
-function eqExpressionArrays(
-    arr1: AstExpression[],
-    arr2: AstExpression[],
-): boolean {
-    if (arr1.length !== arr2.length) {
-        return false;
-    }
-
-    for (let i = 0; i < arr1.length; i++) {
-        if (!eqExpressions(arr1[i]!, arr2[i]!)) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-export function isValue(ast: AstExpression): boolean {
+export function isLiteral(ast: AstExpression): ast is AstLiteral {
     switch (ast.kind) {
         case "null":
         case "boolean":
         case "number":
-        case "string":
+        case "address":
+        case "cell":
+        case "slice":
+        case "comment_value":
+        case "simplified_string":
+        case "struct_value":
             return true;
 
         case "struct_instance":
-            return ast.args.every((arg) => isValue(arg.initializer));
+            return ast.args.every((arg) => isLiteral(arg.initializer));
 
+        case "string":
         case "id":
         case "method_call":
         case "init_of":
@@ -912,6 +1003,9 @@ export function isValue(ast: AstExpression): boolean {
         case "field_access":
         case "static_call":
             return false;
+
+        default:
+            throwInternalCompilerError("Unrecognized expression kind");
     }
 }
 
