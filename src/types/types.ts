@@ -6,7 +6,6 @@ import {
     AstContractInit,
     AstNativeFunctionDecl,
     AstReceiver,
-    SrcInfo,
     AstTypeDecl,
     AstId,
     AstFunctionDecl,
@@ -17,7 +16,7 @@ import {
     AstLiteral,
     idText,
 } from "../grammar/ast";
-import { ItemOrigin } from "../grammar/grammar";
+import { ItemOrigin, SrcInfo } from "../grammar";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";
@@ -66,25 +65,6 @@ export type TypeRef =
 // https://github.com/microsoft/TypeScript/issues/35164 and
 // https://github.com/microsoft/TypeScript/pull/57293
 // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
-/*export type StructValue = {
-    [key: string]: Value;
-};*/
-
-/*export class CommentValue {
-    constructor(public readonly comment: string) {}
-}*/
-
-/*export type Value =
-    | bigint
-    | boolean
-    | string
-    | Address
-    | Cell
-    | Slice
-    | null
-    | CommentValue
-    | StructValue;
-*/
 
 export function showValue(val: AstLiteral): string {
     switch (val.kind) {

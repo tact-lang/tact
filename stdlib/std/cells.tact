@@ -32,6 +32,14 @@ extends native storeBit(self: Builder, value: Bool): Builder;
 
 asm extends fun storeCoins(self: Builder, value: Int): Builder { STVARUINT16 }
 
+asm extends fun storeVarInt16(self: Builder, value: Int): Builder { STVARINT16 }
+
+asm extends fun storeVarInt32(self: Builder, value: Int): Builder { STVARINT32 }
+
+asm extends fun storeVarUint16(self: Builder, value: Int): Builder { STVARUINT16 }
+
+asm extends fun storeVarUint32(self: Builder, value: Int): Builder { STVARUINT32 }
+
 asm(cell self) extends fun storeRef(self: Builder, cell: Cell): Builder { STREF }
 
 asm extends fun storeSlice(self: Builder, cell: Slice): Builder { STSLICER }

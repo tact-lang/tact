@@ -52,6 +52,7 @@
     "getsimpleforwardfee",
     "gettest",
     "Héctor",
+    "heisenbugs",
     "infixl",
     "infixr",
     "initof",
@@ -66,6 +67,8 @@
     "Korshakov",
     "Laika",
     "langle",
+    "langtools",
+    "Liskov",
     "lparen",
     "lvalue",
     "lvalues",
@@ -85,6 +88,7 @@
     "Novus",
     "Offchain",
     "Parens",
+    "pgen",
     "pinst",
     "POSIX",
     "postpack",
@@ -107,18 +111,26 @@
     "Ston",
     "struct",
     "structs",
+    "styleguide",
     "subtyping",
+    "supertypes",
     "Tarjan",
     "testdata",
     "Topup",
     "Toncoin",
     "Toncoins",
+    "tonstudio",
     "Trunov",
     "typechecker",
     "uintptr",
+    "unboc",
     "uninit",
     "unixfs",
+    "untypable",
     "varuint",
+    "varint",
+    "storer",
+    "Ints",
     "workchain",
     "xffff",
     "привет"
@@ -126,7 +138,8 @@
   "ignoreRegExpList": [
     "\\b[xB]\\{[a-fA-F0-9]*_?\\}", // binary literals in Fift-asm
     "\\b0[xX][a-fA-F0-9_]*\\b", // hexadecimal numbers
-    "\\b(?:address|crc32|cell|slice|rawSlice)\\(\".+\"\\)" // some comptime functions
+    "\\b(?:address|crc32|cell|slice|rawSlice)\\(\".+\"\\)", // some comptime functions
+    "ince Tact " // regex in RELEASE.md
   ],
   "flagWords": [],
   "ignorePaths": [
@@ -144,6 +157,8 @@
     "src/grammar/test/items-asm-funs.tact",
     "src/grammar/test-asm/*.tact",
     "src/grammar/test-failed/funcid-*.tact",
+    "src/grammar/next/grammar.gg",
+    "src/grammar/next/grammar.ts",
     "src/imports/stdlib.ts",
     "/src/test/compilation-failed/const-eval-failed.spec.ts",
     "src/test/e2e-emulated/address.spec.ts",

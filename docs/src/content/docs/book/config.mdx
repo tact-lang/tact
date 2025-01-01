@@ -149,39 +149,6 @@ If set to `true{:json}`, enables debug output of a contract and allows usage of 
 
 :::
 
-#### `masterchain` {#options-masterchain}
-
-`false{:json}` by default.
-
-If set to `true{:json}`, enables [masterchain](/book/masterchain) support.
-
-```json filename="tact.config.json" {8,14}
-{
-  "projects": [
-    {
-      "name": "some_prefix",
-      "path": "./contract.tact",
-      "output": "./contract_output",
-      "options": {
-        "masterchain": true
-      }
-    },
-    {
-      "name": "ContractUnderBlueprint",
-      "options": {
-        "masterchain": true
-      }
-    }
-  ]
-}
-```
-
-:::note
-
-  Read more on the dedicated page: [Masterchain](/book/masterchain).
-
-:::
-
 #### `external` {#options-external}
 
 `false{:json}` by default.
@@ -280,6 +247,35 @@ If set to `true{:json}`, enables generation of a [getter](/book/contracts#getter
   Read more: [Supported interfaces](/book/contracts#interfaces).
 
 :::
+
+#### `parser` {#options-parser}
+
+`"new"{:json}` by default.
+
+If set to `new{:json}`, Tact will compile with a new language parser.
+
+If set to `old{:json}`, Tact will compile with an old language parser.
+
+```json filename="tact.config.json" {8,14}
+{
+  "projects": [
+    {
+      "name": "some_prefix",
+      "path": "./contract.tact",
+      "output": "./contract_output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {
+        "debug": true
+      }
+    }
+  ]
+}
+```
 
 #### `experimental` {#options-experimental}
 
@@ -399,7 +395,6 @@ In [Blueprint][bp], `mode` is always set to `"full"{:json}` and cannot be overwr
       "name": "ContractUnderBlueprint",
       "options": {
         "debug": false,
-        "masterchain": false,
         "external": false,
         "ipfsAbiGetter": true,
         "interfacesGetter": true,

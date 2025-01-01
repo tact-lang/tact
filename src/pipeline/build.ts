@@ -19,8 +19,10 @@ import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
-import { idText } from "../grammar/ast";
+import { FactoryAst, getAstFactory, idText } from "../grammar/ast";
 import { TactErrorCollection } from "../errors";
+import { getParser, Parser } from "../grammar";
+import { defaultParser } from "../grammar/grammar";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -32,7 +34,6 @@ export function enableFeatures(
     }
     const features = [
         { option: config.options.debug, name: "debug" },
-        { option: config.options.masterchain, name: "masterchain" },
         { option: config.options.external, name: "external" },
         { option: config.options.experimental?.inline, name: "inline" },
         { option: config.options.ipfsAbiGetter, name: "ipfsAbiGetter" },
@@ -52,12 +53,17 @@ export async function build(args: {
     project: VirtualFileSystem;
     stdlib: string | VirtualFileSystem;
     logger?: ILogger;
+    parser?: Parser;
+    ast?: FactoryAst;
 }): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
     const { config, project } = args;
     const stdlib =
         typeof args.stdlib === "string"
             ? createVirtualFileSystem(args.stdlib, files)
             : args.stdlib;
+    const ast: FactoryAst = args.ast ?? getAstFactory();
+    const parser: Parser =
+        args.parser ?? getParser(ast, config.options?.parser ?? defaultParser);
     const logger: ILogger = args.logger ?? new Logger();
 
     // Configure context
@@ -70,7 +76,7 @@ export async function build(args: {
 
     // Precompile
     try {
-        ctx = precompile(ctx, project, stdlib, config.path);
+        ctx = precompile(ctx, project, stdlib, config.path, parser, ast);
     } catch (e) {
         logger.error(
             config.mode === "checkOnly" || config.mode === "funcOnly"
@@ -258,7 +264,6 @@ export async function build(args: {
             Dictionary.Values.Cell(),
         );
         const ct = getType(ctx, contract);
-        depends.set(ct.uid, Cell.fromBoc(built[ct.name]!.codeBoc)[0]!); // Mine
         for (const c of ct.dependsOn) {
             const cd = built[c.name];
             if (!cd) {
@@ -269,7 +274,10 @@ export async function build(args: {
             }
             depends.set(c.uid, Cell.fromBoc(cd.codeBoc)[0]!);
         }
-        const systemCell = beginCell().storeDict(depends).endCell();
+        const systemCell =
+            ct.dependsOn.length > 0
+                ? beginCell().storeDict(depends).endCell()
+                : null;
 
         // Collect sources
         const sources: Record<string, string> = {};
@@ -305,7 +313,7 @@ export async function build(args: {
                 },
                 deployment: {
                     kind: "system-cell",
-                    system: systemCell.toBoc().toString("base64"),
+                    system: systemCell?.toBoc().toString("base64") ?? null,
                 },
             },
             sources,

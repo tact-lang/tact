@@ -80,8 +80,13 @@
       "output": "./examples/output"
     },
     {
-      "name": "maps",
-      "path": "./src/test/e2e-emulated/contracts/maps.tact",
+      "name": "maps1",
+      "path": "./src/test/e2e-emulated/contracts/maps1.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
+      "name": "maps2",
+      "path": "./src/test/e2e-emulated/contracts/maps2.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
     },
     {
@@ -109,8 +114,7 @@
       "path": "./src/test/e2e-emulated/contracts/optionals.tact",
       "output": "./src/test/e2e-emulated/contracts/output",
       "options": {
-        "debug": true,
-        "masterchain": true
+        "debug": true
       }
     },
     {
@@ -261,15 +265,6 @@
       "name": "try-catch",
       "path": "./src/test/e2e-emulated/contracts/try-catch.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
-    },
-    {
-      "name": "masterchain-allow",
-      "path": "./src/test/e2e-emulated/contracts/masterchain.tact",
-      "output": "./src/test/e2e-emulated/contracts/output",
-      "options": {
-        "debug": true,
-        "masterchain": true
-      }
     },
     {
       "name": "address",

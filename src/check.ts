@@ -1,8 +1,11 @@
 import { featureEnable } from "./config/features";
 import { CompilerContext } from "./context";
+import { getAstFactory } from "./grammar/ast";
+import { getParser } from "./grammar";
 import files from "./imports/stdlib";
 import { createVirtualFileSystem, TactError, VirtualFileSystem } from "./main";
 import { precompile } from "./pipeline/precompile";
+import { defaultParser } from "./grammar/grammar";
 
 export type CheckResultItem = {
     type: "error" | "warning";
@@ -32,13 +35,15 @@ export function check(args: {
     const stdlib = createVirtualFileSystem("@stdlib/", files);
     let ctx: CompilerContext = new CompilerContext();
     ctx = featureEnable(ctx, "debug"); // Enable debug flag (does not affect type checking in practice)
-    ctx = featureEnable(ctx, "masterchain"); // Enable masterchain flag to avoid masterchain-specific errors
     ctx = featureEnable(ctx, "external"); // Enable external messages flag to avoid external-specific errors
+
+    const ast = getAstFactory();
+    const parser = getParser(ast, defaultParser);
 
     // Execute check
     const items: CheckResultItem[] = [];
     try {
-        precompile(ctx, args.project, stdlib, args.entrypoint);
+        precompile(ctx, args.project, stdlib, args.entrypoint, parser, ast);
     } catch (e) {
         if (e instanceof TactError) {
             items.push({

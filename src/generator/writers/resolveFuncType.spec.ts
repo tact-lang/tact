@@ -1,9 +1,11 @@
-import { __DANGER_resetNodeId } from "../../grammar/ast";
+import { getAstFactory } from "../../grammar/ast";
 import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
 import { openContext } from "../../grammar/store";
 import { CompilerContext } from "../../context";
+import { getParser } from "../../grammar";
+import { defaultParser } from "../../grammar/grammar";
 
 const primitiveCode = `
 primitive Int;
@@ -45,17 +47,15 @@ contract Contract2 {
 `;
 
 describe("resolveFuncType", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-
     it("should process primitive types", () => {
+        const ast = getAstFactory();
         let ctx = openContext(
             new CompilerContext(),
             [{ code: primitiveCode, path: "<unknown>", origin: "user" }],
             [],
+            getParser(ast, defaultParser),
         );
-        ctx = resolveDescriptors(ctx);
+        ctx = resolveDescriptors(ctx, ast);
         const wCtx = new WriterContext(ctx, "Contract1");
         expect(
             resolveFuncType(
@@ -117,12 +117,14 @@ describe("resolveFuncType", () => {
     });
 
     it("should process contract and struct types", () => {
+        const ast = getAstFactory();
         let ctx = openContext(
             new CompilerContext(),
             [{ code: primitiveCode, path: "<unknown>", origin: "user" }],
             [],
+            getParser(ast, defaultParser),
         );
-        ctx = resolveDescriptors(ctx);
+        ctx = resolveDescriptors(ctx, ast);
         const wCtx = new WriterContext(ctx, "Contract1");
         expect(
             resolveFuncType(

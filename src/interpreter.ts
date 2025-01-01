@@ -4,8 +4,8 @@ import * as crc32 from "crc-32";
 import { evalConstantExpression } from "./constEval";
 import { CompilerContext } from "./context";
 import {
+    TactCompilationError,
     TactConstEvalError,
-    TactParseError,
     idTextErr,
     throwConstEvalError,
     throwInternalCompilerError,
@@ -37,6 +37,7 @@ import {
     AstPrimitiveTypeDecl,
     AstSimplifiedString,
     AstSlice,
+    FactoryAst,
     AstStatement,
     AstStatementAssign,
     AstStatementAugmentedAssign,
@@ -60,24 +61,11 @@ import {
     AstUnaryOperation,
     eqExpressions,
     eqNames,
+    getAstFactory,
     idText,
     isSelfId,
 } from "./grammar/ast";
-import { SrcInfo, dummySrcInfo, parseExpression } from "./grammar/grammar";
-import {
-    divFloor,
-    makeAddressLiteral,
-    makeBooleanLiteral,
-    makeCellLiteral,
-    makeCommentLiteral,
-    makeNullLiteral,
-    makeNumberLiteral,
-    makeSimplifiedStringLiteral,
-    makeSliceLiteral,
-    makeStructFieldValue,
-    makeStructValue,
-    modFloor,
-} from "./optimizer/util";
+import { divFloor, getAstUtil, modFloor } from "./optimizer/util";
 import {
     getStaticConstant,
     getStaticFunction,
@@ -88,7 +76,8 @@ import {
 import { getExpType } from "./types/resolveExpression";
 import { TypeRef, showValue } from "./types/types";
 import { sha256_sync } from "@ton/crypto";
-import { enabledMasterchain } from "./config/features";
+import { defaultParser, getParser, Parser } from "./grammar/grammar";
+import { dummySrcInfo, SrcInfo } from "./grammar";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -97,6 +86,9 @@ const maxTvmInt: bigint = 2n ** 256n - 1n;
 // Range allowed in repeat statements
 const minRepeatStatement: bigint = -(2n ** 256n); // Note it is the same as minimum for TVM
 const maxRepeatStatement: bigint = 2n ** 31n - 1n;
+
+// Util factory methods
+const util = getAstUtil(getAstFactory());
 
 // Throws a non-fatal const-eval error, in the sense that const-eval as a compiler
 // optimization cannot be applied, e.g. to `let`-statements.
@@ -234,17 +226,17 @@ export function evalUnaryOp(
         case "-": {
             const astNumber = ensureInt(valOperand);
             const result = -astNumber.value;
-            return ensureInt(makeNumberLiteral(result, source));
+            return ensureInt(util.makeNumberLiteral(result, source));
         }
         case "~": {
             const astNumber = ensureInt(valOperand);
             const result = ~astNumber.value;
-            return makeNumberLiteral(result, source);
+            return util.makeNumberLiteral(result, source);
         }
         case "!": {
             const astBoolean = ensureBoolean(valOperand);
             const result = !astBoolean.value;
-            return makeBooleanLiteral(result, source);
+            return util.makeBooleanLiteral(result, source);
         }
         case "!!":
             if (valOperand.kind === "null") {
@@ -270,19 +262,19 @@ export function evalBinaryOp(
             const astLeft = ensureInt(valLeft);
             const astRight = ensureInt(valRightContinuation());
             const result = astLeft.value + astRight.value;
-            return ensureInt(makeNumberLiteral(result, source));
+            return ensureInt(util.makeNumberLiteral(result, source));
         }
         case "-": {
             const astLeft = ensureInt(valLeft);
             const astRight = ensureInt(valRightContinuation());
             const result = astLeft.value - astRight.value;
-            return ensureInt(makeNumberLiteral(result, source));
+            return ensureInt(util.makeNumberLiteral(result, source));
         }
         case "*": {
             const astLeft = ensureInt(valLeft);
             const astRight = ensureInt(valRightContinuation());
             const result = astLeft.value * astRight.value;
-            return ensureInt(makeNumberLiteral(result, source));
+            return ensureInt(util.makeNumberLiteral(result, source));
         }
         case "/": {
             // The semantics of integer division for TVM (and by extension in Tact)
@@ -298,7 +290,7 @@ export function evalBinaryOp(
                 );
             const astLeft = ensureInt(valLeft);
             const result = divFloor(astLeft.value, astRight.value);
-            return ensureInt(makeNumberLiteral(result, source));
+            return ensureInt(util.makeNumberLiteral(result, source));
         }
         case "%": {
             // Same as for division, see the comment above
@@ -311,25 +303,25 @@ export function evalBinaryOp(
                 );
             const astLeft = ensureInt(valLeft);
             const result = modFloor(astLeft.value, astRight.value);
-            return ensureInt(makeNumberLiteral(result, source));
+            return ensureInt(util.makeNumberLiteral(result, source));
         }
         case "&": {
             const astLeft = ensureInt(valLeft);
             const astRight = ensureInt(valRightContinuation());
             const result = astLeft.value & astRight.value;
-            return makeNumberLiteral(result, source);
+            return util.makeNumberLiteral(result, source);
         }
         case "|": {
             const astLeft = ensureInt(valLeft);
             const astRight = ensureInt(valRightContinuation());
             const result = astLeft.value | astRight.value;
-            return makeNumberLiteral(result, source);
+            return util.makeNumberLiteral(result, source);
         }
         case "^": {
             const astLeft = ensureInt(valLeft);
             const astRight = ensureInt(valRightContinuation());
             const result = astLeft.value ^ astRight.value;
-            return makeNumberLiteral(result, source);
+            return util.makeNumberLiteral(result, source);
         }
         case "<<": {
             const astNum = ensureInt(valLeft);
@@ -342,7 +334,7 @@ export function evalBinaryOp(
             }
             const result = astNum.value << astBits.value;
             try {
-                return ensureInt(makeNumberLiteral(result, source));
+                return ensureInt(util.makeNumberLiteral(result, source));
             } catch (e) {
                 if (e instanceof RangeError)
                     // this actually should not happen
@@ -364,7 +356,7 @@ export function evalBinaryOp(
             }
             const result = astNum.value >> astBits.value;
             try {
-                return ensureInt(makeNumberLiteral(result, source));
+                return ensureInt(util.makeNumberLiteral(result, source));
             } catch (e) {
                 if (e instanceof RangeError)
                     // this actually should not happen
@@ -379,25 +371,25 @@ export function evalBinaryOp(
             const astLeft = ensureInt(valLeft);
             const astRight = ensureInt(valRightContinuation());
             const result = astLeft.value > astRight.value;
-            return makeBooleanLiteral(result, source);
+            return util.makeBooleanLiteral(result, source);
         }
         case "<": {
             const astLeft = ensureInt(valLeft);
             const astRight = ensureInt(valRightContinuation());
             const result = astLeft.value < astRight.value;
-            return makeBooleanLiteral(result, source);
+            return util.makeBooleanLiteral(result, source);
         }
         case ">=": {
             const astLeft = ensureInt(valLeft);
             const astRight = ensureInt(valRightContinuation());
             const result = astLeft.value >= astRight.value;
-            return makeBooleanLiteral(result, source);
+            return util.makeBooleanLiteral(result, source);
         }
         case "<=": {
             const astLeft = ensureInt(valLeft);
             const astRight = ensureInt(valRightContinuation());
             const result = astLeft.value <= astRight.value;
-            return makeBooleanLiteral(result, source);
+            return util.makeBooleanLiteral(result, source);
         }
         case "==": {
             const valR = valRightContinuation();
@@ -418,7 +410,7 @@ export function evalBinaryOp(
             const valR_ = ensureArgumentForEquality(valR);
 
             const result = eqExpressions(valLeft_, valR_); // Changed to equality testing (instead of ===) because cells, slices, address are equal by hashing
-            return makeBooleanLiteral(result, source);
+            return util.makeBooleanLiteral(result, source);
         }
         case "!=": {
             const valR = valRightContinuation();
@@ -439,19 +431,19 @@ export function evalBinaryOp(
             const valR_ = ensureArgumentForEquality(valR);
 
             const result = !eqExpressions(valLeft_, valR_); // Changed to equality testing (instead of ===) because cells, slices are equal by hashing
-            return makeBooleanLiteral(result, source);
+            return util.makeBooleanLiteral(result, source);
         }
         case "&&": {
             const astLeft = ensureBoolean(valLeft);
             const astRight = ensureBoolean(valRightContinuation());
             const result = astLeft.value && astRight.value;
-            return makeBooleanLiteral(result, source);
+            return util.makeBooleanLiteral(result, source);
         }
         case "||": {
             const astLeft = ensureBoolean(valLeft);
             const astRight = ensureBoolean(valRightContinuation());
             const result = astLeft.value || astRight.value;
-            return makeBooleanLiteral(result, source);
+            return util.makeBooleanLiteral(result, source);
         }
     }
 }
@@ -678,9 +670,13 @@ class EnvironmentStack {
     }
 }
 
-export function parseAndEvalExpression(sourceCode: string): EvalResult {
+export function parseAndEvalExpression(
+    sourceCode: string,
+    ast: FactoryAst = getAstFactory(),
+    parser: Parser = getParser(ast, defaultParser),
+): EvalResult {
     try {
-        const ast = parseExpression(sourceCode);
+        const ast = parser.parseExpression(sourceCode);
         const constEvalResult = evalConstantExpression(
             ast,
             new CompilerContext(),
@@ -688,7 +684,7 @@ export function parseAndEvalExpression(sourceCode: string): EvalResult {
         return { kind: "ok", value: constEvalResult };
     } catch (error) {
         if (
-            error instanceof TactParseError ||
+            error instanceof TactCompilationError ||
             error instanceof TactConstEvalError
         )
             return { kind: "error", message: error.message };
@@ -916,7 +912,7 @@ export class Interpreter {
                 const comment = ensureSimplifiedString(
                     this.interpretExpression(ast.self),
                 ).value;
-                return makeCommentLiteral(comment, ast.loc);
+                return util.makeCommentLiteral(comment, ast.loc);
             }
             default:
                 throwNonFatalErrorConstEval(
@@ -946,7 +942,7 @@ export class Interpreter {
     }
 
     public interpretString(ast: AstString): AstSimplifiedString {
-        return makeSimplifiedStringLiteral(
+        return util.makeSimplifiedStringLiteral(
             interpretEscapeSequences(ast.value, ast.loc),
             ast.loc,
         );
@@ -981,7 +977,9 @@ export class Interpreter {
 
         if (ast.operand.kind === "number" && ast.op === "-") {
             // emulating negative integer literals
-            return ensureInt(makeNumberLiteral(-ast.operand.value, ast.loc));
+            return ensureInt(
+                util.makeNumberLiteral(-ast.operand.value, ast.loc),
+            );
         }
 
         const valOperand = this.interpretExpression(ast.operand);
@@ -1019,7 +1017,7 @@ export class Interpreter {
                 resultMap.set(field.name, field.default);
             } else {
                 if (field.type.kind === "ref" && field.type.optional) {
-                    resultMap.set(field.name, makeNullLiteral(ast.loc));
+                    resultMap.set(field.name, util.makeNullLiteral(ast.loc));
                 }
             }
         }
@@ -1041,7 +1039,7 @@ export class Interpreter {
             );
             if (typeof sourceField !== "undefined") {
                 structValueFields.push(
-                    makeStructFieldValue(
+                    util.makeStructFieldValue(
                         fieldName,
                         fieldValue,
                         sourceField.loc,
@@ -1050,12 +1048,12 @@ export class Interpreter {
             } else {
                 // Use as source code location the entire struct
                 structValueFields.push(
-                    makeStructFieldValue(fieldName, fieldValue, ast.loc),
+                    util.makeStructFieldValue(fieldName, fieldValue, ast.loc),
                 );
             }
         }
 
-        return makeStructValue(structValueFields, ast.type, ast.loc);
+        return util.makeStructValue(structValueFields, ast.type, ast.loc);
     }
 
     public interpretStructValue(ast: AstStructValue): AstStructValue {
@@ -1130,7 +1128,7 @@ export class Interpreter {
                 );
                 try {
                     return ensureInt(
-                        makeNumberLiteral(
+                        util.makeNumberLiteral(
                             BigInt(toNano(tons.value).toString(10)),
                             ast.loc,
                         ),
@@ -1161,7 +1159,7 @@ export class Interpreter {
                 }
                 try {
                     const result = valBase.value ** valExp.value;
-                    return ensureInt(makeNumberLiteral(result, ast.loc));
+                    return ensureInt(util.makeNumberLiteral(result, ast.loc));
                 } catch (e) {
                     if (e instanceof RangeError) {
                         // even TS bigint type cannot hold it
@@ -1186,7 +1184,7 @@ export class Interpreter {
                 }
                 try {
                     const result = 2n ** valExponent.value;
-                    return ensureInt(makeNumberLiteral(result, ast.loc));
+                    return ensureInt(util.makeNumberLiteral(result, ast.loc));
                 } catch (e) {
                     if (e instanceof RangeError) {
                         // even TS bigint type cannot hold it
@@ -1208,14 +1206,14 @@ export class Interpreter {
                     );
                 }
                 const str = ensureSimplifiedString(expr);
-                return makeNumberLiteral(
+                return util.makeNumberLiteral(
                     BigInt("0x" + sha256_sync(str.value).toString("hex")),
                     ast.loc,
                 );
             }
             case "emptyMap": {
                 ensureFunArity(0, ast.args, ast.loc);
-                return makeNullLiteral(ast.loc);
+                return util.makeNullLiteral(ast.loc);
             }
             case "cell":
                 {
@@ -1224,7 +1222,7 @@ export class Interpreter {
                         this.interpretExpression(ast.args[0]!),
                     );
                     try {
-                        return makeCellLiteral(
+                        return util.makeCellLiteral(
                             Cell.fromBase64(str.value),
                             ast.loc,
                         );
@@ -1243,7 +1241,7 @@ export class Interpreter {
                         this.interpretExpression(ast.args[0]!),
                     );
                     try {
-                        return makeSliceLiteral(
+                        return util.makeSliceLiteral(
                             Cell.fromBase64(str.value).asSlice(),
                             ast.loc,
                         );
@@ -1306,7 +1304,7 @@ export class Interpreter {
                     }
 
                     // Return the constructed slice
-                    return makeSliceLiteral(
+                    return util.makeSliceLiteral(
                         beginCell().storeBits(bits).endCell().asSlice(),
                         ast.loc,
                     );
@@ -1331,7 +1329,7 @@ export class Interpreter {
                             ast.loc,
                         );
                     }
-                    return makeNumberLiteral(BigInt("0x" + hex), ast.loc);
+                    return util.makeNumberLiteral(BigInt("0x" + hex), ast.loc);
                 }
                 break;
             case "crc32":
@@ -1340,7 +1338,7 @@ export class Interpreter {
                     const str = ensureSimplifiedString(
                         this.interpretExpression(ast.args[0]!),
                     );
-                    return makeNumberLiteral(
+                    return util.makeNumberLiteral(
                         BigInt(crc32.str(str.value) >>> 0),
                         ast.loc,
                     ); // >>> 0 converts to unsigned
@@ -1363,16 +1361,7 @@ export class Interpreter {
                                 ast.loc,
                             );
                         }
-                        if (
-                            !enabledMasterchain(this.context) &&
-                            address.workChain !== 0
-                        ) {
-                            throwErrorConstEval(
-                                `address ${showValue(str)} is from masterchain which is not enabled for this contract`,
-                                ast.loc,
-                            );
-                        }
-                        return makeAddressLiteral(address, ast.loc);
+                        return util.makeAddressLiteral(address, ast.loc);
                     } catch (_) {
                         throwErrorConstEval(
                             `invalid address encoding: ${showValue(str)}`,
@@ -1398,13 +1387,7 @@ export class Interpreter {
                         ast.loc,
                     );
                 }
-                if (!enabledMasterchain(this.context) && wc !== 0n) {
-                    throwErrorConstEval(
-                        `${wc}:${addr.toString("hex")} address is from masterchain which is not enabled for this contract`,
-                        ast.loc,
-                    );
-                }
-                return makeAddressLiteral(
+                return util.makeAddressLiteral(
                     new Address(Number(wc), addr),
                     ast.loc,
                 );
@@ -1516,7 +1499,7 @@ export class Interpreter {
                     // The function does not return a value.
                     // We rely on the typechecker so that the function is called as a statement.
                     // Hence, we can return a dummy null, since the null will be discarded anyway.
-                    return makeNullLiteral(dummySrcInfo);
+                    return util.makeNullLiteral(dummySrcInfo);
                 }
             },
             { names: paramNames, values: argValues },

@@ -1,7 +1,8 @@
 //type Test = { expr: string; isValue: boolean };
 
-import { __DANGER_resetNodeId, isLiteral } from "../ast";
-import { parseExpression } from "../grammar";
+import { getAstFactory, isLiteral } from "../ast";
+import { getParser } from "../";
+import { defaultParser } from "../grammar";
 
 const valueExpressions: string[] = [
     "1",
@@ -52,13 +53,12 @@ const notValueExpressions: string[] = [
 ];
 
 function testIsValue(expr: string, testResult: boolean) {
+    const ast = getAstFactory();
+    const { parseExpression } = getParser(ast, defaultParser);
     expect(isLiteral(parseExpression(expr))).toBe(testResult);
 }
 
 describe("expression-is-value", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
     valueExpressions.forEach((test) => {
         it(`should correctly determine that '${test}' is a value expression.`, () => {
             testIsValue(test, true);

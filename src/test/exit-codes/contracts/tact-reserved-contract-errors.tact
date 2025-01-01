@@ -96,22 +96,4 @@ contract ReservedContractErrorsTester with Ownable {
         // so let's throw it explicitly now for the tests on Blueprint's side
         throw(targetCode);
     }
-
-    /// Exit code 136
-    receive("136") {
-        let unsupportedChainId = 1;
-        dump(
-            // Zero address in unsupported workchain
-            newAddress(unsupportedChainId, 0)
-        );
-    }
-
-    /// Exit code 137
-    receive("137") {
-        let masterchainId = -1;
-        dump(
-            // Zero address in masterchain without the config option set
-            newAddress(masterchainId, 0)
-        );
-    }
 }

@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `replace` and `replaceGet` methods for the `Map` type: PR [#941](https://github.com/tact-lang/tact/pull/941)
 - Utility for logging errors in code that was supposed to be unreachable: PR [#991](https://github.com/tact-lang/tact/pull/991)
 - Ability to specify a compile-time message opcode expression: PR [#1188](https://github.com/tact-lang/tact/pull/1188)
+- The `VarInt16`, `VarInt32`, `VarUint16`, `VarUint32` integer serialization types: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
+- `unboc`: a standalone CLI utility to expose Tact's TVM disassembler: PR [#1259](https://github.com/tact-lang/tact/pull/1259)
+- Added alternative parser: PR [#1258](https://github.com/tact-lang/tact/pull/1258)
 
 ### Changed
 
@@ -24,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optional types for `self` argument in `extends mutates` functions are now allowed: PR [#854](https://github.com/tact-lang/tact/pull/854)
 - Error codes in the report are now formatted as a list: PR [#1051](https://github.com/tact-lang/tact/pull/1051)
 - Clarify error message for bounced types from which accessed a field that does not fit in 224 bytes: PR [#1111](https://github.com/tact-lang/tact/pull/1111)
+- Do not automatically validate all addresses when receiving/sending messages or using address manipulating functions: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
+- Remove `enabledMasterchain` compiler config option from `tact.config.json`: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
+- Remove `org.ton.chain.any.v0` interface: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
+- To reduce fees, Tact no longer stores the parent contract code in the system cell that holds all the child contract codes used in `initOf`. Instead, the `MYCODE` instruction is used: PR [#1213](https://github.com/tact-lang/tact/pull/1213)
 
 ### Fixed
 
@@ -34,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Type checking for `foreach` loops in trait methods: PR [#1017](https://github.com/tact-lang/tact/pull/1017)
 - The `sha256()` function no longer throws on statically known strings of any length: PR [#907](https://github.com/tact-lang/tact/pull/907)
 - TypeScript wrappers generation for messages with single quote: PR [#1106](https://github.com/tact-lang/tact/pull/1106)
+- `foreach` loops now properly handle `as coins` map value serialization type: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
 
 ### Docs
 
@@ -56,6 +64,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed the Programmatic API page due to frequent changes. To use the API, please refer to the compiler sources: PR [#1184](https://github.com/tact-lang/tact/pull/1184)
 - Added a link to the article by CertiK to Security best practices page: PR [#1185](https://github.com/tact-lang/tact/pull/1185)
 - Added a note on `dump()` being computationally expensive: PR [#1189](https://github.com/tact-lang/tact/pull/1189)
+- Fixed links in Chinese translation: PR [#1206](https://github.com/tact-lang/tact/pull/1206)
+- Added a note on 255 being the maximum number of messages that can be sent during action phase: PR [#1237](https://github.com/tact-lang/tact/pull/1237)
+- Added onchain metadata creation for NFTs and Jettons to the cookbook: PR [#1236](https://github.com/tact-lang/tact/pull/1236)
 
 ### Release contributors
 
@@ -73,7 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- `asm` functions now support full range of Fift-asm syntax: PR [#855](https://github.com/tact-lang/tact/pull/855)
+- `asm` functions now support full range of Fift-asm syntax: PR [#855](https://github.com/tact-lang/tact/pull/855), PR [#1061](https://github.com/tact-lang/tact/pull/1061)
 
 - Fix `npm` installations of Tact compiler or any of the packages depending on it by hiding unnecessary post-install runs of `husky`: PR [#870](https://github.com/tact-lang/tact/pull/870)
 

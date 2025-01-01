@@ -1,5 +1,6 @@
-import { __DANGER_resetNodeId, eqExpressions } from "../ast";
-import { parseExpression } from "../grammar";
+import { eqExpressions, getAstFactory } from "../ast";
+import { getParser } from "../";
+import { defaultParser } from "../grammar";
 
 type Test = { expr1: string; expr2: string; equality: boolean };
 
@@ -366,15 +367,14 @@ const initOfExpressions: Test[] = [
 ];
 
 function testEquality(expr1: string, expr2: string, equal: boolean) {
+    const ast = getAstFactory();
+    const { parseExpression } = getParser(ast, defaultParser);
     expect(eqExpressions(parseExpression(expr1), parseExpression(expr2))).toBe(
         equal,
     );
 }
 
 describe("expression-equality", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
     it("should correctly determine if two expressions involving values are equal or not.", () => {
         valueExpressions.forEach((test) => {
             testEquality(test.expr1, test.expr2, test.equality);

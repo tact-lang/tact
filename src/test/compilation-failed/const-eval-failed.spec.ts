@@ -1,11 +1,6 @@
-import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { itShouldNotCompile } from "./util";
 
 describe("fail-const-eval", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-
     itShouldNotCompile({
         testName: "const-eval-div-by-zero",
         errorMessage:

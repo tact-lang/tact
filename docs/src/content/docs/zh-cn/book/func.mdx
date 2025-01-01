@@ -4,19 +4,19 @@ title: 与 func 的兼容性
 
 Tact 本身编译为 FunC，并将其所有实体直接映射到各种 FunC 和 TL-B 类型。
 
-## 转换类型
+## 转换类型 {#convert-types}
 
-Tact 中的 [原始类型](/book/types#primitive-types)可直接映射到 FunC 中的类型。
+Tact 中的 [原始类型](/zh-cn/book/types#primitive-types)可直接映射到 FunC 中的类型。
 
-所有关于复制变量的规则都是一样的。其中一个最大的不同是，在 Tact 中没有可见的突变操作符，大多数 [`切片{:tact}`](/book/cells#slices)操作都是就地突变变量。
+所有关于复制变量的规则都是一样的。其中一个最大的不同是，在 Tact 中没有可见的突变操作符，大多数 [`切片{:tact}`](/zh-cn/book/cells#slices)操作都是就地突变变量。
 
-## 转换序列化
+## 转换序列化 {#convert-serialization}
 
-在 Tact 中，[Structs](/book/structs-and-messages#structs)和[Messages](/book/structs-and-messages#messages)的序列化是自动进行的，不像 FunC 需要手动定义序列化逻辑。
+在 Tact 中，[Structs](/zh-cn/book/structs-and-messages#structs)和[Messages](/zh-cn/book/structs-and-messages#messages)的序列化是自动进行的，不像 FunC 需要手动定义序列化逻辑。
 
 Tact 的自动布局算法是贪婪的。这意味着它会获取下一个变量，计算其大小，并尝试将其放入当前单元格。如果不合适，它就会创建一个新单元格并继续。所有用于自动布局的内部结构都会在分配前被扁平化。
 
-除了 [`Address{:tact}`](/book/types#primitive-types) 以外，所有可选类型在 TL-B 中都序列化为 `Maybe`。
+除了 [`Address{:tact}`](/zh-cn/book/types#primitive-types) 以外，所有可选类型在 TL-B 中都序列化为 `Maybe`。
 
 没有对 `Either` 的支持，因为它没有定义在某些情况下序列化时应选择什么。
 
@@ -100,7 +100,7 @@ struct SomeValue {
 }
 ```
 
-## 将收到的信息转换为 `op` 操作
+## 将收到的信息转换为 `op` 操作 {#convert-received-messages-to-op-operations}
 
 Tact 会为每条接收到的键入信息生成一个唯一的 `op`，但它可以被覆盖。
 
@@ -177,7 +177,7 @@ get fun seqno(): Int {
 
 在 FunC 中，张量类型 `(int, int){:func}` 和 `(int, (int)){:func}` 是有区别的，但对于 TVM 来说没有区别，它们都表示两个整数的堆栈。
 
-要转换从 FunC `get` 方法返回的张量，需要定义一个 [Struct](/book/structs-and-messages#structs)，它与张量的字段类型相同，顺序也相同。
+要转换从 FunC `get` 方法返回的张量，需要定义一个 [Struct](/zh-cn/book/structs-and-messages#structs)，它与张量的字段类型相同，顺序也相同。
 
 下面是 FunC 中的代码
 
@@ -265,7 +265,7 @@ contract StatefulContract {
 
 ### 参数 制图
 
-获取 "方法参数的转换非常简单。每个参数都_原样_映射到 FunC one，每个元组都映射到 [结构](/book/structs-and-messages#structs)。
+获取 "方法参数的转换非常简单。每个参数都_原样_映射到 FunC one，每个元组都映射到 [结构](/zh-cn/book/structs-and-messages#structs)。
 
 下面是 FunC 中的代码
 

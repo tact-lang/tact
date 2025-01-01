@@ -1,5 +1,5 @@
 import { Address, beginCell, Cell, toNano } from "@ton/core";
-import { enabledDebug, enabledMasterchain } from "../config/features";
+import { enabledDebug } from "../config/features";
 import {
     writeAddress,
     writeCell,
@@ -18,8 +18,11 @@ import path from "path";
 import { cwd } from "process";
 import { posixNormalize } from "../utils/filePath";
 import { ensureSimplifiedString } from "../interpreter";
-import { makeSimplifiedStringLiteral } from "../optimizer/util";
-import { dummySrcInfo } from "../grammar/grammar";
+import { getAstFactory } from "../grammar/ast";
+import { getAstUtil } from "../optimizer/util";
+import { dummySrcInfo } from "../grammar";
+
+const util = getAstUtil(getAstFactory());
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [
@@ -163,14 +166,6 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                if (!enabledMasterchain(ctx.ctx)) {
-                    if (address.workChain !== 0) {
-                        throwCompilationError(
-                            `Address ${str} from masterchain are not enabled for this contract`,
-                            ref,
-                        );
-                    }
-                }
 
                 // Generate address
                 const res = writeAddress(address, ctx);
@@ -247,7 +242,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 const lineCol = ref.interval.getLineAndColumn();
                 const debugPrint1 = `File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}:`;
                 const debugPrint2 = writeValue(
-                    makeSimplifiedStringLiteral(
+                    util.makeSimplifiedStringLiteral(
                         ref.interval.contents,
                         dummySrcInfo,
                     ),

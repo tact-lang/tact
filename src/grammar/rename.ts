@@ -17,9 +17,9 @@ import {
     AstNode,
     AstFunctionAttribute,
 } from "./ast";
-import { dummySrcInfo } from "./grammar";
 import { AstSorter } from "./sort";
 import { AstHasher, AstHash } from "./hash";
+import { dummySrcInfo } from "./src-info";
 
 type GivenName = string;
 

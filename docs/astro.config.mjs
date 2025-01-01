@@ -163,6 +163,7 @@ export default defineConfig({
 						{ slug: 'book/statements' },
 						{ slug: 'book/constants' },
 						{ slug: 'book/functions' },
+						{ slug: 'book/assembly-functions' },
 						{
 							label: 'Communication',
 							translations: { 'zh-CN': '交流' },
@@ -186,7 +187,6 @@ export default defineConfig({
 						{ slug: 'book/upgrades' },
 						{ slug: 'book/import' },
 						{ slug: 'book/config' },
-						{ slug: 'book/masterchain' },
 						{ slug: 'book/func' },
 						{ slug: 'book/security-best-practices' },
 					],

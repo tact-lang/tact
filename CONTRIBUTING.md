@@ -61,6 +61,10 @@ Updating a subset of the test snapshots can be done like so:
 yarn test -u spec-name-pattern1 spec-name-pattern2
 ```
 
+## Code quality
+
+To pass review, code has to conform to our [styleguide](/STYLEGUIDE.md).
+
 ## Linting
 
 To pass CI, one needs to have a warning-free build. To run all the lints described below execute the following command in your terminal:

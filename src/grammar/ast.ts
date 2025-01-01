@@ -1,6 +1,6 @@
 import { Address, Cell, Slice } from "@ton/core";
-import { dummySrcInfo, SrcInfo } from "./grammar";
 import { throwInternalCompilerError } from "../errors";
+import { dummySrcInfo, SrcInfo } from "./src-info";
 
 export type AstModule = {
     kind: "module";
@@ -714,10 +714,12 @@ export type AstStructFieldValue = {
     loc: SrcInfo;
 };
 
-export type AstConstantAttribute =
-    | { type: "virtual"; loc: SrcInfo }
-    | { type: "override"; loc: SrcInfo }
-    | { type: "abstract"; loc: SrcInfo };
+export type AstConstantAttributeName = "virtual" | "override" | "abstract";
+
+export type AstConstantAttribute = {
+    type: AstConstantAttributeName;
+    loc: SrcInfo;
+};
 
 export type AstContractAttribute = {
     type: "interface";
@@ -725,19 +727,30 @@ export type AstContractAttribute = {
     loc: SrcInfo;
 };
 
+export type AstFunctionAttributeGet = {
+    kind: "function_attribute";
+    type: "get";
+    methodId: AstExpression | null;
+    loc: SrcInfo;
+};
+
+export type AstFunctionAttributeName =
+    | "mutates"
+    | "extends"
+    | "virtual"
+    | "abstract"
+    | "override"
+    | "inline";
+
+export type AstFunctionAttributeRest = {
+    kind: "function_attribute";
+    type: AstFunctionAttributeName;
+    loc: SrcInfo;
+};
+
 export type AstFunctionAttribute =
-    | {
-          kind: "function_attribute";
-          type: "get";
-          methodId: AstExpression | null;
-          loc: SrcInfo;
-      }
-    | { kind: "function_attribute"; type: "mutates"; loc: SrcInfo }
-    | { kind: "function_attribute"; type: "extends"; loc: SrcInfo }
-    | { kind: "function_attribute"; type: "virtual"; loc: SrcInfo }
-    | { kind: "function_attribute"; type: "abstract"; loc: SrcInfo }
-    | { kind: "function_attribute"; type: "override"; loc: SrcInfo }
-    | { kind: "function_attribute"; type: "inline"; loc: SrcInfo };
+    | AstFunctionAttributeGet
+    | AstFunctionAttributeRest;
 
 export type AstTypedParameter = {
     kind: "typed_parameter";
@@ -822,17 +835,22 @@ export function tryExtractPath(path: AstExpression): AstId[] | null {
 type DistributiveOmit<T, K extends keyof any> = T extends any
     ? Omit<T, K>
     : never;
-let nextId = 1;
-export function createAstNode(src: DistributiveOmit<AstNode, "id">): AstNode {
-    return Object.freeze(Object.assign({ id: nextId++ }, src));
-}
-export function cloneAstNode<T extends AstNode>(src: T): T {
-    return { ...src, id: nextId++ };
-}
 
-export function __DANGER_resetNodeId() {
-    nextId = 1;
-}
+export const getAstFactory = () => {
+    let nextId = 1;
+    function createNode(src: DistributiveOmit<AstNode, "id">): AstNode {
+        return Object.freeze(Object.assign({ id: nextId++ }, src));
+    }
+    function cloneNode<T extends AstNode>(src: T): T {
+        return { ...src, id: nextId++ };
+    }
+    return {
+        createNode,
+        cloneNode,
+    };
+};
+
+export type FactoryAst = ReturnType<typeof getAstFactory>;
 
 // Test equality of AstExpressions.
 // Note this is syntactical equality of expressions.
@@ -1011,5 +1029,3 @@ export function isLiteral(ast: AstExpression): ast is AstLiteral {
             throwInternalCompilerError("Unrecognized expression kind");
     }
 }
-
-export { SrcInfo };
