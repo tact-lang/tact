@@ -9,6 +9,7 @@ import {
     getAllTypes,
     getAllStaticConstants,
 } from "./resolveDescriptors";
+import { ensureSimplifiedString } from "../interpreter";
 
 type Exception = { value: string; id: number };
 
@@ -28,10 +29,9 @@ function resolveStringsInAST(ast: AstNode, ctx: CompilerContext) {
             if (node.args.length !== 2) {
                 return;
             }
-            const resolved = evalConstantExpression(
-                node.args[1]!,
-                ctx,
-            ) as string;
+            const resolved = ensureSimplifiedString(
+                evalConstantExpression(node.args[1]!, ctx),
+            ).value;
             if (!exceptions.get(ctx, resolved)) {
                 const id = exceptionId(resolved);
                 if (

@@ -1,6 +1,6 @@
 //type Test = { expr: string; isValue: boolean };
 
-import { getAstFactory, isValue } from "../ast";
+import { getAstFactory, isLiteral } from "../ast";
 import { getParser } from "../";
 import { defaultParser } from "../grammar";
 
@@ -8,7 +8,6 @@ const valueExpressions: string[] = [
     "1",
     "true",
     "false",
-    '"one"',
     "null",
     "Test {f1: 0, f2: true}",
     "Test {f1: 0, f2: true, f3: null}",
@@ -17,6 +16,7 @@ const valueExpressions: string[] = [
 
 const notValueExpressions: string[] = [
     "g",
+    '"one"', // A raw string cannot be determined to be a literal because it is not possible to know if some of its characters are already escaped or not
     "Test {f1: 0, f2: b}",
     "Test {f1: a, f2: true}",
     "f(1)",
@@ -55,7 +55,7 @@ const notValueExpressions: string[] = [
 function testIsValue(expr: string, testResult: boolean) {
     const ast = getAstFactory();
     const { parseExpression } = getParser(ast, defaultParser);
-    expect(isValue(parseExpression(expr))).toBe(testResult);
+    expect(isLiteral(parseExpression(expr))).toBe(testResult);
 }
 
 describe("expression-is-value", () => {

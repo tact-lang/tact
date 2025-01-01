@@ -17,6 +17,12 @@ import { sha256_sync } from "@ton/crypto";
 import path from "path";
 import { cwd } from "process";
 import { posixNormalize } from "../utils/filePath";
+import { ensureSimplifiedString } from "../interpreter";
+import { getAstFactory } from "../grammar/ast";
+import { getAstUtil } from "../optimizer/util";
+import { dummySrcInfo } from "../grammar";
+
+const util = getAstUtil(getAstFactory());
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [
@@ -52,11 +58,10 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
-                return toNano(str).toString(10);
+                const str = ensureSimplifiedString(
+                    evalConstantExpression(resolved[0]!, ctx.ctx),
+                );
+                return toNano(str.value).toString(10);
             },
         },
     ],
@@ -106,11 +111,10 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                const str = evalConstantExpression(
-                    resolved[1]!,
-                    ctx.ctx,
-                ) as string;
-                return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0]!, ctx)})`;
+                const str = ensureSimplifiedString(
+                    evalConstantExpression(resolved[1]!, ctx.ctx),
+                );
+                return `throw_unless(${getErrorId(str.value, ctx.ctx)}, ${writeExpression(resolved[0]!, ctx)})`;
             },
         },
     ],
@@ -147,10 +151,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const str = ensureSimplifiedString(
+                    evalConstantExpression(resolved[0]!, ctx.ctx),
+                ).value;
                 let address: Address;
                 try {
                     address = Address.parse(str);
@@ -200,10 +203,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load cell data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const str = ensureSimplifiedString(
+                    evalConstantExpression(resolved[0]!, ctx.ctx),
+                ).value;
                 let c: Cell;
                 try {
                     c = Cell.fromBase64(str);
@@ -239,7 +241,13 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
                 const debugPrint1 = `File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}:`;
-                const debugPrint2 = writeValue(ref.interval.contents, ctx);
+                const debugPrint2 = writeValue(
+                    util.makeSimplifiedStringLiteral(
+                        ref.interval.contents,
+                        dummySrcInfo,
+                    ),
+                    ctx,
+                );
 
                 if (arg0.kind === "map") {
                     const exp = writeExpression(resolved[0]!, ctx);
@@ -364,10 +372,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                     // Try const-eval
                     try {
-                        str = evalConstantExpression(
-                            resolved[0]!,
-                            ctx.ctx,
-                        ) as string;
+                        str = ensureSimplifiedString(
+                            evalConstantExpression(resolved[0]!, ctx.ctx),
+                        ).value;
                     } catch (error) {
                         if (
                             !(error instanceof TactConstEvalError) ||
@@ -430,10 +437,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load slice data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const str = ensureSimplifiedString(
+                    evalConstantExpression(resolved[0]!, ctx.ctx),
+                ).value;
                 let c: Cell;
                 try {
                     c = Cell.fromBase64(str);
@@ -482,10 +488,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load slice data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const str = ensureSimplifiedString(
+                    evalConstantExpression(resolved[0]!, ctx.ctx),
+                ).value;
                 let c: Cell;
                 try {
                     c = beginCell().storeBuffer(Buffer.from(str)).endCell();
@@ -528,10 +533,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load slice data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const str = ensureSimplifiedString(
+                    evalConstantExpression(resolved[0]!, ctx.ctx),
+                ).value;
 
                 if (str.length > 32) {
                     throwCompilationError(
@@ -573,10 +577,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load slice data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const str = ensureSimplifiedString(
+                    evalConstantExpression(resolved[0]!, ctx.ctx),
+                ).value;
 
                 return `"${str}"c`;
             },

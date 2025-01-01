@@ -1033,8 +1033,7 @@ function getMethodId(
 
         const methodId = ensureInt(
             evalConstantExpression(optMethodId, ctx),
-            optMethodId.loc,
-        );
+        ).value;
         checkMethodId(methodId, optMethodId.loc);
         return Number(methodId);
     } else {

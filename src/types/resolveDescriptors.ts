@@ -18,6 +18,7 @@ import {
     AstTypeId,
     AstAsmFunctionDef,
     FactoryAst,
+    getAstFactory,
 } from "../grammar/ast";
 import { traverse } from "../grammar/iterators";
 import {
@@ -57,6 +58,9 @@ import { ItemOrigin } from "../grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
+import { getAstUtil } from "../optimizer/util";
+
+const util = getAstUtil(getAstFactory());
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -2167,7 +2171,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
 
                             field.default =
                                 field.type.kind === "ref" && field.type.optional
-                                    ? null
+                                    ? util.makeNullLiteral(field.ast.loc)
                                     : undefined;
                         }
                     }
