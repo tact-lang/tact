@@ -672,6 +672,56 @@ Line 6, col 29:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for wf-type-contract-incorrect-map-key-annotation-coins 1`] = `
+"<unknown>:6:19: "coins" is invalid as-annotation for map key type "Int"
+Line 6, col 19:
+  5 | contract Test {
+> 6 |     m: map<Int as coins, Address> = emptyMap();
+                        ^~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for wf-type-contract-incorrect-map-key-annotation-varint16 1`] = `
+"<unknown>:6:19: "varint16" is invalid as-annotation for map key type "Int"
+Line 6, col 19:
+  5 | contract Test {
+> 6 |     m: map<Int as varint16, Address> = emptyMap();
+                        ^~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for wf-type-contract-incorrect-map-key-annotation-varint32 1`] = `
+"<unknown>:6:19: "varint32" is invalid as-annotation for map key type "Int"
+Line 6, col 19:
+  5 | contract Test {
+> 6 |     m: map<Int as varint32, Address> = emptyMap();
+                        ^~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for wf-type-contract-incorrect-map-key-annotation-varuint16 1`] = `
+"<unknown>:6:19: "varuint16" is invalid as-annotation for map key type "Int"
+Line 6, col 19:
+  5 | contract Test {
+> 6 |     m: map<Int as varuint16, Address> = emptyMap();
+                        ^~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for wf-type-contract-incorrect-map-key-annotation-varuint32 1`] = `
+"<unknown>:6:19: "varuint32" is invalid as-annotation for map key type "Int"
+Line 6, col 19:
+  5 | contract Test {
+> 6 |     m: map<Int as varuint32, Address> = emptyMap();
+                        ^~~~~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for wf-type-fun-param 1`] = `
 "<unknown>:4:16: Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types
 Line 4, col 16:
