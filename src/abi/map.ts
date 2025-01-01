@@ -74,21 +74,27 @@ function checkValueType(
 }
 
 function resolveMapKeyBits(
-    self: { key: string; keyAs: string | null },
-    ref: SrcInfo,
+    type: { key: string; keyAs: string | null },
+    loc: SrcInfo,
 ): { bits: number; kind: string } {
-    if (self.key === "Int") {
-        if (self.keyAs?.startsWith("int")) {
-            return { bits: parseInt(self.keyAs.slice(3), 10), kind: "int" };
+    if (type.key === "Int") {
+        if (type.keyAs === null) {
+            return { bits: 257, kind: "int" }; // Default for "Int" keys
         }
-        if (self.keyAs?.startsWith("uint")) {
-            return { bits: parseInt(self.keyAs.slice(4), 10), kind: "uint" };
+        if (type.keyAs.startsWith("int")) {
+            return { bits: parseInt(type.keyAs.slice(3), 10), kind: "int" };
         }
-        return { bits: 257, kind: "int" }; // Default for "Int" keys
-    } else if (self.key === "Address") {
+        if (type.keyAs.startsWith("uint")) {
+            return { bits: parseInt(type.keyAs.slice(4), 10), kind: "uint" };
+        }
+        throwCompilationError(
+            `Unsupported integer map key type storage annotation: ${type.keyAs}`,
+            loc,
+        );
+    } else if (type.key === "Address") {
         return { bits: 267, kind: "slice" };
     }
-    throwCompilationError(`Unsupported key type: ${self.key}`, ref);
+    throwCompilationError(`Unsupported key type: ${type.key}`, loc);
 }
 
 function handleStructOrOtherValue(

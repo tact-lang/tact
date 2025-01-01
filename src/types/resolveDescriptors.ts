@@ -46,7 +46,11 @@ import { cloneNode } from "../grammar/clone";
 import { crc16 } from "../utils/crc16";
 import { isSubsetOf } from "../utils/isSubsetOf";
 import { evalConstantExpression } from "../constEval";
-import { resolveABIType, intMapFormats } from "./resolveABITypeRef";
+import {
+    resolveABIType,
+    intMapKeyFormats,
+    intMapValFormats,
+} from "./resolveABITypeRef";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
@@ -66,17 +70,28 @@ const staticConstantsStore = createContextStore<ConstantDescription>();
 function verifyMapAsAnnotationsForPrimitiveTypes(
     type: AstTypeId,
     asAnnotation: AstId | null,
+    kind: "keyType" | "valType",
 ): void {
     switch (idText(type)) {
         case "Int": {
-            if (
-                asAnnotation !== null &&
-                !Object.keys(intMapFormats).includes(idText(asAnnotation))
-            ) {
-                throwCompilationError(
-                    'Invalid `as`-annotation for type "Int" type',
-                    asAnnotation.loc,
-                );
+            if (asAnnotation === null) return;
+            const ann = idText(asAnnotation);
+            switch (kind) {
+                case "keyType":
+                    if (!Object.keys(intMapKeyFormats).includes(ann)) {
+                        throwCompilationError(
+                            `"${ann}" is invalid as-annotation for map key type "Int"`,
+                            asAnnotation.loc,
+                        );
+                    }
+                    return;
+                case "valType":
+                    if (!Object.keys(intMapValFormats).includes(ann)) {
+                        throwCompilationError(
+                            `"${ann}" is invalid as-annotation for map value type "Int"`,
+                            asAnnotation.loc,
+                        );
+                    }
             }
             return;
         }
@@ -101,6 +116,7 @@ function verifyMapTypes(
     typeId: AstTypeId,
     asAnnotation: AstId | null,
     allowedTypeNames: string[],
+    kind: "keyType" | "valType",
 ): void {
     if (!allowedTypeNames.includes(idText(typeId))) {
         throwCompilationError(
@@ -108,26 +124,31 @@ function verifyMapTypes(
             typeId.loc,
         );
     }
-    verifyMapAsAnnotationsForPrimitiveTypes(typeId, asAnnotation);
+    verifyMapAsAnnotationsForPrimitiveTypes(typeId, asAnnotation, kind);
 }
 
 function verifyMapType(mapTy: AstMapType, isValTypeStruct: boolean) {
     // optional and other compound key and value types are disallowed at the level of grammar
 
     // check allowed key types
-    verifyMapTypes(mapTy.keyType, mapTy.keyStorageType, ["Int", "Address"]);
+    verifyMapTypes(
+        mapTy.keyType,
+        mapTy.keyStorageType,
+        ["Int", "Address"],
+        "keyType",
+    );
 
     // check allowed value types
     if (isValTypeStruct && mapTy.valueStorageType === null) {
         return;
     }
     // the case for struct/message is already checked
-    verifyMapTypes(mapTy.valueType, mapTy.valueStorageType, [
-        "Int",
-        "Address",
-        "Bool",
-        "Cell",
-    ]);
+    verifyMapTypes(
+        mapTy.valueType,
+        mapTy.valueStorageType,
+        ["Int", "Address", "Bool", "Cell"],
+        "valType",
+    );
 }
 
 export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
