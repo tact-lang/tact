@@ -14,6 +14,7 @@
     "src/error/display-to-json.ts",
     "src/grammar/src-info.ts",
     "src/grammar/next/grammar.ts",
+    "src/test/e2e-emulated/map-tests/map-properties.spec.template.ts",
     ".github/workflows/tact*.yml"
   ],
   "ignoreDependencies": ["@tact-lang/ton-abi"]
