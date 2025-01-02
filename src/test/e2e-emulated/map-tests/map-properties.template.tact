@@ -45,6 +45,8 @@ contract MapPropertiesTester {
     const ExitCodeKeyMustBeMissing: Int = 1025;
     const ExitCodeKeyMustBePresent: Int = 1026;
 
+    receive() { } // deploy
+
     // Property: emptyMap().get(k) == null
     get fun testEmptyMapGet(key: KeyData, val: ValData): Bool {
         let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
@@ -71,7 +73,7 @@ contract MapPropertiesTester {
         m1.set(key._1, val._1);
         return
             m1 != m &&
-            !m1.deepEquals(m1);
+            !m1.deepEquals(m);
     }
 
     // Property: m.set(k, v).get(k) == v
@@ -121,7 +123,7 @@ contract MapPropertiesTester {
     // Property: (m.get(k) != null) => m.del(k).get(k) == null
     get fun testDelGetSameKeyPresent(key: KeyData, val: ValData): Bool {
         let m = doubletonMap(key, val);
-        nativeThrowUnless(self.ExitCodeKeyMustBePresent, m.get(key._1) == null);
+        nativeThrowUnless(self.ExitCodeKeyMustBePresent, m.get(key._1) != null);
         let deleted: Bool = m.del(key._1);
         return
             m.get(key._1) == null &&
