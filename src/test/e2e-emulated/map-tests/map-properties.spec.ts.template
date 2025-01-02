@@ -1,0 +1,100 @@
+import { Address, address, toNano } from "@ton/core";
+import { Blockchain } from "@ton/sandbox";
+import {
+    KeyData,
+    MapPropertiesTester,
+    ValData,
+} from "./test_MapPropertiesTester";
+import "@ton/test-utils";
+
+const key: KeyData = {
+    $$type: "KeyData",
+    _1: KEY_1,
+    _2: KEY_2,
+};
+
+const val: ValData = {
+    $$type: "ValData",
+    _1: VAL_1,
+    _2: VAL_2,
+};
+
+describe("map properties", () => {
+    it("should pass map property tests", async () => {
+        const blockchain = await Blockchain.create();
+        blockchain.verbosity.print = false;
+        const treasure = await blockchain.treasury("treasure");
+        const contract = blockchain.openContract(
+            await MapPropertiesTester.fromInit(),
+        );
+
+        const result = await contract.send(
+            treasure.getSender(),
+            {
+                value: toNano("10"),
+            },
+            null,
+        );
+
+        expect(result.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: contract.address,
+            success: true,
+            deploy: true,
+        });
+
+        expect(await contract.getTestEmptyMapGet(key, val)).toStrictEqual(true);
+        expect(await contract.getTestGetDoesNotModify(key, val)).toStrictEqual(
+            true,
+        );
+        expect(await contract.getTestSetModifies(key, val)).toStrictEqual(true);
+        expect(await contract.getTestSetGetSameKey(key, val)).toStrictEqual(
+            true,
+        );
+        expect(await contract.getTestSetGetNotSameKey(key, val)).toStrictEqual(
+            true,
+        );
+        expect(
+            await contract.getTestSetSetOfSameDoesNotModify(key, val),
+        ).toStrictEqual(true);
+        expect(
+            await contract.getTestSetSetOfNotSameCommutes(key, val),
+        ).toStrictEqual(true);
+        expect(
+            await contract.getTestDelGetSameKeyPresent(key, val),
+        ).toStrictEqual(true);
+        expect(
+            await contract.getTestDelGetSameKeyMissing(key, val),
+        ).toStrictEqual(true);
+        expect(
+            await contract.getTestDelOfPresentModifies(key, val),
+        ).toStrictEqual(true);
+        expect(
+            await contract.getTestDelOfMissingDoesNotModify(key, val),
+        ).toStrictEqual(true);
+        expect(
+            await contract.getTestDelDelOfSameDoesNotModify(key, val),
+        ).toStrictEqual(true);
+        expect(
+            await contract.getTestSetDelOfMissingDoesNotModify(key, val),
+        ).toStrictEqual(true);
+        expect(
+            await contract.getTestDelSetOfSamePresent(key, val),
+        ).toStrictEqual(true);
+        expect(
+            await contract.getTestDelSetOfSameMissing(key, val),
+        ).toStrictEqual(true);
+        expect(
+            await contract.getTestDelSetOfNotSameCommutes(key, val),
+        ).toStrictEqual(true);
+        expect(await contract.getTestEmptyMapSize(key, val)).toStrictEqual(
+            true,
+        );
+        expect(await contract.getTestSingletonMapSize(key, val)).toStrictEqual(
+            true,
+        );
+        expect(await contract.getTestDoubletonMapSize(key, val)).toStrictEqual(
+            true,
+        );
+    });
+});

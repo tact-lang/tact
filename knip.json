@@ -10,6 +10,7 @@
     "src/grammar/src-info.ts",
     "src/grammar/next/grammar.ts",
     "src/func/funcCompile.ts",
+    "test/e2e-emulated/map-tests/map-properties.spec.template.ts",
     ".github/workflows/tact*.yml"
   ],
   "ignoreDependencies": ["@tact-lang/ton-abi"]
