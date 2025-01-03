@@ -55,25 +55,19 @@ const address = {
     val2: "new Address(0, Buffer.alloc(32, 0))",
 };
 
-const otherTypes: MapType[] = [];
-/*
-const otherTypes = [
+const otherValueTypes: MapType[] = [
     { type: "Bool", val1: "true", val2: "false" },
     {
         type: "Cell",
-        val1: ...
-        val2: ...
+        val1: 'Cell.fromBase64("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=")',
+        val2: 'Cell.fromBase64("te6ccgEBAgEALQABDv8AiNDtHtgBCEICGbgzd5nhZ9WhSM+4juFCvgMYJOtxthFdtTKIH6M/6SM=")',
     },
     // TODO
     // struct
-    { type: "S", val1: "", val2: "" },
+    // { type: "S", val1: "", val2: "" },
     // message
-    { type: "M", val1: "", val2: "" },
+    // { type: "M", val1: "", val2: "" },
 ];
-*/
 
 export const keyTypes = ints.concat(uints, [address]);
-export const valTypes = allInts.concat(otherTypes, [address]);
-
-// export const keyTypes = [address];
-// export const valTypes = [address];
+export const valTypes = allInts.concat(otherValueTypes, [address]);

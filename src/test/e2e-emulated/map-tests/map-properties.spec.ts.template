@@ -1,4 +1,4 @@
-import { Address, address, toNano } from "@ton/core";
+import { Address, address, Cell, toNano } from "@ton/core";
 import { Blockchain } from "@ton/sandbox";
 import {
     KeyData,
