@@ -3,6 +3,7 @@ import { MapType, keyTypes, valTypes } from "./map-properties-key-value-types";
 import { mkdir, writeFile } from "fs/promises";
 import { readFileSync } from "fs";
 import path from "path";
+import { exit } from "node:process";
 
 const pwd = (fileName: string): string => path.join(__dirname, fileName);
 
@@ -55,10 +56,14 @@ const compileContracts = async () => {
                 key,
                 val,
             );
-            await run({
+            const compilationResult = await run({
                 fileName: tactFilePath,
                 suppressLog: true,
             });
+            if (!compilationResult.ok) {
+                console.error(compilationResult.error);
+                exit(1);
+            }
         }
     }
 };
