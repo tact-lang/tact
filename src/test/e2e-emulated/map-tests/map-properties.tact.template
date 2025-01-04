@@ -14,6 +14,55 @@ struct ValData {
     _2: VAL_TYPE;
 }
 
+
+// struct with over 1023 bits so that it is serialized as multiple cells
+struct SomeStruct {
+    i: Int;
+    b: Bool;
+    a: Address;
+    u1: Int as uint256;
+    u2: Int as uint255;
+}
+
+// value equality: structs/messages cannot be compared using `==`
+
+extends fun eq(self: Int?, other: Int?): Bool {
+    return self == other;
+}
+
+extends fun eq(self: Bool?, other: Bool?): Bool {
+    return self == other;
+}
+
+extends fun eq(self: Address?, other: Address?): Bool {
+    return self == other;
+}
+
+extends fun eq(self: Slice?, other: Slice?): Bool {
+    return self == other;
+}
+
+extends fun eq(self: Cell?, other: Cell?): Bool {
+    return self == other;
+}
+
+extends fun eq(self: SomeStruct?, other: SomeStruct?): Bool {
+    if (self == null && other == null) {
+        return true;
+    }
+    if (self == null || other == null) {
+        return false;
+    }
+    let SomeStruct { i: i_s, b: b_s, a: a_s, u1: u1_s, u2: u2_s } = self!!;
+    let SomeStruct { i: i_o, b: b_o, a: a_o, u1: u1_o, u2: u2_o } = other!!;
+    return
+        i_s == i_o &&
+        b_s == b_o &&
+        a_s == a_o &&
+        u1_s == u1_o &&
+        u2_s == u2_o;
+}
+
 fun singletonMap1(key: KeyData, val: ValData): map<KEY_TYPE, VAL_TYPE> {
     let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
     m.set(key._1, val._1);
@@ -81,7 +130,7 @@ contract MapPropertiesTester {
         let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
         m.set(key._1, val._1);
         return
-            m.get(key._1) == val._1;
+            m.get(key._1).eq(val._1);
     }
 
     // Property: k1 != k2 => m.set(k1, v).get(k2) == m.get(k2)
@@ -91,7 +140,7 @@ contract MapPropertiesTester {
         let m1 = singletonMap2(key, val);
         m1.set(key._1, val._1);
         return
-            m1.get(key._2) == m.get(key._2);
+            m1.get(key._2).eq(m.get(key._2));
     }
 
     // Property: m.set(k, v).set(k, v) == m.set(k, v)
@@ -250,10 +299,11 @@ contract MapPropertiesTester {
 
     // TODO: cover
     // - exists
-    // - replace
-    // - replaceGet
     // - isEmpty
     // - ? deepEquals -- more properties?
     // - asCell
     // - more things for `foreach`?
+    // Available since Tact 1.6
+    // - replace
+    // - replaceGet
 }
