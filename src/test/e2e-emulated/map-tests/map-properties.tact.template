@@ -24,6 +24,11 @@ struct SomeStruct {
     u2: Int as uint255;
 }
 
+message(0x1234) SomeMessage {
+    buyer: Address;
+    nonce: Int as uint32;
+}
+
 // value equality: structs/messages cannot be compared using `==`
 
 extends fun eq(self: Int?, other: Int?): Bool {
@@ -61,6 +66,18 @@ extends fun eq(self: SomeStruct?, other: SomeStruct?): Bool {
         a_s == a_o &&
         u1_s == u1_o &&
         u2_s == u2_o;
+}
+
+extends fun eq(self: SomeMessage?, other: SomeMessage?): Bool {
+    if (self == null && other == null) {
+        return true;
+    }
+    if (self == null || other == null) {
+        return false;
+    }
+    return
+        self!!.buyer == other!!.buyer  &&
+        self!!.nonce == other!!.nonce;
 }
 
 fun singletonMap1(key: KeyData, val: ValData): map<KEY_TYPE, VAL_TYPE> {
