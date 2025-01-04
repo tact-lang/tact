@@ -172,6 +172,8 @@
     "src/test/compilation-fail/fail-const-eval.spec.ts",
     "src/test/e2e-emulated/getter-names-conflict.spec.ts",
     "src/test/exit-codes/contracts/compute-phase-errors.tact",
+    "src/test/e2e-emulated/map-tests/build",
+    "src/test/e2e-emulated/map-tests/map-properties-key-value-types.ts",
     "stdlib/stdlib.fc",
     "/docs"
   ]
