@@ -105,6 +105,11 @@
       "output": "./src/test/e2e-emulated/contracts/output"
     },
     {
+      "name": "non-mutating-methods",
+      "path": "./src/test/e2e-emulated/contracts/non-mutating-methods.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
       "name": "underscore-variable",
       "path": "./src/test/e2e-emulated/contracts/underscore-variable.tact",
       "output": "./src/test/e2e-emulated/contracts/output"
