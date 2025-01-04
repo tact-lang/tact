@@ -62,13 +62,16 @@ const otherValueTypes: MapType[] = [
         val1: 'Cell.fromBase64("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=")',
         val2: 'Cell.fromBase64("te6ccgEBAgEALQABDv8AiNDtHtgBCEICGbgzd5nhZ9WhSM+4juFCvgMYJOtxthFdtTKIH6M/6SM=")',
     },
-    {   type: "SomeStruct",
+    {
+        type: "SomeStruct",
         val1: "{ $$$$type: 'SomeStruct', i: -321n, b: false, a: new Address(0, Buffer.alloc(32, 0)), u1: 10n, u2: 20n }",
         val2: "{ $$$$type: 'SomeStruct', i: -322n, b: true, a: new Address(0, Buffer.alloc(32, 1)), u1: 101n, u2: 202n }",
-    }
-    // TODO
-    // message
-    // { type: "M", val1: "", val2: "" },
+    },
+    {
+        type: "SomeMessage",
+        val1: "{ $$$$type: 'SomeMessage', nonce: 0n, buyer: new Address(0, Buffer.alloc(32, 2)) }",
+        val2: "{ $$$$type: 'SomeMessage', nonce: 56n, buyer: new Address(0, Buffer.alloc(32, 1)) }",
+    },
 ];
 
 export const keyTypes = ints.concat(uints, [address]);
