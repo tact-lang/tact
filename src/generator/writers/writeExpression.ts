@@ -624,8 +624,7 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
                 }
             }
 
-            // Render
-            const s = writeExpression(f.self, wCtx);
+            const s = writeCastedExpression(f.self, methodDescr.self!, wCtx);
             if (methodDescr.isMutating) {
                 // check if it's an l-value
                 const path = tryExtractPath(f.self);
