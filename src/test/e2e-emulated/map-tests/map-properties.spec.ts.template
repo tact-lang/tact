@@ -96,5 +96,8 @@ describe("map properties", () => {
         expect(await contract.getTestDoubletonMapSize(key, val)).toStrictEqual(
             true,
         );
+        expect(await contract.getTestGetNonNullEquivalentExists(key, val)).toStrictEqual(
+            true,
+        );
     });
 });
