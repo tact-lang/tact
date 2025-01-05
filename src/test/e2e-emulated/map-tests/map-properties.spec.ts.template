@@ -105,5 +105,12 @@ describe("map properties", () => {
         expect(await contract.getTestNonEmptyMapsNotIsEmpty(key, val)).toStrictEqual(
             true,
         );
+        
+        expect(await contract.getTestThereDeepEqualMapsThatAreNotEqual(key, val)).toStrictEqual(
+            true,
+        );
+        expect(await contract.getTestEqualsImpliesDeepEquals(key, val)).toStrictEqual(
+            true,
+        );
     });
 });

@@ -106,10 +106,13 @@ fun size(m: map<KEY_TYPE, VAL_TYPE>): Int {
     return res;
 }
 
+asm fun castToMap(c: Cell): map<Int as uint8, Bool> { NOP }
+
 contract MapPropertiesTester {
     const ExitCodeEqualKeys: Int = 1024;
     const ExitCodeKeyMustBeMissing: Int = 1025;
     const ExitCodeKeyMustBePresent: Int = 1026;
+    const ExitCodeUnequalMapHashes: Int = 1027;
 
     receive() { } // deploy
 
@@ -347,8 +350,35 @@ contract MapPropertiesTester {
             !m3.isEmpty();
     }
 
+    // Property: (m1 == m2) => m1.deepEquals(m2)
+    get fun testEqualsImpliesDeepEquals(key: KeyData, val: ValData): Bool {
+        let m1 = doubletonMap(key, val);
+        let m2 = doubletonMap(key, val);
+        nativeThrowUnless(self.ExitCodeUnequalMapHashes, m1 == m2);
+        return
+            m1.deepEquals(m2);
+    }
+
+    // Property: exists m1, m2, m1 != m2 && m1.deepEquals(m2)
+    get fun testThereDeepEqualMapsThatAreNotEqual(_key: KeyData, _val: ValData): Bool {
+        let m1 = castToMap(beginCell()
+                     .storeUint(2, 2) // long label
+                     .storeUint(8, 4) // key length
+                     .storeUint(1, 8) // key
+                     .storeBit(true)  // value
+                     .endCell());
+        let m2 = castToMap(beginCell()
+                     .storeUint(0, 1)           // short label
+                     .storeUint(0b111111110, 9) // key length
+                     .storeUint(1, 8)           // key
+                     .storeBit(true)            // value
+                     .endCell());
+        return
+            m1 != m2 &&
+            m1.deepEquals(m2); 
+    }
+
     // TODO: cover
-    // - ? deepEquals -- more properties?
     // - asCell
     // - more things for `foreach`?
     // Available since Tact 1.6
