@@ -329,8 +329,25 @@ contract MapPropertiesTester {
             !m.exists(key._2);
     }
 
+    // Property: emptyMap().isEmpty()
+    get fun testEmptyMapIsEmpty(key: KeyData, val: ValData): Bool {
+        let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+        return
+            m.isEmpty();
+    }
+
+    // Property: !singletonMap().isEmpty()
+    get fun testNonEmptyMapsNotIsEmpty(key: KeyData, val: ValData): Bool {
+        let m1 = singletonMap1(key, val);
+        let m2 = singletonMap2(key, val);
+        let m3 = doubletonMap(key, val);
+        return
+            !m1.isEmpty() &&
+            !m2.isEmpty() &&
+            !m3.isEmpty();
+    }
+
     // TODO: cover
-    // - isEmpty
     // - ? deepEquals -- more properties?
     // - asCell
     // - more things for `foreach`?
