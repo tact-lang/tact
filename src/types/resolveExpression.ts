@@ -32,7 +32,7 @@ import {
     hasStaticConstant,
     hasStaticFunction,
 } from "./resolveDescriptors";
-import { printTypeRef, TypeRef, typeRefEquals } from "./types";
+import { printTypeRef, showValue, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
@@ -96,42 +96,6 @@ function resolveIntLiteral(
     });
 }
 
-function resolveAddressLiteral(
-    exp: AstAddress,
-    sctx: StatementContext,
-    ctx: CompilerContext,
-): CompilerContext {
-    return registerExpType(ctx, exp, {
-        kind: "ref",
-        name: "Address",
-        optional: false,
-    });
-}
-
-function resolveCellLiteral(
-    exp: AstCell,
-    sctx: StatementContext,
-    ctx: CompilerContext,
-): CompilerContext {
-    return registerExpType(ctx, exp, {
-        kind: "ref",
-        name: "Cell",
-        optional: false,
-    });
-}
-
-function resolveSliceLiteral(
-    exp: AstSlice,
-    sctx: StatementContext,
-    ctx: CompilerContext,
-): CompilerContext {
-    return registerExpType(ctx, exp, {
-        kind: "ref",
-        name: "Slice",
-        optional: false,
-    });
-}
-
 function resolveNullLiteral(
     exp: AstNull,
     sctx: StatementContext,
@@ -141,7 +105,7 @@ function resolveNullLiteral(
 }
 
 function resolveStringLiteral(
-    exp: AstString | AstSimplifiedString | AstCommentValue,
+    exp: AstString,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -153,7 +117,7 @@ function resolveStringLiteral(
 }
 
 function resolveStructNew(
-    exp: AstStructInstance | AstStructValue,
+    exp: AstStructInstance,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -807,24 +771,13 @@ export function resolveExpression(
         case "string": {
             return resolveStringLiteral(exp, sctx, ctx);
         }
-        case "address": {
-            return resolveAddressLiteral(exp, sctx, ctx);
-        }
-        case "cell": {
-            return resolveCellLiteral(exp, sctx, ctx);
-        }
-        case "slice": {
-            return resolveSliceLiteral(exp, sctx, ctx);
-        }
-        case "simplified_string": {
-            return resolveStringLiteral(exp, sctx, ctx); // A simplified string is resolved as a string
-        }
-        case "comment_value": {
-            return resolveStringLiteral(exp, sctx, ctx); // A comment value is resolved as a string
-        }
-        case "struct_value": {
-            return resolveStructNew(exp, sctx, ctx); // A struct value is resolved as a struct instance
-        }
+        case "address": 
+        case "cell": 
+        case "slice": 
+        case "simplified_string": 
+        case "comment_value": 
+        case "struct_value": 
+            throwInternalCompilerError(`Expression kind ${exp.kind} should not happen here`);
         case "struct_instance": {
             return resolveStructNew(exp, sctx, ctx);
         }

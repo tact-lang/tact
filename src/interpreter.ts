@@ -88,6 +88,7 @@ const minRepeatStatement: bigint = -(2n ** 256n); // Note it is the same as mini
 const maxRepeatStatement: bigint = 2n ** 31n - 1n;
 
 // Util factory methods
+// FIXME: pass util as argument
 const util = getAstUtil(getAstFactory());
 
 // Throws a non-fatal const-eval error, in the sense that const-eval as a compiler
@@ -409,7 +410,8 @@ export function evalBinaryOp(
             const valLeft_ = ensureArgumentForEquality(valLeft);
             const valR_ = ensureArgumentForEquality(valR);
 
-            const result = eqExpressions(valLeft_, valR_); // Changed to equality testing (instead of ===) because cells, slices, address are equal by hashing
+            // Changed to equality testing (instead of ===) because cells, slices, address are equal by hashing
+            const result = eqExpressions(valLeft_, valR_); 
             return util.makeBooleanLiteral(result, source);
         }
         case "!=": {
@@ -430,7 +432,8 @@ export function evalBinaryOp(
             const valLeft_ = ensureArgumentForEquality(valLeft);
             const valR_ = ensureArgumentForEquality(valR);
 
-            const result = !eqExpressions(valLeft_, valR_); // Changed to equality testing (instead of ===) because cells, slices are equal by hashing
+            // Changed to equality testing (instead of ===) because cells, slices are equal by hashing
+            const result = !eqExpressions(valLeft_, valR_); 
             return util.makeBooleanLiteral(result, source);
         }
         case "&&": {
@@ -1590,7 +1593,8 @@ export class Interpreter {
             if (name.text === "_") {
                 continue;
             }
-            if (!valAsMap.has(idText(field))) {
+            const v = valAsMap.get(idText(field));
+            if (typeof v === "undefined") {
                 throwErrorConstEval(
                     `destructuring assignment expected field ${idTextErr(
                         field,
@@ -1598,7 +1602,6 @@ export class Interpreter {
                     ast.loc,
                 );
             }
-            const v = valAsMap.get(idText(field))!;
             this.envStack.setNewBinding(idText(name), v);
         }
     }

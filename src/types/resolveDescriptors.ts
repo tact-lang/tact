@@ -294,6 +294,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     const staticFunctions: Map<string, FunctionDescription> = new Map();
     const staticConstants: Map<string, ConstantDescription> = new Map();
     const ast = getRawAST(ctx);
+    const util = getAstUtil(Ast); // FIXME: Pass it where needed
 
     //
     // Register types

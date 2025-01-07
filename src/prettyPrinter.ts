@@ -186,9 +186,9 @@ export const ppAstBoolean = ({ value }: A.AstBoolean) => value.toString();
 export const ppAstId = ({ text }: A.AstId) => text;
 export const ppAstNull = (_expr: A.AstNull) => "null";
 export const ppAstString = ({ value }: A.AstString) => `"${value}"`;
-export const ppAstCommentValue = ({ value }: A.AstCommentValue) => `"${value}"`;
+export const ppAstCommentValue = ({ value }: A.AstCommentValue) => JSON.stringify(value);
 export const ppAstSimplifiedString = ({ value }: A.AstSimplifiedString) =>
-    `"${value}"`;
+    JSON.stringify(value);
 export const ppAstAddress = ({ value }: A.AstAddress) =>
     `addr("${value.toRawString()}")`;
 export const ppAstCell = ({ value }: A.AstCell) =>
