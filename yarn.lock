@@ -1325,10 +1325,10 @@
   resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.0.14.tgz"
   integrity sha512-8FKHK2jwvViRBReO2t40DCkHAP9KPTRWZof4kdsAUJFlyeWIC8SsRQSl9QkZxF+48WvjDduKNqN5Ltb80paufA==
 
-"@tact-lang/opcode@^0.0.16":
-  version "0.0.16"
-  resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.0.16.tgz"
-  integrity sha512-YJTUjoDOy+e+FHHppJiF+uWJ2IMjVknB9VQ5n78pknCE129DazCb/nFXnw0wVRDVcn8Tn59ky+pmjiQjQOjEbw==
+"@tact-lang/opcode@^0.0.18":
+  version "0.0.18"
+  resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.0.18.tgz#5081ca87f133cab5cd1ea0c1b1c6be9803d9d707"
+  integrity sha512-o/dvtvN6Zo3g5IMjDuzn3631uPihC8G6aaMzRfv4AYCtn36OdaMqbdqZYEfwF7fSzctONn6IkaNfY5rj10ir6Q==
 
 "@tact-lang/ton-abi@^0.0.3":
   version "0.0.3"
