@@ -44,80 +44,31 @@ describe("map properties", () => {
         });
 
         expect(await contract.getTestEmptyMapGet(key, val)).toStrictEqual(true);
-        expect(await contract.getTestGetDoesNotModify(key, val)).toStrictEqual(
-            true,
-        );
+        expect(await contract.getTestGetDoesNotModify(key, val)).toStrictEqual(true);
         expect(await contract.getTestSetModifies(key, val)).toStrictEqual(true);
-        expect(await contract.getTestSetGetSameKey(key, val)).toStrictEqual(
-            true,
-        );
-        expect(await contract.getTestSetGetNotSameKey(key, val)).toStrictEqual(
-            true,
-        );
-        expect(
-            await contract.getTestSetIdempotent(key, val),
-        ).toStrictEqual(true);
-        expect(
-            await contract.getTestSetSetOfNotSameCommutes(key, val),
-        ).toStrictEqual(true);
-        expect(
-            await contract.getTestDelGetSameKeyPresent(key, val),
-        ).toStrictEqual(true);
-        expect(
-            await contract.getTestDelGetSameKeyMissing(key, val),
-        ).toStrictEqual(true);
-        expect(
-            await contract.getTestDelOfPresentModifies(key, val),
-        ).toStrictEqual(true);
-        expect(
-            await contract.getTestDelOfMissingDoesNotModify(key, val),
-        ).toStrictEqual(true);
-        expect(
-            await contract.getTestDelDelOfSameDoesNotModify(key, val),
-        ).toStrictEqual(true);
-        expect(
-            await contract.getTestSetDelOfMissingDoesNotModify(key, val),
-        ).toStrictEqual(true);
-        expect(
-            await contract.getTestDelSetOfSamePresent(key, val),
-        ).toStrictEqual(true);
-        expect(
-            await contract.getTestDelSetOfSameMissing(key, val),
-        ).toStrictEqual(true);
-        expect(
-            await contract.getTestDelSetOfNotSameCommutes(key, val),
-        ).toStrictEqual(true);
-        expect(await contract.getTestEmptyMapSize(key, val)).toStrictEqual(
-            true,
-        );
-        expect(await contract.getTestSingletonMapSize(key, val)).toStrictEqual(
-            true,
-        );
-        expect(await contract.getTestDoubletonMapSize(key, val)).toStrictEqual(
-            true,
-        );
-        expect(await contract.getTestGetNonNullEquivalentExists(key, val)).toStrictEqual(
-            true,
-        );
-        expect(await contract.getTestEmptyMapIsEmpty(key, val)).toStrictEqual(
-            true,
-        );
-        expect(await contract.getTestNonEmptyMapsNotIsEmpty(key, val)).toStrictEqual(
-            true,
-        );
-        
-        expect(await contract.getTestThereDeepEqualMapsThatAreNotEqual(key, val)).toStrictEqual(
-            true,
-        );
-        expect(await contract.getTestEqualsImpliesDeepEquals(key, val)).toStrictEqual(
-            true,
-        );
-        expect(await contract.getTestAsCellEquals(key, val)).toStrictEqual(
-            true,
-        );
-        expect(await contract.getTestAsCellDoesNothing(key, val)).toStrictEqual(
-            true,
-        );
+        expect(await contract.getTestSetGetSameKey(key, val)).toStrictEqual(true);
+        expect(await contract.getTestSetGetNotSameKey(key, val)).toStrictEqual(true);
+        expect(await contract.getTestSetIdempotent(key, val)).toStrictEqual(true);
+        expect(await contract.getTestSetSetOfNotSameCommutes(key, val)).toStrictEqual(true);
+        expect(await contract.getTestDelGetSameKeyPresent(key, val)).toStrictEqual(true);
+        expect(await contract.getTestDelGetSameKeyMissing(key, val)).toStrictEqual(true);
+        expect(await contract.getTestDelOfPresentModifies(key, val)).toStrictEqual(true);
+        expect(await contract.getTestDelOfMissingDoesNotModify(key, val)).toStrictEqual(true);
+        expect(await contract.getTestDelDelOfSameDoesNotModify(key, val)).toStrictEqual(true);
+        expect(await contract.getTestSetDelOfMissingDoesNotModify(key, val)).toStrictEqual(true);
+        expect(await contract.getTestDelSetOfSamePresent(key, val)).toStrictEqual(true);
+        expect(await contract.getTestDelSetOfSameMissing(key, val)).toStrictEqual(true);
+        expect(await contract.getTestDelSetOfNotSameCommutes(key, val)).toStrictEqual(true);
+        expect(await contract.getTestEmptyMapSize(key, val)).toStrictEqual(true);
+        expect(await contract.getTestSingletonMapSize(key, val)).toStrictEqual(true);
+        expect(await contract.getTestDoubletonMapSize(key, val)).toStrictEqual(true);
+        expect(await contract.getTestGetNonNullEquivalentExists(key, val)).toStrictEqual(true);
+        expect(await contract.getTestEmptyMapIsEmpty(key, val)).toStrictEqual(true);
+        expect(await contract.getTestNonEmptyMapsNotIsEmpty(key, val)).toStrictEqual(true);
+        expect(await contract.getTestThereDeepEqualMapsThatAreNotEqual(key, val)).toStrictEqual(true);
+        expect(await contract.getTestEqualsImpliesDeepEquals(key, val)).toStrictEqual(true);
+        expect(await contract.getTestAsCellEquals(key, val)).toStrictEqual(true);
+        expect(await contract.getTestAsCellDoesNothing(key, val)).toStrictEqual(true);
         expect(await contract.getTestReplaceEmptyMap(key, val)).toStrictEqual(true);
         expect(await contract.getTestReplaceDoesNotModifyIfKeyIsMissing(key, val)).toStrictEqual(true);
         expect(await contract.getTestReplaceWorksAsSetIfKeyIsPresent(key, val)).toStrictEqual(true);
