@@ -112,5 +112,11 @@ describe("map properties", () => {
         expect(await contract.getTestEqualsImpliesDeepEquals(key, val)).toStrictEqual(
             true,
         );
+        expect(await contract.getTestAsCellEquals(key, val)).toStrictEqual(
+            true,
+        );
+        expect(await contract.getTestAsCellDoesNothing(key, val)).toStrictEqual(
+            true,
+        );
     });
 });
