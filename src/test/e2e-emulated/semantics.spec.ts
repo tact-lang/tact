@@ -118,9 +118,12 @@ describe("semantics", () => {
         expect(await contract.getTestAddressEquality()).toEqual(true);
 
         // Testing equality on slices
-        expect(await contract.getTestSliceEquality()).toEqual(true);
+        expect(await contract.getTestSliceEquality1()).toEqual(true);
+        expect(await contract.getTestSliceEquality2()).toEqual(true);
 
         // Testing equality on cells
-        expect(await contract.getTestCellEquality()).toEqual(true);
+        expect(await contract.getTestCellEquality1()).toEqual(true);
+        expect(await contract.getTestCellEquality2()).toEqual(true);
+        expect(await contract.getTestCellEquality3()).toEqual(true);
     });
 });
