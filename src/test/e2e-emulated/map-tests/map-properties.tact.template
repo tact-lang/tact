@@ -484,7 +484,27 @@ contract MapPropertiesTester {
             m1.deepEquals(m2);
     }
 
-    // TODO: cover
-    // Available since Tact 1.6
-    // - replaceGet
+    // Property: emptyMap().replaceGet(k) == null
+    get fun testEmptyMapReplaceGet(key: KeyData, val: ValData): Bool {
+        let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+        return
+            m.replaceGet(key._1, val._1).eq(null) &&
+            m.replaceGet(key._2, val._2).eq(null);
+    }
+
+    // Property: m.del(k).replaceGet(k) == null
+    get fun testDelReplaceGet(key: KeyData, val: ValData): Bool {
+        let m = doubletonMap(key, val);
+        m.del(key._1);
+        return
+            m.replaceGet(key._1, val._1).eq(null);
+    }
+
+    // Property: m.set(k, v1).replaceGet(k, v2) == v1
+    get fun testSetReplaceGet(key: KeyData, val: ValData): Bool {
+        let m = singletonMap2(key, val);
+        m.set(key._1, val._1);
+        return
+            m.replaceGet(key._1, val._2).eq(val._1);
+    }
 }

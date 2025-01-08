@@ -76,5 +76,8 @@ describe("map properties", () => {
         expect(await contract.getTestReplaceGetNotSameKey(key, val)).toStrictEqual(true);
         expect(await contract.getTestReplaceIdempotent(key, val)).toStrictEqual(true);
         expect(await contract.getTestReplaceReplaceOfNotSameCommutes(key, val)).toStrictEqual(true);
+        expect(await contract.getTestEmptyMapReplaceGet(key, val)).toStrictEqual(true);
+        expect(await contract.getTestSetReplaceGet(key, val)).toStrictEqual(true);
+        expect(await contract.getTestDelReplaceGet(key, val)).toStrictEqual(true);
     });
 });
