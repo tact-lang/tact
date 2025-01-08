@@ -1325,10 +1325,10 @@
   resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.0.14.tgz"
   integrity sha512-8FKHK2jwvViRBReO2t40DCkHAP9KPTRWZof4kdsAUJFlyeWIC8SsRQSl9QkZxF+48WvjDduKNqN5Ltb80paufA==
 
-"@tact-lang/opcode@^0.0.16":
-  version "0.0.16"
-  resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.0.16.tgz"
-  integrity sha512-YJTUjoDOy+e+FHHppJiF+uWJ2IMjVknB9VQ5n78pknCE129DazCb/nFXnw0wVRDVcn8Tn59ky+pmjiQjQOjEbw==
+"@tact-lang/opcode@^0.0.18":
+  version "0.0.18"
+  resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.0.18.tgz#5081ca87f133cab5cd1ea0c1b1c6be9803d9d707"
+  integrity sha512-o/dvtvN6Zo3g5IMjDuzn3631uPihC8G6aaMzRfv4AYCtn36OdaMqbdqZYEfwF7fSzctONn6IkaNfY5rj10ir6Q==
 
 "@tact-lang/ton-abi@^0.0.3":
   version "0.0.3"
@@ -1505,9 +1505,9 @@
   integrity sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==
 
 "@types/node@*", "@types/node@>=13.7.0", "@types/node@^22.5.0":
-  version "22.10.2"
-  resolved "https://registry.npmjs.org/@types/node/-/node-22.10.2.tgz#a485426e6d1fdafc7b0d4c7b24e2c78182ddabb9"
-  integrity sha512-Xxr6BBRCAOQixvonOye19wnzyDiUtTeqldOOmj3CkeblonbccA12PFwlufvRdrpjXxqnmUaeiU5EOA+7s5diUQ==
+  version "22.10.5"
+  resolved "https://registry.npmjs.org/@types/node/-/node-22.10.5.tgz#95af89a3fb74a2bb41ef9927f206e6472026e48b"
+  integrity sha512-F8Q+SeGimwOo86fiovQh8qiXfFEh2/ocYv7tU5pJ3EXMSSxk1Joj5wefpFK2fHTf/N6HKGSxIDBT9f3gCxXPkQ==
   dependencies:
     undici-types "~6.20.0"
 
