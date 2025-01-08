@@ -169,7 +169,7 @@ contract MapPropertiesTester {
     }
 
     // Property: m.set(k, v).set(k, v) == m.set(k, v)
-    get fun testSetSetOfSameDoesNotModify(key: KeyData, val: ValData): Bool {
+    get fun testSetIdempotent(key: KeyData, val: ValData): Bool {
         let m1 = singletonMap2(key, val);
         m1.set(key._1, val._1);
         let m = m1;
@@ -407,8 +407,84 @@ contract MapPropertiesTester {
             m3.asCell().asMap().deepEquals(m3);
     }
 
+    // Property: emptyMap().replace(k, v) == emptyMap()
+    get fun testReplaceEmptyMap(key: KeyData, val: ValData): Bool {
+        let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+        let replaced: Bool = m.replace(key._1, val._1);
+        return
+            m == emptyMap() &&
+            !replaced;
+    }
+
+    // Property: (m.get(k) == null && !m.exists(k)) => m.replace(k, v) == m
+    get fun testReplaceDoesNotModifyIfKeyIsMissing(key: KeyData, val: ValData): Bool {
+        let m = singletonMap2(key, val);
+        nativeThrowUnless(self.ExitCodeKeyMustBeMissing, m.get(key._1) == null && !m.exists(key._1));
+        let m1 = singletonMap2(key, val);
+        m1.replace(key._1, val._1);
+        return
+            m1 == m &&
+            m1.deepEquals(m);
+    }
+
+    // Property: (m.get(k) != null && m.exists(k)) => m.replace(k, v) == m.set(k, v)
+    get fun testReplaceWorksAsSetIfKeyIsPresent(key: KeyData, val: ValData): Bool {
+        let m = singletonMap1(key, val);
+        nativeThrowUnless(self.ExitCodeKeyMustBePresent, m.get(key._1) != null && m.exists(key._1));
+        let m1 = singletonMap1(key, val);
+        m.replace(key._1, val._1);
+        m1.set(key._1, val._1);
+        return
+            m1 == m &&
+            m1.deepEquals(m);
+    }
+
+    // Property: (m.get(k) != null && m.exists(k)) => m.replace(k, v).get(k) == v
+    get fun testReplaceGetSameKeyIfPresent(key: KeyData, val: ValData): Bool {
+        let m = singletonMap1(key, val);
+        nativeThrowUnless(self.ExitCodeKeyMustBePresent, m.get(key._1) != null && m.exists(key._1));
+        m.replace(key._1, val._2);
+        return
+            m.get(key._1).eq(val._2);
+    }
+
+    // Property: k1 != k2 => m.replace(k1, v).get(k2) == m.get(k2)
+    get fun testReplaceGetNotSameKey(key: KeyData, val: ValData): Bool {
+        nativeThrowUnless(self.ExitCodeEqualKeys, key._1 != key._2);
+        let m = singletonMap2(key, val);
+        let m1 = singletonMap2(key, val);
+        m1.replace(key._1, val._1);
+        return
+            m1.get(key._2).eq(m.get(key._2));
+    }
+
+    // Property: m.replace(k, v).replace(k, v) == m.replace(k, v)
+    get fun testReplaceIdempotent(key: KeyData, val: ValData): Bool {
+        let m1 = singletonMap2(key, val);
+        m1.replace(key._1, val._1);
+        let m = m1;
+        m1.replace(key._1, val._1);
+        return
+            m1 == m &&
+            m1.deepEquals(m);
+    }
+
+    // Property: k1 != k2 => m.replace(k1, v1).replace(k2, v2) == m.replace(k2, v2).replace(k1, v1)
+    get fun testReplaceReplaceOfNotSameCommutes(key: KeyData, val: ValData): Bool {
+        nativeThrowUnless(self.ExitCodeEqualKeys, key._1 != key._2);
+        let m1: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+        let m2: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+        m1.replace(key._1, val._1);
+        m1.replace(key._2, val._2);
+
+        m2.replace(key._2, val._2);
+        m2.replace(key._1, val._1);
+        return
+            m1 == m2 &&
+            m1.deepEquals(m2);
+    }
+
     // TODO: cover
     // Available since Tact 1.6
-    // - replace
     // - replaceGet
 }
