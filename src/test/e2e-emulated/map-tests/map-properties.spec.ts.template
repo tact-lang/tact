@@ -55,7 +55,7 @@ describe("map properties", () => {
             true,
         );
         expect(
-            await contract.getTestSetSetOfSameDoesNotModify(key, val),
+            await contract.getTestSetIdempotent(key, val),
         ).toStrictEqual(true);
         expect(
             await contract.getTestSetSetOfNotSameCommutes(key, val),
@@ -118,5 +118,12 @@ describe("map properties", () => {
         expect(await contract.getTestAsCellDoesNothing(key, val)).toStrictEqual(
             true,
         );
+        expect(await contract.getTestReplaceEmptyMap(key, val)).toStrictEqual(true);
+        expect(await contract.getTestReplaceDoesNotModifyIfKeyIsMissing(key, val)).toStrictEqual(true);
+        expect(await contract.getTestReplaceWorksAsSetIfKeyIsPresent(key, val)).toStrictEqual(true);
+        expect(await contract.getTestReplaceGetSameKeyIfPresent(key, val)).toStrictEqual(true);
+        expect(await contract.getTestReplaceGetNotSameKey(key, val)).toStrictEqual(true);
+        expect(await contract.getTestReplaceIdempotent(key, val)).toStrictEqual(true);
+        expect(await contract.getTestReplaceReplaceOfNotSameCommutes(key, val)).toStrictEqual(true);
     });
 });
