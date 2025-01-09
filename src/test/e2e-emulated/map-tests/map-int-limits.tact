@@ -1,11 +1,32 @@
-struct KeyData {
-    min: Int as KEY_SIZE;
-    max: Int as KEY_SIZE;
-}
+struct Map {
+    // various key lengths
+    _1: map<Int as uint1, Bool>;
+    _2: map<Int as uint8, Bool>;
+    _3: map<Int as uint32, Bool>;
+    _4: map<Int as uint142, Bool>;
+    _5: map<Int as uint256, Bool>;
+    _6: map<Int as int2, Bool>;
+    _7: map<Int as int10, Bool>;
+    _8: map<Int as int37, Bool>;
+    _9: map<Int as int256, Bool>;
+    _10: map<Int as int257, Bool>;
 
-struct ValData {
-    min: Int as VAL_SIZE;
-    max: Int as VAL_SIZE;
+    // various value formats
+    _11: map<Int as uint4, Int as uint1>;
+    _12: map<Int as uint4, Int as uint8>;
+    _13: map<Int as uint4, Int as uint32>;
+    _14: map<Int as uint4, Int as uint142>;
+    _15: map<Int as uint4, Int as uint256>;
+    _16: map<Int as uint4, Int as int2>;
+    _17: map<Int as uint4, Int as int10>;
+    _18: map<Int as uint4, Int as int37>;
+    _19: map<Int as uint4, Int as int256>;
+    _21: map<Int as uint4, Int as int257>;
+    _22: map<Int as uint4, Int as coins>;
+    _23: map<Int as uint4, Int as varuint16>;
+    _24: map<Int as uint4, Int as varuint32>;
+    _25: map<Int as uint4, Int as varint16>;
+    _26: map<Int as uint4, Int as varint32>;
 }
 
  // -pow(2, 256)
@@ -13,32 +34,12 @@ const MIN_INT257: Int = -1157920892373161954235709850086879078532699846656405640
 // pow(2, 256) - 1
 const MAX_INT257: Int = 115792089237316195423570985008687907853269984665640564039457584007913129639935;
 
-fun singletonMap1(key: KeyData, val: ValData): map<Int as KEY_SIZE, Int as VAL_SIZE> {
-    let m: map<Int as KEY_SIZE, Int as VAL_SIZE> = emptyMap();
-    m.set(key.min, val.min);
-    return m;
-}
-
-fun singletonMap2(key: KeyData, val: ValData): map<Int as KEY_SIZE, Int as VAL_SIZE> {
-    let m: map<Int as KEY_SIZE, Int as VAL_SIZE> = emptyMap();
-    m.set(key.max, val.max);
-    return m;
-}
-
-// assumption: key.min != key.max
-fun doubletonMap(key: KeyData, val: ValData): map<Int as KEY_SIZE, Int as VAL_SIZE> {
-    let m: map<Int as KEY_SIZE, Int as VAL_SIZE> = emptyMap();
-    m.set(key.min, val.min);
-    m.set(key.max, val.max);
-    return m;
-}
-
 contract MapIntLimitTester {
     const ExitCodeTooLargeNum: Int = 1024;
     const ExitCodeTooSmallNum: Int = 1025;
 
-    // Property: m.set(key.min, val.min).set(key.max, val.max) does not throw
-    get fun testSetKeyAndValMinAndMax(key: KeyData, val: ValData): Bool {
+    // Property: m.set(key.min, v).set(key.max, v) does not throw
+    get fun testSetKeyMinAndMaxDoesNotThrow(key: KeyData, val: ValData): Bool {
         let m = doubletonMap(key, val);
         return
             true;
