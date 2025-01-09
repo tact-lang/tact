@@ -144,3 +144,5 @@ export async function run(args: {
 export { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 
 export { parseAndEvalExpression } from "./interpreter";
+
+export { showValue } from "./types/types"; 
