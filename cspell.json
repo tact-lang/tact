@@ -160,6 +160,8 @@
     "src/050-grammar/next/grammar.gg",
     "src/050-grammar/next/grammar.ts",
     "src/080-generator/writers/writeStdlib.ts",
+    "src/090-func/funcfiftlib.js",
+    "src/090-func/funcCompile.ts",
     "test/e2e-emulated/address.spec.ts",
     "test/e2e-emulated/intrinsics.spec.ts",
     "test/e2e-emulated/optionals.spec.ts",
