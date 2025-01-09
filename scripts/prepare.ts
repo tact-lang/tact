@@ -1,7 +1,7 @@
 import fs from "fs";
 import { decompileAll } from "@tact-lang/opcode";
 import { run } from "../src/node";
-import { FuncCompilationResult, funcCompile } from "../src/func/funcCompile";
+import { FuncCompilationResult, funcCompile } from "../src/090-func/funcCompile";
 import path from "path";
 import { glob } from "glob";
 import { verify } from "../src/verify";

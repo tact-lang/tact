@@ -4,7 +4,7 @@ import { writeTypescript } from "../bindings/writeTypescript";
 import { featureEnable } from "../000-config/features";
 import { ConfigProject } from "../000-config/parseConfig";
 import { CompilerContext } from "./context";
-import { funcCompile } from "../func/funcCompile";
+import { funcCompile } from "../090-func/funcCompile";
 import { writeReport } from "../080-generator/writeReport";
 import { getRawAST } from "../050-grammar/store";
 import files from "../040-imports/stdlib";

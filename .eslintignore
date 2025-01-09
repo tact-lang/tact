@@ -3,7 +3,7 @@ dist/
 coverage/
 **/output/
 src/test/**/output/
-src/func/funcfiftlib.js
+**/*.js
 **/grammar.ohm*.ts
 **/grammar.ohm*.js
 src/grammar/next/grammar.ts

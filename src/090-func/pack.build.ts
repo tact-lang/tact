@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import glob from "glob";
-import { posixNormalize } from "../src/utils/filePath";
+import { posixNormalize } from "../utils/filePath";
 
 // Pack func
 const wasmBase64 = fs

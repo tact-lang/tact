@@ -1,6 +1,5 @@
 /dist
-/src/func/funcfiftlib.js
-/src/func/funcfiftlib.wasm.js
+**/*.js
 /src/050-grammar/prev/grammar.ohm-bundle.d.ts
 /src/050-grammar/prev/grammar.ohm-bundle.js
 src/050-grammar/next/grammar.ts

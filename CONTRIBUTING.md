@@ -30,9 +30,9 @@ The rest of the build and development dependencies are specified, as usual, in t
 
 Tact's pipeline uses a patched version of the FunC compiler vendored as a WASM binary with some JS wrappers, see the following files:
 
-- [src/func/funcfiftlib.js](./src/func/funcfiftlib.js)
-- [src/func/funcfiftlib.wasm](./src/func/funcfiftlib.wasm)
-- [src/func/funcfiftlib.wasm.js](./src/func/funcfiftlib.wasm.js)
+- [src/func/funcfiftlib.js](src/090-func/funcfiftlib.js)
+- [src/func/funcfiftlib.wasm](src/090-func/funcfiftlib.wasm)
+- [src/func/funcfiftlib.wasm.js](src/090-func/funcfiftlib.wasm.js)
 
 The message of the commit [`f777da3213e3b064a7f407b2569cfd546cca277e`](https://github.com/tact-lang/tact/commit/f777da3213e3b064a7f407b2569cfd546cca277e) explains how the patched version was obtained. We had to patch the FunC compiler because the corresponding [FunC compiler issue](https://github.com/ton-blockchain/ton/issues/971) is unresolved at the time of writing.
 

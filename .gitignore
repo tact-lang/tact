@@ -8,5 +8,4 @@ dist
 output/
 **/grammar.ohm-bundle.js
 **/grammar.ohm-bundle.d.ts
-src/func/funcfiftlib.wasm.js
 src/test/contracts/pretty-printer-output
