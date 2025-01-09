@@ -9,7 +9,7 @@ import {
     writeExpression,
     writeValue,
 } from "../generator/writers/writeExpression";
-import { TactConstEvalError, throwCompilationError } from "../errors";
+import { TactConstEvalError, throwCompilationError } from "../error/errors";
 import { evalConstantExpression } from "../interpreter/constEval";
 import { getErrorId } from "../types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";

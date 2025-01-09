@@ -16,7 +16,7 @@ import {
     throwCompilationError,
     throwConstEvalError,
     throwInternalCompilerError,
-} from "../errors";
+} from "../error/errors";
 import {
     getAllStaticFunctions,
     getStaticConstant,

@@ -3,7 +3,7 @@ import { CompilerContext, createContextStore } from "../context";
 import { AstNode, isRequire } from "../grammar/ast";
 import { traverse } from "../grammar/iterators";
 import { evalConstantExpression } from "../interpreter/constEval";
-import { throwInternalCompilerError } from "../errors";
+import { throwInternalCompilerError } from "../error/errors";
 import {
     getAllStaticFunctions,
     getAllTypes,
