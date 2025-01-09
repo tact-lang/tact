@@ -1,11 +1,11 @@
 import fs from "fs";
-import { getParser } from "../050-grammar";
+import { getParser } from "../src/050-grammar";
 import { join } from "path";
-import { AstComparator } from "../050-grammar/compare";
+import { AstComparator } from "../src/050-grammar/compare";
 import { CONTRACTS_DIR } from "./util";
 import * as assert from "assert";
-import { getAstFactory } from "../050-grammar/ast";
-import { defaultParser } from "../050-grammar/grammar";
+import { getAstFactory } from "../src/050-grammar/ast";
+import { defaultParser } from "../src/050-grammar/grammar";
 
 describe("comparator", () => {
     it.each(fs.readdirSync(CONTRACTS_DIR, { withFileTypes: true }))(

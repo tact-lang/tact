@@ -2,11 +2,11 @@ node_modules/
 dist/
 coverage/
 **/output/
-src/test/**/output/
+test/**/output/
 **/*.js
 **/grammar.ohm*.ts
 **/grammar.ohm*.js
-src/grammar/next/grammar.ts
+src/050-grammar/next/grammar.ts
 jest.setup.js
 jest.teardown.js
 /docs

@@ -2,7 +2,7 @@ import fs from "fs";
 import { prettyPrint } from "./index";
 import { getParser } from "../050-grammar";
 import { join } from "path";
-import { trimTrailingCR, CONTRACTS_DIR } from "../test/util";
+import { trimTrailingCR, CONTRACTS_DIR } from "../../test/util";
 import * as assert from "assert";
 import JSONBig from "json-bigint";
 import { getAstFactory } from "../050-grammar/ast";

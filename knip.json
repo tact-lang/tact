@@ -9,9 +9,9 @@
   ],
   "project": ["src/**/*.ts", "bin/tact.js", "bin/unboc.js"],
   "ignore": [
+    "src/prettyPrinter/index.ts",
+    "src/030-error/display-to-json.ts",
     "src/050-grammar/ast.ts",
-    "src/prettyPrinter.ts",
-    "src/error/display-to-json.ts",
     "src/050-grammar/src-info.ts",
     "src/050-grammar/next/grammar.ts",
     ".github/workflows/tact*.yml"

@@ -1,0 +1,372 @@
+{
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json",
+  "projects": [
+    {
+      "name": "benchmark_functions",
+      "path": "./benchmarks/contracts/functions.tact",
+      "output": "./benchmarks/contracts/output"
+    },
+    {
+      "name": "benchmark_functions_inline",
+      "path": "./benchmarks/contracts/functions.tact",
+      "output": "./benchmarks/contracts/output",
+      "options": {
+        "experimental": {
+          "inline": true
+        }
+      }
+    },
+    {
+      "name": "codegen",
+      "path": "./codegen/all-contracts.tact",
+      "output": "./codegen/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "repeat-range",
+      "path": "./exit-codes/contracts/repeat-range.tact",
+      "output": "./exit-codes/contracts/output"
+    },
+    {
+      "name": "tact-reserved-contract-errors",
+      "path": "./exit-codes/contracts/tact-reserved-contract-errors.tact",
+      "output": "./exit-codes/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "compute-phase-errors",
+      "path": "./exit-codes/contracts/compute-phase-errors.tact",
+      "output": "./exit-codes/contracts/output"
+    },
+
+
+
+    
+    {
+      "name": "maps1",
+      "path": "./e2e-emulated/contracts/maps1.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "maps2",
+      "path": "./e2e-emulated/contracts/maps2.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "map-traverse",
+      "path": "./e2e-emulated/contracts/map-traverse.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "map-comparison",
+      "path": "./e2e-emulated/contracts/map-comparison.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "mutating-methods",
+      "path": "./e2e-emulated/contracts/mutating-methods.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "non-mutating-methods",
+      "path": "./e2e-emulated/contracts/non-mutating-methods.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "underscore-variable",
+      "path": "./e2e-emulated/contracts/underscore-variable.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "optionals",
+      "path": "./e2e-emulated/contracts/optionals.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "sample-jetton",
+      "path": "./e2e-emulated/contracts/sample-jetton.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "serialization",
+      "path": "./e2e-emulated/contracts/serialization.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "serialization-2",
+      "path": "./e2e-emulated/contracts/serialization-2.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "serialization-3",
+      "path": "./e2e-emulated/contracts/serialization-3.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "strings",
+      "path": "./e2e-emulated/contracts/strings.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "constants",
+      "path": "./e2e-emulated/contracts/constants.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "math",
+      "path": "./e2e-emulated/contracts/math.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "dns",
+      "path": "./e2e-emulated/contracts/dns.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "integer-literals",
+      "path": "./e2e-emulated/contracts/integer-literals.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "random",
+      "path": "./e2e-emulated/contracts/random.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "ordering",
+      "path": "./e2e-emulated/contracts/ordering.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "deep",
+      "path": "./e2e-emulated/contracts/deep-sequence.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "bounced-routing",
+      "path": "./e2e-emulated/contracts/bounced-routing.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "external-fallbacks",
+      "path": "./e2e-emulated/contracts/external-fallbacks.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "external": true
+      }
+    },
+    {
+      "name": "debug",
+      "path": "./e2e-emulated/contracts/debug.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "send",
+      "path": "./e2e-emulated/contracts/send.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "intrinsics",
+      "path": "./e2e-emulated/contracts/intrinsics.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "masterchain",
+      "path": "./e2e-emulated/contracts/masterchain.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "try-catch",
+      "path": "./e2e-emulated/contracts/try-catch.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "address",
+      "path": "./e2e-emulated/contracts/address.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "ternary",
+      "path": "./e2e-emulated/contracts/ternary.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "implicit-init",
+      "path": "./e2e-emulated/contracts/implicit-init.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "recursion",
+      "path": "./e2e-emulated/contracts/recursion.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "local-type-inference",
+      "path": "./e2e-emulated/contracts/local-type-inference.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "stdlib",
+      "path": "./e2e-emulated/contracts/stdlib.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "structs",
+      "path": "./e2e-emulated/contracts/structs.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "initof",
+      "path": "./e2e-emulated/contracts/initof.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "initof-2",
+      "path": "./e2e-emulated/contracts/initof-2.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "initof-3",
+      "path": "./e2e-emulated/contracts/initof-3.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    },
+    {
+      "name": "getters",
+      "path": "./e2e-emulated/contracts/getters.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "allocation",
+      "path": "./e2e-emulated/contracts/allocation.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "traits",
+      "path": "./e2e-emulated/contracts/traits.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "receiver-empty",
+      "path": "./e2e-emulated/contracts/receiver-empty.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "init-of-message",
+      "path": "./e2e-emulated/contracts/init-of-message.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "init-return",
+      "path": "./e2e-emulated/contracts/init-return.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "semantics",
+      "path": "./e2e-emulated/contracts/semantics.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "contract-methods",
+      "path": "./e2e-emulated/contracts/contract-methods.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "asm-functions",
+      "path": "./e2e-emulated/contracts/asm-functions.tact",
+      "output": "./e2e-emulated/contracts/output"
+    },
+    {
+      "name": "text-message-receivers",
+      "path": "./e2e-emulated/contracts/text-message-receivers.tact",
+      "output": "./e2e-emulated/contracts/output",
+      "options": {
+        "debug": true
+      }
+    }
+  ]
+}

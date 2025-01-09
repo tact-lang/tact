@@ -25,7 +25,11 @@ import {
     throwCompilationError,
     throwInternalCompilerError,
 } from "../030-error/errors";
-import { CompilerContext, Store, createContextStore } from "../010-pipeline/context";
+import {
+    CompilerContext,
+    Store,
+    createContextStore,
+} from "../010-pipeline/context";
 import {
     ConstantDescription,
     FieldDescription,

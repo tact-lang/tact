@@ -9,9 +9,10 @@ import path from "path";
 import { getParser } from "../050-grammar";
 import { getAstFactory } from "../050-grammar/ast";
 import { defaultParser } from "../050-grammar/grammar";
+import { stdlibPath } from "../040-imports/path";
 
-const stdlibPath = path.resolve(__dirname, "../../stdlib/std/primitives.tact");
-const stdlib = fs.readFileSync(stdlibPath, "utf-8");
+const primitivesPath = path.resolve(stdlibPath, "std/primitives.tact");
+const stdlib = fs.readFileSync(primitivesPath, "utf-8");
 const src = `
 
 trait BaseTrait {
@@ -68,7 +69,7 @@ describe("resolveAllocation", () => {
         let ctx = openContext(
             new CompilerContext(),
             [
-                { code: stdlib, path: stdlibPath, origin: "stdlib" },
+                { code: stdlib, path: primitivesPath, origin: "stdlib" },
                 { code: src, path: "<unknown>", origin: "user" },
             ],
             [],

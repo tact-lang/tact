@@ -139,7 +139,7 @@ Until we have the Tact type system specified, the only source of information abo
 - [src/types/test-failed](src/060-types/test-failed): negative well-formedness tests at the level of data types, contracts, traits and function signatures;
 - [src/types/stmts](src/060-types/stmts): positive type-checking tests at the level of function bodies;
 - [src/types/stmts-failed](src/060-types/stmts-failed): negative type-checking tests at the level of function bodies;
-- [src/test/compilation-failed](./src/test/compilation-failed): negative type-checking tests that require full environment, for instance, the standard library (the other tests in `src/types` don't have access to the full environment).
+- [src/test/compilation-failed](test/compilation-failed): negative type-checking tests that require full environment, for instance, the standard library (the other tests in `src/types` don't have access to the full environment).
 
 ### Constant evaluator
 
@@ -149,9 +149,9 @@ The constant evaluator supports a large subset of Tact and handles, for instance
 
 The main logic of the constant evaluator can be found in the file [src/interpreter.ts](src/070-optimizer/interpreter.ts).
 
-You can find the relevant tests in [src/test/e2e-emulated/contracts/constants.tact](./src/test/e2e-emulated/contracts/constants.tact) and the corresponding spec-file: [](./src/test/e2e-emulated/constants.spec.ts).
+You can find the relevant tests in [src/test/e2e-emulated/contracts/constants.tact](test/e2e-emulated/contracts/constants.tact) and the corresponding spec-file: [](test/e2e-emulated/constants.spec.ts).
 
-The negative tests for constant evaluation are contained in the Tact files prefixed with `const-eval` in the [src/test/compilation-failed/contracts](./src/test/compilation-failed/contracts) folder.
+The negative tests for constant evaluation are contained in the Tact files prefixed with `const-eval` in the [src/test/compilation-failed/contracts](test/compilation-failed/contracts) folder.
 
 ### Code generator
 
@@ -161,8 +161,8 @@ The code generator lives in the [src/generator](./src/080-generator) sub-folder 
 
 The implementation that we have right now is being refactored to produce FunC ASTs and then pretty-print those ASTs as strings instead of producing source FunC code in one step. Here is the relevant pull request: <https://github.com/tact-lang/tact/pull/559>.
 
-One can find the end-to-end codegen test spec files in the [src/test/e2e-emulated](./src/test/e2e-emulated/) folder. The test contracts are located in [src/test/e2e-emulated/contracts](./src/test/e2e-emulated/contracts) subfolder. Many of those spec files test various language features in relative isolation.
-An important spec file that tests argument passing semantics for functions and assignment semantics for variables is here: [src/test/e2e-emulated/semantics.spec.ts](./src/test/e2e-emulated/semantics.spec.ts).
+One can find the end-to-end codegen test spec files in the [src/test/e2e-emulated](test/e2e-emulated/) folder. The test contracts are located in [src/test/e2e-emulated/contracts](test/e2e-emulated/contracts) subfolder. Many of those spec files test various language features in relative isolation.
+An important spec file that tests argument passing semantics for functions and assignment semantics for variables is here: [src/test/e2e-emulated/semantics.spec.ts](test/e2e-emulated/semantics.spec.ts).
 
 Note: If you add an end-to-end test contract, you also need to include it into [tact.config.json](./tact.config.json) and run `yarn gen` to compile it and create TypeScript wrappers.
 
@@ -170,8 +170,8 @@ Note: If you add an end-to-end test contract, you also need to include it into [
 
 Some other codegen tests are as follows:
 
-- [src/test/exit-codes](./src/test/exit-codes): test that certain actions produce the expected exit codes;
-- [src/test/codegen](./src/test/codegen/): test that these contracts compile just fine without running any dynamic tests: bug fixes for FunC code generation often add tests into this folder.
+- [src/test/exit-codes](test/exit-codes): test that certain actions produce the expected exit codes;
+- [src/test/codegen](test/codegen/): test that these contracts compile just fine without running any dynamic tests: bug fixes for FunC code generation often add tests into this folder.
 
 ### Pretty-printer and AST comparators
 
@@ -179,4 +179,4 @@ The entry point to the Tact AST pretty-printer is [src/prettyPrinter.ts](src/pre
 
 The AST comparator is defined in [src/grammar/compare.ts](src/050-grammar/compare.ts). This is useful, for instance, for static analysis tools which can re-use the Tact TypeScript API.
 
-The corresponding test spec files can be found in [src/test](./src/test/) folder with the test contracts in [src/test/contracts](./src/test/contracts/) folder.
+The corresponding test spec files can be found in [src/test](./src/test/) folder with the test contracts in [src/test/contracts](test/contracts/) folder.

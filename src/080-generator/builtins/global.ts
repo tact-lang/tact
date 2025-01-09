@@ -1,15 +1,11 @@
 import { Address, beginCell, Cell, toNano } from "@ton/core";
 import { enabledDebug } from "../../000-config/features";
+import { writeAddress, writeCell, writeSlice } from "../writers/writeConstant";
+import { writeExpression, writeValue } from "../writers/writeExpression";
 import {
-    writeAddress,
-    writeCell,
-    writeSlice,
-} from "../writers/writeConstant";
-import {
-    writeExpression,
-    writeValue,
-} from "../writers/writeExpression";
-import { TactConstEvalError, throwCompilationError } from "../../030-error/errors";
+    TactConstEvalError,
+    throwCompilationError,
+} from "../../030-error/errors";
 import { evalConstantExpression } from "../../070-optimizer/constEval";
 import { getErrorId } from "../../060-types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";

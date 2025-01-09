@@ -8,4 +8,4 @@ dist
 output/
 **/grammar.ohm-bundle.js
 **/grammar.ohm-bundle.d.ts
-src/test/contracts/pretty-printer-output
+test/contracts/pretty-printer-output

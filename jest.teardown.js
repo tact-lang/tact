@@ -7,7 +7,6 @@ module.exports = async () => {
             path.resolve(__dirname, "examples", "output", "*.boc"),
             path.resolve(
                 __dirname,
-                "src",
                 "test",
                 "codegen",
                 "output",
@@ -15,7 +14,6 @@ module.exports = async () => {
             ),
             path.resolve(
                 __dirname,
-                "src",
                 "test",
                 "e2e-emulated",
                 "output",
@@ -23,7 +21,6 @@ module.exports = async () => {
             ),
             path.resolve(
                 __dirname,
-                "src",
                 "benchmarks",
                 "contracts",
                 "output",
