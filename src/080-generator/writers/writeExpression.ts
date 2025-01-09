@@ -26,10 +26,10 @@ import {
 } from "../../060-types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
-import { MapFunctions } from "../../abi/map";
-import { GlobalFunctions } from "../../abi/global";
+import { MapFunctions } from "../builtins/map";
+import { GlobalFunctions } from "../builtins/global";
 import { funcIdOf } from "./id";
-import { StructFunctions } from "../../abi/struct";
+import { StructFunctions } from "../builtins/struct";
 import { resolveFuncType } from "./resolveFuncType";
 import { Address, Cell, Slice } from "@ton/core";
 import {

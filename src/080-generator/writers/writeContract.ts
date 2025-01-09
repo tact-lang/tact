@@ -1,4 +1,4 @@
-import { contractErrors } from "../../abi/errors";
+import { contractErrors } from "../builtins/errors";
 import {
     enabledInline,
     enabledInterfacesGetter,

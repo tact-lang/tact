@@ -1,22 +1,22 @@
 import { Address, beginCell, Cell, toNano } from "@ton/core";
-import { enabledDebug } from "../000-config/features";
+import { enabledDebug } from "../../000-config/features";
 import {
     writeAddress,
     writeCell,
     writeSlice,
-} from "../generator/writers/writeConstant";
+} from "../writers/writeConstant";
 import {
     writeExpression,
     writeValue,
-} from "../generator/writers/writeExpression";
-import { TactConstEvalError, throwCompilationError } from "../030-error/errors";
-import { evalConstantExpression } from "../interpreter/constEval";
-import { getErrorId } from "../060-types/resolveErrors";
+} from "../writers/writeExpression";
+import { TactConstEvalError, throwCompilationError } from "../../030-error/errors";
+import { evalConstantExpression } from "../../interpreter/constEval";
+import { getErrorId } from "../../060-types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
 import { sha256_sync } from "@ton/crypto";
 import path from "path";
 import { cwd } from "process";
-import { posixNormalize } from "../utils/filePath";
+import { posixNormalize } from "../../utils/filePath";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [

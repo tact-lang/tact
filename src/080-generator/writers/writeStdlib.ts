@@ -1,4 +1,4 @@
-import { contractErrors } from "../../abi/errors";
+import { contractErrors } from "../builtins/errors";
 import { maxTupleSize } from "../../bindings/typescript/writeStruct";
 import { match } from "../../utils/tricks";
 import { WriterContext } from "../Writer";

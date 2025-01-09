@@ -1,7 +1,7 @@
-import { ops } from "../generator/writers/ops";
-import { writeExpression } from "../generator/writers/writeExpression";
-import { throwCompilationError } from "../030-error/errors";
-import { getType } from "../060-types/resolveDescriptors";
+import { ops } from "../writers/ops";
+import { writeExpression } from "../writers/writeExpression";
+import { throwCompilationError } from "../../030-error/errors";
+import { getType } from "../../060-types/resolveDescriptors";
 import { AbiFunction } from "./AbiFunction";
 
 export const StructFunctions: Map<string, AbiFunction> = new Map([

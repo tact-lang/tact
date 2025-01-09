@@ -6,7 +6,7 @@ import { StorageAllocation } from "./StorageAllocation";
 import { AllocationOperation } from "./operation";
 import { allocate, getAllocationOperationFromField } from "./allocator";
 import { createABITypeRefFromTypeRef } from "./resolveABITypeRef";
-import { funcInitIdOf } from "../generator/writers/id";
+import { funcInitIdOf } from "../080-generator/writers/id";
 import { throwInternalCompilerError } from "../030-error/errors";
 import { idText } from "../050-grammar/ast";
 

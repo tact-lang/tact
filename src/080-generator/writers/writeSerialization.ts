@@ -1,4 +1,4 @@
-import { contractErrors } from "../../abi/errors";
+import { contractErrors } from "../builtins/errors";
 import { throwInternalCompilerError } from "../../030-error/errors";
 import { dummySrcInfo, ItemOrigin } from "../../050-grammar";
 import { AllocationCell, AllocationOperation } from "../../060-types/operation";

@@ -15,7 +15,7 @@ import {
 } from "./types";
 import { throwCompilationError } from "../030-error/errors";
 import { AstNumber, AstReceiver } from "../050-grammar/ast";
-import { commentPseudoOpcode } from "../generator/writers/writeRouter";
+import { commentPseudoOpcode } from "../080-generator/writers/writeRouter";
 import { sha256_sync } from "@ton/crypto";
 import { dummySrcInfo } from "../050-grammar";
 import { ensureInt } from "../interpreter/interpreter";

@@ -28,11 +28,11 @@ import {
 } from "./resolveDescriptors";
 import { printTypeRef, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
-import { MapFunctions } from "../abi/map";
-import { GlobalFunctions } from "../abi/global";
+import { MapFunctions } from "../080-generator/builtins/map";
+import { GlobalFunctions } from "../080-generator/builtins/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
 import { throwInternalCompilerError } from "../030-error/errors";
-import { StructFunctions } from "../abi/struct";
+import { StructFunctions } from "../080-generator/builtins/struct";
 import { prettyPrint } from "../prettyPrinter";
 
 const store = createContextStore<{

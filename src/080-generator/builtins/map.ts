@@ -1,13 +1,13 @@
-import { CompilerContext } from "../010-pipeline/context";
-import { SrcInfo } from "../050-grammar";
-import { TypeRef } from "../060-types/types";
-import { WriterContext } from "../generator/Writer";
-import { ops } from "../generator/writers/ops";
-import { writeExpression } from "../generator/writers/writeExpression";
-import { throwCompilationError } from "../030-error/errors";
-import { getType } from "../060-types/resolveDescriptors";
+import { CompilerContext } from "../../010-pipeline/context";
+import { SrcInfo } from "../../050-grammar";
+import { TypeRef } from "../../060-types/types";
+import { WriterContext } from "../Writer";
+import { ops } from "../writers/ops";
+import { writeExpression } from "../writers/writeExpression";
+import { throwCompilationError } from "../../030-error/errors";
+import { getType } from "../../060-types/resolveDescriptors";
 import { AbiFunction } from "./AbiFunction";
-import { AstExpression } from "../050-grammar/ast";
+import { AstExpression } from "../../050-grammar/ast";
 
 // Helper functions to avoid redundancy
 function checkArgumentsLength(

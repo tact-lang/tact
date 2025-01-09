@@ -52,7 +52,7 @@ import {
 } from "./resolveABITypeRef";
 import { enabledExternals } from "../000-config/features";
 import { isRuntimeType } from "./isRuntimeType";
-import { GlobalFunctions } from "../abi/global";
+import { GlobalFunctions } from "../080-generator/builtins/global";
 import { ItemOrigin } from "../050-grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { emptyContext } from "./resolveStatements";
