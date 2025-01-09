@@ -116,7 +116,7 @@ export const includes = <const K extends string>(
 - **Avoid unnecessary bigint**. We have to work with `bigint`, because TVM supports ints of 257 bit length, but in rest of the code `bigint` would only cause issues with debugging it.
 - **Beware of `${}`** in template strings. Any inlining succeeds, and there won't be any compile-time errors even if it's a function `${(x: number) => x}`.
 - **Avoid `null`**. `typeof null === 'object'`, and there is `undefined` anyway.
-- **Avoid exceptions**. Exceptions are untyped. Pass error continuations explicitly `(onFooError: () => T) => T`. Example can be found in `src/grammar/parser-error.ts`.
+- **Avoid exceptions**. Exceptions are untyped. Pass error continuations explicitly `(onFooError: () => T) => T`. Example can be found in `src/050-grammar/parser-error.ts`.
 - **Avoid tuples**. TS gives them minimal distinction from arrays, and type system is broken around them. Occasionally for performance reasons tuples might be a better option than objects.
 - **Avoid `enum`**. It's equivalent to unions since 5.0, except generates boilerplate JS code. A version that doesn't generate extraneous code, `const enum`, is not properly supported by `babel`.
 - **Avoid iterators**. They're untypable unless fixed in JS standard. Prefer generators. Prefer iterating with `for (... of ...)`.

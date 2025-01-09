@@ -3,8 +3,8 @@
  */
 
 import { throwInternalCompilerError } from "./errors";
-import { SrcInfo } from "../grammar";
-import { srcInfoEqual } from "../grammar/src-info";
+import { SrcInfo } from "../050-grammar";
+import { srcInfoEqual } from "../050-grammar/src-info";
 import { ErrorDisplay } from "./display";
 
 export type ErrorJson = ErrorSub | ErrorText | ErrorLink | ErrorAt;

@@ -5,8 +5,8 @@ import {
     AstValue,
     isValue,
     FactoryAst,
-} from "../grammar/ast";
-import { dummySrcInfo } from "../grammar";
+} from "../050-grammar/ast";
+import { dummySrcInfo } from "../050-grammar";
 import { throwInternalCompilerError } from "../030-error/errors";
 import { Value } from "../types/types";
 

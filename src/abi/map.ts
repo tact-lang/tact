@@ -1,5 +1,5 @@
 import { CompilerContext } from "../010-pipeline/context";
-import { SrcInfo } from "../grammar";
+import { SrcInfo } from "../050-grammar";
 import { TypeRef } from "../types/types";
 import { WriterContext } from "../generator/Writer";
 import { ops } from "../generator/writers/ops";
@@ -7,7 +7,7 @@ import { writeExpression } from "../generator/writers/writeExpression";
 import { throwCompilationError } from "../030-error/errors";
 import { getType } from "../types/resolveDescriptors";
 import { AbiFunction } from "./AbiFunction";
-import { AstExpression } from "../grammar/ast";
+import { AstExpression } from "../050-grammar/ast";
 
 // Helper functions to avoid redundancy
 function checkArgumentsLength(

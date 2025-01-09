@@ -1,12 +1,12 @@
 import fs from "fs";
 import { prettyPrint } from "../prettyPrinter";
-import { getParser } from "../grammar";
+import { getParser } from "../050-grammar";
 import { join } from "path";
 import { trimTrailingCR, CONTRACTS_DIR } from "./util";
 import * as assert from "assert";
 import JSONBig from "json-bigint";
-import { getAstFactory } from "../grammar/ast";
-import { defaultParser } from "../grammar/grammar";
+import { getAstFactory } from "../050-grammar/ast";
+import { defaultParser } from "../050-grammar/grammar";
 
 describe("formatter", () => {
     it.each(fs.readdirSync(CONTRACTS_DIR, { withFileTypes: true }))(

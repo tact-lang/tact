@@ -13,8 +13,8 @@ import {
     AstFieldDecl,
     AstAsmFunctionDef,
     AstNumber,
-} from "../grammar/ast";
-import { dummySrcInfo, ItemOrigin, SrcInfo } from "../grammar";
+} from "../050-grammar/ast";
+import { dummySrcInfo, ItemOrigin, SrcInfo } from "../050-grammar";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";

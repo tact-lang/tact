@@ -9,7 +9,7 @@ import {
     selfId,
     isSelfId,
     eqNames,
-} from "../grammar/ast";
+} from "../050-grammar/ast";
 import { isAssignable } from "./subtyping";
 import {
     idTextErr,
@@ -30,7 +30,7 @@ import { FunctionDescription, printTypeRef, TypeRef } from "./types";
 import { evalConstantExpression } from "../interpreter/constEval";
 import { ensureInt } from "../interpreter/interpreter";
 import { crc16 } from "../utils/crc16";
-import { SrcInfo } from "../grammar";
+import { SrcInfo } from "../050-grammar";
 
 export type StatementContext = {
     root: SrcInfo;

@@ -1,4 +1,4 @@
-import { AstId, idText } from "../../grammar/ast";
+import { AstId, idText } from "../../050-grammar/ast";
 
 export function funcIdOf(ident: AstId | string): string {
     if (typeof ident === "string") {

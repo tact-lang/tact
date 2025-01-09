@@ -21,7 +21,7 @@ import {
     getAllocationOperationFromField,
 } from "../storage/allocator";
 import { serializers } from "./typescript/serializers";
-import { eqNames } from "../grammar/ast";
+import { eqNames } from "../050-grammar/ast";
 
 function writeArguments(args: ABIArgument[]) {
     const res: string[] = [];

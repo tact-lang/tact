@@ -6,7 +6,7 @@ import {
     AstOpBinary,
     AstValue,
     isValue,
-} from "../grammar/ast";
+} from "../050-grammar/ast";
 import * as interpreterModule from "../interpreter/interpreter";
 import { Value } from "../types/types";
 import { ExpressionTransformer, Rule } from "./types";

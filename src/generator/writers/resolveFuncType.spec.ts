@@ -1,11 +1,11 @@
-import { getAstFactory } from "../../grammar/ast";
+import { getAstFactory } from "../../050-grammar/ast";
 import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
-import { openContext } from "../../grammar/store";
+import { openContext } from "../../050-grammar/store";
 import { CompilerContext } from "../../010-pipeline/context";
-import { getParser } from "../../grammar";
-import { defaultParser } from "../../grammar/grammar";
+import { getParser } from "../../050-grammar";
+import { defaultParser } from "../../050-grammar/grammar";
 
 const primitiveCode = `
 primitive Int;

@@ -1,13 +1,13 @@
 import { getAllExpressionTypes } from "./resolveExpression";
 import { resolveDescriptors } from "./resolveDescriptors";
 import { loadCases } from "../utils/loadCases";
-import { openContext } from "../grammar/store";
+import { openContext } from "../050-grammar/store";
 import { resolveStatements } from "./resolveStatements";
 import { CompilerContext } from "../010-pipeline/context";
 import { featureEnable } from "../000-config/features";
-import { getParser } from "../grammar";
-import { getAstFactory } from "../grammar/ast";
-import { defaultParser } from "../grammar/grammar";
+import { getParser } from "../050-grammar";
+import { getAstFactory } from "../050-grammar/ast";
+import { defaultParser } from "../050-grammar/grammar";
 
 describe("resolveStatements", () => {
     for (const r of loadCases(__dirname + "/stmts/")) {

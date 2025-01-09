@@ -6,7 +6,7 @@ import { ConfigProject } from "../000-config/parseConfig";
 import { CompilerContext } from "./context";
 import { funcCompile } from "../func/funcCompile";
 import { writeReport } from "../generator/writeReport";
-import { getRawAST } from "../grammar/store";
+import { getRawAST } from "../050-grammar/store";
 import files from "../040-imports/stdlib";
 import { ILogger, Logger } from "./logger";
 import { PackageFileFormat } from "../packaging/fileFormat";
@@ -19,10 +19,10 @@ import { VirtualFileSystem } from "../020-vfs/VirtualFileSystem";
 import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
-import { FactoryAst, getAstFactory, idText } from "../grammar/ast";
+import { FactoryAst, getAstFactory, idText } from "../050-grammar/ast";
 import { TactErrorCollection } from "../030-error/errors";
-import { getParser, Parser } from "../grammar";
-import { defaultParser } from "../grammar/grammar";
+import { getParser, Parser } from "../050-grammar";
+import { defaultParser } from "../050-grammar/grammar";
 
 export function enableFeatures(
     ctx: CompilerContext,

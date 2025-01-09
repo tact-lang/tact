@@ -7,7 +7,7 @@ import { ops } from "./ops";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeStatement } from "./writeFunction";
-import { AstNumber } from "../../grammar/ast";
+import { AstNumber } from "../../050-grammar/ast";
 
 export function commentPseudoOpcode(comment: string): string {
     return beginCell()

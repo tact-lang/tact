@@ -11,11 +11,11 @@ import {
 import { WriterContext } from "../Writer";
 import { writeParser, writeSerializer } from "./writeSerialization";
 import { writeStdlib } from "./writeStdlib";
-import { openContext } from "../../grammar/store";
+import { openContext } from "../../050-grammar/store";
 import { writeAccessors } from "./writeAccessors";
-import { getParser } from "../../grammar";
-import { getAstFactory } from "../../grammar/ast";
-import { defaultParser } from "../../grammar/grammar";
+import { getParser } from "../../050-grammar";
+import { getAstFactory } from "../../050-grammar/ast";
+import { defaultParser } from "../../050-grammar/grammar";
 
 const code = `
 primitive Int;

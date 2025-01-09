@@ -5,7 +5,7 @@ import {
     AstUnaryOperation,
     AstValue,
     isValue,
-} from "../grammar/ast";
+} from "../050-grammar/ast";
 import { TactConstEvalError } from "../030-error/errors";
 import { Value } from "../types/types";
 import { AstUtil, extractValue } from "../optimizer/util";
@@ -19,7 +19,7 @@ import {
     evalUnaryOp,
     throwNonFatalErrorConstEval,
 } from "./interpreter";
-import { SrcInfo } from "../grammar";
+import { SrcInfo } from "../050-grammar";
 
 // Utility Exception class to interrupt the execution
 // of functions that cannot evaluate a tree fully into a value.

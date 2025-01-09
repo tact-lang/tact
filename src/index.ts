@@ -12,7 +12,7 @@ export {
     projectSchema,
     configSchema,
 } from "./000-config/parseConfig";
-export { AstSorter } from "./grammar/sort";
-export { AstRenamer } from "./grammar/rename";
-export { AstHasher } from "./grammar/hash";
-export { AstComparator } from "./grammar/compare";
+export { AstSorter } from "./050-grammar/sort";
+export { AstRenamer } from "./050-grammar/rename";
+export { AstHasher } from "./050-grammar/hash";
+export { AstComparator } from "./050-grammar/compare";

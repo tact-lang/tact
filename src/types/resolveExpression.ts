@@ -15,7 +15,7 @@ import {
     eqNames,
     idText,
     isWildcard,
-} from "../grammar/ast";
+} from "../050-grammar/ast";
 import { idTextErr, throwCompilationError } from "../030-error/errors";
 import { CompilerContext, createContextStore } from "../010-pipeline/context";
 import {

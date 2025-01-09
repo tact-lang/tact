@@ -18,8 +18,8 @@ import {
     AstTypeId,
     AstAsmFunctionDef,
     FactoryAst,
-} from "../grammar/ast";
-import { traverse } from "../grammar/iterators";
+} from "../050-grammar/ast";
+import { traverse } from "../050-grammar/iterators";
 import {
     idTextErr,
     throwCompilationError,
@@ -40,8 +40,8 @@ import {
     TypeRef,
     typeRefEquals,
 } from "./types";
-import { getRawAST } from "../grammar/store";
-import { cloneNode } from "../grammar/clone";
+import { getRawAST } from "../050-grammar/store";
+import { cloneNode } from "../050-grammar/clone";
 import { crc16 } from "../utils/crc16";
 import { isSubsetOf } from "../utils/isSubsetOf";
 import { evalConstantExpression } from "../interpreter/constEval";
@@ -53,7 +53,7 @@ import {
 import { enabledExternals } from "../000-config/features";
 import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
-import { ItemOrigin } from "../grammar";
+import { ItemOrigin } from "../050-grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";

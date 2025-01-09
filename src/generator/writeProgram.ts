@@ -18,7 +18,7 @@ import { writeAccessors } from "./writers/writeAccessors";
 import { ContractABI } from "@ton/core";
 import { writeFunction } from "./writers/writeFunction";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
-import { getRawAST } from "../grammar/store";
+import { getRawAST } from "../050-grammar/store";
 import { emit } from "./emitter/emit";
 import {
     writeInit,

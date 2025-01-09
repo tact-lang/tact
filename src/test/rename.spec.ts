@@ -1,12 +1,12 @@
 import fs from "fs";
 import { join } from "path";
-import { AstRenamer } from "../grammar/rename";
+import { AstRenamer } from "../050-grammar/rename";
 import { prettyPrint } from "../prettyPrinter";
 import { trimTrailingCR, CONTRACTS_DIR } from "./util";
 import * as assert from "assert";
-import { getParser } from "../grammar";
-import { getAstFactory } from "../grammar/ast";
-import { defaultParser } from "../grammar/grammar";
+import { getParser } from "../050-grammar";
+import { getAstFactory } from "../050-grammar/ast";
+import { defaultParser } from "../050-grammar/grammar";
 
 const EXPECTED_DIR = join(CONTRACTS_DIR, "renamer-expected");
 

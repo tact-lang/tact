@@ -1,14 +1,14 @@
 import { CompilerContext } from "./context";
 import { resolveDescriptors } from "../types/resolveDescriptors";
 import { resolveAllocations } from "../storage/resolveAllocation";
-import { openContext } from "../grammar/store";
+import { openContext } from "../050-grammar/store";
 import { resolveStatements } from "../types/resolveStatements";
 import { resolveErrors } from "../types/resolveErrors";
 import { resolveSignatures } from "../types/resolveSignatures";
 import { resolveImports } from "../040-imports/resolveImports";
 import { VirtualFileSystem } from "../020-vfs/VirtualFileSystem";
-import { AstModule, FactoryAst } from "../grammar/ast";
-import { Parser } from "../grammar";
+import { AstModule, FactoryAst } from "../050-grammar/ast";
+import { Parser } from "../050-grammar";
 
 export function precompile(
     ctx: CompilerContext,

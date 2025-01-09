@@ -6,12 +6,12 @@ import {
 } from "./resolveDescriptors";
 import { resolveSignatures } from "./resolveSignatures";
 import { loadCases } from "../utils/loadCases";
-import { openContext } from "../grammar/store";
+import { openContext } from "../050-grammar/store";
 import { featureEnable } from "../000-config/features";
-import { getParser, SrcInfo } from "../grammar";
-import { getAstFactory } from "../grammar/ast";
-import { isSrcInfo } from "../grammar/src-info";
-import { defaultParser } from "../grammar/grammar";
+import { getParser, SrcInfo } from "../050-grammar";
+import { getAstFactory } from "../050-grammar/ast";
+import { isSrcInfo } from "../050-grammar/src-info";
+import { defaultParser } from "../050-grammar/grammar";
 
 expect.addSnapshotSerializer({
     test: (src) => isSrcInfo(src),

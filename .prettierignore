@@ -1,9 +1,9 @@
 /dist
 /src/func/funcfiftlib.js
 /src/func/funcfiftlib.wasm.js
-/src/grammar/prev/grammar.ohm-bundle.d.ts
-/src/grammar/prev/grammar.ohm-bundle.js
-src/grammar/next/grammar.ts
+/src/050-grammar/prev/grammar.ohm-bundle.d.ts
+/src/050-grammar/prev/grammar.ohm-bundle.js
+src/050-grammar/next/grammar.ts
 /src/imports/stdlib.ts
 /grammar
 /docs

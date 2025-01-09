@@ -1,4 +1,4 @@
-import { AstExpression } from "../grammar/ast";
+import { AstExpression } from "../050-grammar/ast";
 import { AstUtil } from "./util";
 
 export interface ExpressionTransformer {

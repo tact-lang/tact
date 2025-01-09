@@ -4,7 +4,7 @@ import {
     eqNames,
     idText,
     tryExtractPath,
-} from "../../grammar/ast";
+} from "../../050-grammar/ast";
 import {
     idTextErr,
     TactConstEvalError,

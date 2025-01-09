@@ -4,12 +4,12 @@ import {
 } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { writeExpression } from "./writeExpression";
-import { openContext } from "../../grammar/store";
+import { openContext } from "../../050-grammar/store";
 import { resolveStatements } from "../../types/resolveStatements";
 import { CompilerContext } from "../../010-pipeline/context";
-import { getParser } from "../../grammar";
-import { getAstFactory } from "../../grammar/ast";
-import { defaultParser } from "../../grammar/grammar";
+import { getParser } from "../../050-grammar";
+import { getAstFactory } from "../../050-grammar/ast";
+import { defaultParser } from "../../050-grammar/grammar";
 
 const code = `
 

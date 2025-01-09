@@ -55,8 +55,8 @@ import {
     getAstFactory,
     idText,
     isSelfId,
-} from "../grammar/ast";
-import { SrcInfo, dummySrcInfo, Parser, getParser } from "../grammar";
+} from "../050-grammar/ast";
+import { SrcInfo, dummySrcInfo, Parser, getParser } from "../050-grammar";
 import { divFloor, modFloor } from "../optimizer/util";
 import {
     getStaticConstant,
@@ -74,7 +74,7 @@ import {
     showValue,
 } from "../types/types";
 import { sha256_sync } from "@ton/crypto";
-import { defaultParser } from "../grammar/grammar";
+import { defaultParser } from "../050-grammar/grammar";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);

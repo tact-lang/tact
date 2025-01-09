@@ -1,8 +1,8 @@
-import { AstExpression } from "../grammar/ast";
+import { AstExpression } from "../050-grammar/ast";
 import { CompilerContext } from "../010-pipeline/context";
 import { WriterContext } from "../generator/Writer";
 import { TypeRef } from "../types/types";
-import { SrcInfo } from "../grammar";
+import { SrcInfo } from "../050-grammar";
 
 export type AbiFunction = {
     name: string;

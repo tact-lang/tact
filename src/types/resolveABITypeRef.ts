@@ -12,7 +12,7 @@ import {
     isSlice,
     isString,
     isStringBuilder,
-} from "../grammar/ast";
+} from "../050-grammar/ast";
 import {
     idTextErr,
     throwCompilationError,
@@ -21,7 +21,7 @@ import {
 import { TypeRef } from "./types";
 import { CompilerContext } from "../010-pipeline/context";
 import { getType } from "./resolveDescriptors";
-import { SrcInfo } from "../grammar";
+import { SrcInfo } from "../050-grammar";
 
 type FormatDef = Record<
     string,

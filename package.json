@@ -10,8 +10,8 @@
   "author": "Steve Korshakov <steve@korshakov.com>",
   "license": "MIT",
   "scripts": {
-    "gen:grammar:old": "ohm generateBundles --withTypes src/grammar/prev/*.ohm",
-    "gen:grammar:new": "pgen src/grammar/next/grammar.gg -o src/grammar/next/grammar.ts",
+    "gen:grammar:old": "ohm generateBundles --withTypes src/050-grammar/prev/*.ohm",
+    "gen:grammar:new": "pgen src/050-grammar/next/grammar.gg -o src/050-grammar/next/grammar.ts",
     "gen:grammar": "yarn gen:grammar:old && yarn gen:grammar:new",
     "gen:pack": "ts-node ./scripts/pack.ts",
     "gen:compiler": "ts-node ./scripts/prepare.ts",

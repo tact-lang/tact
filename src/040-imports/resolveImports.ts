@@ -1,4 +1,4 @@
-import { ItemOrigin, Parser } from "../grammar";
+import { ItemOrigin, Parser } from "../050-grammar";
 import { VirtualFileSystem } from "../020-vfs/VirtualFileSystem";
 import { throwCompilationError } from "../030-error/errors";
 import { resolveLibrary } from "./resolveLibrary";

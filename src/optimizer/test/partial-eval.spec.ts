@@ -5,15 +5,15 @@ import {
     eqExpressions,
     getAstFactory,
     isValue,
-} from "../../grammar/ast";
+} from "../../050-grammar/ast";
 import { AstUtil, extractValue, getAstUtil } from "../util";
 import { getOptimizer } from "../../interpreter/constEval";
 import { CompilerContext } from "../../010-pipeline/context";
 import { ExpressionTransformer, Rule } from "../types";
 import { AssociativeRule3 } from "../associative";
 import { evalBinaryOp, evalUnaryOp } from "../../interpreter/interpreter";
-import { getParser } from "../../grammar";
-import { defaultParser } from "../../grammar/grammar";
+import { getParser } from "../../050-grammar";
+import { defaultParser } from "../../050-grammar/grammar";
 
 const MAX: string =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";
