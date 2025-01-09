@@ -1,9 +1,9 @@
 import { contractErrors } from "../../abi/errors";
 import { throwInternalCompilerError } from "../../030-error/errors";
 import { dummySrcInfo, ItemOrigin } from "../../050-grammar";
-import { AllocationCell, AllocationOperation } from "../../storage/operation";
-import { StorageAllocation } from "../../storage/StorageAllocation";
-import { getType } from "../../types/resolveDescriptors";
+import { AllocationCell, AllocationOperation } from "../../060-types/operation";
+import { StorageAllocation } from "../../060-types/StorageAllocation";
+import { getType } from "../../060-types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { ops } from "./ops";
 import { resolveFuncTypeFromAbi } from "./resolveFuncTypeFromAbi";

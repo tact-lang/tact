@@ -127,18 +127,18 @@ The [src/grammar/test](src/050-grammar/test) folder contains Tact files that are
 
 The Tact type-checker's implementation can be found mostly in the following files:
 
-- [src/types/resolveDescriptors.ts](./src/types/resolveDescriptors.ts) takes care of checking at the level of module-items, data type definitions, function signatures, etc. and it does not deal with statements (so does not traverse function bodies);
-- [src/types/resolveStatements.ts](./src/types/resolveStatements.ts) checks statements and statements blocks;
-- [src/types/resolveExpression.ts](./src/types/resolveExpression.ts) type-checks the Tact expressions.
+- [src/types/resolveDescriptors.ts](src/060-types/resolveDescriptors.ts) takes care of checking at the level of module-items, data type definitions, function signatures, etc. and it does not deal with statements (so does not traverse function bodies);
+- [src/types/resolveStatements.ts](src/060-types/resolveStatements.ts) checks statements and statements blocks;
+- [src/types/resolveExpression.ts](src/060-types/resolveExpression.ts) type-checks the Tact expressions.
 
 The current implementation of the typechecker is going to be significantly refactored, as per [issue #458](https://github.com/tact-lang/tact/issues/458). The corresponding pull request will have formally specified the Tact typing rules.
 
 Until we have the Tact type system specified, the only source of information about it would be the aforementioned Tact docs and the tests in the following locations:
 
-- [src/types/test](./src/types/test): positive well-formedness tests at the level of data types, contracts, traits and function signatures;
-- [src/types/test-failed](./src/types/test-failed): negative well-formedness tests at the level of data types, contracts, traits and function signatures;
-- [src/types/stmts](./src/types/stmts): positive type-checking tests at the level of function bodies;
-- [src/types/stmts-failed](./src/types/stmts-failed): negative type-checking tests at the level of function bodies;
+- [src/types/test](src/060-types/test): positive well-formedness tests at the level of data types, contracts, traits and function signatures;
+- [src/types/test-failed](src/060-types/test-failed): negative well-formedness tests at the level of data types, contracts, traits and function signatures;
+- [src/types/stmts](src/060-types/stmts): positive type-checking tests at the level of function bodies;
+- [src/types/stmts-failed](src/060-types/stmts-failed): negative type-checking tests at the level of function bodies;
 - [src/test/compilation-failed](./src/test/compilation-failed): negative type-checking tests that require full environment, for instance, the standard library (the other tests in `src/types` don't have access to the full environment).
 
 ### Constant evaluator

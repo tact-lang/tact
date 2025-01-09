@@ -1,8 +1,8 @@
 import { contractErrors } from "../../abi/errors";
 import { maxTupleSize } from "../../bindings/typescript/writeStruct";
 import { ItemOrigin } from "../../050-grammar";
-import { getType } from "../../types/resolveDescriptors";
-import { TypeDescription } from "../../types/types";
+import { getType } from "../../060-types/resolveDescriptors";
+import { TypeDescription } from "../../060-types/types";
 import { WriterContext } from "../Writer";
 import { ops } from "./ops";
 import { resolveFuncFlatPack } from "./resolveFuncFlatPack";

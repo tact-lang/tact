@@ -1,10 +1,10 @@
 import fs from "fs";
-import { resolveDescriptors } from "../types/resolveDescriptors";
+import { resolveDescriptors } from "./resolveDescriptors";
 import { getAllocations, resolveAllocations } from "./resolveAllocation";
 import { openContext } from "../050-grammar/store";
-import { resolveStatements } from "../types/resolveStatements";
+import { resolveStatements } from "./resolveStatements";
 import { CompilerContext } from "../010-pipeline/context";
-import { resolveSignatures } from "../types/resolveSignatures";
+import { resolveSignatures } from "./resolveSignatures";
 import path from "path";
 import { getParser } from "../050-grammar";
 import { getAstFactory } from "../050-grammar/ast";

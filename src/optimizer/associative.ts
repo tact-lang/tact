@@ -8,7 +8,7 @@ import {
     isValue,
 } from "../050-grammar/ast";
 import * as interpreterModule from "../interpreter/interpreter";
-import { Value } from "../types/types";
+import { Value } from "../060-types/types";
 import { ExpressionTransformer, Rule } from "./types";
 import {
     abs,

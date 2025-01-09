@@ -5,7 +5,7 @@ import {
     enabledIpfsAbiGetter,
 } from "../../000-config/features";
 import { ItemOrigin } from "../../050-grammar";
-import { InitDescription, TypeDescription } from "../../types/types";
+import { InitDescription, TypeDescription } from "../../060-types/types";
 import { WriterContext } from "../Writer";
 import { funcIdOf, funcInitIdOf } from "./id";
 import { ops } from "./ops";

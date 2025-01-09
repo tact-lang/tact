@@ -8,7 +8,7 @@ import {
 } from "../050-grammar/ast";
 import { dummySrcInfo } from "../050-grammar";
 import { throwInternalCompilerError } from "../030-error/errors";
-import { Value } from "../types/types";
+import { Value } from "../060-types/types";
 
 export function extractValue(ast: AstValue): Value {
     switch (

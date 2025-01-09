@@ -9,9 +9,9 @@ import {
     isWildcard,
     tryExtractPath,
 } from "../../050-grammar/ast";
-import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
-import { getExpType } from "../../types/resolveExpression";
-import { FunctionDescription, TypeRef } from "../../types/types";
+import { getType, resolveTypeRef } from "../../060-types/resolveDescriptors";
+import { getExpType } from "../../060-types/resolveExpression";
+import { FunctionDescription, TypeRef } from "../../060-types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";

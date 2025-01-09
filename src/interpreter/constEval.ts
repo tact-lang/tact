@@ -7,7 +7,7 @@ import {
     isValue,
 } from "../050-grammar/ast";
 import { TactConstEvalError } from "../030-error/errors";
-import { Value } from "../types/types";
+import { Value } from "../060-types/types";
 import { AstUtil, extractValue } from "../optimizer/util";
 import { ExpressionTransformer } from "../optimizer/types";
 import { StandardOptimizer } from "../optimizer/standardOptimizer";

@@ -1,11 +1,11 @@
 import {
     getStaticFunction,
     resolveDescriptors,
-} from "../../types/resolveDescriptors";
+} from "../../060-types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { writeExpression } from "./writeExpression";
 import { openContext } from "../../050-grammar/store";
-import { resolveStatements } from "../../types/resolveStatements";
+import { resolveStatements } from "../../060-types/resolveStatements";
 import { CompilerContext } from "../../010-pipeline/context";
 import { getParser } from "../../050-grammar";
 import { getAstFactory } from "../../050-grammar/ast";

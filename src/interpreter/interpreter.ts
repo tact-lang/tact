@@ -64,15 +64,15 @@ import {
     getType,
     hasStaticConstant,
     hasStaticFunction,
-} from "../types/resolveDescriptors";
-import { getExpType } from "../types/resolveExpression";
+} from "../060-types/resolveDescriptors";
+import { getExpType } from "../060-types/resolveExpression";
 import {
     CommentValue,
     StructValue,
     TypeRef,
     Value,
     showValue,
-} from "../types/types";
+} from "../060-types/types";
 import { sha256_sync } from "@ton/crypto";
 import { defaultParser } from "../050-grammar/grammar";
 

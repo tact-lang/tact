@@ -2,12 +2,12 @@ import { CompilerContext } from "../../010-pipeline/context";
 import {
     getAllocation,
     resolveAllocations,
-} from "../../storage/resolveAllocation";
+} from "../../060-types/resolveAllocation";
 import {
     getAllTypes,
     getType,
     resolveDescriptors,
-} from "../../types/resolveDescriptors";
+} from "../../060-types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { writeParser, writeSerializer } from "./writeSerialization";
 import { writeStdlib } from "./writeStdlib";

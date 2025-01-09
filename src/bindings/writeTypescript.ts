@@ -13,13 +13,13 @@ import {
     writeTupleParser,
     writeTupleSerializer,
 } from "./typescript/writeStruct";
-import { AllocationCell } from "../storage/operation";
+import { AllocationCell } from "../060-types/operation";
 import { throwInternalCompilerError } from "../030-error/errors";
 import { topologicalSort } from "../utils/utils";
 import {
     allocate,
     getAllocationOperationFromField,
-} from "../storage/allocator";
+} from "../060-types/allocator";
 import { serializers } from "./typescript/serializers";
 import { eqNames } from "../050-grammar/ast";
 

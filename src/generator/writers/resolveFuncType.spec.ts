@@ -1,5 +1,5 @@
 import { getAstFactory } from "../../050-grammar/ast";
-import { resolveDescriptors } from "../../types/resolveDescriptors";
+import { resolveDescriptors } from "../../060-types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
 import { openContext } from "../../050-grammar/store";

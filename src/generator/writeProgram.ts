@@ -1,10 +1,10 @@
 import { CompilerContext } from "../010-pipeline/context";
-import { getAllocation, getSortedTypes } from "../storage/resolveAllocation";
+import { getAllocation, getSortedTypes } from "../060-types/resolveAllocation";
 import {
     getAllStaticFunctions,
     getAllTypes,
     toBounced,
-} from "../types/resolveDescriptors";
+} from "../060-types/resolveDescriptors";
 import { WriterContext, WrittenFunction } from "./Writer";
 import {
     writeBouncedParser,

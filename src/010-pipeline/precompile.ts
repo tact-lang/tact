@@ -1,10 +1,10 @@
 import { CompilerContext } from "./context";
-import { resolveDescriptors } from "../types/resolveDescriptors";
-import { resolveAllocations } from "../storage/resolveAllocation";
+import { resolveDescriptors } from "../060-types/resolveDescriptors";
+import { resolveAllocations } from "../060-types/resolveAllocation";
 import { openContext } from "../050-grammar/store";
-import { resolveStatements } from "../types/resolveStatements";
-import { resolveErrors } from "../types/resolveErrors";
-import { resolveSignatures } from "../types/resolveSignatures";
+import { resolveStatements } from "../060-types/resolveStatements";
+import { resolveErrors } from "../060-types/resolveErrors";
+import { resolveSignatures } from "../060-types/resolveSignatures";
 import { resolveImports } from "../040-imports/resolveImports";
 import { VirtualFileSystem } from "../020-vfs/VirtualFileSystem";
 import { AstModule, FactoryAst } from "../050-grammar/ast";

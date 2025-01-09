@@ -2,10 +2,10 @@ import { ABIGetter, ABIReceiver, ABIType, ContractABI } from "@ton/core";
 import { contractErrors } from "../abi/errors";
 import { CompilerContext } from "../010-pipeline/context";
 import { idText } from "../050-grammar/ast";
-import { getSupportedInterfaces } from "../types/getSupportedInterfaces";
-import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
-import { getAllTypes } from "../types/resolveDescriptors";
-import { getAllErrors } from "../types/resolveErrors";
+import { getSupportedInterfaces } from "../060-types/getSupportedInterfaces";
+import { createABITypeRefFromTypeRef } from "../060-types/resolveABITypeRef";
+import { getAllTypes } from "../060-types/resolveDescriptors";
+import { getAllErrors } from "../060-types/resolveErrors";
 
 export function createABI(ctx: CompilerContext, name: string): ContractABI {
     const allTypes = getAllTypes(ctx);

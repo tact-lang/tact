@@ -1,5 +1,5 @@
-import { getType } from "../../types/resolveDescriptors";
-import { TypeDescription, TypeRef } from "../../types/types";
+import { getType } from "../../060-types/resolveDescriptors";
+import { TypeDescription, TypeRef } from "../../060-types/types";
 import { WriterContext } from "../Writer";
 
 export function resolveFuncFlatPack(

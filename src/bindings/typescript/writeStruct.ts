@@ -1,6 +1,6 @@
 import { ABIType, ABITypeRef } from "@ton/core";
 import { serializers } from "./serializers";
-import { AllocationCell, AllocationOperation } from "../../storage/operation";
+import { AllocationCell, AllocationOperation } from "../../060-types/operation";
 import { throwInternalCompilerError } from "../../030-error/errors";
 import { Writer } from "../../utils/Writer";
 

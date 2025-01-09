@@ -1,5 +1,5 @@
-import { getSupportedInterfaces } from "../../types/getSupportedInterfaces";
-import { TypeDescription } from "../../types/types";
+import { getSupportedInterfaces } from "../../060-types/getSupportedInterfaces";
+import { TypeDescription } from "../../060-types/types";
 import { WriterContext } from "../Writer";
 
 export function writeInterfaces(type: TypeDescription, ctx: WriterContext) {

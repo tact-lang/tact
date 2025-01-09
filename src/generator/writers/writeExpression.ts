@@ -10,20 +10,20 @@ import {
     TactConstEvalError,
     throwCompilationError,
 } from "../../030-error/errors";
-import { getExpType } from "../../types/resolveExpression";
+import { getExpType } from "../../060-types/resolveExpression";
 import {
     getStaticConstant,
     getStaticFunction,
     getType,
     hasStaticConstant,
-} from "../../types/resolveDescriptors";
+} from "../../060-types/resolveDescriptors";
 import {
     FieldDescription,
     printTypeRef,
     TypeDescription,
     CommentValue,
     Value,
-} from "../../types/types";
+} from "../../060-types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { MapFunctions } from "../../abi/map";
@@ -42,7 +42,7 @@ import {
 import { ops } from "./ops";
 import { writeCastedExpression } from "./writeFunction";
 import { evalConstantExpression } from "../../interpreter/constEval";
-import { isLvalue } from "../../types/resolveStatements";
+import { isLvalue } from "../../060-types/resolveStatements";
 
 function isNull(wCtx: WriterContext, expr: AstExpression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";

@@ -1,11 +1,11 @@
 import { CompilerContext, createContextStore } from "../010-pipeline/context";
-import { getType, toBounced, getAllTypes } from "../types/resolveDescriptors";
-import { TypeDescription } from "../types/types";
+import { getType, toBounced, getAllTypes } from "./resolveDescriptors";
+import { TypeDescription } from "./types";
 import { topologicalSort } from "../utils/utils";
 import { StorageAllocation } from "./StorageAllocation";
 import { AllocationOperation } from "./operation";
 import { allocate, getAllocationOperationFromField } from "./allocator";
-import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
+import { createABITypeRefFromTypeRef } from "./resolveABITypeRef";
 import { funcInitIdOf } from "../generator/writers/id";
 import { throwInternalCompilerError } from "../030-error/errors";
 import { idText } from "../050-grammar/ast";
