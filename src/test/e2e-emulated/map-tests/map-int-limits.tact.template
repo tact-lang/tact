@@ -1,0 +1,99 @@
+// Key types: KEY_FORMAT_PLACEHOLDER (needs to be either `Int` or `Int as ...`)
+// Value types: VAL_FORMAT_PLACEHOLDER (needs to be either `Int` or `Int as ...`)
+
+const KEY_MIN: Int = KEY_MIN_PLACEHOLDER;
+const KEY_MAX: Int = KEY_MAX_PLACEHOLDER;
+
+const VAL_MIN: Int = VAL_MIN_PLACEHOLDER;
+const VAL_MAX: Int = VAL_MAX_PLACEHOLDER;
+
+// -pow(2, 256)
+const MIN_INT257: Int = -115792089237316195423570985008687907853269984665640564039457584007913129639936;
+// pow(2, 256) - 1
+const MAX_INT257: Int = 115792089237316195423570985008687907853269984665640564039457584007913129639935;
+
+fun toInt(b: Bool): Int {
+    if (b) { return 1 }
+    else { return 0 }
+}
+
+contract MapIntLimitTester {
+    receive() { } // deploy
+
+    // Property: m.set(key.min, v).set(key.max, v) does not throw
+    get fun testSetMinAndMaxDoesNotThrow(): Bool {
+        let m: map<KEY_FORMAT_PLACEHOLDER, VAL_FORMAT_PLACEHOLDER> = emptyMap();
+        m.set(KEY_MIN, VAL_MIN);
+        m.set(KEY_MIN, VAL_MAX);
+        m.set(KEY_MAX, VAL_MIN);
+        m.set(KEY_MAX, VAL_MAX);
+        return
+            true;
+    }
+
+    // Property: KEY_MAX < MAX_INT257 => m.get(KEY_MAX + 1) == null
+    // no exception occurs
+    get fun testGetGreaterThanMax(): Bool {
+        let m: map<KEY_FORMAT_PLACEHOLDER, VAL_FORMAT_PLACEHOLDER> = emptyMap();
+        return
+            (KEY_MAX == MAX_INT257) || 
+            m.get(KEY_MAX + toInt(KEY_MAX != MAX_INT257)) == null
+    }
+
+    // Property: KEY_MIN > MIN_INT257 => m.get(KEY_MIN - 1) == null
+    // no exception occurs
+    get fun testGetSmallerThanMin(): Bool {
+        let m: map<KEY_FORMAT_PLACEHOLDER, VAL_FORMAT_PLACEHOLDER> = emptyMap();
+        return
+            (KEY_MIN == MIN_INT257) || 
+            m.get(KEY_MIN - toInt(KEY_MIN != MIN_INT257)) == null
+    }
+
+    // Property: KEY_MAX < MAX_INT257 => m.set(KEY_MAX + 1, 0) should result in exit code 5
+    get fun testSetKeyGreaterThanMax(): Bool {
+        if (KEY_MAX == MAX_INT257) { return true }
+        let m: map<KEY_FORMAT_PLACEHOLDER, VAL_FORMAT_PLACEHOLDER> = emptyMap();
+        try { m.set(KEY_MAX + toInt(KEY_MAX != MAX_INT257), 0) }
+        catch (exitCode) {
+            return exitCode == 5
+        }
+        // use the map `m` here to work around a FunC bug
+        return m.get(0) != null && m.get(0) == null;
+    }
+
+    // Property: KEY_MIN > MIN_INT257 => m.set(KEY_MIN - 1, 0) should result in exit code 5
+    get fun testSetKeySmallerThanMin(): Bool {
+        if (KEY_MIN == MIN_INT257) { return true }
+        let m: map<KEY_FORMAT_PLACEHOLDER, VAL_FORMAT_PLACEHOLDER> = emptyMap();
+        try { m.set(KEY_MIN - toInt(KEY_MIN != MIN_INT257), 0) }
+        catch (exitCode) {
+            return exitCode == 5
+        }
+        // use the map `m` here to work around a FunC bug
+        return m.get(0) != null && m.get(0) == null;
+    }
+
+    // Property: VAL_MAX < MAX_INT257 => m.set(0, VAL_MAX + 1) should result in exit code 5
+    get fun testSetValGreaterThanMax(): Bool {
+        if (VAL_MAX == MAX_INT257) { return true }
+        let m: map<KEY_FORMAT_PLACEHOLDER, VAL_FORMAT_PLACEHOLDER> = emptyMap();
+        try { m.set(0, VAL_MAX + toInt(VAL_MAX != MAX_INT257)) }
+        catch (exitCode) {
+            return exitCode == 5
+        }
+        // use the map `m` here to work around a FunC bug
+        return m.get(0) != null && m.get(0) == null;
+    }
+
+    // Property: VAL_MIN > MIN_INT257 => m.set(0, VAL_MIN - 1) should result in exit code 5
+    get fun testSetValSmallerThanMin(): Bool {
+        if (VAL_MIN == MIN_INT257) { return true }
+        let m: map<KEY_FORMAT_PLACEHOLDER, VAL_FORMAT_PLACEHOLDER> = emptyMap();
+        try { m.set(0, VAL_MIN - toInt(VAL_MIN != MIN_INT257)) }
+        catch (exitCode) {
+            return exitCode == 5
+        }
+        // use the map `m` here to work around a FunC bug
+        return m.get(0) != null && m.get(0) == null;
+    }
+}
