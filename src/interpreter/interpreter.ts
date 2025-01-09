@@ -2,14 +2,14 @@ import { Address, beginCell, BitString, Cell, Slice, toNano } from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
 import * as crc32 from "crc-32";
 import { evalConstantExpression } from "./constEval";
-import { CompilerContext } from "./context";
+import { CompilerContext } from "../context";
 import {
     TactCompilationError,
     TactConstEvalError,
     idTextErr,
     throwConstEvalError,
     throwInternalCompilerError,
-} from "./errors";
+} from "../errors";
 import {
     AstBinaryOperation,
     AstBoolean,
@@ -55,26 +55,26 @@ import {
     getAstFactory,
     idText,
     isSelfId,
-} from "./grammar/ast";
-import { SrcInfo, dummySrcInfo, Parser, getParser } from "./grammar";
-import { divFloor, modFloor } from "./optimizer/util";
+} from "../grammar/ast";
+import { SrcInfo, dummySrcInfo, Parser, getParser } from "../grammar";
+import { divFloor, modFloor } from "../optimizer/util";
 import {
     getStaticConstant,
     getStaticFunction,
     getType,
     hasStaticConstant,
     hasStaticFunction,
-} from "./types/resolveDescriptors";
-import { getExpType } from "./types/resolveExpression";
+} from "../types/resolveDescriptors";
+import { getExpType } from "../types/resolveExpression";
 import {
     CommentValue,
     StructValue,
     TypeRef,
     Value,
     showValue,
-} from "./types/types";
+} from "../types/types";
 import { sha256_sync } from "@ton/crypto";
-import { defaultParser } from "./grammar/grammar";
+import { defaultParser } from "../grammar/grammar";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);

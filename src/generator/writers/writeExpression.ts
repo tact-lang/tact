@@ -41,7 +41,7 @@ import {
 } from "./writeConstant";
 import { ops } from "./ops";
 import { writeCastedExpression } from "./writeFunction";
-import { evalConstantExpression } from "../../constEval";
+import { evalConstantExpression } from "../../interpreter/constEval";
 import { isLvalue } from "../../types/resolveStatements";
 
 function isNull(wCtx: WriterContext, expr: AstExpression): boolean {

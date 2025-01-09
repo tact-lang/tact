@@ -18,8 +18,8 @@ import { AstNumber, AstReceiver } from "../grammar/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 import { sha256_sync } from "@ton/crypto";
 import { dummySrcInfo } from "../grammar";
-import { ensureInt } from "../interpreter";
-import { evalConstantExpression } from "../constEval";
+import { ensureInt } from "../interpreter/interpreter";
+import { evalConstantExpression } from "../interpreter/constEval";
 
 export function resolveSignatures(ctx: CompilerContext) {
     const signatures: Map<

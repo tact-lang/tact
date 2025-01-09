@@ -1,16 +1,16 @@
-import { CompilerContext } from "./context";
+import { CompilerContext } from "../context";
 import {
     AstBinaryOperation,
     AstExpression,
     AstUnaryOperation,
     AstValue,
     isValue,
-} from "./grammar/ast";
-import { TactConstEvalError } from "./errors";
-import { Value } from "./types/types";
-import { AstUtil, extractValue } from "./optimizer/util";
-import { ExpressionTransformer } from "./optimizer/types";
-import { StandardOptimizer } from "./optimizer/standardOptimizer";
+} from "../grammar/ast";
+import { TactConstEvalError } from "../errors";
+import { Value } from "../types/types";
+import { AstUtil, extractValue } from "../optimizer/util";
+import { ExpressionTransformer } from "../optimizer/types";
+import { StandardOptimizer } from "../optimizer/standardOptimizer";
 import {
     Interpreter,
     InterpreterConfig,
@@ -19,7 +19,7 @@ import {
     evalUnaryOp,
     throwNonFatalErrorConstEval,
 } from "./interpreter";
-import { SrcInfo } from "./grammar";
+import { SrcInfo } from "../grammar";
 
 // Utility Exception class to interrupt the execution
 // of functions that cannot evaluate a tree fully into a value.

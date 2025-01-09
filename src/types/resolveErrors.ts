@@ -2,7 +2,7 @@ import { sha256_sync } from "@ton/crypto";
 import { CompilerContext, createContextStore } from "../context";
 import { AstNode, isRequire } from "../grammar/ast";
 import { traverse } from "../grammar/iterators";
-import { evalConstantExpression } from "../constEval";
+import { evalConstantExpression } from "../interpreter/constEval";
 import { throwInternalCompilerError } from "../errors";
 import {
     getAllStaticFunctions,

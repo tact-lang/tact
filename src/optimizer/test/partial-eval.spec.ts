@@ -7,11 +7,11 @@ import {
     isValue,
 } from "../../grammar/ast";
 import { AstUtil, extractValue, getAstUtil } from "../util";
-import { getOptimizer } from "../../constEval";
+import { getOptimizer } from "../../interpreter/constEval";
 import { CompilerContext } from "../../context";
 import { ExpressionTransformer, Rule } from "../types";
 import { AssociativeRule3 } from "../associative";
-import { evalBinaryOp, evalUnaryOp } from "../../interpreter";
+import { evalBinaryOp, evalUnaryOp } from "../../interpreter/interpreter";
 import { getParser } from "../../grammar";
 import { defaultParser } from "../../grammar/grammar";
 
