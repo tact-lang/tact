@@ -5,7 +5,7 @@ import { openContext } from "../grammar/store";
 import { resolveStatements } from "../types/resolveStatements";
 import { resolveErrors } from "../types/resolveErrors";
 import { resolveSignatures } from "../types/resolveSignatures";
-import { resolveImports } from "../imports/resolveImports";
+import { resolveImports } from "../040-imports/resolveImports";
 import { VirtualFileSystem } from "../020-vfs/VirtualFileSystem";
 import { AstModule, FactoryAst } from "../grammar/ast";
 import { Parser } from "../grammar";

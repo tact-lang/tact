@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { Logger } from "../010-pipeline/logger";
 import { funcCompile } from "./funcCompile";
-import files from "../imports/stdlib";
+import files from "../040-imports/stdlib";
 
 describe("funcCompile", () => {
     it("should compile small contract", async () => {
