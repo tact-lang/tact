@@ -50,7 +50,7 @@ export const getOptimizer = (util: AstUtil) => {
         const simplOperand = partiallyEvalExpression(operand, ctx);
 
         if (isLiteral(simplOperand)) {
-            const result = evalUnaryOp(op, simplOperand, source);
+            const result = evalUnaryOp(op, simplOperand, source, util);
             return result;
         } else {
             const newAst = util.makeUnaryExpression(op, simplOperand);
@@ -94,6 +94,7 @@ export const getOptimizer = (util: AstUtil) => {
                         }
                     },
                     source,
+                    util,
                 );
 
                 return result;
@@ -130,7 +131,7 @@ export const getOptimizer = (util: AstUtil) => {
         ctx: CompilerContext,
         interpreterConfig?: InterpreterConfig,
     ): AstExpression {
-        const interpreter = new Interpreter(ctx, interpreterConfig);
+        const interpreter = new Interpreter(util, ctx, interpreterConfig);
         switch (ast.kind) {
             case "id":
                 try {
@@ -210,9 +211,10 @@ export const getOptimizer = (util: AstUtil) => {
 export function evalConstantExpression(
     ast: AstExpression,
     ctx: CompilerContext,
+    util: AstUtil,
     interpreterConfig?: InterpreterConfig,
 ): AstLiteral {
-    const interpreter = new Interpreter(ctx, interpreterConfig);
+    const interpreter = new Interpreter(util, ctx, interpreterConfig);
     const result = interpreter.interpretExpression(ast);
     return result;
 }

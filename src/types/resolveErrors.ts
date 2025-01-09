@@ -1,6 +1,6 @@
 import { sha256_sync } from "@ton/crypto";
 import { CompilerContext, createContextStore } from "../context";
-import { AstNode, isRequire } from "../grammar/ast";
+import { AstNode, FactoryAst, isRequire } from "../grammar/ast";
 import { traverse } from "../grammar/iterators";
 import { evalConstantExpression } from "../constEval";
 import { throwInternalCompilerError } from "../errors";
@@ -10,6 +10,7 @@ import {
     getAllStaticConstants,
 } from "./resolveDescriptors";
 import { ensureSimplifiedString } from "../interpreter";
+import { AstUtil, getAstUtil } from "../optimizer/util";
 
 type Exception = { value: string; id: number };
 
@@ -23,14 +24,18 @@ function exceptionId(src: string): number {
     return (stringId(src) % 63000) + 1000;
 }
 
-function resolveStringsInAST(ast: AstNode, ctx: CompilerContext) {
+function resolveStringsInAST(
+    ast: AstNode,
+    ctx: CompilerContext,
+    util: AstUtil,
+) {
     traverse(ast, (node) => {
         if (node.kind === "static_call" && isRequire(node.function)) {
             if (node.args.length !== 2) {
                 return;
             }
             const resolved = ensureSimplifiedString(
-                evalConstantExpression(node.args[1]!, ctx),
+                evalConstantExpression(node.args[1]!, ctx, util),
             ).value;
             if (!exceptions.get(ctx, resolved)) {
                 const id = exceptionId(resolved);
@@ -50,42 +55,44 @@ function resolveStringsInAST(ast: AstNode, ctx: CompilerContext) {
     return ctx;
 }
 
-export function resolveErrors(ctx: CompilerContext) {
+export function resolveErrors(ctx: CompilerContext, Ast: FactoryAst) {
+    const util = getAstUtil(Ast);
+
     // Process all static functions
     for (const f of getAllStaticFunctions(ctx)) {
-        ctx = resolveStringsInAST(f.ast, ctx);
+        ctx = resolveStringsInAST(f.ast, ctx, util);
     }
 
     // Process all static constants
     for (const f of getAllStaticConstants(ctx)) {
-        ctx = resolveStringsInAST(f.ast, ctx);
+        ctx = resolveStringsInAST(f.ast, ctx, util);
     }
 
     // Process all types
     for (const t of getAllTypes(ctx)) {
         // Process fields
         for (const f of t.fields) {
-            ctx = resolveStringsInAST(f.ast, ctx);
+            ctx = resolveStringsInAST(f.ast, ctx, util);
         }
 
         // Process constants
         for (const f of t.constants) {
-            ctx = resolveStringsInAST(f.ast, ctx);
+            ctx = resolveStringsInAST(f.ast, ctx, util);
         }
 
         // Process init
         if (t.init) {
-            ctx = resolveStringsInAST(t.init.ast, ctx);
+            ctx = resolveStringsInAST(t.init.ast, ctx, util);
         }
 
         // Process receivers
         for (const f of t.receivers) {
-            ctx = resolveStringsInAST(f.ast, ctx);
+            ctx = resolveStringsInAST(f.ast, ctx, util);
         }
 
         // Process functions
         for (const f of t.functions.values()) {
-            ctx = resolveStringsInAST(f.ast, ctx);
+            ctx = resolveStringsInAST(f.ast, ctx, util);
         }
     }
 

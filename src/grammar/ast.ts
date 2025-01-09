@@ -999,11 +999,18 @@ function eqArrays<T>(
 }
 
 export function isLiteral(ast: AstExpression): ast is AstLiteral {
-    return checkLiteral(ast, () => true, () => false);
+    return checkLiteral(
+        ast,
+        () => true,
+        () => false,
+    );
 }
 
-export function checkLiteral<T>(ast: AstExpression, t: (node: AstLiteral) => T, 
-f: (node: Exclude<AstExpression, AstLiteral>) => T): T {
+export function checkLiteral<T>(
+    ast: AstExpression,
+    t: (node: AstLiteral) => T,
+    f: (node: Exclude<AstExpression, AstLiteral>) => T,
+): T {
     switch (ast.kind) {
         case "null":
         case "boolean":
@@ -1032,5 +1039,3 @@ f: (node: Exclude<AstExpression, AstLiteral>) => T): T {
             throwInternalCompilerError("Unrecognized expression kind");
     }
 }
-
-

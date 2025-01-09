@@ -1915,7 +1915,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
           },
         },
         "default": {
-          "id": 1,
+          "id": 24,
           "kind": "null",
           "loc": s: Int?,
         },
@@ -13431,7 +13431,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
           },
         },
         "default": {
-          "id": 2,
+          "id": 20,
           "kind": "null",
           "loc": value: SomeStruct?,
         },

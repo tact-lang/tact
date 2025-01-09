@@ -15,12 +15,6 @@ import {
     eqNames,
     idText,
     isWildcard,
-    AstAddress,
-    AstCell,
-    AstSlice,
-    AstSimplifiedString,
-    AstCommentValue,
-    AstStructValue,
 } from "../grammar/ast";
 import { idTextErr, throwCompilationError } from "../errors";
 import { CompilerContext, createContextStore } from "../context";
@@ -32,7 +26,7 @@ import {
     hasStaticConstant,
     hasStaticFunction,
 } from "./resolveDescriptors";
-import { printTypeRef, showValue, TypeRef, typeRefEquals } from "./types";
+import { printTypeRef, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
@@ -771,13 +765,16 @@ export function resolveExpression(
         case "string": {
             return resolveStringLiteral(exp, sctx, ctx);
         }
-        case "address": 
-        case "cell": 
-        case "slice": 
-        case "simplified_string": 
-        case "comment_value": 
-        case "struct_value": 
-            throwInternalCompilerError(`Expression kind ${exp.kind} should not happen here`);
+        case "address":
+        case "cell":
+        case "slice":
+        case "simplified_string":
+        case "comment_value":
+        case "struct_value":
+            throwInternalCompilerError(
+                `Expression kind ${exp.kind} should not happen here`,
+            );
+            break;
         case "struct_instance": {
             return resolveStructNew(exp, sctx, ctx);
         }

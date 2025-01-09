@@ -4,19 +4,20 @@ import { getAstFactory, isLiteral } from "../ast";
 import { getParser } from "../";
 import { defaultParser } from "../grammar";
 
-const valueExpressions: string[] = [
-    "1",
-    "true",
-    "false",
-    "null",
-    "Test {f1: 0, f2: true}",
-    "Test {f1: 0, f2: true, f3: null}",
-    "Test {f1: Test2 {c:0}, f2: true}",
-];
+const valueExpressions: string[] = ["1", "true", "false", "null"];
 
 const notValueExpressions: string[] = [
     "g",
-    '"one"', // A raw string cannot be determined to be a literal because it is not possible to know if some of its characters are already escaped or not
+
+    // Raw strings are not literals: they need to go through the interpreter to get transformed into simplified strings, which are literals.
+    '"one"',
+
+    // Even if these three struct instances have literal fields, raw struct instances are not literals because they need to go through
+    // the interpreter to get transformed into struct values.
+    "Test {f1: 0, f2: true}",
+    "Test {f1: 0, f2: true, f3: null}",
+    "Test {f1: Test2 {c:0}, f2: true}",
+
     "Test {f1: 0, f2: b}",
     "Test {f1: a, f2: true}",
     "f(1)",

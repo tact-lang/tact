@@ -32,13 +32,6 @@ type Transform = (
     s: SrcInfo,
 ) => TransformData;
 
-/* A simple wrapper function to transform the right value in a binary operator to a continuation
-   so that we can call the evaluation function in the interpreter module
-function evalBinaryOp(op: AstBinaryOperation, valL: AstLiteral, valR: AstLiteral): AstLiteral {
-    return interpreterModule.evalBinaryOp(op, valL, () => valR);
-}
-*/
-
 abstract class AssociativeRewriteRule extends Rule {
     // An entry (op, S) in the map means "operator op associates with all operators in set S",
     // mathematically: all op2 \in S. (a op b) op2 c = a op (b op2 c)
@@ -168,6 +161,7 @@ export class AssociativeRule1 extends AllowableOpRule {
                             c1,
                             () => c2,
                             topLevelNode.loc,
+                            util,
                         );
 
                         // The final expression is
@@ -221,6 +215,7 @@ export class AssociativeRule1 extends AllowableOpRule {
                             c1,
                             () => c2,
                             topLevelNode.loc,
+                            util,
                         );
 
                         // The current expression could be either
@@ -278,6 +273,7 @@ export class AssociativeRule1 extends AllowableOpRule {
                             c2,
                             () => c1,
                             topLevelNode.loc,
+                            util,
                         );
 
                         // The current expression could be either
@@ -335,6 +331,7 @@ export class AssociativeRule1 extends AllowableOpRule {
                             c1,
                             () => c2,
                             topLevelNode.loc,
+                            util,
                         );
 
                         // The final expression is
@@ -633,7 +630,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // final expression: x1 + (c1 + c2)
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("+", c1, () => c2, s),
+                            iM.evalBinaryOp("+", c1, () => c2, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -657,7 +654,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // final expression: x1 + (c1 - c2)
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("-", c1, () => c2, s),
+                            iM.evalBinaryOp("-", c1, () => c2, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -686,7 +683,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // final expression x1 - (c1 - c2)
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("-", c1, () => c2, s),
+                            iM.evalBinaryOp("-", c1, () => c2, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -710,7 +707,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // final expression x1 - (c1 + c2)
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("+", c1, () => c2, s),
+                            iM.evalBinaryOp("+", c1, () => c2, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -739,7 +736,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // final expression x1 * (c1 * c2)
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("*", c1, () => c2, s),
+                            iM.evalBinaryOp("*", c1, () => c2, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -767,7 +764,13 @@ export class AssociativeRule3 extends Rule {
                     // original expression: (x1 && c1) && c2
                     (x1, c1, c2, util, s) => {
                         // final expression x1 && (c1 && c2)
-                        const val_ = iM.evalBinaryOp("&&", c1, () => c2, s);
+                        const val_ = iM.evalBinaryOp(
+                            "&&",
+                            c1,
+                            () => c2,
+                            s,
+                            util,
+                        );
                         return {
                             simplifiedExpression: util.makeBinaryExpression(
                                 "&&",
@@ -789,7 +792,13 @@ export class AssociativeRule3 extends Rule {
                     // original expression: (x1 || c1) || c2
                     (x1, c1, c2, util, s) => {
                         // final expression x1 || (c1 || c2)
-                        const val_ = iM.evalBinaryOp("||", c1, () => c2, s);
+                        const val_ = iM.evalBinaryOp(
+                            "||",
+                            c1,
+                            () => c2,
+                            s,
+                            util,
+                        );
                         return {
                             simplifiedExpression: util.makeBinaryExpression(
                                 "||",
@@ -826,7 +835,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // final expression (c2 + c1) + x1
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("+", c2, () => c1, s),
+                            iM.evalBinaryOp("+", c2, () => c1, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -850,7 +859,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // final expression (c2 + c1) - x1
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("+", c2, () => c1, s),
+                            iM.evalBinaryOp("+", c2, () => c1, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -879,7 +888,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // final expression (c2 - c1) - x1
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("-", c2, () => c1, s),
+                            iM.evalBinaryOp("-", c2, () => c1, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -903,7 +912,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // final expression (c2 - c1) + x1
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("-", c2, () => c1, s),
+                            iM.evalBinaryOp("-", c2, () => c1, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -933,7 +942,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // final expression (c2 * c1) * x1
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("*", c2, () => c1, s),
+                            iM.evalBinaryOp("*", c2, () => c1, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -962,7 +971,13 @@ export class AssociativeRule3 extends Rule {
                     // original expression: c2 && (c1 && x1)
                     (x1, c1, c2, util, s) => {
                         // final expression (c2 && c1) && x1
-                        const val_ = iM.evalBinaryOp("&&", c2, () => c1, s);
+                        const val_ = iM.evalBinaryOp(
+                            "&&",
+                            c2,
+                            () => c1,
+                            s,
+                            util,
+                        );
                         return {
                             simplifiedExpression: util.makeBinaryExpression(
                                 "&&",
@@ -985,7 +1000,13 @@ export class AssociativeRule3 extends Rule {
                     // original expression: c2 || (c1 || x1)
                     (x1, c1, c2, util, s) => {
                         // final expression (c2 || c1) || x1
-                        const val_ = iM.evalBinaryOp("||", c2, () => c1, s);
+                        const val_ = iM.evalBinaryOp(
+                            "||",
+                            c2,
+                            () => c1,
+                            s,
+                            util,
+                        );
                         return {
                             simplifiedExpression: util.makeBinaryExpression(
                                 "||",
@@ -1022,7 +1043,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // final expression x1 + (c2 + c1)
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("+", c2, () => c1, s),
+                            iM.evalBinaryOp("+", c2, () => c1, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -1046,7 +1067,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // final expression x1 - (c1 - c2)
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("-", c1, () => c2, s),
+                            iM.evalBinaryOp("-", c1, () => c2, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -1075,7 +1096,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // final expression (c2 - c1) - x1
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("-", c2, () => c1, s),
+                            iM.evalBinaryOp("-", c2, () => c1, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -1099,7 +1120,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // final expression (c2 + c1) - x1
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("+", c2, () => c1, s),
+                            iM.evalBinaryOp("+", c2, () => c1, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -1129,7 +1150,7 @@ export class AssociativeRule3 extends Rule {
                 (x1, c1, c2, util, s) => {
                     // Final expression x1 * (c2 * c1)
                     const val_ = iM.ensureInt(
-                        iM.evalBinaryOp("*", c2, () => c1, s),
+                        iM.evalBinaryOp("*", c2, () => c1, s, util),
                     );
                     const c1_ = iM.ensureInt(c1);
                     return {
@@ -1155,7 +1176,13 @@ export class AssociativeRule3 extends Rule {
                     "&&",
                     // original expression: c2 && (x1 && c1)
                     (x1, c1, c2, util, s) => {
-                        const val_ = iM.evalBinaryOp("&&", c2, () => c1, s);
+                        const val_ = iM.evalBinaryOp(
+                            "&&",
+                            c2,
+                            () => c1,
+                            s,
+                            util,
+                        );
                         const c1_ = iM.ensureBoolean(c1);
                         const c2_ = iM.ensureBoolean(c2);
                         let final_expr;
@@ -1193,7 +1220,13 @@ export class AssociativeRule3 extends Rule {
                     "||",
                     // original expression: c2 || (x1 || c1)
                     (x1, c1, c2, util, s) => {
-                        const val_ = iM.evalBinaryOp("||", c2, () => c1, s);
+                        const val_ = iM.evalBinaryOp(
+                            "||",
+                            c2,
+                            () => c1,
+                            s,
+                            util,
+                        );
                         const c1_ = iM.ensureBoolean(c1);
                         const c2_ = iM.ensureBoolean(c2);
                         let final_expr;
@@ -1246,7 +1279,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // Final expression (c1 + c2) + x1
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("+", c1, () => c2, s),
+                            iM.evalBinaryOp("+", c1, () => c2, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -1270,7 +1303,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // Final expression (c1 - c2) + x1
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("-", c1, () => c2, s),
+                            iM.evalBinaryOp("-", c1, () => c2, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -1299,7 +1332,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // Final expression (c1 + c2) - x1
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("+", c1, () => c2, s),
+                            iM.evalBinaryOp("+", c1, () => c2, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -1323,7 +1356,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // Final expression (c1 - c2) - x1
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("-", c1, () => c2, s),
+                            iM.evalBinaryOp("-", c1, () => c2, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -1352,7 +1385,7 @@ export class AssociativeRule3 extends Rule {
                     (x1, c1, c2, util, s) => {
                         // Final expression (c1 * c2) * x1
                         const val_ = iM.ensureInt(
-                            iM.evalBinaryOp("*", c1, () => c2, s),
+                            iM.evalBinaryOp("*", c1, () => c2, s, util),
                         );
                         const c1_ = iM.ensureInt(c1);
                         return {
@@ -1379,7 +1412,13 @@ export class AssociativeRule3 extends Rule {
                     "&&",
                     // original expression: (c1 && x1) && c2
                     (x1, c1, c2, util, s) => {
-                        const val_ = iM.evalBinaryOp("&&", c1, () => c2, s);
+                        const val_ = iM.evalBinaryOp(
+                            "&&",
+                            c1,
+                            () => c2,
+                            s,
+                            util,
+                        );
                         const c1_ = iM.ensureBoolean(c1);
                         const c2_ = iM.ensureBoolean(c2);
                         let final_expr;
@@ -1417,7 +1456,13 @@ export class AssociativeRule3 extends Rule {
                     "||",
                     // original expression: (c1 || x1) || c2
                     (x1, c1, c2, util, s) => {
-                        const val_ = iM.evalBinaryOp("||", c1, () => c2, s);
+                        const val_ = iM.evalBinaryOp(
+                            "||",
+                            c1,
+                            () => c2,
+                            s,
+                            util,
+                        );
                         const c1_ = iM.ensureBoolean(c1);
                         const c2_ = iM.ensureBoolean(c2);
                         let final_expr;

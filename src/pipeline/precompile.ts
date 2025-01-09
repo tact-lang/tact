@@ -30,16 +30,16 @@ export function precompile(
     ctx = resolveDescriptors(ctx, ast);
 
     // This creates TLB-style type definitions
-    ctx = resolveSignatures(ctx);
+    ctx = resolveSignatures(ctx, ast);
 
     // This creates allocations for all defined types
     ctx = resolveAllocations(ctx);
 
     // This checks and resolves all statements
-    ctx = resolveStatements(ctx);
+    ctx = resolveStatements(ctx, ast);
 
     // This extracts error messages
-    ctx = resolveErrors(ctx);
+    ctx = resolveErrors(ctx, ast);
 
     // Prepared context
     return ctx;

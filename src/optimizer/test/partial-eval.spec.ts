@@ -352,10 +352,9 @@ function testExpressionWithOptimizer(
 // The reason for doing this is that the partial evaluator will actually simplify constant
 // expressions. So, when comparing for equality of expressions, we also need to simplify
 // constant expressions.
-function dummyEval(
-    ast: AstExpression,
-    { cloneNode }: FactoryAst,
-): AstExpression {
+function dummyEval(ast: AstExpression, astFactory: FactoryAst): AstExpression {
+    const cloneNode = astFactory.cloneNode;
+    const util = getAstUtil(astFactory);
     const recurse = (ast: AstExpression): AstExpression => {
         switch (ast.kind) {
             case "null":
@@ -395,7 +394,7 @@ function dummyEval(
                 const newNode = cloneNode(ast);
                 newNode.operand = recurse(ast.operand);
                 if (isLiteral(newNode.operand)) {
-                    return evalUnaryOp(ast.op, newNode.operand, ast.loc);
+                    return evalUnaryOp(ast.op, newNode.operand, ast.loc, util);
                 }
                 return newNode;
             }
@@ -410,6 +409,7 @@ function dummyEval(
                         newNode.left,
                         () => valR,
                         ast.loc,
+                        util,
                     );
                 }
                 return newNode;
