@@ -3,7 +3,7 @@ import { Cell } from "@ton/core";
 import { Config, Options } from "./000-config/parseConfig";
 import { ILogger, Logger } from "./010-pipeline/logger";
 import { PackageFileFormat, run } from "./main";
-import { fileFormat } from "./packaging/fileFormat";
+import { fileFormat } from "./110-packaging/fileFormat";
 import { getCompilerVersion } from "./010-pipeline/version";
 
 export type VerifyResult =

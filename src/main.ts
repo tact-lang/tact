@@ -5,7 +5,7 @@ export {
     verifyConfig,
 } from "./000-config/parseConfig";
 
-export { PackageFileFormat } from "./packaging/fileFormat";
+export { PackageFileFormat } from "./110-packaging/fileFormat";
 
 export { build } from "./010-pipeline/build";
 

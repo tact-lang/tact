@@ -1,6 +1,6 @@
 import { ContractABI } from "@ton/core";
 import { CompilerContext } from "../010-pipeline/context";
-import { PackageFileFormat } from "../packaging/fileFormat";
+import { PackageFileFormat } from "../110-packaging/fileFormat";
 import { getType } from "../060-types/resolveDescriptors";
 import { Writer } from "../utils/Writer";
 import { TypeDescription } from "../060-types/types";
