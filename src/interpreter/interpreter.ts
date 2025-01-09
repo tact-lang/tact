@@ -57,7 +57,7 @@ import {
     isSelfId,
 } from "../050-grammar/ast";
 import { SrcInfo, dummySrcInfo, Parser, getParser } from "../050-grammar";
-import { divFloor, modFloor } from "../optimizer/util";
+import { divFloor, modFloor } from "../070-optimizer/util";
 import {
     getStaticConstant,
     getStaticFunction,
