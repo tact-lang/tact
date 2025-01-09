@@ -6,7 +6,7 @@ import {
     isLiteral,
     AstLiteral,
 } from "./grammar/ast";
-import { TactConstEvalError, throwInternalCompilerError } from "./errors";
+import { TactConstEvalError, throwInternalCompilerError } from "./error/errors";
 import { AstUtil } from "./optimizer/util";
 import { ExpressionTransformer } from "./optimizer/types";
 import { StandardOptimizer } from "./optimizer/standardOptimizer";

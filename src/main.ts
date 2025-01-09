@@ -16,4 +16,4 @@ export { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
 export * from "./browser";
 export * from "./verify";
 export * from "./logger";
-export * from "./errors";
+export * from "./error/errors";

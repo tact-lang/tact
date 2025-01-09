@@ -1,5 +1,5 @@
 import { Address, Cell, Slice } from "@ton/core";
-import { throwInternalCompilerError } from "../errors";
+import { throwInternalCompilerError } from "../error/errors";
 import { dummySrcInfo, SrcInfo } from "./src-info";
 
 export type AstModule = {

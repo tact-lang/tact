@@ -2,7 +2,10 @@ import * as $ from "@tonstudio/parser-runtime";
 import * as A from "../ast";
 import * as G from "./grammar";
 import type { $ast } from "./grammar";
-import { TactCompilationError, throwInternalCompilerError } from "../../errors";
+import {
+    TactCompilationError,
+    throwInternalCompilerError,
+} from "../../error/errors";
 import { SyntaxErrors, syntaxErrorSchema } from "../parser-error";
 import { AstSchema, getAstSchema } from "../ast-typed";
 import { getSrcInfo, ItemOrigin } from "../src-info";

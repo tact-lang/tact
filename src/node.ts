@@ -4,7 +4,7 @@ import { ConfigProject, Config, parseConfig } from "./config/parseConfig";
 import { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 import { build } from "./pipeline/build";
 import { LogLevel, Logger } from "./logger";
-import { TactErrorCollection } from "./errors";
+import { TactErrorCollection } from "./error/errors";
 
 type AdditionalCliOptions = {
     mode?: ConfigProject["mode"];

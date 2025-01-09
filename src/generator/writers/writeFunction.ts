@@ -22,7 +22,7 @@ import { cast } from "./cast";
 import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { ops } from "./ops";
 import { freshIdentifier } from "./freshIdentifier";
-import { idTextErr, throwInternalCompilerError } from "../../errors";
+import { idTextErr, throwInternalCompilerError } from "../../error/errors";
 import { ppAsmShuffle } from "../../prettyPrinter";
 
 export function writeCastedExpression(
