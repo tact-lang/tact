@@ -1,7 +1,7 @@
-import { Config, verifyConfig } from "./config/parseConfig";
-import { ILogger } from "./logger";
-import { build } from "./pipeline/build";
-import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
+import { Config, verifyConfig } from "./000-config/parseConfig";
+import { ILogger } from "./010-pipeline/logger";
+import { build } from "./010-pipeline/build";
+import { createVirtualFileSystem } from "./020-vfs/createVirtualFileSystem";
 
 export async function run(args: {
     config: Config;

@@ -1,0 +1,83 @@
+{
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json",
+  "projects": [
+    {
+      "name": "echo",
+      "path": "./echo.tact",
+      "output": "./output"
+    },
+    {
+      "name": "inheritance",
+      "path": "./inheritance.tact",
+      "output": "./output"
+    },
+    {
+      "name": "large",
+      "path": "./large.tact",
+      "output": "./output"
+    },
+    {
+      "name": "native",
+      "path": "./native.tact",
+      "output": "./output"
+    },
+    {
+      "name": "maps",
+      "path": "./maps.tact",
+      "output": "./output"
+    },
+    {
+      "name": "payouts",
+      "path": "./payouts.tact",
+      "output": "./output"
+    },
+    {
+      "name": "external",
+      "path": "./external.tact",
+      "output": "./output",
+      "options": {
+        "external": true
+      }
+    },
+    {
+      "name": "wallet",
+      "path": "./wallet.tact",
+      "output": "./output"
+    },
+    {
+      "name": "wallet-opt",
+      "path": "./wallet-opt.tact",
+      "output": "./output",
+      "options": {
+        "experimental": {
+          "inline": true
+        }
+      }
+    },
+    {
+      "name": "treasure",
+      "path": "./treasure.tact",
+      "output": "./output"
+    },
+    {
+      "name": "multisig",
+      "path": "./multisig.tact",
+      "output": "./output"
+    },
+    {
+      "name": "multisig-3",
+      "path": "./multisig-3.tact",
+      "output": "./output"
+    },
+    {
+      "name": "increment",
+      "path": "./increment.tact",
+      "output": "./output"
+    },
+    {
+      "name": "rugpull",
+      "path": "./rugpull.tact",
+      "output": "./output"
+    }
+  ]
+}
