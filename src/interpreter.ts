@@ -65,7 +65,7 @@ import {
     idText,
     isSelfId,
 } from "./grammar/ast";
-import { AstUtil, divFloor, modFloor } from "./optimizer/util";
+import { AstUtil, divFloor, getAstUtil, modFloor } from "./optimizer/util";
 import {
     getStaticConstant,
     getStaticFunction,
@@ -691,7 +691,7 @@ export function parseAndEvalExpression(
     sourceCode: string,
     ast: FactoryAst = getAstFactory(),
     parser: Parser = getParser(ast, defaultParser),
-    util: AstUtil,
+    util: AstUtil = getAstUtil(ast),
 ): EvalResult {
     try {
         const ast = parser.parseExpression(sourceCode);
