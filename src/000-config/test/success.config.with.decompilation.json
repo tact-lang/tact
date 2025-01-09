@@ -1,12 +1,12 @@
 {
-  "$schema": "../../schemas/configSchema.json",
+  "$schema": "../configSchema.json",
   "projects": [
     {
       "name": "success",
       "path": "./success.tact",
       "output": "./success_output",
       "options": { "external": true },
-      "mode": "full"
+      "mode": "fullWithDecompilation"
     }
   ]
 }
