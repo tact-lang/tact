@@ -1,4 +1,4 @@
-import { Config, verifyConfig } from "./config/parseConfig";
+import { Config, verifyConfig } from "./000-config/parseConfig";
 import { ILogger } from "./logger";
 import { build } from "./pipeline/build";
 import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";

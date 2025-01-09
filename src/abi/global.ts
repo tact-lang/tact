@@ -1,5 +1,5 @@
 import { Address, beginCell, Cell, toNano } from "@ton/core";
-import { enabledDebug } from "../config/features";
+import { enabledDebug } from "../000-config/features";
 import {
     writeAddress,
     writeCell,

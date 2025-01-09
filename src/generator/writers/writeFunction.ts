@@ -1,4 +1,4 @@
-import { enabledInline } from "../../config/features";
+import { enabledInline } from "../../000-config/features";
 import {
     AstAsmShuffle,
     AstCondition,

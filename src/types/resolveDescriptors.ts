@@ -50,7 +50,7 @@ import {
     intMapKeyFormats,
     intMapValFormats,
 } from "./resolveABITypeRef";
-import { enabledExternals } from "../config/features";
+import { enabledExternals } from "../000-config/features";
 import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
 import { ItemOrigin } from "../grammar";

@@ -3,7 +3,7 @@ export {
     ConfigProject,
     parseConfig,
     verifyConfig,
-} from "./config/parseConfig";
+} from "./000-config/parseConfig";
 
 export { PackageFileFormat } from "./packaging/fileFormat";
 

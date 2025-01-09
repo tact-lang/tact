@@ -4,7 +4,7 @@ import { loadCases } from "../utils/loadCases";
 import { openContext } from "../grammar/store";
 import { resolveStatements } from "./resolveStatements";
 import { CompilerContext } from "../context";
-import { featureEnable } from "../config/features";
+import { featureEnable } from "../000-config/features";
 import { getParser } from "../grammar";
 import { getAstFactory } from "../grammar/ast";
 import { defaultParser } from "../grammar/grammar";

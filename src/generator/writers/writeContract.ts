@@ -3,7 +3,7 @@ import {
     enabledInline,
     enabledInterfacesGetter,
     enabledIpfsAbiGetter,
-} from "../../config/features";
+} from "../../000-config/features";
 import { ItemOrigin } from "../../grammar";
 import { InitDescription, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";

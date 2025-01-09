@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { ConfigProject, Config, parseConfig } from "./config/parseConfig";
+import { ConfigProject, Config, parseConfig } from "./000-config/parseConfig";
 import { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 import { build } from "./pipeline/build";
 import { LogLevel, Logger } from "./logger";

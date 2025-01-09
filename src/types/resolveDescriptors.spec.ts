@@ -7,7 +7,7 @@ import {
 import { resolveSignatures } from "./resolveSignatures";
 import { loadCases } from "../utils/loadCases";
 import { openContext } from "../grammar/store";
-import { featureEnable } from "../config/features";
+import { featureEnable } from "../000-config/features";
 import { getParser, SrcInfo } from "../grammar";
 import { getAstFactory } from "../grammar/ast";
 import { isSrcInfo } from "../grammar/src-info";
