@@ -10,7 +10,7 @@ import {
     writeValue,
 } from "../writers/writeExpression";
 import { TactConstEvalError, throwCompilationError } from "../../030-error/errors";
-import { evalConstantExpression } from "../../interpreter/constEval";
+import { evalConstantExpression } from "../../070-optimizer/constEval";
 import { getErrorId } from "../../060-types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
 import { sha256_sync } from "@ton/crypto";

@@ -44,7 +44,7 @@ import { getRawAST } from "../050-grammar/store";
 import { cloneNode } from "../050-grammar/clone";
 import { crc16 } from "../utils/crc16";
 import { isSubsetOf } from "../utils/isSubsetOf";
-import { evalConstantExpression } from "../interpreter/constEval";
+import { evalConstantExpression } from "../070-optimizer/constEval";
 import {
     resolveABIType,
     intMapKeyFormats,

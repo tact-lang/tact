@@ -27,8 +27,8 @@ import {
 } from "./resolveDescriptors";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { FunctionDescription, printTypeRef, TypeRef } from "./types";
-import { evalConstantExpression } from "../interpreter/constEval";
-import { ensureInt } from "../interpreter/interpreter";
+import { evalConstantExpression } from "../070-optimizer/constEval";
+import { ensureInt } from "../070-optimizer/interpreter";
 import { crc16 } from "../utils/crc16";
 import { SrcInfo } from "../050-grammar";
 

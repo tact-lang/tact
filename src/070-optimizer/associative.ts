@@ -7,7 +7,7 @@ import {
     AstValue,
     isValue,
 } from "../050-grammar/ast";
-import * as interpreterModule from "../interpreter/interpreter";
+import * as interpreterModule from "./interpreter";
 import { Value } from "../060-types/types";
 import { ExpressionTransformer, Rule } from "./types";
 import {

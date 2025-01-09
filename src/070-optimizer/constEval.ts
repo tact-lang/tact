@@ -8,9 +8,9 @@ import {
 } from "../050-grammar/ast";
 import { TactConstEvalError } from "../030-error/errors";
 import { Value } from "../060-types/types";
-import { AstUtil, extractValue } from "../070-optimizer/util";
-import { ExpressionTransformer } from "../070-optimizer/types";
-import { StandardOptimizer } from "../070-optimizer/standardOptimizer";
+import { AstUtil, extractValue } from "./util";
+import { ExpressionTransformer } from "./types";
+import { StandardOptimizer } from "./standardOptimizer";
 import {
     Interpreter,
     InterpreterConfig,
