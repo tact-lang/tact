@@ -1,6 +1,6 @@
-import * as A from "./050-grammar/ast";
-import { groupBy, intercalate, isUndefined } from "./utils/array";
-import { makeVisitor } from "./utils/tricks";
+import * as A from "../050-grammar/ast";
+import { groupBy, intercalate, isUndefined } from "../utils/array";
+import { makeVisitor } from "../utils/tricks";
 
 //
 // Types

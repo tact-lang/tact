@@ -175,7 +175,7 @@ Some other codegen tests are as follows:
 
 ### Pretty-printer and AST comparators
 
-The entry point to the Tact AST pretty-printer is [src/prettyPrinter.ts](./src/prettyPrinter.ts). It is going to be used for the Tact source code formatter once the parser keeps comments and other relevant information.
+The entry point to the Tact AST pretty-printer is [src/prettyPrinter.ts](src/prettyPrinter/index.ts). It is going to be used for the Tact source code formatter once the parser keeps comments and other relevant information.
 
 The AST comparator is defined in [src/grammar/compare.ts](src/050-grammar/compare.ts). This is useful, for instance, for static analysis tools which can re-use the Tact TypeScript API.
 
