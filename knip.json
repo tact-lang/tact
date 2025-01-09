@@ -10,6 +10,7 @@
   "project": ["src/**/*.ts", "bin/tact.js", "bin/unboc.js"],
   "ignore": [
     "src/prettyPrinter/index.ts",
+    "src/000-config/parseConfig.ts",
     "src/030-error/display-to-json.ts",
     "src/050-grammar/ast.ts",
     "src/050-grammar/src-info.ts",

@@ -43,9 +43,6 @@
       "output": "./exit-codes/contracts/output"
     },
 
-
-
-    
     {
       "name": "maps1",
       "path": "./e2e-emulated/contracts/maps1.tact",

@@ -3,7 +3,7 @@ import * as path from "path";
 import * as glob from "glob";
 
 const cp = async (fromGlob: string, toPath: string) => {
-    for (const file of glob.sync(path.join(fromGlob, '**/*'))) {
+    for (const file of glob.sync(path.join(fromGlob, "**/*"))) {
         const relPath = path.relative(fromGlob, file);
         const pathTo = path.join(toPath, relPath);
         const stat = await fs.stat(file);
