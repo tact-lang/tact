@@ -21,9 +21,10 @@
     "gen": "yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && yarn gen:examples && yarn gen:func && yarn gen:projects",
     "clean": "rm -fr dist",
     "cleanall": "rm -fr dist node_modules",
+    "build:stdlib": "ts-node ./src/040-imports/copy.build.ts",
     "build:func": "ts-node ./src/090-func/copy.build.ts",
     "build:grammar": "ts-node ./src/050-grammar/prev/copy.build.ts",
-    "build": "tsc && yarn build:func && yarn build:grammar",
+    "build": "tsc && yarn build:stdlib && yarn build:func && yarn build:grammar",
     "test": "yarn gen:grammar && jest",
     "coverage": "cross-env COVERAGE=true jest",
     "release": "yarn clean && yarn build && yarn coverage && yarn release-it --npm.yarn1",
@@ -42,13 +43,16 @@
     "postpack": "pinst --enable"
   },
   "files": [
+    "!**/*",
     "dist/**/*",
-    "src/**/*",
+    "src/040-imports/stdlib/**/*",
     "bin/**/*",
+    "!**/*.build.js*",
+    "!**/*.build.d.ts*",
     "!**/test",
     "!/docs"
   ],
-  "main": "./dist/main.js",
+  "main": "./dist/index.js",
   "bin": {
     "tact": "bin/tact.js",
     "unboc": "bin/unboc.js"

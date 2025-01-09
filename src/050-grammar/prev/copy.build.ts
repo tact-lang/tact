@@ -9,9 +9,12 @@ const cp = async (fromGlob: string, toPath: string) => {
     }
 };
 
+const fromPath = path.join(__dirname, "/grammar.ohm*");
+const toPath = path.join(__dirname, "../../../dist/050-grammar/prev/");
+
 const main = async () => {
     try {
-        await cp("./src/grammar/prev/grammar.ohm*", "./dist/grammar/prev/");
+        await cp(fromPath, toPath);
     } catch (e) {
         console.error(e);
         process.exit(1);
