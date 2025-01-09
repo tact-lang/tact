@@ -145,4 +145,4 @@ export { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 
 export { parseAndEvalExpression } from "./interpreter";
 
-export { showValue } from "./types/types"; 
+export { showValue } from "./types/types";
