@@ -113,5 +113,17 @@ describe("semantics", () => {
 
         // The address before mutation and after mutation is the same.
         expect(address1.equals(address2)).toEqual(true);
+
+        // Testing equality on addresses
+        expect(await contract.getTestAddressEquality()).toEqual(true);
+
+        // Testing equality on slices
+        expect(await contract.getTestSliceEquality1()).toEqual(true);
+        expect(await contract.getTestSliceEquality2()).toEqual(true);
+
+        // Testing equality on cells
+        expect(await contract.getTestCellEquality1()).toEqual(true);
+        expect(await contract.getTestCellEquality2()).toEqual(true);
+        expect(await contract.getTestCellEquality3()).toEqual(true);
     });
 });
