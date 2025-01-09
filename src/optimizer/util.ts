@@ -7,7 +7,7 @@ import {
     FactoryAst,
 } from "../grammar/ast";
 import { dummySrcInfo } from "../grammar";
-import { throwInternalCompilerError } from "../error/errors";
+import { throwInternalCompilerError } from "../030-error/errors";
 import { Value } from "../types/types";
 
 export function extractValue(ast: AstValue): Value {

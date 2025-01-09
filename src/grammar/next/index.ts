@@ -2,11 +2,11 @@ import * as $ from "@tonstudio/parser-runtime";
 import * as A from "../ast";
 import * as G from "./grammar";
 import type { $ast } from "./grammar";
-import { TactCompilationError, throwInternalCompilerError } from "../../error/errors";
+import { TactCompilationError, throwInternalCompilerError } from "../../030-error/errors";
 import { SyntaxErrors, syntaxErrorSchema } from "../parser-error";
 import { AstSchema, getAstSchema } from "../ast-typed";
 import { getSrcInfo, ItemOrigin } from "../src-info";
-import { displayToString } from "../../error/display-to-string";
+import { displayToString } from "../../030-error/display-to-string";
 import { makeMakeVisitor } from "../../utils/tricks";
 
 const makeVisitor = makeMakeVisitor("$");

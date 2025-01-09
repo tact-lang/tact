@@ -56,7 +56,7 @@ import {
     AstStatementDestruct,
 } from "./ast";
 import { AstRenamer } from "./rename";
-import { throwInternalCompilerError } from "../error/errors";
+import { throwInternalCompilerError } from "../030-error/errors";
 import JSONbig from "json-bigint";
 
 /**

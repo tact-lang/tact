@@ -5,7 +5,7 @@ import {
     AstContractAttribute,
     AstNode,
 } from "./ast";
-import { throwInternalCompilerError } from "../error/errors";
+import { throwInternalCompilerError } from "../030-error/errors";
 
 /**
  * Provides utilities to sort lists of AST nodes.

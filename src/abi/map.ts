@@ -4,7 +4,7 @@ import { TypeRef } from "../types/types";
 import { WriterContext } from "../generator/Writer";
 import { ops } from "../generator/writers/ops";
 import { writeExpression } from "../generator/writers/writeExpression";
-import { throwCompilationError } from "../error/errors";
+import { throwCompilationError } from "../030-error/errors";
 import { getType } from "../types/resolveDescriptors";
 import { AbiFunction } from "./AbiFunction";
 import { AstExpression } from "../grammar/ast";

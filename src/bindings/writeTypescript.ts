@@ -14,7 +14,7 @@ import {
     writeTupleSerializer,
 } from "./typescript/writeStruct";
 import { AllocationCell } from "../storage/operation";
-import { throwInternalCompilerError } from "../error/errors";
+import { throwInternalCompilerError } from "../030-error/errors";
 import { topologicalSort } from "../utils/utils";
 import {
     allocate,

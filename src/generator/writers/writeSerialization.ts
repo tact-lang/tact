@@ -1,5 +1,5 @@
 import { contractErrors } from "../../abi/errors";
-import { throwInternalCompilerError } from "../../error/errors";
+import { throwInternalCompilerError } from "../../030-error/errors";
 import { dummySrcInfo, ItemOrigin } from "../../grammar";
 import { AllocationCell, AllocationOperation } from "../../storage/operation";
 import { StorageAllocation } from "../../storage/StorageAllocation";

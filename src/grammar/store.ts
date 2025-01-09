@@ -6,7 +6,7 @@ import {
     AstTypeDecl,
     AstAsmFunctionDef,
 } from "./ast";
-import { throwInternalCompilerError } from "../error/errors";
+import { throwInternalCompilerError } from "../030-error/errors";
 import { CompilerContext, createContextStore } from "../010-pipeline/context";
 import { ItemOrigin } from "./src-info";
 import { Parser } from "./grammar";

@@ -1,6 +1,6 @@
 import { MatchResult } from "ohm-js";
-import { ErrorDisplay } from "../../error/display";
-import { TactCompilationError } from "../../error/errors";
+import { ErrorDisplay } from "../../030-error/display";
+import { TactCompilationError } from "../../030-error/errors";
 import { syntaxErrorSchema } from "../parser-error";
 import { ItemOrigin, SrcInfo } from "../src-info";
 import { getSrcInfoFromOhm } from "./src-info";

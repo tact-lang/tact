@@ -6,7 +6,7 @@ export {
     TactInternalCompilerError,
     TactConstEvalError,
     TactErrorCollection,
-} from "./error/errors";
+} from "./030-error/errors";
 export {
     optionsSchema,
     projectSchema,

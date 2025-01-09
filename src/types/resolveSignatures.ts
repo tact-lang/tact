@@ -6,14 +6,14 @@ import {
     idTextErr,
     throwConstEvalError,
     throwInternalCompilerError,
-} from "../error/errors";
+} from "../030-error/errors";
 import { getType, getAllTypes } from "./resolveDescriptors";
 import {
     BinaryReceiverSelector,
     CommentReceiverSelector,
     ReceiverDescription,
 } from "./types";
-import { throwCompilationError } from "../error/errors";
+import { throwCompilationError } from "../030-error/errors";
 import { AstNumber, AstReceiver } from "../grammar/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 import { sha256_sync } from "@ton/crypto";

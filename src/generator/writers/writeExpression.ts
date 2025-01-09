@@ -9,7 +9,7 @@ import {
     idTextErr,
     TactConstEvalError,
     throwCompilationError,
-} from "../../error/errors";
+} from "../../030-error/errors";
 import { getExpType } from "../../types/resolveExpression";
 import {
     getStaticConstant,

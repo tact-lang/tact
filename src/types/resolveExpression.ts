@@ -16,7 +16,7 @@ import {
     idText,
     isWildcard,
 } from "../grammar/ast";
-import { idTextErr, throwCompilationError } from "../error/errors";
+import { idTextErr, throwCompilationError } from "../030-error/errors";
 import { CompilerContext, createContextStore } from "../010-pipeline/context";
 import {
     getAllTypes,
@@ -31,7 +31,7 @@ import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
-import { throwInternalCompilerError } from "../error/errors";
+import { throwInternalCompilerError } from "../030-error/errors";
 import { StructFunctions } from "../abi/struct";
 import { prettyPrint } from "../prettyPrinter";
 

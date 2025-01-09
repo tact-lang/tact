@@ -26,7 +26,7 @@ import {
     AstAsmInstruction,
 } from "./ast";
 import { createHash } from "crypto";
-import { throwInternalCompilerError } from "../error/errors";
+import { throwInternalCompilerError } from "../030-error/errors";
 import JSONbig from "json-bigint";
 
 export type AstHash = string;

@@ -20,7 +20,7 @@ import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
 import { FactoryAst, getAstFactory, idText } from "../grammar/ast";
-import { TactErrorCollection } from "../error/errors";
+import { TactErrorCollection } from "../030-error/errors";
 import { getParser, Parser } from "../grammar";
 import { defaultParser } from "../grammar/grammar";
 

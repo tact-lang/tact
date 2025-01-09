@@ -1,5 +1,5 @@
 import { ABIField, Address, Cell, Slice } from "@ton/core";
-import { throwInternalCompilerError } from "../error/errors";
+import { throwInternalCompilerError } from "../030-error/errors";
 import {
     AstConstantDef,
     AstFunctionDef,

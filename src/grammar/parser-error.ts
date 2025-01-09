@@ -1,4 +1,4 @@
-import { ErrorDisplay } from "../error/display";
+import { ErrorDisplay } from "../030-error/display";
 
 const attributeSchema =
     (name: string) =>

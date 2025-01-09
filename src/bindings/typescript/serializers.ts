@@ -1,6 +1,6 @@
 import { ABITypeRef } from "@ton/core";
 import { Writer } from "../../utils/Writer";
-import { throwInternalCompilerError } from "../../error/errors";
+import { throwInternalCompilerError } from "../../030-error/errors";
 
 const primitiveTypes = [
     "int",
