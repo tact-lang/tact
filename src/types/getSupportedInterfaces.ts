@@ -1,5 +1,5 @@
 import { enabledDebug } from "../000-config/features";
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../010-pipeline/context";
 import { TypeDescription } from "./types";
 
 export function getSupportedInterfaces(

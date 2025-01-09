@@ -3,7 +3,7 @@ import { resolveDescriptors } from "./resolveDescriptors";
 import { loadCases } from "../utils/loadCases";
 import { openContext } from "../grammar/store";
 import { resolveStatements } from "./resolveStatements";
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../010-pipeline/context";
 import { featureEnable } from "../000-config/features";
 import { getParser } from "../grammar";
 import { getAstFactory } from "../grammar/ast";

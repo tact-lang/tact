@@ -1,4 +1,4 @@
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../010-pipeline/context";
 import { escapeUnicodeControlCodes, trimIndent } from "../utils/text";
 import { topologicalSort } from "../utils/utils";
 import { Writer } from "../utils/Writer";

@@ -1,4 +1,4 @@
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../010-pipeline/context";
 import {
     AstBinaryOperation,
     AstExpression,

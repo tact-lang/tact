@@ -2,8 +2,8 @@ import path from "path";
 import fs from "fs";
 import { ConfigProject, Config, parseConfig } from "./000-config/parseConfig";
 import { createNodeFileSystem } from "./vfs/createNodeFileSystem";
-import { build } from "./pipeline/build";
-import { LogLevel, Logger } from "./logger";
+import { build } from "./010-pipeline/build";
+import { LogLevel, Logger } from "./010-pipeline/logger";
 import { TactErrorCollection } from "./error/errors";
 
 type AdditionalCliOptions = {

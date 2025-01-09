@@ -105,11 +105,11 @@ yarn knip
 Tact's command-line interface (CLI) is located in [bin/tact.js](./bin/tact.js).
 Tact uses the [meow](https://github.com/sindresorhus/meow) CLI arguments parser.
 
-The main entry point for the Tact CLI is [src/node.ts](./src/node.ts) and [src/pipeline/build.ts](./src/pipeline/build.ts) is the platform-independent compiler driver which contains the high-level compiler pipeline logic described above.
+The main entry point for the Tact CLI is [src/node.ts](./src/node.ts) and [src/pipeline/build.ts](src/010-pipeline/build.ts) is the platform-independent compiler driver which contains the high-level compiler pipeline logic described above.
 
 The Tact CLI gets Tact settings from a `tact.config.json` file or creates a default config for a single-file compilation mode. The format of `tact.config.json` files is specified in [schemas/configSchema.json](./schemas/configSchema.json).
 
-The so-called "pre-compilation" steps that include imports resolution, type-checking, building schemas for high-level Tact data structures to be serialized/deserialized as cells (this step is dubbed "allocation") are located in [src/pipeline/precompile.ts](src/pipeline/precompile.ts).
+The so-called "pre-compilation" steps that include imports resolution, type-checking, building schemas for high-level Tact data structures to be serialized/deserialized as cells (this step is dubbed "allocation") are located in [src/pipeline/precompile.ts](src/010-pipeline/precompile.ts).
 
 Besides the terminal, the Tact compiler is supposed to work in browser environments as well.
 

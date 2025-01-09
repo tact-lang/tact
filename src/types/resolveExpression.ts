@@ -17,7 +17,7 @@ import {
     isWildcard,
 } from "../grammar/ast";
 import { idTextErr, throwCompilationError } from "../error/errors";
-import { CompilerContext, createContextStore } from "../context";
+import { CompilerContext, createContextStore } from "../010-pipeline/context";
 import {
     getAllTypes,
     getStaticConstant,

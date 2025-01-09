@@ -1,5 +1,5 @@
-export { enableFeatures, build } from "./pipeline/build";
-export { precompile } from "./pipeline/precompile";
+export { enableFeatures, build } from "./010-pipeline/build";
+export { precompile } from "./010-pipeline/precompile";
 export {
     TactError,
     TactCompilationError,

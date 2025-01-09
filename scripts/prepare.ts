@@ -5,8 +5,8 @@ import { FuncCompilationResult, funcCompile } from "../src/func/funcCompile";
 import path from "path";
 import { glob } from "glob";
 import { verify } from "../src/verify";
-import { Logger } from "../src/logger";
-import { __DANGER__disableVersionNumber } from "../src/pipeline/version";
+import { Logger } from "../src/010-pipeline/logger";
+import { __DANGER__disableVersionNumber } from "../src/010-pipeline/version";
 
 // Read cases
 void (async () => {

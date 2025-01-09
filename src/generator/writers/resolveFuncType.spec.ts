@@ -3,7 +3,7 @@ import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
 import { openContext } from "../../grammar/store";
-import { CompilerContext } from "../../context";
+import { CompilerContext } from "../../010-pipeline/context";
 import { getParser } from "../../grammar";
 import { defaultParser } from "../../grammar/grammar";
 
