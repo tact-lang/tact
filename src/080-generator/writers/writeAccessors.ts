@@ -1,5 +1,5 @@
 import { contractErrors } from "../builtins/errors";
-import { maxTupleSize } from "../../bindings/typescript/writeStruct";
+import { maxTupleSize } from "../../100-bindings/typescript/writeStruct";
 import { ItemOrigin } from "../../050-grammar";
 import { getType } from "../../060-types/resolveDescriptors";
 import { TypeDescription } from "../../060-types/types";

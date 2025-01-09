@@ -1,6 +1,6 @@
 import { beginCell, Cell, Dictionary } from "@ton/core";
 import { decompileAll } from "@tact-lang/opcode";
-import { writeTypescript } from "../bindings/writeTypescript";
+import { writeTypescript } from "../100-bindings/writeTypescript";
 import { featureEnable } from "../000-config/features";
 import { ConfigProject } from "../000-config/parseConfig";
 import { CompilerContext } from "./context";
