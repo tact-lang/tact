@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { ConfigProject, Config, parseConfig } from "./000-config/parseConfig";
-import { createNodeFileSystem } from "./vfs/createNodeFileSystem";
+import { createNodeFileSystem } from "./020-vfs/createNodeFileSystem";
 import { build } from "./010-pipeline/build";
 import { LogLevel, Logger } from "./010-pipeline/logger";
 import { TactErrorCollection } from "./error/errors";
@@ -141,6 +141,6 @@ export async function run(args: {
     return { ok: success, error: errorMessages };
 }
 
-export { createNodeFileSystem } from "./vfs/createNodeFileSystem";
+export { createNodeFileSystem } from "./020-vfs/createNodeFileSystem";
 
 export { parseAndEvalExpression } from "./interpreter/interpreter";

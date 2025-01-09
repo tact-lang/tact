@@ -1,5 +1,5 @@
 import { resolveImports } from "./resolveImports";
-import { createNodeFileSystem } from "../vfs/createNodeFileSystem";
+import { createNodeFileSystem } from "../020-vfs/createNodeFileSystem";
 import path from "path";
 import { getParser } from "../grammar";
 import { getAstFactory } from "../grammar/ast";

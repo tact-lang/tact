@@ -1,4 +1,4 @@
-import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
+import { VirtualFileSystem } from "../020-vfs/VirtualFileSystem";
 import { parseImportPath } from "./parseImportPath";
 
 type ResolveLibraryArgs = {

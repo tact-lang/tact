@@ -1,5 +1,5 @@
 import { ItemOrigin, Parser } from "../grammar";
-import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
+import { VirtualFileSystem } from "../020-vfs/VirtualFileSystem";
 import { throwCompilationError } from "../error/errors";
 import { resolveLibrary } from "./resolveLibrary";
 

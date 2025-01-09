@@ -1,4 +1,4 @@
-import { createVirtualFileSystem } from "../vfs/createVirtualFileSystem";
+import { createVirtualFileSystem } from "../020-vfs/createVirtualFileSystem";
 import { resolveLibrary } from "./resolveLibrary";
 
 describe("resolveLibrary", () => {

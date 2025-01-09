@@ -9,9 +9,9 @@ export { PackageFileFormat } from "./packaging/fileFormat";
 
 export { build } from "./010-pipeline/build";
 
-export { VirtualFileSystem } from "./vfs/VirtualFileSystem";
+export { VirtualFileSystem } from "./020-vfs/VirtualFileSystem";
 
-export { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
+export { createVirtualFileSystem } from "./020-vfs/createVirtualFileSystem";
 
 export * from "./browser";
 export * from "./verify";
