@@ -10,7 +10,14 @@ import {
     ReplaceGetAllMaps,
 } from "./contracts/output/maps2_MapTestContract";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Address, beginCell, Dictionary, toNano } from "@ton/core";
+import {
+    Address,
+    beginCell,
+    Cell,
+    Dictionary,
+    DictionaryKey,
+    toNano,
+} from "@ton/core";
 import "@ton/test-utils";
 
 // Type definitions for keys and values to make them type-safe
@@ -1814,5 +1821,153 @@ describe("MapTestContract", () => {
             success: false,
             exitCode: 128,
         });
+    });
+
+    it("fromCell: should correctly set maps from cells", async () => {
+        function getTestKey(mapName: string): bigint | Address {
+            if (mapName.startsWith("address_")) {
+                return Address.parse(
+                    "UQBKgXCNLPexWhs2L79kiARR1phGH1LwXxRbNsCFF9doczSI",
+                );
+            }
+            return 1n;
+        }
+
+        function buildDictionaryCell(mapName: string): Cell {
+            let keyType: DictionaryKey<number | bigint | Address>;
+            if (mapName.startsWith("int8_")) {
+                keyType = Dictionary.Keys.BigInt(8);
+            } else if (mapName.startsWith("int42_")) {
+                keyType = Dictionary.Keys.BigInt(42);
+            } else if (mapName.startsWith("int256_")) {
+                keyType = Dictionary.Keys.BigInt(256);
+            } else if (mapName.startsWith("int_")) {
+                keyType = Dictionary.Keys.BigInt(257);
+            } else if (mapName.startsWith("uint8_")) {
+                keyType = Dictionary.Keys.BigUint(8);
+            } else if (mapName.startsWith("uint42_")) {
+                keyType = Dictionary.Keys.BigUint(42);
+            } else if (mapName.startsWith("uint256_")) {
+                keyType = Dictionary.Keys.BigUint(256);
+            } else if (mapName.startsWith("address_")) {
+                keyType = Dictionary.Keys.Address();
+            } else {
+                keyType = Dictionary.Keys.BigInt(257);
+            }
+
+            const [, valuePart] = mapName.split("_", 2) as [string, string];
+            const testKey = getTestKey(mapName);
+
+            let dict: Dictionary<any, any>;
+
+            switch (valuePart) {
+                case "int":
+                    dict = Dictionary.empty(
+                        keyType,
+                        Dictionary.Values.BigInt(257),
+                    ).set(testKey, 111n);
+                    break;
+                case "int8":
+                    dict = Dictionary.empty(
+                        keyType,
+                        Dictionary.Values.BigInt(8),
+                    ).set(testKey, -10n);
+                    break;
+                case "int42":
+                    dict = Dictionary.empty(
+                        keyType,
+                        Dictionary.Values.BigInt(42),
+                    ).set(testKey, 4242n);
+                    break;
+                case "int256":
+                    dict = Dictionary.empty(
+                        keyType,
+                        Dictionary.Values.BigInt(256),
+                    ).set(testKey, -99999n);
+                    break;
+                case "uint8":
+                    dict = Dictionary.empty(
+                        keyType,
+                        Dictionary.Values.BigUint(8),
+                    ).set(testKey, 200n);
+                    break;
+                case "uint42":
+                    dict = Dictionary.empty(
+                        keyType,
+                        Dictionary.Values.BigUint(42),
+                    ).set(testKey, 424242n);
+                    break;
+                case "uint256":
+                    dict = Dictionary.empty(
+                        keyType,
+                        Dictionary.Values.BigUint(256),
+                    ).set(testKey, 999999n);
+                    break;
+                case "coins":
+                    dict = Dictionary.empty(
+                        keyType,
+                        Dictionary.Values.BigVarUint(4),
+                    ).set(testKey, toNano("3"));
+                    break;
+                default:
+                    throw new Error(`Unknown value part: ${valuePart}`); // should never happen
+            }
+
+            return beginCell().storeDictDirect(dict).endCell();
+        }
+
+        // Build the message with one dictionary-cell per map in mapConfigs
+        const fromCellMessage: any = { $$type: "FromCellAllMaps" };
+        for (const { mapName } of mapConfigs) {
+            fromCellMessage[mapName] = buildDictionaryCell(mapName);
+        }
+
+        // Send message
+        const result = await contract.send(
+            treasury.getSender(),
+            { value: toNano("1") },
+            fromCellMessage,
+        );
+        expect(result.transactions).toHaveLength(2);
+        expect(result.transactions).toHaveTransaction({
+            on: contract.address,
+            success: true,
+        });
+
+        // Read maps from contract
+        const allMaps = await contract.getAllMaps();
+
+        // Verify each dictionary
+        for (const { mapName } of mapConfigs) {
+            const map = allMaps[mapName] as Dictionary<any, any>;
+            expect(map.size).toBe(1);
+
+            let testKey: bigint | Address | number = getTestKey(mapName);
+            testKey =
+                testKey instanceof Address ||
+                (!mapName.startsWith("int8_") && !mapName.startsWith("uint8_"))
+                    ? testKey
+                    : Number(testKey);
+            const val = map.get(testKey);
+
+            // Check the stored value
+            if (mapName.endsWith("_int")) {
+                expect(val).toBe(111n);
+            } else if (mapName.endsWith("_int8")) {
+                expect(val).toBe(-10);
+            } else if (mapName.endsWith("_int42")) {
+                expect(val).toBe(4242n);
+            } else if (mapName.endsWith("_int256")) {
+                expect(val).toBe(-99999n);
+            } else if (mapName.endsWith("_uint8")) {
+                expect(val).toBe(200);
+            } else if (mapName.endsWith("_uint42")) {
+                expect(val).toBe(424242n);
+            } else if (mapName.endsWith("_uint256")) {
+                expect(val).toBe(999999n);
+            } else if (mapName.endsWith("_coins")) {
+                expect(val).toBe(toNano("3"));
+            }
+        }
     });
 });
