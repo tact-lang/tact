@@ -137,7 +137,7 @@ In addition to that, [`tact.config.json`](/book/config) may still be used in [Bl
 
 ### Persistent state variables {#variables}
 
-Contracts can define state variables that persist between contract calls. Contracts in TON [pay rent](https://docs.ton.org/develop/smart-contracts/fees#storage-fee) in proportion to the amount of persistent space they consume, so [compact representations via serialization](/book/integers#serialization) are encouraged.
+Contracts can define state variables that persist between contract calls, and thus commonly referred to as _storage_ variables. Contracts in TON [pay rent](https://docs.ton.org/develop/smart-contracts/fees#storage-fee) in proportion to the amount of persistent space they consume, so [compact representations via serialization](/book/integers#serialization) are encouraged.
 
 ```tact
 contract Example {
@@ -149,11 +149,25 @@ contract Example {
 }
 ```
 
-State variables must have a default value or initialized in [`init(){:tact}`](#init-function) function, that runs on deployment of the contract. The only exception is persistent state variables of type [`map<K, V>{:tact}`](/book/maps) since they are initialized empty by default.
+State variables must have a default value or be initialized in the [`init(){:tact}`](#init-function) function that runs once on deployment of the contract. The only exception are persistent state variables of type [`map<K, V>{:tact}`](/book/maps), since they are initialized empty by default.
+
+The default value of state variables is assigned before any values could be assigned in the [`init(){:tact}`](#init-function) function.
+
+```tact
+contract Example {
+    // persistent state variables
+    var1: Int = 0; // initialized with default value 0
+
+    // constructor function
+    init() {
+        self.var1 = 42; // overrides the default to 42
+    }
+}
+```
 
 :::note
 
-  Note, that Tact supports local, non-persistent-state variables too, see: [Variable declaration](/book/statements#let).
+  Tact supports local, non-persistent-state variables too, see: [Variable declaration](/book/statements#let).
 
 :::
 
@@ -207,6 +221,20 @@ contract Example {
     // constructor function
     init() {
         self.var2 = 42;
+    }
+}
+```
+
+The default value of [state variables](#variables) is assigned before any values could be assigned in the `init(){:tact}` function.
+
+```tact
+contract Example {
+    // persistent state variables
+    var1: Int = 0; // initialized with default value 0
+
+    // constructor function
+    init() {
+        self.var1 = 42; // overrides the default to 42
     }
 }
 ```
