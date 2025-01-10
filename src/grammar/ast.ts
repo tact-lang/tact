@@ -384,7 +384,9 @@ export type AstExpression =
     | AstOpBinary
     | AstOpUnary
     | AstConditional
-    | AstLiteral; // Should I place it here or in AstExpressionPrimary?
+    // AstLiteral could be added in AstExpressionPrimary,
+    // but AstExpressionPrimary is planned to be removed. See issue #1290 (https://github.com/tact-lang/tact/issues/1290).
+    | AstLiteral;
 
 export type AstExpressionPrimary =
     | AstMethodCall
@@ -656,6 +658,10 @@ export type AstLiteral =
     | AstNumber
     | AstBoolean
     | AstNull
+    // An AstSimplifiedString is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.
+    // An AstString is not a literal because it may contain escaping characters that have not been simplified, like '\\'.
+    // AstSimplifiedString is always produced by the interpreter, never directly by the parser. The parser produces AstStrings, which
+    // then get transformed into AstSimplifiedString by the interpreter.
     | AstSimplifiedString
     | AstAddress
     | AstCell
@@ -997,6 +1003,83 @@ function eqArrays<T>(
 
     return true;
 }
+
+/* 
+Functions that return guard types like "ast is AstLiteral" are unsafe to use in production code. 
+But there is a way to make them safe by introducing an intermediate function, like 
+the "checkLiteral" function defined below after "isLiteral". In principle, it is possible to use "checkLiteral" 
+directly in the code (which avoids the guard type altogether), but it produces code that reduces readability significantly.
+
+The pattern shown with "isLiteral" and "checkLiteral" can be generalized to other functions that produce a guard type 
+based on a decision of several cases. 
+For example, if we have the following function, where we assume that B is a subtype of A:
+
+function isB(d: A): d is B {
+  if (cond1(d)) {        // It is assumed that cond1(d) determines d to be of type B inside the if
+     return true;  
+  } else if (cond2(d)) { // It is assumed that cond2(d) determines d to be of type A but not of type B inside the if
+     return false;
+  } else if (cond3(d)) { // It is assumed that cond3(d) determines d to be of type B inside the if
+     return true;
+  } else {               // It is assumed that d is of type A but not of type B inside the else
+     return false;
+  }
+}
+
+We can introduce a "checkB" function as follows:
+
+function checkB<T>(d: A, t: (arg: B) => T, f: (arg: Exclude<A,B>) => T): T {
+  if (cond1(d)) {  
+     return t(d);  
+  } else if (cond2(d)) {
+     return f(d);
+  } else if (cond3(d)) {
+     return t(d);
+  } else {
+     return f(d);
+  }
+}
+
+Here, all the "true" cases return t(d) and all the "false" cases return f(d). The names of the functions t and f help remember 
+that they correspond to the true and false cases, respectively. Observe that cond1(d) and cond3(d) determine the type of 
+d to be B, which means we can pass d to the t function. For the false cases, the type of d is determined to be 
+A but not B, which means we can pass d to function f, because f's argument type Exclude<A,B> states
+that the argument must be of type A but not of type B, i.e., of type "A - B" if we see the types as sets. 
+
+checkB is safe because the compiler will complain if, for example, we use t(d) in the else case:
+
+function checkB<T>(d: A, t: (arg: B) => T, f: (arg: Exclude<A,B>) => T): T {
+  if (cond1(d)) {  
+     return t(d);  
+  } else if (cond2(d)) {
+     return f(d);
+  } else if (cond3(d)) {
+     return t(d);
+  } else {
+     return t(d);   // Compiler will signal an error that d is not assignable to type B
+  }
+}
+
+Contrary to the original function, where the compiler remains silent if we incorrectly return true in the else:
+
+function isB(d: A): d is B {
+  if (cond1(d)) {
+     return true;  
+  } else if (cond2(d)) {
+     return false;
+  } else if (cond3(d)) { 
+     return true;
+  } else {              
+     return true;   // Wrong, but compiler remains silent
+  }
+}
+
+After we have our "checkB" function, we can define the "isB" function simply as:
+
+function isB(d: A): d is B {
+  return checkB(d, () => true, () => false);
+}
+*/
 
 export function isLiteral(ast: AstExpression): ast is AstLiteral {
     return checkLiteral(
