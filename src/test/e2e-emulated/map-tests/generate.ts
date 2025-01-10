@@ -4,6 +4,7 @@ import { mkdir, writeFile } from "fs/promises";
 import { readFileSync } from "fs";
 import path from "path";
 import { exit } from "node:process";
+import { descriptionToString, intKeyFormats, intValFormats } from "./map-int-limits-key-value-types";
 
 const pwd = (fileName: string): string => path.join(__dirname, fileName);
 
@@ -46,6 +47,7 @@ const templateSpecSourceCode: string = readFileSync(
 ).toString();
 
 const compileContracts = async () => {
+    // compile map properties contracts
     for (const key of keyTypes) {
         for (const val of valTypes) {
             const testName = `${key.type}_${val.type}`.replaceAll(" ", "-");
@@ -65,6 +67,12 @@ const compileContracts = async () => {
                 exit(1);
             }
         }
+    }
+    // compile int map limit contracts
+    for (const key of intKeyFormats) {
+        for (const val of intValFormats) {
+            const testName = `${descriptionToString(key)}_${descriptionToString(val)}`;
+        }   
     }
 };
 

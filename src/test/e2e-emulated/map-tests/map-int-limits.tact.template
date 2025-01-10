@@ -1,0 +1,91 @@
+// Key types: Int as KEY_FORMAT
+// Value types: Int as VAL_FORMAT
+
+const KEY_MIN: Int = KEY_MIN_PLACEHOLDER;
+const KEY_MAX: Int = KEY_MAX_PLACEHOLDER;
+
+const VAL_MIN: Int = VAL_MIN_PLACEHOLDER;
+const VAL_MAX: Int = VAL_MAX_PLACEHOLDER;
+
+// -pow(2, 256)
+const MIN_INT257: Int = -115792089237316195423570985008687907853269984665640564039457584007913129639936;
+// pow(2, 256) - 1
+const MAX_INT257: Int = 115792089237316195423570985008687907853269984665640564039457584007913129639935;
+
+contract MapIntLimitTester {
+    const ExitCodeTooLargeNum: Int = 1024;
+    const ExitCodeTooSmallNum: Int = 1025;
+
+    // Property: m.set(key.min, v).set(key.max, v) does not throw
+    get fun testSetMinAndMaxDoesNotThrow(): Bool {
+        let m: map<Int as KEY_FORMAT, Int as VAL_FORMAT> = emptyMap();
+        m.set(KEY_MIN, VAL_MIN);
+        m.set(KEY_MIN, VAL_MAX);
+        m.set(KEY_MAX, VAL_MIN);
+        m.set(KEY_MAX, VAL_MAX);
+        return
+            true;
+    }
+
+    // Property: KEY_MAX < MAX_INT257 => m.get(KEY_MAX + 1) == null
+    // no exception occurs
+    get fun testGetGreaterThanMax(): Bool {
+        let m: map<Int as KEY_FORMAT, Int as VAL_FORMAT> = emptyMap();
+        return
+            !(KEY_MAX < MAX_INT257) || 
+            m.get(KEY_MAX + 1) == null
+    }
+
+    // Property: KEY_MIN > MIN_INT257 => m.get(KEY_MIN - 1) == null
+    // no exception occurs
+    get fun testGetSmallerThanMin(): Bool {
+        let m: map<Int as KEY_FORMAT, Int as VAL_FORMAT> = emptyMap();
+        return
+            !(KEY_MIN > MIN_INT257) || 
+            m.get(KEY_MIN - 1) == null
+    }
+
+    // Property: KEY_MAX < MAX_INT257 => m.set(KEY_MAX + 1, 0) should result in exit code 5
+    get fun testSetKeyGreaterThanMax(): Bool {
+        if (!(KEY_MAX < MAX_INT257)) return true;
+        let m: map<Int as KEY_FORMAT, Int as VAL_FORMAT> = emptyMap();
+        try { m.set(KEY_MAX + 1, 0) }
+        catch (exitCode) {
+            return exitCode == 5
+        }
+        return false;
+    }
+
+    // Property: KEY_MIN > MIN_INT257 => m.set(KEY_MIN - 1, 0) should result in exit code 5
+    get fun testSetKeySmallerThanMin(): Bool {
+        if (!(KEY_MIN > MIN_INT257)) return true;
+        let m: map<Int as KEY_FORMAT, Int as VAL_FORMAT> = emptyMap();
+        try { m.set(KEY_MIN - 1, 0) }
+        catch (exitCode) {
+            return exitCode == 5
+        }
+        return false;
+    }
+
+    // Property: VAL_MAX < MAX_INT257 => m.set(0, VAL_MAX + 1) should result in exit code 5
+    get fun testSetValGreaterThanMax(): Bool {
+        if (!(VAL_MAX < MAX_INT257)) return true;
+        let m: map<Int as KEY_FORMAT, Int as VAL_FORMAT> = emptyMap();
+        try { m.set(0, VAL_MAX + 1) }
+        catch (exitCode) {
+            return exitCode == 5
+        }
+        return false;
+    }
+
+    // Property: VAL_MIN > MIN_INT257 => m.set(0, VAL_MIN - 1) should result in exit code 5
+    get fun testSetValSmallerThanMin(): Bool {
+        if (!(VAL_MIN > MIN_INT257)) return true;
+        let m: map<Int as KEY_FORMAT, Int as VAL_FORMAT> = emptyMap();
+        try { m.set(0, VAL_MIN - 1) }
+        catch (exitCode) {
+            return exitCode == 5
+        }
+        return false;
+    }
+}
