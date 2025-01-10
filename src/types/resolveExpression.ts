@@ -15,6 +15,12 @@ import {
     eqNames,
     idText,
     isWildcard,
+    AstAddress,
+    AstCell,
+    AstSlice,
+    AstSimplifiedString,
+    AstCommentValue,
+    AstStructValue,
 } from "../grammar/ast";
 import { idTextErr, throwCompilationError } from "../errors";
 import { CompilerContext, createContextStore } from "../context";
@@ -98,8 +104,44 @@ function resolveNullLiteral(
     return registerExpType(ctx, exp, { kind: "null" });
 }
 
+function resolveAddressLiteral(
+    exp: AstAddress,
+    sctx: StatementContext,
+    ctx: CompilerContext,
+): CompilerContext {
+    return registerExpType(ctx, exp, {
+        kind: "ref",
+        name: "Address",
+        optional: false,
+    });
+}
+
+function resolveCellLiteral(
+    exp: AstCell,
+    sctx: StatementContext,
+    ctx: CompilerContext,
+): CompilerContext {
+    return registerExpType(ctx, exp, {
+        kind: "ref",
+        name: "Cell",
+        optional: false,
+    });
+}
+
+function resolveSliceLiteral(
+    exp: AstSlice,
+    sctx: StatementContext,
+    ctx: CompilerContext,
+): CompilerContext {
+    return registerExpType(ctx, exp, {
+        kind: "ref",
+        name: "Slice",
+        optional: false,
+    });
+}
+
 function resolveStringLiteral(
-    exp: AstString,
+    exp: AstString | AstSimplifiedString | AstCommentValue,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -111,7 +153,7 @@ function resolveStringLiteral(
 }
 
 function resolveStructNew(
-    exp: AstStructInstance,
+    exp: AstStructInstance | AstStructValue,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -764,6 +806,27 @@ export function resolveExpression(
         }
         case "string": {
             return resolveStringLiteral(exp, sctx, ctx);
+        }
+        case "address": {
+            return resolveAddressLiteral(exp, sctx, ctx);
+        }
+        case "cell": {
+            return resolveCellLiteral(exp, sctx, ctx);
+        }
+        case "slice": {
+            return resolveSliceLiteral(exp, sctx, ctx);
+        }
+        case "simplified_string": {
+            // A simplified string is resolved as a string
+            return resolveStringLiteral(exp, sctx, ctx);
+        }
+        case "comment_value": {
+            // A comment value is resolved as a string
+            return resolveStringLiteral(exp, sctx, ctx);
+        }
+        case "struct_value": {
+            // A struct value is resolved as a struct instance
+            return resolveStructNew(exp, sctx, ctx);
         }
         case "struct_instance": {
             return resolveStructNew(exp, sctx, ctx);

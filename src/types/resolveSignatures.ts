@@ -14,14 +14,17 @@ import {
     ReceiverDescription,
 } from "./types";
 import { throwCompilationError } from "../errors";
-import { AstNumber, AstReceiver } from "../grammar/ast";
+import { AstNumber, AstReceiver, FactoryAst } from "../grammar/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 import { sha256_sync } from "@ton/crypto";
 import { dummySrcInfo } from "../grammar";
 import { ensureInt } from "../interpreter";
 import { evalConstantExpression } from "../constEval";
+import { getAstUtil } from "../optimizer/util";
 
-export function resolveSignatures(ctx: CompilerContext) {
+export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
+    const util = getAstUtil(Ast);
+
     const signatures: Map<
         string,
         { signature: string; tlb: string; id: AstNumber | null }
@@ -203,9 +206,8 @@ export function resolveSignatures(ctx: CompilerContext) {
                 // ```
                 // WILL NOT result in error
                 const opCode = ensureInt(
-                    evalConstantExpression(t.ast.opcode, ctx),
-                    t.ast.opcode.loc,
-                );
+                    evalConstantExpression(t.ast.opcode, ctx, util),
+                ).value;
                 if (opCode === 0n) {
                     throwConstEvalError(
                         `Opcode of message ${idTextErr(t.ast.name)} is zero: those are reserved for text comments and cannot be used for message structs`,

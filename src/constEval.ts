@@ -3,12 +3,11 @@ import {
     AstBinaryOperation,
     AstExpression,
     AstUnaryOperation,
-    AstValue,
-    isValue,
+    isLiteral,
+    AstLiteral,
 } from "./grammar/ast";
-import { TactConstEvalError } from "./errors";
-import { Value } from "./types/types";
-import { AstUtil, extractValue } from "./optimizer/util";
+import { TactConstEvalError, throwInternalCompilerError } from "./errors";
+import { AstUtil } from "./optimizer/util";
 import { ExpressionTransformer } from "./optimizer/types";
 import { StandardOptimizer } from "./optimizer/standardOptimizer";
 import {
@@ -45,21 +44,14 @@ export const getOptimizer = (util: AstUtil) => {
     ): AstExpression {
         if (operand.kind === "number" && op === "-") {
             // emulating negative integer literals
-            return util.makeValueExpression(ensureInt(-operand.value, source));
+            return ensureInt(util.makeNumberLiteral(-operand.value, source));
         }
 
         const simplOperand = partiallyEvalExpression(operand, ctx);
 
-        if (isValue(simplOperand)) {
-            const valueOperand = extractValue(simplOperand as AstValue);
-            const result = evalUnaryOp(
-                op,
-                valueOperand,
-                simplOperand.loc,
-                source,
-            );
-            // Wrap the value into a Tree to continue simplifications
-            return util.makeValueExpression(result);
+        if (isLiteral(simplOperand)) {
+            const result = evalUnaryOp(op, simplOperand, source, util);
+            return result;
         } else {
             const newAst = util.makeUnaryExpression(op, simplOperand);
             return optimizer.applyRules(newAst);
@@ -75,27 +67,25 @@ export const getOptimizer = (util: AstUtil) => {
     ): AstExpression {
         const leftOperand = partiallyEvalExpression(left, ctx);
 
-        if (isValue(leftOperand)) {
+        if (isLiteral(leftOperand)) {
             // Because of short-circuiting, we must delay evaluation of the right operand
-            const valueLeftOperand = extractValue(leftOperand as AstValue);
-
             try {
                 const result = evalBinaryOp(
                     op,
-                    valueLeftOperand,
+                    leftOperand,
                     // We delay the evaluation of the right operand inside a continuation
                     () => {
                         const rightOperand = partiallyEvalExpression(
                             right,
                             ctx,
                         );
-                        if (isValue(rightOperand)) {
-                            // If the right operand reduces to a value, then we can let the function
-                            // evalBinaryOp finish its normal execution by returning the value
-                            // in the right operand.
-                            return extractValue(rightOperand as AstValue);
+                        if (isLiteral(rightOperand)) {
+                            // If the right operand reduced to a value, then we can let the function
+                            // evalBinaryOp finish its normal execution by returning the
+                            // right operand.
+                            return rightOperand;
                         } else {
-                            // If the right operand does not reduce to a value,
+                            // If the right operand does not reduce to a value,<
                             // we interrupt the execution of the evalBinaryOp function
                             // by returning an exception with the partially evaluated right operand.
                             // The simplification rules will handle the partially evaluated tree in the catch
@@ -103,12 +93,11 @@ export const getOptimizer = (util: AstUtil) => {
                             throw new PartiallyEvaluatedTree(rightOperand);
                         }
                     },
-                    leftOperand.loc,
-                    right.loc,
                     source,
+                    util,
                 );
 
-                return util.makeValueExpression(result);
+                return result;
             } catch (e) {
                 if (e instanceof PartiallyEvaluatedTree) {
                     // The right operand did not evaluate to a value. Hence,
@@ -142,13 +131,11 @@ export const getOptimizer = (util: AstUtil) => {
         ctx: CompilerContext,
         interpreterConfig?: InterpreterConfig,
     ): AstExpression {
-        const interpreter = new Interpreter(ctx, interpreterConfig);
+        const interpreter = new Interpreter(util, ctx, interpreterConfig);
         switch (ast.kind) {
             case "id":
                 try {
-                    return util.makeValueExpression(
-                        interpreter.interpretName(ast),
-                    );
+                    return interpreter.interpretName(ast);
                 } catch (e) {
                     if (e instanceof TactConstEvalError) {
                         if (!e.fatal) {
@@ -160,9 +147,7 @@ export const getOptimizer = (util: AstUtil) => {
                 }
             case "method_call":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return util.makeValueExpression(
-                    interpreter.interpretMethodCall(ast),
-                );
+                return interpreter.interpretMethodCall(ast);
             case "init_of":
                 throwNonFatalErrorConstEval(
                     "initOf is not supported at this moment",
@@ -174,13 +159,21 @@ export const getOptimizer = (util: AstUtil) => {
             case "boolean":
                 return ast;
             case "number":
-                return util.makeValueExpression(
-                    interpreter.interpretNumber(ast),
-                );
+                return interpreter.interpretNumber(ast);
             case "string":
-                return util.makeValueExpression(
-                    interpreter.interpretString(ast),
-                );
+                return interpreter.interpretString(ast);
+            case "comment_value":
+                return ast;
+            case "simplified_string":
+                return ast;
+            case "struct_value":
+                return ast;
+            case "address":
+                return ast;
+            case "cell":
+                return ast;
+            case "slice":
+                return ast;
             case "op_unary":
                 return partiallyEvalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
             case "op_binary":
@@ -193,24 +186,18 @@ export const getOptimizer = (util: AstUtil) => {
                 );
             case "conditional":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return util.makeValueExpression(
-                    interpreter.interpretConditional(ast),
-                );
+                return interpreter.interpretConditional(ast);
             case "struct_instance":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return util.makeValueExpression(
-                    interpreter.interpretStructInstance(ast),
-                );
+                return interpreter.interpretStructInstance(ast);
             case "field_access":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return util.makeValueExpression(
-                    interpreter.interpretFieldAccess(ast),
-                );
+                return interpreter.interpretFieldAccess(ast);
             case "static_call":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return util.makeValueExpression(
-                    interpreter.interpretStaticCall(ast),
-                );
+                return interpreter.interpretStaticCall(ast);
+            default:
+                throwInternalCompilerError("Unrecognized expression kind");
         }
     }
 
@@ -224,9 +211,10 @@ export const getOptimizer = (util: AstUtil) => {
 export function evalConstantExpression(
     ast: AstExpression,
     ctx: CompilerContext,
+    util: AstUtil,
     interpreterConfig?: InterpreterConfig,
-): Value {
-    const interpreter = new Interpreter(ctx, interpreterConfig);
+): AstLiteral {
+    const interpreter = new Interpreter(util, ctx, interpreterConfig);
     const result = interpreter.interpretExpression(ast);
     return result;
 }

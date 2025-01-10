@@ -106,7 +106,7 @@ void meowModule.then(
             switch (result.kind) {
                 case "ok":
                     {
-                        console.log(result.value);
+                        console.log(main.showValue(result.value));
                         process.exit(0);
                     }
                     break;

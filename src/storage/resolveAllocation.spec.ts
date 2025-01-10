@@ -75,8 +75,8 @@ describe("resolveAllocation", () => {
             getParser(ast, defaultParser),
         );
         ctx = resolveDescriptors(ctx, ast);
-        ctx = resolveSignatures(ctx);
-        ctx = resolveStatements(ctx);
+        ctx = resolveSignatures(ctx, ast);
+        ctx = resolveStatements(ctx, ast);
         ctx = resolveAllocations(ctx);
         expect(getAllocations(ctx)).toMatchSnapshot();
     });

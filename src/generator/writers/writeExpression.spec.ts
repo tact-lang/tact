@@ -79,7 +79,7 @@ describe("writeExpression", () => {
             getParser(ast, defaultParser),
         );
         ctx = resolveDescriptors(ctx, ast);
-        ctx = resolveStatements(ctx);
+        ctx = resolveStatements(ctx, ast);
         const main = getStaticFunction(ctx, "main");
         if (main.ast.kind !== "function_def") {
             throw Error("Unexpected function kind");

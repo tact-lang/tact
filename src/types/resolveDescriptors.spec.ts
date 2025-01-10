@@ -30,7 +30,7 @@ describe("resolveDescriptors", () => {
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
-            ctx = resolveSignatures(ctx);
+            ctx = resolveSignatures(ctx, Ast);
             expect(getAllTypes(ctx)).toMatchSnapshot();
             expect(getAllStaticFunctions(ctx)).toMatchSnapshot();
         });
@@ -47,7 +47,7 @@ describe("resolveDescriptors", () => {
             ctx = featureEnable(ctx, "external");
             expect(() => {
                 ctx = resolveDescriptors(ctx, Ast);
-                ctx = resolveSignatures(ctx);
+                ctx = resolveSignatures(ctx, Ast);
             }).toThrowErrorMatchingSnapshot();
         });
     }
