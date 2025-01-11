@@ -158,6 +158,47 @@ struct Scrooge {
 }
 ```
 
+### Variable integer types {#serialization-varint}
+
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+Name               | [TL-B][tlb]                 | Inclusive range             | Space taken
+:----------------: | :-------------------------: | :-------------------------: | :-------------------------
+`varuint16{:tact}` | [`VarUInteger 16`][varuint] | $0$ to $2^{120} - 1$        | between $4$ and $124$ bits
+`varint16{:tact}`  | `VarInteger 16`             | $-2^{119}$ to $2^{119} - 1$ | between $4$ and $124$ bits
+`varuint32{:tact}` | [`VarUInteger 32`][varuint] | $0$ to $2^{248} - 1$        | between $5$ and $253$ bits
+`varint32{:tact}`  | `VarInteger 32`             | $-2^{247}$ to $2^{247} - 1$ | between $5$ and $253$ bits
+
+The `varuint16{:tact}` format is equivalent to [`coins{:tact}`](#serialization-coins). Its signed variant, `varint16{:tact}`, has the same memory layout except for the signed `value` field, which allows a different range of values: from $-2^{119}$ to $2^{119} - 1$, including both ends.
+
+To store greater values, use `varuint32{:tact}` and `varint32{:tact}` formats. These are serialized almost identical to `coins{:tact}` and lesser variable integer formats, but use a $5$-bit `len` field for storing the byte length. This allows the `value` to use up to $248$ bits for storing the actual number, meaning that both `varuint32{:tact}` and `varint32{:tact}` can occupy up to $253$ bits in total.
+
+Examples:
+
+```tact
+struct BradBit {
+    // len: 00000, 5 bits
+    // value: none!
+    // in total: 5 bits
+    a: Int as varuint32 = 0; // 00000
+
+    // len: 00001, 5 bits
+    // value: 00000001, 8 bits
+    // in total: 13 bits
+    b: Int as varuint32 = 1; // 00001 00000001
+
+    // len: 00010, 5 bits
+    // value: 00000001 00000010, 16 bits
+    // in total: 21 bits
+    c: Int as varuint32 = 258; // 00010 00000001 00000010
+
+    // len: 11111, 5 bits
+    // value: two hundred and forty-eight 1's in binary
+    // in total: 253 bits
+    d: Int as varuint32 = pow(2, 248) - 1; // two hundred and forty-eight 1's in binary
+}
+```
+
 :::note
 
   Read more on serialization here: [Compatibility with FunC](/book/func#convert-serialization)
