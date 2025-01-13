@@ -43,17 +43,17 @@ const intSerializer: Serializer<{ bits: number; optional: boolean }> = {
     tsLoad(v, slice, field, w) {
         if (v.optional) {
             w.append(
-                `let ${field} = ${slice}.loadBit() ? ${slice}.loadIntBig(${v.bits}) : null;`,
+                `const ${field} = ${slice}.loadBit() ? ${slice}.loadIntBig(${v.bits}) : null;`,
             );
         } else {
-            w.append(`let ${field} = ${slice}.loadIntBig(${v.bits});`);
+            w.append(`const ${field} = ${slice}.loadIntBig(${v.bits});`);
         }
     },
     tsLoadTuple(v, reader, field, w) {
         if (v.optional) {
-            w.append(`let ${field} = ${reader}.readBigNumberOpt();`);
+            w.append(`const ${field} = ${reader}.readBigNumberOpt();`);
         } else {
-            w.append(`let ${field} = ${reader}.readBigNumber();`);
+            w.append(`const ${field} = ${reader}.readBigNumber();`);
         }
     },
     tsStoreTuple(v, to, field, w) {
@@ -99,17 +99,17 @@ const uintSerializer: Serializer<{ bits: number; optional: boolean }> = {
     tsLoad(v, slice, field, w) {
         if (v.optional) {
             w.append(
-                `let ${field} = ${slice}.loadBit() ? ${slice}.loadUintBig(${v.bits}) : null;`,
+                `const ${field} = ${slice}.loadBit() ? ${slice}.loadUintBig(${v.bits}) : null;`,
             );
         } else {
-            w.append(`let ${field} = ${slice}.loadUintBig(${v.bits});`);
+            w.append(`const ${field} = ${slice}.loadUintBig(${v.bits});`);
         }
     },
     tsLoadTuple(v, reader, field, w) {
         if (v.optional) {
-            w.append(`let ${field} = ${reader}.readBigNumberOpt();`);
+            w.append(`const ${field} = ${reader}.readBigNumberOpt();`);
         } else {
-            w.append(`let ${field} = ${reader}.readBigNumber();`);
+            w.append(`const ${field} = ${reader}.readBigNumber();`);
         }
     },
     tsStore(v, builder, field, w) {
@@ -155,17 +155,17 @@ const coinsSerializer: Serializer<{ optional: boolean }> = {
     tsLoad(v, slice, field, w) {
         if (v.optional) {
             w.append(
-                `let ${field} = ${slice}.loadBit() ? ${slice}.loadCoins() : null;`,
+                `const ${field} = ${slice}.loadBit() ? ${slice}.loadCoins() : null;`,
             );
         } else {
-            w.append(`let ${field} = ${slice}.loadCoins();`);
+            w.append(`const ${field} = ${slice}.loadCoins();`);
         }
     },
     tsLoadTuple(v, reader, field, w) {
         if (v.optional) {
-            w.append(`let ${field} = ${reader}.readBigNumberOpt();`);
+            w.append(`const ${field} = ${reader}.readBigNumberOpt();`);
         } else {
-            w.append(`let ${field} = ${reader}.readBigNumber();`);
+            w.append(`const ${field} = ${reader}.readBigNumber();`);
         }
     },
     tsStore(v, builder, field, w) {
@@ -212,17 +212,17 @@ const varIntSerializer: Serializer<{
             v.format === "varint16" || v.format === "varuint16" ? 2 : 4;
         if (v.optional) {
             w.append(
-                `let ${field} = ${slice}.loadBit() ? ${slice}.${loader}(${length}) : null;`,
+                `const ${field} = ${slice}.loadBit() ? ${slice}.${loader}(${length}) : null;`,
             );
         } else {
-            w.append(`let ${field} = ${slice}.${loader}(${length});`);
+            w.append(`const ${field} = ${slice}.${loader}(${length});`);
         }
     },
     tsLoadTuple(v, reader, field, w) {
         if (v.optional) {
-            w.append(`let ${field} = ${reader}.readBigNumberOpt();`);
+            w.append(`const ${field} = ${reader}.readBigNumberOpt();`);
         } else {
-            w.append(`let ${field} = ${reader}.readBigNumber();`);
+            w.append(`const ${field} = ${reader}.readBigNumber();`);
         }
     },
     tsStore(v, builder, field, w) {
@@ -274,17 +274,17 @@ const boolSerializer: Serializer<{ optional: boolean }> = {
     tsLoad(v, slice, field, w) {
         if (v.optional) {
             w.append(
-                `let ${field} = ${slice}.loadBit() ? ${slice}.loadBit() : null;`,
+                `const ${field} = ${slice}.loadBit() ? ${slice}.loadBit() : null;`,
             );
         } else {
-            w.append(`let ${field} = ${slice}.loadBit();`);
+            w.append(`const ${field} = ${slice}.loadBit();`);
         }
     },
     tsLoadTuple(v, reader, field, w) {
         if (v.optional) {
-            w.append(`let ${field} = ${reader}.readBooleanOpt();`);
+            w.append(`const ${field} = ${reader}.readBooleanOpt();`);
         } else {
-            w.append(`let ${field} = ${reader}.readBoolean();`);
+            w.append(`const ${field} = ${reader}.readBoolean();`);
         }
     },
     tsStore(v, builder, field, w) {
@@ -321,16 +321,16 @@ const addressSerializer: Serializer<{ optional: boolean }> = {
     },
     tsLoad(v, slice, field, w) {
         if (v.optional) {
-            w.append(`let ${field} = ${slice}.loadMaybeAddress();`);
+            w.append(`const ${field} = ${slice}.loadMaybeAddress();`);
         } else {
-            w.append(`let ${field} = ${slice}.loadAddress();`);
+            w.append(`const ${field} = ${slice}.loadAddress();`);
         }
     },
     tsLoadTuple(v, reader, field, w) {
         if (v.optional) {
-            w.append(`let ${field} = ${reader}.readAddressOpt();`);
+            w.append(`const ${field} = ${reader}.readAddressOpt();`);
         } else {
-            w.append(`let ${field} = ${reader}.readAddress();`);
+            w.append(`const ${field} = ${reader}.readAddress();`);
         }
     },
     tsStore(v, builder, field, w) {
@@ -383,22 +383,22 @@ const cellSerializer: Serializer<{
     tsLoad(v, slice, field, w) {
         if (v.optional) {
             w.append(
-                `let ${field} = ${slice}.loadBit() ? ${slice}.loadRef()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""} : null;`,
+                `const ${field} = ${slice}.loadBit() ? ${slice}.loadRef()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""} : null;`,
             );
         } else {
             w.append(
-                `let ${field} = ${slice}.loadRef()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
+                `const ${field} = ${slice}.loadRef()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
             );
         }
     },
     tsLoadTuple(v, reader, field, w) {
         if (v.optional) {
             w.append(
-                `let ${field} = ${reader}.readCellOpt()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
+                `const ${field} = ${reader}.readCellOpt()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
             );
         } else {
             w.append(
-                `let ${field} = ${reader}.readCell()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
+                `const ${field} = ${reader}.readCell()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
             );
         }
     },
@@ -454,12 +454,12 @@ const remainderSerializer: Serializer<{ kind: "cell" | "slice" | "builder" }> =
         },
         tsLoad(v, slice, field, w) {
             w.append(
-                `let ${field} = ${slice}${v.kind !== "slice" ? getCellLikeTsAsMethod(v) : ""};`,
+                `const ${field} = ${slice}${v.kind !== "slice" ? getCellLikeTsAsMethod(v) : ""};`,
             );
         },
         tsLoadTuple(v, reader, field, w) {
             w.append(
-                `let ${field} = ${reader}.readCell()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
+                `const ${field} = ${reader}.readCell()${v.kind !== "cell" ? getCellLikeTsAsMethod(v) : ""};`,
             );
         },
         tsStore(v, builder, field, w) {
@@ -499,17 +499,17 @@ const fixedBytesSerializer: Serializer<{ bytes: number; optional: boolean }> = {
     tsLoad(v, slice, field, w) {
         if (v.optional) {
             w.append(
-                `let ${field} = ${slice}.loadBit() ? ${slice}.loadBuffer(${v.bytes}) : null;`,
+                `const ${field} = ${slice}.loadBit() ? ${slice}.loadBuffer(${v.bytes}) : null;`,
             );
         } else {
-            w.append(`let ${field} = ${slice}.loadBuffer(${v.bytes});`);
+            w.append(`const ${field} = ${slice}.loadBuffer(${v.bytes});`);
         }
     },
     tsLoadTuple(v, reader, field, w) {
         if (v.optional) {
-            w.append(`let ${field} = ${reader}.readBufferOpt();`);
+            w.append(`const ${field} = ${reader}.readBufferOpt();`);
         } else {
-            w.append(`let ${field} = ${reader}.readBuffer();`);
+            w.append(`const ${field} = ${reader}.readBuffer();`);
         }
     },
     tsStore(v, builder, field, w) {
@@ -550,17 +550,17 @@ const stringSerializer: Serializer<{ optional: boolean }> = {
     tsLoad(v, slice, field, w) {
         if (v.optional) {
             w.append(
-                `let ${field} = ${slice}.loadBit() ? ${slice}.loadStringRefTail() : null;`,
+                `const ${field} = ${slice}.loadBit() ? ${slice}.loadStringRefTail() : null;`,
             );
         } else {
-            w.append(`let ${field} = ${slice}.loadStringRefTail();`);
+            w.append(`const ${field} = ${slice}.loadStringRefTail();`);
         }
     },
     tsLoadTuple(v, reader, field, w) {
         if (v.optional) {
-            w.append(`let ${field} = ${reader}.readStringOpt();`);
+            w.append(`const ${field} = ${reader}.readStringOpt();`);
         } else {
-            w.append(`let ${field} = ${reader}.readString();`);
+            w.append(`const ${field} = ${reader}.readString();`);
         }
     },
     tsStore(v, builder, field, w) {
@@ -638,10 +638,10 @@ const struct: Serializer<{ name: string; optional: boolean }> = {
     tsLoad(v, slice, field, w) {
         if (v.optional) {
             w.append(
-                `let ${field} = ${slice}.loadBit() ? load${v.name}(${slice}) : null;`,
+                `const ${field} = ${slice}.loadBit() ? load${v.name}(${slice}) : null;`,
             );
         } else {
-            w.append(`let ${field} = load${v.name}(${slice});`);
+            w.append(`const ${field} = load${v.name}(${slice});`);
         }
     },
     tsLoadTuple(v, reader, field, w, fromGet: boolean) {
@@ -927,12 +927,12 @@ const map: Serializer<MapSerializerDescr> = {
     },
     tsLoad(v, slice, field, w) {
         w.append(
-            `let ${field} = Dictionary.load(${getKeyParser(v.key)}, ${getValueParser(v.value)}, ${slice});`,
+            `const ${field} = Dictionary.load(${getKeyParser(v.key)}, ${getValueParser(v.value)}, ${slice});`,
         );
     },
     tsLoadTuple(v, reader, field, w) {
         w.append(
-            `let ${field} = Dictionary.loadDirect(${getKeyParser(v.key)}, ${getValueParser(v.value)}, ${reader}.readCellOpt());`,
+            `const ${field} = Dictionary.loadDirect(${getKeyParser(v.key)}, ${getValueParser(v.value)}, ${reader}.readCellOpt());`,
         );
     },
     tsStore(v, builder, field, w) {
