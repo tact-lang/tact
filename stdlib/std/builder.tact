@@ -12,7 +12,7 @@
 /// let cell = b.endCell(); // cell with -1 and 0 ints
 /// ```
 ///
-/// But usually, store methods are used in a chain, where the final method 
+/// But usually, store methods are used in a chain, where the final method
 /// is `endCell()` or `endSlice()`.
 ///
 /// # Example
