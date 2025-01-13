@@ -12,6 +12,7 @@ import {
     BinaryReceiverSelector,
     CommentReceiverSelector,
     ReceiverDescription,
+    TypeDescription,
 } from "./types";
 import { throwCompilationError } from "../errors";
 import { AstNumber, AstReceiver, FactoryAst } from "../grammar/ast";
@@ -264,16 +265,38 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
         return { signature, id, tlb };
     }
 
-    getAllTypes(ctx).forEach((t) => {
-        if (t.kind === "struct") {
-            const r = createTupleSignature(t.name);
-            t.tlb = r.tlb;
-            t.signature = r.signature;
-            t.header = r.id;
-        }
-    });
+    function checkAggregateTypes(ctx: CompilerContext) {
+        getAllTypes(ctx).forEach((aggregate) => {
+            switch (aggregate.kind) {
+                case "struct": {
+                    const r = createTupleSignature(aggregate.name);
+                    aggregate.tlb = r.tlb;
+                    aggregate.signature = r.signature;
+                    aggregate.header = r.id;
+                    break;
+                }
+                case "contract": {
+                    checkMessageOpcodesUniqueInContractOrTrait(
+                        aggregate.receivers,
+                        ctx,
+                    );
+                    checkContractFields(aggregate);
+                    break;
+                }
+                case "trait": {
+                    checkMessageOpcodesUniqueInContractOrTrait(
+                        aggregate.receivers,
+                        ctx,
+                    );
+                    break;
+                }
+                default:
+                    break;
+            }
+        });
+    }
 
-    checkMessageOpcodesUnique(ctx);
+    checkAggregateTypes(ctx);
 
     return ctx;
 }
@@ -393,18 +416,14 @@ function checkMessageOpcodesUniqueInContractOrTrait(
     }
 }
 
-function checkMessageOpcodesUnique(ctx: CompilerContext) {
-    getAllTypes(ctx).forEach((aggregate) => {
-        switch (aggregate.kind) {
-            case "contract":
-            case "trait":
-                checkMessageOpcodesUniqueInContractOrTrait(
-                    aggregate.receivers,
-                    ctx,
-                );
-                break;
-            default:
-                break;
+function checkContractFields(t: TypeDescription) {
+    // Check if "as remaining" is only used for the last field of contract
+    for (const field of t.fields.slice(0, -1)) {
+        if (field.as === "remaining") {
+            throwCompilationError(
+                `The "remainder" field can only be the last field of the contract`,
+                field.ast.loc,
+            );
         }
-    });
+    }
 }

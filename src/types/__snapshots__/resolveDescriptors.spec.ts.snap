@@ -150,6 +150,16 @@ Line 9, col 3:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for contract-decl-remainder-in-the-middle 1`] = `
+"<unknown>:8:5: The "remainder" field can only be the last field of the contract
+Line 8, col 5:
+  7 |     a: Int = 0;
+> 8 |     s: Cell as remaining;
+          ^~~~~~~~~~~~~~~~~~~~
+  9 |     b: Int = 0;
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for contract-does-not-override-abstract-const 1`] = `
 "<unknown>:8:1: Trait "T" requires constant "Foo"
 Line 8, col 1:
@@ -4054,6 +4064,531 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
 `;
 
 exports[`resolveDescriptors should resolve descriptors for contract-const-override-virtual 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-decl-remainder 1`] = `
+[
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 2,
+      "kind": "trait",
+      "loc": trait BaseTrait { },
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "id": 6,
+      "kind": "primitive_type_decl",
+      "loc": primitive Cell;,
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": Cell,
+        "text": "Cell",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Cell",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 26294,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": null,
+          "id": 11,
+          "initializer": {
+            "base": 10,
+            "id": 10,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+          "kind": "field_decl",
+          "loc": a: Int = 0,
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": null,
+          "id": 15,
+          "initializer": {
+            "base": 10,
+            "id": 14,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+          "kind": "field_decl",
+          "loc": b: Int = 0,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "type": {
+            "id": 13,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": {
+            "id": 18,
+            "kind": "id",
+            "loc": remaining,
+            "text": "remaining",
+          },
+          "id": 19,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": s: Cell as remaining,
+          "name": {
+            "id": 16,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "type": {
+            "id": 17,
+            "kind": "type_id",
+            "loc": Cell,
+            "text": "Cell",
+          },
+        },
+        {
+          "id": 28,
+          "kind": "contract_init",
+          "loc": init(cell: Cell) {
+        self.s = cell;
+    },
+          "params": [
+            {
+              "id": 22,
+              "kind": "typed_parameter",
+              "loc": cell: Cell,
+              "name": {
+                "id": 20,
+                "kind": "id",
+                "loc": cell,
+                "text": "cell",
+              },
+              "type": {
+                "id": 21,
+                "kind": "type_id",
+                "loc": Cell,
+                "text": "Cell",
+              },
+            },
+          ],
+          "statements": [
+            {
+              "expression": {
+                "id": 26,
+                "kind": "id",
+                "loc": cell,
+                "text": "cell",
+              },
+              "id": 27,
+              "kind": "statement_assign",
+              "loc": self.s = cell;,
+              "path": {
+                "aggregate": {
+                  "id": 23,
+                  "kind": "id",
+                  "loc": self,
+                  "text": "self",
+                },
+                "field": {
+                  "id": 24,
+                  "kind": "id",
+                  "loc": s,
+                  "text": "s",
+                },
+                "id": 25,
+                "kind": "field_access",
+                "loc": self.s,
+              },
+            },
+          ],
+        },
+      ],
+      "id": 29,
+      "kind": "contract",
+      "loc": contract Test {
+    a: Int = 0;
+    b: Int = 0;
+    s: Cell as remaining;
+
+    init(cell: Cell) {
+        self.s = cell;
+    }
+},
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "a",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 11,
+          "initializer": {
+            "base": 10,
+            "id": 10,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+          "kind": "field_decl",
+          "loc": a: Int = 0,
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": {
+          "base": 10,
+          "id": 10,
+          "kind": "number",
+          "loc": 0,
+          "value": 0n,
+        },
+        "index": 0,
+        "loc": a: Int = 0,
+        "name": "a",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "abi": {
+          "name": "b",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 15,
+          "initializer": {
+            "base": 10,
+            "id": 14,
+            "kind": "number",
+            "loc": 0,
+            "value": 0n,
+          },
+          "kind": "field_decl",
+          "loc": b: Int = 0,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": b,
+            "text": "b",
+          },
+          "type": {
+            "id": 13,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": {
+          "base": 10,
+          "id": 14,
+          "kind": "number",
+          "loc": 0,
+          "value": 0n,
+        },
+        "index": 1,
+        "loc": b: Int = 0,
+        "name": "b",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "abi": {
+          "name": "s",
+          "type": {
+            "format": "remainder",
+            "kind": "simple",
+            "optional": false,
+            "type": "cell",
+          },
+        },
+        "as": "remaining",
+        "ast": {
+          "as": {
+            "id": 18,
+            "kind": "id",
+            "loc": remaining,
+            "text": "remaining",
+          },
+          "id": 19,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": s: Cell as remaining,
+          "name": {
+            "id": 16,
+            "kind": "id",
+            "loc": s,
+            "text": "s",
+          },
+          "type": {
+            "id": 17,
+            "kind": "type_id",
+            "loc": Cell,
+            "text": "Cell",
+          },
+        },
+        "default": undefined,
+        "index": 2,
+        "loc": s: Cell as remaining,
+        "name": "s",
+        "type": {
+          "kind": "ref",
+          "name": "Cell",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 28,
+        "kind": "contract_init",
+        "loc": init(cell: Cell) {
+        self.s = cell;
+    },
+        "params": [
+          {
+            "id": 22,
+            "kind": "typed_parameter",
+            "loc": cell: Cell,
+            "name": {
+              "id": 20,
+              "kind": "id",
+              "loc": cell,
+              "text": "cell",
+            },
+            "type": {
+              "id": 21,
+              "kind": "type_id",
+              "loc": Cell,
+              "text": "Cell",
+            },
+          },
+        ],
+        "statements": [
+          {
+            "expression": {
+              "id": 26,
+              "kind": "id",
+              "loc": cell,
+              "text": "cell",
+            },
+            "id": 27,
+            "kind": "statement_assign",
+            "loc": self.s = cell;,
+            "path": {
+              "aggregate": {
+                "id": 23,
+                "kind": "id",
+                "loc": self,
+                "text": "self",
+              },
+              "field": {
+                "id": 24,
+                "kind": "id",
+                "loc": s,
+                "text": "s",
+              },
+              "id": 25,
+              "kind": "field_access",
+              "loc": self.s,
+            },
+          },
+        ],
+      },
+      "params": [
+        {
+          "as": null,
+          "loc": cell: Cell,
+          "name": {
+            "id": 20,
+            "kind": "id",
+            "loc": cell,
+            "text": "cell",
+          },
+          "type": {
+            "kind": "ref",
+            "name": "Cell",
+            "optional": false,
+          },
+        },
+      ],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "Test",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 2,
+          "kind": "trait",
+          "loc": trait BaseTrait { },
+          "name": {
+            "id": 1,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 44104,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-decl-remainder 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for contract-external-fallback-receiver 1`] = `
 [
