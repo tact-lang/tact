@@ -265,36 +265,14 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
         return { signature, id, tlb };
     }
 
-    function checkAggregateTypes(ctx: CompilerContext) {
-        getAllTypes(ctx).forEach((aggregate) => {
-            switch (aggregate.kind) {
-                case "struct": {
-                    const r = createTupleSignature(aggregate.name);
-                    aggregate.tlb = r.tlb;
-                    aggregate.signature = r.signature;
-                    aggregate.header = r.id;
-                    break;
-                }
-                case "contract": {
-                    checkMessageOpcodesUniqueInContractOrTrait(
-                        aggregate.receivers,
-                        ctx,
-                    );
-                    checkContractFields(aggregate);
-                    break;
-                }
-                case "trait": {
-                    checkMessageOpcodesUniqueInContractOrTrait(
-                        aggregate.receivers,
-                        ctx,
-                    );
-                    break;
-                }
-                default:
-                    break;
-            }
-        });
-    }
+    getAllTypes(ctx).forEach((t) => {
+        if (t.kind === "struct") {
+            const r = createTupleSignature(t.name);
+            t.tlb = r.tlb;
+            t.signature = r.signature;
+            t.header = r.id;
+        }
+    });
 
     checkAggregateTypes(ctx);
 
@@ -414,6 +392,28 @@ function checkMessageOpcodesUniqueInContractOrTrait(
                 break;
         }
     }
+}
+
+function checkAggregateTypes(ctx: CompilerContext) {
+    getAllTypes(ctx).forEach((aggregate) => {
+        switch (aggregate.kind) {
+            case "contract":
+                checkMessageOpcodesUniqueInContractOrTrait(
+                    aggregate.receivers,
+                    ctx,
+                );
+                checkContractFields(aggregate);
+                break;
+            case "trait":
+                checkMessageOpcodesUniqueInContractOrTrait(
+                    aggregate.receivers,
+                    ctx,
+                );
+                break;
+            default:
+                break;
+        }
+    });
 }
 
 function checkContractFields(t: TypeDescription) {
