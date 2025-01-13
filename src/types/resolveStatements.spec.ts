@@ -21,7 +21,7 @@ describe("resolveStatements", () => {
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
-            ctx = resolveStatements(ctx);
+            ctx = resolveStatements(ctx, Ast);
             expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
         });
     }
@@ -36,7 +36,9 @@ describe("resolveStatements", () => {
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
-            expect(() => resolveStatements(ctx)).toThrowErrorMatchingSnapshot();
+            expect(() =>
+                resolveStatements(ctx, Ast),
+            ).toThrowErrorMatchingSnapshot();
         });
     }
 });

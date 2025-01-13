@@ -256,7 +256,17 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
                 traverse(e, callback);
             });
             break;
+        case "struct_value":
+            traverse(node.type, callback);
+            node.args.forEach((e) => {
+                traverse(e, callback);
+            });
+            break;
         case "struct_field_initializer":
+            traverse(node.field, callback);
+            traverse(node.initializer, callback);
+            break;
+        case "struct_field_value":
             traverse(node.field, callback);
             traverse(node.initializer, callback);
             break;
@@ -277,6 +287,11 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
         case "boolean":
         case "string":
         case "null":
+        case "simplified_string":
+        case "comment_value":
+        case "address":
+        case "cell":
+        case "slice":
             break;
         case "typed_parameter":
             traverse(node.name, callback);

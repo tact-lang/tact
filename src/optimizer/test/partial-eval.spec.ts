@@ -1,12 +1,11 @@
 import {
     AstExpression,
     FactoryAst,
-    AstValue,
     eqExpressions,
     getAstFactory,
-    isValue,
+    isLiteral,
 } from "../../grammar/ast";
-import { AstUtil, extractValue, getAstUtil } from "../util";
+import { AstUtil, getAstUtil } from "../util";
 import { getOptimizer } from "../../constEval";
 import { CompilerContext } from "../../context";
 import { ExpressionTransformer, Rule } from "../types";
@@ -14,6 +13,7 @@ import { AssociativeRule3 } from "../associative";
 import { evalBinaryOp, evalUnaryOp } from "../../interpreter";
 import { getParser } from "../../grammar";
 import { defaultParser } from "../../grammar/grammar";
+import { throwInternalCompilerError } from "../../errors";
 
 const MAX: string =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";
@@ -324,11 +324,7 @@ function testExpression(original: string, simplified: string) {
             parseExpression(original),
             new CompilerContext(),
         );
-        const simplifiedValue = dummyEval(
-            parseExpression(simplified),
-            ast,
-            util,
-        );
+        const simplifiedValue = dummyEval(parseExpression(simplified), ast);
         const areMatching = eqExpressions(originalValue, simplifiedValue);
         expect(areMatching).toBe(true);
     });
@@ -342,15 +338,10 @@ function testExpressionWithOptimizer(
     it(`should simplify ${original} to ${simplified}`, () => {
         const ast = getAstFactory();
         const { parseExpression } = getParser(ast, defaultParser);
-        const util = getAstUtil(ast);
         const originalValue = optimizer.applyRules(
-            dummyEval(parseExpression(original), ast, util),
+            dummyEval(parseExpression(original), ast),
         );
-        const simplifiedValue = dummyEval(
-            parseExpression(simplified),
-            ast,
-            util,
-        );
+        const simplifiedValue = dummyEval(parseExpression(simplified), ast);
         const areMatching = eqExpressions(originalValue, simplifiedValue);
         expect(areMatching).toBe(true);
     });
@@ -361,11 +352,9 @@ function testExpressionWithOptimizer(
 // The reason for doing this is that the partial evaluator will actually simplify constant
 // expressions. So, when comparing for equality of expressions, we also need to simplify
 // constant expressions.
-function dummyEval(
-    ast: AstExpression,
-    { cloneNode }: FactoryAst,
-    { makeValueExpression }: AstUtil,
-): AstExpression {
+function dummyEval(ast: AstExpression, astFactory: FactoryAst): AstExpression {
+    const cloneNode = astFactory.cloneNode;
+    const util = getAstUtil(astFactory);
     const recurse = (ast: AstExpression): AstExpression => {
         switch (ast.kind) {
             case "null":
@@ -378,6 +367,18 @@ function dummyEval(
                 return ast;
             case "id":
                 return ast;
+            case "address":
+                return ast;
+            case "cell":
+                return ast;
+            case "comment_value":
+                return ast;
+            case "simplified_string":
+                return ast;
+            case "slice":
+                return ast;
+            case "struct_value":
+                return ast; // No need to simplify: fields already simplified
             case "method_call": {
                 const newNode = cloneNode(ast);
                 newNode.args = ast.args.map(recurse);
@@ -392,13 +393,8 @@ function dummyEval(
             case "op_unary": {
                 const newNode = cloneNode(ast);
                 newNode.operand = recurse(ast.operand);
-                if (isValue(newNode.operand)) {
-                    return makeValueExpression(
-                        evalUnaryOp(
-                            ast.op,
-                            extractValue(newNode.operand as AstValue),
-                        ),
-                    );
+                if (isLiteral(newNode.operand)) {
+                    return evalUnaryOp(ast.op, newNode.operand, ast.loc, util);
                 }
                 return newNode;
             }
@@ -406,14 +402,14 @@ function dummyEval(
                 const newNode = cloneNode(ast);
                 newNode.left = recurse(ast.left);
                 newNode.right = recurse(ast.right);
-                if (isValue(newNode.left) && isValue(newNode.right)) {
-                    const valR = extractValue(newNode.right as AstValue);
-                    return makeValueExpression(
-                        evalBinaryOp(
-                            ast.op,
-                            extractValue(newNode.left as AstValue),
-                            () => valR,
-                        ),
+                if (isLiteral(newNode.left) && isLiteral(newNode.right)) {
+                    const valR = newNode.right;
+                    return evalBinaryOp(
+                        ast.op,
+                        newNode.left,
+                        () => valR,
+                        ast.loc,
+                        util,
                     );
                 }
                 return newNode;
@@ -443,9 +439,10 @@ function dummyEval(
                 newNode.args = ast.args.map(recurse);
                 return newNode;
             }
+            default:
+                throwInternalCompilerError("Unrecognized expression kind");
         }
     };
-
     return recurse(ast);
 }
 
