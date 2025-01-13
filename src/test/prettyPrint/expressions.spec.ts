@@ -12,6 +12,12 @@ import {
     randomAstStaticCall,
     randomAstStructInstance,
     randomAstStructFieldInitializer,
+    randomAstId,
+    randomAstFieldAccess,
+    randomAstMethodCall,
+    randomAstBoolean,
+    randomAstNumber,
+    randomAstString,
 } from "../utils/expression/randomAst";
 
 describe("Pretty Print Expressions", () => {
@@ -20,14 +26,11 @@ describe("Pretty Print Expressions", () => {
     const expression = () => randomAstExpression(maxShrinks);
 
     const cases: [string, fc.Arbitrary<AstExpression>][] = [
-        [
-            "AstConditional",
-            randomAstConditional(expression(), expression(), expression()),
-        ],
-        ["AstOpBinary", randomAstOpBinary(expression(), expression())],
-        ["AstOpUnary", randomAstOpUnary(expression())],
-        ["AstNull", randomAstNull()],
-        ["AstInitOf", randomAstInitOf(expression())],
+        //
+        // Primary expressions
+        //
+        ["AstMethodCall", randomAstMethodCall(expression(), expression())],
+        ["AstFieldAccess", randomAstFieldAccess(expression())],
         ["AstStaticCall", randomAstStaticCall(expression())],
         [
             "AstStructInstance",
@@ -35,6 +38,23 @@ describe("Pretty Print Expressions", () => {
                 randomAstStructFieldInitializer(expression()),
             ),
         ],
+        ["AstId", randomAstId()],
+        ["AstNull", randomAstNull()],
+        ["AstInitOf", randomAstInitOf(expression())],
+        ["AstString", randomAstString()],
+
+        //
+        // Literals
+        //
+        ["AstNumber", randomAstNumber()],
+        ["AstBoolean", randomAstBoolean()],
+
+        [
+            "AstConditional",
+            randomAstConditional(expression(), expression(), expression()),
+        ],
+        ["AstOpBinary", randomAstOpBinary(expression(), expression())],
+        ["AstOpUnary", randomAstOpUnary(expression())],
     ];
 
     cases.forEach(([caseName, astGenerator]) => {

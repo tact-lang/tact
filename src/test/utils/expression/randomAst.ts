@@ -3,8 +3,10 @@ import {
     AstBoolean,
     AstConditional,
     AstExpression,
+    AstFieldAccess,
     AstId,
     AstInitOf,
+    AstMethodCall,
     AstNull,
     AstNumber,
     AstOpBinary,
@@ -121,17 +123,7 @@ export function randomAstConditional(
     );
 }
 
-function randomAstTypeId(): fc.Arbitrary<AstId> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("id"),
-            text: fc.stringMatching(/^[A-Z][A-Za-z0-9_]*$/),
-            // Rules for text value are in src/grammar/grammar.ohm
-        }),
-    );
-}
-
-function randomAstId(): fc.Arbitrary<AstId> {
+export function randomAstId(): fc.Arbitrary<AstId> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("id"),
@@ -197,6 +189,32 @@ export function randomAstStructInstance(
     );
 }
 
+export function randomAstFieldAccess(
+    expression: fc.Arbitrary<AstExpression>,
+): fc.Arbitrary<AstFieldAccess> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("field_access"),
+            aggregate: expression,
+            field: randomAstId(),
+        }),
+    );
+}
+
+export function randomAstMethodCall(
+    selfExpression: fc.Arbitrary<AstExpression>,
+    argsExpression: fc.Arbitrary<AstExpression>,
+): fc.Arbitrary<AstMethodCall> {
+    return dummyAstNode(
+        fc.record({
+            self: selfExpression,
+            kind: fc.constant("method_call"),
+            method: randomAstId(),
+            args: fc.array(argsExpression),
+        }),
+    );
+}
+
 export function randomAstExpression(
     maxShrinks: number,
 ): fc.Arbitrary<AstExpression> {
@@ -207,7 +225,19 @@ export function randomAstExpression(
         AstConditional: AstConditional;
     }>((tie) => ({
         AstExpression: fc.oneof(
-            randomAstNumber(), // TODO: Expand this to include more expressions, look into AstExpressionPrimary
+            // Enabling will fail the tests by recursion
+
+            // randomAstMethodCall(
+            //     fc.limitShrink(tie("AstExpression"), 1),
+            //     fc.limitShrink(tie("AstExpression"), 1)),
+            // randomAstFieldAccess(fc.limitShrink(tie("AstExpression"), 1)),
+            // randomAstStaticCall(fc.limitShrink(tie("AstExpression"), 1)),
+            randomAstNumber(),
+            randomAstBoolean(),
+            randomAstId(),
+            randomAstNull(),
+            // randomAstInitOf(tie("AstExpression")),
+            randomAstString(),
             tie("AstOpUnary"),
             tie("AstOpBinary"),
             tie("AstConditional"),
