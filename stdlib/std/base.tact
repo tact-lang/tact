@@ -47,8 +47,8 @@ trait BaseTrait {
     /// Queues the message (bounceable or non-bounceable) to be sent to the specified address `to`. 
     /// Optionally, you may provide a [`body`] of the message and the [`init`] package with `initOf`.
     /// 
-    /// When `self.storageReserve` constant is overwritten to be >0, before sending a message it 
-    /// also tries to reserve the `self.storageReserve` amount of nanoToncoins from the remaining 
+    /// When [`self.storageReserve`] constant is overwritten to be >0, before sending a message it
+    /// also tries to reserve the [`self.storageReserve`] amount of nanoToncoins from the remaining
     /// balance before making the send in the [`SendRemainingBalance`] (128) mode.
     ///
     /// In case reservation attempt fails and in the default case without the attempt, the message 
