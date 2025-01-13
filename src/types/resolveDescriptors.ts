@@ -1547,8 +1547,25 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         t.ast.loc,
                     );
                 } else if (f.as !== null && f.as !== ex.as) {
+                    const expected = `${printTypeRef(f.type)} as ${f.as}`;
+                    let actual = printTypeRef(ex.type);
+                    if (ex.as !== null) {
+                        actual += ` as ${ex.as}`;
+                    }
+
                     throwCompilationError(
-                        `Trait "${tr.name}" requires field "${f.name}" of type "${printTypeRef(f.type)} as ${f.as}", but "${printTypeRef(f.type)}" given`,
+                        `Trait "${tr.name}" requires field "${f.name}" of type "${expected}", but "${actual}" given`,
+                        ex.ast.loc,
+                    );
+                } else if (ex.as !== null && f.as !== ex.as) {
+                    let expected = printTypeRef(f.type);
+                    if (f.as !== null) {
+                        expected += ` as ${f.as}`;
+                    }
+                    const actual = `${printTypeRef(ex.type)} as ${ex.as}`;
+
+                    throwCompilationError(
+                        `Trait "${tr.name}" requires field "${f.name}" of type "${expected}", but "${actual}" given`,
                         ex.ast.loc,
                     );
                 }
