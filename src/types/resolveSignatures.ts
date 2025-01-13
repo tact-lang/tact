@@ -187,8 +187,11 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
         // Check for no "remainder" in the middle of the struct
         for (const field of t.fields.slice(0, -1)) {
             if (field.as === "remaining") {
+                const kind =
+                    t.ast.kind === "message_decl" ? "message" : "struct";
                 throwCompilationError(
-                    `The "remainder" field can only be the last field of the struct`,
+                    `The "remainder" field can only be the last field of the ${kind}`,
+                    field.loc,
                 );
             }
         }
