@@ -9,7 +9,7 @@
 /// let b = beginCell();
 /// b = b.storeBit(true);
 /// b = b.storeBit(false);
-/// let cell = b.endCell(); // cell with two bits set to -1 and 0
+/// let cell = b.endCell(); // cell with -1 and 0 ints
 /// ```
 ///
 /// But usually, store methods are used in a chain, where the final method 
@@ -20,7 +20,7 @@
 /// let cell = beginCell()
 ///    .storeBit(true)
 ///    .storeBit(false)
-///    .endCell(); // cell with two bits set to -1 and 0
+///    .endCell(); // cell with -1 and 0 ints
 /// ```
 primitive Builder;
 
@@ -79,18 +79,18 @@ extends native storeInt(self: Builder, value: Int, bits: Int): Builder;
 @name(store_uint)
 extends native storeUint(self: Builder, value: Int, bits: Int): Builder;
 
-/// Stores a boolean value (-1 for true, 0 for false) into a builder as a single bit,
+/// Stores a boolean value (-1 for true, 0 for false) into a builder,
 /// and returns the resulting `Builder`.
 ///
 /// # Example
 /// ```
 /// let b = beginCell();
-/// let cell = b.storeBool(true).endCell(); // cell with only one bit set to 1
+/// let cell = b.storeBool(true).endCell(); // cell with -1 int
 /// ```
 @name(__tact_store_bool)
 extends native storeBool(self: Builder, value: Bool): Builder;
 
-/// Stores a boolean value (-1 for true, 0 for false) into a builder as a single bit,
+/// Stores a boolean value (-1 for true, 0 for false) into a builder,
 /// and returns the resulting `Builder`. Alias to `Builder.storeBool()`.
 ///
 /// @since 1.5.0
