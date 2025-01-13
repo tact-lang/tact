@@ -45,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `foreach` loops now properly handle `as coins` map value serialization type: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
 - The typechecker now rejects integer map key types with variable width (`coins`, `varint16`, `varint32`, `varuint16`, `varuint32`): PR [#1276](https://github.com/tact-lang/tact/pull/1276)
 - Code generation for `self` argument in optional struct methods: PR [#1284](https://github.com/tact-lang/tact/pull/1284)
+- 'The "remainder" field can only be the last field:' inspection now shows location: PR [#1300](https://github.com/tact-lang/tact/pull/1300)
 
 ### Docs
 
