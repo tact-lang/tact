@@ -671,11 +671,11 @@ Line 10, col 5:
 `;
 
 exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-with-unsupported-format 1`] = `
-"<unknown>:6:5: Unsupported format "fooo"
+"<unknown>:6:5: Unsupported format "foo"
 Line 6, col 5:
   5 | trait Foo {
-> 6 |     f: Int as fooo;
-          ^~~~~~~~~~~~~~
+> 6 |     f: Int as foo;
+          ^~~~~~~~~~~~~
   7 | }
 "
 `;

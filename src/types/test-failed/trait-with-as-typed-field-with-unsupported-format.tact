@@ -3,5 +3,5 @@ primitive Int;
 trait BaseTrait {}
 
 trait Foo {
-    f: Int as fooo;
+    f: Int as foo;
 }
