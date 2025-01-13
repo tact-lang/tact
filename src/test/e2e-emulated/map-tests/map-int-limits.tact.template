@@ -24,9 +24,13 @@ contract MapIntLimitTester {
     get fun testSetMinAndMaxDoesNotThrow(): Bool {
         let m: map<KEY_FORMAT_PLACEHOLDER, VAL_FORMAT_PLACEHOLDER> = emptyMap();
         m.set(KEY_MIN, VAL_MIN);
+        require(m.get(KEY_MIN)!! == VAL_MIN, "Error 1");
         m.set(KEY_MIN, VAL_MAX);
+        require(m.get(KEY_MIN)!! == VAL_MAX, "Error 2");
         m.set(KEY_MAX, VAL_MIN);
+        require(m.get(KEY_MAX)!! == VAL_MIN, "Error 3");
         m.set(KEY_MAX, VAL_MAX);
+        require(m.get(KEY_MAX)!! == VAL_MAX, "Error 4");
         return
             true;
     }
