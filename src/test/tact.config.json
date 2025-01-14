@@ -317,8 +317,8 @@
     },
     {
       "name": "block-statements",
-      "path": "./src/test/e2e-emulated/contracts/block-statements.tact",
-      "output": "./src/test/e2e-emulated/contracts/output"
+      "path": "./e2e-emulated/contracts/block-statements.tact",
+      "output": "./e2e-emulated/contracts/output"
     },
     {
       "name": "text-message-receivers",
