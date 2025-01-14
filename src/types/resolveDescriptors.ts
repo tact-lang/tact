@@ -1570,14 +1570,8 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 continue;
             }
 
-            const foundOverriddenFunction = contractOrTrait.traits.some(
-                (inheritedTrait) => {
-                    return (
-                        inheritedTrait.functions.get(
-                            funInContractOrTrait.name,
-                        ) !== undefined
-                    );
-                },
+            const foundOverriddenFunction = contractOrTrait.traits.some((t) =>
+                t.functions.has(funInContractOrTrait.name),
             );
 
             if (!foundOverriddenFunction) {
