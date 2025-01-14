@@ -3665,6 +3665,43 @@ exports[`resolveStatements should resolve statements for var-scope-repeat2 1`] =
 ]
 `;
 
+exports[`resolveStatements should resolve statements for var-scope-subsequent-block-statements 1`] = `
+[
+  [
+    "100",
+    "Int",
+  ],
+  [
+    "456",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "752",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+]
+`;
+
 exports[`resolveStatements should resolve statements for var-scope-toString-non-method 1`] = `
 [
   [

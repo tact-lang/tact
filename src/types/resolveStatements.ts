@@ -764,7 +764,6 @@ function processStatements(
             case "statement_block": {
                 const r = processStatements(s.statements, sctx, ctx);
                 ctx = r.ctx;
-                sctx = r.sctx;
                 returnAlwaysReachable ||= r.returnAlwaysReachable;
                 break;
             }
