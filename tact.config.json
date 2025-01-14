@@ -1,5 +1,5 @@
 {
-  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json",
+  "$schema": "./src/config/configSchema.json",
   "projects": [
     {
       "name": "echo",
