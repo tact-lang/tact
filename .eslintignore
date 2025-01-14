@@ -10,3 +10,4 @@ src/grammar/next/grammar.ts
 jest.setup.js
 jest.teardown.js
 /docs
+version.build.ts
