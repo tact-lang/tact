@@ -28,7 +28,15 @@ describe("block-statements", () => {
         });
     });
 
-    it("should deploy with block statements", async () => {
+    it("should work correctly with block statements", async () => {
         expect(await contract.getA()).toEqual(84n);
+    });
+
+    it("should work correctly with variables from subsequent block statements", async () => {
+        expect(await contract.getB()).toEqual(1308n);
+    });
+
+    it("should work correctly with variables of different types from subsequent block statements", async () => {
+        expect(await contract.getC()).toEqual(557n);
     });
 });
