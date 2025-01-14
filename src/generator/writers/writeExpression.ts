@@ -42,7 +42,7 @@ import {
 import { ops } from "./ops";
 import { writeCastedExpression } from "./writeFunction";
 import { isLvalue } from "../../types/resolveStatements";
-import { evalConstantExpression } from "../../constEval";
+import { evalConstantExpression } from "../../optimizer/constEval";
 import { getAstUtil } from "../../optimizer/util";
 
 function isNull(wCtx: WriterContext, expr: AstExpression): boolean {

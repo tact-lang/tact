@@ -8,7 +8,7 @@ import {
     AstOpBinary,
     isLiteral,
 } from "../grammar/ast";
-import * as iM from "../interpreter";
+import * as iM from "./interpreter";
 import { ExpressionTransformer, Rule } from "./types";
 import {
     abs,

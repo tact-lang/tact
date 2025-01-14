@@ -2,14 +2,14 @@ import { sha256_sync } from "@ton/crypto";
 import { CompilerContext, createContextStore } from "../context";
 import { AstNode, FactoryAst, isRequire } from "../grammar/ast";
 import { traverse } from "../grammar/iterators";
-import { evalConstantExpression } from "../constEval";
+import { evalConstantExpression } from "../optimizer/constEval";
 import { throwInternalCompilerError } from "../error/errors";
 import {
     getAllStaticFunctions,
     getAllTypes,
     getAllStaticConstants,
 } from "./resolveDescriptors";
-import { ensureSimplifiedString } from "../interpreter";
+import { ensureSimplifiedString } from "../optimizer/interpreter";
 import { AstUtil, getAstUtil } from "../optimizer/util";
 
 type Exception = { value: string; id: number };

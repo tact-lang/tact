@@ -19,8 +19,8 @@ import { AstNumber, AstReceiver, FactoryAst } from "../grammar/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 import { sha256_sync } from "@ton/crypto";
 import { dummySrcInfo } from "../grammar";
-import { ensureInt } from "../interpreter";
-import { evalConstantExpression } from "../constEval";
+import { ensureInt } from "../optimizer/interpreter";
+import { evalConstantExpression } from "../optimizer/constEval";
 import { getAstUtil } from "../optimizer/util";
 
 export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
