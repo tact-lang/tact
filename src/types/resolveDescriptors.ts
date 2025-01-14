@@ -25,7 +25,7 @@ import {
     throwCompilationError,
     throwInternalCompilerError,
 } from "../error/errors";
-import { CompilerContext, createContextStore, Store } from "../context";
+import { CompilerContext, createContextStore, Store } from "../context/context";
 import {
     ConstantDescription,
     FieldDescription,

@@ -1,5 +1,5 @@
 import { ContractABI } from "@ton/core";
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { PackageFileFormat } from "../packaging/fileFormat";
 import { getType } from "../types/resolveDescriptors";
 import { Writer } from "../utils/Writer";

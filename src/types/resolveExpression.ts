@@ -23,7 +23,7 @@ import {
     AstStructValue,
 } from "../grammar/ast";
 import { idTextErr, throwCompilationError } from "../error/errors";
-import { CompilerContext, createContextStore } from "../context";
+import { CompilerContext, createContextStore } from "../context/context";
 import {
     getAllTypes,
     getStaticConstant,

@@ -1,5 +1,5 @@
 import { sha256_sync } from "@ton/crypto";
-import { CompilerContext, createContextStore } from "../context";
+import { CompilerContext, createContextStore } from "../context/context";
 import { AstNode, FactoryAst, isRequire } from "../grammar/ast";
 import { traverse } from "../grammar/iterators";
 import { evalConstantExpression } from "../optimizer/constEval";

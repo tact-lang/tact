@@ -7,7 +7,7 @@ import {
 } from "../../grammar/ast";
 import { AstUtil, getAstUtil } from "../util";
 import { getOptimizer } from "../constEval";
-import { CompilerContext } from "../../context";
+import { CompilerContext } from "../../context/context";
 import { ExpressionTransformer, Rule } from "../types";
 import { AssociativeRule3 } from "../associative";
 import { evalBinaryOp, evalUnaryOp } from "../interpreter";

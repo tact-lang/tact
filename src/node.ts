@@ -3,7 +3,7 @@ import fs from "fs";
 import { ConfigProject, Config, parseConfig } from "./config/parseConfig";
 import { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 import { build } from "./pipeline/build";
-import { LogLevel, Logger } from "./logger";
+import { LogLevel, Logger } from "./context/logger";
 import { TactErrorCollection } from "./error/errors";
 
 type AdditionalCliOptions = {

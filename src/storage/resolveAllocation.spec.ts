@@ -3,7 +3,7 @@ import { resolveDescriptors } from "../types/resolveDescriptors";
 import { getAllocations, resolveAllocations } from "./resolveAllocation";
 import { openContext } from "../grammar/store";
 import { resolveStatements } from "../types/resolveStatements";
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { resolveSignatures } from "../types/resolveSignatures";
 import path from "path";
 import { getParser } from "../grammar";
