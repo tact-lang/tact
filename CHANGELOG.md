@@ -71,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed links in Chinese translation: PR [#1206](https://github.com/tact-lang/tact/pull/1206)
 - Added a note on 255 being the maximum number of messages that can be sent during action phase: PR [#1237](https://github.com/tact-lang/tact/pull/1237)
 - Added onchain metadata creation for NFTs and Jettons to the cookbook: PR [#1236](https://github.com/tact-lang/tact/pull/1236)
+- Added a compilation-related page with the description of the compilation report: PR [#1309](https://github.com/tact-lang/tact/pull/1309)
 
 ### Release contributors
 

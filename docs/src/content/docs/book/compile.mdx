@@ -1,0 +1,104 @@
+---
+title: Compilation
+description: "How to compile Tact smart contracts, as well as details on the build artifacts that are provided."
+prev:
+  link: /book/message-mode
+  label: Message mode
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+:::note
+
+  This page is still being written as per [#1136](https://github.com/tact-lang/tact-docs/issues/1136).
+
+:::
+
+The Tact compiler can produce various outputs, ranging from the [BoC](/book/cells#cells-boc) of the compiled contract to various supplementary files, such as the [compilation report](#report) or the [contract package](/ref/evolution/otp-006), which is the JSON file with the `.pkg` extension that one can use to [verify the smart contract's origin](https://verifier.ton.org).
+
+With the proper [configuration settings](/book/config), you can customize the behavior of the compiler to skip the generation of some or all the [build artifacts](#artifacts), and even control the addition or exclusion of [getters for supported interfaces](/book/contracts#interfaces).
+
+Since the Tact compiler is a command-line program, some of the configuration settings can be set directly. When inside a folder with a Tact-based project, such as one created using the [Blueprint](https://github.com/ton-org/blueprint) or from the [tact-template](https://github.com/tact-lang/tact-template), refer to the `npx tact --help{:shell}` command for further instructions.
+
+## Build artifacts {#artifacts}
+
+A number of build artifacts can be produced per compilation of each contract. Some of the artifacts can be omitted using [configuration settings](/book/config).
+
+The location of the artifacts depends on the [`output`](/book/config#projects-output) field of the [`tact.config.json`](/book/config). In [Blueprint][bp]-based projects, `output` is not used and all generated files are always placed in `build/ProjectName/`.
+
+### Compilation report, `.md` {#report}
+
+Every markdown compilation report first features the name of the contract that it was prepared for and then the byte size of the contract compiled to [BoC](/book/cells#cells-boc).
+
+The following sub-headings describe the respective sections of the `.md` report.
+
+#### Structures {#structures}
+
+<Badge text="Written as '# Types' prior to Tact 1.6" variant="tip" size="medium"/><p/>
+
+The first section introduces the present structures, i.e. some of the [composite types](/book/types#composite-types), [Structs and Messages](/book/structs-and-messages) that are declared or imported directly in the contract code, as well as those exposed from the Core standard library.
+
+Along with the number of structures present, each of the [Structs][struct] and [Messages][message] are described with their respective [TL-B schemas][tlb] and Tact signatures.
+
+For example:
+
+```md
+Total structures: 10
+
+### StateInit
+TL-B: `_ code:^cell data:^cell = StateInit`
+Signature: `StateInit{code:^cell,data:^cell}`
+
+### StdAddress
+TL-B: `_ workchain:int8 address:uint256 = StdAddress`
+Signature: `StdAddress{workchain:int8,address:uint256}`
+
+...etc.
+```
+
+#### Get methods {#getters}
+
+This section specifies the number of available get methods or [getter functions](/book/functions#getter-functions) and outlines them with their argument names, if any.
+
+For example:
+
+```md
+Total get methods: 2
+
+## lshift
+Argument: x
+
+## gas
+```
+
+There, the `lshift(){:tact}` getter has a single argument `x`, whereas the `gas(){:tact}` getter has no arguments.
+
+#### Exit codes {#exit-codes}
+
+This section lists all default [exit codes](/book/exit-codes), as well as those generated from the error messages of the [`require(){:tact}`](/ref/core-debug#require), along with those messages for your convenience.
+
+For example:
+
+```md
+* 2: Stack underflow
+* 3: Stack overflow
+...etc.
+* 135: Code of a contract was not found
+* 42933: Hey, I'm the error message of require()
+```
+
+There, the [exit codes](/book/exit-codes) in the range from $0$ to $255$ are those reserved by TON Blockchain or Tact compiler, while the exit code of $42933$ is produced by the respective call to the [`require(){:tact}`](/ref/core-debug#require) function.
+
+#### Trait inheritance diagram {#trait-diagram}
+
+This section shows a [Mermaid][mm] diagram of inherited [traits](/book/types#traits), including the [`BaseTrait{:tact}`](/ref/core-base).
+
+#### Contract inheritance diagram {#contract-diagram}
+
+This section shows a [Mermaid][mm] diagram of [contract](/book/contracts) dependencies, i.e. the [traits](/book/types#traits) that it depends upon.
+
+[struct]: /book/structs-and-messages#structs
+[message]: /book/structs-and-messages#messages
+
+[tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
+[mm]: https://mermaid.js.org/
