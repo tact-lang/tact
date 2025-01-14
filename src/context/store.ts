@@ -5,7 +5,7 @@ import {
     AstNativeFunctionDecl,
     AstTypeDecl,
     AstAsmFunctionDef,
-} from "./ast";
+} from "../ast/ast";
 import { throwInternalCompilerError } from "../error/errors";
 import { CompilerContext, createContextStore } from "../context/context";
 import { ItemOrigin } from "./src-info";

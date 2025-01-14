@@ -5,7 +5,7 @@
 
 import { Loc } from "@tonstudio/parser-runtime";
 import * as A from "./ast";
-import { SrcInfo } from "./src-info";
+import { SrcInfo } from "../grammar/src-info";
 
 export const getAstSchema = (
     factory: A.FactoryAst,
