@@ -1552,8 +1552,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     );
                 } else if (
                     f.as !== ex.as &&
-                    f.as !== "int257" &&
-                    ex.as !== "int257"
+                    !(
+                        (f.as === "int257" && ex.as === null) ||
+                        (f.as === null && ex.as === "int257")
+                    )
                 ) {
                     const expected = printFieldTypeRefWithAs(f);
                     const actual = printFieldTypeRefWithAs(ex);

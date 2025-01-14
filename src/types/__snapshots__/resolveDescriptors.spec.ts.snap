@@ -750,6 +750,16 @@ Line 6, col 5:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-int257-field-for-trait-with-as-typed-coins-field 1`] = `
+"<unknown>:10:5: Trait "Trait" requires field "i" of type "Int as int257", but "Int as coins" given
+Line 10, col 5:
+   9 | contract Foo with Trait {
+> 10 |     i: Int as coins = 0;
+           ^~~~~~~~~~~~~~~~~~~
+  11 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for trait-without-as-typed-field-inherited-with-it 1`] = `
 "<unknown>:10:5: Trait "Foo" requires field "f" of type "Int", but "Int as int32" given
 Line 10, col 5:
