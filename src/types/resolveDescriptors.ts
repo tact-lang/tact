@@ -1,23 +1,23 @@
 import {
+    AstAsmFunctionDef,
+    AstConstantDecl,
     AstConstantDef,
-    AstFieldDecl,
     AstContractInit,
+    AstExpression,
+    AstFieldDecl,
+    AstFunctionDecl,
+    AstFunctionDef,
+    AstId,
+    AstMapType,
     AstNativeFunctionDecl,
     AstNode,
     AstType,
-    idText,
-    AstId,
+    AstTypeId,
     eqNames,
-    AstFunctionDef,
+    FactoryAst,
+    idText,
     isSelfId,
     isSlice,
-    AstFunctionDecl,
-    AstConstantDecl,
-    AstExpression,
-    AstMapType,
-    AstTypeId,
-    AstAsmFunctionDef,
-    FactoryAst,
 } from "../grammar/ast";
 import { traverse } from "../grammar/iterators";
 import {
@@ -25,14 +25,14 @@ import {
     throwCompilationError,
     throwInternalCompilerError,
 } from "../errors";
-import { CompilerContext, Store, createContextStore } from "../context";
+import { CompilerContext, createContextStore, Store } from "../context";
 import {
     ConstantDescription,
     FieldDescription,
-    FunctionParameter,
     FunctionDescription,
-    InitParameter,
+    FunctionParameter,
     InitDescription,
+    InitParameter,
     printTypeRef,
     ReceiverSelector,
     receiverSelectorName,
@@ -46,9 +46,9 @@ import { crc16 } from "../utils/crc16";
 import { isSubsetOf } from "../utils/isSubsetOf";
 import { evalConstantExpression } from "../constEval";
 import {
-    resolveABIType,
     intMapKeyFormats,
     intMapValFormats,
+    resolveABIType,
 } from "./resolveABITypeRef";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
@@ -1574,6 +1574,27 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     //
 
     function copyTraits(contractOrTrait: TypeDescription) {
+        const inheritOnlyBaseTrait = contractOrTrait.traits.length === 1;
+
+        // Check that "override" functions have a super function
+        for (const funInContractOrTrait of contractOrTrait.functions.values()) {
+            if (!funInContractOrTrait.isOverride) {
+                continue;
+            }
+
+            const foundOverriddenFunction = contractOrTrait.traits.some((t) =>
+                t.functions.has(funInContractOrTrait.name),
+            );
+
+            if (!foundOverriddenFunction) {
+                const msg = inheritOnlyBaseTrait
+                    ? `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier or inherit any traits with this function`
+                    : `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier`;
+
+                throwCompilationError(msg, funInContractOrTrait.ast.loc);
+            }
+        }
+
         for (const inheritedTrait of contractOrTrait.traits) {
             // Copy functions
             for (const traitFunction of inheritedTrait.functions.values()) {
