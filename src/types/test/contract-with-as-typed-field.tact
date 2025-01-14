@@ -6,6 +6,6 @@ trait Foo {
     f: Int as int32;
 }
 
-trait SomeTrait with Foo {
+contract SomeContract with Foo {
     f: Int as int32;
 }

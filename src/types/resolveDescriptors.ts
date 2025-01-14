@@ -1548,10 +1548,9 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     );
                 } else if (f.as !== null && f.as !== ex.as) {
                     const expected = `${printTypeRef(f.type)} as ${f.as}`;
-                    let actual = printTypeRef(ex.type);
-                    if (ex.as !== null) {
-                        actual += ` as ${ex.as}`;
-                    }
+                    const actual =
+                        printTypeRef(ex.type) +
+                        (ex.as !== null ? ` as ${ex.as}` : "");
 
                     throwCompilationError(
                         `Trait "${tr.name}" requires field "${f.name}" of type "${expected}", but "${actual}" given`,
