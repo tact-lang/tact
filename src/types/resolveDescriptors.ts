@@ -560,12 +560,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                             traitDecl.loc,
                         );
                     }
-                    if (traitDecl.as) {
-                        throwCompilationError(
-                            `Trait field cannot have serialization specifier`,
-                            traitDecl.loc,
-                        );
-                    }
                     if (traitDecl.initializer) {
                         throwCompilationError(
                             `Trait field cannot have an initializer`,
@@ -1518,6 +1512,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     // Verify trait fields
     //
 
+    function printFieldTypeRefWithAs(ex: FieldDescription) {
+        return printTypeRef(ex.type) + (ex.as !== null ? ` as ${ex.as}` : "");
+    }
+
     for (const t of types.values()) {
         for (const tr of t.traits) {
             // Check that trait is valid
@@ -1551,6 +1549,20 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     throwCompilationError(
                         `Trait "${tr.name}" requires field "${f.name}" of type "${printTypeRef(f.type)}"`,
                         t.ast.loc,
+                    );
+                } else if (
+                    f.as !== ex.as &&
+                    !(
+                        (f.as === "int257" && ex.as === null) ||
+                        (f.as === null && ex.as === "int257")
+                    )
+                ) {
+                    const expected = printFieldTypeRefWithAs(f);
+                    const actual = printFieldTypeRefWithAs(ex);
+
+                    throwCompilationError(
+                        `Trait "${tr.name}" requires field "${f.name}" of type "${expected}", but "${actual}" given`,
+                        ex.ast.loc,
                     );
                 }
             }

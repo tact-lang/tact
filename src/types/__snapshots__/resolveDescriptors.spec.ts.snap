@@ -320,6 +320,16 @@ Line 13, col 3:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for contract-without-as-typed-field-inherited-with-it 1`] = `
+"<unknown>:10:5: Trait "Foo" requires field "f" of type "Int", but "Int as coins" given
+Line 10, col 5:
+   9 | contract SomeContract with Foo {
+> 10 |     f: Int as coins;
+           ^~~~~~~~~~~~~~~
+  11 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for expr-bitwise-not-bool-in-const1 1`] = `
 "<unknown>:4:16: Invalid type "Bool" for unary operator "~"
 Line 4, col 16:
@@ -747,6 +757,106 @@ Line 2, col 14:
 > 2 |     a: Int = 42; // error
                    ^~
   3 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-for-contract 1`] = `
+"<unknown>:10:5: Trait "Foo" requires field "f" of type "Int as int32", but "Int" given
+Line 10, col 5:
+   9 | contract SomeContract with Foo {
+> 10 |     f: Int;
+           ^~~~~~
+  11 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-for-contract-with-other-specialization 1`] = `
+"<unknown>:10:5: Trait "Foo" requires field "f" of type "Int as int32", but "Int as int16" given
+Line 10, col 5:
+   9 | contract SomeContract with Foo {
+> 10 |     f: Int as int16 = 0;
+           ^~~~~~~~~~~~~~~~~~~
+  11 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-for-contract-with-other-type 1`] = `
+"<unknown>:10:1: Trait "Foo" requires field "f" of type "Int"
+Line 10, col 1:
+   9 | 
+> 10 | contract SomeContract with Foo {
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  11 |     f: Cell;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-for-trait 1`] = `
+"<unknown>:10:5: Trait "Foo" requires field "f" of type "Int as int32", but "Int" given
+Line 10, col 5:
+   9 | trait SomeTrait with Foo {
+> 10 |     f: Int;
+           ^~~~~~
+  11 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-for-trait-with-other-specialization 1`] = `
+"<unknown>:10:5: Trait "Foo" requires field "f" of type "Int as int32", but "Int as int16" given
+Line 10, col 5:
+   9 | trait SomeTrait with Foo {
+> 10 |     f: Int as int16;
+           ^~~~~~~~~~~~~~~
+  11 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-for-trait-with-other-type 1`] = `
+"<unknown>:10:1: Trait "Foo" requires field "f" of type "Int"
+Line 10, col 1:
+   9 | 
+> 10 | trait SomeTrait with Foo {
+       ^~~~~~~~~~~~~~~~~~~~~~~~~~
+  11 |     f: Cell;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-in-diamond-inheritance-and-other-specialization 1`] = `
+"<unknown>:21:5: Trait "T2" requires field "f2" of type "Int as int32", but "Int as int16" given
+Line 21, col 5:
+  20 |     f1: Int as int32;
+> 21 |     f2: Int as int16;
+           ^~~~~~~~~~~~~~~~
+  22 |     f3: Int as int32;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-field-with-unsupported-format 1`] = `
+"<unknown>:6:5: Unsupported format "foo"
+Line 6, col 5:
+  5 | trait Foo {
+> 6 |     f: Int as foo;
+          ^~~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-with-as-typed-int257-field-for-trait-with-as-typed-coins-field 1`] = `
+"<unknown>:10:5: Trait "Trait" requires field "i" of type "Int as int257", but "Int as coins" given
+Line 10, col 5:
+   9 | contract Foo with Trait {
+> 10 |     i: Int as coins = 0;
+           ^~~~~~~~~~~~~~~~~~~
+  11 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-without-as-typed-field-inherited-with-it 1`] = `
+"<unknown>:10:5: Trait "Foo" requires field "f" of type "Int", but "Int as int32" given
+Line 10, col 5:
+   9 | trait SomeTrait with Foo {
+> 10 |     f: Int as int32;
+           ^~~~~~~~~~~~~~~
+  11 | }
 "
 `;
 
@@ -6302,6 +6412,506 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
 `;
 
 exports[`resolveDescriptors should resolve descriptors for contract-getter-override-virtual 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-with-as-typed-field 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": {
+            "id": 8,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 9,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int as int32,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 10,
+      "kind": "trait",
+      "loc": trait Foo {
+    f: Int as int32;
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": Foo,
+        "text": "Foo",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "f",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": "int32",
+        "ast": {
+          "as": {
+            "id": 8,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 9,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int as int32,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": f: Int as int32,
+        "name": "f",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "Foo",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 10576,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": {
+            "id": 15,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 16,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int as int32,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 14,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 17,
+      "kind": "contract",
+      "loc": contract SomeContract with Foo {
+    f: Int as int32;
+},
+      "name": {
+        "id": 11,
+        "kind": "id",
+        "loc": SomeContract,
+        "text": "SomeContract",
+      },
+      "traits": [
+        {
+          "id": 12,
+          "kind": "id",
+          "loc": Foo,
+          "text": "Foo",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "f",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": "int32",
+        "ast": {
+          "as": {
+            "id": 15,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 16,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int as int32,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 14,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": f: Int as int32,
+        "name": "f",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 19,
+        "kind": "contract_init",
+        "loc": contract SomeContract with Foo {
+    f: Int as int32;
+},
+        "params": [],
+        "statements": [],
+      },
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "SomeContract",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "as": {
+                "id": 8,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 9,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f: Int as int32,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "id": 10,
+          "kind": "trait",
+          "loc": trait Foo {
+    f: Int as int32;
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": Foo,
+            "text": "Foo",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [
+          {
+            "abi": {
+              "name": "f",
+              "type": {
+                "format": 32,
+                "kind": "simple",
+                "optional": false,
+                "type": "int",
+              },
+            },
+            "as": "int32",
+            "ast": {
+              "as": {
+                "id": 8,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 9,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f: Int as int32,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            "default": undefined,
+            "index": 0,
+            "loc": f: Int as int32,
+            "name": "f",
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "Foo",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [],
+              "id": 4,
+              "kind": "trait",
+              "loc": trait BaseTrait {},
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "loc": BaseTrait,
+                "text": "BaseTrait",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "BaseTrait",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 1020,
+          },
+        ],
+        "uid": 10576,
+      },
+    ],
+    "uid": 59799,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for contract-with-as-typed-field 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for fun-extends-opt-self 1`] = `
 [
@@ -25549,3 +26159,3487 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
 `;
 
 exports[`resolveDescriptors should resolve descriptors for trait-foreach 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-inheritance-with-as-typed-int257-field 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": null,
+          "id": 8,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 9,
+      "kind": "trait",
+      "loc": trait Foo {
+    f: Int;
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": Foo,
+        "text": "Foo",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "f",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 8,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": f: Int,
+        "name": "f",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "Foo",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 10576,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": {
+            "id": 14,
+            "kind": "id",
+            "loc": int257,
+            "text": "int257",
+          },
+          "id": 15,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int as int257,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 13,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 16,
+      "kind": "trait",
+      "loc": trait SomeTrait with Foo {
+    f: Int as int257;
+},
+      "name": {
+        "id": 10,
+        "kind": "id",
+        "loc": SomeTrait,
+        "text": "SomeTrait",
+      },
+      "traits": [
+        {
+          "id": 11,
+          "kind": "id",
+          "loc": Foo,
+          "text": "Foo",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "f",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": "int257",
+        "ast": {
+          "as": {
+            "id": 14,
+            "kind": "id",
+            "loc": int257,
+            "text": "int257",
+          },
+          "id": 15,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int as int257,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 13,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": f: Int as int257,
+        "name": "f",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "SomeTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "as": null,
+              "id": 8,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f: Int,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "id": 9,
+          "kind": "trait",
+          "loc": trait Foo {
+    f: Int;
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": Foo,
+            "text": "Foo",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [
+          {
+            "abi": {
+              "name": "f",
+              "type": {
+                "format": 257,
+                "kind": "simple",
+                "optional": false,
+                "type": "int",
+              },
+            },
+            "as": null,
+            "ast": {
+              "as": null,
+              "id": 8,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f: Int,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            "default": undefined,
+            "index": 0,
+            "loc": f: Int,
+            "name": "f",
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "Foo",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [],
+              "id": 4,
+              "kind": "trait",
+              "loc": trait BaseTrait {},
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "loc": BaseTrait,
+                "text": "BaseTrait",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "BaseTrait",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 1020,
+          },
+        ],
+        "uid": 10576,
+      },
+    ],
+    "uid": 8387,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-inheritance-with-as-typed-int257-field 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-field 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": {
+            "id": 8,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 9,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int as int32,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 10,
+      "kind": "trait",
+      "loc": trait Foo {
+    f: Int as int32;
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": Foo,
+        "text": "Foo",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "f",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": "int32",
+        "ast": {
+          "as": {
+            "id": 8,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 9,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int as int32,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": f: Int as int32,
+        "name": "f",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "Foo",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 10576,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": {
+            "id": 15,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 16,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int as int32,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 14,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 17,
+      "kind": "trait",
+      "loc": trait SomeTrait with Foo {
+    f: Int as int32;
+},
+      "name": {
+        "id": 11,
+        "kind": "id",
+        "loc": SomeTrait,
+        "text": "SomeTrait",
+      },
+      "traits": [
+        {
+          "id": 12,
+          "kind": "id",
+          "loc": Foo,
+          "text": "Foo",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "f",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": "int32",
+        "ast": {
+          "as": {
+            "id": 15,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 16,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int as int32,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 14,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": f: Int as int32,
+        "name": "f",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "SomeTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "as": {
+                "id": 8,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 9,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f: Int as int32,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "id": 10,
+          "kind": "trait",
+          "loc": trait Foo {
+    f: Int as int32;
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": Foo,
+            "text": "Foo",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [
+          {
+            "abi": {
+              "name": "f",
+              "type": {
+                "format": 32,
+                "kind": "simple",
+                "optional": false,
+                "type": "int",
+              },
+            },
+            "as": "int32",
+            "ast": {
+              "as": {
+                "id": 8,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 9,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f: Int as int32,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            "default": undefined,
+            "index": 0,
+            "loc": f: Int as int32,
+            "name": "f",
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "Foo",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [],
+              "id": 4,
+              "kind": "trait",
+              "loc": trait BaseTrait {},
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "loc": BaseTrait,
+                "text": "BaseTrait",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "BaseTrait",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 1020,
+          },
+        ],
+        "uid": 10576,
+      },
+    ],
+    "uid": 8387,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-field 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-field-in-diamond-inheritance 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": {
+            "id": 8,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 9,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f1: Int as int32,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f1,
+            "text": "f1",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 10,
+      "kind": "trait",
+      "loc": trait T {
+    f1: Int as int32;
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": T,
+        "text": "T",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "f1",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": "int32",
+        "ast": {
+          "as": {
+            "id": 8,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 9,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f1: Int as int32,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f1,
+            "text": "f1",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": f1: Int as int32,
+        "name": "f1",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "T",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 6769,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": {
+            "id": 15,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 16,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f1: Int as int32,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": f1,
+            "text": "f1",
+          },
+          "type": {
+            "id": 14,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": {
+            "id": 19,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 20,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f2: Int as int32,
+          "name": {
+            "id": 17,
+            "kind": "id",
+            "loc": f2,
+            "text": "f2",
+          },
+          "type": {
+            "id": 18,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 21,
+      "kind": "trait",
+      "loc": trait T2 with T {
+    f1: Int as int32;
+    f2: Int as int32;
+},
+      "name": {
+        "id": 11,
+        "kind": "id",
+        "loc": T2,
+        "text": "T2",
+      },
+      "traits": [
+        {
+          "id": 12,
+          "kind": "id",
+          "loc": T,
+          "text": "T",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "f1",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": "int32",
+        "ast": {
+          "as": {
+            "id": 15,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 16,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f1: Int as int32,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": f1,
+            "text": "f1",
+          },
+          "type": {
+            "id": 14,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": f1: Int as int32,
+        "name": "f1",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "abi": {
+          "name": "f2",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": "int32",
+        "ast": {
+          "as": {
+            "id": 19,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 20,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f2: Int as int32,
+          "name": {
+            "id": 17,
+            "kind": "id",
+            "loc": f2,
+            "text": "f2",
+          },
+          "type": {
+            "id": 18,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 1,
+        "loc": f2: Int as int32,
+        "name": "f2",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "T2",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "as": {
+                "id": 8,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 9,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f1: Int as int32,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f1,
+                "text": "f1",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "id": 10,
+          "kind": "trait",
+          "loc": trait T {
+    f1: Int as int32;
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": T,
+            "text": "T",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [
+          {
+            "abi": {
+              "name": "f1",
+              "type": {
+                "format": 32,
+                "kind": "simple",
+                "optional": false,
+                "type": "int",
+              },
+            },
+            "as": "int32",
+            "ast": {
+              "as": {
+                "id": 8,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 9,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f1: Int as int32,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f1,
+                "text": "f1",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            "default": undefined,
+            "index": 0,
+            "loc": f1: Int as int32,
+            "name": "f1",
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [],
+              "id": 4,
+              "kind": "trait",
+              "loc": trait BaseTrait {},
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "loc": BaseTrait,
+                "text": "BaseTrait",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "BaseTrait",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 1020,
+          },
+        ],
+        "uid": 6769,
+      },
+    ],
+    "uid": 54378,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": {
+            "id": 26,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 27,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f1: Int as int32,
+          "name": {
+            "id": 24,
+            "kind": "id",
+            "loc": f1,
+            "text": "f1",
+          },
+          "type": {
+            "id": 25,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": {
+            "id": 30,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 31,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f3: Int as int32,
+          "name": {
+            "id": 28,
+            "kind": "id",
+            "loc": f3,
+            "text": "f3",
+          },
+          "type": {
+            "id": 29,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 32,
+      "kind": "trait",
+      "loc": trait T3 with T {
+    f1: Int as int32;
+    f3: Int as int32;
+},
+      "name": {
+        "id": 22,
+        "kind": "id",
+        "loc": T3,
+        "text": "T3",
+      },
+      "traits": [
+        {
+          "id": 23,
+          "kind": "id",
+          "loc": T,
+          "text": "T",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "f1",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": "int32",
+        "ast": {
+          "as": {
+            "id": 26,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 27,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f1: Int as int32,
+          "name": {
+            "id": 24,
+            "kind": "id",
+            "loc": f1,
+            "text": "f1",
+          },
+          "type": {
+            "id": 25,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": f1: Int as int32,
+        "name": "f1",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "abi": {
+          "name": "f3",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": "int32",
+        "ast": {
+          "as": {
+            "id": 30,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 31,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f3: Int as int32,
+          "name": {
+            "id": 28,
+            "kind": "id",
+            "loc": f3,
+            "text": "f3",
+          },
+          "type": {
+            "id": 29,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 1,
+        "loc": f3: Int as int32,
+        "name": "f3",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "T3",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "as": {
+                "id": 8,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 9,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f1: Int as int32,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f1,
+                "text": "f1",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "id": 10,
+          "kind": "trait",
+          "loc": trait T {
+    f1: Int as int32;
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": T,
+            "text": "T",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [
+          {
+            "abi": {
+              "name": "f1",
+              "type": {
+                "format": 32,
+                "kind": "simple",
+                "optional": false,
+                "type": "int",
+              },
+            },
+            "as": "int32",
+            "ast": {
+              "as": {
+                "id": 8,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 9,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f1: Int as int32,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f1,
+                "text": "f1",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            "default": undefined,
+            "index": 0,
+            "loc": f1: Int as int32,
+            "name": "f1",
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [],
+              "id": 4,
+              "kind": "trait",
+              "loc": trait BaseTrait {},
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "loc": BaseTrait,
+                "text": "BaseTrait",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "BaseTrait",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 1020,
+          },
+        ],
+        "uid": 6769,
+      },
+    ],
+    "uid": 50251,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": {
+            "id": 38,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 39,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f1: Int as int32,
+          "name": {
+            "id": 36,
+            "kind": "id",
+            "loc": f1,
+            "text": "f1",
+          },
+          "type": {
+            "id": 37,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": {
+            "id": 42,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 43,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f2: Int as int32,
+          "name": {
+            "id": 40,
+            "kind": "id",
+            "loc": f2,
+            "text": "f2",
+          },
+          "type": {
+            "id": 41,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": {
+            "id": 46,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 47,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f3: Int as int32,
+          "name": {
+            "id": 44,
+            "kind": "id",
+            "loc": f3,
+            "text": "f3",
+          },
+          "type": {
+            "id": 45,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 48,
+      "kind": "trait",
+      "loc": trait SomeTrait with T2, T3 {
+    f1: Int as int32;
+    f2: Int as int32;
+    f3: Int as int32;
+},
+      "name": {
+        "id": 33,
+        "kind": "id",
+        "loc": SomeTrait,
+        "text": "SomeTrait",
+      },
+      "traits": [
+        {
+          "id": 34,
+          "kind": "id",
+          "loc": T2,
+          "text": "T2",
+        },
+        {
+          "id": 35,
+          "kind": "id",
+          "loc": T3,
+          "text": "T3",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "f1",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": "int32",
+        "ast": {
+          "as": {
+            "id": 38,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 39,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f1: Int as int32,
+          "name": {
+            "id": 36,
+            "kind": "id",
+            "loc": f1,
+            "text": "f1",
+          },
+          "type": {
+            "id": 37,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": f1: Int as int32,
+        "name": "f1",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "abi": {
+          "name": "f2",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": "int32",
+        "ast": {
+          "as": {
+            "id": 42,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 43,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f2: Int as int32,
+          "name": {
+            "id": 40,
+            "kind": "id",
+            "loc": f2,
+            "text": "f2",
+          },
+          "type": {
+            "id": 41,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 1,
+        "loc": f2: Int as int32,
+        "name": "f2",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "abi": {
+          "name": "f3",
+          "type": {
+            "format": 32,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": "int32",
+        "ast": {
+          "as": {
+            "id": 46,
+            "kind": "id",
+            "loc": int32,
+            "text": "int32",
+          },
+          "id": 47,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f3: Int as int32,
+          "name": {
+            "id": 44,
+            "kind": "id",
+            "loc": f3,
+            "text": "f3",
+          },
+          "type": {
+            "id": 45,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 2,
+        "loc": f3: Int as int32,
+        "name": "f3",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "SomeTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "as": {
+                "id": 15,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 16,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f1: Int as int32,
+              "name": {
+                "id": 13,
+                "kind": "id",
+                "loc": f1,
+                "text": "f1",
+              },
+              "type": {
+                "id": 14,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            {
+              "as": {
+                "id": 19,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 20,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f2: Int as int32,
+              "name": {
+                "id": 17,
+                "kind": "id",
+                "loc": f2,
+                "text": "f2",
+              },
+              "type": {
+                "id": 18,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "id": 21,
+          "kind": "trait",
+          "loc": trait T2 with T {
+    f1: Int as int32;
+    f2: Int as int32;
+},
+          "name": {
+            "id": 11,
+            "kind": "id",
+            "loc": T2,
+            "text": "T2",
+          },
+          "traits": [
+            {
+              "id": 12,
+              "kind": "id",
+              "loc": T,
+              "text": "T",
+            },
+          ],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [
+          {
+            "abi": {
+              "name": "f1",
+              "type": {
+                "format": 32,
+                "kind": "simple",
+                "optional": false,
+                "type": "int",
+              },
+            },
+            "as": "int32",
+            "ast": {
+              "as": {
+                "id": 15,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 16,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f1: Int as int32,
+              "name": {
+                "id": 13,
+                "kind": "id",
+                "loc": f1,
+                "text": "f1",
+              },
+              "type": {
+                "id": 14,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            "default": undefined,
+            "index": 0,
+            "loc": f1: Int as int32,
+            "name": "f1",
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+          {
+            "abi": {
+              "name": "f2",
+              "type": {
+                "format": 32,
+                "kind": "simple",
+                "optional": false,
+                "type": "int",
+              },
+            },
+            "as": "int32",
+            "ast": {
+              "as": {
+                "id": 19,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 20,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f2: Int as int32,
+              "name": {
+                "id": 17,
+                "kind": "id",
+                "loc": f2,
+                "text": "f2",
+              },
+              "type": {
+                "id": 18,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            "default": undefined,
+            "index": 1,
+            "loc": f2: Int as int32,
+            "name": "f2",
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T2",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [],
+              "id": 4,
+              "kind": "trait",
+              "loc": trait BaseTrait {},
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "loc": BaseTrait,
+                "text": "BaseTrait",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "BaseTrait",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 1020,
+          },
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [
+                {
+                  "as": {
+                    "id": 8,
+                    "kind": "id",
+                    "loc": int32,
+                    "text": "int32",
+                  },
+                  "id": 9,
+                  "initializer": null,
+                  "kind": "field_decl",
+                  "loc": f1: Int as int32,
+                  "name": {
+                    "id": 6,
+                    "kind": "id",
+                    "loc": f1,
+                    "text": "f1",
+                  },
+                  "type": {
+                    "id": 7,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                },
+              ],
+              "id": 10,
+              "kind": "trait",
+              "loc": trait T {
+    f1: Int as int32;
+},
+              "name": {
+                "id": 5,
+                "kind": "id",
+                "loc": T,
+                "text": "T",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [
+              {
+                "abi": {
+                  "name": "f1",
+                  "type": {
+                    "format": 32,
+                    "kind": "simple",
+                    "optional": false,
+                    "type": "int",
+                  },
+                },
+                "as": "int32",
+                "ast": {
+                  "as": {
+                    "id": 8,
+                    "kind": "id",
+                    "loc": int32,
+                    "text": "int32",
+                  },
+                  "id": 9,
+                  "initializer": null,
+                  "kind": "field_decl",
+                  "loc": f1: Int as int32,
+                  "name": {
+                    "id": 6,
+                    "kind": "id",
+                    "loc": f1,
+                    "text": "f1",
+                  },
+                  "type": {
+                    "id": 7,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                },
+                "default": undefined,
+                "index": 0,
+                "loc": f1: Int as int32,
+                "name": "f1",
+                "type": {
+                  "kind": "ref",
+                  "name": "Int",
+                  "optional": false,
+                },
+              },
+            ],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "T",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [
+              {
+                "ast": {
+                  "attributes": [],
+                  "declarations": [],
+                  "id": 4,
+                  "kind": "trait",
+                  "loc": trait BaseTrait {},
+                  "name": {
+                    "id": 3,
+                    "kind": "id",
+                    "loc": BaseTrait,
+                    "text": "BaseTrait",
+                  },
+                  "traits": [],
+                },
+                "constants": [],
+                "dependsOn": [],
+                "fields": [],
+                "functions": Map {},
+                "header": null,
+                "init": null,
+                "interfaces": [],
+                "kind": "trait",
+                "name": "BaseTrait",
+                "origin": "user",
+                "partialFieldCount": 0,
+                "receivers": [],
+                "signature": null,
+                "tlb": null,
+                "traits": [],
+                "uid": 1020,
+              },
+            ],
+            "uid": 6769,
+          },
+        ],
+        "uid": 54378,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "as": {
+                "id": 8,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 9,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f1: Int as int32,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f1,
+                "text": "f1",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "id": 10,
+          "kind": "trait",
+          "loc": trait T {
+    f1: Int as int32;
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": T,
+            "text": "T",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [
+          {
+            "abi": {
+              "name": "f1",
+              "type": {
+                "format": 32,
+                "kind": "simple",
+                "optional": false,
+                "type": "int",
+              },
+            },
+            "as": "int32",
+            "ast": {
+              "as": {
+                "id": 8,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 9,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f1: Int as int32,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f1,
+                "text": "f1",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            "default": undefined,
+            "index": 0,
+            "loc": f1: Int as int32,
+            "name": "f1",
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [],
+              "id": 4,
+              "kind": "trait",
+              "loc": trait BaseTrait {},
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "loc": BaseTrait,
+                "text": "BaseTrait",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "BaseTrait",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 1020,
+          },
+        ],
+        "uid": 6769,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "as": {
+                "id": 26,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 27,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f1: Int as int32,
+              "name": {
+                "id": 24,
+                "kind": "id",
+                "loc": f1,
+                "text": "f1",
+              },
+              "type": {
+                "id": 25,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            {
+              "as": {
+                "id": 30,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 31,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f3: Int as int32,
+              "name": {
+                "id": 28,
+                "kind": "id",
+                "loc": f3,
+                "text": "f3",
+              },
+              "type": {
+                "id": 29,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "id": 32,
+          "kind": "trait",
+          "loc": trait T3 with T {
+    f1: Int as int32;
+    f3: Int as int32;
+},
+          "name": {
+            "id": 22,
+            "kind": "id",
+            "loc": T3,
+            "text": "T3",
+          },
+          "traits": [
+            {
+              "id": 23,
+              "kind": "id",
+              "loc": T,
+              "text": "T",
+            },
+          ],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [
+          {
+            "abi": {
+              "name": "f1",
+              "type": {
+                "format": 32,
+                "kind": "simple",
+                "optional": false,
+                "type": "int",
+              },
+            },
+            "as": "int32",
+            "ast": {
+              "as": {
+                "id": 26,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 27,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f1: Int as int32,
+              "name": {
+                "id": 24,
+                "kind": "id",
+                "loc": f1,
+                "text": "f1",
+              },
+              "type": {
+                "id": 25,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            "default": undefined,
+            "index": 0,
+            "loc": f1: Int as int32,
+            "name": "f1",
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+          {
+            "abi": {
+              "name": "f3",
+              "type": {
+                "format": 32,
+                "kind": "simple",
+                "optional": false,
+                "type": "int",
+              },
+            },
+            "as": "int32",
+            "ast": {
+              "as": {
+                "id": 30,
+                "kind": "id",
+                "loc": int32,
+                "text": "int32",
+              },
+              "id": 31,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f3: Int as int32,
+              "name": {
+                "id": 28,
+                "kind": "id",
+                "loc": f3,
+                "text": "f3",
+              },
+              "type": {
+                "id": 29,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            "default": undefined,
+            "index": 1,
+            "loc": f3: Int as int32,
+            "name": "f3",
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "T3",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [],
+              "id": 4,
+              "kind": "trait",
+              "loc": trait BaseTrait {},
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "loc": BaseTrait,
+                "text": "BaseTrait",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "BaseTrait",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 1020,
+          },
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [
+                {
+                  "as": {
+                    "id": 8,
+                    "kind": "id",
+                    "loc": int32,
+                    "text": "int32",
+                  },
+                  "id": 9,
+                  "initializer": null,
+                  "kind": "field_decl",
+                  "loc": f1: Int as int32,
+                  "name": {
+                    "id": 6,
+                    "kind": "id",
+                    "loc": f1,
+                    "text": "f1",
+                  },
+                  "type": {
+                    "id": 7,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                },
+              ],
+              "id": 10,
+              "kind": "trait",
+              "loc": trait T {
+    f1: Int as int32;
+},
+              "name": {
+                "id": 5,
+                "kind": "id",
+                "loc": T,
+                "text": "T",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [
+              {
+                "abi": {
+                  "name": "f1",
+                  "type": {
+                    "format": 32,
+                    "kind": "simple",
+                    "optional": false,
+                    "type": "int",
+                  },
+                },
+                "as": "int32",
+                "ast": {
+                  "as": {
+                    "id": 8,
+                    "kind": "id",
+                    "loc": int32,
+                    "text": "int32",
+                  },
+                  "id": 9,
+                  "initializer": null,
+                  "kind": "field_decl",
+                  "loc": f1: Int as int32,
+                  "name": {
+                    "id": 6,
+                    "kind": "id",
+                    "loc": f1,
+                    "text": "f1",
+                  },
+                  "type": {
+                    "id": 7,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                },
+                "default": undefined,
+                "index": 0,
+                "loc": f1: Int as int32,
+                "name": "f1",
+                "type": {
+                  "kind": "ref",
+                  "name": "Int",
+                  "optional": false,
+                },
+              },
+            ],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "T",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [
+              {
+                "ast": {
+                  "attributes": [],
+                  "declarations": [],
+                  "id": 4,
+                  "kind": "trait",
+                  "loc": trait BaseTrait {},
+                  "name": {
+                    "id": 3,
+                    "kind": "id",
+                    "loc": BaseTrait,
+                    "text": "BaseTrait",
+                  },
+                  "traits": [],
+                },
+                "constants": [],
+                "dependsOn": [],
+                "fields": [],
+                "functions": Map {},
+                "header": null,
+                "init": null,
+                "interfaces": [],
+                "kind": "trait",
+                "name": "BaseTrait",
+                "origin": "user",
+                "partialFieldCount": 0,
+                "receivers": [],
+                "signature": null,
+                "tlb": null,
+                "traits": [],
+                "uid": 1020,
+              },
+            ],
+            "uid": 6769,
+          },
+        ],
+        "uid": 50251,
+      },
+    ],
+    "uid": 8387,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-field-in-diamond-inheritance 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-int257-field-with-inheritance-without-typed-field 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 4,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": {
+            "id": 8,
+            "kind": "id",
+            "loc": int257,
+            "text": "int257",
+          },
+          "id": 9,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int as int257,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 10,
+      "kind": "trait",
+      "loc": trait Foo {
+    f: Int as int257;
+},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": Foo,
+        "text": "Foo",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "f",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": "int257",
+        "ast": {
+          "as": {
+            "id": 8,
+            "kind": "id",
+            "loc": int257,
+            "text": "int257",
+          },
+          "id": 9,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int as int257,
+          "name": {
+            "id": 6,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 7,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": f: Int as int257,
+        "name": "f",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "Foo",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 10576,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "as": null,
+          "id": 15,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 14,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 16,
+      "kind": "trait",
+      "loc": trait SomeTrait with Foo {
+    f: Int;
+},
+      "name": {
+        "id": 11,
+        "kind": "id",
+        "loc": SomeTrait,
+        "text": "SomeTrait",
+      },
+      "traits": [
+        {
+          "id": 12,
+          "kind": "id",
+          "loc": Foo,
+          "text": "Foo",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "f",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": null,
+          "id": 15,
+          "initializer": null,
+          "kind": "field_decl",
+          "loc": f: Int,
+          "name": {
+            "id": 13,
+            "kind": "id",
+            "loc": f,
+            "text": "f",
+          },
+          "type": {
+            "id": 14,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": f: Int,
+        "name": "f",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "SomeTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 4,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 3,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "as": {
+                "id": 8,
+                "kind": "id",
+                "loc": int257,
+                "text": "int257",
+              },
+              "id": 9,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f: Int as int257,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "id": 10,
+          "kind": "trait",
+          "loc": trait Foo {
+    f: Int as int257;
+},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": Foo,
+            "text": "Foo",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [
+          {
+            "abi": {
+              "name": "f",
+              "type": {
+                "format": 257,
+                "kind": "simple",
+                "optional": false,
+                "type": "int",
+              },
+            },
+            "as": "int257",
+            "ast": {
+              "as": {
+                "id": 8,
+                "kind": "id",
+                "loc": int257,
+                "text": "int257",
+              },
+              "id": 9,
+              "initializer": null,
+              "kind": "field_decl",
+              "loc": f: Int as int257,
+              "name": {
+                "id": 6,
+                "kind": "id",
+                "loc": f,
+                "text": "f",
+              },
+              "type": {
+                "id": 7,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            "default": undefined,
+            "index": 0,
+            "loc": f: Int as int257,
+            "name": "f",
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "Foo",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [
+          {
+            "ast": {
+              "attributes": [],
+              "declarations": [],
+              "id": 4,
+              "kind": "trait",
+              "loc": trait BaseTrait {},
+              "name": {
+                "id": 3,
+                "kind": "id",
+                "loc": BaseTrait,
+                "text": "BaseTrait",
+              },
+              "traits": [],
+            },
+            "constants": [],
+            "dependsOn": [],
+            "fields": [],
+            "functions": Map {},
+            "header": null,
+            "init": null,
+            "interfaces": [],
+            "kind": "trait",
+            "name": "BaseTrait",
+            "origin": "user",
+            "partialFieldCount": 0,
+            "receivers": [],
+            "signature": null,
+            "tlb": null,
+            "traits": [],
+            "uid": 1020,
+          },
+        ],
+        "uid": 10576,
+      },
+    ],
+    "uid": 8387,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-int257-field-with-inheritance-without-typed-field 2`] = `[]`;
