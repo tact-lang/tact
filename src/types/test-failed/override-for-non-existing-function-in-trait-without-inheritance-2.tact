@@ -1,5 +1,5 @@
 trait BaseTrait {}
 
-contract Test {
+trait Test {
     override fun foo() {}
 }

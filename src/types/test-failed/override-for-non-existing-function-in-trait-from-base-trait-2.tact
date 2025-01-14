@@ -2,6 +2,6 @@ trait BaseTrait {
     fun bar() {}
 }
 
-contract Test {
+trait Test {
     override fun foo() {}
 }

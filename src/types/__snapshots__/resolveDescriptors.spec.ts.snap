@@ -443,23 +443,23 @@ Line 9, col 1:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-contract 1`] = `
-"<unknown>:5:5: Function "foo" overrides nothing, remove "override" modifier
-Line 5, col 5:
-  4 | trait Test with T {
-> 5 |     override fun foo() {}
-          ^~~~~~~~~~~~~~~~~~~~~
-  6 | }
-"
-`;
-
 exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-contract-from-base-trait 1`] = `
 "<unknown>:6:5: Function "foo" overrides nothing, remove "override" modifier or inherit any traits with this function
 Line 6, col 5:
-  5 | trait Test {
+  5 | contract Test {
 > 6 |     override fun foo() {}
           ^~~~~~~~~~~~~~~~~~~~~
   7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-contract-with-inheritance 1`] = `
+"<unknown>:5:5: Function "foo" overrides nothing, remove "override" modifier
+Line 5, col 5:
+  4 | contract Test with T {
+> 5 |     override fun foo() {}
+          ^~~~~~~~~~~~~~~~~~~~~
+  6 | }
 "
 `;
 
@@ -476,30 +476,30 @@ Line 11, col 5:
 exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-contract-without-inheritance 1`] = `
 "<unknown>:4:5: Function "foo" overrides nothing, remove "override" modifier or inherit any traits with this function
 Line 4, col 5:
-  3 | trait Test {
+  3 | contract Test {
 > 4 |     override fun foo() {}
           ^~~~~~~~~~~~~~~~~~~~~
   5 | }
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-trait 1`] = `
-"<unknown>:5:5: Function "foo" overrides nothing, remove "override" modifier
-Line 5, col 5:
-  4 | contract Test with T {
-> 5 |     override fun foo() {}
-          ^~~~~~~~~~~~~~~~~~~~~
-  6 | }
-"
-`;
-
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-trait-from-base-trait 1`] = `
+exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-trait-from-base-trait-2 1`] = `
 "<unknown>:6:5: Function "foo" overrides nothing, remove "override" modifier or inherit any traits with this function
 Line 6, col 5:
-  5 | contract Test {
+  5 | trait Test {
 > 6 |     override fun foo() {}
           ^~~~~~~~~~~~~~~~~~~~~
   7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-trait-with-inheritance 1`] = `
+"<unknown>:5:5: Function "foo" overrides nothing, remove "override" modifier
+Line 5, col 5:
+  4 | trait Test with T {
+> 5 |     override fun foo() {}
+          ^~~~~~~~~~~~~~~~~~~~~
+  6 | }
 "
 `;
 
@@ -513,10 +513,10 @@ Line 11, col 5:
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-trait-without-inheritance 1`] = `
+exports[`resolveDescriptors should fail descriptors for override-for-non-existing-function-in-trait-without-inheritance-2 1`] = `
 "<unknown>:4:5: Function "foo" overrides nothing, remove "override" modifier or inherit any traits with this function
 Line 4, col 5:
-  3 | contract Test {
+  3 | trait Test {
 > 4 |     override fun foo() {}
           ^~~~~~~~~~~~~~~~~~~~~
   5 | }
