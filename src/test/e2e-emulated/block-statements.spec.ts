@@ -39,4 +39,12 @@ describe("block-statements", () => {
     it("should work correctly with variables of different types from subsequent block statements", async () => {
         expect(await contract.getC()).toEqual(557n);
     });
+
+    it("should work correctly with variables of different types from subsequent block statements inside interpreter", async () => {
+        expect(await contract.getD()).toEqual(1308n);
+    });
+
+    it("should work correctly with variables of different types from nested block statements inside interpreter", async () => {
+        expect(await contract.getE()).toEqual(84n);
+    });
 });
