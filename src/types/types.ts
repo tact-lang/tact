@@ -15,7 +15,7 @@ import {
     AstNumber,
     AstLiteral,
     idText,
-} from "../grammar/ast";
+} from "../ast/ast";
 import { ItemOrigin, SrcInfo } from "../grammar";
 
 export type TypeDescription = {

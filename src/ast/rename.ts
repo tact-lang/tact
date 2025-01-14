@@ -16,10 +16,10 @@ import {
     AstConstantDecl,
     AstNode,
     AstFunctionAttribute,
-} from "../ast/ast";
+} from "./ast";
 import { AstSorter } from "./sort";
-import { AstHasher, AstHash } from "../ast/hash";
-import { dummySrcInfo } from "./src-info";
+import { AstHasher, AstHash } from "./hash";
+import { dummySrcInfo } from "../grammar/src-info";
 
 type GivenName = string;
 

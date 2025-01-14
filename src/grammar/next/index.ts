@@ -1,5 +1,5 @@
 import * as $ from "@tonstudio/parser-runtime";
-import * as A from "../ast";
+import * as A from "../../ast/ast";
 import * as G from "./grammar";
 import type { $ast } from "./grammar";
 import {
@@ -7,7 +7,7 @@ import {
     throwInternalCompilerError,
 } from "../../error/errors";
 import { SyntaxErrors, syntaxErrorSchema } from "../parser-error";
-import { AstSchema, getAstSchema } from "../ast-typed";
+import { AstSchema, getAstSchema } from "../../ast/getAstSchema";
 import { getSrcInfo, ItemOrigin } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
 import { makeMakeVisitor } from "../../utils/tricks";

@@ -17,7 +17,7 @@ import {
     AstNumberBase,
     AstId,
     FactoryAst,
-} from "../ast";
+} from "../../ast/ast";
 import { ItemOrigin, SrcInfo } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
 import { ParserErrors, parserErrorSchema } from "./parser-error";

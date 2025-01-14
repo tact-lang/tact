@@ -1,6 +1,6 @@
 import path from "path";
 import { cwd } from "process";
-import { AstFuncId, AstId, AstTypeId } from "../grammar/ast";
+import { AstFuncId, AstId, AstTypeId } from "../ast/ast";
 import { SrcInfo } from "../grammar";
 
 export class TactError extends Error {

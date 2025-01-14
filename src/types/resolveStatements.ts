@@ -10,7 +10,7 @@ import {
     isSelfId,
     eqNames,
     FactoryAst,
-} from "../grammar/ast";
+} from "../ast/ast";
 import { isAssignable } from "./subtyping";
 import {
     idTextErr,

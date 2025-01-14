@@ -6,7 +6,7 @@ import {
     getAstFactory,
     idText,
     tryExtractPath,
-} from "../../grammar/ast";
+} from "../../ast/ast";
 import {
     idTextErr,
     TactConstEvalError,

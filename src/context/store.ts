@@ -7,9 +7,9 @@ import {
     AstAsmFunctionDef,
 } from "../ast/ast";
 import { throwInternalCompilerError } from "../error/errors";
-import { CompilerContext, createContextStore } from "../context/context";
-import { ItemOrigin } from "./src-info";
-import { Parser } from "./grammar";
+import { CompilerContext, createContextStore } from "./context";
+import { ItemOrigin } from "../grammar/src-info";
+import { Parser } from "../grammar/grammar";
 
 /**
  * @public
