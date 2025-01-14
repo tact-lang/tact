@@ -10,7 +10,7 @@ import { Badge } from '@astrojs/starlight/components';
 
 :::note
 
-  This page is still being written as per [#1136](https://github.com/tact-lang/tact-docs/issues/1136).
+  This page is still being written as per [#1136](https://github.com/tact-lang/tact/issues/1136).
 
 :::
 
@@ -54,6 +54,18 @@ TL-B: `_ workchain:int8 address:uint256 = StdAddress`
 Signature: `StdAddress{workchain:int8,address:uint256}`
 
 ...etc.
+```
+
+[TL-B schema][tlb] of each [Message][message] contains its opcode, which is handy for looking up the auto-generated opcodes as well as confirming the [manually provided ones](/book/structs-and-messages#message-opcodes). For example:
+
+```md
+## Deploy
+TL-B: `deploy#946a98b6 queryId:uint64 = Deploy`
+Signature: `Deploy{queryId:uint64}`
+
+## Seven
+TL-B: `seven#00000007 = Seven`
+Signature: `Seven{}`
 ```
 
 #### Get methods {#getters}
