@@ -798,6 +798,26 @@ Line 6, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for return-analysis-if-inside-block-statement 1`] = `
+"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 6, col 5:
+  5 | contract Foo {
+> 6 |     get fun notAlwaysReachableReturn(b: Bool): Int {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  7 |         {
+"
+`;
+
+exports[`resolveStatements should fail statements for return-analysis-if-with-block-statement 1`] = `
+"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 6, col 5:
+  5 | contract Foo {
+> 6 |     get fun notAlwaysReachableReturn(b: Bool): Int {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  7 |         if b {
+"
+`;
+
 exports[`resolveStatements should fail statements for return-analysis-non-void1 1`] = `
 "<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
 Line 6, col 5:
@@ -1315,6 +1335,16 @@ Line 6, col 13:
 > 6 |         let a: Int = 456;
                   ^
   7 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-block-statement-use-after-block 1`] = `
+"<unknown>:7:12: Unable to resolve id 'a'
+Line 7, col 12:
+  6 |     }
+> 7 |     return a;
+                 ^
+  8 | }
 "
 `;
 
@@ -2953,6 +2983,15 @@ exports[`resolveStatements should resolve statements for init-vars-analysis-with
   ],
   [
     "self.value + 1",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for return-analysis-block-statement-with-return 1`] = `
+[
+  [
+    "42",
     "Int",
   ],
 ]
