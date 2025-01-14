@@ -164,12 +164,13 @@ The implementation that we have right now is being refactored to produce FunC AS
 One can find the end-to-end codegen test spec files in the [src/test/e2e-emulated](./src/test/e2e-emulated/) folder. The test contracts are located in [src/test/e2e-emulated/contracts](./src/test/e2e-emulated/contracts) subfolder. Many of those spec files test various language features in relative isolation.
 An important spec file that tests argument passing semantics for functions and assignment semantics for variables is here: [src/test/e2e-emulated/semantics.spec.ts](./src/test/e2e-emulated/semantics.spec.ts).
 
-Note: If you add an end-to-end test contract, you also need to include it into [tact.config.json](./tact.config.json) and run `yarn gen` to compile it and create TypeScript wrappers.
+Note: If you add an end-to-end test contract, you also need to include it into [tact.config.json](src/test/tact.config.json) and run `yarn gen` to compile it and create TypeScript wrappers.
 
 `yarn gen` also re-compiles test contracts, so it's important to run it when code generation is changed.
 
 Some other codegen tests are as follows:
 
+- [src/test/benchmarks](./src/test/benchmarks): check gas consumption;
 - [src/test/exit-codes](./src/test/exit-codes): test that certain actions produce the expected exit codes;
 - [src/test/codegen](./src/test/codegen/): test that these contracts compile just fine without running any dynamic tests: bug fixes for FunC code generation often add tests into this folder.
 
