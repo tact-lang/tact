@@ -2,7 +2,7 @@ import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
 import * as crc32 from "crc-32";
 import { evalConstantExpression } from "./constEval";
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import {
     TactCompilationError,
     TactConstEvalError,

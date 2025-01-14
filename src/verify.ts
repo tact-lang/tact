@@ -1,7 +1,7 @@
 import normalize from "path-normalize";
 import { Cell } from "@ton/core";
 import { Config, Options } from "./config/parseConfig";
-import { ILogger, Logger } from "./logger";
+import { ILogger, Logger } from "./context/logger";
 import { PackageFileFormat, run } from "./main";
 import { fileFormat } from "./packaging/fileFormat";
 import { getCompilerVersion } from "./pipeline/version";

@@ -1,6 +1,6 @@
 import * as changeCase from "change-case";
 import { ABIField, beginCell } from "@ton/core";
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { idToHex } from "../utils/idToHex";
 import {
     idTextErr,

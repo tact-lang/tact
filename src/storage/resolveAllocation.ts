@@ -1,4 +1,4 @@
-import { CompilerContext, createContextStore } from "../context";
+import { CompilerContext, createContextStore } from "../context/context";
 import { getType, toBounced, getAllTypes } from "../types/resolveDescriptors";
 import { TypeDescription } from "../types/types";
 import { topologicalSort } from "../utils/utils";

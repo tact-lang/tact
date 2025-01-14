@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { Logger } from "../logger";
+import { Logger } from "../context/logger";
 import { funcCompile } from "./funcCompile";
 import files from "../imports/stdlib";
 

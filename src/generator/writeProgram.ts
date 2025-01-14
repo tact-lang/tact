@@ -1,4 +1,4 @@
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { getAllocation, getSortedTypes } from "../storage/resolveAllocation";
 import {
     getAllStaticFunctions,

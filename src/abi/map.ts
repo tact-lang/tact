@@ -1,4 +1,4 @@
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { SrcInfo } from "../grammar";
 import { TypeRef } from "../types/types";
 import { WriterContext } from "../generator/Writer";

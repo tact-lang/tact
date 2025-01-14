@@ -19,7 +19,7 @@ import {
     throwInternalCompilerError,
 } from "../error/errors";
 import { TypeRef } from "./types";
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { getType } from "./resolveDescriptors";
 import { SrcInfo } from "../grammar";
 

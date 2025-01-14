@@ -1,4 +1,4 @@
-import { ILogger } from "../logger";
+import { ILogger } from "../context/logger";
 
 // Wasm Imports
 // eslint-disable-next-line @typescript-eslint/no-var-requires

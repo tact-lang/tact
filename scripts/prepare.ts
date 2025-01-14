@@ -5,7 +5,7 @@ import { FuncCompilationResult, funcCompile } from "../src/func/funcCompile";
 import path from "path";
 import { glob } from "glob";
 import { verify } from "../src/verify";
-import { Logger } from "../src/logger";
+import { Logger } from "../src/context/logger";
 import { __DANGER__disableVersionNumber } from "../src/pipeline/version";
 
 // Read cases
