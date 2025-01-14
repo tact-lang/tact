@@ -43,7 +43,7 @@
     "!**/test",
     "!/docs"
   ],
-  "main": "./dist/main.js",
+  "main": "./dist/index.js",
   "bin": {
     "tact": "bin/tact.js",
     "unboc": "bin/unboc.js"
