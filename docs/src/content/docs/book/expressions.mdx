@@ -167,11 +167,17 @@ Read more about working with `null{:tact}` on the dedicated page: [Optionals](/b
 
 ## Identifiers
 
-An identifier is a sequence of characters in the code that _identifies_ a [variable](/book/statements#let), [constant](/book/constants), [map](/book/maps) and a [function](/book/functions), as well as a [Struct][s], [Message][m], [contract](/book/contracts), [trait](/book/types#traits), or their fields and methods. Identifiers are case-sensitive and not quoted.
+An identifier is a sequence of characters in the code that _identifies_ a [variable](/book/statements#let), [constant](/book/constants), [map](/book/maps) and a [function](/book/functions), as well as a [Struct][s], [Message][m], [contract](/book/contracts), [trait](/book/types#traits), or their fields and methods. Identifiers are case-sensitive and not quoted. An identifier differs from a [string](#string-literals) in that a string is data, while an identifier is part of the code.
 
-In Tact, identifiers can contain latin lowercase letters (`a-z`), latin uppercase letters (`A-Z`), underscores (`_`) and digits ($\mathrm{0 - 9}$), but may not start with a digit. An identifier differs from a [string](#string-literals) in that a string is data, while an identifier is part of the code.
+In Tact, identifiers may contain Latin lowercase letters `a-z`, Latin uppercase letters `A-Z`, underscores `_`, and digits $\mathrm{0 - 9}$, but may not start with a digit. No other symbols are allowed, and Unicode identifiers are prohibited.
 
 Note, that when identifiers for [primitive types][p] start with an uppercase letter. Used-defined [composite types](/book/types#composite-types), such as [Structs][s] and [Messages][m] also must be capitalized.
+
+:::caution
+
+  All identifiers starting with `__gen` and `__tact` are not allowed and are instead reserved for internal use by the compiler.
+
+:::
 
 ## Instantiation
 
