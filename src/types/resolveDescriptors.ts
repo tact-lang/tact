@@ -1512,6 +1512,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     // Verify trait fields
     //
 
+    function printFieldTypeRefWithAs(ex: FieldDescription) {
+        return printTypeRef(ex.type) + (ex.as !== null ? ` as ${ex.as}` : "");
+    }
+
     for (const t of types.values()) {
         for (const tr of t.traits) {
             // Check that trait is valid
@@ -1546,11 +1550,22 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         `Trait "${tr.name}" requires field "${f.name}" of type "${printTypeRef(f.type)}"`,
                         t.ast.loc,
                     );
-                } else if (f.as !== null && f.as !== ex.as) {
-                    const expected = `${printTypeRef(f.type)} as ${f.as}`;
-                    const actual =
-                        printTypeRef(ex.type) +
-                        (ex.as !== null ? ` as ${ex.as}` : "");
+                } else if (
+                    (f.as !== null || ex.as !== null) &&
+                    f.as !== ex.as
+                ) {
+                    if (
+                        (ex.as === "int257" && f.as === null) ||
+                        (ex.as === null && f.as === "int257")
+                    ) {
+                        // allow overriding:
+                        // - `f: Int` with `f: Int as int257`
+                        // - `f: Int as int257` with `f: Int`
+                        continue;
+                    }
+
+                    const expected = printFieldTypeRefWithAs(f);
+                    const actual = printFieldTypeRefWithAs(ex);
 
                     throwCompilationError(
                         `Trait "${tr.name}" requires field "${f.name}" of type "${expected}", but "${actual}" given`,
