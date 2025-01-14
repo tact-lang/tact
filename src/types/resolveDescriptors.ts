@@ -24,7 +24,7 @@ import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../errors";
+} from "../error/errors";
 import { CompilerContext, createContextStore, Store } from "../context";
 import {
     ConstantDescription,

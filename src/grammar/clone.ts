@@ -1,5 +1,5 @@
 import { AstNode, FactoryAst } from "./ast";
-import { throwInternalCompilerError } from "../errors";
+import { throwInternalCompilerError } from "../error/errors";
 
 export function cloneNode<T extends AstNode>(
     src: T,

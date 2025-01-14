@@ -1,4 +1,4 @@
-import { throwInternalCompilerError } from "../errors";
+import { throwInternalCompilerError } from "../error/errors";
 
 export type ItemOrigin = "stdlib" | "user";
 

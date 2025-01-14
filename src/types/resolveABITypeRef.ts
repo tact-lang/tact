@@ -17,7 +17,7 @@ import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../errors";
+} from "../error/errors";
 import { TypeRef } from "./types";
 import { CompilerContext } from "../context";
 import { getType } from "./resolveDescriptors";

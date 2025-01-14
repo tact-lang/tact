@@ -12,7 +12,7 @@ import {
     TactConstEvalError,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../../errors";
+} from "../../error/errors";
 import { getExpType } from "../../types/resolveExpression";
 import {
     getStaticConstant,

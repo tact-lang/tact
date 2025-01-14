@@ -1,4 +1,4 @@
-import { throwInternalCompilerError } from "../errors";
+import { throwInternalCompilerError } from "../error/errors";
 
 export function topologicalSort<T>(src: T[], references: (src: T) => T[]) {
     const result: T[] = [];

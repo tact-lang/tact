@@ -9,7 +9,7 @@ import {
     idTextErr,
     throwConstEvalError,
     throwInternalCompilerError,
-} from "./errors";
+} from "./error/errors";
 import {
     AstAddress,
     AstBinaryOperation,

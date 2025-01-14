@@ -6,7 +6,7 @@ import {
     idTextErr,
     throwConstEvalError,
     throwInternalCompilerError,
-} from "../errors";
+} from "../error/errors";
 import { getType, getAllTypes } from "./resolveDescriptors";
 import {
     BinaryReceiverSelector,
@@ -14,7 +14,7 @@ import {
     ReceiverDescription,
     TypeDescription,
 } from "./types";
-import { throwCompilationError } from "../errors";
+import { throwCompilationError } from "../error/errors";
 import { AstNumber, AstReceiver, FactoryAst } from "../grammar/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 import { sha256_sync } from "@ton/crypto";
