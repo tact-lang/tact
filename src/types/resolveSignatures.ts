@@ -12,6 +12,7 @@ import {
     BinaryReceiverSelector,
     CommentReceiverSelector,
     ReceiverDescription,
+    TypeDescription,
 } from "./types";
 import { throwCompilationError } from "../errors";
 import { AstNumber, AstReceiver, FactoryAst } from "../grammar/ast";
@@ -273,7 +274,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
         }
     });
 
-    checkMessageOpcodesUnique(ctx);
+    checkAggregateTypes(ctx);
 
     return ctx;
 }
@@ -393,10 +394,16 @@ function checkMessageOpcodesUniqueInContractOrTrait(
     }
 }
 
-function checkMessageOpcodesUnique(ctx: CompilerContext) {
+function checkAggregateTypes(ctx: CompilerContext) {
     getAllTypes(ctx).forEach((aggregate) => {
         switch (aggregate.kind) {
             case "contract":
+                checkMessageOpcodesUniqueInContractOrTrait(
+                    aggregate.receivers,
+                    ctx,
+                );
+                checkContractFields(aggregate);
+                break;
             case "trait":
                 checkMessageOpcodesUniqueInContractOrTrait(
                     aggregate.receivers,
@@ -407,4 +414,16 @@ function checkMessageOpcodesUnique(ctx: CompilerContext) {
                 break;
         }
     });
+}
+
+function checkContractFields(t: TypeDescription) {
+    // Check if "as remaining" is only used for the last field of contract
+    for (const field of t.fields.slice(0, -1)) {
+        if (field.as === "remaining") {
+            throwCompilationError(
+                `The "remainder" field can only be the last field of the contract`,
+                field.ast.loc,
+            );
+        }
+    }
 }
