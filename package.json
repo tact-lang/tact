@@ -14,8 +14,9 @@
     "gen:grammar:new": "pgen src/grammar/next/grammar.gg -o src/grammar/next/grammar.ts",
     "gen:grammar": "yarn gen:grammar:old && yarn gen:grammar:new",
     "gen:pack": "ts-node ./scripts/pack.ts",
-    "gen:compiler": "ts-node ./scripts/prepare.ts",
-    "gen": "yarn gen:grammar && yarn gen:pack && yarn gen:compiler",
+    "gen:contracts:examples": "ts-node examples/contracts.build.ts",
+    "gen:contracts:test": "ts-node src/test/contracts.build.ts",
+    "gen": "yarn gen:grammar && yarn gen:pack && yarn gen:contracts:examples && yarn gen:contracts:test",
     "clean": "rm -fr dist",
     "cleanall": "rm -fr dist node_modules",
     "build": "tsc && node --no-warnings=ExperimentalWarning -r ts-node/register ./scripts/copy-files",
@@ -24,7 +25,8 @@
     "release": "yarn clean && yarn build && yarn coverage && yarn release-it --npm.yarn1",
     "type": "tsc --noEmit",
     "lint": "yarn eslint .",
-    "lint:schema": "ajv validate -s src/config/configSchema.json -d tact.config.json",
+    "lint:one-schema": "ajv validate -s src/config/configSchema.json -d",
+    "lint:schema": "yarn lint:one-schema src/test/tact.config.json && yarn lint:one-schema examples/tact.config.json",
     "fmt": "yarn prettier -l -w .",
     "fmt:check": "yarn prettier --check .",
     "spell": "yarn cspell --no-progress \"**\"",
@@ -41,7 +43,8 @@
     "bin/**/*",
     "stdlib/**/*",
     "!**/test",
-    "!/docs"
+    "!/docs",
+    "!**/*.build.ts"
   ],
   "main": "./dist/index.js",
   "bin": {
