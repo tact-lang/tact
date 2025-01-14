@@ -819,6 +819,11 @@ export const ppAstStatementDestruct: Printer<A.AstStatementDestruct> =
         );
     };
 
+export const ppAstStatementBlock: Printer<A.AstStatementBlock> =
+    ({ statements }) =>
+    (c) =>
+        ppStatementBlock(statements)(c);
+
 export const ppAstStatement: Printer<A.AstStatement> =
     makeVisitor<A.AstStatement>()({
         statement_let: ppAstStatementLet,
@@ -834,6 +839,7 @@ export const ppAstStatement: Printer<A.AstStatement> =
         statement_try: ppAstStatementTry,
         statement_try_catch: ppAstStatementTryCatch,
         statement_destruct: ppAstStatementDestruct,
+        statement_block: ppAstStatementBlock,
     });
 
 export const exprNode =
@@ -904,6 +910,7 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     statement_try: ppAstStatementTry,
     statement_try_catch: ppAstStatementTryCatch,
     statement_foreach: ppAstStatementForEach,
+    statement_block: ppAstStatementBlock,
     import: ppAstImport,
     func_id: exprNode(ppAstFuncId),
     statement_destruct: ppAstStatementDestruct,

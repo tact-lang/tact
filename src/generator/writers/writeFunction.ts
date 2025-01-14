@@ -491,6 +491,12 @@ export function writeStatement(
             );
             return;
         }
+        case "statement_block": {
+            for (const s of f.statements) {
+                writeStatement(s, self, returns, ctx);
+            }
+            return;
+        }
     }
 
     throw Error("Unknown statement kind");

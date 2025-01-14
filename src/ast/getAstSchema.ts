@@ -376,6 +376,15 @@ export const getAstSchema = (
                 statements,
                 loc: toSrcInfo(loc),
             }),
+        StatementBlock: (
+            statements: A.AstStatement[],
+            loc: Loc,
+        ): A.AstStatementBlock =>
+            createNode<A.AstStatementBlock>({
+                kind: "statement_block",
+                statements,
+                loc: toSrcInfo(loc),
+            }),
         TypeId: (text: string, loc: Loc): A.AstTypeId =>
             createNode<A.AstTypeId>({
                 kind: "type_id",

@@ -1053,6 +1053,13 @@ semantics.addOperation<AstNode>("astOfStatement", {
             loc: createRef(this),
         });
     },
+    StatementBlock(_lbrace, statements, _rbrace) {
+        return createNode({
+            kind: "statement_block",
+            statements: statements.children.map((s) => s.astOfStatement()),
+            loc: createRef(this),
+        });
+    },
 });
 
 semantics.addOperation<AstNode>("astOfType", {

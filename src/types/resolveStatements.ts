@@ -761,6 +761,12 @@ function processStatements(
 
                 break;
             }
+            case "statement_block": {
+                const r = processStatements(s.statements, sctx, ctx);
+                ctx = r.ctx;
+                returnAlwaysReachable ||= r.returnAlwaysReachable;
+                break;
+            }
         }
     }
 

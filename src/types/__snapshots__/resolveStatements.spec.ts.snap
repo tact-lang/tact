@@ -798,6 +798,26 @@ Line 6, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for return-analysis-if-inside-block-statement 1`] = `
+"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 6, col 5:
+  5 | contract Foo {
+> 6 |     get fun notAlwaysReachableReturn(b: Bool): Int {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  7 |         {
+"
+`;
+
+exports[`resolveStatements should fail statements for return-analysis-if-with-block-statement 1`] = `
+"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 6, col 5:
+  5 | contract Foo {
+> 6 |     get fun notAlwaysReachableReturn(b: Bool): Int {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  7 |         if b {
+"
+`;
+
 exports[`resolveStatements should fail statements for return-analysis-non-void1 1`] = `
 "<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
 Line 6, col 5:
@@ -1308,6 +1328,26 @@ Line 9, col 9:
 "
 `;
 
+exports[`resolveStatements should fail statements for var-scope-block-statement 1`] = `
+"<unknown>:6:13: Variable already exists: "a"
+Line 6, col 13:
+  5 |     {
+> 6 |         let a: Int = 456;
+                  ^
+  7 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-block-statement-use-after-block 1`] = `
+"<unknown>:7:12: Unable to resolve id 'a'
+Line 7, col 12:
+  6 |     }
+> 7 |     return a;
+                 ^
+  8 | }
+"
+`;
+
 exports[`resolveStatements should fail statements for var-scope-catch-does-not-shadow-outer-const 1`] = `
 "<unknown>:10:13: Variable "e" is trying to shadow an existing constant with the same name
 Line 10, col 13:
@@ -1645,6 +1685,16 @@ Line 5, col 14:
 > 5 |         self.nonExistentField = 42;
                    ^~~~~~~~~~~~~~~~
   6 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-nested-block-statement 1`] = `
+"<unknown>:9:25: Variable already exists: "a"
+Line 9, col 25:
+   8 |                 {
+>  9 |                     let a: Int = 456;
+                               ^
+  10 |                 }
 "
 `;
 
@@ -2938,6 +2988,15 @@ exports[`resolveStatements should resolve statements for init-vars-analysis-with
 ]
 `;
 
+exports[`resolveStatements should resolve statements for return-analysis-block-statement-with-return 1`] = `
+[
+  [
+    "42",
+    "Int",
+  ],
+]
+`;
+
 exports[`resolveStatements should resolve statements for return-analysis-if-elseif 1`] = `
 [
   [
@@ -3636,6 +3695,43 @@ exports[`resolveStatements should resolve statements for var-scope-repeat2 1`] =
   ],
   [
     "a + b",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-scope-subsequent-block-statements 1`] = `
+[
+  [
+    "100",
+    "Int",
+  ],
+  [
+    "456",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "752",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a",
     "Int",
   ],
   [
