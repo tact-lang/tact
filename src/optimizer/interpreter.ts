@@ -64,6 +64,7 @@ import {
     getAstFactory,
     idText,
     isSelfId,
+    AstStatementBlock,
 } from "../ast/ast";
 import { AstUtil, divFloor, getAstUtil, modFloor } from "./util";
 import {
@@ -1589,6 +1590,9 @@ export class Interpreter {
             case "statement_while":
                 this.interpretWhileStatement(ast);
                 break;
+            case "statement_block":
+                this.interpretBlockStatement(ast);
+                break;
         }
     }
 
@@ -1806,5 +1810,9 @@ export class Interpreter {
                 }
             } while (condition.value);
         });
+    }
+
+    public interpretBlockStatement(ast: AstStatementBlock) {
+        ast.statements.forEach(this.interpretStatement, this);
     }
 }

@@ -131,6 +131,10 @@ export class AstHasher {
                 return `${node.kind}|${this.hash(node.map)}|${this.hashStatements(node.statements)}`;
             case "statement_destruct":
                 return `${node.kind}|${this.hash(node.type)}|${this.hashDestructIdentifiers(Array.from(node.identifiers.values()))}|${this.hash(node.expression)}`;
+            case "statement_block": {
+                const statementsHash = this.hashStatements(node.statements);
+                return `${node.kind}|${statementsHash}`;
+            }
             // Expressions
             case "op_binary":
                 return `${node.kind}|${node.op}|${this.hash(node.left)}|${this.hash(node.right)}`;

@@ -207,6 +207,11 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
                 traverse(e, callback);
             });
             break;
+        case "statement_block":
+            node.statements.forEach((e) => {
+                traverse(e, callback);
+            });
+            break;
         case "destruct_mapping":
             traverse(node.field, callback);
             traverse(node.name, callback);

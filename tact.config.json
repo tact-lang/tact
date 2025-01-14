@@ -422,6 +422,11 @@
       "output": "./src/test/e2e-emulated/contracts/output"
     },
     {
+      "name": "block-statements",
+      "path": "./src/test/e2e-emulated/contracts/block-statements.tact",
+      "output": "./src/test/e2e-emulated/contracts/output"
+    },
+    {
       "name": "text-message-receivers",
       "path": "./src/test/e2e-emulated/contracts/text-message-receivers.tact",
       "output": "./src/test/e2e-emulated/contracts/output",

@@ -54,6 +54,7 @@ import {
     AstAsmInstruction,
     AstDestructMapping,
     AstStatementDestruct,
+    AstStatementBlock,
 } from "./ast";
 import { AstRenamer } from "./rename";
 import { throwInternalCompilerError } from "../error/errors";
@@ -609,6 +610,12 @@ export class AstComparator {
                     this.compare(destructType1, destructType2) &&
                     this.compare(destructExpression1, destructExpression2)
                 );
+            }
+
+            case "statement_block": {
+                const { statements: statements1 } = node1 as AstStatementBlock;
+                const { statements: statements2 } = node2 as AstStatementBlock;
+                return this.compareArray(statements1, statements2);
             }
 
             case "type_id": {

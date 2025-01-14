@@ -44,6 +44,11 @@ export function cloneNode<T extends AstNode>(
                     : null,
                 elseif: src.elseif ? recurse(src.elseif) : null,
             });
+        } else if (src.kind === "statement_block") {
+            return cloneNode({
+                ...src,
+                statements: src.statements.map(recurse),
+            });
         } else if (src.kind === "struct_field_initializer") {
             return cloneNode({
                 ...src,
