@@ -1813,6 +1813,8 @@ export class Interpreter {
     }
 
     public interpretBlockStatement(ast: AstStatementBlock) {
-        ast.statements.forEach(this.interpretStatement, this);
+        this.envStack.executeInNewEnvironment(() => {
+            ast.statements.forEach(this.interpretStatement, this);
+        });
     }
 }
