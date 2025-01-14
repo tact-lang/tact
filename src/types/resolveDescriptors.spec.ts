@@ -5,13 +5,14 @@ import {
     resolveDescriptors,
 } from "./resolveDescriptors";
 import { resolveSignatures } from "./resolveSignatures";
-import { loadCases } from "../utils/loadCases";
 import { openContext } from "../context/store";
 import { featureEnable } from "../config/features";
 import { getParser, SrcInfo } from "../grammar";
 import { getAstFactory } from "../ast/ast";
 import { isSrcInfo } from "../grammar/src-info";
 import { defaultParser } from "../grammar/grammar";
+import { positiveCases } from "./test/cases.build";
+import { negativeCases } from "./test-failed/cases.build";
 
 expect.addSnapshotSerializer({
     test: (src) => isSrcInfo(src),
@@ -19,12 +20,12 @@ expect.addSnapshotSerializer({
 });
 
 describe("resolveDescriptors", () => {
-    for (const r of loadCases(__dirname + "/test/")) {
-        it("should resolve descriptors for " + r.name, () => {
+    for (const { code, name } of positiveCases) {
+        it("should resolve descriptors for " + name, () => {
             const Ast = getAstFactory();
             let ctx = openContext(
                 new CompilerContext(),
-                [{ code: r.code, path: "<unknown>", origin: "user" }],
+                [{ code, path: "<unknown>", origin: "user" }],
                 [],
                 getParser(Ast, defaultParser),
             );
@@ -35,12 +36,12 @@ describe("resolveDescriptors", () => {
             expect(getAllStaticFunctions(ctx)).toMatchSnapshot();
         });
     }
-    for (const r of loadCases(__dirname + "/test-failed/")) {
-        it("should fail descriptors for " + r.name, () => {
+    for (const { code, name } of negativeCases) {
+        it("should fail descriptors for " + name, () => {
             const Ast = getAstFactory();
             let ctx = openContext(
                 new CompilerContext(),
-                [{ code: r.code, path: "<unknown>", origin: "user" }],
+                [{ code: code, path: "<unknown>", origin: "user" }],
                 [],
                 getParser(Ast, defaultParser),
             );

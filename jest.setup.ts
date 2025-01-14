@@ -1,8 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const coverage = require("@tact-lang/coverage");
+import Coverage from "@tact-lang/coverage";
 
-module.exports = async () => {
+export default async () => {
     if (process.env.COVERAGE === "true") {
-        coverage.beginCoverage();
+        Coverage.beginCoverage();
     }
 };

@@ -1,3 +1,4 @@
+import { join } from "path";
 import { run } from "../../node";
 
 // helper to reduce boilerplate
@@ -7,7 +8,7 @@ export function itShouldNotCompile(params: {
 }) {
     it(`should not compile ${params.testName}`, async () => {
         const result = await run({
-            configPath: __dirname + "/tact.config.json",
+            configPath: join(__dirname, "tact.config.json"),
             projectNames: [params.testName],
             suppressLog: true,
         });

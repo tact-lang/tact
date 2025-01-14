@@ -4,8 +4,8 @@ import glob from "glob";
 import { posixNormalize } from "../utils/filePath";
 import { stdlibPath } from "./path";
 
-const libFiles = path.resolve(__dirname, "stdlib", "**", "*.@(tact|fc)");
-const targetPath = path.resolve(__dirname, "stdlib.ts");
+const libFiles = path.join(stdlibPath, "**", "*.@(tact|fc)");
+const targetPath = path.join(__dirname, "stdlib.ts");
 
 const chunk = (s: string, chunkSize: number): string[] => {
     const result: string[] = [];

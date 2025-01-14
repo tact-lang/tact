@@ -1,7 +1,8 @@
 import { getAstFactory } from "../../ast/ast";
-import { loadCases } from "../../utils/loadCases";
 import { getParser } from "../grammar";
 import { SrcInfo, isSrcInfo } from "../src-info";
+import { negativeCases } from "../test-failed/cases.build";
+import { positiveCases } from "../test/cases.build";
 
 expect.addSnapshotSerializer({
     test: (src) => isSrcInfo(src),
@@ -9,7 +10,7 @@ expect.addSnapshotSerializer({
 });
 
 describe("grammar", () => {
-    for (const r of loadCases(__dirname + "/../test/")) {
+    for (const r of positiveCases) {
         it("should parse " + r.name, () => {
             const ast = getAstFactory();
             const { parse } = getParser(ast, "old");
@@ -17,7 +18,7 @@ describe("grammar", () => {
         });
     }
 
-    for (const r of loadCases(__dirname + "/../test-failed/")) {
+    for (const r of negativeCases) {
         it("should fail " + r.name, () => {
             const ast = getAstFactory();
             const { parse } = getParser(ast, "old");

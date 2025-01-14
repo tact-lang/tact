@@ -2,20 +2,16 @@ import path from "path";
 import fs from "fs";
 import rimraf from "rimraf";
 import { createNodeFileSystem } from "./createNodeFileSystem";
+import { testPath } from "./__testdata/path.build";
 
 describe("createNodeFileSystem", () => {
     it("should open file system", () => {
-        const vfs = createNodeFileSystem(
-            path.resolve(__dirname, "./__testdata/"),
-        );
-        expect(vfs.root).toBe(path.normalize(__dirname + "/__testdata/"));
+        const vfs = createNodeFileSystem(testPath);
+        expect(vfs.root).toBe(path.normalize(testPath));
     });
 
     it("should write and read files", () => {
-        const vfs = createNodeFileSystem(
-            path.resolve(__dirname, "./__testdata"),
-            false,
-        );
+        const vfs = createNodeFileSystem(testPath, false);
 
         // Create a single file
         const filename = "tmp-" + Math.random() + ".txt";

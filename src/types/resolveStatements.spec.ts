@@ -1,6 +1,5 @@
 import { getAllExpressionTypes } from "./resolveExpression";
 import { resolveDescriptors } from "./resolveDescriptors";
-import { loadCases } from "../utils/loadCases";
 import { openContext } from "../context/store";
 import { resolveStatements } from "./resolveStatements";
 import { CompilerContext } from "../context/context";
@@ -8,14 +7,16 @@ import { featureEnable } from "../config/features";
 import { getParser } from "../grammar";
 import { getAstFactory } from "../ast/ast";
 import { defaultParser } from "../grammar/grammar";
+import { positiveCases } from "./stmts/cases.build";
+import { negativeCases } from "./stmts-failed/cases.build";
 
 describe("resolveStatements", () => {
-    for (const r of loadCases(__dirname + "/stmts/")) {
-        it("should resolve statements for " + r.name, () => {
+    for (const { code, name } of positiveCases) {
+        it("should resolve statements for " + name, () => {
             const Ast = getAstFactory();
             let ctx = openContext(
                 new CompilerContext(),
-                [{ code: r.code, path: "<unknown>", origin: "user" }],
+                [{ code, path: "<unknown>", origin: "user" }],
                 [],
                 getParser(Ast, defaultParser),
             );
@@ -25,12 +26,12 @@ describe("resolveStatements", () => {
             expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
         });
     }
-    for (const r of loadCases(__dirname + "/stmts-failed/")) {
-        it("should fail statements for " + r.name, () => {
+    for (const { code, name } of negativeCases) {
+        it("should fail statements for " + name, () => {
             const Ast = getAstFactory();
             let ctx = openContext(
                 new CompilerContext(),
-                [{ code: r.code, path: "<unknown>", origin: "user" }],
+                [{ code, path: "<unknown>", origin: "user" }],
                 [],
                 getParser(Ast, defaultParser),
             );

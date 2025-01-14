@@ -1,4 +1,5 @@
 import fs from "fs";
+import { join } from "path";
 
 export function loadCases(src: string) {
     const recs = fs.readdirSync(src);
@@ -7,7 +8,7 @@ export function loadCases(src: string) {
         if (r.endsWith(".tact")) {
             res.push({
                 name: r.slice(0, r.length - ".tact".length),
-                code: fs.readFileSync(src + r, "utf8"),
+                code: fs.readFileSync(join(src, r), "utf8"),
             });
         }
     }

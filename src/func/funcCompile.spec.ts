@@ -1,15 +1,14 @@
-import fs from "fs";
-import path from "path";
 import { Logger } from "../context/logger";
 import { funcCompile } from "./funcCompile";
 import files from "../stdlib/stdlib";
 
 describe("funcCompile", () => {
     it("should compile small contract", async () => {
-        const source = fs.readFileSync(
-            path.resolve(__dirname, "__testdata__", "small.fc"),
-            "utf8",
-        );
+        const source = `
+            int main(int a, int b) impure {
+                return a + b;
+            }
+        `;
         const res = await funcCompile({
             entries: ["/stdlib.fc", "/small.fc"],
             sources: [

@@ -7,7 +7,7 @@ import { Logger } from "../src/context/logger";
 import { __DANGER__disableVersionNumber } from "../src/pipeline/version";
 
 const configPath = path.join(__dirname, "tact.config.json");
-const packagesPath = path.resolve(__dirname, "output", "*.pkg");
+const packagesPath = path.join(__dirname, "output", "*.pkg");
 
 // Read cases
 const main = async () => {
