@@ -28,8 +28,8 @@ import {
 } from "./resolveDescriptors";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { FunctionDescription, printTypeRef, TypeRef } from "./types";
-import { evalConstantExpression } from "../constEval";
-import { ensureInt } from "../interpreter";
+import { evalConstantExpression } from "../optimizer/constEval";
+import { ensureInt } from "../optimizer/interpreter";
 import { crc16 } from "../utils/crc16";
 import { SrcInfo } from "../grammar";
 import { AstUtil, getAstUtil } from "../optimizer/util";

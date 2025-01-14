@@ -18,7 +18,7 @@ import {
     ensureSimplifiedString,
     ensureString,
     interpretEscapeSequences,
-} from "../interpreter";
+} from "../optimizer/interpreter";
 import { isLiteral } from "../grammar/ast";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([

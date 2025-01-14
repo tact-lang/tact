@@ -6,11 +6,11 @@ import {
     isLiteral,
 } from "../../grammar/ast";
 import { AstUtil, getAstUtil } from "../util";
-import { getOptimizer } from "../../constEval";
+import { getOptimizer } from "../constEval";
 import { CompilerContext } from "../../context";
 import { ExpressionTransformer, Rule } from "../types";
 import { AssociativeRule3 } from "../associative";
-import { evalBinaryOp, evalUnaryOp } from "../../interpreter";
+import { evalBinaryOp, evalUnaryOp } from "../interpreter";
 import { getParser } from "../../grammar";
 import { defaultParser } from "../../grammar/grammar";
 import { throwInternalCompilerError } from "../../error/errors";

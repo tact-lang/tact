@@ -147,9 +147,9 @@ The constant evaluator is used as an optimizer to prevent some statically known 
 
 The constant evaluator supports a large subset of Tact and handles, for instance, constants defined in terms of other constants, built-in and user-defined functions, logical and arithmetic operations.
 
-The main logic of the constant evaluator can be found in the file [src/interpreter.ts](./src/interpreter.ts).
+The main logic of the constant evaluator can be found in the file [src/optimizer/interpreter.ts](./src/optimizer/interpreter.ts).
 
-You can find the relevant tests in [src/test/e2e-emulated/contracts/constants.tact](./src/test/e2e-emulated/contracts/constants.tact) and the corresponding spec-file: [](./src/test/e2e-emulated/constants.spec.ts).
+You can find the relevant tests in [src/test/e2e-emulated/contracts/constants.tact](./src/test/e2e-emulated/contracts/constants.tact) and the corresponding spec-file: [src/test/e2e-emulated/constants.spec.ts](./src/test/e2e-emulated/constants.spec.ts).
 
 The negative tests for constant evaluation are contained in the Tact files prefixed with `const-eval` in the [src/test/compilation-failed/contracts](./src/test/compilation-failed/contracts) folder.
 
