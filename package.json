@@ -24,7 +24,7 @@
     "release": "yarn clean && yarn build && yarn coverage && yarn release-it --npm.yarn1",
     "type": "tsc --noEmit",
     "lint": "yarn eslint .",
-    "lint:schema": "ajv validate -s schemas/configSchema.json -d tact.config.json",
+    "lint:schema": "ajv validate -s src/config/configSchema.json -d tact.config.json",
     "fmt": "yarn prettier -l -w .",
     "fmt:check": "yarn prettier --check .",
     "spell": "yarn cspell --no-progress \"**\"",
