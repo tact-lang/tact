@@ -1551,19 +1551,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         t.ast.loc,
                     );
                 } else if (
-                    (f.as !== null || ex.as !== null) &&
-                    f.as !== ex.as
+                    f.as !== ex.as &&
+                    f.as !== "int257" &&
+                    ex.as !== "int257"
                 ) {
-                    if (
-                        (ex.as === "int257" && f.as === null) ||
-                        (ex.as === null && f.as === "int257")
-                    ) {
-                        // allow overriding:
-                        // - `f: Int` with `f: Int as int257`
-                        // - `f: Int as int257` with `f: Int`
-                        continue;
-                    }
-
                     const expected = printFieldTypeRefWithAs(f);
                     const actual = printFieldTypeRefWithAs(ex);
 
