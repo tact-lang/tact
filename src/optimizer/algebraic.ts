@@ -5,7 +5,7 @@ import {
     AstOpUnary,
     eqExpressions,
     isLiteral,
-} from "../grammar/ast";
+} from "../ast/ast";
 import { ExpressionTransformer, Rule } from "./types";
 import {
     checkIsBinaryOpNode,

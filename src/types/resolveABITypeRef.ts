@@ -12,7 +12,7 @@ import {
     isSlice,
     isString,
     isStringBuilder,
-} from "../grammar/ast";
+} from "../ast/ast";
 import {
     idTextErr,
     throwCompilationError,

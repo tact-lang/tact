@@ -6,10 +6,10 @@ import {
 } from "./resolveDescriptors";
 import { resolveSignatures } from "./resolveSignatures";
 import { loadCases } from "../utils/loadCases";
-import { openContext } from "../grammar/store";
+import { openContext } from "../context/store";
 import { featureEnable } from "../config/features";
 import { getParser, SrcInfo } from "../grammar";
-import { getAstFactory } from "../grammar/ast";
+import { getAstFactory } from "../ast/ast";
 import { isSrcInfo } from "../grammar/src-info";
 import { defaultParser } from "../grammar/grammar";
 

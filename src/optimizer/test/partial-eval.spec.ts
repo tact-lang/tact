@@ -4,7 +4,7 @@ import {
     eqExpressions,
     getAstFactory,
     isLiteral,
-} from "../../grammar/ast";
+} from "../../ast/ast";
 import { AstUtil, getAstUtil } from "../util";
 import { getOptimizer } from "../constEval";
 import { CompilerContext } from "../../context/context";

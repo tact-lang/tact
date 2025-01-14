@@ -8,7 +8,7 @@ import {
     idText,
     isWildcard,
     tryExtractPath,
-} from "../../grammar/ast";
+} from "../../ast/ast";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
 import { FunctionDescription, TypeRef } from "../../types/types";

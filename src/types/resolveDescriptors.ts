@@ -18,8 +18,8 @@ import {
     idText,
     isSelfId,
     isSlice,
-} from "../grammar/ast";
-import { traverse } from "../grammar/iterators";
+} from "../ast/ast";
+import { traverse } from "../ast/iterators";
 import {
     idTextErr,
     throwCompilationError,
@@ -40,8 +40,8 @@ import {
     TypeRef,
     typeRefEquals,
 } from "./types";
-import { getRawAST } from "../grammar/store";
-import { cloneNode } from "../grammar/clone";
+import { getRawAST } from "../context/store";
+import { cloneNode } from "../ast/clone";
 import { crc16 } from "../utils/crc16";
 import { isSubsetOf } from "../utils/isSubsetOf";
 import { evalConstantExpression } from "../optimizer/constEval";

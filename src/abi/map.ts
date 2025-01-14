@@ -7,7 +7,7 @@ import { writeExpression } from "../generator/writers/writeExpression";
 import { throwCompilationError } from "../error/errors";
 import { getType } from "../types/resolveDescriptors";
 import { AbiFunction } from "./AbiFunction";
-import { AstExpression } from "../grammar/ast";
+import { AstExpression } from "../ast/ast";
 
 // Helper functions to avoid redundancy
 function checkArgumentsLength(

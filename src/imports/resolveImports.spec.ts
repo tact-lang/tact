@@ -2,7 +2,7 @@ import { resolveImports } from "./resolveImports";
 import { createNodeFileSystem } from "../vfs/createNodeFileSystem";
 import path from "path";
 import { getParser } from "../grammar";
-import { getAstFactory } from "../grammar/ast";
+import { getAstFactory } from "../ast/ast";
 import { defaultParser } from "../grammar/grammar";
 
 describe("resolveImports", () => {

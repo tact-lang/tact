@@ -15,7 +15,7 @@ import {
     TypeDescription,
 } from "./types";
 import { throwCompilationError } from "../error/errors";
-import { AstNumber, AstReceiver, FactoryAst } from "../grammar/ast";
+import { AstNumber, AstReceiver, FactoryAst } from "../ast/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 import { sha256_sync } from "@ton/crypto";
 import { dummySrcInfo } from "../grammar";

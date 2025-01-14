@@ -21,7 +21,7 @@ import {
     AstSimplifiedString,
     AstCommentValue,
     AstStructValue,
-} from "../grammar/ast";
+} from "../ast/ast";
 import { idTextErr, throwCompilationError } from "../error/errors";
 import { CompilerContext, createContextStore } from "../context/context";
 import {

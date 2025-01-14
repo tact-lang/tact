@@ -1,4 +1,4 @@
-import * as A from "./grammar/ast";
+import * as A from "./ast/ast";
 import { groupBy, intercalate, isUndefined } from "./utils/array";
 import { makeVisitor } from "./utils/tricks";
 

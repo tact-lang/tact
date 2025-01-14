@@ -1,6 +1,6 @@
 import { Address, Cell, Slice } from "@ton/core";
 import { throwInternalCompilerError } from "../error/errors";
-import { dummySrcInfo, SrcInfo } from "./src-info";
+import { dummySrcInfo, SrcInfo } from "../grammar/src-info";
 
 export type AstModule = {
     kind: "module";
@@ -380,25 +380,28 @@ export type AstBouncedMessageType = {
 //
 
 export type AstExpression =
-    | AstExpressionPrimary
     | AstOpBinary
     | AstOpUnary
     | AstConditional
-    // AstLiteral could be added in AstExpressionPrimary,
-    // but AstExpressionPrimary is planned to be removed. See issue #1290 (https://github.com/tact-lang/tact/issues/1290).
-    | AstLiteral;
-
-export type AstExpressionPrimary =
     | AstMethodCall
     | AstFieldAccess
     | AstStaticCall
     | AstStructInstance
+    | AstId
+    | AstInitOf
+    | AstString
+    | AstLiteral;
+
+export type AstLiteral =
     | AstNumber
     | AstBoolean
-    | AstId
     | AstNull
-    | AstInitOf
-    | AstString;
+    | AstSimplifiedString
+    | AstAddress
+    | AstCell
+    | AstSlice
+    | AstCommentValue
+    | AstStructValue;
 
 export type AstBinaryOperation =
     | "+"
@@ -638,6 +641,20 @@ export type AstBoolean = {
     loc: SrcInfo;
 };
 
+// An AstSimplifiedString is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.
+// An AstString is not a literal because it may contain escaping characters that have not been simplified, like '\\'.
+// AstSimplifiedString is always produced by the interpreter, never directly by the parser. The parser produces AstStrings, which
+// then get transformed into AstSimplifiedString by the interpreter.
+export type AstSimplifiedString = {
+    kind: "simplified_string";
+    value: string;
+    id: number;
+    loc: SrcInfo;
+};
+
+/**
+ * @deprecated AstSimplifiedString
+ */
 export type AstString = {
     kind: "string";
     value: string;
@@ -650,28 +667,6 @@ export type AstString = {
 // or empty map of any key and value types
 export type AstNull = {
     kind: "null";
-    id: number;
-    loc: SrcInfo;
-};
-
-export type AstLiteral =
-    | AstNumber
-    | AstBoolean
-    | AstNull
-    // An AstSimplifiedString is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.
-    // An AstString is not a literal because it may contain escaping characters that have not been simplified, like '\\'.
-    // AstSimplifiedString is always produced by the interpreter, never directly by the parser. The parser produces AstStrings, which
-    // then get transformed into AstSimplifiedString by the interpreter.
-    | AstSimplifiedString
-    | AstAddress
-    | AstCell
-    | AstSlice
-    | AstCommentValue
-    | AstStructValue;
-
-export type AstSimplifiedString = {
-    kind: "simplified_string";
-    value: string;
     id: number;
     loc: SrcInfo;
 };

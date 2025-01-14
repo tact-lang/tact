@@ -3,7 +3,7 @@
   "entry": ["src/index.ts", "src/node.ts", "bin/tact.js", "bin/unboc.js"],
   "project": ["src/**/*.ts", "bin/tact.js", "bin/unboc.js"],
   "ignore": [
-    "src/grammar/ast.ts",
+    "src/ast/ast.ts",
     "src/prettyPrinter.ts",
     "src/error/display-to-json.ts",
     "src/grammar/src-info.ts",

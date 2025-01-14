@@ -64,7 +64,7 @@ import {
     getAstFactory,
     idText,
     isSelfId,
-} from "../grammar/ast";
+} from "../ast/ast";
 import { AstUtil, divFloor, getAstUtil, modFloor } from "./util";
 import {
     getStaticConstant,

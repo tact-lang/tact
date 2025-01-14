@@ -5,7 +5,7 @@ import {
     AstUnaryOperation,
     isLiteral,
     AstLiteral,
-} from "../grammar/ast";
+} from "../ast/ast";
 import {
     TactConstEvalError,
     throwInternalCompilerError,

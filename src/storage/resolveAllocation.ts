@@ -8,7 +8,7 @@ import { allocate, getAllocationOperationFromField } from "./allocator";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
 import { funcInitIdOf } from "../generator/writers/id";
 import { throwInternalCompilerError } from "../error/errors";
-import { idText } from "../grammar/ast";
+import { idText } from "../ast/ast";
 
 const store = createContextStore<StorageAllocation>();
 
