@@ -20,7 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `VarInt16`, `VarInt32`, `VarUint16`, `VarUint32` integer serialization types: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
 - `unboc`: a standalone CLI utility to expose Tact's TVM disassembler: PR [#1259](https://github.com/tact-lang/tact/pull/1259)
 - Added alternative parser: PR [#1258](https://github.com/tact-lang/tact/pull/1258)
-- Check if overridden functions have super function: PR [#1302](https://github.com/tact-lang/tact/pull/1302)
 
 ### Changed
 
@@ -47,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The typechecker now rejects integer map key types with variable width (`coins`, `varint16`, `varint32`, `varuint16`, `varuint32`): PR [#1276](https://github.com/tact-lang/tact/pull/1276)
 - Code generation for `self` argument in optional struct methods: PR [#1284](https://github.com/tact-lang/tact/pull/1284)
 - 'The "remainder" field can only be the last field:' inspection now shows location: PR [#1300](https://github.com/tact-lang/tact/pull/1300)
+- Forbid override modifier for functions without super function: PR [#1302](https://github.com/tact-lang/tact/pull/1302)
 
 ### Docs
 
