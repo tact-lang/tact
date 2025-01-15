@@ -1,38 +1,54 @@
 import { toNano } from "@ton/core";
-import { Blockchain } from "@ton/sandbox";
+import { Blockchain, SandboxContract } from "@ton/sandbox";
 import { MapIntLimitTester } from "./test_MapIntLimitTester";
 import "@ton/test-utils";
 
+let contract: SandboxContract<MapIntLimitTester>;
+
+beforeAll(async () => {
+    const blockchain = await Blockchain.create();
+    blockchain.verbosity.print = false;
+    const treasure = await blockchain.treasury("treasure");
+    contract = blockchain.openContract(
+        await MapIntLimitTester.fromInit(),
+    );
+
+    const result = await contract.send(
+        treasure.getSender(),
+        {
+            value: toNano("10"),
+        },
+        null,
+    );
+
+    expect(result.transactions).toHaveTransaction({
+        from: treasure.address,
+        to: contract.address,
+        success: true,
+        deploy: true,
+    });
+});
+
 describe("map int limits", () => {
-    it("should pass map int limit tests", async () => {
-        const blockchain = await Blockchain.create();
-        blockchain.verbosity.print = false;
-        const treasure = await blockchain.treasury("treasure");
-        const contract = blockchain.openContract(
-            await MapIntLimitTester.fromInit(),
-        );
-
-        const result = await contract.send(
-            treasure.getSender(),
-            {
-                value: toNano("10"),
-            },
-            null,
-        );
-
-        expect(result.transactions).toHaveTransaction({
-            from: treasure.address,
-            to: contract.address,
-            success: true,
-            deploy: true,
-        });
-
+    it("should pass map int limit test: SetMinAndMaxDoesNotThrow", async () => {
         expect(await contract.getTestSetMinAndMaxDoesNotThrow()).toStrictEqual(true);
+    });
+    it("should pass map int limit test: GetGreaterThanMax", async () => {
         expect(await contract.getTestGetGreaterThanMax()).toStrictEqual(true);
+    });
+    it("should pass map int limit test: GetSmallerThanMin", async () => {
         expect(await contract.getTestGetSmallerThanMin()).toStrictEqual(true);
+    });
+    it("should pass map int limit test: SetKeyGreaterThanMax", async () => {
         expect(await contract.getTestSetKeyGreaterThanMax()).toStrictEqual(true);
+    });
+    it("should pass map int limit test: etKeySmallerThanMin", async () => {
         expect(await contract.getTestSetKeySmallerThanMin()).toStrictEqual(true);
+    });
+    it("should pass map int limit test: SetValGreaterThanMax", async () => {
         expect(await contract.getTestSetValGreaterThanMax()).toStrictEqual(true);
+    });
+    it("should pass map int limit test: SetValSmallerThanMin", async () => {
         expect(await contract.getTestSetValSmallerThanMin()).toStrictEqual(true);
     });
 });
