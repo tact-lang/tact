@@ -9,14 +9,14 @@ import "@ton/test-utils";
 
 const key: KeyData = {
     $$type: "KeyData",
-    _1: KEY_1,
-    _2: KEY_2,
+    _1: KEY_1_PLACEHOLDER,
+    _2: KEY_2_PLACEHOLDER,
 };
 
 const val: ValData = {
     $$type: "ValData",
-    _1: VAL_1,
-    _2: VAL_2,
+    _1: VAL_1_PLACEHOLDER,
+    _2: VAL_2_PLACEHOLDER,
 };
 
 let contract: SandboxContract<MapPropertiesTester>;

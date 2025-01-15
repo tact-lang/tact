@@ -33,17 +33,17 @@ const instantiateContractTemplateAndSpecProperties = async (
     val: MapType,
 ): Promise<string> => {
     const tactSourceCode = templateTact
-        .replaceAll("KEY_TYPE", key.type)
-        .replaceAll("VAL_TYPE", val.type);
+        .replaceAll("KEY_TYPE_PLACEHOLDER", key.type)
+        .replaceAll("VAL_TYPE_PLACEHOLDER", val.type);
     const testDir = testDirectory("property", testName);
     await mkdir(testDir, { recursive: true });
     const tactFilePath = path.join(testDir, testContractFileName);
     await writeFile(tactFilePath, tactSourceCode);
     const specSourceCode = templateSpec
-        .replaceAll("KEY_1", key.val1)
-        .replaceAll("KEY_2", key.val2)
-        .replaceAll("VAL_1", val.val1)
-        .replaceAll("VAL_2", val.val2);
+        .replaceAll("KEY_1_PLACEHOLDER", key.val1)
+        .replaceAll("KEY_2_PLACEHOLDER", key.val2)
+        .replaceAll("VAL_1_PLACEHOLDER", val.val1)
+        .replaceAll("VAL_2_PLACEHOLDER", val.val2);
     const specFilePath = path.join(testDir, specFileNameProperties);
     await writeFile(specFilePath, specSourceCode);
     return tactFilePath;

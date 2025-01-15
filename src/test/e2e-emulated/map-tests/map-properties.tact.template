@@ -5,13 +5,13 @@
 // for instance, m.set(k,v) returns a new updated map instead of modifying it in-place.
 
 struct KeyData {
-    _1: KEY_TYPE;
-    _2: KEY_TYPE;
+    _1: KEY_TYPE_PLACEHOLDER;
+    _2: KEY_TYPE_PLACEHOLDER;
 }
 
 struct ValData {
-    _1: VAL_TYPE;
-    _2: VAL_TYPE;
+    _1: VAL_TYPE_PLACEHOLDER;
+    _2: VAL_TYPE_PLACEHOLDER;
 }
 
 
@@ -80,27 +80,27 @@ extends fun eq(self: SomeMessage?, other: SomeMessage?): Bool {
         self!!.nonce == other!!.nonce;
 }
 
-fun singletonMap1(key: KeyData, val: ValData): map<KEY_TYPE, VAL_TYPE> {
-    let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+fun singletonMap1(key: KeyData, val: ValData): map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> {
+    let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
     m.set(key._1, val._1);
     return m;
 }
 
-fun singletonMap2(key: KeyData, val: ValData): map<KEY_TYPE, VAL_TYPE> {
-    let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+fun singletonMap2(key: KeyData, val: ValData): map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> {
+    let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
     m.set(key._2, val._2);
     return m;
 }
 
 // assumption: key._1 != key._2
-fun doubletonMap(key: KeyData, val: ValData): map<KEY_TYPE, VAL_TYPE> {
-    let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+fun doubletonMap(key: KeyData, val: ValData): map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> {
+    let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
     m.set(key._1, val._1);
     m.set(key._2, val._2);
     return m;
 }
 
-fun size(m: map<KEY_TYPE, VAL_TYPE>): Int {
+fun size(m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER>): Int {
     let res: Int = 0;
     foreach (_, _ in m) { res += 1 }
     return res;
@@ -108,7 +108,7 @@ fun size(m: map<KEY_TYPE, VAL_TYPE>): Int {
 
 asm fun castToMap(c: Cell): map<Int as uint8, Bool> { NOP }
 
-asm extends fun asMap(self: Cell): map<KEY_TYPE, VAL_TYPE> { NOP }
+asm extends fun asMap(self: Cell): map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> { NOP }
 
 contract MapPropertiesTester {
     const ExitCodeEqualKeys: Int = 1024;
@@ -120,7 +120,7 @@ contract MapPropertiesTester {
 
     // Property: emptyMap().get(k) == null && !emptyMap().exists(k)
     get fun testEmptyMapGet(key: KeyData, val: ValData): Bool {
-        let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+        let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
         return
             m.get(key._1) == null &&
             m.get(key._2) == null &&
@@ -152,7 +152,7 @@ contract MapPropertiesTester {
 
     // Property: m.set(k, v).get(k) == v
     get fun testSetGetSameKey(key: KeyData, val: ValData): Bool {
-        let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+        let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
         m.set(key._1, val._1);
         return
             m.get(key._1).eq(val._1);
@@ -182,8 +182,8 @@ contract MapPropertiesTester {
     // Property: k1 != k2 => m.set(k1, v1).set(k2, v2) == m.set(k2, v2).set(k1, v1)
     get fun testSetSetOfNotSameCommutes(key: KeyData, val: ValData): Bool {
         nativeThrowUnless(self.ExitCodeEqualKeys, key._1 != key._2);
-        let m1: map<KEY_TYPE, VAL_TYPE> = emptyMap();
-        let m2: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+        let m1: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+        let m2: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
         m1.set(key._1, val._1);
         m1.set(key._2, val._2);
 
@@ -304,7 +304,7 @@ contract MapPropertiesTester {
 
     // Property: size(emptyMap()) == 0
     get fun testEmptyMapSize(key: KeyData, val: ValData): Bool {
-        let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+        let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
         return
             size(m) == 0;
     }
@@ -336,7 +336,7 @@ contract MapPropertiesTester {
 
     // Property: emptyMap().isEmpty()
     get fun testEmptyMapIsEmpty(key: KeyData, val: ValData): Bool {
-        let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+        let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
         return
             m.isEmpty();
     }
@@ -391,7 +391,7 @@ contract MapPropertiesTester {
 
     // Property: m.asCell().asMap() == m
     get fun testAsCellDoesNothing(key: KeyData, val: ValData): Bool {
-        let m0: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+        let m0: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
         let m1 = singletonMap1(key, val);
         let m2 = singletonMap2(key, val);
         let m3 = doubletonMap(key, val);
@@ -409,7 +409,7 @@ contract MapPropertiesTester {
 
     // Property: emptyMap().replace(k, v) == emptyMap()
     get fun testReplaceEmptyMap(key: KeyData, val: ValData): Bool {
-        let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+        let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
         let replaced: Bool = m.replace(key._1, val._1);
         return
             m == emptyMap() &&
@@ -472,8 +472,8 @@ contract MapPropertiesTester {
     // Property: k1 != k2 => m.replace(k1, v1).replace(k2, v2) == m.replace(k2, v2).replace(k1, v1)
     get fun testReplaceReplaceOfNotSameCommutes(key: KeyData, val: ValData): Bool {
         nativeThrowUnless(self.ExitCodeEqualKeys, key._1 != key._2);
-        let m1: map<KEY_TYPE, VAL_TYPE> = emptyMap();
-        let m2: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+        let m1: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+        let m2: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
         m1.replace(key._1, val._1);
         m1.replace(key._2, val._2);
 
@@ -486,7 +486,7 @@ contract MapPropertiesTester {
 
     // Property: emptyMap().replaceGet(k) == null
     get fun testEmptyMapReplaceGet(key: KeyData, val: ValData): Bool {
-        let m: map<KEY_TYPE, VAL_TYPE> = emptyMap();
+        let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
         return
             m.replaceGet(key._1, val._1).eq(null) &&
             m.replaceGet(key._2, val._2).eq(null);
