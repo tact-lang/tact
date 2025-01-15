@@ -14,6 +14,12 @@ import { readFile } from "node:fs/promises";
 
 type TestKind = "map-properties" | "map-int-limits";
 
+// template with substitutions that make it an instance after application
+type TemplateWithSubst = {
+    template: string;
+    subst: Map<string, string>;
+};
+
 const pwd = (fileName: string): string => path.join(__dirname, fileName);
 
 const testDirectory = (kind: TestKind, testName: string): string =>
@@ -21,26 +27,24 @@ const testDirectory = (kind: TestKind, testName: string): string =>
 
 const testContractFileName = "test.tact";
 
-const applySubstitutions = (
-    source: string,
-    subst: Map<string, string>,
-): string => {
-    return Array.from(subst).reduce((src, [placeholder, concreteValue]) => {
-        return src.replaceAll(placeholder, concreteValue);
-    }, source);
+const applySubstitutions = ({ template, subst }: TemplateWithSubst): string => {
+    return Array.from(subst).reduce(
+        (partialTemplate, [placeholder, concreteValue]) => {
+            return partialTemplate.replaceAll(placeholder, concreteValue);
+        },
+        template,
+    );
 };
 
 const instantiateContractAndSpecTemplates = async (
     testKind: TestKind,
     testName: string,
-    templateTact: string,
-    templateTactSubst: Map<string, string>,
-    templateSpec: string,
-    templateSpecSubst: Map<string, string>,
+    templateTact: TemplateWithSubst,
+    templateSpec: TemplateWithSubst,
 ): Promise<string> => {
     const testDir = testDirectory(testKind, testName);
-    const tactSourceCode = applySubstitutions(templateTact, templateTactSubst);
-    const specSourceCode = applySubstitutions(templateSpec, templateSpecSubst);
+    const tactSourceCode = applySubstitutions(templateTact);
+    const specSourceCode = applySubstitutions(templateSpec);
     await mkdir(testDir, { recursive: true });
     const tactFilePath = path.join(testDir, testContractFileName);
     await writeFile(tactFilePath, tactSourceCode);
@@ -73,18 +77,22 @@ const generatePropertyTests = async () => {
             const tactFilePath = await instantiateContractAndSpecTemplates(
                 "map-properties",
                 testName,
-                templateTactSourceCodeProperties,
-                new Map([
-                    ["KEY_TYPE_PLACEHOLDER", key.type],
-                    ["VAL_TYPE_PLACEHOLDER", val.type],
-                ]),
-                templateSpecSourceCodeProperties,
-                new Map([
-                    ["KEY_1_PLACEHOLDER", key._1],
-                    ["KEY_2_PLACEHOLDER", key._2],
-                    ["VAL_1_PLACEHOLDER", val._1],
-                    ["VAL_2_PLACEHOLDER", val._2],
-                ]),
+                {
+                    template: templateTactSourceCodeProperties,
+                    subst: new Map([
+                        ["KEY_TYPE_PLACEHOLDER", key.type],
+                        ["VAL_TYPE_PLACEHOLDER", val.type],
+                    ]),
+                },
+                {
+                    template: templateSpecSourceCodeProperties,
+                    subst: new Map([
+                        ["KEY_1_PLACEHOLDER", key._1],
+                        ["KEY_2_PLACEHOLDER", key._2],
+                        ["VAL_1_PLACEHOLDER", val._1],
+                        ["VAL_2_PLACEHOLDER", val._2],
+                    ]),
+                },
             );
             await compileAndExitOnError(tactFilePath);
         }
@@ -104,17 +112,21 @@ const generateIntLimitsTests = async () => {
             const tactFilePath = await instantiateContractAndSpecTemplates(
                 "map-int-limits",
                 testName,
-                templateTactSourceCodeLimits,
-                new Map([
-                    ["KEY_FORMAT_PLACEHOLDER", descriptionToString(key)],
-                    ["VAL_FORMAT_PLACEHOLDER", descriptionToString(val)],
-                    ["KEY_MIN_PLACEHOLDER", minInt(key).toString()],
-                    ["KEY_MAX_PLACEHOLDER", maxInt(key).toString()],
-                    ["VAL_MIN_PLACEHOLDER", minInt(val).toString()],
-                    ["VAL_MAX_PLACEHOLDER", maxInt(val).toString()],
-                ]),
-                templateSpecSourceCodeLimits,
-                new Map(),
+                {
+                    template: templateTactSourceCodeLimits,
+                    subst: new Map([
+                        ["KEY_FORMAT_PLACEHOLDER", descriptionToString(key)],
+                        ["VAL_FORMAT_PLACEHOLDER", descriptionToString(val)],
+                        ["KEY_MIN_PLACEHOLDER", minInt(key).toString()],
+                        ["KEY_MAX_PLACEHOLDER", maxInt(key).toString()],
+                        ["VAL_MIN_PLACEHOLDER", minInt(val).toString()],
+                        ["VAL_MAX_PLACEHOLDER", maxInt(val).toString()],
+                    ]),
+                },
+                {
+                    template: templateSpecSourceCodeLimits,
+                    subst: new Map(),
+                },
             );
             await compileAndExitOnError(tactFilePath);
         }
