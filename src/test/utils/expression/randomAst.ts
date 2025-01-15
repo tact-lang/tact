@@ -15,7 +15,7 @@ import {
     AstString,
     AstStructFieldInitializer,
     AstStructInstance,
-} from "../../../grammar/ast";
+} from "../../../ast/ast";
 import { dummySrcInfo } from "../../../grammar/src-info";
 
 function dummyAstNode<T>(
@@ -133,6 +133,16 @@ export function randomAstId(): fc.Arbitrary<AstId> {
     );
 }
 
+function randomAstCapitalizedId(): fc.Arbitrary<AstId> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("id"),
+            text: fc.stringMatching(/^[A-Z]+$/),
+            // Rules for text value are in src/grammar/grammar.ohm
+        }),
+    );
+}
+
 export function randomAstNull(): fc.Arbitrary<AstNull> {
     return dummyAstNode(
         fc.record({
@@ -148,7 +158,7 @@ export function randomAstInitOf(
         fc.record({
             kind: fc.constant("init_of"),
             contract: randomAstId(),
-            args: fc.array(expression),
+            args: fc.array(expression, { maxLength: 1 }),
         }),
     );
 }
@@ -183,7 +193,7 @@ export function randomAstStructInstance(
     return dummyAstNode(
         fc.record({
             kind: fc.constant("struct_instance"),
-            type: randomAstId(),
+            type: randomAstCapitalizedId(),
             args: fc.array(structFieldInitializer),
         }),
     );
@@ -216,47 +226,35 @@ export function randomAstMethodCall(
 }
 
 export function randomAstExpression(
-    maxShrinks: number,
+    maxDepth: number,
 ): fc.Arbitrary<AstExpression> {
-    return fc.letrec<{
-        AstExpression: AstExpression;
-        AstOpUnary: AstOpUnary;
-        AstOpBinary: AstOpBinary;
-        AstConditional: AstConditional;
-    }>((tie) => ({
-        AstExpression: fc.oneof(
-            // Enabling will fail the tests by recursion
+    // No weighted items
+    const baseExpressions = [
+        randomAstNumber(),
+        randomAstBoolean(),
+        randomAstId(),
+        randomAstNull(),
+        randomAstString(),
+    ];
 
-            // randomAstMethodCall(
-            //     fc.limitShrink(tie("AstExpression"), 1),
-            //     fc.limitShrink(tie("AstExpression"), 1)),
-            // randomAstFieldAccess(fc.limitShrink(tie("AstExpression"), 1)),
-            // randomAstStaticCall(fc.limitShrink(tie("AstExpression"), 1)),
-            randomAstNumber(),
-            randomAstBoolean(),
-            randomAstId(),
-            randomAstNull(),
-            // randomAstInitOf(tie("AstExpression")),
-            randomAstString(),
-            tie("AstOpUnary"),
-            tie("AstOpBinary"),
-            tie("AstConditional"),
-        ),
-        AstOpUnary: fc.limitShrink(
-            randomAstOpUnary(tie("AstExpression")),
-            maxShrinks,
-        ),
-        AstOpBinary: fc.limitShrink(
-            randomAstOpBinary(tie("AstExpression"), tie("AstExpression")),
-            maxShrinks,
-        ),
-        AstConditional: fc.limitShrink(
-            randomAstConditional(
-                tie("AstExpression"),
-                tie("AstExpression"),
-                tie("AstExpression"),
-            ),
-            maxShrinks,
-        ),
-    })).AstExpression;
+    // More weighted items
+    return fc.memo((depth: number): fc.Arbitrary<AstExpression> => {
+        if (depth == 1) {
+            return fc.oneof(...baseExpressions);
+        }
+
+        const subExpr = () => randomAstExpression(depth - 1);
+
+        return fc.oneof(
+            ...baseExpressions,
+            randomAstMethodCall(subExpr(), subExpr()),
+            randomAstFieldAccess(subExpr()),
+            randomAstStaticCall(subExpr()),
+            randomAstStructInstance(randomAstStructFieldInitializer(subExpr())),
+            randomAstInitOf(subExpr()),
+            randomAstOpUnary(subExpr()),
+            randomAstOpBinary(subExpr(), subExpr()),
+            randomAstConditional(subExpr(), subExpr(), subExpr()),
+        );
+    })(maxDepth);
 }

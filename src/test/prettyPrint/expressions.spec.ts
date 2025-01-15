@@ -1,5 +1,5 @@
 import fc from "fast-check";
-import { AstExpression, eqExpressions, getAstFactory } from "../../grammar/ast";
+import { AstExpression, eqExpressions, getAstFactory } from "../../ast/ast";
 import { prettyPrint } from "../../prettyPrinter";
 import { getParser } from "../../grammar";
 import {
@@ -21,9 +21,8 @@ import {
 } from "../utils/expression/randomAst";
 
 describe("Pretty Print Expressions", () => {
-    // Max depth of the expression tree
-    const maxShrinks = 15;
-    const expression = () => randomAstExpression(maxShrinks);
+    const maxDepth = 3;
+    const expression = () => randomAstExpression(maxDepth);
 
     const cases: [string, fc.Arbitrary<AstExpression>][] = [
         //
@@ -62,8 +61,7 @@ describe("Pretty Print Expressions", () => {
             fc.assert(
                 fc.property(astGenerator, (generatedAst) => {
                     const prettyBefore = prettyPrint(generatedAst);
-                    const astFactory = getAstFactory();
-                    const parser = getParser(astFactory, "new");
+                    const parser = getParser(getAstFactory(), "new");
                     const parsedAst = parser.parseExpression(prettyBefore);
                     expect(eqExpressions(generatedAst, parsedAst)).toBe(true);
                 }),
