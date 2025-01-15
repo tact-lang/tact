@@ -49,7 +49,7 @@ export const minInt = (descr: MapIntValDescription): bigint => {
     }
 };
 
-export const maxInt = (descr: MapIntValDescription) => {
+export const maxInt = (descr: MapIntValDescription): bigint => {
     switch (descr.format) {
         case null:
             return maxSignedInt(257);
