@@ -348,6 +348,44 @@ Line 4, col 17:
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for extend-fun-cannot-be-defined-within-contract 1`] = `
+"<unknown>:3:5: Extend functions cannot be defined within a contract
+Line 3, col 5:
+  2 | contract Foo {
+> 3 |     extends fun Bar(self: Int, a: Int): Int {}    
+          ^~~~~~~
+  4 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for extend-fun-cannot-be-defined-within-trait 1`] = `
+"<unknown>:3:5: Extend functions cannot be defined within a contract
+Line 3, col 5:
+  2 | trait Foo {
+> 3 |     extends fun Bar(self: Int, a: Int): Int {}    
+          ^~~~~~~
+  4 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for extend-fun-missing-type 1`] = `
+"<unknown>:1:32: Type "Bar" not found
+Line 1, col 32:
+> 1 | extends fun Foo(self: String): Bar {
+                                     ^~~
+  2 |     return "";
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for extend-fun-must-have-at-least-one-parameter 1`] = `
+"<unknown>:2:1: Extend functions must have at least one parameter
+Line 2, col 1:
+  1 | primitive Int;
+> 2 | extends fun Bar(): Int {}
+      ^~~~~~~
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for getter-outside-contract 1`] = `
 "<unknown>:8:1: Getters must be defined within a contract
 Line 8, col 1:
