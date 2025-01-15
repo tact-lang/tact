@@ -1,5 +1,5 @@
 import { run } from "../../../node";
-import { MapType, keyTypes, valTypes } from "./map-properties-key-value-types";
+import { keyTypes, valTypes } from "./map-properties-key-value-types";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 import { exit } from "node:process";
@@ -7,74 +7,60 @@ import {
     descriptionToString,
     intKeyFormats,
     intValFormats,
-    MapIntKeyDescription,
-    MapIntValDescription,
     maxInt,
     minInt,
 } from "./map-int-limits-key-value-types";
 import { readFile } from "node:fs/promises";
 
-type TestKind = "property" | "int-limits";
+type TestKind = "map-properties" | "map-int-limits";
 
 const pwd = (fileName: string): string => path.join(__dirname, fileName);
 
 const testDirectory = (kind: TestKind, testName: string): string =>
-    pwd(`./build/${kind}_${testName}`);
+    pwd(`./build/${kind}_${testName}`.replaceAll(" ", "-"));
 
 const testContractFileName = "test.tact";
-const specFileNameProperties = "map-properties.spec.ts";
-const specFileNameLimits = "map-int-limits.spec.ts";
 
-const instantiateContractTemplateAndSpecProperties = async (
-    templateTact: string,
-    templateSpec: string,
+const applySubstitutions = (
+    source: string,
+    subst: Map<string, string>,
+): string => {
+    return Array.from(subst).reduce((src, [placeholder, concreteValue]) => {
+        return src.replaceAll(placeholder, concreteValue);
+    }, source);
+};
+
+const instantiateContractAndSpecTemplates = async (
+    testKind: TestKind,
     testName: string,
-    key: MapType,
-    val: MapType,
+    templateTact: string,
+    templateTactSubst: Map<string, string>,
+    templateSpec: string,
+    templateSpecSubst: Map<string, string>,
 ): Promise<string> => {
-    const tactSourceCode = templateTact
-        .replaceAll("KEY_TYPE_PLACEHOLDER", key.type)
-        .replaceAll("VAL_TYPE_PLACEHOLDER", val.type);
-    const testDir = testDirectory("property", testName);
+    const testDir = testDirectory(testKind, testName);
+    const tactSourceCode = applySubstitutions(templateTact, templateTactSubst);
+    const specSourceCode = applySubstitutions(templateSpec, templateSpecSubst);
     await mkdir(testDir, { recursive: true });
     const tactFilePath = path.join(testDir, testContractFileName);
     await writeFile(tactFilePath, tactSourceCode);
-    const specSourceCode = templateSpec
-        .replaceAll("KEY_1_PLACEHOLDER", key.val1)
-        .replaceAll("KEY_2_PLACEHOLDER", key.val2)
-        .replaceAll("VAL_1_PLACEHOLDER", val.val1)
-        .replaceAll("VAL_2_PLACEHOLDER", val.val2);
-    const specFilePath = path.join(testDir, specFileNameProperties);
+    const specFilePath = path.join(testDir, `${testKind}.spec.ts`);
     await writeFile(specFilePath, specSourceCode);
     return tactFilePath;
 };
 
-const instantiateContractTemplateAndSpecLimits = async (
-    templateTact: string,
-    templateSpec: string,
-    testName: string,
-    key: MapIntKeyDescription,
-    val: MapIntValDescription,
-): Promise<string> => {
-    const tactSourceCode = templateTact
-        .replaceAll("KEY_FORMAT_PLACEHOLDER", descriptionToString(key))
-        .replaceAll("VAL_FORMAT_PLACEHOLDER", descriptionToString(val))
-        .replaceAll("KEY_MIN_PLACEHOLDER", minInt(key).toString())
-        .replaceAll("KEY_MAX_PLACEHOLDER", maxInt(key).toString())
-        .replaceAll("VAL_MIN_PLACEHOLDER", minInt(val).toString())
-        .replaceAll("VAL_MAX_PLACEHOLDER", maxInt(val).toString());
-    const testDir = testDirectory("int-limits", testName);
-    await mkdir(testDir, { recursive: true });
-    const tactFilePath = path.join(testDir, testContractFileName);
-    await writeFile(tactFilePath, tactSourceCode);
-    const specSourceCode = templateSpec;
-    const specFilePath = path.join(testDir, specFileNameLimits);
-    await writeFile(specFilePath, specSourceCode);
-    return tactFilePath;
+const compileAndExitOnError = async (tactFilePath: string) => {
+    const compilationResult = await run({
+        fileName: tactFilePath,
+        suppressLog: true,
+    });
+    if (!compilationResult.ok) {
+        console.error(compilationResult.error);
+        exit(1);
+    }
 };
 
-const compileContracts = async () => {
-    // compile map properties contracts
+const generatePropertyTests = async () => {
     const templateTactSourceCodeProperties: string = (
         await readFile(pwd("map-properties.tact.template"))
     ).toString();
@@ -83,26 +69,29 @@ const compileContracts = async () => {
     ).toString();
     for (const key of keyTypes) {
         for (const val of valTypes) {
-            const testName = `${key.type}_${val.type}`.replaceAll(" ", "-");
-            const tactFilePath =
-                await instantiateContractTemplateAndSpecProperties(
-                    templateTactSourceCodeProperties,
-                    templateSpecSourceCodeProperties,
-                    testName,
-                    key,
-                    val,
-                );
-            const compilationResult = await run({
-                fileName: tactFilePath,
-                suppressLog: true,
-            });
-            if (!compilationResult.ok) {
-                console.error(compilationResult.error);
-                exit(1);
-            }
+            const testName = `${key.type}_${val.type}`;
+            const tactFilePath = await instantiateContractAndSpecTemplates(
+                "map-properties",
+                testName,
+                templateTactSourceCodeProperties,
+                new Map([
+                    ["KEY_TYPE_PLACEHOLDER", key.type],
+                    ["VAL_TYPE_PLACEHOLDER", val.type],
+                ]),
+                templateSpecSourceCodeProperties,
+                new Map([
+                    ["KEY_1_PLACEHOLDER", key._1],
+                    ["KEY_2_PLACEHOLDER", key._2],
+                    ["VAL_1_PLACEHOLDER", val._1],
+                    ["VAL_2_PLACEHOLDER", val._2],
+                ]),
+            );
+            await compileAndExitOnError(tactFilePath);
         }
     }
-    // compile int map limit contracts
+};
+
+const generateIntLimitsTests = async () => {
     const templateTactSourceCodeLimits: string = (
         await readFile(pwd("map-int-limits.tact.template"))
     ).toString();
@@ -111,33 +100,31 @@ const compileContracts = async () => {
     ).toString();
     for (const key of intKeyFormats) {
         for (const val of intValFormats) {
-            const testName =
-                `${descriptionToString(key)}_${descriptionToString(val)}`.replaceAll(
-                    " ",
-                    "-",
-                );
-            const tactFilePath = await instantiateContractTemplateAndSpecLimits(
-                templateTactSourceCodeLimits,
-                templateSpecSourceCodeLimits,
+            const testName = `${descriptionToString(key)}_${descriptionToString(val)}`;
+            const tactFilePath = await instantiateContractAndSpecTemplates(
+                "map-int-limits",
                 testName,
-                key,
-                val,
+                templateTactSourceCodeLimits,
+                new Map([
+                    ["KEY_FORMAT_PLACEHOLDER", descriptionToString(key)],
+                    ["VAL_FORMAT_PLACEHOLDER", descriptionToString(val)],
+                    ["KEY_MIN_PLACEHOLDER", minInt(key).toString()],
+                    ["KEY_MAX_PLACEHOLDER", maxInt(key).toString()],
+                    ["VAL_MIN_PLACEHOLDER", minInt(val).toString()],
+                    ["VAL_MAX_PLACEHOLDER", maxInt(val).toString()],
+                ]),
+                templateSpecSourceCodeLimits,
+                new Map(),
             );
-            const compilationResult = await run({
-                fileName: tactFilePath,
-                suppressLog: true,
-            });
-            if (!compilationResult.ok) {
-                console.error(compilationResult.error);
-                exit(1);
-            }
+            await compileAndExitOnError(tactFilePath);
         }
     }
 };
 
 const main = async () => {
     try {
-        await compileContracts();
+        await generatePropertyTests();
+        await generateIntLimitsTests();
     } catch (e) {
         console.error(e);
         process.exit(1);

@@ -1,14 +1,14 @@
 type FixedWidthFormat = "int" | "uint";
 type VarWidthFormat = "varint" | "varuint";
 
-export type MapIntKeyDescription =
+type MapIntKeyDescription =
     | {
           format: FixedWidthFormat;
           size: number;
       }
     | { format: null };
 
-export type MapIntValDescription =
+type MapIntValDescription =
     | MapIntKeyDescription
     | {
           format: VarWidthFormat;
