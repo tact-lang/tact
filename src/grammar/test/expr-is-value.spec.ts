@@ -1,6 +1,6 @@
 //type Test = { expr: string; isValue: boolean };
 
-import { getAstFactory, isLiteral } from "../ast";
+import { getAstFactory, isLiteral } from "../../ast/ast";
 import { getParser } from "../";
 import { defaultParser } from "../grammar";
 

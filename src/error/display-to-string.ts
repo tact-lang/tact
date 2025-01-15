@@ -3,7 +3,7 @@
  */
 
 import { ErrorDisplay } from "./display";
-import { locationStr } from "../errors";
+import { locationStr } from "./errors";
 
 export const displayToString: ErrorDisplay<string> = {
     text: (text) => text,

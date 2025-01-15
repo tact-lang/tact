@@ -1,6 +1,6 @@
 import { Node, IterationNode, NonterminalNode } from "ohm-js";
 import tactGrammar from "./grammar.ohm-bundle";
-import { throwInternalCompilerError } from "../../errors";
+import { throwInternalCompilerError } from "../../error/errors";
 import {
     AstAugmentedAssignOperation,
     AstConstantAttribute,
@@ -17,7 +17,7 @@ import {
     AstNumberBase,
     AstId,
     FactoryAst,
-} from "../ast";
+} from "../../ast/ast";
 import { ItemOrigin, SrcInfo } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
 import { ParserErrors, parserErrorSchema } from "./parser-error";
@@ -1050,6 +1050,13 @@ semantics.addOperation<AstNode>("astOfStatement", {
             ignoreUnspecifiedFields:
                 endOfIdentifiers.astOfExpression().ignoreUnspecifiedFields,
             expression: expression.astOfExpression(),
+            loc: createRef(this),
+        });
+    },
+    StatementBlock(_lbrace, statements, _rbrace) {
+        return createNode({
+            kind: "statement_block",
+            statements: statements.children.map((s) => s.astOfStatement()),
             loc: createRef(this),
         });
     },

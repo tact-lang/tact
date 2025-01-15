@@ -15,13 +15,13 @@ This page lists all the configuration options as they're structured in the [sche
 
 ## `$schema` {#schema}
 
-A [JSON schema](https://json-schema.org/) file is available for editors to provide autocompletion and hover hints: [configSchema.json](http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json).
+A [JSON schema](https://json-schema.org/) file is available for editors to provide autocompletion and hover hints: [configSchema.json](http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json).
 
 Simply add the `$schema` field on top your configuration file:
 
 ```json filename="tact.config.json" {2}
 {
-  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json",
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
   "projects": []
 }
 ```
@@ -369,7 +369,7 @@ In [Blueprint][bp], `mode` is always set to `"full"{:json}` and cannot be overwr
 
 ```json filename="tact.config.json" copy=false
 {
-  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json",
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
   "projects": [
     {
       "name": "basic",

@@ -14,13 +14,13 @@ title: 配置
 
 ## `$schema` {#schema}
 
-编辑器可使用[JSON 模式](https://json-schema.org/) 文件提供自动完成和悬停提示：[configSchema.json](http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json)。
+编辑器可使用[JSON 模式](https://json-schema.org/) 文件提供自动完成和悬停提示：[configSchema.json](http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json)。
 
 只需在配置文件顶部添加 `$schema` 字段即可：
 
 ```json filename="tact.config.json" {2}
 {
-  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json",
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
   "projects"：[]
 }
 ```
@@ -372,7 +372,7 @@ Value                            | Description
 
 ```json filename="tact.config.json" copy=false
 {
-  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json",
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
   "projects": [
     {
       "name": "basic",

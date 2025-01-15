@@ -877,6 +877,84 @@ exports[`grammar should parse abstract-const 1`] = `
 }
 `;
 
+exports[`grammar should parse block-statements 1`] = `
+{
+  "id": 10,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 9,
+      "kind": "function_def",
+      "loc": fun foo() {
+    let x = 100;
+    {
+        let y = 200;
+    }
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": foo,
+        "text": "foo",
+      },
+      "params": [],
+      "return": null,
+      "statements": [
+        {
+          "expression": {
+            "base": 10,
+            "id": 3,
+            "kind": "number",
+            "loc": 100,
+            "value": 100n,
+          },
+          "id": 4,
+          "kind": "statement_let",
+          "loc": let x = 100;,
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": x,
+            "text": "x",
+          },
+          "type": null,
+        },
+        {
+          "id": 8,
+          "kind": "statement_block",
+          "loc": {
+        let y = 200;
+    },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 6,
+                "kind": "number",
+                "loc": 200,
+                "value": 200n,
+              },
+              "id": 7,
+              "kind": "statement_let",
+              "loc": let y = 200;,
+              "name": {
+                "id": 5,
+                "kind": "id",
+                "loc": y,
+                "text": "y",
+              },
+              "type": null,
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
 exports[`grammar should parse case-35 1`] = `
 {
   "id": 7,
@@ -6841,6 +6919,129 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
           "id": 78,
           "kind": "statement_return",
           "loc": return a + b + c + d + e + f + g + h + i + j + k + l;,
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse nested-block-statements 1`] = `
+{
+  "id": 13,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 12,
+      "kind": "function_def",
+      "loc": fun foo() {
+    let x = 100;
+    {
+        {
+            {
+                {
+                    let y = 200;
+                }
+            }
+        }
+    }
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": foo,
+        "text": "foo",
+      },
+      "params": [],
+      "return": null,
+      "statements": [
+        {
+          "expression": {
+            "base": 10,
+            "id": 3,
+            "kind": "number",
+            "loc": 100,
+            "value": 100n,
+          },
+          "id": 4,
+          "kind": "statement_let",
+          "loc": let x = 100;,
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": x,
+            "text": "x",
+          },
+          "type": null,
+        },
+        {
+          "id": 11,
+          "kind": "statement_block",
+          "loc": {
+        {
+            {
+                {
+                    let y = 200;
+                }
+            }
+        }
+    },
+          "statements": [
+            {
+              "id": 10,
+              "kind": "statement_block",
+              "loc": {
+            {
+                {
+                    let y = 200;
+                }
+            }
+        },
+              "statements": [
+                {
+                  "id": 9,
+                  "kind": "statement_block",
+                  "loc": {
+                {
+                    let y = 200;
+                }
+            },
+                  "statements": [
+                    {
+                      "id": 8,
+                      "kind": "statement_block",
+                      "loc": {
+                    let y = 200;
+                },
+                      "statements": [
+                        {
+                          "expression": {
+                            "base": 10,
+                            "id": 6,
+                            "kind": "number",
+                            "loc": 200,
+                            "value": 200n,
+                          },
+                          "id": 7,
+                          "kind": "statement_let",
+                          "loc": let y = 200;,
+                          "name": {
+                            "id": 5,
+                            "kind": "id",
+                            "loc": y,
+                            "text": "y",
+                          },
+                          "type": null,
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
         },
       ],
     },

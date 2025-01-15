@@ -1,4 +1,4 @@
-import { eqExpressions, getAstFactory } from "../ast";
+import { eqExpressions, getAstFactory } from "../../ast/ast";
 import { getParser } from "../";
 import { defaultParser } from "../grammar";
 

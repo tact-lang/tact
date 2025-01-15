@@ -2,7 +2,7 @@
  * Render error message to JSON for tests
  */
 
-import { throwInternalCompilerError } from "../errors";
+import { throwInternalCompilerError } from "./errors";
 import { SrcInfo } from "../grammar";
 import { srcInfoEqual } from "../grammar/src-info";
 import { ErrorDisplay } from "./display";

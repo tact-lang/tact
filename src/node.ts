@@ -3,8 +3,8 @@ import fs from "fs";
 import { ConfigProject, Config, parseConfig } from "./config/parseConfig";
 import { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 import { build } from "./pipeline/build";
-import { LogLevel, Logger } from "./logger";
-import { TactErrorCollection } from "./errors";
+import { LogLevel, Logger } from "./context/logger";
+import { TactErrorCollection } from "./error/errors";
 
 type AdditionalCliOptions = {
     mode?: ConfigProject["mode"];
@@ -143,6 +143,6 @@ export async function run(args: {
 
 export { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 
-export { parseAndEvalExpression } from "./interpreter";
+export { parseAndEvalExpression } from "./optimizer/interpreter";
 
 export { showValue } from "./types/types";

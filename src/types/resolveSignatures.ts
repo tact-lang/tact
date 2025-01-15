@@ -1,25 +1,26 @@
 import * as changeCase from "change-case";
 import { ABIField, beginCell } from "@ton/core";
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { idToHex } from "../utils/idToHex";
 import {
     idTextErr,
     throwConstEvalError,
     throwInternalCompilerError,
-} from "../errors";
+} from "../error/errors";
 import { getType, getAllTypes } from "./resolveDescriptors";
 import {
     BinaryReceiverSelector,
     CommentReceiverSelector,
     ReceiverDescription,
+    TypeDescription,
 } from "./types";
-import { throwCompilationError } from "../errors";
-import { AstNumber, AstReceiver, FactoryAst } from "../grammar/ast";
+import { throwCompilationError } from "../error/errors";
+import { AstNumber, AstReceiver, FactoryAst } from "../ast/ast";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 import { sha256_sync } from "@ton/crypto";
 import { dummySrcInfo } from "../grammar";
-import { ensureInt } from "../interpreter";
-import { evalConstantExpression } from "../constEval";
+import { ensureInt } from "../optimizer/interpreter";
+import { evalConstantExpression } from "../optimizer/constEval";
 import { getAstUtil } from "../optimizer/util";
 
 export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
@@ -273,7 +274,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
         }
     });
 
-    checkMessageOpcodesUnique(ctx);
+    checkAggregateTypes(ctx);
 
     return ctx;
 }
@@ -393,10 +394,16 @@ function checkMessageOpcodesUniqueInContractOrTrait(
     }
 }
 
-function checkMessageOpcodesUnique(ctx: CompilerContext) {
+function checkAggregateTypes(ctx: CompilerContext) {
     getAllTypes(ctx).forEach((aggregate) => {
         switch (aggregate.kind) {
             case "contract":
+                checkMessageOpcodesUniqueInContractOrTrait(
+                    aggregate.receivers,
+                    ctx,
+                );
+                checkContractFields(aggregate);
+                break;
             case "trait":
                 checkMessageOpcodesUniqueInContractOrTrait(
                     aggregate.receivers,
@@ -407,4 +414,16 @@ function checkMessageOpcodesUnique(ctx: CompilerContext) {
                 break;
         }
     });
+}
+
+function checkContractFields(t: TypeDescription) {
+    // Check if "as remaining" is only used for the last field of contract
+    for (const field of t.fields.slice(0, -1)) {
+        if (field.as === "remaining") {
+            throwCompilationError(
+                `The "remainder" field can only be the last field of the contract`,
+                field.ast.loc,
+            );
+        }
+    }
 }
