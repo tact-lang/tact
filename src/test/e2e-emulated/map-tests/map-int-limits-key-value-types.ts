@@ -107,8 +107,7 @@ const varIntFormats: MapIntValDescription[] = [
 const fixedWidthInts: MapIntKeyDescription[] =
     signedIntFormats.concat(unsignedIntFormats);
 
-export const intKeyFormats = fixedWidthInts;
+export const intKeyFormats: MapIntKeyDescription[] = fixedWidthInts;
 
-export const intValFormats: MapIntValDescription[] = (
-    fixedWidthInts as MapIntValDescription[]
-).concat(varIntFormats);
+export const intValFormats: MapIntValDescription[] =
+    varIntFormats.concat(fixedWidthInts);
