@@ -380,7 +380,9 @@ const createContext = (spaces: number): Context<ContextModel> => {
     const indent = (rows: readonly ContextModel[]) =>
         block(rows).map((f) => (level: number) => f(level + 1));
     const braced = (rows: readonly ContextModel[]) =>
-        block([row(`{`), indent(rows), row(`}`)]);
+        block(
+            rows.length > 0 ? [row(`{`), indent(rows), row(`}`)] : [row("{}")],
+        );
     const list = <T>(items: readonly T[], print: Printer<T>) =>
         items.map((node) => print(node)(ctx));
     const grouped = <T, V>({
@@ -695,7 +697,7 @@ export const ppAstFuncId = (func: A.AstFuncId): string => func.text;
 //
 
 export const ppStatementBlock: Printer<A.AstStatement[]> = (stmts) => (c) =>
-    c.braced(stmts.length === 0 ? [c.row("")] : c.list(stmts, ppAstStatement));
+    c.braced(stmts.length === 0 ? [] : c.list(stmts, ppAstStatement));
 
 export const ppAsmInstructionsBlock: Printer<A.AstAsmInstruction[]> =
     (instructions) => (c) =>

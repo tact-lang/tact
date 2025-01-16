@@ -30,5 +30,4 @@ message(DEADBEEF + 1) MyMessageWithExprOpcode {
     a: Int;
 }
 
-contract TestContract {
-}
+contract TestContract {}
