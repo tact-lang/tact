@@ -132,6 +132,10 @@
     "untypable",
     "varint",
     "varuint",
+    "viiii",
+    "varint",
+    "storer",
+    "Ints",
     "workchain",
     "xffff",
     "привет"
@@ -150,9 +154,9 @@
     "*.spec.ts.snap",
     "node_modules",
     "dist",
-    "func",
     "grammar/sample.json",
     "src/generator/writers/writeStdlib.ts",
+    "src/func/funcfiftlib.*",
     "src/grammar/grammar.ohm-bundle.d.ts",
     "src/grammar/test/items-native-fun-funcid.tact",
     "src/grammar/test/items-asm-funs.tact",
@@ -160,8 +164,9 @@
     "src/grammar/test-failed/funcid-*.tact",
     "src/grammar/next/grammar.gg",
     "src/grammar/next/grammar.ts",
-    "src/imports/stdlib.ts",
-    "/src/test/compilation-failed/const-eval-failed.spec.ts",
+    "src/stdlib/stdlib.ts",
+    "src/stdlib/stdlib/stdlib.fc",
+    "src/test/compilation-failed/const-eval-failed.spec.ts",
     "src/test/e2e-emulated/address.spec.ts",
     "src/test/e2e-emulated/intrinsics.spec.ts",
     "src/test/e2e-emulated/optionals.spec.ts",
@@ -174,7 +179,6 @@
     "src/test/exit-codes/contracts/compute-phase-errors.tact",
     "src/test/e2e-emulated/map-tests/build",
     "src/test/e2e-emulated/map-tests/map-properties-key-value-types.ts",
-    "stdlib/stdlib.fc",
     "/docs"
   ]
 }
