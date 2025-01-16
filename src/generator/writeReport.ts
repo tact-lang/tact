@@ -37,7 +37,7 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     for (const t of abi.getters!) {
         w.write(`## ${t.name}`);
         if (t.arguments!.length === 0) {
-            w.write(`This getter has no arguments`);
+            w.write(`No arguments`);
         } else {
             for (const arg of t.arguments!) {
                 w.write(`Argument: ${arg.name}`);
