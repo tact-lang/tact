@@ -1,4 +1,4 @@
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { getAllocation, getSortedTypes } from "../storage/resolveAllocation";
 import {
     getAllStaticFunctions,
@@ -18,7 +18,7 @@ import { writeAccessors } from "./writers/writeAccessors";
 import { ContractABI } from "@ton/core";
 import { writeFunction } from "./writers/writeFunction";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
-import { getRawAST } from "../grammar/store";
+import { getRawAST } from "../context/store";
 import { emit } from "./emitter/emit";
 import {
     writeInit,
@@ -96,7 +96,7 @@ export async function writeProgram(
     const stdlibHeader = trimIndent(`
         global (int, slice, int, slice) __tact_context;
         global slice __tact_context_sender;
-        global cell __tact_context_sys;
+        global cell __tact_child_contract_codes;
         global int __tact_randomized;
     `);
 

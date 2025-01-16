@@ -259,6 +259,31 @@ fun throwException(v: Int): Bool {
 }
 
 
+
+/***** Auxiliary functions for slices */
+
+// Reads two 6-bit integers (with values 5 and 2) from the slice and checks that the slice is empty afterwards.
+// This will not modify the slice given as parameter.
+fun fullyReadSlice(s: Slice): Bool {
+    let i1 = s.loadInt(6);  // 5
+    let i2 = s.loadInt(6);  // 2
+    s.endParse();
+
+    return i1 == 5 && i2 == 2 && s.empty();
+}
+
+// Reads two 6-bit integers (with values 5 and 2) from the slice and checks that the slice is empty afterwards.
+// This will modify the slice given as parameter.
+extends mutates fun fullyReadAndModifySlice(self: Slice): Bool {
+    let i1 = self.loadInt(6);  // 5
+    let i2 = self.loadInt(6);  // 2
+    self.endParse();
+
+    return i1 == 5 && i2 == 2 && self.empty();
+}
+
+
+
 contract SemanticsTester {
 
     // Currently, declaring fields like this:
@@ -1883,6 +1908,444 @@ contract SemanticsTester {
         result &&= s == 3;
 
         result &&= t1 && t2 && t3 && t4;
+
+        return result;
+    }
+
+
+    /*************** Addresses ********************/
+
+    get fun testAddressEquality(): Bool {
+        
+        // Addresses are immutable.
+
+        let addr1 = myAddress();
+        let addr2 = contractAddress(initOf SemanticsTester());
+
+        // The two addresses are the same
+        let result = addr1 == addr2;
+
+        // Make a copy of addr1 (assignments are by value).
+        let addr3 = addr1;
+
+        // The addresses are still equal.
+        result &&= addr1 == addr3;
+
+        return result;
+    }
+
+
+    /*************** Slices ********************/
+
+    // Test slices generated from cells without references to other cells.
+    get fun testSliceEquality1(): Bool {
+        let cell = beginCell().storeInt(10, 6).storeInt(5, 6).storeInt(2, 6).endCell();
+
+        // We have two slices of the same cell.
+        // When reading the data in both slices, we will need to read three 6-bit integers in each slice.
+        let slice1 = cell.asSlice();
+        let slice2 = cell.asSlice();
+
+        // Naturally, they are equal so far
+        let result = slice1 == slice2;
+
+        // But now, let us read the first integer in slice1, but not in slice2.
+        // Naming convention of integer variables: 
+        // i1_s1 means "integer 1 of slice 1", 
+        // i2_s1 means "integer 2 of slice 1",
+        // i1_s2 means  "integer 1 of slice 2".... and so on.
+        let i1_s1 = slice1.loadInt(6);   // 10
+
+        // The slices are different so far, because slice2 still needs to read 3 integers, while slice1 only needs to read 2.
+        result &&= slice1 != slice2 && i1_s1 == 10;
+
+        // Now read the first integer in the second slice.
+        let i1_s2 = slice2.loadInt(6);   // 10
+
+        // So far, both slices are in the same state. Hence, they are equal.
+        result &&= slice1 == slice2 && i1_s2 == 10;
+
+        // Now read the remaining two integers in the first slice
+        let i2_s1 = slice1.loadInt(6);   // 5
+        let i3_s1 = slice1.loadInt(6);   // 2
+
+        // But read only one integer in the second slice.
+        let i2_s2 = slice2.loadInt(6);   // 5
+
+        // The slices are different, because the first slice is currently empty, while the second slice still needs to read the third integer.
+        result &&= slice1 != slice2 && i2_s1 == 5 && i3_s1 == 2 && i2_s2 == 5;
+
+        // Read the third integer in the second slice. The slice is now also empty.
+        let i3_s2 = slice2.loadInt(6);   // 2
+
+        // Both slices are now equal.
+        result &&= slice1 == slice2 && i3_s2 == 2;
+
+        // This will check that the first slice is empty.
+        slice1.endParse();
+
+        // They are both still empty, hence equal.
+        result &&= slice1 == slice2;
+
+        // Now check that the second slice is also empty.
+        slice2.endParse();
+
+        // Naturally, both slices are still equal and empty.
+        result &&= slice1 == slice2 && slice1.empty() && slice2.empty();
+
+        // Now, let us obtain a third slice from the starting cell.
+        let slice3 = cell.asSlice();
+
+        // Load the first integer from the slice. There are still two to go.
+        let i1_s3 = slice3.loadInt(6);  // 10
+
+        result &&= i1_s3 == 10;
+
+        // Now, make a copy of the slice (assignments are by value)
+        // This means that slice4 still has two integers to read as well. 
+        let slice4 = slice3;
+
+        // Naturally, the slices are equal.
+        result &&= slice3 == slice4;
+
+        // But now, read the second integer in slice3, but NOT in slice4.
+        let i2_s3 = slice3.loadInt(6);   // 5
+
+        // The slices are now different.
+        result &&= slice3 != slice4 && i2_s3 == 5;
+
+        // Read the last integer in slice3. The third slice is now empty, but slice4 still has two integers to read.
+        let i3_s3 = slice3.loadInt(6);  // 2
+
+        // Evidently, the slices are different.
+        result &&= slice3 != slice4 && i3_s3 == 2;
+
+        // Now read the second integer in the fourth slice.
+        let i2_s4 = slice4.loadInt(6);  // 5
+
+        // The slices are still different, because slice3 is empty, but slice4 still has one integer to read.
+        result &&= slice3 != slice4 && i2_s4 == 5;
+
+        // Read the third integer in the fourth slice. slice4 is now also empty.
+        let i3_s4 = slice4.loadInt(6);   // 2
+
+        // Both slices are now equal, and both are empty.
+        result &&= slice3 == slice4 && i3_s4 == 2 && slice3.empty() && slice4.empty();
+
+        // Now, let us obtain a fifth slice from the starting cell.
+        let slice5 = cell.asSlice();
+
+        // Again, load the first integer from the slice. There are still two to go.
+        let i1_s5 = slice5.loadInt(6);  // 10
+
+        result &&= i1_s5 == 10;
+
+        // Give the slice to a global function. Since arguments are by value, the global function will make a copy of the slice.
+        // The global function will read the remaining two integers in the slice copy. But slice5 will remain unchanged.
+
+        result &&= fullyReadSlice(slice5);    // Returns true: meaning that the function read 5 and 2 from the copy and checked that the copy is empty
+
+        // But we can still read the two integers in slice5.
+        let i2_s5 = slice5.loadInt(6);   // 5
+        let i3_s5 = slice5.loadInt(6);   // 2
+
+        // And check that slice5 is now empty
+        result &&= i2_s5 == 5 && i3_s5 == 2 && slice5.empty();
+
+        // Now, let us do the same experiment with a sixth slice, but this time pass it to a mutating function.
+        let slice6 = cell.asSlice();
+
+        // Again, load the first integer from the slice. There are still two to go.
+        let i1_s6 = slice6.loadInt(6);  // 10
+
+        result &&= i1_s6 == 10;
+
+        // Give the slice to a mutating function. 
+        // The mutating function will read the remaining two integers in the slice. 
+        // After the call, slice6 is now empty.
+
+        result &&= slice6.fullyReadAndModifySlice();    // Returns true: meaning that the function read 5 and 2 from the slice and checked that the slice is empty
+
+        // Check that slice6 is now empty
+        result &&= slice6.empty();
+
+        return result;
+    }
+
+    // Test slices generated from cells having references to other cells.
+    get fun testSliceEquality2(): Bool {
+        
+        // Create two cells with exactly the same data
+        let cell1 = beginCell().storeInt(10, 6).storeBool(true).storeUint(2, 6).endCell();
+        let cell2 = beginCell().storeInt(10, 6).storeBool(true).storeUint(2, 6).endCell();
+
+        // Two cells with the same data, but each having a reference to cell1 and cell2 respectively.
+        let cell3 = beginCell().storeInt(5, 6).storeRef(cell1).endCell();
+        let cell4 = beginCell().storeInt(5, 6).storeRef(cell2).endCell();
+
+        // Let us create another cell which differs by the reference.
+        let cell5 = beginCell().storeInt(5, 6).storeRef(emptyCell()).endCell();
+
+        // Now, create slices for cells 3,4,5.
+        let slice3 = cell3.asSlice();
+        let slice4 = cell4.asSlice();
+        let slice5 = cell5.asSlice();
+
+        // Slices 3 and 4 are equal, because they still need to read an integer and a reference to two equal cells (cells 1 and 2). 
+        let result = slice3 == slice4;
+
+        // Slice 5 differs from slices 3 and 4, because slice 5 still needs to read an integer and a reference to an empty cell.
+        result &&= slice5 != slice3 && slice5 != slice4;
+
+        // Read the integer in slice 3
+        let d1_s3 = slice3.loadInt(6);   // 5
+
+        result &&= d1_s3 == 5;
+
+        // Now, slices 3 and 4 are different, because slice 4 has not read its integer.
+        result &&= slice3 != slice4;
+
+        // Read the integer in slice 4
+        let d1_s4 = slice4.loadInt(6);   // 5
+
+        result &&= d1_s3 == 5;
+
+        // Now, slices 3 and 4 are equal, because slice 3 and 4 still need to read the reference cell,
+        // and both slices have references with the same data (cells 1 and 2).
+        result &&= slice3 == slice4;
+
+        // Read integer in slice 5
+        let d1_s5 = slice5.loadInt(6);   // 5
+
+        result &&= d1_s5 == 5;
+
+        // slice 5 differs from slices 3 and 4 because slice 5 has a reference to an empty cell.
+        result &&= slice5 != slice3 && slice5 != slice4;
+
+        // Now read the references from the slices
+        let d2_s3 = slice3.loadRef();  // cell1
+        let d2_s4 = slice4.loadRef();  // cell2
+        let d2_s5 = slice5.loadRef();  // empty cell
+
+        result &&= d2_s3 == cell1 && d2_s4 == cell2 && d2_s5 == emptyCell();
+
+        // At this moment, the three slices are equal, because they are now empty.
+        result &&= slice3 == slice4 && slice3 == slice5;
+
+        return result;
+    }
+
+    /*************** Cells ********************/
+
+    // Test cells generated by structs.
+    get fun testCellEquality1(): Bool {
+        
+        // Cells are immutable.
+
+        // Create two cells from two structs
+        // These are the same structs, but their fields are declared in different order.
+        let struct1 = SB {b1: true, b2: SC {c1: 10}, b3: 50};
+        let struct2 = SB {b2: SC {c1: 10}, b3: 50, b1: true};
+
+        let cell1 = struct1.toCell();
+        let cell2 = struct2.toCell();
+        
+        // The two cells are equal.
+        let result = cell1 == cell2;
+
+        // Make a copy of cell1 (assignments are by value).
+        let cell3 = cell1;
+
+        // The cells are still equal.
+        result &&= cell1 == cell3;
+
+        // Extract the struct from the cell copy.
+        let struct3 = SB.fromCell(cell3);
+
+        // The structs are equal.
+        result &&= struct1.b1 == struct3.b1 && struct1.b2.c1 == struct3.b2.c1 && struct1.b3 == struct3.b3;
+
+        // Let us modify struct3.
+        struct3.b2.c1 = 100;
+
+        // Obtain the cell of the modified struct
+        let cell4 = struct3.toCell();
+
+        // cell1 and cell4 are now different.
+        result &&= cell1 != cell4;
+
+        // Let us modify struct1 as done to struct3
+        struct1.b2.c1 = 100;
+
+        // Obtain the cell of the modified struct1
+        let cell5 = struct1.toCell();
+
+        // The cells are now equal
+        result &&= cell5 == cell4;
+
+        // But note that cell5 and cell1 are different
+        result &&= cell5 != cell1;
+
+        return result;
+    }
+
+    // Test cells generated by builders.
+    get fun testCellEquality2(): Bool {
+
+        // Cells are immutable.
+
+        // Create 5 cells as follows:
+
+        // Two with exactly the same data
+        let cell1 = beginCell().storeInt(10, 6).storeBool(true).storeUint(2, 6).endCell();
+        let cell2 = beginCell().storeInt(10, 6).storeBool(true).storeUint(2, 6).endCell();
+
+        // A third with the same data, but in different order
+        let cell3 = beginCell().storeBool(true).storeInt(10, 6).storeUint(2, 6).endCell();
+
+        // A fourth and fifth with only difference the stored boolean and ordering of data
+        let cell4 = beginCell().storeInt(10, 6).storeBool(false).storeUint(2, 6).endCell();
+        let cell5 = beginCell().storeBool(false).storeInt(10, 6).storeUint(2, 6).endCell();
+
+        // Then, the first and second cells are equal
+        let result = cell1 == cell2;
+
+        // The first cell differs from the third, fourth, and fifth
+        result &&= cell1 != cell3 && cell1 != cell4 && cell1 != cell5;
+
+        // Same for the second cell
+        result &&= cell2 != cell3 && cell2 != cell4 && cell2 != cell5;
+
+        // The third cell differs from fourth and fifth
+        result &&= cell3 != cell4 && cell3 != cell5;
+
+        // The fourth and fifth cells differ
+        result &&= cell4 != cell5;
+
+        // Now, let us make a slice from the first and third cells.
+        let slice1 = cell1.asSlice();
+        let slice3 = cell3.asSlice();
+
+        // Read the first data in both slices
+        // Naming convention of data variables:
+        // d1_s1 means "data 1 of slice 1", 
+        // d2_s1 means "data 2 of slice 1", 
+        // d1_s3 means "data 1 of slice 3",
+        // and so on 
+        let d1_s1 = slice1.loadInt(6);   // 10
+        let d1_s3 = slice3.loadBool();   // true
+
+        result &&= d1_s1 == 10 && d1_s3 == true;
+
+        // Transform what remains in the slices to cells.
+        // The two cells differ, because slice1 needs to read a boolean followed by an int
+        // but slice3 needs to read two integers still.
+        result &&= slice1.asCell() != slice3.asCell();
+
+        // Keep reading from slice1
+        let d2_s1 = slice1.loadBool();  // true
+
+        result &&= d2_s1 == true;
+
+        // The cells still differ
+        result &&= slice1.asCell() != slice3.asCell();
+
+        // But now read the other slice
+        let d2_s3 = slice3.loadInt(6);  // 10
+
+        result &&= d2_s3 == 10;
+
+        // Transform the slices to cells
+        let cell6 = slice1.asCell();
+        let cell7 = slice3.asCell();
+
+        // The cells are now equal, because they both have stored the unsigned integer 2.
+        result &&= cell6 == cell7;
+
+        // Indeed, we can read the unsigned integer from the cells
+        let slice4 = cell6.asSlice();
+        let slice5 = cell7.asSlice();
+        let d_s4 = slice4.loadUint(6);  // 2
+        let d_s5 = slice5.loadUint(6);  // 2
+
+        result &&= d_s4 == 2 && d_s5 == 2;
+
+        // And when transforming the slices back to cells, those cells are empty
+        result &&= slice4.asCell() == emptyCell() && slice5.asCell() == emptyCell();
+
+        // Observe that slices 1 and 3 did not get affected when they got transformed back to cells 6 and 7.
+        // This means that we can still read the unsigned integer pending in slices 1 and 3.
+        let d3_s1 = slice1.loadUint(6);  // 2
+        let d3_s3 = slice3.loadUint(6);  // 2
+
+        result &&= d3_s1 == 2 && d3_s3 == 2;
+
+        // And now, when transforming those slices back to cells, they are empty and equal.
+        let cell8 = slice1.asCell();
+        let cell9 = slice3.asCell();
+
+        result &&= cell8 == cell9 && cell8 == emptyCell() && cell9 == emptyCell();
+        
+        return result;
+    }
+
+    // Test cells generated by builders, having references to other cells.
+    get fun testCellEquality3(): Bool {
+
+        // Cells are immutable.
+
+        // Two cells with exactly the same data
+        let cell1 = beginCell().storeInt(10, 6).storeBool(true).storeUint(2, 6).endCell();
+        let cell2 = beginCell().storeInt(10, 6).storeBool(true).storeUint(2, 6).endCell();
+
+        // They are equal
+        let result = cell1 == cell2;
+
+        // Two cells with the same data, but each having a reference to cell1 and cell2 respectively.
+        let cell3 = beginCell().storeInt(5, 6).storeRef(cell1).endCell();
+        let cell4 = beginCell().storeInt(5, 6).storeRef(cell2).endCell();
+
+        // The cells are equal, because they have references to equal cells.
+        result &&= cell3 == cell4;
+
+        // Let us create another cell which differs by the reference.
+        let cell5 = beginCell().storeInt(5, 6).storeRef(emptyCell()).endCell();
+
+        // cell5 is different from both cell3 and cell4 (and of course, from cell1 and cell2).
+        result &&= cell5 != cell3 && cell5 != cell4 && cell5 != cell1 && cell5 != cell2;
+
+        // Obtain a slice for cells 3,4,5.
+        let slice3 = cell3.asSlice();
+        let slice4 = cell4.asSlice();
+        let slice5 = cell5.asSlice();
+
+        // Load the first common integer on the three slices.
+        let d1_s3 = slice3.loadInt(6);  // 5
+        let d1_s4 = slice4.loadInt(6);  // 5
+        let d1_s5 = slice5.loadInt(6);  // 5
+
+        result &&= d1_s3 == 5 && d1_s4 == 5 && d1_s5 == 5;
+
+        // Transforming the slices to cells produce two equal cells and one that differs:
+        // cells from slices 3 and 4 are equal because the slices still need to read 
+        // the references, which are references to equal cells.
+        // Instead, the cell from slice 5 differs because it has a reference to an empty cell.
+        result &&= slice3.asCell() == slice4.asCell() && slice3.asCell() != slice5.asCell() && slice4.asCell() != slice5.asCell();
+
+        // Now read the references from the slices
+        let d2_s3 = slice3.loadRef();  // cell1
+        let d2_s4 = slice4.loadRef();  // cell2
+        let d2_s5 = slice5.loadRef();  // empty cell
+
+        result &&= d2_s3 == cell1 && d2_s4 == cell2 && d2_s5 == emptyCell();
+
+        // Transforming the slices back to cells, it will produce three equal cells, because the cells are now empty,
+        // i.e., there is no more data to read from the slices.
+        let cell6 = slice3.asCell();
+        let cell7 = slice4.asCell();
+        let cell8 = slice5.asCell();
+
+        result &&= cell6 == cell7 && cell6 == cell8 && cell6 == emptyCell() && cell7 == emptyCell() && cell8 == emptyCell();
 
         return result;
     }

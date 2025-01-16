@@ -15,32 +15,55 @@ extends native storeUint(self: Builder, value: Int, bits: Int): Builder;
 @name(__tact_store_bool)
 extends native storeBool(self: Builder, value: Bool): Builder;
 
-/// Extension function for the `Builder`. Alias to `Builder.storeBool()`.
+/// Extension function for the `Builder`. Alias to `Builder.storeBool()`. Available since Tact 1.5.0.
 ///
 /// ```tact
-/// let b: Builder = beginCell();
-/// let fizz: Builder = b.storeBit(true);  // writes 1
-/// let buzz: Builder = b.storeBit(false); // writes 0
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b.storeBit(true);  // writes 1
+///     let buzz: Builder = b.storeBit(false); // writes 0
+/// }
 /// ```
 ///
-/// @since Tact 1.5.0
-/// @see https://docs.tact-lang.org/ref/core-cells#builderstorebit
+/// See: https://docs.tact-lang.org/ref/core-cells#builderstorebit
 ///
 @name(__tact_store_bool)
 extends native storeBit(self: Builder, value: Bool): Builder;
 
 asm extends fun storeCoins(self: Builder, value: Int): Builder { STVARUINT16 }
 
+asm extends fun storeVarInt16(self: Builder, value: Int): Builder { STVARINT16 }
+
+asm extends fun storeVarInt32(self: Builder, value: Int): Builder { STVARINT32 }
+
+asm extends fun storeVarUint16(self: Builder, value: Int): Builder { STVARUINT16 }
+
+asm extends fun storeVarUint32(self: Builder, value: Int): Builder { STVARUINT32 }
+
 asm(cell self) extends fun storeRef(self: Builder, cell: Cell): Builder { STREF }
 
 asm extends fun storeSlice(self: Builder, cell: Slice): Builder { STSLICER }
 
+/// Extension function for the `Builder`. Available since Tact 1.5.0.
+///
+/// Appends all data from a `Builder` `cell` to the copy of the `Builder`. Returns that copy.
+///
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell().storeCoins(42);
+///     let fizz: Builder = beginCell().storeBuilder(b);
+///     b.endCell() == fizz.endCell(); // true
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#builderstorebuilder
+///
 asm extends fun storeBuilder(self: Builder, cell: Builder): Builder { STBR }
 
 @name(__tact_store_address)
 extends native storeAddress(self: Builder, address: Address): Builder;
 
-/// Extension function for the `Builder`.
+/// Extension function for the `Builder`. Available since Tact 1.5.0.
 ///
 /// If the `cell` is not `null`, stores 1 as a single bit and then reference `cell` into the copy of the `Builder`. Returns that copy.
 ///
@@ -49,14 +72,15 @@ extends native storeAddress(self: Builder, address: Address): Builder;
 /// As a single `Cell` can store up to 4 references, attempts to store more throw an exception with exit code 8: `Cell overflow`.
 ///
 /// ```tact
-/// let b: Builder = beginCell();
-/// let fizz: Builder = b
-///     .storeMaybeRef(emptyCell()) // 1, then empty cell
-///     .storeMaybeRef(null);       // 0
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b
+///         .storeMaybeRef(emptyCell()) // 1, then empty cell
+///         .storeMaybeRef(null);       // 0
+/// }
 /// ```
 ///
-/// @since Tact 1.5.0
-/// @see https://docs.tact-lang.org/ref/core-cells#builderstoremayberef
+/// See: https://docs.tact-lang.org/ref/core-cells#builderstoremayberef
 ///
 asm(cell self) extends fun storeMaybeRef(self: Builder, cell: Cell?): Builder { STOPTREF }
 
@@ -83,16 +107,18 @@ asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
 /// Attempts to preload more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
 ///
 /// ```tact
-/// let s1: Slice = beginCell().storeRef(emptyCell()).asSlice();
-/// let fizz: Cell = s1.preloadRef(); // didn't modify s1
+/// fun examples() {
+///     let s1: Slice = beginCell().storeRef(emptyCell()).asSlice();
+///     let fizz: Cell = s1.preloadRef(); // didn't modify s1
 ///
-/// let s2: Slice = beginCell()
-///     .storeRef(emptyCell())
-///     .storeRef(s1.asCell())
-///     .asSlice();
-/// let ref1: Cell = s2.preloadRef();
-/// let ref2: Cell = s2.preloadRef();
-/// ref1 == ref2; // true
+///     let s2: Slice = beginCell()
+///         .storeRef(emptyCell())
+///         .storeRef(s1.asCell())
+///         .asSlice();
+///     let ref1: Cell = s2.preloadRef();
+///     let ref2: Cell = s2.preloadRef();
+///     ref1 == ref2; // true
+/// }
 /// ```
 ///
 /// See:
@@ -127,15 +153,16 @@ extends native preloadUint(self: Slice, l: Int): Int;
 
 asm(-> 1 0) extends mutates fun loadBool(self: Slice): Bool { 1 LDI }
 
-/// Extension mutation function for the `Slice`. Alias to `Slice.loadBool()`.
+/// Extension mutation function for the `Slice`. Alias to `Slice.loadBool()`. Available since Tact 1.5.0.
 ///
 /// ```tact
-/// let s: Slice = beginCell().storeBool(true).asSlice();
-/// let fizz: Bool = s.loadBit(); // true
+/// fun example() {
+///     let s: Slice = beginCell().storeBool(true).asSlice();
+///     let fizz: Bool = s.loadBit(); // true
+/// }
 /// ```
 ///
-/// @since Tact 1.5.0
-/// @see https://docs.tact-lang.org/ref/core-cells#sliceloadbit
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadbit
 ///
 asm(-> 1 0) extends mutates fun loadBit(self: Slice): Bool { 1 LDI }
 

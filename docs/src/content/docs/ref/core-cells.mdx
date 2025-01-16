@@ -170,7 +170,7 @@ Usage example:
 
 ```tact
 let b: Builder = beginCell();
-let fizz: Builder = b.storeUint(42, 7);
+let fizz: Builder = b.storeInt(42, 7);
 ```
 
 ## Builder.storeBool
@@ -207,6 +207,24 @@ Usage example:
 let b: Builder = beginCell();
 let fizz: Builder = b.storeBit(true);  // writes 1
 let buzz: Builder = b.storeBit(false); // writes 0
+```
+
+## Builder.storeBuilder
+
+```tact
+extends fun storeBuilder(self: Builder, cell: Builder): Builder;
+```
+
+Extension function for the [`Builder{:tact}`][builder].
+
+Appends all data from a [`Builder{:tact}`][builder] `cell` to the copy of the [`Builder{:tact}`][builder]. Returns that copy.
+
+Usage example:
+
+```tact
+let b: Builder = beginCell().storeCoins(42);
+let fizz: Builder = beginCell().storeBuilder(b);
+b.endCell() == fizz.endCell(); // true
 ```
 
 ## Builder.storeSlice
@@ -942,7 +960,7 @@ fun cautiousParse(payload: Cell): GuessCoin? {
 ## Struct.fromSlice
 
 ```tact
-extends fun fromSlice(self: Struct, cell: Slice): Struct;
+extends fun fromSlice(self: Struct, slice: Slice): Struct;
 ```
 
 Extension function for any structure type [Struct][struct].
@@ -1066,7 +1084,7 @@ fun cautiousParse(payload: Cell): TripleAxe? {
 
 
 ```tact
-extends fun fromSlice(self: Message, cell: Slice): Message;
+extends fun fromSlice(self: Message, slice: Slice): Message;
 ```
 
 Extension function for any message type [Message][message].

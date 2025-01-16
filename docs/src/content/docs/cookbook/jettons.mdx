@@ -360,6 +360,53 @@ fun calculateJettonWalletAddress(
 }
 ```
 
+### Onchain metadata creation
+
+```tact
+/// https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#jetton-metadata-example-offchain
+fun composeJettonMetadata(
+    name: String,        // full name
+    description: String, // text description of the Jetton
+    symbol: String,      // "stock ticker" symbol without the $ prefix, like USDT or SCALE
+    image: String,       // link to the image
+    // There could be other data, see:
+    // https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#jetton-metadata-attributes
+): Cell {
+    let dict: map<Int as uint256, Cell> = emptyMap();
+    dict.set(sha256("name"), name.asMetadataCell());
+    dict.set(sha256("description"), description.asMetadataCell());
+    dict.set(sha256("symbol"), symbol.asMetadataCell());
+    dict.set(sha256("image"), image.asMetadataCell());
+
+    return beginCell()
+        .storeUint(0, 8)                // a null byte prefix
+        .storeMaybeRef(dict.asCell()!!) // 1 as a single bit, then a reference
+        .endCell();
+}
+
+// Taking flight!
+fun poorMansLaunchPad() {
+    let jettonMetadata = composeJettonMetadata(
+        "Best Jetton",
+        "A very descriptive description describing the jetton descriptively",
+        "JETTON",
+        "...link to ipfs or somewhere trusted...",
+    );
+}
+
+// Prefixes the String with a single null byte and converts it to a Cell
+// The null byte prefix is used to express metadata in various standards, like NFT or Jetton
+inline extends fun asMetadataCell(self: String): Cell {
+    return beginTailString().concat(self).toCell();
+}
+```
+
+:::note[Useful links:]
+
+  [Token Data Standard in TEPs](https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#jetton-metadata-attributes)
+
+:::
+
 :::tip[Hey there!]
 
 Didn't find your favorite example of Jetton usage? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)

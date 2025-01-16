@@ -14,13 +14,13 @@ title: 配置
 
 ## `$schema` {#schema}
 
-编辑器可使用[JSON 模式](https://json-schema.org/) 文件提供自动完成和悬停提示：[configSchema.json](http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json)。
+编辑器可使用[JSON 模式](https://json-schema.org/) 文件提供自动完成和悬停提示：[configSchema.json](http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json)。
 
 只需在配置文件顶部添加 `$schema` 字段即可：
 
 ```json filename="tact.config.json" {2}
 {
-  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json",
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
   "projects"：[]
 }
 ```
@@ -144,7 +144,7 @@ title: 配置
 
 :::note
 
-  更多信息，请访问专用页面：[调试](/book/debug)。
+  更多信息，请访问专用页面：[调试](/zh-cn/book/debug)。
 
 :::
 
@@ -152,7 +152,7 @@ title: 配置
 
 默认为 `false{:json}`。
 
-如果设置为 `true{:json}`，则启用 [masterchain](/book/masterchain) 支持。
+如果设置为 `true{:json}`，则启用 [masterchain](/zh-cn/book/masterchain) 支持。
 
 ```json filename="tact.config.json" {8,14}
 {
@@ -177,7 +177,7 @@ title: 配置
 
 :::note
 
-  更多信息，请访问专用页面：[大师链](/book/masterchain)。
+  更多信息，请访问专用页面：[大师链](/zh-cn/book/masterchain)。
 
 :::
 
@@ -185,7 +185,7 @@ title: 配置
 
 默认为 `false{:json}`。
 
-如果设置为 `true{:json}`，则启用对 [external](/book/external) 消息接收器的支持。
+如果设置为 `true{:json}`，则启用对 [external](/zh-cn/book/external) 消息接收器的支持。
 
 ```json filename="tact.config.json" {8,14}
 {
@@ -210,7 +210,7 @@ title: 配置
 
 :::note
 
-  更多信息，请访问专用页面：[外部信息](/book/external)。
+  更多信息，请访问专用页面：[外部信息](/zh-cn/book/external)。
 
 :::
 
@@ -218,7 +218,7 @@ title: 配置
 
 默认为 `false{:json}`。
 
-如果设置为 `true{:json}`，则可生成带有描述合同 ABI 的 IPFS 链接的[getter](/book/contracts#getter-functions)。
+如果设置为 `true{:json}`，则可生成带有描述合同 ABI 的 IPFS 链接的[getter](/zh-cn/book/contracts#getter-functions)。
 
 ```json filename="tact.config.json" {8,14}
 {
@@ -243,7 +243,7 @@ title: 配置
 
 :::note
 
-  在专用网页上阅读更多信息：[OTP-003：自我 ABI 报告](/ref/evolution/otp-003)。
+  在专用网页上阅读更多信息：[OTP-003：自我 ABI 报告](/zh-cn/ref/evolution/otp-003)。
 
 :::
 
@@ -276,7 +276,7 @@ title: 配置
 
 :::note
 
-  了解更多信息：[支持的接口](/book/contracts#interfaces)。
+  了解更多信息：[支持的接口](/zh-cn/book/contracts#interfaces)。
 
 :::
 
@@ -372,7 +372,7 @@ Value                            | Description
 
 ```json filename="tact.config.json" copy=false
 {
-  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/schemas/configSchema.json",
+  "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
   "projects": [
     {
       "name": "basic",

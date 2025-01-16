@@ -1,4 +1,4 @@
-import { CompilerContext, createContextStore } from "../context";
+import { CompilerContext, createContextStore } from "../context/context";
 
 const featureStore = createContextStore<boolean | null | string>();
 
@@ -8,10 +8,6 @@ export function enabledInline(ctx: CompilerContext) {
 
 export function enabledDebug(ctx: CompilerContext) {
     return featureEnabled(ctx, "debug");
-}
-
-export function enabledMasterchain(ctx: CompilerContext) {
-    return featureEnabled(ctx, "masterchain");
 }
 
 export function enabledExternals(ctx: CompilerContext) {

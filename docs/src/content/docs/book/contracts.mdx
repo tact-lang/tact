@@ -95,7 +95,6 @@ Tact has a small set of interfaces provided under specific conditions:
 * `"org.ton.abi.ipfs.v0"{:tact}`, in accordance to [OTP-003: Self-ABI Reporting](/ref/evolution/otp-003) — opt-in via [`ipfsAbiGetter`](/book/config#options-ipfsabigetter) config property
 * `"org.ton.deploy.lazy.v0"{:tact}`, in accordance to [OTP-005: Argument-addressable contracts](/ref/evolution/otp-005)
 * `"org.ton.debug.v0"{:tact}`, but only if [debug mode](/book/debug#debug-mode) is enabled
-* `"org.ton.chain.any.v0"{:tact}` if [masterchain](/book/masterchain) support is enabled, and `"org.ton.chain.workchain.v0"{:tact}` otherwise
 
 Some [traits][trait] in [standard libraries](/ref/standard-libraries) define their interfaces too:
 
@@ -121,6 +120,12 @@ export const compile: CompilerConfig = {
 ```
 
 In addition to that, [`tact.config.json`](/book/config) may still be used in [Blueprint][bp] projects. In such cases values specified in [`tact.config.json`](/book/config) act as default unless modified in the `wrappers/`.
+
+:::note
+
+  If you have the `separateCompilables` option set to `true{:typescript}` in the [`blueprint.config.ts`][bp-config], then the `.compile.ts` files will be located in the `compilables/` directory and **not** in `wrappers/`.
+
+:::
 
 :::caution
 
@@ -352,3 +357,4 @@ contract Functions {
 [trait]: /book/types#traits
 
 [bp]: https://github.com/ton-org/blueprint
+[bp-config]: https://github.com/ton-org/blueprint/tree/main?tab=readme-ov-file#configuration

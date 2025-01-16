@@ -1,29 +1,22 @@
-import { CompilerContext } from "../context";
-import { TactConstEvalError, throwInternalCompilerError } from "../errors";
-import {
-    AstConstantDef,
-    AstContractDeclaration,
-    AstExpression,
-    AstFieldDecl,
-    AstStatement,
-    AstTraitDeclaration,
-    AstValue,
-    idText,
-    SrcInfo,
-} from "../grammar/ast";
-import { Interpreter } from "../interpreter";
+import { AstConstantDef, AstContractDeclaration, AstExpression, AstFieldDecl, AstLiteral, AstStatement, AstTraitDeclaration, idText } from "../ast/ast";
+import { CompilerContext } from "../context/context";
+import { TactConstEvalError, throwInternalCompilerError } from "../error/errors";
 import { getType } from "../types/resolveDescriptors";
 import { getExpType, registerExpType } from "../types/resolveExpression";
-import { TypeRef, Value } from "../types/types";
+import { TypeRef } from "../types/types";
+import { Interpreter } from "./interpreter";
 import {
     OptimizationContext,
     registerAstNodeChange,
 } from "./optimization-phase";
-import { makeValueExpression, UnsupportedOperation } from "./util";
+import { getAstUtil } from "./util";
+
 
 export function simplifyAllExpressions(optCtx: OptimizationContext) {
+    const util = getAstUtil(optCtx.factoryAst);
+
     // The interpreter in charge of simplifying expressions
-    const interpreter = new Interpreter(optCtx.ctx);
+    const interpreter = new Interpreter(util, optCtx.ctx);
 
     // Traverse the program and attempt to evaluate every expression
 
@@ -250,6 +243,12 @@ function simplifyStatement(
             });
             break;
         }
+        case "statement_block": {
+            stmt.statements.forEach((blockStmt) => {
+                simplifyStatement(blockStmt, optCtx, interpreter);
+            });
+            break;
+        }
         default:
             throwInternalCompilerError("Unrecognized statement kind");
     }
@@ -261,37 +260,27 @@ function simplifyExpression(
     interpreter: Interpreter,
 ): AstExpression {
     const value = tryExpressionSimplification(expr, interpreter);
-    let newExpr = expr;
     if (typeof value !== "undefined") {
-        try {
-            newExpr = makeValueExpression(value, expr.loc);
-            // Register the new expression in the context
-            registerAstNodeChange(optCtx, expr, newExpr);
-            // To maintain consistency with types in the CompilerContext, register the
-            // types of all newly created expressions
-            optCtx.ctx = registerAllSubExpTypes(
-                optCtx.ctx,
-                newExpr,
-                getExpType(optCtx.ctx, expr),
-            );
-        } catch (e) {
-            if (e instanceof UnsupportedOperation) {
-                // This means that transforming the value into an AST node is
-                // unsupported. Just use the original expression.
-                newExpr = expr;
-            } else {
-                throw e;
-            }
-        }
-    }
+        // Register the new expression in the context
+        registerAstNodeChange(optCtx, expr, value);
+        // To maintain consistency with types in the CompilerContext, register the
+        // types of all newly created expressions
+        optCtx.ctx = registerAllSubExpTypes(
+            optCtx.ctx,
+            value,
+            getExpType(optCtx.ctx, expr),
+        );
 
-    return newExpr;
+        return value;
+    } else {
+        return expr;
+    }
 }
 
 function tryExpressionSimplification(
     expr: AstExpression,
     interpreter: Interpreter,
-): Value | undefined {
+): AstLiteral | undefined {
     try {
         // Eventually, this will be replaced by the partial evaluator.
         return interpreter.interpretExpression(expr);
@@ -307,18 +296,22 @@ function tryExpressionSimplification(
 
 function registerAllSubExpTypes(
     ctx: CompilerContext,
-    expr: AstValue,
+    expr: AstLiteral,
     expType: TypeRef,
 ): CompilerContext {
     switch (expr.kind) {
         case "boolean":
         case "number":
-        case "string":
-        case "null": {
+        case "null":
+        case "address":
+        case "cell": 
+        case "slice":
+        case "simplified_string":
+        case "comment_value": {
             ctx = registerExpType(ctx, expr, expType);
             break;
         }
-        case "struct_instance": {
+        case "struct_value": {
             ctx = registerExpType(ctx, expr, expType);
 
             const structFields = getType(ctx, expr.type).fields;
@@ -338,30 +331,14 @@ function registerAllSubExpTypes(
                 }
                 ctx = registerAllSubExpTypes(
                     ctx,
-                    ensureAstValue(fieldValue.initializer, fieldValue.loc),
+                    fieldValue.initializer,
                     fieldType,
                 );
             }
             break;
         }
         default:
-            throwInternalCompilerError("Unrecognized AstValue.");
+            throwInternalCompilerError("Unrecognized ast literal kind.");
     }
     return ctx;
-}
-
-function ensureAstValue(expr: AstExpression, src: SrcInfo): AstValue {
-    switch (expr.kind) {
-        case "boolean":
-        case "null":
-        case "number":
-        case "string":
-        case "struct_instance":
-            return expr;
-        default:
-            throwInternalCompilerError(
-                `Expressions of kind ${expr.kind} are not ASTValues.`,
-                src,
-            );
-    }
 }

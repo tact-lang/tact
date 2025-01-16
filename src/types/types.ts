@@ -1,12 +1,11 @@
-import { ABIField, Address, Cell, Slice } from "@ton/core";
-import { throwInternalCompilerError } from "../errors";
+import { ABIField } from "@ton/core";
+import { throwInternalCompilerError } from "../error/errors";
 import {
     AstConstantDef,
     AstFunctionDef,
     AstContractInit,
     AstNativeFunctionDecl,
     AstReceiver,
-    SrcInfo,
     AstTypeDecl,
     AstId,
     AstFunctionDecl,
@@ -14,8 +13,10 @@ import {
     AstFieldDecl,
     AstAsmFunctionDef,
     AstNumber,
-} from "../grammar/ast";
-import { dummySrcInfo, ItemOrigin } from "../grammar/grammar";
+    AstLiteral,
+    idText,
+} from "../ast/ast";
+import { ItemOrigin, SrcInfo } from "../grammar";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";
@@ -64,47 +65,32 @@ export type TypeRef =
 // https://github.com/microsoft/TypeScript/issues/35164 and
 // https://github.com/microsoft/TypeScript/pull/57293
 // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
-export type StructValue = {
-    [key: string]: Value;
-};
 
-export class CommentValue {
-    constructor(public readonly comment: string) {}
-}
-
-export type Value =
-    | bigint
-    | boolean
-    | string
-    | Address
-    | Cell
-    | Slice
-    | null
-    | CommentValue
-    | StructValue;
-
-export function showValue(val: Value): string {
-    if (typeof val === "bigint") {
-        return val.toString(10);
-    } else if (typeof val === "string") {
-        return val;
-    } else if (typeof val === "boolean") {
-        return val ? "true" : "false";
-    } else if (Address.isAddress(val)) {
-        return val.toRawString();
-    } else if (val instanceof Cell || val instanceof Slice) {
-        return val.toString();
-    } else if (val === null) {
-        return "null";
-    } else if (val instanceof CommentValue) {
-        return val.comment;
-    } else if (typeof val === "object" && "$tactStruct" in val) {
-        const assocList = Object.entries(val).map(([key, value]) => {
-            return `${key}: ${showValue(value)}`;
-        });
-        return `{${assocList.join(",")}}`;
-    } else {
-        throwInternalCompilerError("Invalid value", dummySrcInfo);
+export function showValue(val: AstLiteral): string {
+    switch (val.kind) {
+        case "number":
+            return val.value.toString(val.base);
+        case "simplified_string":
+        case "comment_value":
+            return val.value;
+        case "boolean":
+            return val.value ? "true" : "false";
+        case "address":
+            return val.value.toRawString();
+        case "cell":
+        case "slice":
+            return val.value.toString();
+        case "null":
+            return "null";
+        case "struct_value": {
+            const assocList = val.args.map(
+                (field) =>
+                    `${idText(field.field)}: ${showValue(field.initializer)}`,
+            );
+            return `{${assocList.join(",")}}`;
+        }
+        default:
+            throwInternalCompilerError("Invalid value");
     }
 }
 
@@ -113,7 +99,7 @@ export type FieldDescription = {
     index: number;
     type: TypeRef;
     as: string | null;
-    default: Value | undefined;
+    default: AstLiteral | undefined;
     loc: SrcInfo;
     ast: AstFieldDecl;
     abi: ABIField;
@@ -122,7 +108,7 @@ export type FieldDescription = {
 export type ConstantDescription = {
     name: string;
     type: TypeRef;
-    value: Value | undefined;
+    value: AstLiteral | undefined;
     loc: SrcInfo;
     ast: AstConstantDef | AstConstantDecl;
 };

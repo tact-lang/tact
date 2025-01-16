@@ -3,6 +3,8 @@ title: Exit codes
 description: "An exit code is a 32-bit signed integer, which indicates whether the compute or action phase of the transaction was successful, and if not — holds the code of the exception occurred"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 Each transaction on TON Blockchain consists of [multiple phases](https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases). An _exit code_ is a $32$-bit signed integer, which indicates whether the [compute](#compute) or [action](#action) phase of the transaction was successful, and if not — holds the code of the exception occurred. Each exit code represents its own exception or resulting state of the transaction.
 
 Exit codes $0$ and $1$ indicate normal (successful) execution of the [compute phase](#compute). Exit (or [result](#action)) code $0$ indicates normal (successful) execution of the [action phase](#action). Any other exit code indicates that a certain exception has occurred and that the transaction wasn't successful in one way or another, i.e. transaction was reverted or the inbound message has bounced back.
@@ -60,8 +62,8 @@ Exit code     | Origin                              | Brief description
 [$133$](#133) | Tact compiler ([Compute phase][c])  | Contract stopped. Reserved, but never thrown.
 [$134$](#134) | Tact compiler ([Compute phase][c])  | Invalid argument.
 [$135$](#135) | Tact compiler ([Compute phase][c])  | Code of a contract was not found.
-[$136$](#136) | Tact compiler ([Compute phase][c])  | Invalid address.
-[$137$](#137) | Tact compiler ([Compute phase][c])  | Masterchain support is not enabled for this contract.
+~~[$136$](#136)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Invalid address.~~ Removed since Tact 1.6 (not released yet)
+~~[$137$](#137)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Masterchain support is not enabled for this contract.~~ Removed since Tact 1.6 (not released yet)
 
 :::note
 
@@ -126,7 +128,7 @@ This is an alternative exit code for the successful execution of the [compute ph
 
 ### 2: Stack underflow {#2}
 
-If some operation consumed more elements than there were on the stacks, the error with exit code $2$ is thrown: `Stack underflow`.
+If some operation consumed more elements than there were on the stack, the error with exit code $2$ is thrown: `Stack underflow`.
 
 ```tact
 asm fun drop() { DROP }
@@ -151,17 +153,17 @@ contract Loot {
 
 ### 3: Stack overflow {#3}
 
-If there are too many elements copied into a closure continuation or stored on the stack, an error with exit code $3$ is thrown: `Stack overflow`. Occurs rarely, unless you're deep in [Fift and TVM assembly](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) trenches:
+If there are too many elements copied into a closure continuation, an error with exit code $3$ is thrown: `Stack overflow`. Occurs rarely, unless you're deep in [Fift and TVM assembly](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) trenches:
 
 ```tact
 // Remember kids, don't try to overflow the stack at home!
 asm fun stackOverflow() {
-    <{
-    }>CONT // c
-    0 SETNUMARGS // c'
-    2 PUSHINT // c' 2
-    SWAP // 2 c'
-    1 -1 SETCONTARGS // <- this blows up
+    x{} SLICE        // s
+    BLESS            // c
+    0 SETNUMARGS     // c'
+    2 PUSHINT        // c' 2
+    SWAP             // 2 c'
+    1 -1 SETCONTARGS // ← this blows up
 }
 
 contract ItsSoOver {
@@ -240,11 +242,11 @@ try {
 
 ### 6: Invalid opcode {#6}
 
-If you specify an instruction that is not defined in the current [TVM][tvm] version, an error with exit code $6$ is thrown: `Invalid opcode`.
+If you specify an instruction that is not defined in the current [TVM][tvm] version or try to set an unsupported [code page](https://docs.ton.org/v3/documentation/tvm/tvm-overview#tvm-state), an error with exit code $6$ is thrown: `Invalid opcode`.
 
 ```tact
-// No such thing
-asm fun invalidOpcode() { x{D7FF} @addop }
+// There's no such codepage, and attempt to set it fails
+asm fun invalidOpcode() { 42 SETCP }
 
 contract OpOp {
     receive("I solemnly swear that I'm up to no good") {
@@ -500,6 +502,12 @@ When processing the message, TON Blockchain tries to pack it according to the [r
 
 If there would not be enough funds to process all the cells in a message, the message is too large or its Merkle depth is too big, an error with exit code $40$ is thrown: `Cannot process a message`.
 
+:::note
+
+  If the [optional flag +2](/book/message-mode#optional-flags) is set, this error won't be thrown and the given message won't be sent.
+
+:::
+
 ### 41: Library reference is null {#41}
 
 If the library reference was required during library change action, but it was null, an error with exit code $41$ is thrown: `Library reference is null`.
@@ -526,7 +534,7 @@ If the configuration is absent, default values are:
 * `ext_msg_limits.max_depth` is equal to $2^{9}$ — maximum external message [depth](/book/cells#cells-representation).
 * `max_acc_state_cells` is equal to $2^{16}$ — maximum number of [cells][cell] that an account state can occupy.
 * `max_acc_state_bits` is equal to $2^{16} * 1023$ — maximum account state size in bits.
-* `max_acc_public_libraries` is equal to $2^{8}$ — maximum number of [library reference cells](/book/cells#cells-kinds) that an account state can use on the [masterchain](/book/masterchain).
+* `max_acc_public_libraries` is equal to $2^{8}$ — maximum number of [library reference cells](/book/cells#cells-kinds) that an account state can use on the masterchain.
 * `defer_out_queue_size_limit` is equal to $2^{8}$ — maximum number of outbound messages to be queued (regards validators and collators).
 
 ## Tact compiler
@@ -623,10 +631,12 @@ If the code of the contract doesn't match the one saved in TypeScript wrappers, 
 
 ### 136: Invalid address {#136}
 
+<Badge text="Removed since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
 A value of type [`Address{:tact}`][p] is valid in Tact when:
 
 * It occupies $267$ bits: $11$ bits for the chain ID prefix and $256$ bits for the [address itself](https://docs.ton.org/learn/overviews/addresses#address-of-smart-contract).
-* It belongs to either: basechain (ID $0$) or masterchain (ID $-1$), with the latter requiring [masterchain support](/book/masterchain#support) to be enabled.
+* It belongs to either basechain (ID $0$) or masterchain (ID $-1$).
 
 If the [`Address{:tact}`][p] isn't valid, the error with exit code $136$ will be thrown: `Invalid address`.
 
@@ -644,7 +654,9 @@ try {
 
 ### 137: Masterchain support is not enabled for this contract {#137}
 
-Any attempts to point to masterchain (ID $-1$) or otherwise interact with it without [enabling masterchain support](/book/masterchain#support) throw an exception with exit code $137$: `Masterchain support is not enabled for this contract`.
+<Badge text="Removed since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+Prior to removal, any attempts to point to masterchain (ID $-1$) or otherwise interact with it without enabling masterchain support were throwing an exception with exit code $137$: `Masterchain support is not enabled for this contract`.
 
 ```tact
 let masterchainID = -1;

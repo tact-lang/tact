@@ -1,0 +1,1 @@
+message(0xFFFF * 0x1FFFF) Foo { }

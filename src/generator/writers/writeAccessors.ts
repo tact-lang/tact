@@ -1,6 +1,6 @@
 import { contractErrors } from "../../abi/errors";
 import { maxTupleSize } from "../../bindings/typescript/writeStruct";
-import { ItemOrigin } from "../../grammar/grammar";
+import { ItemOrigin } from "../../grammar";
 import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
@@ -212,21 +212,10 @@ export function writeAccessors(
                         t.kind === "primitive_type_decl" &&
                         t.name === "Address"
                     ) {
-                        if (f.type.optional) {
-                            vars.push(
-                                `${resolveFuncType(f.type, ctx)} v'${f.name}`,
-                            );
-                            out.push(
-                                `null?(v'${f.name}) ? null() : ${ctx.used(`__tact_verify_address`)}(v'${f.name})`,
-                            );
-                        } else {
-                            vars.push(
-                                `${resolveFuncType(f.type, ctx)} v'${f.name}`,
-                            );
-                            out.push(
-                                `${ctx.used(`__tact_verify_address`)}(v'${f.name})`,
-                            );
-                        }
+                        vars.push(
+                            `${resolveFuncType(f.type, ctx)} v'${f.name}`,
+                        );
+                        out.push(`v'${f.name}`);
                         continue;
                     }
                 }

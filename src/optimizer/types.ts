@@ -1,7 +1,9 @@
-import { AstExpression } from "../grammar/ast";
+import { AstExpression } from "../ast/ast";
+import { AstUtil } from "./util";
 
-export abstract class ExpressionTransformer {
-    public abstract applyRules(ast: AstExpression): AstExpression;
+export interface ExpressionTransformer {
+    util: AstUtil;
+    applyRules(ast: AstExpression): AstExpression;
 }
 
 export abstract class Rule {

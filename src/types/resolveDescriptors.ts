@@ -1,38 +1,38 @@
 import {
+    AstAsmFunctionDef,
+    AstConstantDecl,
     AstConstantDef,
-    AstFieldDecl,
     AstContractInit,
+    AstExpression,
+    AstFieldDecl,
+    AstFunctionDecl,
+    AstFunctionDef,
+    AstId,
+    AstMapType,
     AstNativeFunctionDecl,
     AstNode,
     AstType,
-    createAstNode,
-    idText,
-    AstId,
+    AstTypeId,
     eqNames,
-    AstFunctionDef,
+    FactoryAst,
+    idText,
     isSelfId,
     isSlice,
-    AstFunctionDecl,
-    AstConstantDecl,
-    AstExpression,
-    AstMapType,
-    AstTypeId,
-    AstAsmFunctionDef,
-} from "../grammar/ast";
-import { traverse } from "../grammar/iterators";
+} from "../ast/ast";
+import { traverse } from "../ast/iterators";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../errors";
-import { CompilerContext, Store, createContextStore } from "../context";
+} from "../error/errors";
+import { CompilerContext, createContextStore, Store } from "../context/context";
 import {
     ConstantDescription,
     FieldDescription,
-    FunctionParameter,
     FunctionDescription,
-    InitParameter,
+    FunctionParameter,
     InitDescription,
+    InitParameter,
     printTypeRef,
     ReceiverSelector,
     receiverSelectorName,
@@ -40,19 +40,24 @@ import {
     TypeRef,
     typeRefEquals,
 } from "./types";
-import { getRawAST } from "../grammar/store";
-import { cloneNode } from "../grammar/clone";
+import { getRawAST } from "../context/store";
+import { cloneNode } from "../ast/clone";
 import { crc16 } from "../utils/crc16";
 import { isSubsetOf } from "../utils/isSubsetOf";
-import { evalConstantExpression } from "../constEval";
-import { resolveABIType, intMapFormats } from "./resolveABITypeRef";
+import { evalConstantExpression } from "../optimizer/constEval";
+import {
+    intMapKeyFormats,
+    intMapValFormats,
+    resolveABIType,
+} from "./resolveABITypeRef";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
-import { ItemOrigin } from "../grammar/grammar";
+import { ItemOrigin } from "../grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
+import { AstUtil, getAstUtil } from "../optimizer/util";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -62,17 +67,28 @@ const staticConstantsStore = createContextStore<ConstantDescription>();
 function verifyMapAsAnnotationsForPrimitiveTypes(
     type: AstTypeId,
     asAnnotation: AstId | null,
+    kind: "keyType" | "valType",
 ): void {
     switch (idText(type)) {
         case "Int": {
-            if (
-                asAnnotation !== null &&
-                !Object.keys(intMapFormats).includes(idText(asAnnotation))
-            ) {
-                throwCompilationError(
-                    'Invalid `as`-annotation for type "Int" type',
-                    asAnnotation.loc,
-                );
+            if (asAnnotation === null) return;
+            const ann = idText(asAnnotation);
+            switch (kind) {
+                case "keyType":
+                    if (!Object.keys(intMapKeyFormats).includes(ann)) {
+                        throwCompilationError(
+                            `"${ann}" is invalid as-annotation for map key type "Int"`,
+                            asAnnotation.loc,
+                        );
+                    }
+                    return;
+                case "valType":
+                    if (!Object.keys(intMapValFormats).includes(ann)) {
+                        throwCompilationError(
+                            `"${ann}" is invalid as-annotation for map value type "Int"`,
+                            asAnnotation.loc,
+                        );
+                    }
             }
             return;
         }
@@ -97,6 +113,7 @@ function verifyMapTypes(
     typeId: AstTypeId,
     asAnnotation: AstId | null,
     allowedTypeNames: string[],
+    kind: "keyType" | "valType",
 ): void {
     if (!allowedTypeNames.includes(idText(typeId))) {
         throwCompilationError(
@@ -104,26 +121,31 @@ function verifyMapTypes(
             typeId.loc,
         );
     }
-    verifyMapAsAnnotationsForPrimitiveTypes(typeId, asAnnotation);
+    verifyMapAsAnnotationsForPrimitiveTypes(typeId, asAnnotation, kind);
 }
 
 function verifyMapType(mapTy: AstMapType, isValTypeStruct: boolean) {
     // optional and other compound key and value types are disallowed at the level of grammar
 
     // check allowed key types
-    verifyMapTypes(mapTy.keyType, mapTy.keyStorageType, ["Int", "Address"]);
+    verifyMapTypes(
+        mapTy.keyType,
+        mapTy.keyStorageType,
+        ["Int", "Address"],
+        "keyType",
+    );
 
     // check allowed value types
     if (isValTypeStruct && mapTy.valueStorageType === null) {
         return;
     }
     // the case for struct/message is already checked
-    verifyMapTypes(mapTy.valueType, mapTy.valueStorageType, [
-        "Int",
-        "Address",
-        "Bool",
-        "Cell",
-    ]);
+    verifyMapTypes(
+        mapTy.valueType,
+        mapTy.valueStorageType,
+        ["Int", "Address", "Bool", "Cell"],
+        "valType",
+    );
 }
 
 export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
@@ -264,11 +286,12 @@ function uidForName(name: string, types: Map<string, TypeDescription>) {
     return uid;
 }
 
-export function resolveDescriptors(ctx: CompilerContext) {
+export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     const types: Map<string, TypeDescription> = new Map();
     const staticFunctions: Map<string, FunctionDescription> = new Map();
     const staticConstants: Map<string, ConstantDescription> = new Map();
     const ast = getRawAST(ctx);
+    const util = getAstUtil(Ast);
 
     //
     // Register types
@@ -521,20 +544,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     a.loc,
                 );
             }
-            if (a.kind === "message_decl" && a.opcode) {
-                if (a.opcode.value === 0n) {
-                    throwCompilationError(
-                        `Zero opcodes are reserved for text comments and cannot be used for message structs`,
-                        a.opcode.loc,
-                    );
-                }
-                if (a.opcode.value > 0xffff_ffff) {
-                    throwCompilationError(
-                        `Opcode of message ${idTextErr(a.name)} is too large: it must fit into 32 bits`,
-                        a.opcode.loc,
-                    );
-                }
-            }
         }
 
         // Trait
@@ -548,12 +557,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     ) {
                         throwCompilationError(
                             `Field ${idTextErr(traitDecl.name)} already exists`,
-                            traitDecl.loc,
-                        );
-                    }
-                    if (traitDecl.as) {
-                        throwCompilationError(
-                            `Trait field cannot have serialization specifier`,
                             traitDecl.loc,
                         );
                     }
@@ -1436,7 +1439,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (!t.init) {
                 t.init = {
                     params: [],
-                    ast: createAstNode({
+                    ast: Ast.createNode({
                         kind: "contract_init",
                         params: [],
                         statements: [],
@@ -1509,6 +1512,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Verify trait fields
     //
 
+    function printFieldTypeRefWithAs(ex: FieldDescription) {
+        return printTypeRef(ex.type) + (ex.as !== null ? ` as ${ex.as}` : "");
+    }
+
     for (const t of types.values()) {
         for (const tr of t.traits) {
             // Check that trait is valid
@@ -1543,6 +1550,20 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         `Trait "${tr.name}" requires field "${f.name}" of type "${printTypeRef(f.type)}"`,
                         t.ast.loc,
                     );
+                } else if (
+                    f.as !== ex.as &&
+                    !(
+                        (f.as === "int257" && ex.as === null) ||
+                        (f.as === null && ex.as === "int257")
+                    )
+                ) {
+                    const expected = printFieldTypeRefWithAs(f);
+                    const actual = printFieldTypeRefWithAs(ex);
+
+                    throwCompilationError(
+                        `Trait "${tr.name}" requires field "${f.name}" of type "${expected}", but "${actual}" given`,
+                        ex.ast.loc,
+                    );
                 }
             }
         }
@@ -1553,6 +1574,27 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     function copyTraits(contractOrTrait: TypeDescription) {
+        const inheritOnlyBaseTrait = contractOrTrait.traits.length === 1;
+
+        // Check that "override" functions have a super function
+        for (const funInContractOrTrait of contractOrTrait.functions.values()) {
+            if (!funInContractOrTrait.isOverride) {
+                continue;
+            }
+
+            const foundOverriddenFunction = contractOrTrait.traits.some((t) =>
+                t.functions.has(funInContractOrTrait.name),
+            );
+
+            if (!foundOverriddenFunction) {
+                const msg = inheritOnlyBaseTrait
+                    ? `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier or inherit any traits with this function`
+                    : `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier`;
+
+                throwCompilationError(msg, funInContractOrTrait.ast.loc);
+            }
+        }
+
         for (const inheritedTrait of contractOrTrait.traits) {
             // Copy functions
             for (const traitFunction of inheritedTrait.functions.values()) {
@@ -1640,7 +1682,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         name: contractOrTrait.name,
                         optional: false,
                     },
-                    ast: cloneNode(traitFunction.ast),
+                    ast: cloneNode(traitFunction.ast, Ast),
                 });
             }
 
@@ -1711,7 +1753,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 // Register constant
                 contractOrTrait.constants.push({
                     ...traitConstant,
-                    ast: cloneNode(traitConstant.ast),
+                    ast: cloneNode(traitConstant.ast, Ast),
                 });
             }
 
@@ -1778,7 +1820,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
                 contractOrTrait.receivers.push({
                     selector: f.selector,
-                    ast: cloneNode(f.ast),
+                    ast: cloneNode(f.ast, Ast),
                 });
             }
 
@@ -1963,7 +2005,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     // A pass that initializes constants and default field values
-    ctx = initializeConstantsAndDefaultContractAndStructFields(ctx);
+    ctx = initializeConstantsAndDefaultContractAndStructFields(ctx, util);
 
     // detect self-referencing or mutually-recursive types
     checkRecursiveTypes(ctx);
@@ -2111,6 +2153,7 @@ function checkInitializerType(
 function initializeConstants(
     constants: ConstantDescription[],
     ctx: CompilerContext,
+    util: AstUtil,
 ): CompilerContext {
     for (const constant of constants) {
         if (constant.ast.kind === "constant_def") {
@@ -2124,6 +2167,7 @@ function initializeConstants(
             constant.value = evalConstantExpression(
                 constant.ast.initializer,
                 ctx,
+                util,
             );
         }
     }
@@ -2132,6 +2176,7 @@ function initializeConstants(
 
 function initializeConstantsAndDefaultContractAndStructFields(
     ctx: CompilerContext,
+    util: AstUtil,
 ): CompilerContext {
     for (const aggregateTy of getAllTypes(ctx)) {
         switch (aggregateTy.kind) {
@@ -2153,6 +2198,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
                             field.default = evalConstantExpression(
                                 field.ast.initializer,
                                 ctx,
+                                util,
                             );
                         } else {
                             // if a field has optional type and it is missing an explicit initializer
@@ -2160,14 +2206,14 @@ function initializeConstantsAndDefaultContractAndStructFields(
 
                             field.default =
                                 field.type.kind === "ref" && field.type.optional
-                                    ? null
+                                    ? util.makeNullLiteral(field.ast.loc)
                                     : undefined;
                         }
                     }
 
                     // constants need to be processed after structs because
                     // see more detail below
-                    ctx = initializeConstants(aggregateTy.constants, ctx);
+                    ctx = initializeConstants(aggregateTy.constants, ctx, util);
                 }
                 break;
             }
@@ -2177,7 +2223,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
     // constants need to be processed after structs because
     // constants might use default field values: `const x: Int = S{}.f`, where `struct S {f: Int = 42}`
     // and the default field values are filled in during struct field initializers processing
-    ctx = initializeConstants(getAllStaticConstants(ctx), ctx);
+    ctx = initializeConstants(getAllStaticConstants(ctx), ctx, util);
 
     return ctx;
 }

@@ -1,12 +1,14 @@
 import fs from "fs";
-import { __DANGER_resetNodeId } from "../grammar/ast";
 import { resolveDescriptors } from "../types/resolveDescriptors";
 import { getAllocations, resolveAllocations } from "./resolveAllocation";
-import { openContext } from "../grammar/store";
+import { openContext } from "../context/store";
 import { resolveStatements } from "../types/resolveStatements";
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { resolveSignatures } from "../types/resolveSignatures";
 import path from "path";
+import { getParser } from "../grammar";
+import { getAstFactory } from "../ast/ast";
+import { defaultParser } from "../grammar/grammar";
 
 const stdlibPath = path.resolve(__dirname, "../../stdlib/std/primitives.tact");
 const stdlib = fs.readFileSync(stdlibPath, "utf-8");
@@ -61,10 +63,8 @@ contract Sample {
 `;
 
 describe("resolveAllocation", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
     it("should write program", () => {
+        const ast = getAstFactory();
         let ctx = openContext(
             new CompilerContext(),
             [
@@ -72,10 +72,11 @@ describe("resolveAllocation", () => {
                 { code: src, path: "<unknown>", origin: "user" },
             ],
             [],
+            getParser(ast, defaultParser),
         );
-        ctx = resolveDescriptors(ctx);
-        ctx = resolveSignatures(ctx);
-        ctx = resolveStatements(ctx);
+        ctx = resolveDescriptors(ctx, ast);
+        ctx = resolveSignatures(ctx, ast);
+        ctx = resolveStatements(ctx, ast);
         ctx = resolveAllocations(ctx);
         expect(getAllocations(ctx)).toMatchSnapshot();
     });

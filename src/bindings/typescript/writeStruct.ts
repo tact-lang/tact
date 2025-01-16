@@ -1,7 +1,7 @@
 import { ABIType, ABITypeRef } from "@ton/core";
 import { serializers } from "./serializers";
 import { AllocationCell, AllocationOperation } from "../../storage/operation";
-import { throwInternalCompilerError } from "../../errors";
+import { throwInternalCompilerError } from "../../error/errors";
 import { Writer } from "../../utils/Writer";
 
 export const maxTupleSize = 15;
@@ -37,7 +37,7 @@ export function writeStruct(
 export function writeParser(s: ABIType, allocation: AllocationCell, w: Writer) {
     w.append(`export function load${s.name}(slice: Slice) {`);
     w.inIndent(() => {
-        w.append(`let sc_0 = slice;`);
+        w.append(`const sc_0 = slice;`);
         if (s.header) {
             w.append(
                 `if (sc_0.loadUint(32) !== ${s.header}) { throw Error('Invalid prefix'); }`,
@@ -62,7 +62,7 @@ function writeParserCell(
         writeParserField(gen, f, s, w);
     }
     if (src.next) {
-        w.append(`let sc_${gen + 1} = sc_${gen}.loadRef().beginParse();`);
+        w.append(`const sc_${gen + 1} = sc_${gen}.loadRef().beginParse();`);
         writeParserCell(gen + 1, src.next, s, w);
     }
 }
@@ -94,7 +94,7 @@ export function writeSerializer(
     w.inIndent(() => {
         w.append(`return (builder: Builder) => {`);
         w.inIndent(() => {
-            w.append(`let b_0 = builder;`);
+            w.append(`const b_0 = builder;`);
             if (s.header) {
                 w.append(`b_0.storeUint(${s.header}, 32);`);
             }
@@ -115,7 +115,7 @@ export function writeInitSerializer(
     w.inIndent(() => {
         w.append(`return (builder: Builder) => {`);
         w.inIndent(() => {
-            w.append(`let b_0 = builder;`);
+            w.append(`const b_0 = builder;`);
             writeSerializerCell(0, allocation, w);
         });
         w.append(`};`);
@@ -129,7 +129,7 @@ function writeSerializerCell(gen: number, src: AllocationCell, w: Writer) {
         writeSerializerField(gen, f, w);
     }
     if (src.next) {
-        w.append(`let b_${gen + 1} = new Builder();`);
+        w.append(`const b_${gen + 1} = new Builder();`);
         writeSerializerCell(gen + 1, src.next, w);
         w.append(`b_${gen}.storeRef(b_${gen + 1}.endCell());`);
     }
@@ -213,7 +213,7 @@ function writeTupleFieldParser(
 export function writeTupleSerializer(s: ABIType, w: Writer) {
     w.append(`function storeTuple${s.name}(source: ${s.name}) {`);
     w.inIndent(() => {
-        w.append(`let builder = new TupleBuilder();`);
+        w.append(`const builder = new TupleBuilder();`);
         for (const f of s.fields) {
             writeVariableToStack(`source.${f.name}`, f.type, w);
         }

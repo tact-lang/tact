@@ -98,6 +98,25 @@ Parentheses (also can be called round brackets, `(){:tact}`) are more of a punct
 5 * (5 - 2); // 15
 ```
 
+:::note
+
+  The current maximum allowed nesting level of expressions is $83$. An attempt to write a deeper expression will result in a compilation error:
+
+  ```tact
+  fun elegantWeaponsForCivilizedAge(): Int {
+      return
+      ((((((((((((((((((((((((((((((((
+          ((((((((((((((((((((((((((((((((
+              (((((((((((((((((((( // 84 parens, compilation error!
+                  42
+              ))))))))))))))))))))
+          ))))))))))))))))))))))))))))))))
+      ))))))))))))))))))))))))))))))));
+  }
+  ```
+
+:::
+
 ## Unary
 
 Unary here means that they are applied only to one operand of the given expression. All unary operators, except for the [non-null assertion](#unary-non-null-assert), are of the same [precedence](#precedence).
@@ -201,7 +220,7 @@ two / 1; // 2
 
 :::note
 
-  Note that the following relationship between the division and modulo operators always holds for `Int{:tact}` type:
+  The following relationship between the division and [modulo](#binary-modulo) operators always holds for `Int{:tact}` type:
 
   ```tact
   a / b * b + a % b == a; // true for any Int values of `a` and `b`,
@@ -228,11 +247,23 @@ two % 1; // 1
 -1 % -5; // -1
 ```
 
-The simplest way to avoid confusion between the two is to prefer using positive values via [`abs(x: Int){:tact}`](/ref/core-math#abs):
+The simplest way to avoid confusing getting the modulo with getting the remainder is to [use only unsigned integers](/book/security-best-practices#misuse-of-signed-integers). Alternatively, consider using [`abs(){:tact}`](/ref/core-math#abs) function to ensure non-negative values:
 
 ```tact
 abs(-1) % abs(-5); // 1
 ```
+
+:::note
+
+  The following relationship between the [division](#binary-divide) and modulo operators always holds for `Int{:tact}` type:
+
+  ```tact
+  a / b * b + a % b == a; // true for any Int values of `a` and `b`,
+                          //   except when `b` is equal to 0 and we divide `a` by 0,
+                          //   which is an attempt to divide by zero resulting in an error
+  ```
+
+:::
 
 :::note
 

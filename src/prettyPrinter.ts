@@ -1,4 +1,4 @@
-import * as A from "./grammar/ast";
+import * as A from "./ast/ast";
 import { groupBy, intercalate, isUndefined } from "./utils/array";
 import { makeVisitor } from "./utils/tricks";
 
@@ -170,9 +170,13 @@ export const ppExprArgs = (args: A.AstExpression[]) =>
 export const ppAstStructFieldInit = (
     param: A.AstStructFieldInitializer,
 ): string => `${ppAstId(param.field)}: ${ppAstExpression(param.initializer)}`;
+export const ppAstStructFieldValue = (param: A.AstStructFieldValue): string =>
+    `${ppAstId(param.field)}: ${ppAstExpression(param.initializer)}`;
 
 export const ppAstStructInstance = ({ type, args }: A.AstStructInstance) =>
     `${ppAstId(type)}{${args.map((x) => ppAstStructFieldInit(x)).join(", ")}}`;
+export const ppAstStructValue = ({ type, args }: A.AstStructValue) =>
+    `${ppAstId(type)}{${args.map((x) => ppAstStructFieldValue(x)).join(", ")}}`;
 
 export const ppAstInitOf = ({ contract, args }: A.AstInitOf) =>
     `initOf ${ppAstId(contract)}(${ppExprArgs(args)})`;
@@ -182,6 +186,16 @@ export const ppAstBoolean = ({ value }: A.AstBoolean) => value.toString();
 export const ppAstId = ({ text }: A.AstId) => text;
 export const ppAstNull = (_expr: A.AstNull) => "null";
 export const ppAstString = ({ value }: A.AstString) => `"${value}"`;
+export const ppAstCommentValue = ({ value }: A.AstCommentValue) =>
+    JSON.stringify(value);
+export const ppAstSimplifiedString = ({ value }: A.AstSimplifiedString) =>
+    JSON.stringify(value);
+export const ppAstAddress = ({ value }: A.AstAddress) =>
+    `addr("${value.toRawString()}")`;
+export const ppAstCell = ({ value }: A.AstCell) =>
+    `cell("${value.toString()}")`;
+export const ppAstSlice = ({ value }: A.AstSlice) =>
+    `slice("${value.toString()}")`;
 
 export const ppAstStaticCall = ({ function: func, args }: A.AstStaticCall) => {
     return `${ppAstId(func)}(${ppExprArgs(args)})`;
@@ -239,6 +253,7 @@ export const ppAstConditional: ExprPrinter<A.AstConditional> =
 
 export const ppAstExpressionNested = makeVisitor<A.AstExpression>()({
     struct_instance: ppLeaf(ppAstStructInstance),
+    struct_value: ppLeaf(ppAstStructValue),
     number: ppLeaf(ppAstNumber),
     boolean: ppLeaf(ppAstBoolean),
     id: ppLeaf(ppAstId),
@@ -246,6 +261,11 @@ export const ppAstExpressionNested = makeVisitor<A.AstExpression>()({
     init_of: ppLeaf(ppAstInitOf),
     string: ppLeaf(ppAstString),
     static_call: ppLeaf(ppAstStaticCall),
+    comment_value: ppLeaf(ppAstCommentValue),
+    simplified_string: ppLeaf(ppAstSimplifiedString),
+    address: ppLeaf(ppAstAddress),
+    cell: ppLeaf(ppAstCell),
+    slice: ppLeaf(ppAstSlice),
 
     method_call: ppAstMethodCall,
     field_access: ppAstFieldAccess,
@@ -537,7 +557,7 @@ export const ppAstMessage: Printer<A.AstMessageDecl> =
     ({ name, opcode, fields }) =>
     (c) => {
         const prefixCode =
-            opcode !== null ? `(${A.astNumToString(opcode)})` : "";
+            opcode !== null ? `(${ppAstExpression(opcode)})` : "";
 
         return c.concat([
             c.row(`message${prefixCode} ${ppAstId(name)} `),
@@ -799,6 +819,11 @@ export const ppAstStatementDestruct: Printer<A.AstStatementDestruct> =
         );
     };
 
+export const ppAstStatementBlock: Printer<A.AstStatementBlock> =
+    ({ statements }) =>
+    (c) =>
+        ppStatementBlock(statements)(c);
+
 export const ppAstStatement: Printer<A.AstStatement> =
     makeVisitor<A.AstStatement>()({
         statement_let: ppAstStatementLet,
@@ -814,6 +839,7 @@ export const ppAstStatement: Printer<A.AstStatement> =
         statement_try: ppAstStatementTry,
         statement_try_catch: ppAstStatementTryCatch,
         statement_destruct: ppAstStatementDestruct,
+        statement_block: ppAstStatementBlock,
     });
 
 export const exprNode =
@@ -829,18 +855,25 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     method_call: exprNode(ppAstExpression),
     static_call: exprNode(ppAstExpression),
     struct_instance: exprNode(ppAstExpression),
+    struct_value: exprNode(ppAstStructValue),
     init_of: exprNode(ppAstExpression),
     conditional: exprNode(ppAstExpression),
     number: exprNode(ppAstExpression),
     id: exprNode(ppAstExpression),
     boolean: exprNode(ppAstExpression),
     string: exprNode(ppAstExpression),
+    comment_value: exprNode(ppAstExpression),
+    simplified_string: exprNode(ppAstExpression),
     null: exprNode(ppAstExpression),
+    address: exprNode(ppAstExpression),
+    cell: exprNode(ppAstExpression),
+    slice: exprNode(ppAstExpression),
     type_id: exprNode(ppAstType),
     optional_type: exprNode(ppAstType),
     map_type: exprNode(ppAstType),
     bounced_message_type: exprNode(ppAstType),
     struct_field_initializer: exprNode(ppAstStructFieldInit),
+    struct_field_value: exprNode(ppAstStructFieldValue),
     destruct_mapping: () => {
         throw new Error("Not implemented");
     },
@@ -877,6 +910,7 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     statement_try: ppAstStatementTry,
     statement_try_catch: ppAstStatementTryCatch,
     statement_foreach: ppAstStatementForEach,
+    statement_block: ppAstStatementBlock,
     import: ppAstImport,
     func_id: exprNode(ppAstFuncId),
     statement_destruct: ppAstStatementDestruct,

@@ -14,14 +14,14 @@ import {
     writeTupleSerializer,
 } from "./typescript/writeStruct";
 import { AllocationCell } from "../storage/operation";
-import { throwInternalCompilerError } from "../errors";
+import { throwInternalCompilerError } from "../error/errors";
 import { topologicalSort } from "../utils/utils";
 import {
     allocate,
     getAllocationOperationFromField,
 } from "../storage/allocator";
 import { serializers } from "./typescript/serializers";
-import { eqNames } from "../grammar/ast";
+import { eqNames } from "../ast/ast";
 
 function writeArguments(args: ABIArgument[]) {
     const res: string[] = [];
@@ -45,7 +45,7 @@ export function writeTypescript(
     abi: ContractABI,
     init?: {
         code: string;
-        system: string;
+        system: string | null;
         args: ABIArgument[];
         prefix?:
             | {
@@ -171,11 +171,13 @@ export function writeTypescript(
         w.inIndent(() => {
             // Code references
             w.append(`const __code = Cell.fromBase64('${init.code}');`);
-            w.append(`const __system = Cell.fromBase64('${init.system}');`);
+            w.append("const builder = beginCell();");
 
-            // Stack
-            w.append("let builder = beginCell();");
-            w.append(`builder.storeRef(__system);`);
+            if (init.system !== null) {
+                w.append(`const __system = Cell.fromBase64('${init.system}');`);
+                w.append(`builder.storeRef(__system);`);
+            }
+
             if (init.prefix) {
                 w.append(
                     `builder.storeUint(${init.prefix.value}, ${init.prefix.bits});`,
@@ -352,7 +354,7 @@ export function writeTypescript(
                                 r.message.text !== null &&
                                 r.message.text !== undefined
                             ) {
-                                receivers.push(`'${r.message.text}'`);
+                                receivers.push(JSON.stringify(r.message.text));
                             } else {
                                 receivers.push(`string`);
                             }
@@ -420,7 +422,7 @@ export function writeTypescript(
                                     w.append(`}`);
                                 } else {
                                     w.append(
-                                        `if (message === '${msg.text}') {`,
+                                        `if (message === ${JSON.stringify(msg.text)}) {`,
                                     );
                                     w.inIndent(() => {
                                         w.append(
@@ -594,7 +596,7 @@ export function writeTypescript(
                     `async get${getterNames.get(g.name)}(${["provider: ContractProvider", ...writeArguments(g.arguments ? g.arguments : [])].join(", ")}) {`,
                 );
                 w.inIndent(() => {
-                    w.append(`let builder = new TupleBuilder();`);
+                    w.append(`const builder = new TupleBuilder();`);
                     if (g.arguments) {
                         for (const a of g.arguments) {
                             writeArgumentToStack(a.name, a.type, w);
@@ -606,11 +608,11 @@ export function writeTypescript(
                         // but the ContractProvider's interface get methods can only
                         // take strings (function names)
                         w.append(
-                            `let source = (await provider.get(${g.methodId} as any, builder.build())).stack;`,
+                            `const source = (await provider.get(${g.methodId} as any, builder.build())).stack;`,
                         );
                     } else {
                         w.append(
-                            `let source = (await provider.get('${g.name}', builder.build())).stack;`,
+                            `const source = (await provider.get('${g.name}', builder.build())).stack;`,
                         );
                     }
                     if (g.returnType) {

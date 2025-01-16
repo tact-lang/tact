@@ -81,7 +81,7 @@ Line 10, col 5:
 `;
 
 exports[`resolveStatements should fail statements for bounced-type-is-smaller 1`] = `
-"<unknown>:23:22: Type bounced<"A"> does not have a field named "c"
+"<unknown>:23:22: Maximum size of the bounced message is 224 bytes, but the "c" field of type "A" cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes
 Line 23, col 22:
   22 |     let y: Bool = src.b;
 > 23 |     let z: Int = src.c;
@@ -798,6 +798,26 @@ Line 6, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for return-analysis-if-inside-block-statement 1`] = `
+"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 6, col 5:
+  5 | contract Foo {
+> 6 |     get fun notAlwaysReachableReturn(b: Bool): Int {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  7 |         {
+"
+`;
+
+exports[`resolveStatements should fail statements for return-analysis-if-with-block-statement 1`] = `
+"<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
+Line 6, col 5:
+  5 | contract Foo {
+> 6 |     get fun notAlwaysReachableReturn(b: Bool): Int {
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  7 |         if b {
+"
+`;
+
 exports[`resolveStatements should fail statements for return-analysis-non-void1 1`] = `
 "<unknown>:6:5: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
 Line 6, col 5:
@@ -1238,6 +1258,36 @@ Line 9, col 5:
 "
 `;
 
+exports[`resolveStatements should fail statements for usage-of-bounced-field-in-type-that-is-too-big 1`] = `
+"<unknown>:14:29: Maximum size of the bounced message is 224 bytes, but the "amount" field of type "Withdraw" cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes
+Line 14, col 29:
+  13 |         self.balance += msg.data; // ok
+> 14 |         self.balance += msg.amount;
+                                   ^~~~~~
+  15 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for usage-of-bounced-field-in-type-that-is-too-big-2 1`] = `
+"<unknown>:26:29: Maximum size of the bounced message is 224 bytes, but the "amount" field of type "Withdraw" cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes
+Line 26, col 29:
+  25 | 
+> 26 |         self.balance += msg.amount;
+                                   ^~~~~~
+  27 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for usage-of-bounced-field-that-is-too-big 1`] = `
+"<unknown>:12:29: Maximum size of the bounced message is 224 bytes, but the "amount" field of type "Withdraw" cannot fit into it because its too big, so it cannot be accessed. Reduce the type of this field so that it fits into 224 bytes
+Line 12, col 29:
+  11 |     bounced(msg: bounced<Withdraw>){
+> 12 |         self.balance += msg.amount;
+                                   ^~~~~~
+  13 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for var-does-not-exist 1`] = `
 "<unknown>:5:9: Unable to resolve id 'nonExistentVariable'
 Line 5, col 9:
@@ -1275,6 +1325,26 @@ Line 9, col 9:
 >  9 |         someField = 42;
                ^~~~~~~~~
   10 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-block-statement 1`] = `
+"<unknown>:6:13: Variable already exists: "a"
+Line 6, col 13:
+  5 |     {
+> 6 |         let a: Int = 456;
+                  ^
+  7 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-block-statement-use-after-block 1`] = `
+"<unknown>:7:12: Unable to resolve id 'a'
+Line 7, col 12:
+  6 |     }
+> 7 |     return a;
+                 ^
+  8 | }
 "
 `;
 
@@ -1615,6 +1685,16 @@ Line 5, col 14:
 > 5 |         self.nonExistentField = 42;
                    ^~~~~~~~~~~~~~~~
   6 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for var-scope-nested-block-statement 1`] = `
+"<unknown>:9:25: Variable already exists: "a"
+Line 9, col 25:
+   8 |                 {
+>  9 |                     let a: Int = 456;
+                               ^
+  10 |                 }
 "
 `;
 
@@ -2908,6 +2988,15 @@ exports[`resolveStatements should resolve statements for init-vars-analysis-with
 ]
 `;
 
+exports[`resolveStatements should resolve statements for return-analysis-block-statement-with-return 1`] = `
+[
+  [
+    "42",
+    "Int",
+  ],
+]
+`;
+
 exports[`resolveStatements should resolve statements for return-analysis-if-elseif 1`] = `
 [
   [
@@ -3606,6 +3695,43 @@ exports[`resolveStatements should resolve statements for var-scope-repeat2 1`] =
   ],
   [
     "a + b",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for var-scope-subsequent-block-statements 1`] = `
+[
+  [
+    "100",
+    "Int",
+  ],
+  [
+    "456",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "752",
+    "Int",
+  ],
+  [
+    "b",
+    "Int",
+  ],
+  [
+    "a",
     "Int",
   ],
   [

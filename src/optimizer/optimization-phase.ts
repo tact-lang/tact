@@ -1,48 +1,3 @@
-import { CompilerContext } from "../context";
-import { throwInternalCompilerError } from "../errors";
-import {
-    AstCondition,
-    AstConditional,
-    AstConstantDef,
-    AstContract,
-    AstContractDeclaration,
-    AstContractInit,
-    AstExpression,
-    AstFieldAccess,
-    AstFieldDecl,
-    AstFunctionDef,
-    AstInitOf,
-    AstMessageDecl,
-    AstMethodCall,
-    AstModule,
-    AstModuleItem,
-    AstOpBinary,
-    AstOpUnary,
-    AstReceiver,
-    AstStatement,
-    AstStatementAssign,
-    AstStatementAugmentedAssign,
-    AstStatementDestruct,
-    AstStatementExpression,
-    AstStatementForEach,
-    AstStatementLet,
-    AstStatementRepeat,
-    AstStatementReturn,
-    AstStatementTry,
-    AstStatementTryCatch,
-    AstStatementUntil,
-    AstStatementWhile,
-    AstStaticCall,
-    AstStructDecl,
-    AstStructFieldInitializer,
-    AstStructInstance,
-    AstTrait,
-    AstTraitDeclaration,
-    AstTypeDecl,
-    cloneAstNode,
-    createAstNode,
-    isAstExpression,
-} from "../grammar/ast";
 import { prettyPrint } from "../prettyPrinter";
 import {
     getAllStaticConstants,
@@ -53,6 +8,9 @@ import { writeFile } from "node:fs/promises";
 import { simplifyAllExpressions } from "./expr-simplification";
 import { TypeDescription } from "../types/types";
 import { getExpTypeById, registerExpType } from "../types/resolveExpression";
+import { AstCondition, AstConditional, AstConstantDef, AstContract, AstContractDeclaration, AstContractInit, AstExpression, AstFieldAccess, AstFieldDecl, AstFunctionDef, AstInitOf, AstMessageDecl, AstMethodCall, AstModule, AstModuleItem, AstOpBinary, AstOpUnary, AstReceiver, AstStatement, AstStatementAssign, AstStatementAugmentedAssign, AstStatementBlock, AstStatementDestruct, AstStatementExpression, AstStatementForEach, AstStatementLet, AstStatementRepeat, AstStatementReturn, AstStatementTry, AstStatementTryCatch, AstStatementUntil, AstStatementWhile, AstStaticCall, AstStructDecl, AstStructFieldInitializer, AstStructFieldValue, AstStructInstance, AstTrait, AstTraitDeclaration, AstTypeDecl, FactoryAst, isAstExpression } from "../ast/ast";
+import { CompilerContext } from "../context/context";
+import { throwInternalCompilerError } from "../error/errors";
 
 /* These are the node types that the optimization phase is allowed to modify */
 type AstMutableNode =
@@ -65,14 +23,15 @@ type AstMutableNode =
     | AstContractInit
     | AstReceiver
     | AstConstantDef
-    | AstStructFieldInitializer;
+    | AstStructFieldInitializer
+    | AstStructFieldValue;
 
 export type OptimizationContext = {
     originalAst: AstModule;
     modifiedAst: AstModule;
     nodeReplacements: Map<number, AstMutableNode>;
-    originalIDs: Map<number, number>;
     ctx: CompilerContext;
+    factoryAst: FactoryAst;
 };
 
 export function optimizeTact(ctx: OptimizationContext) {
@@ -84,9 +43,23 @@ export function optimizeTact(ctx: OptimizationContext) {
 
 export function prepareAstForOptimization(
     ctx: CompilerContext,
+    factoryAst: FactoryAst,
     doOptimizationFlag: boolean,
 ): OptimizationContext {
-    // Create a module AST that stores the entire program.
+
+    const moduleAst = createTopLevelModule();
+    const changedIds: Map<number, AstMutableNode> = new Map();
+
+    if (doOptimizationFlag) {
+        const newAst = makeUnfrozenCopyOfModule(moduleAst);
+        return buildOptimizationContext(moduleAst, newAst);
+    } else {
+        return buildOptimizationContext(moduleAst, moduleAst);
+    }
+
+
+    function createTopLevelModule(): AstModule {
+        // Create a module AST that stores the entire program.
     const moduleItems: AstModuleItem[] = [];
 
     // Extract constants
@@ -115,25 +88,18 @@ export function prepareAstForOptimization(
     }
 
     // Uses an empty list of imports. AstModule nodes will be deleted at the end of the optimization phase anyway,
-    // because everything needs to be put back into the format inside of CompilerContext
-    const moduleAst = createAstNode({
+    // because everything needs to be put back into the format used by CompilerContext
+    const moduleAst = factoryAst.createNode({
         kind: "module",
         items: moduleItems,
         imports: [],
     }) as AstModule;
 
-    if (doOptimizationFlag) {
-        const changedIds: Map<number, AstMutableNode> = new Map();
-        const newAst = makeUnfrozenCopyOfModule(moduleAst, changedIds);
-        return buildOptimizationContext(moduleAst, newAst, changedIds, ctx);
-    } else {
-        return buildOptimizationContext(moduleAst, moduleAst, new Map(), ctx);
+    return moduleAst;
     }
-}
 
 function makeUnfrozenCopyOfModule(
-    ast: AstModule,
-    changedNodeIds: Map<number, AstMutableNode>,
+    ast: AstModule
 ): AstModule {
     const newItems: AstModuleItem[] = [];
 
@@ -149,37 +115,37 @@ function makeUnfrozenCopyOfModule(
             }
             case "constant_def": {
                 newItems.push(
-                    makeUnfrozenCopyOfConstantDef(moduleItem, changedNodeIds),
+                    makeUnfrozenCopyOfConstantDef(moduleItem),
                 );
                 break;
             }
             case "function_def": {
                 newItems.push(
-                    makeUnfrozenCopyOfFunctionDef(moduleItem, changedNodeIds),
+                    makeUnfrozenCopyOfFunctionDef(moduleItem),
                 );
                 break;
             }
             case "message_decl": {
                 newItems.push(
-                    makeUnfrozenCopyOfMessageDecl(moduleItem, changedNodeIds),
+                    makeUnfrozenCopyOfMessageDecl(moduleItem),
                 );
                 break;
             }
             case "struct_decl": {
                 newItems.push(
-                    makeUnfrozenCopyOfStructDecl(moduleItem, changedNodeIds),
+                    makeUnfrozenCopyOfStructDecl(moduleItem),
                 );
                 break;
             }
             case "trait": {
                 newItems.push(
-                    makeUnfrozenCopyOfTrait(moduleItem, changedNodeIds),
+                    makeUnfrozenCopyOfTrait(moduleItem),
                 );
                 break;
             }
             case "contract": {
                 newItems.push(
-                    makeUnfrozenCopyOfContract(moduleItem, changedNodeIds),
+                    makeUnfrozenCopyOfContract(moduleItem),
                 );
                 break;
             }
@@ -188,78 +154,72 @@ function makeUnfrozenCopyOfModule(
         }
     }
 
-    const newModuleNode = cloneAstNode(ast);
+    const newModuleNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newModuleNode.items = newItems;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newModuleNode);
+    changedIds.set(ast.id, newModuleNode);
     return newModuleNode;
 }
 
 function makeUnfrozenCopyOfConstantDef(
-    ast: AstConstantDef,
-    changedNodeIds: Map<number, AstMutableNode>,
+    ast: AstConstantDef
 ): AstConstantDef {
     const newInitializer = makeUnfrozenCopyOfExpression(
-        ast.initializer,
-        changedNodeIds,
+        ast.initializer
     );
-    const newConstantDefNode = cloneAstNode(ast);
+    const newConstantDefNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newConstantDefNode.initializer = newInitializer;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newConstantDefNode);
+    changedIds.set(ast.id, newConstantDefNode);
     return newConstantDefNode;
 }
 
 function makeUnfrozenCopyOfFunctionDef(
-    ast: AstFunctionDef,
-    changedNodeIds: Map<number, AstMutableNode>,
+    ast: AstFunctionDef
 ): AstFunctionDef {
     const newStatements = ast.statements.map((stmt) =>
-        makeUnfrozenCopyOfStatement(stmt, changedNodeIds),
+        makeUnfrozenCopyOfStatement(stmt),
     );
-    const newFunctionDefNode = cloneAstNode(ast);
+    const newFunctionDefNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newFunctionDefNode.statements = newStatements;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newFunctionDefNode);
+    changedIds.set(ast.id, newFunctionDefNode);
     return newFunctionDefNode;
 }
 
 function makeUnfrozenCopyOfMessageDecl(
     ast: AstMessageDecl,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstMessageDecl {
     const newFields = ast.fields.map((field) =>
-        makeUnfrozenCopyOfFieldDecl(field, changedNodeIds),
+        makeUnfrozenCopyOfFieldDecl(field),
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.fields = newFields;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfStructDecl(
     ast: AstStructDecl,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStructDecl {
     const newFields = ast.fields.map((field) =>
-        makeUnfrozenCopyOfFieldDecl(field, changedNodeIds),
+        makeUnfrozenCopyOfFieldDecl(field),
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.fields = newFields;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfTrait(
     ast: AstTrait,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstTrait {
     const newDeclarations: AstTraitDeclaration[] = [];
 
@@ -274,25 +234,25 @@ function makeUnfrozenCopyOfTrait(
             }
             case "field_decl": {
                 newDeclarations.push(
-                    makeUnfrozenCopyOfFieldDecl(decl, changedNodeIds),
+                    makeUnfrozenCopyOfFieldDecl(decl),
                 );
                 break;
             }
             case "constant_def": {
                 newDeclarations.push(
-                    makeUnfrozenCopyOfConstantDef(decl, changedNodeIds),
+                    makeUnfrozenCopyOfConstantDef(decl),
                 );
                 break;
             }
             case "function_def": {
                 newDeclarations.push(
-                    makeUnfrozenCopyOfFunctionDef(decl, changedNodeIds),
+                    makeUnfrozenCopyOfFunctionDef(decl),
                 );
                 break;
             }
             case "receiver": {
                 newDeclarations.push(
-                    makeUnfrozenCopyOfReceiver(decl, changedNodeIds),
+                    makeUnfrozenCopyOfReceiver(decl),
                 );
                 break;
             }
@@ -303,17 +263,16 @@ function makeUnfrozenCopyOfTrait(
         }
     }
 
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.declarations = newDeclarations;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfContract(
     ast: AstContract,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstContract {
     const newDeclarations: AstContractDeclaration[] = [];
 
@@ -326,31 +285,31 @@ function makeUnfrozenCopyOfContract(
             }
             case "field_decl": {
                 newDeclarations.push(
-                    makeUnfrozenCopyOfFieldDecl(decl, changedNodeIds),
+                    makeUnfrozenCopyOfFieldDecl(decl),
                 );
                 break;
             }
             case "constant_def": {
                 newDeclarations.push(
-                    makeUnfrozenCopyOfConstantDef(decl, changedNodeIds),
+                    makeUnfrozenCopyOfConstantDef(decl),
                 );
                 break;
             }
             case "function_def": {
                 newDeclarations.push(
-                    makeUnfrozenCopyOfFunctionDef(decl, changedNodeIds),
+                    makeUnfrozenCopyOfFunctionDef(decl),
                 );
                 break;
             }
             case "receiver": {
                 newDeclarations.push(
-                    makeUnfrozenCopyOfReceiver(decl, changedNodeIds),
+                    makeUnfrozenCopyOfReceiver(decl),
                 );
                 break;
             }
             case "contract_init": {
                 newDeclarations.push(
-                    makeUnfrozenCopyOfContractInit(decl, changedNodeIds),
+                    makeUnfrozenCopyOfContractInit(decl),
                 );
                 break;
             }
@@ -361,17 +320,16 @@ function makeUnfrozenCopyOfContract(
         }
     }
 
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.declarations = newDeclarations;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfFieldDecl(
     ast: AstFieldDecl,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstFieldDecl {
     if (ast.initializer === null) {
         // If there is no initializer expression,
@@ -380,90 +338,89 @@ function makeUnfrozenCopyOfFieldDecl(
     }
 
     const newInitializer = makeUnfrozenCopyOfExpression(
-        ast.initializer,
-        changedNodeIds,
+        ast.initializer
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.initializer = newInitializer;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfReceiver(
     ast: AstReceiver,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstReceiver {
     const newStatements = ast.statements.map((stmt) =>
-        makeUnfrozenCopyOfStatement(stmt, changedNodeIds),
+        makeUnfrozenCopyOfStatement(stmt),
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.statements = newStatements;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfContractInit(
     ast: AstContractInit,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstContractInit {
     const newStatements = ast.statements.map((stmt) =>
-        makeUnfrozenCopyOfStatement(stmt, changedNodeIds),
+        makeUnfrozenCopyOfStatement(stmt),
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.statements = newStatements;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfStatement(
     ast: AstStatement,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStatement {
     switch (ast.kind) {
         case "statement_assign": {
-            return makeUnfrozenCopyOfAssign(ast, changedNodeIds);
+            return makeUnfrozenCopyOfAssign(ast);
         }
         case "statement_augmentedassign": {
-            return makeUnfrozenCopyOfAugmentedAssign(ast, changedNodeIds);
+            return makeUnfrozenCopyOfAugmentedAssign(ast);
         }
         case "statement_expression": {
-            return makeUnfrozenCopyOfStatementExpression(ast, changedNodeIds);
+            return makeUnfrozenCopyOfStatementExpression(ast);
         }
         case "statement_let": {
-            return makeUnfrozenCopyOfLet(ast, changedNodeIds);
+            return makeUnfrozenCopyOfLet(ast);
         }
         case "statement_destruct": {
-            return makeUnfrozenCopyOfDestruct(ast, changedNodeIds);
+            return makeUnfrozenCopyOfDestruct(ast);
         }
         case "statement_return": {
-            return makeUnfrozenCopyOfReturn(ast, changedNodeIds);
+            return makeUnfrozenCopyOfReturn(ast);
         }
         case "statement_until": {
-            return makeUnfrozenCopyOfUntil(ast, changedNodeIds);
+            return makeUnfrozenCopyOfUntil(ast);
         }
         case "statement_while": {
-            return makeUnfrozenCopyOfWhile(ast, changedNodeIds);
+            return makeUnfrozenCopyOfWhile(ast);
         }
         case "statement_repeat": {
-            return makeUnfrozenCopyOfRepeat(ast, changedNodeIds);
+            return makeUnfrozenCopyOfRepeat(ast);
         }
         case "statement_foreach": {
-            return makeUnfrozenCopyOfForEach(ast, changedNodeIds);
+            return makeUnfrozenCopyOfForEach(ast);
         }
         case "statement_condition": {
-            return makeUnfrozenCopyOfCondition(ast, changedNodeIds);
+            return makeUnfrozenCopyOfCondition(ast);
         }
         case "statement_try": {
-            return makeUnfrozenCopyOfTry(ast, changedNodeIds);
+            return makeUnfrozenCopyOfTry(ast);
         }
         case "statement_try_catch": {
-            return makeUnfrozenCopyOfTryCatch(ast, changedNodeIds);
+            return makeUnfrozenCopyOfTryCatch(ast);
+        }
+        case "statement_block": {
+            return makeUnfrozenCopyOfBlock(ast);
         }
         default:
             throwInternalCompilerError("Unrecognized AstStatement kind");
@@ -472,249 +429,239 @@ function makeUnfrozenCopyOfStatement(
 
 function makeUnfrozenCopyOfAssign(
     ast: AstStatementAssign,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStatementAssign {
     const newExpr = makeUnfrozenCopyOfExpression(
         ast.expression,
-        changedNodeIds,
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.expression = newExpr;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfAugmentedAssign(
     ast: AstStatementAugmentedAssign,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStatementAugmentedAssign {
     const newExpr = makeUnfrozenCopyOfExpression(
         ast.expression,
-        changedNodeIds,
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.expression = newExpr;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfStatementExpression(
     ast: AstStatementExpression,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStatementExpression {
     const newExpr = makeUnfrozenCopyOfExpression(
-        ast.expression,
-        changedNodeIds,
+        ast.expression
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.expression = newExpr;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfLet(
     ast: AstStatementLet,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStatementLet {
     const newExpr = makeUnfrozenCopyOfExpression(
         ast.expression,
-        changedNodeIds,
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.expression = newExpr;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfDestruct(
     ast: AstStatementDestruct,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStatementDestruct {
     const newExpr = makeUnfrozenCopyOfExpression(
         ast.expression,
-        changedNodeIds,
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.expression = newExpr;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfReturn(
     ast: AstStatementReturn,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStatementReturn {
     if (ast.expression === null) {
         return ast;
     }
     const newExpr = makeUnfrozenCopyOfExpression(
         ast.expression,
-        changedNodeIds,
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.expression = newExpr;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfUntil(
     ast: AstStatementUntil,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStatementUntil {
     const newCondition = makeUnfrozenCopyOfExpression(
         ast.condition,
-        changedNodeIds,
     );
     const newStatements = ast.statements.map((stmt) =>
-        makeUnfrozenCopyOfStatement(stmt, changedNodeIds),
+        makeUnfrozenCopyOfStatement(stmt),
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.condition = newCondition;
     newNode.statements = newStatements;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfWhile(
     ast: AstStatementWhile,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStatementWhile {
     const newCondition = makeUnfrozenCopyOfExpression(
-        ast.condition,
-        changedNodeIds,
+        ast.condition
     );
     const newStatements = ast.statements.map((stmt) =>
-        makeUnfrozenCopyOfStatement(stmt, changedNodeIds),
+        makeUnfrozenCopyOfStatement(stmt),
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.condition = newCondition;
     newNode.statements = newStatements;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfRepeat(
     ast: AstStatementRepeat,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStatementRepeat {
     const newIterations = makeUnfrozenCopyOfExpression(
-        ast.iterations,
-        changedNodeIds,
+        ast.iterations
     );
     const newStatements = ast.statements.map((stmt) =>
-        makeUnfrozenCopyOfStatement(stmt, changedNodeIds),
+        makeUnfrozenCopyOfStatement(stmt),
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.iterations = newIterations;
     newNode.statements = newStatements;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfForEach(
     ast: AstStatementForEach,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStatementForEach {
-    const newMap = makeUnfrozenCopyOfExpression(ast.map, changedNodeIds);
+    const newMap = makeUnfrozenCopyOfExpression(ast.map);
     const newStatements = ast.statements.map((stmt) =>
-        makeUnfrozenCopyOfStatement(stmt, changedNodeIds),
+        makeUnfrozenCopyOfStatement(stmt),
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.map = newMap;
     newNode.statements = newStatements;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfCondition(
     ast: AstCondition,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstCondition {
     const newCondition = makeUnfrozenCopyOfExpression(
-        ast.condition,
-        changedNodeIds,
+        ast.condition
     );
     const newTrueStatements = ast.trueStatements.map((stmt) =>
-        makeUnfrozenCopyOfStatement(stmt, changedNodeIds),
+        makeUnfrozenCopyOfStatement(stmt),
     );
     const newFalseStatements =
         ast.falseStatements !== null
             ? ast.falseStatements.map((stmt) =>
-                  makeUnfrozenCopyOfStatement(stmt, changedNodeIds),
+                  makeUnfrozenCopyOfStatement(stmt),
               )
             : null;
     const newElseIf =
         ast.elseif !== null
-            ? makeUnfrozenCopyOfCondition(ast.elseif, changedNodeIds)
+            ? makeUnfrozenCopyOfCondition(ast.elseif)
             : null;
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.condition = newCondition;
     newNode.trueStatements = newTrueStatements;
     newNode.falseStatements = newFalseStatements;
     newNode.elseif = newElseIf;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfTry(
     ast: AstStatementTry,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStatementTry {
     const newStatements = ast.statements.map((stmt) =>
-        makeUnfrozenCopyOfStatement(stmt, changedNodeIds),
+        makeUnfrozenCopyOfStatement(stmt),
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.statements = newStatements;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfTryCatch(
     ast: AstStatementTryCatch,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStatementTryCatch {
     const newStatements = ast.statements.map((stmt) =>
-        makeUnfrozenCopyOfStatement(stmt, changedNodeIds),
+        makeUnfrozenCopyOfStatement(stmt),
     );
     const newCatchStatements = ast.catchStatements.map((stmt) =>
-        makeUnfrozenCopyOfStatement(stmt, changedNodeIds),
+        makeUnfrozenCopyOfStatement(stmt),
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.statements = newStatements;
     newNode.catchStatements = newCatchStatements;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
+    return newNode;
+}
+
+function makeUnfrozenCopyOfBlock(
+    ast: AstStatementBlock,
+): AstStatementBlock {
+    const newStatements = ast.statements.map((stmt) =>
+        makeUnfrozenCopyOfStatement(stmt),
+    );
+    const newNode = factoryAst.cloneNode(ast);
+    // The rest of properties will not be touched by the optimizer.
+    newNode.statements = newStatements;
+    // Remember the ID of the new node
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfExpression(
     ast: AstExpression,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstExpression {
     switch (ast.kind) {
         case "id":
@@ -722,24 +669,30 @@ function makeUnfrozenCopyOfExpression(
         case "boolean":
         case "number":
         case "string":
-            // These leaf nodes are never changed.
+        case "address":
+        case "cell":
+        case "slice":
+        case "comment_value":
+        case "simplified_string":
+        case "struct_value":
+            // These leaf nodes are never changed inside because they represent values or freshly generated names (in the case of ids).
             return ast;
         case "struct_instance":
-            return makeUnfrozenCopyOfStructInstance(ast, changedNodeIds);
+            return makeUnfrozenCopyOfStructInstance(ast);
         case "field_access":
-            return makeUnfrozenCopyOfFieldAccess(ast, changedNodeIds);
+            return makeUnfrozenCopyOfFieldAccess(ast);
         case "method_call":
-            return makeUnfrozenCopyOfMethodCall(ast, changedNodeIds);
+            return makeUnfrozenCopyOfMethodCall(ast);
         case "static_call":
-            return makeUnfrozenCopyOfStaticCall(ast, changedNodeIds);
+            return makeUnfrozenCopyOfStaticCall(ast);
         case "op_unary":
-            return makeUnfrozenCopyOfUnaryOp(ast, changedNodeIds);
+            return makeUnfrozenCopyOfUnaryOp(ast);
         case "op_binary":
-            return makeUnfrozenCopyOfBinaryOp(ast, changedNodeIds);
+            return makeUnfrozenCopyOfBinaryOp(ast);
         case "init_of":
-            return makeUnfrozenCopyOfInitOf(ast, changedNodeIds);
+            return makeUnfrozenCopyOfInitOf(ast);
         case "conditional":
-            return makeUnfrozenCopyOfConditional(ast, changedNodeIds);
+            return makeUnfrozenCopyOfConditional(ast);
         default:
             throwInternalCompilerError("Unrecognized AstExpression kind");
     }
@@ -747,153 +700,160 @@ function makeUnfrozenCopyOfExpression(
 
 function makeUnfrozenCopyOfStructInstance(
     ast: AstStructInstance,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStructInstance {
     const newArgs = ast.args.map((initializer) =>
-        makeUnfrozenCopyOfFieldInitializer(initializer, changedNodeIds),
+        makeUnfrozenCopyOfFieldInitializer(initializer),
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.args = newArgs;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfFieldAccess(
     ast: AstFieldAccess,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstFieldAccess {
     const newAggregate = makeUnfrozenCopyOfExpression(
-        ast.aggregate,
-        changedNodeIds,
+        ast.aggregate
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.aggregate = newAggregate;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfMethodCall(
     ast: AstMethodCall,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstMethodCall {
     const newArgs = ast.args.map((expr) =>
-        makeUnfrozenCopyOfExpression(expr, changedNodeIds),
+        makeUnfrozenCopyOfExpression(expr),
     );
-    const newSelf = makeUnfrozenCopyOfExpression(ast.self, changedNodeIds);
-    const newNode = cloneAstNode(ast);
+    const newSelf = makeUnfrozenCopyOfExpression(ast.self);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.args = newArgs;
     newNode.self = newSelf;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfStaticCall(
     ast: AstStaticCall,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStaticCall {
     const newArgs = ast.args.map((expr) =>
-        makeUnfrozenCopyOfExpression(expr, changedNodeIds),
+        makeUnfrozenCopyOfExpression(expr),
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.args = newArgs;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfUnaryOp(
     ast: AstOpUnary,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstOpUnary {
     const newOperand = makeUnfrozenCopyOfExpression(
-        ast.operand,
-        changedNodeIds,
+        ast.operand
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.operand = newOperand;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfBinaryOp(
     ast: AstOpBinary,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstOpBinary {
-    const newLeft = makeUnfrozenCopyOfExpression(ast.left, changedNodeIds);
-    const newRight = makeUnfrozenCopyOfExpression(ast.right, changedNodeIds);
-    const newNode = cloneAstNode(ast);
+    const newLeft = makeUnfrozenCopyOfExpression(ast.left);
+    const newRight = makeUnfrozenCopyOfExpression(ast.right);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.left = newLeft;
     newNode.right = newRight;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfInitOf(
     ast: AstInitOf,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstInitOf {
     const newArgs = ast.args.map((expr) =>
-        makeUnfrozenCopyOfExpression(expr, changedNodeIds),
+        makeUnfrozenCopyOfExpression(expr),
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.args = newArgs;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfConditional(
     ast: AstConditional,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstConditional {
     const newCondition = makeUnfrozenCopyOfExpression(
-        ast.condition,
-        changedNodeIds,
+        ast.condition
     );
     const newThen = makeUnfrozenCopyOfExpression(
-        ast.thenBranch,
-        changedNodeIds,
+        ast.thenBranch
     );
     const newElse = makeUnfrozenCopyOfExpression(
-        ast.elseBranch,
-        changedNodeIds,
+        ast.elseBranch
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.condition = newCondition;
     newNode.thenBranch = newThen;
     newNode.elseBranch = newElse;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
 }
 
 function makeUnfrozenCopyOfFieldInitializer(
     ast: AstStructFieldInitializer,
-    changedNodeIds: Map<number, AstMutableNode>,
 ): AstStructFieldInitializer {
     const newInitializer = makeUnfrozenCopyOfExpression(
-        ast.initializer,
-        changedNodeIds,
+        ast.initializer
     );
-    const newNode = cloneAstNode(ast);
+    const newNode = factoryAst.cloneNode(ast);
     // The rest of properties will not be touched by the optimizer.
     newNode.initializer = newInitializer;
     // Remember the ID of the new node
-    changedNodeIds.set(ast.id, newNode);
+    changedIds.set(ast.id, newNode);
     return newNode;
+}
+
+function buildOptimizationContext(
+    ast: AstModule,
+    newAst: AstModule
+): OptimizationContext {
+    // To maintain consistency with types in the CompilerContext, register the
+    // types of all newly created expressions in changedIds.
+    for (const [id, node] of changedIds) {
+        if (isAstExpression(node)) {
+            ctx = registerExpType(ctx, node, getExpTypeById(ctx, id));
+        }
+    }
+
+    return {
+        originalAst: ast,
+        modifiedAst: newAst,
+        nodeReplacements: changedIds,
+        ctx: ctx,
+        factoryAst: factoryAst
+    };
+}
 }
 
 export function updateCompilerContext(
@@ -914,57 +874,13 @@ export function dumpTactCode(ast: AstModule, file: string) {
     void writeFile(file, program);
 }
 
-function buildOptimizationContext(
-    ast: AstModule,
-    newAst: AstModule,
-    changedIds: Map<number, AstMutableNode>,
-    ctx: CompilerContext,
-): OptimizationContext {
-    // Build inverse map
-    const originalIDs: Map<number, number> = new Map();
-
-    for (const [id, node] of changedIds) {
-        originalIDs.set(node.id, id);
-    }
-
-    // To maintain consistency with types in the CompilerContext, register the
-    // types of all newly created expressions in changedIds.
-    for (const [id, node] of changedIds) {
-        if (isAstExpression(node)) {
-            ctx = registerExpType(ctx, node, getExpTypeById(ctx, id));
-        }
-    }
-
-    return {
-        originalAst: ast,
-        modifiedAst: newAst,
-        nodeReplacements: changedIds,
-        originalIDs: originalIDs,
-        ctx: ctx,
-    };
-}
-
 export function registerAstNodeChange(
     optCtx: OptimizationContext,
     nodeToReplace: AstMutableNode,
     newNode: AstMutableNode,
 ) {
     const idToReplace = nodeToReplace.id;
-
-    // Is the idToReplace already a replacement of an original ID?
-    if (optCtx.originalIDs.has(idToReplace)) {
-        // Obtain the original ID
-        const originalID = optCtx.originalIDs.get(idToReplace)!;
-        // Now replace the original node
-        optCtx.nodeReplacements.set(originalID, newNode);
-        // Update the inverse map
-        optCtx.originalIDs.set(newNode.id, originalID);
-    } else {
-        // idToReplace is an original node
-        optCtx.nodeReplacements.set(idToReplace, newNode);
-        // Update the inverse map
-        optCtx.originalIDs.set(newNode.id, idToReplace);
-    }
+    optCtx.nodeReplacements.set(idToReplace, newNode);    
 }
 
 function processStaticFunctions(

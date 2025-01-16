@@ -51,8 +51,8 @@ contract SampleJetton with Jetton {
 // ============================================================================================================ //
 @interface("org.ton.jetton.master")
 trait Jetton with Ownable {
-    totalSupply: Int; // Already set initially 
-    max_supply: Int;
+    totalSupply: Int as coins; // Already set initially
+    max_supply: Int as coins;
     mintable: Bool;
     owner: Address;
     content: Cell;
