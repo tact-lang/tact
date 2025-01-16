@@ -3,6 +3,5 @@
   "compilerOptions": {
     "outDir": "./dist"
   },
-  "include": ["src/**/*"],
-  "exclude": ["**/**.spec.ts", "**/**.bind.ts", "src/test/features/output/**/*"]
+  "include": ["src/**/*"]
 }

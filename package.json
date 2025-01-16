@@ -26,6 +26,7 @@
     "copy:func": "ts-node src/func/copy.build.ts",
     "build": "tsc && yarn copy:stdlib && yarn copy:grammar && yarn copy:func",
     "test": "jest",
+    "test:fast": "jest --config=./jest-fast.config.js",
     "coverage": "cross-env COVERAGE=true jest",
     "release": "yarn clean && yarn build && yarn coverage && yarn release-it --npm.yarn1",
     "type": "tsc --noEmit",
@@ -46,10 +47,13 @@
   "files": [
     "dist/**/*",
     "bin/**/*",
-    "stdlib/**/*",
+    "!src/**/*",
     "!**/test",
     "!/docs",
-    "!**/*.build.ts"
+    "!**/*.build.ts",
+    "!**/*.spec.js",
+    "!**/*.spec.d.ts",
+    "!**/*.tsbuildinfo"
   ],
   "main": "./dist/index.js",
   "bin": {
@@ -76,6 +80,8 @@
   "devDependencies": {
     "@ohm-js/cli": "^2.0.0",
     "@release-it/keep-a-changelog": "^6.0.0",
+    "@swc/core": "^1.10.7",
+    "@swc/jest": "^0.2.37",
     "@tact-lang/coverage": "^0.0.8",
     "@tact-lang/ton-abi": "^0.0.3",
     "@tact-lang/ton-jest": "^0.0.4",
