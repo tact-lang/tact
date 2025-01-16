@@ -33,13 +33,11 @@ function cutFirstLine(src: string) {
 export type FuncCompilationResult =
     | {
           ok: false;
-          log: string;
-          fift: string | null;
-          output: Buffer | null;
+          error: string;
       }
     | {
           ok: true;
-          log: string;
+          warnings: string;
           fift: string;
           output: Buffer;
       };
@@ -155,20 +153,18 @@ export async function funcCompile(args: {
             case "error": {
                 return {
                     ok: false,
-                    log:
+                    error:
                         logs.length > 0
                             ? msg
                             : result.message
                               ? result.message
                               : "Unknown error",
-                    fift: null,
-                    output: null,
                 };
             }
             case "ok": {
                 return {
                     ok: true,
-                    log:
+                    warnings:
                         logs.length > 0
                             ? msg
                             : result.warnings

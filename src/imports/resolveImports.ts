@@ -5,30 +5,30 @@ import { resolveLibrary } from "./resolveLibrary";
 
 export function resolveImports(args: {
     entrypoint: string;
-    project: VirtualFileSystem;
-    stdlib: VirtualFileSystem;
+    projectFs: VirtualFileSystem;
+    stdlibFs: VirtualFileSystem;
     parser: Parser;
 }) {
     //
     // Load stdlib and entrypoint
     //
 
-    // const stdlibFuncPath = args.stdlib.resolve('./stdlib.fc');
-    // const stdlibFunc = args.stdlib.readFile(stdlibFuncPath).toString();
+    // const stdlibFuncPath = args.stdlibFs.resolve('./stdlib.fc');
+    // const stdlibFunc = args.stdlibFs.readFile(stdlibFuncPath).toString();
 
-    const stdlibTactPath = args.stdlib.resolve("stdlib.tact");
-    if (!args.stdlib.exists(stdlibTactPath)) {
+    const stdlibTactPath = args.stdlibFs.resolve("stdlib.tact");
+    if (!args.stdlibFs.exists(stdlibTactPath)) {
         throwCompilationError(
             `Could not find stdlib.tact at ${stdlibTactPath}`,
         );
     }
-    const stdlibTact = args.stdlib.readFile(stdlibTactPath).toString();
+    const stdlibTact = args.stdlibFs.readFile(stdlibTactPath).toString();
 
-    const codePath = args.project.resolve(args.entrypoint);
-    if (!args.project.exists(codePath)) {
+    const codePath = args.projectFs.resolve(args.entrypoint);
+    if (!args.projectFs.exists(codePath)) {
         throwCompilationError(`Could not find entrypoint ${args.entrypoint}`);
     }
-    const code = args.project.readFile(codePath).toString();
+    const code = args.projectFs.readFile(codePath).toString();
 
     //
     // Resolve all imports
@@ -48,8 +48,8 @@ export function resolveImports(args: {
             const resolved = resolveLibrary({
                 path: path,
                 name: importPath,
-                project: args.project,
-                stdlib: args.stdlib,
+                project: args.projectFs,
+                stdlib: args.stdlibFs,
             });
             if (!resolved.ok) {
                 throwCompilationError(
@@ -70,7 +70,7 @@ export function resolveImports(args: {
 
             // Load code
             const vfs =
-                resolved.source === "project" ? args.project : args.stdlib;
+                resolved.source === "project" ? args.projectFs : args.stdlibFs;
             if (!vfs.exists(resolved.path)) {
                 throwCompilationError(
                     `Could not find source file ${resolved.path}`,

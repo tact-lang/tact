@@ -13,10 +13,10 @@ export async function run(args: {
     const config = verifyConfig(args.config);
 
     // Create project's writable fs
-    const project = createVirtualFileSystem("/", args.files, false);
+    const projectFs = createVirtualFileSystem("/", args.files, false);
 
     // Create stdlib path
-    const stdlib = createVirtualFileSystem("@stdlib", files);
+    const stdlibFs = createVirtualFileSystem("@stdlib", files);
 
     // Compile
     let success = true;
@@ -24,8 +24,8 @@ export async function run(args: {
     for (const p of config.projects) {
         const built = await build({
             config: p,
-            project,
-            stdlib,
+            projectFs,
+            stdlibFs,
             logger: args.logger,
         });
         success = success && built.ok;

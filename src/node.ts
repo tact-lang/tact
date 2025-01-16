@@ -113,11 +113,11 @@ export async function run(args: {
     // Compile
     let success = true;
     let errorMessages: TactErrorCollection[] = [];
-    const project = createNodeFileSystem(
+    const projectFs = createNodeFileSystem(
         configWithRootPath.rootPath as string,
         false,
     );
-    const stdlib = createVirtualFileSystem("@stdlib", files);
+    const stdlibFs = createVirtualFileSystem("@stdlib", files);
     for (const config of projects) {
         logger.info(`💼 Compiling project ${config.name} ...`);
         let cliConfig = { ...config };
@@ -128,8 +128,8 @@ export async function run(args: {
 
         const built = await build({
             config: cliConfig,
-            project,
-            stdlib,
+            projectFs,
+            stdlibFs,
             logger,
         });
         success = success && built.ok;

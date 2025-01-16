@@ -52,21 +52,64 @@ export function enableFeatures(
     }, ctx);
 }
 
+const getFileWriter = (
+    config: ConfigProject,
+    project: VirtualFileSystem
+) => {
+    const outputPath: string = config.output;
+
+    return (contract: string) => ({
+        writeAbi: (abi: string) => {
+            project.writeFile(project.resolve(
+                outputPath,
+                config.name + "_" + contract + ".abi",
+            ), abi);
+        },
+        writeBoc: (boc: Buffer) => {
+            const pathCodeBoc = project.resolve(
+                outputPath,
+                config.name + "_" + contract + ".code.boc",
+            );
+            project.writeFile(pathCodeBoc, boc);
+        },
+        writeFift: (fift: string) => {
+            const pathCodeFif = project.resolve(
+                outputPath,
+                config.name + "_" + contract + ".code.fif",
+            );
+            project.writeFile(pathCodeFif, fift);
+        },
+        writeFiftDecompiled: (decompiled: string) => {
+            const pathCodeFifDec = project.resolve(
+                outputPath,
+                config.name + "_" + contract + ".code.rev.fif",
+            );
+            project.writeFile(pathCodeFifDec, decompiled);
+        },
+        writeFunc: (name: string, code: string) => {
+            const ffc = project.resolve(outputPath, name);
+            project.writeFile(ffc, code);
+        },
+    });
+};
+
 export async function build({
     config,
-    project,
-    stdlib,
+    projectFs,
+    stdlibFs,
     logger = new Logger(),
     ast = getAstFactory(),
     parser = getParser(ast, config.options?.parser ?? defaultParser),
  }: {
     config: ConfigProject;
-    project: VirtualFileSystem;
-    stdlib: VirtualFileSystem;
+    projectFs: VirtualFileSystem;
+    stdlibFs: VirtualFileSystem;
     logger?: ILogger;
     parser?: Parser;
     ast?: FactoryAst;
 }): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
+    const writer = getFileWriter(config, projectFs);
+
     // Configure context
     let ctx: CompilerContext = new CompilerContext();
     const cfg: string = JSON.stringify({
@@ -79,7 +122,7 @@ export async function build({
     
     try {
         // Load all sources
-        const imported = resolveImports({ entrypoint, project, stdlib, parser });
+        const imported = resolveImports({ entrypoint, projectFs, stdlibFs, parser });
 
         // Add information about all the source code entries to the context
         ctx = openContext(ctx, imported.tact, imported.func, parser);
@@ -126,23 +169,7 @@ export async function build({
         | undefined
     > = {};
     for (const contract of getContracts(ctx)) {
-        const pathAbi = project.resolve(
-            config.output,
-            config.name + "_" + contract + ".abi",
-        );
-
-        const pathCodeBoc = project.resolve(
-            config.output,
-            config.name + "_" + contract + ".code.boc",
-        );
-        const pathCodeFif = project.resolve(
-            config.output,
-            config.name + "_" + contract + ".code.fif",
-        );
-        const pathCodeFifDec = project.resolve(
-            config.output,
-            config.name + "_" + contract + ".code.rev.fif",
-        );
+        const cw = writer(contract);
         let codeFc: { path: string; content: string }[];
         let codeEntrypoint: string;
 
@@ -156,13 +183,12 @@ export async function build({
                 config.name + "_" + contract,
             );
             for (const files of res.output.files) {
-                const ffc = project.resolve(config.output, files.name);
-                project.writeFile(ffc, files.code);
+                cw.writeFunc(files.name, files.code);
             }
-            project.writeFile(pathAbi, res.output.abi);
+            cw.writeAbi(res.output.abi);
             abi = res.output.abi;
             codeFc = res.output.files.map((v) => ({
-                path: posixNormalize(project.resolve(config.output, v.name)),
+                path: posixNormalize(projectFs.resolve(config.output, v.name)),
                 content: v.code,
             }));
             codeEntrypoint = res.output.entrypoint;
@@ -182,16 +208,16 @@ export async function build({
         logger.info(`   > ${contract}: func compiler`);
         let codeBoc: Buffer;
         try {
-            const stdlibPath = stdlib.resolve("stdlib.fc");
-            const stdlibCode = stdlib.readFile(stdlibPath).toString();
-            const stdlibExPath = stdlib.resolve("stdlib_ex.fc");
-            const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
+            const stdlibPath = stdlibFs.resolve("stdlib.fc");
+            const stdlibCode = stdlibFs.readFile(stdlibPath).toString();
+            const stdlibExPath = stdlibFs.resolve("stdlib_ex.fc");
+            const stdlibExCode = stdlibFs.readFile(stdlibExPath).toString();
             const c = await funcCompile({
                 entries: [
                     stdlibPath,
                     stdlibExPath,
                     posixNormalize(
-                        project.resolve(config.output, codeEntrypoint),
+                        projectFs.resolve(config.output, codeEntrypoint),
                     ),
                 ],
                 sources: [
@@ -208,7 +234,7 @@ export async function build({
                 logger,
             });
             if (!c.ok) {
-                const match = c.log.match(
+                const match = c.error.match(
                     /undefined function `([^`]+)`, defining a global function of unknown type/,
                 );
                 if (match) {
@@ -218,13 +244,13 @@ export async function build({
                     return { ok: false, error: errorMessages };
                 }
 
-                logger.error(c.log);
+                logger.error(c.error);
                 ok = false;
-                errorMessages.push(new Error(c.log));
+                errorMessages.push(new Error(c.error));
                 continue;
             }
-            project.writeFile(pathCodeFif, c.fift);
-            project.writeFile(pathCodeBoc, c.output);
+            cw.writeFift(c.fift);
+            cw.writeBoc(c.output);
             codeBoc = c.output;
         } catch (e) {
             logger.error("FunC compiler crashed");
@@ -243,10 +269,8 @@ export async function build({
         if (config.mode === "fullWithDecompilation") {
             // Fift decompiler for generated code debug
             logger.info(`   > ${contract}: fift decompiler`);
-            let codeFiftDecompiled: string;
             try {
-                codeFiftDecompiled = decompileAll({ src: codeBoc });
-                project.writeFile(pathCodeFifDec, codeFiftDecompiled);
+                cw.writeFiftDecompiled(decompileAll({ src: codeBoc }));
             } catch (e) {
                 logger.error("Fift decompiler crashed");
                 logger.error(e as Error);
@@ -306,11 +330,11 @@ export async function build({
         const rawAst = getRawAST(ctx);
         for (const source of [...rawAst.funcSources, ...rawAst.sources]) {
             if (
-                source.path.startsWith(project.root) &&
-                !source.path.startsWith(stdlib.root)
+                source.path.startsWith(projectFs.root) &&
+                !source.path.startsWith(stdlibFs.root)
             ) {
                 const source_path = posixNormalize(
-                    source.path.slice(project.root.length),
+                    source.path.slice(projectFs.root.length),
                 );
                 sources[source_path] = Buffer.from(source.code).toString(
                     "base64",
@@ -346,11 +370,11 @@ export async function build({
             },
         };
         const pkgData = packageCode(pkg);
-        const pathPkg = project.resolve(
+        const pathPkg = projectFs.resolve(
             config.output,
             config.name + "_" + contract + ".pkg",
         );
-        project.writeFile(pathPkg, pkgData);
+        projectFs.writeFile(pathPkg, pkgData);
         packages.push(pkg);
     }
 
@@ -371,8 +395,8 @@ export async function build({
                 system: pkg.init.deployment.system,
                 args: pkg.init.args,
             });
-            project.writeFile(
-                project.resolve(
+            projectFs.writeFile(
+                projectFs.resolve(
                     config.output,
                     config.name + "_" + pkg.name + ".ts",
                 ),
@@ -393,11 +417,11 @@ export async function build({
         logger.info("   > " + pkg.name);
         try {
             const report = writeReport(ctx, pkg);
-            const pathBindings = project.resolve(
+            const pathBindings = projectFs.resolve(
                 config.output,
                 config.name + "_" + pkg.name + ".md",
             );
-            project.writeFile(pathBindings, report);
+            projectFs.writeFile(pathBindings, report);
         } catch (e) {
             const error = e as Error;
             error.message = `Report generation crashed: ${error.message}`;
