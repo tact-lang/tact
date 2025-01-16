@@ -244,6 +244,7 @@ export async function writeProgram(
         entrypoint: basename + ".code.fc",
         files,
         abi,
+        abiSrc,
     };
 }
 

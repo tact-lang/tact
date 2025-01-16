@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/require-await */
 import { beginCell, Cell, Dictionary } from "@ton/core";
 import { decompileAll } from "@tact-lang/opcode";
 import { writeTypescript } from "../bindings/writeTypescript";
 import { featureEnable } from "../config/features";
 import { ConfigProject } from "../config/parseConfig";
 import { CompilerContext } from "../context/context";
-import { funcCompile } from "../func/funcCompile";
+import { funcCompileWrap } from "../func/funcCompile";
 import { writeReport } from "../generator/writeReport";
 import { getRawAST } from "../context/store";
 import { ILogger, Logger } from "../context/logger";
@@ -52,45 +53,50 @@ export function enableFeatures(
     }, ctx);
 }
 
-const getFileWriter = (
-    config: ConfigProject,
-    project: VirtualFileSystem
-) => {
+type Stdlib = {
+    stdlibCode: string;
+    stdlibExCode: string;
+};
+
+const getStdLib = (stdlib: VirtualFileSystem): Stdlib => {
+    const stdlibPath = stdlib.resolve("stdlib.fc");
+    const stdlibCode = stdlib.readFile(stdlibPath).toString();
+    const stdlibExPath = stdlib.resolve("stdlib_ex.fc");
+    const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
+
+    return {
+        stdlibCode,
+        stdlibExCode,
+    };
+};
+
+const getFileWriter = (config: ConfigProject, project: VirtualFileSystem) => {
     const outputPath: string = config.output;
 
-    return (contract: string) => ({
-        writeAbi: (abi: string) => {
-            project.writeFile(project.resolve(
-                outputPath,
-                config.name + "_" + contract + ".abi",
-            ), abi);
-        },
-        writeBoc: (boc: Buffer) => {
-            const pathCodeBoc = project.resolve(
-                outputPath,
-                config.name + "_" + contract + ".code.boc",
+    return (contract: string) => {
+        const writeExt = (ext: string) => (code: string | Buffer) => {
+            project.writeFile(
+                project.resolve(
+                    outputPath,
+                    `${config.name}_${contract}.${ext}`,
+                ),
+                code,
             );
-            project.writeFile(pathCodeBoc, boc);
-        },
-        writeFift: (fift: string) => {
-            const pathCodeFif = project.resolve(
-                outputPath,
-                config.name + "_" + contract + ".code.fif",
-            );
-            project.writeFile(pathCodeFif, fift);
-        },
-        writeFiftDecompiled: (decompiled: string) => {
-            const pathCodeFifDec = project.resolve(
-                outputPath,
-                config.name + "_" + contract + ".code.rev.fif",
-            );
-            project.writeFile(pathCodeFifDec, decompiled);
-        },
-        writeFunc: (name: string, code: string) => {
-            const ffc = project.resolve(outputPath, name);
-            project.writeFile(ffc, code);
-        },
-    });
+        };
+
+        return {
+            writeAbi: writeExt("abi"),
+            writeBoc: writeExt("code.boc"),
+            writeFift: writeExt("code.fif"),
+            writeFiftDecompiled: writeExt("code.rev.fif"),
+            writePackage: writeExt("pkg"),
+            writeBindings: writeExt("ts"),
+            writeReport: writeExt("md"),
+            writeFunC: (name: string, code: string) => {
+                project.writeFile(project.resolve(outputPath, name), code);
+            },
+        };
+    };
 };
 
 export async function build({
@@ -100,14 +106,15 @@ export async function build({
     logger = new Logger(),
     ast = getAstFactory(),
     parser = getParser(ast, config.options?.parser ?? defaultParser),
- }: {
+}: {
     config: ConfigProject;
     projectFs: VirtualFileSystem;
     stdlibFs: VirtualFileSystem;
     logger?: ILogger;
     parser?: Parser;
     ast?: FactoryAst;
-}): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
+}) /*: Promise<{ readonly ok: boolean; readonly error: Error[] }>*/ {
+    const stdlib = getStdLib(stdlibFs);
     const writer = getFileWriter(config, projectFs);
 
     // Configure context
@@ -119,37 +126,54 @@ export async function build({
     ctx = enableFeatures(ctx, logger, config);
 
     const entrypoint = config.path;
-    
-    try {
-        // Load all sources
-        const imported = resolveImports({ entrypoint, projectFs, stdlibFs, parser });
 
+    const attempt = async <T>(
+        name: string,
+        f: () => Promise<T>,
+    ): Promise<{ ok: true; value: T } | { ok: false; error: Error[] }> => {
+        logger.info(`${name} started`);
+        try {
+            return {
+                ok: true,
+                value: await f(),
+            };
+        } catch (e) {
+            if (!(e instanceof Error)) {
+                throw e;
+            }
+            logger.error(`${name} failed`);
+            logger.error(e);
+            return {
+                ok: false,
+                error: [e],
+            };
+        }
+    };
+
+    const typecheckResult = await attempt("Checking types", async () => {
+        // Load all sources
+        const imported = resolveImports({
+            entrypoint,
+            projectFs,
+            stdlibFs,
+            parser,
+        });
         // Add information about all the source code entries to the context
         ctx = openContext(ctx, imported.tact, imported.func, parser);
-
-        // First load type descriptors and check that
-        //       they all have valid signatures
+        // First load type descriptors and check that they all have valid signatures
         ctx = resolveDescriptors(ctx, ast);
-
         // This creates TLB-style type definitions
         ctx = resolveSignatures(ctx, ast);
-
         // This checks and resolves all statements
         ctx = resolveStatements(ctx, ast);
-
         // This extracts error messages
         ctx = resolveErrors(ctx, ast);
-
         // This creates allocations for all defined types
         ctx = resolveAllocations(ctx);
-    } catch (e) {
-        logger.error(
-            config.mode === "checkOnly" || config.mode === "funcOnly"
-                ? "Syntax and type checking failed"
-                : "Tact compilation failed",
-        );
-        logger.error(e as Error);
-        return { ok: false, error: [e as Error] };
+    });
+
+    if (!typecheckResult.ok) {
+        return typecheckResult;
     }
 
     if (config.mode === "checkOnly") {
@@ -158,129 +182,192 @@ export async function build({
     }
 
     // Compile contracts
-    let ok = true;
     const errorMessages: TactErrorCollection[] = [];
     const built: Record<
         string,
-        | {
-              codeBoc: Buffer;
-              abi: string;
-          }
-        | undefined
+        {
+            codeBoc: Buffer;
+            abi: string;
+            pack: (resolveDep: (contract: string) => Buffer) => Promise<void>;
+        }
     > = {};
     for (const contract of getContracts(ctx)) {
         const cw = writer(contract);
-        let codeFc: { path: string; content: string }[];
-        let codeEntrypoint: string;
 
-        // Compiling contract to func
-        logger.info(`   > ${contract}: tact compiler`);
-        let abi: string;
-        try {
-            const res = await compile(
-                ctx,
-                contract,
-                config.name + "_" + contract,
-            );
-            for (const files of res.output.files) {
-                cw.writeFunc(files.name, files.code);
-            }
-            cw.writeAbi(res.output.abi);
-            abi = res.output.abi;
-            codeFc = res.output.files.map((v) => ({
-                path: posixNormalize(projectFs.resolve(config.output, v.name)),
-                content: v.code,
-            }));
-            codeEntrypoint = res.output.entrypoint;
-        } catch (e) {
-            logger.error("Tact compilation failed");
-            logger.error(e as Error);
-            ok = false;
-            errorMessages.push(e as Error);
+        const tactResult = await attempt(
+            `${contract}: Tact compilation`,
+            async () => {
+                const res = await compile(
+                    ctx,
+                    contract,
+                    config.name + "_" + contract,
+                );
+                return {
+                    abi: res.output.abi,
+                    abiSrc: res.output.abiSrc,
+                    codeFc: res.output.files,
+                    codeEntrypoint: res.output.entrypoint,
+                };
+            },
+        );
+
+        if (!tactResult.ok) {
+            errorMessages.push(...tactResult.error);
             continue;
         }
+
+        const { codeFc, codeEntrypoint, abi, abiSrc } = tactResult.value;
+
+        for (const files of codeFc) {
+            cw.writeFunC(files.name, files.code);
+        }
+        cw.writeAbi(abi);
 
         if (config.mode === "funcOnly") {
             continue;
         }
 
         // Compiling contract to TVM
-        logger.info(`   > ${contract}: func compiler`);
-        let codeBoc: Buffer;
-        try {
-            const stdlibPath = stdlibFs.resolve("stdlib.fc");
-            const stdlibCode = stdlibFs.readFile(stdlibPath).toString();
-            const stdlibExPath = stdlibFs.resolve("stdlib_ex.fc");
-            const stdlibExCode = stdlibFs.readFile(stdlibExPath).toString();
-            const c = await funcCompile({
-                entries: [
-                    stdlibPath,
-                    stdlibExPath,
-                    posixNormalize(
-                        projectFs.resolve(config.output, codeEntrypoint),
-                    ),
-                ],
-                sources: [
-                    {
-                        path: stdlibPath,
-                        content: stdlibCode,
-                    },
-                    {
-                        path: stdlibExPath,
-                        content: stdlibExCode,
-                    },
-                    ...codeFc,
-                ],
-                logger,
-            });
-            if (!c.ok) {
-                const match = c.error.match(
-                    /undefined function `([^`]+)`, defining a global function of unknown type/,
-                );
-                if (match) {
-                    const message = `Function '${match[1]}' does not exist in imported FunC sources`;
-                    logger.error(message);
-                    errorMessages.push(new Error(message));
-                    return { ok: false, error: errorMessages };
-                }
+        const funcResult = await attempt(
+            `${contract}: FunC compilation`,
+            async () => {
+                const funcVfsStdlibPath = "/stdlib.fc";
+                const funcVfsStdlibExPath = "/stdlib_ex.fc";
+                const c = await funcCompileWrap({
+                    entries: [
+                        funcVfsStdlibPath,
+                        funcVfsStdlibExPath,
+                        codeEntrypoint,
+                    ],
+                    sources: [
+                        {
+                            path: funcVfsStdlibPath,
+                            content: stdlib.stdlibCode,
+                        },
+                        {
+                            path: funcVfsStdlibExPath,
+                            content: stdlib.stdlibExCode,
+                        },
+                        ...codeFc.map(({ name, code }) => ({
+                            path: `/${name}`,
+                            content: code,
+                        })),
+                    ],
+                    logger,
+                });
+                return { fift: c.fift, codeBoc: c.output };
+            },
+        );
 
-                logger.error(c.error);
-                ok = false;
-                errorMessages.push(new Error(c.error));
-                continue;
-            }
-            cw.writeFift(c.fift);
-            cw.writeBoc(c.output);
-            codeBoc = c.output;
-        } catch (e) {
-            logger.error("FunC compiler crashed");
-            logger.error(e as Error);
-            ok = false;
-            errorMessages.push(e as Error);
+        if (!funcResult.ok) {
+            errorMessages.push(...funcResult.error);
             continue;
         }
 
-        // Add to built map
-        built[contract] = {
-            codeBoc,
-            abi,
+        const { codeBoc, fift } = funcResult.value;
+
+        cw.writeFift(fift);
+        cw.writeBoc(codeBoc);
+
+        const artifacts = { codeBoc, abi };
+
+        const pack = async (resolveDep: (contract: string) => Buffer) => {
+            // System cell
+            const depends = Dictionary.empty(
+                Dictionary.Keys.Uint(16),
+                Dictionary.Values.Cell(),
+            );
+            const { dependsOn } = getType(ctx, contract);
+            for (const c of dependsOn) {
+                depends.set(c.uid, Cell.fromBoc(resolveDep(c.name))[0]!);
+            }
+            const systemCell =
+                dependsOn.length > 0
+                    ? beginCell().storeDict(depends).endCell()
+                    : null;
+
+            // Collect sources
+            const sources: Record<string, string> = {};
+            const rawAst = getRawAST(ctx);
+            for (const source of [...rawAst.funcSources, ...rawAst.sources]) {
+                if (
+                    source.path.startsWith(projectFs.root) &&
+                    !source.path.startsWith(stdlibFs.root)
+                ) {
+                    const source_path = posixNormalize(
+                        source.path.slice(projectFs.root.length),
+                    );
+                    sources[source_path] = Buffer.from(source.code).toString(
+                        "base64",
+                    );
+                }
+            }
+
+            const prefix = {
+                bits: 1,
+                value: 0,
+            };
+            const system = systemCell?.toBoc().toString("base64") ?? null;
+            const code = artifacts.codeBoc.toString("base64");
+            const args = getType(ctx, contract).init!.params.map((v) => ({
+                name: idText(v.name),
+                type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
+            }));
+
+            // Package
+            const pkg: PackageFileFormat = {
+                name: contract,
+                abi: artifacts.abi,
+                code,
+                init: {
+                    kind: "direct",
+                    args,
+                    prefix,
+                    deployment: {
+                        kind: "system-cell",
+                        system,
+                    },
+                },
+                sources,
+                compiler: {
+                    name: "tact",
+                    version: getCompilerVersion(),
+                    parameters: cfg,
+                },
+            };
+
+            cw.writePackage(packageCode(pkg));
+
+            // Bindings
+            await attempt(`${contract}: Bindings`, async () => {
+                cw.writeBindings(
+                    writeTypescript(abiSrc, { code, prefix, system, args }),
+                );
+            });
+
+            await attempt(`${contract}: Reports`, async () => {
+                cw.writeReport(
+                    writeReport(ctx, { abi: abiSrc, code, name: contract }),
+                );
+            });
         };
 
         if (config.mode === "fullWithDecompilation") {
             // Fift decompiler for generated code debug
-            logger.info(`   > ${contract}: fift decompiler`);
-            try {
+            await attempt(`${contract}: Decompilation`, async () => {
                 cw.writeFiftDecompiled(decompileAll({ src: codeBoc }));
-            } catch (e) {
-                logger.error("Fift decompiler crashed");
-                logger.error(e as Error);
-                ok = false;
-                errorMessages.push(e as Error);
-                continue;
-            }
+            });
         }
+
+        // Add to built map
+        built[contract] = {
+            abi,
+            codeBoc,
+            pack,
+        };
     }
-    if (!ok) {
+
+    if (errorMessages.length > 0) {
         logger.info("💥 Compilation failed. Skipping packaging");
         return { ok: false, error: errorMessages };
     }
@@ -290,145 +377,16 @@ export async function build({
         return { ok: true, error: errorMessages };
     }
 
-    // Package
-    logger.info("   > Packaging");
-    const contracts = getContracts(ctx);
-    const packages: PackageFileFormat[] = [];
-    for (const contract of contracts) {
-        logger.info("   > " + contract);
-        const artifacts = built[contract];
-        if (!artifacts) {
-            const message = `   > ${contract}: no artifacts found`;
-            logger.error(message);
-            errorMessages.push(new Error(message));
-            return { ok: false, error: errorMessages };
+    const resolveDep = (contract: string) => {
+        const cd = built[contract];
+        if (typeof cd === "undefined") {
+            throw new Error(`Dependency ${contract} was not found`);
         }
+        return cd.codeBoc;
+    };
 
-        // System cell
-        const depends = Dictionary.empty(
-            Dictionary.Keys.Uint(16),
-            Dictionary.Values.Cell(),
-        );
-        const ct = getType(ctx, contract);
-        for (const c of ct.dependsOn) {
-            const cd = built[c.name];
-            if (!cd) {
-                const message = `   > ${c.name}: no artifacts found`;
-                logger.error(message);
-                errorMessages.push(new Error(message));
-                return { ok: false, error: errorMessages };
-            }
-            depends.set(c.uid, Cell.fromBoc(cd.codeBoc)[0]!);
-        }
-        const systemCell =
-            ct.dependsOn.length > 0
-                ? beginCell().storeDict(depends).endCell()
-                : null;
-
-        // Collect sources
-        const sources: Record<string, string> = {};
-        const rawAst = getRawAST(ctx);
-        for (const source of [...rawAst.funcSources, ...rawAst.sources]) {
-            if (
-                source.path.startsWith(projectFs.root) &&
-                !source.path.startsWith(stdlibFs.root)
-            ) {
-                const source_path = posixNormalize(
-                    source.path.slice(projectFs.root.length),
-                );
-                sources[source_path] = Buffer.from(source.code).toString(
-                    "base64",
-                );
-            }
-        }
-
-        // Package
-        const pkg: PackageFileFormat = {
-            name: contract,
-            abi: artifacts.abi,
-            code: artifacts.codeBoc.toString("base64"),
-            init: {
-                kind: "direct",
-                args: getType(ctx, contract).init!.params.map((v) => ({
-                    name: idText(v.name),
-                    type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
-                })),
-                prefix: {
-                    bits: 1,
-                    value: 0,
-                },
-                deployment: {
-                    kind: "system-cell",
-                    system: systemCell?.toBoc().toString("base64") ?? null,
-                },
-            },
-            sources,
-            compiler: {
-                name: "tact",
-                version: getCompilerVersion(),
-                parameters: cfg,
-            },
-        };
-        const pkgData = packageCode(pkg);
-        const pathPkg = projectFs.resolve(
-            config.output,
-            config.name + "_" + contract + ".pkg",
-        );
-        projectFs.writeFile(pathPkg, pkgData);
-        packages.push(pkg);
-    }
-
-    // Bindings
-    logger.info("   > Bindings");
-    for (const pkg of packages) {
-        logger.info(`   > ${pkg.name}`);
-        if (pkg.init.deployment.kind !== "system-cell") {
-            const message = `   > ${pkg.name}: unsupported deployment kind ${pkg.init.deployment.kind}`;
-            logger.error(message);
-            errorMessages.push(new Error(message));
-            return { ok: false, error: errorMessages };
-        }
-        try {
-            const bindingsServer = writeTypescript(JSON.parse(pkg.abi), {
-                code: pkg.code,
-                prefix: pkg.init.prefix,
-                system: pkg.init.deployment.system,
-                args: pkg.init.args,
-            });
-            projectFs.writeFile(
-                projectFs.resolve(
-                    config.output,
-                    config.name + "_" + pkg.name + ".ts",
-                ),
-                bindingsServer,
-            );
-        } catch (e) {
-            const error = e as Error;
-            error.message = `Bindings compiler crashed: ${error.message}`;
-            logger.error(error);
-            errorMessages.push(error);
-            return { ok: false, error: errorMessages };
-        }
-    }
-
-    // Reports
-    logger.info("   > Reports");
-    for (const pkg of packages) {
-        logger.info("   > " + pkg.name);
-        try {
-            const report = writeReport(ctx, pkg);
-            const pathBindings = projectFs.resolve(
-                config.output,
-                config.name + "_" + pkg.name + ".md",
-            );
-            projectFs.writeFile(pathBindings, report);
-        } catch (e) {
-            const error = e as Error;
-            error.message = `Report generation crashed: ${error.message}`;
-            logger.error(error);
-            errorMessages.push(error);
-            return { ok: false, error: errorMessages };
-        }
+    for (const { pack } of Object.values(built)) {
+        await pack(resolveDep);
     }
 
     return { ok: true, error: [] };

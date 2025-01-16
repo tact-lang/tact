@@ -1,17 +1,26 @@
 import { ContractABI } from "@ton/core";
 import { CompilerContext } from "../context/context";
-import { PackageFileFormat } from "../packaging/fileFormat";
 import { getType } from "../types/resolveDescriptors";
 import { Writer } from "../utils/Writer";
 import { TypeDescription } from "../types/types";
 
-export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
+export function writeReport(
+    ctx: CompilerContext,
+    {
+        abi,
+        code,
+        name,
+    }: {
+        abi: ContractABI;
+        code: string;
+        name: string;
+    },
+) {
     const w = new Writer();
-    const abi = JSON.parse(pkg.abi) as ContractABI;
     w.write(`
         # Tact compilation report
-        Contract: ${pkg.name}
-        BoC Size: ${Buffer.from(pkg.code, "base64").length} bytes
+        Contract: ${name}
+        BoC Size: ${Buffer.from(code, "base64").length} bytes
     `);
     w.append();
 
@@ -53,7 +62,7 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     });
     w.append();
 
-    const t = getType(ctx, pkg.name);
+    const t = getType(ctx, name);
     const writtenEdges: Set<string> = new Set();
 
     // Trait inheritance diagram

@@ -54,10 +54,36 @@ type CompileResult =
           warnings: string;
       };
 
-export async function funcCompile(args: {
+export async function funcCompileWrap(args: {
     entries: string[];
     sources: { path: string; content: string }[];
     logger: ILogger;
+}): Promise<{
+    warnings: string;
+    fift: string;
+    output: Buffer;
+}> {
+    const c = await funcCompile(args);
+
+    if (!c.ok) {
+        const match = c.error.match(
+            /undefined function `([^`]+)`, defining a global function of unknown type/,
+        );
+        if (match) {
+            throw new Error(
+                `Function '${match[1]}' does not exist in imported FunC sources`,
+            );
+        } else {
+            throw new Error(c.error);
+        }
+    } else {
+        return c;
+    }
+}
+
+export async function funcCompile(args: {
+    entries: string[];
+    sources: { path: string; content: string }[];
 }): Promise<FuncCompilationResult> {
     // Parameters
     const files: string[] = args.entries;
@@ -176,7 +202,6 @@ export async function funcCompile(args: {
             }
         }
     } catch (e) {
-        args.logger.error(e as Error);
         throw Error("Unexpected compiler response");
     } finally {
         for (const i of allocatedFunctions) {
