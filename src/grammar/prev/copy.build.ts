@@ -12,7 +12,6 @@ const cp = async (fromGlob: string, toPath: string) => {
 const main = async () => {
     try {
         await cp("./src/grammar/prev/grammar.ohm*", "./dist/grammar/prev/");
-        await cp("./src/func/funcfiftlib.*", "./dist/func/");
     } catch (e) {
         console.error(e);
         process.exit(1);

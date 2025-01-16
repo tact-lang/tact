@@ -9,41 +9,45 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     const w = new Writer();
     const abi = JSON.parse(pkg.abi) as ContractABI;
     w.write(`
-        # TACT Compilation Report
+        # Tact compilation report
         Contract: ${pkg.name}
-        BOC Size: ${Buffer.from(pkg.code, "base64").length} bytes
+        BoC Size: ${Buffer.from(pkg.code, "base64").length} bytes
     `);
     w.append();
 
-    // Types
-    w.write(`# Types`);
-    w.write("Total Types: " + abi.types!.length);
+    // Structures
+    w.write(`## Structures (Structs and Messages)`);
+    w.write("Total structures: " + abi.types!.length);
     w.append();
     for (const t of abi.types!) {
         const tt = getType(
             ctx,
             t.name.endsWith("$Data") ? t.name.slice(0, -5) : t.name,
         );
-        w.write(`## ${t.name}`);
-        w.write(`TLB: \`${tt.tlb!}\``);
+        w.write(`### ${t.name}`);
+        w.write(`TL-B: \`${tt.tlb!}\``);
         w.write(`Signature: \`${tt.signature!}\``);
         w.append();
     }
 
     // Get methods
-    w.write(`# Get Methods`);
-    w.write("Total Get Methods: " + abi.getters!.length);
+    w.write(`## Get methods`);
+    w.write("Total get methods: " + abi.getters!.length);
     w.append();
     for (const t of abi.getters!) {
         w.write(`## ${t.name}`);
-        for (const arg of t.arguments!) {
-            w.write(`Argument: ${arg.name}`);
+        if (t.arguments!.length === 0) {
+            w.write(`No arguments`);
+        } else {
+            for (const arg of t.arguments!) {
+                w.write(`Argument: ${arg.name}`);
+            }
         }
         w.append();
     }
 
-    // Error Codes
-    w.write(`# Error Codes`);
+    // Exit codes
+    w.write(`## Exit codes`);
     Object.entries(abi.errors!).forEach(([t, abiError]) => {
         w.write(`* ${t}: ${abiError.message}`);
     });
@@ -52,8 +56,8 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
     const t = getType(ctx, pkg.name);
     const writtenEdges: Set<string> = new Set();
 
-    // Trait Inheritance Diagram
-    w.write(`# Trait Inheritance Diagram`);
+    // Trait inheritance diagram
+    w.write(`## Trait inheritance diagram`);
     w.append();
     w.write("```mermaid");
     w.write("graph TD");
@@ -75,8 +79,8 @@ export function writeReport(ctx: CompilerContext, pkg: PackageFileFormat) {
 
     writtenEdges.clear();
 
-    // Contract Dependency Diagram
-    w.write(`# Contract Dependency Diagram`);
+    // Contract dependency diagram
+    w.write(`## Contract dependency diagram`);
     w.append();
     w.write("```mermaid");
     w.write("graph TD");

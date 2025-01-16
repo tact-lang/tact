@@ -51,6 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 'The "remainder" field can only be the last field:' inspection now shows location: PR [#1300](https://github.com/tact-lang/tact/pull/1300)
 - Forbid "remainder" field at the middle of a contract storage: PR [#1301](https://github.com/tact-lang/tact/pull/1301)
 - Forbid the `override` modifier for functions without the corresponding super-function: PR [#1302](https://github.com/tact-lang/tact/pull/1302)
+- Format empty blocks without extra empty line: PR [#1346](https://github.com/tact-lang/tact/pull/1346)
+- Remove duplicate line and column info from error messages: PR [#1362](https://github.com/tact-lang/tact/pull/1362)
 - Support `AstTypedParameter` AST node in pretty printer: PR [#1347](https://github.com/tact-lang/tact/pull/1347)
 
 ### Docs
@@ -78,6 +80,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a note on 255 being the maximum number of messages that can be sent during action phase: PR [#1237](https://github.com/tact-lang/tact/pull/1237)
 - Added onchain metadata creation for NFTs and Jettons to the cookbook: PR [#1236](https://github.com/tact-lang/tact/pull/1236)
 - Document that identifiers cannot start with `__gen` or `__tact`, and cannot contain Unicode characters apart from the small subset `a-zA-Z0-9_`: PR [#1312](https://github.com/tact-lang/tact/pull/1312)
+- Added signatures for map methods, such as `.get()`, `.exists()`, `.set()`, `.replace()`, `.replaceGet()`, `.del()`, `.isEmpty()`, `.deepEquals()`, `.asCell()`: PR [#1352](https://github.com/tact-lang/tact/pull/1352)
+- Added a compilation-related page with the description of the compilation report: PR [#1309](https://github.com/tact-lang/tact/pull/1309)
 
 ### Release contributors
 
