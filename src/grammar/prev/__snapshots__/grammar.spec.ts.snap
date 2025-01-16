@@ -50,6 +50,15 @@ Line 4, col 1:
 "
 `;
 
+exports[`grammar should fail const-unicode 1`] = `
+"<unknown>:1:7: Expected "_", "A".."Z", or "a".."z"
+
+Line 1, col 7:
+> 1 | const Константа: Int = 42;
+            ^
+"
+`;
+
 exports[`grammar should fail const-virtual 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
 Line 4, col 1:
@@ -172,6 +181,15 @@ Line 1, col 19:
 "
 `;
 
+exports[`grammar should fail contract-unicode 1`] = `
+"<unknown>:1:10: Expected "_", "A".."Z", or "a".."z"
+
+Line 1, col 10:
+> 1 | contract Контракт {}
+               ^
+"
+`;
+
 exports[`grammar should fail contract-with-imports 1`] = `
 "<unknown>:6:1: Expected end of input, "trait", "contract", "message", "struct", "const", "@name", "asm", "fun", or "primitive"
 
@@ -210,6 +228,16 @@ Line 2, col 24:
 > 2 |     return 42.toString(,);
                              ^
   3 | }
+"
+`;
+
+exports[`grammar should fail fun-unicode 1`] = `
+"<unknown>:1:5: Expected "_", "A".."Z", or "a".."z"
+
+Line 1, col 5:
+> 1 | fun ФункциЯ() {
+          ^
+  2 |     return "";
 "
 `;
 
@@ -724,6 +752,24 @@ Line 2, col 13:
 "
 `;
 
+exports[`grammar should fail message-unicode 1`] = `
+"<unknown>:1:9: Expected "A".."Z" or "("
+
+Line 1, col 9:
+> 1 | message Сообщение {}
+              ^
+"
+`;
+
+exports[`grammar should fail message-with-opcode-unicode 1`] = `
+"<unknown>:1:21: Expected "A".."Z"
+
+Line 1, col 21:
+> 1 | message(0x7362d09c) Сообщение {} 
+                          ^
+"
+`;
+
 exports[`grammar should fail struct-double-semicolon 1`] = `
 "<unknown>:2:19: Expected "}"
 
@@ -754,6 +800,15 @@ Line 2, col 24:
 > 2 | struct B { x: Int = 42 y: Int }
                              ^
   3 | 
+"
+`;
+
+exports[`grammar should fail struct-unicode 1`] = `
+"<unknown>:1:8: Expected "A".."Z"
+
+Line 1, col 8:
+> 1 | struct Структура { }
+             ^
 "
 `;
 
@@ -804,6 +859,15 @@ Line 1, col 16:
 > 1 | trait Name with, {}
                      ^
   2 | 
+"
+`;
+
+exports[`grammar should fail trait-unicode 1`] = `
+"<unknown>:1:7: Expected "_", "A".."Z", or "a".."z"
+
+Line 1, col 7:
+> 1 | trait ОперацияД { }
+            ^
 "
 `;
 

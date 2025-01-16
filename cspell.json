@@ -158,6 +158,7 @@
     "src/grammar/test/items-asm-funs.tact",
     "src/grammar/test-asm/*.tact",
     "src/grammar/test-failed/funcid-*.tact",
+    "src/grammar/test-failed/*unicode*.tact",
     "src/grammar/next/grammar.gg",
     "src/grammar/next/grammar.ts",
     "src/imports/stdlib.ts",
