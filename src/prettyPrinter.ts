@@ -819,6 +819,28 @@ export const ppAstStatementDestruct: Printer<A.AstStatementDestruct> =
         );
     };
 
+export const ppAstDestructMapping: Printer<A.AstDestructMapping> =
+    ({ field, name }) =>
+    (c) => {
+        return c.row(
+            field.text === name.text
+                ? ppAstId(name)
+                : `${ppAstId(field)}: ${ppAstId(name)}`,
+        );
+    };
+
+export const ppAstDestructEnd: Printer<A.AstDestructEnd> =
+    ({ ignoreUnspecifiedFields }) =>
+    (c) => {
+        return c.row(ignoreUnspecifiedFields ? ", .." : "");
+    };
+
+export const ppTypedParameter: Printer<A.AstTypedParameter> =
+    ({ name, type }) =>
+    (c) => {
+        return c.row(`${ppAstId(name)}: ${ppAstType(type)}`);
+    };
+
 export const ppAstStatementBlock: Printer<A.AstStatementBlock> =
     ({ statements }) =>
     (c) =>
@@ -874,15 +896,6 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     bounced_message_type: exprNode(ppAstType),
     struct_field_initializer: exprNode(ppAstStructFieldInit),
     struct_field_value: exprNode(ppAstStructFieldValue),
-    destruct_mapping: () => {
-        throw new Error("Not implemented");
-    },
-    typed_parameter: () => {
-        throw new Error("Not implemented");
-    },
-    destruct_end: () => {
-        throw new Error("Not implemented");
-    },
 
     module: ppAstModule,
     struct_decl: ppAstStruct,
@@ -914,8 +927,11 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     import: ppAstImport,
     func_id: exprNode(ppAstFuncId),
     statement_destruct: ppAstStatementDestruct,
+    destruct_mapping: ppAstDestructMapping,
+    destruct_end: ppAstDestructEnd,
     function_attribute: exprNode(ppAstFunctionAttribute),
     asm_function_def: ppAstAsmFunctionDef,
+    typed_parameter: ppTypedParameter,
 });
 
 /**
