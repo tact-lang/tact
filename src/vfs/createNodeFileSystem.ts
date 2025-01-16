@@ -7,26 +7,27 @@ export function createNodeFileSystem(
     root: string,
     readonly: boolean = true,
 ): VirtualFileSystem {
-    if (!root.endsWith(path.sep)) {
-        root += path.sep;
+    let normalizedRoot = path.normalize(root);
+    if (!normalizedRoot.endsWith(path.sep)) {
+        normalizedRoot += path.sep;
     }
     return {
-        root: root,
+        root: normalizedRoot,
         exists(filePath: string): boolean {
-            if (!filePath.startsWith(root)) {
+            if (!filePath.startsWith(normalizedRoot)) {
                 throw new Error(
-                    `Path '${filePath}' is outside of the root directory '${root}'`,
+                    `Path '${filePath}' is outside of the root directory '${normalizedRoot}'`,
                 );
             }
             return fs.existsSync(filePath);
         },
         resolve(...filePath) {
-            return path.normalize(path.resolve(root, ...filePath));
+            return path.normalize(path.resolve(normalizedRoot, ...filePath));
         },
         readFile(filePath) {
-            if (!filePath.startsWith(root)) {
+            if (!filePath.startsWith(normalizedRoot)) {
                 throw new Error(
-                    `Path '${filePath}' is outside of the root directory '${root}'`,
+                    `Path '${filePath}' is outside of the root directory '${normalizedRoot}'`,
                 );
             }
             return fs.readFileSync(filePath);
@@ -35,9 +36,9 @@ export function createNodeFileSystem(
             if (readonly) {
                 throw new Error("File system is readonly");
             }
-            if (!filePath.startsWith(root)) {
+            if (!filePath.startsWith(normalizedRoot)) {
                 throw new Error(
-                    `Path '${filePath}' is outside of the root directory '${root}'`,
+                    `Path '${filePath}' is outside of the root directory '${normalizedRoot}'`,
                 );
             }
 
