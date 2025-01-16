@@ -1,5 +1,3 @@
-import { ILogger } from "../context/logger";
-
 // Wasm Imports
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const CompilerModule = require("./funcfiftlib.js");
@@ -57,7 +55,6 @@ type CompileResult =
 export async function funcCompileWrap(args: {
     entries: string[];
     sources: { path: string; content: string }[];
-    logger: ILogger;
 }): Promise<{
     warnings: string;
     fift: string;

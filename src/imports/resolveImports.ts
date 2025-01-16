@@ -1,116 +1,103 @@
-import { ItemOrigin, Parser } from "../grammar";
+import { ItemOrigin } from "../grammar";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { throwCompilationError } from "../error/errors";
 import { resolveLibrary } from "./resolveLibrary";
+import { Stdlib } from "../pipeline/fs";
+import { AstImport } from "../ast/ast";
 
-export function resolveImports(args: {
+const createQueue = <K, V>() => {
+    const processed: Set<K> = new Set();
+    const queue: { key: K, value: V }[] = [];
+
+    const add = (key: K, value: V) => {
+        if (!processed.has(key)) {
+            processed.add(key);
+            queue.push({ key, value });
+        }
+    };
+
+    const iterate = (f: (key: K, value: V) => void) => {
+        for (;;) {
+            const pair = queue.shift();
+            if (typeof pair === 'undefined') {
+                return;
+            }
+            const { key, value } = pair;
+            f(key, value);
+        }
+    };
+
+    return {
+        add,
+        iterate,
+    }
+};
+
+export type Source = {
+    readonly code: string;
+    readonly origin: ItemOrigin;
+}
+
+export type Imports = {
+    readonly tact: Record<string, Source>,
+    readonly func: Record<string, Source>
+}
+
+export function resolveImports({
+    entrypoint,
+    parseImports,
+    projectFs,
+    stdlibFs,
+    stdlib,
+}: {
     entrypoint: string;
     projectFs: VirtualFileSystem;
     stdlibFs: VirtualFileSystem;
-    parser: Parser;
-}) {
-    //
-    // Load stdlib and entrypoint
-    //
+    parseImports: (src: string, path: string, origin: ItemOrigin) => AstImport[]
+    stdlib: Stdlib;
+}): Imports {
+    const q = createQueue<string, Source>();
 
-    // const stdlibFuncPath = args.stdlibFs.resolve('./stdlib.fc');
-    // const stdlibFunc = args.stdlibFs.readFile(stdlibFuncPath).toString();
+    q.add(stdlib.stdlibTactPath, { code: stdlib.stdlibTact, origin: "stdlib" });
 
-    const stdlibTactPath = args.stdlibFs.resolve("stdlib.tact");
-    if (!args.stdlibFs.exists(stdlibTactPath)) {
-        throwCompilationError(
-            `Could not find stdlib.tact at ${stdlibTactPath}`,
-        );
-    }
-    const stdlibTact = args.stdlibFs.readFile(stdlibTactPath).toString();
+    const codePath = projectFs.resolve(entrypoint);
+    const code = projectFs.readFile(codePath).toString();
+    q.add(codePath, { code: code, origin: "user" });
 
-    const codePath = args.projectFs.resolve(args.entrypoint);
-    if (!args.projectFs.exists(codePath)) {
-        throwCompilationError(`Could not find entrypoint ${args.entrypoint}`);
-    }
-    const code = args.projectFs.readFile(codePath).toString();
-
-    //
-    // Resolve all imports
-    //
-
-    const importedTact: { code: string; path: string; origin: ItemOrigin }[] =
-        [];
-    const importedFunc: { code: string; path: string; origin: ItemOrigin }[] =
-        [];
-    const processed: Set<string> = new Set();
-    const pending: { code: string; path: string; origin: ItemOrigin }[] = [];
-    function processImports(source: string, path: string, origin: ItemOrigin) {
-        const imp = args.parser.parseImports(source, path, origin);
-        for (const i of imp) {
-            const importPath = i.path.value;
-            // Resolve library
+    const result: Imports = { func: {}, tact: {} };
+    q.iterate((path, { code, origin }) => {
+        result.tact[path] = { code, origin };
+        
+        for (const { path: { value: importPath } } of parseImports(code, path, origin)) {
             const resolved = resolveLibrary({
                 path: path,
                 name: importPath,
-                project: args.projectFs,
-                stdlib: args.stdlibFs,
+                project: projectFs,
+                stdlib: stdlibFs,
             });
+
             if (!resolved.ok) {
                 throwCompilationError(
                     `Could not resolve import "${importPath}" in ${path}`,
                 );
             }
 
-            // Check if already imported
-            if (resolved.kind === "func") {
-                if (importedFunc.find((v) => v.path === resolved.path)) {
-                    continue;
-                }
-            } else {
-                if (importedTact.find((v) => v.path === resolved.path)) {
-                    continue;
-                }
+            if (resolved.path in result[resolved.kind]) {
+                continue;
             }
 
-            // Load code
-            const vfs =
-                resolved.source === "project" ? args.projectFs : args.stdlibFs;
-            if (!vfs.exists(resolved.path)) {
-                throwCompilationError(
-                    `Could not find source file ${resolved.path}`,
-                );
-            }
-            const code: string = vfs.readFile(resolved.path).toString();
+            const newFile: Source = {
+                origin: resolved.source === 'project' ? 'user' : 'stdlib',
+                code: (resolved.source === "project" ? projectFs : stdlibFs).readFile(resolved.path).toString(),
+            };
 
-            // Add to imports
             if (resolved.kind === "func") {
-                importedFunc.push({ code, path: resolved.path, origin });
+                result.func[resolved.path] = newFile;
             } else {
-                if (!processed.has(resolved.path)) {
-                    processed.add(resolved.path);
-                    pending.push({ path: resolved.path, code, origin });
-                }
+                q.add(resolved.path, newFile);
             }
         }
-    }
-
-    // Run resolve
-    importedTact.push({
-        code: stdlibTact,
-        path: stdlibTactPath,
-        origin: "stdlib",
     });
-    processImports(stdlibTact, stdlibTactPath, "stdlib");
-    processImports(code, codePath, "user");
-    while (pending.length > 0) {
-        const p = pending.shift()!;
-        importedTact.push(p);
-        processImports(p.code, p.path, p.origin);
-    }
-    importedTact.push({ code: code, path: codePath, origin: "user" }); // To keep order same as before refactoring
 
-    // Assemble result
-    return {
-        tact: [...importedTact],
-        func: [
-            // { code: stdlibFunc, path: stdlibFuncPath },
-            ...importedFunc,
-        ],
-    };
+    return result;
 }

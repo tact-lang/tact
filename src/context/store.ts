@@ -9,7 +9,6 @@ import {
 import { throwInternalCompilerError } from "../error/errors";
 import { CompilerContext, createContextStore } from "./context";
 import { ItemOrigin } from "../grammar/src-info";
-import { Parser } from "../grammar/grammar";
 
 /**
  * @public
@@ -24,8 +23,6 @@ export type TactSource = { code: string; path: string; origin: ItemOrigin };
  * @property types AST entries representing structures, contracts, and traits.
  */
 export type AstStore = {
-    sources: TactSource[];
-    funcSources: { code: string; path: string }[];
     functions: (AstFunctionDef | AstNativeFunctionDecl | AstAsmFunctionDef)[];
     constants: AstConstantDef[];
     types: AstTypeDecl[];
@@ -49,19 +46,6 @@ export function getRawAST(ctx: CompilerContext): AstStore {
 }
 
 /**
- * Parses multiple Tact source files into AST modules.
- * @public
- */
-export function parseModules(
-    sources: TactSource[],
-    parser: Parser,
-): AstModule[] {
-    return sources.map((source) =>
-        parser.parse(source.code, source.path, source.origin),
-    );
-}
-
-/**
  * Extends the compiler context by adding AST entries and source information from
  * given sources and parsed programs.
  * @public
@@ -70,14 +54,8 @@ export function parseModules(
  */
 export function openContext(
     ctx: CompilerContext,
-    sources: TactSource[],
-    funcSources: { code: string; path: string }[],
-    parser: Parser,
-    parsedModules?: AstModule[],
+    modules: AstModule[],
 ): CompilerContext {
-    const modules = parsedModules
-        ? parsedModules
-        : parseModules(sources, parser);
     const types: AstTypeDecl[] = [];
     const functions: (
         | AstNativeFunctionDecl
@@ -113,8 +91,6 @@ export function openContext(
         }
     }
     ctx = store.set(ctx, "types", {
-        sources,
-        funcSources,
         functions,
         constants,
         types,

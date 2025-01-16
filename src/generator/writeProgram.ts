@@ -17,8 +17,6 @@ import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
 import { ContractABI } from "@ton/core";
 import { writeFunction } from "./writers/writeFunction";
-import { calculateIPFSlink } from "../utils/calculateIPFSlink";
-import { getRawAST } from "../context/store";
 import { emit } from "./emitter/emit";
 import {
     writeInit,
@@ -28,20 +26,25 @@ import {
 import { funcInitIdOf } from "./writers/id";
 import { idToHex } from "../utils/idToHex";
 import { trimIndent } from "../utils/text";
+import { Source } from "../imports/resolveImports";
 
-export async function writeProgram(
-    ctx: CompilerContext,
-    abiSrc: ContractABI,
-    basename: string,
-    debug: boolean = false,
+export function writeProgram(
+    {
+        ctx,
+        abiSrc,
+        abiLink,
+        basename,
+        funcSources,
+        debug = false,
+    }: {
+        ctx: CompilerContext,
+        abiSrc: ContractABI,
+        abiLink: string,
+        basename: string,
+        funcSources: Record<string, Source>,
+        debug?: boolean,
+    }
 ) {
-    //
-    // Load ABI (required for generator)
-    //
-
-    const abi = JSON.stringify(abiSrc);
-    const abiLink = await calculateIPFSlink(Buffer.from(abi));
-
     //
     // Render contract
     //
@@ -119,13 +122,13 @@ export async function writeProgram(
     // native
     //
 
-    const nativeSources = getRawAST(ctx).funcSources;
+    const nativeSources = Object.values(funcSources).map(({ code }) => code);
     if (nativeSources.length > 0) {
         imported.push("native");
         files.push({
             name: basename + ".native.fc",
             code: emit({
-                header: [...nativeSources.map((v) => v.code)].join("\n\n"),
+                header: nativeSources.join("\n\n"),
             }),
         });
     }
@@ -242,8 +245,7 @@ export async function writeProgram(
 
     return {
         entrypoint: basename + ".code.fc",
-        files,
-        abi,
+        codeFc: files,
         abiSrc,
     };
 }
