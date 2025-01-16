@@ -52,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Forbid "remainder" field at the middle of a contract storage: PR [#1301](https://github.com/tact-lang/tact/pull/1301)
 - Forbid the `override` modifier for functions without the corresponding super-function: PR [#1302](https://github.com/tact-lang/tact/pull/1302)
 - Format empty blocks without extra empty line: PR [#1346](https://github.com/tact-lang/tact/pull/1346)
+- Remove duplicate line and column info from error messages: PR [#1362](https://github.com/tact-lang/tact/pull/1362)
 
 ### Docs
 
