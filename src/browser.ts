@@ -2,6 +2,7 @@ import { Config, verifyConfig } from "./config/parseConfig";
 import { ILogger } from "./context/logger";
 import { build } from "./pipeline/build";
 import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
+import files from "./stdlib/stdlib";
 
 export async function run(args: {
     config: Config;
@@ -15,7 +16,7 @@ export async function run(args: {
     const project = createVirtualFileSystem("/", args.files, false);
 
     // Create stdlib path
-    const stdlib = "@stdlib";
+    const stdlib = createVirtualFileSystem("@stdlib", files);
 
     // Compile
     let success = true;

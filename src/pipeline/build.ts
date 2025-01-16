@@ -7,14 +7,12 @@ import { CompilerContext } from "../context/context";
 import { funcCompile } from "../func/funcCompile";
 import { writeReport } from "../generator/writeReport";
 import { getRawAST } from "../context/store";
-import files from "../stdlib/stdlib";
 import { ILogger, Logger } from "../context/logger";
 import { PackageFileFormat } from "../packaging/fileFormat";
 import { packageCode } from "../packaging/packageCode";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
 import { getContracts, getType } from "../types/resolveDescriptors";
 import { posixNormalize } from "../utils/filePath";
-import { createVirtualFileSystem } from "../vfs/createVirtualFileSystem";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { compile } from "./compile";
 import { precompile } from "./precompile";
@@ -51,16 +49,13 @@ export function enableFeatures(
 export async function build(args: {
     config: ConfigProject;
     project: VirtualFileSystem;
-    stdlib: string | VirtualFileSystem;
+    stdlib: VirtualFileSystem;
     logger?: ILogger;
     parser?: Parser;
     ast?: FactoryAst;
 }): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
     const { config, project } = args;
-    const stdlib =
-        typeof args.stdlib === "string"
-            ? createVirtualFileSystem(args.stdlib, files)
-            : args.stdlib;
+    const stdlib = args.stdlib;
     const ast: FactoryAst = args.ast ?? getAstFactory();
     const parser: Parser =
         args.parser ?? getParser(ast, config.options?.parser ?? defaultParser);

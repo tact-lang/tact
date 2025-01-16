@@ -5,7 +5,8 @@ import { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 import { build } from "./pipeline/build";
 import { LogLevel, Logger } from "./context/logger";
 import { TactErrorCollection } from "./error/errors";
-import { stdlibPath } from "./stdlib/path";
+import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
+import files from "./stdlib/stdlib";
 
 type AdditionalCliOptions = {
     mode?: ConfigProject["mode"];
@@ -116,7 +117,7 @@ export async function run(args: {
         configWithRootPath.rootPath as string,
         false,
     );
-    const stdlib = createNodeFileSystem(stdlibPath, false); // Improves developer experience
+    const stdlib = createVirtualFileSystem("@stdlib", files);
     for (const config of projects) {
         logger.info(`💼 Compiling project ${config.name} ...`);
         let cliConfig = { ...config };
