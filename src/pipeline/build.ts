@@ -15,7 +15,13 @@ import { getContracts, getType } from "../types/resolveDescriptors";
 import { posixNormalize } from "../utils/filePath";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { compile } from "./compile";
-import { precompile } from "./precompile";
+import { resolveDescriptors } from "../types/resolveDescriptors";
+import { resolveAllocations } from "../storage/resolveAllocation";
+import { openContext } from "../context/store";
+import { resolveStatements } from "../types/resolveStatements";
+import { resolveErrors } from "../types/resolveErrors";
+import { resolveSignatures } from "../types/resolveSignatures";
+import { resolveImports } from "../imports/resolveImports";
 import { getCompilerVersion } from "./version";
 import { FactoryAst, getAstFactory, idText } from "../ast/ast";
 import { TactErrorCollection } from "../error/errors";
@@ -46,7 +52,14 @@ export function enableFeatures(
     }, ctx);
 }
 
-export async function build(args: {
+export async function build({
+    config,
+    project,
+    stdlib,
+    logger = new Logger(),
+    ast = getAstFactory(),
+    parser = getParser(ast, config.options?.parser ?? defaultParser),
+ }: {
     config: ConfigProject;
     project: VirtualFileSystem;
     stdlib: VirtualFileSystem;
@@ -54,13 +67,6 @@ export async function build(args: {
     parser?: Parser;
     ast?: FactoryAst;
 }): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
-    const { config, project } = args;
-    const stdlib = args.stdlib;
-    const ast: FactoryAst = args.ast ?? getAstFactory();
-    const parser: Parser =
-        args.parser ?? getParser(ast, config.options?.parser ?? defaultParser);
-    const logger: ILogger = args.logger ?? new Logger();
-
     // Configure context
     let ctx: CompilerContext = new CompilerContext();
     const cfg: string = JSON.stringify({
@@ -69,9 +75,30 @@ export async function build(args: {
     });
     ctx = enableFeatures(ctx, logger, config);
 
-    // Precompile
+    const entrypoint = config.path;
+    
     try {
-        ctx = precompile(ctx, project, stdlib, config.path, parser, ast);
+        // Load all sources
+        const imported = resolveImports({ entrypoint, project, stdlib, parser });
+
+        // Add information about all the source code entries to the context
+        ctx = openContext(ctx, imported.tact, imported.func, parser);
+
+        // First load type descriptors and check that
+        //       they all have valid signatures
+        ctx = resolveDescriptors(ctx, ast);
+
+        // This creates TLB-style type definitions
+        ctx = resolveSignatures(ctx, ast);
+
+        // This checks and resolves all statements
+        ctx = resolveStatements(ctx, ast);
+
+        // This extracts error messages
+        ctx = resolveErrors(ctx, ast);
+
+        // This creates allocations for all defined types
+        ctx = resolveAllocations(ctx);
     } catch (e) {
         logger.error(
             config.mode === "checkOnly" || config.mode === "funcOnly"

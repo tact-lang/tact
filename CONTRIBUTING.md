@@ -109,7 +109,7 @@ The main entry point for the Tact CLI is [src/node.ts](./src/node.ts) and [src/p
 
 The Tact CLI gets Tact settings from a `tact.config.json` file or creates a default config for a single-file compilation mode. The format of `tact.config.json` files is specified in [src/config/configSchema.json](src/config/configSchema.json).
 
-The so-called "pre-compilation" steps that include imports resolution, type-checking, building schemas for high-level Tact data structures to be serialized/deserialized as cells (this step is dubbed "allocation") are located in [src/pipeline/precompile.ts](src/pipeline/precompile.ts).
+The so-called "pre-compilation" steps that include imports resolution, type-checking, building schemas for high-level Tact data structures to be serialized/deserialized as cells (this step is dubbed "allocation") are located in [src/pipeline/build.ts](src/pipeline/build.ts).
 
 Besides the terminal, the Tact compiler is supposed to work in browser environments as well.
 
