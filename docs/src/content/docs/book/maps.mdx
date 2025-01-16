@@ -75,6 +75,11 @@ Note, that [persistent state variables](/book/contracts#variables) of type `map<
 
 ### Set values, `.set()` {#set}
 
+```tact
+// K and V correspond to the key and value types of the given map
+extends fun set(self: map<K, V>, key: K, val: V);
+```
+
 To set or replace the value under a key call the `.set(){:tact}` [method](/book/functions#extension-function), which is accessible for all maps.
 
 ```tact
@@ -91,7 +96,12 @@ fizz.set(7, 68); // key 7 now points to value 68
 
 ### Get values, `.get()` {#get}
 
-To check if a key is found in the map by calling the `.get(){:tact}` [method](/book/functions#extension-function), which is accessible for all maps. This will return `null{:tact}` if the key is missing, or the value if the key is found.
+```tact
+// K and V correspond to the key and value types of the given map
+extends fun get(self: map<K, V>, key: K): V?;
+```
+
+To check if a key is found in the map by calling the `.get(){:tact}` [method](/book/functions#extension-function), which is accessible for all maps. This will return [`null{:tact}`](/book/optionals) if the key is missing, or the value if the key is found.
 
 ```tact
 // Empty map
@@ -117,6 +127,11 @@ if (gotButUnsure != null) {
 ### Replace values, `.replace()` {#replace}
 
 <Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+```tact
+// K and V correspond to the key and value types of the given map
+extends fun replace(self: map<K, V>, key: K, val: V): Bool;
+```
 
 To replace the value under a key, if such a key exists, use the `.replace(){:tact}` [method](/book/functions#extension-function). It returns `true{:tact}` on successful replacement and `false{:tact}` otherwise.
 
@@ -160,6 +175,11 @@ replaced2; // false
 
 <Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
 
+```tact
+// K and V correspond to the key and value types of the given map
+extends fun replaceGet(self: map<K, V>, key: K, val: V): V?;
+```
+
 Like [`.replace()`](#replace), but instead of returning a [`Bool{:tact}`](/book/types#booleans) it returns the old (pre-replacement) value on successful replacement and [`null{:tact}`](/book/optionals) otherwise.
 
 ```tact
@@ -199,6 +219,11 @@ oldVal2; // null
 ```
 
 ### Delete entries, `.del()` {#del}
+
+```tact
+// K and V correspond to the key and value types of the given map
+extends fun del(self: map<K, V>, key: K): Bool;
+```
 
 To delete a single key-value pair (single entry), use the `.del(){:tact}` [method](/book/functions#extension-function). It returns `true{:tact}` in the case of successful deletion and `false{:tact}` otherwise.
 
@@ -241,6 +266,11 @@ With this approach all previous entries of the map are completely discarded from
 
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
 
+```tact
+// K and V correspond to the key and value types of the given map
+extends fun exists(self: map<K, V>, key: K): Bool;
+```
+
 The `.exists(){:tact}` [method](/book/functions#extension-function) on maps returns `true{:tact}` if the value under the given key exists in the map and `false{:tact}` otherwise.
 
 ```tact
@@ -268,6 +298,11 @@ if (fizz.get(1 / 2) != null) { // also true, but consumes more gas
 
 ### Check if empty, `.isEmpty()` {#isempty}
 
+```tact
+// K and V correspond to the key and value types of the given map
+extends fun isEmpty(self: map<K, V>): Bool;
+```
+
 The `.isEmpty(){:tact}` [method](/book/functions#extension-function) on maps returns `true{:tact}` if the map is empty and `false{:tact}` otherwise:
 
 ```tact
@@ -287,6 +322,11 @@ if (fizz == null) {
 ### Compare with `.deepEquals()` {#deepequals}
 
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+// K and V correspond to the key and value types of the given map
+extends fun deepEquals(self: map<K, V>, other: map<K, V>): Bool;
+```
 
 The `.deepEquals(){:tact}` [method](/book/functions#extension-function) on maps returns `true{:tact}` if all entries of the map match corresponding entries of another map, ignoring possible differences in the [underlying serialization logic][hashmap]. Returns `false{:tact}` otherwise.
 
@@ -330,6 +370,11 @@ There, both maps are formed manually and both contain the same key-value pair. I
 :::
 
 ### Convert to a `Cell`, `.asCell()` {#ascell}
+
+```tact
+// K and V correspond to the key and value types of the given map
+extends fun asCell(self: map<K, V>): Cell;
+```
 
 On [TVM][tvm], maps are represented as a [`Cell{:tact}`][cell] type and it's possible to construct and parse them directly. However, doing so is highly error-prone and quite messy, which is why Tact provides maps as a standalone composite type with many of the helper methods mentioned above.
 
