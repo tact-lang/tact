@@ -1,4 +1,4 @@
-@interface("") trait B {}
+@interface("") trait B { }
 
 trait C {
     abstract get fun d(e: String): String;
@@ -11,7 +11,7 @@ trait Ownable with B {
     const someNum: Int = 2;
     abstract const something: Int;
 
-    receive("message") {}
+    receive("message") { }
 
     fun requireOwner() {
         nativeThrowUnless(132, context().sender == self.owner);

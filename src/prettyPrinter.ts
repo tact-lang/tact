@@ -381,7 +381,7 @@ const createContext = (spaces: number): Context<ContextModel> => {
         block(rows).map((f) => (level: number) => f(level + 1));
     const braced = (rows: readonly ContextModel[]) =>
         block(
-            rows.length > 0 ? [row(`{`), indent(rows), row(`}`)] : [row("{}")],
+            rows.length > 0 ? [row(`{`), indent(rows), row(`}`)] : [row("{ }")],
         );
     const list = <T>(items: readonly T[], print: Printer<T>) =>
         items.map((node) => print(node)(ctx));

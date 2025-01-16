@@ -30,4 +30,4 @@ message(constant_def_5 + 1) message_decl_6 {
 
 const constant_def_5: Int = 0xdeadbeef;
 
-contract contract_7 {}
+contract contract_7 { }
