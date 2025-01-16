@@ -77,7 +77,7 @@ Note, that [persistent state variables](/book/contracts#variables) of type `map<
 
 ```tact
 // K and V correspond to the key and value types of the given map
-extends fun set(self: map<K, V>, key: K, val: V);
+extends mutates fun set(self: map<K, V>, key: K, val: V);
 ```
 
 To set or replace the value under a key call the `.set(){:tact}` [method](/book/functions#extension-function), which is accessible for all maps.
@@ -130,7 +130,7 @@ if (gotButUnsure != null) {
 
 ```tact
 // K and V correspond to the key and value types of the given map
-extends fun replace(self: map<K, V>, key: K, val: V): Bool;
+extends mutates fun replace(self: map<K, V>, key: K, val: V): Bool;
 ```
 
 To replace the value under a key, if such a key exists, use the `.replace(){:tact}` [method](/book/functions#extension-function). It returns `true{:tact}` on successful replacement and `false{:tact}` otherwise.
@@ -177,7 +177,7 @@ replaced2; // false
 
 ```tact
 // K and V correspond to the key and value types of the given map
-extends fun replaceGet(self: map<K, V>, key: K, val: V): V?;
+extends mutates fun replaceGet(self: map<K, V>, key: K, val: V): V?;
 ```
 
 Like [`.replace()`](#replace), but instead of returning a [`Bool{:tact}`](/book/types#booleans) it returns the old (pre-replacement) value on successful replacement and [`null{:tact}`](/book/optionals) otherwise.
@@ -222,7 +222,7 @@ oldVal2; // null
 
 ```tact
 // K and V correspond to the key and value types of the given map
-extends fun del(self: map<K, V>, key: K): Bool;
+extends mutates fun del(self: map<K, V>, key: K): Bool;
 ```
 
 To delete a single key-value pair (single entry), use the `.del(){:tact}` [method](/book/functions#extension-function). It returns `true{:tact}` in the case of successful deletion and `false{:tact}` otherwise.
