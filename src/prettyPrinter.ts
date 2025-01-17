@@ -821,6 +821,12 @@ export const ppAstStatementDestruct: Printer<A.AstStatementDestruct> =
         );
     };
 
+export const ppTypedParameter: Printer<A.AstTypedParameter> =
+    ({ name, type }) =>
+    (c) => {
+        return c.row(`${ppAstId(name)}: ${ppAstType(type)}`);
+    };
+
 export const ppAstStatementBlock: Printer<A.AstStatementBlock> =
     ({ statements }) =>
     (c) =>
@@ -879,9 +885,6 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     destruct_mapping: () => {
         throw new Error("Not implemented");
     },
-    typed_parameter: () => {
-        throw new Error("Not implemented");
-    },
     destruct_end: () => {
         throw new Error("Not implemented");
     },
@@ -918,6 +921,7 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     statement_destruct: ppAstStatementDestruct,
     function_attribute: exprNode(ppAstFunctionAttribute),
     asm_function_def: ppAstAsmFunctionDef,
+    typed_parameter: ppTypedParameter,
 });
 
 /**
