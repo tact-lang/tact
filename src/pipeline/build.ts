@@ -152,7 +152,12 @@ export async function build(args: {
             codeEntrypoint = res.output.entrypoint;
         } catch (e) {
             logger.error("Tact compilation failed");
-            logger.error(e as Error);
+            // show an error with a backtrace only in verbose mode
+            if (e instanceof TactError && !config.verbose) {
+                logger.error(e.message);
+            } else {
+                logger.error(e as Error);
+            }
             ok = false;
             errorMessages.push(e as Error);
             continue;
