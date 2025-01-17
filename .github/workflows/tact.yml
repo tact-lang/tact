@@ -123,7 +123,7 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           set -o pipefail
-          
+
           tact src/test/compilation-failed/contracts/const-eval-ascii-empty.tact 2>&1 | \
           tee output.log | \
           (! grep -E ".*at \w+ \(.*")
@@ -135,7 +135,7 @@ jobs:
       - name: CLI Test | Check compilation of broken contract contains stacktrace with --verbose flag
         run: |
           set -o pipefail
-          
+
           tact --verbose src/test/compilation-failed/contracts/const-eval-ascii-empty.tact 2>&1 | \
           tee compiler-error-output.log | \
           (grep -E ".*at \w+ \(.*")
