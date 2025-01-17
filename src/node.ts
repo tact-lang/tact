@@ -7,6 +7,7 @@ import { LogLevel, Logger } from "./context/logger";
 import { TactErrorCollection } from "./error/errors";
 import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
 import files from "./stdlib/stdlib";
+import { getCompilerVersion } from "./pipeline/version";
 
 type AdditionalCliOptions = {
     mode?: ConfigProject["mode"];
@@ -71,6 +72,7 @@ export async function run(args: {
     projectNames?: string[];
     additionalCliOptions?: AdditionalCliOptions;
     suppressLog?: boolean;
+    compilerVersion?: string;
 }) {
     const configWithRootPath = await loadConfig(args.fileName, args.configPath);
     if (!configWithRootPath) {
@@ -131,6 +133,7 @@ export async function run(args: {
             projectFs,
             stdlibFs,
             logger,
+            compilerVersion: args.compilerVersion ?? getCompilerVersion(),
         });
         success = success && built.ok;
         if (!built.ok && built.error.length > 0) {

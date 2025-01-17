@@ -3,6 +3,7 @@ import { ILogger } from "./context/logger";
 import { build } from "./pipeline/build";
 import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
 import files from "./stdlib/stdlib";
+import { getCompilerVersion } from "./pipeline/version";
 
 export async function run(args: {
     config: Config;
@@ -27,6 +28,7 @@ export async function run(args: {
             projectFs,
             stdlibFs,
             logger: args.logger,
+            compilerVersion: getCompilerVersion(),
         });
         success = success && built.ok;
         if (!built.ok) {

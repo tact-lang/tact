@@ -4,22 +4,19 @@ import path from "path";
 import { glob } from "glob";
 import { verify } from "./verify";
 import { Logger } from "../src/context/logger";
-import { __DANGER__disableVersionNumber } from "../src/pipeline/version";
 
 const configPath = path.join(__dirname, "tact.config.json");
 const packagesPath = path.resolve(__dirname, "output", "*.pkg");
 
 // Read cases
 const main = async () => {
-    // Disable version number in packages
-    __DANGER__disableVersionNumber();
-
     const logger = new Logger();
 
     try {
         // Compile projects
         const compileResult = await run({
             configPath,
+            compilerVersion: 'invalid',
         });
         if (!compileResult.ok) {
             throw new Error("Tact projects compilation failed");

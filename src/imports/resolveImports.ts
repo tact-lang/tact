@@ -43,19 +43,19 @@ export type Imports = {
     readonly func: Record<string, Source>
 }
 
-export function resolveImports({
-    entrypoint,
+export const resolveImports = ({
     parseImports,
+    stdlib,
+    entrypoint,
     projectFs,
     stdlibFs,
-    stdlib,
 }: {
-    entrypoint: string;
-    projectFs: VirtualFileSystem;
-    stdlibFs: VirtualFileSystem;
     parseImports: (src: string, path: string, origin: ItemOrigin) => AstImport[]
     stdlib: Stdlib;
-}): Imports {
+    projectFs: VirtualFileSystem;
+    stdlibFs: VirtualFileSystem;
+    entrypoint: string
+}): Imports => {
     const q = createQueue<string, Source>();
 
     q.add(stdlib.stdlibTactPath, { code: stdlib.stdlibTact, origin: "stdlib" });
