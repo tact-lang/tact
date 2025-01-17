@@ -7,7 +7,7 @@ import { AstImport } from "../ast/ast";
 
 const createQueue = <K, V>() => {
     const processed: Set<K> = new Set();
-    const queue: { key: K, value: V }[] = [];
+    const queue: { key: K; value: V }[] = [];
 
     const add = (key: K, value: V) => {
         if (!processed.has(key)) {
@@ -19,7 +19,7 @@ const createQueue = <K, V>() => {
     const iterate = (f: (key: K, value: V) => void) => {
         for (;;) {
             const pair = queue.shift();
-            if (typeof pair === 'undefined') {
+            if (typeof pair === "undefined") {
                 return;
             }
             const { key, value } = pair;
@@ -30,18 +30,18 @@ const createQueue = <K, V>() => {
     return {
         add,
         iterate,
-    }
+    };
 };
 
 export type Source = {
     readonly code: string;
     readonly origin: ItemOrigin;
-}
+};
 
 export type Imports = {
-    readonly tact: Record<string, Source>,
-    readonly func: Record<string, Source>
-}
+    readonly tact: Record<string, Source>;
+    readonly func: Record<string, Source>;
+};
 
 export const resolveImports = ({
     parseImports,
@@ -50,11 +50,15 @@ export const resolveImports = ({
     projectFs,
     stdlibFs,
 }: {
-    parseImports: (src: string, path: string, origin: ItemOrigin) => AstImport[]
+    parseImports: (
+        src: string,
+        path: string,
+        origin: ItemOrigin,
+    ) => AstImport[];
     stdlib: Stdlib;
     projectFs: VirtualFileSystem;
     stdlibFs: VirtualFileSystem;
-    entrypoint: string
+    entrypoint: string;
 }): Imports => {
     const q = createQueue<string, Source>();
 
@@ -67,8 +71,10 @@ export const resolveImports = ({
     const result: Imports = { func: {}, tact: {} };
     q.iterate((path, { code, origin }) => {
         result.tact[path] = { code, origin };
-        
-        for (const { path: { value: importPath } } of parseImports(code, path, origin)) {
+
+        for (const {
+            path: { value: importPath },
+        } of parseImports(code, path, origin)) {
             const resolved = resolveLibrary({
                 path: path,
                 name: importPath,
@@ -87,8 +93,10 @@ export const resolveImports = ({
             }
 
             const newFile: Source = {
-                origin: resolved.source === 'project' ? 'user' : 'stdlib',
-                code: (resolved.source === "project" ? projectFs : stdlibFs).readFile(resolved.path).toString(),
+                origin: resolved.source === "project" ? "user" : "stdlib",
+                code: (resolved.source === "project" ? projectFs : stdlibFs)
+                    .readFile(resolved.path)
+                    .toString(),
             };
 
             if (resolved.kind === "func") {
@@ -100,4 +108,4 @@ export const resolveImports = ({
     });
 
     return result;
-}
+};

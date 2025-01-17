@@ -16,7 +16,7 @@ const main = async () => {
         // Compile projects
         const compileResult = await run({
             configPath,
-            compilerVersion: 'invalid',
+            compilerVersion: "invalid",
         });
         if (!compileResult.ok) {
             throw new Error("Tact projects compilation failed");

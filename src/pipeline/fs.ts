@@ -1,4 +1,4 @@
-import { ConfigProject } from "../config/parseConfig";
+/* eslint-disable @typescript-eslint/require-await */
 import { throwCompilationError } from "../error/errors";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 
@@ -32,34 +32,41 @@ export const getStdLib = (stdlib: VirtualFileSystem): Stdlib => {
     };
 };
 
-export const getFileWriter = (
-    { name: projectName, output: outputPath }: ConfigProject, 
-    project: VirtualFileSystem,
-) => {
+export const getFileWriter = (args: {
+    projectName: string;
+    outputDir: string;
+    projectFs: VirtualFileSystem;
+}) => {
     return (contract: string) => {
-        const writeExt = (ext: string) => (code: string | Buffer) => {
-            project.writeFile(
-                project.resolve(
-                    outputPath,
-                    `${projectName}_${contract}.${ext}`,
+        const writeExt = (ext: string) => async (code: string | Buffer) => {
+            args.projectFs.writeFile(
+                args.projectFs.resolve(
+                    args.outputDir,
+                    `${args.projectName}_${contract}.${ext}`,
                 ),
                 code,
             );
         };
 
         return {
-            writeAbi: writeExt("abi"),
-            writeBoc: writeExt("code.boc"),
-            writeFift: writeExt("code.fif"),
-            writeFiftDecompiled: writeExt("code.rev.fif"),
-            writePackage: writeExt("pkg"),
-            writeBindings: writeExt("ts"),
-            writeReport: writeExt("md"),
-            writeFunC: (name: string, code: string) => {
-                project.writeFile(project.resolve(outputPath, name), code);
+            abi: writeExt("abi"),
+            boc: writeExt("code.boc"),
+            fift: writeExt("code.fif"),
+            fiftDecompiled: writeExt("code.rev.fif"),
+            package: writeExt("pkg"),
+            bindings: writeExt("ts"),
+            report: writeExt("md"),
+            funC: async (codeFc: Record<string, string>) => {
+                for (const [name, code] of Object.entries(codeFc)) {
+                    args.projectFs.writeFile(
+                        args.projectFs.resolve(args.outputDir, name),
+                        code,
+                    );
+                }
             },
         };
     };
 };
 
-export type FileWriter = ReturnType<typeof getFileWriter>
+export type FileWriter = ReturnType<typeof getFileWriter>;
+export type ContractWriter = ReturnType<FileWriter>;

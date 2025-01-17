@@ -7,7 +7,10 @@ import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
 import { getAllTypes } from "../types/resolveDescriptors";
 import { getAllErrors } from "../types/resolveErrors";
 
-export function createABI(ctx: CompilerContext, name: string): ContractABI & { interfaces: string[] } {
+export function createABI(
+    ctx: CompilerContext,
+    name: string,
+): ContractABI & { interfaces: string[] } {
     const allTypes = getAllTypes(ctx);
 
     // Contract

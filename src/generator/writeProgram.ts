@@ -28,23 +28,21 @@ import { idToHex } from "../utils/idToHex";
 import { trimIndent } from "../utils/text";
 import { Source } from "../imports/resolveImports";
 
-export function writeProgram(
-    {
-        ctx,
-        abiSrc,
-        abiLink,
-        basename,
-        funcSources,
-        debug = false,
-    }: {
-        ctx: CompilerContext,
-        abiSrc: ContractABI,
-        abiLink: string,
-        basename: string,
-        funcSources: Record<string, Source>,
-        debug?: boolean,
-    }
-) {
+export function writeProgram({
+    ctx,
+    abiSrc,
+    abiLink,
+    basename,
+    funcSources,
+    debug = false,
+}: {
+    ctx: CompilerContext;
+    abiSrc: ContractABI;
+    abiLink: string;
+    basename: string;
+    funcSources: Record<string, Source>;
+    debug?: boolean;
+}) {
     //
     // Render contract
     //
@@ -244,7 +242,7 @@ export function writeProgram(
     });
 
     return {
-        entrypoint: basename + ".code.fc",
+        funcEntry: basename + ".code.fc",
         codeFc: files,
         abiSrc,
     };
