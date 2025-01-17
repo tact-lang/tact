@@ -17,7 +17,7 @@ This version will be the first stable release of TACT. It will be released when 
 - Ability to receive messages from other contracts
 - Limited Strings and Maps support
 - Importing `func` files
-- [Arguments-addressable contracts](https://docs.tact-lang.org/evolution/OTP-005)
+- [Arguments-addressable contracts](https://docs.tact-lang.org/ref/evolution/otp-005)
 - TypeScript bindings for Node, Browser and React Native
 
 ## ✍️ Version v2
