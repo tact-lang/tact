@@ -81,6 +81,11 @@ export const projectSchema = z
         mode: z
             .enum(["fullWithDecompilation", "full", "funcOnly", "checkOnly"])
             .optional(),
+
+        /**
+         * If set to true, enables extra output which is useful for debugging purposes.
+         */
+        verbose: z.boolean().optional(),
     })
     .strict();
 

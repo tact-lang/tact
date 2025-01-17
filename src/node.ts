@@ -70,6 +70,7 @@ export async function run(args: {
     projectNames?: string[];
     additionalCliOptions?: AdditionalCliOptions;
     suppressLog?: boolean;
+    verbose?: boolean;
 }) {
     const configWithRootPath = await loadConfig(args.fileName, args.configPath);
     if (!configWithRootPath) {
@@ -123,6 +124,9 @@ export async function run(args: {
 
         if (args.additionalCliOptions?.mode !== undefined) {
             cliConfig = { ...config, ...args.additionalCliOptions };
+        }
+        if (args.verbose !== undefined) {
+            cliConfig.verbose = args.verbose;
         }
 
         const built = await build({

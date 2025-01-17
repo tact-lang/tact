@@ -20,7 +20,7 @@ import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
 import { FactoryAst, getAstFactory, idText } from "../ast/ast";
-import { TactErrorCollection } from "../error/errors";
+import { TactError, TactErrorCollection } from "../error/errors";
 import { getParser, Parser } from "../grammar";
 import { defaultParser } from "../grammar/grammar";
 
@@ -83,7 +83,13 @@ export async function build(args: {
                 ? "Syntax and type checking failed"
                 : "Tact compilation failed",
         );
-        logger.error(e as Error);
+
+        // show an error with a backtrace only in verbose mode
+        if (e instanceof TactError && !config.verbose) {
+            logger.error(e.message);
+        } else {
+            logger.error(e as Error);
+        }
         return { ok: false, error: [e as Error] };
     }
 
