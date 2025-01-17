@@ -40,7 +40,6 @@ import files from "../stdlib/stdlib";
 
 export function enableFeatures(
     ctx: CompilerContext,
-    logger: ILogger,
     options: Options | undefined,
 ): CompilerContext {
     if (options === undefined) {
@@ -55,162 +54,181 @@ export function enableFeatures(
     ];
     return features.reduce((currentCtx, { option, name }) => {
         if (option) {
-            logger.debug(`   > 👀 Enabling ${name}`);
             return featureEnable(currentCtx, name);
         }
         return currentCtx;
     }, ctx);
 }
 
-const stage =
-    <T extends unknown[], U>(
-        name: string,
-        callback: (...args: T) => Promise<U>,
-    ) =>
-    (...args: T): Promise<U> => {
-        return callback(...args);
+const runSync = (arr: ((sync: () => Promise<void>) => Promise<void>)[]) => {
+    let count = arr.length;
+    let resolve: undefined | (() => void);
+    const syncP: Promise<void> = new Promise((r) => (resolve = r));
+    const sync = async () => {
+        --count;
+        if (count === 0) resolve?.();
+        await syncP;
     };
+    return arr.map((task) => task(sync));
+};
 
-// const attempt = async <T>(
-//     name: string,
-//     f: () => Promise<T>,
-// ): Promise<{ ok: true; value: T } | { ok: false; error: Error[] }> => {
-//     logger.info(`${name} started`);
-//     try {
-//         return {
-//             ok: true,
-//             value: await f(),
-//         };
-//     } catch (e) {
-//         if (!(e instanceof Error)) {
-//             throw e;
-//         }
-//         logger.error(`${name} failed`);
-//         logger.error(e);
-//         return {
-//             ok: false,
-//             error: [e],
-//         };
-//     }
-// };
+const getStepper = (logger: ILogger, path: string[] = []) => {
+    const wrap = async <T>(name: string, callback: () => Promise<T>) => {
+        try {
+            path.push(name);
+            return await callback();
+        } finally {
+            path.pop();
+        }
+    };
+    const message = (s: string) => [...path, s].join(": ");
+    const info = (s: string) => {
+        logger.info(message(s));
+    };
+    const error = (s: string) => {
+        logger.error(message(s));
+    };
+    const step = async <U>(
+        name: string,
+        callback: () => Promise<U>,
+    ): Promise<U> => {
+        return wrap(name, async () => {
+            info("started");
+            try {
+                return await callback();
+            } catch (e) {
+                if (!(e instanceof Error)) {
+                    throw e;
+                }
+                error("failed");
+                error(e.toString());
+                throw e;
+            }
+        });
+    };
+    const steps = (
+        xs: string[],
+        f: (x: string, sync: () => Promise<void>) => Promise<void>,
+    ) => Promise.all(runSync(xs.map((x) => (s) => step(x, () => f(x, s)))));
+    return { step, steps };
+};
 
-const getImporter = (args: {
-    parseImports: (
-        src: string,
-        path: string,
-        origin: ItemOrigin,
-    ) => AstImport[];
-    stdlib: Stdlib;
-    stdlibFs: VirtualFileSystem;
-    projectFs: VirtualFileSystem;
-    entrypoint: string;
-}) =>
-    stage("Checking imports", async () => {
+const getImporter =
+    (args: {
+        parseImports: (
+            src: string,
+            path: string,
+            origin: ItemOrigin,
+        ) => AstImport[];
+        stdlib: Stdlib;
+        stdlibFs: VirtualFileSystem;
+        projectFs: VirtualFileSystem;
+        entrypoint: string;
+    }) =>
+    async () => {
         // Load all sources
         return resolveImports(args);
-    });
+    };
 
-const getImportParser = ({
-    parse,
-}: {
-    parse: (src: string, path: string, origin: ItemOrigin) => AstModule;
-}) =>
-    stage("Parse", async (imports: Imports) => {
+const getImportParser =
+    ({
+        parse,
+    }: {
+        parse: (src: string, path: string, origin: ItemOrigin) => AstModule;
+    }) =>
+    async (imports: Imports) => {
         // Parse sources
         return Object.entries(imports.tact).map(([path, { code, origin }]) =>
             parse(code, path, origin),
         );
-    });
+    };
 
-const checkTypes = stage(
-    "Checking types",
+const checkTypes = async (args: {
+    sources: AstModule[];
+    ast: FactoryAst;
+    ctx: CompilerContext;
+}) => {
+    let ctx = args.ctx;
+    // Add information about all the source code entries to the context
+    ctx = openContext(ctx, args.sources);
+    // First load type descriptors and check that they all have valid signatures
+    ctx = resolveDescriptors(ctx, args.ast);
+    // This creates TLB-style type definitions
+    ctx = resolveSignatures(ctx, args.ast);
+    // This checks and resolves all statements
+    ctx = resolveStatements(ctx, args.ast);
+    // This extracts error messages
+    ctx = resolveErrors(ctx, args.ast);
+    // This creates allocations for all defined types
+    return resolveAllocations(ctx);
+};
+
+const compileAbi = async (args: {
+    contractName: string;
+    ctx: CompilerContext;
+}) => {
+    const abiSrc = createABI(args.ctx, args.contractName);
+    const abi = JSON.stringify(abiSrc);
+    const abiLink = await calculateIPFSlink(Buffer.from(abi));
+    return { text: abi, src: abiSrc, link: abiLink };
+};
+
+const getTactCompiler =
+    ({ projectName }: { projectName: string }) =>
     async (args: {
-        sources: AstModule[];
-        ast: FactoryAst;
         ctx: CompilerContext;
+        abiSrc: ContractABI;
+        abiLink: string;
+        contractName: string;
+        funcSources: Record<string, Source>;
     }) => {
-        let ctx = args.ctx;
-        // Add information about all the source code entries to the context
-        ctx = openContext(ctx, args.sources);
-        // First load type descriptors and check that they all have valid signatures
-        ctx = resolveDescriptors(ctx, args.ast);
-        // This creates TLB-style type definitions
-        ctx = resolveSignatures(ctx, args.ast);
-        // This checks and resolves all statements
-        ctx = resolveStatements(ctx, args.ast);
-        // This extracts error messages
-        ctx = resolveErrors(ctx, args.ast);
-        // This creates allocations for all defined types
-        return resolveAllocations(ctx);
-    },
-);
+        const result = writeProgram({
+            ctx: args.ctx,
+            abiSrc: args.abiSrc,
+            abiLink: args.abiLink,
+            basename: projectName + "_" + args.contractName,
+            funcSources: args.funcSources,
+        });
+        return {
+            funcEntry: result.funcEntry,
+            codeFc: result.codeFc,
+        };
+    };
 
-const getTactCompiler = ({ projectName }: { projectName: string }) =>
-    stage(
-        `Tact compilation`,
-        async (args: {
-            contractName: string;
-            funcSources: Record<string, Source>;
-            ctx: CompilerContext;
-        }) => {
-            const abiSrc = createABI(args.ctx, args.contractName);
-            const abi = JSON.stringify(abiSrc);
-            const result = writeProgram({
-                ctx: args.ctx,
-                abiSrc,
-                abiLink: await calculateIPFSlink(Buffer.from(abi)),
-                basename: projectName + "_" + args.contractName,
-                funcSources: args.funcSources,
-            });
-            return {
-                funcEntry: result.funcEntry,
-                codeFc: result.codeFc,
-                abiSrc: result.abiSrc,
-                abi,
-            };
-        },
-    );
+const getFuncCompiler =
+    ({ stdlib }: { stdlib: Stdlib }) =>
+    async (args: {
+        funcEntry: string;
+        codeFc: { name: string; code: string }[];
+    }) => {
+        // Names don't really matter, as FunC will
+        // make definitions available anyway
+        const funcVfsStdlibPath = "/stdlib.fc";
+        const funcVfsStdlibExPath = "/stdlib_ex.fc";
+        const c = await funcCompileWrap({
+            entries: [funcVfsStdlibPath, funcVfsStdlibExPath, args.funcEntry],
+            sources: [
+                {
+                    path: funcVfsStdlibPath,
+                    content: stdlib.stdlibFunc,
+                },
+                {
+                    path: funcVfsStdlibExPath,
+                    content: stdlib.stdlibExFunc,
+                },
+                ...args.codeFc.map(({ name, code }) => ({
+                    path: `/${name}`,
+                    content: code,
+                })),
+            ],
+        });
+        return { fift: c.fift, codeBoc: c.output };
+    };
 
-const getFuncCompiler = ({ stdlib }: { stdlib: Stdlib }) =>
-    stage(
-        `FunC compilation`,
-        async (args: {
-            funcEntry: string;
-            codeFc: { name: string; code: string }[];
-        }) => {
-            // Names don't really matter, as FunC will
-            // make definitions available anyway
-            const funcVfsStdlibPath = "/stdlib.fc";
-            const funcVfsStdlibExPath = "/stdlib_ex.fc";
-            const c = await funcCompileWrap({
-                entries: [
-                    funcVfsStdlibPath,
-                    funcVfsStdlibExPath,
-                    args.funcEntry,
-                ],
-                sources: [
-                    {
-                        path: funcVfsStdlibPath,
-                        content: stdlib.stdlibFunc,
-                    },
-                    {
-                        path: funcVfsStdlibExPath,
-                        content: stdlib.stdlibExFunc,
-                    },
-                    ...args.codeFc.map(({ name, code }) => ({
-                        path: `/${name}`,
-                        content: code,
-                    })),
-                ],
-            });
-            return { fift: c.fift, codeBoc: c.output };
-        },
-    );
-
-const decompile = stage(`Decompilation`, async (codeBoc: Buffer) => {
+const decompile = async (codeBoc: Buffer) => {
     // Fift decompiler for generated code debug
     return decompileAll({ src: codeBoc });
-});
+};
 
 const getSystemCell = (childContracts: { uid: number; code: Buffer }[]) => {
     if (childContracts.length === 0) {
@@ -246,97 +264,86 @@ const compileContractData = (args: {
 
 type CompiledContract = ReturnType<typeof compileContractData>;
 
-const getPackager = (mods: {
-    compilerVersion: string;
-    projectFs: VirtualFileSystem;
-    options: Options | undefined;
-    entrypoint: string;
-}) =>
-    stage(
-        `Package`,
-        async ({
-            allSources,
-            contractName,
-            contract,
-            abi,
-        }: {
-            contractName: string;
-            contract: CompiledContract;
-            abi: string;
-            allSources: Record<string, Source>;
-        }) => {
-            const pkg: PackageFileFormat = {
-                // FIXME
-                name: contractName,
-                abi,
-                code: contract.code,
-                init: {
-                    kind: "direct",
-                    args: contract.args,
-                    prefix: contract.prefix,
-                    deployment: {
-                        kind: "system-cell",
-                        system: contract.system,
-                    },
-                },
-                sources: Object.fromEntries(
-                    Object.entries(allSources)
-                        .filter(([, { origin }]) => origin === "user")
-                        .map(([path, { code }]) => [
-                            posixNormalize(
-                                path.slice(mods.projectFs.root.length),
-                            ),
-                            Buffer.from(code).toString("base64"),
-                        ]),
-                ),
-                compiler: {
-                    name: "tact",
-                    version: mods.compilerVersion,
-                    parameters: JSON.stringify({
-                        entrypoint: mods.entrypoint,
-                        options: mods.options ?? {},
-                    }),
-                },
-            };
-
-            return JSON.stringify(fileFormat.parse(pkg));
-        },
-    );
-
-const compileBindings = stage(
-    `Bindings`,
-    async (args: { abiSrc: ContractABI; contract: CompiledContract }) => {
-        return writeTypescript(args.abiSrc, args.contract);
-    },
-);
-
-const emitReport = stage(
-    `Reports`,
-    async (args: {
-        ctx: CompilerContext;
-        abiSrc: ContractABI;
-        code: string;
+const getPackager =
+    (mods: {
+        compilerVersion: string;
+        projectFs: VirtualFileSystem;
+        options: Options | undefined;
+        entrypoint: string;
+    }) =>
+    async ({
+        allSources,
+        contractName,
+        contract,
+        abi,
+    }: {
         contractName: string;
+        contract: CompiledContract;
+        abi: string;
+        allSources: Record<string, Source>;
     }) => {
-        return writeReport(args.ctx, {
-            abi: args.abiSrc,
-            code: args.code,
-            name: args.contractName,
-        });
-    },
-);
+        const pkg: PackageFileFormat = {
+            name: contractName,
+            abi,
+            code: contract.code,
+            init: {
+                kind: "direct",
+                args: contract.args,
+                prefix: contract.prefix,
+                deployment: {
+                    kind: "system-cell",
+                    system: contract.system,
+                },
+            },
+            sources: Object.fromEntries(
+                Object.entries(allSources)
+                    .filter(([, { origin }]) => origin === "user")
+                    .map(([path, { code }]) => [
+                        posixNormalize(path.slice(mods.projectFs.root.length)),
+                        Buffer.from(code).toString("base64"),
+                    ]),
+            ),
+            compiler: {
+                name: "tact",
+                version: mods.compilerVersion,
+                parameters: JSON.stringify({
+                    entrypoint: mods.entrypoint,
+                    options: mods.options ?? {},
+                }),
+            },
+        };
 
-const runSync = (arr: ((sync: () => Promise<void>) => Promise<void>)[]) => {
-    let count = arr.length;
-    let resolve: undefined | (() => void);
-    const syncP: Promise<void> = new Promise((r) => (resolve = r));
-    const sync = async () => {
-        --count;
-        if (count === 0) resolve?.();
-        await syncP;
+        return JSON.stringify(fileFormat.parse(pkg));
     };
-    return arr.map((task) => task(sync));
+
+const compileBindings = async (args: {
+    abiSrc: ContractABI;
+    contract: CompiledContract;
+}) => {
+    return writeTypescript(args.abiSrc, args.contract);
 };
+
+const emitReport = async (args: {
+    ctx: CompilerContext;
+    abiSrc: ContractABI;
+    code: string;
+    contractName: string;
+}) => {
+    return writeReport(args.ctx, {
+        abi: args.abiSrc,
+        code: args.code,
+        name: args.contractName,
+    });
+};
+
+/*
+ограничить параллелизм
+падение одной из параллельных тасок не должно ронять все
+сделать vfs асинхронной
+соединить с run
+починить тесты
+https://github.com/tact-lang/tact/blob/82ce38d11ccc8a163ff6dda73e51c3d215ef08ab/src/pipeline/build.ts#L354-L386
+*/
 
 export async function build({
     config: {
@@ -352,12 +359,12 @@ export async function build({
     projectFs: VirtualFileSystem;
 }) {
     const compilerVersion = getCompilerVersion();
-    const logger = new Logger();
+    const { step, steps } = getStepper(new Logger());
     const ast = getAstFactory();
     const parser = getParser(ast, options?.parser ?? defaultParser);
     const stdlibFs = createVirtualFileSystem("@stdlib", files);
     const stdlib = getStdLib(stdlibFs);
-    const writeContract = getFileWriter({
+    const contractFs = getFileWriter({
         projectName,
         outputDir,
         projectFs,
@@ -385,80 +392,101 @@ export async function build({
         stdlib,
     });
 
-    const imports = await checkImports();
-    const sources = await parseImports(imports);
-    const ctx = await checkTypes({
-        ctx: enableFeatures(new CompilerContext(), logger, options),
-        sources,
-        ast,
-    });
+    const imports = await step("Imports", () => checkImports());
+    const sources = await step("Parse", () => parseImports(imports));
+    const ctx = await step("Types", () =>
+        checkTypes({
+            ctx: enableFeatures(new CompilerContext(), options),
+            sources,
+            ast,
+        }),
+    );
     if (mode === "checkOnly") {
         return;
     }
     const built: Record<string, Buffer> = {};
     const contracts = getContracts(ctx);
-    const tasks = contracts.map(
-        (contractName) => async (sync: () => Promise<void>) => {
-            const emit = writeContract(contractName);
-            const { codeFc, funcEntry, abi, abiSrc } = await compileTact({
+    await steps(contracts, async (contractName, sync) => {
+        const emit = contractFs(contractName);
+        const abi = await step("Abi", async () => {
+            const abi = await compileAbi({
+                ctx,
+                contractName,
+            });
+            await emit.abi(abi.text);
+            return abi;
+        });
+        const funcResult = await step("Tact", async () => {
+            const result = await compileTact({
                 ctx,
                 funcSources: imports.func,
                 contractName: contractName,
+                abiSrc: abi.src,
+                abiLink: abi.link,
             });
-            await emit.funC(files);
-            await emit.abi(abi);
-            if (mode === "funcOnly") {
-                return;
-            }
-            const { codeBoc, fift } = await compileFunc({
-                codeFc,
-                funcEntry,
-            });
+            await emit.funC(result.codeFc);
+            return result;
+        });
+        if (mode === "funcOnly") {
+            return;
+        }
+        const codeBoc = await step("FunC", async () => {
+            const { fift, codeBoc } = await compileFunc(funcResult);
             await emit.fift(fift);
             await emit.boc(codeBoc);
-            if (mode === "fullWithDecompilation") {
-                await emit.fiftDecompiled(await decompile(codeBoc));
-            }
+            return codeBoc;
+        });
+        if (mode === "fullWithDecompilation") {
+            await step("Decompilation", async () =>
+                emit.fiftDecompiled(await decompile(codeBoc)),
+            );
+        }
+        await step("Waiting", () => {
             built[contractName] = codeBoc;
-            await sync();
+            return sync();
+        });
+        const contract = await step("Interface", async () => {
             const { dependsOn, init } = getType(ctx, contractName);
-            const childContracts = dependsOn.map(({ uid, name }) => {
-                const code = built[name];
-                if (typeof code === "undefined") {
-                    throw new Error(`Dependency ${name} was not found`);
-                }
-                return { uid, code };
-            });
-            const contract = compileContractData({
+            return compileContractData({
                 ctx,
-                childContracts,
+                childContracts: dependsOn.map(({ uid, name }) => {
+                    const code = built[name];
+                    if (typeof code === "undefined") {
+                        throw new Error(`Dependency ${name} was not found`);
+                    }
+                    return { uid, code };
+                }),
                 codeBoc,
                 init: init!,
             });
-            await emit.package(
+        });
+        await step("Package", async () =>
+            emit.package(
                 await compilePackage({
                     contractName,
                     allSources: { ...imports.func, ...imports.tact },
-                    abi,
+                    abi: abi.text,
                     contract,
                 }),
-            );
-            await emit.bindings(
+            ),
+        );
+        await step("Bindings", async () =>
+            emit.bindings(
                 await compileBindings({
-                    abiSrc,
+                    abiSrc: abi.src,
                     contract,
                 }),
-            );
-            await emit.report(
+            ),
+        );
+        await step("Reports", async () =>
+            emit.report(
                 await emitReport({
                     contractName,
                     ctx,
-                    abiSrc,
+                    abiSrc: abi.src,
                     code: contract.code,
                 }),
-            );
-        },
-    );
-
-    await Promise.all(runSync(tasks));
+            ),
+        );
+    });
 }

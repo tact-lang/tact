@@ -56,8 +56,8 @@ export const getFileWriter = (args: {
             package: writeExt("pkg"),
             bindings: writeExt("ts"),
             report: writeExt("md"),
-            funC: async (codeFc: Record<string, string>) => {
-                for (const [name, code] of Object.entries(codeFc)) {
+            funC: async (codeFc: { name: string; code: string }[]) => {
+                for (const { name, code } of codeFc) {
                     args.projectFs.writeFile(
                         args.projectFs.resolve(args.outputDir, name),
                         code,
