@@ -124,25 +124,21 @@ jobs:
         run: |
           set -o pipefail
 
-          tact src/test/compilation-failed/contracts/const-eval-ascii-empty.tact 2>&1 | \
-          tee output.log | \
-          (! grep -E ".*at \w+ \(.*")
-
-          tact src/test/compilation-failed/contracts/contract-duplicate-bounced-opcode.tact 2>&1 | \
-          tee output.log | \
-          (! grep -E ".*at \w+ \(.*")
+          output=$(tact src/test/compilation-failed/contracts/const-eval-ascii-empty.tact 2>&1 || true)
+          echo "$output" | (! grep -E ".*at \w+ \(.*")
+          
+          output=$(tact src/test/compilation-failed/contracts/contract-duplicate-bounced-opcode.tact 2>&1 || true)
+          echo "$output" | (! grep -E ".*at \w+ \(.*")
 
       - name: CLI Test | Check compilation of broken contract contains stacktrace with --verbose flag
         run: |
           set -o pipefail
 
-          tact --verbose src/test/compilation-failed/contracts/const-eval-ascii-empty.tact 2>&1 | \
-          tee compiler-error-output.log | \
-          (grep -E ".*at \w+ \(.*")
-
-          tact --verbose src/test/compilation-failed/contracts/contract-duplicate-bounced-opcode.tact 2>&1 | \
-          tee compiler-error-output.log | \
-          (grep -E ".*at \w+ \(.*")
+          output=$(tact --verbose src/test/compilation-failed/contracts/const-eval-ascii-empty.tact 2>&1 || true)
+          echo "$output" | grep -E ".*at \w+ \(.*"
+          
+          output=$(tact --verbose src/test/compilation-failed/contracts/contract-duplicate-bounced-opcode.tact 2>&1 || true)
+          echo "$output" | grep -E ".*at \w+ \(.*"
 
       - name: CLI Test | Check single-contract compilation
         if: runner.os != 'Windows'
