@@ -112,11 +112,25 @@ There, the [exit codes](/book/exit-codes) in the range from $0$ to $255$ are tho
 
 #### Trait inheritance diagram {#trait-diagram}
 
-This section shows a [Mermaid][mm] diagram of inherited [traits](/book/types#traits), including the [`BaseTrait{:tact}`](/ref/core-base).
+This section shows a [Mermaid][mm] diagram of [inherited traits](/book/contracts#traits), including the [`BaseTrait{:tact}`](/ref/core-base).
 
-#### Contract inheritance diagram {#contract-diagram}
+For example:
 
-This section shows a [Mermaid][mm] diagram of [contract](/book/contracts) dependencies, i.e. the [traits](/book/types#traits) that it depends upon.
+![Trait inheritance diagram](/src/assets/trait-inheritance-diagram.png)
+
+There, `SampleTactContract` inherits the [`Deployable{:tact}`](/ref/stdlib-deploy#deployable) trait, and both inherit the [`BaseTrait{:tact}`](/ref/core-base).
+
+#### Contract dependency diagram {#contract-diagram}
+
+This section shows a [Mermaid][mm] diagram of [contract](/book/contracts) dependencies, i.e. any calls to [`initOf{:tact}`](/book/expressions#initof) in order to compute the initial state of other contracts.
+
+If the contract has no dependencies, only its name is displayed:
+
+![Contract dependency diagram without dependencies](/src/assets/contract-dependency-diagram.png)
+
+However, if the contract, say `FirstOne`, somewhere in its code computes the [initial state](/book/expressions#initof) of another contract, say `SecondOne`, such a relationship is shown in the diagram:
+
+![Contract dependency diagram with a single dependency](/src/assets/contract-dependency-diagram-2.png)
 
 [struct]: /book/structs-and-messages#structs
 [message]: /book/structs-and-messages#messages
