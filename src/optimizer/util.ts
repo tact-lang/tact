@@ -1,69 +1,26 @@
+import { Address, Cell, Slice } from "@ton/core";
 import {
     AstExpression,
     AstUnaryOperation,
     AstBinaryOperation,
-    AstValue,
-    isValue,
+    isLiteral,
+    AstNumber,
+    AstBoolean,
+    AstSimplifiedString,
+    AstNull,
+    AstCell,
+    AstSlice,
+    AstAddress,
+    AstLiteral,
+    AstStructValue,
+    AstStructFieldValue,
+    AstId,
+    AstCommentValue,
     FactoryAst,
-} from "../grammar/ast";
-import { dummySrcInfo } from "../grammar";
-import { throwInternalCompilerError } from "../errors";
-import { Value } from "../types/types";
-
-export function extractValue(ast: AstValue): Value {
-    switch (
-        ast.kind // Missing structs
-    ) {
-        case "null":
-            return null;
-        case "boolean":
-            return ast.value;
-        case "number":
-            return ast.value;
-        case "string":
-            return ast.value;
-    }
-}
+} from "../ast/ast";
+import { dummySrcInfo, SrcInfo } from "../grammar";
 
 export const getAstUtil = ({ createNode }: FactoryAst) => {
-    function makeValueExpression(value: Value): AstValue {
-        if (value === null) {
-            const result = createNode({
-                kind: "null",
-                loc: dummySrcInfo,
-            });
-            return result as AstValue;
-        }
-        if (typeof value === "string") {
-            const result = createNode({
-                kind: "string",
-                value: value,
-                loc: dummySrcInfo,
-            });
-            return result as AstValue;
-        }
-        if (typeof value === "bigint") {
-            const result = createNode({
-                kind: "number",
-                base: 10,
-                value: value,
-                loc: dummySrcInfo,
-            });
-            return result as AstValue;
-        }
-        if (typeof value === "boolean") {
-            const result = createNode({
-                kind: "boolean",
-                value: value,
-                loc: dummySrcInfo,
-            });
-            return result as AstValue;
-        }
-        throwInternalCompilerError(
-            `structs, addresses, cells, and comment values are not supported at the moment.`,
-        );
-    }
-
     function makeUnaryExpression(
         op: AstUnaryOperation,
         operand: AstExpression,
@@ -92,10 +49,126 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
         return result as AstExpression;
     }
 
+    function makeNumberLiteral(n: bigint, loc: SrcInfo): AstNumber {
+        const result = createNode({
+            kind: "number",
+            base: 10,
+            value: n,
+            loc: loc,
+        });
+        return result as AstNumber;
+    }
+
+    function makeBooleanLiteral(b: boolean, loc: SrcInfo): AstBoolean {
+        const result = createNode({
+            kind: "boolean",
+            value: b,
+            loc: loc,
+        });
+        return result as AstBoolean;
+    }
+
+    function makeSimplifiedStringLiteral(
+        s: string,
+        loc: SrcInfo,
+    ): AstSimplifiedString {
+        const result = createNode({
+            kind: "simplified_string",
+            value: s,
+            loc: loc,
+        });
+        return result as AstSimplifiedString;
+    }
+
+    function makeCommentLiteral(s: string, loc: SrcInfo): AstCommentValue {
+        const result = createNode({
+            kind: "comment_value",
+            value: s,
+            loc: loc,
+        });
+        return result as AstCommentValue;
+    }
+
+    function makeNullLiteral(loc: SrcInfo): AstNull {
+        const result = createNode({
+            kind: "null",
+            loc: loc,
+        });
+        return result as AstNull;
+    }
+
+    function makeCellLiteral(c: Cell, loc: SrcInfo): AstCell {
+        const result = createNode({
+            kind: "cell",
+            value: c,
+            loc: loc,
+        });
+        return result as AstCell;
+    }
+
+    function makeSliceLiteral(s: Slice, loc: SrcInfo): AstSlice {
+        const result = createNode({
+            kind: "slice",
+            value: s,
+            loc: loc,
+        });
+        return result as AstSlice;
+    }
+
+    function makeAddressLiteral(a: Address, loc: SrcInfo): AstAddress {
+        const result = createNode({
+            kind: "address",
+            value: a,
+            loc: loc,
+        });
+        return result as AstAddress;
+    }
+
+    function makeStructFieldValue(
+        fieldName: string,
+        val: AstLiteral,
+        loc: SrcInfo,
+    ): AstStructFieldValue {
+        const result = createNode({
+            kind: "struct_field_value",
+            field: createNode({
+                kind: "id",
+                text: fieldName,
+                loc: loc,
+            }) as AstId,
+            initializer: val,
+            loc: loc,
+        });
+        return result as AstStructFieldValue;
+    }
+
+    function makeStructValue(
+        fields: AstStructFieldValue[],
+        type: AstId,
+        loc: SrcInfo,
+    ): AstStructValue {
+        const result = createNode({
+            kind: "struct_value",
+            args: fields,
+            loc: loc,
+            type: type,
+        });
+        return result as AstStructValue;
+    }
+
     return {
-        makeValueExpression,
         makeUnaryExpression,
         makeBinaryExpression,
+        makeNumberLiteral,
+        makeBooleanLiteral,
+        makeSimplifiedStringLiteral,
+        makeCommentLiteral,
+        makeNullLiteral,
+        makeCellLiteral,
+        makeSliceLiteral,
+        makeAddressLiteral,
+        makeStructFieldValue,
+        makeStructValue,
     };
 };
 
@@ -114,13 +187,13 @@ export function checkIsBinaryOpNode(ast: AstExpression): boolean {
 // Checks if top level node is a binary op node
 // with a value node on the right
 export function checkIsBinaryOp_With_RightValue(ast: AstExpression): boolean {
-    return ast.kind === "op_binary" ? isValue(ast.right) : false;
+    return ast.kind === "op_binary" ? isLiteral(ast.right) : false;
 }
 
 // Checks if top level node is a binary op node
 // with a value node on the left
 export function checkIsBinaryOp_With_LeftValue(ast: AstExpression): boolean {
-    return ast.kind === "op_binary" ? isValue(ast.left) : false;
+    return ast.kind === "op_binary" ? isLiteral(ast.left) : false;
 }
 
 // Checks if the top level node is the specified number

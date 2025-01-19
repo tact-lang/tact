@@ -3,8 +3,9 @@ import fs from "fs";
 import { ConfigProject, Config, parseConfig } from "./config/parseConfig";
 import { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 import { build } from "./pipeline/build";
-import { LogLevel, Logger } from "./logger";
-import { TactErrorCollection } from "./errors";
+import { LogLevel, Logger } from "./context/logger";
+import { TactErrorCollection } from "./error/errors";
+import { stdlibPath } from "./stdlib/path";
 
 type AdditionalCliOptions = {
     mode?: ConfigProject["mode"];
@@ -115,10 +116,7 @@ export async function run(args: {
         configWithRootPath.rootPath as string,
         false,
     );
-    const stdlib = createNodeFileSystem(
-        path.resolve(__dirname, "..", "stdlib"),
-        false,
-    ); // Improves developer experience
+    const stdlib = createNodeFileSystem(stdlibPath, false); // Improves developer experience
     for (const config of projects) {
         logger.info(`💼 Compiling project ${config.name} ...`);
         let cliConfig = { ...config };
@@ -143,4 +141,6 @@ export async function run(args: {
 
 export { createNodeFileSystem } from "./vfs/createNodeFileSystem";
 
-export { parseAndEvalExpression } from "./interpreter";
+export { parseAndEvalExpression } from "./optimizer/interpreter";
+
+export { showValue } from "./types/types";

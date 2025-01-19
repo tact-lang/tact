@@ -169,9 +169,15 @@ Read more about working with `null{:tact}` on the dedicated page: [Optionals](/b
 
 An identifier is a sequence of characters in the code that _identifies_ a [variable](/book/statements#let), [constant](/book/constants), [map](/book/maps) and a [function](/book/functions), as well as a [Struct][s], [Message][m], [contract](/book/contracts), [trait](/book/types#traits), or their fields and methods. Identifiers are case-sensitive and not quoted.
 
-In Tact, identifiers can contain latin lowercase letters (`a-z`), latin uppercase letters (`A-Z`), underscores (`_`) and digits ($\mathrm{0 - 9}$), but may not start with a digit. An identifier differs from a [string](#string-literals) in that a string is data, while an identifier is part of the code.
+In Tact, identifiers may contain Latin lowercase letters `a-z`, Latin uppercase letters `A-Z`, underscores `_`, and digits $\mathrm{0 - 9}$, but may not start with a digit. No other symbols are allowed, and Unicode identifiers are prohibited.
 
 Note, that when identifiers for [primitive types][p] start with an uppercase letter. Used-defined [composite types](/book/types#composite-types), such as [Structs][s] and [Messages][m] also must be capitalized.
+
+:::caution
+
+  All identifiers starting with `__gen` and `__tact` are not allowed and are instead reserved for internal use by the compiler.
+
+:::
 
 ## Instantiation
 
@@ -246,7 +252,7 @@ contract ExampleContract {
 
 ## `initOf`
 
-Expression `initOf{:tact}` computes initial state (`StateInit{:tact}`) of a [contract](/book/contracts):
+Expression `initOf{:tact}` computes initial state, i.e. `StateInit{:tact}` of a [contract](/book/contracts):
 
 ```tact
 //                     argument values for the init() function of the contract
@@ -263,12 +269,31 @@ initOf ExampleContract(
 );
 ```
 
-Where `StateInit{:tact}` is a built-in [Struct][s], that consists of:
+The `StateInit{:tact}` is a built-in [Struct][s], that consists of:
 
 Field  | Type               | Description
 :----- | :----------------- | :----------
 `code` | [`Cell{:tact}`][cell] | initial code of the [contract](/book/contracts) (the compiled bytecode)
 `data` | [`Cell{:tact}`][cell] | initial data of the [contract](/book/contracts) (arguments of `init(){:tact}` function of the contract)
+
+:::note
+
+  For workchain $0$, the [`Address{:tact}`][p] of the current contract obtained by calling the [`myAddress(){:tact}`](/ref/core-common#myaddress) function is identical to the one that can be obtained by calling the [`contractAddress(){:tact}`](/ref/core-common#contractaddress) function with the initial state of the current contract computed via `initOf{:tact}`:
+
+  ```tact {6}
+  contract TheKingPrawn {
+      receive("keeping the address") {
+          let myAddr1 = myAddress();
+          let myAddr2 = contractAddress(initOf TheKingPrawn());
+
+          myAddr1 == myAddr2; // true
+      }
+  }
+  ```
+
+  However, if you only need the address of the current contract at runtime and not its `StateInit{:tact}`, use the [`myAddress(){:tact}`](/ref/core-common#myaddress) function, as it consumes **significantly** less gas.
+
+:::
 
 [p]: /book/types#primitive-types
 [cell]: /book/cells#cells

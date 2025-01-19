@@ -1,10 +1,10 @@
 import fs from "fs";
 import { getParser } from "../grammar";
 import { join } from "path";
-import { AstComparator } from "../grammar/compare";
+import { AstComparator } from "../ast/compare";
 import { CONTRACTS_DIR } from "./util";
 import * as assert from "assert";
-import { getAstFactory } from "../grammar/ast";
+import { getAstFactory } from "../ast/ast";
 import { defaultParser } from "../grammar/grammar";
 
 describe("comparator", () => {

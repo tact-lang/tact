@@ -1,12 +1,12 @@
 import { getAllExpressionTypes } from "./resolveExpression";
 import { resolveDescriptors } from "./resolveDescriptors";
 import { loadCases } from "../utils/loadCases";
-import { openContext } from "../grammar/store";
+import { openContext } from "../context/store";
 import { resolveStatements } from "./resolveStatements";
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { featureEnable } from "../config/features";
 import { getParser } from "../grammar";
-import { getAstFactory } from "../grammar/ast";
+import { getAstFactory } from "../ast/ast";
 import { defaultParser } from "../grammar/grammar";
 
 describe("resolveStatements", () => {
@@ -21,7 +21,7 @@ describe("resolveStatements", () => {
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
-            ctx = resolveStatements(ctx);
+            ctx = resolveStatements(ctx, Ast);
             expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
         });
     }
@@ -36,7 +36,9 @@ describe("resolveStatements", () => {
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
-            expect(() => resolveStatements(ctx)).toThrowErrorMatchingSnapshot();
+            expect(() =>
+                resolveStatements(ctx, Ast),
+            ).toThrowErrorMatchingSnapshot();
         });
     }
 });

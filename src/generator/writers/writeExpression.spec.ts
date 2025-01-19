@@ -4,11 +4,11 @@ import {
 } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { writeExpression } from "./writeExpression";
-import { openContext } from "../../grammar/store";
+import { openContext } from "../../context/store";
 import { resolveStatements } from "../../types/resolveStatements";
-import { CompilerContext } from "../../context";
+import { CompilerContext } from "../../context/context";
 import { getParser } from "../../grammar";
-import { getAstFactory } from "../../grammar/ast";
+import { getAstFactory } from "../../ast/ast";
 import { defaultParser } from "../../grammar/grammar";
 
 const code = `
@@ -79,7 +79,7 @@ describe("writeExpression", () => {
             getParser(ast, defaultParser),
         );
         ctx = resolveDescriptors(ctx, ast);
-        ctx = resolveStatements(ctx);
+        ctx = resolveStatements(ctx, ast);
         const main = getStaticFunction(ctx, "main");
         if (main.ast.kind !== "function_def") {
             throw Error("Unexpected function kind");

@@ -1,15 +1,18 @@
 import {
     AstExpression,
     AstId,
+    AstLiteral,
     eqNames,
+    getAstFactory,
     idText,
     tryExtractPath,
-} from "../../grammar/ast";
+} from "../../ast/ast";
 import {
     idTextErr,
     TactConstEvalError,
     throwCompilationError,
-} from "../../errors";
+    throwInternalCompilerError,
+} from "../../error/errors";
 import { getExpType } from "../../types/resolveExpression";
 import {
     getStaticConstant,
@@ -21,8 +24,6 @@ import {
     FieldDescription,
     printTypeRef,
     TypeDescription,
-    CommentValue,
-    Value,
 } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
@@ -31,7 +32,6 @@ import { GlobalFunctions } from "../../abi/global";
 import { funcIdOf } from "./id";
 import { StructFunctions } from "../../abi/struct";
 import { resolveFuncType } from "./resolveFuncType";
-import { Address, Cell, Slice } from "@ton/core";
 import {
     writeAddress,
     writeCell,
@@ -41,8 +41,9 @@ import {
 } from "./writeConstant";
 import { ops } from "./ops";
 import { writeCastedExpression } from "./writeFunction";
-import { evalConstantExpression } from "../../constEval";
 import { isLvalue } from "../../types/resolveStatements";
+import { evalConstantExpression } from "../../optimizer/constEval";
+import { getAstUtil } from "../../optimizer/util";
 
 function isNull(wCtx: WriterContext, expr: AstExpression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
@@ -98,69 +99,72 @@ function writeStructConstructor(
     return name;
 }
 
-export function writeValue(val: Value, wCtx: WriterContext): string {
-    if (typeof val === "bigint") {
-        return val.toString(10);
-    }
-    if (typeof val === "string") {
-        const id = writeString(val, wCtx);
-        wCtx.used(id);
-        return `${id}()`;
-    }
-    if (typeof val === "boolean") {
-        return val ? "true" : "false";
-    }
-    if (Address.isAddress(val)) {
-        const res = writeAddress(val, wCtx);
-        wCtx.used(res);
-        return res + "()";
-    }
-    if (val instanceof Cell) {
-        const res = writeCell(val, wCtx);
-        wCtx.used(res);
-        return `${res}()`;
-    }
-    if (val instanceof Slice) {
-        const res = writeSlice(val, wCtx);
-        wCtx.used(res);
-        return `${res}()`;
-    }
-    if (val === null) {
-        return "null()";
-    }
-    if (val instanceof CommentValue) {
-        const id = writeComment(val.comment, wCtx);
-        wCtx.used(id);
-        return `${id}()`;
-    }
-    if (typeof val === "object" && "$tactStruct" in val) {
-        // this is a struct value
-        const structDescription = getType(
-            wCtx.ctx,
-            val["$tactStruct"] as string,
-        );
-        const fields = structDescription.fields.map((field) => field.name);
-        const id = writeStructConstructor(structDescription, fields, wCtx);
-        wCtx.used(id);
-        const fieldValues = structDescription.fields.map((field) => {
-            if (field.name in val) {
-                if (field.type.kind === "ref" && field.type.optional) {
-                    const ft = getType(wCtx.ctx, field.type.name);
-                    if (ft.kind === "struct" && val[field.name] !== null) {
-                        return `${ops.typeAsOptional(ft.name, wCtx)}(${writeValue(val[field.name]!, wCtx)})`;
-                    }
-                }
-                return writeValue(val[field.name]!, wCtx);
-            } else {
-                throw Error(
-                    `Struct value is missing a field: ${field.name}`,
-                    val,
-                );
+export function writeValue(val: AstLiteral, wCtx: WriterContext): string {
+    switch (val.kind) {
+        case "number":
+            return val.value.toString(10);
+        case "simplified_string": {
+            const id = writeString(val.value, wCtx);
+            wCtx.used(id);
+            return `${id}()`;
+        }
+        case "boolean":
+            return val.value ? "true" : "false";
+        case "address": {
+            const res = writeAddress(val.value, wCtx);
+            wCtx.used(res);
+            return res + "()";
+        }
+        case "cell": {
+            const res = writeCell(val.value, wCtx);
+            wCtx.used(res);
+            return `${res}()`;
+        }
+        case "slice": {
+            const res = writeSlice(val.value, wCtx);
+            wCtx.used(res);
+            return `${res}()`;
+        }
+        case "null":
+            return "null()";
+        case "comment_value": {
+            const id = writeComment(val.value, wCtx);
+            wCtx.used(id);
+            return `${id}()`;
+        }
+        case "struct_value": {
+            // Transform the struct fields into a map for lookup
+            const valMap: Map<string, AstLiteral> = new Map();
+            for (const f of val.args) {
+                valMap.set(idText(f.field), f.initializer);
             }
-        });
-        return `${id}(${fieldValues.join(", ")})`;
+
+            const structDescription = getType(wCtx.ctx, val.type);
+            const fields = structDescription.fields.map((field) => field.name);
+            const id = writeStructConstructor(structDescription, fields, wCtx);
+            wCtx.used(id);
+            const fieldValues = structDescription.fields.map((field) => {
+                if (valMap.has(field.name)) {
+                    const v = valMap.get(field.name)!;
+                    if (field.type.kind === "ref" && field.type.optional) {
+                        const ft = getType(wCtx.ctx, field.type.name);
+                        if (ft.kind === "struct" && v.kind !== "null") {
+                            return `${ops.typeAsOptional(ft.name, wCtx)}(${writeValue(v, wCtx)})`;
+                        }
+                    }
+                    return writeValue(v, wCtx);
+                } else {
+                    throwInternalCompilerError(
+                        `Struct value is missing a field: ${field.name}`,
+                        val.loc,
+                    );
+                }
+            });
+            return `${id}(${fieldValues.join(", ")})`;
+        }
+        default:
+            throwInternalCompilerError("Unrecognized ast literal kind");
     }
-    throw Error("Invalid value", val);
 }
 
 export function writePathExpression(path: AstId[]): string {
@@ -169,12 +173,19 @@ export function writePathExpression(path: AstId[]): string {
 
 export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
     // literals and constant expressions are covered here
+
+    // FIXME: Once optimization step is added, remove this try and replace it with this
+    // conditional:
+    // if (isLiteral(f)) {
+    //    return writeValue(f, wCtx);
+    // }
     try {
+        const util = getAstUtil(getAstFactory());
         // Let us put a limit of 2 ^ 12 = 4096 iterations on loops to increase compiler responsiveness.
         // If a loop takes more than such number of iterations, the interpreter will fail evaluation.
         // I think maxLoopIterations should be a command line option in case a user wants to wait more
         // during evaluation.
-        const value = evalConstantExpression(f, wCtx.ctx, {
+        const value = evalConstantExpression(f, wCtx.ctx, util, {
             maxLoopIterations: 2n ** 12n,
         });
         return writeValue(value, wCtx);
@@ -624,8 +635,7 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
                 }
             }
 
-            // Render
-            const s = writeExpression(f.self, wCtx);
+            const s = writeCastedExpression(f.self, methodDescr.self!, wCtx);
             if (methodDescr.isMutating) {
                 // check if it's an l-value
                 const path = tryExtractPath(f.self);

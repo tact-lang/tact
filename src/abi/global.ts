@@ -4,19 +4,22 @@ import {
     writeAddress,
     writeCell,
     writeSlice,
+    writeString,
 } from "../generator/writers/writeConstant";
-import {
-    writeExpression,
-    writeValue,
-} from "../generator/writers/writeExpression";
-import { TactConstEvalError, throwCompilationError } from "../errors";
-import { evalConstantExpression } from "../constEval";
+import { writeExpression } from "../generator/writers/writeExpression";
+import { throwCompilationError } from "../error/errors";
 import { getErrorId } from "../types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
 import { sha256_sync } from "@ton/crypto";
 import path from "path";
 import { cwd } from "process";
 import { posixNormalize } from "../utils/filePath";
+import {
+    ensureSimplifiedString,
+    ensureString,
+    interpretEscapeSequences,
+} from "../optimizer/interpreter";
+import { isLiteral } from "../ast/ast";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [
@@ -52,10 +55,13 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const resolved0 = resolved[0]!;
+                // FIXME: When optimizer step added, change the following line to:
+                // const str = ensureSimplifiedString(resolved0).value;
+                const str = interpretEscapeSequences(
+                    ensureString(resolved0).value,
+                    resolved0.loc,
+                );
                 return toNano(str).toString(10);
             },
         },
@@ -106,10 +112,13 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                const str = evalConstantExpression(
-                    resolved[1]!,
-                    ctx.ctx,
-                ) as string;
+                const resolved1 = resolved[1]!;
+                // FIXME: When optimizer step added, change the following line to:
+                // const str = ensureSimplifiedString(resolved1).value;
+                const str = interpretEscapeSequences(
+                    ensureString(resolved1).value,
+                    resolved1.loc,
+                );
                 return `throw_unless(${getErrorId(str, ctx.ctx)}, ${writeExpression(resolved[0]!, ctx)})`;
             },
         },
@@ -147,10 +156,13 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         ref,
                     );
                 }
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const resolved0 = resolved[0]!;
+                // FIXME: When optimizer step added, change the following line to:
+                // const str = ensureSimplifiedString(resolved0).value;
+                const str = interpretEscapeSequences(
+                    ensureString(resolved0).value,
+                    resolved0.loc,
+                );
                 let address: Address;
                 try {
                     address = Address.parse(str);
@@ -200,10 +212,13 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load cell data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const resolved0 = resolved[0]!;
+                // FIXME: When optimizer step added, change the following line to:
+                // const str = ensureSimplifiedString(resolved0).value;
+                const str = interpretEscapeSequences(
+                    ensureString(resolved0).value,
+                    resolved0.loc,
+                );
                 let c: Cell;
                 try {
                     c = Cell.fromBase64(str);
@@ -239,7 +254,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     : "unknown";
                 const lineCol = ref.interval.getLineAndColumn();
                 const debugPrint1 = `File ${filePath}:${lineCol.lineNum}:${lineCol.colNum}:`;
-                const debugPrint2 = writeValue(ref.interval.contents, ctx);
+                const contentsId = writeString(ref.interval.contents, ctx);
+                ctx.used(contentsId);
+                const debugPrint2 = `${contentsId}()`;
 
                 if (arg0.kind === "map") {
                     const exp = writeExpression(resolved[0]!, ctx);
@@ -360,24 +377,12 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
 
                 // String case
                 if (arg0.name === "String") {
-                    let str: string | undefined;
+                    const resolved0 = resolved[0]!;
 
-                    // Try const-eval
-                    try {
-                        str = evalConstantExpression(
-                            resolved[0]!,
-                            ctx.ctx,
-                        ) as string;
-                    } catch (error) {
-                        if (
-                            !(error instanceof TactConstEvalError) ||
-                            error.fatal
-                        )
-                            throw error;
-                    }
-
-                    // If const-eval did succeed
-                    if (str !== undefined) {
+                    if (isLiteral(resolved0)) {
+                        // FIXME: This one does not need fixing, because it is carried out inside a "isLiteral" check.
+                        // Remove this comment once the optimization step is added
+                        const str = ensureSimplifiedString(resolved0).value;
                         return BigInt(
                             "0x" + sha256_sync(str).toString("hex"),
                         ).toString(10);
@@ -430,10 +435,13 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load slice data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const resolved0 = resolved[0]!;
+                // FIXME: When optimizer step added, change the following line to:
+                // const str = ensureSimplifiedString(resolved0).value;
+                const str = interpretEscapeSequences(
+                    ensureString(resolved0).value,
+                    resolved0.loc,
+                );
                 let c: Cell;
                 try {
                     c = Cell.fromBase64(str);
@@ -482,10 +490,13 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load slice data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const resolved0 = resolved[0]!;
+                // FIXME: When optimizer step added, change the following line to:
+                // const str = ensureSimplifiedString(resolved0).value;
+                const str = interpretEscapeSequences(
+                    ensureString(resolved0).value,
+                    resolved0.loc,
+                );
                 let c: Cell;
                 try {
                     c = beginCell().storeBuffer(Buffer.from(str)).endCell();
@@ -528,10 +539,13 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load slice data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const resolved0 = resolved[0]!;
+                // FIXME: When optimizer step added, change the following line to:
+                // const str = ensureSimplifiedString(resolved0).value;
+                const str = interpretEscapeSequences(
+                    ensureString(resolved0).value,
+                    resolved0.loc,
+                );
 
                 if (str.length > 32) {
                     throwCompilationError(
@@ -573,10 +587,13 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 }
 
                 // Load slice data
-                const str = evalConstantExpression(
-                    resolved[0]!,
-                    ctx.ctx,
-                ) as string;
+                const resolved0 = resolved[0]!;
+                // FIXME: When optimizer step added, change the following line to:
+                // const str = ensureSimplifiedString(resolved0).value;
+                const str = interpretEscapeSequences(
+                    ensureString(resolved0).value,
+                    resolved0.loc,
+                );
 
                 return `"${str}"c`;
             },

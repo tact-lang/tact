@@ -14,14 +14,14 @@ import {
     writeTupleSerializer,
 } from "./typescript/writeStruct";
 import { AllocationCell } from "../storage/operation";
-import { throwInternalCompilerError } from "../errors";
+import { throwInternalCompilerError } from "../error/errors";
 import { topologicalSort } from "../utils/utils";
 import {
     allocate,
     getAllocationOperationFromField,
 } from "../storage/allocator";
 import { serializers } from "./typescript/serializers";
-import { eqNames } from "../grammar/ast";
+import { eqNames } from "../ast/ast";
 
 function writeArguments(args: ABIArgument[]) {
     const res: string[] = [];
@@ -171,7 +171,7 @@ export function writeTypescript(
         w.inIndent(() => {
             // Code references
             w.append(`const __code = Cell.fromBase64('${init.code}');`);
-            w.append("let builder = beginCell();");
+            w.append("const builder = beginCell();");
 
             if (init.system !== null) {
                 w.append(`const __system = Cell.fromBase64('${init.system}');`);
@@ -596,7 +596,7 @@ export function writeTypescript(
                     `async get${getterNames.get(g.name)}(${["provider: ContractProvider", ...writeArguments(g.arguments ? g.arguments : [])].join(", ")}) {`,
                 );
                 w.inIndent(() => {
-                    w.append(`let builder = new TupleBuilder();`);
+                    w.append(`const builder = new TupleBuilder();`);
                     if (g.arguments) {
                         for (const a of g.arguments) {
                             writeArgumentToStack(a.name, a.type, w);
@@ -608,11 +608,11 @@ export function writeTypescript(
                         // but the ContractProvider's interface get methods can only
                         // take strings (function names)
                         w.append(
-                            `let source = (await provider.get(${g.methodId} as any, builder.build())).stack;`,
+                            `const source = (await provider.get(${g.methodId} as any, builder.build())).stack;`,
                         );
                     } else {
                         w.append(
-                            `let source = (await provider.get('${g.name}', builder.build())).stack;`,
+                            `const source = (await provider.get('${g.name}', builder.build())).stack;`,
                         );
                     }
                     if (g.returnType) {

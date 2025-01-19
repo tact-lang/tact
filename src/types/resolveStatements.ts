@@ -1,4 +1,4 @@
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import {
     AstCondition,
     AstStatement,
@@ -9,14 +9,15 @@ import {
     selfId,
     isSelfId,
     eqNames,
-} from "../grammar/ast";
+    FactoryAst,
+} from "../ast/ast";
 import { isAssignable } from "./subtyping";
 import {
     idTextErr,
     throwCompilationError,
     throwConstEvalError,
     throwInternalCompilerError,
-} from "../errors";
+} from "../error/errors";
 import {
     getAllStaticFunctions,
     getStaticConstant,
@@ -27,10 +28,11 @@ import {
 } from "./resolveDescriptors";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { FunctionDescription, printTypeRef, TypeRef } from "./types";
-import { evalConstantExpression } from "../constEval";
-import { ensureInt } from "../interpreter";
+import { evalConstantExpression } from "../optimizer/constEval";
+import { ensureInt } from "../optimizer/interpreter";
 import { crc16 } from "../utils/crc16";
 import { SrcInfo } from "../grammar";
+import { AstUtil, getAstUtil } from "../optimizer/util";
 
 export type StatementContext = {
     root: SrcInfo;
@@ -759,6 +761,12 @@ function processStatements(
 
                 break;
             }
+            case "statement_block": {
+                const r = processStatements(s.statements, sctx, ctx);
+                ctx = r.ctx;
+                returnAlwaysReachable ||= r.returnAlwaysReachable;
+                break;
+            }
         }
     }
 
@@ -798,7 +806,9 @@ function processFunctionBody(
     return res.ctx;
 }
 
-export function resolveStatements(ctx: CompilerContext) {
+export function resolveStatements(ctx: CompilerContext, Ast: FactoryAst) {
+    const util = getAstUtil(Ast);
+
     // Process all static functions
     for (const f of getAllStaticFunctions(ctx)) {
         if (f.ast.kind === "function_def") {
@@ -953,7 +963,7 @@ export function resolveStatements(ctx: CompilerContext) {
 
                 // Check for collisions in getter method IDs
                 if (f.isGetter) {
-                    const methodId = getMethodId(f, ctx, sctx);
+                    const methodId = getMethodId(f, ctx, sctx, util);
                     const existing = methodIds.get(methodId);
                     if (existing) {
                         throwCompilationError(
@@ -1016,6 +1026,7 @@ function getMethodId(
     funcDescr: FunctionDescription,
     ctx: CompilerContext,
     sctx: StatementContext,
+    util: AstUtil,
 ): number {
     const optMethodId = funcDescr.ast.attributes.find(
         (attr) => attr.type === "get",
@@ -1032,9 +1043,8 @@ function getMethodId(
         }
 
         const methodId = ensureInt(
-            evalConstantExpression(optMethodId, ctx),
-            optMethodId.loc,
-        );
+            evalConstantExpression(optMethodId, ctx, util),
+        ).value;
         checkMethodId(methodId, optMethodId.loc);
         return Number(methodId);
     } else {

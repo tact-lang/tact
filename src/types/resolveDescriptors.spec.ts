@@ -1,4 +1,4 @@
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import {
     getAllStaticFunctions,
     getAllTypes,
@@ -6,10 +6,10 @@ import {
 } from "./resolveDescriptors";
 import { resolveSignatures } from "./resolveSignatures";
 import { loadCases } from "../utils/loadCases";
-import { openContext } from "../grammar/store";
+import { openContext } from "../context/store";
 import { featureEnable } from "../config/features";
 import { getParser, SrcInfo } from "../grammar";
-import { getAstFactory } from "../grammar/ast";
+import { getAstFactory } from "../ast/ast";
 import { isSrcInfo } from "../grammar/src-info";
 import { defaultParser } from "../grammar/grammar";
 
@@ -30,7 +30,7 @@ describe("resolveDescriptors", () => {
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
-            ctx = resolveSignatures(ctx);
+            ctx = resolveSignatures(ctx, Ast);
             expect(getAllTypes(ctx)).toMatchSnapshot();
             expect(getAllStaticFunctions(ctx)).toMatchSnapshot();
         });
@@ -47,7 +47,7 @@ describe("resolveDescriptors", () => {
             ctx = featureEnable(ctx, "external");
             expect(() => {
                 ctx = resolveDescriptors(ctx, Ast);
-                ctx = resolveSignatures(ctx);
+                ctx = resolveSignatures(ctx, Ast);
             }).toThrowErrorMatchingSnapshot();
         });
     }

@@ -8,7 +8,7 @@ import {
     idText,
     isWildcard,
     tryExtractPath,
-} from "../../grammar/ast";
+} from "../../ast/ast";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
 import { FunctionDescription, TypeRef } from "../../types/types";
@@ -22,7 +22,7 @@ import { cast } from "./cast";
 import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { ops } from "./ops";
 import { freshIdentifier } from "./freshIdentifier";
-import { idTextErr, throwInternalCompilerError } from "../../errors";
+import { idTextErr, throwInternalCompilerError } from "../../error/errors";
 import { ppAsmShuffle } from "../../prettyPrinter";
 
 export function writeCastedExpression(
@@ -491,6 +491,12 @@ export function writeStatement(
             );
             return;
         }
+        case "statement_block": {
+            for (const s of f.statements) {
+                writeStatement(s, self, returns, ctx);
+            }
+            return;
+        }
     }
 
     throw Error("Unknown statement kind");
@@ -527,8 +533,10 @@ function writeCondition(
 }
 
 export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
-    // Resolve self
-    const self = f.self?.kind === "ref" ? getType(ctx.ctx, f.self.name) : null;
+    const [self, isSelfOpt] =
+        f.self?.kind === "ref"
+            ? [getType(ctx.ctx, f.self.name), f.self.optional]
+            : [null, false];
 
     // Write function header
     let returns: string = resolveFuncType(f.returns, ctx);
@@ -546,7 +554,9 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     // Resolve function descriptor
     const params: string[] = [];
     if (self) {
-        params.push(resolveFuncType(self, ctx) + " " + funcIdOf("self"));
+        params.push(
+            resolveFuncType(self, ctx, isSelfOpt) + " " + funcIdOf("self"),
+        );
     }
     for (const a of f.params) {
         params.push(resolveFuncType(a.type, ctx) + " " + funcIdOf(a.name));
@@ -619,7 +629,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                 }
                 ctx.body(() => {
                     // Unpack self
-                    if (self) {
+                    if (self && !isSelfOpt) {
                         ctx.append(
                             `var (${resolveFuncTypeUnpack(self, funcIdOf("self"), ctx)}) = ${funcIdOf("self")};`,
                         );

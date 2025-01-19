@@ -1,4 +1,4 @@
-import { throwInternalCompilerError } from "../errors";
+import { throwInternalCompilerError } from "../error/errors";
 
 export type ItemOrigin = "stdlib" | "user";
 
@@ -211,9 +211,7 @@ const getErrorPrinter = ({
             return `${prefix} ${paddedLineNum} ${text}`;
         });
 
-        // Add header and concatenate lines
-        const header = `Line ${firstLineNum + 1}, col ${(lines[firstLineNum]?.startOfError ?? 0) + 1}:`;
-        return [header, ...paddedLines].join("\n") + "\n";
+        return paddedLines.join("\n") + "\n";
     };
 
     const getLineAndColumn = (str: string, range: Range) => {
