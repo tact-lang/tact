@@ -4,6 +4,6 @@
 /src/grammar/prev/grammar.ohm-bundle.d.ts
 /src/grammar/prev/grammar.ohm-bundle.js
 src/grammar/next/grammar.ts
-/src/imports/stdlib.ts
+/src/stdlib/stdlib.ts
 /grammar
 /docs

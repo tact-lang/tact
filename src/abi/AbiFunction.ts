@@ -1,5 +1,5 @@
-import { AstExpression } from "../grammar/ast";
-import { CompilerContext } from "../context";
+import { AstExpression } from "../ast/ast";
+import { CompilerContext } from "../context/context";
 import { WriterContext } from "../generator/Writer";
 import { TypeRef } from "../types/types";
 import { SrcInfo } from "../grammar";

@@ -2,7 +2,6 @@
 
 exports[`grammar should fail abstract-const-without-modifier 1`] = `
 "<unknown>:2:5: Abstract constant doesn't have abstract modifier
-Line 2, col 5:
   1 | trait t {
 > 2 |     const c: Int;
           ^~~~~~~~~~~~~
@@ -12,7 +11,6 @@ Line 2, col 5:
 
 exports[`grammar should fail const-abstract-abstract 1`] = `
 "<unknown>:4:10: Duplicate constant attribute "abstract"
-Line 4, col 10:
   3 | 
 > 4 | abstract abstract const Foo: Int = 42;
                ^~~~~~~~
@@ -22,7 +20,6 @@ Line 4, col 10:
 
 exports[`grammar should fail const-override 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
-Line 4, col 1:
   3 | 
 > 4 | override const Foo: Int = 42;
       ^~~~~~~~
@@ -32,7 +29,6 @@ Line 4, col 1:
 
 exports[`grammar should fail const-override-override 1`] = `
 "<unknown>:4:10: Duplicate constant attribute "override"
-Line 4, col 10:
   3 | 
 > 4 | override override const Foo: Int = 42;
                ^~~~~~~~
@@ -42,7 +38,6 @@ Line 4, col 10:
 
 exports[`grammar should fail const-override-virtual 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
-Line 4, col 1:
   3 | 
 > 4 | override virtual const Foo: Int = 42;
       ^~~~~~~~
@@ -52,7 +47,6 @@ Line 4, col 1:
 
 exports[`grammar should fail const-virtual 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
-Line 4, col 1:
   3 | 
 > 4 | virtual const Foo: Int = 42;
       ^~~~~~~
@@ -62,7 +56,6 @@ Line 4, col 1:
 
 exports[`grammar should fail const-virtual-override 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
-Line 4, col 1:
   3 | 
 > 4 | virtual override const Foo: Int = 42;
       ^~~~~~~
@@ -72,7 +65,6 @@ Line 4, col 1:
 
 exports[`grammar should fail const-virtual-virtual 1`] = `
 "<unknown>:4:9: Duplicate constant attribute "virtual"
-Line 4, col 9:
   3 | 
 > 4 | virtual virtual const Foo: Int = 42;
               ^~~~~~~
@@ -83,7 +75,6 @@ Line 4, col 9:
 exports[`grammar should fail contract-const-abstract 1`] = `
 "<unknown>:5:26: Expected "="
 
-Line 5, col 26:
   4 | contract TestContract {
 > 5 |   abstract const Foo: Int;
                                ^
@@ -93,7 +84,6 @@ Line 5, col 26:
 
 exports[`grammar should fail contract-const-abstract-abstract 1`] = `
 "<unknown>:5:12: Duplicate constant attribute "abstract"
-Line 5, col 12:
   4 | contract TestContract {
 > 5 |   abstract abstract const Foo: Int = 42;
                  ^~~~~~~~
@@ -103,7 +93,6 @@ Line 5, col 12:
 
 exports[`grammar should fail contract-const-abstract-with-initializer 1`] = `
 "<unknown>:5:3: Non-abstract constant has abstract modifier
-Line 5, col 3:
   4 | contract TestContract {
 > 5 |   abstract const Foo: Int = 42;
         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,7 +102,6 @@ Line 5, col 3:
 
 exports[`grammar should fail contract-const-override-override 1`] = `
 "<unknown>:5:12: Duplicate constant attribute "override"
-Line 5, col 12:
   4 | contract TestContract {
 > 5 |   override override const Foo: Int = 42;
                  ^~~~~~~~
@@ -123,7 +111,6 @@ Line 5, col 12:
 
 exports[`grammar should fail contract-const-virtual-virtual 1`] = `
 "<unknown>:5:11: Duplicate constant attribute "virtual"
-Line 5, col 11:
   4 | contract TestContract {
 > 5 |   virtual virtual const Foo: Int = 42;
                 ^~~~~~~
@@ -134,7 +121,6 @@ Line 5, col 11:
 exports[`grammar should fail contract-empty-traits-list-with-keyword 1`] = `
 "<unknown>:1:20: Expected "_", "A".."Z", or "a".."z"
 
-Line 1, col 20:
 > 1 | contract Name with {}
                          ^
   2 | 
@@ -144,7 +130,6 @@ Line 1, col 20:
 exports[`grammar should fail contract-getter-parens-no-method-id 1`] = `
 "<unknown>:2:9: Expected "\\"", "initOf", "null", "_", "A".."Z", "a".."z", "false", "true", "0", "1".."9", "0O", "0o", "0B", "0b", "0X", "0x", "(", "~", "!", "+", or "-"
 
-Line 2, col 9:
   1 | contract Test {
 > 2 |     get() fun test(): Int {
               ^
@@ -154,7 +139,6 @@ Line 2, col 9:
 
 exports[`grammar should fail contract-init-trailing-comma-empty-params 1`] = `
 "<unknown>:2:10: Empty parameter list should not have a dangling comma
-Line 2, col 10:
   1 | contract Name {
 > 2 |     init(,) {}
                ^
@@ -165,7 +149,6 @@ Line 2, col 10:
 exports[`grammar should fail contract-trailing-comma-empty-traits-list 1`] = `
 "<unknown>:1:19: Expected "_", "A".."Z", or "a".."z"
 
-Line 1, col 19:
 > 1 | contract Name with, {}
                         ^
   2 | 
@@ -175,7 +158,6 @@ Line 1, col 19:
 exports[`grammar should fail contract-with-imports 1`] = `
 "<unknown>:6:1: Expected end of input, "trait", "contract", "message", "struct", "const", "@name", "asm", "fun", or "primitive"
 
-Line 6, col 1:
   5 | // all imports must be at the very top of the file
 > 6 | import "@stdlib/not-allowed";
       ^
@@ -185,7 +167,6 @@ Line 6, col 1:
 
 exports[`grammar should fail destructuring-duplicate-source-id 1`] = `
 "<unknown>:15:19: Duplicate field destructuring: "a"
-Line 15, col 19:
   14 |     let s = S{ a: 1, b: 2, c: 3 };
 > 15 |     let S { a: x, a: y } = s;
                          ^~~~
@@ -195,7 +176,6 @@ Line 15, col 19:
 
 exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
 "<unknown>:6:14: Empty parameter list should not have a dangling comma
-Line 6, col 14:
   5 | fun b(): Int {
 > 6 |     return a(,);
                    ^
@@ -205,7 +185,6 @@ Line 6, col 14:
 
 exports[`grammar should fail expr-method-call-trailing-comma-no-args 1`] = `
 "<unknown>:2:24: Empty parameter list should not have a dangling comma
-Line 2, col 24:
   1 | fun another() {
 > 2 |     return 42.toString(,);
                              ^
@@ -216,7 +195,6 @@ Line 2, col 24:
 exports[`grammar should fail funcid-native-fun-arith-operator 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name(/)
             ^
   2 | native idTest();
@@ -226,7 +204,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-assign-operator 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name(^>>=)
             ^
   2 | native idTest();
@@ -236,7 +213,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-bitwise-operator 1`] = `
 "<unknown>:1:8: Expected not (a whiteSpace or "(" or ")" or "[" or "]" or "," or "." or ";" or "~") or "\`"
 
-Line 1, col 8:
 > 1 | @name(~)
              ^
   2 | native idTest();
@@ -246,7 +222,6 @@ Line 1, col 8:
 exports[`grammar should fail funcid-native-fun-comma 1`] = `
 "<unknown>:1:19: Expected ")"
 
-Line 1, col 19:
 > 1 | @name(send_message,then_terminate)
                         ^
   2 | native idTest();
@@ -256,7 +231,6 @@ Line 1, col 19:
 exports[`grammar should fail funcid-native-fun-comparison-operator 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name(<=>)
             ^
   2 | native idTest();
@@ -266,7 +240,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-control-keyword 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name(elseifnot)
             ^
   2 | native idTest();
@@ -276,7 +249,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-delimiter 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name([)
             ^
   2 | native idTest();
@@ -286,7 +258,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-directive 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name(#include)
             ^
   2 | native idTest();
@@ -296,7 +267,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-dot 1`] = `
 "<unknown>:1:10: Expected ")"
 
-Line 1, col 10:
 > 1 | @name(msg.sender)
                ^
   2 | native idTest();
@@ -306,7 +276,6 @@ Line 1, col 10:
 exports[`grammar should fail funcid-native-fun-keyword 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name(global)
             ^
   2 | native idTest();
@@ -316,7 +285,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-multiline-comments 1`] = `
 "<unknown>:1:7: Expected not ("\\"" or "{-")
 
-Line 1, col 7:
 > 1 | @name({-aaa-})
             ^
   2 | native idTest();
@@ -326,7 +294,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-number 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name(123)
             ^
   2 | native idTest();
@@ -336,7 +303,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-number-decimal 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name(0)
             ^
   2 | native idTest();
@@ -346,7 +312,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-number-hexadecimal 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name(0x0)
             ^
   2 | native idTest();
@@ -356,7 +321,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-number-hexadecimal-2 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name(0xDEADBEEF)
             ^
   2 | native idTest();
@@ -366,7 +330,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-number-neg-decimal 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name(-1)
             ^
   2 | native idTest();
@@ -376,7 +339,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-number-neg-hexadecimal 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name(-0x0)
             ^
   2 | native idTest();
@@ -386,7 +348,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-only-underscore 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name(_)
             ^
   2 | native idTest();
@@ -396,7 +357,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-parens 1`] = `
 "<unknown>:1:11: Expected ")"
 
-Line 1, col 11:
 > 1 | @name(take(first)Entry)
                 ^
   2 | native idTest();
@@ -406,7 +366,6 @@ Line 1, col 11:
 exports[`grammar should fail funcid-native-fun-semicolons 1`] = `
 "<unknown>:1:9: Expected ")"
 
-Line 1, col 9:
 > 1 | @name(pa;;in"\`aaa\`")
               ^
   2 | native idTest();
@@ -416,7 +375,6 @@ Line 1, col 9:
 exports[`grammar should fail funcid-native-fun-space 1`] = `
 "<unknown>:1:11: Expected ")"
 
-Line 1, col 11:
 > 1 | @name(foo foo)
                 ^
   2 | native idTest();
@@ -426,7 +384,6 @@ Line 1, col 11:
 exports[`grammar should fail funcid-native-fun-square-brackets 1`] = `
 "<unknown>:1:11: Expected ")"
 
-Line 1, col 11:
 > 1 | @name(take[some]entry)
                 ^
   2 | native idTest();
@@ -436,7 +393,6 @@ Line 1, col 11:
 exports[`grammar should fail funcid-native-fun-string 1`] = `
 "<unknown>:1:7: Expected not ("\\"" or "{-")
 
-Line 1, col 7:
 > 1 | @name("not_a_string)
             ^
   2 | native idTest();
@@ -446,7 +402,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-type-keyword 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 
-Line 1, col 7:
 > 1 | @name(->)
             ^
   2 | native idTest();
@@ -456,7 +411,6 @@ Line 1, col 7:
 exports[`grammar should fail funcid-native-fun-unclosed-parens 1`] = `
 "<unknown>:1:9: Expected ")"
 
-Line 1, col 9:
 > 1 | @name(aa(bb)
               ^
   2 | native idTest();
@@ -466,7 +420,6 @@ Line 1, col 9:
 exports[`grammar should fail ident-cannot-be-if-reserved-word 1`] = `
 "<unknown>:2:9: Expected "A".."Z" or not a reservedWord
 
-Line 2, col 9:
   1 | fun hello(): Int {
 > 2 |     let if: Int = 0;
               ^
@@ -476,7 +429,6 @@ Line 2, col 9:
 
 exports[`grammar should fail ident-contract-cannot-start-with-__gen 1`] = `
 "<unknown>:1:10: Variable name cannot start with "__gen"
-Line 1, col 10:
 > 1 | contract __gen_a {
                ^~~~~~~
   2 | 
@@ -485,7 +437,6 @@ Line 1, col 10:
 
 exports[`grammar should fail ident-fun-cannot-start-with-__gen 1`] = `
 "<unknown>:1:5: Variable name cannot start with "__gen"
-Line 1, col 5:
 > 1 | fun __gen_hello(): Int {
           ^~~~~~~~~~~
   2 |     
@@ -494,7 +445,6 @@ Line 1, col 5:
 
 exports[`grammar should fail ident-fun-param-cannot-start-with-__gen 1`] = `
 "<unknown>:1:10: Variable name cannot start with "__gen"
-Line 1, col 10:
 > 1 | fun main(__gen: Int): Int {
                ^~~~~
   2 |     return 0;
@@ -503,7 +453,6 @@ Line 1, col 10:
 
 exports[`grammar should fail ident-fun-param-cannot-start-with-__tact 1`] = `
 "<unknown>:2:11: Variable name cannot start with "__tact"
-Line 2, col 11:
   1 | contract A {
 > 2 |     fun b(__tact: Int) {
                 ^~~~~~
@@ -513,7 +462,6 @@ Line 2, col 11:
 
 exports[`grammar should fail ident-init-param-cannot-start-with-__tact 1`] = `
 "<unknown>:2:10: Variable name cannot start with "__tact"
-Line 2, col 10:
   1 | contract A {
 > 2 |     init(__tact: Int) {
                ^~~~~~
@@ -523,7 +471,6 @@ Line 2, col 10:
 
 exports[`grammar should fail ident-let-cannot-start-with-__gen 1`] = `
 "<unknown>:2:9: Variable name cannot start with "__gen"
-Line 2, col 9:
   1 | fun hello(): Int {
 > 2 |     let __gen_a: Int = 0;
               ^~~~~~~
@@ -533,7 +480,6 @@ Line 2, col 9:
 
 exports[`grammar should fail ident-let-cannot-start-with-__tact 1`] = `
 "<unknown>:2:9: Variable name cannot start with "__tact"
-Line 2, col 9:
   1 | fun hello(): Int {
 > 2 |     let __tact_a: Int = 0;
               ^~~~~~~~
@@ -544,7 +490,6 @@ Line 2, col 9:
 exports[`grammar should fail ident-struct-cannot-start-with-__gen 1`] = `
 "<unknown>:1:8: Expected "A".."Z"
 
-Line 1, col 8:
 > 1 | struct __genA {
              ^
   2 |     a: Int;
@@ -553,7 +498,6 @@ Line 1, col 8:
 
 exports[`grammar should fail item-fun-non-void-trailing-comma-no-params 1`] = `
 "<unknown>:1:14: Empty parameter list should not have a dangling comma
-Line 1, col 14:
 > 1 | fun function(,) : Int {
                    ^
   2 |     return 42;
@@ -562,7 +506,6 @@ Line 1, col 14:
 
 exports[`grammar should fail item-fun-void-trailing-comma-no-params 1`] = `
 "<unknown>:1:14: Empty parameter list should not have a dangling comma
-Line 1, col 14:
 > 1 | fun function(,) {}
                    ^
   2 | 
@@ -572,7 +515,6 @@ Line 1, col 14:
 exports[`grammar should fail item-fun-without-body 1`] = `
 "<unknown>:1:20: Expected "{"
 
-Line 1, col 20:
 > 1 | fun testFunc(): Int;
                          ^
 "
@@ -580,7 +522,6 @@ Line 1, col 20:
 
 exports[`grammar should fail item-native-fun-not-void-decl-trailing-comma-no-params 1`] = `
 "<unknown>:2:31: Empty parameter list should not have a dangling comma
-Line 2, col 31:
   1 | @name(native_name_2)
 > 2 | native testNativeFuncWithType(,): Int;
                                     ^
@@ -589,7 +530,6 @@ Line 2, col 31:
 
 exports[`grammar should fail item-native-fun-void-decl-trailing-comma-no-params 1`] = `
 "<unknown>:2:23: Empty parameter list should not have a dangling comma
-Line 2, col 23:
   1 | @name(native_name_1)
 > 2 | native testNativeFunc(,);
                             ^
@@ -599,7 +539,6 @@ Line 2, col 23:
 exports[`grammar should fail items-asm-fun-1 1`] = `
 "<unknown>:1:5: Expected ")"
 
-Line 1, col 5:
 > 1 | asm(1 0) extends fun loadCoins(self: Slice): Int {
           ^
   2 |     LDVARUINT16
@@ -609,7 +548,6 @@ Line 1, col 5:
 exports[`grammar should fail items-asm-fun-2 1`] = `
 "<unknown>:1:9: Expected ")", "->", "_", "A".."Z", or "a".."z"
 
-Line 1, col 9:
 > 1 | asm(c b 42) extends fun storeDict(b: Builder, c: Cell) {
               ^
   2 |     STDICT
@@ -619,7 +557,6 @@ Line 1, col 9:
 exports[`grammar should fail items-asm-fun-3 1`] = `
 "<unknown>:1:14: Expected "0" or "1".."9"
 
-Line 1, col 14:
 > 1 | asm(s len -> len 1 0) extends fun loadInt(self: Slice, len: Int): Int {
                    ^
   2 |     LDIX
@@ -629,7 +566,6 @@ Line 1, col 14:
 exports[`grammar should fail items-asm-fun-4 1`] = `
 "<unknown>:1:7: Expected "0" or "1".."9"
 
-Line 1, col 7:
 > 1 | asm(->) extends fun loadInt(self: Slice, len: Int): Int {
             ^
   2 |     LDIX
@@ -639,7 +575,6 @@ Line 1, col 7:
 exports[`grammar should fail items-asm-fun-5 1`] = `
 "<unknown>:3:5: Expected end of input, "trait", "contract", "message", "struct", "const", "@name", "asm", "fun", or "primitive"
 
-Line 3, col 5:
   2 |     { INC } : }
 > 3 |     5 }
           ^
@@ -650,7 +585,6 @@ Line 3, col 5:
 exports[`grammar should fail literal-dec-trailing-underscore 1`] = `
 "<unknown>:2:16: Expected a digit
 
-Line 2, col 16:
   1 | fun test_fun(): Int {
 > 2 |     return 123_;
                      ^
@@ -661,7 +595,6 @@ Line 2, col 16:
 exports[`grammar should fail literal-double-underscore 1`] = `
 "<unknown>:2:20: Expected a digit
 
-Line 2, col 20:
   1 | fun test_fun(): Int {
 > 2 |     return 123_123__123;
                          ^
@@ -672,7 +605,6 @@ Line 2, col 20:
 exports[`grammar should fail literal-hex-trailing-underscore 1`] = `
 "<unknown>:2:18: Expected a hexadecimal digit
 
-Line 2, col 18:
   1 | fun test_fun(): Int {
 > 2 |     return 0x123_;
                        ^
@@ -683,7 +615,6 @@ Line 2, col 18:
 exports[`grammar should fail literal-no-underscore-after-0b 1`] = `
 "<unknown>:2:14: Expected "1" or "0"
 
-Line 2, col 14:
   1 | fun test_fun(): Int {
 > 2 |     return 0b_00101010;
                    ^
@@ -694,7 +625,6 @@ Line 2, col 14:
 exports[`grammar should fail literal-no-underscores-if-leading-zero 1`] = `
 "<unknown>:2:15: Expected "}" or ";"
 
-Line 2, col 15:
   1 | fun test_fun(): Int {
 > 2 |     return 012_3;
                     ^
@@ -705,7 +635,6 @@ Line 2, col 15:
 exports[`grammar should fail literal-non-binary-digits 1`] = `
 "<unknown>:2:15: Expected "}" or ";"
 
-Line 2, col 15:
   1 | fun test_fun(): Int {
 > 2 |     return 0b123;
                     ^
@@ -716,7 +645,6 @@ Line 2, col 15:
 exports[`grammar should fail literal-underscore-after-leading-zero 1`] = `
 "<unknown>:2:13: Expected "}" or ";"
 
-Line 2, col 13:
   1 | fun test_fun(): Int {
 > 2 |     return 0_123;
                   ^
@@ -727,7 +655,6 @@ Line 2, col 13:
 exports[`grammar should fail struct-double-semicolon 1`] = `
 "<unknown>:2:19: Expected "}"
 
-Line 2, col 19:
   1 | // too many semicolons
 > 2 | struct A { x: Int;; }
                         ^
@@ -738,7 +665,6 @@ Line 2, col 19:
 exports[`grammar should fail struct-missing-semicolon-between-fields 1`] = `
 "<unknown>:2:19: Expected "}", ";", "=", "as", or "?"
 
-Line 2, col 19:
   1 | // missing ; between fields
 > 2 | struct B { x: Int y: Int }
                         ^
@@ -749,7 +675,6 @@ Line 2, col 19:
 exports[`grammar should fail struct-missing-semicolon-between-fields-with-initializer 1`] = `
 "<unknown>:2:24: Expected "}", ";", ".", "!!", "%", "/", "*", ">>", "<<", "-", "+", "==", "!=", "<=", "<", ">=", ">", "^", "&", "&&", "|", "?", or "||"
 
-Line 2, col 24:
   1 | // missing ; between fields
 > 2 | struct B { x: Int = 42 y: Int }
                              ^
@@ -759,7 +684,6 @@ Line 2, col 24:
 
 exports[`grammar should fail trait-const-abstract-with-initializer 1`] = `
 "<unknown>:5:3: Non-abstract constant has abstract modifier
-Line 5, col 3:
   4 | trait TestContract {
 > 5 |   abstract const Foo: Int = 42;
         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -770,7 +694,6 @@ Line 5, col 3:
 exports[`grammar should fail trait-empty-traits-list-with-keyword 1`] = `
 "<unknown>:1:17: Expected "_", "A".."Z", or "a".."z"
 
-Line 1, col 17:
 > 1 | trait Name with {}
                       ^
   2 | 
@@ -779,7 +702,6 @@ Line 1, col 17:
 
 exports[`grammar should fail trait-fun-non-void-trailing-comma-no-params 1`] = `
 "<unknown>:2:39: Empty parameter list should not have a dangling comma
-Line 2, col 39:
   1 | trait Test {
 > 2 |     abstract fun testAbstractWithType(,): Int;
                                             ^
@@ -789,7 +711,6 @@ Line 2, col 39:
 
 exports[`grammar should fail trait-fun-void-trailing-comma-no-params 1`] = `
 "<unknown>:2:31: Empty parameter list should not have a dangling comma
-Line 2, col 31:
   1 | trait Test {
 > 2 |     abstract fun testAbstract(,);
                                     ^
@@ -800,7 +721,6 @@ Line 2, col 31:
 exports[`grammar should fail trait-trailing-comma-empty-traits-list 1`] = `
 "<unknown>:1:16: Expected "_", "A".."Z", or "a".."z"
 
-Line 1, col 16:
 > 1 | trait Name with, {}
                      ^
   2 | 
@@ -810,7 +730,6 @@ Line 1, col 16:
 exports[`grammar should fail type-ident-msg-should-be-capitalized 1`] = `
 "<unknown>:1:14: Expected "A".."Z"
 
-Line 1, col 14:
 > 1 | message(123) foo {
                    ^
   2 |     signature: Slice;
@@ -820,7 +739,6 @@ Line 1, col 14:
 exports[`grammar should fail type-ident-struct-should-be-capitalized 1`] = `
 "<unknown>:1:8: Expected "A".."Z"
 
-Line 1, col 8:
 > 1 | struct lowercaseIdForType {
              ^
   2 |     a: Int;
@@ -871,6 +789,84 @@ exports[`grammar should parse abstract-const 1`] = `
         "text": "t",
       },
       "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse block-statements 1`] = `
+{
+  "id": 10,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 9,
+      "kind": "function_def",
+      "loc": fun foo() {
+    let x = 100;
+    {
+        let y = 200;
+    }
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": foo,
+        "text": "foo",
+      },
+      "params": [],
+      "return": null,
+      "statements": [
+        {
+          "expression": {
+            "base": 10,
+            "id": 3,
+            "kind": "number",
+            "loc": 100,
+            "value": 100n,
+          },
+          "id": 4,
+          "kind": "statement_let",
+          "loc": let x = 100;,
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": x,
+            "text": "x",
+          },
+          "type": null,
+        },
+        {
+          "id": 8,
+          "kind": "statement_block",
+          "loc": {
+        let y = 200;
+    },
+          "statements": [
+            {
+              "expression": {
+                "base": 10,
+                "id": 6,
+                "kind": "number",
+                "loc": 200,
+                "value": 200n,
+              },
+              "id": 7,
+              "kind": "statement_let",
+              "loc": let y = 200;,
+              "name": {
+                "id": 5,
+                "kind": "id",
+                "loc": y,
+                "text": "y",
+              },
+              "type": null,
+            },
+          ],
+        },
+      ],
     },
   ],
   "kind": "module",
@@ -6841,6 +6837,129 @@ exports[`grammar should parse literals-int-underscores-bin-dec-hex-oct 1`] = `
           "id": 78,
           "kind": "statement_return",
           "loc": return a + b + c + d + e + f + g + h + i + j + k + l;,
+        },
+      ],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse nested-block-statements 1`] = `
+{
+  "id": 13,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 12,
+      "kind": "function_def",
+      "loc": fun foo() {
+    let x = 100;
+    {
+        {
+            {
+                {
+                    let y = 200;
+                }
+            }
+        }
+    }
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": foo,
+        "text": "foo",
+      },
+      "params": [],
+      "return": null,
+      "statements": [
+        {
+          "expression": {
+            "base": 10,
+            "id": 3,
+            "kind": "number",
+            "loc": 100,
+            "value": 100n,
+          },
+          "id": 4,
+          "kind": "statement_let",
+          "loc": let x = 100;,
+          "name": {
+            "id": 2,
+            "kind": "id",
+            "loc": x,
+            "text": "x",
+          },
+          "type": null,
+        },
+        {
+          "id": 11,
+          "kind": "statement_block",
+          "loc": {
+        {
+            {
+                {
+                    let y = 200;
+                }
+            }
+        }
+    },
+          "statements": [
+            {
+              "id": 10,
+              "kind": "statement_block",
+              "loc": {
+            {
+                {
+                    let y = 200;
+                }
+            }
+        },
+              "statements": [
+                {
+                  "id": 9,
+                  "kind": "statement_block",
+                  "loc": {
+                {
+                    let y = 200;
+                }
+            },
+                  "statements": [
+                    {
+                      "id": 8,
+                      "kind": "statement_block",
+                      "loc": {
+                    let y = 200;
+                },
+                      "statements": [
+                        {
+                          "expression": {
+                            "base": 10,
+                            "id": 6,
+                            "kind": "number",
+                            "loc": 200,
+                            "value": 200n,
+                          },
+                          "id": 7,
+                          "kind": "statement_let",
+                          "loc": let y = 200;,
+                          "name": {
+                            "id": 5,
+                            "kind": "id",
+                            "loc": y,
+                            "text": "y",
+                          },
+                          "type": null,
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
         },
       ],
     },

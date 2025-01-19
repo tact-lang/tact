@@ -1,4 +1,4 @@
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import {
     AstCondition,
     AstStatement,
@@ -10,14 +10,14 @@ import {
     isSelfId,
     eqNames,
     FactoryAst,
-} from "../grammar/ast";
+} from "../ast/ast";
 import { isAssignable } from "./subtyping";
 import {
     idTextErr,
     throwCompilationError,
     throwConstEvalError,
     throwInternalCompilerError,
-} from "../errors";
+} from "../error/errors";
 import {
     getAllStaticFunctions,
     getStaticConstant,
@@ -28,8 +28,8 @@ import {
 } from "./resolveDescriptors";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { FunctionDescription, printTypeRef, TypeRef } from "./types";
-import { evalConstantExpression } from "../constEval";
-import { ensureInt } from "../interpreter";
+import { evalConstantExpression } from "../optimizer/constEval";
+import { ensureInt } from "../optimizer/interpreter";
 import { crc16 } from "../utils/crc16";
 import { SrcInfo } from "../grammar";
 import { AstUtil, getAstUtil } from "../optimizer/util";
@@ -759,6 +759,12 @@ function processStatements(
                     }
                 });
 
+                break;
+            }
+            case "statement_block": {
+                const r = processStatements(s.statements, sctx, ctx);
+                ctx = r.ctx;
+                returnAlwaysReachable ||= r.returnAlwaysReachable;
                 break;
             }
         }

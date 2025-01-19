@@ -1,4 +1,4 @@
-import { CompilerContext } from "../../context";
+import { CompilerContext } from "../../context/context";
 import {
     getAllocation,
     resolveAllocations,
@@ -11,10 +11,10 @@ import {
 import { WriterContext } from "../Writer";
 import { writeParser, writeSerializer } from "./writeSerialization";
 import { writeStdlib } from "./writeStdlib";
-import { openContext } from "../../grammar/store";
+import { openContext } from "../../context/store";
 import { writeAccessors } from "./writeAccessors";
 import { getParser } from "../../grammar";
-import { getAstFactory } from "../../grammar/ast";
+import { getAstFactory } from "../../ast/ast";
 import { defaultParser } from "../../grammar/grammar";
 
 const code = `

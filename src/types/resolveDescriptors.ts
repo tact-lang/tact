@@ -1,38 +1,38 @@
 import {
+    AstAsmFunctionDef,
+    AstConstantDecl,
     AstConstantDef,
-    AstFieldDecl,
     AstContractInit,
+    AstExpression,
+    AstFieldDecl,
+    AstFunctionDecl,
+    AstFunctionDef,
+    AstId,
+    AstMapType,
     AstNativeFunctionDecl,
     AstNode,
     AstType,
-    idText,
-    AstId,
+    AstTypeId,
     eqNames,
-    AstFunctionDef,
+    FactoryAst,
+    idText,
     isSelfId,
     isSlice,
-    AstFunctionDecl,
-    AstConstantDecl,
-    AstExpression,
-    AstMapType,
-    AstTypeId,
-    AstAsmFunctionDef,
-    FactoryAst,
-} from "../grammar/ast";
-import { traverse } from "../grammar/iterators";
+} from "../ast/ast";
+import { traverse } from "../ast/iterators";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../errors";
-import { CompilerContext, Store, createContextStore } from "../context";
+} from "../error/errors";
+import { CompilerContext, createContextStore, Store } from "../context/context";
 import {
     ConstantDescription,
     FieldDescription,
-    FunctionParameter,
     FunctionDescription,
-    InitParameter,
+    FunctionParameter,
     InitDescription,
+    InitParameter,
     printTypeRef,
     ReceiverSelector,
     receiverSelectorName,
@@ -40,15 +40,15 @@ import {
     TypeRef,
     typeRefEquals,
 } from "./types";
-import { getRawAST } from "../grammar/store";
-import { cloneNode } from "../grammar/clone";
+import { getRawAST } from "../context/store";
+import { cloneNode } from "../ast/clone";
 import { crc16 } from "../utils/crc16";
 import { isSubsetOf } from "../utils/isSubsetOf";
-import { evalConstantExpression } from "../constEval";
+import { evalConstantExpression } from "../optimizer/constEval";
 import {
-    resolveABIType,
     intMapKeyFormats,
     intMapValFormats,
+    resolveABIType,
 } from "./resolveABITypeRef";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
@@ -557,12 +557,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     ) {
                         throwCompilationError(
                             `Field ${idTextErr(traitDecl.name)} already exists`,
-                            traitDecl.loc,
-                        );
-                    }
-                    if (traitDecl.as) {
-                        throwCompilationError(
-                            `Trait field cannot have serialization specifier`,
                             traitDecl.loc,
                         );
                     }
@@ -1518,6 +1512,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     // Verify trait fields
     //
 
+    function printFieldTypeRefWithAs(ex: FieldDescription) {
+        return printTypeRef(ex.type) + (ex.as !== null ? ` as ${ex.as}` : "");
+    }
+
     for (const t of types.values()) {
         for (const tr of t.traits) {
             // Check that trait is valid
@@ -1552,6 +1550,20 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         `Trait "${tr.name}" requires field "${f.name}" of type "${printTypeRef(f.type)}"`,
                         t.ast.loc,
                     );
+                } else if (
+                    f.as !== ex.as &&
+                    !(
+                        (f.as === "int257" && ex.as === null) ||
+                        (f.as === null && ex.as === "int257")
+                    )
+                ) {
+                    const expected = printFieldTypeRefWithAs(f);
+                    const actual = printFieldTypeRefWithAs(ex);
+
+                    throwCompilationError(
+                        `Trait "${tr.name}" requires field "${f.name}" of type "${expected}", but "${actual}" given`,
+                        ex.ast.loc,
+                    );
                 }
             }
         }
@@ -1562,6 +1574,27 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     //
 
     function copyTraits(contractOrTrait: TypeDescription) {
+        const inheritOnlyBaseTrait = contractOrTrait.traits.length === 1;
+
+        // Check that "override" functions have a super function
+        for (const funInContractOrTrait of contractOrTrait.functions.values()) {
+            if (!funInContractOrTrait.isOverride) {
+                continue;
+            }
+
+            const foundOverriddenFunction = contractOrTrait.traits.some((t) =>
+                t.functions.has(funInContractOrTrait.name),
+            );
+
+            if (!foundOverriddenFunction) {
+                const msg = inheritOnlyBaseTrait
+                    ? `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier or inherit any traits with this function`
+                    : `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier`;
+
+                throwCompilationError(msg, funInContractOrTrait.ast.loc);
+            }
+        }
+
         for (const inheritedTrait of contractOrTrait.traits) {
             // Copy functions
             for (const traitFunction of inheritedTrait.functions.values()) {

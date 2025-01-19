@@ -7,7 +7,7 @@ import {
     writeString,
 } from "../generator/writers/writeConstant";
 import { writeExpression } from "../generator/writers/writeExpression";
-import { throwCompilationError } from "../errors";
+import { throwCompilationError } from "../error/errors";
 import { getErrorId } from "../types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
 import { sha256_sync } from "@ton/crypto";
@@ -18,8 +18,8 @@ import {
     ensureSimplifiedString,
     ensureString,
     interpretEscapeSequences,
-} from "../interpreter";
-import { isLiteral } from "../grammar/ast";
+} from "../optimizer/interpreter";
+import { isLiteral } from "../ast/ast";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [
