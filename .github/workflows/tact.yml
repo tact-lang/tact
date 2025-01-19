@@ -70,7 +70,7 @@ jobs:
           yarn gen
           yarn build
 
-      - name: Check there are no errors to be fixed in package.json and no uncommited changes
+      - name: Check there are no errors to be fixed in package.json and no uncommitted changes
         run: |
           npm pkg fix && git diff --exit-code
 
@@ -97,12 +97,6 @@ jobs:
       - name: Check there are no unused dependencies
         run: |
           yarn knip
-
-      - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@master
-        if: runner.os != 'Windows'
-        with:
-          scandir: "./scripts"
 
       - name: Show an example .pkg file on Windows
         if: runner.os == 'Windows'

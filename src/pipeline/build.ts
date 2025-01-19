@@ -7,7 +7,7 @@ import { CompilerContext } from "../context/context";
 import { funcCompile } from "../func/funcCompile";
 import { writeReport } from "../generator/writeReport";
 import { getRawAST } from "../context/store";
-import files from "../imports/stdlib";
+import files from "../stdlib/stdlib";
 import { ILogger, Logger } from "../context/logger";
 import { PackageFileFormat } from "../packaging/fileFormat";
 import { packageCode } from "../packaging/packageCode";

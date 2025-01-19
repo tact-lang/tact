@@ -18,7 +18,7 @@ export const optionsSchema = z
         /**
          * If set to true, enables generation of a getter with IPFS links describing the contract's ABI.
          *
-         * Read more: https://docs.tact-lang.org/ref/evolution/OTP-003
+         * Read more: https://docs.tact-lang.org/ref/evolution/otp-003
          */
         ipfsAbiGetter: z.boolean().optional(),
         /**
