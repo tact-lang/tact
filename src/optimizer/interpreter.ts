@@ -1578,7 +1578,7 @@ export class Interpreter {
                 this.interpretReturnStatement(ast);
                 break;
             case "statement_try":
-                this.interpretTryCatchStatement(ast);
+                this.interpretTryStatement(ast);
                 break;
             case "statement_until":
                 this.interpretUntilStatement(ast);
@@ -1734,7 +1734,7 @@ export class Interpreter {
         }
     }
 
-    public interpretTryCatchStatement(ast: AstStatementTry) {
+    public interpretTryStatement(ast: AstStatementTry) {
         throwNonFatalErrorConstEval(
             "try statements currently not supported",
             ast.loc,
