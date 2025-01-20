@@ -70,6 +70,11 @@
             "enum": ["fullWithDecompilation", "full", "funcOnly", "checkOnly"],
             "title": "Compilation mode of the project. In Blueprint, it's always set to `full` and cannot be overwritten.",
             "description": "Set to `full` by default, which runs the whole pipeline of the compilation and emits FunC code, BoC, and various utility files, including wrappers for TypeScript.\nIf set to `fullWithDecompilation`, does full compilation and also decompiles produced binary code in the BoC format.\nIf set to `funcOnly`, only outputs intermediate FunC code, preventing further compilation.\nIf set to `checkOnly`, only performs syntax and type checking, preventing further compilation."
+          },
+          "verbose": {
+            "type": "boolean",
+            "default": false,
+            "description": "False by default. If set to true, enables extra output which is useful for debugging purposes."
           }
         }
       }

@@ -333,6 +333,23 @@ If set to `true{:json}`, enables inlining of all functions in contracts. This ca
 }
 ```
 
+### `verbose` {#verbose}
+
+If set to `true{:json}`, enables extra output which is useful for debugging purposes.
+
+```json filename="tact.config.json" {7}
+{
+  "projects": [
+    {
+      "name": "func_only",
+      "path": "./contract.tact",
+      "output": "./contract_output",
+      "verbose": true
+    }
+  ]
+}
+```
+
 ### `mode` {#projects-mode}
 
 Compilation mode of the project. Valid values are:
