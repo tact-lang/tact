@@ -21,20 +21,13 @@ describe("grammar", () => {
         }
     }
 
-    const shouldFailPaths = [
-        __dirname + "/../test-failed/",
-        __dirname + "/test-failed/",
-    ];
-
-    for (const path of shouldFailPaths) {
-        for (const r of loadCases(path)) {
-            it("should fail " + r.name, () => {
-                const ast = getAstFactory();
-                const { parse } = getParser(ast, "new");
-                expect(() =>
-                    parse(r.code, "<unknown>", "user"),
-                ).toThrowErrorMatchingSnapshot();
-            });
-        }
+    for (const r of loadCases(__dirname + "/../test-failed/")) {
+        it("should fail " + r.name, () => {
+            const ast = getAstFactory();
+            const { parse } = getParser(ast, "new");
+            expect(() =>
+                parse(r.code, "<unknown>", "user"),
+            ).toThrowErrorMatchingSnapshot();
+        });
     }
 });
