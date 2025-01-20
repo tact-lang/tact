@@ -570,18 +570,15 @@ const parseStatementTry =
     ({ body, handler, loc }: $ast.StatementTry): Handler<A.AstStatementTry> =>
     (ctx) => {
         if (handler) {
-            return ctx.ast.StatementTry(
-                parseStatements(body)(ctx),
-                parseId(handler.name)(ctx),
-                parseStatements(handler.body)(ctx),
-                loc,
-            );
+            return ctx.ast.StatementTry(parseStatements(body)(ctx), loc, {
+                catchName: parseId(handler.name)(ctx),
+                catchStatements: parseStatements(handler.body)(ctx),
+            });
         } else {
             return ctx.ast.StatementTry(
                 parseStatements(body)(ctx),
-                undefined,
-                undefined,
                 loc,
+                undefined,
             );
         }
     };
