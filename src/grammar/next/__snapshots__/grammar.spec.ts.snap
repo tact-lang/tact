@@ -9,6 +9,14 @@ exports[`grammar should fail abstract-const-without-modifier 1`] = `
 "
 `;
 
+exports[`grammar should fail asm-instruction-invalid-syntax 1`] = `
+"<unknown>:1:34: Expected "@interface", "@name", "abstract", "asm", "const", "contract", "extends", "fun", "get", "inline", "message", "mutates", "override", "primitive", "struct", "trait", or "virtual"
+> 1 | asm fun Bar(): Int {-ROT ADD MUL};
+                                       ^
+  2 | 
+"
+`;
+
 exports[`grammar should fail const-abstract-abstract 1`] = `
 "<unknown>:4:10: Duplicate constant attribute "abstract"
   3 | 
