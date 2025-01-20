@@ -106,11 +106,12 @@ type Intersect<T> = (T extends unknown ? (x: T) => 0 : never) extends (
  */
 type Unwrap<T> = T extends infer R ? { [K in keyof R]: R[K] } : never;
 
-type Inputs<I, T extends string> = I extends Record<T, infer K>
-    ? K extends string
-        ? Record<K, (input: I) => unknown>
-        : never
-    : never;
+type Inputs<I, T extends string> =
+    I extends Record<T, infer K>
+        ? K extends string
+            ? Record<K, (input: I) => unknown>
+            : never
+        : never;
 type Outputs<O> = { [K in keyof O]: (input: never) => O[K] };
 type Handlers<I, O, T extends string> = Unwrap<Intersect<Inputs<I, T>>> &
     Outputs<O>;
