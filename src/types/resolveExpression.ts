@@ -21,9 +21,9 @@ import {
     AstSimplifiedString,
     AstCommentValue,
     AstStructValue,
-} from "../grammar/ast";
-import { idTextErr, throwCompilationError } from "../errors";
-import { CompilerContext, createContextStore } from "../context";
+} from "../ast/ast";
+import { idTextErr, throwCompilationError } from "../error/errors";
+import { CompilerContext, createContextStore } from "../context/context";
 import {
     getAllTypes,
     getStaticConstant,
@@ -37,7 +37,7 @@ import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
-import { throwInternalCompilerError } from "../errors";
+import { throwInternalCompilerError } from "../error/errors";
 import { StructFunctions } from "../abi/struct";
 import { prettyPrint } from "../prettyPrinter";
 

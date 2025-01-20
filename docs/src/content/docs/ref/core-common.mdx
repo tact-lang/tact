@@ -98,7 +98,7 @@ Field     | Type                  | Description
 `bounced` | [`Bool{:tact}`][bool] | [Bounced](https://ton.org/docs/learn/overviews/addresses#bounceable-vs-non-bounceable-addresses) flag of the incoming message.
 `sender`  | [`Address{:tact}`][p] | Internal address of the sender on the TON blockchain.
 `value`   | [`Int{:tact}`][int]   | Amount of [nanoToncoins](/book/integers#nanotoncoin) in a message.
-`raw`     | [`Slice{:tact}`][slice]   | The remainder of the message as a [`Slice{:tact}`][slice]. It follows [internal message layout](https://docs.ton.org/develop/smart-contracts/messages#message-layout) of TON starting from the destination [`Address{:tact}`][p] (`dest:MsgAddressInt ` in [TL-B notation](https://docs.ton.org/develop/data-formats/tl-b-language)).
+`raw`     | [`Slice{:tact}`][slice]   | The remainder of the message as a [`Slice{:tact}`][slice]. It follows [internal message layout](https://docs.ton.org/develop/smart-contracts/messages#message-layout) of TON starting from the destination [`Address{:tact}`][p] (`MsgAddressInt` in [TL-B notation](https://docs.ton.org/develop/data-formats/tl-b-language)).
 
 Usage example:
 

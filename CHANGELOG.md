@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `VarInt16`, `VarInt32`, `VarUint16`, `VarUint32` integer serialization types: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
 - `unboc`: a standalone CLI utility to expose Tact's TVM disassembler: PR [#1259](https://github.com/tact-lang/tact/pull/1259)
 - Added alternative parser: PR [#1258](https://github.com/tact-lang/tact/pull/1258)
+- Support for block statements: PR [#1334](https://github.com/tact-lang/tact/pull/1334)
 
 ### Changed
 
@@ -32,6 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove `org.ton.chain.any.v0` interface: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
 - To reduce fees, Tact no longer stores the parent contract code in the system cell that holds all the child contract codes used in `initOf`. Instead, the `MYCODE` instruction is used: PR [#1213](https://github.com/tact-lang/tact/pull/1213)
 - Generated TS wrappers now use `const` where possible for variable declarations: PR [#1292](https://github.com/tact-lang/tact/pull/1292)
+- Allow serialization specifiers for trait fields PR: [#1303](https://github.com/tact-lang/tact/pull/1303)
+- Remove unused typechecker wrapper with the file `check.ts` it is contained in: PR [#1313](https://github.com/tact-lang/tact/pull/1313)
 
 ### Fixed
 
@@ -45,6 +48,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `foreach` loops now properly handle `as coins` map value serialization type: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
 - The typechecker now rejects integer map key types with variable width (`coins`, `varint16`, `varint32`, `varuint16`, `varuint32`): PR [#1276](https://github.com/tact-lang/tact/pull/1276)
 - Code generation for `self` argument in optional struct methods: PR [#1284](https://github.com/tact-lang/tact/pull/1284)
+- 'The "remainder" field can only be the last field:' inspection now shows location: PR [#1300](https://github.com/tact-lang/tact/pull/1300)
+- Forbid "remainder" field at the middle of a contract storage: PR [#1301](https://github.com/tact-lang/tact/pull/1301)
+- Forbid the `override` modifier for functions without the corresponding super-function: PR [#1302](https://github.com/tact-lang/tact/pull/1302)
+- Format empty blocks without extra empty line: PR [#1346](https://github.com/tact-lang/tact/pull/1346)
+- Remove duplicate line and column info from error messages: PR [#1362](https://github.com/tact-lang/tact/pull/1362)
+- Support `AstTypedParameter` AST node in pretty printer: PR [#1347](https://github.com/tact-lang/tact/pull/1347)
 
 ### Docs
 
@@ -70,6 +79,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed links in Chinese translation: PR [#1206](https://github.com/tact-lang/tact/pull/1206)
 - Added a note on 255 being the maximum number of messages that can be sent during action phase: PR [#1237](https://github.com/tact-lang/tact/pull/1237)
 - Added onchain metadata creation for NFTs and Jettons to the cookbook: PR [#1236](https://github.com/tact-lang/tact/pull/1236)
+- Document that identifiers cannot start with `__gen` or `__tact`, and cannot contain Unicode characters apart from the small subset `a-zA-Z0-9_`: PR [#1312](https://github.com/tact-lang/tact/pull/1312)
+- Added signatures for map methods, such as `.get()`, `.exists()`, `.set()`, `.replace()`, `.replaceGet()`, `.del()`, `.isEmpty()`, `.deepEquals()`, `.asCell()`: PR [#1352](https://github.com/tact-lang/tact/pull/1352)
+- Added a compilation-related page with the description of the compilation report: PR [#1309](https://github.com/tact-lang/tact/pull/1309)
 
 ### Release contributors
 
@@ -814,7 +826,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Tact contracts are now [Argument-addressable](https://docs.tact-lang.org/evolution/OTP-005) meaning that they depend on init arguments and code hash only. Init function is now called when first valid message is received.
+- Tact contracts are now [Argument-addressable](https://docs.tact-lang.org/ref/evolution/otp-005) meaning that they depend on init arguments and code hash only. Init function is now called when first valid message is received.
 - Refactoring of allocator
 - Moving contract's load function to the beginning of the execution
 - Moving contract's save function to the end of the execution

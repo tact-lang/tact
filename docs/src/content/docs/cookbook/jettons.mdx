@@ -40,13 +40,21 @@ Common examples of working with Jettons.
 
 ### Accepting Jetton transfer
 
-Transfer notification message have the following structure.
+Transfer notification message have the following structure:
 
 ```tact
 message(0x7362d09c) JettonTransferNotification {
-    queryId: Int as uint64;
+    // Unique identifier used to trace transactions across multiple contracts
+    // Defaults to 0, which means we don't mark messages to trace their chains
+    queryId: Int as uint64 = 0;
+
+    // Amount of Jettons transferred
     amount: Int as coins;
+
+    // Address of the sender of the Jettons
     sender: Address;
+
+    // Optional custom payload
     forwardPayload: Slice as remaining;
 }
 ```
@@ -216,7 +224,7 @@ contract Example with Deployable {
             to: self.myJettonWalletAddress,
             value: JettonTransferGas,
             body: JettonTransfer{
-                // To prevent replay attacks
+                // Unique identifier used to trace transactions across multiple contracts
                 queryId: 42,
                 // Jetton amount to transfer
                 amount: msg.amount,
@@ -311,7 +319,7 @@ contract Example with Deployable {
             to: self.myJettonWalletAddress,
             value: JettonBurnGas,
             body: JettonBurn{
-                // To prevent replay attacks
+                // Unique identifier used to trace transactions across multiple contracts
                 queryId: 42,
                 // Jetton amount you want to burn
                 amount: msg.amount,

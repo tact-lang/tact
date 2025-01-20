@@ -1,5 +1,5 @@
 import { ABIField } from "@ton/core";
-import { throwInternalCompilerError } from "../errors";
+import { throwInternalCompilerError } from "../error/errors";
 import {
     AstConstantDef,
     AstFunctionDef,
@@ -15,7 +15,7 @@ import {
     AstNumber,
     AstLiteral,
     idText,
-} from "../grammar/ast";
+} from "../ast/ast";
 import { ItemOrigin, SrcInfo } from "../grammar";
 
 export type TypeDescription = {

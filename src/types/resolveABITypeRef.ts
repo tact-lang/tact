@@ -12,14 +12,14 @@ import {
     isSlice,
     isString,
     isStringBuilder,
-} from "../grammar/ast";
+} from "../ast/ast";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../errors";
+} from "../error/errors";
 import { TypeRef } from "./types";
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { getType } from "./resolveDescriptors";
 import { SrcInfo } from "../grammar";
 

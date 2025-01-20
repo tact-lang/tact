@@ -1,9 +1,9 @@
-import { getAstFactory } from "../../grammar/ast";
+import { getAstFactory } from "../../ast/ast";
 import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
-import { openContext } from "../../grammar/store";
-import { CompilerContext } from "../../context";
+import { openContext } from "../../context/store";
+import { CompilerContext } from "../../context/context";
 import { getParser } from "../../grammar";
 import { defaultParser } from "../../grammar/grammar";
 

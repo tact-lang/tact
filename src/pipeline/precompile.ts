@@ -1,13 +1,13 @@
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { resolveDescriptors } from "../types/resolveDescriptors";
 import { resolveAllocations } from "../storage/resolveAllocation";
-import { openContext } from "../grammar/store";
+import { openContext } from "../context/store";
 import { resolveStatements } from "../types/resolveStatements";
 import { resolveErrors } from "../types/resolveErrors";
 import { resolveSignatures } from "../types/resolveSignatures";
 import { resolveImports } from "../imports/resolveImports";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
-import { AstModule, FactoryAst } from "../grammar/ast";
+import { AstModule, FactoryAst } from "../ast/ast";
 import { Parser } from "../grammar";
 
 export function precompile(
@@ -32,14 +32,14 @@ export function precompile(
     // This creates TLB-style type definitions
     ctx = resolveSignatures(ctx, ast);
 
-    // This creates allocations for all defined types
-    ctx = resolveAllocations(ctx);
-
     // This checks and resolves all statements
     ctx = resolveStatements(ctx, ast);
 
     // This extracts error messages
     ctx = resolveErrors(ctx, ast);
+
+    // This creates allocations for all defined types
+    ctx = resolveAllocations(ctx);
 
     // Prepared context
     return ctx;

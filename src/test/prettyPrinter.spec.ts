@@ -5,7 +5,7 @@ import { join } from "path";
 import { trimTrailingCR, CONTRACTS_DIR } from "./util";
 import * as assert from "assert";
 import JSONBig from "json-bigint";
-import { getAstFactory } from "../grammar/ast";
+import { getAstFactory } from "../ast/ast";
 import { defaultParser } from "../grammar/grammar";
 
 describe("formatter", () => {

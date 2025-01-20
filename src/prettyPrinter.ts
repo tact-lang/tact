@@ -1,4 +1,4 @@
-import * as A from "./grammar/ast";
+import * as A from "./ast/ast";
 import { groupBy, intercalate, isUndefined } from "./utils/array";
 import { makeVisitor } from "./utils/tricks";
 
@@ -380,7 +380,9 @@ const createContext = (spaces: number): Context<ContextModel> => {
     const indent = (rows: readonly ContextModel[]) =>
         block(rows).map((f) => (level: number) => f(level + 1));
     const braced = (rows: readonly ContextModel[]) =>
-        block([row(`{`), indent(rows), row(`}`)]);
+        block(
+            rows.length > 0 ? [row(`{`), indent(rows), row(`}`)] : [row("{ }")],
+        );
     const list = <T>(items: readonly T[], print: Printer<T>) =>
         items.map((node) => print(node)(ctx));
     const grouped = <T, V>({
@@ -695,7 +697,7 @@ export const ppAstFuncId = (func: A.AstFuncId): string => func.text;
 //
 
 export const ppStatementBlock: Printer<A.AstStatement[]> = (stmts) => (c) =>
-    c.braced(stmts.length === 0 ? [c.row("")] : c.list(stmts, ppAstStatement));
+    c.braced(stmts.length === 0 ? [] : c.list(stmts, ppAstStatement));
 
 export const ppAsmInstructionsBlock: Printer<A.AstAsmInstruction[]> =
     (instructions) => (c) =>
@@ -819,6 +821,17 @@ export const ppAstStatementDestruct: Printer<A.AstStatementDestruct> =
         );
     };
 
+export const ppTypedParameter: Printer<A.AstTypedParameter> =
+    ({ name, type }) =>
+    (c) => {
+        return c.row(`${ppAstId(name)}: ${ppAstType(type)}`);
+    };
+
+export const ppAstStatementBlock: Printer<A.AstStatementBlock> =
+    ({ statements }) =>
+    (c) =>
+        ppStatementBlock(statements)(c);
+
 export const ppAstStatement: Printer<A.AstStatement> =
     makeVisitor<A.AstStatement>()({
         statement_let: ppAstStatementLet,
@@ -834,6 +847,7 @@ export const ppAstStatement: Printer<A.AstStatement> =
         statement_try: ppAstStatementTry,
         statement_try_catch: ppAstStatementTryCatch,
         statement_destruct: ppAstStatementDestruct,
+        statement_block: ppAstStatementBlock,
     });
 
 export const exprNode =
@@ -871,9 +885,6 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     destruct_mapping: () => {
         throw new Error("Not implemented");
     },
-    typed_parameter: () => {
-        throw new Error("Not implemented");
-    },
     destruct_end: () => {
         throw new Error("Not implemented");
     },
@@ -904,11 +915,13 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     statement_try: ppAstStatementTry,
     statement_try_catch: ppAstStatementTryCatch,
     statement_foreach: ppAstStatementForEach,
+    statement_block: ppAstStatementBlock,
     import: ppAstImport,
     func_id: exprNode(ppAstFuncId),
     statement_destruct: ppAstStatementDestruct,
     function_attribute: exprNode(ppAstFunctionAttribute),
     asm_function_def: ppAstAsmFunctionDef,
+    typed_parameter: ppTypedParameter,
 });
 
 /**

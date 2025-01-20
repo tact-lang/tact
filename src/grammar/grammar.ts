@@ -1,6 +1,6 @@
 import { getParser as getParserNext } from "./next";
 
-import { AstExpression, AstImport, AstModule, FactoryAst } from "./ast";
+import { AstExpression, AstImport, AstModule, FactoryAst } from "../ast/ast";
 
 import { getParser as getParserPrev } from "./prev/grammar";
 import { ItemOrigin } from "./src-info";
