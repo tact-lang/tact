@@ -23,6 +23,7 @@ void meowModule.then(
       --func                      Output intermediate FunC code and exit
       --check                     Perform syntax and type checking, then exit
       -e, --eval EXPRESSION       Evaluate a Tact expression and exit
+      --verbose LEVEL             Set verbosity level (higher = more details), default: 1
       -v, --version               Print Tact compiler version and exit
       -h, --help                  Display this text and exit
 
@@ -67,6 +68,7 @@ void meowModule.then(
                     func: { type: "boolean", default: false },
                     check: { type: "boolean", default: false },
                     eval: { shortFlag: "e", type: "string" },
+                    verbose: { type: "number", default: 1 },
                     version: { shortFlag: "v", type: "boolean" },
                     help: { shortFlag: "h", type: "boolean" },
                 },
@@ -188,6 +190,7 @@ void meowModule.then(
                 projectNames: cli.flags.projects ?? [],
                 additionalCliOptions: { mode },
                 suppressLog: cli.flags.quiet,
+                verbose: cli.flags.verbose,
             })
             .then((response) => {
                 // https://nodejs.org/docs/v20.12.1/api/process.html#exit-codes

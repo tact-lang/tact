@@ -81,6 +81,11 @@ export const projectSchema = z
         mode: z
             .enum(["fullWithDecompilation", "full", "funcOnly", "checkOnly"])
             .optional(),
+
+        /**
+         * Set verbosity level (higher = more details), default: 1
+         */
+        verbose: z.number().optional(),
     })
     .strict();
 

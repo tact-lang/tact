@@ -54,6 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Format empty blocks without extra empty line: PR [#1346](https://github.com/tact-lang/tact/pull/1346)
 - Remove duplicate line and column info from error messages: PR [#1362](https://github.com/tact-lang/tact/pull/1362)
 - Support `AstTypedParameter` AST node in pretty printer: PR [#1347](https://github.com/tact-lang/tact/pull/1347)
+- Show stacktrace of a compiler error only in verbose mode: PR [#1375](https://github.com/tact-lang/tact/pull/1375)
 
 ### Docs
 
