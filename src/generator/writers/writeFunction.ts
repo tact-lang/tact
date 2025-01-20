@@ -23,7 +23,7 @@ import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { ops } from "./ops";
 import { freshIdentifier } from "./freshIdentifier";
 import { idTextErr, throwInternalCompilerError } from "../../error/errors";
-import { ppAsmShuffle } from "../../prettyPrinter";
+import { ppAsmShuffle } from "../../ast/ast-printer";
 
 export function writeCastedExpression(
     expression: AstExpression,

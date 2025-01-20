@@ -1,5 +1,5 @@
 import fs from "fs";
-import { prettyPrint } from "../prettyPrinter";
+import { prettyPrint } from "../ast/ast-printer";
 import { getParser } from "../grammar";
 import { join } from "path";
 import { trimTrailingCR, CONTRACTS_DIR } from "./util";
