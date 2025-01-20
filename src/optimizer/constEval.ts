@@ -10,7 +10,7 @@ import {
     TactConstEvalError,
     throwInternalCompilerError,
 } from "../error/errors";
-import { AstUtil } from "./util";
+import { AstUtil } from "../ast/util";
 import { ExpressionTransformer } from "./types";
 import { StandardOptimizer } from "./standardOptimizer";
 import {
