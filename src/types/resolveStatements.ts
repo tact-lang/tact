@@ -581,47 +581,46 @@ function processStatements(
 
                     // try-statement might not return from the current function
                     // because the control flow can go to the empty catch block
-
-                    let catchCtx = sctx;
-                    if (s.catchName !== undefined) {
-                        // Process catchName variable for exit code
-                        checkVariableExists(ctx, initialSctx, s.catchName);
-                        catchCtx = addVariable(
-                            s.catchName,
-                            { kind: "ref", name: "Int", optional: false },
-                            ctx,
-                            initialSctx,
-                        );
+                    if (s.catchBlock === undefined) {
+                        break;
                     }
 
-                    if (s.catchStatements !== undefined) {
-                        // Process catch statements
-                        const rCatch = processStatements(
-                            s.catchStatements,
-                            catchCtx,
-                            ctx,
-                        );
-                        ctx = rCatch.ctx;
-                        catchCtx = rCatch.sctx;
-                        // if both catch- and try- blocks always return from the current function
-                        // we mark the whole try-catch statement as always returning
-                        returnAlwaysReachable ||=
-                            r.returnAlwaysReachable &&
-                            rCatch.returnAlwaysReachable;
+                    let catchCtx = sctx;
+                    // Process catchName variable for exit code
+                    checkVariableExists(
+                        ctx,
+                        initialSctx,
+                        s.catchBlock.catchName,
+                    );
+                    catchCtx = addVariable(
+                        s.catchBlock.catchName,
+                        { kind: "ref", name: "Int", optional: false },
+                        ctx,
+                        initialSctx,
+                    );
 
-                        // Merge statement contexts
-                        const removed: string[] = [];
-                        for (const f of initialSctx.requiredFields) {
-                            if (!catchCtx.requiredFields.find((v) => v === f)) {
-                                removed.push(f);
-                            }
+                    // Process catch statements
+                    const rCatch = processStatements(
+                        s.catchBlock.catchStatements,
+                        catchCtx,
+                        ctx,
+                    );
+                    ctx = rCatch.ctx;
+                    catchCtx = rCatch.sctx;
+                    // if both catch- and try- blocks always return from the current function
+                    // we mark the whole try-catch statement as always returning
+                    returnAlwaysReachable ||=
+                        r.returnAlwaysReachable && rCatch.returnAlwaysReachable;
+
+                    // Merge statement contexts
+                    const removed: string[] = [];
+                    for (const f of initialSctx.requiredFields) {
+                        if (!catchCtx.requiredFields.find((v) => v === f)) {
+                            removed.push(f);
                         }
-                        for (const r of removed) {
-                            initialSctx = removeRequiredVariable(
-                                r,
-                                initialSctx,
-                            );
-                        }
+                    }
+                    for (const r of removed) {
+                        initialSctx = removeRequiredVariable(r, initialSctx);
                     }
                 }
                 break;

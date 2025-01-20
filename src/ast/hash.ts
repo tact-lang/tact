@@ -124,11 +124,8 @@ export class AstHasher {
             case "statement_repeat":
                 return `${node.kind}|${this.hash(node.iterations)}|${this.hashStatements(node.statements)}`;
             case "statement_try":
-                if (
-                    node.catchName !== undefined &&
-                    node.catchStatements !== undefined
-                ) {
-                    return `${node.kind}|${this.hashStatements(node.statements)}|${this.hash(node.catchName)}|${this.hashStatements(node.catchStatements)}`;
+                if (node.catchBlock !== undefined) {
+                    return `${node.kind}|${this.hashStatements(node.statements)}|${this.hash(node.catchBlock.catchName)}|${this.hashStatements(node.catchBlock.catchStatements)}`;
                 }
 
                 return `${node.kind}|${this.hashStatements(node.statements)}`;

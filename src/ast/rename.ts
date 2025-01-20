@@ -407,9 +407,14 @@ export class AstRenamer {
                 return {
                     ...stmt,
                     statements: this.renameStatements(stmt.statements),
-                    catchStatements: this.renameStatements(
-                        stmt.catchStatements ?? [],
-                    ),
+                    catchBlock: stmt.catchBlock
+                        ? {
+                              catchName: stmt.catchBlock.catchName,
+                              catchStatements: this.renameStatements(
+                                  stmt.catchBlock.catchStatements,
+                              ),
+                          }
+                        : undefined,
                 };
             case "statement_foreach":
                 return {

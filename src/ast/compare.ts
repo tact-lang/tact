@@ -508,35 +508,38 @@ export class AstComparator {
             case "statement_try": {
                 const {
                     statements: tryCatchStatements1,
-                    catchName: catchName1,
-                    catchStatements: catchStatements1,
+                    catchBlock: catchBlock1,
                 } = node1 as AstStatementTry;
                 const {
                     statements: tryCatchStatements2,
-                    catchName: catchName2,
-                    catchStatements: catchStatements2,
+                    catchBlock: catchBlock2,
                 } = node2 as AstStatementTry;
 
-                const equal =
-                    this.compareArray(
-                        tryCatchStatements1,
-                        tryCatchStatements2,
-                    ) &&
-                    this.compareArray(
-                        catchStatements1 ?? [],
-                        catchStatements2 ?? [],
-                    );
-
-                if (!equal) {
+                if (
+                    !this.compareArray(tryCatchStatements1, tryCatchStatements2)
+                ) {
                     return false;
                 }
 
-                if (catchName1 === undefined && catchName2 === undefined) {
+                if (catchBlock1 === undefined && catchBlock2 === undefined) {
                     return true;
                 }
 
-                if (catchName1 !== undefined && catchName2 !== undefined) {
-                    return this.compare(catchName1, catchName2);
+                if (catchBlock1 !== undefined && catchBlock2 !== undefined) {
+                    const {
+                        catchName: catchName1,
+                        catchStatements: catchStatements1,
+                    } = catchBlock1;
+
+                    const {
+                        catchName: catchName2,
+                        catchStatements: catchStatements2,
+                    } = catchBlock2;
+
+                    return (
+                        this.compare(catchName1, catchName2) &&
+                        this.compareArray(catchStatements1, catchStatements2)
+                    );
                 }
 
                 return false;

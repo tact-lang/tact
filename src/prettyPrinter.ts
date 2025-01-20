@@ -790,20 +790,20 @@ export const ppAstStatementForEach: Printer<A.AstStatementForEach> =
         ]);
 
 export const ppAstStatementTry: Printer<A.AstStatementTry> =
-    ({ statements, catchName, catchStatements }) =>
+    ({ statements, catchBlock }) =>
     (c) => {
-        const catchBlock =
-            catchStatements !== undefined && catchName !== undefined
+        const catchBlocks =
+            catchBlock !== undefined
                 ? [
-                      c.row(` catch (${ppAstId(catchName)}) `),
-                      ppStatementBlock(catchStatements)(c),
+                      c.row(` catch (${ppAstId(catchBlock.catchName)}) `),
+                      ppStatementBlock(catchBlock.catchStatements)(c),
                   ]
                 : [];
 
         return c.concat([
             c.row(`try `),
             ppStatementBlock(statements)(c),
-            ...catchBlock,
+            ...catchBlocks,
         ]);
     };
 

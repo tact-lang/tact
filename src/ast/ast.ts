@@ -300,8 +300,10 @@ export type AstStatementRepeat = {
 export type AstStatementTry = {
     kind: "statement_try";
     statements: AstStatement[];
-    catchName?: AstId;
-    catchStatements?: AstStatement[];
+    catchBlock?: {
+        catchName: AstId;
+        catchStatements: AstStatement[];
+    };
     id: number;
     loc: SrcInfo;
 };

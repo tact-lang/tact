@@ -228,17 +228,22 @@ export function writeStatement(
                 }
             });
 
-            if (f.catchName !== undefined && f.catchStatements !== undefined) {
-                if (isWildcard(f.catchName)) {
+            const catchBlock = f.catchBlock;
+            if (catchBlock !== undefined) {
+                if (isWildcard(catchBlock.catchName)) {
                     ctx.append(`} catch (_) {`);
                 } else {
-                    ctx.append(`} catch (_, ${funcIdOf(f.catchName)}) {`);
+                    ctx.append(
+                        `} catch (_, ${funcIdOf(catchBlock.catchName)}) {`,
+                    );
                 }
                 ctx.inIndent(() => {
-                    for (const s of f.catchStatements!) {
+                    for (const s of catchBlock.catchStatements!) {
                         writeStatement(s, self, returns, ctx);
                     }
                 });
+            } else {
+                ctx.append("} catch (_) { ");
             }
 
             ctx.append(`}`);
