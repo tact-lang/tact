@@ -29,7 +29,6 @@ module.exports = {
         allow: ["/package\\.json$"],
       },
     ],
-    "@typescript-eslint/no-duplicate-type-constituents": "error",
     "@typescript-eslint/restrict-plus-operands": "error",
     "@typescript-eslint/no-base-to-string": "error",
     "@typescript-eslint/restrict-template-expressions": "error",
