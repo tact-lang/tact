@@ -73,7 +73,7 @@
           },
           "verbose": {
             "type": "number",
-            "default": false,
+            "default": 1,
             "description": "Set verbosity level (higher = more details), default: 1"
           }
         }
