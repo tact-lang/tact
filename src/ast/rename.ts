@@ -407,13 +407,8 @@ export class AstRenamer {
                 return {
                     ...stmt,
                     statements: this.renameStatements(stmt.statements),
-                };
-            case "statement_try_catch":
-                return {
-                    ...stmt,
-                    statements: this.renameStatements(stmt.statements),
                     catchStatements: this.renameStatements(
-                        stmt.catchStatements,
+                        stmt.catchStatements ?? [],
                     ),
                 };
             case "statement_foreach":

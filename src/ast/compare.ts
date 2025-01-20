@@ -25,7 +25,6 @@ import {
     AstStatementWhile,
     AstStatementForEach,
     AstStatementTry,
-    AstStatementTryCatch,
     AstCondition,
     AstStatementAugmentedAssign,
     AstStatementAssign,
@@ -507,30 +506,40 @@ export class AstComparator {
             }
 
             case "statement_try": {
-                const { statements: tryStatements1 } = node1 as AstStatementTry;
-                const { statements: tryStatements2 } = node2 as AstStatementTry;
-                return this.compareArray(tryStatements1, tryStatements2);
-            }
-
-            case "statement_try_catch": {
                 const {
                     statements: tryCatchStatements1,
                     catchName: catchName1,
                     catchStatements: catchStatements1,
-                } = node1 as AstStatementTryCatch;
+                } = node1 as AstStatementTry;
                 const {
                     statements: tryCatchStatements2,
                     catchName: catchName2,
                     catchStatements: catchStatements2,
-                } = node2 as AstStatementTryCatch;
-                return (
+                } = node2 as AstStatementTry;
+
+                const equal =
                     this.compareArray(
                         tryCatchStatements1,
                         tryCatchStatements2,
                     ) &&
-                    this.compare(catchName1, catchName2) &&
-                    this.compareArray(catchStatements1, catchStatements2)
-                );
+                    this.compareArray(
+                        catchStatements1 ?? [],
+                        catchStatements2 ?? [],
+                    );
+
+                if (!equal) {
+                    return false;
+                }
+
+                if (catchName1 === undefined && catchName2 === undefined) {
+                    return true;
+                }
+
+                if (catchName1 !== undefined && catchName2 !== undefined) {
+                    return this.compare(catchName1, catchName2);
+                }
+
+                return false;
             }
 
             case "statement_foreach": {

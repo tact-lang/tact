@@ -227,26 +227,20 @@ export function writeStatement(
                     writeStatement(s, self, returns, ctx);
                 }
             });
-            ctx.append("} catch (_) { }");
-            return;
-        }
-        case "statement_try_catch": {
-            ctx.append(`try {`);
-            ctx.inIndent(() => {
-                for (const s of f.statements) {
-                    writeStatement(s, self, returns, ctx);
+
+            if (f.catchName !== undefined && f.catchStatements !== undefined) {
+                if (isWildcard(f.catchName)) {
+                    ctx.append(`} catch (_) {`);
+                } else {
+                    ctx.append(`} catch (_, ${funcIdOf(f.catchName)}) {`);
                 }
-            });
-            if (isWildcard(f.catchName)) {
-                ctx.append(`} catch (_) {`);
-            } else {
-                ctx.append(`} catch (_, ${funcIdOf(f.catchName)}) {`);
+                ctx.inIndent(() => {
+                    for (const s of f.catchStatements!) {
+                        writeStatement(s, self, returns, ctx);
+                    }
+                });
             }
-            ctx.inIndent(() => {
-                for (const s of f.catchStatements) {
-                    writeStatement(s, self, returns, ctx);
-                }
-            });
+
             ctx.append(`}`);
             return;
         }

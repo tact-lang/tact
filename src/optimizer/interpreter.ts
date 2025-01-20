@@ -48,7 +48,6 @@ import {
     AstStatementRepeat,
     AstStatementReturn,
     AstStatementTry,
-    AstStatementTryCatch,
     AstStatementUntil,
     AstStatementWhile,
     AstStaticCall,
@@ -1579,9 +1578,6 @@ export class Interpreter {
                 this.interpretReturnStatement(ast);
                 break;
             case "statement_try":
-                this.interpretTryStatement(ast);
-                break;
-            case "statement_try_catch":
                 this.interpretTryCatchStatement(ast);
                 break;
             case "statement_until":
@@ -1738,16 +1734,9 @@ export class Interpreter {
         }
     }
 
-    public interpretTryStatement(ast: AstStatementTry) {
+    public interpretTryCatchStatement(ast: AstStatementTry) {
         throwNonFatalErrorConstEval(
             "try statements currently not supported",
-            ast.loc,
-        );
-    }
-
-    public interpretTryCatchStatement(ast: AstStatementTryCatch) {
-        throwNonFatalErrorConstEval(
-            "try-catch statements currently not supported",
             ast.loc,
         );
     }

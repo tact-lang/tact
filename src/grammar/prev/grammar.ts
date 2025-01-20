@@ -987,7 +987,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
         _rbraceCatch,
     ) {
         return createNode({
-            kind: "statement_try_catch",
+            kind: "statement_try",
             statements: tryBlock.children.map((s) => s.astOfStatement()),
             catchName: exitCodeId.astOfExpression(),
             catchStatements: catchBlock.children.map((s) => s.astOfStatement()),

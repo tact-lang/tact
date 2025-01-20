@@ -205,7 +205,6 @@ export type AstStatement =
     | AstStatementUntil
     | AstStatementRepeat
     | AstStatementTry
-    | AstStatementTryCatch
     | AstStatementForEach
     | AstStatementDestruct
     | AstStatementBlock;
@@ -301,15 +300,8 @@ export type AstStatementRepeat = {
 export type AstStatementTry = {
     kind: "statement_try";
     statements: AstStatement[];
-    id: number;
-    loc: SrcInfo;
-};
-
-export type AstStatementTryCatch = {
-    kind: "statement_try_catch";
-    statements: AstStatement[];
-    catchName: AstId;
-    catchStatements: AstStatement[];
+    catchName?: AstId;
+    catchStatements?: AstStatement[];
     id: number;
     loc: SrcInfo;
 };

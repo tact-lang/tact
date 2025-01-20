@@ -341,21 +341,12 @@ export const getAstSchema = (
             }),
         StatementTry: (
             statements: A.AstStatement[],
+            catchName: A.AstId | undefined,
+            catchStatements: A.AstStatement[] | undefined,
             loc: Loc,
         ): A.AstStatementTry =>
             createNode<A.AstStatementTry>({
                 kind: "statement_try",
-                statements,
-                loc: toSrcInfo(loc),
-            }),
-        StatementTryCatch: (
-            statements: A.AstStatement[],
-            catchName: A.AstId,
-            catchStatements: A.AstStatement[],
-            loc: Loc,
-        ): A.AstStatementTryCatch =>
-            createNode<A.AstStatementTryCatch>({
-                kind: "statement_try_catch",
                 statements,
                 catchName,
                 catchStatements,

@@ -573,55 +573,55 @@ function processStatements(
                 break;
             case "statement_try":
                 {
-                    // Process inner statements
-                    const r = processStatements(s.statements, sctx, ctx);
-                    ctx = r.ctx;
-                    sctx = r.sctx;
-                    // try-statement might not return from the current function
-                    // because the control flow can go to the empty catch block
-                }
-                break;
-            case "statement_try_catch":
-                {
                     let initialSctx = sctx;
 
                     // Process inner statements
                     const r = processStatements(s.statements, sctx, ctx);
                     ctx = r.ctx;
 
+                    // try-statement might not return from the current function
+                    // because the control flow can go to the empty catch block
+
                     let catchCtx = sctx;
-
-                    // Process catchName variable for exit code
-                    checkVariableExists(ctx, initialSctx, s.catchName);
-                    catchCtx = addVariable(
-                        s.catchName,
-                        { kind: "ref", name: "Int", optional: false },
-                        ctx,
-                        initialSctx,
-                    );
-
-                    // Process catch statements
-                    const rCatch = processStatements(
-                        s.catchStatements,
-                        catchCtx,
-                        ctx,
-                    );
-                    ctx = rCatch.ctx;
-                    catchCtx = rCatch.sctx;
-                    // if both catch- and try- blocks always return from the current function
-                    // we mark the whole try-catch statement as always returning
-                    returnAlwaysReachable ||=
-                        r.returnAlwaysReachable && rCatch.returnAlwaysReachable;
-
-                    // Merge statement contexts
-                    const removed: string[] = [];
-                    for (const f of initialSctx.requiredFields) {
-                        if (!catchCtx.requiredFields.find((v) => v === f)) {
-                            removed.push(f);
-                        }
+                    if (s.catchName !== undefined) {
+                        // Process catchName variable for exit code
+                        checkVariableExists(ctx, initialSctx, s.catchName);
+                        catchCtx = addVariable(
+                            s.catchName,
+                            { kind: "ref", name: "Int", optional: false },
+                            ctx,
+                            initialSctx,
+                        );
                     }
-                    for (const r of removed) {
-                        initialSctx = removeRequiredVariable(r, initialSctx);
+
+                    if (s.catchStatements !== undefined) {
+                        // Process catch statements
+                        const rCatch = processStatements(
+                            s.catchStatements,
+                            catchCtx,
+                            ctx,
+                        );
+                        ctx = rCatch.ctx;
+                        catchCtx = rCatch.sctx;
+                        // if both catch- and try- blocks always return from the current function
+                        // we mark the whole try-catch statement as always returning
+                        returnAlwaysReachable ||=
+                            r.returnAlwaysReachable &&
+                            rCatch.returnAlwaysReachable;
+
+                        // Merge statement contexts
+                        const removed: string[] = [];
+                        for (const f of initialSctx.requiredFields) {
+                            if (!catchCtx.requiredFields.find((v) => v === f)) {
+                                removed.push(f);
+                            }
+                        }
+                        for (const r of removed) {
+                            initialSctx = removeRequiredVariable(
+                                r,
+                                initialSctx,
+                            );
+                        }
                     }
                 }
                 break;
