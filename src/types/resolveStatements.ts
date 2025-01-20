@@ -32,7 +32,7 @@ import { evalConstantExpression } from "../optimizer/constEval";
 import { ensureInt } from "../optimizer/interpreter";
 import { crc16 } from "../utils/crc16";
 import { SrcInfo } from "../grammar";
-import { AstUtil, getAstUtil } from "../optimizer/util";
+import { AstUtil, getAstUtil } from "../ast/util";
 
 export type StatementContext = {
     root: SrcInfo;

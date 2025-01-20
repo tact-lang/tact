@@ -65,7 +65,7 @@ import {
     isSelfId,
     AstStatementBlock,
 } from "../ast/ast";
-import { AstUtil, divFloor, getAstUtil, modFloor } from "./util";
+import { AstUtil, divFloor, getAstUtil, modFloor } from "../ast/util";
 import {
     getStaticConstant,
     getStaticFunction,

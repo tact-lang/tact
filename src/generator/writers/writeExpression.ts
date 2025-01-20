@@ -43,7 +43,7 @@ import { ops } from "./ops";
 import { writeCastedExpression } from "./writeFunction";
 import { isLvalue } from "../../types/resolveStatements";
 import { evalConstantExpression } from "../../optimizer/constEval";
-import { getAstUtil } from "../../optimizer/util";
+import { getAstUtil } from "../../ast/util";
 
 function isNull(wCtx: WriterContext, expr: AstExpression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";

@@ -10,7 +10,7 @@ import {
     getAllStaticConstants,
 } from "./resolveDescriptors";
 import { ensureSimplifiedString } from "../optimizer/interpreter";
-import { AstUtil, getAstUtil } from "../optimizer/util";
+import { AstUtil, getAstUtil } from "../ast/util";
 
 type Exception = { value: string; id: number };
 
