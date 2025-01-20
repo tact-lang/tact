@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-confusing-void-expression */
 /* eslint-disable @typescript-eslint/require-await */
 import { beginCell, Cell, ContractABI, Dictionary } from "@ton/core";
 import { decompileAll } from "@tact-lang/opcode";
@@ -37,6 +39,7 @@ import { fileFormat, PackageFileFormat } from "../packaging/fileFormat";
 import { getCompilerVersion } from "./version";
 import { createVirtualFileSystem } from "../vfs/createVirtualFileSystem";
 import files from "../stdlib/stdlib";
+import { deferredMap } from "../utils/async";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -59,18 +62,6 @@ export function enableFeatures(
         return currentCtx;
     }, ctx);
 }
-
-const runSync = (arr: ((sync: () => Promise<void>) => Promise<void>)[]) => {
-    let count = arr.length;
-    let resolve: undefined | (() => void);
-    const syncP: Promise<void> = new Promise((r) => (resolve = r));
-    const sync = async () => {
-        --count;
-        if (count === 0) resolve?.();
-        await syncP;
-    };
-    return arr.map((task) => task(sync));
-};
 
 const getStepper = (logger: ILogger, path: string[] = []) => {
     const wrap = async <T>(name: string, callback: () => Promise<T>) => {
@@ -106,10 +97,36 @@ const getStepper = (logger: ILogger, path: string[] = []) => {
             }
         });
     };
-    const steps = (
+    const steps = async (
         xs: string[],
         f: (x: string, sync: () => Promise<void>) => Promise<void>,
-    ) => Promise.all(runSync(xs.map((x) => (s) => step(x, () => f(x, s)))));
+    ) => {
+        const rests: (() => Promise<void>)[] = [];
+        // execute all threads up to `sync()`
+        for (const x of xs) {
+            let runSync: undefined | (() => void);
+            const sync: Promise<void> = new Promise(
+                (resolve) => (runSync = resolve),
+            );
+            let rest: Promise<void> | undefined;
+            await new Promise<void>((atSync) => {
+                rest = step(x, () =>
+                    f(x, () => {
+                        atSync();
+                        return sync;
+                    }),
+                );
+            });
+            rests.push(async () => {
+                runSync?.();
+                await rest;
+            });
+        }
+        // let threads continue from sync
+        for (const rest of rests) {
+            await rest();
+        }
+    };
     return { step, steps };
 };
 
@@ -359,7 +376,7 @@ export async function build({
     projectFs: VirtualFileSystem;
 }) {
     const compilerVersion = getCompilerVersion();
-    const { step, steps } = getStepper(new Logger());
+    const { step } = getStepper(new Logger());
     const ast = getAstFactory();
     const parser = getParser(ast, options?.parser ?? defaultParser);
     const stdlibFs = createVirtualFileSystem("@stdlib", files);
@@ -392,101 +409,144 @@ export async function build({
         stdlib,
     });
 
-    const imports = await step("Imports", () => checkImports());
-    const sources = await step("Parse", () => parseImports(imports));
-    const ctx = await step("Types", () =>
+    // FIXME: run((define, use) => { ... })
+    const imports = step("Imports", () => checkImports());
+
+    const sources = step("Parse", async () => parseImports(await imports));
+
+    const types = step("Types", async () =>
         checkTypes({
             ctx: enableFeatures(new CompilerContext(), options),
-            sources,
+            sources: await sources,
             ast,
         }),
     );
+
     if (mode === "checkOnly") {
         return;
     }
-    const built: Record<string, Buffer> = {};
-    const contracts = getContracts(ctx);
-    await steps(contracts, async (contractName, sync) => {
-        const emit = contractFs(contractName);
-        const abi = await step("Abi", async () => {
-            const abi = await compileAbi({
-                ctx,
-                contractName,
+
+    step('Contracts', async () => {
+        const ctx = await types;
+
+        const contracts = getContracts(ctx);
+
+        const built = deferredMap<string, Buffer>(contracts);
+
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        for (const contractName of contracts) {
+            // const step = step.sub(contractName);
+
+            const emit = contractFs(contractName);
+
+            const abi = step("ABI", async () =>
+                compileAbi({
+                    ctx,
+                    contractName,
+                }),
+            );
+
+            step("Emit ABI", async () => await emit.abi((await abi).text));
+
+            const tactResult = step("Tact", async () =>
+                compileTact({
+                    ctx,
+                    funcSources: imports.func,
+                    contractName: contractName,
+                    abiSrc: (await abi).src,
+                    abiLink: (await abi).link,
+                }),
+            );
+
+            step(
+                "Emit FunC",
+                async () => await emit.funC((await tactResult).codeFc),
+            );
+
+            if (mode === "funcOnly") {
+                return;
+            }
+
+            const funcResult = step("FunC", async () =>
+                compileFunc(await tactResult),
+            );
+
+            step("Report BoC", async () =>
+                built.set(contractName, (await funcResult).codeBoc),
+            );
+
+            step(
+                "Emit BoC",
+                async () => await emit.boc((await funcResult).codeBoc),
+            );
+
+            step(
+                "Emit FIFT",
+                async () => await emit.fift((await funcResult).fift),
+            );
+
+            if (mode === "fullWithDecompilation") {
+                step("Decompilation", async () => {
+                    await emit.fiftDecompiled(
+                        await decompile((await funcResult).codeBoc),
+                    );
+                });
+            }
+
+            const contract = step("Interface", async () => {
+                await tactResult;
+                const { dependsOn, init } = getType(ctx, contractName);
+                const childContracts = await Promise.all(
+                    dependsOn.map(
+                        async ({ uid, name }) => {
+                            return { uid, code: await built.get(name) };
+                        },
+                    ),
+                );
+                return await compileContractData({
+                    ctx,
+                    childContracts: await childContracts,
+                    codeBoc: (await funcResult).codeBoc,
+                    init: init!,
+                });
             });
-            await emit.abi(abi.text);
-            return abi;
-        });
-        const funcResult = await step("Tact", async () => {
-            const result = await compileTact({
-                ctx,
-                funcSources: imports.func,
-                contractName: contractName,
-                abiSrc: abi.src,
-                abiLink: abi.link,
-            });
-            await emit.funC(result.codeFc);
-            return result;
-        });
-        if (mode === "funcOnly") {
-            return;
-        }
-        const codeBoc = await step("FunC", async () => {
-            const { fift, codeBoc } = await compileFunc(funcResult);
-            await emit.fift(fift);
-            await emit.boc(codeBoc);
-            return codeBoc;
-        });
-        if (mode === "fullWithDecompilation") {
-            await step("Decompilation", async () =>
-                emit.fiftDecompiled(await decompile(codeBoc)),
+
+            step(
+                "Package",
+                async () =>
+                    await emit.package(
+                        await compilePackage({
+                            contractName,
+                            allSources: { ...imports.func, ...imports.tact },
+                            abi: (await abi).text,
+                            contract: await contract,
+                        }),
+                    ),
+            );
+
+            step(
+                "Bindings",
+                async () =>
+                    await emit.bindings(
+                        await compileBindings({
+                            abiSrc: (await abi).src,
+                            contract: await contract,
+                        }),
+                    ),
+            );
+
+            step(
+                "Reports",
+                async () =>
+                    await emit.report(
+                        await emitReport({
+                            contractName,
+                            ctx,
+                            abiSrc: (await abi).src,
+                            code: (await contract).code,
+                        }),
+                    ),
             );
         }
-        await step("Waiting", () => {
-            built[contractName] = codeBoc;
-            return sync();
-        });
-        const contract = await step("Interface", async () => {
-            const { dependsOn, init } = getType(ctx, contractName);
-            return compileContractData({
-                ctx,
-                childContracts: dependsOn.map(({ uid, name }) => {
-                    const code = built[name];
-                    if (typeof code === "undefined") {
-                        throw new Error(`Dependency ${name} was not found`);
-                    }
-                    return { uid, code };
-                }),
-                codeBoc,
-                init: init!,
-            });
-        });
-        await step("Package", async () =>
-            emit.package(
-                await compilePackage({
-                    contractName,
-                    allSources: { ...imports.func, ...imports.tact },
-                    abi: abi.text,
-                    contract,
-                }),
-            ),
-        );
-        await step("Bindings", async () =>
-            emit.bindings(
-                await compileBindings({
-                    abiSrc: abi.src,
-                    contract,
-                }),
-            ),
-        );
-        await step("Reports", async () =>
-            emit.report(
-                await emitReport({
-                    contractName,
-                    ctx,
-                    abiSrc: abi.src,
-                    code: contract.code,
-                }),
-            ),
-        );
     });
 }
