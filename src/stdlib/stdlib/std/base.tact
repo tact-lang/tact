@@ -53,8 +53,7 @@ trait BaseTrait {
         self.forward(sender(), body, false, null);
     }
 
-    /// Queues the message (bounceable or non-bounceable) to be sent to the specified
-    /// address `to`.
+    /// Queues the message (bounceable or non-bounceable) to be sent to the specified address `to`.
     /// Optionally, you may provide a `body` of the message and the `init` package with `initOf`.
     /// 
     /// When `self.storageReserve` constant is overwritten to be greater than zero, before sending a
