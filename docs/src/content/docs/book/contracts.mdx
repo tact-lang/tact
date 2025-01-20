@@ -165,6 +165,23 @@ contract Example {
 }
 ```
 
+As the contract state is updated at the very end of the [compute phase][compute] of the transaction, intermediate assignments of [`Int{:tact}`][int] values that exceed the limits specified by [serialization formats](/book/integers#serialization) won't fail immediately. Instead, such assignments would cause an [exit code 5](/book/exit-codes#5) only after all statements have been executed.
+
+This is to be expected because the integers in the temporary [TVM][tvm] memory, which is used to process the [compute phase][compute], always have $257$ bits and are capable of holding values in the inclusive range from $-2^{256}$ to $2^{256} - 1.$
+
+```tact
+contract DeRanged {
+    // Persistent state variables
+    var: Int as uint8; // cannot store values outside the 0-255 range
+
+    init() {
+        self.var = -1;  // this won't fail immediately
+        self.var = 500; // and that won't fail right away either
+    } // only here, at the end of the compute phase,
+      // would there be an error thrown with an exit code 5: Integer out of range
+}
+```
+
 :::note
 
   Tact supports local, non-persistent-state variables too, see: [Variable declaration](/book/statements#let).
@@ -217,24 +234,12 @@ contract Example {
     // persistent state variables
     var1: Int = 0; // initialized with default value 0
     var2: Int;     // must be initialized in the init() function
+    var3: Int = 7; // initialized with default value 7
 
     // constructor function
     init() {
         self.var2 = 42;
-    }
-}
-```
-
-The default value of [state variables](#variables) is assigned before any values could be assigned in the `init(){:tact}` function.
-
-```tact
-contract Example {
-    // persistent state variables
-    var1: Int = 0; // initialized with default value 0
-
-    // constructor function
-    init() {
-        self.var1 = 42; // overrides the default to 42
+        self.var3 = 32; // overrides the default to 32
     }
 }
 ```
@@ -382,7 +387,10 @@ contract Functions {
 :::
 
 [p]: /book/types#primitive-types
+[int]: /book/integers
 [trait]: /book/types#traits
 
+[compute]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [bp]: https://github.com/ton-org/blueprint
 [bp-config]: https://github.com/ton-org/blueprint/tree/main?tab=readme-ov-file#configuration
