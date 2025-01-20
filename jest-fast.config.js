@@ -4,10 +4,13 @@ module.exports = {
         "^.+\\.(t|j)sx?$": "@swc/jest",
     },
     testEnvironment: "node",
-    testPathIgnorePatterns: ["/node_modules/", "/dist/"],
+    testPathIgnorePatterns: [
+        "/node_modules/",
+        "/dist/",
+        "/src/test/e2e-emulated/map*",
+    ],
     maxWorkers: "8",
-    globalSetup: "./jest.globalSetup.js",
-    setupFiles: ["./jest.setup.js"],
+    globalSetup: "./jest.setup.js",
     globalTeardown: "./jest.teardown.js",
     snapshotSerializers: ["@tact-lang/ton-jest/serializers"],
 };
