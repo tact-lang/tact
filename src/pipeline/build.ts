@@ -153,7 +153,11 @@ export async function build(args: {
         } catch (e) {
             logger.error("Tact compilation failed");
             // show an error with a backtrace only in verbose mode
-            if (e instanceof TactError && config.verbose && config.verbose >= 2) {
+            if (
+                e instanceof TactError &&
+                config.verbose &&
+                config.verbose >= 2
+            ) {
                 logger.error(e.message);
             } else {
                 logger.error(e as Error);
