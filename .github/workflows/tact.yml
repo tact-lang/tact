@@ -122,24 +122,32 @@ jobs:
       - name: CLI Test | Check compilation of broken contract doesn't contain stacktrace
         if: runner.os != 'Windows'
         run: |
-          set -o pipefail
-
-          output=$(tact src/test/compilation-failed/contracts/const-eval-ascii-empty.tact 2>&1 || true)
-          echo "$output" | (! grep -E ".*at \w+ \(.*")
+          output=$(bin/tact.js src/test/compilation-failed/contracts/const-eval-ascii-empty.tact 2>&1 || true)
+          if echo "$output" | grep -E ".*at \w+ \(.*"; then
+            echo "Unexpected stack trace found!"
+            exit 1
+          fi
 
           output=$(tact src/test/compilation-failed/contracts/contract-duplicate-bounced-opcode.tact 2>&1 || true)
-          echo "$output" | (! grep -E ".*at \w+ \(.*")
+          if echo "$output" | grep -E ".*at \w+ \(.*"; then
+            echo "Unexpected stack trace found!"
+            exit 1
+          fi
 
       - name: CLI Test | Check compilation of broken contract contains stacktrace with --verbose flag
         if: runner.os != 'Windows'
         run: |
-          set -o pipefail
-
           output=$(tact --verbose src/test/compilation-failed/contracts/const-eval-ascii-empty.tact 2>&1 || true)
-          echo "$output" | grep -E ".*at \w+ \(.*"
+          if ! echo "$output" | grep -E ".*at \w+ \(.*"; then
+            echo "Expected stack trace not found!"
+            exit 1
+          fi
 
           output=$(tact --verbose src/test/compilation-failed/contracts/contract-duplicate-bounced-opcode.tact 2>&1 || true)
-          echo "$output" | grep -E ".*at \w+ \(.*"
+          if ! echo "$output" | grep -E ".*at \w+ \(.*"; then
+            echo "Expected stack trace not found!"
+            exit 1
+          fi
 
       - name: CLI Test | Check single-contract compilation
         if: runner.os != 'Windows'
