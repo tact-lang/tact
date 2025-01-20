@@ -137,13 +137,13 @@ jobs:
       - name: CLI Test | Check compilation of broken contract contains stacktrace with --verbose flag
         if: runner.os != 'Windows'
         run: |
-          output=$(tact --verbose src/test/compilation-failed/contracts/const-eval-ascii-empty.tact 2>&1 || true)
+          output=$(tact --verbose 1 src/test/compilation-failed/contracts/const-eval-ascii-empty.tact 2>&1 || true)
           if ! echo "$output" | grep -E ".*at \w+ \(.*"; then
             echo "Expected stack trace not found!"
             exit 1
           fi
 
-          output=$(tact --verbose src/test/compilation-failed/contracts/contract-duplicate-bounced-opcode.tact 2>&1 || true)
+          output=$(tact --verbose 1 src/test/compilation-failed/contracts/contract-duplicate-bounced-opcode.tact 2>&1 || true)
           if ! echo "$output" | grep -E ".*at \w+ \(.*"; then
             echo "Expected stack trace not found!"
             exit 1

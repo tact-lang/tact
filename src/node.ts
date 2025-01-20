@@ -70,7 +70,7 @@ export async function run(args: {
     projectNames?: string[];
     additionalCliOptions?: AdditionalCliOptions;
     suppressLog?: boolean;
-    verbose?: boolean;
+    verbose?: number;
 }) {
     const configWithRootPath = await loadConfig(args.fileName, args.configPath);
     if (!configWithRootPath) {

@@ -3,6 +3,8 @@ title: Configuration
 description: "The behavior of Tact compiler can be customized using its configuration file"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 The behavior of Tact compiler can be customized using its configuration file, `tact.config.json` — a JSON file that contains the list of settings according to the specific [schema](#schema).
 
 This page lists all the configuration options as they're structured in the [schema](#schema). Look for table of contents on the right to easily navigate them.
@@ -335,7 +337,11 @@ If set to `true{:json}`, enables inlining of all functions in contracts. This ca
 
 ### `verbose` {#verbose}
 
-If set to `true{:json}`, enables extra output which is useful for debugging purposes.
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+`0{:json}` by default.
+
+Sets the verbosity level. Higher values produce more output.
 
 ```json filename="tact.config.json" {7}
 {
@@ -344,7 +350,7 @@ If set to `true{:json}`, enables extra output which is useful for debugging purp
       "name": "func_only",
       "path": "./contract.tact",
       "output": "./contract_output",
-      "verbose": true
+      "verbose": 1
     }
   ]
 }

@@ -85,7 +85,7 @@ export async function build(args: {
         );
 
         // show an error with a backtrace only in verbose mode
-        if (e instanceof TactError && !config.verbose) {
+        if (e instanceof TactError && config.verbose === 0) {
             logger.error(e.message);
         } else {
             logger.error(e as Error);
@@ -153,7 +153,7 @@ export async function build(args: {
         } catch (e) {
             logger.error("Tact compilation failed");
             // show an error with a backtrace only in verbose mode
-            if (e instanceof TactError && !config.verbose) {
+            if (e instanceof TactError && config.verbose === 0) {
                 logger.error(e.message);
             } else {
                 logger.error(e as Error);

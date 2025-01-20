@@ -83,9 +83,9 @@ export const projectSchema = z
             .optional(),
 
         /**
-         * If set to true, enables extra output which is useful for debugging purposes.
+         * Set verbosity level (higher = more details), default: 0
          */
-        verbose: z.boolean().optional(),
+        verbose: z.number().optional(),
     })
     .strict();
 
