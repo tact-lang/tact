@@ -17,7 +17,7 @@ void meowModule.then(
 
     Flags
       -c, --config CONFIG         Specify path to config file (tact.config.json)
-      -p, --project ...names      Build only the specified project name(s) from the config file
+      -p, --projects ...names     Build only the specified project name(s) from the config file
       -q, --quiet                 Suppress compiler log output
       --with-decompilation        Full compilation followed by decompilation of produced binary code
       --func                      Output intermediate FunC code and exit
