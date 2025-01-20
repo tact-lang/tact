@@ -22,7 +22,7 @@ trait BaseTrait {
     virtual const storageReserve: Int = 0;
     
     /// Sends a bounceable message back to the sender of the current message.
-    /// Storage function. An alias function to calling the [`self.forward`] function with
+    /// Storage function. An alias function to calling the `self.forward()` function with
     /// the following arguments:
     ///
     /// ```tact
@@ -38,7 +38,7 @@ trait BaseTrait {
     }
 
     /// Sends a non-bounceable message back to the sender of the current message.
-    /// Storage function. An alias function to calling the [`self.forward`] function with
+    /// Storage function. An alias function to calling the `self.forward()` function with
     /// the following arguments:
     ///
     /// ```tact
