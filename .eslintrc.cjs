@@ -23,7 +23,7 @@ module.exports = {
         caughtErrorsIgnorePattern: "^_",
       },
     ],
-    "@typescript-eslint/no-var-requires": [
+    "@typescript-eslint/no-require-imports": [
       "error",
       {
         allow: ["/package\\.json$"],

@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const pkg = require("../package.json");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const main = require("../dist/node.js");
 const meowModule = import("meow");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { execFileSync } = require("child_process");
 
 void meowModule.then(
