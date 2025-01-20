@@ -118,7 +118,7 @@ For example:
 
 ![Trait inheritance diagram](/src/assets/trait-inheritance-diagram.png)
 
-There, [`JettonWallet`](https://github.com/tact-lang/jetton/blob/ef802f95c967f2fd37e80893845c3c3ed7c34c78/sources/jetton_wallet.tact) inherits the `WalletExitcodes` and `GasConstant` traits, and all inherit the [`BaseTrait{:tact}`](/ref/core-base).
+There, [`JettonWallet`][code-jetton-wallet] inherits the `WalletExitcodes` and `GasConstant` traits, and all inherit the [`BaseTrait{:tact}`](/ref/core-base).
 
 #### Contract dependency diagram {#contract-diagram}
 
@@ -132,8 +132,23 @@ However, if the contract, say `FirstOne`, somewhere in its code computes the [in
 
 ![Contract dependency diagram with a single dependency](/src/assets/contract-dependency-diagram-2.png)
 
+A real-world example of this would be the [`JettonMinter`][code-jetton-minter] contract, commonly referred to as the [Jetton Master](/cookbook/jettons#jetton-master-contract). Often, `JettonMinter` needs the [initial state](/book/expressions#initof) of the [`JettonWallet`][code-jetton-wallet], which is why `JettonMinter` defines the following [internal function](/book/contracts#internal-functions):
+
+```tact
+inline fun getJettonWalletInit(address: Address): StateInit {
+    return initOf JettonWallet(address, myAddress());
+}
+```
+
+Thus, the following dependency diagram is produced:
+
+![Contract dependency diagram of the JettonMinter](/src/assets/contract-dependency-diagram-3.png)
+
 [struct]: /book/structs-and-messages#structs
 [message]: /book/structs-and-messages#messages
 
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
 [mm]: https://mermaid.js.org/
+
+[code-jetton-wallet]: https://github.com/tact-lang/jetton/blob/ef802f95c967f2fd37e80893845c3c3ed7c34c78/sources/jetton_wallet.tact
+[code-jetton-minter]: https://github.com/tact-lang/jetton/blob/ef802f95c967f2fd37e80893845c3c3ed7c34c78/sources/jetton_minter_discoverable.tact
