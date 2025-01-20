@@ -24,7 +24,7 @@ export interface ILogger {
     error: (message: messageType) => void;
 }
 
-const logLevelToMethodName: { [key in LogLevel]: keyof ILogger | null } = {
+const logLevelToMethodName: Record<LogLevel, keyof ILogger | null> = {
     [LogLevel.NONE]: null,
     [LogLevel.ERROR]: "error",
     [LogLevel.WARN]: "warn",
