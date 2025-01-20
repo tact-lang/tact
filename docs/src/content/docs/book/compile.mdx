@@ -116,7 +116,7 @@ This section shows a [Mermaid][mm] diagram of [inherited traits](/book/contracts
 
 For example:
 
-![Trait inheritance diagram](/src/assets/trait-inheritance-diagram.png)
+![Trait inheritance diagram](../../../assets/trait-inheritance-diagram.png)
 
 There, [`JettonWallet`][code-jetton-wallet] inherits the `WalletExitcodes` and `GasConstant` traits, and all inherit the [`BaseTrait{:tact}`](/ref/core-base).
 
@@ -126,11 +126,11 @@ This section shows a [Mermaid][mm] diagram of [contract](/book/contracts) depend
 
 If the contract has no dependencies, only its name is displayed:
 
-![Contract dependency diagram without dependencies](/src/assets/contract-dependency-diagram.png)
+![Contract dependency diagram without dependencies](../../..//assets/contract-dependency-diagram.png)
 
 However, if the contract, say `FirstOne`, somewhere in its code computes the [initial state](/book/expressions#initof) of another contract, say `SecondOne`, such a relationship is shown in the diagram:
 
-![Contract dependency diagram with a single dependency](/src/assets/contract-dependency-diagram-2.png)
+![Contract dependency diagram with a single dependency](../../../assets/contract-dependency-diagram-2.png)
 
 A real-world example of this would be the [`JettonMinter`][code-jetton-minter] contract, commonly referred to as the [Jetton Master](/cookbook/jettons#jetton-master-contract). Often, `JettonMinter` needs the [initial state](/book/expressions#initof) of the [`JettonWallet`][code-jetton-wallet], which is why `JettonMinter` defines the following [internal function](/book/contracts#internal-functions):
 
@@ -142,7 +142,7 @@ inline fun getJettonWalletInit(address: Address): StateInit {
 
 Thus, the following dependency diagram is produced:
 
-![Contract dependency diagram of the JettonMinter](/src/assets/contract-dependency-diagram-3.png)
+![Contract dependency diagram of the JettonMinter](../../../assets/contract-dependency-diagram-3.png)
 
 [struct]: /book/structs-and-messages#structs
 [message]: /book/structs-and-messages#messages
