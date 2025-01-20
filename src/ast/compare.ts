@@ -25,7 +25,6 @@ import {
     AstStatementWhile,
     AstStatementForEach,
     AstStatementTry,
-    AstStatementTryCatch,
     AstCondition,
     AstStatementAugmentedAssign,
     AstStatementAssign,
@@ -507,30 +506,43 @@ export class AstComparator {
             }
 
             case "statement_try": {
-                const { statements: tryStatements1 } = node1 as AstStatementTry;
-                const { statements: tryStatements2 } = node2 as AstStatementTry;
-                return this.compareArray(tryStatements1, tryStatements2);
-            }
-
-            case "statement_try_catch": {
                 const {
                     statements: tryCatchStatements1,
-                    catchName: catchName1,
-                    catchStatements: catchStatements1,
-                } = node1 as AstStatementTryCatch;
+                    catchBlock: catchBlock1,
+                } = node1 as AstStatementTry;
                 const {
                     statements: tryCatchStatements2,
-                    catchName: catchName2,
-                    catchStatements: catchStatements2,
-                } = node2 as AstStatementTryCatch;
-                return (
-                    this.compareArray(
-                        tryCatchStatements1,
-                        tryCatchStatements2,
-                    ) &&
-                    this.compare(catchName1, catchName2) &&
-                    this.compareArray(catchStatements1, catchStatements2)
-                );
+                    catchBlock: catchBlock2,
+                } = node2 as AstStatementTry;
+
+                if (
+                    !this.compareArray(tryCatchStatements1, tryCatchStatements2)
+                ) {
+                    return false;
+                }
+
+                if (catchBlock1 === undefined && catchBlock2 === undefined) {
+                    return true;
+                }
+
+                if (catchBlock1 !== undefined && catchBlock2 !== undefined) {
+                    const {
+                        catchName: catchName1,
+                        catchStatements: catchStatements1,
+                    } = catchBlock1;
+
+                    const {
+                        catchName: catchName2,
+                        catchStatements: catchStatements2,
+                    } = catchBlock2;
+
+                    return (
+                        this.compare(catchName1, catchName2) &&
+                        this.compareArray(catchStatements1, catchStatements2)
+                    );
+                }
+
+                return false;
             }
 
             case "statement_foreach": {
