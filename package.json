@@ -104,7 +104,6 @@
     "pinst": "^3.0.0",
     "prettier": "^3.2.5",
     "release-it": "^18.1.1",
-    "rimraf": "^4.1.2",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "~5.6.2"
