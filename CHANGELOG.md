@@ -827,7 +827,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Tact contracts are now [Argument-addressable](https://docs.tact-lang.org/evolution/OTP-005) meaning that they depend on init arguments and code hash only. Init function is now called when first valid message is received.
+- Tact contracts are now [Argument-addressable](https://docs.tact-lang.org/ref/evolution/otp-005) meaning that they depend on init arguments and code hash only. Init function is now called when first valid message is received.
 - Refactoring of allocator
 - Moving contract's load function to the beginning of the execution
 - Moving contract's save function to the end of the execution
