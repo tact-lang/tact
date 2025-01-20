@@ -1,5 +1,4 @@
 import "./std/primitives";
-import "./std/builder";
 import "./std/cells";
 import "./std/crypto";
 import "./std/text";
