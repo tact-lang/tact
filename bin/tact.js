@@ -23,7 +23,7 @@ void meowModule.then(
       --func                      Output intermediate FunC code and exit
       --check                     Perform syntax and type checking, then exit
       -e, --eval EXPRESSION       Evaluate a Tact expression and exit
-      --verbose LEVEL             Set verbosity level (higher = more details, default: 0)
+      --verbose LEVEL             Set verbosity level (higher = more details), default: 1
       -v, --version               Print Tact compiler version and exit
       -h, --help                  Display this text and exit
 
@@ -68,7 +68,7 @@ void meowModule.then(
                     func: { type: "boolean", default: false },
                     check: { type: "boolean", default: false },
                     eval: { shortFlag: "e", type: "string" },
-                    verbose: { type: "number", default: 0 },
+                    verbose: { type: "number", default: 1 },
                     version: { shortFlag: "v", type: "boolean" },
                     help: { shortFlag: "h", type: "boolean" },
                 },

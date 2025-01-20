@@ -83,7 +83,7 @@ export const projectSchema = z
             .optional(),
 
         /**
-         * Set verbosity level (higher = more details), default: 0
+         * Set verbosity level (higher = more details), default: 1
          */
         verbose: z.number().optional(),
     })
