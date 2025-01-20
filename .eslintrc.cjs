@@ -39,7 +39,10 @@ module.exports = {
     "@typescript-eslint/adjacent-overload-signatures": "error",
     "@typescript-eslint/array-type": "error",
     "@typescript-eslint/ban-ts-comment": "error",
-    "@typescript-eslint/ban-types": "error",
+    "@typescript-eslint/no-restricted-types": "error",
+    "@typescript-eslint/no-empty-object-type": "error",
+    "@typescript-eslint/no-unsafe-function-type": "error",
+    "@typescript-eslint/no-wrapper-object-types": "error",
     "@typescript-eslint/consistent-generic-constructors": [
       "error",
       "type-annotation",
