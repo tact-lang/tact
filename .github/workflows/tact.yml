@@ -131,6 +131,7 @@ jobs:
           echo "$output" | (! grep -E ".*at \w+ \(.*")
 
       - name: CLI Test | Check compilation of broken contract contains stacktrace with --verbose flag
+        if: runner.os != 'Windows'
         run: |
           set -o pipefail
 
