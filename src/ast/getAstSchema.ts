@@ -341,20 +341,16 @@ export const getAstSchema = (
             }),
         StatementTry: (
             statements: A.AstStatement[],
-            catchName: A.AstId | undefined,
-            catchStatements: A.AstStatement[] | undefined,
             loc: Loc,
+            catchBlock?: {
+                catchName: A.AstId;
+                catchStatements: A.AstStatement[];
+            },
         ): A.AstStatementTry =>
             createNode<A.AstStatementTry>({
                 kind: "statement_try",
                 statements,
-                catchBlock:
-                    catchName !== undefined && catchStatements !== undefined
-                        ? {
-                              catchName,
-                              catchStatements,
-                          }
-                        : undefined,
+                catchBlock: catchBlock,
                 loc: toSrcInfo(loc),
             }),
         StatementForEach: (
