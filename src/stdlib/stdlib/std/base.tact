@@ -22,7 +22,7 @@ trait BaseTrait {
     virtual const storageReserve: Int = 0;
     
     /// Sends a bounceable message back to the sender of the current message.
-    /// Storage function. An alias function to calling the `self.forward()` function with
+    /// An alias function to calling the `self.forward()` function with
     /// the following arguments:
     ///
     /// ```tact
@@ -38,7 +38,7 @@ trait BaseTrait {
     }
 
     /// Sends a non-bounceable message back to the sender of the current message.
-    /// Storage function. An alias function to calling the `self.forward()` function with
+    /// An alias function to calling the `self.forward()` function with
     /// the following arguments:
     ///
     /// ```tact
@@ -53,7 +53,7 @@ trait BaseTrait {
         self.forward(sender(), body, false, null);
     }
 
-    /// Storage function. Queues the message (bounceable or non-bounceable) to be sent to the specified
+    /// Queues the message (bounceable or non-bounceable) to be sent to the specified
     /// address `to`.
     /// Optionally, you may provide a `body` of the message and the `init` package with `initOf`.
     /// 
@@ -85,13 +85,13 @@ trait BaseTrait {
             if (balanceBeforeMessage < self.storageReserve) {
                 nativeReserve(self.storageReserve, ReserveExact);
                 send(SendParameters{
-                    bounce: bounce,
-                    to: to,
+                    bounce,
+                    to,
                     value: 0,
                     mode: SendRemainingBalance | SendIgnoreErrors,
-                    body: body,
-                    code: code,
-                    data: data,
+                    body,
+                    code,
+                    data,
                 });
                 return;
             }
@@ -99,13 +99,13 @@ trait BaseTrait {
 
         // Just send with remaining balance
         send(SendParameters{
-            bounce: bounce,
-            to: to,
+            bounce,
+            to,
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            body: body,
-            code: code,
-            data: data,
+            body,
+            code,
+            data,
         });
     }
 }
