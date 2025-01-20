@@ -32,7 +32,7 @@ import { evalConstantExpression } from "../optimizer/constEval";
 import { ensureInt } from "../optimizer/interpreter";
 import { crc16 } from "../utils/crc16";
 import { SrcInfo } from "../grammar";
-import { AstUtil, getAstUtil } from "../optimizer/util";
+import { AstUtil, getAstUtil } from "../ast/util";
 
 export type StatementContext = {
     root: SrcInfo;
@@ -573,28 +573,27 @@ function processStatements(
                 break;
             case "statement_try":
                 {
-                    // Process inner statements
-                    const r = processStatements(s.statements, sctx, ctx);
-                    ctx = r.ctx;
-                    sctx = r.sctx;
-                    // try-statement might not return from the current function
-                    // because the control flow can go to the empty catch block
-                }
-                break;
-            case "statement_try_catch":
-                {
                     let initialSctx = sctx;
 
                     // Process inner statements
                     const r = processStatements(s.statements, sctx, ctx);
                     ctx = r.ctx;
 
-                    let catchCtx = sctx;
+                    // try-statement might not return from the current function
+                    // because the control flow can go to the empty catch block
+                    if (s.catchBlock === undefined) {
+                        break;
+                    }
 
+                    let catchCtx = sctx;
                     // Process catchName variable for exit code
-                    checkVariableExists(ctx, initialSctx, s.catchName);
+                    checkVariableExists(
+                        ctx,
+                        initialSctx,
+                        s.catchBlock.catchName,
+                    );
                     catchCtx = addVariable(
-                        s.catchName,
+                        s.catchBlock.catchName,
                         { kind: "ref", name: "Int", optional: false },
                         ctx,
                         initialSctx,
@@ -602,7 +601,7 @@ function processStatements(
 
                     // Process catch statements
                     const rCatch = processStatements(
-                        s.catchStatements,
+                        s.catchBlock.catchStatements,
                         catchCtx,
                         ctx,
                     );

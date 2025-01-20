@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Generated TS wrappers now use `const` where possible for variable declarations: PR [#1292](https://github.com/tact-lang/tact/pull/1292)
 - Allow serialization specifiers for trait fields PR: [#1303](https://github.com/tact-lang/tact/pull/1303)
 - Remove unused typechecker wrapper with the file `check.ts` it is contained in: PR [#1313](https://github.com/tact-lang/tact/pull/1313)
+- Unified `StatementTry` and `StatementTryCatch` AST nodes: PR [#1418](https://github.com/tact-lang/tact/pull/1418)
 
 ### Fixed
 
@@ -54,6 +55,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Format empty blocks without extra empty line: PR [#1346](https://github.com/tact-lang/tact/pull/1346)
 - Remove duplicate line and column info from error messages: PR [#1362](https://github.com/tact-lang/tact/pull/1362)
 - Support `AstTypedParameter` AST node in pretty printer: PR [#1347](https://github.com/tact-lang/tact/pull/1347)
+- Show stacktrace of a compiler error only in verbose mode: PR [#1375](https://github.com/tact-lang/tact/pull/1375)
+- Flag name in help (`--project` to `--projects`): PR [#1419](https://github.com/tact-lang/tact/pull/1419)
 
 ### Docs
 

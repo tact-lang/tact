@@ -1,6 +1,6 @@
-import * as A from "./ast/ast";
-import { groupBy, intercalate, isUndefined } from "./utils/array";
-import { makeVisitor } from "./utils/tricks";
+import * as A from "./ast";
+import { groupBy, intercalate, isUndefined } from "../utils/array";
+import { makeVisitor } from "../utils/tricks";
 
 //
 // Types
@@ -790,19 +790,22 @@ export const ppAstStatementForEach: Printer<A.AstStatementForEach> =
         ]);
 
 export const ppAstStatementTry: Printer<A.AstStatementTry> =
-    ({ statements }) =>
-    (c) =>
-        c.concat([c.row(`try `), ppStatementBlock(statements)(c)]);
+    ({ statements, catchBlock }) =>
+    (c) => {
+        const catchBlocks =
+            catchBlock !== undefined
+                ? [
+                      c.row(` catch (${ppAstId(catchBlock.catchName)}) `),
+                      ppStatementBlock(catchBlock.catchStatements)(c),
+                  ]
+                : [];
 
-export const ppAstStatementTryCatch: Printer<A.AstStatementTryCatch> =
-    ({ statements, catchName, catchStatements }) =>
-    (c) =>
-        c.concat([
+        return c.concat([
             c.row(`try `),
             ppStatementBlock(statements)(c),
-            c.row(` catch (${ppAstId(catchName)}) `),
-            ppStatementBlock(catchStatements)(c),
+            ...catchBlocks,
         ]);
+    };
 
 export const ppAstStatementDestruct: Printer<A.AstStatementDestruct> =
     ({ type, identifiers, ignoreUnspecifiedFields, expression }) =>
@@ -845,7 +848,6 @@ export const ppAstStatement: Printer<A.AstStatement> =
         statement_repeat: ppAstStatementRepeat,
         statement_foreach: ppAstStatementForEach,
         statement_try: ppAstStatementTry,
-        statement_try_catch: ppAstStatementTryCatch,
         statement_destruct: ppAstStatementDestruct,
         statement_block: ppAstStatementBlock,
     });
@@ -913,7 +915,6 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     statement_until: ppAstStatementUntil,
     statement_repeat: ppAstStatementRepeat,
     statement_try: ppAstStatementTry,
-    statement_try_catch: ppAstStatementTryCatch,
     statement_foreach: ppAstStatementForEach,
     statement_block: ppAstStatementBlock,
     import: ppAstImport,

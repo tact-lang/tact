@@ -39,7 +39,7 @@ import { GlobalFunctions } from "../abi/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
 import { throwInternalCompilerError } from "../error/errors";
 import { StructFunctions } from "../abi/struct";
-import { prettyPrint } from "../prettyPrinter";
+import { prettyPrint } from "../ast/ast-printer";
 
 const store = createContextStore<{
     ast: AstExpression;
