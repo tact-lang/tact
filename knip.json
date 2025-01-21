@@ -5,7 +5,7 @@
   "ignore": [
     "src/ast/ast.ts",
     "src/config/parseConfig.ts",
-    "src/prettyPrinter.ts",
+    "src/ast/ast-printer.ts",
     "src/error/display-to-json.ts",
     "src/grammar/src-info.ts",
     "src/grammar/next/grammar.ts",

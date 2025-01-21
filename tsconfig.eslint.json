@@ -9,6 +9,7 @@
     "examples/",
     "scripts/",
     "./jest.config.js",
+    "./jest-fast.config.js",
     "bin/tact.js",
     "bin/unboc.js"
   ],

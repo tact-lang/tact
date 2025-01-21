@@ -189,15 +189,12 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
             node.statements.forEach((e) => {
                 traverse(e, callback);
             });
-            break;
-        case "statement_try_catch":
-            node.statements.forEach((e) => {
-                traverse(e, callback);
-            });
-            traverse(node.catchName, callback);
-            node.catchStatements.forEach((e) => {
-                traverse(e, callback);
-            });
+            if (node.catchBlock !== undefined) {
+                traverse(node.catchBlock.catchName, callback);
+                node.catchBlock.catchStatements.forEach((e) => {
+                    traverse(e, callback);
+                });
+            }
             break;
         case "statement_foreach":
             traverse(node.keyName, callback);
