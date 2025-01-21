@@ -13,7 +13,7 @@ import {
     checkIsName,
     checkIsNumber,
     checkIsUnaryOpNode,
-} from "./util";
+} from "../ast/util";
 
 export class AddZero extends Rule {
     private additiveOperators: AstBinaryOperation[] = ["+", "-"];

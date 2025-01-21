@@ -16,6 +16,7 @@ import {
     AstTraitDeclaration,
     idText,
 } from "../ast/ast";
+import { getAstUtil } from "../ast/util";
 import {
     TactConstEvalError,
     throwInternalCompilerError,
@@ -32,7 +33,6 @@ import {
     OptimizationContext,
     registerAstNodeChange,
 } from "./optimization-phase";
-import { getAstUtil } from "./util";
 
 export function simplifyAllExpressions(optCtx: OptimizationContext) {
     const util = getAstUtil(optCtx.factoryAst);
@@ -254,15 +254,11 @@ function simplifyStatement(
             stmt.statements.forEach((tryStmt) => {
                 simplifyStatement(tryStmt, optCtx, interpreter);
             });
-            break;
-        }
-        case "statement_try_catch": {
-            stmt.statements.forEach((tryStmt) => {
-                simplifyStatement(tryStmt, optCtx, interpreter);
-            });
-            stmt.catchStatements.forEach((catchStmt) => {
-                simplifyStatement(catchStmt, optCtx, interpreter);
-            });
+            if (stmt.catchBlock) {
+                stmt.catchBlock.catchStatements.forEach((catchStmt) => {
+                    simplifyStatement(catchStmt, optCtx, interpreter);
+                });
+            }
             break;
         }
         case "statement_block": {

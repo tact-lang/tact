@@ -125,12 +125,13 @@ export function cloneNode<T extends AstNode>(
             return cloneNode({
                 ...src,
                 statements: src.statements.map(recurse),
-            });
-        } else if (src.kind === "statement_try_catch") {
-            return cloneNode({
-                ...src,
-                statements: src.statements.map(recurse),
-                catchStatements: src.catchStatements.map(recurse),
+                catchBlock: src.catchBlock
+                    ? {
+                          catchName: src.catchBlock.catchName,
+                          catchStatements:
+                              src.catchBlock.catchStatements.map(recurse),
+                      }
+                    : undefined,
             });
         } else if (src.kind === "statement_foreach") {
             return cloneNode({

@@ -17,7 +17,7 @@ import {
     AstId,
     AstCommentValue,
     FactoryAst,
-} from "../ast/ast";
+} from "./ast";
 import { dummySrcInfo, SrcInfo } from "../grammar";
 
 export const getAstUtil = ({ createNode }: FactoryAst) => {

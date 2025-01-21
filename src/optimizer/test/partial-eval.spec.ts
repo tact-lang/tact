@@ -5,7 +5,7 @@ import {
     getAstFactory,
     isLiteral,
 } from "../../ast/ast";
-import { AstUtil, getAstUtil } from "../util";
+import { AstUtil, getAstUtil } from "../../ast/util";
 import { getOptimizer } from "../constEval";
 import { CompilerContext } from "../../context/context";
 import { ExpressionTransformer, Rule } from "../types";

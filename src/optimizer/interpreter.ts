@@ -48,7 +48,6 @@ import {
     AstStatementRepeat,
     AstStatementReturn,
     AstStatementTry,
-    AstStatementTryCatch,
     AstStatementUntil,
     AstStatementWhile,
     AstStaticCall,
@@ -66,7 +65,7 @@ import {
     isSelfId,
     AstStatementBlock,
 } from "../ast/ast";
-import { AstUtil, divFloor, getAstUtil, modFloor } from "./util";
+import { AstUtil, divFloor, getAstUtil, modFloor } from "../ast/util";
 import {
     getStaticConstant,
     getStaticFunction,
@@ -1567,9 +1566,6 @@ export class Interpreter {
             case "statement_try":
                 this.interpretTryStatement(ast);
                 break;
-            case "statement_try_catch":
-                this.interpretTryCatchStatement(ast);
-                break;
             case "statement_until":
                 this.interpretUntilStatement(ast);
                 break;
@@ -1727,13 +1723,6 @@ export class Interpreter {
     public interpretTryStatement(ast: AstStatementTry) {
         throwNonFatalErrorConstEval(
             "try statements currently not supported",
-            ast.loc,
-        );
-    }
-
-    public interpretTryCatchStatement(ast: AstStatementTryCatch) {
-        throwNonFatalErrorConstEval(
-            "try-catch statements currently not supported",
             ast.loc,
         );
     }

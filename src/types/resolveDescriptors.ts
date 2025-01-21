@@ -57,7 +57,7 @@ import { ItemOrigin } from "../grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
-import { AstUtil, getAstUtil } from "../optimizer/util";
+import { AstUtil, getAstUtil } from "../ast/util";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();

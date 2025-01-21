@@ -17,7 +17,7 @@ import {
     checkIsBinaryOp_With_LeftValue,
     sign,
     AstUtil,
-} from "./util";
+} from "../ast/util";
 
 type TransformData = {
     simplifiedExpression: AstExpression;

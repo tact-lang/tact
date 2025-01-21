@@ -1,4 +1,3 @@
-import { prettyPrint } from "../prettyPrinter";
 import {
     getAllStaticConstants,
     getAllStaticFunctions,
@@ -42,7 +41,6 @@ import {
     AstStatementRepeat,
     AstStatementReturn,
     AstStatementTry,
-    AstStatementTryCatch,
     AstStatementUntil,
     AstStatementWhile,
     AstStaticCall,
@@ -58,6 +56,7 @@ import {
 } from "../ast/ast";
 import { CompilerContext } from "../context/context";
 import { throwInternalCompilerError } from "../error/errors";
+import { prettyPrint } from "../ast/ast-printer";
 
 /* These are the node types that the optimization phase is allowed to modify */
 type AstMutableNode =
@@ -528,9 +527,6 @@ export function prepareAstForOptimization(
             case "statement_try": {
                 return makeUnfrozenCopyOfTry(ast);
             }
-            case "statement_try_catch": {
-                return makeUnfrozenCopyOfTryCatch(ast);
-            }
             case "statement_block": {
                 return makeUnfrozenCopyOfBlock(ast);
             }
@@ -706,30 +702,29 @@ export function prepareAstForOptimization(
         const newStatements = ast.statements.map((stmt) =>
             makeUnfrozenCopyOfStatement(stmt),
         );
-        const newNode = factoryAst.cloneNode(ast);
-        // The rest of properties will not be touched by the optimizer.
-        newNode.statements = newStatements;
+        if (ast.catchBlock) {
+            const catchStatements = ast.catchBlock.catchStatements.map((stmt) =>
+                makeUnfrozenCopyOfStatement(stmt),
+            );
+            const newNode = factoryAst.cloneNode(ast);
+            // The rest of properties will not be touched by the optimizer.
+            newNode.statements = newStatements;
+            newNode.catchBlock = {
+                catchName: ast.catchBlock.catchName,
+                catchStatements: catchStatements,
+            };
 
-        registerAstNodeChange(optCtx, ast, newNode);
-        return newNode;
-    }
+            registerAstNodeChange(optCtx, ast, newNode);
+            return newNode;
+        } else {
+            const newNode = factoryAst.cloneNode(ast);
+            // The rest of properties will not be touched by the optimizer.
+            newNode.statements = newStatements;
+            newNode.catchBlock = undefined;
 
-    function makeUnfrozenCopyOfTryCatch(
-        ast: AstStatementTryCatch,
-    ): AstStatementTryCatch {
-        const newStatements = ast.statements.map((stmt) =>
-            makeUnfrozenCopyOfStatement(stmt),
-        );
-        const newCatchStatements = ast.catchStatements.map((stmt) =>
-            makeUnfrozenCopyOfStatement(stmt),
-        );
-        const newNode = factoryAst.cloneNode(ast);
-        // The rest of properties will not be touched by the optimizer.
-        newNode.statements = newStatements;
-        newNode.catchStatements = newCatchStatements;
-
-        registerAstNodeChange(optCtx, ast, newNode);
-        return newNode;
+            registerAstNodeChange(optCtx, ast, newNode);
+            return newNode;
+        }
     }
 
     function makeUnfrozenCopyOfBlock(
