@@ -384,7 +384,7 @@ export type AstBouncedMessageType = {
 export type AstExpression =
     | AstOpBinary
     | AstOpUnary
-    | AstStatementConditional
+    | AstConditional
     | AstMethodCall
     | AstFieldAccess
     | AstStaticCall
@@ -494,7 +494,7 @@ export type AstInitOf = {
     loc: SrcInfo;
 };
 
-export type AstStatementConditional = {
+export type AstConditional = {
     kind: "conditional";
     condition: AstExpression;
     thenBranch: AstExpression;
@@ -925,15 +925,15 @@ export function eqExpressions(
             return (
                 eqExpressions(
                     ast1.condition,
-                    (ast2 as AstStatementConditional).condition,
+                    (ast2 as AstConditional).condition,
                 ) &&
                 eqExpressions(
                     ast1.thenBranch,
-                    (ast2 as AstStatementConditional).thenBranch,
+                    (ast2 as AstConditional).thenBranch,
                 ) &&
                 eqExpressions(
                     ast1.elseBranch,
-                    (ast2 as AstStatementConditional).elseBranch,
+                    (ast2 as AstConditional).elseBranch,
                 )
             );
         case "struct_instance":

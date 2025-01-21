@@ -510,8 +510,8 @@ export const getAstSchema = (
             thenBranch: A.AstExpression,
             elseBranch: A.AstExpression,
             loc: Loc,
-        ): A.AstStatementConditional =>
-            createNode<A.AstStatementConditional>({
+        ): A.AstConditional =>
+            createNode<A.AstConditional>({
                 kind: "conditional",
                 condition,
                 thenBranch,

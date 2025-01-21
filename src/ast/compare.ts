@@ -715,12 +715,12 @@ export class AstComparator {
                     condition: cond1,
                     thenBranch: then1,
                     elseBranch: else1,
-                } = node1 as A.AstStatementConditional;
+                } = node1 as A.AstConditional;
                 const {
                     condition: cond2,
                     thenBranch: then2,
                     elseBranch: else2,
-                } = node2 as A.AstStatementConditional;
+                } = node2 as A.AstConditional;
                 return (
                     this.compare(cond1, cond2) &&
                     this.compare(then1, then2) &&
