@@ -1,10 +1,5 @@
 import { enabledInline } from "../../config/features";
-import {
-    AstAsmShuffle,
-    AstCondition,
-    AstExpression,
-    AstStatement,
-} from "../../ast/ast";
+import * as A from "../../ast/ast";
 import {
     idOfText,
     idText,
@@ -28,7 +23,7 @@ import { idTextErr, throwInternalCompilerError } from "../../error/errors";
 import { ppAsmShuffle } from "../../ast/ast-printer";
 
 export function writeCastedExpression(
-    expression: AstExpression,
+    expression: A.AstExpression,
     to: TypeRef,
     ctx: WriterContext,
 ) {
@@ -66,7 +61,7 @@ function unwrapExternal(
 }
 
 export function writeStatement(
-    f: AstStatement,
+    f: A.AstStatement,
     self: string | null,
     returns: TypeRef | null,
     ctx: WriterContext,
@@ -504,7 +499,7 @@ export function writeStatement(
 }
 
 function writeCondition(
-    f: AstCondition,
+    f: A.AstCondition,
     self: string | null,
     elseif: boolean,
     returns: TypeRef | null,
@@ -592,7 +587,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                     ctx.context("stdlib");
                 }
                 // we need to do some renames (prepending $ to identifiers)
-                const asmShuffleEscaped: AstAsmShuffle = {
+                const asmShuffleEscaped: A.AstAsmShuffle = {
                     ...fAst.shuffle,
                     args: fAst.shuffle.args.map((id) => idOfText(funcIdOf(id))),
                 };
