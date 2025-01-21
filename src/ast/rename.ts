@@ -121,7 +121,6 @@ export class AstRenamer {
                     : this.changeItemName(item),
             ),
         );
-
         return this.sort ? this.sortModuleItems(renamedItems) : renamedItems;
     }
 
