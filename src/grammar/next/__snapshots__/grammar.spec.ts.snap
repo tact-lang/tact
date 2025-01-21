@@ -743,6 +743,157 @@ exports[`grammar should parse abstract-const 1`] = `
 }
 `;
 
+exports[`grammar should parse asm-instruction-no-whitespace-1 1`] = `
+{
+  "id": 6,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 3,
+      "instructions": [
+        "b{00} PUSHSLICE",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun Bar(): Address { b{00} PUSHSLICE},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Bar,
+        "text": "Bar",
+      },
+      "params": [],
+      "return": {
+        "id": 2,
+        "kind": "type_id",
+        "loc": Address,
+        "text": "Address",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "declarations": [],
+      "id": 5,
+      "kind": "contract",
+      "loc": contract Foo { },
+      "name": {
+        "id": 4,
+        "kind": "id",
+        "loc": Foo,
+        "text": "Foo",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse asm-instruction-no-whitespace-2 1`] = `
+{
+  "id": 6,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 3,
+      "instructions": [
+        "42 PUSHINT",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun push42(): Int {
+    42 PUSHINT},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": push42,
+        "text": "push42",
+      },
+      "params": [],
+      "return": {
+        "id": 2,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "declarations": [],
+      "id": 5,
+      "kind": "contract",
+      "loc": contract Foo { },
+      "name": {
+        "id": 4,
+        "kind": "id",
+        "loc": Foo,
+        "text": "Foo",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse asm-instruction-no-whitespace-3 1`] = `
+{
+  "id": 6,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "id": 3,
+      "instructions": [
+        "-ROT ADD MUL",
+      ],
+      "kind": "asm_function_def",
+      "loc": asm fun Bar(): Int {-ROT ADD MUL},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Bar,
+        "text": "Bar",
+      },
+      "params": [],
+      "return": {
+        "id": 2,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "shuffle": {
+        "args": [],
+        "ret": [],
+      },
+    },
+    {
+      "attributes": [],
+      "declarations": [],
+      "id": 5,
+      "kind": "contract",
+      "loc": contract Foo { },
+      "name": {
+        "id": 4,
+        "kind": "id",
+        "loc": Foo,
+        "text": "Foo",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
 exports[`grammar should parse block-statements 1`] = `
 {
   "id": 10,
