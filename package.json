@@ -84,7 +84,7 @@
     "@tact-lang/coverage": "^0.0.8",
     "@tact-lang/ton-abi": "^0.0.3",
     "@tact-lang/ton-jest": "^0.0.4",
-    "@ton/sandbox": "^0.23.0",
+    "@ton/sandbox": "^0.24.0",
     "@ton/test-utils": "^0.4.2",
     "@tonstudio/pgen": "^0.0.1",
     "@types/glob": "^8.1.0",
