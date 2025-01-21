@@ -9,12 +9,16 @@ expect.addSnapshotSerializer({
 });
 
 describe("grammar", () => {
-    for (const r of loadCases(__dirname + "/../test/")) {
-        it("should parse " + r.name, () => {
-            const ast = getAstFactory();
-            const { parse } = getParser(ast, "new");
-            expect(parse(r.code, "<unknown>", "user")).toMatchSnapshot();
-        });
+    const shouldParsePaths = [__dirname + "/../test/", __dirname + "/test/"];
+
+    for (const path of shouldParsePaths) {
+        for (const r of loadCases(path)) {
+            it("should parse " + r.name, () => {
+                const ast = getAstFactory();
+                const { parse } = getParser(ast, "new");
+                expect(parse(r.code, "<unknown>", "user")).toMatchSnapshot();
+            });
+        }
     }
 
     for (const r of loadCases(__dirname + "/../test-failed/")) {

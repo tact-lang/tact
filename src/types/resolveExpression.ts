@@ -1,28 +1,9 @@
+import * as A from "../ast/ast";
 import {
-    AstBoolean,
-    AstExpression,
-    AstInitOf,
-    AstNull,
-    AstNumber,
-    AstOpBinary,
-    AstMethodCall,
-    AstStaticCall,
-    AstFieldAccess,
-    AstStructInstance,
-    AstOpUnary,
-    AstString,
-    AstConditional,
-    eqNames,
-    idText,
-    isWildcard,
-    AstAddress,
-    AstCell,
-    AstSlice,
-    AstSimplifiedString,
-    AstCommentValue,
-    AstStructValue,
-} from "../ast/ast";
-import { idTextErr, throwCompilationError } from "../error/errors";
+    idTextErr,
+    TactConstEvalError,
+    throwCompilationError,
+} from "../error/errors";
 import { CompilerContext, createContextStore } from "../context/context";
 import {
     getAllTypes,
@@ -40,13 +21,16 @@ import { isAssignable, moreGeneralType } from "./subtyping";
 import { throwInternalCompilerError } from "../error/errors";
 import { StructFunctions } from "../abi/struct";
 import { prettyPrint } from "../ast/ast-printer";
+import { ensureInt } from "../optimizer/interpreter";
+import { evalConstantExpression } from "../optimizer/constEval";
+import { getAstUtil } from "../ast/util";
 
 const store = createContextStore<{
-    ast: AstExpression;
+    ast: A.AstExpression;
     description: TypeRef;
 }>();
 
-export function getExpType(ctx: CompilerContext, exp: AstExpression) {
+export function getExpType(ctx: CompilerContext, exp: A.AstExpression) {
     const t = store.get(ctx, exp.id);
     if (!t) {
         throwInternalCompilerError(`Expression ${exp.id} not found`);
@@ -56,7 +40,7 @@ export function getExpType(ctx: CompilerContext, exp: AstExpression) {
 
 function registerExpType(
     ctx: CompilerContext,
-    exp: AstExpression,
+    exp: A.AstExpression,
     description: TypeRef,
 ): CompilerContext {
     const ex = store.get(ctx, exp.id);
@@ -73,7 +57,7 @@ function registerExpType(
 }
 
 function resolveBooleanLiteral(
-    exp: AstBoolean,
+    exp: A.AstBoolean,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -85,7 +69,7 @@ function resolveBooleanLiteral(
 }
 
 function resolveIntLiteral(
-    exp: AstNumber,
+    exp: A.AstNumber,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -97,7 +81,7 @@ function resolveIntLiteral(
 }
 
 function resolveNullLiteral(
-    exp: AstNull,
+    exp: A.AstNull,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -105,7 +89,7 @@ function resolveNullLiteral(
 }
 
 function resolveAddressLiteral(
-    exp: AstAddress,
+    exp: A.AstAddress,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -117,7 +101,7 @@ function resolveAddressLiteral(
 }
 
 function resolveCellLiteral(
-    exp: AstCell,
+    exp: A.AstCell,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -129,7 +113,7 @@ function resolveCellLiteral(
 }
 
 function resolveSliceLiteral(
-    exp: AstSlice,
+    exp: A.AstSlice,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -141,7 +125,7 @@ function resolveSliceLiteral(
 }
 
 function resolveStringLiteral(
-    exp: AstString | AstSimplifiedString | AstCommentValue,
+    exp: A.AstString | A.AstSimplifiedString | A.AstCommentValue,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -153,7 +137,7 @@ function resolveStringLiteral(
 }
 
 function resolveStructNew(
-    exp: AstStructInstance | AstStructValue,
+    exp: A.AstStructInstance | A.AstStructValue,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -171,16 +155,16 @@ function resolveStructNew(
     const processed: Set<string> = new Set();
     for (const e of exp.args) {
         // Check duplicates
-        if (processed.has(idText(e.field))) {
+        if (processed.has(A.idText(e.field))) {
             throwCompilationError(
                 `Duplicate fields ${idTextErr(e.field)}`,
                 e.loc,
             );
         }
-        processed.add(idText(e.field));
+        processed.add(A.idText(e.field));
 
         // Check existing
-        const f = tp.fields.find((v) => eqNames(v.name, e.field));
+        const f = tp.fields.find((v) => A.eqNames(v.name, e.field));
         if (!f) {
             throwCompilationError(
                 `Unknown fields ${idTextErr(e.field)} in type ${idTextErr(tp.name)}`,
@@ -224,7 +208,7 @@ function resolveStructNew(
 }
 
 function resolveBinaryOp(
-    exp: AstOpBinary,
+    exp: A.AstOpBinary,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -260,6 +244,32 @@ function resolveBinaryOp(
                         exp.loc,
                     );
                 }
+
+                // poor man's constant propagation analysis (very local)
+                // it works only in the case when the right-hand side is a constant expression
+                // and does not have any variables
+                if (exp.op === ">>" || exp.op === "<<") {
+                    try {
+                        const valBits = ensureInt(
+                            evalConstantExpression(
+                                exp.right,
+                                ctx,
+                                getAstUtil(A.getAstFactory()),
+                            ),
+                        );
+                        if (0n > valBits.value || valBits.value > 256n) {
+                            throwCompilationError(
+                                `the number of bits shifted ('${valBits.value}') must be within [0..256] range`,
+                                exp.right.loc,
+                            );
+                        }
+                    } catch (error) {
+                        if (!(error instanceof TactConstEvalError)) {
+                            throw error;
+                        }
+                    }
+                }
+
                 resolved = { kind: "ref", name: "Int", optional: false };
             }
             break;
@@ -364,7 +374,7 @@ function isEqualityType(ctx: CompilerContext, ty: TypeRef): boolean {
 }
 
 function resolveUnaryOp(
-    exp: AstOpUnary,
+    exp: A.AstOpUnary,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -424,7 +434,7 @@ function resolveUnaryOp(
 }
 
 function resolveFieldAccess(
-    exp: AstFieldAccess,
+    exp: A.AstFieldAccess,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -447,7 +457,7 @@ function resolveFieldAccess(
         exp.aggregate.kind === "id" &&
         exp.aggregate.text === "self"
     ) {
-        if (sctx.requiredFields.find((v) => eqNames(v, exp.field))) {
+        if (sctx.requiredFields.find((v) => A.eqNames(v, exp.field))) {
             throwCompilationError(
                 `Field ${idTextErr(exp.field)} is not initialized`,
                 exp.field.loc,
@@ -458,7 +468,9 @@ function resolveFieldAccess(
     // Find field
     const srcT = getType(ctx, src.name);
 
-    const fieldIndex = srcT.fields.findIndex((v) => eqNames(v.name, exp.field));
+    const fieldIndex = srcT.fields.findIndex((v) =>
+        A.eqNames(v.name, exp.field),
+    );
     const field = fieldIndex !== -1 ? srcT.fields[fieldIndex] : undefined;
 
     // If we found a field of bounced<T>, check if the field doesn't fit in 224 bytes and cannot be accessed
@@ -480,7 +492,7 @@ function resolveFieldAccess(
         );
     }
 
-    const cst = srcT.constants.find((v) => eqNames(v.name, exp.field));
+    const cst = srcT.constants.find((v) => A.eqNames(v.name, exp.field));
     if (!field && !cst) {
         const typeStr =
             src.kind === "ref_bounced"
@@ -491,8 +503,8 @@ function resolveFieldAccess(
             // Check for struct methods
             if (
                 (srcT.kind === "struct" &&
-                    StructFunctions.has(idText(exp.field))) ||
-                srcT.functions.has(idText(exp.field))
+                    StructFunctions.has(A.idText(exp.field))) ||
+                srcT.functions.has(A.idText(exp.field))
             ) {
                 throwCompilationError(
                     `Type ${typeStr} does not have a field named "${exp.field.text}", did you mean "${exp.field.text}()" instead?`,
@@ -516,13 +528,13 @@ function resolveFieldAccess(
 }
 
 function resolveStaticCall(
-    exp: AstStaticCall,
+    exp: A.AstStaticCall,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
     // Check if abi global function
-    if (GlobalFunctions.has(idText(exp.function))) {
-        const f = GlobalFunctions.get(idText(exp.function))!;
+    if (GlobalFunctions.has(A.idText(exp.function))) {
+        const f = GlobalFunctions.get(A.idText(exp.function))!;
 
         // Resolve arguments
         for (const e of exp.args) {
@@ -541,15 +553,15 @@ function resolveStaticCall(
     }
 
     // Check if function exists
-    if (!hasStaticFunction(ctx, idText(exp.function))) {
+    if (!hasStaticFunction(ctx, A.idText(exp.function))) {
         // check if there is a method with the same name
         if (
             getAllTypes(ctx).find(
-                (ty) => ty.functions.get(idText(exp.function)) !== undefined,
+                (ty) => ty.functions.get(A.idText(exp.function)) !== undefined,
             ) !== undefined
         ) {
             throwCompilationError(
-                `Static function ${idTextErr(exp.function)} does not exist. Perhaps you meant to call ".${idText(exp.function)}(...)" extension function?`,
+                `Static function ${idTextErr(exp.function)} does not exist. Perhaps you meant to call ".${A.idText(exp.function)}(...)" extension function?`,
                 exp.loc,
             );
         }
@@ -561,7 +573,7 @@ function resolveStaticCall(
     }
 
     // Get static function
-    const f = getStaticFunction(ctx, idText(exp.function));
+    const f = getStaticFunction(ctx, A.idText(exp.function));
 
     // Resolve call arguments
     for (const e of exp.args) {
@@ -591,7 +603,7 @@ function resolveStaticCall(
 }
 
 function resolveCall(
-    exp: AstMethodCall,
+    exp: A.AstMethodCall,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -622,8 +634,8 @@ function resolveCall(
 
         // Check struct ABI
         if (srcT.kind === "struct") {
-            if (StructFunctions.has(idText(exp.method))) {
-                const abi = StructFunctions.get(idText(exp.method))!;
+            if (StructFunctions.has(A.idText(exp.method))) {
+                const abi = StructFunctions.get(A.idText(exp.method))!;
                 const resolved = abi.resolve(
                     ctx,
                     [src, ...exp.args.map((v) => getExpType(ctx, v))],
@@ -633,7 +645,7 @@ function resolveCall(
             }
         }
 
-        const f = srcT.functions.get(idText(exp.method));
+        const f = srcT.functions.get(A.idText(exp.method));
         if (f) {
             // Check arguments
             if (f.params.length !== exp.args.length) {
@@ -657,7 +669,7 @@ function resolveCall(
         }
 
         // Check if a field with the same name exists
-        const field = srcT.fields.find((v) => eqNames(v.name, exp.method));
+        const field = srcT.fields.find((v) => A.eqNames(v.name, exp.method));
         if (field) {
             throwCompilationError(
                 `Type "${src.name}" does not have a function named "${exp.method.text}()", did you mean field "${exp.method.text}" instead?`,
@@ -673,13 +685,13 @@ function resolveCall(
 
     // Handle map
     if (src.kind === "map") {
-        if (!MapFunctions.has(idText(exp.method))) {
+        if (!MapFunctions.has(A.idText(exp.method))) {
             throwCompilationError(
                 `Map function ${idTextErr(exp.method)} not found`,
                 exp.loc,
             );
         }
-        const abf = MapFunctions.get(idText(exp.method))!;
+        const abf = MapFunctions.get(A.idText(exp.method))!;
         const resolved = abf.resolve(
             ctx,
             [src, ...exp.args.map((v) => getExpType(ctx, v))],
@@ -699,7 +711,7 @@ function resolveCall(
 }
 
 function resolveInitOf(
-    ast: AstInitOf,
+    ast: A.AstInitOf,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -750,7 +762,7 @@ function resolveInitOf(
 }
 
 function resolveConditional(
-    ast: AstConditional,
+    ast: A.AstConditional,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -790,7 +802,7 @@ function resolveConditional(
 }
 
 export function resolveExpression(
-    exp: AstExpression,
+    exp: A.AstExpression,
     sctx: StatementContext,
     ctx: CompilerContext,
 ) {
@@ -842,7 +854,7 @@ export function resolveExpression(
             const v = sctx.vars.get(exp.text);
             if (!v) {
                 if (!hasStaticConstant(ctx, exp.text)) {
-                    if (isWildcard(exp)) {
+                    if (A.isWildcard(exp)) {
                         throwCompilationError(
                             "Wildcard variable name '_' cannot be accessed",
                             exp.loc,
