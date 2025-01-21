@@ -1,4 +1,4 @@
-import { run } from "../../../node";
+import { run } from "../../../cli/node";
 import { keyTypes, valTypes } from "./map-properties-key-value-types";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";

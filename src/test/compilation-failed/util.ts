@@ -1,4 +1,4 @@
-import { run } from "../../node";
+import { run } from "../../cli";
 
 // helper to reduce boilerplate
 export function itShouldNotCompile(params: {

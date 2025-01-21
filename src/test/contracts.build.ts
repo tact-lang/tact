@@ -1,4 +1,4 @@
-import { run } from "../node";
+import { run } from "../cli/node";
 import path from "path";
 import { Logger } from "../context/logger";
 import { __DANGER__disableVersionNumber } from "../pipeline/version";
