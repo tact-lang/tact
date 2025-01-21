@@ -58,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Show stacktrace of a compiler error only in verbose mode: PR [#1375](https://github.com/tact-lang/tact/pull/1375)
 - Flag name in help (`--project` to `--projects`): PR [#1419](https://github.com/tact-lang/tact/pull/1419)
 - Allow importing FunC files with `.func` extension: PR [#1451](https://github.com/tact-lang/tact/pull/1451)
+- Error on circular trait dependencies: PR [#1452](https://github.com/tact-lang/tact/pull/1452)
 
 ### Docs
 
