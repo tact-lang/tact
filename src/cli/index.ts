@@ -122,11 +122,11 @@ const parseConfigSafe = (E: CliErrors, configPath:string, configText: string): C
     }
 };
 
-const createSingleFileConfig = (fileName: string): Config => ({
+export const createSingleFileConfig = (fileName: string): Config => ({
     projects: [
         {
-            name: ensureExtension(fileName),
-            path: fileName,
+            name: fileName,
+            path: ensureExtension(fileName),
             output: './',
             options: {
                 debug: true,

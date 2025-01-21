@@ -1,0 +1,44 @@
+import { globSync } from "fs";
+import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";
+import { Options } from "../../config/parseConfig";
+import { basename, dirname, extname, join } from "path";
+import { createNodeFileSystem } from "../../vfs/createNodeFileSystem";
+import { Logger, LogLevel } from "../../context/logger";
+import { run } from "../../cli";
+import files from "../../stdlib/stdlib";
+
+export const allInFolder = async (folder: string, globs: string[]) => {
+    try {
+        const stdlib = createVirtualFileSystem("@stdlib", files);
+
+        const contracts = globSync(globs, { cwd: folder });
+
+        const projects = contracts.map(contractPath => {
+            const options: Options = { debug: true, external: true };
+            if (contractPath.includes('inline')) {
+                options.experimental = { inline: true };
+            }
+            return {
+                name: basename(contractPath, extname(contractPath)),
+                path: contractPath,
+                output: join(dirname(contractPath), 'output'),
+                options,
+            }
+        });
+
+        const project = createNodeFileSystem(folder, false);
+
+        const compileResult = await run({
+            config: { projects },
+            logger: new Logger(LogLevel.DEBUG),
+            project,
+            stdlib,
+        });
+        if (!compileResult.ok) {
+            throw new Error("Tact projects compilation failed");
+        }
+    } catch (error) {
+        console.error(error);
+        process.exit(1);
+    }
+};

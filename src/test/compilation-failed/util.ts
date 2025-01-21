@@ -31,7 +31,7 @@ export function itShouldNotCompile(params: {
             logger: new Logger(LogLevel.NONE),
             project: createVirtualFileSystem('/', {
                 [fileName]: readFileSync(join(__dirname, 'contracts', `./${fileName}`)).toString('base64')
-            }),
+            }, false),
             stdlib: createVirtualFileSystem("@stdlib", files),
         });
 
