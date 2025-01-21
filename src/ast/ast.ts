@@ -200,7 +200,7 @@ export type AstStatement =
     | AstStatementExpression
     | AstStatementAssign
     | AstStatementAugmentedAssign
-    | AstCondition
+    | AstStatementCondition
     | AstStatementWhile
     | AstStatementUntil
     | AstStatementRepeat
@@ -263,12 +263,12 @@ export type AstStatementAugmentedAssign = {
     loc: SrcInfo;
 };
 
-export type AstCondition = {
+export type AstStatementCondition = {
     kind: "statement_condition";
     condition: AstExpression;
     trueStatements: AstStatement[];
     falseStatements: AstStatement[] | null;
-    elseif: AstCondition | null;
+    elseif: AstStatementCondition | null;
     id: number;
     loc: SrcInfo;
 };
@@ -384,7 +384,7 @@ export type AstBouncedMessageType = {
 export type AstExpression =
     | AstOpBinary
     | AstOpUnary
-    | AstConditional
+    | AstStatementConditional
     | AstMethodCall
     | AstFieldAccess
     | AstStaticCall
@@ -494,7 +494,7 @@ export type AstInitOf = {
     loc: SrcInfo;
 };
 
-export type AstConditional = {
+export type AstStatementConditional = {
     kind: "conditional";
     condition: AstExpression;
     thenBranch: AstExpression;
@@ -925,15 +925,15 @@ export function eqExpressions(
             return (
                 eqExpressions(
                     ast1.condition,
-                    (ast2 as AstConditional).condition,
+                    (ast2 as AstStatementConditional).condition,
                 ) &&
                 eqExpressions(
                     ast1.thenBranch,
-                    (ast2 as AstConditional).thenBranch,
+                    (ast2 as AstStatementConditional).thenBranch,
                 ) &&
                 eqExpressions(
                     ast1.elseBranch,
-                    (ast2 as AstConditional).elseBranch,
+                    (ast2 as AstStatementConditional).elseBranch,
                 )
             );
         case "struct_instance":

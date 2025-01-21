@@ -395,13 +395,13 @@ export class AstComparator {
                     trueStatements: true1,
                     falseStatements: false1,
                     elseif: condElseIf1,
-                } = node1 as A.AstCondition;
+                } = node1 as A.AstStatementCondition;
                 const {
                     condition: cond2,
                     trueStatements: true2,
                     falseStatements: false2,
                     elseif: condElseIf2,
-                } = node2 as A.AstCondition;
+                } = node2 as A.AstStatementCondition;
                 return (
                     this.compare(cond1, cond2) &&
                     this.compareArray(true1, true2) &&
@@ -715,12 +715,12 @@ export class AstComparator {
                     condition: cond1,
                     thenBranch: then1,
                     elseBranch: else1,
-                } = node1 as A.AstConditional;
+                } = node1 as A.AstStatementConditional;
                 const {
                     condition: cond2,
                     thenBranch: then2,
                     elseBranch: else2,
-                } = node2 as A.AstConditional;
+                } = node2 as A.AstStatementConditional;
                 return (
                     this.compare(cond1, cond2) &&
                     this.compare(then1, then2) &&
