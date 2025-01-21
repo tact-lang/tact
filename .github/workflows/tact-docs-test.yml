@@ -55,7 +55,7 @@ jobs:
         uses: lycheeverse/lychee-action@v2
         with:
           args: "-n -s file docs/README.md"
-          output: "/dev/null"
+          output: "/dev/stdout"
           fail: true
           failIfEmpty: false
 

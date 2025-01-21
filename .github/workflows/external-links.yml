@@ -21,7 +21,7 @@ jobs:
             --base 'https://docs.tact-lang.org'
             --exclude '.*?\\.(?:jpg|png)'
             docs/README.md './docs/**/*.mdx'
-          output: "./out.md"
+          output: "/dev/stdout"
           fail: false
           failIfEmpty: false
 
@@ -32,6 +32,6 @@ jobs:
           args: >
             -n -s https --exclude-path node_modules --exclude-path docs
             './**/*.md'
-          output: "./out_dev.md"
+          output: "/dev/stdout"
           fail: false
           failIfEmpty: false
