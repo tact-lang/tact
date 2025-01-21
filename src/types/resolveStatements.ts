@@ -123,7 +123,7 @@ function addVariable(
 }
 
 function processCondition(
-    condition: A.AstCondition,
+    condition: A.AstStatementCondition,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): {
