@@ -5,13 +5,12 @@ import * as A from "../ast/ast";
 import * as iM from "./interpreter";
 import { ExpressionTransformer, Rule } from "./types";
 import {
-    abs,
     checkIsBinaryOpNode,
     checkIsBinaryOp_With_RightValue,
     checkIsBinaryOp_With_LeftValue,
-    sign,
     AstUtil,
 } from "../ast/util";
+import { abs, sign } from "./util";
 
 type TransformData = {
     simplifiedExpression: A.AstExpression;
