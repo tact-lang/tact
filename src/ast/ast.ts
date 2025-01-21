@@ -1,5 +1,5 @@
 import { Address, Cell, Slice } from "@ton/core";
-import { dummySrcInfo, SrcInfo } from "../grammar/src-info";
+import { SrcInfo } from "../grammar/src-info";
 
 export type AstModule = {
     kind: "module";
@@ -514,13 +514,6 @@ export type AstFuncId = {
     text: string;
     id: number;
     loc: SrcInfo;
-};
-
-export const selfId: AstId = {
-    kind: "id",
-    text: "self",
-    id: 0,
-    loc: dummySrcInfo,
 };
 
 export type AstDestructMapping = {

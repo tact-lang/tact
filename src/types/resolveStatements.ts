@@ -1,5 +1,5 @@
 import { CompilerContext } from "../context/context";
-import { AstCondition, AstStatement, AstId, selfId } from "../ast/ast";
+import { AstCondition, AstStatement, AstId } from "../ast/ast";
 import {
     tryExtractPath,
     FactoryAst,
@@ -7,6 +7,7 @@ import {
     isWildcard,
     isSelfId,
     idText,
+    selfId,
 } from "../ast/ast-helpers";
 import { isAssignable } from "./subtyping";
 import {
