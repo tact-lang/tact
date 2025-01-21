@@ -32,6 +32,7 @@ import {
     idText,
     isSelfId,
 } from "../ast/ast-helpers";
+import { divFloor, modFloor } from "./util";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
