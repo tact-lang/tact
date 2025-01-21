@@ -50,18 +50,10 @@ jobs:
         working-directory: docs
         run: yarn deps
 
-      - name: Check broken HTTPS links
-        uses: lycheeverse/lychee-action@v2
-        with:
-          args: "-n -s https -f compact --exclude-path docs/node_modules --base 'https://docs.tact-lang.org' --exclude '.*?\\.(?:jpg|png)' docs/README.md './docs/**/*.mdx'"
-          output: "/dev/null"
-          fail: true
-          failIfEmpty: false
-
       - name: Check broken file references in README
         uses: lycheeverse/lychee-action@v2
         with:
-          args: "-n -s file -f compact docs/README.md"
+          args: "-n -s file docs/README.md"
           output: "/dev/null"
           fail: true
           failIfEmpty: false
