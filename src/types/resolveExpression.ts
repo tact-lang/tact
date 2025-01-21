@@ -21,8 +21,13 @@ import {
     AstSimplifiedString,
     AstCommentValue,
     AstStructValue,
+    getAstFactory,
 } from "../ast/ast";
-import { idTextErr, throwCompilationError } from "../error/errors";
+import {
+    idTextErr,
+    TactConstEvalError,
+    throwCompilationError,
+} from "../error/errors";
 import { CompilerContext, createContextStore } from "../context/context";
 import {
     getAllTypes,
@@ -40,6 +45,9 @@ import { isAssignable, moreGeneralType } from "./subtyping";
 import { throwInternalCompilerError } from "../error/errors";
 import { StructFunctions } from "../abi/struct";
 import { prettyPrint } from "../ast/ast-printer";
+import { ensureInt } from "../optimizer/interpreter";
+import { evalConstantExpression } from "../optimizer/constEval";
+import { getAstUtil } from "../ast/util";
 
 const store = createContextStore<{
     ast: AstExpression;
@@ -260,6 +268,32 @@ function resolveBinaryOp(
                         exp.loc,
                     );
                 }
+
+                // poor man's constant propagation analysis (very local)
+                // it works only in the case when the right-hand side is a constant expression
+                // and does not have any variables
+                if (exp.op === ">>" || exp.op === "<<") {
+                    try {
+                        const valBits = ensureInt(
+                            evalConstantExpression(
+                                exp.right,
+                                ctx,
+                                getAstUtil(getAstFactory()),
+                            ),
+                        );
+                        if (0n > valBits.value || valBits.value > 256n) {
+                            throwCompilationError(
+                                `the number of bits shifted ('${valBits.value}') must be within [0..256] range`,
+                                exp.right.loc,
+                            );
+                        }
+                    } catch (error) {
+                        if (!(error instanceof TactConstEvalError)) {
+                            throw error;
+                        }
+                    }
+                }
+
                 resolved = { kind: "ref", name: "Int", optional: false };
             }
             break;
