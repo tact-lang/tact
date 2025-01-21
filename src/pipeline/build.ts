@@ -29,6 +29,7 @@ import {
     prepareAstForOptimization,
     updateCompilerContext,
 } from "../optimizer/optimization-phase";
+import path from "path";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -118,8 +119,9 @@ export async function build(args: {
     // Dump the code before optimization phase
     if (config.options?.dumpAst) {
         dumpTactCode(
+            project,
+            path.join(project.root, config.output, `${config.name}-unoptimized-tact-dump.tact`),
             optimizationCtx.originalAst,
-            config.output + `/${config.name}-unoptimized-tact-dump.tact`,
         );
     }
 
@@ -148,8 +150,9 @@ export async function build(args: {
     // Dump the code after optimization phase
     if (config.options?.dumpAfterPartialEval) {
         dumpTactCode(
+            project,
+            path.join(project.root, config.output, `${config.name}-optimized-tact-dump.tact`),
             optimizationCtx.modifiedAst,
-            config.output + `/${config.name}-optimized-tact-dump.tact`,
         );
     }
 

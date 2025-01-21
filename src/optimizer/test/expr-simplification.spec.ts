@@ -1,3 +1,4 @@
+import path from "node:path";
 import { getAstFactory } from "../../ast/ast";
 import { featureEnable } from "../../config/features";
 import { CompilerContext } from "../../context/context";
@@ -12,7 +13,7 @@ import { simplifyAllExpressions } from "../expr-simplification";
 import { prepareAstForOptimization } from "../optimization-phase";
 
 describe("expression-simplification", () => {
-    for (const r of loadCases(__dirname + "/success/")) {
+    for (const r of loadCases(path.join(__dirname, "success/"))) {
         it("should pass expression simplification for " + r.name, () => {
             const ast = getAstFactory();
             let ctx = openContext(
@@ -29,7 +30,7 @@ describe("expression-simplification", () => {
             expect(getAllExpressionTypes(optCtx.ctx)).toMatchSnapshot();
         });
     }
-    for (const r of loadCases(__dirname + "/failed/")) {
+    for (const r of loadCases(path.join(__dirname, "failed/"))) {
         it("should fail expression simplification for " + r.name, () => {
             const ast = getAstFactory();
             let ctx = openContext(

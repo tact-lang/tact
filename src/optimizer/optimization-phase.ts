@@ -57,6 +57,7 @@ import {
 import { CompilerContext } from "../context/context";
 import { throwInternalCompilerError } from "../error/errors";
 import { prettyPrint } from "../ast/ast-printer";
+import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 
 /* These are the node types that the optimization phase is allowed to modify */
 type AstMutableNode =
@@ -902,10 +903,10 @@ export function updateCompilerContext(optCtx: OptimizationContext) {
     processTypes(optCtx.ctx, nodeReplacements);
 }
 
-export function dumpTactCode(ast: AstModule, file: string) {
+export function dumpTactCode(vfs: VirtualFileSystem, file: string, ast: AstModule,) {
     const program = prettyPrint(ast);
 
-    void writeFile(file, program);
+    vfs.writeFile(file, program);
 }
 
 export function registerAstNodeChange(
