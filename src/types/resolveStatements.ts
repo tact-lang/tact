@@ -1,5 +1,6 @@
+import * as A from "../ast/ast";
 import { CompilerContext } from "../context/context";
-import { AstCondition, AstStatement, AstId } from "../ast/ast";
+import { isAssignable } from "./subtyping";
 import {
     tryExtractPath,
     FactoryAst,
@@ -9,7 +10,6 @@ import {
     idText,
     selfId,
 } from "../ast/ast-helpers";
-import { isAssignable } from "./subtyping";
 import {
     idTextErr,
     throwCompilationError,
@@ -57,24 +57,24 @@ export function emptyContext(
 function checkVariableExists(
     ctx: CompilerContext,
     sctx: StatementContext,
-    name: AstId,
+    name: A.AstId,
 ): void {
-    if (sctx.vars.has(idText(name))) {
+    if (sctx.vars.has(A.idText(name))) {
         throwCompilationError(
             `Variable already exists: ${idTextErr(name)}`,
             name.loc,
         );
     }
     // Check if the user tries to shadow the current function name
-    if (sctx.funName === idText(name)) {
+    if (sctx.funName === A.idText(name)) {
         throwCompilationError(
             `Variable cannot have the same name as its enclosing function: ${idTextErr(name)}`,
             name.loc,
         );
     }
-    if (hasStaticConstant(ctx, idText(name))) {
+    if (hasStaticConstant(ctx, A.idText(name))) {
         if (name.loc.origin === "stdlib") {
-            const constLoc = getStaticConstant(ctx, idText(name)).loc;
+            const constLoc = getStaticConstant(ctx, A.idText(name)).loc;
             throwCompilationError(
                 `Constant ${idTextErr(name)} is shadowing an identifier defined in the Tact standard library: pick a different constant name`,
                 constLoc,
@@ -116,23 +116,23 @@ function removeRequiredVariable(
 }
 
 function addVariable(
-    name: AstId,
+    name: A.AstId,
     ref: TypeRef,
     ctx: CompilerContext,
     sctx: StatementContext,
 ): StatementContext {
     checkVariableExists(ctx, sctx, name); // Should happen earlier
-    if (isWildcard(name)) {
+    if (A.isWildcard(name)) {
         return sctx;
     }
     return {
         ...sctx,
-        vars: new Map(sctx.vars).set(idText(name), ref),
+        vars: new Map(sctx.vars).set(A.idText(name), ref),
     };
 }
 
 function processCondition(
-    condition: AstCondition,
+    condition: A.AstCondition,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): {
@@ -211,16 +211,16 @@ function processCondition(
 
 // Precondition: `self` here means a contract or a trait,
 // and not a `self` parameter of a mutating method
-export function isLvalue(path: AstId[], ctx: CompilerContext): boolean {
+export function isLvalue(path: A.AstId[], ctx: CompilerContext): boolean {
     const headId = path[0]!;
-    if (isSelfId(headId) && path.length > 1) {
+    if (A.isSelfId(headId) && path.length > 1) {
         // we can be dealing with a contract/trait constant `self.constFoo`
         const selfTypeRef = getExpType(ctx, headId);
         if (selfTypeRef.kind == "ref") {
             const contractTypeDescription = getType(ctx, selfTypeRef.name);
             return (
                 contractTypeDescription.constants.findIndex((constDescr) =>
-                    eqNames(path[1]!, constDescr.name),
+                    A.eqNames(path[1]!, constDescr.name),
                 ) === -1
             );
         } else {
@@ -228,12 +228,12 @@ export function isLvalue(path: AstId[], ctx: CompilerContext): boolean {
         }
     } else {
         // if the head path symbol is a global constant, then the whole path expression is a constant
-        return !hasStaticConstant(ctx, idText(headId));
+        return !hasStaticConstant(ctx, A.idText(headId));
     }
 }
 
 function processStatements(
-    statements: AstStatement[],
+    statements: A.AstStatement[],
     sctx: StatementContext,
     ctx: CompilerContext,
 ): {
@@ -293,7 +293,7 @@ function processStatements(
                     const tempSctx = { ...sctx, requiredFields: [] };
                     // Process lvalue
                     ctx = resolveExpression(s.path, tempSctx, ctx);
-                    const path = tryExtractPath(s.path);
+                    const path = A.tryExtractPath(s.path);
                     if (path === null) {
                         throwCompilationError(
                             `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
@@ -337,7 +337,7 @@ function processStatements(
                     // Process lvalue
                     const tempSctx = { ...sctx, requiredFields: [] };
                     ctx = resolveExpression(s.path, tempSctx, ctx);
-                    const path = tryExtractPath(s.path);
+                    const path = A.tryExtractPath(s.path);
                     if (path === null) {
                         throwCompilationError(
                             `Assignments are allowed only into path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
@@ -413,7 +413,7 @@ function processStatements(
                     if (
                         s.expression.kind === "static_call" &&
                         ["throw", "nativeThrow"].includes(
-                            idText(s.expression.function),
+                            A.idText(s.expression.function),
                         )
                     ) {
                         returnAlwaysReachable = true;
@@ -627,7 +627,7 @@ function processStatements(
 
                 // Resolve map expression
                 ctx = resolveExpression(s.map, sctx, ctx);
-                const mapPath = tryExtractPath(s.map);
+                const mapPath = A.tryExtractPath(s.map);
                 if (mapPath === null) {
                     throwCompilationError(
                         `foreach is only allowed over maps that are path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"`,
@@ -647,7 +647,7 @@ function processStatements(
                 let foreachSctx = sctx;
 
                 // Add key and value to statement context
-                if (!isWildcard(s.keyName)) {
+                if (!A.isWildcard(s.keyName)) {
                     checkVariableExists(ctx, initialSctx, s.keyName);
                     foreachSctx = addVariable(
                         s.keyName,
@@ -656,7 +656,7 @@ function processStatements(
                         initialSctx,
                     );
                 }
-                if (!isWildcard(s.valueName)) {
+                if (!A.isWildcard(s.valueName)) {
                     checkVariableExists(ctx, foreachSctx, s.valueName);
                     foreachSctx = addVariable(
                         s.valueName,
@@ -744,7 +744,7 @@ function processStatements(
 
                 // Add variables
                 s.identifiers.forEach(([field, name], _) => {
-                    const f = ty.fields.find((f) => eqNames(f.name, field));
+                    const f = ty.fields.find((f) => A.eqNames(f.name, field));
                     if (!f) {
                         throwCompilationError(
                             `Field '${idTextErr(field)}' not found in type '${expressionType.name}'`,
@@ -771,7 +771,7 @@ function processStatements(
 }
 
 function processFunctionBody(
-    statements: AstStatement[],
+    statements: A.AstStatement[],
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -803,7 +803,7 @@ function processFunctionBody(
     return res.ctx;
 }
 
-export function resolveStatements(ctx: CompilerContext, Ast: FactoryAst) {
+export function resolveStatements(ctx: CompilerContext, Ast: A.FactoryAst) {
     const util = getAstUtil(Ast);
 
     // Process all static functions
@@ -828,7 +828,7 @@ export function resolveStatements(ctx: CompilerContext, Ast: FactoryAst) {
 
             // Self
             sctx = addVariable(
-                selfId,
+                A.selfId,
                 { kind: "ref", name: t.name, optional: false },
                 ctx,
                 sctx,
@@ -860,7 +860,7 @@ export function resolveStatements(ctx: CompilerContext, Ast: FactoryAst) {
             // Build statement context
             let sctx = emptyContext(f.ast.loc, null, { kind: "void" });
             sctx = addVariable(
-                selfId,
+                A.selfId,
                 { kind: "ref", name: t.name, optional: false },
                 ctx,
                 sctx,
@@ -956,7 +956,7 @@ export function resolveStatements(ctx: CompilerContext, Ast: FactoryAst) {
                         "Self is null where it should not be",
                     );
                 }
-                sctx = addVariable(selfId, f.self, ctx, sctx);
+                sctx = addVariable(A.selfId, f.self, ctx, sctx);
 
                 // Check for collisions in getter method IDs
                 if (f.isGetter) {

@@ -1,10 +1,4 @@
-import { AstExpression } from "../../ast/ast";
-import {
-    isLiteral,
-    eqExpressions,
-    getAstFactory,
-    FactoryAst,
-} from "../../ast/ast-helpers";
+import * as A from "../../ast/ast";
 import { AstUtil, getAstUtil } from "../../ast/util";
 import { getOptimizer } from "../constEval";
 import { CompilerContext } from "../../context/context";
@@ -316,7 +310,7 @@ const booleanExpressions = [
 
 function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
-        const ast = getAstFactory();
+        const ast = A.getAstFactory();
         const { parseExpression } = getParser(ast, defaultParser);
         const util = getAstUtil(ast);
         const { partiallyEvalExpression } = getOptimizer(util);
@@ -325,7 +319,7 @@ function testExpression(original: string, simplified: string) {
             new CompilerContext(),
         );
         const simplifiedValue = dummyEval(parseExpression(simplified), ast);
-        const areMatching = eqExpressions(originalValue, simplifiedValue);
+        const areMatching = A.eqExpressions(originalValue, simplifiedValue);
         expect(areMatching).toBe(true);
     });
 }
@@ -336,13 +330,13 @@ function testExpressionWithOptimizer(
     optimizer: ExpressionTransformer,
 ) {
     it(`should simplify ${original} to ${simplified}`, () => {
-        const ast = getAstFactory();
+        const ast = A.getAstFactory();
         const { parseExpression } = getParser(ast, defaultParser);
         const originalValue = optimizer.applyRules(
             dummyEval(parseExpression(original), ast),
         );
         const simplifiedValue = dummyEval(parseExpression(simplified), ast);
-        const areMatching = eqExpressions(originalValue, simplifiedValue);
+        const areMatching = A.eqExpressions(originalValue, simplifiedValue);
         expect(areMatching).toBe(true);
     });
 }
@@ -352,10 +346,13 @@ function testExpressionWithOptimizer(
 // The reason for doing this is that the partial evaluator will actually simplify constant
 // expressions. So, when comparing for equality of expressions, we also need to simplify
 // constant expressions.
-function dummyEval(ast: AstExpression, astFactory: FactoryAst): AstExpression {
+function dummyEval(
+    ast: A.AstExpression,
+    astFactory: A.FactoryAst,
+): A.AstExpression {
     const cloneNode = astFactory.cloneNode;
     const util = getAstUtil(astFactory);
-    const recurse = (ast: AstExpression): AstExpression => {
+    const recurse = (ast: A.AstExpression): A.AstExpression => {
         switch (ast.kind) {
             case "null":
                 return ast;
@@ -393,7 +390,7 @@ function dummyEval(ast: AstExpression, astFactory: FactoryAst): AstExpression {
             case "op_unary": {
                 const newNode = cloneNode(ast);
                 newNode.operand = recurse(ast.operand);
-                if (isLiteral(newNode.operand)) {
+                if (A.isLiteral(newNode.operand)) {
                     return evalUnaryOp(ast.op, newNode.operand, ast.loc, util);
                 }
                 return newNode;
@@ -402,7 +399,7 @@ function dummyEval(ast: AstExpression, astFactory: FactoryAst): AstExpression {
                 const newNode = cloneNode(ast);
                 newNode.left = recurse(ast.left);
                 newNode.right = recurse(ast.right);
-                if (isLiteral(newNode.left) && isLiteral(newNode.right)) {
+                if (A.isLiteral(newNode.left) && A.isLiteral(newNode.right)) {
                     const valR = newNode.right;
                     return evalBinaryOp(
                         ast.op,
@@ -452,13 +449,13 @@ class ParameterizableDummyOptimizer implements ExpressionTransformer {
 
     public util: AstUtil;
 
-    constructor(rules: Rule[], Ast: FactoryAst) {
+    constructor(rules: Rule[], Ast: A.FactoryAst) {
         this.util = getAstUtil(Ast);
 
         this.rules = rules;
     }
 
-    public applyRules = (ast: AstExpression): AstExpression => {
+    public applyRules = (ast: A.AstExpression): A.AstExpression => {
         return this.rules.reduce(
             (prev, rule) => rule.applyRule(prev, this),
             ast,
@@ -482,7 +479,7 @@ describe("partial-evaluator", () => {
         // uses the associative rule 3.
         const optimizer = new ParameterizableDummyOptimizer(
             [new AssociativeRule3()],
-            getAstFactory(),
+            A.getAstFactory(),
         );
 
         testExpressionWithOptimizer(test.original, test.simplified, optimizer);
