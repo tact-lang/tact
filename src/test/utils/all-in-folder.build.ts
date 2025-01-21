@@ -14,9 +14,12 @@ export const allInFolder = async (folder: string, globs: string[]) => {
         const contracts = globSync(globs, { cwd: folder });
 
         const projects = contracts.map(contractPath => {
-            const options: Options = { debug: true, external: true };
+            const options: Options = { debug: true };
             if (contractPath.includes('inline')) {
                 options.experimental = { inline: true };
+            }
+            if (contractPath.includes('external')) {
+                options.external = true;
             }
             return {
                 name: basename(contractPath, extname(contractPath)),
