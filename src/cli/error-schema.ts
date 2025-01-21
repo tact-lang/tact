@@ -5,6 +5,9 @@ export const CliErrors = (
         argumentHasParameter: (param: string, argName: string) => {
             log(`Expected ${param} ${argName}`);
         },
+        unexpectedArgument: (text: string | undefined) => {
+            log(`Unexpected ${typeof text === 'undefined' ? "end of arguments" : text}`);
+        },
         internal: (error: unknown) => {
             log(`Internal error: ${error instanceof Error ? error.toString() : String(error)}`)
         },

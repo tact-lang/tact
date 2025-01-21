@@ -107,7 +107,8 @@ export const ArgParser = (E: CliErrors) => {
     // eslint-disable-next-line @typescript-eslint/ban-types
     const tokenizer = makeTokenizer<{}>((argv) => {
         const [head, ...rest] = argv;
-        return { kind: 'error', errors: [`Unexpected ${head}`], rest };
+        E.unexpectedArgument(head);
+        return { kind: 'error', rest };
     });
 
     return {

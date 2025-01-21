@@ -90,17 +90,11 @@ const parseArgs = async (E: CliErrors, A: Args) => {
             return;
         }
         const configText = F.readFile(configPath).toString('utf-8');
-        try {
-            const config = parseConfig(configText);
-            await compile(A, E, F, config);
-            return;
-        } catch (e) {
-            if (!(e instanceof ZodError)) {
-                throw e;
-            }
-            E.configError(configPath, e.toString());
+        const config = parseConfigSafe(E, configPath, configText);
+        if (!config) {
             return;
         }
+        await compile(A, E, F, config);
     }
 
     const filePath = A.single('immediate');
@@ -113,6 +107,18 @@ const parseArgs = async (E: CliErrors, A: Args) => {
 
     if (noUnknownParams(A)) {
         showHelp();
+    }
+};
+
+const parseConfigSafe = (E: CliErrors, configPath:string, configText: string): Config | undefined => {
+    try {
+        return parseConfig(configText);
+    } catch (e) {
+        if (!(e instanceof ZodError)) {
+            throw e;
+        }
+        E.configError(configPath, e.toString());
+        return;
     }
 };
 
