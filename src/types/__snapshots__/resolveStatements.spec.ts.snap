@@ -501,6 +501,15 @@ exports[`resolveStatements should fail statements for expr-shift-right-bits-out-
 "
 `;
 
+exports[`resolveStatements should fail statements for expr-shift-right-bits-out-of-bounds-4 1`] = `
+"<unknown>:14:21: the number of bits shifted ('500') must be within [0..256] range
+  13 |     get fun shift(x: Int): Int {
+> 14 |         return x >> foo();
+                           ^~~~~
+  15 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for expr-struct-duplicate-field 1`] = `
 "<unknown>:17:9: Duplicate fields "a"
   16 |         a: 1,
