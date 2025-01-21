@@ -1,11 +1,5 @@
 import { CompilerContext } from "../context/context";
-import {
-    AstBinaryOperation,
-    AstExpression,
-    AstUnaryOperation,
-    isLiteral,
-    AstLiteral,
-} from "../ast/ast";
+import * as A from "../ast/ast";
 import {
     TactConstEvalError,
     throwInternalCompilerError,
@@ -26,9 +20,9 @@ import { SrcInfo } from "../grammar";
 // Utility Exception class to interrupt the execution
 // of functions that cannot evaluate a tree fully into a value.
 class PartiallyEvaluatedTree extends Error {
-    public tree: AstExpression;
+    public tree: A.AstExpression;
 
-    constructor(tree: AstExpression) {
+    constructor(tree: A.AstExpression) {
         super();
         this.tree = tree;
     }
@@ -40,11 +34,11 @@ export const getOptimizer = (util: AstUtil) => {
     const optimizer: ExpressionTransformer = new StandardOptimizer(util);
 
     function partiallyEvalUnaryOp(
-        op: AstUnaryOperation,
-        operand: AstExpression,
+        op: A.AstUnaryOperation,
+        operand: A.AstExpression,
         source: SrcInfo,
         ctx: CompilerContext,
-    ): AstExpression {
+    ): A.AstExpression {
         if (operand.kind === "number" && op === "-") {
             // emulating negative integer literals
             return ensureInt(util.makeNumberLiteral(-operand.value, source));
@@ -52,7 +46,7 @@ export const getOptimizer = (util: AstUtil) => {
 
         const simplOperand = partiallyEvalExpression(operand, ctx);
 
-        if (isLiteral(simplOperand)) {
+        if (A.isLiteral(simplOperand)) {
             const result = evalUnaryOp(op, simplOperand, source, util);
             return result;
         } else {
@@ -62,15 +56,15 @@ export const getOptimizer = (util: AstUtil) => {
     }
 
     function partiallyEvalBinaryOp(
-        op: AstBinaryOperation,
-        left: AstExpression,
-        right: AstExpression,
+        op: A.AstBinaryOperation,
+        left: A.AstExpression,
+        right: A.AstExpression,
         source: SrcInfo,
         ctx: CompilerContext,
-    ): AstExpression {
+    ): A.AstExpression {
         const leftOperand = partiallyEvalExpression(left, ctx);
 
-        if (isLiteral(leftOperand)) {
+        if (A.isLiteral(leftOperand)) {
             // Because of short-circuiting, we must delay evaluation of the right operand
             try {
                 const result = evalBinaryOp(
@@ -82,7 +76,7 @@ export const getOptimizer = (util: AstUtil) => {
                             right,
                             ctx,
                         );
-                        if (isLiteral(rightOperand)) {
+                        if (A.isLiteral(rightOperand)) {
                             // If the right operand reduced to a value, then we can let the function
                             // evalBinaryOp finish its normal execution by returning the
                             // right operand.
@@ -130,10 +124,10 @@ export const getOptimizer = (util: AstUtil) => {
     }
 
     function partiallyEvalExpression(
-        ast: AstExpression,
+        ast: A.AstExpression,
         ctx: CompilerContext,
         interpreterConfig?: InterpreterConfig,
-    ): AstExpression {
+    ): A.AstExpression {
         const interpreter = new Interpreter(util, ctx, interpreterConfig);
         switch (ast.kind) {
             case "id":
@@ -212,11 +206,11 @@ export const getOptimizer = (util: AstUtil) => {
 };
 
 export function evalConstantExpression(
-    ast: AstExpression,
+    ast: A.AstExpression,
     ctx: CompilerContext,
     util: AstUtil,
     interpreterConfig?: InterpreterConfig,
-): AstLiteral {
+): A.AstLiteral {
     const interpreter = new Interpreter(util, ctx, interpreterConfig);
     const result = interpreter.interpretExpression(ast);
     return result;

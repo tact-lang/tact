@@ -1,11 +1,4 @@
-import {
-    AstModule,
-    AstConstantDef,
-    AstFunctionDef,
-    AstNativeFunctionDecl,
-    AstTypeDecl,
-    AstAsmFunctionDef,
-} from "../ast/ast";
+import * as A from "../ast/ast";
 import { throwInternalCompilerError } from "../error/errors";
 import { CompilerContext, createContextStore } from "./context";
 import { ItemOrigin } from "../grammar/src-info";
@@ -26,9 +19,13 @@ export type TactSource = { code: string; path: string; origin: ItemOrigin };
 export type AstStore = {
     sources: TactSource[];
     funcSources: { code: string; path: string }[];
-    functions: (AstFunctionDef | AstNativeFunctionDecl | AstAsmFunctionDef)[];
-    constants: AstConstantDef[];
-    types: AstTypeDecl[];
+    functions: (
+        | A.AstFunctionDef
+        | A.AstNativeFunctionDecl
+        | A.AstAsmFunctionDef
+    )[];
+    constants: A.AstConstantDef[];
+    types: A.AstTypeDecl[];
 };
 
 const store = createContextStore<AstStore>();
@@ -55,7 +52,7 @@ export function getRawAST(ctx: CompilerContext): AstStore {
 export function parseModules(
     sources: TactSource[],
     parser: Parser,
-): AstModule[] {
+): A.AstModule[] {
     return sources.map((source) =>
         parser.parse(source.code, source.path, source.origin),
     );
@@ -73,18 +70,18 @@ export function openContext(
     sources: TactSource[],
     funcSources: { code: string; path: string }[],
     parser: Parser,
-    parsedModules?: AstModule[],
+    parsedModules?: A.AstModule[],
 ): CompilerContext {
     const modules = parsedModules
         ? parsedModules
         : parseModules(sources, parser);
-    const types: AstTypeDecl[] = [];
+    const types: A.AstTypeDecl[] = [];
     const functions: (
-        | AstNativeFunctionDecl
-        | AstFunctionDef
-        | AstAsmFunctionDef
+        | A.AstNativeFunctionDecl
+        | A.AstFunctionDef
+        | A.AstAsmFunctionDef
     )[] = [];
-    const constants: AstConstantDef[] = [];
+    const constants: A.AstConstantDef[] = [];
     for (const module of modules) {
         for (const item of module.items) {
             switch (item.kind) {
