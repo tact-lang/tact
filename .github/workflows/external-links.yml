@@ -1,0 +1,37 @@
+name: Link check
+
+on:
+  workflow_dispatch: # on demand launches, if needed
+  schedule:
+    - cron: "0 0 * * 2" # 00:00 on Tuesday, near the dependabot.yml
+
+jobs:
+  linkcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: (docs) Check broken HTTPS links
+        uses: lycheeverse/lychee-action@v2
+        id: lychee
+        with:
+          args: >
+            -n -s https --exclude-path docs/node_modules
+            --base 'https://docs.tact-lang.org'
+            --exclude '.*?\\.(?:jpg|png)'
+            docs/README.md './docs/**/*.mdx'
+          output: "/dev/stdout"
+          fail: false
+          failIfEmpty: false
+
+      - name: (dev-docs) Check broken HTTPS links
+        uses: lycheeverse/lychee-action@v2
+        id: lychee_dev
+        with:
+          args: >
+            -n -s https --exclude-path node_modules --exclude-path docs
+            './**/*.md'
+          output: "/dev/stdout"
+          fail: false
+          failIfEmpty: false
