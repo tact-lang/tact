@@ -516,80 +516,6 @@ export type AstFuncId = {
     loc: SrcInfo;
 };
 
-export function idText(ident: AstId | AstFuncId | AstTypeId): string {
-    return ident.text;
-}
-
-export function isInt(ident: AstTypeId): boolean {
-    return ident.text === "Int";
-}
-
-export function isBool(ident: AstTypeId): boolean {
-    return ident.text === "Bool";
-}
-
-export function isCell(ident: AstTypeId): boolean {
-    return ident.text === "Cell";
-}
-
-export function isSlice(ident: AstTypeId): boolean {
-    return ident.text === "Slice";
-}
-
-export function isBuilder(ident: AstTypeId): boolean {
-    return ident.text === "Builder";
-}
-
-export function isAddress(ident: AstTypeId): boolean {
-    return ident.text === "Address";
-}
-
-export function isString(ident: AstTypeId): boolean {
-    return ident.text === "String";
-}
-
-export function isStringBuilder(ident: AstTypeId): boolean {
-    return ident.text === "StringBuilder";
-}
-
-export function isSelfId(ident: AstId): boolean {
-    return ident.text === "self";
-}
-
-export function isWildcard(ident: AstId): boolean {
-    return ident.text === "_";
-}
-
-export function isRequire(ident: AstId): boolean {
-    return ident.text === "require";
-}
-
-export function eqNames(
-    left: AstId | AstTypeId | string,
-    right: AstId | AstTypeId | string,
-): boolean {
-    if (typeof left === "string") {
-        if (typeof right === "string") {
-            return left === right;
-        }
-        return left === right.text;
-    } else {
-        if (typeof right === "string") {
-            return left.text === right;
-        }
-        return left.text === right.text;
-    }
-}
-
-export function idOfText(text: string): AstId {
-    return {
-        kind: "id",
-        text,
-        id: 0,
-        loc: dummySrcInfo,
-    };
-}
-
 export const selfId: AstId = {
     kind: "id",
     text: "self",
@@ -621,19 +547,6 @@ export type AstNumber = {
 };
 
 export type AstNumberBase = 2 | 8 | 10 | 16;
-
-export function astNumToString(n: AstNumber): string {
-    switch (n.base) {
-        case 2:
-            return `0b${n.value.toString(n.base)}`;
-        case 8:
-            return `0o${n.value.toString(n.base)}`;
-        case 10:
-            return n.value.toString(n.base);
-        case 16:
-            return `0x${n.value.toString(n.base)}`;
-    }
-}
 
 export type AstBoolean = {
     kind: "boolean";

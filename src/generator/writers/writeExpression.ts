@@ -1,11 +1,10 @@
+import { AstExpression, AstId, AstLiteral } from "../../ast/ast";
 import {
-    AstExpression,
-    AstId,
-    AstLiteral,
+    tryExtractPath,
+    getAstFactory,
     eqNames,
     idText,
-} from "../../ast/ast";
-import { tryExtractPath, getAstFactory } from "../../ast/ast-helpers";
+} from "../../ast/ast-helpers";
 import {
     idTextErr,
     TactConstEvalError,

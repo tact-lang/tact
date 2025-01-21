@@ -4,11 +4,13 @@ import {
     AstCondition,
     AstExpression,
     AstStatement,
+} from "../../ast/ast";
+import {
     idOfText,
     idText,
     isWildcard,
-} from "../../ast/ast";
-import { tryExtractPath } from "../../ast/ast-helpers";
+    tryExtractPath,
+} from "../../ast/ast-helpers";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
 import { FunctionDescription, TypeRef } from "../../types/types";

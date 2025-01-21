@@ -1,7 +1,15 @@
 import { ABITypeRef } from "@ton/core";
+import { AstFieldDecl, AstTypeId } from "../ast/ast";
 import {
-    AstFieldDecl,
-    AstTypeId,
+    idTextErr,
+    throwCompilationError,
+    throwInternalCompilerError,
+} from "../error/errors";
+import { TypeRef } from "./types";
+import { CompilerContext } from "../context/context";
+import { getType } from "./resolveDescriptors";
+import { SrcInfo } from "../grammar";
+import {
     eqNames,
     idText,
     isAddress,
@@ -12,16 +20,7 @@ import {
     isSlice,
     isString,
     isStringBuilder,
-} from "../ast/ast";
-import {
-    idTextErr,
-    throwCompilationError,
-    throwInternalCompilerError,
-} from "../error/errors";
-import { TypeRef } from "./types";
-import { CompilerContext } from "../context/context";
-import { getType } from "./resolveDescriptors";
-import { SrcInfo } from "../grammar";
+} from "../ast/ast-helpers";
 
 type FormatDef = Record<
     string,

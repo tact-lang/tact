@@ -1,5 +1,11 @@
 import * as A from "../ast/ast";
-import { FactoryAst } from "../ast/ast-helpers";
+import {
+    eqNames,
+    FactoryAst,
+    idText,
+    isSelfId,
+    isSlice,
+} from "../ast/ast-helpers";
 import { traverse } from "../ast/iterators";
 import {
     idTextErr,
@@ -50,10 +56,10 @@ function verifyMapAsAnnotationsForPrimitiveTypes(
     asAnnotation: A.AstId | null,
     kind: "keyType" | "valType",
 ): void {
-    switch (A.idText(type)) {
+    switch (idText(type)) {
         case "Int": {
             if (asAnnotation === null) return;
-            const ann = A.idText(asAnnotation);
+            const ann = idText(asAnnotation);
             switch (kind) {
                 case "keyType":
                     if (!Object.keys(intMapKeyFormats).includes(ann)) {
@@ -96,7 +102,7 @@ function verifyMapTypes(
     allowedTypeNames: string[],
     kind: "keyType" | "valType",
 ): void {
-    if (!allowedTypeNames.includes(A.idText(typeId))) {
+    if (!allowedTypeNames.includes(idText(typeId))) {
         throwCompilationError(
             "Invalid map type. Check https://docs.tact-lang.org/book/maps#allowed-types",
             typeId.loc,
@@ -134,7 +140,7 @@ export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
 export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
     switch (type.kind) {
         case "type_id": {
-            const t = getType(ctx, A.idText(type));
+            const t = getType(ctx, idText(type));
             return {
                 kind: "ref",
                 name: t.name,
@@ -148,7 +154,7 @@ export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
                     type.typeArg.loc,
                 );
             }
-            const t = getType(ctx, A.idText(type.typeArg));
+            const t = getType(ctx, idText(type.typeArg));
             return {
                 kind: "ref",
                 name: t.name,
@@ -156,25 +162,25 @@ export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
             };
         }
         case "map_type": {
-            const keyTy = getType(ctx, A.idText(type.keyType));
-            const valTy = getType(ctx, A.idText(type.valueType));
+            const keyTy = getType(ctx, idText(type.keyType));
+            const valTy = getType(ctx, idText(type.valueType));
             verifyMapType(type, valTy.kind === "struct");
             return {
                 kind: "map",
                 key: keyTy.name,
                 keyAs:
                     type.keyStorageType !== null
-                        ? A.idText(type.keyStorageType)
+                        ? idText(type.keyStorageType)
                         : null,
                 value: valTy.name,
                 valueAs:
                     type.valueStorageType !== null
-                        ? A.idText(type.valueStorageType)
+                        ? idText(type.valueStorageType)
                         : null,
             };
         }
         case "bounced_message_type": {
-            const t = getType(ctx, A.idText(type.messageType));
+            const t = getType(ctx, idText(type.messageType));
             return {
                 kind: "ref_bounced",
                 name: t.name,
@@ -189,7 +195,7 @@ function buildTypeRef(
 ): TypeRef {
     switch (type.kind) {
         case "type_id": {
-            if (!types.has(A.idText(type))) {
+            if (!types.has(idText(type))) {
                 throwCompilationError(
                     `Type ${idTextErr(type)} not found`,
                     type.loc,
@@ -197,7 +203,7 @@ function buildTypeRef(
             }
             return {
                 kind: "ref",
-                name: A.idText(type),
+                name: idText(type),
                 optional: false,
             };
         }
@@ -208,7 +214,7 @@ function buildTypeRef(
                     type.typeArg.loc,
                 );
             }
-            if (!types.has(A.idText(type.typeArg))) {
+            if (!types.has(idText(type.typeArg))) {
                 throwCompilationError(
                     `Type ${idTextErr(type.typeArg)} not found`,
                     type.loc,
@@ -216,43 +222,43 @@ function buildTypeRef(
             }
             return {
                 kind: "ref",
-                name: A.idText(type.typeArg),
+                name: idText(type.typeArg),
                 optional: true,
             };
         }
         case "map_type": {
-            if (!types.has(A.idText(type.keyType))) {
+            if (!types.has(idText(type.keyType))) {
                 throwCompilationError(
                     `Type ${idTextErr(type.keyType)} not found`,
                     type.loc,
                 );
             }
-            if (!types.has(A.idText(type.valueType))) {
+            if (!types.has(idText(type.valueType))) {
                 throwCompilationError(
                     `Type ${idTextErr(type.valueType)} not found`,
                     type.loc,
                 );
             }
-            const valTy = types.get(A.idText(type.valueType))!;
+            const valTy = types.get(idText(type.valueType))!;
             verifyMapType(type, valTy.kind === "struct");
             return {
                 kind: "map",
-                key: A.idText(type.keyType),
+                key: idText(type.keyType),
                 keyAs:
                     type.keyStorageType !== null
-                        ? A.idText(type.keyStorageType)
+                        ? idText(type.keyStorageType)
                         : null,
-                value: A.idText(type.valueType),
+                value: idText(type.valueType),
                 valueAs:
                     type.valueStorageType !== null
-                        ? A.idText(type.valueStorageType)
+                        ? idText(type.valueStorageType)
                         : null,
             };
         }
         case "bounced_message_type": {
             return {
                 kind: "ref_bounced",
-                name: A.idText(type.messageType),
+                name: idText(type.messageType),
             };
         }
     }
@@ -279,22 +285,22 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     //
 
     for (const a of ast.types) {
-        if (types.has(A.idText(a.name))) {
+        if (types.has(idText(a.name))) {
             throwCompilationError(
-                `Type "${A.idText(a.name)}" already exists`,
+                `Type "${idText(a.name)}" already exists`,
                 a.loc,
             );
         }
 
-        const uid = uidForName(A.idText(a.name), types);
+        const uid = uidForName(idText(a.name), types);
 
         switch (a.kind) {
             case "primitive_type_decl":
                 {
-                    types.set(A.idText(a.name), {
+                    types.set(idText(a.name), {
                         kind: "primitive_type_decl",
                         origin: a.loc.origin,
-                        name: A.idText(a.name),
+                        name: idText(a.name),
                         uid,
                         fields: [],
                         traits: [],
@@ -314,10 +320,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 break;
             case "contract":
                 {
-                    types.set(A.idText(a.name), {
+                    types.set(idText(a.name), {
                         kind: "contract",
                         origin: a.loc.origin,
-                        name: A.idText(a.name),
+                        name: idText(a.name),
                         uid,
                         header: null,
                         tlb: null,
@@ -338,10 +344,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             case "struct_decl":
             case "message_decl":
                 {
-                    types.set(A.idText(a.name), {
+                    types.set(idText(a.name), {
                         kind: "struct",
                         origin: a.loc.origin,
-                        name: A.idText(a.name),
+                        name: idText(a.name),
                         uid,
                         header: null,
                         tlb: null,
@@ -360,10 +366,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 }
                 break;
             case "trait": {
-                types.set(A.idText(a.name), {
+                types.set(idText(a.name), {
                     kind: "trait",
                     origin: a.loc.origin,
-                    name: A.idText(a.name),
+                    name: idText(a.name),
                     uid,
                     header: null,
                     tlb: null,
@@ -406,14 +412,14 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         const type = resolveABIType(src);
 
         return {
-            name: A.idText(src.name),
+            name: idText(src.name),
             type: fieldTy,
             index,
-            as: src.as !== null ? A.idText(src.as) : null,
+            as: src.as !== null ? idText(src.as) : null,
             default: undefined, // initializer will be evaluated after typechecking
             loc: src.loc,
             ast: src,
-            abi: { name: A.idText(src.name), type },
+            abi: { name: idText(src.name), type },
         };
     }
 
@@ -422,7 +428,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     ): ConstantDescription {
         const constDeclTy = buildTypeRef(src.type, types);
         return {
-            name: A.idText(src.name),
+            name: idText(src.name),
             type: constDeclTy,
             value: undefined, // initializer will be evaluated after typechecking
             loc: src.loc,
@@ -437,8 +443,8 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 if (f.kind === "field_decl") {
                     if (
                         types
-                            .get(A.idText(a.name))!
-                            .fields.find((v) => A.eqNames(v.name, f.name))
+                            .get(idText(a.name))!
+                            .fields.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
                             `Field ${idTextErr(f.name)} already exists`,
@@ -447,27 +453,27 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     }
                     if (
                         types
-                            .get(A.idText(a.name))!
-                            .constants.find((v) => A.eqNames(v.name, f.name))
+                            .get(idText(a.name))!
+                            .constants.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
-                            `Constant ${A.idText(f.name)} already exists`,
+                            `Constant ${idText(f.name)} already exists`,
                             f.loc,
                         );
                     }
                     types
-                        .get(A.idText(a.name))!
+                        .get(idText(a.name))!
                         .fields.push(
                             buildFieldDescription(
                                 f,
-                                types.get(A.idText(a.name))!.fields.length,
+                                types.get(idText(a.name))!.fields.length,
                             ),
                         );
                 } else if (f.kind === "constant_def") {
                     if (
                         types
-                            .get(A.idText(a.name))!
-                            .fields.find((v) => A.eqNames(v.name, f.name))
+                            .get(idText(a.name))!
+                            .fields.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
                             `Field ${idTextErr(f.name)} already exists`,
@@ -476,8 +482,8 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     }
                     if (
                         types
-                            .get(A.idText(a.name))!
-                            .constants.find((v) => A.eqNames(v.name, f.name))
+                            .get(idText(a.name))!
+                            .constants.find((v) => eqNames(v.name, f.name))
                     ) {
                         throwCompilationError(
                             `Constant ${idTextErr(f.name)} already exists`,
@@ -491,7 +497,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         );
                     }
                     types
-                        .get(A.idText(a.name))!
+                        .get(idText(a.name))!
                         .constants.push(buildConstantDescription(f));
                 }
             }
@@ -502,8 +508,8 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             for (const f of a.fields) {
                 if (
                     types
-                        .get(A.idText(a.name))!
-                        .fields.find((v) => A.eqNames(v.name, f.name))
+                        .get(idText(a.name))!
+                        .fields.find((v) => eqNames(v.name, f.name))
                 ) {
                     throwCompilationError(
                         `Field ${idTextErr(f.name)} already exists`,
@@ -511,11 +517,11 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     );
                 }
                 types
-                    .get(A.idText(a.name))!
+                    .get(idText(a.name))!
                     .fields.push(
                         buildFieldDescription(
                             f,
-                            types.get(A.idText(a.name))!.fields.length,
+                            types.get(idText(a.name))!.fields.length,
                         ),
                     );
             }
@@ -533,10 +539,8 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 if (traitDecl.kind === "field_decl") {
                     if (
                         types
-                            .get(A.idText(a.name))!
-                            .fields.find((v) =>
-                                A.eqNames(v.name, traitDecl.name),
-                            )
+                            .get(idText(a.name))!
+                            .fields.find((v) => eqNames(v.name, traitDecl.name))
                     ) {
                         throwCompilationError(
                             `Field ${idTextErr(traitDecl.name)} already exists`,
@@ -550,11 +554,11 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         );
                     }
                     types
-                        .get(A.idText(a.name))!
+                        .get(idText(a.name))!
                         .fields.push(
                             buildFieldDescription(
                                 traitDecl,
-                                types.get(A.idText(a.name))!.fields.length,
+                                types.get(idText(a.name))!.fields.length,
                             ),
                         );
                 } else if (
@@ -563,10 +567,8 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 ) {
                     if (
                         types
-                            .get(A.idText(a.name))!
-                            .fields.find((v) =>
-                                A.eqNames(v.name, traitDecl.name),
-                            )
+                            .get(idText(a.name))!
+                            .fields.find((v) => eqNames(v.name, traitDecl.name))
                     ) {
                         throwCompilationError(
                             `Field ${idTextErr(traitDecl.name)} already exists`,
@@ -575,9 +577,9 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     }
                     if (
                         types
-                            .get(A.idText(a.name))!
+                            .get(idText(a.name))!
                             .constants.find((v) =>
-                                A.eqNames(v.name, traitDecl.name),
+                                eqNames(v.name, traitDecl.name),
                             )
                     ) {
                         throwCompilationError(
@@ -594,7 +596,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         );
                     }
                     types
-                        .get(A.idText(a.name))!
+                        .get(idText(a.name))!
                         .constants.push(buildConstantDescription(traitDecl));
                 }
             }
@@ -812,7 +814,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 );
             }
             const firstParam = params[0]!;
-            if (!A.isSelfId(firstParam.name)) {
+            if (!isSelfId(firstParam.name)) {
                 throwCompilationError(
                     'Extend function must have first parameter named "self"',
                     firstParam.loc,
@@ -847,19 +849,19 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         // Check parameter names
         const exNames: Set<string> = new Set();
         for (const param of params) {
-            if (A.isSelfId(param.name)) {
+            if (isSelfId(param.name)) {
                 throwCompilationError(
                     'Parameter name "self" is reserved',
                     param.loc,
                 );
             }
-            if (exNames.has(A.idText(param.name))) {
+            if (exNames.has(idText(param.name))) {
                 throwCompilationError(
                     `Parameter name ${idTextErr(param.name)} is already used`,
                     param.loc,
                 );
             }
-            exNames.add(A.idText(param.name));
+            exNames.add(idText(param.name));
         }
 
         // Check for runtime types in getters
@@ -887,7 +889,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             // check arguments shuffle
             if (a.shuffle.args.length !== 0) {
                 const shuffleArgSet = new Set(
-                    a.shuffle.args.map((id) => A.idText(id)),
+                    a.shuffle.args.map((id) => idText(id)),
                 );
                 if (shuffleArgSet.size !== a.shuffle.args.length) {
                     throwCompilationError(
@@ -896,7 +898,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     );
                 }
                 const paramSet = new Set(
-                    a.params.map((typedId) => A.idText(typedId.name)),
+                    a.params.map((typedId) => idText(typedId.name)),
                 );
                 if (!isSubsetOf(paramSet, shuffleArgSet)) {
                     throwCompilationError(
@@ -979,7 +981,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
         // Register function
         return {
-            name: A.idText(a.name),
+            name: idText(a.name),
             self: self,
             origin,
             params,
@@ -1025,7 +1027,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
     for (const a of ast.types) {
         if (a.kind === "contract" || a.kind === "trait") {
-            const s = types.get(A.idText(a.name))!;
+            const s = types.get(idText(a.name))!;
             for (const d of a.declarations) {
                 if (
                     d.kind === "function_def" ||
@@ -1089,7 +1091,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                         d.loc,
                                     );
                                 }
-                                const t = types.get(A.idText(param.type));
+                                const t = types.get(idText(param.type));
                                 if (!t) {
                                     throwCompilationError(
                                         `Type ${idTextErr(param.type)} not found`,
@@ -1175,7 +1177,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                     }
 
                                     // Check for duplicate
-                                    const n = A.idText(param.type);
+                                    const n = idText(param.type);
                                     if (
                                         s.receivers.find(
                                             (v) =>
@@ -1183,7 +1185,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                                     (internal
                                                         ? "internal-binary"
                                                         : "external-binary") &&
-                                                A.eqNames(v.selector.type, n),
+                                                eqNames(v.selector.type, n),
                                         )
                                     ) {
                                         throwCompilationError(
@@ -1199,7 +1201,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                                 ? "internal-binary"
                                                 : "external-binary",
                                             name: param.name,
-                                            type: A.idText(param.type),
+                                            type: idText(param.type),
                                         },
                                         ast: d,
                                     });
@@ -1278,7 +1280,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                             const param = d.selector.param;
 
                             if (param.type.kind === "type_id") {
-                                if (A.isSlice(param.type)) {
+                                if (isSlice(param.type)) {
                                     if (
                                         s.receivers.find(
                                             (v) =>
@@ -1300,9 +1302,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                         ast: d,
                                     });
                                 } else {
-                                    const type = types.get(
-                                        A.idText(param.type),
-                                    );
+                                    const type = types.get(idText(param.type));
                                     if (type === undefined) {
                                         throwCompilationError(
                                             `Unknown bounced receiver parameter type: ${idTextErr(param.type)}`,
@@ -1341,7 +1341,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                         selector: {
                                             kind: "bounce-binary",
                                             name: param.name,
-                                            type: A.idText(param.type),
+                                            type: idText(param.type),
                                             bounced: false,
                                         },
                                         ast: d,
@@ -1356,7 +1356,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                 param.type.kind === "bounced_message_type"
                             ) {
                                 const t = types.get(
-                                    A.idText(param.type.messageType),
+                                    idText(param.type.messageType),
                                 );
                                 if (t === undefined) {
                                     throwCompilationError(
@@ -1399,7 +1399,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                     selector: {
                                         kind: "bounce-binary",
                                         name: param.name,
-                                        type: A.idText(param.type.messageType),
+                                        type: idText(param.type.messageType),
                                         bounced: true,
                                     },
                                     ast: d,
@@ -1444,7 +1444,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     for (const t of types.values()) {
         if (t.ast.kind === "trait" || t.ast.kind === "contract") {
             // Check there are no duplicates in the _immediately_ inherited traits
-            const traitSet: Set<string> = new Set(t.ast.traits.map(A.idText));
+            const traitSet: Set<string> = new Set(t.ast.traits.map(idText));
             if (traitSet.size !== t.ast.traits.length) {
                 const aggregateType =
                     t.ast.kind === "contract" ? "contract" : "trait";
@@ -1473,7 +1473,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 traits.push(tt);
                 if (tt.ast.kind === "trait") {
                     for (const s of tt.ast.traits) {
-                        visit(A.idText(s));
+                        visit(idText(s));
                     }
                     for (const f of tt.traits) {
                         visit(f.name);
@@ -1487,7 +1487,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             }
             visit("BaseTrait");
             for (const s of t.ast.traits) {
-                visit(A.idText(s));
+                visit(idText(s));
             }
 
             // Assign traits
@@ -1865,13 +1865,13 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         const dependsOn: Set<string> = new Set();
         const handler = (src: A.AstNode) => {
             if (src.kind === "init_of") {
-                if (!types.has(A.idText(src.contract))) {
+                if (!types.has(idText(src.contract))) {
                     throwCompilationError(
                         `Type ${idTextErr(src.contract)} not found`,
                         src.loc,
                     );
                 }
-                dependsOn.add(A.idText(src.contract));
+                dependsOn.add(idText(src.contract));
             }
         };
 
@@ -1959,22 +1959,22 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     //
 
     for (const a of ast.constants) {
-        if (staticConstants.has(A.idText(a.name))) {
+        if (staticConstants.has(idText(a.name))) {
             throwCompilationError(
                 `Static constant ${idTextErr(a.name)} already exists`,
                 a.loc,
             );
         }
         if (
-            staticFunctions.has(A.idText(a.name)) ||
-            GlobalFunctions.has(A.idText(a.name))
+            staticFunctions.has(idText(a.name)) ||
+            GlobalFunctions.has(idText(a.name))
         ) {
             throwCompilationError(
                 `Static function ${idTextErr(a.name)} already exists`,
                 a.loc,
             );
         }
-        staticConstants.set(A.idText(a.name), buildConstantDescription(a));
+        staticConstants.set(idText(a.name), buildConstantDescription(a));
     }
 
     //
@@ -2004,7 +2004,7 @@ export function getType(
     ctx: CompilerContext,
     ident: A.AstId | A.AstTypeId | string,
 ): TypeDescription {
-    const name = typeof ident === "string" ? ident : A.idText(ident);
+    const name = typeof ident === "string" ? ident : idText(ident);
     const r = store.get(ctx, name);
     if (!r) {
         throwInternalCompilerError(`Type ${name} not found`);
@@ -2309,7 +2309,7 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
             let e = "";
             do {
                 const last = stack.pop()!;
-                e = A.idText(last);
+                e = idText(last);
                 onStack.delete(e);
                 cycle.push(last);
             } while (e !== struct.name);

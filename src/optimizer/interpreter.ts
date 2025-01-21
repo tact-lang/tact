@@ -57,12 +57,16 @@ import {
     AstStructValue,
     AstTrait,
     AstUnaryOperation,
-    eqNames,
-    idText,
-    isSelfId,
     AstStatementBlock,
 } from "../ast/ast";
-import { getAstFactory, FactoryAst, eqExpressions } from "../ast/ast-helpers";
+import {
+    getAstFactory,
+    FactoryAst,
+    eqExpressions,
+    eqNames,
+    isSelfId,
+    idText,
+} from "../ast/ast-helpers";
 import { AstUtil, divFloor, getAstUtil, modFloor } from "../ast/util";
 import {
     getStaticConstant,
