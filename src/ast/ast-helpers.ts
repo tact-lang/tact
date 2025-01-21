@@ -204,15 +204,15 @@ export function eqExpressions(
             return (
                 eqExpressions(
                     ast1.condition,
-                    (ast2 as A.AstConditional).condition,
+                    (ast2 as A.AstStatementConditional).condition,
                 ) &&
                 eqExpressions(
                     ast1.thenBranch,
-                    (ast2 as A.AstConditional).thenBranch,
+                    (ast2 as A.AstStatementConditional).thenBranch,
                 ) &&
                 eqExpressions(
                     ast1.elseBranch,
-                    (ast2 as A.AstConditional).elseBranch,
+                    (ast2 as A.AstStatementConditional).elseBranch,
                 )
             );
         case "struct_instance":
