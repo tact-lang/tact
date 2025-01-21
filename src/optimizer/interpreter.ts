@@ -11,7 +11,7 @@ import {
     throwConstEvalError,
     throwInternalCompilerError,
 } from "../error/errors";
-import { AstUtil, divFloor, getAstUtil, modFloor } from "../ast/util";
+import { AstUtil, getAstUtil } from "../ast/util";
 import {
     getStaticConstant,
     getStaticFunction,
@@ -24,6 +24,7 @@ import { TypeRef, showValue } from "../types/types";
 import { sha256_sync } from "@ton/crypto";
 import { defaultParser, getParser, Parser } from "../grammar/grammar";
 import { dummySrcInfo, SrcInfo } from "../grammar";
+import { divFloor, modFloor } from "./util";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
