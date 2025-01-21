@@ -193,4 +193,25 @@ describe("fail-const-eval", () => {
         errorMessage:
             "Cannot evaluate expression to a constant: ascii string cannot be empty",
     });
+    itShouldNotCompile({
+        testName: "const-eval-constant-circular-dependency",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> C]",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-constant-deep-circular-dependency",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate E as it has circular dependencies: [E -> D -> C -> B -> A -> E]",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-constant-circular-dependency-with-function",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [foo() -> C -> A -> foo() -> C]",
+    });
+    itShouldNotCompile({
+        testName:
+            "const-eval-constant-circular-dependency-with-recursive-function",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [foo() -> foo() -> foo() -> C -> A -> foo() -> foo() -> foo() -> C]",
+    });
 });

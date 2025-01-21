@@ -223,6 +223,26 @@
       "output": "./contracts/output"
     },
     {
+      "name": "const-eval-constant-circular-dependency",
+      "path": "./contracts/const-eval-constant-circular-dependency.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-constant-deep-circular-dependency",
+      "path": "./contracts/const-eval-constant-deep-circular-dependency.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-constant-circular-dependency-with-function",
+      "path": "./contracts/const-eval-constant-circular-dependency-with-function.tact",
+      "output": "./contracts/output"
+    },
+    {
+      "name": "const-eval-constant-circular-dependency-with-recursive-function",
+      "path": "./contracts/const-eval-constant-circular-dependency-with-recursive-function.tact",
+      "output": "./contracts/output"
+    },
+    {
       "name": "scope-const-shadows-stdlib-ident",
       "path": "./contracts/scope-const-shadows-stdlib-ident.tact",
       "output": "./contracts/output"

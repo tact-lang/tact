@@ -2143,17 +2143,26 @@ function initializeConstants(
 ): CompilerContext {
     for (const constant of constants) {
         if (constant.ast.kind === "constant_def") {
+            constant.value =
+                constant.value ??
+                evalConstantExpression(constant.ast.initializer, ctx, util);
+        }
+    }
+    return ctx;
+}
+
+function checkConstants(
+    constants: ConstantDescription[],
+    ctx: CompilerContext,
+): CompilerContext {
+    for (const constant of constants) {
+        if (constant.ast.kind === "constant_def") {
             ctx = checkInitializerType(
                 constant.name,
                 "Constant",
                 constant.type,
                 constant.ast.initializer,
                 ctx,
-            );
-            constant.value = evalConstantExpression(
-                constant.ast.initializer,
-                ctx,
-                util,
             );
         }
     }
@@ -2164,6 +2173,12 @@ function initializeConstantsAndDefaultContractAndStructFields(
     ctx: CompilerContext,
     util: AstUtil,
 ): CompilerContext {
+    const staticConstants = getAllStaticConstants(ctx);
+
+    // we split the handling of constants into two steps:
+    // first we check all constants to make sure the types of initializers are correct
+    ctx = checkConstants(staticConstants, ctx);
+
     for (const aggregateTy of getAllTypes(ctx)) {
         switch (aggregateTy.kind) {
             case "primitive_type_decl":
@@ -2172,6 +2187,8 @@ function initializeConstantsAndDefaultContractAndStructFields(
             case "contract":
             case "struct": {
                 {
+                    ctx = checkConstants(aggregateTy.constants, ctx);
+
                     for (const field of aggregateTy.fields) {
                         if (field.ast.initializer !== null) {
                             ctx = checkInitializerType(
@@ -2197,7 +2214,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
                         }
                     }
 
-                    // constants need to be processed after structs because
+                    // here we actually initialize constants
                     // see more detail below
                     ctx = initializeConstants(aggregateTy.constants, ctx, util);
                 }
@@ -2206,10 +2223,10 @@ function initializeConstantsAndDefaultContractAndStructFields(
         }
     }
 
-    // constants need to be processed after structs because
-    // constants might use default field values: `const x: Int = S{}.f`, where `struct S {f: Int = 42}`
-    // and the default field values are filled in during struct field initializers processing
-    ctx = initializeConstants(getAllStaticConstants(ctx), ctx, util);
+    // and here we initialize all uninitialized constants,
+    // the constant may already be initialized since we call initialization recursively
+    // if one constant depends on another
+    ctx = initializeConstants(staticConstants, ctx, util);
 
     return ctx;
 }

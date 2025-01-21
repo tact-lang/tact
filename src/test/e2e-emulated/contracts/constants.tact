@@ -14,6 +14,14 @@ const globalConst11: Int = factorial_iterative(globalConst3);  // 4! = 24
 const globalConst12: Int = fibonacci_recursive(globalConst3 + 2);  // fibonacci(6) = 8
 const globalConst13: Int = fibonacci_iterative(globalConst3 + 2);  // fibonacci(6) = 8
 
+const beforeDefinedC: Int = beforeDefinedA + beforeDefinedB;
+const beforeDefinedA: Int = beforeDefinedB;
+const beforeDefinedB: Int = 10;
+
+struct A {
+    b: Int = beforeDefinedC;
+}
+
 struct S {
     a: Bool;
     b: Int;
@@ -318,6 +326,11 @@ contract ConstantTester {
     get fun globalConst11(): Int { return globalConst11; }
     get fun globalConst12(): Int { return globalConst12; }
     get fun globalConst13(): Int { return globalConst13; }
+
+    get fun beforeDefinedA(): Int { return beforeDefinedA; }
+    get fun beforeDefinedC(): Int { return beforeDefinedC; }
+
+    get fun defaultFieldB(): Int { return A {}.b; }
 
     get fun minInt1(): Int {
         return -115792089237316195423570985008687907853269984665640564039457584007913129639936;

@@ -711,6 +711,17 @@ that binds a variable name to its corresponding value.
 export class Interpreter {
     private envStack: EnvironmentStack;
     private context: CompilerContext;
+
+    /**
+     * Stores all visited constants during the current computation.
+     */
+    private visited: Set<string> = new Set();
+
+    /**
+     * Stores all constants that were calculated during the calculation of some constant.
+     * Used only in case of circular dependencies to return a clear error.
+     */
+    private dependenciesPath: string[] = [];
     private config: InterpreterConfig;
     private util: AstUtil;
 
@@ -862,18 +873,42 @@ export class Interpreter {
     }
 
     public interpretName(ast: A.AstId): A.AstLiteral {
-        if (hasStaticConstant(this.context, A.idText(ast))) {
-            const constant = getStaticConstant(this.context, A.idText(ast));
+        const name = A.idText(ast);
+
+        if (hasStaticConstant(this.context, name)) {
+            const constant = getStaticConstant(this.context, name);
             if (constant.value !== undefined) {
                 return constant.value;
-            } else {
+            }
+
+            // Since we call `interpretExpression` on a constant value below, we don't want
+            // infinite recursion due to circular dependencies. To prevent this, let's collect
+            // all the constants we process in this iteration. That way, any circular dependencies
+            // will result in a second occurrence here and thus an early (before stack overflow)
+            // exception being thrown here.
+            if (this.visited.has(name)) {
                 throwErrorConstEval(
-                    `cannot evaluate declared constant ${idTextErr(ast)} as it does not have a body`,
+                    `cannot evaluate ${name} as it has circular dependencies: [${this.dependenciesPath.join(" -> ")} -> ${name}]`,
                     ast.loc,
                 );
             }
+            this.visited.add(name);
+
+            if (constant.ast.kind === "constant_def") {
+                this.dependenciesPath.push(name);
+                constant.value = this.interpretExpression(
+                    constant.ast.initializer,
+                );
+                this.dependenciesPath.pop();
+                return constant.value;
+            }
+
+            throwErrorConstEval(
+                `cannot evaluate declared constant ${idTextErr(ast)} as it does not have a body`,
+                ast.loc,
+            );
         }
-        const variableBinding = this.envStack.getBinding(A.idText(ast));
+        const variableBinding = this.envStack.getBinding(name);
         if (variableBinding !== undefined) {
             return variableBinding;
         }
@@ -1394,7 +1429,7 @@ export class Interpreter {
                         A.idText(ast.function),
                     );
                     switch (functionDescription.ast.kind) {
-                        case "function_def":
+                        case "function_def": {
                             // Currently, no attribute is supported
                             if (functionDescription.ast.attributes.length > 0) {
                                 throwNonFatalErrorConstEval(
@@ -1402,12 +1437,17 @@ export class Interpreter {
                                     ast.loc,
                                 );
                             }
-                            return this.evalStaticFunction(
+                            this.dependenciesPath.push(
+                                `${functionDescription.name}()`,
+                            );
+                            const result = this.evalStaticFunction(
                                 functionDescription.ast,
                                 ast.args,
                                 functionDescription.returns,
                             );
-
+                            this.dependenciesPath.pop();
+                            return result;
+                        }
                         case "asm_function_def":
                             throwNonFatalErrorConstEval(
                                 `${idTextErr(ast.function)} cannot be interpreted because it's an asm-function`,
