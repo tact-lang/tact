@@ -1,30 +1,4 @@
-import {
-    AstConstantDef,
-    AstModuleItem,
-    AstStatement,
-    AstStructFieldInitializer,
-    AstFunctionAttribute,
-    AstConstantAttribute,
-    AstContractAttribute,
-    AstTypedParameter,
-    AstImport,
-    AstNativeFunctionDecl,
-    AstReceiver,
-    AstFunctionDef,
-    AstContract,
-    AstTrait,
-    AstId,
-    AstModule,
-    AstStructDecl,
-    AstMessageDecl,
-    AstFunctionDecl,
-    AstConstantDecl,
-    AstContractInit,
-    AstFieldDecl,
-    AstNode,
-    AstAsmFunctionDef,
-    AstAsmInstruction,
-} from "./ast";
+import * as A from "./ast";
 import { createHash } from "crypto";
 import { throwInternalCompilerError } from "../error/errors";
 import JSONbig from "json-bigint";
@@ -41,7 +15,7 @@ export class AstHasher {
         return new AstHasher(sort);
     }
 
-    public hash(node: AstNode): AstHash {
+    public hash(node: A.AstNode): AstHash {
         const data =
             node.kind === "id" || node.kind === "func_id"
                 ? `${node.kind}_${node.text}`
@@ -52,48 +26,52 @@ export class AstHasher {
     /**
      * Generates a string that is used to create a hash.
      */
-    private getHashData(node: AstNode): string {
+    private getHashData(node: A.AstNode): string {
         switch (node.kind) {
             case "module":
-                return this.hashModule(node);
+                return this.hashModule(node as A.AstModule);
             case "struct_decl":
-                return this.hashStructDecl(node);
+                return this.hashStructDecl(node as A.AstStructDecl);
             case "message_decl":
-                return this.hashMessageDecl(node);
+                return this.hashMessageDecl(node as A.AstMessageDecl);
             case "function_def":
-                return this.hashFunctionDef(node);
+                return this.hashFunctionDef(node as A.AstFunctionDef);
             case "asm_function_def":
-                return this.hashAsmFunctionDef(node);
+                return this.hashAsmFunctionDef(node as A.AstAsmFunctionDef);
             case "constant_def":
-                return this.hashConstantDef(node);
+                return this.hashConstantDef(node as A.AstConstantDef);
             case "trait":
-                return this.hashTrait(node);
+                return this.hashTrait(node as A.AstTrait);
             case "contract":
-                return this.hashContract(node);
+                return this.hashContract(node as A.AstContract);
             case "field_decl":
-                return this.hashFieldDecl(node);
+                return this.hashFieldDecl(node as A.AstFieldDecl);
             case "primitive_type_decl":
-                return `${node.kind}|${node.name.kind}`;
+                return node.kind;
             case "contract_init":
-                return this.hashContractInit(node);
+                return this.hashContractInit(node as A.AstContractInit);
             case "native_function_decl":
-                return this.hashNativeFunctionDecl(node);
+                return this.hashNativeFunctionDecl(
+                    node as A.AstNativeFunctionDecl,
+                );
             case "receiver":
-                return this.hashReceiver(node);
+                return this.hashReceiver(node as A.AstReceiver);
             case "id":
                 return "id";
             case "func_id":
                 return "func_id";
             case "typed_parameter":
-                return this.hashTypedParameter(node);
+                return this.hashTypedParameter(node as A.AstTypedParameter);
             case "function_decl":
-                return this.hashFunctionDecl(node);
+                return this.hashFunctionDecl(node as A.AstFunctionDecl);
             case "struct_field_initializer":
-                return this.hashStructFieldInitializer(node);
+                return this.hashStructFieldInitializer(
+                    node as A.AstStructFieldInitializer,
+                );
             case "import":
-                return this.hashImport(node);
+                return this.hashImport(node as A.AstImport);
             case "constant_decl":
-                return this.hashConstantDecl(node);
+                return this.hashConstantDecl(node as A.AstConstantDecl);
             // Statements
             case "statement_let":
                 return `${node.kind}|${node.type ? this.hash(node.type) : "null"}|${this.hash(node.expression)}`;
@@ -201,24 +179,24 @@ export class AstHasher {
         }
     }
 
-    private hashDestructIdentifiers(identifiers: [AstId, AstId][]): string {
+    private hashDestructIdentifiers(identifiers: [A.AstId, A.AstId][]): string {
         const identifiersHash = identifiers
             .map(([key, value]) => `${this.hash(key)}|${this.hash(value)}`)
             .join("|");
         return identifiersHash;
     }
 
-    private hashStructDecl(node: AstStructDecl): string {
+    private hashStructDecl(node: A.AstStructDecl): string {
         const fieldsHash = this.hashFields(node.fields);
         return `struct|${fieldsHash}`;
     }
 
-    private hashMessageDecl(node: AstMessageDecl): string {
+    private hashMessageDecl(node: A.AstMessageDecl): string {
         const fieldsHash = this.hashFields(node.fields);
         return `message|${fieldsHash}|${node.opcode ? this.hash(node.opcode) : "null"}`;
     }
 
-    private hashFunctionDef(node: AstFunctionDef): string {
+    private hashFunctionDef(node: A.AstFunctionDef): string {
         const attributesHash = this.hashAttributes(node.attributes);
         const returnHash = node.return ? this.hash(node.return) : "void";
         const paramsHash = this.hashParams(node.params);
@@ -226,7 +204,7 @@ export class AstHasher {
         return `function|${attributesHash}|${returnHash}|${paramsHash}|${statementsHash}`;
     }
 
-    private hashAsmFunctionDef(node: AstAsmFunctionDef): string {
+    private hashAsmFunctionDef(node: A.AstAsmFunctionDef): string {
         const asmAttributeHash = `asm|${this.hashIds(node.shuffle.args)}|->|${node.shuffle.ret.map((num) => num.value.toString()).join("|")}`;
         const attributesHash = this.hashAttributes(node.attributes);
         const returnHash = node.return ? this.hash(node.return) : "void";
@@ -235,28 +213,28 @@ export class AstHasher {
         return `function|${asmAttributeHash}|${attributesHash}|${returnHash}|${paramsHash}|${instructionsHash}`;
     }
 
-    private hashConstantDef(node: AstConstantDef): string {
+    private hashConstantDef(node: A.AstConstantDef): string {
         const attributesHash = this.hashAttributes(node.attributes);
         const typeHash = this.hash(node.type);
         const initializerHash = this.hash(node.initializer);
         return `constant|${attributesHash}|${typeHash}|${initializerHash}`;
     }
 
-    private hashTrait(node: AstTrait): string {
+    private hashTrait(node: A.AstTrait): string {
         const traitsHash = this.hashIds(node.traits);
         const attributesHash = this.hashContractAttributes(node.attributes);
         const declarationsHash = this.hashDeclarations(node.declarations);
         return `trait|${traitsHash}|${attributesHash}|${declarationsHash}`;
     }
 
-    private hashContract(node: AstContract): string {
+    private hashContract(node: A.AstContract): string {
         const traitsHash = this.hashIds(node.traits);
         const attributesHash = this.hashContractAttributes(node.attributes);
         const declarationsHash = this.hashDeclarations(node.declarations);
         return `contract|${traitsHash}|${attributesHash}|${declarationsHash}`;
     }
 
-    private hashFields(fields: AstFieldDecl[]): string {
+    private hashFields(fields: A.AstFieldDecl[]): string {
         let hashedFields = fields.map((field) => this.hashFieldDecl(field));
         if (this.sort) {
             hashedFields = hashedFields.sort();
@@ -264,7 +242,7 @@ export class AstHasher {
         return hashedFields.join("|");
     }
 
-    private hashParams(params: AstTypedParameter[]): string {
+    private hashParams(params: A.AstTypedParameter[]): string {
         let hashedParams = params.map((param) =>
             this.hashTypedParameter(param),
         );
@@ -274,13 +252,13 @@ export class AstHasher {
         return hashedParams.join("|");
     }
 
-    private hashTypedParameter(param: AstTypedParameter): string {
+    private hashTypedParameter(param: A.AstTypedParameter): string {
         const typeHash = this.hash(param.type);
         return `param|${typeHash}`;
     }
 
     private hashAttributes(
-        attributes: (AstFunctionAttribute | AstConstantAttribute)[],
+        attributes: (A.AstFunctionAttribute | A.AstConstantAttribute)[],
     ): string {
         return attributes
             .map((attr) => attr.type)
@@ -288,21 +266,23 @@ export class AstHasher {
             .join("|");
     }
 
-    private hashContractAttributes(attributes: AstContractAttribute[]): string {
+    private hashContractAttributes(
+        attributes: A.AstContractAttribute[],
+    ): string {
         return attributes
             .map((attr) => `${attr.type}|${attr.name.value}`)
             .sort()
             .join("|");
     }
 
-    private hashIds(ids: AstId[]): string {
+    private hashIds(ids: A.AstId[]): string {
         return ids
             .map((id) => id.kind)
             .sort()
             .join("|"); // Ignore actual id.text, just hash based on kind
     }
 
-    private hashDeclarations(declarations: AstNode[]): string {
+    private hashDeclarations(declarations: A.AstNode[]): string {
         let hashedDeclarations = declarations.map((decl) => this.hash(decl));
         if (this.sort) {
             hashedDeclarations = hashedDeclarations.sort();
@@ -310,7 +290,7 @@ export class AstHasher {
         return hashedDeclarations.join("|");
     }
 
-    private hashStatements(statements: AstStatement[]): string {
+    private hashStatements(statements: A.AstStatement[]): string {
         let hashedStatements = statements.map((stmt) => this.hash(stmt));
         if (this.sort) {
             hashedStatements = hashedStatements.sort();
@@ -318,64 +298,64 @@ export class AstHasher {
         return hashedStatements.join("|");
     }
 
-    private hashInstructions(instructions: AstAsmInstruction[]): string {
+    private hashInstructions(instructions: A.AstAsmInstruction[]): string {
         return instructions.join("|");
     }
 
     private hashStructFieldInitializer(
-        initializer: AstStructFieldInitializer,
+        initializer: A.AstStructFieldInitializer,
     ): string {
         return `field_initializer|${this.hash(initializer.initializer)}`;
     }
 
-    private hashFieldDecl(field: AstFieldDecl): string {
+    private hashFieldDecl(field: A.AstFieldDecl): string {
         const typeHash = this.hash(field.type);
         return `field|${typeHash}`;
     }
 
-    private hashContractInit(node: AstContractInit): string {
+    private hashContractInit(node: A.AstContractInit): string {
         const paramsHash = this.hashParams(node.params);
         const statementsHash = this.hashStatements(node.statements);
         return `${node.kind}|${paramsHash}|${statementsHash}`;
     }
 
-    private hashNativeFunctionDecl(node: AstNativeFunctionDecl): string {
+    private hashNativeFunctionDecl(node: A.AstNativeFunctionDecl): string {
         const attributesHash = this.hashAttributes(node.attributes);
         const paramsHash = this.hashParams(node.params);
         const returnHash = node.return ? this.hash(node.return) : "void";
         return `${node.kind}|${attributesHash}|${paramsHash}|${returnHash}`;
     }
 
-    private hashReceiver(node: AstReceiver): string {
+    private hashReceiver(node: A.AstReceiver): string {
         const selectorHash = node.selector.kind;
         const statementsHash = this.hashStatements(node.statements);
         return `${node.kind}|${selectorHash}|${statementsHash}`;
     }
 
-    private hashFunctionDecl(node: AstFunctionDecl): string {
+    private hashFunctionDecl(node: A.AstFunctionDecl): string {
         const attributesHash = this.hashAttributes(node.attributes);
         const returnHash = node.return ? this.hash(node.return) : "void";
         const paramsHash = this.hashParams(node.params);
         return `${node.kind}|${attributesHash}|${returnHash}|${paramsHash}`;
     }
 
-    private hashImport(node: AstImport): string {
+    private hashImport(node: A.AstImport): string {
         return `${node.kind}|${this.hash(node.path)}`;
     }
 
-    private hashConstantDecl(node: AstConstantDecl): string {
+    private hashConstantDecl(node: A.AstConstantDecl): string {
         const attributesHash = this.hashAttributes(node.attributes);
         const typeHash = this.hash(node.type);
         return `${node.kind}|${attributesHash}|${typeHash}`;
     }
 
-    private hashModule(node: AstModule): string {
+    private hashModule(node: A.AstModule): string {
         const importsHash = this.hashImports(node.imports);
         const itemsHash = this.hashModuleItems(node.items);
         return `${node.kind}|${importsHash}|${itemsHash}`;
     }
 
-    private hashImports(imports: AstImport[]): string {
+    private hashImports(imports: A.AstImport[]): string {
         let hashedImports = imports.map((imp) => this.hash(imp));
         if (this.sort) {
             hashedImports = hashedImports.sort();
@@ -383,7 +363,7 @@ export class AstHasher {
         return hashedImports.join("|");
     }
 
-    private hashModuleItems(items: AstModuleItem[]): string {
+    private hashModuleItems(items: A.AstModuleItem[]): string {
         let hashedItems = items.map((item) => this.hash(item));
         if (this.sort) {
             hashedItems = hashedItems.sort();
