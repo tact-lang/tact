@@ -56,7 +56,7 @@ export function getExpType(ctx: CompilerContext, exp: AstExpression) {
 
 export function expHasType(ctx: CompilerContext, exp: AstExpression): boolean {
     const t = store.get(ctx, exp.id);
-    return t ? true : false;
+    return Boolean(t);
 }
 
 export function registerExpType(
