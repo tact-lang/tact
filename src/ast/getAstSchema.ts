@@ -296,10 +296,10 @@ export const getAstSchema = (
             condition: A.AstExpression,
             trueStatements: A.AstStatement[],
             falseStatements: A.AstStatement[] | null,
-            elseif: A.AstCondition | null,
+            elseif: A.AstStatementCondition | null,
             loc: Loc,
-        ): A.AstCondition =>
-            createNode<A.AstCondition>({
+        ): A.AstStatementCondition =>
+            createNode<A.AstStatementCondition>({
                 kind: "statement_condition",
                 condition,
                 trueStatements,
@@ -511,8 +511,8 @@ export const getAstSchema = (
             thenBranch: A.AstExpression,
             elseBranch: A.AstExpression,
             loc: Loc,
-        ): A.AstConditional =>
-            createNode<A.AstConditional>({
+        ): A.AstStatementConditional =>
+            createNode<A.AstStatementConditional>({
                 kind: "conditional",
                 condition,
                 thenBranch,

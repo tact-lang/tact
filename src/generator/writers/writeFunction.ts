@@ -499,7 +499,7 @@ export function writeStatement(
 }
 
 function writeCondition(
-    f: A.AstCondition,
+    f: A.AstStatementCondition,
     self: string | null,
     elseif: boolean,
     returns: TypeRef | null,

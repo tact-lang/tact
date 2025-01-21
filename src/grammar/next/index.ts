@@ -496,7 +496,7 @@ const parseStatementCondition =
         trueBranch,
         falseBranch,
         loc,
-    }: $ast.StatementCondition): Handler<A.AstCondition> =>
+    }: $ast.StatementCondition): Handler<A.AstStatementCondition> =>
     (ctx) => {
         if (typeof falseBranch === "undefined") {
             return ctx.ast.Condition(

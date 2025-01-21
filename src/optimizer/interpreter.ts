@@ -982,7 +982,7 @@ export class Interpreter {
         );
     }
 
-    public interpretConditional(ast: A.AstConditional): A.AstLiteral {
+    public interpretConditional(ast: A.AstStatementConditional): A.AstLiteral {
         // here we rely on the typechecker that both branches have the same type
         const valCond = ensureBoolean(this.interpretExpression(ast.condition));
         if (valCond.value) {
@@ -1645,7 +1645,7 @@ export class Interpreter {
         }
     }
 
-    public interpretConditionStatement(ast: A.AstCondition) {
+    public interpretConditionStatement(ast: A.AstStatementCondition) {
         const condition = ensureBoolean(
             this.interpretExpression(ast.condition),
         );
