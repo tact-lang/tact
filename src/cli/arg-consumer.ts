@@ -18,12 +18,11 @@ export const ArgConsumer = <T>(args: { [L in keyof T]?: T[L][] }) => {
         return s[0];
     };
 
-    const multiple = <K extends keyof T>(k: K): undefined | T[K] => {
+    const multiple = <K extends keyof T>(k: K): undefined | T[K][] => {
         const s = (copy[k] ?? []);
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete copy[k];
-        // TS bug
-        return s as never;
+        return s;
     };
 
     return {
