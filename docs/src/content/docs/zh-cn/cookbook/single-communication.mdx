@@ -8,7 +8,7 @@ prev:
 
 本页列出了单个已部署合约与区块链上其他合约进行通信的示例。
 
-有关多个已部署合约之间的通信示例，请参阅：[多合约通信](/cookbook/multi-communication)。
+有关多个已部署合约之间的通信示例，请参阅：[多合约通信](/zh-cn/cookbook/multi-communication)。
 
 ## 如何进行基本回复 {#how-to-make-a-basic-reply}
 
@@ -91,7 +91,7 @@ contract Example {
 
 ## 如何发送带有长文本注释的信息
 
-如果我们需要发送一条带有冗长文本注释的信息，我们应该创建一个 [`String{:tact}`](/book/types#primitive-types)，由超过 $127$ 个字符组成。 如果我们需要发送一条带有冗长文本注释的信息，我们应该创建一个 [`String{:tact}`](/book/types#primitive-types)，由超过 $127$ 个字符组成。 为此，我们可以利用 [`StringBuilder{:tact}`](/book/types#primitive-types)原始类型及其名为 `beginComment(){:tact}` 和 `append(){:tact}` 的方法。 在发送之前，我们应该使用 `toCell(){:tact}` 方法将字符串转换为cell。 在发送之前，我们应该使用 `toCell(){:tact}` 方法将字符串转换为cell。
+如果我们需要发送一条带有冗长文本注释的信息，我们应该创建一个 [`String{:tact}`](/zh-cn/book/types#primitive-types)，由超过 $127$ 个字符组成。 如果我们需要发送一条带有冗长文本注释的信息，我们应该创建一个 [`String{:tact}`](/zh-cn/book/types#primitive-types)，由超过 $127$ 个字符组成。 为此，我们可以利用 [`StringBuilder{:tact}`](/zh-cn/book/types#primitive-types)原始类型及其名为 `beginComment(){:tact}` 和 `append(){:tact}` 的方法。 在发送之前，我们应该使用 `toCell(){:tact}` 方法将字符串转换为cell。 在发送之前，我们应该使用 `toCell(){:tact}` 方法将字符串转换为cell。
 
 ```tact
 contract Example {
@@ -113,10 +113,10 @@ contract Example {
 
 :::note[Useful links:]
 
-  ["Sending messages" in the Book](/book/send#send-message)\
-  ["Message `mode`" in the Book](/book/message-mode)\
-  [`StringBuilder{:tact}` in the Book](/book/types#primitive-types)\
-  [`Cell{:tact}` in Core library](/ref/core-cells)
+  ["Sending messages" in the Book](/zh-cn/book/send#send-message)\
+  ["Message `mode`" in the Book](/zh-cn/book/message-mode)\
+  [`StringBuilder{:tact}` in the Book](/zh-cn/book/types#primitive-types)\
+  [`Cell{:tact}` in Core library](/zh-cn/ref/core-cells)
 
 :::
 

@@ -17,7 +17,7 @@ description: 当一个智能合约发送消息时，如果消息的回退标志�
 
 :::
 
-要接收被回退的消息，您需要定义一个 `bounced(){:tact}` [接收函数](/book/contracts#receiver-functions) 在你的 [智能合约](/book/contracts) 或者一个 [特性](/book/types#traits) 当中:
+要接收被回退的消息，您需要定义一个 `bounced(){:tact}` [接收函数](/zh-cn/book/contracts#receiver-functions) 在你的 [智能合约](/zh-cn/book/contracts) 或者一个 [特性](/zh-cn/book/types#traits) 当中:
 
 ```tact {2-4}
 contract MyContract {
@@ -27,7 +27,7 @@ contract MyContract {
 }
 ```
 
-要手动处理被回退的消息，您可以使用一个回退定义，直接处理原始的 [`Slice{:tact}`](/book/cells#slices)。 请注意，这样的接收器将获得由您的智能合约产生的**“所有”**被回退的消息：
+要手动处理被回退的消息，您可以使用一个回退定义，直接处理原始的 [`Slice{:tact}`](/zh-cn/book/cells#slices)。 请注意，这样的接收器将获得由您的智能合约产生的**“所有”**被回退的消息：
 
 ```tact /rawMsg: Slice/
 contract MyContract {

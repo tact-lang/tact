@@ -27,7 +27,7 @@ let timeOffset: Int = now() + 1000; // thousand seconds from now()
 fun myBalance(): Int;
 ```
 
-返回当前交易的 [计算阶段](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase) 开始时智能合约的 [nano Toncoins](/book/integers#nanotoncoin) 余额。
+返回当前交易的 [计算阶段](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase) 开始时智能合约的 [nano Toncoins](/zh-cn/book/integers#nanotoncoin) 余额。
 
 用法示例：
 
@@ -37,7 +37,7 @@ let iNeedADolla: Int = myBalance();
 
 :::caution
 
-  请注意，Tact 的 [所有信息发送函数](/book/send) 可以更改 _实际_ 合约的余额，但 _不会_ 更新此函数返回的值。
+  请注意，Tact 的 [所有信息发送函数](/zh-cn/book/send) 可以更改 _实际_ 合约的余额，但 _不会_ 更新此函数返回的值。
 
 :::
 
@@ -75,7 +75,7 @@ contract MeSee {
 
 :::caution
 
-  对于 [getter 函数](/book/contracts#getter-functions)，行为是未定义的，因为它们不能有发送者，也不能发送信息。
+  对于 [getter 函数](/zh-cn/book/contracts#getter-functions)，行为是未定义的，因为它们不能有发送者，也不能发送信息。
 
 :::
 
@@ -91,13 +91,13 @@ contract MeSee {
 fun context(): Context;
 ```
 
-返回 `Context{:tact}` [Struct](/book/structs/and-messages#structs)，包含：
+返回 `Context{:tact}` [Struct](/zh-cn/book/structs/and-messages#structs)，包含：
 
 | 字段        | 类型                        | 描述                                                                                                                                                                                                                                                    |
 | :-------- | :------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `bounced` | [`Bool{:tact}`][bool]     | 传入消息的[Bounced](https://ton.org/docs/learn/overviews/addses#bounceable-vs-non-ounceable-addresses) 标志.                                                                                                                                                 |
 | `sender`  | [`Address{:tact}`][p]     | 发送方在 TON 区块链上的内部地址。                                                                                                                                                                                                                                   |
-| `value`   | [`Int{:tact}`][int]       | 信息中 [nanoToncoins](/book/integers#nanotoncoin) 的数量。                                                                                                                                                                                                   |
+| `value`   | [`Int{:tact}`][int]       | 信息中 [nanoToncoins](/zh-cn/book/integers#nanotoncoin) 的数量。                                                                                                                                                                                                   |
 | `raw`     | [`Slice{:tact}`][slice]   | 信息的其余部分作为 [`Slice{:tact}`][slice]。 它遵循 TON 的 [内部消息布局](https://docs.ton.org/develop/smart-contracts/messages#message-layout)，从目标 [`Address{:tact}`][p] (`dest:MsgAddressInt` 在 [TL-B 记法](https://docs.ton.org/develop/data-formats/tl-b-language)) 开始。 |
 
 示例用法：
@@ -121,9 +121,9 @@ require(ctx.value != 68 + 1, "Invalid amount of nanoToncoins, bye!");
 fun newAddress(chain: Int, hash: Int): Address;
 ```
 
-根据[`chain`id](https://ton-blockchain.github.io/docs/#/overviews/TON_blockchain_overview)和[SHA-256](/ref/core-math#sha256)编码的[`hash`值](https://docs.ton.org/learn/overviews/addresses#account-id)创建一个新的[`Address{:tact}`][p]。
+根据[`chain`id](https://ton-blockchain.github.io/docs/#/overviews/TON_blockchain_overview)和[SHA-256](/zh-cn/ref/core-math#sha256)编码的[`hash`值](https://docs.ton.org/learn/overviews/addresses#account-id)创建一个新的[`Address{:tact}`][p]。
 
-此函数试图尽可能解析 [compile-time](/ref/core-comptime) 中的常数值。
+此函数试图尽可能解析 [compile-time](/zh-cn/ref/core-comptime) 中的常数值。
 
 示例用法：
 
@@ -138,7 +138,7 @@ let oldTonFoundationAddr: Address =
 
 :::caution
 
-  如果 `chain` 无效，该方法会抛出错误[退出码 136](/book/exit-codes#136)；如果 `chain` 指向主链 ($-1$) 且未启用[主链支持](/book/masterchain)，该方法会抛出错误[退出码 137](/book/exit-codes#137)。
+  如果 `chain` 无效，该方法会抛出错误[退出码 136](/zh-cn/book/exit-codes#136)；如果 `chain` 指向主链 ($-1$) 且未启用[主链支持](/zh-cn/book/masterchain)，该方法会抛出错误[退出码 137](/zh-cn/book/exit-codes#137)。
 
 :::
 
@@ -146,7 +146,7 @@ let oldTonFoundationAddr: Address =
 
   [TON文档中的`chain`（工作链ID）](https://docs.ton.org/learn/overviews/addresses#workchain-id)\
   [TON文档中的`hash`（账户ID）](https://docs.ton.org/learn/overviews/addresses#account-id)\
-  [合约的初始包（`StateInit{:tact}`）](/book/expressions#initof)
+  [合约的初始包（`StateInit{:tact}`）](/zh-cn/book/expressions#initof)
 
 :::
 
@@ -156,7 +156,7 @@ let oldTonFoundationAddr: Address =
 fun contractAddress(s: StateInit): Address;
 ```
 
-根据智能合约的 [`StateInit{:tact}`](/book/expressions#initof)，计算智能合约在工作链 $0$ 中的 [`Address{:tact}`][p]。
+根据智能合约的 [`StateInit{:tact}`](/zh-cn/book/expressions#initof)，计算智能合约在工作链 $0$ 中的 [`Address{:tact}`][p]。
 
 示例用法：
 
@@ -170,7 +170,7 @@ let foundMeSome: Address = contractAddress(initOf SomeContract());
 fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address;
 ```
 
-根据 `chain` id、合约 `code` 和合约初始状态 `data` 计算智能合约的 [`Address{:tact}`][p]。 使用 [`initOf{:tact}`](/book/expressions#initof)表达式获取给定合约的初始 `code` 和初始 `data` 。
+根据 `chain` id、合约 `code` 和合约初始状态 `data` 计算智能合约的 [`Address{:tact}`][p]。 使用 [`initOf{:tact}`](/zh-cn/book/expressions#initof)表达式获取给定合约的初始 `code` 和初始 `data` 。
 
 用法示例：
 
@@ -181,14 +181,14 @@ let hereBeDragons: Address = contractAddressExt(0, initPkg.code, initPkg.data);
 
 :::caution
 
-  如果 `chain` 无效，该方法会抛出错误[退出码 136](/book/exit-codes#136)；如果 `chain` 指向主链 ($-1$) 且未启用[主链支持](/book/masterchain)，该方法会抛出错误[退出码 137](/book/exit-codes#137)。
+  如果 `chain` 无效，该方法会抛出错误[退出码 136](/zh-cn/book/exit-codes#136)；如果 `chain` 指向主链 ($-1$) 且未启用[主链支持](/zh-cn/book/masterchain)，该方法会抛出错误[退出码 137](/zh-cn/book/exit-codes#137)。
 
 :::
 
 :::note
 
-  要使用该功能，必须在 [configuration file](/book/config).
-  中为当前项目将编译器选项 `debug` 设置为 `true{:tact}`：[调试](/book/debug)。
+  要使用该功能，必须在 [configuration file](/zh-cn/book/config).
+  中为当前项目将编译器选项 `debug` 设置为 `true{:tact}`：[调试](/zh-cn/book/debug)。
 
 :::
 
@@ -200,7 +200,7 @@ let hereBeDragons: Address = contractAddressExt(0, initPkg.code, initPkg.data);
 fun send(params: SendParameters);
 ```
 
-[排序消息](/book/send#outbound-message-processing)，以便使用 [`SendParameters{:tact}`](/book/send) [结构体](/book/structs-and-messages#structs) 发送。
+[排序消息](/zh-cn/book/send#outbound-message-processing)，以便使用 [`SendParameters{:tact}`](/zh-cn/book/send) [结构体](/zh-cn/book/structs-and-messages#structs) 发送。
 
 示例用法：
 
@@ -214,9 +214,9 @@ send(SendParameters{
 
 :::note[Useful links:]
 
-  [Sending messages in the Book](/book/send)\
-  [Message `mode` in the Book](/book/message-mode)\
-  [Single-contract communication in the Cookbook](/cookbook/single-communication)
+  [Sending messages in the Book](/zh-cn/book/send)\
+  [Message `mode` in the Book](/zh-cn/book/message-mode)\
+  [Single-contract communication in the Cookbook](/zh-cn/cookbook/single-communication)
 
 :::
 
@@ -226,7 +226,7 @@ send(SendParameters{
 fun emit(body: Cell);
 ```
 
-[将消息排序的](/book/send#outbound-message-processing) `body` 发送到外部世界，目的是进行日志记录并在链外进行后续分析。 该信息没有收件人，与使用 Tact 的其他信息发送功能相比更省 gas。
+[将消息排序的](/zh-cn/book/send#outbound-message-processing) `body` 发送到外部世界，目的是进行日志记录并在链外进行后续分析。 该信息没有收件人，与使用 Tact 的其他信息发送功能相比更省 gas。
 
 使用示例
 
@@ -236,13 +236,13 @@ emit("Catch me if you can, Mr. Holmes".asComment()); // asComment() converts a S
 
 :::note
 
-  要分析 `emit(){:tact}` 调用，必须查看合约产生的 [外部信息](/book/external)。
+  要分析 `emit(){:tact}` 调用，必须查看合约产生的 [外部信息](/zh-cn/book/external)。
 
-  了解更多信息：[通过 `emit(){:tact}`记录日志](/book/debug#logging)。
+  了解更多信息：[通过 `emit(){:tact}`记录日志](/zh-cn/book/debug#logging)。
 
 :::
 
-[p]: /book/types#primitive-types
-[bool]: /book/types#booleans
-[int]: /book/integers
-[slice]: /book/cells#slices
+[p]: /zh-cn/book/types#primitive-types
+[bool]: /zh-cn/book/types#booleans
+[int]: /zh-cn/book/integers
+[slice]: /zh-cn/book/cells#slices

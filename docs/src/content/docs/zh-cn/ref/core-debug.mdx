@@ -7,7 +7,7 @@ Tact 中调试智能合约常用的函数列表。
 
 :::note
 
-  有关调试的更多信息，请访问专用页面：[调试](/book/debug)。
+  有关调试的更多信息，请访问专用页面：[调试](/zh-cn/book/debug)。
 
 :::
 
@@ -17,7 +17,7 @@ Tact 中调试智能合约常用的函数列表。
 fun require(condition: Bool, error: String);
 ```
 
-检查 `condition` 并抛出错误，如果 `condition` 为 `false{:tact}`，则从 `error` 消息中生成 [exit code](/book/exit-codes)。 除此之外，别无其他作用。
+检查 `condition` 并抛出错误，如果 `condition` 为 `false{:tact}`，则从 `error` 消息中生成 [exit code](/zh-cn/book/exit-codes)。 除此之外，别无其他作用。
 
 生成退出码的算法如下：
 
@@ -25,7 +25,7 @@ fun require(condition: Bool, error: String);
 - 然后，它的值被作为一个32位的 [大端](https://en.wikipedia.org/wiki/Endianness) 数字读取，计算方式是对 $63000$ 取模后加上 $1000$，按此顺序进行。
 - 最后，它将被放入 `.md` 编译报告文件，该文件与其他编译工件一起存放在项目的 `outputs/` 或 `build/` 目录中。
 
-保证生成的退出码不在为 TVM 和 Tact 合约错误保留的常用 $0 - 255$ 范围内，这样就可以将退出码与 `require(){:tact}` 和任何其他 [标准退出码](/book/exit-codes) 区分开来。
+保证生成的退出码不在为 TVM 和 Tact 合约错误保留的常用 $0 - 255$ 范围内，这样就可以将退出码与 `require(){:tact}` 和任何其他 [标准退出码](/zh-cn/book/exit-codes) 区分开来。
 
 示例用法：
 
@@ -48,7 +48,7 @@ try {
 fun dump(arg);
 ```
 
-将参数 `arg` 打印到合约的调试控制台。 仅当[配置文件](/book/config) 中的 "debug "选项设置为 "true{:json}"时才进行评估，否则不执行任何操作。
+将参数 `arg` 打印到合约的调试控制台。 仅当[配置文件](/zh-cn/book/config) 中的 "debug "选项设置为 "true{:json}"时才进行评估，否则不执行任何操作。
 
 可应用于下列类型和值：
 
@@ -57,8 +57,8 @@ fun dump(arg);
 - [`Address{:tact}`][p]
 - [`Cell{:tact}`][cell], [`Builder{:tact}`][builder] 或 [`Slice{:tact}`][slice]
 - [`String{:tact}`][p] 或 [`StringBuilder{:tact}`][p]
-- [`map<K, V>{:tact}`](/book/maps)
-- [Optionals 和 `null{:tact}` value](/book/optionals)
+- [`map<K, V>{:tact}`](/zh-cn/book/maps)
+- [Optionals 和 `null{:tact}` value](/zh-cn/book/optionals)
 - `void`，当函数没有定义返回值时隐式返回
 
 示例用法：
@@ -95,7 +95,7 @@ dump(emit("msg".asComment())); // As emit() function doesn't return a value, dum
 
 :::note[Useful links:]
 
-  [使用 `dump(){:tact}` 调试](/book/debug#tests-dump)
+  [使用 `dump(){:tact}` 调试](/zh-cn/book/debug#tests-dump)
 
 :::
 
@@ -105,7 +105,7 @@ dump(emit("msg".asComment())); // As emit() function doesn't return a value, dum
 fun dumpStack();
 ```
 
-将 [持久状态变量](/book/contracts#variables)的所有值打印到合约的调试控制台。 仅当[配置文件](/book/config) 中的 "debug "选项设置为 "true{:json}"时才进行评估，否则不执行任何操作。
+将 [持久状态变量](/zh-cn/book/contracts#variables)的所有值打印到合约的调试控制台。 仅当[配置文件](/zh-cn/book/config) 中的 "debug "选项设置为 "true{:json}"时才进行评估，否则不执行任何操作。
 
 用法示例：
 
@@ -122,7 +122,7 @@ contract DumpsterFire {
 
 :::note[Useful links:]
 
-  [使用 `dump(){:tact}` 调试](/book/debug#tests-dump)
+  [使用 `dump(){:tact}` 调试](/zh-cn/book/debug#tests-dump)
 
 :::
 
@@ -140,9 +140,9 @@ fun throw(code: Int);
 fun nativeThrow(code: Int);
 ```
 
-抛出错误代码等于 `code` 的异常。 当前上下文的执行将停止（`nativeThrow` 后的语句将不会执行），控制权将传递给调用栈中的第一个[`try...catch{:tact}`块](/book/statements#try-catch)。 如果调用者函数中不存在 `try{:tact}` 或 `try...catch{:tact}` 块，[TVM](https://docs.ton.org/learn/tvm-instructions/tvm-overview)将终止事务。
+抛出错误代码等于 `code` 的异常。 当前上下文的执行将停止（`nativeThrow` 后的语句将不会执行），控制权将传递给调用栈中的第一个[`try...catch{:tact}`块](/zh-cn/book/statements#try-catch)。 如果调用者函数中不存在 `try{:tact}` 或 `try...catch{:tact}` 块，[TVM](https://docs.ton.org/learn/tvm-instructions/tvm-overview)将终止事务。
 
-试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
+试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：`Integer out of expected range`。
 
 示例用法：
 
@@ -168,7 +168,7 @@ fun nativeThrowIf(code: Int, condition: Bool);
 
 类似于 [`nativeThrow(){:tact}`](#nativethrow)，但会在 `condition` 等于 `true{:tact}` 时有条件地抛出异常。 否则不会抛出。
 
-试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/book/exit-codes#5) 异常：`Integer out of expected range`。
+试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/zh-cn/book/exit-codes#5) 异常：`Integer out of expected range`。
 
 示例用法：
 
@@ -193,7 +193,7 @@ fun nativeThrowUnless(code: Int, condition: Bool);
 
 类似于 [`nativeThrow(){:tact}`](#nativethrow)，但会在 `condition` 等于 `false{:tact}` 时有条件地抛出异常。 否则不会抛出。
 
-试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/book/exit-codes#5) 异常：`Integer out of expected range`。
+试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/zh-cn/book/exit-codes#5) 异常：`Integer out of expected range`。
 
 使用示例：
 
@@ -210,9 +210,9 @@ fun butThisDoesNot() {
 }
 ```
 
-[p]: /book/types#primitive-types
-[bool]: /book/types#booleans
-[int]: /book/integers
-[cell]: /book/cells#cells
-[builder]: /book/cells#builders
-[slice]: /book/cells#slices
+[p]: /zh-cn/book/types#primitive-types
+[bool]: /zh-cn/book/types#booleans
+[int]: /zh-cn/book/integers
+[cell]: /zh-cn/book/cells#cells
+[builder]: /zh-cn/book/cells#builders
+[slice]: /zh-cn/book/cells#slices

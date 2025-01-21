@@ -7,17 +7,17 @@ Tact 本身编译为 FunC，并将其所有实体直接映射到各种 FunC 和 
 
 ## 转换类型
 
-Tact 中的 [原始类型](/book/types#primitive-types)可直接映射到 FunC 中的类型。
+Tact 中的 [原始类型](/zh-cn/book/types#primitive-types)可直接映射到 FunC 中的类型。
 
-复制变量的所有规则都是一样的。 所有关于复制变量的规则都是一样的。其中一个最大的不同是，在 Tact 中没有可见的突变(mutation)操作符，大多数 [`slice{:tact}`](/book/cells#slices)操作都是就地突变变量。
+复制变量的所有规则都是一样的。 所有关于复制变量的规则都是一样的。其中一个最大的不同是，在 Tact 中没有可见的突变(mutation)操作符，大多数 [`slice{:tact}`](/zh-cn/book/cells#slices)操作都是就地突变变量。
 
 ## 转换序列化
 
-在 Tact 中，[Structs](/book/structs-and-messages#structs)和[Messages](/book/structs-and-messages#messages)的序列化是自动进行的，不像 FunC 需要手动定义序列化逻辑。
+在 Tact 中，[Structs](/zh-cn/book/structs-and-messages#structs)和[Messages](/zh-cn/book/structs-and-messages#messages)的序列化是自动进行的，不像 FunC 需要手动定义序列化逻辑。
 
 Tact 的自动布局算法是贪婪的。 这意味着它会获取下一个变量，计算其大小，并尝试将其放入当前cell中。 如果不合适，它会创建一个新cell并继续。 自动布局的所有内部结构在分配前都会被扁平化。
 
-除了 [`Address{:tact}`](/book/types#primitive-types) 以外，所有可选类型在 TL-B 中都序列化为 `Maybe`。
+除了 [`Address{:tact}`](/zh-cn/book/types#primitive-types) 以外，所有可选类型在 TL-B 中都序列化为 `Maybe`。
 
 没有对 `Either` 的支持，因为它没有定义在某些情况下序列化时应选择什么。
 
@@ -177,7 +177,7 @@ get fun seqno(): Int {
 
 在 FunC 中，张量类型 `(int, int){:func}` 和 `(int, (int)){:func}` 是有区别的，但对于 TVM 来说没有区别，它们都表示两个整数的堆栈。
 
-要转换从 FunC `get` 方法返回的张量，需要定义一个 [Struct](/book/structs-and-messages#structs)，它与张量的字段类型相同，顺序也相同。
+要转换从 FunC `get` 方法返回的张量，需要定义一个 [Struct](/zh-cn/book/structs-and-messages#structs)，它与张量的字段类型相同，顺序也相同。
 
 下面是 FunC 中的代码
 
@@ -233,7 +233,7 @@ contract StatefulContract {
 
 ### 混合元组(tuple)和张量(tensor)返回类型
 
-如果某些张量是元组，则需要像前面的步骤一样定义结构体，而元组必须定义为单独的 [Struct](/book/structs-and-messages#structs)。
+如果某些张量是元组，则需要像前面的步骤一样定义结构体，而元组必须定义为单独的 [Struct](/zh-cn/book/structs-and-messages#structs)。
 
 下面是 FunC 中的代码
 
@@ -265,7 +265,7 @@ contract StatefulContract {
 
 ### 参数映射
 
-get方法参数的转换过程非常直接。 每个参数按原样映射为 FunC 的参数，每个元组映射为一个 [Struct](/book/structs-and-messages#structs)。
+get方法参数的转换过程非常直接。 每个参数按原样映射为 FunC 的参数，每个元组映射为一个 [Struct](/zh-cn/book/structs-and-messages#structs)。
 
 下面是 FunC 中的代码
 

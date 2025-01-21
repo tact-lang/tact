@@ -68,9 +68,9 @@ fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool): Int
 
 计算并返回在给定数量的 `cells` 和 `bits` 下存储合约指定 `seconds` 时间所需的 [storage fee][storage-fee]，以 [nanoToncoins][nanotoncoin] [`Int{:tact}`][int] 表示。 如果`isMasterchain` 是 `true{:tact}`，则使用 [masterchain][masterchain] 的价格，否则 [basechain][basechain] 的价格。 当前价格来自[TON Blockchain的配置参数18](https://docs.ton.org/develop/howto/blockchain-configs#param-18)。
 
-请注意，`cells`和`bits`的数值被用来作为它们最大的数值加上 $1$的模块。 也就是说，如果指定的值高于[账户状态限制（`max_acc_state_cells`和`max_acc_state_bits`）](/book/exit-codes#50)中列出的值，其结果将与指定精确限制的结果相同。 此外，请确保您考虑到[与同一哈希的 cells 分离][deduplication]。
+请注意，`cells`和`bits`的数值被用来作为它们最大的数值加上 $1$的模块。 也就是说，如果指定的值高于[账户状态限制（`max_acc_state_cells`和`max_acc_state_bits`）](/zh-cn/book/exit-codes#50)中列出的值，其结果将与指定精确限制的结果相同。 此外，请确保您考虑到[与同一哈希的 cells 分离][deduplication]。
 
-试图指定负数的 `cells`、`bits` 或 `seconds` 会抛出异常[export code 5](/book/exit-codes#5)：\`整数超出预期范围'。
+试图指定负数的 `cells`、`bits` 或 `seconds` 会抛出异常[export code 5](/zh-cn/book/exit-codes#5)：\`整数超出预期范围'。
 
 用法示例：
 
@@ -105,7 +105,7 @@ fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int;
 
 当 `gasUsed` 小于称为 [`flat_gas_limit`][param-20-21] 的某个阈值时，需支付的最低费用基于 [`flat_gas_price`][param-20-21] 的值计算。 gas 使用量越小，最低价格就越高。 请参阅[`getSimpleComputeFee(){:tact}`](#getsimplecomputefee)的示例来得出这个阈值。
 
-试图指定一个 `gassUsed` 的负值导致异常[退出码 5](/book/exit-codes#5)：`Integer out of expected range`。
+试图指定一个 `gassUsed` 的负值导致异常[退出码 5](/zh-cn/book/exit-codes#5)：`Integer out of expected range`。
 
 使用示例
 
@@ -137,7 +137,7 @@ fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int;
 
 类似于[`getComputeFee(){:tact}`](#getcomputedefee)，但没有[`flat_gas_price`][param-20-21]，如果`gassUsed`小于一个叫做[`flat_gas_limit`][param-20-21] 的阈值，则不支付最低价格。 计算并只返回当前 gas 价格的 `gasUsed` 倍数。
 
-试图指定一个 `gassUsed` 的负值导致异常[退出码 5](/book/exit-codes#5)：`Integer out of expected range`。
+试图指定一个 `gassUsed` 的负值导致异常[退出码 5](/zh-cn/book/exit-codes#5)：`Integer out of expected range`。
 
 示例用法：
 
@@ -161,7 +161,7 @@ let maxFlatPrice = fee - feeNoFlat;
 extends fun readForwardFee(self: Context): Int;
 ```
 
-[`Context{:tact}`](/ref/core-common#context) 的扩展函数。
+[`Context{:tact}`](/zh-cn/ref/core-common#context) 的扩展函数。
 
 读取[forward fee](https://docs.ton.org/develop/smart-contracts/guidelines/processing)，然后返回为 [`Int{:tact}`][int] [nanoToncoins][nanotoncoin]。
 
@@ -189,11 +189,11 @@ fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int;
 
 如果源地址和目的地址都在 [basechain][basechain]中，那么指定`isMasterchain` 为 `false{:tact}`。 否则，请指定\`true{:tact}'。
 
-请注意，`cells` 和 `bits` 的值取其最大值加上 $1$。 也就是说，指定高于[账户状态限制（`max_msg_cells` 和 `max_msg_bits`）](/book/exit-codes#50)中所列值的值，会产生与指定精确限制相同的结果。
+请注意，`cells` 和 `bits` 的值取其最大值加上 $1$。 也就是说，指定高于[账户状态限制（`max_msg_cells` 和 `max_msg_bits`）](/zh-cn/book/exit-codes#50)中所列值的值，会产生与指定精确限制相同的结果。
 
 然而，不管`cells`和`bits`的数值如何，此函数总是添加基于[`lump_price`][param-24-25] 的最低价格。 请参阅[`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee) 的示例以获取它。 此外，请确保考虑到[具有相同哈希的cell去重][deduplication]，因为例如 root cell 及其数据位不计入转发费用，并由[`lump_price`][param-24-25]覆盖。
 
-试图指定负数的 `cells` 或 `bits` 会导致异常[退出码 5](/book/exit-codes#5)：`Integer out of expected range`。
+试图指定负数的 `cells` 或 `bits` 会导致异常[退出码 5](/zh-cn/book/exit-codes#5)：`Integer out of expected range`。
 
 使用示例
 
@@ -228,7 +228,7 @@ fun getSimpleForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int;
 
 类似于[`getForwardFee(){:tact}`](#getforwardfee)，但没有 [`lump_price`][param-24-25], 例如, 不考虑`cells`或`bits`的数量，支付最低价格。 计算并返回仅由 `cells` 乘以当前单元价格加上 `bits` 乘以当前位价格的结果。
 
-试图指定负数的 `cells` 或 `bits` 会导致异常[退出码 5](/book/exit-codes#5)：`Integer out of expected range`。
+试图指定负数的 `cells` 或 `bits` 会导致异常[退出码 5](/zh-cn/book/exit-codes#5)：`Integer out of expected range`。
 
 使用示例
 
@@ -258,7 +258,7 @@ fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int;
 
 当发出的信息在很大程度上取决于收到的信息的结构，以至于无法单独使用 [`getForwardFee(){:tact}`](#getforwardfee) 来完全预测费用时，这个函数就非常有用。 即使可以，以 [nanoToncoin][nanotoncoin] 级别的精度计算精确费用也会非常昂贵，因此该函数给出的近似值通常已经足够好了。
 
-试图指定一个 `fwdFee` 的负值导致异常[退出码 5](/book/exit-codes#5)：`Integer out of expected range`。
+试图指定一个 `fwdFee` 的负值导致异常[退出码 5](/zh-cn/book/exit-codes#5)：`Integer out of expected range`。
 
 用法示例：
 
@@ -296,9 +296,9 @@ let dataStorageFeeConfig: Cell = getConfigParam(18)!!;
 
 :::note
 
-  标准库 [`@stdlib/config`](/ref/stdlib-config) 提供了两个相关的辅助函数：\
-  [`getConfigAddress(){:tact}`](/ref/stdlib-config#getconfigaddress)，用于获取配置 [`Address{:tact}`][p]/
-  [`getElectorAddress(){:tact}`](/ref/stdlib-config#getconfigaddress)，用于获取选区 [`Address{:tact}`][p]。
+  标准库 [`@stdlib/config`](/zh-cn/ref/stdlib-config) 提供了两个相关的辅助函数：\
+  [`getConfigAddress(){:tact}`](/zh-cn/ref/stdlib-config#getconfigaddress)，用于获取配置 [`Address{:tact}`][p]/
+  [`getElectorAddress(){:tact}`](/zh-cn/ref/stdlib-config#getconfigaddress)，用于获取选区 [`Address{:tact}`][p]。
 
   了解有关其他参数的更多信息：[TON 文档中的配置参数](https://docs.ton.org/develop/howto/blockchain-configs)。
 
@@ -357,7 +357,7 @@ throw(42); // and this won't fail it
 fun nativePrepareRandom();
 ```
 
-使用 [`nativeRandomizeLt(){:tact}`](#nativerandomizelt)准备随机数生成器。 由 [`randomInt(){:tact}`](/ref/core-random#randomint) 和 [`random(){:tact}`](/ref/core-random#random) 函数自动调用。
+使用 [`nativeRandomizeLt(){:tact}`](#nativerandomizelt)准备随机数生成器。 由 [`randomInt(){:tact}`](/zh-cn/ref/core-random#randomint) 和 [`random(){:tact}`](/zh-cn/ref/core-random#random) 函数自动调用。
 
 用法示例：
 
@@ -404,11 +404,11 @@ let idk: Int = randomInt(); // ???, it's random!
 fun nativeRandom(): Int;
 ```
 
-生成并返回 $256$-bit 随机数，就像 [`randomInt(){:tact}`](/ref/core-random#randomint)，但不会事先用 [`nativePrepareRandom(){:tact}`](#nativePrepareRandom)初始化随机生成器。
+生成并返回 $256$-bit 随机数，就像 [`randomInt(){:tact}`](/zh-cn/ref/core-random#randomint)，但不会事先用 [`nativePrepareRandom(){:tact}`](#nativePrepareRandom)初始化随机生成器。
 
 :::note
 
-  不要直接使用该函数，而应使用 [`randomInt(){:tact}`](/ref/core-random#randomint)。
+  不要直接使用该函数，而应使用 [`randomInt(){:tact}`](/zh-cn/ref/core-random#randomint)。
 
 :::
 
@@ -418,11 +418,11 @@ fun nativeRandom(): Int;
 fun nativeRandomInterval(max: Int): Int;
 ```
 
-生成并返回 $256$-bit 的随机数，范围从 $0$ 到 `max`，类似于 [`random(){:tact}`](/ref/core-random#random)，但不会事先用 [`nativePrepareRandom(){:tact}`](#nativePrepareRandom)初始化随机生成器。
+生成并返回 $256$-bit 的随机数，范围从 $0$ 到 `max`，类似于 [`random(){:tact}`](/zh-cn/ref/core-random#random)，但不会事先用 [`nativePrepareRandom(){:tact}`](#nativePrepareRandom)初始化随机生成器。
 
 :::note
 
-  不要直接使用该函数，而应使用 [`random(){:tact}`](/ref/core-random#random)。
+  不要直接使用该函数，而应使用 [`random(){:tact}`](/zh-cn/ref/core-random#random)。
 
 :::
 
@@ -432,11 +432,11 @@ fun nativeRandomInterval(max: Int): Int;
 fun nativeSendMessage(cell: Cell, mode: Int);
 ```
 
-[排序消息](/book/send#outbound-message-processing)将通过指定完整的 `cell` 和 [message `mode`](/book/message-mode) 发送。
+[排序消息](/zh-cn/book/send#outbound-message-processing)将通过指定完整的 `cell` 和 [message `mode`](/zh-cn/book/message-mode) 发送。
 
 :::note
 
-  除非您有无法以其他方式表达的复杂逻辑，否则请优先使用更常见、更方便用户使用的 [`send(){:tact}`](/ref/core-common#send)函数。
+  除非您有无法以其他方式表达的复杂逻辑，否则请优先使用更常见、更方便用户使用的 [`send(){:tact}`](/zh-cn/ref/core-common#send)函数。
 
 :::
 
@@ -491,7 +491,7 @@ raw_reserve(int amount, int mode) impure asm "RAWRESERVE";
 
 ### 使用标志组合模式 {#nativereserve-combining-modes-with-flags}
 
-要为 `mode` 参数创建 [`Int{:tact}`][int] 值，只需通过应用 [按位或操作](/book/operators#binary-bitwise-or) 将基本模式与可选标志结合起来：
+要为 `mode` 参数创建 [`Int{:tact}`][int] 值，只需通过应用 [按位或操作](/zh-cn/book/operators#binary-bitwise-or) 将基本模式与可选标志结合起来：
 
 ```tact
 nativeReserve(ton("0.1"), ReserveExact | ReserveBounceIfActionFail);
@@ -516,7 +516,7 @@ fun parseStdAddress(slice: Slice): StdAddress;
 | `workchain` | [`Int as int8{:tact}`][int]    | 地址的工作链ID，通常是 $0$ (basechain) 或 $-1$ (masterchain) |
 | `address`   | [`Int as uint256{:tact}`][int] | 指定的`工作链`中的地址                                      |
 
-尝试传递具有不同布局的 [`Slice{:tact}`][slice]，或者加载的数据超过给定 [`Slice{:tact}`][slice] 所包含的数据，会抛出异常，带有 [退出码 9](/book/exit-codes#9)：`Cell underflow`。
+尝试传递具有不同布局的 [`Slice{:tact}`][slice]，或者加载的数据超过给定 [`Slice{:tact}`][slice] 所包含的数据，会抛出异常，带有 [退出码 9](/zh-cn/book/exit-codes#9)：`Cell underflow`。
 
 用法示例：
 
@@ -548,12 +548,12 @@ fun parseVarAddress(slice: Slice): VarAddress;
 
 将包含可变长度的地址的 [`Slice{:tact}`][slice] 转换为 `VarAddress{:tact} [Struct][s] 并返回它。 `VarAddress{:tact}\` 是一个内置的 [Struct][s] 由以下部分组成：
 
-| 字段          | 类型                           | 函数 "raw_reserve "大致等同于创建一个向外发送的消息，将指定的 "金额"[nanoToncoins](/book/integers#nanotoncoin)（或 "b " $-$ "金额"[nanoToncoins](/book/integers#nanotoncoin)，其中 "b "为余额）发送给自己。 这就确保了后续产出行动所花费的资金不会超过剩余资金。 |
+| 字段          | 类型                           | 函数 "raw_reserve "大致等同于创建一个向外发送的消息，将指定的 "金额"[nanoToncoins](/zh-cn/book/integers#nanotoncoin)（或 "b " $-$ "金额"[nanoToncoins](/zh-cn/book/integers#nanotoncoin)，其中 "b "为余额）发送给自己。 这就确保了后续产出行动所花费的资金不会超过剩余资金。 |
 | :---------- | :--------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `workchain` | [`Int as int32{:tact}`][int] | 变量长度地址的 Workchain ID                                                                                                                                                                         |
 | `address`   | [`Slice{:tact}`][slice]      | 指定的`工作链`中的地址                                                                                                                                                                                 |
 
-尝试传递具有不同布局的 [`Slice{:tact}`][slice]，或者加载的数据超过给定 [`Slice{:tact}`][slice] 所包含的数据，会抛出异常，带有 [退出代码 9](/book/exit-codes#9)：`Cell underflow`。
+尝试传递具有不同布局的 [`Slice{:tact}`][slice]，或者加载的数据超过给定 [`Slice{:tact}`][slice] 所包含的数据，会抛出异常，带有 [退出代码 9](/zh-cn/book/exit-codes#9)：`Cell underflow`。
 
 用法示例：
 
@@ -577,14 +577,14 @@ parsedVarAddr.address.loadUint(123); // 345
 
 :::
 
-[p]: /book/types#primitive-types
-[bool]: /book/types#booleans
-[int]: /book/integers
-[slice]: /book/cells#slices
-[s]: /book/structs-and-messages#structs
-[masterchain]: /book/masterchain
-[cell-hash]: /ref/core-cell#cellhash
-[nanotoncoin]: /book/integers#nanotoncoin
+[p]: /zh-cn/book/types#primitive-types
+[bool]: /zh-cn/book/types#booleans
+[int]: /zh-cn/book/integers
+[slice]: /zh-cn/book/cells#slices
+[s]: /zh-cn/book/structs-and-messages#structs
+[masterchain]: /zh-cn/book/masterchain
+[cell-hash]: /zh-cn/ref/core-cell#cellhash
+[nanotoncoin]: /zh-cn/book/integers#nanotoncoin
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [basechain]: https://docs.ton.org/v3/concepts/ton-blockchain/smart-contract-addresses#address-components
 [deduplication]: https://docs.ton.org/v3/documentation/data-formats/tlb/library-cells

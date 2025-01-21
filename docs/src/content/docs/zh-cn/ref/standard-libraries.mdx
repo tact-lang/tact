@@ -8,7 +8,7 @@ prev:
 
 有些库（也称为标准库或 stdlibs）与 Tact 编译器捆绑在一起，但不会自动包含到项目中，除非明确指定。
 
-要导入任何标准库，请使用[`import{:tact}`关键字](/book/import)，然后在 [string][p] 中输入该库的名称，像这样：
+要导入任何标准库，请使用[`import{:tact}`关键字](/zh-cn/book/import)，然后在 [string][p] 中输入该库的名称，像这样：
 
 ```tact
 // This would include everything from @stdlib/deploy into your codebase:
@@ -26,23 +26,23 @@ import "@stdlib/deploy";
 | [`@stdlib/ownable`][5]                                                         | 所有权管理的trait。                                            | [`Ownable{:tact}`][own], [`OwnableTransferable{:tact}`][ownt]           |
 | [`@stdlib/stoppable`][6]                                                       | 允许合约停止的 Traits。 需要 [@stdlib/ownable][5]。                | [`Stoppable{:tact}`][stp], [`Resumable{:tact}`][res]                    |
 
-[1]: /ref/stdlib-config
-[gca]: /ref/stdlib-config#getconfigaddress
-[gea]: /ref/stdlib-config#getelectoraddress
-[2]: /ref/stdlib-content
-[coff]: /ref/stdlib-content#createoffchaincontent
-[3]: /ref/stdlib-deploy
-[dep]: /ref/stdlib-deploy#deployable
-[fcd]: /ref/stdlib-deploy#factorydeployable
-[4]: /ref/stdlib-dns
-[dnsr]: /ref/stdlib-dns#dnsresolver
-[dnsi]: /ref/stdlib-dns#dnsinternalverify
-[5]: /ref/stdlib-ownable
-[own]: /ref/stdlib-ownable#ownable
-[ownt]: /ref/stdlib-ownable#ownabletransferable
-[6]: /ref/stdlib-stoppable
-[stp]: /ref/stdlib-stoppable#stoppable
-[res]: /ref/stdlib-stoppable#resumable
-[p]: /book/types#primitive-types
-[cell]: /book/cells#cells
+[1]: /zh-cn/ref/stdlib-config
+[gca]: /zh-cn/ref/stdlib-config#getconfigaddress
+[gea]: /zh-cn/ref/stdlib-config#getelectoraddress
+[2]: /zh-cn/ref/stdlib-content
+[coff]: /zh-cn/ref/stdlib-content#createoffchaincontent
+[3]: /zh-cn/ref/stdlib-deploy
+[dep]: /zh-cn/ref/stdlib-deploy#deployable
+[fcd]: /zh-cn/ref/stdlib-deploy#factorydeployable
+[4]: /zh-cn/ref/stdlib-dns
+[dnsr]: /zh-cn/ref/stdlib-dns#dnsresolver
+[dnsi]: /zh-cn/ref/stdlib-dns#dnsinternalverify
+[5]: /zh-cn/ref/stdlib-ownable
+[own]: /zh-cn/ref/stdlib-ownable#ownable
+[ownt]: /zh-cn/ref/stdlib-ownable#ownabletransferable
+[6]: /zh-cn/ref/stdlib-stoppable
+[stp]: /zh-cn/ref/stdlib-stoppable#stoppable
+[res]: /zh-cn/ref/stdlib-stoppable#resumable
+[p]: /zh-cn/book/types#primitive-types
+[cell]: /zh-cn/book/cells#cells
 [dns]: https://docs.ton.org/participate/web3/dns

@@ -67,11 +67,11 @@ contract Sample {
 
 ## 无效的抛出值
 
-[退出码](/book/exit-codes) $0$ 和 $1$ 表示交易的计算阶段正常执行。 如果调用一个 [`lown (){:tact}`](/ref/core-debug#play) 或[类似的函数](/ref/core-debug) 直接带有退出码 $0$ 和 $1$ ，执行可能会意外中止. 这可能使调试非常困难，因为这种中止的执行与正常的执行无法区分。
+[退出码](/zh-cn/book/exit-codes) $0$ 和 $1$ 表示交易的计算阶段正常执行。 如果调用一个 [`lown (){:tact}`](/zh-cn/ref/core-debug#play) 或[类似的函数](/zh-cn/ref/core-debug) 直接带有退出码 $0$ 和 $1$ ，执行可能会意外中止. 这可能使调试非常困难，因为这种中止的执行与正常的执行无法区分。
 
 ##### Do's ✅
 
-最好使用 [`require(){:tact}`](/ref/core-debug#require) 函数来阐明期望状态。
+最好使用 [`require(){:tact}`](/zh-cn/ref/core-debug#require) 函数来阐明期望状态。
 
 ```tact
 require(isDataValid(msg.data), "Invalid data!")；
@@ -88,13 +88,13 @@ throw(1);
 
 ## 不安全的随机数字
 
-在TON中生成真正安全的随机数字是一项挑战。 [`random()`](/ref/core-random#random)函数是伪随机的，取决于[逻辑时间](https://docs.ton.org/develop/smart-contracts/guidelines/message-delivery-guarantees#what-is-a-logical-time)。 黑客可以通过 [brute-forcing](https://en.wikipedia.org/wiki/Brute-force_attack) 当前区块中的逻辑时间来预测随机数。
+在TON中生成真正安全的随机数字是一项挑战。 [`random()`](/zh-cn/ref/core-random#random)函数是伪随机的，取决于[逻辑时间](https://docs.ton.org/develop/smart-contracts/guidelines/message-delivery-guarantees#what-is-a-logical-time)。 黑客可以通过 [brute-forcing](https://en.wikipedia.org/wiki/Brute-force_attack) 当前区块中的逻辑时间来预测随机数。
 
 ##### Do's ✅
 
 - 对于关键应用 **避免仅仅依赖于链上的解决方案**。
 
-- 使用 [`random(){:tact}`](/ref/corre-random#random) 与随机逻辑时间，以提高安全性，使攻击者更难预测而不访问验证节点。 但是，请注意，它仍然**不是完全万无一失的**。
+- 使用 [`random(){:tact}`](/zh-cn/ref/corre-random#random) 与随机逻辑时间，以提高安全性，使攻击者更难预测而不访问验证节点。 但是，请注意，它仍然**不是完全万无一失的**。
 
 - 考虑使用 **提交和披露方案**：
   1. 参与者在链外随机生成数字，并将其散列发送到合约中。
@@ -105,7 +105,7 @@ throw(1);
 
 ##### Don'ts ❌
 
-不要依赖[`random(){:tact}`](/ref/core-random#random)函数。
+不要依赖[`random(){:tact}`](/zh-cn/ref/core-random#random)函数。
 
 ```tact
 if (random(1, 10) == 7) {
@@ -152,7 +152,7 @@ contract Example {
 
 ## Gas限制
 
-小心“Gas用尽错误”。 这无法处理，因此请尽量为每个接收者预先计算 gas 消耗[使用测试](/book/debug#tests)。 这将有助于避免浪费额外的gas，因为交易无论如何都会失败。
+小心“Gas用尽错误”。 这无法处理，因此请尽量为每个接收者预先计算 gas 消耗[使用测试](/zh-cn/book/debug#tests)。 这将有助于避免浪费额外的gas，因为交易无论如何都会失败。
 
 ##### Do's ✅
 
@@ -170,11 +170,11 @@ contract Example {
 
 ## 身份验证
 
-如果您的合约逻辑围绕可信的发件人运行，总是验证发件人的身份。 这可以使用 [`Ownable{:tact}`](/ref/stdlib-own) 特性或使用 [state init](/book/expressions#init) 验证。 您可以阅读更多关于[Jetton validation](/cookbook/jettons#accepting-jetton-transfer)和[NFT validation](/cookbook/nfts#accepting-nft-ownership-assignment)的信息。
+如果您的合约逻辑围绕可信的发件人运行，总是验证发件人的身份。 这可以使用 [`Ownable{:tact}`](/zh-cn/ref/stdlib-own) 特性或使用 [state init](/zh-cn/book/expressions#init) 验证。 您可以阅读更多关于[Jetton validation](/zh-cn/cookbook/jettons#accepting-jetton-transfer)和[NFT validation](/zh-cn/cookbook/nfts#accepting-nft-ownership-assignment)的信息。
 
 ##### Do's ✅
 
-使用 [`Ownable{:tact}`](/ref/stdlib-own) 特性.
+使用 [`Ownable{:tact}`](/zh-cn/ref/stdlib-own) 特性.
 
 ```tact
 import "@stdlib/ownable";
@@ -291,11 +291,11 @@ contract Sample {
 
 ## 处理/发送退回消息
 
-发送反弹标志(bounce flag)设置为 `true{:tact}`的信息，这是 [`send(){:tact}`](/ref/core-common#send)函数的默认设置。 消息在合约执行失败后退出。 您可能希望通过在 [\`try...catch{:tact}\`\`](/book/statements#try-catch) 语句中封装代码来回滚合约状态，并根据您的逻辑进行一些额外处理，从而解决这个问题。
+发送反弹标志(bounce flag)设置为 `true{:tact}`的信息，这是 [`send(){:tact}`](/zh-cn/ref/core-common#send)函数的默认设置。 消息在合约执行失败后退出。 您可能希望通过在 [\`try...catch{:tact}\`\`](/zh-cn/book/statements#try-catch) 语句中封装代码来回滚合约状态，并根据您的逻辑进行一些额外处理，从而解决这个问题。
 
 ##### Do's ✅
 
-通过[bounced message receiver](/book/bounced/#bounced-message-receiver)处理退信以正确响应失败的信息。
+通过[bounced message receiver](/zh-cn/book/bounced/#bounced-message-receiver)处理退信以正确响应失败的信息。
 
 ```tact
 contract JettonDefaultWallet {
@@ -344,11 +344,11 @@ contract JettonDefaultWallet {
 
 ## 交易和阶段
 
-来自本书的 [发送信息页面](/book/send#outbound-message-processing)：
+来自本书的 [发送信息页面](/zh-cn/book/send#outbound-message-processing)：
 
 > TON Blockchain上的每笔交易由多个阶段组成。 发送信息是在计算阶段进行评估，但是在该阶段**不是**发送。 相反，它们会按出现的先后顺序排队进入行动阶段，在该阶段，计算阶段列出的所有行动（如向外发送消息或储备请求）都会被执行。
 
-因此，如果计算阶段失败，[寄存器](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers) `c4`（持久性数据）和`c5`（操作）将不会更新。 但是，可以使用[`commit(){:tact}`](/ref/core-advanced/#commit)函数手动保存其状态。
+因此，如果计算阶段失败，[寄存器](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers) `c4`（持久性数据）和`c5`（操作）将不会更新。 但是，可以使用[`commit(){:tact}`](/zh-cn/ref/core-advanced/#commit)函数手动保存其状态。
 
 ## 小心退回多余 gas
 
@@ -378,7 +378,7 @@ contract Sample {
 }
 ```
 
-另外，您可以充分利用[`notify(){:tact}`](/ref/core-base/#self-notify) 或 [`forward(){:tact}`](/ref/core-base/#self-forward) 标准函数。
+另外，您可以充分利用[`notify(){:tact}`](/zh-cn/ref/core-base/#self-notify) 或 [`forward(){:tact}`](/zh-cn/ref/core-base/#self-forward) 标准函数。
 
 ```tact
 message(0xd53276db) Excesses {}
@@ -397,7 +397,7 @@ contract Sample {
 
 ## 从其他合约中提取数据
 
-区块链中的合约可以驻留在不同的分片中，由其他验证器处理，这意味着一个合约无法从其他合约中获取数据。 也就是说，任何合约都不能从其他合约调用[getter function](/book/functions#getter-functions))。
+区块链中的合约可以驻留在不同的分片中，由其他验证器处理，这意味着一个合约无法从其他合约中获取数据。 也就是说，任何合约都不能从其他合约调用[getter function](/zh-cn/book/functions#getter-functions))。
 
 因此，任何链上的通信都是异步的，都是通过发送和接收信息来进行的。
 
@@ -439,5 +439,5 @@ contract AnotherContract {
 }
 ```
 
-[struct]: /book/structs-and-messages#structs
-[message]: /book/structs-and-messages#messages
+[struct]: /zh-cn/book/structs-and-messages#structs
+[message]: /zh-cn/book/structs-and-messages#messages

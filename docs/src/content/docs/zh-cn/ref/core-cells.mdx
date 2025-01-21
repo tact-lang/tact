@@ -15,7 +15,7 @@ import { Badge } from '@astrojs/starlight/components';
 
   为此，建议高级用户使用[类型语言 - 二进制（TL-B）模式][tlb]。
 
-  每个用户都建议使用 [结构体][struct] 及其 [方法](/book/functions#extension-function)，例如 [`Struct.toCell(){:tact}`](#structtocell) 和 [`Struct.fromCell(){:tact}`](#structfromcell)，而不是手动构建和解析单元格，因为 [结构体][struct] 和 [消息][message] 最接近于作为你合约的 [活的 TL-B 模式](/book/cells#cnp-structs)。
+  每个用户都建议使用 [结构体][struct] 及其 [方法](/zh-cn/book/functions#extension-function)，例如 [`Struct.toCell(){:tact}`](#structtocell) 和 [`Struct.fromCell(){:tact}`](#structfromcell)，而不是手动构建和解析单元格，因为 [结构体][struct] 和 [消息][message] 最接近于作为你合约的 [活的 TL-B 模式](/zh-cn/book/cells#cnp-structs)。
 
 :::
 
@@ -145,7 +145,7 @@ extends fun storeUint(self: Builder, value: Int, bits: Int): Builder;
 
 将一个无符号的 `bits` 位 `value` 存储到 [`Builder{:tact}`][builder] 的副本中，范围为 $0 ≤$ `bits` $≤ 256$。 返回该副本。
 
-尝试存储一个负数 `value` 或提供一个不足或超出范围的 `bits` 数量会抛出异常，错误代码为 [退出代码 5](/book/exit-codes#5): `Integer out of expected range`。
+尝试存储一个负数 `value` 或提供一个不足或超出范围的 `bits` 数量会抛出异常，错误代码为 [退出代码 5](/zh-cn/book/exit-codes#5): `Integer out of expected range`。
 
 示例用法：
 
@@ -164,7 +164,7 @@ extends fun storeInt(self: Builder, value: Int, bits: Int): Builder;
 
 将一个有符号的 `bits` 位的 `value` 存储到 [`Builder{:tact}`][builder] 的副本中，范围是 $0 ≤$ `bits` $≤ 257$。 返回该副本。
 
-试图提供一个不足或超出范围的`比特`数时，会出现[退出码5](/book/exit-codes#5)的异常：`Integer out of expected range`。
+试图提供一个不足或超出范围的`比特`数时，会出现[退出码5](/zh-cn/book/exit-codes#5)的异常：`Integer out of expected range`。
 
 示例用法：
 
@@ -255,9 +255,9 @@ extends fun storeCoins(self: Builder, value: Int): Builder;
 
 将一个无符号的 [`Int{:tact}`][int] `value` 存储（序列化）到范围 $0 .. 2^{120} - 1$ 到 [`Builder{:tact}`][builder] 的副本中。 `value` 的序列化由一个 4 位无符号大端整数 `l` 组成，`l` 是满足 `value` $< 2^{8 _ l}$ 的最小整数 $l ≥ 0$，然后是一个 8 _ l 位无符号大端表示的 `value`。 返回 [`Builder{:tact}`][builder] 的副本。
 
-试图存储一个超出范围的`值`时，会出现[退出码5](/book/exit-codes#5)的异常：`Integer out of expected range`。
+试图存储一个超出范围的`值`时，会出现[退出码5](/zh-cn/book/exit-codes#5)的异常：`Integer out of expected range`。
 
-这是保存 [nanoToncoins](/book/integers#nanotoncoin) 的最常见方式。
+这是保存 [nanoToncoins](/zh-cn/book/integers#nanotoncoin) 的最常见方式。
 
 示例用法：
 
@@ -268,7 +268,7 @@ let fizz: Builder = b.storeCoins(42);
 
 :::note[Useful links:]
 
-  [特殊的 `coins` 序列化类型](/book/integers#serialization-coins)
+  [特殊的 `coins` 序列化类型](/zh-cn/book/integers#serialization-coins)
 
 :::
 
@@ -299,7 +299,7 @@ extends fun storeRef(self: Builder, cell: Cell): Builder;
 
 将引用 `cell` 存储到 [`Builder{:tact}`][builder] 的副本中。 返回该副本。
 
-由于单个 [`cell{:tact}`][cell] 最多可存储 $4$ 引用，如果尝试存储更多引用，则会出现[退出码 8](/book/exit-codes#8)异常：`Cell overflow`。
+由于单个 [`cell{:tact}`][cell] 最多可存储 $4$ 引用，如果尝试存储更多引用，则会出现[退出码 8](/zh-cn/book/exit-codes#8)异常：`Cell overflow`。
 
 示例用法：
 
@@ -322,7 +322,7 @@ extends fun storeMaybeRef(self: Builder, cell: Cell?): Builder;
 
 如果 `cell` 是 `null{:tact}`，则只将 $0$ 作为单个位存储到 [`Builder{:tact}`][builder] 的副本中。 返回此复制。
 
-由于单个 [`Cell{:tact}`][cell] 最多可以存储 $4$ 个引用，尝试存储更多引用将抛出异常，错误码为 [exit code 8](/book/exit-codes#8)：`Cell overflow`。
+由于单个 [`Cell{:tact}`][cell] 最多可以存储 $4$ 个引用，尝试存储更多引用将抛出异常，错误码为 [exit code 8](/zh-cn/book/exit-codes#8)：`Cell overflow`。
 
 用法示例：
 
@@ -411,9 +411,9 @@ extends mutates fun loadUint(self: Slice, l: Int): Int;
 
 从 [`Slice{:tact}`][slice]中加载并返回一个无符号的 `l` 位 [`Int{:tact}`][int]，条件是 $0 ≤$ `l` $≤ 256$。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：`Integer out of expected range`。
 
-尝试加载的数据超过 [`Slice{:tact}`][slice] 包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell underflow`。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：`Cell underflow`。
 
 示例用法：
 
@@ -432,9 +432,9 @@ extends fun preloadUint(self: Slice, l: Int): Int;
 
 为 $0 ≤$ `l` $≤ 256$ 从 [`Slice{:tact}`][slice]中预载并返回一个无符号的 `l` 位 [`Int{:tact}`][int]。 不会修改 [`Slice{:tact}`][slice]。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：`Integer out of expected range`。
 
-尝试预载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9)异常：`Cell underflow`。
+尝试预载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9)异常：`Cell underflow`。
 
 示例用法：
 
@@ -453,9 +453,9 @@ extends mutates fun loadInt(self: Slice, l: Int): Int;
 
 从 [`Slice{:tact}`][slice] 中加载并返回一个有符号的 `l` 位 [`Int{:tact}`][int]，值为 $0 ≤$ `l` $≤ 257$。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：`Integer out of expected range`。
 
-尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell underflow`。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：`Cell underflow`。
 
 示例用法：
 
@@ -474,9 +474,9 @@ extends fun preloadInt(self: Slice, l: Int): Int;
 
 为 $0 ≤$ `l` $≤ 257$ 从 [`Slice{:tact}`][slice]中预载并返回一个有符号的 `l` 位 [`Int{:tact}`][int]。 不会修改 [`slice{:tact}`][slice]。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：`Integer out of expected range`。
 
-尝试预载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9)异常：`Cell underflow`。
+尝试预载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9)异常：`Cell underflow`。
 
 示例用法：
 
@@ -495,9 +495,9 @@ extends mutates fun loadBits(self: Slice, l: Int): Slice;
 
 从 [`Slice{:tact}`][slice] 中加载 $0 ≤$ `l` $≤ 1023$ 位，并作为单独的  [`Slice{:tact}`][slice] 返回。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：`Integer out of expected range`。
 
-尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell underflow`。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：`Cell underflow`。
 
 示例用法：
 
@@ -516,9 +516,9 @@ extends fun preloadBits(self: Slice, l: Int): Slice;
 
 从 [`Slice{:tact}`][slice] 中预载 $0 ≤$ `l` $≤ 1023$ 位，并将其作为单独的 [`Slice{:tact}`][slice] 返回。 不修改原始 [`slice{:tact}`][slice]。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：`Integer out of expected range`。
 
-尝试预载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9)异常：`Cell underflow`。
+尝试预载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9)异常：`Cell underflow`。
 
 示例用法：
 
@@ -537,9 +537,9 @@ extends mutates fun skipBits(self: Slice, l: Int);
 
 从 [`Slice{:tact}`][slice] 中加载除第一个 0 ≤$ `l` $≤ 1023$ 位以外的所有位。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：`Integer out of expected range`。
 
-尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell underflow`。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：`Cell underflow`。
 
 示例用法：
 
@@ -559,9 +559,9 @@ extends mutates fun loadBool(self: Slice): Bool;
 
 从[`Slice{:tact}`][slice]加载单个位并返回[`Bool{:tact}`][bool]值。 如果加载的位等于 $1$，则读取 `true{:tact}`，否则读取 `false{:tact}`。
 
-当 [`Bool{:tact}`][bool][`slice{:tact}`][slice]不包含它时，尝试加载此类 [`Bool `][bool]会产生异常，[退出码 8](/book/exit-codes#8)：`Cell overflow`。
+当 [`Bool{:tact}`][bool][`slice{:tact}`][slice]不包含它时，尝试加载此类 [`Bool `][bool]会产生异常，[退出码 8](/zh-cn/book/exit-codes#8)：`Cell overflow`。
 
-尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell underflow`。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：`Cell underflow`。
 
 示例用法：
 
@@ -595,11 +595,11 @@ extends mutates fun loadCoins(self: Slice): Int;
 
 [`Slice{:tact}`][slice] 的扩展突变函数。
 
-加载并返回 [序列化](#builderstorecoins)一个范围为 $0 ... 的无符号 [`Int{:tact}`][int]值。 2^{120} - 1$ 来自 [`Slice{:tact}`][slice]。 此值通常代表 [nanoToncoins](/book/integers#nanotoncoin) 的金额。
+加载并返回 [序列化](#builderstorecoins)一个范围为 $0 ... 的无符号 [`Int{:tact}`][int]值。 2^{120} - 1$ 来自 [`Slice{:tact}`][slice]。 此值通常代表 [nanoToncoins](/zh-cn/book/integers#nanotoncoin) 的金额。
 
-当 [\``Slice{:tact}`][slice]中不包含[`Int{:tact}`][int]时，尝试加载此类[`Int `][int]会产生异常，[退出码为 8](/book/exit-codes#8)：`Cell overflow`。
+当 [\``Slice{:tact}`][slice]中不包含[`Int{:tact}`][int]时，尝试加载此类[`Int `][int]会产生异常，[退出码为 8](/zh-cn/book/exit-codes#8)：`Cell overflow`。
 
-尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell overflow`。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：`Cell overflow`。
 
 用法示例：
 
@@ -610,7 +610,7 @@ let fizz: Int = s.loadCoins();
 
 :::note[Useful links:]
 
-  [特殊的 "coin" 序列化类型](/book/integers#serialization-coins)
+  [特殊的 "coin" 序列化类型](/zh-cn/book/integers#serialization-coins)
 
 :::
 
@@ -624,9 +624,9 @@ extends mutates fun loadAddress(self: Slice): Address;
 
 从 [`Slice{:tact}`][slice] 加载并返回一个[`Address{:tact}`][p]。
 
-当[`Address{:tact}`][p][[`Slice{:tact}`][slice]不包含该地址时，尝试加载该[`地址 `][p]会产生异常，[退出码 8](/book/exit-codes#8)：`Cell overflow`。
+当[`Address{:tact}`][p][[`Slice{:tact}`][slice]不包含该地址时，尝试加载该[`地址 `][p]会产生异常，[退出码 8](/zh-cn/book/exit-codes#8)：`Cell overflow`。
 
-尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell underflow`。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：`Cell underflow`。
 
 示例用法：
 
@@ -645,9 +645,9 @@ extends mutates fun loadRef(self: Slice): Cell;
 
 从 [`Slice{:tact}`][slice] 中加载下一个引用作为 [`cell{:tact}`][cell]。
 
-当 [`Cell{:tact}`][cell][slice{:tact}\`][slice]不包含该引用时，尝试加载该引用会产生异常，[退出码 8](/book/exit-codes#8)：`Cell overflow`。
+当 [`Cell{:tact}`][cell][slice{:tact}\`][slice]不包含该引用时，尝试加载该引用会产生异常，[退出码 8](/zh-cn/book/exit-codes#8)：`Cell overflow`。
 
-尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell underflow`。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：`Cell underflow`。
 
 示例用法：
 
@@ -674,9 +674,9 @@ slice{:tact}\`][slice]的扩展函数。
 
 预加载下一个引用从 [`Slice{:tact}`][slice] 为 [`cell{:tact}`][cell] 没有修改原来的 [`Slice{:tact}`][slice]
 
-试图在[[`Slice{:tact}`][cell] 时预加载此引用 [`slice{:tact}`][slice] 不包含一个异常[退出码 8](/book/exit-codes#8)：`Cell overflow`。
+试图在[[`Slice{:tact}`][cell] 时预加载此引用 [`slice{:tact}`][slice] 不包含一个异常[退出码 8](/zh-cn/book/exit-codes#8)：`Cell overflow`。
 
-试图预加载更多数据超过 [`Slice{:tact}`][slice] 含有异常[export code 9](/book/exit-codes#9)：`Cell underflow`。
+试图预加载更多数据超过 [`Slice{:tact}`][slice] 含有异常[export code 9](/zh-cn/book/exit-codes#9)：`Cell underflow`。
 
 示例用法：
 
@@ -797,7 +797,7 @@ extends fun endParse(self: Slice);
 
 [`Slice{:tact}`][slice] 的扩展函数。
 
-检查 [`Slice{:tact}`][slice] 是否为空（即不包含数据位和cell引用）。 如果不是，则抛出异常[退出码 9](/book/exit-codes#9)：`Cell underflow`。
+检查 [`Slice{:tact}`][slice] 是否为空（即不包含数据位和cell引用）。 如果不是，则抛出异常[退出码 9](/zh-cn/book/exit-codes#9)：`Cell underflow`。
 
 使用示例：
 
@@ -932,7 +932,7 @@ extends fun fromCell(self: Struct, cell: Cell): Struct;
 
 将 [`cell{:tact}`][cell] 转换为指定的 [结构体][struct]，并返回该 [结构体][struct]。
 
-试图传递布局与指定 [Struct][struct] 不同的 [`cell{:tact}`][cell]，或加载的数据超过 [`cell{:tact}`][cell] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9)异常：`Cell underflow`。
+试图传递布局与指定 [Struct][struct] 不同的 [`cell{:tact}`][cell]，或加载的数据超过 [`cell{:tact}`][cell] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9)异常：`Cell underflow`。
 
 使用示例：
 
@@ -967,7 +967,7 @@ extends fun fromSlice(self: Struct, cell: Slice): Struct;
 
 将 [`Slice{:tact}`][slice] 转换为指定的 [Struct][struct]，并返回该 [Struct][struct]。
 
-尝试传递布局与指定 [结构][struct] 不同的 [`Slice{:tact}`][slice]，或加载比 [`Slice{:tact}`][slice] 包含的数据更多的数据时，会出现[退出码 9](/book/exit-codes#9)异常：`Cell underflow`。
+尝试传递布局与指定 [结构][struct] 不同的 [`Slice{:tact}`][slice]，或加载比 [`Slice{:tact}`][slice] 包含的数据更多的数据时，会出现[退出码 9](/zh-cn/book/exit-codes#9)异常：`Cell underflow`。
 
 使用示例：
 
@@ -1056,7 +1056,7 @@ extends fun fromCell(self: Message, cell: Cell): Message;
 
 将 [`cell{:tact}`][cell] 转换为指定的 [Message][message]，并返回该 [Message][message]。
 
-尝试传递布局与指定 [Message][message] 不同的[`cell{:tact}`][cell]，或加载的数据超过[`cell{:tact}`][cell]所包含的数据时，会出现[退出码 9](/book/exit-codes#9)的异常：`Cell underflow`。
+尝试传递布局与指定 [Message][message] 不同的[`cell{:tact}`][cell]，或加载的数据超过[`cell{:tact}`][cell]所包含的数据时，会出现[退出码 9](/zh-cn/book/exit-codes#9)的异常：`Cell underflow`。
 
 使用示例：
 
@@ -1090,7 +1090,7 @@ extends fun fromSlice(self: Message, cell: Slice): Message;
 
 将 [`Slice{:tact}`][slice] 转换为指定的 [Message][message]，并返回该 [Message][message]。
 
-试图传递布局不同于指定 [Message][message] 的[`Slice{:tact}`][slice]，或加载的数据多于[`Slice{:tact}`][slice]所包含的数据时，会出现[退出码 9](/book/exit-codes#9)的异常：`Cell underflow`。
+试图传递布局不同于指定 [Message][message] 的[`Slice{:tact}`][slice]，或加载的数据多于[`Slice{:tact}`][slice]所包含的数据时，会出现[退出码 9](/zh-cn/book/exit-codes#9)的异常：`Cell underflow`。
 
 使用示例
 
@@ -1114,15 +1114,15 @@ fun cautiousParse(payload: Slice): TripleAxe? {
 }
 ```
 
-[p]: /book/types#primitive-types
-[bool]: /book/types#booleans
-[int]: /book/integers
-[cell]: /book/cells#cells
-[builder]: /book/cells#builders
-[slice]: /book/cells#slices
-[map]: /book/maps
-[struct]: /book/structs-and-messages#structs
-[message]: /book/structs-and-messages#messages
-[std-repr]: /book/cells#cells-representation
+[p]: /zh-cn/book/types#primitive-types
+[bool]: /zh-cn/book/types#booleans
+[int]: /zh-cn/book/integers
+[cell]: /zh-cn/book/cells#cells
+[builder]: /zh-cn/book/cells#builders
+[slice]: /zh-cn/book/cells#slices
+[map]: /zh-cn/book/maps
+[struct]: /zh-cn/book/structs-and-messages#structs
+[message]: /zh-cn/book/structs-and-messages#messages
+[std-repr]: /zh-cn/book/cells#cells-representation
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
 [sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard

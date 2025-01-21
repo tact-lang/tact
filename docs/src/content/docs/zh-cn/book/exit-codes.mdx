@@ -13,13 +13,13 @@ TON 区块链保留从 $0$ 到 $127$的退出码值，而 Tact 使用从 $128$ �
 
 :::note
 
-  虽然在 TON Blockchain 上退出（或 [结果](#action)）码是一个 $32$-bit 有符号整数，但尝试 [抛出](/ref/core-debug) 超出 $16$-bit 无符号整数（$0 - 65535$）范围的退出码将导致一个 [退出码 5](#5) 的错误。 这是故意这样做的，目的是防止某些退出代码被人为产生，例如[退出代码 -14](#-14)。
+  虽然在 TON Blockchain 上退出（或 [结果](#action)）码是一个 $32$-bit 有符号整数，但尝试 [抛出](/zh-cn/ref/core-debug) 超出 $16$-bit 无符号整数（$0 - 65535$）范围的退出码将导致一个 [退出码 5](#5) 的错误。 这是故意这样做的，目的是防止某些退出代码被人为产生，例如[退出代码 -14](#-14)。
 
 :::
 
 ## 退出码列表 {#table}
 
-下表列出了每个退出码的来源（可能出现的位置）和简短说明。 该表没有列出 [`require()`](/ref/core-debug#require) 的退出码，因为它是根据具体的 `error` 消息 [String][p] 生成的。
+下表列出了每个退出码的来源（可能出现的位置）和简短说明。 该表没有列出 [`require()`](/zh-cn/ref/core-debug#require) 的退出码，因为它是根据具体的 `error` 消息 [String][p] 生成的。
 
 | 退出码                                                                                              | 来源                              | 说明                                     |
 | :----------------------------------------------------------------------------------------------- | :------------------------------ | :------------------------------------- |
@@ -78,11 +78,11 @@ TON 区块链保留从 $0$ 到 $127$的退出码值，而 Tact 使用从 $128$ �
 
 :::note
 
-  了解更多有关期望特定退出码的信息：[故意出错的事务](/book/debug#tests-errors)。
+  了解更多有关期望特定退出码的信息：[故意出错的事务](/zh-cn/book/debug#tests-errors)。
 
 :::
 
-此外， 我们可以查看[发送消息到合约](/book/debug#tests-end)的结果，并发现每个交易的阶段及其值。 包括[计算阶段](#compute)(#compute)(或[行动阶段](#action))的退出(或结果)代码。
+此外， 我们可以查看[发送消息到合约](/zh-cn/book/debug#tests-end)的结果，并发现每个交易的阶段及其值。 包括[计算阶段](#compute)(#compute)(或[行动阶段](#action))的退出(或结果)代码。
 
 请注意，为了做到这一点，您必须先进行几种类型的检查才能做到：
 
@@ -279,13 +279,13 @@ contract VibeCheck {
 
 ### 8: Cell overflow {#8}
 
-来自书的[Cells, Builders and Slices page](/book/cells#cells)
+来自书的[Cells, Builders and Slices page](/zh-cn/book/cells#cells)
 
-> [`cell{:tact}`][cell]是一种[基元][p]和数据结构，它[通常](/book/cells#cells-kinds)由最多 $1023$ 个连续排列的位和最多 $4$ 个指向其他cell的引用（refs）组成。
+> [`cell{:tact}`][cell]是一种[基元][p]和数据结构，它[通常](/zh-cn/book/cells#cells-kinds)由最多 $1023$ 个连续排列的位和最多 $4$ 个指向其他cell的引用（refs）组成。
 
 要构建一个 [`cellent{:tact}`][cell], 使用 [`Builder{:tact}`][builder] 如果尝试存储的数据超过 $1023$ 位，或对其他cell的引用超过 $4$ ，则会出现退出码为 $8$ 的错误："`Cell overflow`。
 
-这个错误可以由[手动construction](/book/cells#cnp-manual y) 通过[relevant `.loadSomething()`方法](/ref/core-cells) 或[使用结构和消息及其方便方法](/book/cells#cnp-structs) 触发。
+这个错误可以由[手动construction](/zh-cn/book/cells#cnp-manual y) 通过[relevant `.loadSomething()`方法](/zh-cn/ref/core-cells) 或[使用结构和消息及其方便方法](/zh-cn/book/cells#cnp-structs) 触发。
 
 ```tact
 // Too much bits
@@ -317,13 +317,13 @@ try {
 
 ### 9: Cell underflow {#9}
 
-来自书的[Cells, Builders and Slices page](/book/cells#cells)
+来自书的[Cells, Builders and Slices page](/zh-cn/book/cells#cells)
 
-> `Cell{:tact}`是一种[基元][p]和数据结构，它[通常](/book/cells#cells-kinds)由最多 $1023$ 个连续排列的位和最多 $4$ 个指向其他cell的引用（refs）组成。
+> `Cell{:tact}`是一种[基元][p]和数据结构，它[通常](/zh-cn/book/cells#cells-kinds)由最多 $1023$ 个连续排列的位和最多 $4$ 个指向其他cell的引用（refs）组成。
 
 若要解析[`cell{:tact}`][cell]，请使用 [`slice{:tact}`][slice] 如果你试图加载比`slice{:tact}`更多的数据或引用，则退出码 $9$ 的错误就会抛出：“cell下溢”。
 
-此错误的最常见原因是cell的预期内存布局和实际内存布局不匹配， 因此建议[使用结构和消息进行解析](/book/cells#cnp-structs) ，而不是[手动解析](/book/cells#cnp-manualy) 通过 [relevant `. oadSomething()` 方法](/ref/core-cells)。
+此错误的最常见原因是cell的预期内存布局和实际内存布局不匹配， 因此建议[使用结构和消息进行解析](/zh-cn/book/cells#cnp-structs) ，而不是[手动解析](/zh-cn/book/cells#cnp-manualy) 通过 [relevant `. oadSomething()` 方法](/zh-cn/ref/core-cells)。
 
 ```tact
 // Too few bits
@@ -343,7 +343,7 @@ try {
 
 ### 10: Dictionary error {#10}
 
-在 Tact 中，[`map<K, V>{:tact}`](/book/maps) 类型是对 [FunC 的 "hash" map 字典](https://docs.ton.org/develop/func/dictionaries#hashmap) 和 [TL-B][tlb] 及 [TVM][tvm] 的底层 [`HashmapE` 类型](https://docs.ton.org/develop/data-formats/tl-b-types#hashmap) 的一种抽象。
+在 Tact 中，[`map<K, V>{:tact}`](/zh-cn/book/maps) 类型是对 [FunC 的 "hash" map 字典](https://docs.ton.org/develop/func/dictionaries#hashmap) 和 [TL-B][tlb] 及 [TVM][tvm] 的底层 [`HashmapE` 类型](https://docs.ton.org/develop/data-formats/tl-b-types#hashmap) 的一种抽象。
 
 如果不正确地操纵字典，如对其内存布局的错误假设， 退出码 $10$ 出错：\`字典错误'。 请注意，除非您自己使用 [Fift 和 TVM assembly](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) ，否则您无法获得此错误：
 
@@ -393,7 +393,7 @@ try {
 
 但是这个代码并不会立即按原样显示——而是应用了按位非运算，从而将值从$13$变为$-14$。 只有那时才显示代码。
 
-这样做是为了防止在用户合约中人为地生成结果代码 ($-14$)，因为所有可以[抛出退出码](/ref/core-debug)的函数只能指定从 $0$ 到 $65535$ （含）范围内的整数。
+这样做是为了防止在用户合约中人为地生成结果代码 ($-14$)，因为所有可以[抛出退出码](/zh-cn/ref/core-debug)的函数只能指定从 $0$ 到 $65535$ （含）范围内的整数。
 
 ```tact
 try {
@@ -409,7 +409,7 @@ try {
 
 ### 14: Virtualization error {#14}
 
-虚拟化错误，与 [prunned branch cells](/book/cells#cells-kinds) 有关。 保留，但从未抛出。
+虚拟化错误，与 [prunned branch cells](/zh-cn/book/cells#cells-kinds) 有关。 保留，但从未抛出。
 
 ## 行动阶段
 
@@ -419,7 +419,7 @@ try {
 
 ### 32: Action list is invalid {#32}
 
-如果操作列表包含[外来的cell](/book/cells#cells-kinds)，则操作项cell没有引用，或者某些操作项cell无法解析， 退出码 $32$ 出错："行动列表无效"。
+如果操作列表包含[外来的cell](/zh-cn/book/cells#cells-kinds)，则操作项cell没有引用，或者某些操作项cell无法解析， 退出码 $32$ 出错："行动列表无效"。
 
 :::note
 
@@ -441,7 +441,7 @@ repeat (256) {
 
 ### 34: Invalid or unsupported action {#34}
 
-此刻只有四个支持的动作：更改合约代码，发送一条消息， 保留特定数量的 [nanoToncoins](/book/integers#nanotoncoin) 并更改library cell。 如果指定动作有任何问题 (无效消息，不支持的动作等)，则退出码 $34$ 的错误将被抛出：\`无效或不支持的动作'。
+此刻只有四个支持的动作：更改合约代码，发送一条消息， 保留特定数量的 [nanoToncoins](/zh-cn/book/integers#nanotoncoin) 并更改library cell。 如果指定动作有任何问题 (无效消息，不支持的动作等)，则退出码 $34$ 的错误将被抛出：\`无效或不支持的动作'。
 
 ```tact
 // For example, let's try to send an ill-formed message:
@@ -459,23 +459,23 @@ nativeSendMessage(emptyCell(), 0); // won't fail in compute phase,
 
 :::note
 
-  如果设置了[可选标记 +2](/book/message-mode#optional-flags)，则不会抛出此错误，也不会发送给定的信息。
+  如果设置了[可选标记 +2](/zh-cn/book/message-mode#optional-flags)，则不会抛出此错误，也不会发送给定的信息。
 
 :::
 
 ### 37: Not enough Toncoin {#37}
 
-如果带有[基本模式 64](/book/message-mode#base-modes)设置的入站消息的所有资金已被消耗，并且没有足够的资金支付失败操作的费用，或者提供的值的 [TL-B][tlb] 布局（[`CurrencyCollection`](https://docs.ton.org/develop/data-formats/msg-tlb#currencycollection)）无效，或者没有足够的资金支付[转发费用](https://docs.ton.org/develop/smart-contracts/guidelines/processing)，或在扣除费用后资金不足，则会抛出错误，退出码为 $37$：`Not enough Toncoin`。
+如果带有[基本模式 64](/zh-cn/book/message-mode#base-modes)设置的入站消息的所有资金已被消耗，并且没有足够的资金支付失败操作的费用，或者提供的值的 [TL-B][tlb] 布局（[`CurrencyCollection`](https://docs.ton.org/develop/data-formats/msg-tlb#currencycollection)）无效，或者没有足够的资金支付[转发费用](https://docs.ton.org/develop/smart-contracts/guidelines/processing)，或在扣除费用后资金不足，则会抛出错误，退出码为 $37$：`Not enough Toncoin`。
 
 :::note
 
-  如果设置了[可选标记 +2](/book/message-mode#optional-flags)，则不会抛出此错误，也不会发送给定的信息。
+  如果设置了[可选标记 +2](/zh-cn/book/message-mode#optional-flags)，则不会抛出此错误，也不会发送给定的信息。
 
 :::
 
 ### 38: Not enough extra currencies {#38}
 
-除了本地货币Toncoin外，TON区块链支持最多 $2^{32}$ 种额外货币。 它们与创建新的[Jetton](/cookbook/jettons) 不同，因为额外的货币是原生支持的——可以在发送给另一个合约的内部消息中，除了 Toncoin 金额之外，额外指定一个额外货币金额的 [`HashmapE`](https://docs.ton.org/develop/data-formats/tl-b-types#hashmap)。 与 Jettons 不同，额外货币只能存储和转移，没有任何其他功能。
+除了本地货币Toncoin外，TON区块链支持最多 $2^{32}$ 种额外货币。 它们与创建新的[Jetton](/zh-cn/cookbook/jettons) 不同，因为额外的货币是原生支持的——可以在发送给另一个合约的内部消息中，除了 Toncoin 金额之外，额外指定一个额外货币金额的 [`HashmapE`](https://docs.ton.org/develop/data-formats/tl-b-types#hashmap)。 与 Jettons 不同，额外货币只能存储和转移，没有任何其他功能。
 
 目前，TON 区块链上**没有额外的货币**，但当没有足够的额外货币来发送指定数量的货币时，退出代码 $38$ 已被保留：没有足够的额外货币"。
 
@@ -492,7 +492,7 @@ nativeSendMessage(emptyCell(), 0); // won't fail in compute phase,
 
 :::note
 
-  如果多次尝试发送消息失败，并且设置了[可选标记 +2](/book/message-mode#optional-flags)，则不会抛出此错误，也不会发送给定的信息。
+  如果多次尝试发送消息失败，并且设置了[可选标记 +2](/zh-cn/book/message-mode#optional-flags)，则不会抛出此错误，也不会发送给定的信息。
 
 :::
 
@@ -520,13 +520,13 @@ nativeSendMessage(emptyCell(), 0); // won't fail in compute phase,
 
 - `max_msg_bits` 等于 $2^{21}$ — 消息的最大大小（位）。
 - `max_msg_cells`等于2^{13}$ — 最高数量的 [cells][cell] 一个消息可以占用。
-- `max_library_cells` 等于 $1000$ - 可用作[库参考cells](/book/cells#cells-kinds)的[cells][cell]的最大数量。
+- `max_library_cells` 等于 $1000$ - 可用作[库参考cells](/zh-cn/book/cells#cells-kinds)的[cells][cell]的最大数量。
 - `max_vm_data_depth` 等于 $2^{9}$ — 最大 [cells][cell] 消息和帐户状态深度。
 - `ext_msg_limits.max_size` 等于 $65535$ - 外部信息的最大位数。
-- `ext_msg_limits.max_depth` 等于2 ^{9}$ — 最大外部消息 [depth](/book/cells#cells-representation).
+- `ext_msg_limits.max_depth` 等于2 ^{9}$ — 最大外部消息 [depth](/zh-cn/book/cells#cells-representation).
 - `max_acc_state_cells` 等于2 ^{16}$ — 最高数量的 [cells][cell] 账户状态可以占用。
 - `max_acc_state_bits` 等于 $2^{16} \times 1023$ — 帐户状态的最大大小（位）。
-- `max_acc_public_libraries` 等于 $2^{8}$，即账户状态在[主链](/book/masterchain)上可使用的[库引用单元](/book/cells#cells-kinds)的最大数量。
+- `max_acc_public_libraries` 等于 $2^{8}$，即账户状态在[主链](/zh-cn/book/masterchain)上可使用的[库引用单元](/zh-cn/book/cells#cells-kinds)的最大数量。
 - `deleger_out_queue_size_limit` 等于2 ^{8}$ — — 最大数量的出站消息队列(关于验证器和校验器)。
 
 ## Tact 编译器
@@ -535,7 +535,7 @@ Tact 使用从 $128$ 到 $255$的退出码。 请注意，Tact 使用的退出�
 
 ### 128: Null reference exception {#128}
 
-如果有一个非空断言，例如 [`!!{:tact}`](/book/operators#unary-non-null-assert)操作符，而检查值是 [`null{:tact}`](/book/optionals)，则会抛出一个退出码为 $128$ 的错误："空引用异常"。
+如果有一个非空断言，例如 [`!!{:tact}`](/zh-cn/book/operators#unary-non-null-assert)操作符，而检查值是 [`null{:tact}`](/zh-cn/book/optionals)，则会抛出一个退出码为 $128$ 的错误："空引用异常"。
 
 ```tact
 let gotcha: String? = null;
@@ -564,7 +564,7 @@ import "@stdlib/deploy";
 contract Dummy with Deployable {}
 ```
 
-如果尝试发送任何消息，除了 [`@stdlib/deploy`](/ref/stdlib-deploy)提供的 [`部署{:tact}`](/ref/stdlib-deploy#deploy)，合约将没有接收器，因此会抛出错误，退出码为 $130$。
+如果尝试发送任何消息，除了 [`@stdlib/deploy`](/zh-cn/ref/stdlib-deploy)提供的 [`部署{:tact}`](/zh-cn/ref/stdlib-deploy#deploy)，合约将没有接收器，因此会抛出错误，退出码为 $130$。
 
 ### 131: Constraints error {#131}
 
@@ -572,7 +572,7 @@ contract Dummy with Deployable {}
 
 ### 132: Access denied {#132}
 
-如果使用[`@stdlib/ownable`](/ref/stdlib-ownable)库中的[`Ownable{:tact}`](/ref/stdlib-ownable#ownable) [trait][ct]，由它提供的辅助函数 `requireOwner(){:tact}` 会在入站消息的发件人与指定的所有者不匹配时抛出一个退出码为 $132$ 的错误：`Access denied`。
+如果使用[`@stdlib/ownable`](/zh-cn/ref/stdlib-ownable)库中的[`Ownable{:tact}`](/zh-cn/ref/stdlib-ownable#ownable) [trait][ct]，由它提供的辅助函数 `requireOwner(){:tact}` 会在入站消息的发件人与指定的所有者不匹配时抛出一个退出码为 $132$ 的错误：`Access denied`。
 
 ```tact
 import "@stdlib/ownable";
@@ -604,9 +604,9 @@ contract Hal9k with Ownable {
 
 以下是Tact 中的一些函数，这些函数可能导致此退出码出现错误：
 
-1. [`Int.toFloatString(digits){:tact}`](/ref/core-strings#inttofloatstring)：如果 `digits` 不在区间：$0 < $ `digits` $ < 78$。
+1. [`Int.toFloatString(digits){:tact}`](/zh-cn/ref/core-strings#inttofloatstring)：如果 `digits` 不在区间：$0 < $ `digits` $ < 78$。
 
-2. [`String.fromBase64(){:tact}`](/ref/core-strings#stringfrombase64)和[`Slice.fromBase64(){:tact}`](/ref/core-strings#slicefrombase64)：如果给定的[`String{:tact}`][p]或[`Slice{:tact}`][slice]包含非 Base64 字符。
+2. [`String.fromBase64(){:tact}`](/zh-cn/ref/core-strings#stringfrombase64)和[`Slice.fromBase64(){:tact}`](/zh-cn/ref/core-strings#slicefrombase64)：如果给定的[`String{:tact}`][p]或[`Slice{:tact}`][slice]包含非 Base64 字符。
 
 ```tact
 try {
@@ -626,7 +626,7 @@ try {
 类型 [`Address{:tact}`][p] 的值在如下情况下有效：
 
 - 它占用 $267$ 位： $11$ 位用于链 ID 前缀， $256$ 位用于[地址本身](https://docs.ton.org/learn/overviews/addresses#address-of-smart-contract)。
-- 它属于两者之一：basechain(ID $0$) 或masterchain (ID $-1$)，后者需要启用 [masterchain support](/book/masterchain#support)。
+- 它属于两者之一：basechain(ID $0$) 或masterchain (ID $-1$)，后者需要启用 [masterchain support](/zh-cn/book/masterchain#support)。
 
 如果 [`地址{:tact}`][p]无效，则会出现退出码为 $136$ 的错误：`无效地址`。
 
@@ -644,7 +644,7 @@ try {
 
 ### 137: Masterchain support is not enabled for this contract {#137}
 
-在未[启用主链支持](/book/masterchain#support)的情况下，任何指向主链（ID $-1$）或以其他方式与之交互的尝试都会产生异常，退出码为 $137$："此合约未启用主链支持"。
+在未[启用主链支持](/zh-cn/book/masterchain#support)的情况下，任何指向主链（ID $-1$）或以其他方式与之交互的尝试都会产生异常，退出码为 $137$："此合约未启用主链支持"。
 
 ```tact
 let masterchainID = -1;
@@ -657,12 +657,12 @@ try {
 }
 ```
 
-[p]: /book/types#primitive-types
-[ct]: /book/types#composite-types
-[cell]: /book/cells
-[builder]: /book/cells#builders
-[slice]: /book/cells#slices
-[message]: /book/structs-and-messages#messages
+[p]: /zh-cn/book/types#primitive-types
+[ct]: /zh-cn/book/types#composite-types
+[cell]: /zh-cn/book/cells
+[builder]: /zh-cn/book/cells#builders
+[slice]: /zh-cn/book/cells#slices
+[message]: /zh-cn/book/structs-and-messages#messages
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [bp]: https://github.com/ton-org/blueprint

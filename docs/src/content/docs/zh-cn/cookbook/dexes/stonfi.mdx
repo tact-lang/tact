@@ -17,9 +17,9 @@ sidebar:
 
 在进一步介绍之前，请自己熟悉以下内容：
 
-- [接收消息](/book/receive/)
-- [发送消息](/book/send/)
-- [可替代代币（Jettons）](/cookbook/jettons/)
+- [接收消息](/zh-cn/book/receive/)
+- [发送消息](/zh-cn/book/send/)
+- [可替代代币（Jettons）](/zh-cn/cookbook/jettons/)
 - [STONFi 文档：术语表](https://docs.ston.fi/docs/user-section/glossary)
 - [STON.fi文档：架构](https://docs.ston.fi/docs/developer-section/architecture)
 
@@ -665,7 +665,7 @@ const FeeSingleSideProvideLpToncoin: Int = ton("0.01") + ton("0.8");
 
 ### 提取流动资金
 
-要提取流动性，需要燃烧的 LP 代币。 您可以参考 [Jettons Cookbook 页面中有关 Jetton 销毁的相关部分](/cookbook/jettons#burning-jetton) 的示例。 然而，应该添加比正常销毁更多的 Toncoin，因为如果添加的 Toncoin 太少，可能会导致 LP 代币被销毁，但不会从池中发送任何（或仅部分）流动性。 因此，请考虑至少附上 $0.5$ Toncoin - 超额部分将予以退还。
+要提取流动性，需要燃烧的 LP 代币。 您可以参考 [Jettons Cookbook 页面中有关 Jetton 销毁的相关部分](/zh-cn/cookbook/jettons#burning-jetton) 的示例。 然而，应该添加比正常销毁更多的 Toncoin，因为如果添加的 Toncoin 太少，可能会导致 LP 代币被销毁，但不会从池中发送任何（或仅部分）流动性。 因此，请考虑至少附上 $0.5$ Toncoin - 超额部分将予以退还。
 
 :::tip[Hey there!]
 
@@ -673,8 +673,8 @@ const FeeSingleSideProvideLpToncoin: Int = ton("0.01") + ton("0.8");
 
 :::
 
-[struct]: /book/structs-and-messages#structs
-[message]: /book/structs-and-messages#messages
+[struct]: /zh-cn/book/structs-and-messages#structs
+[message]: /zh-cn/book/structs-and-messages#messages
 [testnet]: https://docs.ton.org/v3/documentation/smart-contracts/getting-started/testnet
 [jetton-addr-online]: https://docs.ton.org/develop/dapps/asset-processing/jettons#retrieving-jetton-wallet-addresses-for-a-given-user
 [jetton-addr-offline]: https://docs.ton.org/v3/guidelines/dapps/cookbook#how-to-calculate-users-jetton-wallet-address-offline

@@ -3,7 +3,7 @@ title: "@stdlib/stoppable"
 description: 提供允许停止合同的 traits ，这对紧急或维护模式非常有用
 ---
 
-提供[traits](/book/types#composite-types)，允许停止[合约](/book/contracts)。 适用于应急或维护模式。 需要来自 [`@stdlib/ownable`](/ref/stdlib-ownable) 的 [`Ownable{:tact}`](/ref/stdlib-ownable#ownable)trait。 该trait只管理合约中的一个标记 `stopped`，处理停止状态必须在合约本身中完成。
+提供[traits](/zh-cn/book/types#composite-types)，允许停止[合约](/zh-cn/book/contracts)。 适用于应急或维护模式。 需要来自 [`@stdlib/ownable`](/zh-cn/ref/stdlib-ownable) 的 [`Ownable{:tact}`](/zh-cn/ref/stdlib-ownable#ownable)trait。 该trait只管理合约中的一个标记 `stopped`，处理停止状态必须在合约本身中完成。
 
 要使用该库，请导入 `@stdlib/stoppable`：
 
@@ -15,7 +15,7 @@ import "@stdlib/stoppable"; // this would automatically import @stdlib/ownable t
 
 ### Stoppable
 
-[Trait](/book/types#composite-types) `Stoppable{:tact}` 实现了一个接收者，用于接收所有者可以发送的 [Message](/book/structs-and-messages#messages) 消息 "Stop"。它还实现了 `stopped(){:tact}` [getter 函数](/book/functions#getter-functions)，如果合约已停止则返回 `true{:tact}`（否则返回 `false{:tact}`），并提供了私有（非 getter）函数 `requireNotStopped(){:tact}` 和 `requireStopped(){:tact}`。
+[Trait](/zh-cn/book/types#composite-types) `Stoppable{:tact}` 实现了一个接收者，用于接收所有者可以发送的 [Message](/zh-cn/book/structs-and-messages#messages) 消息 "Stop"。它还实现了 `stopped(){:tact}` [getter 函数](/zh-cn/book/functions#getter-functions)，如果合约已停止则返回 `true{:tact}`（否则返回 `false{:tact}`），并提供了私有（非 getter）函数 `requireNotStopped(){:tact}` 和 `requireStopped(){:tact}`。
 
 源码:
 
@@ -65,7 +65,7 @@ contract MyContract with Stoppable {
 
 ### Resumable
 
-`Resumable{:tact}` [trait](/book/types#composite-types) 扩展了 [`Stoppable{:tact}`](#stoppable) trait，允许恢复 [合约](/book/contracts) 的执行。
+`Resumable{:tact}` [trait](/zh-cn/book/types#composite-types) 扩展了 [`Stoppable{:tact}`](#stoppable) trait，允许恢复 [合约](/zh-cn/book/contracts) 的执行。
 
 源码:
 

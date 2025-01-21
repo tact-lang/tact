@@ -5,7 +5,7 @@ description: Tact 核心库中的各种编译时全局函数
 
 import { Badge } from '@astrojs/starlight/components';
 
-此页面列出了所有内置的[全局静态函数](/book/functions#global-static-functions)，这些函数在构建 Tact 项目时进行求值，并且无法与非常量的运行时数据一起使用。 这些函数通常被称为 "编译时函数(compile-time functions)"。
+此页面列出了所有内置的[全局静态函数](/zh-cn/book/functions#global-static-functions)，这些函数在构建 Tact 项目时进行求值，并且无法与非常量的运行时数据一起使用。 这些函数通常被称为 "编译时函数(compile-time functions)"。
 
 ## address
 
@@ -169,7 +169,7 @@ contract Example {
 fun ton(value: String): Int;
 ```
 
-一个编译时函数，将给定的 Toncoin `value` 从人类可读格式 [`String{:tact}`][p] 转换为 [nanoToncoin](/book/integers#nanotoncoin) [`Int{:tact}`][int] 格式。
+一个编译时函数，将给定的 Toncoin `value` 从人类可读格式 [`String{:tact}`][p] 转换为 [nanoToncoin](/zh-cn/book/integers#nanotoncoin) [`Int{:tact}`][int] 格式。
 
 用法示例：
 
@@ -183,10 +183,10 @@ contract Example {
 }
 ```
 
-[p]: /book/types#primitive-types
-[bool]: /book/types#booleans
-[int]: /book/integers
-[cell]: /book/cells#cells
-[slice]: /book/cells#slices
-[boc]: /book/cells#cells-boc
+[p]: /zh-cn/book/types#primitive-types
+[bool]: /zh-cn/book/types#booleans
+[int]: /zh-cn/book/integers
+[cell]: /zh-cn/book/cells#cells
+[slice]: /zh-cn/book/cells#slices
+[boc]: /zh-cn/book/cells#cells-boc
 [crc]: https://en.wikipedia.org/wiki/Cyclic_redundancy_check

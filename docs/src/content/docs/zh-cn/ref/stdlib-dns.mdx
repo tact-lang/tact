@@ -31,7 +31,7 @@ struct DNSResolveResult {
 native dnsStringToInternal(str: String): Slice?;
 ```
 
-将一个 DNS 字符串转换为 [`Slice{:tact}`][slice] 或 [`null{:tact}`](/book/optionals)，如果不可能转换则返回 [`null{:tact}`]。
+将一个 DNS 字符串转换为 [`Slice{:tact}`][slice] 或 [`null{:tact}`](/zh-cn/book/optionals)，如果不可能转换则返回 [`null{:tact}`]。
 
 源代码 (FunC)：[dns.fc#L1](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc#L1)
 
@@ -42,7 +42,7 @@ native dnsStringToInternal(str: String): Slice?;
 native dnsInternalNormalize(src: Slice): Slice;
 ```
 
-规范化 [`Slice{:tact}`][slice] 的内部 DNS 表示。 传入的 [`Slice{:tact}`][slice] 不能有任何引用，否则[ext code 134](/book/exit-codes#134)将会抛出：`Invalid argument`。
+规范化 [`Slice{:tact}`][slice] 的内部 DNS 表示。 传入的 [`Slice{:tact}`][slice] 不能有任何引用，否则[ext code 134](/zh-cn/book/exit-codes#134)将会抛出：`Invalid argument`。
 
 源代码 (FunC)：[dns.fc#L125](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc#L125)
 
@@ -145,7 +145,7 @@ fun dnsResolveWallet(address: Address): Cell {
 
 Trait `DNSResolver` 为 DNS 解析提供了两个辅助函数：
 
-1. [getter函数](/book/functions#getter-functions) `dnsresolve(){:tact}`，对应于其[FunC变体](https://docs.ton.org/develop/howto/subresolvers#dnsresolve-code)。
+1. [getter函数](/zh-cn/book/functions#getter-functions) `dnsresolve(){:tact}`，对应于其[FunC变体](https://docs.ton.org/develop/howto/subresolvers#dnsresolve-code)。
 2. 虚函数 `doResolveDNS(){:tact}`，它通过子域 [`Slice{:tact}`][slice] 位创建一个 [DNSResolveResult](#dnsresolveresult) 结构体。
 
 源码:
@@ -190,6 +190,6 @@ contract ExampleContract with DNSResolver {
 - [dns.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/dns.tact)
 - [dns.fc](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc)
 
-[p]: /book/types#primitive-types
-[cell]: /book/cells#cells
-[slice]: /book/cells#slices
+[p]: /zh-cn/book/types#primitive-types
+[cell]: /zh-cn/book/cells#cells
+[slice]: /zh-cn/book/cells#slices

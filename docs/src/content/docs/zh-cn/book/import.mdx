@@ -5,7 +5,7 @@ description: Tact 允许您导入 Tact 和 FunC 代码，并拥有一套通用�
 
 Tact 允许您导入 Tact 和 [FunC](https://docs.ton.org/develop/func/overview) 代码--任何给定的 `.tact` 或 `.fc`/`.func` 文件都可以使用 `import{:tact}` 关键字导入到您的项目中。
 
-此外，Tact 编译器还拥有一套通用的标准库，这些标准库捆绑在 Tact 编译器中，但并不立即包含在 Tact 编译器中，请参阅 [标准库概述](/ref/standard-libraries)。
+此外，Tact 编译器还拥有一套通用的标准库，这些标准库捆绑在 Tact 编译器中，但并不立即包含在 Tact 编译器中，请参阅 [标准库概述](/zh-cn/ref/standard-libraries)。
 
 :::caution
 
@@ -39,7 +39,7 @@ import "./relative/path/to/the/target/func/file.fc";
 import "../subfolder/imported/func/file.fc";
 ```
 
-但要使用此类文件中的函数，必须先将它们声明为 `native` 函数。 例如，当标准库 [@stdlib/dns](/ref/stdlib-dns) 使用 `dns.fc` FunC 文件时，它会将 FunC 函数映射到 Tact 函数，如下所示：
+但要使用此类文件中的函数，必须先将它们声明为 `native` 函数。 例如，当标准库 [@stdlib/dns](/zh-cn/ref/stdlib-dns) 使用 `dns.fc` FunC 文件时，它会将 FunC 函数映射到 Tact 函数，如下所示：
 
 ```tact
 // FunC code located in a file right next to the current Tact one:
@@ -52,4 +52,4 @@ native dnsStringToInternal(str: String): Slice?;
 
 ## 标准库
 
-参见 [标准库概述](/ref/standard-libraries)。
+参见 [标准库概述](/zh-cn/ref/standard-libraries)。

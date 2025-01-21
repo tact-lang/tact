@@ -65,7 +65,7 @@ abs(-(-(-42))); // 42
 fun log(num: Int, base: Int): Int;
 ```
 
-计算并返回数字 `num` $> 0$ 以 `base` $≥1$ 为底的 [logarithm](https://en.wikipedia.org/wiki/Logarithm) 值。 结果[四舍五入](https://en.wikipedia.org/wiki/Rounding#Rounding_down)。 传入一个非正数 `num` 值或 `base` 小于 $1$ 会产生错误[退出码 5](/book/exit-codes#5)：`Integer out of expected range`。
+计算并返回数字 `num` $> 0$ 以 `base` $≥1$ 为底的 [logarithm](https://en.wikipedia.org/wiki/Logarithm) 值。 结果[四舍五入](https://en.wikipedia.org/wiki/Rounding#Rounding_down)。 传入一个非正数 `num` 值或 `base` 小于 $1$ 会产生错误[退出码 5](/zh-cn/book/exit-codes#5)：`Integer out of expected range`。
 
 示例用法：
 
@@ -119,9 +119,9 @@ log2(1024); // 10, as 2^10 is 1024
 fun pow(base: Int, exp: Int): Int;
 ```
 
-计算并返回涉及两个数字的 [指数运算](https://en.wikipedia.org/wiki/Exponentiation)：`base` 和指数（或 _幂_）`exp`。 指数 `exp` 必须是非负数，否则将产生[退出码 5](/book/exit-codes#5)错误：`Integer out of expected range`。
+计算并返回涉及两个数字的 [指数运算](https://en.wikipedia.org/wiki/Exponentiation)：`base` 和指数（或 _幂_）`exp`。 指数 `exp` 必须是非负数，否则将产生[退出码 5](/zh-cn/book/exit-codes#5)错误：`Integer out of expected range`。
 
-请注意，该函数在运行时和[编译时](/ref/core-comptime)均有效。
+请注意，该函数在运行时和[编译时](/zh-cn/ref/core-comptime)均有效。
 
 示例用法：
 
@@ -148,7 +148,7 @@ contract Example {
 
 :::note
 
-  仅在编译时工作的函数列表：[API Comptime](/ref/core-comptime)。
+  仅在编译时工作的函数列表：[API Comptime](/zh-cn/ref/core-comptime)。
 
 :::
 
@@ -158,7 +158,7 @@ contract Example {
 fun pow2(exp: Int): Int;
 ```
 
-与 [`pow(){:tact}`](#pow) 类似，但将 `base` 设为 $2$。 在运行时和 [编译时](/ref/core-comptime) 均可使用。
+与 [`pow(){:tact}`](#pow) 类似，但将 `base` 设为 $2$。 在运行时和 [编译时](/zh-cn/ref/core-comptime) 均可使用。
 
 示例用法：
 
@@ -185,7 +185,7 @@ contract Example {
 
 :::note
 
-  仅在编译时工作的函数列表：[API Comptime](/ref/core-comptime)。
+  仅在编译时工作的函数列表：[API Comptime](/zh-cn/ref/core-comptime)。
 
 :::
 
@@ -236,7 +236,7 @@ contract Showcase {
 fun checkDataSignature(data: Slice, signature: Slice, public_key: Int): Bool;
 ```
 
-检查 `data` 的 [Ed25519][ed] `signature`，使用 `public_key`，类似于 [`checkSignature(){:tact}`](#checksignature)。 如果 `data` 的位长不能被 $8$整除，该函数将产生错误[退出码 9](/book/exit-codes#9)：`Cell underflow`。 验证本身是间接进行的：根据  `data` 的[SHA-256][sha-2] 哈希值进行验证。
+检查 `data` 的 [Ed25519][ed] `signature`，使用 `public_key`，类似于 [`checkSignature(){:tact}`](#checksignature)。 如果 `data` 的位长不能被 $8$整除，该函数将产生错误[退出码 9](/zh-cn/book/exit-codes#9)：`Cell underflow`。 验证本身是间接进行的：根据  `data` 的[SHA-256][sha-2] 哈希值进行验证。
 
 如果签名有效，则返回 `true{:tact}`，否则返回 `false{:tact}`。
 
@@ -259,11 +259,11 @@ fun sha256(data: String): Int;
 
 从传递的 [`Slice{:tact}`][slice] 或 [`String{:tact}`][p]`data`计算[SHA-256][sha-2] 哈希值，并以 $256$-bit 无符号 [`Int{:tact}`][int]的形式返回。
 
-如果 `data` 是一个 [`String{:tact}`][p]，它的位数应能被 $8$除，如果它是一个 [`Slice{:tact}`][slice]，它**也必须**没有引用（即总共只有最多 $1023$ 位数据）。 该函数尽可能在 [编译时](/ref/core-comptime) 解析常量字符串值。
+如果 `data` 是一个 [`String{:tact}`][p]，它的位数应能被 $8$除，如果它是一个 [`Slice{:tact}`][slice]，它**也必须**没有引用（即总共只有最多 $1023$ 位数据）。 该函数尽可能在 [编译时](/zh-cn/ref/core-comptime) 解析常量字符串值。
 
 :::caution
 
-  如果[`String{:tact}`][p] 值在[编译时间](/ref/core-comptime)期间无法解析，则哈希值是由 [TVM][tvm] 本身在运行时计算的。 注意，通过 [TVM][tvm] 对超过 $128$ 字节的字符串进行哈希处理时，如果它们的前 $128$ 字节相同，可能会导致碰撞。
+  如果[`String{:tact}`][p] 值在[编译时间](/zh-cn/ref/core-comptime)期间无法解析，则哈希值是由 [TVM][tvm] 本身在运行时计算的。 注意，通过 [TVM][tvm] 对超过 $128$ 字节的字符串进行哈希处理时，如果它们的前 $128$ 字节相同，可能会导致碰撞。
 
   因此，选择尽可能使用静态的字符串。 如有疑问，请使用长度不超过 $128$ 字节的字符串。
 
@@ -278,10 +278,10 @@ sha256(someVariableElsewhere); // will try to resolve at compile-time,
                                // and fallback to run-time evaluation
 ```
 
-[p]: /book/types#primitive-types
-[bool]: /book/types#booleans
-[int]: /book/integers
-[slice]: /book/cells#slices
+[p]: /zh-cn/book/types#primitive-types
+[bool]: /zh-cn/book/types#booleans
+[int]: /zh-cn/book/integers
+[slice]: /zh-cn/book/cells#slices
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [ed]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
 [sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
