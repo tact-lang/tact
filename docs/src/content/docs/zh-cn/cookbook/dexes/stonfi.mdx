@@ -27,7 +27,7 @@ sidebar:
 
 在 [STON.fi 文档](https://docs.ston.fi/docs/developer-section/api-reference-v2/example_swap)中阅读更多关于 Swaps 的信息。
 
-Swaps使用 `StonfiSwap{:tact}` [Message][message] 和 \`SwapAdditionalData{:tact} [Struct][struct]
+Swaps使用 `StonfiSwap{:tact}` [Message][message] 和 `SwapAdditionalData{:tact}` [Struct][struct]
 
 ```tact
 /// https://docs.ston.fi/docs/developer-section/api-reference-v2/router#swap-0x6664de2a
@@ -423,7 +423,7 @@ const FeeSwapToncoinToJetton: Int = ton("0.3");
 
 STON.fi 允许您只指定一种代币来存入流动性--池将自动执行交换并铸造流动性提供者（LP）代币。 要做到这一点，您需要将 `ProvideLiquidity{:tact}` [Message][message] 的 `bothPositive` 字段设置为 `false{:tact}`。
 
-流动性存款使用 `ProvideLiquidity{:tact}` [Message][message] 和 \`ProvideLiquidityAdditionalData{:tact} [Struct][struct]
+流动性存款使用 `ProvideLiquidity{:tact}` [Message][message] 和 `ProvideLiquidityAdditionalData{:tact}` [Struct][struct]
 
 ```tact
 /// https://docs.ston.fi/docs/developer-section/api-reference-v2/router#provide_lp-0x37c096df

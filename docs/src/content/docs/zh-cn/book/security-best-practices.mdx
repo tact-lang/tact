@@ -291,7 +291,7 @@ contract Sample {
 
 ## 处理/发送退回消息
 
-发送反弹标志(bounce flag)设置为 `true{:tact}`的信息，这是 [`send(){:tact}`](/zh-cn/ref/core-common#send)函数的默认设置。 消息在合约执行失败后退出。 您可能希望通过在 [\`try...catch{:tact}\`\`](/zh-cn/book/statements#try-catch) 语句中封装代码来回滚合约状态，并根据您的逻辑进行一些额外处理，从而解决这个问题。
+发送反弹标志(bounce flag)设置为 `true{:tact}`的信息，这是 [`send(){:tact}`](/zh-cn/ref/core-common#send)函数的默认设置。 消息在合约执行失败后退出。 您可能希望通过在 [`try...catch{:tact}`](/zh-cn/book/statements#try-catch) 语句中封装代码来回滚合约状态，并根据您的逻辑进行一些额外处理，从而解决这个问题。
 
 ##### Do's ✅
 

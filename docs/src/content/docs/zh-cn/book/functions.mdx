@@ -142,23 +142,14 @@ contract Treasure {
 
 ### 明确解决方法 ID 碰撞的问题
 
-<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
 
-与 TVM 合约中的其他函数一样，getters 也有其_独特_的相关函数选择器，即一些整数 ID（称为_方法 ID_）。
-其中一些整数是为内部目的保留的，例如 -4, -3, -2, -1, 0 是保留 ID，而 
-常规函数（合约内部函数，不可从外部调用）通常由从 1 开始的后续（小）整数编号。
-默认情况下，获取器有相关的方法 ID，这些 ID 是使用 [CRC16](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) 算法从名称中导出的，具体如下：
-`crc16(<function_name>) & 0xffff) | 0x10000`。
-有时，这可能会使名称不同的获取器获得相同的方法 ID。
-如果出现这种情况，您可以重命名合约中的某些获取器，或
-以编译时表达式的形式手动指定获取器的方法 ID：
-其中一些整数是为内部目的保留的，例如，-4、-3、-2、-1、0 是保留的 ID， 
-常规函数（合同内部函数，不能从外部调用）通常由从 1 开始的后续（小）整数编号。
-默认情况下，获取器具有相关的方法 ID，这些 ID 是使用 [CRC16](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) 算法从其名称导出的，具体如下：
-CRC16(<function_name>) & 0xffff) | 0x10000\`。
-有时，这可以让不同名称的获取器使用相同的方法 ID。
-如果出现这种情况，您可以重命名合约的某些获取器，或者
-以编译时表达式的形式手动指定获取器的方法 ID，比如这样：
+与 TON 合约中的其他函数一样，getter 函数都有其 _唯一_ 的关联函数选择器，它们是 $19$ 位有符号整数标识符，通常称为 _方法 ID_。
+
+getter 的方法 ID 是使用 [CRC16](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) 算法从其名称派生的，如下所示：`(crc16(<function_name>) & 0xffff) | 0x10000`。此外，Tact 编译器有条件地保留一些方法 ID 用于[支持的接口的 getter](/book/contracts#interfaces)，即：$113617$ 用于 `supported_interfaces`，$115390$ 用于 `lazy_deployment_completed`，以及 $121275$ 用于 `get_abi_ipfs`。
+
+有时，不同名称的 getter 最终会得到相同的方法 ID。如果发生这种情况，您可以重命名某些 getter，或者手动指定方法 ID 作为[编译时](/zh-cn/ref/core-comptime)表达式，如下所示：
+
 
 ```tact
 contract ManualMethodId {

@@ -130,7 +130,7 @@ message MsgSerialization {
 这种序列化格式包括两个 [TL-B 字段](https://docs.ton.org/develop/data-formats/tl-b-language#field-definitions)：
 
 - `len`，一个 $4$位无符号大二进制整数，存储所提供值的字节长度
-- `value`，即所提供值的 8 \* len$ 位无符号大二进制表示法
+- `value`，即所提供值的 $8 * len$ 位无符号大二进制表示法
 
 也就是说，序列化为 `coins{:tact}` 的整数占用 $4$ 至 $124$ 位（`len`为$4$ 位，`value`为 $0$ 至 $15$ 字节），其值范围为 $0$ 至 $2^{120} - 1$ 之间。
 

@@ -70,7 +70,7 @@ fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool): Int
 
 请注意，`cells`和`bits`的数值被用来作为它们最大的数值加上 $1$的模块。 也就是说，如果指定的值高于[账户状态限制（`max_acc_state_cells`和`max_acc_state_bits`）](/zh-cn/book/exit-codes#50)中列出的值，其结果将与指定精确限制的结果相同。 此外，请确保您考虑到[与同一哈希的 cells 分离][deduplication]。
 
-试图指定负数的 `cells`、`bits` 或 `seconds` 会抛出异常[export code 5](/zh-cn/book/exit-codes#5)：\`整数超出预期范围'。
+试图指定负数的 `cells`、`bits` 或 `seconds` 会抛出异常[export code 5](/zh-cn/book/exit-codes#5)：`整数超出预期范围`。
 
 用法示例：
 
@@ -187,7 +187,7 @@ fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int;
 
 计算并返回一个出站消息的[转发费用][forward-fee]，该消息由给定数量的`cells`和`bits`组成，费用以[nanoToncoins][nanotoncoin]表示，类型为[`Int{:tact}`][int]。 如果`isMasterchain` 是 `true{:tact}`，则使用 [masterchain][masterchain] 的价格，否则 [basechain][basechain] 的价格。 当前价格来自 TON 区块链的[主链配置参数 24 和基链配置参数 25][param-24-25]。
 
-如果源地址和目的地址都在 [basechain][basechain]中，那么指定`isMasterchain` 为 `false{:tact}`。 否则，请指定\`true{:tact}'。
+如果源地址和目的地址都在 [basechain][basechain]中，那么指定`isMasterchain` 为 `false{:tact}`。 否则，请指定 `true{:tact}`。
 
 请注意，`cells` 和 `bits` 的值取其最大值加上 $1$。 也就是说，指定高于[账户状态限制（`max_msg_cells` 和 `max_msg_bits`）](/zh-cn/book/exit-codes#50)中所列值的值，会产生与指定精确限制相同的结果。
 
@@ -254,7 +254,7 @@ let lumpPrice = fee - feeNoLump;
 fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int;
 ```
 
-根据从传入信息中获取的 `fwdFee` 计算并返回传出信息的所谓 _original_ [转发费][forward-fee]，单位为 [nano Toncoins][nanotoncoin] [`Int{:tact}`][int]。 如果源地址和目的地址都在 [basechain][basechain]中，那么指定`isMasterchain` 为 `false{:tact}`。 否则，请指定\`true{:tact}'。
+根据从传入信息中获取的 `fwdFee` 计算并返回传出信息的所谓 _original_ [转发费][forward-fee]，单位为 [nano Toncoins][nanotoncoin] [`Int{:tact}`][int]。 如果源地址和目的地址都在 [basechain][basechain]中，那么指定`isMasterchain` 为 `false{:tact}`。 否则，请指定 `true{:tact}`。
 
 当发出的信息在很大程度上取决于收到的信息的结构，以至于无法单独使用 [`getForwardFee(){:tact}`](#getforwardfee) 来完全预测费用时，这个函数就非常有用。 即使可以，以 [nanoToncoin][nanotoncoin] 级别的精度计算精确费用也会非常昂贵，因此该函数给出的近似值通常已经足够好了。
 
@@ -509,7 +509,7 @@ nativeReserve(ton("0.1"), ReserveExact | ReserveBounceIfActionFail);
 fun parseStdAddress(slice: Slice): StdAddress;
 ```
 
-将包含地址的 [`Slice{:tact}`][slice] 转换为 `StdAddress{:tact} [Struct][s] 并返回它。 `StdAddress{:tact}\`是一个内置的 [Struct][s] 包含：
+将包含地址的 [`Slice{:tact}`][slice] 转换为 `StdAddress{:tact}` [Struct][s] 并返回它。 `StdAddress{:tact}` 是一个内置的 [Struct][s] 包含：
 
 | 字段          | 类型                             | 说明                                                |
 | :---------- | :----------------------------- | :------------------------------------------------ |
@@ -546,7 +546,7 @@ addr2 == addr; // true
 fun parseVarAddress(slice: Slice): VarAddress;
 ```
 
-将包含可变长度的地址的 [`Slice{:tact}`][slice] 转换为 `VarAddress{:tact} [Struct][s] 并返回它。 `VarAddress{:tact}\` 是一个内置的 [Struct][s] 由以下部分组成：
+将包含可变长度的地址的 [`Slice{:tact}`][slice] 转换为 `VarAddress{:tact}` [Struct][s] 并返回它。 `VarAddress{:tact}` 是一个内置的 [Struct][s] 由以下部分组成：
 
 | 字段          | 类型                           | 函数 "raw_reserve "大致等同于创建一个向外发送的消息，将指定的 "金额"[nanoToncoins](/zh-cn/book/integers#nanotoncoin)（或 "b " $-$ "金额"[nanoToncoins](/zh-cn/book/integers#nanotoncoin)，其中 "b "为余额）发送给自己。 这就确保了后续产出行动所花费的资金不会超过剩余资金。 |
 | :---------- | :--------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

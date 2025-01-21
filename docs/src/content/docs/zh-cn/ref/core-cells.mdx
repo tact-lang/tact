@@ -595,9 +595,9 @@ extends mutates fun loadCoins(self: Slice): Int;
 
 [`Slice{:tact}`][slice] 的扩展突变函数。
 
-加载并返回 [序列化](#builderstorecoins)一个范围为 $0 ... 的无符号 [`Int{:tact}`][int]值。 2^{120} - 1$ 来自 [`Slice{:tact}`][slice]。 此值通常代表 [nanoToncoins](/zh-cn/book/integers#nanotoncoin) 的金额。
+从[`Slice{:tact}`][slice]中加载并返回一个[序列化的](#builderstorecoins)无符号[`Int{:tact}`][int]值，范围为 $0 .. 2^{120} - 1$。此值通常代表 [nanoToncoins](/zh-cn/book/integers#nanotoncoin) 的金额。
 
-当 [\``Slice{:tact}`][slice]中不包含[`Int{:tact}`][int]时，尝试加载此类[`Int `][int]会产生异常，[退出码为 8](/zh-cn/book/exit-codes#8)：`Cell overflow`。
+当 [`Slice{:tact}`][slice]中不包含[`Int{:tact}`][int]时，尝试加载此类[`Int `][int]会产生异常，[退出码为 8](/zh-cn/book/exit-codes#8)：`Cell overflow`。
 
 尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：`Cell overflow`。
 
@@ -645,7 +645,7 @@ extends mutates fun loadRef(self: Slice): Cell;
 
 从 [`Slice{:tact}`][slice] 中加载下一个引用作为 [`cell{:tact}`][cell]。
 
-当 [`Cell{:tact}`][cell][slice{:tact}\`][slice]不包含该引用时，尝试加载该引用会产生异常，[退出码 8](/zh-cn/book/exit-codes#8)：`Cell overflow`。
+当 [`Cell{:tact}`][cell][`slice{:tact}`][slice]不包含该引用时，尝试加载该引用会产生异常，[退出码 8](/zh-cn/book/exit-codes#8)：`Cell overflow`。
 
 尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：`Cell underflow`。
 
@@ -670,11 +670,11 @@ ref1 == ref2; // false
 extends fun preloadRef(self: Slice): Cell;
 ```
 
-slice{:tact}\`][slice]的扩展函数。
+[`Slice{:tact}`][slice] 的扩展函数。
 
 预加载下一个引用从 [`Slice{:tact}`][slice] 为 [`cell{:tact}`][cell] 没有修改原来的 [`Slice{:tact}`][slice]
 
-试图在[[`Slice{:tact}`][cell] 时预加载此引用 [`slice{:tact}`][slice] 不包含一个异常[退出码 8](/zh-cn/book/exit-codes#8)：`Cell overflow`。
+试图在 [`Slice{:tact}`][slice] 时预加载此引用 [`slice{:tact}`][slice] 不包含一个异常[退出码 8](/zh-cn/book/exit-codes#8)：`Cell overflow`。
 
 试图预加载更多数据超过 [`Slice{:tact}`][slice] 含有异常[export code 9](/zh-cn/book/exit-codes#9)：`Cell underflow`。
 
