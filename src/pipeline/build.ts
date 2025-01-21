@@ -1,28 +1,28 @@
 import { beginCell, Cell, Dictionary } from "@ton/core";
 import { decompileAll } from "@tact-lang/opcode";
-import { writeTypescript } from "../bindings/writeTypescript";
-import { featureEnable } from "../config/features";
-import { ConfigProject } from "../config/parseConfig";
-import { CompilerContext } from "../context/context";
-import { funcCompile } from "../func/funcCompile";
-import { writeReport } from "../generator/writeReport";
-import { getRawAST } from "../context/store";
-import files from "../stdlib/stdlib";
-import { ILogger, Logger } from "../context/logger";
-import { PackageFileFormat } from "../packaging/fileFormat";
-import { packageCode } from "../packaging/packageCode";
-import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
-import { getContracts, getType } from "../types/resolveDescriptors";
-import { posixNormalize } from "../utils/filePath";
-import { createVirtualFileSystem } from "../vfs/createVirtualFileSystem";
-import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
+import { writeTypescript } from "@/bindings/writeTypescript";
+import { featureEnable } from "@/config/features";
+import { ConfigProject } from "@/config/parseConfig";
+import { CompilerContext } from "@/context/context";
+import { funcCompile } from "@/func/funcCompile";
+import { writeReport } from "@/generator/writeReport";
+import { getRawAST } from "@/context/store";
+import files from "@/stdlib/stdlib";
+import { ILogger, Logger } from "@/context/logger";
+import { PackageFileFormat } from "@/packaging/fileFormat";
+import { packageCode } from "@/packaging/packageCode";
+import { createABITypeRefFromTypeRef } from "@/types/resolveABITypeRef";
+import { getContracts, getType } from "@/types/resolveDescriptors";
+import { posixNormalize } from "@/utils/filePath";
+import { createVirtualFileSystem } from "@/vfs/createVirtualFileSystem";
+import { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
 import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
-import { FactoryAst, getAstFactory, idText } from "../ast/ast";
-import { TactError, TactErrorCollection } from "../error/errors";
-import { getParser, Parser } from "../grammar";
-import { defaultParser } from "../grammar/grammar";
+import { FactoryAst, getAstFactory, idText } from "@/ast/ast";
+import { TactError, TactErrorCollection } from "@/error/errors";
+import { getParser, Parser } from "@/grammar";
+import { defaultParser } from "@/grammar/grammar";
 
 export function enableFeatures(
     ctx: CompilerContext,

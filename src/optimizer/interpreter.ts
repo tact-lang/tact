@@ -1,29 +1,29 @@
 import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
 import * as crc32 from "crc-32";
-import * as A from "../ast/ast";
+import * as A from "@/ast/ast";
 import { evalConstantExpression } from "./constEval";
-import { CompilerContext } from "../context/context";
+import { CompilerContext } from "@/context/context";
 import {
     TactCompilationError,
     TactConstEvalError,
     idTextErr,
     throwConstEvalError,
     throwInternalCompilerError,
-} from "../error/errors";
-import { AstUtil, getAstUtil } from "../ast/util";
+} from "@/error/errors";
+import { AstUtil, getAstUtil } from "@/ast/util";
 import {
     getStaticConstant,
     getStaticFunction,
     getType,
     hasStaticConstant,
     hasStaticFunction,
-} from "../types/resolveDescriptors";
-import { getExpType } from "../types/resolveExpression";
-import { TypeRef, showValue } from "../types/types";
+} from "@/types/resolveDescriptors";
+import { getExpType } from "@/types/resolveExpression";
+import { TypeRef, showValue } from "@/types/types";
 import { sha256_sync } from "@ton/crypto";
-import { defaultParser, getParser, Parser } from "../grammar/grammar";
-import { dummySrcInfo, SrcInfo } from "../grammar";
+import { defaultParser, getParser, Parser } from "@/grammar/grammar";
+import { dummySrcInfo, SrcInfo } from "@/grammar";
 import { divFloor, modFloor } from "./util";
 
 // TVM integers are signed 257-bit integers

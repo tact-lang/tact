@@ -1,7 +1,7 @@
 // This module includes rules involving associative rewrites of expressions
 
-import { SrcInfo } from "../grammar";
-import * as A from "../ast/ast";
+import { SrcInfo } from "@/grammar";
+import * as A from "@/ast/ast";
 import * as iM from "./interpreter";
 import { ExpressionTransformer, Rule } from "./types";
 import {
@@ -9,7 +9,7 @@ import {
     checkIsBinaryOp_With_RightValue,
     checkIsBinaryOp_With_LeftValue,
     AstUtil,
-} from "../ast/util";
+} from "@/ast/util";
 import { abs, sign } from "./util";
 
 type TransformData = {

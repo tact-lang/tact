@@ -1,13 +1,13 @@
-import * as A from "../../ast/ast";
-import { AstUtil, getAstUtil } from "../../ast/util";
-import { getOptimizer } from "../constEval";
-import { CompilerContext } from "../../context/context";
-import { ExpressionTransformer, Rule } from "../types";
-import { AssociativeRule3 } from "../associative";
-import { evalBinaryOp, evalUnaryOp } from "../interpreter";
-import { getParser } from "../../grammar";
-import { defaultParser } from "../../grammar/grammar";
-import { throwInternalCompilerError } from "../../error/errors";
+import * as A from "@/ast/ast";
+import { AstUtil, getAstUtil } from "@/ast/util";
+import { getOptimizer } from "@/optimizer/constEval";
+import { CompilerContext } from "@/context/context";
+import { ExpressionTransformer, Rule } from "@/optimizer/types";
+import { AssociativeRule3 } from "@/optimizer/associative";
+import { evalBinaryOp, evalUnaryOp } from "@/optimizer/interpreter";
+import { getParser } from "@/grammar";
+import { defaultParser } from "@/grammar/grammar";
+import { throwInternalCompilerError } from "@/error/errors";
 
 const MAX: string =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";

@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
-import { Logger } from "../context/logger";
-import { funcCompile } from "./funcCompile";
-import files from "../stdlib/stdlib";
+import { Logger } from "@/context/logger";
+import { funcCompile } from "@/func/funcCompile";
+import files from "@/stdlib/stdlib";
 
 describe("funcCompile", () => {
     it("should compile small contract", async () => {

@@ -1,7 +1,7 @@
 import { ABIField } from "@ton/core";
-import { throwInternalCompilerError } from "../error/errors";
-import * as A from "../ast/ast";
-import { ItemOrigin, SrcInfo } from "../grammar";
+import { throwInternalCompilerError } from "@/error/errors";
+import * as A from "@/ast/ast";
+import { ItemOrigin, SrcInfo } from "@/grammar";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";

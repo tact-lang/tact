@@ -1,12 +1,12 @@
-import * as A from "../ast/ast";
-import { CompilerContext } from "../context/context";
+import * as A from "@/ast/ast";
+import { CompilerContext } from "@/context/context";
 import { isAssignable } from "./subtyping";
 import {
     idTextErr,
     throwCompilationError,
     throwConstEvalError,
     throwInternalCompilerError,
-} from "../error/errors";
+} from "@/error/errors";
 import {
     getAllStaticFunctions,
     getStaticConstant,
@@ -17,11 +17,11 @@ import {
 } from "./resolveDescriptors";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { FunctionDescription, printTypeRef, TypeRef } from "./types";
-import { evalConstantExpression } from "../optimizer/constEval";
-import { ensureInt } from "../optimizer/interpreter";
-import { crc16 } from "../utils/crc16";
-import { SrcInfo } from "../grammar";
-import { AstUtil, getAstUtil } from "../ast/util";
+import { evalConstantExpression } from "@/optimizer/constEval";
+import { ensureInt } from "@/optimizer/interpreter";
+import { crc16 } from "@/utils/crc16";
+import { SrcInfo } from "@/grammar";
+import { AstUtil, getAstUtil } from "@/ast/util";
 
 export type StatementContext = {
     root: SrcInfo;

@@ -1,6 +1,6 @@
 import * as A from "./ast";
 import { createHash } from "crypto";
-import { throwInternalCompilerError } from "../error/errors";
+import { throwInternalCompilerError } from "@/error/errors";
 import JSONbig from "json-bigint";
 
 export type AstHash = string;

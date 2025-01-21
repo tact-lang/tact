@@ -1,16 +1,16 @@
 import { sha256_sync } from "@ton/crypto";
-import { CompilerContext, createContextStore } from "../context/context";
-import { AstNode, FactoryAst, isRequire } from "../ast/ast";
-import { traverse } from "../ast/iterators";
-import { evalConstantExpression } from "../optimizer/constEval";
-import { throwInternalCompilerError } from "../error/errors";
+import { CompilerContext, createContextStore } from "@/context/context";
+import { AstNode, FactoryAst, isRequire } from "@/ast/ast";
+import { traverse } from "@/ast/iterators";
+import { evalConstantExpression } from "@/optimizer/constEval";
+import { throwInternalCompilerError } from "@/error/errors";
 import {
     getAllStaticFunctions,
     getAllTypes,
     getAllStaticConstants,
 } from "./resolveDescriptors";
-import { ensureSimplifiedString } from "../optimizer/interpreter";
-import { AstUtil, getAstUtil } from "../ast/util";
+import { ensureSimplifiedString } from "@/optimizer/interpreter";
+import { AstUtil, getAstUtil } from "@/ast/util";
 
 type Exception = { value: string; id: number };
 

@@ -1,6 +1,6 @@
-import { getType } from "../../types/resolveDescriptors";
-import { TypeRef } from "../../types/types";
-import { WriterContext } from "../Writer";
+import { getType } from "@/types/resolveDescriptors";
+import { TypeRef } from "@/types/types";
+import { WriterContext } from "@/generator/Writer";
 import { ops } from "./ops";
 
 export function cast(

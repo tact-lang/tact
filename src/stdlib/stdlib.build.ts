@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import glob from "glob";
-import { posixNormalize } from "../utils/filePath";
+import { posixNormalize } from "@/utils/filePath";
 import { stdlibPath } from "./path";
 
 const libFiles = path.join(__dirname, "stdlib", "**", "*.@(tact|fc)");

@@ -2,7 +2,7 @@ import { storeTransfer, Transfer, Wallet } from "./output/wallet_Wallet";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { beginCell, toNano } from "@ton/core";
 import { sign } from "@ton/crypto";
-import { testKey } from "../src/utils/testKey";
+import { testKey } from "@/utils/testKey";
 import "@ton/test-utils";
 
 describe("wallet", () => {

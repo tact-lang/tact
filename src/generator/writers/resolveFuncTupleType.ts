@@ -1,6 +1,6 @@
-import { getType } from "../../types/resolveDescriptors";
-import { TypeDescription, TypeRef } from "../../types/types";
-import { WriterContext } from "../Writer";
+import { getType } from "@/types/resolveDescriptors";
+import { TypeDescription, TypeRef } from "@/types/types";
+import { WriterContext } from "@/generator/Writer";
 
 export function resolveFuncTupleType(
     descriptor: TypeRef | TypeDescription | string,

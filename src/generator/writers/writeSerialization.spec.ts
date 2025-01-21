@@ -1,21 +1,18 @@
-import { CompilerContext } from "../../context/context";
-import {
-    getAllocation,
-    resolveAllocations,
-} from "../../storage/resolveAllocation";
+import { CompilerContext } from "@/context/context";
+import { getAllocation, resolveAllocations } from "@/storage/resolveAllocation";
 import {
     getAllTypes,
     getType,
     resolveDescriptors,
-} from "../../types/resolveDescriptors";
-import { WriterContext } from "../Writer";
+} from "@/types/resolveDescriptors";
+import { WriterContext } from "@/generator/Writer";
 import { writeParser, writeSerializer } from "./writeSerialization";
 import { writeStdlib } from "./writeStdlib";
-import { openContext } from "../../context/store";
+import { openContext } from "@/context/store";
 import { writeAccessors } from "./writeAccessors";
-import { getParser } from "../../grammar";
-import { getAstFactory } from "../../ast/ast";
-import { defaultParser } from "../../grammar/grammar";
+import { getParser } from "@/grammar";
+import { getAstFactory } from "@/ast/ast";
+import { defaultParser } from "@/grammar/grammar";
 
 const code = `
 primitive Int;

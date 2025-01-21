@@ -1,6 +1,6 @@
 import * as A from "./ast";
 import { AstRenamer } from "./rename";
-import { throwInternalCompilerError } from "../error/errors";
+import { throwInternalCompilerError } from "@/error/errors";
 import JSONbig from "json-bigint";
 
 /**

@@ -1,11 +1,11 @@
-import * as A from "../ast/ast";
-import { traverse } from "../ast/iterators";
+import * as A from "@/ast/ast";
+import { traverse } from "@/ast/iterators";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../error/errors";
-import { CompilerContext, createContextStore, Store } from "../context/context";
+} from "@/error/errors";
+import { CompilerContext, createContextStore, Store } from "@/context/context";
 import {
     ConstantDescription,
     FieldDescription,
@@ -20,24 +20,24 @@ import {
     TypeRef,
     typeRefEquals,
 } from "./types";
-import { getRawAST } from "../context/store";
-import { cloneNode } from "../ast/clone";
-import { crc16 } from "../utils/crc16";
-import { isSubsetOf } from "../utils/isSubsetOf";
-import { evalConstantExpression } from "../optimizer/constEval";
+import { getRawAST } from "@/context/store";
+import { cloneNode } from "@/ast/clone";
+import { crc16 } from "@/utils/crc16";
+import { isSubsetOf } from "@/utils/isSubsetOf";
+import { evalConstantExpression } from "@/optimizer/constEval";
 import {
     intMapKeyFormats,
     intMapValFormats,
     resolveABIType,
 } from "./resolveABITypeRef";
-import { enabledExternals } from "../config/features";
+import { enabledExternals } from "@/config/features";
 import { isRuntimeType } from "./isRuntimeType";
-import { GlobalFunctions } from "../abi/global";
-import { ItemOrigin } from "../grammar";
+import { GlobalFunctions } from "@/abi/global";
+import { ItemOrigin } from "@/grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
-import { AstUtil, getAstUtil } from "../ast/util";
+import { AstUtil, getAstUtil } from "@/ast/util";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();

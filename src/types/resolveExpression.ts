@@ -1,10 +1,10 @@
-import * as A from "../ast/ast";
+import * as A from "@/ast/ast";
 import {
     idTextErr,
     TactConstEvalError,
     throwCompilationError,
-} from "../error/errors";
-import { CompilerContext, createContextStore } from "../context/context";
+} from "@/error/errors";
+import { CompilerContext, createContextStore } from "@/context/context";
 import {
     getAllTypes,
     getStaticConstant,
@@ -15,15 +15,15 @@ import {
 } from "./resolveDescriptors";
 import { printTypeRef, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
-import { MapFunctions } from "../abi/map";
-import { GlobalFunctions } from "../abi/global";
+import { MapFunctions } from "@/abi/map";
+import { GlobalFunctions } from "@/abi/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
-import { throwInternalCompilerError } from "../error/errors";
-import { StructFunctions } from "../abi/struct";
-import { prettyPrint } from "../ast/ast-printer";
-import { ensureInt } from "../optimizer/interpreter";
-import { evalConstantExpression } from "../optimizer/constEval";
-import { getAstUtil } from "../ast/util";
+import { throwInternalCompilerError } from "@/error/errors";
+import { StructFunctions } from "@/abi/struct";
+import { prettyPrint } from "@/ast/ast-printer";
+import { ensureInt } from "@/optimizer/interpreter";
+import { evalConstantExpression } from "@/optimizer/constEval";
+import { getAstUtil } from "@/ast/util";
 
 const store = createContextStore<{
     ast: A.AstExpression;

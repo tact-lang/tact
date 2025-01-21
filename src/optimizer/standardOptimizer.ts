@@ -1,4 +1,4 @@
-import { AstExpression } from "../ast/ast";
+import { AstExpression } from "@/ast/ast";
 import {
     AddSelf,
     AddZero,
@@ -23,7 +23,7 @@ import {
     AssociativeRule3,
 } from "./associative";
 import { Rule, ExpressionTransformer } from "./types";
-import { AstUtil } from "../ast/util";
+import { AstUtil } from "@/ast/util";
 
 type PrioritizedRule = { priority: number; rule: Rule };
 

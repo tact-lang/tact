@@ -1,6 +1,6 @@
-import { CompilerContext } from "../context/context";
-import { createABI } from "../generator/createABI";
-import { writeProgram } from "../generator/writeProgram";
+import { CompilerContext } from "@/context/context";
+import { createABI } from "@/generator/createABI";
+import { writeProgram } from "@/generator/writeProgram";
 
 export async function compile(
     ctx: CompilerContext,

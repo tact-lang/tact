@@ -1,10 +1,10 @@
-import { CompilerContext } from "../context/context";
-import { getAllocation, getSortedTypes } from "../storage/resolveAllocation";
+import { CompilerContext } from "@/context/context";
+import { getAllocation, getSortedTypes } from "@/storage/resolveAllocation";
 import {
     getAllStaticFunctions,
     getAllTypes,
     toBounced,
-} from "../types/resolveDescriptors";
+} from "@/types/resolveDescriptors";
 import { WriterContext, WrittenFunction } from "./Writer";
 import {
     writeBouncedParser,
@@ -17,8 +17,8 @@ import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
 import { ContractABI } from "@ton/core";
 import { writeFunction } from "./writers/writeFunction";
-import { calculateIPFSlink } from "../utils/calculateIPFSlink";
-import { getRawAST } from "../context/store";
+import { calculateIPFSlink } from "@/utils/calculateIPFSlink";
+import { getRawAST } from "@/context/store";
 import { emit } from "./emitter/emit";
 import {
     writeInit,
@@ -26,8 +26,8 @@ import {
     writeStorageOps,
 } from "./writers/writeContract";
 import { funcInitIdOf } from "./writers/id";
-import { idToHex } from "../utils/idToHex";
-import { trimIndent } from "../utils/text";
+import { idToHex } from "@/utils/idToHex";
+import { trimIndent } from "@/utils/text";
 
 export async function writeProgram(
     ctx: CompilerContext,

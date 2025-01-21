@@ -2,7 +2,7 @@
  * Describes DSL for displaying errors
  */
 
-import { SrcInfo } from "../grammar";
+import { SrcInfo } from "@/grammar";
 
 export interface ErrorDisplay<T> {
     // Specify main error location

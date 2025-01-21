@@ -1,11 +1,11 @@
 import { Node, IterationNode, NonterminalNode } from "ohm-js";
 import tactGrammar from "./grammar.ohm-bundle";
-import { throwInternalCompilerError } from "../../error/errors";
-import * as A from "../../ast/ast";
-import { ItemOrigin, SrcInfo } from "../src-info";
-import { displayToString } from "../../error/display-to-string";
-import { ParserErrors, parserErrorSchema } from "./parser-error";
-import { getSrcInfoFromOhm } from "./src-info";
+import { throwInternalCompilerError } from "@/error/errors";
+import * as A from "@/ast/ast";
+import { ItemOrigin, SrcInfo } from "@/grammar/src-info";
+import { displayToString } from "@/error/display-to-string";
+import { ParserErrors, parserErrorSchema } from "@/grammar/prev/parser-error";
+import { getSrcInfoFromOhm } from "@/grammar/prev/src-info";
 
 type Context = {
     origin: ItemOrigin | null;

@@ -1,15 +1,15 @@
 import fs from "fs";
-import { resolveDescriptors } from "../types/resolveDescriptors";
+import { resolveDescriptors } from "@/types/resolveDescriptors";
 import { getAllocations, resolveAllocations } from "./resolveAllocation";
-import { openContext } from "../context/store";
-import { resolveStatements } from "../types/resolveStatements";
-import { CompilerContext } from "../context/context";
-import { resolveSignatures } from "../types/resolveSignatures";
+import { openContext } from "@/context/store";
+import { resolveStatements } from "@/types/resolveStatements";
+import { CompilerContext } from "@/context/context";
+import { resolveSignatures } from "@/types/resolveSignatures";
 import path from "path";
-import { getParser } from "../grammar";
-import { getAstFactory } from "../ast/ast";
-import { defaultParser } from "../grammar/grammar";
-import { stdlibPath } from "../stdlib/path";
+import { getParser } from "@/grammar";
+import { getAstFactory } from "@/ast/ast";
+import { defaultParser } from "@/grammar/grammar";
+import { stdlibPath } from "@/stdlib/path";
 
 const primitivesPath = path.join(stdlibPath, "/std/primitives.tact");
 const stdlib = fs.readFileSync(primitivesPath, "utf-8");

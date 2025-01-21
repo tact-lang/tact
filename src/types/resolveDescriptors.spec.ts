@@ -1,17 +1,17 @@
-import { CompilerContext } from "../context/context";
+import { CompilerContext } from "@/context/context";
 import {
     getAllStaticFunctions,
     getAllTypes,
     resolveDescriptors,
 } from "./resolveDescriptors";
 import { resolveSignatures } from "./resolveSignatures";
-import { loadCases } from "../utils/loadCases";
-import { openContext } from "../context/store";
-import { featureEnable } from "../config/features";
-import { getParser, SrcInfo } from "../grammar";
-import { getAstFactory } from "../ast/ast";
-import { isSrcInfo } from "../grammar/src-info";
-import { defaultParser } from "../grammar/grammar";
+import { loadCases } from "@/utils/loadCases";
+import { openContext } from "@/context/store";
+import { featureEnable } from "@/config/features";
+import { getParser, SrcInfo } from "@/grammar";
+import { getAstFactory } from "@/ast/ast";
+import { isSrcInfo } from "@/grammar/src-info";
+import { defaultParser } from "@/grammar/grammar";
 
 expect.addSnapshotSerializer({
     test: (src) => isSrcInfo(src),

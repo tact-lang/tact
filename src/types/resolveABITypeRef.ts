@@ -1,14 +1,14 @@
 import { ABITypeRef } from "@ton/core";
-import * as A from "../ast/ast";
+import * as A from "@/ast/ast";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../error/errors";
+} from "@/error/errors";
 import { TypeRef } from "./types";
-import { CompilerContext } from "../context/context";
+import { CompilerContext } from "@/context/context";
 import { getType } from "./resolveDescriptors";
-import { SrcInfo } from "../grammar";
+import { SrcInfo } from "@/grammar";
 
 type FormatDef = Record<
     string,

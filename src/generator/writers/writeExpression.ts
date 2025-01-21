@@ -1,28 +1,24 @@
-import * as A from "../../ast/ast";
+import * as A from "@/ast/ast";
 import {
     idTextErr,
     TactConstEvalError,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../../error/errors";
-import { getExpType } from "../../types/resolveExpression";
+} from "@/error/errors";
+import { getExpType } from "@/types/resolveExpression";
 import {
     getStaticConstant,
     getStaticFunction,
     getType,
     hasStaticConstant,
-} from "../../types/resolveDescriptors";
-import {
-    FieldDescription,
-    printTypeRef,
-    TypeDescription,
-} from "../../types/types";
-import { WriterContext } from "../Writer";
+} from "@/types/resolveDescriptors";
+import { FieldDescription, printTypeRef, TypeDescription } from "@/types/types";
+import { WriterContext } from "@/generator/Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
-import { MapFunctions } from "../../abi/map";
-import { GlobalFunctions } from "../../abi/global";
+import { MapFunctions } from "@/abi/map";
+import { GlobalFunctions } from "@/abi/global";
 import { funcIdOf } from "./id";
-import { StructFunctions } from "../../abi/struct";
+import { StructFunctions } from "@/abi/struct";
 import { resolveFuncType } from "./resolveFuncType";
 import {
     writeAddress,
@@ -33,9 +29,9 @@ import {
 } from "./writeConstant";
 import { ops } from "./ops";
 import { writeCastedExpression } from "./writeFunction";
-import { isLvalue } from "../../types/resolveStatements";
-import { evalConstantExpression } from "../../optimizer/constEval";
-import { getAstUtil } from "../../ast/util";
+import { isLvalue } from "@/types/resolveStatements";
+import { evalConstantExpression } from "@/optimizer/constEval";
+import { getAstUtil } from "@/ast/util";
 
 function isNull(wCtx: WriterContext, expr: A.AstExpression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";

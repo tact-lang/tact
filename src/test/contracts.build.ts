@@ -1,7 +1,7 @@
-import { run } from "../node";
+import { run } from "@/node";
 import path from "path";
-import { Logger } from "../context/logger";
-import { __DANGER__disableVersionNumber } from "../pipeline/version";
+import { Logger } from "@/context/logger";
+import { __DANGER__disableVersionNumber } from "@/pipeline/version";
 
 const configPath = path.join(__dirname, "tact.config.json");
 

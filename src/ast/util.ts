@@ -1,6 +1,6 @@
 import * as A from "./ast";
 import { Address, Cell, Slice } from "@ton/core";
-import { dummySrcInfo, SrcInfo } from "../grammar";
+import { dummySrcInfo, SrcInfo } from "@/grammar";
 
 export const getAstUtil = ({ createNode }: A.FactoryAst) => {
     function makeUnaryExpression(

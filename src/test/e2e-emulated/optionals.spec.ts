@@ -1,4 +1,4 @@
-import { randomAddress } from "../utils/randomAddress";
+import { randomAddress } from "@/test/utils/randomAddress";
 import {
     ContractWithOptionals,
     SomeGenericStruct,

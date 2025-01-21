@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { randomAddress } from "../utils/randomAddress";
+import { randomAddress } from "@/test/utils/randomAddress";
 import {
     MapTestContract,
     MapTestContract$Data,

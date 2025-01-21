@@ -1,14 +1,14 @@
-import { CompilerContext, createContextStore } from "../context/context";
-import { getType, toBounced, getAllTypes } from "../types/resolveDescriptors";
-import { TypeDescription } from "../types/types";
-import { topologicalSort } from "../utils/utils";
+import { CompilerContext, createContextStore } from "@/context/context";
+import { getType, toBounced, getAllTypes } from "@/types/resolveDescriptors";
+import { TypeDescription } from "@/types/types";
+import { topologicalSort } from "@/utils/utils";
 import { StorageAllocation } from "./StorageAllocation";
 import { AllocationOperation } from "./operation";
 import { allocate, getAllocationOperationFromField } from "./allocator";
-import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
-import { funcInitIdOf } from "../generator/writers/id";
-import { throwInternalCompilerError } from "../error/errors";
-import { idText } from "../ast/ast";
+import { createABITypeRefFromTypeRef } from "@/types/resolveABITypeRef";
+import { funcInitIdOf } from "@/generator/writers/id";
+import { throwInternalCompilerError } from "@/error/errors";
+import { idText } from "@/ast/ast";
 
 const store = createContextStore<StorageAllocation>();
 

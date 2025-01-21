@@ -1,10 +1,10 @@
 import fs from "fs";
-import { run } from "../src/node";
+import { run } from "@/node";
 import path from "path";
 import { glob } from "glob";
 import { verify } from "./verify";
-import { Logger } from "../src/context/logger";
-import { __DANGER__disableVersionNumber } from "../src/pipeline/version";
+import { Logger } from "@/context/logger";
+import { __DANGER__disableVersionNumber } from "@/pipeline/version";
 
 const configPath = path.join(__dirname, "tact.config.json");
 const packagesPath = path.resolve(__dirname, "output", "*.pkg");

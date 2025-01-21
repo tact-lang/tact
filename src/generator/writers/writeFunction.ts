@@ -1,9 +1,9 @@
-import { enabledInline } from "../../config/features";
-import * as A from "../../ast/ast";
-import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
-import { getExpType } from "../../types/resolveExpression";
-import { FunctionDescription, TypeRef } from "../../types/types";
-import { WriterContext } from "../Writer";
+import { enabledInline } from "@/config/features";
+import * as A from "@/ast/ast";
+import { getType, resolveTypeRef } from "@/types/resolveDescriptors";
+import { getExpType } from "@/types/resolveExpression";
+import { FunctionDescription, TypeRef } from "@/types/types";
+import { WriterContext } from "@/generator/Writer";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
@@ -13,8 +13,8 @@ import { cast } from "./cast";
 import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { ops } from "./ops";
 import { freshIdentifier } from "./freshIdentifier";
-import { idTextErr, throwInternalCompilerError } from "../../error/errors";
-import { ppAsmShuffle } from "../../ast/ast-printer";
+import { idTextErr, throwInternalCompilerError } from "@/error/errors";
+import { ppAsmShuffle } from "@/ast/ast-printer";
 
 export function writeCastedExpression(
     expression: A.AstExpression,

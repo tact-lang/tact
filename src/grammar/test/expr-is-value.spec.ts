@@ -1,8 +1,8 @@
 //type Test = { expr: string; isValue: boolean };
 
-import { getAstFactory, isLiteral } from "../../ast/ast";
+import { getAstFactory, isLiteral } from "@/ast/ast";
 import { getParser } from "../";
-import { defaultParser } from "../grammar";
+import { defaultParser } from "@/grammar/grammar";
 
 const valueExpressions: string[] = ["1", "true", "false", "null"];
 

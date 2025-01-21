@@ -1,6 +1,6 @@
-import { eqExpressions, getAstFactory } from "../../ast/ast";
-import { getParser } from "../";
-import { defaultParser } from "../grammar";
+import { eqExpressions, getAstFactory } from "@/ast/ast";
+import { getParser } from "@/grammar";
+import { defaultParser } from "@/grammar/grammar";
 
 type Test = { expr1: string; expr2: string; equality: boolean };
 

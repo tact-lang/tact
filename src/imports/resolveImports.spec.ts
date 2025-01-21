@@ -1,9 +1,9 @@
 import { resolveImports } from "./resolveImports";
-import { createNodeFileSystem } from "../vfs/createNodeFileSystem";
+import { createNodeFileSystem } from "@/vfs/createNodeFileSystem";
 import path from "path";
-import { getParser } from "../grammar";
-import { getAstFactory } from "../ast/ast";
-import { defaultParser } from "../grammar/grammar";
+import { getParser } from "@/grammar";
+import { getAstFactory } from "@/ast/ast";
+import { defaultParser } from "@/grammar/grammar";
 
 describe("resolveImports", () => {
     it("should resolve imports", () => {

@@ -1,12 +1,12 @@
 import * as changeCase from "change-case";
 import { ABIField, beginCell } from "@ton/core";
-import { CompilerContext } from "../context/context";
-import { idToHex } from "../utils/idToHex";
+import { CompilerContext } from "@/context/context";
+import { idToHex } from "@/utils/idToHex";
 import {
     idTextErr,
     throwConstEvalError,
     throwInternalCompilerError,
-} from "../error/errors";
+} from "@/error/errors";
 import { getType, getAllTypes } from "./resolveDescriptors";
 import {
     BinaryReceiverSelector,
@@ -14,14 +14,14 @@ import {
     ReceiverDescription,
     TypeDescription,
 } from "./types";
-import { throwCompilationError } from "../error/errors";
-import { AstNumber, AstReceiver, FactoryAst } from "../ast/ast";
-import { commentPseudoOpcode } from "../generator/writers/writeRouter";
+import { throwCompilationError } from "@/error/errors";
+import { AstNumber, AstReceiver, FactoryAst } from "@/ast/ast";
+import { commentPseudoOpcode } from "@/generator/writers/writeRouter";
 import { sha256_sync } from "@ton/crypto";
-import { dummySrcInfo } from "../grammar";
-import { ensureInt } from "../optimizer/interpreter";
-import { evalConstantExpression } from "../optimizer/constEval";
-import { getAstUtil } from "../ast/util";
+import { dummySrcInfo } from "@/grammar";
+import { ensureInt } from "@/optimizer/interpreter";
+import { evalConstantExpression } from "@/optimizer/constEval";
+import { getAstUtil } from "@/ast/util";
 
 export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
     const util = getAstUtil(Ast);

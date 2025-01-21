@@ -1,5 +1,5 @@
 import { Interval } from "ohm-js";
-import { getSrcInfo, ItemOrigin, SrcInfo } from "../src-info";
+import { getSrcInfo, ItemOrigin, SrcInfo } from "@/grammar/src-info";
 
 /**
  * @deprecated

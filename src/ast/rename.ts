@@ -1,7 +1,7 @@
 import * as A from "./ast";
 import { AstSorter } from "./sort";
 import { AstHasher, AstHash } from "./hash";
-import { dummySrcInfo } from "../grammar/src-info";
+import { dummySrcInfo } from "@/grammar";
 
 type GivenName = string;
 

@@ -1,4 +1,4 @@
-import { AstId, idText } from "../../ast/ast";
+import { AstId, idText } from "@/ast/ast";
 
 export function funcIdOf(ident: AstId | string): string {
     if (typeof ident === "string") {

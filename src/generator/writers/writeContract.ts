@@ -1,12 +1,12 @@
-import { contractErrors } from "../../abi/errors";
+import { contractErrors } from "@/abi/errors";
 import {
     enabledInline,
     enabledInterfacesGetter,
     enabledIpfsAbiGetter,
-} from "../../config/features";
-import { ItemOrigin } from "../../grammar";
-import { InitDescription, TypeDescription } from "../../types/types";
-import { WriterContext } from "../Writer";
+} from "@/config/features";
+import { ItemOrigin } from "@/grammar";
+import { InitDescription, TypeDescription } from "@/types/types";
+import { WriterContext } from "@/generator/Writer";
 import { funcIdOf, funcInitIdOf } from "./id";
 import { ops } from "./ops";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";

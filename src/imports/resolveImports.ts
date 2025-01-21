@@ -1,6 +1,6 @@
-import { ItemOrigin, Parser } from "../grammar";
-import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
-import { throwCompilationError } from "../error/errors";
+import { ItemOrigin, Parser } from "@/grammar";
+import { VirtualFileSystem } from "@/vfs/VirtualFileSystem";
+import { throwCompilationError } from "@/error/errors";
 import { resolveLibrary } from "./resolveLibrary";
 
 export function resolveImports(args: {

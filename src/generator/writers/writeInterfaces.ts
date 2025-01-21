@@ -1,6 +1,6 @@
-import { getSupportedInterfaces } from "../../types/getSupportedInterfaces";
-import { TypeDescription } from "../../types/types";
-import { WriterContext } from "../Writer";
+import { getSupportedInterfaces } from "@/types/getSupportedInterfaces";
+import { TypeDescription } from "@/types/types";
+import { WriterContext } from "@/generator/Writer";
 
 export function writeInterfaces(type: TypeDescription, ctx: WriterContext) {
     ctx.append(`_ supported_interfaces() method_id {`);

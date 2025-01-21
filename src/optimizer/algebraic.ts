@@ -1,4 +1,4 @@
-import * as A from "../ast/ast";
+import * as A from "@/ast/ast";
 import { ExpressionTransformer, Rule } from "./types";
 import {
     checkIsBinaryOpNode,
@@ -6,7 +6,7 @@ import {
     checkIsName,
     checkIsNumber,
     checkIsUnaryOpNode,
-} from "../ast/util";
+} from "@/ast/util";
 
 export class AddZero extends Rule {
     private additiveOperators: A.AstBinaryOperation[] = ["+", "-"];

@@ -1,6 +1,6 @@
 import { getParser as getParserNext } from "./next";
 
-import * as A from "../ast/ast";
+import * as A from "@/ast/ast";
 
 import { getParser as getParserPrev } from "./prev/grammar";
 import { ItemOrigin } from "./src-info";

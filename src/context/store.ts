@@ -1,8 +1,8 @@
-import * as A from "../ast/ast";
-import { throwInternalCompilerError } from "../error/errors";
+import * as A from "@/ast/ast";
+import { throwInternalCompilerError } from "@/error/errors";
 import { CompilerContext, createContextStore } from "./context";
-import { ItemOrigin } from "../grammar/src-info";
-import { Parser } from "../grammar/grammar";
+import { ItemOrigin } from "@/grammar";
+import { Parser } from "@/grammar";
 
 /**
  * @public

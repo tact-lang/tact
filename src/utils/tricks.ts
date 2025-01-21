@@ -89,7 +89,7 @@ export const match = <const I extends any[]>(
     }) as MV<Flat<I>, never>;
 };
 
-import { throwInternalCompilerError } from "../error/errors";
+import { throwInternalCompilerError } from "@/error/errors";
 
 /**
  * Convert union to intersection. See https://stackoverflow.com/q/50374908
