@@ -106,8 +106,8 @@ export async function build(args: {
 
     // Prepare ast for optimization phase (true = do it, false = skip it)
     const doOptimizationFlag =
-        config.options?.skipTactOptimizationPhase === undefined ||
-        !config.options.skipTactOptimizationPhase;
+        config.options?.skipPartialEval === undefined ||
+        !config.options.skipPartialEval;
 
     const optimizationCtx = prepareAstForOptimization(
         ctx,
@@ -116,7 +116,7 @@ export async function build(args: {
     );
 
     // Dump the code before optimization phase
-    if (config.options?.dumpCodeBeforeAndAfterTactOptimizationPhase) {
+    if (config.options?.dumpAst) {
         dumpTactCode(
             optimizationCtx.originalAst,
             config.output + `/${config.name}-unoptimized-tact-dump.tact`,
@@ -146,7 +146,7 @@ export async function build(args: {
     }
 
     // Dump the code after optimization phase
-    if (config.options?.dumpCodeBeforeAndAfterTactOptimizationPhase) {
+    if (config.options?.dumpAfterPartialEval) {
         dumpTactCode(
             optimizationCtx.modifiedAst,
             config.output + `/${config.name}-optimized-tact-dump.tact`,

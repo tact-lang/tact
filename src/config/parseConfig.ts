@@ -28,13 +28,17 @@ export const optionsSchema = z
          */
         interfacesGetter: z.boolean().optional(),
         /**
-         * If set to true, skips the Tact code optimization phase. Default is false.
+         * If set to true, skips the partial evaluation of all expressions in the code. Default is false.
          */
-        skipTactOptimizationPhase: z.boolean().optional(),
+        skipPartialEval: z.boolean().optional(),
         /**
-         * If set to true, dumps the code produced before and after the Tact code optimization phase. Default is false.
+         * If set to true, dumps the code before any optimization is applied. Default is false.
          */
-        dumpCodeBeforeAndAfterTactOptimizationPhase: z.boolean().optional(),
+        dumpAst: z.boolean().optional(),
+        /**
+         * If set to true, dumps the code produced by partial evaluation of all expressions in the code. Default is false.
+         */
+        dumpAfterPartialEval: z.boolean().optional(),
         /**
          * If set to "new", uses new parser. If set to "old", uses legacy parser. Default is "old".
          */

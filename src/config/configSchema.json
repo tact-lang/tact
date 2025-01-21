@@ -51,15 +51,20 @@
                 "default": false,
                 "description": "False by default. If set to true, enables generation of a getter the information on the interfaces provided by the contract.\n\nRead more about supported interfaces: https://docs.tact-lang.org/ref/evolution/OTP-001."
               },
-              "skipTactOptimizationPhase": {
+              "skipPartialEval": {
                 "type": "boolean",
                 "default": false,
-                "description": "False by default. If set to true, skips the Tact code optimization phase."
+                "description": "False by default. If set to true, skips the partial evaluation of all expressions in the code."
               },
-              "dumpCodeBeforeAndAfterTactOptimizationPhase": {
+              "dumpAst": {
                 "type": "boolean",
                 "default": false,
-                "description": "False by default. If set to true, dumps the code produced before and after the Tact code optimization phase."
+                "description": "False by default. If set to true, dumps the code before any optimization is applied."
+              },
+              "dumpAfterPartialEval": {
+                "type": "boolean",
+                "default": false,
+                "description": "False by default. If set to true, dumps the code produced by partial evaluation of all expressions in the code."
               },
               "experimental": {
                 "type": "object",
