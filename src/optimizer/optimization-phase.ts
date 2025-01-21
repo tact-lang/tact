@@ -51,6 +51,11 @@ import {
     AstTrait,
     AstTraitDeclaration,
     AstTypeDecl,
+    ensureConstantDef,
+    ensureContractInit,
+    ensureFieldDecl,
+    ensureFunctionDef,
+    ensureReceiver,
     FactoryAst,
     isAstExpression,
 } from "../ast/ast";
@@ -980,7 +985,7 @@ function processStaticFunctions(
     for (const f of getAllStaticFunctions(ctx)) {
         const node = nodeReplacements.get(f.ast.id);
         if (typeof node !== "undefined") {
-            f.ast = ensureFunction(node);
+            f.ast = ensureFunctionDef(node);
         }
     }
 }
@@ -992,7 +997,7 @@ function processStaticConstants(
     for (const c of getAllStaticConstants(ctx)) {
         const node = nodeReplacements.get(c.ast.id);
         if (typeof node !== "undefined") {
-            c.ast = ensureConstant(node);
+            c.ast = ensureConstantDef(node);
         }
     }
 }
@@ -1018,7 +1023,7 @@ function processTypeConstantDescriptions(
     for (const c of t.constants) {
         const node = nodeReplacements.get(c.ast.id);
         if (typeof node !== "undefined") {
-            c.ast = ensureConstant(node);
+            c.ast = ensureConstantDef(node);
         }
     }
 }
@@ -1054,7 +1059,7 @@ function processTypeFunctionDescriptions(
     for (const [_, m] of t.functions) {
         const node = nodeReplacements.get(m.ast.id);
         if (typeof node !== "undefined") {
-            m.ast = ensureFunction(node);
+            m.ast = ensureFunctionDef(node);
         }
     }
 }
@@ -1076,50 +1081,4 @@ function processTypes(
     }
 }
 
-function ensureFunction(ast: AstMutableNode): AstFunctionDef {
-    // Type AstMutableNode restricts the possibilities of the
-    // function type to AstFunctionDef
-    if (ast.kind === "function_def") {
-        return ast;
-    } else {
-        throwInternalCompilerError(`kind ${ast.kind} is not a function kind`);
-    }
-}
 
-function ensureConstant(ast: AstMutableNode): AstConstantDef {
-    // Type AstMutableNode restricts the possibilities of the
-    // constant type to AstConstantDef
-    if (ast.kind === "constant_def") {
-        return ast;
-    } else {
-        throwInternalCompilerError(`kind ${ast.kind} is not a constant kind`);
-    }
-}
-
-function ensureContractInit(ast: AstMutableNode): AstContractInit {
-    if (ast.kind === "contract_init") {
-        return ast;
-    } else {
-        throwInternalCompilerError(
-            `kind ${ast.kind} is not a contract initialization method`,
-        );
-    }
-}
-
-function ensureFieldDecl(ast: AstMutableNode): AstFieldDecl {
-    if (ast.kind === "field_decl") {
-        return ast;
-    } else {
-        throwInternalCompilerError(
-            `kind ${ast.kind} is not a field declaration`,
-        );
-    }
-}
-
-function ensureReceiver(ast: AstMutableNode): AstReceiver {
-    if (ast.kind === "receiver") {
-        return ast;
-    } else {
-        throwInternalCompilerError(`kind ${ast.kind} is not a receiver`);
-    }
-}

@@ -1001,6 +1001,55 @@ function eqArrays<T>(
     return true;
 }
 
+
+export function ensureFunctionDef(ast: AstNode): AstFunctionDef {
+    // Type AstMutableNode restricts the possibilities of the
+    // function type to AstFunctionDef
+    if (ast.kind === "function_def") {
+        return ast;
+    } else {
+        throwInternalCompilerError(`kind ${ast.kind} is not a function definition kind`);
+    }
+}
+
+export function ensureConstantDef(ast: AstNode): AstConstantDef {
+    // Type AstMutableNode restricts the possibilities of the
+    // constant type to AstConstantDef
+    if (ast.kind === "constant_def") {
+        return ast;
+    } else {
+        throwInternalCompilerError(`kind ${ast.kind} is not a constant definition kind`);
+    }
+}
+
+export function ensureContractInit(ast: AstNode): AstContractInit {
+    if (ast.kind === "contract_init") {
+        return ast;
+    } else {
+        throwInternalCompilerError(
+            `kind ${ast.kind} is not a contract initialization method`,
+        );
+    }
+}
+
+export function ensureFieldDecl(ast: AstNode): AstFieldDecl {
+    if (ast.kind === "field_decl") {
+        return ast;
+    } else {
+        throwInternalCompilerError(
+            `kind ${ast.kind} is not a field declaration`,
+        );
+    }
+}
+
+export function ensureReceiver(ast: AstNode): AstReceiver {
+    if (ast.kind === "receiver") {
+        return ast;
+    } else {
+        throwInternalCompilerError(`kind ${ast.kind} is not a receiver`);
+    }
+}
+
 /* 
 Functions that return guard types like "ast is AstLiteral" are unsafe to use in production code. 
 But there is a way to make them safe by introducing an intermediate function, like 
