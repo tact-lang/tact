@@ -177,8 +177,28 @@ contract DeRanged {
     init() {
         self.var = -1;  // this won't fail immediately
         self.var = 500; // and that won't fail right away either
+
     } // only here, at the end of the compute phase,
       // would there be an error thrown with an exit code 5: Integer out of range
+}
+```
+
+In the end, this means that you cannot rely on intermediate out-of-bounds checks, because there are none, and only the last assignment of each state variable is used to update its persistent state value.
+
+```tact
+contract Zero {
+    // Persistent state variables
+    var: Int as uint8; // cannot store values outside the 0-255 range
+    var2: Int as uint4; // cannot store values outside the 0-15 range
+
+    init() {
+        self.var = -1; // this won't fail
+        self.var = 0;  // and this is in the range of `uint8`
+
+        self.var2 = -1; // this won't fail
+        self.var2 = 15; // and this is in the range of `uint4`
+
+    } // no errors, and now `self.var` is 0 and `self.var2` is 15
 }
 ```
 
