@@ -183,7 +183,7 @@ contract DeRanged {
 }
 ```
 
-In the end, this means that you cannot rely on intermediate out-of-bounds checks, because there are none, and only the last assignment of each state variable is used to update its persistent state value.
+In the end, this means that you cannot rely on intermediate out-of-bounds checks, because there are none at [TVM][tvm] runtime, and only the last assignment of each state variable is used to update its persistent state value.
 
 ```tact
 contract Zero {
