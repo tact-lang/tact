@@ -20,11 +20,7 @@ import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
 import { FactoryAst, getAstFactory, idText } from "../ast/ast";
-import {
-    TactError,
-    TactErrorCollection,
-    throwInternalCompilerError,
-} from "../error/errors";
+import { TactError, TactErrorCollection } from "../error/errors";
 import { getParser, Parser } from "../grammar";
 import { defaultParser } from "../grammar/grammar";
 import {
@@ -134,14 +130,18 @@ export async function build(args: {
             updateCompilerContext(optimizationCtx);
             ctx = optimizationCtx.ctx;
         } catch (e) {
-            // TODO: e is not an Error in general. Change interface of logger.
-            if (e instanceof Error) {
-                logger.error("Tact code optimization failed.");
-                logger.error(e);
-                return { ok: false, error: [e] };
+            logger.error("Tact code optimization failed.");
+            // show an error with a backtrace only in verbose mode
+            if (
+                e instanceof TactError &&
+                config.verbose &&
+                config.verbose < 2
+            ) {
+                logger.error(e.message);
             } else {
-                throwInternalCompilerError("Not an instance of Error");
+                logger.error(e as Error);
             }
+            return { ok: false, error: [e as Error] };
         }
     }
 
