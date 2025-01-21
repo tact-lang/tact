@@ -3,13 +3,12 @@ import {
     AstId,
     AstLiteral,
     eqNames,
-    getAstFactory,
     idText,
+    isLiteral,
     tryExtractPath,
 } from "../../ast/ast";
 import {
     idTextErr,
-    TactConstEvalError,
     throwCompilationError,
     throwInternalCompilerError,
 } from "../../error/errors";
@@ -42,8 +41,6 @@ import {
 import { ops } from "./ops";
 import { writeCastedExpression } from "./writeFunction";
 import { isLvalue } from "../../types/resolveStatements";
-import { evalConstantExpression } from "../../optimizer/constEval";
-import { getAstUtil } from "../../optimizer/util";
 
 function isNull(wCtx: WriterContext, expr: AstExpression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
@@ -173,24 +170,8 @@ export function writePathExpression(path: AstId[]): string {
 
 export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
     // literals and constant expressions are covered here
-
-    // FIXME: Once optimization step is added, remove this try and replace it with this
-    // conditional:
-    // if (isLiteral(f)) {
-    //    return writeValue(f, wCtx);
-    // }
-    try {
-        const util = getAstUtil(getAstFactory());
-        // Let us put a limit of 2 ^ 12 = 4096 iterations on loops to increase compiler responsiveness.
-        // If a loop takes more than such number of iterations, the interpreter will fail evaluation.
-        // I think maxLoopIterations should be a command line option in case a user wants to wait more
-        // during evaluation.
-        const value = evalConstantExpression(f, wCtx.ctx, util, {
-            maxLoopIterations: 2n ** 12n,
-        });
-        return writeValue(value, wCtx);
-    } catch (error) {
-        if (!(error instanceof TactConstEvalError) || error.fatal) throw error;
+    if (isLiteral(f)) {
+        return writeValue(f, wCtx);
     }
 
     //

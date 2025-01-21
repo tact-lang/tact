@@ -1127,13 +1127,18 @@ export function checkLiteral<T>(
 }
 
 export function isAstExpression(ast: AstNode): ast is AstExpression {
-    return checkAstExpression(ast, () => true, () => false);
+    return checkAstExpression(
+        ast,
+        () => true,
+        () => false,
+    );
 }
 
 export function checkAstExpression<T>(
     ast: AstNode,
     t: (node: AstExpression) => T,
-    f: (node: Exclude<AstNode, AstExpression>) => T): T {
+    f: (node: Exclude<AstNode, AstExpression>) => T,
+): T {
     switch (ast.kind) {
         case "null":
         case "boolean":
@@ -1200,6 +1205,6 @@ export function checkAstExpression<T>(
             return f(ast);
 
         default:
-           throwInternalCompilerError("Unrecognized ast node kind");
+            throwInternalCompilerError("Unrecognized ast node kind");
     }
 }

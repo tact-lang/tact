@@ -2662,7 +2662,7 @@ cspell-trie-lib@8.17.2:
     "@cspell/cspell-types" "8.17.2"
     gensequence "^7.0.0"
 
-cspell@^8.8.3:
+cspell@^8.16.0:
   version "8.17.2"
   resolved "https://registry.npmjs.org/cspell/-/cspell-8.17.2.tgz#fce96c5e4096645b4c97bb528db29fa9e4841332"
   integrity sha512-y+INkxDa+M9f+gsyyMLjKh1tF20r2g5Gn22peSRJglrNLQtmDuRtDT9vyDHANXZcH5g6pHDnENQu/+P2Tiyu8Q==

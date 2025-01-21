@@ -1,8 +1,31 @@
-import { AstConstantDef, AstContractDeclaration, AstExpression, AstFieldDecl, AstLiteral, AstStatement, AstTraitDeclaration, idText } from "../ast/ast";
-import { CompilerContext } from "../context/context";
-import { TactConstEvalError, throwInternalCompilerError } from "../error/errors";
+import {
+    AstConditional,
+    AstConstantDef,
+    AstContractDeclaration,
+    AstExpression,
+    AstFieldAccess,
+    AstFieldDecl,
+    AstInitOf,
+    AstLiteral,
+    AstMethodCall,
+    AstOpBinary,
+    AstOpUnary,
+    AstStatement,
+    AstStaticCall,
+    AstStructInstance,
+    AstTraitDeclaration,
+    idText,
+} from "../ast/ast";
+import {
+    TactConstEvalError,
+    throwInternalCompilerError,
+} from "../error/errors";
 import { getType } from "../types/resolveDescriptors";
-import { getExpType, registerExpType } from "../types/resolveExpression";
+import {
+    expHasType,
+    getExpType,
+    registerExpType,
+} from "../types/resolveExpression";
 import { TypeRef } from "../types/types";
 import { Interpreter } from "./interpreter";
 import {
@@ -10,7 +33,6 @@ import {
     registerAstNodeChange,
 } from "./optimization-phase";
 import { getAstUtil } from "./util";
-
 
 export function simplifyAllExpressions(optCtx: OptimizationContext) {
     const util = getAstUtil(optCtx.factoryAst);
@@ -261,19 +283,29 @@ function simplifyExpression(
 ): AstExpression {
     const value = tryExpressionSimplification(expr, interpreter);
     if (typeof value !== "undefined") {
-        // Register the new expression in the context
-        registerAstNodeChange(optCtx, expr, value);
-        // To maintain consistency with types in the CompilerContext, register the
-        // types of all newly created expressions
-        optCtx.ctx = registerAllSubExpTypes(
-            optCtx.ctx,
-            value,
-            getExpType(optCtx.ctx, expr),
-        );
+        if (value.id !== expr.id) {
+            registerAstNodeChange(optCtx, expr, value);
+
+            // The above registers the type of the value into the CompilerContext.
+            // but the value may have sub-values. Hence, to maintain consistency with
+            // CompilerContext, register the
+            // types of all sub-values in the value.
+            registerAllSubValueTypes(
+                optCtx,
+                value,
+                getExpType(optCtx.ctx, expr),
+            );
+        }
 
         return value;
     } else {
-        return expr;
+        // The expression could not be simplified to a value.
+        // Attempt to simplify its subexpressions: this is necessary, because
+        // writeExpression during FunC generation implicitly did this!
+        // Note this is essentially the partial evaluator.
+        // TODO: Replace this call with the partial evaluator,
+        // but I do not do it right now because the partial evaluator is still not active in production.
+        return traverseAndSimplifyExpression(expr, optCtx, interpreter);
     }
 }
 
@@ -294,43 +326,87 @@ function tryExpressionSimplification(
     }
 }
 
-function registerAllSubExpTypes(
-    ctx: CompilerContext,
-    expr: AstLiteral,
-    expType: TypeRef,
-): CompilerContext {
+function traverseAndSimplifyExpression(
+    expr: AstExpression,
+    optCtx: OptimizationContext,
+    interpreter: Interpreter,
+): AstExpression {
     switch (expr.kind) {
+        // All these cases return the expression because there is no sub-expression to traverse.
+        // The case for StructValue is special, because it already a literal, so, there is nothing to traverse and simplify.
+        case "address":
+        case "boolean":
+        case "cell":
+        case "comment_value":
+        case "id":
+        case "null":
+        case "number":
+        case "slice":
+        case "string":
+        case "simplified_string":
+        case "struct_value":
+            return expr;
+        case "field_access":
+            return traverseAndSimplifyFieldAccess(expr, optCtx, interpreter);
+        case "conditional":
+            return traverseAndSimplifyConditional(expr, optCtx, interpreter);
+        case "init_of":
+            return traverseAndSimplifyInitOf(expr, optCtx, interpreter);
+        case "method_call":
+            return traverseAndSimplifyMethodCall(expr, optCtx, interpreter);
+        case "op_binary":
+            return traverseAndSimplifyBinaryOp(expr, optCtx, interpreter);
+        case "op_unary":
+            return traverseAndSimplifyUnaryOp(expr, optCtx, interpreter);
+        case "static_call":
+            return traverseAndSimplifyStaticCall(expr, optCtx, interpreter);
+        case "struct_instance":
+            return traverseAndSimplifyStructInstance(expr, optCtx, interpreter);
+        default:
+            throwInternalCompilerError("Unrecognized expression kind");
+    }
+}
+
+function registerAllSubValueTypes(
+    optCtx: OptimizationContext,
+    value: AstLiteral,
+    valueType: TypeRef,
+) {
+    switch (value.kind) {
         case "boolean":
         case "number":
         case "null":
         case "address":
-        case "cell": 
+        case "cell":
         case "slice":
         case "simplified_string":
         case "comment_value": {
-            ctx = registerExpType(ctx, expr, expType);
+            if (!expHasType(optCtx.ctx, value)) {
+                optCtx.ctx = registerExpType(optCtx.ctx, value, valueType);
+            }
             break;
         }
         case "struct_value": {
-            ctx = registerExpType(ctx, expr, expType);
-
-            const structFields = getType(ctx, expr.type).fields;
+            if (!expHasType(optCtx.ctx, value)) {
+                optCtx.ctx = registerExpType(optCtx.ctx, value, valueType);
+            }
+            const structFields = getType(optCtx.ctx, value.type).fields;
             const fieldTypes: Map<string, TypeRef> = new Map();
 
             for (const field of structFields) {
                 fieldTypes.set(field.name, field.type);
             }
 
-            for (const fieldValue of expr.args) {
+            for (const fieldValue of value.args) {
                 const fieldType = fieldTypes.get(idText(fieldValue.field));
                 if (typeof fieldType === "undefined") {
                     throwInternalCompilerError(
-                        `Field ${idText(fieldValue.field)} does not have a declared type in struct ${idText(expr.type)}.`,
+                        `Field ${idText(fieldValue.field)} does not have a declared type in struct ${idText(value.type)}.`,
                         fieldValue.loc,
                     );
                 }
-                ctx = registerAllSubExpTypes(
-                    ctx,
+                registerAllSubValueTypes(
+                    optCtx,
                     fieldValue.initializer,
                     fieldType,
                 );
@@ -340,5 +416,93 @@ function registerAllSubExpTypes(
         default:
             throwInternalCompilerError("Unrecognized ast literal kind.");
     }
-    return ctx;
+}
+
+function traverseAndSimplifyFieldAccess(
+    expr: AstFieldAccess,
+    optCtx: OptimizationContext,
+    interpreter: Interpreter,
+): AstExpression {
+    expr.aggregate = simplifyExpression(expr.aggregate, optCtx, interpreter);
+    return expr;
+}
+
+function traverseAndSimplifyConditional(
+    expr: AstConditional,
+    optCtx: OptimizationContext,
+    interpreter: Interpreter,
+): AstExpression {
+    expr.condition = simplifyExpression(expr.condition, optCtx, interpreter);
+    expr.thenBranch = simplifyExpression(expr.thenBranch, optCtx, interpreter);
+    expr.elseBranch = simplifyExpression(expr.elseBranch, optCtx, interpreter);
+    return expr;
+}
+
+function traverseAndSimplifyInitOf(
+    expr: AstInitOf,
+    optCtx: OptimizationContext,
+    interpreter: Interpreter,
+): AstExpression {
+    expr.args = expr.args.map((arg) =>
+        simplifyExpression(arg, optCtx, interpreter),
+    );
+    return expr;
+}
+
+function traverseAndSimplifyMethodCall(
+    expr: AstMethodCall,
+    optCtx: OptimizationContext,
+    interpreter: Interpreter,
+): AstExpression {
+    expr.args = expr.args.map((arg) =>
+        simplifyExpression(arg, optCtx, interpreter),
+    );
+    expr.self = simplifyExpression(expr.self, optCtx, interpreter);
+    return expr;
+}
+
+function traverseAndSimplifyBinaryOp(
+    expr: AstOpBinary,
+    optCtx: OptimizationContext,
+    interpreter: Interpreter,
+): AstExpression {
+    expr.left = simplifyExpression(expr.left, optCtx, interpreter);
+    expr.right = simplifyExpression(expr.right, optCtx, interpreter);
+    return expr;
+}
+
+function traverseAndSimplifyUnaryOp(
+    expr: AstOpUnary,
+    optCtx: OptimizationContext,
+    interpreter: Interpreter,
+): AstExpression {
+    expr.operand = simplifyExpression(expr.operand, optCtx, interpreter);
+    return expr;
+}
+
+function traverseAndSimplifyStaticCall(
+    expr: AstStaticCall,
+    optCtx: OptimizationContext,
+    interpreter: Interpreter,
+): AstExpression {
+    expr.args = expr.args.map((arg) =>
+        simplifyExpression(arg, optCtx, interpreter),
+    );
+    return expr;
+}
+
+function traverseAndSimplifyStructInstance(
+    expr: AstStructInstance,
+    optCtx: OptimizationContext,
+    interpreter: Interpreter,
+): AstExpression {
+    expr.args = expr.args.map((arg) => {
+        arg.initializer = simplifyExpression(
+            arg.initializer,
+            optCtx,
+            interpreter,
+        );
+        return arg;
+    });
+    return expr;
 }

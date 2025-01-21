@@ -1,12 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`expression-simplification should fail expression simplification for interpreter-called-when-no-contract 1`] = `
-"<unknown>:6:9: Cannot evaluate expression to a constant: divisor expression must be non-zero
-Line 6, col 9:
-  5 | fun blowup(v: Int) {
-> 6 |     1 / v;
-              ^
-  7 | }
+"<unknown>:10:12: Cannot evaluate expression to a constant: divisor expression must be non-zero
+   9 | fun test() {
+> 10 |     blowup(0);   // Interpreter will execute this call and inform of a division by zero.
+                  ^
+  11 | }
 "
 `;
 
@@ -217,44 +216,40 @@ exports[`expression-simplification should pass expression simplification for int
     "Bool",
   ],
   [
-    "13",
+    "3 + 7",
     "Int",
   ],
   [
-    "B { nested: A { a: 15, b: 10 }, c: true }",
+    "v + 10 + 3",
+    "Int",
+  ],
+  [
+    "B {nested: s, c: true}",
     "B",
   ],
   [
-    "A { a: 15, b: 10 }",
+    "A {a: v + 10 + 3, b: 3 + 7}",
     "A",
   ],
   [
-    "15",
+    "v + 10 + 3",
     "Int",
   ],
   [
-    "10",
+    "3 + 7",
     "Int",
   ],
   [
-    "true",
-    "Bool",
-  ],
-  [
-    "A { a: 14, b: 10 }",
+    "A {a: v + 10 + 3, b: 3 + 7}",
     "A",
   ],
   [
-    "14",
+    "v + 10 + 3",
     "Int",
   ],
   [
-    "10",
+    "3 + 7",
     "Int",
-  ],
-  [
-    "true",
-    "Bool",
   ],
 ]
 `;

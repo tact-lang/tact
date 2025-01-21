@@ -88,10 +88,6 @@ const maxTvmInt: bigint = 2n ** 256n - 1n;
 const minRepeatStatement: bigint = -(2n ** 256n); // Note it is the same as minimum for TVM
 const maxRepeatStatement: bigint = 2n ** 31n - 1n;
 
-// Util factory methods
-// FIXME: pass util as argument
-//const util = getAstUtil(getAstFactory());
-
 // Throws a non-fatal const-eval error, in the sense that const-eval as a compiler
 // optimization cannot be applied, e.g. to `let`-statements.
 // Note that for const initializers this is a show-stopper.
@@ -179,16 +175,6 @@ export function ensureBoolean(val: AstExpression): AstBoolean {
     if (val.kind !== "boolean") {
         throwErrorConstEval(
             `boolean expected, but got expression of kind '${val.kind}'`,
-            val.loc,
-        );
-    }
-    return val;
-}
-
-export function ensureString(val: AstExpression): AstString {
-    if (val.kind !== "string") {
-        throwErrorConstEval(
-            `string expected, but got expression of kind '${val.kind}'`,
             val.loc,
         );
     }
@@ -466,7 +452,7 @@ export function evalBinaryOp(
     }
 }
 
-export function interpretEscapeSequences(
+function interpretEscapeSequences(
     stringLiteral: string,
     source: SrcInfo,
 ): string {
@@ -713,9 +699,9 @@ export function parseAndEvalExpression(
 }
 
 const defaultInterpreterConfig: InterpreterConfig = {
-    // We set the default max number of loop iterations
-    // to the maximum number allowed for repeat loops
-    maxLoopIterations: maxRepeatStatement,
+    // Set the default to 2 ^ 12 = 4096 iterations on loops to increase compiler responsiveness.
+    // If a loop takes more than such number of iterations, the interpreter will fail evaluation.
+    maxLoopIterations: 2n ** 12n,
 };
 
 /*

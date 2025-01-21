@@ -10,6 +10,11 @@ import { CompilerContext } from "../../context/context";
 import { getParser } from "../../grammar";
 import { getAstFactory } from "../../ast/ast";
 import { defaultParser } from "../../grammar/grammar";
+import {
+    prepareAstForOptimization,
+    updateCompilerContext,
+} from "../../optimizer/optimization-phase";
+import { simplifyAllExpressions } from "../../optimizer/expr-simplification";
 
 const code = `
 
@@ -80,6 +85,10 @@ describe("writeExpression", () => {
         );
         ctx = resolveDescriptors(ctx, ast);
         ctx = resolveStatements(ctx, ast);
+        const optimizationCtx = prepareAstForOptimization(ctx, ast, true);
+        simplifyAllExpressions(optimizationCtx);
+        updateCompilerContext(optimizationCtx);
+        ctx = optimizationCtx.ctx;
         const main = getStaticFunction(ctx, "main");
         if (main.ast.kind !== "function_def") {
             throw Error("Unexpected function kind");

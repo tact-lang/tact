@@ -20,7 +20,10 @@ import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
 import { FactoryAst, getAstFactory, idText } from "../ast/ast";
-import { TactErrorCollection, throwInternalCompilerError } from "../error/errors";
+import {
+    TactErrorCollection,
+    throwInternalCompilerError,
+} from "../error/errors";
 import { getParser, Parser } from "../grammar";
 import { defaultParser } from "../grammar/grammar";
 import {
@@ -103,7 +106,11 @@ export async function build(args: {
         config.options?.skipTactOptimizationPhase === undefined ||
         !config.options.skipTactOptimizationPhase;
 
-    const optimizationCtx = prepareAstForOptimization(ctx, ast, doOptimizationFlag);
+    const optimizationCtx = prepareAstForOptimization(
+        ctx,
+        ast,
+        doOptimizationFlag,
+    );
 
     // Dump the code before optimization phase
     if (config.options?.dumpCodeBeforeAndAfterTactOptimizationPhase) {
@@ -117,7 +124,8 @@ export async function build(args: {
     if (doOptimizationFlag) {
         try {
             optimizeTact(optimizationCtx);
-            ctx = updateCompilerContext(optimizationCtx);
+            updateCompilerContext(optimizationCtx);
+            ctx = optimizationCtx.ctx;
         } catch (e) {
             // TODO: e is not an Error in general. Change interface of logger.
             if (e instanceof Error) {
