@@ -242,9 +242,7 @@ export const ppAstOpBinary: ExprPrinter<A.AstOpBinary> =
         return brace(position, `${leftCode} ${op} ${rightCode}`);
     };
 
-export const ppAstStatementConditional: ExprPrinter<
-    A.AstStatementConditional
-> =
+export const ppAstConditional: ExprPrinter<A.AstConditional> =
     ({ condition, thenBranch, elseBranch }) =>
     (position) => {
         const { brace, self, child } = conditionalPrecedence;
@@ -277,7 +275,7 @@ export const ppAstExpressionNested = makeVisitor<A.AstExpression>()({
 
     op_binary: ppAstOpBinary,
 
-    conditional: ppAstStatementConditional,
+    conditional: ppAstConditional,
 });
 
 export const ppAstExpression = (expr: A.AstExpression): string => {

@@ -383,7 +383,7 @@ export type AstBouncedMessageType = {
 export type AstExpression =
     | AstOpBinary
     | AstOpUnary
-    | AstStatementConditional
+    | AstConditional
     | AstMethodCall
     | AstFieldAccess
     | AstStaticCall
@@ -493,7 +493,7 @@ export type AstInitOf = {
     loc: SrcInfo;
 };
 
-export type AstStatementConditional = {
+export type AstConditional = {
     kind: "conditional";
     condition: AstExpression;
     thenBranch: AstExpression;

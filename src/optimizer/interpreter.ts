@@ -11,7 +11,7 @@ import {
     throwConstEvalError,
     throwInternalCompilerError,
 } from "../error/errors";
-import { AstUtil, divFloor, getAstUtil, modFloor } from "../ast/util";
+import { AstUtil, getAstUtil } from "../ast/util";
 import {
     getStaticConstant,
     getStaticFunction,
@@ -982,7 +982,7 @@ export class Interpreter {
         );
     }
 
-    public interpretConditional(ast: A.AstStatementConditional): A.AstLiteral {
+    public interpretConditional(ast: A.AstConditional): A.AstLiteral {
         // here we rely on the typechecker that both branches have the same type
         const valCond = ensureBoolean(this.interpretExpression(ast.condition));
         if (valCond.value) {

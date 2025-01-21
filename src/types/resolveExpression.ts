@@ -761,7 +761,7 @@ function resolveInitOf(
 }
 
 function resolveConditional(
-    ast: A.AstStatementConditional,
+    ast: A.AstConditional,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
