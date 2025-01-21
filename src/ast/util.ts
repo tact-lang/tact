@@ -3,7 +3,6 @@ import {
     AstExpression,
     AstUnaryOperation,
     AstBinaryOperation,
-    isLiteral,
     AstNumber,
     AstBoolean,
     AstSimplifiedString,
@@ -16,8 +15,8 @@ import {
     AstStructFieldValue,
     AstId,
     AstCommentValue,
-    FactoryAst,
 } from "./ast";
+import { isLiteral, FactoryAst } from "./ast-helpers";
 import { dummySrcInfo, SrcInfo } from "../grammar";
 
 export const getAstUtil = ({ createNode }: FactoryAst) => {

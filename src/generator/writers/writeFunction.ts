@@ -7,8 +7,8 @@ import {
     idOfText,
     idText,
     isWildcard,
-    tryExtractPath,
 } from "../../ast/ast";
+import { tryExtractPath } from "../../ast/ast-helpers";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
 import { FunctionDescription, TypeRef } from "../../types/types";

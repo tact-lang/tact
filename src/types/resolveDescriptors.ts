@@ -1,4 +1,5 @@
 import * as A from "../ast/ast";
+import { FactoryAst } from "../ast/ast-helpers";
 import { traverse } from "../ast/iterators";
 import {
     idTextErr,
@@ -266,7 +267,7 @@ function uidForName(name: string, types: Map<string, TypeDescription>) {
     return uid;
 }
 
-export function resolveDescriptors(ctx: CompilerContext, Ast: A.FactoryAst) {
+export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     const types: Map<string, TypeDescription> = new Map();
     const staticFunctions: Map<string, FunctionDescription> = new Map();
     const staticConstants: Map<string, ConstantDescription> = new Map();

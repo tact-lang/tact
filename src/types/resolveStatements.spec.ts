@@ -6,7 +6,7 @@ import { resolveStatements } from "./resolveStatements";
 import { CompilerContext } from "../context/context";
 import { featureEnable } from "../config/features";
 import { getParser } from "../grammar";
-import { getAstFactory } from "../ast/ast";
+import { getAstFactory } from "../ast/ast-helpers";
 import { defaultParser } from "../grammar/grammar";
 
 describe("resolveStatements", () => {

@@ -2,15 +2,14 @@ import { CompilerContext } from "../context/context";
 import {
     AstCondition,
     AstStatement,
-    tryExtractPath,
     AstId,
     idText,
     isWildcard,
     selfId,
     isSelfId,
     eqNames,
-    FactoryAst,
 } from "../ast/ast";
+import { tryExtractPath, FactoryAst } from "../ast/ast-helpers";
 import { isAssignable } from "./subtyping";
 import {
     idTextErr,

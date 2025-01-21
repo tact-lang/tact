@@ -3,10 +3,9 @@ import {
     AstId,
     AstLiteral,
     eqNames,
-    getAstFactory,
     idText,
-    tryExtractPath,
 } from "../../ast/ast";
+import { tryExtractPath, getAstFactory } from "../../ast/ast-helpers";
 import {
     idTextErr,
     TactConstEvalError,

@@ -37,7 +37,6 @@ import {
     AstPrimitiveTypeDecl,
     AstSimplifiedString,
     AstSlice,
-    FactoryAst,
     AstStatement,
     AstStatementAssign,
     AstStatementAugmentedAssign,
@@ -58,13 +57,12 @@ import {
     AstStructValue,
     AstTrait,
     AstUnaryOperation,
-    eqExpressions,
     eqNames,
-    getAstFactory,
     idText,
     isSelfId,
     AstStatementBlock,
 } from "../ast/ast";
+import { getAstFactory, FactoryAst, eqExpressions } from "../ast/ast-helpers";
 import { AstUtil, divFloor, getAstUtil, modFloor } from "../ast/util";
 import {
     getStaticConstant,

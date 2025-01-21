@@ -5,10 +5,11 @@
 
 import { Loc } from "@tonstudio/parser-runtime";
 import * as A from "./ast";
+import { FactoryAst } from "../ast/ast-helpers";
 import { SrcInfo } from "../grammar/src-info";
 
 export const getAstSchema = (
-    factory: A.FactoryAst,
+    factory: FactoryAst,
     toSrcInfo: (location: Loc) => SrcInfo,
 ) => {
     const createNode = <T>(src: Omit<T, "id">): T => {

@@ -1,10 +1,10 @@
+import { AstExpression } from "../../ast/ast";
 import {
-    AstExpression,
-    FactoryAst,
+    isLiteral,
     eqExpressions,
     getAstFactory,
-    isLiteral,
-} from "../../ast/ast";
+    FactoryAst,
+} from "../../ast/ast-helpers";
 import { AstUtil, getAstUtil } from "../../ast/util";
 import { getOptimizer } from "../constEval";
 import { CompilerContext } from "../../context/context";

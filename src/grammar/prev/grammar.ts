@@ -16,8 +16,8 @@ import {
     AstConstantDef,
     AstNumberBase,
     AstId,
-    FactoryAst,
 } from "../../ast/ast";
+import { FactoryAst } from "../../ast/ast-helpers";
 import { ItemOrigin, SrcInfo } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
 import { ParserErrors, parserErrorSchema } from "./parser-error";

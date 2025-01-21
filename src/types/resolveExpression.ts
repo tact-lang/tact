@@ -1,4 +1,5 @@
 import * as A from "../ast/ast";
+import { getAstFactory } from "../ast/ast-helpers";
 import {
     idTextErr,
     TactConstEvalError,
@@ -254,7 +255,7 @@ function resolveBinaryOp(
                             evalConstantExpression(
                                 exp.right,
                                 ctx,
-                                getAstUtil(A.getAstFactory()),
+                                getAstUtil(getAstFactory()),
                             ),
                         );
                         if (0n > valBits.value || valBits.value > 256n) {
