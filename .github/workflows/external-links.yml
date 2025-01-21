@@ -8,8 +8,6 @@ on:
 jobs:
   linkcheck:
     runs-on: ubuntu-latest
-    permissions:
-      issues: write # in order to create new issues
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,19 +35,3 @@ jobs:
           output: "./out_dev.md"
           fail: false
           failIfEmpty: false
-
-      - name: (docs) Create issue from the link-checking report
-        if: steps.lychee.outputs.exit_code != 0
-        uses: peter-evans/create-issue-from-file@v5
-        with:
-          title: "ci: Link checker report (docs)"
-          content-filepath: "./out.md"
-          labels: "kind: bug, kind: docs"
-
-      - name: (dev-docs) Create issue from the link-checking report
-        if: steps.lychee_dev.outputs.exit_code != 0
-        uses: peter-evans/create-issue-from-file@v5
-        with:
-          title: "ci: Link checker report (dev-docs)"
-          content-filepath: "./out_dev.md"
-          labels: "kind: bug, scope: dev-docs"

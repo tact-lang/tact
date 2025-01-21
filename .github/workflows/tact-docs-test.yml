@@ -51,6 +51,7 @@ jobs:
         run: yarn deps
 
       - name: Check broken file references in README
+        if: runner.os != 'macOS' # it's enough to check on Windows and Linux
         uses: lycheeverse/lychee-action@v2
         with:
           args: "-n -s file docs/README.md"
