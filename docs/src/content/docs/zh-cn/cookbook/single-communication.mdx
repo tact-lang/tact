@@ -1,42 +1,56 @@
 ---
-title: 单项合同通信
+title: 单项合约通信
+description: 常见的单个已部署合约与区块链上其他合约通信的示例：
+prev:
+  link: /cookbook
+  label: Cookbook 概述
 ---
 
 本页列出了单个已部署合约与区块链上其他合约进行通信的示例。
 
-有关多个已部署合同之间的通信示例，请参阅：[多合约通信](/zh-cn/cookbook/multi-communication)。
+有关多个已部署合约之间的通信示例，请参阅：[多合约通信](/cookbook/multi-communication)。
 
 ## 如何进行基本回复 {#how-to-make-a-basic-reply}
 
 ```tact
-receive() {
-    self.reply("Hello, World!".asComment()); // asComment 将字符串转换为带注释的单元格
+contract Example {
+    receive() {
+        self.reply("Hello, World!".asComment()); // asComment converts a String to a Cell with a comment
+    }
 }
 ```
 
 ## 如何发送简单信息
 
 ```tact
-send(SendParameters{
-    bounce: true, // default
-    to: destinationAddress,
-    value: ton("0.01"), // attached amount of Tons to send
-    body："Hello from Tact!".asComment(), // comment (optional)
-})；
+contract Example {
+    receive() {
+        send(SendParameters{
+            bounce: true, // default
+            to: sender(), // or another destination address
+            value: ton("0.01"), // attached amount of Tons to send
+            body: "Hello from Tact!".asComment(), // comment (optional)
+        });
+    }
+}
 ```
 
 ## 如何发送包含全部余额的信息
 
-如果我们需要发送智能合约的全部余额，则应使用 `SendRemainingBalance{:tact}` 发送模式。 或者，我们也可以使用 `mode：128{:tact}`，其含义相同。
+如果我们需要发送智能合约的全部余额，则应使用 `SendRemainingBalance{:tact}` 发送模式。  或者，我们也可以使用 `mode：128{:tact}`，其含义相同。
 
 ```tact
-send(SendParameters{
-    // bounce = true by default
-    to: sender(), // send the message back to the original sender
-    value: 0,
-    mode：SendRemainingBalance, // or mode：128
-    body："Hello from Tact!".asComment(), // comment (optional)
-})；
+contract Example {
+    receive() {
+        send(SendParameters{
+            // bounce = true by default
+            to: sender(), // send the message back to the original sender
+            value: 0,
+            mode: SendRemainingBalance, // or mode: 128
+            body: "Hello from Tact!".asComment(), // comment (optional)
+        });
+    }
+}
 ```
 
 ## 如何发送带有余值的信息
@@ -44,58 +58,70 @@ send(SendParameters{
 如果我们要向同一发件人发送回复，可以使用 `SendRemainingValue{:tact}`模式（即 `mode: 64{:tact}`），除了新信息中最初显示的值外，它还会携带入站信息的所有剩余值。
 
 ```tact
-send(SendParameters{
-    // bounce = true by default
-    to: sender(), // send the message back to the original sender
-    value: 0,
-    mode：SendRemainingValue,
-    body："Hello from Tact!".asComment(), // comment (optional)
-})；
+contract Example {
+    receive() {
+        send(SendParameters{
+            // bounce = true by default
+            to: sender(), // send the message back to the original sender
+            value: 0,
+            mode: SendRemainingValue,
+            body: "Hello from Tact!".asComment(), // comment (optional)
+        });
+    }
+}
 ```
 
-通常还需要添加 `SendIgnoreErrors{:tact}`标记，以便忽略在操作阶段处理该消息时出现的任何错误L
+通常还需要添加 `SendIgnoreErrors{:tact}`标记，以便忽略在操作阶段处理该消息时出现的任何错误
 
 ```tact
-send(SendParameters{
-    // bounce = true by default
-    to: sender(), // send the message back to the original sender
-    value: 0,
-    mode：SendRemainingValue | SendIgnoreErrors, // 更喜欢使用 | 而不是 + 来表示模式
-    body："Hello from Tact!".asComment(), // comment (optional)
-})；
+contract Example {
+    receive() {
+        send(SendParameters{
+            // bounce = true by default
+            to: sender(), // send the message back to the original sender
+            value: 0,
+            mode: SendRemainingValue | SendIgnoreErrors, // prefer using | over + for the mode
+            body: "Hello from Tact!".asComment(), // comment (optional)
+        });
+    }
+}
 ```
 
 后一个示例与使用 [`.reply(){:tact}` 函数](#how-to-make-a-basic-reply)相同。
 
 ## 如何发送带有长文本注释的信息
 
-如果我们需要发送一条带有冗长文本注释的信息，我们应该创建一个 [`String{:tact}`](/zh-cn/book/types#primitive-types)，由超过 $127$ 个字符组成。 为此，我们可以利用 [`StringBuilder{:tact}`](/zh-cn/book/types#primitive-types)原始类型及其名为 `beginComment(){:tact}` 和 `append(){:tact}` 的方法。 在发送之前，我们应该使用 `toCell(){:tact}` 方法将字符串转换为单元格。
+如果我们需要发送一条带有冗长文本注释的信息，我们应该创建一个 [`String{:tact}`](/book/types#primitive-types)，由超过 $127$ 个字符组成。 如果我们需要发送一条带有冗长文本注释的信息，我们应该创建一个 [`String{:tact}`](/book/types#primitive-types)，由超过 $127$ 个字符组成。 为此，我们可以利用 [`StringBuilder{:tact}`](/book/types#primitive-types)原始类型及其名为 `beginComment(){:tact}` 和 `append(){:tact}` 的方法。 在发送之前，我们应该使用 `toCell(){:tact}` 方法将字符串转换为cell。 在发送之前，我们应该使用 `toCell(){:tact}` 方法将字符串转换为cell。
 
 ```tact
-let comment: StringBuilder = beginComment();
-let longString = "..."; // Some string with more than 127 characters.
-comment.append(longString);
+contract Example {
+    receive() {
+        let comment: StringBuilder = beginComment();
+        let longString = "..."; // Some string with more than 127 characters.
+        comment.append(longString);
 
-send(SendParameters{
-    // bounce = true by default
-    to: sender(),
-    value: 0,
-    mode: SendIgnoreErrors,
-    body: comment.toCell(),
-});
+        send(SendParameters{
+            // bounce = true by default
+            to: sender(),
+            value: 0,
+            mode: SendIgnoreErrors,
+            body: comment.toCell(),
+        });
+    }
+}
 ```
 
 :::note[Useful links:]
 
-  ["Sending messages" in the Book](/zh-cn/book/send#send-message)\
-  ["Message `mode`" in the Book](/zh-cn/book/message-mode)
-  [`StringBuilder{:tact}` in the Book](/zh-cn/book/types#primitive-types)
-  [`Cell{:tact}` in Core library](/zh-cn/ref/core-cells)
+  ["Sending messages" in the Book](/book/send#send-message)\
+  ["Message `mode`" in the Book](/book/message-mode)\
+  [`StringBuilder{:tact}` in the Book](/book/types#primitive-types)\
+  [`Cell{:tact}` in Core library](/ref/core-cells)
 
 :::
 
 :::tip[Hey there!]
 
-  没有找到您最喜欢的单一合同通信案例？ 您有很酷的实施方案吗？ [欢迎投稿！](https://github.com/tact-lang/tact/issues)
+  没有找到您最喜欢的单一合约通信案例？  您有很酷的实施方案吗？ [欢迎投稿！](https://github.com/tact-lang/tact/issues)
 
 :::

@@ -1,0 +1,443 @@
+---
+title: 最佳安全实践
+description: Tact 智能合约开发者应当意识到的几个反模式、潜在攻击向量以及最佳实践。
+---
+
+[//]: # "✅❌"
+
+Tact 智能合约开发者应该意识到一些反模式和潜在的攻击矢量。 这可能影响合约的安全性、效率和正确性。 以下我们将讨论编写和维护安全的 Tact 智能合约的具体注意事项。
+
+为了加深理解，请参考以下资源：
+
+- [TON文档中的智能合约指南](https://docs.ton.org/v3/guidelines/smart-contracts/guidelines)
+- [TON Docs中的安全智能合约编程](https://docs.ton.org/v3/guidelines/smart-contracts/security/secure-programming)
+- [GitHub 仓库中的 FunC 安全最佳实践](https://github.com/slowmist/Toncoin-Smart-Contract-Security-Best-Practices/blob/main/README.md)
+
+## 在链上发送敏感数据
+
+整个智能合约计算是透明的，如果您在运行时有一些保密值，就可以通过简单的仿真来检索它们。
+
+##### Do's ✅
+
+**不**发送或存储在链上的敏感数据。
+
+##### Don'ts ❌
+
+```tact
+import "@stdlib/deploy";
+
+message Login {
+    privateKey: Int as uint256;
+    signature: Slice;
+    data: Slice;
+}
+
+contract Test with Deployable {
+    receive(msg: Login) {
+        let publicKey = getPublicKey(msg.privateKey);
+
+        require(checkDataSignature(msg.data, msg.signature, publicKey), "Invalid signature!");
+    }
+}
+```
+
+## 滥用有符号整数
+
+无符号整数较安全，因为它们能防止大部分设计错误，而已签名整数如果不认真使用，可能会产生不可预测的后果。 因此，只有在绝对必要时才能使用经签名的整数。
+
+##### Do's ✅
+
+优先使用无符号整数，除非有符号整数。
+
+##### Don'ts ❌
+
+下面是一个使用有符号整数的不正确的例子。 在`Vote{:tact}` [Message][message]中，`votes` 字段的类型是`Int as int32{:tact}`，这是一个32-bit有符号整数。 如果攻击者发送负数投票而不是正数，这可能导致欺骗。
+
+```tact
+message Vote { votes: Int as int32 }
+
+contract Sample {
+    votes: Int as uint32 = 0;
+
+    receive(msg: Vote) {
+        self.votes += msg.votes;
+    }
+}
+```
+
+## 无效的抛出值
+
+[退出码](/book/exit-codes) $0$ 和 $1$ 表示交易的计算阶段正常执行。 如果调用一个 [`lown (){:tact}`](/ref/core-debug#play) 或[类似的函数](/ref/core-debug) 直接带有退出码 $0$ 和 $1$ ，执行可能会意外中止. 这可能使调试非常困难，因为这种中止的执行与正常的执行无法区分。
+
+##### Do's ✅
+
+最好使用 [`require(){:tact}`](/ref/core-debug#require) 函数来阐明期望状态。
+
+```tact
+require(isDataValid(msg.data), "Invalid data!")；
+```
+
+##### Don'ts ❌
+
+不要直接抛出 $0$ 或 $1$。
+
+```tact
+throw(0);
+throw(1);
+```
+
+## 不安全的随机数字
+
+在TON中生成真正安全的随机数字是一项挑战。 [`random()`](/ref/core-random#random)函数是伪随机的，取决于[逻辑时间](https://docs.ton.org/develop/smart-contracts/guidelines/message-delivery-guarantees#what-is-a-logical-time)。 黑客可以通过 [brute-forcing](https://en.wikipedia.org/wiki/Brute-force_attack) 当前区块中的逻辑时间来预测随机数。
+
+##### Do's ✅
+
+- 对于关键应用 **避免仅仅依赖于链上的解决方案**。
+
+- 使用 [`random(){:tact}`](/ref/corre-random#random) 与随机逻辑时间，以提高安全性，使攻击者更难预测而不访问验证节点。 但是，请注意，它仍然**不是完全万无一失的**。
+
+- 考虑使用 **提交和披露方案**：
+  1. 参与者在链外随机生成数字，并将其散列发送到合约中。
+  2. 一旦收到所有哈希，参与者就公布其原始数字。
+  3. 结合公开的数字（例如，将它们相加）以生成一个安全的随机值。
+
+有关更多详细信息，请参阅 [TON 文档中的安全随机数生成页面](https://docs.ton.org/guidelines/smart-contracts/security/random-number-generation)。
+
+##### Don'ts ❌
+
+不要依赖[`random(){:tact}`](/ref/core-random#random)函数。
+
+```tact
+if (random(1, 10) == 7) {
+  ... send reward ...
+}
+```
+
+不在 `external_message` 接收器中使用随机化，因为即使在随机逻辑时间内它仍然很脆弱。
+
+## 优化消息处理
+
+从人类友好的格式解析为机器可读的二进制结构的字符串解析工作应在**链下**完成。 这种办法确保只向区块链发送最优化和紧凑的消息，尽量减少计算和储存费用，同时避免不必要的气体间接费用。
+
+##### Do's ✅
+
+执行从可读格式解析为机器可读二进制结构**链下**的字符串以保持合约效率。
+
+```tact
+message Sample {
+    parsedField: Slice;
+}
+
+contract Example {
+    receive(msg: Sample) {
+        // Process msg.parsedField directly
+    }
+}
+```
+
+##### Don'ts ❌
+
+避免将字符串从可读格式解析为二进制结构**在链上**，因为这会增加计算开销和Gas成本。
+
+```tact
+message Sample { field: String }
+
+contract Example {
+    receive(msg: Sample) {
+        // Parsing occurs on-chain, which is inefficient
+        let parsed = field.fromBase64();
+    }
+}
+```
+
+## Gas限制
+
+小心“Gas用尽错误”。 这无法处理，因此请尽量为每个接收者预先计算 gas 消耗[使用测试](/book/debug#tests)。 这将有助于避免浪费额外的gas，因为交易无论如何都会失败。
+
+##### Do's ✅
+
+```tact
+message Vote { votes: Int as int32 }
+
+contract Example {
+    const voteGasUsage = 10000; // precompute with tests
+
+    receive(msg: Vote) {
+        require(context().value > getComputeFee(self.voteGasUsage, false), "Not enough gas!");
+    }
+}
+```
+
+## 身份验证
+
+如果您的合约逻辑围绕可信的发件人运行，总是验证发件人的身份。 这可以使用 [`Ownable{:tact}`](/ref/stdlib-own) 特性或使用 [state init](/book/expressions#init) 验证。 您可以阅读更多关于[Jetton validation](/cookbook/jettons#accepting-jetton-transfer)和[NFT validation](/cookbook/nfts#accepting-nft-ownership-assignment)的信息。
+
+##### Do's ✅
+
+使用 [`Ownable{:tact}`](/ref/stdlib-own) 特性.
+
+```tact
+import "@stdlib/ownable";
+
+contract Counter with Ownable {
+    owner: Address;
+    val: Int as uint32;
+
+    init() {
+        self.owner = address("OWNER_ADDRESS");
+        self.val = 0;
+    }
+
+    receive("admin-double") {
+        self.requireOwner();
+        self.val = self.val * 2;
+    }
+}
+```
+
+##### Don'ts ❌
+
+不要在不验证发件人身份的情况下执行消息！
+
+```tact
+contract Example with Deployable {
+    myJettonWalletAddress: Address;
+    myJettonAmount: Int as coins = 0;
+
+    init(jettonWalletCode: Cell, jettonMasterAddress: Address) {
+        self.myJettonWalletAddress = calculateJettonWalletAddress(
+            myAddress(),
+            jettonMasterAddress,
+            jettonWalletCode,
+        );
+    }
+
+    receive(msg: JettonTransferNotification) {
+        self.myJettonAmount += msg.amount;
+    }
+}
+```
+
+## 重放保护
+
+重放保护是一种安全机制，防止攻击者重用以前的消息。 有关重放保护的更多信息，请参阅[TON 文档中的外部信息页面](https://docs.ton.org/develop/smart-contracts/guidelines/external-messages)。
+
+##### Do's ✅
+
+要区分消息，总是包含和验证独特的标识符，例如“seqno”。 成功处理后更新标识符以避免重复。
+
+或者，您可以实现类似于[highload v3 wallet](https://github.com/ton-blockchain/highload-wallet-contract-v3/blob/main/contracts/highload-wallet-v3.func#L60)中的重放保护，这种保护不基于`seqno`。
+
+```tact
+message Msg {
+    newMessage: Cell;
+    signature: Slice;
+}
+
+struct DataToVerify {
+    seqno: Int as uint64;
+    message: Cell;
+}
+
+contract Sample {
+    publicKey: Int as uint256;
+    seqno: Int as uint64;
+
+    init(publicKey: Int, seqno: Int) {
+        self.publicKey = publicKey;
+        self.seqno = seqno;
+    }
+
+    external(msg: Msg) {
+        require(checkDataSignature(DataToVerify{
+            seqno: self.seqno,
+            message: msg.newMessage
+        }.toSlice(), msg.signature, self.publicKey), "Invalid signature");
+        acceptMessage();
+        self.seqno += 1;
+        nativeSendMessage(msg.newMessage, 0);
+    }
+}
+```
+
+##### Don'ts ❌
+
+不要依赖签名验证而不包含序列号。 没有重播保护的消息可能会被攻击者重发，因为没有方式区分有效的原始消息和重播的消息。
+
+```tact
+message Msg {
+    newMessage: Cell;
+    signature: Slice;
+}
+
+contract Sample {
+    publicKey: Int as uint256;
+
+    init(publicKey: Int, seqno: Int) {
+        self.publicKey = publicKey;
+    }
+
+    external(msg: Msg) {
+        require(checkDataSignature(msg.toSlice(), msg.signature, self.publicKey), "Invalid signature");
+        acceptMessage();
+        nativeSendMessage(msg.newMessage, 0);
+    }
+}
+```
+
+## 消息的竞争条件
+
+消息级联可以在很多区块上处理。 假定一个消息流正在运行，攻击者可以同时启动第二个消息流。 也就是说，如果一个属性在开始时被检查，例如用户是否有足够的Tokens，但不假定在同一合约的第三阶段仍会满足这一要求。
+
+## 处理/发送退回消息
+
+发送反弹标志(bounce flag)设置为 `true{:tact}`的信息，这是 [`send(){:tact}`](/ref/core-common#send)函数的默认设置。 消息在合约执行失败后退出。 您可能希望通过在 [\`try...catch{:tact}\`\`](/book/statements#try-catch) 语句中封装代码来回滚合约状态，并根据您的逻辑进行一些额外处理，从而解决这个问题。
+
+##### Do's ✅
+
+通过[bounced message receiver](/book/bounced/#bounced-message-receiver)处理退信以正确响应失败的信息。
+
+```tact
+contract JettonDefaultWallet {
+    const minTonsForStorage: Int = ton("0.01");
+    const gasConsumption: Int = ton("0.01");
+
+    balance: Int;
+    owner: Address;
+    master: Address;
+
+    init(master: Address, owner: Address) {
+        self.balance = 0;
+        self.owner = owner;
+        self.master = master;
+    }
+
+    receive(msg: TokenBurn) {
+        let ctx: Context = context();
+        require(ctx.sender == self.owner, "Invalid sender");
+
+        self.balance = self.balance - msg.amount;
+        require(self.balance >= 0, "Invalid balance");
+
+        let fwdFee: Int = ctx.readForwardFee();
+        require(ctx.value > fwdFee + 2 * self.gasConsumption + self.minTonsForStorage, "Invalid value - Burn");
+
+        send(SendParameters{
+            to: self.master,
+            value: 0,
+            mode: SendRemainingValue,
+            bounce: true,
+            body: TokenBurnNotification{
+                queryId: msg.queryId,
+                amount: msg.amount,
+                owner: self.owner,
+                response_destination: self.owner
+            }.toCell()
+        });
+    }
+
+    bounced(src: bounced<TokenBurnNotification>) {
+        self.balance = self.balance + src.amount;
+    }
+}
+```
+
+## 交易和阶段
+
+来自本书的 [发送信息页面](/book/send#outbound-message-processing)：
+
+> TON Blockchain上的每笔交易由多个阶段组成。 发送信息是在计算阶段进行评估，但是在该阶段**不是**发送。 相反，它们会按出现的先后顺序排队进入行动阶段，在该阶段，计算阶段列出的所有行动（如向外发送消息或储备请求）都会被执行。
+
+因此，如果计算阶段失败，[寄存器](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers) `c4`（持久性数据）和`c5`（操作）将不会更新。 但是，可以使用[`commit(){:tact}`](/ref/core-advanced/#commit)函数手动保存其状态。
+
+## 小心退回多余 gas
+
+如果多余 gas不退还给发送者，资金将会随着时间的推移累积在您的合约中。 原则上没有任何可怕之处，只是一种不理想的做法。 您可以添加一个函数来清除多余部分，但流行的合约，如ton Jetton，仍然通过带有`0xd53276db`操作码的[消息][message]返回给发送者。
+
+##### Do's ✅
+
+使用 `0xd5276db` opcode的[消息][message] 返回过剩的 gas。
+
+```tact
+message(0xd53276db) Excesses {}
+message Vote { votes: Int as int32 }
+
+contract Sample {
+    votes: Int as uint32 = 0;
+
+    receive(msg: Vote) {
+        self.votes += msg.votes;
+
+        send(SendParameters{
+            to: sender(),
+            value: 0,
+            mode: SendRemainingValue | SendIgnoreErrors,
+            body: Excesses{}.toCell(),
+        });
+    }
+}
+```
+
+另外，您可以充分利用[`notify(){:tact}`](/ref/core-base/#self-notify) 或 [`forward(){:tact}`](/ref/core-base/#self-forward) 标准函数。
+
+```tact
+message(0xd53276db) Excesses {}
+message Vote { votes: Int as int32 }
+
+contract Sample {
+    votes: Int as uint32 = 0;
+
+    receive(msg: Vote) {
+        self.votes += msg.votes;
+
+        self.notify(Excesses{}.toCell());
+    }
+}
+```
+
+## 从其他合约中提取数据
+
+区块链中的合约可以驻留在不同的分片中，由其他验证器处理，这意味着一个合约无法从其他合约中获取数据。 也就是说，任何合约都不能从其他合约调用[getter function](/book/functions#getter-functions))。
+
+因此，任何链上的通信都是异步的，都是通过发送和接收信息来进行的。
+
+##### Do's ✅
+
+交换消息以从其他合约中提取数据。
+
+```tact
+message ProvideMoney {}
+message TakeMoney { money: Int as coins }
+
+contract OneContract {
+    money: Int as coins;
+
+    init(money: Int) {
+        self.money = money;
+    }
+
+    receive(msg: ProvideMoney) {
+        self.reply(TakeMoney{money: self.money}.toCell());
+    }
+}
+
+contract AnotherContract {
+    oneContractAddress: Address;
+
+    init(oneContractAddress: Address) {
+        self.oneContractAddress = oneContractAddress;
+    }
+
+    receive("get money") {
+        self.forward(self.oneContractAddress, ProvideMoney{}.toCell(), false, null);
+    }
+
+    receive(msg: TakeMoney) {
+        require(sender() == self.oneContractAddress, "Invalid money provider!");
+        // Money processing
+    }
+}
+```
+
+[struct]: /book/structs-and-messages#structs
+[message]: /book/structs-and-messages#messages

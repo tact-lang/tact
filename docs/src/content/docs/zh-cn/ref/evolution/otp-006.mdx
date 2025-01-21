@@ -1,16 +1,17 @@
 ---
-title: OTP-006：合同包
+title: OTP-006：合约包
+description: 该提案定义了一种将编译合约、其依赖关系和所有相关元数据打包成一个文件的方法
 sidebar:
   order: 6
 ---
 
-该提案定义了一种将编译合同、其依赖关系和所有相关元数据打包成一个文件的方法。
+该提案定义了一种将编译合约、其依赖关系和所有相关元数据打包成一个文件的方法。
 
 ## 动机
 
-需要一种统一的软件包格式，以简化使用各种工具部署和升级合同的过程，而无需对其进行配置。
+需要一种统一的包格式，以简化使用各种工具部署和升级合约的过程，而无需进行配置。
 
-## 规格
+## 技术说明
 
 软件包文件的扩展名为".pkg"，是一个 JSON 文件：
 
@@ -51,4 +52,4 @@ sidebar:
 
 ## 参考资料
 
-- 细胞袋 (BoC): https://docs.ton.org/develop/data-formats/cell-boc#packing-a-bag-of-cells
+- Bags of Cells (BoC): https://docs.ton.org/develop/data-formats/cell-boc#packing-a-bag-of-cells

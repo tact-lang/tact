@@ -1,55 +1,52 @@
 ---
-title: 发送信息
+title: 发送消息
+description: TON 区块链是基于消息的--要与其他合约通信和部署新合约，您需要发送消息。
 ---
 
 TON 区块链是基于消息的--要与其他合约通信和部署新合约，您需要发送消息。
 
-Tact 中的消息通常使用内置[Struct](/zh-cn/book/structs-and-messages#structs) `SendParameters{:tact}`组成，它由以下部分组成：
+Tact 中的消息通常使用内置[Struct](/book/structs-and-messages#structs) `SendParameters{:tact}`组成，它由以下部分组成：
 
-| 现场    | 类型                      | 说明                                                                                                                                                                      |
-| :---- | :---------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 弹跳    | [`Bool{:tact}`][p]      | `bounce` - if set to `true` (default) then the message will be bounced back to the sender if the receiver contract doesn't exist or wasn't able to process the message. |
-| 到     | [`地址{:tact}`][p]        | TON 区块链中的内部接收器 [`地址{:tact}`][p]。                                                                                                                                        |
-| 值     | [`Int{:tact}`][int]。    | `value` in TON - the amount of TON you want to send with the message. This value is used to cover gas fees on the receiver side.                                        |
-| 模式    | [`Int{:tact}`][int]。    | 一个 8 位值，用于配置发送信息的方式，默认值为 $0$。 参见：[消息`模式`](/zh-cn/book/message-mode)。                                                                                                          |
-| 身体    | [`Cell?{:tact}`][单元格]   | [可选][选项]信息正文作为[`单元格{:tact}`][单元格]                                                                                                                                       |
-| 代码    | [`Cell?{:tact}`][单元格]   | [可选][opt] 合同的初始代码（编译后的字节码）                                                                                                                                              |
-| 数据    | [`Cell?{:tact}`][单元格]   | [可选][选项]合同的初始数据（合同的[`init(){:tact}`函数](/zh-cn/book/contracts#init-function)的参数）                                                                                               |
+| 字段       | 类型                     | 说明                                                                                                                                  |
+| :------- | :--------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
+| `bounce` | [`Bool{:tact}`][p]     | 如果设置为`true`（默认），当接收合约不存在或无法处理消息时，消息会退回给发送者。                                                                                         |
+| `to`     | [`Address{:tact}`][p]  | TON 区块链中的内部接收器 [`Address{:tact}`][p]。                                                                                               |
+| `value`  | [`Int{:tact}`][int]    | 消息中要发送的[nanoToncoins][nano]的金额。 此值通常用于支付[转发费用][fwdfee]，除非使用了可选标志[`SendPayGasSeparately{:tact}`](/book/message-mode#optional-flags)。 |
+| `mode`   | [`Int{:tact}`][int]    | 一个 8 位值，用于配置发送消息的方式，默认值为 $0$。 参见：[消息`模式`](/book/message-mode)。 见：[消息`mode`](/book/message-mode).                                    |
+| `body`   | [`Cell?{:tact}`][cell] | [可选][opt]消息正文作为[`Cell{:tact}`][cell]                                                                                                |
+| `code`   | [`Cell?{:tact}`][cell] | [可选][opt] 合约的初始代码（编译后的字节码）                                                                                                          |
+| `data`   | [`Cell?{:tact}`][cell] | [可选][opt]合约的初始数据（合约的[`init(){:tact}`函数](/book/contracts#init-function)的参数）                                                          |
 
-字段 `code` 和 `data` 被称为 [初始包](/zh-cn/book/expressions#initof)，用于部署新合约。
+字段 `code` 和 `data` 被称为[初始化包](/book/expressions#initof)，它用于新合约的部署。
 
 ## 发送简单回复 {#send-simple-reply}
 
-最简单的信息是对接收信息的回复，返回信息的所有多余值：
+最简单的消息是回复收到的消息，返回消息的所有过剩值：
 
 ```tact
-receive() {
-    self.reply("Hello, World!".asComment()); // asComment converts a String to a Cell with a comment
-}
+self.reply("Hello, World!".asComment()); // asComment converts a String to a Cell with a comment
 ```
 
-## 发送信息 {#send-message}
+## 发送消息
 
-如果需要更高级的逻辑，可以直接使用 `send(){:tact}` 函数和 `SendParameters{:tact}` [Struct](/zh-cn/book/structs-and-messages#structs) 。
+如果需要更高级的逻辑，可以直接使用 `send(){:tact}` 函数和 `SendParameters{:tact}` [Struct](/book/structs-and-messages#structs) 。
 
-事实上，前面使用 [`.reply(){:tact}`](#send-simple-reply)的示例可以通过调用下面的`send(){:tact}`函数来实现：
+事实上，前面使用 [`.reply(){:tact}`](#send-simple-reply) 的示例可以通过调用下面的 `send(){:tact}` 函数来实现：
 
 ```tact
-receive() {
-    send(SendParameters{
-        // bounce is set to true by default
-        to: sender(), // sending message back to the sender
-        value: 0, // don't add Toncoins to the message...
-        mode: SendRemainingValue | SendIgnoreErrors, // ...except for ones received from the sender due to SendRemainingValue
-        body: "Hello, World".asComment(), // asComment converts a String to a Cell with a comment
-    });
-}
+send(SendParameters{
+    // bounce is set to true by default
+    to: sender(), // sending message back to the sender
+    value: 0, // don't add Toncoins to the message...
+    mode: SendRemainingValue | SendIgnoreErrors, // ...except for ones received from the sender due to SendRemainingValue
+    body: "Hello, World".asComment(), // asComment converts a String to a Cell with a comment
+});
 ```
 
-另一个示例是向指定的 [`Address{:tact}`][p]发送一条信息，信息的`值`为 $1$ TON，`body`为带有 [`String{:tact}`][p] `"Hello, World!"{:tact}`的注释：
+另一个示例是向指定的 [`Address{:tact}`][p]发送一条消息，消息的`值`为 $1$ TON，`body`为带有 [`String{:tact}`][p] `"Hello, World!"{:tact}`的注释：
 
 ```tact
-let recipient: Address = ...;
+let recipient: Address = address("...");
 let value: Int = ton("1");
 send(SendParameters{
     // bounce is set to true by default
@@ -60,14 +57,14 @@ send(SendParameters{
 });
 ```
 
-[可选标记](/zh-cn/book/message-mode#optional-flags) `SendIgnoreErrors{:tact}`表示即使在发送信息过程中发生错误，也会继续发送下一条信息。**发送阶段的任何错误都不会导致事务逆转**。
+[可选标记](/book/message-mode#optional-flags) `SendIgnoreErrors{:tact}`表示即使在发送消息过程中发生错误，也会继续发送下一条消息。 **在发送阶段，没有错误会导致交易回滚。**
 
-## 发送打字信息
+## 发送输入的消息
 
-要发送二进制键入信息，可以使用以下代码：
+要发送二进制类型的消息，您可以使用以下代码：
 
 ```tact
-let recipient: Address = ...;
+let recipient: Address = address("...");
 let value: Int = ton("1");
 send(SendParameters{
     // bounce is set to true by default
@@ -80,7 +77,7 @@ send(SendParameters{
 
 ## 部署合约
 
-要部署一个合约，你需要用 [`initOf{:tact}`](/zh-cn/book/expressions#initof)计算它的地址和初始状态，然后在初始化信息中发送它们：
+要部署一个合约，你需要用 [`initOf{:tact}`](/book/expressions#initof)计算它的地址和初始状态，然后在初始化消息中发送它们：
 
 ```tact
 let init: StateInit = initOf SecondContract(arg1, arg2);
@@ -97,11 +94,11 @@ send(SendParameters{
 });
 ```
 
-## 外发信息处理 {#outbound-message-processing}
+## 外发消息处理
 
-TON 区块链上的每笔交易都由 [多个阶段][阶段] 组成。 出站报文在[计算阶段][计算]中进行评估，但\*\*\*不在该阶段发送。 在[计算阶段][compute]中列出的所有操作，如外向消息或[储备请求]（/ref/core-advanced#nativereserve），都会在[操作阶段][phases]中执行。
+TON 区块链上的每笔交易都由 [多个阶段][phases] 组成。 发送消息是在[计算阶段][compute]进行评估，但是在该阶段**不是**发送。 相反，它们将按照出现顺序排入[操作阶段][phases]，在[计算阶段][compute]中列出的所有操作，如外向消息或[储备请求](/ref/core-advanced#nativereserve)，都会在此阶段执行。
 
-由于所有值都是在[计算阶段][compute]中计算的，所有费用都是在计算结束前计算的，而且在[操作阶段][phases]中出现异常时不会恢复交易，因此向外发送信息可能会因[操作费](https://docs.ton.org/develop/howto/fees-low-level#action-fee) 或[转发费][fwdfee]不足而失败，不会出现跳转。
+由于所有值都是在[计算阶段][compute]中计算的，所有费用都是在计算结束前计算的，而且在[操作阶段][phases]中出现异常时不会恢复交易，因此向外发送消息可能会因[操作费](https://docs.ton.org/develop/howto/fees-low-level#action-fee) 或[转发费][fwdfee]不足而失败，不会出现跳转。
 
 请看下面的例子：
 
@@ -127,33 +124,32 @@ contract FailureIsNothingButAnotherStep {
 }
 ```
 
-在那里，第二条信息实际上不会被发送：
+在那里，第二条消息实际上不会被发送：
 
-- [计算阶段][计算]结束后，计算合约的剩余价值 $\mathrm{R}$。
+- [计算阶段][compute]结束后，计算合约的剩余价值 $\mathrm{R}$。
 
-- 在出站信息处理过程中，假设入站信息中提供了足够的价值，第一条信息会在余额上留下 $\mathrm{R} - (0.042 + \mathrm{forward\_fees})$ [nanoToncoins](/zh-cn/book/integers#nanotoncoin) 。
+- 在出站消息处理过程中，假设入站消息中提供了足够的金额，第一条消息会在余额上留下 $\mathrm{R} - (0.042 + \mathrm{forward\_fees})$ [nanoToncoins](/book/integers#nanotoncoin) 。
 
-- 处理第二条信息时，合约会尝试发送 $\mathrm{R}$ [纳米通币](/zh-cn/book/integers#nanotoncoin)，但发送失败，因为剩余的金额已经较少。
+- 处理第二条消息时，合约会尝试发送 $\mathrm{R}$ [nano Toncoins](/book/integers#nanotoncoin)，但发送失败，因为剩余的金额已经较少。
 
 :::note
 
-  有关所有信息发送功能的更多信息，请参阅参考资料：
+  有关所有消息发送功能的更多消息，请参阅参考资料：
 
-- [`send(){:tact}`](/zh-cn/ref/core-common#send)
-- [`emit(){:tact}`](/zh-cn/ref/core-common#emit)
-- [`self.notify(){:tact}`](/zh-cn/ref/core-base#self-notify)
-- [`self.reply(){:tact}`](/zh-cn/ref/core-base#self-reply)
-- [`self.forward(){:tact}`](/zh-cn/ref/core-base#self-forward)
-- [`nativeSendMessage(){:tact}`](/zh-cn/ref/core-advanced#nativesendmessage)
+- [`send(){:tact}`](/ref/core-common#send)
+- [`emit(){:tact}`](/ref/core-common#emit)
+- [`self.notify(){:tact}`](/ref/core-base#self-notify)
+- [`self.reply(){:tact}`](/ref/core-base#self-reply)
+- [`self.forward(){:tact}`](/ref/core-base#self-forward)
+- [`nativeSendMessage(){:tact}`](/ref/core-advanced#nativesendmessage)
 
 :::
 
-[p]: /zh-cn/book/types#primitive-types
-[int]: /zh-cn/book/integers
-[电池]: /zh-cn/book/cells#cells
-[选择]: /zh-cn/book/optionals
-
-[阶段]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases
-[算]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase
-[纳米]: /zh-cn/book/integers#nanotoncoin
+[p]: /book/types#primitive-types
+[int]: /book/integers
+[cell]: /book/cells#cells
+[opt]: /book/optionals
+[phases]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phasesC
+[compute]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase
+[nano]: /book/integers#nanotoncoin
 [fwdfee]: https://docs.ton.org/develop/howto/fees-low-level#forward-fees

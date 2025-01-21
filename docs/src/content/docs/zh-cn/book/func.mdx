@@ -1,22 +1,23 @@
 ---
 title: 与 func 的兼容性
+description: Tact 编译为 FunC，并将其所有实体直接映射到各种 FunC 和 TL-B 类型。
 ---
 
 Tact 本身编译为 FunC，并将其所有实体直接映射到各种 FunC 和 TL-B 类型。
 
-## 转换类型 {#convert-types}
+## 转换类型
 
-Tact 中的 [原始类型](/zh-cn/book/types#primitive-types)可直接映射到 FunC 中的类型。
+Tact 中的 [原始类型](/book/types#primitive-types)可直接映射到 FunC 中的类型。
 
-所有关于复制变量的规则都是一样的。其中一个最大的不同是，在 Tact 中没有可见的突变操作符，大多数 [`切片{:tact}`](/zh-cn/book/cells#slices)操作都是就地突变变量。
+复制变量的所有规则都是一样的。 所有关于复制变量的规则都是一样的。其中一个最大的不同是，在 Tact 中没有可见的突变(mutation)操作符，大多数 [`slice{:tact}`](/book/cells#slices)操作都是就地突变变量。
 
-## 转换序列化 {#convert-serialization}
+## 转换序列化
 
-在 Tact 中，[Structs](/zh-cn/book/structs-and-messages#structs)和[Messages](/zh-cn/book/structs-and-messages#messages)的序列化是自动进行的，不像 FunC 需要手动定义序列化逻辑。
+在 Tact 中，[Structs](/book/structs-and-messages#structs)和[Messages](/book/structs-and-messages#messages)的序列化是自动进行的，不像 FunC 需要手动定义序列化逻辑。
 
-Tact 的自动布局算法是贪婪的。这意味着它会获取下一个变量，计算其大小，并尝试将其放入当前单元格。如果不合适，它就会创建一个新单元格并继续。所有用于自动布局的内部结构都会在分配前被扁平化。
+Tact 的自动布局算法是贪婪的。 这意味着它会获取下一个变量，计算其大小，并尝试将其放入当前cell中。 如果不合适，它会创建一个新cell并继续。 自动布局的所有内部结构在分配前都会被扁平化。
 
-除了 [`Address{:tact}`](/zh-cn/book/types#primitive-types) 以外，所有可选类型在 TL-B 中都序列化为 `Maybe`。
+除了 [`Address{:tact}`](/book/types#primitive-types) 以外，所有可选类型在 TL-B 中都序列化为 `Maybe`。
 
 没有对 `Either` 的支持，因为它没有定义在某些情况下序列化时应选择什么。
 
@@ -25,7 +26,7 @@ Tact 的自动布局算法是贪婪的。这意味着它会获取下一个变量
 ```tact
 // _ value1:int257 = SomeValue;
 struct SomeValue {
-    value1: Int; // 默认为 257 位
+    value1: Int; // Default is 257 bits
 }
 ```
 
@@ -33,7 +34,7 @@ struct SomeValue {
 // _ value1:int256 value2:uint32 = SomeValue;
 struct SomeValue {
     value1: Int as int256;
-    value2：int as uint32;
+    value2: Int as uint32;
 }
 ```
 
@@ -41,21 +42,21 @@ struct SomeValue {
 // _ value1:bool value2:Maybe bool = SomeValue;
 struct SomeValue {
     value1: Bool;
-    value2：Bool?;
+    value2: Bool?;
 }
 ```
 
 ```tact
 // _ cell:^cell = SomeValue;
 struct SomeValue {
-    cell：Cell; // 总是作为引用存储
+    cell: Cell; // Always stored as a reference
 }
 ```
 
 ```tact
 // _ cell:^slice = SomeValue;
 struct SomeValue {
-    cell：Slice; // 总是作为引用存储
+    cell: Slice; // Always stored as a reference
 }
 ```
 
@@ -75,7 +76,7 @@ struct SomeValue {
     value1: Int as int256;
     value2: Int as int256;
     value3: Int as int256;
-    flag：Bool; // Flag 写在 value4 之前，以避免自动布局将其分配到下一个单元格
+    flag: Bool; // Flag is written before value4 to avoid auto-layout to allocate it to the next cell
     value4: Int as int256;
 }
 ```
@@ -95,29 +96,29 @@ struct SomeValue {
 // _ value1:int256 value2:^TailString value3:int256 = SomeValue;
 struct SomeValue {
     value1: Int as int256;
-    value2：String;
+    value2: String;
     value3: Int as int256;
 }
 ```
 
-## 将收到的信息转换为 `op` 操作 {#convert-received-messages-to-op-operations}
+## 将收到的信息转换为 `op` 操作
 
 Tact 会为每条接收到的键入信息生成一个唯一的 `op`，但它可以被覆盖。
 
-下面是 FunC.NET 中的代码
+下面是 FunC 中的代码
 
 ```func
 () recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
-    ;; 传入消息代码...
+    ;; incoming message code...
 
-    ;; 接收 MessageWithGeneratedOp 消息
+    ;; Receive MessageWithGeneratedOp message
     if (op == 1180414602) {
-        ;; 代码...
+        ;; code...
     }
 
-    ;; 接收 MessageWithOverwrittenOP 消息
+    ;; Receive MessageWithOverwrittenOP message
     if (op == 291) {
-        ;; 代码...
+        ;; code...
     }
 
 }
@@ -146,10 +147,9 @@ contract Contract {
     }
 
 }
-
 ```
 
-## Convert get-methods
+## 转换 `get`-methods
 
 你可以用与 FunC 的 `get` 方法兼容的 Tact 来表达除 `list-style-lists` 以外的所有内容。
 
@@ -173,11 +173,11 @@ get fun seqno(): Int {
 }
 ```
 
-### 张量返回类型
+### 张量(Tensor)返回类型
 
 在 FunC 中，张量类型 `(int, int){:func}` 和 `(int, (int)){:func}` 是有区别的，但对于 TVM 来说没有区别，它们都表示两个整数的堆栈。
 
-要转换从 FunC `get` 方法返回的张量，需要定义一个 [Struct](/zh-cn/book/structs-and-messages#structs)，它与张量的字段类型相同，顺序也相同。
+要转换从 FunC `get` 方法返回的张量，需要定义一个 [Struct](/book/structs-and-messages#structs)，它与张量的字段类型相同，顺序也相同。
 
 下面是 FunC 中的代码
 
@@ -204,7 +204,7 @@ contract JettonWallet {
 }
 ```
 
-### 元组返回类型
+### 元组(Tuple)返回类型
 
 在 FunC 中，如果返回的是元组而不是张量，则需要遵循张量类型的流程，但要将 “get ”方法的返回类型定义为可选类型。
 
@@ -231,9 +231,9 @@ contract StatefulContract {
 }
 ```
 
-### 混合元组和张量返回类型
+### 混合元组(tuple)和张量(tensor)返回类型
 
-如果某些张量是元组，则需要像前面的步骤一样定义结构体，而元组必须定义为单独的 [Struct]（/book/structs-and-messages#structs）。
+如果某些张量是元组，则需要像前面的步骤一样定义结构体，而元组必须定义为单独的 [Struct](/book/structs-and-messages#structs)。
 
 下面是 FunC 中的代码
 
@@ -263,9 +263,9 @@ contract StatefulContract {
 }
 ```
 
-### 参数 制图
+### 参数映射
 
-获取 "方法参数的转换非常简单。每个参数都_原样_映射到 FunC one，每个元组都映射到 [结构](/zh-cn/book/structs-and-messages#structs)。
+get方法参数的转换过程非常直接。 每个参数按原样映射为 FunC 的参数，每个元组映射为一个 [Struct](/book/structs-and-messages#structs)。
 
 下面是 FunC 中的代码
 

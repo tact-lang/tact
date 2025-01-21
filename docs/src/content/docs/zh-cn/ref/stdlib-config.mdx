@@ -1,8 +1,9 @@
 ---
 title: "@stdlib/config"
+description: 提供配置和选举(elector)地址检索的功能
 ---
 
-提供配置和选民地址检索功能。
+提供配置和选举(elector)地址检索功能。
 
 要使用该库，请导入 `@stdlib/config`：
 
@@ -10,7 +11,7 @@ title: "@stdlib/config"
 import "@stdlib/config";
 ```
 
-## 功能
+## 函数
 
 ### getConfigAddress
 
@@ -18,14 +19,14 @@ import "@stdlib/config";
 fun getConfigAddress(): Address;
 ```
 
-读取配置参数 $0$ 作为 [`地址{:tact}`][p]。
+读取配置参数 $0$ 作为 [`Address{:tact}`][p]。
 
-源代码
+源码:
 
 ```tact
-fun getConfigAddress()：Address {
-    let cell：Cell = getConfigParam(0)!!;
-    let sc：Slice = cell.beginParse();
+fun getConfigAddress(): Address {
+    let cell: Cell = getConfigParam(0)!!;
+    let sc: Slice = cell.beginParse();
     return newAddress(-1, sc.loadUint(256));
 }
 ```
@@ -36,9 +37,9 @@ fun getConfigAddress()：Address {
 fun getElectorAddress(): Address;
 ```
 
-读取配置参数 $1$ 作为 [`地址{:tact}`][p]。
+读取配置参数 $1$ 作为 [`Address{:tact}`][p]。
 
-源代码
+源码:
 
 ```tact
 fun getElectorAddress(): Address {
@@ -52,4 +53,4 @@ fun getElectorAddress(): Address {
 
 - [config.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/config.tact)
 
-[p]: /zh-cn/book/types#primitive-types
+[p]: /book/types#primitive-types

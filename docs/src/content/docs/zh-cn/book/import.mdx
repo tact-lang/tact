@@ -1,14 +1,15 @@
 ---
 title: 导入代码
+description: Tact 允许您导入 Tact 和 FunC 代码，并拥有一套通用的标准库
 ---
 
 Tact 允许您导入 Tact 和 [FunC](https://docs.ton.org/develop/func/overview) 代码--任何给定的 `.tact` 或 `.fc`/`.func` 文件都可以使用 `import{:tact}` 关键字导入到您的项目中。
 
-此外，Tact 编译器还拥有一套通用的标准库，这些标准库捆绑在 Tact 编译器中，但并不立即包含在 Tact 编译器中，请参阅 [标准库概述](/zh-cn/ref/standard-libraries)。
+此外，Tact 编译器还拥有一套通用的标准库，这些标准库捆绑在 Tact 编译器中，但并不立即包含在 Tact 编译器中，请参阅 [标准库概述](/ref/standard-libraries)。
 
 :::caution
 
- 注意：所有导入的代码都会与您的代码合并在一起，因此必须避免名称冲突，并始终仔细检查源代码！
+  注意：所有导入的代码都会与您的代码合并在一起，因此必须避免名称冲突，并始终仔细检查源代码！
 
 :::
 
@@ -28,7 +29,7 @@ import "../subfolder/imported/file.tact";
 
 ## 导入 FunC 代码
 
-可以直接导入用 FunC 代码编写的代码，就像 Tact 代码导入一样：
+可以直接导入用FunC代码编写的代码，就像导入Tact代码一样：
 
 ```tact
 // Relative import
@@ -38,17 +39,17 @@ import "./relative/path/to/the/target/func/file.fc";
 import "../subfolder/imported/func/file.fc";
 ```
 
-但要使用此类文件中的函数，必须先将它们声明为 "本地 "函数。 For example, when standard library [@stdlib/dns](/zh-cn/ref/stdlib-dns) uses a `dns.fc` FunC file, it maps FunC functions to Tact ones like so:
+但要使用此类文件中的函数，必须先将它们声明为 `native` 函数。 例如，当标准库 [@stdlib/dns](/ref/stdlib-dns) 使用 `dns.fc` FunC 文件时，它会将 FunC 函数映射到 Tact 函数，如下所示：
 
 ```tact
-// FunC 代码位于当前 Tact 代码旁边的文件中：
+// FunC code located in a file right next to the current Tact one:
 import "./dns.fc";
 
-// 从 FunC 到 Tact 的函数签名映射：
-@name(dns_string_too_internal)
-native dnsStringToInternal(str: String)：Slice?
+// Mapping function signatures from FunC to Tact:
+@name(dns_string_to_internal)
+native dnsStringToInternal(str: String): Slice?;
 ```
 
-## 标准图书馆
+## 标准库
 
-See [Standard libraries overview](/zh-cn/ref/standard-libraries).
+参见 [标准库概述](/ref/standard-libraries)。

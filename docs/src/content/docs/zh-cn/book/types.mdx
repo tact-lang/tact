@@ -1,42 +1,46 @@
 ---
 title: 类型系统概述
+description: Tact 程序中的每个变量、项目和值都有一个类型
+prev:
+  link: /book/cs/from-solidity
+  label: 来自Solidity
 ---
 
 Tact 程序中的每个变量、项目和值都有一个类型。 它们可以是
 
 - [原始类型](#primitive-types) 之一
-- 或 [复合类型](#composite-types)
+- 或 [复合类型](#复合类型)
 
-Additionally, many of those types [can be made nullable](#optionals).
+此外，这些类型中的许多类型[可以变为空值](#optionals)。
 
 ## 原始类型 {#primitive-types}
 
 Tact 支持许多专为智能合约定制的原始数据类型：
 
-- `Int{:tact}` — Tact 中的所有数字都是 257 位有符号整数，但可以使用[较小的表示方法](/zh-cn/book/integers#serialization)来减少存储成本。
+- `Int{:tact}` — Tact 中的所有数字都是 257 位有符号整数，但可以使用[较小的表示方法](/book/integers#serialization)来减少存储成本。
 - `Bool{:tact}` — 经典布尔类型，具有 `true{:tact}` 和 `false{:tact}` 值。
 - `Address{:tact}` — TON 区块链中的标准[智能合约地址](https://docs.ton.org/learn/overviews/addresses#address-of-smart-contract)。
-- [`Cell{:tact}`](/zh-cn/book/cells#cells)、[`Builder{:tact}`](/zh-cn/book/cells#builders)、[`Slice{:tact}`](/zh-cn/book/cells#slices) — [TVM][tvm] 的底层基元。
+- [`Cell{:tact}`](/book/cells#cells)、[`Builder{:tact}`](/book/cells#builders)、[`Slice{:tact}`](/book/cells#slices) — [TVM][tvm] 的底层基元。
 - `String{:tact}` — 不可变的文本字符串。
 - `StringBuilder{:tact}` — 辅助类型，允许以节省 gas 的方式连接字符串。
 
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 
-### 布尔 {#booleans}
+### 布尔值 {#booleans}
 
-原始类型 `Bool{:tact}` 是经典的布尔类型，只能容纳两个值：`true{:tact}` 和 `false{:tact}`。它便于布尔和逻辑运算，也便于存储标志。
+原始类型 `Bool{:tact}` 是经典的布尔类型，只能容纳两个值：`true{:tact}` 和 `false{:tact}`。它便于布尔和逻辑运算，也便于存储标志。 它便于布尔和逻辑运算，也便于存储标志。
 
-Tact 中没有隐式类型转换，因此两个布尔值的加法（[`+{:tact}`](/zh-cn/book/operators#binary-add)）是不可能的。这里有许多比较[运算符](/zh-cn/book/operators)，例如：
+Tact 中没有隐式类型转换，因此两个布尔值的加法（[`+{:tact}`](/book/operators#binary-add)）是不可能的。这里有许多比较[运算符](/book/operators)，例如： 这里有许多比较[运算符](/book/operators)，例如：
 
-- `&&{:tact}` 为 [logical AND](/zh-cn/book/operators#binary-logical-and)
-- `||{:tact}` 为 [logical OR](/zh-cn/book/operators#binary-logical-or)
-- `!{:tact}` 为 [logical inversion](/zh-cn/book/operators#unary-inverse)
-- `=={:tact}` 和 `!={:tact}` 用于检查[相等](/zh-cn/book/operators#binary-equality)
-- `!{:tact}` 表示[非空断言](/zh-cn/book/optionals)
+- `&&{:tact}` 为 [logical AND](/book/operators#binary-logical-and)
+- `||{:tact}` 为 [logical OR](/book/operators#binary-logical-or)
+- `!{:tact}` 为 [logical inversion](/book/operators#unary-inverse)
+- `=={:tact}` 和 `!={:tact}` 用于检查[相等](/book/operators#binary-equality)
+- `!{:tact}` 表示[非空断言](/book/optionals)
 
-将 bools 持久化为状态非常节省空间，因为它们只占用 1 位。 每年在州[花费](https://ton.org/docs/develop/smart-contracts/fees#how-to-calculate-fees)存储 1000 个布尔约需 $0.00072$ ton 。
+将布尔值持久化到状态中非常节省空间，因为它们只占用1位。 在状态中存储 1000 个布尔值每年大约花费 $0.00072$ TON。
 
-## 复合类型 {#composite-types}
+## 复合类型
 
 使用单独的存储手段往往会变得繁琐，因此有办法将多个[原始类型](#primitive-types)组合在一起，创建复合类型：
 
@@ -44,73 +48,73 @@ Tact 中没有隐式类型转换，因此两个布尔值的加法（[`+{:tact}`]
 - 复合类型，如[结构体和消息](#structs-and-messages)
 - [可选项](#optionals) - [结构体和消息](#structs-and-messages)变量或字段的`null{:tact}`值。
 
-除上述复合类型外，Tact 还提供了一种特殊的类型构造函数[`bounced<T>{:tact}`](/zh-cn/book/bounced)，它只能在[弹回消息接收器](/zh-cn/book/bounced)中指定。
+除上述复合类型外，Tact 还提供了一种特殊的类型构造函数[`bounced<T>{:tact}`](/book/bounced)，它只能在[回退消息接收器(bounced message receivers)](/book/bounced)中指定。
 
-请注意，虽然[合约](#contracts)和[特质](#traits)也被视为Tact类型系统的一部分，但我们不能像[结构体和消息](#structs-and-messages)那样传递它们。相反，我们可以使用[`initOf{:tact}`](/zh-cn/book/expressions#initof)表达式来获取给定合约的初始状态。
+请注意，虽然[合约](#contracts)和[trait](#traits)也被视为Tact类型系统的一部分，但我们不能像[结构体和消息](#structs-and-messages)那样传递它们。 相反，我们可以使用 [`initOf{:tact}`](/book/expressions#initof)表达式来获取给定合约的初始状态。
 
-### 映射 {#maps}
+### Maps
 
-类型`map<k, v>{:tact}`用于将数据与相应的键关联起来。
+类型[`map<K, V>{:tact}`][maps]用于将类型`K{:tact}`的键与类型`V{:tact}`的相应值关联起来。
+
+示例[`map<K, V>{:tact}`][maps]
 
 ```tact
-let mapExample: map<Int, Int> = emptyMap(); // 带有 Int 键和值的空地图
+let mapExample: map<Int, Int> = emptyMap(); // empty map with Int keys and values
 ```
 
-在专门页面了解更多信息：[地图][地图]。
+在专用页面了解更多关于他们的信息： [Maps][maps]。
 
-[[Maps](#maps)]: /zh-cn/book/maps
+[maps]: <[[Maps](#maps)]: /book/maps>
 
-### 结构和信息 {#structs-and-messages}
+### 结构和消息 {#structs-and-messages}
 
-Possible key types:
+[结构][structs]和[消息][messages]是将多个[原始类型](#primitive-types)组合成复合类型的两种主要方式。
 
-[Structs][structs] and [Messages][messages] are two main ways of combining multiple [primitive types](#primitive-types) into a composite one.
-
-Example of a [Struct][structs]:
+[Struct][structs] 示例：
 
 ```tact
 struct Point {
-    x：Int;
-    y：Int;
+    x: Int;
+    y: Int;
 }
 ```
 
-Example of a [Message][messages]:
+[Message][messages] 示例：
 
 ```tact
 // Custom numeric id of the Message
 message(0x11111111) SetValue {
     key: Int;
-    value: Int?; // Optional
+    value: Int?; // Optional, Int or null
     coins: Int as coins; // Serialization into TL-B types
 }
 ```
 
-有关它们的更多信息，请访问专门页面：[结构和信息][s-n-m]。
+有关它们的更多消息，请访问专门页面：[结构和消息][s-n-m]。
 
-[s-n-m]: /zh-cn/book/structs-and-messages
-[structs]: /zh-cn/book/structs-and-messages#structs
-[messages]: /zh-cn/book/structs-and-messages#messages
+[s-n-m]: /book/structs-and-messages
+[structs]: /book/structs-and-messages#structs
+[messages]: /book/structs-and-messages#messages
 
 ### 可选项 {#optionals}
 
 所有[原始类型](#primitive-types)以及[结构体和消息](#structs-and-messages)都可以为空，并持有一个特殊的 `null{:tact}`值。
 
-[可选项][可选项]示例：
+[可选项][optionals]示例：
 
 ```tact
 let opt: Int? = null; // Int or null, with explicitly assigned null
 ```
 
-Learn more about them on a dedicated page: [Optionals][optionals].
+在专门页面了解更多信息：[可选项][optionals]。
 
-[选修课]: /zh-cn/book/optionals
+[optionals]: /book/optionals
 
-### 合同 {#contracts}
+### 合约 {#contracts}
 
-Contracts are the main entry of a smart contract on the TON blockchain. It holds all functions, getters, and receivers of a TON contract.
+TON区块链上的[合约](/book/contracts)在Tact中作为智能合约的主要入口。 它包含了一个TON合约的所有[functions](/book/functions)、[getters](/book/functions#getter-functions)和[receivers](/book/functions#receiver-functions)等多种内容。
 
-[合同示例](/zh-cn/book/contracts)：
+[合约示例](/book/contracts)：
 
 ```tact
 contract HelloWorld {
@@ -136,13 +140,13 @@ contract HelloWorld {
 
 or [Contracts](#contracts) and [Traits](#traits)
 
-### 特质 {#traits}
+### Traits
 
-Tact 不支持经典的类继承，而是引入了**特质**（traits）的概念。它们的结构与[合约](#contracts)相同，但不能[初始化持久状态变量](/zh-cn/book/contracts#init-function)。
+Tact 不支持经典的类继承，而是引入了**trait**（traits）的概念。它们的结构与抽象合约（类似于流行的面向对象语言中的抽象类）相同。 它们的结构与[合约](#contracts）相同，但不能[初始化持久状态变量](/book/contracts#init-function)。
 
-特质还可以让继承它的契约重写其[函数](/zh-cn/book/functions#virtual-and-abstract-functions)的行为和[常量](/zh-cn/book/constants#virtual-and-abstract-constants)的值。
+trait还可以让继承它的合约重写其[函数](/book/functions#virtual-and-abstract-functions)的行为和[常量](/book/constants#virtual-and-abstract-constants)的值。
 
-来自 [`@stdlib/ownable`](/zh-cn/ref/stdlib-ownable) 的 trait [`Ownable`](/zh-cn/ref/stdlib-ownable#ownable) 示例：
+来自 [`@stdlib/ownable`](/ref/stdlib-ownable) 的 trait [`Ownable`](/ref/stdlib-ownable#ownable) 示例：
 
 ```tact
 trait Ownable {
@@ -161,7 +165,7 @@ trait Ownable {
 }
 ```
 
-而 [contract](#contracts) 使用了 trait [`Ownable{:tact}`](/zh-cn/ref/stdlib-ownable#ownable)：
+而 [合约](#contracts) 使用了 trait [`Ownable{:tact}`](/ref/stdlib-ownable#ownable)：
 
 ```tact
 contract Treasure with Ownable {

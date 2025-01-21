@@ -1,173 +1,541 @@
 ---
-title: 退出代码
+title: 退出码(Exit codes)
+description: 退出码是一个32位签名的整数，表示交易的计算或动作阶段是否成功。 如果不是，请保存异常代码
 ---
 
-:::caution
-  根据 [#106] (https://github.com/tact-lang/tact-docs/issues/106)，本页正在重建中。 所有锚链接 (`#`) 今后都可能发生变化！
+TON Blockchain上的每笔交易都包含[多个阶段](https://docs.ton.org/learn/tvm-instructions/tvm-overview#transaction-and-stage)。 _退出码_ 是一个 $32$位符号整数 这表明交易的 [计算(compute)](#compute) 或 [动作(action)](#action) 阶段是成功的。 如果没有，则保留例外的代码。 每个退出码代表自己的异常或交易结果。
+
+退出码 $0$ 和 $1$ 表示正常(成功)执行 [计算阶段](#compute)。 退出 (或 [result](#action)) 代码 $0$ 表示了[动作阶段] (#action)的正常执行(成功)。 任何其他退出代码都表示发生了某种异常，交易以某种方式没有成功，即交易被退回或入站（inbound）报文被弹回。
+
+TON 区块链保留从 $0$ 到 $127$的退出码值，而 Tact 使用从 $128$ 到 $255$的退出码。 注意, Tact使用的退出码表示使用Tact生成FunC代码时可能发生合约错误。 因此被扔进交易的[计算阶段](#计算)，而不是在编译过程中。
+
+从 $256$ 到 $65535$ 的范围内，开发人员可自由定义退出码。
+
+:::note
+
+  虽然在 TON Blockchain 上退出（或 [结果](#action)）码是一个 $32$-bit 有符号整数，但尝试 [抛出](/ref/core-debug) 超出 $16$-bit 无符号整数（$0 - 65535$）范围的退出码将导致一个 [退出码 5](#5) 的错误。 这是故意这样做的，目的是防止某些退出代码被人为产生，例如[退出代码 -14](#-14)。
+
 :::
 
-退出代码是一个 $16$-bit 无符号整数，范围在 $0$ 到 $65535$ 之间（或 2_{16} - 1$）。
+## 退出码列表 {#table}
 
-$0$ 至 $127$ 的代码分配给 FunC (TVM)， $128$ 至 $255$ 的代码分配给 Tact。 从 $256$ 到 $65535$ 的范围内，开发人员可自由定义退出代码。
+下表列出了每个退出码的来源（可能出现的位置）和简短说明。 该表没有列出 [`require()`](/ref/core-debug#require) 的退出码，因为它是根据具体的 `error` 消息 [String][p] 生成的。
 
-预先分配的退出代码列表：
+| 退出码                                                                                              | 来源                              | 说明                                     |
+| :----------------------------------------------------------------------------------------------- | :------------------------------ | :------------------------------------- |
+| [$0$](#0)                                                                                        | [计算][c]和[动作][a]阶段               | 标准成功执行退出码                              |
+| [$1$](#1)                                                                                        | [计算阶段][c]                       | 替代成功的执行退出码。 保留，但不会出现。                  |
+| $2$                                                                                              | [计算阶段][c]                       | 堆栈下溢。                                  |
+| $0$                                                                                              | [计算阶段][c]                       | 堆栈溢出。                                  |
+| [$4$](#4)                                                                                        | [计算阶段][c]                       | 整数溢出。                                  |
+| $5$                                                                                              | [计算阶段][c]                       | 范围检查错误 — 某些整数超出预期范围。                   |
+| $6$                                                                                              | [计算阶段][c]                       | 无效的 [TVM][tvm] opcode                  |
+| $7$                                                                                              | [计算阶段][c]                       | 类型检查错误。                                |
+| $8$                                                                                              | [计算阶段][c]                       | Cell 溢出。                               |
+| $9$                                                                                              | [计算阶段][c]                       | cell下溢。                                |
+| $10$                                                                                             | [计算阶段][c]                       | 字典错误。                                  |
+| [$11$](#11)                                                                                      | [计算阶段][c]                       | [TVM][tvm] 文档被描述为“未知错误，可能会被用户程序抛出”。    |
+| [$12$](#12)                                                                                      | [计算阶段][c]                       | 致命错误。 由于被认为是不可能的情况而由 [TVM][tvm] 抛出。    |
+| $13$: 气用尽错误 {#13}                                                                                | [计算阶段][c]                       |  gas 耗尽错误。                             |
+| $-14$                                                                                            | [计算阶段][c]                       | 与 $13$ 相同。 负数，因此[无法伪造](#13)。           |
+| $13$                                                                                             | [计算阶段][c]                       | 虚拟机虚拟化错误。 保留，但从未抛出。                    |
+| $32$                                                                                             | [行动阶段][a]                       | 操作列表(Action list)无效。                   |
+| $133$                                                                                            | [行动阶段][a]                       | 操作列表太长。                                |
+| $34$                                                                                             | [行动阶段][a]                       | 行动无效或不支持。如果无法执行当前操作，则在行动阶段设置           |
+| $3$                                                                                              | [行动阶段][a]                       | 发送消息中无效的源地址。                           |
+| $136$                                                                                            | [行动阶段][a]                       | 发送消息中无效的目标地址。                          |
+| $37$TON {#37}                                                                                    | [动作阶段][a]                       | 没有足够的Toncoin。                          |
+| $38$                                                                                             | [动作阶段][a]                       | 额外代币不足。                                |
+| $37$                                                                                             | [行动阶段][a]                       | 发送消息在重写后不适合在cell中。                     |
+| $130$                                                                                            | [行动阶段][a]                       | 无法处理一条消息 — 资金不足，信息过大，或者它的 Merkle 深度过大。 |
+| $0$：成功执行 {#0}                                                                                    | [行动阶段][a]                       | 在库更改操作期间，库引用是无效的。                      |
+| $0$ 至 $127$ 的代码分配给 FunC (TVM)， $128$ 至 $255$ 的代码分配给 Tact。 从 $256$ 到 $65535$ 的范围内，开发人员可自由定义退出码。   | [动作阶段][a]                       | 库更改动作错误。                               |
+| $4$                                                                                              | [动作阶段][a]                       | 超出库中cell的最大数目或默克尔树的最大深度。               |
+| [$50$](#50)                                                                                      | [行动阶段][a]                       | 账户状态大小超过限制。                            |
+| [$128$](#128)                                                                                    | Tact 编译器 ([计算阶段][c])            | 空引用异常。                                 |
+| [$129$](#129)                                                                                    | Tact 编译器 ([计算阶段][c])            | 无效的序列化前缀。                              |
+| $130$来信无效 {#130}                                                                                 | Tact 编译器 ([计算阶段][c])            | 无效的收到消息 — 没有接收消息的验证码。                  |
+| $131$                                                                                            | Tact 编译器 ([计算阶段][c])            | 限制错误。 保留，但从未抛出。                        |
+| $132$                                                                                            | Tact 编译器 ([计算阶段][c])            | 拒绝访问 - 所有者以外的其他人向合约发送了信息               |
+| $128$                                                                                            | Tact 编译器 ([计算阶段][c])            | 合约已中止。 保留，但从未抛出。                       |
+| $134$                                                                                            | Tact 编译器 ([计算阶段][c])            | 无效参数。                                  |
+| $135$                                                                                            | Tact 编译器 ([计算阶段][c])            | 未找到合约代码 - 字典调用的假标记                     |
+| $129$                                                                                            | Tact 编译器 ([计算阶段][c])            | 无效地址。                                  |
+| $137$                                                                                            | Tact 编译器 ([计算阶段][c])            | 此合约未启用主链支持                             |
 
-| 退出代码 | 相位 | 说明 |
-| :--- | :--- | :--- |
-| $0$ | [计算阶段][c] | 标准成功执行退出代码 |
-| $2$ | [计算阶段][c] | 堆栈下溢。最后一个操作码消耗的元素多于堆栈中的元素数量 |
-| $3$ | [计算阶段][c] | 堆栈溢出。堆栈中存储的值超过了该版本 TVM 的允许值 |
-| $4$ | [计算阶段][c] | 整数溢出。整数不适合 $-2^{256} \leq x < 2^{256}$ 或发生了零除法 |
-| $5$ | [计算阶段][c] | 整数超出预期范围 |
-| $6$ | [计算阶段][c] | 操作码无效。在当前的 TVM 版本中，指令不详 |
-| $7$ | [计算阶段][c] | 类型检查错误。基元参数的值类型不正确 |
-| $8$ | [计算阶段][c] | 电池溢出。不可能将数据写入生成器，因为操作后将有超过 1023 位或 4 个引用 |
-| $9$ | [计算阶段][c] | 单元下溢。从片原始码读取数据时，试图读取的比特或引用数多于现有比特或引用数 |
-| $10$ | [计算阶段][c] | 词典错误。处理字典（哈希图）时出错 |
-| $13$ | [计算阶段][c] |  gas 耗尽错误。当剩余 gas 变为负值时，由 TVM 抛出 |
-| $-14$ | [计算阶段][c] | 这意味着 gas 耗尽错误，与 $13$ 相同。否定，因为无法伪造 |
-| $32$ | [行动阶段][a] | 操作列表无效。如果执行后的 c5 寄存器包含不可解析对象，则在操作阶段设置该寄存器 |
-| $34$ | [行动阶段][a] | 操作无效或不支持。如果无法执行当前操作，则在操作阶段设置 |
-| $37$ | [行动阶段][a] | 不够吨。信息发送的吨数过多（或扣除费用后吨数不足） |
-| $38$ | [行动阶段][a] | 额外货币不足 |
-| $128$ | 塔克（编译） | 空引用异常--编译器预期是一个整数或单元格，但传递了一个空值 |
-| $129$ | 塔克（编译） | 无效序列化前缀--如果与之前的操作码检查有任何不一致，将抛出此退出代码 |
-| $130$ | 塔克（编译） | 收到的报文无效 - 未找到合适的操作 |
-| $131$ | 塔克（编译） | 制约因素错误 |
-| $132$ | 塔克（编译） | 拒绝访问 - 所有者以外的其他人向合同发送了信息 |
-| $133$ | 塔克（编译） | 合同已停止 - 已向停止的合同发送信息 |
-| $134$ | 塔克（编译） | 无效参数 - 无效 Base64 字符串 |
-| $135$ | 塔克（编译） | 未找到合同代码 - 字典调用的假标记 |
-| $136$ | 塔克（编译） | 无效地址 - 非 $267$- 位地址或无效链 id（非 0 或 -1） |
-| $137$ | 塔克（编译） | 此合约未启用主链支持 |
+:::note
+
+  通常情况下，您可能会遇到退出码 $65535$ （或 `0xffff`），其含义通常与 [exit code 130](#130）相同--接收到的操作码对合约来说是未知的，因为没有接收器期待它。 在编写合约时，退出码 $65535$ 由开发人员设置，而不是由 [TVM][tvm] 或 Tact 编译器设置。
+
+:::
 
 [c]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase
 [a]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases
 
-问：**在哪里可以看到项目中所有自动生成的退出代码列表？**
-答：Tact 编译器会在 \*.md 文件末尾收集所有退出代码，您可以在
-路径"./ProjectFolder/build/ProjectName/tact_ProjectName.md "下的目录中跟踪它们。
+## 在Blueprint项目中退出码 {#blueprint}
 
-问：** 如何观察抛出的退出代码？**
-答：在 Tact 中，打印交易来查看结果是不明智的，因为它们不容易读取。 如果想查看事务的退出代码，
-，在 Typescript 本地测试中使用下面的模板：
+在[Blueprint][bp]测试中，[计算阶段](#compute)的退出码在`expect(){:typescript}` 匹配器的 `toHaveTransaction(){:typescript}` 方法的对象参数的 `exitCode` 字段中指定。 相同的 `toHaveTransaction(){:typescript}` 方法的 [result](#action) 代码(#action) 的退出码，称为`actionResultCode`。
+
+:::note
+
+  了解更多有关期望特定退出码的信息：[故意出错的事务](/book/debug#tests-errors)。
+
+:::
+
+此外， 我们可以查看[发送消息到合约](/book/debug#tests-end)的结果，并发现每个交易的阶段及其值。 包括[计算阶段](#compute)(#compute)(或[行动阶段](#action))的退出(或结果)代码。
+
+请注意，为了做到这一点，您必须先进行几种类型的检查才能做到：
 
 ```typescript
-const sender = await blockchain.treasury('sender');
-const result = await contractName.send(sender.getSender(), { value: toNano('0.05'), }, { transactionData });
+it('tests something, you name it', async () => {
+  // Send a specific message to our contract and store the results
+  const res = await your_contract_name.send(…);
 
-expect(result.transactions).toHaveTransaction(
-    { from: sender.address, to: contractName.address, exitCode: YOUR_DESIRED_EXIT_CODE }
-)；
+  // Now, we have an access to array of executed transactions,
+  // with the second one (index 1) being the one that we look for
+  const tx = res.transactions[1]!;
+
+  // To do something useful with it, let's ensure that it's type is 'generic'
+  // and that the compute phase in it wasn't skipped
+  if (tx.description.type === "generic"
+      && tx.description.computePhase.type === "vm") {
+    // Finally, we're able to freely peek into the transaction for general details,
+    // such as printing out the exit code of the compute phase if we so desire
+    console.log(tx.description.computePhase.exitCode);
+  }
+
+  // ...
+});
 ```
 
-- 第一行定义发件人。
-- 第二行发送交易。
-- 在第三行中，您要检查结果中是否有从发送方到您的合约的交易，以及您所需的退出代码。
+## 如果没有足够的 TON 来处理计算阶段，则会抛出此错误。
+
+### 0: Normal termination {#0}
+
+该退出码表示事务的计算阶段已成功完成。
 
 ## 计算阶段
 
-### $0$：成功执行 {#0}
+[TVM][tvm] 初始化和所有计算都发生在 [计算阶段][c] 中。
 
-该退出代码表示事务的计算阶段已成功完成。
+如果计算阶段失败（产生的退出代码不是 [$0$](#0) 或 [$1$](#1) ），事务将跳过[操作阶段](#action)，进入反弹阶段。 在其中，回弹消息是为入站消息发起的交易形成的。
 
-### $4$：整数溢出 {#4}
+### 1: Alternative termination {#1}
 
-在 TVM 中，整数的范围可以是 $-2^{256} < x < 2^{256}$。
-如果计算过程中的值超出了这个范围，就会抛出 4 个退出代码。
+这是成功执行[计算阶段](#compute)的替代退出码。 保留，但从未发生。
 
-例如
+### 2: Stack underflow {#2}
+
+如果某些操作消耗的元素多于堆栈上的元素，则退出码 $2$ 的错误就会抛出：“堆栈溢出”。
 
 ```tact
-self.id = 1; // 使用存储变量强制不忽略它
-repeat(256) {
-    self.id = 2 * self.id;
+asm fun drop() { DROP }
+
+contract Loot {
+    receive("I solemnly swear that I'm up to no good") {
+        try {
+            // Removes 100 elements from the stack, causing an underflow
+            repeat (100) { drop() }
+        } catch (exitCode) {
+            // exitCode is 2
+        }
+    }
 }
 ```
 
-### $5$：超出预期范围的整数 {#5}
+:::note[Useful links:]
 
-如果整数值超出预期范围，则抛出 5 个退出代码。
-例如，如果在 .store_uint() 函数中使用了负值。 在 Tact 中，还有其他一些新情况，例如：
-1- 如你所知，你可以在 Tact 中定义更多有限的整数（小于 257 位的整数）。2- 根据 ````storeUint(self: Builder, value: Int, bits: Int)```函数，不能使用 ````storeUint(0, 257)``` 因为 ``0 ≤ bits ≤ 256```。
+  [TVM 是一台堆栈机](https://docs.ton.org/learn/tvm-instructions/tvm-overview#tvm-is-a-stack-machine)
 
-例如
+:::
+
+### 3: Stack overflow {#3}
+
+如果有太多元素被复制到关闭继续或存储在堆栈上， 退出码 $3$ 出错："堆栈溢出"。 很少出现，除非你深陷 [Fift 和 TVM 组装](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) 战壕：
 
 ```tact
-// 选项 1 -> id: Int as uint32
-self.id = 1; // 强制使用存储变量不忽略它
-repeat(32) {
-    self.id = 2 * self.id;
+// Remember kids, don't try to overflow the stack at home!
+asm fun stackOverflow() {
+    <{
+    }>CONT // c
+    0 SETNUMARGS // c'
+    2 PUSHINT // c' 2
+    SWAP // 2 c'
+    1 -1 SETCONTARGS // <- this blows up
 }
 
-// 选项 2 -> 根据 storeUint(self: Builder, value: Int, bits: Int) 函数，不可能使用 storeUint(0, 1024) 因为 0 ≤ bits ≤ 256
-let s：Slice = beginCell().storeUint(0, 257).asSlice()；
-```
-
-### $8$：单元格溢出 {#8}
-
-一个单元可存储 1023 位数据和 4 个指向其他单元的引用。
-如果尝试写入超过 1023 位或超过 4 个引用，则会抛出 8 个退出代码。
-
-例如
-
-```tact
-// 根据 storeUint(self: Builder, value: Int, bits: Int) 函数，无法使用 storeUint(0, 1024) 因为 0 ≤ bits ≤ 256
-let s：Slice = beginCell().storeUint(0, 256).storeUint(0, 256).storeUint(0, 256).storeUint(0, 256).asSlice()；
-```
-
-### $9$：单元下溢 {#9}
-
-如果尝试从片段中读取的数据多于其包含的数据，则会抛出 9 个退出代码。
-
-例如
-
-```tact
-让 s：Slice = emptySlice();
-self.id = s.loadUint(1); // 使用存储变量强制不忽略它
-```
-
-### $13$: 气用尽错误 {#13}
-
-如果没有足够的 TON 来处理计算阶段，则会抛出此错误。
-
-在处理过程中，将对该值执行 NOT 操作，从而将该值更改为 -14。 这样做是为了防止使用 throw 函数伪造退出代码，因为所有此类函数都只接受正值的退出代码，这一点在前面已经讨论过。
-
-例如
-
-```tact
-repeat(10000) {
-    self.id += 1;
+contract ItsSoOver {
+    receive("I solemnly swear that I'm up to no good") {
+        try {
+            stackOverflow();
+        } catch (exitCode) {
+            // exitCode is 3
+        }
+    }
 }
 ```
+
+:::note[Useful links:]
+
+  [TVM 是一台堆栈机](https://docs.ton.org/learn/tvm-instructions/tvm-overview#tvm-is-a-stack-machine)
+
+:::
+
+### 4: Integer overflow {#4}
+
+整数溢出。整数不适合 $-2^{256} \leq x < 2^{256}$ 或发生了零除法
+
+```tact
+let x = -pow(2, 255) - pow(2, 255); // -2^{256}
+
+try {
+    -x; // integer overflow by negation
+        // since the max positive value is 2^{256} - 1
+} catch (exitCode) {
+    // exitCode is 4
+}
+
+try {
+    x / 0; // division by zero!
+} catch (exitCode) {
+    // exitCode is 4
+}
+
+try {
+    x * x * x; // integer overflow!
+} catch (exitCode) {
+    // exitCode is 4
+}
+
+// There can also be an integer overflow when doing:
+// addition (+),
+// subtraction (-),
+// division (/) by a negative number or modulo (%) by zero
+```
+
+### 5: Integer out of range {#5}
+
+范围检查错误 — 某些整数超出预期范围。 I.e. 任何试图存储意外数量的数据或指定一个超出范围的值会造成退出码 $5$的错误：“整数超出范围”。
+
+指定非边界值的示例：
+
+```tact
+try {
+    // Repeat only operates on inclusive range from 1 to 2^{31} - 1
+    // and any valid integer value greater than that causes an error with exit code 5
+    repeat (pow(2, 55)) {
+        dump("smash. logs. I. must.");
+    }
+} catch (exitCode) {
+    // exitCode is 5
+}
+
+try {
+    // Builder.storeUint() function can only use up to 256 bits, so 512 is too much:
+    let s: Slice = beginCell().storeUint(-1, 512).asSlice();
+} catch (exitCode) {
+    // exitCode is 5
+}
+```
+
+### 6: Invalid opcode {#6}
+
+如果您指定了在当前 [TVM][tvm] 版本中未定义的指令，退出码 $6$ 将会丢失一个错误：“无效的opcode”。
+
+```tact
+// No such thing
+asm fun invalidOpcode() { x{D7FF} @addop }
+
+contract OpOp {
+    receive("I solemnly swear that I'm up to no good") {
+        try {
+            invalidOpcode();
+        } catch (exitCode) {
+            // exitCode is 6
+        }
+    }
+}
+```
+
+### 7: Type check error {#7}
+
+如果原始参数的值类型不正确，或在[计算阶段](#compute)中的类型中存在任何其他不匹配的类型， 退出码 $7$ 出错："类型检查错误"。
+
+```tact
+// The actual returned value type doesn't match the declared one
+asm fun typeCheckError(): map<Int, Int> { 42 PUSHINT }
+
+contract VibeCheck {
+    receive("I solemnly swear that I'm up to no good") {
+        try {
+            // The 0th index doesn't exist
+            typeCheckError().get(0)!!;
+        } catch (exitCode) {
+            // exitCode is 7
+        }
+    }
+}
+```
+
+### 8: Cell overflow {#8}
+
+来自书的[Cells, Builders and Slices page](/book/cells#cells)
+
+> [`cell{:tact}`][cell]是一种[基元][p]和数据结构，它[通常](/book/cells#cells-kinds)由最多 $1023$ 个连续排列的位和最多 $4$ 个指向其他cell的引用（refs）组成。
+
+要构建一个 [`cellent{:tact}`][cell], 使用 [`Builder{:tact}`][builder] 如果尝试存储的数据超过 $1023$ 位，或对其他cell的引用超过 $4$ ，则会出现退出码为 $8$ 的错误："`Cell overflow`。
+
+这个错误可以由[手动construction](/book/cells#cnp-manual y) 通过[relevant `.loadSomething()`方法](/ref/core-cells) 或[使用结构和消息及其方便方法](/book/cells#cnp-structs) 触发。
+
+```tact
+// Too much bits
+try {
+    let data = beginCell()
+        .storeInt(0, 250)
+        .storeInt(0, 250)
+        .storeInt(0, 250)
+        .storeInt(0, 250)
+        .storeInt(0, 24) // 1024 bits!
+        .endCell();
+} catch (exitCode) {
+    // exitCode is 8
+}
+
+// Too much refs
+try {
+    let data = beginCell()
+        .storeRef(emptyCell())
+        .storeRef(emptyCell())
+        .storeRef(emptyCell())
+        .storeRef(emptyCell())
+        .storeRef(emptyCell()) // 5 refs!
+        .endCell();
+} catch (exitCode) {
+    // exitCode is 8
+}
+```
+
+### 9: Cell underflow {#9}
+
+来自书的[Cells, Builders and Slices page](/book/cells#cells)
+
+> `Cell{:tact}`是一种[基元][p]和数据结构，它[通常](/book/cells#cells-kinds)由最多 $1023$ 个连续排列的位和最多 $4$ 个指向其他cell的引用（refs）组成。
+
+若要解析[`cell{:tact}`][cell]，请使用 [`slice{:tact}`][slice] 如果你试图加载比`slice{:tact}`更多的数据或引用，则退出码 $9$ 的错误就会抛出：“cell下溢”。
+
+此错误的最常见原因是cell的预期内存布局和实际内存布局不匹配， 因此建议[使用结构和消息进行解析](/book/cells#cnp-structs) ，而不是[手动解析](/book/cells#cnp-manualy) 通过 [relevant `. oadSomething()` 方法](/ref/core-cells)。
+
+```tact
+// Too few bits
+try {
+    emptySlice().loadInt(1); // 0 bits!
+} catch (exitCode) {
+    // exitCode is 9
+}
+
+// Too few refs
+try {
+    emptySlice().loadRef(); // 0 refs!
+} catch (exitCode) {
+    // exitCode is 9
+}
+```
+
+### 10: Dictionary error {#10}
+
+在 Tact 中，[`map<K, V>{:tact}`](/book/maps) 类型是对 [FunC 的 "hash" map 字典](https://docs.ton.org/develop/func/dictionaries#hashmap) 和 [TL-B][tlb] 及 [TVM][tvm] 的底层 [`HashmapE` 类型](https://docs.ton.org/develop/data-formats/tl-b-types#hashmap) 的一种抽象。
+
+如果不正确地操纵字典，如对其内存布局的错误假设， 退出码 $10$ 出错：\`字典错误'。 请注意，除非您自己使用 [Fift 和 TVM assembly](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) ，否则您无法获得此错误：
+
+```tact
+/// Pre-computed Int to Int dictionary with two entries — 0: 0 and 1: 1
+const cellWithDictIntInt: Cell = cell("te6cckEBBAEAUAABAcABAgPQCAIDAEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMLMbT1U=");
+
+/// Tries to preload a dictionary from a Slice as a map<Int, Cell>
+asm fun toMapIntCell(x: Slice): map<Int, Cell> { PLDDICT }
+
+contract DictPic {
+    receive("I solemnly swear that I'm up to no good") {
+        try {
+            // The Int to Int dictionary is being misinterpreted as a map<Int, Cell>
+            let m: map<Int, Cell> = toMapIntCell(cellWithDictIntInt.beginParse());
+
+            // And the error happens only when we touch it
+            m.get(0)!!;
+        } catch (exitCode) {
+            // exitCode is 10
+        }
+    }
+}
+```
+
+### 11: "Unknown" error {#11}
+
+在[TVM][tvm]文档中被描述为 "未知错误，可能由用户程序抛出"，但最常用于队列消息发送问题或[get-methods](https://docs.ton.org/develop/smart-contracts/guidelines/get-methods)问题。
+
+```tact
+try {
+    // Unlike nativeSendMessage which uses SENDRAWMSG, this one uses SENDMSG,
+    // and therefore fails in Compute phase when the message is ill-formed
+    nativeSendMessageReturnForwardFee(emptyCell(), 0);
+} catch (exitCode) {
+    // exitCode is 11
+}
+```
+
+### 12: Fatal error {#12}
+
+致命错误。 由于被认为是不可能的情况而由 TVM 抛出。
+
+### 13: Out of gas error {#13}
+
+如果没有足够的 gas 在[计算阶段](#compute)中结束计算, 则退出码 $13$ 的错误将会抛出: \` gas 错误'.
+
+但是这个代码并不会立即按原样显示——而是应用了按位非运算，从而将值从$13$变为$-14$。 只有那时才显示代码。
+
+这样做是为了防止在用户合约中人为地生成结果代码 ($-14$)，因为所有可以[抛出退出码](/ref/core-debug)的函数只能指定从 $0$ 到 $65535$ （含）范围内的整数。
+
+```tact
+try {
+    repeat (pow(2, 31) - 1) {}
+} catch (exitCode) {
+    // exitCode is -14
+}
+```
+
+### \-14: Out of gas error {#-14}
+
+见[退出码13](#13)。
+
+### 14: Virtualization error {#14}
+
+虚拟化错误，与 [prunned branch cells](/book/cells#cells-kinds) 有关。 保留，但从未抛出。
 
 ## 行动阶段
 
-### $34$行动无效或不支持 {#34}
+[操作阶段][a] 是在成功执行 [计算阶段](#compute) 后处理的。 它试图在计算阶段执行由 [TVM][tvm] 存储在行动列表中的动作。
 
-在处理操作时，该退出代码会导致大部分错误：无效信息、不正确操作等。
+有些操作可能在处理过程中失败。 在这种情况下，这些行动可能被跳过或整个交易可能会根据行动方式恢复。 表明[行动阶段][a] 结果状态的代码被称为 _结果代码(result code)_ 。 因为它也是一个 $32$位签名的整数，它基本上与[计算阶段](#compute)的 _export 代码](#compute)具有相同的用途， 通常将结果代码称为退出码。
 
-例如
+### 32: Action list is invalid {#32}
+
+如果操作列表包含[外来的cell](/book/cells#cells-kinds)，则操作项cell没有引用，或者某些操作项cell无法解析， 退出码 $32$ 出错："行动列表无效"。
+
+:::note
+
+  除了这个退出码之外，还有一个布尔值标志`valid`，你可以在“描述”下找到。 与 [Sandbox 和 Blueprint](#Blueprint) 工作时，交易结果中的ctionPhase.valid`。 交易可以将这个标志设置为 `false\` ，即使有其它退出码从操作阶段扔出。
+
+:::
+
+### 33: Action list is too long {#33}
+
+如果排队等待执行的操作超过 $255$ ，[操作阶段](#action) 将抛出错误，退出码为 $33$："操作列表太长"。
 
 ```tact
-nativeSendMessage(emptyCell(), 0)；
+// For example, let's attempt to queue reservation of specific amount of nanoToncoins
+// This won't fail in compute phase, but will result in exit code 33 in Action phase
+repeat (256) {
+    nativeReserve(ton("0.001"), ReserveAtMost);
+}
 ```
 
-### $37$TON {#37}
+### 34: Invalid or unsupported action {#34}
 
-这意味着没有足够的 TON 来发送指定的数量。
-
-例如
+此刻只有四个支持的动作：更改合约代码，发送一条消息， 保留特定数量的 [nanoToncoins](/book/integers#nanotoncoin) 并更改library cell。 如果指定动作有任何问题 (无效消息，不支持的动作等)，则退出码 $34$ 的错误将被抛出：\`无效或不支持的动作'。
 
 ```tact
-send(SendParameters{to: context().sender, value: ton("10")})；
+// For example, let's try to send an ill-formed message:
+nativeSendMessage(emptyCell(), 0); // won't fail in compute phase,
+                                   // but will result in exit code 34 in Action phase
 ```
 
-## 塔克（编译）
+### 35: Invalid source address in outbound message {#35}
 
-### 128：空引用异常 {#128}
+如果出站消息中的源地址不等于[`addr_none`](https://docs.ton)。 rg/develop/data forms/msg-tlb#addr_none00，或是引发此消息的合约地址， 退出码 $35$ 出错：\`出站消息中无效的源地址'。
 
-如果有一个非空断言，例如 [`!!{:tact}`](/zh-cn/book/operators#unary-non-null-assert)操作符，而检查值是 [`null{:tact}`](/zh-cn/book/optionals)，则会抛出一个退出代码为 $128$ 的错误："空引用异常"。
+### 36: Invalid destination address in outbound message {#36}
+
+如果出站消息中的目标地址无效，例如： 它不符合相关的 [TL-B][tlb] 模式，其中包含未知的工作链ID或它对给定的工作链有无效的长度， 退出码 $36$ 出现错误: "发送消息中无效的目标地址"。
+
+:::note
+
+  如果设置了[可选标记 +2](/book/message-mode#optional-flags)，则不会抛出此错误，也不会发送给定的信息。
+
+:::
+
+### 37: Not enough Toncoin {#37}
+
+如果带有[基本模式 64](/book/message-mode#base-modes)设置的入站消息的所有资金已被消耗，并且没有足够的资金支付失败操作的费用，或者提供的值的 [TL-B][tlb] 布局（[`CurrencyCollection`](https://docs.ton.org/develop/data-formats/msg-tlb#currencycollection)）无效，或者没有足够的资金支付[转发费用](https://docs.ton.org/develop/smart-contracts/guidelines/processing)，或在扣除费用后资金不足，则会抛出错误，退出码为 $37$：`Not enough Toncoin`。
+
+:::note
+
+  如果设置了[可选标记 +2](/book/message-mode#optional-flags)，则不会抛出此错误，也不会发送给定的信息。
+
+:::
+
+### 38: Not enough extra currencies {#38}
+
+除了本地货币Toncoin外，TON区块链支持最多 $2^{32}$ 种额外货币。 它们与创建新的[Jetton](/cookbook/jettons) 不同，因为额外的货币是原生支持的——可以在发送给另一个合约的内部消息中，除了 Toncoin 金额之外，额外指定一个额外货币金额的 [`HashmapE`](https://docs.ton.org/develop/data-formats/tl-b-types#hashmap)。 与 Jettons 不同，额外货币只能存储和转移，没有任何其他功能。
+
+目前，TON 区块链上**没有额外的货币**，但当没有足够的额外货币来发送指定数量的货币时，退出代码 $38$ 已被保留：没有足够的额外货币"。
+
+:::note[Useful links:]
+
+  [TON文档中](https://docs.ton.org/develop/dapps/defi/coins)的[额外货币](https://docs.ton.org/develop/dapps/defi/coins)。\
+  TON文档中的[额外货币挖掘](https://docs.ton.org/develop/research-and-development/minter-flow)。
+
+:::
+
+### 39: Outbound message doesn't fit into a cell {#39}
+
+在处理消息时，TON 区块链会尝试根据[相关的 TL-B 模式](https://docs.ton.org/develop/data-formats/msg-tlb)对其进行打包，如果无法打包，则会抛出退出码为 $39$ 的错误：`Outbound message doesn't fit into a cell`。
+
+:::note
+
+  如果多次尝试发送消息失败，并且设置了[可选标记 +2](/book/message-mode#optional-flags)，则不会抛出此错误，也不会发送给定的信息。
+
+:::
+
+### 40: Cannot process a message {#40}
+
+如果没有足够的资金处理消息中的所有cell， 消息过大或它的 Merkle 深度过大， 退出码 $40$ 出错：\`无法处理消息'。
+
+### 41: Library reference is null {#41}
+
+如果在库更改操作过程中需要库引用，但该引用为空，则会出现退出代码为 $41$ 的错误："库引用为空"。
+
+### 42: Library change action error {#42}
+
+如果尝试修改库时出现错误，退出码 $42$ 将会丢失: \`Library 更改操作错误'。
+
+### 43: Library limits exceeded {#43}
+
+如果超出库中cell的最大数目或超过Merkle树的最大深度， 退出码 $43$ 出错：`库限制已超过`。
+
+### 50: Account state size exceeded limits {#50}
+
+如果账户状态（本质上是合约存储）在[动作阶段](#action)结束时超过了 [TON Blockchain 配置参数 43](https://docs.ton.org/develop/howto/blockchain-configs#param-43)中规定的任意限制，则会抛出退出码为 $50$ 的错误：`Account state size exceeded limits`。
+
+如果配置不存在，默认值为：
+
+- `max_msg_bits` 等于 $2^{21}$ — 消息的最大大小（位）。
+- `max_msg_cells`等于2^{13}$ — 最高数量的 [cells][cell] 一个消息可以占用。
+- `max_library_cells` 等于 $1000$ - 可用作[库参考cells](/book/cells#cells-kinds)的[cells][cell]的最大数量。
+- `max_vm_data_depth` 等于 $2^{9}$ — 最大 [cells][cell] 消息和帐户状态深度。
+- `ext_msg_limits.max_size` 等于 $65535$ - 外部信息的最大位数。
+- `ext_msg_limits.max_depth` 等于2 ^{9}$ — 最大外部消息 [depth](/book/cells#cells-representation).
+- `max_acc_state_cells` 等于2 ^{16}$ — 最高数量的 [cells][cell] 账户状态可以占用。
+- `max_acc_state_bits` 等于 $2^{16} \times 1023$ — 帐户状态的最大大小（位）。
+- `max_acc_public_libraries` 等于 $2^{8}$，即账户状态在[主链](/book/masterchain)上可使用的[库引用单元](/book/cells#cells-kinds)的最大数量。
+- `deleger_out_queue_size_limit` 等于2 ^{8}$ — — 最大数量的出站消息队列(关于验证器和校验器)。
+
+## Tact 编译器
+
+Tact 使用从 $128$ 到 $255$的退出码。 请注意，Tact 使用的退出代码表示在使用 Tact 生成的 FunC 代码时可能出现的合约错误，因此在事务的[计算阶段](#compute)而不是在编译期间抛出。
+
+### 128: Null reference exception {#128}
+
+如果有一个非空断言，例如 [`!!{:tact}`](/book/operators#unary-non-null-assert)操作符，而检查值是 [`null{:tact}`](/book/optionals)，则会抛出一个退出码为 $128$ 的错误："空引用异常"。
 
 ```tact
 let gotcha: String? = null;
@@ -180,145 +548,123 @@ try {
 }
 ```
 
-### $130$来信无效 {#130}
+### 129: Invalid serialization prefix {#129}
 
-向合约发送信息时，信息体的前 32 位是操作码。 它决定了必须进行的操作。
-在 FunC 中，如果找不到操作码，就会抛出 0xffff。 在 Tact 中，将抛出 130 个退出代码。
+保留，但由于有许多事先检查，除非在部署前劫持合约代码并更改合约中预期接收的 [信息][message] 的操作码，否则不会抛出。
 
-例如
+### 130: Invalid incoming message {#130}
 
-1. 首先，像下面这样定义一个空合约：
+如果收到的内部或外部信息未被合约处理，则会出现退出码为 $130$ 的错误："Invalid incoming message"。 它通常发生在合约没有特定消息的接收器及其opcode 前缀(32位整数头)。
 
-```tact
-合同烟花 {}
-```
-
-2. 然后，给这份合同发送信息。 由于没有找到合适的操作，您将得到此退出代码。
-
-### $132$: 拒绝访问 {#132}
-
-首先，你应该导入并继承 Ownable Trait。 之后，您的合同就有了所有者。
-您可以在函数中调用 ```self.requireOwner();``` 要求检查。 这将确保只有所有者才能向您的合同发送信息。
-
-例如
+考虑下列合约：
 
 ```tact
 import "@stdlib/deploy";
+
+contract Dummy with Deployable {}
+```
+
+如果尝试发送任何消息，除了 [`@stdlib/deploy`](/ref/stdlib-deploy)提供的 [`部署{:tact}`](/ref/stdlib-deploy#deploy)，合约将没有接收器，因此会抛出错误，退出码为 $130$。
+
+### 131: Constraints error {#131}
+
+限制错误。 保留，但从未抛出。
+
+### 132: Access denied {#132}
+
+如果使用[`@stdlib/ownable`](/ref/stdlib-ownable)库中的[`Ownable{:tact}`](/ref/stdlib-ownable#ownable) [trait][ct]，由它提供的辅助函数 `requireOwner(){:tact}` 会在入站消息的发件人与指定的所有者不匹配时抛出一个退出码为 $132$ 的错误：`Access denied`。
+
+```tact
 import "@stdlib/ownable";
 
-message FakeLaunch {
-
-}
-
-contract Fireworks with
-    Deployable,
-    Ownable,
-{
+contract Hal9k with Ownable {
     owner: Address;
 
-    init(){
-        self.owner = sender();
+    init(owner: Address) {
+        self.owner = owner; // set the owner address upon deployment
     }
 
-    receive(msg: FakeLaunch){
+    receive("I'm sorry Dave, I'm afraid I can't do that.") {
+        // Checks that the message sender's address equals to the owner address,
+        // and if not — throws an error with exit code 132.
         self.requireOwner();
+
+        // ... you do you ...
     }
 }
+```
 
-fun requireOwner() {
-        nativeThrowUnless(132, sender() == self.owner);
+### 133: Contract stopped {#133}
+
+合约已停止 - 已向停止的合约发送信息 保留，但从未抛出。
+
+### 134: Invalid argument {#134}
+
+如果参数值无效或出乎意料，则会出现退出码为 $134$ 的错误："无效参数"。
+
+以下是Tact 中的一些函数，这些函数可能导致此退出码出现错误：
+
+1. [`Int.toFloatString(digits){:tact}`](/ref/core-strings#inttofloatstring)：如果 `digits` 不在区间：$0 < $ `digits` $ < 78$。
+
+2. [`String.fromBase64(){:tact}`](/ref/core-strings#stringfrombase64)和[`Slice.fromBase64(){:tact}`](/ref/core-strings#slicefrombase64)：如果给定的[`String{:tact}`][p]或[`Slice{:tact}`][slice]包含非 Base64 字符。
+
+```tact
+try {
+    // 0 is code of NUL in ASCII and it is not valid Base64
+    let code: Slice = beginCell().storeUint(0, 8).asSlice().fromBase64();
+} catch (exitCode) {
+    // exitCode is 134
 }
 ```
 
-### $133$: 合同停止 {#133}
+### 135: Code of a contract was not found {#135}
 
-stoppable 特性允许停止合约。
-如果向已停止的合约发送信息，而合约通过运行 \`\`self.requireNotStopped();\`\`\`\` 要求检查，则会抛出此退出代码。
-在当前版本的 Tact 中，将抛出 40368 而不是 133 的退出代码。
+如果合约代码与 TypeScript 封装程序中保存的代码不匹配，则会出现退出码为 $135$ 的错误："未找到合约代码"。
 
-例如
+### 136: Invalid address {#136}
+
+类型 [`Address{:tact}`][p] 的值在如下情况下有效：
+
+- 它占用 $267$ 位： $11$ 位用于链 ID 前缀， $256$ 位用于[地址本身](https://docs.ton.org/learn/overviews/addresses#address-of-smart-contract)。
+- 它属于两者之一：basechain(ID $0$) 或masterchain (ID $-1$)，后者需要启用 [masterchain support](/book/masterchain#support)。
+
+如果 [`地址{:tact}`][p]无效，则会出现退出码为 $136$ 的错误：`无效地址`。
 
 ```tact
-import "@stdlib/deploy";
-import "@stdlib/ownable";
-import "@stdlib/stoppable";
+// Only basechain (ID 0) or masterchain (ID -1) are supported by Tact
+let unsupportedChainID = 1;
 
-message FakeLaunch {}
-
-contract Fireworks with
-    Deployable,
-    Ownable,
-    Stoppable,
-{
-    owner: Address;
-    stopped：Bool;
-
-    init() {
-        self.owner = sender();
-        self.stopped = false;
-    }
-
-    receive(msg: FakeLaunch) {
-        self.stopped = true;
-        self.requireNotStopped();
-    }
-}
-
-fun requireNotStopped() {
-    require(!self.stopped, "Contract stopped");
+try {
+    // Zero address in unsupported workchain
+    dump(newAddress(unsupportedChainID, 0));
+} catch (exitCode) {
+    // exitCode is 136
 }
 ```
 
-### $134$参数无效 {#134}
+### 137: Masterchain support is not enabled for this contract {#137}
 
-下面的 FunC 函数（在一堆 if 条件的最后一部分）将抛出这个问题。 该函数从 Base64 中读取内容。
-
-如果输入字符不符合 base64 字符，就会出现此退出代码。
-
-例如
+在未[启用主链支持](/book/masterchain#support)的情况下，任何指向主链（ID $-1$）或以其他方式与之交互的尝试都会产生异常，退出码为 $137$："此合约未启用主链支持"。
 
 ```tact
-让代码Slice = beginCell().storeUint(0, 8).asSlice().fromBase64();
-// 0 不是有效的 ASCII 码，因此无法转换为 Base64 码。
+let masterchainID = -1;
+
+try {
+    // Zero address in masterchain without the config option set
+    dump(newAddress(masterchainID, 0));
+} catch (exitCode) {
+    // exitCode is 137
+}
 ```
 
-### $135$：未找到合同代码 {#135}
-
-它将检查字典键搜索的返回标志。
-
-例如
-
-```tact
-// copy & paste the below line in wrapper file(../build/ContractName/tact_ContractName.ts) instead of the second line of ContractName_init() function - this is a dictionary containing another smart contract code which leads to 135 exit code
-// const __system = Cell.fromBase64('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');
-let ctx: Context = context();
-let fireworks_init: StateInit = initOf Fireworks(0);
-```
-
-### $136$: 无效地址 {#136}
-
-在 TON 中，所有地址都是 267 位。 如果您违反了这一规则，您将面临这个退出代码。
-
-目前，TON 只支持两个链 id。0 代表基础链，-1 代表主链。 如果地址不是来自 basechain，则会抛出 136 个退出代码。
-
-例如
-
-```tact
-// fun newAddress(chain: Int, hash: Int)：Address;
-// 从链和哈希值创建一个新地址。
-let zeroAddress：Address = newAddress(1, 0); // 无效的链零地址
-```
-
-### $137$：该合约未启用主链支持 {#137}
-
-目前，TON 只支持两个链 id。0 代表基础链，-1 代表主链。
-
-Tact 仅支持 basechain，如果您的地址来自 masterchain，则会抛出 137 个退出代码。
-
-例如
-
-```tact
-// fun newAddress(chain: Int, hash: Int)：Address;
-// 根据链和哈希值创建新地址。
-let zeroAddress：Address = newAddress(-1, 0); // 主链零地址
-```
+[p]: /book/types#primitive-types
+[ct]: /book/types#composite-types
+[cell]: /book/cells
+[builder]: /book/cells#builders
+[slice]: /book/cells#slices
+[message]: /book/structs-and-messages#messages
+[tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
+[bp]: https://github.com/ton-org/blueprint
+[sb]: https://github.com/ton-org/sandbox
+[jest]: https://jestjs.io

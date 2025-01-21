@@ -1,22 +1,23 @@
 ---
 title: 主链
+description: 在 TON 区块链中，一条名为主链的特殊链用于同步消息路由和交易执行，因此网络中的节点可以固定多链状态中的某个特定点，并就该状态达成共识
 ---
 
 :::caution
 
-  除非将[配置文件](/zh-cn/book/config)中的 "masterchain "选项设置为 `true{:json}`，否则主链地址将被视为无效。
+  除非将[配置文件](/book/config)中的 `masterchain` 选项设置为 `true{:json}`，否则主链地址将被视为无效。
 
 :::
 
 在 TON 区块链中，一条名为["主链"](https://docs.ton.org/learn/overviews/ton-blockchain#masterchain-blockchain-of-blockchains) 的特殊链用于同步消息路由和交易执行，因此网络中的节点可以固定多链状态中的某个特定点，并就该状态达成共识。
 
-主链存储 [网络配置](/zh-cn/ref/core-advanced#getconfigparam) 和所有 [工作链] 的最终状态(https://docs.ton.org/learn/overviews/ton-blockchain#workchain-blockchain-with-your-own-rules)。 它承载着基本的协议信息，包括当前设置、活动验证器及其赌注列表、活动工作链以及相关的[分块链](https://docs.ton.org/develop/blockchain/shards)。 最重要的是，它为所有工作链和分块链维护最新的区块哈希值记录，从而在整个网络中达成共识。
+主链存储[网络配置](/ref/core-advanced#getconfigparam)以及所有[工作链](https://docs.ton.org/learn/overviews/ton-blockchain#workchain-blockchain-with-your-own-rules)的最终状态。 它承载着基本的协议信息，包括当前设置、活动验证器及其质押列表、活动工作链以及相关的[分块链](https://docs.ton.org/develop/blockchain/shards)。 最重要的是，它为所有工作链和分块链维护最新的区块哈希值记录，从而在整个网络中达成共识。
 
 ## 主链如何保护合约
 
-Tact 强制所有合约使用 [basechain](https://docs.ton.org/develop/blockchain/shards)，即 ID 为 $0$ 的默认工作链。这样做是为了防止在合约中使用主链地址。
+Tact 强制所有合约使用 [basechain](https://docs.ton.org/develop/blockchain/shards)，即 ID 为 $0$ 的默认工作链。 这样做是为了防止在合约中使用主链地址。
 
-在未[启用主链支持](#support)的情况下，任何指向主链或以其他方式与之交互的尝试都会产生异常，并显示[退出代码 137](/zh-cn/book/exit-codes#137)： 此合约未启用 “主链支持”。
+在未[启用主链支持](#support)的情况下，任何指向主链或以其他方式与之交互的尝试都会产生异常，并显示[退出码 137](/book/exit-codes#137)： 此合约未启用 “主链支持”。
 
 也就是说，意外部署到主链、从主链账户接收消息、向此类账户发送消息以及使用主链地址或其链 ID ($-1$) 都是默认禁止的。
 
@@ -24,26 +25,33 @@ Tact 强制所有合约使用 [basechain](https://docs.ton.org/develop/blockchai
 
 :::caution
 
-大多数合约不需要部署在主链上，也不需要在主链上进行任何交互。这是因为主链主要用于投票或存储库。如果你不需要参与这些事情，就不需要启用主链支持。
+大多数合约不需要部署在主链上，也不需要在主链上进行任何交互。 这是因为主链主要用于投票或存储库。 如果不需要参与这些活动，就不需要启用主链支持。
 
 :::
 
-如果您确实需要主链支持，最简单也是最推荐的方法是修改项目根目录下的 [`tact.config.json`](/zh-cn/book/config) 文件（如果还不存在，则创建该文件），并 [将 `masterchain` 属性设置为 `true{:json}`](/zh-cn/book/config#options-masterchain)。
+如果您确实需要主链支持，最简单也是最推荐的方法是修改项目根目录下的 [`tact.config.json`](/book/config) 文件（如果还不存在，则创建该文件），并 [将 `masterchain` 属性设置为 `true{:json}`](/book/config#options-masterchain)。
 
 如果您正在开发基于 [Blueprint][bp] 的项目，可以在合约的编译配置中启用主链支持，这些配置位于名为 `wrappers/` 的目录中：
 
 ```typescript title="wrappers/YourContractName.compile.ts" {7}
 import { CompilerConfig } from '@ton/blueprint';
 
-export const compile：CompilerConfig = {
+export const compile: CompilerConfig = {
   lang: 'tact',
   target: 'contracts/your_contract_name.tact',
-  options：{
-    masterchain: true, // ← that's the stuff！
+  options: {
+    masterchain: true, // ← that's the stuff!
   }
 };
 ```
 
-不过，[蓝图][bp] 项目中仍可使用 [`tact.config.json`](/zh-cn/book/config)。 在这种情况下，除非在 `wrappers/` 中修改，否则 [`tact.config.json`](/zh-cn/book/config)中指定的值将作为默认值。
+不过，[Blueprint][bp] 项目中仍可使用 [`tact.config.json`](/book/config)。 不过，[Blueprint][bp] 项目中仍可使用 [`tact.config.json`](/book/config)。 在这种情况下，除非在 `wrappers/` 中修改，否则 [`tact.config.json`](/book/config)中指定的值将作为默认值。
+
+:::note
+
+  如果你有 `separateCompilables` 选项设置为 `true{:typescript}` 在 [`blueprint.config. . s`][bp-config]，然后`.compile.ts`文件将位于`compilables/`目录中，**不**位于`wrapper/`。
+
+:::
 
 [bp]: https://github.com/ton-org/blueprint
+[bp-config]: https://github.com/ton-org/blueprint/tree/main?tab=readme-ov-file#configuration

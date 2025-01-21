@@ -1,10 +1,13 @@
 ---
-title: 细胞、建造者和切片
+title: Cells, Builders 和 Slices
+description: Tact 核心库中的各种 Cell、Builder 和 Slice 函数
 ---
 
-[`Cell{:tact}`][cell]是 TON 区块链中表示数据的低级[基元][p]。 单元由 $1023$ 位数据组成，最多可 $4$ 引用另一个单元。 它们是只读的、不可变的，并且不能循环引用。
+import { Badge } from '@astrojs/starlight/components';
 
-[`Builder{:tact}`][builder]是一个不可变的[基元][p]，用于构建单元格；[`Slice{:tact}`][slice]是一个可变的[基元][p]，用于解析单元格。
+[`Cell{:tact}`][cell] 是一个低级别的 [原始类型][p]，表示 TON 区块链中的数据。 cell由 $1023$ 位数据组成，最多可 $4$ 引用另一个cell。 它们是只读的、不可变的，并且不能循环引用。
+
+[`Builder{:tact}`][builder] 是一个不可变的 [原始类型][p]，用于构建单元格，而 [`Slice{:tact}`][slice] 是一个可变的 [原始类型][p]，用于解析单元格。
 
 :::note
 
@@ -12,37 +15,37 @@ title: 细胞、建造者和切片
 
   为此，建议高级用户使用[类型语言 - 二进制（TL-B）模式][tlb]。
 
-  建议每位用户使用 [Structs][struct] 及其 [方法](/zh-cn/book/functions#extension-function)，如 [`Struct.toCell(){:tact}`](#structtocell) 和 [`Struct.fromCell(){:tact}`](#structfromcell)，而不是手动构建和解析单元格，因为 [Structs][struct] 和 [Messages][message] 最接近于[您的合约的活 TL-B 架构](/zh-cn/book/cells#cnp-structs)。
+  每个用户都建议使用 [结构体][struct] 及其 [方法](/book/functions#extension-function)，例如 [`Struct.toCell(){:tact}`](#structtocell) 和 [`Struct.fromCell(){:tact}`](#structfromcell)，而不是手动构建和解析单元格，因为 [结构体][struct] 和 [消息][message] 最接近于作为你合约的 [活的 TL-B 模式](/book/cells#cnp-structs)。
 
 :::
 
 ## beginCell
 
 ```tact
-fun beginCell()：生成器
+fun beginCell(): Builder;
 ```
 
 创建一个新的空[`Builder{:tact}`][builder]。
 
-使用示例
+示例用法：
 
 ```tact
-让 fizz：Builder = beginCell()；
+let fizz: Builder = beginCell();
 ```
 
 ## emptyCell
 
 ```tact
-fun emptyCell()：单元格；
+fun emptyCell(): Cell;
 ```
 
-创建并返回空 [`单元格{:tact}`][单元格]（不含数据和引用）。 别名为 `beginCell().endCell(){:tact}`。
+创建并返回空 [`cell{:tact}`][cell](不含数据和引用）。 别名为 `beginCell().endCell(){:tact}`。
 
-使用示例
+示例用法：
 
 ```tact
-让 fizz：Cell = emptyCell();
-let buzz：Cell = beginCell().endCell();
+let fizz: Cell = emptyCell();
+let buzz: Cell = beginCell().endCell();
 
 fizz == buzz; // true
 ```
@@ -50,16 +53,16 @@ fizz == buzz; // true
 ## emptySlice
 
 ```tact
-fun emptySlice()：Slice；
+fun emptySlice(): Slice;
 ```
 
-创建并返回空 [`片{:tact}`][片]（不含数据和引用）。 与 `emptyCell().asSlice(){:tact}` 同名。
+创建并返回一个空的 [`Slice{:tact}`][slice] (没有数据和引用)。 与 `emptyCell().asSlice(){:tact}` 同名。
 
-使用示例
+示例用法：
 
 ```tact
-让 fizz：Slice = emptySlice();
-let buzz：Slice = emptyCell().asSlice();
+let fizz: Slice = emptySlice();
+let buzz: Slice = emptyCell().asSlice();
 
 fizz == buzz; // true
 ```
@@ -67,571 +70,679 @@ fizz == buzz; // true
 ## Cell.beginParse
 
 ```tact
-extends fun beginParse(self: Cell)：Slice；
+extends fun beginParse(self: Cell): Slice;
 ```
 
-[`单元格{:tact}`][单元格]的扩展函数。
+[`Cell{:tact}`][cell] 的扩展函数。
 
-打开[`单元格{:tact}`][单元格]进行解析，并以[`切片{:tact}`][切片]的形式返回。
+打开 [`Cell{:tact}`][cell] 进行解析，并以 [`Cell{:tact}`][cell] 的形式返回。
 
-使用示例
+示例用法：
 
 ```tact
-让 c：Cell = emptyCell();
-let fizz：Slice = c.beginParse()；
+let c: Cell = emptyCell();
+let fizz: Slice = c.beginParse();
 ```
 
 ## Cell.hash
 
 ```tact
-extends fun hash(self: Cell)：Int；
+extends fun hash(self: Cell): Int;
 ```
 
-[`单元格{:tact}`][单元格]的扩展函数。
+[`Cell{:tact}`][cell] 的扩展函数。
 
-计算并返回给定[`单元格{:tact}`][单元格]的[标准`单元格{:tact}`表示][st-repr]的[SHA-256][sha-2]哈希值的[`Int{:tact}`][int]值。
+计算并返回给定 [`Cell{:tact}`][cell] 的 [标准 `Cell{:tact}` 表示][std-repr] 的 [SHA-256][sha-2] 哈希值的 [`Int{:tact}`][int]。
 
-使用示例
+示例用法：
 
 ```tact
-让 c：Cell = emptyCell();
-let fizz：Int = c.hash()；
+let c: Cell = emptyCell();
+let fizz: Int = c.hash();
 ```
 
 ## Cell.asSlice
 
 ```tact
-extends fun asSlice(self: Cell)：Slice；
+extends fun asSlice(self: Cell): Slice;
 ```
 
-[`单元格{:tact}`][单元格]的扩展函数。
+[`Cell{:tact}`][cell] 的扩展函数。
 
-将单元格转换为[`Slice{:tact}`][slice]并返回。 `self.beginParse(){:tact}`的别名。
+将cell转换为[`Slice{:tact}`][slice]并返回。 `self.beginParse(){:tact}` 的别名。
 
-使用示例
+示例用法：
 
 ```tact
-让 c：Cell = emptyCell();
-let fizz：Slice = c.asSlice()；
+let c: Cell = emptyCell();
+let fizz: Slice = c.asSlice();
 ```
 
 ## Builder.endCell
 
 ```tact
-extends fun endCell(self: Builder)：Cell；
+extends fun endCell(self: Builder): Cell;
 ```
 
-[`生成器{:tact}`][生成器]的扩展函数。
+[`Builder{:tact}`][builder] 的扩展函数。
 
-将 [`构造器{:tact}`][构造器] 转换为普通的 [`单元格{:tact}`][单元格]。
+将 [`Builder{:tact}`][builder] 转换为普通的 [`cell{:tact}`][cell]。
 
-使用示例
+示例用法：
 
 ```tact
 let b: Builder = beginCell();
-let fizz：单元格 = b.endCell()；
+let fizz: Cell = b.endCell();
 ```
 
 ## Builder.storeUint
 
 ```tact
-extends fun storeUint(self: Builder, value: Int, bits: Int)：Builder；
+extends fun storeUint(self: Builder, value: Int, bits: Int): Builder;
 ```
 
-[`生成器{:tact}`][生成器]的扩展函数。
+[`Builder{:tact}`][builder] 的扩展函数。
 
-将 $0 \leq \text{bits} \leq 256$ 的无符号 `bits` 位 `value` 存储到 [`Builder{:tact}`][builder] 的副本中。返回该副本。
+将一个无符号的 `bits` 位 `value` 存储到 [`Builder{:tact}`][builder] 的副本中，范围为 $0 ≤$ `bits` $≤ 256$。 返回该副本。
 
-试图存储负 `value` 或提供不足或超界 `bits` 数时，会出现 [退出代码 5](/zh-cn/book/exit-codes#5) 异常："整数超出预期范围"。
+尝试存储一个负数 `value` 或提供一个不足或超出范围的 `bits` 数量会抛出异常，错误代码为 [退出代码 5](/book/exit-codes#5): `Integer out of expected range`。
 
-使用示例
+示例用法：
 
 ```tact
 let b: Builder = beginCell();
-let fizz：Builder = b.storeUint(42, 6)；
+let fizz: Builder = b.storeUint(42, 6);
 ```
 
 ## Builder.storeInt
 
 ```tact
-extends fun storeInt(self: Builder, value: Int, bits: Int)：Builder；
+extends fun storeInt(self: Builder, value: Int, bits: Int): Builder;
 ```
 
-[`生成器{:tact}`][生成器]的扩展函数。
+[`Builder{:tact}`][builder] 的扩展函数。
 
-将$0 ≤$ `bits` $≤ 257$的有符号`bits`-位`值`存储到[`builder{:tact}`][builder]的副本中。 返回该副本。
+将一个有符号的 `bits` 位的 `value` 存储到 [`Builder{:tact}`][builder] 的副本中，范围是 $0 ≤$ `bits` $≤ 257$。 返回该副本。
 
-试图提供一个不足或超出范围的`比特`数时，会出现[退出代码5](/zh-cn/book/exit-codes#5)的异常：整数超出预期范围"。
+试图提供一个不足或超出范围的`比特`数时，会出现[退出码5](/book/exit-codes#5)的异常：`Integer out of expected range`。
 
-使用示例
+示例用法：
 
 ```tact
 let b: Builder = beginCell();
-let fizz：Builder = b.storeUint(42, 7)；
+let fizz: Builder = b.storeUint(42, 7);
 ```
 
 ## Builder.storeBool
 
 ```tact
-extends fun storeBool(self: Builder, value: Bool)：Builder；
+extends fun storeBool(self: Builder, value: Bool): Builder;
 ```
 
-[`生成器{:tact}`][生成器]的扩展函数。
+[`Builder{:tact}`][builder] 的扩展函数。
 
-将[`Bool{:tact}`][bool]`value`存储到[`Builder{:tact}`][builder]的副本中。 如果 `value` 是 `true{:tact}`，则写入 $1$ 作为单个位，否则写入 $0$。 返回 [`生成器{:tact}`][生成器] 的副本。
+将[`Bool{:tact}`][bool]`value`存储到[`Builder{:tact}`][builder]的副本中。 如果 `value` 是 `true{:tact}`，则写入 $1$ 作为单个位，否则写入 $0$。 返回 [`Builder{:tact}`][builder] 的副本。
 
-使用示例
+示例用法：
 
 ```tact
 let b: Builder = beginCell();
-let fizz：Builder = b.storeBool(true); // writes 1
-let buzz：Builder = b.storeBool(false); // writes 0
+let fizz: Builder = b.storeBool(true);  // writes 1
+let buzz: Builder = b.storeBool(false); // writes 0
+```
+
+## Builder.storeBit
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun storeBit(self: Builder, value: Bool): Builder;
+```
+
+[`Builder{:tact}`][builder] 的扩展函数。 [`Builder.storeBool(){:tact}`](#builderstorebool) 的别名。
+
+用法示例：
+
+```tact
+let b: Builder = beginCell();
+let fizz: Builder = b.storeBit(true);  // writes 1
+let buzz: Builder = b.storeBit(false); // writes 0
+```
+
+## Builder.storeBuilder
+
+```tact
+extends fun storeBuilder(self: Builder, cell: Builder): Builder;
+```
+
+[`Builder{:tact}`][builder] 的扩展函数。
+
+将 [`Builder{:tact}`][builder] `cell` 中的所有数据添加到[`Builder{:tact}`][builder] 的副本中。 返回该副本。
+
+示例用法：
+
+```tact
+let b: Builder = beginCell().storeCoins(42);
+let fizz: Builder = beginCell().storeBuilder(b);
+b.endCell() == fizz.endCell(); // true
 ```
 
 ## Builder.storeSlice
 
 ```tact
-extends fun storeSlice(self: Builder, cell: Slice)：Builder；
+extends fun storeSlice(self: Builder, cell: Slice): Builder;
 ```
 
-[`生成器{:tact}`][生成器]的扩展函数。
+[`Builder{:tact}`][builder] 的扩展函数。
 
 将[`slice{:tact}`][slice]`cell`存储到[`builder{:tact}`][builder]的副本中。 返回该副本。
 
-使用示例
+示例用法：
 
 ```tact
 let b: Builder = beginCell();
-let s：Slice = emptyCell().asSlice();
-let fizz：Builder = b.storeSlice(s)；
+let s: Slice = emptyCell().asSlice();
+let fizz: Builder = b.storeSlice(s);
 ```
 
 ## Builder.storeCoins
 
 ```tact
-extends fun storeCoins(self: Builder, value: Int)：Builder；
+extends fun storeCoins(self: Builder, value: Int): Builder;
 ```
 
-[`生成器{:tact}`][生成器]的扩展函数。
+[`Builder{:tact}`][builder] 的扩展函数。
 
-存储（序列化）一个范围为 $0 \ldots 2^{120} - 1$ 的无符号 [`Int{:tact}`][int] `value` 到 [`Builder{:tact}`][builder] 的副本中。`value` 的序列化由 $4$ 位无符号大端整数 $l$ 组成，它是最小的整数 $l \geq 0$，使得 $\text{value} < 2^{8l}$，然后是 `value` 的 $8l$ 位无符号大端表示。返回 [`Builder{:tact}`][builder] 的副本。
+将一个无符号的 [`Int{:tact}`][int] `value` 存储（序列化）到范围 $0 .. 2^{120} - 1$ 到 [`Builder{:tact}`][builder] 的副本中。 `value` 的序列化由一个 4 位无符号大端整数 `l` 组成，`l` 是满足 `value` $< 2^{8 _ l}$ 的最小整数 $l ≥ 0$，然后是一个 8 _ l 位无符号大端表示的 `value`。 返回 [`Builder{:tact}`][builder] 的副本。
 
-试图存储一个超出范围的`值`时，会出现[退出代码5](/zh-cn/book/exit-codes#5)的异常：超出预期范围的`整数`。
+试图存储一个超出范围的`值`时，会出现[退出码5](/book/exit-codes#5)的异常：`Integer out of expected range`。
 
-这是最常见的[纳米通币]存储方式（/book/integers#nanotoncoin）。
+这是保存 [nanoToncoins](/book/integers#nanotoncoin) 的最常见方式。
 
-使用示例
+示例用法：
 
 ```tact
 let b: Builder = beginCell();
-let fizz：Builder = b.storeCoins(42)；
+let fizz: Builder = b.storeCoins(42);
 ```
 
 :::note[Useful links:]
 
-  [特殊的 "硬币 "序列化类型](/zh-cn/book/integers#serialization-coins)
+  [特殊的 `coins` 序列化类型](/book/integers#serialization-coins)
 
 :::
 
 ## Builder.storeAddress
 
 ```tact
-extends fun storeAddress(self: Builder, address: Address)：Builder；
+extends fun storeAddress(self: Builder, address: Address): Builder;
 ```
 
-[`生成器{:tact}`][生成器]的扩展函数。
+[`Builder{:tact}`][builder] 的扩展函数。
 
-将地址存储在 [`生成器{:tact}`][生成器] 的副本中。 返回该副本。
+将地址存储在 [`Builder{:tact}`][builder] 的副本中。 返回该副本。
 
-使用示例
+示例用法：
 
 ```tact
 let b: Builder = beginCell();
-let fizz：Builder = b.storeAddress(myAddress())；
+let fizz: Builder = b.storeAddress(myAddress());
 ```
 
 ## Builder.storeRef
 
 ```tact
-extends fun storeRef(self: Builder, cell: Cell)：Builder；
+extends fun storeRef(self: Builder, cell: Cell): Builder;
 ```
 
-[`生成器{:tact}`][生成器]的扩展函数。
+[`Builder{:tact}`][builder] 的扩展函数。
 
-将引用 `cell` 存储到[`Builder{:tact}`][builder]的副本中。 返回该副本。
+将引用 `cell` 存储到 [`Builder{:tact}`][builder] 的副本中。 返回该副本。
 
-由于单个 [`单元格{:tact}`][单元格] 最多可存储 $4$ 引用，如果尝试存储更多引用，则会出现[退出代码 8](/zh-cn/book/exit-codes#8)异常：单元格溢出"。
+由于单个 [`cell{:tact}`][cell] 最多可存储 $4$ 引用，如果尝试存储更多引用，则会出现[退出码 8](/book/exit-codes#8)异常：`Cell overflow`。
 
-使用示例
+示例用法：
 
 ```tact
 let b: Builder = beginCell();
-let fizz：Builder = b.storeRef(emptyCell())；
+let fizz: Builder = b.storeRef(emptyCell());
+```
+
+## Builder.storeMaybeRef
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun storeMaybeRef(self: Builder, cell: Cell?): Builder;
+```
+
+[`Builder{:tact}`][builder] 的扩展函数。
+
+如果`cell`不是`null{:tact}`, 把 $1$ 作为一个位存储，然后在[`Builder{:tact}`][builder] 中使用 `cell` 。 返回此复制。
+
+如果 `cell` 是 `null{:tact}`，则只将 $0$ 作为单个位存储到 [`Builder{:tact}`][builder] 的副本中。 返回此复制。
+
+由于单个 [`Cell{:tact}`][cell] 最多可以存储 $4$ 个引用，尝试存储更多引用将抛出异常，错误码为 [exit code 8](/book/exit-codes#8)：`Cell overflow`。
+
+用法示例：
+
+```tact
+let b: Builder = beginCell();
+let fizz: Builder = b
+    .storeMaybeRef(emptyCell()) // stores a single 1 bit, then an empty cell
+    .storeMaybeRef(null);       // stores only a single 0 bit
 ```
 
 ## Builder.refs
 
 ```tact
-extends fun refs(self: Builder)：Int；
+extends fun refs(self: Builder): Int;
 ```
 
-[`生成器{:tact}`][生成器]的扩展函数。
+[`Builder{:tact}`][builder] 的扩展函数。
 
-以 [`Int{:tact}`][int]形式返回已存储在 [`构造器{:tact}`][构造器] 中的单元格引用的数目。
+以 [`Int{:tact}`][int] 形式返回已存储在 [`Builder{:tact}`][builder] 中的cell引用的数目。
 
-使用示例
+用法示例：
 
 ```tact
 let b: Builder = beginCell();
-let fizz：Int = b.refs(); // 0
+let fizz: Int = b.refs(); // 0
 ```
 
 ## Builder.bits
 
 ```tact
-extends fun bits(self: Builder)：Int；
+extends fun bits(self: Builder): Int;
 ```
 
-[`生成器{:tact}`][生成器]的扩展函数。
+[`Builder{:tact}`][builder] 的扩展函数。
 
 以[`Int{:tact}`][int]形式返回已存储在[`builder{:tact}`][builder]中的数据位数。
 
-使用示例
+示例用法：
 
 ```tact
 let b: Builder = beginCell();
-let fizz：Int = b.bits(); // 0
+let fizz: Int = b.bits(); // 0
 ```
 
 ## Builder.asSlice
 
 ```tact
-extends fun asSlice(self: Builder)：Slice；
+extends fun asSlice(self: Builder): Slice;
 ```
 
-[`生成器{:tact}`][生成器]的扩展函数。
+[`Builder{:tact}`][builder] 的扩展函数。
 
-将[`builder{:tact}`][builder]转换为[`slice{:tact}`][slice]并返回。 别名为 `self.endCell().beginParse(){:tact}`。
+将[`builder{:tact}`][builder]转换为[`slice{:tact}`][slice]并返回。 `self.endCell().beginParse(){:tact}` 的别名。
 
-使用示例
+示例用法：
 
 ```tact
 let b: Builder = beginCell();
-let fizz：Slice = b.asSlice()；
+let fizz: Slice = b.asSlice();
 ```
 
 ## Builder.asCell
 
 ```tact
-extends fun asCell(self: Builder)：Cell；
+extends fun asCell(self: Builder): Cell;
 ```
 
-[`生成器{:tact}`][生成器]的扩展函数。
+[`Builder{:tact}`][builder] 的扩展函数。
 
-将[`Builder{:tact}`][builder]转换为[`Cell{:tact}`][cell]并返回。 别名为 `self.endCell(){:tact}`。
+将[`Builder{:tact}`][builder]转换为[`Cell{:tact}`][cell]并返回。 `self.endCell(){:tact}` 的别名。
 
-使用示例
+示例用法：
 
 ```tact
 let b: Builder = beginCell();
-let fizz：Cell = b.asCell()；
+let fizz: Cell = b.asCell();
 ```
 
 ## Slice.loadUint
 
 ```tact
-extends mutates fun loadUint(self: Slice, l: Int)：Int；
+extends mutates fun loadUint(self: Slice, l: Int): Int;
 ```
 
-[`切片{:tact}`][切片]的扩展突变函数。
+[`Slice{:tact}`][slice] 的扩展突变函数。
 
 从 [`Slice{:tact}`][slice]中加载并返回一个无符号的 `l` 位 [`Int{:tact}`][int]，条件是 $0 ≤$ `l` $≤ 256$。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：超出预期范围的整数。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
 
-尝试加载的数据超过 [`片{:tact}`][片] 包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：单元格下溢"。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell underflow`。
 
-使用示例
+示例用法：
 
 ```tact
-让 s：Slice = beginCell().storeUint(42, 7).asSlice();
-let fizz：Int = s.loadUint(7)；
+let s: Slice = beginCell().storeUint(42, 7).asSlice();
+let fizz: Int = s.loadUint(7);
 ```
 
 ## Slice.preloadUint
 
 ```tact
-extends fun preloadUint(self: Slice, l: Int)：Int；
+extends fun preloadUint(self: Slice, l: Int): Int;
 ```
 
-[`切片{:tact}`][切片]的扩展函数。
+[`Slice{:tact}`][slice] 的扩展函数。
 
-为 $0 ≤$ `l` $≤ 256$ 从 [`Slice{:tact}`][slice]中预载并返回一个无符号的 `l` 位 [`Int{:tact}`][int]。 不会修改 [`切片{:tact}`][切片]。
+为 $0 ≤$ `l` $≤ 256$ 从 [`Slice{:tact}`][slice]中预载并返回一个无符号的 `l` 位 [`Int{:tact}`][int]。 不会修改 [`Slice{:tact}`][slice]。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：超出预期范围的整数。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
 
-尝试预载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9)异常：单元格下溢"。
+尝试预载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9)异常：`Cell underflow`。
 
-使用示例
+示例用法：
 
 ```tact
-让 s：Slice = beginCell().storeUint(42, 7).asSlice();
-let fizz：Int = s.preloadUint(7)；
+let s: Slice = beginCell().storeUint(42, 7).asSlice();
+let fizz: Int = s.preloadUint(7);
 ```
 
 ## Slice.loadInt
 
 ```tact
-extends mutates fun loadInt(self: Slice, l: Int)：Int；
+extends mutates fun loadInt(self: Slice, l: Int): Int;
 ```
 
-[`切片{:tact}`][切片]的扩展突变函数。
+[`Slice{:tact}`][slice] 的扩展突变函数。
 
-从 [`Slice{:tact}`][slice]中加载并返回一个有符号的 `l` 位 [`Int{:tact}`][int]，值为 $0 ≤$ `l` $≤ 257$。
+从 [`Slice{:tact}`][slice] 中加载并返回一个有符号的 `l` 位 [`Int{:tact}`][int]，值为 $0 ≤$ `l` $≤ 257$。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：超出预期范围的整数。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
 
-尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：单元格下溢"。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell underflow`。
 
-使用示例
+示例用法：
 
 ```tact
-让 s：Slice = beginCell().storeInt(42, 7).asSlice();
-let fizz：Int = s.loadInt(7)；
+let s: Slice = beginCell().storeInt(42, 7).asSlice();
+let fizz: Int = s.loadInt(7);
 ```
 
 ## Slice.preloadInt
 
 ```tact
-extends fun preloadInt(self: Slice, l: Int)：Int；
+extends fun preloadInt(self: Slice, l: Int): Int;
 ```
 
-[`切片{:tact}`][切片]的扩展函数。
+[`Slice{:tact}`][slice] 的扩展函数。
 
-为 $0 ≤$ `l` $≤ 257$ 从 [`Slice{:tact}`][slice]中预载并返回一个有符号的 `l` 位 [`Int{:tact}`][int]。 不会修改 [`切片{:tact}`][切片]。
+为 $0 ≤$ `l` $≤ 257$ 从 [`Slice{:tact}`][slice]中预载并返回一个有符号的 `l` 位 [`Int{:tact}`][int]。 不会修改 [`slice{:tact}`][slice]。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：超出预期范围的整数。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
 
-尝试预载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9)异常：单元格下溢"。
+尝试预载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9)异常：`Cell underflow`。
 
-使用示例
+示例用法：
 
 ```tact
-让 s：Slice = beginCell().storeInt(42, 7).asSlice();
-let fizz：Int = s.preloadInt(7)；
+let s: Slice = beginCell().storeInt(42, 7).asSlice();
+let fizz: Int = s.preloadInt(7);
 ```
 
 ## Slice.loadBits
 
 ```tact
-extends mutates fun loadBits(self: Slice, l: Int)：Slice；
+extends mutates fun loadBits(self: Slice, l: Int): Slice;
 ```
 
-[`切片{:tact}`][切片]的扩展突变函数。
+[`Slice{:tact}`][slice] 的扩展突变函数。
 
-从 [`片{:tact}`][片] 中加载 $0 ≤$ `l` $≤ 1023$ 位，并作为单独的 [`片{:tact}`][片] 返回。
+从 [`Slice{:tact}`][slice] 中加载 $0 ≤$ `l` $≤ 1023$ 位，并作为单独的  [`Slice{:tact}`][slice] 返回。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：超出预期范围的整数。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
 
-尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：单元格下溢"。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell underflow`。
 
-使用示例
+示例用法：
 
 ```tact
-让 s：Slice = beginCell().storeInt(42, 7).asSlice();
-let fizz：Slice = s.loadBits(7)；
+let s: Slice = beginCell().storeInt(42, 7).asSlice();
+let fizz: Slice = s.loadBits(7);
 ```
 
 ## Slice.preloadBits
 
 ```tact
-extends fun preloadBits(self: Slice, l: Int)：Slice；
+extends fun preloadBits(self: Slice, l: Int): Slice;
 ```
 
-[`切片{:tact}`][切片]的扩展函数。
+[`Slice{:tact}`][slice] 的扩展函数。
 
-从 [`片{:tact}`][片] 中预载 $0 ≤$ `l` $≤ 1023$ 位，并将其作为单独的 [`片{:tact}`][片] 返回。 不修改原始 [`切片{:tact}`][切片]。
+从 [`Slice{:tact}`][slice] 中预载 $0 ≤$ `l` $≤ 1023$ 位，并将其作为单独的 [`Slice{:tact}`][slice] 返回。 不修改原始 [`slice{:tact}`][slice]。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：超出预期范围的整数。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
 
-尝试预载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9)异常：单元格下溢"。
+尝试预载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9)异常：`Cell underflow`。
 
-使用示例
+示例用法：
 
 ```tact
-让 s：Slice = beginCell().storeInt(42, 7).asSlice();
-let fizz：Slice = s.preloadBits(7)；
+let s: Slice = beginCell().storeInt(42, 7).asSlice();
+let fizz: Slice = s.preloadBits(7);
 ```
 
 ## Slice.skipBits
 
 ```tact
-extends mutates fun skipBits(self: Slice, l: Int)；
+extends mutates fun skipBits(self: Slice, l: Int);
 ```
 
-[`片{:tact}`][片]的扩展突变函数。
+[`Slice{:tact}`][slice]的扩展突变函数。
 
-从 [`片{:tact}`][片] 中加载除第一个 0 ≤$ `l` $≤ 1023$ 位以外的所有位。
+从 [`Slice{:tact}`][slice] 中加载除第一个 0 ≤$ `l` $≤ 1023$ 位以外的所有位。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：超出预期范围的整数。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
 
-尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：单元格下溢"。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell underflow`。
 
-使用示例
+示例用法：
 
 ```tact
-让 s：Slice = beginCell().storeInt(42, 7).asSlice();
-s.skipBits(5); // 除了前 5 位之外的所有位
-let fizz：Slice = s.loadBits(1); // 只加载 1 位
+let s: Slice = beginCell().storeInt(42, 7).asSlice();
+s.skipBits(5);                   // all but first 5 bits
+let fizz: Slice = s.loadBits(1); // load only 1 bit
 ```
 
 ## Slice.loadBool
 
 ```tact
-extends mutates fun loadBool(self: Slice)：Bool；
+extends mutates fun loadBool(self: Slice): Bool;
 ```
 
-[`片{:tact}`][片]的扩展突变函数。
+[`Slice{:tact}`][slice]的扩展突变函数。
 
 从[`Slice{:tact}`][slice]加载单个位并返回[`Bool{:tact}`][bool]值。 如果加载的位等于 $1$，则读取 `true{:tact}`，否则读取 `false{:tact}`。
 
-当 [`Bool{:tact}`][bool][`slice{:tact}`][slice]不包含它时，尝试加载此类 [`Bool `][bool]会产生异常，[退出代码 8](/zh-cn/book/exit-codes#8)：单元格溢出"。
+当 [`Bool{:tact}`][bool][`slice{:tact}`][slice]不包含它时，尝试加载此类 [`Bool `][bool]会产生异常，[退出码 8](/book/exit-codes#8)：`Cell overflow`。
 
-尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：单元格下溢"。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell underflow`。
 
-使用示例
+示例用法：
 
 ```tact
-让 s：Slice = beginCell().storeBool(true).asSlice();
-let fizz：Bool = s.loadBool(); // true
+let s: Slice = beginCell().storeBool(true).asSlice();
+let fizz: Bool = s.loadBool(); // true
+```
+
+## Slice.loadBit
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun loadBit(self: Slice): Bool;
+```
+
+[`Slice{:tact}`][slice] 的扩展突变函数。 别名为 [`Slice.loadBool(){:tact}`](#sliceloadbool)。
+
+示例用法：
+
+```tact
+let s: Slice = beginCell().storeBit(true).asSlice();
+let fizz: Bool = s.loadBit(); // true
 ```
 
 ## Slice.loadCoins
 
 ```tact
-extends mutates fun loadCoins(self: Slice)：Int；
+extends mutates fun loadCoins(self: Slice): Int;
 ```
 
-[`切片{:tact}`][切片]的扩展突变函数。
+[`Slice{:tact}`][slice] 的扩展突变函数。
 
-加载并返回[序列化](#builderstorecoins)的一个范围为 $0 ... 2^{120} - 1$ 的无符号 [`Int{:tact}`][int]值，来自 [`片{:tact}`][片]。该值通常代表以[纳吨币](/zh-cn/book/integers#nanotoncoin)为单位的金额。
+加载并返回 [序列化](#builderstorecoins)一个范围为 $0 ... 的无符号 [`Int{:tact}`][int]值。 2^{120} - 1$ 来自 [`Slice{:tact}`][slice]。 此值通常代表 [nanoToncoins](/book/integers#nanotoncoin) 的金额。
 
-当 [`Slice{:tact}`][slice]中不包含[`Int{:tact}`][int]时，尝试加载此类[`Int`][int]会产生异常，[退出代码为 8](/zh-cn/book/exit-codes#8)："单元格溢出"。
+当 [\``Slice{:tact}`][slice]中不包含[`Int{:tact}`][int]时，尝试加载此类[`Int `][int]会产生异常，[退出码为 8](/book/exit-codes#8)：`Cell overflow`。
 
-尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常："单元格下溢"。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell overflow`。
 
-使用示例
+用法示例：
 
 ```tact
-让 s：Slice = beginCell().storeCoins(42).asSlice();
-let fizz：Int = s.loadCoins()；
+let s: Slice = beginCell().storeCoins(42).asSlice();
+let fizz: Int = s.loadCoins();
 ```
 
 :::note[Useful links:]
 
-  [特殊的 "硬币 "序列化类型](/zh-cn/book/integers#serialization-coins)
+  [特殊的 "coin" 序列化类型](/book/integers#serialization-coins)
 
 :::
 
 ## Slice.loadAddress
 
 ```tact
-extends mutates fun loadAddress(self: Slice)：地址；
+extends mutates fun loadAddress(self: Slice): Address;
 ```
 
-[`Slice{:tact}`][slice]的扩展突变函数。
+[`Slice{:tact}`][slice] 的扩展突变函数。
 
-从[`Slice{:tact}`][slice]加载并返回一个[`Address{:tact}`][address]。
+从 [`Slice{:tact}`][slice] 加载并返回一个[`Address{:tact}`][p]。
 
-当[`Slice{:tact}`][slice]不包含该地址时，尝试加载该[`Address{:tact}`][address]会产生异常，[退出代码 8](/zh-cn/book/exit-codes#8)："单元格溢出"。
+当[`Address{:tact}`][p][[`Slice{:tact}`][slice]不包含该地址时，尝试加载该[`地址 `][p]会产生异常，[退出码 8](/book/exit-codes#8)：`Cell overflow`。
 
-尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [退出代码 9](/zh-cn/book/exit-codes#9) 异常："单元格下溢"。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell underflow`。
 
-使用示例
+示例用法：
 
 ```tact
-让 s：Slice = beginCell().storeAddress(myAddress()).asSlice();
-let fizz：地址 = s.loadAddress()；
+let s: Slice = beginCell().storeAddress(myAddress()).asSlice();
+let fizz: Address = s.loadAddress();
 ```
 
 ## Slice.loadRef
 
 ```tact
-extends mutates fun loadRef(self: Slice)：Cell；
+extends mutates fun loadRef(self: Slice): Cell;
 ```
 
-[`切片{:tact}`][切片]的扩展突变函数。
+[`Slice{:tact}`][slice] 的扩展突变函数。
 
-从 [`切片{:tact}`][切片] 中加载下一个引用作为 [`单元格{:tact}`][单元格]。
+从 [`Slice{:tact}`][slice] 中加载下一个引用作为 [`cell{:tact}`][cell]。
 
-当 [`切片{:tact}`][切片]不包含该引用时，尝试加载该引用会产生异常，[退出代码 8](/zh-cn/book/exit-codes#8)："单元格溢出"。
+当 [`Cell{:tact}`][cell][slice{:tact}\`][slice]不包含该引用时，尝试加载该引用会产生异常，[退出码 8](/book/exit-codes#8)：`Cell overflow`。
 
-尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：单元格下溢"。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：`Cell underflow`。
 
-使用示例
+示例用法：
 
 ```tact
-让 s：Slice = beginCell().storeRef(emptyCell()).asSlice();
-let fizz：Cell = s.loadRef();
+let s1: Slice = beginCell().storeRef(emptyCell()).asSlice();
+let fizz: Cell = s1.loadRef();
 
-let s：Slice = beginCell()
+let s2: Slice = beginCell()
     .storeRef(emptyCell())
-    .storeRef(emptyCell())
+    .storeRef(s1.asCell())
     .asSlice();
-let ref1: Cell = s.loadRef();
-let ref2: Cell = s.loadRef()；
+let ref1: Cell = s2.loadRef();
+let ref2: Cell = s2.loadRef();
+ref1 == ref2; // false
+```
+
+## Slice.preloadRef
+
+```tact
+extends fun preloadRef(self: Slice): Cell;
+```
+
+slice{:tact}\`][slice]的扩展函数。
+
+预加载下一个引用从 [`Slice{:tact}`][slice] 为 [`cell{:tact}`][cell] 没有修改原来的 [`Slice{:tact}`][slice]
+
+试图在[[`Slice{:tact}`][cell] 时预加载此引用 [`slice{:tact}`][slice] 不包含一个异常[退出码 8](/book/exit-codes#8)：`Cell overflow`。
+
+试图预加载更多数据超过 [`Slice{:tact}`][slice] 含有异常[export code 9](/book/exit-codes#9)：`Cell underflow`。
+
+示例用法：
+
+```tact
+let s1: Slice = beginCell().storeRef(emptyCell()).asSlice();
+let fizz: Cell = s1.preloadRef(); // didn't modify s1
+
+let s2: Slice = beginCell()
+    .storeRef(emptyCell())
+    .storeRef(s1.asCell())
+    .asSlice();
+let ref1: Cell = s2.preloadRef();
+let ref2: Cell = s2.preloadRef();
+ref1 == ref2; // true
 ```
 
 ## Slice.refs
 
 ```tact
-extends fun refs(self: Slice)：Int；
+extends fun refs(self: Slice): Int;
 ```
 
-[`切片{:tact}`][切片]的扩展函数。
+[`Slice{:tact}`][slice] 的扩展函数。
 
-以 [`Int{:tact}`][int]形式返回 [`片{:tact}`][片] 中引用的个数。
+以 [`Int{:tact}`][int]形式返回 [`Slice{:tact}`][slice] 中引用的个数。
 
-使用示例
+示例用法：
 
 ```tact
-让 s：Slice = beginCell().storeRef(emptyCell()).asSlice();
-let fizz：Int = s.refs().asSlice(); let fizz: Int = s.refs().asSlice()
+let s: Slice = beginCell().storeRef(emptyCell()).asSlice();
+let fizz: Int = s.refs();
 ```
 
 ## Slice.bits
 
 ```tact
-extends fun bits(self: Slice)：Int；
+extends fun bits(self: Slice): Int;
 ```
 
-[`切片{:tact}`][切片]的扩展函数。
+[`slice{:tact}`][slice]的扩展函数。
 
-以 [`Int{:tact}`][int]形式返回 [`片{:tact}`][片] 中的数据位数。
+以 [`Int{:tact}`][int]形式返回 [`Slice{:tact}`][slice] 中的数据位数。
 
-使用示例
+用法示例：
 
 ```tact
-让 s：Slice = beginCell().storeRef(emptyCell()).asSlice();
-let fizz：Int = s.bits()；
+let s: Slice = beginCell().storeRef(emptyCell()).asSlice();
+let fizz: Int = s.bits();
 ```
 
 ## Slice.empty
 
 ```tact
-extends fun empty(self: Slice)：Bool；
+extends fun empty(self: Slice): Bool;
 ```
 
-[`切片{:tact}`][切片]的扩展函数。
+[`Slice{:tact}`][slice] 的扩展函数。
 
-检查 [`片{:tact}`][片] 是否为空（即不包含数据位和单元格引用）。 如果为空，则返回 `true{:tact}`，否则返回 `false{:tact}`。
+检查 [`Slice{:tact}`][slice] 是否为空（即不包含数据位和cell引用）。 如果为空，则返回 `true{:tact}`，否则返回 `false{:tact}`。
 
-使用示例
+用法示例：
 
 ```tact
-让 s：Slice = beginCell().storeRef(emptyCell()).asSlice();
-let fizz：Bool = s.empty(); // false
-let buzz：Bool = beginCell().asSlice().empty(); // true
+let s: Slice = beginCell().storeRef(emptyCell()).asSlice();
+let fizz: Bool = s.empty();                     // false
+let buzz: Bool = beginCell().asSlice().empty(); // true
 ```
 
 :::note
@@ -643,52 +754,52 @@ let buzz：Bool = beginCell().asSlice().empty(); // true
 ## Slice.dataEmpty
 
 ```tact
-extends fun dataEmpty(slice: Slice)：Bool；
+extends fun dataEmpty(slice: Slice): Bool;
 ```
 
-[`切片{:tact}`][切片]的扩展函数。
+[`Slice{:tact}`][slice] 的扩展函数。
 
-检查 [`片{:tact}`][片] 是否没有数据位。 如果没有数据，则返回 `true{:tact}`，否则返回 `false{:tact}`。
+检查[`slice{:tact}`][slice] 是否没有任何比特的数据。 如果没有数据，则返回 `true{:tact}`，否则返回 `false{:tact}`。
 
 使用示例
 
 ```tact
-让 s：Slice = beginCell().storeRef(emptyCell()).asSlice();
-let fizz：Bool = s.dataEmpty(); // true
+let s: Slice = beginCell().storeRef(emptyCell()).asSlice();
+let fizz: Bool = s.dataEmpty();  // true
 
-let s2：Slice = beginCell().storeInt(42, 7).asSlice();
-let buzz：Bool = s2.dataEmpty(); // false
+let s2: Slice = beginCell().storeInt(42, 7).asSlice();
+let buzz: Bool = s2.dataEmpty(); // false
 ```
 
 ## Slice.refsEmpty
 
 ```tact
-extends fun refsEmpty(slice: Slice)：Bool；
+extends fun refsEmpty(slice: Slice): Bool;
 ```
 
-[`切片{:tact}`][切片]的扩展函数。
+[`Slice{:tact}`][slice]的扩展函数。
 
-检查 [`Slice{:tact}`][slice]是否没有引用。 如果没有引用，则返回 `true{:tact}`，否则返回 `false{:tact}`。
+检查 [`Slice{:tact}`][slice] 是否没有引用。 如果没有引用，则返回 `true{:tact}`，否则返回 `false{:tact}`。
 
-使用示例
+用法示例：
 
 ```tact
-让 s：Slice = beginCell().storeRef(emptyCell()).asSlice();
-let fizz：Bool = s.refsEmpty(); // false
-let buzz：Bool = beginCell().asSlice().refsEmpty(); // true
+let s: Slice = beginCell().storeRef(emptyCell()).asSlice();
+let fizz: Bool = s.refsEmpty();                     // false
+let buzz: Bool = beginCell().asSlice().refsEmpty(); // true
 ```
 
 ## Slice.endParse
 
 ```tact
-extends fun endParse(self: Slice)；
+extends fun endParse(self: Slice);
 ```
 
-[`切片{:tact}`][切片]的扩展函数。
+[`Slice{:tact}`][slice] 的扩展函数。
 
-检查 [`片{:tact}`][片] 是否为空（即不包含数据位和单元格引用）。 如果不是，则抛出异常[退出代码 9](/zh-cn/book/exit-codes#9)：单元格下溢。
+检查 [`Slice{:tact}`][slice] 是否为空（即不包含数据位和cell引用）。 如果不是，则抛出异常[退出码 9](/book/exit-codes#9)：`Cell underflow`。
 
-使用示例
+使用示例：
 
 ```tact {2,6}
 let emptyOne: Slice = emptySlice();
@@ -703,36 +814,36 @@ try {
 ## Slice.hash
 
 ```tact
-extends fun hash(self: Slice)：Int；
+extends fun hash(self: Slice): Int;
 ```
 
-[`切片{:tact}`][切片]的扩展函数。
+[`Slice{:tact}`][slice] 的扩展函数。
 
-计算并返回给定[`Slice{:tact}`][slice]的[标准`Cell{:tact}`表示][st-repr]的[SHA-256][sha-2]哈希值的[`Int{:tact}`][int]值。
+计算并返回给定[`Slice{:tact}`][slice]的 [标准 `Cell{:tact}` 表示][std-repr] 的[SHA-256][sha-2]哈希值的[`Int{:tact}`][int]值。
 
-使用示例
+用法示例：
 
 ```tact
-让 s：Slice = beginCell().asSlice();
-let fizz：Int = s.hash()；
+let s: Slice = beginCell().asSlice();
+let fizz: Int = s.hash();
 ```
 
 ## Slice.asCell
 
 ```tact
-extends fun asCell(self: Slice)：Cell；
+extends fun asCell(self: Slice): Cell;
 ```
 
-[`切片{:tact}`][切片]的扩展函数。
+[`Slice{:tact}`][slice] 的扩展函数。
 
 将 [`Slice{:tact}`][slice]转换为 [`Cell{:tact}`][cell]并返回。 别名为 `beginCell().storeSlice(self).endCell(){:tact}`。
 
-使用示例
+用法示例：
 
 ```tact
-让 s：Slice = beginCell().asSlice();
-let fizz：Cell = s.asCell();
-let buzz：Cell = beginCell().storeSlice(s).endCell();
+let s: Slice = beginCell().asSlice();
+let fizz: Cell = s.asCell();
+let buzz: Cell = beginCell().storeSlice(s).endCell();
 
 fizz == buzz; // true
 ```
@@ -740,19 +851,19 @@ fizz == buzz; // true
 ## Address.asSlice
 
 ```tact
-extends fun asSlice(self: Address)：Slice；
+extends fun asSlice(self: Address): Slice;
 ```
 
-[`地址{:tact}`][p]的扩展函数。
+[`Address{:tact}`][p] 的扩展函数。
 
-将[`地址{:tact}`][p]转换为[`片{:tact}`][片]并返回。 别名为 `beginCell().storeAddress(self).asSlice(){:tact}`。
+将 [`Address{:tact}`][p] 转换为[`Slice{:tact}`][slice]并返回。 别名为 `beginCell().storeAddress(self).asSlice(){:tact}`。
 
-使用示例
+用法示例：
 
 ```tact
-让 a：Address = myAddress();
-let fizz：Slice = a.asSlice();
-let buzz：Slice = beginCell().storeAddress(a).asSlice();
+let a: Address = myAddress();
+let fizz: Slice = a.asSlice();
+let buzz: Slice = beginCell().storeAddress(a).asSlice();
 
 fizz == buzz; // true
 ```
@@ -760,55 +871,83 @@ fizz == buzz; // true
 ## Struct.toCell
 
 ```tact
-extends fun toCell(self: Struct)：Cell；
+extends fun toCell(self: Struct): Cell;
+```
+
+任何结构类型 [Struct][struct] 的扩展函数。
+
+将 [Struct][struct] 转换为 [`cell{:tact}`][cell]并返回。
+
+用法示例：
+
+```tact
+struct GuessCoin {
+    probably: Int as coins;
+    nothing: Int as coins;
+}
+
+fun coinCell(): Cell {
+    let s: GuessCoin = GuessCoin{ probably: 42, nothing: 27 };
+    let fizz: Cell = s.toCell();
+
+    return fizz; // "x{12A11B}"
+}
+```
+
+## Struct.toSlice
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun toSlice(self: Struct): Slice;
 ```
 
 任何结构类型 [Struct][struct]的扩展函数。
 
-将 [Struct][struct] 转换为 [`单元格{:tact}`][单元格]并返回。
+将 [Struct][struct] 转换为 [`Slice{:tact}`][slice] 并返回它。 别名为`self.toCell().asSlice(){:tact}`。
 
-使用示例
+用法示例：
 
 ```tact
 struct GuessCoin {
-    probably：
+    probably: Int as coins;
     nothing: Int as coins;
 }
 
-fun coinCell()：Cell {
-    let s：GuessCoin = GuessCoin{ probably: 42, nothing: 27 };
-    let fizz：Cell = s.toCell();
+fun coinSlice(): Slice {
+    let s: GuessCoin = GuessCoin{ probably: 42, nothing: 27 };
+    let fizz: Slice = s.toSlice();
 
-    return fizz; // "x{12A11B}"
+    return fizz; // "CS{Cell{000612a11b} bits: 0..24; refs: 0..0}"
 }
 ```
 
 ## Struct.fromCell
 
 ```tact
-extends fun fromCell(self: Struct, cell: Cell)：Struct；
+extends fun fromCell(self: Struct, cell: Cell): Struct;
 ```
 
-任何结构类型 [Struct][struct]的扩展函数。
+任何结构类型 [Struct][struct] 的扩展函数。
 
-将 [`单元格{:tact}`][单元格] 转换为指定的 [结构体][struct]，并返回该 [结构体][struct]。
+将 [`cell{:tact}`][cell] 转换为指定的 [结构体][struct]，并返回该 [结构体][struct]。
 
-试图传递布局与指定 [Struct][struct] 不同的 [`单元格{:tact}`][单元格]，或加载的数据超过 [`单元格{:tact}`][单元格] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9)异常：单元格下溢"。
+试图传递布局与指定 [Struct][struct] 不同的 [`cell{:tact}`][cell]，或加载的数据超过 [`cell{:tact}`][cell] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9)异常：`Cell underflow`。
 
-使用示例
+使用示例：
 
 ```tact
 struct GuessCoin {
-    probably：
+    probably: Int as coins;
     nothing: Int as coins;
 }
 
-fun directParse(payload: Cell)：GuessCoin {
+fun directParse(payload: Cell): GuessCoin {
     return GuessCoin.fromCell(payload);
 }
 
-fun cautiousParse(payload: Cell)：GuessCoin?{
-    let coin: GuessCoin?= null;
+fun cautiousParse(payload: Cell): GuessCoin? {
+    let coin: GuessCoin? = null;
     try {
         coin = GuessCoin.fromCell(payload);
     } catch (e) {
@@ -821,29 +960,29 @@ fun cautiousParse(payload: Cell)：GuessCoin?{
 ## Struct.fromSlice
 
 ```tact
-extends fun fromSlice(self: Struct, cell: Slice)：Struct；
+extends fun fromSlice(self: Struct, cell: Slice): Struct;
 ```
 
-任何结构类型 [Struct][struct]的扩展函数。
+任何结构类型 [Struct][struct] 的扩展函数。
 
-将 [`片{:tact}`][slice]转换为指定的 [Struct][struct]，并返回该 [Struct][struct]。
+将 [`Slice{:tact}`][slice] 转换为指定的 [Struct][struct]，并返回该 [Struct][struct]。
 
-尝试传递布局与指定 [结构][struct]不同的 [`片{:tact}`][片]，或加载比 [`片{:tact}`][片] 包含的数据更多的数据时，会出现[退出代码 9](/zh-cn/book/exit-codes#9)异常：单元下溢"。
+尝试传递布局与指定 [结构][struct] 不同的 [`Slice{:tact}`][slice]，或加载比 [`Slice{:tact}`][slice] 包含的数据更多的数据时，会出现[退出码 9](/book/exit-codes#9)异常：`Cell underflow`。
 
-使用示例
+使用示例：
 
 ```tact
 struct GuessCoin {
-    probably：
+    probably: Int as coins;
     nothing: Int as coins;
 }
 
-fun directParse(payload: Slice)：GuessCoin {
+fun directParse(payload: Slice): GuessCoin {
     return GuessCoin.fromSlice(payload);
 }
 
-fun cautiousParse(payload: Slice)：GuessCoin?{
-    let coin: GuessCoin?= null;
+fun cautiousParse(payload: Slice): GuessCoin? {
+    let coin: GuessCoin? = null;
     try {
         coin = GuessCoin.fromSlice(payload);
     } catch (e) {
@@ -856,53 +995,81 @@ fun cautiousParse(payload: Slice)：GuessCoin?{
 ## Message.toCell
 
 ```tact
-extends fun toCell(self: Message)：Cell；
+extends fun toCell(self: Message): Cell;
 ```
 
-任何报文类型 [报文][信息] 的扩展函数。
+任何消息类型 [Message][message] 的扩展函数。
 
-将[信息][message]转换为[`单元格{:tact}`][单元格]并返回。
+将 [Message][message] 转换为[`cell{:tact}`][cell]并返回。
 
-使用示例
+用法示例：
 
 ```tact
 message GuessCoin {
-    probably：
+    probably: Int as coins;
     nothing: Int as coins;
 }
 
-fun coinCell()：Cell {
-    let s：GuessCoin = GuessCoin{ probably: 42, nothing: 27 };
-    let fizz：Cell = s.toCell();
+fun coinCell(): Cell {
+    let s: GuessCoin = GuessCoin{ probably: 42, nothing: 27 };
+    let fizz: Cell = s.toCell();
 
     return fizz; // "x{AB37107712A11B}"
+}
+```
+
+## Message.toSlice
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun toSlice(self: Message): Slice;
+```
+
+任何 [Message][message] 类型的扩展函数。
+
+将 [Message][message] 转换为 [`Slice{:tact}`][slice] 并返回它。 别名为`self.toCell().asSlice(){:tact}`。
+
+用法示例：
+
+```tact
+message GuessCoin {
+    probably: Int as coins;
+    nothing: Int as coins;
+}
+
+fun coinSlice(): Slice {
+    let s: GuessCoin = GuessCoin{ probably: 42, nothing: 27 };
+    let fizz: Slice = s.toSlice();
+
+    return fizz; // "CS{Cell{000eab37107712a11b} bits: 0..56; refs: 0..0}"
 }
 ```
 
 ## Message.fromCell
 
 ```tact
-extends fun fromCell(self: Message, cell: Cell)：消息；
+extends fun fromCell(self: Message, cell: Cell): Message;
 ```
 
-任何报文类型 [报文][信息] 的扩展函数。
+任何消息类型 [Message][message] 的扩展函数。
 
-将 [`单元格{:tact}`][单元格] 转换为指定的 [信息][消息]，并返回该 [信息][消息]。
+将 [`cell{:tact}`][cell] 转换为指定的 [Message][message]，并返回该 [Message][message]。
 
-尝试传递布局与指定[信息][message]不同的[`单元格{:tact}`][单元格]，或加载的数据超过[`单元格{:tact}`][单元格]所包含的数据时，会出现[退出代码 9](/zh-cn/book/exit-codes#9)的异常：单元格下溢"。
+尝试传递布局与指定 [Message][message] 不同的[`cell{:tact}`][cell]，或加载的数据超过[`cell{:tact}`][cell]所包含的数据时，会出现[退出码 9](/book/exit-codes#9)的异常：`Cell underflow`。
 
-使用示例
+使用示例：
 
 ```tact
 message(0x777) TripleAxe {
-    prize：Int as uint32;
+    prize: Int as uint32;
 }
 
-fun directParse(payload: Cell)：TripleAxe {
+fun directParse(payload: Cell): TripleAxe {
     return TripleAxe.fromCell(payload);
 }
 
-fun cautiousParse(payload: Cell)：TripleAxe?{
+fun cautiousParse(payload: Cell): TripleAxe? {
     let coin: TripleAxe? = null;
     try {
         coin = TripleAxe.fromCell(payload);
@@ -916,27 +1083,27 @@ fun cautiousParse(payload: Cell)：TripleAxe?{
 ## Message.fromSlice
 
 ```tact
-extends fun fromSlice(self: Message, cell: Slice)：消息；
+extends fun fromSlice(self: Message, cell: Slice): Message;
 ```
 
-任何报文类型 [报文][信息] 的扩展函数。
+任何 [Message][message] 类型的扩展函数。
 
-将 [`片{:tact}`][片] 转换为指定的 [信息][消息]，并返回该 [信息][消息]。
+将 [`Slice{:tact}`][slice] 转换为指定的 [Message][message]，并返回该 [Message][message]。
 
-试图传递布局不同于指定[信息][消息]的[`片{:tact}`][片]，或加载的数据多于[`片{:tact}`][片]所包含的数据时，会出现[退出代码 9](/zh-cn/book/exit-codes#9)的异常：单元下溢"。
+试图传递布局不同于指定 [Message][message] 的[`Slice{:tact}`][slice]，或加载的数据多于[`Slice{:tact}`][slice]所包含的数据时，会出现[退出码 9](/book/exit-codes#9)的异常：`Cell underflow`。
 
 使用示例
 
 ```tact
 message(0x777) TripleAxe {
-    prize：Int as uint32;
+    prize: Int as uint32;
 }
 
-fun directParse(payload: Slice)：TripleAxe {
+fun directParse(payload: Slice): TripleAxe {
     return TripleAxe.fromSlice(payload);
 }
 
-fun cautiousParse(payload: Slice)：TripleAxe?{
+fun cautiousParse(payload: Slice): TripleAxe? {
     let coin: TripleAxe? = null;
     try {
         coin = TripleAxe.fromSlice(payload);
@@ -947,17 +1114,15 @@ fun cautiousParse(payload: Slice)：TripleAxe?{
 }
 ```
 
-[p]: /zh-cn/book/types#primitive-types
-[bool]: /zh-cn/book/types#booleans
-[int]: /zh-cn/book/integers
-[cell]: /zh-cn/book/cells#cells
-[builder]: /zh-cn/book/cells#builders
-[slice]: /zh-cn/book/cells#slices
-[map]: /zh-cn/book/maps
-[struct]: /zh-cn/book/structs-and-messages#structs
-[message]: /zh-cn/book/structs-and-messages#messages
-
-[std-repr]: /zh-cn/book/cells#cells-representation
-
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
+[cell]: /book/cells#cells
+[builder]: /book/cells#builders
+[slice]: /book/cells#slices
+[map]: /book/maps
+[struct]: /book/structs-and-messages#structs
+[message]: /book/structs-and-messages#messages
+[std-repr]: /book/cells#cells-representation
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
 [sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard

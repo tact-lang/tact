@@ -1,10 +1,44 @@
 ---
-title: 可变型代币（Jettons）
+title: 同质化代币（Jettons）
+description: 在Tact中处理同质化代币（Jettons）的常见示例
 ---
 
-本页列出了使用 [jettons](https://docs.ton.org/develop/dapps/asset-processing/jettons)的常见示例。
+本页列出了使用 [jettons](https://docs.ton.org/develop/dapps/asset-processing/jettons) 的常见示例。
 
-## 接受 jetton 转移
+Jettons 是TON区块链上的代币标准，旨在创建同质化代币（类似于以太坊上的ERC-20），并采用去中心化的方式。 它们以一对智能合约的形式实现，通常由两个核心组件组成：
+
+- Jetton Master Contracting (Jetton master)
+- Jetton Wallet Contract (Jetton wallet)
+
+这些合同相互影响，以管理代币供应、分配、转让以及与捷通相关的其他操作。
+
+## Jetton Master Contract
+
+Jetton 主合同是特定 Jetton 的中心实体。 它保留了有关Jetton本身的重要信息。 Jetton 主合同中存储的主要责任和数据包括：
+
+- Jetton元数据：诸如代币名称、符号、总供应量和小数点等信息。
+
+- 铸造和销毁：当新的Jettons被铸造（创建）时，Jetton主合约管理创建过程并将其分发到相应的钱包。 它还能根据需要管理代币的燃烧（销毁）。
+
+- 供应管理：Jetton Master 跟踪 Jettons 的总供应量，并确保对所有已发放的 Jettons 进行适当核算。
+
+## Jetton Wallet 合约
+
+Jetton Wallet 合约是个人持有者的代币钱包，负责管理特定用户的余额和与代币相关的操作。 每个持有Jettons的用户或实体将拥有自己独特的Jetton钱包合约。 Jetton Wallet 合约的主要特点包括：
+
+- 余额跟踪：钱包合约存储用户的代币余额。
+
+- 代币转账：钱包负责处理用户之间的代币转账。 当用户发送Jetton时，Jetton Wallet 合约确保与收件人的钱包进行适当的转移和沟通。 Jetton Master 不参与这项活动，也不会造成瓶颈。 钱包可充分利用 TON 的分片功能
+
+- 代币销毁：Jetton钱包与Jetton Master交互以销毁代币。
+
+- 所有者控制：钱包合约由特定用户拥有和控制 表示只有钱包的所有者可以启动转账或其他代币操作。
+
+## 示例：
+
+处理Jettons的常见示例。
+
+### 接受 jetton 转移
 
 转账通知信息的结构如下
 
@@ -17,7 +51,7 @@ message(0x7362d09c) JettonTransferNotification {
 }
 ```
 
-使用 [receiver](/zh-cn/book/receive) 功能接受令牌通知信息。
+使用 [receiver](/book/receive) 功能接受代币通知信息。
 
 :::caution
 
@@ -25,12 +59,31 @@ message(0x7362d09c) JettonTransferNotification {
 
 :::
 
-可使用 jetton 钱包状态初始值和计算 jetton 地址进行验证。
-请注意，通知来自您的合约的 jetton 钱包，因此所有者地址栏应使用 [`myAddress()`](/zh-cn/ref/core-common#myaddress)。
-钱包的初始数据布局如下所示，但有时会有所不同。
-请注意，"myJettonWalletAddress "也可以存储在合约存储中，以便在每次交易中减少 gas 使用量。
+必须验证传输通知的发件人，因为恶意行为者可能试图从未经授权的账户中伪造通知。
+如果不进行这种确认，合约可接受未经授权的交易，从而造成潜在的安全脆弱性。
+
+使用合约中的 Jetton 地址进行验证：
+
+1. 发送者向其 Jetton 钱包发送以 `0xf8a7ea5` 作为 32 位标题（操作码）的信息。
+2. Jetton钱包将资金转到合约的Jetton钱包。
+3. 在成功的转账接受后，合约的Jetton钱包将转账通知给他的所有者合约。
+4. 合约验证Jetton信息。
+
+你可以使用 [`contractAddress(){:tact}`](/ref/core-common#contractadress) 函数获取合约的 Jetton 钱包，或链下计算此地址。
+
+要获取 Jetton 钱包的初始状态，您需要钱包的数据和代码。 虽然初始数据布局有一个共同的结构，但在某些情况下可能不同，如 [USDT](#ustt-jetton-operations)。
+
+由于通知源自您的合约的 Jetton 钱包，函数[`myAddress(){:tact}`](/ref/core-common#myaddress) 应在 \`owners' 字段中使用。
+
+:::caution
+
+  通知并不总能保证发送。 默认情况下，如果 `forwardAmount` 设置为零，执行不会发送通知。 因此，在这种情况下，不能依靠发送通知。
+
+:::
 
 ```tact
+import "@stdlib/deploy";
+
 struct JettonWalletData {
     balance: Int as coins;
     ownerAddress: Address;
@@ -38,7 +91,12 @@ struct JettonWalletData {
     jettonWalletCode: Cell;
 }
 
-fun calculateJettonWalletAddress(ownerAddress: Address, jettonMasterAddress: Address, jettonWalletCode: Cell): Address {
+fun calculateJettonWalletAddress(
+    ownerAddress: Address,
+    jettonMasterAddress: Address,
+    jettonWalletCode: Cell
+): Address {
+
     let initData = JettonWalletData{
         balance: 0,
         ownerAddress,
@@ -46,33 +104,54 @@ fun calculateJettonWalletAddress(ownerAddress: Address, jettonMasterAddress: Add
         jettonWalletCode,
     };
 
-    return contractAddress(StateInit{code: jettonWalletCode, data: initData.toCell()});
+    return contractAddress(StateInit{
+        code: jettonWalletCode,
+        data: initData.toCell(),
+    });
 }
 
-contract Sample {
-    jettonWalletCode: Cell;
-    jettonMasterAddress: Address;
+message(0x7362d09c) JettonTransferNotification {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    sender: Address;
+    forwardPayload: Slice as remaining;
+}
+
+contract Example with Deployable {
+    myJettonWalletAddress: Address;
+    myJettonAmount: Int as coins = 0;
 
     init(jettonWalletCode: Cell, jettonMasterAddress: Address) {
-        self.jettonWalletCode = jettonWalletCode;
-        self.jettonMasterAddress = jettonMasterAddress;
+        self.myJettonWalletAddress = calculateJettonWalletAddress(
+            myAddress(),
+            jettonMasterAddress,
+            jettonWalletCode,
+        );
     }
 
     receive(msg: JettonTransferNotification) {
-        let myJettonWalletAddress = calculateJettonWalletAddress(myAddress(), self.jettonMasterAddress, self.jettonWalletCode);
-        require(sender() == myJettonWalletAddress, "Notification not from your jetton wallet!");
+        require(
+            sender() == self.myJettonWalletAddress,
+            "Notification not from your jetton wallet!",
+        );
 
-        // your logic of processing token notification
+        self.myJettonAmount += msg.amount;
+
+        // Forward excesses
+        self.forward(msg.sender, null, false, null);
     }
 }
 ```
 
-## 发送 jetton 转送
+### 发送Jetton转账
 
-要发送 jetton 传输，请使用 [`send(){:tact}`](/zh-cn/book/send)函数。
-请注意，"myJettonWalletAddress" 也可以存储在合约存储中，以便在每次交易中减少 gas 使用量。
+Jetton 转账是将指定数量的 Jetton 从一个钱包（合约）发送到另一个钱包的过程。
+
+若要发送Jetton转账，请使用 [`send(){:tact}`](/book/send) 函数。
 
 ```tact
+import "@stdlib/deploy";
+
 message(0xf8a7ea5) JettonTransfer {
     queryId: Int as uint64;
     amount: Int as coins;
@@ -83,27 +162,94 @@ message(0xf8a7ea5) JettonTransfer {
     forwardPayload: Slice as remaining;
 }
 
-receive("send") {
-    let myJettonWalletAddress = calculateJettonWalletAddress(myAddress(), self.jettonMasterAddress, self.jettonWalletCode);
-    send(SendParameters{
-        to: myJettonWalletAddress,
-        value: ton("0.05"),
-        body: JettonTransfer{
-            queryId: 42,
-            amount: jettonAmount, // jetton amount you want to transfer
-            destination: msg.userAddress, // address you want to transfer jettons. Note that this is address of jetton wallet owner, not jetton wallet itself
-            responseDestination: msg.userAddress, //  address where to send a response with confirmation of a successful transfer and the rest of the incoming message Toncoins
-            customPayload: null, // in most cases will be null and can be omitted. Needed for custom logic on Jetton Wallets itself
-            forwardTonAmount: 1, // amount that will be transferred with JettonTransferNotification. Needed for custom logic execution like in example below. If the amount is 0 notification won't be sent
-            forwardPayload: rawSlice("F") // precomputed beginCell().storeUint(0xF, 4).endCell().beginParse(). This works for simple transfer, if needed any struct can be used as `forwardPayload`
-        }.toCell(),
+const JettonTransferGas: Int = ton("0.05");
+
+struct JettonWalletData {
+    balance: Int as coins;
+    ownerAddress: Address;
+    jettonMasterAddress: Address;
+    jettonWalletCode: Cell;
+}
+
+fun calculateJettonWalletAddress(
+    ownerAddress: Address,
+    jettonMasterAddress: Address,
+    jettonWalletCode: Cell,
+): Address {
+
+    let initData = JettonWalletData{
+        balance: 0,
+        ownerAddress,
+        jettonMasterAddress,
+        jettonWalletCode,
+    };
+
+    return contractAddress(StateInit{
+        code: jettonWalletCode,
+        data: initData.toCell(),
     });
+}
+
+message Withdraw {
+    amount: Int as coins;
+}
+
+contract Example with Deployable {
+    myJettonWalletAddress: Address;
+    myJettonAmount: Int as coins = 0;
+
+    init(jettonWalletCode: Cell, jettonMasterAddress: Address) {
+        self.myJettonWalletAddress = calculateJettonWalletAddress(
+            myAddress(),
+            jettonMasterAddress,
+            jettonWalletCode,
+        );
+    }
+
+    receive(msg: Withdraw) {
+        require(
+            msg.amount <= self.myJettonAmount,
+            "Not enough funds to withdraw"
+        );
+
+        send(SendParameters{
+            to: self.myJettonWalletAddress,
+            value: JettonTransferGas,
+            body: JettonTransfer{
+                // To prevent replay attacks
+                queryId: 42,
+                // Jetton amount to transfer
+                amount: msg.amount,
+                // Where to transfer Jettons:
+                // this is an address of the Jetton wallet
+                // owner and not the Jetton wallet itself
+                destination: sender(),
+                // Where to send a confirmation notice of a successful transfer
+                // and the rest of the incoming message value
+                responseDestination: sender(),
+                // Can be used for custom logic of Jettons themselves,
+                // and without such can be set to null
+                customPayload: null,
+                // Amount to transfer with JettonTransferNotification,
+                // which is needed for the execution of custom logic
+                forwardTonAmount: 1, // if its 0, the notification won't be sent!
+                // Compile-time way of expressing:
+                //     beginCell().storeUint(0xF, 4).endCell().beginParse()
+                // For more complicated transfers, adjust accordingly
+                forwardPayload: rawSlice("F")
+            }.toCell(),
+        });
+    }
 }
 ```
 
-## 销毁 jetton
+### 销毁 jetton
+
+Jetton 销毁是将指定数量的 Jetton 永久移出流通的过程，无法恢复。
 
 ```tact
+import "@stdlib/deploy";
+
 message(0x595f07bc) JettonBurn {
     queryId: Int as uint64;
     amount: Int as coins;
@@ -111,37 +257,95 @@ message(0x595f07bc) JettonBurn {
     customPayload: Cell? = null;
 }
 
-receive("burn") {
-    let myJettonWalletAddress = calculateJettonWalletAddress(myAddress(), self.jettonMasterAddress, self.jettonWalletCode);
-    send(SendParameters{
-        to: myJettonWalletAddress,
-        body: JettonBurn{
-            queryId: 42,
-            amount: jettonAmount, // jetton amount you want to burn
-            responseDestination: someAddress, // address where to send a response with confirmation of a successful burn and the rest of the incoming message coins
-            customPayload: null, // in most cases will be null and can be omitted. Needed for custom logic on jettons itself
-        }.toCell(),
+const JettonBurnGas: Int = ton("0.05");
+
+struct JettonWalletData {
+    balance: Int as coins;
+    ownerAddress: Address;
+    jettonMasterAddress: Address;
+    jettonWalletCode: Cell;
+}
+
+fun calculateJettonWalletAddress(
+    ownerAddress: Address,
+    jettonMasterAddress: Address,
+    jettonWalletCode: Cell,
+): Address {
+
+    let initData = JettonWalletData{
+        balance: 0,
+        ownerAddress,
+        jettonMasterAddress,
+        jettonWalletCode,
+    };
+
+    return contractAddress(StateInit{
+        code: jettonWalletCode,
+        data: initData.toCell(),
     });
+}
+
+message ThrowAway {
+    amount: Int as coins;
+}
+
+contract Example with Deployable {
+    myJettonWalletAddress: Address;
+    myJettonAmount: Int as coins = 0;
+
+    init(jettonWalletCode: Cell, jettonMasterAddress: Address) {
+        self.myJettonWalletAddress = calculateJettonWalletAddress(
+            myAddress(),
+            jettonMasterAddress,
+            jettonWalletCode,
+        );
+    }
+
+    receive(msg: ThrowAway) {
+        require(
+            msg.amount <= self.myJettonAmount,
+            "Not enough funds to throw away",
+        );
+
+        send(SendParameters{
+            to: self.myJettonWalletAddress,
+            value: JettonBurnGas,
+            body: JettonBurn{
+                // To prevent replay attacks
+                queryId: 42,
+                // Jetton amount you want to burn
+                amount: msg.amount,
+                // Where to send a confirmation notice of a successful burn
+                // and the rest of the incoming message value
+                responseDestination: sender(),
+                // Can be used for custom logic of Jettons themselves,
+                // and without such can be set to null
+                customPayload: null,
+            }.toCell(),
+        });
+    }
 }
 ```
 
-## USDT jetton 业务
+### USDT jetton 业务
 
 除了 `JettonWalletData` 将采用以下结构外，USDT（在 TON 上）的操作保持不变：
 
 ```tact
 struct JettonWalletData {
-    status: Ins as uint4;
+    status: Int as uint4;
     balance: Int as coins;
     ownerAddress: Address;
     jettonMasterAddress: Address;
 }
-```
 
-计算钱包地址的函数如下所示：
+// And the function to calculate the wallet address may look like this:
+fun calculateJettonWalletAddress(
+    ownerAddress: Address,
+    jettonMasterAddress: Address,
+    jettonWalletCode: Cell
+): Address {
 
-```tact
-fun calculateJettonWalletAddress(ownerAddress: Address, jettonMasterAddress: Address, jettonWalletCode: Cell): Address {
     let initData = JettonWalletData{
         status: 0,
         balance: 0,
@@ -149,12 +353,15 @@ fun calculateJettonWalletAddress(ownerAddress: Address, jettonMasterAddress: Add
         jettonMasterAddress,
     };
 
-    return contractAddress(StateInit{code: jettonWalletCode, data: initData.toCell()});
+    return contractAddress(StateInit{
+        code: jettonWalletCode,
+        data: initData.toCell(),
+    });
 }
 ```
 
 :::tip[Hey there!]
 
-  没有找到您最喜欢的 jetton 使用范例？ 您有很酷的实施方案吗？ [欢迎投稿！](https://github.com/tact-lang/tact/issues)
+没有找到您最喜欢的 jetton 使用范例？  您有很酷的实施方案吗？ [欢迎投稿！](https://github.com/tact-lang/tact/issues)
 
 :::

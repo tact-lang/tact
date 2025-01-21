@@ -1,27 +1,28 @@
 ---
 title: "@stdlib/stoppable"
+description: 提供允许停止合同的 traits ，这对紧急或维护模式非常有用
 ---
 
-提供[traits](/zh-cn/book/types#composite-types)，允许停止[contract](/zh-cn/book/contracts)。 适用于应急或维护模式。 需要来自 [`@stdlib/ownable`](/zh-cn/ref/stdlib-ownable) 的 [`Ownable{:tact}`](/zh-cn/ref/stdlib-ownable#ownable)特质。 该特质只管理合约中的一个标记 "stopped"，处理停止状态必须在合约本身中完成。
+提供[traits](/book/types#composite-types)，允许停止[合约](/book/contracts)。 适用于应急或维护模式。 需要来自 [`@stdlib/ownable`](/ref/stdlib-ownable) 的 [`Ownable{:tact}`](/ref/stdlib-ownable#ownable)trait。 该trait只管理合约中的一个标记 `stopped`，处理停止状态必须在合约本身中完成。
 
 要使用该库，请导入 `@stdlib/stoppable`：
 
 ```tact
-import "@stdlib/stoppable"; // 这也将自动导入 @stdlib/ownable！
+import "@stdlib/stoppable"; // this would automatically import @stdlib/ownable too!
 ```
 
-## 特质
+## Traits
 
 ### Stoppable
 
-[Trait](/zh-cn/book/types#composite-types) `Stoppable{:tact}` 实现可由所有者发送的 [Message](/zh-cn/book/structs-and-messages#messages) [string](/zh-cn/book/types#primitive-types) "Stop" 的接收器、实现了 `stopped(){:tact}` [getter 函数](/zh-cn/book/functions#getter-functions)，如果合约已停止，则返回 `true{:tact}`（否则返回 `false{:tact}`），并提供了私有（非getter）函数 `requireNotStopped(){:tact}` 和 `requireStopped(){:tact}`。
+[Trait](/book/types#composite-types) `Stoppable{:tact}` 实现了一个接收者，用于接收所有者可以发送的 [Message](/book/structs-and-messages#messages) 消息 "Stop"。它还实现了 `stopped(){:tact}` [getter 函数](/book/functions#getter-functions)，如果合约已停止则返回 `true{:tact}`（否则返回 `false{:tact}`），并提供了私有（非 getter）函数 `requireNotStopped(){:tact}` 和 `requireStopped(){:tact}`。
 
-源代码
+源码:
 
 ```tact
 @interface("org.ton.stoppable")
 trait Stoppable with Ownable {
-    stopped：Bool;
+    stopped: Bool;
     owner: Address;
 
     fun requireNotStopped() {
@@ -29,7 +30,7 @@ trait Stoppable with Ownable {
     }
 
     fun requireStopped() {
-        require(self. stopped, "Contract not stopped"); } receive("Stop") { self.stopped, "Contract not stopped");
+        require(self.stopped, "Contract not stopped");
     }
 
     receive("Stop") {
@@ -39,13 +40,13 @@ trait Stoppable with Ownable {
         self.reply("Stopped".asComment());
     }
 
-    get fun stopped()：Bool {
+    get fun stopped(): Bool {
         return self.stopped;
     }
 }
 ```
 
-使用示例
+示例用法：
 
 ```tact /Stoppable/
 import "@stdlib/ownable";
@@ -64,14 +65,14 @@ contract MyContract with Stoppable {
 
 ### Resumable
 
-`Resumable{:tact}` [trait](/zh-cn/book/types#composite-types) 扩展了 [`Stoppable{:tact}`](#stoppable) trait，允许恢复 [contract](/zh-cn/book/contracts) 的执行。
+`Resumable{:tact}` [trait](/book/types#composite-types) 扩展了 [`Stoppable{:tact}`](#stoppable) trait，允许恢复 [合约](/book/contracts) 的执行。
 
-源代码
+源码:
 
 ```tact
 @interface("org.ton.resumable")
 trait Resumable with Stoppable {
-    stopped：Bool;
+    stopped: Bool;
     owner: Address;
 
     receive("Resume") {
@@ -83,7 +84,7 @@ trait Resumable with Stoppable {
 }
 ```
 
-使用示例
+用法示例：
 
 ```tact /Resumable/
 import "@stdlib/ownable";

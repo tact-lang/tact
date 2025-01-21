@@ -1,42 +1,43 @@
 ---
 title: 调试
+description: Tact 核心库中的各种调试功能
 ---
 
 Tact 中调试智能合约常用的函数列表。
 
 :::note
 
-  有关调试的更多信息，请访问专用页面：[调试](/zh-cn/book/debug)。
+  有关调试的更多信息，请访问专用页面：[调试](/book/debug)。
 
 :::
 
 ## require
 
 ```tact
-fun require(condition: Bool, error: String)；
+fun require(condition: Bool, error: String);
 ```
 
-检查 `condition` 并抛出错误，如果 `condition` 为 `false{:tact}`，则从 `error` 消息中生成 [exit code](/zh-cn/book/exit-codes)。 除此之外，别无其他作用。
+检查 `condition` 并抛出错误，如果 `condition` 为 `false{:tact}`，则从 `error` 消息中生成 [exit code](/book/exit-codes)。 除此之外，别无其他作用。
 
-生成退出代码的算法如下：
+生成退出码的算法如下：
 
-- 首先，获取`错误`报文[`字符串{:tact}`][p]的[SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) 哈希值。
-- 然后，按此顺序将其值读作一个 32 位 [big-endian](https://en.wikipedia.org/wiki/Endianness) 数字 modulo $63000$ 加 $1000$。
+- 首先，获取`错误`报文 [`String{:tact}`][p] 的[SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) 哈希值。
+- 然后，它的值被作为一个32位的 [大端](https://en.wikipedia.org/wiki/Endianness) 数字读取，计算方式是对 $63000$ 取模后加上 $1000$，按此顺序进行。
 - 最后，它将被放入 `.md` 编译报告文件，该文件与其他编译工件一起存放在项目的 `outputs/` 或 `build/` 目录中。
 
-保证生成的退出代码不在为 TVM 和 Tact 合同错误保留的常用 $0 - 255$ 范围内，这样就可以将退出代码与 `require(){:tact}` 和任何其他 [标准退出代码](/zh-cn/book/exit-codes) 区分开来。
+保证生成的退出码不在为 TVM 和 Tact 合约错误保留的常用 $0 - 255$ 范围内，这样就可以将退出码与 `require(){:tact}` 和任何其他 [标准退出码](/book/exit-codes) 区分开来。
 
-使用示例
+示例用法：
 
 ```tact
-// now() 必须返回一个大于 1000 的值，否则将抛出错误信息
-require(now() > 1000, "We're in the first 1000 seconds of January 1970!");
+// now() has to return a value greater than 1000, otherwise an error message will be thrown
+require(now() > 1000, "We're in the first 1000 seconds of 1 January 1970!");
 
 try {
-    // 下面的内容永远不会为真，所以这个 require 将总是抛出
-    require(now() < -1, "Time is an illusion.午餐时间更是如此。");
+    // The following will never be true, so this require would always throw
+    require(now() < -1, "Time is an illusion. Lunchtime doubly so.");
 } catch (e) {
-    // e 将超出 0-255 范围
+    // e will be outside of range 0-255
     dump(e);
 }
 ```
@@ -44,23 +45,23 @@ try {
 ## dump
 
 ```tact
-fun dump(arg)；
+fun dump(arg);
 ```
 
-将参数 `arg` 打印到合约的调试控制台。 仅当[配置文件](/zh-cn/book/config) 中的 "debug "选项设置为 `true{:json}`时才进行评估，否则不执行任何操作。
+将参数 `arg` 打印到合约的调试控制台。 仅当[配置文件](/book/config) 中的 "debug "选项设置为 "true{:json}"时才进行评估，否则不执行任何操作。
 
 可应用于下列类型和值：
 
-- [`Int{:tact}`][int]。
-- [`Bool{:tact}`][bool]。
-- [`地址{:tact}`][p]
-- [`单元格{:tact}`][单元格]、[`构建器{:tact}`][构建器]或[`切片{:tact}`][切片]
+- [`Int{:tact}`][int]
+- [`Bool{:tact}`][bool]
+- [`Address{:tact}`][p]
+- [`Cell{:tact}`][cell], [`Builder{:tact}`][builder] 或 [`Slice{:tact}`][slice]
 - [`String{:tact}`][p] 或 [`StringBuilder{:tact}`][p]
-- [`map<K, V>{:tact}`](/zh-cn/book/maps)
-- [选项和 `null{:tact}` 值](/zh-cn/book/optionals)
-- void"，当函数没有定义返回值时隐式返回
+- [`map<K, V>{:tact}`](/book/maps)
+- [Optionals 和 `null{:tact}` value](/book/optionals)
+- `void`，当函数没有定义返回值时隐式返回
 
-使用示例
+示例用法：
 
 ```tact
 // Int
@@ -74,39 +75,39 @@ dump(false);
 dump(myAddress());
 
 // Cell, Builder or Slice
-dump(emptyCell())；  // Cell
-dump(beginCell()); // Builder
+dump(emptyCell());  // Cell
+dump(beginCell());  // Builder
 dump(emptySlice()); // Slice
 
 // String or StringBuilder
 dump("Hello, my name is..."); // String
-dump(beginTailString()); // StringBuilder
+dump(beginTailString());      // StringBuilder
 
 // Maps
 let m: map<Int, Int> = emptyMap();
 m.set(2 + 2, 4);
 dump(m);
 
-// 特殊值
+// Special values
 dump(null);
-dump(emit("msg".asComment())); // 由于 emit() 函数不返回值，dump() 将打印 #DEBUG#: void.
+dump(emit("msg".asComment())); // As emit() function doesn't return a value, dump() would print #DEBUG#: void.
 ```
 
 :::note[Useful links:]
 
-  [使用 `dump(){:tact}` 调试](/zh-cn/book/debug#tests-dump)
+  [使用 `dump(){:tact}` 调试](/book/debug#tests-dump)
 
 :::
 
 ## dumpStack
 
 ```tact
-fun dumpStack()；
+fun dumpStack();
 ```
 
-将 [持久状态变量](/zh-cn/book/contracts#variables)的所有值打印到合约的调试控制台。 仅当[配置文件](/zh-cn/book/config) 中的 "debug "选项设置为 `true{:json}`时才进行评估，否则不执行任何操作。
+将 [持久状态变量](/book/contracts#variables)的所有值打印到合约的调试控制台。 仅当[配置文件](/book/config) 中的 "debug "选项设置为 "true{:json}"时才进行评估，否则不执行任何操作。
 
-使用示例
+用法示例：
 
 ```tact {6}
 contract DumpsterFire {
@@ -121,14 +122,14 @@ contract DumpsterFire {
 
 :::note[Useful links:]
 
-  [使用 `dump(){:tact}` 调试](/zh-cn/book/debug#tests-dump)
+  [使用 `dump(){:tact}` 调试](/book/debug#tests-dump)
 
 :::
 
 ## throw
 
 ```tact
-fun throw(code: Int)；
+fun throw(code: Int);
 ```
 
 是 [`nativeThrow(){:tact}`](#nativethrow)的别名。
@@ -136,82 +137,82 @@ fun throw(code: Int)；
 ## nativeThrow
 
 ```tact
-fun nativeThrow(code: Int)；
+fun nativeThrow(code: Int);
 ```
 
-抛出错误代码等于 `code` 的异常。 当前上下文的执行将停止（"nativeThrow "后的语句将不会执行），控制权将传递给调用栈中的第一个[`try...catch{:tact}`块](/zh-cn/book/statements#try-catch)。 如果调用者函数中不存在 `try{:tact}`或 `try...catch{:tact}`块，[TVM](https://docs.ton.org/learn/tvm-instructions/tvm-overview)将终止事务。
+抛出错误代码等于 `code` 的异常。 当前上下文的执行将停止（`nativeThrow` 后的语句将不会执行），控制权将传递给调用栈中的第一个[`try...catch{:tact}`块](/book/statements#try-catch)。 如果调用者函数中不存在 `try{:tact}` 或 `try...catch{:tact}` 块，[TVM](https://docs.ton.org/learn/tvm-instructions/tvm-overview)将终止事务。
 
-试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：整数超出预期范围"。
+试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/book/exit-codes#5)异常：`Integer out of expected range`。
 
-使用示例
+示例用法：
 
 ```tact {2,7}
 fun thisWillTerminate() {
-    nativeThrow(42); // 抛出退出代码 42
+    nativeThrow(42); // throwing with exit code 42
 }
 
 fun butThisDoesNot() {
     try {
-        nativeThrow(42); // 抛出退出代码 42
+        nativeThrow(42); // throwing with exit code 42
     }
 
-    // ... 后续逻辑 ...
+    // ... follow-up logic ...
 }
 ```
 
 ## nativeThrowIf
 
 ```tact
-fun nativeThrowIf(code: Int, condition: Bool)；
+fun nativeThrowIf(code: Int, condition: Bool);
 ```
 
-类似于 [`nativeThrow(){:tact}`](#nativethrow)，但会在 `condition` 等于 `true{:tact}` 时有条件地抛出异常。 否则不会扔。
+类似于 [`nativeThrow(){:tact}`](#nativethrow)，但会在 `condition` 等于 `true{:tact}` 时有条件地抛出异常。 否则不会抛出。
 
-试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/zh-cn/book/exit-codes#5) 异常：整数超出预期范围"。
+试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/book/exit-codes#5) 异常：`Integer out of expected range`。
 
-使用示例
+示例用法：
 
 ```tact {2,7}
 fun thisWillTerminate() {
-    nativeThrowIf(42, true); // 抛出退出代码 42
+    nativeThrowIf(42, true); // throwing with exit code 42
 }
 
 fun butThisDoesNot() {
     try {
-        nativeThrowIf(42, true); // 抛出退出代码 42
+        nativeThrowIf(42, true); // throwing with exit code 42
     }
-    // ... 后续逻辑 ...
+    // ... follow-up logic ...
 }
 ```
 
 ## nativeThrowUnless
 
 ```tact
-fun nativeThrowUnless(code: Int, condition: Bool)；
+fun nativeThrowUnless(code: Int, condition: Bool);
 ```
 
-类似于 [`nativeThrow(){:tact}`](#nativethrow)，但会在 `condition` 等于 `false{:tact}` 时有条件地抛出异常。 否则不会扔。
+类似于 [`nativeThrow(){:tact}`](#nativethrow)，但会在 `condition` 等于 `false{:tact}` 时有条件地抛出异常。 否则不会抛出。
 
-试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/zh-cn/book/exit-codes#5) 异常：整数超出预期范围"。
+试图在 $0 - 65535$ 范围之外指定 `code` 时，会出现 [exit code 5](/book/exit-codes#5) 异常：`Integer out of expected range`。
 
-使用示例
+使用示例：
 
 ```tact {2,7}
 fun thisWillTerminate() {
-    nativeThrowUnless(42, false); // 抛出退出代码 42
+    nativeThrowUnless(42, false); // throwing with exit code 42
 }
 
 fun butThisDoesNot() {
     try {
-        nativeThrowUnless(42, false); // 抛出退出代码 42
+        nativeThrowUnless(42, false); // throwing with exit code 42
     }
-    // ... 后续逻辑 ...
+    // ... follow-up logic ...
 }
 ```
 
-[p]: /zh-cn/book/types#primitive-types
-[bool]: /zh-cn/book/types#booleans
-[int]: /zh-cn/book/integers
-[电池]: /zh-cn/book/cells#cells
-[建筑工人]: /zh-cn/book/cells#builders
-[一片]: /zh-cn/book/cells#slices
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
+[cell]: /book/cells#cells
+[builder]: /book/cells#builders
+[slice]: /book/cells#slices
