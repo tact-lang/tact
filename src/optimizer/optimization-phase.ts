@@ -3,7 +3,6 @@ import {
     getAllStaticFunctions,
     getAllTypes,
 } from "../types/resolveDescriptors";
-import { writeFile } from "node:fs/promises";
 import { simplifyAllExpressions } from "./expr-simplification";
 import { TypeDescription } from "../types/types";
 import {
@@ -12,7 +11,6 @@ import {
     registerExpType,
 } from "../types/resolveExpression";
 import {
-    AstCondition,
     AstConditional,
     AstConstantDef,
     AstContract,
@@ -34,6 +32,7 @@ import {
     AstStatementAssign,
     AstStatementAugmentedAssign,
     AstStatementBlock,
+    AstStatementCondition,
     AstStatementDestruct,
     AstStatementExpression,
     AstStatementForEach,
@@ -678,7 +677,9 @@ export function prepareAstForOptimization(
         return newNode;
     }
 
-    function makeUnfrozenCopyOfCondition(ast: AstCondition): AstCondition {
+    function makeUnfrozenCopyOfCondition(
+        ast: AstStatementCondition,
+    ): AstStatementCondition {
         const newCondition = makeUnfrozenCopyOfExpression(ast.condition);
         const newTrueStatements = ast.trueStatements.map((stmt) =>
             makeUnfrozenCopyOfStatement(stmt),
@@ -908,7 +909,11 @@ export function updateCompilerContext(optCtx: OptimizationContext) {
     processTypes(optCtx.ctx, nodeReplacements);
 }
 
-export function dumpTactCode(vfs: VirtualFileSystem, file: string, ast: AstModule,) {
+export function dumpTactCode(
+    vfs: VirtualFileSystem,
+    file: string,
+    ast: AstModule,
+) {
     const program = prettyPrint(ast);
 
     vfs.writeFile(file, program);
@@ -1080,5 +1085,3 @@ function processTypes(
         processTypeFunctionDescriptions(t, nodeReplacements);
     }
 }
-
-

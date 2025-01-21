@@ -200,7 +200,7 @@ export type AstStatement =
     | AstStatementExpression
     | AstStatementAssign
     | AstStatementAugmentedAssign
-    | AstCondition
+    | AstStatementCondition
     | AstStatementWhile
     | AstStatementUntil
     | AstStatementRepeat
@@ -263,12 +263,12 @@ export type AstStatementAugmentedAssign = {
     loc: SrcInfo;
 };
 
-export type AstCondition = {
+export type AstStatementCondition = {
     kind: "statement_condition";
     condition: AstExpression;
     trueStatements: AstStatement[];
     falseStatements: AstStatement[] | null;
-    elseif: AstCondition | null;
+    elseif: AstStatementCondition | null;
     id: number;
     loc: SrcInfo;
 };
@@ -1001,14 +1001,15 @@ function eqArrays<T>(
     return true;
 }
 
-
 export function ensureFunctionDef(ast: AstNode): AstFunctionDef {
     // Type AstMutableNode restricts the possibilities of the
     // function type to AstFunctionDef
     if (ast.kind === "function_def") {
         return ast;
     } else {
-        throwInternalCompilerError(`kind ${ast.kind} is not a function definition kind`);
+        throwInternalCompilerError(
+            `kind ${ast.kind} is not a function definition kind`,
+        );
     }
 }
 
@@ -1018,7 +1019,9 @@ export function ensureConstantDef(ast: AstNode): AstConstantDef {
     if (ast.kind === "constant_def") {
         return ast;
     } else {
-        throwInternalCompilerError(`kind ${ast.kind} is not a constant definition kind`);
+        throwInternalCompilerError(
+            `kind ${ast.kind} is not a constant definition kind`,
+        );
     }
 }
 

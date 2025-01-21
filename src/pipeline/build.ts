@@ -120,7 +120,11 @@ export async function build(args: {
     if (config.options?.dumpAst) {
         dumpTactCode(
             project,
-            path.join(project.root, config.output, `${config.name}-unoptimized-tact-dump.tact`),
+            path.join(
+                project.root,
+                config.output,
+                `${config.name}-unoptimized-tact-dump.tact`,
+            ),
             optimizationCtx.originalAst,
         );
     }
@@ -151,7 +155,11 @@ export async function build(args: {
     if (config.options?.dumpAfterPartialEval) {
         dumpTactCode(
             project,
-            path.join(project.root, config.output, `${config.name}-optimized-tact-dump.tact`),
+            path.join(
+                project.root,
+                config.output,
+                `${config.name}-optimized-tact-dump.tact`,
+            ),
             optimizationCtx.modifiedAst,
         );
     }

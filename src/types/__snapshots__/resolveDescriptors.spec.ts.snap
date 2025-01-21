@@ -73,7 +73,7 @@ exports[`resolveDescriptors should fail descriptors for const-decl-default-field
 `;
 
 exports[`resolveDescriptors should fail descriptors for const-eval-overflow 1`] = `
-"<unknown>:8:26: Cannot evaluate expression to a constant: the number of bits shifted ('-1073741824') must be within [0..256] range
+"<unknown>:8:26: the number of bits shifted ('-1073741824') must be within [0..256] range
   7 | 
 > 8 | const a: Int = 1 + (1 >> -1073741824);
                                ^~~~~~~~~~~
@@ -696,6 +696,24 @@ exports[`resolveDescriptors should fail descriptors for struct-decl-self-referen
 > 4 | struct A {
              ^
   5 |   a: Int;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-circular-deps 1`] = `
+"<unknown>:3:1: Circular dependency detected for type "A"
+  2 | 
+> 3 | trait A with B {}
+      ^~~~~~~~~~~~~~~~~
+  4 | trait B with A {}
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for trait-circular-deps-with-deep-inheritance 1`] = `
+"<unknown>:3:1: Circular dependency detected for type "A"
+  2 | 
+> 3 | trait A with B {}
+      ^~~~~~~~~~~~~~~~~
+  4 | trait B with C {}
 "
 `;
 

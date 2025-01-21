@@ -1,12 +1,4 @@
-import {
-    AstExpression,
-    AstId,
-    AstLiteral,
-    eqNames,
-    idText,
-    isLiteral,
-    tryExtractPath,
-} from "../../ast/ast";
+import * as A from "../../ast/ast";
 import {
     idTextErr,
     throwCompilationError,
@@ -42,7 +34,7 @@ import { ops } from "./ops";
 import { writeCastedExpression } from "./writeFunction";
 import { isLvalue } from "../../types/resolveStatements";
 
-function isNull(wCtx: WriterContext, expr: AstExpression): boolean {
+function isNull(wCtx: WriterContext, expr: A.AstExpression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
 }
 
@@ -96,7 +88,7 @@ function writeStructConstructor(
     return name;
 }
 
-export function writeValue(val: AstLiteral, wCtx: WriterContext): string {
+export function writeValue(val: A.AstLiteral, wCtx: WriterContext): string {
     switch (val.kind) {
         case "number":
             return val.value.toString(10);
@@ -131,9 +123,9 @@ export function writeValue(val: AstLiteral, wCtx: WriterContext): string {
         }
         case "struct_value": {
             // Transform the struct fields into a map for lookup
-            const valMap: Map<string, AstLiteral> = new Map();
+            const valMap: Map<string, A.AstLiteral> = new Map();
             for (const f of val.args) {
-                valMap.set(idText(f.field), f.initializer);
+                valMap.set(A.idText(f.field), f.initializer);
             }
 
             const structDescription = getType(wCtx.ctx, val.type);
@@ -164,13 +156,18 @@ export function writeValue(val: AstLiteral, wCtx: WriterContext): string {
     }
 }
 
-export function writePathExpression(path: AstId[]): string {
-    return [funcIdOf(idText(path[0]!)), ...path.slice(1).map(idText)].join(`'`);
+export function writePathExpression(path: A.AstId[]): string {
+    return [funcIdOf(A.idText(path[0]!)), ...path.slice(1).map(A.idText)].join(
+        `'`,
+    );
 }
 
-export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
+export function writeExpression(
+    f: A.AstExpression,
+    wCtx: WriterContext,
+): string {
     // literals and constant expressions are covered here
-    if (isLiteral(f)) {
+    if (A.isLiteral(f)) {
         return writeValue(f, wCtx);
     }
 
@@ -447,8 +444,8 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
             fields = fields.slice(0, srcT.partialFieldCount);
         }
 
-        const field = fields.find((v) => eqNames(v.name, f.field));
-        const cst = srcT.constants.find((v) => eqNames(v.name, f.field));
+        const field = fields.find((v) => A.eqNames(v.name, f.field));
+        const cst = srcT.constants.find((v) => A.eqNames(v.name, f.field));
         if (!field && !cst) {
             throwCompilationError(
                 `Cannot find field ${idTextErr(f.field)} in struct ${idTextErr(srcT.name)}`,
@@ -458,7 +455,7 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
 
         if (field) {
             // Trying to resolve field as a path
-            const path = tryExtractPath(f);
+            const path = A.tryExtractPath(f);
             if (path) {
                 // Prepare path
                 const idd = writePathExpression(path);
@@ -487,8 +484,8 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
 
     if (f.kind === "static_call") {
         // Check global functions
-        if (GlobalFunctions.has(idText(f.function))) {
-            return GlobalFunctions.get(idText(f.function))!.generate(
+        if (GlobalFunctions.has(A.idText(f.function))) {
+            return GlobalFunctions.get(A.idText(f.function))!.generate(
                 wCtx,
                 f.args.map((v) => getExpType(wCtx.ctx, v)),
                 f.args,
@@ -496,10 +493,10 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
             );
         }
 
-        const sf = getStaticFunction(wCtx.ctx, idText(f.function));
-        let n = ops.global(idText(f.function));
+        const sf = getStaticFunction(wCtx.ctx, A.idText(f.function));
+        let n = ops.global(A.idText(f.function));
         if (sf.ast.kind === "native_function_decl") {
-            n = idText(sf.ast.nativeName);
+            n = A.idText(sf.ast.nativeName);
             if (n.startsWith("__tact")) {
                 wCtx.used(n);
             }
@@ -528,7 +525,7 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
         // Write a constructor
         const id = writeStructConstructor(
             src,
-            f.args.map((v) => idText(v.field)),
+            f.args.map((v) => A.idText(v.field)),
             wCtx,
         );
         wCtx.used(id);
@@ -538,7 +535,7 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
             (v) =>
                 writeCastedExpression(
                     v.initializer,
-                    src.fields.find((v2) => eqNames(v2.name, v.field))!.type,
+                    src.fields.find((v2) => A.eqNames(v2.name, v.field))!.type,
                     wCtx,
                 ),
             wCtx,
@@ -561,8 +558,8 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
 
             // Check struct ABI
             if (selfTy.kind === "struct") {
-                if (StructFunctions.has(idText(f.method))) {
-                    const abi = StructFunctions.get(idText(f.method))!;
+                if (StructFunctions.has(A.idText(f.method))) {
+                    const abi = StructFunctions.get(A.idText(f.method))!;
                     return abi.generate(
                         wCtx,
                         [
@@ -576,8 +573,8 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
             }
 
             // Resolve function
-            const methodDescr = selfTy.functions.get(idText(f.method))!;
-            let name = ops.extension(selfTyRef.name, idText(f.method));
+            const methodDescr = selfTy.functions.get(A.idText(f.method))!;
+            let name = ops.extension(selfTyRef.name, A.idText(f.method));
             if (
                 methodDescr.ast.kind === "function_def" ||
                 methodDescr.ast.kind === "function_decl" ||
@@ -585,7 +582,7 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
             ) {
                 wCtx.used(name);
             } else {
-                name = idText(methodDescr.ast.nativeName);
+                name = A.idText(methodDescr.ast.nativeName);
                 if (name.startsWith("__tact")) {
                     wCtx.used(name);
                 }
@@ -619,7 +616,7 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
             const s = writeCastedExpression(f.self, methodDescr.self!, wCtx);
             if (methodDescr.isMutating) {
                 // check if it's an l-value
-                const path = tryExtractPath(f.self);
+                const path = A.tryExtractPath(f.self);
                 if (path !== null && isLvalue(path, wCtx.ctx)) {
                     return `${s}~${name}(${renderedArguments.join(", ")})`;
                 } else {
@@ -632,13 +629,13 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
 
         // Map types
         if (selfTyRef.kind === "map") {
-            if (!MapFunctions.has(idText(f.method))) {
+            if (!MapFunctions.has(A.idText(f.method))) {
                 throwCompilationError(
-                    `Map function "${idText(f.method)}" not found`,
+                    `Map function "${A.idText(f.method)}" not found`,
                     f.loc,
                 );
             }
-            const abf = MapFunctions.get(idText(f.method))!;
+            const abf = MapFunctions.get(A.idText(f.method))!;
             return abf.generate(
                 wCtx,
                 [selfTyRef, ...f.args.map((v) => getExpType(wCtx.ctx, v))],
@@ -666,7 +663,7 @@ export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
         const initArgs = f.args.map((a, i) =>
             writeCastedExpression(a, type.init!.params[i]!.type, wCtx),
         );
-        return `${ops.contractInitChild(idText(f.contract), wCtx)}(${initArgs.join(", ")})`;
+        return `${ops.contractInitChild(A.idText(f.contract), wCtx)}(${initArgs.join(", ")})`;
     }
 
     //
