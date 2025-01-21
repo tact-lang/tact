@@ -1634,10 +1634,10 @@
     jssha "3.2.0"
     tweetnacl "1.0.3"
 
-"@ton/sandbox@^0.23.0":
-  version "0.23.0"
-  resolved "https://registry.npmjs.org/@ton/sandbox/-/sandbox-0.23.0.tgz#c3b6ee0b9c057650a32d0c9ebf770a77e0832421"
-  integrity sha512-V0PfjefTJbpBvsE1b5851LyuZlOXuBZnvxtCKrvK/wDlw348dCnUJuBvWuApZ5RGXq36xJ07XBoYl6sMuS0Xug==
+"@ton/sandbox@^0.24.0":
+  version "0.24.0"
+  resolved "https://registry.npmjs.org/@ton/sandbox/-/sandbox-0.24.0.tgz#5be1ed04f65e5653d18e92922c6af9ce53ebb365"
+  integrity sha512-YBUEaC1jNjShkH6dPGC2ogf6O2SE8Ro/M1wT9B2G+wC/ehgDuDa7uIRTWA1ez+046egINyFePi1ogsKczfgF4Q==
 
 "@ton/test-utils@^0.4.2":
   version "0.4.2"
