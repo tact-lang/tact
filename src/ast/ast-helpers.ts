@@ -369,7 +369,7 @@ export function isLiteral(ast: A.AstExpression): ast is A.AstLiteral {
     );
 }
 
-export function checkLiteral<T>(
+function checkLiteral<T>(
     ast: A.AstExpression,
     t: (node: A.AstLiteral) => T,
     f: (node: Exclude<A.AstExpression, A.AstLiteral>) => T,
