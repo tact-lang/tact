@@ -21,7 +21,7 @@ import { sha256_sync } from "@ton/crypto";
 import { dummySrcInfo } from "../grammar";
 import { ensureInt } from "../optimizer/interpreter";
 import { evalConstantExpression } from "../optimizer/constEval";
-import { getAstUtil } from "../optimizer/util";
+import { getAstUtil } from "../ast/util";
 
 export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
     const util = getAstUtil(Ast);
