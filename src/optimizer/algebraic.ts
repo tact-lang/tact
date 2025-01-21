@@ -1,11 +1,4 @@
-import {
-    AstBinaryOperation,
-    AstExpression,
-    AstOpBinary,
-    AstOpUnary,
-    eqExpressions,
-    isLiteral,
-} from "../ast/ast";
+import * as A from "../ast/ast";
 import { ExpressionTransformer, Rule } from "./types";
 import {
     checkIsBinaryOpNode,
@@ -16,17 +9,17 @@ import {
 } from "../ast/util";
 
 export class AddZero extends Rule {
-    private additiveOperators: AstBinaryOperation[] = ["+", "-"];
+    private additiveOperators: A.AstBinaryOperation[] = ["+", "-"];
 
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         { util }: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (this.additiveOperators.includes(topLevelNode.op)) {
                 if (
-                    !isLiteral(topLevelNode.left) &&
+                    !A.isLiteral(topLevelNode.left) &&
                     checkIsNumber(topLevelNode.right, 0n)
                 ) {
                     // The tree has this form:
@@ -37,7 +30,7 @@ export class AddZero extends Rule {
                     return x;
                 } else if (
                     checkIsNumber(topLevelNode.left, 0n) &&
-                    !isLiteral(topLevelNode.right)
+                    !A.isLiteral(topLevelNode.right)
                 ) {
                     // The tree has this form:
                     // 0 op x
@@ -62,11 +55,11 @@ export class AddZero extends Rule {
 
 export class MultiplyZero extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         { util }: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (topLevelNode.op === "*") {
                 if (
                     checkIsName(topLevelNode.left) &&
@@ -96,14 +89,14 @@ export class MultiplyZero extends Rule {
 
 export class MultiplyOne extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         _optimizer: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (topLevelNode.op === "*") {
                 if (
-                    !isLiteral(topLevelNode.left) &&
+                    !A.isLiteral(topLevelNode.left) &&
                     checkIsNumber(topLevelNode.right, 1n)
                 ) {
                     // The tree has this form:
@@ -114,7 +107,7 @@ export class MultiplyOne extends Rule {
                     return x;
                 } else if (
                     checkIsNumber(topLevelNode.left, 1n) &&
-                    !isLiteral(topLevelNode.right)
+                    !A.isLiteral(topLevelNode.right)
                 ) {
                     // The tree has this form:
                     // 1 * x
@@ -134,11 +127,11 @@ export class MultiplyOne extends Rule {
 
 export class SubtractSelf extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         { util }: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (topLevelNode.op === "-") {
                 if (
                     checkIsName(topLevelNode.left) &&
@@ -151,7 +144,7 @@ export class SubtractSelf extends Rule {
                     const x = topLevelNode.left;
                     const y = topLevelNode.right;
 
-                    if (eqExpressions(x, y)) {
+                    if (A.eqExpressions(x, y)) {
                         return util.makeNumberLiteral(0n, ast.loc);
                     }
                 }
@@ -166,15 +159,15 @@ export class SubtractSelf extends Rule {
 
 export class AddSelf extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         { applyRules, util }: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (topLevelNode.op === "+") {
                 if (
-                    !isLiteral(topLevelNode.left) &&
-                    !isLiteral(topLevelNode.right)
+                    !A.isLiteral(topLevelNode.left) &&
+                    !A.isLiteral(topLevelNode.right)
                 ) {
                     // The tree has this form:
                     // x + y
@@ -183,7 +176,7 @@ export class AddSelf extends Rule {
                     const x = topLevelNode.left;
                     const y = topLevelNode.right;
 
-                    if (eqExpressions(x, y)) {
+                    if (A.eqExpressions(x, y)) {
                         const res = util.makeBinaryExpression(
                             "*",
                             x,
@@ -205,15 +198,15 @@ export class AddSelf extends Rule {
 
 export class OrTrue extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         { util }: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (topLevelNode.op === "||") {
                 if (
                     (checkIsName(topLevelNode.left) ||
-                        isLiteral(topLevelNode.left)) &&
+                        A.isLiteral(topLevelNode.left)) &&
                     checkIsBoolean(topLevelNode.right, true)
                 ) {
                     // The tree has this form:
@@ -237,15 +230,15 @@ export class OrTrue extends Rule {
 
 export class AndFalse extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         { util }: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (topLevelNode.op === "&&") {
                 if (
                     (checkIsName(topLevelNode.left) ||
-                        isLiteral(topLevelNode.left)) &&
+                        A.isLiteral(topLevelNode.left)) &&
                     checkIsBoolean(topLevelNode.right, false)
                 ) {
                     // The tree has this form:
@@ -269,11 +262,11 @@ export class AndFalse extends Rule {
 
 export class OrFalse extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         _optimizer: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (topLevelNode.op === "||") {
                 if (checkIsBoolean(topLevelNode.right, false)) {
                     // The tree has this form:
@@ -301,11 +294,11 @@ export class OrFalse extends Rule {
 
 export class AndTrue extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         _optimizer: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (topLevelNode.op === "&&") {
                 if (checkIsBoolean(topLevelNode.right, true)) {
                     // The tree has this form:
@@ -333,11 +326,11 @@ export class AndTrue extends Rule {
 
 export class OrSelf extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         _optimizer: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (topLevelNode.op === "||") {
                 // The tree has this form:
                 // x || y
@@ -346,7 +339,7 @@ export class OrSelf extends Rule {
                 const x = topLevelNode.left;
                 const y = topLevelNode.right;
 
-                if (eqExpressions(x, y)) {
+                if (A.eqExpressions(x, y)) {
                     return x;
                 }
             }
@@ -360,11 +353,11 @@ export class OrSelf extends Rule {
 
 export class AndSelf extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         _optimizer: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (topLevelNode.op === "&&") {
                 // The tree has this form:
                 // x && y
@@ -373,7 +366,7 @@ export class AndSelf extends Rule {
                 const x = topLevelNode.left;
                 const y = topLevelNode.right;
 
-                if (eqExpressions(x, y)) {
+                if (A.eqExpressions(x, y)) {
                     return x;
                 }
             }
@@ -387,14 +380,14 @@ export class AndSelf extends Rule {
 
 export class ExcludedMiddle extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         { util }: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (topLevelNode.op === "||") {
                 if (checkIsUnaryOpNode(topLevelNode.right)) {
-                    const rightNode = topLevelNode.right as AstOpUnary;
+                    const rightNode = topLevelNode.right as A.AstOpUnary;
                     if (rightNode.op === "!") {
                         // The tree has this form:
                         // x || !y
@@ -405,14 +398,14 @@ export class ExcludedMiddle extends Rule {
                         const y = rightNode.operand;
 
                         if (
-                            (checkIsName(x) || isLiteral(x)) &&
-                            eqExpressions(x, y)
+                            (checkIsName(x) || A.isLiteral(x)) &&
+                            A.eqExpressions(x, y)
                         ) {
                             return util.makeBooleanLiteral(true, ast.loc);
                         }
                     }
                 } else if (checkIsUnaryOpNode(topLevelNode.left)) {
-                    const leftNode = topLevelNode.left as AstOpUnary;
+                    const leftNode = topLevelNode.left as A.AstOpUnary;
                     if (leftNode.op === "!") {
                         // The tree has this form:
                         // !x || y
@@ -423,8 +416,8 @@ export class ExcludedMiddle extends Rule {
                         const y = topLevelNode.right;
 
                         if (
-                            (checkIsName(x) || isLiteral(x)) &&
-                            eqExpressions(x, y)
+                            (checkIsName(x) || A.isLiteral(x)) &&
+                            A.eqExpressions(x, y)
                         ) {
                             return util.makeBooleanLiteral(true, ast.loc);
                         }
@@ -441,14 +434,14 @@ export class ExcludedMiddle extends Rule {
 
 export class Contradiction extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         { util }: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (topLevelNode.op === "&&") {
                 if (checkIsUnaryOpNode(topLevelNode.right)) {
-                    const rightNode = topLevelNode.right as AstOpUnary;
+                    const rightNode = topLevelNode.right as A.AstOpUnary;
                     if (rightNode.op === "!") {
                         // The tree has this form:
                         // x && !y
@@ -459,14 +452,14 @@ export class Contradiction extends Rule {
                         const y = rightNode.operand;
 
                         if (
-                            (checkIsName(x) || isLiteral(x)) &&
-                            eqExpressions(x, y)
+                            (checkIsName(x) || A.isLiteral(x)) &&
+                            A.eqExpressions(x, y)
                         ) {
                             return util.makeBooleanLiteral(false, ast.loc);
                         }
                     }
                 } else if (checkIsUnaryOpNode(topLevelNode.left)) {
-                    const leftNode = topLevelNode.left as AstOpUnary;
+                    const leftNode = topLevelNode.left as A.AstOpUnary;
                     if (leftNode.op === "!") {
                         // The tree has this form:
                         // !x && y
@@ -477,8 +470,8 @@ export class Contradiction extends Rule {
                         const y = topLevelNode.right;
 
                         if (
-                            (checkIsName(x) || isLiteral(x)) &&
-                            eqExpressions(x, y)
+                            (checkIsName(x) || A.isLiteral(x)) &&
+                            A.eqExpressions(x, y)
                         ) {
                             return util.makeBooleanLiteral(false, ast.loc);
                         }
@@ -495,14 +488,14 @@ export class Contradiction extends Rule {
 
 export class DoubleNegation extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         _optimizer: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsUnaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpUnary;
+            const topLevelNode = ast as A.AstOpUnary;
             if (topLevelNode.op === "!") {
                 if (checkIsUnaryOpNode(topLevelNode.operand)) {
-                    const innerNode = topLevelNode.operand as AstOpUnary;
+                    const innerNode = topLevelNode.operand as A.AstOpUnary;
                     if (innerNode.op === "!") {
                         // The tree has this form:
                         // !!x
@@ -523,11 +516,11 @@ export class DoubleNegation extends Rule {
 
 export class NegateTrue extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         { util }: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsUnaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpUnary;
+            const topLevelNode = ast as A.AstOpUnary;
             if (topLevelNode.op === "!") {
                 if (checkIsBoolean(topLevelNode.operand, true)) {
                     // The tree has this form
@@ -546,11 +539,11 @@ export class NegateTrue extends Rule {
 
 export class NegateFalse extends Rule {
     public applyRule(
-        ast: AstExpression,
+        ast: A.AstExpression,
         { util }: ExpressionTransformer,
-    ): AstExpression {
+    ): A.AstExpression {
         if (checkIsUnaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpUnary;
+            const topLevelNode = ast as A.AstOpUnary;
             if (topLevelNode.op === "!") {
                 if (checkIsBoolean(topLevelNode.operand, false)) {
                     // The tree has this form
