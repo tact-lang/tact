@@ -1,14 +1,5 @@
 import { enabledInline } from "../../config/features";
-import {
-    AstAsmShuffle,
-    AstCondition,
-    AstExpression,
-    AstStatement,
-    idOfText,
-    idText,
-    isWildcard,
-    tryExtractPath,
-} from "../../ast/ast";
+import * as A from "../../ast/ast";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
 import { FunctionDescription, TypeRef } from "../../types/types";
@@ -26,7 +17,7 @@ import { idTextErr, throwInternalCompilerError } from "../../error/errors";
 import { ppAsmShuffle } from "../../ast/ast-printer";
 
 export function writeCastedExpression(
-    expression: AstExpression,
+    expression: A.AstExpression,
     to: TypeRef,
     ctx: WriterContext,
 ) {
@@ -64,7 +55,7 @@ function unwrapExternal(
 }
 
 export function writeStatement(
-    f: AstStatement,
+    f: A.AstStatement,
     self: string | null,
     returns: TypeRef | null,
     ctx: WriterContext,
@@ -103,7 +94,7 @@ export function writeStatement(
         }
         case "statement_let": {
             // Underscore name case
-            if (isWildcard(f.name)) {
+            if (A.isWildcard(f.name)) {
                 ctx.append(`${writeExpression(f.expression, ctx)};`);
                 return;
             }
@@ -137,7 +128,7 @@ export function writeStatement(
         }
         case "statement_assign": {
             // Prepare lvalue
-            const lvaluePath = tryExtractPath(f.path);
+            const lvaluePath = A.tryExtractPath(f.path);
             if (lvaluePath === null) {
                 // typechecker is supposed to catch this
                 throwInternalCompilerError(
@@ -165,7 +156,7 @@ export function writeStatement(
             return;
         }
         case "statement_augmentedassign": {
-            const lvaluePath = tryExtractPath(f.path);
+            const lvaluePath = A.tryExtractPath(f.path);
             if (lvaluePath === null) {
                 // typechecker is supposed to catch this
                 throwInternalCompilerError(
@@ -230,7 +221,7 @@ export function writeStatement(
 
             const catchBlock = f.catchBlock;
             if (catchBlock !== undefined) {
-                if (isWildcard(catchBlock.catchName)) {
+                if (A.isWildcard(catchBlock.catchName)) {
                     ctx.append(`} catch (_) {`);
                 } else {
                     ctx.append(
@@ -250,7 +241,7 @@ export function writeStatement(
             return;
         }
         case "statement_foreach": {
-            const mapPath = tryExtractPath(f.map);
+            const mapPath = A.tryExtractPath(f.map);
             if (mapPath === null) {
                 // typechecker is supposed to catch this
                 throwInternalCompilerError(
@@ -266,10 +257,10 @@ export function writeStatement(
             }
 
             const flag = freshIdentifier("flag");
-            const key = isWildcard(f.keyName)
+            const key = A.isWildcard(f.keyName)
                 ? freshIdentifier("underscore")
                 : funcIdOf(f.keyName);
-            const value = isWildcard(f.valueName)
+            const value = A.isWildcard(f.valueName)
                 ? freshIdentifier("underscore")
                 : funcIdOf(f.valueName);
 
@@ -481,7 +472,7 @@ export function writeStatement(
             const ty = getType(ctx.ctx, t.name);
             const ids = ty.fields.map((field) => {
                 const id = f.identifiers.get(field.name);
-                return id === undefined || isWildcard(id[1])
+                return id === undefined || A.isWildcard(id[1])
                     ? "_"
                     : funcIdOf(id[1]);
             });
@@ -502,7 +493,7 @@ export function writeStatement(
 }
 
 function writeCondition(
-    f: AstCondition,
+    f: A.AstStatementCondition,
     self: string | null,
     elseif: boolean,
     returns: TypeRef | null,
@@ -564,7 +555,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     const fAst = f.ast;
     switch (fAst.kind) {
         case "native_function_decl": {
-            const name = idText(fAst.nativeName);
+            const name = A.idText(fAst.nativeName);
             if (f.isMutating && !ctx.isRendered(name)) {
                 writeNonMutatingFunction(
                     f,
@@ -590,9 +581,11 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                     ctx.context("stdlib");
                 }
                 // we need to do some renames (prepending $ to identifiers)
-                const asmShuffleEscaped: AstAsmShuffle = {
+                const asmShuffleEscaped: A.AstAsmShuffle = {
                     ...fAst.shuffle,
-                    args: fAst.shuffle.args.map((id) => idOfText(funcIdOf(id))),
+                    args: fAst.shuffle.args.map((id) =>
+                        A.idOfText(funcIdOf(id)),
+                    ),
                 };
                 ctx.asm(
                     ppAsmShuffle(asmShuffleEscaped),

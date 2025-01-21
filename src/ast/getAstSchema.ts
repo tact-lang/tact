@@ -295,10 +295,10 @@ export const getAstSchema = (
             condition: A.AstExpression,
             trueStatements: A.AstStatement[],
             falseStatements: A.AstStatement[] | null,
-            elseif: A.AstCondition | null,
+            elseif: A.AstStatementCondition | null,
             loc: Loc,
-        ): A.AstCondition =>
-            createNode<A.AstCondition>({
+        ): A.AstStatementCondition =>
+            createNode<A.AstStatementCondition>({
                 kind: "statement_condition",
                 condition,
                 trueStatements,

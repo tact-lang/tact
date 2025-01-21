@@ -98,6 +98,15 @@ jobs:
         run: |
           yarn knip
 
+      - name: Check broken file references in internal documentation
+        if: runner.os != 'macOS' # it's enough to check on Windows and Linux
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: "-n -s file --exclude-path node_modules --exclude-path docs './**/*.md'"
+          output: "/dev/stdout"
+          fail: true
+          failIfEmpty: false
+
       - name: Show an example .pkg file on Windows
         if: runner.os == 'Windows'
         run: |
