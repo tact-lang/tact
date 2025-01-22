@@ -1,3 +1,9 @@
+fun throwWithElseIf(op: Int) {
+    if (op == 1) { return }
+    else if (op == 2) { return }
+    else { throw(1042) }
+}
+
 contract TryCatchTester {
     counter: Int = 0;
 
@@ -60,5 +66,17 @@ contract TryCatchTester {
         } catch (e) {
             return e;
         }
+    }
+
+    // bug fixed in FunC v0.4.6
+    get fun testTryCatch4(): Bool {
+        let x = 10;
+        try {
+            x = 20;
+            throwWithElseIf(42);
+        } catch(_) {
+            return true; // x == 10;
+        }
+        return false;
     }
 }

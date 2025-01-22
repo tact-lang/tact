@@ -1,23 +1,8 @@
 import { Node, IterationNode, NonterminalNode } from "ohm-js";
 import tactGrammar from "./grammar.ohm-bundle";
 import { throwInternalCompilerError } from "../../error/errors";
-import {
-    AstAugmentedAssignOperation,
-    AstConstantAttribute,
-    AstContractAttribute,
-    AstExpression,
-    AstFunctionAttribute,
-    AstNode,
-    AstModule,
-    AstReceiverKind,
-    AstString,
-    AstType,
-    AstImport,
-    AstConstantDef,
-    AstNumberBase,
-    AstId,
-    FactoryAst,
-} from "../../ast/ast";
+import * as A from "../../ast/ast";
+import { FactoryAst } from "../../ast/ast-helpers";
 import { ItemOrigin, SrcInfo } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
 import { ParserErrors, parserErrorSchema } from "./parser-error";
@@ -95,7 +80,7 @@ const checkAttributes =
     (kind: "constant" | "function") =>
     (
         isAbstract: boolean,
-        attributes: (AstConstantAttribute | AstFunctionAttribute)[],
+        attributes: (A.AstConstantAttribute | A.AstFunctionAttribute)[],
         loc: SrcInfo,
     ) => {
         const { duplicate, tooAbstract, notAbstract } = err()[kind];
@@ -120,7 +105,7 @@ const checkFunctionAttributes = checkAttributes("function");
 
 const semantics = tactGrammar.createSemantics();
 
-semantics.addOperation<AstNode>("astOfModule", {
+semantics.addOperation<A.AstNode>("astOfModule", {
     Module(imports, items) {
         return createNode({
             kind: "module",
@@ -130,9 +115,9 @@ semantics.addOperation<AstNode>("astOfModule", {
     },
 });
 
-semantics.addOperation<AstNode>("astOfImport", {
+semantics.addOperation<A.AstNode>("astOfImport", {
     Import(_importKwd, path, _semicolon) {
-        const pathAST = path.astOfExpression() as AstString;
+        const pathAST = path.astOfExpression() as A.AstString;
         if (pathAST.value.includes("\\")) {
             err().importWithBackslash()(createRef(path));
         }
@@ -144,13 +129,13 @@ semantics.addOperation<AstNode>("astOfImport", {
     },
 });
 
-semantics.addOperation<AstImport[]>("astOfJustImports", {
+semantics.addOperation<A.AstImport[]>("astOfJustImports", {
     JustImports(imports, _restOfInput) {
         return imports.children.map((item) => item.astOfImport());
     },
 });
 
-semantics.addOperation<AstNode>("astOfModuleItem", {
+semantics.addOperation<A.AstNode>("astOfModuleItem", {
     PrimitiveTypeDecl(_primitive_kwd, typeId, _semicolon) {
         checkVariableName(typeId.sourceString, createRef(typeId));
         return createNode({
@@ -265,7 +250,7 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
         return fun.astOfItem();
     },
     ModuleConstant(constant) {
-        const astConstDef: AstConstantDef = constant.astOfItem();
+        const astConstDef: A.AstConstantDef = constant.astOfItem();
         if (astConstDef.attributes.length !== 0) {
             err().topLevelConstantWithAttribute()(
                 astConstDef.attributes[0]!.loc,
@@ -278,7 +263,7 @@ semantics.addOperation<AstNode>("astOfModuleItem", {
 // top-level (module-level), contract or trait items:
 // constant declarations/definitions, functions, receivers,
 // getters, etc.
-semantics.addOperation<AstNode>("astOfItem", {
+semantics.addOperation<A.AstNode>("astOfItem", {
     ConstantDefinition(
         constAttributes,
         _constKwd,
@@ -291,7 +276,7 @@ semantics.addOperation<AstNode>("astOfItem", {
     ) {
         const attributes = constAttributes.children.map((a) =>
             a.astOfConstAttribute(),
-        ) as AstConstantAttribute[];
+        ) as A.AstConstantAttribute[];
         checkConstAttributes(false, attributes, createRef(this));
         return createNode({
             kind: "constant_def",
@@ -312,7 +297,7 @@ semantics.addOperation<AstNode>("astOfItem", {
     ) {
         const attributes = constAttributes.children.map((a) =>
             a.astOfConstAttribute(),
-        ) as AstConstantAttribute[];
+        ) as A.AstConstantAttribute[];
         checkConstAttributes(true, attributes, createRef(this));
         return createNode({
             kind: "constant_decl",
@@ -338,7 +323,7 @@ semantics.addOperation<AstNode>("astOfItem", {
     ) {
         const attributes = funAttributes.children.map((a) =>
             a.astOfFunctionAttributes(),
-        ) as AstFunctionAttribute[];
+        ) as A.AstFunctionAttribute[];
         checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(false, attributes, createRef(this));
         return createNode({
@@ -370,7 +355,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         };
         const attributes = funAttributes.children.map((a) =>
             a.astOfFunctionAttributes(),
-        ) as AstFunctionAttribute[];
+        ) as A.AstFunctionAttribute[];
         checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(false, attributes, createRef(this));
         return createNode({
@@ -397,7 +382,7 @@ semantics.addOperation<AstNode>("astOfItem", {
     ) {
         const attributes = funAttributes.children.map((a) =>
             a.astOfFunctionAttributes(),
-        ) as AstFunctionAttribute[];
+        ) as A.AstFunctionAttribute[];
         checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(true, attributes, createRef(this));
         return createNode({
@@ -427,7 +412,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         _rbrace,
     ) {
         const optParam = optParameter.children[0] as Node | undefined;
-        const selector: AstReceiverKind = optParam
+        const selector: A.AstReceiverKind = optParam
             ? {
                   kind: "internal-simple",
                   param: optParam.astOfDeclaration(),
@@ -485,7 +470,7 @@ semantics.addOperation<AstNode>("astOfItem", {
         _rbrace,
     ) {
         const optParam = optParameter.children[0] as Node | undefined;
-        const selector: AstReceiverKind = optParam
+        const selector: A.AstReceiverKind = optParam
             ? {
                   kind: "external-simple",
                   param: optParam.astOfDeclaration(),
@@ -594,7 +579,7 @@ semantics.addOperation<string>("astOfAsmInstruction", {
     },
 });
 
-semantics.addOperation<AstFunctionAttribute>("astOfFunctionAttributes", {
+semantics.addOperation<A.AstFunctionAttribute>("astOfFunctionAttributes", {
     FunctionAttribute_getter(_getKwd, _optLparen, optMethodId, _optRparen) {
         return {
             kind: "function_attribute",
@@ -647,7 +632,7 @@ semantics.addOperation<AstFunctionAttribute>("astOfFunctionAttributes", {
     },
 });
 
-semantics.addOperation<{ args: AstNode[]; ret: AstNode[] }>(
+semantics.addOperation<{ args: A.AstNode[]; ret: A.AstNode[] }>(
     "astsOfAsmShuffle",
     {
         AsmShuffle(_lparen, argsShuffle, _optArrow, optRetShuffle, _rparen) {
@@ -662,7 +647,7 @@ semantics.addOperation<{ args: AstNode[]; ret: AstNode[] }>(
     },
 );
 
-semantics.addOperation<AstConstantAttribute>("astOfConstAttribute", {
+semantics.addOperation<A.AstConstantAttribute>("astOfConstAttribute", {
     ConstantAttribute_override(_) {
         return { type: "override", loc: createRef(this) };
     },
@@ -674,7 +659,7 @@ semantics.addOperation<AstConstantAttribute>("astOfConstAttribute", {
     },
 });
 
-semantics.addOperation<AstNode[]>("astsOfList", {
+semantics.addOperation<A.AstNode[]>("astsOfList", {
     InheritedTraits(traits, _optTrailingComma) {
         return traits
             .asIteration()
@@ -705,7 +690,7 @@ semantics.addOperation<AstNode[]>("astsOfList", {
     },
 });
 
-semantics.addOperation<AstContractAttribute>("astOfContractAttributes", {
+semantics.addOperation<A.AstContractAttribute>("astOfContractAttributes", {
     ContractAttribute_interface(_interface, _lparen, interfaceName, _rparen) {
         return {
             type: "interface",
@@ -715,7 +700,7 @@ semantics.addOperation<AstContractAttribute>("astOfContractAttributes", {
     },
 });
 
-semantics.addOperation<AstNode>("astOfDeclaration", {
+semantics.addOperation<A.AstNode>("astOfDeclaration", {
     FieldDecl(
         id,
         _colon,
@@ -728,7 +713,7 @@ semantics.addOperation<AstNode>("astOfDeclaration", {
         return createNode({
             kind: "field_decl",
             name: id.astOfExpression(),
-            type: type.astOfType() as AstType,
+            type: type.astOfType() as A.AstType,
             as: unwrapOptNode(optStorageType, (t) => t.astOfExpression()),
             initializer: unwrapOptNode(optInitializer, (e) =>
                 e.astOfExpression(),
@@ -764,7 +749,7 @@ semantics.addOperation<AstNode>("astOfDeclaration", {
 });
 
 // Statements
-semantics.addOperation<AstNode>("astOfStatement", {
+semantics.addOperation<A.AstNode>("astOfStatement", {
     // TODO: process StatementBlock
 
     StatementLet(
@@ -816,7 +801,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
                 loc: createRef(this),
             });
         } else {
-            let op: AstAugmentedAssignOperation;
+            let op: A.AstAugmentedAssignOperation;
             switch (operator.sourceString) {
                 case "+=":
                     op = "+";
@@ -987,10 +972,14 @@ semantics.addOperation<AstNode>("astOfStatement", {
         _rbraceCatch,
     ) {
         return createNode({
-            kind: "statement_try_catch",
+            kind: "statement_try",
             statements: tryBlock.children.map((s) => s.astOfStatement()),
-            catchName: exitCodeId.astOfExpression(),
-            catchStatements: catchBlock.children.map((s) => s.astOfStatement()),
+            catchBlock: {
+                catchName: exitCodeId.astOfExpression(),
+                catchStatements: catchBlock.children.map((s) =>
+                    s.astOfStatement(),
+                ),
+            },
             loc: createRef(this),
         });
     },
@@ -1046,7 +1035,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
                         destructItem.name,
                     ]);
                     return map;
-                }, new Map<string, [AstId, AstId]>()),
+                }, new Map<string, [A.AstId, A.AstId]>()),
             ignoreUnspecifiedFields:
                 endOfIdentifiers.astOfExpression().ignoreUnspecifiedFields,
             expression: expression.astOfExpression(),
@@ -1062,7 +1051,7 @@ semantics.addOperation<AstNode>("astOfStatement", {
     },
 });
 
-semantics.addOperation<AstNode>("astOfType", {
+semantics.addOperation<A.AstNode>("astOfType", {
     typeId(firstTactTypeIdCharacter, restOfTactTypeId) {
         return createNode({
             kind: "type_id",
@@ -1121,7 +1110,7 @@ function bigintOfIntLiteral(litString: NonterminalNode): bigint {
     return BigInt(litString.sourceString.replaceAll("_", ""));
 }
 
-function baseOfIntLiteral(node: NonterminalNode): AstNumberBase {
+function baseOfIntLiteral(node: NonterminalNode): A.AstNumberBase {
     const basePrefix = node.sourceString.slice(0, 2).toLowerCase();
     switch (basePrefix) {
         case "0x":
@@ -1135,7 +1124,7 @@ function baseOfIntLiteral(node: NonterminalNode): AstNumberBase {
     }
 }
 
-function astOfNumber(node: Node): AstNode {
+function astOfNumber(node: Node): A.AstNode {
     return createNode({
         kind: "number",
         base: baseOfIntLiteral(node),
@@ -1145,7 +1134,7 @@ function astOfNumber(node: Node): AstNode {
 }
 
 // Expressions
-semantics.addOperation<AstNode>("astOfExpression", {
+semantics.addOperation<A.AstNode>("astOfExpression", {
     // Literals
     integerLiteral(_) {
         // Parses dec, hex, and bin numbers
@@ -1507,7 +1496,7 @@ semantics.addOperation<AstNode>("astOfExpression", {
 export const getParser = (ast: FactoryAst) => {
     const errorTypes = parserErrorSchema(displayToString);
 
-    function parse(src: string, path: string, origin: ItemOrigin): AstModule {
+    function parse(src: string, path: string, origin: ItemOrigin): A.AstModule {
         return withContext(
             {
                 currentFile: path,
@@ -1525,7 +1514,7 @@ export const getParser = (ast: FactoryAst) => {
         );
     }
 
-    function parseExpression(sourceCode: string): AstExpression {
+    function parseExpression(sourceCode: string): A.AstExpression {
         return withContext(
             {
                 currentFile: null,
@@ -1547,7 +1536,7 @@ export const getParser = (ast: FactoryAst) => {
         src: string,
         path: string,
         origin: ItemOrigin,
-    ): AstImport[] {
+    ): A.AstImport[] {
         return withContext(
             {
                 currentFile: path,

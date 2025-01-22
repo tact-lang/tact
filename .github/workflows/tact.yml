@@ -86,10 +86,6 @@ jobs:
         run: |
           yarn fmt:check
 
-      - name: Check that tact.config.json adheres to the JSON schema
-        run: |
-          yarn lint:schema
-
       - name: Spellcheck code base
         run: |
           yarn spell
@@ -97,6 +93,15 @@ jobs:
       - name: Check there are no unused dependencies
         run: |
           yarn knip
+
+      - name: Check broken file references in internal documentation
+        if: runner.os != 'macOS' # it's enough to check on Windows and Linux
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: "-n -s file --exclude-path node_modules --exclude-path docs './**/*.md'"
+          output: "/dev/stdout"
+          fail: true
+          failIfEmpty: false
 
       - name: Show an example .pkg file on Windows
         if: runner.os == 'Windows'
@@ -106,72 +111,6 @@ jobs:
       - name: Link Tact yarn package
         run: |
           yarn link
-
-      - name: CLI Test | Check tact --version
-        if: runner.os != 'Windows'
-        run: |
-          tact --version
-
-      - name: CLI Test | Compare Tact version from CLI flag `--version` against package.json
-        if: runner.os != 'Windows'
-        run: |
-          if [ "$(tact --version | head -n1)" != "$(jq -r '.version' < package.json)" ];
-          then false
-          fi
-
-      - name: CLI Test | Check single-contract compilation
-        if: runner.os != 'Windows'
-        run: |
-          tact --check bin/test/success.tact
-          tact --func bin/test/success.tact
-          tact bin/test/success.tact
-          tact --with-decompilation bin/test/success.tact
-
-      - name: CLI Test | Check compilation via `--config`
-        if: runner.os != 'Windows'
-        run: |
-          # should output complete results
-          tact --config bin/test/success.config.json
-          # should output complete result + decompile binary code
-          tact --config bin/test/success.config.with.decompilation.json
-          # should only run the syntax and type checking
-          tact --config bin/test/success.config.json --check
-
-      - name: CLI Test | Check parsing of mutually exclusive flags - 1
-        if: runner.os != 'Windows'
-        run: |
-          ! tact --func --check bin/test/success.config.json
-
-      - name: CLI Test | Check parsing of mutually exclusive flags - 2
-        if: runner.os != 'Windows'
-        run: |
-          ! tact --with-decompilation --check bin/test/success.config.json
-
-      - name: CLI Test | Check parsing of mutually exclusive flags - 3
-        if: runner.os != 'Windows'
-        run: |
-          ! tact --func --with-decompilation bin/test/success.config.json
-
-      - name: CLI Test | Check parsing of a non-existing CLI flag
-        if: runner.os != 'Windows'
-        run: |
-          ! tact --nonexistentoption bin/test/success.config.json
-
-      - name: CLI Test | tact executable return non-zero exit code if compilation fails
-        if: runner.os != 'Windows'
-        run: |
-          ! tact --config bin/test/fail.config.json
-
-      - name: CLI Test | Evaluate expression
-        if: runner.os != 'Windows'
-        run: |
-          tact -e '(1 + 2 * (pow(3,4) - 2) << 1 & 0x54 | 33 >> 1) * 2 + 2'
-
-      - name: CLI Test | Check TVM disassembler flag
-        if: runner.os != 'Windows'
-        run: |
-          tact bin/test/success.tact
-          unboc bin/test/success_HelloWorld.code.boc
 
       - name: Test compatibility with tact-template
         run: |

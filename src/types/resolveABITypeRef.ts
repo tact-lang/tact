@@ -1,7 +1,6 @@
 import { ABITypeRef } from "@ton/core";
+import * as A from "../ast/ast";
 import {
-    AstFieldDecl,
-    AstTypeId,
     eqNames,
     idText,
     isAddress,
@@ -12,7 +11,7 @@ import {
     isSlice,
     isString,
     isStringBuilder,
-} from "../ast/ast";
+} from "../ast/ast-helpers";
 import {
     idTextErr,
     throwCompilationError,
@@ -76,7 +75,7 @@ const builderFormats: FormatDef = {
     remaining: { type: "builder", format: "remainder" },
 };
 
-export function resolveABIType(src: AstFieldDecl): ABITypeRef {
+export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
     if (
         src.type.kind === "type_id" ||
         (src.type.kind === "optional_type" &&
@@ -86,7 +85,7 @@ export function resolveABIType(src: AstFieldDecl): ABITypeRef {
         // Primitive types
         //
 
-        const typeId: AstTypeId =
+        const typeId: A.AstTypeId =
             src.type.kind === "type_id"
                 ? src.type
                 : src.type.typeArg.kind === "type_id"

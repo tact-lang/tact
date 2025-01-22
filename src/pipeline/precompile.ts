@@ -7,7 +7,8 @@ import { resolveErrors } from "../types/resolveErrors";
 import { resolveSignatures } from "../types/resolveSignatures";
 import { resolveImports } from "../imports/resolveImports";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
-import { AstModule, FactoryAst } from "../ast/ast";
+import { AstModule } from "../ast/ast";
+import { FactoryAst } from "../ast/ast-helpers";
 import { Parser } from "../grammar";
 
 export function precompile(

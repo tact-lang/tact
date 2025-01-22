@@ -1,28 +1,11 @@
+import * as A from "../ast/ast";
+import { eqNames, getAstFactory, idText, isWildcard } from "../ast/ast-helpers";
 import {
-    AstBoolean,
-    AstExpression,
-    AstInitOf,
-    AstNull,
-    AstNumber,
-    AstOpBinary,
-    AstMethodCall,
-    AstStaticCall,
-    AstFieldAccess,
-    AstStructInstance,
-    AstOpUnary,
-    AstString,
-    AstConditional,
-    eqNames,
-    idText,
-    isWildcard,
-    AstAddress,
-    AstCell,
-    AstSlice,
-    AstSimplifiedString,
-    AstCommentValue,
-    AstStructValue,
-} from "../ast/ast";
-import { idTextErr, throwCompilationError } from "../error/errors";
+    idTextErr,
+    TactConstEvalError,
+    throwCompilationError,
+    throwInternalCompilerError,
+} from "../error/errors";
 import { CompilerContext, createContextStore } from "../context/context";
 import {
     getAllTypes,
@@ -37,16 +20,18 @@ import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
-import { throwInternalCompilerError } from "../error/errors";
 import { StructFunctions } from "../abi/struct";
-import { prettyPrint } from "../prettyPrinter";
+import { prettyPrint } from "../ast/ast-printer";
+import { ensureInt } from "../optimizer/interpreter";
+import { evalConstantExpression } from "../optimizer/constEval";
+import { getAstUtil } from "../ast/util";
 
 const store = createContextStore<{
-    ast: AstExpression;
+    ast: A.AstExpression;
     description: TypeRef;
 }>();
 
-export function getExpType(ctx: CompilerContext, exp: AstExpression) {
+export function getExpType(ctx: CompilerContext, exp: A.AstExpression) {
     const t = store.get(ctx, exp.id);
     if (!t) {
         throwInternalCompilerError(`Expression ${exp.id} not found`);
@@ -56,7 +41,7 @@ export function getExpType(ctx: CompilerContext, exp: AstExpression) {
 
 function registerExpType(
     ctx: CompilerContext,
-    exp: AstExpression,
+    exp: A.AstExpression,
     description: TypeRef,
 ): CompilerContext {
     const ex = store.get(ctx, exp.id);
@@ -73,7 +58,7 @@ function registerExpType(
 }
 
 function resolveBooleanLiteral(
-    exp: AstBoolean,
+    exp: A.AstBoolean,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -85,7 +70,7 @@ function resolveBooleanLiteral(
 }
 
 function resolveIntLiteral(
-    exp: AstNumber,
+    exp: A.AstNumber,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -97,7 +82,7 @@ function resolveIntLiteral(
 }
 
 function resolveNullLiteral(
-    exp: AstNull,
+    exp: A.AstNull,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -105,7 +90,7 @@ function resolveNullLiteral(
 }
 
 function resolveAddressLiteral(
-    exp: AstAddress,
+    exp: A.AstAddress,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -117,7 +102,7 @@ function resolveAddressLiteral(
 }
 
 function resolveCellLiteral(
-    exp: AstCell,
+    exp: A.AstCell,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -129,7 +114,7 @@ function resolveCellLiteral(
 }
 
 function resolveSliceLiteral(
-    exp: AstSlice,
+    exp: A.AstSlice,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -141,7 +126,7 @@ function resolveSliceLiteral(
 }
 
 function resolveStringLiteral(
-    exp: AstString | AstSimplifiedString | AstCommentValue,
+    exp: A.AstString | A.AstSimplifiedString | A.AstCommentValue,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -153,7 +138,7 @@ function resolveStringLiteral(
 }
 
 function resolveStructNew(
-    exp: AstStructInstance | AstStructValue,
+    exp: A.AstStructInstance | A.AstStructValue,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -224,7 +209,7 @@ function resolveStructNew(
 }
 
 function resolveBinaryOp(
-    exp: AstOpBinary,
+    exp: A.AstOpBinary,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -260,6 +245,32 @@ function resolveBinaryOp(
                         exp.loc,
                     );
                 }
+
+                // poor man's constant propagation analysis (very local)
+                // it works only in the case when the right-hand side is a constant expression
+                // and does not have any variables
+                if (exp.op === ">>" || exp.op === "<<") {
+                    try {
+                        const valBits = ensureInt(
+                            evalConstantExpression(
+                                exp.right,
+                                ctx,
+                                getAstUtil(getAstFactory()),
+                            ),
+                        );
+                        if (0n > valBits.value || valBits.value > 256n) {
+                            throwCompilationError(
+                                `the number of bits shifted ('${valBits.value}') must be within [0..256] range`,
+                                exp.right.loc,
+                            );
+                        }
+                    } catch (error) {
+                        if (!(error instanceof TactConstEvalError)) {
+                            throw error;
+                        }
+                    }
+                }
+
                 resolved = { kind: "ref", name: "Int", optional: false };
             }
             break;
@@ -364,7 +375,7 @@ function isEqualityType(ctx: CompilerContext, ty: TypeRef): boolean {
 }
 
 function resolveUnaryOp(
-    exp: AstOpUnary,
+    exp: A.AstOpUnary,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -424,7 +435,7 @@ function resolveUnaryOp(
 }
 
 function resolveFieldAccess(
-    exp: AstFieldAccess,
+    exp: A.AstFieldAccess,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -516,7 +527,7 @@ function resolveFieldAccess(
 }
 
 function resolveStaticCall(
-    exp: AstStaticCall,
+    exp: A.AstStaticCall,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -591,7 +602,7 @@ function resolveStaticCall(
 }
 
 function resolveCall(
-    exp: AstMethodCall,
+    exp: A.AstMethodCall,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -699,7 +710,7 @@ function resolveCall(
 }
 
 function resolveInitOf(
-    ast: AstInitOf,
+    ast: A.AstInitOf,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -750,7 +761,7 @@ function resolveInitOf(
 }
 
 function resolveConditional(
-    ast: AstConditional,
+    ast: A.AstConditional,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -790,7 +801,7 @@ function resolveConditional(
 }
 
 export function resolveExpression(
-    exp: AstExpression,
+    exp: A.AstExpression,
     sctx: StatementContext,
     ctx: CompilerContext,
 ) {

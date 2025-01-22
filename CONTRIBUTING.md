@@ -63,7 +63,7 @@ yarn test -u spec-name-pattern1 spec-name-pattern2
 
 ## Code quality
 
-To pass review, code has to conform to our [styleguide](/STYLEGUIDE.md).
+To pass review, code has to conform to our [styleguide](./STYLEGUIDE.md).
 
 ## Linting
 
@@ -105,7 +105,7 @@ yarn knip
 Tact's command-line interface (CLI) is located in [bin/tact.js](./bin/tact.js).
 Tact uses the [meow](https://github.com/sindresorhus/meow) CLI arguments parser.
 
-The main entry point for the Tact CLI is [src/node.ts](./src/node.ts) and [src/pipeline/build.ts](./src/pipeline/build.ts) is the platform-independent compiler driver which contains the high-level compiler pipeline logic described above.
+The main entry point for the Tact CLI is [src/cli/tact/index.ts](./src/cli/tact/index.ts) and [src/pipeline/build.ts](./src/pipeline/build.ts) is the platform-independent compiler driver which contains the high-level compiler pipeline logic described above.
 
 The Tact CLI gets Tact settings from a `tact.config.json` file or creates a default config for a single-file compilation mode. The format of `tact.config.json` files is specified in [src/config/configSchema.json](src/config/configSchema.json).
 
@@ -117,11 +117,11 @@ Some CLI tests can be found in [.github/workflows/tact.yml](./.github/workflows/
 
 ### Parser
 
-The [src/grammar/grammar.ohm](./src/grammar/grammar.ohm) file contains the Tact grammar expressed in the PEG-like language of the [Ohm.js](https://ohmjs.org) parser generator.
+The [src/grammar/grammar.ohm](./src/grammar/prev/grammar.ohm) file contains the Tact grammar expressed in the PEG-like language of the [Ohm.js](https://ohmjs.org) parser generator.
 
-The helper file [src/grammar/grammar.ts](./src/grammar/grammar.ts) contains the logic that transforms concrete syntax trees produced with the help of the Ohm.js-generated parser into abstract syntax trees (ASTs) defined in [src/ast/ast.ts](./src/ast/ast.ts). The grammar.ts file also does a bit of grammar validation, like checking that function or constant attributes are not duplicated or that user identifiers do not start with certain reserved prefixes.
+The helper file [src/grammar/grammar.ts](./src/grammar/prev/grammar.ts) contains the logic that transforms concrete syntax trees produced with the help of the Ohm.js-generated parser into abstract syntax trees (ASTs) defined in [src/ast/ast.ts](./src/ast/ast.ts). The grammar.ts file also does a bit of grammar validation, like checking that function or constant attributes are not duplicated or that user identifiers do not start with certain reserved prefixes.
 
-The [src/grammar/test](./src/grammar/test) folder contains Tact files that are supposed to be parsed without any issues, and the [src/grammar/test-failed](./src/grammar/test-failed) folder contains grammatically incorrect test files which should result in parser errors. The parser error messages and the locations they point to are fixed in the [src/grammar/**snapshots**/grammar.spec.ts.snap](./src/grammar/__snapshots__/grammar.spec.ts.snap) Jest snapshot file.
+The [src/grammar/test](./src/grammar/test) folder contains Tact files that are supposed to be parsed without any issues, and the [src/grammar/test-failed](./src/grammar/test-failed) folder contains grammatically incorrect test files which should result in parser errors. The parser error messages and the locations they point to are fixed in the [src/grammar/**snapshots**/grammar.spec.ts.snap](./src/grammar/prev/__snapshots__/grammar.spec.ts.snap) Jest snapshot file.
 
 ### Typechecker
 
@@ -164,7 +164,10 @@ The implementation that we have right now is being refactored to produce FunC AS
 One can find the end-to-end codegen test spec files in the [src/test/e2e-emulated](./src/test/e2e-emulated/) folder. The test contracts are located in [src/test/e2e-emulated/contracts](./src/test/e2e-emulated/contracts) subfolder. Many of those spec files test various language features in relative isolation.
 An important spec file that tests argument passing semantics for functions and assignment semantics for variables is here: [src/test/e2e-emulated/semantics.spec.ts](./src/test/e2e-emulated/semantics.spec.ts).
 
-Note: If you add an end-to-end test contract, you also need to include it into [tact.config.json](src/test/tact.config.json) and run `yarn gen` to compile it and create TypeScript wrappers.
+Contracts with `inline` in the name of the file set `experimental.inline` config option to `true`.
+Contracts with `external` in the name of the file set `external` config option to `true`.
+
+Note: If you add an end-to-end test contract, you also need to run `yarn gen` to compile it and create TypeScript wrappers.
 
 `yarn gen` also re-compiles test contracts, so it's important to run it when code generation is changed.
 
@@ -176,7 +179,7 @@ Some other codegen tests are as follows:
 
 ### Pretty-printer and AST comparators
 
-The entry point to the Tact AST pretty-printer is [src/prettyPrinter.ts](./src/prettyPrinter.ts). It is going to be used for the Tact source code formatter once the parser keeps comments and other relevant information.
+The entry point to the Tact AST pretty-printer is [src/ast/ast-printer.ts](./src/ast/ast-printer.ts). It is going to be used for the Tact source code formatter once the parser keeps comments and other relevant information.
 
 The AST comparator is defined in [src/ast/compare.ts](./src/ast/compare.ts). This is useful, for instance, for static analysis tools which can re-use the Tact TypeScript API.
 

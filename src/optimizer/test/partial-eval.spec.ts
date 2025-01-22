@@ -1,11 +1,5 @@
-import {
-    AstExpression,
-    FactoryAst,
-    eqExpressions,
-    getAstFactory,
-    isLiteral,
-} from "../../ast/ast";
-import { AstUtil, getAstUtil } from "../util";
+import * as A from "../../ast/ast";
+import { AstUtil, getAstUtil } from "../../ast/util";
 import { getOptimizer } from "../constEval";
 import { CompilerContext } from "../../context/context";
 import { ExpressionTransformer, Rule } from "../types";
@@ -14,6 +8,12 @@ import { evalBinaryOp, evalUnaryOp } from "../interpreter";
 import { getParser } from "../../grammar";
 import { defaultParser } from "../../grammar/grammar";
 import { throwInternalCompilerError } from "../../error/errors";
+import {
+    eqExpressions,
+    FactoryAst,
+    getAstFactory,
+    isLiteral,
+} from "../../ast/ast-helpers";
 
 const MAX: string =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";
@@ -352,10 +352,13 @@ function testExpressionWithOptimizer(
 // The reason for doing this is that the partial evaluator will actually simplify constant
 // expressions. So, when comparing for equality of expressions, we also need to simplify
 // constant expressions.
-function dummyEval(ast: AstExpression, astFactory: FactoryAst): AstExpression {
+function dummyEval(
+    ast: A.AstExpression,
+    astFactory: FactoryAst,
+): A.AstExpression {
     const cloneNode = astFactory.cloneNode;
     const util = getAstUtil(astFactory);
-    const recurse = (ast: AstExpression): AstExpression => {
+    const recurse = (ast: A.AstExpression): A.AstExpression => {
         switch (ast.kind) {
             case "null":
                 return ast;
@@ -458,7 +461,7 @@ class ParameterizableDummyOptimizer implements ExpressionTransformer {
         this.rules = rules;
     }
 
-    public applyRules = (ast: AstExpression): AstExpression => {
+    public applyRules = (ast: A.AstExpression): A.AstExpression => {
         return this.rules.reduce(
             (prev, rule) => rule.applyRule(prev, this),
             ast,

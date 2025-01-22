@@ -1,18 +1,18 @@
 import { getParser as getParserNext } from "./next";
-
-import { AstExpression, AstImport, AstModule, FactoryAst } from "../ast/ast";
+import { FactoryAst } from "../ast/ast-helpers";
+import * as A from "../ast/ast";
 
 import { getParser as getParserPrev } from "./prev/grammar";
 import { ItemOrigin } from "./src-info";
 
 export type Parser = {
-    parse: (src: string, path: string, origin: ItemOrigin) => AstModule;
-    parseExpression: (sourceCode: string) => AstExpression;
+    parse: (src: string, path: string, origin: ItemOrigin) => A.AstModule;
+    parseExpression: (sourceCode: string) => A.AstExpression;
     parseImports: (
         src: string,
         path: string,
         origin: ItemOrigin,
-    ) => AstImport[];
+    ) => A.AstImport[];
 };
 
 export const defaultParser = "new";
