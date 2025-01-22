@@ -1016,6 +1016,38 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: A.FactoryAst) {
             }
         }
 
+        function checkNode(node: A.AstNode): boolean {
+            if (node.kind === "field_access" || node.kind === "method_call") {
+                // we don't need to check `self.a` or `self.foo()`
+                return false;
+            }
+
+            if (node.kind === "statement_assign") {
+                const left = node.path;
+                if (left.kind === "id" && left.text === "self") {
+                    throwCompilationError(
+                        "cannot reassign `self` in `init` function",
+                        left.loc,
+                    );
+                }
+
+                traverse(node.expression, checkNode);
+
+                // don't walk to left side of assignment
+                return false;
+            }
+
+            if (node.kind === "id" && node.text === "self") {
+                throwCompilationError(
+                    "cannot read whole `self` in `init` function",
+                    node.loc,
+                );
+            }
+            return true;
+        }
+
+        ast.statements.forEach((stmt) => traverse(stmt, checkNode));
+
         return {
             params,
             ast,
@@ -1862,7 +1894,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: A.FactoryAst) {
 
     for (const [k, t] of types) {
         const dependsOn: Set<string> = new Set();
-        const handler = (src: A.AstNode) => {
+        const handler = (src: A.AstNode): boolean => {
             if (src.kind === "init_of") {
                 if (!types.has(A.idText(src.contract))) {
                     throwCompilationError(
@@ -1872,6 +1904,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: A.FactoryAst) {
                 }
                 dependsOn.add(A.idText(src.contract));
             }
+            return true;
         };
 
         // Traverse functions
