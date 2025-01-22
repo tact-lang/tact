@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "entry": ["src/index.ts", "src/cli/index.ts", "bin/unboc.js"],
+  "entry": ["src/index.ts", "src/cli/tact/index.ts", "bin/unboc.js"],
   "project": ["src/**/*.ts", "bin/unboc.js"],
   "ignore": [
     "src/ast/ast.ts",
