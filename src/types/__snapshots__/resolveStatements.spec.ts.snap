@@ -1789,7 +1789,77 @@ exports[`resolveStatements should resolve statements for assign-self-mutating-me
 ]
 `;
 
+exports[`resolveStatements should resolve statements for const-eval-almost-constant-circular-dependency 1`] = `
+[
+  [
+    "B",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "foo(1)",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "v == 1",
+    "Bool",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "A",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "v == 1",
+    "Bool",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "A",
+    "Int",
+  ],
+]
+`;
+
 exports[`resolveStatements should resolve statements for constant-as-default-value-of-struct-field 1`] = `
+[
+  [
+    "100",
+    "Int",
+  ],
+  [
+    "C",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for constant-as-default-value-of-struct-field-2 1`] = `
 [
   [
     "100",

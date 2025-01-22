@@ -715,13 +715,14 @@ export class Interpreter {
     /**
      * Stores all visited constants during the current computation.
      */
-    private visited: Set<string> = new Set();
+    private visitedConstants: Set<string> = new Set();
 
     /**
-     * Stores all constants that were calculated during the calculation of some constant.
+     * Stores all constants that were calculated during the computation of some constant,
+     * and the functions that were called for this process.
      * Used only in case of circular dependencies to return a clear error.
      */
-    private dependenciesPath: string[] = [];
+    private constantComputationPath: string[] = [];
     private config: InterpreterConfig;
     private util: AstUtil;
 
@@ -886,20 +887,20 @@ export class Interpreter {
             // all the constants we process in this iteration. That way, any circular dependencies
             // will result in a second occurrence here and thus an early (before stack overflow)
             // exception being thrown here.
-            if (this.visited.has(name)) {
+            if (this.visitedConstants.has(name)) {
                 throwErrorConstEval(
-                    `cannot evaluate ${name} as it has circular dependencies: [${this.dependenciesPath.join(" -> ")} -> ${name}]`,
+                    `cannot evaluate ${name} as it has circular dependencies: [${this.constantComputationPath.join(" -> ")} -> ${name}]`,
                     ast.loc,
                 );
             }
-            this.visited.add(name);
+            this.visitedConstants.add(name);
 
             if (constant.ast.kind === "constant_def") {
-                this.dependenciesPath.push(name);
+                this.constantComputationPath.push(name);
                 constant.value = this.interpretExpression(
                     constant.ast.initializer,
                 );
-                this.dependenciesPath.pop();
+                this.constantComputationPath.pop();
                 return constant.value;
             }
 
@@ -1437,7 +1438,7 @@ export class Interpreter {
                                     ast.loc,
                                 );
                             }
-                            this.dependenciesPath.push(
+                            this.constantComputationPath.push(
                                 `${functionDescription.name}()`,
                             );
                             const result = this.evalStaticFunction(
@@ -1445,7 +1446,7 @@ export class Interpreter {
                                 ast.args,
                                 functionDescription.returns,
                             );
-                            this.dependenciesPath.pop();
+                            this.constantComputationPath.pop();
                             return result;
                         }
                         case "asm_function_def":
