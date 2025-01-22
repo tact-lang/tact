@@ -1,6 +1,12 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "entry": ["src/index.ts", "src/node.ts", "bin/tact.js", "bin/unboc.js"],
+  "entry": [
+    "src/index.ts",
+    "src/node.ts",
+    "bin/tact.js",
+    "bin/unboc.js",
+    "requires.build.ts"
+  ],
   "project": ["src/**/*.ts", "bin/tact.js", "bin/unboc.js"],
   "ignore": [
     "src/ast/ast.ts",
