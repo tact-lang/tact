@@ -2,6 +2,9 @@ import { stat } from "fs/promises";
 import { makeCodegen, runCommand } from "../test-util.build";
 import { join, normalize } from "path";
 
+// disable tests on windows
+const testWin = process.platform !== 'win32' ? test : test.skip;
+
 const tact = (args: string) => {
     const tactPath = normalize(
         join(__dirname, "..", "..", "..", "bin", "tact.js"),
@@ -13,13 +16,13 @@ const tact = (args: string) => {
 const codegen = makeCodegen(join(__dirname, "output"));
 
 describe("tact --version", () => {
-    test("Exits with correct code", async () => {
+    testWin("Exits with correct code", async () => {
         const result = await tact("--version");
 
         expect(result).toMatchObject({ kind: "exited", code: 0 });
     });
 
-    test("Returns correct stdout", async () => {
+    testWin("Returns correct stdout", async () => {
         const result = await tact("--version");
 
         expect(result).toHaveProperty(
@@ -51,7 +54,7 @@ const badContracts = [
 ] as const;
 
 describe("tact foo.tact", () => {
-    test.each(badContracts)(
+    testWin.each(badContracts)(
         "Compilation of broken contract doesn't contain stacktrace (%s)",
         async (name, code) => {
             const result = await tact(
@@ -65,7 +68,7 @@ describe("tact foo.tact", () => {
         },
     );
 
-    test.skip.each(badContracts)(
+    testWin.skip.each(badContracts)(
         "Compilation of broken contract contains stacktrace with --verbose 2 (%s)",
         async (name, code) => {
             const result = await tact(
@@ -90,28 +93,28 @@ contract Test {
 `;
 
 describe("tact foo.tact", () => {
-    test("Check single-contract compilation without flags", async () => {
+    testWin("Check single-contract compilation without flags", async () => {
         const path = await codegen.contract(`single`, goodContract);
         const result = await tact(path);
 
         expect(result).toMatchObject({ kind: "exited", code: 0 });
     });
 
-    test("Check single-contract compilation with --check", async () => {
+    testWin("Check single-contract compilation with --check", async () => {
         const path = await codegen.contract(`single-check`, goodContract);
         const result = await tact(`--check ${path}`);
 
         expect(result).toMatchObject({ kind: "exited", code: 0 });
     });
 
-    test("Check single-contract compilation with --func", async () => {
+    testWin("Check single-contract compilation with --func", async () => {
         const path = await codegen.contract(`single-func`, goodContract);
         const result = await tact(`--func ${path}`);
 
         expect(result).toMatchObject({ kind: "exited", code: 0 });
     });
 
-    test("Check single-contract compilation with --with-decompilation", async () => {
+    testWin("Check single-contract compilation with --with-decompilation", async () => {
         const path = await codegen.contract(`single-decompile`, goodContract);
         const result = await tact(`--with-decompilation ${path}`);
 
@@ -120,7 +123,7 @@ describe("tact foo.tact", () => {
 });
 
 describe("tact --config config.json", () => {
-    test("Complete results", async () => {
+    testWin("Complete results", async () => {
         const r = await codegen.config("complete", goodContract, {
             options: { external: true },
             mode: "full",
@@ -133,7 +136,7 @@ describe("tact --config config.json", () => {
         await expect(statPromise).resolves.not.toThrow();
     });
 
-    test("With decompiled binary", async () => {
+    testWin("With decompiled binary", async () => {
         const r = await codegen.config("decompile", goodContract, {
             options: { external: true },
             mode: "fullWithDecompilation",
@@ -146,7 +149,7 @@ describe("tact --config config.json", () => {
         await expect(statPromise).resolves.toMatchObject({});
     });
 
-    test("Mode passed as parameter takes priority", async () => {
+    testWin("Mode passed as parameter takes priority", async () => {
         const r = await codegen.config("priority", goodContract, {
             options: { external: true },
             mode: "full",
@@ -161,28 +164,28 @@ describe("tact --config config.json", () => {
 });
 
 describe("Wrong flags", () => {
-    test("--func --check are mutually exclusive ", async () => {
+    testWin("--func --check are mutually exclusive ", async () => {
         const path = await codegen.contract(`func-check`, goodContract);
         const result = await tact(`${path} --func --check`);
 
         expect(result).toMatchObject({ kind: "exited", code: 30 });
     });
 
-    test("--with-decompilation --check are mutually exclusive", async () => {
+    testWin("--with-decompilation --check are mutually exclusive", async () => {
         const path = await codegen.contract(`decompile-check`, goodContract);
         const result = await tact(`${path} --with-decompilation --check`);
 
         expect(result).toMatchObject({ kind: "exited", code: 30 });
     });
 
-    test("--func --with-decompilation are mutually exclusive", async () => {
+    testWin("--func --with-decompilation are mutually exclusive", async () => {
         const path = await codegen.contract(`func-decompile`, goodContract);
         const result = await tact(`${path} --func --with-decompilation`);
 
         expect(result).toMatchObject({ kind: "exited", code: 30 });
     });
 
-    test("Unknown flag throws error", async () => {
+    testWin("Unknown flag throws error", async () => {
         const path = await codegen.contract(`func-decompile`, goodContract);
         const result = await tact(`${path} --unknownOption`);
 
@@ -191,7 +194,7 @@ describe("Wrong flags", () => {
 });
 
 describe("Compilation failures", () => {
-    test("Exits with failure on wrong contracts", async () => {
+    testWin("Exits with failure on wrong contracts", async () => {
         const badContract = `
         message(1) Msg1 {}
         message(1) Msg2 {}
@@ -211,7 +214,7 @@ describe("Compilation failures", () => {
 });
 
 describe("tact --eval", () => {
-    test("Evaluate expressions", async () => {
+    testWin("Evaluate expressions", async () => {
         const result = await tact(
             '-e "(1 + 2 * (pow(3,4) - 2) << 1 & 0x54 | 33 >> 1) * 2 + 2"',
         );

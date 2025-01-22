@@ -1,6 +1,9 @@
 import { join, normalize } from "path";
 import { makeCodegen, runCommand } from "../test-util.build";
 
+// disable tests on windows
+const testWin = process.platform !== 'win32' ? test : test.skip;
+
 const tact = (args: string) => {
     const tactPath = normalize(
         join(__dirname, "..", "..", "..", "bin", "tact.js"),
@@ -27,7 +30,7 @@ contract Test {
 `;
 
 describe("unboc foo.boc", () => {
-    test("Exits with correct code", async () => {
+    testWin("Exits with correct code", async () => {
         const r = await codegen.config(`unboc`, goodContract, {});
         await tact(`-c ${r.config}`);
         const result = await unboc(r.outputPath("code.boc"));
