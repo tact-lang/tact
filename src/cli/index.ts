@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import { dirname, join } from "path";
+import { basename, dirname, join } from "path";
 import { execFileSync } from "child_process";
 import { z, ZodError } from "zod";
 import { createNodeFileSystem } from "../vfs/createNodeFileSystem";
@@ -100,7 +100,7 @@ const parseArgs = async (E: CliErrors, A: Args) => {
     const filePath = A.single("immediate");
     if (filePath) {
         const F = createNodeFileSystem(dirname(filePath), false);
-        const config = createSingleFileConfig(filePath);
+        const config = createSingleFileConfig(basename(filePath));
         await compile(A, E, F, config);
         return;
     }

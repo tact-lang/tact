@@ -6,7 +6,6 @@ import { Config, ConfigProject } from "../config/parseConfig";
 const binDir = join(__dirname, "..", "..", "bin");
 const tact = (args: string) => {
     const command = `./tact.js ${args}`;
-    console.error(command);
     return runCommand(command, binDir);
 }
 
@@ -118,19 +117,18 @@ contract Test {
 
 const flags = [
     ["without flags", ""],
-    // ["with --check", "--check"],
-    // ["with --func", "--func"],
+    ["with --check", "--check"],
+    ["with --func", "--func"],
     ["with --with-decompilation", "--with-decompilation"],
 ] as const;
 
-describe.only("tact foo.tact", () => {
+describe("tact foo.tact", () => {
     test.each(flags)(
         "Check single-contract compilation %s",
         async (_text, flag) => {
             const path = await writeContract(`single-${flag}`, goodContract);
             const result = await tact(`${flag} ${path}`);
 
-            console.error(result);
             expect(result).toMatchObject({ kind: "exited", code: 0 });
         },
     );
