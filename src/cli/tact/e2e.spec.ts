@@ -3,7 +3,9 @@ import { makeCodegen, runCommand } from "../test-util.build";
 import { join, normalize } from "path";
 
 const tact = (args: string) => {
-    const tactPath = normalize(join(__dirname, "..", "..", "..", "bin", "tact.js"));
+    const tactPath = normalize(
+        join(__dirname, "..", "..", "..", "bin", "tact.js"),
+    );
     const command = `node ${tactPath} ${args}`;
     return runCommand(command);
 };

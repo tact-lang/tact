@@ -2,12 +2,16 @@ import { join, normalize } from "path";
 import { makeCodegen, runCommand } from "../test-util.build";
 
 const tact = (args: string) => {
-    const tactPath = normalize(join(__dirname, "..", "..", "..", "bin", "tact.js"));
+    const tactPath = normalize(
+        join(__dirname, "..", "..", "..", "bin", "tact.js"),
+    );
     const command = `node ${tactPath} ${args}`;
     return runCommand(command);
 };
 const unboc = (args: string) => {
-    const unbocPath = normalize(join(__dirname, "..", "..", "..", "bin", "unboc.js"));
+    const unbocPath = normalize(
+        join(__dirname, "..", "..", "..", "bin", "unboc.js"),
+    );
     const command = `node ${unbocPath} ${args}`;
     return runCommand(command);
 };
