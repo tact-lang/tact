@@ -1,10 +1,10 @@
-import * as A from "../../ast/ast";
 import {
     idTextErr,
     TactConstEvalError,
     throwCompilationError,
     throwInternalCompilerError,
 } from "../../error/errors";
+import * as A from "../../ast/ast";
 import { getExpType } from "../../types/resolveExpression";
 import {
     getStaticConstant,
@@ -36,6 +36,12 @@ import { writeCastedExpression } from "./writeFunction";
 import { isLvalue } from "../../types/resolveStatements";
 import { evalConstantExpression } from "../../optimizer/constEval";
 import { getAstUtil } from "../../ast/util";
+import {
+    eqNames,
+    getAstFactory,
+    idText,
+    tryExtractPath,
+} from "../../ast/ast-helpers";
 
 function isNull(wCtx: WriterContext, expr: A.AstExpression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
@@ -128,7 +134,7 @@ export function writeValue(val: A.AstLiteral, wCtx: WriterContext): string {
             // Transform the struct fields into a map for lookup
             const valMap: Map<string, A.AstLiteral> = new Map();
             for (const f of val.args) {
-                valMap.set(A.idText(f.field), f.initializer);
+                valMap.set(idText(f.field), f.initializer);
             }
 
             const structDescription = getType(wCtx.ctx, val.type);
@@ -160,9 +166,7 @@ export function writeValue(val: A.AstLiteral, wCtx: WriterContext): string {
 }
 
 export function writePathExpression(path: A.AstId[]): string {
-    return [funcIdOf(A.idText(path[0]!)), ...path.slice(1).map(A.idText)].join(
-        `'`,
-    );
+    return [funcIdOf(idText(path[0]!)), ...path.slice(1).map(idText)].join(`'`);
 }
 
 export function writeExpression(
@@ -177,7 +181,7 @@ export function writeExpression(
     //    return writeValue(f, wCtx);
     // }
     try {
-        const util = getAstUtil(A.getAstFactory());
+        const util = getAstUtil(getAstFactory());
         // Let us put a limit of 2 ^ 12 = 4096 iterations on loops to increase compiler responsiveness.
         // If a loop takes more than such number of iterations, the interpreter will fail evaluation.
         // I think maxLoopIterations should be a command line option in case a user wants to wait more
@@ -463,8 +467,8 @@ export function writeExpression(
             fields = fields.slice(0, srcT.partialFieldCount);
         }
 
-        const field = fields.find((v) => A.eqNames(v.name, f.field));
-        const cst = srcT.constants.find((v) => A.eqNames(v.name, f.field));
+        const field = fields.find((v) => eqNames(v.name, f.field));
+        const cst = srcT.constants.find((v) => eqNames(v.name, f.field));
         if (!field && !cst) {
             throwCompilationError(
                 `Cannot find field ${idTextErr(f.field)} in struct ${idTextErr(srcT.name)}`,
@@ -474,7 +478,7 @@ export function writeExpression(
 
         if (field) {
             // Trying to resolve field as a path
-            const path = A.tryExtractPath(f);
+            const path = tryExtractPath(f);
             if (path) {
                 // Prepare path
                 const idd = writePathExpression(path);
@@ -503,8 +507,8 @@ export function writeExpression(
 
     if (f.kind === "static_call") {
         // Check global functions
-        if (GlobalFunctions.has(A.idText(f.function))) {
-            return GlobalFunctions.get(A.idText(f.function))!.generate(
+        if (GlobalFunctions.has(idText(f.function))) {
+            return GlobalFunctions.get(idText(f.function))!.generate(
                 wCtx,
                 f.args.map((v) => getExpType(wCtx.ctx, v)),
                 f.args,
@@ -512,10 +516,10 @@ export function writeExpression(
             );
         }
 
-        const sf = getStaticFunction(wCtx.ctx, A.idText(f.function));
-        let n = ops.global(A.idText(f.function));
+        const sf = getStaticFunction(wCtx.ctx, idText(f.function));
+        let n = ops.global(idText(f.function));
         if (sf.ast.kind === "native_function_decl") {
-            n = A.idText(sf.ast.nativeName);
+            n = idText(sf.ast.nativeName);
             if (n.startsWith("__tact")) {
                 wCtx.used(n);
             }
@@ -544,7 +548,7 @@ export function writeExpression(
         // Write a constructor
         const id = writeStructConstructor(
             src,
-            f.args.map((v) => A.idText(v.field)),
+            f.args.map((v) => idText(v.field)),
             wCtx,
         );
         wCtx.used(id);
@@ -554,7 +558,7 @@ export function writeExpression(
             (v) =>
                 writeCastedExpression(
                     v.initializer,
-                    src.fields.find((v2) => A.eqNames(v2.name, v.field))!.type,
+                    src.fields.find((v2) => eqNames(v2.name, v.field))!.type,
                     wCtx,
                 ),
             wCtx,
@@ -577,8 +581,8 @@ export function writeExpression(
 
             // Check struct ABI
             if (selfTy.kind === "struct") {
-                if (StructFunctions.has(A.idText(f.method))) {
-                    const abi = StructFunctions.get(A.idText(f.method))!;
+                if (StructFunctions.has(idText(f.method))) {
+                    const abi = StructFunctions.get(idText(f.method))!;
                     return abi.generate(
                         wCtx,
                         [
@@ -592,8 +596,8 @@ export function writeExpression(
             }
 
             // Resolve function
-            const methodDescr = selfTy.functions.get(A.idText(f.method))!;
-            let name = ops.extension(selfTyRef.name, A.idText(f.method));
+            const methodDescr = selfTy.functions.get(idText(f.method))!;
+            let name = ops.extension(selfTyRef.name, idText(f.method));
             if (
                 methodDescr.ast.kind === "function_def" ||
                 methodDescr.ast.kind === "function_decl" ||
@@ -601,7 +605,7 @@ export function writeExpression(
             ) {
                 wCtx.used(name);
             } else {
-                name = A.idText(methodDescr.ast.nativeName);
+                name = idText(methodDescr.ast.nativeName);
                 if (name.startsWith("__tact")) {
                     wCtx.used(name);
                 }
@@ -635,7 +639,7 @@ export function writeExpression(
             const s = writeCastedExpression(f.self, methodDescr.self!, wCtx);
             if (methodDescr.isMutating) {
                 // check if it's an l-value
-                const path = A.tryExtractPath(f.self);
+                const path = tryExtractPath(f.self);
                 if (path !== null && isLvalue(path, wCtx.ctx)) {
                     return `${s}~${name}(${renderedArguments.join(", ")})`;
                 } else {
@@ -648,13 +652,13 @@ export function writeExpression(
 
         // Map types
         if (selfTyRef.kind === "map") {
-            if (!MapFunctions.has(A.idText(f.method))) {
+            if (!MapFunctions.has(idText(f.method))) {
                 throwCompilationError(
-                    `Map function "${A.idText(f.method)}" not found`,
+                    `Map function "${idText(f.method)}" not found`,
                     f.loc,
                 );
             }
-            const abf = MapFunctions.get(A.idText(f.method))!;
+            const abf = MapFunctions.get(idText(f.method))!;
             return abf.generate(
                 wCtx,
                 [selfTyRef, ...f.args.map((v) => getExpType(wCtx.ctx, v))],
@@ -682,7 +686,7 @@ export function writeExpression(
         const initArgs = f.args.map((a, i) =>
             writeCastedExpression(a, type.init!.params[i]!.type, wCtx),
         );
-        return `${ops.contractInitChild(A.idText(f.contract), wCtx)}(${initArgs.join(", ")})`;
+        return `${ops.contractInitChild(idText(f.contract), wCtx)}(${initArgs.join(", ")})`;
     }
 
     //

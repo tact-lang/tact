@@ -7,7 +7,7 @@ import { CompilerContext } from "../context/context";
 import { resolveSignatures } from "../types/resolveSignatures";
 import path from "path";
 import { getParser } from "../grammar";
-import { getAstFactory } from "../ast/ast";
+import { getAstFactory } from "../ast/ast-helpers";
 import { defaultParser } from "../grammar/grammar";
 import { stdlibPath } from "../stdlib/path";
 

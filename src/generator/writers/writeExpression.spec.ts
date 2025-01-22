@@ -8,7 +8,7 @@ import { openContext } from "../../context/store";
 import { resolveStatements } from "../../types/resolveStatements";
 import { CompilerContext } from "../../context/context";
 import { getParser } from "../../grammar";
-import { getAstFactory } from "../../ast/ast";
+import { getAstFactory } from "../../ast/ast-helpers";
 import { defaultParser } from "../../grammar/grammar";
 
 const code = `

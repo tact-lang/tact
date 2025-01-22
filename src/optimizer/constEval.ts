@@ -1,5 +1,6 @@
 import { CompilerContext } from "../context/context";
 import * as A from "../ast/ast";
+import { isLiteral } from "../ast/ast-helpers";
 import {
     TactConstEvalError,
     throwInternalCompilerError,
@@ -46,7 +47,7 @@ export const getOptimizer = (util: AstUtil) => {
 
         const simplOperand = partiallyEvalExpression(operand, ctx);
 
-        if (A.isLiteral(simplOperand)) {
+        if (isLiteral(simplOperand)) {
             const result = evalUnaryOp(op, simplOperand, source, util);
             return result;
         } else {
@@ -64,7 +65,7 @@ export const getOptimizer = (util: AstUtil) => {
     ): A.AstExpression {
         const leftOperand = partiallyEvalExpression(left, ctx);
 
-        if (A.isLiteral(leftOperand)) {
+        if (isLiteral(leftOperand)) {
             // Because of short-circuiting, we must delay evaluation of the right operand
             try {
                 const result = evalBinaryOp(
@@ -76,7 +77,7 @@ export const getOptimizer = (util: AstUtil) => {
                             right,
                             ctx,
                         );
-                        if (A.isLiteral(rightOperand)) {
+                        if (isLiteral(rightOperand)) {
                             // If the right operand reduced to a value, then we can let the function
                             // evalBinaryOp finish its normal execution by returning the
                             // right operand.
