@@ -200,7 +200,7 @@ export type AstStatement =
     | AstStatementExpression
     | AstStatementAssign
     | AstStatementAugmentedAssign
-    | AstCondition
+    | AstStatementCondition
     | AstStatementWhile
     | AstStatementUntil
     | AstStatementRepeat
@@ -263,12 +263,12 @@ export type AstStatementAugmentedAssign = {
     loc: SrcInfo;
 };
 
-export type AstCondition = {
+export type AstStatementCondition = {
     kind: "statement_condition";
     condition: AstExpression;
     trueStatements: AstStatement[];
     falseStatements: AstStatement[] | null;
-    elseif: AstCondition | null;
+    elseif: AstStatementCondition | null;
     id: number;
     loc: SrcInfo;
 };

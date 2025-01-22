@@ -736,7 +736,7 @@ export const ppAstStatementAugmentedAssign: Printer<
             `${ppAstExpression(path)} ${op}= ${ppAstExpression(expression)};`,
         );
 
-export const ppAstCondition: Printer<A.AstCondition> =
+export const ppAstStatementCondition: Printer<A.AstStatementCondition> =
     ({ condition, trueStatements, falseStatements }) =>
     (c) => {
         if (falseStatements) {
@@ -842,7 +842,7 @@ export const ppAstStatement: Printer<A.AstStatement> =
         statement_expression: ppAstStatementExpression,
         statement_assign: ppAstStatementAssign,
         statement_augmentedassign: ppAstStatementAugmentedAssign,
-        statement_condition: ppAstCondition,
+        statement_condition: ppAstStatementCondition,
         statement_while: ppAstStatementWhile,
         statement_until: ppAstStatementUntil,
         statement_repeat: ppAstStatementRepeat,
@@ -910,7 +910,7 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     statement_expression: ppAstStatementExpression,
     statement_assign: ppAstStatementAssign,
     statement_augmentedassign: ppAstStatementAugmentedAssign,
-    statement_condition: ppAstCondition,
+    statement_condition: ppAstStatementCondition,
     statement_while: ppAstStatementWhile,
     statement_until: ppAstStatementUntil,
     statement_repeat: ppAstStatementRepeat,

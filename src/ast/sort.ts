@@ -1,10 +1,4 @@
-import {
-    AstPrimitiveTypeDecl,
-    AstFunctionAttribute,
-    AstConstantAttribute,
-    AstContractAttribute,
-    AstNode,
-} from "./ast";
+import * as A from "./ast";
 import { throwInternalCompilerError } from "../error/errors";
 
 /**
@@ -12,7 +6,7 @@ import { throwInternalCompilerError } from "../error/errors";
  */
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class AstSorter {
-    public static sort<T extends AstNode>(items: T[]): T[] {
+    public static sort<T extends A.AstNode>(items: T[]): T[] {
         if (items.length === 0) {
             return items;
         }
@@ -20,7 +14,7 @@ export class AstSorter {
         switch (kind) {
             case "primitive_type_decl":
                 return this.sortPrimitiveTypeDecls(
-                    items as AstPrimitiveTypeDecl[],
+                    items as A.AstPrimitiveTypeDecl[],
                 ) as T[];
             default:
                 throwInternalCompilerError(`Unsupported node kind: ${kind}`);
@@ -28,8 +22,8 @@ export class AstSorter {
     }
 
     private static sortPrimitiveTypeDecls(
-        decls: AstPrimitiveTypeDecl[],
-    ): AstPrimitiveTypeDecl[] {
+        decls: A.AstPrimitiveTypeDecl[],
+    ): A.AstPrimitiveTypeDecl[] {
         return decls.sort((a, b) => {
             // Case-insensitive sorting
             const nameA = a.name.text.toLowerCase();
@@ -46,9 +40,9 @@ export class AstSorter {
 
     public static sortAttributes<
         T extends
-            | AstConstantAttribute
-            | AstContractAttribute
-            | AstFunctionAttribute,
+            | A.AstConstantAttribute
+            | A.AstContractAttribute
+            | A.AstFunctionAttribute,
     >(attributes: T[]): T[] {
         return attributes.sort((a, b) => a.type.localeCompare(b.type));
     }
