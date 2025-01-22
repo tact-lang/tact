@@ -30,9 +30,9 @@ export type GetParserResult<T> = [T] extends [
 const iterationLimit = 10000;
 
 type ArgParserErrors = {
-    argumentHasParameter: (param: string, argName: string) => void,
-    unexpectedArgument: (text: string | undefined) => void
-}
+    argumentHasParameter: (param: string, argName: string) => void;
+    unexpectedArgument: (text: string | undefined) => void;
+};
 
 export const ArgParser = (Errors: ArgParserErrors) => {
     const immediate: Token<"immediate", string> = (argv) => {

@@ -15,7 +15,7 @@ const unboc = (args: string) => {
     return runCommand(command, binDir);
 };
 
-const codegen = makeCodegen(join(__dirname, "output"))
+const codegen = makeCodegen(join(__dirname, "output"));
 
 const goodContract = `
 contract Test {

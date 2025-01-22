@@ -59,7 +59,8 @@ export const makeCodegen = (outputDir: string) => {
         await writeFile(configPath, JSON.stringify(config, null, 4));
         return {
             config: configPath,
-            outputPath: (ext: string) => join(outDir, name, `${name}_Test.${ext}`),
+            outputPath: (ext: string) =>
+                join(outDir, name, `${name}_Test.${ext}`),
         };
     };
 

@@ -2,7 +2,7 @@ import { Intersect } from "../utils/tricks";
 
 type ArgConsumerErrors = {
     duplicateArgument: (name: string) => void;
-}
+};
 
 export const ArgConsumer = <T>(
     Errors: ArgConsumerErrors,

@@ -8,7 +8,7 @@ const tact = (args: string) => {
     return runCommand(command, binDir);
 };
 
-const codegen = makeCodegen(join(__dirname, "output"))
+const codegen = makeCodegen(join(__dirname, "output"));
 
 describe("tact --version", () => {
     test("Exits with correct code", async () => {
@@ -94,7 +94,7 @@ describe("tact foo.tact", () => {
 
         expect(result).toMatchObject({ kind: "exited", code: 0 });
     });
-    
+
     test("Check single-contract compilation with --check", async () => {
         const path = await codegen.contract(`single-check`, goodContract);
         const result = await tact(`--check ${path}`);
@@ -115,7 +115,6 @@ describe("tact foo.tact", () => {
 
         expect(result).toMatchObject({ kind: "exited", code: 0 });
     });
-
 });
 
 describe("tact --config config.json", () => {
