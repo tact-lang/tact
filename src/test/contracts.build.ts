@@ -1,27 +1,16 @@
-import { run } from "../node";
-import path from "path";
-import { Logger } from "../context/logger";
 import { __DANGER__disableVersionNumber } from "../pipeline/version";
-
-const configPath = path.join(__dirname, "tact.config.json");
+import { allInFolder } from "./utils/all-in-folder.build";
 
 const main = async () => {
     // Disable version number in packages
     __DANGER__disableVersionNumber();
 
-    const logger = new Logger();
-
-    try {
-        const compileResult = await run({
-            configPath,
-        });
-        if (!compileResult.ok) {
-            throw new Error("Tact projects compilation failed");
-        }
-    } catch (error) {
-        logger.error(error as Error);
-        process.exit(1);
-    }
+    await allInFolder(__dirname, [
+        "e2e-emulated/contracts/*.tact",
+        "benchmarks/contracts/*.tact",
+        "codegen/all-contracts.tact",
+        "exit-codes/contracts/*.tact",
+    ]);
 };
 
 void main();

@@ -12,3 +12,4 @@ jest.setup.js
 jest.teardown.js
 /docs
 version.build.ts
+bin/*
