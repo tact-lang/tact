@@ -2143,9 +2143,11 @@ function initializeConstants(
 ): CompilerContext {
     for (const constant of constants) {
         if (constant.ast.kind === "constant_def") {
-            constant.value =
-                constant.value ??
-                evalConstantExpression(constant.ast.initializer, ctx, util);
+            constant.value ??= evalConstantExpression(
+                constant.ast.initializer,
+                ctx,
+                util,
+            );
         }
     }
     return ctx;
