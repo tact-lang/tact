@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import { basename, dirname, join, resolve } from "path";
+import { basename, dirname, join, normalize, resolve } from "path";
 import { execFileSync } from "child_process";
 import { z, ZodError } from "zod";
 import { createNodeFileSystem } from "../../vfs/createNodeFileSystem";
@@ -115,14 +115,21 @@ const parseArgs = async (Errors: CliErrors, Args: Args) => {
 
     const configPath = Args.single("config");
     if (configPath) {
-        const normalizedPath = resolve(cwd(), dirname(configPath));
-        const Fs = createNodeFileSystem(normalizedPath, false);
-        if (!Fs.exists(configPath)) {
+        const normalizedConfigPath = normalize(resolve(cwd(), configPath));
+        const normalizedDirPath = normalize(
+            resolve(cwd(), dirname(configPath)),
+        );
+        const Fs = createNodeFileSystem(normalizedDirPath, false);
+        if (!Fs.exists(normalizedConfigPath)) {
             Errors.configNotFound(configPath);
             return;
         }
-        const configText = Fs.readFile(configPath).toString("utf-8");
-        const config = parseConfigSafe(Errors, configPath, configText);
+        const configText = Fs.readFile(normalizedConfigPath).toString("utf-8");
+        const config = parseConfigSafe(
+            Errors,
+            normalizedConfigPath,
+            configText,
+        );
         if (!config) {
             return;
         }
