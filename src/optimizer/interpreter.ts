@@ -882,7 +882,7 @@ export class Interpreter {
     }
 
     public interpretName(ast: A.AstId): A.AstLiteral {
-        const name = A.idText(ast);
+        const name = idText(ast);
 
         if (hasStaticConstant(this.context, name)) {
             const constant = getStaticConstant(this.context, name);
