@@ -1025,7 +1025,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 return false;
             }
 
-            if (node.kind === "statement_assign") {
+            if (
+                node.kind === "statement_assign" ||
+                node.kind === "statement_augmentedassign"
+            ) {
                 const left = node.path;
                 if (left.kind === "id" && left.text === "self") {
                     throwCompilationError(
@@ -1049,7 +1052,9 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             return true;
         }
 
-        ast.statements.forEach((stmt) => traverse(stmt, checkNode));
+        ast.statements.forEach((stmt) => {
+            traverse(stmt, checkNode);
+        });
 
         return {
             params,

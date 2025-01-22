@@ -356,6 +356,15 @@ exports[`resolveDescriptors should fail descriptors for getter-outside-contract 
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for init-self-augmented-reassign-with 1`] = `
+"<unknown>:5:9: cannot reassign \`self\` in \`init\` function
+  4 |     init() {
+> 5 |         self += 20;
+              ^~~~
+  6 |     }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for init-self-reassign 1`] = `
 "<unknown>:5:9: cannot reassign \`self\` in \`init\` function
   4 |     init() {
@@ -371,6 +380,15 @@ exports[`resolveDescriptors should fail descriptors for init-self-reassign-in-if
 > 7 |                 self = 100;
                       ^~~~
   8 |             }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for init-self-reassign-in-if-2 1`] = `
+"<unknown>:8:13: cannot reassign \`self\` in \`init\` function
+  7 |             a = 30;
+> 8 |             self = 20;
+                  ^~~~
+  9 |         }
 "
 `;
 
