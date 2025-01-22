@@ -2,7 +2,7 @@ import { Intersect } from "../utils/tricks";
 import { CliErrors } from "./error-schema";
 
 export const ArgConsumer = <T>(
-    E: CliErrors,
+    Errors: CliErrors,
     args: { [L in keyof T]?: T[L][] },
 ) => {
     const copy = { ...args };
@@ -14,7 +14,7 @@ export const ArgConsumer = <T>(
     ): undefined | T[K] => {
         const s = copy[k] ?? [];
         if (s.length > 1) {
-            E.duplicateArgument(k);
+            Errors.duplicateArgument(k);
             return s[0];
         }
         if (s.length === 0) {

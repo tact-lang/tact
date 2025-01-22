@@ -30,7 +30,7 @@ export type GetParserResult<T> = [T] extends [
 
 const iterationLimit = 10000;
 
-export const ArgParser = (E: CliErrors) => {
+export const ArgParser = (Errors: CliErrors) => {
     const immediate: Token<"immediate", string> = (argv) => {
         const [head, ...rest] = argv;
         if (typeof head === "undefined" || head.startsWith("-")) {
@@ -71,7 +71,7 @@ export const ArgParser = (E: CliErrors) => {
             }
             const [head, ...rest] = result.rest;
             if (typeof head === "undefined" || head.startsWith("-")) {
-                E.argumentHasParameter(argv[0]!, argName);
+                Errors.argumentHasParameter(argv[0]!, argName);
                 return { kind: "error", rest: result.rest };
             }
             return { ...result, value: [result.value[0], head], rest };
@@ -133,7 +133,7 @@ export const ArgParser = (E: CliErrors) => {
     // eslint-disable-next-line @typescript-eslint/ban-types
     const tokenizer = makeTokenizer<{}>((argv) => {
         const [head, ...rest] = argv;
-        E.unexpectedArgument(head);
+        Errors.unexpectedArgument(head);
         return { kind: "error", rest };
     });
 
