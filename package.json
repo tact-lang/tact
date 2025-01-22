@@ -68,7 +68,6 @@
     "crc-32": "1.2.2",
     "ipfs-unixfs-importer": "9.0.10",
     "json-bigint": "^1.0.0",
-    "meow": "^13.2.0",
     "ohm-js": "^17.1.0",
     "path-normalize": "^6.0.13",
     "prando": "^6.0.1",
