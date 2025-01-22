@@ -53,7 +53,8 @@
     "!**/*.build.ts",
     "!**/*.spec.js",
     "!**/*.spec.d.ts",
-    "!**/*.tsbuildinfo"
+    "!**/*.tsbuildinfo",
+    "!**/*.infra.ts"
   ],
   "main": "./dist/index.js",
   "bin": {

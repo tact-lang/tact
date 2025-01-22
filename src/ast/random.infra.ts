@@ -1,22 +1,6 @@
 import fc from "fast-check";
-import {
-    AstBoolean,
-    AstConditional,
-    AstExpression,
-    AstFieldAccess,
-    AstId,
-    AstInitOf,
-    AstMethodCall,
-    AstNull,
-    AstNumber,
-    AstOpBinary,
-    AstOpUnary,
-    AstStaticCall,
-    AstString,
-    AstStructFieldInitializer,
-    AstStructInstance,
-} from "../../../ast/ast";
-import { dummySrcInfo } from "../../../grammar/src-info";
+import * as A from "./ast";
+import { dummySrcInfo } from "../grammar/src-info";
 
 function dummyAstNode<T>(
     generator: fc.Arbitrary<T>,
@@ -28,7 +12,7 @@ function dummyAstNode<T>(
     }));
 }
 
-function randomAstBoolean(): fc.Arbitrary<AstBoolean> {
+function randomAstBoolean(): fc.Arbitrary<A.AstBoolean> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("boolean"),
@@ -37,7 +21,7 @@ function randomAstBoolean(): fc.Arbitrary<AstBoolean> {
     );
 }
 
-function randomAstString(): fc.Arbitrary<AstString> {
+function randomAstString(): fc.Arbitrary<A.AstString> {
     const escapeString = (s: string): string =>
         s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 
@@ -49,7 +33,7 @@ function randomAstString(): fc.Arbitrary<AstString> {
     );
 }
 
-function randomAstNumber(): fc.Arbitrary<AstNumber> {
+function randomAstNumber(): fc.Arbitrary<A.AstNumber> {
     const values = [
         ...Array.from({ length: 10 }, (_, i) => [0n, BigInt(i)]).flat(),
         ...Array.from({ length: 256 }, (_, i) => 1n ** BigInt(i)),
@@ -65,8 +49,8 @@ function randomAstNumber(): fc.Arbitrary<AstNumber> {
 }
 
 function randomAstOpUnary(
-    operand: fc.Arbitrary<AstExpression>,
-): fc.Arbitrary<AstOpUnary> {
+    operand: fc.Arbitrary<A.AstExpression>,
+): fc.Arbitrary<A.AstOpUnary> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("op_unary"),
@@ -76,9 +60,9 @@ function randomAstOpUnary(
     );
 }
 function randomAstOpBinary(
-    leftExpression: fc.Arbitrary<AstExpression>,
-    rightExpression: fc.Arbitrary<AstExpression>,
-): fc.Arbitrary<AstOpBinary> {
+    leftExpression: fc.Arbitrary<A.AstExpression>,
+    rightExpression: fc.Arbitrary<A.AstExpression>,
+): fc.Arbitrary<A.AstOpBinary> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("op_binary"),
@@ -109,10 +93,10 @@ function randomAstOpBinary(
 }
 
 function randomAstConditional(
-    conditionExpression: fc.Arbitrary<AstExpression>,
-    thenBranchExpression: fc.Arbitrary<AstExpression>,
-    elseBranchExpression: fc.Arbitrary<AstExpression>,
-): fc.Arbitrary<AstConditional> {
+    conditionExpression: fc.Arbitrary<A.AstExpression>,
+    thenBranchExpression: fc.Arbitrary<A.AstExpression>,
+    elseBranchExpression: fc.Arbitrary<A.AstExpression>,
+): fc.Arbitrary<A.AstConditional> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("conditional"),
@@ -123,7 +107,7 @@ function randomAstConditional(
     );
 }
 
-function randomAstId(): fc.Arbitrary<AstId> {
+function randomAstId(): fc.Arbitrary<A.AstId> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("id"),
@@ -133,7 +117,7 @@ function randomAstId(): fc.Arbitrary<AstId> {
     );
 }
 
-function randomAstCapitalizedId(): fc.Arbitrary<AstId> {
+function randomAstCapitalizedId(): fc.Arbitrary<A.AstId> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("id"),
@@ -143,7 +127,7 @@ function randomAstCapitalizedId(): fc.Arbitrary<AstId> {
     );
 }
 
-function randomAstNull(): fc.Arbitrary<AstNull> {
+function randomAstNull(): fc.Arbitrary<A.AstNull> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("null"),
@@ -152,8 +136,8 @@ function randomAstNull(): fc.Arbitrary<AstNull> {
 }
 
 function randomAstInitOf(
-    expression: fc.Arbitrary<AstExpression>,
-): fc.Arbitrary<AstInitOf> {
+    expression: fc.Arbitrary<A.AstExpression>,
+): fc.Arbitrary<A.AstInitOf> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("init_of"),
@@ -164,8 +148,8 @@ function randomAstInitOf(
 }
 
 function randomAstStaticCall(
-    expression: fc.Arbitrary<AstExpression>,
-): fc.Arbitrary<AstStaticCall> {
+    expression: fc.Arbitrary<A.AstExpression>,
+): fc.Arbitrary<A.AstStaticCall> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("static_call"),
@@ -176,8 +160,8 @@ function randomAstStaticCall(
 }
 
 function randomAstStructFieldInitializer(
-    expression: fc.Arbitrary<AstExpression>,
-): fc.Arbitrary<AstStructFieldInitializer> {
+    expression: fc.Arbitrary<A.AstExpression>,
+): fc.Arbitrary<A.AstStructFieldInitializer> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("struct_field_initializer"),
@@ -188,8 +172,8 @@ function randomAstStructFieldInitializer(
 }
 
 function randomAstStructInstance(
-    structFieldInitializer: fc.Arbitrary<AstStructFieldInitializer>,
-): fc.Arbitrary<AstStructInstance> {
+    structFieldInitializer: fc.Arbitrary<A.AstStructFieldInitializer>,
+): fc.Arbitrary<A.AstStructInstance> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("struct_instance"),
@@ -200,8 +184,8 @@ function randomAstStructInstance(
 }
 
 function randomAstFieldAccess(
-    expression: fc.Arbitrary<AstExpression>,
-): fc.Arbitrary<AstFieldAccess> {
+    expression: fc.Arbitrary<A.AstExpression>,
+): fc.Arbitrary<A.AstFieldAccess> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("field_access"),
@@ -212,9 +196,9 @@ function randomAstFieldAccess(
 }
 
 function randomAstMethodCall(
-    selfExpression: fc.Arbitrary<AstExpression>,
-    argsExpression: fc.Arbitrary<AstExpression>,
-): fc.Arbitrary<AstMethodCall> {
+    selfExpression: fc.Arbitrary<A.AstExpression>,
+    argsExpression: fc.Arbitrary<A.AstExpression>,
+): fc.Arbitrary<A.AstMethodCall> {
     return dummyAstNode(
         fc.record({
             self: selfExpression,
@@ -227,7 +211,7 @@ function randomAstMethodCall(
 
 export function randomAstExpression(
     maxDepth: number,
-): fc.Arbitrary<AstExpression> {
+): fc.Arbitrary<A.AstExpression> {
     // No weighted items
     const baseExpressions = [
         randomAstNumber(),
@@ -238,7 +222,7 @@ export function randomAstExpression(
     ];
 
     // More weighted items
-    return fc.memo((depth: number): fc.Arbitrary<AstExpression> => {
+    return fc.memo((depth: number): fc.Arbitrary<A.AstExpression> => {
         if (depth == 1) {
             return fc.oneof(...baseExpressions);
         }
