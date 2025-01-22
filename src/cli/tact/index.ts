@@ -1,8 +1,9 @@
 import { readFileSync } from "fs";
-import { basename, dirname, join } from "path";
+import { basename, dirname, join, resolve } from "path";
 import { execFileSync } from "child_process";
 import { z, ZodError } from "zod";
 import { createNodeFileSystem } from "../../vfs/createNodeFileSystem";
+import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";
 import { parseAndEvalExpression } from "../../optimizer/interpreter";
 import { showValue } from "../../types/types";
 import { Config, ConfigProject, parseConfig } from "../../config/parseConfig";
@@ -12,10 +13,11 @@ import { CliLogger } from "../logger";
 import { ArgConsumer } from "../arg-consumer";
 import { VirtualFileSystem } from "../../vfs/VirtualFileSystem";
 import { entries } from "../../utils/tricks";
-import { stdlibPath } from "../../stdlib/path";
 import { Logger, LogLevel } from "../../context/logger";
 import { build } from "../../pipeline/build";
 import { TactErrorCollection } from "../../error/errors";
+import files from "../../stdlib/stdlib";
+import { cwd } from "process";
 
 export const main = async () => {
     const Log = CliLogger();
@@ -113,7 +115,8 @@ const parseArgs = async (Errors: CliErrors, Args: Args) => {
 
     const configPath = Args.single("config");
     if (configPath) {
-        const Fs = createNodeFileSystem(dirname(configPath), false);
+        const normalizedPath = resolve(cwd(), dirname(configPath));
+        const Fs = createNodeFileSystem(normalizedPath, false);
         if (!Fs.exists(configPath)) {
             Errors.configNotFound(configPath);
             return;
@@ -129,7 +132,8 @@ const parseArgs = async (Errors: CliErrors, Args: Args) => {
 
     const filePath = Args.single("immediate");
     if (filePath) {
-        const Fs = createNodeFileSystem(dirname(filePath), false);
+        const normalizedPath = resolve(cwd(), dirname(filePath));
+        const Fs = createNodeFileSystem(normalizedPath, false);
         const config = createSingleFileConfig(basename(filePath));
         await compile(Args, Errors, Fs, config);
         return;
@@ -212,7 +216,7 @@ const compile = async (
     }
     setConfigOptions(config, options);
 
-    const stdlib = createNodeFileSystem(stdlibPath);
+    const stdlib = createVirtualFileSystem("@stdlib", files);
 
     if (noUnknownParams(Errors, Args)) {
         // TODO: all flags on the cli should take precedence over flags in the config
