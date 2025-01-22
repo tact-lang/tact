@@ -1,4 +1,4 @@
-import { getAstFactory } from "../../ast/ast";
+import { getAstFactory } from "../../ast/ast-helpers";
 import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";

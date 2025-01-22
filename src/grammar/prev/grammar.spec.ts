@@ -1,4 +1,4 @@
-import { getAstFactory } from "../../ast/ast";
+import { getAstFactory } from "../../ast/ast-helpers";
 import { loadCases } from "../../utils/loadCases";
 import { getParser } from "../grammar";
 import { SrcInfo, isSrcInfo } from "../src-info";

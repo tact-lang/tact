@@ -1,12 +1,13 @@
 import * as A from "./ast";
 import { groupBy, intercalate, isUndefined } from "../utils/array";
 import { makeVisitor } from "../utils/tricks";
+import { astNumToString, idText } from "./ast-helpers";
 
 //
 // Types
 //
 
-export const ppAstTypeId = A.idText;
+export const ppAstTypeId = idText;
 
 export const ppAstTypeIdWithStorage = (
     type: A.AstTypeId,
@@ -181,7 +182,7 @@ export const ppAstStructValue = ({ type, args }: A.AstStructValue) =>
 export const ppAstInitOf = ({ contract, args }: A.AstInitOf) =>
     `initOf ${ppAstId(contract)}(${ppExprArgs(args)})`;
 
-export const ppAstNumber = A.astNumToString;
+export const ppAstNumber = astNumToString;
 export const ppAstBoolean = ({ value }: A.AstBoolean) => value.toString();
 export const ppAstId = ({ text }: A.AstId) => text;
 export const ppAstNull = (_expr: A.AstNull) => "null";

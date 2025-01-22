@@ -24,6 +24,14 @@ import { TypeRef, showValue } from "../types/types";
 import { sha256_sync } from "@ton/crypto";
 import { defaultParser, getParser, Parser } from "../grammar/grammar";
 import { dummySrcInfo, SrcInfo } from "../grammar";
+import {
+    eqExpressions,
+    eqNames,
+    FactoryAst,
+    getAstFactory,
+    idText,
+    isSelfId,
+} from "../ast/ast-helpers";
 import { divFloor, modFloor } from "./util";
 
 // TVM integers are signed 257-bit integers
@@ -376,7 +384,7 @@ export function evalBinaryOp(
             const valR_ = ensureArgumentForEquality(valR);
 
             // Changed to equality testing (instead of ===) because cells, slices, address are equal by hashing
-            const result = A.eqExpressions(valLeft_, valR_);
+            const result = eqExpressions(valLeft_, valR_);
             return util.makeBooleanLiteral(result, source);
         }
         case "!=": {
@@ -398,7 +406,7 @@ export function evalBinaryOp(
             const valR_ = ensureArgumentForEquality(valR);
 
             // Changed to equality testing (instead of ===) because cells, slices are equal by hashing
-            const result = !A.eqExpressions(valLeft_, valR_);
+            const result = !eqExpressions(valLeft_, valR_);
             return util.makeBooleanLiteral(result, source);
         }
         case "&&": {
@@ -642,7 +650,7 @@ class EnvironmentStack {
 
 export function parseAndEvalExpression(
     sourceCode: string,
-    ast: A.FactoryAst = A.getAstFactory(),
+    ast: FactoryAst = getAstFactory(),
     parser: Parser = getParser(ast, defaultParser),
     util: AstUtil = getAstUtil(ast),
 ): EvalResult {
@@ -917,7 +925,7 @@ export class Interpreter {
     }
 
     public interpretMethodCall(ast: A.AstMethodCall): A.AstLiteral {
-        switch (A.idText(ast.method)) {
+        switch (idText(ast.method)) {
             case "asComment": {
                 ensureMethodArity(0, ast.args, ast.loc);
                 const comment = ensureSimplifiedString(
@@ -1045,7 +1053,7 @@ export class Interpreter {
         // this will override default fields set above
         for (const fieldWithInit of ast.args) {
             const v = this.interpretExpression(fieldWithInit.initializer);
-            resultMap.set(A.idText(fieldWithInit.field), v);
+            resultMap.set(idText(fieldWithInit.field), v);
         }
 
         // Create the field entries for the StructValue
@@ -1055,7 +1063,7 @@ export class Interpreter {
         for (const [fieldName, fieldValue] of resultMap) {
             // Find the source code declaration, if existent
             const sourceField = ast.args.find(
-                (f) => A.idText(f.field) === fieldName,
+                (f) => idText(f.field) === fieldName,
             );
             if (typeof sourceField !== "undefined") {
                 structValueFields.push(
@@ -1092,7 +1100,7 @@ export class Interpreter {
         // we are executing inside an extends function)
         if (
             ast.aggregate.kind === "id" &&
-            A.isSelfId(ast.aggregate) &&
+            isSelfId(ast.aggregate) &&
             !this.envStack.selfInEnvironment()
         ) {
             const selfTypeRef = getExpType(this.context, ast.aggregate);
@@ -1103,7 +1111,7 @@ export class Interpreter {
                 );
                 const foundContractConst =
                     contractTypeDescription.constants.find((constId) =>
-                        A.eqNames(ast.field, constId.name),
+                        eqNames(ast.field, constId.name),
                     );
                 if (foundContractConst === undefined) {
                     // not a constant, e.g. `self.storageVariable`
@@ -1130,7 +1138,7 @@ export class Interpreter {
             );
         }
         const field = valStruct.args.find(
-            (f) => A.idText(ast.field) === A.idText(f.field),
+            (f) => idText(ast.field) === idText(f.field),
         );
         if (typeof field !== "undefined") {
             return field.initializer;
@@ -1144,7 +1152,7 @@ export class Interpreter {
     }
 
     public interpretStaticCall(ast: A.AstStaticCall): A.AstLiteral {
-        switch (A.idText(ast.function)) {
+        switch (idText(ast.function)) {
             case "ton": {
                 ensureFunArity(1, ast.args, ast.loc);
                 const tons = ensureSimplifiedString(
@@ -1424,10 +1432,10 @@ export class Interpreter {
                 );
             }
             default:
-                if (hasStaticFunction(this.context, A.idText(ast.function))) {
+                if (hasStaticFunction(this.context, idText(ast.function))) {
                     const functionDescription = getStaticFunction(
                         this.context,
-                        A.idText(ast.function),
+                        idText(ast.function),
                     );
                     switch (functionDescription.ast.kind) {
                         case "function_def": {
@@ -1486,7 +1494,7 @@ export class Interpreter {
         const argValues = args.map(this.interpretExpression, this);
         // Extract the parameter names
         const paramNames = functionCode.params.map((param) =>
-            A.idText(param.name),
+            idText(param.name),
         );
         // Check parameter names do not shadow constants
         if (
@@ -1495,7 +1503,7 @@ export class Interpreter {
             )
         ) {
             throwInternalCompilerError(
-                `some parameter of function ${A.idText(functionCode.name)} shadows a constant with the same name`,
+                `some parameter of function ${idText(functionCode.name)} shadows a constant with the same name`,
                 functionCode.loc,
             );
         }
@@ -1528,7 +1536,7 @@ export class Interpreter {
                 // function is not void
                 if (returns.kind !== "void") {
                     throwInternalCompilerError(
-                        `function ${A.idText(functionCode.name)} must return a value`,
+                        `function ${idText(functionCode.name)} must return a value`,
                         functionCode.loc,
                     );
                 } else {
@@ -1587,23 +1595,23 @@ export class Interpreter {
     }
 
     public interpretLetStatement(ast: A.AstStatementLet) {
-        if (hasStaticConstant(this.context, A.idText(ast.name))) {
+        if (hasStaticConstant(this.context, idText(ast.name))) {
             // Attempt of shadowing a constant in a let declaration
             throwInternalCompilerError(
-                `declaration of ${A.idText(ast.name)} shadows a constant with the same name`,
+                `declaration of ${idText(ast.name)} shadows a constant with the same name`,
                 ast.loc,
             );
         }
         const val = this.interpretExpression(ast.expression);
-        this.envStack.setNewBinding(A.idText(ast.name), val);
+        this.envStack.setNewBinding(idText(ast.name), val);
     }
 
     public interpretDestructStatement(ast: A.AstStatementDestruct) {
         for (const [_, name] of ast.identifiers.values()) {
-            if (hasStaticConstant(this.context, A.idText(name))) {
+            if (hasStaticConstant(this.context, idText(name))) {
                 // Attempt of shadowing a constant in a destructuring declaration
                 throwInternalCompilerError(
-                    `declaration of ${A.idText(name)} shadows a constant with the same name`,
+                    `declaration of ${idText(name)} shadows a constant with the same name`,
                     ast.loc,
                 );
             }
@@ -1620,13 +1628,13 @@ export class Interpreter {
 
         // Keep a map of the fields in val for lookup
         const valAsMap: Map<string, A.AstLiteral> = new Map();
-        val.args.forEach((f) => valAsMap.set(A.idText(f.field), f.initializer));
+        val.args.forEach((f) => valAsMap.set(idText(f.field), f.initializer));
 
         for (const [field, name] of ast.identifiers.values()) {
             if (name.text === "_") {
                 continue;
             }
-            const v = valAsMap.get(A.idText(field));
+            const v = valAsMap.get(idText(field));
             if (typeof v === "undefined") {
                 throwErrorConstEval(
                     `destructuring assignment expected field ${idTextErr(
@@ -1635,14 +1643,14 @@ export class Interpreter {
                     ast.loc,
                 );
             }
-            this.envStack.setNewBinding(A.idText(name), v);
+            this.envStack.setNewBinding(idText(name), v);
         }
     }
 
     public interpretAssignStatement(ast: A.AstStatementAssign) {
         if (ast.path.kind === "id") {
             const val = this.interpretExpression(ast.expression);
-            this.envStack.updateBinding(A.idText(ast.path), val);
+            this.envStack.updateBinding(idText(ast.path), val);
         } else {
             throwNonFatalErrorConstEval(
                 "only identifiers are currently supported as path expressions",
@@ -1656,9 +1664,7 @@ export class Interpreter {
     ) {
         if (ast.path.kind === "id") {
             const updateVal = () => this.interpretExpression(ast.expression);
-            const currentPathValue = this.envStack.getBinding(
-                A.idText(ast.path),
-            );
+            const currentPathValue = this.envStack.getBinding(idText(ast.path));
             if (currentPathValue === undefined) {
                 throwNonFatalErrorConstEval(
                     "undeclared identifier",
@@ -1672,7 +1678,7 @@ export class Interpreter {
                 ast.loc,
                 this.util,
             );
-            this.envStack.updateBinding(A.idText(ast.path), newVal);
+            this.envStack.updateBinding(idText(ast.path), newVal);
         } else {
             throwNonFatalErrorConstEval(
                 "only identifiers are currently supported as path expressions",

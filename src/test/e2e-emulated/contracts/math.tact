@@ -426,4 +426,16 @@ contract MathTester with Deployable {
         a >>= b;
         return a;
     }
+
+    // test FunC optimization bug
+    get fun shiftLeft0(i: Int): Bool {
+        let mask = 1 << i;
+        return mask == 1;
+    }
+
+    // test FunC optimization bug
+    get fun shiftRight0(i: Int): Bool {
+        let mask = 1 >> i;
+        return mask == 1;
+    }
 }

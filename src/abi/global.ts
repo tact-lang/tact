@@ -19,7 +19,7 @@ import {
     ensureString,
     interpretEscapeSequences,
 } from "../optimizer/interpreter";
-import { isLiteral } from "../ast/ast";
+import { isLiteral } from "../ast/ast-helpers";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [
