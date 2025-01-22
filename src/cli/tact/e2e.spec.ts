@@ -1,11 +1,11 @@
 import { stat } from "fs/promises";
 import { makeCodegen, runCommand } from "../test-util.build";
-import { join } from "path";
+import { join, normalize } from "path";
 
-const binDir = join(__dirname, "..", "..", "..", "bin");
 const tact = (args: string) => {
-    const command = `./tact.js ${args}`;
-    return runCommand(command, binDir);
+    const tactPath = normalize(join(__dirname, "..", "..", "..", "bin", "tact.js"));
+    const command = `node ${tactPath} ${args}`;
+    return runCommand(command);
 };
 
 const codegen = makeCodegen(join(__dirname, "output"));
@@ -211,7 +211,7 @@ describe("Compilation failures", () => {
 describe("tact --eval", () => {
     test("Evaluate expressions", async () => {
         const result = await tact(
-            "-e '(1 + 2 * (pow(3,4) - 2) << 1 & 0x54 | 33 >> 1) * 2 + 2'",
+            '-e "(1 + 2 * (pow(3,4) - 2) << 1 & 0x54 | 33 >> 1) * 2 + 2"',
         );
 
         expect(result).toHaveProperty("stdout", expect.stringMatching("42\n"));

@@ -1,18 +1,15 @@
-// - name: CLI Test | Check TVM disassembler flag
-// tact bin/test/success.tact
-// unboc bin/test/success_HelloWorld.code.boc
-
-import { join } from "path";
+import { join, normalize } from "path";
 import { makeCodegen, runCommand } from "../test-util.build";
 
-const binDir = join(__dirname, "..", "..", "..", "bin");
 const tact = (args: string) => {
-    const command = `./tact.js ${args}`;
-    return runCommand(command, binDir);
+    const tactPath = normalize(join(__dirname, "..", "..", "..", "bin", "tact.js"));
+    const command = `node ${tactPath} ${args}`;
+    return runCommand(command);
 };
 const unboc = (args: string) => {
-    const command = `./unboc.js ${args}`;
-    return runCommand(command, binDir);
+    const unbocPath = normalize(join(__dirname, "..", "..", "..", "bin", "unboc.js"));
+    const command = `node ${unbocPath} ${args}`;
+    return runCommand(command);
 };
 
 const codegen = makeCodegen(join(__dirname, "output"));
