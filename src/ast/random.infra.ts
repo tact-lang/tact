@@ -1,6 +1,7 @@
 import fc from "fast-check";
 import * as A from "./ast";
 import { dummySrcInfo } from "../grammar/src-info";
+import { Address, address, beginCell, Cell, Slice } from "@ton/core";
 
 /**
  * An array of reserved words that cannot be used as contract or variable names in tests.
@@ -43,6 +44,8 @@ const reservedWords = [
     "virtual",
     "inline",
     "const",
+    "__gen",
+    "__tact",
 ];
 
 function dummyAstNode<T>(
@@ -60,6 +63,15 @@ function randomAstBoolean(): fc.Arbitrary<A.AstBoolean> {
         fc.record({
             kind: fc.constant("boolean"),
             value: fc.boolean(),
+        }),
+    );
+}
+
+function randomAstSimplifiedString(): fc.Arbitrary<A.AstSimplifiedString> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("simplified_string"),
+            value: fc.string(),
         }),
     );
 }
@@ -156,7 +168,12 @@ function randomAstId(): fc.Arbitrary<A.AstId> {
             kind: fc.constant("id"),
             text: fc
                 .stringMatching(/^[A-Za-z_][A-Za-z0-9_]*$/)
-                .filter((i) => !reservedWords.includes(i)),
+                .filter(
+                    (i) =>
+                        !reservedWords.includes(i) &&
+                        !i.startsWith("__gen") &&
+                        !i.startsWith("__tact"),
+                ),
         }),
     );
 }
@@ -165,7 +182,7 @@ function randomAstCapitalizedId(): fc.Arbitrary<A.AstId> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("id"),
-            text: fc.stringMatching(/^[A-Z][a-z]*$/),
+            text: fc.stringMatching(/^[A-Z][A-Za-z0-9_]*$/),
         }),
     );
 }
@@ -185,7 +202,7 @@ function randomAstInitOf(
         fc.record({
             kind: fc.constant("init_of"),
             contract: randomAstId(),
-            args: fc.array(expression, { maxLength: 1 }),
+            args: fc.array(expression),
         }),
     );
 }
@@ -252,33 +269,129 @@ function randomAstMethodCall(
     );
 }
 
+function randomAddress(): fc.Arbitrary<Address> {
+    return fc.constant(
+        address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"), // TODO: use random address
+    );
+}
+
+function randomCell(): fc.Arbitrary<Cell> {
+    return fc.string().map((s) => Cell.fromBase64(s)); // Error Index 24 > 24 is out of bounds. Need's fix
+}
+
+function randomAstAddress(): fc.Arbitrary<A.AstAddress> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("address"),
+            value: randomAddress(),
+        }),
+    );
+}
+
+function randomAstCell(): fc.Arbitrary<A.AstCell> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("cell"),
+            value: randomCell(),
+        }),
+    );
+}
+
+function randomSlice(): fc.Arbitrary<Slice> {
+    return fc.constant(beginCell().endCell().beginParse());
+}
+
+function randomAstSlice(): fc.Arbitrary<A.AstSlice> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("slice"),
+            value: randomSlice(),
+        }),
+    );
+}
+
+function randomAstCommentValue(): fc.Arbitrary<A.AstCommentValue> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("comment_value"),
+            value: fc.string(),
+        }),
+    );
+}
+
+function randomAstStructFieldValue(
+    subLiteral: fc.Arbitrary<A.AstLiteral>,
+): fc.Arbitrary<A.AstStructFieldValue> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("struct_field_value"),
+            field: randomAstId(),
+            initializer: subLiteral,
+        }),
+    );
+}
+
+function randomAstStructValue(
+    subLiteral: fc.Arbitrary<A.AstLiteral>,
+): fc.Arbitrary<A.AstStructValue> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("struct_value"),
+            type: randomAstId(),
+            args: fc.array(randomAstStructFieldValue(subLiteral)),
+        }),
+    );
+}
+
+function randomAstLiteral(maxDepth: number): fc.Arbitrary<A.AstLiteral> {
+    return fc.memo((depth: number): fc.Arbitrary<A.AstLiteral> => {
+        if (depth === 1) {
+            return fc.oneof(
+                randomAstNumber(),
+                randomAstBoolean(),
+                randomAstNull(),
+                randomAstSimplifiedString(),
+                randomAstAddress(),
+                randomAstCell(),
+                randomAstSlice(),
+                randomAstCommentValue(),
+            );
+        }
+
+        const subLiteral = () => randomAstLiteral(depth - 1);
+
+        return fc.oneof(
+            randomAstNumber(),
+            randomAstBoolean(),
+            randomAstNull(),
+            randomAstSimplifiedString(),
+            randomAstAddress(),
+            randomAstCell(),
+            randomAstSlice(),
+            randomAstCommentValue(),
+            randomAstStructValue(subLiteral()),
+        );
+    })(maxDepth);
+}
+
 export function randomAstExpression(
     maxDepth: number,
 ): fc.Arbitrary<A.AstExpression> {
-    // No weighted items
-    const baseExpressions = [
-        randomAstNumber(),
-        randomAstBoolean(),
-        randomAstId(),
-        randomAstNull(),
-        randomAstString(),
-    ];
-
-    // More weighted items
     return fc.memo((depth: number): fc.Arbitrary<A.AstExpression> => {
         if (depth == 1) {
-            return fc.oneof(...baseExpressions);
+            return fc.oneof(randomAstLiteral(depth));
         }
 
         const subExpr = () => randomAstExpression(depth - 1);
 
         return fc.oneof(
-            ...baseExpressions,
+            randomAstLiteral(maxDepth),
             randomAstMethodCall(subExpr(), subExpr()),
             randomAstFieldAccess(subExpr()),
             randomAstStaticCall(subExpr()),
             randomAstStructInstance(randomAstStructFieldInitializer(subExpr())),
             randomAstInitOf(subExpr()),
+            randomAstString(),
             randomAstOpUnary(subExpr()),
             randomAstOpBinary(subExpr(), subExpr()),
             randomAstConditional(subExpr(), subExpr(), subExpr()),

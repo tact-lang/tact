@@ -8,7 +8,7 @@ describe("Pretty Print Expressions", () => {
     const maxDepth = 3;
     const parser = getParser(getAstFactory(), "new");
 
-    it(`should parse Ast`, () => {
+    it(`should parse AstExpression`, () => {
         fc.assert(
             fc.property(randomAstExpression(maxDepth), (generatedAst) => {
                 const prettyBefore = prettyPrint(generatedAst);
