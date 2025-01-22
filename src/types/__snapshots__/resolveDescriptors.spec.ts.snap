@@ -558,6 +558,15 @@ exports[`resolveDescriptors should fail descriptors for read-self-in-init-functi
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for read-self-in-init-function-assign 1`] = `
+"<unknown>:9:18: cannot read whole \`self\` in \`init\` function
+   8 |         let a = 100;
+>  9 |         self.a = self;
+                        ^~~~
+  10 |     }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for read-self-in-init-function-in-deep-expression 1`] = `
 "<unknown>:5:23: cannot read whole \`self\` in \`init\` function
   4 |     init() {
