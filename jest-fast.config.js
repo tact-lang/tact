@@ -8,6 +8,7 @@ module.exports = {
         "/node_modules/",
         "/dist/",
         "/src/test/e2e-emulated/map*",
+        "/src/cli/e2e.spec.ts",
     ],
     maxWorkers: "8",
     globalSetup: "./jest.setup.js",
