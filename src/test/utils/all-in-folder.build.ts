@@ -1,4 +1,4 @@
-import { globSync } from "fs";
+import { glob } from "glob";
 import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";
 import { Options } from "../../config/parseConfig";
 import { basename, dirname, extname, join } from "path";
@@ -6,6 +6,11 @@ import { createNodeFileSystem } from "../../vfs/createNodeFileSystem";
 import { Logger, LogLevel } from "../../context/logger";
 import { run } from "../../cli";
 import files from "../../stdlib/stdlib";
+
+// node.js 20+ builtin
+const globSync = (globs: string[], options: { cwd: string }) => {
+    return globs.flatMap((g) => glob.sync(g, options));
+};
 
 export const allInFolder = async (folder: string, globs: string[]) => {
     try {
