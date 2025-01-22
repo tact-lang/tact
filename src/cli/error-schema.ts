@@ -3,11 +3,11 @@ export const CliErrors = (log: (error: string) => void) => {
         /**
          * @deprecated Because there are incompatible loggers, we have to inform
          * top-level logger that there was an error.
-         * 
+         *
          * Will be removed along with { ok: boolean } returns from `build`
          */
         setHadErrors: () => {
-            log('');
+            log("");
         },
         argumentHasParameter: (param: string, argName: string) => {
             log(`Expected ${param} ${argName}`);

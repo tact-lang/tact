@@ -7,7 +7,7 @@ const binDir = join(__dirname, "..", "..", "bin");
 const tact = (args: string) => {
     const command = `./tact.js ${args}`;
     return runCommand(command, binDir);
-}
+};
 
 const outputDir = join(__dirname, "output");
 const getOutDir = async () => {
@@ -21,7 +21,11 @@ const writeContract = async (name: string, code: string) => {
     return fullPath;
 };
 
-const writeConfig = async (name: string, code: string, partialConfig: Pick<ConfigProject, 'options' | 'mode'>) => {
+const writeConfig = async (
+    name: string,
+    code: string,
+    partialConfig: Pick<ConfigProject, "options" | "mode">,
+) => {
     const outDir = await getOutDir();
     await writeFile(join(outDir, `${name}.tact`), code);
     const config: Config = {
@@ -84,7 +88,9 @@ describe("tact foo.tact", () => {
     test.each(badContracts)(
         "Compilation of broken contract doesn't contain stacktrace (%s)",
         async (name, code) => {
-            const result = await tact(await writeContract(`no-err-${name}`, code));
+            const result = await tact(
+                await writeContract(`no-err-${name}`, code),
+            );
 
             expect(result).toHaveProperty(
                 "stdout",
@@ -96,7 +102,9 @@ describe("tact foo.tact", () => {
     test.skip.each(badContracts)(
         "Compilation of broken contract contains stacktrace with --verbose 2 (%s)",
         async (name, code) => {
-            const result = await tact(`--verbose 2 ${await writeContract(`err-${name}`, code)}`);
+            const result = await tact(
+                `--verbose 2 ${await writeContract(`err-${name}`, code)}`,
+            );
 
             expect(result).toHaveProperty(
                 "stdout",
@@ -135,8 +143,8 @@ describe("tact foo.tact", () => {
 });
 
 describe("tact --config config.json", () => {
-    test('Complete results', async () => {
-        const r = await writeConfig('complete', goodContract, {
+    test("Complete results", async () => {
+        const r = await writeConfig("complete", goodContract, {
             options: { external: true },
             mode: "full",
         });
@@ -144,12 +152,12 @@ describe("tact --config config.json", () => {
         const result = await tact(`--config ${r.config}`);
         expect(result).toMatchObject({ kind: "exited", code: 0 });
 
-        const statPromise = stat(r.outputPath('pkg'))
+        const statPromise = stat(r.outputPath("pkg"));
         await expect(statPromise).resolves.not.toThrow();
     });
 
-    test('With decompiled binary', async () => {
-        const r = await writeConfig('decompile', goodContract, {
+    test("With decompiled binary", async () => {
+        const r = await writeConfig("decompile", goodContract, {
             options: { external: true },
             mode: "fullWithDecompilation",
         });
@@ -157,12 +165,12 @@ describe("tact --config config.json", () => {
         const result = await tact(`--config ${r.config}`);
         expect(result).toMatchObject({ kind: "exited", code: 0 });
 
-        const statPromise = stat(r.outputPath('code.rev.fif'))
+        const statPromise = stat(r.outputPath("code.rev.fif"));
         await expect(statPromise).resolves.toMatchObject({});
     });
 
-    test('Mode passed as parameter takes priority', async () => {
-        const r = await writeConfig('priority', goodContract, {
+    test("Mode passed as parameter takes priority", async () => {
+        const r = await writeConfig("priority", goodContract, {
             options: { external: true },
             mode: "full",
         });
@@ -170,34 +178,34 @@ describe("tact --config config.json", () => {
         const result = await tact(`--check --config ${r.config}`);
         expect(result).toMatchObject({ kind: "exited", code: 0 });
 
-        const statPromise = stat(r.outputPath('pkg'))
+        const statPromise = stat(r.outputPath("pkg"));
         await expect(statPromise).rejects.toThrow();
     });
 });
 
 describe("Wrong flags", () => {
-    test('--func --check are mutually exclusive ', async () => {
+    test("--func --check are mutually exclusive ", async () => {
         const path = await writeContract(`func-check`, goodContract);
         const result = await tact(`${path} --func --check`);
 
         expect(result).toMatchObject({ kind: "exited", code: 30 });
     });
 
-    test('--with-decompilation --check are mutually exclusive', async () => {
+    test("--with-decompilation --check are mutually exclusive", async () => {
         const path = await writeContract(`decompile-check`, goodContract);
         const result = await tact(`${path} --with-decompilation --check`);
 
         expect(result).toMatchObject({ kind: "exited", code: 30 });
     });
 
-    test('--func --with-decompilation are mutually exclusive', async () => {
+    test("--func --with-decompilation are mutually exclusive", async () => {
         const path = await writeContract(`func-decompile`, goodContract);
         const result = await tact(`${path} --func --with-decompilation`);
 
         expect(result).toMatchObject({ kind: "exited", code: 30 });
     });
 
-    test('Unknown flag throws error', async () => {
+    test("Unknown flag throws error", async () => {
         const path = await writeContract(`func-decompile`, goodContract);
         const result = await tact(`${path} --unknownOption`);
 
@@ -205,8 +213,8 @@ describe("Wrong flags", () => {
     });
 });
 
-describe('Compilation failures', () => {
-    test('Exits with failure on wrong contracts', async () => {
+describe("Compilation failures", () => {
+    test("Exits with failure on wrong contracts", async () => {
         const badContract = `
         message(1) Msg1 {}
         message(1) Msg2 {}
@@ -216,22 +224,21 @@ describe('Compilation failures', () => {
             bounced(msg: Msg2) { }
         }
         `;
-        const r = await writeConfig('failure', badContract, {
+        const r = await writeConfig("failure", badContract, {
             mode: "checkOnly",
         });
 
         const result = await tact(`--config ${r.config}`);
         expect(result).toMatchObject({ kind: "exited", code: 30 });
-    })
+    });
 });
 
 describe("tact --eval", () => {
-    test('Evaluate expressions', async () => {
-        const result = await tact("-e '(1 + 2 * (pow(3,4) - 2) << 1 & 0x54 | 33 >> 1) * 2 + 2'");
-
-        expect(result).toHaveProperty(
-            "stdout",
-            expect.stringMatching("42\n"),
+    test("Evaluate expressions", async () => {
+        const result = await tact(
+            "-e '(1 + 2 * (pow(3,4) - 2) << 1 & 0x54 | 33 >> 1) * 2 + 2'",
         );
+
+        expect(result).toHaveProperty("stdout", expect.stringMatching("42\n"));
     });
 });
