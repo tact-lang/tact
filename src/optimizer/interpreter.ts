@@ -1648,6 +1648,8 @@ export class Interpreter {
             this.envStack.executeInNewEnvironment(() => {
                 ast.trueStatements.forEach(this.interpretStatement, this);
             });
+        } else if (ast.elseif !== null) {
+            this.interpretConditionStatement(ast.elseif);
         } else if (ast.falseStatements !== null) {
             this.envStack.executeInNewEnvironment(() => {
                 ast.falseStatements!.forEach(this.interpretStatement, this);
