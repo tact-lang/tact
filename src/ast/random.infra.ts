@@ -2,6 +2,49 @@ import fc from "fast-check";
 import * as A from "./ast";
 import { dummySrcInfo } from "../grammar/src-info";
 
+/**
+ * An array of reserved words that cannot be used as contract or variable names in tests.
+ *
+ * These words are reserved for use in the language and may cause errors
+ * if attempted to be used as identifiers.
+ *
+ * @see src/grammar/next/grammar.gg
+ */
+const reservedWords = [
+    "extend",
+    "public",
+    "fun",
+    "let",
+    "return",
+    "receive",
+    "native",
+    "primitive",
+    "null",
+    "if",
+    "else",
+    "while",
+    "repeat",
+    "do",
+    "until",
+    "try",
+    "catch",
+    "foreach",
+    "as",
+    "map",
+    "mutates",
+    "extends",
+    "external",
+    "import",
+    "with",
+    "trait",
+    "initOf",
+    "override",
+    "abstract",
+    "virtual",
+    "inline",
+    "const",
+];
+
 function dummyAstNode<T>(
     generator: fc.Arbitrary<T>,
 ): fc.Arbitrary<T & { id: number; loc: typeof dummySrcInfo }> {
@@ -111,8 +154,9 @@ function randomAstId(): fc.Arbitrary<A.AstId> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("id"),
-            text: fc.stringMatching(/^[A-Za-z_][A-Za-z0-9_]*$/),
-            // Rules for text value are in src/grammar/grammar.ohm
+            text: fc
+                .stringMatching(/^[A-Za-z_][A-Za-z0-9_]*$/)
+                .filter((i) => !reservedWords.includes(i)),
         }),
     );
 }
@@ -121,8 +165,7 @@ function randomAstCapitalizedId(): fc.Arbitrary<A.AstId> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("id"),
-            text: fc.stringMatching(/^[A-Z]+$/),
-            // Rules for text value are in src/grammar/grammar.ohm
+            text: fc.stringMatching(/^[A-Z][a-z]*$/),
         }),
     );
 }
