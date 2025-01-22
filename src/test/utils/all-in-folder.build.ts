@@ -4,7 +4,7 @@ import { Options } from "../../config/parseConfig";
 import { basename, dirname, extname, join } from "path";
 import { createNodeFileSystem } from "../../vfs/createNodeFileSystem";
 import { Logger, LogLevel } from "../../context/logger";
-import { run } from "../../cli";
+import { run } from "../../cli/tact";
 import files from "../../stdlib/stdlib";
 
 // node.js 20+ builtin

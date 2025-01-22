@@ -22,7 +22,7 @@ export const CliErrors = (log: (error: string) => void) => {
         },
         unexpected: (error: unknown) => {
             log(
-                `Internal error: ${error instanceof Error ? error.toString() : String(error)}`,
+                `Unexpected error: ${error instanceof Error ? error.toString() : String(error)}`,
             );
         },
         configNotFound: (path: string) => {

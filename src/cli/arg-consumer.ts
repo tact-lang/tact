@@ -1,8 +1,11 @@
 import { Intersect } from "../utils/tricks";
-import { CliErrors } from "./error-schema";
+
+type ArgConsumerErrors = {
+    duplicateArgument: (name: string) => void;
+}
 
 export const ArgConsumer = <T>(
-    Errors: CliErrors,
+    Errors: ArgConsumerErrors,
     args: { [L in keyof T]?: T[L][] },
 ) => {
     const copy = { ...args };

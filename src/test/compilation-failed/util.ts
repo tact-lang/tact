@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import { run } from "../../cli";
+import { run } from "../../cli/tact";
 import { Logger, LogLevel } from "../../context/logger";
 import files from "../../stdlib/stdlib";
 import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";

@@ -1,5 +1,4 @@
 import type { Unwrap } from "../utils/tricks";
-import type { CliErrors } from "./error-schema";
 
 type Token<K, V> = Parser<[K, V]>;
 type Parser<T> = (argv: Argv) => Match<T>;
@@ -30,7 +29,12 @@ export type GetParserResult<T> = [T] extends [
 
 const iterationLimit = 10000;
 
-export const ArgParser = (Errors: CliErrors) => {
+type ArgParserErrors = {
+    argumentHasParameter: (param: string, argName: string) => void,
+    unexpectedArgument: (text: string | undefined) => void
+}
+
+export const ArgParser = (Errors: ArgParserErrors) => {
     const immediate: Token<"immediate", string> = (argv) => {
         const [head, ...rest] = argv;
         if (typeof head === "undefined" || head.startsWith("-")) {

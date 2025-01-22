@@ -1,50 +1,14 @@
+import { stat } from "fs/promises";
+import { makeCodegen, runCommand } from "../test-util.build";
 import { join } from "path";
-import { runCommand } from "./run-command.build";
-import { writeFile, mkdir, stat } from "fs/promises";
-import { Config, ConfigProject } from "../config/parseConfig";
 
-const binDir = join(__dirname, "..", "..", "bin");
+const binDir = join(__dirname, "..", "..", "..", "bin");
 const tact = (args: string) => {
     const command = `./tact.js ${args}`;
     return runCommand(command, binDir);
 };
 
-const outputDir = join(__dirname, "output");
-const getOutDir = async () => {
-    await mkdir(outputDir, { recursive: true });
-    return outputDir;
-};
-
-const writeContract = async (name: string, code: string) => {
-    const fullPath = join(await getOutDir(), `${name}.tact`);
-    await writeFile(fullPath, code);
-    return fullPath;
-};
-
-const writeConfig = async (
-    name: string,
-    code: string,
-    partialConfig: Pick<ConfigProject, "options" | "mode">,
-) => {
-    const outDir = await getOutDir();
-    await writeFile(join(outDir, `${name}.tact`), code);
-    const config: Config = {
-        projects: [
-            {
-                name,
-                path: `./${name}.tact`,
-                output: `./${name}`,
-                ...partialConfig,
-            },
-        ],
-    };
-    const configPath = join(outDir, `${name}.config.json`);
-    await writeFile(configPath, JSON.stringify(config, null, 4));
-    return {
-        config: configPath,
-        outputPath: (ext: string) => join(outDir, name, `${name}_Test.${ext}`),
-    };
-};
+const codegen = makeCodegen(join(__dirname, "output"))
 
 describe("tact --version", () => {
     test("Exits with correct code", async () => {
@@ -89,7 +53,7 @@ describe("tact foo.tact", () => {
         "Compilation of broken contract doesn't contain stacktrace (%s)",
         async (name, code) => {
             const result = await tact(
-                await writeContract(`no-err-${name}`, code),
+                await codegen.contract(`no-err-${name}`, code),
             );
 
             expect(result).toHaveProperty(
@@ -103,7 +67,7 @@ describe("tact foo.tact", () => {
         "Compilation of broken contract contains stacktrace with --verbose 2 (%s)",
         async (name, code) => {
             const result = await tact(
-                `--verbose 2 ${await writeContract(`err-${name}`, code)}`,
+                `--verbose 2 ${await codegen.contract(`err-${name}`, code)}`,
             );
 
             expect(result).toHaveProperty(
@@ -123,28 +87,40 @@ contract Test {
 }
 `;
 
-const flags = [
-    ["without flags", ""],
-    ["with --check", "--check"],
-    ["with --func", "--func"],
-    ["with --with-decompilation", "--with-decompilation"],
-] as const;
-
 describe("tact foo.tact", () => {
-    test.each(flags)(
-        "Check single-contract compilation %s",
-        async (_text, flag) => {
-            const path = await writeContract(`single-${flag}`, goodContract);
-            const result = await tact(`${flag} ${path}`);
+    test("Check single-contract compilation without flags", async () => {
+        const path = await codegen.contract(`single`, goodContract);
+        const result = await tact(path);
 
-            expect(result).toMatchObject({ kind: "exited", code: 0 });
-        },
-    );
+        expect(result).toMatchObject({ kind: "exited", code: 0 });
+    });
+    
+    test("Check single-contract compilation with --check", async () => {
+        const path = await codegen.contract(`single-check`, goodContract);
+        const result = await tact(`--check ${path}`);
+
+        expect(result).toMatchObject({ kind: "exited", code: 0 });
+    });
+
+    test("Check single-contract compilation with --func", async () => {
+        const path = await codegen.contract(`single-func`, goodContract);
+        const result = await tact(`--func ${path}`);
+
+        expect(result).toMatchObject({ kind: "exited", code: 0 });
+    });
+
+    test("Check single-contract compilation with --with-decompilation", async () => {
+        const path = await codegen.contract(`single-decompile`, goodContract);
+        const result = await tact(`--with-decompilation ${path}`);
+
+        expect(result).toMatchObject({ kind: "exited", code: 0 });
+    });
+
 });
 
 describe("tact --config config.json", () => {
     test("Complete results", async () => {
-        const r = await writeConfig("complete", goodContract, {
+        const r = await codegen.config("complete", goodContract, {
             options: { external: true },
             mode: "full",
         });
@@ -157,7 +133,7 @@ describe("tact --config config.json", () => {
     });
 
     test("With decompiled binary", async () => {
-        const r = await writeConfig("decompile", goodContract, {
+        const r = await codegen.config("decompile", goodContract, {
             options: { external: true },
             mode: "fullWithDecompilation",
         });
@@ -170,7 +146,7 @@ describe("tact --config config.json", () => {
     });
 
     test("Mode passed as parameter takes priority", async () => {
-        const r = await writeConfig("priority", goodContract, {
+        const r = await codegen.config("priority", goodContract, {
             options: { external: true },
             mode: "full",
         });
@@ -185,28 +161,28 @@ describe("tact --config config.json", () => {
 
 describe("Wrong flags", () => {
     test("--func --check are mutually exclusive ", async () => {
-        const path = await writeContract(`func-check`, goodContract);
+        const path = await codegen.contract(`func-check`, goodContract);
         const result = await tact(`${path} --func --check`);
 
         expect(result).toMatchObject({ kind: "exited", code: 30 });
     });
 
     test("--with-decompilation --check are mutually exclusive", async () => {
-        const path = await writeContract(`decompile-check`, goodContract);
+        const path = await codegen.contract(`decompile-check`, goodContract);
         const result = await tact(`${path} --with-decompilation --check`);
 
         expect(result).toMatchObject({ kind: "exited", code: 30 });
     });
 
     test("--func --with-decompilation are mutually exclusive", async () => {
-        const path = await writeContract(`func-decompile`, goodContract);
+        const path = await codegen.contract(`func-decompile`, goodContract);
         const result = await tact(`${path} --func --with-decompilation`);
 
         expect(result).toMatchObject({ kind: "exited", code: 30 });
     });
 
     test("Unknown flag throws error", async () => {
-        const path = await writeContract(`func-decompile`, goodContract);
+        const path = await codegen.contract(`func-decompile`, goodContract);
         const result = await tact(`${path} --unknownOption`);
 
         expect(result).toMatchObject({ kind: "exited", code: 30 });
@@ -224,7 +200,7 @@ describe("Compilation failures", () => {
             bounced(msg: Msg2) { }
         }
         `;
-        const r = await writeConfig("failure", badContract, {
+        const r = await codegen.config("failure", badContract, {
             mode: "checkOnly",
         });
 

@@ -2,20 +2,20 @@ import { readFileSync } from "fs";
 import { basename, dirname, join } from "path";
 import { execFileSync } from "child_process";
 import { z, ZodError } from "zod";
-import { createNodeFileSystem } from "../vfs/createNodeFileSystem";
-import { parseAndEvalExpression } from "../optimizer/interpreter";
-import { showValue } from "../types/types";
-import { Config, ConfigProject, parseConfig } from "../config/parseConfig";
-import { ArgParser, GetParserResult } from "./arg-parser";
+import { createNodeFileSystem } from "../../vfs/createNodeFileSystem";
+import { parseAndEvalExpression } from "../../optimizer/interpreter";
+import { showValue } from "../../types/types";
+import { Config, ConfigProject, parseConfig } from "../../config/parseConfig";
+import { ArgParser, GetParserResult } from "../arg-parser";
 import { CliErrors } from "./error-schema";
-import { CliLogger } from "./logger";
-import { ArgConsumer } from "./arg-consumer";
-import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
-import { entries } from "../utils/tricks";
-import { stdlibPath } from "../stdlib/path";
-import { Logger, LogLevel } from "../context/logger";
-import { build } from "../pipeline/build";
-import { TactErrorCollection } from "../error/errors";
+import { CliLogger } from "../logger";
+import { ArgConsumer } from "../arg-consumer";
+import { VirtualFileSystem } from "../../vfs/VirtualFileSystem";
+import { entries } from "../../utils/tricks";
+import { stdlibPath } from "../../stdlib/path";
+import { Logger, LogLevel } from "../../context/logger";
+import { build } from "../../pipeline/build";
+import { TactErrorCollection } from "../../error/errors";
 
 export const main = async () => {
     const Log = CliLogger();
@@ -340,7 +340,7 @@ const getVersion = () => {
         version: z.string(),
     });
 
-    const packageJsonPath = join(__dirname, "..", "..", "package.json");
+    const packageJsonPath = join(__dirname, "..", "..", "..", "package.json");
 
     const pkg = packageSchema.parse(
         JSON.parse(readFileSync(packageJsonPath, "utf-8")),

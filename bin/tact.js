@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require("../dist/cli/index.js").main();
+require("../dist/cli/tact/index.js").main();

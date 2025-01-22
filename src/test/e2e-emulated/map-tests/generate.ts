@@ -1,4 +1,4 @@
-import { createSingleFileConfig, run } from "../../../cli";
+import { createSingleFileConfig, run } from "../../../cli/tact";
 import { keyTypes, valTypes } from "./map-properties-key-value-types";
 import { mkdir, writeFile } from "fs/promises";
 import path, { basename, dirname, extname } from "path";
