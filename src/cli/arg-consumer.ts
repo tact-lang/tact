@@ -7,7 +7,7 @@ export const ArgConsumer = <T>(
 ) => {
     const copy = { ...args };
 
-    const isEmpty = () => Object.keys(copy).length === 0;
+    const leftover = () => Object.keys(copy);
 
     const single = <K extends Extract<keyof T, string>>(
         k: K,
@@ -33,7 +33,7 @@ export const ArgConsumer = <T>(
     };
 
     return {
-        isEmpty,
+        leftover,
         // TS bug
         single: single as Intersect<
             { [K in keyof T]: (k: K) => T[K] | undefined }[keyof T]

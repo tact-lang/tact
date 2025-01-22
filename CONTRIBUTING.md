@@ -105,7 +105,7 @@ yarn knip
 Tact's command-line interface (CLI) is located in [bin/tact.js](./bin/tact.js).
 Tact uses the [meow](https://github.com/sindresorhus/meow) CLI arguments parser.
 
-The main entry point for the Tact CLI is [src/node.ts](./src/node.ts) and [src/pipeline/build.ts](./src/pipeline/build.ts) is the platform-independent compiler driver which contains the high-level compiler pipeline logic described above.
+The main entry point for the Tact CLI is [src/cli/index.ts](./src/cli/index.ts) and [src/pipeline/build.ts](./src/pipeline/build.ts) is the platform-independent compiler driver which contains the high-level compiler pipeline logic described above.
 
 The Tact CLI gets Tact settings from a `tact.config.json` file or creates a default config for a single-file compilation mode. The format of `tact.config.json` files is specified in [src/config/configSchema.json](src/config/configSchema.json).
 
@@ -164,7 +164,7 @@ The implementation that we have right now is being refactored to produce FunC AS
 One can find the end-to-end codegen test spec files in the [src/test/e2e-emulated](./src/test/e2e-emulated/) folder. The test contracts are located in [src/test/e2e-emulated/contracts](./src/test/e2e-emulated/contracts) subfolder. Many of those spec files test various language features in relative isolation.
 An important spec file that tests argument passing semantics for functions and assignment semantics for variables is here: [src/test/e2e-emulated/semantics.spec.ts](./src/test/e2e-emulated/semantics.spec.ts).
 
-Note: If you add an end-to-end test contract, you also need to include it into [tact.config.json](src/test/tact.config.json) and run `yarn gen` to compile it and create TypeScript wrappers.
+Note: If you add an end-to-end test contract, you also need to run `yarn gen` to compile it and create TypeScript wrappers.
 
 `yarn gen` also re-compiles test contracts, so it's important to run it when code generation is changed.
 

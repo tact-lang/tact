@@ -25,7 +25,7 @@ export const main = async () => {
         const argv = process.argv.slice(2);
         await processArgs(Errors, argv);
     } catch (e) {
-        Errors.internal(e);
+        Errors.unexpected(e);
     }
 
     if (Log.hadErrors()) {
@@ -89,47 +89,53 @@ Follow X/Twitter account:     https://twitter.com/tact_language`);
 type Args = ArgConsumer<GetParserResult<ReturnType<typeof ArgSchema>>>;
 
 const parseArgs = async (Errors: CliErrors, Args: Args) => {
-    if (Args.single("help") && noUnknownParams(Args)) {
-        showHelp();
+    if (Args.single("help")) {
+        if (noUnknownParams(Errors, Args)) {
+            showHelp();
+        }
         return;
     }
 
-    if (Args.single("version") && noUnknownParams(Args)) {
-        showVersion();
+    if (Args.single("version")) {
+        if (noUnknownParams(Errors, Args)) {
+            showVersion();
+        }
         return;
     }
 
     const expression = Args.single("eval");
-    if (expression && noUnknownParams(Args)) {
-        evaluate(expression);
+    if (expression) {
+        if (noUnknownParams(Errors, Args)) {
+            evaluate(expression);
+        }
         return;
     }
 
     const configPath = Args.single("config");
     if (configPath) {
-        const F = createNodeFileSystem(dirname(configPath), false);
-        if (!F.exists(configPath)) {
+        const Fs = createNodeFileSystem(dirname(configPath), false);
+        if (!Fs.exists(configPath)) {
             Errors.configNotFound(configPath);
             return;
         }
-        const configText = F.readFile(configPath).toString("utf-8");
+        const configText = Fs.readFile(configPath).toString("utf-8");
         const config = parseConfigSafe(Errors, configPath, configText);
         if (!config) {
             return;
         }
-        await compile(Args, Errors, F, config);
+        await compile(Args, Errors, Fs, config);
         return;
     }
 
     const filePath = Args.single("immediate");
     if (filePath) {
-        const F = createNodeFileSystem(dirname(filePath), false);
+        const Fs = createNodeFileSystem(dirname(filePath), false);
         const config = createSingleFileConfig(basename(filePath));
-        await compile(Args, Errors, F, config);
+        await compile(Args, Errors, Fs, config);
         return;
     }
 
-    if (noUnknownParams(Args)) {
+    if (noUnknownParams(Errors, Args)) {
         showHelp();
     }
 };
@@ -208,7 +214,7 @@ const compile = async (
 
     const stdlib = createNodeFileSystem(stdlibPath);
 
-    if (noUnknownParams(Args)) {
+    if (noUnknownParams(Errors, Args)) {
         // TODO: all flags on the cli should take precedence over flags in the config
         // Make a nice model for it instead of the current mess
         // Consider making overwrites right here or something.
@@ -286,11 +292,16 @@ const setConfigOptions = (config: Config, options: ExtraOptions): void => {
     }
 };
 
-const noUnknownParams = (args: Args): boolean => {
-    if (args.isEmpty()) {
+const noUnknownParams = (Errors: CliErrors, Args: Args): boolean => {
+    const leftoverArgs = Args.leftover();
+
+    if (leftoverArgs.length === 0) {
         return true;
     }
 
+    for (const argument of leftoverArgs) {
+        Errors.unexpectedArgument(argument);
+    }
     showHelp();
     return false;
 };

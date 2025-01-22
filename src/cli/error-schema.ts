@@ -20,7 +20,7 @@ export const CliErrors = (log: (error: string) => void) => {
         duplicateArgument: (name: string) => {
             log(`Duplicate ${name} argument. Only first argument will be used`);
         },
-        internal: (error: unknown) => {
+        unexpected: (error: unknown) => {
             log(
                 `Internal error: ${error instanceof Error ? error.toString() : String(error)}`,
             );
