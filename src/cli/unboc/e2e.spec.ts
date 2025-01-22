@@ -2,7 +2,7 @@ import { join, normalize } from "path";
 import { makeCodegen, runCommand } from "../test-util.build";
 
 // disable tests on windows
-const testWin = process.platform !== 'win32' ? test : test.skip;
+const testWin = process.platform !== "win32" ? test : test.skip;
 
 const tact = (args: string) => {
     const tactPath = normalize(

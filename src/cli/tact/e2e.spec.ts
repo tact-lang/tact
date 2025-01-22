@@ -3,7 +3,7 @@ import { makeCodegen, runCommand } from "../test-util.build";
 import { join, normalize } from "path";
 
 // disable tests on windows
-const testWin = process.platform !== 'win32' ? test : test.skip;
+const testWin = process.platform !== "win32" ? test : test.skip;
 
 const tact = (args: string) => {
     const tactPath = normalize(
@@ -68,7 +68,7 @@ describe("tact foo.tact", () => {
         },
     );
 
-    testWin.skip.each(badContracts)(
+    test.skip.each(badContracts)(
         "Compilation of broken contract contains stacktrace with --verbose 2 (%s)",
         async (name, code) => {
             const result = await tact(
@@ -114,12 +114,18 @@ describe("tact foo.tact", () => {
         expect(result).toMatchObject({ kind: "exited", code: 0 });
     });
 
-    testWin("Check single-contract compilation with --with-decompilation", async () => {
-        const path = await codegen.contract(`single-decompile`, goodContract);
-        const result = await tact(`--with-decompilation ${path}`);
+    testWin(
+        "Check single-contract compilation with --with-decompilation",
+        async () => {
+            const path = await codegen.contract(
+                `single-decompile`,
+                goodContract,
+            );
+            const result = await tact(`--with-decompilation ${path}`);
 
-        expect(result).toMatchObject({ kind: "exited", code: 0 });
-    });
+            expect(result).toMatchObject({ kind: "exited", code: 0 });
+        },
+    );
 });
 
 describe("tact --config config.json", () => {
