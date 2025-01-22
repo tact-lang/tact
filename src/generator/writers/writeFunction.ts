@@ -1,5 +1,11 @@
 import { enabledInline } from "../../config/features";
 import * as A from "../../ast/ast";
+import {
+    idOfText,
+    idText,
+    isWildcard,
+    tryExtractPath,
+} from "../../ast/ast-helpers";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
 import { FunctionDescription, TypeRef } from "../../types/types";
@@ -94,7 +100,7 @@ export function writeStatement(
         }
         case "statement_let": {
             // Underscore name case
-            if (A.isWildcard(f.name)) {
+            if (isWildcard(f.name)) {
                 ctx.append(`${writeExpression(f.expression, ctx)};`);
                 return;
             }
@@ -128,7 +134,7 @@ export function writeStatement(
         }
         case "statement_assign": {
             // Prepare lvalue
-            const lvaluePath = A.tryExtractPath(f.path);
+            const lvaluePath = tryExtractPath(f.path);
             if (lvaluePath === null) {
                 // typechecker is supposed to catch this
                 throwInternalCompilerError(
@@ -156,7 +162,7 @@ export function writeStatement(
             return;
         }
         case "statement_augmentedassign": {
-            const lvaluePath = A.tryExtractPath(f.path);
+            const lvaluePath = tryExtractPath(f.path);
             if (lvaluePath === null) {
                 // typechecker is supposed to catch this
                 throwInternalCompilerError(
@@ -221,7 +227,7 @@ export function writeStatement(
 
             const catchBlock = f.catchBlock;
             if (catchBlock !== undefined) {
-                if (A.isWildcard(catchBlock.catchName)) {
+                if (isWildcard(catchBlock.catchName)) {
                     ctx.append(`} catch (_) {`);
                 } else {
                     ctx.append(
@@ -241,7 +247,7 @@ export function writeStatement(
             return;
         }
         case "statement_foreach": {
-            const mapPath = A.tryExtractPath(f.map);
+            const mapPath = tryExtractPath(f.map);
             if (mapPath === null) {
                 // typechecker is supposed to catch this
                 throwInternalCompilerError(
@@ -257,10 +263,10 @@ export function writeStatement(
             }
 
             const flag = freshIdentifier("flag");
-            const key = A.isWildcard(f.keyName)
+            const key = isWildcard(f.keyName)
                 ? freshIdentifier("underscore")
                 : funcIdOf(f.keyName);
-            const value = A.isWildcard(f.valueName)
+            const value = isWildcard(f.valueName)
                 ? freshIdentifier("underscore")
                 : funcIdOf(f.valueName);
 
@@ -472,7 +478,7 @@ export function writeStatement(
             const ty = getType(ctx.ctx, t.name);
             const ids = ty.fields.map((field) => {
                 const id = f.identifiers.get(field.name);
-                return id === undefined || A.isWildcard(id[1])
+                return id === undefined || isWildcard(id[1])
                     ? "_"
                     : funcIdOf(id[1]);
             });
@@ -555,7 +561,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     const fAst = f.ast;
     switch (fAst.kind) {
         case "native_function_decl": {
-            const name = A.idText(fAst.nativeName);
+            const name = idText(fAst.nativeName);
             if (f.isMutating && !ctx.isRendered(name)) {
                 writeNonMutatingFunction(
                     f,
@@ -583,9 +589,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                 // we need to do some renames (prepending $ to identifiers)
                 const asmShuffleEscaped: A.AstAsmShuffle = {
                     ...fAst.shuffle,
-                    args: fAst.shuffle.args.map((id) =>
-                        A.idOfText(funcIdOf(id)),
-                    ),
+                    args: fAst.shuffle.args.map((id) => idOfText(funcIdOf(id))),
                 };
                 ctx.asm(
                     ppAsmShuffle(asmShuffleEscaped),

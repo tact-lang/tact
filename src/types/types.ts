@@ -2,6 +2,7 @@ import { ABIField } from "@ton/core";
 import { throwInternalCompilerError } from "../error/errors";
 import * as A from "../ast/ast";
 import { ItemOrigin, SrcInfo } from "../grammar";
+import { idText } from "../ast/ast-helpers";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";
@@ -70,7 +71,7 @@ export function showValue(val: A.AstLiteral): string {
         case "struct_value": {
             const assocList = val.args.map(
                 (field) =>
-                    `${A.idText(field.field)}: ${showValue(field.initializer)}`,
+                    `${idText(field.field)}: ${showValue(field.initializer)}`,
             );
             return `{${assocList.join(",")}}`;
         }

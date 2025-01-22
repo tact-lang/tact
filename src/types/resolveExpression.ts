@@ -1,8 +1,10 @@
 import * as A from "../ast/ast";
+import { eqNames, getAstFactory, idText, isWildcard } from "../ast/ast-helpers";
 import {
     idTextErr,
     TactConstEvalError,
     throwCompilationError,
+    throwInternalCompilerError,
 } from "../error/errors";
 import { CompilerContext, createContextStore } from "../context/context";
 import {
@@ -18,7 +20,6 @@ import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
-import { throwInternalCompilerError } from "../error/errors";
 import { StructFunctions } from "../abi/struct";
 import { prettyPrint } from "../ast/ast-printer";
 import { ensureInt } from "../optimizer/interpreter";
@@ -155,16 +156,16 @@ function resolveStructNew(
     const processed: Set<string> = new Set();
     for (const e of exp.args) {
         // Check duplicates
-        if (processed.has(A.idText(e.field))) {
+        if (processed.has(idText(e.field))) {
             throwCompilationError(
                 `Duplicate fields ${idTextErr(e.field)}`,
                 e.loc,
             );
         }
-        processed.add(A.idText(e.field));
+        processed.add(idText(e.field));
 
         // Check existing
-        const f = tp.fields.find((v) => A.eqNames(v.name, e.field));
+        const f = tp.fields.find((v) => eqNames(v.name, e.field));
         if (!f) {
             throwCompilationError(
                 `Unknown fields ${idTextErr(e.field)} in type ${idTextErr(tp.name)}`,
@@ -254,7 +255,7 @@ function resolveBinaryOp(
                             evalConstantExpression(
                                 exp.right,
                                 ctx,
-                                getAstUtil(A.getAstFactory()),
+                                getAstUtil(getAstFactory()),
                             ),
                         );
                         if (0n > valBits.value || valBits.value > 256n) {
@@ -457,7 +458,7 @@ function resolveFieldAccess(
         exp.aggregate.kind === "id" &&
         exp.aggregate.text === "self"
     ) {
-        if (sctx.requiredFields.find((v) => A.eqNames(v, exp.field))) {
+        if (sctx.requiredFields.find((v) => eqNames(v, exp.field))) {
             throwCompilationError(
                 `Field ${idTextErr(exp.field)} is not initialized`,
                 exp.field.loc,
@@ -468,9 +469,7 @@ function resolveFieldAccess(
     // Find field
     const srcT = getType(ctx, src.name);
 
-    const fieldIndex = srcT.fields.findIndex((v) =>
-        A.eqNames(v.name, exp.field),
-    );
+    const fieldIndex = srcT.fields.findIndex((v) => eqNames(v.name, exp.field));
     const field = fieldIndex !== -1 ? srcT.fields[fieldIndex] : undefined;
 
     // If we found a field of bounced<T>, check if the field doesn't fit in 224 bytes and cannot be accessed
@@ -492,7 +491,7 @@ function resolveFieldAccess(
         );
     }
 
-    const cst = srcT.constants.find((v) => A.eqNames(v.name, exp.field));
+    const cst = srcT.constants.find((v) => eqNames(v.name, exp.field));
     if (!field && !cst) {
         const typeStr =
             src.kind === "ref_bounced"
@@ -503,8 +502,8 @@ function resolveFieldAccess(
             // Check for struct methods
             if (
                 (srcT.kind === "struct" &&
-                    StructFunctions.has(A.idText(exp.field))) ||
-                srcT.functions.has(A.idText(exp.field))
+                    StructFunctions.has(idText(exp.field))) ||
+                srcT.functions.has(idText(exp.field))
             ) {
                 throwCompilationError(
                     `Type ${typeStr} does not have a field named "${exp.field.text}", did you mean "${exp.field.text}()" instead?`,
@@ -533,8 +532,8 @@ function resolveStaticCall(
     ctx: CompilerContext,
 ): CompilerContext {
     // Check if abi global function
-    if (GlobalFunctions.has(A.idText(exp.function))) {
-        const f = GlobalFunctions.get(A.idText(exp.function))!;
+    if (GlobalFunctions.has(idText(exp.function))) {
+        const f = GlobalFunctions.get(idText(exp.function))!;
 
         // Resolve arguments
         for (const e of exp.args) {
@@ -553,15 +552,15 @@ function resolveStaticCall(
     }
 
     // Check if function exists
-    if (!hasStaticFunction(ctx, A.idText(exp.function))) {
+    if (!hasStaticFunction(ctx, idText(exp.function))) {
         // check if there is a method with the same name
         if (
             getAllTypes(ctx).find(
-                (ty) => ty.functions.get(A.idText(exp.function)) !== undefined,
+                (ty) => ty.functions.get(idText(exp.function)) !== undefined,
             ) !== undefined
         ) {
             throwCompilationError(
-                `Static function ${idTextErr(exp.function)} does not exist. Perhaps you meant to call ".${A.idText(exp.function)}(...)" extension function?`,
+                `Static function ${idTextErr(exp.function)} does not exist. Perhaps you meant to call ".${idText(exp.function)}(...)" extension function?`,
                 exp.loc,
             );
         }
@@ -573,7 +572,7 @@ function resolveStaticCall(
     }
 
     // Get static function
-    const f = getStaticFunction(ctx, A.idText(exp.function));
+    const f = getStaticFunction(ctx, idText(exp.function));
 
     // Resolve call arguments
     for (const e of exp.args) {
@@ -634,8 +633,8 @@ function resolveCall(
 
         // Check struct ABI
         if (srcT.kind === "struct") {
-            if (StructFunctions.has(A.idText(exp.method))) {
-                const abi = StructFunctions.get(A.idText(exp.method))!;
+            if (StructFunctions.has(idText(exp.method))) {
+                const abi = StructFunctions.get(idText(exp.method))!;
                 const resolved = abi.resolve(
                     ctx,
                     [src, ...exp.args.map((v) => getExpType(ctx, v))],
@@ -645,7 +644,7 @@ function resolveCall(
             }
         }
 
-        const f = srcT.functions.get(A.idText(exp.method));
+        const f = srcT.functions.get(idText(exp.method));
         if (f) {
             // Check arguments
             if (f.params.length !== exp.args.length) {
@@ -669,7 +668,7 @@ function resolveCall(
         }
 
         // Check if a field with the same name exists
-        const field = srcT.fields.find((v) => A.eqNames(v.name, exp.method));
+        const field = srcT.fields.find((v) => eqNames(v.name, exp.method));
         if (field) {
             throwCompilationError(
                 `Type "${src.name}" does not have a function named "${exp.method.text}()", did you mean field "${exp.method.text}" instead?`,
@@ -685,13 +684,13 @@ function resolveCall(
 
     // Handle map
     if (src.kind === "map") {
-        if (!MapFunctions.has(A.idText(exp.method))) {
+        if (!MapFunctions.has(idText(exp.method))) {
             throwCompilationError(
                 `Map function ${idTextErr(exp.method)} not found`,
                 exp.loc,
             );
         }
-        const abf = MapFunctions.get(A.idText(exp.method))!;
+        const abf = MapFunctions.get(idText(exp.method))!;
         const resolved = abf.resolve(
             ctx,
             [src, ...exp.args.map((v) => getExpType(ctx, v))],
@@ -854,7 +853,7 @@ export function resolveExpression(
             const v = sctx.vars.get(exp.text);
             if (!v) {
                 if (!hasStaticConstant(ctx, exp.text)) {
-                    if (A.isWildcard(exp)) {
+                    if (isWildcard(exp)) {
                         throwCompilationError(
                             "Wildcard variable name '_' cannot be accessed",
                             exp.loc,

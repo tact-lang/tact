@@ -1,5 +1,5 @@
 import { getParser as getParserNext } from "./next";
-
+import { FactoryAst } from "../ast/ast-helpers";
 import * as A from "../ast/ast";
 
 import { getParser as getParserPrev } from "./prev/grammar";
@@ -17,10 +17,7 @@ export type Parser = {
 
 export const defaultParser = "new";
 
-export const getParser = (
-    ast: A.FactoryAst,
-    version: "old" | "new",
-): Parser => {
+export const getParser = (ast: FactoryAst, version: "old" | "new"): Parser => {
     if (version === "new") {
         return getParserNext(ast);
     } else {

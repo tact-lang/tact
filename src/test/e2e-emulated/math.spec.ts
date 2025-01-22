@@ -508,4 +508,11 @@ describe("math", () => {
         expect(await contract.getAugmentedShiftRight(4n, 2n)).toBe(1n);
         expect(await contract.getAugmentedShiftRight(16n, 3n)).toBe(2n);
     });
+
+    it("should perform left shifts with comparisons correctly", async () => {
+        expect(await contract.getShiftLeft0(0n)).toStrictEqual(true);
+    });
+    it("should perform right shifts with comparisons correctly", async () => {
+        expect(await contract.getShiftRight0(0n)).toStrictEqual(true);
+    });
 });
