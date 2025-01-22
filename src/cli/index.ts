@@ -40,7 +40,7 @@ const processArgs = async (E: CliErrors, argv: string[]) => {
 
     const match = getArgs(argv);
     if (match.kind === "ok") {
-        const A = ArgConsumer(match.value);
+        const A = ArgConsumer(E, match.value);
 
         await parseArgs(E, A);
     } else {
