@@ -39,7 +39,7 @@ struct Line {
 }
 ```
 
-结构体还可以包含默认字段，并定义[可选类型](/zh-cn/book/optionals)的字段。 结构体还可以包含默认字段和定义[可选类型]字段（/book/optionals）。 如果您有很多字段，但又不想一直在 [new instances](#instantiate）中为它们指定通用值，那么这将非常有用。
+结构体还可以包含默认字段，并定义[可选类型](/zh-cn/book/optionals)的字段。 结构体还可以包含默认字段和定义[可选类型]字段（/book/optionals）。 如果您有很多字段，但又不想一直在 [new instances](#instantiate) 中为它们指定通用值，那么这将非常有用。
 
 ```tact
 struct Params {
@@ -88,7 +88,7 @@ struct MoviesToWatch {
 
 ## 消息 {#messages}
 
-消息中可以包含 [结构体](#structs）：
+消息中可以包含 [结构体](#structs)：
 
 ```tact
 struct Point {
@@ -101,7 +101,7 @@ message Add {
 }
 ```
 
-消息与 [结构体](#structs)几乎相同，唯一不同的是，消息在序列化时有一个 32 位整数头，包含唯一的数字 id，通常称为 _opcode_（操作码）。  这使得消息可以与 [接收者(receivers)](/book/receive）一起使用，因为合约可以根据这个 id 区分不同类型的消息。
+消息与 [结构体](#structs)几乎相同，唯一不同的是，消息在序列化时有一个 32 位整数头，包含唯一的数字 id，通常称为 _opcode_（操作码）。  这使得消息可以与 [接收者(receivers)](/zh-cn/book/receive) 一起使用，因为合约可以根据这个 id 区分不同类型的消息。
 
 Tact 会为每个接收到的消息自动生成这些唯一 ID（操作码），但也可以手动覆盖：
 
@@ -126,7 +126,7 @@ message(0x7362d09c) TokenNotification {
 
 ## 操作
 
-### 实例化
+### 实例化 {#instantiate}
 
 创建 [Struct](#structs) 和 [Message](#messages) 实例类似于 [function calls](/zh-cn/book/expressions#static-function-call)，但需要用大括号 `{}{:tact}`（大括号）代替小括号 `(){:tact}`指定参数：
 

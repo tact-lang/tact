@@ -28,7 +28,7 @@ fun bar() {
 }
 ```
 
-## 全局静态函数
+## 全局静态函数 {#global-static-functions}
 
 您可以在程序的任何地方定义全局函数：
 
@@ -42,7 +42,7 @@ fun customPow(a: Int, c: Int): Int {
 }
 ```
 
-## 虚拟和抽象函数
+## 虚拟和抽象函数 {#virtual-and-abstract-functions}
 
 如果 [traits](/zh-cn/book/types#traits) 有 `virtual{:tact}` 关键字，则可以使用 `override{:tact}` 允许继承 [traits](/zh-cn/book/types#traits) 的合约修改内部函数。  函数也可以标记为 `abstract{:tact}`，在这种情况下，继承合约必须定义其实现：
 
@@ -68,7 +68,7 @@ trait FilterTrait with Ownable {
 }
 ```
 
-## 扩展函数
+## 扩展函数 {#extension-function}
 
 扩展函数允许你为任何可能的类型实现扩展。
 
@@ -114,7 +114,7 @@ native storeUint(s: Builder, value: Int, bits: Int): Builder;
 extends mutates native loadInt(self: Slice, l: Int): Int;
 ```
 
-## 接收器函数
+## 接收器函数 {#receiver-functions}
 
 接收器函数是负责在合约中接收信息的特殊函数，只能在合约或trait中定义。
 
@@ -127,7 +127,7 @@ contract Treasure {
 }
 ```
 
-## 获取器函数
+## 获取器函数 {#getter-functions}
 
 获取器函数定义智能合约上的获取器，只能在合约或特征中定义。
 Getter 函数不能用来读取其他合约的状态：如果您需要获取一些数据，您需要通过发送带有请求的消息和定义接收器来读取请求答案。

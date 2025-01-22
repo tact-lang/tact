@@ -26,7 +26,7 @@ import { Badge } from '@astrojs/starlight/components';
 | $+16$      | `SendBounceIfActionFail{:tact}` | 如果在行动阶段出现任何错误，则退回交易。 如果使用了标志 $+2$, `SendIgnoreErrors{:tact}`，则没有影响。    |
 | $+32$      | `SendDestroyIfZero{:tact}`      | 如果当前账户的余额为零，则必须销毁该账户（通常与模式 $128$, `SendRemainingBalance{:tact}` 一起使用）。 |
 
-## 将模式与标志(flags)相结合
+## 将模式与标志(flags)相结合 {#combining-modes-with-flags}
 
 要为 `SendParameters{:tact}` 的 `mode` 字段创建 [`Int{:tact}`][int] 值，只需通过 [bitwise OR](/zh-cn/book/operators#binary-bitwise-or) 运算将基本模式与可选标记结合起来。
 

@@ -38,7 +38,7 @@ Jetton Wallet 合约是个人持有者的代币钱包，负责管理特定用户
 
 处理Jettons的常见示例。
 
-### 接受 jetton 转移
+### 接受 jetton 转移 {#accepting-jetton-transfer}
 
 转账通知信息的结构如下
 
@@ -69,9 +69,9 @@ message(0x7362d09c) JettonTransferNotification {
 3. 在成功的转账接受后，合约的Jetton钱包将转账通知给他的所有者合约。
 4. 合约验证Jetton信息。
 
-你可以使用 [`contractAddress(){:tact}`](/zh-cn/ref/core-common#contractadress) 函数获取合约的 Jetton 钱包，或链下计算此地址。
+你可以使用 [`contractAddress(){:tact}`](/zh-cn/ref/core-common#contractaddress) 函数获取合约的 Jetton 钱包，或链下计算此地址。
 
-要获取 Jetton 钱包的初始状态，您需要钱包的数据和代码。 虽然初始数据布局有一个共同的结构，但在某些情况下可能不同，如 [USDT](#ustt-jetton-operations)。
+要获取 Jetton 钱包的初始状态，您需要钱包的数据和代码。 虽然初始数据布局有一个共同的结构，但在某些情况下可能不同，如 [USDT](#usdt-jetton-operations)。
 
 由于通知源自您的合约的 Jetton 钱包，函数[`myAddress(){:tact}`](/zh-cn/ref/core-common#myaddress) 应在 \`owners' 字段中使用。
 
@@ -243,7 +243,7 @@ contract Example with Deployable {
 }
 ```
 
-### 销毁 jetton
+### 销毁 jetton {#burning-jetton}
 
 Jetton 销毁是将指定数量的 Jetton 永久移出流通的过程，无法恢复。
 
@@ -327,7 +327,7 @@ contract Example with Deployable {
 }
 ```
 
-### USDT jetton 业务
+### USDT jetton 业务 {#usdt-jetton-operations}
 
 除了 `JettonWalletData` 将采用以下结构外，USDT（在 TON 上）的操作保持不变：
 

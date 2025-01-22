@@ -5,7 +5,7 @@ description: 在Tact中处理非同质化代币 (NFT) 的常见示例
 
 此页列出了与 [NFTs]交互的常见例子(https://docs.ton.org/develop/dapps/asset-processing/nfts)。
 
-## 接受 NFT 所有权分配
+## 接受 NFT 所有权分配 {#accepting-nft-ownership-assignment}
 
 指派的 NFT 所有权的通知信息具有以下结构：
 
@@ -51,7 +51,7 @@ contract SingleNft with Deployable {
 }
 ```
 
-2. 使用 [`StateInit{:tact}`](/zh-cn/book/expressions#init) 和派生的 NFT 项目地址。
+2. 使用 [`StateInit{:tact}`](/zh-cn/book/expressions#initof) 和派生的 NFT 项目地址。
 
 ```tact
 import "@stdlib/deploy";

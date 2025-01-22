@@ -24,13 +24,13 @@ contract Example {
 
 每份合约可包括:
 
-- [可继承trait](#trait)
-- [支持的接口](#接口)
-- [持久状态变量](#变量)
+- [可继承trait](#traits)
+- [支持的接口](#interfaces)
+- [持久状态变量](#variables)
 - [构造函数 `init(){:tact}`](#init-function)
-- [合约常量](#常量)
+- [合约常量](#constants)
 - [Getter 函数](#getter-functions)
-- [Receiver 功能](#接收器功能）
+- [Receiver 功能](#receiver-functions)
 - [内部功能](#internal-functions)
 
 ### 继承trait， `with{:tact}` {#traits}
@@ -151,7 +151,7 @@ contract Example {
 }
 ```
 
-状态变量必须有默认值或在 [`init(){:tact}`](#init-function）函数中初始化，该函数在部署合约时运行。 唯一的例外是 [`map<K, V>{:tact}`](/zh-cn/book/maps) 类型的持久状态变量，因为它们默认初始化为空。
+状态变量必须有默认值或在 [`init(){:tact}`](#init-function) 函数中初始化，该函数在部署合约时运行。 唯一的例外是 [`map<K, V>{:tact}`](/zh-cn/book/maps) 类型的持久状态变量，因为它们默认初始化为空。
 
 :::note
 
@@ -240,7 +240,7 @@ contract TheySeeMeTrailing {
 
 :::
 
-### 获取器(getter)功能
+### 获取器(getter)功能 {#getter-functions}
 
 [获取(getter)函数](/zh-cn/book/functions#getter-functions) **无法从其他合约访问，仅导出到链下世界**。
 
@@ -263,7 +263,7 @@ contract HelloWorld {
 
 请在其专门章节中阅读更多相关信息：[获取函数](/zh-cn/book/functions#getter-functions)
 
-### 接收器(Receiver)功能
+### 接收器(Receiver)功能 {#receiver-functions}
 
 Tact 中的[接收器(Receiver)函数](/zh-cn/book/functions#receiver-functions)可以是以下三种之一：
 
@@ -325,7 +325,7 @@ contract Example {
 }
 ```
 
-### 内部函数
+### 内部函数 {#internal-functions}
 
 这些函数的行为类似于流行的面向对象语言中的私有方法——它们是合约的内部函数，可以通过在其前缀添加特殊的[标识符 `self{:tact}`](#self)来调用。 因此，内部函数有时也被称为 "合约方法"。
 

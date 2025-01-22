@@ -135,7 +135,7 @@ let fee: Int = getComputeFee(1_000, false);
 fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int;
 ```
 
-类似于[`getComputeFee(){:tact}`](#getcomputedefee)，但没有[`flat_gas_price`][param-20-21]，如果`gassUsed`小于一个叫做[`flat_gas_limit`][param-20-21] 的阈值，则不支付最低价格。 计算并只返回当前 gas 价格的 `gasUsed` 倍数。
+类似于[`getComputeFee(){:tact}`](#getcomputefee)，但没有[`flat_gas_price`][param-20-21]，如果`gassUsed`小于一个叫做[`flat_gas_limit`][param-20-21] 的阈值，则不支付最低价格。 计算并只返回当前 gas 价格的 `gasUsed` 倍数。
 
 试图指定一个 `gassUsed` 的负值导致异常[退出码 5](/zh-cn/book/exit-codes#5)：`Integer out of expected range`。
 

@@ -17,11 +17,11 @@ Tact 支持多种方式编写 `Int{:tact}` 的原始值作为[整数字面量](/
 大多数符号允许在数字之间添加下划线 (`_`)，但下列符号除外：
 
 - 字符串表示法，如 [NanoToncoins](#nanotoncoin) 案例所示。
-- 带前导零的十进制数 $0$。一般不鼓励使用，参见 [下文](#十进制)。
+- 带前导零的十进制数 $0$。一般不鼓励使用，参见 [下文](#decimal)。
 
 此外，**不允许**在 $4\_\_2$ 中连续使用多个下划线，或在 $42\_$ 中使用尾部下划线。
 
-### 十进制
+### 十进制 {#decimal}
 
 最常见、最常用的数字表示方法，使用[十进制数字系统](https://en.wikipedia.org/wiki/Decimal)： $123456789$。\
 您可以使用下划线（`_`）来提高可读性： $123\_456\_789$ 等于 $123456789$。
@@ -31,22 +31,22 @@ Tact 支持多种方式编写 `Int{:tact}` 的原始值作为[整数字面量](/
   注意，**强烈建议**使用这种带前导零的符号，因为可能会与 TypeScript 中的八进制整数字面混淆，而 TypeScript 通常与 Tact 一起用于开发和测试合约。
 :::
 
-### 十六进制
+### 十六进制 {#hexadecimal}
 
 使用[十六进制数字系统](https://en.wikipedia.org/wiki/Hexadecimal)表示数字，用 $\mathrm{0x}$（或 $\mathrm{0X}$）前缀表示：$\mathrm{0xFFFFFFFFF}$。
 使用下划线（`_`）提高可读性：$\mathrm{0xFFF\_FFFF\_FFF}$ 等于 $\mathrm{0xFFFFFFFFF}$。
 
-### 八进制
+### 八进制 {#octal}
 
 使用[八进制数字系统](https://en.wikipedia.org/wiki/Octal)表示数字，用 $\mathrm{0o}$（或 $\mathrm{0O}$）前缀表示：$\mathrm{0o777777777}$。
 使用下划线（`_`）提高可读性：$\mathrm{0o777\_777\_777}$ 等于 $\mathrm{0o777777777}$。
 
-### 二进制
+### 二进制 {#binary}
 
 使用[二进制数字系统](https://en.wikipedia.org/wiki/Binary_number)表示数字，用 $\mathrm{0b}$（或 $\mathrm{0B}$）前缀表示：$\mathrm{0b111111111}$。
 使用下划线（`_`）提高可读性：$\mathrm{0b111\_111\_111}$ 等于 $\mathrm{0b111111111}$。
 
-### NanoToncoins
+### NanoToncoins {#nanotoncoin}
 
 与美元的运算要求小数点后保留两位小数——这些用于表示美分(cents)的值。 但是，如果我们只能用整数来表示数字 \$$1.25$ ，我们该如何表示呢？ 解决的办法是直接使用 _cents_。 这样， \$$1.25$ 就变成了 $125$ 美分。 我们只需记住最右边的两位数代表小数点后的数字。
 
@@ -54,7 +54,7 @@ Tact 支持多种方式编写 `Int{:tact}` 的原始值作为[整数字面量](/
 
 因此， $1.25$ Toncoin 的数量，可以用 Tact 表示为 [`ton("1.25"){:tact}`](/zh-cn/ref/core-comptime#ton)，实际上就是数字 $1250000000$。 我们称这样的数字为_nanoToncoin(s)_（或_nano-ton(s)）而不是_美分_。
 
-## 序列化
+## 序列化 {#serialization}
 
 将 `Int{:tact}` 值编码为持久状态（[contracts](/zh-cn/book/contracts) 和 [traits](/zh-cn/book/types#traits) 的字段）时，通常最好使用比 $257$-bits 更小的表示形式，以降低[存储成本](https://docs.ton.org/develop/smart-contracts/fees#storage-fee)。 这些表示法的使用也被称为 "序列化"，因为它们代表了 TON 区块链运行的本地[TL-B][tlb]类型。
 
@@ -91,7 +91,7 @@ message MsgSerialization {
 - 在状态中存储 $1000$ 个 $257$ 位的整数[成本](https://docs.ton.org/develop/smart-contracts/fees#how-to-calculate-fees)大约为每年 $0.184$ TON。
 - 相比之下，存储 $1000$ $32$-bit 整数每年只需花费 $0.023$ ton 。
 
-### 常见序列化类型 {#serialization-types}
+### 常见序列化类型 {#common-serialization-types}
 
 |  名称              | [TL-B][tlb]                 |      包含的范围                  |                          占用空间                          |
 | :--------------: | :-------------------------: | :-------------------------: | :----------------------------------------------------: |
@@ -114,7 +114,7 @@ message MsgSerialization {
 
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
 
-除了 [常见序列化类型](#-common-serialization-types)，还可以使用前缀 `int` 或 `uint` 后跟数字来指定任意位宽的整数。 例如，写入 `int7{:tact}` 表示有符号 $7$- 位整数。
+除了 [常见序列化类型](#common-serialization-types)，还可以使用前缀 `int` 或 `uint` 后跟数字来指定任意位宽的整数。 例如，写入 `int7{:tact}` 表示有符号 $7$- 位整数。
 
 `Int{:tact}` 类型的最小允许位宽是 $1$，而对于 `int` 前缀（有符号整数）最大是 $257$，对于 `uint` 前缀（无符号整数）最大是 $256$。
 
@@ -166,11 +166,11 @@ struct Scrooge {
 
 :::
 
-## 操作
+## 操作 {#operations}
 
 所有数字的运行时计算都是在 257 位完成的，因此 [溢出](https://en.wikipedia.org/wiki/Integer_overflow) 非常罕见。  不过，如果任何数学运算出现溢出，就会抛出异常，事务也会失败。 可以说，Tact 的数学默认是安全的。
 
-请注意，在同一计算中混合使用 [不同状态大小](#序列化) 的变量是没有问题的。  在运行时，无论是什么，它们都是相同类型的——$257$-bit带符号，因此不会发生溢出。
+请注意，在同一计算中混合使用 [不同状态大小](#serialization) 的变量是没有问题的。  在运行时，无论是什么，它们都是相同类型的——$257$-bit带符号，因此不会发生溢出。
 
 然而，这仍可能导致交易的[计算阶段](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase)**错误**。 请看下面的例子：
 

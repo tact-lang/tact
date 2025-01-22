@@ -7,7 +7,7 @@ TON Blockchain上的每笔交易都包含[多个阶段](https://docs.ton.org/lea
 
 退出码 $0$ 和 $1$ 表示正常(成功)执行 [计算阶段](#compute)。 退出 (或 [result](#action)) 代码 $0$ 表示了[动作阶段] (#action)的正常执行(成功)。 任何其他退出代码都表示发生了某种异常，交易以某种方式没有成功，即交易被退回或入站（inbound）报文被弹回。
 
-TON 区块链保留从 $0$ 到 $127$的退出码值，而 Tact 使用从 $128$ 到 $255$的退出码。 注意, Tact使用的退出码表示使用Tact生成FunC代码时可能发生合约错误。 因此被扔进交易的[计算阶段](#计算)，而不是在编译过程中。
+TON 区块链保留从 $0$ 到 $127$的退出码值，而 Tact 使用从 $128$ 到 $255$的退出码。 注意, Tact使用的退出码表示使用Tact生成FunC代码时可能发生合约错误。 因此被扔进交易的[计算阶段](#compute)，而不是在编译过程中。
 
 从 $256$ 到 $65535$ 的范围内，开发人员可自由定义退出码。
 
@@ -82,7 +82,7 @@ TON 区块链保留从 $0$ 到 $127$的退出码值，而 Tact 使用从 $128$ �
 
 :::
 
-此外， 我们可以查看[发送消息到合约](/zh-cn/book/debug#tests-end)的结果，并发现每个交易的阶段及其值。 包括[计算阶段](#compute)(#compute)(或[行动阶段](#action))的退出(或结果)代码。
+此外， 我们可以查看[发送消息到合约](/zh-cn/book/debug#tests-send)的结果，并发现每个交易的阶段及其值。 包括[计算阶段](#compute)(#compute)(或[行动阶段](#action))的退出(或结果)代码。
 
 请注意，为了做到这一点，您必须先进行几种类型的检查才能做到：
 
@@ -114,7 +114,7 @@ it('tests something, you name it', async () => {
 
 该退出码表示事务的计算阶段已成功完成。
 
-## 计算阶段
+## 计算阶段 {#compute}
 
 [TVM][tvm] 初始化和所有计算都发生在 [计算阶段][c] 中。
 
@@ -323,7 +323,7 @@ try {
 
 若要解析[`cell{:tact}`][cell]，请使用 [`slice{:tact}`][slice] 如果你试图加载比`slice{:tact}`更多的数据或引用，则退出码 $9$ 的错误就会抛出：“cell下溢”。
 
-此错误的最常见原因是cell的预期内存布局和实际内存布局不匹配， 因此建议[使用结构和消息进行解析](/zh-cn/book/cells#cnp-structs) ，而不是[手动解析](/zh-cn/book/cells#cnp-manualy) 通过 [relevant `. oadSomething()` 方法](/zh-cn/ref/core-cells)。
+此错误的最常见原因是cell的预期内存布局和实际内存布局不匹配， 因此建议[使用结构和消息进行解析](/zh-cn/book/cells#cnp-structs) ，而不是[手动解析](/zh-cn/book/cells#cnp-manually) 通过 [relevant `. oadSomething()` 方法](/zh-cn/ref/core-cells)。
 
 ```tact
 // Too few bits
@@ -411,7 +411,7 @@ try {
 
 虚拟化错误，与 [prunned branch cells](/zh-cn/book/cells#cells-kinds) 有关。 保留，但从未抛出。
 
-## 行动阶段
+## 行动阶段 {#action}
 
 [操作阶段][a] 是在成功执行 [计算阶段](#compute) 后处理的。 它试图在计算阶段执行由 [TVM][tvm] 存储在行动列表中的动作。
 
@@ -423,7 +423,7 @@ try {
 
 :::note
 
-  除了这个退出码之外，还有一个布尔值标志`valid`，你可以在“描述”下找到。 与 [Sandbox 和 Blueprint](#Blueprint) 工作时，交易结果中的ctionPhase.valid`。 交易可以将这个标志设置为 `false\` ，即使有其它退出码从操作阶段扔出。
+  除了这个退出码之外，还有一个布尔值标志`valid`，你可以在“描述”下找到。 与 [Sandbox 和 Blueprint](#blueprint) 工作时，交易结果中的ctionPhase.valid`。 交易可以将这个标志设置为 `false\` ，即使有其它退出码从操作阶段扔出。
 
 :::
 

@@ -15,7 +15,7 @@ struct IntToInt {
 }
 ```
 
-## 允许的类型
+## 允许的类型 {#allowed-types}
 
 允许的键(key)类型
 
@@ -411,7 +411,7 @@ contract Iteration {
 }
 ```
 
-在此类map上设置上限限制通常很有用，这样就不会[触及极限](#limits-and-drawbacks）。
+在此类map上设置上限限制通常很有用，这样就不会[触及极限](#limits-and-drawbacks)。
 
 :::caution
 
@@ -431,7 +431,7 @@ contract Iteration {
 
 ## 序列化
 
-可以对映射键、值或两者进行[整数序列化](/zh-cn/book/integers#serialization-types)，以[保留空间并降低存储成本](/zh-cn/book/integers#serialization)：
+可以对映射键、值或两者进行[整数序列化](/zh-cn/book/integers#common-serialization-types)，以[保留空间并降低存储成本](/zh-cn/book/integers#serialization)：
 
 ```tact
 struct SerializedMapInside {
@@ -447,7 +447,7 @@ struct SerializedMapInside {
 
 :::
 
-## 局限性和缺点
+## 局限性和缺点 {#limits-and-drawbacks}
 
 虽然map在小范围内使用起来很方便，但如果项目数量不受限制，map的大小会大幅增加，就会产生很多问题：
 

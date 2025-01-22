@@ -27,7 +27,7 @@ Tact 中的消息通常使用内置[Struct](/zh-cn/book/structs-and-messages#str
 self.reply("Hello, World!".asComment()); // asComment converts a String to a Cell with a comment
 ```
 
-## 发送消息
+## 发送消息 {#send-message}
 
 如果需要更高级的逻辑，可以直接使用 `send(){:tact}` 函数和 `SendParameters{:tact}` [Struct](/zh-cn/book/structs-and-messages#structs) 。
 
@@ -94,7 +94,7 @@ send(SendParameters{
 });
 ```
 
-## 外发消息处理
+## 外发消息处理 {#outbound-message-processing}
 
 TON 区块链上的每笔交易都由 [多个阶段][phases] 组成。 发送消息是在[计算阶段][compute]进行评估，但是在该阶段**不是**发送。 相反，它们将按照出现顺序排入[操作阶段][phases]，在[计算阶段][compute]中列出的所有操作，如外向消息或[储备请求](/zh-cn/ref/core-advanced#nativereserve)，都会在此阶段执行。
 

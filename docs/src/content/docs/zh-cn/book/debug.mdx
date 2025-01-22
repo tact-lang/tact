@@ -358,7 +358,7 @@ expect(res.transactions).toHaveTransaction(…);
 
 ### 观察费用和数值 {#tests-fees}
 
-[沙盒][sb]提供了一个辅助函数 `printTransactionFees(){:typescript}`，它可以漂亮地打印所提供交易的所有值和费用。  它对观察 [nano Toncoins](/book/integers#nanotoncoin）的流动非常方便。
+[沙盒][sb]提供了一个辅助函数 `printTransactionFees(){:typescript}`，它可以漂亮地打印所提供交易的所有值和费用。  它对观察 [nano Toncoins](/zh-cn/book/integers#nanotoncoin)的流动非常方便。
 
 要使用它，请在测试文件顶部修改来自 `@ton/sandbox` 的导入：
 
@@ -504,7 +504,7 @@ TON 区块链上的每笔交易都[包含`out_msgs`](https://docs.ton.org/develo
 
 要查看字典中 [`emit(){:tact}`](/zh-cn/ref/core-common#emit)的日志，请查找没有收件人的外部消息。  在各种 TON 区块链探索器中，此类交易将被标记为 "外部输出(external-out)"，目的地指定为"-"或 "空"。
 
-请注意，有些探索者会为你反序列化发送的信息体，而有些则不会。 不过，您可以随时在本地[自行解析](#logging-parsing）。
+请注意，有些探索者会为你反序列化发送的信息体，而有些则不会。 不过，您可以随时在本地[自行解析](#logging-parsing)。
 
 ### 解析已发送信息的正文 {#logging-parsing}
 
@@ -531,7 +531,7 @@ contract Bonanza {
 }
 ```
 
-现在，让我们为 "Bonanza "合约制作一个简单的 [测试条款](#tests-structure）：
+现在，让我们为 "Bonanza "合约制作一个简单的 [测试条款](#tests-structure)：
 
 ```typescript /bonanza/
 it('emits', async () => {

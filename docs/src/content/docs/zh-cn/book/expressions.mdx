@@ -38,7 +38,7 @@ fun elegantWeaponsForCivilizedAge(): Int {
 "Tact is awesome!".asComment();C
 ```
 
-### 整数字面量
+### 整数字面量 {#integer-literals}
 
 整数字面量可以使用以下表示法编写：[十进制](/zh-cn/book/integers#decimal)（基数 $10$）、[十六进制](/zh-cn/book/integers#hexadecimal)（基数 $16$）、[八进制](/zh-cn/book/integers#octal)（基数 $8$）和[二进制](/zh-cn/book/integers#binary)（基数 $2$）表示法：
 
@@ -83,7 +83,7 @@ true != false;
 
 有关布尔和 [`Bool{:tact}`](/zh-cn/book/types#booleans)类型的更多信息，请参阅专门章节：[布尔](/zh-cn/book/types#booleans)。
 
-### 字符串字面量
+### 字符串字面量 {#string-literals}
 
 字符串字面量是用双引号（`"`"）括起来的零个或多个字符。 字符串字面量是用双引号（`"`"）括起来的零个或多个字符。 所有字符串字面量都是 [`String{:tact}`][p]类型的对象。
 
@@ -153,7 +153,7 @@ Tact 字符串支持一系列从反斜杠字符开始的[转义序列](https://e
 
 ### `null` 字面量
 
-`空{:tact}`值将以`null{:tact}` 字面形式写入。 它**不是**[标识符](#identifiers），也不指向任何对象。 它也**不是**[原始类型][p]的实例。 相反，`null{:tact}` 表示缺乏识别以及故意不设置任何值。
+`空{:tact}`值将以`null{:tact}` 字面形式写入。 它**不是**[标识符](#identifiers)，也不指向任何对象。 它也**不是**[原始类型][p]的实例。 相反，`null{:tact}` 表示缺乏识别以及故意不设置任何值。
 
 ```tact
 let var: Int? = null; // variable, which can hold null value
@@ -165,15 +165,15 @@ if (var != null) {
 
 有关使用 `null{:tact}`的更多信息，请访问专门页面：[选项](/zh-cn/book/optionals)。
 
-## 标识符
+## 标识符 {#identifiers}
 
 标识符是代码中的一串字符，用于标识[变量](/zh-cn/book/statements#let)、[常量](/zh-cn/book/constants)、[映射](/zh-cn/book/maps)和[函数](/zh-cn/book/functions)，以及[结构][s]、[消息][m]、[合约](/zh-cn/book/contracts)、[trait](/zh-cn/book/types#traits)或它们的字段和方法。 标识符区分大小写，不加引号。 标识符区分大小写，不加引号。
 
-在 Tact 中，标识符可以包含拉丁小写字母 (`a-z`)、拉丁大写字母 (`A-Z`)、下划线 (`_`)和数字 ($\mathrm{0 - 9}$)，但不能以数字开头。  标识符与 [字符串](#string-literals）的区别在于，字符串是数据，而标识符是代码的一部分。
+在 Tact 中，标识符可以包含拉丁小写字母 (`a-z`)、拉丁大写字母 (`A-Z`)、下划线 (`_`)和数字 ($\mathrm{0 - 9}$)，但不能以数字开头。  标识符与 [字符串](#string-literals) 的区别在于，字符串是数据，而标识符是代码的一部分。
 
 请注意，当[基元类型][p]的标识符以大写字母开头时。 请注意，当[基元类型][p]的标识符以大写字母开头时。 已使用定义的 [复合类型](/zh-cn/book/types#composite-types)，如 [Structs][s] 和 [Messages][m] 也必须大写。
 
-## 实例化
+## 实例化 {#instantiation}
 
 您可以创建以下类型的实例：
 
@@ -227,7 +227,7 @@ fun example(): Int {
 42.toString(); // toString() is a stdlib function that is defined on Int type
 ```
 
-## 静态函数调用
+## 静态函数调用 {#static-function-call}
 
 在函数体的任何位置，都可以调用全局 [static function](/zh-cn/book/functions#global-static-functions) 或 [contract](/zh-cn/book/contracts) 的内部函数：
 

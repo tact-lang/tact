@@ -2,14 +2,14 @@
 title: 类型系统概述
 description: Tact 程序中的每个变量、项目和值都有一个类型
 prev:
-  link: /book/cs/from-solidity
+  link: /zh-cn/book/cs/from-solidity
   label: 来自Solidity
 ---
 
 Tact 程序中的每个变量、项目和值都有一个类型。 它们可以是
 
 - [原始类型](#primitive-types) 之一
-- 或 [复合类型](#复合类型)
+- 或 [复合类型](#composite-types)
 
 此外，这些类型中的许多类型[可以变为空值](#optionals)。
 
@@ -40,7 +40,7 @@ Tact 中没有隐式类型转换，因此两个布尔值的加法（[`+{:tact}`]
 
 将布尔值持久化到状态中非常节省空间，因为它们只占用1位。 在状态中存储 1000 个布尔值每年大约花费 $0.00072$ TON。
 
-## 复合类型
+## 复合类型 {#composite-types}
 
 使用单独的存储手段往往会变得繁琐，因此有办法将多个[原始类型](#primitive-types)组合在一起，创建复合类型：
 
@@ -64,7 +64,7 @@ let mapExample: map<Int, Int> = emptyMap(); // empty map with Int keys and value
 
 在专用页面了解更多关于他们的信息： [Maps][maps]。
 
-[maps]: <[[Maps](#maps)]: /zh-cn/book/maps>
+[maps]: /zh-cn/book/maps
 
 ### 结构和消息 {#structs-and-messages}
 
@@ -142,7 +142,7 @@ or [Contracts](#contracts) and [Traits](#traits)
 
 ### Traits
 
-Tact 不支持经典的类继承，而是引入了**trait**（traits）的概念。它们的结构与抽象合约（类似于流行的面向对象语言中的抽象类）相同。 它们的结构与[合约](#contracts）相同，但不能[初始化持久状态变量](/zh-cn/book/contracts#init-function)。
+Tact 不支持经典的类继承，而是引入了**trait**（traits）的概念。它们的结构与抽象合约（类似于流行的面向对象语言中的抽象类）相同。 它们的结构与[合约](#contracts) 相同，但不能[初始化持久状态变量](/zh-cn/book/contracts#init-function)。
 
 trait还可以让继承它的合约重写其[函数](/zh-cn/book/functions#virtual-and-abstract-functions)的行为和[常量](/zh-cn/book/constants#virtual-and-abstract-constants)的值。
 

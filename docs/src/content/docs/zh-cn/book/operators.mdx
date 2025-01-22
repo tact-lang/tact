@@ -2,7 +2,7 @@
 title: 运算符
 description: 本页按照[优先级](#precedence)的递减顺序列出了 Tact 中的所有运算符，并附有使用示例
 prev:
-  link: /book/exit-codes
+  link: /zh-cn/book/exit-codes
   label: 退出码
 ---
 
@@ -64,7 +64,7 @@ prev:
 [ternary]: #ternary
 [assign]: #assignment
 
-## 优先级
+## 优先级 {#precedence}
 
 本页所有运算符的优先级从高到低依次递减。 优先级用于选择在特定情况下考虑哪个运算符。 每当出现模棱两可的情况时，Tact 会优先选择优先级较高的运算符，而不是优先级较低的运算符。
 
@@ -81,7 +81,7 @@ prev:
 
 ## 括号，`()` {#parentheses}
 
-括号（也可称为圆括号，`(){:tact}`）与其说是实际的运算符，不如说是一种标点符号，但其[优先级](#优先级）高于任何其他运算符的优先级。 使用括号可覆盖运算顺序： 使用括号可覆盖运算顺序：
+括号（也可称为圆括号，`(){:tact}`）与其说是实际的运算符，不如说是一种标点符号，但其 [优先级](#precedence) 高于任何其他运算符的优先级。 使用括号可覆盖运算顺序：
 
 ```tact
 5 * 5 - 2;   // 23
@@ -596,9 +596,9 @@ someVar = 4;             // ...and here
 someVar = (someVar = 5); // SYNTAX ERROR!
 ```
 
-### 增强赋值
+### 增强赋值 {#augmented-assignment}
 
-增强（或复合）赋值运算符，如 `+={:tact}`，将操作与 [赋值](#assignment）结合起来。  增强赋值是一个语句，不返回值。
+增强（或复合）赋值运算符，如 `+={:tact}`，将操作与 [赋值](#assignment) 结合起来。  增强赋值是一个语句，不返回值。
 
 增强赋值在语义上等价于常规赋值，但附带一个操作：
 
@@ -618,7 +618,7 @@ value = value + 5;
 - `*={:tact}`，使用 [乘法运算符 `*{:tact}`](#binary-multiply)。  只能应用于 [`Int{:tact}`][int]类型的值。
 - `/={:tact}`，使用 [除法运算符 `/{:tact}`](#binary-divide)。  只能应用于 [`Int{:tact}`][int]类型的值。
 - `%={:tact}`，使用 [modulo 运算符 `%{:tact}`](#binary-modulo)。  只能应用于 [`Int{:tact}`][int]类型的值。
-- `&={:tact}`，使用 [bitwise AND 运算符 `&{:tact}`](#binary-bitwise-and）。 只能应用于 [`Int{:tact}`][int]类型的值。
+- `&={:tact}`，使用 [bitwise AND 运算符 `&{:tact}`](#binary-bitwise-and)。 只能应用于 [`Int{:tact}`][int]类型的值。
 - `^={:tact}`，它使用 [bitwise XOR 运算符 `^{:tact}`](#binary-bitwise-xor)。  只能应用于 [`Int{:tact}`][int]类型的值。
 - `|={:tact}`，它使用 [bitwise OR 运算符 `|{:tact}`](#binary-bitwise-or)。 只能应用于 [`Int{:tact}`][int]类型的值。
 

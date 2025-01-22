@@ -67,7 +67,7 @@ contract Sample {
 
 ## 无效的抛出值
 
-[退出码](/zh-cn/book/exit-codes) $0$ 和 $1$ 表示交易的计算阶段正常执行。 如果调用一个 [`lown (){:tact}`](/zh-cn/ref/core-debug#play) 或[类似的函数](/zh-cn/ref/core-debug) 直接带有退出码 $0$ 和 $1$ ，执行可能会意外中止. 这可能使调试非常困难，因为这种中止的执行与正常的执行无法区分。
+[退出码](/zh-cn/book/exit-codes) $0$ 和 $1$ 表示交易的计算阶段正常执行。 如果调用一个 [`throw(){:tact}`](/zh-cn/ref/core-debug#throw) 或[类似的函数](/zh-cn/ref/core-debug) 直接带有退出码 $0$ 和 $1$ ，执行可能会意外中止. 这可能使调试非常困难，因为这种中止的执行与正常的执行无法区分。
 
 ##### Do's ✅
 
@@ -94,7 +94,7 @@ throw(1);
 
 - 对于关键应用 **避免仅仅依赖于链上的解决方案**。
 
-- 使用 [`random(){:tact}`](/zh-cn/ref/corre-random#random) 与随机逻辑时间，以提高安全性，使攻击者更难预测而不访问验证节点。 但是，请注意，它仍然**不是完全万无一失的**。
+- 使用 [`random(){:tact}`](/zh-cn/ref/core-random#random) 与随机逻辑时间，以提高安全性，使攻击者更难预测而不访问验证节点。 但是，请注意，它仍然**不是完全万无一失的**。
 
 - 考虑使用 **提交和披露方案**：
   1. 参与者在链外随机生成数字，并将其散列发送到合约中。
@@ -170,11 +170,11 @@ contract Example {
 
 ## 身份验证
 
-如果您的合约逻辑围绕可信的发件人运行，总是验证发件人的身份。 这可以使用 [`Ownable{:tact}`](/zh-cn/ref/stdlib-own) 特性或使用 [state init](/zh-cn/book/expressions#init) 验证。 您可以阅读更多关于[Jetton validation](/zh-cn/cookbook/jettons#accepting-jetton-transfer)和[NFT validation](/zh-cn/cookbook/nfts#accepting-nft-ownership-assignment)的信息。
+如果您的合约逻辑围绕可信的发件人运行，总是验证发件人的身份。 这可以使用 [`Ownable{:tact}`](/zh-cn/ref/stdlib-ownable) 特性或使用 [state init](/zh-cn/book/expressions#initof) 验证。 您可以阅读更多关于[Jetton validation](/zh-cn/cookbook/jettons#accepting-jetton-transfer)和[NFT validation](/zh-cn/cookbook/nfts#accepting-nft-ownership-assignment)的信息。
 
 ##### Do's ✅
 
-使用 [`Ownable{:tact}`](/zh-cn/ref/stdlib-own) 特性.
+使用 [`Ownable{:tact}`](/zh-cn/ref/stdlib-ownable) 特性.
 
 ```tact
 import "@stdlib/ownable";
