@@ -39,7 +39,7 @@ const processArgs = async (E: CliErrors, argv: string[]) => {
     const getArgs = ArgSchema(P);
 
     const match = getArgs(argv);
-    if (match.kind === 'ok') {
+    if (match.kind === "ok") {
         const A = ArgConsumer(match.value);
 
         await parseArgs(E, A);
@@ -50,56 +50,56 @@ const processArgs = async (E: CliErrors, argv: string[]) => {
 
 const ArgSchema = (P: ArgParser) => {
     return P.tokenizer
-        .add(P.string('config', 'c', 'CONFIG'))
-        .add(P.string('project', 'p', 'NAME'))
-        .add(P.boolean('quiet', 'q'))
-        .add(P.boolean('withDecompilation', undefined))
-        .add(P.boolean('func', undefined))
-        .add(P.boolean('check', undefined))
-        .add(P.string('eval', 'e', 'EXPRESSION'))
-        .add(P.boolean('version', 'v'))
-        .add(P.boolean('help', 'h'))
-        .add(P.immediate)
-        .end;
+        .add(P.string("config", "c", "CONFIG"))
+        .add(P.string("project", "p", "NAME"))
+        .add(P.boolean("quiet", "q"))
+        .add(P.boolean("with-decompilation", undefined))
+        .add(P.boolean("func", undefined))
+        .add(P.boolean("check", undefined))
+        .add(P.string("eval", "e", "EXPRESSION"))
+        .add(P.boolean("version", "v"))
+        .add(P.boolean("help", "h"))
+        .add(P.immediate).end;
 };
 
 type Args = ArgConsumer<GetParserResult<ReturnType<typeof ArgSchema>>>;
 
 const parseArgs = async (E: CliErrors, A: Args) => {
-    if (A.single('help') && noUnknownParams(A)) {
+    if (A.single("help") && noUnknownParams(A)) {
         showHelp();
         return;
     }
 
-    if (A.single('version') && noUnknownParams(A)) {
+    if (A.single("version") && noUnknownParams(A)) {
         showVersion();
         return;
     }
 
-    const expression = A.single('eval');
+    const expression = A.single("eval");
     if (expression && noUnknownParams(A)) {
         evaluate(expression);
         return;
     }
 
-    const configPath = A.single('config');
+    const configPath = A.single("config");
     if (configPath) {
-        const F = createNodeFileSystem(dirname(configPath));
+        const F = createNodeFileSystem(dirname(configPath), false);
         if (!F.exists(configPath)) {
             E.configNotFound(configPath);
             return;
         }
-        const configText = F.readFile(configPath).toString('utf-8');
+        const configText = F.readFile(configPath).toString("utf-8");
         const config = parseConfigSafe(E, configPath, configText);
         if (!config) {
             return;
         }
         await compile(A, E, F, config);
+        return;
     }
 
-    const filePath = A.single('immediate');
+    const filePath = A.single("immediate");
     if (filePath) {
-        const F = createNodeFileSystem(dirname(filePath));
+        const F = createNodeFileSystem(dirname(filePath), false);
         const config = createSingleFileConfig(filePath);
         await compile(A, E, F, config);
         return;
@@ -110,7 +110,11 @@ const parseArgs = async (E: CliErrors, A: Args) => {
     }
 };
 
-const parseConfigSafe = (E: CliErrors, configPath:string, configText: string): Config | undefined => {
+const parseConfigSafe = (
+    E: CliErrors,
+    configPath: string,
+    configText: string,
+): Config | undefined => {
     try {
         return parseConfig(configText);
     } catch (e) {
@@ -127,7 +131,7 @@ export const createSingleFileConfig = (fileName: string): Config => ({
         {
             name: fileName,
             path: ensureExtension(fileName),
-            output: './',
+            output: "./",
             options: {
                 debug: true,
                 external: true,
@@ -140,23 +144,28 @@ export const createSingleFileConfig = (fileName: string): Config => ({
 });
 
 const ensureExtension = (path: string): string => {
-    return path.endsWith('.tact') ? path : `${path}.tact`;
+    return path.endsWith(".tact") ? path : `${path}.tact`;
 };
 
-const compile = async (A: Args, E: CliErrors, F: VirtualFileSystem, rawConfig: Config) => {
-    const config = filterConfig(E, rawConfig, A.multiple('project') ?? []);
+const compile = async (
+    A: Args,
+    E: CliErrors,
+    F: VirtualFileSystem,
+    rawConfig: Config,
+) => {
+    const config = filterConfig(E, rawConfig, A.multiple("project") ?? []);
 
     if (!config) {
         return;
     }
 
-    const suppressLog = A.single('quiet') ?? false;
+    const suppressLog = A.single("quiet") ?? false;
     const logger = new Logger(suppressLog ? LogLevel.NONE : LogLevel.INFO);
 
     const flags = entries({
-        checkOnly: A.single('check'),
-        funcOnly: A.single('func'),
-        fullWithDecompilation: A.single('withDecompilation'),
+        checkOnly: A.single("check"),
+        funcOnly: A.single("func"),
+        fullWithDecompilation: A.single("with-decompilation"),
     });
     const setFlags = flags.filter(([, value]) => value);
     if (setFlags.length > 1) {
@@ -169,18 +178,21 @@ const compile = async (A: Args, E: CliErrors, F: VirtualFileSystem, rawConfig: C
     }
     setConfigOptions(config, options);
 
-    const stdlib = createNodeFileSystem(stdlibPath, false); // Improves developer experience
+    const stdlib = createNodeFileSystem(stdlibPath);
 
     if (noUnknownParams(A)) {
         // TODO: all flags on the cli should take precedence over flags in the config
         // Make a nice model for it instead of the current mess
         // Consider making overwrites right here or something.
-        await run({
+        const result = await run({
             logger,
             config,
             project: F,
             stdlib,
         });
+        if (!result.ok) {
+            E.setHadErrors();
+        }
     }
 };
 
@@ -196,7 +208,7 @@ export async function run(args: {
     // Compile
     let success = true;
     let errorMessages: TactErrorCollection[] = [];
-    
+
     for (const config of projects) {
         args.logger.info(`💼 Compiling project ${config.name} ...`);
 
@@ -214,7 +226,11 @@ export async function run(args: {
     return { ok: success, error: errorMessages };
 }
 
-const filterConfig = (E: CliErrors, config: Config, projectNames: string[]): Config | undefined => {
+const filterConfig = (
+    E: CliErrors,
+    config: Config,
+    projectNames: string[],
+): Config | undefined => {
     if (projectNames.length === 0) {
         return config;
     }
@@ -234,7 +250,7 @@ const filterConfig = (E: CliErrors, config: Config, projectNames: string[]): Con
     };
 };
 
-type ExtraOptions = Pick<ConfigProject, 'mode'>
+type ExtraOptions = Pick<ConfigProject, "mode">;
 
 const setConfigOptions = (config: Config, options: ExtraOptions): void => {
     for (const project of config.projects) {
@@ -308,10 +324,12 @@ const getVersion = () => {
     const packageSchema = z.object({
         version: z.string(),
     });
-    
-    const packageJsonPath = join(__dirname, "package.json");
-    
-    const pkg = packageSchema.parse(JSON.parse(readFileSync(packageJsonPath, "utf-8")));
+
+    const packageJsonPath = join(__dirname, "..", "..", "package.json");
+
+    const pkg = packageSchema.parse(
+        JSON.parse(readFileSync(packageJsonPath, "utf-8")),
+    );
 
     return pkg.version;
 };

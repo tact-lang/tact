@@ -4,7 +4,7 @@ import { glob } from "glob";
 import { verify } from "./verify";
 import { Logger } from "../src/context/logger";
 import { __DANGER__disableVersionNumber } from "../src/pipeline/version";
-import { allInFolder } from '../src/test/utils/all-in-folder.build'
+import { allInFolder } from "../src/test/utils/all-in-folder.build";
 
 const packagesPath = path.resolve(__dirname, "output", "*.pkg");
 

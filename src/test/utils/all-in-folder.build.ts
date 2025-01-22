@@ -13,27 +13,27 @@ export const allInFolder = async (folder: string, globs: string[]) => {
 
         const contracts = globSync(globs, { cwd: folder });
 
-        const projects = contracts.map(contractPath => {
+        const projects = contracts.map((contractPath) => {
             const options: Options = { debug: true };
-            if (contractPath.includes('inline')) {
+            if (contractPath.includes("inline")) {
                 options.experimental = { inline: true };
             }
-            if (contractPath.includes('external')) {
+            if (contractPath.includes("external")) {
                 options.external = true;
             }
             return {
                 name: basename(contractPath, extname(contractPath)),
                 path: contractPath,
-                output: join(dirname(contractPath), 'output'),
+                output: join(dirname(contractPath), "output"),
                 options,
-            }
+            };
         });
 
         const project = createNodeFileSystem(folder, false);
 
         const compileResult = await run({
             config: { projects },
-            logger: new Logger(LogLevel.DEBUG),
+            logger: new Logger(LogLevel.INFO),
             project,
             stdlib,
         });

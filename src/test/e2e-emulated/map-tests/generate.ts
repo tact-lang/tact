@@ -61,7 +61,9 @@ const stdlib = createVirtualFileSystem("@stdlib", files);
 
 const compileAndExitOnError = async (tactFilePath: string) => {
     const compilationResult = await run({
-        config: createSingleFileConfig(basename(tactFilePath, extname(tactFilePath))),
+        config: createSingleFileConfig(
+            basename(tactFilePath, extname(tactFilePath)),
+        ),
         logger: new Logger(LogLevel.NONE),
         stdlib,
         project: createNodeFileSystem(dirname(tactFilePath), false),

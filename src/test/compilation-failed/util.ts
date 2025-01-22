@@ -14,7 +14,7 @@ export function itShouldNotCompile(params: {
     it(`should not compile ${params.testName}`, async () => {
         const fileName = `${params.testName}.tact`;
         const options: Options = {};
-        if (params.testName.includes('external')) {
+        if (params.testName.includes("external")) {
             options.external = true;
         }
         const result = await run({
@@ -25,13 +25,19 @@ export function itShouldNotCompile(params: {
                         path: `./${fileName}`,
                         output: "./output",
                         options,
-                    }
+                    },
                 ],
             },
             logger: new Logger(LogLevel.NONE),
-            project: createVirtualFileSystem('/', {
-                [fileName]: readFileSync(join(__dirname, 'contracts', `./${fileName}`)).toString('base64')
-            }, false),
+            project: createVirtualFileSystem(
+                "/",
+                {
+                    [fileName]: readFileSync(
+                        join(__dirname, "contracts", `./${fileName}`),
+                    ).toString("base64"),
+                },
+                false,
+            ),
             stdlib: createVirtualFileSystem("@stdlib", files),
         });
 

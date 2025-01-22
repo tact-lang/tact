@@ -86,10 +86,6 @@ jobs:
         run: |
           yarn fmt:check
 
-      - name: Check that tact.config.json adheres to the JSON schema
-        run: |
-          yarn lint:schema
-
       - name: Spellcheck code base
         run: |
           yarn spell

@@ -143,4 +143,6 @@ export const singleton = <K extends string | symbol, V>(key: K, value: V) => {
     return { [key]: value } as Record<K, V>;
 };
 
-export const entries = Object.entries as <O>(o: O) => { [K in keyof O]: [K, O[K]] }[keyof O][];
+export const entries = Object.entries as <O>(
+    o: O,
+) => { [K in keyof O]: [K, O[K]] }[keyof O][];
