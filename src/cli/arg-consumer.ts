@@ -1,12 +1,17 @@
 import { Intersect } from "../utils/tricks";
 import { CliErrors } from "./error-schema";
 
-export const ArgConsumer = <T>(E: CliErrors, args: { [L in keyof T]?: T[L][] }) => {
+export const ArgConsumer = <T>(
+    E: CliErrors,
+    args: { [L in keyof T]?: T[L][] },
+) => {
     const copy = { ...args };
 
     const isEmpty = () => Object.keys(copy).length === 0;
 
-    const single = <K extends Extract<keyof T, string>>(k: K): undefined | T[K] => {
+    const single = <K extends Extract<keyof T, string>>(
+        k: K,
+    ): undefined | T[K] => {
         const s = copy[k] ?? [];
         if (s.length > 1) {
             E.duplicateArgument(k);
