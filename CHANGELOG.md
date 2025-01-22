@@ -61,6 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Error on circular trait dependencies: PR [#1452](https://github.com/tact-lang/tact/pull/1452)
 - Bit shift FunC compilation errors for incorrect bit widths: PR [#1453](https://github.com/tact-lang/tact/pull/1453)
 - Process `else if` statements in the interpreter: PR [#1500](https://github.com/tact-lang/tact/pull/1500)
+- Incorrect arithmetic bit shift operations optimizations: PR [#1501](https://github.com/tact-lang/tact/pull/1501)
+- Throwing from functions with non-trivial branching in the `try` statement: PR [#1501](https://github.com/tact-lang/tact/pull/1501)
 
 ### Docs
 
