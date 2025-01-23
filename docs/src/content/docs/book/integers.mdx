@@ -114,7 +114,7 @@ Name             | [TL-B][tlb]                 | Inclusive range             | S
 `int128{:tact}`  | [`int128`][tlb-builtin]     | $-2^{127}$ to $2^{127} - 1$ | $128$ bits = $16$ bytes
 `int256{:tact}`  | [`int256`][tlb-builtin]     | $-2^{255}$ to $2^{255} - 1$ | $256$ bits = $32$ bytes
 `int257{:tact}`  | [`int257`][tlb-builtin]     | $-2^{256}$ to $2^{256} - 1$ | $257$ bits = $32$ bytes + $1$ bit
-`coins{:tact}`   | [`VarUInteger 16`][varuint] | $0$ to $2^{120} - 1$        | between $4$ and $124$ bits, [see below](#serialization-coins)
+`coins{:tact}`   | [`VarUInteger 16`][varuint] | $0$ to $2^{120} - 1$        | between $4$ and $124$ bits, [see below](#serialization-varint)
 
 ### Arbitrary types of fixed bit-width {#serialization-fixed}
 
@@ -129,9 +129,13 @@ Name             | [TL-B][tlb]            | Inclusive range                 | Sp
 `uintX{:tact}`   | [`uintX`][tlb-builtin] | $0$ to $2^{X} - 1$              | $X$ bits, where $X$ is between $1$ and $256$
 `intX{:tact}`    | [`intX`][tlb-builtin]  | $-2^{X - 1}$ to $2^{X - 1} - 1$ | $X$ bits, where $X$ is between $1$ and $257$
 
-### Variable `coins` type {#serialization-coins}
+### Types of variable bit-width {#serialization-varint}
 
-In Tact, `coins{:tact}` is an alias to [`VarUInteger 16`][varuint] in [TL-B][tlb] representation, i.e. it takes a variable bit length depending on the optimal number of bytes needed to store the given integer and is commonly used for storing [nanoToncoin](/book/integers#nanotoncoin) amounts.
+Name           | [TL-B][tlb]                 | Inclusive range      | Space taken
+:------------: | :-------------------------: | :------------------: | :-------------------------
+`coins{:tact}` | [`VarUInteger 16`][varuint] | $0$ to $2^{120} - 1$ | between $4$ and $124$ bits
+
+In Tact, variable `coins{:tact}` format is an alias to [`VarUInteger 16`][varuint] in [TL-B][tlb] representation, i.e. it takes a variable bit length depending on the optimal number of bytes needed to store the given integer and is commonly used for storing [nanoToncoin](/book/integers#nanotoncoin) amounts.
 
 This serialization format consists of two [TL-B fields](https://docs.ton.org/develop/data-formats/tl-b-language#field-definitions):
 
@@ -166,18 +170,16 @@ struct Scrooge {
 }
 ```
 
-### Variable integer types {#serialization-varint}
-
-<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
-
 Name               | [TL-B][tlb]                 | Inclusive range             | Space taken
 :----------------: | :-------------------------: | :-------------------------: | :-------------------------
-`varuint16{:tact}` | [`VarUInteger 16`][varuint] | $0$ to $2^{120} - 1$        | between $4$ and $124$ bits
+`varuint16{:tact}` | [`VarUInteger 16`][varuint] | same as `coins{:tact}`      | same as `coins{:tact}`
 `varint16{:tact}`  | `VarInteger 16`             | $-2^{119}$ to $2^{119} - 1$ | between $4$ and $124$ bits
 `varuint32{:tact}` | [`VarUInteger 32`][varuint] | $0$ to $2^{248} - 1$        | between $5$ and $253$ bits
 `varint32{:tact}`  | `VarInteger 32`             | $-2^{247}$ to $2^{247} - 1$ | between $5$ and $253$ bits
 
-The `varuint16{:tact}` format is equivalent to [`coins{:tact}`](#serialization-coins). Its signed variant, `varint16{:tact}`, has the same memory layout except for the signed `value` field, which allows a different range of values: from $-2^{119}$ to $2^{119} - 1$, including both ends.
+<p/><Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+The `varuint16{:tact}` format is equivalent to [`coins{:tact}`](#serialization-varint). Its signed variant, `varint16{:tact}`, has the same memory layout except for the signed `value` field, which allows a different range of values: from $-2^{119}$ to $2^{119} - 1$, including both ends.
 
 To store greater values, use `varuint32{:tact}` and `varint32{:tact}` formats. These are serialized almost identical to `coins{:tact}` and lesser variable integer formats, but use a $5$-bit `len` field for storing the byte length. This allows the `value` to use up to $248$ bits for storing the actual number, meaning that both `varuint32{:tact}` and `varint32{:tact}` can occupy up to $253$ bits in total.
 
