@@ -678,29 +678,19 @@ export const ppAstFunctionAttribute = (
     }
 };
 
+const ppReceiverSubKind = (prefix: string) =>
+    makeVisitor<A.AstReceiverSubKind>()({
+        simple: ({ param }) =>
+            `${prefix}(${ppAstId(param.name)}: ${ppAstType(param.type)})`,
+        fallback: () => `${prefix}()`,
+        comment: ({ comment }) => `${prefix}("${comment.value}")`,
+    });
+
 export const ppAstReceiverHeader = makeVisitor<A.AstReceiverKind>()({
     bounce: ({ param: { name, type } }) =>
         `bounced(${ppAstId(name)}: ${ppAstType(type)})`,
-    internal: ({ subKind }) => {
-        switch (subKind.kind) {
-            case "simple":
-                return `receive(${ppAstId(subKind.param.name)}: ${ppAstType(subKind.param.type)})`;
-            case "fallback":
-                return "receive()";
-            case "comment":
-                return `receive("${subKind.comment.value}")`;
-        }
-    },
-    external: ({ subKind }) => {
-        switch (subKind.kind) {
-            case "simple":
-                return `external(${ppAstId(subKind.param.name)}: ${ppAstType(subKind.param.type)})`;
-            case "fallback":
-                return "external()";
-            case "comment":
-                return `external("${subKind.comment.value}")`;
-        }
-    },
+    internal: ({ subKind }) => ppReceiverSubKind("receive")(subKind),
+    external: ({ subKind }) => ppReceiverSubKind("external")(subKind),
 });
 
 export const ppAstFuncId = (func: A.AstFuncId): string => func.text;
