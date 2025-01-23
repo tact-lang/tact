@@ -62,13 +62,12 @@ jobs:
 
       - name: Forward compatibility tests
         run: |
-          # Install dependencies and perform some steps of the build pipeline
+          # Install dependencies and perform some steps of the build pipeline,
+          # skipping the contract generation and the final `yarn build` step
           yarn install
           yarn gen:grammar
           yarn gen:stdlib
           yarn gen:func-js
-          # ...skipping contract generation...
-          yarn build
           # Clean-up
           yarn cleanall
 
