@@ -46,6 +46,7 @@
     "bin/**/*",
     "!src/**/*",
     "!**/test",
+    "!**/benchmarks",
     "!/docs",
     "!**/*.build.ts",
     "!**/*.spec.js",
