@@ -1,8 +1,8 @@
 import fc from "fast-check";
-import { eqExpressions, getAstFactory } from "./ast";
-import { prettyPrint } from "../prettyPrinter";
 import { getParser } from "../grammar";
+import { eqExpressions, getAstFactory } from "../ast/ast-helpers";
 import { randomAstExpression } from "./random.infra";
+import { prettyPrint } from "./ast-printer";
 
 describe("Pretty Print Expressions", () => {
     const maxDepth = 3;
