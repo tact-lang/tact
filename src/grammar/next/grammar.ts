@@ -84,7 +84,7 @@ export namespace $ast {
   }>;
   export type Receiver = $.Located<{
     readonly $: "Receiver";
-    readonly type: receiverType;
+    readonly type: ReceiverType;
     readonly param: receiverParam;
     readonly body: statements;
   }>;
@@ -152,7 +152,10 @@ export namespace $ast {
     readonly $: "GetAttribute";
     readonly methodId: expression | undefined;
   }>;
-  export type receiverType = "bounced" | keyword<"receive"> | keyword<"external">;
+  export type ReceiverType = $.Located<{
+    readonly $: "ReceiverType";
+    readonly name: "bounced" | keyword<"receive"> | keyword<"external">;
+  }>;
   export type Parameter = $.Located<{
     readonly $: "Parameter";
     readonly name: Id;
@@ -410,7 +413,7 @@ export const Contract: $.Parser<$ast.Contract> = $.loc($.field($.pure("Contract"
 export const Trait: $.Parser<$ast.Trait> = $.loc($.field($.pure("Trait"), "$", $.field($.star($.lazy(() => ContractAttribute)), "attributes", $.right($.lazy(() => keyword($.str("trait"))), $.field($.lazy(() => Id), "name", $.field($.opt($.lazy(() => inheritedTraits)), "traits", $.right($.str("{"), $.field($.star($.lazy(() => traitItemDecl)), "declarations", $.right($.str("}"), $.eps)))))))));
 export const moduleItem: $.Parser<$ast.moduleItem> = $.alt(PrimitiveTypeDecl, $.alt($Function, $.alt(AsmFunction, $.alt(NativeFunctionDecl, $.alt(Constant, $.alt(StructDecl, $.alt(MessageDecl, $.alt(Contract, Trait))))))));
 export const ContractInit: $.Parser<$ast.ContractInit> = $.loc($.field($.pure("ContractInit"), "$", $.right($.str("init"), $.field($.lazy(() => parameterList($.lazy(() => Parameter))), "parameters", $.field($.lazy(() => statements), "body", $.eps)))));
-export const Receiver: $.Parser<$ast.Receiver> = $.loc($.field($.pure("Receiver"), "$", $.field($.lazy(() => receiverType), "type", $.right($.str("("), $.field($.lazy(() => receiverParam), "param", $.right($.str(")"), $.field($.lazy(() => statements), "body", $.eps)))))));
+export const Receiver: $.Parser<$ast.Receiver> = $.loc($.field($.pure("Receiver"), "$", $.field($.lazy(() => ReceiverType), "type", $.right($.str("("), $.field($.lazy(() => receiverParam), "param", $.right($.str(")"), $.field($.lazy(() => statements), "body", $.eps)))))));
 export const FieldDecl: $.Parser<$ast.FieldDecl> = $.loc($.field($.pure("FieldDecl"), "$", $.field($.lazy(() => Id), "name", $.field($.lazy(() => ascription), "type", $.field($.opt($.lazy(() => asType)), "as", $.field($.opt($.right($.str("="), $.lazy(() => expression))), "expression", $.eps))))));
 export const semicolon: $.Parser<$ast.semicolon> = $.alt($.str(";"), $.lookPos($.str("}")));
 export const storageVar: $.Parser<$ast.storageVar> = $.left(FieldDecl, semicolon);
@@ -432,7 +435,7 @@ export const inheritedTraits: $.Parser<$ast.inheritedTraits> = $.right(keyword($
 export const ContractAttribute: $.Parser<$ast.ContractAttribute> = $.loc($.field($.pure("ContractAttribute"), "$", $.right($.str("@interface"), $.right($.str("("), $.field($.lazy(() => StringLiteral), "name", $.right($.str(")"), $.eps))))));
 export const FunctionAttribute: $.Parser<$ast.FunctionAttribute> = $.loc($.field($.pure("FunctionAttribute"), "$", $.field($.alt($.lazy(() => GetAttribute), $.alt(keyword($.str("mutates")), $.alt(keyword($.str("extends")), $.alt(keyword($.str("virtual")), $.alt(keyword($.str("override")), $.alt(keyword($.str("inline")), keyword($.str("abstract")))))))), "name", $.eps)));
 export const GetAttribute: $.Parser<$ast.GetAttribute> = $.loc($.field($.pure("GetAttribute"), "$", $.right($.str("get"), $.field($.opt($.right($.str("("), $.left($.lazy(() => expression), $.str(")")))), "methodId", $.eps))));
-export const receiverType: $.Parser<$ast.receiverType> = $.alt($.str("bounced"), $.alt(keyword($.str("receive")), keyword($.str("external"))));
+export const ReceiverType: $.Parser<$ast.ReceiverType> = $.loc($.field($.pure("ReceiverType"), "$", $.field($.alt($.str("bounced"), $.alt(keyword($.str("receive")), keyword($.str("external")))), "name", $.eps)));
 export const Parameter: $.Parser<$ast.Parameter> = $.loc($.field($.pure("Parameter"), "$", $.field(Id, "name", $.field($.lazy(() => ascription), "type", $.eps))));
 export const StringLiteral: $.Parser<$ast.StringLiteral> = $.loc($.field($.pure("StringLiteral"), "$", $.field($.lex($.right($.str("\""), $.left($.stry($.star($.alt($.regex<"\"" | "\\">("^\"\\\\", $.negateExps([$.ExpString("\""), $.ExpString("\\")])), $.right($.str("\\"), $.lazy(() => escapeChar))))), $.str("\"")))), "value", $.eps)));
 export const receiverParam: $.Parser<$ast.receiverParam> = $.opt($.alt(Parameter, StringLiteral));

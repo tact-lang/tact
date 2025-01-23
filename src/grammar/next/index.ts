@@ -805,45 +805,31 @@ const parseFieldDecl =
         );
     };
 
-const parseReceiverReceive =
-    ({ param, body, loc }: $ast.Receiver): Handler<A.AstReceiver> =>
+const parseReceiverParam =
+    (param: $ast.receiverParam): Handler<A.AstReceiverSubKind> =>
     (ctx) => {
-        const subKind: A.AstReceiverSubKind = !param
-            ? { kind: "fallback" }
+        return !param
+            ? ctx.ast.ReceiverFallback()
             : param.$ === "Parameter"
-              ? {
-                    kind: "simple",
-                    param: parseParameter(param)(ctx),
-                }
-              : {
-                    kind: "comment",
-                    comment: parseStringLiteral(param)(ctx),
-                };
+              ? ctx.ast.ReceiverSimple(parseParameter(param)(ctx))
+              : ctx.ast.ReceiverComment(parseStringLiteral(param)(ctx));
+    };
 
+const parseReceiverReceive =
+    ({ type, param, body, loc }: $ast.Receiver): Handler<A.AstReceiver> =>
+    (ctx) => {
         return ctx.ast.Receiver(
-            { kind: "internal", subKind },
+            ctx.ast.ReceiverInternal(parseReceiverParam(param)(ctx), type.loc),
             map(body, parseStatement)(ctx),
             loc,
         );
     };
 
 const parseReceiverExternal =
-    ({ param, body, loc }: $ast.Receiver): Handler<A.AstReceiver> =>
+    ({ type, param, body, loc }: $ast.Receiver): Handler<A.AstReceiver> =>
     (ctx) => {
-        const subKind: A.AstReceiverSubKind = !param
-            ? { kind: "fallback" }
-            : param.$ === "Parameter"
-              ? {
-                    kind: "simple",
-                    param: parseParameter(param)(ctx),
-                }
-              : {
-                    kind: "comment",
-                    comment: parseStringLiteral(param)(ctx),
-                };
-
         return ctx.ast.Receiver(
-            { kind: "external", subKind },
+            ctx.ast.ReceiverExternal(parseReceiverParam(param)(ctx), type.loc),
             map(body, parseStatement)(ctx),
             loc,
         );
@@ -869,7 +855,7 @@ const repairParam: $ast.receiverParam = {
 };
 
 const parseReceiverBounced =
-    ({ param, body, loc }: $ast.Receiver): Handler<A.AstReceiver> =>
+    ({ type, param, body, loc }: $ast.Receiver): Handler<A.AstReceiver> =>
     (ctx) => {
         if (typeof param === "undefined") {
             ctx.err.noBouncedWithoutArg()(loc);
@@ -881,16 +867,15 @@ const parseReceiverBounced =
             param = repairParam;
         }
 
-        const selector: A.AstReceiverKind = {
-            kind: "bounce",
-            param: parseParameter(param)(ctx),
-        };
-
-        return ctx.ast.Receiver(selector, map(body, parseStatement)(ctx), loc);
+        return ctx.ast.Receiver(
+            ctx.ast.ReceiverBounce(parseParameter(param)(ctx), type.loc),
+            map(body, parseStatement)(ctx),
+            loc,
+        );
     };
 
 const parserByReceiverType: Record<
-    $ast.receiverType,
+    $ast.ReceiverType["name"],
     (node: $ast.Receiver) => Handler<A.AstReceiver>
 > = {
     bounced: parseReceiverBounced,
@@ -899,7 +884,7 @@ const parserByReceiverType: Record<
 };
 
 const parseReceiver = (node: $ast.Receiver): Handler<A.AstReceiver> => {
-    return parserByReceiverType[node.type](node);
+    return parserByReceiverType[node.type.name](node);
 };
 
 const defaultShuffle = {

@@ -597,7 +597,7 @@ export const ppAstReceiver: Printer<A.AstReceiver> =
     ({ selector, statements }) =>
     (c) =>
         c.concat([
-            c.row(`${ppAstReceiverHeader(selector)} `),
+            c.row(`${ppAstReceiverKind(selector)} `),
             ppStatementBlock(statements)(c),
         ]);
 
@@ -678,19 +678,18 @@ export const ppAstFunctionAttribute = (
     }
 };
 
-const ppReceiverSubKind = (prefix: string) =>
-    makeVisitor<A.AstReceiverSubKind>()({
-        simple: ({ param }) =>
-            `${prefix}(${ppAstId(param.name)}: ${ppAstType(param.type)})`,
-        fallback: () => `${prefix}()`,
-        comment: ({ comment }) => `${prefix}("${comment.value}")`,
-    });
+const wrap = (prefix: string, body: string) => `${prefix}(${body})`;
 
-export const ppAstReceiverHeader = makeVisitor<A.AstReceiverKind>()({
-    bounce: ({ param: { name, type } }) =>
-        `bounced(${ppAstId(name)}: ${ppAstType(type)})`,
-    internal: ({ subKind }) => ppReceiverSubKind("receive")(subKind),
-    external: ({ subKind }) => ppReceiverSubKind("external")(subKind),
+export const ppReceiverSubKind = makeVisitor<A.AstReceiverSubKind>()({
+    simple: ({ param }) => typedParameter(param),
+    fallback: () => "",
+    comment: ({ comment }) => `"${comment.value}"`,
+});
+
+export const ppAstReceiverKind = makeVisitor<A.AstReceiverKind>()({
+    bounce: ({ param }) => wrap("bounced", typedParameter(param)),
+    internal: ({ subKind }) => wrap("receive", ppReceiverSubKind(subKind)),
+    external: ({ subKind }) => wrap("external", ppReceiverSubKind(subKind)),
 });
 
 export const ppAstFuncId = (func: A.AstFuncId): string => func.text;
@@ -827,11 +826,11 @@ export const ppAstStatementDestruct: Printer<A.AstStatementDestruct> =
         );
     };
 
-export const ppTypedParameter: Printer<A.AstTypedParameter> =
-    ({ name, type }) =>
-    (c) => {
-        return c.row(`${ppAstId(name)}: ${ppAstType(type)}`);
-    };
+const typedParameter = ({ name, type }: A.AstTypedParameter) =>
+    `${ppAstId(name)}: ${ppAstType(type)}`;
+
+export const ppTypedParameter: Printer<A.AstTypedParameter> = (param) => (c) =>
+    c.row(typedParameter(param));
 
 export const ppAstStatementBlock: Printer<A.AstStatementBlock> =
     ({ statements }) =>
@@ -893,6 +892,12 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     destruct_end: () => {
         throw new Error("Not implemented");
     },
+    simple: exprNode(ppReceiverSubKind),
+    fallback: exprNode(ppReceiverSubKind),
+    comment: exprNode(ppReceiverSubKind),
+    bounce: exprNode(ppAstReceiverKind),
+    internal: exprNode(ppAstReceiverKind),
+    external: exprNode(ppAstReceiverKind),
 
     module: ppAstModule,
     struct_decl: ppAstStruct,

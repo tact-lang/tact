@@ -849,21 +849,15 @@ export class AstComparator {
         kind1: A.AstReceiverKind,
         kind2: A.AstReceiverKind,
     ): boolean {
-        if (kind1.kind !== kind2.kind) {
-            return false;
-        }
-
         if (kind1.kind === "bounce" && kind2.kind === "bounce") {
             return this.compare(kind1.param, kind2.param);
         }
-
-        if (
-            (kind1.kind === "internal" || kind1.kind === "external") &&
-            (kind2.kind === "internal" || kind2.kind === "external")
-        ) {
+        if (kind1.kind === "internal" && kind2.kind === "internal") {
             return this.compareReceiverSubKinds(kind1.subKind, kind2.subKind);
         }
-
+        if (kind1.kind === "external" && kind2.kind === "external") {
+            return this.compareReceiverSubKinds(kind1.subKind, kind2.subKind);
+        }
         return false;
     }
 
@@ -871,27 +865,15 @@ export class AstComparator {
         subKind1: A.AstReceiverSubKind,
         subKind2: A.AstReceiverSubKind,
     ): boolean {
-        if (subKind1.kind !== subKind2.kind) {
-            return false;
+        if (subKind1.kind === "simple" && subKind2.kind === "simple") {
+            return this.compare(subKind1.param, subKind2.param);
         }
-
-        switch (subKind1.kind) {
-            case "simple":
-                return this.compare(
-                    subKind1.param,
-                    (subKind2 as typeof subKind1).param,
-                );
-            case "comment":
-                return this.compare(
-                    subKind1.comment,
-                    (subKind2 as typeof subKind1).comment,
-                );
-            case "fallback":
-                return true;
-            default:
-                throwInternalCompilerError(
-                    `Unsupported receiver subKind: ${JSONbig.stringify(subKind1)}`,
-                );
+        if (subKind1.kind === "comment" && subKind2.kind === "comment") {
+            return this.compare(subKind1.comment, subKind2.comment);
         }
+        if (subKind1.kind === "fallback" && subKind2.kind === "fallback") {
+            return true;
+        }
+        return false;
     }
 }

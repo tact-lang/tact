@@ -668,32 +668,53 @@ export type AstTypedParameter = {
     loc: SrcInfo;
 };
 
+export type AstReceiverSimple = {
+    kind: "simple";
+    param: AstTypedParameter;
+    id: number;
+};
+
+export type AstReceiverFallback = {
+    kind: "fallback";
+    id: number;
+};
+
+export type AstReceiverComment = {
+    kind: "comment";
+    comment: AstString;
+    id: number;
+};
+
 export type AstReceiverSubKind =
-    | {
-          kind: "simple";
-          param: AstTypedParameter;
-      }
-    | {
-          kind: "fallback";
-      }
-    | {
-          kind: "comment";
-          comment: AstString;
-      };
+    | AstReceiverSimple
+    | AstReceiverFallback
+    | AstReceiverComment;
+
+export type AstReceiverInternal = {
+    kind: "internal";
+    subKind: AstReceiverSubKind;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstReceiverExternal = {
+    kind: "external";
+    subKind: AstReceiverSubKind;
+    id: number;
+    loc: SrcInfo;
+};
+
+export type AstReceiverBounce = {
+    kind: "bounce";
+    param: AstTypedParameter;
+    id: number;
+    loc: SrcInfo;
+};
 
 export type AstReceiverKind =
-    | {
-          kind: "internal";
-          subKind: AstReceiverSubKind;
-      }
-    | {
-          kind: "external";
-          subKind: AstReceiverSubKind;
-      }
-    | {
-          kind: "bounce";
-          param: AstTypedParameter;
-      };
+    | AstReceiverInternal
+    | AstReceiverExternal
+    | AstReceiverBounce;
 
 export type AstNode =
     | AstFuncId
@@ -717,4 +738,6 @@ export type AstNode =
     | AstReceiver
     | AstImport
     | AstConstantDef
-    | AstConstantDecl;
+    | AstConstantDecl
+    | AstReceiverKind
+    | AstReceiverSubKind;
