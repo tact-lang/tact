@@ -668,32 +668,31 @@ export type AstTypedParameter = {
     loc: SrcInfo;
 };
 
-export type AstReceiverKind =
+export type AstReceiverSubKind =
     | {
-          kind: "internal-simple";
+          kind: "simple";
           param: AstTypedParameter;
       }
     | {
-          kind: "internal-fallback";
+          kind: "fallback";
       }
     | {
-          kind: "internal-comment";
+          kind: "comment";
           comment: AstString;
+      };
+
+export type AstReceiverKind =
+    | {
+          kind: "internal";
+          subKind: AstReceiverSubKind;
+      }
+    | {
+          kind: "external";
+          subKind: AstReceiverSubKind;
       }
     | {
           kind: "bounce";
           param: AstTypedParameter;
-      }
-    | {
-          kind: "external-simple";
-          param: AstTypedParameter;
-      }
-    | {
-          kind: "external-fallback";
-      }
-    | {
-          kind: "external-comment";
-          comment: AstString;
       };
 
 export type AstNode =

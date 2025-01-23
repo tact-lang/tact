@@ -888,7 +888,10 @@ exports[`grammar should parse case-35 1`] = `
         acceptMessage();
     },
           "selector": {
-            "kind": "external-fallback",
+            "kind": "external",
+            "subKind": {
+              "kind": "fallback",
+            },
           },
           "statements": [
             {

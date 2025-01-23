@@ -852,23 +852,46 @@ export class AstComparator {
         if (kind1.kind !== kind2.kind) {
             return false;
         }
-        if (
-            (kind1.kind === "internal-simple" &&
-                kind2.kind === "internal-simple") ||
-            (kind1.kind === "bounce" && kind2.kind === "bounce") ||
-            (kind1.kind === "external-simple" &&
-                kind2.kind === "external-simple")
-        ) {
+
+        if (kind1.kind === "bounce" && kind2.kind === "bounce") {
             return this.compare(kind1.param, kind2.param);
         }
+
         if (
-            (kind1.kind === "internal-comment" &&
-                kind2.kind === "internal-comment") ||
-            (kind1.kind === "external-comment" &&
-                kind2.kind === "external-comment")
+            (kind1.kind === "internal" || kind1.kind === "external") &&
+            (kind2.kind === "internal" || kind2.kind === "external")
         ) {
-            return this.compare(kind1.comment, kind2.comment);
+            return this.compareReceiverSubKinds(kind1.subKind, kind2.subKind);
         }
-        return true;
+
+        return false;
+    }
+
+    private compareReceiverSubKinds(
+        subKind1: A.AstReceiverSubKind,
+        subKind2: A.AstReceiverSubKind,
+    ): boolean {
+        if (subKind1.kind !== subKind2.kind) {
+            return false;
+        }
+
+        switch (subKind1.kind) {
+            case "simple":
+                return this.compare(
+                    subKind1.param,
+                    (subKind2 as typeof subKind1).param,
+                );
+            case "comment":
+                return this.compare(
+                    subKind1.comment,
+                    (subKind2 as typeof subKind1).comment,
+                );
+            case "fallback":
+                return true;
+            default:
+                throwInternalCompilerError(
+                    `Unsupported receiver subKind: ${JSONbig.stringify(subKind1)}`,
+                );
+        }
     }
 }

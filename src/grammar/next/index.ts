@@ -808,37 +808,45 @@ const parseFieldDecl =
 const parseReceiverReceive =
     ({ param, body, loc }: $ast.Receiver): Handler<A.AstReceiver> =>
     (ctx) => {
-        const selector: A.AstReceiverKind = !param
-            ? { kind: "internal-fallback" }
+        const subKind: A.AstReceiverSubKind = !param
+            ? { kind: "fallback" }
             : param.$ === "Parameter"
               ? {
-                    kind: "internal-simple",
+                    kind: "simple",
                     param: parseParameter(param)(ctx),
                 }
               : {
-                    kind: "internal-comment",
+                    kind: "comment",
                     comment: parseStringLiteral(param)(ctx),
                 };
 
-        return ctx.ast.Receiver(selector, map(body, parseStatement)(ctx), loc);
+        return ctx.ast.Receiver(
+            { kind: "internal", subKind },
+            map(body, parseStatement)(ctx),
+            loc,
+        );
     };
 
 const parseReceiverExternal =
     ({ param, body, loc }: $ast.Receiver): Handler<A.AstReceiver> =>
     (ctx) => {
-        const selector: A.AstReceiverKind = !param
-            ? { kind: "external-fallback" }
+        const subKind: A.AstReceiverSubKind = !param
+            ? { kind: "fallback" }
             : param.$ === "Parameter"
               ? {
-                    kind: "external-simple",
+                    kind: "simple",
                     param: parseParameter(param)(ctx),
                 }
               : {
-                    kind: "external-comment",
+                    kind: "comment",
                     comment: parseStringLiteral(param)(ctx),
                 };
 
-        return ctx.ast.Receiver(selector, map(body, parseStatement)(ctx), loc);
+        return ctx.ast.Receiver(
+            { kind: "external", subKind },
+            map(body, parseStatement)(ctx),
+            loc,
+        );
     };
 
 const repairParam: $ast.receiverParam = {

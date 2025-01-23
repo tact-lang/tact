@@ -412,15 +412,15 @@ semantics.addOperation<A.AstNode>("astOfItem", {
         _rbrace,
     ) {
         const optParam = optParameter.children[0] as Node | undefined;
-        const selector: A.AstReceiverKind = optParam
+        const subKind: A.AstReceiverSubKind = optParam
             ? {
-                  kind: "internal-simple",
+                  kind: "simple",
                   param: optParam.astOfDeclaration(),
               }
-            : { kind: "internal-fallback" };
+            : { kind: "fallback" };
         return createNode({
             kind: "receiver",
-            selector,
+            selector: { kind: "internal", subKind },
             statements: receiverBody.children.map((s) => s.astOfStatement()),
             loc: createRef(this),
         });
@@ -437,8 +437,11 @@ semantics.addOperation<A.AstNode>("astOfItem", {
         return createNode({
             kind: "receiver",
             selector: {
-                kind: "internal-comment",
-                comment: comment.astOfExpression(),
+                kind: "internal",
+                subKind: {
+                    kind: "comment",
+                    comment: comment.astOfExpression(),
+                },
             },
             statements: receiverBody.children.map((s) => s.astOfStatement()),
             loc: createRef(this),
@@ -470,15 +473,16 @@ semantics.addOperation<A.AstNode>("astOfItem", {
         _rbrace,
     ) {
         const optParam = optParameter.children[0] as Node | undefined;
-        const selector: A.AstReceiverKind = optParam
+        const subKind: A.AstReceiverSubKind = optParam
             ? {
-                  kind: "external-simple",
+                  kind: "simple",
                   param: optParam.astOfDeclaration(),
               }
-            : { kind: "external-fallback" };
+            : { kind: "fallback" };
+
         return createNode({
             kind: "receiver",
-            selector,
+            selector: { kind: "external", subKind },
             statements: receiverBody.children.map((s) => s.astOfStatement()),
             loc: createRef(this),
         });
@@ -495,8 +499,11 @@ semantics.addOperation<A.AstNode>("astOfItem", {
         return createNode({
             kind: "receiver",
             selector: {
-                kind: "external-comment",
-                comment: comment.astOfExpression(),
+                kind: "external",
+                subKind: {
+                    kind: "comment",
+                    comment: comment.astOfExpression(),
+                },
             },
             statements: receiverBody.children.map((s) => s.astOfStatement()),
             loc: createRef(this),

@@ -2353,22 +2353,25 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     
   },
           "selector": {
-            "kind": "internal-simple",
-            "param": {
-              "id": 17,
-              "kind": "typed_parameter",
-              "loc": src: A,
-              "name": {
-                "id": 15,
-                "kind": "id",
-                "loc": src,
-                "text": "src",
-              },
-              "type": {
-                "id": 16,
-                "kind": "type_id",
-                "loc": A,
-                "text": "A",
+            "kind": "internal",
+            "subKind": {
+              "kind": "simple",
+              "param": {
+                "id": 17,
+                "kind": "typed_parameter",
+                "loc": src: A,
+                "name": {
+                  "id": 15,
+                  "kind": "id",
+                  "loc": src,
+                  "text": "src",
+                },
+                "type": {
+                  "id": 16,
+                  "kind": "type_id",
+                  "loc": A,
+                  "text": "A",
+                },
               },
             },
           },
@@ -2452,22 +2455,25 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     
   },
           "selector": {
-            "kind": "internal-simple",
-            "param": {
-              "id": 17,
-              "kind": "typed_parameter",
-              "loc": src: A,
-              "name": {
-                "id": 15,
-                "kind": "id",
-                "loc": src,
-                "text": "src",
-              },
-              "type": {
-                "id": 16,
-                "kind": "type_id",
-                "loc": A,
-                "text": "A",
+            "kind": "internal",
+            "subKind": {
+              "kind": "simple",
+              "param": {
+                "id": 17,
+                "kind": "typed_parameter",
+                "loc": src: A,
+                "name": {
+                  "id": 15,
+                  "kind": "id",
+                  "loc": src,
+                  "text": "src",
+                },
+                "type": {
+                  "id": 16,
+                  "kind": "type_id",
+                  "loc": A,
+                  "text": "A",
+                },
               },
             },
           },
@@ -2920,22 +2926,25 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     
   },
           "selector": {
-            "kind": "internal-simple",
-            "param": {
-              "id": 24,
-              "kind": "typed_parameter",
-              "loc": src: A,
-              "name": {
-                "id": 22,
-                "kind": "id",
-                "loc": src,
-                "text": "src",
-              },
-              "type": {
-                "id": 23,
-                "kind": "type_id",
-                "loc": A,
-                "text": "A",
+            "kind": "internal",
+            "subKind": {
+              "kind": "simple",
+              "param": {
+                "id": 24,
+                "kind": "typed_parameter",
+                "loc": src: A,
+                "name": {
+                  "id": 22,
+                  "kind": "id",
+                  "loc": src,
+                  "text": "src",
+                },
+                "type": {
+                  "id": 23,
+                  "kind": "type_id",
+                  "loc": A,
+                  "text": "A",
+                },
               },
             },
           },
@@ -3059,22 +3068,25 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     
   },
           "selector": {
-            "kind": "internal-simple",
-            "param": {
-              "id": 24,
-              "kind": "typed_parameter",
-              "loc": src: A,
-              "name": {
-                "id": 22,
-                "kind": "id",
-                "loc": src,
-                "text": "src",
-              },
-              "type": {
-                "id": 23,
-                "kind": "type_id",
-                "loc": A,
-                "text": "A",
+            "kind": "internal",
+            "subKind": {
+              "kind": "simple",
+              "param": {
+                "id": 24,
+                "kind": "typed_parameter",
+                "loc": src: A,
+                "name": {
+                  "id": 22,
+                  "kind": "id",
+                  "loc": src,
+                  "text": "src",
+                },
+                "type": {
+                  "id": 23,
+                  "kind": "type_id",
+                  "loc": A,
+                  "text": "A",
+                },
               },
             },
           },
@@ -4931,22 +4943,25 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         42;
     },
           "selector": {
-            "kind": "external-simple",
-            "param": {
-              "id": 14,
-              "kind": "typed_parameter",
-              "loc": msg: A,
-              "name": {
-                "id": 12,
-                "kind": "id",
-                "loc": msg,
-                "text": "msg",
-              },
-              "type": {
-                "id": 13,
-                "kind": "type_id",
-                "loc": A,
-                "text": "A",
+            "kind": "external",
+            "subKind": {
+              "kind": "simple",
+              "param": {
+                "id": 14,
+                "kind": "typed_parameter",
+                "loc": msg: A,
+                "name": {
+                  "id": 12,
+                  "kind": "id",
+                  "loc": msg,
+                  "text": "msg",
+                },
+                "type": {
+                  "id": 13,
+                  "kind": "type_id",
+                  "loc": A,
+                  "text": "A",
+                },
               },
             },
           },
@@ -4972,7 +4987,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         42;
     },
           "selector": {
-            "kind": "external-fallback",
+            "kind": "external",
+            "subKind": {
+              "kind": "fallback",
+            },
           },
           "statements": [
             {
@@ -5046,22 +5064,25 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         42;
     },
           "selector": {
-            "kind": "external-simple",
-            "param": {
-              "id": 14,
-              "kind": "typed_parameter",
-              "loc": msg: A,
-              "name": {
-                "id": 12,
-                "kind": "id",
-                "loc": msg,
-                "text": "msg",
-              },
-              "type": {
-                "id": 13,
-                "kind": "type_id",
-                "loc": A,
-                "text": "A",
+            "kind": "external",
+            "subKind": {
+              "kind": "simple",
+              "param": {
+                "id": 14,
+                "kind": "typed_parameter",
+                "loc": msg: A,
+                "name": {
+                  "id": 12,
+                  "kind": "id",
+                  "loc": msg,
+                  "text": "msg",
+                },
+                "type": {
+                  "id": 13,
+                  "kind": "type_id",
+                  "loc": A,
+                  "text": "A",
+                },
               },
             },
           },
@@ -5099,7 +5120,10 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         42;
     },
           "selector": {
-            "kind": "external-fallback",
+            "kind": "external",
+            "subKind": {
+              "kind": "fallback",
+            },
           },
           "statements": [
             {
@@ -13698,22 +13722,25 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
           "kind": "receiver",
           "loc": receive(msg: MsgWithExprOpcode) { },
           "selector": {
-            "kind": "internal-simple",
-            "param": {
-              "id": 21,
-              "kind": "typed_parameter",
-              "loc": msg: MsgWithExprOpcode,
-              "name": {
-                "id": 19,
-                "kind": "id",
-                "loc": msg,
-                "text": "msg",
-              },
-              "type": {
-                "id": 20,
-                "kind": "type_id",
-                "loc": MsgWithExprOpcode,
-                "text": "MsgWithExprOpcode",
+            "kind": "internal",
+            "subKind": {
+              "kind": "simple",
+              "param": {
+                "id": 21,
+                "kind": "typed_parameter",
+                "loc": msg: MsgWithExprOpcode,
+                "name": {
+                  "id": 19,
+                  "kind": "id",
+                  "loc": msg,
+                  "text": "msg",
+                },
+                "type": {
+                  "id": 20,
+                  "kind": "type_id",
+                  "loc": MsgWithExprOpcode,
+                  "text": "MsgWithExprOpcode",
+                },
               },
             },
           },
@@ -13762,22 +13789,25 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
           "kind": "receiver",
           "loc": receive(msg: MsgWithExprOpcode) { },
           "selector": {
-            "kind": "internal-simple",
-            "param": {
-              "id": 21,
-              "kind": "typed_parameter",
-              "loc": msg: MsgWithExprOpcode,
-              "name": {
-                "id": 19,
-                "kind": "id",
-                "loc": msg,
-                "text": "msg",
-              },
-              "type": {
-                "id": 20,
-                "kind": "type_id",
-                "loc": MsgWithExprOpcode,
-                "text": "MsgWithExprOpcode",
+            "kind": "internal",
+            "subKind": {
+              "kind": "simple",
+              "param": {
+                "id": 21,
+                "kind": "typed_parameter",
+                "loc": msg: MsgWithExprOpcode,
+                "name": {
+                  "id": 19,
+                  "kind": "id",
+                  "loc": msg,
+                  "text": "msg",
+                },
+                "type": {
+                  "id": 20,
+                  "kind": "type_id",
+                  "loc": MsgWithExprOpcode,
+                  "text": "MsgWithExprOpcode",
+                },
               },
             },
           },
