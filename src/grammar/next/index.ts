@@ -666,13 +666,16 @@ const parseFunctionAttribute =
     (node: $ast.FunctionAttribute): Handler<A.AstFunctionAttribute> =>
     (ctx) => {
         if (typeof node.name === "string") {
-            return ctx.ast.FunctionAttribute(node.name, node.loc);
+            return ctx.ast.FunctionAttribute({ type: node.name }, node.loc);
         }
 
-        return ctx.ast.FunctionAttributeGet(
-            node.name.methodId
-                ? parseExpression(node.name.methodId)(ctx)
-                : null,
+        return ctx.ast.FunctionAttribute(
+            {
+                type: "get",
+                methodId: node.name.methodId
+                    ? parseExpression(node.name.methodId)(ctx)
+                    : null,
+            },
             node.loc,
         );
     };

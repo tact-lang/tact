@@ -635,30 +635,25 @@ export type AstContractAttribute = {
     loc: SrcInfo;
 };
 
-export type AstFunctionAttributeGet = {
+export type AstFunctionAttributeType =
+    | {
+          type: "get";
+          methodId: AstExpression | null;
+      }
+    | {
+          type:
+              | "mutates"
+              | "extends"
+              | "virtual"
+              | "abstract"
+              | "override"
+              | "inline";
+      };
+
+export type AstFunctionAttribute = AstFunctionAttributeType & {
     kind: "function_attribute";
-    type: "get";
-    methodId: AstExpression | null;
     loc: SrcInfo;
 };
-
-export type AstFunctionAttributeName =
-    | "mutates"
-    | "extends"
-    | "virtual"
-    | "abstract"
-    | "override"
-    | "inline";
-
-export type AstFunctionAttributeRest = {
-    kind: "function_attribute";
-    type: AstFunctionAttributeName;
-    loc: SrcInfo;
-};
-
-export type AstFunctionAttribute =
-    | AstFunctionAttributeGet
-    | AstFunctionAttributeRest;
 
 export type AstTypedParameter = {
     kind: "typed_parameter";

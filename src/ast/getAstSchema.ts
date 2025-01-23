@@ -557,21 +557,12 @@ export const getAstSchema = (
                 name,
                 loc: toSrcInfo(loc),
             }),
-        FunctionAttributeGet: (
-            methodId: A.AstExpression | null,
-            loc: Loc,
-        ): A.AstFunctionAttributeGet => ({
-            kind: "function_attribute",
-            type: "get",
-            methodId,
-            loc: toSrcInfo(loc),
-        }),
         FunctionAttribute: (
-            type: A.AstFunctionAttributeName,
+            type: A.AstFunctionAttributeType,
             loc: Loc,
-        ): A.AstFunctionAttributeRest => ({
+        ): A.AstFunctionAttribute => ({
             kind: "function_attribute",
-            type,
+            ...type,
             loc: toSrcInfo(loc),
         }),
         ConstantAttribute: (
