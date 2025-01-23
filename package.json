@@ -28,7 +28,6 @@
     "test": "jest",
     "test:fast": "jest --config=./jest-fast.config.js",
     "coverage": "cross-env COVERAGE=true jest",
-    "release": "yarn clean && yarn build && yarn coverage && yarn release-it --npm.yarn1",
     "type": "tsc --noEmit",
     "lint": "yarn eslint .",
     "fmt": "yarn prettier -l -w .",
@@ -40,15 +39,17 @@
     "postinstall": "node .husky/install.mjs || true",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
-    "next-version": "ts-node version.build.ts"
+    "next-version": "ts-node version.build.ts",
+    "top10": "find . -type f -exec du -h {} + | sort -rh | head -n 10"
   },
   "files": [
     "dist/**/*",
     "bin/**/*",
     "!src/**/*",
     "!**/test",
+    "!dist/**/output",
     "!/docs",
-    "!**/*.build.ts",
+    "!**/*.build.*",
     "!**/*.spec.js",
     "!**/*.spec.d.ts",
     "!**/*.tsbuildinfo"
@@ -75,7 +76,6 @@
   },
   "devDependencies": {
     "@ohm-js/cli": "^2.0.0",
-    "@release-it/keep-a-changelog": "^6.0.0",
     "@swc/core": "^1.10.7",
     "@swc/jest": "^0.2.37",
     "@tact-lang/coverage": "^0.0.8",
@@ -99,7 +99,6 @@
     "knip": "^5.24.1",
     "pinst": "^3.0.0",
     "prettier": "^3.2.5",
-    "release-it": "^18.1.1",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "~5.6.2"
@@ -107,16 +106,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "release-it": {
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/keep-a-changelog": {
-        "filename": "CHANGELOG.md"
-      }
-    }
   },
   "packageManager": "yarn@1.22.22",
   "engines": {

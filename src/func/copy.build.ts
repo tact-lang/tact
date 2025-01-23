@@ -11,7 +11,8 @@ const cp = async (fromGlob: string, toPath: string) => {
 
 const main = async () => {
     try {
-        await cp("./src/func/funcfiftlib.*", "./dist/func/");
+        await cp("./src/func/funcfiftlib.js", "./dist/func/");
+        await cp("./src/func/funcfiftlib.wasm.js", "./dist/func/");
     } catch (e) {
         console.error(e);
         process.exit(1);
