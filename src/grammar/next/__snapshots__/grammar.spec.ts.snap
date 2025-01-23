@@ -22,7 +22,7 @@ exports[`grammar should fail const-override 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | override const Foo: Int = 42;
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      ^~~~~~~~
   5 | 
 "
 `;
@@ -40,7 +40,7 @@ exports[`grammar should fail const-override-virtual 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | override virtual const Foo: Int = 42;
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      ^~~~~~~~
   5 | 
 "
 `;
@@ -49,7 +49,7 @@ exports[`grammar should fail const-virtual 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | virtual const Foo: Int = 42;
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      ^~~~~~~
   5 | 
 "
 `;
@@ -58,7 +58,7 @@ exports[`grammar should fail const-virtual-override 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | virtual override const Foo: Int = 42;
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      ^~~~~~~
   5 | 
 "
 `;

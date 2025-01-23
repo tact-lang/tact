@@ -946,9 +946,11 @@ const parseConstantDefInModule =
         const result = parseConstantDef(node)(ctx);
         const firstAttribute = result.attributes[0];
         if (typeof firstAttribute !== "undefined") {
-            // FIXME: should be `firstAttribute.loc`
-            // https://github.com/tact-lang/tact/issues/1255
-            ctx.err.topLevelConstantWithAttribute()(node.loc);
+            ctx.err.topLevelConstantWithAttribute()({
+                $: "range",
+                start: firstAttribute.loc.interval.startIdx,
+                end: firstAttribute.loc.interval.endIdx,
+            } as $.Loc);
             result.attributes = [];
         }
         return result;
