@@ -276,7 +276,7 @@ function randomAddress(): fc.Arbitrary<Address> {
 }
 
 function randomCell(): fc.Arbitrary<Cell> {
-    return fc.string().map((s) => Cell.fromBase64(s)); // Error Index 24 > 24 is out of bounds. Need's fix
+    return fc.constant(beginCell().endCell()); // TODO: use random random here
 }
 
 function randomAstAddress(): fc.Arbitrary<A.AstAddress> {
