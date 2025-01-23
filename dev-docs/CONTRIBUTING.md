@@ -189,6 +189,6 @@ The corresponding test spec files can be found in [src/test](../src/test) folder
 
 The project contains special TypeScript files with the `.build.ts` extension that are used for build processes and testing purposes. These files are not included in the published NPM package.
 
-A typical example is [test/contracts.build.ts](https://github.com/tact-lang/tact/blob/132fe4ad7f030671d28740313b9d573fd8829684/src/test/contracts.build.ts) which runs contract tests.
+A typical example is [test/contracts.build.ts](https://github.com/tact-lang/tact/blob/132fe4ad7f030671d28740313b9d573fd8829684/src/test/contracts.build.ts) which builds contract tests.
 
 When adding new build or test scripts, make sure to use the `.build.ts` extension to keep them separate from the main compiler code.
