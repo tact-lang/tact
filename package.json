@@ -39,7 +39,8 @@
     "postinstall": "node .husky/install.mjs || true",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
-    "next-version": "ts-node version.build.ts"
+    "next-version": "ts-node version.build.ts",
+    "top10": "find . -type f -exec du -h {} + | sort -rh | head -n 10"
   },
   "files": [
     "dist/**/*",
