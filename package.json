@@ -47,7 +47,7 @@
     "!src/**/*",
     "!**/test",
     "!/docs",
-    "!**/*.build.ts",
+    "!**/*.build.*",
     "!**/*.spec.js",
     "!**/*.spec.d.ts",
     "!**/*.tsbuildinfo"
