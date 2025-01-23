@@ -1,8 +1,9 @@
-import * as A from "./ast";
 import { Address, Cell, Slice } from "@ton/core";
+import * as A from "./ast";
+import { isLiteral, FactoryAst } from "./ast-helpers";
 import { dummySrcInfo, SrcInfo } from "../grammar";
 
-export const getAstUtil = ({ createNode }: A.FactoryAst) => {
+export const getAstUtil = ({ createNode }: FactoryAst) => {
     function makeUnaryExpression(
         op: A.AstUnaryOperation,
         operand: A.AstExpression,
@@ -179,13 +180,13 @@ export function checkIsBinaryOpNode(ast: A.AstExpression): boolean {
 // Checks if top level node is a binary op node
 // with a value node on the right
 export function checkIsBinaryOp_With_RightValue(ast: A.AstExpression): boolean {
-    return ast.kind === "op_binary" ? A.isLiteral(ast.right) : false;
+    return ast.kind === "op_binary" ? isLiteral(ast.right) : false;
 }
 
 // Checks if top level node is a binary op node
 // with a value node on the left
 export function checkIsBinaryOp_With_LeftValue(ast: A.AstExpression): boolean {
-    return ast.kind === "op_binary" ? A.isLiteral(ast.left) : false;
+    return ast.kind === "op_binary" ? isLiteral(ast.left) : false;
 }
 
 // Checks if the top level node is the specified number

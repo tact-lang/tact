@@ -59,6 +59,12 @@ export const optionsSchema = z
     })
     .strict();
 
+const modeSchema = z
+    .enum(["fullWithDecompilation", "full", "funcOnly", "checkOnly"])
+    .optional();
+
+export type Mode = z.infer<typeof modeSchema>;
+
 export const projectSchema = z
     .object({
         /**
@@ -90,9 +96,7 @@ export const projectSchema = z
          *
          * Read more: https://docs.tact-lang.org/book/config#projects-mode
          */
-        mode: z
-            .enum(["fullWithDecompilation", "full", "funcOnly", "checkOnly"])
-            .optional(),
+        mode: modeSchema,
 
         /**
          * Set verbosity level (higher = more details), default: 1

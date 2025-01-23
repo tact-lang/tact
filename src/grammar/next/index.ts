@@ -1,5 +1,6 @@
 import * as $ from "@tonstudio/parser-runtime";
 import * as A from "../../ast/ast";
+import { FactoryAst } from "../../ast/ast-helpers";
 import * as G from "./grammar";
 import { $ast } from "./grammar";
 import { TactCompilationError } from "../../error/errors";
@@ -1209,7 +1210,7 @@ const parseJustImports =
         return map(imports, parseImport)(ctx);
     };
 
-export const getParser = (ast: A.FactoryAst) => {
+export const getParser = (ast: FactoryAst) => {
     const display = displayToString;
 
     const doParse = <T, U>(

@@ -15,7 +15,7 @@ import path from "path";
 import { cwd } from "process";
 import { posixNormalize } from "../utils/filePath";
 import { ensureSimplifiedString } from "../optimizer/interpreter";
-import { isLiteral } from "../ast/ast";
+import { isLiteral } from "../ast/ast-helpers";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [

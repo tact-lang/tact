@@ -19,7 +19,7 @@ import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
-import { FactoryAst, getAstFactory, idText } from "../ast/ast";
+import { getAstFactory, FactoryAst, idText } from "../ast/ast-helpers";
 import { TactError, TactErrorCollection } from "../error/errors";
 import { getParser, Parser } from "../grammar";
 import { defaultParser } from "../grammar/grammar";

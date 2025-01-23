@@ -2,6 +2,7 @@
 
 import { SrcInfo } from "../grammar";
 import * as A from "../ast/ast";
+import { isLiteral } from "../ast/ast-helpers";
 import * as iM from "./interpreter";
 import { ExpressionTransformer, Rule } from "./types";
 import {
@@ -367,7 +368,7 @@ export class AssociativeRule2 extends AllowableOpRule {
             const topLevelNode = ast as A.AstOpBinary;
             if (
                 checkIsBinaryOp_With_RightValue(topLevelNode.left) &&
-                !A.isLiteral(topLevelNode.right)
+                !isLiteral(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (x1 op1 c1) op x2
@@ -404,7 +405,7 @@ export class AssociativeRule2 extends AllowableOpRule {
                 }
             } else if (
                 checkIsBinaryOp_With_LeftValue(topLevelNode.left) &&
-                !A.isLiteral(topLevelNode.right)
+                !isLiteral(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (c1 op1 x1) op x2
@@ -438,7 +439,7 @@ export class AssociativeRule2 extends AllowableOpRule {
                     return util.makeBinaryExpression(op1, c1, newRight);
                 }
             } else if (
-                !A.isLiteral(topLevelNode.left) &&
+                !isLiteral(topLevelNode.left) &&
                 checkIsBinaryOp_With_RightValue(topLevelNode.right)
             ) {
                 // The tree has this form:
@@ -473,7 +474,7 @@ export class AssociativeRule2 extends AllowableOpRule {
                     return util.makeBinaryExpression(op1, newLeft, c1);
                 }
             } else if (
-                !A.isLiteral(topLevelNode.left) &&
+                !isLiteral(topLevelNode.left) &&
                 checkIsBinaryOp_With_LeftValue(topLevelNode.right)
             ) {
                 // The tree has this form:
@@ -1556,7 +1557,7 @@ export class AssociativeRule3 extends Rule {
             const topLevelNode = ast as A.AstOpBinary;
             if (
                 checkIsBinaryOp_With_RightValue(topLevelNode.left) &&
-                A.isLiteral(topLevelNode.right)
+                isLiteral(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (x1 op1 c1) op c2
@@ -1591,7 +1592,7 @@ export class AssociativeRule3 extends Rule {
                 }
             } else if (
                 checkIsBinaryOp_With_LeftValue(topLevelNode.left) &&
-                A.isLiteral(topLevelNode.right)
+                isLiteral(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (c1 op1 x1) op c2
@@ -1625,7 +1626,7 @@ export class AssociativeRule3 extends Rule {
                     // Do nothing: will exit rule without modifying tree
                 }
             } else if (
-                A.isLiteral(topLevelNode.left) &&
+                isLiteral(topLevelNode.left) &&
                 checkIsBinaryOp_With_RightValue(topLevelNode.right)
             ) {
                 // The tree has this form:
@@ -1660,7 +1661,7 @@ export class AssociativeRule3 extends Rule {
                     // Do nothing: will exit rule without modifying tree
                 }
             } else if (
-                A.isLiteral(topLevelNode.left) &&
+                isLiteral(topLevelNode.left) &&
                 checkIsBinaryOp_With_LeftValue(topLevelNode.right)
             ) {
                 // The tree has this form:

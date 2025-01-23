@@ -97,7 +97,7 @@ it('tests something, you name it', async () => {
   // with the second one (index 1) being the one that we look for
   const tx = res.transactions[1]!;
 
-  // To do something useful with it, let's ensure that it's type is 'generic'
+  // To do something useful with it, let's ensure that its type is 'generic'
   // and that the compute phase in it wasn't skipped
   if (tx.description.type === "generic"
       && tx.description.computePhase.type === "vm") {

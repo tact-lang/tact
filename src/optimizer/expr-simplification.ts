@@ -14,8 +14,8 @@ import {
     AstStaticCall,
     AstStructInstance,
     AstTraitDeclaration,
-    idText,
 } from "../ast/ast";
+import { idText } from "../ast/ast-helpers";
 import { getAstUtil } from "../ast/util";
 import {
     TactConstEvalError,

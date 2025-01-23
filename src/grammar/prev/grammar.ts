@@ -2,6 +2,7 @@ import { Node, IterationNode, NonterminalNode } from "ohm-js";
 import tactGrammar from "./grammar.ohm-bundle";
 import { throwInternalCompilerError } from "../../error/errors";
 import * as A from "../../ast/ast";
+import { FactoryAst } from "../../ast/ast-helpers";
 import { ItemOrigin, SrcInfo } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
 import { ParserErrors, parserErrorSchema } from "./parser-error";
@@ -10,7 +11,7 @@ import { getSrcInfoFromOhm } from "./src-info";
 type Context = {
     origin: ItemOrigin | null;
     currentFile: string | null;
-    createNode: A.FactoryAst["createNode"] | null;
+    createNode: FactoryAst["createNode"] | null;
     errorTypes: ParserErrors | null;
 };
 
@@ -40,7 +41,7 @@ function createRef(s: Node): SrcInfo {
     return getSrcInfoFromOhm(s.source, context.currentFile, context.origin);
 }
 
-const createNode: A.FactoryAst["createNode"] = (...args) => {
+const createNode: FactoryAst["createNode"] = (...args) => {
     if (context.createNode === null) {
         throwInternalCompilerError("Parser context was not initialized");
     }
@@ -1492,7 +1493,7 @@ semantics.addOperation<A.AstNode>("astOfExpression", {
 /**
  * @deprecated
  */
-export const getParser = (ast: A.FactoryAst) => {
+export const getParser = (ast: FactoryAst) => {
     const errorTypes = parserErrorSchema(displayToString);
 
     function parse(src: string, path: string, origin: ItemOrigin): A.AstModule {

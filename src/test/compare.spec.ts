@@ -4,7 +4,7 @@ import { join } from "path";
 import { AstComparator } from "../ast/compare";
 import { CONTRACTS_DIR } from "./util";
 import * as assert from "assert";
-import { getAstFactory } from "../ast/ast";
+import { getAstFactory } from "../ast/ast-helpers";
 import { defaultParser } from "../grammar/grammar";
 
 describe("comparator", () => {

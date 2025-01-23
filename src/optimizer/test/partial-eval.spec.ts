@@ -8,6 +8,12 @@ import { evalBinaryOp, evalUnaryOp } from "../interpreter";
 import { getParser } from "../../grammar";
 import { defaultParser } from "../../grammar/grammar";
 import { throwInternalCompilerError } from "../../error/errors";
+import {
+    eqExpressions,
+    FactoryAst,
+    getAstFactory,
+    isLiteral,
+} from "../../ast/ast-helpers";
 
 const MAX: string =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";
@@ -310,7 +316,7 @@ const booleanExpressions = [
 
 function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
-        const ast = A.getAstFactory();
+        const ast = getAstFactory();
         const { parseExpression } = getParser(ast, defaultParser);
         const util = getAstUtil(ast);
         const { partiallyEvalExpression } = getOptimizer(util);
@@ -319,7 +325,7 @@ function testExpression(original: string, simplified: string) {
             new CompilerContext(),
         );
         const simplifiedValue = dummyEval(parseExpression(simplified), ast);
-        const areMatching = A.eqExpressions(originalValue, simplifiedValue);
+        const areMatching = eqExpressions(originalValue, simplifiedValue);
         expect(areMatching).toBe(true);
     });
 }
@@ -330,13 +336,13 @@ function testExpressionWithOptimizer(
     optimizer: ExpressionTransformer,
 ) {
     it(`should simplify ${original} to ${simplified}`, () => {
-        const ast = A.getAstFactory();
+        const ast = getAstFactory();
         const { parseExpression } = getParser(ast, defaultParser);
         const originalValue = optimizer.applyRules(
             dummyEval(parseExpression(original), ast),
         );
         const simplifiedValue = dummyEval(parseExpression(simplified), ast);
-        const areMatching = A.eqExpressions(originalValue, simplifiedValue);
+        const areMatching = eqExpressions(originalValue, simplifiedValue);
         expect(areMatching).toBe(true);
     });
 }
@@ -348,7 +354,7 @@ function testExpressionWithOptimizer(
 // constant expressions.
 function dummyEval(
     ast: A.AstExpression,
-    astFactory: A.FactoryAst,
+    astFactory: FactoryAst,
 ): A.AstExpression {
     const cloneNode = astFactory.cloneNode;
     const util = getAstUtil(astFactory);
@@ -390,7 +396,7 @@ function dummyEval(
             case "op_unary": {
                 const newNode = cloneNode(ast);
                 newNode.operand = recurse(ast.operand);
-                if (A.isLiteral(newNode.operand)) {
+                if (isLiteral(newNode.operand)) {
                     return evalUnaryOp(ast.op, newNode.operand, ast.loc, util);
                 }
                 return newNode;
@@ -399,7 +405,7 @@ function dummyEval(
                 const newNode = cloneNode(ast);
                 newNode.left = recurse(ast.left);
                 newNode.right = recurse(ast.right);
-                if (A.isLiteral(newNode.left) && A.isLiteral(newNode.right)) {
+                if (isLiteral(newNode.left) && isLiteral(newNode.right)) {
                     const valR = newNode.right;
                     return evalBinaryOp(
                         ast.op,
@@ -449,7 +455,7 @@ class ParameterizableDummyOptimizer implements ExpressionTransformer {
 
     public util: AstUtil;
 
-    constructor(rules: Rule[], Ast: A.FactoryAst) {
+    constructor(rules: Rule[], Ast: FactoryAst) {
         this.util = getAstUtil(Ast);
 
         this.rules = rules;
@@ -479,7 +485,7 @@ describe("partial-evaluator", () => {
         // uses the associative rule 3.
         const optimizer = new ParameterizableDummyOptimizer(
             [new AssociativeRule3()],
-            A.getAstFactory(),
+            getAstFactory(),
         );
 
         testExpressionWithOptimizer(test.original, test.simplified, optimizer);

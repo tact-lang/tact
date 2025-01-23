@@ -1,4 +1,5 @@
 import * as A from "../ast/ast";
+import { eqExpressions, isLiteral } from "../ast/ast-helpers";
 import { ExpressionTransformer, Rule } from "./types";
 import {
     checkIsBinaryOpNode,
@@ -19,7 +20,7 @@ export class AddZero extends Rule {
             const topLevelNode = ast as A.AstOpBinary;
             if (this.additiveOperators.includes(topLevelNode.op)) {
                 if (
-                    !A.isLiteral(topLevelNode.left) &&
+                    !isLiteral(topLevelNode.left) &&
                     checkIsNumber(topLevelNode.right, 0n)
                 ) {
                     // The tree has this form:
@@ -30,7 +31,7 @@ export class AddZero extends Rule {
                     return x;
                 } else if (
                     checkIsNumber(topLevelNode.left, 0n) &&
-                    !A.isLiteral(topLevelNode.right)
+                    !isLiteral(topLevelNode.right)
                 ) {
                     // The tree has this form:
                     // 0 op x
@@ -96,7 +97,7 @@ export class MultiplyOne extends Rule {
             const topLevelNode = ast as A.AstOpBinary;
             if (topLevelNode.op === "*") {
                 if (
-                    !A.isLiteral(topLevelNode.left) &&
+                    !isLiteral(topLevelNode.left) &&
                     checkIsNumber(topLevelNode.right, 1n)
                 ) {
                     // The tree has this form:
@@ -107,7 +108,7 @@ export class MultiplyOne extends Rule {
                     return x;
                 } else if (
                     checkIsNumber(topLevelNode.left, 1n) &&
-                    !A.isLiteral(topLevelNode.right)
+                    !isLiteral(topLevelNode.right)
                 ) {
                     // The tree has this form:
                     // 1 * x
@@ -144,7 +145,7 @@ export class SubtractSelf extends Rule {
                     const x = topLevelNode.left;
                     const y = topLevelNode.right;
 
-                    if (A.eqExpressions(x, y)) {
+                    if (eqExpressions(x, y)) {
                         return util.makeNumberLiteral(0n, ast.loc);
                     }
                 }
@@ -166,8 +167,8 @@ export class AddSelf extends Rule {
             const topLevelNode = ast as A.AstOpBinary;
             if (topLevelNode.op === "+") {
                 if (
-                    !A.isLiteral(topLevelNode.left) &&
-                    !A.isLiteral(topLevelNode.right)
+                    !isLiteral(topLevelNode.left) &&
+                    !isLiteral(topLevelNode.right)
                 ) {
                     // The tree has this form:
                     // x + y
@@ -176,7 +177,7 @@ export class AddSelf extends Rule {
                     const x = topLevelNode.left;
                     const y = topLevelNode.right;
 
-                    if (A.eqExpressions(x, y)) {
+                    if (eqExpressions(x, y)) {
                         const res = util.makeBinaryExpression(
                             "*",
                             x,
@@ -206,7 +207,7 @@ export class OrTrue extends Rule {
             if (topLevelNode.op === "||") {
                 if (
                     (checkIsName(topLevelNode.left) ||
-                        A.isLiteral(topLevelNode.left)) &&
+                        isLiteral(topLevelNode.left)) &&
                     checkIsBoolean(topLevelNode.right, true)
                 ) {
                     // The tree has this form:
@@ -238,7 +239,7 @@ export class AndFalse extends Rule {
             if (topLevelNode.op === "&&") {
                 if (
                     (checkIsName(topLevelNode.left) ||
-                        A.isLiteral(topLevelNode.left)) &&
+                        isLiteral(topLevelNode.left)) &&
                     checkIsBoolean(topLevelNode.right, false)
                 ) {
                     // The tree has this form:
@@ -339,7 +340,7 @@ export class OrSelf extends Rule {
                 const x = topLevelNode.left;
                 const y = topLevelNode.right;
 
-                if (A.eqExpressions(x, y)) {
+                if (eqExpressions(x, y)) {
                     return x;
                 }
             }
@@ -366,7 +367,7 @@ export class AndSelf extends Rule {
                 const x = topLevelNode.left;
                 const y = topLevelNode.right;
 
-                if (A.eqExpressions(x, y)) {
+                if (eqExpressions(x, y)) {
                     return x;
                 }
             }
@@ -398,8 +399,8 @@ export class ExcludedMiddle extends Rule {
                         const y = rightNode.operand;
 
                         if (
-                            (checkIsName(x) || A.isLiteral(x)) &&
-                            A.eqExpressions(x, y)
+                            (checkIsName(x) || isLiteral(x)) &&
+                            eqExpressions(x, y)
                         ) {
                             return util.makeBooleanLiteral(true, ast.loc);
                         }
@@ -416,8 +417,8 @@ export class ExcludedMiddle extends Rule {
                         const y = topLevelNode.right;
 
                         if (
-                            (checkIsName(x) || A.isLiteral(x)) &&
-                            A.eqExpressions(x, y)
+                            (checkIsName(x) || isLiteral(x)) &&
+                            eqExpressions(x, y)
                         ) {
                             return util.makeBooleanLiteral(true, ast.loc);
                         }
@@ -452,8 +453,8 @@ export class Contradiction extends Rule {
                         const y = rightNode.operand;
 
                         if (
-                            (checkIsName(x) || A.isLiteral(x)) &&
-                            A.eqExpressions(x, y)
+                            (checkIsName(x) || isLiteral(x)) &&
+                            eqExpressions(x, y)
                         ) {
                             return util.makeBooleanLiteral(false, ast.loc);
                         }
@@ -470,8 +471,8 @@ export class Contradiction extends Rule {
                         const y = topLevelNode.right;
 
                         if (
-                            (checkIsName(x) || A.isLiteral(x)) &&
-                            A.eqExpressions(x, y)
+                            (checkIsName(x) || isLiteral(x)) &&
+                            eqExpressions(x, y)
                         ) {
                             return util.makeBooleanLiteral(false, ast.loc);
                         }

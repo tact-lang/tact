@@ -60,6 +60,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow importing FunC files with `.func` extension: PR [#1451](https://github.com/tact-lang/tact/pull/1451)
 - Error on circular trait dependencies: PR [#1452](https://github.com/tact-lang/tact/pull/1452)
 - Bit shift FunC compilation errors for incorrect bit widths: PR [#1453](https://github.com/tact-lang/tact/pull/1453)
+- Process `else if` statements in the interpreter: PR [#1500](https://github.com/tact-lang/tact/pull/1500)
+- Incorrect arithmetic bit shift operations optimizations: PR [#1501](https://github.com/tact-lang/tact/pull/1501)
+- Throwing from functions with non-trivial branching in the `try` statement: PR [#1501](https://github.com/tact-lang/tact/pull/1501)
 
 ### Docs
 
@@ -89,6 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added signatures for map methods, such as `.get()`, `.exists()`, `.set()`, `.replace()`, `.replaceGet()`, `.del()`, `.isEmpty()`, `.deepEquals()`, `.asCell()`: PR [#1352](https://github.com/tact-lang/tact/pull/1352)
 - Added a compilation-related page with the description of the compilation report: PR [#1309](https://github.com/tact-lang/tact/pull/1309), PR [#1387](https://github.com/tact-lang/tact/pull/1387)
 - Documented `BaseTrait` and methods in stdlib code: PR [#1296](https://github.com/tact-lang/tact/pull/1296)
+- Document how storage variables get updated in relation to the `init()` function: PR [#1311](https://github.com/tact-lang/tact/pull/1311)
 
 ### Release contributors
 

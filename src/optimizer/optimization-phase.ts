@@ -50,6 +50,12 @@ import {
     AstTrait,
     AstTraitDeclaration,
     AstTypeDecl,
+} from "../ast/ast";
+import { CompilerContext } from "../context/context";
+import { throwInternalCompilerError } from "../error/errors";
+import { prettyPrint } from "../ast/ast-printer";
+import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
+import {
     ensureConstantDef,
     ensureContractInit,
     ensureFieldDecl,
@@ -57,11 +63,7 @@ import {
     ensureReceiver,
     FactoryAst,
     isAstExpression,
-} from "../ast/ast";
-import { CompilerContext } from "../context/context";
-import { throwInternalCompilerError } from "../error/errors";
-import { prettyPrint } from "../ast/ast-printer";
-import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
+} from "../ast/ast-helpers";
 
 /* These are the node types that the optimization phase is allowed to modify */
 type AstMutableNode =

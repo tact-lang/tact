@@ -1,6 +1,18 @@
 import { ABITypeRef } from "@ton/core";
 import * as A from "../ast/ast";
 import {
+    eqNames,
+    idText,
+    isAddress,
+    isBool,
+    isBuilder,
+    isCell,
+    isInt,
+    isSlice,
+    isString,
+    isStringBuilder,
+} from "../ast/ast-helpers";
+import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
@@ -83,9 +95,9 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
                         src.type.typeArg.loc,
                     );
 
-        if (A.isInt(typeId)) {
+        if (isInt(typeId)) {
             if (src.as) {
-                const fmt = intFormats[A.idText(src.as)];
+                const fmt = intFormats[idText(src.as)];
                 if (!fmt) {
                     throwCompilationError(
                         `Unsupported format ${idTextErr(src.as)}`,
@@ -106,7 +118,7 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
                 format: 257,
             }; // Default is maximum size int
         }
-        if (A.isBool(typeId)) {
+        if (isBool(typeId)) {
             if (src.as) {
                 throwCompilationError(
                     `Unsupported format ${idTextErr(src.as)}`,
@@ -119,9 +131,9 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
                 optional: src.type.kind === "optional_type",
             };
         }
-        if (A.isCell(typeId)) {
+        if (isCell(typeId)) {
             if (src.as) {
-                const fmt = cellFormats[A.idText(src.as)];
+                const fmt = cellFormats[idText(src.as)];
                 if (!fmt) {
                     throwCompilationError(
                         `Unsupported format ${idTextErr(src.as)}`,
@@ -141,9 +153,9 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
                 optional: src.type.kind === "optional_type",
             };
         }
-        if (A.isSlice(typeId)) {
+        if (isSlice(typeId)) {
             if (src.as) {
-                const fmt = sliceFormats[A.idText(src.as)];
+                const fmt = sliceFormats[idText(src.as)];
                 if (!fmt) {
                     throwCompilationError(
                         `Unsupported format ${idTextErr(src.as)}`,
@@ -163,9 +175,9 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
                 optional: src.type.kind === "optional_type",
             };
         }
-        if (A.isBuilder(typeId)) {
+        if (isBuilder(typeId)) {
             if (src.as) {
-                const fmt = builderFormats[A.idText(src.as)];
+                const fmt = builderFormats[idText(src.as)];
                 if (!fmt) {
                     throwCompilationError(
                         `Unsupported format ${idTextErr(src.as)}`,
@@ -185,7 +197,7 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
                 optional: src.type.kind === "optional_type",
             };
         }
-        if (A.isAddress(typeId)) {
+        if (isAddress(typeId)) {
             if (src.as) {
                 throwCompilationError(
                     `Unsupported format ${idTextErr(src.as)}`,
@@ -198,7 +210,7 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
                 optional: src.type.kind === "optional_type",
             };
         }
-        if (A.isString(typeId)) {
+        if (isString(typeId)) {
             if (src.as) {
                 throwCompilationError(
                     `Unsupported format ${idTextErr(src.as)}`,
@@ -211,7 +223,7 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
                 optional: src.type.kind === "optional_type",
             };
         }
-        if (A.isStringBuilder(typeId)) {
+        if (isStringBuilder(typeId)) {
             throwCompilationError(`Unsupported type StringBuilder`, src.loc);
         }
 
@@ -220,10 +232,10 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
         //
 
         if (src.as) {
-            if (A.eqNames(src.as, "reference")) {
+            if (eqNames(src.as, "reference")) {
                 return {
                     kind: "simple",
-                    type: A.idText(typeId),
+                    type: idText(typeId),
                     optional: src.type.kind === "optional_type",
                     format: "ref",
                 };
@@ -236,7 +248,7 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
         }
         return {
             kind: "simple",
-            type: A.idText(typeId),
+            type: idText(typeId),
             optional: src.type.kind === "optional_type",
         };
     }
@@ -252,11 +264,11 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
         let valueFormat: string | number | undefined = undefined;
 
         // Resolve key type
-        if (A.isInt(src.type.keyType)) {
+        if (isInt(src.type.keyType)) {
             key = "int";
             if (src.type.keyStorageType) {
                 const format =
-                    intMapKeyFormats[A.idText(src.type.keyStorageType)];
+                    intMapKeyFormats[idText(src.type.keyStorageType)];
                 if (!format) {
                     throwCompilationError(
                         `Unsupported format ${idTextErr(src.type.keyStorageType)} for map key`,
@@ -266,7 +278,7 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
                 key = format.type;
                 keyFormat = format.format;
             }
-        } else if (A.isAddress(src.type.keyType)) {
+        } else if (isAddress(src.type.keyType)) {
             key = "address";
             if (src.type.keyStorageType) {
                 throwCompilationError(
@@ -282,21 +294,21 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
         }
 
         // Resolve value type
-        if (A.isInt(src.type.valueType)) {
+        if (isInt(src.type.valueType)) {
             value = "int";
             if (src.type.valueStorageType) {
                 const format =
-                    intMapValFormats[A.idText(src.type.valueStorageType)];
+                    intMapValFormats[idText(src.type.valueStorageType)];
                 if (!format) {
                     throwCompilationError(
-                        `Unsupported format ${A.idText(src.type.valueStorageType)} for map value`,
+                        `Unsupported format ${idText(src.type.valueStorageType)} for map value`,
                         src.loc,
                     );
                 }
                 value = format.type;
                 valueFormat = format.format;
             }
-        } else if (A.isBool(src.type.valueType)) {
+        } else if (isBool(src.type.valueType)) {
             value = "bool";
             if (src.type.valueStorageType) {
                 throwCompilationError(
@@ -304,24 +316,24 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
                     src.loc,
                 );
             }
-        } else if (A.isCell(src.type.valueType)) {
+        } else if (isCell(src.type.valueType)) {
             value = "cell";
             valueFormat = "ref";
             if (
                 src.type.valueStorageType &&
-                A.eqNames(src.type.valueStorageType, "reference")
+                eqNames(src.type.valueStorageType, "reference")
             ) {
                 throwCompilationError(
                     `Unsupported format ${idTextErr(src.type.valueStorageType)} for map value`,
                     src.loc,
                 );
             }
-        } else if (A.isSlice(src.type.valueType)) {
+        } else if (isSlice(src.type.valueType)) {
             throwCompilationError(
                 `Unsupported map value type ${idTextErr(src.type.valueType)}`,
                 src.loc,
             );
-        } else if (A.isAddress(src.type.valueType)) {
+        } else if (isAddress(src.type.valueType)) {
             value = "address";
             if (src.type.valueStorageType) {
                 throwCompilationError(
@@ -329,25 +341,25 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
                     src.loc,
                 );
             }
-        } else if (A.isString(src.type.valueType)) {
+        } else if (isString(src.type.valueType)) {
             throwCompilationError(
                 `Unsupported map value type ${idTextErr(src.type.valueType)}`,
                 src.loc,
             );
         } else if (
-            A.isStringBuilder(src.type.valueType) ||
-            A.isBuilder(src.type.valueType)
+            isStringBuilder(src.type.valueType) ||
+            isBuilder(src.type.valueType)
         ) {
             throwCompilationError(
                 `Unsupported map value type ${idTextErr(src.type.valueType)}`,
                 src.loc,
             );
         } else {
-            value = A.idText(src.type.valueType);
+            value = idText(src.type.valueType);
             valueFormat = "ref";
             if (
                 src.type.valueStorageType &&
-                A.eqNames(src.type.valueStorageType, "reference")
+                eqNames(src.type.valueStorageType, "reference")
             ) {
                 throwCompilationError(
                     `Unsupported format ${idTextErr(src.type.valueStorageType)} for map value`,

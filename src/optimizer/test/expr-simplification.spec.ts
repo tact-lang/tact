@@ -1,5 +1,5 @@
-import path from "node:path";
-import { getAstFactory } from "../../ast/ast";
+import path from "path";
+import { getAstFactory } from "../../ast/ast-helpers";
 import { featureEnable } from "../../config/features";
 import { CompilerContext } from "../../context/context";
 import { openContext } from "../../context/store";
