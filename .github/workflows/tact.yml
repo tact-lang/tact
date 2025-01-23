@@ -45,6 +45,34 @@ jobs:
           yarn cleanall
           yarn config delete ignore-engines
 
+      - name: Setup Node.js 23 for forward compat tests
+        uses: actions/setup-node@v4
+        with:
+          node-version: 23
+          # without caching
+
+      - name: Forward compat tests
+        run: |
+          # Install dependencies, gen and build the compiler
+          yarn install
+          yarn clean
+          yarn gen
+          yarn build
+
+          # Linking and tact-template checks
+          yarn link
+          git clone https://github.com/tact-lang/tact-template.git tact-template-23
+          cd tact-template
+          yarn install
+          yarn link @tact-lang/compiler
+          yarn build
+          yarn test
+          cd ..
+          yarn unlink
+
+          # Clean-up
+          yarn cleanall
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
