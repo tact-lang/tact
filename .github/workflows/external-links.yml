@@ -12,25 +12,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: (docs) Check broken HTTPS links
+      - name: (docs) Check broken HTTP(S) links
         uses: lycheeverse/lychee-action@v2
         id: lychee
         with:
           args: >
-            -n -s https --exclude-path docs/node_modules
-            --base 'https://docs.tact-lang.org'
+            -n -s https -s http --base 'https://docs.tact-lang.org'
+            --exclude-path docs/node_modules
             --exclude '.*?\\.(?:jpg|png)'
             docs/README.md './docs/**/*.mdx'
           output: "/dev/stdout"
           fail: false
           failIfEmpty: false
 
-      - name: (dev-docs) Check broken HTTPS links
+      - name: (dev-docs) Check broken HTTP(S) links
         uses: lycheeverse/lychee-action@v2
         id: lychee_dev
         with:
           args: >
-            -n -s https --exclude-path node_modules --exclude-path docs
+            -n -s https -s http
+            --exclude-path node_modules --exclude-path docs
             './**/*.md'
           output: "/dev/stdout"
           fail: false

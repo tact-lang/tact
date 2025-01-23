@@ -43,6 +43,12 @@ struct SerializedMapInside {
 }
 ```
 
+Since map keys can only be of fixed-width, [variable integer types](/book/integers#serialization-varint) are not allowed for them. Instead, use [fixed-width serialization formats](/book/integers#serialization-fixed).
+
+However, map values of type [`Int{:tact}`][int] can have either [fixed](/book/integers#serialization-fixed) or [variable](/book/integers#serialization-varint) bit-length serialization formats specified.
+
+No other [allowed key or value types](#allowed-types) besides [`Int{:tact}`][int] have serialization formats available.
+
 :::note
 
   Read more about serialization in Tact: [Compatibility with FunC](/book/func#convert-serialization).
