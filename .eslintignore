@@ -13,3 +13,4 @@ jest.globalSetup.js
 jest.teardown.js
 /docs
 version.build.ts
+bin/*

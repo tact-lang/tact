@@ -1,29 +1,11 @@
-import {
-    AstConstantDef,
-    AstModuleItem,
-    AstStatement,
-    AstModule,
-    AstTraitDeclaration,
-    AstContractDeclaration,
-    AstExpression,
-    AstStructFieldInitializer,
-    AstCondition,
-    AstFunctionDef,
-    AstContract,
-    AstTrait,
-    AstId,
-    AstFunctionDecl,
-    AstConstantDecl,
-    AstNode,
-    AstFunctionAttribute,
-} from "./ast";
+import * as A from "./ast";
 import { AstSorter } from "./sort";
 import { AstHasher, AstHash } from "./hash";
 import { dummySrcInfo } from "../grammar/src-info";
 
 type GivenName = string;
 
-function id(text: string): AstId {
+function id(text: string): A.AstId {
     return { kind: "id", text, id: 0, loc: dummySrcInfo };
 }
 
@@ -46,7 +28,7 @@ export class AstRenamer {
     /**
      * Renames the given node based on its AST.
      */
-    public renameModule(module: AstModule): AstNode {
+    public renameModule(module: A.AstModule): A.AstNode {
         return {
             ...module,
             items: this.renameModuleItems(module.items),
@@ -62,14 +44,14 @@ export class AstRenamer {
     /**
      * Generates a new unique node name.
      */
-    private generateName(node: AstNode): GivenName {
+    private generateName(node: A.AstNode): GivenName {
         return `${node.kind}_${this.nextIdx()}`;
     }
 
     /**
      * Tries to get an identifier based on the node definition.
      */
-    private getName(node: AstNode): string | undefined {
+    private getName(node: A.AstNode): string | undefined {
         switch (node.kind) {
             case "id":
             case "func_id":
@@ -93,7 +75,7 @@ export class AstRenamer {
     /**
      * Sets new or an existent name based on node's hash.
      */
-    private setName(node: AstNode, forceName?: string): GivenName {
+    private setName(node: A.AstNode, forceName?: string): GivenName {
         const hash = AstHasher.make({ sort: this.sort }).hash(node);
         const giveNewName = (newName: string) => {
             const name = this.getName(node);
@@ -112,26 +94,22 @@ export class AstRenamer {
         return name;
     }
 
-    public renameModuleItems(items: AstModuleItem[]): AstModuleItem[] {
+    public renameModuleItems(items: A.AstModuleItem[]): A.AstModuleItem[] {
         // Give new names to module-level elements.
-        let renamedItems = items.map((item) => this.changeItemName(item));
-
-        if (this.sort) {
-            renamedItems.map((item) => this.sortAttributes(item));
-        }
-
-        // Apply renaming to the contents of these elements.
-        renamedItems = renamedItems.map((item) =>
-            this.renameModuleItemContents(item),
+        const renamedItems = items.map((item) =>
+            this.renameModuleItemContents(
+                this.sort
+                    ? this.sortAttributes(this.changeItemName(item))
+                    : this.changeItemName(item),
+            ),
         );
-
         return this.sort ? this.sortModuleItems(renamedItems) : renamedItems;
     }
 
     /**
      * Lexicographically sort items based on their kinds and then by their names.
      */
-    private sortModuleItems(items: AstModuleItem[]): AstModuleItem[] {
+    private sortModuleItems(items: A.AstModuleItem[]): A.AstModuleItem[] {
         const kindOrder = {
             primitive_type_decl: 1,
             native_function_decl: 2,
@@ -156,7 +134,7 @@ export class AstRenamer {
      * Changes the name of a top-level/contract/trait element without inspecting its body.
      */
     private changeItemName<
-        T extends AstModuleItem | AstConstantDecl | AstFunctionDecl,
+        T extends A.AstModuleItem | A.AstConstantDecl | A.AstFunctionDecl,
     >(item: T): T {
         switch (item.kind) {
             case "primitive_type_decl":
@@ -177,7 +155,7 @@ export class AstRenamer {
                     ) {
                         return this.changeItemName(
                             decl,
-                        ) as AstContractDeclaration;
+                        ) as A.AstContractDeclaration;
                     } else {
                         return decl;
                     }
@@ -193,7 +171,9 @@ export class AstRenamer {
                         decl.kind === "function_decl" ||
                         decl.kind === "constant_decl"
                     ) {
-                        return this.changeItemName(decl) as AstTraitDeclaration;
+                        return this.changeItemName(
+                            decl,
+                        ) as A.AstTraitDeclaration;
                     } else {
                         return decl;
                     }
@@ -210,7 +190,7 @@ export class AstRenamer {
     /**
      * Renames the contents of an AstModuleItem based on its kind.
      */
-    private renameModuleItemContents(item: AstModuleItem): AstModuleItem {
+    private renameModuleItemContents(item: A.AstModuleItem): A.AstModuleItem {
         switch (item.kind) {
             case "struct_decl":
                 return item;
@@ -223,13 +203,13 @@ export class AstRenamer {
                 }
                 return item;
             case "function_def":
-                return this.renameFunctionContents(item as AstFunctionDef);
+                return this.renameFunctionContents(item as A.AstFunctionDef);
             case "constant_def":
-                return this.renameConstantContents(item as AstConstantDef);
+                return this.renameConstantContents(item as A.AstConstantDef);
             case "trait":
-                return this.renameTraitContents(item as AstTrait);
+                return this.renameTraitContents(item as A.AstTrait);
             case "contract":
-                return this.renameContractContents(item as AstContract);
+                return this.renameContractContents(item as A.AstContract);
             default:
                 return item; // No further renaming needed for other kinds
         }
@@ -239,7 +219,10 @@ export class AstRenamer {
      * Sorts attributes within an item if available.
      */
     private sortAttributes<
-        T extends AstModuleItem | AstContractDeclaration | AstTraitDeclaration,
+        T extends
+            | A.AstModuleItem
+            | A.AstContractDeclaration
+            | A.AstTraitDeclaration,
     >(item: T): T {
         switch (item.kind) {
             case "trait":
@@ -272,8 +255,8 @@ export class AstRenamer {
      * Renames the contents of a function.
      */
     private renameFunctionContents(
-        functionDef: AstFunctionDef,
-    ): AstFunctionDef {
+        functionDef: A.AstFunctionDef,
+    ): A.AstFunctionDef {
         const attributes = this.renameFunctionAttributes(
             functionDef.attributes,
         );
@@ -285,8 +268,8 @@ export class AstRenamer {
      * Renames getter's methodId expression.
      */
     private renameFunctionAttributes(
-        functionAttrs: AstFunctionAttribute[],
-    ): AstFunctionAttribute[] {
+        functionAttrs: A.AstFunctionAttribute[],
+    ): A.AstFunctionAttribute[] {
         return functionAttrs.map((attr) => {
             if (attr.type === "get" && attr.methodId !== null) {
                 return {
@@ -303,8 +286,8 @@ export class AstRenamer {
      * Renames the contents of a constant, focusing on the initializer.
      */
     private renameConstantContents(
-        constantDef: AstConstantDef,
-    ): AstConstantDef {
+        constantDef: A.AstConstantDef,
+    ): A.AstConstantDef {
         const initializer = this.renameExpression(constantDef.initializer);
         return { ...constantDef, initializer };
     }
@@ -312,12 +295,12 @@ export class AstRenamer {
     /**
      * Renames the contents of a trait, including its declarations.
      */
-    private renameTraitContents(trait: AstTrait): AstTrait {
+    private renameTraitContents(trait: A.AstTrait): A.AstTrait {
         const declarations = trait.declarations.map((decl) => {
             if (decl.kind === "function_def") {
-                return this.renameFunctionContents(decl as AstFunctionDef);
+                return this.renameFunctionContents(decl as A.AstFunctionDef);
             } else if (decl.kind === "constant_def") {
-                return this.renameConstantContents(decl as AstConstantDef);
+                return this.renameConstantContents(decl as A.AstConstantDef);
             } else {
                 return decl;
             }
@@ -328,12 +311,12 @@ export class AstRenamer {
     /**
      * Renames the contents of a contract, including its declarations and parameters.
      */
-    private renameContractContents(contract: AstContract): AstContract {
+    private renameContractContents(contract: A.AstContract): A.AstContract {
         const declarations = contract.declarations.map((decl) => {
             if (decl.kind === "function_def") {
-                return this.renameFunctionContents(decl as AstFunctionDef);
+                return this.renameFunctionContents(decl as A.AstFunctionDef);
             } else if (decl.kind === "constant_def") {
-                return this.renameConstantContents(decl as AstConstantDef);
+                return this.renameConstantContents(decl as A.AstConstantDef);
             } else {
                 return decl;
             }
@@ -341,13 +324,13 @@ export class AstRenamer {
         return { ...contract, declarations };
     }
 
-    private renameStatements(statements: AstStatement[]): AstStatement[] {
+    private renameStatements(statements: A.AstStatement[]): A.AstStatement[] {
         return statements.map((stmt) => {
             return this.renameStatement(stmt);
         });
     }
 
-    private renameStatement(stmt: AstStatement): AstStatement {
+    private renameStatement(stmt: A.AstStatement): A.AstStatement {
         switch (stmt.kind) {
             case "statement_let":
                 return {
@@ -387,7 +370,9 @@ export class AstRenamer {
                         ? this.renameStatements(stmt.falseStatements)
                         : null,
                     elseif: stmt.elseif
-                        ? (this.renameStatement(stmt.elseif) as AstCondition)
+                        ? (this.renameStatement(
+                              stmt.elseif,
+                          ) as A.AstStatementCondition)
                         : null,
                 };
             case "statement_while":
@@ -407,14 +392,14 @@ export class AstRenamer {
                 return {
                     ...stmt,
                     statements: this.renameStatements(stmt.statements),
-                };
-            case "statement_try_catch":
-                return {
-                    ...stmt,
-                    statements: this.renameStatements(stmt.statements),
-                    catchStatements: this.renameStatements(
-                        stmt.catchStatements,
-                    ),
+                    catchBlock: stmt.catchBlock
+                        ? {
+                              catchName: stmt.catchBlock.catchName,
+                              catchStatements: this.renameStatements(
+                                  stmt.catchBlock.catchStatements,
+                              ),
+                          }
+                        : undefined,
                 };
             case "statement_foreach":
                 return {
@@ -432,7 +417,7 @@ export class AstRenamer {
         }
     }
 
-    private renameExpression(expr: AstExpression): AstExpression {
+    private renameExpression(expr: A.AstExpression): A.AstExpression {
         switch (expr.kind) {
             case "id":
                 return {
@@ -491,8 +476,8 @@ export class AstRenamer {
     }
 
     private renameStructFieldInitializer(
-        initializer: AstStructFieldInitializer,
-    ): AstStructFieldInitializer {
+        initializer: A.AstStructFieldInitializer,
+    ): A.AstStructFieldInitializer {
         return {
             ...initializer,
             initializer: this.renameExpression(initializer.initializer),

@@ -14,7 +14,7 @@ import { writeStdlib } from "./writeStdlib";
 import { openContext } from "../../context/store";
 import { writeAccessors } from "./writeAccessors";
 import { getParser } from "../../grammar";
-import { getAstFactory } from "../../ast/ast";
+import { getAstFactory } from "../../ast/ast-helpers";
 import { defaultParser } from "../../grammar/grammar";
 
 const code = `

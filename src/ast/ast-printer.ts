@@ -1,12 +1,13 @@
-import * as A from "./ast/ast";
-import { groupBy, intercalate, isUndefined } from "./utils/array";
-import { makeVisitor } from "./utils/tricks";
+import * as A from "./ast";
+import { groupBy, intercalate, isUndefined } from "../utils/array";
+import { makeVisitor } from "../utils/tricks";
+import { astNumToString, idText } from "./ast-helpers";
 
 //
 // Types
 //
 
-export const ppAstTypeId = A.idText;
+export const ppAstTypeId = idText;
 
 export const ppAstTypeIdWithStorage = (
     type: A.AstTypeId,
@@ -181,7 +182,7 @@ export const ppAstStructValue = ({ type, args }: A.AstStructValue) =>
 export const ppAstInitOf = ({ contract, args }: A.AstInitOf) =>
     `initOf ${ppAstId(contract)}(${ppExprArgs(args)})`;
 
-export const ppAstNumber = A.astNumToString;
+export const ppAstNumber = astNumToString;
 export const ppAstBoolean = ({ value }: A.AstBoolean) => value.toString();
 export const ppAstId = ({ text }: A.AstId) => text;
 export const ppAstNull = (_expr: A.AstNull) => "null";
@@ -736,7 +737,7 @@ export const ppAstStatementAugmentedAssign: Printer<
             `${ppAstExpression(path)} ${op}= ${ppAstExpression(expression)};`,
         );
 
-export const ppAstCondition: Printer<A.AstCondition> =
+export const ppAstStatementCondition: Printer<A.AstStatementCondition> =
     ({ condition, trueStatements, falseStatements }) =>
     (c) => {
         if (falseStatements) {
@@ -790,19 +791,22 @@ export const ppAstStatementForEach: Printer<A.AstStatementForEach> =
         ]);
 
 export const ppAstStatementTry: Printer<A.AstStatementTry> =
-    ({ statements }) =>
-    (c) =>
-        c.concat([c.row(`try `), ppStatementBlock(statements)(c)]);
+    ({ statements, catchBlock }) =>
+    (c) => {
+        const catchBlocks =
+            catchBlock !== undefined
+                ? [
+                      c.row(` catch (${ppAstId(catchBlock.catchName)}) `),
+                      ppStatementBlock(catchBlock.catchStatements)(c),
+                  ]
+                : [];
 
-export const ppAstStatementTryCatch: Printer<A.AstStatementTryCatch> =
-    ({ statements, catchName, catchStatements }) =>
-    (c) =>
-        c.concat([
+        return c.concat([
             c.row(`try `),
             ppStatementBlock(statements)(c),
-            c.row(` catch (${ppAstId(catchName)}) `),
-            ppStatementBlock(catchStatements)(c),
+            ...catchBlocks,
         ]);
+    };
 
 export const ppAstStatementDestruct: Printer<A.AstStatementDestruct> =
     ({ type, identifiers, ignoreUnspecifiedFields, expression }) =>
@@ -839,13 +843,12 @@ export const ppAstStatement: Printer<A.AstStatement> =
         statement_expression: ppAstStatementExpression,
         statement_assign: ppAstStatementAssign,
         statement_augmentedassign: ppAstStatementAugmentedAssign,
-        statement_condition: ppAstCondition,
+        statement_condition: ppAstStatementCondition,
         statement_while: ppAstStatementWhile,
         statement_until: ppAstStatementUntil,
         statement_repeat: ppAstStatementRepeat,
         statement_foreach: ppAstStatementForEach,
         statement_try: ppAstStatementTry,
-        statement_try_catch: ppAstStatementTryCatch,
         statement_destruct: ppAstStatementDestruct,
         statement_block: ppAstStatementBlock,
     });
@@ -908,12 +911,11 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     statement_expression: ppAstStatementExpression,
     statement_assign: ppAstStatementAssign,
     statement_augmentedassign: ppAstStatementAugmentedAssign,
-    statement_condition: ppAstCondition,
+    statement_condition: ppAstStatementCondition,
     statement_while: ppAstStatementWhile,
     statement_until: ppAstStatementUntil,
     statement_repeat: ppAstStatementRepeat,
     statement_try: ppAstStatementTry,
-    statement_try_catch: ppAstStatementTryCatch,
     statement_foreach: ppAstStatementForEach,
     statement_block: ppAstStatementBlock,
     import: ppAstImport,

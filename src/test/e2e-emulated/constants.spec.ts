@@ -114,6 +114,7 @@ describe("constants", () => {
         expect((await contract.getSomething44()).toRawString()).toEqual(
             "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
         );
+        expect(await contract.getSomething45()).toEqual(42n);
 
         expect(await contract.getGlobalConst1()).toEqual(1n);
         expect(await contract.getGlobalConst2()).toEqual(2n);

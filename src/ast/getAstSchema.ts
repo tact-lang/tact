@@ -5,10 +5,11 @@
 
 import { Loc } from "@tonstudio/parser-runtime";
 import * as A from "./ast";
+import { FactoryAst } from "../ast/ast-helpers";
 import { SrcInfo } from "../grammar/src-info";
 
 export const getAstSchema = (
-    factory: A.FactoryAst,
+    factory: FactoryAst,
     toSrcInfo: (location: Loc) => SrcInfo,
 ) => {
     const createNode = <T>(src: Omit<T, "id">): T => {
@@ -295,10 +296,10 @@ export const getAstSchema = (
             condition: A.AstExpression,
             trueStatements: A.AstStatement[],
             falseStatements: A.AstStatement[] | null,
-            elseif: A.AstCondition | null,
+            elseif: A.AstStatementCondition | null,
             loc: Loc,
-        ): A.AstCondition =>
-            createNode<A.AstCondition>({
+        ): A.AstStatementCondition =>
+            createNode<A.AstStatementCondition>({
                 kind: "statement_condition",
                 condition,
                 trueStatements,
@@ -342,23 +343,15 @@ export const getAstSchema = (
         StatementTry: (
             statements: A.AstStatement[],
             loc: Loc,
+            catchBlock?: {
+                catchName: A.AstId;
+                catchStatements: A.AstStatement[];
+            },
         ): A.AstStatementTry =>
             createNode<A.AstStatementTry>({
                 kind: "statement_try",
                 statements,
-                loc: toSrcInfo(loc),
-            }),
-        StatementTryCatch: (
-            statements: A.AstStatement[],
-            catchName: A.AstId,
-            catchStatements: A.AstStatement[],
-            loc: Loc,
-        ): A.AstStatementTryCatch =>
-            createNode<A.AstStatementTryCatch>({
-                kind: "statement_try_catch",
-                statements,
-                catchName,
-                catchStatements,
+                catchBlock: catchBlock,
                 loc: toSrcInfo(loc),
             }),
         StatementForEach: (

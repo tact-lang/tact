@@ -187,6 +187,11 @@ fun fibonacci_iterative(a: Int): Int {
     return current;
 }
 
+fun elseif(op: Int): Int {
+    if (op == 1) { return 41 }
+    else if (op == 2) { return 42 }
+    else { return 44 }
+}
 
 contract ConstantTester {
     const something1: Int = 10 + 1;
@@ -256,6 +261,8 @@ contract ConstantTester {
     const something43: Address = newAddress(0, 0x123456789abcdef);
     const something44: Address = newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873);
 
+    const something45: Int = elseif(2);
+
     init() { }
 
     receive() { }
@@ -304,6 +311,7 @@ contract ConstantTester {
     get fun something42(): Address { return self.something42; }
     get fun something43(): Address { return self.something43; }
     get fun something44(): Address { return self.something44; }
+    get fun something45(): Int { return self.something45; }
 
     get fun globalConst1(): Int { return globalConst1; }
     get fun globalConst2(): Int { return globalConst2; }

@@ -4,12 +4,16 @@
   "language": "en",
   "dictionaryDefinitions": [
     {
+      "name": "main-list",
+      "path": "./spell/cspell-list.txt"
+    },
+    {
       "name": "fift-words",
-      "path": "./cspell-fift-words-adjusted.txt"
+      "path": "./spell/cspell-fift-words-adjusted.txt"
     },
     {
       "name": "tvm-instructions",
-      "path": "./cspell-tvm-instructions.txt"
+      "path": "./spell/cspell-tvm-instructions.txt"
     }
   ],
   "dictionaries": ["fift-words", "tvm-instructions"],
@@ -141,6 +145,7 @@
     "привет",
     "letrec"
   ],
+  "dictionaries": ["main-list", "fift-words", "tvm-instructions"],
   "ignoreRegExpList": [
     "\\b[xB]\\{[a-fA-F0-9]*_?\\}", // binary literals in Fift-asm
     "\\b0[xX][a-fA-F0-9_]*\\b", // hexadecimal numbers

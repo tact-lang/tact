@@ -9,7 +9,7 @@ import { loadCases } from "../utils/loadCases";
 import { openContext } from "../context/store";
 import { featureEnable } from "../config/features";
 import { getParser, SrcInfo } from "../grammar";
-import { getAstFactory } from "../ast/ast";
+import { getAstFactory } from "../ast/ast-helpers";
 import { isSrcInfo } from "../grammar/src-info";
 import { defaultParser } from "../grammar/grammar";
 

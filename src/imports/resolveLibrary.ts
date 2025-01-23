@@ -53,11 +53,14 @@ export function resolveLibrary(args: ResolveLibraryArgs): ResolveLibraryResult {
     const workingDirectory = args.path.slice(vfs.root.length);
 
     // Resolving relative file
-    let importName = args.name;
-    const kind: "tact" | "func" = importName.endsWith(".fc") ? "func" : "tact";
-    if (!importName.endsWith(".tact") && !importName.endsWith(".fc")) {
-        importName = importName + ".tact";
-    }
+    const kind =
+        args.name.endsWith(".fc") || args.name.endsWith(".func")
+            ? "func"
+            : "tact";
+    const importName =
+        kind === "func" || args.name.endsWith(".tact")
+            ? args.name
+            : `${args.name}.tact`;
 
     // Resolve import
     const parsedImport = parseImportPath(importName);

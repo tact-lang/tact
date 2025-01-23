@@ -28,16 +28,13 @@
     "test": "jest",
     "test:fast": "jest --config=./jest-fast.config.js",
     "coverage": "cross-env COVERAGE=true jest",
-    "release": "yarn clean && yarn build && yarn coverage && yarn release-it --npm.yarn1",
     "type": "tsc --noEmit",
     "lint": "yarn eslint .",
-    "lint:one-schema": "ajv validate -s src/config/configSchema.json -d",
-    "lint:schema": "yarn lint:one-schema src/test/tact.config.json && yarn lint:one-schema examples/tact.config.json",
     "fmt": "yarn prettier -l -w .",
     "fmt:check": "yarn prettier --check .",
     "spell": "yarn cspell --no-progress \"**\"",
     "knip": "knip",
-    "lint:all": "yarn lint && yarn fmt:check && yarn lint:schema && yarn spell && yarn knip",
+    "lint:all": "yarn lint && yarn fmt:check && yarn spell && yarn knip",
     "all": "yarn clean && yarn gen && yarn build && yarn coverage && yarn lint:all",
     "postinstall": "node .husky/install.mjs || true",
     "prepack": "pinst --disable",
@@ -49,6 +46,7 @@
     "bin/**/*",
     "!src/**/*",
     "!**/test",
+    "!dist/**/output",
     "!/docs",
     "!**/*.build.ts",
     "!**/*.spec.js",
@@ -71,8 +69,6 @@
     "crc-32": "1.2.2",
     "ipfs-unixfs-importer": "9.0.10",
     "json-bigint": "^1.0.0",
-    "meow": "^13.2.0",
-    "mkdirp": "^2.1.3",
     "ohm-js": "^17.1.0",
     "path-normalize": "^6.0.13",
     "prando": "^6.0.1",
@@ -80,14 +76,13 @@
   },
   "devDependencies": {
     "@ohm-js/cli": "^2.0.0",
-    "@release-it/keep-a-changelog": "^6.0.0",
     "@swc/core": "^1.10.7",
     "@swc/jest": "^0.2.37",
     "@tact-lang/coverage": "^0.0.8",
     "@tact-lang/ton-abi": "^0.0.3",
     "@tact-lang/ton-jest": "^0.0.4",
-    "@ton/sandbox": "^0.23.0",
-    "@ton/test-utils": "^0.4.2",
+    "@ton/sandbox": "^0.24.0",
+    "@ton/test-utils": "^0.5.0",
     "@tonstudio/pgen": "^0.0.1",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.12",
@@ -95,7 +90,6 @@
     "@types/node": "^22.5.0",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
-    "ajv-cli": "^5.0.0",
     "cross-env": "^7.0.3",
     "cspell": "^8.8.3",
     "eslint": "^8.56.0",
@@ -106,8 +100,6 @@
     "knip": "^5.24.1",
     "pinst": "^3.0.0",
     "prettier": "^3.2.5",
-    "release-it": "^18.1.1",
-    "rimraf": "^4.1.2",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "~5.6.2"
@@ -115,16 +107,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "release-it": {
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/keep-a-changelog": {
-        "filename": "CHANGELOG.md"
-      }
-    }
   },
   "packageManager": "yarn@1.22.22",
   "engines": {
