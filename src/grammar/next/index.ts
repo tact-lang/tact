@@ -950,7 +950,7 @@ const parseConstantDefInModule =
                 $: "range",
                 start: firstAttribute.loc.interval.startIdx,
                 end: firstAttribute.loc.interval.endIdx,
-            } as $.Loc);
+            });
             result.attributes = [];
         }
         return result;
