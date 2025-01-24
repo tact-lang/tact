@@ -28,21 +28,19 @@
     "test": "jest",
     "test:fast": "jest --config=./jest-fast.config.js",
     "coverage": "cross-env COVERAGE=true jest",
-    "release": "yarn clean && yarn build && yarn coverage && yarn release-it --npm.yarn1",
     "type": "tsc --noEmit",
     "lint": "yarn eslint .",
-    "lint:one-schema": "ajv validate -s src/config/configSchema.json -d",
-    "lint:schema": "yarn lint:one-schema src/test/tact.config.json && yarn lint:one-schema examples/tact.config.json",
     "fmt": "yarn prettier -l -w .",
     "fmt:check": "yarn prettier --check .",
     "spell": "yarn cspell --no-progress \"**\"",
     "knip": "knip",
-    "lint:all": "yarn lint && yarn fmt:check && yarn lint:schema && yarn spell && yarn knip",
+    "lint:all": "yarn lint && yarn fmt:check && yarn spell && yarn knip",
     "all": "yarn clean && yarn gen && yarn build && yarn coverage && yarn lint:all",
     "postinstall": "node .husky/install.mjs || true",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
-    "next-version": "ts-node version.build.ts"
+    "next-version": "ts-node version.build.ts",
+    "top10": "find . -type f -exec du -h {} + | sort -rh | head -n 10"
   },
   "files": [
     "dist/**/*",
@@ -101,8 +99,6 @@
     "knip": "^5.24.1",
     "pinst": "^3.0.0",
     "prettier": "^3.2.5",
-    "release-it": "^18.1.1",
-    "rimraf": "^4.1.2",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "~5.6.2"
@@ -110,16 +106,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "release-it": {
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/keep-a-changelog": {
-        "filename": "CHANGELOG.md"
-      }
-    }
   },
   "packageManager": "yarn@1.22.22",
   "engines": {
