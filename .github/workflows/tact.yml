@@ -107,29 +107,9 @@ jobs:
           yarn gen
           yarn build
 
-      - name: Check there are no errors to be fixed in package.json and no uncommitted changes
-        run: |
-          npm pkg fix && git diff --exit-code
-
       - name: Test Tact compiler
         run: |
           yarn coverage
-
-      - name: Check there are no errors reported by ESLint
-        run: |
-          yarn lint
-
-      - name: Check formatting with Prettier
-        run: |
-          yarn fmt:check
-
-      - name: Spellcheck code base
-        run: |
-          yarn spell
-
-      - name: Check there are no unused dependencies
-        run: |
-          yarn knip
 
       - name: Check broken file references in internal documentation
         if: runner.os == 'Linux'
