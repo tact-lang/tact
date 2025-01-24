@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/consistent-indexed-object-style */
 type Extend<T extends any[], H> = H extends infer A ? [...T, A] : never;
 type Flat<TS extends any[], R extends any[] = []> = TS extends [
     infer H,
@@ -106,12 +106,11 @@ type Intersect<T> = (T extends unknown ? (x: T) => 0 : never) extends (
  */
 type Unwrap<T> = T extends infer R ? { [K in keyof R]: R[K] } : never;
 
-type Inputs<I, T extends string> =
-    I extends Record<T, infer K>
-        ? K extends string
-            ? Record<K, (input: I) => unknown>
-            : never
-        : never;
+type Inputs<I, T extends string> = I extends { [Z in T]: infer K }
+    ? K extends string
+        ? Record<K, (input: I) => unknown>
+        : never
+    : never;
 type Outputs<O> = { [K in keyof O]: (input: never) => O[K] };
 type Handlers<I, O, T extends string> = Unwrap<Intersect<Inputs<I, T>>> &
     Outputs<O>;
@@ -120,7 +119,7 @@ export const makeMakeVisitor =
     <T extends string>(tag: T) =>
     <I>() =>
     <O>(handlers: Handlers<I, O, T>) =>
-    (input: Extract<I, Record<T, string>>): O[keyof O] => {
+    (input: Extract<I, { [K in T]: string }>): O[keyof O] => {
         const handler = (handlers as Record<string, (input: I) => O[keyof O]>)[
             input[tag]
         ];
