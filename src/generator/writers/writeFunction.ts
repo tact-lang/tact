@@ -1,14 +1,11 @@
 import { enabledInline } from "../../config/features";
+import * as A from "../../ast/ast";
 import {
-    AstAsmShuffle,
-    AstCondition,
-    AstExpression,
-    AstStatement,
     idOfText,
     idText,
     isWildcard,
     tryExtractPath,
-} from "../../ast/ast";
+} from "../../ast/ast-helpers";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
 import { FunctionDescription, TypeRef } from "../../types/types";
@@ -23,10 +20,10 @@ import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { ops } from "./ops";
 import { freshIdentifier } from "./freshIdentifier";
 import { idTextErr, throwInternalCompilerError } from "../../error/errors";
-import { ppAsmShuffle } from "../../prettyPrinter";
+import { ppAsmShuffle } from "../../ast/ast-printer";
 
 export function writeCastedExpression(
-    expression: AstExpression,
+    expression: A.AstExpression,
     to: TypeRef,
     ctx: WriterContext,
 ) {
@@ -64,7 +61,7 @@ function unwrapExternal(
 }
 
 export function writeStatement(
-    f: AstStatement,
+    f: A.AstStatement,
     self: string | null,
     returns: TypeRef | null,
     ctx: WriterContext,
@@ -227,26 +224,25 @@ export function writeStatement(
                     writeStatement(s, self, returns, ctx);
                 }
             });
-            ctx.append("} catch (_) { }");
-            return;
-        }
-        case "statement_try_catch": {
-            ctx.append(`try {`);
-            ctx.inIndent(() => {
-                for (const s of f.statements) {
-                    writeStatement(s, self, returns, ctx);
+
+            const catchBlock = f.catchBlock;
+            if (catchBlock !== undefined) {
+                if (isWildcard(catchBlock.catchName)) {
+                    ctx.append(`} catch (_) {`);
+                } else {
+                    ctx.append(
+                        `} catch (_, ${funcIdOf(catchBlock.catchName)}) {`,
+                    );
                 }
-            });
-            if (isWildcard(f.catchName)) {
-                ctx.append(`} catch (_) {`);
+                ctx.inIndent(() => {
+                    for (const s of catchBlock.catchStatements!) {
+                        writeStatement(s, self, returns, ctx);
+                    }
+                });
             } else {
-                ctx.append(`} catch (_, ${funcIdOf(f.catchName)}) {`);
+                ctx.append("} catch (_) { ");
             }
-            ctx.inIndent(() => {
-                for (const s of f.catchStatements) {
-                    writeStatement(s, self, returns, ctx);
-                }
-            });
+
             ctx.append(`}`);
             return;
         }
@@ -503,7 +499,7 @@ export function writeStatement(
 }
 
 function writeCondition(
-    f: AstCondition,
+    f: A.AstStatementCondition,
     self: string | null,
     elseif: boolean,
     returns: TypeRef | null,
@@ -591,7 +587,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                     ctx.context("stdlib");
                 }
                 // we need to do some renames (prepending $ to identifiers)
-                const asmShuffleEscaped: AstAsmShuffle = {
+                const asmShuffleEscaped: A.AstAsmShuffle = {
                     ...fAst.shuffle,
                     args: fAst.shuffle.args.map((id) => idOfText(funcIdOf(id))),
                 };

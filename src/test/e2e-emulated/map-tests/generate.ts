@@ -1,7 +1,7 @@
-import { run } from "../../../node";
+import { createSingleFileConfig, run } from "../../../cli/tact";
 import { keyTypes, valTypes } from "./map-properties-key-value-types";
 import { mkdir, writeFile } from "fs/promises";
-import path from "path";
+import path, { basename, dirname, extname } from "path";
 import { exit } from "node:process";
 import {
     descriptionToString,
@@ -11,6 +11,10 @@ import {
     minInt,
 } from "./map-int-limits-key-value-types";
 import { readFile } from "node:fs/promises";
+import { createVirtualFileSystem } from "../../../vfs/createVirtualFileSystem";
+import files from "../../../stdlib/stdlib";
+import { Logger, LogLevel } from "../../../context/logger";
+import { createNodeFileSystem } from "../../../vfs/createNodeFileSystem";
 
 type TestKind = "map-properties" | "map-int-limits";
 
@@ -53,10 +57,16 @@ const instantiateContractAndSpecTemplates = async (
     return tactFilePath;
 };
 
+const stdlib = createVirtualFileSystem("@stdlib", files);
+
 const compileAndExitOnError = async (tactFilePath: string) => {
     const compilationResult = await run({
-        fileName: tactFilePath,
-        suppressLog: true,
+        config: createSingleFileConfig(
+            basename(tactFilePath, extname(tactFilePath)),
+        ),
+        logger: new Logger(LogLevel.NONE),
+        stdlib,
+        project: createNodeFileSystem(dirname(tactFilePath), false),
     });
     if (!compilationResult.ok) {
         console.error(compilationResult.error);

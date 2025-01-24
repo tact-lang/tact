@@ -1,24 +1,11 @@
+import * as A from "../ast/ast";
 import {
-    AstAsmFunctionDef,
-    AstConstantDecl,
-    AstConstantDef,
-    AstContractInit,
-    AstExpression,
-    AstFieldDecl,
-    AstFunctionDecl,
-    AstFunctionDef,
-    AstId,
-    AstMapType,
-    AstNativeFunctionDecl,
-    AstNode,
-    AstType,
-    AstTypeId,
     eqNames,
     FactoryAst,
     idText,
     isSelfId,
     isSlice,
-} from "../ast/ast";
+} from "../ast/ast-helpers";
 import { traverse } from "../ast/iterators";
 import {
     idTextErr,
@@ -57,7 +44,7 @@ import { ItemOrigin } from "../grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
-import { AstUtil, getAstUtil } from "../optimizer/util";
+import { AstUtil, getAstUtil } from "../ast/util";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -65,8 +52,8 @@ const staticConstantsStore = createContextStore<ConstantDescription>();
 
 // this function does not handle the case of structs
 function verifyMapAsAnnotationsForPrimitiveTypes(
-    type: AstTypeId,
-    asAnnotation: AstId | null,
+    type: A.AstTypeId,
+    asAnnotation: A.AstId | null,
     kind: "keyType" | "valType",
 ): void {
     switch (idText(type)) {
@@ -110,8 +97,8 @@ function verifyMapAsAnnotationsForPrimitiveTypes(
 }
 
 function verifyMapTypes(
-    typeId: AstTypeId,
-    asAnnotation: AstId | null,
+    typeId: A.AstTypeId,
+    asAnnotation: A.AstId | null,
     allowedTypeNames: string[],
     kind: "keyType" | "valType",
 ): void {
@@ -124,7 +111,7 @@ function verifyMapTypes(
     verifyMapAsAnnotationsForPrimitiveTypes(typeId, asAnnotation, kind);
 }
 
-function verifyMapType(mapTy: AstMapType, isValTypeStruct: boolean) {
+function verifyMapType(mapTy: A.AstMapType, isValTypeStruct: boolean) {
     // optional and other compound key and value types are disallowed at the level of grammar
 
     // check allowed key types
@@ -150,7 +137,7 @@ function verifyMapType(mapTy: AstMapType, isValTypeStruct: boolean) {
 
 export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
 
-export function resolveTypeRef(ctx: CompilerContext, type: AstType): TypeRef {
+export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
     switch (type.kind) {
         case "type_id": {
             const t = getType(ctx, idText(type));
@@ -203,7 +190,7 @@ export function resolveTypeRef(ctx: CompilerContext, type: AstType): TypeRef {
 }
 
 function buildTypeRef(
-    type: AstType,
+    type: A.AstType,
     types: Map<string, TypeDescription>,
 ): TypeRef {
     switch (type.kind) {
@@ -407,7 +394,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     //
 
     function buildFieldDescription(
-        src: AstFieldDecl,
+        src: A.AstFieldDecl,
         index: number,
     ): FieldDescription {
         const fieldTy = buildTypeRef(src.type, types);
@@ -437,7 +424,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     }
 
     function buildConstantDescription(
-        src: AstConstantDef | AstConstantDecl,
+        src: A.AstConstantDef | A.AstConstantDecl,
     ): ConstantDescription {
         const constDeclTy = buildTypeRef(src.type, types);
         return {
@@ -631,10 +618,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     function resolveFunctionDescriptor(
         optSelf: TypeRef | null,
         a:
-            | AstFunctionDef
-            | AstNativeFunctionDecl
-            | AstFunctionDecl
-            | AstAsmFunctionDef,
+            | A.AstFunctionDef
+            | A.AstNativeFunctionDecl
+            | A.AstFunctionDecl
+            | A.AstAsmFunctionDef,
         origin: ItemOrigin,
     ): FunctionDescription {
         let self = optSelf;
@@ -1010,7 +997,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         };
     }
 
-    function resolveInitFunction(ast: AstContractInit): InitDescription {
+    function resolveInitFunction(ast: A.AstContractInit): InitDescription {
         const params: InitParameter[] = [];
         for (const r of ast.params) {
             params.push({
@@ -1444,7 +1431,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         params: [],
                         statements: [],
                         loc: t.ast.loc,
-                    }) as AstContractInit,
+                    }) as A.AstContractInit,
                 };
             }
         }
@@ -1849,7 +1836,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 types.get(name)!.ast.loc,
             );
         }
-        processing.has(name);
+        processing.add(name);
 
         // Process dependencies first
         const dependencies = Array.from(types.values()).filter((v) =>
@@ -1876,7 +1863,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
     for (const [k, t] of types) {
         const dependsOn: Set<string> = new Set();
-        const handler = (src: AstNode) => {
+        const handler = (src: A.AstNode) => {
             if (src.kind === "init_of") {
                 if (!types.has(idText(src.contract))) {
                     throwCompilationError(
@@ -2015,7 +2002,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
 export function getType(
     ctx: CompilerContext,
-    ident: AstId | AstTypeId | string,
+    ident: A.AstId | A.AstTypeId | string,
 ): TypeDescription {
     const name = typeof ident === "string" ? ident : idText(ident);
     const r = store.get(ctx, name);
@@ -2135,7 +2122,7 @@ function checkInitializerType(
     name: string,
     kind: "Constant" | "Struct field",
     declTy: TypeRef,
-    initializer: AstExpression,
+    initializer: A.AstExpression,
     ctx: CompilerContext,
 ): CompilerContext {
     const stmtCtx = emptyContext(initializer.loc, null, declTy);
@@ -2238,7 +2225,7 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
         (aggregate) => aggregate.kind === "struct",
     );
     let index = 0;
-    const stack: AstId[] = [];
+    const stack: A.AstId[] = [];
     // `string` here means "struct name"
     const indices: Map<string, number> = new Map();
     const lowLinks: Map<string, number> = new Map();
@@ -2318,7 +2305,7 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
         }
 
         if (lowLinks.get(struct.name) === indices.get(struct.name)) {
-            const cycle: AstId[] = [];
+            const cycle: A.AstId[] = [];
             let e = "";
             do {
                 const last = stack.pop()!;

@@ -1,5 +1,6 @@
 import * as $ from "@tonstudio/parser-runtime";
 import * as A from "../../ast/ast";
+import { FactoryAst } from "../../ast/ast-helpers";
 import * as G from "./grammar";
 import { $ast } from "./grammar";
 import { TactCompilationError } from "../../error/errors";
@@ -496,7 +497,7 @@ const parseStatementCondition =
         trueBranch,
         falseBranch,
         loc,
-    }: $ast.StatementCondition): Handler<A.AstCondition> =>
+    }: $ast.StatementCondition): Handler<A.AstStatementCondition> =>
     (ctx) => {
         if (typeof falseBranch === "undefined") {
             return ctx.ast.Condition(
@@ -568,23 +569,19 @@ const parseStatementUntil =
     };
 
 const parseStatementTry =
-    ({
-        body,
-        handler,
-        loc,
-    }: $ast.StatementTry): Handler<
-        A.AstStatementTry | A.AstStatementTryCatch
-    > =>
+    ({ body, handler, loc }: $ast.StatementTry): Handler<A.AstStatementTry> =>
     (ctx) => {
         if (handler) {
-            return ctx.ast.StatementTryCatch(
-                parseStatements(body)(ctx),
-                parseId(handler.name)(ctx),
-                parseStatements(handler.body)(ctx),
-                loc,
-            );
+            return ctx.ast.StatementTry(parseStatements(body)(ctx), loc, {
+                catchName: parseId(handler.name)(ctx),
+                catchStatements: parseStatements(handler.body)(ctx),
+            });
         } else {
-            return ctx.ast.StatementTry(parseStatements(body)(ctx), loc);
+            return ctx.ast.StatementTry(
+                parseStatements(body)(ctx),
+                loc,
+                undefined,
+            );
         }
     };
 
@@ -1214,7 +1211,7 @@ const parseJustImports =
         return map(imports, parseImport)(ctx);
     };
 
-export const getParser = (ast: A.FactoryAst) => {
+export const getParser = (ast: FactoryAst) => {
     const display = displayToString;
 
     const doParse = <T, U>(

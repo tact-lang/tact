@@ -1,17 +1,15 @@
+import * as A from "../ast/ast";
 import { CompilerContext } from "../context/context";
-import {
-    AstCondition,
-    AstStatement,
-    tryExtractPath,
-    AstId,
-    idText,
-    isWildcard,
-    selfId,
-    isSelfId,
-    eqNames,
-    FactoryAst,
-} from "../ast/ast";
 import { isAssignable } from "./subtyping";
+import {
+    tryExtractPath,
+    FactoryAst,
+    eqNames,
+    isWildcard,
+    isSelfId,
+    idText,
+    selfId,
+} from "../ast/ast-helpers";
 import {
     idTextErr,
     throwCompilationError,
@@ -32,7 +30,7 @@ import { evalConstantExpression } from "../optimizer/constEval";
 import { ensureInt } from "../optimizer/interpreter";
 import { crc16 } from "../utils/crc16";
 import { SrcInfo } from "../grammar";
-import { AstUtil, getAstUtil } from "../optimizer/util";
+import { AstUtil, getAstUtil } from "../ast/util";
 
 export type StatementContext = {
     root: SrcInfo;
@@ -59,7 +57,7 @@ export function emptyContext(
 function checkVariableExists(
     ctx: CompilerContext,
     sctx: StatementContext,
-    name: AstId,
+    name: A.AstId,
 ): void {
     if (sctx.vars.has(idText(name))) {
         throwCompilationError(
@@ -118,7 +116,7 @@ function removeRequiredVariable(
 }
 
 function addVariable(
-    name: AstId,
+    name: A.AstId,
     ref: TypeRef,
     ctx: CompilerContext,
     sctx: StatementContext,
@@ -134,7 +132,7 @@ function addVariable(
 }
 
 function processCondition(
-    condition: AstCondition,
+    condition: A.AstStatementCondition,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): {
@@ -213,7 +211,7 @@ function processCondition(
 
 // Precondition: `self` here means a contract or a trait,
 // and not a `self` parameter of a mutating method
-export function isLvalue(path: AstId[], ctx: CompilerContext): boolean {
+export function isLvalue(path: A.AstId[], ctx: CompilerContext): boolean {
     const headId = path[0]!;
     if (isSelfId(headId) && path.length > 1) {
         // we can be dealing with a contract/trait constant `self.constFoo`
@@ -235,7 +233,7 @@ export function isLvalue(path: AstId[], ctx: CompilerContext): boolean {
 }
 
 function processStatements(
-    statements: AstStatement[],
+    statements: A.AstStatement[],
     sctx: StatementContext,
     ctx: CompilerContext,
 ): {
@@ -573,28 +571,27 @@ function processStatements(
                 break;
             case "statement_try":
                 {
-                    // Process inner statements
-                    const r = processStatements(s.statements, sctx, ctx);
-                    ctx = r.ctx;
-                    sctx = r.sctx;
-                    // try-statement might not return from the current function
-                    // because the control flow can go to the empty catch block
-                }
-                break;
-            case "statement_try_catch":
-                {
                     let initialSctx = sctx;
 
                     // Process inner statements
                     const r = processStatements(s.statements, sctx, ctx);
                     ctx = r.ctx;
 
-                    let catchCtx = sctx;
+                    // try-statement might not return from the current function
+                    // because the control flow can go to the empty catch block
+                    if (s.catchBlock === undefined) {
+                        break;
+                    }
 
+                    let catchCtx = sctx;
                     // Process catchName variable for exit code
-                    checkVariableExists(ctx, initialSctx, s.catchName);
+                    checkVariableExists(
+                        ctx,
+                        initialSctx,
+                        s.catchBlock.catchName,
+                    );
                     catchCtx = addVariable(
-                        s.catchName,
+                        s.catchBlock.catchName,
                         { kind: "ref", name: "Int", optional: false },
                         ctx,
                         initialSctx,
@@ -602,7 +599,7 @@ function processStatements(
 
                     // Process catch statements
                     const rCatch = processStatements(
-                        s.catchStatements,
+                        s.catchBlock.catchStatements,
                         catchCtx,
                         ctx,
                     );
@@ -774,7 +771,7 @@ function processStatements(
 }
 
 function processFunctionBody(
-    statements: AstStatement[],
+    statements: A.AstStatement[],
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {

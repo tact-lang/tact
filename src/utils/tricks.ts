@@ -94,7 +94,7 @@ import { throwInternalCompilerError } from "../error/errors";
 /**
  * Convert union to intersection. See https://stackoverflow.com/q/50374908
  */
-type Intersect<T> = (T extends unknown ? (x: T) => 0 : never) extends (
+export type Intersect<T> = (T extends unknown ? (x: T) => 0 : never) extends (
     x: infer R,
 ) => 0
     ? R
@@ -104,7 +104,7 @@ type Intersect<T> = (T extends unknown ? (x: T) => 0 : never) extends (
  * Makes types more readable
  * Example: Unwrap<{ a: 1 } & { b: 2 }> = { a: 1, b: 2 }
  */
-type Unwrap<T> = T extends infer R ? { [K in keyof R]: R[K] } : never;
+export type Unwrap<T> = T extends infer R ? { [K in keyof R]: R[K] } : never;
 
 type Inputs<I, T extends string> = I extends { [Z in T]: infer K }
     ? K extends string
@@ -138,3 +138,11 @@ export const makeMakeVisitor =
  * Make visitor for disjoint union (tagged union, discriminated union)
  */
 export const makeVisitor = makeMakeVisitor("kind");
+
+export const singleton = <K extends string | symbol, V>(key: K, value: V) => {
+    return { [key]: value } as Record<K, V>;
+};
+
+export const entries = Object.entries as <O>(
+    o: O,
+) => { [K in keyof O]: [K, O[K]] }[keyof O][];

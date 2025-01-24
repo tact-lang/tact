@@ -1,18 +1,10 @@
 import {
-    AstExpression,
-    AstId,
-    AstLiteral,
-    eqNames,
-    getAstFactory,
-    idText,
-    tryExtractPath,
-} from "../../ast/ast";
-import {
     idTextErr,
     TactConstEvalError,
     throwCompilationError,
     throwInternalCompilerError,
 } from "../../error/errors";
+import * as A from "../../ast/ast";
 import { getExpType } from "../../types/resolveExpression";
 import {
     getStaticConstant,
@@ -43,9 +35,15 @@ import { ops } from "./ops";
 import { writeCastedExpression } from "./writeFunction";
 import { isLvalue } from "../../types/resolveStatements";
 import { evalConstantExpression } from "../../optimizer/constEval";
-import { getAstUtil } from "../../optimizer/util";
+import { getAstUtil } from "../../ast/util";
+import {
+    eqNames,
+    getAstFactory,
+    idText,
+    tryExtractPath,
+} from "../../ast/ast-helpers";
 
-function isNull(wCtx: WriterContext, expr: AstExpression): boolean {
+function isNull(wCtx: WriterContext, expr: A.AstExpression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
 }
 
@@ -99,7 +97,7 @@ function writeStructConstructor(
     return name;
 }
 
-export function writeValue(val: AstLiteral, wCtx: WriterContext): string {
+export function writeValue(val: A.AstLiteral, wCtx: WriterContext): string {
     switch (val.kind) {
         case "number":
             return val.value.toString(10);
@@ -134,7 +132,7 @@ export function writeValue(val: AstLiteral, wCtx: WriterContext): string {
         }
         case "struct_value": {
             // Transform the struct fields into a map for lookup
-            const valMap: Map<string, AstLiteral> = new Map();
+            const valMap: Map<string, A.AstLiteral> = new Map();
             for (const f of val.args) {
                 valMap.set(idText(f.field), f.initializer);
             }
@@ -167,11 +165,14 @@ export function writeValue(val: AstLiteral, wCtx: WriterContext): string {
     }
 }
 
-export function writePathExpression(path: AstId[]): string {
+export function writePathExpression(path: A.AstId[]): string {
     return [funcIdOf(idText(path[0]!)), ...path.slice(1).map(idText)].join(`'`);
 }
 
-export function writeExpression(f: AstExpression, wCtx: WriterContext): string {
+export function writeExpression(
+    f: A.AstExpression,
+    wCtx: WriterContext,
+): string {
     // literals and constant expressions are covered here
 
     // FIXME: Once optimization step is added, remove this try and replace it with this

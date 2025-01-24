@@ -7,7 +7,7 @@
   - [ ] `regex='([sS]ince Tact \d\.\d) \(not released yet\)'; rg "$regex" -r '$1'` (or similar with `grep`) — to preview the changes
   - [ ] `regex='([sS]ince Tact \d\.\d) \(not released yet\)'; rg "$regex" -l | xargs sd "$regex" '$1'` (or similar with `grep` and `sed`) — to apply the changes
 - [ ] Bump Tact version in:
-  - [ ] [`package.json`](./package.json) file
+  - [ ] [`package.json`](../package.json) file
   - [ ] [CHANGELOG.md](./CHANGELOG.md): `Unreleased` -> `vX.Y.Z`
 - [ ] Tag the new `vX.Y.Z` release in Git
   ```shell

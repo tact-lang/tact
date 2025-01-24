@@ -1,29 +1,15 @@
 import { ABIField } from "@ton/core";
 import { throwInternalCompilerError } from "../error/errors";
-import {
-    AstConstantDef,
-    AstFunctionDef,
-    AstContractInit,
-    AstNativeFunctionDecl,
-    AstReceiver,
-    AstTypeDecl,
-    AstId,
-    AstFunctionDecl,
-    AstConstantDecl,
-    AstFieldDecl,
-    AstAsmFunctionDef,
-    AstNumber,
-    AstLiteral,
-    idText,
-} from "../ast/ast";
+import * as A from "../ast/ast";
 import { ItemOrigin, SrcInfo } from "../grammar";
+import { idText } from "../ast/ast-helpers";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";
     origin: ItemOrigin;
     name: string;
     uid: number;
-    header: AstNumber | null;
+    header: A.AstNumber | null;
     tlb: string | null;
     signature: string | null;
     fields: FieldDescription[];
@@ -32,7 +18,7 @@ export type TypeDescription = {
     functions: Map<string, FunctionDescription>;
     receivers: ReceiverDescription[];
     init: InitDescription | null;
-    ast: AstTypeDecl;
+    ast: A.AstTypeDecl;
     dependsOn: TypeDescription[];
     interfaces: string[];
     constants: ConstantDescription[];
@@ -66,7 +52,7 @@ export type TypeRef =
 // https://github.com/microsoft/TypeScript/pull/57293
 // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 
-export function showValue(val: AstLiteral): string {
+export function showValue(val: A.AstLiteral): string {
     switch (val.kind) {
         case "number":
             return val.value.toString(val.base);
@@ -99,28 +85,28 @@ export type FieldDescription = {
     index: number;
     type: TypeRef;
     as: string | null;
-    default: AstLiteral | undefined;
+    default: A.AstLiteral | undefined;
     loc: SrcInfo;
-    ast: AstFieldDecl;
+    ast: A.AstFieldDecl;
     abi: ABIField;
 };
 
 export type ConstantDescription = {
     name: string;
     type: TypeRef;
-    value: AstLiteral | undefined;
+    value: A.AstLiteral | undefined;
     loc: SrcInfo;
-    ast: AstConstantDef | AstConstantDecl;
+    ast: A.AstConstantDef | A.AstConstantDecl;
 };
 
 export type FunctionParameter = {
-    name: AstId;
+    name: A.AstId;
     type: TypeRef;
     loc: SrcInfo;
 };
 
 export type InitParameter = {
-    name: AstId;
+    name: A.AstId;
     type: TypeRef;
     as: string | null;
     loc: SrcInfo;
@@ -140,28 +126,28 @@ export type FunctionDescription = {
     returns: TypeRef;
     params: FunctionParameter[];
     ast:
-        | AstFunctionDef
-        | AstNativeFunctionDecl
-        | AstFunctionDecl
-        | AstAsmFunctionDef;
+        | A.AstFunctionDef
+        | A.AstNativeFunctionDecl
+        | A.AstFunctionDecl
+        | A.AstAsmFunctionDef;
 };
 
 export type BinaryReceiverSelector =
     | {
           kind: "internal-binary";
           type: string;
-          name: AstId;
+          name: A.AstId;
       }
     | {
           kind: "bounce-binary";
-          name: AstId;
+          name: A.AstId;
           type: string;
           bounced: boolean;
       }
     | {
           kind: "external-binary";
           type: string;
-          name: AstId;
+          name: A.AstId;
       };
 
 export type CommentReceiverSelector =
@@ -185,23 +171,23 @@ type EmptyReceiverSelector =
 type FallbackReceiverSelector =
     | {
           kind: "internal-comment-fallback";
-          name: AstId;
+          name: A.AstId;
       }
     | {
           kind: "internal-fallback";
-          name: AstId;
+          name: A.AstId;
       }
     | {
           kind: "bounce-fallback";
-          name: AstId;
+          name: A.AstId;
       }
     | {
           kind: "external-comment-fallback";
-          name: AstId;
+          name: A.AstId;
       }
     | {
           kind: "external-fallback";
-          name: AstId;
+          name: A.AstId;
       };
 
 export type ReceiverSelector =
@@ -235,12 +221,12 @@ export function receiverSelectorName(selector: ReceiverSelector): string {
 
 export type ReceiverDescription = {
     selector: ReceiverSelector;
-    ast: AstReceiver;
+    ast: A.AstReceiver;
 };
 
 export type InitDescription = {
     params: InitParameter[];
-    ast: AstContractInit;
+    ast: A.AstContractInit;
 };
 
 export function printTypeRef(src: TypeRef): string {
