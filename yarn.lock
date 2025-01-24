@@ -1816,7 +1816,7 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@typescript-eslint/eslint-plugin@^8.0.0":
+"@typescript-eslint/eslint-plugin@^8.21.0":
   version "8.21.0"
   resolved "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.21.0.tgz#395014a75112ecdb81142b866ab6bb62e3be0f2a"
   integrity sha512-eTH+UOR4I7WbdQnG4Z48ebIA6Bgi7WO8HvFEneeYBxG8qCOYgTOFPSg6ek9ITIDvGjDQzWHcoWHCDO2biByNzA==
@@ -1831,7 +1831,7 @@
     natural-compare "^1.4.0"
     ts-api-utils "^2.0.0"
 
-"@typescript-eslint/parser@^8.0.0":
+"@typescript-eslint/parser@^8.21.0":
   version "8.21.0"
   resolved "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-8.21.0.tgz#312c638aaba4f640d45bfde7c6795a9d75deb088"
   integrity sha512-Wy+/sdEH9kI3w9civgACwabHbKl+qIOu0uFZ9IMKzX3Jpv9og0ZBJrZExGrPpFAY7rWsXuxs5e7CPPP17A4eYA==
