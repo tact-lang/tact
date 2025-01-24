@@ -3,7 +3,7 @@ title: Sending messages
 description: "TON Blockchain is message-based — to communicate with other contracts and to deploy new ones you need to send messages."
 ---
 
-TON blockchain is message-based — to communicate with other contracts and to deploy new ones you need to send messages.
+TON Blockchain is message-based — to communicate with other contracts and to deploy new ones you need to send messages.
 
 Messages in Tact are commonly composed using a built-in [Struct](/book/structs-and-messages#structs) `SendParameters{:tact}`, which consists of:
 
@@ -112,20 +112,23 @@ Consider the following example:
 contract FailureIsNothingButAnotherStep {
     // And all the funds it gets are obtained from inbound internal messages
     receive() {
-        // 1st outbound message evaluated and queued (but not sent yet)
+        // 1st outbound message evaluated and queued (but not yet sent)
         send(SendParameters{
             to: sender(),
             value: ton("0.042"), // plus forward fee due to SendPayGasSeparately
             mode: SendIgnoreErrors | SendPayGasSeparately,
+            // body is null by default
         });
 
-        // 2nd outbound message evaluated and queued (but not sent yet, and never will be!)
+        // 2nd outbound message evaluated and queued,
+        // but not yet sent, and never will be!
         send(SendParameters{
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
+            // body is null by default
         });
-    }
+    } // exit code 37 during action phase!
 }
 ```
 
@@ -133,9 +136,45 @@ There, the second message won't actually be sent:
 
 * After finishing the [compute phase][compute], the remaining value $\mathrm{R}$ of the contract is computed.
 
-* During the outbound message processing and assuming that there was enough value provided in the inbound message, the first message leaves $\mathrm{R} - (0.042 + \mathrm{forward\_fees})$ [nanoToncoins](/book/integers#nanotoncoin) on the balance.
+* During the outbound message processing and assuming that there was enough value provided in the inbound message, the first message leaves $\mathrm{R} - (0.042 + \mathrm{forward\_fees})$ [nanoToncoins][nano] on the balance.
 
-* When the second message is processed, contract tries to send $\mathrm{R}$ [nanoToncoins](/book/integers#nanotoncoin), but fails to do so because there is already a smaller amount left.
+* When the second message is processed, contract tries to send $\mathrm{R}$ [nanoToncoins][nano], but fails to do so because there is already a smaller amount left.
+
+* Thus, an error with [exit code 37](/book/exit-codes#37) is thrown: `Not enough Toncoin`.
+
+Note that such failures are not exclusive to the [`send(){:tact}`](/ref/core-common#send) function and may also occur when using other [message sending functions](#message-sending-functions).
+
+For instance, let's replace the first call to the [`send(){:tact}`](/ref/core-common#send) function in the previous example with the [`emit(){:tact}`](/ref/core-common#emit) function. The latter queues the message using the default mode, i.e. $0$, and spends some [nanoToncoins][nano] to pay the [forward fees][fwdfee].
+
+If a subsequent message is then sent with a [`SendRemainingValue{:tact}`](/book/message-mode#base-modes) base mode, it will cause the same error as before:
+
+```tact
+// This contract initially has 0 nanoToncoins on the balance
+contract IfItDiesItDies {
+    // And all the funds it gets are obtained from inbound internal messages
+    receive() {
+        // 1st outbound message evaluated and queued (but not yet sent)
+        // with the mode 0, which is the default
+        emit("Have you seen this message?".asComment());
+
+        // 2nd outbound message evaluated and queued,
+        // but not yet sent, and never will be!
+        send(SendParameters{
+            to: sender(),
+            value: 0,
+            bounce: false, // brave and bold
+            mode: SendRemainingValue,
+            body: "Not this again!".asComment(),
+        });
+    } // exit code 37 during action phase!
+}
+```
+
+:::note
+
+  To avoid dealing with similar cases and to simplify future [debugging sessions](/book/debug), consider having only one call to one of the [message sending functions](#message-sending-functions) per [receiver function](/book/receive), preferably at the end of the function body.
+
+:::
 
 ## Message sending limits
 
@@ -158,6 +197,7 @@ Read more about all message sending functions in the Reference:
 [int]: /book/integers
 [cell]: /book/cells#cells
 [opt]: /book/optionals
+[nano]: /book/integers#nanotoncoin
 
 [phases]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases
 [compute]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase

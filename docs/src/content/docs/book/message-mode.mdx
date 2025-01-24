@@ -47,16 +47,19 @@ send(SendParameters{
 });
 ```
 
+Note that there can be only **one** [base mode](#base-modes), but number of [optional flags](#optional-flags) may vary: you can use them all, none or just some.
+
 :::caution
 
-  Note, that while adding ([`+{:tact}`](/book/operators#binary-add)) base modes together with optional flags is possible, it is discouraged due to the possibility of excess values. Use the bitwise OR ([`|{:tact}`](/book/operators#binary-bitwise-or)) instead, as it's designed to work with such flag and bit manipulations of the `mode`.
+  While adding ([`+{:tact}`](/book/operators#binary-add)) base modes together with optional flags is possible, it is discouraged due to the possibility of excess values. Use the [bitwise OR `|{:tact}`](/book/operators#binary-bitwise-or) instead, as it's designed to work with such flag and bit manipulations of the `mode`.
 
 :::
 
-:::note
+## Functions with implicit mode
 
-  Also note, that there can be only one [base mode](#base-modes), but number of [optional flags](#optional-flags) may vary: you can use them all, none or just some.
+Some [message sending functions](/book/send#message-sending-functions) do not allow to set a mode by passing an argument. That's because their internal logic requires specific fixed set of modes to be used instead:
 
-:::
+* [`emit(){:tact}`](/ref/core-common#emit) sends a message with the `SendDefaultMode{:tact}` ($0$).
+* [`self.reply(){:tact}`](/ref/core-base#self-reply), [`self.notify(){:tact}`](/ref/core-base#self-notify), and [`self.forward(){:tact}`](/ref/core-base#self-forward) all use the `SendRemainingValue{:tact}` mode unless the [`self.storageReserve{:tact}`](/ref/core-base#self-storagereserve) constant is overwritten to be greater than $0$, in which case they attempt to use the `SendRemainingBalance{:tact}` mode.
 
 [int]: /book/integers
