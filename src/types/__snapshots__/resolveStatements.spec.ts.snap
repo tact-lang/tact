@@ -2652,6 +2652,87 @@ exports[`resolveStatements should resolve statements for expr-method-call-null2 
 ]
 `;
 
+exports[`resolveStatements should resolve statements for expr-method-call-null3 1`] = `
+[
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "self == null",
+    "Bool",
+  ],
+  [
+    "false",
+    "Bool",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "self!!",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "self!! == 42",
+    "Bool",
+  ],
+  [
+    "self",
+    "String?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "self == null",
+    "Bool",
+  ],
+  [
+    "false",
+    "Bool",
+  ],
+  [
+    "self",
+    "String?",
+  ],
+  [
+    "self!!",
+    "String",
+  ],
+  [
+    ""hello"",
+    "String",
+  ],
+  [
+    "self!! == "hello"",
+    "Bool",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "x.foo()",
+    "Bool",
+  ],
+]
+`;
+
 exports[`resolveStatements should resolve statements for expr-struct-construction 1`] = `
 [
   [
