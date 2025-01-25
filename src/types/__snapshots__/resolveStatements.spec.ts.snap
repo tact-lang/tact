@@ -420,6 +420,24 @@ exports[`resolveStatements should fail statements for expr-map-exists-method-on-
 "
 `;
 
+exports[`resolveStatements should fail statements for expr-method-call-null-ambiguous 1`] = `
+"<unknown>:19:16: Ambiguous method call "foo"
+  18 |     get fun test(): Bool {
+> 19 |         return null.foo();
+                      ^~~~~~~~~~
+  20 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for expr-method-call-null-not-existing 1`] = `
+"<unknown>:14:16: Invalid type "<null>" for function call
+  13 |     get fun test(): Bool {
+> 14 |         return null.bar();
+                      ^~~~~~~~~~
+  15 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for expr-method-does-not-exist-but-field-does 1`] = `
 "<unknown>:13:5: Type "S" does not have a function named "x()", did you mean field "x" instead?
   12 |     let s: S = S{ x: 1 };
@@ -2499,6 +2517,136 @@ exports[`resolveStatements should resolve statements for expr-maps-exists-method
   ],
   [
     "m.exists(2)",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-method-call-null 1`] = `
+[
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "self == null",
+    "Bool",
+  ],
+  [
+    "false",
+    "Bool",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "self!!",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "self!! == 42",
+    "Bool",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "null.foo()",
+    "Bool",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-method-call-null2 1`] = `
+[
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "self == null",
+    "Bool",
+  ],
+  [
+    "false",
+    "Bool",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "self!!",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "self!! == 42",
+    "Bool",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "self == null",
+    "Bool",
+  ],
+  [
+    "false",
+    "Bool",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "self!!",
+    "Int",
+  ],
+  [
+    "69",
+    "Int",
+  ],
+  [
+    "self!! == 69",
+    "Bool",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "null.foo()",
+    "Bool",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "null.bar()",
     "Bool",
   ],
 ]
