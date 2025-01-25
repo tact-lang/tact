@@ -69,6 +69,7 @@ function throwErrorConstEval(msg: string, source: SrcInfo): never {
         source,
     );
 }
+
 type EvalResult =
     | { kind: "ok"; value: A.AstLiteral }
     | { kind: "error"; message: string };
@@ -1342,9 +1343,9 @@ export class Interpreter {
                         this.interpretExpression(ast.args[0]!),
                     );
                     return this.util.makeNumberLiteral(
-                        BigInt(crc32(str.value)),
+                        BigInt(crc32(str.value) >>> 0),
                         ast.loc,
-                    );
+                    ); // >>> 0 converts to unsigned
                 }
                 break;
             case "address":
