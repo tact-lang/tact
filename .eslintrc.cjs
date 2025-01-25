@@ -15,6 +15,13 @@ module.exports = {
     es2021: true,
   },
   rules: {
+    "no-restricted-syntax": [
+      "error",
+      {
+        selector: "MemberExpression[object.name='Buffer']",
+        message: "lol",
+      },
+    ],
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
