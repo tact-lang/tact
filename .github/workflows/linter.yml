@@ -28,9 +28,7 @@ jobs:
 
       - name: Prepare linter
         run: |
-          yarn gen:grammar
-          yarn gen:stdlib
-          yarn gen:func-js
+          yarn gen
 
       - name: Check there are no errors to be fixed in package.json and no uncommitted changes
         run: |
