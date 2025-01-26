@@ -1078,70 +1078,120 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     }
 
                     switch (d.selector.kind) {
-                        case "internal-simple":
-                        case "external-simple":
-                            {
-                                const param = d.selector.param;
-                                const internal =
-                                    d.selector.kind === "internal-simple";
+                        case "internal":
+                        case "external": {
+                            const internal = d.selector.kind === "internal";
+                            const { subKind } = d.selector;
 
-                                if (param.type.kind !== "type_id") {
-                                    throwCompilationError(
-                                        "Receive function can only accept non-optional message types",
-                                        d.loc,
-                                    );
-                                }
-                                const t = types.get(idText(param.type));
-                                if (!t) {
-                                    throwCompilationError(
-                                        `Type ${idTextErr(param.type)} not found`,
-                                        d.loc,
-                                    );
-                                }
+                            switch (subKind.kind) {
+                                case "simple": {
+                                    const param = subKind.param;
+                                    if (param.type.kind !== "type_id") {
+                                        throwCompilationError(
+                                            "Receive function can only accept non-optional message types",
+                                            d.loc,
+                                        );
+                                    }
+                                    const t = types.get(idText(param.type));
+                                    if (!t) {
+                                        throwCompilationError(
+                                            `Type ${idTextErr(param.type)} not found`,
+                                            d.loc,
+                                        );
+                                    }
 
-                                // Raw receiver
-                                if (t.kind === "primitive_type_decl") {
-                                    if (t.name === "Slice") {
-                                        // Check for existing receiver
-                                        if (
-                                            s.receivers.find(
-                                                (v) =>
-                                                    v.selector.kind ===
-                                                    (internal
+                                    // Raw receiver
+                                    if (t.kind === "primitive_type_decl") {
+                                        if (t.name === "Slice") {
+                                            // Check for existing receiver
+                                            if (
+                                                s.receivers.find(
+                                                    (v) =>
+                                                        v.selector.kind ===
+                                                        (internal
+                                                            ? "internal-fallback"
+                                                            : "external-fallback"),
+                                                )
+                                            ) {
+                                                throwCompilationError(
+                                                    `Fallback receive function already exists`,
+                                                    d.loc,
+                                                );
+                                            }
+
+                                            // Persist receiver
+                                            s.receivers.push({
+                                                selector: {
+                                                    kind: internal
                                                         ? "internal-fallback"
-                                                        : "external-fallback"),
-                                            )
-                                        ) {
+                                                        : "external-fallback",
+                                                    name: param.name,
+                                                },
+                                                ast: d,
+                                            });
+                                        } else if (t.name === "String") {
+                                            // Check for existing receiver
+                                            if (
+                                                s.receivers.find(
+                                                    (v) =>
+                                                        v.selector.kind ===
+                                                        (internal
+                                                            ? "internal-comment-fallback"
+                                                            : "external-comment-fallback"),
+                                                )
+                                            ) {
+                                                throwCompilationError(
+                                                    "Comment fallback receive function already exists",
+                                                    d.loc,
+                                                );
+                                            }
+
+                                            // Persist receiver
+                                            s.receivers.push({
+                                                selector: {
+                                                    kind: internal
+                                                        ? "internal-comment-fallback"
+                                                        : "external-comment-fallback",
+                                                    name: param.name,
+                                                },
+                                                ast: d,
+                                            });
+                                        } else {
                                             throwCompilationError(
-                                                `Fallback receive function already exists`,
+                                                "Receive function can only accept message, Slice or String",
+                                                d.loc,
+                                            );
+                                        }
+                                    } else {
+                                        // Check type
+                                        if (t.kind !== "struct") {
+                                            throwCompilationError(
+                                                "Receive function can only accept message",
+                                                d.loc,
+                                            );
+                                        }
+                                        if (t.ast.kind !== "message_decl") {
+                                            throwCompilationError(
+                                                "Receive function can only accept message",
                                                 d.loc,
                                             );
                                         }
 
-                                        // Persist receiver
-                                        s.receivers.push({
-                                            selector: {
-                                                kind: internal
-                                                    ? "internal-fallback"
-                                                    : "external-fallback",
-                                                name: param.name,
-                                            },
-                                            ast: d,
-                                        });
-                                    } else if (t.name === "String") {
-                                        // Check for existing receiver
+                                        // Check for duplicate
+                                        const n = idText(param.type);
                                         if (
                                             s.receivers.find(
                                                 (v) =>
                                                     v.selector.kind ===
-                                                    (internal
-                                                        ? "internal-comment-fallback"
-                                                        : "external-comment-fallback"),
+                                                        (internal
+                                                            ? "internal-binary"
+                                                            : "external-binary") &&
+                                                    eqNames(v.selector.type, n),
                                             )
                                         ) {
                                             throwCompilationError(
-                                                "Comment fallback receive function already exists",
-                                                d.loc,
+                                                `Receive function for ${idTextErr(param.type)} already exists`,
+                                                param.loc,
                                             );
                                         }
 
@@ -1149,133 +1199,79 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                         s.receivers.push({
                                             selector: {
                                                 kind: internal
-                                                    ? "internal-comment-fallback"
-                                                    : "external-comment-fallback",
+                                                    ? "internal-binary"
+                                                    : "external-binary",
                                                 name: param.name,
+                                                type: idText(param.type),
                                             },
                                             ast: d,
                                         });
-                                    } else {
+                                    }
+                                    break;
+                                }
+                                case "comment": {
+                                    if (subKind.comment.value === "") {
                                         throwCompilationError(
-                                            "Receive function can only accept message, Slice or String",
+                                            "To use empty comment receiver, just remove parameter instead of passing empty string",
                                             d.loc,
                                         );
                                     }
-                                } else {
-                                    // Check type
-                                    if (t.kind !== "struct") {
-                                        throwCompilationError(
-                                            "Receive function can only accept message",
-                                            d.loc,
-                                        );
-                                    }
-                                    if (t.ast.kind !== "message_decl") {
-                                        throwCompilationError(
-                                            "Receive function can only accept message",
-                                            d.loc,
-                                        );
-                                    }
-
-                                    // Check for duplicate
-                                    const n = idText(param.type);
+                                    const c = subKind.comment.value;
                                     if (
                                         s.receivers.find(
                                             (v) =>
                                                 v.selector.kind ===
                                                     (internal
-                                                        ? "internal-binary"
-                                                        : "external-binary") &&
-                                                eqNames(v.selector.type, n),
+                                                        ? "internal-comment"
+                                                        : "external-comment") &&
+                                                v.selector.comment === c,
                                         )
                                     ) {
                                         throwCompilationError(
-                                            `Receive function for ${idTextErr(param.type)} already exists`,
-                                            param.loc,
+                                            `Receive function for ${idTextErr(c)} already exists`,
+                                            d.loc,
                                         );
                                     }
-
-                                    // Persist receiver
                                     s.receivers.push({
                                         selector: {
                                             kind: internal
-                                                ? "internal-binary"
-                                                : "external-binary",
-                                            name: param.name,
-                                            type: idText(param.type),
+                                                ? "internal-comment"
+                                                : "external-comment",
+                                            comment: c,
                                         },
                                         ast: d,
                                     });
+                                    break;
                                 }
-                            }
-                            break;
-                        case "internal-comment":
-                        case "external-comment":
-                            {
-                                const internal =
-                                    d.selector.kind === "internal-comment";
-                                if (d.selector.comment.value === "") {
-                                    throwCompilationError(
-                                        "To use empty comment receiver, just remove parameter instead of passing empty string",
-                                        d.loc,
-                                    );
-                                }
-                                const c = d.selector.comment.value;
-                                if (
-                                    s.receivers.find(
-                                        (v) =>
-                                            v.selector.kind ===
+                                case "fallback": {
+                                    // Handle empty
+                                    if (
+                                        s.receivers.find(
+                                            (v) =>
+                                                v.selector.kind ===
                                                 (internal
-                                                    ? "internal-comment"
-                                                    : "external-comment") &&
-                                            v.selector.comment === c,
-                                    )
-                                ) {
-                                    throwCompilationError(
-                                        `Receive function for ${idTextErr(c)} already exists`,
-                                        d.loc,
-                                    );
-                                }
-                                s.receivers.push({
-                                    selector: {
-                                        kind: internal
-                                            ? "internal-comment"
-                                            : "external-comment",
-                                        comment: c,
-                                    },
-                                    ast: d,
-                                });
-                            }
-                            break;
-                        case "internal-fallback":
-                        case "external-fallback":
-                            {
-                                const internal =
-                                    d.selector.kind === "internal-fallback";
-                                // Handle empty
-                                if (
-                                    s.receivers.find(
-                                        (v) =>
-                                            v.selector.kind ===
-                                            (internal
+                                                    ? "internal-empty"
+                                                    : "external-empty"),
+                                        )
+                                    ) {
+                                        throwCompilationError(
+                                            "Empty receive function already exists",
+                                            d.loc,
+                                        );
+                                    }
+                                    s.receivers.push({
+                                        selector: {
+                                            kind: internal
                                                 ? "internal-empty"
-                                                : "external-empty"),
-                                    )
-                                ) {
-                                    throwCompilationError(
-                                        "Empty receive function already exists",
-                                        d.loc,
-                                    );
+                                                : "external-empty",
+                                        },
+                                        ast: d,
+                                    });
+                                    break;
                                 }
-                                s.receivers.push({
-                                    selector: {
-                                        kind: internal
-                                            ? "internal-empty"
-                                            : "external-empty",
-                                    },
-                                    ast: d,
-                                });
                             }
                             break;
+                        }
                         case "bounce": {
                             const param = d.selector.param;
 
