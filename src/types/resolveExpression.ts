@@ -718,8 +718,10 @@ function resolveCall(
             }
         }
 
+        const candidate = candidates[0];
+
         // No candidates found
-        if (candidates.length === 0) {
+        if (typeof candidate === "undefined") {
             throwCompilationError(
                 `Invalid type "${printTypeRef(src)}" for function call`,
                 exp.loc,
@@ -735,7 +737,7 @@ function resolveCall(
         }
 
         // Return the only candidate
-        return registerExpType(ctx, exp, candidates[0]!.f.returns);
+        return registerExpType(ctx, exp, candidate.f.returns);
     }
 
     throwCompilationError(
