@@ -28,10 +28,10 @@ jobs:
 
       - name: Prepare linter
         run: |
-          gen:grammar
-          gen:stdlib
-          gen:func-js
-          gen:contracts:test
+          yarn gen:grammar
+          yarn gen:stdlib
+          yarn gen:func-js
+          yarn gen:contracts:test
 
       - name: Check there are no errors to be fixed in package.json and no uncommitted changes
         run: |
