@@ -1034,7 +1034,7 @@ function getMethodId(
         const ty = getExpType(ctx, optMethodId);
         if (!(ty.kind === "ref" && ty.name === "Int")) {
             throwCompilationError(
-                `Getter's method id expression must be of type "Int" but it has type "${printTypeRef(ty)}"`,
+                `Getter's method ID expression must be of type "Int" but it has type "${printTypeRef(ty)}"`,
                 optMethodId.loc,
             );
         }
