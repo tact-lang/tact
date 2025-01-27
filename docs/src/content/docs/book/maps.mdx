@@ -15,6 +15,38 @@ struct IntToInt {
 }
 ```
 
+Since maps can use any given [Struct][struct] as their [value types](#allowed-types), the nested maps can be created via helper structures like this:
+
+```tact
+import "@stdlib/deploy";
+
+// A `map<Address, Int>` packed into the `AllowanceMap` structure
+struct AllowanceMap { unbox: map<Address, Int> }
+
+contract NestedMaps with Deployable {
+    get fun test(): Int {
+        // An outer map `map<Address, AllowanceMap>`,
+        // with `AllowanceMap` Structs as values,
+        // each containing maps of type `map<Address, Int>`
+        let allowances: map<Address, AllowanceMap> = emptyMap();
+
+        // An inner map in the `unbox` field of the `AllowanceMap` Struct
+        let allowance = AllowanceMap{ unbox: emptyMap() };
+
+        // Setting the inner map entry
+        allowance.unbox.set(myAddress(), 42);
+
+        // Setting the outer map entry
+        allowances.set(myAddress(), allowance);
+
+        // Produces 42
+        return allowances.get(myAddress())!!.unbox.get(myAddress())!!;
+    }
+}
+```
+
+Keep in mind that on [TVM][tvm], maps are represented as [`Cell{:tact}`][cell] type, which is very gas-intensive. Also, nested maps will reach the [limits](#limits-and-drawbacks) faster than regular maps.
+
 ## Allowed types
 
 Allowed key types:
@@ -28,7 +60,7 @@ Allowed value types:
 * [`Bool{:tact}`](/book/types#booleans)
 * [`Cell{:tact}`][cell]
 * [`Address{:tact}`][p]
-* [Struct](/book/structs-and-messages#structs)
+* [Struct][struct]
 * [Message](/book/structs-and-messages#messages)
 
 ## Serialization
@@ -486,7 +518,7 @@ It's often useful to set an upper-bound restriction on such maps, so that you [d
 
 :::caution
 
-  Note, that manually keeping track of number of items or checking the length of such map is very error-prone and generally discouraged. Instead, try to wrap your map into the [Struct](/book/structs-and-messages#structs) and define [extension functions](/book/functions#extension-function) on it. See example in the Cookbook: [How to emulate an array using a map wrapped in a Struct](/cookbook/data-structures#array).
+  Note, that manually keeping track of number of items or checking the length of such map is very error-prone and generally discouraged. Instead, try to wrap your map into the [Struct][struct] and define [extension functions](/book/functions#extension-function) on it. See example in the Cookbook: [How to emulate an array using a map wrapped in a Struct](/cookbook/data-structures#array).
 
 :::
 
@@ -543,6 +575,7 @@ If you still need a large map or an unbound (infinitely large) map, it's better 
 [p]: /book/types#primitive-types
 [int]: /book/integers
 [cell]: /book/cells#cells
+[struct]: /book/structs-and-messages#structs
 
 [hashmap]: https://docs.ton.org/develop/data-formats/tl-b-types#hashmap
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
