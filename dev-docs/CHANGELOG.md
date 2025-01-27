@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unified `StatementTry` and `StatementTryCatch` AST nodes: PR [#1418](https://github.com/tact-lang/tact/pull/1418)
 - Make `msg_bounced` last parameter of `*_contract_router_internal` for better code generation: PR [#1585](https://github.com/tact-lang/tact/pull/1585)
 - Inline `*_contract_init` function: PR [#1589](https://github.com/tact-lang/tact/pull/1589)
+- Better error message for `unresolved name` error: PR [#1595](https://github.com/tact-lang/tact/pull/1595)
 
 ### Fixed
 
@@ -66,6 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Incorrect arithmetic bit shift operations optimizations: PR [#1501](https://github.com/tact-lang/tact/pull/1501)
 - Throwing from functions with non-trivial branching in the `try` statement: PR [#1501](https://github.com/tact-lang/tact/pull/1501)
 - Forbid read and write to self in contract init function: PR [#1482](https://github.com/tact-lang/tact/pull/1482)
+- Support for using a constant within another constant and for the default value of a struct field before constant declaration: PR [#1478](https://github.com/tact-lang/tact/pull/1478)
 
 ### Docs
 
