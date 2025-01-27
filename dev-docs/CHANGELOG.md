@@ -65,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Process `else if` statements in the interpreter: PR [#1500](https://github.com/tact-lang/tact/pull/1500)
 - Incorrect arithmetic bit shift operations optimizations: PR [#1501](https://github.com/tact-lang/tact/pull/1501)
 - Throwing from functions with non-trivial branching in the `try` statement: PR [#1501](https://github.com/tact-lang/tact/pull/1501)
+- Forbid read and write to self in contract init function: PR [#1482](https://github.com/tact-lang/tact/pull/1482)
 
 ### Docs
 
