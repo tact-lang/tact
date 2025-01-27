@@ -587,14 +587,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                             traitDecl.loc,
                         );
                     }
-                    if (
-                        traitDecl.attributes.find((v) => v.type === "override")
-                    ) {
-                        throwCompilationError(
-                            `Trait constant cannot be overridden`,
-                            traitDecl.loc,
-                        );
-                    }
                     types
                         .get(idText(a.name))!
                         .constants.push(buildConstantDescription(traitDecl));
@@ -1688,10 +1680,17 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                             funInContractOrTrait.ast.loc,
                         );
                     }
-                    throwCompilationError(
-                        `Function "${traitFunction.name}" is already defined in trait "${inheritedTrait.name}"`,
-                        funInContractOrTrait.ast.loc,
-                    );
+
+                    if (
+                        traitFunction.ast.attributes.find(
+                            (v) => v.type === "override",
+                        ) === undefined
+                    ) {
+                        throwCompilationError(
+                            `Function "${traitFunction.name}" is already defined in trait "${inheritedTrait.name}"`,
+                            funInContractOrTrait.ast.loc,
+                        );
+                    }
                 }
 
                 // Register function
@@ -1754,10 +1753,17 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                             constInContractOrTrait.ast.loc,
                         );
                     }
-                    throwCompilationError(
-                        `Constant "${traitConstant.name}" is already defined in trait "${inheritedTrait.name}"`,
-                        constInContractOrTrait.ast.loc,
-                    );
+
+                    if (
+                        traitConstant.ast.attributes.find(
+                            (v) => v.type === "override",
+                        ) === undefined
+                    ) {
+                        throwCompilationError(
+                            `Constant "${traitConstant.name}" is already defined in trait "${inheritedTrait.name}"`,
+                            constInContractOrTrait.ast.loc,
+                        );
+                    }
                 }
                 const contractField = contractOrTrait.fields.find(
                     (v) => v.name === traitConstant.name,
@@ -1770,7 +1776,18 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     );
                 }
 
-                // Register constant
+                if (
+                    traitConstant.ast.attributes.find(
+                        (v) => v.type === "override",
+                    )
+                ) {
+                    // remove overridden constant
+                    contractOrTrait.constants =
+                        contractOrTrait.constants.filter(
+                            (c) => c.name !== traitConstant.name,
+                        );
+                }
+
                 contractOrTrait.constants.push({
                     ...traitConstant,
                     ast: cloneNode(traitConstant.ast, Ast),

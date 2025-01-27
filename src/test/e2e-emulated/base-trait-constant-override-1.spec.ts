@@ -1,19 +1,21 @@
 import { toNano } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { LaikaContract } from "./contracts/output/traits_LaikaContract";
+import { TraitsConstantContract } from "./contracts/output/base-trait-constant-override-1_TraitsConstantContract";
 import "@ton/test-utils";
 
-describe("traits", () => {
+describe("base-trait-constant-override-1", () => {
     let blockchain: Blockchain;
     let treasure: SandboxContract<TreasuryContract>;
-    let contract: SandboxContract<LaikaContract>;
+    let contract: SandboxContract<TraitsConstantContract>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
         treasure = await blockchain.treasury("treasure");
 
-        contract = blockchain.openContract(await LaikaContract.fromInit());
+        contract = blockchain.openContract(
+            await TraitsConstantContract.fromInit(),
+        );
 
         const deployResult = await contract.send(
             treasure.getSender(),
@@ -29,13 +31,7 @@ describe("traits", () => {
         });
     });
 
-    it("should implement traits correctly", async () => {
-        // Check the contract's behavior after deployment
-        expect(await contract.getSay()).toBe("I am a Laika and I say Woof");
-    });
-
     it("should override constant correctly", async () => {
-        // Check the contract's behavior after deployment
-        expect(await contract.getFooConstant()).toBe(100n);
+        expect(await contract.getConstant()).toEqual(100n);
     });
 });
