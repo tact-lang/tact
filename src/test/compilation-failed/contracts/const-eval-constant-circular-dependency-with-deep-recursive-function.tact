@@ -1,4 +1,4 @@
-const A: Int = foo(3);
+const A: Int = foo(20);
 const C: Int = A;
 
 fun foo(value: Int): Int {

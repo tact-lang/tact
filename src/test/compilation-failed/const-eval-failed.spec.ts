@@ -217,6 +217,12 @@ describe("fail-const-eval", () => {
         testName:
             "const-eval-constant-circular-dependency-with-recursive-function",
         errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> foo() -> foo() -> foo() -> C]",
+    });
+    itShouldNotCompile({
+        testName:
+            "const-eval-constant-circular-dependency-with-deep-recursive-function",
+        errorMessage:
             "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> foo() -> foo() -> foo() -> ... -> foo() -> foo() -> foo() -> foo() -> C]",
     });
     itShouldNotCompile({
