@@ -154,9 +154,9 @@ FunctionAttribute = name:(
 
 GetAttribute = "get" methodId:("(" @expression ")")?;
 
-Receiver = type:receiverType "(" param:receiverParam ")" body:statements;
+Receiver = type:ReceiverType "(" param:receiverParam ")" body:statements;
 // "bounced" cannot be a reserved word because there a 'bounced' field in stdlib's 'Context' structure
-receiverType = "bounced" / keyword<"receive"> / keyword<"external">;
+ReceiverType = name:("bounced" / keyword<"receive"> / keyword<"external">);
 receiverParam = @(Parameter / StringLiteral)?;
 
 assembly = #$assemblySequence;

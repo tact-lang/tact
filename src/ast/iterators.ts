@@ -126,6 +126,21 @@ export function traverse(node: AstNode, callback: (node: AstNode) => boolean) {
                 traverse(e, callback);
             });
             break;
+        case "bounce":
+            traverse(node.param, callback);
+            break;
+        case "internal":
+        case "external":
+            traverse(node.subKind, callback);
+            break;
+        case "fallback":
+            break;
+        case "comment":
+            traverse(node.comment, callback);
+            break;
+        case "simple":
+            traverse(node.param, callback);
+            break;
         case "contract_init":
             node.params.forEach((e) => {
                 traverse(e, callback);
