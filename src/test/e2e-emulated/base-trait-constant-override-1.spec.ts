@@ -10,7 +10,6 @@ describe("base-trait-constant-override-1", () => {
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
-        blockchain.verbosity.print = false;
         treasure = await blockchain.treasury("treasure");
 
         contract = blockchain.openContract(
