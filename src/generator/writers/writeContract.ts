@@ -111,6 +111,7 @@ export function writeInit(
         const sig = `${resolveFuncType(t, ctx)} ${ops.contractInit(t.name, ctx)}(${args.join(", ")})`;
         ctx.signature(sig);
         ctx.flag("impure");
+        ctx.flag("inline");
         ctx.body(() => {
             // Unpack parameters
             for (const a of init.params) {
