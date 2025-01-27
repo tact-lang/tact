@@ -1037,7 +1037,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     );
                 }
 
-                traverse(node.expression, checkNode);
+                traverseAndCheck(node.expression, checkNode);
 
                 // don't walk to left side of assignment
                 return false;
