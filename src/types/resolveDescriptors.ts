@@ -6,7 +6,7 @@ import {
     isSelfId,
     isSlice,
 } from "../ast/ast-helpers";
-import { traverse } from "../ast/iterators";
+import { traverse, traverseAndCheck } from "../ast/iterators";
 import {
     idTextErr,
     throwCompilationError,
@@ -1018,6 +1018,43 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 );
             }
         }
+
+        function checkNode(node: A.AstNode): boolean {
+            if (node.kind === "field_access" || node.kind === "method_call") {
+                // we don't need to check `self.a` or `self.foo()`
+                return false;
+            }
+
+            if (
+                node.kind === "statement_assign" ||
+                node.kind === "statement_augmentedassign"
+            ) {
+                const left = node.path;
+                if (left.kind === "id" && left.text === "self") {
+                    throwCompilationError(
+                        "cannot reassign `self` in `init` function",
+                        left.loc,
+                    );
+                }
+
+                traverseAndCheck(node.expression, checkNode);
+
+                // don't walk to left side of assignment
+                return false;
+            }
+
+            if (node.kind === "id" && node.text === "self") {
+                throwCompilationError(
+                    "cannot read whole `self` in `init` function",
+                    node.loc,
+                );
+            }
+            return true;
+        }
+
+        ast.statements.forEach((stmt) => {
+            traverseAndCheck(stmt, checkNode);
+        });
 
         return {
             params,
