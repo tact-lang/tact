@@ -211,6 +211,47 @@ export const getAstSchema = (
                 statements,
                 loc: toSrcInfo(loc),
             }),
+        ReceiverSimple: (param: A.AstTypedParameter): A.AstReceiverSimple =>
+            createNode<A.AstReceiverSimple>({
+                kind: "simple",
+                param,
+            }),
+        ReceiverFallback: (): A.AstReceiverFallback =>
+            createNode<A.AstReceiverFallback>({
+                kind: "fallback",
+            }),
+        ReceiverComment: (comment: A.AstString): A.AstReceiverComment =>
+            createNode<A.AstReceiverComment>({
+                kind: "comment",
+                comment,
+            }),
+        ReceiverInternal: (
+            subKind: A.AstReceiverSubKind,
+            loc: Loc,
+        ): A.AstReceiverInternal =>
+            createNode<A.AstReceiverInternal>({
+                kind: "internal",
+                subKind,
+                loc: toSrcInfo(loc),
+            }),
+        ReceiverExternal: (
+            subKind: A.AstReceiverSubKind,
+            loc: Loc,
+        ): A.AstReceiverExternal =>
+            createNode<A.AstReceiverExternal>({
+                kind: "external",
+                subKind,
+                loc: toSrcInfo(loc),
+            }),
+        ReceiverBounce: (
+            param: A.AstTypedParameter,
+            loc: Loc,
+        ): A.AstReceiverBounce =>
+            createNode<A.AstReceiverBounce>({
+                kind: "bounce",
+                param,
+                loc: toSrcInfo(loc),
+            }),
         ContractInit: (
             params: A.AstTypedParameter[],
             statements: A.AstStatement[],

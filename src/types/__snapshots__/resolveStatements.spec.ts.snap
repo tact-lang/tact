@@ -1234,7 +1234,7 @@ exports[`resolveStatements should fail statements for usage-of-bounced-field-tha
 `;
 
 exports[`resolveStatements should fail statements for var-does-not-exist 1`] = `
-"<unknown>:5:9: Unable to resolve id 'nonExistentVariable'
+"<unknown>:5:9: Cannot find 'nonExistentVariable'
   4 |     receive() {
 > 5 |         nonExistentVariable = 42;
               ^~~~~~~~~~~~~~~~~~~
@@ -1243,7 +1243,7 @@ exports[`resolveStatements should fail statements for var-does-not-exist 1`] = `
 `;
 
 exports[`resolveStatements should fail statements for var-does-not-exist2 1`] = `
-"<unknown>:13:9: Unable to resolve id 'someField', did you mean 'self.someField'?
+"<unknown>:13:9: Cannot find 'someField', did you mean 'self.someField'?
   12 |     receive() {
 > 13 |         someField = 42;
                ^~~~~~~~~
@@ -1252,7 +1252,7 @@ exports[`resolveStatements should fail statements for var-does-not-exist2 1`] = 
 `;
 
 exports[`resolveStatements should fail statements for var-does-not-exist3 1`] = `
-"<unknown>:17:9: Unable to resolve id 'someField', did you mean 'self.someField'?
+"<unknown>:17:9: Cannot find 'someField', did you mean 'self.someField'?
   16 |     receive() {
 > 17 |         someField = 42;
                ^~~~~~~~~
@@ -1261,7 +1261,7 @@ exports[`resolveStatements should fail statements for var-does-not-exist3 1`] = 
 `;
 
 exports[`resolveStatements should fail statements for var-does-not-exist4 1`] = `
-"<unknown>:9:9: Unable to resolve id 'someField', did you mean 'self.someField'?
+"<unknown>:9:9: Cannot find 'someField', did you mean 'self.someField'?
    8 |     receive() {
 >  9 |         someField = 42;
                ^~~~~~~~~
@@ -1279,7 +1279,7 @@ exports[`resolveStatements should fail statements for var-scope-block-statement 
 `;
 
 exports[`resolveStatements should fail statements for var-scope-block-statement-use-after-block 1`] = `
-"<unknown>:7:12: Unable to resolve id 'a'
+"<unknown>:7:12: Cannot find 'a'
   6 |     }
 > 7 |     return a;
                  ^
@@ -1315,7 +1315,7 @@ exports[`resolveStatements should fail statements for var-scope-catch-param-does
 `;
 
 exports[`resolveStatements should fail statements for var-scope-catch-param-is-not-visible-in-try 1`] = `
-"<unknown>:5:16: Unable to resolve id 'e'
+"<unknown>:5:16: Cannot find 'e'
   4 |     try {
 > 5 |         return e;
                      ^
@@ -1405,7 +1405,7 @@ exports[`resolveStatements should fail statements for var-scope-external-shadows
 `;
 
 exports[`resolveStatements should fail statements for var-scope-foreach-internal-var-does-not-escape 1`] = `
-"<unknown>:8:12: Unable to resolve id 'x'
+"<unknown>:8:12: Cannot find 'x'
   7 |     }
 > 8 |     return x;
                  ^
@@ -1414,7 +1414,7 @@ exports[`resolveStatements should fail statements for var-scope-foreach-internal
 `;
 
 exports[`resolveStatements should fail statements for var-scope-foreach-key-does-not-escape 1`] = `
-"<unknown>:8:12: Unable to resolve id 'k'
+"<unknown>:8:12: Cannot find 'k'
   7 |     }
 > 8 |     return k;
                  ^
@@ -1468,7 +1468,7 @@ exports[`resolveStatements should fail statements for var-scope-foreach-shadows-
 `;
 
 exports[`resolveStatements should fail statements for var-scope-foreach-val-does-not-escape 1`] = `
-"<unknown>:8:12: Unable to resolve id 'v'
+"<unknown>:8:12: Cannot find 'v'
   7 |     }
 > 8 |     return v;
                  ^
@@ -1567,7 +1567,7 @@ exports[`resolveStatements should fail statements for var-scope-if-then-shadows-
 `;
 
 exports[`resolveStatements should fail statements for var-scope-local-catch-param-does-not-escape 1`] = `
-"<unknown>:9:12: Unable to resolve id 'e'
+"<unknown>:9:12: Cannot find 'e'
    8 |     }
 >  9 |     return e;
                   ^
@@ -1576,7 +1576,7 @@ exports[`resolveStatements should fail statements for var-scope-local-catch-para
 `;
 
 exports[`resolveStatements should fail statements for var-scope-local-loop-var-does-not-escape 1`] = `
-"<unknown>:9:12: Unable to resolve id 'c'
+"<unknown>:9:12: Cannot find 'c'
    8 |     }
 >  9 |     return c;
                   ^
@@ -1784,6 +1784,32 @@ exports[`resolveStatements should resolve statements for assign-self-mutating-me
   ],
   [
     "42",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for constant-as-default-value-of-struct-field 1`] = `
+[
+  [
+    "100",
+    "Int",
+  ],
+  [
+    "C",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for constant-as-default-value-of-struct-field-2 1`] = `
+[
+  [
+    "100",
+    "Int",
+  ],
+  [
+    "C",
     "Int",
   ],
 ]
