@@ -974,43 +974,49 @@ exports[`grammar should parse block-statements 1`] = `
 
 exports[`grammar should parse case-35 1`] = `
 {
-  "id": 7,
+  "id": 9,
   "imports": [],
   "items": [
     {
       "attributes": [],
       "declarations": [
         {
-          "id": 5,
+          "id": 7,
           "kind": "receiver",
           "loc": external() {
         acceptMessage();
     },
           "selector": {
-            "kind": "external-fallback",
+            "id": 3,
+            "kind": "external",
+            "loc": external,
+            "subKind": {
+              "id": 2,
+              "kind": "fallback",
+            },
           },
           "statements": [
             {
               "expression": {
                 "args": [],
                 "function": {
-                  "id": 2,
+                  "id": 4,
                   "kind": "id",
                   "loc": acceptMessage,
                   "text": "acceptMessage",
                 },
-                "id": 3,
+                "id": 5,
                 "kind": "static_call",
                 "loc": acceptMessage(),
               },
-              "id": 4,
+              "id": 6,
               "kind": "statement_expression",
               "loc": acceptMessage();,
             },
           ],
         },
       ],
-      "id": 6,
+      "id": 8,
       "kind": "contract",
       "loc": contract ReceiveTestContract {
     external() {
