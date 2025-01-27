@@ -1789,6 +1789,32 @@ exports[`resolveStatements should resolve statements for assign-self-mutating-me
 ]
 `;
 
+exports[`resolveStatements should resolve statements for constant-as-default-value-of-struct-field 1`] = `
+[
+  [
+    "100",
+    "Int",
+  ],
+  [
+    "C",
+    "Int",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for constant-as-default-value-of-struct-field-2 1`] = `
+[
+  [
+    "100",
+    "Int",
+  ],
+  [
+    "C",
+    "Int",
+  ],
+]
+`;
+
 exports[`resolveStatements should resolve statements for contract-getter-with-method-id-1 1`] = `
 [
   [
