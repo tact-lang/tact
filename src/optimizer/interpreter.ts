@@ -1826,6 +1826,12 @@ export class Interpreter {
             start !== -1
                 ? this.constantComputationPath.slice(start)
                 : this.constantComputationPath;
-        return `${path.join(" -> ")} -> ${name}`;
+
+        const shortPath =
+            path.length > 10
+                ? [...path.slice(0, 5), "...", ...path.slice(path.length - 4)]
+                : path;
+
+        return `${shortPath.join(" -> ")} -> ${name}`;
     }
 }
