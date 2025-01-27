@@ -1788,6 +1788,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         );
                 }
 
+                // Register constant
                 contractOrTrait.constants.push({
                     ...traitConstant,
                     ast: cloneNode(traitConstant.ast, Ast),
