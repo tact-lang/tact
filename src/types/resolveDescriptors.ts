@@ -6,7 +6,7 @@ import {
     isSelfId,
     isSlice,
 } from "../ast/ast-helpers";
-import { traverse } from "../ast/iterators";
+import { traverse, traverseAndCheck } from "../ast/iterators";
 import {
     idTextErr,
     throwCompilationError,
@@ -1053,7 +1053,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         }
 
         ast.statements.forEach((stmt) => {
-            traverse(stmt, checkNode);
+            traverseAndCheck(stmt, checkNode);
         });
 
         return {
@@ -1896,7 +1896,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
     for (const [k, t] of types) {
         const dependsOn: Set<string> = new Set();
-        const handler = (src: A.AstNode): boolean => {
+        const handler = (src: A.AstNode) => {
             if (src.kind === "init_of") {
                 if (!types.has(idText(src.contract))) {
                     throwCompilationError(
@@ -1906,7 +1906,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 }
                 dependsOn.add(idText(src.contract));
             }
-            return true;
         };
 
         // Traverse functions

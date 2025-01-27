@@ -30,10 +30,10 @@ function resolveStringsInAST(
     ctx: CompilerContext,
     util: AstUtil,
 ) {
-    traverse(ast, (node): boolean => {
+    traverse(ast, (node) => {
         if (node.kind === "static_call" && isRequire(node.function)) {
             if (node.args.length !== 2) {
-                return true;
+                return;
             }
             const resolved = ensureSimplifiedString(
                 evalConstantExpression(node.args[1]!, ctx, util),
