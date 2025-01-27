@@ -849,26 +849,31 @@ export class AstComparator {
         kind1: A.AstReceiverKind,
         kind2: A.AstReceiverKind,
     ): boolean {
-        if (kind1.kind !== kind2.kind) {
-            return false;
-        }
-        if (
-            (kind1.kind === "internal-simple" &&
-                kind2.kind === "internal-simple") ||
-            (kind1.kind === "bounce" && kind2.kind === "bounce") ||
-            (kind1.kind === "external-simple" &&
-                kind2.kind === "external-simple")
-        ) {
+        if (kind1.kind === "bounce" && kind2.kind === "bounce") {
             return this.compare(kind1.param, kind2.param);
         }
-        if (
-            (kind1.kind === "internal-comment" &&
-                kind2.kind === "internal-comment") ||
-            (kind1.kind === "external-comment" &&
-                kind2.kind === "external-comment")
-        ) {
-            return this.compare(kind1.comment, kind2.comment);
+        if (kind1.kind === "internal" && kind2.kind === "internal") {
+            return this.compareReceiverSubKinds(kind1.subKind, kind2.subKind);
         }
-        return true;
+        if (kind1.kind === "external" && kind2.kind === "external") {
+            return this.compareReceiverSubKinds(kind1.subKind, kind2.subKind);
+        }
+        return false;
+    }
+
+    private compareReceiverSubKinds(
+        subKind1: A.AstReceiverSubKind,
+        subKind2: A.AstReceiverSubKind,
+    ): boolean {
+        if (subKind1.kind === "simple" && subKind2.kind === "simple") {
+            return this.compare(subKind1.param, subKind2.param);
+        }
+        if (subKind1.kind === "comment" && subKind2.kind === "comment") {
+            return this.compare(subKind1.comment, subKind2.comment);
+        }
+        if (subKind1.kind === "fallback" && subKind2.kind === "fallback") {
+            return true;
+        }
+        return false;
     }
 }

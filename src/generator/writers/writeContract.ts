@@ -342,7 +342,7 @@ export function writeMainContract(
             // Process operation
             ctx.append(`;; Handle operation`);
             ctx.append(
-                `int handled = self~${ops.contractRouter(type.name, "internal")}(msg_bounced, in_msg);`,
+                `int handled = self~${ops.contractRouter(type.name, "internal")}(in_msg, msg_bounced);`,
             );
             ctx.append();
 
