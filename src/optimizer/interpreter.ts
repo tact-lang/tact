@@ -33,6 +33,7 @@ import {
     isSelfId,
 } from "../ast/ast-helpers";
 import { divFloor, modFloor } from "./util";
+import { cloneNode } from "../ast/clone";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -112,7 +113,7 @@ function ensureArgumentForEquality(val: A.AstLiteral): A.AstLiteral {
     }
 }
 
-function ensureRepeatInt(val: A.AstExpression): A.AstNumber {
+export function ensureRepeatInt(val: A.AstExpression): A.AstNumber {
     if (val.kind !== "number") {
         throwErrorConstEval(
             `integer expected, but got expression of kind '${val.kind}'`,
@@ -499,18 +500,31 @@ export type InterpreterConfig = {
 
 const WILDCARD_NAME: string = "_";
 
-type Environment = { values: Map<string, A.AstLiteral>; parent?: Environment };
+type ActiveBinding = { value: A.AstLiteral; state: "active" };
+type DeletedBinding = { state: "inactive" };
+type BindingState = ActiveBinding | DeletedBinding;
 
-class EnvironmentStack {
+type Environment = { values: Map<string, BindingState>; parent?: Environment };
+
+export class EnvironmentStack {
     private currentEnv: Environment;
+    private copyLiteral: (literal: A.AstLiteral) => A.AstLiteral;
 
-    constructor() {
+    constructor(copyLiteral: (literal: A.AstLiteral) => A.AstLiteral) {
+        this.currentEnv = { values: new Map() };
+        this.copyLiteral = copyLiteral;
+    }
+
+    /* 
+    Removes all bindings from the stack
+    */
+    public clear() {
         this.currentEnv = { values: new Map() };
     }
 
     private findBindingMap(
         name: string,
-    ): Map<string, A.AstLiteral> | undefined {
+    ): Map<string, BindingState> | undefined {
         let env: Environment | undefined = this.currentEnv;
         while (env !== undefined) {
             if (env.values.has(name)) {
@@ -520,6 +534,31 @@ class EnvironmentStack {
             }
         }
         return undefined;
+    }
+
+    private copyValue(val: BindingState): BindingState {
+        switch (val.state) {
+            case "active":
+                return { state: "active", value: this.copyLiteral(val.value) };
+            case "inactive":
+                return val;
+        }
+    }
+
+    private copyEnvironment(env: Environment): Environment {
+        const newMap: Map<string, BindingState> = new Map();
+
+        for (const [name, val] of env.values) {
+            newMap.set(name, this.copyValue(val));
+        }
+
+        let newParent: Environment | undefined = undefined;
+
+        if (typeof env.parent !== "undefined") {
+            newParent = this.copyEnvironment(env.parent);
+        }
+
+        return { values: newMap, parent: newParent };
     }
 
     /*
@@ -570,7 +609,7 @@ class EnvironmentStack {
     */
     public setNewBinding(name: string, val: A.AstLiteral) {
         if (name !== WILDCARD_NAME) {
-            this.currentEnv.values.set(name, val);
+            this.currentEnv.values.set(name, { state: "active", value: val });
         }
     }
 
@@ -584,8 +623,8 @@ class EnvironmentStack {
     public updateBinding(name: string, val: A.AstLiteral) {
         if (name !== WILDCARD_NAME) {
             const bindings = this.findBindingMap(name);
-            if (bindings !== undefined) {
-                bindings.set(name, val);
+            if (typeof bindings !== "undefined") {
+                bindings.set(name, { state: "active", value: val });
             }
         }
     }
@@ -602,15 +641,32 @@ class EnvironmentStack {
             return undefined;
         }
         const bindings = this.findBindingMap(name);
-        if (bindings !== undefined) {
-            return bindings.get(name);
-        } else {
-            return undefined;
+        if (typeof bindings !== "undefined") {
+            const val = bindings.get(name);
+            if (typeof val !== "undefined" && val.state === "active") {
+                return val.value;
+            }
+        }
+        return undefined;
+    }
+
+    public deactivateBinding(name: string) {
+        if (name === WILDCARD_NAME) {
+            return;
+        }
+        const bindings = this.findBindingMap(name);
+        if (typeof bindings !== "undefined") {
+            bindings.set(name, { state: "inactive" });
         }
     }
 
     public selfInEnvironment(): boolean {
-        return this.findBindingMap("self") !== undefined;
+        const bindings = this.findBindingMap("self");
+        if (typeof bindings !== "undefined") {
+            const val = bindings.get("self");
+            return typeof val !== "undefined" && val.state === "active";
+        }
+        return false;
     }
 
     /*
@@ -646,20 +702,43 @@ class EnvironmentStack {
             this.currentEnv = oldEnv;
         }
     }
+
+    public simulate<T>(code: () => T): T {
+        // Make a copy of the current environment
+        const envCopy = this.copyEnvironment(this.currentEnv);
+
+        // Save the current environment for restoring it once
+        // the execution finishes
+        const currentEnv = this.currentEnv;
+
+        // All the changes will be made to the copy
+        this.currentEnv = envCopy;
+
+        try {
+            const result = code();
+            return result;
+        } finally {
+            // Restore the environment as it was before execution of the code
+            this.currentEnv = currentEnv;
+        }
+    }
+
+    public simulateInNewEnvironment<T>(code: () => T): T {
+        return this.simulate(() => this.executeInNewEnvironment(code));
+    }
 }
 
 export function parseAndEvalExpression(
     sourceCode: string,
-    ast: FactoryAst = getAstFactory(),
-    parser: Parser = getParser(ast, defaultParser),
-    util: AstUtil = getAstUtil(ast),
+    astF: FactoryAst = getAstFactory(),
+    parser: Parser = getParser(astF, defaultParser),
 ): EvalResult {
     try {
         const ast = parser.parseExpression(sourceCode);
         const constEvalResult = evalConstantExpression(
             ast,
             new CompilerContext(),
-            util,
+            astF,
         );
         return { kind: "ok", value: constEvalResult };
     } catch (error) {
@@ -673,9 +752,9 @@ export function parseAndEvalExpression(
 }
 
 const defaultInterpreterConfig: InterpreterConfig = {
-    // We set the default max number of loop iterations
-    // to the maximum number allowed for repeat loops
-    maxLoopIterations: maxRepeatStatement,
+    // Set the default max number of loop iterations to 2 ^ 12 = 4096
+    // to increase compiler responsiveness.
+    maxLoopIterations: 2n ** 12n,
 };
 
 /*
@@ -723,14 +802,24 @@ export class Interpreter {
     private util: AstUtil;
 
     constructor(
-        util: AstUtil,
+        astF: FactoryAst,
         context: CompilerContext = new CompilerContext(),
         config: InterpreterConfig = defaultInterpreterConfig,
     ) {
-        this.envStack = new EnvironmentStack();
+        this.envStack = new EnvironmentStack((expr: A.AstLiteral) =>
+            cloneNode(expr, astF),
+        );
         this.context = context;
         this.config = config;
-        this.util = util;
+        this.util = getAstUtil(astF);
+    }
+
+    public getConfig(): InterpreterConfig {
+        return this.config;
+    }
+
+    public setEnvironmentStack(envSack: EnvironmentStack) {
+        this.envStack = envSack;
     }
 
     public interpretModuleItem(ast: A.AstModuleItem): void {
@@ -873,7 +962,10 @@ export class Interpreter {
         if (hasStaticConstant(this.context, idText(ast))) {
             const constant = getStaticConstant(this.context, idText(ast));
             if (constant.value !== undefined) {
-                return constant.value;
+                return this.util.changeLocationOfLiteral(
+                    constant.value,
+                    ast.loc,
+                );
             } else {
                 throwErrorConstEval(
                     `cannot evaluate declared constant ${idTextErr(ast)} as it does not have a body`,
@@ -883,7 +975,7 @@ export class Interpreter {
         }
         const variableBinding = this.envStack.getBinding(idText(ast));
         if (variableBinding !== undefined) {
-            return variableBinding;
+            return this.util.changeLocationOfLiteral(variableBinding, ast.loc);
         }
         throwNonFatalErrorConstEval("cannot evaluate a variable", ast.loc);
     }
@@ -1085,7 +1177,10 @@ export class Interpreter {
                     );
                 }
                 if (foundContractConst.value !== undefined) {
-                    return foundContractConst.value;
+                    return this.util.changeLocationOfLiteral(
+                        foundContractConst.value,
+                        ast.aggregate.loc,
+                    );
                 } else {
                     throwErrorConstEval(
                         `cannot evaluate declared contract/trait constant ${idTextErr(ast.field)} as it does not have a body`,
@@ -1105,7 +1200,10 @@ export class Interpreter {
             (f) => idText(ast.field) === idText(f.field),
         );
         if (typeof field !== "undefined") {
-            return field.initializer;
+            return this.util.changeLocationOfLiteral(
+                field.initializer,
+                ast.aggregate.loc,
+            );
         } else {
             // this cannot happen in a well-typed program
             throwInternalCompilerError(

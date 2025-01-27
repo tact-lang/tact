@@ -1,6 +1,6 @@
-import { AstNode } from "./ast";
 import { FactoryAst } from "./ast-helpers";
 import { throwInternalCompilerError } from "../error/errors";
+import { AstNode } from "./ast";
 
 export function cloneNode<T extends AstNode>(
     src: T,
@@ -17,6 +17,27 @@ export function cloneNode<T extends AstNode>(
             return cloneNode(src);
         } else if (src.kind === "string") {
             return cloneNode(src);
+        } else if (src.kind === "address") {
+            // The actual address value src.value is immutable (it freezes its fields in its constructor)
+            // So, there is no need to make a copy of the value
+            return cloneNode(src);
+        } else if (src.kind === "cell") {
+            // The actual address value src.value is immutable (it freezes its fields in its constructor)
+            // So, there is no need to make a copy of the value
+            return cloneNode(src);
+        } else if (src.kind === "comment_value") {
+            return cloneNode(src);
+        } else if (src.kind === "simplified_string") {
+            return cloneNode(src);
+        } else if (src.kind === "slice") {
+            // This will make a copy of the slice from the point it is
+            // currently reading (this is compatible with the way equality works for slices)
+            return cloneNode({ ...src, value: src.value.clone() });
+        } else if (src.kind === "struct_value") {
+            return cloneNode({
+                ...src,
+                args: src.args.map(recurse),
+            });
         } else if (src.kind === "statement_assign") {
             return cloneNode({
                 ...src,
@@ -51,6 +72,11 @@ export function cloneNode<T extends AstNode>(
                 statements: src.statements.map(recurse),
             });
         } else if (src.kind === "struct_field_initializer") {
+            return cloneNode({
+                ...src,
+                initializer: recurse(src.initializer),
+            });
+        } else if (src.kind === "struct_field_value") {
             return cloneNode({
                 ...src,
                 initializer: recurse(src.initializer),

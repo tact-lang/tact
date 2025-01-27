@@ -3,6 +3,8 @@ import "@stdlib/dns";
 
 message(1478) SpanishInquisition {}
 
+message(128) ExitCode128 { gotcha: String? }
+
 contract ReservedContractErrorsTester with Ownable {
     /// To make Ownable work
     owner: Address;
@@ -14,9 +16,8 @@ contract ReservedContractErrorsTester with Ownable {
     receive() {}
 
     /// Exit code 128
-    receive("128") {
-        let gotcha: String? = null;
-        dump(gotcha!!);
+    receive(msg: ExitCode128) {
+        dump(msg.gotcha!!);
     }
 
     /// Exit code 130

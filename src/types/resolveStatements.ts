@@ -30,7 +30,6 @@ import { evalConstantExpression } from "../optimizer/constEval";
 import { ensureInt } from "../optimizer/interpreter";
 import { crc16 } from "../utils/crc16";
 import { SrcInfo } from "../grammar";
-import { AstUtil, getAstUtil } from "../ast/util";
 
 export type StatementContext = {
     root: SrcInfo;
@@ -804,8 +803,6 @@ function processFunctionBody(
 }
 
 export function resolveStatements(ctx: CompilerContext, Ast: FactoryAst) {
-    const util = getAstUtil(Ast);
-
     // Process all static functions
     for (const f of getAllStaticFunctions(ctx)) {
         if (f.ast.kind === "function_def") {
@@ -960,7 +957,7 @@ export function resolveStatements(ctx: CompilerContext, Ast: FactoryAst) {
 
                 // Check for collisions in getter method IDs
                 if (f.isGetter) {
-                    const methodId = getMethodId(f, ctx, sctx, util);
+                    const methodId = getMethodId(f, ctx, sctx, Ast);
                     const existing = methodIds.get(methodId);
                     if (existing) {
                         throwCompilationError(
@@ -1023,7 +1020,7 @@ function getMethodId(
     funcDescr: FunctionDescription,
     ctx: CompilerContext,
     sctx: StatementContext,
-    util: AstUtil,
+    astF: FactoryAst,
 ): number {
     const optMethodId = funcDescr.ast.attributes.find(
         (attr) => attr.type === "get",
@@ -1040,7 +1037,7 @@ function getMethodId(
         }
 
         const methodId = ensureInt(
-            evalConstantExpression(optMethodId, ctx, util),
+            evalConstantExpression(optMethodId, ctx, astF),
         ).value;
         checkMethodId(methodId, optMethodId.loc);
         return Number(methodId);

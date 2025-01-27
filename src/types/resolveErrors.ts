@@ -11,7 +11,6 @@ import {
     getAllStaticConstants,
 } from "./resolveDescriptors";
 import { ensureSimplifiedString } from "../optimizer/interpreter";
-import { AstUtil, getAstUtil } from "../ast/util";
 
 type Exception = { value: string; id: number };
 
@@ -28,7 +27,7 @@ function exceptionId(src: string): number {
 function resolveStringsInAST(
     ast: AstNode,
     ctx: CompilerContext,
-    util: AstUtil,
+    astF: FactoryAst,
 ) {
     traverse(ast, (node) => {
         if (node.kind === "static_call" && isRequire(node.function)) {
@@ -36,7 +35,7 @@ function resolveStringsInAST(
                 return;
             }
             const resolved = ensureSimplifiedString(
-                evalConstantExpression(node.args[1]!, ctx, util),
+                evalConstantExpression(node.args[1]!, ctx, astF),
             ).value;
             if (!exceptions.get(ctx, resolved)) {
                 const id = exceptionId(resolved);
@@ -57,43 +56,41 @@ function resolveStringsInAST(
 }
 
 export function resolveErrors(ctx: CompilerContext, Ast: FactoryAst) {
-    const util = getAstUtil(Ast);
-
     // Process all static functions
     for (const f of getAllStaticFunctions(ctx)) {
-        ctx = resolveStringsInAST(f.ast, ctx, util);
+        ctx = resolveStringsInAST(f.ast, ctx, Ast);
     }
 
     // Process all static constants
     for (const f of getAllStaticConstants(ctx)) {
-        ctx = resolveStringsInAST(f.ast, ctx, util);
+        ctx = resolveStringsInAST(f.ast, ctx, Ast);
     }
 
     // Process all types
     for (const t of getAllTypes(ctx)) {
         // Process fields
         for (const f of t.fields) {
-            ctx = resolveStringsInAST(f.ast, ctx, util);
+            ctx = resolveStringsInAST(f.ast, ctx, Ast);
         }
 
         // Process constants
         for (const f of t.constants) {
-            ctx = resolveStringsInAST(f.ast, ctx, util);
+            ctx = resolveStringsInAST(f.ast, ctx, Ast);
         }
 
         // Process init
         if (t.init) {
-            ctx = resolveStringsInAST(t.init.ast, ctx, util);
+            ctx = resolveStringsInAST(t.init.ast, ctx, Ast);
         }
 
         // Process receivers
         for (const f of t.receivers) {
-            ctx = resolveStringsInAST(f.ast, ctx, util);
+            ctx = resolveStringsInAST(f.ast, ctx, Ast);
         }
 
         // Process functions
         for (const f of t.functions.values()) {
-            ctx = resolveStringsInAST(f.ast, ctx, util);
+            ctx = resolveStringsInAST(f.ast, ctx, Ast);
         }
     }
 

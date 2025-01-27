@@ -14,10 +14,10 @@ contract RepeatRangeTester {
     }
 
     /// from 2^{31} to +∞ — repeat range is too big
-    get fun testInvalidRange(): Bool {
+    get fun testInvalidRange(exponent: Int): Bool {
         try {
             let counter = 0;
-            repeat (pow(2, 31)) { counter += 1 }
+            repeat (pow(2, exponent)) { counter += 1 }
 
             return false;
         } catch (exitCode) {

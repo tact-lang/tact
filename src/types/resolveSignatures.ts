@@ -22,11 +22,8 @@ import { sha256_sync } from "@ton/crypto";
 import { dummySrcInfo } from "../grammar";
 import { ensureInt } from "../optimizer/interpreter";
 import { evalConstantExpression } from "../optimizer/constEval";
-import { getAstUtil } from "../ast/util";
 
 export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
-    const util = getAstUtil(Ast);
-
     const signatures: Map<
         string,
         { signature: string; tlb: string; id: AstNumber | null }
@@ -211,7 +208,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
                 // ```
                 // WILL NOT result in error
                 const opCode = ensureInt(
-                    evalConstantExpression(t.ast.opcode, ctx, util),
+                    evalConstantExpression(t.ast.opcode, ctx, Ast),
                 ).value;
                 if (opCode === 0n) {
                     throwConstEvalError(
