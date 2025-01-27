@@ -52,7 +52,6 @@ function resolveStringsInAST(
                 ctx = exceptions.set(ctx, resolved, { value: resolved, id });
             }
         }
-        return true;
     });
     return ctx;
 }
