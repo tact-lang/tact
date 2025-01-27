@@ -91,7 +91,7 @@ exports[`resolveStatements should fail statements for contract-getter-with-metho
 `;
 
 exports[`resolveStatements should fail statements for contract-getter-with-method-id-2 1`] = `
-"<unknown>:5:9: Getter's method ID expression must be of type "Int" but it has type "Bool"
+"<unknown>:5:9: Getter's method id expression must be of type "Int" but it has type "Bool"
   4 | contract Test {
 > 5 |     get(true) fun test(): Int {
               ^~~~
