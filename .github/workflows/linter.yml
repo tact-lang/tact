@@ -1,0 +1,62 @@
+name: Linter check
+
+env:
+  HUSKY: 0
+
+on:
+  pull_request:
+    branches: ["**"]
+  workflow_dispatch:
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: |
+          corepack enable
+          yarn install
+
+      - name: Prepare linter
+        run: |
+          yarn gen:grammar
+          yarn gen:stdlib
+          yarn gen:func-js
+          yarn gen:contracts:test
+
+      - name: Check there are no errors to be fixed in package.json and no uncommitted changes
+        run: |
+          npm pkg fix && git diff --exit-code
+
+      - name: Check there are no errors reported by ESLint
+        run: |
+          yarn lint
+
+      - name: Check formatting with Prettier
+        run: |
+          yarn fmt:check
+
+      - name: Spellcheck code base
+        run: |
+          yarn spell
+
+      - name: Check there are no unused dependencies
+        run: |
+          yarn knip
+
+      - name: Check broken file references in internal documentation
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: "-n -s file --exclude-path node_modules --exclude-path docs './**/*.md'"
+          output: "/dev/stdout"
+          fail: true
+          failIfEmpty: false

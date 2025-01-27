@@ -356,6 +356,42 @@ exports[`resolveDescriptors should fail descriptors for getter-outside-contract 
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for init-self-augmented-reassign-with 1`] = `
+"<unknown>:5:9: cannot reassign \`self\` in \`init\` function
+  4 |     init() {
+> 5 |         self += 20;
+              ^~~~
+  6 |     }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for init-self-reassign 1`] = `
+"<unknown>:5:9: cannot reassign \`self\` in \`init\` function
+  4 |     init() {
+> 5 |         self = 100;
+              ^~~~
+  6 |     }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for init-self-reassign-in-if 1`] = `
+"<unknown>:7:17: cannot reassign \`self\` in \`init\` function
+  6 |             if (true) {
+> 7 |                 self = 100;
+                      ^~~~
+  8 |             }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for init-self-reassign-in-if-2 1`] = `
+"<unknown>:8:13: cannot reassign \`self\` in \`init\` function
+  7 |             a = 30;
+> 8 |             self = 20;
+                  ^~~~
+  9 |         }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for message-decl-remainder-in-the-middle 1`] = `
 "<unknown>:8:5: The "remainder" field can only be the last field of the message
   7 |     a: Int;
@@ -528,6 +564,42 @@ exports[`resolveDescriptors should fail descriptors for override-for-non-existin
 > 4 |     override fun foo() {}
           ^~~~~~~~~~~~~~~~~~~~~
   5 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for read-self-in-init-function 1`] = `
+"<unknown>:5:17: cannot read whole \`self\` in \`init\` function
+  4 |     init() {
+> 5 |         let a = self;
+                      ^~~~
+  6 |     }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for read-self-in-init-function-assign 1`] = `
+"<unknown>:9:18: cannot read whole \`self\` in \`init\` function
+   8 |         let a = 100;
+>  9 |         self.a = self;
+                        ^~~~
+  10 |     }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for read-self-in-init-function-in-deep-expression 1`] = `
+"<unknown>:5:23: cannot read whole \`self\` in \`init\` function
+  4 |     init() {
+> 5 |         let a = 10 + (self);
+                            ^~~~
+  6 |     }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for read-self-in-init-function-in-if 1`] = `
+"<unknown>:7:25: cannot read whole \`self\` in \`init\` function
+  6 |             if (true) {
+> 7 |                 let a = self;
+                              ^~~~
+  8 |             }
 "
 `;
 
@@ -2347,53 +2419,61 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
           "statements": [],
         },
         {
-          "id": 18,
+          "id": 20,
           "kind": "receiver",
           "loc": receive(src: A) {
     
   },
           "selector": {
-            "kind": "internal-simple",
-            "param": {
-              "id": 17,
-              "kind": "typed_parameter",
-              "loc": src: A,
-              "name": {
-                "id": 15,
-                "kind": "id",
-                "loc": src,
-                "text": "src",
-              },
-              "type": {
-                "id": 16,
-                "kind": "type_id",
-                "loc": A,
-                "text": "A",
+            "id": 19,
+            "kind": "internal",
+            "loc": receive,
+            "subKind": {
+              "id": 18,
+              "kind": "simple",
+              "param": {
+                "id": 17,
+                "kind": "typed_parameter",
+                "loc": src: A,
+                "name": {
+                  "id": 15,
+                  "kind": "id",
+                  "loc": src,
+                  "text": "src",
+                },
+                "type": {
+                  "id": 16,
+                  "kind": "type_id",
+                  "loc": A,
+                  "text": "A",
+                },
               },
             },
           },
           "statements": [],
         },
         {
-          "id": 22,
+          "id": 25,
           "kind": "receiver",
           "loc": bounced(src: Slice) {
     
   },
           "selector": {
+            "id": 24,
             "kind": "bounce",
+            "loc": bounced,
             "param": {
-              "id": 21,
+              "id": 23,
               "kind": "typed_parameter",
               "loc": src: Slice,
               "name": {
-                "id": 19,
+                "id": 21,
                 "kind": "id",
                 "loc": src,
                 "text": "src",
               },
               "type": {
-                "id": 20,
+                "id": 22,
                 "kind": "type_id",
                 "loc": Slice,
                 "text": "Slice",
@@ -2403,7 +2483,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
           "statements": [],
         },
       ],
-      "id": 23,
+      "id": 26,
       "kind": "contract",
       "loc": contract Test {
   init() {}
@@ -2446,28 +2526,34 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
     "receivers": [
       {
         "ast": {
-          "id": 18,
+          "id": 20,
           "kind": "receiver",
           "loc": receive(src: A) {
     
   },
           "selector": {
-            "kind": "internal-simple",
-            "param": {
-              "id": 17,
-              "kind": "typed_parameter",
-              "loc": src: A,
-              "name": {
-                "id": 15,
-                "kind": "id",
-                "loc": src,
-                "text": "src",
-              },
-              "type": {
-                "id": 16,
-                "kind": "type_id",
-                "loc": A,
-                "text": "A",
+            "id": 19,
+            "kind": "internal",
+            "loc": receive,
+            "subKind": {
+              "id": 18,
+              "kind": "simple",
+              "param": {
+                "id": 17,
+                "kind": "typed_parameter",
+                "loc": src: A,
+                "name": {
+                  "id": 15,
+                  "kind": "id",
+                  "loc": src,
+                  "text": "src",
+                },
+                "type": {
+                  "id": 16,
+                  "kind": "type_id",
+                  "loc": A,
+                  "text": "A",
+                },
               },
             },
           },
@@ -2486,25 +2572,27 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
       },
       {
         "ast": {
-          "id": 22,
+          "id": 25,
           "kind": "receiver",
           "loc": bounced(src: Slice) {
     
   },
           "selector": {
+            "id": 24,
             "kind": "bounce",
+            "loc": bounced,
             "param": {
-              "id": 21,
+              "id": 23,
               "kind": "typed_parameter",
               "loc": src: Slice,
               "name": {
-                "id": 19,
+                "id": 21,
                 "kind": "id",
                 "loc": src,
                 "text": "src",
               },
               "type": {
-                "id": 20,
+                "id": 22,
                 "kind": "type_id",
                 "loc": Slice,
                 "text": "Slice",
@@ -2516,7 +2604,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         "selector": {
           "kind": "bounce-fallback",
           "name": {
-            "id": 19,
+            "id": 21,
             "kind": "id",
             "loc": src,
             "text": "src",
@@ -2914,57 +3002,65 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "statements": [],
         },
         {
-          "id": 25,
+          "id": 27,
           "kind": "receiver",
           "loc": receive(src: A) {
     
   },
           "selector": {
-            "kind": "internal-simple",
-            "param": {
-              "id": 24,
-              "kind": "typed_parameter",
-              "loc": src: A,
-              "name": {
-                "id": 22,
-                "kind": "id",
-                "loc": src,
-                "text": "src",
-              },
-              "type": {
-                "id": 23,
-                "kind": "type_id",
-                "loc": A,
-                "text": "A",
+            "id": 26,
+            "kind": "internal",
+            "loc": receive,
+            "subKind": {
+              "id": 25,
+              "kind": "simple",
+              "param": {
+                "id": 24,
+                "kind": "typed_parameter",
+                "loc": src: A,
+                "name": {
+                  "id": 22,
+                  "kind": "id",
+                  "loc": src,
+                  "text": "src",
+                },
+                "type": {
+                  "id": 23,
+                  "kind": "type_id",
+                  "loc": A,
+                  "text": "A",
+                },
               },
             },
           },
           "statements": [],
         },
         {
-          "id": 36,
+          "id": 39,
           "kind": "receiver",
           "loc": bounced(src: bounced<A>) {
     let x: Int = src.c;
   },
           "selector": {
+            "id": 32,
             "kind": "bounce",
+            "loc": bounced,
             "param": {
-              "id": 29,
+              "id": 31,
               "kind": "typed_parameter",
               "loc": src: bounced<A>,
               "name": {
-                "id": 26,
+                "id": 28,
                 "kind": "id",
                 "loc": src,
                 "text": "src",
               },
               "type": {
-                "id": 28,
+                "id": 30,
                 "kind": "bounced_message_type",
                 "loc": bounced<A>,
                 "messageType": {
-                  "id": 27,
+                  "id": 29,
                   "kind": "type_id",
                   "loc": A,
                   "text": "A",
@@ -2976,32 +3072,32 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             {
               "expression": {
                 "aggregate": {
-                  "id": 32,
+                  "id": 35,
                   "kind": "id",
                   "loc": src,
                   "text": "src",
                 },
                 "field": {
-                  "id": 33,
+                  "id": 36,
                   "kind": "id",
                   "loc": c,
                   "text": "c",
                 },
-                "id": 34,
+                "id": 37,
                 "kind": "field_access",
                 "loc": src.c,
               },
-              "id": 35,
+              "id": 38,
               "kind": "statement_let",
               "loc": let x: Int = src.c;,
               "name": {
-                "id": 30,
+                "id": 33,
                 "kind": "id",
                 "loc": x,
                 "text": "x",
               },
               "type": {
-                "id": 31,
+                "id": 34,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
@@ -3010,7 +3106,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           ],
         },
       ],
-      "id": 37,
+      "id": 40,
       "kind": "contract",
       "loc": contract Test {
   init() {}
@@ -3053,28 +3149,34 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
     "receivers": [
       {
         "ast": {
-          "id": 25,
+          "id": 27,
           "kind": "receiver",
           "loc": receive(src: A) {
     
   },
           "selector": {
-            "kind": "internal-simple",
-            "param": {
-              "id": 24,
-              "kind": "typed_parameter",
-              "loc": src: A,
-              "name": {
-                "id": 22,
-                "kind": "id",
-                "loc": src,
-                "text": "src",
-              },
-              "type": {
-                "id": 23,
-                "kind": "type_id",
-                "loc": A,
-                "text": "A",
+            "id": 26,
+            "kind": "internal",
+            "loc": receive,
+            "subKind": {
+              "id": 25,
+              "kind": "simple",
+              "param": {
+                "id": 24,
+                "kind": "typed_parameter",
+                "loc": src: A,
+                "name": {
+                  "id": 22,
+                  "kind": "id",
+                  "loc": src,
+                  "text": "src",
+                },
+                "type": {
+                  "id": 23,
+                  "kind": "type_id",
+                  "loc": A,
+                  "text": "A",
+                },
               },
             },
           },
@@ -3093,29 +3195,31 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
       },
       {
         "ast": {
-          "id": 36,
+          "id": 39,
           "kind": "receiver",
           "loc": bounced(src: bounced<A>) {
     let x: Int = src.c;
   },
           "selector": {
+            "id": 32,
             "kind": "bounce",
+            "loc": bounced,
             "param": {
-              "id": 29,
+              "id": 31,
               "kind": "typed_parameter",
               "loc": src: bounced<A>,
               "name": {
-                "id": 26,
+                "id": 28,
                 "kind": "id",
                 "loc": src,
                 "text": "src",
               },
               "type": {
-                "id": 28,
+                "id": 30,
                 "kind": "bounced_message_type",
                 "loc": bounced<A>,
                 "messageType": {
-                  "id": 27,
+                  "id": 29,
                   "kind": "type_id",
                   "loc": A,
                   "text": "A",
@@ -3127,32 +3231,32 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             {
               "expression": {
                 "aggregate": {
-                  "id": 32,
+                  "id": 35,
                   "kind": "id",
                   "loc": src,
                   "text": "src",
                 },
                 "field": {
-                  "id": 33,
+                  "id": 36,
                   "kind": "id",
                   "loc": c,
                   "text": "c",
                 },
-                "id": 34,
+                "id": 37,
                 "kind": "field_access",
                 "loc": src.c,
               },
-              "id": 35,
+              "id": 38,
               "kind": "statement_let",
               "loc": let x: Int = src.c;,
               "name": {
-                "id": 30,
+                "id": 33,
                 "kind": "id",
                 "loc": x,
                 "text": "x",
               },
               "type": {
-                "id": 31,
+                "id": 34,
                 "kind": "type_id",
                 "loc": Int,
                 "text": "Int",
@@ -3164,7 +3268,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           "bounced": true,
           "kind": "bounce-binary",
           "name": {
-            "id": 26,
+            "id": 28,
             "kind": "id",
             "loc": src,
             "text": "src",
@@ -4925,28 +5029,34 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       "attributes": [],
       "declarations": [
         {
-          "id": 17,
+          "id": 19,
           "kind": "receiver",
           "loc": external(msg: A) {
         42;
     },
           "selector": {
-            "kind": "external-simple",
-            "param": {
-              "id": 14,
-              "kind": "typed_parameter",
-              "loc": msg: A,
-              "name": {
-                "id": 12,
-                "kind": "id",
-                "loc": msg,
-                "text": "msg",
-              },
-              "type": {
-                "id": 13,
-                "kind": "type_id",
-                "loc": A,
-                "text": "A",
+            "id": 16,
+            "kind": "external",
+            "loc": external,
+            "subKind": {
+              "id": 15,
+              "kind": "simple",
+              "param": {
+                "id": 14,
+                "kind": "typed_parameter",
+                "loc": msg: A,
+                "name": {
+                  "id": 12,
+                  "kind": "id",
+                  "loc": msg,
+                  "text": "msg",
+                },
+                "type": {
+                  "id": 13,
+                  "kind": "type_id",
+                  "loc": A,
+                  "text": "A",
+                },
               },
             },
           },
@@ -4954,43 +5064,49 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
             {
               "expression": {
                 "base": 10,
-                "id": 15,
+                "id": 17,
                 "kind": "number",
                 "loc": 42,
                 "value": 42n,
               },
-              "id": 16,
+              "id": 18,
               "kind": "statement_expression",
               "loc": 42;,
             },
           ],
         },
         {
-          "id": 20,
+          "id": 24,
           "kind": "receiver",
           "loc": external() {
         42;
     },
           "selector": {
-            "kind": "external-fallback",
+            "id": 21,
+            "kind": "external",
+            "loc": external,
+            "subKind": {
+              "id": 20,
+              "kind": "fallback",
+            },
           },
           "statements": [
             {
               "expression": {
                 "base": 10,
-                "id": 18,
+                "id": 22,
                 "kind": "number",
                 "loc": 42,
                 "value": 42n,
               },
-              "id": 19,
+              "id": 23,
               "kind": "statement_expression",
               "loc": 42;,
             },
           ],
         },
       ],
-      "id": 21,
+      "id": 25,
       "kind": "contract",
       "loc": contract Test {
     external(msg: A) {
@@ -5016,7 +5132,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
     "header": null,
     "init": {
       "ast": {
-        "id": 23,
+        "id": 27,
         "kind": "contract_init",
         "loc": contract Test {
     external(msg: A) {
@@ -5040,28 +5156,34 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
     "receivers": [
       {
         "ast": {
-          "id": 17,
+          "id": 19,
           "kind": "receiver",
           "loc": external(msg: A) {
         42;
     },
           "selector": {
-            "kind": "external-simple",
-            "param": {
-              "id": 14,
-              "kind": "typed_parameter",
-              "loc": msg: A,
-              "name": {
-                "id": 12,
-                "kind": "id",
-                "loc": msg,
-                "text": "msg",
-              },
-              "type": {
-                "id": 13,
-                "kind": "type_id",
-                "loc": A,
-                "text": "A",
+            "id": 16,
+            "kind": "external",
+            "loc": external,
+            "subKind": {
+              "id": 15,
+              "kind": "simple",
+              "param": {
+                "id": 14,
+                "kind": "typed_parameter",
+                "loc": msg: A,
+                "name": {
+                  "id": 12,
+                  "kind": "id",
+                  "loc": msg,
+                  "text": "msg",
+                },
+                "type": {
+                  "id": 13,
+                  "kind": "type_id",
+                  "loc": A,
+                  "text": "A",
+                },
               },
             },
           },
@@ -5069,12 +5191,12 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
             {
               "expression": {
                 "base": 10,
-                "id": 15,
+                "id": 17,
                 "kind": "number",
                 "loc": 42,
                 "value": 42n,
               },
-              "id": 16,
+              "id": 18,
               "kind": "statement_expression",
               "loc": 42;,
             },
@@ -5093,24 +5215,30 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
       },
       {
         "ast": {
-          "id": 20,
+          "id": 24,
           "kind": "receiver",
           "loc": external() {
         42;
     },
           "selector": {
-            "kind": "external-fallback",
+            "id": 21,
+            "kind": "external",
+            "loc": external,
+            "subKind": {
+              "id": 20,
+              "kind": "fallback",
+            },
           },
           "statements": [
             {
               "expression": {
                 "base": 10,
-                "id": 18,
+                "id": 22,
                 "kind": "number",
                 "loc": 42,
                 "value": 42n,
               },
-              "id": 19,
+              "id": 23,
               "kind": "statement_expression",
               "loc": 42;,
             },
@@ -13694,33 +13822,39 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
       "attributes": [],
       "declarations": [
         {
-          "id": 22,
+          "id": 24,
           "kind": "receiver",
           "loc": receive(msg: MsgWithExprOpcode) { },
           "selector": {
-            "kind": "internal-simple",
-            "param": {
-              "id": 21,
-              "kind": "typed_parameter",
-              "loc": msg: MsgWithExprOpcode,
-              "name": {
-                "id": 19,
-                "kind": "id",
-                "loc": msg,
-                "text": "msg",
-              },
-              "type": {
-                "id": 20,
-                "kind": "type_id",
-                "loc": MsgWithExprOpcode,
-                "text": "MsgWithExprOpcode",
+            "id": 23,
+            "kind": "internal",
+            "loc": receive,
+            "subKind": {
+              "id": 22,
+              "kind": "simple",
+              "param": {
+                "id": 21,
+                "kind": "typed_parameter",
+                "loc": msg: MsgWithExprOpcode,
+                "name": {
+                  "id": 19,
+                  "kind": "id",
+                  "loc": msg,
+                  "text": "msg",
+                },
+                "type": {
+                  "id": 20,
+                  "kind": "type_id",
+                  "loc": MsgWithExprOpcode,
+                  "text": "MsgWithExprOpcode",
+                },
               },
             },
           },
           "statements": [],
         },
       ],
-      "id": 23,
+      "id": 25,
       "kind": "contract",
       "loc": contract Foo {
     receive(msg: MsgWithExprOpcode) { }
@@ -13740,7 +13874,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
     "header": null,
     "init": {
       "ast": {
-        "id": 25,
+        "id": 27,
         "kind": "contract_init",
         "loc": contract Foo {
     receive(msg: MsgWithExprOpcode) { }
@@ -13758,26 +13892,32 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
     "receivers": [
       {
         "ast": {
-          "id": 22,
+          "id": 24,
           "kind": "receiver",
           "loc": receive(msg: MsgWithExprOpcode) { },
           "selector": {
-            "kind": "internal-simple",
-            "param": {
-              "id": 21,
-              "kind": "typed_parameter",
-              "loc": msg: MsgWithExprOpcode,
-              "name": {
-                "id": 19,
-                "kind": "id",
-                "loc": msg,
-                "text": "msg",
-              },
-              "type": {
-                "id": 20,
-                "kind": "type_id",
-                "loc": MsgWithExprOpcode,
-                "text": "MsgWithExprOpcode",
+            "id": 23,
+            "kind": "internal",
+            "loc": receive,
+            "subKind": {
+              "id": 22,
+              "kind": "simple",
+              "param": {
+                "id": 21,
+                "kind": "typed_parameter",
+                "loc": msg: MsgWithExprOpcode,
+                "name": {
+                  "id": 19,
+                  "kind": "id",
+                  "loc": msg,
+                  "text": "msg",
+                },
+                "type": {
+                  "id": 20,
+                  "kind": "type_id",
+                  "loc": MsgWithExprOpcode,
+                  "text": "MsgWithExprOpcode",
+                },
               },
             },
           },

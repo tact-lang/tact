@@ -2,7 +2,7 @@ import { storeTransfer, Transfer, Wallet } from "./output/wallet_Wallet";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { beginCell, toNano } from "@ton/core";
 import { sign } from "@ton/crypto";
-import { testKey } from "../src/utils/testKey";
+import { randomKey } from "../src/test/utils/random-utils";
 import "@ton/test-utils";
 
 describe("wallet", () => {
@@ -16,7 +16,7 @@ describe("wallet", () => {
         blockchain.verbosity.print = false;
         treasure = await blockchain.treasury("treasure");
 
-        key = testKey("wallet-key");
+        key = randomKey("wallet-key");
         const publicKey = beginCell()
             .storeBuffer(key.publicKey)
             .endCell()

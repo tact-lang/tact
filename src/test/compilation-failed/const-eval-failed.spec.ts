@@ -193,4 +193,41 @@ describe("fail-const-eval", () => {
         errorMessage:
             "Cannot evaluate expression to a constant: ascii string cannot be empty",
     });
+    itShouldNotCompile({
+        testName: "const-eval-constant-circular-dependency",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> C]",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-constant-deep-circular-dependency",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate E as it has circular dependencies: [E -> D -> C -> B -> A -> E]",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-constant-circular-dependency-with-function",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> foo() -> C]",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-constant-circular-dependency-with-functions",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> foo() -> bar() -> baz() -> C]",
+    });
+    itShouldNotCompile({
+        testName:
+            "const-eval-constant-circular-dependency-with-recursive-function",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> foo() -> foo() -> foo() -> C]",
+    });
+    itShouldNotCompile({
+        testName:
+            "const-eval-constant-circular-dependency-with-deep-recursive-function",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> foo() -> foo() -> foo() -> ... -> foo() -> foo() -> foo() -> foo() -> C]",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-constant-circular-dependency-self-assignment",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate A as it has circular dependencies: [A -> A]",
+    });
 });

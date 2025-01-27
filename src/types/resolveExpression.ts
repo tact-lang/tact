@@ -921,17 +921,14 @@ export function resolveExpression(
                             );
                             if (field) {
                                 throwCompilationError(
-                                    `Unable to resolve id '${exp.text}', did you mean 'self.${exp.text}'?`,
+                                    `Cannot find '${exp.text}', did you mean 'self.${exp.text}'?`,
                                     exp.loc,
                                 );
                             }
                         }
                     }
 
-                    throwCompilationError(
-                        `Unable to resolve id '${exp.text}'`,
-                        exp.loc,
-                    );
+                    throwCompilationError(`Cannot find '${exp.text}'`, exp.loc);
                 } else {
                     const cc = getStaticConstant(ctx, exp.text);
                     return registerExpType(ctx, exp, cc.type);

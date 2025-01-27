@@ -111,6 +111,7 @@ export function writeInit(
         const sig = `${resolveFuncType(t, ctx)} ${ops.contractInit(t.name, ctx)}(${args.join(", ")})`;
         ctx.signature(sig);
         ctx.flag("impure");
+        ctx.flag("inline");
         ctx.body(() => {
             // Unpack parameters
             for (const a of init.params) {
@@ -342,7 +343,7 @@ export function writeMainContract(
             // Process operation
             ctx.append(`;; Handle operation`);
             ctx.append(
-                `int handled = self~${ops.contractRouter(type.name, "internal")}(msg_bounced, in_msg);`,
+                `int handled = self~${ops.contractRouter(type.name, "internal")}(in_msg, msg_bounced);`,
             );
             ctx.append();
 
