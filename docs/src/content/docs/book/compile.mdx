@@ -52,13 +52,40 @@ To upgrade the Tact compiler to its latest version in a [Blueprint][bp]-based pr
 
 Sometimes, bug fixes require us to change the existing behavior, introducing small breaking changes. To be prepared for these, make sure to read the [CHANGELOG.md](https://github.com/tact-lang/tact/blob/main/dev-docs/CHANGELOG.md) and act accordingly. Except for bug fixes, Tact tries its best not to introduce breaking changes in minor or patch versions according to [semantic versioning](https://semver.org/#summary).
 
-If you want to pin down a specific version of the compiler, simply specify it in your [project.json](https://docs.npmjs.com/cli/v10/configuring-npm/package-json) as follows: `"@tact-lang/compiler": "X.Y.Z"{:json}`, where `X.Y.Z` is the version that you want to set.
+If you want to pin down a specific version of the compiler, run the following command. There, `X.Y.Z` is the target version you want to install:
+
+<Tabs>
+ <TabItem label="yarn" icon="seti:yarn">
+   ```shell
+   # X.Y.Z must be replaced by the actual version number
+   yarn add --exact @tact-lang/compiler@X.Y.Z
+   ```
+ </TabItem>
+ <TabItem label="npm" icon="seti:npm">
+   ```shell
+   # X.Y.Z must be replaced by the actual version number
+   npm i --save-exact @tact-lang/compiler@X.Y.Z
+   ```
+ </TabItem>
+ <TabItem label="pnpm" icon="pnpm">
+   ```shell
+   # X.Y.Z must be replaced by the actual version number
+   pnpm add --save-exact @tact-lang/compiler@X.Y.Z
+   ```
+ </TabItem>
+ <TabItem label="bun" icon="bun">
+   ```shell
+   # X.Y.Z must be replaced by the actual version number
+   bun add --exact @tact-lang/compiler@X.Y.Z
+   ```
+ </TabItem>
+</Tabs>
 
 :::caution
 
   Do not mix different Node.js package managers in your projects. If you created the [Blueprint][bp] project with `npm`, stick to using `npm` for the rest of the commands — this will ensure that you don't get "File not found" errors or lock-file conflicts between different package managers.
 
-  For example, using the `npm` package manager to install dependencies and then using `yarn` to build the contracts can lead to the following error message:
+  For example, using the `npm` package manager to install dependencies and then switching to `yarn` to build the contracts can lead to the following error message:
 
   ```shell
   File not found: tact_Task1.headers.fc
