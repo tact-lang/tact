@@ -69,6 +69,7 @@ function throwErrorConstEval(msg: string, source: SrcInfo): never {
         source,
     );
 }
+
 type EvalResult =
     | { kind: "ok"; value: A.AstLiteral }
     | { kind: "error"; message: string };
@@ -897,7 +898,7 @@ export class Interpreter {
             // exception being thrown here.
             if (this.visitedConstants.has(name)) {
                 throwErrorConstEval(
-                    `cannot evaluate ${name} as it has circular dependencies: [${this.constantComputationPath.join(" -> ")} -> ${name}]`,
+                    `cannot evaluate ${name} as it has circular dependencies: [${this.formatComputationPath(name)}]`,
                     ast.loc,
                 );
             }
@@ -1817,5 +1818,14 @@ export class Interpreter {
         const res = cb();
         this.constantComputationPath.pop();
         return res;
+    }
+
+    private formatComputationPath(name: string): string {
+        const start = this.constantComputationPath.indexOf(name);
+        const path =
+            start !== -1
+                ? this.constantComputationPath.slice(start)
+                : this.constantComputationPath;
+        return `${path.join(" -> ")} -> ${name}`;
     }
 }

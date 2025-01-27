@@ -206,18 +206,18 @@ describe("fail-const-eval", () => {
     itShouldNotCompile({
         testName: "const-eval-constant-circular-dependency-with-function",
         errorMessage:
-            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [foo() -> C -> A -> foo() -> C]",
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> foo() -> C]",
     });
     itShouldNotCompile({
         testName: "const-eval-constant-circular-dependency-with-functions",
         errorMessage:
-            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [foo() -> bar() -> baz() -> C -> A -> foo() -> bar() -> baz() -> C]",
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> foo() -> bar() -> baz() -> C]",
     });
     itShouldNotCompile({
         testName:
             "const-eval-constant-circular-dependency-with-recursive-function",
         errorMessage:
-            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [foo() -> foo() -> foo() -> C -> A -> foo() -> foo() -> foo() -> C]",
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> foo() -> foo() -> foo() -> C]",
     });
     itShouldNotCompile({
         testName: "const-eval-constant-circular-dependency-self-assignment",
