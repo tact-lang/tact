@@ -32,6 +32,17 @@ struct T {
     s: S;
 }
 
+const NoCircularA: Int = NoCircularB;
+const NoCircularB: Int = useAConditionally(1);
+
+fun useAConditionally(v: Int): Int {
+    if (v == 1) {
+        return 100;
+    } else {
+        return NoCircularA; // The else never executes, so no circular dependence at compile-time
+    }
+}
+
 // Global functions
 
 // Test assignments
@@ -339,6 +350,8 @@ contract ConstantTester {
     get fun beforeDefinedC(): Int { return beforeDefinedC; }
 
     get fun defaultFieldB(): Int { return A {}.b; }
+
+    get fun noCircularA(): Int { return NoCircularA + NoCircularB; }
 
     get fun minInt1(): Int {
         return -115792089237316195423570985008687907853269984665640564039457584007913129639936;

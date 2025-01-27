@@ -5,9 +5,9 @@ import * as A from "../ast/ast";
 import { evalConstantExpression } from "./constEval";
 import { CompilerContext } from "../context/context";
 import {
+    idTextErr,
     TactCompilationError,
     TactConstEvalError,
-    idTextErr,
     throwConstEvalError,
     throwInternalCompilerError,
 } from "../error/errors";
@@ -20,7 +20,7 @@ import {
     hasStaticFunction,
 } from "../types/resolveDescriptors";
 import { getExpType } from "../types/resolveExpression";
-import { TypeRef, showValue } from "../types/types";
+import { showValue, TypeRef } from "../types/types";
 import { sha256_sync } from "@ton/crypto";
 import { defaultParser, getParser, Parser } from "../grammar/grammar";
 import { dummySrcInfo, SrcInfo } from "../grammar";
@@ -903,12 +903,11 @@ export class Interpreter {
             }
             this.visitedConstants.add(name);
 
-            if (constant.ast.kind === "constant_def") {
-                this.constantComputationPath.push(name);
-                constant.value = this.interpretExpression(
-                    constant.ast.initializer,
+            const astNode = constant.ast;
+            if (astNode.kind === "constant_def") {
+                constant.value = this.inComputationPath(name, () =>
+                    this.interpretExpression(astNode.initializer),
                 );
-                this.constantComputationPath.pop();
                 return constant.value;
             }
 
@@ -1437,25 +1436,25 @@ export class Interpreter {
                         this.context,
                         idText(ast.function),
                     );
-                    switch (functionDescription.ast.kind) {
+                    const functionNode = functionDescription.ast;
+                    switch (functionNode.kind) {
                         case "function_def": {
                             // Currently, no attribute is supported
-                            if (functionDescription.ast.attributes.length > 0) {
+                            if (functionNode.attributes.length > 0) {
                                 throwNonFatalErrorConstEval(
                                     "calls to functions with attributes are currently not supported",
                                     ast.loc,
                                 );
                             }
-                            this.constantComputationPath.push(
+                            return this.inComputationPath(
                                 `${functionDescription.name}()`,
+                                () =>
+                                    this.evalStaticFunction(
+                                        functionNode,
+                                        ast.args,
+                                        functionDescription.returns,
+                                    ),
                             );
-                            const result = this.evalStaticFunction(
-                                functionDescription.ast,
-                                ast.args,
-                                functionDescription.returns,
-                            );
-                            this.constantComputationPath.pop();
-                            return result;
                         }
                         case "asm_function_def":
                             throwNonFatalErrorConstEval(
@@ -1811,5 +1810,12 @@ export class Interpreter {
         this.envStack.executeInNewEnvironment(() => {
             ast.statements.forEach(this.interpretStatement, this);
         });
+    }
+
+    private inComputationPath<T>(path: string, cb: () => T) {
+        this.constantComputationPath.push(path);
+        const res = cb();
+        this.constantComputationPath.pop();
+        return res;
     }
 }
