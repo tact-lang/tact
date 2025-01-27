@@ -7,72 +7,91 @@ import { AstNode } from "./ast";
  * @param callback The callback function to apply to each AST element.
  */
 export function traverse(node: AstNode, callback: (node: AstNode) => void) {
-    callback(node);
+    traverseAndCheck(node, (n) => {
+        callback(n);
+        return true;
+    });
+}
+
+/**
+ * Recursively iterates over each node in an AstNode and applies a callback to each AST element.
+ * @public
+ * @param node The node to traverse.
+ * @param callback The callback function to apply to each AST element, if returns false, does not traverse child nodes
+ */
+export function traverseAndCheck(
+    node: AstNode,
+    callback: (node: AstNode) => boolean,
+) {
+    if (!callback(node)) {
+        return;
+    }
 
     switch (node.kind) {
         case "module":
             node.imports.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             node.items.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "import":
-            traverse(node.path, callback);
+            traverseAndCheck(node.path, callback);
             break;
         case "primitive_type_decl":
-            traverse(node.name, callback);
+            traverseAndCheck(node.name, callback);
             break;
         case "function_def":
             node.attributes.forEach((attr) => {
-                traverse(attr, callback);
+                traverseAndCheck(attr, callback);
             });
-            traverse(node.name, callback);
-            if (node.return) traverse(node.return, callback);
+            traverseAndCheck(node.name, callback);
+            if (node.return) traverseAndCheck(node.return, callback);
             node.params.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             node.statements.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "asm_function_def":
             node.shuffle.args.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             node.shuffle.ret.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
-            traverse(node.name, callback);
-            if (node.return) traverse(node.return, callback);
+            traverseAndCheck(node.name, callback);
+            if (node.return) traverseAndCheck(node.return, callback);
             node.params.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "function_decl":
             node.attributes.forEach((attr) => {
-                traverse(attr, callback);
+                traverseAndCheck(attr, callback);
             });
-            traverse(node.name, callback);
-            if (node.return) traverse(node.return, callback);
+            traverseAndCheck(node.name, callback);
+            if (node.return) traverseAndCheck(node.return, callback);
             node.params.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "native_function_decl":
-            traverse(node.name, callback);
-            traverse(node.nativeName, callback);
+            traverseAndCheck(node.name, callback);
+            traverseAndCheck(node.nativeName, callback);
             node.params.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
-            if (node.return) traverse(node.return, callback);
+            if (node.return) traverseAndCheck(node.return, callback);
             break;
         case "function_attribute":
             switch (node.type) {
                 case "get":
                     {
-                        if (node.methodId) traverse(node.methodId, callback);
+                        if (node.methodId)
+                            traverseAndCheck(node.methodId, callback);
                     }
                     break;
                 case "mutates":
@@ -85,218 +104,219 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
             }
             break;
         case "constant_def":
-            traverse(node.name, callback);
-            traverse(node.type, callback);
-            traverse(node.initializer, callback);
+            traverseAndCheck(node.name, callback);
+            traverseAndCheck(node.type, callback);
+            traverseAndCheck(node.initializer, callback);
             break;
         case "constant_decl":
-            traverse(node.name, callback);
-            traverse(node.type, callback);
+            traverseAndCheck(node.name, callback);
+            traverseAndCheck(node.type, callback);
             break;
         case "struct_decl":
         case "message_decl":
-            traverse(node.name, callback);
+            traverseAndCheck(node.name, callback);
             if (node.kind === "message_decl" && node.opcode !== null) {
-                traverse(node.opcode, callback);
+                traverseAndCheck(node.opcode, callback);
             }
             node.fields.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "contract":
         case "trait":
-            traverse(node.name, callback);
+            traverseAndCheck(node.name, callback);
             node.traits.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             node.declarations.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "field_decl":
-            traverse(node.name, callback);
-            traverse(node.type, callback);
-            if (node.initializer) traverse(node.initializer, callback);
-            if (node.as) traverse(node.as, callback);
+            traverseAndCheck(node.name, callback);
+            traverseAndCheck(node.type, callback);
+            if (node.initializer) traverseAndCheck(node.initializer, callback);
+            if (node.as) traverseAndCheck(node.as, callback);
             break;
         case "receiver":
             node.statements.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "bounce":
-            traverse(node.param, callback);
+            traverseAndCheck(node.param, callback);
             break;
         case "internal":
         case "external":
-            traverse(node.subKind, callback);
+            traverseAndCheck(node.subKind, callback);
             break;
         case "fallback":
             break;
         case "comment":
-            traverse(node.comment, callback);
+            traverseAndCheck(node.comment, callback);
             break;
         case "simple":
-            traverse(node.param, callback);
+            traverseAndCheck(node.param, callback);
             break;
         case "contract_init":
             node.params.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             node.statements.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "statement_let":
-            traverse(node.name, callback);
-            if (node.type) traverse(node.type, callback);
-            traverse(node.expression, callback);
+            traverseAndCheck(node.name, callback);
+            if (node.type) traverseAndCheck(node.type, callback);
+            traverseAndCheck(node.expression, callback);
             break;
         case "statement_destruct":
             node.identifiers.forEach(([field, name], _) => {
-                traverse(field, callback);
-                traverse(name, callback);
+                traverseAndCheck(field, callback);
+                traverseAndCheck(name, callback);
             });
-            traverse(node.expression, callback);
+            traverseAndCheck(node.expression, callback);
             break;
         case "destruct_end":
             break;
         case "statement_return":
-            if (node.expression) traverse(node.expression, callback);
+            if (node.expression) traverseAndCheck(node.expression, callback);
             break;
         case "statement_expression":
-            traverse(node.expression, callback);
+            traverseAndCheck(node.expression, callback);
             break;
         case "statement_assign":
-            traverse(node.path, callback);
-            traverse(node.expression, callback);
+            traverseAndCheck(node.path, callback);
+            traverseAndCheck(node.expression, callback);
             break;
         case "statement_augmentedassign":
-            traverse(node.path, callback);
-            traverse(node.expression, callback);
+            traverseAndCheck(node.path, callback);
+            traverseAndCheck(node.expression, callback);
             break;
         case "statement_condition":
-            traverse(node.condition, callback);
+            traverseAndCheck(node.condition, callback);
             node.trueStatements.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             if (node.falseStatements) {
                 node.falseStatements.forEach((e) => {
-                    traverse(e, callback);
+                    traverseAndCheck(e, callback);
                 });
             }
-            if (node.elseif) traverse(node.elseif, callback);
+            if (node.elseif) traverseAndCheck(node.elseif, callback);
             break;
         case "statement_while":
         case "statement_until":
-            traverse(node.condition, callback);
+            traverseAndCheck(node.condition, callback);
             node.statements.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "statement_repeat":
-            traverse(node.iterations, callback);
+            traverseAndCheck(node.iterations, callback);
             node.statements.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "statement_try":
             node.statements.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             if (node.catchBlock !== undefined) {
-                traverse(node.catchBlock.catchName, callback);
+                traverseAndCheck(node.catchBlock.catchName, callback);
                 node.catchBlock.catchStatements.forEach((e) => {
-                    traverse(e, callback);
+                    traverseAndCheck(e, callback);
                 });
             }
             break;
         case "statement_foreach":
-            traverse(node.keyName, callback);
-            traverse(node.valueName, callback);
-            traverse(node.map, callback);
+            traverseAndCheck(node.keyName, callback);
+            traverseAndCheck(node.valueName, callback);
+            traverseAndCheck(node.map, callback);
             node.statements.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "statement_block":
             node.statements.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "destruct_mapping":
-            traverse(node.field, callback);
-            traverse(node.name, callback);
+            traverseAndCheck(node.field, callback);
+            traverseAndCheck(node.name, callback);
             break;
         case "type_id":
             break;
         case "optional_type":
-            traverse(node.typeArg, callback);
+            traverseAndCheck(node.typeArg, callback);
             break;
         case "map_type":
-            traverse(node.keyType, callback);
-            if (node.keyStorageType) traverse(node.keyStorageType, callback);
-            traverse(node.valueType, callback);
+            traverseAndCheck(node.keyType, callback);
+            if (node.keyStorageType)
+                traverseAndCheck(node.keyStorageType, callback);
+            traverseAndCheck(node.valueType, callback);
             if (node.valueStorageType)
-                traverse(node.valueStorageType, callback);
+                traverseAndCheck(node.valueStorageType, callback);
             break;
         case "bounced_message_type":
-            traverse(node.messageType, callback);
+            traverseAndCheck(node.messageType, callback);
             break;
         case "op_binary":
-            traverse(node.left, callback);
-            traverse(node.right, callback);
+            traverseAndCheck(node.left, callback);
+            traverseAndCheck(node.right, callback);
             break;
         case "op_unary":
-            traverse(node.operand, callback);
+            traverseAndCheck(node.operand, callback);
             break;
         case "field_access":
-            traverse(node.aggregate, callback);
-            traverse(node.field, callback);
+            traverseAndCheck(node.aggregate, callback);
+            traverseAndCheck(node.field, callback);
             break;
         case "method_call":
-            traverse(node.self, callback);
-            traverse(node.method, callback);
+            traverseAndCheck(node.self, callback);
+            traverseAndCheck(node.method, callback);
             node.args.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "static_call":
-            traverse(node.function, callback);
+            traverseAndCheck(node.function, callback);
             node.args.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "struct_instance":
-            traverse(node.type, callback);
+            traverseAndCheck(node.type, callback);
             node.args.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "struct_value":
-            traverse(node.type, callback);
+            traverseAndCheck(node.type, callback);
             node.args.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "struct_field_initializer":
-            traverse(node.field, callback);
-            traverse(node.initializer, callback);
+            traverseAndCheck(node.field, callback);
+            traverseAndCheck(node.initializer, callback);
             break;
         case "struct_field_value":
-            traverse(node.field, callback);
-            traverse(node.initializer, callback);
+            traverseAndCheck(node.field, callback);
+            traverseAndCheck(node.initializer, callback);
             break;
         case "init_of":
-            traverse(node.contract, callback);
+            traverseAndCheck(node.contract, callback);
             node.args.forEach((e) => {
-                traverse(e, callback);
+                traverseAndCheck(e, callback);
             });
             break;
         case "conditional":
-            traverse(node.condition, callback);
-            traverse(node.thenBranch, callback);
-            traverse(node.elseBranch, callback);
+            traverseAndCheck(node.condition, callback);
+            traverseAndCheck(node.thenBranch, callback);
+            traverseAndCheck(node.elseBranch, callback);
             break;
         case "id":
         case "func_id":
@@ -311,8 +331,8 @@ export function traverse(node: AstNode, callback: (node: AstNode) => void) {
         case "slice":
             break;
         case "typed_parameter":
-            traverse(node.name, callback);
-            traverse(node.type, callback);
+            traverseAndCheck(node.name, callback);
+            traverseAndCheck(node.type, callback);
             break;
     }
 }
