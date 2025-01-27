@@ -43,6 +43,6 @@ trait IWantToOverrideConstant with WithConstant {
 
 contract LaikaContract with Laika, IWantToOverrideConstant {
     get fun fooConstant(): Int {
-        return self.foo
+        return self.foo;
     }
 }
