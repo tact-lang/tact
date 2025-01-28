@@ -68,10 +68,13 @@ function randomAstBoolean(): fc.Arbitrary<A.AstBoolean> {
 }
 
 function randomAstSimplifiedString(): fc.Arbitrary<A.AstSimplifiedString> {
+    const escapeString = (s: string): string =>
+        s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+
     return dummyAstNode(
         fc.record({
             kind: fc.constant("simplified_string"),
-            value: fc.string(),
+            value: fc.string().map(escapeString),
         }),
     );
 }
@@ -343,8 +346,17 @@ function randomAstStructValue(
     );
 }
 
-function randomAstLiteral(maxDepth: number): fc.Arbitrary<A.AstLiteral> {
+function randomAstLiteral(
+    maxDepth: number,
+    ref: string = "",
+): fc.Arbitrary<A.AstLiteral> {
     return fc.memo((depth: number): fc.Arbitrary<A.AstLiteral> => {
+        console.log("depth at randomAstLiteral", depth);
+
+        if (ref === "statement_let") {
+            return fc.oneof(randomAstSimplifiedString());
+        }
+
         if (depth === 1) {
             return fc.oneof(
                 randomAstNumber(),
@@ -357,7 +369,6 @@ function randomAstLiteral(maxDepth: number): fc.Arbitrary<A.AstLiteral> {
                 randomAstCommentValue(),
             );
         }
-
         const subLiteral = () => randomAstLiteral(depth - 1);
 
         return fc.oneof(
@@ -374,12 +385,13 @@ function randomAstLiteral(maxDepth: number): fc.Arbitrary<A.AstLiteral> {
     })(maxDepth);
 }
 
-export function randomAstExpression(
+function randomAstExpression(
     maxDepth: number,
+    ref: string = "",
 ): fc.Arbitrary<A.AstExpression> {
     return fc.memo((depth: number): fc.Arbitrary<A.AstExpression> => {
         if (depth == 1) {
-            return fc.oneof(randomAstLiteral(depth));
+            return fc.oneof(randomAstLiteral(depth, ref));
         }
 
         const subExpr = () => randomAstExpression(depth - 1);
@@ -395,6 +407,382 @@ export function randomAstExpression(
             randomAstOpUnary(subExpr()),
             randomAstOpBinary(subExpr(), subExpr()),
             randomAstConditional(subExpr(), subExpr(), subExpr()),
+        );
+    })(maxDepth);
+}
+
+function randomAstType(
+    maxDepth: number = 3,
+    ref: string = "",
+): fc.Arbitrary<A.AstType> {
+    if (ref === "statement_let") {
+        return fc.oneof(randomAstTypeId());
+    }
+
+    if (maxDepth <= 0) {
+        return fc.oneof(
+            randomAstTypeId(),
+            randomAstOptionalType(),
+            randomAstBouncedMessageType(),
+        );
+    }
+
+    return fc.oneof(
+        randomAstTypeId(),
+        randomAstOptionalType(),
+        randomAstMapType(),
+        randomAstBouncedMessageType(),
+    );
+}
+
+function randomAstTypeId(): fc.Arbitrary<A.AstTypeId> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("type_id"),
+            text: fc.stringMatching(/^[A-Z][a-zA-Z0-9_]*$/),
+        }),
+    );
+}
+
+function randomAstOptionalType(): fc.Arbitrary<A.AstOptionalType> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("optional_type"),
+            typeArg: randomAstTypeId(), // Add randomAstType but now it will be generate randomly (not validate by grammar)
+        }),
+    );
+}
+
+function randomAstBouncedMessageType(): fc.Arbitrary<A.AstBouncedMessageType> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("bounced_message_type"),
+            messageType: randomAstTypeId(),
+        }),
+    );
+}
+
+function randomAstMapType(): fc.Arbitrary<A.AstMapType> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("map_type"),
+            keyType: randomAstTypeId(),
+            keyStorageType: randomAstId(),
+            valueType: randomAstTypeId(),
+            valueStorageType: randomAstId(),
+        }),
+    );
+}
+
+function randomAstStatementLet(
+    expression: fc.Arbitrary<A.AstExpression>,
+): fc.Arbitrary<A.AstStatementLet> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("statement_let"),
+            name: randomAstId(),
+            type: randomAstType(2, "statement_let"),
+            expression: expression,
+        }),
+    );
+}
+
+function randomAstStatementReturn(
+    expression: fc.Arbitrary<A.AstExpression>,
+): fc.Arbitrary<A.AstStatementReturn> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("statement_return"),
+            expression: fc.option(expression),
+        }),
+    );
+}
+
+function randomAstStatementExpression(
+    expression: fc.Arbitrary<A.AstExpression>,
+): fc.Arbitrary<A.AstStatementExpression> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("statement_expression"),
+            expression: expression,
+        }),
+    );
+}
+
+function randomAstStatementAssign(
+    expression: fc.Arbitrary<A.AstExpression>,
+): fc.Arbitrary<A.AstStatementAssign> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("statement_assign"),
+            path: expression,
+            expression: expression,
+        }),
+    );
+}
+
+function randomAstStatementAugmentedAssign(
+    expression: fc.Arbitrary<A.AstExpression>,
+): fc.Arbitrary<A.AstStatementAugmentedAssign> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("statement_augmentedassign"),
+            op: fc.constantFrom(
+                "+",
+                "-",
+                "*",
+                "/",
+                "&&",
+                "||",
+                "%",
+                "|",
+                "<<",
+                ">>",
+                "&",
+                "^",
+            ),
+            path: expression,
+            expression: expression,
+        }),
+    );
+}
+
+function randomAstStatementCondition(
+    expression: fc.Arbitrary<A.AstExpression>,
+    statement: fc.Arbitrary<A.AstStatement>,
+    maxDepth: number,
+): fc.Arbitrary<A.AstStatementCondition> {
+    return fc.memo((depth: number): fc.Arbitrary<A.AstStatementCondition> => {
+        if (depth === 1) {
+            return dummyAstNode(
+                fc.record({
+                    kind: fc.constant("statement_condition"),
+                    condition: expression,
+                    trueStatements: fc.array(statement, { maxLength: 3 }),
+                    falseStatements: fc.array(statement, { maxLength: 3 }),
+                    elseif: fc.constant(null),
+                }),
+            );
+        }
+
+        return dummyAstNode(
+            fc.record({
+                kind: fc.constant("statement_condition"),
+                condition: expression,
+                trueStatements: fc.array(statement, { maxLength: 3 }),
+                falseStatements: fc.array(statement, { maxLength: 3 }),
+                elseif: fc.option(
+                    randomAstStatementCondition(
+                        expression,
+                        statement,
+                        maxDepth,
+                    ),
+                ),
+            }),
+        );
+    })(maxDepth);
+}
+
+function randomAstStatementWhile(
+    expression: fc.Arbitrary<A.AstExpression>,
+    statement: fc.Arbitrary<A.AstStatement>,
+): fc.Arbitrary<A.AstStatementWhile> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("statement_while"),
+            condition: expression,
+            statements: fc.array(statement, { maxLength: 3 }),
+        }),
+    );
+}
+
+function randomAstStatementUntil(
+    expression: fc.Arbitrary<A.AstExpression>,
+    statement: fc.Arbitrary<A.AstStatement>,
+): fc.Arbitrary<A.AstStatementUntil> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("statement_until"),
+            condition: expression,
+            statements: fc.array(statement, { maxLength: 3 }),
+        }),
+    );
+}
+
+function randomAstStatementRepeat(
+    expression: fc.Arbitrary<A.AstExpression>,
+    statement: fc.Arbitrary<A.AstStatement>,
+): fc.Arbitrary<A.AstStatementRepeat> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("statement_repeat"),
+            iterations: expression,
+            statements: fc.array(statement, { maxLength: 3 }),
+        }),
+    );
+}
+
+function randomAstStatementTry(
+    statement: fc.Arbitrary<A.AstStatement>,
+): fc.Arbitrary<A.AstStatementTry> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("statement_try"),
+            statements: fc.array(statement, { maxLength: 3 }),
+            catchBlock: fc.option(
+                fc.record({
+                    catchName: randomAstId(),
+                    catchStatements: fc.array(statement, { maxLength: 3 }),
+                }),
+            ),
+        }),
+    );
+}
+
+function randomAstStatementForeach(
+    expression: fc.Arbitrary<A.AstExpression>,
+    statement: fc.Arbitrary<A.AstStatement>,
+): fc.Arbitrary<A.AstStatementForEach> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("statement_foreach"),
+            keyName: randomAstId(),
+            valueName: randomAstId(),
+            map: expression,
+            statements: fc.array(statement, { maxLength: 3 }),
+        }),
+    );
+}
+
+function randomAstStatementDestruct(
+    expression: fc.Arbitrary<A.AstExpression>,
+): fc.Arbitrary<A.AstStatementDestruct> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("statement_destruct"),
+            type: dummyAstNode(
+                fc.record({
+                    kind: fc.constant("type_id"),
+                    text: fc.stringMatching(/^[A-Z][a-zA-Z0-9_]*$/),
+                }),
+            ),
+            identifiers: fc.constant(new Map()),
+            ignoreUnspecifiedFields: fc.boolean(),
+            expression: expression,
+        }),
+    );
+}
+
+function randomAstStatementBlock(
+    statement: fc.Arbitrary<A.AstStatement>,
+): fc.Arbitrary<A.AstStatementBlock> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("statement_block"),
+            statements: fc.array(statement, { maxLength: 3 }),
+        }),
+    );
+}
+
+function randomAstImport(): fc.Arbitrary<A.AstImport> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("import"),
+            path: randomAstString().filter((i) => !i.value.includes("\\")),
+        }),
+    );
+}
+
+function randomAstContractAttribute(): fc.Arbitrary<A.AstContractAttribute> {
+    return dummyAstNode(
+        fc.record({
+            type: fc.constant("interface"),
+            name: randomAstString(),
+        }),
+    );
+}
+
+function randomAstTypedParameter(): fc.Arbitrary<A.AstTypedParameter> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("typed_parameter"),
+            name: randomAstId(),
+            type: randomAstType(),
+        }),
+    );
+}
+
+function randomAstContractDeclaration(): fc.Arbitrary<A.AstContractDeclaration> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("contract_init"),
+            params: fc.array(randomAstTypedParameter(), { maxLength: 3 }),
+            statements: fc.array(randomAstStatement(2), { maxLength: 3 }),
+        }),
+    );
+}
+
+function randomAstContract(): fc.Arbitrary<A.AstContract> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("contract"),
+            name: randomAstId(),
+            traits: fc.array(randomAstId(), { maxLength: 3 }),
+            attributes: fc.array(randomAstContractAttribute(), {
+                maxLength: 3,
+            }),
+            declarations: fc.array(randomAstContractDeclaration(), {
+                maxLength: 3,
+            }),
+        }),
+    );
+}
+
+function randomAstModuleItem(maxDepth: number): fc.Arbitrary<A.AstModuleItem> {
+    if (maxDepth <= 0) {
+        return fc.oneof(randomAstContract());
+    }
+    // Add more items !!!
+    return fc.oneof(randomAstContract());
+}
+
+export function randomAstModule(maxDepth: number): fc.Arbitrary<A.AstModule> {
+    return fc.memo((depth: number): fc.Arbitrary<A.AstModule> => {
+        return dummyAstNode(
+            fc.record({
+                kind: fc.constant("module"),
+                imports: fc.array(randomAstImport()),
+                items: fc.array(randomAstModuleItem(depth - 1)),
+            }),
+        );
+    })(maxDepth);
+}
+
+function randomAstStatement(maxDepth: number): fc.Arbitrary<A.AstStatement> {
+    return fc.memo((depth: number): fc.Arbitrary<A.AstStatement> => {
+        console.log("depth", depth);
+        if (depth === 1) {
+            return randomAstStatementExpression(randomAstExpression(depth));
+        }
+
+        const subExpr = (ref: string = "") =>
+            randomAstExpression(depth - 1, ref);
+        const subStmt = () => randomAstStatement(depth - 1);
+
+        return fc.oneof(
+            randomAstStatementLet(subExpr("statement_let")),
+            randomAstStatementReturn(subExpr()),
+            randomAstStatementExpression(subExpr()),
+            randomAstStatementAssign(subExpr()),
+            randomAstStatementAugmentedAssign(subExpr()),
+            randomAstStatementCondition(subExpr(), subStmt(), depth - 1),
+            randomAstStatementWhile(subExpr(), subStmt()),
+            randomAstStatementUntil(subExpr(), subStmt()),
+            randomAstStatementRepeat(subExpr(), subStmt()),
+            randomAstStatementTry(subStmt()),
+            randomAstStatementForeach(subExpr(), subStmt()),
+            randomAstStatementDestruct(subExpr()),
+            randomAstStatementBlock(subStmt()),
         );
     })(maxDepth);
 }

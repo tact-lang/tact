@@ -1532,6 +1532,24 @@ export const getParser = (ast: FactoryAst) => {
         );
     }
 
+    function parseModule(sourceCode: string): A.AstModule {
+        return withContext(
+            {
+                currentFile: null,
+                origin: "user",
+                createNode: ast.createNode,
+                errorTypes,
+            },
+            () => {
+                const matchResult = tactGrammar.match(sourceCode, "Module");
+                if (matchResult.failed()) {
+                    errorTypes.generic(matchResult, "", "user");
+                }
+                return semantics(matchResult).astOfModule();
+            },
+        );
+    }
+
     function parseImports(
         src: string,
         path: string,
@@ -1554,9 +1572,29 @@ export const getParser = (ast: FactoryAst) => {
         );
     }
 
+    function parseStatement(src: string): A.AstStatement {
+        return withContext(
+            {
+                currentFile: null,
+                origin: "user",
+                createNode: ast.createNode,
+                errorTypes,
+            },
+            () => {
+                const matchResult = tactGrammar.match(src, "Statement");
+                if (matchResult.failed()) {
+                    errorTypes.generic(matchResult, "", "user");
+                }
+                return semantics(matchResult).astOfStatement();
+            },
+        );
+    }
+
     return {
         parse,
         parseExpression,
+        parseModule,
+        parseStatement,
         parseImports,
     };
 };

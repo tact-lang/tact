@@ -1273,6 +1273,12 @@ export const getParser = (ast: FactoryAst) => {
                 "user",
             );
         },
+        parseModule: (src: string): A.AstModule => {
+            return doParse(G.Module, parseModule, src, "<repl>", "user");
+        },
+        parseStatement: (src: string): A.AstStatement => {
+            return doParse(G.statement, parseStatement, src, "<repl>", "user");
+        },
         parseImports: (
             src: string,
             path: string,

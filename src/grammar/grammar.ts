@@ -13,6 +13,8 @@ export type Parser = {
         path: string,
         origin: ItemOrigin,
     ) => A.AstImport[];
+    parseStatement: (src: string) => A.AstStatement;
+    parseModule: (src: string) => A.AstModule;
 };
 
 export const defaultParser = "new";
