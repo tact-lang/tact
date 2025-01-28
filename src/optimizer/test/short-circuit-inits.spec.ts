@@ -12,40 +12,36 @@ import { loadCases } from "../../utils/loadCases";
 
 describe("short-circuit-initialization", () => {
     for (const r of loadCases(__dirname + "/success/")) {
-        it(`${r.name} should pass boolean short-circuiting during initialization`,
-            () => {
-                const Ast = getAstFactory();
-                let ctx = openContext(
-                    new CompilerContext(),
-                    [{ code: r.code, path: "<unknown>", origin: "user" }],
-                    [],
-                    getParser(Ast, defaultParser),
-                );
-                ctx = featureEnable(ctx, "external");
+        it(`${r.name} should pass boolean short-circuiting during initialization`, () => {
+            const Ast = getAstFactory();
+            let ctx = openContext(
+                new CompilerContext(),
+                [{ code: r.code, path: "<unknown>", origin: "user" }],
+                [],
+                getParser(Ast, defaultParser),
+            );
+            ctx = featureEnable(ctx, "external");
+            ctx = resolveDescriptors(ctx, Ast);
+            ctx = resolveStatements(ctx, Ast);
+            ctx = resolveSignatures(ctx, Ast);
+            expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
+        });
+    }
+    for (const r of loadCases(__dirname + "/failed/")) {
+        it(`${r.name} should fail boolean short-circuiting during initialization`, () => {
+            const Ast = getAstFactory();
+            let ctx = openContext(
+                new CompilerContext(),
+                [{ code: r.code, path: "<unknown>", origin: "user" }],
+                [],
+                getParser(Ast, defaultParser),
+            );
+            ctx = featureEnable(ctx, "external");
+            expect(() => {
                 ctx = resolveDescriptors(ctx, Ast);
                 ctx = resolveStatements(ctx, Ast);
                 ctx = resolveSignatures(ctx, Ast);
-                expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
-            },
-        );
-    }
-    for (const r of loadCases(__dirname + "/failed/")) {
-        it(`${r.name} should fail boolean short-circuiting during initialization`,
-            () => {
-                const Ast = getAstFactory();
-                let ctx = openContext(
-                    new CompilerContext(),
-                    [{ code: r.code, path: "<unknown>", origin: "user" }],
-                    [],
-                    getParser(Ast, defaultParser),
-                );
-                ctx = featureEnable(ctx, "external");
-                expect(() => {
-                    ctx = resolveDescriptors(ctx, Ast);
-                    ctx = resolveStatements(ctx, Ast);
-                    ctx = resolveSignatures(ctx, Ast);
-                }).toThrowErrorMatchingSnapshot();
-            },
-        );
+            }).toThrowErrorMatchingSnapshot();
+        });
     }
 });
