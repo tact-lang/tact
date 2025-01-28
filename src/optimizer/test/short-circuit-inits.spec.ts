@@ -10,11 +10,9 @@ import { resolveSignatures } from "../../types/resolveSignatures";
 import { resolveStatements } from "../../types/resolveStatements";
 import { loadCases } from "../../utils/loadCases";
 
-describe("constant-propagation", () => {
+describe("short-circuit-initialization", () => {
     for (const r of loadCases(__dirname + "/short-circuit/success/")) {
-        it(
-            r.name +
-                " should pass boolean short-circuiting during initialization",
+        it(`${r.name} should pass boolean short-circuiting during initialization`,
             () => {
                 const Ast = getAstFactory();
                 let ctx = openContext(
@@ -32,9 +30,7 @@ describe("constant-propagation", () => {
         );
     }
     for (const r of loadCases(__dirname + "/short-circuit/failed/")) {
-        it(
-            r.name +
-                " should fail boolean short-circuiting during initialization",
+        it(`${r.name} should fail boolean short-circuiting during initialization`,
             () => {
                 const Ast = getAstFactory();
                 let ctx = openContext(
