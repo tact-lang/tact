@@ -675,8 +675,8 @@ export function parseAndEvalExpression(
 
 const defaultInterpreterConfig: InterpreterConfig = {
     // We set the default max number of loop iterations
-    // to the maximum number allowed for repeat loops
-    maxLoopIterations: maxRepeatStatement,
+    // to 2^12 = 4096 to increase compiler responsiveness.
+    maxLoopIterations: 2n ** 12n,
 };
 
 /*
