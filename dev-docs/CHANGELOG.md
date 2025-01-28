@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Make `msg_bounced` last parameter of `*_contract_router_internal` for better code generation: PR [#1585](https://github.com/tact-lang/tact/pull/1585)
 - Inline `*_contract_init` function: PR [#1589](https://github.com/tact-lang/tact/pull/1589)
 - Better error message for `unresolved name` error: PR [#1595](https://github.com/tact-lang/tact/pull/1595)
+- Better error message for `unresolved global function` error: PR [#1610](https://github.com/tact-lang/tact/pull/1610)
 
 ### Fixed
 
@@ -68,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Throwing from functions with non-trivial branching in the `try` statement: PR [#1501](https://github.com/tact-lang/tact/pull/1501)
 - Forbid read and write to self in contract init function: PR [#1482](https://github.com/tact-lang/tact/pull/1482)
 - Support for using a constant within another constant and for the default value of a struct field before constant declaration: PR [#1478](https://github.com/tact-lang/tact/pull/1478)
+- Incorrect call generation to a mutation function: PR [#1608](https://github.com/tact-lang/tact/pull/1608)
 - Support overriding constants and methods of BaseTrait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
 
 ### Docs

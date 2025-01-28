@@ -702,9 +702,13 @@ function writeNonMutatingFunction(
             ctx.context("stdlib");
         }
         ctx.body(() => {
+            const params = f.ast.params;
+            const withoutSelfParams =
+                params.length > 0 && params.at(0)?.name.text === "self"
+                    ? params.slice(1)
+                    : params;
             ctx.append(
-                `return ${funcIdOf("self")}~${markUsedName ? ctx.used(name) : name}(${f.ast.params
-                    .slice(1)
+                `return ${funcIdOf("self")}~${markUsedName ? ctx.used(name) : name}(${withoutSelfParams
                     .map((arg) => funcIdOf(arg.name))
                     .join(", ")});`,
             );
