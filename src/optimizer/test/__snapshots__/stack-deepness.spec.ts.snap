@@ -1,0 +1,190 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`stack-deepness stack-deepness-deep-call should fail compilation 1`] = `
+"<unknown>:16:25: Cannot evaluate expression to a constant: Execution stack reached maximum level
+  15 |                     {
+> 16 |                         {
+                               ^
+  17 |                             {
+"
+`;
+
+exports[`stack-deepness stack-deepness-infinite-recursion should fail compilation 1`] = `
+"<unknown>:6:12: Cannot evaluate expression to a constant: Execution stack reached maximum level
+  5 | fun recurse(): Int {
+> 6 |     return recurse();
+                 ^~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`stack-deepness stack-deepness-near-miss should fail compilation 1`] = `
+"<unknown>:12:20: Cannot evaluate expression to a constant: Execution stack reached maximum level
+  11 |     } else {
+> 12 |         return 2 + multiplyByTwo(n - 1);   // When it enters this branch, each call will open two levels in the environment stack.
+                          ^~~~~~~~~~~~~~~~~~~~
+  13 |     }                                      // Since the method is called 250 times, it creates around 500 levels in the stack.
+"
+`;
+
+exports[`stack-deepness stack-deepness-near-miss should pass compilation 1`] = `
+[
+  [
+    "249",
+    "Int",
+  ],
+  [
+    "multiplyByTwo(249)",
+    "Int",
+  ],
+  [
+    "n",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "n < 0",
+    "Bool",
+  ],
+  [
+    "n",
+    "Int",
+  ],
+  [
+    "-n",
+    "Int",
+  ],
+  [
+    "multiplyByTwo(-n)",
+    "Int",
+  ],
+  [
+    "-multiplyByTwo(-n)",
+    "Int",
+  ],
+  [
+    "n",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "n == 0",
+    "Bool",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "n",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "n - 1",
+    "Int",
+  ],
+  [
+    "multiplyByTwo(n - 1)",
+    "Int",
+  ],
+  [
+    "2 + multiplyByTwo(n - 1)",
+    "Int",
+  ],
+]
+`;
+
+exports[`stack-deepness stack-deepness-recursion should pass compilation 1`] = `
+[
+  [
+    "200",
+    "Int",
+  ],
+  [
+    "multiplyByTwo(200)",
+    "Int",
+  ],
+  [
+    "n",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "n < 0",
+    "Bool",
+  ],
+  [
+    "n",
+    "Int",
+  ],
+  [
+    "-n",
+    "Int",
+  ],
+  [
+    "multiplyByTwo(-n)",
+    "Int",
+  ],
+  [
+    "-multiplyByTwo(-n)",
+    "Int",
+  ],
+  [
+    "n",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "n == 0",
+    "Bool",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "n",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "n - 1",
+    "Int",
+  ],
+  [
+    "multiplyByTwo(n - 1)",
+    "Int",
+  ],
+  [
+    "2 + multiplyByTwo(n - 1)",
+    "Int",
+  ],
+]
+`;

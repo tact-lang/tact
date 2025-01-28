@@ -496,17 +496,31 @@ export type InterpreterConfig = {
     // Maximum number of iterations inside a loop before a time out is issued.
     // This option only applies to: do...until and while loops
     maxLoopIterations: bigint;
+
+    // Maximum deepness of the Environment stack.
+    maxStackDeepness: bigint;
 };
 
 const WILDCARD_NAME: string = "_";
 
-type Environment = { values: Map<string, A.AstLiteral>; parent?: Environment };
+type Environment = {
+    values: Map<string, A.AstLiteral>;
+    parent?: Environment;
+    deepness: bigint;
+};
+
+/**
+ * This exception is thrown when the stack reaches its maximum deepness.
+ */
+class MaxStackDeepnessReached extends Error {}
 
 class EnvironmentStack {
     private currentEnv: Environment;
+    private maxStackDeepness: bigint;
 
-    constructor() {
-        this.currentEnv = { values: new Map() };
+    constructor(maxStackDeepness: bigint) {
+        this.currentEnv = { values: new Map(), deepness: 0n };
+        this.maxStackDeepness = maxStackDeepness;
     }
 
     private findBindingMap(
@@ -614,7 +628,7 @@ class EnvironmentStack {
         return this.findBindingMap("self") !== undefined;
     }
 
-    /*
+    /**
     Executes "code" in a fresh environment that is placed at the top
     of the environment stack. The fresh environment is initialized
     with the bindings in "initialBindings". Once "code" finishes
@@ -623,6 +637,10 @@ class EnvironmentStack {
     
     This method is useful for starting a new local variables scope, 
     like in a function call.
+
+    @param code The code to execute in the fresh environment.
+    @param initialBindings The initial bindings to add to the fresh environment.
+    @throws MaxStackDeepnessReached
     */
     public executeInNewEnvironment<T>(
         code: () => T,
@@ -635,7 +653,16 @@ class EnvironmentStack {
         const values = initialBindings.values;
 
         const oldEnv = this.currentEnv;
-        this.currentEnv = { values: new Map(), parent: oldEnv };
+
+        if (oldEnv.deepness >= this.maxStackDeepness) {
+            throw new MaxStackDeepnessReached();
+        }
+
+        this.currentEnv = {
+            values: new Map(),
+            parent: oldEnv,
+            deepness: oldEnv.deepness + 1n,
+        };
 
         names.forEach((name, index) => {
             this.setNewBinding(name, values[index]!);
@@ -673,10 +700,13 @@ export function parseAndEvalExpression(
     }
 }
 
-const defaultInterpreterConfig: InterpreterConfig = {
+export const defaultInterpreterConfig: InterpreterConfig = {
     // We set the default max number of loop iterations
     // to the maximum number allowed for repeat loops
     maxLoopIterations: maxRepeatStatement,
+
+    // Default set to 500. This is within the bounds of the call stack in TypeScript.
+    maxStackDeepness: 500n,
 };
 
 /*
@@ -740,7 +770,7 @@ export class Interpreter {
         context: CompilerContext = new CompilerContext(),
         config: InterpreterConfig = defaultInterpreterConfig,
     ) {
-        this.envStack = new EnvironmentStack();
+        this.envStack = new EnvironmentStack(config.maxStackDeepness);
         this.context = context;
         this.config = config;
         this.util = util;
@@ -1452,6 +1482,7 @@ export class Interpreter {
                                 () =>
                                     this.evalStaticFunction(
                                         functionNode,
+                                        ast,
                                         ast.args,
                                         functionDescription.returns,
                                     ),
@@ -1487,6 +1518,7 @@ export class Interpreter {
 
     private evalStaticFunction(
         functionCode: A.AstFunctionDef,
+        functionCall: A.AstStaticCall,
         args: A.AstExpression[],
         returns: TypeRef,
     ): A.AstLiteral {
@@ -1508,7 +1540,7 @@ export class Interpreter {
             );
         }
         // Call function inside a new environment
-        return this.envStack.executeInNewEnvironment(
+        return this.runInNewEnvironment(
             () => {
                 // Interpret all the statements
                 try {
@@ -1546,6 +1578,7 @@ export class Interpreter {
                     return this.util.makeNullLiteral(dummySrcInfo);
                 }
             },
+            functionCall.loc,
             { names: paramNames, values: argValues },
         );
     }
@@ -1692,15 +1725,15 @@ export class Interpreter {
             this.interpretExpression(ast.condition),
         );
         if (condition.value) {
-            this.envStack.executeInNewEnvironment(() => {
+            this.runInNewEnvironment(() => {
                 ast.trueStatements.forEach(this.interpretStatement, this);
-            });
+            }, ast.loc);
         } else if (ast.elseif !== null) {
             this.interpretConditionStatement(ast.elseif);
         } else if (ast.falseStatements !== null) {
-            this.envStack.executeInNewEnvironment(() => {
+            this.runInNewEnvironment(() => {
                 ast.falseStatements!.forEach(this.interpretStatement, this);
-            });
+            }, ast.loc);
         }
     }
 
@@ -1723,11 +1756,11 @@ export class Interpreter {
             // the loop. Also, the language requires that all declared variables inside the
             // loop be initialized, which means that we can overwrite its value in the environment
             // in each iteration.
-            this.envStack.executeInNewEnvironment(() => {
+            this.runInNewEnvironment(() => {
                 for (let i = 1; i <= iterations.value; i++) {
                     ast.statements.forEach(this.interpretStatement, this);
                 }
-            });
+            }, ast.loc);
         }
     }
 
@@ -1756,7 +1789,7 @@ export class Interpreter {
         // the loop. Also, the language requires that all declared variables inside the
         // loop be initialized, which means that we can overwrite its value in the environment
         // in each iteration.
-        this.envStack.executeInNewEnvironment(() => {
+        this.runInNewEnvironment(() => {
             do {
                 ast.statements.forEach(this.interpretStatement, this);
 
@@ -1773,7 +1806,7 @@ export class Interpreter {
                     this.interpretExpression(ast.condition),
                 );
             } while (!condition.value);
-        });
+        }, ast.loc);
     }
 
     public interpretWhileStatement(ast: A.AstStatementWhile) {
@@ -1785,7 +1818,7 @@ export class Interpreter {
         // the loop. Also, the language requires that all declared variables inside the
         // loop be initialized, which means that we can overwrite its value in the environment
         // in each iteration.
-        this.envStack.executeInNewEnvironment(() => {
+        this.runInNewEnvironment(() => {
             do {
                 // The typechecker ensures that the condition does not refer to
                 // variables declared inside the loop.
@@ -1804,13 +1837,13 @@ export class Interpreter {
                     }
                 }
             } while (condition.value);
-        });
+        }, ast.loc);
     }
 
     public interpretBlockStatement(ast: A.AstStatementBlock) {
-        this.envStack.executeInNewEnvironment(() => {
+        this.runInNewEnvironment(() => {
             ast.statements.forEach(this.interpretStatement, this);
-        });
+        }, ast.loc);
     }
 
     private inComputationPath<T>(path: string, cb: () => T) {
@@ -1833,5 +1866,26 @@ export class Interpreter {
                 : path;
 
         return `${shortPath.join(" -> ")} -> ${name}`;
+    }
+
+    private runInNewEnvironment<T>(
+        code: () => T,
+        loc: SrcInfo,
+        initialBindings: { names: string[]; values: A.AstLiteral[] } = {
+            names: [],
+            values: [],
+        },
+    ): T {
+        try {
+            return this.envStack.executeInNewEnvironment(code, initialBindings);
+        } catch (e) {
+            if (e instanceof MaxStackDeepnessReached) {
+                throwNonFatalErrorConstEval(
+                    "Execution stack reached maximum level",
+                    loc,
+                );
+            }
+            throw e;
+        }
     }
 }
