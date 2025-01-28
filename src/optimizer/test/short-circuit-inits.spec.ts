@@ -11,7 +11,7 @@ import { resolveStatements } from "../../types/resolveStatements";
 import { loadCases } from "../../utils/loadCases";
 
 describe("short-circuit-initialization", () => {
-    for (const r of loadCases(__dirname + "/short-circuit/success/")) {
+    for (const r of loadCases(__dirname + "/success/")) {
         it(`${r.name} should pass boolean short-circuiting during initialization`,
             () => {
                 const Ast = getAstFactory();
@@ -29,7 +29,7 @@ describe("short-circuit-initialization", () => {
             },
         );
     }
-    for (const r of loadCases(__dirname + "/short-circuit/failed/")) {
+    for (const r of loadCases(__dirname + "/failed/")) {
         it(`${r.name} should fail boolean short-circuiting during initialization`,
             () => {
                 const Ast = getAstFactory();
