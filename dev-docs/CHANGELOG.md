@@ -68,6 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Throwing from functions with non-trivial branching in the `try` statement: PR [#1501](https://github.com/tact-lang/tact/pull/1501)
 - Forbid read and write to self in contract init function: PR [#1482](https://github.com/tact-lang/tact/pull/1482)
 - Support for using a constant within another constant and for the default value of a struct field before constant declaration: PR [#1478](https://github.com/tact-lang/tact/pull/1478)
+- Generation of non-mutating function: PR [#1608](https://github.com/tact-lang/tact/pull/1608)
 
 ### Docs
 
