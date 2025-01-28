@@ -129,5 +129,10 @@ describe("constants", () => {
         expect(await contract.getGlobalConst11()).toEqual(24n);
         expect(await contract.getGlobalConst12()).toEqual(8n);
         expect(await contract.getGlobalConst13()).toEqual(8n);
+
+        expect(await contract.getBeforeDefinedA()).toEqual(10n);
+        expect(await contract.getBeforeDefinedC()).toEqual(20n);
+        expect(await contract.getDefaultFieldB()).toEqual(20n);
+        expect(await contract.getNoCircularA()).toEqual(200n);
     });
 });

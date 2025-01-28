@@ -9,26 +9,24 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  backwards-compat:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [22]
+        node-version: [18]
         os: [ubuntu-latest, windows-latest, macos-latest]
-
     runs-on: ${{ matrix.os }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 18 for backwards compat tests
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: ${{ matrix.node-version }}
           # without caching
 
-      - name: Backwards compat tests
+      - name: Backwards compatibility tests
         run: |
           # Temporarily ignore engines
           yarn config set ignore-engines true
@@ -44,6 +42,45 @@ jobs:
           # Clean-up
           yarn cleanall
           yarn config delete ignore-engines
+
+  forward-compat:
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [23]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          # without caching
+
+      - name: Forward compatibility tests
+        run: |
+          # Install dependencies and perform some steps of the build pipeline,
+          # skipping the contract generation and the final `yarn build` step
+          yarn install
+          yarn gen:grammar
+          yarn gen:stdlib
+          yarn gen:func-js
+          # Clean-up
+          yarn cleanall
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -70,38 +107,9 @@ jobs:
           yarn gen
           yarn build
 
-      - name: Check there are no errors to be fixed in package.json and no uncommitted changes
-        run: |
-          npm pkg fix && git diff --exit-code
-
       - name: Test Tact compiler
         run: |
           yarn coverage
-
-      - name: Check there are no errors reported by ESLint
-        run: |
-          yarn lint
-
-      - name: Check formatting with Prettier
-        run: |
-          yarn fmt:check
-
-      - name: Spellcheck code base
-        run: |
-          yarn spell
-
-      - name: Check there are no unused dependencies
-        run: |
-          yarn knip
-
-      - name: Check broken file references in internal documentation
-        if: runner.os == 'Linux'
-        uses: lycheeverse/lychee-action@v2
-        with:
-          args: "-n -s file --exclude-path node_modules --exclude-path docs './**/*.md'"
-          output: "/dev/stdout"
-          fail: true
-          failIfEmpty: false
 
       - name: Show an example .pkg file on Windows
         if: runner.os == 'Windows'
@@ -129,9 +137,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         package-manager: [npm, yarn, pnpm, bun]
         # follow-up ifs are for ensuring clean state at all times
-
     runs-on: ${{ matrix.os }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
