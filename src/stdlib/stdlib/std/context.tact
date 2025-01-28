@@ -11,7 +11,7 @@ native context(): Context;
 @name(__tact_context_get_sender)
 native sender(): Address;
 
-asm fun internalReadForwardFee(ctx: Context): Int {
+asm extends fun readForwardFee(self: Context): Int {
     LDMSGADDR
     LDGRAMS
     ONE
@@ -22,9 +22,4 @@ asm fun internalReadForwardFee(ctx: Context): Int {
     6 1 BLKDROP2
     ZERO
     GETORIGINALFWDFEE
-}
-
-
-extends fun readForwardFee(self: Context): Int {
-    return internalReadForwardFee(self);
 }
