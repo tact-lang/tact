@@ -1603,7 +1603,7 @@ exports[`resolveStatements should fail statements for var-scope-nested-block-sta
 `;
 
 exports[`resolveStatements should fail statements for var-scope-no-toString-global-fun1 1`] = `
-"<unknown>:7:9: Static function "toString" does not exist
+"<unknown>:7:9: Cannot find global function "toString"
   6 |     init() {
 > 7 |         toString(); // non-existent function
               ^~~~~~~~~~
@@ -1612,7 +1612,7 @@ exports[`resolveStatements should fail statements for var-scope-no-toString-glob
 `;
 
 exports[`resolveStatements should fail statements for var-scope-no-toString-global-fun2 1`] = `
-"<unknown>:6:12: Static function "toString" does not exist. Perhaps you meant to call ".toString(...)" extension function?
+"<unknown>:6:12: Cannot find global function "toString", did you mean "self.toString()"?
   5 | extends fun toString(self: WrappedInt): Int {
 > 6 |     return toString(self.x);
                  ^~~~~~~~~~~~~~~~
@@ -1621,7 +1621,7 @@ exports[`resolveStatements should fail statements for var-scope-no-toString-glob
 `;
 
 exports[`resolveStatements should fail statements for var-scope-no-valueOf-global-fun 1`] = `
-"<unknown>:4:5: Static function "valueOf" does not exist
+"<unknown>:4:5: Cannot find global function "valueOf"
   3 | fun foo(x: Int) {
 > 4 |     valueOf(x);
           ^~~~~~~~~~
