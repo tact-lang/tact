@@ -16,7 +16,6 @@ import {
     TokenUpdateContent,
     TokenBurn,
     Mint,
-    ChangeOwner,
     ProvideWalletAddress,
 } from "./sources/output/jetton_minter_discoverable_JettonMinter";
 import {
@@ -27,38 +26,44 @@ import {
 import "@ton/test-utils";
 import { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
 
-JettonMinter.prototype.getTotalSupply = async function (
-    this: JettonMinter,
-    provider: ContractProvider,
-): Promise<bigint> {
-    const res = await this.getGetJettonData(provider);
-    return res.totalSupply;
-};
+interface ExtendedJettonWallet extends SandboxContract<JettonWallet> {
+    getJettonBalance(): Promise<bigint>;
+    sendTransfer(
+        via: Sender,
+        value: bigint,
+        jetton_amount: bigint,
+        to: Address,
+        responseAddress: Address,
+        customPayload: Cell | null,
+        forward_ton_amount: bigint,
+        forwardPayload: Cell | null,
+    ): Promise<SendMessageResult>;
+    sendBurn(
+        via: Sender,
+        value: bigint,
+        jetton_amount: bigint,
+        responseAddress: Address,
+        customPayload: Cell | null,
+    ): Promise<SendMessageResult>;
+}
 
-JettonMinter.prototype.getWalletAddress = async function (
-    this: JettonMinter,
-    provider: ContractProvider,
-    owner: Address,
-) {
-    return this.getGetWalletAddress(provider, owner);
-};
+interface ExtendedJettonMinter extends SandboxContract<JettonMinter> {
+    sendMint(
+        via: Sender,
+        to: Address,
+        jetton_amount: bigint,
+        forward_ton_amount: bigint,
+        total_ton_amount: bigint,
+    ): Promise<SendMessageResult>;
+    sendDiscovery(
+        via: Sender,
+        address: Address,
+        includeAddress: boolean,
+        value?: bigint,
+    ): Promise<SendMessageResult>;
+}
 
-JettonMinter.prototype.getAdminAddress = async function (
-    this: JettonMinter,
-    provider: ContractProvider,
-) {
-    return this.getOwner(provider);
-};
-
-JettonMinter.prototype.getContent = async function (
-    this: JettonMinter,
-    provider: ContractProvider,
-) {
-    const res = await this.getGetJettonData(provider);
-    return res.jettonContent;
-};
-
-JettonMinter.prototype.sendMint = async function (
+JettonMinter.prototype.sendMint = async function sendMint(
     this: JettonMinter,
     provider: ContractProvider,
     via: Sender,
@@ -83,33 +88,6 @@ JettonMinter.prototype.sendMint = async function (
         { value: total_ton_amount + toNano("0.015") },
         msg,
     );
-};
-
-JettonMinter.prototype.sendChangeAdmin = async function (
-    this: JettonMinter,
-    provider: ContractProvider,
-    via: Sender,
-    newOwner: Address,
-) {
-    const msg: ChangeOwner = {
-        $$type: "ChangeOwner",
-        queryId: 0n,
-        newOwner: newOwner,
-    };
-    return this.send(provider, via, { value: toNano("0.05") }, msg);
-};
-
-JettonMinter.prototype.sendChangeContent = async function (
-    this: JettonMinter,
-    provider: ContractProvider,
-    via: Sender,
-    content: Cell,
-) {
-    const msg: TokenUpdateContent = {
-        $$type: "TokenUpdateContent",
-        content: content,
-    };
-    return this.send(provider, via, { value: toNano("0.05") }, msg);
 };
 
 JettonMinter.prototype.sendDiscovery = async function (
@@ -265,12 +243,12 @@ function getUsedGas(sendEnough: SendMessageResult) {
 
 describe("Jetton", () => {
     let blockchain: Blockchain;
-    let jettonMinter: SandboxContract<JettonMinter>;
+    let jettonMinter: ExtendedJettonMinter;
     let deployer: SandboxContract<TreasuryContract>;
 
     let notDeployer: SandboxContract<TreasuryContract>;
 
-    let userWallet: any;
+    let userWallet: (address: Address) => Promise<ExtendedJettonWallet>;
     let defaultContent: Cell;
 
     const expectedResult = results.at(-1)!;
@@ -288,7 +266,7 @@ describe("Jetton", () => {
 
         jettonMinter = blockchain.openContract(
             await JettonMinter.fromInit(deployer.address, defaultContent),
-        );
+        ) as ExtendedJettonMinter;
         const deployResult = await jettonMinter.send(
             deployer.getSender(),
             { value: toNano("0.1") },
@@ -312,6 +290,7 @@ describe("Jetton", () => {
                     await jettonMinter.getGetWalletAddress(address),
                 ),
             );
+
             newUserWallet.getProvider = (provider: ContractProvider) =>
                 provider;
 
@@ -406,11 +385,11 @@ describe("Jetton", () => {
         const sendResult = await deployerJettonWallet.sendTransfer(
             deployer.getSender(),
             toNano(1),
-            1,
+            1n,
             someAddress,
             deployer.address,
             null,
-            0,
+            0n,
             null,
         );
 
@@ -434,7 +413,8 @@ describe("Jetton", () => {
         const deployerJettonWallet = await userWallet(deployer.address);
         const initialJettonBalance =
             await deployerJettonWallet.getJettonBalance();
-        const initialTotalSupply = await jettonMinter.getTotalSupply();
+        const jettonData = await jettonMinter.getGetJettonData();
+        const initialTotalSupply = jettonData.totalSupply;
         const burnAmount = toNano("0.01");
 
         await blockchain.loadFrom(snapshot);
@@ -456,9 +436,8 @@ describe("Jetton", () => {
         expect(await deployerJettonWallet.getJettonBalance()).toEqual(
             initialJettonBalance - burnAmount,
         );
-        expect(await jettonMinter.getTotalSupply()).toEqual(
-            initialTotalSupply - burnAmount,
-        );
+        const data = await jettonMinter.getGetJettonData();
+        expect(data.totalSupply).toEqual(initialTotalSupply - burnAmount);
 
         const gasUsed = getUsedGas(burnResult);
         expect(gasUsed).toEqual(expectedResult.burn);

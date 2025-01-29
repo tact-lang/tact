@@ -8,7 +8,7 @@ declare module "../output/Jetton_JettonMinter" {
             owner: Address,
         ): Promise<Address>;
         getAdminAddress(provider: ContractProvider): Promise<Address>;
-        getContent(provider: ContractProvider): Promise<any>;
+        getContent(provider: ContractProvider): Promise<unknown>;
         sendMint(
             provider: ContractProvider,
             via: Sender,
