@@ -4,13 +4,14 @@ import { openContext } from "../../context/store";
 import { getParser } from "../../grammar";
 import { defaultParser } from "../../grammar/grammar";
 import { resolveDescriptors } from "../../types/resolveDescriptors";
+import { getAllExpressionTypes } from "../../types/resolveExpression";
 import { resolveSignatures } from "../../types/resolveSignatures";
 import { resolveStatements } from "../../types/resolveStatements";
 import { loadCases } from "../../utils/loadCases";
 
-describe("stack-deepness", () => {
-    for (const r of loadCases(__dirname + "/failed/")) {
-        it(`${r.name} should fail compilation`, () => {
+describe("interpreter-evaluation", () => {
+    for (const r of loadCases(__dirname + "/success/")) {
+        it(`${r.name} should pass compilation`, () => {
             const Ast = getAstFactory();
             let ctx = openContext(
                 new CompilerContext(),
@@ -18,11 +19,10 @@ describe("stack-deepness", () => {
                 [],
                 getParser(Ast, defaultParser),
             );
-            expect(() => {
-                ctx = resolveDescriptors(ctx, Ast);
-                ctx = resolveStatements(ctx, Ast);
-                ctx = resolveSignatures(ctx, Ast);
-            }).toThrowErrorMatchingSnapshot();
+            ctx = resolveDescriptors(ctx, Ast);
+            ctx = resolveStatements(ctx, Ast);
+            ctx = resolveSignatures(ctx, Ast);
+            expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
         });
     }
 });

@@ -1,6 +1,6 @@
 primitive Int;
 
-const A: Int = multiplyByTwo(300);
+const A: Int = multiplyByTwo(200);
 
 fun multiplyByTwo(n: Int): Int {
     if (n < 0) {
