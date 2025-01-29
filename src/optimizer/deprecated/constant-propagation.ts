@@ -471,9 +471,9 @@ export function constantPropagationAnalysis(
                     // Interrupt the computation
                     throw new InterruptedAnalysis();
                 }
-                const rawCond = tryExpressionEvaluation(ast.condition);
-                if (typeof rawCond !== "undefined") {
-                    condition = ensureBoolean(rawCond).value;
+                const conditionValue = tryExpressionEvaluation(ast.condition);
+                if (typeof conditionValue !== "undefined") {
+                    condition = ensureBoolean(conditionValue).value;
                 } else {
                     // Branching point detected. Halt computation after executing body once.
                     simulateBranch(() => {
@@ -490,9 +490,9 @@ export function constantPropagationAnalysis(
             let condition: boolean;
             let iterCount = 0;
             do {
-                const rawCond = tryExpressionEvaluation(ast.condition);
-                if (typeof rawCond !== "undefined") {
-                    condition = ensureBoolean(rawCond).value;
+                const conditionValue = tryExpressionEvaluation(ast.condition);
+                if (typeof conditionValue !== "undefined") {
+                    condition = ensureBoolean(conditionValue).value;
                 } else {
                     // Branching point detected. Halt computation after executing body once.
                     simulateBranch(() => {
@@ -636,16 +636,15 @@ export function constantPropagationAnalysis(
     function interpretMethodCall(expr: A.AstMethodCall): A.AstLiteral | undefined {
         const self = tryExpressionEvaluation(expr.self);
         const argValues = expr.args.map((e) => tryExpressionEvaluation(e));
-        if (
-            typeof self !== "undefined" &&
-            argValues.every((v) => typeof v !== "undefined")
-        ) {
-            // Pass the call to the interpreter
-            const result = catchNonFatalErrors(() =>
-                interpreter.interpretMethodCall(
-                    util.makeMethodCall(self, expr.method, argValues, expr.loc),
-                ),
-            );
+
+        const result = typeof self !== "undefined" &&
+        argValues.every((v) => typeof v !== "undefined") ? 
+        catchNonFatalErrors(() =>
+            interpreter.interpretMethodCall(
+                util.makeMethodCall(self, expr.method, argValues, expr.loc),
+            ),
+        ) :
+        undefined;
 
             // If the method is a mutates function, then the expression acts as an implicit assignment statement
             // into expr.self.
@@ -653,10 +652,23 @@ export function constantPropagationAnalysis(
             // currently, method calls in the interpreter do not modify self and they do not return the new value for self.
 
             const fullPath = tryExtractPath(expr.self);
-            if (fullPath !== null) {
-                const baseName = fullPath[0];
-                if (typeof baseName !== "undefined") {
-                    // Check that the method is a mutates function
+            if (fullPath === null) {
+                // ast.self is not a path expression, i.e., it has the form: a.f()...
+                // then there is nothing to update in the environment stack because a.f()... is not a full path to a variable.
+
+                return result;
+            }
+
+            
+            const baseName = fullPath[0];
+            if (typeof baseName === "undefined") {
+                throwInternalCompilerError(
+                    "path expressions must be non-empty",
+                    expr.self.loc,
+                );
+            }
+                   
+            // Check that the method is a mutates function
                     const selfTypeRef = getExpType(ctx, expr.self);
 
                     if (selfTypeRef.kind === "ref") {
@@ -689,21 +701,10 @@ export function constantPropagationAnalysis(
 
                     // Not a reference or map type, so, it cannot have mutates functions
                     // Do nothing
-                } else {
-                    throwInternalCompilerError(
-                        "path expressions must be non-empty",
-                        expr.self.loc,
-                    );
-                }
-            }
+                
 
-            // ast.self is not a path expression, i.e., it has the form: a.f()...
-            // then there is nothing to update in the environment stack because a.f()... is not a full path to a variable.
-
+            
             return result;
-        } else {
-            return undefined;
-        }
     }
 
     function interpretStaticCall(expr: A.AstStaticCall): A.AstLiteral | undefined {
