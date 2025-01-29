@@ -20,7 +20,6 @@ describe("short-circuit-initialization", () => {
                 [],
                 getParser(Ast, defaultParser),
             );
-            ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
             ctx = resolveStatements(ctx, Ast);
             ctx = resolveSignatures(ctx, Ast);
@@ -36,7 +35,6 @@ describe("short-circuit-initialization", () => {
                 [],
                 getParser(Ast, defaultParser),
             );
-            ctx = featureEnable(ctx, "external");
             expect(() => {
                 ctx = resolveDescriptors(ctx, Ast);
                 ctx = resolveStatements(ctx, Ast);
