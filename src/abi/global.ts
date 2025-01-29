@@ -388,9 +388,9 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         ).toString(10);
                     }
 
-                    // Otherwise, revert back to runtime hash through SHA256U
+                    // Otherwise, revert back to runtime hash through HASHEXT_SHA256
                     const exp = writeExpression(resolved[0]!, ctx);
-                    return `string_hash(${exp})`;
+                    return `__tact_sha256(${exp})`;
                 }
 
                 // Slice case

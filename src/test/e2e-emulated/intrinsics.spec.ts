@@ -94,29 +94,6 @@ describe("intrinsics", () => {
         expect(outMessage.remainingBits).toEqual(0);
         expect(outMessage.remainingRefs).toEqual(0);
 
-        // Check sha256
-        function sha256(src: string | Buffer) {
-            return BigInt("0x" + sha256_sync(src).toString("hex"));
-        }
-        expect(await contract.getGetHash()).toBe(sha256("hello world"));
-        expect(await contract.getGetHash2()).toBe(sha256("hello world"));
-        expect(
-            await contract.getGetHash3(
-                beginCell().storeStringTail("sometest").endCell().asSlice(),
-            ),
-        ).toBe(sha256("sometest"));
-        expect(await contract.getGetHash4("wallet")).toBe(sha256("wallet"));
-        const longString =
-            "------------------------------------------------------------------------------------------------------------------------------129";
-        expect(await contract.getGetHashLongComptime()).toBe(
-            sha256(longString),
-        );
-        // NOTE: The discrepancy here is expected, since SHA256U operates only on the first 127 bytes
-        expect(
-            (await contract.getGetHashLongRuntime(longString)) !==
-                sha256(longString),
-        ).toBe(true);
-
         // Check `slice`
         expect(
             (await contract.getGetSlice())
@@ -284,5 +261,63 @@ describe("intrinsics", () => {
         expect(await contract.getGetCrc32_2()).toBe(BigInt(2235694568));
         expect(await contract.getGetCrc32_3()).toBe(0n);
         expect(await contract.getGetCrc32_4()).toBe(0n);
+    });
+
+    const checkSha256 = async (input: string) => {
+        const expected = sha256_sync(input).toString("hex");
+        const actual = await contract.getGetHashLongRuntime(input);
+        expect(actual.toString(16)).toEqual(expected);
+    };
+
+    const generateString = (length: number): string => {
+        const chars =
+            "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        let result = "";
+        for (let i = 0; i < length; i++) {
+            result += chars[Math.floor(Math.random() * chars.length)];
+        }
+        return result;
+    };
+
+    it("should calculate sha256 correctly", async () => {
+        function sha256(src: string | Buffer) {
+            return BigInt("0x" + sha256_sync(src).toString("hex"));
+        }
+        expect(await contract.getGetHash()).toBe(sha256("hello world"));
+        expect(await contract.getGetHash2()).toBe(sha256("hello world"));
+        expect(
+            await contract.getGetHash3(
+                beginCell().storeStringTail("sometest").endCell().asSlice(),
+            ),
+        ).toBe(sha256("sometest"));
+        expect(await contract.getGetHash4("wallet")).toBe(sha256("wallet"));
+        const longString =
+            "------------------------------------------------------------------------------------------------------------------------------129";
+        expect(await contract.getGetHashLongComptime()).toBe(
+            sha256(longString),
+        );
+
+        await checkSha256("hello world");
+
+        const input256bytes = generateString(256);
+
+        // check various length input
+        await checkSha256(generateString(15));
+        await checkSha256(generateString(127));
+        await checkSha256(generateString(128));
+        await checkSha256(input256bytes);
+        await checkSha256(generateString(1024));
+        await checkSha256(generateString(16999));
+
+        // check that we hash all string, not just first 127 bytes
+        const first128bytesOf256bytesString = input256bytes.slice(0, 128);
+        const first128bytesOf256bytesStringHash =
+            await contract.getGetHashLongRuntime(first128bytesOf256bytesString);
+        const input256bytesStringHash =
+            await contract.getGetHashLongRuntime(input256bytes);
+
+        expect(first128bytesOf256bytesStringHash).not.toEqual(
+            input256bytesStringHash,
+        );
     });
 });
