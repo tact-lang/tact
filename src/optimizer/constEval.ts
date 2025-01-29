@@ -133,7 +133,7 @@ export const getOptimizer = (util: AstUtil) => {
         switch (ast.kind) {
             case "id":
                 try {
-                    return interpreter.interpretName(ast);
+                    return interpreter.interpretExpression(ast);
                 } catch (e) {
                     if (e instanceof TactConstEvalError) {
                         if (!e.fatal) {
@@ -143,9 +143,16 @@ export const getOptimizer = (util: AstUtil) => {
                     }
                     throw e;
                 }
-            case "method_call":
-                // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return interpreter.interpretMethodCall(ast);
+            case "op_unary":
+                return partiallyEvalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
+            case "op_binary":
+                return partiallyEvalBinaryOp(
+                    ast.op,
+                    ast.left,
+                    ast.right,
+                    ast.loc,
+                    ctx,
+                );
             case "init_of":
                 throwNonFatalErrorConstEval(
                     "initOf is not supported at this moment",
@@ -157,9 +164,9 @@ export const getOptimizer = (util: AstUtil) => {
             case "boolean":
                 return ast;
             case "number":
-                return interpreter.interpretNumber(ast);
+                return interpreter.interpretExpression(ast);
             case "string":
-                return interpreter.interpretString(ast);
+                return interpreter.interpretExpression(ast);
             case "comment_value":
                 return ast;
             case "simplified_string":
@@ -172,28 +179,13 @@ export const getOptimizer = (util: AstUtil) => {
                 return ast;
             case "slice":
                 return ast;
-            case "op_unary":
-                return partiallyEvalUnaryOp(ast.op, ast.operand, ast.loc, ctx);
-            case "op_binary":
-                return partiallyEvalBinaryOp(
-                    ast.op,
-                    ast.left,
-                    ast.right,
-                    ast.loc,
-                    ctx,
-                );
+            case "method_call":
             case "conditional":
-                // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return interpreter.interpretConditional(ast);
             case "struct_instance":
-                // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return interpreter.interpretStructInstance(ast);
             case "field_access":
-                // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return interpreter.interpretFieldAccess(ast);
             case "static_call":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return interpreter.interpretStaticCall(ast);
+                return interpreter.interpretExpression(ast);
             default:
                 throwInternalCompilerError("Unrecognized expression kind");
         }

@@ -42,7 +42,6 @@ import {
     idText,
     tryExtractPath,
 } from "../../ast/ast-helpers";
-import { defaultInterpreterConfig } from "../../optimizer/interpreter";
 
 function isNull(wCtx: WriterContext, expr: A.AstExpression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
