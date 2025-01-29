@@ -38,7 +38,7 @@ describe("benchmarks", () => {
 
         // Verify code size
         const codeSize = functions.init!.code.toBoc().length;
-        expect(codeSize).toMatchInlineSnapshot(`260`);
+        expect(codeSize).toMatchInlineSnapshot(`283`);
     });
 
     it("benchmark functions (inline)", async () => {
@@ -85,8 +85,8 @@ describe("benchmarks", () => {
                     .description as TransactionDescriptionGeneric
             ).computePhase as TransactionComputeVm
         ).gasUsed;
-        expect(gasUsed).toMatchInlineSnapshot(`2973n`);
+        expect(gasUsed).toMatchInlineSnapshot(`3283n`);
         const codeSize = testContract.init!.code.toBoc().length;
-        expect(codeSize).toMatchInlineSnapshot(`260`);
+        expect(codeSize).toMatchInlineSnapshot(`283`);
     });
 });

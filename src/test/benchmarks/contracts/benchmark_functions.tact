@@ -10,6 +10,10 @@ message TestGetFwdFee {
     any: Slice;
 }
 
+asm fun touch(x: Int) {
+    NOP
+}
+
 contract Functions {
     value: Int;
 
@@ -31,6 +35,6 @@ contract Functions {
         self.update(-msg.value);
     }
     receive(msg: TestGetFwdFee) {
-
+        touch(context().readForwardFee());
     }
 }

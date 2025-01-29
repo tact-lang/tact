@@ -62,10 +62,12 @@ contract StdlibTest {
     get fun parseOriginalFwdFee(msg: Slice): Int {
         msg.skipBits(4); //Skip tags
         msg.loadAddress(); // Skip source
-        msg.loadAddress(); // Skip destination
-        msg.loadCoins(); // Skip value
-        msg.skipBits(1); // Skip extra currency collection
-        msg.loadCoins(); // Skip ihr_fee
-        return getOriginalFwdFee(msg.loadCoins(), false);
+        let ctx: Context = Context{
+            bounced: false,
+            sender: myAddress(),
+            value: ton("1"),
+            raw: msg
+        };
+        return ctx.readForwardFee();
     }
 }
