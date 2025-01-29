@@ -18,8 +18,11 @@ import {
     Mint,
     ChangeOwner,
     ProvideWalletAddress,
-} from "./Jetton_JettonMinter";
-import { JettonWallet, TokenTransfer } from "./Jetton_JettonWallet";
+} from "./sources/output/jetton_minter_discoverable_JettonMinter";
+import {
+    JettonWallet,
+    TokenTransfer,
+} from "./sources/output/jetton_minter_discoverable_JettonWallet";
 
 import "@ton/test-utils";
 import { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
@@ -127,41 +130,137 @@ JettonMinter.prototype.sendDiscovery = async function (
 };
 
 type BenchmarkResult = {
-    sendTransfer: bigint;
+    label: string;
+    transfer: bigint;
     burn: bigint;
     discovery: bigint;
 };
 
-function printBenchmarkTable(results: BenchmarkResult[]): void {
-    process.stdout.write("+--------------+----------------------+\n");
-    process.stdout.write("| Operation    | Gas                  |\n");
-    process.stdout.write("+--------------+----------------------+\n");
+const results: BenchmarkResult[] = [
+    {
+        label: "FunC",
+        transfer: 15064n,
+        burn: 11895n,
+        discovery: 5915n,
+    },
+    {
+        label: "1.5.3",
+        transfer: 40678n,
+        burn: 25852n,
+        discovery: 15265n,
+    },
+    {
+        label: "1.5.3 without address validation",
+        transfer: 31470n,
+        burn: 26594n,
+        discovery: 15408n,
+    },
+    {
+        label: "1.5.3 without self-code in system cell",
+        transfer: 26876n,
+        burn: 17898n,
+        discovery: 11135n,
+    },
+    {
+        label: "1.5.3 with removed JettonWallet duplicate",
+        transfer: 26852n,
+        burn: 17728n,
+        discovery: 11055n,
+    },
+    {
+        label: "master",
+        transfer: 26568n,
+        burn: 17718n,
+        discovery: 11063n,
+    },
+];
 
-    results.forEach((result, index) => {
-        process.stdout.write(
-            `| Run #${index + 1}       |                      |\n`,
-        );
-        process.stdout.write("+--------------+----------------------+\n");
-        process.stdout.write(
-            `| Send         | ${result.sendTransfer.toString().padEnd(20)} |\n`,
-        );
-        process.stdout.write(
-            `| Burn         | ${result.burn.toString().padEnd(20)} |\n`,
-        );
-        process.stdout.write(
-            `| Discovery    | ${result.discovery.toString().padEnd(20)} |\n`,
-        );
-        process.stdout.write("+--------------+----------------------+\n");
-    });
+function calculateChanges(results: BenchmarkResult[]): string[][] {
+    const headers = Object.keys(results[0]!).filter((k) => k !== "label");
+    const changes: string[][] = results.map(() =>
+        headers.map(() => "\x1b[32m\x1b[0m"),
+    );
+
+    for (let i = 1; i < results.length; i++) {
+        headers.forEach((key, index) => {
+            const prevValue = (results[i - 1] as Record<string, unknown>)[
+                key
+            ] as bigint;
+            const currValue = (results[i] as Record<string, unknown>)[
+                key
+            ] as bigint;
+            const change = (
+                (Number(currValue - prevValue) / Number(prevValue)) *
+                100
+            ).toFixed(2);
+            changes[i]![index] =
+                parseFloat(change) >= 0
+                    ? `\x1b[31m+${change}%\x1b[0m`
+                    : `\x1b[32m${change}%\x1b[0m`;
+        });
+    }
+    return changes;
+}
+
+function printBenchmarkTable(results: BenchmarkResult[]): void {
+    if (results.length === 0) {
+        console.log("No benchmark results to display.");
+        return;
+    }
+
+    const maxLabel =
+        results
+            .map((r) => r.label.length)
+            .reduceRight((prev, cur) => (cur > prev ? cur : prev)) + 2;
+
+    const headers = Object.keys(results[0]!).filter((k) => k !== "label");
+    const separator =
+        "+" +
+        "-".repeat(maxLabel) +
+        "+" +
+        headers.map(() => "-".repeat(20)).join("+") +
+        "+";
+
+    process.stdout.write(separator + "\n");
+    process.stdout.write(
+        "| Run" +
+            " ".repeat(maxLabel - 4) +
+            "|" +
+            headers.map((h) => ` ${h.padEnd(18)} `).join("|") +
+            "|\n",
+    );
+    process.stdout.write(separator + "\n");
+
+    const changes = calculateChanges(results);
+
+    for (let i = 0; i < results.length; i++) {
+        const result = results[i]!;
+        const label = result.label;
+        process.stdout.write(`| ${label.padEnd(maxLabel - 2)} |`);
+
+        headers.forEach((key, index) => {
+            if (Object.hasOwn(result, key)) {
+                const res = (result as Record<string, unknown>)[key]! as bigint;
+                const changeStr = changes[i]![index] ?? "";
+                process.stdout.write(` ${`${res} ${changeStr}`.padEnd(28)}|`);
+            }
+        });
+        process.stdout.write("\n");
+    }
+
+    process.stdout.write(separator + "\n");
 }
 
 function getUsedGas(sendEnough: SendMessageResult) {
-    return (
-        (
-            sendEnough.transactions[1]!
-                .description as TransactionDescriptionGeneric
-        ).computePhase as TransactionComputeVm
-    ).gasUsed;
+    return sendEnough.transactions
+        .slice(1)
+        .map((t) => {
+            return (
+                (t.description as TransactionDescriptionGeneric)
+                    .computePhase as TransactionComputeVm
+            ).gasUsed;
+        })
+        .reduceRight((prev, cur) => prev + cur);
 }
 
 describe("Jetton", () => {
@@ -174,11 +273,7 @@ describe("Jetton", () => {
     let userWallet: any;
     let defaultContent: Cell;
 
-    const result: BenchmarkResult = {
-        burn: 0n,
-        sendTransfer: 0n,
-        discovery: 0n,
-    };
+    const expectedResult = results.at(-1)!;
 
     beforeAll(async () => {
         blockchain = await Blockchain.create();
@@ -285,7 +380,7 @@ describe("Jetton", () => {
     });
 
     afterAll(() => {
-        printBenchmarkTable([result]);
+        printBenchmarkTable(results);
     });
 
     it("send transfer", async () => {
@@ -331,9 +426,7 @@ describe("Jetton", () => {
         });
 
         const gasUsed = getUsedGas(sendResult);
-        result.sendTransfer = gasUsed;
-
-        expect(gasUsed).toMatchInlineSnapshot(`22273n`);
+        expect(gasUsed).toEqual(expectedResult.transfer);
     });
 
     it("burn", async () => {
@@ -368,9 +461,7 @@ describe("Jetton", () => {
         );
 
         const gasUsed = getUsedGas(burnResult);
-        result.burn = gasUsed;
-
-        expect(gasUsed).toMatchInlineSnapshot(`10938n`);
+        expect(gasUsed).toEqual(expectedResult.burn);
     });
 
     it("discovery", async () => {
@@ -388,8 +479,6 @@ describe("Jetton", () => {
         });
 
         const gasUsed = getUsedGas(discoveryResult);
-        expect(gasUsed).toMatchInlineSnapshot(`14956n`);
-
-        result.discovery = gasUsed;
+        expect(gasUsed).toEqual(expectedResult.discovery);
     });
 });
