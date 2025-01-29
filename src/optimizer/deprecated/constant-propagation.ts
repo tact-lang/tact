@@ -65,10 +65,11 @@ export function constantPropagationAnalysis(
     astF: FactoryAst,
 ) {
     // Check that the builtin Functions known by the analyzer are still the ones in StructFunctions and MapFunctions
-    const knownStructBuiltInFunctions =
-        knownStructBuiltInNonMutationFunctions.concat(
-            knownStructBuiltInMutationFunctions,
-        );
+    const knownStructBuiltInFunctions = [
+        ...knownStructBuiltInNonMutationFunctions,
+        ...knownStructBuiltInMutationFunctions
+    ];
+    
     if (
         StructFunctions.size !== knownStructBuiltInFunctions.length ||
         knownStructBuiltInFunctions.some((name) => !StructFunctions.has(name))
@@ -78,9 +79,11 @@ export function constantPropagationAnalysis(
         );
     }
 
-    const knownMapBuiltInFunctions = knownMapBuiltInNonMutationFunctions.concat(
-        knownMapBuiltInMutationFunctions,
-    );
+    const knownMapBuiltInFunctions = [
+        ...knownMapBuiltInNonMutationFunctions,
+        ...knownMapBuiltInMutationFunctions
+    ];
+
     if (
         MapFunctions.size !== knownMapBuiltInFunctions.length ||
         knownMapBuiltInFunctions.some((name) => !MapFunctions.has(name))
