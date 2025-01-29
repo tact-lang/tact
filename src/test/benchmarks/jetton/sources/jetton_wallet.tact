@@ -116,7 +116,7 @@ contract JettonWallet with Ownable {
         self.balance -= msg.amount; // Update balance
         require(self.balance >= 0, "Invalid balance after burn");
 
-        // This is minimal possible amount of TONs for attached. But still, maybe we should icrease it?
+        // This is minimal possible amount of TONs for attached. But still, maybe we should increase it?
         //require(ctx.value > ton("0.011217199"), "Too little TONs for gas attached");
 
         //let fwd_fee: Int = ctx.readForwardFee(); // Gas checks
@@ -150,7 +150,7 @@ contract JettonWallet with Ownable {
         balance: self.balance,
         owner: self.owner,
         master: self.master,
-        code: myCode() //may be raplaced by "initOf JettonDefaultWallet(self.owner, self.master).code"
+        code: myCode() //may be replaced by "initOf JettonDefaultWallet(self.owner, self.master).code"
         };
     }
 }
