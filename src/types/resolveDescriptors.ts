@@ -2209,6 +2209,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
     astF: FactoryAst,
 ): CompilerContext {
     const staticConstants = getAllStaticConstants(ctx);
+    const util = getAstUtil(astF);
 
     // we split the handling of constants into two steps:
     // first we check all constants to make sure the types of initializers are correct
@@ -2244,7 +2245,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
 
                             field.default =
                                 field.type.kind === "ref" && field.type.optional
-                                    ? getAstUtil(astF).makeNullLiteral(
+                                    ? util.makeNullLiteral(
                                           field.ast.loc,
                                       )
                                     : undefined;

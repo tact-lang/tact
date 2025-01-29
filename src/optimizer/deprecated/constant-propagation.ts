@@ -4,36 +4,7 @@
 // the simplification is: the analyzer stops when it reaches a join point of two or more branches.
 // FIXME: Remove this entire file once constant propagation is implemented.
 
-import {
-    AstConditional,
-    AstContractInit,
-    AstExpression,
-    AstFieldAccess,
-    AstFunctionDef,
-    AstInitOf,
-    AstLiteral,
-    AstMethodCall,
-    AstOpBinary,
-    AstOpUnary,
-    AstReceiver,
-    AstStatement,
-    AstStatementAssign,
-    AstStatementAugmentedAssign,
-    AstStatementBlock,
-    AstStatementCondition,
-    AstStatementDestruct,
-    AstStatementExpression,
-    AstStatementForEach,
-    AstStatementLet,
-    AstStatementRepeat,
-    AstStatementReturn,
-    AstStatementTry,
-    AstStatementUntil,
-    AstStatementWhile,
-    AstStaticCall,
-    AstStructFieldValue,
-    AstStructInstance,
-} from "../../ast/ast";
+import * as A from "../../ast/ast";
 import { FactoryAst, idText, tryExtractPath } from "../../ast/ast-helpers";
 import { getAstUtil } from "../../ast/util";
 import { CompilerContext } from "../../context/context";
@@ -119,7 +90,7 @@ export function constantPropagationAnalysis(
         );
     }
 
-    const envStack = new EnvironmentStack((expr: AstLiteral) =>
+    const envStack = new EnvironmentStack((expr: A.AstLiteral) =>
         cloneNode(expr, astF),
     );
     const interpreter = new Interpreter(astF, ctx);
@@ -153,7 +124,7 @@ export function constantPropagationAnalysis(
         // Process init
         if (t.init) {
             // Prepare the self struct
-            const fields: AstStructFieldValue[] = [];
+            const fields: A.AstStructFieldValue[] = [];
             for (const f of t.fields) {
                 if (typeof f.default !== "undefined") {
                     fields.push(
@@ -209,7 +180,7 @@ export function constantPropagationAnalysis(
     }
 
     function interpretProcedure(
-        ast: AstFunctionDef | AstReceiver | AstContractInit,
+        ast: A.AstFunctionDef | A.AstReceiver | A.AstContractInit,
     ) {
         try {
             envStack.executeInNewEnvironment(() => {
@@ -222,13 +193,13 @@ export function constantPropagationAnalysis(
         }
     }
 
-    function executeStatements(statements: AstStatement[]) {
+    function executeStatements(statements: A.AstStatement[]) {
         statements.forEach((currStmt) => {
             interpretStatement(currStmt);
         });
     }
 
-    function interpretStatement(ast: AstStatement) {
+    function interpretStatement(ast: A.AstStatement) {
         switch (ast.kind) {
             case "statement_let":
                 interpretLetStatement(ast);
@@ -274,7 +245,7 @@ export function constantPropagationAnalysis(
         }
     }
 
-    function interpretLetStatement(ast: AstStatementLet) {
+    function interpretLetStatement(ast: A.AstStatementLet) {
         const val = tryExpressionEvaluation(ast.expression);
         if (typeof val !== "undefined") {
             envStack.setNewBinding(idText(ast.name), val);
@@ -282,11 +253,11 @@ export function constantPropagationAnalysis(
         // Do nothing if the expression did not evaluate to a literal
     }
 
-    function interpretDestructStatement(ast: AstStatementDestruct): void {
+    function interpretDestructStatement(ast: A.AstStatementDestruct): void {
         const rawVal = tryExpressionEvaluation(ast.expression);
 
         if (typeof rawVal !== "undefined" && rawVal.kind === "struct_value") {
-            const valStruct: Map<string, AstLiteral> = new Map();
+            const valStruct: Map<string, A.AstLiteral> = new Map();
 
             for (const { field, initializer } of rawVal.args) {
                 valStruct.set(idText(field), initializer);
@@ -303,7 +274,7 @@ export function constantPropagationAnalysis(
         // Do nothing if the expression did not evaluate to a Struct value
     }
 
-    function interpretAssignStatement(ast: AstStatementAssign) {
+    function interpretAssignStatement(ast: A.AstStatementAssign) {
         if (ast.path.kind === "id") {
             const val = tryExpressionEvaluation(ast.expression);
             if (typeof val !== "undefined") {
@@ -333,7 +304,7 @@ export function constantPropagationAnalysis(
     }
 
     function interpretAugmentedAssignStatement(
-        ast: AstStatementAugmentedAssign,
+        ast: A.AstStatementAugmentedAssign,
     ) {
         // Interpret it as if it was a simple assignment
         interpretAssignStatement(
@@ -350,7 +321,7 @@ export function constantPropagationAnalysis(
         );
     }
 
-    function interpretConditionStatement(ast: AstStatementCondition) {
+    function interpretConditionStatement(ast: A.AstStatementCondition) {
         const conditionValue = tryExpressionEvaluation(ast.condition);
 
         if (typeof conditionValue !== "undefined") {
@@ -396,12 +367,12 @@ export function constantPropagationAnalysis(
         }
     }
 
-    function interpretExpressionStatement(ast: AstStatementExpression) {
+    function interpretExpressionStatement(ast: A.AstStatementExpression) {
         // Keep executing if a non-fatal error occurs.
         tryExpressionEvaluation(ast.expression);
     }
 
-    function interpretForEachStatement(ast: AstStatementForEach) {
+    function interpretForEachStatement(ast: A.AstStatementForEach) {
         const mapValue = tryExpressionEvaluation(ast.map);
 
         if (typeof mapValue !== "undefined") {
@@ -427,7 +398,7 @@ export function constantPropagationAnalysis(
         }
     }
 
-    function interpretRepeatStatement(ast: AstStatementRepeat) {
+    function interpretRepeatStatement(ast: A.AstStatementRepeat) {
         const iterationsValue = tryExpressionEvaluation(ast.iterations);
 
         if (typeof iterationsValue !== "undefined") {
@@ -457,7 +428,7 @@ export function constantPropagationAnalysis(
         }
     }
 
-    function interpretReturnStatement(ast: AstStatementReturn) {
+    function interpretReturnStatement(ast: A.AstStatementReturn) {
         // Interpret the expression, but do nothing with it
         if (ast.expression !== null) {
             tryExpressionEvaluation(ast.expression);
@@ -466,7 +437,7 @@ export function constantPropagationAnalysis(
         throw new InterruptedAnalysis();
     }
 
-    function interpretTryStatement(ast: AstStatementTry) {
+    function interpretTryStatement(ast: A.AstStatementTry) {
         // try-catch is always a branching point. Simulate both branches
         simulateBranch(() => {
             executeStatements(ast.statements);
@@ -481,7 +452,7 @@ export function constantPropagationAnalysis(
         throw new InterruptedAnalysis();
     }
 
-    function interpretUntilStatement(ast: AstStatementUntil) {
+    function interpretUntilStatement(ast: A.AstStatementUntil) {
         envStack.executeInNewEnvironment(() => {
             let condition: boolean;
             let iterCount = 0;
@@ -507,7 +478,7 @@ export function constantPropagationAnalysis(
         });
     }
 
-    function interpretWhileStatement(ast: AstStatementWhile) {
+    function interpretWhileStatement(ast: A.AstStatementWhile) {
         envStack.executeInNewEnvironment(() => {
             let condition: boolean;
             let iterCount = 0;
@@ -537,15 +508,15 @@ export function constantPropagationAnalysis(
         });
     }
 
-    function interpretBlock(ast: AstStatementBlock) {
+    function interpretBlock(ast: A.AstStatementBlock) {
         envStack.executeInNewEnvironment(() => {
             executeStatements(ast.statements);
         });
     }
 
     function tryExpressionEvaluation(
-        expr: AstExpression,
-    ): AstLiteral | undefined {
+        expr: A.AstExpression,
+    ): A.AstLiteral | undefined {
         try {
             return interpretExpression(expr);
         } catch (e) {
@@ -559,8 +530,8 @@ export function constantPropagationAnalysis(
     }
 
     function catchNonFatalErrors(
-        code: () => AstLiteral | undefined,
-    ): AstLiteral | undefined {
+        code: () => A.AstLiteral | undefined,
+    ): A.AstLiteral | undefined {
         try {
             return code();
         } catch (e) {
@@ -573,7 +544,7 @@ export function constantPropagationAnalysis(
         }
     }
 
-    function interpretExpression(expr: AstExpression): AstLiteral | undefined {
+    function interpretExpression(expr: A.AstExpression): A.AstLiteral | undefined {
         switch (expr.kind) {
             case "address":
             case "boolean":
@@ -618,7 +589,7 @@ export function constantPropagationAnalysis(
         }
     }
 
-    function interpretFieldAccess(expr: AstFieldAccess): AstLiteral {
+    function interpretFieldAccess(expr: A.AstFieldAccess): A.AstLiteral {
         /* Pass it to the interpreter, but we do the following HACK:
            if the interpreter returns an internal compiler error describing that a struct does not
            have a field, treat it as a non-fatal error. 
@@ -639,8 +610,8 @@ export function constantPropagationAnalysis(
     }
 
     function interpretConditional(
-        expr: AstConditional,
-    ): AstLiteral | undefined {
+        expr: A.AstConditional,
+    ): A.AstLiteral | undefined {
         const cond = tryExpressionEvaluation(expr.condition);
         if (typeof cond !== "undefined") {
             const condValue = ensureBoolean(cond).value;
@@ -655,7 +626,7 @@ export function constantPropagationAnalysis(
         }
     }
 
-    function interpretMethodCall(expr: AstMethodCall): AstLiteral | undefined {
+    function interpretMethodCall(expr: A.AstMethodCall): A.AstLiteral | undefined {
         const self = tryExpressionEvaluation(expr.self);
         const argValues = expr.args.map((e) => tryExpressionEvaluation(e));
         if (
@@ -728,7 +699,7 @@ export function constantPropagationAnalysis(
         }
     }
 
-    function interpretStaticCall(expr: AstStaticCall): AstLiteral | undefined {
+    function interpretStaticCall(expr: A.AstStaticCall): A.AstLiteral | undefined {
         const argValues = expr.args.map((e) => tryExpressionEvaluation(e));
         if (argValues.every((v) => typeof v !== "undefined")) {
             // Pass the call to the interpreter
@@ -741,14 +712,14 @@ export function constantPropagationAnalysis(
     }
 
     function interpretStructInstance(
-        expr: AstStructInstance,
-    ): AstLiteral | undefined {
+        expr: A.AstStructInstance,
+    ): A.AstLiteral | undefined {
         const structTy = getType(ctx, expr.type);
 
         // initialize the resulting struct value with
         // the default values for fields with initializers
         // or null for uninitialized optional fields
-        const resultMap: Map<string, AstLiteral> = new Map();
+        const resultMap: Map<string, A.AstLiteral> = new Map();
 
         for (const field of structTy.fields) {
             if (typeof field.default !== "undefined") {
@@ -771,7 +742,7 @@ export function constantPropagationAnalysis(
         }
 
         // Create the field entries for the StructValue
-        const structValueFields: AstStructFieldValue[] = [];
+        const structValueFields: A.AstStructFieldValue[] = [];
         for (const [fieldName, fieldValue] of resultMap) {
             // Find the source code declaration, if existent
             const sourceField = expr.args.find(
@@ -796,7 +767,7 @@ export function constantPropagationAnalysis(
         return util.makeStructValue(structValueFields, expr.type, expr.loc);
     }
 
-    function interpretBinaryOp(expr: AstOpBinary): AstLiteral | undefined {
+    function interpretBinaryOp(expr: A.AstOpBinary): A.AstLiteral | undefined {
         // Boolean operators are a source of branching due to short-circuiting
 
         if (expr.op === "&&") {
@@ -841,7 +812,7 @@ export function constantPropagationAnalysis(
         }
     }
 
-    function interpretUnaryOp(expr: AstOpUnary): AstLiteral | undefined {
+    function interpretUnaryOp(expr: A.AstOpUnary): A.AstLiteral | undefined {
         // Special case when expression is of the form "-numberLiteral"
         if (expr.op === "-" && expr.operand.kind === "number") {
             return interpreter.interpretUnaryOp(expr);
@@ -856,7 +827,7 @@ export function constantPropagationAnalysis(
         }
     }
 
-    function interpretInitOf(expr: AstInitOf): AstLiteral | undefined {
+    function interpretInitOf(expr: A.AstInitOf): A.AstLiteral | undefined {
         const argValues = expr.args.map((e) => tryExpressionEvaluation(e));
         if (argValues.every((v) => typeof v !== "undefined")) {
             // Pass the call to the interpreter

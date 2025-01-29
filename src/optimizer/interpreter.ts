@@ -553,11 +553,7 @@ export class EnvironmentStack {
             newMap.set(name, this.copyValue(val));
         }
 
-        let newParent: Environment | undefined = undefined;
-
-        if (typeof env.parent !== "undefined") {
-            newParent = this.copyEnvironment(env.parent);
-        }
+        const newParent = typeof env.parent !== "undefined" ? this.copyEnvironment(env.parent) : undefined;
 
         return { values: newMap, parent: newParent };
     }
