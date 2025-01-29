@@ -2245,9 +2245,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
 
                             field.default =
                                 field.type.kind === "ref" && field.type.optional
-                                    ? util.makeNullLiteral(
-                                          field.ast.loc,
-                                      )
+                                    ? util.makeNullLiteral(field.ast.loc)
                                     : undefined;
                         }
                     }

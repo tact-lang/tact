@@ -67,9 +67,9 @@ export function constantPropagationAnalysis(
     // Check that the builtin Functions known by the analyzer are still the ones in StructFunctions and MapFunctions
     const knownStructBuiltInFunctions = [
         ...knownStructBuiltInNonMutationFunctions,
-        ...knownStructBuiltInMutationFunctions
+        ...knownStructBuiltInMutationFunctions,
     ];
-    
+
     if (
         StructFunctions.size !== knownStructBuiltInFunctions.length ||
         knownStructBuiltInFunctions.some((name) => !StructFunctions.has(name))
@@ -81,7 +81,7 @@ export function constantPropagationAnalysis(
 
     const knownMapBuiltInFunctions = [
         ...knownMapBuiltInNonMutationFunctions,
-        ...knownMapBuiltInMutationFunctions
+        ...knownMapBuiltInMutationFunctions,
     ];
 
     if (
@@ -353,7 +353,9 @@ export function constantPropagationAnalysis(
             });
 
             if (ast.falseStatements !== null && ast.elseif !== null) {
-                throwInternalCompilerError("Incorrect AST: 'else' and `else if' cannot occur simultaneously in an AstStatementCondition")
+                throwInternalCompilerError(
+                    "Incorrect AST: 'else' and `else if' cannot occur simultaneously in an AstStatementCondition",
+                );
             }
 
             if (ast.falseStatements !== null) {
@@ -361,8 +363,8 @@ export function constantPropagationAnalysis(
                 simulateBranch(() => {
                     executeStatements(falseStmts);
                 });
-            } 
-            
+            }
+
             if (ast.elseif !== null) {
                 const elseif = ast.elseif;
                 simulateBranch(() => {
@@ -551,7 +553,9 @@ export function constantPropagationAnalysis(
         }
     }
 
-    function interpretExpression(expr: A.AstExpression): A.AstLiteral | undefined {
+    function interpretExpression(
+        expr: A.AstExpression,
+    ): A.AstLiteral | undefined {
         switch (expr.kind) {
             case "address":
             case "boolean":
@@ -642,81 +646,86 @@ export function constantPropagationAnalysis(
         }
     }
 
-    function interpretMethodCall(expr: A.AstMethodCall): A.AstLiteral | undefined {
+    function interpretMethodCall(
+        expr: A.AstMethodCall,
+    ): A.AstLiteral | undefined {
         const self = tryExpressionEvaluation(expr.self);
         const argValues = expr.args.map((e) => tryExpressionEvaluation(e));
 
-        const result = typeof self !== "undefined" &&
-        argValues.every((v) => typeof v !== "undefined") ? 
-        catchNonFatalErrors(() =>
-            interpreter.interpretMethodCall(
-                util.makeMethodCall(self, expr.method, argValues, expr.loc),
-            ),
-        ) :
-        undefined;
+        const result =
+            typeof self !== "undefined" &&
+            argValues.every((v) => typeof v !== "undefined")
+                ? catchNonFatalErrors(() =>
+                      interpreter.interpretMethodCall(
+                          util.makeMethodCall(
+                              self,
+                              expr.method,
+                              argValues,
+                              expr.loc,
+                          ),
+                      ),
+                  )
+                : undefined;
 
-            // If the method is a mutates function, then the expression acts as an implicit assignment statement
-            // into expr.self.
-            // We need to delete the binding for the path expression in expr.self, because
-            // currently, method calls in the interpreter do not modify self and they do not return the new value for self.
+        // If the method is a mutates function, then the expression acts as an implicit assignment statement
+        // into expr.self.
+        // We need to delete the binding for the path expression in expr.self, because
+        // currently, method calls in the interpreter do not modify self and they do not return the new value for self.
 
-            const fullPath = tryExtractPath(expr.self);
-            if (fullPath === null) {
-                // ast.self is not a path expression, i.e., it has the form: a.f()...
-                // then there is nothing to update in the environment stack because a.f()... is not a full path to a variable.
+        const fullPath = tryExtractPath(expr.self);
+        if (fullPath === null) {
+            // ast.self is not a path expression, i.e., it has the form: a.f()...
+            // then there is nothing to update in the environment stack because a.f()... is not a full path to a variable.
 
-                return result;
-            }
-
-            
-            const baseName = fullPath[0];
-            if (typeof baseName === "undefined") {
-                throwInternalCompilerError(
-                    "path expressions must be non-empty",
-                    expr.self.loc,
-                );
-            }
-                   
-            // Check that the method is a mutates function
-                    const selfTypeRef = getExpType(ctx, expr.self);
-
-                    if (selfTypeRef.kind === "ref") {
-                        const selfT = getType(ctx, selfTypeRef.name);
-                        const f = selfT.functions.get(idText(expr.method));
-                        if (typeof f !== "undefined") {
-                            if (
-                                f.isMutating ||
-                                knownStructBuiltInMutationFunctions.includes(
-                                    idText(expr.method),
-                                )
-                            ) {
-                                envStack.deactivateBinding(idText(baseName));
-                            }
-                            // Not a mutates function, do nothing
-                        }
-                        // Not a registered function in the reference type. Do nothing
-                    }
-
-                    if (selfTypeRef.kind === "map") {
-                        if (
-                            knownMapBuiltInMutationFunctions.includes(
-                                idText(expr.method),
-                            )
-                        ) {
-                            envStack.deactivateBinding(idText(baseName));
-                        }
-                        // Not a mutates function, do nothing
-                    }
-
-                    // Not a reference or map type, so, it cannot have mutates functions
-                    // Do nothing
-                
-
-            
             return result;
+        }
+
+        const baseName = fullPath[0];
+        if (typeof baseName === "undefined") {
+            throwInternalCompilerError(
+                "path expressions must be non-empty",
+                expr.self.loc,
+            );
+        }
+
+        // Check that the method is a mutates function
+        const selfTypeRef = getExpType(ctx, expr.self);
+
+        if (selfTypeRef.kind === "ref") {
+            const selfT = getType(ctx, selfTypeRef.name);
+            const f = selfT.functions.get(idText(expr.method));
+            if (typeof f !== "undefined") {
+                if (
+                    f.isMutating ||
+                    knownStructBuiltInMutationFunctions.includes(
+                        idText(expr.method),
+                    )
+                ) {
+                    envStack.deactivateBinding(idText(baseName));
+                }
+                // Not a mutates function, do nothing
+            }
+            // Not a registered function in the reference type. Do nothing
+        }
+
+        if (selfTypeRef.kind === "map") {
+            if (
+                knownMapBuiltInMutationFunctions.includes(idText(expr.method))
+            ) {
+                envStack.deactivateBinding(idText(baseName));
+            }
+            // Not a mutates function, do nothing
+        }
+
+        // Not a reference or map type, so, it cannot have mutates functions
+        // Do nothing
+
+        return result;
     }
 
-    function interpretStaticCall(expr: A.AstStaticCall): A.AstLiteral | undefined {
+    function interpretStaticCall(
+        expr: A.AstStaticCall,
+    ): A.AstLiteral | undefined {
         const argValues = expr.args.map((e) => tryExpressionEvaluation(e));
         if (argValues.every((v) => typeof v !== "undefined")) {
             // Pass the call to the interpreter
