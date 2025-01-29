@@ -1,4 +1,4 @@
-import {Address, beginCell, Cell, toNano} from "@ton/core";
+import { Address, beginCell, Cell, toNano } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { StdlibTest } from "./contracts/output/stdlib_StdlibTest";
 import "@ton/test-utils";
@@ -106,8 +106,12 @@ describe("stdlib", () => {
             beginCell().storeUint(345, 123).endCell(),
         );
 
-        const RandomMessage = Cell.fromBase64("te6ccuEBAQEAZwDOAMloAdbATUBllK0egYWU34F08lIun9zBwyu7UZQrueKKJgnXADfmsDtWQP5D/YkXX+XlULvs4HivRaKY38ftT2hS5yAAEE1v+YAGCCNaAABhF0kRG4TPMTmAapk7bYAAGEXSDt8BwKQrvKE=");
-        const res = await contract.getParseOriginalFwdFee(RandomMessage.beginParse());
+        const RandomMessage = Cell.fromBase64(
+            "te6ccuEBAQEAZwDOAMloAdbATUBllK0egYWU34F08lIun9zBwyu7UZQrueKKJgnXADfmsDtWQP5D/YkXX+XlULvs4HivRaKY38ftT2hS5yAAEE1v+YAGCCNaAABhF0kRG4TPMTmAapk7bYAAGEXSDt8BwKQrvKE=",
+        );
+        const res = await contract.getParseOriginalFwdFee(
+            RandomMessage.beginParse(),
+        );
         expect(res).toBe(400000n);
     });
 });

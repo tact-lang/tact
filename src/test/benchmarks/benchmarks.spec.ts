@@ -65,20 +65,28 @@ describe("benchmarks", () => {
         expect(codeSize).toMatchInlineSnapshot(`220`);
     });
     it("benchmark readFwdFee", async () => {
-       const testContract = blockchain.openContract(await Functions.fromInit());
-         const sendResult = await testContract.send(
-              treasure.getSender(),
-              { value: toNano(1) },
-              { $$type: "TestGetFwdFee", any: beginCell().storeUint(0, 32).storeStringTail("This is test payload").asSlice()},
-         );
-         const gasUsed = (
-             (
-                 sendResult.transactions[1]!
-                     .description as TransactionDescriptionGeneric
-             ).computePhase as TransactionComputeVm
-         ).gasUsed;
-         expect(gasUsed).toMatchInlineSnapshot(`2973n`);
-         const codeSize = testContract.init!.code.toBoc().length;
-         expect(codeSize).toMatchInlineSnapshot(`260`);
+        const testContract = blockchain.openContract(
+            await Functions.fromInit(),
+        );
+        const sendResult = await testContract.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            {
+                $$type: "TestGetFwdFee",
+                any: beginCell()
+                    .storeUint(0, 32)
+                    .storeStringTail("This is test payload")
+                    .asSlice(),
+            },
+        );
+        const gasUsed = (
+            (
+                sendResult.transactions[1]!
+                    .description as TransactionDescriptionGeneric
+            ).computePhase as TransactionComputeVm
+        ).gasUsed;
+        expect(gasUsed).toMatchInlineSnapshot(`2973n`);
+        const codeSize = testContract.init!.code.toBoc().length;
+        expect(codeSize).toMatchInlineSnapshot(`260`);
     });
 });
