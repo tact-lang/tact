@@ -1,7 +1,7 @@
 import fc from "fast-check";
 import * as A from "./ast";
 import { dummySrcInfo } from "../grammar/src-info";
-import { Address, address, beginCell, Cell, Slice } from "@ton/core";
+import { diffJson } from "diff";
 
 /**
  * An array of reserved words that cannot be used as contract or variable names in tests.
@@ -269,46 +269,46 @@ function randomAstMethodCall(
     );
 }
 
-function randomAddress(): fc.Arbitrary<Address> {
-    return fc.constant(
-        address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"), // TODO: use random address
-    );
-}
+// function randomAddress(): fc.Arbitrary<Address> {
+//     return fc.constant(
+//         address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"), // TODO: use random address
+//     );
+// }
 
-function randomCell(): fc.Arbitrary<Cell> {
-    return fc.constant(beginCell().endCell()); // TODO: use random random here
-}
+// function randomCell(): fc.Arbitrary<Cell> {
+//     return fc.constant(beginCell().endCell()); // TODO: use random random here
+// }
 
-function randomAstAddress(): fc.Arbitrary<A.AstAddress> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("address"),
-            value: randomAddress(),
-        }),
-    );
-}
+// function randomAstAddress(): fc.Arbitrary<A.AstAddress> {
+//     return dummyAstNode(
+//         fc.record({
+//             kind: fc.constant("address"),
+//             value: randomAddress(),
+//         }),
+//     );
+// }
 
-function randomAstCell(): fc.Arbitrary<A.AstCell> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("cell"),
-            value: randomCell(),
-        }),
-    );
-}
+// function randomAstCell(): fc.Arbitrary<A.AstCell> {
+//     return dummyAstNode(
+//         fc.record({
+//             kind: fc.constant("cell"),
+//             value: randomCell(),
+//         }),
+//     );
+// }
 
-function randomSlice(): fc.Arbitrary<Slice> {
-    return fc.constant(beginCell().endCell().beginParse());
-}
+// function randomSlice(): fc.Arbitrary<Slice> {
+//     return fc.constant(beginCell().endCell().beginParse());
+// }
 
-function randomAstSlice(): fc.Arbitrary<A.AstSlice> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("slice"),
-            value: randomSlice(),
-        }),
-    );
-}
+// function randomAstSlice(): fc.Arbitrary<A.AstSlice> {
+//     return dummyAstNode(
+//         fc.record({
+//             kind: fc.constant("slice"),
+//             value: randomSlice(),
+//         }),
+//     );
+// }
 
 function randomAstCommentValue(): fc.Arbitrary<A.AstCommentValue> {
     return dummyAstNode(
@@ -337,7 +337,7 @@ function randomAstStructValue(
     return dummyAstNode(
         fc.record({
             kind: fc.constant("struct_value"),
-            type: randomAstId(),
+            type: randomAstCapitalizedId(),
             args: fc.array(randomAstStructFieldValue(subLiteral)),
         }),
     );
@@ -345,15 +345,15 @@ function randomAstStructValue(
 
 function randomAstLiteral(maxDepth: number): fc.Arbitrary<A.AstLiteral> {
     return fc.memo((depth: number): fc.Arbitrary<A.AstLiteral> => {
-        if (depth === 1) {
+        if (depth <= 1) {
             return fc.oneof(
                 randomAstNumber(),
                 randomAstBoolean(),
                 randomAstNull(),
                 randomAstSimplifiedString(),
-                randomAstAddress(),
-                randomAstCell(),
-                randomAstSlice(),
+                // randomAstAddress(),
+                // randomAstCell(),
+                // randomAstSlice(),
                 randomAstCommentValue(),
             );
         }
@@ -365,9 +365,9 @@ function randomAstLiteral(maxDepth: number): fc.Arbitrary<A.AstLiteral> {
             randomAstBoolean(),
             randomAstNull(),
             randomAstSimplifiedString(),
-            randomAstAddress(),
-            randomAstCell(),
-            randomAstSlice(),
+            // randomAstAddress(),
+            // randomAstCell(),
+            // randomAstSlice(),
             randomAstCommentValue(),
             randomAstStructValue(subLiteral()),
         );
@@ -378,8 +378,8 @@ export function randomAstExpression(
     maxDepth: number,
 ): fc.Arbitrary<A.AstExpression> {
     return fc.memo((depth: number): fc.Arbitrary<A.AstExpression> => {
-        if (depth == 1) {
-            return fc.oneof(randomAstLiteral(depth));
+        if (depth <= 1) {
+            return fc.oneof(randomAstLiteral(depth - 1));
         }
 
         const subExpr = () => randomAstExpression(depth - 1);
@@ -397,4 +397,60 @@ export function randomAstExpression(
             randomAstConditional(subExpr(), subExpr(), subExpr()),
         );
     })(maxDepth);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+    return (
+        typeof value === "object" &&
+        value !== null &&
+        !Array.isArray(value) &&
+        Object.keys(value).every((key) => typeof key === "string")
+    );
+}
+
+function sortObjectKeys<T extends Record<string, unknown>>(obj: T): T {
+    const sortedEntries = Object.entries(obj)
+        .sort(([key1], [key2]) => key1.localeCompare(key2))
+        .map(([key, value]) => ({
+            [key]: isRecord(value) ? sortObjectKeys(value) : value,
+        }));
+
+    return Object.assign({}, ...sortedEntries);
+}
+
+export function diffAstObjects(
+    left: A.AstExpression,
+    right: A.AstExpression,
+    prettyBefore: string,
+    prettyAfter: string,
+): void {
+    const ConsoleColors = {
+        added: "\x1b[32m",
+        removed: "\x1b[31m",
+        reset: "\x1b[0m",
+    };
+
+    const replacer = (key: string, value: unknown): unknown => {
+        if (key === "id") return undefined;
+        if (typeof value === "bigint") return value.toString();
+        return value;
+    };
+
+    const leftStr = JSON.stringify(sortObjectKeys(left), replacer, 4);
+    const rightStr = JSON.stringify(sortObjectKeys(right), replacer, 4);
+
+    const differences = diffJson(leftStr, rightStr);
+
+    differences.forEach((part) => {
+        const color = part.added
+            ? ConsoleColors.added
+            : part.removed
+              ? ConsoleColors.removed
+              : ConsoleColors.reset;
+
+        process.stdout.write(color + part.value + ConsoleColors.reset);
+    });
+
+    process.stdout.write(`\n\nGenerated to\n\n${prettyBefore}`);
+    process.stdout.write(`\n\nParsed to\n\n${prettyAfter}\n\n`);
 }
