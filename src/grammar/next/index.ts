@@ -376,6 +376,7 @@ const parseParens = ({ child }: $ast.Parens): Handler<A.AstExpression> => {
 };
 
 // has to be an interface because of the way TS handles circular type references
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface Binary extends $ast.Binary<Expression, A.AstBinaryOperation> {}
 
 type Expression =
