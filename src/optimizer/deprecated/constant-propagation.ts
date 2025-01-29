@@ -629,6 +629,15 @@ export function constantPropagationAnalysis(
             }
         } else {
             // Branch point detected.
+
+            simulateBranch(() => {
+                tryExpressionEvaluation(expr.thenBranch);
+            });
+
+            simulateBranch(() => {
+                tryExpressionEvaluation(expr.elseBranch);
+            });
+
             throw new InterruptedAnalysis();
         }
     }
@@ -788,7 +797,10 @@ export function constantPropagationAnalysis(
                     return util.makeBooleanLiteral(false, expr.left.loc);
                 }
             } else {
-                // Branching point detected
+                // Branching point detected. Analyze right branch and halt.
+                simulateBranch(() => {
+                    tryExpressionEvaluation(expr.right);
+                });
                 throw new InterruptedAnalysis();
             }
         }
@@ -802,7 +814,10 @@ export function constantPropagationAnalysis(
                     return tryExpressionEvaluation(expr.right);
                 }
             } else {
-                // Branching point detected
+                // Branching point detected. Analyze right branch and halt.
+                simulateBranch(() => {
+                    tryExpressionEvaluation(expr.right);
+                });
                 throw new InterruptedAnalysis();
             }
         }
