@@ -580,7 +580,7 @@ Constraints error. Reserved, but never thrown.
 
 ### 132: Access denied {#132}
 
-If you use the [`Ownable{:tact}`](/ref/stdlib-ownable#ownable) [trait][ct] from the [`@stdlib/ownable`](/ref/stdlib-ownable) library, the helper function `requireOwner(){:tact}` provided by it will throw an error with exit code $132$ if the sender of the inbound message won't match the specified owner: `Access denied`.
+If you use the [`Ownable{:tact}`](/ref/stdlib-ownable#ownable) [trait][trait] from the [`@stdlib/ownable`](/ref/stdlib-ownable) library, the helper function `requireOwner(){:tact}` provided by it will throw an error with exit code $132$ if the sender of the inbound message won't match the specified owner: `Access denied`.
 
 ```tact
 import "@stdlib/ownable";
@@ -670,7 +670,7 @@ try {
 ```
 
 [p]: /book/types#primitive-types
-[ct]: /book/types#composite-types
+[trait]: /book/types/#traits
 [cell]: /book/cells
 [builder]: /book/cells#builders
 [slice]: /book/cells#slices
