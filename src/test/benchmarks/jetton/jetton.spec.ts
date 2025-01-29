@@ -397,7 +397,7 @@ interface ExtendedJettonMinter extends SandboxContract<JettonMinter> {
     ): Promise<SendMessageResult>;
 }
 
-JettonMinter.prototype.sendMint = async function sendMint(
+JettonMinter.prototype.sendMint = function sendMint(
     this: JettonMinter,
     provider: ContractProvider,
     via: Sender,
@@ -424,7 +424,7 @@ JettonMinter.prototype.sendMint = async function sendMint(
     );
 };
 
-JettonMinter.prototype.sendDiscovery = async function (
+JettonMinter.prototype.sendDiscovery = function (
     this: JettonMinter,
     provider: ContractProvider,
     via: Sender,
