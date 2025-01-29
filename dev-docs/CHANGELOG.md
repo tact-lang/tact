@@ -103,6 +103,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documented `BaseTrait` and methods in stdlib code: PR [#1296](https://github.com/tact-lang/tact/pull/1296)
 - Document how storage variables get updated in relation to the `init()` function: PR [#1311](https://github.com/tact-lang/tact/pull/1311)
 - Document compiler upgrades in Blueprint and other Tact projects: PR [#1560](https://github.com/tact-lang/tact/pull/1560)
+- Illustrate how nested maps can be created: PR [#1593](https://github.com/tact-lang/tact/pull/1593)
 
 ### Release contributors
 
