@@ -8,8 +8,8 @@ fun multiplyByTwoDeepBlocks(n: Int): Int {
         return -multiplyByTwoDeepBlocks(-n);
     } else if (n == 0) {
         return 0;
-    } else {     // When it enters this branch, each call creates 18 levels in the stack. 
-        {        // Since the method is called 200 times, it would create around 3600 levels.
+    } else {     // When it enters this branch, each call creates 19 levels in the stack. 
+        {        // Since the method is called 200 times, it would create around 3800 levels, without counting initialization levels.
             { 
                 {
                     {

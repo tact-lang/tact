@@ -519,7 +519,7 @@ class EnvironmentStack {
     private maxStackDeepness: bigint;
 
     constructor(maxStackDeepness: bigint) {
-        this.currentEnv = { values: new Map(), deepness: 0n };
+        this.currentEnv = { values: new Map(), deepness: 1n };
         this.maxStackDeepness = maxStackDeepness;
     }
 
