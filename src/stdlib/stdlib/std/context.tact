@@ -11,11 +11,15 @@ native context(): Context;
 @name(__tact_context_get_sender)
 native sender(): Address;
 
-extends fun readForwardFee(self: Context): Int {
-    let sc: Slice = self.raw;
-    sc.loadAddress(); // Skip destination
-    sc.loadCoins(); // Skip value
-    sc.skipBits(1); // Skip extra currency collection
-    sc.loadCoins(); // Skip ihr_fee
-    return getOriginalFwdFee(sc.loadCoins(), false);
+asm extends fun readForwardFee(self: Context): Int {
+    LDMSGADDR
+    LDGRAMS
+    ONE
+    SDSKIPFIRST
+    LDGRAMS
+    LDGRAMS
+    DROP
+    6 1 BLKDROP2
+    ZERO
+    GETORIGINALFWDFEE
 }

@@ -4,10 +4,22 @@ import {
     TransactionComputeVm,
     TransactionDescriptionGeneric,
 } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import {
+    Blockchain,
+    BlockchainTransaction,
+    SandboxContract,
+    TreasuryContract,
+} from "@ton/sandbox";
 import { Functions } from "./contracts/output/benchmark_functions_Functions";
 import { Functions as FunctionsInline } from "./contracts/output/benchmark_functions_inline_Functions";
 import "@ton/test-utils";
+
+function measureGas(txs: BlockchainTransaction[]) {
+    return (
+        (txs[1]!.description as TransactionDescriptionGeneric)
+            .computePhase as TransactionComputeVm
+    ).gasUsed;
+}
 
 describe("benchmarks", () => {
     let blockchain: Blockchain;
@@ -28,12 +40,8 @@ describe("benchmarks", () => {
             { $$type: "Add", value: 10n },
         );
 
-        const gasUsed = (
-            (
-                sendResult.transactions[1]!
-                    .description as TransactionDescriptionGeneric
-            ).computePhase as TransactionComputeVm
-        ).gasUsed;
+        const gasUsed = measureGas(sendResult.transactions);
+
         expect(gasUsed).toMatchInlineSnapshot(`2869n`);
 
         // Verify code size
@@ -52,12 +60,7 @@ describe("benchmarks", () => {
             { $$type: "Add", value: 10n },
         );
 
-        const gasUsed = (
-            (
-                sendResult.transactions[1]!
-                    .description as TransactionDescriptionGeneric
-            ).computePhase as TransactionComputeVm
-        ).gasUsed;
+        const gasUsed = measureGas(sendResult.transactions);
         expect(gasUsed).toMatchInlineSnapshot(`2738n`);
 
         // Verify code size
@@ -79,12 +82,7 @@ describe("benchmarks", () => {
                     .asSlice(),
             },
         );
-        const gasUsed = (
-            (
-                sendResult.transactions[1]!
-                    .description as TransactionDescriptionGeneric
-            ).computePhase as TransactionComputeVm
-        ).gasUsed;
+        const gasUsed = measureGas(sendResult.transactions);
         expect(gasUsed).toMatchInlineSnapshot(`3283n`);
         const codeSize = testContract.init!.code.toBoc().length;
         expect(codeSize).toMatchInlineSnapshot(`283`);
