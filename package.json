@@ -91,6 +91,7 @@
     "@types/node": "^22.5.0",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
+    "cli-table3": "^0.6.5",
     "cross-env": "^7.0.3",
     "cspell": "^8.8.3",
     "eslint": "^8.56.0",

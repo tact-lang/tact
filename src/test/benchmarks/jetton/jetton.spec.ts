@@ -25,9 +25,11 @@ import {
 
 import "@ton/test-utils";
 import { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
+import Table from "cli-table3";
 
 interface ExtendedJettonWallet extends SandboxContract<JettonWallet> {
     getJettonBalance(): Promise<bigint>;
+
     sendTransfer(
         via: Sender,
         value: bigint,
@@ -38,6 +40,7 @@ interface ExtendedJettonWallet extends SandboxContract<JettonWallet> {
         forward_ton_amount: bigint,
         forwardPayload: Cell | null,
     ): Promise<SendMessageResult>;
+
     sendBurn(
         via: Sender,
         value: bigint,
@@ -55,6 +58,7 @@ interface ExtendedJettonMinter extends SandboxContract<JettonMinter> {
         forward_ton_amount: bigint,
         total_ton_amount: bigint,
     ): Promise<SendMessageResult>;
+
     sendDiscovery(
         via: Sender,
         address: Address,
@@ -154,26 +158,21 @@ const results: BenchmarkResult[] = [
 ];
 
 function calculateChanges(results: BenchmarkResult[]): string[][] {
-    const headers = Object.keys(results[0]!).filter((k) => k !== "label");
-    const changes: string[][] = results.map(() =>
-        headers.map(() => "\x1b[32m\x1b[0m"),
-    );
+    type MetricKey = Exclude<keyof BenchmarkResult, "label">;
+    const headers = ["transfer", "burn", "discovery"] as const;
+    const changes: string[][] = results.map(() => headers.map(() => ""));
 
     for (let i = 1; i < results.length; i++) {
         headers.forEach((key, index) => {
-            const prevValue = (results[i - 1] as Record<string, unknown>)[
-                key
-            ] as bigint;
-            const currValue = (results[i] as Record<string, unknown>)[
-                key
-            ] as bigint;
+            const prevValue = results[i - 1]![key as MetricKey];
+            const currValue = results[i]![key as MetricKey];
             const change = (
                 (Number(currValue - prevValue) / Number(prevValue)) *
                 100
             ).toFixed(2);
             changes[i]![index] =
                 parseFloat(change) >= 0
-                    ? `\x1b[31m+${change}%\x1b[0m`
+                    ? `\x1b[91m+${change}%\x1b[0m`
                     : `\x1b[32m${change}%\x1b[0m`;
         });
     }
@@ -186,47 +185,27 @@ function printBenchmarkTable(results: BenchmarkResult[]): void {
         return;
     }
 
-    const maxLabel =
-        results
-            .map((r) => r.label.length)
-            .reduceRight((prev, cur) => (cur > prev ? cur : prev)) + 2;
-
-    const headers = Object.keys(results[0]!).filter((k) => k !== "label");
-    const separator =
-        "+" +
-        "-".repeat(maxLabel) +
-        "+" +
-        headers.map(() => "-".repeat(20)).join("+") +
-        "+";
-
-    process.stdout.write(separator + "\n");
-    process.stdout.write(
-        "| Run" +
-            " ".repeat(maxLabel - 4) +
-            "|" +
-            headers.map((h) => ` ${h.padEnd(18)} `).join("|") +
-            "|\n",
-    );
-    process.stdout.write(separator + "\n");
+    const table = new Table({
+        head: ["Run", "Transfer", "Burn", "Discovery"],
+        style: {
+            head: ["cyan"],
+            border: ["gray"],
+        },
+    });
 
     const changes = calculateChanges(results);
 
-    for (let i = 0; i < results.length; i++) {
-        const result = results[i]!;
-        const label = result.label;
-        process.stdout.write(`| ${label.padEnd(maxLabel - 2)} |`);
+    results.forEach((result, i) => {
+        table.push([
+            result.label,
+            `${result.transfer} ${changes[i]?.[0] ?? ""}`,
+            `${result.burn} ${changes[i]?.[1] ?? ""}`,
+            `${result.discovery} ${changes[i]?.[2] ?? ""}`,
+        ]);
+    });
 
-        headers.forEach((key, index) => {
-            if (Object.hasOwn(result, key)) {
-                const res = (result as Record<string, unknown>)[key]! as bigint;
-                const changeStr = changes[i]![index] ?? "";
-                process.stdout.write(` ${`${res} ${changeStr}`.padEnd(28)}|`);
-            }
-        });
-        process.stdout.write("\n");
-    }
-
-    process.stdout.write(separator + "\n");
+    process.stdout.write(table.toString());
+    process.stdout.write("\n");
 }
 
 function getUsedGas(sendEnough: SendMessageResult) {
