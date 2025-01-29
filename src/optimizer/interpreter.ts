@@ -5,9 +5,9 @@ import * as A from "../ast/ast";
 import { evalConstantExpression } from "./constEval";
 import { CompilerContext } from "../context/context";
 import {
+    idTextErr,
     TactCompilationError,
     TactConstEvalError,
-    idTextErr,
     throwConstEvalError,
     throwInternalCompilerError,
 } from "../error/errors";
@@ -20,7 +20,7 @@ import {
     hasStaticFunction,
 } from "../types/resolveDescriptors";
 import { getExpType } from "../types/resolveExpression";
-import { TypeRef, showValue } from "../types/types";
+import { showValue, TypeRef } from "../types/types";
 import { sha256_sync } from "@ton/crypto";
 import { defaultParser, getParser, Parser } from "../grammar/grammar";
 import { dummySrcInfo, SrcInfo } from "../grammar";
@@ -69,6 +69,7 @@ function throwErrorConstEval(msg: string, source: SrcInfo): never {
         source,
     );
 }
+
 type EvalResult =
     | { kind: "ok"; value: A.AstLiteral }
     | { kind: "error"; message: string };
@@ -411,14 +412,14 @@ export function evalBinaryOp(
         }
         case "&&": {
             const astLeft = ensureBoolean(valLeft);
-            const astRight = ensureBoolean(valRightContinuation());
-            const result = astLeft.value && astRight.value;
+            const result =
+                astLeft.value && ensureBoolean(valRightContinuation()).value;
             return util.makeBooleanLiteral(result, source);
         }
         case "||": {
             const astLeft = ensureBoolean(valLeft);
-            const astRight = ensureBoolean(valRightContinuation());
-            const result = astLeft.value || astRight.value;
+            const result =
+                astLeft.value || ensureBoolean(valRightContinuation()).value;
             return util.makeBooleanLiteral(result, source);
         }
     }
@@ -719,6 +720,18 @@ that binds a variable name to its corresponding value.
 export class Interpreter {
     private envStack: EnvironmentStack;
     private context: CompilerContext;
+
+    /**
+     * Stores all visited constants during the current computation.
+     */
+    private visitedConstants: Set<string> = new Set();
+
+    /**
+     * Stores all constants that were calculated during the computation of some constant,
+     * and the functions that were called for this process.
+     * Used only in case of circular dependencies to return a clear error.
+     */
+    private constantComputationPath: string[] = [];
     private config: InterpreterConfig;
     private util: AstUtil;
 
@@ -870,18 +883,41 @@ export class Interpreter {
     }
 
     public interpretName(ast: A.AstId): A.AstLiteral {
-        if (hasStaticConstant(this.context, idText(ast))) {
-            const constant = getStaticConstant(this.context, idText(ast));
+        const name = idText(ast);
+
+        if (hasStaticConstant(this.context, name)) {
+            const constant = getStaticConstant(this.context, name);
             if (constant.value !== undefined) {
                 return constant.value;
-            } else {
+            }
+
+            // Since we call `interpretExpression` on a constant value below, we don't want
+            // infinite recursion due to circular dependencies. To prevent this, let's collect
+            // all the constants we process in this iteration. That way, any circular dependencies
+            // will result in a second occurrence here and thus an early (before stack overflow)
+            // exception being thrown here.
+            if (this.visitedConstants.has(name)) {
                 throwErrorConstEval(
-                    `cannot evaluate declared constant ${idTextErr(ast)} as it does not have a body`,
+                    `cannot evaluate ${name} as it has circular dependencies: [${this.formatComputationPath(name)}]`,
                     ast.loc,
                 );
             }
+            this.visitedConstants.add(name);
+
+            const astNode = constant.ast;
+            if (astNode.kind === "constant_def") {
+                constant.value = this.inComputationPath(name, () =>
+                    this.interpretExpression(astNode.initializer),
+                );
+                return constant.value;
+            }
+
+            throwErrorConstEval(
+                `cannot evaluate declared constant ${idTextErr(ast)} as it does not have a body`,
+                ast.loc,
+            );
         }
-        const variableBinding = this.envStack.getBinding(idText(ast));
+        const variableBinding = this.envStack.getBinding(name);
         if (variableBinding !== undefined) {
             return variableBinding;
         }
@@ -1401,21 +1437,26 @@ export class Interpreter {
                         this.context,
                         idText(ast.function),
                     );
-                    switch (functionDescription.ast.kind) {
-                        case "function_def":
+                    const functionNode = functionDescription.ast;
+                    switch (functionNode.kind) {
+                        case "function_def": {
                             // Currently, no attribute is supported
-                            if (functionDescription.ast.attributes.length > 0) {
+                            if (functionNode.attributes.length > 0) {
                                 throwNonFatalErrorConstEval(
                                     "calls to functions with attributes are currently not supported",
                                     ast.loc,
                                 );
                             }
-                            return this.evalStaticFunction(
-                                functionDescription.ast,
-                                ast.args,
-                                functionDescription.returns,
+                            return this.inComputationPath(
+                                `${functionDescription.name}()`,
+                                () =>
+                                    this.evalStaticFunction(
+                                        functionNode,
+                                        ast.args,
+                                        functionDescription.returns,
+                                    ),
                             );
-
+                        }
                         case "asm_function_def":
                             throwNonFatalErrorConstEval(
                                 `${idTextErr(ast.function)} cannot be interpreted because it's an asm-function`,
@@ -1770,5 +1811,27 @@ export class Interpreter {
         this.envStack.executeInNewEnvironment(() => {
             ast.statements.forEach(this.interpretStatement, this);
         });
+    }
+
+    private inComputationPath<T>(path: string, cb: () => T) {
+        this.constantComputationPath.push(path);
+        const res = cb();
+        this.constantComputationPath.pop();
+        return res;
+    }
+
+    private formatComputationPath(name: string): string {
+        const start = this.constantComputationPath.indexOf(name);
+        const path =
+            start !== -1
+                ? this.constantComputationPath.slice(start)
+                : this.constantComputationPath;
+
+        const shortPath =
+            path.length > 10
+                ? [...path.slice(0, 5), "...", ...path.slice(path.length - 4)]
+                : path;
+
+        return `${shortPath.join(" -> ")} -> ${name}`;
     }
 }
