@@ -269,47 +269,6 @@ function randomAstMethodCall(
     );
 }
 
-// function randomAddress(): fc.Arbitrary<Address> {
-//     return fc.constant(
-//         address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"), // TODO: use random address
-//     );
-// }
-
-// function randomCell(): fc.Arbitrary<Cell> {
-//     return fc.constant(beginCell().endCell()); // TODO: use random random here
-// }
-
-// function randomAstAddress(): fc.Arbitrary<A.AstAddress> {
-//     return dummyAstNode(
-//         fc.record({
-//             kind: fc.constant("address"),
-//             value: randomAddress(),
-//         }),
-//     );
-// }
-
-// function randomAstCell(): fc.Arbitrary<A.AstCell> {
-//     return dummyAstNode(
-//         fc.record({
-//             kind: fc.constant("cell"),
-//             value: randomCell(),
-//         }),
-//     );
-// }
-
-// function randomSlice(): fc.Arbitrary<Slice> {
-//     return fc.constant(beginCell().endCell().beginParse());
-// }
-
-// function randomAstSlice(): fc.Arbitrary<A.AstSlice> {
-//     return dummyAstNode(
-//         fc.record({
-//             kind: fc.constant("slice"),
-//             value: randomSlice(),
-//         }),
-//     );
-// }
-
 function randomAstCommentValue(): fc.Arbitrary<A.AstCommentValue> {
     return dummyAstNode(
         fc.record({
@@ -351,9 +310,7 @@ function randomAstLiteral(maxDepth: number): fc.Arbitrary<A.AstLiteral> {
                 randomAstBoolean(),
                 randomAstNull(),
                 randomAstSimplifiedString(),
-                // randomAstAddress(),
-                // randomAstCell(),
-                // randomAstSlice(),
+                // Add Address, Cell, Slice
                 randomAstCommentValue(),
             );
         }
@@ -365,9 +322,7 @@ function randomAstLiteral(maxDepth: number): fc.Arbitrary<A.AstLiteral> {
             randomAstBoolean(),
             randomAstNull(),
             randomAstSimplifiedString(),
-            // randomAstAddress(),
-            // randomAstCell(),
-            // randomAstSlice(),
+            // Add Address, Cell, Slice
             randomAstCommentValue(),
             randomAstStructValue(subLiteral()),
         );
