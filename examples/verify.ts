@@ -33,7 +33,7 @@ export async function verify(args: {
     try {
         const data = JSON.parse(args.pkg);
         unpacked = fileFormat.parse(data);
-    } catch (e) {
+    } catch (_) {
         return { ok: false, error: "invalid-package-format" };
     }
 
