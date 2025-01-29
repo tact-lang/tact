@@ -1125,7 +1125,7 @@ export class Interpreter {
                     return foundContractConst.value;
                 }
 
-                const name = `self.${ast.field.text}`;
+                const name = `self.${idText(ast.field)}`;
 
                 // see comment in `interpretName`
                 if (this.visitedConstants.has(name)) {

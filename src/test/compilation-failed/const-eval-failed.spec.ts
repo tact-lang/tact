@@ -252,4 +252,9 @@ describe("fail-const-eval", () => {
         errorMessage:
             "Cannot evaluate expression to a constant: cannot evaluate non-constant self field access",
     });
+    itShouldNotCompile({
+        testName: "const-eval-self-constant-with-method-call-in-value",
+        errorMessage:
+            'Cannot evaluate expression to a constant: calls of "test" are not supported at this moment',
+    });
 });
