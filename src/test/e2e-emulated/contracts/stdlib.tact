@@ -58,4 +58,14 @@ contract StdlibTest {
     get fun parseVarAddress(slice: Slice): VarAddress {
         return parseVarAddress(slice);
     }
+
+    get fun parseOriginalFwdFee(msg: Slice): Int {
+        msg.skipBits(4); //Skip tags
+        msg.loadAddress(); // Skip source
+        msg.loadAddress(); // Skip destination
+        msg.loadCoins(); // Skip value
+        msg.skipBits(1); // Skip extra currency collection
+        msg.loadCoins(); // Skip ihr_fee
+        return getOriginalFwdFee(msg.loadCoins(), false);
+    }
 }

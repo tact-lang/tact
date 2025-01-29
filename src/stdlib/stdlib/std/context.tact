@@ -17,5 +17,5 @@ extends fun readForwardFee(self: Context): Int {
     sc.loadCoins(); // Skip value
     sc.skipBits(1); // Skip extra currency collection
     sc.loadCoins(); // Skip ihr_fee
-    return (sc.loadCoins() * 3) / 2;
+    return getOriginalFwdFee(sc.loadCoins(), false);
 }

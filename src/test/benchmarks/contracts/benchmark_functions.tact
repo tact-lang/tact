@@ -6,6 +6,10 @@ message Sub {
     value: Int;
 }
 
+message TestGetFwdFee {
+    any: Slice;
+}
+
 contract Functions {
     value: Int;
 
@@ -25,5 +29,8 @@ contract Functions {
     receive(msg: Sub) {
         require(msg.value > 0, "Value must be greater than 0");
         self.update(-msg.value);
+    }
+    receive(msg: TestGetFwdFee) {
+
     }
 }
