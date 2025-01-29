@@ -71,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Forbid read and write to self in contract init function: PR [#1482](https://github.com/tact-lang/tact/pull/1482)
 - Support for using a constant within another constant and for the default value of a struct field before constant declaration: PR [#1478](https://github.com/tact-lang/tact/pull/1478)
 - Incorrect call generation to a mutation function: PR [#1608](https://github.com/tact-lang/tact/pull/1608)
+- Runtime `sha256` now work for arbitrary strings with length >= 128: PR [#1626](https://github.com/tact-lang/tact/pull/1626)
 
 ### Docs
 
