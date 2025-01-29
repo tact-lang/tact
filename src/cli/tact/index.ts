@@ -69,19 +69,19 @@ const showHelp = () => {
 $ tact [...flags] (--config CONFIG | FILE)
 
 Flags
-    -c, --config CONFIG         Specify path to config file (tact.config.json)
-    -p, --project ...names      Build only the specified project name(s) from the config file
-    -q, --quiet                 Suppress compiler log output
-    --with-decompilation        Full compilation followed by decompilation of produced binary code
-    --func                      Output intermediate FunC code and exit
-    --check                     Perform syntax and type checking, then exit
-    -e, --eval EXPRESSION       Evaluate a Tact expression and exit
-    -v, --version               Print Tact compiler version and exit
-    -h, --help                  Display this text and exit
+  -c, --config CONFIG         Specify path to config file (tact.config.json)
+  -p, --project ...names      Build only the specified project name(s) from the config file
+  -q, --quiet                 Suppress compiler log output
+  --with-decompilation        Full compilation followed by decompilation of produced binary code
+  --func                      Output intermediate FunC code and exit
+  --check                     Perform syntax and type checking, then exit
+  -e, --eval EXPRESSION       Evaluate a Tact expression and exit
+  -v, --version               Print Tact compiler version and exit
+  -h, --help                  Display this text and exit
 
 Examples
-    $ tact --version
-    ${getVersion()}
+  $ tact --version
+  ${getVersion()}
 
 Learn more about Tact:        https://docs.tact-lang.org
 Join Telegram group:          https://t.me/tactlang

@@ -36,10 +36,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow serialization specifiers for trait fields PR: [#1303](https://github.com/tact-lang/tact/pull/1303)
 - Remove unused typechecker wrapper with the file `check.ts` it is contained in: PR [#1313](https://github.com/tact-lang/tact/pull/1313)
 - Unified `StatementTry` and `StatementTryCatch` AST nodes: PR [#1418](https://github.com/tact-lang/tact/pull/1418)
+- Calling methods on `null` when `self` is of an optional type is now allowed: PR [#1567](https://github.com/tact-lang/tact/pull/1567)
 - Make `msg_bounced` last parameter of `*_contract_router_internal` for better code generation: PR [#1585](https://github.com/tact-lang/tact/pull/1585)
 - Inline `*_contract_init` function: PR [#1589](https://github.com/tact-lang/tact/pull/1589)
 - Better error message for `unresolved name` error: PR [#1595](https://github.com/tact-lang/tact/pull/1595)
 - Better error message for `unresolved global function` error: PR [#1610](https://github.com/tact-lang/tact/pull/1610)
+- Better error message for `extend function without parameters` error: PR [#1624](https://github.com/tact-lang/tact/pull/1624)
 
 ### Fixed
 
@@ -101,6 +103,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a compilation-related page with the description of the compilation report: PR [#1309](https://github.com/tact-lang/tact/pull/1309), PR [#1387](https://github.com/tact-lang/tact/pull/1387)
 - Documented `BaseTrait` and methods in stdlib code: PR [#1296](https://github.com/tact-lang/tact/pull/1296)
 - Document how storage variables get updated in relation to the `init()` function: PR [#1311](https://github.com/tact-lang/tact/pull/1311)
+- Document compiler upgrades in Blueprint and other Tact projects: PR [#1560](https://github.com/tact-lang/tact/pull/1560)
+- Illustrate how nested maps can be created: PR [#1593](https://github.com/tact-lang/tact/pull/1593)
 
 ### Release contributors
 

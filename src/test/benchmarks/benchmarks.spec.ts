@@ -1,12 +1,25 @@
 import {
+    beginCell,
     toNano,
     TransactionComputeVm,
     TransactionDescriptionGeneric,
 } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import {
+    Blockchain,
+    BlockchainTransaction,
+    SandboxContract,
+    TreasuryContract,
+} from "@ton/sandbox";
 import { Functions } from "./contracts/output/benchmark_functions_Functions";
 import { Functions as FunctionsInline } from "./contracts/output/benchmark_functions_inline_Functions";
 import "@ton/test-utils";
+
+function measureGas(txs: BlockchainTransaction[]) {
+    return (
+        (txs[1]!.description as TransactionDescriptionGeneric)
+            .computePhase as TransactionComputeVm
+    ).gasUsed;
+}
 
 describe("benchmarks", () => {
     let blockchain: Blockchain;
@@ -27,17 +40,13 @@ describe("benchmarks", () => {
             { $$type: "Add", value: 10n },
         );
 
-        const gasUsed = (
-            (
-                sendResult.transactions[1]!
-                    .description as TransactionDescriptionGeneric
-            ).computePhase as TransactionComputeVm
-        ).gasUsed;
+        const gasUsed = measureGas(sendResult.transactions);
+
         expect(gasUsed).toMatchInlineSnapshot(`2869n`);
 
         // Verify code size
         const codeSize = functions.init!.code.toBoc().length;
-        expect(codeSize).toMatchInlineSnapshot(`227`);
+        expect(codeSize).toMatchInlineSnapshot(`283`);
     });
 
     it("benchmark functions (inline)", async () => {
@@ -51,16 +60,31 @@ describe("benchmarks", () => {
             { $$type: "Add", value: 10n },
         );
 
-        const gasUsed = (
-            (
-                sendResult.transactions[1]!
-                    .description as TransactionDescriptionGeneric
-            ).computePhase as TransactionComputeVm
-        ).gasUsed;
+        const gasUsed = measureGas(sendResult.transactions);
         expect(gasUsed).toMatchInlineSnapshot(`2738n`);
 
         // Verify code size
         const codeSize = functionsInline.init!.code.toBoc().length;
         expect(codeSize).toMatchInlineSnapshot(`220`);
+    });
+    it("benchmark readFwdFee", async () => {
+        const testContract = blockchain.openContract(
+            await Functions.fromInit(),
+        );
+        const sendResult = await testContract.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            {
+                $$type: "TestGetFwdFee",
+                any: beginCell()
+                    .storeUint(0, 32)
+                    .storeStringTail("This is test payload")
+                    .asSlice(),
+            },
+        );
+        const gasUsed = measureGas(sendResult.transactions);
+        expect(gasUsed).toMatchInlineSnapshot(`3283n`);
+        const codeSize = testContract.init!.code.toBoc().length;
+        expect(codeSize).toMatchInlineSnapshot(`283`);
     });
 });
