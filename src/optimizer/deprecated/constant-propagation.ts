@@ -352,13 +352,17 @@ export function constantPropagationAnalysis(
                 executeStatements(ast.trueStatements);
             });
 
+            if (ast.falseStatements !== null && ast.elseif !== null) {
+                throwInternalCompilerError("Incorrect AST: 'else' and `else if' cannot occur simultaneously in an AstStatementCondition")
+            }
+
             if (ast.falseStatements !== null) {
                 const falseStmts = ast.falseStatements;
                 simulateBranch(() => {
                     executeStatements(falseStmts);
                 });
-            }
-
+            } 
+            
             if (ast.elseif !== null) {
                 const elseif = ast.elseif;
                 simulateBranch(() => {
