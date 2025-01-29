@@ -189,7 +189,6 @@ export function writeExpression(
         // during evaluation.
         const value = evalConstantExpression(f, wCtx.ctx, util, {
             maxLoopIterations: 2n ** 12n,
-            maxStackDeepness: defaultInterpreterConfig.maxStackDeepness,
         });
         return writeValue(value, wCtx);
     } catch (error) {
