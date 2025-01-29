@@ -16,6 +16,20 @@ struct Foo {
     s: Slice;
 }
 
+struct MyStruct {
+    age: Int;
+}
+
+fun returnMyStruct(): MyStruct {
+    return MyStruct{ age: 10 };
+}
+
+extends mutates fun setAge(self: MyStruct, age: Int): Int {
+    let old = self.age;
+    self.age = age;
+    return old + self.age;
+}
+
 contract Tester {
     s: Slice;
     
@@ -83,5 +97,9 @@ contract Tester {
         x.multiplyExtends(2);
         x.multiplyExtends(2).multiplyExtends(3);
         return x.multiplyExtends(2).multiplyExtends(3);
+    }
+
+    get fun test12(): Int {
+        return returnMyStruct().setAge(20);
     }
 }
