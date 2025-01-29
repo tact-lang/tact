@@ -2158,7 +2158,7 @@ function checkInitializerType(
     declTy: TypeRef,
     initializer: A.AstExpression,
     ctx: CompilerContext,
-    selfTypeRef: TypeRef | null,
+    selfTypeRef: TypeRef | undefined,
 ): CompilerContext {
     let stmtCtx = emptyContext(initializer.loc, null, declTy);
     if (selfTypeRef) {
@@ -2195,7 +2195,7 @@ function initializeConstants(
 function checkConstants(
     constants: ConstantDescription[],
     ctx: CompilerContext,
-    typeRef: TypeRef | null,
+    typeRef: TypeRef | undefined,
 ): CompilerContext {
     for (const constant of constants) {
         if (constant.ast.kind === "constant_def") {
@@ -2220,7 +2220,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
 
     // we split the handling of constants into two steps:
     // first we check all constants to make sure the types of initializers are correct
-    ctx = checkConstants(staticConstants, ctx, null);
+    ctx = checkConstants(staticConstants, ctx, undefined);
 
     for (const aggregateTy of getAllTypes(ctx)) {
         switch (aggregateTy.kind) {

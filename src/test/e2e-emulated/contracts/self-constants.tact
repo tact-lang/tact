@@ -15,7 +15,7 @@ contract ConstantTester with WithConstant {
     const C2: Int = self.A2 + 1 + self.B2;
     const B2: Int = 9;
 
-    value: Int = self.B2 + self.C2;
+    value: Int = self.B2 + self.C2 + self.TraitB2;
 
     receive() {}
 
