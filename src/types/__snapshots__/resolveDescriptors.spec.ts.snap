@@ -81,6 +81,15 @@ exports[`resolveDescriptors should fail descriptors for const-eval-overflow 1`] 
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for constant-does-not-exist 1`] = `
+"<unknown>:7:20: Cannot find 'A', did you mean 'self.A'?
+  6 |     const A: Int = 100;
+> 7 |     const B: Int = A;
+                         ^
+  8 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for contract-bounced-receiver-int 1`] = `
 "<unknown>:17:3: Bounce receive function can only accept bounced message, message or Slice
   16 |   
