@@ -6,7 +6,7 @@ prev:
   label: Message mode
 ---
 
-import { Badge } from '@astrojs/starlight/components';
+import { Badge, Tabs, TabItem } from '@astrojs/starlight/components';
 
 :::note
 
@@ -18,7 +18,84 @@ The Tact compiler can produce various outputs, ranging from the [BoC](/book/cell
 
 With the proper [configuration settings](/book/config), you can customize the behavior of the compiler to skip the generation of some or all the [build artifacts](#artifacts), and even control the addition or exclusion of [getters for supported interfaces](/book/contracts#interfaces).
 
-Since the Tact compiler is a command-line program, some of the configuration settings can be set directly. When inside a folder with a Tact-based project, such as one created using the [Blueprint](https://github.com/ton-org/blueprint) or from the [tact-template](https://github.com/tact-lang/tact-template), refer to the `npx tact --help{:shell}` command for further instructions.
+Since the Tact compiler is a command-line program, some of the configuration settings can be set directly. When inside a folder with a Tact-based project, such as one created using the [Blueprint][bp] or from the [tact-template](https://github.com/tact-lang/tact-template), refer to the `npx tact --help{:shell}` command for further instructions.
+
+## Compiler upgrades {#upgrades}
+
+Work on the compiler is active and extensive, so be sure to check out [NPM](https://www.npmjs.com/package/@tact-lang/compiler) whenever we push new releases. To follow updates, see the [Tact Kitchen in Telegram](https://t.me/tact_kitchen) for the short scoop, or our [GitHub organization](https://github.com/tact-lang) for the whole picture in all its details.
+
+To upgrade the Tact compiler to its latest version in a [Blueprint][bp]-based project or a project created from the [tact-template](https://github.com/tact-lang/tact-template), run:
+
+<Tabs>
+ <TabItem label="yarn" icon="seti:yarn">
+   ```shell
+   # recommended
+   yarn upgrade @tact-lang/compiler
+   ```
+ </TabItem>
+ <TabItem label="npm" icon="seti:npm">
+   ```shell
+   npm i @tact-lang/compiler@latest
+   ```
+ </TabItem>
+ <TabItem label="pnpm" icon="pnpm">
+   ```shell
+   pnpm upgrade @tact-lang/compiler
+   ```
+ </TabItem>
+ <TabItem label="bun" icon="bun">
+   ```shell
+   bun update --latest @tact-lang/compiler
+   ```
+ </TabItem>
+</Tabs>
+
+Sometimes, bug fixes require us to change the existing behavior, introducing small breaking changes. To be prepared for these, make sure to read the [CHANGELOG.md](https://github.com/tact-lang/tact/blob/main/dev-docs/CHANGELOG.md) and act accordingly. Except for bug fixes, Tact tries its best not to introduce breaking changes in minor or patch versions according to [semantic versioning](https://semver.org/#summary).
+
+If you want to pin down a specific version of the compiler, run the following command. There, `X.Y.Z` is the target version you want to install:
+
+<Tabs>
+ <TabItem label="yarn" icon="seti:yarn">
+   ```shell
+   # X.Y.Z must be replaced by the actual version number
+   yarn add --exact @tact-lang/compiler@X.Y.Z
+   ```
+ </TabItem>
+ <TabItem label="npm" icon="seti:npm">
+   ```shell
+   # X.Y.Z must be replaced by the actual version number
+   npm i --save-exact @tact-lang/compiler@X.Y.Z
+   ```
+ </TabItem>
+ <TabItem label="pnpm" icon="pnpm">
+   ```shell
+   # X.Y.Z must be replaced by the actual version number
+   pnpm add --save-exact @tact-lang/compiler@X.Y.Z
+   ```
+ </TabItem>
+ <TabItem label="bun" icon="bun">
+   ```shell
+   # X.Y.Z must be replaced by the actual version number
+   bun add --exact @tact-lang/compiler@X.Y.Z
+   ```
+ </TabItem>
+</Tabs>
+
+:::caution
+
+  Do not mix different Node.js package managers in your projects. If you created the [Blueprint][bp] project with `npm`, stick to using `npm` for the rest of the commands — this will ensure that you don't get "File not found" errors or lock-file conflicts between different package managers.
+
+  For example, using the `npm` package manager to install dependencies and then switching to `yarn` to build the contracts can lead to the following error message:
+
+  ```shell
+  File not found: tact_Task1.headers.fc
+    #include "tact_Task1.headers.fc";
+  💥 Compilation failed. Skipping packaging
+  Error: Could not compile tact
+  error Command failed with exit code 1.
+  ```
+
+:::
 
 ## Build artifacts {#artifacts}
 
@@ -149,6 +226,7 @@ Thus, the following dependency diagram is produced:
 
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
 [mm]: https://mermaid.js.org/
+[bp]: https://github.com/ton-org/blueprint
 
 [code-jetton-wallet]: https://github.com/tact-lang/jetton/blob/70f6c9c51755fcab4b451da0cd2f2016476271cc/sources/jetton_wallet.tact
 [code-jetton-minter]: https://github.com/tact-lang/jetton/blob/70f6c9c51755fcab4b451da0cd2f2016476271cc/sources/jetton_minter_discoverable.tact
