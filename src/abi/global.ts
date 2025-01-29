@@ -222,7 +222,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 let c: Cell;
                 try {
                     c = Cell.fromBase64(str);
-                } catch (e) {
+                } catch (_) {
                     throwCompilationError(`Invalid cell ${str}`, ref);
                 }
 
@@ -445,7 +445,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 let c: Cell;
                 try {
                     c = Cell.fromBase64(str);
-                } catch (e) {
+                } catch (_) {
                     throwCompilationError(`Invalid slice ${str}`, ref);
                 }
 
@@ -500,7 +500,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 let c: Cell;
                 try {
                     c = beginCell().storeBuffer(Buffer.from(str)).endCell();
-                } catch (e) {
+                } catch (_) {
                     throwCompilationError(`Invalid slice data ${str}`, ref);
                 }
 

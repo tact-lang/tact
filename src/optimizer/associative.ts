@@ -172,7 +172,7 @@ export class AssociativeRule1 extends AllowableOpRule {
                         );
                         const newRight = val;
                         return util.makeBinaryExpression(op, newLeft, newRight);
-                    } catch (e) {
+                    } catch (_) {
                         // Do nothing: will exit rule without modifying tree
                     }
                 }
@@ -228,7 +228,7 @@ export class AssociativeRule1 extends AllowableOpRule {
                             util.makeBinaryExpression(op1, x1, newValNode),
                         );
                         return util.makeBinaryExpression(op2, newLeft, x2);
-                    } catch (e) {
+                    } catch (_) {
                         // Do nothing: will exit rule without modifying tree
                     }
                 }
@@ -286,7 +286,7 @@ export class AssociativeRule1 extends AllowableOpRule {
                             util.makeBinaryExpression(op2, x2, newValNode),
                         );
                         return util.makeBinaryExpression(op1, newLeft, x1);
-                    } catch (e) {
+                    } catch (_) {
                         // Do nothing: will exit rule without modifying tree
                     }
                 }
@@ -342,7 +342,7 @@ export class AssociativeRule1 extends AllowableOpRule {
                         );
                         const newLeft = val;
                         return util.makeBinaryExpression(op, newLeft, newRight);
-                    } catch (e) {
+                    } catch (_) {
                         // Do nothing: will exit rule without modifying tree
                     }
                 }
@@ -1587,7 +1587,7 @@ export class AssociativeRule3 extends Rule {
                         // previously
                         return applyRules(data.simplifiedExpression);
                     }
-                } catch (e) {
+                } catch (_) {
                     // Do nothing: will exit rule without modifying tree
                 }
             } else if (
@@ -1622,7 +1622,7 @@ export class AssociativeRule3 extends Rule {
                         // previously
                         return applyRules(data.simplifiedExpression);
                     }
-                } catch (e) {
+                } catch (_) {
                     // Do nothing: will exit rule without modifying tree
                 }
             } else if (
@@ -1657,7 +1657,7 @@ export class AssociativeRule3 extends Rule {
                         // previously
                         return applyRules(data.simplifiedExpression);
                     }
-                } catch (e) {
+                } catch (_) {
                     // Do nothing: will exit rule without modifying tree
                 }
             } else if (
@@ -1692,7 +1692,7 @@ export class AssociativeRule3 extends Rule {
                         // previously
                         return applyRules(data.simplifiedExpression);
                     }
-                } catch (e) {
+                } catch (_) {
                     // Do nothing: will exit rule without modifying tree
                 }
             }

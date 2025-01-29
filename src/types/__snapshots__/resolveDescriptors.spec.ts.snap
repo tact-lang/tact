@@ -340,7 +340,7 @@ exports[`resolveDescriptors should fail descriptors for extend-fun-missing-type 
 `;
 
 exports[`resolveDescriptors should fail descriptors for extend-fun-must-have-at-least-one-parameter 1`] = `
-"<unknown>:2:1: Extend functions must have at least one parameter
+"<unknown>:2:1: Extend functions must have at least one parameter named "self"
   1 | primitive Int;
 > 2 | extends fun Bar(): Int {}
       ^~~~~~~
