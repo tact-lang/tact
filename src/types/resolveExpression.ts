@@ -560,13 +560,13 @@ function resolveStaticCall(
             ) !== undefined
         ) {
             throwCompilationError(
-                `Static function ${idTextErr(exp.function)} does not exist. Perhaps you meant to call ".${idText(exp.function)}(...)" extension function?`,
+                `Cannot find global function ${idTextErr(exp.function)}, did you mean "self.${idText(exp.function)}()"?`,
                 exp.loc,
             );
         }
 
         throwCompilationError(
-            `Static function ${idTextErr(exp.function)} does not exist`,
+            `Cannot find global function ${idTextErr(exp.function)}`,
             exp.loc,
         );
     }
@@ -701,6 +701,43 @@ function resolveCall(
 
     if (src.kind === "ref_bounced") {
         throwCompilationError(`Cannot call function on bounced value`, exp.loc);
+    }
+
+    if (src.kind === "null") {
+        // e.g. null.foo()
+        // we need to try to find a method foo that accepts nullable type as self
+
+        const types = getAllTypes(ctx);
+        const candidates = [];
+        for (const t of types) {
+            const f = t.functions.get(idText(exp.method));
+            if (f) {
+                if (f.self?.kind === "ref" && f.self.optional) {
+                    candidates.push({ type: t, f });
+                }
+            }
+        }
+
+        const candidate = candidates[0];
+
+        // No candidates found
+        if (typeof candidate === "undefined") {
+            throwCompilationError(
+                `Invalid type "${printTypeRef(src)}" for function call`,
+                exp.loc,
+            );
+        }
+
+        // Too many candidates found
+        if (candidates.length > 1) {
+            throwCompilationError(
+                `Ambiguous method call ${idTextErr(exp.method)}`,
+                exp.loc,
+            );
+        }
+
+        // Return the only candidate
+        return registerExpType(ctx, exp, candidate.f.returns);
     }
 
     throwCompilationError(
