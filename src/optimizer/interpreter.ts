@@ -1902,6 +1902,7 @@ export class Interpreter {
         try {
             return code();
         } catch (e) {
+            // TODO: Add here handlers for different operating systems.
             if (e instanceof RangeError) {
                 throwNonFatalErrorConstEval(
                     "execution stack reached maximum allowed deepness",
