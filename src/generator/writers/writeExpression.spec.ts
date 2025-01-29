@@ -1,13 +1,15 @@
-import { __DANGER_resetNodeId } from "../../grammar/ast";
 import {
     getStaticFunction,
     resolveDescriptors,
 } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
 import { writeExpression } from "./writeExpression";
-import { openContext } from "../../grammar/store";
+import { openContext } from "../../context/store";
 import { resolveStatements } from "../../types/resolveStatements";
-import { CompilerContext } from "../../context";
+import { CompilerContext } from "../../context/context";
+import { getParser } from "../../grammar";
+import { getAstFactory } from "../../ast/ast-helpers";
+import { defaultParser } from "../../grammar/grammar";
 
 const code = `
 
@@ -68,17 +70,16 @@ const golden: string[] = [
 ];
 
 describe("writeExpression", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
     it("should write expression", () => {
+        const ast = getAstFactory();
         let ctx = openContext(
             new CompilerContext(),
             [{ code: code, path: "<unknown>", origin: "user" }],
             [],
+            getParser(ast, defaultParser),
         );
-        ctx = resolveDescriptors(ctx);
-        ctx = resolveStatements(ctx);
+        ctx = resolveDescriptors(ctx, ast);
+        ctx = resolveStatements(ctx, ast);
         const main = getStaticFunction(ctx, "main");
         if (main.ast.kind !== "function_def") {
             throw Error("Unexpected function kind");

@@ -27,7 +27,7 @@ fun bar() {
 }
 ```
 
-## 全局静态函数
+## 全局静态函数 {#global-static-functions}
 
 您可以在程序的任何地方定义全局函数：
 
@@ -41,9 +41,9 @@ fun pow(a: Int, c: Int): Int {
 }
 ```
 
-## 虚拟和抽象函数
+## 虚拟和抽象函数 {#virtual-and-abstract-functions}
 
-如果 [traits](/book/types#traits) 有 `virtual{:tact}` 关键字，则可以使用 `override{:tact}` 允许继承 [traits](/book/types#traits) 的合约修改内部函数。 函数也可以标记为 `抽象{:tact}`，在这种情况下，继承合约必须定义其实现：
+如果 [traits](/zh-cn/book/types#traits) 有 `virtual{:tact}` 关键字，则可以使用 `override{:tact}` 允许继承 [traits](/zh-cn/book/types#traits) 的合约修改内部函数。 函数也可以标记为 `抽象{:tact}`，在这种情况下，继承合约必须定义其实现：
 
 ```tact
 trait FilterTrait with Ownable {
@@ -67,7 +67,7 @@ contract Filter with FilterTrait {
 }
 ```
 
-## 扩展功能
+## 扩展功能 {#extension-function}
 
 扩展函数允许你为任何可能的类型实现扩展。
 
@@ -84,7 +84,7 @@ extends fun customPow(self: Int, c: Int): Int {
 }
 ```
 
-## 可变函数
+## 可变函数 {#mutation-functions}
 
 可变函数是对数值进行变异，用执行结果代替数值。 要执行突变，函数必须改变 `self` 值。
 
@@ -98,7 +98,7 @@ extends mutates fun customPow(self: Int, c: Int) {
 }
 ```
 
-## 本地功能
+## 本地功能 {#native-functions}
 
 本地函数是 FunC 函数的直接绑定：
 
@@ -113,7 +113,7 @@ native storeUint(s: Builder, value: Int, bits: Int): Builder;
 extends mutates native loadInt(self: Slice, l: Int): Int;
 ```
 
-## Receiver functions
+## Receiver functions {#receiver-functions}
 
 接收器函数是负责在合约中接收信息的特殊函数，只能在合约或特质中定义。
 
@@ -126,7 +126,7 @@ contract Treasure {
 }
 ```
 
-## 获取器函数
+## 获取器函数 {#getter-functions}
 
 获取器函数定义智能合约上的获取器，只能在合约或特征中定义。
 
@@ -139,7 +139,7 @@ contract Treasure {
 ```
 ### 明确解决方法 ID 碰撞问题
 
-<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
 
 与 TVM 合约中的其他函数一样，getters 也有其*独特*的相关函数选择器，即一些整数 ID（称为*方法 ID*）。
 其中一些整数是为内部目的保留的，例如 -4, -3, -2, -1, 0 是保留 ID，而 

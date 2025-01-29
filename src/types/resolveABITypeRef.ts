@@ -1,7 +1,6 @@
 import { ABITypeRef } from "@ton/core";
+import * as A from "../ast/ast";
 import {
-    AstFieldDecl,
-    AstTypeId,
     eqNames,
     idText,
     isAddress,
@@ -12,16 +11,16 @@ import {
     isSlice,
     isString,
     isStringBuilder,
-    SrcInfo,
-} from "../grammar/ast";
+} from "../ast/ast-helpers";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../errors";
+} from "../error/errors";
 import { TypeRef } from "./types";
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { getType } from "./resolveDescriptors";
+import { SrcInfo } from "../grammar";
 
 type FormatDef = Record<
     string,
@@ -29,15 +28,17 @@ type FormatDef = Record<
 >;
 
 const uintOptions: FormatDef = Object.fromEntries(
-    [...Array(257).keys()]
-        .slice(1)
-        .map((key) => [`uint${key}`, { type: "uint", format: key }]),
+    [...Array(256).keys()].map((key) => [
+        `uint${key + 1}`,
+        { type: "uint", format: key + 1 },
+    ]),
 );
 
 const intOptions: FormatDef = Object.fromEntries(
-    [...Array(257).keys()]
-        .slice(1)
-        .map((key) => [`int${key}`, { type: "int", format: key }]),
+    [...Array(256).keys()].map((key) => [
+        `int${key + 1}`,
+        { type: "int", format: key + 1 },
+    ]),
 );
 
 const intFormats: FormatDef = {
@@ -45,9 +46,20 @@ const intFormats: FormatDef = {
     ...intOptions,
     int257: { type: "int", format: 257 },
     coins: { type: "uint", format: "coins" },
+    varint16: { type: "int", format: "varint16" },
+    varint32: { type: "int", format: "varint32" },
+    varuint16: { type: "uint", format: "varuint16" },
+    varuint32: { type: "uint", format: "varuint32" },
 };
 
-export const intMapFormats: FormatDef = { ...intFormats };
+// only fixed-width integer map keys are supported
+export const intMapKeyFormats: FormatDef = {
+    ...uintOptions,
+    ...intOptions,
+    int257: { type: "int", format: 257 },
+};
+
+export const intMapValFormats: FormatDef = { ...intFormats };
 
 const cellFormats: FormatDef = {
     remaining: { type: "cell", format: "remainder" },
@@ -63,7 +75,7 @@ const builderFormats: FormatDef = {
     remaining: { type: "builder", format: "remainder" },
 };
 
-export function resolveABIType(src: AstFieldDecl): ABITypeRef {
+export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
     if (
         src.type.kind === "type_id" ||
         (src.type.kind === "optional_type" &&
@@ -73,7 +85,7 @@ export function resolveABIType(src: AstFieldDecl): ABITypeRef {
         // Primitive types
         //
 
-        const typeId: AstTypeId =
+        const typeId: A.AstTypeId =
             src.type.kind === "type_id"
                 ? src.type
                 : src.type.typeArg.kind === "type_id"
@@ -255,8 +267,9 @@ export function resolveABIType(src: AstFieldDecl): ABITypeRef {
         if (isInt(src.type.keyType)) {
             key = "int";
             if (src.type.keyStorageType) {
-                const format = intMapFormats[idText(src.type.keyStorageType)];
-                if (!format || format.format === "coins") {
+                const format =
+                    intMapKeyFormats[idText(src.type.keyStorageType)];
+                if (!format) {
                     throwCompilationError(
                         `Unsupported format ${idTextErr(src.type.keyStorageType)} for map key`,
                         src.loc,
@@ -284,7 +297,8 @@ export function resolveABIType(src: AstFieldDecl): ABITypeRef {
         if (isInt(src.type.valueType)) {
             value = "int";
             if (src.type.valueStorageType) {
-                const format = intMapFormats[idText(src.type.valueStorageType)];
+                const format =
+                    intMapValFormats[idText(src.type.valueStorageType)];
                 if (!format) {
                     throwCompilationError(
                         `Unsupported format ${idText(src.type.valueStorageType)} for map value`,
@@ -420,8 +434,8 @@ export function createABITypeRefFromTypeRef(
         if (src.key === "Int") {
             key = "int";
             if (src.keyAs) {
-                const format = intMapFormats[src.keyAs];
-                if (!format || src.keyAs === "coins") {
+                const format = intMapKeyFormats[src.keyAs];
+                if (!format) {
                     throwCompilationError(
                         `Unsupported format ${src.keyAs} for map key`,
                         loc,
@@ -446,7 +460,7 @@ export function createABITypeRefFromTypeRef(
         if (src.value === "Int") {
             value = "int";
             if (src.valueAs) {
-                const format = intMapFormats[src.valueAs];
+                const format = intMapValFormats[src.valueAs];
                 if (!format) {
                     throwCompilationError(
                         `Unsupported format ${src.valueAs} for map value`,

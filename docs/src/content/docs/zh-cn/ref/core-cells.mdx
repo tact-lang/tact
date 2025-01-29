@@ -12,7 +12,7 @@ title: 细胞、建造者和切片
 
   为此，建议高级用户使用[类型语言 - 二进制（TL-B）模式][tlb]。
 
-  建议每位用户使用 [Structs][struct] 及其 [方法](/book/functions#extension-function)，如 [`Struct.toCell(){:tact}`](#structtocell) 和 [`Struct.fromCell(){:tact}`](#structfromcell)，而不是手动构建和解析单元格，因为 [Structs][struct] 和 [Messages][message] 最接近于[您的合约的活 TL-B 架构](/book/cells#cnp-structs)。
+  建议每位用户使用 [Structs][struct] 及其 [方法](/zh-cn/book/functions#extension-function)，如 [`Struct.toCell(){:tact}`](#structtocell) 和 [`Struct.fromCell(){:tact}`](#structfromcell)，而不是手动构建和解析单元格，因为 [Structs][struct] 和 [Messages][message] 最接近于[您的合约的活 TL-B 架构](/zh-cn/book/cells#cnp-structs)。
 
 :::
 
@@ -30,7 +30,7 @@ fun beginCell()：生成器
 让 fizz：Builder = beginCell()；
 ```
 
-## 空单元格
+## emptyCell
 
 ```tact
 fun emptyCell()：单元格；
@@ -47,7 +47,7 @@ let buzz：Cell = beginCell().endCell();
 fizz == buzz; // true
 ```
 
-## 空切片
+## emptySlice
 
 ```tact
 fun emptySlice()：Slice；
@@ -81,7 +81,7 @@ extends fun beginParse(self: Cell)：Slice；
 let fizz：Slice = c.beginParse()；
 ```
 
-## 单元格哈希值
+## Cell.hash
 
 ```tact
 extends fun hash(self: Cell)：Int；
@@ -142,7 +142,7 @@ extends fun storeUint(self: Builder, value: Int, bits: Int)：Builder；
 
 将 $0 \leq \text{bits} \leq 256$ 的无符号 `bits` 位 `value` 存储到 [`Builder{:tact}`][builder] 的副本中。返回该副本。
 
-试图存储负 `value` 或提供不足或超界 `bits` 数时，会出现 [退出代码 5](/book/exit-codes#5) 异常："整数超出预期范围"。
+试图存储负 `value` 或提供不足或超界 `bits` 数时，会出现 [退出代码 5](/zh-cn/book/exit-codes#5) 异常："整数超出预期范围"。
 
 使用示例
 
@@ -161,7 +161,7 @@ extends fun storeInt(self: Builder, value: Int, bits: Int)：Builder；
 
 将$0 ≤$ `bits` $≤ 257$的有符号`bits`-位`值`存储到[`builder{:tact}`][builder]的副本中。 返回该副本。
 
-试图提供一个不足或超出范围的`比特`数时，会出现[退出代码5](/book/exit-codes#5)的异常：整数超出预期范围"。
+试图提供一个不足或超出范围的`比特`数时，会出现[退出代码5](/zh-cn/book/exit-codes#5)的异常：整数超出预期范围"。
 
 使用示例
 
@@ -216,7 +216,7 @@ extends fun storeCoins(self: Builder, value: Int)：Builder；
 
 存储（序列化）一个范围为 $0 \ldots 2^{120} - 1$ 的无符号 [`Int{:tact}`][int] `value` 到 [`Builder{:tact}`][builder] 的副本中。`value` 的序列化由 $4$ 位无符号大端整数 $l$ 组成，它是最小的整数 $l \geq 0$，使得 $\text{value} < 2^{8l}$，然后是 `value` 的 $8l$ 位无符号大端表示。返回 [`Builder{:tact}`][builder] 的副本。
 
-试图存储一个超出范围的`值`时，会出现[退出代码5](/book/exit-codes#5)的异常：超出预期范围的`整数`。
+试图存储一个超出范围的`值`时，会出现[退出代码5](/zh-cn/book/exit-codes#5)的异常：超出预期范围的`整数`。
 
 这是最常见的[纳米通币]存储方式（/book/integers#nanotoncoin）。
 
@@ -229,7 +229,7 @@ let fizz：Builder = b.storeCoins(42)；
 
 :::note[Useful links:]
 
-  [特殊的 "硬币 "序列化类型](/book/integers#serialization-coins)
+  [特殊的 "硬币 "序列化类型](/zh-cn/book/integers#serialization-coins)
 
 :::
 
@@ -260,7 +260,7 @@ extends fun storeRef(self: Builder, cell: Cell)：Builder；
 
 将引用 `cell` 存储到[`Builder{:tact}`][builder]的副本中。 返回该副本。
 
-由于单个 [`单元格{:tact}`][单元格] 最多可存储 $4$ 引用，如果尝试存储更多引用，则会出现[退出代码 8](/book/exit-codes#8)异常：单元格溢出"。
+由于单个 [`单元格{:tact}`][单元格] 最多可存储 $4$ 引用，如果尝试存储更多引用，则会出现[退出代码 8](/zh-cn/book/exit-codes#8)异常：单元格溢出"。
 
 使用示例
 
@@ -269,7 +269,7 @@ let b: Builder = beginCell();
 let fizz：Builder = b.storeRef(emptyCell())；
 ```
 
-## 建造者参考资料
+## Builder.refs
 
 ```tact
 extends fun refs(self: Builder)：Int；
@@ -286,7 +286,7 @@ let b: Builder = beginCell();
 let fizz：Int = b.refs(); // 0
 ```
 
-## 构建器位
+## Builder.bits
 
 ```tact
 extends fun bits(self: Builder)：Int；
@@ -347,9 +347,9 @@ extends mutates fun loadUint(self: Slice, l: Int)：Int；
 
 从 [`Slice{:tact}`][slice]中加载并返回一个无符号的 `l` 位 [`Int{:tact}`][int]，条件是 $0 ≤$ `l` $≤ 256$。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：超出预期范围的整数。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：超出预期范围的整数。
 
-尝试加载的数据超过 [`片{:tact}`][片] 包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：单元格下溢"。
+尝试加载的数据超过 [`片{:tact}`][片] 包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：单元格下溢"。
 
 使用示例
 
@@ -368,9 +368,9 @@ extends fun preloadUint(self: Slice, l: Int)：Int；
 
 为 $0 ≤$ `l` $≤ 256$ 从 [`Slice{:tact}`][slice]中预载并返回一个无符号的 `l` 位 [`Int{:tact}`][int]。 不会修改 [`切片{:tact}`][切片]。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：超出预期范围的整数。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：超出预期范围的整数。
 
-尝试预载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9)异常：单元格下溢"。
+尝试预载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9)异常：单元格下溢"。
 
 使用示例
 
@@ -389,9 +389,9 @@ extends mutates fun loadInt(self: Slice, l: Int)：Int；
 
 从 [`Slice{:tact}`][slice]中加载并返回一个有符号的 `l` 位 [`Int{:tact}`][int]，值为 $0 ≤$ `l` $≤ 257$。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：超出预期范围的整数。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：超出预期范围的整数。
 
-尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：单元格下溢"。
+尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：单元格下溢"。
 
 使用示例
 
@@ -410,9 +410,9 @@ extends fun preloadInt(self: Slice, l: Int)：Int；
 
 为 $0 ≤$ `l` $≤ 257$ 从 [`Slice{:tact}`][slice]中预载并返回一个有符号的 `l` 位 [`Int{:tact}`][int]。 不会修改 [`切片{:tact}`][切片]。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：超出预期范围的整数。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：超出预期范围的整数。
 
-尝试预载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9)异常：单元格下溢"。
+尝试预载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9)异常：单元格下溢"。
 
 使用示例
 
@@ -431,9 +431,9 @@ extends mutates fun loadBits(self: Slice, l: Int)：Slice；
 
 从 [`片{:tact}`][片] 中加载 $0 ≤$ `l` $≤ 1023$ 位，并作为单独的 [`片{:tact}`][片] 返回。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：超出预期范围的整数。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：超出预期范围的整数。
 
-尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：单元格下溢"。
+尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：单元格下溢"。
 
 使用示例
 
@@ -452,9 +452,9 @@ extends fun preloadBits(self: Slice, l: Int)：Slice；
 
 从 [`片{:tact}`][片] 中预载 $0 ≤$ `l` $≤ 1023$ 位，并将其作为单独的 [`片{:tact}`][片] 返回。 不修改原始 [`切片{:tact}`][切片]。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：超出预期范围的整数。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：超出预期范围的整数。
 
-尝试预载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9)异常：单元格下溢"。
+尝试预载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9)异常：单元格下溢"。
 
 使用示例
 
@@ -473,9 +473,9 @@ extends mutates fun skipBits(self: Slice, l: Int)；
 
 从 [`片{:tact}`][片] 中加载除第一个 0 ≤$ `l` $≤ 1023$ 位以外的所有位。
 
-试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/book/exit-codes#5)异常：超出预期范围的整数。
+试图指定一个超出范围的 `l` 值时，会出现 [exit code 5](/zh-cn/book/exit-codes#5)异常：超出预期范围的整数。
 
-尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：单元格下溢"。
+尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：单元格下溢"。
 
 使用示例
 
@@ -495,9 +495,9 @@ extends mutates fun loadBool(self: Slice)：Bool；
 
 从[`Slice{:tact}`][slice]加载单个位并返回[`Bool{:tact}`][bool]值。 如果加载的位等于 $1$，则读取 `true{:tact}`，否则读取 `false{:tact}`。
 
-当 [`Bool{:tact}`][bool][`slice{:tact}`][slice]不包含它时，尝试加载此类 [`Bool `][bool]会产生异常，[退出代码 8](/book/exit-codes#8)：单元格溢出"。
+当 [`Bool{:tact}`][bool][`slice{:tact}`][slice]不包含它时，尝试加载此类 [`Bool `][bool]会产生异常，[退出代码 8](/zh-cn/book/exit-codes#8)：单元格溢出"。
 
-尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：单元格下溢"。
+尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：单元格下溢"。
 
 使用示例
 
@@ -514,11 +514,11 @@ extends mutates fun loadCoins(self: Slice)：Int；
 
 [`切片{:tact}`][切片]的扩展突变函数。
 
-加载并返回[序列化](#builderstorecoins)的一个范围为 $0 ... 2^{120} - 1$ 的无符号 [`Int{:tact}`][int]值，来自 [`片{:tact}`][片]。该值通常代表以[纳吨币](/book/integers#nanotoncoin)为单位的金额。
+加载并返回[序列化](#builderstorecoins)的一个范围为 $0 ... 2^{120} - 1$ 的无符号 [`Int{:tact}`][int]值，来自 [`片{:tact}`][片]。该值通常代表以[纳吨币](/zh-cn/book/integers#nanotoncoin)为单位的金额。
 
-当 [`Slice{:tact}`][slice]中不包含[`Int{:tact}`][int]时，尝试加载此类[`Int`][int]会产生异常，[退出代码为 8](/book/exit-codes#8)："单元格溢出"。
+当 [`Slice{:tact}`][slice]中不包含[`Int{:tact}`][int]时，尝试加载此类[`Int`][int]会产生异常，[退出代码为 8](/zh-cn/book/exit-codes#8)："单元格溢出"。
 
-尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常："单元格下溢"。
+尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常："单元格下溢"。
 
 使用示例
 
@@ -529,7 +529,7 @@ let fizz：Int = s.loadCoins()；
 
 :::note[Useful links:]
 
-  [特殊的 "硬币 "序列化类型](/book/integers#serialization-coins)
+  [特殊的 "硬币 "序列化类型](/zh-cn/book/integers#serialization-coins)
 
 :::
 
@@ -543,9 +543,9 @@ extends mutates fun loadAddress(self: Slice)：地址；
 
 从[`Slice{:tact}`][slice]加载并返回一个[`Address{:tact}`][address]。
 
-当[`Slice{:tact}`][slice]不包含该地址时，尝试加载该[`Address{:tact}`][address]会产生异常，[退出代码 8](/book/exit-codes#8)："单元格溢出"。
+当[`Slice{:tact}`][slice]不包含该地址时，尝试加载该[`Address{:tact}`][address]会产生异常，[退出代码 8](/zh-cn/book/exit-codes#8)："单元格溢出"。
 
-尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [退出代码 9](/book/exit-codes#9) 异常："单元格下溢"。
+尝试加载的数据超过 [`Slice{:tact}`][slice] 所包含的数据时，会出现 [退出代码 9](/zh-cn/book/exit-codes#9) 异常："单元格下溢"。
 
 使用示例
 
@@ -564,9 +564,9 @@ extends mutates fun loadRef(self: Slice)：Cell；
 
 从 [`切片{:tact}`][切片] 中加载下一个引用作为 [`单元格{:tact}`][单元格]。
 
-当 [`切片{:tact}`][切片]不包含该引用时，尝试加载该引用会产生异常，[退出代码 8](/book/exit-codes#8)："单元格溢出"。
+当 [`切片{:tact}`][切片]不包含该引用时，尝试加载该引用会产生异常，[退出代码 8](/zh-cn/book/exit-codes#8)："单元格溢出"。
 
-尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9) 异常：单元格下溢"。
+尝试加载的数据超过 [`片{:tact}`][片] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9) 异常：单元格下溢"。
 
 使用示例
 
@@ -686,7 +686,7 @@ extends fun endParse(self: Slice)；
 
 [`切片{:tact}`][切片]的扩展函数。
 
-检查 [`片{:tact}`][片] 是否为空（即不包含数据位和单元格引用）。 如果不是，则抛出异常[退出代码 9](/book/exit-codes#9)：单元格下溢。
+检查 [`片{:tact}`][片] 是否为空（即不包含数据位和单元格引用）。 如果不是，则抛出异常[退出代码 9](/zh-cn/book/exit-codes#9)：单元格下溢。
 
 使用示例
 
@@ -737,7 +737,7 @@ let buzz：Cell = beginCell().storeSlice(s).endCell();
 fizz == buzz; // true
 ```
 
-## 地址.asSlice
+## Address.asSlice
 
 ```tact
 extends fun asSlice(self: Address)：Slice；
@@ -793,7 +793,7 @@ extends fun fromCell(self: Struct, cell: Cell)：Struct；
 
 将 [`单元格{:tact}`][单元格] 转换为指定的 [结构体][struct]，并返回该 [结构体][struct]。
 
-试图传递布局与指定 [Struct][struct] 不同的 [`单元格{:tact}`][单元格]，或加载的数据超过 [`单元格{:tact}`][单元格] 所包含的数据时，会出现 [exit code 9](/book/exit-codes#9)异常：单元格下溢"。
+试图传递布局与指定 [Struct][struct] 不同的 [`单元格{:tact}`][单元格]，或加载的数据超过 [`单元格{:tact}`][单元格] 所包含的数据时，会出现 [exit code 9](/zh-cn/book/exit-codes#9)异常：单元格下溢"。
 
 使用示例
 
@@ -828,7 +828,7 @@ extends fun fromSlice(self: Struct, cell: Slice)：Struct；
 
 将 [`片{:tact}`][slice]转换为指定的 [Struct][struct]，并返回该 [Struct][struct]。
 
-尝试传递布局与指定 [结构][struct]不同的 [`片{:tact}`][片]，或加载比 [`片{:tact}`][片] 包含的数据更多的数据时，会出现[退出代码 9](/book/exit-codes#9)异常：单元下溢"。
+尝试传递布局与指定 [结构][struct]不同的 [`片{:tact}`][片]，或加载比 [`片{:tact}`][片] 包含的数据更多的数据时，会出现[退出代码 9](/zh-cn/book/exit-codes#9)异常：单元下溢"。
 
 使用示例
 
@@ -889,7 +889,7 @@ extends fun fromCell(self: Message, cell: Cell)：消息；
 
 将 [`单元格{:tact}`][单元格] 转换为指定的 [信息][消息]，并返回该 [信息][消息]。
 
-尝试传递布局与指定[信息][message]不同的[`单元格{:tact}`][单元格]，或加载的数据超过[`单元格{:tact}`][单元格]所包含的数据时，会出现[退出代码 9](/book/exit-codes#9)的异常：单元格下溢"。
+尝试传递布局与指定[信息][message]不同的[`单元格{:tact}`][单元格]，或加载的数据超过[`单元格{:tact}`][单元格]所包含的数据时，会出现[退出代码 9](/zh-cn/book/exit-codes#9)的异常：单元格下溢"。
 
 使用示例
 
@@ -923,7 +923,7 @@ extends fun fromSlice(self: Message, cell: Slice)：消息；
 
 将 [`片{:tact}`][片] 转换为指定的 [信息][消息]，并返回该 [信息][消息]。
 
-试图传递布局不同于指定[信息][消息]的[`片{:tact}`][片]，或加载的数据多于[`片{:tact}`][片]所包含的数据时，会出现[退出代码 9](/book/exit-codes#9)的异常：单元下溢"。
+试图传递布局不同于指定[信息][消息]的[`片{:tact}`][片]，或加载的数据多于[`片{:tact}`][片]所包含的数据时，会出现[退出代码 9](/zh-cn/book/exit-codes#9)的异常：单元下溢"。
 
 使用示例
 
@@ -947,17 +947,17 @@ fun cautiousParse(payload: Slice)：TripleAxe?{
 }
 ```
 
-[p]: /book/types#primitive-types
-[bool]: /book/types#booleans
-[int]: /book/integers
-[cell]: /book/cells#cells
-[builder]: /book/cells#builders
-[slice]: /book/cells#slices
-[map]: /book/maps
-[struct]: /book/structs-and-messages#structs
-[message]: /book/structs-and-messages#messages
+[p]: /zh-cn/book/types#primitive-types
+[bool]: /zh-cn/book/types#booleans
+[int]: /zh-cn/book/integers
+[cell]: /zh-cn/book/cells#cells
+[builder]: /zh-cn/book/cells#builders
+[slice]: /zh-cn/book/cells#slices
+[map]: /zh-cn/book/maps
+[struct]: /zh-cn/book/structs-and-messages#structs
+[message]: /zh-cn/book/structs-and-messages#messages
 
-[std-repr]: /book/cells#cells-representation
+[std-repr]: /zh-cn/book/cells#cells-representation
 
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
 [sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard

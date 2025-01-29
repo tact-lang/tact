@@ -1,14 +1,11 @@
 import { enabledInline } from "../../config/features";
+import * as A from "../../ast/ast";
 import {
-    AstAsmShuffle,
-    AstCondition,
-    AstExpression,
-    AstStatement,
     idOfText,
     idText,
     isWildcard,
     tryExtractPath,
-} from "../../grammar/ast";
+} from "../../ast/ast-helpers";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
 import { FunctionDescription, TypeRef } from "../../types/types";
@@ -22,11 +19,11 @@ import { cast } from "./cast";
 import { resolveFuncTupleType } from "./resolveFuncTupleType";
 import { ops } from "./ops";
 import { freshIdentifier } from "./freshIdentifier";
-import { idTextErr, throwInternalCompilerError } from "../../errors";
-import { ppAsmShuffle } from "../../prettyPrinter";
+import { idTextErr, throwInternalCompilerError } from "../../error/errors";
+import { ppAsmShuffle } from "../../ast/ast-printer";
 
 export function writeCastedExpression(
-    expression: AstExpression,
+    expression: A.AstExpression,
     to: TypeRef,
     ctx: WriterContext,
 ) {
@@ -54,15 +51,9 @@ function unwrapExternal(
             }
             return;
         } else if (t.kind === "primitive_type_decl" && t.name === "Address") {
-            if (type.optional) {
-                ctx.append(
-                    `${resolveFuncType(type, ctx)} ${targetName} = null?(${sourceName}) ? null() : ${ctx.used(`__tact_verify_address`)}(${sourceName});`,
-                );
-            } else {
-                ctx.append(
-                    `${resolveFuncType(type, ctx)} ${targetName} = ${ctx.used(`__tact_verify_address`)}(${sourceName});`,
-                );
-            }
+            ctx.append(
+                `${resolveFuncType(type, ctx)} ${targetName} = ${sourceName};`,
+            );
             return;
         }
     }
@@ -70,7 +61,7 @@ function unwrapExternal(
 }
 
 export function writeStatement(
-    f: AstStatement,
+    f: A.AstStatement,
     self: string | null,
     returns: TypeRef | null,
     ctx: WriterContext,
@@ -233,26 +224,25 @@ export function writeStatement(
                     writeStatement(s, self, returns, ctx);
                 }
             });
-            ctx.append("} catch (_) { }");
-            return;
-        }
-        case "statement_try_catch": {
-            ctx.append(`try {`);
-            ctx.inIndent(() => {
-                for (const s of f.statements) {
-                    writeStatement(s, self, returns, ctx);
+
+            const catchBlock = f.catchBlock;
+            if (catchBlock !== undefined) {
+                if (isWildcard(catchBlock.catchName)) {
+                    ctx.append(`} catch (_) {`);
+                } else {
+                    ctx.append(
+                        `} catch (_, ${funcIdOf(catchBlock.catchName)}) {`,
+                    );
                 }
-            });
-            if (isWildcard(f.catchName)) {
-                ctx.append(`} catch (_) {`);
+                ctx.inIndent(() => {
+                    for (const s of catchBlock.catchStatements!) {
+                        writeStatement(s, self, returns, ctx);
+                    }
+                });
             } else {
-                ctx.append(`} catch (_, ${funcIdOf(f.catchName)}) {`);
+                ctx.append("} catch (_) { ");
             }
-            ctx.inIndent(() => {
-                for (const s of f.catchStatements) {
-                    writeStatement(s, self, returns, ctx);
-                }
-            });
+
             ctx.append(`}`);
             return;
         }
@@ -291,17 +281,23 @@ export function writeStatement(
                     kind = "uint";
                 }
                 if (t.value === "Int") {
-                    let vBits = 257;
+                    let vBits = ", 257";
                     let vKind = "int";
                     if (t.valueAs?.startsWith("int")) {
-                        vBits = parseInt(t.valueAs.slice(3), 10);
+                        vBits = `, ${parseInt(t.valueAs.slice(3), 10)}`;
                     } else if (t.valueAs?.startsWith("uint")) {
-                        vBits = parseInt(t.valueAs.slice(4), 10);
+                        vBits = `, ${parseInt(t.valueAs.slice(4), 10)}`;
                         vKind = "uint";
+                    } else if (t.valueAs?.startsWith("coins")) {
+                        vBits = "";
+                        vKind = "coins";
+                    } else if (t.valueAs?.startsWith("var")) {
+                        vBits = "";
+                        vKind = t.valueAs;
                     }
 
                     ctx.append(
-                        `var (${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_${vKind}`)}(${path}, ${bits}, ${vBits});`,
+                        `var (${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_min_${kind}_${vKind}`)}(${path}, ${bits}${vBits});`,
                     );
                     ctx.append(`while (${flag}) {`);
                     ctx.inIndent(() => {
@@ -309,7 +305,7 @@ export function writeStatement(
                             writeStatement(s, self, returns, ctx);
                         }
                         ctx.append(
-                            `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_${vKind}`)}(${path}, ${bits}, ${key}, ${vBits});`,
+                            `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_${kind}_${vKind}`)}(${path}, ${bits}, ${key}${vBits});`,
                         );
                     });
                     ctx.append(`}`);
@@ -379,16 +375,22 @@ export function writeStatement(
             // Handle address key
             if (t.key === "Address") {
                 if (t.value === "Int") {
-                    let vBits = 257;
+                    let vBits = ", 257";
                     let vKind = "int";
                     if (t.valueAs?.startsWith("int")) {
-                        vBits = parseInt(t.valueAs.slice(3), 10);
+                        vBits = `, ${parseInt(t.valueAs.slice(3), 10)}`;
                     } else if (t.valueAs?.startsWith("uint")) {
-                        vBits = parseInt(t.valueAs.slice(4), 10);
+                        vBits = `, ${parseInt(t.valueAs.slice(4), 10)}`;
                         vKind = "uint";
+                    } else if (t.valueAs?.startsWith("coins")) {
+                        vBits = "";
+                        vKind = "coins";
+                    } else if (t.valueAs?.startsWith("var")) {
+                        vBits = "";
+                        vKind = t.valueAs;
                     }
                     ctx.append(
-                        `var (${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_${vKind}`)}(${path}, 267, ${vBits});`,
+                        `var (${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_min_slice_${vKind}`)}(${path}, 267${vBits});`,
                     );
                     ctx.append(`while (${flag}) {`);
                     ctx.inIndent(() => {
@@ -396,7 +398,7 @@ export function writeStatement(
                             writeStatement(s, self, returns, ctx);
                         }
                         ctx.append(
-                            `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_${vKind}`)}(${path}, 267, ${key}, ${vBits});`,
+                            `(${key}, ${value}, ${flag}) = ${ctx.used(`__tact_dict_next_slice_${vKind}`)}(${path}, 267, ${key}${vBits});`,
                         );
                     });
                     ctx.append(`}`);
@@ -485,13 +487,19 @@ export function writeStatement(
             );
             return;
         }
+        case "statement_block": {
+            for (const s of f.statements) {
+                writeStatement(s, self, returns, ctx);
+            }
+            return;
+        }
     }
 
     throw Error("Unknown statement kind");
 }
 
 function writeCondition(
-    f: AstCondition,
+    f: A.AstStatementCondition,
     self: string | null,
     elseif: boolean,
     returns: TypeRef | null,
@@ -521,8 +529,10 @@ function writeCondition(
 }
 
 export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
-    // Resolve self
-    const self = f.self?.kind === "ref" ? getType(ctx.ctx, f.self.name) : null;
+    const [self, isSelfOpt] =
+        f.self?.kind === "ref"
+            ? [getType(ctx.ctx, f.self.name), f.self.optional]
+            : [null, false];
 
     // Write function header
     let returns: string = resolveFuncType(f.returns, ctx);
@@ -540,7 +550,9 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     // Resolve function descriptor
     const params: string[] = [];
     if (self) {
-        params.push(resolveFuncType(self, ctx) + " " + funcIdOf("self"));
+        params.push(
+            resolveFuncType(self, ctx, isSelfOpt) + " " + funcIdOf("self"),
+        );
     }
     for (const a of f.params) {
         params.push(resolveFuncType(a.type, ctx) + " " + funcIdOf(a.name));
@@ -575,7 +587,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                     ctx.context("stdlib");
                 }
                 // we need to do some renames (prepending $ to identifiers)
-                const asmShuffleEscaped: AstAsmShuffle = {
+                const asmShuffleEscaped: A.AstAsmShuffle = {
                     ...fAst.shuffle,
                     args: fAst.shuffle.args.map((id) => idOfText(funcIdOf(id))),
                 };
@@ -613,7 +625,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                 }
                 ctx.body(() => {
                     // Unpack self
-                    if (self) {
+                    if (self && !isSelfOpt) {
                         ctx.append(
                             `var (${resolveFuncTypeUnpack(self, funcIdOf("self"), ctx)}) = ${funcIdOf("self")};`,
                         );
@@ -690,9 +702,13 @@ function writeNonMutatingFunction(
             ctx.context("stdlib");
         }
         ctx.body(() => {
+            const params = f.ast.params;
+            const withoutSelfParams =
+                params.length > 0 && params.at(0)?.name.text === "self"
+                    ? params.slice(1)
+                    : params;
             ctx.append(
-                `return ${funcIdOf("self")}~${markUsedName ? ctx.used(name) : name}(${f.ast.params
-                    .slice(1)
+                `return ${funcIdOf("self")}~${markUsedName ? ctx.used(name) : name}(${withoutSelfParams
                     .map((arg) => funcIdOf(arg.name))
                     .join(", ")});`,
             );

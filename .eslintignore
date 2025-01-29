@@ -3,9 +3,13 @@ dist/
 coverage/
 **/output/
 src/test/**/output/
+src/test/e2e-emulated/map-tests/build
 src/func/funcfiftlib.js
-src/grammar/grammar.ohm*.ts
-src/grammar/grammar.ohm*.js
+**/grammar.ohm*.ts
+**/grammar.ohm*.js
+src/grammar/next/grammar.ts
 jest.setup.js
 jest.teardown.js
 /docs
+version.build.ts
+bin/*

@@ -32,11 +32,11 @@ message ChangeOwnerOk {
 
 ## 特质
 
-### ownable
+### Ownable
 
-[Trait](/book/types#composite-types) `Ownable{:tact}` 声明了 [contract](/book/contracts) 的所有者（不可编辑），并提供了一个辅助函数 `requireOwner(){:tact}` 来检查消息是否由所有者发送。
+[Trait](/zh-cn/book/types#composite-types) `Ownable{:tact}` 声明了 [contract](/zh-cn/book/contracts) 的所有者（不可编辑），并提供了一个辅助函数 `requireOwner(){:tact}` 来检查消息是否由所有者发送。
 
-此 [trait](/book/types#composite-types) 要求声明一个字段 `owner: Address{:tact}`，并公开一个 [getter 函数](/book/functions#getter-functions) `owner(){:tact}`，该函数从 [contract](/book/contracts) 中读取。
+此 [trait](/zh-cn/book/types#composite-types) 要求声明一个字段 `owner: Address{:tact}`，并公开一个 [getter 函数](/zh-cn/book/functions#getter-functions) `owner(){:tact}`，该函数从 [contract](/zh-cn/book/contracts) 中读取。
 
 源代码
 
@@ -69,11 +69,11 @@ contract ExampleContract with Ownable {
 }
 ```
 
-### 可拥有可转让
+### OwnableTransferable
 
-`OwnableTransferable{:tact}` 是 [`Ownable{:tact}`](#ownable) 的扩展，允许将合同的所有权转移到另一个地址。它提供了一个安全的句柄 [Message](/book/structs-and-messages#messages) [`ChangeOwner{:tact}`](#changeowner)，可供所有者调用以转移所有权。
+`OwnableTransferable{:tact}` 是 [`Ownable{:tact}`](#ownable) 的扩展，允许将合同的所有权转移到另一个地址。它提供了一个安全的句柄 [Message](/zh-cn/book/structs-and-messages#messages) [`ChangeOwner{:tact}`](#changeowner)，可供所有者调用以转移所有权。
 
-如果所有者转移请求成功，合约将回复一条 [`ChangeOwnerOk{:tact}`](#changeownerok) [信息](/book/structs-and-messages#messages)。
+如果所有者转移请求成功，合约将回复一条 [`ChangeOwnerOk{:tact}`](#changeownerok) [信息](/zh-cn/book/structs-and-messages#messages)。
 
 源代码
 

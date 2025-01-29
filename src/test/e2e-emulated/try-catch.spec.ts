@@ -73,4 +73,8 @@ describe("try-catch", () => {
         });
         expect(await contract.getGetCounter()).toEqual(2n); // Counter should increment
     });
+
+    it("should restore state changes if a throw occurs inside a function with non-trivial branching", async () => {
+        expect(await contract.getTestTryCatch4()).toStrictEqual(true);
+    });
 });

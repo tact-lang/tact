@@ -1,0 +1,510 @@
+// Key types: Address, Int as K_WIDTH
+// Value types: Int as V_WIDTH, Bool, Address, Cell, Struct, Message
+
+// The properties below are formulated in a Tact-like pseudocode:
+// for instance, m.set(k,v) returns a new updated map instead of modifying it in-place.
+
+struct KeyData {
+    _1: KEY_TYPE_PLACEHOLDER;
+    _2: KEY_TYPE_PLACEHOLDER;
+}
+
+struct ValData {
+    _1: VAL_TYPE_PLACEHOLDER;
+    _2: VAL_TYPE_PLACEHOLDER;
+}
+
+
+// struct with over 1023 bits so that it is serialized as multiple cells
+struct SomeStruct {
+    i: Int;
+    b: Bool;
+    a: Address;
+    u1: Int as uint256;
+    u2: Int as uint255;
+}
+
+message(0x1234) SomeMessage {
+    buyer: Address;
+    nonce: Int as uint32;
+}
+
+// value equality: structs/messages cannot be compared using `==`
+
+extends fun eq(self: Int?, other: Int?): Bool {
+    return self == other;
+}
+
+extends fun eq(self: Bool?, other: Bool?): Bool {
+    return self == other;
+}
+
+extends fun eq(self: Address?, other: Address?): Bool {
+    return self == other;
+}
+
+extends fun eq(self: Slice?, other: Slice?): Bool {
+    return self == other;
+}
+
+extends fun eq(self: Cell?, other: Cell?): Bool {
+    return self == other;
+}
+
+extends fun eq(self: SomeStruct?, other: SomeStruct?): Bool {
+    if (self == null && other == null) {
+        return true;
+    }
+    if (self == null || other == null) {
+        return false;
+    }
+    let SomeStruct { i: i_s, b: b_s, a: a_s, u1: u1_s, u2: u2_s } = self!!;
+    let SomeStruct { i: i_o, b: b_o, a: a_o, u1: u1_o, u2: u2_o } = other!!;
+    return
+        i_s == i_o &&
+        b_s == b_o &&
+        a_s == a_o &&
+        u1_s == u1_o &&
+        u2_s == u2_o;
+}
+
+extends fun eq(self: SomeMessage?, other: SomeMessage?): Bool {
+    if (self == null && other == null) {
+        return true;
+    }
+    if (self == null || other == null) {
+        return false;
+    }
+    return
+        self!!.buyer == other!!.buyer  &&
+        self!!.nonce == other!!.nonce;
+}
+
+fun singletonMap1(key: KeyData, val: ValData): map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> {
+    let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+    m.set(key._1, val._1);
+    return m;
+}
+
+fun singletonMap2(key: KeyData, val: ValData): map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> {
+    let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+    m.set(key._2, val._2);
+    return m;
+}
+
+// assumption: key._1 != key._2
+fun doubletonMap(key: KeyData, val: ValData): map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> {
+    let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+    m.set(key._1, val._1);
+    m.set(key._2, val._2);
+    return m;
+}
+
+fun size(m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER>): Int {
+    let res: Int = 0;
+    foreach (_, _ in m) { res += 1 }
+    return res;
+}
+
+asm fun castToMap(c: Cell): map<Int as uint8, Bool> { NOP }
+
+asm extends fun asMap(self: Cell): map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> { NOP }
+
+contract MapPropertiesTester {
+    const ExitCodeEqualKeys: Int = 1024;
+    const ExitCodeKeyMustBeMissing: Int = 1025;
+    const ExitCodeKeyMustBePresent: Int = 1026;
+    const ExitCodeUnequalMapHashes: Int = 1027;
+
+    receive() { } // deploy
+
+    // Property: emptyMap().get(k) == null && !emptyMap().exists(k)
+    get fun testEmptyMapGet(key: KeyData, val: ValData): Bool {
+        let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+        return
+            m.get(key._1) == null &&
+            m.get(key._2) == null &&
+            !m.exists(key._1) &&
+            !m.exists(key._2);
+    }
+
+    // Property: `get` / `exists` does not modify the map
+    get fun testGetDoesNotModify(key: KeyData, val: ValData): Bool {
+        let m = doubletonMap(key, val);
+        let mCopy = m;
+        let _ = m.get(key._1);
+        let _ = m.exists(key._1);
+        return
+            m == mCopy &&
+            m.deepEquals(mCopy);
+    }
+
+    // Property: (m.get(k) == null && !m.exists(k)) => m.set(k, v) != m
+    get fun testSetModifies(key: KeyData, val: ValData): Bool {
+        let m = singletonMap2(key, val);
+        nativeThrowUnless(self.ExitCodeKeyMustBeMissing, m.get(key._1) == null && !m.exists(key._1));
+        let m1 = singletonMap2(key, val);
+        m1.set(key._1, val._1);
+        return
+            m1 != m &&
+            !m1.deepEquals(m);
+    }
+
+    // Property: m.set(k, v).get(k) == v
+    get fun testSetGetSameKey(key: KeyData, val: ValData): Bool {
+        let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+        m.set(key._1, val._1);
+        return
+            m.get(key._1).eq(val._1);
+    }
+
+    // Property: k1 != k2 => m.set(k1, v).get(k2) == m.get(k2)
+    get fun testSetGetNotSameKey(key: KeyData, val: ValData): Bool {
+        nativeThrowUnless(self.ExitCodeEqualKeys, key._1 != key._2);
+        let m = singletonMap2(key, val);
+        let m1 = singletonMap2(key, val);
+        m1.set(key._1, val._1);
+        return
+            m1.get(key._2).eq(m.get(key._2));
+    }
+
+    // Property: m.set(k, v).set(k, v) == m.set(k, v)
+    get fun testSetIdempotent(key: KeyData, val: ValData): Bool {
+        let m1 = singletonMap2(key, val);
+        m1.set(key._1, val._1);
+        let m = m1;
+        m1.set(key._1, val._1);
+        return
+            m1 == m &&
+            m1.deepEquals(m);
+    }
+
+    // Property: k1 != k2 => m.set(k1, v1).set(k2, v2) == m.set(k2, v2).set(k1, v1)
+    get fun testSetSetOfNotSameCommutes(key: KeyData, val: ValData): Bool {
+        nativeThrowUnless(self.ExitCodeEqualKeys, key._1 != key._2);
+        let m1: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+        let m2: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+        m1.set(key._1, val._1);
+        m1.set(key._2, val._2);
+
+        m2.set(key._2, val._2);
+        m2.set(key._1, val._1);
+        return
+            m1 == m2 &&
+            m1.deepEquals(m2);
+    }
+
+    // Property: (m.get(k) != null && m.exists(k)) => m.del(k).get(k) == null && !m.exists(k)
+    get fun testDelGetSameKeyPresent(key: KeyData, val: ValData): Bool {
+        let m = doubletonMap(key, val);
+        nativeThrowUnless(self.ExitCodeKeyMustBePresent, m.get(key._1) != null && m.exists(key._1));
+        let deleted: Bool = m.del(key._1);
+        return
+            m.get(key._1) == null &&
+            !m.exists(key._1) &&
+            deleted;
+    }
+
+    // Property: (m.get(k) == null && !m.exists(k)) => m.del(k).get(k) == null && !m.del(k).exists(k)
+    get fun testDelGetSameKeyMissing(key: KeyData, val: ValData): Bool {
+        let m = singletonMap2(key, val);
+        nativeThrowUnless(self.ExitCodeKeyMustBeMissing, m.get(key._1) == null && !m.exists(key._1));
+        let deleted: Bool = m.del(key._1);
+        return
+            m.get(key._1) == null &&
+            !m.exists(key._1) &&
+            !deleted;
+    }
+
+    // Property: (m.get(k) != null && m.exists(k)) => m.del(k) != m
+    get fun testDelOfPresentModifies(key: KeyData, val: ValData): Bool {
+        let m = doubletonMap(key, val);
+        nativeThrowUnless(self.ExitCodeKeyMustBePresent, m.get(key._1) != null && m.exists(key._1));
+        let m1 = doubletonMap(key, val);
+        m1.del(key._1);
+        return
+            m1 != m &&
+            !m1.deepEquals(m);
+    }
+
+    // Property: (m.get(k) == null && !m.exists(k)) => m.del(k) == m
+    get fun testDelOfMissingDoesNotModify(key: KeyData, val: ValData): Bool {
+        let m = singletonMap2(key, val);
+        let m1 = singletonMap2(key, val);
+        nativeThrowUnless(self.ExitCodeKeyMustBeMissing, m.get(key._1) == null && !m.exists(key._1));
+        m1.del(key._1);
+        return
+            m1 == m &&
+            m1.deepEquals(m);
+    }
+
+    // Property: m.del(k).del(k) == m.del(k)
+    get fun testDelDelOfSameDoesNotModify(key: KeyData, val: ValData): Bool {
+        let m1 = doubletonMap(key, val);
+        m1.del(key._1);
+        let m = m1;
+        m1.del(key._1);
+        return
+            m1 == m &&
+            m1.deepEquals(m);
+    }
+
+    // Property: (m.get(k) == null && m.exists(k)) => m.set(k, v).del(k) == m
+    get fun testSetDelOfMissingDoesNotModify(key: KeyData, val: ValData): Bool {
+        let m = singletonMap2(key, val);
+        let m1 = singletonMap2(key, val);
+        nativeThrowUnless(self.ExitCodeKeyMustBeMissing, m.get(key._1) == null && !m.exists(key._1));
+        m1.set(key._1, val._1);
+        m1.del(key._1);
+        return
+            m1 == m &&
+            m1.deepEquals(m);
+    }
+
+    // Property: (m.get(k) != null && m.exists(k)) => m.del(k).set(k, v) == m.set(k)
+    get fun testDelSetOfSamePresent(key: KeyData, val: ValData): Bool {
+        let m1 = singletonMap1(key, val);
+        let m2 = singletonMap1(key, val);
+        nativeThrowUnless(self.ExitCodeKeyMustBePresent, m1.get(key._1) != null && m1.exists(key._1));
+        m1.del(key._1);
+        m1.set(key._1, val._1);
+        m2.set(key._1, val._1);
+        return
+            m1 == m2 &&
+            m1.deepEquals(m2);
+    }
+
+    // Property: (m.get(k) == null && !m.exists(k)) => m.del(k).set(k, v) == m.set(k)
+    get fun testDelSetOfSameMissing(key: KeyData, val: ValData): Bool {
+        let m1 = singletonMap1(key, val);
+        let m2 = singletonMap1(key, val);
+        nativeThrowUnless(self.ExitCodeKeyMustBeMissing, m1.get(key._2) == null && !m1.exists(key._2));
+        m1.del(key._2);
+        m1.set(key._2, val._2);
+        m2.set(key._2, val._2);
+        return
+            m1 == m2 &&
+            m1.deepEquals(m2);
+    }
+
+    // Property: k1 != k2 => m.del(k1).set(k2, v) == m.set(k2).del(k1)
+    get fun testDelSetOfNotSameCommutes(key: KeyData, val: ValData): Bool {
+        nativeThrowUnless(self.ExitCodeEqualKeys, key._1 != key._2);
+        let m1 = singletonMap1(key, val);
+        let m2 = singletonMap1(key, val);
+        m1.del(key._1);
+        m1.set(key._2, val._2);
+
+        m2.set(key._2, val._2);
+        m2.del(key._1);
+        return
+            m1 == m2 &&
+            m1.deepEquals(m2);
+    }
+
+    // Property: size(emptyMap()) == 0
+    get fun testEmptyMapSize(key: KeyData, val: ValData): Bool {
+        let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+        return
+            size(m) == 0;
+    }
+
+    // Property: size(emptyMap().set(k, v)) == 1
+    get fun testSingletonMapSize(key: KeyData, val: ValData): Bool {
+        let m = singletonMap1(key, val);
+        return
+            size(m) == 1;
+    }
+
+    // Property: k1 != k2 => size(emptyMap().set(k1, v1).set(k2, v2)) == 2
+    get fun testDoubletonMapSize(key: KeyData, val: ValData): Bool {
+        nativeThrowUnless(self.ExitCodeEqualKeys, key._1 != key._2);
+        let m = doubletonMap(key, val);
+        return
+            size(m) == 2;
+    }
+
+    // Property: m.get(k) != null <=> m.exists(k)
+    get fun testGetNonNullEquivalentExists(key: KeyData, val: ValData): Bool {
+        let m = singletonMap1(key, val);
+        return
+            m.get(key._1) != null &&
+            m.exists(key._1) &&
+            m.get(key._2) == null &&
+            !m.exists(key._2);
+    }
+
+    // Property: emptyMap().isEmpty()
+    get fun testEmptyMapIsEmpty(key: KeyData, val: ValData): Bool {
+        let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+        return
+            m.isEmpty();
+    }
+
+    // Property: !singletonMap().isEmpty()
+    get fun testNonEmptyMapsNotIsEmpty(key: KeyData, val: ValData): Bool {
+        let m1 = singletonMap1(key, val);
+        let m2 = singletonMap2(key, val);
+        let m3 = doubletonMap(key, val);
+        return
+            !m1.isEmpty() &&
+            !m2.isEmpty() &&
+            !m3.isEmpty();
+    }
+
+    // Property: (m1 == m2) => m1.deepEquals(m2)
+    get fun testEqualsImpliesDeepEquals(key: KeyData, val: ValData): Bool {
+        let m1 = doubletonMap(key, val);
+        let m2 = doubletonMap(key, val);
+        nativeThrowUnless(self.ExitCodeUnequalMapHashes, m1 == m2);
+        return
+            m1.deepEquals(m2);
+    }
+
+    // Property: exists m1, m2, m1 != m2 && m1.deepEquals(m2)
+    get fun testThereDeepEqualMapsThatAreNotEqual(_key: KeyData, _val: ValData): Bool {
+        let m1 = castToMap(beginCell()
+                     .storeUint(2, 2) // long label
+                     .storeUint(8, 4) // key length
+                     .storeUint(1, 8) // key
+                     .storeBit(true)  // value
+                     .endCell());
+        let m2 = castToMap(beginCell()
+                     .storeUint(0, 1)           // short label
+                     .storeUint(0b111111110, 9) // key length
+                     .storeUint(1, 8)           // key
+                     .storeBit(true)            // value
+                     .endCell());
+        return
+            m1 != m2 &&
+            m1.deepEquals(m2); 
+    }
+
+    // Property: (m1 == m2) => m1.asCell() == m2.asCell()
+    get fun testAsCellEquals(key: KeyData, val: ValData): Bool {
+        let m1 = singletonMap1(key, val);
+        let m2 = singletonMap1(key, val);
+        nativeThrowUnless(self.ExitCodeUnequalMapHashes, m1 == m2);
+        return
+            m1.asCell() == m2.asCell();
+    }
+
+    // Property: m.asCell().asMap() == m
+    get fun testAsCellDoesNothing(key: KeyData, val: ValData): Bool {
+        let m0: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+        let m1 = singletonMap1(key, val);
+        let m2 = singletonMap2(key, val);
+        let m3 = doubletonMap(key, val);
+
+        return
+            m0.asCell().asMap() == m0 &&
+            m0.asCell().asMap().deepEquals(m0) &&
+            m1.asCell().asMap() == m1 &&
+            m1.asCell().asMap().deepEquals(m1) &&
+            m2.asCell().asMap() == m2 &&
+            m2.asCell().asMap().deepEquals(m2) &&
+            m3.asCell().asMap() == m3 &&
+            m3.asCell().asMap().deepEquals(m3);
+    }
+
+    // Property: emptyMap().replace(k, v) == emptyMap()
+    get fun testReplaceEmptyMap(key: KeyData, val: ValData): Bool {
+        let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+        let replaced: Bool = m.replace(key._1, val._1);
+        return
+            m == emptyMap() &&
+            !replaced;
+    }
+
+    // Property: (m.get(k) == null && !m.exists(k)) => m.replace(k, v) == m
+    get fun testReplaceDoesNotModifyIfKeyIsMissing(key: KeyData, val: ValData): Bool {
+        let m = singletonMap2(key, val);
+        nativeThrowUnless(self.ExitCodeKeyMustBeMissing, m.get(key._1) == null && !m.exists(key._1));
+        let m1 = singletonMap2(key, val);
+        m1.replace(key._1, val._1);
+        return
+            m1 == m &&
+            m1.deepEquals(m);
+    }
+
+    // Property: (m.get(k) != null && m.exists(k)) => m.replace(k, v) == m.set(k, v)
+    get fun testReplaceWorksAsSetIfKeyIsPresent(key: KeyData, val: ValData): Bool {
+        let m = singletonMap1(key, val);
+        nativeThrowUnless(self.ExitCodeKeyMustBePresent, m.get(key._1) != null && m.exists(key._1));
+        let m1 = singletonMap1(key, val);
+        m.replace(key._1, val._1);
+        m1.set(key._1, val._1);
+        return
+            m1 == m &&
+            m1.deepEquals(m);
+    }
+
+    // Property: (m.get(k) != null && m.exists(k)) => m.replace(k, v).get(k) == v
+    get fun testReplaceGetSameKeyIfPresent(key: KeyData, val: ValData): Bool {
+        let m = singletonMap1(key, val);
+        nativeThrowUnless(self.ExitCodeKeyMustBePresent, m.get(key._1) != null && m.exists(key._1));
+        m.replace(key._1, val._2);
+        return
+            m.get(key._1).eq(val._2);
+    }
+
+    // Property: k1 != k2 => m.replace(k1, v).get(k2) == m.get(k2)
+    get fun testReplaceGetNotSameKey(key: KeyData, val: ValData): Bool {
+        nativeThrowUnless(self.ExitCodeEqualKeys, key._1 != key._2);
+        let m = singletonMap2(key, val);
+        let m1 = singletonMap2(key, val);
+        m1.replace(key._1, val._1);
+        return
+            m1.get(key._2).eq(m.get(key._2));
+    }
+
+    // Property: m.replace(k, v).replace(k, v) == m.replace(k, v)
+    get fun testReplaceIdempotent(key: KeyData, val: ValData): Bool {
+        let m1 = singletonMap2(key, val);
+        m1.replace(key._1, val._1);
+        let m = m1;
+        m1.replace(key._1, val._1);
+        return
+            m1 == m &&
+            m1.deepEquals(m);
+    }
+
+    // Property: k1 != k2 => m.replace(k1, v1).replace(k2, v2) == m.replace(k2, v2).replace(k1, v1)
+    get fun testReplaceReplaceOfNotSameCommutes(key: KeyData, val: ValData): Bool {
+        nativeThrowUnless(self.ExitCodeEqualKeys, key._1 != key._2);
+        let m1: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+        let m2: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+        m1.replace(key._1, val._1);
+        m1.replace(key._2, val._2);
+
+        m2.replace(key._2, val._2);
+        m2.replace(key._1, val._1);
+        return
+            m1 == m2 &&
+            m1.deepEquals(m2);
+    }
+
+    // Property: emptyMap().replaceGet(k) == null
+    get fun testEmptyMapReplaceGet(key: KeyData, val: ValData): Bool {
+        let m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> = emptyMap();
+        return
+            m.replaceGet(key._1, val._1).eq(null) &&
+            m.replaceGet(key._2, val._2).eq(null);
+    }
+
+    // Property: m.del(k).replaceGet(k) == null
+    get fun testDelReplaceGet(key: KeyData, val: ValData): Bool {
+        let m = doubletonMap(key, val);
+        m.del(key._1);
+        return
+            m.replaceGet(key._1, val._1).eq(null);
+    }
+
+    // Property: m.set(k, v1).replaceGet(k, v2) == v1
+    get fun testSetReplaceGet(key: KeyData, val: ValData): Bool {
+        let m = singletonMap2(key, val);
+        m.set(key._1, val._1);
+        return
+            m.replaceGet(key._1, val._2).eq(val._1);
+    }
+}

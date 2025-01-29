@@ -7,7 +7,7 @@ import { ops } from "./ops";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeStatement } from "./writeFunction";
-import { AstNumber } from "../../grammar/ast";
+import { AstNumber } from "../../ast/ast";
 
 export function commentPseudoOpcode(comment: string): string {
     return beginCell()
@@ -26,7 +26,7 @@ export function writeRouter(
     const internal = kind === "internal";
     if (internal) {
         ctx.append(
-            `(${resolveFuncType(type, ctx)}, int) ${ops.contractRouter(type.name, kind)}(${resolveFuncType(type, ctx)} self, int msg_bounced, slice in_msg) impure inline_ref {`,
+            `(${resolveFuncType(type, ctx)}, int) ${ops.contractRouter(type.name, kind)}(${resolveFuncType(type, ctx)} self, slice in_msg, int msg_bounced) impure inline_ref {`,
         );
     } else {
         ctx.append(

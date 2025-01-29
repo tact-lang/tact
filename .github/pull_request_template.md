@@ -11,4 +11,4 @@ Click the `Preview` tab and select a PR template:
 - [Improve compiler tests by adding new ones or modifying the existing tests](?expand=1&template=tests.md)
 - [Tact release](?expand=1&template=release.md)
 - [Project policies](?expand=1&template=policies.md)
-- [Code quality improvement](?expand=1&code-quality.md)
+- [Code quality improvement](?expand=1&template=code-quality.md)

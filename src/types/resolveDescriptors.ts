@@ -1,38 +1,25 @@
+import * as A from "../ast/ast";
 import {
-    AstConstantDef,
-    AstFieldDecl,
-    AstContractInit,
-    AstNativeFunctionDecl,
-    AstNode,
-    AstType,
-    createAstNode,
-    idText,
-    AstId,
     eqNames,
-    AstFunctionDef,
+    FactoryAst,
+    idText,
     isSelfId,
     isSlice,
-    AstFunctionDecl,
-    AstConstantDecl,
-    AstExpression,
-    AstMapType,
-    AstTypeId,
-    AstAsmFunctionDef,
-} from "../grammar/ast";
-import { traverse } from "../grammar/iterators";
+} from "../ast/ast-helpers";
+import { traverse, traverseAndCheck } from "../ast/iterators";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
-} from "../errors";
-import { CompilerContext, Store, createContextStore } from "../context";
+} from "../error/errors";
+import { CompilerContext, createContextStore, Store } from "../context/context";
 import {
     ConstantDescription,
     FieldDescription,
-    FunctionParameter,
     FunctionDescription,
-    InitParameter,
+    FunctionParameter,
     InitDescription,
+    InitParameter,
     printTypeRef,
     ReceiverSelector,
     receiverSelectorName,
@@ -40,19 +27,24 @@ import {
     TypeRef,
     typeRefEquals,
 } from "./types";
-import { getRawAST } from "../grammar/store";
-import { cloneNode } from "../grammar/clone";
+import { getRawAST } from "../context/store";
+import { cloneNode } from "../ast/clone";
 import { crc16 } from "../utils/crc16";
 import { isSubsetOf } from "../utils/isSubsetOf";
-import { evalConstantExpression } from "../constEval";
-import { resolveABIType, intMapFormats } from "./resolveABITypeRef";
+import { evalConstantExpression } from "../optimizer/constEval";
+import {
+    intMapKeyFormats,
+    intMapValFormats,
+    resolveABIType,
+} from "./resolveABITypeRef";
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
-import { ItemOrigin } from "../grammar/grammar";
+import { ItemOrigin } from "../grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
+import { AstUtil, getAstUtil } from "../ast/util";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -60,19 +52,30 @@ const staticConstantsStore = createContextStore<ConstantDescription>();
 
 // this function does not handle the case of structs
 function verifyMapAsAnnotationsForPrimitiveTypes(
-    type: AstTypeId,
-    asAnnotation: AstId | null,
+    type: A.AstTypeId,
+    asAnnotation: A.AstId | null,
+    kind: "keyType" | "valType",
 ): void {
     switch (idText(type)) {
         case "Int": {
-            if (
-                asAnnotation !== null &&
-                !Object.keys(intMapFormats).includes(idText(asAnnotation))
-            ) {
-                throwCompilationError(
-                    'Invalid `as`-annotation for type "Int" type',
-                    asAnnotation.loc,
-                );
+            if (asAnnotation === null) return;
+            const ann = idText(asAnnotation);
+            switch (kind) {
+                case "keyType":
+                    if (!Object.keys(intMapKeyFormats).includes(ann)) {
+                        throwCompilationError(
+                            `"${ann}" is invalid as-annotation for map key type "Int"`,
+                            asAnnotation.loc,
+                        );
+                    }
+                    return;
+                case "valType":
+                    if (!Object.keys(intMapValFormats).includes(ann)) {
+                        throwCompilationError(
+                            `"${ann}" is invalid as-annotation for map value type "Int"`,
+                            asAnnotation.loc,
+                        );
+                    }
             }
             return;
         }
@@ -94,9 +97,10 @@ function verifyMapAsAnnotationsForPrimitiveTypes(
 }
 
 function verifyMapTypes(
-    typeId: AstTypeId,
-    asAnnotation: AstId | null,
+    typeId: A.AstTypeId,
+    asAnnotation: A.AstId | null,
     allowedTypeNames: string[],
+    kind: "keyType" | "valType",
 ): void {
     if (!allowedTypeNames.includes(idText(typeId))) {
         throwCompilationError(
@@ -104,31 +108,36 @@ function verifyMapTypes(
             typeId.loc,
         );
     }
-    verifyMapAsAnnotationsForPrimitiveTypes(typeId, asAnnotation);
+    verifyMapAsAnnotationsForPrimitiveTypes(typeId, asAnnotation, kind);
 }
 
-function verifyMapType(mapTy: AstMapType, isValTypeStruct: boolean) {
+function verifyMapType(mapTy: A.AstMapType, isValTypeStruct: boolean) {
     // optional and other compound key and value types are disallowed at the level of grammar
 
     // check allowed key types
-    verifyMapTypes(mapTy.keyType, mapTy.keyStorageType, ["Int", "Address"]);
+    verifyMapTypes(
+        mapTy.keyType,
+        mapTy.keyStorageType,
+        ["Int", "Address"],
+        "keyType",
+    );
 
     // check allowed value types
     if (isValTypeStruct && mapTy.valueStorageType === null) {
         return;
     }
     // the case for struct/message is already checked
-    verifyMapTypes(mapTy.valueType, mapTy.valueStorageType, [
-        "Int",
-        "Address",
-        "Bool",
-        "Cell",
-    ]);
+    verifyMapTypes(
+        mapTy.valueType,
+        mapTy.valueStorageType,
+        ["Int", "Address", "Bool", "Cell"],
+        "valType",
+    );
 }
 
 export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
 
-export function resolveTypeRef(ctx: CompilerContext, type: AstType): TypeRef {
+export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
     switch (type.kind) {
         case "type_id": {
             const t = getType(ctx, idText(type));
@@ -181,7 +190,7 @@ export function resolveTypeRef(ctx: CompilerContext, type: AstType): TypeRef {
 }
 
 function buildTypeRef(
-    type: AstType,
+    type: A.AstType,
     types: Map<string, TypeDescription>,
 ): TypeRef {
     switch (type.kind) {
@@ -264,11 +273,12 @@ function uidForName(name: string, types: Map<string, TypeDescription>) {
     return uid;
 }
 
-export function resolveDescriptors(ctx: CompilerContext) {
+export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     const types: Map<string, TypeDescription> = new Map();
     const staticFunctions: Map<string, FunctionDescription> = new Map();
     const staticConstants: Map<string, ConstantDescription> = new Map();
     const ast = getRawAST(ctx);
+    const util = getAstUtil(Ast);
 
     //
     // Register types
@@ -384,7 +394,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     function buildFieldDescription(
-        src: AstFieldDecl,
+        src: A.AstFieldDecl,
         index: number,
     ): FieldDescription {
         const fieldTy = buildTypeRef(src.type, types);
@@ -414,7 +424,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     function buildConstantDescription(
-        src: AstConstantDef | AstConstantDecl,
+        src: A.AstConstantDef | A.AstConstantDecl,
     ): ConstantDescription {
         const constDeclTy = buildTypeRef(src.type, types);
         return {
@@ -521,20 +531,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     a.loc,
                 );
             }
-            if (a.kind === "message_decl" && a.opcode) {
-                if (a.opcode.value === 0n) {
-                    throwCompilationError(
-                        `Zero opcodes are reserved for text comments and cannot be used for message structs`,
-                        a.opcode.loc,
-                    );
-                }
-                if (a.opcode.value > 0xffff_ffff) {
-                    throwCompilationError(
-                        `Opcode of message ${idTextErr(a.name)} is too large: it must fit into 32 bits`,
-                        a.opcode.loc,
-                    );
-                }
-            }
         }
 
         // Trait
@@ -548,12 +544,6 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     ) {
                         throwCompilationError(
                             `Field ${idTextErr(traitDecl.name)} already exists`,
-                            traitDecl.loc,
-                        );
-                    }
-                    if (traitDecl.as) {
-                        throwCompilationError(
-                            `Trait field cannot have serialization specifier`,
                             traitDecl.loc,
                         );
                     }
@@ -628,10 +618,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
     function resolveFunctionDescriptor(
         optSelf: TypeRef | null,
         a:
-            | AstFunctionDef
-            | AstNativeFunctionDecl
-            | AstFunctionDecl
-            | AstAsmFunctionDef,
+            | A.AstFunctionDef
+            | A.AstNativeFunctionDecl
+            | A.AstFunctionDecl
+            | A.AstAsmFunctionDef,
         origin: ItemOrigin,
     ): FunctionDescription {
         let self = optSelf;
@@ -819,7 +809,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
             }
             if (params.length === 0) {
                 throwCompilationError(
-                    "Extend functions must have at least one parameter",
+                    'Extend functions must have at least one parameter named "self"',
                     isExtends.loc,
                 );
             }
@@ -1007,7 +997,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
         };
     }
 
-    function resolveInitFunction(ast: AstContractInit): InitDescription {
+    function resolveInitFunction(ast: A.AstContractInit): InitDescription {
         const params: InitParameter[] = [];
         for (const r of ast.params) {
             params.push({
@@ -1028,6 +1018,43 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 );
             }
         }
+
+        function checkNode(node: A.AstNode): boolean {
+            if (node.kind === "field_access" || node.kind === "method_call") {
+                // we don't need to check `self.a` or `self.foo()`
+                return false;
+            }
+
+            if (
+                node.kind === "statement_assign" ||
+                node.kind === "statement_augmentedassign"
+            ) {
+                const left = node.path;
+                if (left.kind === "id" && left.text === "self") {
+                    throwCompilationError(
+                        "cannot reassign `self` in `init` function",
+                        left.loc,
+                    );
+                }
+
+                traverseAndCheck(node.expression, checkNode);
+
+                // don't walk to left side of assignment
+                return false;
+            }
+
+            if (node.kind === "id" && node.text === "self") {
+                throwCompilationError(
+                    "cannot read whole `self` in `init` function",
+                    node.loc,
+                );
+            }
+            return true;
+        }
+
+        ast.statements.forEach((stmt) => {
+            traverseAndCheck(stmt, checkNode);
+        });
 
         return {
             params,
@@ -1088,70 +1115,120 @@ export function resolveDescriptors(ctx: CompilerContext) {
                     }
 
                     switch (d.selector.kind) {
-                        case "internal-simple":
-                        case "external-simple":
-                            {
-                                const param = d.selector.param;
-                                const internal =
-                                    d.selector.kind === "internal-simple";
+                        case "internal":
+                        case "external": {
+                            const internal = d.selector.kind === "internal";
+                            const { subKind } = d.selector;
 
-                                if (param.type.kind !== "type_id") {
-                                    throwCompilationError(
-                                        "Receive function can only accept non-optional message types",
-                                        d.loc,
-                                    );
-                                }
-                                const t = types.get(idText(param.type));
-                                if (!t) {
-                                    throwCompilationError(
-                                        `Type ${idTextErr(param.type)} not found`,
-                                        d.loc,
-                                    );
-                                }
+                            switch (subKind.kind) {
+                                case "simple": {
+                                    const param = subKind.param;
+                                    if (param.type.kind !== "type_id") {
+                                        throwCompilationError(
+                                            "Receive function can only accept non-optional message types",
+                                            d.loc,
+                                        );
+                                    }
+                                    const t = types.get(idText(param.type));
+                                    if (!t) {
+                                        throwCompilationError(
+                                            `Type ${idTextErr(param.type)} not found`,
+                                            d.loc,
+                                        );
+                                    }
 
-                                // Raw receiver
-                                if (t.kind === "primitive_type_decl") {
-                                    if (t.name === "Slice") {
-                                        // Check for existing receiver
-                                        if (
-                                            s.receivers.find(
-                                                (v) =>
-                                                    v.selector.kind ===
-                                                    (internal
+                                    // Raw receiver
+                                    if (t.kind === "primitive_type_decl") {
+                                        if (t.name === "Slice") {
+                                            // Check for existing receiver
+                                            if (
+                                                s.receivers.find(
+                                                    (v) =>
+                                                        v.selector.kind ===
+                                                        (internal
+                                                            ? "internal-fallback"
+                                                            : "external-fallback"),
+                                                )
+                                            ) {
+                                                throwCompilationError(
+                                                    `Fallback receive function already exists`,
+                                                    d.loc,
+                                                );
+                                            }
+
+                                            // Persist receiver
+                                            s.receivers.push({
+                                                selector: {
+                                                    kind: internal
                                                         ? "internal-fallback"
-                                                        : "external-fallback"),
-                                            )
-                                        ) {
+                                                        : "external-fallback",
+                                                    name: param.name,
+                                                },
+                                                ast: d,
+                                            });
+                                        } else if (t.name === "String") {
+                                            // Check for existing receiver
+                                            if (
+                                                s.receivers.find(
+                                                    (v) =>
+                                                        v.selector.kind ===
+                                                        (internal
+                                                            ? "internal-comment-fallback"
+                                                            : "external-comment-fallback"),
+                                                )
+                                            ) {
+                                                throwCompilationError(
+                                                    "Comment fallback receive function already exists",
+                                                    d.loc,
+                                                );
+                                            }
+
+                                            // Persist receiver
+                                            s.receivers.push({
+                                                selector: {
+                                                    kind: internal
+                                                        ? "internal-comment-fallback"
+                                                        : "external-comment-fallback",
+                                                    name: param.name,
+                                                },
+                                                ast: d,
+                                            });
+                                        } else {
                                             throwCompilationError(
-                                                `Fallback receive function already exists`,
+                                                "Receive function can only accept message, Slice or String",
+                                                d.loc,
+                                            );
+                                        }
+                                    } else {
+                                        // Check type
+                                        if (t.kind !== "struct") {
+                                            throwCompilationError(
+                                                "Receive function can only accept message",
+                                                d.loc,
+                                            );
+                                        }
+                                        if (t.ast.kind !== "message_decl") {
+                                            throwCompilationError(
+                                                "Receive function can only accept message",
                                                 d.loc,
                                             );
                                         }
 
-                                        // Persist receiver
-                                        s.receivers.push({
-                                            selector: {
-                                                kind: internal
-                                                    ? "internal-fallback"
-                                                    : "external-fallback",
-                                                name: param.name,
-                                            },
-                                            ast: d,
-                                        });
-                                    } else if (t.name === "String") {
-                                        // Check for existing receiver
+                                        // Check for duplicate
+                                        const n = idText(param.type);
                                         if (
                                             s.receivers.find(
                                                 (v) =>
                                                     v.selector.kind ===
-                                                    (internal
-                                                        ? "internal-comment-fallback"
-                                                        : "external-comment-fallback"),
+                                                        (internal
+                                                            ? "internal-binary"
+                                                            : "external-binary") &&
+                                                    eqNames(v.selector.type, n),
                                             )
                                         ) {
                                             throwCompilationError(
-                                                "Comment fallback receive function already exists",
-                                                d.loc,
+                                                `Receive function for ${idTextErr(param.type)} already exists`,
+                                                param.loc,
                                             );
                                         }
 
@@ -1159,133 +1236,79 @@ export function resolveDescriptors(ctx: CompilerContext) {
                                         s.receivers.push({
                                             selector: {
                                                 kind: internal
-                                                    ? "internal-comment-fallback"
-                                                    : "external-comment-fallback",
+                                                    ? "internal-binary"
+                                                    : "external-binary",
                                                 name: param.name,
+                                                type: idText(param.type),
                                             },
                                             ast: d,
                                         });
-                                    } else {
+                                    }
+                                    break;
+                                }
+                                case "comment": {
+                                    if (subKind.comment.value === "") {
                                         throwCompilationError(
-                                            "Receive function can only accept message, Slice or String",
+                                            "To use empty comment receiver, just remove parameter instead of passing empty string",
                                             d.loc,
                                         );
                                     }
-                                } else {
-                                    // Check type
-                                    if (t.kind !== "struct") {
-                                        throwCompilationError(
-                                            "Receive function can only accept message",
-                                            d.loc,
-                                        );
-                                    }
-                                    if (t.ast.kind !== "message_decl") {
-                                        throwCompilationError(
-                                            "Receive function can only accept message",
-                                            d.loc,
-                                        );
-                                    }
-
-                                    // Check for duplicate
-                                    const n = idText(param.type);
+                                    const c = subKind.comment.value;
                                     if (
                                         s.receivers.find(
                                             (v) =>
                                                 v.selector.kind ===
                                                     (internal
-                                                        ? "internal-binary"
-                                                        : "external-binary") &&
-                                                eqNames(v.selector.type, n),
+                                                        ? "internal-comment"
+                                                        : "external-comment") &&
+                                                v.selector.comment === c,
                                         )
                                     ) {
                                         throwCompilationError(
-                                            `Receive function for ${idTextErr(param.type)} already exists`,
-                                            param.loc,
+                                            `Receive function for ${idTextErr(c)} already exists`,
+                                            d.loc,
                                         );
                                     }
-
-                                    // Persist receiver
                                     s.receivers.push({
                                         selector: {
                                             kind: internal
-                                                ? "internal-binary"
-                                                : "external-binary",
-                                            name: param.name,
-                                            type: idText(param.type),
+                                                ? "internal-comment"
+                                                : "external-comment",
+                                            comment: c,
                                         },
                                         ast: d,
                                     });
+                                    break;
                                 }
-                            }
-                            break;
-                        case "internal-comment":
-                        case "external-comment":
-                            {
-                                const internal =
-                                    d.selector.kind === "internal-comment";
-                                if (d.selector.comment.value === "") {
-                                    throwCompilationError(
-                                        "To use empty comment receiver, just remove parameter instead of passing empty string",
-                                        d.loc,
-                                    );
-                                }
-                                const c = d.selector.comment.value;
-                                if (
-                                    s.receivers.find(
-                                        (v) =>
-                                            v.selector.kind ===
+                                case "fallback": {
+                                    // Handle empty
+                                    if (
+                                        s.receivers.find(
+                                            (v) =>
+                                                v.selector.kind ===
                                                 (internal
-                                                    ? "internal-comment"
-                                                    : "external-comment") &&
-                                            v.selector.comment === c,
-                                    )
-                                ) {
-                                    throwCompilationError(
-                                        `Receive function for ${idTextErr(c)} already exists`,
-                                        d.loc,
-                                    );
-                                }
-                                s.receivers.push({
-                                    selector: {
-                                        kind: internal
-                                            ? "internal-comment"
-                                            : "external-comment",
-                                        comment: c,
-                                    },
-                                    ast: d,
-                                });
-                            }
-                            break;
-                        case "internal-fallback":
-                        case "external-fallback":
-                            {
-                                const internal =
-                                    d.selector.kind === "internal-fallback";
-                                // Handle empty
-                                if (
-                                    s.receivers.find(
-                                        (v) =>
-                                            v.selector.kind ===
-                                            (internal
+                                                    ? "internal-empty"
+                                                    : "external-empty"),
+                                        )
+                                    ) {
+                                        throwCompilationError(
+                                            "Empty receive function already exists",
+                                            d.loc,
+                                        );
+                                    }
+                                    s.receivers.push({
+                                        selector: {
+                                            kind: internal
                                                 ? "internal-empty"
-                                                : "external-empty"),
-                                    )
-                                ) {
-                                    throwCompilationError(
-                                        "Empty receive function already exists",
-                                        d.loc,
-                                    );
+                                                : "external-empty",
+                                        },
+                                        ast: d,
+                                    });
+                                    break;
                                 }
-                                s.receivers.push({
-                                    selector: {
-                                        kind: internal
-                                            ? "internal-empty"
-                                            : "external-empty",
-                                    },
-                                    ast: d,
-                                });
                             }
                             break;
+                        }
                         case "bounce": {
                             const param = d.selector.param;
 
@@ -1436,12 +1459,12 @@ export function resolveDescriptors(ctx: CompilerContext) {
             if (!t.init) {
                 t.init = {
                     params: [],
-                    ast: createAstNode({
+                    ast: Ast.createNode({
                         kind: "contract_init",
                         params: [],
                         statements: [],
                         loc: t.ast.loc,
-                    }) as AstContractInit,
+                    }) as A.AstContractInit,
                 };
             }
         }
@@ -1509,6 +1532,10 @@ export function resolveDescriptors(ctx: CompilerContext) {
     // Verify trait fields
     //
 
+    function printFieldTypeRefWithAs(ex: FieldDescription) {
+        return printTypeRef(ex.type) + (ex.as !== null ? ` as ${ex.as}` : "");
+    }
+
     for (const t of types.values()) {
         for (const tr of t.traits) {
             // Check that trait is valid
@@ -1543,6 +1570,20 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         `Trait "${tr.name}" requires field "${f.name}" of type "${printTypeRef(f.type)}"`,
                         t.ast.loc,
                     );
+                } else if (
+                    f.as !== ex.as &&
+                    !(
+                        (f.as === "int257" && ex.as === null) ||
+                        (f.as === null && ex.as === "int257")
+                    )
+                ) {
+                    const expected = printFieldTypeRefWithAs(f);
+                    const actual = printFieldTypeRefWithAs(ex);
+
+                    throwCompilationError(
+                        `Trait "${tr.name}" requires field "${f.name}" of type "${expected}", but "${actual}" given`,
+                        ex.ast.loc,
+                    );
                 }
             }
         }
@@ -1553,6 +1594,27 @@ export function resolveDescriptors(ctx: CompilerContext) {
     //
 
     function copyTraits(contractOrTrait: TypeDescription) {
+        const inheritOnlyBaseTrait = contractOrTrait.traits.length === 1;
+
+        // Check that "override" functions have a super function
+        for (const funInContractOrTrait of contractOrTrait.functions.values()) {
+            if (!funInContractOrTrait.isOverride) {
+                continue;
+            }
+
+            const foundOverriddenFunction = contractOrTrait.traits.some((t) =>
+                t.functions.has(funInContractOrTrait.name),
+            );
+
+            if (!foundOverriddenFunction) {
+                const msg = inheritOnlyBaseTrait
+                    ? `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier or inherit any traits with this function`
+                    : `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier`;
+
+                throwCompilationError(msg, funInContractOrTrait.ast.loc);
+            }
+        }
+
         for (const inheritedTrait of contractOrTrait.traits) {
             // Copy functions
             for (const traitFunction of inheritedTrait.functions.values()) {
@@ -1640,7 +1702,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                         name: contractOrTrait.name,
                         optional: false,
                     },
-                    ast: cloneNode(traitFunction.ast),
+                    ast: cloneNode(traitFunction.ast, Ast),
                 });
             }
 
@@ -1711,7 +1773,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 // Register constant
                 contractOrTrait.constants.push({
                     ...traitConstant,
-                    ast: cloneNode(traitConstant.ast),
+                    ast: cloneNode(traitConstant.ast, Ast),
                 });
             }
 
@@ -1778,7 +1840,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 }
                 contractOrTrait.receivers.push({
                     selector: f.selector,
-                    ast: cloneNode(f.ast),
+                    ast: cloneNode(f.ast, Ast),
                 });
             }
 
@@ -1807,7 +1869,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
                 types.get(name)!.ast.loc,
             );
         }
-        processing.has(name);
+        processing.add(name);
 
         // Process dependencies first
         const dependencies = Array.from(types.values()).filter((v) =>
@@ -1834,7 +1896,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
     for (const [k, t] of types) {
         const dependsOn: Set<string> = new Set();
-        const handler = (src: AstNode) => {
+        const handler = (src: A.AstNode) => {
             if (src.kind === "init_of") {
                 if (!types.has(idText(src.contract))) {
                     throwCompilationError(
@@ -1963,7 +2025,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
     }
 
     // A pass that initializes constants and default field values
-    ctx = initializeConstantsAndDefaultContractAndStructFields(ctx);
+    ctx = initializeConstantsAndDefaultContractAndStructFields(ctx, util);
 
     // detect self-referencing or mutually-recursive types
     checkRecursiveTypes(ctx);
@@ -1973,7 +2035,7 @@ export function resolveDescriptors(ctx: CompilerContext) {
 
 export function getType(
     ctx: CompilerContext,
-    ident: AstId | AstTypeId | string,
+    ident: A.AstId | A.AstTypeId | string,
 ): TypeDescription {
     const name = typeof ident === "string" ? ident : idText(ident);
     const r = store.get(ctx, name);
@@ -2093,7 +2155,7 @@ function checkInitializerType(
     name: string,
     kind: "Constant" | "Struct field",
     declTy: TypeRef,
-    initializer: AstExpression,
+    initializer: A.AstExpression,
     ctx: CompilerContext,
 ): CompilerContext {
     const stmtCtx = emptyContext(initializer.loc, null, declTy);
@@ -2111,6 +2173,23 @@ function checkInitializerType(
 function initializeConstants(
     constants: ConstantDescription[],
     ctx: CompilerContext,
+    util: AstUtil,
+): CompilerContext {
+    for (const constant of constants) {
+        if (constant.ast.kind === "constant_def") {
+            constant.value ??= evalConstantExpression(
+                constant.ast.initializer,
+                ctx,
+                util,
+            );
+        }
+    }
+    return ctx;
+}
+
+function checkConstants(
+    constants: ConstantDescription[],
+    ctx: CompilerContext,
 ): CompilerContext {
     for (const constant of constants) {
         if (constant.ast.kind === "constant_def") {
@@ -2121,10 +2200,6 @@ function initializeConstants(
                 constant.ast.initializer,
                 ctx,
             );
-            constant.value = evalConstantExpression(
-                constant.ast.initializer,
-                ctx,
-            );
         }
     }
     return ctx;
@@ -2132,7 +2207,14 @@ function initializeConstants(
 
 function initializeConstantsAndDefaultContractAndStructFields(
     ctx: CompilerContext,
+    util: AstUtil,
 ): CompilerContext {
+    const staticConstants = getAllStaticConstants(ctx);
+
+    // we split the handling of constants into two steps:
+    // first we check all constants to make sure the types of initializers are correct
+    ctx = checkConstants(staticConstants, ctx);
+
     for (const aggregateTy of getAllTypes(ctx)) {
         switch (aggregateTy.kind) {
             case "primitive_type_decl":
@@ -2141,6 +2223,8 @@ function initializeConstantsAndDefaultContractAndStructFields(
             case "contract":
             case "struct": {
                 {
+                    ctx = checkConstants(aggregateTy.constants, ctx);
+
                     for (const field of aggregateTy.fields) {
                         if (field.ast.initializer !== null) {
                             ctx = checkInitializerType(
@@ -2153,6 +2237,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
                             field.default = evalConstantExpression(
                                 field.ast.initializer,
                                 ctx,
+                                util,
                             );
                         } else {
                             // if a field has optional type and it is missing an explicit initializer
@@ -2160,24 +2245,24 @@ function initializeConstantsAndDefaultContractAndStructFields(
 
                             field.default =
                                 field.type.kind === "ref" && field.type.optional
-                                    ? null
+                                    ? util.makeNullLiteral(field.ast.loc)
                                     : undefined;
                         }
                     }
 
-                    // constants need to be processed after structs because
+                    // here we actually initialize constants
                     // see more detail below
-                    ctx = initializeConstants(aggregateTy.constants, ctx);
+                    ctx = initializeConstants(aggregateTy.constants, ctx, util);
                 }
                 break;
             }
         }
     }
 
-    // constants need to be processed after structs because
-    // constants might use default field values: `const x: Int = S{}.f`, where `struct S {f: Int = 42}`
-    // and the default field values are filled in during struct field initializers processing
-    ctx = initializeConstants(getAllStaticConstants(ctx), ctx);
+    // and here we initialize all uninitialized constants,
+    // the constant may already be initialized since we call initialization recursively
+    // if one constant depends on another
+    ctx = initializeConstants(staticConstants, ctx, util);
 
     return ctx;
 }
@@ -2192,7 +2277,7 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
         (aggregate) => aggregate.kind === "struct",
     );
     let index = 0;
-    const stack: AstId[] = [];
+    const stack: A.AstId[] = [];
     // `string` here means "struct name"
     const indices: Map<string, number> = new Map();
     const lowLinks: Map<string, number> = new Map();
@@ -2272,7 +2357,7 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
         }
 
         if (lowLinks.get(struct.name) === indices.get(struct.name)) {
-            const cycle: AstId[] = [];
+            const cycle: A.AstId[] = [];
             let e = "";
             do {
                 const last = stack.pop()!;

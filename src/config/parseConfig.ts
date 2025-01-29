@@ -10,12 +10,6 @@ export const optionsSchema = z
          */
         debug: z.boolean().optional(),
         /**
-         * If set to true, enables masterchain support.
-         *
-         * Read more: https://docs.tact-lang.org/book/masterchain
-         */
-        masterchain: z.boolean().optional(),
-        /**
          * If set to true, enables support of external message receivers.
          *
          * Read more: https://docs.tact-lang.org/book/external
@@ -24,7 +18,7 @@ export const optionsSchema = z
         /**
          * If set to true, enables generation of a getter with IPFS links describing the contract's ABI.
          *
-         * Read more: https://docs.tact-lang.org/ref/evolution/OTP-003
+         * Read more: https://docs.tact-lang.org/ref/evolution/otp-003
          */
         ipfsAbiGetter: z.boolean().optional(),
         /**
@@ -33,6 +27,10 @@ export const optionsSchema = z
          * Read more: https://docs.tact-lang.org/book/contracts#interfaces
          */
         interfacesGetter: z.boolean().optional(),
+        /**
+         * If set to "new", uses new parser. If set to "old", uses legacy parser. Default is "old".
+         */
+        parser: z.union([z.literal("new"), z.literal("old")]).optional(),
         /**
          * Experimental options that might be removed in the future. Use with caution!
          */
@@ -48,6 +46,12 @@ export const optionsSchema = z
             .optional(),
     })
     .strict();
+
+const modeSchema = z
+    .enum(["fullWithDecompilation", "full", "funcOnly", "checkOnly"])
+    .optional();
+
+export type Mode = z.infer<typeof modeSchema>;
 
 export const projectSchema = z
     .object({
@@ -80,9 +84,12 @@ export const projectSchema = z
          *
          * Read more: https://docs.tact-lang.org/book/config#projects-mode
          */
-        mode: z
-            .enum(["fullWithDecompilation", "full", "funcOnly", "checkOnly"])
-            .optional(),
+        mode: modeSchema,
+
+        /**
+         * Set verbosity level (higher = more details), default: 1
+         */
+        verbose: z.number().optional(),
     })
     .strict();
 

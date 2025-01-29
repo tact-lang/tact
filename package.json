@@ -1,6 +1,6 @@
 {
   "name": "@tact-lang/compiler",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tact-lang/tact.git"
@@ -10,72 +10,85 @@
   "author": "Steve Korshakov <steve@korshakov.com>",
   "license": "MIT",
   "scripts": {
-    "gen:grammar": "ohm generateBundles --withTypes src/grammar/*.ohm",
-    "gen:pack": "ts-node ./scripts/pack.ts",
-    "gen:compiler": "ts-node ./scripts/prepare.ts",
-    "gen": "yarn gen:grammar && yarn gen:pack && yarn gen:compiler",
+    "gen:grammar:old": "ohm generateBundles --withTypes src/grammar/prev/*.ohm",
+    "gen:grammar:new": "pgen src/grammar/next/grammar.gg -o src/grammar/next/grammar.ts",
+    "gen:grammar": "yarn gen:grammar:old && yarn gen:grammar:new",
+    "gen:stdlib": "ts-node src/stdlib/stdlib.build.ts",
+    "gen:func-js": "ts-node src/func/func.build.ts",
+    "gen:contracts:examples": "ts-node examples/contracts.build.ts",
+    "gen:contracts:test": "ts-node src/test/contracts.build.ts",
+    "gen:contracts:test:map": "ts-node ./src/test/e2e-emulated/map-tests/generate.ts",
+    "gen": "yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && yarn gen:contracts:examples && yarn gen:contracts:test && yarn gen:contracts:test:map",
     "clean": "rm -fr dist",
     "cleanall": "rm -fr dist node_modules",
-    "build": "tsc && node --no-warnings=ExperimentalWarning -r ts-node/register ./scripts/copy-files",
+    "copy:stdlib": "ts-node src/stdlib/copy.build.ts",
+    "copy:grammar": "ts-node src/grammar/prev/copy.build.ts",
+    "copy:func": "ts-node src/func/copy.build.ts",
+    "build": "tsc && yarn copy:stdlib && yarn copy:grammar && yarn copy:func",
     "test": "jest",
+    "test:fast": "jest --config=./jest-fast.config.js",
     "coverage": "cross-env COVERAGE=true jest",
-    "release": "yarn clean && yarn build && yarn coverage && yarn release-it --npm.yarn1",
     "type": "tsc --noEmit",
     "lint": "yarn eslint .",
-    "lint:schema": "ajv validate -s schemas/configSchema.json -d tact.config.json",
     "fmt": "yarn prettier -l -w .",
     "fmt:check": "yarn prettier --check .",
     "spell": "yarn cspell --no-progress \"**\"",
     "knip": "knip",
-    "lint:all": "yarn lint && yarn fmt:check && yarn lint:schema && yarn spell && yarn knip",
+    "lint:all": "yarn lint && yarn fmt:check && yarn spell && yarn knip",
     "all": "yarn clean && yarn gen && yarn build && yarn coverage && yarn lint:all",
     "postinstall": "node .husky/install.mjs || true",
     "prepack": "pinst --disable",
-    "postpack": "pinst --enable"
+    "postpack": "pinst --enable",
+    "next-version": "ts-node version.build.ts",
+    "top10": "find . -type f -exec du -h {} + | sort -rh | head -n 10"
   },
   "files": [
     "dist/**/*",
-    "src/**/*",
     "bin/**/*",
-    "stdlib/**/*",
+    "!src/**/*",
     "!**/test",
-    "!/docs"
+    "!dist/**/output",
+    "!/docs",
+    "!**/*.build.*",
+    "!**/*.spec.js",
+    "!**/*.spec.d.ts",
+    "!**/*.tsbuildinfo"
   ],
-  "main": "./dist/main.js",
+  "main": "./dist/index.js",
   "bin": {
-    "tact": "bin/tact.js"
+    "tact": "bin/tact.js",
+    "unboc": "bin/unboc.js"
   },
   "dependencies": {
-    "@tact-lang/opcode": "^0.0.16",
-    "@ton/core": "0.59.0",
+    "@tact-lang/opcode": "^0.0.18",
+    "@ton/core": "0.59.1",
     "@ton/crypto": "^3.2.0",
+    "@tonstudio/parser-runtime": "^0.0.1",
     "blockstore-core": "1.0.5",
     "change-case": "^4.1.2",
     "crc-32": "1.2.2",
     "ipfs-unixfs-importer": "9.0.10",
     "json-bigint": "^1.0.0",
-    "meow": "^13.2.0",
-    "mkdirp": "^2.1.3",
     "ohm-js": "^17.1.0",
     "path-normalize": "^6.0.13",
-    "prando": "^6.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@ohm-js/cli": "^2.0.0",
-    "@release-it/keep-a-changelog": "^5.0.0",
+    "@swc/core": "^1.10.7",
+    "@swc/jest": "^0.2.37",
     "@tact-lang/coverage": "^0.0.8",
     "@tact-lang/ton-abi": "^0.0.3",
     "@tact-lang/ton-jest": "^0.0.4",
-    "@ton/sandbox": "^0.22.0",
-    "@ton/test-utils": "^0.4.2",
+    "@ton/sandbox": "^0.24.0",
+    "@ton/test-utils": "^0.5.0",
+    "@tonstudio/pgen": "^0.0.1",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.12",
     "@types/json-bigint": "^1.0.4",
     "@types/node": "^22.5.0",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
-    "ajv-cli": "^5.0.0",
     "cross-env": "^7.0.3",
     "cspell": "^8.8.3",
     "eslint": "^8.56.0",
@@ -84,9 +97,8 @@
     "jest": "^29.3.1",
     "knip": "^5.24.1",
     "pinst": "^3.0.0",
+    "prando": "^6.0.1",
     "prettier": "^3.2.5",
-    "release-it": "^17.6.0",
-    "rimraf": "^4.1.2",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "~5.6.2"
@@ -94,16 +106,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "release-it": {
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/keep-a-changelog": {
-        "filename": "CHANGELOG.md"
-      }
-    }
   },
   "packageManager": "yarn@1.22.22",
   "engines": {

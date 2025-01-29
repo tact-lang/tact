@@ -9,7 +9,7 @@ Additionally, Tact compiler has a versatile set of standard libraries, which com
 
 :::caution
 
-  NOTE: All imported code is combined together with yours, so it's important to avoid name collisions and always double-check the sources!
+  All imported code is combined together with yours, so it's important to avoid name collisions and always double-check the sources!
 
 :::
 
@@ -39,7 +39,7 @@ import "./relative/path/to/the/target/func/file.fc";
 import "../subfolder/imported/func/file.fc";
 ```
 
-But in order to use functions from such file, one has to declare them as `native` functions first. For example, when standard library [@stdlib/dns](/ref/stdlib-dns) uses a `dns.fc` FunC file, it maps FunC functions to Tact ones like so:
+But in order to use functions from such file, one has to declare them as `native` functions first. For example, when standard library [`@stdlib/dns`](/ref/stdlib-dns) uses a `dns.fc` FunC file, it maps FunC functions to Tact ones like so:
 
 ```tact
 // FunC code located in a file right next to the current Tact one:

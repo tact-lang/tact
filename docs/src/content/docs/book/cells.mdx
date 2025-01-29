@@ -21,7 +21,7 @@ Kinds (or subtypes) of all cells are encoded by an integer between $-1$ and $255
 
 [TVM][tvm] currently supports the following exotic cell subtypes:
 * [Pruned branch cell][c-pruned], with subtype encoded as $1$ — they represent deleted subtrees of cells.
-* [Library reference cell][c-library], with subtype encoded as $2$ — they are used for storing libraries, and usually, in [masterchain](/book/masterchain) contexts.
+* [Library reference cell][c-library], with subtype encoded as $2$ — they are used for storing libraries, and usually, in [masterchain][masterchain] contexts.
 * [Merkle proof cell][c-mproof], with subtype encoded as $3$ — they are used for verifying that certain portions of other cell's tree data belong to the full tree.
 * [Merkle update cell][c-mupdate], with subtype encoded as $4$ — they always have two references and behave like a [Merkle proof][mproof] for both of them.
 
@@ -40,6 +40,7 @@ Kinds (or subtypes) of all cells are encoded by an integer between $-1$ and $255
 [c-mproof]: https://docs.ton.org/develop/data-formats/exotic-cells#merkle-proof
 [c-mupdate]: https://docs.ton.org/develop/data-formats/exotic-cells#merkle-update
 [mproof]: https://docs.ton.org/develop/data-formats/exotic-cells#simple-proof-verifying-example
+[masterchain]: https://docs.ton.org/v3/documentation/smart-contracts/shards/shards-intro#masterchain
 
 ### Levels {#cells-levels}
 
@@ -177,14 +178,22 @@ contract SerializationExample {
 
 There, `^cell`, `^builder` and `^slice` in [TL-B][tlb] syntax mean the reference to [`Cell{:tact}`](#cells), [`Builder{:tact}`](#builders) and [`Slice{:tact}`](#slices) values respectively, while the `remainder<…>` of `cell`, `builder` or `slice` tells that the given value would be stored as a `Slice{:tact}` directly and not as a reference.
 
-Now, to give a real-world example, imagine that you need to notice and react to inbound [jetton][jetton] transfers in your smart contract. The appropriate [Message][message] structure for doing so would look something like this:
+Now, to give a real-world example, imagine that you need to notice and react to inbound [Jetton][jetton] transfers in your smart contract. The appropriate [Message][message] structure for doing so would look like this:
 
 ```tact /remaining/
 message(0x7362d09c) JettonTransferNotification {
-    queryId: Int as uint64;             // arbitrary request number to prevent replay attacks
-    amount: Int as coins;               // amount of jettons transferred
-    sender: Address;                    // address of the sender of the jettons
-    forwardPayload: Slice as remaining; // optional custom payload
+    // Unique identifier used to trace transactions across multiple contracts
+    // Defaults to 0, which means we don't mark messages to trace their chains
+    queryId: Int as uint64 = 0;
+
+    // Amount of Jettons transferred
+    amount: Int as coins;
+
+    // Address of the sender of the Jettons
+    sender: Address;
+
+    // Optional custom payload
+    forwardPayload: Slice as remaining;
 }
 ```
 
@@ -196,9 +205,9 @@ receive(msg: JettonTransferNotification) {
 }
 ```
 
-Upon receiving a [jetton][jetton] transfer notification message, its cell body is converted into a [`Slice{:tact}`](#slices) and then parsed as a `JettonTransferNotification{:tact}` [Message][message]. At the end of this process, the `forwardPayload` will have all the remaining data of the original message cell.
+Upon receiving a [Jetton][jetton] transfer notification message, its cell body is converted into a [`Slice{:tact}`](#slices) and then parsed as a `JettonTransferNotification{:tact}` [Message][message]. At the end of this process, the `forwardPayload` will have all the remaining data of the original message cell.
 
-Here, it's not possible to violate the [jetton][jetton] standard by placing the `forwardPayload: Slice as remaining` field in any other position in the `JettonTransferNotification{:tact}` [Message][message]. That's because Tact prohibits usage of `as remaining{:tact}` for any but the last field of the [Structs][struct] and [Messages][message] to prevent misuse of the contract storage and reduce gas consumption.
+Here, it's not possible to violate the [Jetton][jetton] standard by placing the `forwardPayload: Slice as remaining` field in any other position in the `JettonTransferNotification{:tact}` [Message][message]. That's because Tact prohibits usage of `as remaining{:tact}` for any but the last field of the [Structs][struct] and [Messages][message] to prevent misuse of the contract storage and reduce gas consumption.
 
 :::note
 
@@ -435,10 +444,10 @@ let areSlicesNotEqual = aSlice.hash() != bSlice.hash(); // false
 [struct]: /book/structs-and-messages#structs
 [message]: /book/structs-and-messages#messages
 [recv]: /book/contracts#receiver-functions
+[jetton]: /cookbook/jettons
 
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
-[jetton]: https://docs.ton.org/develop/dapps/asset-processing/jettons
 [sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
 
 [quadtree]: https://en.wikipedia.org/wiki/Quadtree

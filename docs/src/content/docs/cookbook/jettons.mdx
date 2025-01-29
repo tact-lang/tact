@@ -40,13 +40,21 @@ Common examples of working with Jettons.
 
 ### Accepting Jetton transfer
 
-Transfer notification message have the following structure.
+Transfer notification message have the following structure:
 
 ```tact
 message(0x7362d09c) JettonTransferNotification {
-    queryId: Int as uint64;
+    // Unique identifier used to trace transactions across multiple contracts
+    // Defaults to 0, which means we don't mark messages to trace their chains
+    queryId: Int as uint64 = 0;
+
+    // Amount of Jettons transferred
     amount: Int as coins;
+
+    // Address of the sender of the Jettons
     sender: Address;
+
+    // Optional custom payload
     forwardPayload: Slice as remaining;
 }
 ```
@@ -216,7 +224,7 @@ contract Example with Deployable {
             to: self.myJettonWalletAddress,
             value: JettonTransferGas,
             body: JettonTransfer{
-                // To prevent replay attacks
+                // Unique identifier used to trace transactions across multiple contracts
                 queryId: 42,
                 // Jetton amount to transfer
                 amount: msg.amount,
@@ -311,7 +319,7 @@ contract Example with Deployable {
             to: self.myJettonWalletAddress,
             value: JettonBurnGas,
             body: JettonBurn{
-                // To prevent replay attacks
+                // Unique identifier used to trace transactions across multiple contracts
                 queryId: 42,
                 // Jetton amount you want to burn
                 amount: msg.amount,
@@ -359,6 +367,53 @@ fun calculateJettonWalletAddress(
     });
 }
 ```
+
+### Onchain metadata creation
+
+```tact
+/// https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#jetton-metadata-example-offchain
+fun composeJettonMetadata(
+    name: String,        // full name
+    description: String, // text description of the Jetton
+    symbol: String,      // "stock ticker" symbol without the $ prefix, like USDT or SCALE
+    image: String,       // link to the image
+    // There could be other data, see:
+    // https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#jetton-metadata-attributes
+): Cell {
+    let dict: map<Int as uint256, Cell> = emptyMap();
+    dict.set(sha256("name"), name.asMetadataCell());
+    dict.set(sha256("description"), description.asMetadataCell());
+    dict.set(sha256("symbol"), symbol.asMetadataCell());
+    dict.set(sha256("image"), image.asMetadataCell());
+
+    return beginCell()
+        .storeUint(0, 8)                // a null byte prefix
+        .storeMaybeRef(dict.asCell()!!) // 1 as a single bit, then a reference
+        .endCell();
+}
+
+// Taking flight!
+fun poorMansLaunchPad() {
+    let jettonMetadata = composeJettonMetadata(
+        "Best Jetton",
+        "A very descriptive description describing the jetton descriptively",
+        "JETTON",
+        "...link to ipfs or somewhere trusted...",
+    );
+}
+
+// Prefixes the String with a single null byte and converts it to a Cell
+// The null byte prefix is used to express metadata in various standards, like NFT or Jetton
+inline extends fun asMetadataCell(self: String): Cell {
+    return beginTailString().concat(self).toCell();
+}
+```
+
+:::note[Useful links:]
+
+  [Token Data Standard in TEPs](https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md#jetton-metadata-attributes)
+
+:::
 
 :::tip[Hey there!]
 

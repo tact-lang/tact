@@ -9,7 +9,9 @@
     "examples/",
     "scripts/",
     "./jest.config.js",
-    "bin/tact.js"
+    "./jest-fast.config.js",
+    "bin/tact.js",
+    "bin/unboc.js"
   ],
   "exclude": ["**/*.bind.ts", "src/test/**/output/**/*"]
 }

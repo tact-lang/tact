@@ -1,21 +1,32 @@
 import * as changeCase from "change-case";
 import { ABIField, beginCell } from "@ton/core";
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { idToHex } from "../utils/idToHex";
-import { idTextErr, throwInternalCompilerError } from "../errors";
+import {
+    idTextErr,
+    throwConstEvalError,
+    throwInternalCompilerError,
+} from "../error/errors";
 import { getType, getAllTypes } from "./resolveDescriptors";
 import {
     BinaryReceiverSelector,
     CommentReceiverSelector,
     ReceiverDescription,
+    TypeDescription,
 } from "./types";
-import { throwCompilationError } from "../errors";
-import { AstNumber, AstReceiver } from "../grammar/ast";
+import { throwCompilationError } from "../error/errors";
+import { AstNumber, AstReceiver } from "../ast/ast";
+import { FactoryAst } from "../ast/ast-helpers";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 import { sha256_sync } from "@ton/crypto";
-import { dummySrcInfo } from "../grammar/grammar";
+import { dummySrcInfo } from "../grammar";
+import { ensureInt } from "../optimizer/interpreter";
+import { evalConstantExpression } from "../optimizer/constEval";
+import { getAstUtil } from "../ast/util";
 
-export function resolveSignatures(ctx: CompilerContext) {
+export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
+    const util = getAstUtil(Ast);
+
     const signatures: Map<
         string,
         { signature: string; tlb: string; id: AstNumber | null }
@@ -27,6 +38,8 @@ export function resolveSignatures(ctx: CompilerContext) {
         if (type === "int") {
             if (typeof format === "number") {
                 return `int${format}`;
+            } else if (format === "varint16" || format === "varint32") {
+                return format;
             } else if (format !== null) {
                 throwInternalCompilerError(`Unsupported int format: ${format}`);
             }
@@ -36,6 +49,8 @@ export function resolveSignatures(ctx: CompilerContext) {
                 return `uint${format}`;
             } else if (format === "coins") {
                 return `coins`;
+            } else if (format === "varuint16" || format === "varuint32") {
+                return format;
             } else if (format !== null) {
                 throwInternalCompilerError(
                     `Unsupported uint format: ${format}`,
@@ -174,8 +189,11 @@ export function resolveSignatures(ctx: CompilerContext) {
         // Check for no "remainder" in the middle of the struct
         for (const field of t.fields.slice(0, -1)) {
             if (field.as === "remaining") {
+                const kind =
+                    t.ast.kind === "message_decl" ? "message" : "struct";
                 throwCompilationError(
-                    `The "remainder" field can only be the last field of the struct`,
+                    `The "remainder" field can only be the last field of the ${kind}`,
+                    field.loc,
                 );
             }
         }
@@ -187,7 +205,45 @@ export function resolveSignatures(ctx: CompilerContext) {
         let id: AstNumber | null = null;
         if (t.ast.kind === "message_decl") {
             if (t.ast.opcode !== null) {
-                id = t.ast.opcode;
+                // Currently, message opcode expressions do not get typechecked, so
+                // ```
+                // message(true ? 42 : false) TypeError { }
+                // ```
+                // WILL NOT result in error
+                const opCode = ensureInt(
+                    evalConstantExpression(t.ast.opcode, ctx, util),
+                ).value;
+                if (opCode === 0n) {
+                    throwConstEvalError(
+                        `Opcode of message ${idTextErr(t.ast.name)} is zero: those are reserved for text comments and cannot be used for message structs`,
+                        true,
+                        t.ast.opcode.loc,
+                    );
+                }
+                if (opCode < 0) {
+                    throwConstEvalError(
+                        `Opcode of message ${idTextErr(t.ast.name)} is negative ('${opCode}') which is not allowed`,
+                        true,
+                        t.ast.opcode.loc,
+                    );
+                }
+                if (opCode > 0xffff_ffff) {
+                    throwConstEvalError(
+                        `Opcode of message ${idTextErr(t.ast.name)} is too large ('${opCode}'): it must fit into 32 bits`,
+                        true,
+                        t.ast.opcode.loc,
+                    );
+                }
+                id =
+                    t.ast.opcode.kind === "number"
+                        ? t.ast.opcode
+                        : {
+                              kind: "number",
+                              base: 10,
+                              value: opCode,
+                              id: 0,
+                              loc: dummySrcInfo,
+                          };
             } else {
                 id = newMessageOpcode(signature);
                 if (id.value === 0n) {
@@ -219,7 +275,7 @@ export function resolveSignatures(ctx: CompilerContext) {
         }
     });
 
-    checkMessageOpcodesUnique(ctx);
+    checkAggregateTypes(ctx);
 
     return ctx;
 }
@@ -339,10 +395,16 @@ function checkMessageOpcodesUniqueInContractOrTrait(
     }
 }
 
-function checkMessageOpcodesUnique(ctx: CompilerContext) {
+function checkAggregateTypes(ctx: CompilerContext) {
     getAllTypes(ctx).forEach((aggregate) => {
         switch (aggregate.kind) {
             case "contract":
+                checkMessageOpcodesUniqueInContractOrTrait(
+                    aggregate.receivers,
+                    ctx,
+                );
+                checkContractFields(aggregate);
+                break;
             case "trait":
                 checkMessageOpcodesUniqueInContractOrTrait(
                     aggregate.receivers,
@@ -353,4 +415,16 @@ function checkMessageOpcodesUnique(ctx: CompilerContext) {
                 break;
         }
     });
+}
+
+function checkContractFields(t: TypeDescription) {
+    // Check if "as remaining" is only used for the last field of contract
+    for (const field of t.fields.slice(0, -1)) {
+        if (field.as === "remaining") {
+            throwCompilationError(
+                `The "remainder" field can only be the last field of the contract`,
+                field.ast.loc,
+            );
+        }
+    }
 }

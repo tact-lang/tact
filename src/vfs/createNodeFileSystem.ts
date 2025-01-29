@@ -1,7 +1,6 @@
 import { VirtualFileSystem } from "./VirtualFileSystem";
 import fs from "fs";
 import path from "path";
-import mkdirp from "mkdirp";
 
 export function createNodeFileSystem(
     root: string,
@@ -42,7 +41,7 @@ export function createNodeFileSystem(
                 );
             }
 
-            mkdirp.sync(path.dirname(filePath));
+            fs.mkdirSync(path.dirname(filePath), { recursive: true });
             fs.writeFileSync(filePath, content);
         },
     };

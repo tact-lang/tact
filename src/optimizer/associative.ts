@@ -1,59 +1,53 @@
 // This module includes rules involving associative rewrites of expressions
 
-import {
-    AstBinaryOperation,
-    AstExpression,
-    AstOpBinary,
-    AstValue,
-    isValue,
-} from "../grammar/ast";
-import * as interpreterModule from "../interpreter";
-import { Value } from "../types/types";
+import { SrcInfo } from "../grammar";
+import * as A from "../ast/ast";
+import { isLiteral } from "../ast/ast-helpers";
+import * as iM from "./interpreter";
 import { ExpressionTransformer, Rule } from "./types";
 import {
-    abs,
     checkIsBinaryOpNode,
     checkIsBinaryOp_With_RightValue,
     checkIsBinaryOp_With_LeftValue,
-    extractValue,
-    makeBinaryExpression,
-    makeValueExpression,
-    sign,
-} from "./util";
+    AstUtil,
+} from "../ast/util";
+import { abs, sign } from "./util";
 
 type TransformData = {
-    simplifiedExpression: AstExpression;
+    simplifiedExpression: A.AstExpression;
     safetyCondition: boolean;
 };
 
-type Transform = (x1: AstExpression, c1: Value, c2: Value) => TransformData;
-
-/* A simple wrapper function to transform the right value in a binary operator to a continuation
-   so that we can call the evaluation function in the interpreter module
-*/
-function evalBinaryOp(op: AstBinaryOperation, valL: Value, valR: Value): Value {
-    return interpreterModule.evalBinaryOp(op, valL, () => valR);
-}
+type Transform = (
+    x1: A.AstExpression,
+    c1: A.AstLiteral,
+    c2: A.AstLiteral,
+    util: AstUtil,
+    s: SrcInfo,
+) => TransformData;
 
 abstract class AssociativeRewriteRule extends Rule {
     // An entry (op, S) in the map means "operator op associates with all operators in set S",
     // mathematically: all op2 \in S. (a op b) op2 c = a op (b op2 c)
-    private associativeOps: Map<AstBinaryOperation, Set<AstBinaryOperation>>;
+    private associativeOps: Map<
+        A.AstBinaryOperation,
+        Set<A.AstBinaryOperation>
+    >;
 
     // This set contains all operators that commute.
     // Mathematically:
     // all op \in commutativeOps. a op b = b op a
-    private commutativeOps: Set<AstBinaryOperation>;
+    private commutativeOps: Set<A.AstBinaryOperation>;
 
     constructor() {
         super();
 
         // + associates with these on the right:
         // i.e., all op \in additiveAssoc. (a + b) op c = a + (b op c)
-        const additiveAssoc: Set<AstBinaryOperation> = new Set(["+", "-"]);
+        const additiveAssoc: Set<A.AstBinaryOperation> = new Set(["+", "-"]);
 
         // * associates with these on the right:
-        const multiplicativeAssoc: Set<AstBinaryOperation> = new Set([
+        const multiplicativeAssoc: Set<A.AstBinaryOperation> = new Set([
             "*",
             "<<",
         ]);
@@ -75,8 +69,8 @@ abstract class AssociativeRewriteRule extends Rule {
     }
 
     public areAssociative(
-        op1: AstBinaryOperation,
-        op2: AstBinaryOperation,
+        op1: A.AstBinaryOperation,
+        op2: A.AstBinaryOperation,
     ): boolean {
         if (this.associativeOps.has(op1)) {
             const rightOperators = this.associativeOps.get(op1)!;
@@ -86,13 +80,13 @@ abstract class AssociativeRewriteRule extends Rule {
         }
     }
 
-    public isCommutative(op: AstBinaryOperation): boolean {
+    public isCommutative(op: A.AstBinaryOperation): boolean {
         return this.commutativeOps.has(op);
     }
 }
 
 abstract class AllowableOpRule extends AssociativeRewriteRule {
-    private allowedOps: Set<AstBinaryOperation>;
+    private allowedOps: Set<A.AstBinaryOperation>;
 
     constructor() {
         super();
@@ -103,11 +97,11 @@ abstract class AllowableOpRule extends AssociativeRewriteRule {
         //["&&", "||"], // TODO: check bitwise integer operators
     }
 
-    public isAllowedOp(op: AstBinaryOperation): boolean {
+    public isAllowedOp(op: A.AstBinaryOperation): boolean {
         return this.allowedOps.has(op);
     }
 
-    public areAllowedOps(op: AstBinaryOperation[]): boolean {
+    public areAllowedOps(op: A.AstBinaryOperation[]): boolean {
         return op.reduce(
             (prev, curr) => prev && this.allowedOps.has(curr),
             true,
@@ -121,26 +115,26 @@ abstract class AllowableOpRule extends AssociativeRewriteRule {
 // but I found out they cannot.
 export class AssociativeRule1 extends AllowableOpRule {
     public applyRule(
-        ast: AstExpression,
-        optimizer: ExpressionTransformer,
-    ): AstExpression {
+        ast: A.AstExpression,
+        { applyRules, util }: ExpressionTransformer,
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (
                 checkIsBinaryOp_With_RightValue(topLevelNode.left) &&
                 checkIsBinaryOp_With_RightValue(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (x1 op1 c1) op (x2 op2 c2)
-                const leftTree = topLevelNode.left as AstOpBinary;
-                const rightTree = topLevelNode.right as AstOpBinary;
+                const leftTree = topLevelNode.left as A.AstOpBinary;
+                const rightTree = topLevelNode.right as A.AstOpBinary;
 
                 const x1 = leftTree.left;
-                const c1 = leftTree.right as AstValue;
+                const c1 = leftTree.right as A.AstLiteral;
                 const op1 = leftTree.op;
 
                 const x2 = rightTree.left;
-                const c2 = rightTree.right as AstValue;
+                const c2 = rightTree.right as A.AstLiteral;
                 const op2 = rightTree.op;
 
                 const op = topLevelNode.op;
@@ -159,10 +153,12 @@ export class AssociativeRule1 extends AllowableOpRule {
                     // Agglutinate the constants and compute their final value
                     try {
                         // If an error occurs, we abandon the simplification
-                        const val = evalBinaryOp(
+                        const val = iM.evalBinaryOp(
                             op2,
-                            extractValue(c1),
-                            extractValue(c2),
+                            c1,
+                            () => c2,
+                            topLevelNode.loc,
+                            util,
                         );
 
                         // The final expression is
@@ -171,11 +167,11 @@ export class AssociativeRule1 extends AllowableOpRule {
                         // Because we are joining x1 and x2,
                         // there is further opportunity of simplification,
                         // So, we ask the evaluator to apply all the rules in the subtree.
-                        const newLeft = optimizer.applyRules(
-                            makeBinaryExpression(op1, x1, x2),
+                        const newLeft = applyRules(
+                            util.makeBinaryExpression(op1, x1, x2),
                         );
-                        const newRight = makeValueExpression(val);
-                        return makeBinaryExpression(op, newLeft, newRight);
+                        const newRight = val;
+                        return util.makeBinaryExpression(op, newLeft, newRight);
                     } catch (e) {
                         // Do nothing: will exit rule without modifying tree
                     }
@@ -186,15 +182,15 @@ export class AssociativeRule1 extends AllowableOpRule {
             ) {
                 // The tree has this form:
                 // (x1 op1 c1) op (c2 op2 x2)
-                const leftTree = topLevelNode.left as AstOpBinary;
-                const rightTree = topLevelNode.right as AstOpBinary;
+                const leftTree = topLevelNode.left as A.AstOpBinary;
+                const rightTree = topLevelNode.right as A.AstOpBinary;
 
                 const x1 = leftTree.left;
-                const c1 = leftTree.right as AstValue;
+                const c1 = leftTree.right as A.AstLiteral;
                 const op1 = leftTree.op;
 
                 const x2 = rightTree.right;
-                const c2 = rightTree.left as AstValue;
+                const c2 = rightTree.left as A.AstLiteral;
                 const op2 = rightTree.op;
 
                 const op = topLevelNode.op;
@@ -211,10 +207,12 @@ export class AssociativeRule1 extends AllowableOpRule {
                     // Agglutinate the constants and compute their final value
                     try {
                         // If an error occurs, we abandon the simplification
-                        const val = evalBinaryOp(
+                        const val = iM.evalBinaryOp(
                             op,
-                            extractValue(c1),
-                            extractValue(c2),
+                            c1,
+                            () => c2,
+                            topLevelNode.loc,
+                            util,
                         );
 
                         // The current expression could be either
@@ -225,11 +223,11 @@ export class AssociativeRule1 extends AllowableOpRule {
                         // Because we are joining x1 and val,
                         // there is further opportunity of simplification,
                         // So, we ask the evaluator to apply all the rules in the subtree.
-                        const newValNode = makeValueExpression(val);
-                        const newLeft = optimizer.applyRules(
-                            makeBinaryExpression(op1, x1, newValNode),
+                        const newValNode = val;
+                        const newLeft = applyRules(
+                            util.makeBinaryExpression(op1, x1, newValNode),
                         );
-                        return makeBinaryExpression(op2, newLeft, x2);
+                        return util.makeBinaryExpression(op2, newLeft, x2);
                     } catch (e) {
                         // Do nothing: will exit rule without modifying tree
                     }
@@ -240,15 +238,15 @@ export class AssociativeRule1 extends AllowableOpRule {
             ) {
                 // The tree has this form:
                 // (c1 op1 x1) op (x2 op2 c2)
-                const leftTree = topLevelNode.left as AstOpBinary;
-                const rightTree = topLevelNode.right as AstOpBinary;
+                const leftTree = topLevelNode.left as A.AstOpBinary;
+                const rightTree = topLevelNode.right as A.AstOpBinary;
 
                 const x1 = leftTree.right;
-                const c1 = leftTree.left as AstValue;
+                const c1 = leftTree.left as A.AstLiteral;
                 const op1 = leftTree.op;
 
                 const x2 = rightTree.left;
-                const c2 = rightTree.right as AstValue;
+                const c2 = rightTree.right as A.AstLiteral;
                 const op2 = rightTree.op;
 
                 const op = topLevelNode.op;
@@ -267,10 +265,12 @@ export class AssociativeRule1 extends AllowableOpRule {
                     // Agglutinate the constants and compute their final value
                     try {
                         // If an error occurs, we abandon the simplification
-                        const val = evalBinaryOp(
+                        const val = iM.evalBinaryOp(
                             op,
-                            extractValue(c2),
-                            extractValue(c1),
+                            c2,
+                            () => c1,
+                            topLevelNode.loc,
+                            util,
                         );
 
                         // The current expression could be either
@@ -281,11 +281,11 @@ export class AssociativeRule1 extends AllowableOpRule {
                         // Because we are joining x2 and val,
                         // there is further opportunity of simplification,
                         // So, we ask the evaluator to apply all the rules in the subtree.
-                        const newValNode = makeValueExpression(val);
-                        const newLeft = optimizer.applyRules(
-                            makeBinaryExpression(op2, x2, newValNode),
+                        const newValNode = val;
+                        const newLeft = applyRules(
+                            util.makeBinaryExpression(op2, x2, newValNode),
                         );
-                        return makeBinaryExpression(op1, newLeft, x1);
+                        return util.makeBinaryExpression(op1, newLeft, x1);
                     } catch (e) {
                         // Do nothing: will exit rule without modifying tree
                     }
@@ -296,15 +296,15 @@ export class AssociativeRule1 extends AllowableOpRule {
             ) {
                 // The tree has this form:
                 // (c1 op1 x1) op (c2 op2 x2)
-                const leftTree = topLevelNode.left as AstOpBinary;
-                const rightTree = topLevelNode.right as AstOpBinary;
+                const leftTree = topLevelNode.left as A.AstOpBinary;
+                const rightTree = topLevelNode.right as A.AstOpBinary;
 
                 const x1 = leftTree.right;
-                const c1 = leftTree.left as AstValue;
+                const c1 = leftTree.left as A.AstLiteral;
                 const op1 = leftTree.op;
 
                 const x2 = rightTree.right;
-                const c2 = rightTree.left as AstValue;
+                const c2 = rightTree.left as A.AstLiteral;
                 const op2 = rightTree.op;
 
                 const op = topLevelNode.op;
@@ -323,10 +323,12 @@ export class AssociativeRule1 extends AllowableOpRule {
                     // Agglutinate the constants and compute their final value
                     try {
                         // If an error occurs, we abandon the simplification
-                        const val = evalBinaryOp(
+                        const val = iM.evalBinaryOp(
                             op1,
-                            extractValue(c1),
-                            extractValue(c2),
+                            c1,
+                            () => c2,
+                            topLevelNode.loc,
+                            util,
                         );
 
                         // The final expression is
@@ -335,11 +337,11 @@ export class AssociativeRule1 extends AllowableOpRule {
                         // Because we are joining x1 and x2,
                         // there is further opportunity of simplification,
                         // So, we ask the evaluator to apply all the rules in the subtree.
-                        const newRight = optimizer.applyRules(
-                            makeBinaryExpression(op2, x1, x2),
+                        const newRight = applyRules(
+                            util.makeBinaryExpression(op2, x1, x2),
                         );
-                        const newLeft = makeValueExpression(val);
-                        return makeBinaryExpression(op, newLeft, newRight);
+                        const newLeft = val;
+                        return util.makeBinaryExpression(op, newLeft, newRight);
                     } catch (e) {
                         // Do nothing: will exit rule without modifying tree
                     }
@@ -359,22 +361,22 @@ export class AssociativeRule1 extends AllowableOpRule {
 // but I found out they cannot.
 export class AssociativeRule2 extends AllowableOpRule {
     public applyRule(
-        ast: AstExpression,
-        optimizer: ExpressionTransformer,
-    ): AstExpression {
+        ast: A.AstExpression,
+        { applyRules, util }: ExpressionTransformer,
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (
                 checkIsBinaryOp_With_RightValue(topLevelNode.left) &&
-                !isValue(topLevelNode.right)
+                !isLiteral(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (x1 op1 c1) op x2
-                const leftTree = topLevelNode.left as AstOpBinary;
+                const leftTree = topLevelNode.left as A.AstOpBinary;
                 const rightTree = topLevelNode.right;
 
                 const x1 = leftTree.left;
-                const c1 = leftTree.right as AstValue;
+                const c1 = leftTree.right as A.AstLiteral;
                 const op1 = leftTree.op;
 
                 const x2 = rightTree;
@@ -396,22 +398,22 @@ export class AssociativeRule2 extends AllowableOpRule {
                     // Because we are joining x1 and x2,
                     // there is further opportunity of simplification,
                     // So, we ask the evaluator to apply all the rules in the subtree.
-                    const newLeft = optimizer.applyRules(
-                        makeBinaryExpression(op1, x1, x2),
+                    const newLeft = applyRules(
+                        util.makeBinaryExpression(op1, x1, x2),
                     );
-                    return makeBinaryExpression(op, newLeft, c1);
+                    return util.makeBinaryExpression(op, newLeft, c1);
                 }
             } else if (
                 checkIsBinaryOp_With_LeftValue(topLevelNode.left) &&
-                !isValue(topLevelNode.right)
+                !isLiteral(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (c1 op1 x1) op x2
-                const leftTree = topLevelNode.left as AstOpBinary;
+                const leftTree = topLevelNode.left as A.AstOpBinary;
                 const rightTree = topLevelNode.right;
 
                 const x1 = leftTree.right;
-                const c1 = leftTree.left as AstValue;
+                const c1 = leftTree.left as A.AstLiteral;
                 const op1 = leftTree.op;
 
                 const x2 = rightTree;
@@ -431,22 +433,22 @@ export class AssociativeRule2 extends AllowableOpRule {
                     // Because we are joining x1 and x2,
                     // there is further opportunity of simplification,
                     // So, we ask the evaluator to apply all the rules in the subtree.
-                    const newRight = optimizer.applyRules(
-                        makeBinaryExpression(op, x1, x2),
+                    const newRight = applyRules(
+                        util.makeBinaryExpression(op, x1, x2),
                     );
-                    return makeBinaryExpression(op1, c1, newRight);
+                    return util.makeBinaryExpression(op1, c1, newRight);
                 }
             } else if (
-                !isValue(topLevelNode.left) &&
+                !isLiteral(topLevelNode.left) &&
                 checkIsBinaryOp_With_RightValue(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // x2 op (x1 op1 c1)
                 const leftTree = topLevelNode.left;
-                const rightTree = topLevelNode.right as AstOpBinary;
+                const rightTree = topLevelNode.right as A.AstOpBinary;
 
                 const x1 = rightTree.left;
-                const c1 = rightTree.right as AstValue;
+                const c1 = rightTree.right as A.AstLiteral;
                 const op1 = rightTree.op;
 
                 const x2 = leftTree;
@@ -466,22 +468,22 @@ export class AssociativeRule2 extends AllowableOpRule {
                     // Because we are joining x1 and x2,
                     // there is further opportunity of simplification,
                     // So, we ask the evaluator to apply all the rules in the subtree.
-                    const newLeft = optimizer.applyRules(
-                        makeBinaryExpression(op, x2, x1),
+                    const newLeft = applyRules(
+                        util.makeBinaryExpression(op, x2, x1),
                     );
-                    return makeBinaryExpression(op1, newLeft, c1);
+                    return util.makeBinaryExpression(op1, newLeft, c1);
                 }
             } else if (
-                !isValue(topLevelNode.left) &&
+                !isLiteral(topLevelNode.left) &&
                 checkIsBinaryOp_With_LeftValue(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // x2 op (c1 op1 x1)
                 const leftTree = topLevelNode.left;
-                const rightTree = topLevelNode.right as AstOpBinary;
+                const rightTree = topLevelNode.right as A.AstOpBinary;
 
                 const x1 = rightTree.right;
-                const c1 = rightTree.left as AstValue;
+                const c1 = rightTree.left as A.AstLiteral;
                 const op1 = rightTree.op;
 
                 const x2 = leftTree;
@@ -503,10 +505,10 @@ export class AssociativeRule2 extends AllowableOpRule {
                     // Because we are joining x1 and x2,
                     // there is further opportunity of simplification,
                     // So, we ask the evaluator to apply all the rules in the subtree.
-                    const newRight = optimizer.applyRules(
-                        makeBinaryExpression(op1, x2, x1),
+                    const newRight = applyRules(
+                        util.makeBinaryExpression(op1, x2, x1),
                     );
-                    return makeBinaryExpression(op, c1, newRight);
+                    return util.makeBinaryExpression(op, c1, newRight);
                 }
             }
         }
@@ -519,20 +521,20 @@ export class AssociativeRule2 extends AllowableOpRule {
 
 export class AssociativeRule3 extends Rule {
     private leftAssocTransforms: Map<
-        AstBinaryOperation,
-        Map<AstBinaryOperation, Transform>
+        A.AstBinaryOperation,
+        Map<A.AstBinaryOperation, Transform>
     >;
     private rightAssocTransforms: Map<
-        AstBinaryOperation,
-        Map<AstBinaryOperation, Transform>
+        A.AstBinaryOperation,
+        Map<A.AstBinaryOperation, Transform>
     >;
     private rightCommuteTransforms: Map<
-        AstBinaryOperation,
-        Map<AstBinaryOperation, Transform>
+        A.AstBinaryOperation,
+        Map<A.AstBinaryOperation, Transform>
     >;
     private leftCommuteTransforms: Map<
-        AstBinaryOperation,
-        Map<AstBinaryOperation, Transform>
+        A.AstBinaryOperation,
+        Map<A.AstBinaryOperation, Transform>
     >;
 
     // Safety conditions that repeat a lot.
@@ -617,24 +619,26 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = +
 
-        const plusLeftAssocOperators: Map<AstBinaryOperation, Transform> =
+        const plusLeftAssocOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "+",
                     // original expression: (x1 + c1) + c2
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression: x1 + (c1 + c2)
-                        const val_ = evalBinaryOp("+", c1, c2);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("+", c1, () => c2, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "+",
                                 x1,
-                                val_node,
+                                val_,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 0n,
                             ),
                         };
@@ -644,19 +648,21 @@ export class AssociativeRule3 extends Rule {
                 [
                     "-",
                     // original expression: (x1 + c1) - c2
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression: x1 + (c1 - c2)
-                        const val_ = evalBinaryOp("-", c1, c2);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("-", c1, () => c2, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "+",
                                 x1,
-                                val_node,
+                                val_,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 0n,
                             ),
                         };
@@ -666,24 +672,26 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = -
 
-        const minusLeftAssocOperators: Map<AstBinaryOperation, Transform> =
+        const minusLeftAssocOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "+",
                     // original expression: (x1 - c1) + c2
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression x1 - (c1 - c2)
-                        const val_ = evalBinaryOp("-", c1, c2);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("-", c1, () => c2, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "-",
                                 x1,
-                                val_node,
+                                val_,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 0n,
                             ),
                         };
@@ -693,19 +701,21 @@ export class AssociativeRule3 extends Rule {
                 [
                     "-",
                     // original expression: (x1 - c1) - c2
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression x1 - (c1 + c2)
-                        const val_ = evalBinaryOp("+", c1, c2);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("+", c1, () => c2, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "-",
                                 x1,
-                                val_node,
+                                val_,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 0n,
                             ),
                         };
@@ -715,25 +725,27 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = *
 
-        const multiplyLeftAssocOperators: Map<AstBinaryOperation, Transform> =
+        const multiplyLeftAssocOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "*",
                     // original expression: (x1 * c1) * c2
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression x1 * (c1 * c2)
-                        const val_ = evalBinaryOp("*", c1, c2);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("*", c1, () => c2, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "*",
                                 x1,
-                                val_node,
+                                val_,
                             ),
                             safetyCondition:
                                 this.standardMultiplicativeCondition(
-                                    c1 as bigint,
-                                    val_ as bigint,
+                                    c1_.value,
+                                    val_.value,
                                 ),
                         };
                     },
@@ -742,20 +754,25 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = &&
 
-        const andLeftAssocOperators: Map<AstBinaryOperation, Transform> =
+        const andLeftAssocOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "&&",
                     // original expression: (x1 && c1) && c2
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression x1 && (c1 && c2)
-                        const val_ = evalBinaryOp("&&", c1, c2);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.evalBinaryOp(
+                            "&&",
+                            c1,
+                            () => c2,
+                            s,
+                            util,
+                        );
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "&&",
                                 x1,
-                                val_node,
+                                val_,
                             ),
                             safetyCondition: true,
                         };
@@ -765,20 +782,25 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = ||
 
-        const orLeftAssocOperators: Map<AstBinaryOperation, Transform> =
+        const orLeftAssocOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "||",
                     // original expression: (x1 || c1) || c2
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression x1 || (c1 || c2)
-                        const val_ = evalBinaryOp("||", c1, c2);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.evalBinaryOp(
+                            "||",
+                            c1,
+                            () => c2,
+                            s,
+                            util,
+                        );
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "||",
                                 x1,
-                                val_node,
+                                val_,
                             ),
                             safetyCondition: true,
                         };
@@ -802,24 +824,26 @@ export class AssociativeRule3 extends Rule {
 
         // op = +
 
-        const plusRightAssocOperators: Map<AstBinaryOperation, Transform> =
+        const plusRightAssocOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "+",
                     // original expression: c2 + (c1 + x1)
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression (c2 + c1) + x1
-                        const val_ = evalBinaryOp("+", c2, c1);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("+", c2, () => c1, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "+",
-                                val_node,
+                                val_,
                                 x1,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 0n,
                             ),
                         };
@@ -829,19 +853,21 @@ export class AssociativeRule3 extends Rule {
                 [
                     "-",
                     // original expression: c2 + (c1 - x1)
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression (c2 + c1) - x1
-                        const val_ = evalBinaryOp("+", c2, c1);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("+", c2, () => c1, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "-",
-                                val_node,
+                                val_,
                                 x1,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 -1n,
                             ),
                         };
@@ -851,24 +877,26 @@ export class AssociativeRule3 extends Rule {
 
         // op = -
 
-        const minusRightAssocOperators: Map<AstBinaryOperation, Transform> =
+        const minusRightAssocOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "+",
                     // original expression: c2 - (c1 + x1)
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression (c2 - c1) - x1
-                        const val_ = evalBinaryOp("-", c2, c1);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("-", c2, () => c1, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "-",
-                                val_node,
+                                val_,
                                 x1,
                             ),
                             safetyCondition: this.oppositeAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 0n,
                             ),
                         };
@@ -878,19 +906,21 @@ export class AssociativeRule3 extends Rule {
                 [
                     "-",
                     // original expression: c2 - (c1 - x1)
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression (c2 - c1) + x1
-                        const val_ = evalBinaryOp("-", c2, c1);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("-", c2, () => c1, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "+",
-                                val_node,
+                                val_,
                                 x1,
                             ),
                             safetyCondition: this.oppositeAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 -1n,
                             ),
                         };
@@ -900,48 +930,56 @@ export class AssociativeRule3 extends Rule {
 
         // op = *
 
-        const multiplyRightAssocOperators: Map<AstBinaryOperation, Transform> =
-            new Map([
-                [
-                    "*",
+        const multiplyRightAssocOperators: Map<
+            A.AstBinaryOperation,
+            Transform
+        > = new Map([
+            [
+                "*",
 
-                    // original expression: c2 * (c1 * x1)
-                    (x1, c1, c2) => {
-                        // final expression (c2 * c1) * x1
-                        const val_ = evalBinaryOp("*", c2, c1);
-                        const val_node = makeValueExpression(val_);
-                        return {
-                            simplifiedExpression: makeBinaryExpression(
-                                "*",
-                                val_node,
-                                x1,
-                            ),
-                            safetyCondition:
-                                this.standardMultiplicativeCondition(
-                                    c1 as bigint,
-                                    val_ as bigint,
-                                ),
-                        };
-                    },
-                ],
-            ]);
+                // original expression: c2 * (c1 * x1)
+                (x1, c1, c2, util, s) => {
+                    // final expression (c2 * c1) * x1
+                    const val_ = iM.ensureInt(
+                        iM.evalBinaryOp("*", c2, () => c1, s, util),
+                    );
+                    const c1_ = iM.ensureInt(c1);
+                    return {
+                        simplifiedExpression: util.makeBinaryExpression(
+                            "*",
+                            val_,
+                            x1,
+                        ),
+                        safetyCondition: this.standardMultiplicativeCondition(
+                            c1_.value,
+                            val_.value,
+                        ),
+                    };
+                },
+            ],
+        ]);
 
         // op = &&
 
-        const andRightAssocOperators: Map<AstBinaryOperation, Transform> =
+        const andRightAssocOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "&&",
 
                     // original expression: c2 && (c1 && x1)
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression (c2 && c1) && x1
-                        const val_ = evalBinaryOp("&&", c2, c1);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.evalBinaryOp(
+                            "&&",
+                            c2,
+                            () => c1,
+                            s,
+                            util,
+                        );
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "&&",
-                                val_node,
+                                val_,
                                 x1,
                             ),
                             safetyCondition: true,
@@ -952,20 +990,25 @@ export class AssociativeRule3 extends Rule {
 
         // op = ||
 
-        const orRightAssocOperators: Map<AstBinaryOperation, Transform> =
+        const orRightAssocOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "||",
 
                     // original expression: c2 || (c1 || x1)
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression (c2 || c1) || x1
-                        const val_ = evalBinaryOp("||", c2, c1);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.evalBinaryOp(
+                            "||",
+                            c2,
+                            () => c1,
+                            s,
+                            util,
+                        );
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "||",
-                                val_node,
+                                val_,
                                 x1,
                             ),
                             safetyCondition: true,
@@ -990,24 +1033,26 @@ export class AssociativeRule3 extends Rule {
 
         // op = +
 
-        const plusRightCommuteOperators: Map<AstBinaryOperation, Transform> =
+        const plusRightCommuteOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "+",
                     // original expression: c2 + (x1 + c1)
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression x1 + (c2 + c1)
-                        const val_ = evalBinaryOp("+", c2, c1);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("+", c2, () => c1, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "+",
                                 x1,
-                                val_node,
+                                val_,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 0n,
                             ),
                         };
@@ -1017,19 +1062,21 @@ export class AssociativeRule3 extends Rule {
                 [
                     "-",
                     // original expression: c2 + (x1 - c1)
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression x1 - (c1 - c2)
-                        const val_ = evalBinaryOp("-", c1, c2);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("-", c1, () => c2, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "-",
                                 x1,
-                                val_node,
+                                val_,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 0n,
                             ),
                         };
@@ -1039,24 +1086,26 @@ export class AssociativeRule3 extends Rule {
 
         // op = -
 
-        const minusRightCommuteOperators: Map<AstBinaryOperation, Transform> =
+        const minusRightCommuteOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "+",
                     // original expression: c2 - (x1 + c1)
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression (c2 - c1) - x1
-                        const val_ = evalBinaryOp("-", c2, c1);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("-", c2, () => c1, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "-",
-                                val_node,
+                                val_,
                                 x1,
                             ),
                             safetyCondition: this.oppositeAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 0n,
                             ),
                         };
@@ -1066,19 +1115,21 @@ export class AssociativeRule3 extends Rule {
                 [
                     "-",
                     // original expression: c2 - (x1 - c1)
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // final expression (c2 + c1) - x1
-                        const val_ = evalBinaryOp("+", c2, c1);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("+", c2, () => c1, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "-",
-                                val_node,
+                                val_,
                                 x1,
                             ),
                             safetyCondition: this.shiftedAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                             ),
                         };
                     },
@@ -1088,25 +1139,27 @@ export class AssociativeRule3 extends Rule {
         // op = *
 
         const multiplyRightCommuteOperators: Map<
-            AstBinaryOperation,
+            A.AstBinaryOperation,
             Transform
         > = new Map([
             [
                 "*",
                 // original expression: c2 * (x1 * c1)
-                (x1, c1, c2) => {
+                (x1, c1, c2, util, s) => {
                     // Final expression x1 * (c2 * c1)
-                    const val_ = evalBinaryOp("*", c2, c1);
-                    const val_node = makeValueExpression(val_);
+                    const val_ = iM.ensureInt(
+                        iM.evalBinaryOp("*", c2, () => c1, s, util),
+                    );
+                    const c1_ = iM.ensureInt(c1);
                     return {
-                        simplifiedExpression: makeBinaryExpression(
+                        simplifiedExpression: util.makeBinaryExpression(
                             "*",
                             x1,
-                            val_node,
+                            val_,
                         ),
                         safetyCondition: this.standardMultiplicativeCondition(
-                            c1 as bigint,
-                            val_ as bigint,
+                            c1_.value,
+                            val_.value,
                         ),
                     };
                 },
@@ -1115,36 +1168,43 @@ export class AssociativeRule3 extends Rule {
 
         // op = &&
 
-        const andRightCommuteOperators: Map<AstBinaryOperation, Transform> =
+        const andRightCommuteOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "&&",
                     // original expression: c2 && (x1 && c1)
-                    (x1, c1, c2) => {
-                        const val_ = evalBinaryOp("&&", c2, c1);
-                        const val_node = makeValueExpression(val_);
+                    (x1, c1, c2, util, s) => {
+                        const val_ = iM.evalBinaryOp(
+                            "&&",
+                            c2,
+                            () => c1,
+                            s,
+                            util,
+                        );
+                        const c1_ = iM.ensureBoolean(c1);
+                        const c2_ = iM.ensureBoolean(c2);
                         let final_expr;
-                        if (c2 === true) {
+                        if (c2_.value) {
                             // Final expression x1 && (c2 && c1)
-                            final_expr = makeBinaryExpression(
+                            final_expr = util.makeBinaryExpression(
                                 "&&",
                                 x1,
-                                val_node,
+                                val_,
                             );
                         } else {
                             // Final expression (c2 && c1) && x1
 
                             // Note that by the safety condition,
                             // at this point c1 = true.
-                            final_expr = makeBinaryExpression(
+                            final_expr = util.makeBinaryExpression(
                                 "&&",
-                                val_node,
+                                val_,
                                 x1,
                             );
                         }
                         return {
                             simplifiedExpression: final_expr,
-                            safetyCondition: c1 === true || c2 === true,
+                            safetyCondition: c1_.value || c2_.value,
                         };
                     },
                 ],
@@ -1152,36 +1212,43 @@ export class AssociativeRule3 extends Rule {
 
         // op = ||
 
-        const orRightCommuteOperators: Map<AstBinaryOperation, Transform> =
+        const orRightCommuteOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "||",
                     // original expression: c2 || (x1 || c1)
-                    (x1, c1, c2) => {
-                        const val_ = evalBinaryOp("||", c2, c1);
-                        const val_node = makeValueExpression(val_);
+                    (x1, c1, c2, util, s) => {
+                        const val_ = iM.evalBinaryOp(
+                            "||",
+                            c2,
+                            () => c1,
+                            s,
+                            util,
+                        );
+                        const c1_ = iM.ensureBoolean(c1);
+                        const c2_ = iM.ensureBoolean(c2);
                         let final_expr;
-                        if (c2 === false) {
+                        if (!c2_.value) {
                             // Final expression x1 || (c2 || c1)
-                            final_expr = makeBinaryExpression(
+                            final_expr = util.makeBinaryExpression(
                                 "||",
                                 x1,
-                                val_node,
+                                val_,
                             );
                         } else {
                             // Final expression (c2 || c1) || x1
 
                             // Note that by the safety condition,
                             // at this point c1 = false.
-                            final_expr = makeBinaryExpression(
+                            final_expr = util.makeBinaryExpression(
                                 "||",
-                                val_node,
+                                val_,
                                 x1,
                             );
                         }
                         return {
                             simplifiedExpression: final_expr,
-                            safetyCondition: c1 === false || c2 === false,
+                            safetyCondition: !c1_.value || !c2_.value,
                         };
                     },
                 ],
@@ -1202,24 +1269,26 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = +
 
-        const plusLeftCommuteOperators: Map<AstBinaryOperation, Transform> =
+        const plusLeftCommuteOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "+",
                     // original expression: (c1 + x1) + c2
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // Final expression (c1 + c2) + x1
-                        const val_ = evalBinaryOp("+", c1, c2);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("+", c1, () => c2, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "+",
-                                val_node,
+                                val_,
                                 x1,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 0n,
                             ),
                         };
@@ -1229,19 +1298,21 @@ export class AssociativeRule3 extends Rule {
                 [
                     "-",
                     // original expression: (c1 + x1) - c2
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // Final expression (c1 - c2) + x1
-                        const val_ = evalBinaryOp("-", c1, c2);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("-", c1, () => c2, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "+",
-                                val_node,
+                                val_,
                                 x1,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 0n,
                             ),
                         };
@@ -1251,24 +1322,26 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = -
 
-        const minusLeftCommuteOperators: Map<AstBinaryOperation, Transform> =
+        const minusLeftCommuteOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "+",
                     // original expression: (c1 - x1) + c2
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // Final expression (c1 + c2) - x1
-                        const val_ = evalBinaryOp("+", c1, c2);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("+", c1, () => c2, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "-",
-                                val_node,
+                                val_,
                                 x1,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 -1n,
                             ),
                         };
@@ -1278,19 +1351,21 @@ export class AssociativeRule3 extends Rule {
                 [
                     "-",
                     // original expression: (c1 - x1) - c2
-                    (x1, c1, c2) => {
+                    (x1, c1, c2, util, s) => {
                         // Final expression (c1 - c2) - x1
-                        const val_ = evalBinaryOp("-", c1, c2);
-                        const val_node = makeValueExpression(val_);
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("-", c1, () => c2, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
                         return {
-                            simplifiedExpression: makeBinaryExpression(
+                            simplifiedExpression: util.makeBinaryExpression(
                                 "-",
-                                val_node,
+                                val_,
                                 x1,
                             ),
                             safetyCondition: this.standardAdditiveCondition(
-                                c1 as bigint,
-                                val_ as bigint,
+                                c1_.value,
+                                val_.value,
                                 -1n,
                             ),
                         };
@@ -1300,47 +1375,57 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = *
 
-        const multiplyLeftCommuteOperators: Map<AstBinaryOperation, Transform> =
-            new Map([
-                [
-                    "*",
-                    // original expression: (c1 * x1) * c2
-                    (x1, c1, c2) => {
-                        // Final expression (c1 * c2) * x1
-                        const val_ = evalBinaryOp("*", c1, c2);
-                        const val_node = makeValueExpression(val_);
-                        return {
-                            simplifiedExpression: makeBinaryExpression(
-                                "*",
-                                val_node,
-                                x1,
-                            ),
-                            safetyCondition:
-                                this.standardMultiplicativeCondition(
-                                    c1 as bigint,
-                                    val_ as bigint,
-                                ),
-                        };
-                    },
-                ],
-            ]);
+        const multiplyLeftCommuteOperators: Map<
+            A.AstBinaryOperation,
+            Transform
+        > = new Map([
+            [
+                "*",
+                // original expression: (c1 * x1) * c2
+                (x1, c1, c2, util, s) => {
+                    // Final expression (c1 * c2) * x1
+                    const val_ = iM.ensureInt(
+                        iM.evalBinaryOp("*", c1, () => c2, s, util),
+                    );
+                    const c1_ = iM.ensureInt(c1);
+                    return {
+                        simplifiedExpression: util.makeBinaryExpression(
+                            "*",
+                            val_,
+                            x1,
+                        ),
+                        safetyCondition: this.standardMultiplicativeCondition(
+                            c1_.value,
+                            val_.value,
+                        ),
+                    };
+                },
+            ],
+        ]);
 
         // op1 = &&
 
-        const andLeftCommuteOperators: Map<AstBinaryOperation, Transform> =
+        const andLeftCommuteOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "&&",
                     // original expression: (c1 && x1) && c2
-                    (x1, c1, c2) => {
-                        const val_ = evalBinaryOp("&&", c1, c2);
-                        const val_node = makeValueExpression(val_);
+                    (x1, c1, c2, util, s) => {
+                        const val_ = iM.evalBinaryOp(
+                            "&&",
+                            c1,
+                            () => c2,
+                            s,
+                            util,
+                        );
+                        const c1_ = iM.ensureBoolean(c1);
+                        const c2_ = iM.ensureBoolean(c2);
                         let final_expr;
-                        if (c2 === true) {
+                        if (c2_.value) {
                             // Final expression (c1 && c2) && x1
-                            final_expr = makeBinaryExpression(
+                            final_expr = util.makeBinaryExpression(
                                 "&&",
-                                val_node,
+                                val_,
                                 x1,
                             );
                         } else {
@@ -1348,15 +1433,15 @@ export class AssociativeRule3 extends Rule {
 
                             // Note that by the safety condition,
                             // at this point c1 = true.
-                            final_expr = makeBinaryExpression(
+                            final_expr = util.makeBinaryExpression(
                                 "&&",
                                 x1,
-                                val_node,
+                                val_,
                             );
                         }
                         return {
                             simplifiedExpression: final_expr,
-                            safetyCondition: c1 === true || c2 === true,
+                            safetyCondition: c1_.value || c2_.value,
                         };
                     },
                 ],
@@ -1364,20 +1449,27 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = ||
 
-        const orLeftCommuteOperators: Map<AstBinaryOperation, Transform> =
+        const orLeftCommuteOperators: Map<A.AstBinaryOperation, Transform> =
             new Map([
                 [
                     "||",
                     // original expression: (c1 || x1) || c2
-                    (x1, c1, c2) => {
-                        const val_ = evalBinaryOp("||", c1, c2);
-                        const val_node = makeValueExpression(val_);
+                    (x1, c1, c2, util, s) => {
+                        const val_ = iM.evalBinaryOp(
+                            "||",
+                            c1,
+                            () => c2,
+                            s,
+                            util,
+                        );
+                        const c1_ = iM.ensureBoolean(c1);
+                        const c2_ = iM.ensureBoolean(c2);
                         let final_expr;
-                        if (c2 === false) {
+                        if (!c2_.value) {
                             // Final expression (c1 || c2) || x1
-                            final_expr = makeBinaryExpression(
+                            final_expr = util.makeBinaryExpression(
                                 "||",
-                                val_node,
+                                val_,
                                 x1,
                             );
                         } else {
@@ -1385,15 +1477,15 @@ export class AssociativeRule3 extends Rule {
 
                             // Note that by the safety condition,
                             // at this point c1 = false.
-                            final_expr = makeBinaryExpression(
+                            final_expr = util.makeBinaryExpression(
                                 "||",
                                 x1,
-                                val_node,
+                                val_,
                             );
                         }
                         return {
                             simplifiedExpression: final_expr,
-                            safetyCondition: c1 === false || c2 === false,
+                            safetyCondition: !c1_.value || !c2_.value,
                         };
                     },
                 ],
@@ -1409,9 +1501,12 @@ export class AssociativeRule3 extends Rule {
     }
 
     private lookupTransform(
-        keyOp1: AstBinaryOperation,
-        keyOp2: AstBinaryOperation,
-        transforms: Map<AstBinaryOperation, Map<AstBinaryOperation, Transform>>,
+        keyOp1: A.AstBinaryOperation,
+        keyOp2: A.AstBinaryOperation,
+        transforms: Map<
+            A.AstBinaryOperation,
+            Map<A.AstBinaryOperation, Transform>
+        >,
     ): Transform | undefined {
         if (transforms.has(keyOp1)) {
             const intermediateMap = transforms.get(keyOp1)!;
@@ -1423,29 +1518,29 @@ export class AssociativeRule3 extends Rule {
     }
 
     protected getLeftAssociativityTransform(
-        keyOp1: AstBinaryOperation,
-        keyOp2: AstBinaryOperation,
+        keyOp1: A.AstBinaryOperation,
+        keyOp2: A.AstBinaryOperation,
     ): Transform | undefined {
         return this.lookupTransform(keyOp1, keyOp2, this.leftAssocTransforms);
     }
 
     protected getRightAssociativityTransform(
-        keyOp1: AstBinaryOperation,
-        keyOp2: AstBinaryOperation,
+        keyOp1: A.AstBinaryOperation,
+        keyOp2: A.AstBinaryOperation,
     ): Transform | undefined {
         return this.lookupTransform(keyOp1, keyOp2, this.rightAssocTransforms);
     }
 
     protected getLeftCommutativityTransform(
-        keyOp1: AstBinaryOperation,
-        keyOp2: AstBinaryOperation,
+        keyOp1: A.AstBinaryOperation,
+        keyOp2: A.AstBinaryOperation,
     ): Transform | undefined {
         return this.lookupTransform(keyOp1, keyOp2, this.leftCommuteTransforms);
     }
 
     protected getRightCommutativityTransform(
-        keyOp1: AstBinaryOperation,
-        keyOp2: AstBinaryOperation,
+        keyOp1: A.AstBinaryOperation,
+        keyOp2: A.AstBinaryOperation,
     ): Transform | undefined {
         return this.lookupTransform(
             keyOp1,
@@ -1455,26 +1550,26 @@ export class AssociativeRule3 extends Rule {
     }
 
     public applyRule(
-        ast: AstExpression,
-        optimizer: ExpressionTransformer,
-    ): AstExpression {
+        ast: A.AstExpression,
+        { applyRules, util }: ExpressionTransformer,
+    ): A.AstExpression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as AstOpBinary;
+            const topLevelNode = ast as A.AstOpBinary;
             if (
                 checkIsBinaryOp_With_RightValue(topLevelNode.left) &&
-                isValue(topLevelNode.right)
+                isLiteral(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (x1 op1 c1) op c2
 
-                const leftTree = topLevelNode.left as AstOpBinary;
-                const rightTree = topLevelNode.right as AstValue;
+                const leftTree = topLevelNode.left as A.AstOpBinary;
+                const rightTree = topLevelNode.right as A.AstLiteral;
 
                 const x1 = leftTree.left;
-                const c1 = extractValue(leftTree.right as AstValue);
+                const c1 = leftTree.right as A.AstLiteral;
                 const op1 = leftTree.op;
 
-                const c2 = extractValue(rightTree);
+                const c2 = rightTree;
 
                 const op = topLevelNode.op;
 
@@ -1483,31 +1578,33 @@ export class AssociativeRule3 extends Rule {
                         x1,
                         c1,
                         c2,
+                        util,
+                        topLevelNode.loc,
                     );
                     if (data.safetyCondition) {
                         // Since the tree is simpler now, there is further
                         // opportunity for simplification that was missed
                         // previously
-                        return optimizer.applyRules(data.simplifiedExpression);
+                        return applyRules(data.simplifiedExpression);
                     }
                 } catch (e) {
                     // Do nothing: will exit rule without modifying tree
                 }
             } else if (
                 checkIsBinaryOp_With_LeftValue(topLevelNode.left) &&
-                isValue(topLevelNode.right)
+                isLiteral(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (c1 op1 x1) op c2
 
-                const leftTree = topLevelNode.left as AstOpBinary;
-                const rightTree = topLevelNode.right as AstValue;
+                const leftTree = topLevelNode.left as A.AstOpBinary;
+                const rightTree = topLevelNode.right as A.AstLiteral;
 
                 const x1 = leftTree.right;
-                const c1 = extractValue(leftTree.left as AstValue);
+                const c1 = leftTree.left as A.AstLiteral;
                 const op1 = leftTree.op;
 
-                const c2 = extractValue(rightTree);
+                const c2 = rightTree;
 
                 const op = topLevelNode.op;
 
@@ -1516,31 +1613,33 @@ export class AssociativeRule3 extends Rule {
                         x1,
                         c1,
                         c2,
+                        util,
+                        topLevelNode.loc,
                     );
                     if (data.safetyCondition) {
                         // Since the tree is simpler now, there is further
                         // opportunity for simplification that was missed
                         // previously
-                        return optimizer.applyRules(data.simplifiedExpression);
+                        return applyRules(data.simplifiedExpression);
                     }
                 } catch (e) {
                     // Do nothing: will exit rule without modifying tree
                 }
             } else if (
-                isValue(topLevelNode.left) &&
+                isLiteral(topLevelNode.left) &&
                 checkIsBinaryOp_With_RightValue(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // c2 op (x1 op1 c1)
 
-                const leftTree = topLevelNode.left as AstValue;
-                const rightTree = topLevelNode.right as AstOpBinary;
+                const leftTree = topLevelNode.left as A.AstLiteral;
+                const rightTree = topLevelNode.right as A.AstOpBinary;
 
                 const x1 = rightTree.left;
-                const c1 = extractValue(rightTree.right as AstValue);
+                const c1 = rightTree.right as A.AstLiteral;
                 const op1 = rightTree.op;
 
-                const c2 = extractValue(leftTree);
+                const c2 = leftTree;
 
                 const op = topLevelNode.op;
 
@@ -1549,31 +1648,33 @@ export class AssociativeRule3 extends Rule {
                         x1,
                         c1,
                         c2,
+                        util,
+                        topLevelNode.loc,
                     );
                     if (data.safetyCondition) {
                         // Since the tree is simpler now, there is further
                         // opportunity for simplification that was missed
                         // previously
-                        return optimizer.applyRules(data.simplifiedExpression);
+                        return applyRules(data.simplifiedExpression);
                     }
                 } catch (e) {
                     // Do nothing: will exit rule without modifying tree
                 }
             } else if (
-                isValue(topLevelNode.left) &&
+                isLiteral(topLevelNode.left) &&
                 checkIsBinaryOp_With_LeftValue(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // c2 op (c1 op1 x1)
 
-                const leftTree = topLevelNode.left as AstValue;
-                const rightTree = topLevelNode.right as AstOpBinary;
+                const leftTree = topLevelNode.left as A.AstLiteral;
+                const rightTree = topLevelNode.right as A.AstOpBinary;
 
                 const x1 = rightTree.right;
-                const c1 = extractValue(rightTree.left as AstValue);
+                const c1 = rightTree.left as A.AstLiteral;
                 const op1 = rightTree.op;
 
-                const c2 = extractValue(leftTree);
+                const c2 = leftTree;
 
                 const op = topLevelNode.op;
 
@@ -1582,12 +1683,14 @@ export class AssociativeRule3 extends Rule {
                         x1,
                         c1,
                         c2,
+                        util,
+                        topLevelNode.loc,
                     );
                     if (data.safetyCondition) {
                         // Since the tree is simpler now, there is further
                         // opportunity for simplification that was missed
                         // previously
-                        return optimizer.applyRules(data.simplifiedExpression);
+                        return applyRules(data.simplifiedExpression);
                     }
                 } catch (e) {
                     // Do nothing: will exit rule without modifying tree

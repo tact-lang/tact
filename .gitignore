@@ -6,7 +6,9 @@ node_modules
 coverage
 dist
 output/
-src/grammar/grammar.ohm-bundle.js
-src/grammar/grammar.ohm-bundle.d.ts
+**/grammar.ohm-bundle.js
+**/grammar.ohm-bundle.d.ts
 src/func/funcfiftlib.wasm.js
 src/test/contracts/pretty-printer-output
+src/test/e2e-emulated/map-tests/build
+

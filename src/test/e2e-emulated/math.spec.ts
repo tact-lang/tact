@@ -2,7 +2,7 @@ import { beginCell, Dictionary, toNano } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { MathTester } from "./contracts/output/math_MathTester";
 import "@ton/test-utils";
-import { randomAddress } from "../utils/randomAddress";
+import { randomAddress } from "../utils/random-utils";
 
 describe("math", () => {
     let blockchain: Blockchain;
@@ -565,5 +565,12 @@ describe("math", () => {
                 "Unable to execute get method. Got exit_code: 5",
             );
         }
+    });
+
+    it("should perform left shifts with comparisons correctly", async () => {
+        expect(await contract.getShiftLeft0(0n)).toStrictEqual(true);
+    });
+    it("should perform right shifts with comparisons correctly", async () => {
+        expect(await contract.getShiftRight0(0n)).toStrictEqual(true);
     });
 });

@@ -17,7 +17,7 @@ message(0x7362d09c) JettonTransferNotification {
 }
 ```
 
-使用 [receiver](/book/receive) 功能接受令牌通知信息。
+使用 [receiver](/zh-cn/book/receive) 功能接受令牌通知信息。
 
 :::caution
 
@@ -26,7 +26,7 @@ message(0x7362d09c) JettonTransferNotification {
 :::
 
 可使用 jetton 钱包状态初始值和计算 jetton 地址进行验证。
-请注意，通知来自您的合约的 jetton 钱包，因此所有者地址栏应使用 [`myAddress()`](/ref/core-common#myaddress)。
+请注意，通知来自您的合约的 jetton 钱包，因此所有者地址栏应使用 [`myAddress()`](/zh-cn/ref/core-common#myaddress)。
 钱包的初始数据布局如下所示，但有时会有所不同。
 请注意，"myJettonWalletAddress "也可以存储在合约存储中，以便在每次交易中减少 gas 使用量。
 
@@ -69,7 +69,7 @@ contract Sample {
 
 ## 发送 jetton 转送
 
-要发送 jetton 传输，请使用 [`send(){:tact}`](/book/send)函数。
+要发送 jetton 传输，请使用 [`send(){:tact}`](/zh-cn/book/send)函数。
 请注意，"myJettonWalletAddress" 也可以存储在合约存储中，以便在每次交易中减少 gas 使用量。
 
 ```tact

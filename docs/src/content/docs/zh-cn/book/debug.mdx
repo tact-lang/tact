@@ -61,7 +61,7 @@ import { LinkCard, CardGrid, Steps, Tabs, TabItem } from '@astrojs/starlight/com
 
 目前，Tact 还没有步进式调试器。 尽管如此，仍然可以使用["printf 调试"](https://en.wikipedia.org/wiki/Debugging#printf_debugging) 方法。
 
-这包括在整个代码中主动调用 [`dump(){:tact}`][dump]和 [`dumpStack(){:tact}`](/ref/core-debug#dumpstack)函数，并观察特定时间点的变量状态。 请注意，这些函数只在 [调试模式]（#debug-mode）下工作，否则不会执行。
+这包括在整个代码中主动调用 [`dump(){:tact}`][dump]和 [`dumpStack(){:tact}`](/zh-cn/ref/core-debug#dumpstack)函数，并观察特定时间点的变量状态。 请注意，这些函数只在 [调试模式]（#debug-mode）下工作，否则不会执行。
 
 :::note
 
@@ -69,13 +69,13 @@ import { LinkCard, CardGrid, Steps, Tabs, TabItem } from '@astrojs/starlight/com
 
 :::
 
-除了转储值之外，使用 [`require(){:tact}`](/ref/core-debug#require)、[`nativeThrowIf(){:tact}`](/ref/core-debug#nativethrowif)和 [`nativeThrowUnless(){:tact}`](/ref/core-debug#nativethrowunless)等自信的函数通常也很有帮助。 它们有助于明确说明你的假设，并方便设置 "绊线"，以便在将来发现问题。
+除了转储值之外，使用 [`require(){:tact}`](/zh-cn/ref/core-debug#require)、[`nativeThrowIf(){:tact}`](/zh-cn/ref/core-debug#nativethrowif)和 [`nativeThrowUnless(){:tact}`](/zh-cn/ref/core-debug#nativethrowunless)等自信的函数通常也很有帮助。 它们有助于明确说明你的假设，并方便设置 "绊线"，以便在将来发现问题。
 
 如果您没有找到或无法解决您的问题，请尝试在 Tact 的[Telegram 聊天][tg]中询问社区；如果您的问题或疑问与 TON 的关系大于与 Tact 的关系，请进入[TON Dev Telegram 聊天](https://t.me/tondev_eng)。
 
 ## 常用调试功能 {#debug-functions}
 
-Tact 提供了大量对调试有用的各种函数：[核心库 → 调试](/ref/core-debug)。
+Tact 提供了大量对调试有用的各种函数：[核心库 → 调试](/zh-cn/ref/core-debug)。
 
 ## 在编译选项中启用调试模式 {#debug-mode}
 
@@ -99,7 +99,7 @@ export const compile：CompilerConfig = {
 
 请注意，从 0.20.0 开始的 [Blueprint][bp] 版本会自动为新合约启用 `wrappers/` 中的调试模式。
 
-除此之外，[蓝图][bp] 项目中仍可使用 [`tact.config.json`](/book/config)。 在这种情况下，除非在 `wrappers/` 中修改，否则 [`tact.config.json`](/book/config)中指定的值将作为默认值。
+除此之外，[蓝图][bp] 项目中仍可使用 [`tact.config.json`](/zh-cn/book/config)。 在这种情况下，除非在 `wrappers/` 中修改，否则 [`tact.config.json`](/zh-cn/book/config)中指定的值将作为默认值。
 
 :::note
 
@@ -139,7 +139,7 @@ Ton Emulator allows you to have a small virtual blockchain in your Node.js code.
 
 :::note
 
-  强烈建议不要修改 `beforeEach(){:tact}` 中的内容，除非您确实需要为每个测试闭包设置某些特定行为，或者 [`init(){:tact}`](/book/contracts#init-function)函数的参数发生了变化。
+  强烈建议不要修改 `beforeEach(){:tact}` 中的内容，除非您确实需要为每个测试闭包设置某些特定行为，或者 [`init(){:tact}`](/zh-cn/book/contracts#init-function)函数的参数发生了变化。
 
 :::
 
@@ -160,7 +160,7 @@ it('should deploy', async () => {
 1. 在代码的相关位置调用 [`dump(){:tact}`][dump]和其他[常用调试函数](#debug-functions)。
 2. 运行 [Jest][jest]测试，这些测试将调用目标函数并向目标接收器发送信息。
 
-假设你已经创建了一个 [新计数器合约项目](/#start)，让我们来看看它是如何实际运行的。
+假设你已经创建了一个 [新计数器合约项目](/zh-cn/#start)，让我们来看看它是如何实际运行的。
 
 首先，让我们在 `contracts/simple_counter.tact` 中调用 [`dump(){:tact}`][dump]，这将把 `msg{:tact}` [Struct][struct] 中传递的 `amount` 输出到合约的调试控制台：
 
@@ -185,7 +185,7 @@ it('should dump', async () => {
 })；
 ```
 
-它向我们合约的 `receive(msg: Add){:tact}` [接收器](/book/receive) 发送信息，而不存储[发送结果](#tests-send)。
+它向我们合约的 `receive(msg: Add){:tact}` [接收器](/zh-cn/book/receive) 发送信息，而不存储[发送结果](#tests-send)。
 
 现在，如果我们使用 `yarn build{:shell}` 构建我们的合约，并使用 `yarn test{:shell}` 运行我们的测试套件，我们将在测试日志中看到以下内容：
 
@@ -277,7 +277,7 @@ expect(res.transactions).toHaveTransaction({
 
 #### toEqualCell
 
-方法 `expect(…).toEqualCell(){:typescript}` 检查两个 [单元格](/book/cells#cells)是否相等：
+方法 `expect(…).toEqualCell(){:typescript}` 检查两个 [单元格](/zh-cn/book/cells#cells)是否相等：
 
 ```typescript {3}
 expect(oneCell).toEqualCell(anotherCell)；
@@ -285,7 +285,7 @@ expect(oneCell).toEqualCell(anotherCell)；
 
 #### 对等切片
 
-方法 `expect(…).toEqualSlice(){:typescript}` 检查两个 [slices](/book/cells#slices) 是否相等：
+方法 `expect(…).toEqualSlice(){:typescript}` 检查两个 [slices](/zh-cn/book/cells#slices) 是否相等：
 
 ```typescript {3}
 expect(oneSlice).toEqualSlice(anotherSlice)；
@@ -293,7 +293,7 @@ expect(oneSlice).toEqualSlice(anotherSlice)；
 
 #### toEqualAddress
 
-方法 `expect(…).toEqualAddress(){:typescript}` 检查两个 [地址](/book/types#primitive-types)是否相等：
+方法 `expect(…).toEqualAddress(){:typescript}` 检查两个 [地址](/zh-cn/book/types#primitive-types)是否相等：
 
 ```typescript {3}
 expect(oneAddress).toEqualAddress(anotherAddress)；
@@ -317,7 +317,7 @@ await yourContractName.send(
 )；
 ```
 
-消息体可以是简单的字符串，也可以是指定 [消息](/book/structs-and-messages#messages)类型字段的对象：
+消息体可以是简单的字符串，也可以是指定 [消息](/zh-cn/book/structs-and-messages#messages)类型字段的对象：
 
 ```typescript {4-8}
 await yourContractName.send(
@@ -403,7 +403,7 @@ expect(
 
 ### 有故意错误的交易 {#tests-errors}
 
-有时，进行负面测试也很有用，它可以故意出错并抛出特定的[退出代码](/book/exit-codes)。
+有时，进行负面测试也很有用，它可以故意出错并抛出特定的[退出代码](/zh-cn/book/exit-codes)。
 
 [蓝图][bp]中此类[Jest][jest]测试闭包的示例：
 
@@ -466,13 +466,13 @@ it('your test clause title', async () => {
 
 ## 通过 `emit` 记录 {#logging}
 
-[全局静态函数](/book/functions#global-static-functions) [`emit(){:tact}`](/ref/core-common#emit)向外部世界发送信息--它没有特定的接收者。
+[全局静态函数](/zh-cn/book/functions#global-static-functions) [`emit(){:tact}`](/zh-cn/ref/core-common#emit)向外部世界发送信息--它没有特定的接收者。
 
-该功能对于记录和分析链外数据非常方便，只需查看合约生成的 [external messages](/book/external) 即可。
+该功能对于记录和分析链外数据非常方便，只需查看合约生成的 [external messages](/zh-cn/book/external) 即可。
 
 ### 本地沙箱测试中的日志 {#logging-local}
 
-在 [Sandbox][sb] 中部署时，您可以从 [receiver function](/book/contracts#receiver-functions) 中调用 [`emit(){:tact}`](/ref/core-common#emit)，然后观察已发送的 [external messages](/book/external) 列表：
+在 [Sandbox][sb] 中部署时，您可以从 [receiver function](/zh-cn/book/contracts#receiver-functions) 中调用 [`emit(){:tact}`](/zh-cn/ref/core-common#emit)，然后观察已发送的 [external messages](/zh-cn/book/external) 列表：
 
 ```typescript {9-10}
 it('emits', async () => {
@@ -492,7 +492,7 @@ it('emits', async () => {
 
 TON 区块链上的每笔交易都[包含`out_msgs`](https://docs.ton.org/develop/data-formats/transaction-layout#transaction) - 这是一个字典，保存着执行交易时创建的传出消息列表。
 
-要查看字典中 [`emit(){:tact}`](/ref/core-common#emit)的日志，请查找没有收件人的外部消息。 在各种 TON 区块链探索器中，此类交易将被标记为 "外部输出"，目的地指定为"-"或 "空"。
+要查看字典中 [`emit(){:tact}`](/zh-cn/ref/core-common#emit)的日志，请查找没有收件人的外部消息。 在各种 TON 区块链探索器中，此类交易将被标记为 "外部输出"，目的地指定为"-"或 "空"。
 
 请注意，有些探索者会为你反序列化发送的信息体，而有些则不会。 不过，您可以随时在本地[自行解析]（#logging-parsing）。
 
@@ -533,7 +533,7 @@ it('emits', async () => {
 })；
 ```
 
-在这里，`res` 对象的`externals`字段将包含已发送的[外部信息]（/book/external）列表。 让我们访问它，以解析通过调用 Tact 代码中的 [`emit(){:tact}`](/ref/core-common#emit)（或简称 _emitted_）发送的第一条信息：
+在这里，`res` 对象的`externals`字段将包含已发送的[外部信息]（/book/external）列表。 让我们访问它，以解析通过调用 Tact 代码中的 [`emit(){:tact}`](/zh-cn/ref/core-common#emit)（或简称 _emitted_）发送的第一条信息：
 
 ```typescript /body/
 it('emits', async () => {
@@ -586,7 +586,7 @@ it('emits', async () => {
 
 ## 处理退回的邮件 {#bounced}
 
-当 [send](/book/send) 带有 `bounce: true{:tact}` 时，信息会在出错时反弹。确保编写相关的 [`bounced(){:tact}`](/book/bounced) 消息[接收器](/book/contracts#receiver-functions)，并优雅地处理被退回的消息：
+当 [send](/zh-cn/book/send) 带有 `bounce: true{:tact}` 时，信息会在出错时反弹。确保编写相关的 [`bounced(){:tact}`](/zh-cn/book/bounced) 消息[接收器](/zh-cn/book/contracts#receiver-functions)，并优雅地处理被退回的消息：
 
 ```tact
 bounced(msg: YourMessage) {
@@ -596,7 +596,7 @@ bounced(msg: YourMessage) {
 
 请记住，在 TON 中被退回的邮件正文中只有 $224$ 个可用数据位，而且没有任何引用，因此无法从中恢复很多数据。 不过，您仍然可以看到邮件是否被退回，从而可以创建更稳健的合同。
 
-了解更多有关退信和收信人的信息：[退信](/book/bounced)。
+了解更多有关退信和收信人的信息：[退信](/zh-cn/book/bounced)。
 
 ## 实验实验室设置 {#lab}
 
@@ -669,7 +669,7 @@ bounced(msg: YourMessage) {
    }
    ```
 
-   此设置的基本思想是将要测试的代码放入 [receiver function](/book/contracts#receiver-functions) 中，以响应 [string](/book/types#primitive-types) 消息 `"plays"{:tact}`。
+   此设置的基本思想是将要测试的代码放入 [receiver function](/zh-cn/book/contracts#receiver-functions) 中，以响应 [string](/zh-cn/book/types#primitive-types) 消息 `"plays"{:tact}`。
 
    请注意，您仍然可以在[接收器]（/book/contracts#receiver-functions）之外编写任何有效的 Tact 代码。 但为了测试它，你需要在其中编写相关的测试逻辑。
 
@@ -714,11 +714,11 @@ bounced(msg: YourMessage) {
 
 </Steps>
 
-[转储]: /ref/core-debug#dump
+[转储]: /zh-cn/ref/core-debug#dump
 [结构]: </book/structs and-messages#structs>
 [信息]: </book/structs and-messages#messages>
-[电池]: /book/cells#cells
-[一片]: /book/cells#slices
+[电池]: /zh-cn/book/cells#cells
+[一片]: /zh-cn/book/cells#slices
 [tg]: https://t.me/tactlang
 [bp]: https://github.com/ton-org/blueprint
 [某人]: https://github.com/ton-org/sandbox

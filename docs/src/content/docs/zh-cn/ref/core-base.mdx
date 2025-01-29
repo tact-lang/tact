@@ -2,7 +2,7 @@
 title: 基本特质
 ---
 
-Tact 中的每个 [contract](/book/contracts) 和 [trait](/book/types#traits) 都隐式 [继承](/book/contracts#traits) `BaseTrait{:tact}` trait，该 trait 包含大量对任何类型的 contract 最有用的 [internal functions](/book/contracts#internal-functions) 以及一个针对 Tact 高级用户的常量 `self.storageReserve{:tact}`。
+Tact 中的每个 [contract](/zh-cn/book/contracts) 和 [trait](/zh-cn/book/types#traits) 都隐式 [继承](/zh-cn/book/contracts#traits) `BaseTrait{:tact}` trait，该 trait 包含大量对任何类型的 contract 最有用的 [internal functions](/zh-cn/book/contracts#internal-functions) 以及一个针对 Tact 高级用户的常量 `self.storageReserve{:tact}`。
 
 ## 常数
 
@@ -79,7 +79,7 @@ self.notify("Beware, this is my reply to you!".asComment());
 virtual fun forward(to: Address, body: Cell?, bounce: Bool, init: StateInit?)；
 ```
 
-[将信息](/book/send#outbound-message-processing)（可跳转或不可跳转）发送到指定地址 `to`。 您可以选择提供信息的 "body "和[`init`包](/book/expressions#initof)。
+[将信息](/zh-cn/book/send#outbound-message-processing)（可跳转或不可跳转）发送到指定地址 `to`。 您可以选择提供信息的 "body "和[`init`包](/zh-cn/book/expressions#initof)。
 
 当[`self.storageReserve{:tact}`](#self-storagereserve)常量被覆盖为$> 0$时，在发送信息之前，它也会尝试从剩余余额中预留`self.storageReserve{:tact}`的[nanoToncoins][nano]金额，然后再以[`SendRemainingBalance{:tact}`](https://docs.tact-lang.org/book/message-mode#base-modes)($128$) 模式发送信息。
 
@@ -88,7 +88,7 @@ virtual fun forward(to: Address, body: Cell?, bounce: Bool, init: StateInit?)；
 :::note
 
   请注意，`self.forward(){:tact}` 不会在余额上可用的[nanoToncoins][nano]之外发送额外的[nanoToncoins][nano]。
-  要想用一条信息发送更多的[nanoToncoins][nano]，请使用[`send(){:tact}`](/ref/core-common#send)函数。
+  要想用一条信息发送更多的[nanoToncoins][nano]，请使用[`send(){:tact}`](/zh-cn/ref/core-common#send)函数。
 
 :::
 
@@ -124,4 +124,4 @@ message PayoutOk {
 }
 ```
 
-[nano]: /book/integers#nanotoncoin
+[nano]: /zh-cn/book/integers#nanotoncoin

@@ -24,5 +24,10 @@ message message_decl_4 {
     value: Int;
 }
 
-contract contract_5 {
+message(constant_def_5 + 1) message_decl_6 {
+    a: Int;
 }
+
+const constant_def_5: Int = 0xdeadbeef;
+
+contract contract_7 { }

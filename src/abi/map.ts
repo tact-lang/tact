@@ -1,13 +1,13 @@
-import { CompilerContext } from "../context";
-import { SrcInfo } from "../grammar/grammar";
+import { CompilerContext } from "../context/context";
+import { SrcInfo } from "../grammar";
 import { TypeRef } from "../types/types";
 import { WriterContext } from "../generator/Writer";
 import { ops } from "../generator/writers/ops";
 import { writeExpression } from "../generator/writers/writeExpression";
-import { throwCompilationError } from "../errors";
+import { throwCompilationError } from "../error/errors";
 import { getType } from "../types/resolveDescriptors";
 import { AbiFunction } from "./AbiFunction";
-import { AstExpression } from "../grammar/ast";
+import { AstExpression } from "../ast/ast";
 
 // Helper functions to avoid redundancy
 function checkArgumentsLength(
@@ -74,21 +74,27 @@ function checkValueType(
 }
 
 function resolveMapKeyBits(
-    self: { key: string; keyAs: string | null },
-    ref: SrcInfo,
+    type: { key: string; keyAs: string | null },
+    loc: SrcInfo,
 ): { bits: number; kind: string } {
-    if (self.key === "Int") {
-        if (self.keyAs?.startsWith("int")) {
-            return { bits: parseInt(self.keyAs.slice(3), 10), kind: "int" };
+    if (type.key === "Int") {
+        if (type.keyAs === null) {
+            return { bits: 257, kind: "int" }; // Default for "Int" keys
         }
-        if (self.keyAs?.startsWith("uint")) {
-            return { bits: parseInt(self.keyAs.slice(4), 10), kind: "uint" };
+        if (type.keyAs.startsWith("int")) {
+            return { bits: parseInt(type.keyAs.slice(3), 10), kind: "int" };
         }
-        return { bits: 257, kind: "int" }; // Default for "Int" keys
-    } else if (self.key === "Address") {
+        if (type.keyAs.startsWith("uint")) {
+            return { bits: parseInt(type.keyAs.slice(4), 10), kind: "uint" };
+        }
+        throwCompilationError(
+            `Unsupported integer map key type storage annotation: ${type.keyAs}`,
+            loc,
+        );
+    } else if (type.key === "Address") {
         return { bits: 267, kind: "slice" };
     }
-    throwCompilationError(`Unsupported key type: ${self.key}`, ref);
+    throwCompilationError(`Unsupported key type: ${type.key}`, loc);
 }
 
 function handleStructOrOtherValue(
@@ -164,6 +170,10 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                         vKind = "coins";
                         ctx.used(`__tact_dict_set_${kind}_${vKind}`);
                         return `${resolved[0]}~__tact_dict_set_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]})`;
+                    } else if (self.valueAs?.startsWith("var")) {
+                        vKind = self.valueAs;
+                        ctx.used(`__tact_dict_set_${kind}_${vKind}`);
+                        return `${resolved[0]}~__tact_dict_set_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]})`;
                     }
                     ctx.used(`__tact_dict_set_${kind}_${vKind}`);
                     return `${resolved[0]}~__tact_dict_set_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
@@ -232,6 +242,10 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                         vKind = "uint";
                     } else if (self.valueAs?.startsWith("coins")) {
                         vKind = "coins";
+                        ctx.used(`__tact_dict_get_${kind}_${vKind}`);
+                        return `__tact_dict_get_${kind}_${vKind}(${resolved[0]}, ${bits}, ${resolved[1]})`;
+                    } else if (self.valueAs?.startsWith("var")) {
+                        vKind = self.valueAs;
                         ctx.used(`__tact_dict_get_${kind}_${vKind}`);
                         return `__tact_dict_get_${kind}_${vKind}(${resolved[0]}, ${bits}, ${resolved[1]})`;
                     }
@@ -583,6 +597,10 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                         vKind = "coins";
                         ctx.used(`__tact_dict_replace_${kind}_${vKind}`);
                         return `${resolved[0]}~__tact_dict_replace_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]})`;
+                    } else if (self.valueAs?.startsWith("var")) {
+                        vKind = self.valueAs;
+                        ctx.used(`__tact_dict_replace_${kind}_${vKind}`);
+                        return `${resolved[0]}~__tact_dict_replace_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]})`;
                     }
                     ctx.used(`__tact_dict_replace_${kind}_${vKind}`);
                     return `${resolved[0]}~__tact_dict_replace_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]}, ${vBits})`;
@@ -663,6 +681,10 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                         vKind = "uint";
                     } else if (self.valueAs?.startsWith("coins")) {
                         vKind = "coins";
+                        ctx.used(`__tact_dict_replaceget_${kind}_${vKind}`);
+                        return `${resolved[0]}~__tact_dict_replaceget_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]})`;
+                    } else if (self.valueAs?.startsWith("var")) {
+                        vKind = self.valueAs;
                         ctx.used(`__tact_dict_replaceget_${kind}_${vKind}`);
                         return `${resolved[0]}~__tact_dict_replaceget_${kind}_${vKind}(${bits}, ${resolved[1]}, ${resolved[2]})`;
                     }

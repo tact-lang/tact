@@ -59,6 +59,18 @@ contract StdlibTest {
         return parseVarAddress(slice);
     }
 
+    get fun parseOriginalFwdFee(msg: Slice): Int {
+        msg.skipBits(4); //Skip tags
+        msg.loadAddress(); // Skip source
+        let ctx: Context = Context{
+            bounced: false,
+            sender: myAddress(),
+            value: ton("1"),
+            raw: msg
+        };
+        return ctx.readForwardFee();
+    }
+
     get fun builderDepth(bl: Builder): Int {
         return bl.depth();
     }

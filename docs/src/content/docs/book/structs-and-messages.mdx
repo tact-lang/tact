@@ -3,7 +3,11 @@ title: Structs and Messages
 description: "Structs can define complex data types that contain multiple fields of different types, while Messages also have a 32-bit header and are convenient to receive and sent message bodies on TON Blockchain"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 Tact supports a number of [primitive data types](/book/types#primitive-types) that are tailored for smart contract use. However, using individual means of storage often becomes cumbersome, so there are [Structs](#structs) and [Messages](#messages) which allow combining types together.
+
+After a successful compilation, Tact produces a [compilation report](/book/compile), which features all the declared [Structs](#structs) and [Messages](#messages), including those from the Core standard library. See the [Structures section of the compilation report](/book/compile#structures) for details.
 
 :::caution
 
@@ -101,18 +105,32 @@ message Add {
 }
 ```
 
+### Message opcodes
+
 Messages are almost the same thing as [Structs](#structs) with the only difference that Messages have a 32-bit integer header in their serialization containing their unique numeric id, commonly referred to as an _opcode_ (operation code). This allows Messages to be used with [receivers](/book/receive) since the contract can tell different types of messages apart based on this id.
 
-Tact automatically generates those unique ids (opcodes) for every received Message, but this can be manually overwritten:
+Tact automatically generates those unique ids (opcodes) for every received Message, which can be observed in the [Structures section of the compilation report](/book/compile#structures).
+
+Besides, opcodes can be overwritten manually:
 
 ```tact
-// This Message overwrites its unique id with 0x7362d09c
+// This Message overwrites its unique id (opcode) with 0x7362d09c
 message(0x7362d09c) TokenNotification {
     forwardPayload: Slice as remaining;
 }
 ```
 
 This is useful for cases where you want to handle certain opcodes of a given smart contract, such as [Jetton standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md). The short-list of opcodes this contract is able to process is [given here in FunC](https://github.com/ton-blockchain/token-contract/blob/main/ft/op-codes.fc). They serve as an interface to the smart contract.
+
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="small"/> A message opcode can be any [compile-time](/ref/core-comptime) expression that evaluates to a positive $32$-bit integer, so the following is also valid:
+
+```tact
+// This Message overwrites its unique id (opcode) with 898001897,
+// which is the evaluated integer value of the specified compile-time expression
+message((crc32("Tact") + 42) & 0xFFFF_FFFF) MsgWithExprOpcode {
+    field: Int as uint4;
+}
+```
 
 :::note
 

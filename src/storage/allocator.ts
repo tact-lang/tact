@@ -4,7 +4,7 @@ import {
     AllocationOperation,
     AllocationOperationType,
 } from "./operation";
-import { throwInternalCompilerError } from "../errors";
+import { throwInternalCompilerError } from "../error/errors";
 
 const ALLOCATOR_RESERVE_BIT = 1;
 const ALLOCATOR_RESERVE_REF = 1;
@@ -18,8 +18,13 @@ function getOperationSize(src: AllocationOperationType): {
         case "uint": {
             return { bits: src.bits + (src.optional ? 1 : 0), refs: 0 };
         }
-        case "coins": {
+        case "varint16":
+        case "varuint16": {
             return { bits: 124 + (src.optional ? 1 : 0), refs: 0 };
+        }
+        case "varint32":
+        case "varuint32": {
+            return { bits: 253 + (src.optional ? 1 : 0), refs: 0 };
         }
         case "boolean": {
             return { bits: 1 + (src.optional ? 1 : 0), refs: 0 };
@@ -86,6 +91,12 @@ export function getAllocationOperationFromField(
                         optional: src.optional ? src.optional : false,
                     };
                 }
+                if (src.format === "varint16" || src.format === "varint32") {
+                    return {
+                        kind: src.format,
+                        optional: src.optional ? src.optional : false,
+                    };
+                }
                 if (src.format !== null && src.format !== undefined) {
                     throwInternalCompilerError(
                         `Unsupported int format: ${src.format}`,
@@ -112,7 +123,13 @@ export function getAllocationOperationFromField(
                 }
                 if (src.format === "coins") {
                     return {
-                        kind: "coins",
+                        kind: "varuint16",
+                        optional: src.optional ? src.optional : false,
+                    };
+                }
+                if (src.format === "varuint16" || src.format === "varuint32") {
+                    return {
+                        kind: src.format,
                         optional: src.optional ? src.optional : false,
                     };
                 }

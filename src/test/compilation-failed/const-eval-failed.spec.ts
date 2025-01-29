@@ -1,11 +1,6 @@
-import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { itShouldNotCompile } from "./util";
 
 describe("fail-const-eval", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-
     itShouldNotCompile({
         testName: "const-eval-div-by-zero",
         errorMessage:
@@ -96,12 +91,12 @@ describe("fail-const-eval", () => {
     itShouldNotCompile({
         testName: "const-eval-shl-invalid-bits1",
         errorMessage:
-            "Cannot evaluate expression to a constant: the number of bits shifted ('257') must be within [0..256] range",
+            "the number of bits shifted ('257') must be within [0..256] range",
     });
     itShouldNotCompile({
         testName: "const-eval-shl-invalid-bits2",
         errorMessage:
-            "Cannot evaluate expression to a constant: the number of bits shifted ('-1') must be within [0..256] range",
+            "the number of bits shifted ('-1') must be within [0..256] range",
     });
     itShouldNotCompile({
         testName: "const-eval-unboxing-null",
@@ -161,7 +156,7 @@ describe("fail-const-eval", () => {
     itShouldNotCompile({
         testName: "const-eval-repeat-upper-bound",
         errorMessage:
-            "Cannot evaluate expression to a constant: repeat argument must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)",
+            "Cannot evaluate expression to a constant: repeat argument '2147483648' must be a number between -2^256 (inclusive) and 2^31 - 1 (inclusive)",
     });
     itShouldNotCompile({
         testName: "const-eval-ascii-overflow",
@@ -197,5 +192,42 @@ describe("fail-const-eval", () => {
         testName: "const-eval-ascii-empty",
         errorMessage:
             "Cannot evaluate expression to a constant: ascii string cannot be empty",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-constant-circular-dependency",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> C]",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-constant-deep-circular-dependency",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate E as it has circular dependencies: [E -> D -> C -> B -> A -> E]",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-constant-circular-dependency-with-function",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> foo() -> C]",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-constant-circular-dependency-with-functions",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> foo() -> bar() -> baz() -> C]",
+    });
+    itShouldNotCompile({
+        testName:
+            "const-eval-constant-circular-dependency-with-recursive-function",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> foo() -> foo() -> foo() -> C]",
+    });
+    itShouldNotCompile({
+        testName:
+            "const-eval-constant-circular-dependency-with-deep-recursive-function",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate C as it has circular dependencies: [C -> A -> foo() -> foo() -> foo() -> ... -> foo() -> foo() -> foo() -> foo() -> C]",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-constant-circular-dependency-self-assignment",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate A as it has circular dependencies: [A -> A]",
     });
 });

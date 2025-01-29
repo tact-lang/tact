@@ -1,6 +1,5 @@
 import path from "path";
 import fs from "fs";
-import rimraf from "rimraf";
 import { createNodeFileSystem } from "./createNodeFileSystem";
 
 describe("createNodeFileSystem", () => {
@@ -44,7 +43,7 @@ describe("createNodeFileSystem", () => {
             );
             expect(fs.readFileSync(realPath2, "utf8")).toBe("Hello world");
         } finally {
-            rimraf.sync(realPathDir2);
+            fs.rmSync(realPathDir2, { recursive: true, force: true });
         }
     });
 });

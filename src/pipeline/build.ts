@@ -3,12 +3,12 @@ import { decompileAll } from "@tact-lang/opcode";
 import { writeTypescript } from "../bindings/writeTypescript";
 import { featureEnable } from "../config/features";
 import { ConfigProject } from "../config/parseConfig";
-import { CompilerContext } from "../context";
+import { CompilerContext } from "../context/context";
 import { funcCompile } from "../func/funcCompile";
 import { writeReport } from "../generator/writeReport";
-import { getRawAST } from "../grammar/store";
-import files from "../imports/stdlib";
-import { ILogger, Logger } from "../logger";
+import { getRawAST } from "../context/store";
+import files from "../stdlib/stdlib";
+import { ILogger, Logger } from "../context/logger";
 import { PackageFileFormat } from "../packaging/fileFormat";
 import { packageCode } from "../packaging/packageCode";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
@@ -19,8 +19,10 @@ import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { compile } from "./compile";
 import { precompile } from "./precompile";
 import { getCompilerVersion } from "./version";
-import { idText } from "../grammar/ast";
-import { TactErrorCollection } from "../errors";
+import { getAstFactory, FactoryAst, idText } from "../ast/ast-helpers";
+import { TactError, TactErrorCollection } from "../error/errors";
+import { getParser, Parser } from "../grammar";
+import { defaultParser } from "../grammar/grammar";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -32,7 +34,6 @@ export function enableFeatures(
     }
     const features = [
         { option: config.options.debug, name: "debug" },
-        { option: config.options.masterchain, name: "masterchain" },
         { option: config.options.external, name: "external" },
         { option: config.options.experimental?.inline, name: "inline" },
         { option: config.options.ipfsAbiGetter, name: "ipfsAbiGetter" },
@@ -52,12 +53,17 @@ export async function build(args: {
     project: VirtualFileSystem;
     stdlib: string | VirtualFileSystem;
     logger?: ILogger;
+    parser?: Parser;
+    ast?: FactoryAst;
 }): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
     const { config, project } = args;
     const stdlib =
         typeof args.stdlib === "string"
             ? createVirtualFileSystem(args.stdlib, files)
             : args.stdlib;
+    const ast: FactoryAst = args.ast ?? getAstFactory();
+    const parser: Parser =
+        args.parser ?? getParser(ast, config.options?.parser ?? defaultParser);
     const logger: ILogger = args.logger ?? new Logger();
 
     // Configure context
@@ -70,14 +76,20 @@ export async function build(args: {
 
     // Precompile
     try {
-        ctx = precompile(ctx, project, stdlib, config.path);
+        ctx = precompile(ctx, project, stdlib, config.path, parser, ast);
     } catch (e) {
         logger.error(
             config.mode === "checkOnly" || config.mode === "funcOnly"
                 ? "Syntax and type checking failed"
                 : "Tact compilation failed",
         );
-        logger.error(e as Error);
+
+        // show an error with a backtrace only in verbose mode
+        if (e instanceof TactError && config.verbose && config.verbose < 2) {
+            logger.error(e.message);
+        } else {
+            logger.error(e as Error);
+        }
         return { ok: false, error: [e as Error] };
     }
 
@@ -140,7 +152,16 @@ export async function build(args: {
             codeEntrypoint = res.output.entrypoint;
         } catch (e) {
             logger.error("Tact compilation failed");
-            logger.error(e as Error);
+            // show an error with a backtrace only in verbose mode
+            if (
+                e instanceof TactError &&
+                config.verbose &&
+                config.verbose < 2
+            ) {
+                logger.error(e.message);
+            } else {
+                logger.error(e as Error);
+            }
             ok = false;
             errorMessages.push(e as Error);
             continue;
@@ -258,7 +279,6 @@ export async function build(args: {
             Dictionary.Values.Cell(),
         );
         const ct = getType(ctx, contract);
-        depends.set(ct.uid, Cell.fromBoc(built[ct.name]!.codeBoc)[0]!); // Mine
         for (const c of ct.dependsOn) {
             const cd = built[c.name];
             if (!cd) {
@@ -269,7 +289,10 @@ export async function build(args: {
             }
             depends.set(c.uid, Cell.fromBoc(cd.codeBoc)[0]!);
         }
-        const systemCell = beginCell().storeDict(depends).endCell();
+        const systemCell =
+            ct.dependsOn.length > 0
+                ? beginCell().storeDict(depends).endCell()
+                : null;
 
         // Collect sources
         const sources: Record<string, string> = {};
@@ -305,7 +328,7 @@ export async function build(args: {
                 },
                 deployment: {
                     kind: "system-cell",
-                    system: systemCell.toBoc().toString("base64"),
+                    system: systemCell?.toBoc().toString("base64") ?? null,
                 },
             },
             sources,

@@ -56,7 +56,7 @@ describe("stdlib", () => {
                 .toString(),
         ).toBe(beginCell().storeBit(true).endCell().toString());
 
-        expect(await contract.getTvm_2023_07Upgrade()).toEqual(1455n);
+        expect(await contract.getTvm_2023_07Upgrade()).toEqual(1389n);
         expect(await contract.getTvm_2024_04Upgrade()).toEqual(82009144n);
 
         expect(
@@ -156,13 +156,21 @@ describe("stdlib", () => {
 
         expect(await contract.getBlockLt()).toBe(0n);
 
-        expect(await contract.getSetGasLimit(5000n)).toBe(3997n); // 5000 just to make sure it's enough, 3997 is how much it actually costs
-        await expect(contract.getSetGasLimit(3996n)).rejects.toThrow("-14"); // 3996 gas is not enough for sure
+        expect(await contract.getSetGasLimit(5000n)).toBe(3931n); // 5000 just to make sure it's enough, 3931 is how much it actually costs
+        await expect(contract.getSetGasLimit(3930n)).rejects.toThrow("-14"); // 3996 gas is not enough for sure
 
         expect(await contract.getGetSeed()).toBe(0n);
 
         expect(await contract.getSetSeed(123n)).toBe(123n);
 
         expect(await contract.getMyCode()).toEqualCell(contract.init!.code);
+
+        const RandomMessage = Cell.fromBase64(
+            "te6ccuEBAQEAZwDOAMloAdbATUBllK0egYWU34F08lIun9zBwyu7UZQrueKKJgnXADfmsDtWQP5D/YkXX+XlULvs4HivRaKY38ftT2hS5yAAEE1v+YAGCCNaAABhF0kRG4TPMTmAapk7bYAAGEXSDt8BwKQrvKE=",
+        );
+        const res = await contract.getParseOriginalFwdFee(
+            RandomMessage.beginParse(),
+        );
+        expect(res).toBe(400000n);
     });
 });

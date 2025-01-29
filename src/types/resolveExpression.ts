@@ -1,23 +1,12 @@
+import * as A from "../ast/ast";
+import { eqNames, getAstFactory, idText, isWildcard } from "../ast/ast-helpers";
 import {
-    AstBoolean,
-    AstExpression,
-    AstInitOf,
-    AstNull,
-    AstNumber,
-    AstOpBinary,
-    AstMethodCall,
-    AstStaticCall,
-    AstFieldAccess,
-    AstStructInstance,
-    AstOpUnary,
-    AstString,
-    AstConditional,
-    eqNames,
-    idText,
-    isWildcard,
-} from "../grammar/ast";
-import { idTextErr, throwCompilationError } from "../errors";
-import { CompilerContext, createContextStore } from "../context";
+    idTextErr,
+    TactConstEvalError,
+    throwCompilationError,
+    throwInternalCompilerError,
+} from "../error/errors";
+import { CompilerContext, createContextStore } from "../context/context";
 import {
     getAllTypes,
     getStaticConstant,
@@ -26,26 +15,23 @@ import {
     hasStaticConstant,
     hasStaticFunction,
 } from "./resolveDescriptors";
-import {
-    FieldDescription,
-    printTypeRef,
-    TypeRef,
-    typeRefEquals,
-} from "./types";
+import { printTypeRef, TypeRef, typeRefEquals } from "./types";
 import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
-import { throwInternalCompilerError } from "../errors";
 import { StructFunctions } from "../abi/struct";
-import { prettyPrint } from "../prettyPrinter";
+import { prettyPrint } from "../ast/ast-printer";
+import { ensureInt } from "../optimizer/interpreter";
+import { evalConstantExpression } from "../optimizer/constEval";
+import { getAstUtil } from "../ast/util";
 
 const store = createContextStore<{
-    ast: AstExpression;
+    ast: A.AstExpression;
     description: TypeRef;
 }>();
 
-export function getExpType(ctx: CompilerContext, exp: AstExpression) {
+export function getExpType(ctx: CompilerContext, exp: A.AstExpression) {
     const t = store.get(ctx, exp.id);
     if (!t) {
         throwInternalCompilerError(`Expression ${exp.id} not found`);
@@ -55,7 +41,7 @@ export function getExpType(ctx: CompilerContext, exp: AstExpression) {
 
 function registerExpType(
     ctx: CompilerContext,
-    exp: AstExpression,
+    exp: A.AstExpression,
     description: TypeRef,
 ): CompilerContext {
     const ex = store.get(ctx, exp.id);
@@ -72,7 +58,7 @@ function registerExpType(
 }
 
 function resolveBooleanLiteral(
-    exp: AstBoolean,
+    exp: A.AstBoolean,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -84,7 +70,7 @@ function resolveBooleanLiteral(
 }
 
 function resolveIntLiteral(
-    exp: AstNumber,
+    exp: A.AstNumber,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -96,15 +82,51 @@ function resolveIntLiteral(
 }
 
 function resolveNullLiteral(
-    exp: AstNull,
+    exp: A.AstNull,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
     return registerExpType(ctx, exp, { kind: "null" });
 }
 
+function resolveAddressLiteral(
+    exp: A.AstAddress,
+    sctx: StatementContext,
+    ctx: CompilerContext,
+): CompilerContext {
+    return registerExpType(ctx, exp, {
+        kind: "ref",
+        name: "Address",
+        optional: false,
+    });
+}
+
+function resolveCellLiteral(
+    exp: A.AstCell,
+    sctx: StatementContext,
+    ctx: CompilerContext,
+): CompilerContext {
+    return registerExpType(ctx, exp, {
+        kind: "ref",
+        name: "Cell",
+        optional: false,
+    });
+}
+
+function resolveSliceLiteral(
+    exp: A.AstSlice,
+    sctx: StatementContext,
+    ctx: CompilerContext,
+): CompilerContext {
+    return registerExpType(ctx, exp, {
+        kind: "ref",
+        name: "Slice",
+        optional: false,
+    });
+}
+
 function resolveStringLiteral(
-    exp: AstString,
+    exp: A.AstString | A.AstSimplifiedString | A.AstCommentValue,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -116,7 +138,7 @@ function resolveStringLiteral(
 }
 
 function resolveStructNew(
-    exp: AstStructInstance,
+    exp: A.AstStructInstance | A.AstStructValue,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -187,7 +209,7 @@ function resolveStructNew(
 }
 
 function resolveBinaryOp(
-    exp: AstOpBinary,
+    exp: A.AstOpBinary,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -223,6 +245,32 @@ function resolveBinaryOp(
                         exp.loc,
                     );
                 }
+
+                // poor man's constant propagation analysis (very local)
+                // it works only in the case when the right-hand side is a constant expression
+                // and does not have any variables
+                if (exp.op === ">>" || exp.op === "<<") {
+                    try {
+                        const valBits = ensureInt(
+                            evalConstantExpression(
+                                exp.right,
+                                ctx,
+                                getAstUtil(getAstFactory()),
+                            ),
+                        );
+                        if (0n > valBits.value || valBits.value > 256n) {
+                            throwCompilationError(
+                                `the number of bits shifted ('${valBits.value}') must be within [0..256] range`,
+                                exp.right.loc,
+                            );
+                        }
+                    } catch (error) {
+                        if (!(error instanceof TactConstEvalError)) {
+                            throw error;
+                        }
+                    }
+                }
+
                 resolved = { kind: "ref", name: "Int", optional: false };
             }
             break;
@@ -327,7 +375,7 @@ function isEqualityType(ctx: CompilerContext, ty: TypeRef): boolean {
 }
 
 function resolveUnaryOp(
-    exp: AstOpUnary,
+    exp: A.AstOpUnary,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -387,7 +435,7 @@ function resolveUnaryOp(
 }
 
 function resolveFieldAccess(
-    exp: AstFieldAccess,
+    exp: A.AstFieldAccess,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -419,16 +467,30 @@ function resolveFieldAccess(
     }
 
     // Find field
-    let fields: FieldDescription[];
-
     const srcT = getType(ctx, src.name);
 
-    fields = srcT.fields;
-    if (src.kind === "ref_bounced") {
-        fields = fields.slice(0, srcT.partialFieldCount);
+    const fieldIndex = srcT.fields.findIndex((v) => eqNames(v.name, exp.field));
+    const field = fieldIndex !== -1 ? srcT.fields[fieldIndex] : undefined;
+
+    // If we found a field of bounced<T>, check if the field doesn't fit in 224 bytes and cannot be accessed
+    if (
+        src.kind === "ref_bounced" &&
+        field &&
+        fieldIndex >= srcT.partialFieldCount
+    ) {
+        if (srcT.fields.length === 1) {
+            throwCompilationError(
+                `Maximum size of the bounced message is 224 bytes, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it because its too big, so it cannot be accessed. Reduce the type of this field so that it fits into 224 bytes`,
+                exp.field.loc,
+            );
+        }
+
+        throwCompilationError(
+            `Maximum size of the bounced message is 224 bytes, but the ${idTextErr(exp.field)} field of type ${idTextErr(src.name)} cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes`,
+            exp.field.loc,
+        );
     }
 
-    const field = fields.find((v) => eqNames(v.name, exp.field));
     const cst = srcT.constants.find((v) => eqNames(v.name, exp.field));
     if (!field && !cst) {
         const typeStr =
@@ -465,7 +527,7 @@ function resolveFieldAccess(
 }
 
 function resolveStaticCall(
-    exp: AstStaticCall,
+    exp: A.AstStaticCall,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -498,13 +560,13 @@ function resolveStaticCall(
             ) !== undefined
         ) {
             throwCompilationError(
-                `Static function ${idTextErr(exp.function)} does not exist. Perhaps you meant to call ".${idText(exp.function)}(...)" extension function?`,
+                `Cannot find global function ${idTextErr(exp.function)}, did you mean "self.${idText(exp.function)}()"?`,
                 exp.loc,
             );
         }
 
         throwCompilationError(
-            `Static function ${idTextErr(exp.function)} does not exist`,
+            `Cannot find global function ${idTextErr(exp.function)}`,
             exp.loc,
         );
     }
@@ -540,7 +602,7 @@ function resolveStaticCall(
 }
 
 function resolveCall(
-    exp: AstMethodCall,
+    exp: A.AstMethodCall,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -641,6 +703,43 @@ function resolveCall(
         throwCompilationError(`Cannot call function on bounced value`, exp.loc);
     }
 
+    if (src.kind === "null") {
+        // e.g. null.foo()
+        // we need to try to find a method foo that accepts nullable type as self
+
+        const types = getAllTypes(ctx);
+        const candidates = [];
+        for (const t of types) {
+            const f = t.functions.get(idText(exp.method));
+            if (f) {
+                if (f.self?.kind === "ref" && f.self.optional) {
+                    candidates.push({ type: t, f });
+                }
+            }
+        }
+
+        const candidate = candidates[0];
+
+        // No candidates found
+        if (typeof candidate === "undefined") {
+            throwCompilationError(
+                `Invalid type "${printTypeRef(src)}" for function call`,
+                exp.loc,
+            );
+        }
+
+        // Too many candidates found
+        if (candidates.length > 1) {
+            throwCompilationError(
+                `Ambiguous method call ${idTextErr(exp.method)}`,
+                exp.loc,
+            );
+        }
+
+        // Return the only candidate
+        return registerExpType(ctx, exp, candidate.f.returns);
+    }
+
     throwCompilationError(
         `Invalid type "${printTypeRef(src)}" for function call`,
         exp.loc,
@@ -648,7 +747,7 @@ function resolveCall(
 }
 
 function resolveInitOf(
-    ast: AstInitOf,
+    ast: A.AstInitOf,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -699,7 +798,7 @@ function resolveInitOf(
 }
 
 function resolveConditional(
-    ast: AstConditional,
+    ast: A.AstConditional,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -739,7 +838,7 @@ function resolveConditional(
 }
 
 export function resolveExpression(
-    exp: AstExpression,
+    exp: A.AstExpression,
     sctx: StatementContext,
     ctx: CompilerContext,
 ) {
@@ -755,6 +854,27 @@ export function resolveExpression(
         }
         case "string": {
             return resolveStringLiteral(exp, sctx, ctx);
+        }
+        case "address": {
+            return resolveAddressLiteral(exp, sctx, ctx);
+        }
+        case "cell": {
+            return resolveCellLiteral(exp, sctx, ctx);
+        }
+        case "slice": {
+            return resolveSliceLiteral(exp, sctx, ctx);
+        }
+        case "simplified_string": {
+            // A simplified string is resolved as a string
+            return resolveStringLiteral(exp, sctx, ctx);
+        }
+        case "comment_value": {
+            // A comment value is resolved as a string
+            return resolveStringLiteral(exp, sctx, ctx);
+        }
+        case "struct_value": {
+            // A struct value is resolved as a struct instance
+            return resolveStructNew(exp, sctx, ctx);
         }
         case "struct_instance": {
             return resolveStructNew(exp, sctx, ctx);
@@ -801,17 +921,14 @@ export function resolveExpression(
                             );
                             if (field) {
                                 throwCompilationError(
-                                    `Unable to resolve id '${exp.text}', did you mean 'self.${exp.text}'?`,
+                                    `Cannot find '${exp.text}', did you mean 'self.${exp.text}'?`,
                                     exp.loc,
                                 );
                             }
                         }
                     }
 
-                    throwCompilationError(
-                        `Unable to resolve id '${exp.text}'`,
-                        exp.loc,
-                    );
+                    throwCompilationError(`Cannot find '${exp.text}'`, exp.loc);
                 } else {
                     const cc = getStaticConstant(ctx, exp.text);
                     return registerExpType(ctx, exp, cc.type);

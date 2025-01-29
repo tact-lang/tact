@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "$id": "http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
+  "title": "Tact configuration schema",
+  "description": "JSON Schema for tact.config.json",
+  "type": "object",
+  "required": ["projects"],
+  "properties": {
+    "projects": {
+      "type": "array",
+      "description": "List of Tact projects with respective compilation options. Each .tact file represents its own Tact project.",
+      "items": {
+        "type": "object",
+        "required": ["name", "path", "output"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the project. All generated files are prefixed with it.\n\nIn Blueprint, `name` refers to the name of the contract itself."
+          },
+          "path": {
+            "type": "string",
+            "description": "Path to the project's Tact file. You can only specify one Tact file per project.\n\nIn Blueprint, `path` is superseded by the `target` field in `wrappers/ContractName.compile.ts` by default, or in `compilables/ContractName.compile.ts` if you have `separateCompilables` the option set in the `blueprint.config.ts`.",
+            "examples": ["./path/to/contract.tact"]
+          },
+          "output": {
+            "type": "string",
+            "description": "Path to the directory where all generated files will be placed.\n\nIn Blueprint, `output` is not used and all generated files are always placed in `build/ProjectName/`.",
+            "examples": ["./path/to/output/directory"]
+          },
+          "options": {
+            "type": "object",
+            "description": "Compilation options for the project.\n\nIn Blueprint, they act as default unless modified in `wrappers/ContractName.compile.ts` by default, or in `compilables/ContractName.compile.ts` if you have `separateCompilables` the option set in the `blueprint.config.ts`.",
+            "properties": {
+              "debug": {
+                "type": "boolean",
+                "default": false,
+                "description": "False by default. If set to true, enables debug output of a contract and allows usage of `dump()` function, which is useful for debugging purposes. With this option enabled, the contract will report that it was compiled in debug mode using the supported_interfaces method.\n\nRead more on debugging Tact code: https://docs.tact-lang.org/book/debug."
+              },
+              "external": {
+                "type": "boolean",
+                "default": false,
+                "description": "False by default. If set to true, enables support of external message receivers.\n\nRead more about external message receivers: https://docs.tact-lang.org/book/external."
+              },
+              "ipfsAbiGetter": {
+                "type": "boolean",
+                "default": false,
+                "description": "False by default. If set to true, enables generation of a getter with IPFS links describing the contract's ABI.\n\nRead more about IPFS ABI links: https://docs.tact-lang.org/ref/evolution/OTP-003."
+              },
+              "interfacesGetter": {
+                "type": "boolean",
+                "default": false,
+                "description": "False by default. If set to true, enables generation of a getter the information on the interfaces provided by the contract.\n\nRead more about supported interfaces: https://docs.tact-lang.org/ref/evolution/OTP-001."
+              },
+              "experimental": {
+                "type": "object",
+                "description": "Experimental options that might be removed in the future. Use with caution!",
+                "properties": {
+                  "inline": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "False by default. If set to true, enables inlining of all functions in contracts. This can reduce gas usage at the cost of bigger contracts."
+                  }
+                }
+              }
+            }
+          },
+          "mode": {
+            "type": "string",
+            "default": "full",
+            "enum": ["fullWithDecompilation", "full", "funcOnly", "checkOnly"],
+            "title": "Compilation mode of the project. In Blueprint, it's always set to `full` and cannot be overwritten.",
+            "description": "Set to `full` by default, which runs the whole pipeline of the compilation and emits FunC code, BoC, and various utility files, including wrappers for TypeScript.\nIf set to `fullWithDecompilation`, does full compilation and also decompiles produced binary code in the BoC format.\nIf set to `funcOnly`, only outputs intermediate FunC code, preventing further compilation.\nIf set to `checkOnly`, only performs syntax and type checking, preventing further compilation."
+          },
+          "verbose": {
+            "type": "number",
+            "default": 1,
+            "description": "Set verbosity level (higher = more details), default: 1"
+          }
+        }
+      }
+    }
+  }
+}

@@ -228,7 +228,7 @@ Usage example:
 
 ```tact
 let b: Builder = beginCell();
-let fizz: Builder = b.storeUint(42, 7);
+let fizz: Builder = b.storeInt(42, 7);
 ```
 
 ## Builder.storeBool
@@ -326,7 +326,7 @@ let fizz: Builder = b.storeCoins(42);
 
 :::note[Useful links:]
 
-  [Special `coins` serialization type](/book/integers#serialization-coins)
+  [Special `coins{:tact}` serialization type](/book/integers#serialization-varint)
 
 :::
 
@@ -717,7 +717,7 @@ let fizz: Int = s.loadCoins();
 
 :::note[Useful links:]
 
-  [Special `coins` serialization type](/book/integers#serialization-coins)
+  [Special `coins{:tact}` serialization type](/book/integers#serialization-varint)
 
 :::
 
@@ -1167,7 +1167,7 @@ fun cautiousParse(payload: Cell): GuessCoin? {
 ## Struct.fromSlice
 
 ```tact
-extends fun fromSlice(self: Struct, cell: Slice): Struct;
+extends fun fromSlice(self: Struct, slice: Slice): Struct;
 ```
 
 Extension function for any structure type [Struct][struct].
@@ -1291,7 +1291,7 @@ fun cautiousParse(payload: Cell): TripleAxe? {
 
 
 ```tact
-extends fun fromSlice(self: Message, cell: Slice): Message;
+extends fun fromSlice(self: Message, slice: Slice): Message;
 ```
 
 Extension function for any message type [Message][message].

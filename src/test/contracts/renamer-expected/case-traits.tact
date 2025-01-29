@@ -1,5 +1,4 @@
-@interface("") trait trait_0 {
-}
+@interface("") trait trait_0 { }
 
 trait trait_1 {
     abstract get fun function_decl_2(e: String): String;
@@ -12,9 +11,7 @@ trait trait_3 with B {
     const constant_def_4: Int = 2;
     abstract const constant_decl_5: Int;
 
-    receive("message") {
-
-    }
+    receive("message") { }
 
     fun function_def_6() {
         nativeThrowUnless(132, context().sender == self.owner);

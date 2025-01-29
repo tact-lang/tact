@@ -89,6 +89,14 @@ Motivation is very simple:
 * Storing $1000$ $257$-bit integers in state [costs](https://docs.ton.org/develop/smart-contracts/fees#how-to-calculate-fees) about $0.184$ TON per year.
 * Storing $1000$ $32$-bit integers only costs $0.023$ TON per year by comparison.
 
+:::note
+
+  Serialization limits apply only to the contract state between transactions and are **not** imposed on the temporary [TVM][tvm] memory, which operates only on $257$-bit integers.
+
+  Attempts to assign out-of-bounds values will result in [exit code 5](/book/exit-codes#5) being thrown at the very end of the [compute phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase): `Integer out of range`.
+
+:::
+
 ### Common serialization types
 
 Name             | [TL-B][tlb]                 | Inclusive range             | Space taken
@@ -106,9 +114,9 @@ Name             | [TL-B][tlb]                 | Inclusive range             | S
 `int128{:tact}`  | [`int128`][tlb-builtin]     | $-2^{127}$ to $2^{127} - 1$ | $128$ bits = $16$ bytes
 `int256{:tact}`  | [`int256`][tlb-builtin]     | $-2^{255}$ to $2^{255} - 1$ | $256$ bits = $32$ bytes
 `int257{:tact}`  | [`int257`][tlb-builtin]     | $-2^{256}$ to $2^{256} - 1$ | $257$ bits = $32$ bytes + $1$ bit
-`coins{:tact}`   | [`VarUInteger 16`][varuint] | $0$ to $2^{120} - 1$        | between $4$ and $124$ bits, [see below](#serialization-coins)
+`coins{:tact}`   | [`VarUInteger 16`][varuint] | $0$ to $2^{120} - 1$        | between $4$ and $124$ bits, [see below](#serialization-varint)
 
-### Arbitrary bit-width types
+### Arbitrary types of fixed bit-width {#serialization-fixed}
 
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
 
@@ -121,9 +129,13 @@ Name             | [TL-B][tlb]            | Inclusive range                 | Sp
 `uintX{:tact}`   | [`uintX`][tlb-builtin] | $0$ to $2^{X} - 1$              | $X$ bits, where $X$ is between $1$ and $256$
 `intX{:tact}`    | [`intX`][tlb-builtin]  | $-2^{X - 1}$ to $2^{X - 1} - 1$ | $X$ bits, where $X$ is between $1$ and $257$
 
-### Variable `coins` type {#serialization-coins}
+### Types of variable bit-width {#serialization-varint}
 
-In Tact, `coins{:tact}` is an alias to [`VarUInteger 16`][varuint] in [TL-B][tlb] representation, i.e. it takes a variable bit length depending on the optimal number of bytes needed to store the given integer and is commonly used for storing [nanoToncoin](/book/integers#nanotoncoin) amounts.
+Name           | [TL-B][tlb]                 | Inclusive range      | Space taken
+:------------: | :-------------------------: | :------------------: | :-------------------------
+`coins{:tact}` | [`VarUInteger 16`][varuint] | $0$ to $2^{120} - 1$ | between $4$ and $124$ bits
+
+In Tact, variable `coins{:tact}` format is an alias to [`VarUInteger 16`][varuint] in [TL-B][tlb] representation, i.e. it takes a variable bit length depending on the optimal number of bytes needed to store the given integer and is commonly used for storing [nanoToncoin](/book/integers#nanotoncoin) amounts.
 
 This serialization format consists of two [TL-B fields](https://docs.ton.org/develop/data-formats/tl-b-language#field-definitions):
 
@@ -155,6 +167,45 @@ struct Scrooge {
     // value: hundred twenty 1's in binary
     // in total: 124 bits
     d: Int as coins = pow(2, 120) - 1; // hundred twenty 1's in binary
+}
+```
+
+Name               | [TL-B][tlb]                 | Inclusive range             | Space taken
+:----------------: | :-------------------------: | :-------------------------: | :-------------------------
+`varuint16{:tact}` | [`VarUInteger 16`][varuint] | same as `coins{:tact}`      | same as `coins{:tact}`
+`varint16{:tact}`  | `VarInteger 16`             | $-2^{119}$ to $2^{119} - 1$ | between $4$ and $124$ bits
+`varuint32{:tact}` | [`VarUInteger 32`][varuint] | $0$ to $2^{248} - 1$        | between $5$ and $253$ bits
+`varint32{:tact}`  | `VarInteger 32`             | $-2^{247}$ to $2^{247} - 1$ | between $5$ and $253$ bits
+
+<p/><Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+The `varuint16{:tact}` format is equivalent to [`coins{:tact}`](#serialization-varint). Its signed variant, `varint16{:tact}`, has the same memory layout except for the signed `value` field, which allows a different range of values: from $-2^{119}$ to $2^{119} - 1$, including both ends.
+
+To store greater values, use `varuint32{:tact}` and `varint32{:tact}` formats. These are serialized almost identical to `coins{:tact}` and lesser variable integer formats, but use a $5$-bit `len` field for storing the byte length. This allows the `value` to use up to $248$ bits for storing the actual number, meaning that both `varuint32{:tact}` and `varint32{:tact}` can occupy up to $253$ bits in total.
+
+Examples:
+
+```tact
+struct BradBit {
+    // len: 00000, 5 bits
+    // value: none!
+    // in total: 5 bits
+    a: Int as varuint32 = 0; // 00000
+
+    // len: 00001, 5 bits
+    // value: 00000001, 8 bits
+    // in total: 13 bits
+    b: Int as varuint32 = 1; // 00001 00000001
+
+    // len: 00010, 5 bits
+    // value: 00000001 00000010, 16 bits
+    // in total: 21 bits
+    c: Int as varuint32 = 258; // 00010 00000001 00000010
+
+    // len: 11111, 5 bits
+    // value: two hundred and forty-eight 1's in binary
+    // in total: 253 bits
+    d: Int as varuint32 = pow(2, 248) - 1; // two hundred and forty-eight 1's in binary
 }
 ```
 
@@ -195,6 +246,7 @@ Here, `oneByte` is serialized as a [`uint8`](#common-serialization-types), which
   Therefore, be **very** careful with numbers and always double-check calculations when using serialization.
 :::
 
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
 [tlb-builtin]: https://docs.ton.org/develop/data-formats/tl-b-language#built-in-types
 [varuint]: https://docs.ton.org/develop/data-formats/msg-tlb#varuinteger-n

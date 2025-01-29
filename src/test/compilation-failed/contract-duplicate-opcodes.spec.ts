@@ -1,11 +1,6 @@
-import { __DANGER_resetNodeId } from "../../grammar/ast";
 import { itShouldNotCompile } from "./util";
 
 describe("contract-duplicate-opcodes", () => {
-    beforeEach(() => {
-        __DANGER_resetNodeId();
-    });
-
     itShouldNotCompile({
         testName: "contract-duplicate-bounced-opcode",
         errorMessage:
