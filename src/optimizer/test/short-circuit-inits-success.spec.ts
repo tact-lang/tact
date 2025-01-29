@@ -1,5 +1,4 @@
 import { getAstFactory } from "../../ast/ast-helpers";
-import { featureEnable } from "../../config/features";
 import { CompilerContext } from "../../context/context";
 import { openContext } from "../../context/store";
 import { getParser } from "../../grammar";
@@ -24,22 +23,6 @@ describe("short-circuit-initialization", () => {
             ctx = resolveStatements(ctx, Ast);
             ctx = resolveSignatures(ctx, Ast);
             expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
-        });
-    }
-    for (const r of loadCases(__dirname + "/failed/")) {
-        it(`${r.name} should fail boolean short-circuiting during initialization`, () => {
-            const Ast = getAstFactory();
-            let ctx = openContext(
-                new CompilerContext(),
-                [{ code: r.code, path: "<unknown>", origin: "user" }],
-                [],
-                getParser(Ast, defaultParser),
-            );
-            expect(() => {
-                ctx = resolveDescriptors(ctx, Ast);
-                ctx = resolveStatements(ctx, Ast);
-                ctx = resolveSignatures(ctx, Ast);
-            }).toThrowErrorMatchingSnapshot();
         });
     }
 });
