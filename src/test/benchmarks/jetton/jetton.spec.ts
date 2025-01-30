@@ -1,12 +1,4 @@
-import {
-    Address,
-    beginCell,
-    Cell,
-    ContractProvider,
-    Sender,
-    toNano,
-    Builder,
-} from "@ton/core";
+import { Address, beginCell, Cell, Sender, toNano, Builder } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import chalk from "chalk";
 
@@ -237,17 +229,8 @@ describe("Jetton", () => {
                 ),
             );
 
-            newUserWallet.getProvider = (provider: ContractProvider) =>
-                provider;
-
-            const getJettonBalance = async (): Promise<bigint> => {
-                const provider = await newUserWallet.getProvider();
-                const state = await provider.getState();
-                if (state.state.type !== "active") {
-                    return 0n;
-                }
-                return (await newUserWallet.getGetWalletData()).balance;
-            };
+            const getJettonBalance = async (): Promise<bigint> =>
+                (await newUserWallet.getGetWalletData()).balance;
 
             const sendTransfer = async (
                 via: Sender,
@@ -308,8 +291,50 @@ describe("Jetton", () => {
         printBenchmarkTable(results);
     });
 
+    function sendMint(
+        contract: SandboxContract<JettonMinter>,
+        via: Sender,
+        to: Address,
+        jetton_amount: bigint,
+        forward_ton_amount: bigint,
+        total_ton_amount: bigint,
+    ): Promise<SendMessageResult> {
+        if (total_ton_amount <= forward_ton_amount) {
+            throw new Error(
+                "Total TON amount should be greater than the forward amount",
+            );
+        }
+        const msg: Mint = {
+            $$type: "Mint",
+            amount: jetton_amount,
+            receiver: to,
+        };
+        return contract.send(
+            via,
+            { value: total_ton_amount + toNano("0.015") },
+            msg,
+        );
+    }
+
+    function sendDiscovery(
+        contract: SandboxContract<JettonMinter>,
+        via: Sender,
+        address: Address,
+        includeAddress: boolean,
+        value: bigint = toNano("0.1"),
+    ): Promise<SendMessageResult> {
+        const msg: ProvideWalletAddress = {
+            $$type: "ProvideWalletAddress",
+            query_id: 0n,
+            owner_address: address,
+            include_address: includeAddress,
+        };
+        return contract.send(via, { value }, msg);
+    }
+
     it("send transfer", async () => {
-        const mintResult = await jettonMinter.sendMint(
+        const mintResult = await sendMint(
+            jettonMinter,
             deployer.getSender(),
             deployer.address,
             toNano(100000),
@@ -390,7 +415,8 @@ describe("Jetton", () => {
     });
 
     it("discovery", async () => {
-        const discoveryResult = await jettonMinter.sendDiscovery(
+        const discoveryResult = await sendDiscovery(
+            jettonMinter,
             deployer.getSender(),
             notDeployer.address,
             false,
@@ -447,47 +473,3 @@ interface ExtendedJettonMinter extends SandboxContract<JettonMinter> {
         value?: bigint,
     ): Promise<SendMessageResult>;
 }
-
-JettonMinter.prototype.sendMint = function sendMint(
-    this: JettonMinter,
-    provider: ContractProvider,
-    via: Sender,
-    to: Address,
-    jetton_amount: bigint,
-    forward_ton_amount: bigint,
-    total_ton_amount: bigint,
-) {
-    if (total_ton_amount <= forward_ton_amount) {
-        throw new Error(
-            "Total TON amount should be greater than the forward amount",
-        );
-    }
-    const msg: Mint = {
-        $$type: "Mint",
-        amount: jetton_amount,
-        receiver: to,
-    };
-    return this.send(
-        provider,
-        via,
-        { value: total_ton_amount + toNano("0.015") },
-        msg,
-    );
-};
-
-JettonMinter.prototype.sendDiscovery = function (
-    this: JettonMinter,
-    provider: ContractProvider,
-    via: Sender,
-    address: Address,
-    includeAddress: boolean,
-    value: bigint = toNano("0.1"),
-) {
-    const msg: ProvideWalletAddress = {
-        $$type: "ProvideWalletAddress",
-        query_id: 0n,
-        owner_address: address,
-        include_address: includeAddress,
-    };
-    return this.send(provider, via, { value: value }, msg);
-};
