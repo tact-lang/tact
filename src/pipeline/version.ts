@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const version = require("../../package.json").version;
 
 let __DANGER__VersionNumberDisabled = false;
