@@ -6,7 +6,6 @@ const main = async () => {
     __DANGER__disableVersionNumber();
 
     await allInFolder(__dirname, ["benchmarks/contracts/*.tact"]);
-    await allInFolder(__dirname, ["benchmarks/jetton/sources/*.tact"]);
 };
 
 void main();

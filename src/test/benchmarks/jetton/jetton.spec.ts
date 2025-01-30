@@ -10,6 +10,7 @@ import {
     TransactionComputeVm,
 } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import chalk from "chalk";
 
 import {
     JettonMinter,
@@ -17,11 +18,11 @@ import {
     TokenBurn,
     Mint,
     ProvideWalletAddress,
-} from "./sources/output/jetton_minter_discoverable_JettonMinter";
+} from "../contracts/output/jetton_minter_discoverable_JettonMinter";
 import {
     JettonWallet,
     TokenTransfer,
-} from "./sources/output/jetton_minter_discoverable_JettonWallet";
+} from "../contracts/output/jetton_minter_discoverable_JettonWallet";
 
 import "@ton/test-utils";
 import { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
@@ -88,8 +89,8 @@ function calculateChanges(results: BenchmarkResult[]): string[][] {
             ).toFixed(2);
             changes[i]![index] =
                 parseFloat(change) >= 0
-                    ? `\x1b[91m+${change}%\x1b[0m`
-                    : `\x1b[32m${change}%\x1b[0m`;
+                    ? chalk.redBright(`(+${change}%)`)
+                    : chalk.green(`(${change}%)`);
         });
     }
     return changes;
@@ -136,8 +137,8 @@ function printBenchmarkTable(results: BenchmarkResult[]): void {
         process.stdout.write(
             `${metric.charAt(0).toUpperCase() + metric.slice(1)}: ${
                 parseFloat(ratio) > 100
-                    ? `\x1b[91m${ratio}%\x1b[0m`
-                    : `\x1b[32m${ratio}%\x1b[0m`
+                    ? chalk.redBright(`${ratio}%`)
+                    : chalk.green(`${ratio}%`)
             } of FunC gas usage\n`,
         );
     });

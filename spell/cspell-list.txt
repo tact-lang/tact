@@ -1,6 +1,5 @@
 Brujin
 bocchi
-consuption
 Cheatsheet
 Cheatsheets
 Comptime
@@ -190,7 +189,6 @@ unboc
 uncons
 uninit
 unixfs
-Unsufficient
 untypable
 varint
 varuint
