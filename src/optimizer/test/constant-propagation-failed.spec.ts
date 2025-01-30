@@ -1,14 +1,9 @@
 import { getAstFactory } from "../../ast/ast-helpers";
-import { featureEnable } from "../../config/features";
 import { CompilerContext } from "../../context/context";
 import { openContext } from "../../context/store";
 import { getParser } from "../../grammar";
 import { defaultParser } from "../../grammar/grammar";
-import {
-    getAllStaticFunctions,
-    resolveDescriptors,
-} from "../../types/resolveDescriptors";
-import { getAllExpressionTypes } from "../../types/resolveExpression";
+import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { resolveSignatures } from "../../types/resolveSignatures";
 import { resolveStatements } from "../../types/resolveStatements";
 import { loadCases } from "../../utils/loadCases";
@@ -24,7 +19,6 @@ describe("constant-propagation", () => {
                 [],
                 getParser(Ast, defaultParser),
             );
-            ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
             ctx = resolveStatements(ctx, Ast);
             ctx = resolveSignatures(ctx, Ast);
