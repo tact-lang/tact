@@ -11,6 +11,7 @@ function makeCRC32Table(polynomial: number): Int32Array {
     return table;
 }
 
+// Reversed polynomial of ISO3309 CRC32
 const CRC32C_TABLE = makeCRC32Table(0xedb88320);
 
 export function crc32(data: string | Uint8Array): number {
