@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/consistent-indexed-object-style */
 type Extend<T extends any[], H> = H extends infer A ? [...T, A] : never;
 type Flat<TS extends any[], R extends any[] = []> = TS extends [
     infer H,

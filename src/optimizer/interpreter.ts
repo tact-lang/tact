@@ -413,14 +413,14 @@ export function evalBinaryOp(
         }
         case "&&": {
             const astLeft = ensureBoolean(valLeft);
-            const astRight = ensureBoolean(valRightContinuation());
-            const result = astLeft.value && astRight.value;
+            const result =
+                astLeft.value && ensureBoolean(valRightContinuation()).value;
             return util.makeBooleanLiteral(result, source);
         }
         case "||": {
             const astLeft = ensureBoolean(valLeft);
-            const astRight = ensureBoolean(valRightContinuation());
-            const result = astLeft.value || astRight.value;
+            const result =
+                astLeft.value || ensureBoolean(valRightContinuation()).value;
             return util.makeBooleanLiteral(result, source);
         }
     }

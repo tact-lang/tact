@@ -1,9 +1,9 @@
 import { ILogger } from "../context/logger";
 
 // Wasm Imports
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const CompilerModule = require("./funcfiftlib.js");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const FuncFiftLibWasm = require("./funcfiftlib.wasm.js").FuncFiftLibWasm;
 const WasmBinary = Buffer.from(FuncFiftLibWasm, "base64");
 

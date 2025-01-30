@@ -808,7 +808,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             }
             if (params.length === 0) {
                 throwCompilationError(
-                    "Extend functions must have at least one parameter",
+                    'Extend functions must have at least one parameter named "self"',
                     isExtends.loc,
                 );
             }
