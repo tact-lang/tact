@@ -1,14 +1,15 @@
 ---
 title: 配置
+description: Tact编译器的行为可以通过其配置文件自定义：
 ---
 
 `tact.config.json` 是 Tact 项目的入口点。它是一个 JSON 文件，包含所有项目和编译器参数的列表。
 
-本页列出了 [模式](#schema)中的所有配置选项。 请查看右侧的目录，以方便浏览。
+本页列出了 [模式](#schema)中的所有配置选项。 请查看右侧的目录，以方便浏览。 请查看右侧的目录，以方便浏览。
 
 :::note
 
-  对该文件的唯一要求是它是一个有效的 JSON 文件，包含 [适当的字段](#schema)，因此可以任意命名。 不过，将配置文件命名为 `tact.config.json` 是所有使用 Tact 的工具都鼓励和支持的通用约定。
+  对该文件的唯一要求是它是一个有效的 JSON 文件，包含 [适当的字段](#schema)，因此可以任意命名。  不过，将配置文件命名为 `tact.config.json` 是所有使用 Tact 的工具都鼓励和支持的通用约定。
 
 :::
 
@@ -21,17 +22,17 @@ title: 配置
 ```json filename="tact.config.json" {2}
 {
   "$schema": "http://raw.githubusercontent.com/tact-lang/tact/main/src/config/configSchema.json",
-  "projects"：[]
+  "projects": []
 }
 ```
 
-## 项目 {#projects}
+## `项目` {#projects}
 
-带有相应编译选项的 Tact 项目列表。 每个 `.tact` 文件都代表自己的 Tact 项目。
+带有相应编译选项的 Tact 项目列表。 每个 `.tact` 文件都代表自己的 Tact 项目。 每个 `.tact` 文件都代表自己的 Tact 项目。
 
 ```json filename="tact.config.json" {3,4}
 {
-  "projects"：[
+  "projects": [
     { },
     { }
   ]
@@ -40,18 +41,18 @@ title: 配置
 
 ### `name` {#projects-name}
 
-`name` 是项目名称。所有生成的文件都以此为前缀。
+`name` 是项目的名称。 所有生成的文件都以此名称为前缀。
 
-在 [Blueprint][bp] 中，"name "指合同本身的名称。
+在[Blueprint][bp]中，`name`指的是合约本身的名称。
 
 ```json filename="tact.config.json" {4,7}
 {
-  "projects"：[
+  "projects": [
     {
-      "name"："some_prefix"
+      "name": "some_prefix"
     },
     {
-      "name"："ContractUnderBlueprint"
+      "name": "ContractUnderBlueprint"
     }
   ]
 }
@@ -59,9 +60,9 @@ title: 配置
 
 ### `path` {#projects-path}
 
-项目 Tact 文件的路径。 每个项目只能指定一个 Tact 文件。
+项目 Tact 文件的路径。 每个项目只能指定一个 Tact 文件。 每个项目只能指定一个 Tact 文件。
 
-在 [Blueprint][bp] 中，`path` 被 `wrappers/ContractName.compile.ts` 中的 `target` 字段取代。
+在 [Blueprint][bp]中，`path` 被`wrapper/ContractName.compile 中的`target`字段所取代。 默认情况下，或在“compilables/ContractName.compile.ts”中，如果你有 `separateCompilables`，则在 [`blueprint.config.ts\`][bp-config] 中设置的选项。
 
 ```json filename="tact.config.json" {5}
 {
@@ -78,7 +79,7 @@ title: 配置
 
 `output` 是放置所有生成文件的目录路径。
 
-在 [蓝图][bp] 中，不使用 `output` ，所有生成的文件始终放在 `build/ProjectName/` 中。
+在 [Blueprint][bp] 中，`output` 未被使用，并且所有生成的文件总是放在 `build/ProjectName/` 中。
 
 ```json filename="tact.config.json" {6}
 {
@@ -96,7 +97,7 @@ title: 配置
 
 项目的编译选项。
 
-在 [Blueprint][bp] 中，除非在`wrappers/ContractName.compile.ts`中进行修改，否则它们将作为默认设置运行。
+在[Blueprint][bp]中，它们作为默认设置，除非在`wrappers/ContractName.compile.ts`中修改为默认设置，或者在`compilables/ContractName.compile.ts`中修改（如果您在[`blueprint.config.ts`][bp-config]中设置了`separateCompilables`选项）。
 
 ```json filename="tact.config.json" {7,11}
 {
@@ -119,7 +120,7 @@ title: 配置
 
 默认为 `false{:json}`。
 
-`debug: true`. 启用合约的调试输出。这对调试非常有用。启用此合约将报告它是在调试模式下使用 `supported_interfaces` 方法编译的。
+如果设置为`true{:json}`，则启用合约的调试输出，并允许使用[`dump(){:tact}`](/zh-cn/ref/core-debug#dump)函数，这对[调试目的](/zh-cn/book/debug)很有用。 启用此选项后，合约将报告它是在调试模式下使用 `supported_interfaces` 方法编译的。
 
 ```json filename="tact.config.json" {8,14}
 {
@@ -177,7 +178,7 @@ title: 配置
 
 :::note
 
-  更多信息，请访问专用页面：[大师链](/zh-cn/book/masterchain)。
+  阅读更多内容请访问专页：[主链](/zh-cn/book/masterchain)。
 
 :::
 
@@ -218,7 +219,7 @@ title: 配置
 
 默认为 `false{:json}`。
 
-如果设置为 `true{:json}`，则可生成带有描述合同 ABI 的 IPFS 链接的[getter](/zh-cn/book/contracts#getter-functions)。
+如果设置为 `true{:json}`，则可生成带有描述合约 ABI 的 IPFS 链接的[getter](/zh-cn/book/contracts#getter-functions)。
 
 ```json filename="tact.config.json" {8,14}
 {
@@ -243,7 +244,7 @@ title: 配置
 
 :::note
 
-  在专用网页上阅读更多信息：[OTP-003：自我 ABI 报告](/zh-cn/ref/evolution/otp-003)。
+  阅读更多专页: [OTP-003: Self-ABI reporting](/zh-cn/ref/evolution/otp-003)。
 
 :::
 
@@ -251,7 +252,7 @@ title: 配置
 
 默认为 `false{:json}`。
 
-如果设置为 `true{:json}`，则可生成包含合约所提供接口列表的 [getter]（/book/contracts#getter-functions）。
+如果设置为 `true{:json}`，则可生成包含合约所提供接口列表的 [getter](/zh-cn/book/contracts#getter-functions)。
 
 ```json filename="tact.config.json" {8,14}
 {
@@ -280,7 +281,7 @@ title: 配置
 
 :::
 
-#### Experimental
+#### `experimental` {#options-experimental}
 
 将来可能会取消的试验性选项。 谨慎使用！
 
@@ -305,11 +306,11 @@ title: 配置
 }
 ```
 
-##### `inline` {#experimental-inline}
+##### `inline` {#experimental-inline}C
 
 默认为 `false{:json}`。
 
-`inline: true`. 启用合同中所有函数的内联。这可以减少gas的使用，但代价是需要更大的合约。
+如果设置为`true{:json}`，则启用合约中所有函数的内联。 这可以减少Gas使用，但代价是合约更大。
 
 ```json filename="tact.config.json" {9,17}
 {
@@ -340,14 +341,14 @@ title: 配置
 
 项目的编译模式。 有效值为
 
-Value                            | Description
-:------------------------------- | :----------
-`"full"{:json}`                  | (默认) 运行整个编译流水线，并生成 FunC 代码、BoC 和各种实用程序文件，包括 TypeScript 的封装器。
-`"fullWithDecompilation"{:json}` | 运行整个编译管道，如 `“full”{:json}`，并以 BoC 格式反编译生成的二进制代码。
-`"funcOnly"{:json}`              | 只输出中间 FunC 代码，阻止进一步编译。
-`"checkOnly"{:json}`             | 仅执行语法和类型检查，阻止进一步编译。
+| 值                                | 说明                                                     |
+| :------------------------------- | :----------------------------------------------------- |
+| `"full"{:json}`                  | (默认) 运行整个编译管道并发布FunC 代码，BoC 和各种实用文件，包括TypeScript的包装文件。 |
+| `"fullWithDecompilation"{:json}` | 运行整个编译管道，如 `“full”{:json}`，并以 BoC 格式反编译生成的二进制代码。       |
+| `"funcOnly"{:json}`              | 只输出中间 FunC 代码，阻止进一步编译。                                 |
+| `"checkOnly"{:json}`             | 仅执行语法和类型检查，阻止进一步编译。                                    |
 
-在 [Blueprint][bp] 中，"mode "始终设置为`"full"{:json}`，且不可覆盖。
+在 [Blueprint][bp] 中，`mode` 始终设置为`"full"{:json}`，且不可覆盖。
 
 ```json filename="tact.config.json" {7,13}
 {
@@ -412,3 +413,4 @@ Value                            | Description
 ```
 
 [bp]: https://github.com/ton-org/blueprint
+[bp-config]: https://github.com/ton-org/blueprint/tree/main?tab=readme-ov-file#configuration

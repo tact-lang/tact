@@ -1,13 +1,682 @@
 ---
 title: STON.fi
+description: 这个页面列出了与STON.fi合作的示例，这是一个基于TON Blockchain 的分散自动化市场制造商。
 sidebar:
   order: 2
 ---
 
 [STON.fi](https://ston.fi)是一个建立在[TON 区块链](https://ton.org)上的去中心化自动做市商（AMM），提供几乎零费用、低滑点、极其简单的界面以及与 TON 钱包的直接集成。
 
-:::danger[Not implemented]
+:::caution
 
-  在 [#149](https://github.com/tact-lang/tact-docs/issues/149) 获得新内容之前，本页只是一个存根。
+  此页面上的示例使用了STON.fi的 API v2, 目前正在开发中。 因此，所有地址都在 [testnet][testnet] 中。
+
+  慎重行事——不试图将资金从主网送到测试网，反之亦然。
 
 :::
+
+在进一步介绍之前，请自己熟悉以下内容：
+
+- [接收消息](/zh-cn/book/receive/)
+- [发送消息](/zh-cn/book/send/)
+- [可替代代币（Jettons）](/zh-cn/cookbook/jettons/)
+- [STONFi 文档：术语表](https://docs.ston.fi/docs/user-section/glossary)
+- [STON.fi文档：架构](https://docs.ston.fi/docs/developer-section/architecture)
+
+## Swaps
+
+在 [STON.fi 文档](https://docs.ston.fi/docs/developer-section/api-reference-v2/example_swap)中阅读更多关于 Swaps 的信息。
+
+Swaps使用 `StonfiSwap{:tact}` [Message][message] 和 `SwapAdditionalData{:tact}` [Struct][struct]
+
+```tact
+/// https://docs.ston.fi/docs/developer-section/api-reference-v2/router#swap-0x6664de2a
+message(0x6664de2a) StonfiSwap {
+    // Address of the other Router token wallet
+    otherTokenWallet: Address;
+
+    // Where to send refunds upon a failed swap
+    refundAddress: Address;
+
+    // Where to send excesses upon a successful swap
+    excessesAddress: Address;
+
+    // UNIX timestamp of execution deadline for the swap
+    deadline: Int as uint64;
+
+    // Reference to another Cell with additional data,
+    // using the Tact's greedy auto-layout mechanism
+    additionalData: SwapAdditionalData;
+}
+
+/// https://docs.ston.fi/docs/developer-section/api-reference-v2/router#additional_data-body
+struct SwapAdditionalData {
+    // Minimum required amount of tokens to receive
+    // Defaults to 1, which causes the swap to fail
+    //                only if no tokens are received
+    minOut: Int as coins = 1;
+
+    // Where to send tokens upon a successful swap
+    receiverAddress: Address;
+
+    // Forward fees for the `customPayload` if it's not `null`
+    // Defaults to 0
+    fwdGas: Int as coins = 0;
+
+    // Custom payload that will be sent upon a successful swap
+    // Defaults to `null`, which means no payload
+    customPayload: Cell? = null;
+
+    // Forward fees for `refundPayload` if it's not `null`
+    // Defaults to 0
+    refundFwdGas: Int as coins = 0;
+
+    // Custom payload that will be sent upon a failed swap
+    // Defaults to `null`, which means no payload
+    refundPayload: Cell? = null;
+
+    // Referral fee, between 0 (no fee) and 100 (1%)
+    // Defaults to 10, which means 0.1% fee
+    refFee: Int as uint16 = 10;
+
+    // Address of the referral
+    // Defaults to `null`
+    referralAddress: Address? = null;
+}
+```
+
+[STON.fi SDK](https://github.com/ston-fi/sdk) 定义了一些[常量用于处理费用](https://github.com/ston-fi/sdk/blob/786ece758794bd5c575db8b38f5e5de19f43f0d1/pubes/sdk/src/contracts/dex/v2_1/router/BaseRouterV2_1.s)。 请注意这些是硬编码值，但最佳做法是[用当前配置参数动态计算费用](https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation)
+
+```tact
+/// Hardcoded fee value to pay for sending a message to the Jetton wallet
+const FeeSwapJettonToJetton: Int = ton("0.3");
+/// Hardcoded fee value to pay forward fees from the Jetton wallet
+const FeeSwapJettonToJettonFwd: Int = ton("0.24");
+
+/// Hardcoded fee value to pay for sending a message to the Jetton wallet
+const FeeSwapJettonToToncoin: Int = ton("0.3");
+/// Hardcoded fee value to pay for sending a message to the Jetton wallet
+const FeeSwapJettonToToncoinFwd: Int = ton("0.24");
+
+/// Hardcoded fee value to pay for sending a message and subsequent forwarding
+const FeeSwapToncoinToJetton: Int = ton("0.01") + ton("0.3");
+```
+
+:::note[Useful links:]
+
+  [TON 文档中的费用计算][fees-calc]
+
+:::
+
+### Jetton to Jetton {#swaps-jetton-to-jetton}
+
+:::caution
+
+  下面的示例使用了STON.fi的 API v2, 目前正在开发中。 因此，所有地址都在 [testnet][testnet] 中。
+
+  此外，有些变量，如`offerAmount`，为了演示目的而硬编码。 别忘了在真实生活的场景中更改它们。
+
+:::
+
+```tact
+// CPI Router v2.1.0
+const RouterAddress: Address =
+    address("kQALh-JBBIKK7gr0o4AVf9JZnEsFndqO0qTCyT-D-yBsWk0v");
+
+// Router Jetton Wallet address
+const RouterJettonWallet: Address =
+    address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK");
+
+/// NOTE: To calculate and provide Jetton wallet address for the target user,
+///       make sure to check links after this code snippet
+fun jettonToJetton(myJettonWalletAddress: Address) {
+    // Amount of Jettons to swap
+    let offerAmount: Int = 100_000;
+
+    // Prepare the payload
+    let forwardPayload = StonfiSwap{
+        otherTokenWallet: RouterJettonWallet,
+        refundAddress: myAddress(),
+        excessesAddress: myAddress(),
+        // Deadline is set to 10,000 seconds from now
+        deadline: now() + 10_000,
+        additionalData: SwapAdditionalData{ receiverAddress: myAddress() },
+    };
+
+    // Start a swap with the message to the Jetton wallet
+    send(SendParameters{
+        to: myJettonWalletAddress,
+        value: FeeSwapJettonToJetton,
+        body: JettonTransfer{
+            queryId: 42,
+            amount: offerAmount,
+            destination: RouterAddress,
+            responseDestination: myAddress(),
+            forwardTonAmount: FeeSwapJettonToJettonFwd,
+            forwardPayload: forwardPayload.toCell(),
+        }.toCell(),
+    });
+}
+
+//
+// Helper Messages, Structs and constants described earlier on this page
+//
+
+message(0x6664de2a) StonfiSwap {
+    otherTokenWallet: Address;
+    refundAddress: Address;
+    excessesAddress: Address;
+    deadline: Int as uint64;
+    additionalData: SwapAdditionalData;
+}
+
+struct SwapAdditionalData {
+    minOut: Int as coins = 1;
+    receiverAddress: Address;
+    fwdGas: Int as coins = 0;
+    customPayload: Cell? = null;
+    refundFwdGas: Int as coins = 0;
+    refundPayload: Cell? = null;
+    refFee: Int as uint16 = 10;
+    referralAddress: Address? = null;
+}
+
+const FeeSwapJettonToJetton: Int = ton("0.3");
+const FeeSwapJettonToJettonFwd: Int = ton("0.24");
+
+//
+// Messages from the Jetton standard
+//
+
+message(0xf8a7ea5) JettonTransfer {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    destination: Address;
+    responseDestination: Address?;
+    customPayload: Cell? = null;
+    forwardTonAmount: Int as coins;
+    forwardPayload: Cell?; // slightly adjusted
+}
+```
+
+:::note[Useful links:]
+
+  [在 TON 文档中检索 Jetton 钱包地址][jetton-addr-online]\
+  [如何计算用户的 Jetton 钱包地址（离线）?][jetton-addr-offline]\
+  [可发现的 Jetton 钱包][discoverable-jetton-wallets]\
+  [TON 文档中的费用计算][fees-calc]
+
+:::
+
+### Jetton to Toncoin {#swaps-jetton-to-toncoin}
+
+Jetton to Toncoin swap与[Jetton to Jetton swap](#swaps-jetton-to-jetton) 非常相似，唯一不同的是，`RouterJettonWallet{:tact}`地址被替换为 `RouterProxyTonWallet{:tact} ` 。
+
+:::caution
+
+  下面的示例使用了STON.fi的 API v2, 目前正在开发中。 因此，所有地址都在 [testnet][testnet] 中。
+
+  此外，有些变量，如`offerAmount`，为了演示目的而硬编码。 别忘了在真实生活的场景中更改它们。
+
+:::
+
+```tact
+// CPI Router v2.1.0
+const RouterAddress: Address =
+    address("kQALh-JBBIKK7gr0o4AVf9JZnEsFndqO0qTCyT-D-yBsWk0v");
+
+// Router's pTON address
+const RouterProxyTonWallet: Address =
+    address("kQBbJjnahBMGbMUJwhAXLn8BiigcGXMJhSC0l7DBhdYABhG7");
+
+/// NOTE: To calculate and provide Jetton wallet address for the target user,
+///       make sure to check links after this code snippet
+fun jettonToToncoin(myJettonWalletAddress: Address) {
+    // Amount of Jettons to swap
+    let offerAmount: Int = 100_000;
+
+    // Prepare the payload
+    let forwardPayload = StonfiSwap{
+        otherTokenWallet: RouterProxyTonWallet,
+        refundAddress: myAddress(),
+        excessesAddress: myAddress(),
+        // Deadline is set to 10,000 seconds from now
+        deadline: now() + 10_000,
+        additionalData: SwapAdditionalData{ receiverAddress: myAddress() },
+    };
+
+    // Start a swap with the message to the Jetton wallet
+    send(SendParameters{
+        to: myJettonWalletAddress,
+        value: FeeSwapJettonToToncoin,
+        body: JettonTransfer{
+            queryId: 42,
+            amount: offerAmount,
+            destination: RouterAddress,
+            responseDestination: myAddress(),
+            forwardTonAmount: FeeSwapJettonToToncoinFwd,
+            forwardPayload: forwardPayload.toCell(),
+        }.toCell(),
+    });
+}
+
+//
+// Helper Messages, Structs and constants described earlier on this page
+//
+
+message(0x6664de2a) StonfiSwap {
+    otherTokenWallet: Address;
+    refundAddress: Address;
+    excessesAddress: Address;
+    deadline: Int as uint64;
+    additionalData: SwapAdditionalData;
+}
+
+struct SwapAdditionalData {
+    minOut: Int as coins = 1;
+    receiverAddress: Address;
+    fwdGas: Int as coins = 0;
+    customPayload: Cell? = null;
+    refundFwdGas: Int as coins = 0;
+    refundPayload: Cell? = null;
+    refFee: Int as uint16 = 10;
+    referralAddress: Address? = null;
+}
+
+const FeeSwapJettonToToncoin: Int = ton("0.3");
+const FeeSwapJettonToToncoinFwd: Int = ton("0.24");
+
+//
+// Messages from the Jetton standard
+//
+
+message(0xf8a7ea5) JettonTransfer {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    destination: Address;
+    responseDestination: Address?;
+    customPayload: Cell? = null;
+    forwardTonAmount: Int as coins;
+    forwardPayload: Cell?; // slightly adjusted
+}
+```
+
+:::note[Useful links:]
+
+  [在 TON 文档中检索 Jetton 钱包地址][jetton-addr-online]\
+  [如何计算用户的 Jetton 钱包地址（离线）?][jetton-addr-offline]\
+  [可发现的 Jetton 钱包][discoverable-jetton-wallets]\
+  [TON 文档中的费用计算][fees-calc]
+
+:::
+
+### Toncoin 交换至 Jetton {#swaps-jetton-to-toncoin}
+
+要将 Toncoin 兑换为 Jetton，STON.fi 需要使用一种被称为代理 Toncoin 钱包（简称 pTON）的工具。 要与它进行适当的互动，我们需要引入一个 `ProxyToncoinTransfer{:tact}` [Message][message]
+
+```tact
+/// https://github.com/ston-fi/sdk/blob/786ece758794bd5c575db8b38f5e5de19f43f0d1/packages/sdk/src/contracts/pTON/v2_1/PtonV2_1.ts
+message(0x01f3835d) ProxyToncoinTransfer {
+    // Unique identifier used to trace transactions across multiple contracts
+    // Defaults to 0, which means we don't mark messages to trace their chains
+    queryId: Int as uint64 = 0;
+
+    // Toncoin amount for the swap
+    tonAmount: Int as coins;
+
+    // Where to send refunds upon a failed swap
+    refundAddress: Address;
+
+    // Optional custom payload to attach to the swap
+    // Defaults to `null`
+    forwardPayload: Cell?;
+}
+```
+
+请注意，`ProxyToncoinTransfer{:tact}`与`JettonTransfer{:tact}`相似， 但不要求除退款地址以外的任何地址，也不要求指定任何预付金额。
+
+:::caution
+
+  下面的示例使用了STON.fi的 API v2, 目前正在开发中。 因此，所有地址都在 [testnet][testnet] 中。
+
+  此外，有些变量，如`offerAmount`，为了演示目的而硬编码。 别忘了在真实生活的场景中更改它们。
+
+:::
+
+```tact
+// Router's pTON wallet address
+const RouterProxyTonWallet: Address
+    = address("kQBbJjnahBMGbMUJwhAXLn8BiigcGXMJhSC0l7DBhdYABhG7");
+
+// Router's Jetton wallet address
+const RouterJettonWallet: Address =
+    address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK");
+
+fun toncoinToJetton() {
+    // Amount of Toncoin to swap
+    let offerAmount: Int = 1_000;
+
+    // Prepare the payload
+    let forwardPayload = StonfiSwap{
+        otherTokenWallet: RouterJettonWallet,
+        refundAddress: myAddress(),
+        excessesAddress: myAddress(),
+        // Deadline is set to 10,000 seconds from now
+        deadline: now() + 10_000,
+        additionalData: SwapAdditionalData{ receiverAddress: myAddress() },
+    };
+
+    // Start a swap with the message to the proxy Toncoin wallet
+    send(SendParameters{
+        to: RouterProxyTonWallet,
+        value: FeeSwapToncoinToJetton + offerAmount,
+        body: ProxyToncoinTransfer{
+            tonAmount: offerAmount,
+            refundAddress: myAddress(),
+            forwardPayload: forwardPayload.toCell(),
+        }.toCell(),
+    });
+}
+
+//
+// Helper Messages, Structs and constants described earlier on this page
+//
+
+message(0x01f3835d) ProxyToncoinTransfer {
+    queryId: Int as uint64 = 0;
+    tonAmount: Int as coins;
+    refundAddress: Address;
+    forwardPayload: Cell?;
+}
+
+message(0x6664de2a) StonfiSwap {
+    otherTokenWallet: Address;
+    refundAddress: Address;
+    excessesAddress: Address;
+    deadline: Int as uint64;
+    additionalData: SwapAdditionalData;
+}
+
+struct SwapAdditionalData {
+    minOut: Int as coins = 1;
+    receiverAddress: Address;
+    fwdGas: Int as coins = 0;
+    customPayload: Cell? = null;
+    refundFwdGas: Int as coins = 0;
+    refundPayload: Cell? = null;
+    refFee: Int as uint16 = 10;
+    referralAddress: Address? = null;
+}
+
+const FeeSwapToncoinToJetton: Int = ton("0.3");
+```
+
+:::note[Useful links:]
+
+  [TON 文档中的费用计算][fees-calc]
+
+:::
+
+## 流动资金
+
+阅读更多关于[STON.fi documentation](https://docs.ston.fi/docs/developer-section/api-reference-v2/example_lp_provide)中流动资金条款的信息。
+
+STON.fi 允许您只指定一种代币来存入流动性--池将自动执行交换并铸造流动性提供者（LP）代币。 要做到这一点，您需要将 `ProvideLiquidity{:tact}` [Message][message] 的 `bothPositive` 字段设置为 `false{:tact}`。
+
+流动性存款使用 `ProvideLiquidity{:tact}` [Message][message] 和 `ProvideLiquidityAdditionalData{:tact}` [Struct][struct]
+
+```tact
+/// https://docs.ston.fi/docs/developer-section/api-reference-v2/router#provide_lp-0x37c096df
+message(0x37c096df) ProvideLiquidity {
+    // Address of the other Router token wallet
+    otherTokenWallet: Address;
+
+    // Where to send refunds if provisioning fails
+    refundAddress: Address;
+
+    // Where to send excesses if provisioning succeeds
+    excessesAddress: Address;
+
+    // UNIX timestamp of execution deadline for the provisioning
+    deadline: Int as uint64;
+
+    // Reference to another Cell with additional data,
+    // using the Tact's greedy auto-layout mechanism
+    additionalData: ProvideLiquidityAdditionalData;
+}
+
+/// https://docs.ston.fi/docs/developer-section/api-reference-v2/router#additional_data-body-1
+struct ProvideLiquidityAdditionalData {
+    // Minimum required amount of LP tokens to receive
+    // Defaults to 1, which causes the provisioning to fail
+    //                only if no tokens are received
+    minLpOut: Int as coins = 1;
+
+    // Where to send LP tokens if provisioning succeeds
+    receiverAddress: Address;
+
+    // Should both tokens in a pair have a positive quantity?
+    // If not, then the pool would perform an additional swap for the lacking token
+    // Defaults to `true`, which means that deposit would only go through
+    //                     when both token amounts are non-zero
+    bothPositive: Bool = true;
+
+    // Forward fees for the `customPayload` if it's not `null`
+    // Defaults to 0
+    fwdGas: Int as coins = 0;
+
+    // Custom payload that will be sent if provisioning succeeds
+    // Defaults to `null`, which means no payload
+    customPayload: Cell? = null;
+}
+```
+
+[STON.fi SDK](https://github.com/ston-fi/sdk) 定义了一些[常量用于处理费用](https://github.com/ston-fi/sdk/blob/786ece758794bd5c575db8b38f5e5de19f43f0d1/pubes/sdk/src/contracts/dex/v2_1/router/BaseRouterV2_1.s)。 请注意这些是硬编码值，但最佳做法是[用当前配置参数动态计算费用](https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation)
+
+```tact
+/// Hardcoded fee value to pay for sending a liquidity provisioning message
+/// when depositing a certain amount of Jettons
+const FeeSingleSideProvideLpJetton: Int = ton("1");
+
+/// Hardcoded fee value to pay forward fees of subsequent messages for liquidity provisioning
+const FeeSingleSideProvideLpJettonFwd: Int = ton("0.8");
+
+/// Hardcoded fee value to pay for sending a liquidity provisioning message
+/// when depositing a certain amount of Toncoins
+const FeeSingleSideProvideLpToncoin: Int = ton("0.01") + ton("0.8");
+```
+
+:::note[Useful links:]
+
+  [TON 文档中的费用计算][fees-calc]
+
+:::
+
+### 存入 Jetton
+
+:::caution
+
+  下面的示例使用了STON.fi的 API v2, 目前正在开发中。 因此，所有地址都在 [testnet][testnet] 中。
+
+  此外，有些变量，如`offerAmount`，为了演示目的而硬编码。 别忘了在真实生活的场景中更改它们。
+
+:::
+
+```tact
+// CPI Router v2.1.0
+const RouterAddress: Address =
+    address("kQALh-JBBIKK7gr0o4AVf9JZnEsFndqO0qTCyT-D-yBsWk0v");
+
+// Router's pTON wallet address
+const RouterProxyTonWallet: Address =
+    address("kQBbJjnahBMGbMUJwhAXLn8BiigcGXMJhSC0l7DBhdYABhG7");
+
+// Router's Jetton wallet address
+const RouterJettonWallet: Address =
+    address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK"); 
+
+/// NOTE: To calculate and provide Jetton wallet address for the target user,
+///       make sure to check links after this code snippet
+fun jettonDeposit(myJettonWalletAddress: Address) {
+    // Amount of Jettons for liquidity provisioning
+    let offerAmount = 100_000;
+
+    // Prepare the payload
+    let forwardPayload = ProvideLiquidity{
+        otherTokenWallet: RouterProxyTonWallet,
+        refundAddress: myAddress(),
+        excessesAddress: myAddress(),
+        // Deadline is set to 1,000 seconds from now
+        deadline: now() + 1_000,
+        additionalData: ProvideLiquidityAdditionalData{
+            receiverAddress: myAddress(),
+            bothPositive: false, // i.e. single side
+        },
+    };
+
+    send(SendParameters{
+        to: myJettonWalletAddress,
+        value: FeeSingleSideProvideLpJetton,
+        body: JettonTransfer{
+            queryId: 42,
+            amount: offerAmount,
+            destination: RouterAddress,
+            responseDestination: myAddress(),
+            forwardTonAmount: FeeSingleSideProvideLpJettonFwd,
+            forwardPayload: forwardPayload.toCell(),
+        }.toCell(),
+    });
+}
+
+//
+// Helper Messages, Structs and constants described earlier on this page
+//
+
+message(0x37c096df) ProvideLiquidity {
+    otherTokenWallet: Address;
+    refundAddress: Address;
+    excessesAddress: Address;
+    deadline: Int as uint64;
+    additionalData: ProvideLiquidityAdditionalData;
+}
+
+struct ProvideLiquidityAdditionalData {
+    minLpOut: Int as coins = 1;
+    receiverAddress: Address;
+    bothPositive: Bool = true;
+    fwdGas: Int as coins = 0;
+    customPayload: Cell? = null;
+}
+
+const FeeSingleSideProvideLpJetton: Int = ton("1");
+const FeeSingleSideProvideLpJettonFwd: Int = ton("0.8");
+
+//
+// Messages from the Jetton standard
+//
+
+message(0xf8a7ea5) JettonTransfer {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    destination: Address;
+    responseDestination: Address?;
+    customPayload: Cell? = null;
+    forwardTonAmount: Int as coins;
+    forwardPayload: Cell?; // slightly adjusted
+}
+```
+
+### 存入 Toncoin
+
+:::caution
+
+  下面的示例使用了STON.fi的 API v2, 目前正在开发中。 因此，所有地址都在 [testnet][testnet] 中。
+
+  此外，有些变量，如`offerAmount`，为了演示目的而硬编码。 别忘了在真实生活的场景中更改它们。
+
+:::
+
+```tact
+// Router's pTON wallet address
+const RouterProxyTonWallet: Address =
+    address("kQBbJjnahBMGbMUJwhAXLn8BiigcGXMJhSC0l7DBhdYABhG7");
+
+// Router's Jetton wallet address
+const RouterJettonWallet: Address =
+    address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK");
+
+fun toncoinDeposit() {
+    // Amount of Jettons for liquidity provisioning
+    let offerAmount = 100_000;
+
+    // Prepare the payload
+    let forwardPayload = ProvideLiquidity{
+        otherTokenWallet: RouterJettonWallet,
+        refundAddress: myAddress(),
+        excessesAddress: myAddress(),
+        deadline: now() + 1000,
+        additionalData: ProvideLiquidityAdditionalData{
+            receiverAddress: myAddress(),
+            bothPositive: false, // i.e. single side
+        },
+    };
+
+    send(SendParameters{
+        to: RouterProxyTonWallet,
+        value: FeeSingleSideProvideLpToncoin + offerAmount,
+        body: ProxyToncoinTransfer{
+            queryId: 42,
+            tonAmount: offerAmount,
+            refundAddress: myAddress(),
+            forwardPayload: forwardPayload.toCell(),
+        }.toCell(),
+    });
+}
+
+//
+// Helper Messages, Structs and constants described earlier on this page
+//
+
+message(0x01f3835d) ProxyToncoinTransfer {
+    queryId: Int as uint64 = 0;
+    tonAmount: Int as coins;
+    refundAddress: Address;
+    forwardPayload: Cell?;
+}
+
+message(0x37c096df) ProvideLiquidity {
+    otherTokenWallet: Address;
+    refundAddress: Address;
+    excessesAddress: Address;
+    deadline: Int as uint64;
+    additionalData: ProvideLiquidityAdditionalData;
+}
+
+struct ProvideLiquidityAdditionalData {
+    minLpOut: Int as coins = 1;
+    receiverAddress: Address;
+    bothPositive: Bool = true;
+    fwdGas: Int as coins = 0;
+    customPayload: Cell? = null;
+}
+
+const FeeSingleSideProvideLpToncoin: Int = ton("0.01") + ton("0.8");
+```
+
+### 提取流动资金
+
+要提取流动性，需要燃烧的 LP 代币。 您可以参考 [Jettons Cookbook 页面中有关 Jetton 销毁的相关部分](/zh-cn/cookbook/jettons#burning-jetton) 的示例。 然而，应该添加比正常销毁更多的 Toncoin，因为如果添加的 Toncoin 太少，可能会导致 LP 代币被销毁，但不会从池中发送任何（或仅部分）流动性。 因此，请考虑至少附上 $0.5$ Toncoin - 超额部分将予以退还。
+
+:::tip[Hey there!]
+
+找不到您最喜欢的 STON.fi 交互的例子吗？ 您有很酷的实施方案吗？ [欢迎贡献！](https://github.com/tact-lang/tact/issues)
+
+:::
+
+[struct]: /zh-cn/book/structs-and-messages#structs
+[message]: /zh-cn/book/structs-and-messages#messages
+[testnet]: https://docs.ton.org/v3/documentation/smart-contracts/getting-started/testnet
+[jetton-addr-online]: https://docs.ton.org/develop/dapps/asset-processing/jettons#retrieving-jetton-wallet-addresses-for-a-given-user
+[jetton-addr-offline]: https://docs.ton.org/v3/guidelines/dapps/cookbook#how-to-calculate-users-jetton-wallet-address-offline
+[discoverable-jetton-wallets]: https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md
+[fees-calc]: https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation
