@@ -139,14 +139,16 @@ function printBenchmarkTable(results: BenchmarkResult[]): void {
 
     const changes = calculateChanges(results);
 
-    results.forEach((result, i) => {
-        table.push([
+    results
+        .map((result, i) => [
             result.label,
             `${result.transfer} ${changes[i]?.[0] ?? ""}`,
             `${result.burn} ${changes[i]?.[1] ?? ""}`,
             `${result.discovery} ${changes[i]?.[2] ?? ""}`,
-        ]);
-    });
+        ])
+        .forEach((arr) => {
+            table.push(arr);
+        });
 
     let output = "";
     output += table.toString();
