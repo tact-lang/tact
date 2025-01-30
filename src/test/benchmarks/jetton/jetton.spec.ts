@@ -18,6 +18,7 @@ import "@ton/test-utils";
 import { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
 import Table from "cli-table3";
 import { getUsedGas } from "../util/util";
+import benchmarkResults from "./results.json";
 
 type BenchmarkResult = {
     label: string;
@@ -26,63 +27,15 @@ type BenchmarkResult = {
     discovery: bigint;
 };
 
-const results: BenchmarkResult[] = [
-    {
-        label: "FunC",
-        transfer: 15064n,
-        burn: 11895n,
-        discovery: 5915n,
-    },
-    {
-        label: "1.5.3",
-        transfer: 40678n,
-        burn: 25852n,
-        discovery: 15265n,
-    },
-    {
-        label: "1.5.3 without address validation",
-        transfer: 31470n,
-        burn: 26594n,
-        discovery: 15408n,
-    },
-    {
-        label: "1.5.3 without self-code in system cell",
-        transfer: 26876n,
-        burn: 17898n,
-        discovery: 11135n,
-    },
-    {
-        label: "1.5.3 with removed JettonWallet duplicate",
-        transfer: 26852n,
-        burn: 17728n,
-        discovery: 11055n,
-    },
-    {
-        label: "1.5.3 with #1586 and #1589",
-        transfer: 26568n,
-        burn: 17718n,
-        discovery: 11063n,
-    },
-    {
-        label: "1.5.3 with faster readForwardFee",
-        transfer: 26121n,
-        burn: 17718n,
-        discovery: 11063n,
-    },
-    {
-        label: "master",
-        transfer: 26121n,
-        burn: 17718n,
-        discovery: 11063n,
-    },
-];
+const results: BenchmarkResult[] = benchmarkResults.results.map((result) => ({
+    label: result.label,
+    transfer: BigInt(result.transfer),
+    burn: BigInt(result.burn),
+    discovery: BigInt(result.discovery),
+}));
 
 type MetricKey = "transfer" | "burn" | "discovery";
-const METRICS: readonly MetricKey[] = [
-    "transfer",
-    "burn",
-    "discovery",
-] as const;
+const METRICS: readonly MetricKey[] = ["transfer", "burn", "discovery"];
 
 function calculateChange(prev: bigint, curr: bigint): string {
     const change = ((Number(curr - prev) / Number(prev)) * 100).toFixed(2);
@@ -143,29 +96,31 @@ function printBenchmarkTable(results: BenchmarkResult[]): void {
             table.push(arr);
         });
 
-    let output = "";
-    output += table.toString();
-    output += "\n";
+    const output = [];
+    output.push(table.toString());
+    output.push("\n");
 
     const first = results[0]!;
     const last = results[results.length - 1]!;
-    const compareMetrics = ["transfer", "burn", "discovery"] as const;
 
-    output += "\nComparison with FunC implementation:\n";
-    compareMetrics.forEach((metric) => {
-        const ratio = (
-            (Number(last[metric]) / Number(first[metric])) *
-            100
-        ).toFixed(2);
-        output += `${metric.charAt(0).toUpperCase() + metric.slice(1)}: ${
-            parseFloat(ratio) > 100
-                ? chalk.redBright(`${ratio}%`)
-                : chalk.green(`${ratio}%`)
-        } of FunC gas usage\n`;
-    });
-    output += "\n";
+    output.push("\nComparison with FunC implementation:\n");
+    output.push(
+        ...METRICS.map((metric) => {
+            const ratio = (
+                (Number(last[metric]) / Number(first[metric])) *
+                100
+            ).toFixed(2);
 
-    console.log(output);
+            return `${metric.charAt(0).toUpperCase() + metric.slice(1)}: ${
+                parseFloat(ratio) > 100
+                    ? chalk.redBright(`${ratio}%`)
+                    : chalk.green(`${ratio}%`)
+            } of FunC gas usage\n`;
+        }),
+    );
+    output.push("\n");
+
+    console.log(output.join(""));
 }
 
 describe("Jetton", () => {
