@@ -134,28 +134,29 @@ function printBenchmarkTable(results: BenchmarkResult[]): void {
         ]);
     });
 
-    process.stdout.write(table.toString());
-    process.stdout.write("\n");
+    let output = "";
+    output += table.toString();
+    output += "\n";
 
     const first = results[0]!;
     const last = results[results.length - 1]!;
     const compareMetrics = ["transfer", "burn", "discovery"] as const;
 
-    process.stdout.write("\nComparison with FunC implementation:\n");
+    output += "\nComparison with FunC implementation:\n";
     compareMetrics.forEach((metric) => {
         const ratio = (
             (Number(last[metric]) / Number(first[metric])) *
             100
         ).toFixed(2);
-        process.stdout.write(
-            `${metric.charAt(0).toUpperCase() + metric.slice(1)}: ${
-                parseFloat(ratio) > 100
-                    ? chalk.redBright(`${ratio}%`)
-                    : chalk.green(`${ratio}%`)
-            } of FunC gas usage\n`,
-        );
+        output += `${metric.charAt(0).toUpperCase() + metric.slice(1)}: ${
+            parseFloat(ratio) > 100
+                ? chalk.redBright(`${ratio}%`)
+                : chalk.green(`${ratio}%`)
+        } of FunC gas usage\n`;
     });
-    process.stdout.write("\n");
+    output += "\n";
+
+    console.log(output);
 }
 
 function getUsedGas(sendEnough: SendMessageResult) {
