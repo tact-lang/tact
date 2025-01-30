@@ -1,5 +1,6 @@
 ---
 title: "@stdlib/deploy"
+description: 提供统一的部署机制
 ---
 
 提供统一的部署机制。
@@ -10,13 +11,13 @@ title: "@stdlib/deploy"
 import "@stdlib/deploy";
 ```
 
-## 信息
+## 消息 - Messages {#messages}
 
 ### Deploy
 
 ```tact
 message Deploy {
-    queryId：Int as uint64;
+    queryId: Int as uint64;
 }
 ```
 
@@ -24,30 +25,30 @@ message Deploy {
 
 ```tact
 message DeployOk {
-    queryId：Int as uint64;
+    queryId: Int as uint64;
 }
 ```
 
-### 工厂部署
+### FactoryDeploy
 
 ```tact
 message FactoryDeploy {
-    queryId：Int as uint64;
-    cashback：Address;
+    queryId: Int as uint64;
+    cashback: Address;
 }
 ```
 
-## 特质
+## Traits
 
 ### Deployable
 
-最简单的特质 `可部署{:tact}`，通过为[Deploy](#deploy)消息实现一个简单的接收器，为部署提供了一个方便的统一机制。
+最简单的 trait `Deployable{:tact}` 提供了一个便捷的统一部署机制，通过实现一个简单的接收器来处理 [Deploy](#deploy) 消息。
 
-所有合同都是通过发送信息来部署的。 虽然任何信息都可用于此目的，但最佳做法是使用特殊的 [部署](#deploy) 信息。
+所有合约都是通过发送消息来部署的。 虽然任何消息都可用于此目的，但最佳做法是使用特殊的 [部署](#deploy) 消息。
 
-该信息只有一个字段 `queryId` ，由部署者提供（通常设置为零）。 如果部署成功，合约将回复一条 [DeployOk](#deployok) 消息，并在回复中呼应相同的 `queryId` 。
+该消息只有一个字段 `queryId` ，由部署者提供（通常设置为零）。 如果部署成功，合约将回复一条 [DeployOk](#deployok) 消息，并在回复中呼应相同的 `queryId` 。
 
-源代码
+源码:
 
 ```tact
 trait Deployable {
@@ -57,7 +58,7 @@ trait Deployable {
 }
 ```
 
-使用示例
+示例用法：
 
 ```tact /Deployable/
 import "@stdlib/deploy";
@@ -71,17 +72,17 @@ contract ExampleContract with Deployable {
 
 Trait `FactoryDeployable{:tact}` 为连锁部署提供了方便的统一机制。
 
-源代码
+源码:
 
 ```tact
-trait FactoryDeployable {
+trait FactoryDeployable  {
     receive(deploy: FactoryDeploy) {
         self.forward(deploy.cashback, DeployOk{queryId: deploy.queryId}.toCell(), false, null);
     }
 }
 ```
 
-使用示例
+用法示例：
 
 ```tact /FactoryDeployable/
 import "@stdlib/deploy";

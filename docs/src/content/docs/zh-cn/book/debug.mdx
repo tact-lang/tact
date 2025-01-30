@@ -1,67 +1,68 @@
 ---
 title: 调试 Tact 合约
+description: 在 Tact 代码中显示问题或错误的各种方式
 ---
 
 import { LinkCard, CardGrid, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
-作为智能合约开发人员，我们编写的代码并不总是能实现我们的预期。 有时，它做的事情完全不同！ 当意外发生时，接下来的任务就是找出原因。 为此，有多种方法可以揭示代码中的问题或 "错误"。 让我们开始_调试_！
+作为智能合约开发人员，我们编写的代码并不总是能实现我们的预期。 有时，它做的事情完全不同！ 当意外发生时，接下来的任务就是找出原因。 为此，有多种方法可以揭示代码中的问题或 "错误"。 让我们开始_调试_！ 有时，它做的事情完全不同！ 当意外发生时，接下来的任务就是找出原因。 为此，有多种方法可以揭示代码中的问题或 "错误"。 让我们开始_调试_！
 
 <CardGrid>
   <LinkCard
-    title="一般方法"
+    title="General approach"
     href="#approach"
   />
   <LinkCard
-    title="调试模式"
+    title="Debug mode"
     href="#debug-mode"
   />
   <LinkCard
-    title="测试结构"
+    title="Structure of tests"
     href="#tests-structure"
   />
   <LinkCard
-    title="转储值"
+    title="Dump values"
     href="#tests-dump"
   />
   <LinkCard
-    title="预期某些状态"
+    title="Expect certain states"
     href="#tests-errors"
   />
   <LinkCard
-    title="发送消息"
+    title="Send messages"
     href="#tests-send"
   />
   <LinkCard
-    title="观察费用"
+    title="Observe fees"
     href="#tests-fees"
   />
   <LinkCard
-    title="预期退出代码"
+    title="Expect exit codes"
     href="#tests-errors"
   />
   <LinkCard
-    title="模拟时间"
+    title="Simulate time"
     href="#tests-time"
   />
   <LinkCard
-    title="发射和记录消息"
+    title="Emit and log messages"
     href="#logging"
   />
   <LinkCard
-    title="处理退回的消息"
+    title="Handle bounced messages"
     href="#bounced"
   />
   <LinkCard
-    title="实验实验室设置"
+    title="Experimental lab setup"
     href="#lab"
   />
 </CardGrid>
 
 ## 一般方法 {#approach}
 
-目前，Tact 还没有步进式调试器。 尽管如此，仍然可以使用["printf 调试"](https://en.wikipedia.org/wiki/Debugging#printf_debugging) 方法。
+目前，Tact 还没有步进式调试器。 目前，Tact 还没有步进式调试器。 尽管如此，仍然可以使用["printf 调试"](https://en.wikipedia.org/wiki/Debugging#printf_debugging) 方法。
 
-这包括在整个代码中主动调用 [`dump(){:tact}`][dump]和 [`dumpStack(){:tact}`](/zh-cn/ref/core-debug#dumpstack)函数，并观察特定时间点的变量状态。 请注意，这些函数只在 [调试模式]（#debug-mode）下工作，否则不会执行。
+这包括在整个代码中主动调用 [`dump(){:tact}`][dump]和 [`dumpStack(){:tact}`](/zh-cn/ref/core-debug#dumpstack)函数，并观察特定时间点的变量状态。 请注意，这些函数只在 [调试模式](#debug-mode) 下工作，否则不会执行。
 
 :::note
 
@@ -69,7 +70,7 @@ import { LinkCard, CardGrid, Steps, Tabs, TabItem } from '@astrojs/starlight/com
 
 :::
 
-除了转储值之外，使用 [`require(){:tact}`](/zh-cn/ref/core-debug#require)、[`nativeThrowIf(){:tact}`](/zh-cn/ref/core-debug#nativethrowif)和 [`nativeThrowUnless(){:tact}`](/zh-cn/ref/core-debug#nativethrowunless)等自信的函数通常也很有帮助。 它们有助于明确说明你的假设，并方便设置 "绊线"，以便在将来发现问题。
+除了转储值之外，使用一些断言函数通常也很有帮助，例如 [`require(){:tact}`](/zh-cn/ref/core-debug#require)、[`nativeThrowIf(){:tact}`](/zh-cn/ref/core-debug#nativethrowif) 和 [`nativeThrowUnless(){:tact}`](/zh-cn/ref/core-debug#nativethrowunless)。 它们有助于明确说明你的假设，并方便设置 "绊线"，以便在将来发现问题。
 
 如果您没有找到或无法解决您的问题，请尝试在 Tact 的[Telegram 聊天][tg]中询问社区；如果您的问题或疑问与 TON 的关系大于与 Tact 的关系，请进入[TON Dev Telegram 聊天](https://t.me/tondev_eng)。
 
@@ -79,59 +80,68 @@ Tact 提供了大量对调试有用的各种函数：[核心库 → 调试](/zh-
 
 ## 在编译选项中启用调试模式 {#debug-mode}
 
-Using `@tact-lang/emulator`
+为了使 [`dump(){:tact}`][dump]或 [`dumpStack(){:tact}`](/zh-cn/ref/core-debug#dumpstack)等函数正常工作，需要启用调试模式。
 
-To make `dump` work you need to enable the feature `debug` in `tact.conf.json`.
+最简单和推荐的方法是修改项目根目录下的 [`tact.config.json`](/zh-cn/book/config) 文件（如果还不存在，则创建该文件），并 [将 `debug` 属性设置为 `true{:json}`](/zh-cn/book/config#options-debug)。
 
 如果您正在处理基于 [Blueprint][bp] 的项目，可以在合约的编译配置中启用调试模式，这些配置位于名为 `wrappers/` 的目录中：
 
 ```typescript title="wrappers/YourContractName.compile.ts" {7}
 import { CompilerConfig } from '@ton/blueprint';
 
-export const compile：CompilerConfig = {
+export const compile: CompilerConfig = {
   lang: 'tact',
   target: 'contracts/your_contract_name.tact',
-  options：{
-    debug: true, // ← that's the stuff！
+  options: {
+    debug: true, // ← that's the stuff!
   }
 };
 ```
 
 请注意，从 0.20.0 开始的 [Blueprint][bp] 版本会自动为新合约启用 `wrappers/` 中的调试模式。
 
-除此之外，[蓝图][bp] 项目中仍可使用 [`tact.config.json`](/zh-cn/book/config)。 在这种情况下，除非在 `wrappers/` 中修改，否则 [`tact.config.json`](/zh-cn/book/config)中指定的值将作为默认值。
+除此之外，[`tact.config.json`](/zh-cn/book/config) 仍然可以用于 [Blueprint][bp] 项目。 除此之外，[Blueprint][bp] 项目中仍可使用 [`tact.config.json`](/zh-cn/book/config)。 在这种情况下，除非在 `wrappers/` 中修改，否则 [`tact.config.json`](/zh-cn/book/config)中指定的值将作为默认值。
 
 :::note
 
+  如果在 [`blueprint.config.ts`][bp-config] 文件中将 `separateCompilables` 选项设置为 `true{:typescript}`，那么 `.compile.ts` 文件将位于 `compilables/` 目录中，而**不会**位于 `wrappers/` 目录中。
+
 :::
 
-## 在蓝图中编写测试，使用 Sandbox 和 Jest {#tests}
+:::note
 
-[蓝图][bp] 是一个流行的开发框架，用于在 TON 区块链上编写、测试和部署智能合约。
+  阅读更多关于配置和 [`tact.config.json`](/zh-cn/book/config) 文件的信息：[配置](/zh-cn/book/config)。\
+  查看如何使用 [`dump(){:tact}`][dump] 进行调试：[使用 `dump(){:tact}` 调试](#tests-dump)。
 
-Ton Emulator allows you to have a small virtual blockchain in your Node.js code. This library is built specifically for testing smart contracts in unit tests.
+:::
 
-无论何时创建一个新的 [Blueprint][bp] 项目，或在现有项目中使用 "blueprint create "命令，都会创建一个新的合同以及测试套件文件。
+## 在 Blueprint 中编写测试，使用 Sandbox 和 Jest {#tests}
 
-这些文件被放在`tests/`文件夹中，并用[Jest][jest]执行。 默认情况下，除非指定特定组或测试关闭，否则所有测试都会运行。 有关其他选项，请参阅 Jest CLI 中的简要文档：`jest --help`。
+[Blueprint][bp] 是一个流行的开发框架，用于在 TON 区块链上编写、测试和部署智能合约。
+
+为了测试智能合约，它使用了本地 TON 区块链模拟器[Sandbox][sb]和 JavaScript 测试框架[Jest][jest]。
+
+无论何时创建一个新的 [Blueprint][bp] 项目，或在现有项目中使用 "blueprint create "命令，都会创建一个新的合约以及测试套件文件。
+
+这些文件被放在`tests/`文件夹中，并用[Jest][jest]执行。  默认情况下，除非指定特定组或测试关闭，否则所有测试都会运行。 有关其他选项，请参阅 Jest CLI 中的简要文档：`jest --help`。
 
 ### 测试文件的结构 {#tests-structure}
 
-假设我们有一份名为 `Playground` 的合同，写在 `contracts/playground.tact` 文件中。 如果我们通过 [Blueprint][bp] 创建了该合约，那么它也会为我们创建一个 `tests/Playground.spec.ts` 测试套件文件。
+假设我们有一份名为 `Playground` 的合约，写在 `contracts/playground.tact` 文件中。 假设我们有一份名为 `Playground` 的合约，写在 `contracts/playground.tact` 文件中。 如果我们通过 [Blueprint][bp] 创建了该合约，那么它也会为我们创建一个 `tests/Playground.spec.ts` 测试套件文件。
 
 测试文件包含一个 `describe(){:typescript}` [Jest][jest] 函数调用，表示一个测试组。
 
 在该组中，有三个变量在所有测试中都可用：
 
 - `blockchain` - 由[沙盒][sb]提供的本地区块链实例
-- deployer\` - 一个 TypeScript 封装器，用于部署我们的 Playground 合约或我们希望部署的任何其他合约
+- `deployer` — 一个 TypeScript 封装器，用于部署我们的 `Playground` 合约或我们希望部署的任何其他合约
 - `playground` - 我们的 `Playground` 合约的 TypeScript 封装器
 
 :::note
 
-  更新 `.tact` 代码和运行测试而不先进行构建是一个常见错误。 这是因为 [Blueprint][bp] 中的测试依赖于 Tact 编译器生成的 TypeScript 封装程序，并与最新的构建程序一起工作。
+  常见的错误是更新`.tact`代码后直接运行测试，而没有先进行构建。 更新 `.tact` 代码和运行测试而不先进行构建是一个常见错误。 这是因为 [Blueprint][bp] 中的测试依赖于 Tact 编译器生成的 TypeScript 封装程序，并与最新的构建程序一起工作。
 
-  这就是为什么每次更改 Tact 代码时，都要确保在执行测试套件之前使用 `npx blueprint build` 进行构建。 为方便起见，您可以将构建和测试合并为一条命令，如 [实验性实验室设置](#lab-4) 所示。
+  这就是为什么每次更改 Tact 代码时，都要确保在执行测试套件之前使用 `npx blueprint build` 进行构建。  为了您的方便，您可以将构建和测试合并为一个命令，如[实验室设置](#lab-4)中所示。
 
 :::
 
@@ -145,12 +155,12 @@ Ton Emulator allows you to have a small virtual blockchain in your Node.js code.
 
 最后，通过调用 `it(){:tact}` [Jest][jest] 函数来描述每个测试闭包--这就是实际编写测试的地方。
 
-Example of a minimal test file:
+一个最简单的测试闭包示例如下：
 
 ```typescript
 it('should deploy', async () => {
-  // 检查是在 beforeEach 内部进行的，因此此处可以为空
-})；
+  // The check is done inside beforeEach, so this can be empty
+});
 ```
 
 ### 使用 `dump()` 调试 {#tests-dump}
@@ -173,7 +183,7 @@ receive(msg: Add) {
 // ...
 ```
 
-接下来，让我们注释掉 `tests/SimpleCounter.spec.ts` 文件中所有现有的 `it(){:typescript}` 测试闭包。 然后再加上下面一条：
+接下来，让我们注释掉 `tests/SimpleCounter.spec.ts` 文件中所有现有的 `it(){:typescript}` 测试闭包。 然后再加上下面一条： 然后再加上下面一条：
 
 ```typescript title="tests/SimpleCounter.spec.ts"
 it('should dump', async () => {
@@ -182,7 +192,7 @@ it('should dump', async () => {
     { value: toNano('0.5') },
     { $$type: 'Add', queryId: 1n, amount: 1n },
   );
-})；
+});
 ```
 
 它向我们合约的 `receive(msg: Add){:tact}` [接收器](/zh-cn/book/receive) 发送信息，而不存储[发送结果](#tests-send)。
@@ -207,7 +217,7 @@ console.log
 
 ### 使用`expect()`说明期望 {#tests-expect}
 
-编写测试不可或缺的部分是确保你的期望与观察到的现实相吻合。 为此，[Jest][jest] 提供了一个函数 `expect(){:tact}`，使用方法如下：
+编写测试不可或缺的部分是确保你的期望与观察到的现实相吻合。 编写测试不可或缺的部分是确保你的期望与观察到的现实相吻合。 为此，[Jest][jest] 提供了一个函数 `expect(){:tact}`，使用方法如下：
 
 1. 首先，提供一个观测变量。
 2. 然后，调用特定的方法来检查该变量的某个属性。
@@ -244,23 +254,23 @@ it('should increase counter', async () => {
     console.log('counter after increasing', counterAfter);
 
     expect(counterAfter).toBe(counterBefore + increaseBy);
-  }.
+  }
 });
 ```
 
 :::note
 
-  查看 [Sandbox][sb] 文档中的更多测试示例：
-  [Testing flow (FunC)](https://github.com/ton-org/sandbox/blob/main/docs/testing-key-points.md)
-  [Writing tests for Tact](https://github.com/ton-org/sandbox/blob/main/docs/tact-testing-examples.md)
+  请参阅 [Sandbox][sb] 文档中的更多测试示例：\
+  [测试流程 (FunC)](https://github.com/ton-org/sandbox/blob/main/docs/testing-key-points.md)\
+  [为 Tact 编写测试](https://github.com/ton-org/sandbox/blob/main/docs/tact-testing-examples.md)
 
 :::
 
 ### 实用方法 {#tests-jest-utils}
 
-由 [Blueprint][bp] 生成的测试文件导入了 `@ton/test-utils` 库，该库为 `expect(){:typescript}` [Jest][jest] 函数的结果类型提供了一些额外的辅助方法。 请注意，`toEqual(){:typescript}`等常规方法仍然存在，随时可以使用。
+由 [Blueprint][bp] 生成的测试文件导入了 `@ton/test-utils` 库，该库为 `expect(){:typescript}` [Jest][jest] 函数的结果类型提供了一些额外的辅助方法。  请注意，`toEqual(){:typescript}` 等常规方法仍然存在，随时可以使用。
 
-#### 有交易
+#### toHaveTransaction
 
 方法 `expect(…).toHaveTransaction(){:typescript}` 检查事务列表中是否有符合你指定的某些属性的事务：
 
@@ -270,25 +280,25 @@ expect(res.transactions).toHaveTransaction({
   // For example, let's check that a transaction to your contract was successful:
   to: yourContractName.address,
   success: true,
-})；
+});
 ```
 
 要了解此类属性的完整列表，请查看编辑器或集成开发环境提供的自动完成选项。
 
 #### toEqualCell
 
-方法 `expect(…).toEqualCell(){:typescript}` 检查两个 [单元格](/zh-cn/book/cells#cells)是否相等：
+方法 `expect(…).toEqualCell(){:typescript}` 检查两个 [cell](/zh-cn/book/cells#cells)是否相等：
 
 ```typescript {3}
-expect(oneCell).toEqualCell(anotherCell)；
+expect(oneCell).toEqualCell(anotherCell);
 ```
 
-#### 对等切片
+#### toEqualSlice
 
 方法 `expect(…).toEqualSlice(){:typescript}` 检查两个 [slices](/zh-cn/book/cells#slices) 是否相等：
 
 ```typescript {3}
-expect(oneSlice).toEqualSlice(anotherSlice)；
+expect(oneSlice).toEqualSlice(anotherSlice);
 ```
 
 #### toEqualAddress
@@ -304,17 +314,17 @@ expect(oneAddress).toEqualAddress(anotherAddress)；
 要向合约发送消息，请在其 TypeScript 封装器上使用 `.send(){:typescript}` 方法，如下所示：
 
 ```typescript
-// 它接受 3 个参数：
+// It accepts 3 arguments:
 await yourContractName.send(
-  // 1. 消息的发送者
-  deployer.getSender(), // 这是一个默认的宝库，可以替换
+  // 1. sender of the message
+  deployer.getSender(), // this is a default treasury, can be replaced
 
-  // 2. 值和（可选）反弹，默认为 true
+  // 2. value and (optional) bounce, which is true by default
   { value: toNano('0.5'), bounce: false },
 
-  // 3. 消息正文，如果有的话
+  // 3. a message body, if any
   'Look at me!',
-)；
+);
 ```
 
 消息体可以是简单的字符串，也可以是指定 [消息](/zh-cn/book/structs-and-messages#messages)类型字段的对象：
@@ -328,7 +338,7 @@ await yourContractName.send(
     field1: 0n, // bigint zero
     field2: 'yay',
   },
-)；
+);
 ```
 
 通常情况下，存储此类发送的结果非常重要，因为它们包含发生的事件、进行的事务和发送的外部信息：
@@ -343,44 +353,44 @@ const res = await yourContractName.send(…);
 这样，我们就可以轻松地过滤或检查某些交易：
 
 ```typescript
-expect(res.transactions).toHaveTransaction(…)；
+expect(res.transactions).toHaveTransaction(…);
 ```
 
-### 遵守收费和价值 {#tests-fees}
+### 观察费用和数值 {#tests-fees}
 
-[沙盒][sb]提供了一个辅助函数 `printTransactionFees(){:typescript}`，它可以漂亮地打印所提供交易的所有值和费用。 它对观察 [纳米通币]（/book/integers#nanotoncoin）的流动非常方便。
+[沙盒][sb]提供了一个辅助函数 `printTransactionFees(){:typescript}`，它可以漂亮地打印所提供交易的所有值和费用。  它对观察 [nano Toncoins](/zh-cn/book/integers#nanotoncoin)的流动非常方便。
 
 要使用它，请在测试文件顶部修改来自 `@ton/sandbox` 的导入：
 
 ```typescript
 import { Blockchain, SandboxContract, TreasuryContract, printTransactionFees } from '@ton/sandbox';
-// ^^^^^^^^^^^^^^^^^^^^
+//                                                      ^^^^^^^^^^^^^^^^^^^^
 ```
 
 然后，提供一个事务数组作为参数，就像这样：
 
 ```typescript
-printTransactionFees(res.transactions)；
+printTransactionFees(res.transactions);
 ```
 
 要处理计算和操作 [阶段](https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases)的总费用或费用的单个值，请逐个检查每笔交易：
 
 ```typescript {11,17,21}
-// 将接收方处理的交易存储在一个单独的常量中
+// Storing the transaction handled by the receiver in a separate constant
 const receiverHandledTx = res.transactions[1];
 expect(receiverHandledTx.description.type).toEqual('generic');
 
-// 为了满足 TypeScript 的要求
+// Needed to please TypeScript
 if (receiverHandledTx.description.type !== 'generic') {
   throw new Error('Generic transaction expected');
-} // Total fees
+}
 
-// 总费用
+// Total fees
 console.log('Total fees: ', receiverHandledTx.totalFees);
 
-// 计算费用
+// Compute fee
 const computeFee = receiverHandledTx.description.computePhase.type === 'vm'
-  ?receiverHandledTx.description.computePhase.gasFees
+  ? receiverHandledTx.description.computePhase.gasFees
   : undefined;
 console.log('Compute fee: ', computeFee);
 
@@ -388,33 +398,33 @@ console.log('Compute fee: ', computeFee);
 const actionFee = receiverHandledTx.description.actionPhase?.totalActionFees;
 console.log('Action fee: ', actionFee);
 
-// 现在我们可以进行一些相关检查，比如将费用限制在 1 Toncoin
+// Now we can do some involved checks, like limiting the fees to 1 Toncoin
 expect(
   (computeFee ?? 0n)
   + (actionFee ?? 0n)
-).toBeLessThanOrEqual(toNano('1'))；
+).toBeLessThanOrEqual(toNano('1'));
 ```
 
 :::note
 
-  [沙盒][sb]还有很多实用功能，通常都很方便。 例如，它提供了 `prettyLogTransaction(){:typescript}` 和 `prettyLogTransactions(){:typescript}`，分别对单个或多个事务进行操作，并漂亮地打印地址之间的值流。
+  [沙盒][sb] 还有更多的实用功能，通常非常有用。 [沙盒][sb]还有很多实用功能，通常都很方便。 例如，它提供了 `prettyLogTransaction(){:typescript}` 和 `prettyLogTransactions(){:typescript}`，分别对单个或多个事务进行操作，并漂亮地打印地址之间的值流。
 
 :::
 
 ### 有故意错误的交易 {#tests-errors}
 
-有时，进行负面测试也很有用，它可以故意出错并抛出特定的[退出代码](/zh-cn/book/exit-codes)。
+有时，进行负面测试也很有用，它可以故意出错并抛出特定的[退出码](/zh-cn/book/exit-codes)。
 
-[蓝图][bp]中此类[Jest][jest]测试闭包的示例：
+[Blueprint][bp]中此类[Jest][jest]测试闭包的示例：
 
 ```typescript title="tests/YourTestFileHere.spec.ts" {9,15}
 it('throws specific exit code', async () => {
-  // 向我们的合约发送特定消息并存储结果
+  // Send a specific message to our contract and store the results
   const res = await your_contract_name.send(
     deployer.getSender(),
     {
-      value: toNano('0.5'), // 值以发送的 nanoToncoins 为单位
-      bounce: true, // (default) bounceable message
+      value: toNano('0.5'), // value in nanoToncoins sent
+      bounce: true,         // (default) bounceable message
     },
     'the message your receiver expects', // ← change it to yours
   );
@@ -422,14 +432,14 @@ it('throws specific exit code', async () => {
   // Expect the transaction to our contract fail with a certain exit code
   expect(res.transactions).toHaveTransaction({
     to: your_contract_name.address,
-    exitCode：5, // ← 更改为您的
+    exitCode: 5, // ← change it to yours
   });
-})；
+});
 ```
 
-请注意，要跟踪具有特定退出代码的事务，只需在 `expect(){:typescript}` 方法的 `toHaveTransaction(){:typescript}` 对象参数中指定 `exitCode` 字段即可。
+请注意，要跟踪具有特定退出码的事务，只需在 `expect(){:typescript}` 方法的 `toHaveTransaction(){:typescript}` 对象参数中指定 `exitCode` 字段即可。
 
-不过，通过指定收件人地址 "to "来缩小范围是很有用的，这样 Jest 就只能查看我们发送给合同的消息所引起的事务。
+不过，通过指定收件人地址 `to`来缩小范围是很有用的，这样 Jest 就只能查看我们发送给合约的消息所引起的事务。
 
 ### 模拟时间流逝 {#tests-time}
 
@@ -442,7 +452,7 @@ beforeEach(async () => {
 });
 ```
 
-在此之前，我们曾被警告不要修改 `beforeEach(){:typescript}` 块，除非我们真的需要这样做。 而现在，我们要做的，就是稍稍推翻时间和时空旅行。
+在此之前，我们曾被警告不要修改 `beforeEach(){:typescript}` 块，除非我们真的需要这样做。 而现在，我们要做的，就是稍稍推翻时间和时空旅行。 而现在，为了超越时间并进行一些时光旅行，我们这样做。
 
 让我们在末尾添加下面一行，将 `blockchain.now` 明确设置为处理部署消息的时间：
 
@@ -450,10 +460,10 @@ beforeEach(async () => {
 beforeEach(async () => {
   // ...
   blockchain.now = deployResult.transactions[1].now;
-})；
+});
 ```
 
-现在，我们可以在测试子句中操作时间了。 例如，让我们在部署一分钟后进行一次交易，两分钟后再进行一次交易：
+现在，我们可以在测试子句中操作时间了。 现在，我们可以在测试子句中操作时间了。 例如，让我们在部署一分钟后进行一次交易，两分钟后再进行一次交易：
 
 ```typescript {2,4}
 it('your test clause title', async () => {
@@ -461,7 +471,7 @@ it('your test clause title', async () => {
   const res1 = await yourContractName.send(…);
   blockchain.now += 60; // another 60 seconds late
   const res2 = await yourContractName.send(…);
-})；
+});
 ```
 
 ## 通过 `emit` 记录 {#logging}
@@ -483,45 +493,45 @@ it('emits', async () => {
   );
 
   console.log("Address of our contract: " + simpleCounter.address);
-  console.log(res.externals); // ← 在这里可以看到 emit() 调用的结果，
-                              // 以及所有外部消息
-})；
+  console.log(res.externals); // ← here one would see results of emit() calls,
+                              //   and all external messages in general
+});
 ```
 
-### 已部署合同的日志 {#logging-deployed}
+### 已部署合约的日志 {#logging-deployed}
 
 TON 区块链上的每笔交易都[包含`out_msgs`](https://docs.ton.org/develop/data-formats/transaction-layout#transaction) - 这是一个字典，保存着执行交易时创建的传出消息列表。
 
-要查看字典中 [`emit(){:tact}`](/zh-cn/ref/core-common#emit)的日志，请查找没有收件人的外部消息。 在各种 TON 区块链探索器中，此类交易将被标记为 "外部输出"，目的地指定为"-"或 "空"。
+要查看字典中 [`emit(){:tact}`](/zh-cn/ref/core-common#emit)的日志，请查找没有收件人的外部消息。  在各种 TON 区块链探索器中，此类交易将被标记为 "外部输出(external-out)"，目的地指定为"-"或 "空"。
 
-请注意，有些探索者会为你反序列化发送的信息体，而有些则不会。 不过，您可以随时在本地[自行解析]（#logging-parsing）。
+请注意，有些探索者会为你反序列化发送的信息体，而有些则不会。 不过，您可以随时在本地[自行解析](#logging-parsing)。
 
 ### 解析已发送信息的正文 {#logging-parsing}
 
-Example:
+请参考以下示例：
 
 ```tact
-// 我们有一个结构
+// We have a Struct
 struct Ballroom {
-    meme：Bool;
-    in：Int;
-    theory：String;
+    meme: Bool;
+    in: Int;
+    theory: String;
 }
 
-// 还有一个简单的合约，
+// And a simple contract,
 contract Bonanza {
-    // 可以接收一个字符串消息，
+    // which can receive a String message,
     receive("time to emit") {
-        // 发送一个字符串
-        emit("But to the Supes?Absolutely diabolical.".asComment());
+        // emit a String
+        emit("But to the Supes? Absolutely diabolical.".asComment());
 
         // and a Struct
-        emit(Ballroom{meme: true, in：42, theory: "Duh"}.toCell());
+        emit(Ballroom{meme: true, in: 42, theory: "Duh"}.toCell());
     }
 }
 ```
 
-现在，让我们为 "Bonanza "合同制作一个简单的 [测试条款]（#tests-structure）：
+现在，让我们为 "Bonanza "合约制作一个简单的 [测试条款](#tests-structure)：
 
 ```typescript /bonanza/
 it('emits', async () => {
@@ -530,63 +540,63 @@ it('emits', async () => {
     { value: toNano('0.05') },
     'time to emit',
   );
-})；
+});
 ```
 
-在这里，`res` 对象的`externals`字段将包含已发送的[外部信息]（/book/external）列表。 让我们访问它，以解析通过调用 Tact 代码中的 [`emit(){:tact}`](/zh-cn/ref/core-common#emit)（或简称 _emitted_）发送的第一条信息：
+在这里，`res` 对象的`externals`字段将包含已发送的[外部信息](/zh-cn/book/external) 列表。  让我们访问它，以解析通过调用 Tact 代码中的 [`emit(){:tact}`](/zh-cn/ref/core-common#emit)（或简称 _emitted_）发送的第一条信息：
 
 ```typescript /body/
 it('emits', async () => {
-  // ... 之前的代码 ...
+  // ... prior code ...
 
-  // 我们只需要观察到的消息正文：
+  // We'll need only the body of the observed message:
   const firstMsgBody = res.externals[0].body;
 
-  // 现在，我们来解析它，因为我们知道它是一条文本消息。
+  // Now, let's parse it, knowing that it's a text message.
   // NOTE: In a real-world scenario,
-  // you'd want to check that first or wrap this in a try...catch
+  //       you'd want to check that first or wrap this in a try...catch
   const firstMsgText = firstMsgBody.asSlice().loadStringTail();
 
-  // "But to the Supes?绝对邪恶。"
+  // "But to the Supes? Absolutely diabolical."
   console.log(firstMsgText);
-})；
+});
 ```
 
-要解析第二条发出的信息，我们可以手动使用一堆 `.loadSomething(){:typescript}` 函数，但这样做太麻烦了--如果 `Ballroom{:tact}` [Struct][struct] 的字段发生变化，就需要重新开始。 当你以这种方式编写大量测试时，可能会适得其反。
+要解析第二条发出的信息，我们可以手动使用一堆 `.loadSomething(){:typescript}` 函数，但这样做太麻烦了--如果 `Ballroom{:tact}` [Struct][struct] 的字段发生变化，就需要重新开始。  当你以这种方式编写大量测试时，可能会适得其反。
 
-幸运的是，Tact 编译器会自动为合约生成 TypeScript 绑定（或封装），在测试套件中重新使用它们非常容易。 它们不仅有一个你正在测试的合约的包装器，而且还导出了一堆辅助函数来存储或加载合约中定义的 [Structs][struct] 和 [Messages][message] 。 后者的命名方式与 [Structs][struct] 和 [Messages][message] 一样，只是在前面加上了 `load` 前缀。
+幸运的是，Tact 编译器会自动为合约生成 TypeScript 绑定（或封装），在测试套件中重新使用它们非常容易。  它们不仅有一个你正在测试的合约的包装器，而且还导出了一堆辅助函数来存储或加载合约中定义的 [Structs][struct] 和 [Messages][message] 。 后者的命名方式与 [Structs][struct] 和 [Messages][message] 一样，只是在前面加上了 `load` 前缀。
 
-例如，在我们的例子中，我们需要一个名为 `loadBallroom(){:typescript}` 的函数，用于将 [`Slice{:tact}`][slice]解析为 TypeScript 中的 `Ballroom{:tact}` [Struct][struct] 。 要导入它，要么键入名称，让集成开发环境建议自动导入，要么查看测试套件文件的顶部--应该有类似的一行：
+例如，在我们的例子中，我们需要一个名为 `loadBallroom(){:typescript}` 的函数，用于将 [`Slice{:tact}`][slice]解析为 TypeScript 中的 `Ballroom{:tact}` [Struct][struct] 。  要导入它，要么键入名称，让集成开发环境建议自动导入，要么查看测试套件文件的顶部--应该有类似的一行：
 
 ```typescript
 import { Bonanza } from '../wrappers/Bonanza';
-// ^ 这里可以导入 loadBallroom
+//              ^ here you could import loadBallroom
 ```
 
 现在，让我们来解析第二条发出的信息：
 
 ```typescript
 it('emits', async () => {
-  // ... 之前的代码 ...
+  // ... prior code ...
 
-  // 我们只需要观察到的消息正文：
+  // We'll need only the body of the observed message:
   const secondMsgBody = res.externals[1].body;
 
-  // 现在，让我们解析它，知道它是 Ballroom Struct。
+  // Now, let's parse it, knowing that it's the Ballroom Struct.
   // NOTE: In a real-world scenario,
-  // you'd want to check that first or wrap this in a try...catch
+  //       you'd want to check that first or wrap this in a try...catch
   const secondMsgStruct = loadBallroom(secondMsgBody.asSlice());
 
-  // { '$$type': 'Ballroom', meme: true, in：42n, theory: 'Duh' }
+  // { '$$type': 'Ballroom', meme: true, in: 42n, theory: 'Duh' }
   console.log(secondMsgStruct);
-})；
+});
 ```
 
-请注意，即使在我们的测试套件之外，也可以解析已部署合约的发射信息。您只需获取发射的消息体，然后像上面的示例一样，在 `@ton/core` 库旁使用自动生成的 Tact 的 TypeScript 绑定。
+请注意，即使在我们的测试套件之外，也可以解析已部署合约的发射信息。 您只需获取已触发的消息体，然后像上面的示例一样，在 `@ton/core` 库旁使用自动生成的 Tact 的 TypeScript 绑定。
 
-## 处理退回的邮件 {#bounced}
+## 处理退回消息 {#bounced}
 
-当 [send](/zh-cn/book/send) 带有 `bounce: true{:tact}` 时，信息会在出错时反弹。确保编写相关的 [`bounced(){:tact}`](/zh-cn/book/bounced) 消息[接收器](/zh-cn/book/contracts#receiver-functions)，并优雅地处理被退回的消息：
+当 [sent](/zh-cn/book/send) 带有 `bounce: true{:tact}`时，消息可以在出现错误时退回. 确保编写相关的 [`bounced(){:tact}`](/zh-cn/book/bounced)消息[接收器](/zh-cn/book/contracts#receiver-functions)，并优雅地处理被退回的消息：
 
 ```tact
 bounced(msg: YourMessage) {
@@ -594,17 +604,17 @@ bounced(msg: YourMessage) {
 }
 ```
 
-请记住，在 TON 中被退回的邮件正文中只有 $224$ 个可用数据位，而且没有任何引用，因此无法从中恢复很多数据。 不过，您仍然可以看到邮件是否被退回，从而可以创建更稳健的合同。
+请记住，在 TON 中被退回的消息正文中只有 $224$ 个可用数据位，而且没有任何引用，因此无法从中恢复很多数据。  不过，您仍然可以看到消息是否被退回，从而可以创建更稳健的合约。
 
-了解更多有关退信和收信人的信息：[退信](/zh-cn/book/bounced)。
+了解更多关于退回消息和接收者的信息：[退回消息](/zh-cn/book/bounced)。
 
-## 实验实验室设置 {#lab}
+## 实验室设置 {#lab}
 
 如果你对 [Blueprint][bp] 的测试设置感到不知所措，或者只是想快速测试一些东西，不用担心--有一种方法可以建立一个简单的游戏场作为实验实验室，来测试你的想法和假设。
 
 <Steps>
 
-1. #### 创建新的蓝图项目 {#lab-1}
+1. #### 创建新的Blueprint项目 {#lab-1}
 
    这将防止任意代码和测试污染您现有的程序。
 
@@ -615,7 +625,7 @@ bounced(msg: YourMessage) {
    <Tabs>
      <TabItem label="yarn" icon="seti:yarn">
        ```shell
-       # 推荐
+       # recommended
        yarn create ton tact-playground --type tact-empty --contractName Playground
        ```
      </TabItem>
@@ -646,42 +656,42 @@ bounced(msg: YourMessage) {
    it('plays', async () => {
      const res = await playground.send(
        deployer.getSender(),
-       { value: toNano('0.5') }, // ← 在这里你可以增加发送的纳币值
+       { value: toNano('0.5') }, // ← here you may increase the value in nanoToncoins sent
        'plays',
      );
 
      console.log("Address of our contract: " + playground.address);
-     console.log(res.externals); // ← 在这里可以看到 emit() 调用的结果
-   })；
+     console.log(res.externals); // ← here one would see results of emit() calls
+   });
    ```
 
-3. #### 修改合同 {#lab-3}
+3. #### 修改合约 {#lab-3}
 
    用以下代码替换`contracts/playground.tact`中的代码：
 
    ```tact title="contracts/playground.tact" {4-6}
    import "@stdlib/deploy";
 
-   合同 Playground with Deployable {
+   contract Playground with Deployable {
        receive("plays") {
-           // NOTE: write your test logic here！
+           // NOTE: write your test logic here!
        }
    }
    ```
 
    此设置的基本思想是将要测试的代码放入 [receiver function](/zh-cn/book/contracts#receiver-functions) 中，以响应 [string](/zh-cn/book/types#primitive-types) 消息 `"plays"{:tact}`。
 
-   请注意，您仍然可以在[接收器]（/book/contracts#receiver-functions）之外编写任何有效的 Tact 代码。 但为了测试它，你需要在其中编写相关的测试逻辑。
+   请注意，您仍然可以在[接收器](/zh-cn/book/contracts#receiver-functions) 之外编写任何有效的 Tact 代码。  但为了测试它，你需要在其中编写相关的测试逻辑。
 
-4. #### 我们来测试一下！ {#lab-4}
+4. #### 我们来测试一下！ 我们来测试一下！ {#lab-4}
 
-   这样，我们的实验装置就完成了。 要执行我们为 "Playground "合约准备的单个测试，请运行以下程序：
+   这样，我们的实验装置就完成了。  要执行我们为 "Playground "合约准备的单个测试，请运行以下程序：
 
    ```shell
    yarn test -t plays
    ```
 
-   从现在起，您只需修改 Tact 合同文件中已测试的 [receiver function]（/book/contracts#receiver-functions）的内容，然后重新运行上述命令，就可以对某些内容进行测试。 冲洗并重复这个过程，直到你测试了你想测试的东西。
+   从现在起，您只需修改 Tact 合约文件中已测试的 [receiver function](/zh-cn/book/contracts#receiver-functions) 的内容，然后重新运行上述命令，就可以对某些内容进行测试。  重复该过程，直到您测试了想要测试的内容。
 
    为了简化和更干净的输出，您可以在 `package.json` 中为 `scripts` 添加一个新字段，这样您只需运行 `yarn lab{:shell}` 即可在一个字段中完成构建和测试。
 
@@ -689,8 +699,8 @@ bounced(msg: YourMessage) {
 
    ```json filename="package.json" {3}
    {
-     "脚本"：{
-       "lab"："blueprint build 1>/dev/null && yarn test -t plays"
+     "scripts": {
+       "lab": "blueprint build --all 1>/dev/null && yarn test -t plays"
      }
    }
    ```
@@ -699,9 +709,9 @@ bounced(msg: YourMessage) {
 
    ```json filename="package.json" {3-4}
    {
-     "脚本"：{
-       "build"："blueprint build | out-null",
-       "lab"："yarn build && yarn test -t plays"
+     "scripts": {
+       "build": "blueprint build --all | out-null",
+       "lab": "yarn build && yarn test -t plays"
      }
    }
    ```
@@ -709,17 +719,18 @@ bounced(msg: YourMessage) {
    要运行
 
    ```shell
-   纱线实验室
+   yarn lab
    ```
 
 </Steps>
 
-[转储]: /zh-cn/ref/core-debug#dump
-[结构]: </book/structs and-messages#structs>
-[信息]: </book/structs and-messages#messages>
-[电池]: /zh-cn/book/cells#cells
-[一片]: /zh-cn/book/cells#slices
+[dump]: /zh-cn/ref/core-debug#dump
+[struct]: /zh-cn/book/structs-and-messages#structs
+[message]: /zh-cn/book/structs-and-messages#messages
+[cell]: /zh-cn/book/cells#cells
+[slice]: /zh-cn/book/cells#slices
 [tg]: https://t.me/tactlang
 [bp]: https://github.com/ton-org/blueprint
-[某人]: https://github.com/ton-org/sandbox
-[笑话]: https://jestjs.io
+[bp-config]: https://github.com/ton-org/blueprint/tree/main?tab=readme-ov-file#configuration
+[sb]: https://github.com/ton-org/sandbox
+[jest]: https://jestjs.io

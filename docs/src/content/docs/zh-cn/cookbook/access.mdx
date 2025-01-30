@@ -1,13 +1,14 @@
 ---
-title: 门禁控制
+title: 访问控制
+description: 此页列出了使用特权、所有权和访问控制的常见例子
 ---
 
 本页列出了使用权限、所有权和访问控制的常见示例。
 
-## 如何使用 Ownable 特质检查发件人权限
+## 如何使用 Ownable trait检查发件人权限
 
 ```tact
-// 为了方便起见，必须从 stdlib 导入 Ownable 以及 Deployable：
+// Ownable has to be imported from stdlib, as well as Deployable, for convenience:
 import "@stdlib/ownable";
 import "@stdlib/deploy";
 
@@ -15,14 +16,14 @@ message FooBarMsg {
     newVal: Int as uint32;
 }
 
-// Ownable 特性可以限制某些操作只能由所有者执行
-Deployable, Ownable 的 SenderChecker 合约 {
-    // 持久状态变量
-    owner: Address; // Ownable 特性要求你添加这个确切的状态变量
-    val: Int as uint32; // 一些值
+// Ownable trait can limit certain actions to the owner only
+contract SenderChecker with Deployable, Ownable {
+    // Persistent state variables
+    owner: Address;     // Ownable trait requires you to add this exact state variable
+    val: Int as uint32; // some value
 
     init() {
-        // 我们可以将所有者初始化为我们想要的任何值，在本例中就是部署者：
+        // we can initialize owner to any value we want, the deployer in this case:
         self.owner = sender();
         self.val = 0;
     }
@@ -47,6 +48,6 @@ Deployable, Ownable 的 SenderChecker 合约 {
 
 :::tip[Hey there!]
 
-  没有找到您最喜欢的访问控制范例？ 您有很酷的实施方案吗？ [欢迎投稿！](https://github.com/tact-lang/tact/issues)
+  没有找到您最喜欢的访问控制范例？  您有很酷的实施方案吗？ [欢迎投稿！](https://github.com/tact-lang/tact/issues)
 
 :::
