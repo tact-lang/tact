@@ -17,6 +17,7 @@ import {
 import "@ton/test-utils";
 import { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
 import Table from "cli-table3";
+import { getUsedGas } from "../util/util";
 
 type BenchmarkResult = {
     label: string;
@@ -165,18 +166,6 @@ function printBenchmarkTable(results: BenchmarkResult[]): void {
     output += "\n";
 
     console.log(output);
-}
-
-function getUsedGas(sendEnough: SendMessageResult) {
-    return sendEnough.transactions
-        .slice(1)
-        .map((t) =>
-            t.description.type === "generic" &&
-            t.description.computePhase.type === "vm"
-                ? t.description.computePhase.gasUsed
-                : 0n,
-        )
-        .reduceRight((prev, cur) => prev + cur);
 }
 
 describe("Jetton", () => {
