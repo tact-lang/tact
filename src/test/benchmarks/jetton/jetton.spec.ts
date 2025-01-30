@@ -65,7 +65,7 @@ const results: BenchmarkResult[] = [
         discovery: 11055n,
     },
     {
-        label: "1.5.3 with old readForwardFee",
+        label: "1.5.3 with #1586 and #1589",
         transfer: 26568n,
         burn: 17718n,
         discovery: 11063n,
