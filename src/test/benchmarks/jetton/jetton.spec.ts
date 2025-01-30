@@ -17,7 +17,7 @@ import {
 import "@ton/test-utils";
 import { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
 import Table from "cli-table3";
-import { getUsedGas } from "../util/util";
+import { getUsedGas } from "../util";
 import benchmarkResults from "./results.json";
 
 type BenchmarkResult = {
