@@ -154,7 +154,7 @@ export default defineConfig({
 						{ slug: 'book/exit-codes' },
 						{
 							label: 'Expressiveness',
-							translations: { 'zh-CN': '表现力' },
+							translations: { 'zh-CN': '表达能力' },
 							attrs: { class: 'sidebar-separator' },
 							link: 'book/operators#',
 						},
@@ -166,7 +166,7 @@ export default defineConfig({
 						{ slug: 'book/assembly-functions' },
 						{
 							label: 'Communication',
-							translations: { 'zh-CN': '交流' },
+							translations: { 'zh-CN': '通信' },
 							attrs: { class: 'sidebar-separator' },
 							link: 'book/receive#',
 						},
@@ -201,7 +201,7 @@ export default defineConfig({
 						{ slug: 'cookbook' },
 						{
 							label: 'Single contract',
-							translations: { 'zh-CN': '单一合同' },
+							translations: { 'zh-CN': '单一合约' },
 							attrs: { class: 'sidebar-separator' },
 							link: 'cookbook/single-communication#',
 						},
@@ -215,7 +215,7 @@ export default defineConfig({
 						{ slug: 'cookbook/misc' },
 						{
 							label: 'Multiple contracts',
-							translations: { 'zh-CN': '多重合同' },
+							translations: { 'zh-CN': '多重合约' },
 							attrs: { class: 'sidebar-separator' },
 							link: 'cookbook/multi-communication#',
 						},
@@ -250,7 +250,7 @@ export default defineConfig({
 						},
 						{
 							label: 'Core library',
-							translations: { 'zh-CN': '核心图书馆' },
+							translations: { 'zh-CN': '核心库' },
 							attrs: { class: 'sidebar-separator' },
 							link: 'ref/core-base#',
 						},
@@ -265,7 +265,7 @@ export default defineConfig({
 						{ slug: 'ref/core-advanced' },
 						{
 							label: 'Standard libraries',
-							translations: { 'zh-CN': '标准图书馆' },
+							translations: { 'zh-CN': '标准库' },
 							attrs: { class: 'sidebar-separator' },
 							link: 'ref/standard-libraries#',
 						},

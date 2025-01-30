@@ -1,8 +1,9 @@
 ---
 title: 杂项
+description: 各种尚未有专门页面但仍然有用且有趣的示例。
 ---
 
-各种利基范例，这些范例还没有专门的页面，但非常有用和有趣。
+各种尚未有专门页面但仍然有用且有趣的示例。
 
 ## 如何抛出错误
 
@@ -13,14 +14,14 @@ title: 杂项
 ```tact
 let number: Int = 198;
 
-// 无论如何都会触发错误
-throw(36);
+// the error will be triggered anyway
+try { throw(36); } catch (exitCode) {}
 
-// 只有当数字大于 50 时才会触发错误
-nativeThrowIf(35, number > 50);
+// the error will be triggered only if the number is greater than 50
+try { nativeThrowIf(35, number > 50); } catch (exitCode) {}
 
-// 只有当数字不等于 198 时才会触发错误
-nativeThrowUnless(39, number == 198)；
+// the error will be triggered only if the number is NOT EQUAL to 198
+try { nativeThrowUnless(39, number == 198); } catch (exitCode) {}
 ```
 
 :::note[Useful links:]
