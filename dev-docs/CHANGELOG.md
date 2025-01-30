@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Inline `*_contract_init` function: PR [#1589](https://github.com/tact-lang/tact/pull/1589)
 - Better error message for `unresolved name` error: PR [#1595](https://github.com/tact-lang/tact/pull/1595)
 - Better error message for `unresolved global function` error: PR [#1610](https://github.com/tact-lang/tact/pull/1610)
+- Better error message for `extend function without parameters` error: PR [#1624](https://github.com/tact-lang/tact/pull/1624)
 
 ### Fixed
 
@@ -102,6 +103,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a compilation-related page with the description of the compilation report: PR [#1309](https://github.com/tact-lang/tact/pull/1309), PR [#1387](https://github.com/tact-lang/tact/pull/1387)
 - Documented `BaseTrait` and methods in stdlib code: PR [#1296](https://github.com/tact-lang/tact/pull/1296)
 - Document how storage variables get updated in relation to the `init()` function: PR [#1311](https://github.com/tact-lang/tact/pull/1311)
+- Document compiler upgrades in Blueprint and other Tact projects: PR [#1560](https://github.com/tact-lang/tact/pull/1560)
+- Illustrate how nested maps can be created: PR [#1593](https://github.com/tact-lang/tact/pull/1593)
 
 ### Release contributors
 
