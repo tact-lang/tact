@@ -1498,7 +1498,6 @@ export class Interpreter {
                                 () =>
                                     this.evalStaticFunction(
                                         functionNode,
-                                        ast,
                                         ast.args,
                                         functionDescription.returns,
                                     ),
@@ -1532,9 +1531,8 @@ export class Interpreter {
         }
     }
 
-    public evalStaticFunction(
+    private evalStaticFunction(
         functionCode: A.AstFunctionDef,
-        functionCall: A.AstStaticCall,
         args: A.AstExpression[],
         returns: TypeRef,
     ): A.AstLiteral {
