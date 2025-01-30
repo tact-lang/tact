@@ -11,7 +11,7 @@ import { loadCases } from "../../utils/loadCases";
 import { constantPropagationAnalysis } from "../deprecated/constant-propagation";
 
 describe("constant-propagation", () => {
-    for (const r of loadCases(__dirname + "/success/")) {
+    for (const r of loadCases(__dirname + "/success/constant-propagation/")) {
         it("should pass constant propagation analysis for " + r.name, () => {
             const Ast = getAstFactory();
             let ctx = openContext(

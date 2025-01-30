@@ -41,8 +41,6 @@ exports[`constant-propagation should pass constant propagation analysis for insi
 ]
 `;
 
-exports[`constant-propagation should pass constant propagation analysis for inside-foreach 2`] = `[]`;
-
 exports[`constant-propagation should pass constant propagation analysis for inside-if 1`] = `
 [
   [
@@ -87,8 +85,6 @@ exports[`constant-propagation should pass constant propagation analysis for insi
   ],
 ]
 `;
-
-exports[`constant-propagation should pass constant propagation analysis for inside-if 2`] = `[]`;
 
 exports[`constant-propagation should pass constant propagation analysis for inside-if-else-false-branch 1`] = `
 [
@@ -135,8 +131,6 @@ exports[`constant-propagation should pass constant propagation analysis for insi
 ]
 `;
 
-exports[`constant-propagation should pass constant propagation analysis for inside-if-else-false-branch 2`] = `[]`;
-
 exports[`constant-propagation should pass constant propagation analysis for inside-if-else-true-branch 1`] = `
 [
   [
@@ -182,8 +176,6 @@ exports[`constant-propagation should pass constant propagation analysis for insi
 ]
 `;
 
-exports[`constant-propagation should pass constant propagation analysis for inside-if-else-true-branch 2`] = `[]`;
-
 exports[`constant-propagation should pass constant propagation analysis for inside-repeat 1`] = `
 [
   [
@@ -224,8 +216,6 @@ exports[`constant-propagation should pass constant propagation analysis for insi
   ],
 ]
 `;
-
-exports[`constant-propagation should pass constant propagation analysis for inside-repeat 2`] = `[]`;
 
 exports[`constant-propagation should pass constant propagation analysis for inside-while 1`] = `
 [
@@ -275,8 +265,6 @@ exports[`constant-propagation should pass constant propagation analysis for insi
   ],
 ]
 `;
-
-exports[`constant-propagation should pass constant propagation analysis for inside-while 2`] = `[]`;
 
 exports[`constant-propagation should pass constant propagation analysis for outside-do-until 1`] = `
 [
@@ -330,8 +318,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
   ],
 ]
 `;
-
-exports[`constant-propagation should pass constant propagation analysis for outside-do-until 2`] = `[]`;
 
 exports[`constant-propagation should pass constant propagation analysis for outside-do-until-mutatingFun 1`] = `
 [
@@ -401,8 +387,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
   ],
 ]
 `;
-
-exports[`constant-propagation should pass constant propagation analysis for outside-do-until-mutatingFun 2`] = `[]`;
 
 exports[`constant-propagation should pass constant propagation analysis for outside-foreach 1`] = `
 [
@@ -480,8 +464,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
   ],
 ]
 `;
-
-exports[`constant-propagation should pass constant propagation analysis for outside-foreach 2`] = `[]`;
 
 exports[`constant-propagation should pass constant propagation analysis for outside-foreach-mutatingFun 1`] = `
 [
@@ -576,8 +558,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
 ]
 `;
 
-exports[`constant-propagation should pass constant propagation analysis for outside-foreach-mutatingFun 2`] = `[]`;
-
 exports[`constant-propagation should pass constant propagation analysis for outside-if 1`] = `
 [
   [
@@ -626,8 +606,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
   ],
 ]
 `;
-
-exports[`constant-propagation should pass constant propagation analysis for outside-if 2`] = `[]`;
 
 exports[`constant-propagation should pass constant propagation analysis for outside-if-else 1`] = `
 [
@@ -685,8 +663,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
   ],
 ]
 `;
-
-exports[`constant-propagation should pass constant propagation analysis for outside-if-else 2`] = `[]`;
 
 exports[`constant-propagation should pass constant propagation analysis for outside-if-else-mutatingFun 1`] = `
 [
@@ -753,8 +729,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
 ]
 `;
 
-exports[`constant-propagation should pass constant propagation analysis for outside-if-else-mutatingFun 2`] = `[]`;
-
 exports[`constant-propagation should pass constant propagation analysis for outside-if-else-no-assign-false-branch 1`] = `
 [
   [
@@ -815,8 +789,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
   ],
 ]
 `;
-
-exports[`constant-propagation should pass constant propagation analysis for outside-if-else-no-assign-false-branch 2`] = `[]`;
 
 exports[`constant-propagation should pass constant propagation analysis for outside-if-else-no-assign-false-branch-mutatingFun 1`] = `
 [
@@ -887,8 +859,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
 ]
 `;
 
-exports[`constant-propagation should pass constant propagation analysis for outside-if-else-no-assign-false-branch-mutatingFun 2`] = `[]`;
-
 exports[`constant-propagation should pass constant propagation analysis for outside-if-else-no-assign-true-branch 1`] = `
 [
   [
@@ -949,8 +919,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
   ],
 ]
 `;
-
-exports[`constant-propagation should pass constant propagation analysis for outside-if-else-no-assign-true-branch 2`] = `[]`;
 
 exports[`constant-propagation should pass constant propagation analysis for outside-if-else-no-assign-true-branch-mutatingFun 1`] = `
 [
@@ -1021,8 +989,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
 ]
 `;
 
-exports[`constant-propagation should pass constant propagation analysis for outside-if-else-no-assign-true-branch-mutatingFun 2`] = `[]`;
-
 exports[`constant-propagation should pass constant propagation analysis for outside-if-elseif 1`] = `
 [
   [
@@ -1091,8 +1057,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
   ],
 ]
 `;
-
-exports[`constant-propagation should pass constant propagation analysis for outside-if-elseif 2`] = `[]`;
 
 exports[`constant-propagation should pass constant propagation analysis for outside-if-elseif-else-mutatingFun 1`] = `
 [
@@ -1183,8 +1147,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
 ]
 `;
 
-exports[`constant-propagation should pass constant propagation analysis for outside-if-elseif-else-mutatingFun 2`] = `[]`;
-
 exports[`constant-propagation should pass constant propagation analysis for outside-if-mutatingFun 1`] = `
 [
   [
@@ -1241,8 +1203,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
   ],
 ]
 `;
-
-exports[`constant-propagation should pass constant propagation analysis for outside-if-mutatingFun 2`] = `[]`;
 
 exports[`constant-propagation should pass constant propagation analysis for outside-repeat 1`] = `
 [
@@ -1313,8 +1273,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
 ]
 `;
 
-exports[`constant-propagation should pass constant propagation analysis for outside-repeat 2`] = `[]`;
-
 exports[`constant-propagation should pass constant propagation analysis for outside-repeat-mutatingFun 1`] = `
 [
   [
@@ -1375,8 +1333,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
   ],
 ]
 `;
-
-exports[`constant-propagation should pass constant propagation analysis for outside-repeat-mutatingFun 2`] = `[]`;
 
 exports[`constant-propagation should pass constant propagation analysis for outside-repeat-with-iterations_return-inside 1`] = `
 [
@@ -1471,8 +1427,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
 ]
 `;
 
-exports[`constant-propagation should pass constant propagation analysis for outside-repeat-with-iterations_return-inside 2`] = `[]`;
-
 exports[`constant-propagation should pass constant propagation analysis for outside-while 1`] = `
 [
   [
@@ -1550,8 +1504,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
 ]
 `;
 
-exports[`constant-propagation should pass constant propagation analysis for outside-while 2`] = `[]`;
-
 exports[`constant-propagation should pass constant propagation analysis for outside-while-mutatingFun 1`] = `
 [
   [
@@ -1628,8 +1580,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
   ],
 ]
 `;
-
-exports[`constant-propagation should pass constant propagation analysis for outside-while-mutatingFun 2`] = `[]`;
 
 exports[`constant-propagation should pass constant propagation analysis for outside-while-with-iterations_return-inside 1`] = `
 [
@@ -1740,8 +1690,6 @@ exports[`constant-propagation should pass constant propagation analysis for outs
 ]
 `;
 
-exports[`constant-propagation should pass constant propagation analysis for outside-while-with-iterations_return-inside 2`] = `[]`;
-
 exports[`constant-propagation should pass constant propagation analysis for short-circuit-and 1`] = `
 [
   [
@@ -1799,191 +1747,6 @@ exports[`constant-propagation should pass constant propagation analysis for shor
 ]
 `;
 
-exports[`constant-propagation should pass constant propagation analysis for short-circuit-and 2`] = `
-[
-  {
-    "ast": {
-      "attributes": [],
-      "id": 40,
-      "kind": "function_def",
-      "loc": {},
-      "name": {
-        "id": 16,
-        "kind": "id",
-        "loc": {},
-        "text": "foo",
-      },
-      "params": [
-        {
-          "id": 20,
-          "kind": "typed_parameter",
-          "loc": {},
-          "name": {
-            "id": 18,
-            "kind": "id",
-            "loc": {},
-            "text": "b",
-          },
-          "type": {
-            "id": 19,
-            "kind": "type_id",
-            "loc": {},
-            "text": "Bool",
-          },
-        },
-      ],
-      "return": {
-        "id": 17,
-        "kind": "type_id",
-        "loc": {},
-        "text": "Int",
-      },
-      "statements": [
-        {
-          "expression": {
-            "base": 10,
-            "id": 23,
-            "kind": "number",
-            "loc": {},
-            "value": 10n,
-          },
-          "id": 24,
-          "kind": "statement_let",
-          "loc": {},
-          "name": {
-            "id": 21,
-            "kind": "id",
-            "loc": {},
-            "text": "a",
-          },
-          "type": {
-            "id": 22,
-            "kind": "type_id",
-            "loc": {},
-            "text": "Int",
-          },
-        },
-        {
-          "expression": {
-            "id": 32,
-            "kind": "op_binary",
-            "left": {
-              "id": 27,
-              "kind": "id",
-              "loc": {},
-              "text": "b",
-            },
-            "loc": {},
-            "op": "&&",
-            "right": {
-              "args": [],
-              "id": 31,
-              "kind": "method_call",
-              "loc": {},
-              "method": {
-                "id": 29,
-                "kind": "id",
-                "loc": {},
-                "text": "mutator",
-              },
-              "self": {
-                "id": 28,
-                "kind": "id",
-                "loc": {},
-                "text": "a",
-              },
-            },
-          },
-          "id": 33,
-          "kind": "statement_let",
-          "loc": {},
-          "name": {
-            "id": 25,
-            "kind": "id",
-            "loc": {},
-            "text": "c",
-          },
-          "type": {
-            "id": 26,
-            "kind": "type_id",
-            "loc": {},
-            "text": "Bool",
-          },
-        },
-        {
-          "expression": {
-            "id": 38,
-            "kind": "op_binary",
-            "left": {
-              "base": 10,
-              "id": 34,
-              "kind": "number",
-              "loc": {},
-              "value": 1n,
-            },
-            "loc": {},
-            "op": "/",
-            "right": {
-              "id": 37,
-              "kind": "op_binary",
-              "left": {
-                "id": 35,
-                "kind": "id",
-                "loc": {},
-                "text": "a",
-              },
-              "loc": {},
-              "op": "-",
-              "right": {
-                "base": 10,
-                "id": 36,
-                "kind": "number",
-                "loc": {},
-                "value": 10n,
-              },
-            },
-          },
-          "id": 39,
-          "kind": "statement_return",
-          "loc": {},
-        },
-      ],
-    },
-    "isAbstract": false,
-    "isGetter": false,
-    "isInline": false,
-    "isMutating": false,
-    "isOverride": false,
-    "isVirtual": false,
-    "methodId": null,
-    "name": "foo",
-    "origin": "user",
-    "params": [
-      {
-        "loc": {},
-        "name": {
-          "id": 18,
-          "kind": "id",
-          "loc": {},
-          "text": "b",
-        },
-        "type": {
-          "kind": "ref",
-          "name": "Bool",
-          "optional": false,
-        },
-      },
-    ],
-    "returns": {
-      "kind": "ref",
-      "name": "Int",
-      "optional": false,
-    },
-    "self": null,
-  },
-]
-`;
-
 exports[`constant-propagation should pass constant propagation analysis for short-circuit-or 1`] = `
 [
   [
@@ -2038,190 +1801,5 @@ exports[`constant-propagation should pass constant propagation analysis for shor
     "false",
     "Bool",
   ],
-]
-`;
-
-exports[`constant-propagation should pass constant propagation analysis for short-circuit-or 2`] = `
-[
-  {
-    "ast": {
-      "attributes": [],
-      "id": 40,
-      "kind": "function_def",
-      "loc": {},
-      "name": {
-        "id": 16,
-        "kind": "id",
-        "loc": {},
-        "text": "foo",
-      },
-      "params": [
-        {
-          "id": 20,
-          "kind": "typed_parameter",
-          "loc": {},
-          "name": {
-            "id": 18,
-            "kind": "id",
-            "loc": {},
-            "text": "b",
-          },
-          "type": {
-            "id": 19,
-            "kind": "type_id",
-            "loc": {},
-            "text": "Bool",
-          },
-        },
-      ],
-      "return": {
-        "id": 17,
-        "kind": "type_id",
-        "loc": {},
-        "text": "Int",
-      },
-      "statements": [
-        {
-          "expression": {
-            "base": 10,
-            "id": 23,
-            "kind": "number",
-            "loc": {},
-            "value": 10n,
-          },
-          "id": 24,
-          "kind": "statement_let",
-          "loc": {},
-          "name": {
-            "id": 21,
-            "kind": "id",
-            "loc": {},
-            "text": "a",
-          },
-          "type": {
-            "id": 22,
-            "kind": "type_id",
-            "loc": {},
-            "text": "Int",
-          },
-        },
-        {
-          "expression": {
-            "id": 32,
-            "kind": "op_binary",
-            "left": {
-              "id": 27,
-              "kind": "id",
-              "loc": {},
-              "text": "b",
-            },
-            "loc": {},
-            "op": "||",
-            "right": {
-              "args": [],
-              "id": 31,
-              "kind": "method_call",
-              "loc": {},
-              "method": {
-                "id": 29,
-                "kind": "id",
-                "loc": {},
-                "text": "mutator",
-              },
-              "self": {
-                "id": 28,
-                "kind": "id",
-                "loc": {},
-                "text": "a",
-              },
-            },
-          },
-          "id": 33,
-          "kind": "statement_let",
-          "loc": {},
-          "name": {
-            "id": 25,
-            "kind": "id",
-            "loc": {},
-            "text": "c",
-          },
-          "type": {
-            "id": 26,
-            "kind": "type_id",
-            "loc": {},
-            "text": "Bool",
-          },
-        },
-        {
-          "expression": {
-            "id": 38,
-            "kind": "op_binary",
-            "left": {
-              "base": 10,
-              "id": 34,
-              "kind": "number",
-              "loc": {},
-              "value": 1n,
-            },
-            "loc": {},
-            "op": "/",
-            "right": {
-              "id": 37,
-              "kind": "op_binary",
-              "left": {
-                "id": 35,
-                "kind": "id",
-                "loc": {},
-                "text": "a",
-              },
-              "loc": {},
-              "op": "-",
-              "right": {
-                "base": 10,
-                "id": 36,
-                "kind": "number",
-                "loc": {},
-                "value": 10n,
-              },
-            },
-          },
-          "id": 39,
-          "kind": "statement_return",
-          "loc": {},
-        },
-      ],
-    },
-    "isAbstract": false,
-    "isGetter": false,
-    "isInline": false,
-    "isMutating": false,
-    "isOverride": false,
-    "isVirtual": false,
-    "methodId": null,
-    "name": "foo",
-    "origin": "user",
-    "params": [
-      {
-        "loc": {},
-        "name": {
-          "id": 18,
-          "kind": "id",
-          "loc": {},
-          "text": "b",
-        },
-        "type": {
-          "kind": "ref",
-          "name": "Bool",
-          "optional": false,
-        },
-      },
-    ],
-    "returns": {
-      "kind": "ref",
-      "name": "Int",
-      "optional": false,
-    },
-    "self": null,
-  },
 ]
 `;
