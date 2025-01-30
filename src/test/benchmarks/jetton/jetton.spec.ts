@@ -6,8 +6,6 @@ import {
     Sender,
     toNano,
     Builder,
-    TransactionDescriptionGeneric,
-    TransactionComputeVm,
 } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import chalk from "chalk";
@@ -67,8 +65,20 @@ const results: BenchmarkResult[] = [
         discovery: 11055n,
     },
     {
-        label: "master",
+        label: "1.5.3 with old readForwardFee",
         transfer: 26568n,
+        burn: 17718n,
+        discovery: 11063n,
+    },
+    {
+        label: "1.5.3 with faster readForwardFee",
+        transfer: 26121n,
+        burn: 17718n,
+        discovery: 11063n,
+    },
+    {
+        label: "master",
+        transfer: 26121n,
         burn: 17718n,
         discovery: 11063n,
     },
@@ -83,7 +93,11 @@ const METRICS: readonly MetricKey[] = [
 
 function calculateChange(prev: bigint, curr: bigint): string {
     const change = ((Number(curr - prev) / Number(prev)) * 100).toFixed(2);
-    return parseFloat(change) >= 0
+    const number = parseFloat(change);
+    if (number === 0) {
+        return chalk.gray(`same`);
+    }
+    return number >= 0
         ? chalk.redBright(`(+${change}%)`)
         : chalk.green(`(${change}%)`);
 }
