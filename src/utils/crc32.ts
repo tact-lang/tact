@@ -13,9 +13,9 @@ function makeCRC32Table(polynomial: number): number[] {
 
 const CRC32C_TABLE = makeCRC32Table(0xedb88320);
 
-export function crc32(data: string | Buffer): number {
-    if (!(data instanceof Buffer)) {
-        data = Buffer.from(data);
+export function crc32(data: string | Uint8Array): number {
+    if (typeof data === "string") {
+        data = new TextEncoder().encode(data);
     }
 
     let crc = 0xffffffff;
