@@ -43,7 +43,7 @@ asm fun send(params: SendParameters) {
     3 4 BLKSWAP
     s2 XCHG0
     /*
-    These two instuctions do this
+    These two instructions do this
     mode: s6
     body: s5
     code: s4
@@ -92,7 +92,7 @@ asm fun send(params: SendParameters) {
     */
     <{
         DROP2 // drop extra code and data
-        PUSHNULL
+        NULL // push NULL
         SWAP
         /*
         mode: s4
@@ -119,7 +119,7 @@ asm fun send(params: SendParameters) {
         STDICT // Store code
         STDICT // Store data
         b{0} STSLICECONST // Store library
-        ENDC // Completed builing StateInit
+        ENDC // Completed building StateInit
         SWAP
         /*
         mode: s2
@@ -139,7 +139,7 @@ asm fun send(params: SendParameters) {
     */
     STDICT // Save state init (and Maybe bit)
     STDICT // Save body as ref and place Maybe bit (body also may be NULL)
-    ENDC // We finished builing message!
+    ENDC // We finished building message!
     /*
     mode: s2
     MessageCell: s0
