@@ -1,6 +1,9 @@
 ---
 title: 高级
+description: Tact 核心库中的高级、特殊或危险功能
 ---
+
+import { Badge } from '@astrojs/starlight/components';
 
 各种小众、危险或不稳定的功能，可能会产生意想不到的结果，仅供更有经验的用户使用。
 
@@ -10,37 +13,284 @@ title: 高级
 
 :::
 
+## gasConsumed
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun gasConsumed(): Int;
+```
+
+返回当前交易中 [TVM][tvm] 到目前为止消耗的 [gas][gas] 的 [nanoToncoin][nanotoncoin] [`Int{:tact}`][int] 数量。 由此产生的值包括调用此功能的费用。
+
+用法示例：
+
+```tact
+let gas: Int = gasConsumed();
+```
+
+:::note[Useful links:]
+
+  [TON Docs中的 Gas](https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees#gas)
+
+:::
+
+## myStorageDue
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun myStorageDue(): Int;
+```
+
+返回累积的 [storage fee][storage-fee] 债务的 [nanoToncoin][nanotoncoin] [`Int{:tact}`][int] 数量。 在计算新的合约余额之前，将从收到的信息值中扣除储存费。
+
+用法示例：
+
+```tact
+let debt: Int = myStorageDue();
+```
+
+:::note[Useful links:]
+
+  [TON 文档中的存储费][storage-fee](存储费）
+  [TON 文档中的存储费计算][storage-fee-calc]
+
+:::
+
+## getStorageFee
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool): Int;
+```
+
+计算并返回在给定数量的 `cells` 和 `bits` 下存储合约指定 `seconds` 时间所需的 [storage fee][storage-fee]，以 [nanoToncoins][nanotoncoin] [`Int{:tact}`][int] 表示。 如果`isMasterchain` 是 `true{:tact}`，则使用 [masterchain][masterchain] 的价格，否则 [basechain][basechain] 的价格。 当前价格来自[TON Blockchain的配置参数18](https://docs.ton.org/develop/howto/blockchain-configs#param-18)。
+
+请注意，`cells`和`bits`的数值被用来作为它们最大的数值加上 $1$的模块。 也就是说，如果指定的值高于[账户状态限制（`max_acc_state_cells`和`max_acc_state_bits`）](/zh-cn/book/exit-codes#50)中列出的值，其结果将与指定精确限制的结果相同。 此外，请确保您考虑到[与同一哈希的 cells 分离][deduplication]。
+
+试图指定负数的 `cells`、`bits` 或 `seconds` 会抛出异常[export code 5](/zh-cn/book/exit-codes#5)：`整数超出预期范围`。
+
+用法示例：
+
+```tact
+let fee: Int = getStorageFee(1_000, 1_000, 1_000, false);
+//                           -----  -----  -----  -----
+//                           ↑      ↑      ↑      ↑
+//                           |      |      |      Isn't on the masterchain,
+//                           |      |      |      but on the basechain
+//                           |      |      Number of seconds to calculate
+//                           |      |      the storage fee for
+//                           |      Number of bits in a contract
+//                           Number of cells in a contract
+```
+
+:::note[Useful links:]
+
+  [TON 文档中的存储费][storage-fee](存储费）
+  [TON 文档中的存储费计算][storage-fee-calc]
+
+:::
+
+## getComputeFee
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int;
+```
+
+计算并返回消耗了 `gasUsed` 数量的[gas][gas]的交易的[compute fee][compute-fee]，单位为[nanoToncoins][nanotoncoin][`Int{:tact}`][int]。 如果`isMasterchain` 是 `true{:tact}`，则使用 [masterchain][masterchain] 的价格，否则 [basechain][basechain] 的价格。 当前价格来源于 TON 区块链的 [主链配置参数 20 和基本链配置参数 21][param-20-21]。
+
+当 `gasUsed` 小于称为 [`flat_gas_limit`][param-20-21] 的某个阈值时，需支付的最低费用基于 [`flat_gas_price`][param-20-21] 的值计算。 gas 使用量越小，最低价格就越高。 请参阅[`getSimpleComputeFee(){:tact}`](#getsimplecomputefee)的示例来得出这个阈值。
+
+试图指定一个 `gassUsed` 的负值导致异常[退出码 5](/zh-cn/book/exit-codes#5)：`Integer out of expected range`。
+
+使用示例
+
+```tact
+let fee: Int = getComputeFee(1_000, false);
+//                           -----  -----
+//                           ↑      ↑
+//                           |      Isn't on the masterchain,
+//                           |      but on the basechain
+//                           Number of gas units
+//                           consumed per transaction
+```
+
+:::note[Useful links:]
+
+  [Compute fee in TON Docs][compute-fee]\
+  [Compute fee calculation in TON Docs][compute-fee-calc]\
+  [`getSimpleComputeFee(){:tact}`](#getsimplecomputefee)
+
+:::
+
+## getSimpleComputeFee
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int;
+```
+
+类似于[`getComputeFee(){:tact}`](#getcomputefee)，但没有[`flat_gas_price`][param-20-21]，如果`gassUsed`小于一个叫做[`flat_gas_limit`][param-20-21] 的阈值，则不支付最低价格。 计算并只返回当前 gas 价格的 `gasUsed` 倍数。
+
+试图指定一个 `gassUsed` 的负值导致异常[退出码 5](/zh-cn/book/exit-codes#5)：`Integer out of expected range`。
+
+示例用法：
+
+```tact
+let fee = getComputeFee(0, false);
+let feeNoFlat = getSimpleComputeFee(0, false);
+let maxFlatPrice = fee - feeNoFlat;
+```
+
+:::note[Useful links:]
+
+  [Compute fee in TON Docs][compute-fee]\
+  [Compute fee calculation in TON Docs][compute-fee-calc]\
+  [`getComputeFee(){:tact}`](#getcomputefee)
+
+:::
+
 ## Context.readForwardFee
 
 ```tact
-extends fun readForwardFee(self: Context)：Int
+extends fun readForwardFee(self: Context): Int;
 ```
 
 [`Context{:tact}`](/zh-cn/ref/core-common#context) 的扩展函数。
 
-读取 [forward fee](https://docs.ton.org/develop/smart-contracts/guidelines/processing)，并以 [`Int{:tact}`][int] 的形式返回 [nanoToncoins](/zh-cn/book/integers#nanotoncoin) 的金额。
+读取[forward fee](https://docs.ton.org/develop/smart-contracts/guidelines/processing)，然后返回为 [`Int{:tact}`][int] [nanoToncoins][nanotoncoin]。
+
+示例用法：
+
+```tact
+let fwdFee: Int = context().readForwardFee();
+```
+
+:::note[Useful links:]
+
+  [`getOriginalFwdFee(){:tact}`](#getoriginalfwdfee)
+
+:::
+
+## getForwardFee
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int;
+```
+
+计算并返回一个出站消息的[转发费用][forward-fee]，该消息由给定数量的`cells`和`bits`组成，费用以[nanoToncoins][nanotoncoin]表示，类型为[`Int{:tact}`][int]。 如果`isMasterchain` 是 `true{:tact}`，则使用 [masterchain][masterchain] 的价格，否则 [basechain][basechain] 的价格。 当前价格来自 TON 区块链的[主链配置参数 24 和基链配置参数 25][param-24-25]。
+
+如果源地址和目的地址都在 [basechain][basechain]中，那么指定`isMasterchain` 为 `false{:tact}`。 否则，请指定 `true{:tact}`。
+
+请注意，`cells` 和 `bits` 的值取其最大值加上 $1$。 也就是说，指定高于[账户状态限制（`max_msg_cells` 和 `max_msg_bits`）](/zh-cn/book/exit-codes#50)中所列值的值，会产生与指定精确限制相同的结果。
+
+然而，不管`cells`和`bits`的数值如何，此函数总是添加基于[`lump_price`][param-24-25] 的最低价格。 请参阅[`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee) 的示例以获取它。 此外，请确保考虑到[具有相同哈希的cell去重][deduplication]，因为例如 root cell 及其数据位不计入转发费用，并由[`lump_price`][param-24-25]覆盖。
+
+试图指定负数的 `cells` 或 `bits` 会导致异常[退出码 5](/zh-cn/book/exit-codes#5)：`Integer out of expected range`。
 
 使用示例
 
 ```tact
-let fwdFee: Int = context().readForwardFee()；
+let fee: Int = getForwardFee(1_000, 1_000, false);
+//                           -----  -----  -----
+//                           ↑      ↑      ↑
+//                           |      |      Both source and destination
+//                           |      |      isn't on the masterchain,
+//                           |      |      but on the basechain
+//                           |      Number of bits in a message
+//                           Number of cells in a message
 ```
+
+:::note[Useful links:]
+
+  [TON 文档中的转发费用][forward-fee]\
+[TON 文档中的转发费用计算][forward-fee-calc]\
+[`CDATASIZEQ` 指令用于计算 `Cell{:tact}` 中不同cell、数据位和引用的数量](https://docs.ton.org/v3/documentation/tvm/instructions#F940)\
+[`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee)\
+[`getOriginalFwdFee(){:tact}`](#getoriginalfwdfee)
+
+:::
+
+## getSimpleForwardFee
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun getSimpleForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int;
+```
+
+类似于[`getForwardFee(){:tact}`](#getforwardfee)，但没有 [`lump_price`][param-24-25], 例如, 不考虑`cells`或`bits`的数量，支付最低价格。 计算并返回仅由 `cells` 乘以当前单元价格加上 `bits` 乘以当前位价格的结果。
+
+试图指定负数的 `cells` 或 `bits` 会导致异常[退出码 5](/zh-cn/book/exit-codes#5)：`Integer out of expected range`。
+
+使用示例
+
+```tact
+let fee = getForwardFee(1_000, 1_000, false);
+let feeNoLump = getSimpleForwardFee(1_000, 1_000, false);
+let lumpPrice = fee - feeNoLump;
+```
+
+:::note[Useful links:]
+
+  [TON 文档中的forward-fee][forward-fee](
+  ） [TON 文档中的forward-fee计算][forward-fee-calc](
+  ） [`getForwardFee()（{:tact}）`](#getforwardfee)
+
+:::
+
+## getOriginalFwdFee
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int;
+```
+
+根据从传入信息中获取的 `fwdFee` 计算并返回传出信息的所谓 _original_ [转发费][forward-fee]，单位为 [nano Toncoins][nanotoncoin] [`Int{:tact}`][int]。 如果源地址和目的地址都在 [basechain][basechain]中，那么指定`isMasterchain` 为 `false{:tact}`。 否则，请指定 `true{:tact}`。
+
+当发出的信息在很大程度上取决于收到的信息的结构，以至于无法单独使用 [`getForwardFee(){:tact}`](#getforwardfee) 来完全预测费用时，这个函数就非常有用。 即使可以，以 [nanoToncoin][nanotoncoin] 级别的精度计算精确费用也会非常昂贵，因此该函数给出的近似值通常已经足够好了。
+
+试图指定一个 `fwdFee` 的负值导致异常[退出码 5](/zh-cn/book/exit-codes#5)：`Integer out of expected range`。
+
+用法示例：
+
+```tact
+let fwdFee: Int = context().readForwardFee();
+let origFee: Int = getOriginalFwdFee(fee, false);
+```
+
+:::note[Useful links:]
+
+  [TON 文档中的转发费用][forward-fee]/
+  [TON 文档中的转发费用计算][forward-fee-calc]/
+  [`getForwardFee(){:tact}`](#getforwardfee)/
+  [`Context.readForwardFee(){:tact}`](#contextreadforwardfee)
+
+:::
 
 ## getConfigParam
 
 ```tact
-fun getConfigParam(id: Int)：Cell?
+fun getConfigParam(id: Int): Cell?;
 ```
 
-通过 "id "号加载 TON 区块链的[配置参数](https://docs.ton.org/develop/howto/blockchain-configs)。
+通过 `id` 加载 TON 区块链的[配置参数](https://docs.ton.org/develop/howto/blockchain-configs)。
 
-使用示例
+使用示例：
 
 ```tact
-// 参数 0，存储区块链配置的特殊智能合约的地址
+// Parameter 0, address of a special smart contract that stores the blockchain's configuration
 let configAddrAsCell: Cell = getConfigParam(0)!!;
 
-// 参数 18，用于确定数据存储价格的配置
+// Parameter 18, configuration for determining the prices for data storage
 let dataStorageFeeConfig: Cell = getConfigParam(18)!!;
 ```
 
@@ -48,7 +298,7 @@ let dataStorageFeeConfig: Cell = getConfigParam(18)!!;
 
   标准库 [`@stdlib/config`](/zh-cn/ref/stdlib-config) 提供了两个相关的辅助函数：\
   [`getConfigAddress(){:tact}`](/zh-cn/ref/stdlib-config#getconfigaddress)，用于获取配置 [`Address{:tact}`][p]/
-  [`getElectorAddress(){:tact}`](/zh-cn/ref/stdlib-config#getconfigaddress)，用于获取选区 [`地址{:tact}`][p]。
+  [`getElectorAddress(){:tact}`](/zh-cn/ref/stdlib-config#getconfigaddress)，用于获取选区 [`Address{:tact}`][p]。
 
   了解有关其他参数的更多信息：[TON 文档中的配置参数](https://docs.ton.org/develop/howto/blockchain-configs)。
 
@@ -57,16 +307,16 @@ let dataStorageFeeConfig: Cell = getConfigParam(18)!!;
 ## acceptMessage
 
 ```tact
-fun acceptMessage()；
+fun acceptMessage();
 ```
 
-同意购买一些汽油来完成当前交易。 处理外部信息时需要这一操作，因为外部信息本身没有价值（因此没有 gas ）。
+同意购买一些 gas 来完成当前交易。 处理外部信息时需要这一操作，因为外部信息本身没有值（因此没有 gas ）。
 
-使用示例
+用法示例：
 
 ```tact {10}
 contract Timeout {
-    timeout：Int;
+    timeout: Int;
 
     init() {
         self.timeout = now() + 5 * 60; // 5 minutes from now
@@ -74,7 +324,7 @@ contract Timeout {
 
     external("timeout") {
         if (now() > self.timeout) {
-            acceptMessage(); // 超时后开始接受外部信息
+            acceptMessage(); // start accepting external messages once timeout went out
         }
     }
 }
@@ -89,27 +339,27 @@ contract Timeout {
 ## commit
 
 ```tact
-fun commit()；
+fun commit();
 ```
 
 提交 [寄存器](https://docs.ton.org/learn/tvm-instructions/tvm-overview#control-registers)`c4`（"持久化数据"）和`c5`（"操作"）的当前状态，这样，即使随后在计算阶段出现异常，当前执行也会因保存的值而被视为 "成功"。
 
-使用示例
+用法示例：
 
 ```tact {1}
-commit(); // 现在，事务被视为 "成功"
-throw(42); // 这样就不会失败了
+commit();  // now, transaction is considered "successful"
+throw(42); // and this won't fail it
 ```
 
-## nativePrepareRandom {#nativepreparerandom}
+## nativePrepareRandom {#nativePrepareRandom}
 
 ```tact
-fun nativePrepareRandom()；
+fun nativePrepareRandom();
 ```
 
 使用 [`nativeRandomizeLt(){:tact}`](#nativerandomizelt)准备随机数生成器。 由 [`randomInt(){:tact}`](/zh-cn/ref/core-random#randomint) 和 [`random(){:tact}`](/zh-cn/ref/core-random#random) 函数自动调用。
 
-使用示例
+用法示例：
 
 ```tact
 nativePrepareRandom(); // prepare the RNG
@@ -119,42 +369,42 @@ nativePrepareRandom(); // prepare the RNG
 ## nativeRandomize
 
 ```tact
-fun nativeRandomize(x: Int)；
+fun nativeRandomize(x: Int);
 ```
 
 使用指定的种子 `x` 随机化伪随机数生成器。
 
-使用示例
+用法示例：
 
 ```tact
-nativeRandomize(); // 现在，随机数的可预测性降低了
-let idk：Int = randomInt(); // ????, it's random！
+nativeRandomize();          // now, random numbers are less predictable
+let idk: Int = randomInt(); // ???, it's random!
 ```
 
 ## nativeRandomizeLt
 
 ```tact
-fun nativeRandomizeLt()；
+fun nativeRandomizeLt();
 ```
 
 使用当前 [逻辑时间](https://docs.ton.org/develop/smart-contracts/guidelines/message-delivery-guarantees#what-is-a-logical-time) 随机化随机数发生器。
 
-使用示例
+用法示例：
 
 ```tact
-nativeRandomizeLt(); // 现在，随机数对用户来说是不可预测的，
-                            // 但仍可能受到验证器或校对器的影响
-                            // 因为它们决定了当前代码块的种子。
-let idk：Int = randomInt(); // ???，它是随机的！
+nativeRandomizeLt();        // now, random numbers are unpredictable for users,
+                            // but still may be affected by validators or collators
+                            // as they determine the seed of the current block.
+let idk: Int = randomInt(); // ???, it's random!
 ```
 
 ## nativeRandom
 
 ```tact
-fun nativeRandom()：Int；
+fun nativeRandom(): Int;
 ```
 
-生成并返回 $256$-bit 随机数，就像 [`randomInt(){:tact}`](/zh-cn/ref/core-random#randomint)，但不会事先用 [`nativePrepareRandom(){:tact}`](#nativepreparerandom)初始化随机生成器。
+生成并返回 $256$-bit 随机数，就像 [`randomInt(){:tact}`](/zh-cn/ref/core-random#randomint)，但不会事先用 [`nativePrepareRandom(){:tact}`](#nativePrepareRandom)初始化随机生成器。
 
 :::note
 
@@ -165,10 +415,10 @@ fun nativeRandom()：Int；
 ## nativeRandomInterval
 
 ```tact
-fun nativeRandomInterval(max: Int)：Int；
+fun nativeRandomInterval(max: Int): Int;
 ```
 
-生成并返回 $256$-bit 的随机数，范围从 $0$ 到 `max`，类似于 [`random(){:tact}`](/zh-cn/ref/core-random#random)，但不会事先用 [`nativePrepareRandom(){:tact}`](#nativepreparerandom)初始化随机生成器。
+生成并返回 $256$-bit 的随机数，范围从 $0$ 到 `max`，类似于 [`random(){:tact}`](/zh-cn/ref/core-random#random)，但不会事先用 [`nativePrepareRandom(){:tact}`](#nativePrepareRandom)初始化随机生成器。
 
 :::note
 
@@ -179,10 +429,10 @@ fun nativeRandomInterval(max: Int)：Int；
 ## nativeSendMessage
 
 ```tact
-fun nativeSendMessage(cell: Cell, mode: Int)；
+fun nativeSendMessage(cell: Cell, mode: Int);
 ```
 
-通过指定完整的 "单元格 "和[信息 "模式"](/zh-cn/book/message-mode)，[排队发送信息](/zh-cn/book/send#outbound-message-processing)。
+[排序消息](/zh-cn/book/send#outbound-message-processing)将通过指定完整的 `cell` 和 [message `mode`](/zh-cn/book/message-mode) 发送。
 
 :::note
 
@@ -193,29 +443,29 @@ fun nativeSendMessage(cell: Cell, mode: Int)；
 ## nativeReserve
 
 ```tact
-fun nativeReserve(amount: Int, mode: Int)；
+fun nativeReserve(amount: Int, mode: Int);
 ```
 
-以指定的金额和模式调用本地 `raw_reserve` 函数。 raw_reserve "是一个函数，用于创建输出操作，从账户余额中储备特定数量的[nanoToncoins](/zh-cn/book/integers#nanotoncoin)。
+以指定的金额和模式调用本地 `raw_reserve` 函数。 `raw_reserve`是一个能够创建输出动作的函数，从账户余额中保留一定数量的 [nanoToncoins][nanotoncoin]。
 
 它在 FunC 中的签名如下
 
 ```func
-raw_reserve(int amount, int mode) impure asm "RAWRESERVE"；
+raw_reserve(int amount, int mode) impure asm "RAWRESERVE";
 ```
 
 该函数有两个参数：
 
-- 金额：要储备的 [nanoToncoins](/zh-cn/book/integers#nanotoncoin)的数量。
-- 模式决定预订行为。
+- `amount`: 保留的 [nanoToncoins][nanotoncoin] 个数。
+- `mode `: 确定预订行为。
 
-函数 "raw_reserve "大致等同于创建一个向外发送的消息，将指定的 "金额"[nanoToncoins](/zh-cn/book/integers#nanotoncoin)（或 "b " $-$ "金额"[nanoToncoins](/zh-cn/book/integers#nanotoncoin)，其中 "b "为余额）发送给自己。 这就确保了后续产出行动所花费的资金不会超过剩余资金。
+函数 `raw_reserve` 大致等同于创建一条向外发送的消息，将指定的 "数量" [nano Toncoins][nanotoncoin](或 `b`  $-$ "数量" [nano Toncoins][nanotoncoin]，其中 `b`为余额）发送给自己。 这就确保了后续产出行动所花费的资金不会超过剩余资金。
 
 您可以使用原始的 [`Int{:tact}`][int]值，并手动为 `mode` 提供这些值，但为了方便起见，您可以使用一组常量来轻松构建复合 `mode`。 有关基本模式和可选标记的更多信息，请参阅下表。
 
 :::caution
 
-  目前，"金额 "必须是非负整数，"模式 "的范围必须是 $0..31$（含）。
+  目前，`amount` 必须是非负整数，`mode` 的范围必须是 $0..31$（含）。
 
 :::
 
@@ -223,34 +473,127 @@ raw_reserve(int amount, int mode) impure asm "RAWRESERVE"；
 
 由此产生的 `mode` 值可以有以下基本模式：
 
-|        模式值 | 恒定名称                          | 说明                                                                                   |
-| ---------: | :---------------------------- | ------------------------------------------------------------------------------------ |
-| $0$        | `ReserveExact{:tact}`         | 精确保留指定数量的 [纳顿币](/zh-cn/book/integers#nanotoncoin)。                                         |
-| $1$        | `ReserveAllExcept{:tact}`     | 保留所有 [纳米通币]（/book/integers#nanotoncoin），但保留指定数量的 [纳米通币]（/book/integers#nanotoncoin）。 |
-| $2$        | `ReserveAtMost{:tact}`        | 最多保留指定 "数量 "的 [纳顿币](/zh-cn/book/integers#nanotoncoin)。                                     |
+|        模式值 | 常量名称                          | 说明                                                 |
+| ---------: | :---------------------------- | -------------------------------------------------- |
+| $0$        | `ReserveExact{:tact}`         | 精确保留指定数量的 [nanoToncoins][nanotoncoin]。             |
+| $1$        | `ReserveAllExcept{:tact}`     | 保留所有，但是指定的 [nanoToncoins][nanotoncoin] 的`amount` 。 |
+| $2$        | `ReserveAtMost{:tact}`        | 最多保留指定数量的 [nanoToncoins][nanotoncoin]。             |
 
 ### 可选标记 {#nativereserve-optional-flags}
 
 此外，生成的 `mode` 还可以添加以下可选标记：
 
-|        标志值 | 恒定名称                               | 说明                                  |
-| ---------: | :--------------------------------- | ----------------------------------- |
-| $+4$       | `ReserveAddOriginalBalance{:tact}` | 用经常账户的原始余额（计算阶段之前）增加 "金额"，包括所有额外货币。 |
-| $+8$       | `ReserveInvertSign{:tact}`         | 在执行保留之前否定 `amount` 值。               |
-| $+16$      | `ReserveBounceIfActionFail{:tact}` | 如果预订失败，则退回交易。                       |
+|        标志值 | 常量名称                               | 描述                                            |
+| ---------: | :--------------------------------- | --------------------------------------------- |
+| $+4$       | `ReserveAddOriginalBalance{:tact}` | 增加 `amount` 的值，包含当前账户的原始余额（计算阶段之前），包括所有额外的货币。 |
+| $+8$       | `ReserveInvertSign{:tact}`         | 在执行预留操作之前，将 `amount` 值取反。                     |
+| $+16$      | `ReserveBounceIfActionFail{:tact}` | 保留失败时退回交易。                                    |
 
 ### 使用标志组合模式 {#nativereserve-combining-modes-with-flags}
 
-要为 `mode` 参数创建 [`Int{:tact}`][int]值，只需通过 [bitwise OR](/zh-cn/book/operators#binary-bitwise-or)操作将基本模式与可选标志结合起来：
+要为 `mode` 参数创建 [`Int{:tact}`][int] 值，只需通过应用 [按位或操作](/zh-cn/book/operators#binary-bitwise-or) 将基本模式与可选标志结合起来：
 
 ```tact
 nativeReserve(ton("0.1"), ReserveExact | ReserveBounceIfActionFail);
-// ---------- ----------------------------------------
-// ↑ ↑
-// | 模式，如果精确预订失败，将反弹交易
-// 要预订的纳吨币数量
+//            ----------  ----------------------------------------
+//            ↑           ↑
+//            |           mode, which would bounce the transaction if exact reservation would fail
+//            amount of nanoToncoins to reserve
 ```
+
+## parseStdAddress
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun parseStdAddress(slice: Slice): StdAddress;
+```
+
+将包含地址的 [`Slice{:tact}`][slice] 转换为 `StdAddress{:tact}` [Struct][s] 并返回它。 `StdAddress{:tact}` 是一个内置的 [Struct][s] 包含：
+
+| 字段          | 类型                             | 说明                                                |
+| :---------- | :----------------------------- | :------------------------------------------------ |
+| `workchain` | [`Int as int8{:tact}`][int]    | 地址的工作链ID，通常是 $0$ (basechain) 或 $-1$ (masterchain) |
+| `address`   | [`Int as uint256{:tact}`][int] | 指定的`工作链`中的地址                                      |
+
+尝试传递具有不同布局的 [`Slice{:tact}`][slice]，或者加载的数据超过给定 [`Slice{:tact}`][slice] 所包含的数据，会抛出异常，带有 [退出码 9](/zh-cn/book/exit-codes#9)：`Cell underflow`。
+
+用法示例：
+
+```tact
+let addr = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
+let parsedAddr = parseStdAddress(addr.asSlice());
+
+parsedAddr.workchain; // 0
+parsedAddr.address;   // 107...lots of digits...287
+
+// Using newAddress() function with the contents of StdAddress will yield the initial Address:
+let addr2: Address = newAddress(parsedAddr.workchain, parsedAddr.address);
+addr2 == addr; // true
+```
+
+:::note
+
+  要解析变量长度的地址，请参阅[`parseVarAddress(){:tact}`](#parsevaraddress) 函数。
+
+:::
+
+## parseVarAddress
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun parseVarAddress(slice: Slice): VarAddress;
+```
+
+将包含可变长度的地址的 [`Slice{:tact}`][slice] 转换为 `VarAddress{:tact}` [Struct][s] 并返回它。 `VarAddress{:tact}` 是一个内置的 [Struct][s] 由以下部分组成：
+
+| 字段          | 类型                           | 函数 "raw_reserve "大致等同于创建一个向外发送的消息，将指定的 "金额"[nanoToncoins](/zh-cn/book/integers#nanotoncoin)（或 "b " $-$ "金额"[nanoToncoins](/zh-cn/book/integers#nanotoncoin)，其中 "b "为余额）发送给自己。 这就确保了后续产出行动所花费的资金不会超过剩余资金。 |
+| :---------- | :--------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `workchain` | [`Int as int32{:tact}`][int] | 变量长度地址的 Workchain ID                                                                                                                                                                         |
+| `address`   | [`Slice{:tact}`][slice]      | 指定的`工作链`中的地址                                                                                                                                                                                 |
+
+尝试传递具有不同布局的 [`Slice{:tact}`][slice]，或者加载的数据超过给定 [`Slice{:tact}`][slice] 所包含的数据，会抛出异常，带有 [退出代码 9](/zh-cn/book/exit-codes#9)：`Cell underflow`。
+
+用法示例：
+
+```tact
+let varAddrSlice = beginCell()
+    .storeUint(6, 3)     // to recognize the following as a VarAddress
+    .storeUint(123, 9)   // make address occupy 123 bits
+    .storeUint(234, 32)  // specify workchain ID of 234
+    .storeUint(345, 123) // specify address of 345
+    .asSlice();
+let parsedVarAddr = parseVarAddress(varAddrSlice);
+
+parsedVarAddr.workchain;             // 234
+parsedVarAddr.address;               // CS{Cell{002...2b3} bits: 44..167; refs: 0..0}
+parsedVarAddr.address.loadUint(123); // 345
+```
+
+:::caution
+
+  可变长度地址是为未来扩展而设计的，虽然验证者必须准备好接受它们的入站消息，但标准（非可变）地址在可能的情况下仍然优先使用。
+
+:::
 
 [p]: /zh-cn/book/types#primitive-types
 [bool]: /zh-cn/book/types#booleans
 [int]: /zh-cn/book/integers
+[slice]: /zh-cn/book/cells#slices
+[s]: /zh-cn/book/structs-and-messages#structs
+[masterchain]: /zh-cn/book/masterchain
+[cell-hash]: /zh-cn/ref/core-cell#cellhash
+[nanotoncoin]: /zh-cn/book/integers#nanotoncoin
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
+[basechain]: https://docs.ton.org/v3/concepts/ton-blockchain/smart-contract-addresses#address-components
+[deduplication]: https://docs.ton.org/v3/documentation/data-formats/tlb/library-cells
+[storage-fee]: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees-low-level#storage-fee
+[storage-fee-calc]: https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation#storage-fee
+[gas]: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees#gas
+[compute-fee]: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees-low-level#computation-fees
+[compute-fee-calc]: https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation#computation-fee
+[param-20-21]: https://docs.ton.org/v3/documentation/network/configs/blockchain-configs#param-20-and-21
+[forward-fee]: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/forward-fees
+[forward-fee-calc]: https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation#forward-fee
+[param-24-25]: https://docs.ton.org/v3/documentation/network/configs/blockchain-configs#param-24-and-25
