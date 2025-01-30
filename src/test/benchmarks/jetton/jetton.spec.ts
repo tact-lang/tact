@@ -74,26 +74,39 @@ const results: BenchmarkResult[] = [
     },
 ];
 
-function calculateChanges(results: BenchmarkResult[]): string[][] {
-    type MetricKey = Exclude<keyof BenchmarkResult, "label">;
-    const headers = ["transfer", "burn", "discovery"] as const;
-    const changes: string[][] = results.map(() => headers.map(() => ""));
+type MetricKey = "transfer" | "burn" | "discovery";
+const METRICS: readonly MetricKey[] = [
+    "transfer",
+    "burn",
+    "discovery",
+] as const;
 
-    for (let i = 1; i < results.length; i++) {
-        headers.forEach((key, index) => {
-            const prevValue = results[i - 1]![key as MetricKey];
-            const currValue = results[i]![key as MetricKey];
-            const change = (
-                (Number(currValue - prevValue) / Number(prevValue)) *
-                100
-            ).toFixed(2);
-            changes[i]![index] =
-                parseFloat(change) >= 0
-                    ? chalk.redBright(`(+${change}%)`)
-                    : chalk.green(`(${change}%)`);
-        });
-    }
-    return changes;
+function calculateChange(prev: bigint, curr: bigint): string {
+    const change = ((Number(curr - prev) / Number(prev)) * 100).toFixed(2);
+    return parseFloat(change) >= 0
+        ? chalk.redBright(`(+${change}%)`)
+        : chalk.green(`(${change}%)`);
+}
+
+function calculateChanges(results: BenchmarkResult[]): string[][] {
+    return results.reduce<string[][]>((changes, currentResult, index) => {
+        if (index === 0) {
+            return [METRICS.map(() => "")];
+        }
+
+        const previousResult = results.at(index - 1);
+        const rowChanges =
+            typeof previousResult !== "undefined"
+                ? METRICS.map((metric) =>
+                      calculateChange(
+                          previousResult[metric],
+                          currentResult[metric],
+                      ),
+                  )
+                : [];
+
+        return [...changes, rowChanges];
+    }, []);
 }
 
 function printBenchmarkTable(results: BenchmarkResult[]): void {
