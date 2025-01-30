@@ -33,22 +33,4 @@ describe("constant-propagation", () => {
             expect(getAllStaticFunctions(ctx)).toMatchSnapshot();
         });
     }
-    for (const r of loadCases(__dirname + "/failed/")) {
-        it("should fail constant propagation analysis for " + r.name, () => {
-            const Ast = getAstFactory();
-            let ctx = openContext(
-                new CompilerContext(),
-                [{ code: r.code, path: "<unknown>", origin: "user" }],
-                [],
-                getParser(Ast, defaultParser),
-            );
-            ctx = featureEnable(ctx, "external");
-            ctx = resolveDescriptors(ctx, Ast);
-            ctx = resolveStatements(ctx, Ast);
-            ctx = resolveSignatures(ctx, Ast);
-            expect(() => {
-                constantPropagationAnalysis(ctx, Ast);
-            }).toThrowErrorMatchingSnapshot();
-        });
-    }
 });
