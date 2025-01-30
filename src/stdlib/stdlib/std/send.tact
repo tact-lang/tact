@@ -82,12 +82,12 @@ asm fun send(params: SendParameters) {
     ISNULL
     MUL
     /*
-    mode: s4
-    body: s3
-    MessageBuilder: s2
-    data: s1
-    code: s0
-    0 if any of them is not-null
+    mode: s5
+    body: s4
+    MessageBuilder: s3
+    data: s2
+    code: s1
+    s0: 0 if any of them is not-null
     -1 if both are null
     */
     <{
@@ -95,8 +95,8 @@ asm fun send(params: SendParameters) {
         NULL // push NULL
         SWAP
         /*
-        mode: s4
-        body: s3
+        mode: s3
+        body: s2
         NULL: s1
         MessageBuilder: s0
         */
@@ -122,8 +122,8 @@ asm fun send(params: SendParameters) {
         ENDC // Completed building StateInit
         SWAP
         /*
-        mode: s2
-        body: s1
+        mode: s3
+        body: s2
         StateInitCell: s1
         MessageBuilder: s0
         */
@@ -132,16 +132,16 @@ asm fun send(params: SendParameters) {
     }> PUSHCONT
     IFELSE
     /*
-    mode: s2
-    body: s1
-    StateInitCell: s1 OR NULL
+    mode: s3
+    body: s2
+    StateInitCell OR NULL: s1
     MessageBuilder: s0
     */
     STDICT // Save state init (and Maybe bit)
     STDICT // Save body as ref and place Maybe bit (body also may be NULL)
     ENDC // We finished building message!
     /*
-    mode: s2
+    mode: s1
     MessageCell: s0
     */
     SWAP // Because SENDRAWMSG does that (in terms of stack): `c x - ` where x is the mode, and c in the message
