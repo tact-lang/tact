@@ -21,55 +21,131 @@ struct SendParameters {
     data: Cell? = null;
 }
 
-fun send(params: SendParameters): Int { // returns forward fee
-    let b: Builder = beginCell();
-    b = b.storeInt(1, 2); // internal_message + ihd_disabled
-    b = b.storeBool(params.bounce); // bounce
-    b = b.storeInt(0, 3); // bounced + from
-    b = b.storeAddress(params.to); // To
-    b = b.storeCoins(params.value); // Value
-    b = b.storeInt(0, 1 + 4 + 4 + 64 + 32); // currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
+/*
+int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
+  src:MsgAddress dest:MsgAddressInt
+  value:CurrencyCollection ihr_fee:Grams fwd_fee:Grams
+  created_lt:uint64 created_at:uint32 = CommonMsgInfoRelaxed;
 
-    // Stateinit
-    if (params.code != null || params.data != null) {
-        b = b.storeBool(true); // State init
+message$_ {X:Type} info:CommonMsgInfoRelaxed
+  init:(Maybe (Either StateInit ^StateInit))
+  body:(Either X ^X) = MessageRelaxed X;
 
-        // Assemble state init cell
-        let bc: Builder = beginCell();
-        bc = bc.storeBool(false); // SplitDepth
-        bc = bc.storeBool(false); // TickTock
-        if (params.code != null) {
-            bc = bc.storeBool(true); // Code presence
-            bc = bc.storeRef(params.code!!);
-        } else {
-            bc = bc.storeBool(false); // Code presence
-        }
-        if (params.data != null) {
-            bc = bc.storeBool(true); // Data presence
-            bc = bc.storeRef(params.data!!);
-        } else {
-            bc = bc.storeBool(false); // Data presence
-        }
-        bc = bc.storeBool(false); // Library
-
-        b = b.storeBool(true); // Store as ref
-        b = b.storeRef(bc.endCell());
-    } else {
-        b = b.storeBool(false); // No state init
-    }
-
-    // Body
-    let body: Cell? = params.body;
-    if (body != null) {
-        b = b.storeBool(true);
-        b = b.storeRef(body!!);
-    } else {
-        b = b.storeBool(false); // No body
-    }
-
-    // Send
-    let c: Cell = b.endCell();
-    return nativeSendMessageReturnForwardFee(c, params.mode);
+bounce: s6
+to: s5
+value: s4
+mode: s3
+body: s2
+code: s1
+data: s0
+*/
+asm fun send(params: SendParameters) {
+    3 4 BLKSWAP
+    s2 XCHG0
+    /*
+    These two instuctions do this
+    mode: s6
+    body: s5
+    code: s4
+    data: s3
+    value: s2
+    to: s1
+    bounce: s0
+    */
+    NEWC
+    b{01} STSLICECONST // Store tag = $0, ihr_disabled = true
+    1 STI // Store bounce
+    b{000} STSLICECONST // Store src_addr = addr_none
+    STSLICE // Store to
+    SWAP // Because STGRAMS is kinda reversed b x - b'
+    STGRAMS // Store grams
+    105 PUSHINT // 1 + 4 + 4 + 64 + 32
+    STZEROES // Store currency_collection + IHR fees + Fwd fees + CreatedLT + CreatedAt
+    /*
+    mode: s4
+    body: s3
+    code: s2
+    data: s1
+    MessageBuilder: s0
+    */
+    s2 XCHG0 // We want to check, if code or data is NULL, so place a builder under them
+    /*
+    mode: s4
+    body: s3
+    MessageBuilder: s2
+    data: s1
+    code: s0
+    */
+    DUP2
+    ISNULL
+    SWAP
+    ISNULL
+    MUL
+    /*
+    mode: s4
+    body: s3
+    MessageBuilder: s2
+    data: s1
+    code: s0
+    0 if any of them is not-null
+    -1 if both are null
+    */
+    <{
+        DROP2 // drop extra code and data
+        PUSHNULL
+        SWAP
+        /*
+        mode: s4
+        body: s3
+        NULL: s1
+        MessageBuilder: s0
+        */
+    }> PUSHCONT
+    <{
+        /*
+        mode: s4
+        body: s3
+        MessageBuilder: s2
+        data: s1
+        code: s0
+        */
+        /*
+        _ split_depth:(Maybe (## 5)) special:(Maybe TickTock)
+            code:(Maybe ^Cell) data:(Maybe ^Cell)
+            library:(Maybe ^Cell) = StateInit;
+        */
+        NEWC // Assemble state init
+        b{00} STSLICECONST // SplitDepth and TickTock
+        STDICT // Store code
+        STDICT // Store data
+        b{0} STSLICECONST // Store library
+        ENDC // Completed builing StateInit
+        SWAP
+        /*
+        mode: s2
+        body: s1
+        StateInitCell: s1
+        MessageBuilder: s0
+        */
+        b{1} STSLICECONST // StateInit will be saved as ref (Either bit)
+        // init:(Maybe (Either StateInit ^StateInit))
+    }> PUSHCONT
+    IFELSE
+    /*
+    mode: s2
+    body: s1
+    StateInitCell: s1 OR NULL
+    MessageBuilder: s0
+    */
+    STDICT // Save state init (and Maybe bit)
+    STDICT // Save body as ref and place Maybe bit (body also may be NULL)
+    ENDC // We finished builing message!
+    /*
+    mode: s2
+    MessageCell: s0
+    */
+    SWAP // Because SENDRAWMSG does that (in terms of stack): `c x - ` where x is the mode, and c in the message
+    SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
 }
 
 inline fun emit(body: Cell) {
