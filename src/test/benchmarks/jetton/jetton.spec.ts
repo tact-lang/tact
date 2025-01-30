@@ -162,12 +162,12 @@ function printBenchmarkTable(results: BenchmarkResult[]): void {
 function getUsedGas(sendEnough: SendMessageResult) {
     return sendEnough.transactions
         .slice(1)
-        .map((t) => {
-            return (
-                (t.description as TransactionDescriptionGeneric)
-                    .computePhase as TransactionComputeVm
-            ).gasUsed;
-        })
+        .map((t) =>
+            t.description.type === "generic" &&
+            t.description.computePhase.type === "vm"
+                ? t.description.computePhase.gasUsed
+                : 0n,
+        )
         .reduceRight((prev, cur) => prev + cur);
 }
 
