@@ -12,6 +12,7 @@ import {
 } from "@ton/sandbox";
 import { Functions } from "./contracts/output/benchmark_functions_Functions";
 import { Functions as FunctionsInline } from "./contracts/output/benchmark_functions_inline_Functions";
+import { Sha256 } from "./contracts/output/benchmark_sha256_Sha256";
 import "@ton/test-utils";
 
 function measureGas(txs: BlockchainTransaction[]) {
@@ -86,5 +87,48 @@ describe("benchmarks", () => {
         expect(gasUsed).toMatchInlineSnapshot(`3283n`);
         const codeSize = testContract.init!.code.toBoc().length;
         expect(codeSize).toMatchInlineSnapshot(`283`);
+    });
+
+    async function hashString(
+        sha256: SandboxContract<Sha256>,
+        s: string,
+        method: "HashBig" | "HashSmall",
+    ): Promise<bigint> {
+        const result = await sha256.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            { $$type: method, value: s },
+        );
+
+        return measureGas(result.transactions);
+    }
+
+    it("benchmark sha256", async () => {
+        const sha256 = blockchain.openContract(await Sha256.fromInit());
+
+        await sha256.send(treasure.getSender(), { value: toNano(1) }, null);
+        await hashString(sha256, "hello world", "HashBig");
+        await hashString(sha256, "hello world", "HashSmall");
+
+        expect(await hashString(sha256, "hello world", "HashBig")).toEqual(
+            2766n,
+        );
+        expect(await hashString(sha256, "hello world", "HashSmall")).toEqual(
+            2410n,
+        );
+
+        expect(
+            await hashString(sha256, "hello world".repeat(5), "HashBig"),
+        ).toEqual(2767n);
+        expect(
+            await hashString(sha256, "hello world".repeat(5), "HashSmall"),
+        ).toEqual(2410n);
+
+        expect(
+            await hashString(sha256, "hello world".repeat(10), "HashBig"),
+        ).toEqual(2769n);
+        expect(
+            await hashString(sha256, "hello world".repeat(10), "HashSmall"),
+        ).toEqual(2410n);
     });
 });
