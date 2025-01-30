@@ -2,7 +2,7 @@
 
 ## General information
 
-The Tact smart contract programming language is a statically-typed smart contract programming language which is currently implemented as a transpiler into [FunC](https://docs.ton.org/develop/func), which in its turn compiles down to the [TVM](https://docs.ton.org/learn/tvm-instructions/tvm-overview) bitcode. This implementation strategy is likely to change in the future.
+The Tact smart contract programming language is a statically-typed smart contract programming language which is currently implemented as a transpiler into [FunC](https://docs.ton.org/v3/documentation/smart-contracts/func/overview), which in its turn compiles down to the [TVM](https://docs.ton.org/learn/tvm-instructions/tvm-overview) bitcode. This implementation strategy is likely to change in the future.
 
 The Tact compiler parses the input source code into an abstract syntax tree, type-checks it, generates FunC code, runs the FunC compiler, which produces the corresponding [Fift](https://docs.ton.org/develop/fift/overview) code and a TVM binary in the [BoC](https://docs.ton.org/develop/data-formats/cell-boc) format.
 

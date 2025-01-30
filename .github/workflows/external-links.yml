@@ -3,7 +3,7 @@ name: Link check
 on:
   workflow_dispatch: # on demand launches, if needed
   schedule:
-    - cron: "0 0 * * 2" # 00:00 on Tuesday, near the dependabot.yml
+    - cron: "5 0 * * 2" # 00:05 on Tuesday, near the dependabot.yml
 
 jobs:
   linkcheck:
@@ -19,7 +19,7 @@ jobs:
           args: >
             -n -s https -s http --base 'https://docs.tact-lang.org'
             --exclude-path docs/node_modules
-            --exclude '.*?\\.(?:jpg|png)'
+            --exclude '\.(?:jpg|png)$'
             docs/README.md './docs/**/*.mdx'
           output: "/dev/stdout"
           fail: false
