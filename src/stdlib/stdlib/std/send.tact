@@ -58,7 +58,7 @@ asm fun send(params: SendParameters) {
     // s4: `params.code`
     // s5: `params.body`
     // s6: `params.mode`
-    // For brewity, the "params" prefix will be omitted from now on.
+    // For brevity, the "params" prefix will be omitted from now on.
 
     // Group 2: Storing the `bounce`, `to` and `value` into a Builder
     NEWC
@@ -125,10 +125,10 @@ asm fun send(params: SendParameters) {
     // s2: `body`
     // s3: `mode`
 
-    // Group 5: Finilizing building the message
+    // Group 5: Finalizing the message
     STDICT // store StateInit
     STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
-    ENDC   // finilize the Builder as a Cell
+    ENDC
     // → Stack state
     // s0: Cell
     // s1: `mode`
