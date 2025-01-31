@@ -311,8 +311,6 @@ inline fun emptySlice(): Slice {
     return emptyCell().asSlice();
 }
 
-asm fun addressNone(): Address? { b{00} PUSHSLICE }
-
 /// Struct for holding values computed by the `Cell.computeDataSize()` and `Slice.computeDataSize()` extension functions. Available since Tact 1.6.0.
 ///
 /// See:

@@ -91,10 +91,6 @@ contract StdlibTest {
         return sc.depth();
     }
 
-    get fun addressNone(): Address? {
-        return addressNone();
-    }
-
     get fun computeDataSizeCell(c: Cell?, maxCells: Int): DataSize {
         return c.computeDataSize(maxCells);
     }

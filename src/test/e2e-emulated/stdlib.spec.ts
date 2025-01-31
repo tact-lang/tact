@@ -130,8 +130,6 @@ describe("stdlib", () => {
 
         expect(await contract.getSliceDepth(slice)).toBe(1n);
 
-        expect(await contract.getAddressNone()).toEqual(null);
-
         expect(
             await contract.getComputeDataSizeCell(slice.asCell(), 1000n),
         ).toMatchObject({

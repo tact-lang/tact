@@ -187,22 +187,6 @@ let initPkg: StateInit = initOf SomeContract();
 let hereBeDragons: Address = contractAddressExt(0, initPkg.code, initPkg.data);
 ```
 
-### addressNone
-
-<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
-
-  Make sure your specify only supported chain IDs: $0$ for the basechain and $-1$ for the masterchain.
-
-```tact
-fun addressNone(): Address?;
-```
-
-:::note
-
-  TODO: awaits resolution of [those comments](https://github.com/tact-lang/tact/pull/986#discussion_r1865450023).
-
-:::
-
 ## Communication
 
 ### send
