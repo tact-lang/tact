@@ -38,6 +38,10 @@ export function enableFeatures(
         { option: config.options.experimental?.inline, name: "inline" },
         { option: config.options.ipfsAbiGetter, name: "ipfsAbiGetter" },
         { option: config.options.interfacesGetter, name: "interfacesGetter" },
+        {
+            option: config.options.safety?.nullChecks ?? true,
+            name: "nullChecks",
+        },
     ];
     return features.reduce((currentCtx, { option, name }) => {
         if (option) {
