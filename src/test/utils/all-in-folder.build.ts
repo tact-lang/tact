@@ -50,7 +50,7 @@ export const allInFolder = async (
                 name: basename(contractPath, extname(contractPath)),
                 path: contractPath,
                 output: join(dirname(contractPath), "output"),
-                options,
+                options: contractOptions,
             });
         }
 
