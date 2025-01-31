@@ -86,11 +86,11 @@ function printBenchmarkTable(results: BenchmarkResult[]): void {
     const changes = calculateChanges(results);
 
     results
-        .map((result, i) => [
-            result.label,
-            `${result.transfer} ${changes[i]?.[0] ?? ""}`,
-            `${result.burn} ${changes[i]?.[1] ?? ""}`,
-            `${result.discovery} ${changes[i]?.[2] ?? ""}`,
+        .map(({ label, transfer, burn, discovery }, i) => [
+            label,
+            `${transfer} ${changes[i]?.[0] ?? ""}`,
+            `${burn} ${changes[i]?.[1] ?? ""}`,
+            `${discovery} ${changes[i]?.[2] ?? ""}`,
         ])
         .forEach((arr) => {
             table.push(arr);
@@ -98,29 +98,24 @@ function printBenchmarkTable(results: BenchmarkResult[]): void {
 
     const output = [];
     output.push(table.toString());
-    output.push("\n");
 
     const first = results[0]!;
     const last = results[results.length - 1]!;
 
-    output.push("\nComparison with FunC implementation:\n");
+    output.push("\nComparison with FunC implementation:");
     output.push(
         ...METRICS.map((metric) => {
-            const ratio = (
-                (Number(last[metric]) / Number(first[metric])) *
-                100
-            ).toFixed(2);
+            const ratio = (Number(last[metric]) / Number(first[metric])) * 100;
 
             return `${metric.charAt(0).toUpperCase() + metric.slice(1)}: ${
-                parseFloat(ratio) > 100
-                    ? chalk.redBright(`${ratio}%`)
-                    : chalk.green(`${ratio}%`)
-            } of FunC gas usage\n`;
+                ratio > 100
+                    ? chalk.redBright(`${ratio.toFixed(2)}%`)
+                    : chalk.green(`${ratio.toFixed(2)}%`)
+            } of FunC gas usage`;
         }),
     );
-    output.push("\n");
 
-    console.log(output.join(""));
+    console.log(output.join("\n"));
 }
 
 describe("Jetton", () => {
