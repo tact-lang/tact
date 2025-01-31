@@ -187,8 +187,6 @@ export const ppAstBoolean = ({ value }: A.AstBoolean) => value.toString();
 export const ppAstId = ({ text }: A.AstId) => text;
 export const ppAstNull = (_expr: A.AstNull) => "null";
 export const ppAstString = ({ value }: A.AstString) => `"${value}"`;
-export const ppAstCommentValue = ({ value }: A.AstCommentValue) =>
-    JSON.stringify(value);
 export const ppAstSimplifiedString = ({ value }: A.AstSimplifiedString) =>
     JSON.stringify(value);
 export const ppAstAddress = ({ value }: A.AstAddress) =>
@@ -262,7 +260,6 @@ export const ppAstExpressionNested = makeVisitor<A.AstExpression>()({
     init_of: ppLeaf(ppAstInitOf),
     string: ppLeaf(ppAstString),
     static_call: ppLeaf(ppAstStaticCall),
-    comment_value: ppLeaf(ppAstCommentValue),
     simplified_string: ppLeaf(ppAstSimplifiedString),
     address: ppLeaf(ppAstAddress),
     cell: ppLeaf(ppAstCell),
@@ -874,7 +871,6 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     id: exprNode(ppAstExpression),
     boolean: exprNode(ppAstExpression),
     string: exprNode(ppAstExpression),
-    comment_value: exprNode(ppAstExpression),
     simplified_string: exprNode(ppAstExpression),
     null: exprNode(ppAstExpression),
     address: exprNode(ppAstExpression),
