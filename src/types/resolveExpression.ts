@@ -126,7 +126,7 @@ function resolveSliceLiteral(
 }
 
 function resolveStringLiteral(
-    exp: A.AstString | A.AstSimplifiedString | A.AstCommentValue,
+    exp: A.AstString | A.AstSimplifiedString,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -866,10 +866,6 @@ export function resolveExpression(
         }
         case "simplified_string": {
             // A simplified string is resolved as a string
-            return resolveStringLiteral(exp, sctx, ctx);
-        }
-        case "comment_value": {
-            // A comment value is resolved as a string
             return resolveStringLiteral(exp, sctx, ctx);
         }
         case "struct_value": {

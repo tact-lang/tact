@@ -1,6 +1,6 @@
 import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
-import * as crc32 from "crc-32";
+import { crc32 } from "../utils/crc32";
 import * as A from "../ast/ast";
 import { evalConstantExpression } from "./constEval";
 import { CompilerContext } from "../context/context";
@@ -96,7 +96,6 @@ function ensureArgumentForEquality(val: A.AstLiteral): A.AstLiteral {
         case "address":
         case "boolean":
         case "cell":
-        case "comment_value":
         case "null":
         case "number":
         case "simplified_string":
@@ -853,8 +852,6 @@ export class Interpreter {
                 return this.interpretNumber(ast);
             case "string":
                 return this.interpretString(ast);
-            case "comment_value":
-                return this.interpretCommentValue(ast);
             case "simplified_string":
                 return this.interpretSimplifiedString(ast);
             case "address":
@@ -931,7 +928,13 @@ export class Interpreter {
                 const comment = ensureSimplifiedString(
                     this.interpretExpression(ast.self),
                 ).value;
-                return this.util.makeCommentLiteral(comment, ast.loc);
+                return this.util.makeCellLiteral(
+                    beginCell()
+                        .storeUint(0, 32)
+                        .storeStringTail(comment)
+                        .endCell(),
+                    ast.loc,
+                );
             }
             default:
                 throwNonFatalErrorConstEval(
@@ -965,10 +968,6 @@ export class Interpreter {
             interpretEscapeSequences(ast.value, ast.loc),
             ast.loc,
         );
-    }
-
-    public interpretCommentValue(ast: A.AstCommentValue): A.AstCommentValue {
-        return ast;
     }
 
     public interpretSimplifiedString(
@@ -1378,7 +1377,7 @@ export class Interpreter {
                         this.interpretExpression(ast.args[0]!),
                     );
                     return this.util.makeNumberLiteral(
-                        BigInt(crc32.str(str.value) >>> 0),
+                        BigInt(crc32(str.value) >>> 0),
                         ast.loc,
                     ); // >>> 0 converts to unsigned
                 }
