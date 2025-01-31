@@ -1,5 +1,6 @@
 ---
 title: 随机数生成
+description: Tact 核心库中的各种随机数生成函数
 ---
 
 为 Tact 智能合约生成随机数。
@@ -7,32 +8,32 @@ title: 随机数生成
 ## random
 
 ```tact
-fun random(min: Int, max: Int)：Int；
+fun random(min: Int, max: Int): Int;
 ```
 
-在提供的半封闭区间内生成并返回一个新的伪随机无符号 [`Int{:tact}`][int]值 `x`: `min` $≤$ `x` $<$ `max` or `min` $≥$ `x` $>$ `max`, 如果 `min` 和 `max` 都是负值。 注意，"最大 "值从不包含在区间内。
+生成并返回一个新的伪随机无符号 [`Int{:tact}`][int] 值 `x`，该值位于提供的半闭区间内：`min` $≤$ `x` $<$ `max`，或者当 `min` 和 `max` 都是负数时，`min` $≥$ `x` $>$ `max`。 请注意，`max`值从未包含在区间内。
 
-使用示例
+示例用法：
 
 ```tact
 random(42, 43); // 42, always
-random(0, 42); // 0-41, but never a 42
+random(0, 42);  // 0-41, but never a 42
 ```
 
 ## randomInt
 
 ```tact
-fun randomInt()：Int；
+fun randomInt(): Int;
 ```
 
 生成并返回一个新的伪随机无符号 $256$-bit [`Int{:tact}`][int]值 `x`。
 
-该算法的工作原理如下：如果 `r` 是被视为 $32$-字节数组（通过构建无符号 $256$-位 [`Int{:tact}`][int]的 big-endian 表示）的随机种子的旧值，则计算其 `sha512(r){:tact}`。 哈希值的前 $32$ 字节作为随机种子的新值 `r'` 存储，其余 $32$ 字节作为下一个随机值 `x` 返回。
+算法如下：如果 `r` 是随机种子的旧值，认为它是一个 $32$ 字节的数组（通过构建无符号 $256$ 位 [`Int{:tact}`][int] 的大端表示），那么计算其 `sha512(r){:tact}`。 哈希值的前 $32$ 字节作为随机种子的新值 `r'` 存储，其余 $32$ 字节作为下一个随机值 `x` 返回。
 
-使用示例
+用法示例：
 
 ```tact
-let allYourRandomBelongsToUs：Int = randomInt(); // ????, it's random :)
+let allYourRandomBelongsToUs: Int = randomInt(); // ???, it's random :)
 ```
 
 :::caution

@@ -1,5 +1,6 @@
 ---
-title: 程序化 API
+title: Programmatic API
+description: 在Node.js和浏览器项目中使用 Tact编译器作为库的方法
 ---
 
 您可以在节点和浏览器环境中从代码中调用 Tact 编译器。
@@ -17,15 +18,15 @@ import { run } from "@tact-lang/compiler";
 
 // Virtual FS
 const fs = {
-  ["main.tact"]：Buffer.from("...").toString("base64"),
+  ["main.tact"]: Buffer.from("...").toString("base64"),
 };
 
 const config = {
-  projects：[
+  projects: [
     {
       name: "Sample",
-      path："main.tact",
-      output："./output",
+      path: "main.tact",
+      output: "./output",
     },
   ],
 };
@@ -36,12 +37,12 @@ let successful = await run({ config, fs });
 // NOTE: Output from is written to the same fs object.
 ```
 
-## 合同核查
+## 合约验证
 
 您可以使用 `verify` 函数验证编译后的软件包。
 
 ```ts
 import { verify } from "@tact-lang/compiler";
 const pkg: string = '...';
-const res = await verify(pkg)；
+const res = await verify(pkg);
 ```

@@ -1,12 +1,13 @@
 ---
-title: 地图
+title: Maps
+description: 复合类型映射用于将键与各种类型的相应值关联起来
 ---
 
 import { Badge } from '@astrojs/starlight/components';
 
 [复合类型](/zh-cn/book/types#composite-types) `map<K, V>{:tact}` 用于将 `K{:tact}` 类型的键与 `V{:tact}` 类型的相应值关联起来。
 
-例如，`map<Int, Int>{:tact}` 的键和值使用 [`英特{:tact}`][英特] 类型：
+例如，`map<Int, Int>{:tact}` 使用 [`Int{:tact}`][int] 类型作为其键和值：
 
 ```tact
 struct IntToInt {
@@ -16,29 +17,29 @@ struct IntToInt {
 
 ## 允许的类型 {#allowed-types}
 
-允许的密钥类型
+允许的键(key)类型
 
-- [`Int{:tact}`][int]。
-- [`地址{:tact}`][p]
+- [`Int{:tact}`][int]
+- [`Address{:tact}`][p]
 
-允许的值类型：
+允许的值(value)类型：
 
-- [`Int{:tact}`][int]。
+- [`Int{:tact}`][int]
 - [`Bool{:tact}`](/zh-cn/book/types#booleans)
-- [`单元格{:tact}`][单元格]
-- [`地址{:tact}`][p]
-- [结构](/zh-cn/book/structs-and-messages#structs)
-- [消息](/zh-cn/book/structs-and-messages#messages)
+- [`Cell{:tact}`][cell]
+- [`Address{:tact}`][p]
+- [Struct](/zh-cn/book/structs-and-messages#structs)
+- [Message](/zh-cn/book/structs-and-messages#messages)
 
-## 业务
+## 操作
 
-### 声明，`emptyMap()` {#emptymap}
+### Declare, `emptyMap()` {#emptymap}
 
 作为[局部变量](/zh-cn/book/statements#let)，使用标准库的 `emptyMap(){:tact}` 函数：
 
 ```tact
 let fizz: map<Int, Int> = emptyMap();
-let fizz: map<Int, Int> = null; // 与前一行相同，但描述性较弱
+let fizz: map<Int, Int> = null; // identical to the previous line, but less descriptive
 ```
 
 作为 [持久状态变量](/zh-cn/book/contracts#variables)：
@@ -47,7 +48,7 @@ let fizz: map<Int, Int> = null; // 与前一行相同，但描述性较弱
 contract Example {
     fizz: map<Int, Int>; // Int keys to Int values
     init() {
-        self.fizz = emptyMap(); // 冗余，可以删除！
+        self.fizz = emptyMap(); // redundant and can be removed!
     }
 }
 ```
@@ -56,23 +57,23 @@ contract Example {
 
 ### 设置值，`.set()` {#set}
 
-要设置或替换键下的值，请调用 `.set(){:tact}` [方法](/zh-cn/book/functions#extension-function)，所有地图都可以使用该方法。
+要设置或替换键下的值，请调用 `.set(){:tact}` [方法](/zh-cn/book/functions#extension-function)，所有 map 都可以使用该方法。
 
 ```tact
-// 空 map
+// Empty map
 let fizz: map<Int, Int> = emptyMap();
 
-// 在不同的键下设置几个值
+// Setting a couple of values under different keys
 fizz.set(7, 7);
 fizz.set(42, 42);
 
-// 覆盖现有键值对中的一个
-fizz.set(7, 68); // 键 7 现在指向值 68
+// Overriding one of the existing key-value pairs
+fizz.set(7, 68); // key 7 now points to value 68
 ```
 
 ### 获取值，`.get()` {#get}
 
-通过调用 `.get(){:tact}` [方法](/zh-cn/book/functions#extension-function)，检查是否在地图中找到了键，所有地图都可以访问该方法。 如果键丢失，则返回 `null{:tact}`；如果键找到，则返回值。
+通过调用 `.get(){:tact}` [方法](/zh-cn/book/functions#extension-function)，检查是否在map中找到了键，所有map都可以访问该方法。 如果键丢失，则返回 `null{:tact}`；如果键找到，则返回值。
 
 ```tact
 // Empty map
@@ -82,17 +83,101 @@ let fizz: map<Int, Int> = emptyMap();
 fizz.set(68, 0);
 
 // Getting the value by its key
-let gotButUnsure: Int? = fizz.get(68); // returns Int or null, therefore the type is Int?
-let mustHaveGotOrErrored：让 mustHaveGotOrErrored: Int = fizz.get(68)!!; // 明确断言值不能为空，
-                                                // 如果值实际上为空，运行时可能会崩溃
+let gotButUnsure: Int? = fizz.get(68);          // returns Int or null, therefore the type is Int?
+let mustHaveGotOrErrored: Int = fizz.get(68)!!; // explicitly asserting that the value must not be null,
+                                                // which may crush at runtime if the value is, in fact, null
 
-// 或者，我们可以在 if 语句中检查关键字
+// Alternatively, we can check for the key in the if statement
 if (gotButUnsure != null) {
-    // 万岁，现在让我们毫无顾忌地使用 !! 并将 Int? 转换为 Int
-    让 definitelyGotIt：Int = fizz.get(68)!!;
+    // Hooray, let's use !! without fear now and cast Int? to Int
+    let definitelyGotIt: Int = fizz.get(68)!!;
 } else {
     // Do something else...
 }
+```
+
+### 替换值 `.replace()` {#replace}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+要替换某个键下的值，如果存在这样的键，请使用 `.replace(){:tact}` [方法](/zh-cn/book/functions#extension-function)。 它在成功替换时返回 `true{:tact}`，否则返回 `false{:tact}`。
+
+```tact
+// Empty map
+let fizz: map<Int, Int> = emptyMap();
+
+// Setting a couple of values under different keys
+fizz.set(7, 70);
+fizz.set(42, 42);
+
+// Overriding one of the existing key-value pairs
+let replaced1 = fizz.replace(7, 68); // key 7 now points to value 68
+replaced1; // true
+
+// Trying to replace the value in a non-existing key-value pair will do nothing
+let replaced2 = fizz.replace(8, 68); // no key 8, so nothing was altered
+replaced2; // false
+```
+
+如果给定值是[`null{:tact}`](/zh-cn/book/optionals)并且键存在，地图中的条目将被删除。
+
+```tact
+// Empty map
+let fizz: map<Int, Int> = emptyMap();
+
+// Setting a couple of values under different keys
+fizz.set(7, 70);
+fizz.set(42, 42);
+
+// Overriding one of the existing key-value pairs
+let replaced1 = fizz.replace(7, null); // the entry under key 7 is now deleted
+replaced1; // true
+
+// Trying to replace the value in a non-existing key-value pair will do nothing
+let replaced2 = fizz.replace(8, null); // no key 8, so nothing was altered
+replaced2; // false
+```
+
+### 替换并获取旧值，`.replaceGet()` {#replaceget}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+类似于 [`.replace()`](#replace)，但在成功替换时返回旧的（替换前的）值，否则返回 [`null{:tact}`](/zh-cn/book/optionals)，而不是返回一个 [`Boolean{:tact}`](/zh-cn/book/types#booleans)。
+
+```tact
+// Empty map
+let fizz: map<Int, Int> = emptyMap();
+
+// Setting a couple of values under different keys
+fizz.set(7, 70);
+fizz.set(42, 42);
+
+// Overriding one of the existing key-value pairs
+let oldVal1 = fizz.replaceGet(7, 68); // key 7 now points to value 68
+oldVal1; // 70
+
+// Trying to replace the value in a non-existing key-value pair will do nothing
+let oldVal2 = fizz.replaceGet(8, 68); // no key 8, so nothing was altered
+oldVal2; // null
+```
+
+如果给定值是[`null{:tact}`](/zh-cn/book/optionals)，并且键存在，则条目将从映射中删除。
+
+```tact
+// Empty map
+let fizz: map<Int, Int> = emptyMap();
+
+// Setting a couple of values under different keys
+fizz.set(7, 70);
+fizz.set(42, 42);
+
+// Overriding one of the existing key-value pairs
+let oldVal1 = fizz.replaceGet(7, null); // the entry under key 7 is now deleted
+oldVal1; // 70
+
+// Trying to replace the value in a non-existing key-value pair will do nothing
+let oldVal2 = fizz.replaceGet(8, null); // no key 8, so nothing was altered
+oldVal2; // null
 ```
 
 ### 删除条目，`.del()` {#del}
@@ -100,45 +185,45 @@ if (gotButUnsure != null) {
 要删除单个键值对（单个条目），请使用 `.del(){:tact}` [方法](/zh-cn/book/functions#extension-function)。 如果删除成功，则返回 `true{:tact}`，否则返回 `false{:tact}`。
 
 ```tact
-// 空 map
+// Empty map
 let fizz: map<Int, Int> = emptyMap();
 
-// 在不同的键下设置几个值
+// Setting a couple of values under different keys
 fizz.set(7, 123);
 fizz.set(42, 321);
 
-// 删除其中一个键
-let deletionSuccess：Bool = fizz.del(7); // true，因为 map 包含了键 7 下的条目
-fizz.del(7); // false，因为 map 不再有键 7 下的条目
+// Deleting one of the keys
+let deletionSuccess: Bool = fizz.del(7); // true, because map contained the entry under key 7
+fizz.del(7);                             // false, because map no longer has an entry under key 7
 
-// 注意，在使用 `.set()` 方法
-// 等同于调用 `.del()`，不过这种方法的描述性要差得多
-// 而且一般不推荐使用：
-fizz.set(42, null); // 键 42 下的条目现在被删除了
+// Note, that assigning the `null` value to the key when using the `.set()` method
+//   is equivalent to calling `.del()`, although such approach is much less descriptive
+//   and is generally discouraged:
+fizz.set(42, null); // the entry under key 42 is now deleted
 ```
 
 要删除映射表中的所有条目，请使用 `emptyMap(){:tact}` 函数重新分配映射表：
 
 ```tact
-// 空 map
+// Empty map
 let fizz: map<Int, Int> = emptyMap();
 
-// 在不同的键下设置几个值
+// Setting a couple of values under different keys
 fizz.set(7, 123);
 fizz.set(42, 321);
 
-// 一次性删除所有条目
+// Deleting all of the entries at once
 fizz = emptyMap();
-fizz = null; // 与上一行相同，但描述性较弱
+fizz = null; // identical to the previous line, but less descriptive
 ```
 
-采用这种方法后，即使已将映射声明为持久状态变量，映射之前的所有条目也会从合约中完全删除。 因此，将地图分配给 `emptyMap(){:tact}` **不会**产生任何隐藏或突然的[存储费用](https://docs.ton.org/develop/smart-contracts/fees#storage-fee)。
+通过这种方法，即使映射被声明为其持久状态变量，映射的所有先前条目也会被从合约中完全丢弃。 因此，将映射(map)赋值为 `emptyMap(){:tact}` **不会**产生任何隐藏或意外的[存储费用](https://docs.ton.org/develop/smart-contracts/fees#storage-fee)。
 
 ### 检查条目是否存在, `.exists()` {#exists}
 
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
 
-映射上的 `.exists(){:tact}` [方法](/zh-cn/book/functions#extension-function)，如果给定键下的值在映射中存在，则返回 `true{:tact}`，否则返回 `false{:tact}`。
+map上的 `.exists(){:tact}` [方法](/zh-cn/book/functions#extension-function)，如果给定键下的值在map中存在，则返回 `true{:tact}`，否则返回 `false{:tact}`。
 
 ```tact
 let fizz: map<Int, Int> = emptyMap();
@@ -165,7 +250,7 @@ if (fizz.get(1 / 2) != null) { // also true, but consumes more gas
 
 ### 检查是否为空，`.isEmpty()` {#isempty}
 
-地图上的 `.isEmpty(){:tact}` [方法](/zh-cn/book/functions#extension-function) 如果地图为空，则返回 `true{:tact}`，否则返回 `false{:tact}`：
+map上的 `.isEmpty(){:tact}` [方法](/zh-cn/book/functions#extension-function) 如果map为空，则返回 `true{:tact}`，否则返回 `false{:tact}`：
 
 ```tact
 let fizz: map<Int, Int> = emptyMap();
@@ -174,18 +259,63 @@ if (fizz.isEmpty()) {
     dump("Empty maps are empty, duh!");
 }
 
-// 请注意，将地图与 "空 "进行比较的行为与".isEmpty() "方法相同，
-// 尽管这种直接比较的描述性要差得多，一般不鼓励使用：
+// Note, that comparing the map to `null` behaves the same as `.isEmpty()` method,
+// although such direct comparison is much less descriptive and is generally discouraged:
 if (fizz == null) {
     dump("Empty maps are null, which isn't obvious");
 }
 ```
 
+### 与 `.deepEquals()` 进行比较 {#deepequals}
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+`.deepEquals(){:tact}` [方法](/zh-cn/book/functions#extension-function) 在映射上返回 `true{:tact}`，如果映射的所有条目都与另一个映射的相应条目匹配，忽略在[底层序列化逻辑][hashmap]中可能存在的差异。 返回 `false{:tact}` 。
+
+```tact
+let fizz: map<Int, Int> = emptyMap();
+let buzz: map<Int, Int> = emptyMap();
+
+fizz.set(1, 2);
+buzz.set(1, 2);
+
+fizz.deepEquals(buzz); // true
+fizz == buzz;          // true, and uses much less gas to compute
+```
+
+使用 `.deepEquals(){:tact}`非常重要，因为map来自第三方源，它没有提供关于[序列化布局][hashmap] 的任何保证。 例如，考虑以下代码：
+
+```typescript title="some-typescript-code.ts"
+// First map, with long labels
+const m1 = beginCell()
+    .storeUint(2, 2) // long label
+    .storeUint(8, 4) // key length
+    .storeUint(1, 8) // key
+    .storeBit(true)  // value
+    .endCell();
+
+// Second map, with short labels
+const m2 = beginCell()
+    .storeUint(0, 1)           // short label
+    .storeUint(0b111111110, 9) // key length
+    .storeUint(1, 8)           // key
+    .storeBit(true)            // value
+    .endCell();
+```
+
+在这里，两张map都是手动形成的，两张map都包含相同的键值。 如果你要在消息中将这两张map发送给Tact合约，然后将它们与`.deepEquals(){:tact}` 和 [equality operator `=={:tact}`](/zh-cn/book/operators#binary-equality)进行比较，前者将产生`true{:tact}` ，因为两张map都有相同的条目， 后者会产生`false{:tact}` ，因为它只能对map哈希进行浅色比较。 由于map的序列化不同，情况也不同。
+
+:::note
+
+  此函数的gas成本非常高，在大多数情况下，使用 [等于 `=={:tact}`](/zh-cn/book/operators#binary-equality) 或 [不等于 `!={:tact}`](/zh-cn/book/operators#binary-equality) 操作符进行浅层比较已足够。
+
+:::
+
 ### 转换为 `Cell`, `.asCell()` {#ascell}
 
-在地图上使用 `.asCell(){:tact}` [方法](/zh-cn/book/functions#extension-function)，将其所有值转换为 [`单元格{:tact}`][单元格] 类型。 请注意，[`Cell{:tact}`][单元格] 类型最多只能存储 1023 位，因此将更大的映射转换为单元格会导致错误。
+在map上使用 `.asCell(){:tact}` [方法](/zh-cn/book/functions#extension-function)，将其所有值转换为 [`cell{:tact}`][cell] 类型。 请注意，[`Cell{:tact}`][cell] 类型最多只能存储 1023 位，因此将更大的映射转换为cell会导致错误。
 
-例如，这种方法适用于在回复正文中直接发送小地图：
+例如，这种方法适用于在回复正文中直接发送小map：
 
 ```tact
 contract Example {
@@ -212,80 +342,80 @@ contract Example {
 
 ### 遍历条目 {#traverse}
 
-要遍历地图条目，有一个 [`foreach{:tact}`](/zh-cn/book/statements#foreach-loop)循环语句：
+要遍历map条目，有一个 [`foreach{:tact}`](/zh-cn/book/statements#foreach-loop)循环语句：
 
 ```tact
 // Empty map
 let fizz: map<Int, Int> = emptyMap();
 
-// 在不同的键下设置几个值
+// Setting a couple of values under different keys
 fizz.set(42, 321);
 fizz.set(7, 123);
 
-// 按顺序迭代：从最小的键到最大的键
+// Iterating over in a sequential order: from the smallest keys to the biggest ones
 foreach (key, value in fizz) {
-    dump(key); // 第一次迭代将转存 7，第二次迭代将转存 42
+    dump(key); // will dump 7 on the first iteration, then 42 on the second
 }
 ```
 
 了解更多相关信息：[`foreach{:tact}` loop in Book→Statements](/zh-cn/book/statements#foreach-loop).
 
-请注意，也可以将映射作为简单数组使用，只要定义一个 `map<Int, V>{:tact}`，键为 [`Int{:tact}`][int] 类型，值为任何允许的 `V{:tact}` 类型，并跟踪单独变量中的项数即可：
+请注意，也可以将 map 作为简单数组使用，只要定义一个 `map<Int, V>{:tact}`，键为 [`Int{:tact}`][int] 类型，值为任何允许的 `V{:tact}` 类型，并跟踪单独变量中的项数即可：
 
 ```tact
 contract Iteration {
-    // 持久状态变量
-    counter：int as uint32; // 地图条目的计数器，序列化为 32 位无符号
+    // Persistent state variables
+    counter: Int as uint32;    // counter of map entries, serialized as a 32-bit unsigned
     record: map<Int, Address>; // Int to Address map
 
-    // 合约的构造函数（初始化）
+    // Constructor (initialization) function of the contract
     init() {
-        self.counter = 0; // 设置 self.counter 为 0
-    } // 内部消息接收器，用于响应字符串消息 "Add" receive("Add") { // 获取上下文结构体 let c.counter = 0.
+        self.counter = 0; // Setting the self.counter to 0
+    }
 
-    // 内部消息接收器，响应字符串消息 "Add"
+    // Internal message receiver, which responds to a String message "Add"
     receive("Add") {
-        // 获取上下文结构
-        let ctx：Context = context();
-        // 设置条目：counter Int 作为键，ctx.sender Address 作为值
+        // Get the Context Struct
+        let ctx: Context = context();
+        // Set the entry: counter Int as a key, ctx.sender Address as a value
         self.record.set(self.counter, ctx.sender);
-        // 增加计数器
+        // Increase the counter
         self.counter += 1;
     }
 
-
+    // Internal message receiver, which responds to a String message "Send"
     receive("Send") {
-        // 循环，直到 self.counter 的值（遍历所有 self.record 条目）
-        let i. Int = 0; // 声明通常的 i.counter = 1; // 增加计数器的值：Int = 0; // 为循环迭代声明通常的 i
+        // Loop until the value of self.counter (over all the self.record entries)
+        let i: Int = 0; // declare usual i for loop iterations
         while (i < self.counter) {
            send(SendParameters{
-                bounce: false, // do not bounce back this message
-                to: self.record.get(i)!!, // set the sender address, knowing that key i exists in the map
-                value: ton("0.0000001"), // 100 nanoToncoins (nano-tons)
-                mode：SendIgnoreErrors, // 忽略交易中的错误（如果有的话）发送
-                body："SENDING".asComment() // "SENDING "字符串转换为单元格作为消息正文
+                bounce: false,              // do not bounce back this message
+                to: self.record.get(i)!!,   // set the sender address, knowing that key i exists in the map
+                value: ton("0.0000001"),    // 100 nanoToncoins (nano-tons)
+                mode: SendIgnoreErrors,     // send ignoring errors in transaction, if any
+                body: "SENDING".asComment() // String "SENDING" converted to a Cell as a message body
             });
-            i += 1; // 不要忘记增加 i
+            i += 1; // don't forget to increase the i
         }
     }
 
-    // 获取 self.record 值的获取函数
+    // Getter function for obtaining the value of self.record
     get fun map(): map<Int, Address> {
         return self.record;
     }
 
-    // 获取 self.counter 值的获取函数
-    get fun counter()：Int {
+    // Getter function for obtaining the value of self.counter
+    get fun counter(): Int {
         return self.counter;
     }
 }
 ```
 
-在此类地图上设置上限限制通常很有用，这样就不会[触及极限]（#limits-and-drawbacks）。
+在此类map上设置上限限制通常很有用，这样就不会[触及极限](#limits-and-drawbacks)。
 
 :::caution
 
-  请注意，手动记录项目数或检查此类地图的长度非常容易出错，一般不建议使用。 相反，请尝试将您的地图封装到 [Struct](/zh-cn/book/structs-and-messages#structs) 中，并在其上定义 [extension functions](/zh-cn/book/functions#extension-function) 。 参见 Cookbook 中的示例：[如何使用包裹在 Struct 中的 map 来模拟数组](/zh-cn/cookbook/data-structures#array)。
+  请注意，手动记录项目数或检查此类map的长度非常容易出错，一般不建议使用。 相反，请尝试将您的map封装到 [Struct](/zh-cn/book/structs-and-messages#structs) 中，并在其上定义 [extension functions](/zh-cn/book/functions#extension-function) 。 参见 Cookbook 中的示例：[如何使用包裹在 Struct 中的 map 来模拟数组](/zh-cn/cookbook/data-structures#array)。
 
 :::
 
@@ -301,12 +431,12 @@ contract Iteration {
 
 ## 序列化
 
-可以对映射键、值或两者进行[整数序列化](/zh-cn/book/integers#serialization-types)，以[保留空间并降低存储成本](/zh-cn/book/integers#serialization)：
+可以对映射键、值或两者进行[整数序列化](/zh-cn/book/integers#common-serialization-types)，以[保留空间并降低存储成本](/zh-cn/book/integers#serialization)：
 
 ```tact
 struct SerializedMapInside {
-    // 这里的键和值都将序列化为 8 位无符号整数，
-    // 从而节省空间并降低存储成本：
+    // Both keys and values here would be serialized as 8-bit unsigned integers,
+    // thus preserving the space and reducing storage costs:
     countersButCompact: map<Int as uint8, Int as uint8>;
 }
 ```
@@ -317,33 +447,33 @@ struct SerializedMapInside {
 
 :::
 
-## 局限性和缺点
+## 局限性和缺点 {#limits-and-drawbacks}
 
-虽然地图在小范围内使用起来很方便，但如果项目数量不受限制，地图的大小会大幅增加，就会产生很多问题：
+虽然map在小范围内使用起来很方便，但如果项目数量不受限制，map的大小会大幅增加，就会产生很多问题：
 
-- 由于智能合约状态大小的上限约为 [`Cell{:tact}`][cell] 类型的 $65,000$ 项，因此整个合约的映射存储上限约为 $30,000$ 键值对。
+- 由于智能合约状态大小的上限约为 $65\,000$ 项类型为 [`Cell{:tact}`][cell]，因此整个合约的映射存储上限约为 $30\,000$ 键值对。
 
-- 地图中的条目越多，[计算费](https://docs.ton.org/develop/howto/fees-low-level#computation-fees) 就越高。 因此，处理大型地图使得计算费用难以预测和管理。
+- map中的条目越多，[计算费](https://docs.ton.org/develop/howto/fees-low-level#computation-fees) 就越高。 因此，处理大型map使得计算费用难以预测和管理。
 
-- 在单个合同中使用大型地图无法分散工作量。 因此，与使用较小的地图和大量交互式智能合约相比，这可能会使整体性能大打折扣。
+- 在单个合约中使用大型map无法分散工作量。 在单个合约中使用大型map无法分散工作量。 因此，与使用较小的map和大量交互式智能合约相比，这可能会使整体性能大打折扣。
 
-要解决此类问题，可以将地图上的上限限制设置为常数，并在每次为地图设置新值时对其进行检查：
+要解决此类问题，可以将map上的上限限制设置为常数，并在每次为map设置新值时对其进行检查：
 
 ```tact
 contract Example {
-    // 为我们的 map 声明一个编译时常数上限
-    const MaxMapSize：Int = 42;
+    // Declare a compile-time constant upper-bound for our map
+    const MaxMapSize: Int = 42;
 
-    // 持久状态变量
-    arr: map<Int, Int>; // Int 值的 "数组 "作为 map
-    arrLength：Int = 0; // "数组 "的长度，默认为 0
+    // Persistent state variables
+    arr: map<Int, Int>; // "array" of Int values as a map
+    arrLength: Int = 0; // length of the "array", defaults to 0
 
-    // 将一个项目推到 "数组 "末尾的内部函数
+    // Internal function for pushing an item to the end of the "array"
     fun arrPush(item: Int) {
         if (self.arrLength >= self.MaxMapSize) {
-            // 做一些事情，例如停止操作
+            // Do something, stop the operation, for example
         } else {
-            // 继续添加新项
+            // Proceed with adding new item
             self.arr.set(self.arrLength, item);
             self.arrLength += 1;
         }
@@ -351,12 +481,15 @@ contract Example {
 }
 ```
 
-如果您仍然需要大地图或无约束（无限大）地图，最好按照[TON 区块链的异步和基于角色的模型](https://docs.ton.org/learn/overviews/ton-blockchain)来构建您的智能合约。 也就是说，使用合约分片，让整个区块链成为地图的一部分。
+如果您仍然需要大map或无约束（无限大）map，最好按照[TON 区块链的异步和基于角色的模型](https://docs.ton.org/learn/overviews/ton-blockchain)来构建您的智能合约。 也就是说，使用合约分片，让整个区块链成为map的一部分。
 
 {/*
-  TODO：添加对分片页面的引用，如： https://github.com/tact-lang/tact-docs/issues/155
+  TODO: Add reference to sharding page as per: https://github.com/tact-lang/tact-docs/issues/155
 */}
 
 [p]: /zh-cn/book/types#primitive-types
 [int]: /zh-cn/book/integers
-[电池]: /zh-cn/book/cells#cells
+[cell]: /zh-cn/book/cells#cells
+
+[hashmap]: https://docs.ton.org/develop/data-formats/tl-b-types#hashmap
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview

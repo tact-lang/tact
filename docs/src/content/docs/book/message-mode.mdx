@@ -5,9 +5,11 @@ description: "Messages are sent with the mode param of a struct SendParameters. 
 
 import { Badge } from '@astrojs/starlight/components';
 
-As it was previously mentioned, messages are sent with the `mode` param of a struct `SendParameters{:tact}`. It's an [`Int{:tact}`][int] value, which is combined from base modes and optional flags, which are also [`Int{:tact}`][int] values.
+As it was previously mentioned, messages sent via [`send(){:tact}`](/ref/core-common#send) function utilize the `mode` param of the `SendParameters{:tact}` structure. The `mode` is an [`Int{:tact}`][int] value, which is combined from base modes and optional flags, which are also [`Int{:tact}`][int] values.
 
 It's possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience there's a set of constants which you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on base modes and optional flags.
+
+Note that there are other [message sending functions](/book/send#message-sending-functions) — they do not use the `SendParameters{:tact}` [Struct](/book/structs-and-messages#structs), but accept the `mode` as one of their parameters.
 
 ## Base modes
 
@@ -16,6 +18,7 @@ Mode value | Constant name                 | Description
 $0$        | <Badge text="Since Tact 1.6 (not released yet)" variant="tip"/> `SendDefaultMode{:tact}` | Ordinary message (default).
 $64$       | `SendRemainingValue{:tact}`   | Carry all the remaining value of the inbound message in addition to the value initially indicated in the new message.
 $128$      | `SendRemainingBalance{:tact}` | Carry all the remaining balance of the current smart contract instead of the value originally indicated in the message.
+$1024$     | <Badge text="Since Tact 1.5" variant="tip"/> `SendOnlyEstimateFee{:tact}` | Doesn't send the message, only estimates the forward fees if the [message sending function](/book/send#message-sending-functions) computes those.
 
 ## Optional flags
 

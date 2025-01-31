@@ -230,4 +230,31 @@ describe("fail-const-eval", () => {
         errorMessage:
             "Cannot evaluate expression to a constant: cannot evaluate A as it has circular dependencies: [A -> A]",
     });
+
+    itShouldNotCompile({
+        testName: "const-eval-self-constant-circular-dependency",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate self.C as it has circular dependencies: [self.C -> self.A -> self.C]",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-self-constant-deep-circular-dependency",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate self.E as it has circular dependencies: [self.E -> self.D -> self.C -> self.B -> self.A -> self.E]",
+    });
+    itShouldNotCompile({
+        testName:
+            "const-eval-self-constant-circular-dependency-self-assignment",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate self.A as it has circular dependencies: [self.A -> self.A]",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-self-constant-assign-field",
+        errorMessage:
+            "Cannot evaluate expression to a constant: cannot evaluate non-constant self field access",
+    });
+    itShouldNotCompile({
+        testName: "const-eval-self-constant-with-method-call-in-value",
+        errorMessage:
+            'Cannot evaluate expression to a constant: calls of "test" are not supported at this moment',
+    });
 });
