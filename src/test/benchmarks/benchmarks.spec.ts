@@ -42,11 +42,11 @@ describe("benchmarks", () => {
 
         const gasUsed = measureGas(sendResult.transactions);
 
-        expect(gasUsed).toMatchSnapshot();
+        expect(gasUsed).toMatchSnapshot('gas used');
 
         // Verify code size
         const codeSize = functions.init!.code.toBoc().length;
-        expect(codeSize).toMatchSnapshot();
+        expect(codeSize).toMatchSnapshot('code size');
     });
 
     it("benchmark readFwdFee", async () => {
@@ -63,8 +63,8 @@ describe("benchmarks", () => {
             },
         );
         const gasUsed = measureGas(sendResult.transactions);
-        expect(gasUsed).toMatchSnapshot();
+        expect(gasUsed).toMatchSnapshot('gas used');
         const codeSize = testContract.init!.code.toBoc().length;
-        expect(codeSize).toMatchSnapshot();
+        expect(codeSize).toMatchSnapshot('code size');
     });
 });
