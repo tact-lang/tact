@@ -27,7 +27,6 @@ import { resolveFuncType } from "./resolveFuncType";
 import {
     writeAddress,
     writeCell,
-    writeComment,
     writeSlice,
     writeString,
 } from "./writeConstant";
@@ -126,11 +125,6 @@ export function writeValue(val: A.AstLiteral, wCtx: WriterContext): string {
         }
         case "null":
             return "null()";
-        case "comment_value": {
-            const id = writeComment(val.value, wCtx);
-            wCtx.used(id);
-            return `${id}()`;
-        }
         case "struct_value": {
             // Transform the struct fields into a map for lookup
             const valMap: Map<string, A.AstLiteral> = new Map();
