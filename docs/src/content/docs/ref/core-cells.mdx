@@ -94,7 +94,7 @@ extends fun depth(self: Cell?): Int;
 
 Extension function for the [`Cell{:tact}`][cell].
 
-Computes and returns the [`Int{:tact}`][int] [depth][std-repr] of the [`Cell{:tact}`][cell]. Produces $0$ if the [`Cell{:tact}`][cell] has no references, otherwise $1$ plus the maximum of the depths of the referenced cells. If `self` is a [`Null{:tact}`][null] instead of a [`Cell{:tact}`][cell], returns $0$.
+Computes and returns the [`Int{:tact}`][int] [depth][std-repr] of the [`Cell{:tact}`][cell]. Produces $0$ if the [`Cell{:tact}`][cell] has no references, otherwise $1$ plus the maximum of the depths of the referenced cells. If `self{:tact}` is [`null{:tact}`][null], returns $0$.
 
 Usage example:
 
@@ -113,7 +113,7 @@ extends fun computeDataSize(self: Cell?, maxCells: Int): DataSize;
 
 Extension function for the [`Cell{:tact}`][cell].
 
-Computes and returns the number of distinct cells, bits and refs in the [`Cell{:tact}`][cell] by using a [depth-first search (DFS)][dfs] algorithm, recursively traversing each referenced cell. This function is computationally expensive and can consume a lot of [gas][gas]. If `self` is a [`Null{:tact}`][null] instead of a [`Cell{:tact}`][cell], returns a `DataSize{:tact}` with all fields set to $0$.
+Computes and returns the number of distinct cells, bits and refs in the [`Cell{:tact}`][cell] by using a [depth-first search (DFS)][dfs] algorithm, recursively traversing each referenced cell. This function is computationally expensive and can consume a lot of [gas][gas]. If `self{:tact}` is [`null{:tact}`][null], returns a `DataSize{:tact}` with all fields set to $0$.
 
 The results are packed into a `DataSize{:tact}` [Struct][struct] consisting of:
 
@@ -1341,6 +1341,7 @@ fun cautiousParse(payload: Slice): TripleAxe? {
 [map]: /book/maps
 [struct]: /book/structs-and-messages#structs
 [message]: /book/structs-and-messages#messages
+[null]: /book/optionals
 
 [std-repr]: /book/cells#cells-representation
 
