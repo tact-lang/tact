@@ -140,6 +140,14 @@ describe("stdlib", () => {
             bits: 3n,
             refs: 1n,
         });
+        expect(
+            await contract.getComputeDataSizeCell(null, 1000n),
+        ).toMatchObject({
+            $$type: "DataSize",
+            cells: 0n,
+            bits: 0n,
+            refs: 0n,
+        });
 
         expect(
             await contract.getComputeDataSizeSlice(slice, 1000n),
@@ -151,6 +159,7 @@ describe("stdlib", () => {
         });
 
         expect(await contract.getCellDepth(slice.asCell())).toBe(1n);
+        expect(await contract.getCellDepth(null)).toBe(0n);
 
         expect(await contract.getCurLt()).toBe(0n);
 

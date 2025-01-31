@@ -95,7 +95,7 @@ contract StdlibTest {
         return addressNone();
     }
 
-    get fun computeDataSizeCell(c: Cell, maxCells: Int): DataSize {
+    get fun computeDataSizeCell(c: Cell?, maxCells: Int): DataSize {
         return c.computeDataSize(maxCells);
     }
 
@@ -103,7 +103,7 @@ contract StdlibTest {
         return sc.computeDataSize(maxCells);
     }
 
-    get fun cellDepth(c: Cell): Int {
+    get fun cellDepth(c: Cell?): Int {
         return c.depth();
     }
 

@@ -327,7 +327,7 @@ struct DataSize {
 
 /// Extension function for the `Cell`. Available since Tact 1.6.0.
 ///
-/// Computes and returns the number of distinct cells, bits and refs in the `Cell` by using a depth-first search (DFS) algorithm, recursively traversing each referenced cell. This function is computationally expensive and can consume a lot of gas.
+/// Computes and returns the number of distinct cells, bits and refs in the `Cell` by using a depth-first search (DFS) algorithm, recursively traversing each referenced cell. This function is computationally expensive and can consume a lot of gas. If `self` is a `Null` instead of a `Cell`, returns `DataSize` with all fields set to 0.
 ///
 /// The results are packed into a `DataSize` Struct consisting of:
 /// * `cells: Int`, the total number of nested cells, including the starting one
@@ -355,7 +355,7 @@ struct DataSize {
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#cellcomputedatasize
 ///
-asm extends fun computeDataSize(self: Cell, maxCells: Int): DataSize { CDATASIZE }
+asm extends fun computeDataSize(self: Cell?, maxCells: Int): DataSize { CDATASIZE }
 
 /// Extension function for the `Slice`. Available since Tact 1.6.0.
 ///
@@ -391,7 +391,7 @@ asm extends fun computeDataSize(self: Slice, maxCells: Int): DataSize { SDATASIZ
 
 /// Extension function for the `Cell`. Available since Tact 1.6.0.
 ///
-/// Computes and returns the `Int` depth of the `Cell`. Produces 0 if the `Cell` has no references, otherwise 1 plus the maximum of the depths of the referenced cells.
+/// Computes and returns the `Int` depth of the `Cell`. Produces 0 if the `Cell` has no references, otherwise 1 plus the maximum of the depths of the referenced cells. If c is a Null instead of a Cell, returns zero.
 ///
 /// ```tact
 /// fun example() {
@@ -402,5 +402,5 @@ asm extends fun computeDataSize(self: Slice, maxCells: Int): DataSize { SDATASIZ
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#celldepth
 ///
-asm extends fun depth(self: Cell): Int { CDEPTH }
+asm extends fun depth(self: Cell?): Int { CDEPTH }
 

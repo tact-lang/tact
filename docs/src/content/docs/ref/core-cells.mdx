@@ -89,12 +89,12 @@ let fizz: Slice = c.beginParse();
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
-extends fun depth(self: Cell): Int;
+extends fun depth(self: Cell?): Int;
 ```
 
 Extension function for the [`Cell{:tact}`][cell].
 
-Computes and returns the [`Int{:tact}`][int] [depth][std-repr] of the [`Cell{:tact}`][cell]. Produces $0$ if the [`Cell{:tact}`][cell] has no references, otherwise $1$ plus the maximum of the depths of the referenced cells.
+Computes and returns the [`Int{:tact}`][int] [depth][std-repr] of the [`Cell{:tact}`][cell]. Produces $0$ if the [`Cell{:tact}`][cell] has no references, otherwise $1$ plus the maximum of the depths of the referenced cells. If `self` is a [`Null{:tact}`][null] instead of a [`Cell{:tact}`][cell], returns $0$.
 
 Usage example:
 
@@ -108,12 +108,12 @@ let depth: Int = c.depth(); // 0
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
-extends fun computeDataSize(self: Cell, maxCells: Int): DataSize;
+extends fun computeDataSize(self: Cell?, maxCells: Int): DataSize;
 ```
 
 Extension function for the [`Cell{:tact}`][cell].
 
-Computes and returns the number of distinct cells, bits and refs in the [`Cell{:tact}`][cell] by using a [depth-first search (DFS)][dfs] algorithm, recursively traversing each referenced cell. This function is computationally expensive and can consume a lot of [gas][gas].
+Computes and returns the number of distinct cells, bits and refs in the [`Cell{:tact}`][cell] by using a [depth-first search (DFS)][dfs] algorithm, recursively traversing each referenced cell. This function is computationally expensive and can consume a lot of [gas][gas]. If `self` is a [`Null{:tact}`][null] instead of a [`Cell{:tact}`][cell], returns a `DataSize{:tact}` with all fields set to $0$.
 
 The results are packed into a `DataSize{:tact}` [Struct][struct] consisting of:
 
