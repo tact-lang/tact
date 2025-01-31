@@ -43,6 +43,12 @@
       "discovery": "11063"
     },
     {
+      "label": "1.5.3 without run-time null checks for `!!`",
+      "transfer": "25860",
+      "burn": "17686",
+      "discovery": "11039"
+    },
+    {
       "label": "Optimized send()",
       "transfer": "21464",
       "burn": "16029",

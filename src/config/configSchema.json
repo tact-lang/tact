@@ -61,6 +61,17 @@
                     "description": "False by default. If set to true, enables inlining of all functions in contracts. This can reduce gas usage at the cost of bigger contracts."
                   }
                 }
+              },
+              "safety": {
+                "type": "object",
+                "description": "Safety options for the contract.",
+                "properties": {
+                  "nullChecks": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "True by default. If set to true, enables run-time null checks for the `!!` operator. Set it to `false` if you'd like to decrease gas consumption."
+                  }
+                }
               }
             }
           },
