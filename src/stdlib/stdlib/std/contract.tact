@@ -241,14 +241,105 @@ asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
 ///
 asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 
+/// Global function. Available since Tact 1.6.0.
+///
+/// Returns the `Int` value of the logical time of the current transaction.
+///
+/// ```tact
+/// fun example() {
+///     let lt: Int = curLt();
+///     nativeRandomize(lt); // equivalent to calling nativeRandomizeLt()
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-advanced#curlt
+/// * https://docs.tact-lang.org/ref/core-advanced#nativerandomize
+/// * https://docs.tact-lang.org/ref/core-advanced#nativerandomizelt
+///
 asm fun curLt(): Int { LTIME }
 
+/// Global function. Available since Tact 1.6.0.
+///
+/// Returns the `Int` value of the starting logical time of the current block.
+///
+/// ```tact
+/// fun example() {
+///     let time: Int = blockLt();
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-advanced#blocklt
+///
 asm fun blockLt(): Int { BLOCKLT }
 
+/// Global function. Available since Tact 1.6.0.
+///
+/// Sets the `gas_limit` to the `Int` `limit` and resets the `gas_credit` to 0. Note that specifying the `limit` higher than the maximum allowed value of 2^63 - 1 will have the same result as with specifying that exact maximum or calling `acceptMessage()`.
+///
+/// Attempts to specify a negative or insufficient value of `limit` will cause an exception with exit code -14: `Out of gas error`.
+///
+/// ```tact
+/// fun example() {
+///     setGasLimit(42000);
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-advanced#setgaslimit
+///
 asm fun setGasLimit(limit: Int) { SETGASLIMIT }
 
+/// Global function. Available since Tact 1.6.0.
+///
+/// Generates and returns an unsigned 256-bit `Int` seed for the random number generator. The resulting seed is commonly used with the `setSeed()` and `nativeRandomize()` functions.
+///
+/// ```tact
+/// fun example() {
+///     let seed: Int = getSeed();
+///     setSeed(seed); // from now on the results of pseudorandom number generator
+///                    // are completely determined by the seed, which can be handy in tests,
+///                    // but must not be used in production code!
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-advanced#getseed
+/// * https://docs.tact-lang.org/ref/core-advanced#setseed
+/// * https://docs.tact-lang.org/ref/core-advanced#nativerandomize
+///
 asm fun getSeed(): Int { RANDSEED }
 
+/// Global function. Available since Tact 1.6.0.
+///
+/// Sets the seed of the random number generator to the unsigned 256-bit `Int` `seed` which can be obtained with the `getSeed()` function.
+///
+/// Attempts to specify a negative value of `seed` throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// ```tact
+/// fun example() {
+///     let seed: Int = getSeed();
+///     setSeed(seed); // from now on the results of pseudorandom number generator
+///                    // are completely determined by the seed, which can be handy in tests,
+///                    // but must not be used in production code!
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-advanced#setseed
+/// * https://docs.tact-lang.org/ref/core-advanced#getseed
+///
 asm fun setSeed(seed: Int) { SETRAND }
 
+/// Global function. Available since Tact 1.6.0.
+///
+/// Returns the smart contract code `Cell` obtained from the `c7` register.
+///
+/// ```tact
+/// fun example() {
+///     let code: Cell = myCode();
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-advanced#mycode
+///
 asm fun myCode(): Cell { MYCODE }

@@ -6,8 +6,8 @@
 // the second with the big-endian representation of x.
 asm fun nativeRandomize(x: Int) { ADDRAND }
 
-/// Equivalent to `nativeRandomize(cur_lt())`,
-/// where `cur_lt()` is the logical time of the current transaction
+// Equivalent to `nativeRandomize(cur_lt())`,
+// where `cur_lt()` is the logical time of the current transaction
 asm fun nativeRandomizeLt() { LTIME ADDRAND }
 
 @name(__tact_prepare_random)
@@ -63,24 +63,146 @@ native pow(base: Int, exp: Int): Int;
 
 asm fun pow2(exp: Int): Int { POW2 }
 
+/// Global function. Available since Tact 1.6.0.
+///
+/// Computes and returns the sign of the `Int` value `x`. Produces 1 if the `x` is positive, -1 if the `x` is negative, and 0 if the `x` is 0.
+///
+/// ```tact
+/// fun examples() {
+///     sign(42);        // 1
+///     sign(-42);       // -1
+///     sign(-(-42));    // 1
+///     sign(-(-(-42))); // -1
+///     sign(0);         // 0
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-math#sign
+///
 asm fun sign(x: Int): Int { SGN }
 
-// ceil(x/y)
+/// Global function. Available since Tact 1.6.0.
+///
+/// Computes and returns the rounded up result of division of the `Int` `x` by the `Int` `y`.
+///
+/// Attempts to divide by `y` equal to 0 throw an exception with exit code 4: `Integer overflow`.
+///
+/// ```tact
+/// fun examples() {
+///     divc(4, 2);  // 2
+///     divc(3, 2);  // 2
+///     divc(-4, 2); // -2
+///     divc(-3, 2); // -1
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-math#divc
+///
 asm fun divc(x: Int, y: Int): Int { DIVC }
 
-// ceil(x*y/z)
+/// Global function. Available since Tact 1.6.0.
+///
+/// Computes and returns the rounded up result of `(x * y) / z`.
+///
+/// If the value in calculation goes beyond the range from -2^256 to 2^256 - 1 inclusive, or if there's an attempt to divide by `z` equal to 0, an exception with exit code 4 is thrown: `Integer overflow`.
+///
+/// ```tact
+/// fun examples() {
+///     muldivc(4, 1, 2);  // 2
+///     muldivc(3, 1, 2);  // 2
+///     muldivc(-4, 1, 2); // -2
+///     muldivc(-3, 1, 2); // -1
+///     muldivc(-3, 0, 2); // 0
+///     muldivc(-3, 0, 0); // ERROR! Exit code 4: Integer overflow
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-math#muldivc
+///
 asm fun muldivc(x: Int, y: Int, z: Int): Int { MULDIVC }
 
-// floor(x*y/2^z)
+/// Global function. Available since Tact 1.6.0.
+///
+/// Computes and returns the rounded down result of `(x * y) / z`. It is a more gas-efficient equivalent of doing the bitwise shift right on the result of multiplication of `Int` `x` times `Int` `y`, where `Int` `z` is the right operand of the shift.
+///
+/// If the value in calculation goes beyond the range from -2^256 to 2^256 - 1 inclusive, an exception with exit code 4 is thrown: `Integer overflow`.
+///
+/// Attempts to specify a negative value of `z` throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// ```tact
+/// fun examples() {
+///     mulShiftRight(5, 5, 2);  // 6
+///     mulShiftRight(5, 5, 1);  // 12
+///     mulShiftRight(5, 5, 0);  // 25
+///     mulShiftRight(5, 5, -1); // ERROR! Exit code 5: Integer out of expected range
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-math#mulshiftright
+///
 asm fun mulShiftRight(x: Int, y: Int, z: Int): Int { MULRSHIFT }
 
-// round(x*y/2^z)
+/// Global function. Available since Tact 1.6.0.
+///
+/// Similar to `mulShiftRight()`, but instead of rounding down, the result value is rounded to the nearest integer. If there are two equally close integers, rounding is done toward the even one.
+///
+/// If the value in calculation goes beyond the range from -2^256 to 2^256 - 1 inclusive, an exception with exit code 4 is thrown: `Integer overflow`.
+///
+/// Attempts to specify a negative value of `z` throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// ```tact
+/// fun examples() {
+///     mulShiftRightRound(5, 5, 2);  // 6
+///     mulShiftRightRound(5, 5, 1);  // 13
+///     mulShiftRightRound(5, 5, 0);  // 25
+///     mulShiftRightRound(5, 5, -1); // ERROR! Exit code 5: Integer out of expected range
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-math#mulshiftrightround
+///
 asm fun mulShiftRightRound(x: Int, y: Int, z: Int): Int { MULRSHIFTR }
 
-// ceil(x*y/2^z)
+/// Global function. Available since Tact 1.6.0.
+///
+/// Similar to `mulShiftRight()`, but instead of rounding down, the result value is rounded up.
+///
+/// If the value in calculation goes beyond the range from -2^256 to 2^256 - 1 inclusive, an exception with exit code 4 is thrown: `Integer overflow`.
+///
+/// Attempts to specify a negative value of `z` throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// ```tact
+/// fun examples() {
+///     mulShiftRightCeil(5, 5, 2);  // 7
+///     mulShiftRightCeil(5, 5, 1);  // 13
+///     mulShiftRightCeil(5, 5, 0);  // 25
+///     mulShiftRightCeil(5, 5, -1); // ERROR! Exit code 5: Integer out of expected range
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-math#mulshiftrightceil
+///
 asm fun mulShiftRightCeil(x: Int, y: Int, z: Int): Int { MULRSHIFTC }
 
-// round(sqrt(num))
+/// Global function. Available since Tact 1.6.0.
+///
+/// Computes the square root of the `Int` value `num`. Returns the result rounded to the nearest integer. If there are two equally close integers, rounding is done toward the even one.
+///
+/// Attempts to specify a negative value of `num` throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// ```tact
+/// fun examples() {
+///     sqrt(4);  // 2
+///     sqrt(3);  // 2
+///     sqrt(2);  // 1
+///     sqrt(1);  // 1
+///     sqrt(0);  // 0
+///     sqrt(-1); // ERROR! Exit code 5: Integer out of expected range
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-math#sqrt
+///
 fun sqrt(num: Int): Int {
     if (num == 0) {
         return 0;

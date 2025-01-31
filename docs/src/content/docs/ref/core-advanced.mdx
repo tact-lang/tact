@@ -284,7 +284,7 @@ let origFee: Int = getOriginalFwdFee(fee, false);
 fun setGasLimit(limit: Int);
 ```
 
-Sets the [`gas_limit`][param-20-21] to the [`Int{:tact}`][int] `limit` and resets the [`gas_credit`][param-20-21] to $0$. Note, that specifying the `limit` higher than the maximum allowed value of $2^{63} - 1$ will have the same result as with specifying that exact maximum or calling [`acceptMessage(){:tact}`](#acceptmessage).
+Sets the [`gas_limit`][param-20-21] to the [`Int{:tact}`][int] `limit` and resets the [`gas_credit`][param-20-21] to $0$. Note that specifying the `limit` higher than the maximum allowed value of $2^{63} - 1$ will have the same result as with specifying that exact maximum or calling [`acceptMessage(){:tact}`](#acceptmessage).
 
 Attempts to specify a negative or insufficient value of `limit` will cause an exception with [exit code -14](/book/exit-codes#-14): `Out of gas error`.
 

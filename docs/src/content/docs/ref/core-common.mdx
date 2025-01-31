@@ -127,9 +127,7 @@ Creates a new [`Address{:tact}`][p] based on the [`chain` id](https://ton-blockc
 
 This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
 
-Attempts to specify an invalid `chain` ID (not $-1$ or $0$) throw an exception with [exit code 136](/book/exit-codes#136): `Invalid address`.
-
-Attempts to specify an `chain` ID pointing to the masterchain ($-1$) without [masterchain support](/book/masterchain) enabled throw an exception with [exit code 137](/book/exit-codes#137): `Masterchain support is not enabled for this contract`.
+Attempts to specify an invalid `chain` ID (not $-1$ or $0$) that can be detected in [compile-time](/ref/core-comptime) will result in a compilation error.
 
 Usage example:
 
@@ -178,9 +176,9 @@ fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address;
 
 Computes smart contract's [`Address{:tact}`][p] based on the `chain` id, contract's `code` and contract's initial state `data`. Use [`initOf{:tact}`](/book/expressions#initof) expression to obtain initial `code` and initial `data` of a given contract.
 
-Attempts to specify an invalid `chain` ID (not $-1$ or $0$) throw an exception with [exit code 136](/book/exit-codes#136): `Invalid address`.
+This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
 
-Attempts to specify an `chain` ID pointing to the masterchain ($-1$) without [masterchain support](/book/masterchain) enabled throw an exception with [exit code 137](/book/exit-codes#137): `Masterchain support is not enabled for this contract`.
+Attempts to specify an invalid `chain` ID (not $-1$ or $0$) that can be detected in [compile-time](/ref/core-comptime) will result in a compilation error.
 
 Usage example:
 

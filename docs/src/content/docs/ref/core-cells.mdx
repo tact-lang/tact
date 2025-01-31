@@ -100,7 +100,7 @@ Usage example:
 
 ```tact
 let c: Cell = beginCell().storeInt(42, 7).endCell();
-let depth: Int = c.depth;
+let depth: Int = c.depth(); // 0
 ```
 
 ## Cell.computeDataSize
@@ -113,7 +113,7 @@ extends fun computeDataSize(self: Cell, maxCells: Int): DataSize;
 
 Extension function for the [`Cell{:tact}`][cell].
 
-Computes and returns the number of distinct cells, bits and refs in the [`Cell{:tact}`][tact] by using a [depth-first search (DFS)][dfs] algorithm, recursively traversing each referenced cell. This function is computationally expensive and can consume a lot of [gas][gas].
+Computes and returns the number of distinct cells, bits and refs in the [`Cell{:tact}`][cell] by using a [depth-first search (DFS)][dfs] algorithm, recursively traversing each referenced cell. This function is computationally expensive and can consume a lot of [gas][gas].
 
 The results are packed into a `DataSize{:tact}` [Struct][struct] consisting of:
 
@@ -441,7 +441,7 @@ Usage example:
 
 ```tact
 let b: Builder = beginCell().storeInt(42, 7);
-let depth: Int = b.depth;
+let depth: Int = b.depth(); // 0
 ```
 
 ## Builder.asSlice
@@ -902,7 +902,7 @@ Usage example:
 
 ```tact
 let s: Slice = beginCell().storeInt(42, 7).asSlice();
-let depth: Int = s.depth;
+let depth: Int = s.depth(); // 0
 ```
 
 ## Slice.computeDataSize
@@ -913,7 +913,17 @@ let depth: Int = s.depth;
 extends fun computeDataSize(self: Slice, maxCells: Int): DataSize;
 ```
 
-Extension function for the [`Slice{:tact}`][slice]. Similar to [`Cell.computeDataSize(){:tact}`](#cellcomputedatasize), but doesn't take into account the cell that contains the [`Slice{:tact}`][slice] itself. However, accounts for its bits and refs.
+Extension function for the [`Slice{:tact}`][slice].
+
+Similar to [`Cell.computeDataSize(){:tact}`](#cellcomputedatasize), but doesn't take into account the cell that contains the [`Slice{:tact}`][slice] itself. However, accounts for its bits and refs.
+
+The results are packed into a `DataSize{:tact}` [Struct][struct] consisting of:
+
+Field   | Type                | Description
+:------ | :------------------ | :----------
+`cells` | [`Int{:tact}`][int] | The total number of nested cells, including the starting one
+`bits`  | [`Int{:tact}`][int] | The total number of bits in all nested cells, including the starting one
+`refs`  | [`Int{:tact}`][int] | The total number of refs in all nested cells, including the starting one
 
 If the specified `maxCells` value isn't enough to traverse all cells **not** including the starting one, an exception with [exit code 8](/book/exit-codes#8) is thrown: `Cell overflow`.
 
