@@ -15,7 +15,7 @@ const globSync = (globs: string[], options: { cwd: string }) => {
 export const allInFolder = async (
     folder: string,
     globs: string[],
-    options: Options = { debug: true },
+    options: Options = { debug: true, external: true },
 ) => {
     try {
         const stdlib = createVirtualFileSystem("@stdlib", files);
@@ -24,12 +24,6 @@ export const allInFolder = async (
 
         const projects = contracts.map((contractPath) => {
             const contractOptions: Options = structuredClone(options);
-            if (contractPath.includes("inline")) {
-                contractOptions.experimental = { inline: true };
-            }
-            if (contractPath.includes("external")) {
-                contractOptions.external = true;
-            }
             return {
                 name: basename(contractPath, extname(contractPath)),
                 path: contractPath,

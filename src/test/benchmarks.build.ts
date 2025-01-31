@@ -6,6 +6,17 @@ const main = async () => {
     __DANGER__disableVersionNumber();
 
     await allInFolder(__dirname, ["benchmarks/contracts/*.tact"]);
+
+    await allInFolder(
+        __dirname,
+        ["benchmarks/inline/benchmark_functions.tact"],
+        { debug: true, external: true, experimental: { inline: false } },
+    );
+    await allInFolder(
+        __dirname,
+        ["benchmarks/inline/benchmark_functions_inline.tact"],
+        { debug: true, external: true, experimental: { inline: true } },
+    );
 };
 
 void main();

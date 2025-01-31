@@ -10,8 +10,8 @@ import {
     SandboxContract,
     TreasuryContract,
 } from "@ton/sandbox";
-import { Functions } from "./contracts/output/benchmark_functions_Functions";
-import { Functions as FunctionsInline } from "./contracts/output/benchmark_functions_inline_Functions";
+import { Functions } from "./inline/output/benchmark_functions_Functions";
+import { Functions as FunctionsInline } from "./inline/output/benchmark_functions_inline_Functions";
 import "@ton/test-utils";
 
 function measureGas(txs: BlockchainTransaction[]) {
