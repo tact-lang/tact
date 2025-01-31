@@ -1,4 +1,5 @@
 //@ { "external": true }
+
 message Add {
     x: Int as uint32;
 }
