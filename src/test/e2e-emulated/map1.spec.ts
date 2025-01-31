@@ -1465,7 +1465,7 @@ describe("MapTestContract", () => {
         }
     });
 
-    it.only("asCell: should correctly serialize and deserialize maps", async () => {
+    it("asCell: should correctly serialize and deserialize maps", async () => {
         for (const { keys, values } of testCases) {
             // Set values for the current test case
             const setMessage: SetAllMaps = {
