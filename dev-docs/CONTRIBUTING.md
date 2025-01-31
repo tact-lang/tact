@@ -61,6 +61,24 @@ Updating a subset of the test snapshots can be done like so:
 yarn test -u spec-name-pattern1 spec-name-pattern2
 ```
 
+## Benchmarks
+
+The benchmarks system is used to track gas consumption changes after making changes to the compiler.
+
+To run benchmarks:
+
+```shell
+yarn bench
+```
+
+### Adding a new benchmark
+
+To add a new benchmark:
+
+1. Add `*.tact` file to `src/test/benchmarks/contracts`
+2. Recompile the benchmarks with `yarn gen:contracts:benchmarks`
+3. Add additional benchmark to `src/test/benchmarks/benchmarks.spec.ts`
+
 ## Code quality
 
 To pass review, code has to conform to our [styleguide](./STYLEGUIDE.md).
