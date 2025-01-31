@@ -1,4 +1,4 @@
-import { Address, beginCell, Cell, Slice } from "@ton/core";
+import { Address, Cell, Slice } from "@ton/core";
 import * as A from "./ast";
 import { isLiteral, FactoryAst } from "./ast-helpers";
 import { dummySrcInfo, SrcInfo } from "../grammar";
