@@ -65,7 +65,7 @@ const golden: string[] = [
     `((- $j'b) + $a)`,
     `(((- $j'b) + $a) + (+ $b))`,
     "null()",
-    "(__tact_not_null($o) + 1)",
+    "($o + 1)",
     `$A$_store_cell(($j'a, $j'b))`,
 ];
 

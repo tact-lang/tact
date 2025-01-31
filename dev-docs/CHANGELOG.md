@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `unboc`: a standalone CLI utility to expose Tact's TVM disassembler: PR [#1259](https://github.com/tact-lang/tact/pull/1259)
 - Added alternative parser: PR [#1258](https://github.com/tact-lang/tact/pull/1258)
 - Support for block statements: PR [#1334](https://github.com/tact-lang/tact/pull/1334)
+- `nullChecks` config option to disable run-time null checks for the `!!` operator in order to save gas: PR [#1660](https://github.com/tact-lang/tact/pull/1660)
 
 ### Changed
 
