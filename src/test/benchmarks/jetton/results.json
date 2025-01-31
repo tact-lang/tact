@@ -49,10 +49,16 @@
       "discovery": "11039"
     },
     {
+      "label": "1.5.3 with optimized send()",
+      "transfer": "21464",
+      "burn": "16029",
+      "discovery": "10093"
+    },
+    {
       "label": "master",
-      "transfer": "25860",
-      "burn": "17686",
-      "discovery": "11039"
+      "transfer": "21402",
+      "burn": "16029",
+      "discovery": "10085"
     }
   ]
 }
