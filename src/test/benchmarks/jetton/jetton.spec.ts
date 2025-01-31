@@ -1,13 +1,13 @@
-import { Address, beginCell, Cell, Sender, toNano, Builder } from "@ton/core";
+import { Address, beginCell, Builder, Cell, Sender, toNano } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import chalk from "chalk";
 
 import {
     JettonMinter,
-    TokenUpdateContent,
-    TokenBurn,
     Mint,
     ProvideWalletAddress,
+    TokenBurn,
+    TokenUpdateContent,
 } from "../contracts/output/jetton_minter_discoverable_JettonMinter";
 import {
     JettonWallet,
@@ -118,14 +118,106 @@ function printBenchmarkTable(results: BenchmarkResult[]): void {
     console.log(output.join("\n"));
 }
 
+const getJettonBalance = async (
+    userWallet: SandboxContract<JettonWallet>,
+): Promise<bigint> => (await userWallet.getGetWalletData()).balance;
+
+const sendTransfer = async (
+    userWallet: SandboxContract<JettonWallet>,
+    via: Sender,
+    value: bigint,
+    jetton_amount: bigint,
+    to: Address,
+    responseAddress: Address,
+    customPayload: Cell | null,
+    forward_ton_amount: bigint,
+    forwardPayload: Cell | null,
+) => {
+    const parsedForwardPayload =
+        forwardPayload != null
+            ? forwardPayload.beginParse()
+            : new Builder().storeUint(0, 1).endCell().beginParse(); //Either bit equals 0
+    const msg: TokenTransfer = {
+        $$type: "TokenTransfer",
+        query_id: 0n,
+        amount: jetton_amount,
+        destination: to,
+        response_destination: responseAddress,
+        custom_payload: customPayload,
+        forward_ton_amount: forward_ton_amount,
+        forward_payload: parsedForwardPayload,
+    };
+
+    return await userWallet.send(via, { value }, msg);
+};
+
+const sendBurn = async (
+    userWallet: SandboxContract<JettonWallet>,
+    via: Sender,
+    value: bigint,
+    jetton_amount: bigint,
+    responseAddress: Address,
+    customPayload: Cell | null,
+) => {
+    const msg: TokenBurn = {
+        $$type: "TokenBurn",
+        query_id: 0n,
+        amount: jetton_amount,
+        response_destination: responseAddress,
+        custom_payload: customPayload,
+    };
+
+    return await userWallet.send(via, { value }, msg);
+};
+
+function sendMint(
+    contract: SandboxContract<JettonMinter>,
+    via: Sender,
+    to: Address,
+    jetton_amount: bigint,
+    forward_ton_amount: bigint,
+    total_ton_amount: bigint,
+): Promise<SendMessageResult> {
+    if (total_ton_amount <= forward_ton_amount) {
+        throw new Error(
+            "Total TON amount should be greater than the forward amount",
+        );
+    }
+    const msg: Mint = {
+        $$type: "Mint",
+        amount: jetton_amount,
+        receiver: to,
+    };
+    return contract.send(
+        via,
+        { value: total_ton_amount + toNano("0.015") },
+        msg,
+    );
+}
+
+function sendDiscovery(
+    contract: SandboxContract<JettonMinter>,
+    via: Sender,
+    address: Address,
+    includeAddress: boolean,
+    value: bigint = toNano("0.1"),
+): Promise<SendMessageResult> {
+    const msg: ProvideWalletAddress = {
+        $$type: "ProvideWalletAddress",
+        query_id: 0n,
+        owner_address: address,
+        include_address: includeAddress,
+    };
+    return contract.send(via, { value }, msg);
+}
+
 describe("Jetton", () => {
     let blockchain: Blockchain;
-    let jettonMinter: ExtendedJettonMinter;
+    let jettonMinter: SandboxContract<JettonMinter>;
     let deployer: SandboxContract<TreasuryContract>;
 
     let notDeployer: SandboxContract<TreasuryContract>;
 
-    let userWallet: (address: Address) => Promise<ExtendedJettonWallet>;
     let defaultContent: Cell;
 
     const expectedResult = results.at(-1)!;
@@ -143,7 +235,7 @@ describe("Jetton", () => {
 
         jettonMinter = blockchain.openContract(
             await JettonMinter.fromInit(deployer.address, defaultContent),
-        ) as ExtendedJettonMinter;
+        );
         const deployResult = await jettonMinter.send(
             deployer.getSender(),
             { value: toNano("0.1") },
@@ -160,116 +252,11 @@ describe("Jetton", () => {
         blockchain.openContract(
             await JettonWallet.fromInit(deployer.address, jettonMinter.address),
         );
-
-        userWallet = async (address: Address) => {
-            const newUserWallet = blockchain.openContract(
-                JettonWallet.fromAddress(
-                    await jettonMinter.getGetWalletAddress(address),
-                ),
-            );
-
-            const getJettonBalance = async (): Promise<bigint> =>
-                (await newUserWallet.getGetWalletData()).balance;
-
-            const sendTransfer = async (
-                via: Sender,
-                value: bigint,
-                jetton_amount: bigint,
-                to: Address,
-                responseAddress: Address,
-                customPayload: Cell | null,
-                forward_ton_amount: bigint,
-                forwardPayload: Cell | null,
-            ) => {
-                const parsedForwardPayload =
-                    forwardPayload != null
-                        ? forwardPayload.beginParse()
-                        : new Builder().storeUint(0, 1).endCell().beginParse(); //Either bit equals 0
-                const msg: TokenTransfer = {
-                    $$type: "TokenTransfer",
-                    query_id: 0n,
-                    amount: jetton_amount,
-                    destination: to,
-                    response_destination: responseAddress,
-                    custom_payload: customPayload,
-                    forward_ton_amount: forward_ton_amount,
-                    forward_payload: parsedForwardPayload,
-                };
-
-                return await newUserWallet.send(via, { value }, msg);
-            };
-
-            const sendBurn = async (
-                via: Sender,
-                value: bigint,
-                jetton_amount: bigint,
-                responseAddress: Address,
-                customPayload: Cell | null,
-            ) => {
-                const msg: TokenBurn = {
-                    $$type: "TokenBurn",
-                    query_id: 0n,
-                    amount: jetton_amount,
-                    response_destination: responseAddress,
-                    custom_payload: customPayload,
-                };
-
-                return await newUserWallet.send(via, { value }, msg);
-            };
-
-            return {
-                ...newUserWallet,
-                getJettonBalance,
-                sendTransfer,
-                sendBurn,
-            };
-        };
     });
 
     afterAll(() => {
         printBenchmarkTable(results);
     });
-
-    function sendMint(
-        contract: SandboxContract<JettonMinter>,
-        via: Sender,
-        to: Address,
-        jetton_amount: bigint,
-        forward_ton_amount: bigint,
-        total_ton_amount: bigint,
-    ): Promise<SendMessageResult> {
-        if (total_ton_amount <= forward_ton_amount) {
-            throw new Error(
-                "Total TON amount should be greater than the forward amount",
-            );
-        }
-        const msg: Mint = {
-            $$type: "Mint",
-            amount: jetton_amount,
-            receiver: to,
-        };
-        return contract.send(
-            via,
-            { value: total_ton_amount + toNano("0.015") },
-            msg,
-        );
-    }
-
-    function sendDiscovery(
-        contract: SandboxContract<JettonMinter>,
-        via: Sender,
-        address: Address,
-        includeAddress: boolean,
-        value: bigint = toNano("0.1"),
-    ): Promise<SendMessageResult> {
-        const msg: ProvideWalletAddress = {
-            $$type: "ProvideWalletAddress",
-            query_id: 0n,
-            owner_address: address,
-            include_address: includeAddress,
-        };
-        return contract.send(via, { value }, msg);
-    }
 
     it("send transfer", async () => {
         const mintResult = await sendMint(
@@ -280,7 +267,11 @@ describe("Jetton", () => {
             toNano("0.05"),
             toNano("1"),
         );
-        const deployerJettonWallet = await userWallet(deployer.address);
+        const deployerJettonWallet = blockchain.openContract(
+            JettonWallet.fromAddress(
+                await jettonMinter.getGetWalletAddress(deployer.address),
+            ),
+        );
         expect(mintResult.transactions).toHaveTransaction({
             from: jettonMinter.address,
             to: deployerJettonWallet.address,
@@ -290,9 +281,14 @@ describe("Jetton", () => {
         const someAddress = Address.parse(
             "EQD__________________________________________0vo",
         );
-        const someJettonWallet = await userWallet(someAddress);
+        const someJettonWallet = blockchain.openContract(
+            JettonWallet.fromAddress(
+                await jettonMinter.getGetWalletAddress(someAddress),
+            ),
+        );
 
-        const sendResult = await deployerJettonWallet.sendTransfer(
+        const sendResult = await sendTransfer(
+            deployerJettonWallet,
             deployer.getSender(),
             toNano(1),
             1n,
@@ -320,16 +316,21 @@ describe("Jetton", () => {
 
     it("burn", async () => {
         const snapshot = blockchain.snapshot();
-        const deployerJettonWallet = await userWallet(deployer.address);
+        const deployerJettonWallet = blockchain.openContract(
+            JettonWallet.fromAddress(
+                await jettonMinter.getGetWalletAddress(deployer.address),
+            ),
+        );
         const initialJettonBalance =
-            await deployerJettonWallet.getJettonBalance();
+            await getJettonBalance(deployerJettonWallet);
         const jettonData = await jettonMinter.getGetJettonData();
         const initialTotalSupply = jettonData.totalSupply;
         const burnAmount = toNano("0.01");
 
         await blockchain.loadFrom(snapshot);
 
-        const burnResult = await deployerJettonWallet.sendBurn(
+        const burnResult = await sendBurn(
+            deployerJettonWallet,
             deployer.getSender(),
             toNano(10),
             burnAmount,
@@ -343,7 +344,7 @@ describe("Jetton", () => {
             exitCode: 0,
         });
 
-        expect(await deployerJettonWallet.getJettonBalance()).toEqual(
+        expect(await getJettonBalance(deployerJettonWallet)).toEqual(
             initialJettonBalance - burnAmount,
         );
         const data = await jettonMinter.getGetJettonData();
@@ -372,43 +373,3 @@ describe("Jetton", () => {
         expect(gasUsed).toEqual(expectedResult.discovery);
     });
 });
-
-interface ExtendedJettonWallet extends SandboxContract<JettonWallet> {
-    getJettonBalance(): Promise<bigint>;
-
-    sendTransfer(
-        via: Sender,
-        value: bigint,
-        jetton_amount: bigint,
-        to: Address,
-        responseAddress: Address,
-        customPayload: Cell | null,
-        forward_ton_amount: bigint,
-        forwardPayload: Cell | null,
-    ): Promise<SendMessageResult>;
-
-    sendBurn(
-        via: Sender,
-        value: bigint,
-        jetton_amount: bigint,
-        responseAddress: Address,
-        customPayload: Cell | null,
-    ): Promise<SendMessageResult>;
-}
-
-interface ExtendedJettonMinter extends SandboxContract<JettonMinter> {
-    sendMint(
-        via: Sender,
-        to: Address,
-        jetton_amount: bigint,
-        forward_ton_amount: bigint,
-        total_ton_amount: bigint,
-    ): Promise<SendMessageResult>;
-
-    sendDiscovery(
-        via: Sender,
-        address: Address,
-        includeAddress: boolean,
-        value?: bigint,
-    ): Promise<SendMessageResult>;
-}
