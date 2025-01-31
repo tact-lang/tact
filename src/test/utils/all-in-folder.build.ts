@@ -18,14 +18,14 @@ type Project = {
     path: string;
     output: string;
     options: Options;
-}
+};
 
 const pragmaStart = "//@";
 
 export const allInFolder = async (
     folder: string,
     globs: string[],
-    options: Options = { debug: true }
+    options: Options = { debug: true },
 ) => {
     try {
         const stdlib = createVirtualFileSystem("@stdlib", files);
@@ -35,11 +35,14 @@ export const allInFolder = async (
         const projects: Project[] = [];
         for (const contractPath of contracts) {
             const contractOptions = structuredClone(options);
-            const contractCode = await readFile(join(folder, contractPath), 'utf-8');
-            const [firstLine] = contractCode.split('\n');
+            const contractCode = await readFile(
+                join(folder, contractPath),
+                "utf-8",
+            );
+            const [firstLine] = contractCode.split("\n");
             if (contractCode.startsWith(pragmaStart) && firstLine) {
                 const pragmaOptions = optionsSchema.parse(
-                    JSON.parse(firstLine.substring(pragmaStart.length))
+                    JSON.parse(firstLine.substring(pragmaStart.length)),
                 );
                 Object.assign(contractOptions, pragmaOptions);
             }
