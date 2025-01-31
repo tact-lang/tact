@@ -127,6 +127,7 @@ mintable
 mktemp
 multiformats
 nanotons
+nanoton
 nextra
 Neovim
 nocheck
