@@ -1,4 +1,4 @@
-import { Address, Cell, Slice } from "@ton/core";
+import { Address, beginCell, Cell, Slice } from "@ton/core";
 import * as A from "./ast";
 import { isLiteral, FactoryAst } from "./ast-helpers";
 import { dummySrcInfo, SrcInfo } from "../grammar";
@@ -63,13 +63,13 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
         return result as A.AstSimplifiedString;
     }
 
-    function makeCommentLiteral(s: string, loc: SrcInfo): A.AstCommentValue {
+    function makeAsCommentCell(s: string, loc: SrcInfo): A.AstCell {
         const result = createNode({
-            kind: "comment_value",
-            value: s,
+            kind: "cell",
+            value: beginCell().storeUint(0, 32).storeStringTail(s).endCell(),
             loc: loc,
         });
-        return result as A.AstCommentValue;
+        return result as A.AstCell;
     }
 
     function makeNullLiteral(loc: SrcInfo): A.AstNull {
@@ -145,7 +145,7 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
         makeNumberLiteral,
         makeBooleanLiteral,
         makeSimplifiedStringLiteral,
-        makeCommentLiteral,
+        makeAsCommentCell,
         makeNullLiteral,
         makeCellLiteral,
         makeSliceLiteral,

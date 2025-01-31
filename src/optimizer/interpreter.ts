@@ -96,7 +96,6 @@ function ensureArgumentForEquality(val: A.AstLiteral): A.AstLiteral {
         case "address":
         case "boolean":
         case "cell":
-        case "comment_value":
         case "null":
         case "number":
         case "simplified_string":
@@ -853,8 +852,6 @@ export class Interpreter {
                 return this.interpretNumber(ast);
             case "string":
                 return this.interpretString(ast);
-            case "comment_value":
-                return this.interpretCommentValue(ast);
             case "simplified_string":
                 return this.interpretSimplifiedString(ast);
             case "address":
@@ -931,7 +928,7 @@ export class Interpreter {
                 const comment = ensureSimplifiedString(
                     this.interpretExpression(ast.self),
                 ).value;
-                return this.util.makeCommentLiteral(comment, ast.loc);
+                return this.util.makeAsCommentCell(comment, ast.loc);
             }
             default:
                 throwNonFatalErrorConstEval(
@@ -965,10 +962,6 @@ export class Interpreter {
             interpretEscapeSequences(ast.value, ast.loc),
             ast.loc,
         );
-    }
-
-    public interpretCommentValue(ast: A.AstCommentValue): A.AstCommentValue {
-        return ast;
     }
 
     public interpretSimplifiedString(
