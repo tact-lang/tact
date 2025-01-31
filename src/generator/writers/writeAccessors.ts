@@ -1,5 +1,6 @@
 import { contractErrors } from "../../abi/errors";
 import { maxTupleSize } from "../../bindings/typescript/writeStruct";
+import { enabledDebug, enabledNullChecks } from "../../config/features";
 import { ItemOrigin } from "../../grammar";
 import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription } from "../../types/types";
@@ -64,7 +65,9 @@ export function writeAccessors(
         ctx.flag("inline");
         ctx.context("type:" + type.name);
         ctx.body(() => {
-            ctx.append(`throw_if(${contractErrors.null.id}, null?(v));`);
+            if (enabledNullChecks(ctx.ctx) || enabledDebug(ctx.ctx)) {
+                ctx.append(`throw_if(${contractErrors.null.id}, null?(v));`);
+            }
             const flatPack = resolveFuncFlatPack(type, "vvv", ctx);
             const flatTypes = resolveFuncFlatTypes(type, ctx);
             if (flatPack.length !== flatTypes.length)

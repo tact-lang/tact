@@ -1,5 +1,16 @@
 import { z } from "zod";
 
+const safetyOptionsSchema = z
+    .object({
+        /**
+         * If set to `true`, enables run-time null checks for the `!!` operator. Default is `true`.
+         */
+        nullChecks: z.boolean().optional(),
+    })
+    .strict();
+
+export type SafetyOptions = z.infer<typeof safetyOptionsSchema>;
+
 export const optionsSchema = z
     .object({
         /**
@@ -44,6 +55,10 @@ export const optionsSchema = z
             })
             .strict()
             .optional(),
+        /**
+         * Safety options for the contract.
+         */
+        safety: safetyOptionsSchema.optional(),
     })
     .strict();
 

@@ -161,8 +161,6 @@ export function eqExpressions(
             return ast1.value
                 .asCell()
                 .equals((ast2 as A.AstSlice).value.asCell());
-        case "comment_value":
-            return ast1.value === (ast2 as A.AstCommentValue).value;
         case "simplified_string":
             return ast1.value === (ast2 as A.AstSimplifiedString).value;
         case "struct_value":
@@ -381,7 +379,6 @@ function checkLiteral<T>(
         case "address":
         case "cell":
         case "slice":
-        case "comment_value":
         case "simplified_string":
         case "struct_value":
             return t(ast);

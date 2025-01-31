@@ -6,11 +6,6 @@ export function writeString(str: string, ctx: WriterContext) {
     return writeRawSlice("string", `String "${str}"`, cell, ctx);
 }
 
-export function writeComment(str: string, ctx: WriterContext) {
-    const cell = beginCell().storeUint(0, 32).storeStringTail(str).endCell();
-    return writeRawCell("comment", `Comment "${str}"`, cell, ctx);
-}
-
 export function writeAddress(address: Address, ctx: WriterContext) {
     return writeRawSlice(
         "address",

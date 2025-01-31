@@ -63,15 +63,6 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
         return result as A.AstSimplifiedString;
     }
 
-    function makeCommentLiteral(s: string, loc: SrcInfo): A.AstCommentValue {
-        const result = createNode({
-            kind: "comment_value",
-            value: s,
-            loc: loc,
-        });
-        return result as A.AstCommentValue;
-    }
-
     function makeNullLiteral(loc: SrcInfo): A.AstNull {
         const result = createNode({
             kind: "null",
@@ -145,7 +136,6 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
         makeNumberLiteral,
         makeBooleanLiteral,
         makeSimplifiedStringLiteral,
-        makeCommentLiteral,
         makeNullLiteral,
         makeCellLiteral,
         makeSliceLiteral,

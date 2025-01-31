@@ -27,7 +27,6 @@ import { resolveFuncType } from "./resolveFuncType";
 import {
     writeAddress,
     writeCell,
-    writeComment,
     writeSlice,
     writeString,
 } from "./writeConstant";
@@ -42,6 +41,7 @@ import {
     idText,
     tryExtractPath,
 } from "../../ast/ast-helpers";
+import { enabledDebug, enabledNullChecks } from "../../config/features";
 
 function isNull(wCtx: WriterContext, expr: A.AstExpression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
@@ -125,11 +125,6 @@ export function writeValue(val: A.AstLiteral, wCtx: WriterContext): string {
         }
         case "null":
             return "null()";
-        case "comment_value": {
-            const id = writeComment(val.value, wCtx);
-            wCtx.used(id);
-            return `${id}()`;
-        }
         case "struct_value": {
             // Transform the struct fields into a map for lookup
             const valMap: Map<string, A.AstLiteral> = new Map();
@@ -434,8 +429,12 @@ export function writeExpression(
                     }
                 }
 
-                wCtx.used("__tact_not_null");
-                return `${wCtx.used("__tact_not_null")}(${writeExpression(f.operand, wCtx)})`;
+                if (enabledNullChecks(wCtx.ctx) || enabledDebug(wCtx.ctx)) {
+                    wCtx.used("__tact_not_null");
+                    return `${wCtx.used("__tact_not_null")}(${writeExpression(f.operand, wCtx)})`;
+                } else {
+                    return writeExpression(f.operand, wCtx);
+                }
             }
         }
     }
