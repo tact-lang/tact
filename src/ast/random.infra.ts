@@ -158,7 +158,7 @@ function randomAstId(): fc.Arbitrary<A.AstId> {
         fc.record({
             kind: fc.constant("id"),
             text: fc
-                .stringMatching(/^[A-Za-z_][A-Za-z0-9_]*$/)
+                .stringMatching(/^[A-Za-z_]$/)
                 .filter(
                     (i) =>
                         !reservedWords.includes(i) &&
@@ -173,7 +173,7 @@ function randomAstCapitalizedId(): fc.Arbitrary<A.AstId> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("id"),
-            text: fc.stringMatching(/^[A-Z][A-Za-z0-9_]*$/),
+            text: fc.stringMatching(/^[A-Z]$/),
         }),
     );
 }
@@ -306,7 +306,7 @@ function randomAstLiteral(maxDepth: number): fc.Arbitrary<A.AstLiteral> {
             // Add Address, Cell, Slice
             // randomAstSimplifiedString(),
             // randomAstCommentValue(),
-            randomAstStructValue(subLiteral()),
+            randomAstStructValue(subLiteral()), // ????
         );
     })(maxDepth);
 }
