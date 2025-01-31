@@ -1,73 +1,192 @@
 ---
-title: 编译时
+title: 编译时 (Compile-time)
+description: Tact 核心库中的各种编译时全局函数
 ---
 
-本页列出了所有内置 [全局静态函数](/zh-cn/book/functions#global-static-functions)，这些函数在构建 Tact 项目时进行评估，无法处理非恒定的运行时数据。 这些函数通常被称为 "编译时函数"。
+import { Badge } from '@astrojs/starlight/components';
 
-## 地址
+此页面列出了所有内置的[全局静态函数](/zh-cn/book/functions#global-static-functions)，这些函数在构建 Tact 项目时进行求值，并且无法与非常量的运行时数据一起使用。 这些函数通常被称为 "编译时函数(compile-time functions)"。
+
+## address
 
 ```tact
-fun address(s: String)：地址；
+fun address(s: String): Address;
 ```
 
-编译时函数，用于将带有地址的 [`字符串{:tact}`][p]转换为 [`地址{:tact}`][p]类型。
+编译时函数，用于将包含地址的 [`String{:tact}`][p] 转换为 [`Address{:tact}`][p] 类型，并嵌入到合约中。
 
-使用示例
+示例用法：
 
 ```tact
 contract Example {
     // Persistent state variables
     addr: Address =
-        address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"); // works at compile-time！
+        address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"); // works at compile-time!
 }
 ```
 
-## 电池
+:::note
 
-```tact
-fun cell(bocBase64: String)：单元格；
-```
-
-编译时函数，将 base64 编码的 [BoC](https://docs.ton.org/develop/data-formats/cell-boc#bag-of-cells)`bocBase64`作为 [`单元格{:tact}`][单元格] 嵌入到合约中。
-
-使用示例
-
-```tact
-contract Example {
-    // 持久状态变量
-    storedCell：Cell =
-        // 钱包 V3R1 的初始包为 base64-编码的 BoC
-        cell("te6cckEBAQEAYgAAwP8AIN0gggFMl7qXMO1E0NcLH+Ck8mCDCNcYINMf0x/TH/gjE7vyY+1E0NMf0x/T/9FRMrryoVFEuvKiBPkBVBBV+RDyo/gAkyDXSpbTB9QC+wDo0QGkyMsfyx/L/8ntVD++buA=")；// 编译时有效！
-}
-```
-
-:::note[Useful links:]
-
-  [TON文档中的细胞袋](https://docs.ton.org/develop/data-formats/cell-boc#bag-of-cells)
+  Tact 中的 `address("...Address...."){:tact}` 相当于 FunC 中的 `"...Address.... "a{:func}`。
 
 :::
 
-## ton 
+## cell
 
 ```tact
-fun ton(value: String)：Int；
+fun cell(bocBase64: String): Cell;
 ```
 
-编译时函数，将给定的通币`值`从人类可读格式[`String{:tact}`][p]转换为[nanoToncoin](/zh-cn/book/integers#nanotoncoin)[`Int{:tact}`][int]格式。
+编译时函数，用于将 base64 编码的[BoC][boc] `bocBase64` 作为[`Cell{:tact}`][cell]嵌入到合约中。
 
-使用示例
+使用示例：
 
 ```tact
 contract Example {
-    // 持久状态变量
-    one：Int = ton("1"); // 10^9 枚纳米通币，等于 1 枚通币
-    pointOne: Int = ton("0.1"); // 10^8 枚纳米通币，等于 0.1 枚通币
-    nano: Int = ton("0.000000001"); // 1 枚纳米通币，等于 10^9 枚通币
-                                    // 在编译时有效！
+    // Persistent state variables
+    stored: Cell =
+        // Init package for Wallet V3R1 as a base64-encoded BoC
+        cell("te6cckEBAQEAYgAAwP8AIN0gggFMl7qXMO1E0NcLH+Ck8mCDCNcYINMf0x/TH/gjE7vyY+1E0NMf0x/T/9FRMrryoVFEuvKiBPkBVBBV+RDyo/gAkyDXSpbTB9QC+wDo0QGkyMsfyx/L/8ntVD++buA="); // works at compile-time!
+}
+```
+
+## slice
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun slice(bocBase64: String): Slice;
+```
+
+编译时函数，将 base64 编码的 [BoC][boc] `bocBase64` 作为 [`Slice{:tact}`][slice] 嵌入到合约中。
+
+使用示例：
+
+```tact
+contract Example {
+    // Persistent state variables
+    stored: Slice =
+        // Works at compile-time!
+        slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw="); // Hello world!
+}
+```
+
+## rawSlice
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun rawSlice(hex: String): Slice;
+```
+
+编译时函数，用于将`hex` [`String{:tact}`][p] 的内容转换为 [`slice{:tact}`][slice]的十六进制编码和可选的位填充内容。
+
+如果 [`String{:tact}`][p] 的末尾有下划线 `_`，则内容将以位填充。 填充去掉了所有尾部的零和前面的最后一个 $1$ 位：
+
+```tact
+// Not bit-padded
+rawSlice("4a").loadUint(8); // 74, or 1001010 in binary
+
+// Bit-padded
+rawSlice("4a_").loadUint(6); // 18, or 10010 in binary
+```
+
+请注意，该功能是有限的，最多只能指定 $1023$ 位。
+
+示例用法：
+
+```tact
+contract Example {
+    // Persistent state variables
+    stored: Slice =
+        rawSlice("000DEADBEEF000");  // CS{Cell{03f...430} bits: 588..644; refs: 1..1}
+    bitPadded: Slice =
+        rawSlice("000DEADBEEF000_"); // CS{Cell{03f...e14} bits: 36..79; refs: 0..0}
+}
+```
+
+:::note
+
+  Tact 中的 `rawSlice("...Hex contents..."){:tact}` 相当于 FunC 中的 `"...Hex contents..."s{:func}`。
+
+:::
+
+## ascii
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun ascii(str: String): Int;
+```
+
+编译时函数，用于将 `str` 中字符的十六进制值连接成一个，并将生成的 [`Int{:tact}`][int] 嵌入到合约中。 仅适用于最多占用 $32$ 字节的字符串，即最多可表示 $32$ [ASCII 码](https://en.wikipedia.org/wiki/ASCII#Control_code_chart) 或 $8$ $4$- 字节 [Unicode 码点](https://en.wikipedia.org/wiki/List_of_Unicode_characters)。
+
+用法示例：
+
+```tact
+contract Example {
+    // Persistent state variables
+    a: Int = ascii("a");            // 97 or 0x61, one byte in total
+    zap: Int = ascii("⚡");         // 14850721 or 0xE29AA1, 3 bytes in total
+    doubleZap: Int = ascii("⚡⚡"); // 249153768823457 or 0xE29AA1E29AA1, 6 bytes in total
+}
+```
+
+:::note
+
+  Tact 中的 `ascii("...String contents..."){:tact}` 相当于 FunC 中的 `"...String contents..."u{:func}`。
+
+:::
+
+## crc32
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun crc32(str: String): Int;
+```
+
+编译时函数，使用 [CRC-32](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) 算法计算校验和，并将计算结果 [`Int{:tact}`][int] 值嵌入到合约中。
+
+用法示例：
+
+```tact
+contract Example {
+    // Persistent state variables
+    checksum: Int = crc32("000DEADBEEF000"); // 1821923098
+}
+```
+
+:::note
+
+  Tact 中的 `crc32("...String contents..."){:tact}` 等同于 FunC 中的 `"...String contents..."c{:func}`。
+
+:::
+
+## ton
+
+```tact
+fun ton(value: String): Int;
+```
+
+一个编译时函数，将给定的 Toncoin `value` 从人类可读格式 [`String{:tact}`][p] 转换为 [nanoToncoin](/zh-cn/book/integers#nanotoncoin) [`Int{:tact}`][int] 格式。
+
+用法示例：
+
+```tact
+contract Example {
+    // Persistent state variables
+    one: Int = ton("1");            // one Toncoin, which is equivalent to 10^9 nanoToncoins
+    pointOne: Int = ton("0.1");     // 0.1 Toncoin, which is equivalent to 10^8 nanoToncoins
+    nano: Int = ton("0.000000001"); // 10^-9 Toncoins, which is equivalent to 1 nanoToncoin
+                                    // works at compile-time!
 }
 ```
 
 [p]: /zh-cn/book/types#primitive-types
 [bool]: /zh-cn/book/types#booleans
 [int]: /zh-cn/book/integers
-[电池]: /zh-cn/book/cells#cells
+[cell]: /zh-cn/book/cells#cells
+[slice]: /zh-cn/book/cells#slices
+[boc]: /zh-cn/book/cells#cells-boc
+[crc]: https://en.wikipedia.org/wiki/Cyclic_redundancy_check
