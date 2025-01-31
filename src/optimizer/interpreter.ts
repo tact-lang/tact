@@ -1163,14 +1163,35 @@ export class Interpreter {
                         ast.aggregate.loc,
                     );
                 }
+
                 if (foundContractConst.value !== undefined) {
                     return foundContractConst.value;
-                } else {
+                }
+
+                const name = `self.${idText(ast.field)}`;
+
+                // see comment in `interpretName`
+                if (this.visitedConstants.has(name)) {
                     throwErrorConstEval(
-                        `cannot evaluate declared contract/trait constant ${idTextErr(ast.field)} as it does not have a body`,
-                        ast.field.loc,
+                        `cannot evaluate ${name} as it has circular dependencies: [${this.formatComputationPath(name)}]`,
+                        ast.loc,
                     );
                 }
+                this.visitedConstants.add(name);
+
+                const astNode = foundContractConst.ast;
+                if (astNode.kind === "constant_def") {
+                    foundContractConst.value = this.inComputationPath(
+                        name,
+                        () => this.interpretExpression(astNode.initializer),
+                    );
+                    return foundContractConst.value;
+                }
+
+                throwErrorConstEval(
+                    `cannot evaluate declared contract/trait constant ${idTextErr(ast.field)} as it does not have a body`,
+                    ast.field.loc,
+                );
             }
         }
         const valStruct = this.interpretExpressionInternal(ast.aggregate);

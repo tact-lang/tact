@@ -915,7 +915,13 @@ export function resolveExpression(
                             const field = t.fields.find(
                                 (f) => f.name == exp.text,
                             );
-                            if (field) {
+                            const constant = t.constants.find(
+                                (c) => c.name == exp.text,
+                            );
+                            if (
+                                typeof field !== "undefined" ||
+                                typeof constant !== "undefined"
+                            ) {
                                 throwCompilationError(
                                     `Cannot find '${exp.text}', did you mean 'self.${exp.text}'?`,
                                     exp.loc,
