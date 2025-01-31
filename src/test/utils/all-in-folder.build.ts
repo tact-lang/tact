@@ -24,6 +24,7 @@ export const allInFolder = async (
 
         const projects = contracts.map((contractPath) => {
             const contractOptions: Options = structuredClone(options);
+            console.error(contractPath, options);
             return {
                 name: basename(contractPath, extname(contractPath)),
                 path: contractPath,
