@@ -20,7 +20,12 @@ import {
     hasStaticFunction,
 } from "../types/resolveDescriptors";
 import { getExpType } from "../types/resolveExpression";
-import { showValue, TypeRef } from "../types/types";
+import {
+    FunctionDescription,
+    showValue,
+    TypeDescription,
+    TypeRef,
+} from "../types/types";
 import { sha256_sync } from "@ton/crypto";
 import { defaultParser, getParser, Parser } from "../grammar/grammar";
 import { dummySrcInfo, SrcInfo } from "../grammar";
@@ -31,6 +36,7 @@ import {
     getAstFactory,
     idText,
     isSelfId,
+    tryExtractPath,
 } from "../ast/ast-helpers";
 import { divFloor, modFloor } from "./util";
 
@@ -630,7 +636,7 @@ class EnvironmentStack {
             names: [],
             values: [],
         },
-    ): T {
+    ): { environment: Environment; value: T } {
         const names = initialBindings.names;
         const values = initialBindings.values;
 
@@ -642,7 +648,7 @@ class EnvironmentStack {
         }, this);
 
         try {
-            return code();
+            return { environment: this.currentEnv, value: code() };
         } finally {
             this.currentEnv = oldEnv;
         }
@@ -933,11 +939,180 @@ export class Interpreter {
                 ).value;
                 return this.util.makeCommentLiteral(comment, ast.loc);
             }
-            default:
-                throwNonFatalErrorConstEval(
-                    `calls of ${idTextErr(ast.method)} are not supported at this moment`,
-                    ast.loc,
+            default: {
+                const selfT = getExpType(this.context, ast.self);
+                if (selfT.kind !== "ref") {
+                    throwNonFatalErrorConstEval(
+                        `currently, method calls only support reference type methods`,
+                        ast.loc,
+                    );
+                }
+                const selfTDesc = getType(this.context, selfT.name);
+                const funDesc = selfTDesc.functions.get(idText(ast.method));
+                if (typeof funDesc === "undefined") {
+                    throwNonFatalErrorConstEval(
+                        `function ${idTextErr(ast.method)} is not declared for type ${idTextErr(selfT.name)}`,
+                        ast.loc,
+                    );
+                }
+                const funAst = funDesc.ast;
+
+                switch (funAst.kind) {
+                    case "function_def": {
+                        return this.inComputationPath(`${funDesc.name}()`, () =>
+                            this.evalMethod(funAst, ast, selfTDesc, funDesc),
+                        );
+                    }
+                    case "asm_function_def":
+                        throwNonFatalErrorConstEval(
+                            `${idTextErr(ast.method)} cannot be interpreted because it's an asm-function`,
+                            ast.loc,
+                        );
+                        break;
+                    case "function_decl":
+                        throwNonFatalErrorConstEval(
+                            `${idTextErr(ast.method)} cannot be interpreted because it does not have a body`,
+                            ast.loc,
+                        );
+                        break;
+                    case "native_function_decl":
+                        throwNonFatalErrorConstEval(
+                            "native function calls are currently not supported",
+                            ast.loc,
+                        );
+                        break;
+                }
+            }
+        }
+    }
+
+    private evalMethod(
+        functionCode: A.AstFunctionDef,
+        callAst: A.AstMethodCall,
+        selfTypeDesc: TypeDescription,
+        funDesc: FunctionDescription,
+    ): A.AstLiteral {
+        const self = callAst.self;
+        const args = callAst.args;
+        const isContractFun =
+            selfTypeDesc.ast.kind === "contract" ||
+            selfTypeDesc.ast.kind === "trait";
+
+        // If the call is to a mutating function, check that the call does not have a path expression of length more than one,
+        // i.e., currently, we do not support assigning to struct fields.
+        // Note that if "self" cannot be transformed into a path expression, then "self" must have the form "a....c.f()...." and it is OK
+        // to execute the function, because we will not mutate self (even if it is a call to a mutating function).
+        // For example, the call a.h().f() has self a.h() which is not a path expression, meaning that after f() finishes execution, there is
+        // no need to mutate a.h() because it is not a path to a field in a struct.
+        const fullPath = tryExtractPath(self);
+        if (funDesc.isMutating && fullPath !== null && fullPath.length > 1) {
+            throwNonFatalErrorConstEval(
+                "only path expressions of a single identifier are currently supported in mutating functions",
+                self.loc,
+            );
+        }
+
+        // Check that path expression is not empty
+        if (fullPath !== null && fullPath.length === 0) {
+            throwInternalCompilerError(
+                "path expressions cannot be empty",
+                self.loc,
+            );
+        }
+
+        // Evaluate self in the current environment
+        const selfValue = this.interpretExpression(self);
+        // Evaluate the arguments in the current environment
+        const argValues = [
+            selfValue,
+            ...args.map(this.interpretExpression, this),
+        ];
+        // Extract the parameter names
+        // In contract functions, self is not explicitly listed in the parameters, so we add it manually.
+        const originalParamNames = functionCode.params.map((param) =>
+            idText(param.name),
+        );
+        const paramNames = isContractFun
+            ? ["self", ...originalParamNames]
+            : originalParamNames;
+
+        // Check that the first argument is actually "self"
+        const firstParam = paramNames[0];
+        if (typeof firstParam === "undefined" || firstParam !== "self") {
+            throwInternalCompilerError(
+                `first argument of function ${idTextErr(functionCode.name)} must be "self"`,
+            );
+        }
+        // Check parameter names do not shadow constants
+        if (
+            paramNames.some((paramName) =>
+                hasStaticConstant(this.context, paramName),
+            )
+        ) {
+            throwInternalCompilerError(
+                `some parameter of function ${idText(functionCode.name)} shadows a constant with the same name`,
+                functionCode.loc,
+            );
+        }
+        // Check that paramNames and argValues have the same length
+        if (paramNames.length !== argValues.length) {
+            throwInternalCompilerError(
+                `The number of argument names is different from the number of argument values`,
+                functionCode.loc,
+            );
+        }
+
+        // Call function inside a new environment
+        const execResult = this.envStack.executeInNewEnvironment(
+            () => {
+                // Interpret all the statements
+                try {
+                    functionCode.statements.forEach((stmt) => {
+                        this.interpretStatement(stmt);
+                    }, this);
+                    // At this point, the function did not execute a return.
+                    return undefined;
+                } catch (e) {
+                    if (e instanceof ReturnSignal) {
+                        return e.getValue();
+                    } else {
+                        throw e;
+                    }
+                }
+            },
+            { names: paramNames, values: argValues },
+        );
+
+        // If the function is mutating and there is a path to assign to, we should assign whatever remained in "self".
+        if (funDesc.isMutating && fullPath !== null) {
+            // Obtain the final value of "self" from the result environment
+            const finalSelfValue = execResult.environment.values.get("self");
+            if (typeof finalSelfValue === "undefined") {
+                // This should not happen. There is something wrong with the code
+                throwInternalCompilerError(
+                    `"self" variable must exist in the environment after calling mutating function`,
+                    callAst.loc,
                 );
+            }
+            const assignToId = fullPath[0];
+            if (typeof assignToId === "undefined") {
+                // Something wrong, a path expression cannot be empty
+                throwInternalCompilerError(
+                    "path expressions cannot be empty",
+                    self.loc,
+                );
+            }
+
+            this.envStack.updateBinding(idText(assignToId), finalSelfValue);
+        }
+
+        if (typeof execResult.value === "undefined") {
+            // The function does not return a value.
+            // This means that the call is a statement.
+            // We can return a dummy null, since the null will be discarded anyway.
+            return this.util.makeNullLiteral(callAst.loc);
+        } else {
+            return execResult.value;
         }
     }
 
@@ -1547,7 +1722,7 @@ export class Interpreter {
                 }
             },
             { names: paramNames, values: argValues },
-        );
+        ).value;
     }
 
     public interpretStatement(ast: A.AstStatement): void {
