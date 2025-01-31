@@ -17,6 +17,10 @@ $0$        | <Badge text="Since Tact 1.6 (not released yet)" variant="tip"/> `Se
 $64$       | `SendRemainingValue{:tact}`   | Carry all the remaining value of the inbound message in addition to the value initially indicated in the new message.
 $128$      | `SendRemainingBalance{:tact}` | Carry all the remaining balance of the current smart contract instead of the value originally indicated in the message.
 
+The base mode `SendRemainingValue{:tact}` does **not** take previous actions into account, i.e. it doesn't recalculate the remaining value of the incoming message based on previously sent messages or performed actions during [action phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases).
+
+Unlike `SendRemainingValue{:tact}`, the base mode `SendRemainingBalance{:tact}` always calculates the current value of the contract balance, which can help solve problems with [complex outbound message processing](/book/send#outbound-message-processing).
+
 ## Optional flags
 
 Flag value | Constant name                   | Description

@@ -172,9 +172,48 @@ contract IfItDiesItDies {
 
 :::note
 
-  To avoid dealing with similar cases and to simplify future [debugging sessions](/book/debug), consider having only one call to one of the [message sending functions](#message-sending-functions) per [receiver function](/book/receive), preferably at the end of the function body.
+  To avoid dealing with similar cases and to simplify future [debugging sessions](/book/debug), consider having only one call to one of the [message sending functions](#message-sending-functions) per [receiver function](/book/receive).
+
+  Alternatively, see the suggested solutions below.
 
 :::
+
+Previous examples discussed a case where the contract has $0$ [nanoToncoins][nano] on the balance, which is rather rare — in most real-world scenarios there would be some funds present. As such, it's usually better to use the [`SendRemainingBalance{:tact}`](/book/message-mode#base-modes) base mode, paired with the call to the [`nativeReserve(){:tact}`](/ref/core-advanced#nativereserve) function:
+
+```tact
+// This contract has some Toncoins on the balance, say, 0.2
+contract MyPrecious {
+    // The extra funds can be received via a "topup" message
+    receive("topup") {}
+
+    // And the rest of the logic is expressed here
+    receive() {
+        // 1st outbound message evaluated and queued (but not yet sent)
+        // with the mode 0, which is the default
+        emit("Have you seen this message?".asComment());
+
+        // Let's keep at least 0.1 Toncoin on the balance
+        // Notice that nativeReserve() only queues an action to be performed during action phase
+        nativeReserve(ton("0.1"), ReserveExact);
+
+        // 2nd outbound message evaluated and queued
+        // with the SendRemainingBalance mode
+        send(SendParameters{
+            to: sender(),
+            value: 0,
+            mode: SendRemainingBalance, // because of the prior nativeReserve(),
+                                        // the contract will still have at least 0.1 Toncoin
+            body: "I give you my all! Well, almost my all!".asComment(),
+        });
+    }
+}
+```
+
+If you want all outgoing messages to preserve some funds on the balance, consider using one of the following functions instead. Note that they require a prior override of the [`self.storageReserve{:tact}`](/ref/core-base#self-storagereserve) constant:
+
+* [`self.reply(){:tact}`](/ref/core-base#self-reply)
+* [`self.notify(){:tact}`](/ref/core-base#self-notify)
+* [`self.forward(){:tact}`](/ref/core-base#self-forward)
 
 ## Message sending limits
 
