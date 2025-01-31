@@ -12,25 +12,29 @@ const globSync = (globs: string[], options: { cwd: string }) => {
     return globs.flatMap((g) => glob.sync(g, options));
 };
 
-export const allInFolder = async (folder: string, globs: string[]) => {
+export const allInFolder = async (
+    folder: string,
+    globs: string[],
+    options: Options = { debug: true },
+) => {
     try {
         const stdlib = createVirtualFileSystem("@stdlib", files);
 
         const contracts = globSync(globs, { cwd: folder });
 
         const projects = contracts.map((contractPath) => {
-            const options: Options = { debug: true };
+            const contractOptions: Options = structuredClone(options);
             if (contractPath.includes("inline")) {
-                options.experimental = { inline: true };
+                contractOptions.experimental = { inline: true };
             }
             if (contractPath.includes("external")) {
-                options.external = true;
+                contractOptions.external = true;
             }
             return {
                 name: basename(contractPath, extname(contractPath)),
                 path: contractPath,
                 output: join(dirname(contractPath), "output"),
-                options,
+                options: contractOptions,
             };
         });
 
