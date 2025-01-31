@@ -50,9 +50,7 @@ describe("benchmarks", () => {
     });
 
     it("benchmark readFwdFee", async () => {
-        const testContract = blockchain.openContract(
-            await Forward.fromInit(),
-        );
+        const testContract = blockchain.openContract(await Forward.fromInit());
         const sendResult = await testContract.send(
             treasure.getSender(),
             { value: toNano(1) },
