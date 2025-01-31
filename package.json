@@ -43,6 +43,7 @@
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
     "next-version": "ts-node version.build.ts",
+    "random-ast": "ts-node ./src/ast/random-ast.ts",
     "top10": "find . -type f -exec du -h {} + | sort -rh | head -n 10"
   },
   "files": [
@@ -55,7 +56,8 @@
     "!**/*.build.*",
     "!**/*.spec.js",
     "!**/*.spec.d.ts",
-    "!**/*.tsbuildinfo"
+    "!**/*.tsbuildinfo",
+    "!**/*.infra.ts"
   ],
   "main": "./dist/index.js",
   "bin": {
@@ -86,6 +88,7 @@
     "@ton/sandbox": "^0.24.0",
     "@ton/test-utils": "^0.5.0",
     "@tonstudio/pgen": "^0.0.1",
+    "@types/diff": "^7.0.0",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.12",
     "@types/json-bigint": "^1.0.4",
@@ -96,7 +99,9 @@
     "chalk": "4.1.2",
     "cross-env": "^7.0.3",
     "cspell": "^8.8.3",
+    "diff": "^7.0.0",
     "eslint": "^8.57.0",
+    "fast-check": "^3.23.2",
     "glob": "^8.1.0",
     "husky": "^9.1.5",
     "jest": "^29.3.1",
