@@ -73,7 +73,7 @@ exports[`interpreter-evaluation short-circuit-struct-init-or should fail compila
 `;
 
 exports[`interpreter-evaluation stack-deepness-big-input should fail compilation 1`] = `
-"<unknown>:3:16: Cannot evaluate expression to a constant: execution stack reached maximum allowed deepness
+"<unknown>:3:16: Cannot evaluate expression to a constant: execution stack reached maximum allowed depth
   2 | 
 > 3 | const A: Int = multiplyByTwo(1000);
                      ^~~~~~~~~~~~~~~~~~~
@@ -82,7 +82,7 @@ exports[`interpreter-evaluation stack-deepness-big-input should fail compilation
 `;
 
 exports[`interpreter-evaluation stack-deepness-deep-call should fail compilation 1`] = `
-"<unknown>:3:16: Cannot evaluate expression to a constant: execution stack reached maximum allowed deepness
+"<unknown>:3:16: Cannot evaluate expression to a constant: execution stack reached maximum allowed depth
   2 | 
 > 3 | const A: Int = multiplyByTwoDeepBlocks(1000);
                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,7 +91,7 @@ exports[`interpreter-evaluation stack-deepness-deep-call should fail compilation
 `;
 
 exports[`interpreter-evaluation stack-deepness-infinite-recursion should fail compilation 1`] = `
-"<unknown>:3:16: Cannot evaluate expression to a constant: execution stack reached maximum allowed deepness
+"<unknown>:3:16: Cannot evaluate expression to a constant: execution stack reached maximum allowed depth
   2 | 
 > 3 | const A: Int = recurse();
                      ^~~~~~~~~
