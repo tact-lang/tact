@@ -107,6 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Document compiler upgrades in Blueprint and other Tact projects: PR [#1560](https://github.com/tact-lang/tact/pull/1560)
 - Illustrate how nested maps can be created: PR [#1593](https://github.com/tact-lang/tact/pull/1593)
 - Improved Chinese localization of the documentation: PR [#1642](https://github.com/tact-lang/tact/pull/1642)
+- Added description of `.boc`, `.ts`, `.abi`, `.pkg` files and completed Compilation page: PR [#1676](https://github.com/tact-lang/tact/pull/1676)
 
 ### Release contributors
 

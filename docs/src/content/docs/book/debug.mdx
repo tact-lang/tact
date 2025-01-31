@@ -569,7 +569,7 @@ it('emits', async () => {
 
 To parse the second emitted message, we could manually use a bunch of `.loadSomething(){:typescript}` functions, but that's way too brittle — if the fields of the `Ballroom{:tact}` [Struct][struct] even change, you'd need to start all over. That could really backfire when you have a lot of tests written in that manner.
 
-Fortunately, Tact compiler auto-generates TypeScript bindings (or wrappers) for the contracts, and it's really easy to re-use them in your test suite. Not only they have a wrapper of the contract you're testing, but they also export a bunch of helper functions to store or load [Structs][struct] and [Messages][message] defined in the contract. The latter will be named just like the [Structs][struct] and [Messages][message] are, but with the `load` prefix in front.
+Fortunately, Tact compiler auto-generates [TypeScript bindings (or wrappers)](/book/compile#wrap-ts) for the contracts, and it's really easy to re-use them in your test suite. Not only they have a wrapper of the contract you're testing, but they also export a bunch of helper functions to store or load [Structs][struct] and [Messages][message] defined in the contract. The latter will be named just like the [Structs][struct] and [Messages][message] are, but with the `load` prefix in front.
 
 For example, in our case we'll need a function called `loadBallroom(){:typescript}`, for parsing a [`Slice{:tact}`][slice] into the `Ballroom{:tact}` [Struct][struct] in TypeScript. To import it, either type the name and let your IDE suggest auto-importing it for you, or take a look at the top of your test suite file — there should be a similar line:
 
