@@ -618,19 +618,17 @@ class EnvironmentStack {
     }
 
     /**
-    Executes "code" in a fresh environment that is placed at the top
-    of the environment stack. The fresh environment is initialized
-    with the bindings in "initialBindings". Once "code" finishes
-    execution, the new environment is automatically popped from 
-    the stack. 
-    
-    This method is useful for starting a new local variables scope, 
-    like in a function call.
-
-    @param code The code to execute in the fresh environment.
-    @param initialBindings The initial bindings to add to the fresh environment.
-    @throws MaxStackDeepnessReached
-    */
+     * Executes code parameter in a fresh environment that is placed at the top
+     * of the environment stack. The fresh environment is initialized
+     * with the bindings in "initialBindings". Once code finishes
+     * execution, the new environment is automatically popped from
+     * the stack.
+     *
+     * This method is useful for starting a new local variables scope,
+     * like in a function call.
+     * @param code The code to execute in the fresh environment.
+     * @param initialBindings The initial bindings to add to the fresh environment.
+     */
     public executeInNewEnvironment<T>(
         code: () => T,
         initialBindings: { names: string[]; values: A.AstLiteral[] } = {
@@ -1899,7 +1897,7 @@ export class Interpreter {
             return code();
         } catch (e) {
             const finalErrorMessage =
-                "execution stack reached maximum allowed deepness";
+                "execution stack reached maximum allowed depth";
             if (e instanceof RangeError) {
                 if (e.message.includes("stack size exceeded")) {
                     // Chrome, Safari, Edge, node.js
