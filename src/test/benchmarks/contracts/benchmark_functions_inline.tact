@@ -1,3 +1,5 @@
+//@ { "experimental": { "inline": true } }
+
 message Add {
     value: Int;
 }
