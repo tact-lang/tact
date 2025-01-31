@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`short-circuit-initialization short-circuit-initializations should pass boolean short-circuiting during initialization 1`] = `
+exports[`interpreter-evaluation short-circuit-initializations should pass compilation 1`] = `
 [
   [
     "true",
@@ -253,6 +253,87 @@ exports[`short-circuit-initialization short-circuit-initializations should pass 
   [
     "1 / v == 0",
     "Bool",
+  ],
+]
+`;
+
+exports[`interpreter-evaluation stack-deepness-recursion should pass compilation 1`] = `
+[
+  [
+    "200",
+    "Int",
+  ],
+  [
+    "multiplyByTwo(200)",
+    "Int",
+  ],
+  [
+    "n",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "n < 0",
+    "Bool",
+  ],
+  [
+    "n",
+    "Int",
+  ],
+  [
+    "-n",
+    "Int",
+  ],
+  [
+    "multiplyByTwo(-n)",
+    "Int",
+  ],
+  [
+    "-multiplyByTwo(-n)",
+    "Int",
+  ],
+  [
+    "n",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "n == 0",
+    "Bool",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "2",
+    "Int",
+  ],
+  [
+    "n",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "n - 1",
+    "Int",
+  ],
+  [
+    "multiplyByTwo(n - 1)",
+    "Int",
+  ],
+  [
+    "2 + multiplyByTwo(n - 1)",
+    "Int",
   ],
 ]
 `;

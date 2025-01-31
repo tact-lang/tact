@@ -126,7 +126,7 @@ function resolveSliceLiteral(
 }
 
 function resolveStringLiteral(
-    exp: A.AstString | A.AstSimplifiedString | A.AstCommentValue,
+    exp: A.AstString | A.AstSimplifiedString,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -868,10 +868,6 @@ export function resolveExpression(
             // A simplified string is resolved as a string
             return resolveStringLiteral(exp, sctx, ctx);
         }
-        case "comment_value": {
-            // A comment value is resolved as a string
-            return resolveStringLiteral(exp, sctx, ctx);
-        }
         case "struct_value": {
             // A struct value is resolved as a struct instance
             return resolveStructNew(exp, sctx, ctx);
@@ -919,7 +915,13 @@ export function resolveExpression(
                             const field = t.fields.find(
                                 (f) => f.name == exp.text,
                             );
-                            if (field) {
+                            const constant = t.constants.find(
+                                (c) => c.name == exp.text,
+                            );
+                            if (
+                                typeof field !== "undefined" ||
+                                typeof constant !== "undefined"
+                            ) {
                                 throwCompilationError(
                                     `Cannot find '${exp.text}', did you mean 'self.${exp.text}'?`,
                                     exp.loc,

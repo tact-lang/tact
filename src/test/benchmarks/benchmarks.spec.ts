@@ -13,6 +13,7 @@ import {
 import { Functions } from "./contracts/output/benchmark_functions_Functions";
 import { Functions as FunctionsInline } from "./contracts/output/benchmark_functions_inline_Functions";
 import { Sha256 } from "./contracts/output/benchmark_sha256_Sha256";
+import { Forward } from "./contracts/output/forward_Forward";
 import "@ton/test-utils";
 
 function measureGas(txs: BlockchainTransaction[]) {
@@ -43,35 +44,15 @@ describe("benchmarks", () => {
 
         const gasUsed = measureGas(sendResult.transactions);
 
-        expect(gasUsed).toMatchInlineSnapshot(`2869n`);
+        expect(gasUsed).toMatchSnapshot("gas used");
 
         // Verify code size
         const codeSize = functions.init!.code.toBoc().length;
-        expect(codeSize).toMatchInlineSnapshot(`283`);
+        expect(codeSize).toMatchSnapshot("code size");
     });
 
-    it("benchmark functions (inline)", async () => {
-        const functionsInline = blockchain.openContract(
-            await FunctionsInline.fromInit(),
-        );
-
-        const sendResult = await functionsInline.send(
-            treasure.getSender(),
-            { value: toNano(1) },
-            { $$type: "Add", value: 10n },
-        );
-
-        const gasUsed = measureGas(sendResult.transactions);
-        expect(gasUsed).toMatchInlineSnapshot(`2738n`);
-
-        // Verify code size
-        const codeSize = functionsInline.init!.code.toBoc().length;
-        expect(codeSize).toMatchInlineSnapshot(`220`);
-    });
     it("benchmark readFwdFee", async () => {
-        const testContract = blockchain.openContract(
-            await Functions.fromInit(),
-        );
+        const testContract = blockchain.openContract(await Forward.fromInit());
         const sendResult = await testContract.send(
             treasure.getSender(),
             { value: toNano(1) },
@@ -84,9 +65,9 @@ describe("benchmarks", () => {
             },
         );
         const gasUsed = measureGas(sendResult.transactions);
-        expect(gasUsed).toMatchInlineSnapshot(`3283n`);
+        expect(gasUsed).toMatchSnapshot("gas used");
         const codeSize = testContract.init!.code.toBoc().length;
-        expect(codeSize).toMatchInlineSnapshot(`283`);
+        expect(codeSize).toMatchSnapshot("code size");
     });
 
     async function hashString(

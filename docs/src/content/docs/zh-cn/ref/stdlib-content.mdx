@@ -1,8 +1,9 @@
 ---
 title: "@stdlib/content"
+description: 提供一个将字符串编码为 Cell 的链下链接的函数
 ---
 
-提供一个函数，用于编码从 [`字符串{:tact}`][p]到 [`单元格{:tact}`][单元格] 的链外链接。
+提供一个将 [`String{:tact}`][p] 编码为 [`Cell{:tact}`][cell] 的链下链接的函数。
 
 要使用该库，请导入 `@stdlib/content`：
 
@@ -10,21 +11,21 @@ title: "@stdlib/content"
 import "@stdlib/content";
 ```
 
-## 功能
+## 函数
 
-### 创建区块链内容
+### createOffchainContent
 
 ```tact
-fun createOffchainContent(link: String)：Cell；
+fun createOffchainContent(link: String): Cell;
 ```
 
-编码从[`字符串{:tact}`][p]到[`单元{:tact}`][单元格]的链外`链接`。
+将链下链接(link) [strings][p] 编码为[`cell{:tact}`][cell]。
 
-源代码
+源码:
 
 ```tact
-fun createOffchainContent(link: String)：Cell {
-    let builder：StringBuilder = beginStringFromBuilder(beginCell().storeUint(0x01, 8));
+fun createOffchainContent(link: String): Cell {
+    let builder: StringBuilder = beginStringFromBuilder(beginCell().storeUint(0x01, 8));
     builder.append(link);
     return builder.toCell();
 }
@@ -35,4 +36,4 @@ fun createOffchainContent(link: String)：Cell {
 - [content.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/content.tact)
 
 [p]: /zh-cn/book/types#primitive-types
-[电池]: /zh-cn/book/cells#cells
+[cell]: /zh-cn/book/cells#cells

@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `unboc`: a standalone CLI utility to expose Tact's TVM disassembler: PR [#1259](https://github.com/tact-lang/tact/pull/1259)
 - Added alternative parser: PR [#1258](https://github.com/tact-lang/tact/pull/1258)
 - Support for block statements: PR [#1334](https://github.com/tact-lang/tact/pull/1334)
+- `nullChecks` config option to disable run-time null checks for the `!!` operator in order to save gas: PR [#1660](https://github.com/tact-lang/tact/pull/1660)
 
 ### Changed
 
@@ -72,6 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Forbid read and write to self in contract init function: PR [#1482](https://github.com/tact-lang/tact/pull/1482)
 - Support for using a constant within another constant and for the default value of a struct field before constant declaration: PR [#1478](https://github.com/tact-lang/tact/pull/1478)
 - Incorrect call generation to a mutation function: PR [#1608](https://github.com/tact-lang/tact/pull/1608)
+- Allow constant/trait constants depend on each other: PR [#1622](https://github.com/tact-lang/tact/pull/1622)
 - Runtime `sha256` now work for arbitrary strings with length >= 128: PR [#1626](https://github.com/tact-lang/tact/pull/1626)
 
 ### Docs
@@ -105,6 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Document how storage variables get updated in relation to the `init()` function: PR [#1311](https://github.com/tact-lang/tact/pull/1311)
 - Document compiler upgrades in Blueprint and other Tact projects: PR [#1560](https://github.com/tact-lang/tact/pull/1560)
 - Illustrate how nested maps can be created: PR [#1593](https://github.com/tact-lang/tact/pull/1593)
+- Improved Chinese localization of the documentation: PR [#1642](https://github.com/tact-lang/tact/pull/1642)
 
 ### Release contributors
 

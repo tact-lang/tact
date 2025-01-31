@@ -1,8 +1,9 @@
 ---
 title: "@stdlib/ownable"
+description: 提供适用于拥有合约的 traits，这些 traits 通常是其他 traits 所需要的。
 ---
 
-为可拥有的合约提供 [traits]（/book/types#composite-types）。 这是最常用的性状，大多数其他性状都需要它。
+为可拥有的合约提供 [traits](/zh-cn/book/types#composite-types)。 这些 traits 通常是其他 traits 所需要的。
 
 要使用该库，请导入 `@stdlib/ownable`：
 
@@ -10,13 +11,13 @@ title: "@stdlib/ownable"
 import "@stdlib/ownable";
 ```
 
-## 信息
+## Messages
 
 ### ChangeOwner
 
 ```tact
 message ChangeOwner {
-    queryId：Int as uint64;
+    queryId: Int as uint64;
     newOwner: Address;
 }
 ```
@@ -25,20 +26,20 @@ message ChangeOwner {
 
 ```tact
 message ChangeOwnerOk {
-    queryId：Int as uint64;
+    queryId: Int as uint64;
     newOwner: Address;
 }
 ```
 
-## 特质
+## Traits
 
 ### Ownable
 
 [Trait](/zh-cn/book/types#composite-types) `Ownable{:tact}` 声明了 [contract](/zh-cn/book/contracts) 的所有者（不可编辑），并提供了一个辅助函数 `requireOwner(){:tact}` 来检查消息是否由所有者发送。
 
-此 [trait](/zh-cn/book/types#composite-types) 要求声明一个字段 `owner: Address{:tact}`，并公开一个 [getter 函数](/zh-cn/book/functions#getter-functions) `owner(){:tact}`，该函数从 [contract](/zh-cn/book/contracts) 中读取。
+此 [trait](/zh-cn/book/types#composite-types) 要求声明一个字段 `owner: Address{:tact}`，并公开一个 [getter 函数](/zh-cn/book/functions#getter-functions) `owner(){:tact}`，该函数从 [合约](/zh-cn/book/contracts) 中读取。
 
-源代码
+源码:
 
 ```tact
 @interface("org.ton.ownable")
@@ -49,13 +50,13 @@ trait Ownable {
         nativeThrowUnless(132, sender() == self.owner);
     }
 
-    get fun owner()：Address {
+    get fun owner(): Address {
         return self.owner;
     }
 }
 ```
 
-使用示例
+示例用法：
 
 ```tact /Ownable/
 import "@stdlib/ownable";
@@ -71,11 +72,11 @@ contract ExampleContract with Ownable {
 
 ### OwnableTransferable
 
-`OwnableTransferable{:tact}` 是 [`Ownable{:tact}`](#ownable) 的扩展，允许将合同的所有权转移到另一个地址。它提供了一个安全的句柄 [Message](/zh-cn/book/structs-and-messages#messages) [`ChangeOwner{:tact}`](#changeowner)，可供所有者调用以转移所有权。
+`OwnableTransferable{:tact}` 是 [`Ownable{:tact}`](#ownable) 的扩展，允许将合约的所有权转移到另一个地址。 它提供了一个安全的句柄 [Message](/zh-cn/book/structs-and-messages#messages) [`ChangeOwner{:tact}`](#changeowner)，可供所有者调用以转移所有权。
 
-如果所有者转移请求成功，合约将回复一条 [`ChangeOwnerOk{:tact}`](#changeownerok) [信息](/zh-cn/book/structs-and-messages#messages)。
+如果所有者转移请求成功，合约将回复一条 [`ChangeOwnerOk{:tact}`](#changeownerok) [消息](/zh-cn/book/structs-and-messages#messages)。
 
-源代码
+源码:
 
 ```tact
 @interface("org.ton.ownable.transferable.v2")
@@ -86,16 +87,16 @@ trait OwnableTransferable with Ownable {
         // Check if the sender is the owner
         self.requireOwner();
 
-        // 更新所有者
+        // Update owner
         self.owner = msg.newOwner;
 
-        // 回复结果
+        // Reply result
         self.reply(ChangeOwnerOk{ queryId: msg.queryId, newOwner: msg.newOwner }.toCell());
     }
 }
 ```
 
-使用示例
+示例用法：
 
 ```tact /OwnableTransferable/
 import "@stdlib/ownable";

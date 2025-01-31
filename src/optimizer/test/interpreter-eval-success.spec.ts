@@ -9,9 +9,9 @@ import { resolveSignatures } from "../../types/resolveSignatures";
 import { resolveStatements } from "../../types/resolveStatements";
 import { loadCases } from "../../utils/loadCases";
 
-describe("short-circuit-initialization", () => {
+describe("interpreter-evaluation", () => {
     for (const r of loadCases(__dirname + "/success/")) {
-        it(`${r.name} should pass boolean short-circuiting during initialization`, () => {
+        it(`${r.name} should pass compilation`, () => {
             const Ast = getAstFactory();
             let ctx = openContext(
                 new CompilerContext(),

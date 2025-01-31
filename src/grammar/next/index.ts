@@ -1274,5 +1274,8 @@ export const getParser = (ast: FactoryAst) => {
         ): A.AstImport[] => {
             return doParse(G.JustImports, parseJustImports, src, path, origin);
         },
+        parseStatement: (src: string): A.AstStatement => {
+            return doParse(G.statement, parseStatement, src, "<repl>", "user");
+        },
     };
 };

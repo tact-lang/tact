@@ -127,6 +127,7 @@ mintable
 mktemp
 multiformats
 nanotons
+nanoton
 nextra
 Neovim
 nocheck
@@ -202,3 +203,4 @@ workchains
 xffff
 xtwitter
 привет
+letrec

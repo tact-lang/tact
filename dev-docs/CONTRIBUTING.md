@@ -2,7 +2,7 @@
 
 ## General information
 
-The Tact smart contract programming language is a statically-typed smart contract programming language which is currently implemented as a transpiler into [FunC](https://docs.ton.org/develop/func), which in its turn compiles down to the [TVM](https://docs.ton.org/learn/tvm-instructions/tvm-overview) bitcode. This implementation strategy is likely to change in the future.
+The Tact smart contract programming language is a statically-typed smart contract programming language which is currently implemented as a transpiler into [FunC](https://docs.ton.org/v3/documentation/smart-contracts/func/overview), which in its turn compiles down to the [TVM](https://docs.ton.org/learn/tvm-instructions/tvm-overview) bitcode. This implementation strategy is likely to change in the future.
 
 The Tact compiler parses the input source code into an abstract syntax tree, type-checks it, generates FunC code, runs the FunC compiler, which produces the corresponding [Fift](https://docs.ton.org/develop/fift/overview) code and a TVM binary in the [BoC](https://docs.ton.org/develop/data-formats/cell-boc) format.
 
@@ -60,6 +60,24 @@ Updating a subset of the test snapshots can be done like so:
 ```shell
 yarn test -u spec-name-pattern1 spec-name-pattern2
 ```
+
+## Benchmarks
+
+The benchmarks system is used to track gas consumption changes after making changes to the compiler.
+
+To run benchmarks:
+
+```shell
+yarn bench
+```
+
+### Adding a new benchmark
+
+To add a new benchmark:
+
+1. Add `*.tact` file to `src/test/benchmarks/contracts`
+2. Recompile the benchmarks with `yarn gen:contracts:benchmarks`
+3. Add additional benchmark to `src/test/benchmarks/benchmarks.spec.ts`
 
 ## Code quality
 
@@ -192,3 +210,23 @@ The project contains special TypeScript files with the `.build.ts` extension tha
 A typical example is [test/contracts.build.ts](https://github.com/tact-lang/tact/blob/132fe4ad7f030671d28740313b9d573fd8829684/src/test/contracts.build.ts) which builds contract tests.
 
 When adding new build or test scripts, make sure to use the `.build.ts` extension to keep them separate from the main compiler code.
+
+## Random AST Expression Generation
+
+To generate and inspect random Abstract Syntax Trees (ASTs), you can use the `yarn random-ast` command. This command generates a specified number of random Abstract Syntax Trees (ASTs) and pretty-prints them.
+
+Note: At the moment only Ast Expression will be generated
+
+### Usage
+
+`yarn random-ast <count>`
+
+Where `<count>` is the number of random expressions to generate.
+
+### Example
+
+`yarn random-ast 42`
+
+This will produce 42 random expressions and pretty-print them in the terminal.
+
+The implementation can be found in [random-ast.ts](../src/ast/random-ast.ts).
