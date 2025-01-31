@@ -154,18 +154,17 @@ In addition, the [TL-B][tlb] representation produced by Tact changes too:
 ```tact
 struct TwoCell {
     cRef: Cell;              // ^cell in TL-B
-    cRem: Cell as remaining; // remainder<cell> in TL-B,
-                             // see explanation for those below
+    cRem: Cell as remaining; // cell in TL-B
 }
 
 struct TwoBuilder {
     bRef: Builder;              // ^builder in TL-B
-    bRem: Builder as remaining; // remainder<builder> in TL-B
+    bRem: Builder as remaining; // builder in TL-B
 }
 
 struct TwoSlice {
     sRef: Slice;              // ^slice in TL-B
-    sRem: Slice as remaining; // remainder<slice> in TL-B
+    sRem: Slice as remaining; // slice in TL-B
 }
 
 contract SerializationExample {
@@ -192,7 +191,7 @@ contract SerializationExample {
 }
 ```
 
-There, `^cell`, `^builder` and `^slice` in [TL-B][tlb] syntax mean the reference to [`Cell{:tact}`](#cells), [`Builder{:tact}`](#builders) and [`Slice{:tact}`](#slices) values respectively, while the `remainder<…>` of `cell`, `builder` or `slice` tells that the given value would be stored as a `Cell{:tact}`, `Builder{:tact}` or `Slice{:tact}` directly and not as a reference. Note that the `remainder<X>` is not part of the regular [TL-B][tlb] syntax and is only present in Tact-generated comments in various [build artifacts](/book/compile#artifacts) as a visual clue.
+There, `^cell`, `^builder` and `^slice` in [TL-B][tlb] syntax mean the reference to [`Cell{:tact}`](#cells), [`Builder{:tact}`](#builders) and [`Slice{:tact}`](#slices) values respectively, while the `cell`, `builder` or `slice` tells that the given value would be stored as a `Cell{:tact}`, `Builder{:tact}` or `Slice{:tact}` directly and not as a reference.
 
 Now, to give a real-world example, imagine that you need to notice and react to inbound [Jetton][jetton] transfers in your smart contract. The appropriate [Message][message] structure for doing so would look like this:
 
