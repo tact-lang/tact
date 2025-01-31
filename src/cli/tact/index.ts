@@ -178,6 +178,9 @@ export const createSingleFileConfig = (fileName: string): Config => ({
                 external: true,
                 ipfsAbiGetter: false,
                 interfacesGetter: false,
+                safety: {
+                    nullChecks: true,
+                },
             },
             mode: "full",
         },

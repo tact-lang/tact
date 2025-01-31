@@ -42,6 +42,7 @@ import {
     idText,
     tryExtractPath,
 } from "../../ast/ast-helpers";
+import { enabledDebug, enabledNullChecks } from "../../config/features";
 
 function isNull(wCtx: WriterContext, expr: A.AstExpression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
@@ -434,8 +435,12 @@ export function writeExpression(
                     }
                 }
 
-                wCtx.used("__tact_not_null");
-                return `${wCtx.used("__tact_not_null")}(${writeExpression(f.operand, wCtx)})`;
+                if (enabledNullChecks(wCtx.ctx) || enabledDebug(wCtx.ctx)) {
+                    wCtx.used("__tact_not_null");
+                    return `${wCtx.used("__tact_not_null")}(${writeExpression(f.operand, wCtx)})`;
+                } else {
+                    return writeExpression(f.operand, wCtx);
+                }
             }
         }
     }

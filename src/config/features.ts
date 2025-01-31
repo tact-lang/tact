@@ -22,6 +22,10 @@ export function enabledInterfacesGetter(ctx: CompilerContext) {
     return featureEnabled(ctx, "interfacesGetter");
 }
 
+export function enabledNullChecks(ctx: CompilerContext) {
+    return featureEnabled(ctx, "nullChecks");
+}
+
 function featureEnabled(ctx: CompilerContext, key: string) {
     return featureStore.get(ctx, key) === true;
 }
