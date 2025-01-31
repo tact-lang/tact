@@ -325,7 +325,6 @@ export function traverseAndCheck(
         case "string":
         case "null":
         case "simplified_string":
-        case "comment_value":
         case "address":
         case "cell":
         case "slice":
