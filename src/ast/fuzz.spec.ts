@@ -5,7 +5,7 @@ import { diffAstObjects, randomAstExpression } from "./random.infra";
 import { prettyPrint } from "./ast-printer";
 
 describe("Pretty Print Expressions", () => {
-    const maxDepth = 3;
+    const maxDepth = 4;
     const parser = getParser(getAstFactory(), "new");
 
     it(`should parse AstExpression`, () => {
@@ -17,7 +17,6 @@ describe("Pretty Print Expressions", () => {
                 const prettyAfter = prettyPrint(parsedAst);
 
                 expect(prettyBefore).toBe(prettyAfter);
-
                 const actual = eqExpressions(generatedAst, parsedAst);
                 if (!actual) {
                     diffAstObjects(

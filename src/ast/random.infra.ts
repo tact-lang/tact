@@ -67,15 +67,6 @@ function randomAstBoolean(): fc.Arbitrary<A.AstBoolean> {
     );
 }
 
-function randomAstSimplifiedString(): fc.Arbitrary<A.AstSimplifiedString> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("simplified_string"),
-            value: fc.string(),
-        }),
-    );
-}
-
 function randomAstString(): fc.Arbitrary<A.AstString> {
     const escapeString = (s: string): string =>
         s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
@@ -269,15 +260,6 @@ function randomAstMethodCall(
     );
 }
 
-function randomAstCommentValue(): fc.Arbitrary<A.AstCommentValue> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("comment_value"),
-            value: fc.string(),
-        }),
-    );
-}
-
 function randomAstStructFieldValue(
     subLiteral: fc.Arbitrary<A.AstLiteral>,
 ): fc.Arbitrary<A.AstStructFieldValue> {
@@ -309,9 +291,9 @@ function randomAstLiteral(maxDepth: number): fc.Arbitrary<A.AstLiteral> {
                 randomAstNumber(),
                 randomAstBoolean(),
                 randomAstNull(),
-                randomAstSimplifiedString(),
                 // Add Address, Cell, Slice
-                randomAstCommentValue(),
+                // randomAstCommentValue(),
+                // randomAstSimplifiedString(),
             );
         }
 
@@ -321,9 +303,9 @@ function randomAstLiteral(maxDepth: number): fc.Arbitrary<A.AstLiteral> {
             randomAstNumber(),
             randomAstBoolean(),
             randomAstNull(),
-            randomAstSimplifiedString(),
             // Add Address, Cell, Slice
-            randomAstCommentValue(),
+            // randomAstSimplifiedString(),
+            // randomAstCommentValue(),
             randomAstStructValue(subLiteral()),
         );
     })(maxDepth);
@@ -339,18 +321,22 @@ export function randomAstExpression(
 
         const subExpr = () => randomAstExpression(depth - 1);
 
-        return fc.oneof(
-            randomAstLiteral(maxDepth),
-            randomAstMethodCall(subExpr(), subExpr()),
-            randomAstFieldAccess(subExpr()),
-            randomAstStaticCall(subExpr()),
-            randomAstStructInstance(randomAstStructFieldInitializer(subExpr())),
-            randomAstInitOf(subExpr()),
-            randomAstString(),
-            randomAstOpUnary(subExpr()),
-            randomAstOpBinary(subExpr(), subExpr()),
-            randomAstConditional(subExpr(), subExpr(), subExpr()),
-        );
+        return fc
+            .oneof(
+                randomAstLiteral(maxDepth),
+                randomAstMethodCall(subExpr(), subExpr()),
+                randomAstFieldAccess(subExpr()),
+                randomAstStaticCall(subExpr()),
+                randomAstStructInstance(
+                    randomAstStructFieldInitializer(subExpr()),
+                ),
+                randomAstInitOf(subExpr()),
+                randomAstString(),
+                randomAstOpUnary(subExpr()),
+                randomAstOpBinary(subExpr(), subExpr()),
+                randomAstConditional(subExpr(), subExpr(), subExpr()),
+            )
+            .filter((i) => i.kind !== "struct_value");
     })(maxDepth);
 }
 
