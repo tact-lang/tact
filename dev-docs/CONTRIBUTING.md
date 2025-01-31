@@ -210,3 +210,23 @@ The project contains special TypeScript files with the `.build.ts` extension tha
 A typical example is [test/contracts.build.ts](https://github.com/tact-lang/tact/blob/132fe4ad7f030671d28740313b9d573fd8829684/src/test/contracts.build.ts) which builds contract tests.
 
 When adding new build or test scripts, make sure to use the `.build.ts` extension to keep them separate from the main compiler code.
+
+## Random AST Expression Generation
+
+To generate and inspect random Abstract Syntax Trees (ASTs), you can use the `yarn random-ast` command. This command generates a specified number of random Abstract Syntax Trees (ASTs) and pretty-prints them.
+
+Note: At the moment only Ast Expression will be generated
+
+### Usage
+
+`yarn random-ast <count>`
+
+Where `<count>` is the number of random expressions to generate.
+
+### Example
+
+`yarn random-ast 42`
+
+This will produce 42 random expressions and pretty-print them in the terminal.
+
+The implementation can be found in [random-ast.ts](../src/ast/random-ast.ts).

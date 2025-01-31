@@ -42,6 +42,7 @@
     "prepack": "pinst --disable",
     "postpack": "pinst --enable",
     "next-version": "ts-node version.build.ts",
+    "random-ast": "ts-node ./src/ast/random-ast.ts",
     "top10": "find . -type f -exec du -h {} + | sort -rh | head -n 10"
   },
   "files": [
