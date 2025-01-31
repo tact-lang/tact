@@ -63,15 +63,6 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
         return result as A.AstSimplifiedString;
     }
 
-    function makeAsCommentCell(s: string, loc: SrcInfo): A.AstCell {
-        const result = createNode({
-            kind: "cell",
-            value: beginCell().storeUint(0, 32).storeStringTail(s).endCell(),
-            loc: loc,
-        });
-        return result as A.AstCell;
-    }
-
     function makeNullLiteral(loc: SrcInfo): A.AstNull {
         const result = createNode({
             kind: "null",
@@ -145,7 +136,6 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
         makeNumberLiteral,
         makeBooleanLiteral,
         makeSimplifiedStringLiteral,
-        makeAsCommentCell,
         makeNullLiteral,
         makeCellLiteral,
         makeSliceLiteral,

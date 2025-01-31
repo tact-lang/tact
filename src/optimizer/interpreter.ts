@@ -928,7 +928,13 @@ export class Interpreter {
                 const comment = ensureSimplifiedString(
                     this.interpretExpression(ast.self),
                 ).value;
-                return this.util.makeAsCommentCell(comment, ast.loc);
+                return this.util.makeCellLiteral(
+                    beginCell()
+                        .storeUint(0, 32)
+                        .storeStringTail(comment)
+                        .endCell(),
+                    ast.loc,
+                );
             }
             default:
                 throwNonFatalErrorConstEval(
