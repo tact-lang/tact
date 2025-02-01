@@ -194,7 +194,7 @@ contract MyPrecious {
 
         // Let's keep at least 0.1 Toncoin on the balance
         // Notice that nativeReserve() only queues an action to be performed during action phase
-        nativeReserve(ton("0.1"), ReserveExact);
+        nativeReserve(ton("0.1"), ReserveExact); // or ReserveAtMost if you're ok with reserving less
 
         // 2nd outbound message evaluated and queued
         // with the SendRemainingBalance mode
