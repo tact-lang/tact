@@ -113,5 +113,8 @@ describe("stdlib", () => {
             RandomMessage.beginParse(),
         );
         expect(res).toBe(400000n);
+
+        const varIntegers = await contract.getVarIntegers();
+        expect(varIntegers).toBe(1234n); // 1000 + 200 + 30 + 4
     });
 });

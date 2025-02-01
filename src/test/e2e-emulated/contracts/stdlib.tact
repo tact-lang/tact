@@ -70,4 +70,13 @@ contract StdlibTest {
         };
         return ctx.readForwardFee();
     }
+
+    get fun varIntegers(): Int {
+        let x = beginCell().storeVarInt16(1000).storeVarInt32(200).storeVarUint16(30).storeVarUint32(4).endCell().beginParse();
+        let a = x.loadVarInt16();
+        let b = x.loadVarInt32();
+        let d = x.loadVarUint16();
+        let e = x.loadVarUint32();
+        return a + b + d + e;
+    }
 }

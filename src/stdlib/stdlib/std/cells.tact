@@ -168,6 +168,14 @@ asm(-> 1 0) extends mutates fun loadBit(self: Slice): Bool { 1 LDI }
 
 asm( -> 1 0) extends mutates fun loadCoins(self: Slice): Int { LDVARUINT16 }
 
+asm( -> 1 0) extends mutates fun loadVarInt16(self: Slice): Int { LDVARINT16 }
+
+asm( -> 1 0) extends mutates fun loadVarUint16(self: Slice): Int { LDVARUINT16 }
+
+asm( -> 1 0) extends mutates fun loadVarInt32(self: Slice): Int { LDVARINT32 }
+
+asm( -> 1 0) extends mutates fun loadVarUint32(self: Slice): Int { LDVARUINT32 }
+
 @name(__tact_load_address)
 extends mutates native loadAddress(self: Slice): Address;
 
