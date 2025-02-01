@@ -1,36 +1,37 @@
 ---
-title: 退信
+title: 回退消息
+description: 当一个智能合约发送消息时，如果消息的回退标志被设置为 true，那么一旦消息未被正确处理，它将回退给发送者。
 ---
 
-当一个合约发送的信息的反弹标志设置为 true 时，如果信息没有被正确处理，它就会反弹回发送者。当你想确认信息是否被正确处理，如果没有，就可以恢复更改，这个功能非常有用。
+当智能合约发送一个消息，并且标志 `bounce` 设置为 `true{:tact}` 时，这时如果消息未被正确处理，它将回退给发送者。 这在您想确保消息已正确处理时很有用，且如果消息没有被正确处理——将会回退更改。
 
 ## 注意事项
 
-目前，在 TON 中，被退回的报文只有 224 个可用数据位，没有引用。 这意味着您无法从被退回的邮件中恢复大部分数据。 这是 TON 区块链的局限性，将来会得到修复。 Tact helps you to check if your message fits the limit and if not - it will suggest to use a special type modifier `bounced<T>` for the receiver that would construct a partial representation that fits into the required limits.
+目前，在 TON 中被回退的消息在消息体中仅有 224 个可用数据位，且不包含任何引用。 这意味着您无法从被回退的消息中恢复大部分数据。 这是目前 TON 区块链的局限性，将来会得到修复。 Tact能够帮助您检查消息是否符合限制，如果不符合，它会建议为回退消息的接收者使用特殊的类型构造器`bounced<T>{:tact}`，该构造器会生成符合要求限制的一部分消息。
 
-## 退信接收器
+## 回退消息接收器 {#bounced-message-receiver}
 
 :::caution
 
-  目前暂不支持文本消息回退
+  目前暂不支持文本消息的回退。
 
 :::
 
-要接收退回的信息，您需要在合同或特性中定义一个 “退回 ”接收器:
+要接收被回退的消息，您需要定义一个 `bounced(){:tact}` [接收函数](/zh-cn/book/contracts#receiver-functions) 在你的 [智能合约](/zh-cn/book/contracts) 或者一个 [特性](/zh-cn/book/types#traits) 当中:
 
 ```tact {2-4}
 contract MyContract {
-    bounced(src: bounced<MyMessage>) {
+    bounced(msg: bounced<MyMessage>) {
         // ...
     }
 }
 ```
 
-要手动处理被退回的信息，您可以使用回退定义，直接处理原始的 [`Slice{:tact}`](/zh-cn/book/cells#slices)。请注意，这样的接收器将获得由您的合约产生的**所有**被退回的信息：
+要手动处理被回退的消息，您可以使用一个回退定义，直接处理原始的 [`Slice{:tact}`](/zh-cn/book/cells#slices)。 请注意，这样的接收器将获得由您的智能合约产生的**“所有”**被回退的消息：
 
 ```tact /rawMsg: Slice/
 contract MyContract {
-    bounced(src: Slice) {
+    bounced(rawMsg: Slice) {
         // ...
     }
 }

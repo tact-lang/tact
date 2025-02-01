@@ -1575,9 +1575,28 @@ export const getParser = (ast: FactoryAst) => {
         );
     }
 
+    function parseStatement(sourceCode: string): A.AstStatement {
+        return withContext(
+            {
+                currentFile: null,
+                origin: "user",
+                createNode: ast.createNode,
+                errorTypes,
+            },
+            () => {
+                const matchResult = tactGrammar.match(sourceCode, "Statement");
+                if (matchResult.failed()) {
+                    errorTypes.generic(matchResult, "", "user");
+                }
+                return semantics(matchResult).astOfStatement();
+            },
+        );
+    }
+
     return {
         parse,
         parseExpression,
         parseImports,
+        parseStatement,
     };
 };

@@ -1,18 +1,19 @@
 ---
 title: 常数
+description: 无法通过重新赋值更改的不可变值
 ---
 
-Tact 中的常量可以比流行语言中的常量更先进一些：它们可以是虚拟的、抽象的。 智能合约通常需要实现多个特征，有时您需要在编译时配置其中的一些特征。 禁止使用特质中的构造函数，因为它们的行为是无法预测的。 因此，我们必须使用常量和字段来传递值。 主合同的职责是为所有特性实现值和常量。
+Tact 中的常量可以比流行语言中的常量更先进一些：它们可以是虚拟的、抽象的。 智能合约通常需要实现多个特征，有时您需要在编译时配置其中的一些特征。 禁止使用trait中的构造函数，因为它们的行为不可预测。 因此，我们必须使用常量和字段来传递值。 主合约的任务是为所有特征实现数值和常量。
 
 ## 简单常数
 
-让我们从一个简单的常数开始。 这是一个在编译时定义的值，不能更改。 您可以在顶层或合约/特质中定义常量。 让我们在顶层定义一个常量：
+让我们从一个简单的常数开始。 这是一个在编译时定义的值，不能更改。 您可以在顶层或合约/trait中定义常量。 让我们在顶层定义一个常量：
 
 ```tact
-const MY_CONSTANT: Int = 42；
+const MY_CONSTANT: Int = 42;
 ```
 
-特征和合同也类似：
+特征和合约也类似：
 
 ```tact
 trait MyTrait {
@@ -26,7 +27,7 @@ contract MyContract {
 
 ## 虚拟常量和抽象常量 {#virtual-and-abstract-constants}
 
-虚拟常量是可以在特质中定义但在合约中改变的常量。 当您需要在编译时配置某些特征时，它非常有用。 让我们定义一个虚拟常量和一个抽象常量：
+虚拟常量是可以在trait中定义但在合约中改变的常量。 当您需要在编译时配置某些特征时，它非常有用。 让我们定义一个虚拟常量和一个抽象常量： 当您需要在编译时配置某些特征时，它非常有用。 让我们定义一个虚拟常量和一个抽象常量：
 
 ```tact
 trait MyTrait {
@@ -34,16 +35,19 @@ trait MyTrait {
 }
 
 trait MyAbstractTrait {
-    abstract const MY_DEVFEE: Int;
+    abstract const MY_DEV_FEE: Int;
 }
 ```
 
-现在，您可以覆盖合同中的默认设置：
+现在，您可以覆盖合约中的默认设置：
 
 ```tact
-contract MyContract with MyTrait, MyAbstractTrait {
+contract MyContract with
+    MyTrait,
+    MyAbstractTrait, // trailing comma is allowed
+{
     override const MY_FEE: Int = ton("0.5");
-    override const MY_DEVFEE: Int = ton("1000");
+    override const MY_DEV_FEE: Int = ton("1000");
 }
 ```
 
@@ -65,5 +69,4 @@ trait Treasure {
 contract MyContract with Treasure {
     override const ENABLE_TIMELOCK: Bool = false;
 }
-
 ```
