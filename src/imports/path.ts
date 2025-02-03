@@ -63,7 +63,7 @@ export const emptyPath = RelativePath(0, []);
 /**
  * Combine two relative paths
  */
-export const appendPath = (
+const appendPath = (
     left: RelativePath,
     right: RelativePath,
 ): RelativePath => {
