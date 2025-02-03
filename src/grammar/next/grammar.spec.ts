@@ -16,7 +16,9 @@ describe("grammar", () => {
             it("should parse " + r.name, () => {
                 const ast = getAstFactory();
                 const { parse } = getParser(ast, "new");
-                expect(parse(r.code, "<unknown>", "user")).toMatchSnapshot();
+                expect(
+                    parse({ code: r.code, path: "<unknown>", origin: "user" }),
+                ).toMatchSnapshot();
             });
         }
     }
@@ -26,7 +28,7 @@ describe("grammar", () => {
             const ast = getAstFactory();
             const { parse } = getParser(ast, "new");
             expect(() =>
-                parse(r.code, "<unknown>", "user"),
+                parse({ code: r.code, path: "<unknown>", origin: "user" }),
             ).toThrowErrorMatchingSnapshot();
         });
     }

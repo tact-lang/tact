@@ -3,10 +3,11 @@ import tactGrammar from "./grammar.ohm-bundle";
 import { throwInternalCompilerError } from "../../error/errors";
 import * as A from "../../ast/ast";
 import { FactoryAst } from "../../ast/ast-helpers";
-import { ItemOrigin, SrcInfo } from "../src-info";
+import { SrcInfo } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
 import { ParserErrors, parserErrorSchema } from "./parser-error";
 import { getSrcInfoFromOhm } from "./src-info";
+import { ItemOrigin, Source } from "../../imports/source";
 
 type Context = {
     origin: ItemOrigin | null;
@@ -1517,7 +1518,7 @@ semantics.addOperation<A.AstNode>("astOfExpression", {
 export const getParser = (ast: FactoryAst) => {
     const errorTypes = parserErrorSchema(displayToString);
 
-    function parse(src: string, path: string, origin: ItemOrigin): A.AstModule {
+    function parse({ code, origin, path }: Source): A.AstModule {
         return withContext(
             {
                 currentFile: path,
@@ -1526,7 +1527,7 @@ export const getParser = (ast: FactoryAst) => {
                 errorTypes,
             },
             () => {
-                const matchResult = tactGrammar.match(src);
+                const matchResult = tactGrammar.match(code);
                 if (matchResult.failed()) {
                     errorTypes.generic(matchResult, path, origin);
                 }
@@ -1535,7 +1536,7 @@ export const getParser = (ast: FactoryAst) => {
         );
     }
 
-    function parseExpression(sourceCode: string): A.AstExpression {
+    function parseExpression(code: string): A.AstExpression {
         return withContext(
             {
                 currentFile: null,
@@ -1544,7 +1545,7 @@ export const getParser = (ast: FactoryAst) => {
                 errorTypes,
             },
             () => {
-                const matchResult = tactGrammar.match(sourceCode, "Expression");
+                const matchResult = tactGrammar.match(code, "Expression");
                 if (matchResult.failed()) {
                     errorTypes.generic(matchResult, "", "user");
                 }
@@ -1553,11 +1554,7 @@ export const getParser = (ast: FactoryAst) => {
         );
     }
 
-    function parseImports(
-        src: string,
-        path: string,
-        origin: ItemOrigin,
-    ): A.AstImport[] {
+    function parseImports({ code, origin, path }: Source): A.AstImport[] {
         return withContext(
             {
                 currentFile: path,
@@ -1566,7 +1563,7 @@ export const getParser = (ast: FactoryAst) => {
                 errorTypes,
             },
             () => {
-                const matchResult = tactGrammar.match(src, "JustImports");
+                const matchResult = tactGrammar.match(code, "JustImports");
                 if (matchResult.failed()) {
                     errorTypes.generic(matchResult, path, origin);
                 }
@@ -1575,7 +1572,7 @@ export const getParser = (ast: FactoryAst) => {
         );
     }
 
-    function parseStatement(sourceCode: string): A.AstStatement {
+    function parseStatement(code: string): A.AstStatement {
         return withContext(
             {
                 currentFile: null,
@@ -1584,7 +1581,7 @@ export const getParser = (ast: FactoryAst) => {
                 errorTypes,
             },
             () => {
-                const matchResult = tactGrammar.match(sourceCode, "Statement");
+                const matchResult = tactGrammar.match(code, "Statement");
                 if (matchResult.failed()) {
                     errorTypes.generic(matchResult, "", "user");
                 }

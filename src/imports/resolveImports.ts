@@ -1,7 +1,8 @@
-import { ItemOrigin, Parser } from "../grammar";
+import { Parser } from "../grammar";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { throwCompilationError } from "../error/errors";
 import { resolveLibrary } from "./resolveLibrary";
+import { Source } from "./source";
 
 export function resolveImports(args: {
     entrypoint: string;
@@ -9,13 +10,6 @@ export function resolveImports(args: {
     stdlib: VirtualFileSystem;
     parser: Parser;
 }) {
-    //
-    // Load stdlib and entrypoint
-    //
-
-    // const stdlibFuncPath = args.stdlib.resolve('./stdlib.fc');
-    // const stdlibFunc = args.stdlib.readFile(stdlibFuncPath).toString();
-
     const stdlibTactPath = args.stdlib.resolve("std/stdlib.tact");
     if (!args.stdlib.exists(stdlibTactPath)) {
         throwCompilationError(
@@ -34,26 +28,24 @@ export function resolveImports(args: {
     // Resolve all imports
     //
 
-    const importedTact: { code: string; path: string; origin: ItemOrigin }[] =
-        [];
-    const importedFunc: { code: string; path: string; origin: ItemOrigin }[] =
-        [];
+    const importedTact: Source[] = [];
+    const importedFunc: Source[] = [];
     const processed: Set<string> = new Set();
-    const pending: { code: string; path: string; origin: ItemOrigin }[] = [];
-    function processImports(source: string, path: string, origin: ItemOrigin) {
-        const imp = args.parser.parseImports(source, path, origin);
+    const pending: Source[] = [];
+    function processImports(source: Source) {
+        const imp = args.parser.parseImports(source);
         for (const i of imp) {
             const importPath = i.path.value;
             // Resolve library
             const resolved = resolveLibrary({
-                path: path,
+                path: source.path,
                 name: importPath,
                 project: args.project,
                 stdlib: args.stdlib,
             });
             if (!resolved.ok) {
                 throwCompilationError(
-                    `Could not resolve import "${importPath}" in ${path}`,
+                    `Could not resolve import "${importPath}" in ${source.path}`,
                 );
             }
 
@@ -80,11 +72,19 @@ export function resolveImports(args: {
 
             // Add to imports
             if (resolved.kind === "func") {
-                importedFunc.push({ code, path: resolved.path, origin });
+                importedFunc.push({
+                    code,
+                    path: resolved.path,
+                    origin: source.origin,
+                });
             } else {
                 if (!processed.has(resolved.path)) {
                     processed.add(resolved.path);
-                    pending.push({ path: resolved.path, code, origin });
+                    pending.push({
+                        path: resolved.path,
+                        code,
+                        origin: source.origin,
+                    });
                 }
             }
         }
@@ -96,21 +96,26 @@ export function resolveImports(args: {
         path: stdlibTactPath,
         origin: "stdlib",
     });
-    processImports(stdlibTact, stdlibTactPath, "stdlib");
-    processImports(code, codePath, "user");
+    processImports({
+        code: stdlibTact,
+        path: stdlibTactPath,
+        origin: "stdlib",
+    });
+    processImports({
+        code,
+        path: codePath,
+        origin: "user",
+    });
     while (pending.length > 0) {
         const p = pending.shift()!;
         importedTact.push(p);
-        processImports(p.code, p.path, p.origin);
+        processImports(p);
     }
     importedTact.push({ code: code, path: codePath, origin: "user" }); // To keep order same as before refactoring
 
     // Assemble result
     return {
         tact: [...importedTact],
-        func: [
-            // { code: stdlibFunc, path: stdlibFuncPath },
-            ...importedFunc,
-        ],
+        func: [...importedFunc],
     };
 }
