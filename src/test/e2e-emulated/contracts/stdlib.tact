@@ -138,6 +138,7 @@ contract StdlibTest {
 
     get fun myCode(): Cell {
         return myCode();
+    }
 
     get fun varIntegers1(): Int {
         let x = beginCell().storeVarInt16(1000).storeVarInt32(200).storeVarUint16(30).storeVarUint32(4).endCell().beginParse();
