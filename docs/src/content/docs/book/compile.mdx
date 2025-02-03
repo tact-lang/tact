@@ -8,13 +8,7 @@ prev:
 
 import { Badge, Tabs, TabItem } from '@astrojs/starlight/components';
 
-:::note
-
-  This page is still being written as per [#1136](https://github.com/tact-lang/tact/issues/1136).
-
-:::
-
-The Tact compiler can produce various outputs, ranging from the [BoC](/book/cells#cells-boc) of the compiled contract to various supplementary files, such as the [compilation report](#report) or the [contract package](/ref/evolution/otp-006), which is the JSON file with the `.pkg` extension that one can use to [verify the smart contract's origin](https://verifier.ton.org).
+The Tact compiler can produce various outputs, ranging from the [BoC][boc] of the [compiled contract](#boc) to various supplementary files, such as the [compilation report](#report) or the [contract package](#pkg).
 
 With the proper [configuration settings](/book/config), you can customize the behavior of the compiler to skip the generation of some or all the [build artifacts](#artifacts), and even control the addition or exclusion of [getters for supported interfaces](/book/contracts#interfaces).
 
@@ -221,8 +215,111 @@ Thus, the following dependency diagram is produced:
 
 ![Contract dependency diagram of the JettonMinter](../../../assets/contract-dependency-diagram-3.png)
 
+### Compiled contract, `.boc` {#boc}
+
+The end result of compiling each contract is to get its code in the [BoC][boc] format, which is placed in a binary file with the `.boc` extension.
+
+By combining the initial code with the initial data for the contract, you can locally and deterministically obtain the blockchain [`Address{:tact}`](/book/types#primitive-types) for the given contract.
+
+From there, you'd only need to send the message containing the initial code and data, usually referred to as initial state or [`StateInit{:tact}`](/book/expressions#initof), to the computed address and provide enough Toncoin for the deployment.
+
+But instead of doing this manually, prefer using the provided [TypeScript wrappers](#wrap-ts) and other [deployment facilities](/book/deploy).
+
+:::note
+
+  When compiling with the [`fullWithDecompilation`](/book/config#projects-mode) mode set in the [Tact config](/book/config), the resulting `.boc` is then decompiled into intermediate assembly sources.
+
+  The `.boc` file and decompiled assembly sources are intended to be used by advanced users and are not required for regular [deployment](/book/deploy) and [debugging](/book/debug). For example, the `.boc` would be very handy when working with a language that doesn't yet have an officially supported [wrapper generation setup](#wrap).
+
+:::
+
+### Contract package, `.pkg` {#pkg}
+
+The contract package is a way to bundle a compiled contract, its dependencies, and all related metadata into a single file. It's is a JSON file with the `.pkg` extension that one can use to [verify the smart contract's origin](https://verifier.ton.org).
+
+Additionally, the [contract ABI](#abi) is included in the package, as a string.
+
+Read more: [OTP-006: Contract Package](/ref/evolution/otp-006).
+
+### Contract ABI, `.abi` {#abi}
+
+Contract's ABI is a JSON file with the `.abi` extension, which describes the contract's data structures, receivers, getters, possible [exit codes](/book/exit-codes) (errors) and [interfaces](/book/contracts#interfaces).
+
+Essentially, it's a [compilation report](#report) given in a machine-readable format, although without the diagrams.
+
+Note that the contract ABI is included in the [contract package](#pkg) as a string.
+
+Read more: [OTP-002: Contract ABI](/ref/evolution/otp-002).
+
+### Bindings and wrappers {#wrap}
+
+Using the [compiled `.boc`](#boc) directly is inconvenient and error-prone, which is why Tact also provides a number of contract wrappers in different general-purpose languages.
+
+:::note
+
+  Currently, only [TypeScript wrappers](#wrap-ts) are provided. This [may change in the future](https://github.com/tact-lang/tact/issues/255), stay tuned.
+
+:::
+
+#### TypeScript wrappers, `.ts` {#wrap-ts}
+
+To aid in [deployment](/book/deploy) and further interactions with the contract, after each successful compilation a `.ts` file with all needed wrappers is produced. The entities added there all use the [@ton/core](https://github.com/ton-org/ton-core) library.
+
+All the [Structs][struct] and [Messages][message] observable in the [compilation report](#structures) are provided as new `type` definitions.
+
+```ts
+export type StateInit = {
+    $$type: 'StateInit';
+    code: Cell;
+    data: Cell;
+}
+```
+
+For each such definition there are `storeStructureName(){:ts}` and `loadStructureName(){:ts}` functions to help compose and parse cells out of those structures.
+
+```ts
+export function storeStateInit(src: StateInit) {
+    return (builder: Builder) => {
+        const b_0 = builder;
+        b_0.storeRef(src.code);
+        b_0.storeRef(src.data);
+    };
+}
+
+export function loadStateInit(slice: Slice) {
+    const sc_0 = slice;
+    const _code = sc_0.loadRef();
+    const _data = sc_0.loadRef();
+    return { $$type: 'StateInit' as const, code: _code, data: _data };
+}
+```
+
+Finally, the [ABI declarations](#abi) are defined and a contract wrapper is given. The latter is designed specifically for you to be able to easily [deploy](/book/deploy) and interact with the deployed contract.
+
+```ts
+export class Playground implements Contract {
+    // ...
+
+    static async fromInit() {
+        const init = await Playground_init(); // init code and data
+        const address = contractAddress(0, init);
+        return new Playground(address, init);
+    }
+
+    // ...
+}
+```
+
+:::note
+
+  See how to apply TypeScript wrappers in scripts and tests of your [Blueprint][bp] projects: [Parsing body of the emitted message](/book/debug#logging-parsing).
+
+:::
+
 [struct]: /book/structs-and-messages#structs
 [message]: /book/structs-and-messages#messages
+
+[boc]: /book/cells#cells-boc
 
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language
 [mm]: https://mermaid.js.org/

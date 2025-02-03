@@ -401,7 +401,6 @@ export type AstLiteral =
     | AstAddress
     | AstCell
     | AstSlice
-    | AstCommentValue
     | AstStructValue;
 
 export type AstBinaryOperation =
@@ -595,13 +594,6 @@ export type AstCell = {
 export type AstSlice = {
     kind: "slice";
     value: Slice;
-    id: number;
-    loc: SrcInfo;
-};
-
-export type AstCommentValue = {
-    kind: "comment_value";
-    value: string;
     id: number;
     loc: SrcInfo;
 };

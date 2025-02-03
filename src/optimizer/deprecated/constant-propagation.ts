@@ -560,7 +560,6 @@ export function constantPropagationAnalysis(
             case "address":
             case "boolean":
             case "cell":
-            case "comment_value":
             case "number":
             case "simplified_string":
             case "slice":

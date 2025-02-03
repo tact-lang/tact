@@ -1,8 +1,12 @@
 ---
 title: 部署
+description: 将Tact 合约部署到 TON Blockchain 测试网或主网的常见方法
+prev:
+  link: /zh-cn/book/message-mode
+  label: 消息模式
 ---
 
-Tact Deployer 是一个与 [TON Verifier](https://verifier.ton.org) 集成的小型库，可让您使用自己喜欢的钱包安全地部署合约，而无需管理密钥或手动部署合约。 Tact Deployer 还能自动验证合同的源代码，确保编译器不受损害。
+Tact Deployer 是一个与 [TON Verifier](https://verifier.ton.org) 集成的小型库，可让您使用自己喜欢的钱包安全地部署合约，而无需管理密钥或手动部署合约。  Tact Deployer 还能自动验证合约的源代码，确保编译器不受损害。
 
 ## 要求
 
@@ -18,7 +22,7 @@ yarn add @tact-lang/deployer
 
 ## 如何使用
 
-当你使用 Tact 构建智能合约时，它会生成一个包（\*.pkg）文件，其中包含所构建智能合约的所有必要信息。要在 TON 中部署智能合约，你需要发送一条附有`init`数据的消息。
+当你使用 Tact 构建智能合约时，它会生成一个包（\*.pkg）文件，其中包含所构建智能合约的所有必要信息。 要在TON中部署智能合约，您需要发送附有`init`数据的消息。
 
 ```typescript
 import * as fs from 'fs';
@@ -28,16 +32,16 @@ import { SampleTactContract } from "./output/sample_SampleTactContract";
 import { prepareTactDeployment } from "@tact-lang/deployer";
 
 // Parameters
-let testnet = true; // Flag for testnet or mainnet
-let packageName = 'sample_SampleTactContract.pkg'; // 要部署的软件包名称
-let outputPath = path.resolve(__dirname, 'output'); // 输出目录的路径
-let owner = Address.parse('<put_address_here>'); // 我们的示例合同有一个所有者
-let init = await SampleTactContract.init(owner); // 为我们的合同创建初始数据
+let testnet = true;                                 // Flag for testnet or mainnet
+let packageName = 'sample_SampleTactContract.pkg';  // Name of your package to deploy
+let outputPath = path.resolve(__dirname, 'output'); // Path to output directory
+let owner = Address.parse('<put_address_here>');    // Our sample contract has an owner
+let init = await SampleTactContract.init(owner);    // Create initial data for our contract
 
-// 计算
-let address = contractAddress(0, init); // 计算合同地址。MUST match with the address in the verifier
-let data = init.data.toBoc(); // Create init data
-let pkg = fs.readFileSync( // Read package file
+// Calculations
+let address = contractAddress(0, init);     // Calculate contract address. MUST match with the address in the verifier
+let data = init.data.toBoc();               // Create init data
+let pkg = fs.readFileSync(                  // Read package file
     path.resolve(outputPath, packageName)
 );
 
@@ -45,8 +49,8 @@ let pkg = fs.readFileSync( // Read package file
 let link = await prepareTactDeployment({ pkg, data, testnet });
 
 // Present a deployment link and contract address
-console.log('Address：' + address.toString({ testOnly: testnet }));
-console.log('Deploy link: ' + link)；
+console.log('Address: ' + address.toString({ testOnly: testnet }));
+console.log('Deploy link: ' + link);
 ```
 
 点击此链接后，您就可以部署和验证您的智能合约。

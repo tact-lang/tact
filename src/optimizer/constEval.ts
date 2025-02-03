@@ -18,6 +18,11 @@ import {
 } from "./interpreter";
 import { SrcInfo } from "../grammar";
 
+// FIXME: After merging PR #1621, change all calls to interpreter in this method to interpreter.interpretExpression(ast)
+// because a follow up will make all other methods in interpreter private. This is required to avoid a potential bug
+// where an external process calls an arbitrary method in the interpreter and the stack overflow check is not executed
+// as a result.
+
 // Utility Exception class to interrupt the execution
 // of functions that cannot evaluate a tree fully into a value.
 class PartiallyEvaluatedTree extends Error {
@@ -162,8 +167,6 @@ export const getOptimizer = (astF: FactoryAst) => {
                 return interpreter.interpretNumber(ast);
             case "string":
                 return interpreter.interpretString(ast);
-            case "comment_value":
-                return ast;
             case "simplified_string":
                 return ast;
             case "struct_value":

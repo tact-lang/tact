@@ -124,6 +124,8 @@ In [Blueprint][bp], they act as default unless modified in `wrappers/ContractNam
 
 If set to `true{:json}`, enables debug output of a contract and allows usage of [`dump(){:tact}`](/ref/core-debug#dump) function, which is useful for [debugging purposes](/book/debug). With this option enabled, the contract will report that it was compiled in debug mode using the `supported_interfaces` method.
 
+The `debug` mode implies activation of the [`nullChecks`](#safety-nullChecks) safety option.
+
 ```json filename="tact.config.json" {8,14}
 {
   "projects": [
@@ -335,6 +337,54 @@ If set to `true{:json}`, enables inlining of all functions in contracts. This ca
 }
 ```
 
+#### `safety` {#options-safety}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+Options that affect the safety of contracts.
+
+```json filename="tact.config.json" {8,14}
+{
+  "projects": [
+    {
+      "name": "contract",
+      "path": "./contract.tact",
+      "output": "./output",
+      "options": {
+        "safety": {}
+      }
+    }
+  ]
+}
+```
+
+##### `nullChecks` {#safety-nullChecks}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+`true{:json}` by default.
+
+If set to `true{:json}`, enables run-time null checks of the arguments of the unwrapping [non-null assertion `!!`](/book/operators/#unary-non-null-assert) operator. Setting the option to `false{:json}` will disable these checks and decrease gas consumption.
+
+Null checks are always enabled in the [`debug`](#options-debug) mode.
+
+```json filename="tact.config.json" {9,17}
+{
+  "projects": [
+    {
+      "name": "contract",
+      "path": "./contract.tact",
+      "output": "./output",
+      "options": {
+        "safety": {
+          "nullChecks": false
+        }
+      }
+    }
+  ]
+}
+```
+
 ### `verbose` {#verbose}
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
@@ -423,6 +473,9 @@ In [Blueprint][bp], `mode` is always set to `"full"{:json}` and cannot be overwr
         "interfacesGetter": true,
         "experimental": {
           "inline": false
+        },
+        "safety": {
+          "nullChecks": false
         }
       }
     }

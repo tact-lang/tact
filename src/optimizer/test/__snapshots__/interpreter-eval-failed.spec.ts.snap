@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`interpreter-evaluation short-circuit-constant-init-and should fail compilation 1`] = `
+"<unknown>:8:16: Cannot evaluate expression to a constant: divisor expression must be non-zero
+  7 | fun exception(v: Int): Bool {
+> 8 |     return 1 / v == 0;
+                     ^
+  9 | }
+"
+`;
+
+exports[`interpreter-evaluation short-circuit-constant-init-or should fail compilation 1`] = `
+"<unknown>:8:16: Cannot evaluate expression to a constant: divisor expression must be non-zero
+  7 | fun exception(v: Int): Bool {
+> 8 |     return 1 / v == 0;
+                     ^
+  9 | }
+"
+`;
+
+exports[`interpreter-evaluation short-circuit-contract-constant-init-and should fail compilation 1`] = `
+"<unknown>:8:16: Cannot evaluate expression to a constant: divisor expression must be non-zero
+  7 | fun exception(v: Int): Bool {
+> 8 |     return 1 / v == 0;
+                     ^
+  9 | }
+"
+`;
+
+exports[`interpreter-evaluation short-circuit-contract-constant-init-or should fail compilation 1`] = `
+"<unknown>:8:16: Cannot evaluate expression to a constant: divisor expression must be non-zero
+  7 | fun exception(v: Int): Bool {
+> 8 |     return 1 / v == 0;
+                     ^
+  9 | }
+"
+`;
+
+exports[`interpreter-evaluation short-circuit-contract-init-and should fail compilation 1`] = `
+"<unknown>:8:16: Cannot evaluate expression to a constant: divisor expression must be non-zero
+  7 | fun exception(v: Int): Bool {
+> 8 |     return 1 / v == 0;
+                     ^
+  9 | }
+"
+`;
+
+exports[`interpreter-evaluation short-circuit-contract-init-or should fail compilation 1`] = `
+"<unknown>:8:16: Cannot evaluate expression to a constant: divisor expression must be non-zero
+  7 | fun exception(v: Int): Bool {
+> 8 |     return 1 / v == 0;
+                     ^
+  9 | }
+"
+`;
+
+exports[`interpreter-evaluation short-circuit-struct-init-and should fail compilation 1`] = `
+"<unknown>:10:16: Cannot evaluate expression to a constant: divisor expression must be non-zero
+   9 | fun exception(v: Int): Bool {
+> 10 |     return 1 / v == 0;
+                      ^
+  11 | }
+"
+`;
+
+exports[`interpreter-evaluation short-circuit-struct-init-or should fail compilation 1`] = `
+"<unknown>:10:16: Cannot evaluate expression to a constant: divisor expression must be non-zero
+   9 | fun exception(v: Int): Bool {
+> 10 |     return 1 / v == 0;
+                      ^
+  11 | }
+"
+`;
+
+exports[`interpreter-evaluation stack-deepness-big-input should fail compilation 1`] = `
+"<unknown>:3:16: Cannot evaluate expression to a constant: execution stack reached maximum allowed depth
+  2 | 
+> 3 | const A: Int = multiplyByTwo(1000);
+                     ^~~~~~~~~~~~~~~~~~~
+  4 | 
+"
+`;
+
+exports[`interpreter-evaluation stack-deepness-deep-call should fail compilation 1`] = `
+"<unknown>:3:16: Cannot evaluate expression to a constant: execution stack reached maximum allowed depth
+  2 | 
+> 3 | const A: Int = multiplyByTwoDeepBlocks(1000);
+                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  4 | 
+"
+`;
+
+exports[`interpreter-evaluation stack-deepness-infinite-recursion should fail compilation 1`] = `
+"<unknown>:3:16: Cannot evaluate expression to a constant: execution stack reached maximum allowed depth
+  2 | 
+> 3 | const A: Int = recurse();
+                     ^~~~~~~~~
+  4 | 
+"
+`;

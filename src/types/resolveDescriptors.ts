@@ -5,6 +5,7 @@ import {
     idText,
     isSelfId,
     isSlice,
+    selfId,
 } from "../ast/ast-helpers";
 import { traverse, traverseAndCheck } from "../ast/iterators";
 import {
@@ -42,7 +43,7 @@ import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
 import { ItemOrigin } from "../grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
-import { emptyContext } from "./resolveStatements";
+import { addVariable, emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
 import { getAstUtil } from "../ast/util";
 
@@ -2156,8 +2157,12 @@ function checkInitializerType(
     declTy: TypeRef,
     initializer: A.AstExpression,
     ctx: CompilerContext,
+    selfTypeRef: TypeRef | undefined,
 ): CompilerContext {
-    const stmtCtx = emptyContext(initializer.loc, null, declTy);
+    let stmtCtx = emptyContext(initializer.loc, null, declTy);
+    if (selfTypeRef) {
+        stmtCtx = addVariable(selfId, selfTypeRef, ctx, stmtCtx);
+    }
     ctx = resolveExpression(initializer, stmtCtx, ctx);
     const initTy = getExpType(ctx, initializer);
     if (!isAssignable(initTy, declTy)) {
@@ -2189,6 +2194,7 @@ function initializeConstants(
 function checkConstants(
     constants: ConstantDescription[],
     ctx: CompilerContext,
+    typeRef: TypeRef | undefined,
 ): CompilerContext {
     for (const constant of constants) {
         if (constant.ast.kind === "constant_def") {
@@ -2198,6 +2204,7 @@ function checkConstants(
                 constant.type,
                 constant.ast.initializer,
                 ctx,
+                typeRef,
             );
         }
     }
@@ -2213,7 +2220,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
 
     // we split the handling of constants into two steps:
     // first we check all constants to make sure the types of initializers are correct
-    ctx = checkConstants(staticConstants, ctx);
+    ctx = checkConstants(staticConstants, ctx, undefined);
 
     for (const aggregateTy of getAllTypes(ctx)) {
         switch (aggregateTy.kind) {
@@ -2223,7 +2230,16 @@ function initializeConstantsAndDefaultContractAndStructFields(
             case "contract":
             case "struct": {
                 {
-                    ctx = checkConstants(aggregateTy.constants, ctx);
+                    const selfTypeRef: TypeRef = {
+                        kind: "ref",
+                        name: aggregateTy.name,
+                        optional: false,
+                    };
+                    ctx = checkConstants(
+                        aggregateTy.constants,
+                        ctx,
+                        selfTypeRef,
+                    );
 
                     for (const field of aggregateTy.fields) {
                         if (field.ast.initializer !== null) {
@@ -2233,6 +2249,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
                                 field.type,
                                 field.ast.initializer,
                                 ctx,
+                                selfTypeRef,
                             );
                             field.default = evalConstantExpression(
                                 field.ast.initializer,

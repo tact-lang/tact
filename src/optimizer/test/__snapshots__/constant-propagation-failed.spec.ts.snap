@@ -31,7 +31,7 @@ exports[`constant-propagation should fail constant propagation analysis for init
 "<unknown>:9:18: Cannot evaluate expression to a constant: divisor expression must be non-zero
    8 |     init(v: Int) {
 >  9 |         self.a / self.a;    // Division by zero
-                        ^~~~
+                        ^~~~~~
   10 |     }
 "
 `;

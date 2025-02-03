@@ -1,9 +1,13 @@
 ---
 title: Typescript 库
+description: Tact 的编译器会自动生成包装代码，供 @ton/ton 和 @ton/core 库使用
+prev:
+  link: /zh-cn/ecosystem
+  label: 生态系统概览
 ---
 
-Tact 语言内置了对 `ton` 和 `ton-core` 类型脚本库的支持。编译器会自动为这些库生成代码，您可以使用 [@tact-lang/emulator](https://github.com/tact-lang/tact-emulator), [@ton-community/sandbox](https://github.com/ton-community/sandbox) 等库。
+Tact 语言内置了对 [@ton/ton](https://github.com/ton-org/ton) 和 [@ton/core](https://github.com/ton-org/ton-core) TypeScript 库的支持。 编译器会自动为这些库生成代码，因此您可以使用 [@tact-lang/emulator](https://github.com/tact-lang/tact-emulator) 或 [@ton/sandbox](https://github.com/ton-org/sandbox)，在它们之上运行。
 
-## Typescript 中的契约
+## Typescript 中的合约
 
-编译器会为项目中的每个合约生成名为 `{project}_{contract}.ts` 的文件，其中包含随时可用的强类型封装器，以便在任何环境下使用合约：测试、部署等。
+编译器会为[项目](/zh-cn/book/config#projects)中的每个合约生成名为`{project}_{contract}.ts` 的文件，其中包含即用型强类型封装器，可在任何由 TypeScript 支持的环境中使用：[测试](/zh-cn/book/debug)、[部署](/zh-cn/book/deploy)等。

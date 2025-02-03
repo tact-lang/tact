@@ -1,6 +1,6 @@
 import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
-import * as crc32 from "crc-32";
+import { crc32 } from "../utils/crc32";
 import * as A from "../ast/ast";
 import { evalConstantExpression } from "./constEval";
 import { CompilerContext } from "../context/context";
@@ -97,7 +97,6 @@ function ensureArgumentForEquality(val: A.AstLiteral): A.AstLiteral {
         case "address":
         case "boolean":
         case "cell":
-        case "comment_value":
         case "null":
         case "number":
         case "simplified_string":
@@ -669,16 +668,18 @@ export class EnvironmentStack {
         return false;
     }
 
-    /*
-    Executes "code" in a fresh environment that is placed at the top
-    of the environment stack. The fresh environment is initialized
-    with the bindings in "initialBindings". Once "code" finishes
-    execution, the new environment is automatically popped from 
-    the stack. 
-    
-    This method is useful for starting a new local variables scope, 
-    like in a function call.
-    */
+    /**
+     * Executes code parameter in a fresh environment that is placed at the top
+     * of the environment stack. The fresh environment is initialized
+     * with the bindings in "initialBindings". Once code finishes
+     * execution, the new environment is automatically popped from
+     * the stack.
+     *
+     * This method is useful for starting a new local variables scope,
+     * like in a function call.
+     * @param code The code to execute in the fresh environment.
+     * @param initialBindings The initial bindings to add to the fresh environment.
+     */
     public executeInNewEnvironment<T>(
         code: () => T,
         initialBindings: { names: string[]; values: A.AstLiteral[] } = {
@@ -690,7 +691,11 @@ export class EnvironmentStack {
         const values = initialBindings.values;
 
         const oldEnv = this.currentEnv;
-        this.currentEnv = { values: new Map(), parent: oldEnv };
+
+        this.currentEnv = {
+            values: new Map(),
+            parent: oldEnv,
+        };
 
         names.forEach((name, index) => {
             this.setNewBinding(name, values[index]!);
@@ -834,7 +839,37 @@ export class Interpreter {
         this.envStack = envSack;
     }
 
-    public interpretModuleItem(ast: A.AstModuleItem): void {
+    /**
+     * This is the public access for expression interpretation.
+     * @param ast Expression to interpret.
+     */
+    public interpretExpression(expr: A.AstExpression): A.AstLiteral {
+        return this.handleStackOverflow(expr.loc, () =>
+            this.interpretExpressionInternal(expr),
+        );
+    }
+
+    /**
+     * This is the public access for statement interpretation.
+     * @param stmt Statement to interpret.
+     */
+    public interpretStatement(stmt: A.AstStatement) {
+        this.handleStackOverflow(stmt.loc, () => {
+            this.interpretStatementInternal(stmt);
+        });
+    }
+
+    /**
+     * This is the public access for module item interpretation.
+     * @param modItem Module item to interpret.
+     */
+    public interpretModuleItem(modItem: A.AstModuleItem) {
+        this.handleStackOverflow(modItem.loc, () => {
+            this.interpretModuleItemInternal(modItem);
+        });
+    }
+
+    public interpretModuleItemInternal(ast: A.AstModuleItem) {
         switch (ast.kind) {
             case "constant_def":
                 this.interpretConstantDef(ast);
@@ -925,7 +960,7 @@ export class Interpreter {
         );
     }
 
-    public interpretExpression(ast: A.AstExpression): A.AstLiteral {
+    public interpretExpressionInternal(ast: A.AstExpression): A.AstLiteral {
         switch (ast.kind) {
             case "id":
                 return this.interpretName(ast);
@@ -941,8 +976,6 @@ export class Interpreter {
                 return this.interpretNumber(ast);
             case "string":
                 return this.interpretString(ast);
-            case "comment_value":
-                return this.interpretCommentValue(ast);
             case "simplified_string":
                 return this.interpretSimplifiedString(ast);
             case "address":
@@ -998,7 +1031,7 @@ export class Interpreter {
             const astNode = constant.ast;
             if (astNode.kind === "constant_def") {
                 constant.value = this.inComputationPath(name, () =>
-                    this.interpretExpression(astNode.initializer),
+                    this.interpretExpressionInternal(astNode.initializer),
                 );
                 return this.util.changeLocationOfLiteral(
                     constant.value,
@@ -1023,9 +1056,15 @@ export class Interpreter {
             case "asComment": {
                 ensureMethodArity(0, ast.args, ast.loc);
                 const comment = ensureSimplifiedString(
-                    this.interpretExpression(ast.self),
+                    this.interpretExpressionInternal(ast.self),
                 ).value;
-                return this.util.makeCommentLiteral(comment, ast.loc);
+                return this.util.makeCellLiteral(
+                    beginCell()
+                        .storeUint(0, 32)
+                        .storeStringTail(comment)
+                        .endCell(),
+                    ast.loc,
+                );
             }
             default:
                 throwNonFatalErrorConstEval(
@@ -1061,10 +1100,6 @@ export class Interpreter {
         );
     }
 
-    public interpretCommentValue(ast: A.AstCommentValue): A.AstCommentValue {
-        return ast;
-    }
-
     public interpretSimplifiedString(
         ast: A.AstSimplifiedString,
     ): A.AstSimplifiedString {
@@ -1095,14 +1130,15 @@ export class Interpreter {
             );
         }
 
-        const valOperand = this.interpretExpression(ast.operand);
+        const valOperand = this.interpretExpressionInternal(ast.operand);
 
         return evalUnaryOp(ast.op, valOperand, ast.loc, this.util);
     }
 
     public interpretBinaryOp(ast: A.AstOpBinary): A.AstLiteral {
-        const valLeft = this.interpretExpression(ast.left);
-        const valRightContinuation = () => this.interpretExpression(ast.right);
+        const valLeft = this.interpretExpressionInternal(ast.left);
+        const valRightContinuation = () =>
+            this.interpretExpressionInternal(ast.right);
 
         return evalBinaryOp(
             ast.op,
@@ -1115,11 +1151,13 @@ export class Interpreter {
 
     public interpretConditional(ast: A.AstConditional): A.AstLiteral {
         // here we rely on the typechecker that both branches have the same type
-        const valCond = ensureBoolean(this.interpretExpression(ast.condition));
+        const valCond = ensureBoolean(
+            this.interpretExpressionInternal(ast.condition),
+        );
         if (valCond.value) {
-            return this.interpretExpression(ast.thenBranch);
+            return this.interpretExpressionInternal(ast.thenBranch);
         } else {
-            return this.interpretExpression(ast.elseBranch);
+            return this.interpretExpressionInternal(ast.elseBranch);
         }
     }
 
@@ -1146,7 +1184,9 @@ export class Interpreter {
 
         // this will override default fields set above
         for (const fieldWithInit of ast.args) {
-            const v = this.interpretExpression(fieldWithInit.initializer);
+            const v = this.interpretExpressionInternal(
+                fieldWithInit.initializer,
+            );
             resultMap.set(idText(fieldWithInit.field), v);
         }
 
@@ -1214,20 +1254,44 @@ export class Interpreter {
                         ast.aggregate.loc,
                     );
                 }
+
                 if (foundContractConst.value !== undefined) {
                     return this.util.changeLocationOfLiteral(
                         foundContractConst.value,
-                        ast.aggregate.loc,
-                    );
-                } else {
-                    throwErrorConstEval(
-                        `cannot evaluate declared contract/trait constant ${idTextErr(ast.field)} as it does not have a body`,
-                        ast.field.loc,
+                        ast.loc,
                     );
                 }
+
+                const name = `self.${idText(ast.field)}`;
+
+                // see comment in `interpretName`
+                if (this.visitedConstants.has(name)) {
+                    throwErrorConstEval(
+                        `cannot evaluate ${name} as it has circular dependencies: [${this.formatComputationPath(name)}]`,
+                        ast.loc,
+                    );
+                }
+                this.visitedConstants.add(name);
+
+                const astNode = foundContractConst.ast;
+                if (astNode.kind === "constant_def") {
+                    foundContractConst.value = this.inComputationPath(
+                        name,
+                        () => this.interpretExpression(astNode.initializer),
+                    );
+                    return this.util.changeLocationOfLiteral(
+                        foundContractConst.value,
+                        ast.loc,
+                    );
+                }
+
+                throwErrorConstEval(
+                    `cannot evaluate declared contract/trait constant ${idTextErr(ast.field)} as it does not have a body`,
+                    ast.field.loc,
+                );
             }
         }
-        const valStruct = this.interpretExpression(ast.aggregate);
+        const valStruct = this.interpretExpressionInternal(ast.aggregate);
         if (valStruct.kind !== "struct_value") {
             throwErrorConstEval(
                 `constant struct expected, but got ${showValue(valStruct)}`,
@@ -1240,7 +1304,7 @@ export class Interpreter {
         if (typeof field !== "undefined") {
             return this.util.changeLocationOfLiteral(
                 field.initializer,
-                ast.aggregate.loc,
+                ast.loc,
             );
         } else {
             // this cannot happen in a well-typed program
@@ -1256,7 +1320,7 @@ export class Interpreter {
             case "ton": {
                 ensureFunArity(1, ast.args, ast.loc);
                 const tons = ensureSimplifiedString(
-                    this.interpretExpression(ast.args[0]!),
+                    this.interpretExpressionInternal(ast.args[0]!),
                 );
                 try {
                     return ensureInt(
@@ -1278,10 +1342,10 @@ export class Interpreter {
             case "pow": {
                 ensureFunArity(2, ast.args, ast.loc);
                 const valBase = ensureInt(
-                    this.interpretExpression(ast.args[0]!),
+                    this.interpretExpressionInternal(ast.args[0]!),
                 );
                 const valExp = ensureInt(
-                    this.interpretExpression(ast.args[1]!),
+                    this.interpretExpressionInternal(ast.args[1]!),
                 );
                 if (valExp.value < 0n) {
                     throwErrorConstEval(
@@ -1308,7 +1372,7 @@ export class Interpreter {
             case "pow2": {
                 ensureFunArity(1, ast.args, ast.loc);
                 const valExponent = ensureInt(
-                    this.interpretExpression(ast.args[0]!),
+                    this.interpretExpressionInternal(ast.args[0]!),
                 );
                 if (valExponent.value < 0n) {
                     throwErrorConstEval(
@@ -1334,7 +1398,7 @@ export class Interpreter {
             }
             case "sha256": {
                 ensureFunArity(1, ast.args, ast.loc);
-                const expr = this.interpretExpression(ast.args[0]!);
+                const expr = this.interpretExpressionInternal(ast.args[0]!);
                 if (expr.kind === "slice") {
                     throwNonFatalErrorConstEval(
                         "slice argument is currently not supported",
@@ -1355,7 +1419,7 @@ export class Interpreter {
                 {
                     ensureFunArity(1, ast.args, ast.loc);
                     const str = ensureSimplifiedString(
-                        this.interpretExpression(ast.args[0]!),
+                        this.interpretExpressionInternal(ast.args[0]!),
                     );
                     try {
                         return this.util.makeCellLiteral(
@@ -1374,7 +1438,7 @@ export class Interpreter {
                 {
                     ensureFunArity(1, ast.args, ast.loc);
                     const str = ensureSimplifiedString(
-                        this.interpretExpression(ast.args[0]!),
+                        this.interpretExpressionInternal(ast.args[0]!),
                     );
                     try {
                         return this.util.makeSliceLiteral(
@@ -1393,7 +1457,7 @@ export class Interpreter {
                 {
                     ensureFunArity(1, ast.args, ast.loc);
                     const str = ensureSimplifiedString(
-                        this.interpretExpression(ast.args[0]!),
+                        this.interpretExpressionInternal(ast.args[0]!),
                     );
 
                     if (!/^[0-9a-fA-F]*_?$/.test(str.value)) {
@@ -1450,7 +1514,7 @@ export class Interpreter {
                 {
                     ensureFunArity(1, ast.args, ast.loc);
                     const str = ensureSimplifiedString(
-                        this.interpretExpression(ast.args[0]!),
+                        this.interpretExpressionInternal(ast.args[0]!),
                     );
                     const hex = Buffer.from(str.value).toString("hex");
                     if (hex.length > 64) {
@@ -1475,10 +1539,10 @@ export class Interpreter {
                 {
                     ensureFunArity(1, ast.args, ast.loc);
                     const str = ensureSimplifiedString(
-                        this.interpretExpression(ast.args[0]!),
+                        this.interpretExpressionInternal(ast.args[0]!),
                     );
                     return this.util.makeNumberLiteral(
-                        BigInt(crc32.str(str.value) >>> 0),
+                        BigInt(crc32(str.value) >>> 0),
                         ast.loc,
                     ); // >>> 0 converts to unsigned
                 }
@@ -1487,7 +1551,7 @@ export class Interpreter {
                 {
                     ensureFunArity(1, ast.args, ast.loc);
                     const str = ensureSimplifiedString(
-                        this.interpretExpression(ast.args[0]!),
+                        this.interpretExpressionInternal(ast.args[0]!),
                     );
                     try {
                         const address = Address.parse(str.value);
@@ -1512,10 +1576,10 @@ export class Interpreter {
             case "newAddress": {
                 ensureFunArity(2, ast.args, ast.loc);
                 const wc = ensureInt(
-                    this.interpretExpression(ast.args[0]!),
+                    this.interpretExpressionInternal(ast.args[0]!),
                 ).value;
                 const addr = Buffer.from(
-                    ensureInt(this.interpretExpression(ast.args[1]!))
+                    ensureInt(this.interpretExpressionInternal(ast.args[1]!))
                         .value.toString(16)
                         .padStart(64, "0"),
                     "hex",
@@ -1591,7 +1655,7 @@ export class Interpreter {
         returns: TypeRef,
     ): A.AstLiteral {
         // Evaluate the arguments in the current environment
-        const argValues = args.map(this.interpretExpression, this);
+        const argValues = args.map(this.interpretExpressionInternal, this);
         // Extract the parameter names
         const paramNames = functionCode.params.map((param) =>
             idText(param.name),
@@ -1613,7 +1677,7 @@ export class Interpreter {
                 // Interpret all the statements
                 try {
                     functionCode.statements.forEach(
-                        this.interpretStatement,
+                        this.interpretStatementInternal,
                         this,
                     );
                     // At this point, the function did not execute a return.
@@ -1650,7 +1714,7 @@ export class Interpreter {
         );
     }
 
-    public interpretStatement(ast: A.AstStatement): void {
+    public interpretStatementInternal(ast: A.AstStatement) {
         switch (ast.kind) {
             case "statement_let":
                 this.interpretLetStatement(ast);
@@ -1702,7 +1766,7 @@ export class Interpreter {
                 ast.loc,
             );
         }
-        const val = this.interpretExpression(ast.expression);
+        const val = this.interpretExpressionInternal(ast.expression);
         this.envStack.setNewBinding(idText(ast.name), val);
     }
 
@@ -1716,7 +1780,7 @@ export class Interpreter {
                 );
             }
         }
-        const val = this.interpretExpression(ast.expression);
+        const val = this.interpretExpressionInternal(ast.expression);
         if (val.kind !== "struct_value") {
             throwErrorConstEval(
                 `destructuring assignment expected a struct, but got ${showValue(
@@ -1749,7 +1813,7 @@ export class Interpreter {
 
     public interpretAssignStatement(ast: A.AstStatementAssign) {
         if (ast.path.kind === "id") {
-            const val = this.interpretExpression(ast.expression);
+            const val = this.interpretExpressionInternal(ast.expression);
             this.envStack.updateBinding(idText(ast.path), val);
         } else {
             throwNonFatalErrorConstEval(
@@ -1763,7 +1827,8 @@ export class Interpreter {
         ast: A.AstStatementAugmentedAssign,
     ) {
         if (ast.path.kind === "id") {
-            const updateVal = () => this.interpretExpression(ast.expression);
+            const updateVal = () =>
+                this.interpretExpressionInternal(ast.expression);
             const currentPathValue = this.envStack.getBinding(idText(ast.path));
             if (currentPathValue === undefined) {
                 throwNonFatalErrorConstEval(
@@ -1789,23 +1854,29 @@ export class Interpreter {
 
     public interpretConditionStatement(ast: A.AstStatementCondition) {
         const condition = ensureBoolean(
-            this.interpretExpression(ast.condition),
+            this.interpretExpressionInternal(ast.condition),
         );
         if (condition.value) {
             this.envStack.executeInNewEnvironment(() => {
-                ast.trueStatements.forEach(this.interpretStatement, this);
+                ast.trueStatements.forEach(
+                    this.interpretStatementInternal,
+                    this,
+                );
             });
         } else if (ast.elseif !== null) {
             this.interpretConditionStatement(ast.elseif);
         } else if (ast.falseStatements !== null) {
             this.envStack.executeInNewEnvironment(() => {
-                ast.falseStatements!.forEach(this.interpretStatement, this);
+                ast.falseStatements!.forEach(
+                    this.interpretStatementInternal,
+                    this,
+                );
             });
         }
     }
 
     public interpretExpressionStatement(ast: A.AstStatementExpression) {
-        this.interpretExpression(ast.expression);
+        this.interpretExpressionInternal(ast.expression);
     }
 
     public interpretForEachStatement(ast: A.AstStatementForEach) {
@@ -1814,7 +1885,7 @@ export class Interpreter {
 
     public interpretRepeatStatement(ast: A.AstStatementRepeat) {
         const iterations = ensureRepeatInt(
-            this.interpretExpression(ast.iterations),
+            this.interpretExpressionInternal(ast.iterations),
         );
         if (iterations.value > 0) {
             // We can create a single environment for all the iterations in the loop
@@ -1825,7 +1896,10 @@ export class Interpreter {
             // in each iteration.
             this.envStack.executeInNewEnvironment(() => {
                 for (let i = 1; i <= iterations.value; i++) {
-                    ast.statements.forEach(this.interpretStatement, this);
+                    ast.statements.forEach(
+                        this.interpretStatementInternal,
+                        this,
+                    );
                 }
             });
         }
@@ -1833,7 +1907,7 @@ export class Interpreter {
 
     public interpretReturnStatement(ast: A.AstStatementReturn) {
         if (ast.expression !== null) {
-            const val = this.interpretExpression(ast.expression);
+            const val = this.interpretExpressionInternal(ast.expression);
             throw new ReturnSignal(val);
         } else {
             throw new ReturnSignal();
@@ -1858,7 +1932,7 @@ export class Interpreter {
         // in each iteration.
         this.envStack.executeInNewEnvironment(() => {
             do {
-                ast.statements.forEach(this.interpretStatement, this);
+                ast.statements.forEach(this.interpretStatementInternal, this);
 
                 iterCount++;
                 if (iterCount >= this.config.maxLoopIterations) {
@@ -1870,7 +1944,7 @@ export class Interpreter {
                 // The typechecker ensures that the condition does not refer to
                 // variables declared inside the loop.
                 condition = ensureBoolean(
-                    this.interpretExpression(ast.condition),
+                    this.interpretExpressionInternal(ast.condition),
                 );
             } while (!condition.value);
         });
@@ -1890,10 +1964,13 @@ export class Interpreter {
                 // The typechecker ensures that the condition does not refer to
                 // variables declared inside the loop.
                 condition = ensureBoolean(
-                    this.interpretExpression(ast.condition),
+                    this.interpretExpressionInternal(ast.condition),
                 );
                 if (condition.value) {
-                    ast.statements.forEach(this.interpretStatement, this);
+                    ast.statements.forEach(
+                        this.interpretStatementInternal,
+                        this,
+                    );
 
                     iterCount++;
                     if (iterCount >= this.config.maxLoopIterations) {
@@ -1909,7 +1986,7 @@ export class Interpreter {
 
     public interpretBlockStatement(ast: A.AstStatementBlock) {
         this.envStack.executeInNewEnvironment(() => {
-            ast.statements.forEach(this.interpretStatement, this);
+            ast.statements.forEach(this.interpretStatementInternal, this);
         });
     }
 
@@ -1933,5 +2010,28 @@ export class Interpreter {
                 : path;
 
         return `${shortPath.join(" -> ")} -> ${name}`;
+    }
+
+    private handleStackOverflow<T>(loc: SrcInfo, code: () => T): T {
+        try {
+            return code();
+        } catch (e) {
+            const finalErrorMessage =
+                "execution stack reached maximum allowed depth";
+            if (e instanceof RangeError) {
+                if (e.message.includes("stack size exceeded")) {
+                    // Chrome, Safari, Edge, node.js
+                    throwNonFatalErrorConstEval(finalErrorMessage, loc);
+                }
+            }
+            if (e instanceof Error) {
+                if (e.message.includes("too much recursion")) {
+                    // Firefox
+                    throwNonFatalErrorConstEval(finalErrorMessage, loc);
+                }
+            }
+
+            throw e;
+        }
     }
 }

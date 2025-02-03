@@ -54,7 +54,7 @@ Exit code     | Origin                              | Brief description
 [$42$](#42)   | [Action phase][a]                   | Library change action error.
 [$43$](#43)   | [Action phase][a]                   | Exceeded maximum number of cells in the library or the maximum depth of the Merkle tree.
 [$50$](#50)   | [Action phase][a]                   | Account state size exceeded limits.
-[$128$](#128) | Tact compiler ([Compute phase][c])  | Null reference exception.
+[$128$](#128) | Tact compiler ([Compute phase][c])  | Null reference exception. Configurable since Tact 1.6 (not released yet).
 [$129$](#129) | Tact compiler ([Compute phase][c])  | Invalid serialization prefix.
 [$130$](#130) | Tact compiler ([Compute phase][c])  | Invalid incoming message — there's no receiver for the opcode of the received message.
 [$131$](#131) | Tact compiler ([Compute phase][c])  | Constraints error. Reserved, but never thrown.
@@ -544,6 +544,8 @@ Tact utilizes exit codes from $128$ to $255$. Note, that exit codes used by Tact
 ### 128: Null reference exception {#128}
 
 If there's a non-null assertion, such as the [`!!{:tact}`](/book/operators#unary-non-null-assert) operator, and the checked value is [`null{:tact}`](/book/optionals), an error with exit code $128$ is thrown: `Null reference exception`.
+
+This behavior can be modified by setting the [`nullChecks`](/book/config#safety-nullChecks) option to `false`, which will disable run-time null checks. This allows to save some gas, however, it is recommended to use it only for well-tested contracts, as it can lead to less recognizable type errors reported by TVM.
 
 ```tact
 let gotcha: String? = null;

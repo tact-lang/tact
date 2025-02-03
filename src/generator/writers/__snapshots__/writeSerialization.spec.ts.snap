@@ -5103,8 +5103,7 @@ return v'g;",
   },
   {
     "code": {
-      "code": "throw_if(128, null?(v));
-var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
+      "code": "var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
 return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);",
       "kind": "generic",
     },
@@ -5362,8 +5361,7 @@ return v'g;",
   },
   {
     "code": {
-      "code": "throw_if(128, null?(v));
-var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
+      "code": "var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
 return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);",
       "kind": "generic",
     },
@@ -5636,8 +5634,7 @@ return v'h;",
   },
   {
     "code": {
-      "code": "throw_if(128, null?(v));
-var (cell vvv'a, cell vvv'b, slice vvv'c, slice vvv'd, int vvv'e, int vvv'f, int vvv'g, slice vvv'h) = __tact_tuple_destroy_8(v);
+      "code": "var (cell vvv'a, cell vvv'b, slice vvv'c, slice vvv'd, int vvv'e, int vvv'f, int vvv'g, slice vvv'h) = __tact_tuple_destroy_8(v);
 return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g, vvv'h);",
       "kind": "generic",
     },
@@ -10917,8 +10914,7 @@ return v'g;",
   },
   {
     "code": {
-      "code": "throw_if(128, null?(v));
-var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
+      "code": "var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
 return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);",
       "kind": "generic",
     },
@@ -11176,8 +11172,7 @@ return v'g;",
   },
   {
     "code": {
-      "code": "throw_if(128, null?(v));
-var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
+      "code": "var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
 return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);",
       "kind": "generic",
     },
@@ -11450,8 +11445,7 @@ return v'h;",
   },
   {
     "code": {
-      "code": "throw_if(128, null?(v));
-var (cell vvv'a, cell vvv'b, slice vvv'c, slice vvv'd, int vvv'e, int vvv'f, int vvv'g, slice vvv'h) = __tact_tuple_destroy_8(v);
+      "code": "var (cell vvv'a, cell vvv'b, slice vvv'c, slice vvv'd, int vvv'e, int vvv'f, int vvv'g, slice vvv'h) = __tact_tuple_destroy_8(v);
 return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g, vvv'h);",
       "kind": "generic",
     },
@@ -16734,8 +16728,7 @@ return v'g;",
   },
   {
     "code": {
-      "code": "throw_if(128, null?(v));
-var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
+      "code": "var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
 return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);",
       "kind": "generic",
     },
@@ -16993,8 +16986,7 @@ return v'g;",
   },
   {
     "code": {
-      "code": "throw_if(128, null?(v));
-var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
+      "code": "var (int vvv'a, int vvv'b, int vvv'c, int vvv'd, int vvv'e, int vvv'f, int vvv'g) = __tact_tuple_destroy_7(v);
 return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g);",
       "kind": "generic",
     },
@@ -17267,8 +17259,7 @@ return v'h;",
   },
   {
     "code": {
-      "code": "throw_if(128, null?(v));
-var (cell vvv'a, cell vvv'b, slice vvv'c, slice vvv'd, int vvv'e, int vvv'f, int vvv'g, slice vvv'h) = __tact_tuple_destroy_8(v);
+      "code": "var (cell vvv'a, cell vvv'b, slice vvv'c, slice vvv'd, int vvv'e, int vvv'f, int vvv'g, slice vvv'h) = __tact_tuple_destroy_8(v);
 return (vvv'a, vvv'b, vvv'c, vvv'd, vvv'e, vvv'f, vvv'g, vvv'h);",
       "kind": "generic",
     },

@@ -114,7 +114,7 @@ function removeRequiredVariable(
     };
 }
 
-function addVariable(
+export function addVariable(
     name: A.AstId,
     ref: TypeRef,
     ctx: CompilerContext,

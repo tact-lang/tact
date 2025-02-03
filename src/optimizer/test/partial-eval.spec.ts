@@ -373,8 +373,6 @@ function dummyEval(
                 return ast;
             case "cell":
                 return ast;
-            case "comment_value":
-                return ast;
             case "simplified_string":
                 return ast;
             case "slice":

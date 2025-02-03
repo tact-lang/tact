@@ -25,8 +25,6 @@ export function cloneNode<T extends AstNode>(
             // The actual address value src.value is immutable (it freezes its fields in its constructor)
             // So, there is no need to make a copy of the value
             return cloneNode(src);
-        } else if (src.kind === "comment_value") {
-            return cloneNode(src);
         } else if (src.kind === "simplified_string") {
             return cloneNode(src);
         } else if (src.kind === "slice") {
