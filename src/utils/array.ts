@@ -1,3 +1,11 @@
+const range = (from: number, to: number) => {
+    return new Array(to - from + 1).fill(0).map((_, i) => i);
+};
+
+export const repeat = <T>(value: T, count: number): T[] => {
+    return range(1, count).map(() => value);
+};
+
 export const isUndefined = <T>(t: T | undefined): t is undefined =>
     typeof t === "undefined";
 

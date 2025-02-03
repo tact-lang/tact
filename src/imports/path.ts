@@ -1,4 +1,5 @@
 import { throwInternalCompilerError } from "../error/errors";
+import { repeat } from "../utils/array";
 
 // Witness tag. Do not use, do not export.
 const pathTag = Symbol("path");
@@ -50,9 +51,7 @@ export const fromString = (raw: string): RelativePath => {
  * Convert RelativePath to string.
  */
 export const asString = ({ stepsUp, segments }: RelativePath): string => {
-    return [...new Array(stepsUp).fill(0).map(() => ".."), ...segments].join(
-        "/",
-    );
+    return [...repeat("..", stepsUp), ...segments].join("/");
 };
 
 /**

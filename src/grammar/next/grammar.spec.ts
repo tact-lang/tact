@@ -141,4 +141,21 @@ describe("parse imports", () => {
             ],
         });
     });
+
+    it("should detect .func imports", () => {
+        expect(parse('import "./import.func";')).toMatchObject({
+            imports: [
+                {
+                    source: {
+                        type: "relative",
+                        language: "func",
+                        path: {
+                            segments: ["import.func"],
+                            stepsUp: 0,
+                        },
+                    },
+                },
+            ],
+        });
+    });
 });
