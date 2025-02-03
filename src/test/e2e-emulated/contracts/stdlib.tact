@@ -1,3 +1,10 @@
+struct VarIntStruct {
+    a: Int as varint16;
+    b: Int as varint32;
+    d: Int as varuint16;
+    e: Int as varuint32;
+}
+
 contract StdlibTest {
 
     v: Int = 0;
@@ -71,12 +78,28 @@ contract StdlibTest {
         return ctx.readForwardFee();
     }
 
-    get fun varIntegers(): Int {
+    get fun varIntegers1(): Int {
         let x = beginCell().storeVarInt16(1000).storeVarInt32(200).storeVarUint16(30).storeVarUint32(4).endCell().beginParse();
         let a = x.loadVarInt16();
         let b = x.loadVarInt32();
         let d = x.loadVarUint16();
         let e = x.loadVarUint32();
+        return a + b + d + e;
+    }
+
+    get fun varIntegers2(): Int {
+        let s = VarIntStruct{
+            a: 1000,
+            b: 200,
+            d: 30,
+            e: 4
+        };
+        let c = s.toCell();
+        let cs = c.beginParse();
+        let a = cs.loadVarInt16();
+        let b = cs.loadVarInt32();
+        let d = cs.loadVarUint16();
+        let e = cs.loadVarUint32();
         return a + b + d + e;
     }
 }

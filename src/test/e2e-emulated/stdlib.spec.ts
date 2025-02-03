@@ -114,7 +114,10 @@ describe("stdlib", () => {
         );
         expect(res).toBe(400000n);
 
-        const varIntegers = await contract.getVarIntegers();
-        expect(varIntegers).toBe(1234n); // 1000 + 200 + 30 + 4
+        const varIntegers1 = await contract.getVarIntegers1();
+        expect(varIntegers1).toBe(1234n); // 1000 + 200 + 30 + 4
+
+        const varIntegers2 = await contract.getVarIntegers2();
+        expect(varIntegers2).toBe(1234n); // 1000 + 200 + 30 + 4
     });
 });
