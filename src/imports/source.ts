@@ -7,3 +7,8 @@ export type Source = {
 };
 
 export type Language = "func" | "tact";
+
+export type SourceReference = {
+    readonly source: Source;
+    readonly language: Language;
+};
