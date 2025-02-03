@@ -61,7 +61,7 @@ export function resolveImports({
                 imported.func.set(resolved.path, {
                     code,
                     path: resolved.path,
-                    origin: sourceFrom.origin,
+                    origin: resolved.origin,
                 });
             } else {
                 if (!processed.has(resolved.path)) {
@@ -69,7 +69,7 @@ export function resolveImports({
                     pending.push({
                         path: resolved.path,
                         code,
-                        origin: sourceFrom.origin,
+                        origin: resolved.origin,
                     });
                 }
             }
