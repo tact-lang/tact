@@ -31,12 +31,22 @@
       "commit": "https://github.com/tact-lang/tact/pull/1800"
     },
     {
+      "label": "No double checking of message opcodes",
+      "gas": {
+        "fundingTon": "6414",
+        "changeCode": "5373",
+        "approveTon": "11202",
+        "cancelTon": "8701"
+      },
+      "commit": "https://github.com/tact-lang/tact/pull/TODO"
+    },
+    {
       "label": "master",
       "gas": {
-        "fundingTon": "6376",
-        "changeCode": "5500",
-        "approveTon": "11164",
-        "cancelTon": "8663"
+        "fundingTon": "6414",
+        "changeCode": "5373",
+        "approveTon": "11202",
+        "cancelTon": "8701"
       },
       "commit": "https://github.com/tact-lang/tact/tree/main"
     }

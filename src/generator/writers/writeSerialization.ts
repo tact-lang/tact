@@ -324,18 +324,19 @@ function writeSerializerField(
 export function writeParser(
     name: string,
     forceInline: boolean,
+    opcode: "with-opcode" | "no-opcode",
     allocation: StorageAllocation,
     origin: ItemOrigin,
     ctx: WriterContext,
 ) {
     const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
 
-    ctx.fun(ops.reader(name, ctx), () => {
+    ctx.fun(ops.reader(name, opcode, ctx), () => {
         ctx.signature(
             `(slice, (${resolveFuncTypeFromAbi(
                 allocation.ops.map((v) => v.type),
                 ctx,
-            )})) ${ops.reader(name, ctx)}(slice sc_0)`,
+            )})) ${ops.reader(name, opcode, ctx)}(slice sc_0)`,
         );
         if (forceInline || isSmall) {
             ctx.flag("inline");
@@ -343,7 +344,7 @@ export function writeParser(
         ctx.context("type:" + name);
         ctx.body(() => {
             // Check prefix
-            if (allocation.header) {
+            if (allocation.header && opcode === "with-opcode") {
                 ctx.append(
                     `throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(${allocation.header.bits}) == ${allocation.header.value});`,
                 );
@@ -364,24 +365,26 @@ export function writeParser(
     });
 
     // Write non-modifying variant
-
-    ctx.fun(ops.readerNonModifying(name, ctx), () => {
-        ctx.signature(
-            `(${resolveFuncTypeFromAbi(
-                allocation.ops.map((v) => v.type),
-                ctx,
-            )}) ${ops.readerNonModifying(name, ctx)}(slice sc_0)`,
-        );
-        if (forceInline || isSmall) {
-            ctx.flag("inline");
-        }
-        ctx.context("type:" + name);
-        ctx.body(() => {
-            ctx.append(`var r = sc_0~${ops.reader(name, ctx)}();`);
-            ctx.append(`sc_0.end_parse();`);
-            ctx.append(`return r;`);
+    // prevent from writing two FunC functions with the same name
+    if (opcode === "with-opcode") {
+        ctx.fun(ops.readerNonModifying(name, ctx), () => {
+            ctx.signature(
+                `(${resolveFuncTypeFromAbi(
+                    allocation.ops.map((v) => v.type),
+                    ctx,
+                )}) ${ops.readerNonModifying(name, ctx)}(slice sc_0)`,
+            );
+            if (forceInline || isSmall) {
+                ctx.flag("inline");
+            }
+            ctx.context("type:" + name);
+            ctx.body(() => {
+                ctx.append(`var r = sc_0~${ops.reader(name, opcode, ctx)}();`);
+                ctx.append(`sc_0.end_parse();`);
+                ctx.append(`return r;`);
+            });
         });
-    });
+    }
 }
 
 export function writeBouncedParser(
@@ -405,12 +408,7 @@ export function writeBouncedParser(
         }
         ctx.context("type:" + name);
         ctx.body(() => {
-            // Check prefix
-            if (allocation.header) {
-                ctx.append(
-                    `throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(${allocation.header.bits}) == ${allocation.header.value});`,
-                );
-            }
+            // Opcode already eaten and checked
 
             // Write cell parser
             writeCellParser(allocation.root, 0, ctx);
@@ -442,7 +440,7 @@ export function writeOptionalParser(
                     return null();
                 }
                 var sc = cl.begin_parse();
-                return ${ops.typeAsOptional(name, ctx)}(sc~${ops.reader(name, ctx)}());
+                return ${ops.typeAsOptional(name, ctx)}(sc~${ops.reader(name, "with-opcode", ctx)}());
             `);
         });
     });
@@ -639,7 +637,7 @@ function writeFieldParser(
                     throw Error("Not implemented");
                 } else {
                     ctx.append(
-                        `${varName} = sc_${gen}~load_int(1) ? ${ops.typeAsOptional(op.type, ctx)}(sc_${gen}~${ops.reader(op.type, ctx)}()) : null();`,
+                        `${varName} = sc_${gen}~load_int(1) ? ${ops.typeAsOptional(op.type, ctx)}(sc_${gen}~${ops.reader(op.type, "with-opcode", ctx)}()) : null();`,
                     );
                 }
             } else {
@@ -647,7 +645,7 @@ function writeFieldParser(
                     throw Error("Not implemented");
                 } else {
                     ctx.append(
-                        `${varName} = sc_${gen}~${ops.reader(op.type, ctx)}();`,
+                        `${varName} = sc_${gen}~${ops.reader(op.type, "with-opcode", ctx)}();`,
                     );
                 }
             }

@@ -326,6 +326,15 @@ function writeAll(
             writeParser(
                 t.name,
                 t.kind === "contract",
+                "with-opcode",
+                allocation,
+                t.origin,
+                wCtx,
+            );
+            writeParser(
+                t.name,
+                t.kind === "contract",
+                "no-opcode",
                 allocation,
                 t.origin,
                 wCtx,
@@ -362,6 +371,7 @@ function writeAll(
             writeParser(
                 funcInitIdOf(t.name),
                 false,
+                "with-opcode",
                 allocation,
                 t.origin,
                 wCtx,

@@ -98,6 +98,15 @@
         "discovery": "10003"
       },
       "commit": null
+    },
+    {
+      "label": "1.5.3 without double checking of message opcodes (#TODO)",
+      "gas": {
+        "transfer": "20368",
+        "burn": "15655",
+        "discovery": "9848"
+      },
+      "commit": null
     }
   ]
 }
