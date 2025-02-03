@@ -10,7 +10,6 @@ import { getParser } from "../grammar";
 import { getAstFactory } from "../ast/ast-helpers";
 import { defaultParser } from "../grammar/grammar";
 import { stdlibPath } from "../stdlib/path";
-import { evaluateDeclarationsInitializers } from "../types/evalInitializers";
 
 const primitivesPath = path.join(stdlibPath, "/std/primitives.tact");
 const stdlib = fs.readFileSync(primitivesPath, "utf-8");
@@ -80,7 +79,6 @@ describe("resolveAllocation", () => {
         ctx = resolveSignatures(ctx, ast);
         ctx = resolveStatements(ctx, ast);
         ctx = resolveAllocations(ctx);
-        evaluateDeclarationsInitializers(ctx, ast);
         expect(getAllocations(ctx)).toMatchSnapshot();
     });
 });

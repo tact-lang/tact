@@ -4,8 +4,10 @@ import { openContext } from "../../context/store";
 import { getParser } from "../../grammar";
 import { defaultParser } from "../../grammar/grammar";
 import { evaluateDeclarationsInitializers } from "../../types/evalInitializers";
-import { resolveDescriptors } from "../../types/resolveDescriptors";
-import { getAllExpressionTypes } from "../../types/resolveExpression";
+import {
+    getAllTypes,
+    resolveDescriptors,
+} from "../../types/resolveDescriptors";
 import { resolveSignatures } from "../../types/resolveSignatures";
 import { resolveStatements } from "../../types/resolveStatements";
 import { loadCases } from "../../utils/loadCases";
@@ -24,7 +26,7 @@ describe("interpreter-evaluation", () => {
             ctx = resolveStatements(ctx, Ast);
             ctx = resolveSignatures(ctx, Ast);
             evaluateDeclarationsInitializers(ctx, Ast);
-            expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
+            expect(getAllTypes(ctx)).toMatchSnapshot();
         });
     }
 });
