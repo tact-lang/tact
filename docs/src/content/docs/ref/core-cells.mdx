@@ -67,7 +67,11 @@ let buzz: Slice = emptyCell().asSlice();
 fizz == buzz; // true
 ```
 
-## Cell.beginParse
+## Cell
+
+A section to group all extension and extension mutation functions for the [`Cell{:tact}`][cell] type.
+
+### Cell.beginParse
 
 ```tact
 extends fun beginParse(self: Cell): Slice;
@@ -84,7 +88,7 @@ let c: Cell = emptyCell();
 let fizz: Slice = c.beginParse();
 ```
 
-## Cell.depth
+### Cell.depth
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
@@ -103,7 +107,7 @@ let c: Cell = beginCell().storeInt(42, 7).endCell();
 let depth: Int = c.depth(); // 0
 ```
 
-## Cell.computeDataSize
+### Cell.computeDataSize
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
@@ -142,7 +146,7 @@ try {
 }
 ```
 
-## Cell.hash
+### Cell.hash
 
 ```tact
 extends fun hash(self: Cell): Int;
@@ -159,7 +163,7 @@ let c: Cell = emptyCell();
 let fizz: Int = c.hash();
 ```
 
-## Cell.asSlice
+### Cell.asSlice
 
 ```tact
 extends fun asSlice(self: Cell): Slice;
@@ -176,7 +180,11 @@ let c: Cell = emptyCell();
 let fizz: Slice = c.asSlice();
 ```
 
-## Builder.endCell
+## Builder
+
+A section to group all extension and extension mutation functions for the [`Builder{:tact}`][builder] type.
+
+### Builder.endCell
 
 ```tact
 extends fun endCell(self: Builder): Cell;
@@ -193,7 +201,7 @@ let b: Builder = beginCell();
 let fizz: Cell = b.endCell();
 ```
 
-## Builder.storeUint
+### Builder.storeUint
 
 ```tact
 extends fun storeUint(self: Builder, value: Int, bits: Int): Builder;
@@ -212,7 +220,7 @@ let b: Builder = beginCell();
 let fizz: Builder = b.storeUint(42, 6);
 ```
 
-## Builder.storeInt
+### Builder.storeInt
 
 ```tact
 extends fun storeInt(self: Builder, value: Int, bits: Int): Builder;
@@ -231,7 +239,7 @@ let b: Builder = beginCell();
 let fizz: Builder = b.storeInt(42, 7);
 ```
 
-## Builder.storeBool
+### Builder.storeBool
 
 ```tact
 extends fun storeBool(self: Builder, value: Bool): Builder;
@@ -249,7 +257,7 @@ let fizz: Builder = b.storeBool(true);  // writes 1
 let buzz: Builder = b.storeBool(false); // writes 0
 ```
 
-## Builder.storeBit
+### Builder.storeBit
 
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
 
@@ -267,7 +275,7 @@ let fizz: Builder = b.storeBit(true);  // writes 1
 let buzz: Builder = b.storeBit(false); // writes 0
 ```
 
-## Builder.storeBuilder
+### Builder.storeBuilder
 
 ```tact
 extends fun storeBuilder(self: Builder, cell: Builder): Builder;
@@ -285,7 +293,7 @@ let fizz: Builder = beginCell().storeBuilder(b);
 b.endCell() == fizz.endCell(); // true
 ```
 
-## Builder.storeSlice
+### Builder.storeSlice
 
 ```tact
 extends fun storeSlice(self: Builder, cell: Slice): Builder;
@@ -303,7 +311,7 @@ let s: Slice = emptyCell().asSlice();
 let fizz: Builder = b.storeSlice(s);
 ```
 
-## Builder.storeCoins
+### Builder.storeCoins
 
 ```tact
 extends fun storeCoins(self: Builder, value: Int): Builder;
@@ -311,7 +319,7 @@ extends fun storeCoins(self: Builder, value: Int): Builder;
 
 Extension function for the [`Builder{:tact}`][builder].
 
-Stores (serializes) an unsigned [`Int{:tact}`][int] `value` in the range $0 .. 2^{120} − 1$ into the copy of the [`Builder{:tact}`][builder]. The serialization of `value` consists of a $4$-bit unsigned big-endian integer $l$, which is the smallest integer $l ≥ 0$, such that `value` $< 2^{8 * l}$, followed by an $8 * l$-bit unsigned big-endian representation of `value`. Returns that copy of the [`Builder{:tact}`][builder].
+Stores (serializes) an unsigned [`Int{:tact}`][int] `value` in the range from $0$ to $2^{120} − 1$ inclusive into the copy of the [`Builder{:tact}`][builder]. The serialization of `value` consists of a $4$-bit unsigned big-endian integer $l$, which is the smallest integer $l ≥ 0$, such that `value` $< 2^{8 * l}$, followed by an $8 * l$-bit unsigned big-endian representation of `value`. Returns that copy of the [`Builder{:tact}`][builder].
 
 Attempts to store an out-of-bounds `value` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -330,7 +338,111 @@ let fizz: Builder = b.storeCoins(42);
 
 :::
 
-## Builder.storeAddress
+### Builder.storeVarUint16
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun storeVarUint16(self: Builder, value: Int): Builder;
+```
+
+Extension function for the [`Builder{:tact}`][builder]. Alias to [`Builder.storeCoins(){:tact}`](#builderstorecoins).
+
+Usage example:
+
+```tact
+let b: Builder = beginCell();
+let fizz: Builder = b.storeVarUint16(42);
+```
+
+:::note[Useful links:]
+
+  [Types of variable bit-width](/book/integers#serialization-varint)
+
+:::
+
+### Builder.storeVarInt16
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun storeVarInt16(self: Builder, value: Int): Builder;
+```
+
+Extension function for the [`Builder{:tact}`][builder].
+
+Similar to [`Builder.storeCoins(){:tact}`](#builderstorecoins), but with a different `value` range: from $-2^{119}$ to $2^{119} - 1$ inclusive.
+
+Attempts to store an out-of-bounds `value` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage example:
+
+```tact
+let b: Builder = beginCell();
+let fizz: Builder = b.storeVarInt16(-42);
+```
+
+:::note[Useful links:]
+
+  [Types of variable bit-width](/book/integers#serialization-varint)
+
+:::
+
+### Builder.storeVarUint32
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun storeVarUint32(self: Builder, value: Int): Builder;
+```
+
+Extension function for the [`Builder{:tact}`][builder].
+
+Stores (serializes) an unsigned [`Int{:tact}`][int] `value` in the range from $0$ to $2^{248} − 1$ inclusive into the copy of the [`Builder{:tact}`][builder]. The serialization of `value` consists of a $5$-bit unsigned big-endian integer $l$, which is the smallest integer $l ≥ 0$, such that `value` $< 2^{8 * l}$, followed by an $8 * l$-bit unsigned big-endian representation of `value`. Returns that copy of the [`Builder{:tact}`][builder].
+
+Attempts to store an out-of-bounds `value` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage example:
+
+```tact
+let b: Builder = beginCell();
+let fizz: Builder = b.storeVarUint32(420000);
+```
+
+:::note[Useful links:]
+
+  [Types of variable bit-width](/book/integers#serialization-varint)
+
+:::
+
+### Builder.storeVarInt32
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun storeVarInt32(self: Builder, value: Int): Builder;
+```
+
+Extension function for the [`Builder{:tact}`][builder].
+
+Similar to [`Builder.storeVarUint32(){:tact}`](#builderstorevaruint32), but with a different `value` range: from $-2^{247}$ to $2^{247} - 1$ inclusive.
+
+Attempts to store an out-of-bounds `value` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage example:
+
+```tact
+let b: Builder = beginCell();
+let fizz: Builder = b.storeVarInt32(-420000);
+```
+
+:::note[Useful links:]
+
+  [Types of variable bit-width](/book/integers#serialization-varint)
+
+:::
+
+### Builder.storeAddress
 
 ```tact
 extends fun storeAddress(self: Builder, address: Address): Builder;
@@ -347,7 +459,7 @@ let b: Builder = beginCell();
 let fizz: Builder = b.storeAddress(myAddress());
 ```
 
-## Builder.storeRef
+### Builder.storeRef
 
 ```tact
 extends fun storeRef(self: Builder, cell: Cell): Builder;
@@ -366,7 +478,7 @@ let b: Builder = beginCell();
 let fizz: Builder = b.storeRef(emptyCell());
 ```
 
-## Builder.storeMaybeRef
+### Builder.storeMaybeRef
 
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
 
@@ -391,7 +503,7 @@ let fizz: Builder = b
     .storeMaybeRef(null);       // stores only a single 0 bit
 ```
 
-## Builder.refs
+### Builder.refs
 
 ```tact
 extends fun refs(self: Builder): Int;
@@ -408,7 +520,7 @@ let b: Builder = beginCell();
 let fizz: Int = b.refs(); // 0
 ```
 
-## Builder.bits
+### Builder.bits
 
 ```tact
 extends fun bits(self: Builder): Int;
@@ -425,7 +537,7 @@ let b: Builder = beginCell();
 let fizz: Int = b.bits(); // 0
 ```
 
-## Builder.depth
+### Builder.depth
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
@@ -444,7 +556,7 @@ let b: Builder = beginCell().storeInt(42, 7);
 let depth: Int = b.depth(); // 0
 ```
 
-## Builder.asSlice
+### Builder.asSlice
 
 ```tact
 extends fun asSlice(self: Builder): Slice;
@@ -461,7 +573,7 @@ let b: Builder = beginCell();
 let fizz: Slice = b.asSlice();
 ```
 
-## Builder.asCell
+### Builder.asCell
 
 ```tact
 extends fun asCell(self: Builder): Cell;
@@ -478,7 +590,11 @@ let b: Builder = beginCell();
 let fizz: Cell = b.asCell();
 ```
 
-## Slice.loadUint
+## Slice
+
+A section to group all extension and extension mutation functions for the [`Slice{:tact}`][slice] type.
+
+### Slice.loadUint
 
 ```tact
 extends mutates fun loadUint(self: Slice, l: Int): Int;
@@ -499,7 +615,7 @@ let s: Slice = beginCell().storeUint(42, 7).asSlice();
 let fizz: Int = s.loadUint(7);
 ```
 
-## Slice.preloadUint
+### Slice.preloadUint
 
 ```tact
 extends fun preloadUint(self: Slice, l: Int): Int;
@@ -520,7 +636,7 @@ let s: Slice = beginCell().storeUint(42, 7).asSlice();
 let fizz: Int = s.preloadUint(7);
 ```
 
-## Slice.loadInt
+### Slice.loadInt
 
 ```tact
 extends mutates fun loadInt(self: Slice, l: Int): Int;
@@ -541,7 +657,7 @@ let s: Slice = beginCell().storeInt(42, 7).asSlice();
 let fizz: Int = s.loadInt(7);
 ```
 
-## Slice.preloadInt
+### Slice.preloadInt
 
 ```tact
 extends fun preloadInt(self: Slice, l: Int): Int;
@@ -562,7 +678,7 @@ let s: Slice = beginCell().storeInt(42, 7).asSlice();
 let fizz: Int = s.preloadInt(7);
 ```
 
-## Slice.loadBits
+### Slice.loadBits
 
 ```tact
 extends mutates fun loadBits(self: Slice, l: Int): Slice;
@@ -583,7 +699,7 @@ let s: Slice = beginCell().storeInt(42, 7).asSlice();
 let fizz: Slice = s.loadBits(7);
 ```
 
-## Slice.preloadBits
+### Slice.preloadBits
 
 ```tact
 extends fun preloadBits(self: Slice, l: Int): Slice;
@@ -610,7 +726,7 @@ let fizz: Slice = s.preloadBits(7);
 
 :::
 
-## Slice.skipBits
+### Slice.skipBits
 
 ```tact
 extends mutates fun skipBits(self: Slice, l: Int);
@@ -632,7 +748,7 @@ s.skipBits(5);                   // all but first 5 bits
 let fizz: Slice = s.loadBits(1); // load only 1 bit
 ```
 
-## Slice.skipLastBits
+### Slice.skipLastBits
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
@@ -656,7 +772,7 @@ let allButLastFive: Slice = s.skipLastBits(5); // all but last 5 bits,
                                                // i.e. only first 2
 ```
 
-## Slice.loadBool
+### Slice.loadBool
 
 ```tact
 extends mutates fun loadBool(self: Slice): Bool;
@@ -677,7 +793,7 @@ let s: Slice = beginCell().storeBool(true).asSlice();
 let fizz: Bool = s.loadBool(); // true
 ```
 
-## Slice.loadBit
+### Slice.loadBit
 
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
 
@@ -694,7 +810,7 @@ let s: Slice = beginCell().storeBit(true).asSlice();
 let fizz: Bool = s.loadBit(); // true
 ```
 
-## Slice.loadCoins
+### Slice.loadCoins
 
 ```tact
 extends mutates fun loadCoins(self: Slice): Int;
@@ -702,7 +818,7 @@ extends mutates fun loadCoins(self: Slice): Int;
 
 Extension mutation function for the [`Slice{:tact}`][slice].
 
-Loads and returns [serialized](#builderstorecoins) an unsigned [`Int{:tact}`][int] value in the range $0 .. 2^{120} - 1$ from the [`Slice{:tact}`][slice]. This value usually represents the amount in [nanoToncoins](/book/integers#nanotoncoin).
+Loads and returns a [serialized](#builderstorecoins) unsigned [`Int{:tact}`][int] value in the range from $0$ to $2^{120} - 1$ inclusive from the [`Slice{:tact}`][slice]. This value usually represents the amount in [nanoToncoins](/book/integers#nanotoncoin).
 
 Attempts to load such [`Int{:tact}`][int] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
@@ -712,7 +828,7 @@ Usage example:
 
 ```tact
 let s: Slice = beginCell().storeCoins(42).asSlice();
-let fizz: Int = s.loadCoins();
+let fizz: Int = s.loadCoins(); // 42
 ```
 
 :::note[Useful links:]
@@ -721,7 +837,113 @@ let fizz: Int = s.loadCoins();
 
 :::
 
-## Slice.loadAddress
+### Slice.loadVarUint16
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun loadVarUint16(self: Slice): Int;
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice]. Alias to [`Slice.loadCoins(){:tact}`](#sliceloadcoins).
+
+Usage example:
+
+```tact
+let s: Slice = beginCell().storeVarUint16(42).asSlice();
+let fizz: Int = s.loadVarUint16(); // 42
+```
+
+:::note[Useful links:]
+
+  [Types of variable bit-width](/book/integers#serialization-varint)
+
+:::
+
+### Slice.loadVarInt16
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun loadVarInt16(self: Slice): Int;
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice].
+
+Similar to [`Slice.loadCoins(){:tact}`](#sliceloadcoins), but with a different `value` range: from $-2^{119}$ to $2^{119} - 1$ inclusive.
+
+Attempts to load such [`Int{:tact}`][int] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to load more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell().storeVarInt16(-42).asSlice();
+let fizz: Int = s.loadVarInt16(); // -42
+```
+
+:::note[Useful links:]
+
+  [Types of variable bit-width](/book/integers#serialization-varint)
+
+:::
+
+### Slice.loadVarUint32
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun loadVarUint32(self: Slice): Int;
+```
+
+Loads and returns a [serialized](#builderstorevaruint32) unsigned [`Int{:tact}`][int] value in the range from $0$ to $2^{248} − 1$ inclusive from the [`Slice{:tact}`][slice].
+
+Attempts to load such [`Int{:tact}`][int] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to load more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell().storeVarUint32(420000).asSlice();
+let fizz: Int = s.loadVarUint32(); // 420000
+```
+
+:::note[Useful links:]
+
+  [Types of variable bit-width](/book/integers#serialization-varint)
+
+:::
+
+### Slice.loadVarInt32
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun loadVarInt32(self: Slice): Int;
+```
+
+Similar to [`Slice.loadVarUint32(){:tact}`](#sliceloadvaruint32), but with a different `value` range: from $-2^{247}$ to $2^{247} - 1$ inclusive.
+
+Attempts to load such [`Int{:tact}`][int] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to load more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell().storeVarInt32(-420000).asSlice();
+let fizz: Int = s.loadVarInt32(); // -420000
+```
+
+:::note[Useful links:]
+
+  [Types of variable bit-width](/book/integers#serialization-varint)
+
+:::
+
+### Slice.loadAddress
 
 ```tact
 extends mutates fun loadAddress(self: Slice): Address;
@@ -742,7 +964,7 @@ let s: Slice = beginCell().storeAddress(myAddress()).asSlice();
 let fizz: Address = s.loadAddress();
 ```
 
-## Slice.loadRef
+### Slice.loadRef
 
 ```tact
 extends mutates fun loadRef(self: Slice): Cell;
@@ -771,7 +993,7 @@ let ref2: Cell = s2.loadRef();
 ref1 == ref2; // false
 ```
 
-## Slice.preloadRef
+### Slice.preloadRef
 
 ```tact
 extends fun preloadRef(self: Slice): Cell;
@@ -800,7 +1022,7 @@ let ref2: Cell = s2.preloadRef();
 ref1 == ref2; // true
 ```
 
-## Slice.refs
+### Slice.refs
 
 ```tact
 extends fun refs(self: Slice): Int;
@@ -817,7 +1039,7 @@ let s: Slice = beginCell().storeRef(emptyCell()).asSlice();
 let fizz: Int = s.refs();
 ```
 
-## Slice.bits
+### Slice.bits
 
 ```tact
 extends fun bits(self: Slice): Int;
@@ -834,7 +1056,7 @@ let s: Slice = beginCell().storeRef(emptyCell()).asSlice();
 let fizz: Int = s.bits();
 ```
 
-## Slice.firstBits
+### Slice.firstBits
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
@@ -863,7 +1085,7 @@ let firstFive: Slice = s.firstBits(5); // first 5 bits
 
 :::
 
-## Slice.lastBits
+### Slice.lastBits
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
@@ -886,7 +1108,7 @@ let s: Slice = beginCell().storeInt(42, 7).asSlice();
 let lastFive: Slice = s.lastBits(5); // last 5 bits
 ```
 
-## Slice.depth
+### Slice.depth
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
@@ -905,7 +1127,7 @@ let s: Slice = beginCell().storeInt(42, 7).asSlice();
 let depth: Int = s.depth(); // 0
 ```
 
-## Slice.computeDataSize
+### Slice.computeDataSize
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
@@ -944,7 +1166,7 @@ try {
 }
 ```
 
-## Slice.empty
+### Slice.empty
 
 ```tact
 extends fun empty(self: Slice): Bool;
@@ -968,7 +1190,7 @@ let buzz: Bool = beginCell().asSlice().empty(); // true
 
 :::
 
-## Slice.dataEmpty
+### Slice.dataEmpty
 
 ```tact
 extends fun dataEmpty(slice: Slice): Bool;
@@ -988,7 +1210,7 @@ let s2: Slice = beginCell().storeInt(42, 7).asSlice();
 let buzz: Bool = s2.dataEmpty(); // false
 ```
 
-## Slice.refsEmpty
+### Slice.refsEmpty
 
 ```tact
 extends fun refsEmpty(slice: Slice): Bool;
@@ -1006,7 +1228,7 @@ let fizz: Bool = s.refsEmpty();                     // false
 let buzz: Bool = beginCell().asSlice().refsEmpty(); // true
 ```
 
-## Slice.endParse
+### Slice.endParse
 
 ```tact
 extends fun endParse(self: Slice);
@@ -1028,7 +1250,7 @@ try {
 }
 ```
 
-## Slice.hash
+### Slice.hash
 
 ```tact
 extends fun hash(self: Slice): Int;
@@ -1045,7 +1267,7 @@ let s: Slice = beginCell().asSlice();
 let fizz: Int = s.hash();
 ```
 
-## Slice.asCell
+### Slice.asCell
 
 ```tact
 extends fun asCell(self: Slice): Cell;
