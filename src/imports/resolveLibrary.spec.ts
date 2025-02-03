@@ -1,86 +1,104 @@
 import { createVirtualFileSystem } from "../vfs/createVirtualFileSystem";
+import { fromString } from "./path";
 import { resolveLibrary } from "./resolveLibrary";
+import { Source } from "./source";
 
-describe("resolveLibrary", () => {
-    it("should resolve imports", () => {
-        const project = createVirtualFileSystem("/project", {
-            ["main.tact"]: "",
-            ["import.tact"]: "",
-            ["main.fc"]: "",
-        });
-        const stdlib = createVirtualFileSystem("@stdlib", {
-            ["libs/config.tact"]: "",
-            ["libs/config/import.tact"]: "",
-        });
+const project = createVirtualFileSystem("/project", {
+    ["main.tact"]: "",
+    ["import.tact"]: "",
+    ["main.fc"]: "",
+});
 
-        // Resolve stdlib import
-        let resolved = resolveLibrary({
-            path: "/project/main.tact",
-            name: "@stdlib/config",
-            project,
-            stdlib,
-        });
-        if (!resolved.ok) {
-            throw Error("Unable to resolve library");
-        }
-        expect(resolved.path).toBe("@stdlib/libs/config.tact");
-        expect(resolved.source).toBe("stdlib");
-        expect(resolved.kind).toBe("tact");
+const mainSource: Source = {
+    origin: "user",
+    path: "/project/main.tact",
+    code: "",
+};
 
-        // Resolve import func file
-        resolved = resolveLibrary({
-            path: "/project/main.tact",
-            name: "./main.fc",
-            project,
-            stdlib,
-        });
-        if (!resolved.ok) {
-            throw Error("Unable to resolve library");
-        }
-        expect(resolved.path).toBe("/project/main.fc");
-        expect(resolved.source).toBe("project");
-        expect(resolved.kind).toBe("func");
+const stdlib = createVirtualFileSystem("@stdlib", {
+    ["libs/config.tact"]: "",
+    ["libs/import.tact"]: "",
+});
 
-        // Resolve import tact file
-        resolved = resolveLibrary({
-            path: "/project/main.tact",
-            name: "./import",
-            project,
-            stdlib,
-        });
-        if (!resolved.ok) {
-            throw Error("Unable to resolve library");
-        }
-        expect(resolved.path).toBe("/project/import.tact");
-        expect(resolved.source).toBe("project");
-        expect(resolved.kind).toBe("tact");
+const stdlibSource: Source = {
+    origin: "stdlib",
+    path: "@stdlib/libs/import.tact",
+    code: "",
+};
 
-        // Resolve import tact file
-        resolved = resolveLibrary({
-            path: "/project/main.tact",
-            name: "./import.tact",
-            project,
-            stdlib,
-        });
-        if (!resolved.ok) {
-            throw Error("Unable to resolve library");
-        }
-        expect(resolved.path).toBe("/project/import.tact");
-        expect(resolved.source).toBe("project");
-        expect(resolved.kind).toBe("tact");
+it("project file, stdlib import", () => {
+    const resolved = resolveLibrary({
+        sourceFrom: mainSource,
+        sourceRef: {
+            path: fromString("config.tact"),
+            language: "tact",
+            type: "stdlib",
+        },
+        project,
+        stdlib,
+    });
+    expect(resolved).toMatchObject({
+        ok: true,
+        path: "@stdlib/libs/config.tact",
+        origin: "stdlib",
+        language: "tact",
+    });
+});
 
-        // Resolve import internal stdlib file
-        resolved = resolveLibrary({
-            path: "@stdlib/libs/import.tact",
-            name: "./config/import",
-            project,
-            stdlib,
-        });
-        if (!resolved.ok) {
-            throw Error("Unable to resolve library");
-        }
-        expect(resolved.path).toBe("@stdlib/libs/config/import.tact");
-        expect(resolved.source).toBe("stdlib");
-        expect(resolved.kind).toBe("tact");
+it("project file, relative import, func", () => {
+    const resolved = resolveLibrary({
+        sourceFrom: mainSource,
+        sourceRef: {
+            path: fromString("./main.fc"),
+            type: "relative",
+            language: "func",
+        },
+        project,
+        stdlib,
+    });
+    expect(resolved).toMatchObject({
+        ok: true,
+        path: "/project/main.fc",
+        origin: "user",
+        language: "func",
+    });
+});
+
+it("project file, relative import, tact", () => {
+    const resolved = resolveLibrary({
+        sourceFrom: mainSource,
+        sourceRef: {
+            path: fromString("./import.tact"),
+            language: "tact",
+            type: "relative",
+        },
+        project,
+        stdlib,
+    });
+    expect(resolved).toMatchObject({
+        ok: true,
+        path: "/project/import.tact",
+        origin: "user",
+        language: "tact",
+    });
+});
+
+it("stdlib file, relative import, tact", () => {
+    const resolved = resolveLibrary({
+        sourceFrom: stdlibSource,
+        sourceRef: {
+            path: fromString("./import.tact"),
+            language: "tact",
+            type: "relative",
+        },
+        project,
+        stdlib,
+    });
+
+    expect(resolved).toMatchObject({
+        ok: true,
+        path: "@stdlib/libs/import.tact",
+        origin: "stdlib",
+        language: "tact",
     });
 });

@@ -2,6 +2,7 @@ import * as A from "./ast";
 import { groupBy, intercalate, isUndefined } from "../utils/array";
 import { makeVisitor } from "../utils/tricks";
 import { astNumToString, idText } from "./ast-helpers";
+import { asString } from "../imports/path";
 
 //
 // Types
@@ -645,9 +646,15 @@ export const ppContractBody: Printer<A.AstContractDeclaration> =
     });
 
 export const ppAstImport: Printer<A.AstImport> =
-    ({ path }) =>
-    (c) =>
-        c.row(`import "${path.value}";`);
+    ({ source: { path, type } }) =>
+    (c) => {
+        if (type === "relative") {
+            return c.row(`import "${asString(path)}";`);
+        } else {
+            const displayPath = asString(path).slice(0, -".tact".length);
+            return c.row(`import "@stdlib/${displayPath}";`);
+        }
+    };
 
 export const ppAstFunctionSignature = ({
     name,

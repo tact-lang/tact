@@ -2,67 +2,53 @@ import { Parser } from "../grammar";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { throwCompilationError } from "../error/errors";
 import { resolveLibrary } from "./resolveLibrary";
-import { SourceAbsolute } from "./source";
+import { Language, Source } from "./source";
 
-export function resolveImports(args: {
+type ResolveImportsArgs = {
     entrypoint: string;
     project: VirtualFileSystem;
     stdlib: VirtualFileSystem;
     parser: Parser;
-}) {
-    const stdlibTactPath = args.stdlib.resolve("std/stdlib.tact");
-    if (!args.stdlib.exists(stdlibTactPath)) {
-        throwCompilationError(
-            `Could not find stdlib.tact at ${stdlibTactPath}`,
-        );
-    }
-    const stdlibTact = args.stdlib.readFile(stdlibTactPath).toString();
+};
 
-    const codePath = args.project.resolve(args.entrypoint);
-    if (!args.project.exists(codePath)) {
-        throwCompilationError(`Could not find entrypoint ${args.entrypoint}`);
-    }
-    const code = args.project.readFile(codePath).toString();
-
-    //
-    // Resolve all imports
-    //
-
-    const importedTact: SourceAbsolute[] = [];
-    const importedFunc: SourceAbsolute[] = [];
+export function resolveImports({
+    entrypoint,
+    parser,
+    project,
+    stdlib,
+}: ResolveImportsArgs) {
+    const imported: Record<Language, Map<string, Source>> = {
+        func: new Map(),
+        tact: new Map(),
+    };
+    // const importedTact: Source[] = [];
+    // const importedFunc: Source[] = [];
     const processed: Set<string> = new Set();
-    const pending: SourceAbsolute[] = [];
-    function processImports(source: SourceAbsolute) {
-        const imp = args.parser.parseImports(source);
-        for (const i of imp) {
-            const importPath = i.path.value;
+    const pending: Source[] = [];
+    function processImports(sourceFrom: Source) {
+        const imp = parser.parseImports(sourceFrom);
+        for (const { source: sourceRef, loc } of imp) {
             // Resolve library
             const resolved = resolveLibrary({
-                path: source.path,
-                name: importPath,
-                project: args.project,
-                stdlib: args.stdlib,
+                sourceFrom,
+                sourceRef,
+                project: project,
+                stdlib: stdlib,
             });
             if (!resolved.ok) {
                 throwCompilationError(
-                    `Could not resolve import "${importPath}" in ${source.path}`,
+                    `Could not resolve import in ${sourceFrom.path}`,
+                    loc,
                 );
             }
 
             // Check if already imported
-            if (resolved.kind === "func") {
-                if (importedFunc.find((v) => v.path === resolved.path)) {
-                    continue;
-                }
-            } else {
-                if (importedTact.find((v) => v.path === resolved.path)) {
-                    continue;
-                }
+            if (imported[resolved.language].has(resolved.path)) {
+                continue;
             }
 
             // Load code
-            const vfs =
-                resolved.source === "project" ? args.project : args.stdlib;
+            const vfs = resolved.origin === "user" ? project : stdlib;
             if (!vfs.exists(resolved.path)) {
                 throwCompilationError(
                     `Could not find source file ${resolved.path}`,
@@ -71,11 +57,11 @@ export function resolveImports(args: {
             const code: string = vfs.readFile(resolved.path).toString();
 
             // Add to imports
-            if (resolved.kind === "func") {
-                importedFunc.push({
+            if (resolved.language === "func") {
+                imported.func.set(resolved.path, {
                     code,
                     path: resolved.path,
-                    origin: source.origin,
+                    origin: sourceFrom.origin,
                 });
             } else {
                 if (!processed.has(resolved.path)) {
@@ -83,39 +69,48 @@ export function resolveImports(args: {
                     pending.push({
                         path: resolved.path,
                         code,
-                        origin: source.origin,
+                        origin: sourceFrom.origin,
                     });
                 }
             }
         }
     }
 
-    // Run resolve
-    importedTact.push({
-        code: stdlibTact,
+    const stdlibTactPath = stdlib.resolve("std/stdlib.tact");
+    if (!stdlib.exists(stdlibTactPath)) {
+        throwCompilationError(
+            `Could not find stdlib.tact at ${stdlibTactPath}`,
+        );
+    }
+    const stdlibSource: Source = {
+        code: stdlib.readFile(stdlibTactPath).toString(),
         path: stdlibTactPath,
         origin: "stdlib",
-    });
-    processImports({
-        code: stdlibTact,
-        path: stdlibTactPath,
-        origin: "stdlib",
-    });
-    processImports({
-        code,
+    };
+    imported.tact.set(stdlibTactPath, stdlibSource);
+    processImports(stdlibSource);
+
+    const codePath = project.resolve(entrypoint);
+    if (!project.exists(codePath)) {
+        throwCompilationError(`Could not find entrypoint ${entrypoint}`);
+    }
+    const entrySource: Source = {
+        code: project.readFile(codePath).toString(),
         path: codePath,
         origin: "user",
-    });
+    };
+    processImports(entrySource);
+
     while (pending.length > 0) {
         const p = pending.shift()!;
-        importedTact.push(p);
+        imported.tact.set(p.path, p);
         processImports(p);
     }
-    importedTact.push({ code: code, path: codePath, origin: "user" }); // To keep order same as before refactoring
 
-    // Assemble result
+    imported.tact.set(codePath, entrySource);
+
     return {
-        tact: [...importedTact],
-        func: [...importedFunc],
+        tact: [...imported.tact.values()],
+        func: [...imported.func.values()],
     };
 }

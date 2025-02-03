@@ -29,3 +29,112 @@ describe("grammar", () => {
         });
     }
 });
+
+describe("parse imports", () => {
+    const parser = getParser(getAstFactory(), "old");
+
+    const parse = (code: string) => {
+        return parser.parse({
+            code,
+            origin: "user",
+            path: "test/test.tact",
+        });
+    };
+
+    it("should reject non-relative imports", () => {
+        expect(() => parse('import "some_name";')).toThrow();
+    });
+
+    it("should reject folder imports", () => {
+        expect(() => parse('import "./some_name/";')).toThrow();
+    });
+
+    it("should reject windows imports", () => {
+        expect(() => parse('import ".\\some_name";')).toThrow();
+    });
+
+    it("should parse relative imports", () => {
+        expect(parse('import "./import";')).toMatchObject({
+            imports: [
+                {
+                    source: {
+                        type: "relative",
+                        language: "tact",
+                        path: {
+                            segments: ["import.tact"],
+                            stepsUp: 0,
+                        },
+                    },
+                },
+            ],
+        });
+    });
+
+    it("should parse step-up imports", () => {
+        expect(parse('import "../import";')).toMatchObject({
+            imports: [
+                {
+                    source: {
+                        type: "relative",
+                        language: "tact",
+                        path: {
+                            segments: ["import.tact"],
+                            stepsUp: 1,
+                        },
+                    },
+                },
+            ],
+        });
+    });
+
+    it("should parse deep imports", () => {
+        expect(parse('import "./import/second";')).toMatchObject({
+            imports: [
+                {
+                    source: {
+                        type: "relative",
+                        language: "tact",
+                        path: {
+                            segments: ["import", "second.tact"],
+                            stepsUp: 0,
+                        },
+                    },
+                },
+            ],
+        });
+    });
+
+    it("should not add .tact second time", () => {
+        expect(parse('import "./import.tact";')).toMatchObject({
+            imports: [
+                {
+                    source: {
+                        type: "relative",
+                        language: "tact",
+                        path: {
+                            segments: ["import.tact"],
+                            stepsUp: 0,
+                        },
+                    },
+                },
+            ],
+        });
+    });
+
+    it("should detect .fc imports", () => {
+        expect(parse('import "./import.fc";')).toMatchObject({
+            imports: [
+                {
+                    source: {
+                        type: "relative",
+                        language: "func",
+                        path: {
+                            segments: ["import.fc"],
+                            stepsUp: 0,
+                        },
+                    },
+                },
+            ],
+        });
+    });
+});

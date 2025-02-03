@@ -2,7 +2,7 @@ import * as A from "../ast/ast";
 import { throwInternalCompilerError } from "../error/errors";
 import { CompilerContext, createContextStore } from "./context";
 import { Parser } from "../grammar/grammar";
-import { SourceAbsolute } from "../imports/source";
+import { Source } from "../imports/source";
 
 /**
  * Represents the storage for all AST-related data within the compiler context.
@@ -12,7 +12,7 @@ import { SourceAbsolute } from "../imports/source";
  * @property types AST entries representing structures, contracts, and traits.
  */
 export type AstStore = {
-    sources: SourceAbsolute[];
+    sources: Source[];
     funcSources: { code: string; path: string }[];
     functions: (
         | A.AstFunctionDef
@@ -44,7 +44,7 @@ export function getRawAST(ctx: CompilerContext): AstStore {
  * Parses multiple Tact source files into AST modules.
  * @public
  */
-export function parseModules(sources: SourceAbsolute[], parser: Parser): A.AstModule[] {
+export function parseModules(sources: Source[], parser: Parser): A.AstModule[] {
     return sources.map((source) => parser.parse(source));
 }
 
@@ -57,7 +57,7 @@ export function parseModules(sources: SourceAbsolute[], parser: Parser): A.AstMo
  */
 export function openContext(
     ctx: CompilerContext,
-    sources: SourceAbsolute[],
+    sources: Source[],
     funcSources: { code: string; path: string }[],
     parser: Parser,
     parsedModules?: A.AstModule[],

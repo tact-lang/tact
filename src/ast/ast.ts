@@ -1,5 +1,7 @@
 import { Address, Cell, Slice } from "@ton/core";
 import { SrcInfo } from "../grammar/src-info";
+import { RelativePath } from "../imports/path";
+import { Language } from "../imports/source";
 
 export type AstModule = {
     kind: "module";
@@ -10,7 +12,7 @@ export type AstModule = {
 
 export type AstImport = {
     kind: "import";
-    path: AstString;
+    source: SourceReference;
     id: number;
     loc: SrcInfo;
 };
@@ -545,6 +547,13 @@ export type AstBoolean = {
     value: boolean;
     id: number;
     loc: SrcInfo;
+};
+
+// Reference to source file
+export type SourceReference = {
+    readonly path: RelativePath;
+    readonly type: "stdlib" | "relative";
+    readonly language: Language;
 };
 
 // An AstSimplifiedString is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.

@@ -7,7 +7,8 @@ import { SrcInfo } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
 import { ParserErrors, parserErrorSchema } from "./parser-error";
 import { getSrcInfoFromOhm } from "./src-info";
-import { ItemOrigin, SourceAbsolute } from "../../imports/source";
+import { ItemOrigin, Language, Source } from "../../imports/source";
+import { emptyPath, fromString } from "../../imports/path";
 
 type Context = {
     origin: ItemOrigin | null;
@@ -116,16 +117,65 @@ semantics.addOperation<A.AstNode>("astOfModule", {
     },
 });
 
+const detectLanguage = (path: string): Language | undefined => {
+    if (path.endsWith(".fc") || path.endsWith(".func")) {
+        return "func";
+    }
+
+    if (path.endsWith(".tact")) {
+        return "tact";
+    }
+
+    return undefined;
+};
+
+const guessExtension = (
+    importText: string,
+): { language: Language; guessedPath: string } => {
+    const language = detectLanguage(importText);
+    if (language) {
+        return { guessedPath: importText, language };
+    } else {
+        return { guessedPath: `${importText}.tact`, language: "tact" };
+    }
+};
+
+const stdlibPrefix = "@stdlib/";
+
+function parseImportString(
+    importText: string,
+    loc: SrcInfo,
+): A.SourceReference {
+    if (importText.endsWith("/")) {
+        err().noFolderImports()(loc);
+    }
+
+    if (importText.includes("\\")) {
+        err().importWithBackslash()(loc);
+    }
+
+    const { guessedPath, language } = guessExtension(importText);
+
+    if (guessedPath.startsWith(stdlibPrefix)) {
+        const path = fromString(guessedPath.substring(stdlibPrefix.length));
+        return { path, type: "stdlib", language };
+    } else if (guessedPath.startsWith("./") || guessedPath.startsWith("../")) {
+        return { path: fromString(guessedPath), type: "relative", language };
+    } else {
+        err().invalidImport()(loc);
+        return { path: emptyPath, type: "relative", language: "tact" };
+    }
+}
+
 semantics.addOperation<A.AstNode>("astOfImport", {
     Import(_importKwd, path, _semicolon) {
-        const pathAST = path.astOfExpression() as A.AstString;
-        if (pathAST.value.includes("\\")) {
-            err().importWithBackslash()(createRef(path));
-        }
+        const stringLiteral = path.astOfExpression() as A.AstString;
+        const parsedString: string = JSON.parse(`"${stringLiteral.value}"`);
+        const loc = createRef(this);
         return createNode({
             kind: "import",
-            path: pathAST,
-            loc: createRef(this),
+            source: parseImportString(parsedString, loc),
+            loc,
         });
     },
 });
@@ -1518,7 +1568,7 @@ semantics.addOperation<A.AstNode>("astOfExpression", {
 export const getParser = (ast: FactoryAst) => {
     const errorTypes = parserErrorSchema(displayToString);
 
-    function parse({ code, origin, path }: SourceAbsolute): A.AstModule {
+    function parse({ code, origin, path }: Source): A.AstModule {
         return withContext(
             {
                 currentFile: path,
@@ -1554,7 +1604,7 @@ export const getParser = (ast: FactoryAst) => {
         );
     }
 
-    function parseImports({ code, origin, path }: SourceAbsolute): A.AstImport[] {
+    function parseImports({ code, origin, path }: Source): A.AstImport[] {
         return withContext(
             {
                 currentFile: path,

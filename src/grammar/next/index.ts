@@ -9,7 +9,8 @@ import { AstSchema, getAstSchema } from "../../ast/getAstSchema";
 import { getSrcInfo } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
 import { makeMakeVisitor } from "../../utils/tricks";
-import { SourceAbsolute } from "../../imports/source";
+import { Language, Source } from "../../imports/source";
+import { emptyPath, fromString } from "../../imports/path";
 
 const makeVisitor = makeMakeVisitor("$");
 
@@ -1179,15 +1180,77 @@ const parseModuleItem: (input: $ast.moduleItem) => Handler<A.AstModuleItem> =
         Trait: parseTrait,
     });
 
+const detectLanguage = (path: string): Language | undefined => {
+    if (path.endsWith(".fc") || path.endsWith(".func")) {
+        return "func";
+    }
+
+    if (path.endsWith(".tact")) {
+        return "tact";
+    }
+
+    return undefined;
+};
+
+const guessExtension = (
+    importText: string,
+): { language: Language; guessedPath: string } => {
+    const language = detectLanguage(importText);
+    if (language) {
+        return { guessedPath: importText, language };
+    } else {
+        return { guessedPath: `${importText}.tact`, language: "tact" };
+    }
+};
+
+const stdlibPrefix = "@stdlib/";
+
+const parseImportString =
+    (importText: string, loc: $.Loc): Handler<A.SourceReference> =>
+    (ctx) => {
+        if (importText.endsWith("/")) {
+            ctx.err.noFolderImports()(loc);
+            importText = importText.slice(0, -1);
+        }
+
+        if (importText.includes("\\")) {
+            ctx.err.importWithBackslash()(loc);
+            importText = importText.replace(/\\/g, "/");
+        }
+
+        const { guessedPath, language } = guessExtension(importText);
+
+        if (guessedPath.startsWith(stdlibPrefix)) {
+            return {
+                path: fromString(guessedPath.substring(stdlibPrefix.length)),
+                type: "stdlib",
+                language,
+            };
+        } else if (
+            guessedPath.startsWith("./") ||
+            guessedPath.startsWith("../")
+        ) {
+            return {
+                path: fromString(guessedPath),
+                type: "relative",
+                language,
+            };
+        } else {
+            ctx.err.invalidImport()(loc);
+            return {
+                path: emptyPath,
+                type: "relative",
+                language: "tact",
+            };
+        }
+    };
+
 const parseImport =
     ({ path, loc }: $ast.Import): Handler<A.AstImport> =>
     (ctx) => {
-        if (path.value.includes("\\")) {
-            ctx.err.importWithBackslash()(loc);
-            path = { ...path, value: path.value.replace(/\\/g, "/") };
-        }
-
-        return ctx.ast.Import(parseStringLiteral(path)(ctx), loc);
+        const stringLiteral = parseStringLiteral(path)(ctx);
+        const parsedString: string = JSON.parse(`"${stringLiteral.value}"`);
+        return ctx.ast.Import(parseImportString(parsedString, loc)(ctx), loc);
     };
 
 const parseModule =
@@ -1211,7 +1274,7 @@ export const getParser = (ast: FactoryAst) => {
     const doParse = <T, U>(
         grammar: $.Parser<T>,
         handler: (t: T) => Handler<U>,
-        { code, path, origin }: SourceAbsolute,
+        { code, path, origin }: Source,
     ) => {
         const locationToSrcInfo = (loc: $.Loc) => {
             if (loc.$ === "range") {
@@ -1254,7 +1317,7 @@ export const getParser = (ast: FactoryAst) => {
     };
 
     return {
-        parse: (source: SourceAbsolute): A.AstModule => {
+        parse: (source: Source): A.AstModule => {
             return doParse(G.Module, parseModule, source);
         },
         parseExpression: (code: string): A.AstExpression => {
@@ -1264,7 +1327,7 @@ export const getParser = (ast: FactoryAst) => {
                 origin: "user",
             });
         },
-        parseImports: (source: SourceAbsolute): A.AstImport[] => {
+        parseImports: (source: Source): A.AstImport[] => {
             return doParse(G.JustImports, parseJustImports, source);
         },
         parseStatement: (code: string): A.AstStatement => {

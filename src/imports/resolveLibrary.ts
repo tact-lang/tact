@@ -1,9 +1,11 @@
+import { SourceReference } from "../ast/ast";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
-import { parseImportPath } from "./parseImportPath";
+import { asString } from "./path";
+import { ItemOrigin, Language, Source } from "./source";
 
 type ResolveLibraryArgs = {
-    path: string;
-    name: string;
+    sourceRef: SourceReference;
+    sourceFrom: Source;
     project: VirtualFileSystem;
     stdlib: VirtualFileSystem;
 };
@@ -12,66 +14,49 @@ type ResolveLibraryResult =
     | {
           ok: true;
           path: string;
-          kind: "func" | "tact";
-          source: "project" | "stdlib";
+          language: Language;
+          origin: ItemOrigin;
       }
     | {
           ok: false;
       };
 
-export function resolveLibrary(args: ResolveLibraryArgs): ResolveLibraryResult {
-    // Stdlib resolving
-    // NOTE: We are handling stdlib resolving here, because we need to enforce the stdlib import before anything else
-    //       to avoid hijacking the stdlib imports
-    if (args.name.startsWith("@stdlib/")) {
-        const libraryName = args.name.substring("@stdlib/".length);
-        const libraryPath = parseImportPath("./" + libraryName + ".tact");
-        if (!libraryPath) {
+export function resolveLibrary({
+    sourceRef: sourceRef,
+    sourceFrom,
+    project,
+    stdlib,
+}: ResolveLibraryArgs): ResolveLibraryResult {
+    if (sourceRef.type === "stdlib") {
+        const tactFile = stdlib.resolve("libs", asString(sourceRef.path));
+
+        if (stdlib.exists(tactFile)) {
+            return {
+                ok: true,
+                path: tactFile,
+                origin: "stdlib",
+                language: "tact",
+            };
+        } else {
             return { ok: false };
         }
-        const tactFile = args.stdlib.resolve("libs", ...libraryPath);
-        if (args.stdlib.exists(tactFile)) {
-            return { ok: true, path: tactFile, source: "stdlib", kind: "tact" };
+    } else {
+        const vfs = sourceFrom.origin === "stdlib" ? stdlib : project;
+        const resolvedPath = vfs.resolve(
+            sourceFrom.path.slice(vfs.root.length),
+            "..",
+            asString(sourceRef.path),
+        );
+
+        if (vfs.exists(resolvedPath)) {
+            return {
+                ok: true,
+                path: resolvedPath,
+                origin: sourceFrom.origin,
+                language: sourceRef.language,
+            };
         } else {
             return { ok: false };
         }
     }
-
-    // Resolve vfs
-    let vfs: VirtualFileSystem;
-    let source: "project" | "stdlib";
-    if (args.path.startsWith(args.stdlib.root)) {
-        // NOTE: stdlib checked first to avoid hijacking stdlib imports
-        vfs = args.stdlib;
-        source = "stdlib";
-    } else if (args.path.startsWith(args.project.root)) {
-        vfs = args.project;
-        source = "project";
-    } else {
-        return { ok: false };
-    }
-    const workingDirectory = args.path.slice(vfs.root.length);
-
-    // Resolving relative file
-    const kind =
-        args.name.endsWith(".fc") || args.name.endsWith(".func")
-            ? "func"
-            : "tact";
-    const importName =
-        kind === "func" || args.name.endsWith(".tact")
-            ? args.name
-            : `${args.name}.tact`;
-
-    // Resolve import
-    const parsedImport = parseImportPath(importName);
-    if (!parsedImport) {
-        return { ok: false };
-    }
-    const resolvedPath = vfs.resolve(workingDirectory, "..", ...parsedImport);
-    if (vfs.exists(resolvedPath)) {
-        return { ok: true, path: resolvedPath, source, kind };
-    }
-
-    // Nothing matched
-    return { ok: false };
 }
