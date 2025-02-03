@@ -1,11 +1,11 @@
 import fs from "fs";
-import path from "path";
+import { join, relative } from "path";
 import glob from "glob";
 import { posixNormalize } from "../utils/filePath";
 import { stdlibPath } from "./path";
 
-const libFiles = path.join(__dirname, "stdlib", "**", "*.@(tact|fc)");
-const targetPath = path.join(__dirname, "stdlib.ts");
+const libFiles = join(__dirname, "stdlib", "**", "*.@(tact|fc)");
+const targetPath = join(__dirname, "stdlib.ts");
 
 const chunk = (s: string, chunkSize: number): string[] => {
     const result: string[] = [];
@@ -18,10 +18,19 @@ const chunk = (s: string, chunkSize: number): string[] => {
 const listFiles = (dir: string) => {
     const paths = glob.sync(dir, { windowsPathsNoEscape: true });
     const prefix = posixNormalize(stdlibPath);
-    return paths.map((p) => ({
-        absolute: p,
-        relative: posixNormalize(path.relative(prefix, p)),
-    }));
+    return paths.map((path) => {
+        const relativePath = posixNormalize(relative(prefix, path));
+        if (!relativePath.match(/^[-./_a-z0-9]+$/)) {
+            console.error(
+                `Standard library has file with invalid characters: ${path}`,
+            );
+            process.exit(30);
+        }
+        return {
+            absolute: path,
+            relative: relativePath,
+        };
+    });
 };
 
 const lines: string[] = [

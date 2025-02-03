@@ -42,7 +42,7 @@
     "src/grammar/next/grammar.gg",
     "src/grammar/next/grammar.ts",
     "src/stdlib/stdlib.ts",
-    "src/stdlib/stdlib/stdlib.fc",
+    "src/stdlib/stdlib/std/stdlib.fc",
     "src/test/compilation-failed/const-eval-failed.spec.ts",
     "src/test/e2e-emulated/address.spec.ts",
     "src/test/e2e-emulated/intrinsics.spec.ts",
