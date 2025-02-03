@@ -146,9 +146,9 @@ The [src/grammar/test](../src/grammar/test) folder contains Tact files that are 
 The [src/stdlib/stdlib](../src/stdlib/stdlib) folder contains source code of standard library. It has two subfolders:
 
 - [src/stdlib/stdlib/std](../src/stdlib/stdlib/std) contains ambient definition that are present in every `.tact` file. It's loaded automatically by compiler, and should never otherwise be included.
-- [src/stdlib/stdlib/libs](../src/stdlib/stdlib/libs/) contains standard library exports available via `@stdlib/...` imports from source code. Source code inside of these files is just a regular `.tact` source, and shouldn't import anything from  `/std` folder either.
+- [src/stdlib/stdlib/libs](../src/stdlib/stdlib/libs/) contains standard library exports available via `@stdlib/...` imports from source code. Source code inside of these files is just a regular `.tact` source, and shouldn't import anything from `/std` folder either.
 
-The library is built by `yarn gen:stdlib` script into `stdlib.ts` file that holds base64 of all Tact and FunC sources in the library. Whenever source code of standard library was changed, a new `stdlib.ts` must be generated.
+The library is built by `yarn gen:stdlib` script into [stdlib.ts](../src/stdlib/stdlib.ts) file that holds base64 of all Tact and FunC sources in the library. Whenever source code of standard library was changed, a new `stdlib.ts` must be generated.
 
 Whenever CLI (or external tooling) needs to access source of standard library, it should initialize virtual filesystem from `stdlib.ts`. Accessing source of standard library directly is error-prone and discouraged. For example, standard library might not be found, if compiler is included as a library.
 
