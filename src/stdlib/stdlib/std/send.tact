@@ -62,12 +62,12 @@ asm fun send(params: SendParameters) {
 
     // Group 2: Storing the `bounce`, `to` and `value` into a Builder
     NEWC
-    b{01} STSLICECONST  // store tag = $0, ihr_disabled = true
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
     1 STI               // store `bounce`
-    b{000} STSLICECONST // store src_addr = addr_none
+    b{000} STSLICECONST // store bounced = false and src = addr_none
     STSLICE             // store `to`
     SWAP
-    STGRAMS             // store nanotons
+    STGRAMS             // store `value`
     105 PUSHINT         // 1 + 4 + 4 + 64 + 32
     STZEROES            // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
     // → Stack state

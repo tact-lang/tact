@@ -7,7 +7,7 @@ When a contract sends a message with a flag `bounce` set to `true{:tact}`, then 
 
 ## Caveats
 
-Currently, bounced messages in TON have only 224 usable data bits in the message body and don't have any references. This means that you can't recover much of the data from the bounced message. This is a limitation of the TON blockchain and will be fixed in the future. Tact helps you to check if your message fits the limit and in case it doesn't — suggests using a special type constructor `bounced<T>{:tact}` for the bounced message receiver, that would construct a partial representation of the message that fits into the required limits.
+Currently, bounced messages in TON have only 224 usable data bits in the message body and don't have any references. This means that you can't recover much of the data from the bounced message. This is a limitation of the TON blockchain and will be fixed in the future. Tact helps you to check if your message fits the limit and in case it doesn't — suggests using a special type constructor `bounced<M>{:tact}` for the bounced message receiver, that would construct a partial representation of the message that fits into the required limits.
 
 ## Bounced message receiver
 
