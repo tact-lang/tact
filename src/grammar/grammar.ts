@@ -4,12 +4,12 @@ import * as A from "../ast/ast";
 
 import { getParser as getParserPrev } from "./prev/grammar";
 
-import { Source } from "../imports/source";
+import { SourceAbsolute } from "../imports/source";
 
 export type Parser = {
-    parse: (source: Source) => A.AstModule;
+    parse: (source: SourceAbsolute) => A.AstModule;
     parseExpression: (sourceCode: string) => A.AstExpression;
-    parseImports: (source: Source) => A.AstImport[];
+    parseImports: (source: SourceAbsolute) => A.AstImport[];
     parseStatement: (sourceCode: string) => A.AstStatement;
 };
 

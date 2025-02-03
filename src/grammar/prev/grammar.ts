@@ -7,7 +7,7 @@ import { SrcInfo } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
 import { ParserErrors, parserErrorSchema } from "./parser-error";
 import { getSrcInfoFromOhm } from "./src-info";
-import { ItemOrigin, Source } from "../../imports/source";
+import { ItemOrigin, SourceAbsolute } from "../../imports/source";
 
 type Context = {
     origin: ItemOrigin | null;
@@ -1518,7 +1518,7 @@ semantics.addOperation<A.AstNode>("astOfExpression", {
 export const getParser = (ast: FactoryAst) => {
     const errorTypes = parserErrorSchema(displayToString);
 
-    function parse({ code, origin, path }: Source): A.AstModule {
+    function parse({ code, origin, path }: SourceAbsolute): A.AstModule {
         return withContext(
             {
                 currentFile: path,
@@ -1554,7 +1554,7 @@ export const getParser = (ast: FactoryAst) => {
         );
     }
 
-    function parseImports({ code, origin, path }: Source): A.AstImport[] {
+    function parseImports({ code, origin, path }: SourceAbsolute): A.AstImport[] {
         return withContext(
             {
                 currentFile: path,

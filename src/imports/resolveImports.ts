@@ -2,7 +2,7 @@ import { Parser } from "../grammar";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { throwCompilationError } from "../error/errors";
 import { resolveLibrary } from "./resolveLibrary";
-import { Source } from "./source";
+import { SourceAbsolute } from "./source";
 
 export function resolveImports(args: {
     entrypoint: string;
@@ -28,11 +28,11 @@ export function resolveImports(args: {
     // Resolve all imports
     //
 
-    const importedTact: Source[] = [];
-    const importedFunc: Source[] = [];
+    const importedTact: SourceAbsolute[] = [];
+    const importedFunc: SourceAbsolute[] = [];
     const processed: Set<string> = new Set();
-    const pending: Source[] = [];
-    function processImports(source: Source) {
+    const pending: SourceAbsolute[] = [];
+    function processImports(source: SourceAbsolute) {
         const imp = args.parser.parseImports(source);
         for (const i of imp) {
             const importPath = i.path.value;

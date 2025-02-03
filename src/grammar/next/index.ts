@@ -9,7 +9,7 @@ import { AstSchema, getAstSchema } from "../../ast/getAstSchema";
 import { getSrcInfo } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
 import { makeMakeVisitor } from "../../utils/tricks";
-import { Source } from "../../imports/source";
+import { SourceAbsolute } from "../../imports/source";
 
 const makeVisitor = makeMakeVisitor("$");
 
@@ -1211,7 +1211,7 @@ export const getParser = (ast: FactoryAst) => {
     const doParse = <T, U>(
         grammar: $.Parser<T>,
         handler: (t: T) => Handler<U>,
-        { code, path, origin }: Source,
+        { code, path, origin }: SourceAbsolute,
     ) => {
         const locationToSrcInfo = (loc: $.Loc) => {
             if (loc.$ === "range") {
@@ -1254,7 +1254,7 @@ export const getParser = (ast: FactoryAst) => {
     };
 
     return {
-        parse: (source: Source): A.AstModule => {
+        parse: (source: SourceAbsolute): A.AstModule => {
             return doParse(G.Module, parseModule, source);
         },
         parseExpression: (code: string): A.AstExpression => {
@@ -1264,7 +1264,7 @@ export const getParser = (ast: FactoryAst) => {
                 origin: "user",
             });
         },
-        parseImports: (source: Source): A.AstImport[] => {
+        parseImports: (source: SourceAbsolute): A.AstImport[] => {
             return doParse(G.JustImports, parseJustImports, source);
         },
         parseStatement: (code: string): A.AstStatement => {
