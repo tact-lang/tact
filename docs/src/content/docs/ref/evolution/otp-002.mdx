@@ -5,75 +5,97 @@ sidebar:
   order: 2
 ---
 
-ABI defines how to communicate with smart contracts. It contains information about the contract's receivers, data structures, etc.
+The contract's Application Binary Interface (ABI) defines a format containing information about the contract's receivers, data structures, getters, etc.
 
 ## Motivation
 
-ABI is an essential tool that allows developers to generate handy bindings, UIs, etc. One of the best consumer usages would be using a DAO and being able to confirm what exactly it is trying to do before signing a transaction.
-
-## Guide
-
-This OTP is based on types that are defined in TLB+ and it is advised to know them before reading this OTP.
+ABI is a tool that allows developers to generate handy bindings, UIs, and so on. One of the best consumer usages would be using a DAO and being able to confirm what exactly it is trying to do before signing a transaction.
 
 ## Specification
 
-ABI is a JSON file:
+ABI is defined as a JSON file, usually with an `.abi` extension:
 
 ```json
 {
   "name": "MyContract",
   "types": [
     {
-      "name": "MyRequest",
-      "header": 12315123,
+      "name": "StateInit",
+      "header": null,
       "fields": [
         {
-          "name": "queryId",
+          "name": "code",
           "type": {
             "kind": "simple",
-            "type": "int",
-            "optional": false,
-            "format": "uint256"
+            "type": "cell",
+            "optional": false
+          }
+        },
+        {
+          "name": "data",
+          "type": {
+            "kind": "simple",
+            "type": "cell",
+            "optional": false
           }
         }
       ]
-    }
+    },
+    // ...etc.
   ],
   "receivers": [
-    { "type": "binary", "kind": "internal", "name": "MyRequest" },
-    { "type": "binary", "kind": "internal" },
-    { "type": "comment", "kind": "internal", "comment": "Vote!" },
-    { "type": "comment", "kind": "internal" },
-    { "type": "empty", "kind": "internal" }
+    {
+      "receiver": "internal",
+      "message": {
+        "kind": "text",
+        "text": "Vote!"
+      }
+    },
+    {
+      "receiver": "internal",
+      "message": {
+        "kind": "typed",
+        "type": "Deploy"
+      }
+    }
   ],
   "getters": [
-    { "name": "getOwner", "type": "address", "args": [] },
     {
-      "name": "getBalance",
-      "type": "coins",
-      "args": [
-        {
-          "name": "invested",
-          "type": {
-            "kind": "simple",
-            "type": "uint",
-            "format": "coins"
-          }
-        }
-      ]
+      "name": "gas",
+      "methodId": 92180,
+      "arguments": [],
+      "returnType": {
+        "kind": "simple",
+        "type": "int",
+        "optional": false,
+        "format": 257
+      }
     }
   ],
   "errors": {
-    "123": "Error description",
-    "124": "Division by zero"
-  }
+    "2": {
+      "message": "Stack underflow"
+    },
+    "3": {
+      "message": "Stack overflow"
+    }
+    // ...etc.
+  },
+  "interfaces": [
+    "org.ton.introspection.v0",
+    "org.ton.abi.ipfs.v0",
+    "org.ton.deploy.lazy.v0",
+    "org.ton.debug.v0"
+  ]
 }
 ```
 
 ## Drawbacks
 
-- Binary and compact representation of ABI could be better, but it is not critical for now.
+- ABI is in JSON format, which is both human and machine-readable, but not the most compact — binary representation could be better, but is not critical for now.
+
+- ABI has no strict JSON or TypeScript schema defined, and thus is subject to frequent changes.
 
 ## Prior art
 
-- OTP-001, that is complimentary to this OTP.
+- [OTP-001](/ref/evolution/otp-001): A complementary proposal that provides additional context.

@@ -151,32 +151,47 @@ It affects the process of constructing and parsing cell values by causing them t
 
 In addition, the [TL-B][tlb] representation produced by Tact changes too:
 
-```tact {3-5, 8-10}
-contract SerializationExample {
-    // By default
-    cRef: Cell;    // ^cell in TL-B
-    bRef: Builder; // ^builder in TL-B
-    sRef: Slice;   // ^slice in TL-B
+```tact
+struct TwoCell {
+    cRef: Cell;              // ^cell in TL-B
+    cRem: Cell as remaining; // cell in TL-B
+}
 
-    // With `remaining`
-    cRem: Cell as remaining;    // remainder<cell> in TL-B
-    bRem: Builder as remaining; // remainder<builder> in TL-B
-    sRem: Slice as remaining;   // remainder<slice> in TL-B
+struct TwoBuilder {
+    bRef: Builder;              // ^builder in TL-B
+    bRem: Builder as remaining; // builder in TL-B
+}
+
+struct TwoSlice {
+    sRef: Slice;              // ^slice in TL-B
+    sRem: Slice as remaining; // slice in TL-B
+}
+
+contract SerializationExample {
+    cell2: TwoCell;
+    builder2: TwoBuilder;
+    slice2: TwoSlice;
 
     // Constructor function,
     // necessary for this example contract to compile
     init() {
-        self.cRef = emptyCell();
-        self.bRef = beginCell();
-        self.sRef = emptySlice();
-        self.cRem = emptyCell();
-        self.bRem = beginCell();
-        self.sRem = emptySlice();
+        self.cell2 = TwoCell{
+            cRef: emptyCell(),
+            cRem: emptyCell(),
+        };
+        self.builder2 = TwoBuilder{
+            bRef: beginCell(),
+            bRem: beginCell(),
+        };
+        self.slice2 = TwoSlice{
+            sRef: emptySlice(),
+            sRem: emptySlice(),
+        };
     }
 }
 ```
 
-There, `^cell`, `^builder` and `^slice` in [TL-B][tlb] syntax mean the reference to [`Cell{:tact}`](#cells), [`Builder{:tact}`](#builders) and [`Slice{:tact}`](#slices) values respectively, while the `remainder<…>` of `cell`, `builder` or `slice` tells that the given value would be stored as a `Slice{:tact}` directly and not as a reference.
+There, `^cell`, `^builder` and `^slice` in [TL-B][tlb] syntax mean the reference to [`Cell{:tact}`](#cells), [`Builder{:tact}`](#builders) and [`Slice{:tact}`](#slices) values respectively, while the `cell`, `builder` or `slice` tells that the given value would be stored as a `Cell{:tact}`, `Builder{:tact}` or `Slice{:tact}` directly and not as a reference.
 
 Now, to give a real-world example, imagine that you need to notice and react to inbound [Jetton][jetton] transfers in your smart contract. The appropriate [Message][message] structure for doing so would look like this:
 

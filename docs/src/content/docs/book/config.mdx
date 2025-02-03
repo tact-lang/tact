@@ -339,6 +339,8 @@ If set to `true{:json}`, enables inlining of all functions in contracts. This ca
 
 #### `safety` {#options-safety}
 
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
 Options that affect the safety of contracts.
 
 ```json filename="tact.config.json" {8,14}
@@ -357,6 +359,8 @@ Options that affect the safety of contracts.
 ```
 
 ##### `nullChecks` {#safety-nullChecks}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 `true{:json}` by default.
 
@@ -469,6 +473,9 @@ In [Blueprint][bp], `mode` is always set to `"full"{:json}` and cannot be overwr
         "interfacesGetter": true,
         "experimental": {
           "inline": false
+        },
+        "safety": {
+          "nullChecks": false
         }
       }
     }
