@@ -108,6 +108,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Illustrated how nested maps can be created: PR [#1593](https://github.com/tact-lang/tact/pull/1593)
 - Improved Chinese localization of the documentation: PR [#1642](https://github.com/tact-lang/tact/pull/1642)
 - Removed the notion of the non-standard TL-B syntax `remainder<X>`: PR [#1599](https://github.com/tact-lang/tact/pull/1599)
+- Added description of `.boc`, `.ts`, `.abi`, `.pkg` files and completed Compilation page: PR [#1676](https://github.com/tact-lang/tact/pull/1676)
 
 ### Release contributors
 
