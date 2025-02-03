@@ -1,11 +1,8 @@
 module.exports = {
     preset: "ts-jest",
-    transform: {
-        "^.+\\.(t|j)sx?$": "@swc/jest",
-    },
     testEnvironment: "node",
     testPathIgnorePatterns: ["/node_modules/", "/dist/"],
-    maxWorkers: "8",
+    maxWorkers: "4",
     globalSetup: "./jest.globalSetup.js",
     setupFiles: ["./jest.setup.js"],
     globalTeardown: "./jest.teardown.js",
