@@ -150,7 +150,7 @@ The [src/stdlib/stdlib](../src/stdlib/stdlib) folder contains source code of sta
 
 The library is built by `yarn gen:stdlib` script into [stdlib.ts](../src/stdlib/stdlib.ts) file that holds base64 of all Tact and FunC sources in the library. Whenever source code of standard library was changed, a new `stdlib.ts` must be generated.
 
-Whenever CLI (or external tooling) needs to access source of standard library, it should initialize virtual filesystem from `stdlib.ts`. Accessing source of standard library directly is error-prone and discouraged. For example, standard library might not be found, if compiler is included as a library.
+Whenever CLI (or external tooling) needs to access the source of the standard library, it should initialize the virtual filesystem from `stdlib.ts`. Accessing the source of the standard library directly is error-prone and discouraged. For example, the standard library might not be found, if compiler is included as a library.
 
 ### Typechecker
 
