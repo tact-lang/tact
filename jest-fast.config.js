@@ -5,7 +5,6 @@ module.exports = {
     transform: {
         "^.+\\.(t|j)sx?$": "@swc/jest",
     },
-    maxWorkers: "8",
     testPathIgnorePatterns: [
         "/node_modules/",
         "/dist/",
