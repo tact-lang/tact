@@ -10,7 +10,7 @@ import {
     SandboxContract,
     TreasuryContract,
 } from "@ton/sandbox";
-import { Functions } from "./contracts/output/benchmark_functions_Functions";
+import { Functions } from "./contracts/output/functions_Functions";
 import { Sha256 } from "./contracts/output/benchmark_sha256_Sha256";
 import { Forward } from "./contracts/output/forward_Forward";
 import "@ton/test-utils";
