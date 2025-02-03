@@ -836,8 +836,8 @@ export function resolveStatements(ctx: CompilerContext, Ast: FactoryAst) {
 
             // Required variables
             for (const f of t.fields) {
-                if (f.default !== undefined) {
-                    // NOTE: undefined is important here
+                if (f.ast.initializer !== null) {
+                    // If the field has an initializer, it is not a required variable.
                     continue;
                 }
                 if (isAssignable({ kind: "null" }, f.type)) {

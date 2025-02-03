@@ -10,6 +10,7 @@ import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { AstModule } from "../ast/ast";
 import { FactoryAst } from "../ast/ast-helpers";
 import { Parser } from "../grammar";
+import { evaluateDeclarationsInitializers } from "../types/evalInitializers";
 
 export function precompile(
     ctx: CompilerContext,
@@ -41,6 +42,9 @@ export function precompile(
 
     // This creates allocations for all defined types
     ctx = resolveAllocations(ctx);
+
+    // Evaluate all constants, default contract fields and default struct fields
+    evaluateDeclarationsInitializers(ctx, ast);
 
     // Prepared context
     return ctx;

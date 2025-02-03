@@ -12,6 +12,7 @@ import { getParser, SrcInfo } from "../grammar";
 import { getAstFactory } from "../ast/ast-helpers";
 import { isSrcInfo } from "../grammar/src-info";
 import { defaultParser } from "../grammar/grammar";
+import { evaluateDeclarationsInitializers } from "./evalInitializers";
 
 expect.addSnapshotSerializer({
     test: (src) => isSrcInfo(src),
@@ -31,6 +32,7 @@ describe("resolveDescriptors", () => {
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
             ctx = resolveSignatures(ctx, Ast);
+            evaluateDeclarationsInitializers(ctx, Ast);
             expect(getAllTypes(ctx)).toMatchSnapshot();
             expect(getAllStaticFunctions(ctx)).toMatchSnapshot();
         });
@@ -48,6 +50,7 @@ describe("resolveDescriptors", () => {
             expect(() => {
                 ctx = resolveDescriptors(ctx, Ast);
                 ctx = resolveSignatures(ctx, Ast);
+                evaluateDeclarationsInitializers(ctx, Ast);
             }).toThrowErrorMatchingSnapshot();
         });
     }
