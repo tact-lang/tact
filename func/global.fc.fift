@@ -1,3 +1,4 @@
+// automatically generated from `/Users/anton-m1/ton/tact/stdlib/stdlib.fc` `/Users/anton-m1/ton/tact/func/global.fc` 
 PROGRAM{
   DECLPROC do_something
   DECLPROC do_another

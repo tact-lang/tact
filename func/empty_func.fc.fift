@@ -1,3 +1,4 @@
+// automatically generated from `/Users/anton-m1/ton/tact/stdlib/stdlib.fc` `/Users/anton-m1/ton/tact/func/empty_func.fc` 
 PROGRAM{
   DECLPROC __gen_write_Wallet
   DECLPROC __gen_writecell_Wallet

@@ -1,3 +1,4 @@
+// automatically generated from `/Users/anton-m1/ton/tact/stdlib/stdlib.fc` `/Users/anton-m1/ton/tact/func/add_slice.fc` 
 PROGRAM{
   DECLPROC begin_string_builder
   DECLPROC ~add_slice
