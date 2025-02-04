@@ -8,7 +8,7 @@ import { featureEnable } from "../config/features";
 import { getParser } from "../grammar";
 import { getAstFactory } from "../ast/ast-helpers";
 import { defaultParser } from "../grammar/grammar";
-import { evalComptimeExpressions } from "./evalInitializers";
+import { evalComptimeExpressions } from "./evalComptimeExpressions";
 
 describe("resolveStatements", () => {
     for (const r of loadCases(__dirname + "/stmts/")) {

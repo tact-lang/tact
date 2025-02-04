@@ -10,7 +10,7 @@ import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { AstModule } from "../ast/ast";
 import { FactoryAst } from "../ast/ast-helpers";
 import { Parser } from "../grammar";
-import { evalComptimeExpressions } from "../types/evalInitializers";
+import { evalComptimeExpressions } from "../types/evalComptimeExpressions";
 
 export function precompile(
     ctx: CompilerContext,

@@ -13,7 +13,7 @@ import { getAstFactory } from "../ast/ast-helpers";
 import { isSrcInfo } from "../grammar/src-info";
 import { defaultParser } from "../grammar/grammar";
 import { resolveStatements } from "./resolveStatements";
-import { evalComptimeExpressions } from "./evalInitializers";
+import { evalComptimeExpressions } from "./evalComptimeExpressions";
 
 expect.addSnapshotSerializer({
     test: (src) => isSrcInfo(src),
