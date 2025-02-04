@@ -13,6 +13,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [1.5.4] - 2025-02-04
+
+### Fixed
+
+- Allowed importing FunC files with `.func` extension. Resolves the `TOB-TACT-1` issue
+- Issue understandable error on circular trait dependencies. Resolves the `TOB-TACT-2` issue
+- Forbade accessing files via symlinks. Resolves the `TOB-TACT-3` issue
+- Bit shift FunC compilation errors for incorrect bit widths. Partially resolves the `TOB-TACT-5` issue
+- Streamlined `renameModuleItems` function. Resolves the `TOB-TACT-6` issue
+- Documented the parser limitations for nested expressions. Alleviates the `TOB-TACT-7` issue
+- Bit shift FunC compilation errors for incorrect bit widths
+- Throwing from functions with non-trivial branching in the `try` statement
+
+### Notes
+
+Handling the Unicode in the Tact grammar as per the `TOB-TACT-4` issue has been left unchanged and will be addressed in the future Tact releases.
+
+### Release contributors
+
+- [Anton Trunov](https://github.com/anton-trunov): security audit fixes
+- [@verytactical](https://github.com/verytactical): internal review of the security audit fixes
+- [Trail of Bits](https://www.trailofbits.com): the security audit of the Tact compiler v1.5.0 (commit 0106ea14857bcf3c40dd10135243d0de96012871) and the audit of the fixes
+
 ## [1.5.3] - 2024-11-28
 
 ### Changed
