@@ -22,7 +22,7 @@ import { dummySrcInfo } from "../grammar";
 import { ensureInt } from "../optimizer/interpreter";
 import { evalConstantExpression } from "../optimizer/constEval";
 import { getAstUtil } from "../ast/util";
-import { sha256, sha256LoadUint32BE } from "../utils/sha256";
+import { sha256, highest32ofSha256 } from "../utils/sha256";
 
 export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
     const util = getAstUtil(Ast);
@@ -284,7 +284,7 @@ function newMessageOpcode(signature: string): AstNumber {
     return {
         kind: "number",
         base: 10,
-        value: sha256LoadUint32BE(sha256(signature)),
+        value: highest32ofSha256(sha256(signature)),
         id: 0,
         loc: dummySrcInfo,
     };
