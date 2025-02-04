@@ -26,7 +26,7 @@ export const getAstSchema = (
         Import: (source: A.ImportPath, loc: Loc): A.AstImport =>
             createNode<A.AstImport>({
                 kind: "import",
-                source,
+                importPath: source,
                 loc: toSrcInfo(loc),
             }),
         PrimitiveTypeDecl: (name: A.AstId, loc: Loc): A.AstPrimitiveTypeDecl =>

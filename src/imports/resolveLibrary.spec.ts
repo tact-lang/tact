@@ -29,7 +29,7 @@ const stdlibSource: Source = {
 it("project file, stdlib import", () => {
     const resolved = resolveLibrary({
         sourceFrom: mainSource,
-        sourceRef: {
+        importPath: {
             path: fromString("config.tact"),
             language: "tact",
             type: "stdlib",
@@ -48,7 +48,7 @@ it("project file, stdlib import", () => {
 it("project file, relative import, func", () => {
     const resolved = resolveLibrary({
         sourceFrom: mainSource,
-        sourceRef: {
+        importPath: {
             path: fromString("./main.fc"),
             type: "relative",
             language: "func",
@@ -67,7 +67,7 @@ it("project file, relative import, func", () => {
 it("project file, relative import, tact", () => {
     const resolved = resolveLibrary({
         sourceFrom: mainSource,
-        sourceRef: {
+        importPath: {
             path: fromString("./import.tact"),
             language: "tact",
             type: "relative",
@@ -86,7 +86,7 @@ it("project file, relative import, tact", () => {
 it("stdlib file, relative import, tact", () => {
     const resolved = resolveLibrary({
         sourceFrom: stdlibSource,
-        sourceRef: {
+        importPath: {
             path: fromString("./import.tact"),
             language: "tact",
             type: "relative",

@@ -49,8 +49,8 @@ export class AstComparator {
             }
 
             case "import": {
-                const { source: source1 } = node1 as A.AstImport;
-                const { source: source2 } = node2 as A.AstImport;
+                const { importPath: source1 } = node1 as A.AstImport;
+                const { importPath: source2 } = node2 as A.AstImport;
                 return (
                     source1.language === source2.language &&
                     source1.type === source2.type &&

@@ -12,7 +12,7 @@ export type AstModule = {
 
 export type AstImport = {
     kind: "import";
-    source: ImportPath;
+    importPath: ImportPath;
     id: number;
     loc: SrcInfo;
 };
@@ -556,6 +556,8 @@ export type ImportPath = {
     readonly language: Language;
 };
 
+// This is different from ItemOrigin, because relative import
+// from standard library is still import with origin: "stdlib"
 export type ImportType = "stdlib" | "relative";
 
 // An AstSimplifiedString is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.

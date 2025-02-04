@@ -4,31 +4,33 @@ import { asString } from "./path";
 import { ItemOrigin, Language, Source } from "./source";
 
 type ResolveLibraryArgs = {
-    sourceRef: ImportPath;
-    sourceFrom: Source;
-    project: VirtualFileSystem;
-    stdlib: VirtualFileSystem;
+    readonly importPath: ImportPath;
+    readonly sourceFrom: Source;
+    readonly project: VirtualFileSystem;
+    readonly stdlib: VirtualFileSystem;
 };
 
-type ResolveLibraryResult =
-    | {
-          ok: true;
-          path: string;
-          language: Language;
-          origin: ItemOrigin;
-      }
-    | {
-          ok: false;
-      };
+type ResolveLibrarySuccess = {
+    readonly ok: true;
+    readonly path: string;
+    readonly language: Language;
+    readonly origin: ItemOrigin;
+};
+
+type ResolveLibraryFailure = {
+    ok: false;
+};
+
+type ResolveLibraryResult = ResolveLibrarySuccess | ResolveLibraryFailure;
 
 export function resolveLibrary({
-    sourceRef: sourceRef,
+    importPath,
     sourceFrom,
     project,
     stdlib,
 }: ResolveLibraryArgs): ResolveLibraryResult {
-    if (sourceRef.type === "stdlib") {
-        const tactFile = stdlib.resolve("libs", asString(sourceRef.path));
+    if (importPath.type === "stdlib") {
+        const tactFile = stdlib.resolve("libs", asString(importPath.path));
 
         if (stdlib.exists(tactFile)) {
             return {
@@ -45,7 +47,7 @@ export function resolveLibrary({
         const resolvedPath = vfs.resolve(
             sourceFrom.path.slice(vfs.root.length),
             "..",
-            asString(sourceRef.path),
+            asString(importPath.path),
         );
 
         if (vfs.exists(resolvedPath)) {
@@ -53,7 +55,7 @@ export function resolveLibrary({
                 ok: true,
                 path: resolvedPath,
                 origin: sourceFrom.origin,
-                language: sourceRef.language,
+                language: importPath.language,
             };
         } else {
             return { ok: false };

@@ -1334,9 +1334,7 @@ exports[`grammar should parse contract-with-imports 1`] = `
   "imports": [
     {
       "id": 2,
-      "kind": "import",
-      "loc": import "@stdlib/deploy";,
-      "source": {
+      "importPath": {
         "language": "tact",
         "path": {
           "segments": [
@@ -1347,6 +1345,8 @@ exports[`grammar should parse contract-with-imports 1`] = `
         },
         "type": "stdlib",
       },
+      "kind": "import",
+      "loc": import "@stdlib/deploy";,
     },
   ],
   "items": [

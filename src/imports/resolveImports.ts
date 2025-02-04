@@ -5,10 +5,10 @@ import { resolveLibrary } from "./resolveLibrary";
 import { Language, Source } from "./source";
 
 type ResolveImportsArgs = {
-    entrypoint: string;
-    project: VirtualFileSystem;
-    stdlib: VirtualFileSystem;
-    parser: Parser;
+    readonly entrypoint: string;
+    readonly project: VirtualFileSystem;
+    readonly stdlib: VirtualFileSystem;
+    readonly parser: Parser;
 };
 
 export function resolveImports({
@@ -25,11 +25,11 @@ export function resolveImports({
     const pending: Source[] = [];
     function processImports(sourceFrom: Source) {
         const imp = parser.parseImports(sourceFrom);
-        for (const { source: sourceRef, loc } of imp) {
+        for (const { importPath, loc } of imp) {
             // Resolve library
             const resolved = resolveLibrary({
                 sourceFrom,
-                sourceRef,
+                importPath,
                 project: project,
                 stdlib: stdlib,
             });

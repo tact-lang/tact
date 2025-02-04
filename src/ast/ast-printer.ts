@@ -646,7 +646,7 @@ export const ppContractBody: Printer<A.AstContractDeclaration> =
     });
 
 export const ppAstImport: Printer<A.AstImport> =
-    ({ source: { path, type } }) =>
+    ({ importPath: { path, type } }) =>
     (c) => {
         if (type === "relative") {
             return c.row(`import "${asString(path)}";`);

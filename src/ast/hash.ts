@@ -340,7 +340,7 @@ export class AstHasher {
     }
 
     private hashImport(node: A.AstImport): string {
-        const { language, type, path } = node.source;
+        const { language, type, path } = node.importPath;
         return `${node.kind}|${language}|${type}|${path.stepsUp}|${path.segments.join("/")}`;
     }
 

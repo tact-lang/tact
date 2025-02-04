@@ -57,7 +57,7 @@ describe("parse imports", () => {
         expect(parse('import "./import";')).toMatchObject({
             imports: [
                 {
-                    source: {
+                    importPath: {
                         type: "relative",
                         language: "tact",
                         path: {
@@ -74,7 +74,7 @@ describe("parse imports", () => {
         expect(parse('import "../import";')).toMatchObject({
             imports: [
                 {
-                    source: {
+                    importPath: {
                         type: "relative",
                         language: "tact",
                         path: {
@@ -91,7 +91,7 @@ describe("parse imports", () => {
         expect(parse('import "./import/second";')).toMatchObject({
             imports: [
                 {
-                    source: {
+                    importPath: {
                         type: "relative",
                         language: "tact",
                         path: {
@@ -108,7 +108,7 @@ describe("parse imports", () => {
         expect(parse('import "./import.tact";')).toMatchObject({
             imports: [
                 {
-                    source: {
+                    importPath: {
                         type: "relative",
                         language: "tact",
                         path: {
@@ -125,7 +125,7 @@ describe("parse imports", () => {
         expect(parse('import "./import.fc";')).toMatchObject({
             imports: [
                 {
-                    source: {
+                    importPath: {
                         type: "relative",
                         language: "func",
                         path: {
@@ -142,7 +142,7 @@ describe("parse imports", () => {
         expect(parse('import "./import.func";')).toMatchObject({
             imports: [
                 {
-                    source: {
+                    importPath: {
                         type: "relative",
                         language: "func",
                         path: {

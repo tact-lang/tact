@@ -171,7 +171,7 @@ semantics.addOperation<A.AstNode>("astOfImport", {
         const loc = createRef(this);
         return createNode({
             kind: "import",
-            source: parseImportString(parsedString, loc),
+            importPath: parseImportString(parsedString, loc),
             loc,
         });
     },
