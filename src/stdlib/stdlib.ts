@@ -293,9 +293,9 @@ files["std/internal/cells.tact"] =
     "dGVuZHMgZnVuIGFzU2xpY2Uoc2VsZjogQnVpbGRlcik6IFNsaWNlIHsKICAgIHJldHVybiBzZWxmLmVuZENlbGwoKS5iZWdpblBhcnNlKCk7Cn0KCmlubGluZSBleHRl" +
     "bmRzIGZ1biBhc1NsaWNlKHNlbGY6IENlbGwpOiBTbGljZSB7CiAgICByZXR1cm4gc2VsZi5iZWdpblBhcnNlKCk7Cn0KCmlubGluZSBleHRlbmRzIGZ1biBhc0NlbGwo" +
     "c2VsZjogU2xpY2UpOiBDZWxsIHsKICAgIHJldHVybiBiZWdpbkNlbGwoKQogICAgICAgIC5zdG9yZVNsaWNlKHNlbGYpCiAgICAgICAgLmVuZENlbGwoKTsKfQoKaW5s" +
-    "aW5lIGV4dGVuZHMgZnVuIGFzQ2VsbChzZWxmOiBCdWlsZGVyKTogQ2VsbCB7CiAgICByZXR1cm4gc2VsZi5lbmRDZWxsKCk7Cn0KCmlubGluZSBmdW4gZW1wdHlDZWxs" +
-    "KCk6IENlbGwgewogICAgcmV0dXJuIGJlZ2luQ2VsbCgpLmVuZENlbGwoKTsKfQoKaW5saW5lIGZ1biBlbXB0eVNsaWNlKCk6IFNsaWNlIHsKICAgIHJldHVybiBlbXB0" +
-    "eUNlbGwoKS5hc1NsaWNlKCk7Cn0K";
+    "aW5lIGV4dGVuZHMgZnVuIGFzQ2VsbChzZWxmOiBCdWlsZGVyKTogQ2VsbCB7CiAgICByZXR1cm4gc2VsZi5lbmRDZWxsKCk7Cn0KCmFzbSBmdW4gZW1wdHlDZWxsKCk6" +
+    "IENlbGwgewogICAgPGIgYj4gUFVTSFJFRiAvLyBQdXJlIGZpZnQpICI8YiIgY3JlYXRlcyBhIGJ1aWxkZXIsICJiPiIgdHVybnMgaXQgaW50byBhIGNlbGwgKGluIGNv" +
+    "bXBpbGUgdGltZSkKfQoKYXNtIGZ1biBlbXB0eVNsaWNlKCk6IFNsaWNlIHsKICAgIGJ7fSBQVVNIU0xJQ0UKfQo=";
 files["std/internal/config.tact"] =
     "YXNtIGZ1biBnZXRDb25maWdQYXJhbShpZDogSW50KTogQ2VsbD8geyBDT05GSUdPUFRQQVJBTSB9Cg==";
 files["std/internal/context.tact"] =

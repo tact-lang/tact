@@ -375,10 +375,10 @@ inline extends fun asCell(self: Builder): Cell {
     return self.endCell();
 }
 
-inline fun emptyCell(): Cell {
-    return beginCell().endCell();
+asm fun emptyCell(): Cell {
+    <b b> PUSHREF // Pure fift) "<b" creates a builder, "b>" turns it into a cell (in compile time)
 }
 
-inline fun emptySlice(): Slice {
-    return emptyCell().asSlice();
+asm fun emptySlice(): Slice {
+    b{} PUSHSLICE
 }
