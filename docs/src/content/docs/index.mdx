@@ -82,15 +82,10 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
        amount: Int as uint32;
    }
 
-   contract SimpleCounter {
-       id: Int as uint32;
-       counter: Int as uint32;
-
-       init(id: Int) {
-           self.id = id;
-           self.counter = 0;
-       }
-
+   contract SimpleCounter(
+       id: Int as uint32,
+       counter: Int as uint32,
+   ) {
        // Empty receiver for the deployment
        receive() {
            // Forward the remaining value in the
@@ -130,9 +125,20 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
 
    See the [Tact Cookbook](/cookbook), which is a handy collection of everyday tasks (and solutions) every Tact developer faces during smart contract development. Use it to avoid reinventing the wheel.
 
-   {/*
+   Alternatively, check the following scenic tours and cheat sheets to get started right away:
 
-   Alternatively, check the following cheat sheets to get started right away:
+   <CardGrid>
+     <LinkCard
+       title="🎒 Learn TON in Y minutes"
+       href="/book/learn-ton-in-y-minutes"
+     />
+     <LinkCard
+       title="⚡ Learn Tact in Y minutes"
+       href="/book/learn-tact-in-y-minutes"
+     />
+   </CardGrid>
+
+   {/*
 
    <CardGrid>
      <LinkCard

@@ -1,0 +1,794 @@
+---
+title: Learn Tact in Y minutes
+description: "Take a whirlwind tour of the Tact smart contract programming language. A scenic voyage inspired by the famous learnXinYminutes website."
+---
+
+Tact is a fresh programming language for TON Blockchain that is focused on efficiency and ease of development. It is a good fit for complex smart contracts, quick onboarding, and rapid prototyping.
+
+You can try Tact without installing anything locally using the [Web IDE](https://ide.ton.org). In addition, all examples below have an "Open in Web IDE" button for your convenience.
+
+## Comments
+
+```tact
+// Single-line (//) comments for occasional and casual annotations
+
+/// Documentation comments that support Markdown
+```
+
+:::note
+
+  There are also C-like multiline comments `/* ... */`, but their use is discouraged in favor of consecutive single-line documentation comments `///`.
+
+:::
+
+## "Hello, World!" {#hello-world}
+
+```tact
+// Importing one of the standard libraries, for common deployments
+import "@stdlib/deploy";
+
+// Defining a contract with the Deployable trait from @stdlib/deploy
+contract HelloWorld with Deployable {
+    // Listens to incoming "ping" messages
+    receive("ping") {
+        // Sends a reply: "pong"
+        self.reply("pong".asComment());
+    }
+
+    // Listens to incoming "hello" messages
+    receive("hello") {
+        // Sends a reply: "Hello, World!"
+        self.reply("Hello, World!".asComment());
+    }
+}
+```
+
+## Primitive types
+
+```tact
+// There are two main groups of primitive types on TON: integers and cells.
+// All other primitive types are derivatives of those two.
+
+// ---
+// Integers,
+// always 257-bit signed in runtime operations,
+// but may have different lengths in persistent contract's state (storage)
+// ---
+
+let one_plus_one: Int = 1 + 1; // 2
+let two_by_two: Int = 2 / 2;   // 1
+
+let one_billion = 1_000_000_000; // decimal
+let binary_mask = 0b1_1111_1111; // binary
+let permissions = 0o7_5_5;       // octal
+let hehex = 0xFF80_0000_0000;    // hexadecimal
+
+let nanoToncoin: Int = 1;    // 1 nanoToncoin = 0.000,000,001 Toncoin
+let toncoin: Int = ton("1"); // 1 Toncoin = 1,000,000,000 nanoToncoin
+
+
+// ---
+// Booleans: true and false.
+// They take only 1 bit in persistent storage.
+// ---
+
+let factual: Bool = !!(true || false);
+let fax: Bool = true && factual;
+
+
+// ---
+// Addresses of smart contracts,
+// deterministically obtained by combining the initial code and initial data.
+// ---
+
+// This is cheap:
+let myAddr: Address = myAddress();
+
+// This is very expensive on-chain, so prefer doing such calculations off-chain:
+let myAddr2: Address = contractAddress(initOf MyContract());
+
+// The results are the same:
+myAddr == myAddr2; // true
+
+// Now, let's convert the Address back to its components:
+// * a workchain ID: 8-bit signed Int
+// * and an account ID: 256-bit unsigned Int
+//
+// The workchain IDs in use on mainnet are 0 (basechain) and -1 (masterchain),
+// although its possible to have more in the future.
+//
+// Most contracts operate in basechain (workchain ID 0).
+
+let addr: Address = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
+let addrComponents: StdAddress = parseStdAddress(addr.asSlice());
+
+addrComponents.workchain; // 0
+addrComponents.address;   // 107...lots of digits...287
+
+let addr2 = newAddress(addrComponents.workchain, addrComponents.address);
+addr2 == addr; // true
+
+
+// ---
+// Cells, Builders, Slices
+// ---
+
+// Cell is an immutable data structure that can contain up to 1023 bits
+// with up to 4 reference to other cells. Cyclic references are prohibited.
+let emptyC: Cell = emptyCell(); // well, cannot do much with that
+
+// Builder is an immutable primitive to construct (compose) cells.
+let bb: Builder = beginCell()
+    .storeUint(42, 6)  // storing 42 using 6 bits
+    .storeInt(42, 7)   // storing 42 using 7 bits (signed Int)
+    .storeBool(true)   // writing 1 as a single bit
+    .storeBit(true)    // alias to storeBool()
+    .storeCoins(40)    // common way of storing nanoToncoins
+    .storeAddress(myAddress())
+    .storeRef(emptyC); // storing a reference
+let composed: Cell = bb.endCell();
+
+// Slice is a mutable primitive to deconstruct (parse) cells.
+let target: Slice = composed.asSlice(); // let's start parsing `composed` Cell
+
+// TODO: ...let's parse the slice and then
+// .......................................
+
+// Manual composition and parsing of Cells is tedious,
+// error-prone and is generally not recommended.
+// Instead, prefer using structures — Struct and Message types.
+// See "Composite types" section below for more info.
+
+
+// ---
+// Strings are immutable sequences of characters,
+// which are useful to store texts to be used as special message bodies.
+// ---
+
+
+// ---
+// StringBuilders
+// ---
+
+
+// NOTE:
+// Under the hood, Address and String types are a Slice,
+// although with a well-defined distinct data layout for each.
+// While direct type conversions aren't allowed in Tact,
+// advanced users can still perform those by using assembly functions, see below.
+```
+
+Read more: [Primitive types](/book/types#primitive-types).
+
+## Composite types
+
+### Optionals {#composite-optionals}
+
+```tact
+// TODO:
+// (move notes here!)
+```
+
+Read more: [Optionals](/book/optionals).
+
+### Maps {#composite-maps}
+
+```tact
+// TODO:
+// (move notes here!)
+```
+
+Read more: [Maps](/book/maps).
+
+### Structs and Messages {#composite-structures}
+
+```tact
+// TODO
+// (move notes here!)
+```
+
+Read more: [Structs and Messages](/book/structs-and-messages).
+
+## Operators
+
+```tact
+// TODO: ...
+// (move notes here!)
+```
+
+Read more: [Operators](/book/operators).
+
+## Expressions
+
+```tact
+// TODO: ... + now, require, send (first use)
+// (move notes here!)
+```
+
+Read more: [Expressions](/book/expressions).
+
+## Statements
+
+```tact
+// TODO: ... + + exit codes and try-catch (may be separated then)
+// (move notes here!)
+```
+
+Read more: [Statements](/book/statements).
+
+## Constants
+
+```tact
+// TODO: with a note on contract constants (later)
+// (move notes here!)
+```
+
+Read more: [Constants](/book/constants).
+
+## Functions
+
+```tact
+// TODO: ... + get fun, receive() {}
+// (move notes here!)
+```
+
+Read more: [Functions](/book/functions).
+
+## Persistent state {#state}
+
+```tact
+// Contracts can define state variables that persist between contract calls, and thus commonly referred to as _storage_ variables.
+// Contracts in TON pay rent in proportion to the amount of persistent space they consume, so compact representations via serialization are encouraged.
+
+import "@stdlib/deploy";
+
+contract StateActor with Deployable {
+    // Persistent state variables
+    // TODO: ...
+
+    // Contract constants, which do not consume space
+    // in the persistent state — their values are always inlined in expressions
+    // TODO: ...
+
+    // TODO: init() and default initialization
+}
+```
+
+## Contract structure {#contract}
+
+```tact
+// TODO: move notes here
+```
+
+## Deployment
+
+```tact
+// TODO: ... + send + initOf + seqno/id
+// (move notes here!)
+```
+
+## Message exchange
+
+```tact
+// TODO: ... + message sending + reserve + receiving messages + refunds + child-parent interactions (or earlier)
+// (move notes here!)
+```
+
+## Example contracts {#examples}
+
+Let's put our newly acquired information of syntax and some semantics to a test.
+
+### Counter contract {#examples-counter}
+
+```tact
+// Defining a new Message type, which consists of two fields
+message Add {
+    queryId: Int as uint64; // unsigned integer value stored in 8 bytes
+    amount: Int as uint32; // unsigned integer value stored in 4 bytes
+}
+
+// Defining a contract
+contract SimpleCounter(
+    // Persistent state variables of the contract:
+    id: Int as uint32,
+    counter: Int as uint32,
+    // their default or initial values are supplied during deployment
+) {
+
+    // This gets run when the contract is deployed.
+    // All state variables have to be initialized with either of:
+    // 1. default values in their definition above
+    // 2. assignments in the init()
+    init(id: Int) { // <- you can pass values for deployment
+        self.id = id;     // <- store the id passed on deployment
+        self.counter = 0; // <- reset the counter
+    }
+
+    // Register a receiver of empty messages from other contracts.
+    // It handles all messages with `null` body
+    // and is very handy and cheap for the deployments.
+    receive() {
+        // Forward the remaining value in the
+        // incoming message back to the sender
+        cashback(sender());
+    }
+
+    // Register a binary receiver of the Add message body.
+    // TODO: return to this in a short while
+    // Receivers can Messages in Tact can be one of the two:
+    // 1. Message type, as defined above
+    // 2. String type, like "I am the message!"
+    // 3. Raw Slice message, we'll get to it later
+    receive(msg: Add) {
+        self.counter += msg.amount; // <- increase the counter
+        // Notify the caller that the receiver was executed and forward remaining value back
+        self.notify("Cashback".asComment());
+    }
+
+    // This is a getter function, which are special external interface functions
+    // that allow users to query information from the contract.
+    get fun counter(): Int {
+        return self.counter; // <- return the counter value
+    }
+
+    // Another getter function, but for the id:
+    get fun id(): Int {
+        return self.id; // <- return the id value
+    }
+}
+```
+
+### Jetton contracts {#examples-jetton}
+
+The tokens on TON Blockchain are commonly called Jettons. The distinction is made because they work differently from ERC-20 tokens or others.
+
+This is due to the scalable and distributed approach that works best on TON: instead of having a single giant contract with a big hashmap of addresses of token holders, Jettons instead have a single minter contract that creates individual contracts called Jetton wallets per each holder.
+
+For more, refer to the following resources:
+
+* [TON Jettons Processing](https://docs.ton.org/v3/guidelines/dapps/asset-processing/jettons) in TON Docs.
+* Jetton standards: [TEP-64](https://github.com/ton-blockchain/TEPs/blob/master/text/0064-token-data-standard.md), [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md), and [TEP-89](https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md).
+
+#### Jetton Wallet
+
+```tact
+// Child contract per each holder of N amount of given Jetton
+contract JettonWallet(
+    balance: Int as coins,
+    owner: Address,
+    master: Address,
+) {
+    receive(msg: JettonTransfer) {
+        require(parseStdAddress(msg.destination.asSlice()).workchain == 0, "Invalid destination workchain");
+        require(sender() == self.owner, "Incorrect sender");
+
+        self.balance -= msg.amount;
+        require(self.balance >= 0, "Incorrect balance after send");
+        require(msg.forwardPayload.bits() >= 1, "Invalid forward payload");
+
+        let ctx = context();
+        let fwdCount = 1 + sign(msg.forwardTonAmount); // msg.forwardTonAmount is coins, so it's positive
+        require(ctx.value >
+            msg.forwardTonAmount +
+            fwdCount * ctx.readForwardFee() +
+            (2 * getComputeFee(gasForTransfer, false) + minTonsForStorage),
+            "Insufficient amount of TON attached"
+        );
+
+        deploy(DeployParameters{
+            value: 0,
+            mode: SendRemainingValue,
+            bounce: true,
+            body: JettonTransferInternal{
+                queryId: msg.queryId,
+                amount: msg.amount,
+                sender: self.owner,
+                responseDestination: msg.responseDestination,
+                forwardTonAmount: msg.forwardTonAmount,
+                forwardPayload: msg.forwardPayload,
+            }.toCell(),
+            init: initOf JettonWallet(0, msg.destination, self.master),
+        });
+    }
+
+    receive(msg: JettonTransferInternal) {
+        self.balance += msg.amount;
+
+        // This message should come only from master, or from other JettonWallet
+        let wallet: StateInit = initOf JettonWallet(0, msg.sender, self.master);
+        if (sender() != contractAddress(wallet)) {
+            require(self.master == sender(), "Incorrect sender");
+        }
+
+        let ctx: Context = context();
+        let msgValue: Int = ctx.value;
+        let tonBalanceBeforeMsg = myBalance() - msgValue;
+
+        if (msg.forwardTonAmount > 0) {
+            let fwdFee: Int = ctx.readForwardFee();
+            msgValue -= msg.forwardTonAmount + fwdFee;
+            message(MessageParameters{
+                to: self.owner,
+                value: msg.forwardTonAmount,
+                mode: SendPayGasSeparately,
+                bounce: false,
+                body: JettonNotification{ // 0x7362d09c -- Remind the new Owner
+                    queryId: msg.queryId,
+                    amount: msg.amount,
+                    sender: msg.sender,
+                    forwardPayload: msg.forwardPayload,
+                }.toCell(),
+            });
+        }
+        nativeReserve(max(tonBalanceBeforeMsg, minTonsForStorage), ReserveAtMost);
+        // 0xd53276db -- Cashback to the original Sender
+        if (msg.responseDestination != null && msgValue > 0) {
+            message(MessageParameters{
+                to: msg.responseDestination!!,
+                value: msgValue,
+                mode: SendRemainingBalance + SendIgnoreErrors,
+                bounce: false,
+                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
+            });
+        }
+    }
+
+    receive(msg: JettonBurn) {
+        require(sender() == self.owner, "Incorrect sender");
+
+        self.balance -= msg.amount;
+        require(self.balance >= 0, "Incorrect balance after send");
+
+        let ctx = context();
+        let fwdFee: Int = ctx.readForwardFee();
+        require(ctx.value > (fwdFee + 2 * getComputeFee(gasForBurn, false)), "Unsufficient amount of TON attached");
+
+        message(MessageParameters{
+            to: self.master,
+            value: 0,
+            mode: SendRemainingValue,
+            bounce: true,
+            body: JettonBurnNotification{
+                queryId: msg.queryId,
+                amount: msg.amount,
+                sender: self.owner,
+                responseDestination: msg.responseDestination,
+            }.toCell(),
+        });
+    }
+
+    bounced(msg: bounced<JettonTransferInternal>) { self.balance += msg.amount; }
+
+    bounced(msg: bounced<JettonBurnNotification>) { self.balance += msg.amount; }
+
+    get fun get_wallet_data(): JettonWalletData {
+        return JettonWalletData{
+            balance: self.balance,
+            owner: self.owner,
+            master: self.master,
+            code: myCode()
+        };
+    }
+}
+
+//
+// Helper structs, message structs and constants,
+// which would otherwise be imported from another file
+//
+
+struct JettonData { totalSupply: Int; mintable: Bool; owner: Address; content: Cell; jettonWalletCode: Cell; }
+
+struct JettonWalletData { balance: Int; owner: Address; master: Address; code: Cell; }
+
+struct MaybeAddress { address: Address?; }
+
+message(4) JettonUpdateContent {
+    queryId: Int as uint64;
+    content: Cell;
+}
+
+message(0xf8a7ea5) JettonTransfer {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    destination: Address;
+    responseDestination: Address?;
+    customPayload: Cell?;
+    forwardTonAmount: Int as coins;
+    forwardPayload: Slice as remaining;
+}
+
+message(0x178d4519) JettonTransferInternal {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    sender: Address;
+    responseDestination: Address?;
+    forwardTonAmount: Int as coins;
+    forwardPayload: Slice as remaining;
+}
+
+message(0x7362d09c) JettonNotification {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    sender: Address;
+    forwardPayload: Slice as remaining;
+}
+
+message(0x595f07bc) JettonBurn {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    responseDestination: Address?;
+    customPayload: Cell?;
+}
+
+message(0x7bdd97de) JettonBurnNotification {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    sender: Address;
+    responseDestination: Address?;
+}
+
+message(0xd53276db) JettonExcesses {
+    queryId: Int as uint64;
+}
+
+message(0x2c76b973) ProvideWalletAddress {
+    queryId: Int as uint64;
+    ownerAddress: Address;
+    includeAddress: Bool;
+}
+
+message(0xd1735400) TakeWalletAddress {
+    queryId: Int as uint64;
+    walletAddress: Address;
+    ownerAddress: Cell?;
+}
+
+message(21) Mint {
+    queryId: Int as uint64;
+    receiver: Address;
+    tonAmount: Int as coins;
+    mintMessage: JettonTransferInternal;
+}
+
+message(22) CloseMinting {}
+
+message(3) ChangeOwner {
+    queryId: Int as uint64;
+    newOwner: Address;
+}
+
+const gasForBurn: Int = 6000;
+const gasForDiscovery: Int = 6500;
+const gasForTransfer: Int = 8000;
+const minTonsForStorage: Int = ton("0.01");
+```
+
+#### Jetton Minter
+
+```tact
+// Using the most common workchain — the basechain.
+const Workchain: Int = 0;
+
+// Parent contract that deploys individual Jetton wallets per each holder
+contract JettonMinter(
+    totalSupply: Int as coins,
+    owner: Address,
+    jettonContent: Cell,
+    mintable: Bool, // Should be deployed with this flag set to true
+) {
+    receive(msg: JettonBurnNotification) {
+        let sender = parseStdAddress(sender().asSlice());
+        let wallet = getJettonBasechainWalletByOwner(msg.sender);
+
+        require(sender.workchain == Workchain && sender.address == wallet.hash!!, "Unauthorized burn");
+
+        self.totalSupply -= msg.amount;
+
+        if (msg.responseDestination != null) {
+            message(MessageParameters {
+                to: msg.responseDestination!!,
+                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
+                value: 0,
+                bounce: false,
+                mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply has already been updated
+            });
+        }
+    }
+
+    receive(msg: ProvideWalletAddress) {
+        // we use message fwdFee for estimation of forward_payload costs
+        let ctx = context();
+        let fwdFee = ctx.readForwardFee();
+        require(ctx.value > fwdFee + getComputeFee(gasForDiscovery, false), "Insufficient gas for discovery");
+        let ownerWorkchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
+
+        let targetJettonWallet: BasechainAddress =
+            (ownerWorkchain == Workchain) ?
+            contractBasechainAddress(initOf JettonWallet(0, msg.ownerAddress, myAddress()))
+            : emptyBasechainAddress();
+
+        message(MessageParameters {
+            body: makeTakeWalletAddressMsg(targetJettonWallet, msg),
+            to: sender(),
+            value: 0,
+            mode: SendRemainingValue,
+        });
+    }
+
+    receive(msg: JettonUpdateContent) {
+        require(sender() == self.owner, "Incorrect sender");
+        self.jettonContent = msg.content;
+    }
+
+    receive(msg: Mint) {
+        require(sender() == self.owner, "Incorrect sender");
+        require(self.mintable, "Mint is closed");
+        self.totalSupply += msg.mintMessage.amount;
+
+        deploy(DeployParameters{
+            value: 0,
+            bounce: true,
+            mode: SendRemainingValue,
+            body: msg.mintMessage.toCell(),
+            init: getJettonWalletInit(msg.receiver)
+        });
+    }
+
+    receive(msg: ChangeOwner) {
+        require(sender() == self.owner, "Incorrect sender");
+        self.owner = msg.newOwner;
+    }
+
+    receive(msg: CloseMinting) {
+        require(sender() == self.owner, "Incorrect sender");
+        self.mintable = false;
+        cashback(sender());
+    }
+
+    bounced(msg: bounced<JettonTransferInternal>) {
+        self.totalSupply -= msg.amount;
+    }
+
+    get fun get_jetton_data(): JettonMasterState {
+        return JettonMasterState {
+            totalSupply: self.totalSupply,
+            mintable: self.mintable,
+            adminAddress: self.owner,
+            jettonContent: self.jettonContent,
+            jettonWalletCode: codeOf JettonWallet
+        };
+    }
+
+    get fun get_wallet_address(ownerAddress: Address): Address {
+        return getJettonWalletByOwner(ownerAddress);
+    }
+}
+
+//
+// Helper functions, structs, message structs and constants,
+// which would otherwise be imported from another file
+//
+
+asm fun emptyAddress(): Address { b{00} PUSHSLICE }
+
+inline fun makeTakeWalletAddressMsg(targetJettonWallet: BasechainAddress, msg: ProvideWalletAddress): Cell {
+    return
+        beginCell()
+        .storeUint(TakeWalletAddressOpcode, 32)
+        .storeUint(msg.queryId, 64)
+        .storeBasechainAddress(targetJettonWallet)
+        .storeMaybeRef(msg.includeAddress ? beginCell().storeAddress(msg.ownerAddress).endCell() : null)
+        .endCell();
+}
+
+inline fun getJettonWalletInit(address: Address): StateInit {
+    return initOf JettonWallet(0, address, myAddress());
+}
+
+inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {
+    return contractAddress(getJettonWalletInit(jettonWalletOwner));
+}
+
+inline fun getJettonBasechainWalletByOwner(jettonWalletOwner: Address): BasechainAddress {
+    return contractBasechainAddress(getJettonWalletInit(jettonWalletOwner));
+}
+
+struct JettonMasterState {
+    totalSupply: Int as coins;
+    mintable: Bool;
+    adminAddress: Address;
+    jettonContent: Cell;
+    jettonWalletCode: Cell;
+}
+
+struct JettonData { totalSupply: Int; mintable: Bool; owner: Address; content: Cell; jettonWalletCode: Cell; }
+
+struct JettonWalletData { balance: Int; owner: Address; master: Address; code: Cell; }
+
+struct MaybeAddress { address: Address?; }
+
+message(4) JettonUpdateContent {
+    queryId: Int as uint64;
+    content: Cell;
+}
+
+message(0xf8a7ea5) JettonTransfer {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    destination: Address;
+    responseDestination: Address?;
+    customPayload: Cell?;
+    forwardTonAmount: Int as coins;
+    forwardPayload: Slice as remaining;
+}
+
+message(0x178d4519) JettonTransferInternal {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    sender: Address;
+    responseDestination: Address?;
+    forwardTonAmount: Int as coins;
+    forwardPayload: Slice as remaining;
+}
+
+message(0x7362d09c) JettonNotification {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    sender: Address;
+    forwardPayload: Slice as remaining;
+}
+
+message(0x595f07bc) JettonBurn {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    responseDestination: Address?;
+    customPayload: Cell?;
+}
+
+message(0x7bdd97de) JettonBurnNotification {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    sender: Address;
+    responseDestination: Address?;
+}
+
+message(0xd53276db) JettonExcesses {
+    queryId: Int as uint64;
+}
+
+message(0x2c76b973) ProvideWalletAddress {
+    queryId: Int as uint64;
+    ownerAddress: Address;
+    includeAddress: Bool;
+}
+
+message(0xd1735400) TakeWalletAddress {
+    queryId: Int as uint64;
+    walletAddress: Address;
+    ownerAddress: Cell?;
+}
+
+message(21) Mint {
+    queryId: Int as uint64;
+    receiver: Address;
+    tonAmount: Int as coins;
+    mintMessage: JettonTransferInternal;
+}
+
+message(22) CloseMinting {}
+
+message(3) ChangeOwner {
+    queryId: Int as uint64;
+    newOwner: Address;
+}
+
+const gasForBurn: Int = 6000;
+const gasForDiscovery: Int = 6500;
+const gasForTransfer: Int = 8000;
+const minTonsForStorage: Int = ton("0.01");
+
+//
+// The Jetton wallet contract,
+// which would otherwise be imported from another file
+//
+```
