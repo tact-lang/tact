@@ -66,7 +66,7 @@
   },
   "dependencies": {
     "@tact-lang/opcode": "^0.0.18",
-    "@ton/core": "0.59.1",
+    "@ton/core": "0.60.0",
     "@ton/crypto": "^3.2.0",
     "@tonstudio/parser-runtime": "^0.0.1",
     "blockstore-core": "1.0.5",
