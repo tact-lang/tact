@@ -84,7 +84,6 @@ export async function writeProgram(
             headers.push("");
         }
     }
-
     files.push({
         name: basename + ".headers.fc",
         code: headers.join("\n"),
@@ -235,7 +234,6 @@ export async function writeProgram(
     header.push(`;; Contract ${abiSrc.name} functions`);
     header.push(";;");
     header.push("");
-
     const code = emit({
         header: header.join("\n"),
         functions: remainingFunctions,
