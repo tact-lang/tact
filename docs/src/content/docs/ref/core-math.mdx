@@ -83,6 +83,7 @@ sign(0);         // 0
 
 ## sqrt
 
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
@@ -156,11 +157,11 @@ muldivc(-3, 0, 0); // ERROR! Exit code 4: Integer overflow
 fun mulShiftRight(x: Int, y: Int, z: Int): Int;
 ```
 
-Computes and returns the [rounded down][round-down] result of `(x * y) / z{:tact}`. It is a more gas-efficient equivalent of doing the [bitwise shift right](/book/operators#binary-bitwise-shift-right) on the result of multiplication of [`Int{:tact}`][int] `x` times [`Int{:tact}`][int] `y`, where [`Int{:tact}`][int] `z` is the right operand of the shift.
+Computes and returns the [rounded down][round-down] result of `(x * y) / 2^z{:tact}`. It is a more gas-efficient equivalent of doing the [bitwise shift right](/book/operators#binary-bitwise-shift-right) on the result of multiplication of [`Int{:tact}`][int] `x` times [`Int{:tact}`][int] `y`, where [`Int{:tact}`][int] `z` is the right operand of the shift.
 
 If the value in calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
 
-Attempts to specify a negative value of `z` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify any value of `z` outside the inclusive range from $0$ to $256$ throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage examples:
 
@@ -183,7 +184,7 @@ Similar to [`mulShiftRight(){:tact}`](#mulshiftright), but instead of [rounding 
 
 If the value in calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
 
-Attempts to specify negative value of `z` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify any value of `z` outside the inclusive range from $0$ to $256$ throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage examples:
 
@@ -206,7 +207,7 @@ Similar to [`mulShiftRight(){:tact}`](#mulshiftright), but instead of [rounding 
 
 If the value in calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
 
-Attempts to specify negative value of `z` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify any value of `z` outside the inclusive range from $0$ to $256$ throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage examples:
 

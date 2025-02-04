@@ -123,11 +123,11 @@ asm fun muldivc(x: Int, y: Int, z: Int): Int { MULDIVC }
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Computes and returns the rounded down result of `(x * y) / z`. It is a more gas-efficient equivalent of doing the bitwise shift right on the result of multiplication of `Int` `x` times `Int` `y`, where `Int` `z` is the right operand of the shift.
+/// Computes and returns the rounded down result of `(x * y) / 2^z`. It is a more gas-efficient equivalent of doing the bitwise shift right on the result of multiplication of `Int` `x` times `Int` `y`, where `Int` `z` is the right operand of the shift.
 ///
 /// If the value in calculation goes beyond the range from -2^256 to 2^256 - 1 inclusive, an exception with exit code 4 is thrown: `Integer overflow`.
 ///
-/// Attempts to specify a negative value of `z` throw an exception with exit code 5: `Integer out of expected range`.
+/// Attempts to specify any value of `z` outside the inclusive range from 0 to 256 throw an exception with exit code 5: `Integer out of expected range`.
 ///
 /// ```tact
 /// fun examples() {
@@ -148,7 +148,7 @@ asm fun mulShiftRight(x: Int, y: Int, z: Int): Int { MULRSHIFT }
 ///
 /// If the value in calculation goes beyond the range from -2^256 to 2^256 - 1 inclusive, an exception with exit code 4 is thrown: `Integer overflow`.
 ///
-/// Attempts to specify a negative value of `z` throw an exception with exit code 5: `Integer out of expected range`.
+/// Attempts to specify any value of `z` outside the inclusive range from 0 to 256 throw an exception with exit code 5: `Integer out of expected range`.
 ///
 /// ```tact
 /// fun examples() {
@@ -169,7 +169,7 @@ asm fun mulShiftRightRound(x: Int, y: Int, z: Int): Int { MULRSHIFTR }
 ///
 /// If the value in calculation goes beyond the range from -2^256 to 2^256 - 1 inclusive, an exception with exit code 4 is thrown: `Integer overflow`.
 ///
-/// Attempts to specify a negative value of `z` throw an exception with exit code 5: `Integer out of expected range`.
+/// Attempts to specify any value of `z` outside the inclusive range from 0 to 256 throw an exception with exit code 5: `Integer out of expected range`.
 ///
 /// ```tact
 /// fun examples() {
