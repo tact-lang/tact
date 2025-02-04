@@ -21,8 +21,6 @@ export function resolveImports({
         func: new Map(),
         tact: new Map(),
     };
-    // const importedTact: Source[] = [];
-    // const importedFunc: Source[] = [];
     const processed: Set<string> = new Set();
     const pending: Source[] = [];
     function processImports(sourceFrom: Source) {
