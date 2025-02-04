@@ -104,11 +104,11 @@ export default defineConfig({
 			credits: false,
 			lastUpdated: true,
 			disable404Route: false,
-			// Note, that UI translations are bundled by Starlight for many languages:
+			// Note that UI translations are bundled by Starlight for many languages:
 			// https://starlight.astro.build/guides/i18n/#translate-starlights-ui
 			//
-			// Also note, that in order to use fallback content and translation notices
-			// provided by Starlight, files across language folders must be named the same!
+			// To use fallback content and translation notices provided by Starlight,
+			// files across language folders must be named the same!
 			defaultLocale: 'root', // removes language prefix from English pages
 			locales: {
 				root: {
@@ -129,6 +129,15 @@ export default defineConfig({
 					},
 					items: [
 						{ slug: 'book' },
+						{
+							slug: 'book/learn-ton-in-y-minutes',
+							badge: { variant: 'tip', text: 'new' },
+						},
+						{
+							slug: 'book/learn-tact-in-y-minutes',
+							badge: { variant: 'tip', text: 'new' },
+						},
+						// NOTE: saved for coming from other blockchains / languages
 						// {
 						// 	label: 'Cheatsheets',
 						// 	translations: {
