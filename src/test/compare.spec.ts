@@ -14,12 +14,12 @@ describe("comparator", () => {
             if (!dentry.isFile()) {
                 return;
             }
-            const filePath = join(CONTRACTS_DIR, dentry.name);
-            const src = fs.readFileSync(filePath, "utf-8");
+            const path = join(CONTRACTS_DIR, dentry.name);
+            const code = fs.readFileSync(path, "utf-8");
             const Ast = getAstFactory();
             const { parse } = getParser(Ast, defaultParser);
-            const ast1 = parse(src, filePath, "user");
-            const ast2 = parse(src, filePath, "user");
+            const ast1 = parse({ code, path, origin: "user" });
+            const ast2 = parse({ code, path, origin: "user" });
             assert.strictEqual(
                 AstComparator.make().compare(ast1, ast2),
                 true,

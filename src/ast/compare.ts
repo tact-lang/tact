@@ -49,9 +49,15 @@ export class AstComparator {
             }
 
             case "import": {
-                const { path: path1 } = node1 as A.AstImport;
-                const { path: path2 } = node2 as A.AstImport;
-                return this.compare(path1, path2);
+                const { importPath: source1 } = node1 as A.AstImport;
+                const { importPath: source2 } = node2 as A.AstImport;
+                return (
+                    source1.language === source2.language &&
+                    source1.type === source2.type &&
+                    source1.path.stepsUp === source2.path.stepsUp &&
+                    source1.path.segments.join("/") ===
+                        source2.path.segments.join("/")
+                );
             }
 
             case "primitive_type_decl": {

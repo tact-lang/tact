@@ -340,7 +340,8 @@ export class AstHasher {
     }
 
     private hashImport(node: A.AstImport): string {
-        return `${node.kind}|${this.hash(node.path)}`;
+        const { language, type, path } = node.importPath;
+        return `${node.kind}|${language}|${type}|${path.stepsUp}|${path.segments.join("/")}`;
     }
 
     private hashConstantDecl(node: A.AstConstantDecl): string {
