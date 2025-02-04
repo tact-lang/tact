@@ -72,8 +72,34 @@ describe("benchmarks", () => {
         expect(codeSize).toMatchSnapshot("code size");
     });
 
-    async function hashString(
-        sha256: SandboxContract<Sha256Small | Sha256Big | Sha256AsSlice>,
+    async function hashStringSmall(
+        sha256: SandboxContract<Sha256Small>,
+        s: string,
+    ): Promise<bigint> {
+        const result = await sha256.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            { $$type: "HashData", value: s },
+        );
+
+        return getUsedGas(result);
+    }
+
+    async function hashStringBig(
+        sha256: SandboxContract<Sha256Big>,
+        s: string,
+    ): Promise<bigint> {
+        const result = await sha256.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            { $$type: "HashData", value: s },
+        );
+
+        return getUsedGas(result);
+    }
+
+    async function hashStringAsSLice(
+        sha256: SandboxContract<Sha256AsSlice>,
         s: string,
     ): Promise<bigint> {
         const result = await sha256.send(
@@ -106,32 +132,36 @@ describe("benchmarks", () => {
             null,
         );
 
-        await hashString(sha256Big, "hello world");
-        await hashString(sha256Small, "hello world");
-        await hashString(sha256AsSlice, "hello world");
+        await hashStringBig(sha256Big, "hello world");
+        await hashStringSmall(sha256Small, "hello world");
+        await hashStringAsSLice(sha256AsSlice, "hello world");
 
-        expect(await hashString(sha256Big, "hello world")).toEqual(3039n);
-        expect(await hashString(sha256Small, "hello world")).toEqual(2516n);
-        expect(await hashString(sha256AsSlice, "hello world")).toEqual(2516n);
+        expect(await hashStringBig(sha256Big, "hello world")).toEqual(3039n);
+        expect(await hashStringSmall(sha256Small, "hello world")).toEqual(
+            2516n,
+        );
+        expect(await hashStringAsSLice(sha256AsSlice, "hello world")).toEqual(
+            2516n,
+        );
 
-        expect(await hashString(sha256Big, "hello world".repeat(5))).toEqual(
+        expect(await hashStringBig(sha256Big, "hello world".repeat(5))).toEqual(
             3040n,
         );
-        expect(await hashString(sha256Small, "hello world".repeat(5))).toEqual(
-            2516n,
-        );
         expect(
-            await hashString(sha256AsSlice, "hello world".repeat(5)),
+            await hashStringSmall(sha256Small, "hello world".repeat(5)),
+        ).toEqual(2516n);
+        expect(
+            await hashStringAsSLice(sha256AsSlice, "hello world".repeat(5)),
         ).toEqual(2516n);
 
-        expect(await hashString(sha256Big, "hello world".repeat(10))).toEqual(
-            3042n,
-        );
-        expect(await hashString(sha256Small, "hello world".repeat(10))).toEqual(
-            2516n,
-        );
         expect(
-            await hashString(sha256AsSlice, "hello world".repeat(10)),
+            await hashStringBig(sha256Big, "hello world".repeat(10)),
+        ).toEqual(3042n);
+        expect(
+            await hashStringSmall(sha256Small, "hello world".repeat(10)),
+        ).toEqual(2516n);
+        expect(
+            await hashStringAsSLice(sha256AsSlice, "hello world".repeat(10)),
         ).toEqual(2516n);
     });
 });
