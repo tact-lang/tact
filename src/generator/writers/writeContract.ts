@@ -4,7 +4,6 @@ import {
     enabledInterfacesGetter,
     enabledIpfsAbiGetter,
 } from "../../config/features";
-import { ItemOrigin } from "../../grammar";
 import { InitDescription, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { funcIdOf, funcInitIdOf } from "./id";
@@ -16,6 +15,7 @@ import { writeValue } from "./writeExpression";
 import { writeGetter, writeStatement } from "./writeFunction";
 import { writeInterfaces } from "./writeInterfaces";
 import { writeReceiver, writeRouter } from "./writeRouter";
+import { ItemOrigin } from "../../imports/source";
 
 export function writeStorageOps(
     type: TypeDescription,

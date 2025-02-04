@@ -37,7 +37,6 @@ export function traverseAndCheck(
             });
             break;
         case "import":
-            traverseAndCheck(node.path, callback);
             break;
         case "primitive_type_decl":
             traverseAndCheck(node.name, callback);

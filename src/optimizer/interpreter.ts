@@ -424,6 +424,9 @@ export function evalBinaryOp(
     }
 }
 
+/**
+ * @deprecated Strings in Tact fully follow JS grammar. Use JSON.parse(`"${value}"`) instead.
+ */
 export function interpretEscapeSequences(
     stringLiteral: string,
     source: SrcInfo,

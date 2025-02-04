@@ -3,16 +3,13 @@ import { FactoryAst } from "../ast/ast-helpers";
 import * as A from "../ast/ast";
 
 import { getParser as getParserPrev } from "./prev/grammar";
-import { ItemOrigin } from "./src-info";
+
+import { Source } from "../imports/source";
 
 export type Parser = {
-    parse: (src: string, path: string, origin: ItemOrigin) => A.AstModule;
+    parse: (source: Source) => A.AstModule;
     parseExpression: (sourceCode: string) => A.AstExpression;
-    parseImports: (
-        src: string,
-        path: string,
-        origin: ItemOrigin,
-    ) => A.AstImport[];
+    parseImports: (source: Source) => A.AstImport[];
     parseStatement: (sourceCode: string) => A.AstStatement;
 };
 
