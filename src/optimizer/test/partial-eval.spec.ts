@@ -440,7 +440,7 @@ function dummyEval(
                         const copy: A.AstStructFieldInitializer = {
                             ...param,
                             initializer: recurse(param.initializer),
-                        }
+                        };
                         return cloneNode(copy);
                     }),
                 };

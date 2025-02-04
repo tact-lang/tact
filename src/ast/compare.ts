@@ -802,7 +802,10 @@ export class AstComparator {
         return this.compare(node1, node2);
     }
 
-    private compareArray(nodes1: readonly A.AstNode[], nodes2: readonly A.AstNode[]): boolean {
+    private compareArray(
+        nodes1: readonly A.AstNode[],
+        nodes2: readonly A.AstNode[],
+    ): boolean {
         if (nodes1.length !== nodes2.length) {
             return false;
         }

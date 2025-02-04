@@ -708,8 +708,9 @@ export const ppAstFuncId = (func: A.AstFuncId): string => func.text;
 // Statements
 //
 
-export const ppStatementBlock: Printer<readonly A.AstStatement[]> = (stmts) => (c) =>
-    c.braced(stmts.length === 0 ? [] : c.list(stmts, ppAstStatement));
+export const ppStatementBlock: Printer<readonly A.AstStatement[]> =
+    (stmts) => (c) =>
+        c.braced(stmts.length === 0 ? [] : c.list(stmts, ppAstStatement));
 
 export const ppAsmInstructionsBlock: Printer<readonly A.AstAsmInstruction[]> =
     (instructions) => (c) =>

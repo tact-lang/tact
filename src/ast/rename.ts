@@ -94,7 +94,9 @@ export class AstRenamer {
         return name;
     }
 
-    public renameModuleItems(items: readonly A.AstModuleItem[]): A.AstModuleItem[] {
+    public renameModuleItems(
+        items: readonly A.AstModuleItem[],
+    ): A.AstModuleItem[] {
         // Give new names to module-level elements.
         const renamedItems = items.map((item) =>
             this.renameModuleItemContents(
@@ -324,7 +326,9 @@ export class AstRenamer {
         return { ...contract, declarations };
     }
 
-    private renameStatements(statements: readonly A.AstStatement[]): A.AstStatement[] {
+    private renameStatements(
+        statements: readonly A.AstStatement[],
+    ): A.AstStatement[] {
         return statements.map((stmt) => {
             return this.renameStatement(stmt);
         });

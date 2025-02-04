@@ -179,7 +179,9 @@ export class AstHasher {
         }
     }
 
-    private hashDestructIdentifiers(identifiers: readonly (readonly [A.AstId, A.AstId])[]): string {
+    private hashDestructIdentifiers(
+        identifiers: readonly (readonly [A.AstId, A.AstId])[],
+    ): string {
         const identifiersHash = identifiers
             .map(([key, value]) => `${this.hash(key)}|${this.hash(value)}`)
             .join("|");
@@ -258,7 +260,10 @@ export class AstHasher {
     }
 
     private hashAttributes(
-        attributes: readonly (A.AstFunctionAttribute | A.AstConstantAttribute)[],
+        attributes: readonly (
+            | A.AstFunctionAttribute
+            | A.AstConstantAttribute
+        )[],
     ): string {
         return attributes
             .map((attr) => attr.type)
@@ -298,7 +303,9 @@ export class AstHasher {
         return hashedStatements.join("|");
     }
 
-    private hashInstructions(instructions: readonly A.AstAsmInstruction[]): string {
+    private hashInstructions(
+        instructions: readonly A.AstAsmInstruction[],
+    ): string {
         return instructions.join("|");
     }
 
