@@ -227,7 +227,7 @@ export function isLvalue(path: A.AstId[], ctx: CompilerContext): boolean {
 }
 
 function processStatements(
-    statements: A.AstStatement[],
+    statements: readonly A.AstStatement[],
     sctx: StatementContext,
     ctx: CompilerContext,
 ): {
@@ -765,7 +765,7 @@ function processStatements(
 }
 
 function processFunctionBody(
-    statements: A.AstStatement[],
+    statements: readonly A.AstStatement[],
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {

@@ -179,9 +179,9 @@ export async function build(args: {
         logger.info(`   > ${contract}: func compiler`);
         let codeBoc: Buffer;
         try {
-            const stdlibPath = stdlib.resolve("stdlib.fc");
+            const stdlibPath = stdlib.resolve("std/stdlib.fc");
             const stdlibCode = stdlib.readFile(stdlibPath).toString();
-            const stdlibExPath = stdlib.resolve("stdlib_ex.fc");
+            const stdlibExPath = stdlib.resolve("std/stdlib_ex.fc");
             const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
             const c = await funcCompile({
                 entries: [

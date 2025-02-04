@@ -6,9 +6,11 @@ import { $ast } from "./grammar";
 import { TactCompilationError } from "../../error/errors";
 import { SyntaxErrors, syntaxErrorSchema } from "../parser-error";
 import { AstSchema, getAstSchema } from "../../ast/getAstSchema";
-import { getSrcInfo, ItemOrigin } from "../src-info";
+import { getSrcInfo } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
 import { makeMakeVisitor } from "../../utils/tricks";
+import { Language, Source } from "../../imports/source";
+import { emptyPath, fromString } from "../../imports/path";
 
 const makeVisitor = makeMakeVisitor("$");
 
@@ -943,7 +945,7 @@ const parseConstantDefInModule =
             // FIXME: should be `firstAttribute.loc`
             // https://github.com/tact-lang/tact/issues/1255
             ctx.err.topLevelConstantWithAttribute()(node.loc);
-            result.attributes = [];
+            return { ...result, attributes: [] };
         }
         return result;
     };
@@ -1178,15 +1180,83 @@ const parseModuleItem: (input: $ast.moduleItem) => Handler<A.AstModuleItem> =
         Trait: parseTrait,
     });
 
+const detectLanguage = (path: string): Language | undefined => {
+    if (path.endsWith(".fc") || path.endsWith(".func")) {
+        return "func";
+    }
+
+    if (path.endsWith(".tact")) {
+        return "tact";
+    }
+
+    return undefined;
+};
+
+const guessExtension = (
+    importText: string,
+): { language: Language; guessedPath: string } => {
+    const language = detectLanguage(importText);
+    if (language) {
+        return { guessedPath: importText, language };
+    } else {
+        return { guessedPath: `${importText}.tact`, language: "tact" };
+    }
+};
+
+const stdlibPrefix = "@stdlib/";
+
+const parseImportString =
+    (importText: string, loc: $.Loc): Handler<A.ImportPath> =>
+    (ctx) => {
+        if (importText.endsWith("/")) {
+            ctx.err.noFolderImports()(loc);
+            importText = importText.slice(0, -1);
+        }
+
+        if (importText.includes("\\")) {
+            ctx.err.importWithBackslash()(loc);
+            importText = importText.replace(/\\/g, "/");
+        }
+
+        const { guessedPath, language } = guessExtension(importText);
+
+        if (guessedPath.startsWith(stdlibPrefix)) {
+            const path = fromString(guessedPath.substring(stdlibPrefix.length));
+
+            if (path.stepsUp !== 0) {
+                ctx.err.importWithBackslash()(loc);
+            }
+
+            return {
+                path,
+                type: "stdlib",
+                language,
+            };
+        } else if (
+            guessedPath.startsWith("./") ||
+            guessedPath.startsWith("../")
+        ) {
+            return {
+                path: fromString(guessedPath),
+                type: "relative",
+                language,
+            };
+        } else {
+            ctx.err.invalidImport()(loc);
+            return {
+                path: emptyPath,
+                type: "relative",
+                language: "tact",
+            };
+        }
+    };
+
 const parseImport =
     ({ path, loc }: $ast.Import): Handler<A.AstImport> =>
     (ctx) => {
-        if (path.value.includes("\\")) {
-            ctx.err.importWithBackslash()(loc);
-            path = { ...path, value: path.value.replace(/\\/g, "/") };
-        }
-
-        return ctx.ast.Import(parseStringLiteral(path)(ctx), loc);
+        const stringLiteral = parseStringLiteral(path)(ctx);
+        const parsedString: string = JSON.parse(`"${stringLiteral.value}"`);
+        return ctx.ast.Import(parseImportString(parsedString, loc)(ctx), loc);
     };
 
 const parseModule =
@@ -1210,16 +1280,14 @@ export const getParser = (ast: FactoryAst) => {
     const doParse = <T, U>(
         grammar: $.Parser<T>,
         handler: (t: T) => Handler<U>,
-        src: string,
-        path: string,
-        origin: ItemOrigin,
+        { code, path, origin }: Source,
     ) => {
         const locationToSrcInfo = (loc: $.Loc) => {
             if (loc.$ === "range") {
-                return getSrcInfo(src, loc.start, loc.end, path, origin);
+                return getSrcInfo(code, loc.start, loc.end, path, origin);
             } else {
                 console.error("Invalid range");
-                return getSrcInfo(src, loc.at, loc.at, path, origin);
+                return getSrcInfo(code, loc.at, loc.at, path, origin);
             }
         };
 
@@ -1237,7 +1305,7 @@ export const getParser = (ast: FactoryAst) => {
         const result = $.parse({
             grammar,
             space: G.space,
-            text: src,
+            text: code,
         });
         if (result.$ === "error") {
             const { expected, position } = result.error;
@@ -1255,27 +1323,25 @@ export const getParser = (ast: FactoryAst) => {
     };
 
     return {
-        parse: (src: string, path: string, origin: ItemOrigin): A.AstModule => {
-            return doParse(G.Module, parseModule, src, path, origin);
+        parse: (source: Source): A.AstModule => {
+            return doParse(G.Module, parseModule, source);
         },
-        parseExpression: (src: string): A.AstExpression => {
-            return doParse(
-                G.expression,
-                parseExpression,
-                src,
-                "<repl>",
-                "user",
-            );
+        parseExpression: (code: string): A.AstExpression => {
+            return doParse(G.expression, parseExpression, {
+                code,
+                path: "<repl>",
+                origin: "user",
+            });
         },
-        parseImports: (
-            src: string,
-            path: string,
-            origin: ItemOrigin,
-        ): A.AstImport[] => {
-            return doParse(G.JustImports, parseJustImports, src, path, origin);
+        parseImports: (source: Source): A.AstImport[] => {
+            return doParse(G.JustImports, parseJustImports, source);
         },
-        parseStatement: (src: string): A.AstStatement => {
-            return doParse(G.statement, parseStatement, src, "<repl>", "user");
+        parseStatement: (code: string): A.AstStatement => {
+            return doParse(G.statement, parseStatement, {
+                code,
+                path: "<repl>",
+                origin: "user",
+            });
         },
     };
 };

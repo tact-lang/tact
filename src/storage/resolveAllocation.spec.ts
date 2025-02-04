@@ -11,7 +11,7 @@ import { getAstFactory } from "../ast/ast-helpers";
 import { defaultParser } from "../grammar/grammar";
 import { stdlibPath } from "../stdlib/path";
 
-const primitivesPath = path.join(stdlibPath, "/std/primitives.tact");
+const primitivesPath = path.join(stdlibPath, "/std/internal/primitives.tact");
 const stdlib = fs.readFileSync(primitivesPath, "utf-8");
 const src = `
 
