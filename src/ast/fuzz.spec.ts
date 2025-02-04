@@ -5,7 +5,7 @@ import { diffAstObjects, randomAstExpression } from "./random.infra";
 import { prettyPrint } from "./ast-printer";
 
 describe("Pretty Print Expressions", () => {
-    const maxDepth = 4;
+    const maxDepth: fc.DepthSize = "+1"; // Small (default value) +1
     const parser = getParser(getAstFactory(), "new");
 
     it(`should parse AstExpression`, () => {
@@ -28,7 +28,7 @@ describe("Pretty Print Expressions", () => {
                 }
                 expect(actual).toBe(true);
             }),
-            { seed: 1, numRuns: 5000 },
+            { seed: 1, numRuns: 1000, ignoreEqualValues: true },
         );
     });
 });

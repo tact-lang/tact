@@ -15,7 +15,7 @@ if (isNaN(count) || count <= 0) {
     process.exit(1);
 }
 
-fc.sample(randomAstExpression(4), count).forEach((expression, index) => {
+fc.sample(randomAstExpression("+1"), count).forEach((expression, index) => {
     console.log(`Expression ${index + 1}:`);
     console.log(prettyPrint(expression));
     console.log("-".repeat(80));
