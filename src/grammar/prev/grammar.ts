@@ -155,6 +155,9 @@ function parseImportString(importText: string, loc: SrcInfo): A.ImportPath {
 
     if (guessedPath.startsWith(stdlibPrefix)) {
         const path = fromString(guessedPath.substring(stdlibPrefix.length));
+        if (path.stepsUp !== 0) {
+            err().importWithBackslash()(loc);
+        }
         return { path, type: "stdlib", language };
     } else if (guessedPath.startsWith("./") || guessedPath.startsWith("../")) {
         return { path: fromString(guessedPath), type: "relative", language };

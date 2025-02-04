@@ -110,6 +110,11 @@ export const syntaxErrorSchema = <T, U>(
         invalidImport: () => {
             return handle(sub`Import must start with ./, ../ or @stdlib/`);
         },
+        escapingImport: () => {
+            return handle(
+                sub`Standard library imports should be inside its root`,
+            );
+        },
     };
 };
 

@@ -1221,8 +1221,14 @@ const parseImportString =
         const { guessedPath, language } = guessExtension(importText);
 
         if (guessedPath.startsWith(stdlibPrefix)) {
+            const path = fromString(guessedPath.substring(stdlibPrefix.length));
+
+            if (path.stepsUp !== 0) {
+                ctx.err.importWithBackslash()(loc);
+            }
+
             return {
-                path: fromString(guessedPath.substring(stdlibPrefix.length)),
+                path,
                 type: "stdlib",
                 language,
             };

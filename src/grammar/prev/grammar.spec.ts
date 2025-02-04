@@ -154,4 +154,88 @@ describe("parse imports", () => {
             ],
         });
     });
+
+    it("should parse absolute stdlib imports", () => {
+        expect(parse('import "@stdlib/foo";')).toMatchObject({
+            imports: [
+                {
+                    importPath: {
+                        type: "stdlib",
+                        language: "tact",
+                        path: {
+                            segments: ["foo.tact"],
+                            stepsUp: 0,
+                        },
+                    },
+                },
+            ],
+        });
+    });
+
+    it("should parse relative stdlib imports", () => {
+        expect(parse('import "@stdlib/foo/../bar";')).toMatchObject({
+            imports: [
+                {
+                    importPath: {
+                        type: "stdlib",
+                        language: "tact",
+                        path: {
+                            segments: ["bar.tact"],
+                            stepsUp: 0,
+                        },
+                    },
+                },
+            ],
+        });
+    });
+
+    it("should parse stdlib tact imports with extension", () => {
+        expect(parse('import "@stdlib/foo.tact";')).toMatchObject({
+            imports: [
+                {
+                    importPath: {
+                        type: "stdlib",
+                        language: "tact",
+                        path: {
+                            segments: ["foo.tact"],
+                            stepsUp: 0,
+                        },
+                    },
+                },
+            ],
+        });
+    });
+
+    it("should parse stdlib func imports with extension", () => {
+        expect(parse('import "@stdlib/foo.fc";')).toMatchObject({
+            imports: [
+                {
+                    importPath: {
+                        type: "stdlib",
+                        language: "func",
+                        path: {
+                            segments: ["foo.fc"],
+                            stepsUp: 0,
+                        },
+                    },
+                },
+            ],
+        });
+    });
+
+    it("should reject stdlib root import", () => {
+        expect(() => parse('import "@stdlib";')).toThrow();
+    });
+
+    it("should reject stdlib root import as folder", () => {
+        expect(() => parse('import "@stdlib/";')).toThrow();
+    });
+
+    it("should reject stdlib folder import", () => {
+        expect(() => parse('import "@stdlib/foo/";')).toThrow();
+    });
+
+    it("should reject stdlib import up from stdlib root", () => {
+        expect(() => parse('import "@stdlib/../foo";')).toThrow();
+    });
 });
