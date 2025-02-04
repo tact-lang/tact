@@ -250,6 +250,12 @@ function resolveBinaryOp(
                 // it works only in the case when the right-hand side is a constant expression
                 // and does not have any variables
                 if (exp.op === ">>" || exp.op === "<<") {
+
+                    // FIXME: This should be removed once PR https://github.com/tact-lang/tact/pull/1047 (add optimization phase)
+                    // gets merged into main. I decided to keep the call to evalConstantExpression here even though it will introduce 
+                    // a bug once method calls are added to interpreter (PR https://github.com/tact-lang/tact/pull/1652),
+                    // because extracting this evalConstantExpression would involve traversing and evaluating all expressions in the AST 
+                    // (something that PR https://github.com/tact-lang/tact/pull/1047 does).
                     try {
                         const valBits = ensureInt(
                             evalConstantExpression(
