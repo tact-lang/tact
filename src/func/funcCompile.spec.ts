@@ -16,7 +16,7 @@ describe("funcCompile", () => {
                 {
                     path: "/stdlib.fc",
                     content: Buffer.from(
-                        files["stdlib.fc"]!,
+                        files["std/stdlib.fc"]!,
                         "base64",
                     ).toString(),
                 },
