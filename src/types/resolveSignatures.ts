@@ -85,7 +85,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
             return "^cell";
         } else if (type === "slice") {
             if (format === "remainder") {
-                return "slice";
+                return "cell";
             } else if (format === "ref") {
                 return "^slice";
             } else if (format !== null) {
@@ -96,7 +96,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
             return "^slice";
         } else if (type === "builder") {
             if (format === "remainder") {
-                return "builder";
+                return "cell";
             } else if (format === "ref") {
                 return "^slice";
             } else if (format !== null) {
