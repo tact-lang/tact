@@ -94,7 +94,7 @@ export class AstRenamer {
         return name;
     }
 
-    public renameModuleItems(items: A.AstModuleItem[]): A.AstModuleItem[] {
+    public renameModuleItems(items: readonly A.AstModuleItem[]): A.AstModuleItem[] {
         // Give new names to module-level elements.
         const renamedItems = items.map((item) =>
             this.renameModuleItemContents(
@@ -268,7 +268,7 @@ export class AstRenamer {
      * Renames getter's methodId expression.
      */
     private renameFunctionAttributes(
-        functionAttrs: A.AstFunctionAttribute[],
+        functionAttrs: readonly A.AstFunctionAttribute[],
     ): A.AstFunctionAttribute[] {
         return functionAttrs.map((attr) => {
             if (attr.type === "get" && attr.methodId !== null) {
@@ -324,7 +324,7 @@ export class AstRenamer {
         return { ...contract, declarations };
     }
 
-    private renameStatements(statements: A.AstStatement[]): A.AstStatement[] {
+    private renameStatements(statements: readonly A.AstStatement[]): A.AstStatement[] {
         return statements.map((stmt) => {
             return this.renameStatement(stmt);
         });

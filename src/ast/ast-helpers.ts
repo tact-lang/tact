@@ -266,8 +266,8 @@ function eqFieldValues(
 }
 
 function eqArrays<T>(
-    arr1: T[],
-    arr2: T[],
+    arr1: readonly T[],
+    arr2: readonly T[],
     eqElements: (elem1: T, elem2: T) => boolean,
 ): boolean {
     if (arr1.length !== arr2.length) {

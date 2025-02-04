@@ -167,7 +167,7 @@ export const ppLeaf =
     () =>
         printer(node);
 
-export const ppExprArgs = (args: A.AstExpression[]) =>
+export const ppExprArgs = (args: readonly A.AstExpression[]) =>
     args.map((arg) => ppAstExpression(arg)).join(", ");
 
 export const ppAstStructFieldInit = (
@@ -708,10 +708,10 @@ export const ppAstFuncId = (func: A.AstFuncId): string => func.text;
 // Statements
 //
 
-export const ppStatementBlock: Printer<A.AstStatement[]> = (stmts) => (c) =>
+export const ppStatementBlock: Printer<readonly A.AstStatement[]> = (stmts) => (c) =>
     c.braced(stmts.length === 0 ? [] : c.list(stmts, ppAstStatement));
 
-export const ppAsmInstructionsBlock: Printer<A.AstAsmInstruction[]> =
+export const ppAsmInstructionsBlock: Printer<readonly A.AstAsmInstruction[]> =
     (instructions) => (c) =>
         c.braced(instructions.map(c.row));
 

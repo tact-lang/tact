@@ -5,8 +5,8 @@ import { Language } from "../imports/source";
 
 export type AstModule = {
     readonly kind: "module";
-    readonly imports: AstImport[];
-    readonly items: AstModuleItem[];
+    readonly imports: readonly AstImport[];
+    readonly items: readonly AstModuleItem[];
     readonly id: number;
 };
 
@@ -44,11 +44,11 @@ export type AstPrimitiveTypeDecl = {
 
 export type AstFunctionDef = {
     readonly kind: "function_def";
-    readonly attributes: AstFunctionAttribute[];
+    readonly attributes: readonly AstFunctionAttribute[];
     readonly name: AstId;
     readonly return: AstType | null;
-    readonly params: AstTypedParameter[];
-    readonly statements: AstStatement[];
+    readonly params: readonly AstTypedParameter[];
+    readonly statements: readonly AstStatement[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -56,37 +56,37 @@ export type AstFunctionDef = {
 export type AstAsmFunctionDef = {
     readonly kind: "asm_function_def";
     readonly shuffle: AstAsmShuffle;
-    readonly attributes: AstFunctionAttribute[];
+    readonly attributes: readonly AstFunctionAttribute[];
     readonly name: AstId;
     readonly return: AstType | null;
-    readonly params: AstTypedParameter[];
-    readonly instructions: AstAsmInstruction[];
+    readonly params: readonly AstTypedParameter[];
+    readonly instructions: readonly AstAsmInstruction[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
 
 export type AstAsmInstruction = string;
 export type AstAsmShuffle = {
-    readonly args: AstId[];
-    readonly ret: AstNumber[];
+    readonly args: readonly AstId[];
+    readonly ret: readonly AstNumber[];
 };
 
 export type AstFunctionDecl = {
     readonly kind: "function_decl";
-    readonly attributes: AstFunctionAttribute[];
+    readonly attributes: readonly AstFunctionAttribute[];
     readonly name: AstId;
     readonly return: AstType | null;
-    readonly params: AstTypedParameter[];
+    readonly params: readonly AstTypedParameter[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
 
 export type AstNativeFunctionDecl = {
     readonly kind: "native_function_decl";
-    readonly attributes: AstFunctionAttribute[];
+    readonly attributes: readonly AstFunctionAttribute[];
     readonly name: AstId;
     readonly nativeName: AstFuncId;
-    readonly params: AstTypedParameter[];
+    readonly params: readonly AstTypedParameter[];
     readonly return: AstType | null;
     readonly id: number;
     readonly loc: SrcInfo;
@@ -94,7 +94,7 @@ export type AstNativeFunctionDecl = {
 
 export type AstConstantDef = {
     readonly kind: "constant_def";
-    readonly attributes: AstConstantAttribute[];
+    readonly attributes: readonly AstConstantAttribute[];
     readonly name: AstId;
     readonly type: AstType;
     readonly initializer: AstExpression;
@@ -104,7 +104,7 @@ export type AstConstantDef = {
 
 export type AstConstantDecl = {
     readonly kind: "constant_decl";
-    readonly attributes: AstConstantAttribute[];
+    readonly attributes: readonly AstConstantAttribute[];
     readonly name: AstId;
     readonly type: AstType;
     readonly id: number;
@@ -114,7 +114,7 @@ export type AstConstantDecl = {
 export type AstStructDecl = {
     readonly kind: "struct_decl";
     readonly name: AstId;
-    readonly fields: AstFieldDecl[];
+    readonly fields: readonly AstFieldDecl[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -123,7 +123,7 @@ export type AstMessageDecl = {
     readonly kind: "message_decl";
     readonly name: AstId;
     readonly opcode: AstExpression | null;
-    readonly fields: AstFieldDecl[];
+    readonly fields: readonly AstFieldDecl[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -131,9 +131,9 @@ export type AstMessageDecl = {
 export type AstContract = {
     readonly kind: "contract";
     readonly name: AstId;
-    readonly traits: AstId[];
-    readonly attributes: AstContractAttribute[];
-    readonly declarations: AstContractDeclaration[];
+    readonly traits: readonly AstId[];
+    readonly attributes: readonly AstContractAttribute[];
+    readonly declarations: readonly AstContractDeclaration[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -141,9 +141,9 @@ export type AstContract = {
 export type AstTrait = {
     readonly kind: "trait";
     readonly name: AstId;
-    readonly traits: AstId[];
-    readonly attributes: AstContractAttribute[];
-    readonly declarations: AstTraitDeclaration[];
+    readonly traits: readonly AstId[];
+    readonly attributes: readonly AstContractAttribute[];
+    readonly declarations: readonly AstTraitDeclaration[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -178,15 +178,15 @@ export type AstFieldDecl = {
 export type AstReceiver = {
     readonly kind: "receiver";
     readonly selector: AstReceiverKind;
-    readonly statements: AstStatement[];
+    readonly statements: readonly AstStatement[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
 
 export type AstContractInit = {
     readonly kind: "contract_init";
-    readonly params: AstTypedParameter[];
-    readonly statements: AstStatement[];
+    readonly params: readonly AstTypedParameter[];
+    readonly statements: readonly AstStatement[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -267,8 +267,8 @@ export type AstStatementAugmentedAssign = {
 export type AstStatementCondition = {
     readonly kind: "statement_condition";
     readonly condition: AstExpression;
-    readonly trueStatements: AstStatement[];
-    readonly falseStatements: AstStatement[] | null;
+    readonly trueStatements: readonly AstStatement[];
+    readonly falseStatements: readonly AstStatement[] | null;
     readonly elseif: AstStatementCondition | null;
     readonly id: number;
     readonly loc: SrcInfo;
@@ -277,7 +277,7 @@ export type AstStatementCondition = {
 export type AstStatementWhile = {
     readonly kind: "statement_while";
     readonly condition: AstExpression;
-    readonly statements: AstStatement[];
+    readonly statements: readonly AstStatement[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -285,7 +285,7 @@ export type AstStatementWhile = {
 export type AstStatementUntil = {
     readonly kind: "statement_until";
     readonly condition: AstExpression;
-    readonly statements: AstStatement[];
+    readonly statements: readonly AstStatement[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -293,14 +293,14 @@ export type AstStatementUntil = {
 export type AstStatementRepeat = {
     readonly kind: "statement_repeat";
     readonly iterations: AstExpression;
-    readonly statements: AstStatement[];
+    readonly statements: readonly AstStatement[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
 
 export type AstStatementTry = {
     readonly kind: "statement_try";
-    readonly statements: AstStatement[];
+    readonly statements: readonly AstStatement[];
     readonly catchBlock: AstCatchBlock | undefined;
     readonly id: number;
     readonly loc: SrcInfo;
@@ -308,7 +308,7 @@ export type AstStatementTry = {
 
 export type AstCatchBlock = {
     readonly catchName: AstId;
-    readonly catchStatements: AstStatement[];
+    readonly catchStatements: readonly AstStatement[];
 };
 
 export type AstStatementForEach = {
@@ -316,7 +316,7 @@ export type AstStatementForEach = {
     readonly keyName: AstId;
     readonly valueName: AstId;
     readonly map: AstExpression;
-    readonly statements: AstStatement[];
+    readonly statements: readonly AstStatement[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -325,7 +325,7 @@ export type AstStatementDestruct = {
     readonly kind: "statement_destruct";
     readonly type: AstTypeId;
     /** field name -> [field id, local id] */
-    readonly identifiers: Map<string, [AstId, AstId]>;
+    readonly identifiers: ReadonlyMap<string, readonly [AstId, AstId]>;
     readonly ignoreUnspecifiedFields: boolean;
     readonly expression: AstExpression;
     readonly id: number;
@@ -334,7 +334,7 @@ export type AstStatementDestruct = {
 
 export type AstStatementBlock = {
     readonly kind: "statement_block";
-    readonly statements: AstStatement[];
+    readonly statements: readonly AstStatement[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -458,7 +458,7 @@ export type AstMethodCall = {
     readonly kind: "method_call";
     readonly self: AstExpression; // anything with a method
     readonly method: AstId;
-    readonly args: AstExpression[];
+    readonly args: readonly AstExpression[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -467,7 +467,7 @@ export type AstMethodCall = {
 export type AstStaticCall = {
     readonly kind: "static_call";
     readonly function: AstId;
-    readonly args: AstExpression[];
+    readonly args: readonly AstExpression[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -475,7 +475,7 @@ export type AstStaticCall = {
 export type AstStructInstance = {
     readonly kind: "struct_instance";
     readonly type: AstId;
-    readonly args: AstStructFieldInitializer[];
+    readonly args: readonly AstStructFieldInitializer[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -491,7 +491,7 @@ export type AstStructFieldInitializer = {
 export type AstInitOf = {
     readonly kind: "init_of";
     readonly contract: AstId;
-    readonly args: AstExpression[];
+    readonly args: readonly AstExpression[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -616,7 +616,7 @@ export type AstSlice = {
 export type AstStructValue = {
     readonly kind: "struct_value";
     readonly type: AstId;
-    readonly args: AstStructFieldValue[];
+    readonly args: readonly AstStructFieldValue[];
     readonly id: number;
     readonly loc: SrcInfo;
 };

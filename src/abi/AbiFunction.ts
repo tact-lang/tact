@@ -6,11 +6,11 @@ import { SrcInfo } from "../grammar";
 
 export type AbiFunction = {
     name: string;
-    resolve: (ctx: CompilerContext, args: TypeRef[], loc: SrcInfo) => TypeRef;
+    resolve: (ctx: CompilerContext, args: readonly TypeRef[], loc: SrcInfo) => TypeRef;
     generate: (
         ctx: WriterContext,
-        args: TypeRef[],
-        resolved: AstExpression[],
+        args: readonly TypeRef[],
+        resolved: readonly AstExpression[],
         loc: SrcInfo,
     ) => string;
 };
