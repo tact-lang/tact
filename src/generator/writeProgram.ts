@@ -84,10 +84,11 @@ export async function writeProgram(
             headers.push("");
         }
     }
-    files.push({
+
+    const headersFile = {
         name: basename + ".headers.fc",
         code: headers.join("\n"),
-    });
+    };
 
     //
     // stdlib
@@ -223,26 +224,31 @@ export async function writeProgram(
     header.push("#pragma allow-post-modification;");
     header.push("#pragma compute-asm-ltr;");
     header.push("");
-    for (const i of files.map((v) => `#include "${v.name}";`)) {
-        header.push(i);
-    }
+
+    // include only `*.headers.fc`
+    header.push(`#include "${headersFile.name}";`);
+
+    // and inline all other files inside the `*.code.fc`
+    files.forEach((file) => {
+        header.push("");
+        header.push(`;; ${file.name}`);
+        header.push(file.code);
+    });
+
     header.push("");
     header.push(";;");
     header.push(`;; Contract ${abiSrc.name} functions`);
     header.push(";;");
     header.push("");
+
     const code = emit({
         header: header.join("\n"),
         functions: remainingFunctions,
     });
-    files.push({
-        name: basename + ".code.fc",
-        code,
-    });
 
     return {
         entrypoint: basename + ".code.fc",
-        files,
+        files: [headersFile, { name: basename + ".code.fc", code }],
         abi,
     };
 }
