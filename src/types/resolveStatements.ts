@@ -1025,9 +1025,7 @@ function getMethodId(
     sctx: StatementContext,
     util: AstUtil,
 ): number {
-    const optMethodId = funcDescr.ast.attributes.find(
-        (attr) => attr.type === "get",
-    )?.methodId;
+    const optMethodId = funcDescr.ast.attributes.get?.methodId;
 
     if (optMethodId) {
         ctx = resolveExpression(optMethodId, sctx, ctx);

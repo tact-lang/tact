@@ -643,13 +643,13 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         }
 
         // Resolve flags
-        const isGetter = a.attributes.find((a) => a.type === "get");
-        const isMutating = a.attributes.find((a) => a.type === "mutates");
-        const isExtends = a.attributes.find((a) => a.type === "extends");
-        const isVirtual = a.attributes.find((a) => a.type === "virtual");
-        const isOverride = a.attributes.find((a) => a.type === "override");
-        const isInline = a.attributes.find((a) => a.type === "inline");
-        const isAbstract = a.attributes.find((a) => a.type === "abstract");
+        const isGetter = a.attributes.get;
+        const isMutating = a.attributes.mutates;
+        const isExtends = a.attributes.extends;
+        const isVirtual = a.attributes.virtual;
+        const isOverride = a.attributes.override;
+        const isInline = a.attributes.inline;
+        const isAbstract = a.attributes.abstract;
 
         // Check for native
         if (a.kind === "native_function_decl") {

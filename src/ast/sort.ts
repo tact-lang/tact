@@ -41,8 +41,7 @@ export class AstSorter {
     public static sortAttributes<
         T extends
             | A.AstConstantAttribute
-            | A.AstContractAttribute
-            | A.AstFunctionAttribute,
+            | A.AstContractAttribute,
     >(attributes: readonly T[]): T[] {
         return [...attributes].sort((a, b) => a.type.localeCompare(b.type));
     }

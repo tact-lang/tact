@@ -665,21 +665,6 @@ const parseStatements =
         return map(nodes, parseStatement)(ctx);
     };
 
-const parseFunctionAttribute =
-    (node: $ast.FunctionAttribute): Handler<A.AstFunctionAttribute> =>
-    (ctx) => {
-        if (typeof node.name === "string") {
-            return ctx.ast.FunctionAttribute(node.name, node.loc);
-        }
-
-        return ctx.ast.FunctionAttributeGet(
-            node.name.methodId
-                ? parseExpression(node.name.methodId)(ctx)
-                : null,
-            node.loc,
-        );
-    };
-
 const checkAttributes =
     (kind: "constant" | "function") =>
     (
@@ -708,15 +693,66 @@ const checkAttributes =
         }
     };
 
+const parseBooleanAttribute = <K extends Extract<$ast.FunctionAttribute["name"], string>>(
+    nodes: readonly $ast.FunctionAttribute[],
+    name: K
+): Handler<A.AstFunctionAttribute1 | undefined> => ctx => {
+    const attrs = nodes.filter((node) => node.name === name);
+    const [head, ...tail] = attrs;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+    if (attrs.length === 0 || head === undefined) {
+        return undefined;
+    }
+    if (attrs.length > 1) {
+        for (const { loc } of tail) {
+            ctx.err.function.duplicate(name)(loc);
+        }
+    }
+    return ctx.ast.FunctionAttribute(head.loc);
+};
+
+const parseGetAttribute = (nodes: readonly $ast.FunctionAttribute[]): Handler<A.AstFunctionAttributeGet1 | undefined> => ctx => {
+    const attrs: $ast.GetAttribute[] = [];
+    for (const node of nodes) {
+        if (typeof node.name === 'object') {
+            attrs.push(node.name);
+        }
+    }
+    const [head, ...tail] = attrs;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+    if (attrs.length === 0 || head === undefined) {
+        return undefined;
+    }
+    if (attrs.length > 1) {
+        for (const { loc } of tail) {
+            ctx.err.function.duplicate('get')(loc);
+        }
+    }
+    return ctx.ast.FunctionAttributeGet(
+        head.methodId
+            ? parseExpression(head.methodId)(ctx)
+            : undefined,
+        head.loc,
+    );
+};
+
 const parseFunctionAttributes =
     (
         nodes: readonly $ast.FunctionAttribute[],
         isAbstract: boolean,
         loc: $.Loc,
-    ): Handler<A.AstFunctionAttribute[]> =>
+    ): Handler<A.AstFunctionAttributes> =>
     (ctx) => {
         checkAttributes("function")(ctx, isAbstract, nodes, loc);
-        return map(nodes, parseFunctionAttribute)(ctx);
+        return ctx.ast.FunctionAttributes({
+            get: parseGetAttribute(nodes)(ctx),
+            mutates: parseBooleanAttribute(nodes, "mutates")(ctx),
+            extends: parseBooleanAttribute(nodes, "extends")(ctx),
+            virtual: parseBooleanAttribute(nodes, "virtual")(ctx),
+            abstract: parseBooleanAttribute(nodes, "abstract")(ctx),
+            override: parseBooleanAttribute(nodes, "override")(ctx),
+            inline: parseBooleanAttribute(nodes, "inline")(ctx),
+        });
     };
 
 const parseConstantAttribute =
@@ -1099,7 +1135,7 @@ const parseNativeFunctionDecl =
     }: $ast.NativeFunctionDecl): Handler<A.AstNativeFunctionDecl> =>
     (ctx) => {
         return ctx.ast.NativeFunctionDecl(
-            map(attributes, parseFunctionAttribute)(ctx),
+            parseFunctionAttributes(attributes, true, loc)(ctx),
             parseId(name)(ctx),
             parseFuncId(nativeName)(ctx),
             map(parseList(parameters), parseParameter)(ctx),

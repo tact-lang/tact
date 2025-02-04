@@ -78,11 +78,22 @@ function checkVariableName(name: string, loc: SrcInfo) {
     }
 }
 
+type AstFunctionAttributeGet = {
+    type: "get",
+    methodId: A.AstExpression | undefined,
+    loc: SrcInfo,
+}
+type AstFunctionAttributeRest = {
+    type: "extends" | "mutates" | "override" | "inline" | "virtual" | "abstract",
+    loc: SrcInfo,
+}
+type AstFunctionAttribute = AstFunctionAttributeGet | AstFunctionAttributeRest
+
 const checkAttributes =
-    (kind: "constant" | "function") =>
+    (kind: "constant") =>
     (
         isAbstract: boolean,
-        attributes: (A.AstConstantAttribute | A.AstFunctionAttribute)[],
+        attributes: (A.AstConstantAttribute | AstFunctionAttribute)[],
         loc: SrcInfo,
     ) => {
         const { duplicate, tooAbstract, notAbstract } = err()[kind];
@@ -103,7 +114,19 @@ const checkAttributes =
 
 const checkConstAttributes = checkAttributes("constant");
 
-const checkFunctionAttributes = checkAttributes("function");
+const checkFunctionAttributes = (
+    isAbstract: boolean,
+    attributes: A.AstFunctionAttributes,
+    loc: SrcInfo,
+) => {
+    const { tooAbstract, notAbstract } = err().function;
+    if (isAbstract && !attributes.abstract) {
+        notAbstract()(loc);
+    }
+    if (!isAbstract && attributes.abstract) {
+        tooAbstract()(loc);
+    }
+}
 
 const semantics = tactGrammar.createSemantics();
 
@@ -186,6 +209,62 @@ semantics.addOperation<A.AstImport[]>("astOfJustImports", {
     },
 });
 
+function parseBooleanAttribute<K extends Extract<AstFunctionAttribute["type"], string>>(
+    nodes: readonly AstFunctionAttribute[],
+    name: K
+): A.AstFunctionAttribute1 | undefined {
+    const attrs = nodes.filter((node) => node.type === name);
+    const [head, ...tail] = attrs;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+    if (attrs.length === 0 || head === undefined) {
+        return undefined;
+    }
+    if (attrs.length > 1) {
+        for (const { loc } of tail) {
+            err().function.duplicate(name)(loc);
+        }
+    }
+    return {
+        loc: head.loc,
+    };
+}
+
+function parseGetAttribute (nodes: readonly AstFunctionAttribute[]): A.AstFunctionAttributeGet1 | undefined {
+    const attrs: AstFunctionAttributeGet[] = [];
+    for (const node of nodes) {
+        if (node.type === 'get') {
+            attrs.push(node);
+        }
+    }
+    const [head, ...tail] = attrs;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+    if (attrs.length === 0 || head === undefined) {
+        return undefined;
+    }
+    if (attrs.length > 1) {
+        for (const { loc } of tail) {
+            err().function.duplicate('get')(loc);
+        }
+    }
+    return {
+        methodId: head.methodId,
+        loc: head.loc,
+    };
+}
+
+function parseFunctionAttributes(nodes: readonly AstFunctionAttribute[]) {
+    return createNode({
+        kind: "function_attributes",
+        get: parseGetAttribute(nodes),
+        mutates: parseBooleanAttribute(nodes, "mutates"),
+        extends: parseBooleanAttribute(nodes, "extends"),
+        virtual: parseBooleanAttribute(nodes, "virtual"),
+        abstract: parseBooleanAttribute(nodes, "abstract"),
+        override: parseBooleanAttribute(nodes, "override"),
+        inline: parseBooleanAttribute(nodes, "inline"),
+    }) as A.AstFunctionAttributes;
+}
+
 semantics.addOperation<A.AstNode>("astOfModuleItem", {
     PrimitiveTypeDecl(_primitive_kwd, typeId, _semicolon) {
         checkVariableName(typeId.sourceString, createRef(typeId));
@@ -211,8 +290,10 @@ semantics.addOperation<A.AstNode>("astOfModuleItem", {
         checkVariableName(tactId.sourceString, createRef(tactId));
         return createNode({
             kind: "native_function_decl",
-            attributes: funAttributes.children.map((a) =>
-                a.astOfFunctionAttributes(),
+            attributes: parseFunctionAttributes(
+                funAttributes.children.map((a) =>
+                    a.astOfFunctionAttributes(),
+                )
             ),
             name: tactId.astOfExpression(),
             nativeName: funcId.astOfExpression(),
@@ -372,9 +453,11 @@ semantics.addOperation<A.AstNode>("astOfItem", {
         funBody,
         _rbrace,
     ) {
-        const attributes = funAttributes.children.map((a) =>
-            a.astOfFunctionAttributes(),
-        ) as A.AstFunctionAttribute[];
+        const attributes = parseFunctionAttributes(
+            funAttributes.children.map((a) =>
+                a.astOfFunctionAttributes(),
+            )
+        );
         checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(false, attributes, createRef(this));
         return createNode({
@@ -404,9 +487,11 @@ semantics.addOperation<A.AstNode>("astOfItem", {
             args: [],
             ret: [],
         };
-        const attributes = funAttributes.children.map((a) =>
-            a.astOfFunctionAttributes(),
-        ) as A.AstFunctionAttribute[];
+        const attributes = parseFunctionAttributes(
+            funAttributes.children.map((a) =>
+                a.astOfFunctionAttributes(),
+            )
+        );
         checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(false, attributes, createRef(this));
         return createNode({
@@ -431,9 +516,11 @@ semantics.addOperation<A.AstNode>("astOfItem", {
         optReturnType,
         _semicolon,
     ) {
-        const attributes = funAttributes.children.map((a) =>
-            a.astOfFunctionAttributes(),
-        ) as A.AstFunctionAttribute[];
+        const attributes = parseFunctionAttributes(
+            funAttributes.children.map((a) =>
+                a.astOfFunctionAttributes(),
+            )
+        );
         checkVariableName(funId.sourceString, createRef(funId));
         checkFunctionAttributes(true, attributes, createRef(this));
         return createNode({
@@ -651,7 +738,7 @@ semantics.addOperation<string>("astOfAsmInstruction", {
     },
 });
 
-semantics.addOperation<A.AstFunctionAttribute>("astOfFunctionAttributes", {
+semantics.addOperation("astOfFunctionAttributes", {
     FunctionAttribute_getter(_getKwd, _optLparen, optMethodId, _optRparen) {
         return {
             kind: "function_attribute",

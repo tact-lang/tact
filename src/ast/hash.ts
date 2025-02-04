@@ -199,7 +199,7 @@ export class AstHasher {
     }
 
     private hashFunctionDef(node: A.AstFunctionDef): string {
-        const attributesHash = this.hashAttributes(node.attributes);
+        const attributesHash = this.hashFunctionAttributes(node.attributes);
         const returnHash = node.return ? this.hash(node.return) : "void";
         const paramsHash = this.hashParams(node.params);
         const statementsHash = this.hashStatements(node.statements);
@@ -208,7 +208,7 @@ export class AstHasher {
 
     private hashAsmFunctionDef(node: A.AstAsmFunctionDef): string {
         const asmAttributeHash = `asm|${this.hashIds(node.shuffle.args)}|->|${node.shuffle.ret.map((num) => num.value.toString()).join("|")}`;
-        const attributesHash = this.hashAttributes(node.attributes);
+        const attributesHash = this.hashFunctionAttributes(node.attributes);
         const returnHash = node.return ? this.hash(node.return) : "void";
         const paramsHash = this.hashParams(node.params);
         const instructionsHash = this.hashInstructions(node.instructions);
@@ -260,15 +260,31 @@ export class AstHasher {
     }
 
     private hashAttributes(
-        attributes: readonly (
-            | A.AstFunctionAttribute
-            | A.AstConstantAttribute
-        )[],
+        attributes: readonly A.AstConstantAttribute[],
     ): string {
         return attributes
             .map((attr) => attr.type)
             .sort()
             .join("|");
+    }
+
+    attributeNames = ['abstract', 'extends', 'inline', 'kind', 'mutates', 'override', 'virtual'] as const;
+
+    private hashFunctionAttributes(
+        attributes: A.AstFunctionAttributes,
+    ): string {
+        const result: string[] = [];
+        if (attributes.get) {
+            const { methodId } = attributes.get;
+            const args = methodId ? `(${this.hash(methodId)})` : '';
+            result.push(`get${args}`);
+        }
+        for (const name of this.attributeNames) {
+            if (attributes[name]) {
+                result.push(name);
+            }
+        }
+        return result.join('|');
     }
 
     private hashContractAttributes(
@@ -327,7 +343,7 @@ export class AstHasher {
     }
 
     private hashNativeFunctionDecl(node: A.AstNativeFunctionDecl): string {
-        const attributesHash = this.hashAttributes(node.attributes);
+        const attributesHash = this.hashFunctionAttributes(node.attributes);
         const paramsHash = this.hashParams(node.params);
         const returnHash = node.return ? this.hash(node.return) : "void";
         return `${node.kind}|${attributesHash}|${paramsHash}|${returnHash}`;
@@ -340,7 +356,7 @@ export class AstHasher {
     }
 
     private hashFunctionDecl(node: A.AstFunctionDecl): string {
-        const attributesHash = this.hashAttributes(node.attributes);
+        const attributesHash = this.hashFunctionAttributes(node.attributes);
         const returnHash = node.return ? this.hash(node.return) : "void";
         const paramsHash = this.hashParams(node.params);
         return `${node.kind}|${attributesHash}|${returnHash}|${paramsHash}`;

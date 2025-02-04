@@ -42,9 +42,7 @@ export function traverseAndCheck(
             traverseAndCheck(node.name, callback);
             break;
         case "function_def":
-            node.attributes.forEach((attr) => {
-                traverseAndCheck(attr, callback);
-            });
+            traverseAndCheck(node.attributes, callback)
             traverseAndCheck(node.name, callback);
             if (node.return) traverseAndCheck(node.return, callback);
             node.params.forEach((e) => {
@@ -55,6 +53,7 @@ export function traverseAndCheck(
             });
             break;
         case "asm_function_def":
+            // FIXME: traverseAndCheck(node.attributes, callback)
             node.shuffle.args.forEach((e) => {
                 traverseAndCheck(e, callback);
             });
@@ -68,9 +67,7 @@ export function traverseAndCheck(
             });
             break;
         case "function_decl":
-            node.attributes.forEach((attr) => {
-                traverseAndCheck(attr, callback);
-            });
+            traverseAndCheck(node.attributes, callback);
             traverseAndCheck(node.name, callback);
             if (node.return) traverseAndCheck(node.return, callback);
             node.params.forEach((e) => {
@@ -78,6 +75,7 @@ export function traverseAndCheck(
             });
             break;
         case "native_function_decl":
+            // FIXME: traverseAndCheck(node.attributes, callback)
             traverseAndCheck(node.name, callback);
             traverseAndCheck(node.nativeName, callback);
             node.params.forEach((e) => {
@@ -85,23 +83,13 @@ export function traverseAndCheck(
             });
             if (node.return) traverseAndCheck(node.return, callback);
             break;
-        case "function_attribute":
-            switch (node.type) {
-                case "get":
-                    {
-                        if (node.methodId)
-                            traverseAndCheck(node.methodId, callback);
-                    }
-                    break;
-                case "mutates":
-                case "extends":
-                case "virtual":
-                case "abstract":
-                case "override":
-                case "inline":
-                    break;
+        case "function_attributes": {
+            const methodId = node.get?.methodId;
+            if (methodId) {
+                traverseAndCheck(methodId, callback);
             }
             break;
+        }
         case "constant_def":
             traverseAndCheck(node.name, callback);
             traverseAndCheck(node.type, callback);

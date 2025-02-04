@@ -82,7 +82,7 @@ export class AstComparator {
                     statements: statements2,
                 } = node2 as A.AstFunctionDef;
                 return (
-                    this.compareAttributes(attributes1, attributes2) &&
+                    this.compareFunctionAttributes(attributes1, attributes2) &&
                     this.compare(funcName1, funcName2) &&
                     this.compareNullableNodes(returnType1, returnType2) &&
                     this.compareArray(params1, params2) &&
@@ -110,7 +110,7 @@ export class AstComparator {
                 return (
                     this.compareArray(shuffle1.args, shuffle2.args) &&
                     this.compareArray(shuffle1.ret, shuffle2.ret) &&
-                    this.compareAttributes(attributes1, attributes2) &&
+                    this.compareFunctionAttributes(attributes1, attributes2) &&
                     this.compare(funcName1, funcName2) &&
                     this.compareNullableNodes(returnType1, returnType2) &&
                     this.compareArray(params1, params2) &&
@@ -131,7 +131,7 @@ export class AstComparator {
                     params: declParams2,
                 } = node2 as A.AstFunctionDecl;
                 return (
-                    this.compareAttributes(declAttributes1, declAttributes2) &&
+                    this.compareFunctionAttributes(declAttributes1, declAttributes2) &&
                     this.compare(declName1, declName2) &&
                     this.compareNullableNodes(
                         declReturnType1,
@@ -157,7 +157,7 @@ export class AstComparator {
                     return: returnTy2,
                 } = node2 as A.AstNativeFunctionDecl;
                 return (
-                    this.compareAttributes(
+                    this.compareFunctionAttributes(
                         nativeAttributes1,
                         nativeAttributes2,
                     ) &&
@@ -839,7 +839,6 @@ export class AstComparator {
 
     private compareAttributes<
         T extends
-            | A.AstFunctionAttribute
             | A.AstConstantAttribute
             | A.AstContractAttribute,
     >(attrs1: readonly T[], attrs2: readonly T[]): boolean {
@@ -852,6 +851,35 @@ export class AstComparator {
             }
         }
         return true;
+    }
+
+    attributeNames = ['abstract', 'extends', 'inline', 'kind', 'mutates', 'override', 'virtual'] as const;
+
+    private compareFunctionAttributes(
+        attrs1: A.AstFunctionAttributes, 
+        attrs2: A.AstFunctionAttributes,
+    ): boolean {
+        for (const name of this.attributeNames) {
+            if (attrs1[name] === undefined && attrs2[name] !== undefined) {
+                return false;
+            }
+            if (attrs1[name] !== undefined && attrs2[name] === undefined) {
+                return false;
+            }
+        }
+        if (attrs1.get === undefined && attrs2.get === undefined) {
+            return true;
+        }
+        if (attrs1.get === undefined || attrs2.get === undefined) {
+            return false;
+        }
+        if (attrs1.get.methodId === undefined && attrs2.get.methodId === undefined) {
+            return true;
+        }
+        if (attrs1.get.methodId === undefined || attrs2.get.methodId === undefined) {
+            return false;
+        }
+        return this.compare(attrs1.get.methodId, attrs2.get.methodId);
     }
 
     private compareReceiverKinds(

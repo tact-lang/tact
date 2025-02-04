@@ -1508,7 +1508,8 @@ export class Interpreter {
                     switch (functionNode.kind) {
                         case "function_def": {
                             // Currently, no attribute is supported
-                            if (functionNode.attributes.length > 0) {
+                            const { abstract, extends: extend, get, inline, kind, mutates, override, virtual } = functionNode.attributes;
+                            if ([abstract, extend, get, inline, kind, mutates, override, virtual].some(x => x !== undefined)) {
                                 throwNonFatalErrorConstEval(
                                     "calls to functions with attributes are currently not supported",
                                     ast.loc,

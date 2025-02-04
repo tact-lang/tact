@@ -242,12 +242,6 @@ export class AstRenamer {
                     ...item,
                     attributes: AstSorter.sortAttributes(item.attributes),
                 };
-            case "function_decl":
-            case "function_def":
-                return {
-                    ...item,
-                    attributes: AstSorter.sortAttributes(item.attributes),
-                };
             default:
                 return item;
         }
@@ -270,18 +264,15 @@ export class AstRenamer {
      * Renames getter's methodId expression.
      */
     private renameFunctionAttributes(
-        functionAttrs: readonly A.AstFunctionAttribute[],
-    ): A.AstFunctionAttribute[] {
-        return functionAttrs.map((attr) => {
-            if (attr.type === "get" && attr.methodId !== null) {
-                return {
-                    ...attr,
-                    methodId: this.renameExpression(attr.methodId),
-                };
-            } else {
-                return attr;
-            }
-        });
+        functionAttrs: A.AstFunctionAttributes,
+    ): A.AstFunctionAttributes {
+        return {
+            ...functionAttrs,
+            get: functionAttrs.get?.methodId ? {
+                ...functionAttrs.get,
+                methodId: this.renameExpression(functionAttrs.get.methodId),
+            } : undefined
+        };
     }
 
     /**

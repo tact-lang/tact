@@ -36,7 +36,7 @@ export const getAstSchema = (
                 loc: toSrcInfo(loc),
             }),
         FunctionDef: (
-            attributes: A.AstFunctionAttribute[],
+            attributes: A.AstFunctionAttributes,
             name: A.AstId,
             retType: A.AstType | null,
             params: A.AstTypedParameter[],
@@ -54,7 +54,7 @@ export const getAstSchema = (
             }),
         AsmFunctionDef: (
             shuffle: A.AstAsmShuffle,
-            attributes: A.AstFunctionAttribute[],
+            attributes: A.AstFunctionAttributes,
             name: A.AstId,
             retType: A.AstType | null,
             params: A.AstTypedParameter[],
@@ -72,7 +72,7 @@ export const getAstSchema = (
                 loc: toSrcInfo(loc),
             }),
         FunctionDecl: (
-            attributes: A.AstFunctionAttribute[],
+            attributes: A.AstFunctionAttributes,
             name: A.AstId,
             retType: A.AstType | null,
             params: A.AstTypedParameter[],
@@ -87,7 +87,7 @@ export const getAstSchema = (
                 loc: toSrcInfo(loc),
             }),
         NativeFunctionDecl: (
-            attributes: A.AstFunctionAttribute[],
+            attributes: A.AstFunctionAttributes,
             name: A.AstId,
             nativeName: A.AstFuncId,
             params: A.AstTypedParameter[],
@@ -599,21 +599,28 @@ export const getAstSchema = (
                 loc: toSrcInfo(loc),
             }),
         FunctionAttributeGet: (
-            methodId: A.AstExpression | null,
+            methodId: A.AstExpression | undefined,
             loc: Loc,
-        ): A.AstFunctionAttributeGet => ({
-            kind: "function_attribute",
-            type: "get",
+        ): A.AstFunctionAttributeGet1 => ({
             methodId,
             loc: toSrcInfo(loc),
         }),
         FunctionAttribute: (
-            type: A.AstFunctionAttributeName,
             loc: Loc,
-        ): A.AstFunctionAttributeRest => ({
-            kind: "function_attribute",
-            type,
+        ): A.AstFunctionAttribute1 => ({
             loc: toSrcInfo(loc),
+        }),
+        FunctionAttributes: (attrs: {
+            readonly get: A.AstFunctionAttributeGet1 | undefined;
+            readonly mutates: A.AstFunctionAttribute1 | undefined;
+            readonly extends: A.AstFunctionAttribute1 | undefined;
+            readonly virtual: A.AstFunctionAttribute1 | undefined;
+            readonly abstract: A.AstFunctionAttribute1 | undefined;
+            readonly override: A.AstFunctionAttribute1 | undefined;
+            readonly inline: A.AstFunctionAttribute1 | undefined;
+        }): A.AstFunctionAttributes => ({
+            kind: "function_attributes",
+            ...attrs,
         }),
         ConstantAttribute: (
             type: A.AstConstantAttributeName,

@@ -44,7 +44,7 @@ export type AstPrimitiveTypeDecl = {
 
 export type AstFunctionDef = {
     readonly kind: "function_def";
-    readonly attributes: readonly AstFunctionAttribute[];
+    readonly attributes: AstFunctionAttributes;
     readonly name: AstId;
     readonly return: AstType | null;
     readonly params: readonly AstTypedParameter[];
@@ -56,7 +56,7 @@ export type AstFunctionDef = {
 export type AstAsmFunctionDef = {
     readonly kind: "asm_function_def";
     readonly shuffle: AstAsmShuffle;
-    readonly attributes: readonly AstFunctionAttribute[];
+    readonly attributes: AstFunctionAttributes;
     readonly name: AstId;
     readonly return: AstType | null;
     readonly params: readonly AstTypedParameter[];
@@ -73,7 +73,7 @@ export type AstAsmShuffle = {
 
 export type AstFunctionDecl = {
     readonly kind: "function_decl";
-    readonly attributes: readonly AstFunctionAttribute[];
+    readonly attributes: AstFunctionAttributes;
     readonly name: AstId;
     readonly return: AstType | null;
     readonly params: readonly AstTypedParameter[];
@@ -83,7 +83,7 @@ export type AstFunctionDecl = {
 
 export type AstNativeFunctionDecl = {
     readonly kind: "native_function_decl";
-    readonly attributes: readonly AstFunctionAttribute[];
+    readonly attributes: AstFunctionAttributes;
     readonly name: AstId;
     readonly nativeName: AstFuncId;
     readonly params: readonly AstTypedParameter[];
@@ -642,30 +642,25 @@ export type AstContractAttribute = {
     readonly loc: SrcInfo;
 };
 
-export type AstFunctionAttributeGet = {
-    readonly kind: "function_attribute";
-    readonly type: "get";
-    readonly methodId: AstExpression | null;
+export type AstFunctionAttributeGet1 = {
+    readonly methodId: AstExpression | undefined;
     readonly loc: SrcInfo;
 };
 
-export type AstFunctionAttributeName =
-    | "mutates"
-    | "extends"
-    | "virtual"
-    | "abstract"
-    | "override"
-    | "inline";
-
-export type AstFunctionAttributeRest = {
-    readonly kind: "function_attribute";
-    readonly type: AstFunctionAttributeName;
+export type AstFunctionAttribute1 = {
     readonly loc: SrcInfo;
 };
 
-export type AstFunctionAttribute =
-    | AstFunctionAttributeGet
-    | AstFunctionAttributeRest;
+export type AstFunctionAttributes = {
+    readonly kind: "function_attributes";
+    readonly get: AstFunctionAttributeGet1 | undefined;
+    readonly mutates: AstFunctionAttribute1 | undefined;
+    readonly extends: AstFunctionAttribute1 | undefined;
+    readonly virtual: AstFunctionAttribute1 | undefined;
+    readonly abstract: AstFunctionAttribute1 | undefined;
+    readonly override: AstFunctionAttribute1 | undefined;
+    readonly inline: AstFunctionAttribute1 | undefined;
+};
 
 export type AstTypedParameter = {
     readonly kind: "typed_parameter";
@@ -733,7 +728,7 @@ export type AstNode =
     | AstFieldDecl
     | AstTypedParameter
     | AstFunctionDef
-    | AstFunctionAttribute
+    | AstFunctionAttributes
     | AstAsmFunctionDef
     | AstFunctionDecl
     | AstModule

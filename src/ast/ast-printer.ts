@@ -505,10 +505,27 @@ export const ppAstAsmFunctionDef: Printer<A.AstAsmFunctionDef> =
             ppAsmInstructionsBlock(node.instructions)(c),
         ]);
 
+const attributeNames = ['abstract', 'extends', 'inline', 'kind', 'mutates', 'override', 'virtual'] as const;
+
+export const ppAstFunctionAttributes = (node: A.AstFunctionAttributes): string => {
+    const result: string[] = [];
+    if (node.get) {
+        const { methodId } = node.get;
+        const args = methodId ? `(${ppAstExpression(methodId)})` : '';
+        result.push(`get${args} `);
+    }
+    for (const name of attributeNames) {
+        if (node[name]) {
+            result.push(`${name} `);
+        }
+    }
+    return result.join('');
+}
+
 export const ppAstNativeFunction: Printer<A.AstNativeFunctionDecl> =
     ({ name, nativeName, params, return: retTy, attributes }) =>
     (c) => {
-        const attrs = attributes.map(({ type }) => type + " ").join("");
+        const attrs = ppAstFunctionAttributes(attributes);
         const argsCode = params
             .map(({ name, type }) => `${ppAstId(name)}: ${ppAstType(type)}`)
             .join(", ");
@@ -671,21 +688,9 @@ export const ppAstFunctionSignature = ({
     const argsCode = params
         .map(({ name, type }) => `${ppAstId(name)}: ${ppAstType(type)}`)
         .join(", ");
-    const attrsCode = attributes
-        .map((attr) => ppAstFunctionAttribute(attr) + " ")
-        .join("");
+    const attrsCode = ppAstFunctionAttributes(attributes);
     const returnType = retTy ? `: ${ppAstType(retTy)}` : "";
     return `${attrsCode}fun ${ppAstId(name)}(${argsCode})${returnType}`;
-};
-
-export const ppAstFunctionAttribute = (
-    attr: A.AstFunctionAttribute,
-): string => {
-    if (attr.type === "get" && attr.methodId !== null) {
-        return `get(${ppAstExpression(attr.methodId)})`;
-    } else {
-        return attr.type;
-    }
 };
 
 const wrap = (prefix: string, body: string) => `${prefix}(${body})`;
@@ -908,6 +913,7 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     bounce: exprNode(ppAstReceiverKind),
     internal: exprNode(ppAstReceiverKind),
     external: exprNode(ppAstReceiverKind),
+    function_attributes: exprNode(ppAstFunctionAttributes),
 
     module: ppAstModule,
     struct_decl: ppAstStruct,
@@ -938,7 +944,6 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     import: ppAstImport,
     func_id: exprNode(ppAstFuncId),
     statement_destruct: ppAstStatementDestruct,
-    function_attribute: exprNode(ppAstFunctionAttribute),
     asm_function_def: ppAstAsmFunctionDef,
     typed_parameter: ppTypedParameter,
 });
