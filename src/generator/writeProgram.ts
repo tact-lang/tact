@@ -85,10 +85,10 @@ export async function writeProgram(
         }
     }
 
-    const headersFile = {
+    files.push({
         name: basename + ".headers.fc",
         code: headers.join("\n"),
-    };
+    });
 
     //
     // stdlib
@@ -223,12 +223,7 @@ export async function writeProgram(
     header.push("#pragma version =0.4.6;");
     header.push("#pragma allow-post-modification;");
     header.push("#pragma compute-asm-ltr;");
-    header.push("");
 
-    // include only `*.headers.fc`
-    header.push(`#include "${headersFile.name}";`);
-
-    // and inline all other files inside the `*.code.fc`
     files.forEach((file) => {
         header.push("");
         header.push(`;; ${file.name}`);
@@ -248,7 +243,7 @@ export async function writeProgram(
 
     return {
         entrypoint: basename + ".code.fc",
-        files: [headersFile, { name: basename + ".code.fc", code }],
+        files: [{ name: basename + ".code.fc", code }],
         abi,
     };
 }
