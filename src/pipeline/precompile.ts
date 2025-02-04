@@ -10,7 +10,7 @@ import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { AstModule } from "../ast/ast";
 import { FactoryAst } from "../ast/ast-helpers";
 import { Parser } from "../grammar";
-import { evaluateDeclarationsInitializers } from "../types/evalInitializers";
+import { evalComptimeExpressions } from "../types/evalInitializers";
 
 export function precompile(
     ctx: CompilerContext,
@@ -35,7 +35,7 @@ export function precompile(
     ctx = resolveSignatures(ctx, ast);
 
     // This checks and resolves all statements
-    ctx = resolveStatements(ctx, ast);
+    ctx = resolveStatements(ctx);
 
     // This extracts error messages
     ctx = resolveErrors(ctx, ast);
@@ -43,8 +43,9 @@ export function precompile(
     // This creates allocations for all defined types
     ctx = resolveAllocations(ctx);
 
-    // Evaluate all constants, default contract fields and default struct fields
-    evaluateDeclarationsInitializers(ctx, ast);
+    // Evaluate all comp-time expressions:
+    // constants, default contract fields, default struct fields, method Ids
+    evalComptimeExpressions(ctx, ast);
 
     // Prepared context
     return ctx;

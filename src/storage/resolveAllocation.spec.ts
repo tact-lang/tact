@@ -77,7 +77,7 @@ describe("resolveAllocation", () => {
         );
         ctx = resolveDescriptors(ctx, ast);
         ctx = resolveSignatures(ctx, ast);
-        ctx = resolveStatements(ctx, ast);
+        ctx = resolveStatements(ctx);
         ctx = resolveAllocations(ctx);
         expect(getAllocations(ctx)).toMatchSnapshot();
     });

@@ -1836,6 +1836,38 @@ exports[`resolveStatements should resolve statements for constant-as-default-val
 exports[`resolveStatements should resolve statements for contract-getter-with-method-id-1 1`] = `
 [
   [
+    ""crc32"",
+    "String",
+  ],
+  [
+    "crc32("crc32")",
+    "Int",
+  ],
+  [
+    "42",
+    "Int",
+  ],
+  [
+    "crc32("crc32") + 42",
+    "Int",
+  ],
+  [
+    "0x3FFFF",
+    "Int",
+  ],
+  [
+    "(crc32("crc32") + 42) & 0x3FFFF",
+    "Int",
+  ],
+  [
+    "0x4000",
+    "Int",
+  ],
+  [
+    "(crc32("crc32") + 42) & 0x3FFFF | 0x4000",
+    "Int",
+  ],
+  [
     "0",
     "Int",
   ],
@@ -1846,6 +1878,10 @@ exports[`resolveStatements should resolve statements for contract-getter-with-me
 [
   [
     "16384",
+    "Int",
+  ],
+  [
+    "MethodId",
     "Int",
   ],
   [
@@ -1867,6 +1903,22 @@ exports[`resolveStatements should resolve statements for contract-getter-with-me
   ],
   [
     "16384 + 41",
+    "Int",
+  ],
+  [
+    "self",
+    "ManualMethodId",
+  ],
+  [
+    "self.methodId",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "self.methodId + 1",
     "Int",
   ],
   [

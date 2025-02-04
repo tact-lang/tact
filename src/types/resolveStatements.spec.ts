@@ -8,6 +8,7 @@ import { featureEnable } from "../config/features";
 import { getParser } from "../grammar";
 import { getAstFactory } from "../ast/ast-helpers";
 import { defaultParser } from "../grammar/grammar";
+import { evalComptimeExpressions } from "./evalInitializers";
 
 describe("resolveStatements", () => {
     for (const r of loadCases(__dirname + "/stmts/")) {
@@ -21,7 +22,8 @@ describe("resolveStatements", () => {
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
-            ctx = resolveStatements(ctx, Ast);
+            ctx = resolveStatements(ctx);
+            evalComptimeExpressions(ctx, Ast);
             expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
         });
     }
@@ -36,9 +38,10 @@ describe("resolveStatements", () => {
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
-            expect(() =>
-                resolveStatements(ctx, Ast),
-            ).toThrowErrorMatchingSnapshot();
+            expect(() => {
+                resolveStatements(ctx);
+                evalComptimeExpressions(ctx, Ast);
+            }).toThrowErrorMatchingSnapshot();
         });
     }
 });
