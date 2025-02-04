@@ -18,6 +18,10 @@ const beforeDefinedC: Int = beforeDefinedA + beforeDefinedB;
 const beforeDefinedA: Int = beforeDefinedB;
 const beforeDefinedB: Int = 10;
 
+const increment1: Int = globalConst1.incr();  // 2
+const increment2: Int = globalConst1.incrMutates();  // What is the meaning of this?? Is this attempting to re-assign the constant??
+const increment3: Int = globalConst1.incrMutates().incrMutates();  // What is the meaning of this?? Is this attempting to re-assign the constant??
+
 struct A {
     b: Int = beforeDefinedC;
 }
@@ -205,6 +209,19 @@ fun fibonacci_iterative(a: Int): Int {
     }
     return current;
 }
+
+// extends and mutates functions
+extends fun incr(self: Int): Int {
+    self += 1;
+    return self;
+}
+
+extends mutates fun incrMutates(self: Int): Int {
+    let old = self;
+    self += 1;
+    return old;
+}
+
 
 fun elseif(op: Int): Int {
     if (op == 1) { return 41 }
