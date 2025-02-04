@@ -1511,7 +1511,12 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     );
                 }
             }
-            visit("BaseTrait");
+
+            // implicitly inherit from BaseTrait only in contracts
+            if (t.ast.kind === "contract") {
+                visit("BaseTrait");
+            }
+
             for (const s of t.ast.traits) {
                 visit(idText(s));
             }
@@ -1600,9 +1605,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             );
 
             if (!foundOverriddenFunction) {
-                const msg = inheritOnlyBaseTrait
-                    ? `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier or inherit any traits with this function`
-                    : `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier`;
+                const msg =
+                    contractOrTrait.traits.length === 0 || inheritOnlyBaseTrait
+                        ? `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier or inherit any traits with this function`
+                        : `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier`;
 
                 throwCompilationError(msg, funInContractOrTrait.ast.loc);
             }

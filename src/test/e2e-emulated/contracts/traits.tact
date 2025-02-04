@@ -1,4 +1,4 @@
-trait Animal {
+trait Animal with BaseTrait {
     abstract fun getType(): String;
     abstract fun getSound(): String;
 

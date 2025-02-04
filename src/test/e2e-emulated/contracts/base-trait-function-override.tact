@@ -1,4 +1,4 @@
-trait OverrideBaseTraitFunction {
+trait OverrideBaseTraitFunction with BaseTrait {
     value: Int;
 
     override fun notify(body: Cell?) {

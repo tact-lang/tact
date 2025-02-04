@@ -1,4 +1,4 @@
-trait OverrideBaseTraitConstant {
+trait OverrideBaseTraitConstant with BaseTrait {
     override const storageReserve: Int = 100;
 }
 

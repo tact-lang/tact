@@ -9,7 +9,7 @@ message ChangeOwnerOk {
 }
 
 @interface("org.ton.ownable")
-trait Ownable {
+trait Ownable with BaseTrait {
     owner: Address;
 
     fun requireOwner() {
