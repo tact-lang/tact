@@ -5,7 +5,7 @@ sidebar:
   order: 6
 ---
 
-This proposal defines a way to package compile contracts, their dependencies, and all related metadata into a single file.
+This proposal defines a way to package compiled contract, its dependencies, and all related metadata into a single file.
 
 ## Motivation
 
@@ -13,37 +13,41 @@ A unified package format is needed to simplify the process of deploying and upgr
 
 ## Specification
 
-The package file has an extension `.pkg` and is a JSON file:
+The contract package is defined as a JSON file, usually with a `.pkg` extension:
 
 ```json
 {
-  "name": "My Contract",
-  "code": "... boc of code ...",
-  "abi": "ABI string to be uploaded as is to IPFS or Ton Storage",
+  "name": "ContractName",
+  "code": "...base64-encoded BoC...",
+  "abi": "...an ABI as a string to be uploaded as is to IPFS or Ton Storage...",
   "init": {
-    "kind": "direct", // Means that this contract can be deployed as is
-    "args": {
-      // ... Arguments in ABI format
-    },
-    "prefix": {
-      // Optional prefix for contract init state
-      "bits": 0, // Number of bits in prefix
-      "value": 0 // Value of prefix
+    "kind": "direct", // contract can be deployed as is
+    "args": [], // arguments in ABI-like format
+    "prefix": { // optional prefix for init()
+      "bits": 1, // number of bits
+      "value": 0 // value of the prefix
     },
     "deployment": {
-      "kind": "system-cell", // Means that this contract can be deployed as is
-      "system": "... boc of system cell ..."
+      "kind": "system-cell",
+      "system": null // removed in Tact 1.6.0
     }
   },
   "sources": {
-    "file.ton": "... base64 encoded source file ..."
+    "contracts/stdlib.fc": "...base64-encoded source file...",
+    "contracts/contract_name.tact": "...base64-encoded source file..."
   },
   "compiler": {
-    "name": "func",
-    "version": "0.4.1",
-    "parameters": "..." // Optional string parameters
+    "name": "tact",
+    "version": "1.5.3",
+    "parameters": "{...}" // a JSON as a string with an entrypoint and compilation options
   }
 }
+```
+
+The schema of the specification is typed and accessible via:
+
+```ts
+import type { PackageFileFormat } from '@tact-lang/compiler';
 ```
 
 ## Drawbacks
@@ -53,3 +57,4 @@ None
 ## Reference
 
 - Bags of Cells (BoC): https://docs.ton.org/develop/data-formats/cell-boc#packing-a-bag-of-cells
+- [OTP-002](/ref/evolution/otp-002): Contract ABI

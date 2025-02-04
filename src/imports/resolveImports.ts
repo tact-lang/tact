@@ -16,7 +16,7 @@ export function resolveImports(args: {
     // const stdlibFuncPath = args.stdlib.resolve('./stdlib.fc');
     // const stdlibFunc = args.stdlib.readFile(stdlibFuncPath).toString();
 
-    const stdlibTactPath = args.stdlib.resolve("stdlib.tact");
+    const stdlibTactPath = args.stdlib.resolve("std/stdlib.tact");
     if (!args.stdlib.exists(stdlibTactPath)) {
         throwCompilationError(
             `Could not find stdlib.tact at ${stdlibTactPath}`,

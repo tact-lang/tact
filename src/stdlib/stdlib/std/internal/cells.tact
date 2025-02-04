@@ -1,0 +1,384 @@
+//
+// Builder
+//
+
+asm fun beginCell(): Builder { NEWC }
+
+// special treatment in Func compiler, so not replaced with asm "STIX"
+@name(store_int)
+extends native storeInt(self: Builder, value: Int, bits: Int): Builder;
+
+// special treatment in Func compiler, so not replaced with asm "STUX"
+@name(store_uint)
+extends native storeUint(self: Builder, value: Int, bits: Int): Builder;
+
+@name(__tact_store_bool)
+extends native storeBool(self: Builder, value: Bool): Builder;
+
+/// Extension function for the `Builder`. Alias to `Builder.storeBool()`. Available since Tact 1.5.0.
+///
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b.storeBit(true);  // writes 1
+///     let buzz: Builder = b.storeBit(false); // writes 0
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#builderstorebit
+///
+@name(__tact_store_bool)
+extends native storeBit(self: Builder, value: Bool): Builder;
+
+/// Extension function for the `Builder`.
+///
+/// Stores (serializes) an unsigned `Int` `value` in the range from 0 to 2^120 − 1 inclusive into the copy of the `Builder`. The serialization of `value` consists of a 4-bit unsigned big-endian integer `l`, which is the smallest integer `l` ≥ 0, such that `value` < 2^(8 * `l`), followed by an 8 * `l`-bit unsigned big-endian representation of `value`. Returns that copy of the `Builder`.
+///
+/// Attempts to store an out-of-bounds `value` throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// This is the most common way of storing nanoToncoins.
+///
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b.storeCoins(42);
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#builderstorecoins
+///
+asm extends fun storeCoins(self: Builder, value: Int): Builder { STVARUINT16 }
+
+/// Extension function for the `Builder`. Alias to `Builder.storeCoins()`. Available since Tact 1.6.0.
+///
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b.storeVarUint16(42);
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#builderstorevaruint16
+/// * https://docs.tact-lang.org/ref/core-cells#builderstorecoins
+///
+asm extends fun storeVarUint16(self: Builder, value: Int): Builder { STVARUINT16 }
+
+/// Extension function for the `Builder`. Available since Tact 1.6.0.
+///
+/// Similar to `Builder.storeCoins()`, but with a different `value` range: from -2^119 to 2^119 - 1 inclusive.
+///
+/// Attempts to store an out-of-bounds `value` throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b.storeVarInt16(-42);
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#builderstorevarint16
+///
+asm extends fun storeVarInt16(self: Builder, value: Int): Builder { STVARINT16 }
+
+/// Extension function for the `Builder`. Available since Tact 1.6.0.
+///
+/// Stores (serializes) an unsigned `Int` `value` in the range from 0 to 2^248 − 1 inclusive into the copy of the `Builder`. The serialization of `value` consists of a 5-bit unsigned big-endian integer `l`, which is the smallest integer `l` ≥ 0, such that `value` < 2^8 * `l`, followed by an 8 * `l`-bit unsigned big-endian representation of `value`. Returns that copy of the `Builder`.
+///
+/// Attempts to store an out-of-bounds `value` throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b.storeVarUint32(420000);
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#builderstorevaruint32
+///
+asm extends fun storeVarUint32(self: Builder, value: Int): Builder { STVARUINT32 }
+
+/// Extension function for the `Builder`. Available since Tact 1.6.0.
+///
+/// Similar to `Builder.storeVarUint32()`, but with a different `value` range: from -2^247 to 2^247 - 1 inclusive.
+///
+/// Attempts to store an out-of-bounds `value` throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b.storeVarInt32(-420000);
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#builderstorevarint32
+///
+asm extends fun storeVarInt32(self: Builder, value: Int): Builder { STVARINT32 }
+
+asm(cell self) extends fun storeRef(self: Builder, cell: Cell): Builder { STREF }
+
+asm extends fun storeSlice(self: Builder, cell: Slice): Builder { STSLICER }
+
+/// Extension function for the `Builder`. Available since Tact 1.5.0.
+///
+/// Appends all data from a `Builder` `cell` to the copy of the `Builder`. Returns that copy.
+///
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell().storeCoins(42);
+///     let fizz: Builder = beginCell().storeBuilder(b);
+///     b.endCell() == fizz.endCell(); // true
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#builderstorebuilder
+///
+asm extends fun storeBuilder(self: Builder, cell: Builder): Builder { STBR }
+
+@name(__tact_store_address)
+extends native storeAddress(self: Builder, address: Address): Builder;
+
+/// Extension function for the `Builder`. Available since Tact 1.5.0.
+///
+/// If the `cell` is not `null`, stores 1 as a single bit and then reference `cell` into the copy of the `Builder`. Returns that copy.
+///
+/// If the `cell` is `null`, only stores 0 as a single bit into the copy of the `Builder`. Returns that copy.
+///
+/// As a single `Cell` can store up to 4 references, attempts to store more throw an exception with exit code 8: `Cell overflow`.
+///
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b
+///         .storeMaybeRef(emptyCell()) // 1, then empty cell
+///         .storeMaybeRef(null);       // 0
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#builderstoremayberef
+///
+asm(cell self) extends fun storeMaybeRef(self: Builder, cell: Cell?): Builder { STOPTREF }
+
+asm extends fun endCell(self: Builder): Cell { ENDC }
+
+asm extends fun refs(self: Builder): Int { BREFS }
+
+asm extends fun bits(self: Builder): Int { BBITS }
+
+//
+// Slice
+//
+
+asm extends fun beginParse(self: Cell): Slice { CTOS }
+
+asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
+
+/// Extension function for the `Slice`. Available since Tact 1.5.0.
+///
+/// Preloads the next reference from the `Slice` as a `Cell`. Doesn't modify the original `Slice`.
+///
+/// Attempts to preload such reference `Cell` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+///
+/// Attempts to preload more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
+/// ```tact
+/// fun examples() {
+///     let s1: Slice = beginCell().storeRef(emptyCell()).asSlice();
+///     let fizz: Cell = s1.preloadRef(); // didn't modify s1
+///
+///     let s2: Slice = beginCell()
+///         .storeRef(emptyCell())
+///         .storeRef(s1.asCell())
+///         .asSlice();
+///     let ref1: Cell = s2.preloadRef();
+///     let ref2: Cell = s2.preloadRef();
+///     ref1 == ref2; // true
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#slicepreloadref
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+asm extends fun preloadRef(self: Slice): Cell { PLDREF }
+
+// special treatment in Func compiler, so not replaced with asm "LDSLICEX"
+@name(load_bits)
+extends mutates native loadBits(self: Slice, l: Int): Slice;
+
+// special treatment in Func compiler, so not replaced with asm "PLDSLICEX"
+@name(preload_bits)
+extends native preloadBits(self: Slice, l: Int): Slice;
+
+// special treatment in Func compiler, so not replaced with asm "LDIX"
+@name(load_int)
+extends mutates native loadInt(self: Slice, l: Int): Int;
+
+// special treatment in Func compiler, so not replaced with asm "PLDIX"
+@name(preload_int)
+extends native preloadInt(self: Slice, l: Int): Int;
+
+// special treatment in Func compiler, so not replaced with asm "LDUX"
+@name(load_uint)
+extends mutates native loadUint(self: Slice, l: Int): Int;
+
+// special treatment in Func compiler, so not replaced with asm "PLDUX"
+@name(preload_uint)
+extends native preloadUint(self: Slice, l: Int): Int;
+
+asm(-> 1 0) extends mutates fun loadBool(self: Slice): Bool { 1 LDI }
+
+/// Extension mutation function for the `Slice`. Alias to `Slice.loadBool()`. Available since Tact 1.5.0.
+///
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeBool(true).asSlice();
+///     let fizz: Bool = s.loadBit(); // true
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadbit
+///
+asm(-> 1 0) extends mutates fun loadBit(self: Slice): Bool { 1 LDI }
+
+/// Extension mutation function for the `Slice`.
+///
+/// Loads and returns a serialized unsigned `Int` value in the range from 0 to 2^120 - 1 inclusive from the `Slice`. This value usually represents the amount in nanoToncoins.
+///
+/// Attempts to load such `Int` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+///
+/// Attempts to load more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeCoins(42).asSlice();
+///     let fizz: Int = s.loadCoins(); // 42
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadcoins
+///
+asm( -> 1 0) extends mutates fun loadCoins(self: Slice): Int { LDVARUINT16 }
+
+/// Extension mutation function for the `Slice`. Alias to `Slice.loadCoins()`. Available since Tact 1.6.0.
+///
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeVarUint16(42).asSlice();
+///     let fizz: Int = s.loadVarUint16(); // 42
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceloadvaruint16
+/// * https://docs.tact-lang.org/ref/core-cells#sliceloadcoins
+///
+asm( -> 1 0) extends mutates fun loadVarUint16(self: Slice): Int { LDVARUINT16 }
+
+/// Extension mutation function for the `Slice`. Available since Tact 1.6.0.
+///
+/// Similar to `Slice.loadCoins()`, but with a different `value` range: from -2^119 to 2^119 - 1 inclusive.
+///
+/// Attempts to load such `Int` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+///
+/// Attempts to load more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeVarInt16(-42).asSlice();
+///     let fizz: Int = s.loadVarInt16(); // -42
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadvarint16
+///
+asm( -> 1 0) extends mutates fun loadVarInt16(self: Slice): Int { LDVARINT16 }
+
+/// Extension mutation function for the `Slice`. Available since Tact 1.6.0.
+///
+/// Loads and returns a serialized unsigned `Int` value in the range from 0 to 2^248 − 1 inclusive from the `Slice`.
+///
+/// Attempts to load such `Int` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+///
+/// Attempts to load more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeVarUint32(420000).asSlice();
+///     let fizz: Int = s.loadVarUint32(); // 420000
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadvaruint32
+///
+asm( -> 1 0) extends mutates fun loadVarUint32(self: Slice): Int { LDVARUINT32 }
+
+/// Extension mutation function for the `Slice`. Available since Tact 1.6.0.
+///
+/// Similar to `Slice.loadVarUint32()`, but with a different `value` range: from -2^247 to 2^247 - 1 inclusive.
+///
+/// Attempts to load such `Int` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+///
+/// Attempts to load more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeVarInt32(-420000).asSlice();
+///     let fizz: Int = s.loadVarInt32(); // -420000
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadvarint32
+///
+asm( -> 1 0) extends mutates fun loadVarInt32(self: Slice): Int { LDVARINT32 }
+
+@name(__tact_load_address)
+extends mutates native loadAddress(self: Slice): Address;
+
+asm extends mutates fun skipBits(self: Slice, l: Int) { SDSKIPFIRST }
+
+asm extends fun endParse(self: Slice) { ENDS }
+
+//
+// Slice size
+//
+
+asm extends fun refs(self: Slice): Int { SREFS }
+
+asm extends fun bits(self: Slice): Int { SBITS }
+
+asm extends fun empty(self: Slice): Bool { SEMPTY }
+
+asm extends fun dataEmpty(self: Slice): Bool { SDEMPTY }
+
+asm extends fun refsEmpty(self: Slice): Bool { SREMPTY }
+
+//
+// Conversions
+//
+
+inline extends fun asSlice(self: Builder): Slice {
+    return self.endCell().beginParse();
+}
+
+inline extends fun asSlice(self: Cell): Slice {
+    return self.beginParse();
+}
+
+inline extends fun asCell(self: Slice): Cell {
+    return beginCell()
+        .storeSlice(self)
+        .endCell();
+}
+
+inline extends fun asCell(self: Builder): Cell {
+    return self.endCell();
+}
+
+inline fun emptyCell(): Cell {
+    return beginCell().endCell();
+}
+
+inline fun emptySlice(): Slice {
+    return emptyCell().asSlice();
+}
