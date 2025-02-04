@@ -18,11 +18,11 @@ import { throwCompilationError } from "../error/errors";
 import { AstNumber, AstReceiver } from "../ast/ast";
 import { FactoryAst } from "../ast/ast-helpers";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
-import { sha256_sync } from "@ton/crypto";
 import { dummySrcInfo } from "../grammar";
 import { ensureInt } from "../optimizer/interpreter";
 import { evalConstantExpression } from "../optimizer/constEval";
 import { getAstUtil } from "../ast/util";
+import { sha256 } from "../utils/sha256";
 
 export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
     const util = getAstUtil(Ast);
@@ -286,7 +286,7 @@ function newMessageOpcode(signature: string): AstNumber {
         base: 10,
         value: BigInt(
             beginCell()
-                .storeBuffer(sha256_sync(signature))
+                .storeBuffer(sha256(signature).value)
                 .endCell()
                 .beginParse()
                 .loadUint(32),

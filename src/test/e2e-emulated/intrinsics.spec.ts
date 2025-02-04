@@ -1,9 +1,9 @@
 import { Address, beginCell, Cell, toNano } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { IntrinsicsTester } from "./contracts/output/intrinsics_IntrinsicsTester";
-import { sha256_sync } from "@ton/crypto";
 import "@ton/test-utils";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
+import { sha256 } from "../../utils/sha256";
 
 describe("intrinsics", () => {
     let blockchain: Blockchain;
@@ -271,7 +271,7 @@ describe("intrinsics", () => {
     };
 
     const checkSha256 = async (input: string) => {
-        const expected = bufferToBigInt(sha256_sync(input));
+        const expected = bufferToBigInt(sha256(input).value);
         const actual = await contract.getGetHashLongRuntime(input);
         expect(actual.toString(16)).toEqual(expected.toString(16));
     };
@@ -287,21 +287,21 @@ describe("intrinsics", () => {
     };
 
     it("should calculate sha256 correctly", async () => {
-        function sha256(src: string | Buffer) {
-            return BigInt("0x" + sha256_sync(src).toString("hex"));
+        function sha256Hex(src: string | Buffer) {
+            return BigInt("0x" + sha256(src).value.toString("hex"));
         }
-        expect(await contract.getGetHash()).toBe(sha256("hello world"));
-        expect(await contract.getGetHash2()).toBe(sha256("hello world"));
+        expect(await contract.getGetHash()).toBe(sha256Hex("hello world"));
+        expect(await contract.getGetHash2()).toBe(sha256Hex("hello world"));
         expect(
             await contract.getGetHash3(
                 beginCell().storeStringTail("sometest").endCell().asSlice(),
             ),
-        ).toBe(sha256("sometest"));
-        expect(await contract.getGetHash4("wallet")).toBe(sha256("wallet"));
+        ).toBe(sha256Hex("sometest"));
+        expect(await contract.getGetHash4("wallet")).toBe(sha256Hex("wallet"));
         const longString =
             "------------------------------------------------------------------------------------------------------------------------------129";
         expect(await contract.getGetHashLongComptime()).toBe(
-            sha256(longString),
+            sha256Hex(longString),
         );
 
         await checkSha256("hello world");

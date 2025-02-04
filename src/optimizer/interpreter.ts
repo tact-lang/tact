@@ -21,7 +21,6 @@ import {
 } from "../types/resolveDescriptors";
 import { getExpType } from "../types/resolveExpression";
 import { showValue, TypeRef } from "../types/types";
-import { sha256_sync } from "@ton/crypto";
 import { defaultParser, getParser, Parser } from "../grammar/grammar";
 import { dummySrcInfo, SrcInfo } from "../grammar";
 import {
@@ -33,6 +32,7 @@ import {
     isSelfId,
 } from "../ast/ast-helpers";
 import { divFloor, modFloor } from "./util";
+import { sha256 } from "../utils/sha256";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -1307,7 +1307,7 @@ export class Interpreter {
                 }
                 const str = ensureSimplifiedString(expr);
                 return this.util.makeNumberLiteral(
-                    BigInt("0x" + sha256_sync(str.value).toString("hex")),
+                    BigInt("0x" + sha256(str.value).value.toString("hex")),
                     ast.loc,
                 );
             }

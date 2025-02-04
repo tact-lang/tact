@@ -1,4 +1,3 @@
-import { sha256_sync } from "@ton/crypto";
 import { CompilerContext, createContextStore } from "../context/context";
 import { AstNode } from "../ast/ast";
 import { FactoryAst, isRequire } from "../ast/ast-helpers";
@@ -12,13 +11,14 @@ import {
 } from "./resolveDescriptors";
 import { ensureSimplifiedString } from "../optimizer/interpreter";
 import { AstUtil, getAstUtil } from "../ast/util";
+import { sha256 } from "../utils/sha256";
 
 type Exception = { value: string; id: number };
 
 const exceptions = createContextStore<Exception>();
 
 function stringId(src: string): number {
-    return sha256_sync(src).readUInt32BE(0);
+    return sha256(src).value.readUInt32BE(0);
 }
 
 function exceptionId(src: string): number {
