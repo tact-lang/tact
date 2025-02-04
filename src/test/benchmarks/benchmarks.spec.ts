@@ -11,9 +11,12 @@ import {
     TreasuryContract,
 } from "@ton/sandbox";
 import { Functions } from "./contracts/output/functions_Functions";
-import { Sha256 } from "./contracts/output/benchmark_sha256_Sha256";
+import { Sha256Small } from "./contracts/output/benchmark_sha256_small_Sha256Small";
+import { Sha256Big } from "./contracts/output/benchmark_sha256_big_Sha256Big";
+import { Sha256AsSlice } from "./contracts/output/benchmark_sha256_as_slice_Sha256AsSlice";
 import { Forward } from "./contracts/output/forward_Forward";
 import "@ton/test-utils";
+import { getUsedGas } from "./util";
 
 function measureGas(txs: BlockchainTransaction[]) {
     return (
@@ -70,45 +73,65 @@ describe("benchmarks", () => {
     });
 
     async function hashString(
-        sha256: SandboxContract<Sha256>,
+        sha256: SandboxContract<Sha256Small | Sha256Big | Sha256AsSlice>,
         s: string,
-        method: "HashBig" | "HashSmall",
     ): Promise<bigint> {
         const result = await sha256.send(
             treasure.getSender(),
             { value: toNano(1) },
-            { $$type: method, value: s },
+            { $$type: "HashData", value: s },
         );
 
-        return measureGas(result.transactions);
+        return getUsedGas(result);
     }
 
     it("benchmark sha256", async () => {
-        const sha256 = blockchain.openContract(await Sha256.fromInit());
-
-        await sha256.send(treasure.getSender(), { value: toNano(1) }, null);
-        await hashString(sha256, "hello world", "HashBig");
-        await hashString(sha256, "hello world", "HashSmall");
-
-        expect(await hashString(sha256, "hello world", "HashBig")).toEqual(
-            2766n,
+        const sha256Small = blockchain.openContract(
+            await Sha256Small.fromInit(),
         );
-        expect(await hashString(sha256, "hello world", "HashSmall")).toEqual(
-            2410n,
+        const sha256Big = blockchain.openContract(await Sha256Big.fromInit());
+        const sha256AsSlice = blockchain.openContract(
+            await Sha256AsSlice.fromInit(),
         );
 
-        expect(
-            await hashString(sha256, "hello world".repeat(5), "HashBig"),
-        ).toEqual(2767n);
-        expect(
-            await hashString(sha256, "hello world".repeat(5), "HashSmall"),
-        ).toEqual(2410n);
+        await sha256Small.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            null,
+        );
+        await sha256Big.send(treasure.getSender(), { value: toNano(1) }, null);
+        await sha256AsSlice.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            null,
+        );
 
+        await hashString(sha256Big, "hello world");
+        await hashString(sha256Small, "hello world");
+        await hashString(sha256AsSlice, "hello world");
+
+        expect(await hashString(sha256Big, "hello world")).toEqual(3039n);
+        expect(await hashString(sha256Small, "hello world")).toEqual(2516n);
+        expect(await hashString(sha256AsSlice, "hello world")).toEqual(2516n);
+
+        expect(await hashString(sha256Big, "hello world".repeat(5))).toEqual(
+            3040n,
+        );
+        expect(await hashString(sha256Small, "hello world".repeat(5))).toEqual(
+            2516n,
+        );
         expect(
-            await hashString(sha256, "hello world".repeat(10), "HashBig"),
-        ).toEqual(2769n);
+            await hashString(sha256AsSlice, "hello world".repeat(5)),
+        ).toEqual(2516n);
+
+        expect(await hashString(sha256Big, "hello world".repeat(10))).toEqual(
+            3042n,
+        );
+        expect(await hashString(sha256Small, "hello world".repeat(10))).toEqual(
+            2516n,
+        );
         expect(
-            await hashString(sha256, "hello world".repeat(10), "HashSmall"),
-        ).toEqual(2410n);
+            await hashString(sha256AsSlice, "hello world".repeat(10)),
+        ).toEqual(2516n);
     });
 });
