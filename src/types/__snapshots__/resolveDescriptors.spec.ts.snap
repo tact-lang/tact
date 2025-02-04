@@ -145,7 +145,7 @@ exports[`resolveDescriptors should fail descriptors for contract-const-override-
 `;
 
 exports[`resolveDescriptors should fail descriptors for contract-decl-remainder-in-the-middle 1`] = `
-"<unknown>:8:5: The "remainder" field can only be the last field of the contract
+"<unknown>:8:5: The "as remaining" field can only be the last field of the contract
   7 |     a: Int = 0;
 > 8 |     s: Cell as remaining;
           ^~~~~~~~~~~~~~~~~~~~
@@ -402,7 +402,7 @@ exports[`resolveDescriptors should fail descriptors for init-self-reassign-in-if
 `;
 
 exports[`resolveDescriptors should fail descriptors for message-decl-remainder-in-the-middle 1`] = `
-"<unknown>:8:5: The "remainder" field can only be the last field of the message
+"<unknown>:8:5: The "as remaining" field can only be the last field of the message
   7 |     a: Int;
 > 8 |     s: Cell as remaining;
           ^~~~~~~~~~~~~~~~~~~~
@@ -754,7 +754,7 @@ exports[`resolveDescriptors should fail descriptors for struct-decl-mutually-rec
 `;
 
 exports[`resolveDescriptors should fail descriptors for struct-decl-remainder-in-the-middle 1`] = `
-"<unknown>:8:5: The "remainder" field can only be the last field of the struct
+"<unknown>:8:5: The "as remaining" field can only be the last field of the struct
   7 |     a: Int;
 > 8 |     s: Cell as remaining;
           ^~~~~~~~~~~~~~~~~~~~
@@ -13590,7 +13590,7 @@ exports[`resolveDescriptors should resolve descriptors for message-decl-remainde
       "id": 0,
       "kind": "number",
       "loc": ,
-      "value": 3344478825n,
+      "value": 1872381133n,
     },
     "init": null,
     "interfaces": [],
@@ -13599,8 +13599,8 @@ exports[`resolveDescriptors should resolve descriptors for message-decl-remainde
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": "Test{a:int257,b:int257,s:remainder<cell>}",
-    "tlb": "test#c758b269 a:int257 b:int257 s:remainder<cell> = Test",
+    "signature": "Test{a:int257,b:int257,s:cell}",
+    "tlb": "test#6f9a44cd a:int257 b:int257 s:cell = Test",
     "traits": [],
     "uid": 44104,
   },
@@ -25276,8 +25276,8 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": "Test{a:int257,b:int257,s:remainder<cell>}",
-    "tlb": "_ a:int257 b:int257 s:remainder<cell> = Test",
+    "signature": "Test{a:int257,b:int257,s:cell}",
+    "tlb": "_ a:int257 b:int257 s:cell = Test",
     "traits": [],
     "uid": 44104,
   },

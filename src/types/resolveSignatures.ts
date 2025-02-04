@@ -73,7 +73,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
             return "address";
         } else if (type === "cell") {
             if (format === "remainder") {
-                return "remainder<cell>";
+                return "cell";
             } else if (format === "ref") {
                 return "^cell";
             }
@@ -85,7 +85,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
             return "^cell";
         } else if (type === "slice") {
             if (format === "remainder") {
-                return "remainder<slice>";
+                return "slice";
             } else if (format === "ref") {
                 return "^slice";
             } else if (format !== null) {
@@ -96,7 +96,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
             return "^slice";
         } else if (type === "builder") {
             if (format === "remainder") {
-                return "remainder<builder>";
+                return "builder";
             } else if (format === "ref") {
                 return "^slice";
             } else if (format !== null) {
@@ -186,13 +186,13 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
             throwInternalCompilerError(`Unsupported type: ${name}`);
         }
 
-        // Check for no "remainder" in the middle of the struct
+        // Check for no "as remaining" in the middle of the struct
         for (const field of t.fields.slice(0, -1)) {
             if (field.as === "remaining") {
                 const kind =
                     t.ast.kind === "message_decl" ? "message" : "struct";
                 throwCompilationError(
-                    `The "remainder" field can only be the last field of the ${kind}`,
+                    `The "as remaining" field can only be the last field of the ${kind}`,
                     field.loc,
                 );
             }
@@ -422,7 +422,7 @@ function checkContractFields(t: TypeDescription) {
     for (const field of t.fields.slice(0, -1)) {
         if (field.as === "remaining") {
             throwCompilationError(
-                `The "remainder" field can only be the last field of the contract`,
+                `The "as remaining" field can only be the last field of the contract`,
                 field.ast.loc,
             );
         }
