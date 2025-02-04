@@ -645,6 +645,35 @@ export function writeExpression(
                     return `${wCtx.used(ops.nonModifying(name))}(${[s, ...renderedArguments].join(", ")})`;
                 }
             } else {
+                // Rearranges the arguments in the order described in Asm Shuffle
+                //
+                // Foe example:
+                // `asm(other self) fun foo(self: Type, other: Type2)` and
+                // `foo(10, 20)` generates as
+                // `foo(20, 10)`
+                if (
+                    methodDescr.ast.kind === "asm_function_def" &&
+                    methodDescr.self &&
+                    methodDescr.ast.shuffle.args.length > 1 &&
+                    methodDescr.ast.shuffle.ret.length === 0
+                ) {
+                    const declaredArgs = [
+                        { name: "self", value: s },
+                        ...f.args.map((_, i) => ({
+                            name: methodDescr.params[i]!.name.text,
+                            value: renderedArguments[i]!,
+                        })),
+                    ];
+
+                    const argsDict = Object.fromEntries(
+                        declaredArgs.map((a) => [a.name, a.value]),
+                    );
+                    const shuffledValues = methodDescr.ast.shuffle.args.map(
+                        (arg) => argsDict[arg.text],
+                    );
+                    return `${name}(${shuffledValues.join(", ")})`;
+                }
+
                 return `${name}(${[s, ...renderedArguments].join(", ")})`;
             }
         }

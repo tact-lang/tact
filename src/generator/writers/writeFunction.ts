@@ -581,7 +581,40 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                 ? ops.extension(self.name, f.name)
                 : ops.global(f.name);
             ctx.fun(name, () => {
-                ctx.signature(`${returns} ${name}(${params.join(", ")})`);
+                let functionParams = params;
+                let needShuffle = true;
+
+                const isMutable = fAst.attributes.some(
+                    (a) => a.type === "mutates",
+                );
+                const isMethod = fAst.params[0]?.name.text === "self";
+                if (
+                    fAst.shuffle.ret.length === 0 &&
+                    fAst.shuffle.args.length > 1 &&
+                    fAst.params.length > 1 &&
+                    isMethod &&
+                    !isMutable
+                ) {
+                    // Rearranges the parameters in the order described in Asm Shuffle
+                    //
+                    // Foe example:
+                    // `asm(other self) fun foo(self: Type, other: Type2)` generates as
+                    //                  fun foo(other: Type2, self: Type)
+                    const paramsDict = Object.fromEntries(
+                        params.map((param, i) => [
+                            i === 0 ? "self" : f.params[i - 1]!.name.text,
+                            param,
+                        ]),
+                    );
+                    functionParams = fAst.shuffle.args.map(
+                        (arg) => paramsDict[arg.text]!,
+                    );
+                    needShuffle = false;
+                }
+
+                ctx.signature(
+                    `${returns} ${name}(${functionParams.join(", ")})`,
+                );
                 ctx.flag("impure");
                 if (f.origin === "stdlib") {
                     ctx.context("stdlib");
@@ -592,7 +625,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                     args: fAst.shuffle.args.map((id) => idOfText(funcIdOf(id))),
                 };
                 ctx.asm(
-                    ppAsmShuffle(asmShuffleEscaped),
+                    needShuffle ? ppAsmShuffle(asmShuffleEscaped) : "",
                     fAst.instructions.join(" "),
                 );
             });
