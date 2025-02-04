@@ -945,7 +945,7 @@ const parseConstantDefInModule =
             // FIXME: should be `firstAttribute.loc`
             // https://github.com/tact-lang/tact/issues/1255
             ctx.err.topLevelConstantWithAttribute()(node.loc);
-            result.attributes = [];
+            return { ...result, attributes: [] };
         }
         return result;
     };

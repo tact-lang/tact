@@ -381,28 +381,38 @@ function dummyEval(
             case "struct_value":
                 return ast; // No need to simplify: fields already simplified
             case "method_call": {
-                const newNode = cloneNode(ast);
-                newNode.args = ast.args.map(recurse);
-                newNode.self = recurse(ast.self);
-                return newNode;
+                const copy: A.AstMethodCall = {
+                    ...ast,
+                    args: ast.args.map(recurse),
+                    self: recurse(ast.self),
+                };
+                return cloneNode(copy);
             }
             case "init_of": {
-                const newNode = cloneNode(ast);
-                newNode.args = ast.args.map(recurse);
-                return newNode;
+                const copy: A.AstInitOf = {
+                    ...ast,
+                    args: ast.args.map(recurse),
+                };
+                return cloneNode(copy);
             }
             case "op_unary": {
-                const newNode = cloneNode(ast);
-                newNode.operand = recurse(ast.operand);
+                const copy: A.AstOpUnary = {
+                    ...ast,
+                    operand: recurse(ast.operand),
+                };
+                const newNode = cloneNode(copy);
                 if (isLiteral(newNode.operand)) {
                     return evalUnaryOp(ast.op, newNode.operand, ast.loc, util);
                 }
                 return newNode;
             }
             case "op_binary": {
-                const newNode = cloneNode(ast);
-                newNode.left = recurse(ast.left);
-                newNode.right = recurse(ast.right);
+                const copy: A.AstOpBinary = {
+                    ...ast,
+                    left: recurse(ast.left),
+                    right: recurse(ast.right),
+                };
+                const newNode = cloneNode(copy);
                 if (isLiteral(newNode.left) && isLiteral(newNode.right)) {
                     const valR = newNode.right;
                     return evalBinaryOp(
@@ -416,29 +426,39 @@ function dummyEval(
                 return newNode;
             }
             case "conditional": {
-                const newNode = cloneNode(ast);
-                newNode.thenBranch = recurse(ast.thenBranch);
-                newNode.elseBranch = recurse(ast.elseBranch);
-                return newNode;
+                const copy: A.AstConditional = {
+                    ...ast,
+                    thenBranch: recurse(ast.thenBranch),
+                    elseBranch: recurse(ast.elseBranch),
+                };
+                return cloneNode(copy);
             }
             case "struct_instance": {
-                const newNode = cloneNode(ast);
-                newNode.args = ast.args.map((param) => {
-                    const newParam = cloneNode(param);
-                    newParam.initializer = recurse(param.initializer);
-                    return newParam;
-                });
-                return newNode;
+                const copy: A.AstStructInstance = {
+                    ...ast,
+                    args: ast.args.map((param) => {
+                        const copy: A.AstStructFieldInitializer = {
+                            ...param,
+                            initializer: recurse(param.initializer),
+                        }
+                        return cloneNode(copy);
+                    }),
+                };
+                return cloneNode(copy);
             }
             case "field_access": {
-                const newNode = cloneNode(ast);
-                newNode.aggregate = recurse(ast.aggregate);
-                return newNode;
+                const copy: A.AstFieldAccess = {
+                    ...ast,
+                    aggregate: recurse(ast.aggregate),
+                };
+                return cloneNode(copy);
             }
             case "static_call": {
-                const newNode = cloneNode(ast);
-                newNode.args = ast.args.map(recurse);
-                return newNode;
+                const copy: A.AstStaticCall = {
+                    ...ast,
+                    args: ast.args.map(recurse),
+                };
+                return cloneNode(copy);
             }
             default:
                 throwInternalCompilerError("Unrecognized expression kind");

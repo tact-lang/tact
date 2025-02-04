@@ -33,7 +33,8 @@ export const getAstFactory = () => {
         return Object.freeze(Object.assign({ id: nextId++ }, src));
     }
     function cloneNode<T extends A.AstNode>(src: T): T {
-        return { ...src, id: nextId++ };
+        const newNode: T = { ...src, id: nextId++ };
+        return Object.freeze(newNode);
     }
     return {
         createNode,
