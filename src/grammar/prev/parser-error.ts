@@ -2,8 +2,9 @@ import { MatchResult } from "ohm-js";
 import { ErrorDisplay } from "../../error/display";
 import { TactCompilationError } from "../../error/errors";
 import { syntaxErrorSchema } from "../parser-error";
-import { ItemOrigin, SrcInfo } from "../src-info";
+import { SrcInfo } from "../src-info";
 import { getSrcInfoFromOhm } from "./src-info";
+import { ItemOrigin } from "../../imports/source";
 
 /**
  * @deprecated

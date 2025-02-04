@@ -41,11 +41,11 @@ import {
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
-import { ItemOrigin } from "../grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { addVariable, emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
 import { AstUtil, getAstUtil } from "../ast/util";
+import { ItemOrigin } from "../imports/source";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();

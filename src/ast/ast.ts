@@ -1,5 +1,7 @@
 import { Address, Cell, Slice } from "@ton/core";
 import { SrcInfo } from "../grammar/src-info";
+import { RelativePath } from "../imports/path";
+import { Language } from "../imports/source";
 
 export type AstModule = {
     kind: "module";
@@ -10,7 +12,7 @@ export type AstModule = {
 
 export type AstImport = {
     kind: "import";
-    path: AstString;
+    importPath: ImportPath;
     id: number;
     loc: SrcInfo;
 };
@@ -546,6 +548,17 @@ export type AstBoolean = {
     id: number;
     loc: SrcInfo;
 };
+
+// Reference to source file
+export type ImportPath = {
+    readonly path: RelativePath;
+    readonly type: ImportType;
+    readonly language: Language;
+};
+
+// This is different from ItemOrigin, because relative import
+// from standard library is still import with origin: "stdlib"
+export type ImportType = "stdlib" | "relative";
 
 // An AstSimplifiedString is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.
 // An AstString is not a literal because it may contain escaping characters that have not been simplified, like '\\'.

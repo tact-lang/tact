@@ -17,13 +17,13 @@ describe("formatter", () => {
             }
             const Ast = getAstFactory();
             const { parse } = getParser(Ast, defaultParser);
-            const filePath = join(CONTRACTS_DIR, dentry.name);
-            const src = trimTrailingCR(fs.readFileSync(filePath, "utf-8"));
-            const ast = parse(src, filePath, "user");
+            const path = join(CONTRACTS_DIR, dentry.name);
+            const code = trimTrailingCR(fs.readFileSync(path, "utf-8"));
+            const ast = parse({ code, path, origin: "user" });
             const formatted = trimTrailingCR(prettyPrint(ast));
             assert.strictEqual(
                 formatted,
-                src,
+                code,
                 `The formatted AST comparison failed for ${dentry.name}`,
             );
         },
@@ -39,17 +39,21 @@ describe("formatter", () => {
             }
             const Ast = getAstFactory();
             const { parse } = getParser(Ast, defaultParser);
-            const filePath = join(CONTRACTS_DIR, dentry.name);
-            const src = fs.readFileSync(filePath, "utf-8");
-            const ast = parse(src, filePath, "user");
+            const path = join(CONTRACTS_DIR, dentry.name);
+            const code = fs.readFileSync(path, "utf-8");
+            const ast = parse({ code, path, origin: "user" });
             //TODO: change for proper recursive removal
             const astStr = JSONBig.stringify(ast).replace(/"id":[0-9]+,/g, "");
 
-            const formatted = prettyPrint(ast);
-            const fileName = join(outputDir, dentry.name);
-            fs.openSync(fileName, "w");
-            fs.writeFileSync(fileName, formatted, { flag: "w" });
-            const astFormatted = parse(formatted, fileName, "user");
+            const formattedCode = prettyPrint(ast);
+            const formattedPath = join(outputDir, dentry.name);
+            fs.openSync(formattedPath, "w");
+            fs.writeFileSync(formattedPath, formattedCode, { flag: "w" });
+            const astFormatted = parse({
+                code: formattedCode,
+                path: formattedPath,
+                origin: "user",
+            });
             //TODO: change for proper recursive removal
             const astFormattedStr = JSONBig.stringify(astFormatted).replace(
                 /"id":[0-9]+,/g,

@@ -104,6 +104,17 @@ export const syntaxErrorSchema = <T, U>(
                 sub`Numbers with leading zeroes cannot use underscores for JS compatibility`,
             );
         },
+        noFolderImports: () => {
+            return handle(sub`Cannot import a folder`);
+        },
+        invalidImport: () => {
+            return handle(sub`Import must start with ./, ../ or @stdlib/`);
+        },
+        escapingImport: () => {
+            return handle(
+                sub`Standard library imports should be inside its root`,
+            );
+        },
     };
 };
 
