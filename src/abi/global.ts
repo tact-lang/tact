@@ -383,9 +383,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         // FIXME: This one does not need fixing, because it is carried out inside a "isLiteral" check.
                         // Remove this comment once the optimization step is added
                         const str = ensureSimplifiedString(resolved0).value;
-                        return BigInt(
-                            "0x" + sha256(str).value.toString("hex"),
-                        ).toString(10);
+                        return sha256(str).value.toString(10);
                     }
 
                     // Otherwise, revert back to runtime hash through HASHEXT_SHA256

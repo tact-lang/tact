@@ -11,14 +11,14 @@ import {
 } from "./resolveDescriptors";
 import { ensureSimplifiedString } from "../optimizer/interpreter";
 import { AstUtil, getAstUtil } from "../ast/util";
-import { sha256 } from "../utils/sha256";
+import { sha256, sha256LoadUint32BE } from "../utils/sha256";
 
 type Exception = { value: string; id: number };
 
 const exceptions = createContextStore<Exception>();
 
 function stringId(src: string): number {
-    return sha256(src).value.readUInt32BE(0);
+    return Number(sha256LoadUint32BE(sha256(src)));
 }
 
 function exceptionId(src: string): number {

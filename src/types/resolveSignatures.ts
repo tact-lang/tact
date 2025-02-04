@@ -1,5 +1,5 @@
 import * as changeCase from "change-case";
-import { ABIField, beginCell } from "@ton/core";
+import { ABIField } from "@ton/core";
 import { CompilerContext } from "../context/context";
 import { idToHex } from "../utils/idToHex";
 import {
@@ -22,7 +22,7 @@ import { dummySrcInfo } from "../grammar";
 import { ensureInt } from "../optimizer/interpreter";
 import { evalConstantExpression } from "../optimizer/constEval";
 import { getAstUtil } from "../ast/util";
-import { sha256 } from "../utils/sha256";
+import { sha256, sha256LoadUint32BE } from "../utils/sha256";
 
 export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
     const util = getAstUtil(Ast);
@@ -284,13 +284,7 @@ function newMessageOpcode(signature: string): AstNumber {
     return {
         kind: "number",
         base: 10,
-        value: BigInt(
-            beginCell()
-                .storeBuffer(sha256(signature).value)
-                .endCell()
-                .beginParse()
-                .loadUint(32),
-        ),
+        value: sha256LoadUint32BE(sha256(signature)),
         id: 0,
         loc: dummySrcInfo,
     };

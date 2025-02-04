@@ -1307,7 +1307,7 @@ export class Interpreter {
                 }
                 const str = ensureSimplifiedString(expr);
                 return this.util.makeNumberLiteral(
-                    BigInt("0x" + sha256(str.value).value.toString("hex")),
+                    sha256(str.value).value,
                     ast.loc,
                 );
             }

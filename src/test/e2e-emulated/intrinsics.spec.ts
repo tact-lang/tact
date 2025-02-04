@@ -263,15 +263,8 @@ describe("intrinsics", () => {
         expect(await contract.getGetCrc32_4()).toBe(0n);
     });
 
-    const bufferToBigInt = (buffer: Buffer): bigint => {
-        return buffer.reduce(
-            (acc, byte) => (acc << BigInt(8)) | BigInt(byte),
-            BigInt(0),
-        );
-    };
-
     const checkSha256 = async (input: string) => {
-        const expected = bufferToBigInt(sha256(input).value);
+        const expected = sha256(input).value;
         const actual = await contract.getGetHashLongRuntime(input);
         expect(actual.toString(16)).toEqual(expected.toString(16));
     };
@@ -288,7 +281,7 @@ describe("intrinsics", () => {
 
     it("should calculate sha256 correctly", async () => {
         function sha256Hex(src: string | Buffer) {
-            return BigInt("0x" + sha256(src).value.toString("hex"));
+            return sha256(src).value.toString(16);
         }
         expect(await contract.getGetHash()).toBe(sha256Hex("hello world"));
         expect(await contract.getGetHash2()).toBe(sha256Hex("hello world"));
