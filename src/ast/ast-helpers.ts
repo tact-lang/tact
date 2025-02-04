@@ -33,7 +33,8 @@ export const getAstFactory = () => {
         return Object.freeze(Object.assign({ id: nextId++ }, src));
     }
     function cloneNode<T extends A.AstNode>(src: T): T {
-        return { ...src, id: nextId++ };
+        const newNode: T = { ...src, id: nextId++ };
+        return Object.freeze(newNode);
     }
     return {
         createNode,
@@ -265,8 +266,8 @@ function eqFieldValues(
 }
 
 function eqArrays<T>(
-    arr1: T[],
-    arr2: T[],
+    arr1: readonly T[],
+    arr2: readonly T[],
     eqElements: (elem1: T, elem2: T) => boolean,
 ): boolean {
     if (arr1.length !== arr2.length) {
