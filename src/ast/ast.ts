@@ -12,7 +12,7 @@ export type AstModule = {
 
 export type AstImport = {
     kind: "import";
-    source: SourceReference;
+    source: ImportPath;
     id: number;
     loc: SrcInfo;
 };
@@ -550,11 +550,13 @@ export type AstBoolean = {
 };
 
 // Reference to source file
-export type SourceReference = {
+export type ImportPath = {
     readonly path: RelativePath;
-    readonly type: "stdlib" | "relative";
+    readonly type: ImportType;
     readonly language: Language;
 };
+
+export type ImportType = "stdlib" | "relative";
 
 // An AstSimplifiedString is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.
 // An AstString is not a literal because it may contain escaping characters that have not been simplified, like '\\'.

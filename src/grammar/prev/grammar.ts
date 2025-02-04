@@ -142,10 +142,7 @@ const guessExtension = (
 
 const stdlibPrefix = "@stdlib/";
 
-function parseImportString(
-    importText: string,
-    loc: SrcInfo,
-): A.SourceReference {
+function parseImportString(importText: string, loc: SrcInfo): A.ImportPath {
     if (importText.endsWith("/")) {
         err().noFolderImports()(loc);
     }

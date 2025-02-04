@@ -19,7 +19,7 @@ export type RelativePath = {
     /**
      * Proof that path was created by RelativePath constructor
      */
-    [pathTag]: true;
+    readonly [pathTag]: true;
 };
 
 /**

@@ -1206,7 +1206,7 @@ const guessExtension = (
 const stdlibPrefix = "@stdlib/";
 
 const parseImportString =
-    (importText: string, loc: $.Loc): Handler<A.SourceReference> =>
+    (importText: string, loc: $.Loc): Handler<A.ImportPath> =>
     (ctx) => {
         if (importText.endsWith("/")) {
             ctx.err.noFolderImports()(loc);

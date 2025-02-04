@@ -1,10 +1,10 @@
-import { SourceReference } from "../ast/ast";
+import { ImportPath } from "../ast/ast";
 import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { asString } from "./path";
 import { ItemOrigin, Language, Source } from "./source";
 
 type ResolveLibraryArgs = {
-    sourceRef: SourceReference;
+    sourceRef: ImportPath;
     sourceFrom: Source;
     project: VirtualFileSystem;
     stdlib: VirtualFileSystem;

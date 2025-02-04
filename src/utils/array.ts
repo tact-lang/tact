@@ -1,8 +1,8 @@
 const range = (from: number, to: number) => {
-    return new Array(to - from + 1).fill(0).map((_, i) => i);
+    return new Array(to - from + 1).fill(0).map((_, i) => from + i);
 };
 
-export const repeat = <T>(value: T, count: number): T[] => {
+export const repeat = <T>(value: T, count: number): readonly T[] => {
     return range(1, count).map(() => value);
 };
 

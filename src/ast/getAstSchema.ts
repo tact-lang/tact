@@ -23,7 +23,7 @@ export const getAstSchema = (
             items: A.AstModuleItem[],
         ): A.AstModule =>
             createNode<A.AstModule>({ kind: "module", imports, items }),
-        Import: (source: A.SourceReference, loc: Loc): A.AstImport =>
+        Import: (source: A.ImportPath, loc: Loc): A.AstImport =>
             createNode<A.AstImport>({
                 kind: "import",
                 source,
