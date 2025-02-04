@@ -43,7 +43,7 @@ export class AstSorter {
             | A.AstConstantAttribute
             | A.AstContractAttribute
             | A.AstFunctionAttribute,
-    >(attributes: T[]): T[] {
-        return attributes.sort((a, b) => a.type.localeCompare(b.type));
+    >(attributes: readonly T[]): T[] {
+        return [...attributes].sort((a, b) => a.type.localeCompare(b.type));
     }
 }

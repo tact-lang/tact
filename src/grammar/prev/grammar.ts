@@ -1027,6 +1027,7 @@ semantics.addOperation<A.AstNode>("astOfStatement", {
         return createNode({
             kind: "statement_try",
             statements: tryBlock.children.map((s) => s.astOfStatement()),
+            catchBlock: undefined,
             loc: createRef(this),
         });
     },
