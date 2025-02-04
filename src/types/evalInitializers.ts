@@ -1,12 +1,22 @@
+import { AstNode } from "../ast/ast";
 import { FactoryAst } from "../ast/ast-helpers";
+import { traverse } from "../ast/iterators";
 import { AstUtil, getAstUtil } from "../ast/util";
 import { CompilerContext } from "../context/context";
-import { throwCompilationError, throwConstEvalError } from "../error/errors";
+import {
+    TactConstEvalError,
+    throwCompilationError,
+    throwConstEvalError,
+} from "../error/errors";
 import { SrcInfo } from "../grammar";
 import { evalConstantExpression } from "../optimizer/constEval";
 import { ensureInt } from "../optimizer/interpreter";
 import { crc16 } from "../utils/crc16";
-import { getAllStaticConstants, getAllTypes } from "./resolveDescriptors";
+import {
+    getAllStaticConstants,
+    getAllStaticFunctions,
+    getAllTypes,
+} from "./resolveDescriptors";
 import { ConstantDescription, FunctionDescription } from "./types";
 
 function initializeConstants(
@@ -97,6 +107,32 @@ export function evalComptimeExpressions(
             }
         }
     }
+
+    // FIXME: We need to do this hack to check shift operators. The code in the callback function checkShiftOperators
+    // was previously in resolveExpressions.
+    // Remove these calls to traverse and function checkShiftOperators once the partial evaluator is active.
+    getAllStaticFunctions(ctx).forEach((fDesc) => {
+        traverse(fDesc.ast, (n) => {
+            checkShiftOperators(ctx, util, n);
+        });
+    });
+    for (const t of getAllTypes(ctx)) {
+        if (t.init) {
+            traverse(t.init.ast, (n) => {
+                checkShiftOperators(ctx, util, n);
+            });
+        }
+        t.functions.forEach((fDesc) => {
+            traverse(fDesc.ast, (n) => {
+                checkShiftOperators(ctx, util, n);
+            });
+        });
+        t.receivers.forEach((rDesc) => {
+            traverse(rDesc.ast, (n) => {
+                checkShiftOperators(ctx, util, n);
+            });
+        });
+    }
 }
 
 function checkMethodId(methodId: bigint, loc: SrcInfo) {
@@ -152,5 +188,35 @@ function getMethodId(
         const methodId = (crc16(funcDescr.name) & 0xffff) | 0x10000;
         checkMethodId(BigInt(methodId), funcDescr.ast.loc);
         return methodId;
+    }
+}
+
+function checkShiftOperators(
+    ctx: CompilerContext,
+    util: AstUtil,
+    ast: AstNode,
+) {
+    // poor man's constant propagation analysis (very local)
+    // it works only in the case when the right-hand side is a constant expression
+    // and does not have any variables
+    if (ast.kind !== "op_binary") {
+        return;
+    }
+    if (ast.op !== ">>" && ast.op !== "<<") {
+        return;
+    }
+
+    try {
+        const valBits = ensureInt(evalConstantExpression(ast.right, ctx, util));
+        if (0n > valBits.value || valBits.value > 256n) {
+            throwCompilationError(
+                `the number of bits shifted ('${valBits.value}') must be within [0..256] range`,
+                ast.right.loc,
+            );
+        }
+    } catch (error) {
+        if (!(error instanceof TactConstEvalError)) {
+            throw error;
+        }
     }
 }

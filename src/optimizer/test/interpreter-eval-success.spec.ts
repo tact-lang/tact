@@ -4,10 +4,8 @@ import { openContext } from "../../context/store";
 import { getParser } from "../../grammar";
 import { defaultParser } from "../../grammar/grammar";
 import { evalComptimeExpressions } from "../../types/evalInitializers";
-import {
-    getAllTypes,
-    resolveDescriptors,
-} from "../../types/resolveDescriptors";
+import { resolveDescriptors } from "../../types/resolveDescriptors";
+import { getAllExpressionTypes } from "../../types/resolveExpression";
 import { resolveSignatures } from "../../types/resolveSignatures";
 import { resolveStatements } from "../../types/resolveStatements";
 import { loadCases } from "../../utils/loadCases";
@@ -26,7 +24,7 @@ describe("interpreter-evaluation", () => {
             ctx = resolveStatements(ctx);
             ctx = resolveSignatures(ctx, Ast);
             evalComptimeExpressions(ctx, Ast);
-            expect(getAllTypes(ctx)).toMatchSnapshot();
+            expect(getAllExpressionTypes(ctx)).toMatchSnapshot();
         });
     }
 });

@@ -1,8 +1,7 @@
 import * as A from "../ast/ast";
-import { eqNames, getAstFactory, idText, isWildcard } from "../ast/ast-helpers";
+import { eqNames, idText, isWildcard } from "../ast/ast-helpers";
 import {
     idTextErr,
-    TactConstEvalError,
     throwCompilationError,
     throwInternalCompilerError,
 } from "../error/errors";
@@ -22,9 +21,6 @@ import { GlobalFunctions } from "../abi/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
 import { StructFunctions } from "../abi/struct";
 import { prettyPrint } from "../ast/ast-printer";
-import { ensureInt } from "../optimizer/interpreter";
-import { evalConstantExpression } from "../optimizer/constEval";
-import { getAstUtil } from "../ast/util";
 
 const store = createContextStore<{
     ast: A.AstExpression;
@@ -246,36 +242,9 @@ function resolveBinaryOp(
                     );
                 }
 
-                // poor man's constant propagation analysis (very local)
-                // it works only in the case when the right-hand side is a constant expression
-                // and does not have any variables
-                if (exp.op === ">>" || exp.op === "<<") {
-
-                    // FIXME: This should be removed once PR https://github.com/tact-lang/tact/pull/1047 (add optimization phase)
-                    // gets merged into main. I decided to keep the call to evalConstantExpression here even though it will introduce 
-                    // a bug once method calls are added to interpreter (PR https://github.com/tact-lang/tact/pull/1652),
-                    // because extracting this evalConstantExpression would involve traversing and evaluating all expressions in the AST 
-                    // (something that PR https://github.com/tact-lang/tact/pull/1047 does).
-                    try {
-                        const valBits = ensureInt(
-                            evalConstantExpression(
-                                exp.right,
-                                ctx,
-                                getAstUtil(getAstFactory()),
-                            ),
-                        );
-                        if (0n > valBits.value || valBits.value > 256n) {
-                            throwCompilationError(
-                                `the number of bits shifted ('${valBits.value}') must be within [0..256] range`,
-                                exp.right.loc,
-                            );
-                        }
-                    } catch (error) {
-                        if (!(error instanceof TactConstEvalError)) {
-                            throw error;
-                        }
-                    }
-                }
+                // The code that was here checking shift operators, was moved after
+                // resolveStatements since it is not safe to call evalConstantExpression
+                // before typechecking statements and expressions.
 
                 resolved = { kind: "ref", name: "Int", optional: false };
             }
