@@ -222,10 +222,13 @@ export async function writeProgram(
     header.push("#pragma version =0.4.6;");
     header.push("#pragma allow-post-modification;");
     header.push("#pragma compute-asm-ltr;");
-    header.push("");
-    for (const i of files.map((v) => `#include "${v.name}";`)) {
-        header.push(i);
-    }
+
+    files.forEach((file) => {
+        header.push("");
+        header.push(`;; ${file.name}`);
+        header.push(file.code);
+    });
+
     header.push("");
     header.push(";;");
     header.push(`;; Contract ${abiSrc.name} functions`);
@@ -235,14 +238,10 @@ export async function writeProgram(
         header: header.join("\n"),
         functions: remainingFunctions,
     });
-    files.push({
-        name: basename + ".code.fc",
-        code,
-    });
 
     return {
         entrypoint: basename + ".code.fc",
-        files,
+        files: [{ name: basename + ".code.fc", code }],
         abi,
     };
 }
