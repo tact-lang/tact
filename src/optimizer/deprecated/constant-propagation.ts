@@ -196,7 +196,7 @@ export function constantPropagationAnalysis(
         }
     }
 
-    function executeStatements(statements: A.AstStatement[]) {
+    function executeStatements(statements: readonly A.AstStatement[]) {
         statements.forEach((currStmt) => {
             interpretStatement(currStmt);
         });
