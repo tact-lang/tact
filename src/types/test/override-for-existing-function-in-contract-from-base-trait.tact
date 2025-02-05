@@ -2,6 +2,6 @@ trait BaseTrait {
     fun foo() {}
 }
 
-trait Test {
+trait Test with BaseTrait {
     override fun foo() {}
 }

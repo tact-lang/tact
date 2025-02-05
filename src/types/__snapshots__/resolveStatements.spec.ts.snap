@@ -783,6 +783,51 @@ exports[`resolveStatements should fail statements for init-vars-analysis-with-if
 "
 `;
 
+exports[`resolveStatements should fail statements for map-deepEquals-type-mismatch 1`] = `
+"<unknown>:12:16: Type mismatch: cannot pass argument of type "map<Address, Int>" to parameter of type "map<Int, Int>"
+  11 |         let m2: map<Address, Int> = emptyMap();
+> 12 |         return m1.deepEquals(m2);
+                      ^~~~~~~~~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for map-deepEquals-type-mismatch-2 1`] = `
+"<unknown>:12:16: Type mismatch: cannot pass argument of type "map<Address, Address>" to parameter of type "map<Address, Int>"
+  11 |         let m2: map<Address, Address> = emptyMap();
+> 12 |         return m1.deepEquals(m2);
+                      ^~~~~~~~~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for map-deepEquals-type-mismatch-3 1`] = `
+"<unknown>:12:16: Type mismatch: cannot pass argument of type "map<Int, Address>" to parameter of type "map<Int, Bool>"
+  11 |         let m2: map<Int, Address> = emptyMap();
+> 12 |         return m1.deepEquals(m2);
+                      ^~~~~~~~~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for map-deepEquals-type-mismatch-4 1`] = `
+"<unknown>:12:16: Type mismatch: cannot pass argument of type "map<Int as uint16, Bool>" to parameter of type "map<Int as uint8, Bool>"
+  11 |         let m2: map<Int as uint16, Bool> = emptyMap();
+> 12 |         return m1.deepEquals(m2);
+                      ^~~~~~~~~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for map-deepEquals-type-mismatch-5 1`] = `
+"<unknown>:12:16: Type mismatch: cannot pass argument of type "map<Int, Int>" to parameter of type "map<Int, Int as uint16>"
+  11 |         let m2: map<Int, Int> = emptyMap();
+> 12 |         return m1.deepEquals(m2);
+                      ^~~~~~~~~~~~~~~~~
+  13 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for return-analysis-catch-if 1`] = `
 "<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
   3 | 
