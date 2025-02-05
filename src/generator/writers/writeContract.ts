@@ -3,6 +3,7 @@ import {
     enabledInline,
     enabledInterfacesGetter,
     enabledIpfsAbiGetter,
+    enabledLazyDeploymentCompletedGetter,
 } from "../../config/features";
 import { InitDescription, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
@@ -294,13 +295,15 @@ export function writeMainContract(
             ctx.append();
         }
 
-        // Deployed
-        ctx.append(`_ lazy_deployment_completed() method_id {`);
-        ctx.inIndent(() => {
-            ctx.append(`return get_data().begin_parse().load_int(1);`);
-        });
-        ctx.append(`}`);
-        ctx.append();
+        if (enabledLazyDeploymentCompletedGetter(ctx.ctx)) {
+            // Deployed
+            ctx.append(`_ lazy_deployment_completed() method_id {`);
+            ctx.inIndent(() => {
+                ctx.append(`return get_data().begin_parse().load_int(1);`);
+            });
+            ctx.append(`}`);
+            ctx.append();
+        }
 
         // Comments
         ctx.append(`;;`);

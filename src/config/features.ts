@@ -26,6 +26,10 @@ export function enabledNullChecks(ctx: CompilerContext) {
     return featureEnabled(ctx, "nullChecks");
 }
 
+export function enabledLazyDeploymentCompletedGetter(ctx: CompilerContext) {
+    return featureEnabled(ctx, "lazyDeploymentCompletedGetter");
+}
+
 function featureEnabled(ctx: CompilerContext, key: string) {
     return featureStore.get(ctx, key) === true;
 }
