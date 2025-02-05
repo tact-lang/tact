@@ -296,7 +296,7 @@ export function writeMainContract(
             ctx.append();
         }
 
-        if (config.options?.enableLazyDeploymentCompletedMethod) {
+        if (config.options?.enableLazyDeploymentCompletedGetter) {
             // Deployed
             ctx.append(`_ lazy_deployment_completed() method_id {`);
             ctx.inIndent(() => {

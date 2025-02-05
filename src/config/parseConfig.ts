@@ -60,9 +60,9 @@ export const optionsSchema = z
          */
         safety: safetyOptionsSchema.optional(),
         /**
-         * If set to true, enables generation of `lazy_deployment_completed()` method.
+         * If set to true, enables generation of `lazy_deployment_completed()` getter.
          */
-        enableLazyDeploymentCompletedMethod: z.boolean().optional(),
+        enableLazyDeploymentCompletedGetter: z.boolean().optional(),
     })
     .strict();
 
