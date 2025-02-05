@@ -1,4 +1,4 @@
-trait Animal {
+trait Animal with BaseTrait {
     abstract fun getType(): String;
     abstract fun getSound(): String;
 
@@ -33,7 +33,16 @@ trait Laika with Dog {
     }
 }
 
-contract LaikaContract with Laika {
-    // empty contract, we just inherit everything from the traits
+trait WithConstant {
+    virtual const foo: Int = 10;
 }
 
+trait IWantToOverrideConstant with WithConstant {
+    override const foo: Int = 100;
+}
+
+contract LaikaContract with Laika, IWantToOverrideConstant {
+    get fun fooConstant(): Int {
+        return self.foo;
+    }
+}

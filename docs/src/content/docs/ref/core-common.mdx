@@ -3,6 +3,8 @@ title: Common
 description: "Commonly used global static functions from the Core library of Tact"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 List of the most commonly used built-in [global static functions](/book/functions#global-static-functions).
 
 ## Contextual
@@ -10,7 +12,7 @@ List of the most commonly used built-in [global static functions](/book/function
 ### now
 
 ```tact
-fun now(): Int
+fun now(): Int;
 ```
 
 Returns the current [Unix time](https://en.wikipedia.org/wiki/Unix_time).
@@ -117,6 +119,8 @@ require(ctx.value != 68 + 1, "Invalid amount of nanoToncoins, bye!");
 
 ### newAddress
 
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
 ```tact
 fun newAddress(chain: Int, hash: Int): Address;
 ```
@@ -124,6 +128,8 @@ fun newAddress(chain: Int, hash: Int): Address;
 Creates a new [`Address{:tact}`][p] based on the [`chain` id](https://ton-blockchain.github.io/docs/#/overviews/TON_blockchain_overview) and the [SHA-256](/ref/core-math#sha256) encoded [`hash` value](https://docs.ton.org/learn/overviews/addresses#account-id).
 
 This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
+
+Attempts to specify an invalid `chain` ID (not $-1$ or $0$) that can be detected in [compile-time](/ref/core-comptime) will result in a compilation error.
 
 Usage example:
 
@@ -152,6 +158,8 @@ let oldTonFoundationAddr: Address =
 
 ### contractAddress
 
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
 ```tact
 fun contractAddress(s: StateInit): Address;
 ```
@@ -166,11 +174,17 @@ let foundMeSome: Address = contractAddress(initOf SomeContract());
 
 ### contractAddressExt
 
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
 ```tact
 fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address;
 ```
 
 Computes smart contract's [`Address{:tact}`][p] based on the `chain` id, contract's `code` and contract's initial state `data`. Use [`initOf{:tact}`](/book/expressions#initof) expression to obtain initial `code` and initial `data` of a given contract.
+
+This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
+
+Attempts to specify an invalid `chain` ID (not $-1$ or $0$) that can be detected in [compile-time](/ref/core-comptime) will result in a compilation error.
 
 Usage example:
 
@@ -179,22 +193,11 @@ let initPkg: StateInit = initOf SomeContract();
 let hereBeDragons: Address = contractAddressExt(0, initPkg.code, initPkg.data);
 ```
 
-:::caution
-
-  Make sure your specify only supported chain IDs: $0$ for the basechain and $-1$ for the masterchain.
-
-:::
-
-:::note
-
-  For this function to work, the compiler option `debug` has to be set to `true{:tact}` for the current project in the [configuration file](/book/config).\
-  Read more about debugging on the dedicated page: [Debugging](/book/debug).
-
-:::
-
 ## Communication
 
 ### send
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun send(params: SendParameters);
@@ -223,6 +226,8 @@ send(SendParameters{
 :::
 
 ### emit
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun emit(body: Cell);

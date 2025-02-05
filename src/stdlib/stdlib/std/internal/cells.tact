@@ -165,6 +165,21 @@ asm extends fun refs(self: Builder): Int { BREFS }
 
 asm extends fun bits(self: Builder): Int { BBITS }
 
+/// Extension function for the `Builder`. Available since Tact 1.6.0.
+///
+/// Computes and returns the `Int` depth of the `Builder`. Produces 0 if the `Builder` has no references stored so far, otherwise 1 plus the maximum of the depths of the referenced cells.
+///
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell().storeInt(42, 7);
+///     let depth: Int = b.depth(); // 0
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#builderdepth
+///
+asm extends fun depth(self: Builder): Int { BDEPTH }
+
 //
 // Slice
 //
@@ -339,6 +354,83 @@ asm extends mutates fun skipBits(self: Slice, l: Int) { SDSKIPFIRST }
 
 asm extends fun endParse(self: Slice) { ENDS }
 
+/// Extension function for the `Slice`. Available since Tact 1.6.0.
+///
+/// Preloads all but the last 0 ≤ `len` ≤ 1023 bits from the `Slice`.
+///
+/// Attempts to specify an out-of-bounds `len` value throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// Attempts to preload more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeInt(42, 7).asSlice();
+///     let allButLastFive: Slice = s.skipLastBits(5); // all but last 5 bits,
+///                                                    // i.e. only first 2
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceskiplastbits
+///
+asm extends fun skipLastBits(self: Slice, len: Int): Slice { SDSKIPLAST }
+
+/// Extension function for the `Slice`. Available since Tact 1.6.0.
+///
+/// Preloads the first 0 ≤ `len` ≤ 1023 bits from the `Slice`.
+///
+/// Attempts to specify an out-of-bounds `len` value throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// Attempts to preload more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeInt(42, 7).asSlice();
+///     let firstFive: Slice = s.firstBits(5); // first 5 bits
+/// }
+/// ```
+///
+/// In order to reduce gas usage, prefer calling `Slice.preloadBits()` over using this function since the former is more optimized.
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#slicefirstbits
+/// * https://docs.tact-lang.org/ref/core-cells#slicepreloadbits
+///
+asm extends fun firstBits(self: Slice, len: Int): Slice { SDCUTFIRST }
+
+/// Extension function for the `Slice`. Available since Tact 1.6.0.
+///
+/// Preloads the last 0 ≤ `len` ≤ 1023 bits from the `Slice`.
+///
+/// Attempts to specify an out-of-bounds `len` value throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// Attempts to preload more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeInt(42, 7).asSlice();
+///     let lastFive: Slice = s.lastBits(5); // last 5 bits
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#slicelastbits
+///
+asm extends fun lastBits(self: Slice, len: Int): Slice { SDCUTLAST }
+
+/// Extension function for the `Slice`. Available since Tact 1.6.0.
+///
+/// Computes and returns the `Int` depth of the `Slice`. Produces 0 if the `Slice` has no references, otherwise 1 plus the maximum of the depths of the referenced cells.
+///
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeInt(42, 7).asSlice();
+///     let depth: Int = s.depth(); // 0
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#slicedepth
+///
+asm extends fun depth(self: Slice): Int { SDEPTH }
+
 //
 // Slice size
 //
@@ -382,3 +474,100 @@ asm fun emptyCell(): Cell {
 asm fun emptySlice(): Slice {
     b{} PUSHSLICE
 }
+
+/// Struct for holding values computed by the `Cell.computeDataSize()` and `Slice.computeDataSize()` extension functions. Available since Tact 1.6.0.
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#cellcomputedatasize
+/// * https://docs.tact-lang.org/ref/core-cells#slicecomputedatasize
+///
+struct DataSize {
+    /// The total number of nested cells, including the starting one.
+    cells: Int;
+
+    /// The total number of bits in all nested cells, including the starting one.
+    bits: Int;
+
+    /// The total number of refs in all nested cells, including the starting one.
+    refs: Int;
+}
+
+/// Extension function for the `Cell`. Available since Tact 1.6.0.
+///
+/// Computes and returns the number of distinct cells, bits and refs in the `Cell` by using a depth-first search (DFS) algorithm, recursively traversing each referenced cell. This function is computationally expensive and can consume a lot of gas. If `self` is `null`, returns `DataSize` with all fields set to 0.
+///
+/// The results are packed into a `DataSize` Struct consisting of:
+/// * `cells: Int`, the total number of nested cells, including the starting one
+/// * `bits: Int`, the total number of bits in all nested cells, including the starting one
+/// * `refs: Int`, the total number of refs in all nested cells, including the starting one
+///
+/// If the specified `maxCells` value isn't enough to traverse all cells including the starting one, an exception with exit code 8 is thrown: `Cell overflow`.
+///
+/// Attempts to specify a negative value of `maxCells` throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// ```tact
+/// fun example() {
+///     let c: Cell = beginCell().storeInt(42, 7).storeRef(emptyCell()).endCell();
+///     try {
+///         let dataSize: DataSize = c.computeDataSize(2);
+///         dataSize.cells; // 2
+///         dataSize.bits;  // 7
+///         dataSize.refs;  // 1
+///     } catch (exitCode) {
+///         // if maxCells was insufficient to traverse the cell
+///         // and all of its references, the exitCode here would be 8
+///     }
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#cellcomputedatasize
+///
+asm extends fun computeDataSize(self: Cell?, maxCells: Int): DataSize { CDATASIZE }
+
+/// Extension function for the `Slice`. Available since Tact 1.6.0.
+///
+/// Similar to `Cell.computeDataSize()`, but doesn't take into account the cell that contains the `Slice` itself. However, accounts for its bits and refs.
+///
+/// The results are packed into a `DataSize` Struct consisting of:
+/// * `cells: Int`, the total number of nested cells, including the starting one
+/// * `bits: Int`, the total number of bits in all nested cells, including the starting one
+/// * `refs: Int`, the total number of refs in all nested cells, including the starting one
+///
+/// If the specified `maxCells` value isn't enough to traverse all cells **not** including the starting one, an exception with exit code 8 is thrown: `Cell overflow`.
+///
+/// Attempts to specify a negative value of `maxCells` throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeInt(42, 7).storeRef(emptyCell()).asSlice();
+///     try {
+///         let dataSize: DataSize = s.computeDataSize(1);
+///         dataSize.cells; // 1
+///         dataSize.bits;  // 7
+///         dataSize.refs;  // 1
+///     } catch (exitCode) {
+///         // if maxCells was insufficient to traverse the cell
+///         // and all of its references, the exitCode here would be 8
+///     }
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#slicecomputedatasize
+///
+asm extends fun computeDataSize(self: Slice, maxCells: Int): DataSize { SDATASIZE }
+
+/// Extension function for the `Cell`. Available since Tact 1.6.0.
+///
+/// Computes and returns the `Int` depth of the `Cell`. Produces 0 if the `Cell` has no references, otherwise 1 plus the maximum of the depths of the referenced cells. If c is null, returns zero.
+///
+/// ```tact
+/// fun example() {
+///     let c: Cell = beginCell().storeInt(42, 7).endCell();
+///     let depth: Int = c.depth(); // 0
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#celldepth
+///
+asm extends fun depth(self: Cell?): Int { CDEPTH }
+

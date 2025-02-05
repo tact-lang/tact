@@ -1,7 +1,7 @@
 trait BaseTrait {
     fun foo() {}
 }
-trait T {
+trait T with BaseTrait {
     fun bar() {}
 }
 

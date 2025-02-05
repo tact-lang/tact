@@ -290,10 +290,10 @@ export function writeTypescript(
             );
             w.inIndent(() => {
                 w.append(
-                    `const init = await ${abi.name}_init(${init!.args.map((v) => v.name).join(", ")});`,
+                    `const __gen_init = await ${abi.name}_init(${init!.args.map((v) => v.name).join(", ")});`,
                 );
-                w.append(`const address = contractAddress(0, init);`);
-                w.append(`return new ${abi.name}(address, init);`);
+                w.append(`const address = contractAddress(0, __gen_init);`);
+                w.append(`return new ${abi.name}(address, __gen_init);`);
             });
             w.append(`}`);
             w.append();

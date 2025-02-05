@@ -7,12 +7,21 @@ import { ops } from "./ops";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeStatement } from "./writeFunction";
-import { AstNumber } from "../../ast/ast";
+import { AstNumber, AstReceiver } from "../../ast/ast";
+import { throwCompilationError } from "../../error/errors";
 
-export function commentPseudoOpcode(comment: string): string {
+export function commentPseudoOpcode(comment: string, ast: AstReceiver): string {
+    const buffer = Buffer.from(comment, "utf8");
+    if (buffer.length > 123) {
+        throwCompilationError(
+            `receiver message is too long, max length is 123 bytes, but given ${buffer.length}`,
+            ast.loc,
+        );
+    }
+
     return beginCell()
         .storeUint(0, 32)
-        .storeBuffer(Buffer.from(comment, "utf8"))
+        .storeBuffer(buffer)
         .endCell()
         .hash()
         .toString("hex", 0, 64);
@@ -206,7 +215,10 @@ export function writeRouter(
                             selector.kind ===
                             (internal ? "internal-comment" : "external-comment")
                         ) {
-                            const hash = commentPseudoOpcode(selector.comment);
+                            const hash = commentPseudoOpcode(
+                                selector.comment,
+                                r.ast,
+                            );
                             ctx.append();
                             ctx.append(
                                 `;; Receive "${selector.comment}" message`,
@@ -365,7 +377,7 @@ export function writeReceiver(
         selector.kind === "internal-comment" ||
         selector.kind === "external-comment"
     ) {
-        const hash = commentPseudoOpcode(selector.comment);
+        const hash = commentPseudoOpcode(selector.comment, f.ast);
         ctx.append(
             `(${selfType}, ()) ${ops.receiveText(self.name, selector.kind === "internal-comment" ? "internal" : "external", hash)}(${selfType + " " + funcIdOf("self")}) impure inline {`,
         );

@@ -802,7 +802,10 @@ export class AstComparator {
         return this.compare(node1, node2);
     }
 
-    private compareArray(nodes1: A.AstNode[], nodes2: A.AstNode[]): boolean {
+    private compareArray(
+        nodes1: readonly A.AstNode[],
+        nodes2: readonly A.AstNode[],
+    ): boolean {
         if (nodes1.length !== nodes2.length) {
             return false;
         }
@@ -815,8 +818,8 @@ export class AstComparator {
     }
 
     private compareNullableArray(
-        nodes1: A.AstNode[] | null,
-        nodes2: A.AstNode[] | null,
+        nodes1: readonly A.AstNode[] | null,
+        nodes2: readonly A.AstNode[] | null,
     ): boolean {
         if (nodes1 === null || nodes2 === null) {
             return nodes1 === nodes2;
@@ -825,8 +828,8 @@ export class AstComparator {
     }
 
     private compareAsmInstructions(
-        instructions1: A.AstAsmInstruction[],
-        instructions2: A.AstAsmInstruction[],
+        instructions1: readonly A.AstAsmInstruction[],
+        instructions2: readonly A.AstAsmInstruction[],
     ): boolean {
         if (instructions1.length !== instructions2.length) {
             return false;
@@ -839,7 +842,7 @@ export class AstComparator {
             | A.AstFunctionAttribute
             | A.AstConstantAttribute
             | A.AstContractAttribute,
-    >(attrs1: T[], attrs2: T[]): boolean {
+    >(attrs1: readonly T[], attrs2: readonly T[]): boolean {
         if (attrs1.length !== attrs2.length) {
             return false;
         }
