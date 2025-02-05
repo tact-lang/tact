@@ -42,6 +42,10 @@ export function enableFeatures(
             option: config.options.safety?.nullChecks ?? true,
             name: "nullChecks",
         },
+        {
+            option: config.options.enableLazyDeploymentCompletedGetter ?? false,
+            name: "lazyDeploymentCompletedGetter",
+        },
     ];
     return features.reduce((currentCtx, { option, name }) => {
         if (option) {
@@ -140,7 +144,6 @@ export async function build(args: {
         try {
             const res = await compile(
                 ctx,
-                config,
                 contract,
                 config.name + "_" + contract,
             );

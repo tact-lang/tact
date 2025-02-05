@@ -3,6 +3,7 @@ import {
     enabledInline,
     enabledInterfacesGetter,
     enabledIpfsAbiGetter,
+    enabledLazyDeploymentCompletedGetter,
 } from "../../config/features";
 import { InitDescription, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
@@ -16,7 +17,6 @@ import { writeGetter, writeStatement } from "./writeFunction";
 import { writeInterfaces } from "./writeInterfaces";
 import { writeReceiver, writeRouter } from "./writeRouter";
 import { ItemOrigin } from "../../imports/source";
-import { ConfigProject } from "../../config/parseConfig";
 
 export function writeStorageOps(
     type: TypeDescription,
@@ -250,7 +250,6 @@ export function writeInit(
 }
 
 export function writeMainContract(
-    config: ConfigProject,
     type: TypeDescription,
     abiLink: string,
     ctx: WriterContext,
@@ -296,7 +295,7 @@ export function writeMainContract(
             ctx.append();
         }
 
-        if (config.options?.enableLazyDeploymentCompletedGetter) {
+        if (enabledLazyDeploymentCompletedGetter(ctx.ctx)) {
             // Deployed
             ctx.append(`_ lazy_deployment_completed() method_id {`);
             ctx.inIndent(() => {
