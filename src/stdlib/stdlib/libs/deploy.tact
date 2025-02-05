@@ -7,7 +7,7 @@ message DeployOk {
     queryId: Int as uint64;
 }
 
-trait Deployable {
+trait Deployable with BaseTrait {
     receive(deploy: Deploy) {
         self.notify(DeployOk{queryId: deploy.queryId}.toCell());
     }
@@ -18,7 +18,7 @@ message FactoryDeploy {
     cashback: Address;
 }
 
-trait FactoryDeployable  {
+trait FactoryDeployable with BaseTrait  {
     receive(deploy: FactoryDeploy) {
         self.forward(deploy.cashback, DeployOk{queryId: deploy.queryId}.toCell(), false, null);
     }
