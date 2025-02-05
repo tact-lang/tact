@@ -612,6 +612,24 @@ exports[`resolveDescriptors should fail descriptors for read-self-in-init-functi
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for receive-message-too-big 1`] = `
+"<unknown>:4:5: receiver message is too long, max length is 123 bytes, but given 124
+  3 | contract Foo {
+> 4 |     receive("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") {}
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for receive-message-too-big-2 1`] = `
+"<unknown>:4:5: receiver message is too long, max length is 123 bytes, but given 156
+  3 | contract Foo {
+> 4 |     receive("💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀") {}
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  5 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for scope-contract-shadows-contract 1`] = `
 "<unknown>:12:1: Type "Main" already exists
   11 | 
@@ -20936,6 +20954,173 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
 `;
 
 exports[`resolveDescriptors should resolve descriptors for override-for-existing-function-in-trait-with-multi-inheritance-from-base-trait 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for receive-message-with-biggest-allowed-size 1`] = `
+[
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 2,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "id": 7,
+          "kind": "receiver",
+          "loc": receive("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") {},
+          "selector": {
+            "id": 6,
+            "kind": "internal",
+            "loc": receive,
+            "subKind": {
+              "comment": {
+                "id": 4,
+                "kind": "string",
+                "loc": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              },
+              "id": 5,
+              "kind": "comment",
+            },
+          },
+          "statements": [],
+        },
+      ],
+      "id": 8,
+      "kind": "contract",
+      "loc": contract Foo {
+    receive("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") {}
+},
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": Foo,
+        "text": "Foo",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 10,
+        "kind": "contract_init",
+        "loc": contract Foo {
+    receive("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") {}
+},
+        "params": [],
+        "statements": [],
+      },
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "Foo",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [
+      {
+        "ast": {
+          "id": 7,
+          "kind": "receiver",
+          "loc": receive("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") {},
+          "selector": {
+            "id": 6,
+            "kind": "internal",
+            "loc": receive,
+            "subKind": {
+              "comment": {
+                "id": 4,
+                "kind": "string",
+                "loc": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              },
+              "id": 5,
+              "kind": "comment",
+            },
+          },
+          "statements": [],
+        },
+        "selector": {
+          "comment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "kind": "internal-comment",
+        },
+      },
+    ],
+    "signature": null,
+    "tlb": null,
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 2,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 1,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 10576,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for receive-message-with-biggest-allowed-size 2`] = `[]`;
 
 exports[`resolveDescriptors should resolve descriptors for scope-loops 1`] = `[]`;
 

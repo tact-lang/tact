@@ -3,6 +3,8 @@ title: Strings and StringBuilders
 description: "Various String and StringBuilder functions from the Core library of Tact"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 Strings are immutable sequences of characters, which means that once a [`String{:tact}`][p] is created, it cannot be changed. Strings are useful to store text, and so they can be converted to [`Cell{:tact}`][cell] type to be used as message bodies.
 
 To be able to concatenate strings in a gas-efficient way, use a [`StringBuilder{:tact}`][p].
@@ -105,6 +107,8 @@ let fizz: StringBuilder = beginString()
 
 ## StringBuilder.toString
 
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
 ```tact
 extends fun toString(self: StringBuilder): String;
 ```
@@ -122,6 +126,8 @@ let buzz: String = fizz.toString();
 
 ## StringBuilder.toCell
 
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
 ```tact
 extends fun toCell(self: StringBuilder): Cell;
 ```
@@ -138,6 +144,8 @@ let buzz: Cell = fizz.toCell();
 ```
 
 ## StringBuilder.toSlice
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun toSlice(self: StringBuilder): Slice;
@@ -186,6 +194,8 @@ fizz == buzz; // true, but be careful as it's not always the case
 :::
 
 ## String.asComment
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun asComment(self: String): Cell;
@@ -277,6 +287,8 @@ let fizz: Slice = s.fromBase64();
 
 ## Int.toString
 
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
 ```tact
 extends fun toString(self: Int): String;
 ```
@@ -292,6 +304,8 @@ let fizz: String = (84 - 42).toString();
 ```
 
 ## Int.toFloatString
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun toFloatString(self: Int, digits: Int): String;
@@ -310,6 +324,8 @@ let fizz: String = (42).toFloatString(9); // "0.000000042"
 ```
 
 ## Int.toCoinsString
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun toCoinsString(self: Int): String;
@@ -332,6 +348,8 @@ fizz == buzz; // true, both store "0.000000042"
 ```
 
 ## Address.toString
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun toString(self: Address): String;
