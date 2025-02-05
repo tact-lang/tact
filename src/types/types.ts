@@ -95,7 +95,6 @@ export type ConstantDescription = {
     name: string;
     type: TypeRef;
     value: A.AstLiteral | undefined;
-    isOverride: boolean;
     loc: SrcInfo;
     ast: A.AstConstantDef | A.AstConstantDecl;
 };

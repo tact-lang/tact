@@ -3532,7 +3532,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": abstract const Foo: Int;,
         "name": "Foo",
         "type": {
@@ -3646,7 +3645,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
             "text": "Int",
           },
         },
-        "isOverride": true,
         "loc": override const Foo: Int = 42;,
         "name": "Foo",
         "type": {
@@ -3786,7 +3784,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": abstract const Foo: Int;,
             "name": "Foo",
             "type": {
@@ -3964,7 +3961,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": virtual const Foo: Int = 41;,
         "name": "Foo",
         "type": {
@@ -4084,7 +4080,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
             "text": "Int",
           },
         },
-        "isOverride": true,
         "loc": override const Foo: Int = 42;,
         "name": "Foo",
         "type": {
@@ -4238,7 +4233,6 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": virtual const Foo: Int = 41;,
             "name": "Foo",
             "type": {
@@ -13868,7 +13862,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAR: Int = 10;,
         "name": "BAR",
         "type": {
@@ -13988,7 +13981,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": true,
         "loc": override const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -14132,7 +14124,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 10;,
             "name": "BAR",
             "type": {
@@ -14274,7 +14265,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -14394,7 +14384,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": true,
         "loc": override const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -14506,7 +14495,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 100;,
             "name": "BAR",
             "type": {
@@ -14712,7 +14700,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -14838,7 +14825,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": true,
         "loc": override const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -15014,7 +15000,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 100;,
             "name": "BAR",
             "type": {
@@ -15156,7 +15141,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const FOO: Int = 100;,
         "name": "FOO",
         "type": {
@@ -15259,7 +15243,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -15362,7 +15345,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAZ: Int = 100;,
         "name": "BAZ",
         "type": {
@@ -15488,7 +15470,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": true,
         "loc": override const FOO: Int = 100;,
         "name": "FOO",
         "type": {
@@ -15530,7 +15511,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -15572,7 +15552,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAZ: Int = 100;,
         "name": "BAZ",
         "type": {
@@ -15684,7 +15663,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const FOO: Int = 100;,
             "name": "FOO",
             "type": {
@@ -15787,7 +15765,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 100;,
             "name": "BAR",
             "type": {
@@ -15890,7 +15867,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAZ: Int = 100;,
             "name": "BAZ",
             "type": {
@@ -16064,7 +16040,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAR: Int = 10;,
         "name": "BAR",
         "type": {
@@ -16184,7 +16159,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": true,
         "loc": override const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -16285,7 +16259,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 10;,
             "name": "BAR",
             "type": {
@@ -16427,7 +16400,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -16547,7 +16519,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": true,
         "loc": override const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -16648,7 +16619,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 100;,
             "name": "BAR",
             "type": {
@@ -16859,7 +16829,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -16974,7 +16943,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -17080,7 +17048,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 100;,
             "name": "BAR",
             "type": {
@@ -17268,7 +17235,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": true,
         "loc": override const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -17348,7 +17314,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 100;,
             "name": "BAR",
             "type": {
@@ -17454,7 +17419,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "Int",
                   },
                 },
-                "isOverride": false,
                 "loc": const BAR: Int = 100;,
                 "name": "BAR",
                 "type": {
@@ -17630,7 +17594,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 100;,
             "name": "BAR",
             "type": {
@@ -17869,7 +17832,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -17979,7 +17941,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAZ: Int = 100;,
         "name": "BAZ",
         "type": {
@@ -18021,7 +17982,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -18122,7 +18082,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 100;,
             "name": "BAR",
             "type": {
@@ -18245,7 +18204,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": true,
         "loc": override const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -18346,7 +18304,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 100;,
             "name": "BAR",
             "type": {
@@ -18475,7 +18432,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": true,
         "loc": override const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -18517,7 +18473,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAZ: Int = 100;,
         "name": "BAZ",
         "type": {
@@ -18625,7 +18580,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAZ: Int = 100;,
             "name": "BAZ",
             "type": {
@@ -18667,7 +18621,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 100;,
             "name": "BAR",
             "type": {
@@ -18768,7 +18721,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "Int",
                   },
                 },
-                "isOverride": false,
                 "loc": const BAR: Int = 100;,
                 "name": "BAR",
                 "type": {
@@ -18874,7 +18826,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 100;,
             "name": "BAR",
             "type": {
@@ -18994,7 +18945,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": true,
             "loc": override const BAR: Int = 100;,
             "name": "BAR",
             "type": {
@@ -19095,7 +19045,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "Int",
                   },
                 },
-                "isOverride": false,
                 "loc": const BAR: Int = 100;,
                 "name": "BAR",
                 "type": {
@@ -19304,7 +19253,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -19430,7 +19378,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": true,
         "loc": override const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -19563,7 +19510,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 100;,
             "name": "BAR",
             "type": {
@@ -19705,7 +19651,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const FOO: Int = 100;,
         "name": "FOO",
         "type": {
@@ -19815,7 +19760,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -19857,7 +19801,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const FOO: Int = 100;,
         "name": "FOO",
         "type": {
@@ -19958,7 +19901,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const FOO: Int = 100;,
             "name": "FOO",
             "type": {
@@ -20064,7 +20006,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAZ: Int = 100;,
         "name": "BAZ",
         "type": {
@@ -20190,7 +20131,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": true,
         "loc": override const FOO: Int = 100;,
         "name": "FOO",
         "type": {
@@ -20232,7 +20172,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAR: Int = 100;,
         "name": "BAR",
         "type": {
@@ -20274,7 +20213,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "Int",
           },
         },
-        "isOverride": false,
         "loc": const BAZ: Int = 100;,
         "name": "BAZ",
         "type": {
@@ -20382,7 +20320,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAR: Int = 100;,
             "name": "BAR",
             "type": {
@@ -20424,7 +20361,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const FOO: Int = 100;,
             "name": "FOO",
             "type": {
@@ -20525,7 +20461,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "Int",
                   },
                 },
-                "isOverride": false,
                 "loc": const FOO: Int = 100;,
                 "name": "FOO",
                 "type": {
@@ -20631,7 +20566,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const FOO: Int = 100;,
             "name": "FOO",
             "type": {
@@ -20734,7 +20668,6 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "Int",
               },
             },
-            "isOverride": false,
             "loc": const BAZ: Int = 100;,
             "name": "BAZ",
             "type": {

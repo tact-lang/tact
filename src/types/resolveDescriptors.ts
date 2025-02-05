@@ -428,12 +428,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         src: A.AstConstantDef | A.AstConstantDecl,
     ): ConstantDescription {
         const constDeclTy = buildTypeRef(src.type, types);
-        const isOverride = src.attributes.find((a) => a.type === "override");
         return {
             name: idText(src.name),
             type: constDeclTy,
             value: undefined, // initializer will be evaluated after typechecking
-            isOverride: !!isOverride,
             loc: src.loc,
             ast: src,
         };
@@ -1618,7 +1616,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
         // Check that "override" constants have a super constant
         for (const constantInContractOrTrait of contractOrTrait.constants.values()) {
-            if (!constantInContractOrTrait.isOverride) {
+            const isOverride = constantInContractOrTrait.ast.attributes.find(
+                (a) => a.type === "override",
+            );
+            if (!isOverride) {
                 continue;
             }
 
