@@ -609,7 +609,7 @@ export function constantPropagationAnalysis(
            are missing (their values are not all known during analysis).
         */
         try {
-            return interpreter.interpretFieldAccess(expr);
+            return interpreter.interpretExpression(expr);
         } catch (e) {
             if (e instanceof TactInternalCompilerError) {
                 const regexp = new RegExp('struct field ".+" is missing');
@@ -657,7 +657,7 @@ export function constantPropagationAnalysis(
             typeof self !== "undefined" &&
             argValues.every((v) => typeof v !== "undefined")
                 ? catchNonFatalErrors(() =>
-                      interpreter.interpretMethodCall(
+                      interpreter.interpretExpression(
                           util.makeMethodCall(
                               self,
                               expr.method,
@@ -730,7 +730,7 @@ export function constantPropagationAnalysis(
         const argValues = expr.args.map((e) => tryExpressionEvaluation(e));
         if (argValues.every((v) => typeof v !== "undefined")) {
             // Pass the call to the interpreter
-            return interpreter.interpretStaticCall(
+            return interpreter.interpretExpression(
                 util.makeStaticCall(expr.function, argValues, expr.loc),
             );
         } else {
@@ -837,7 +837,7 @@ export function constantPropagationAnalysis(
         const rightV = tryExpressionEvaluation(expr.right);
         if (typeof leftV !== "undefined" && typeof rightV !== "undefined") {
             // Pass it to the interpreter
-            return interpreter.interpretBinaryOp(
+            return interpreter.interpretExpression(
                 util.makeBinaryExpressionLoc(expr.op, leftV, rightV, expr.loc),
             );
         } else {
@@ -848,11 +848,11 @@ export function constantPropagationAnalysis(
     function interpretUnaryOp(expr: A.AstOpUnary): A.AstLiteral | undefined {
         // Special case when expression is of the form "-numberLiteral"
         if (expr.op === "-" && expr.operand.kind === "number") {
-            return interpreter.interpretUnaryOp(expr);
+            return interpreter.interpretExpression(expr);
         }
         const operand = tryExpressionEvaluation(expr.operand);
         if (typeof operand !== "undefined") {
-            return interpreter.interpretUnaryOp(
+            return interpreter.interpretExpression(
                 util.makeUnaryExpressionLoc(expr.op, operand, expr.loc),
             );
         } else {
@@ -864,7 +864,7 @@ export function constantPropagationAnalysis(
         const argValues = expr.args.map((e) => tryExpressionEvaluation(e));
         if (argValues.every((v) => typeof v !== "undefined")) {
             // Pass the call to the interpreter
-            return interpreter.interpretInitOf(
+            return interpreter.interpretExpression(
                 util.makeInitOf(expr.contract, argValues, expr.loc),
             );
         } else {
