@@ -97,7 +97,9 @@ export function constantPropagationAnalysis(
         cloneNode(expr, astF),
     );
     const util = getAstUtil(astF);
-    const interpreter = new Interpreter(util, ctx);
+    const interpreter = new Interpreter(util, ctx, {
+        maxLoopIterations: 2n ** 10n,
+    });
     interpreter.setEnvironmentStack(envStack);
 
     // Process all functions

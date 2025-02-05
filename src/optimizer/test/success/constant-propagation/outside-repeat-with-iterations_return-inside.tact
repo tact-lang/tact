@@ -9,7 +9,6 @@ contract Test {
     get fun foo(v: Int): Int {
         let a: Int = 5;
         let x: Int = 1048576;    // A big number so that the analyzer does not attempt to actually run the entire loop.
-                                 // Currently the limit is placed at 2 ^ 12 = 4096 iterations. 
         repeat (x) {                     
             a += 10;
             a = v - v + 3;

@@ -318,7 +318,8 @@ function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
         const ast = getAstFactory();
         const { parseExpression } = getParser(ast, defaultParser);
-        const { partiallyEvalExpression } = getOptimizer(getAstUtil(ast));
+        const util = getAstUtil(ast);
+        const { partiallyEvalExpression } = getOptimizer(util);
         const originalValue = partiallyEvalExpression(
             parseExpression(original),
             new CompilerContext(),
