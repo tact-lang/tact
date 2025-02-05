@@ -1,8 +1,4 @@
-trait OverrideBaseTraitConstant with BaseTrait {
-    override const storageReserve: Int = 100;
-}
-
-trait OverrideBaseTraitConstantWithVirtual {
+trait OverrideBaseTraitConstantWithVirtual with BaseTrait {
     override virtual const storageReserve: Int = 100;
 }
 
