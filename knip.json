@@ -1,6 +1,11 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "entry": ["src/index.ts", "src/cli/tact/index.ts", "src/cli/unboc/index.ts"],
+  "entry": [
+    "src/index.ts",
+    "src/cli/tact/index.ts",
+    "src/cli/unboc/index.ts",
+    "src/test/benchmarks/jetton/log-parser.build.ts"
+  ],
   "project": ["src/**/*.ts"],
   "ignore": [
     "src/ast/ast.ts",
@@ -11,7 +16,6 @@
     "src/grammar/next/grammar.ts",
     "src/func/funcCompile.ts",
     "src/utils/tricks.ts",
-    "src/test/benchmarks/jetton/log-parser.build.ts",
     ".github/workflows/tact*.yml"
   ],
   "ignoreDependencies": ["@tact-lang/ton-abi"]
