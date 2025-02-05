@@ -10,7 +10,6 @@ import { writeExpression } from "../generator/writers/writeExpression";
 import { throwCompilationError } from "../error/errors";
 import { getErrorId } from "../types/resolveErrors";
 import { AbiFunction } from "./AbiFunction";
-import { sha256_sync } from "@ton/crypto";
 import path from "path";
 import { cwd } from "process";
 import { posixNormalize } from "../utils/filePath";
@@ -20,6 +19,7 @@ import {
     interpretEscapeSequences,
 } from "../optimizer/interpreter";
 import { isLiteral } from "../ast/ast-helpers";
+import { sha256 } from "../utils/sha256";
 
 export const GlobalFunctions: Map<string, AbiFunction> = new Map([
     [
@@ -383,14 +383,12 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                         // FIXME: This one does not need fixing, because it is carried out inside a "isLiteral" check.
                         // Remove this comment once the optimization step is added
                         const str = ensureSimplifiedString(resolved0).value;
-                        return BigInt(
-                            "0x" + sha256_sync(str).toString("hex"),
-                        ).toString(10);
+                        return sha256(str).value.toString(10);
                     }
 
-                    // Otherwise, revert back to runtime hash through SHA256U
+                    // Otherwise, revert back to runtime hash through HASHEXT_SHA256
                     const exp = writeExpression(resolved[0]!, ctx);
-                    return `string_hash(${exp})`;
+                    return `__tact_sha256(${exp})`;
                 }
 
                 // Slice case

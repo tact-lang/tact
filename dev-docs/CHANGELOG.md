@@ -76,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Incorrect call generation to a mutation function: PR [#1608](https://github.com/tact-lang/tact/pull/1608)
 - Allow constant/trait constants depend on each other: PR [#1622](https://github.com/tact-lang/tact/pull/1622)
 - Combine all generated FunC code into a single file: PR [#1698](https://github.com/tact-lang/tact/pull/1698)
+- Runtime `sha256` now work for arbitrary strings with length >= 128: PR [#1626](https://github.com/tact-lang/tact/pull/1626)
 - Generated code in TypeScript wrappers for contract with `init(init: Init)`: PR [#1709](https://github.com/tact-lang/tact/pull/1709)
 
 ### Docs
