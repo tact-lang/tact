@@ -163,7 +163,7 @@ export function ensureSimplifiedString(
 
 function ensureFunArity(
     arity: number,
-    args: A.AstExpression[],
+    args: readonly A.AstExpression[],
     source: SrcInfo,
 ) {
     if (args.length !== arity) {
@@ -176,7 +176,7 @@ function ensureFunArity(
 
 function ensureMethodArity(
     arity: number,
-    args: A.AstExpression[],
+    args: readonly A.AstExpression[],
     source: SrcInfo,
 ) {
     if (args.length !== arity) {
@@ -424,6 +424,9 @@ export function evalBinaryOp(
     }
 }
 
+/**
+ * @deprecated Strings in Tact fully follow JS grammar. Use JSON.parse(`"${value}"`) instead.
+ */
 export function interpretEscapeSequences(
     stringLiteral: string,
     source: SrcInfo,
@@ -1551,7 +1554,7 @@ export class Interpreter {
 
     private evalStaticFunction(
         functionCode: A.AstFunctionDef,
-        args: A.AstExpression[],
+        args: readonly A.AstExpression[],
         returns: TypeRef,
     ): A.AstLiteral {
         // Evaluate the arguments in the current environment

@@ -21,9 +21,9 @@ describe("renamer", () => {
             const { parse } = getParser(ast, defaultParser);
             const expectedFilePath = join(EXPECTED_DIR, dentry.name);
             const expected = fs.readFileSync(expectedFilePath, "utf-8");
-            const filePath = join(CONTRACTS_DIR, dentry.name);
-            const src = fs.readFileSync(filePath, "utf-8");
-            const inAst = parse(src, filePath, "user");
+            const path = join(CONTRACTS_DIR, dentry.name);
+            const code = fs.readFileSync(path, "utf-8");
+            const inAst = parse({ code, path, origin: "user" });
             const outAst = AstRenamer.make().renameModule(inAst);
             const got = prettyPrint(outAst);
             assert.strictEqual(

@@ -49,9 +49,15 @@ export class AstComparator {
             }
 
             case "import": {
-                const { path: path1 } = node1 as A.AstImport;
-                const { path: path2 } = node2 as A.AstImport;
-                return this.compare(path1, path2);
+                const { importPath: source1 } = node1 as A.AstImport;
+                const { importPath: source2 } = node2 as A.AstImport;
+                return (
+                    source1.language === source2.language &&
+                    source1.type === source2.type &&
+                    source1.path.stepsUp === source2.path.stepsUp &&
+                    source1.path.segments.join("/") ===
+                        source2.path.segments.join("/")
+                );
             }
 
             case "primitive_type_decl": {
@@ -796,7 +802,10 @@ export class AstComparator {
         return this.compare(node1, node2);
     }
 
-    private compareArray(nodes1: A.AstNode[], nodes2: A.AstNode[]): boolean {
+    private compareArray(
+        nodes1: readonly A.AstNode[],
+        nodes2: readonly A.AstNode[],
+    ): boolean {
         if (nodes1.length !== nodes2.length) {
             return false;
         }
@@ -809,8 +818,8 @@ export class AstComparator {
     }
 
     private compareNullableArray(
-        nodes1: A.AstNode[] | null,
-        nodes2: A.AstNode[] | null,
+        nodes1: readonly A.AstNode[] | null,
+        nodes2: readonly A.AstNode[] | null,
     ): boolean {
         if (nodes1 === null || nodes2 === null) {
             return nodes1 === nodes2;
@@ -819,8 +828,8 @@ export class AstComparator {
     }
 
     private compareAsmInstructions(
-        instructions1: A.AstAsmInstruction[],
-        instructions2: A.AstAsmInstruction[],
+        instructions1: readonly A.AstAsmInstruction[],
+        instructions2: readonly A.AstAsmInstruction[],
     ): boolean {
         if (instructions1.length !== instructions2.length) {
             return false;
@@ -833,7 +842,7 @@ export class AstComparator {
             | A.AstFunctionAttribute
             | A.AstConstantAttribute
             | A.AstContractAttribute,
-    >(attrs1: T[], attrs2: T[]): boolean {
+    >(attrs1: readonly T[], attrs2: readonly T[]): boolean {
         if (attrs1.length !== attrs2.length) {
             return false;
         }
