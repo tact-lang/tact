@@ -15,7 +15,7 @@ To receive a message of the required type, you need to declare a receiver functi
 There are several receiver functions. All receiver functions are processed in the order they are listed below:
 
 * `receive(){:tact}` - called when an empty message is sent to the contract
-* `receive("message"){:tact}` - called when a text message with a specific comment is sent to the contract
+* `receive("message"){:tact}` - called when a text message with a specific comment is sent to the contract (maximum `"message"{:tact}` length is 123 bytes)
 * `receive(str: String){:tact}` - called when an arbitrary text message is sent to the contract
 * `receive(msg: MyMessage){:tact}` - called when a binary message of type `MyMessage` is sent to the contract
 * `receive(msg: Slice){:tact}` - called when binary message of unknown type is sent to the contract

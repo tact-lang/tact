@@ -1,5 +1,5 @@
 import * as changeCase from "change-case";
-import { ABIField, beginCell } from "@ton/core";
+import { ABIField } from "@ton/core";
 import { CompilerContext } from "../context/context";
 import { idToHex } from "../utils/idToHex";
 import {
@@ -18,11 +18,11 @@ import { throwCompilationError } from "../error/errors";
 import { AstNumber, AstReceiver } from "../ast/ast";
 import { FactoryAst } from "../ast/ast-helpers";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
-import { sha256_sync } from "@ton/crypto";
 import { dummySrcInfo } from "../grammar";
 import { ensureInt } from "../optimizer/interpreter";
 import { evalConstantExpression } from "../optimizer/constEval";
 import { getAstUtil } from "../ast/util";
+import { sha256, highest32ofSha256 } from "../utils/sha256";
 
 export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
     const util = getAstUtil(Ast);
@@ -284,13 +284,7 @@ function newMessageOpcode(signature: string): AstNumber {
     return {
         kind: "number",
         base: 10,
-        value: BigInt(
-            beginCell()
-                .storeBuffer(sha256_sync(signature))
-                .endCell()
-                .beginParse()
-                .loadUint(32),
-        ),
+        value: highest32ofSha256(sha256(signature)),
         id: 0,
         loc: dummySrcInfo,
     };
@@ -325,7 +319,7 @@ function checkCommentMessageReceiver(
     rcvAst: AstReceiver,
     usedOpcodes: Map<commentOpcode, messageType>,
 ) {
-    const opcode = commentPseudoOpcode(rcv.comment);
+    const opcode = commentPseudoOpcode(rcv.comment, rcvAst);
     if (usedOpcodes.has(opcode)) {
         throwCompilationError(
             `Receive functions of a contract or trait cannot process comments with the same hashes: hashes of comment strings "${rcv.comment}" and "${usedOpcodes.get(opcode)}" are equal`,
