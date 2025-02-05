@@ -319,7 +319,7 @@ function checkCommentMessageReceiver(
     rcvAst: AstReceiver,
     usedOpcodes: Map<commentOpcode, messageType>,
 ) {
-    const opcode = commentPseudoOpcode(rcv.comment);
+    const opcode = commentPseudoOpcode(rcv.comment, rcvAst);
     if (usedOpcodes.has(opcode)) {
         throwCompilationError(
             `Receive functions of a contract or trait cannot process comments with the same hashes: hashes of comment strings "${rcv.comment}" and "${usedOpcodes.get(opcode)}" are equal`,
