@@ -1,8 +1,6 @@
 import "@stdlib/ownable";
 import "./messages";
 
-asm fun myCode(): Cell { MYCODE }
-
 contract JettonWallet with Ownable {
     balance: Int as coins;
     owner: Address;

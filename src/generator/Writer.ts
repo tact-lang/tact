@@ -2,6 +2,7 @@ import { CompilerContext } from "../context/context";
 import { escapeUnicodeControlCodes, trimIndent } from "../utils/text";
 import { topologicalSort } from "../utils/utils";
 import { Writer } from "../utils/Writer";
+import { TactInternalCompilerError } from "../error/errors";
 
 type Flag = "inline" | "impure" | "inline_ref";
 
@@ -83,10 +84,10 @@ export class WriterContext {
             }
         }
         if (missing.size > 0) {
-            throw new Error(
+            throw new TactInternalCompilerError(
                 `Functions ${Array.from(missing.keys())
                     .map((v) => `"${v}"`)
-                    .join(", ")} wasn't rendered`,
+                    .join(", ")} wasn't processed and generated`,
             );
         }
 

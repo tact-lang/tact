@@ -93,7 +93,7 @@ Motivation is very simple:
 
   Serialization limits apply only to the contract state between transactions and are **not** imposed on the temporary [TVM][tvm] memory, which operates only on $257$-bit integers.
 
-  Attempts to assign out-of-bounds values will result in [exit code 5](/book/exit-codes#5) being thrown at the very end of the [compute phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase): `Integer out of range`.
+  Attempts to assign out-of-bounds values will result in [exit code 5](/book/exit-codes#5) being thrown at the very end of the [compute phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase): `Integer out of expected range`.
 
 :::
 
@@ -235,15 +235,17 @@ contract ComputeErrorsOhNo with Deployable {
 
     receive("lets break it") {
         let tmp: Int = self.oneByte * 256; // no runtime overflow
-        self.oneByte = tmp; // whoops, tmp value is out of the expected range of oneByte
+        self.oneByte = tmp; // whoops, tmp value is out of expected range of oneByte
     }
 }
 ```
 
-Here, `oneByte` is serialized as a [`uint8`](#common-serialization-types), which occupies only one byte and ranges from $0$ to $2^{8} - 1$, which is $255$. And when used in runtime calculations no overflow happens and everything is calculated as a $257$-bit signed integers. But the very moment we decide to store the value of `tmp` back into `oneByte` we get an error with the [exit code 5](/book/exit-codes#5), which states the following: `Integer out of the expected range`.
+Here, `oneByte` is serialized as a [`uint8`](#common-serialization-types), which occupies only one byte and ranges from $0$ to $2^{8} - 1$, which is $255$. And when used in runtime calculations no overflow happens and everything is calculated as a $257$-bit signed integers. But the very moment we decide to store the value of `tmp` back into `oneByte` we get an error with the [exit code 5](/book/exit-codes#5), which states the following: `Integer out of expected range`.
 
 :::caution
+
   Therefore, be **very** careful with numbers and always double-check calculations when using serialization.
+
 :::
 
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
