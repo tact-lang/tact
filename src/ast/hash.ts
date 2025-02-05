@@ -179,7 +179,9 @@ export class AstHasher {
         }
     }
 
-    private hashDestructIdentifiers(identifiers: [A.AstId, A.AstId][]): string {
+    private hashDestructIdentifiers(
+        identifiers: readonly (readonly [A.AstId, A.AstId])[],
+    ): string {
         const identifiersHash = identifiers
             .map(([key, value]) => `${this.hash(key)}|${this.hash(value)}`)
             .join("|");
@@ -234,7 +236,7 @@ export class AstHasher {
         return `contract|${traitsHash}|${attributesHash}|${declarationsHash}`;
     }
 
-    private hashFields(fields: A.AstFieldDecl[]): string {
+    private hashFields(fields: readonly A.AstFieldDecl[]): string {
         let hashedFields = fields.map((field) => this.hashFieldDecl(field));
         if (this.sort) {
             hashedFields = hashedFields.sort();
@@ -242,7 +244,7 @@ export class AstHasher {
         return hashedFields.join("|");
     }
 
-    private hashParams(params: A.AstTypedParameter[]): string {
+    private hashParams(params: readonly A.AstTypedParameter[]): string {
         let hashedParams = params.map((param) =>
             this.hashTypedParameter(param),
         );
@@ -258,7 +260,10 @@ export class AstHasher {
     }
 
     private hashAttributes(
-        attributes: (A.AstFunctionAttribute | A.AstConstantAttribute)[],
+        attributes: readonly (
+            | A.AstFunctionAttribute
+            | A.AstConstantAttribute
+        )[],
     ): string {
         return attributes
             .map((attr) => attr.type)
@@ -267,7 +272,7 @@ export class AstHasher {
     }
 
     private hashContractAttributes(
-        attributes: A.AstContractAttribute[],
+        attributes: readonly A.AstContractAttribute[],
     ): string {
         return attributes
             .map((attr) => `${attr.type}|${attr.name.value}`)
@@ -275,14 +280,14 @@ export class AstHasher {
             .join("|");
     }
 
-    private hashIds(ids: A.AstId[]): string {
+    private hashIds(ids: readonly A.AstId[]): string {
         return ids
             .map((id) => id.kind)
             .sort()
             .join("|"); // Ignore actual id.text, just hash based on kind
     }
 
-    private hashDeclarations(declarations: A.AstNode[]): string {
+    private hashDeclarations(declarations: readonly A.AstNode[]): string {
         let hashedDeclarations = declarations.map((decl) => this.hash(decl));
         if (this.sort) {
             hashedDeclarations = hashedDeclarations.sort();
@@ -290,7 +295,7 @@ export class AstHasher {
         return hashedDeclarations.join("|");
     }
 
-    private hashStatements(statements: A.AstStatement[]): string {
+    private hashStatements(statements: readonly A.AstStatement[]): string {
         let hashedStatements = statements.map((stmt) => this.hash(stmt));
         if (this.sort) {
             hashedStatements = hashedStatements.sort();
@@ -298,7 +303,9 @@ export class AstHasher {
         return hashedStatements.join("|");
     }
 
-    private hashInstructions(instructions: A.AstAsmInstruction[]): string {
+    private hashInstructions(
+        instructions: readonly A.AstAsmInstruction[],
+    ): string {
         return instructions.join("|");
     }
 
@@ -340,7 +347,8 @@ export class AstHasher {
     }
 
     private hashImport(node: A.AstImport): string {
-        return `${node.kind}|${this.hash(node.path)}`;
+        const { language, type, path } = node.importPath;
+        return `${node.kind}|${language}|${type}|${path.stepsUp}|${path.segments.join("/")}`;
     }
 
     private hashConstantDecl(node: A.AstConstantDecl): string {
@@ -355,7 +363,7 @@ export class AstHasher {
         return `${node.kind}|${importsHash}|${itemsHash}`;
     }
 
-    private hashImports(imports: A.AstImport[]): string {
+    private hashImports(imports: readonly A.AstImport[]): string {
         let hashedImports = imports.map((imp) => this.hash(imp));
         if (this.sort) {
             hashedImports = hashedImports.sort();
@@ -363,7 +371,7 @@ export class AstHasher {
         return hashedImports.join("|");
     }
 
-    private hashModuleItems(items: A.AstModuleItem[]): string {
+    private hashModuleItems(items: readonly A.AstModuleItem[]): string {
         let hashedItems = items.map((item) => this.hash(item));
         if (this.sort) {
             hashedItems = hashedItems.sort();

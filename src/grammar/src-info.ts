@@ -1,6 +1,5 @@
 import { throwInternalCompilerError } from "../error/errors";
-
-export type ItemOrigin = "stdlib" | "user";
+import { ItemOrigin } from "../imports/source";
 
 type LineAndColumnInfo = {
     lineNum: number;

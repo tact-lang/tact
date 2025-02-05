@@ -33,3 +33,4 @@ export { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
 export * from "./browser";
 export * from "./context/logger";
 export * from "./error/errors";
+export { ItemOrigin } from "./imports/source";

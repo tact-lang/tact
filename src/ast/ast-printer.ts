@@ -2,6 +2,8 @@ import * as A from "./ast";
 import { groupBy, intercalate, isUndefined } from "../utils/array";
 import { makeVisitor } from "../utils/tricks";
 import { astNumToString, idText } from "./ast-helpers";
+import { asString } from "../imports/path";
+import { throwInternalCompilerError } from "../error/errors";
 
 //
 // Types
@@ -165,7 +167,7 @@ export const ppLeaf =
     () =>
         printer(node);
 
-export const ppExprArgs = (args: A.AstExpression[]) =>
+export const ppExprArgs = (args: readonly A.AstExpression[]) =>
     args.map((arg) => ppAstExpression(arg)).join(", ");
 
 export const ppAstStructFieldInit = (
@@ -645,9 +647,20 @@ export const ppContractBody: Printer<A.AstContractDeclaration> =
     });
 
 export const ppAstImport: Printer<A.AstImport> =
-    ({ path }) =>
-    (c) =>
-        c.row(`import "${path.value}";`);
+    ({ importPath: { path, type, language } }) =>
+    (c) => {
+        if (type === "relative") {
+            return c.row(`import "${asString(path)}";`);
+        } else {
+            if (language === "func") {
+                throwInternalCompilerError(
+                    "There are no standard library files in FunC",
+                );
+            }
+            const displayPath = asString(path).slice(0, -".tact".length);
+            return c.row(`import "@stdlib/${displayPath}";`);
+        }
+    };
 
 export const ppAstFunctionSignature = ({
     name,
@@ -695,10 +708,11 @@ export const ppAstFuncId = (func: A.AstFuncId): string => func.text;
 // Statements
 //
 
-export const ppStatementBlock: Printer<A.AstStatement[]> = (stmts) => (c) =>
-    c.braced(stmts.length === 0 ? [] : c.list(stmts, ppAstStatement));
+export const ppStatementBlock: Printer<readonly A.AstStatement[]> =
+    (stmts) => (c) =>
+        c.braced(stmts.length === 0 ? [] : c.list(stmts, ppAstStatement));
 
-export const ppAsmInstructionsBlock: Printer<A.AstAsmInstruction[]> =
+export const ppAsmInstructionsBlock: Printer<readonly A.AstAsmInstruction[]> =
     (instructions) => (c) =>
         c.braced(instructions.map(c.row));
 
