@@ -6,9 +6,9 @@ trait BaseTrait {}
 
 contract Test {
     get fun foo(): Bool {
-        let m1: map<Address, Int> = emptyMap();
-        m1.set(address(""), 0);
-        let m2: map<Address, Address> = emptyMap();
+        let m1: map<Int, Bool> = emptyMap();
+        m1.set(0, false);
+        let m2: map<Int, Address> = emptyMap();
         return m1.deepEquals(m2);
     }
 }

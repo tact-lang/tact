@@ -793,7 +793,16 @@ exports[`resolveStatements should fail statements for map-deepEquals-type-mismat
 `;
 
 exports[`resolveStatements should fail statements for map-deepEquals-type-mismatch-2 1`] = `
-"<unknown>:12:16: Type mismatch: cannot pass argument of type "map<Int, Address>" to parameter of type "map<Address, Int>"
+"<unknown>:12:16: Type mismatch: cannot pass argument of type "map<Address, Address>" to parameter of type "map<Address, Int>"
+  11 |         let m2: map<Address, Address> = emptyMap();
+> 12 |         return m1.deepEquals(m2);
+                      ^~~~~~~~~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for map-deepEquals-type-mismatch-3 1`] = `
+"<unknown>:12:16: Type mismatch: cannot pass argument of type "map<Int, Address>" to parameter of type "map<Int, Bool>"
   11 |         let m2: map<Int, Address> = emptyMap();
 > 12 |         return m1.deepEquals(m2);
                       ^~~~~~~~~~~~~~~~~
