@@ -501,8 +501,8 @@ export type InterpreterConfig = {
 const WILDCARD_NAME: string = "_";
 
 type ActiveBinding = { value: A.AstLiteral; state: "active" };
-type DeletedBinding = { state: "inactive" };
-type BindingState = ActiveBinding | DeletedBinding;
+type InactiveBinding = { state: "inactive" };
+type BindingState = ActiveBinding | InactiveBinding;
 
 type Environment = { values: Map<string, BindingState>; parent?: Environment };
 
@@ -648,6 +648,53 @@ export class EnvironmentStack {
         }
         return undefined;
     }
+
+    /* Sets the binding to inactive state, or having no value.
+    An inactive binding acts as if it was deleted from the stack
+    but its name remains in the stack in order to retain 
+    information of the environment where it was created.
+    A deactivated binding can become active with a call to updateBinding.
+    
+    For example, if the stack consists on (rightmost environment is the top of the stack):
+
+    a = 5 <------- b = 7 <-------- t = 2 <------- y = 0
+
+    deactivating "b" will change the stack to:
+    
+    a = 5 <------- b = _ <-------- t = 2 <------- y = 0
+
+    If we make a call to updateBinding("b", 22), then the stack will change to:
+
+    a = 5 <------- b = 22 <-------- t = 2 <------- y = 0
+
+    Deactivating bindings is useful, for example, for constant propagation. To give an example, in this code:
+
+    fun test(v: Int) {
+       let a = 10;   (1)
+       a = v;        (2)
+       {
+         let c = 5;  (3)
+         a = 10;     (4)
+       }
+    }
+
+    the stack will change as follows as the analyzer executes. After line (1):
+
+    a = 10
+
+    After line (2), a is deactivated because it does not have a particular value:
+
+    a = _
+
+    After line (3), the block opens a new node in the stack:
+
+    a = _ <----- c = 5
+
+    After line (4), the analyzer updates the value of a, making it active again:
+
+    a = 10 <----- c = 5
+
+    */
 
     public deactivateBinding(name: string) {
         if (name === WILDCARD_NAME) {
