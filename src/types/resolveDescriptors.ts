@@ -45,7 +45,7 @@ import { ItemOrigin } from "../grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { addVariable, emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
-import { getAstUtil } from "../ast/util";
+import { AstUtil, getAstUtil } from "../ast/util";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -279,6 +279,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     const staticFunctions: Map<string, FunctionDescription> = new Map();
     const staticConstants: Map<string, ConstantDescription> = new Map();
     const ast = getRawAST(ctx);
+    const util = getAstUtil(Ast);
 
     //
     // Register types
@@ -2025,7 +2026,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     }
 
     // A pass that initializes constants and default field values
-    ctx = initializeConstantsAndDefaultContractAndStructFields(ctx, Ast);
+    ctx = initializeConstantsAndDefaultContractAndStructFields(ctx, util);
 
     // detect self-referencing or mutually-recursive types
     checkRecursiveTypes(ctx);
@@ -2177,14 +2178,14 @@ function checkInitializerType(
 function initializeConstants(
     constants: ConstantDescription[],
     ctx: CompilerContext,
-    astF: FactoryAst,
+    util: AstUtil,
 ): CompilerContext {
     for (const constant of constants) {
         if (constant.ast.kind === "constant_def") {
             constant.value ??= evalConstantExpression(
                 constant.ast.initializer,
                 ctx,
-                astF,
+                util,
             );
         }
     }
@@ -2213,10 +2214,9 @@ function checkConstants(
 
 function initializeConstantsAndDefaultContractAndStructFields(
     ctx: CompilerContext,
-    astF: FactoryAst,
+    util: AstUtil,
 ): CompilerContext {
     const staticConstants = getAllStaticConstants(ctx);
-    const util = getAstUtil(astF);
 
     // we split the handling of constants into two steps:
     // first we check all constants to make sure the types of initializers are correct
@@ -2254,7 +2254,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
                             field.default = evalConstantExpression(
                                 field.ast.initializer,
                                 ctx,
-                                astF,
+                                util,
                             );
                         } else {
                             // if a field has optional type and it is missing an explicit initializer
@@ -2269,7 +2269,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
 
                     // here we actually initialize constants
                     // see more detail below
-                    ctx = initializeConstants(aggregateTy.constants, ctx, astF);
+                    ctx = initializeConstants(aggregateTy.constants, ctx, util);
                 }
                 break;
             }
@@ -2279,7 +2279,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
     // and here we initialize all uninitialized constants,
     // the constant may already be initialized since we call initialization recursively
     // if one constant depends on another
-    ctx = initializeConstants(staticConstants, ctx, astF);
+    ctx = initializeConstants(staticConstants, ctx, util);
 
     return ctx;
 }

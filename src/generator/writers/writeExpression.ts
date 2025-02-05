@@ -41,6 +41,7 @@ import {
     tryExtractPath,
 } from "../../ast/ast-helpers";
 import { enabledDebug, enabledNullChecks } from "../../config/features";
+import { getAstUtil } from "../../ast/util";
 
 function isNull(wCtx: WriterContext, expr: A.AstExpression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
@@ -175,11 +176,12 @@ export function writeExpression(
     //    return writeValue(f, wCtx);
     // }
     try {
+        const util = getAstUtil(getAstFactory());
         // Let us put a limit of 2 ^ 12 = 4096 iterations on loops to increase compiler responsiveness.
         // If a loop takes more than such number of iterations, the interpreter will fail evaluation.
         // I think maxLoopIterations should be a command line option in case a user wants to wait more
         // during evaluation.
-        const value = evalConstantExpression(f, wCtx.ctx, getAstFactory(), {
+        const value = evalConstantExpression(f, wCtx.ctx, util, {
             maxLoopIterations: 2n ** 12n,
         });
         return writeValue(value, wCtx);

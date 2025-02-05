@@ -24,6 +24,7 @@ import { StructFunctions } from "../abi/struct";
 import { prettyPrint } from "../ast/ast-printer";
 import { ensureInt } from "../optimizer/interpreter";
 import { evalConstantExpression } from "../optimizer/constEval";
+import { getAstUtil } from "../ast/util";
 
 const store = createContextStore<{
     ast: A.AstExpression;
@@ -254,7 +255,7 @@ function resolveBinaryOp(
                             evalConstantExpression(
                                 exp.right,
                                 ctx,
-                                getAstFactory(),
+                                getAstUtil(getAstFactory()),
                             ),
                         );
                         if (0n > valBits.value || valBits.value > 256n) {

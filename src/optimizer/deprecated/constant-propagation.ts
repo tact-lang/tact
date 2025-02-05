@@ -96,8 +96,8 @@ export function constantPropagationAnalysis(
     const envStack = new EnvironmentStack((expr: A.AstLiteral) =>
         cloneNode(expr, astF),
     );
-    const interpreter = new Interpreter(astF, ctx);
     const util = getAstUtil(astF);
+    const interpreter = new Interpreter(util, ctx);
     interpreter.setEnvironmentStack(envStack);
 
     // Process all functions

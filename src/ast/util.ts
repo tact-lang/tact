@@ -3,33 +3,30 @@ import * as A from "./ast";
 import { isLiteral, FactoryAst } from "./ast-helpers";
 import { dummySrcInfo, SrcInfo } from "../grammar";
 
-export const getAstUtil = ({ createNode, cloneNode }: FactoryAst) => {
-    /**
-     * @deprecated, since it uses dummySrcInfo. Use makeUnaryExpressionLoc instead.
-     *
-     */
+export const getAstUtil = (astF: FactoryAst) => {
+    const createNode = astF.createNode;
+    const cloneNode = astF.cloneNode;
+
+    // FIXME: Deprecate makeUnaryExpression and makeBinaryExpression, since they use dummySrcInfo.
+
     function makeUnaryExpression(
         op: A.AstUnaryOperation,
         operand: A.AstExpression,
-    ): A.AstOpUnary {
+    ): A.AstExpression {
         const result = createNode({
             kind: "op_unary",
             op: op,
             operand: operand,
             loc: dummySrcInfo,
         });
-        return result as A.AstOpUnary;
+        return result as A.AstExpression;
     }
 
-    /**
-     * @deprecated, since it uses dummySrcInfo. Use makeBinaryExpressionLoc instead.
-     *
-     */
     function makeBinaryExpression(
         op: A.AstBinaryOperation,
         left: A.AstExpression,
         right: A.AstExpression,
-    ): A.AstOpBinary {
+    ): A.AstExpression {
         const result = createNode({
             kind: "op_binary",
             op: op,
@@ -37,9 +34,10 @@ export const getAstUtil = ({ createNode, cloneNode }: FactoryAst) => {
             right: right,
             loc: dummySrcInfo,
         });
-        return result as A.AstOpBinary;
+        return result as A.AstExpression;
     }
 
+    /* Use this function instead of makeUnaryExpression */
     function makeUnaryExpressionLoc(
         op: A.AstUnaryOperation,
         operand: A.AstExpression,
@@ -54,6 +52,7 @@ export const getAstUtil = ({ createNode, cloneNode }: FactoryAst) => {
         return result as A.AstOpUnary;
     }
 
+    /* Use this function instead of makeBinaryExpression */
     function makeBinaryExpressionLoc(
         op: A.AstBinaryOperation,
         left: A.AstExpression,
@@ -233,7 +232,12 @@ export const getAstUtil = ({ createNode, cloneNode }: FactoryAst) => {
         return cloneNode({ ...expr, loc });
     }
 
+    function getAstFactory(): FactoryAst {
+        return astF;
+    }
+
     return {
+        getAstFactory,
         changeLocationOfLiteral,
         makeUnaryExpressionLoc,
         makeBinaryExpressionLoc,

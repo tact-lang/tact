@@ -735,15 +735,16 @@ export class EnvironmentStack {
 
 export function parseAndEvalExpression(
     sourceCode: string,
-    astF: FactoryAst = getAstFactory(),
-    parser: Parser = getParser(astF, defaultParser),
+    ast: FactoryAst = getAstFactory(),
+    parser: Parser = getParser(ast, defaultParser),
+    util: AstUtil = getAstUtil(ast),
 ): EvalResult {
     try {
         const ast = parser.parseExpression(sourceCode);
         const constEvalResult = evalConstantExpression(
             ast,
             new CompilerContext(),
-            astF,
+            util,
         );
         return { kind: "ok", value: constEvalResult };
     } catch (error) {
@@ -819,16 +820,16 @@ export class Interpreter {
     private util: AstUtil;
 
     constructor(
-        astF: FactoryAst,
+        util: AstUtil,
         context: CompilerContext = new CompilerContext(),
         config: InterpreterConfig = defaultInterpreterConfig,
     ) {
         this.envStack = new EnvironmentStack((expr: A.AstLiteral) =>
-            cloneNode(expr, astF),
+            cloneNode(expr, util.getAstFactory()),
         );
         this.context = context;
         this.config = config;
-        this.util = getAstUtil(astF);
+        this.util = util;
     }
 
     public getConfig(): InterpreterConfig {

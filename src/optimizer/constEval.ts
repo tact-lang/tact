@@ -1,11 +1,11 @@
 import { CompilerContext } from "../context/context";
 import * as A from "../ast/ast";
-import { FactoryAst, isLiteral } from "../ast/ast-helpers";
+import { isLiteral } from "../ast/ast-helpers";
 import {
     TactConstEvalError,
     throwInternalCompilerError,
 } from "../error/errors";
-import { getAstUtil } from "../ast/util";
+import { AstUtil } from "../ast/util";
 import { ExpressionTransformer } from "./types";
 import { StandardOptimizer } from "./standardOptimizer";
 import {
@@ -34,9 +34,7 @@ class PartiallyEvaluatedTree extends Error {
     }
 }
 
-export const getOptimizer = (astF: FactoryAst) => {
-    const util = getAstUtil(astF);
-
+export const getOptimizer = (util: AstUtil) => {
     // The optimizer that applies the rewriting rules during partial evaluation.
     // For the moment we use an optimizer that respects overflows.
     const optimizer: ExpressionTransformer = new StandardOptimizer(util);
@@ -136,7 +134,7 @@ export const getOptimizer = (astF: FactoryAst) => {
         ctx: CompilerContext,
         interpreterConfig?: InterpreterConfig,
     ): A.AstExpression {
-        const interpreter = new Interpreter(astF, ctx, interpreterConfig);
+        const interpreter = new Interpreter(util, ctx, interpreterConfig);
         switch (ast.kind) {
             case "id":
                 try {
@@ -214,10 +212,10 @@ export const getOptimizer = (astF: FactoryAst) => {
 export function evalConstantExpression(
     ast: A.AstExpression,
     ctx: CompilerContext,
-    astF: FactoryAst,
+    util: AstUtil,
     interpreterConfig?: InterpreterConfig,
 ): A.AstLiteral {
-    const interpreter = new Interpreter(astF, ctx, interpreterConfig);
+    const interpreter = new Interpreter(util, ctx, interpreterConfig);
     const result = interpreter.interpretExpression(ast);
     return result;
 }
