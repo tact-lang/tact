@@ -13,6 +13,7 @@ import {
 import { Forward } from "./contracts/output/forward_Forward";
 import { Functions } from "./contracts/output/functions_Functions";
 import "@ton/test-utils";
+import { cellsCreation } from "./contracts/output/cells_cellsCreation";
 
 function measureGas(txs: BlockchainTransaction[]) {
     return (
@@ -66,5 +67,23 @@ describe("benchmarks", () => {
         expect(gasUsed).toMatchSnapshot("gas used");
         const codeSize = testContract.init!.code.toBoc().length;
         expect(codeSize).toMatchSnapshot("code size");
+    });
+    it("benchmark cells creation", async () => {
+        const testContract = blockchain.openContract(
+            await cellsCreation.fromInit(),
+        );
+        await testContract.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            beginCell().asSlice(),
+        );
+        const gasUsed1 = (
+            await blockchain.runGetMethod(testContract.address, "getEmptyCell")
+        ).gasUsed;
+        expect(gasUsed1).toMatchSnapshot("gas used emptyCell");
+        const gasUsed2 = (
+            await blockchain.runGetMethod(testContract.address, "getEmptySlice")
+        ).gasUsed;
+        expect(gasUsed2).toMatchSnapshot("gas used emptySlice");
     });
 });

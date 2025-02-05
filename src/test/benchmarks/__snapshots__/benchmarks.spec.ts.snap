@@ -1,5 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`benchmarks benchmark cells creation: gas used emptyCell 1`] = `1449n`;
+
+exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `1667n`;
+
 exports[`benchmarks benchmark functions: code size 1`] = `227`;
 
 exports[`benchmarks benchmark functions: gas used 1`] = `2869n`;
