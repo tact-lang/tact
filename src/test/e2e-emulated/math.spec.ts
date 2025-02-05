@@ -555,7 +555,6 @@ describe("math", () => {
 
         // sqrt: round(sqrt(num))
         for (let num = 0n; num <= 100n; num++) {
-            // console.log(`sqrt(${num}) = ${await contract.getSqrt(num)}`);
             expect(await contract.getSqrt(num)).toBe(
                 BigInt(Math.round(Math.sqrt(Number(num)))),
             );

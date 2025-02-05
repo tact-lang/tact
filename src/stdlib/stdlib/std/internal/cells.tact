@@ -482,8 +482,13 @@ inline fun emptySlice(): Slice {
 /// * https://docs.tact-lang.org/ref/core-cells#slicecomputedatasize
 ///
 struct DataSize {
+    /// The total number of nested cells, including the starting one.
     cells: Int;
+
+    /// The total number of bits in all nested cells, including the starting one.
     bits: Int;
+
+    /// The total number of refs in all nested cells, including the starting one.
     refs: Int;
 }
 

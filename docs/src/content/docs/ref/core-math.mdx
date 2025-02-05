@@ -224,7 +224,9 @@ mulShiftRightCeil(5, 5, -1); // ERROR! Exit code 5: Integer out of expected rang
 fun log(num: Int, base: Int): Int;
 ```
 
-Computes and returns the [logarithm](https://en.wikipedia.org/wiki/Logarithm) of a number `num` $> 0$ to the base `base` $≥ 1$. Results are [rounded down][round-down]. Passing a non-positive `num` value or a `base` less than $1$ throws an error with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Computes and returns the [logarithm](https://en.wikipedia.org/wiki/Logarithm) of a number `num` $> 0$ to the base `base` $≥ 1$. Results are [rounded down][round-down].
+
+Attempts to specify a non-positive `num` value or a `base` less than $1$ throw an error with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage examples:
 
@@ -236,11 +238,11 @@ log(1000, 10); // 3, as 10^3 is 1000
 log(1001, 10);  // 3
 log(999, 10);   // 2
 try {
-  log(-1000, 10); // throws exit code 5 because of the non-positive num
+    log(-1000, 10); // exit code 5 because of the non-positive num
 }
 log(1024, 2);   // 10
 try {
-  log(1024, -2);  // throws exit code 5 because of the base less than 1
+    log(1024, -2);  // exit code 5 because the base is less than 1
 }
 ```
 
@@ -257,6 +259,8 @@ fun log2(num: Int): Int;
 ```
 
 Similar to [`log(){:tact}`](#log), but sets the `base` to $2$.
+
+Attempts to specify a non-positive `num` value throw an error with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage example:
 
@@ -280,9 +284,9 @@ fun pow(base: Int, exp: Int): Int;
 
 Computes and returns the [exponentiation](https://en.wikipedia.org/wiki/Exponentiation) involving two numbers: the `base` and the exponent (or _power_) `exp`. Exponent `exp` must be non-negative, otherwise an error with [exit code 5](/book/exit-codes#5) will be thrown: `Integer out of expected range`.
 
-Note, that this function works both at run-time and at [compile-time](/ref/core-comptime).
+This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
 
-Usage example:
+Usage examples:
 
 ```tact
 contract Example {
@@ -291,10 +295,12 @@ contract Example {
     one: Int = pow(5, 0); // raises 5 to the power 0, which always produces 1
                           // works at compile-time!
 
-    // Internal message receiver, which accepts message ExtMsg
+    // Internal message receiver
     receive() {
         pow(self.p23, self.one + 1); // 64, works at run-time too!
-        pow(0, -1);                  // ERROR! Exit code 5: Integer out of expected range
+        try {
+            pow(0, -1); // exit code 5: Integer out of expected range
+        }
     }
 }
 ```
@@ -307,7 +313,7 @@ contract Example {
 
 :::note
 
-  List of functions, that only work at compile-time: [API Comptime](/ref/core-comptime).
+  List of functions that only work at compile-time: [API Comptime](/ref/core-comptime).
 
 :::
 
@@ -317,7 +323,9 @@ contract Example {
 fun pow2(exp: Int): Int;
 ```
 
-Similar to [`pow(){:tact}`](#pow), but sets the `base` to $2$. Works both at run-time and at [compile-time](/ref/core-comptime).
+Similar to [`pow(){:tact}`](#pow), but sets the `base` to $2$. Exponent `exp` must be non-negative, otherwise an error with [exit code 5](/book/exit-codes#5) will be thrown: `Integer out of expected range`.
+
+This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
 
 Usage examples:
 
@@ -331,7 +339,9 @@ contract Example {
     // Internal message receiver, which accepts message ExtMsg
     receive() {
         pow2(self.one + 1); // 4, works at run-time too!
-        pow2(-1);           // ERROR! Exit code 5: Integer out of expected range
+        try {
+            pow(-1); // exit code 5: Integer out of expected range
+        }
     }
 }
 ```
@@ -344,7 +354,7 @@ contract Example {
 
 :::note
 
-  List of functions, that only work at compile-time: [API Comptime](/ref/core-comptime).
+  List of functions that only work at compile-time: [API Comptime](/ref/core-comptime).
 
 :::
 
