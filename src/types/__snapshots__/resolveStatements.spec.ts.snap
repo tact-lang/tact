@@ -784,7 +784,7 @@ exports[`resolveStatements should fail statements for init-vars-analysis-with-if
 `;
 
 exports[`resolveStatements should fail statements for map-deepEquals-type-mismatch 1`] = `
-"<unknown>:12:16: Type mismatch: "map<Int, Int>" is not assignable to "map<Address, Int>"
+"<unknown>:12:16: Type mismatch: cannot pass argument of type "map<Address, Int>" to parameter of type "map<Int, Int>"
   11 |         let m2: map<Address, Int> = emptyMap();
 > 12 |         return m1.deepEquals(m2);
                       ^~~~~~~~~~~~~~~~~
@@ -793,7 +793,7 @@ exports[`resolveStatements should fail statements for map-deepEquals-type-mismat
 `;
 
 exports[`resolveStatements should fail statements for map-deepEquals-type-mismatch-2 1`] = `
-"<unknown>:12:16: Type mismatch: "map<Address, Int>" is not assignable to "map<Int, Address>"
+"<unknown>:12:16: Type mismatch: cannot pass argument of type "map<Int, Address>" to parameter of type "map<Address, Int>"
   11 |         let m2: map<Int, Address> = emptyMap();
 > 12 |         return m1.deepEquals(m2);
                       ^~~~~~~~~~~~~~~~~

@@ -495,7 +495,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
 
                 if (!isAssignable(self, other)) {
                     throwCompilationError(
-                        `Type mismatch: "${printTypeRef(self)}" is not assignable to "${printTypeRef(other)}"`,
+                        `Type mismatch: cannot pass argument of type "${printTypeRef(other)}" to parameter of type "${printTypeRef(self)}"`,
                         ref,
                     );
                 }
