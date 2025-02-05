@@ -16,6 +16,7 @@
     "src/grammar/next/grammar.ts",
     "src/func/funcCompile.ts",
     "src/utils/tricks.ts",
+    "src/test/benchmarks/jetton/logs.ts",
     ".github/workflows/tact*.yml"
   ],
   "ignoreDependencies": ["@tact-lang/ton-abi"]
