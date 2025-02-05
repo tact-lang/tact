@@ -59,7 +59,7 @@ describe("compute phase errors", () => {
         await testComputePhaseExitCode(4, contract, treasure);
     });
 
-    // 5: Integer out of range
+    // 5: Integer out of expected range
     it("should test exit code 5", async () => {
         await testComputePhaseExitCode(5, contract, treasure);
     });
