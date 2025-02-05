@@ -3,6 +3,8 @@ title: Debug
 description: "Various debugging functions from the Core library of Tact"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 List of functions commonly used for debugging smart contracts in Tact.
 
 Read more about debugging on the dedicated page: [Debugging](/book/debug).
@@ -39,6 +41,8 @@ try {
 ```
 
 ## dump
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun dump(arg);
@@ -101,6 +105,8 @@ dump(emit("msg".asComment())); // As emit() function doesn't return a value, dum
 :::
 
 ## dumpStack
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun dumpStack();
