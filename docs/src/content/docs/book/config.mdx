@@ -385,6 +385,29 @@ Null checks are always enabled in the [`debug`](#options-debug) mode.
 }
 ```
 
+#### `enableLazyDeploymentCompletedGetter` {#options-enablelazydeploymentcompletedgetter}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+`false{:json}` by default.
+
+If set to `true{:json}`, enables generation of `lazy_deployment_completed()` getter.
+
+```json filename="tact.config.json" {8}
+{
+  "projects": [
+    {
+      "name": "contract",
+      "path": "./contract.tact",
+      "output": "./output",
+      "options": {
+        "enableLazyDeploymentCompletedGetter": true
+      }
+    }
+  ]
+}
+```
+
 ### `verbose` {#verbose}
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>

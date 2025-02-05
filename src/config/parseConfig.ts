@@ -59,6 +59,10 @@ export const optionsSchema = z
          * Safety options for the contract.
          */
         safety: safetyOptionsSchema.optional(),
+        /**
+         * If set to true, enables generation of `lazy_deployment_completed()` getter.
+         */
+        enableLazyDeploymentCompletedGetter: z.boolean().optional(),
     })
     .strict();
 
