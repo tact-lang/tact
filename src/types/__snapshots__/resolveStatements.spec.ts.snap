@@ -783,6 +783,24 @@ exports[`resolveStatements should fail statements for init-vars-analysis-with-if
 "
 `;
 
+exports[`resolveStatements should fail statements for map-deepEquals-type-mismatch 1`] = `
+"<unknown>:12:16: Type mismatch: "map<Int, Int>" is not assignable to "map<Address, Int>"
+  11 |         let m2: map<Address, Int> = emptyMap();
+> 12 |         return m1.deepEquals(m2);
+                      ^~~~~~~~~~~~~~~~~
+  13 |     }
+"
+`;
+
+exports[`resolveStatements should fail statements for map-deepEquals-type-mismatch-2 1`] = `
+"<unknown>:12:16: Type mismatch: "map<Address, Int>" is not assignable to "map<Int, Address>"
+  11 |         let m2: map<Int, Address> = emptyMap();
+> 12 |         return m1.deepEquals(m2);
+                      ^~~~~~~~~~~~~~~~~
+  13 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for return-analysis-catch-if 1`] = `
 "<unknown>:4:1: Function does not always return a result. Adding 'return' statement(s) should fix the issue.
   3 | 
