@@ -119,6 +119,8 @@ require(ctx.value != 68 + 1, "Invalid amount of nanoToncoins, bye!");
 
 ### newAddress
 
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
 ```tact
 fun newAddress(chain: Int, hash: Int): Address;
 ```
@@ -156,6 +158,8 @@ let oldTonFoundationAddr: Address =
 
 ### contractAddress
 
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
 ```tact
 fun contractAddress(s: StateInit): Address;
 ```
@@ -169,6 +173,8 @@ let foundMeSome: Address = contractAddress(initOf SomeContract());
 ```
 
 ### contractAddressExt
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address;
@@ -190,6 +196,8 @@ let hereBeDragons: Address = contractAddressExt(0, initPkg.code, initPkg.data);
 ## Communication
 
 ### send
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun send(params: SendParameters);
@@ -218,6 +226,8 @@ send(SendParameters{
 :::
 
 ### emit
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun emit(body: Cell);

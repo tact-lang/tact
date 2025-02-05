@@ -3,6 +3,8 @@ title: Expressions
 description: "This page lists all the expressions in Tact"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 Every operator in Tact forms an expression, but there's much more to uncover as Tact offers a wide range of expressive options to choose from.
 
 :::note
@@ -251,6 +253,8 @@ contract ExampleContract {
 ```
 
 ## `initOf`
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 Expression `initOf{:tact}` computes initial state, i.e. `StateInit{:tact}` of a [contract](/book/contracts):
 
