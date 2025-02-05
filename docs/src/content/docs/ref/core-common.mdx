@@ -12,7 +12,7 @@ List of the most commonly used built-in [global static functions](/book/function
 ### now
 
 ```tact
-fun now(): Int
+fun now(): Int;
 ```
 
 Returns the current [Unix time](https://en.wikipedia.org/wiki/Unix_time).
@@ -129,6 +129,8 @@ Creates a new [`Address{:tact}`][p] based on the [`chain` id](https://ton-blockc
 
 This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
 
+Attempts to specify an invalid `chain` ID (not $-1$ or $0$) that can be detected in [compile-time](/ref/core-comptime) will result in a compilation error.
+
 Usage example:
 
 ```tact
@@ -180,25 +182,16 @@ fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address;
 
 Computes smart contract's [`Address{:tact}`][p] based on the `chain` id, contract's `code` and contract's initial state `data`. Use [`initOf{:tact}`](/book/expressions#initof) expression to obtain initial `code` and initial `data` of a given contract.
 
+This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
+
+Attempts to specify an invalid `chain` ID (not $-1$ or $0$) that can be detected in [compile-time](/ref/core-comptime) will result in a compilation error.
+
 Usage example:
 
 ```tact
 let initPkg: StateInit = initOf SomeContract();
 let hereBeDragons: Address = contractAddressExt(0, initPkg.code, initPkg.data);
 ```
-
-:::caution
-
-  Make sure your specify only supported chain IDs: $0$ for the basechain and $-1$ for the masterchain.
-
-:::
-
-:::note
-
-  For this function to work, the compiler option `debug` has to be set to `true{:tact}` for the current project in the [configuration file](/book/config).\
-  Read more about debugging on the dedicated page: [Debugging](/book/debug).
-
-:::
 
 ## Communication
 
