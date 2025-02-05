@@ -3,6 +3,8 @@ title: Math
 description: "Various math helper functions from the Core library of Tact"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 Various math helper functions.
 
 ## min
@@ -191,6 +193,8 @@ contract Example {
 
 ## checkSignature
 
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
 ```tact
 fun checkSignature(hash: Int, signature: Slice, public_key: Int): Bool;
 ```
@@ -231,6 +235,8 @@ contract Showcase {
 ```
 
 ## checkDataSignature
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun checkDataSignature(data: Slice, signature: Slice, public_key: Int): Bool;
