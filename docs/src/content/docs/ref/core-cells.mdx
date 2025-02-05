@@ -35,6 +35,8 @@ let fizz: Builder = beginCell();
 
 ## emptyCell
 
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
 ```tact
 fun emptyCell(): Cell;
 ```
@@ -51,6 +53,8 @@ fizz == buzz; // true
 ```
 
 ## emptySlice
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun emptySlice(): Slice;
@@ -127,6 +131,8 @@ let fizz: Slice = c.asSlice();
 A section to group all extension and extension mutation functions for the [`Builder{:tact}`][builder] type.
 
 ### Builder.endCell
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun endCell(self: Builder): Cell;
@@ -1035,6 +1041,8 @@ try {
 
 ### Slice.hash
 
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
 ```tact
 extends fun hash(self: Slice): Int;
 ```
@@ -1051,6 +1059,8 @@ let fizz: Int = s.hash();
 ```
 
 ### Slice.asCell
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun asCell(self: Slice): Cell;
