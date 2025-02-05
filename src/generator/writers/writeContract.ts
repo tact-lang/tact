@@ -16,6 +16,7 @@ import { writeGetter, writeStatement } from "./writeFunction";
 import { writeInterfaces } from "./writeInterfaces";
 import { writeReceiver, writeRouter } from "./writeRouter";
 import { ItemOrigin } from "../../imports/source";
+import { ConfigProject } from "../../config/parseConfig";
 
 export function writeStorageOps(
     type: TypeDescription,
@@ -249,6 +250,7 @@ export function writeInit(
 }
 
 export function writeMainContract(
+    config: ConfigProject,
     type: TypeDescription,
     abiLink: string,
     ctx: WriterContext,
@@ -294,13 +296,15 @@ export function writeMainContract(
             ctx.append();
         }
 
-        // Deployed
-        ctx.append(`_ lazy_deployment_completed() method_id {`);
-        ctx.inIndent(() => {
-            ctx.append(`return get_data().begin_parse().load_int(1);`);
-        });
-        ctx.append(`}`);
-        ctx.append();
+        if (config.options?.enableLazyDeploymentCompletedMethod) {
+            // Deployed
+            ctx.append(`_ lazy_deployment_completed() method_id {`);
+            ctx.inIndent(() => {
+                ctx.append(`return get_data().begin_parse().load_int(1);`);
+            });
+            ctx.append(`}`);
+            ctx.append();
+        }
 
         // Comments
         ctx.append(`;;`);

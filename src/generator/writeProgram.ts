@@ -28,9 +28,11 @@ import {
 import { funcInitIdOf } from "./writers/id";
 import { idToHex } from "../utils/idToHex";
 import { trimIndent } from "../utils/text";
+import { ConfigProject } from "../config/parseConfig";
 
 export async function writeProgram(
     ctx: CompilerContext,
+    config: ConfigProject,
     abiSrc: ContractABI,
     basename: string,
     debug: boolean = false,
@@ -47,7 +49,7 @@ export async function writeProgram(
     //
 
     const wCtx = new WriterContext(ctx, abiSrc.name!);
-    writeAll(ctx, wCtx, abiSrc.name!, abiLink);
+    writeAll(ctx, config, wCtx, abiSrc.name!, abiLink);
     const functions = wCtx.extract(debug);
 
     //
@@ -293,6 +295,7 @@ function tryExtractModule(
 
 function writeAll(
     ctx: CompilerContext,
+    config: ConfigProject,
     wCtx: WriterContext,
     name: string,
     abiLink: string,
@@ -404,5 +407,5 @@ function writeAll(
     }
 
     // Write contract main
-    writeMainContract(c, abiLink, wCtx);
+    writeMainContract(config, c, abiLink, wCtx);
 }

@@ -140,6 +140,7 @@ export async function build(args: {
         try {
             const res = await compile(
                 ctx,
+                config,
                 contract,
                 config.name + "_" + contract,
             );
