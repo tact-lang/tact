@@ -752,95 +752,120 @@ const parseTypeId =
         return ctx.ast.TypeId(name, loc);
     };
 
-const parseTypeOptional = ({ type, loc }: $ast.$type): Handler<A.AstType> => ctx => {
-    const {
-        type: innerType,
-        optionals: [firstOption, ...restOption],
-        loc: optionalLoc,
-    } = type;
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-    if (firstOption) {
-        if (restOption.length !== 0) {
-            ctx.err.multipleOptionals()(optionalLoc);
+const parseTypeOptional =
+    ({ type, loc }: $ast.$type): Handler<A.AstType> =>
+    (ctx) => {
+        const {
+            type: innerType,
+            optionals: [firstOption, ...restOption],
+            loc: optionalLoc,
+        } = type;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+        if (firstOption) {
+            if (restOption.length !== 0) {
+                ctx.err.multipleOptionals()(optionalLoc);
+            }
+            if (innerType.$ !== "TypeRegular") {
+                ctx.err.onlyOptionalOfNamed()(optionalLoc);
+                return ctx.ast.OptionalType(
+                    ctx.ast.TypeId("ERROR", innerType.loc),
+                    optionalLoc,
+                );
+            }
+            const { child } = innerType;
+            return ctx.ast.OptionalType(
+                ctx.ast.TypeId(child.name, child.loc),
+                optionalLoc,
+            );
         }
-        if (innerType.$ !== 'TypeRegular') {
-            ctx.err.onlyOptionalOfNamed()(optionalLoc);
-            return ctx.ast.OptionalType(ctx.ast.TypeId("ERROR", innerType.loc), optionalLoc);
+        if (innerType.$ === "TypeRegular") {
+            const { name, loc } = innerType.child;
+            return ctx.ast.TypeId(name, loc);
         }
-        const { child } = innerType;
-        return ctx.ast.OptionalType(ctx.ast.TypeId(child.name, child.loc), optionalLoc);
-    }
-    if (innerType.$ === 'TypeRegular') {
-        const { name, loc } = innerType.child;
-        return ctx.ast.TypeId(name, loc);
-    }
-    const { name, args, loc: genericLoc } = innerType;
-    if (name.$ === 'MapKeyword') {
-        const parsedArgs = parseList(args);
-        const [key, value, ...rest] = parsedArgs;
-        if (!key || !value || rest.length > 0) {
-            ctx.err.genericArgCount("map", 2, parsedArgs.length)(genericLoc);
-            return ctx.ast.TypeId("ERROR", genericLoc);
+        const { name, args, loc: genericLoc } = innerType;
+        if (name.$ === "MapKeyword") {
+            const parsedArgs = parseList(args);
+            const [key, value, ...rest] = parsedArgs;
+            if (!key || !value || rest.length > 0) {
+                ctx.err.genericArgCount(
+                    "map",
+                    2,
+                    parsedArgs.length,
+                )(genericLoc);
+                return ctx.ast.TypeId("ERROR", genericLoc);
+            }
+            const [keyAs, ...restKeyAs] = key.as;
+            if (restKeyAs.length > 0) {
+                ctx.err.mapOnlyOneAs("key")(genericLoc);
+            }
+            if (key.type.optionals.length > 0) {
+                ctx.err.cannotBeOptional("key")(genericLoc);
+            }
+            if (key.type.type.$ !== "TypeRegular") {
+                ctx.err.onlyTypeId("key")(genericLoc);
+                return ctx.ast.TypeId("ERROR", genericLoc);
+            }
+            const [valueAs, ...restValueAs] = value.as;
+            if (restValueAs.length > 0) {
+                ctx.err.mapOnlyOneAs("value")(genericLoc);
+            }
+            if (value.type.optionals.length > 0) {
+                ctx.err.cannotBeOptional("value")(genericLoc);
+            }
+            if (value.type.type.$ !== "TypeRegular") {
+                ctx.err.onlyTypeId("value")(genericLoc);
+                return ctx.ast.TypeId("ERROR", genericLoc);
+            }
+            const keyType = key.type.type.child;
+            const valueType = value.type.type.child;
+            return ctx.ast.MapType(
+                ctx.ast.TypeId(keyType.name, keyType.loc),
+                keyAs ? ctx.ast.Id(keyAs.name, keyAs.loc) : null,
+                ctx.ast.TypeId(valueType.name, valueType.loc),
+                valueAs ? ctx.ast.Id(valueAs.name, valueAs.loc) : null,
+                genericLoc,
+            );
         }
-        const [keyAs, ...restKeyAs] = key.as;
-        if (restKeyAs.length > 0) {
-            ctx.err.mapOnlyOneAs("key")(genericLoc);
+        if (name.$ === "Id") {
+            if (name.name !== "bounced") {
+                ctx.err.unknownType(name.name)(name.loc);
+                return ctx.ast.TypeId("ERROR", genericLoc);
+            }
+            const parsedArgs = parseList(args);
+            const [arg, ...rest] = parsedArgs;
+            if (!arg || rest.length > 0) {
+                ctx.err.genericArgCount(
+                    "bounced",
+                    1,
+                    parsedArgs.length,
+                )(genericLoc);
+                return ctx.ast.TypeId("ERROR", genericLoc);
+            }
+            if (
+                arg.as.length > 0 ||
+                arg.type.optionals.length > 0 ||
+                arg.type.type.$ !== "TypeRegular"
+            ) {
+                ctx.err.onlyBouncedOfNamed()(genericLoc);
+                return ctx.ast.TypeId("ERROR", genericLoc);
+            }
+            const type = arg.type.type.child;
+            return ctx.ast.BouncedMessageType(
+                ctx.ast.TypeId(type.name, type.loc),
+                loc,
+            );
         }
-        if (key.type.optionals.length > 0) {
-            ctx.err.cannotBeOptional("key")(genericLoc);
-        }
-        if (key.type.type.$ !== 'TypeRegular') {
-            ctx.err.onlyTypeId("key")(genericLoc);
-            return ctx.ast.TypeId("ERROR", genericLoc);
-        }
-        const [valueAs, ...restValueAs] = value.as;
-        if (restValueAs.length > 0) {
-            ctx.err.mapOnlyOneAs("value")(genericLoc);
-        }
-        if (value.type.optionals.length > 0) {
-            ctx.err.cannotBeOptional("value")(genericLoc);
-        }
-        if (value.type.type.$ !== 'TypeRegular') {
-            ctx.err.onlyTypeId("value")(genericLoc);
-            return ctx.ast.TypeId("ERROR", genericLoc);
-        }
-        const keyType = key.type.type.child;
-        const valueType = value.type.type.child;
-        return ctx.ast.MapType(
-            ctx.ast.TypeId(keyType.name, keyType.loc),
-            keyAs ? ctx.ast.Id(keyAs.name, keyAs.loc) : null,
-            ctx.ast.TypeId(valueType.name, valueType.loc),
-            valueAs ? ctx.ast.Id(valueAs.name, valueAs.loc) : null,
-            genericLoc,
-        )
-    }
-    if (name.$ === 'Id') {
-        if (name.name !== 'bounced') {
-            ctx.err.unknownType(name.name)(name.loc);
-            return ctx.ast.TypeId("ERROR", genericLoc);
-        }
-        const parsedArgs = parseList(args);
-        const [arg, ...rest] = parsedArgs;
-        if (!arg || rest.length > 0) {
-            ctx.err.genericArgCount("bounced", 1, parsedArgs.length)(genericLoc);
-            return ctx.ast.TypeId("ERROR", genericLoc);
-        }
-        if (arg.as.length > 0 || arg.type.optionals.length > 0 || arg.type.type.$ !== 'TypeRegular') {
-            ctx.err.onlyBouncedOfNamed()(genericLoc);
-            return ctx.ast.TypeId("ERROR", genericLoc);
-        }
-        const type = arg.type.type.child;
-        return ctx.ast.BouncedMessageType(ctx.ast.TypeId(type.name, type.loc), loc);
-    }
-    return ctx.ast.TypeId(name.name, name.loc);
-};
+        return ctx.ast.TypeId(name.name, name.loc);
+    };
 
-const parseType = (node: $ast.$type): Handler<A.AstType> => ctx => {
-    if (node.as.length > 0) {
-        ctx.err.asNotAllowed()(node.loc);
-    }
-    return parseTypeOptional(node)(ctx);
-};
+const parseType =
+    (node: $ast.$type): Handler<A.AstType> =>
+    (ctx) => {
+        if (node.as.length > 0) {
+            ctx.err.asNotAllowed()(node.loc);
+        }
+        return parseTypeOptional(node)(ctx);
+    };
 
 const parseFieldDecl =
     ({
@@ -856,9 +881,15 @@ const parseFieldDecl =
         if (restAs.length > 0) {
             ctx.err.fieldOnlyOneAs()(loc);
         }
-        const ty = parseTypeOptional(type)(ctx)
+        const ty = parseTypeOptional(type)(ctx);
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-        return ctx.ast.FieldDecl(id, ty, expr, as ? ctx.ast.Id(as.name, as.loc) : null, loc);
+        return ctx.ast.FieldDecl(
+            id,
+            ty,
+            expr,
+            as ? ctx.ast.Id(as.name, as.loc) : null,
+            loc,
+        );
     };
 
 const parseReceiverParam =

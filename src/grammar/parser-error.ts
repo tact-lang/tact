@@ -124,8 +124,14 @@ export const syntaxErrorSchema = <T, U>(
         onlyOptionalOfNamed: () => {
             return handle(sub`Only named type can be optional`);
         },
-        genericArgCount: (name: string, expectedCount: number, gotCount: number) => {
-            return handle(sub`${text(name)}<> expects exactly ${text(String(expectedCount))} arguments, but got ${text(String(gotCount))}`);
+        genericArgCount: (
+            name: string,
+            expectedCount: number,
+            gotCount: number,
+        ) => {
+            return handle(
+                sub`${text(name)}<> expects exactly ${text(String(expectedCount))} arguments, but got ${text(String(gotCount))}`,
+            );
         },
         unknownType: (name: string) => {
             return handle(sub`Unknown generic type: ${text(name)}`);
@@ -133,13 +139,15 @@ export const syntaxErrorSchema = <T, U>(
         onlyBouncedOfNamed: () => {
             return handle(sub`Only named type can be bounced<>`);
         },
-        mapOnlyOneAs: (name: 'key' | 'value') => {
-            return handle(sub`Cannot use several "as" on ${text(name)} of a map`);
+        mapOnlyOneAs: (name: "key" | "value") => {
+            return handle(
+                sub`Cannot use several "as" on ${text(name)} of a map`,
+            );
         },
-        cannotBeOptional: (name: 'key' | 'value') => {
+        cannotBeOptional: (name: "key" | "value") => {
             return handle(sub`${text(name)} cannot be optional`);
         },
-        onlyTypeId: (name: 'key' | 'value') => {
+        onlyTypeId: (name: "key" | "value") => {
             return handle(sub`${text(name)} can only be a named type`);
         },
         fieldOnlyOneAs: () => {
