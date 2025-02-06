@@ -88,6 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Forbid traits inherit implicitly from BaseTrait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
 - Forbid the `override` modifier for constants without the corresponding super-constant: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
 - Remove "remainder" from error messages: PR [#1699](https://github.com/tact-lang/tact/pull/1699)
+- Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
 
 ### Docs
 
@@ -124,7 +125,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed the notion of the non-standard TL-B syntax `remainder<X>`: PR [#1599](https://github.com/tact-lang/tact/pull/1599)
 - Added description of `.boc`, `.ts`, `.abi`, `.pkg` files and completed Compilation page: PR [#1676](https://github.com/tact-lang/tact/pull/1676)
 - Marked gas-expensive functions and expressions: PR [#1703](https://github.com/tact-lang/tact/pull/1703)
-- Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
+- Added a Security audits page, with the first assessment from the Trail of Bits: PR [#1791](https://github.com/tact-lang/tact/pull/1791)
 
 ### Release contributors
 
