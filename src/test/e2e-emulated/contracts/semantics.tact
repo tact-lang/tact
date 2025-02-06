@@ -1912,7 +1912,7 @@ contract SemanticsTester {
         return result;
     }
 
-    /*** Tests _ ? _ : _ short-circuiting with mutating functions ***/
+    /// Tests _ ? _ : _ short-circuiting with mutating functions
     get fun ternaryMutateShortCircuit(): Bool {
 
         let s = 1;
