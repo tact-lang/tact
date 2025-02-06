@@ -1962,7 +1962,7 @@ contract SemanticsTester {
         return result;
     }
 
-    /*** Tests _ ? _ : _ short-circuiting with infinite loops ***/
+    /// Tests _ ? _ : _ short-circuiting with infinite loops
     get fun ternaryInfiniteLoopShortCircuit(): Bool {
 
         let s = 1;
