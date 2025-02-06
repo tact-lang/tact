@@ -829,11 +829,7 @@ const parseTypeOptional =
                 genericLoc,
             );
         }
-        if (name.$ === "Id") {
-            if (name.name !== "bounced") {
-                ctx.err.unknownType(name.name)(name.loc);
-                return ctx.ast.TypeId("ERROR", genericLoc);
-            }
+        if (name.$ === "Bounced") {
             const parsedArgs = parseList(args);
             const [arg, ...rest] = parsedArgs;
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
@@ -859,7 +855,8 @@ const parseTypeOptional =
                 loc,
             );
         }
-        return ctx.ast.TypeId(name.name, name.loc);
+        ctx.err.unknownGeneric()(genericLoc);
+        return ctx.ast.TypeId("ERROR", genericLoc);
     };
 
 const parseType =

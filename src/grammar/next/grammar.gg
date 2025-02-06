@@ -175,8 +175,9 @@ TypeOptional = type:typePrimary optionals:"?"*;
 
 typePrimary = TypeGeneric / TypeRegular;
 TypeRegular = child:TypeId;
-TypeGeneric = name:(MapKeyword / Id / TypeId) "<" args:commaList<type> ">";
+TypeGeneric = name:(MapKeyword / Bounced / TypeId) "<" args:commaList<type> ">";
 MapKeyword = keyword<"map">;
+Bounced = "bounced";
 
 TypeId "capitalized identifier" = name:#$([A-Z] [a-zA-Z0-9_]*);
 

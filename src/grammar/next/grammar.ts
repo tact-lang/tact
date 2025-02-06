@@ -185,7 +185,7 @@ export namespace $ast {
   }>;
   export type TypeGeneric = $.Located<{
     readonly $: "TypeGeneric";
-    readonly name: MapKeyword | Id | TypeId;
+    readonly name: MapKeyword | Bounced | TypeId;
     readonly args: commaList<$type>;
   }>;
   export type TypeRegular = $.Located<{
@@ -195,6 +195,9 @@ export namespace $ast {
   export type typePrimary = TypeGeneric | TypeRegular;
   export type MapKeyword = $.Located<{
     readonly $: "MapKeyword";
+  }>;
+  export type Bounced = $.Located<{
+    readonly $: "Bounced";
   }>;
   export type TypeId = $.Located<{
     readonly $: "TypeId";
@@ -451,10 +454,11 @@ export const TypeAs: $.Parser<$ast.TypeAs> = $.loc($.field($.pure("TypeAs"), "$"
 export const $type: $.Parser<$ast.$type> = TypeAs;
 export const ascription: $.Parser<$ast.ascription> = $.right($.str(":"), $type);
 export const TypeOptional: $.Parser<$ast.TypeOptional> = $.loc($.field($.pure("TypeOptional"), "$", $.field($.lazy(() => typePrimary), "type", $.field($.star($.str("?")), "optionals", $.eps))));
-export const TypeGeneric: $.Parser<$ast.TypeGeneric> = $.loc($.field($.pure("TypeGeneric"), "$", $.field($.alt($.lazy(() => MapKeyword), $.alt(Id, $.lazy(() => TypeId))), "name", $.right($.str("<"), $.field(commaList($type), "args", $.right($.str(">"), $.eps))))));
+export const TypeGeneric: $.Parser<$ast.TypeGeneric> = $.loc($.field($.pure("TypeGeneric"), "$", $.field($.alt($.lazy(() => MapKeyword), $.alt($.lazy(() => Bounced), $.lazy(() => TypeId))), "name", $.right($.str("<"), $.field(commaList($type), "args", $.right($.str(">"), $.eps))))));
 export const TypeRegular: $.Parser<$ast.TypeRegular> = $.loc($.field($.pure("TypeRegular"), "$", $.field($.lazy(() => TypeId), "child", $.eps)));
 export const typePrimary: $.Parser<$ast.typePrimary> = $.alt(TypeGeneric, TypeRegular);
 export const MapKeyword: $.Parser<$ast.MapKeyword> = $.loc($.field($.pure("MapKeyword"), "$", $.right(keyword($.str("map")), $.eps)));
+export const Bounced: $.Parser<$ast.Bounced> = $.loc($.field($.pure("Bounced"), "$", $.right($.str("bounced"), $.eps)));
 export const TypeId: $.Parser<$ast.TypeId> = $.named("capitalized identifier", $.loc($.field($.pure("TypeId"), "$", $.field($.lex($.stry($.right($.regex<string>("A-Z", [$.ExpRange("A", "Z")]), $.right($.star($.regex<string | string | string | "_">("a-zA-Z0-9_", [$.ExpRange("a", "z"), $.ExpRange("A", "Z"), $.ExpRange("0", "9"), $.ExpString("_")])), $.eps)))), "name", $.eps))));
 export const StatementLet: $.Parser<$ast.StatementLet> = $.loc($.field($.pure("StatementLet"), "$", $.right(keyword($.str("let")), $.field(Id, "name", $.field($.opt(ascription), "type", $.right($.str("="), $.field($.lazy(() => expression), "init", $.right(semicolon, $.eps))))))));
 export const StatementDestruct: $.Parser<$ast.StatementDestruct> = $.loc($.field($.pure("StatementDestruct"), "$", $.right(keyword($.str("let")), $.field(TypeId, "type", $.right($.str("{"), $.field(inter($.lazy(() => destructItem), $.str(",")), "fields", $.field($.lazy(() => optionalRest), "rest", $.right($.str("}"), $.right($.str("="), $.field($.lazy(() => expression), "init", $.right(semicolon, $.eps)))))))))));

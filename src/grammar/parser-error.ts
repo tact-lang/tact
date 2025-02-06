@@ -159,6 +159,9 @@ export const syntaxErrorSchema = <T, U>(
         fieldMustBeNamed: () => {
             return handle(sub`Only named type can be a type of a field`);
         },
+        unknownGeneric: () => {
+            return handle(sub`Unknown generic type`);
+        },
     };
 };
 
