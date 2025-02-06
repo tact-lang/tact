@@ -1934,6 +1934,28 @@ contract SemanticsTester {
         return result;
     }
 
+    get fun testInversesParseStdAddressAndNewAddress(): Bool {
+        let addr = myAddress();
+
+        // Using parseStdAddress followed by newAddress produce the same results
+        let parsedAddr: StdAddress = parseStdAddress(addr.asSlice());
+        let addr2: Address = newAddress(parsedAddr.workchain, parsedAddr.address);
+
+        let result = addr == addr2;
+
+        // Using newAddress followed by parseStdAddress produce the same results
+
+        // The two components of our address
+        let chainId = 0;
+        let accountId = (initOf SemanticsTester()).toCell().hash();
+
+        let addr3: Address = newAddress(chainId, accountId);
+        let parsedAddr2: StdAddress = parseStdAddress(addr3.asSlice());
+
+        result &&= chainId == parsedAddr2.workchain && accountId == parsedAddr2.address;
+
+        return result;
+    }
 
     /*************** Slices ********************/
 
