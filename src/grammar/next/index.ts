@@ -882,11 +882,11 @@ const parseFieldDecl =
             ctx.err.fieldOnlyOneAs()(loc);
         }
         const ty = parseTypeOptional(type)(ctx);
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
         return ctx.ast.FieldDecl(
             id,
             ty,
             expr,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
             as ? ctx.ast.Id(as.name, as.loc) : null,
             loc,
         );
