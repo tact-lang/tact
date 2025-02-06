@@ -786,6 +786,7 @@ const parseTypeOptional =
         if (name.$ === "MapKeyword") {
             const parsedArgs = parseList(args);
             const [key, value, ...rest] = parsedArgs;
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
             if (!key || !value || rest.length > 0) {
                 ctx.err.genericArgCount(
                     "map",
@@ -820,8 +821,10 @@ const parseTypeOptional =
             const valueType = value.type.type.child;
             return ctx.ast.MapType(
                 ctx.ast.TypeId(keyType.name, keyType.loc),
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
                 keyAs ? ctx.ast.Id(keyAs.name, keyAs.loc) : null,
                 ctx.ast.TypeId(valueType.name, valueType.loc),
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
                 valueAs ? ctx.ast.Id(valueAs.name, valueAs.loc) : null,
                 genericLoc,
             );
@@ -833,6 +836,7 @@ const parseTypeOptional =
             }
             const parsedArgs = parseList(args);
             const [arg, ...rest] = parsedArgs;
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
             if (!arg || rest.length > 0) {
                 ctx.err.genericArgCount(
                     "bounced",
