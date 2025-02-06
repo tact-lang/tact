@@ -92,7 +92,6 @@ export namespace $ast {
     readonly $: "FieldDecl";
     readonly name: Id;
     readonly type: ascription;
-    readonly as: asType | undefined;
     readonly expression: expression | undefined;
   }>;
   export type semicolon = ";" | "}";
@@ -172,32 +171,35 @@ export namespace $ast {
   export type comment = multiLineComment | singleLineComment;
   export type assemblyItem = {} | comment | {} | readonly {}[];
   export type assemblySequence = readonly assemblyItem[];
+  export type TypeAs = $.Located<{
+    readonly $: "TypeAs";
+    readonly type: TypeOptional;
+    readonly as: readonly Id[];
+  }>;
+  export type $type = TypeAs;
+  export type ascription = $type;
   export type TypeOptional = $.Located<{
     readonly $: "TypeOptional";
-    readonly child: TypeId;
+    readonly type: typePrimary;
+    readonly optionals: readonly "?"[];
+  }>;
+  export type TypeGeneric = $.Located<{
+    readonly $: "TypeGeneric";
+    readonly name: MapKeyword | Id | TypeId;
+    readonly args: commaList<$type>;
   }>;
   export type TypeRegular = $.Located<{
     readonly $: "TypeRegular";
     readonly child: TypeId;
   }>;
-  export type TypeMap = $.Located<{
-    readonly $: "TypeMap";
-    readonly key: TypeId;
-    readonly keyAs: asType | undefined;
-    readonly value: TypeId;
-    readonly valueAs: asType | undefined;
+  export type typePrimary = TypeGeneric | TypeRegular;
+  export type MapKeyword = $.Located<{
+    readonly $: "MapKeyword";
   }>;
-  export type TypeBounced = $.Located<{
-    readonly $: "TypeBounced";
-    readonly child: TypeId;
-  }>;
-  export type $type = TypeOptional | TypeRegular | TypeMap | TypeBounced;
-  export type ascription = $type;
   export type TypeId = $.Located<{
     readonly $: "TypeId";
     readonly name: string;
   }>;
-  export type asType = Id;
   export type StatementLet = $.Located<{
     readonly $: "StatementLet";
     readonly name: Id;
@@ -414,7 +416,7 @@ export const Trait: $.Parser<$ast.Trait> = $.loc($.field($.pure("Trait"), "$", $
 export const moduleItem: $.Parser<$ast.moduleItem> = $.alt(PrimitiveTypeDecl, $.alt($Function, $.alt(AsmFunction, $.alt(NativeFunctionDecl, $.alt(Constant, $.alt(StructDecl, $.alt(MessageDecl, $.alt(Contract, Trait))))))));
 export const ContractInit: $.Parser<$ast.ContractInit> = $.loc($.field($.pure("ContractInit"), "$", $.right($.str("init"), $.field($.lazy(() => parameterList($.lazy(() => Parameter))), "parameters", $.field($.lazy(() => statements), "body", $.eps)))));
 export const Receiver: $.Parser<$ast.Receiver> = $.loc($.field($.pure("Receiver"), "$", $.field($.lazy(() => ReceiverType), "type", $.right($.str("("), $.field($.lazy(() => receiverParam), "param", $.right($.str(")"), $.field($.lazy(() => statements), "body", $.eps)))))));
-export const FieldDecl: $.Parser<$ast.FieldDecl> = $.loc($.field($.pure("FieldDecl"), "$", $.field($.lazy(() => Id), "name", $.field($.lazy(() => ascription), "type", $.field($.opt($.lazy(() => asType)), "as", $.field($.opt($.right($.str("="), $.lazy(() => expression))), "expression", $.eps))))));
+export const FieldDecl: $.Parser<$ast.FieldDecl> = $.loc($.field($.pure("FieldDecl"), "$", $.field($.lazy(() => Id), "name", $.field($.lazy(() => ascription), "type", $.field($.opt($.right($.str("="), $.lazy(() => expression))), "expression", $.eps)))));
 export const semicolon: $.Parser<$ast.semicolon> = $.alt($.str(";"), $.lookPos($.str("}")));
 export const storageVar: $.Parser<$ast.storageVar> = $.left(FieldDecl, semicolon);
 export const contractItemDecl: $.Parser<$ast.contractItemDecl> = $.alt(ContractInit, $.alt(Receiver, $.alt($Function, $.alt(Constant, storageVar))));
@@ -445,14 +447,15 @@ export const singleLineComment: $.Parser<$ast.singleLineComment> = $.right($.str
 export const comment: $.Parser<$ast.comment> = $.alt(multiLineComment, singleLineComment);
 export const assemblyItem: $.Parser<$ast.assemblyItem> = $.alt($.right($.str("{"), $.right($.lazy(() => assemblySequence), $.right($.str("}"), $.eps))), $.alt(comment, $.alt($.right($.str("\""), $.right($.star($.regex<"\"">("^\"", $.negateExps([$.ExpString("\"")]))), $.right($.str("\""), $.eps))), $.plus($.right($.lookNeg($.alt($.regex<"\"" | "{" | "}">("\"{}", [$.ExpString("\""), $.ExpString("{"), $.ExpString("}")]), $.alt($.str("//"), $.str("/*")))), $.right($.any, $.eps))))));
 export const assemblySequence: $.Parser<$ast.assemblySequence> = $.star(assemblyItem);
-export const TypeOptional: $.Parser<$ast.TypeOptional> = $.loc($.field($.pure("TypeOptional"), "$", $.field($.lazy(() => TypeId), "child", $.right($.str("?"), $.eps))));
-export const TypeRegular: $.Parser<$ast.TypeRegular> = $.loc($.field($.pure("TypeRegular"), "$", $.field($.lazy(() => TypeId), "child", $.eps)));
-export const TypeMap: $.Parser<$ast.TypeMap> = $.loc($.field($.pure("TypeMap"), "$", $.right(keyword($.str("map")), $.right($.str("<"), $.field($.lazy(() => TypeId), "key", $.field($.opt($.lazy(() => asType)), "keyAs", $.right($.str(","), $.field($.lazy(() => TypeId), "value", $.field($.opt($.lazy(() => asType)), "valueAs", $.right($.str(">"), $.eps))))))))));
-export const TypeBounced: $.Parser<$ast.TypeBounced> = $.loc($.field($.pure("TypeBounced"), "$", $.right($.str("bounced"), $.right($.str("<"), $.field($.lazy(() => TypeId), "child", $.right($.str(">"), $.eps))))));
-export const $type: $.Parser<$ast.$type> = $.alt(TypeOptional, $.alt(TypeRegular, $.alt(TypeMap, TypeBounced)));
+export const TypeAs: $.Parser<$ast.TypeAs> = $.loc($.field($.pure("TypeAs"), "$", $.field($.lazy(() => TypeOptional), "type", $.field($.star($.right(keyword($.str("as")), Id)), "as", $.eps))));
+export const $type: $.Parser<$ast.$type> = TypeAs;
 export const ascription: $.Parser<$ast.ascription> = $.right($.str(":"), $type);
+export const TypeOptional: $.Parser<$ast.TypeOptional> = $.loc($.field($.pure("TypeOptional"), "$", $.field($.lazy(() => typePrimary), "type", $.field($.star($.str("?")), "optionals", $.eps))));
+export const TypeGeneric: $.Parser<$ast.TypeGeneric> = $.loc($.field($.pure("TypeGeneric"), "$", $.field($.alt($.lazy(() => MapKeyword), $.alt(Id, $.lazy(() => TypeId))), "name", $.right($.str("<"), $.field(commaList($type), "args", $.right($.str(">"), $.eps))))));
+export const TypeRegular: $.Parser<$ast.TypeRegular> = $.loc($.field($.pure("TypeRegular"), "$", $.field($.lazy(() => TypeId), "child", $.eps)));
+export const typePrimary: $.Parser<$ast.typePrimary> = $.alt(TypeGeneric, TypeRegular);
+export const MapKeyword: $.Parser<$ast.MapKeyword> = $.loc($.field($.pure("MapKeyword"), "$", $.right(keyword($.str("map")), $.eps)));
 export const TypeId: $.Parser<$ast.TypeId> = $.named("capitalized identifier", $.loc($.field($.pure("TypeId"), "$", $.field($.lex($.stry($.right($.regex<string>("A-Z", [$.ExpRange("A", "Z")]), $.right($.star($.regex<string | string | string | "_">("a-zA-Z0-9_", [$.ExpRange("a", "z"), $.ExpRange("A", "Z"), $.ExpRange("0", "9"), $.ExpString("_")])), $.eps)))), "name", $.eps))));
-export const asType: $.Parser<$ast.asType> = $.right(keyword($.str("as")), Id);
 export const StatementLet: $.Parser<$ast.StatementLet> = $.loc($.field($.pure("StatementLet"), "$", $.right(keyword($.str("let")), $.field(Id, "name", $.field($.opt(ascription), "type", $.right($.str("="), $.field($.lazy(() => expression), "init", $.right(semicolon, $.eps))))))));
 export const StatementDestruct: $.Parser<$ast.StatementDestruct> = $.loc($.field($.pure("StatementDestruct"), "$", $.right(keyword($.str("let")), $.field(TypeId, "type", $.right($.str("{"), $.field(inter($.lazy(() => destructItem), $.str(",")), "fields", $.field($.lazy(() => optionalRest), "rest", $.right($.str("}"), $.right($.str("="), $.field($.lazy(() => expression), "init", $.right(semicolon, $.eps)))))))))));
 export const StatementBlock: $.Parser<$ast.StatementBlock> = $.loc($.field($.pure("StatementBlock"), "$", $.field($.lazy(() => statements), "body", $.eps)));

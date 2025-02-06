@@ -111,7 +111,7 @@ structFields = @inter<FieldDecl, ";">? ";"?;
 
 FieldDecl =
     name:Id
-    type:ascription as:asType?
+    type:ascription
     expression:("=" @expression)?;
 
 Contract =
@@ -168,23 +168,17 @@ assemblyItem
     / (!(["{}] / "//" / "/*") .)+;
 
 ascription = ":" @type;
-type
-    = TypeOptional
-    / TypeRegular
-    / TypeMap
-    / TypeBounced;
-TypeOptional = child:TypeId "?";
+
+type = TypeAs;
+TypeAs = type:TypeOptional as:(keyword<"as"> @Id)*;
+TypeOptional = type:typePrimary optionals:"?"*;
+
+typePrimary = TypeGeneric / TypeRegular;
 TypeRegular = child:TypeId;
-TypeBounced = "bounced" "<" child:TypeId ">";
-TypeMap =
-    keyword<"map">
-    "<"
-    key:TypeId keyAs:asType?
-    ","
-    value:TypeId valueAs:asType?
-    ">";
+TypeGeneric = name:(MapKeyword / Id / TypeId) "<" args:commaList<type> ">";
+MapKeyword = keyword<"map">;
+
 TypeId "capitalized identifier" = name:#$([A-Z] [a-zA-Z0-9_]*);
-asType = keyword<"as"> @Id;
 
 statement
     = StatementLet
