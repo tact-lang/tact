@@ -8,7 +8,7 @@ module.exports = {
     project: "./tsconfig.eslint.json",
   },
   ignorePatterns: ["*.cjs", "*.js"],
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "@tact-lang/local-rules"],
   root: true,
   env: {
     node: true,
@@ -93,5 +93,6 @@ module.exports = {
     "require-await": "off",
     "@typescript-eslint/require-await": "error",
     "@typescript-eslint/unified-signatures": "error",
+    "@tact-lang/local-rules/no-export-symbol": "error",
   },
 };

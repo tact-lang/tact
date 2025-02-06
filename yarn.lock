@@ -1284,6 +1284,9 @@
     teslabot "^1.5.0"
     zod "^3.20.2"
 
+"@tact-lang/eslint-plugin-local-rules@file:packages/eslint-plugin-local-rules":
+  version "0.0.0"
+
 "@tact-lang/opcode@^0.0.14":
   version "0.0.14"
   resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.0.14.tgz"
