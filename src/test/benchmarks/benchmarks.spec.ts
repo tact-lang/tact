@@ -16,7 +16,7 @@ import { Sha256Big } from "./contracts/output/benchmark_sha256_big_Sha256Big";
 import { Sha256AsSlice } from "./contracts/output/benchmark_sha256_as_slice_Sha256AsSlice";
 import { Forward } from "./contracts/output/forward_Forward";
 import "@ton/test-utils";
-import { CellsCreation } from "./contracts/output/cells_cellsCreation";
+import { CellsCreation } from "./contracts/output/cells_CellsCreation";
 import { getUsedGas } from "./util";
 
 function measureGas(txs: BlockchainTransaction[]) {
@@ -165,6 +165,7 @@ describe("benchmarks", () => {
             await hashStringAsSLice(sha256AsSlice, "hello world".repeat(10)),
         ).toEqual(2516n);
     });
+
     it("benchmark cells creation", async () => {
         const testContract = blockchain.openContract(
             await CellsCreation.fromInit(),
@@ -174,10 +175,12 @@ describe("benchmarks", () => {
             { value: toNano(1) },
             null,
         );
+
         const gasUsed1 = (
             await blockchain.runGetMethod(testContract.address, "getEmptyCell")
         ).gasUsed;
         expect(gasUsed1).toMatchSnapshot("gas used emptyCell");
+
         const gasUsed2 = (
             await blockchain.runGetMethod(testContract.address, "getEmptySlice")
         ).gasUsed;
