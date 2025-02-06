@@ -177,12 +177,12 @@ describe("benchmarks", () => {
         );
 
         const gasUsed1 = (
-            await blockchain.runGetMethod(testContract.address, "getEmptyCell")
+            await blockchain.runGetMethod(testContract.address, "emptyCell")
         ).gasUsed;
         expect(gasUsed1).toMatchSnapshot("gas used emptyCell");
 
         const gasUsed2 = (
-            await blockchain.runGetMethod(testContract.address, "getEmptySlice")
+            await blockchain.runGetMethod(testContract.address, "emptySlice")
         ).gasUsed;
         expect(gasUsed2).toMatchSnapshot("gas used emptySlice");
     });

@@ -1,11 +1,11 @@
 contract CellsCreation {
     receive() { }
 
-    get fun getEmptyCell(): Cell {
+    get fun emptyCell(): Cell {
         return emptyCell();
     }
 
-    get fun getEmptySlice(): Slice {
+    get fun emptySlice(): Slice {
         return emptySlice();
     }
 }
