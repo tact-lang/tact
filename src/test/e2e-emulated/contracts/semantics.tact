@@ -1984,7 +1984,7 @@ contract SemanticsTester {
         return result;
     }
 
-    /*** Tests _ ? _ : _ short-circuiting with exception throwing ***/
+    /// Tests _ ? _ : _ short-circuiting with exception throwing
     get fun ternaryExceptionShortCircuit(): Bool {
 
         let s = 1;
