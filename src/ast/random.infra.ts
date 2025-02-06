@@ -80,75 +80,17 @@ function randomAstString(): fc.Arbitrary<A.AstString> {
 }
 
 function randomAstNumber(): fc.Arbitrary<A.AstNumber> {
-    const values = [
-        ...Array.from({ length: 10 }, (_, i) => [0n, BigInt(i)]).flat(),
-        ...Array.from({ length: 256 }, (_, i) => 1n ** BigInt(i)),
-    ];
-
     return dummyAstNode(
         fc.record({
             kind: fc.constant("number"),
             base: fc.constantFrom(2, 8, 10, 16),
-            value: fc.oneof(...values.map((value) => fc.constant(value))),
-        }),
-    );
-}
-
-function randomAstOpUnary(
-    operand: fc.Arbitrary<A.AstExpression>,
-): fc.Arbitrary<A.AstOpUnary> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("op_unary"),
-            op: fc.constantFrom("+", "-", "!", "!!", "~"),
-            operand: operand,
-        }),
-    );
-}
-function randomAstOpBinary(
-    leftExpression: fc.Arbitrary<A.AstExpression>,
-    rightExpression: fc.Arbitrary<A.AstExpression>,
-): fc.Arbitrary<A.AstOpBinary> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("op_binary"),
-            op: fc.constantFrom(
-                "+",
-                "-",
-                "*",
-                "/",
-                "!=",
-                ">",
-                "<",
-                ">=",
-                "<=",
-                "==",
-                "&&",
-                "||",
-                "%",
-                "<<",
-                ">>",
-                "&",
-                "|",
-                "^",
+            value: fc.oneof(
+                {
+                    arbitrary: fc.bigInt({ min: 0n, max: 2n ** 255n }),
+                    weight: 1,
+                },
+                { arbitrary: fc.bigInt({ min: 0n, max: 256n }), weight: 10000 },
             ),
-            left: leftExpression,
-            right: rightExpression,
-        }),
-    );
-}
-
-function randomAstConditional(
-    conditionExpression: fc.Arbitrary<A.AstExpression>,
-    thenBranchExpression: fc.Arbitrary<A.AstExpression>,
-    elseBranchExpression: fc.Arbitrary<A.AstExpression>,
-): fc.Arbitrary<A.AstConditional> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("conditional"),
-            condition: conditionExpression,
-            thenBranch: thenBranchExpression,
-            elseBranch: elseBranchExpression,
         }),
     );
 }
@@ -186,158 +128,163 @@ function randomAstNull(): fc.Arbitrary<A.AstNull> {
     );
 }
 
-function randomAstInitOf(
-    expression: fc.Arbitrary<A.AstExpression>,
-): fc.Arbitrary<A.AstInitOf> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("init_of"),
-            contract: randomAstId(),
-            args: fc.array(expression),
-        }),
-    );
-}
-
-function randomAstStaticCall(
-    expression: fc.Arbitrary<A.AstExpression>,
-): fc.Arbitrary<A.AstStaticCall> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("static_call"),
-            function: randomAstId(),
-            args: fc.array(expression),
-        }),
-    );
-}
-
-function randomAstStructFieldInitializer(
-    expression: fc.Arbitrary<A.AstExpression>,
-): fc.Arbitrary<A.AstStructFieldInitializer> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("struct_field_initializer"),
-            field: randomAstId(),
-            initializer: expression,
-        }),
-    );
-}
-
-function randomAstStructInstance(
-    structFieldInitializer: fc.Arbitrary<A.AstStructFieldInitializer>,
-): fc.Arbitrary<A.AstStructInstance> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("struct_instance"),
-            type: randomAstCapitalizedId(),
-            args: fc.array(structFieldInitializer),
-        }),
-    );
-}
-
-function randomAstFieldAccess(
-    expression: fc.Arbitrary<A.AstExpression>,
-): fc.Arbitrary<A.AstFieldAccess> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("field_access"),
-            aggregate: expression,
-            field: randomAstId(),
-        }),
-    );
-}
-
-function randomAstMethodCall(
-    selfExpression: fc.Arbitrary<A.AstExpression>,
-    argsExpression: fc.Arbitrary<A.AstExpression>,
-): fc.Arbitrary<A.AstMethodCall> {
-    return dummyAstNode(
-        fc.record({
-            self: selfExpression,
-            kind: fc.constant("method_call"),
-            method: randomAstId(),
-            args: fc.array(argsExpression),
-        }),
-    );
-}
-
-function randomAstStructFieldValue(
-    subLiteral: fc.Arbitrary<A.AstLiteral>,
-): fc.Arbitrary<A.AstStructFieldValue> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("struct_field_value"),
-            field: randomAstId(),
-            initializer: subLiteral,
-        }),
-    );
-}
-
-function randomAstStructValue(
-    subLiteral: fc.Arbitrary<A.AstLiteral>,
-): fc.Arbitrary<A.AstStructValue> {
-    return dummyAstNode(
-        fc.record({
-            kind: fc.constant("struct_value"),
-            type: randomAstCapitalizedId(),
-            args: fc.array(randomAstStructFieldValue(subLiteral)),
-        }),
-    );
-}
-
-function randomAstLiteral(maxDepth: number): fc.Arbitrary<A.AstLiteral> {
-    return fc.memo((depth: number): fc.Arbitrary<A.AstLiteral> => {
-        if (depth <= 1) {
-            return fc.oneof(
-                randomAstNumber(),
-                randomAstBoolean(),
-                randomAstNull(),
-                // Add Address, Cell, Slice
-                // randomAstCommentValue(),
-                // randomAstSimplifiedString(),
-            );
-        }
-
-        const subLiteral = () => randomAstLiteral(depth - 1);
-
-        return fc.oneof(
-            randomAstNumber(),
-            randomAstBoolean(),
-            randomAstNull(),
-            // Add Address, Cell, Slice
-            // randomAstSimplifiedString(),
-            // randomAstCommentValue(),
-            randomAstStructValue(subLiteral()),
-        );
-    })(maxDepth);
-}
-
 export function randomAstExpression(
-    maxDepth: number,
+    depthSize: fc.DepthSize,
 ): fc.Arbitrary<A.AstExpression> {
-    return fc.memo((depth: number): fc.Arbitrary<A.AstExpression> => {
-        if (depth <= 1) {
-            return fc.oneof(randomAstLiteral(depth - 1));
-        }
-
-        const subExpr = () => randomAstExpression(depth - 1);
-
-        return fc
-            .oneof(
-                randomAstLiteral(maxDepth),
-                randomAstMethodCall(subExpr(), subExpr()),
-                randomAstFieldAccess(subExpr()),
-                randomAstStaticCall(subExpr()),
-                randomAstStructInstance(
-                    randomAstStructFieldInitializer(subExpr()),
+    return fc.letrec((tie) => ({
+        literal: fc.oneof(
+            { arbitrary: randomAstNumber(), weight: 100 },
+            { arbitrary: randomAstBoolean(), weight: 20 },
+            { arbitrary: randomAstNull(), weight: 1 },
+        ),
+        methodCall: dummyAstNode(
+            fc.record({
+                kind: fc.constant("method_call"),
+                self: tie("expression"),
+                method: randomAstId(),
+                args: fc.uniqueArray(tie("expression"), {
+                    depthIdentifier: "expression",
+                }),
+            }),
+        ),
+        fieldAccess: dummyAstNode(
+            fc.record({
+                kind: fc.constant("field_access"),
+                aggregate: tie("expression"),
+                field: randomAstId(),
+            }),
+        ),
+        staticCall: dummyAstNode(
+            fc.record({
+                kind: fc.constant("static_call"),
+                function: randomAstId(),
+                args: fc.uniqueArray(tie("expression"), {
+                    depthIdentifier: "expression",
+                }),
+            }),
+        ),
+        structInstance: dummyAstNode(
+            fc.record({
+                kind: fc.constant("struct_instance"),
+                type: randomAstCapitalizedId(),
+                args: fc.array(
+                    dummyAstNode(
+                        fc.record({
+                            kind: fc.constant("struct_field_initializer"),
+                            field: randomAstId(),
+                            initializer: tie("expression"),
+                        }),
+                    ),
+                    { depthIdentifier: "expression" },
                 ),
-                randomAstInitOf(subExpr()),
-                randomAstString(),
-                randomAstOpUnary(subExpr()),
-                randomAstOpBinary(subExpr(), subExpr()),
-                randomAstConditional(subExpr(), subExpr(), subExpr()),
-            )
-            .filter((i) => i.kind !== "struct_value");
-    })(maxDepth);
+            }),
+        ),
+        initOf: dummyAstNode(
+            fc.record({
+                kind: fc.constant("init_of"),
+                contract: randomAstId(),
+                args: fc.uniqueArray(tie("expression"), {
+                    depthIdentifier: "expression",
+                }),
+            }),
+        ),
+        string: randomAstString(),
+        opUnary: dummyAstNode(
+            fc.record({
+                kind: fc.constant("op_unary"),
+                op: fc.constantFrom("+", "-", "!", "!!", "~"),
+                operand: tie("expression"),
+            }),
+        ),
+        opBinary: dummyAstNode(
+            fc.record({
+                kind: fc.constant("op_binary"),
+                op: fc.constantFrom(
+                    "+",
+                    "-",
+                    "*",
+                    "/",
+                    "!=",
+                    ">",
+                    "<",
+                    ">=",
+                    "<=",
+                    "==",
+                    "&&",
+                    "||",
+                    "%",
+                    "<<",
+                    ">>",
+                    "&",
+                    "|",
+                    "^",
+                ),
+                left: tie("expression"),
+                right: tie("expression"),
+            }),
+        ),
+        conditional: dummyAstNode(
+            fc.record({
+                kind: fc.constant("conditional"),
+                condition: tie("expression"),
+                thenBranch: tie("expression"),
+                elseBranch: tie("expression"),
+            }),
+        ),
+        expression: fc.oneof(
+            { depthSize },
+            {
+                arbitrary: tie("literal") as fc.Arbitrary<A.AstLiteral>,
+                weight: 2,
+            },
+            {
+                arbitrary: tie("methodCall") as fc.Arbitrary<A.AstMethodCall>,
+                depthIdentifier: "expression",
+                weight: 2,
+            },
+            {
+                arbitrary: tie("opUnary") as fc.Arbitrary<A.AstOpUnary>,
+                depthIdentifier: "expression",
+                weight: 5,
+            },
+            {
+                arbitrary: tie("opBinary") as fc.Arbitrary<A.AstOpBinary>,
+                depthIdentifier: "expression",
+                weight: 5,
+            },
+            {
+                arbitrary: tie("conditional") as fc.Arbitrary<A.AstConditional>,
+                depthIdentifier: "expression",
+                weight: 10,
+            },
+            {
+                arbitrary: tie("string") as fc.Arbitrary<A.AstString>,
+                weight: 1,
+            },
+            {
+                arbitrary: tie("initOf") as fc.Arbitrary<A.AstInitOf>,
+                depthIdentifier: "expression",
+                weight: 1,
+            },
+            {
+                arbitrary: tie(
+                    "structInstance",
+                ) as fc.Arbitrary<A.AstStructInstance>,
+                depthIdentifier: "expression",
+                weight: 1,
+            },
+            {
+                arbitrary: tie("staticCall") as fc.Arbitrary<A.AstStaticCall>,
+                depthIdentifier: "expression",
+                weight: 2,
+            },
+            {
+                arbitrary: tie("fieldAccess") as fc.Arbitrary<A.AstFieldAccess>,
+                depthIdentifier: "expression",
+                weight: 2,
+            },
+        ),
+    })).expression;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
