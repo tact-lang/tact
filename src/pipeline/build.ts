@@ -42,6 +42,10 @@ export function enableFeatures(
             option: config.options.safety?.nullChecks ?? true,
             name: "nullChecks",
         },
+        {
+            option: config.options.enableLazyDeploymentCompletedGetter ?? false,
+            name: "lazyDeploymentCompletedGetter",
+        },
     ];
     return features.reduce((currentCtx, { option, name }) => {
         if (option) {

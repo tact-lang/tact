@@ -72,6 +72,11 @@
                     "description": "True by default. If set to true, enables run-time null checks for the `!!` operator. Set it to `false` if you'd like to decrease gas consumption."
                   }
                 }
+              },
+              "enableLazyDeploymentCompletedGetter": {
+                "type": "boolean",
+                "default": false,
+                "description": "False by default. If set to true, enables generation of `lazy_deployment_completed()` getter."
               }
             }
           },

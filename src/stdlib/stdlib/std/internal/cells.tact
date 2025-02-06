@@ -468,7 +468,7 @@ inline extends fun asCell(self: Builder): Cell {
 }
 
 asm fun emptyCell(): Cell {
-    <b b> PUSHREF // Pure fift) "<b" creates a builder, "b>" turns it into a cell (in compile time)
+    <b b> PUSHREF // Pure Fift: "<b" creates a builder, "b>" turns it into a cell at compile time
 }
 
 asm fun emptySlice(): Slice {
