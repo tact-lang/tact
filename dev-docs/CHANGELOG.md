@@ -124,7 +124,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Marked gas-expensive functions and expressions: PR [#1703](https://github.com/tact-lang/tact/pull/1703)
 - Listed functions with implicit mode and further clarified the interactions of message sending functions and their modes: PR [#1634](https://github.com/tact-lang/tact/pull/1634)
 
-
 ### Release contributors
 
 ## [1.5.3] - 2024-11-28

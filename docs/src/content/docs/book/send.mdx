@@ -142,7 +142,7 @@ There, the second message won't actually be sent:
 
 * Thus, an error with [exit code 37](/book/exit-codes#37) is thrown: `Not enough Toncoin`.
 
-Note that such failures are not exclusive to the [`send(){:tact}`](/ref/core-common#send) function and may also occur when using other [message sending functions](#message-sending-functions).
+Note that such failures are not exclusive to the [`send(){:tact}`](/ref/core-common#send) function and may also occur when using other [message-sending functions](#message-sending-functions).
 
 For instance, let's replace the first call to the [`send(){:tact}`](/ref/core-common#send) function in the previous example with the [`emit(){:tact}`](/ref/core-common#emit) function. The latter queues the message using the default mode, i.e. $0$, and spends some [nanoToncoins][nano] to pay the [forward fees][fwdfee].
 
@@ -172,16 +172,16 @@ contract IfItDiesItDies {
 
 :::note
 
-  To avoid dealing with similar cases and to simplify future [debugging sessions](/book/debug), consider having only one call to one of the [message sending functions](#message-sending-functions) per [receiver function](/book/receive).
+  To avoid dealing with similar cases and to simplify future [debugging sessions](/book/debug), consider having only one call to one of the [message-sending functions](#message-sending-functions) per [receiver function](/book/receive).
 
   Alternatively, see the suggested solutions below.
 
 :::
 
-Previous examples discussed a case where the contract has $0$ [nanoToncoins][nano] on the balance, which is rather rare — in most real-world scenarios there would be some funds present. As such, it's usually better to use the [`SendRemainingBalance{:tact}`](/book/message-mode#base-modes) base mode, paired with the call to the [`nativeReserve(){:tact}`](/ref/core-advanced#nativereserve) function:
+Previous examples discussed a case where the contract has $0$ [nanoToncoins][nano] on the balance, which is rather rare — in most real-world scenarios there would be some funds present. As such, it's usually better to use the [`SendRemainingBalance{:tact}`](/book/message-mode#base-modes) base mode, paired with the _necessary_ call to the [`nativeReserve(){:tact}`](/ref/core-advanced#nativereserve) function:
 
 ```tact
-// This contract has some Toncoins on the balance, say, 0.2
+// This contract has some Toncoins on the balance, say, 0.2 or more
 contract MyPrecious {
     // The extra funds can be received via a "topup" message
     receive("topup") {}
@@ -192,9 +192,14 @@ contract MyPrecious {
         // with the mode 0, which is the default
         emit("Have you seen this message?".asComment());
 
-        // Let's keep at least 0.1 Toncoin on the balance
+        // Let's try to keep the most out of the balance prior to this transaction
         // Notice that nativeReserve() only queues an action to be performed during action phase
-        nativeReserve(ton("0.1"), ReserveExact); // or ReserveAtMost if you're ok with reserving less
+        nativeReserve(ton("0.05"), ReserveAtMost | ReserveAddOriginalBalance);
+        //            -----------  -------------   -------------------------
+        //            ↑            ↑               ↑
+        //            |            |               keeping the balance from before the compute phase start
+        //            |            might keep less, but won't fail in doing so
+        //            just a tad more on top of the balance, for the fees
 
         // 2nd outbound message evaluated and queued
         // with the SendRemainingBalance mode
@@ -202,18 +207,21 @@ contract MyPrecious {
             to: sender(),
             value: 0,
             mode: SendRemainingBalance, // because of the prior nativeReserve(),
-                                        // the contract will still have at least 0.1 Toncoin
-            body: "I give you my all! Well, almost my all!".asComment(),
+                                        // using this mode is safe and we'll keep
+                                        // the original balance plus a little more
+            body: "I give you my all! Well, all that's not mine!".asComment(),
         });
     }
 }
 ```
 
-If you want all outgoing messages to preserve some funds on the balance, consider using one of the following functions instead. Note that they require a prior override of the [`self.storageReserve{:tact}`](/ref/core-base#self-storagereserve) constant:
+Instead, if you want all outgoing messages to preserve a fixed amount of funds on the balance and **send the rest of the balance**, consider using one of the following functions instead. Note that they require a prior override of the [`self.storageReserve{:tact}`](/ref/core-base#self-storagereserve) constant:
 
 * [`self.reply(){:tact}`](/ref/core-base#self-reply)
 * [`self.notify(){:tact}`](/ref/core-base#self-notify)
 * [`self.forward(){:tact}`](/ref/core-base#self-forward)
+
+If you take only one thing away from this section, please remember this: be very careful with the [base modes](/book/message-mode#base-modes) of the message-sending functions, including the [implicitly set modes](/book/message-mode#functions-with-implicit-mode).
 
 ## Message sending limits
 
@@ -221,9 +229,9 @@ In total, there could be no more than $255$ actions queued for execution, which 
 
 Attempts to queue more throw an exception with an [exit code 33](/book/exit-codes#33) during [action phase][phases]: `Action list is too long`.
 
-## Message sending functions
+## Message-sending functions
 
-Read more about all message sending functions in the Reference:
+Read more about all message-sending functions in the Reference:
 
 * [`send(){:tact}`](/ref/core-common#send)
 * [`emit(){:tact}`](/ref/core-common#emit)

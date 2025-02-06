@@ -9,7 +9,7 @@ As it was previously mentioned, messages sent via [`send(){:tact}`](/ref/core-co
 
 It's possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience there's a set of constants which you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on base modes and optional flags.
 
-Note that there are other [message sending functions](/book/send#message-sending-functions) — they do not use the `SendParameters{:tact}` [Struct](/book/structs-and-messages#structs), but accept the `mode` as one of their parameters.
+Note that there are other [message-sending functions](/book/send#message-sending-functions) — they do not use the `SendParameters{:tact}` [Struct](/book/structs-and-messages#structs), but accept the `mode` as one of their parameters.
 
 ## Base modes
 
@@ -17,12 +17,14 @@ Mode value | Constant name                 | Description
 ---------: | :---------------------------- | -----------
 $0$        | <Badge text="Since Tact 1.6 (not released yet)" variant="tip"/> `SendDefaultMode{:tact}` | Ordinary message (default).
 $64$       | `SendRemainingValue{:tact}`   | Carry all the remaining value of the inbound message in addition to the value initially indicated in the new message.
-$128$      | `SendRemainingBalance{:tact}` | Carry all the remaining balance of the current smart contract instead of the value originally indicated in the message.
-$1024$     | <Badge text="Since Tact 1.5" variant="tip"/> `SendOnlyEstimateFee{:tact}` | Doesn't send the message, only estimates the forward fees if the [message sending function](/book/send#message-sending-functions) computes those.
+$128$      | <Badge text="Use with caution" title="Careless use can result in a total balance loss" variant="danger"/> `SendRemainingBalance{:tact}` | Carry **all the remaining balance** of the current smart contract instead of the value originally indicated in the message.
+$1024$     | <Badge text="Since Tact 1.5" variant="tip"/> `SendOnlyEstimateFee{:tact}` | Doesn't send the message, only estimates the forward fees if the [message-sending function](/book/send#message-sending-functions) computes those.
 
 The base mode `SendRemainingValue{:tact}` does **not** take previous actions into account, i.e. it doesn't recalculate the remaining value of the incoming message based on previously sent messages or performed actions during [action phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases).
 
 Unlike `SendRemainingValue{:tact}`, the base mode `SendRemainingBalance{:tact}` always calculates the current value of the contract balance, which can help solve problems with [complex outbound message processing](/book/send#outbound-message-processing).
+
+However, be **very** careful when using `SendRemainingBalance{:tact}`, because it works with the balance of the whole contract and any mistake with it can lead to a total loss of funds.
 
 ## Optional flags
 
@@ -64,7 +66,7 @@ Note that there can be only **one** [base mode](#base-modes), but number of [opt
 
 ## Functions with implicit mode
 
-Some [message sending functions](/book/send#message-sending-functions) do not allow to set a mode by passing an argument. That's because their internal logic requires specific fixed set of modes to be used instead:
+Some [message-sending functions](/book/send#message-sending-functions) do not allow to set a mode by passing an argument. That's because their internal logic requires specific fixed set of modes to be used instead:
 
 * [`emit(){:tact}`](/ref/core-common#emit) sends a message with the `SendDefaultMode{:tact}` ($0$).
 * [`self.reply(){:tact}`](/ref/core-base#self-reply), [`self.notify(){:tact}`](/ref/core-base#self-notify), and [`self.forward(){:tact}`](/ref/core-base#self-forward) all use the `SendRemainingValue{:tact}` mode unless the [`self.storageReserve{:tact}`](/ref/core-base#self-storagereserve) constant is overwritten to be greater than $0$, in which case they attempt to use the `SendRemainingBalance{:tact}` mode.

@@ -39,7 +39,7 @@ let iNeedADolla: Int = myBalance();
 
 :::caution
 
-  Beware, that [all message sending functions](/book/send#message-sending-functions) of Tact can change the _actual_ contract's balance, but they _won't_ update the value returned by this function.
+  Beware, that [all message-sending functions](/book/send#message-sending-functions) of Tact can change the _actual_ contract's balance, but they _won't_ update the value returned by this function.
 
 :::
 
@@ -97,10 +97,10 @@ Returns `Context{:tact}` [Struct](/book/structs-and-messages#structs), that cons
 
 Field     | Type                  | Description
 :-------- | :-------------------- | :----------
-`bounced` | [`Bool{:tact}`][bool] | [Bounced](https://ton.org/docs/learn/overviews/addresses#bounceable-vs-non-bounceable-addresses) flag of the incoming message.
+`bounced` | [`Bool{:tact}`][bool] | [Bounced](https://ton.org/docs/learn/overviews/addresses#bounceable-vs-non-bounceable-addresses) flag of the received message.
 `sender`  | [`Address{:tact}`][p] | Internal address of the sender on the TON blockchain.
-`value`   | [`Int{:tact}`][int]   | Amount of [nanoToncoins](/book/integers#nanotoncoin) in a message.
-`raw`     | [`Slice{:tact}`][slice]   | The remainder of the message as a [`Slice{:tact}`][slice]. It follows [internal message layout](https://docs.ton.org/develop/smart-contracts/messages#message-layout) of TON starting from the destination [`Address{:tact}`][p] (`MsgAddressInt` in [TL-B notation](https://docs.ton.org/develop/data-formats/tl-b-language)).
+`value`   | [`Int{:tact}`][int]   | Amount of [nanoToncoins](/book/integers#nanotoncoin) in the received message.
+`raw`     | [`Slice{:tact}`][slice]   | The remainder of the received message as a [`Slice{:tact}`][slice]. It follows [internal message layout](https://docs.ton.org/develop/smart-contracts/messages#message-layout) of TON starting from the destination [`Address{:tact}`][p] (`MsgAddressInt` in [TL-B notation](https://docs.ton.org/develop/data-formats/tl-b-language)).
 
 Usage example:
 
@@ -233,7 +233,7 @@ send(SendParameters{
 fun emit(body: Cell);
 ```
 
-[Queues the message](/book/send#outbound-message-processing) `body` to be sent to the outer world with the purpose of logging and analyzing it later off-chain. The message does not have a recipient and is more gas-efficient compared to using any other [message sending functions](/book/send#message-sending-functions) of Tact.
+[Queues the message](/book/send#outbound-message-processing) `body` to be sent to the outer world with the purpose of logging and analyzing it later off-chain. The message does not have a recipient and is more gas-efficient compared to using any other [message-sending functions](/book/send#message-sending-functions) of Tact.
 
 The message is sent with the default mode: [`SendDefaultMode`](/book/message-mode#base-modes) ($0$).
 
