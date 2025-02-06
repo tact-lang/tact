@@ -1,7 +1,5 @@
-contract cellsCreation {
-    receive(msg: Slice) {
-
-    }
+contract CellsCreation {
+    receive() { }
     get fun getEmptyCell(): Cell {
         return emptyCell();
     }
