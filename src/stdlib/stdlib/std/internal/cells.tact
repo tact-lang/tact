@@ -467,12 +467,12 @@ inline extends fun asCell(self: Builder): Cell {
     return self.endCell();
 }
 
-inline fun emptyCell(): Cell {
-    return beginCell().endCell();
+asm fun emptyCell(): Cell {
+    <b b> PUSHREF // Pure Fift: "<b" creates a builder, "b>" turns it into a cell at compile time
 }
 
-inline fun emptySlice(): Slice {
-    return emptyCell().asSlice();
+asm fun emptySlice(): Slice {
+    b{} PUSHSLICE
 }
 
 /// Struct for holding values computed by the `Cell.computeDataSize()` and `Slice.computeDataSize()` extension functions. Available since Tact 1.6.0.

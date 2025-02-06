@@ -2061,7 +2061,7 @@ exports[`resolveAllocation should write program 1`] = `
             "id": 91,
             "initializer": {
               "base": 10,
-              "id": 90,
+              "id": 89,
               "kind": "number",
               "loc": {},
               "value": 0n,
@@ -2075,7 +2075,7 @@ exports[`resolveAllocation should write program 1`] = `
               "text": "v",
             },
             "type": {
-              "id": 89,
+              "id": 90,
               "kind": "type_id",
               "loc": {},
               "text": "Int",
@@ -2169,7 +2169,7 @@ exports[`resolveAllocation should write program 1`] = `
             "id": 91,
             "initializer": {
               "base": 10,
-              "id": 90,
+              "id": 89,
               "kind": "number",
               "loc": {},
               "value": 0n,
@@ -2183,7 +2183,7 @@ exports[`resolveAllocation should write program 1`] = `
               "text": "v",
             },
             "type": {
-              "id": 89,
+              "id": 90,
               "kind": "type_id",
               "loc": {},
               "text": "Int",
