@@ -104,6 +104,64 @@ export const syntaxErrorSchema = <T, U>(
                 sub`Numbers with leading zeroes cannot use underscores for JS compatibility`,
             );
         },
+        noFolderImports: () => {
+            return handle(sub`Cannot import a folder`);
+        },
+        invalidImport: () => {
+            return handle(sub`Import must start with ./, ../ or @stdlib/`);
+        },
+        escapingImport: () => {
+            return handle(
+                sub`Standard library imports should be inside its root`,
+            );
+        },
+        asNotAllowed: () => {
+            return handle(sub`"as" type is not allowed here`);
+        },
+        multipleOptionals: () => {
+            return handle(sub`Nested optional types are not allowed`);
+        },
+        onlyOptionalOfNamed: () => {
+            return handle(sub`Only named type can be optional`);
+        },
+        genericArgCount: (
+            name: string,
+            expectedCount: number,
+            gotCount: number,
+        ) => {
+            return handle(
+                sub`${text(name)}<> expects exactly ${text(String(expectedCount))} arguments, but got ${text(String(gotCount))}`,
+            );
+        },
+        unknownType: (name: string) => {
+            return handle(sub`Unknown generic type: ${text(name)}`);
+        },
+        onlyBouncedOfNamed: () => {
+            return handle(sub`Only named type can be bounced<>`);
+        },
+        mapOnlyOneAs: (name: "key" | "value") => {
+            return handle(
+                sub`Cannot use several "as" on ${text(name)} of a map`,
+            );
+        },
+        cannotBeOptional: (name: "key" | "value") => {
+            return handle(sub`${text(name)} cannot be optional`);
+        },
+        onlyTypeId: (name: "key" | "value") => {
+            return handle(sub`${text(name)} can only be a named type`);
+        },
+        fieldOnlyOneAs: () => {
+            return handle(sub`Cannot use several "as" on a field type`);
+        },
+        noOptionalFieldType: () => {
+            return handle(sub`Field type cannot be optional`);
+        },
+        fieldMustBeNamed: () => {
+            return handle(sub`Only named type can be a type of a field`);
+        },
+        unknownGeneric: () => {
+            return handle(sub`Unknown generic type`);
+        },
     };
 };
 

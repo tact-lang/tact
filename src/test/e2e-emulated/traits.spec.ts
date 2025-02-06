@@ -33,4 +33,9 @@ describe("traits", () => {
         // Check the contract's behavior after deployment
         expect(await contract.getSay()).toBe("I am a Laika and I say Woof");
     });
+
+    it("should override constant correctly", async () => {
+        // Check the contract's behavior after deployment
+        expect(await contract.getFooConstant()).toBe(100n);
+    });
 });

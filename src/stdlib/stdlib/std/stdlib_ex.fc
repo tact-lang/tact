@@ -1,0 +1,18 @@
+forall X -> tuple __tact_set(tuple x, X v, int i) asm "SETINDEXVARQ";
+() __tact_nop() asm "NOP";
+slice __tact_str_to_slice(slice s) asm "NOP";
+slice __tact_slice_to_str(slice s) asm "NOP";
+slice __tact_address_to_slice(slice s) asm "NOP";
+
+() __tact_sha_push(slice data) impure asm "ONE";
+int __tact_sha_should_proceed() asm "OVER SREFS 0 NEQINT";
+() __tact_sha_operate() impure asm "OVER LDREF s0 POP CTOS s0 s1 XCHG INC";
+int __tact_sha_hash_ext() asm "HASHEXT_SHA256";
+
+int __tact_sha256(slice data) {
+    __tact_sha_push(data);
+    while (__tact_sha_should_proceed()) {
+        __tact_sha_operate();
+    }
+    return __tact_sha_hash_ext();
+}

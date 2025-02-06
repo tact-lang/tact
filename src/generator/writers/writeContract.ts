@@ -3,8 +3,8 @@ import {
     enabledInline,
     enabledInterfacesGetter,
     enabledIpfsAbiGetter,
+    enabledLazyDeploymentCompletedGetter,
 } from "../../config/features";
-import { ItemOrigin } from "../../grammar";
 import { InitDescription, TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { funcIdOf, funcInitIdOf } from "./id";
@@ -16,6 +16,7 @@ import { writeValue } from "./writeExpression";
 import { writeGetter, writeStatement } from "./writeFunction";
 import { writeInterfaces } from "./writeInterfaces";
 import { writeReceiver, writeRouter } from "./writeRouter";
+import { ItemOrigin } from "../../imports/source";
 
 export function writeStorageOps(
     type: TypeDescription,
@@ -294,13 +295,15 @@ export function writeMainContract(
             ctx.append();
         }
 
-        // Deployed
-        ctx.append(`_ lazy_deployment_completed() method_id {`);
-        ctx.inIndent(() => {
-            ctx.append(`return get_data().begin_parse().load_int(1);`);
-        });
-        ctx.append(`}`);
-        ctx.append();
+        if (enabledLazyDeploymentCompletedGetter(ctx.ctx)) {
+            // Deployed
+            ctx.append(`_ lazy_deployment_completed() method_id {`);
+            ctx.inIndent(() => {
+                ctx.append(`return get_data().begin_parse().load_int(1);`);
+            });
+            ctx.append(`}`);
+            ctx.append();
+        }
 
         // Comments
         ctx.append(`;;`);

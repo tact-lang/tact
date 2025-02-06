@@ -393,7 +393,7 @@ Conditionally repeat certain blocks of code multiple times.
 
 ### `repeat` {#repeat-loop}
 
-The `repeat{:tact}` loop executes a block of code a specified number of times. The number of repetitions should be given as a positive $32$-bit [`Int{:tact}`][int] in the inclusive range from $1$ to $2^{31} - 1$. If the value is greater, an error with the [exit code 5](/book/exit-codes#5), `Integer out of the expected range` would be thrown.
+The `repeat{:tact}` loop executes a block of code a specified number of times. The number of repetitions should be given as a positive $32$-bit [`Int{:tact}`][int] in the inclusive range from $1$ to $2^{31} - 1$. If the value is greater, an error with the [exit code 5](/book/exit-codes#5), `Integer out of expected range` would be thrown.
 
 If the specified number of repetitions is equal to $0$ or any negative number in the inclusive range $-2^{256}$ to $-1$, it is ignored and the code block is not executed at all.
 

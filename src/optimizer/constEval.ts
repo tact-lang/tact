@@ -18,11 +18,6 @@ import {
 } from "./interpreter";
 import { SrcInfo } from "../grammar";
 
-// FIXME: After merging PR #1621, change all calls to interpreter in this method to interpreter.interpretExpression(ast)
-// because a follow up will make all other methods in interpreter private. This is required to avoid a potential bug
-// where an external process calls an arbitrary method in the interpreter and the stack overflow check is not executed
-// as a result.
-
 // Utility Exception class to interrupt the execution
 // of functions that cannot evaluate a tree fully into a value.
 class PartiallyEvaluatedTree extends Error {
@@ -129,6 +124,7 @@ export const getOptimizer = (util: AstUtil) => {
         }
     }
 
+    // FIXME: Refactor this method in a separate PR because many cases in the switch do the same.
     function partiallyEvalExpression(
         ast: A.AstExpression,
         ctx: CompilerContext,
@@ -138,7 +134,7 @@ export const getOptimizer = (util: AstUtil) => {
         switch (ast.kind) {
             case "id":
                 try {
-                    return interpreter.interpretName(ast);
+                    return interpreter.interpretExpression(ast);
                 } catch (e) {
                     if (e instanceof TactConstEvalError) {
                         if (!e.fatal) {
@@ -150,7 +146,7 @@ export const getOptimizer = (util: AstUtil) => {
                 }
             case "method_call":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return interpreter.interpretMethodCall(ast);
+                return interpreter.interpretExpression(ast);
             case "init_of":
                 throwNonFatalErrorConstEval(
                     "initOf is not supported at this moment",
@@ -162,9 +158,9 @@ export const getOptimizer = (util: AstUtil) => {
             case "boolean":
                 return ast;
             case "number":
-                return interpreter.interpretNumber(ast);
+                return interpreter.interpretExpression(ast);
             case "string":
-                return interpreter.interpretString(ast);
+                return interpreter.interpretExpression(ast);
             case "simplified_string":
                 return ast;
             case "struct_value":
@@ -187,16 +183,16 @@ export const getOptimizer = (util: AstUtil) => {
                 );
             case "conditional":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return interpreter.interpretConditional(ast);
+                return interpreter.interpretExpression(ast);
             case "struct_instance":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return interpreter.interpretStructInstance(ast);
+                return interpreter.interpretExpression(ast);
             case "field_access":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return interpreter.interpretFieldAccess(ast);
+                return interpreter.interpretExpression(ast);
             case "static_call":
                 // Does not partially evaluate at the moment. Will attempt to fully evaluate
-                return interpreter.interpretStaticCall(ast);
+                return interpreter.interpretExpression(ast);
             default:
                 throwInternalCompilerError("Unrecognized expression kind");
         }

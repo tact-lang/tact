@@ -6,9 +6,11 @@ import { $ast } from "./grammar";
 import { TactCompilationError } from "../../error/errors";
 import { SyntaxErrors, syntaxErrorSchema } from "../parser-error";
 import { AstSchema, getAstSchema } from "../../ast/getAstSchema";
-import { getSrcInfo, ItemOrigin } from "../src-info";
+import { getSrcInfo } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
 import { makeMakeVisitor } from "../../utils/tricks";
+import { Language, Source } from "../../imports/source";
+import { emptyPath, fromString } from "../../imports/path";
 
 const makeVisitor = makeMakeVisitor("$");
 
@@ -751,57 +753,142 @@ const parseTypeId =
     };
 
 const parseTypeOptional =
-    ({ child, loc }: $ast.TypeOptional): Handler<A.AstType> =>
+    ({ type, loc }: $ast.$type): Handler<A.AstType> =>
     (ctx) => {
-        return ctx.ast.OptionalType(parseTypeId(child)(ctx), loc);
+        const {
+            type: innerType,
+            optionals: [firstOption, ...restOption],
+            loc: optionalLoc,
+        } = type;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+        if (firstOption) {
+            if (restOption.length !== 0) {
+                ctx.err.multipleOptionals()(optionalLoc);
+            }
+            if (innerType.$ !== "TypeRegular") {
+                ctx.err.onlyOptionalOfNamed()(optionalLoc);
+                return ctx.ast.OptionalType(
+                    ctx.ast.TypeId("ERROR", innerType.loc),
+                    optionalLoc,
+                );
+            }
+            const { child } = innerType;
+            return ctx.ast.OptionalType(
+                ctx.ast.TypeId(child.name, child.loc),
+                optionalLoc,
+            );
+        }
+        if (innerType.$ === "TypeRegular") {
+            const { name, loc } = innerType.child;
+            return ctx.ast.TypeId(name, loc);
+        }
+        const { name, args, loc: genericLoc } = innerType;
+        if (name.$ === "MapKeyword") {
+            const parsedArgs = parseList(args);
+            const [key, value, ...rest] = parsedArgs;
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+            if (!key || !value || rest.length > 0) {
+                ctx.err.genericArgCount(
+                    "map",
+                    2,
+                    parsedArgs.length,
+                )(genericLoc);
+                return ctx.ast.TypeId("ERROR", genericLoc);
+            }
+            const [keyAs, ...restKeyAs] = key.as;
+            if (restKeyAs.length > 0) {
+                ctx.err.mapOnlyOneAs("key")(genericLoc);
+            }
+            if (key.type.optionals.length > 0) {
+                ctx.err.cannotBeOptional("key")(genericLoc);
+            }
+            if (key.type.type.$ !== "TypeRegular") {
+                ctx.err.onlyTypeId("key")(genericLoc);
+                return ctx.ast.TypeId("ERROR", genericLoc);
+            }
+            const [valueAs, ...restValueAs] = value.as;
+            if (restValueAs.length > 0) {
+                ctx.err.mapOnlyOneAs("value")(genericLoc);
+            }
+            if (value.type.optionals.length > 0) {
+                ctx.err.cannotBeOptional("value")(genericLoc);
+            }
+            if (value.type.type.$ !== "TypeRegular") {
+                ctx.err.onlyTypeId("value")(genericLoc);
+                return ctx.ast.TypeId("ERROR", genericLoc);
+            }
+            const keyType = key.type.type.child;
+            const valueType = value.type.type.child;
+            return ctx.ast.MapType(
+                ctx.ast.TypeId(keyType.name, keyType.loc),
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+                keyAs ? ctx.ast.Id(keyAs.name, keyAs.loc) : null,
+                ctx.ast.TypeId(valueType.name, valueType.loc),
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+                valueAs ? ctx.ast.Id(valueAs.name, valueAs.loc) : null,
+                genericLoc,
+            );
+        }
+        if (name.$ === "Bounced") {
+            const parsedArgs = parseList(args);
+            const [arg, ...rest] = parsedArgs;
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+            if (!arg || rest.length > 0) {
+                ctx.err.genericArgCount(
+                    "bounced",
+                    1,
+                    parsedArgs.length,
+                )(genericLoc);
+                return ctx.ast.TypeId("ERROR", genericLoc);
+            }
+            if (
+                arg.as.length > 0 ||
+                arg.type.optionals.length > 0 ||
+                arg.type.type.$ !== "TypeRegular"
+            ) {
+                ctx.err.onlyBouncedOfNamed()(genericLoc);
+                return ctx.ast.TypeId("ERROR", genericLoc);
+            }
+            const type = arg.type.type.child;
+            return ctx.ast.BouncedMessageType(
+                ctx.ast.TypeId(type.name, type.loc),
+                loc,
+            );
+        }
+        ctx.err.unknownGeneric()(genericLoc);
+        return ctx.ast.TypeId("ERROR", genericLoc);
     };
 
-const parseTypeRegular =
-    ({ child }: $ast.TypeRegular): Handler<A.AstType> =>
+const parseType =
+    (node: $ast.$type): Handler<A.AstType> =>
     (ctx) => {
-        return parseTypeId(child)(ctx);
+        if (node.as.length > 0) {
+            ctx.err.asNotAllowed()(node.loc);
+        }
+        return parseTypeOptional(node)(ctx);
     };
-
-const parseTypeMap =
-    ({ key, keyAs, value, valueAs, loc }: $ast.TypeMap): Handler<A.AstType> =>
-    (ctx) => {
-        return ctx.ast.MapType(
-            parseTypeId(key)(ctx),
-            keyAs ? parseId(keyAs)(ctx) : null,
-            parseTypeId(value)(ctx),
-            valueAs ? parseId(valueAs)(ctx) : null,
-            loc,
-        );
-    };
-
-const parseTypeBounced =
-    ({ child, loc }: $ast.TypeBounced): Handler<A.AstType> =>
-    (ctx) => {
-        return ctx.ast.BouncedMessageType(parseTypeId(child)(ctx), loc);
-    };
-
-const parseType: (input: $ast.$type) => Handler<A.AstType> =
-    makeVisitor<$ast.$type>()({
-        TypeBounced: parseTypeBounced,
-        TypeMap: parseTypeMap,
-        TypeOptional: parseTypeOptional,
-        TypeRegular: parseTypeRegular,
-    });
 
 const parseFieldDecl =
     ({
         name,
-        as,
         type,
         expression,
         loc,
     }: $ast.FieldDecl): Handler<A.AstFieldDecl> =>
     (ctx) => {
+        const id = parseId(name)(ctx);
+        const expr = expression ? parseExpression(expression)(ctx) : null;
+        const [as, ...restAs] = type.as;
+        if (restAs.length > 0) {
+            ctx.err.fieldOnlyOneAs()(loc);
+        }
+        const ty = parseTypeOptional(type)(ctx);
         return ctx.ast.FieldDecl(
-            parseId(name)(ctx),
-            parseType(type)(ctx),
-            expression ? parseExpression(expression)(ctx) : null,
-            as ? parseId(as)(ctx) : null,
+            id,
+            ty,
+            expr,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+            as ? ctx.ast.Id(as.name, as.loc) : null,
             loc,
         );
     };
@@ -836,23 +923,34 @@ const parseReceiverExternal =
         );
     };
 
+const emptyLoc = { $: "range", start: 0, end: 0 } as const;
 const repairParam: $ast.receiverParam = {
     $: "Parameter",
     name: {
         $: "Id",
         name: "__invalid__",
-        loc: { $: "range", start: 0, end: 0 },
+        loc: emptyLoc,
     },
     type: {
-        $: "TypeRegular",
-        child: {
-            $: "TypeId",
-            name: "__Invalid__",
-            loc: { $: "range", start: 0, end: 0 },
+        $: "TypeAs",
+        as: [],
+        type: {
+            $: "TypeOptional",
+            optionals: [],
+            type: {
+                $: "TypeRegular",
+                child: {
+                    $: "TypeId",
+                    name: "__Invalid__",
+                    loc: emptyLoc,
+                },
+                loc: emptyLoc,
+            },
+            loc: emptyLoc,
         },
-        loc: { $: "range", start: 0, end: 0 },
+        loc: emptyLoc,
     },
-    loc: { $: "range", start: 0, end: 0 },
+    loc: emptyLoc,
 };
 
 const parseReceiverBounced =
@@ -943,7 +1041,7 @@ const parseConstantDefInModule =
             // FIXME: should be `firstAttribute.loc`
             // https://github.com/tact-lang/tact/issues/1255
             ctx.err.topLevelConstantWithAttribute()(node.loc);
-            result.attributes = [];
+            return { ...result, attributes: [] };
         }
         return result;
     };
@@ -1178,15 +1276,83 @@ const parseModuleItem: (input: $ast.moduleItem) => Handler<A.AstModuleItem> =
         Trait: parseTrait,
     });
 
+const detectLanguage = (path: string): Language | undefined => {
+    if (path.endsWith(".fc") || path.endsWith(".func")) {
+        return "func";
+    }
+
+    if (path.endsWith(".tact")) {
+        return "tact";
+    }
+
+    return undefined;
+};
+
+const guessExtension = (
+    importText: string,
+): { language: Language; guessedPath: string } => {
+    const language = detectLanguage(importText);
+    if (language) {
+        return { guessedPath: importText, language };
+    } else {
+        return { guessedPath: `${importText}.tact`, language: "tact" };
+    }
+};
+
+const stdlibPrefix = "@stdlib/";
+
+const parseImportString =
+    (importText: string, loc: $.Loc): Handler<A.ImportPath> =>
+    (ctx) => {
+        if (importText.endsWith("/")) {
+            ctx.err.noFolderImports()(loc);
+            importText = importText.slice(0, -1);
+        }
+
+        if (importText.includes("\\")) {
+            ctx.err.importWithBackslash()(loc);
+            importText = importText.replace(/\\/g, "/");
+        }
+
+        const { guessedPath, language } = guessExtension(importText);
+
+        if (guessedPath.startsWith(stdlibPrefix)) {
+            const path = fromString(guessedPath.substring(stdlibPrefix.length));
+
+            if (path.stepsUp !== 0) {
+                ctx.err.importWithBackslash()(loc);
+            }
+
+            return {
+                path,
+                type: "stdlib",
+                language,
+            };
+        } else if (
+            guessedPath.startsWith("./") ||
+            guessedPath.startsWith("../")
+        ) {
+            return {
+                path: fromString(guessedPath),
+                type: "relative",
+                language,
+            };
+        } else {
+            ctx.err.invalidImport()(loc);
+            return {
+                path: emptyPath,
+                type: "relative",
+                language: "tact",
+            };
+        }
+    };
+
 const parseImport =
     ({ path, loc }: $ast.Import): Handler<A.AstImport> =>
     (ctx) => {
-        if (path.value.includes("\\")) {
-            ctx.err.importWithBackslash()(loc);
-            path = { ...path, value: path.value.replace(/\\/g, "/") };
-        }
-
-        return ctx.ast.Import(parseStringLiteral(path)(ctx), loc);
+        const stringLiteral = parseStringLiteral(path)(ctx);
+        const parsedString: string = JSON.parse(`"${stringLiteral.value}"`);
+        return ctx.ast.Import(parseImportString(parsedString, loc)(ctx), loc);
     };
 
 const parseModule =
@@ -1210,16 +1376,14 @@ export const getParser = (ast: FactoryAst) => {
     const doParse = <T, U>(
         grammar: $.Parser<T>,
         handler: (t: T) => Handler<U>,
-        src: string,
-        path: string,
-        origin: ItemOrigin,
+        { code, path, origin }: Source,
     ) => {
         const locationToSrcInfo = (loc: $.Loc) => {
             if (loc.$ === "range") {
-                return getSrcInfo(src, loc.start, loc.end, path, origin);
+                return getSrcInfo(code, loc.start, loc.end, path, origin);
             } else {
                 console.error("Invalid range");
-                return getSrcInfo(src, loc.at, loc.at, path, origin);
+                return getSrcInfo(code, loc.at, loc.at, path, origin);
             }
         };
 
@@ -1237,7 +1401,7 @@ export const getParser = (ast: FactoryAst) => {
         const result = $.parse({
             grammar,
             space: G.space,
-            text: src,
+            text: code,
         });
         if (result.$ === "error") {
             const { expected, position } = result.error;
@@ -1255,27 +1419,25 @@ export const getParser = (ast: FactoryAst) => {
     };
 
     return {
-        parse: (src: string, path: string, origin: ItemOrigin): A.AstModule => {
-            return doParse(G.Module, parseModule, src, path, origin);
+        parse: (source: Source): A.AstModule => {
+            return doParse(G.Module, parseModule, source);
         },
-        parseExpression: (src: string): A.AstExpression => {
-            return doParse(
-                G.expression,
-                parseExpression,
-                src,
-                "<repl>",
-                "user",
-            );
+        parseExpression: (code: string): A.AstExpression => {
+            return doParse(G.expression, parseExpression, {
+                code,
+                path: "<repl>",
+                origin: "user",
+            });
         },
-        parseImports: (
-            src: string,
-            path: string,
-            origin: ItemOrigin,
-        ): A.AstImport[] => {
-            return doParse(G.JustImports, parseJustImports, src, path, origin);
+        parseImports: (source: Source): A.AstImport[] => {
+            return doParse(G.JustImports, parseJustImports, source);
         },
-        parseStatement: (src: string): A.AstStatement => {
-            return doParse(G.statement, parseStatement, src, "<repl>", "user");
+        parseStatement: (code: string): A.AstStatement => {
+            return doParse(G.statement, parseStatement, {
+                code,
+                path: "<repl>",
+                origin: "user",
+            });
         },
     };
 };

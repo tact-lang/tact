@@ -1,6 +1,6 @@
 import { CompilerContext } from "../context/context";
 import { SrcInfo } from "../grammar";
-import { TypeRef } from "../types/types";
+import { printTypeRef, TypeRef } from "../types/types";
 import { WriterContext } from "../generator/Writer";
 import { ops } from "../generator/writers/ops";
 import { writeExpression } from "../generator/writers/writeExpression";
@@ -8,10 +8,11 @@ import { throwCompilationError } from "../error/errors";
 import { getType } from "../types/resolveDescriptors";
 import { AbiFunction } from "./AbiFunction";
 import { AstExpression } from "../ast/ast";
+import { isAssignable } from "../types/subtyping";
 
 // Helper functions to avoid redundancy
 function checkArgumentsLength(
-    args: (TypeRef | undefined)[],
+    args: readonly (TypeRef | undefined)[],
     expected: number,
     message: string,
     ref: SrcInfo,
@@ -124,14 +125,14 @@ function handleStructOrOtherValue(
 }
 
 // The fully refactored MapFunctions object
-export const MapFunctions: Map<string, AbiFunction> = new Map([
+export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
     [
         "set",
         {
             name: "set",
             resolve(
                 ctx: CompilerContext,
-                args: (TypeRef | undefined)[],
+                args: readonly (TypeRef | undefined)[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(args, 3, "set expects two arguments", ref);
@@ -146,8 +147,8 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             },
             generate(
                 ctx: WriterContext,
-                args: (TypeRef | undefined)[],
-                exprs: AstExpression[],
+                args: readonly (TypeRef | undefined)[],
+                exprs: readonly AstExpression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(args, 3, "set expects two arguments", ref);
@@ -207,7 +208,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             name: "get",
             resolve(
                 ctx: CompilerContext,
-                args: (TypeRef | undefined)[],
+                args: readonly (TypeRef | undefined)[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(args, 2, "get expects one argument", ref);
@@ -220,8 +221,8 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             },
             generate(
                 ctx: WriterContext,
-                args: (TypeRef | undefined)[],
-                exprs: AstExpression[],
+                args: readonly (TypeRef | undefined)[],
+                exprs: readonly AstExpression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(args, 2, "get expects one argument", ref);
@@ -292,7 +293,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             name: "del",
             resolve(
                 ctx: CompilerContext,
-                args: (TypeRef | undefined)[],
+                args: readonly (TypeRef | undefined)[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(args, 2, "del expects one argument", ref);
@@ -306,8 +307,8 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             },
             generate(
                 ctx: WriterContext,
-                args: (TypeRef | undefined)[],
-                exprs: AstExpression[],
+                args: readonly (TypeRef | undefined)[],
+                exprs: readonly AstExpression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(args, 2, "del expects one argument", ref);
@@ -339,7 +340,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             name: "asCell",
             resolve(
                 ctx: CompilerContext,
-                args: (TypeRef | undefined)[],
+                args: readonly (TypeRef | undefined)[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -356,8 +357,8 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             },
             generate(
                 ctx: WriterContext,
-                args: (TypeRef | undefined)[],
-                exprs: AstExpression[],
+                args: readonly (TypeRef | undefined)[],
+                exprs: readonly AstExpression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -380,7 +381,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             name: "isEmpty",
             resolve(
                 ctx: CompilerContext,
-                args: (TypeRef | undefined)[],
+                args: readonly (TypeRef | undefined)[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -397,8 +398,8 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             },
             generate(
                 ctx: WriterContext,
-                args: (TypeRef | undefined)[],
-                exprs: AstExpression[],
+                args: readonly (TypeRef | undefined)[],
+                exprs: readonly AstExpression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -421,7 +422,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             name: "exists",
             resolve(
                 ctx: CompilerContext,
-                args: (TypeRef | undefined)[],
+                args: readonly (TypeRef | undefined)[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -440,8 +441,8 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             },
             generate(
                 ctx: WriterContext,
-                args: (TypeRef | undefined)[],
-                exprs: AstExpression[],
+                args: readonly (TypeRef | undefined)[],
+                exprs: readonly AstExpression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -478,7 +479,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             name: "deepEquals",
             resolve(
                 ctx: CompilerContext,
-                args: (TypeRef | undefined)[],
+                args: readonly (TypeRef | undefined)[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -492,12 +493,19 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
                 checkMapType(self, ref);
                 checkMapType(other, ref);
 
+                if (!isAssignable(self, other)) {
+                    throwCompilationError(
+                        `Type mismatch: cannot pass argument of type "${printTypeRef(other)}" to parameter of type "${printTypeRef(self)}"`,
+                        ref,
+                    );
+                }
+
                 return { kind: "ref", name: "Bool", optional: false };
             },
             generate(
                 ctx: WriterContext,
-                args: (TypeRef | undefined)[],
-                exprs: AstExpression[],
+                args: readonly (TypeRef | undefined)[],
+                exprs: readonly AstExpression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -548,7 +556,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             name: "replace",
             resolve(
                 ctx: CompilerContext,
-                args: (TypeRef | undefined)[],
+                args: readonly (TypeRef | undefined)[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -568,8 +576,8 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             },
             generate(
                 ctx: WriterContext,
-                args: (TypeRef | undefined)[],
-                exprs: AstExpression[],
+                args: readonly (TypeRef | undefined)[],
+                exprs: readonly AstExpression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -634,7 +642,7 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             name: "replaceGet",
             resolve(
                 ctx: CompilerContext,
-                args: (TypeRef | undefined)[],
+                args: readonly (TypeRef | undefined)[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -654,8 +662,8 @@ export const MapFunctions: Map<string, AbiFunction> = new Map([
             },
             generate(
                 ctx: WriterContext,
-                args: (TypeRef | undefined)[],
-                exprs: AstExpression[],
+                args: readonly (TypeRef | undefined)[],
+                exprs: readonly AstExpression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(

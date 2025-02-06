@@ -41,11 +41,11 @@ import {
 import { enabledExternals } from "../config/features";
 import { isRuntimeType } from "./isRuntimeType";
 import { GlobalFunctions } from "../abi/global";
-import { ItemOrigin } from "../grammar";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { addVariable, emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
 import { AstUtil, getAstUtil } from "../ast/util";
+import { ItemOrigin } from "../imports/source";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -585,14 +585,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     ) {
                         throwCompilationError(
                             `Constant ${idTextErr(traitDecl.name)} already exists`,
-                            traitDecl.loc,
-                        );
-                    }
-                    if (
-                        traitDecl.attributes.find((v) => v.type === "override")
-                    ) {
-                        throwCompilationError(
-                            `Trait constant cannot be overridden`,
                             traitDecl.loc,
                         );
                     }
@@ -1519,7 +1511,12 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     );
                 }
             }
-            visit("BaseTrait");
+
+            // implicitly inherit from BaseTrait only in contracts
+            if (t.ast.kind === "contract") {
+                visit("BaseTrait");
+            }
+
             for (const s of t.ast.traits) {
                 visit(idText(s));
             }
@@ -1608,11 +1605,37 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             );
 
             if (!foundOverriddenFunction) {
-                const msg = inheritOnlyBaseTrait
-                    ? `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier or inherit any traits with this function`
-                    : `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier`;
+                const msg =
+                    contractOrTrait.traits.length === 0 || inheritOnlyBaseTrait
+                        ? `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier or inherit any traits with this function`
+                        : `Function "${funInContractOrTrait.name}" overrides nothing, remove "override" modifier`;
 
                 throwCompilationError(msg, funInContractOrTrait.ast.loc);
+            }
+        }
+
+        // Check that "override" constants have a super constant
+        for (const constantInContractOrTrait of contractOrTrait.constants.values()) {
+            const isOverride = constantInContractOrTrait.ast.attributes.find(
+                (a) => a.type === "override",
+            );
+            if (!isOverride) {
+                continue;
+            }
+
+            const foundOverriddenConstant = contractOrTrait.traits.some((t) =>
+                t.constants.some(
+                    (c) => c.name === constantInContractOrTrait.name,
+                ),
+            );
+
+            if (!foundOverriddenConstant) {
+                const msg =
+                    contractOrTrait.traits.length === 0 || inheritOnlyBaseTrait
+                        ? `Constant "${constantInContractOrTrait.name}" overrides nothing, remove "override" modifier or inherit any traits with this constant`
+                        : `Constant "${constantInContractOrTrait.name}" overrides nothing, remove "override" modifier`;
+
+                throwCompilationError(msg, constantInContractOrTrait.ast.loc);
             }
         }
 
@@ -1689,10 +1712,17 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                             funInContractOrTrait.ast.loc,
                         );
                     }
-                    throwCompilationError(
-                        `Function "${traitFunction.name}" is already defined in trait "${inheritedTrait.name}"`,
-                        funInContractOrTrait.ast.loc,
-                    );
+
+                    if (
+                        traitFunction.ast.attributes.find(
+                            (v) => v.type === "override",
+                        ) === undefined
+                    ) {
+                        throwCompilationError(
+                            `Function "${traitFunction.name}" is already defined in trait "${inheritedTrait.name}"`,
+                            funInContractOrTrait.ast.loc,
+                        );
+                    }
                 }
 
                 // Register function
@@ -1755,10 +1785,17 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                             constInContractOrTrait.ast.loc,
                         );
                     }
-                    throwCompilationError(
-                        `Constant "${traitConstant.name}" is already defined in trait "${inheritedTrait.name}"`,
-                        constInContractOrTrait.ast.loc,
-                    );
+
+                    if (
+                        traitConstant.ast.attributes.find(
+                            (v) => v.type === "override",
+                        ) === undefined
+                    ) {
+                        throwCompilationError(
+                            `Constant "${traitConstant.name}" is already defined in trait "${inheritedTrait.name}"`,
+                            constInContractOrTrait.ast.loc,
+                        );
+                    }
                 }
                 const contractField = contractOrTrait.fields.find(
                     (v) => v.name === traitConstant.name,
@@ -1769,6 +1806,18 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         `Contract ${contractOrTrait.name} inherits constant "${traitConstant.name}" from its traits and hence cannot have a storage variable with the same name`,
                         contractField.loc,
                     );
+                }
+
+                if (
+                    traitConstant.ast.attributes.find(
+                        (v) => v.type === "override",
+                    )
+                ) {
+                    // remove overridden constant
+                    contractOrTrait.constants =
+                        contractOrTrait.constants.filter(
+                            (c) => c.name !== traitConstant.name,
+                        );
                 }
 
                 // Register constant

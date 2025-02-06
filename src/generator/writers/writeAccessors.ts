@@ -1,7 +1,6 @@
 import { contractErrors } from "../../abi/errors";
 import { maxTupleSize } from "../../bindings/typescript/writeStruct";
 import { enabledDebug, enabledNullChecks } from "../../config/features";
-import { ItemOrigin } from "../../grammar";
 import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription } from "../../types/types";
 import { WriterContext } from "../Writer";
@@ -10,6 +9,7 @@ import { resolveFuncFlatPack } from "./resolveFuncFlatPack";
 import { resolveFuncFlatTypes } from "./resolveFuncFlatTypes";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
+import { ItemOrigin } from "../../imports/source";
 
 function chainVars(vars: string[]): string[] {
     // let's say we have vars = ['v1', 'v2, ..., 'v32']
