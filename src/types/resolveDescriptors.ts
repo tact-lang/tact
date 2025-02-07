@@ -844,7 +844,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         for (const param of params) {
             if (isSelfId(param.name)) {
                 throwCompilationError(
-                    'Parameter name "self" is reserved',
+                    'Parameter name "self" is reserved, consider using "extends" function modifier',
                     param.loc,
                 );
             }

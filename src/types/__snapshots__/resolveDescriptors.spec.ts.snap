@@ -479,7 +479,7 @@ exports[`resolveDescriptors should fail descriptors for method-first-param-not-s
 `;
 
 exports[`resolveDescriptors should fail descriptors for method-first-param-not-self2 1`] = `
-"<unknown>:8:17: Parameter name "self" is reserved
+"<unknown>:8:17: Parameter name "self" is reserved, consider using "extends" function modifier
   7 | 
 > 8 | fun inc(a: Int, self: Int): Int {
                       ^~~~~~~~~
@@ -492,6 +492,15 @@ exports[`resolveDescriptors should fail descriptors for native-fun-getter 1`] = 
   8 | @name(hello_world)
 > 9 | get native sample(a: Int): Int;
       ^~~
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for not-extend-function-self-param 1`] = `
+"<unknown>:3:30: Parameter name "self" is reserved, consider using "extends" function modifier
+  2 | 
+> 3 | asm(other self) fun testFunc(self: Int, other: Int) { 2 BLKDROP }
+                                   ^~~~~~~~~
+  4 | 
 "
 `;
 
