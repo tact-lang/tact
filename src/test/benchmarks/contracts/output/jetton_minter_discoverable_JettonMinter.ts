@@ -19,7 +19,6 @@ import {
     TupleBuilder,
     DictionaryValue, toNano
 } from '@ton/core';
-import {emptySlice} from "./cells_emptySlice";
 
 export type DataSize = {
     $$type: 'DataSize';

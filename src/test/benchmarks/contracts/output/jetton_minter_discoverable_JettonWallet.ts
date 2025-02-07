@@ -1624,8 +1624,6 @@ function initJettonWallet_init_args(src: JettonWallet_init_args) {
         const b_0 = builder;
         b_0.storeAddress(src.owner);
         b_0.storeAddress(src.master);
-        console.log('Master address:', src.master);
-        console.log('Owner address:', src.owner);
     };
 }
 
