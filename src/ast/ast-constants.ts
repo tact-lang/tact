@@ -1,4 +1,20 @@
-const augmentedAssignOperationsRecord = {
+import { keys } from "../utils/tricks";
+
+type AugmentedAssignOperator =
+    | "+"
+    | "-"
+    | "*"
+    | "/"
+    | "&&"
+    | "||"
+    | "%"
+    | "|"
+    | "<<"
+    | ">>"
+    | "&"
+    | "^";
+
+const augmentedAssignOperationsRecord: Record<AugmentedAssignOperator, true> = {
     "+": true,
     "-": true,
     "*": true,
@@ -14,10 +30,30 @@ const augmentedAssignOperationsRecord = {
 };
 
 export const astAugmentedAssignOperations = Object.freeze(
-    Object.keys(augmentedAssignOperationsRecord),
+    keys(augmentedAssignOperationsRecord),
 );
 
-const binaryOperationsRecord = {
+type BinaryOperator =
+    | "+"
+    | "-"
+    | "*"
+    | "/"
+    | "!="
+    | ">"
+    | "<"
+    | ">="
+    | "<="
+    | "=="
+    | "&&"
+    | "||"
+    | "%"
+    | "<<"
+    | ">>"
+    | "&"
+    | "|"
+    | "^";
+
+const binaryOperationsRecord: Record<BinaryOperator, true> = {
     "+": true,
     "-": true,
     "*": true,
@@ -38,11 +74,11 @@ const binaryOperationsRecord = {
     "^": true,
 };
 
-export const astBinaryOperations = Object.freeze(
-    Object.keys(binaryOperationsRecord),
-);
+export const astBinaryOperations = Object.freeze(keys(binaryOperationsRecord));
 
-const unaryOperationsRecord = {
+type UnaryOperator = "+" | "-" | "!" | "!!" | "~";
+
+const unaryOperationsRecord: Record<UnaryOperator, true> = {
     "+": true,
     "-": true,
     "!": true,
@@ -50,11 +86,11 @@ const unaryOperationsRecord = {
     "~": true,
 };
 
-export const astUnaryOperations = Object.freeze(
-    Object.keys(unaryOperationsRecord),
-);
+export const astUnaryOperations = Object.freeze(keys(unaryOperationsRecord));
 
-const numberBasesRecord = {
+type NumberBase = 2 | 8 | 10 | 16;
+
+const numberBasesRecord: Record<NumberBase, true> = {
     2: true,
     8: true,
     10: true,
@@ -62,29 +98,41 @@ const numberBasesRecord = {
 };
 
 export const astNumberBases = Object.freeze(
-    Object.keys(numberBasesRecord).map(Number),
+    keys(numberBasesRecord).map(Number),
 ) as readonly number[];
 
 // This is different from ItemOrigin, because relative import
 // from standard library is still import with origin: "stdlib"
-const importTypesRecord = {
+type ImportType = "stdlib" | "relative";
+
+const importTypesRecord: Record<ImportType, true> = {
     stdlib: true,
     relative: true,
 };
 
-export const importTypes = Object.freeze(Object.keys(importTypesRecord));
+export const importTypes = Object.freeze(keys(importTypesRecord));
 
-const constantAttributeNamesRecord = {
+type ConstantAttributeName = "virtual" | "override" | "abstract";
+
+const constantAttributeNamesRecord: Record<ConstantAttributeName, true> = {
     virtual: true,
     override: true,
     abstract: true,
 };
 
 export const astConstantAttributeNames = Object.freeze(
-    Object.keys(constantAttributeNamesRecord),
+    keys(constantAttributeNamesRecord),
 );
 
-const functionAttributeNamesRecord = {
+type FunctionAttributeName =
+    | "mutates"
+    | "extends"
+    | "virtual"
+    | "abstract"
+    | "override"
+    | "inline";
+
+const functionAttributeNamesRecord: Record<FunctionAttributeName, true> = {
     mutates: true,
     extends: true,
     virtual: true,
@@ -94,5 +142,5 @@ const functionAttributeNamesRecord = {
 };
 
 export const astFunctionAttributeNames = Object.freeze(
-    Object.keys(functionAttributeNamesRecord),
+    keys(functionAttributeNamesRecord),
 );

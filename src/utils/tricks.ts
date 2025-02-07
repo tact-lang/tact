@@ -146,3 +146,5 @@ export const singleton = <K extends string | symbol, V>(key: K, value: V) => {
 export const entries = Object.entries as <O>(
     o: O,
 ) => { [K in keyof O]: [K, O[K]] }[keyof O][];
+
+export const keys = Object.keys as <O>(o: O) => (keyof O)[];
