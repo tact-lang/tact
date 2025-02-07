@@ -9,7 +9,7 @@ export const displayToString: ErrorDisplay<string> = {
     text: (text) => text,
     sub: (parts, ...subst) => {
         const [head, ...tail] = parts;
-        if (!head) {
+        if (typeof head === "undefined") {
             return "";
         }
         return tail.reduce((acc, part, index) => {
