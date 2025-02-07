@@ -79,6 +79,11 @@ describe("semantics", () => {
         expect(await contract.getOrMutateShortCircuit()).toEqual(true);
         expect(await contract.getOrInfiniteLoopShortCircuit()).toEqual(true);
         expect(await contract.getOrExceptionShortCircuit()).toEqual(true);
+        expect(await contract.getTernaryMutateShortCircuit()).toEqual(true);
+        expect(await contract.getTernaryInfiniteLoopShortCircuit()).toEqual(
+            true,
+        );
+        expect(await contract.getTernaryExceptionShortCircuit()).toEqual(true);
 
         // Contracts
 
@@ -116,6 +121,9 @@ describe("semantics", () => {
 
         // Testing equality on addresses
         expect(await contract.getTestAddressEquality()).toEqual(true);
+        expect(
+            await contract.getTestInversesParseStdAddressAndNewAddress(),
+        ).toEqual(true);
 
         // Testing equality on slices
         expect(await contract.getTestSliceEquality1()).toEqual(true);

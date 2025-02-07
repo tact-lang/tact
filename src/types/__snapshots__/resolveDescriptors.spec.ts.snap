@@ -2005,7 +2005,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
           "id": 9,
           "initializer": {
             "base": 10,
-            "id": 8,
+            "id": 7,
             "kind": "number",
             "loc": 42,
             "value": 42n,
@@ -2019,7 +2019,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
             "text": "s",
           },
           "type": {
-            "id": 7,
+            "id": 8,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -2055,7 +2055,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
           "id": 9,
           "initializer": {
             "base": 10,
-            "id": 8,
+            "id": 7,
             "kind": "number",
             "loc": 42,
             "value": 42n,
@@ -2069,7 +2069,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
             "text": "s",
           },
           "type": {
-            "id": 7,
+            "id": 8,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -2077,7 +2077,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
         },
         "default": {
           "base": 10,
-          "id": 8,
+          "id": 7,
           "kind": "number",
           "loc": 42,
           "value": 42n,
@@ -4374,7 +4374,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
           "id": 11,
           "initializer": {
             "base": 10,
-            "id": 10,
+            "id": 9,
             "kind": "number",
             "loc": 0,
             "value": 0n,
@@ -4388,7 +4388,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
             "text": "a",
           },
           "type": {
-            "id": 9,
+            "id": 10,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -4399,7 +4399,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
           "id": 15,
           "initializer": {
             "base": 10,
-            "id": 14,
+            "id": 13,
             "kind": "number",
             "loc": 0,
             "value": 0n,
@@ -4413,7 +4413,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
             "text": "b",
           },
           "type": {
-            "id": 13,
+            "id": 14,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -4538,7 +4538,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
           "id": 11,
           "initializer": {
             "base": 10,
-            "id": 10,
+            "id": 9,
             "kind": "number",
             "loc": 0,
             "value": 0n,
@@ -4552,7 +4552,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
             "text": "a",
           },
           "type": {
-            "id": 9,
+            "id": 10,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -4560,7 +4560,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
         },
         "default": {
           "base": 10,
-          "id": 10,
+          "id": 9,
           "kind": "number",
           "loc": 0,
           "value": 0n,
@@ -4590,7 +4590,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
           "id": 15,
           "initializer": {
             "base": 10,
-            "id": 14,
+            "id": 13,
             "kind": "number",
             "loc": 0,
             "value": 0n,
@@ -4604,7 +4604,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
             "text": "b",
           },
           "type": {
-            "id": 13,
+            "id": 14,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -4612,7 +4612,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
         },
         "default": {
           "base": 10,
-          "id": 14,
+          "id": 13,
           "kind": "number",
           "loc": 0,
           "value": 0n,
@@ -28632,7 +28632,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
           "id": 9,
           "initializer": {
             "base": 10,
-            "id": 8,
+            "id": 7,
             "kind": "number",
             "loc": 42,
             "value": 42n,
@@ -28646,7 +28646,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
             "text": "a",
           },
           "type": {
-            "id": 7,
+            "id": 8,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -28682,7 +28682,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
           "id": 9,
           "initializer": {
             "base": 10,
-            "id": 8,
+            "id": 7,
             "kind": "number",
             "loc": 42,
             "value": 42n,
@@ -28696,7 +28696,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
             "text": "a",
           },
           "type": {
-            "id": 7,
+            "id": 8,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -28704,7 +28704,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
         },
         "default": {
           "base": 10,
-          "id": 8,
+          "id": 7,
           "kind": "number",
           "loc": 42,
           "value": 42n,

@@ -52,6 +52,7 @@ idict
 infixl
 infixr
 initof
+injectivity
 Ints
 ipfs
 IPFS
