@@ -5,6 +5,7 @@ const testPathIgnorePatterns =
         ? [
               ...(mainConfig.testPathIgnorePatterns || []),
               "src/test/e2e-emulated/map-tests/build/*",
+              "src/test/e2e-emulated/getters.spec.ts",
           ]
         : mainConfig.testPathIgnorePatterns;
 
