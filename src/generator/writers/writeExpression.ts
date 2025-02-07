@@ -647,7 +647,7 @@ export function writeExpression(
             } else {
                 // Rearranges the arguments in the order described in Asm Shuffle
                 //
-                // Foe example:
+                // For example:
                 // `asm(other self) fun foo(self: Type, other: Type2)` and
                 // `foo(10, 20)` generates as
                 // `foo(20, 10)`
@@ -657,21 +657,20 @@ export function writeExpression(
                     methodDescr.ast.shuffle.args.length > 1 &&
                     methodDescr.ast.shuffle.ret.length === 0
                 ) {
-                    const declaredArgs = [
-                        { name: "self", value: s },
-                        ...f.args.map((_, i) => ({
-                            name: methodDescr.params[i]!.name.text,
-                            value: renderedArguments[i]!,
-                        })),
+                    const renderedSelfAndArguments = [s, ...renderedArguments];
+                    const selfAndParameters = [
+                        "self",
+                        ...methodDescr.params.map((p) => idText(p.name)),
                     ];
-
-                    const argsDict = Object.fromEntries(
-                        declaredArgs.map((a) => [a.name, a.value]),
+                    const shuffledArgs = methodDescr.ast.shuffle.args.map(
+                        (shuffleArg) => {
+                            const i = selfAndParameters.indexOf(
+                                idText(shuffleArg),
+                            );
+                            return renderedSelfAndArguments[i];
+                        },
                     );
-                    const shuffledValues = methodDescr.ast.shuffle.args.map(
-                        (arg) => argsDict[arg.text],
-                    );
-                    return `${name}(${shuffledValues.join(", ")})`;
+                    return `${name}(${shuffledArgs.join(", ")})`;
                 }
 
                 return `${name}(${[s, ...renderedArguments].join(", ")})`;
