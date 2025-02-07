@@ -2,6 +2,15 @@ import { Address, Cell, Slice } from "@ton/core";
 import { SrcInfo } from "../grammar/src-info";
 import { RelativePath } from "../imports/path";
 import { Language } from "../imports/source";
+import {
+    astAugmentedAssignOperations,
+    astBinaryOperations,
+    astConstantAttributeNames,
+    astFunctionAttributeNames,
+    astNumberBases,
+    astUnaryOperations,
+    importTypes,
+} from "./ast-constants";
 
 export type AstModule = {
     readonly kind: "module";
@@ -241,21 +250,6 @@ export type AstStatementAssign = {
     readonly loc: SrcInfo;
 };
 
-export const astAugmentedAssignOperations = [
-    "+",
-    "-",
-    "*",
-    "/",
-    "&&",
-    "||",
-    "%",
-    "|",
-    "<<",
-    ">>",
-    "&",
-    "^",
-] as const;
-
 export type AstAugmentedAssignOperation =
     (typeof astAugmentedAssignOperations)[number];
 
@@ -411,27 +405,6 @@ export type AstLiteral =
     | AstSlice
     | AstStructValue;
 
-export const astBinaryOperations = [
-    "+",
-    "-",
-    "*",
-    "/",
-    "!=",
-    ">",
-    "<",
-    ">=",
-    "<=",
-    "==",
-    "&&",
-    "||",
-    "%",
-    "<<",
-    ">>",
-    "&",
-    "|",
-    "^",
-] as const;
-
 export type AstBinaryOperation = (typeof astBinaryOperations)[number];
 
 export type AstOpBinary = {
@@ -442,8 +415,6 @@ export type AstOpBinary = {
     readonly id: number;
     readonly loc: SrcInfo;
 };
-
-export const astUnaryOperations = ["+", "-", "!", "!!", "~"] as const;
 
 export type AstUnaryOperation = (typeof astUnaryOperations)[number];
 
@@ -551,8 +522,6 @@ export type AstNumber = {
     readonly loc: SrcInfo;
 };
 
-export const astNumberBases = [2, 8, 10, 16] as const;
-
 export type AstNumberBase = (typeof astNumberBases)[number];
 
 export type AstBoolean = {
@@ -568,10 +537,6 @@ export type ImportPath = {
     readonly type: ImportType;
     readonly language: Language;
 };
-
-// This is different from ItemOrigin, because relative import
-// from standard library is still import with origin: "stdlib"
-export const importTypes = ["stdlib", "relative"] as const;
 
 export type ImportType = (typeof importTypes)[number];
 
@@ -642,12 +607,6 @@ export type AstStructFieldValue = {
     readonly loc: SrcInfo;
 };
 
-export const astConstantAttributeNames = [
-    "virtual",
-    "override",
-    "abstract",
-] as const;
-
 export type AstConstantAttributeName =
     (typeof astConstantAttributeNames)[number];
 
@@ -668,15 +627,6 @@ export type AstFunctionAttributeGet = {
     readonly methodId: AstExpression | null;
     readonly loc: SrcInfo;
 };
-
-export const astFunctionAttributeNames = [
-    "mutates",
-    "extends",
-    "virtual",
-    "abstract",
-    "override",
-    "inline",
-] as const;
 
 export type AstFunctionAttributeName =
     (typeof astFunctionAttributeNames)[number];
