@@ -9,6 +9,14 @@ exports[`grammar should fail abstract-const-without-modifier 1`] = `
 "
 `;
 
+exports[`grammar should fail asm-instruction-string 1`] = `
+"<unknown>:1:32: Expected "/*", "//", "{", or "}"
+> 1 | asm fun Bar(): Address { b{00} "PUSHSLICE" }
+                                     ^
+  2 | 
+"
+`;
+
 exports[`grammar should fail const-abstract-abstract 1`] = `
 "<unknown>:4:10: Duplicate constant attribute "abstract"
   3 | 

@@ -169,7 +169,7 @@ export namespace $ast {
   export type multiLineComment = string;
   export type singleLineComment = string;
   export type comment = multiLineComment | singleLineComment;
-  export type assemblyItem = {} | comment | {} | readonly {}[];
+  export type assemblyItem = {} | comment | readonly {}[];
   export type assemblySequence = readonly assemblyItem[];
   export type TypeAs = $.Located<{
     readonly $: "TypeAs";
@@ -448,7 +448,7 @@ export const assembly: $.Parser<$ast.assembly> = $.lex($.stry($.lazy(() => assem
 export const multiLineComment: $.Parser<$ast.multiLineComment> = $.right($.str("/*"), $.left($.stry($.star($.right($.lookNeg($.str("*/")), $.right($.any, $.eps)))), $.str("*/")));
 export const singleLineComment: $.Parser<$ast.singleLineComment> = $.right($.str("//"), $.stry($.star($.regex<"\r" | "\n">("^\\r\\n", $.negateExps([$.ExpString("\r"), $.ExpString("\n")])))));
 export const comment: $.Parser<$ast.comment> = $.alt(multiLineComment, singleLineComment);
-export const assemblyItem: $.Parser<$ast.assemblyItem> = $.alt($.right($.str("{"), $.right($.lazy(() => assemblySequence), $.right($.str("}"), $.eps))), $.alt(comment, $.alt($.right($.str("\""), $.right($.star($.regex<"\"">("^\"", $.negateExps([$.ExpString("\"")]))), $.right($.str("\""), $.eps))), $.plus($.right($.lookNeg($.alt($.regex<"\"" | "{" | "}">("\"{}", [$.ExpString("\""), $.ExpString("{"), $.ExpString("}")]), $.alt($.str("//"), $.str("/*")))), $.right($.any, $.eps))))));
+export const assemblyItem: $.Parser<$ast.assemblyItem> = $.alt($.right($.str("{"), $.right($.lazy(() => assemblySequence), $.right($.str("}"), $.eps))), $.alt(comment, $.plus($.right($.lookNeg($.alt($.regex<"\"" | "{" | "}">("\"{}", [$.ExpString("\""), $.ExpString("{"), $.ExpString("}")]), $.alt($.str("//"), $.str("/*")))), $.right($.any, $.eps)))));
 export const assemblySequence: $.Parser<$ast.assemblySequence> = $.star(assemblyItem);
 export const TypeAs: $.Parser<$ast.TypeAs> = $.loc($.field($.pure("TypeAs"), "$", $.field($.lazy(() => TypeOptional), "type", $.field($.star($.right(keyword($.str("as")), Id)), "as", $.eps))));
 export const $type: $.Parser<$ast.$type> = TypeAs;
