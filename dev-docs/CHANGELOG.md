@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for block statements: PR [#1334](https://github.com/tact-lang/tact/pull/1334)
 - `nullChecks` config option to disable run-time null checks for the `!!` operator in order to save gas: PR [#1660](https://github.com/tact-lang/tact/pull/1660)
 - `loadVarInt16`, `loadVarUint16`, `loadVarInt32`, `loadVarUint32` methods for the `Slice` type: PR [#1667](https://github.com/tact-lang/tact/pull/1667)
+- New functions in stdlib from `stdlib.fc` and `math.fc`: `Builder.depth`, `Slice.skipLastBits`, `Slice.firstBits`, `Slice.lastBits`, `Slice.depth`, `Cell.computeDataSize`, `Slice.computeDataSize`, `Cell.depth`, `curLt`, `blockLt`, `setGasLimit`, `getSeed`, `setSeed`, `myCode`, `sign`, `divc`, `muldivc`, `mulShiftRight`, `mulShiftRightRound`, `mulShiftRightCeil`, `sqrt`: PR [#986](https://github.com/tact-lang/tact/pull/986)
 
 ### Changed
 
@@ -44,6 +45,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better error message for `unresolved name` error: PR [#1595](https://github.com/tact-lang/tact/pull/1595)
 - Better error message for `unresolved global function` error: PR [#1610](https://github.com/tact-lang/tact/pull/1610)
 - Better error message for `extend function without parameters` error: PR [#1624](https://github.com/tact-lang/tact/pull/1624)
+- Don't generate `lazy_deployment_completed` by default: PR [#1717](https://github.com/tact-lang/tact/pull/1717)
+- Optimized `emptyCell()` and `emptySlice()` functions: PR [#1696](https://github.com/tact-lang/tact/pull/1696)
 
 ### Fixed
 
@@ -76,6 +79,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Incorrect call generation to a mutation function: PR [#1608](https://github.com/tact-lang/tact/pull/1608)
 - Allow constant/trait constants depend on each other: PR [#1622](https://github.com/tact-lang/tact/pull/1622)
 - Combine all generated FunC code into a single file: PR [#1698](https://github.com/tact-lang/tact/pull/1698)
+- Runtime `sha256` now work for arbitrary strings with length >= 128: PR [#1626](https://github.com/tact-lang/tact/pull/1626)
+- Generated code in TypeScript wrappers for contract with `init(init: Init)`: PR [#1709](https://github.com/tact-lang/tact/pull/1709)
+- Error message for comment (text) receivers with 124 bytes or more: PR [#1711](https://github.com/tact-lang/tact/pull/1711)
+- Support overriding constants and methods of BaseTrait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
+- Forbid traits inherit implicitly from BaseTrait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
+- Forbid the `override` modifier for constants without the corresponding super-constant: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
 
 ### Docs
 
@@ -111,6 +120,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved Chinese localization of the documentation: PR [#1642](https://github.com/tact-lang/tact/pull/1642)
 - Removed the notion of the non-standard TL-B syntax `remainder<X>`: PR [#1599](https://github.com/tact-lang/tact/pull/1599)
 - Added description of `.boc`, `.ts`, `.abi`, `.pkg` files and completed Compilation page: PR [#1676](https://github.com/tact-lang/tact/pull/1676)
+- Marked gas-expensive functions and expressions: PR [#1703](https://github.com/tact-lang/tact/pull/1703)
+- Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
 
 ### Release contributors
 

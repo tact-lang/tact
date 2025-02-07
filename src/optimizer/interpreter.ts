@@ -21,7 +21,6 @@ import {
 } from "../types/resolveDescriptors";
 import { getExpType } from "../types/resolveExpression";
 import { showValue, TypeRef } from "../types/types";
-import { sha256_sync } from "@ton/crypto";
 import { defaultParser, getParser, Parser } from "../grammar/grammar";
 import { dummySrcInfo, SrcInfo } from "../grammar";
 import {
@@ -33,6 +32,7 @@ import {
     isSelfId,
 } from "../ast/ast-helpers";
 import { divFloor, modFloor } from "./util";
+import { sha256 } from "../utils/sha256";
 
 // TVM integers are signed 257-bit integers
 const minTvmInt: bigint = -(2n ** 256n);
@@ -787,7 +787,7 @@ export class Interpreter {
         });
     }
 
-    public interpretModuleItemInternal(ast: A.AstModuleItem) {
+    private interpretModuleItemInternal(ast: A.AstModuleItem) {
         switch (ast.kind) {
             case "constant_def":
                 this.interpretConstantDef(ast);
@@ -822,63 +822,63 @@ export class Interpreter {
         }
     }
 
-    public interpretConstantDef(ast: A.AstConstantDef) {
+    private interpretConstantDef(ast: A.AstConstantDef) {
         throwNonFatalErrorConstEval(
             "Constant definitions are currently not supported.",
             ast.loc,
         );
     }
 
-    public interpretFunctionDef(ast: A.AstFunctionDef) {
+    private interpretFunctionDef(ast: A.AstFunctionDef) {
         throwNonFatalErrorConstEval(
             "Function definitions are currently not supported.",
             ast.loc,
         );
     }
 
-    public interpretStructDecl(ast: A.AstStructDecl) {
+    private interpretStructDecl(ast: A.AstStructDecl) {
         throwNonFatalErrorConstEval(
             "Struct declarations are currently not supported.",
             ast.loc,
         );
     }
 
-    public interpretMessageDecl(ast: A.AstMessageDecl) {
+    private interpretMessageDecl(ast: A.AstMessageDecl) {
         throwNonFatalErrorConstEval(
             "Message declarations are currently not supported.",
             ast.loc,
         );
     }
 
-    public interpretPrimitiveTypeDecl(ast: A.AstPrimitiveTypeDecl) {
+    private interpretPrimitiveTypeDecl(ast: A.AstPrimitiveTypeDecl) {
         throwNonFatalErrorConstEval(
             "Primitive type declarations are currently not supported.",
             ast.loc,
         );
     }
 
-    public interpretFunctionDecl(ast: A.AstNativeFunctionDecl) {
+    private interpretFunctionDecl(ast: A.AstNativeFunctionDecl) {
         throwNonFatalErrorConstEval(
             "Native function declarations are currently not supported.",
             ast.loc,
         );
     }
 
-    public interpretContract(ast: A.AstContract) {
+    private interpretContract(ast: A.AstContract) {
         throwNonFatalErrorConstEval(
             "Contract declarations are currently not supported.",
             ast.loc,
         );
     }
 
-    public interpretTrait(ast: A.AstTrait) {
+    private interpretTrait(ast: A.AstTrait) {
         throwNonFatalErrorConstEval(
             "Trait declarations are currently not supported.",
             ast.loc,
         );
     }
 
-    public interpretExpressionInternal(ast: A.AstExpression): A.AstLiteral {
+    private interpretExpressionInternal(ast: A.AstExpression): A.AstLiteral {
         switch (ast.kind) {
             case "id":
                 return this.interpretName(ast);
@@ -921,7 +921,7 @@ export class Interpreter {
         }
     }
 
-    public interpretName(ast: A.AstId): A.AstLiteral {
+    private interpretName(ast: A.AstId): A.AstLiteral {
         const name = idText(ast);
 
         if (hasStaticConstant(this.context, name)) {
@@ -963,7 +963,7 @@ export class Interpreter {
         throwNonFatalErrorConstEval("cannot evaluate a variable", ast.loc);
     }
 
-    public interpretMethodCall(ast: A.AstMethodCall): A.AstLiteral {
+    private interpretMethodCall(ast: A.AstMethodCall): A.AstLiteral {
         switch (idText(ast.method)) {
             case "asComment": {
                 ensureMethodArity(0, ast.args, ast.loc);
@@ -986,51 +986,51 @@ export class Interpreter {
         }
     }
 
-    public interpretInitOf(ast: A.AstInitOf): A.AstLiteral {
+    private interpretInitOf(ast: A.AstInitOf): A.AstLiteral {
         throwNonFatalErrorConstEval(
             "initOf is not supported at this moment",
             ast.loc,
         );
     }
 
-    public interpretNull(ast: A.AstNull): A.AstNull {
+    private interpretNull(ast: A.AstNull): A.AstNull {
         return ast;
     }
 
-    public interpretBoolean(ast: A.AstBoolean): A.AstBoolean {
+    private interpretBoolean(ast: A.AstBoolean): A.AstBoolean {
         return ast;
     }
 
-    public interpretNumber(ast: A.AstNumber): A.AstNumber {
+    private interpretNumber(ast: A.AstNumber): A.AstNumber {
         return ensureInt(ast);
     }
 
-    public interpretString(ast: A.AstString): A.AstSimplifiedString {
+    private interpretString(ast: A.AstString): A.AstSimplifiedString {
         return this.util.makeSimplifiedStringLiteral(
             interpretEscapeSequences(ast.value, ast.loc),
             ast.loc,
         );
     }
 
-    public interpretSimplifiedString(
+    private interpretSimplifiedString(
         ast: A.AstSimplifiedString,
     ): A.AstSimplifiedString {
         return ast;
     }
 
-    public interpretAddress(ast: A.AstAddress): A.AstAddress {
+    private interpretAddress(ast: A.AstAddress): A.AstAddress {
         return ast;
     }
 
-    public interpretCell(ast: A.AstCell): A.AstCell {
+    private interpretCell(ast: A.AstCell): A.AstCell {
         return ast;
     }
 
-    public interpretSlice(ast: A.AstSlice): A.AstSlice {
+    private interpretSlice(ast: A.AstSlice): A.AstSlice {
         return ast;
     }
 
-    public interpretUnaryOp(ast: A.AstOpUnary): A.AstLiteral {
+    private interpretUnaryOp(ast: A.AstOpUnary): A.AstLiteral {
         // Tact grammar does not have negative integer literals,
         // so in order to avoid errors for `-115792089237316195423570985008687907853269984665640564039457584007913129639936`
         // which is `-(2**256)` we need to have a special case for it
@@ -1047,7 +1047,7 @@ export class Interpreter {
         return evalUnaryOp(ast.op, valOperand, ast.loc, this.util);
     }
 
-    public interpretBinaryOp(ast: A.AstOpBinary): A.AstLiteral {
+    private interpretBinaryOp(ast: A.AstOpBinary): A.AstLiteral {
         const valLeft = this.interpretExpressionInternal(ast.left);
         const valRightContinuation = () =>
             this.interpretExpressionInternal(ast.right);
@@ -1061,7 +1061,7 @@ export class Interpreter {
         );
     }
 
-    public interpretConditional(ast: A.AstConditional): A.AstLiteral {
+    private interpretConditional(ast: A.AstConditional): A.AstLiteral {
         // here we rely on the typechecker that both branches have the same type
         const valCond = ensureBoolean(
             this.interpretExpressionInternal(ast.condition),
@@ -1073,7 +1073,9 @@ export class Interpreter {
         }
     }
 
-    public interpretStructInstance(ast: A.AstStructInstance): A.AstStructValue {
+    private interpretStructInstance(
+        ast: A.AstStructInstance,
+    ): A.AstStructValue {
         const structTy = getType(this.context, ast.type);
 
         // initialize the resulting struct value with
@@ -1134,12 +1136,12 @@ export class Interpreter {
         return this.util.makeStructValue(structValueFields, ast.type, ast.loc);
     }
 
-    public interpretStructValue(ast: A.AstStructValue): A.AstStructValue {
+    private interpretStructValue(ast: A.AstStructValue): A.AstStructValue {
         // Struct values are already simplified to their simplest form
         return ast;
     }
 
-    public interpretFieldAccess(ast: A.AstFieldAccess): A.AstLiteral {
+    private interpretFieldAccess(ast: A.AstFieldAccess): A.AstLiteral {
         // special case for contract/trait constant accesses via `self.constant`
         // interpret "self" as a contract/trait access only if "self"
         // is not already assigned in the environment (this would mean
@@ -1218,7 +1220,7 @@ export class Interpreter {
         }
     }
 
-    public interpretStaticCall(ast: A.AstStaticCall): A.AstLiteral {
+    private interpretStaticCall(ast: A.AstStaticCall): A.AstLiteral {
         switch (idText(ast.function)) {
             case "ton": {
                 ensureFunArity(1, ast.args, ast.loc);
@@ -1310,7 +1312,7 @@ export class Interpreter {
                 }
                 const str = ensureSimplifiedString(expr);
                 return this.util.makeNumberLiteral(
-                    BigInt("0x" + sha256_sync(str.value).toString("hex")),
+                    sha256(str.value).value,
                     ast.loc,
                 );
             }
@@ -1617,7 +1619,7 @@ export class Interpreter {
         );
     }
 
-    public interpretStatementInternal(ast: A.AstStatement) {
+    private interpretStatementInternal(ast: A.AstStatement) {
         switch (ast.kind) {
             case "statement_let":
                 this.interpretLetStatement(ast);
@@ -1661,7 +1663,7 @@ export class Interpreter {
         }
     }
 
-    public interpretLetStatement(ast: A.AstStatementLet) {
+    private interpretLetStatement(ast: A.AstStatementLet) {
         if (hasStaticConstant(this.context, idText(ast.name))) {
             // Attempt of shadowing a constant in a let declaration
             throwInternalCompilerError(
@@ -1673,7 +1675,7 @@ export class Interpreter {
         this.envStack.setNewBinding(idText(ast.name), val);
     }
 
-    public interpretDestructStatement(ast: A.AstStatementDestruct) {
+    private interpretDestructStatement(ast: A.AstStatementDestruct) {
         for (const [_, name] of ast.identifiers.values()) {
             if (hasStaticConstant(this.context, idText(name))) {
                 // Attempt of shadowing a constant in a destructuring declaration
@@ -1714,7 +1716,7 @@ export class Interpreter {
         }
     }
 
-    public interpretAssignStatement(ast: A.AstStatementAssign) {
+    private interpretAssignStatement(ast: A.AstStatementAssign) {
         if (ast.path.kind === "id") {
             const val = this.interpretExpressionInternal(ast.expression);
             this.envStack.updateBinding(idText(ast.path), val);
@@ -1726,7 +1728,7 @@ export class Interpreter {
         }
     }
 
-    public interpretAugmentedAssignStatement(
+    private interpretAugmentedAssignStatement(
         ast: A.AstStatementAugmentedAssign,
     ) {
         if (ast.path.kind === "id") {
@@ -1755,7 +1757,7 @@ export class Interpreter {
         }
     }
 
-    public interpretConditionStatement(ast: A.AstStatementCondition) {
+    private interpretConditionStatement(ast: A.AstStatementCondition) {
         const condition = ensureBoolean(
             this.interpretExpressionInternal(ast.condition),
         );
@@ -1778,15 +1780,15 @@ export class Interpreter {
         }
     }
 
-    public interpretExpressionStatement(ast: A.AstStatementExpression) {
+    private interpretExpressionStatement(ast: A.AstStatementExpression) {
         this.interpretExpressionInternal(ast.expression);
     }
 
-    public interpretForEachStatement(ast: A.AstStatementForEach) {
+    private interpretForEachStatement(ast: A.AstStatementForEach) {
         throwNonFatalErrorConstEval("foreach currently not supported", ast.loc);
     }
 
-    public interpretRepeatStatement(ast: A.AstStatementRepeat) {
+    private interpretRepeatStatement(ast: A.AstStatementRepeat) {
         const iterations = ensureRepeatInt(
             this.interpretExpressionInternal(ast.iterations),
         );
@@ -1808,7 +1810,7 @@ export class Interpreter {
         }
     }
 
-    public interpretReturnStatement(ast: A.AstStatementReturn) {
+    private interpretReturnStatement(ast: A.AstStatementReturn) {
         if (ast.expression !== null) {
             const val = this.interpretExpressionInternal(ast.expression);
             throw new ReturnSignal(val);
@@ -1817,14 +1819,14 @@ export class Interpreter {
         }
     }
 
-    public interpretTryStatement(ast: A.AstStatementTry) {
+    private interpretTryStatement(ast: A.AstStatementTry) {
         throwNonFatalErrorConstEval(
             "try statements currently not supported",
             ast.loc,
         );
     }
 
-    public interpretUntilStatement(ast: A.AstStatementUntil) {
+    private interpretUntilStatement(ast: A.AstStatementUntil) {
         let condition;
         let iterCount = 0;
         // We can create a single environment for all the iterations in the loop
@@ -1853,7 +1855,7 @@ export class Interpreter {
         });
     }
 
-    public interpretWhileStatement(ast: A.AstStatementWhile) {
+    private interpretWhileStatement(ast: A.AstStatementWhile) {
         let condition;
         let iterCount = 0;
         // We can create a single environment for all the iterations in the loop
@@ -1887,7 +1889,7 @@ export class Interpreter {
         });
     }
 
-    public interpretBlockStatement(ast: A.AstStatementBlock) {
+    private interpretBlockStatement(ast: A.AstStatementBlock) {
         this.envStack.executeInNewEnvironment(() => {
             ast.statements.forEach(this.interpretStatementInternal, this);
         });
