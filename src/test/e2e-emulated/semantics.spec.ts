@@ -116,6 +116,9 @@ describe("semantics", () => {
 
         // Testing equality on addresses
         expect(await contract.getTestAddressEquality()).toEqual(true);
+        expect(
+            await contract.getTestInversesParseStdAddressAndNewAddress(),
+        ).toEqual(true);
 
         // Testing equality on slices
         expect(await contract.getTestSliceEquality1()).toEqual(true);
