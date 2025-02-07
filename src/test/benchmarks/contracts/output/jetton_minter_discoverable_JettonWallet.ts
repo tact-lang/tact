@@ -1624,8 +1624,6 @@ function initJettonWallet_init_args(src: JettonWallet_init_args) {
         const b_0 = builder;
         b_0.storeAddress(src.owner);
         b_0.storeAddress(src.master);
-        console.log('Master address:', src.master);
-        console.log('Owner address:', src.owner);
     };
 }
 
@@ -1736,7 +1734,6 @@ export class JettonWallet implements Contract {
     static async fromInit(owner: Address, master: Address) {
         const __gen_init = await JettonWallet_init(owner, master);
         const address = contractAddress(0, __gen_init);
-        console.log("")
         return new JettonWallet(address, __gen_init);
     }
     

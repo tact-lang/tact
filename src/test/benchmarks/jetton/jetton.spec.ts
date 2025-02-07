@@ -270,7 +270,6 @@ describe("Jetton", () => {
         const deployerJettonWallet = blockchain.openContract(
             await JettonWallet.fromInit(deployer.address, jettonMinter.address),
         );
-        console.log(deployerJettonWallet.address.toString());
         expect(mintResult.transactions).toHaveTransaction({
             from: jettonMinter.address,
             to: deployerJettonWallet.address,
