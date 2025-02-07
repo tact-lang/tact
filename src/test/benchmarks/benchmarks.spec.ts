@@ -16,7 +16,7 @@ import { Sha256Big } from "./contracts/output/benchmark_sha256_big_Sha256Big";
 import { Sha256AsSlice } from "./contracts/output/benchmark_sha256_as_slice_Sha256AsSlice";
 import { Forward } from "./contracts/output/forward_Forward";
 import "@ton/test-utils";
-import { CellsCreation } from "./contracts/output/cells_CellsCreation";
+import { CellsCreation } from "./contracts/output/cells_cellsCreation";
 import { getUsedGas } from "./util";
 
 function measureGas(txs: BlockchainTransaction[]) {

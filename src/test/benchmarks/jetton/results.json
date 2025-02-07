@@ -55,10 +55,16 @@
       "discovery": "10093"
     },
     {
-      "label": "master",
-      "transfer": "21402",
-      "burn": "16029",
-      "discovery": "10085"
+      "label": "FunC-like version",
+      "transfer": "21581",
+      "burn": "17147",
+      "discovery": "9541"
+    },
+    {
+      "label": "Master",
+      "transfer": "21581",
+      "burn": "17147",
+      "discovery": "9541"
     }
   ]
 }
