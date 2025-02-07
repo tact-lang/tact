@@ -479,7 +479,7 @@ exports[`resolveDescriptors should fail descriptors for method-first-param-not-s
 `;
 
 exports[`resolveDescriptors should fail descriptors for method-first-param-not-self2 1`] = `
-"<unknown>:8:17: Parameter name "self" is reserved, consider using "extends" function modifier
+"<unknown>:8:17: Parameter name "self" is reserved
   7 | 
 > 8 | fun inc(a: Int, self: Int): Int {
                       ^~~~~~~~~

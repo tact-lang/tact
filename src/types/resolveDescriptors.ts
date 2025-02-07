@@ -841,12 +841,19 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
         // Check parameter names
         const exNames: Set<string> = new Set();
-        for (const param of params) {
+        for (const [i, param] of params.entries()) {
             if (isSelfId(param.name)) {
-                throwCompilationError(
-                    'Parameter name "self" is reserved, consider using "extends" function modifier',
-                    param.loc,
-                );
+                if (i === 0) {
+                    throwCompilationError(
+                        'Parameter name "self" is reserved, consider using "extends" function modifier',
+                        param.loc,
+                    );
+                } else {
+                    throwCompilationError(
+                        'Parameter name "self" is reserved',
+                        param.loc,
+                    );
+                }
             }
             if (exNames.has(idText(param.name))) {
                 throwCompilationError(
