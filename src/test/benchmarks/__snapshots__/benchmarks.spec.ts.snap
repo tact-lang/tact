@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`benchmarks benchmark functions: code size 1`] = `211`;
+exports[`benchmarks benchmark functions: code size 1`] = `227`;
 
-exports[`benchmarks benchmark functions: gas used 1`] = `2769n`;
+exports[`benchmarks benchmark functions: gas used 1`] = `2869n`;
 
-exports[`benchmarks benchmark readFwdFee: code size 1`] = `157`;
+exports[`benchmarks benchmark readFwdFee: code size 1`] = `173`;
 
-exports[`benchmarks benchmark readFwdFee: gas used 1`] = `2799n`;
+exports[`benchmarks benchmark readFwdFee: gas used 1`] = `2899n`;
