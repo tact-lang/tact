@@ -30,7 +30,7 @@
     "test": "jest",
     "test:fast": "jest --config=./jest-fast.config.js",
     "bench": "yarn gen:contracts:benchmarks && jest ./src/test/benchmarks",
-    "coverage": "cross-env COVERAGE=true jest --config=./jest-ci.config.js",
+    "coverage": "cross-env COVERAGE=true RUNNER_OS=$RUNNER_OS jest --config=./jest-ci.config.js",
     "type": "tsc --noEmit",
     "lint": "yarn eslint .",
     "fmt": "yarn prettier -l -w .",
