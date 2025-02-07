@@ -108,8 +108,6 @@ jobs:
           yarn build
 
       - name: Test Tact compiler
-        env:
-          RUNNER_OS: ${{ runner.os }}
         run: |
           yarn coverage
 
