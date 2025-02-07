@@ -241,19 +241,23 @@ export type AstStatementAssign = {
     readonly loc: SrcInfo;
 };
 
+export const astAugmentedAssignOperations = [
+    "+",
+    "-",
+    "*",
+    "/",
+    "&&",
+    "||",
+    "%",
+    "|",
+    "<<",
+    ">>",
+    "&",
+    "^",
+] as const;
+
 export type AstAugmentedAssignOperation =
-    | "+"
-    | "-"
-    | "*"
-    | "/"
-    | "&&"
-    | "||"
-    | "%"
-    | "|"
-    | "<<"
-    | ">>"
-    | "&"
-    | "^";
+    (typeof astAugmentedAssignOperations)[number];
 
 export type AstStatementAugmentedAssign = {
     readonly kind: "statement_augmentedassign";
@@ -407,25 +411,28 @@ export type AstLiteral =
     | AstSlice
     | AstStructValue;
 
-export type AstBinaryOperation =
-    | "+"
-    | "-"
-    | "*"
-    | "/"
-    | "!="
-    | ">"
-    | "<"
-    | ">="
-    | "<="
-    | "=="
-    | "&&"
-    | "||"
-    | "%"
-    | "<<"
-    | ">>"
-    | "&"
-    | "|"
-    | "^";
+export const astBinaryOperations = [
+    "+",
+    "-",
+    "*",
+    "/",
+    "!=",
+    ">",
+    "<",
+    ">=",
+    "<=",
+    "==",
+    "&&",
+    "||",
+    "%",
+    "<<",
+    ">>",
+    "&",
+    "|",
+    "^",
+] as const;
+
+export type AstBinaryOperation = (typeof astBinaryOperations)[number];
 
 export type AstOpBinary = {
     readonly kind: "op_binary";
@@ -436,7 +443,9 @@ export type AstOpBinary = {
     readonly loc: SrcInfo;
 };
 
-export type AstUnaryOperation = "+" | "-" | "!" | "!!" | "~";
+export const astUnaryOperations = ["+", "-", "!", "!!", "~"] as const;
+
+export type AstUnaryOperation = (typeof astUnaryOperations)[number];
 
 export type AstOpUnary = {
     readonly kind: "op_unary";
@@ -542,7 +551,9 @@ export type AstNumber = {
     readonly loc: SrcInfo;
 };
 
-export type AstNumberBase = 2 | 8 | 10 | 16;
+export const astNumberBases = [2, 8, 10, 16] as const;
+
+export type AstNumberBase = (typeof astNumberBases)[number];
 
 export type AstBoolean = {
     readonly kind: "boolean";
@@ -560,7 +571,9 @@ export type ImportPath = {
 
 // This is different from ItemOrigin, because relative import
 // from standard library is still import with origin: "stdlib"
-export type ImportType = "stdlib" | "relative";
+export const importTypes = ["stdlib", "relative"] as const;
+
+export type ImportType = (typeof importTypes)[number];
 
 // An AstSimplifiedString is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.
 // An AstString is not a literal because it may contain escaping characters that have not been simplified, like '\\'.
@@ -629,7 +642,14 @@ export type AstStructFieldValue = {
     readonly loc: SrcInfo;
 };
 
-export type AstConstantAttributeName = "virtual" | "override" | "abstract";
+export const astConstantAttributeNames = [
+    "virtual",
+    "override",
+    "abstract",
+] as const;
+
+export type AstConstantAttributeName =
+    (typeof astConstantAttributeNames)[number];
 
 export type AstConstantAttribute = {
     readonly type: AstConstantAttributeName;
@@ -649,13 +669,17 @@ export type AstFunctionAttributeGet = {
     readonly loc: SrcInfo;
 };
 
+export const astFunctionAttributeNames = [
+    "mutates",
+    "extends",
+    "virtual",
+    "abstract",
+    "override",
+    "inline",
+] as const;
+
 export type AstFunctionAttributeName =
-    | "mutates"
-    | "extends"
-    | "virtual"
-    | "abstract"
-    | "override"
-    | "inline";
+    (typeof astFunctionAttributeNames)[number];
 
 export type AstFunctionAttributeRest = {
     readonly kind: "function_attribute";
