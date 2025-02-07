@@ -496,7 +496,7 @@ exports[`resolveDescriptors should fail descriptors for native-fun-getter 1`] = 
 `;
 
 exports[`resolveDescriptors should fail descriptors for not-extend-function-self-param 1`] = `
-"<unknown>:3:30: Parameter name "self" is reserved, consider using "extends" function modifier
+"<unknown>:3:30: Parameter name "self" is reserved for functions with "extends" modifier
   2 | 
 > 3 | asm(other self) fun testFunc(self: Int, other: Int) { 2 BLKDROP }
                                    ^~~~~~~~~
