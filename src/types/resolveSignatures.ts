@@ -73,7 +73,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
             return "address";
         } else if (type === "cell") {
             if (format === "remainder") {
-                return "cell";
+                return "remainder<cell>";
             } else if (format === "ref") {
                 return "^cell";
             }
@@ -85,7 +85,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
             return "^cell";
         } else if (type === "slice") {
             if (format === "remainder") {
-                return "cell";
+                return "remainder<slice>";
             } else if (format === "ref") {
                 return "^slice";
             } else if (format !== null) {
@@ -96,7 +96,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
             return "^slice";
         } else if (type === "builder") {
             if (format === "remainder") {
-                return "cell";
+                return "remainder<builder>";
             } else if (format === "ref") {
                 return "^slice";
             } else if (format !== null) {
