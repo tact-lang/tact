@@ -171,11 +171,16 @@ ascription = ":" @type;
 
 type = TypeAs;
 TypeAs = type:TypeOptional as:(keyword<"as"> @Id)*;
-TypeOptional = type:typePrimary optionals:"?"*;
+TypeOptional = type:typePrimary optionals:Optional*;
+Optional = "?";
 
-typePrimary = TypeGeneric / TypeRegular;
+typePrimary = TypeGeneric / TypeRegular / TypeTuple / TypeTensor / TypeUnit / typeParens;
 TypeRegular = child:TypeId;
 TypeGeneric = name:(MapKeyword / Bounced / TypeId) "<" args:commaList<type> ">";
+TypeTuple = "[" types:commaList<type>? "]";
+TypeTensor = "(" head:type tail:("," @type)+ ","? ")";
+TypeUnit = "(" ")";
+typeParens = "(" @type ")";
 MapKeyword = keyword<"map">;
 Bounced = "bounced";
 

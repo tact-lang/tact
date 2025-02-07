@@ -1,6 +1,6 @@
 import { getAstFactory } from "../../ast/ast-helpers";
 import { loadCases } from "../../utils/loadCases";
-import { getParser } from "../grammar";
+import { getParser } from "./";
 import { SrcInfo, isSrcInfo } from "../src-info";
 
 expect.addSnapshotSerializer({
@@ -15,7 +15,7 @@ describe("grammar", () => {
         for (const r of loadCases(path)) {
             it("should parse " + r.name, () => {
                 const ast = getAstFactory();
-                const { parse } = getParser(ast, "new");
+                const { parse } = getParser(ast);
                 expect(
                     parse({ code: r.code, path: "<unknown>", origin: "user" }),
                 ).toMatchSnapshot();
@@ -26,7 +26,7 @@ describe("grammar", () => {
     for (const r of loadCases(__dirname + "/../test-failed/")) {
         it("should fail " + r.name, () => {
             const ast = getAstFactory();
-            const { parse } = getParser(ast, "new");
+            const { parse } = getParser(ast);
             expect(() =>
                 parse({ code: r.code, path: "<unknown>", origin: "user" }),
             ).toThrowErrorMatchingSnapshot();
@@ -35,7 +35,7 @@ describe("grammar", () => {
 });
 
 describe("parse imports", () => {
-    const parser = getParser(getAstFactory(), "new");
+    const parser = getParser(getAstFactory());
 
     const parse = (code: string) => {
         return parser.parse({
@@ -241,5 +241,130 @@ describe("parse imports", () => {
 
     it("should reject stdlib import up from stdlib root", () => {
         expect(() => parse('import "@stdlib/../foo";')).toThrow();
+    });
+});
+
+describe("parse type", () => {
+    const parse = (s: string) => {
+        try {
+            return getParser(getAstFactory()).parseType(s);
+        } catch (e) {
+            return e;
+        }
+    };
+
+    it("foo", () => {
+        expect(parse("foo")).toMatchSnapshot();
+    });
+    it("Foo", () => {
+        expect(parse("Foo")).toMatchSnapshot();
+    });
+    it("map", () => {
+        expect(parse("map")).toMatchSnapshot();
+    });
+    it("map<>", () => {
+        expect(parse("map<>")).toMatchSnapshot();
+    });
+    it("map<T>", () => {
+        expect(parse("map<T>")).toMatchSnapshot();
+    });
+    it("map<T, U>", () => {
+        expect(parse("map<T, U>")).toMatchSnapshot();
+    });
+    it("map<T, U, V>", () => {
+        expect(parse("map<T, U, V>")).toMatchSnapshot();
+    });
+    it("bounced", () => {
+        expect(parse("bounced")).toMatchSnapshot();
+    });
+    it("bounced<>", () => {
+        expect(parse("bounced<>")).toMatchSnapshot();
+    });
+    it("bounced<T>", () => {
+        expect(parse("bounced<T>")).toMatchSnapshot();
+    });
+    it("bounced<T, U>", () => {
+        expect(parse("bounced<T, U>")).toMatchSnapshot();
+    });
+    it("foo<>", () => {
+        expect(parse("foo<>")).toMatchSnapshot();
+    });
+    it("foo<T>", () => {
+        expect(parse("foo<T>")).toMatchSnapshot();
+    });
+    it("Foo<T>", () => {
+        expect(parse("Foo<T>")).toMatchSnapshot();
+    });
+    it("Foo<T, U>", () => {
+        expect(parse("Foo<T, U>")).toMatchSnapshot();
+    });
+    it("Foo<\nT,\nU,\n>", () => {
+        expect(parse("Foo<\nT,\nU,\n>")).toMatchSnapshot();
+    });
+    it("[]", () => {
+        expect(parse("[]")).toMatchSnapshot();
+    });
+    it("[T]", () => {
+        expect(parse("[T]")).toMatchSnapshot();
+    });
+    it("[T, U]", () => {
+        expect(parse("[T, U]")).toMatchSnapshot();
+    });
+    it("[T, U,]", () => {
+        expect(parse("[T, U,]")).toMatchSnapshot();
+    });
+    it("()", () => {
+        expect(parse("()")).toMatchSnapshot();
+    });
+    it("(T)", () => {
+        expect(parse("(T)")).toMatchSnapshot();
+    });
+    it("(T,)", () => {
+        expect(parse("(T,)")).toMatchSnapshot();
+    });
+    it("(T, U)", () => {
+        expect(parse("(T, U)")).toMatchSnapshot();
+    });
+    it("(T, U,)", () => {
+        expect(parse("(T, U,)")).toMatchSnapshot();
+    });
+    it("T?", () => {
+        expect(parse("T?")).toMatchSnapshot();
+    });
+    it("T??", () => {
+        expect(parse("T??")).toMatchSnapshot();
+    });
+    it("(T?)?", () => {
+        expect(parse("(T?)?")).toMatchSnapshot();
+    });
+    it("(T??)", () => {
+        expect(parse("(T??)")).toMatchSnapshot();
+    });
+    it("T as U", () => {
+        expect(parse("T as U")).toMatchSnapshot();
+    });
+    it("T as U as V", () => {
+        expect(parse("T as U as V")).toMatchSnapshot();
+    });
+    it("(T as U) as V", () => {
+        expect(parse("(T as U) as V")).toMatchSnapshot();
+    });
+    it("(T as U as V)", () => {
+        expect(parse("(T as U as V)")).toMatchSnapshot();
+    });
+    it("T? as U", () => {
+        expect(parse("T? as U")).toMatchSnapshot();
+    });
+    it("(T as U)?", () => {
+        expect(parse("(T as U)?")).toMatchSnapshot();
+    });
+    it("((T as U)?)", () => {
+        expect(parse("((T as U)?)")).toMatchSnapshot();
+    });
+    it("(T?) as U", () => {
+        expect(parse("(T?) as U")).toMatchSnapshot();
+    });
+    it("((T?) as U)", () => {
+        expect(parse("((T?) as U)")).toMatchSnapshot();
     });
 });

@@ -181,7 +181,10 @@ export namespace $ast {
   export type TypeOptional = $.Located<{
     readonly $: "TypeOptional";
     readonly type: typePrimary;
-    readonly optionals: readonly "?"[];
+    readonly optionals: readonly Optional[];
+  }>;
+  export type Optional = $.Located<{
+    readonly $: "Optional";
   }>;
   export type TypeGeneric = $.Located<{
     readonly $: "TypeGeneric";
@@ -192,7 +195,20 @@ export namespace $ast {
     readonly $: "TypeRegular";
     readonly child: TypeId;
   }>;
-  export type typePrimary = TypeGeneric | TypeRegular;
+  export type TypeTuple = $.Located<{
+    readonly $: "TypeTuple";
+    readonly types: commaList<$type> | undefined;
+  }>;
+  export type TypeTensor = $.Located<{
+    readonly $: "TypeTensor";
+    readonly head: $type;
+    readonly tail: readonly $type[];
+  }>;
+  export type TypeUnit = $.Located<{
+    readonly $: "TypeUnit";
+  }>;
+  export type typeParens = $type;
+  export type typePrimary = TypeGeneric | TypeRegular | TypeTuple | TypeTensor | TypeUnit | typeParens;
   export type MapKeyword = $.Located<{
     readonly $: "MapKeyword";
   }>;
@@ -453,10 +469,15 @@ export const assemblySequence: $.Parser<$ast.assemblySequence> = $.star(assembly
 export const TypeAs: $.Parser<$ast.TypeAs> = $.loc($.field($.pure("TypeAs"), "$", $.field($.lazy(() => TypeOptional), "type", $.field($.star($.right(keyword($.str("as")), Id)), "as", $.eps))));
 export const $type: $.Parser<$ast.$type> = TypeAs;
 export const ascription: $.Parser<$ast.ascription> = $.right($.str(":"), $type);
-export const TypeOptional: $.Parser<$ast.TypeOptional> = $.loc($.field($.pure("TypeOptional"), "$", $.field($.lazy(() => typePrimary), "type", $.field($.star($.str("?")), "optionals", $.eps))));
+export const TypeOptional: $.Parser<$ast.TypeOptional> = $.loc($.field($.pure("TypeOptional"), "$", $.field($.lazy(() => typePrimary), "type", $.field($.star($.lazy(() => Optional)), "optionals", $.eps))));
+export const Optional: $.Parser<$ast.Optional> = $.loc($.field($.pure("Optional"), "$", $.right($.str("?"), $.eps)));
 export const TypeGeneric: $.Parser<$ast.TypeGeneric> = $.loc($.field($.pure("TypeGeneric"), "$", $.field($.alt($.lazy(() => MapKeyword), $.alt($.lazy(() => Bounced), $.lazy(() => TypeId))), "name", $.right($.str("<"), $.field(commaList($type), "args", $.right($.str(">"), $.eps))))));
 export const TypeRegular: $.Parser<$ast.TypeRegular> = $.loc($.field($.pure("TypeRegular"), "$", $.field($.lazy(() => TypeId), "child", $.eps)));
-export const typePrimary: $.Parser<$ast.typePrimary> = $.alt(TypeGeneric, TypeRegular);
+export const TypeTuple: $.Parser<$ast.TypeTuple> = $.loc($.field($.pure("TypeTuple"), "$", $.right($.str("["), $.field($.opt(commaList($type)), "types", $.right($.str("]"), $.eps)))));
+export const TypeTensor: $.Parser<$ast.TypeTensor> = $.loc($.field($.pure("TypeTensor"), "$", $.right($.str("("), $.field($type, "head", $.field($.plus($.right($.str(","), $type)), "tail", $.right($.opt($.str(",")), $.right($.str(")"), $.eps)))))));
+export const TypeUnit: $.Parser<$ast.TypeUnit> = $.loc($.field($.pure("TypeUnit"), "$", $.right($.right($.str("("), $.right($.str(")"), $.eps)), $.eps)));
+export const typeParens: $.Parser<$ast.typeParens> = $.right($.str("("), $.left($type, $.str(")")));
+export const typePrimary: $.Parser<$ast.typePrimary> = $.alt(TypeGeneric, $.alt(TypeRegular, $.alt(TypeTuple, $.alt(TypeTensor, $.alt(TypeUnit, typeParens)))));
 export const MapKeyword: $.Parser<$ast.MapKeyword> = $.loc($.field($.pure("MapKeyword"), "$", $.right(keyword($.str("map")), $.eps)));
 export const Bounced: $.Parser<$ast.Bounced> = $.loc($.field($.pure("Bounced"), "$", $.right($.str("bounced"), $.eps)));
 export const TypeId: $.Parser<$ast.TypeId> = $.named("capitalized identifier", $.loc($.field($.pure("TypeId"), "$", $.field($.lex($.stry($.right($.regex<string>("A-Z", [$.ExpRange("A", "Z")]), $.right($.star($.regex<string | string | string | "_">("a-zA-Z0-9_", [$.ExpRange("a", "z"), $.ExpRange("A", "Z"), $.ExpRange("0", "9"), $.ExpString("_")])), $.eps)))), "name", $.eps))));
