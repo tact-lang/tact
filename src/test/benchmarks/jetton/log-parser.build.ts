@@ -8,7 +8,7 @@ import * as $ from "./logs";
 import { getSrcInfo } from "../../../grammar/src-info";
 import { cwd } from "process";
 
-const includeIds = false;
+const includeIds = true;
 
 // const logFull = (obj: unknown) => {
 //     console.log(inspect(obj, { colors: true, depth: Infinity }));
@@ -62,7 +62,7 @@ const main = async () => {
     };
     const convertEntry = (node: $ast.run, path: readonly string[]): Entry[] => {
         if (node.$ === "NamedRun") {
-            if (node.name === "ignore") {
+            if (node.name.includes("ignore")) {
                 return [];
             }
             return convertLog(node.log, [...path, node.name]);
@@ -176,9 +176,12 @@ const main = async () => {
     const parsedLog = convertLog(result.value, []);
 
     const commands: Record<string, { count: number; gas: number }> = {};
-    for (const { asm, used } of parsedLog) {
+    for (const { asm, used, path } of parsedLog) {
         if (used === 1937) continue;
         for (const { command, gas } of asm) {
+            if (command === 'HASHSU') {
+                console.log(path);
+            }
             const c = (commands[command] = commands[command] || {
                 count: 0,
                 gas: 0,
