@@ -346,7 +346,6 @@ asm fun myCode(): Cell { MYCODE }
 /// fucntion available in the TVM update 
 asm fun getPrecompiledGas(): Int { GETPRECOMPILEDGAS }
 
-asm fun getFeeConfigs(): Tuple {UNPACKEDCONFIGTUPLE}
 
 
 
