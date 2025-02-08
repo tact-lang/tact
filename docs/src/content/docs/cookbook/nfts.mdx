@@ -11,8 +11,9 @@ Notification message of assigned NFT ownership has the following structure:
 
 ```tact
 message(0x05138d91) NFTOwnershipAssigned {
-    previousOwner: Address;
-    forwardPayload: Slice as remaining;
+    queryId: Int as uint64;
+    previousOwner:Address;
+    forwardPayload:Slice as remaining;
 }
 ```
 
@@ -32,8 +33,9 @@ Validation can be done in two ways:
 import "@stdlib/deploy";
 
 message(0x05138d91) NFTOwnershipAssigned {
-    previousOwner: Address;
-    forwardPayload: Slice as remaining;
+    queryId: Int as uint64;
+    previousOwner:Address;
+    forwardPayload:Slice as remaining;
 }
 
 contract SingleNft with Deployable {
@@ -57,8 +59,9 @@ contract SingleNft with Deployable {
 import "@stdlib/deploy";
 
 message(0x05138d91) NFTOwnershipAssigned {
-    previousOwner: Address;
-    forwardPayload: Slice as remaining;
+    queryId: Int as uint64;
+    previousOwner:Address;
+    forwardPayload:Slice as remaining;
 }
 
 struct NFTItemInitData {
