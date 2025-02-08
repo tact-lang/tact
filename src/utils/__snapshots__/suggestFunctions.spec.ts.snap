@@ -1,0 +1,602 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`suggestFunctions Snapshot for query "  storeInt  " - Query with leading/trailing whitespace; should match storeInt 1`] = `
+[
+  {
+    "name": "storeInt",
+    "signature": "@name(store_int) extends native storeInt(self: Builder, value: Int, bits: Int): Builder;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "AS_slice" - mixed case with underscore in asSlice 1`] = `
+[
+  {
+    "name": "asSlice",
+    "signature": "@name(__tact_address_to_slice) extends native asSlice(self: Address): Slice;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "GAS_conumed" - Mixed case with underscore; should now return only gasConsumed 1`] = `
+[
+  {
+    "name": "gasConsumed",
+    "signature": "asm fun gasConsumed(): Int { GASCONSUMED }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "GAS_conumed" - underscore and missing letter in gasConsumed 1`] = `
+[
+  {
+    "name": "gasConsumed",
+    "signature": "asm fun gasConsumed(): Int { GASCONSUMED }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "STOREINT" - All uppercase query; should match storeInt 1`] = `
+[
+  {
+    "name": "storeInt",
+    "signature": "@name(store_int) extends native storeInt(self: Builder, value: Int, bits: Int): Builder;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "Stroe_Int" - transposition and underscore in storeInt 1`] = `
+[
+  {
+    "name": "storeInt",
+    "signature": "@name(store_int) extends native storeInt(self: Builder, value: Int, bits: Int): Builder;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "asSlic" - missing letter in asSlice 1`] = `
+[
+  {
+    "name": "asSlice",
+    "signature": "@name(__tact_address_to_slice) extends native asSlice(self: Address): Slice;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "bgncell" - transposition in beginCell 1`] = `
+[
+  {
+    "name": "beginCell",
+    "signature": "asm fun beginCell(): Builder { NEWC }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "blokLt" - missing letter in blockLt 1`] = `
+[
+  {
+    "name": "blockLt",
+    "signature": "asm fun blockLt(): Int { BLOCKLT }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "conTract_adresx" - multiple typos in contractAddressExt (extra letter 'x' instead of expected 't') 1`] = `
+[
+  {
+    "name": "contractAddress",
+    "signature": "inline fun contractAddress(s: StateInit): Address { return contractAddressExt(0, s.code, s.data); }",
+  },
+  {
+    "name": "contractAddressExt",
+    "signature": "@name(__tact_compute_contract_address) native contractAddressExt(chain: Int, code: Cell, data: Cell): Address;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "conractAddress" - typo in contractAddress 1`] = `
+[
+  {
+    "name": "contractAddress",
+    "signature": "inline fun contractAddress(s: StateInit): Address { return contractAddressExt(0, s.code, s.data); }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "contrac adress" - Missing letter and space in contractAddress; should match contractAddress 1`] = `
+[
+  {
+    "name": "contractAddress",
+    "signature": "inline fun contractAddress(s: StateInit): Address { return contractAddressExt(0, s.code, s.data); }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "contractAdressExt" - missing letter in contractAddressExt 1`] = `
+[
+  {
+    "name": "contractAddressExt",
+    "signature": "@name(__tact_compute_contract_address) native contractAddressExt(chain: Int, code: Cell, data: Cell): Address;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "contrctadress_ext" - missing letters and underscore in contractAddressExt 1`] = `
+[
+  {
+    "name": "contractAddressExt",
+    "signature": "@name(__tact_compute_contract_address) native contractAddressExt(chain: Int, code: Cell, data: Cell): Address;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "cur lt" - Query with space in curLt; should match curLt 1`] = `
+[
+  {
+    "name": "curLt",
+    "signature": "asm fun curLt(): Int { LTIME }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "gas   conumed" - Extra spaces in gasConsumed; should now correctly filter to gasConsumed 1`] = `
+[
+  {
+    "name": "gasConsumed",
+    "signature": "asm fun gasConsumed(): Int { GASCONSUMED }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "gasConumed" - missing letter in gasConsumed 1`] = `
+[
+  {
+    "name": "gasConsumed",
+    "signature": "asm fun gasConsumed(): Int { GASCONSUMED }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "geT_foRwrd_fee" - mixed case, underscore and transposition in getForwardFee 1`] = `
+[
+  {
+    "name": "getForwardFee",
+    "signature": "asm fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { GETFORWARDFEE }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "get comput fee" - Query with extra spaces; should match getComputeFee 1`] = `
+[
+  {
+    "name": "getComputeFee",
+    "signature": "asm fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEE }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "get original fwd fee" - Query with spaces; should match getOriginalFwdFee 1`] = `
+[
+  {
+    "name": "getOriginalFwdFee",
+    "signature": "asm fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int { GETORIGINALFWDFEE }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "get" - Generic query 'get' should ideally return only high-confidence 'get' functions 1`] = `
+[
+  {
+    "name": "getSeed",
+    "signature": "asm fun getSeed(): Int { RANDSEED }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "get-" - Query with punctuation; should ignore the hyphen 1`] = `
+[
+  {
+    "name": "getSeed",
+    "signature": "asm fun getSeed(): Int { RANDSEED }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "getComputFee" - missing letter in getComputeFee 1`] = `
+[
+  {
+    "name": "getComputeFee",
+    "signature": "asm fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEE }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "getForwadFee" - transposition in getForwardFee 1`] = `
+[
+  {
+    "name": "getForwardFee",
+    "signature": "asm fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { GETFORWARDFEE }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "getOriginalFwdFe" - missing letter in getOriginalFwdFee 1`] = `
+[
+  {
+    "name": "getOriginalFwdFee",
+    "signature": "asm fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int { GETORIGINALFWDFEE }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "getSead" - transposition in getSeed 1`] = `
+[
+  {
+    "name": "getSeed",
+    "signature": "asm fun getSeed(): Int { RANDSEED }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "getStoragFee" - missing letter in getStorageFee 1`] = `
+[
+  {
+    "name": "getStorageFee",
+    "signature": "asm fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool): Int { GETSTORAGEFEE }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "gtsed" - transposition in getSeed 1`] = `
+[
+  {
+    "name": "getSeed",
+    "signature": "asm fun getSeed(): Int { RANDSEED }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "mcode" - transposition in myCode 1`] = `
+[
+  {
+    "name": "myCode",
+    "signature": "asm fun myCode(): Cell { MYCODE }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "my  cdoe" - Multiple spaces and a transposition in myCode; should match myCode 1`] = `
+[
+  {
+    "name": "myCode",
+    "signature": "asm fun myCode(): Cell { MYCODE }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "myAddres" - missing letter in myAddress 1`] = `
+[
+  {
+    "name": "myAddress",
+    "signature": "asm fun myAddress(): Address { MYADDR }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "myBalanace" - transposition in myBalance 1`] = `
+[
+  {
+    "name": "myBalance",
+    "signature": "asm fun myBalance(): Int { BALANCE FIRST }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "myBlnace" - transposition in myBalance 1`] = `
+[
+  {
+    "name": "myBalance",
+    "signature": "asm fun myBalance(): Int { BALANCE FIRST }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "myCdoe" - transposition in myCode 1`] = `
+[
+  {
+    "name": "myCode",
+    "signature": "asm fun myCode(): Cell { MYCODE }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "myStroageDue" - transposition in myStorageDue 1`] = `
+[
+  {
+    "name": "myStorageDue",
+    "signature": "asm fun myStorageDue(): Int { DUEPAYMENT }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "newAdress" - missing letter in newAddress 1`] = `
+[
+  {
+    "name": "newAddress",
+    "signature": "@name(__tact_create_address) native newAddress(chain: Int, hash: Int): Address;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "parse_std_adres" - underscored query with missing letter in parseStdAddress 1`] = `
+[
+  {
+    "name": "parseStdAddress",
+    "signature": "asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "parseStd-Address" - Query with hyphen; should match parseStdAddress 1`] = `
+[
+  {
+    "name": "parseStdAddress",
+    "signature": "asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "parseStdAdress" - missing letter in parseStdAddress 1`] = `
+[
+  {
+    "name": "parseStdAddress",
+    "signature": "asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "parseVarAdress" - missing letter in parseVarAddress 1`] = `
+[
+  {
+    "name": "parseVarAddress",
+    "signature": "asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "sEtSeAd" - mixed case transposition in setSeed 1`] = `
+[
+  {
+    "name": "setSeed",
+    "signature": "asm fun setSeed(seed: Int) { SETRAND }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "set  gas  limit" - Multiple spaces in setGasLimit; should match setGasLimit 1`] = `
+[
+  {
+    "name": "setGasLimit",
+    "signature": "asm fun setGasLimit(limit: Int) { SETGASLIMIT }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "setGasLimt" - missing letter in setGasLimit 1`] = `
+[
+  {
+    "name": "setGasLimit",
+    "signature": "asm fun setGasLimit(limit: Int) { SETGASLIMIT }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "setSead" - transposition in setSeed 1`] = `
+[
+  {
+    "name": "setSeed",
+    "signature": "asm fun setSeed(seed: Int) { SETRAND }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "st" - Very short query; ambiguous (likely returns nothing or many candidates) 1`] = `
+[
+  {
+    "name": "storeBit",
+    "signature": "@name(__tact_store_bool) extends native storeBit(self: Builder, value: Bool): Builder;",
+  },
+  {
+    "name": "storeInt",
+    "signature": "@name(store_int) extends native storeInt(self: Builder, value: Int, bits: Int): Builder;",
+  },
+  {
+    "name": "storeBool",
+    "signature": "@name(__tact_store_bool) extends native storeBool(self: Builder, value: Bool): Builder;",
+  },
+  {
+    "name": "storeUint",
+    "signature": "@name(store_uint) extends native storeUint(self: Builder, value: Int, bits: Int): Builder;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "storBit" - missing letter in storeBit 1`] = `
+[
+  {
+    "name": "storeBit",
+    "signature": "@name(__tact_store_bool) extends native storeBit(self: Builder, value: Bool): Builder;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "storVar_int32" - missing letter in storeVarInt32 with inconsistent casing 1`] = `
+[
+  {
+    "name": "storeVarInt32",
+    "signature": "asm extends fun storeVarInt32(self: Builder, value: Int): Builder { STVARINT32 }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "store    var" - Multiple spaces in storevar; ambiguous but useful 1`] = `
+[
+  {
+    "name": "storeVarInt16",
+    "signature": "asm extends fun storeVarInt16(self: Builder, value: Int): Builder { STVARINT16 }",
+  },
+  {
+    "name": "storeVarInt32",
+    "signature": "asm extends fun storeVarInt32(self: Builder, value: Int): Builder { STVARINT32 }",
+  },
+  {
+    "name": "storeVarUint16",
+    "signature": "asm extends fun storeVarUint16(self: Builder, value: Int): Builder { STVARUINT16 }",
+  },
+  {
+    "name": "storeVarUint32",
+    "signature": "asm extends fun storeVarUint32(self: Builder, value: Int): Builder { STVARUINT32 }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "store int" - Query with a space instead of underscore; should match storeInt 1`] = `
+[
+  {
+    "name": "storeInt",
+    "signature": "@name(store_int) extends native storeInt(self: Builder, value: Int, bits: Int): Builder;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "store-int" - Hyphenated query; should match storeInt 1`] = `
+[
+  {
+    "name": "storeInt",
+    "signature": "@name(store_int) extends native storeInt(self: Builder, value: Int, bits: Int): Builder;",
+  },
+  {
+    "name": "storeUint",
+    "signature": "@name(store_uint) extends native storeUint(self: Builder, value: Int, bits: Int): Builder;",
+  },
+  {
+    "name": "storeBit",
+    "signature": "@name(__tact_store_bool) extends native storeBit(self: Builder, value: Bool): Builder;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "storeit" - missing letter in storeInt 1`] = `
+[
+  {
+    "name": "storeBit",
+    "signature": "@name(__tact_store_bool) extends native storeBit(self: Builder, value: Bool): Builder;",
+  },
+  {
+    "name": "storeInt",
+    "signature": "@name(store_int) extends native storeInt(self: Builder, value: Int, bits: Int): Builder;",
+  },
+  {
+    "name": "storeUint",
+    "signature": "@name(store_uint) extends native storeUint(self: Builder, value: Int, bits: Int): Builder;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "storevar16" - Query with number appended; should match storeVarUint16 1`] = `
+[
+  {
+    "name": "storeVarInt16",
+    "signature": "asm extends fun storeVarInt16(self: Builder, value: Int): Builder { STVARINT16 }",
+  },
+  {
+    "name": "storeVarUint16",
+    "signature": "asm extends fun storeVarUint16(self: Builder, value: Int): Builder { STVARUINT16 }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "storevar32" - Query with number appended; should match storeVarUint32 1`] = `
+[
+  {
+    "name": "storeVarInt32",
+    "signature": "asm extends fun storeVarInt32(self: Builder, value: Int): Builder { STVARINT32 }",
+  },
+  {
+    "name": "storeVarUint32",
+    "signature": "asm extends fun storeVarUint32(self: Builder, value: Int): Builder { STVARUINT32 }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "stroe   bool" - Extra spaces in storeBool; should match storeBool 1`] = `
+[
+  {
+    "name": "storeBool",
+    "signature": "@name(__tact_store_bool) extends native storeBool(self: Builder, value: Bool): Builder;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "stroe__int" - transposition with extra underscore in storeInt 1`] = `
+[
+  {
+    "name": "storeInt",
+    "signature": "@name(store_int) extends native storeInt(self: Builder, value: Int, bits: Int): Builder;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "stroe_bool" - transposition with underscore in storeBool 1`] = `
+[
+  {
+    "name": "storeBool",
+    "signature": "@name(__tact_store_bool) extends native storeBool(self: Builder, value: Bool): Builder;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "stroeBool" - transposition in storeBool 1`] = `
+[
+  {
+    "name": "storeBool",
+    "signature": "@name(__tact_store_bool) extends native storeBool(self: Builder, value: Bool): Builder;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "stroeInt" - transposition in storeInt 1`] = `
+[
+  {
+    "name": "storeInt",
+    "signature": "@name(store_int) extends native storeInt(self: Builder, value: Int, bits: Int): Builder;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "stroeUint" - transposition in storeUint 1`] = `
+[
+  {
+    "name": "storeUint",
+    "signature": "@name(store_uint) extends native storeUint(self: Builder, value: Int, bits: Int): Builder;",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "stroeVAr_uint16" - multiple typos in storeVarUint16 (transposition and inconsistent casing) 1`] = `
+[
+  {
+    "name": "storeVarUint16",
+    "signature": "asm extends fun storeVarUint16(self: Builder, value: Int): Builder { STVARUINT16 }",
+  },
+]
+`;
+
+exports[`suggestFunctions Snapshot for query "stsed" - transposition in setSeed 1`] = `
+[
+  {
+    "name": "setSeed",
+    "signature": "asm fun setSeed(seed: Int) { SETRAND }",
+  },
+]
+`;
