@@ -514,15 +514,19 @@ function writeCondition(
         }
     });
     if (f.falseStatements && f.falseStatements.length > 0) {
-        ctx.append(`} else {`);
-        ctx.inIndent(() => {
-            for (const s of f.falseStatements!) {
-                writeStatement(s, self, returns, ctx);
-            }
-        });
-        ctx.append(`}`);
-    } else if (f.elseif) {
-        writeCondition(f.elseif, self, true, returns, ctx);
+        const [head, ...tail] = f.falseStatements;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+        if (head && tail.length === 0 && head.kind === 'statement_condition') {
+            writeCondition(head, self, true, returns, ctx);
+        } else {
+            ctx.append(`} else {`);
+            ctx.inIndent(() => {
+                for (const s of f.falseStatements!) {
+                    writeStatement(s, self, returns, ctx);
+                }
+            });
+            ctx.append(`}`);
+        }
     } else {
         ctx.append(`}`);
     }

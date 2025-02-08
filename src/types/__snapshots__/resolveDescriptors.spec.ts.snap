@@ -28484,7 +28484,6 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
             "loc": true,
             "value": true,
           },
-          "elseif": null,
           "falseStatements": null,
           "id": 43,
           "kind": "statement_condition",
