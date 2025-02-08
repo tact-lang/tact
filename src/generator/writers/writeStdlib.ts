@@ -452,17 +452,6 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
-    ctx.fun("__tact_store_bool", () => {
-        ctx.signature(`builder __tact_store_bool(builder b, int v)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                return b.store_int(v, 1);
-            `);
-        });
-    });
-
     ctx.fun("__tact_to_tuple", () => {
         ctx.signature(`forall X -> tuple __tact_to_tuple(X x)`);
         ctx.context("stdlib");

@@ -43,7 +43,6 @@ export function cloneNode<T extends AstNode>(
                 falseStatements: src.falseStatements
                     ? src.falseStatements.map(recurse)
                     : null,
-                elseif: src.elseif ? recurse(src.elseif) : null,
             });
         } else if (src.kind === "statement_block") {
             return cloneNode({

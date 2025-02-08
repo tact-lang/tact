@@ -614,20 +614,6 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "return b.store_int(v, 1);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_store_bool",
-    "signature": "builder __tact_store_bool(builder b, int v)",
-  },
-  {
-    "code": {
       "code": "NOP",
       "kind": "asm",
       "shuffle": "",
@@ -6425,20 +6411,6 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
   },
   {
     "code": {
-      "code": "return b.store_int(v, 1);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_store_bool",
-    "signature": "builder __tact_store_bool(builder b, int v)",
-  },
-  {
-    "code": {
       "code": "NOP",
       "kind": "asm",
       "shuffle": "",
@@ -12233,20 +12205,6 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
     },
     "name": "__tact_prepare_random",
     "signature": "() __tact_prepare_random()",
-  },
-  {
-    "code": {
-      "code": "return b.store_int(v, 1);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_store_bool",
-    "signature": "builder __tact_store_bool(builder b, int v)",
   },
   {
     "code": {
