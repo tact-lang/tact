@@ -145,7 +145,7 @@ function processCondition(
     let initialCtx = sctx;
 
     // Simple if
-    if (condition.falseStatements === null && condition.elseif === null) {
+    if (condition.falseStatements === null) {
         const r = processStatements(condition.trueStatements, initialCtx, ctx);
         ctx = r.ctx;
         return { ctx, sctx: initialCtx, returnAlwaysReachable: false };
@@ -156,31 +156,16 @@ function processCondition(
     const returnAlwaysReachableInAllBranches: boolean[] = [];
 
     // Process true branch
-    const r = processStatements(condition.trueStatements, initialCtx, ctx);
-    ctx = r.ctx;
-    processedCtx.push(r.sctx);
-    returnAlwaysReachableInAllBranches.push(r.returnAlwaysReachable);
+    const r1 = processStatements(condition.trueStatements, initialCtx, ctx);
+    ctx = r1.ctx;
+    processedCtx.push(r1.sctx);
+    returnAlwaysReachableInAllBranches.push(r1.returnAlwaysReachable);
 
-    // Process else/elseif branch
-    if (condition.falseStatements !== null && condition.elseif === null) {
-        // if-else
-        const r = processStatements(condition.falseStatements, initialCtx, ctx);
-        ctx = r.ctx;
-        processedCtx.push(r.sctx);
-        returnAlwaysReachableInAllBranches.push(r.returnAlwaysReachable);
-    } else if (
-        condition.falseStatements === null &&
-        condition.elseif !== null
-    ) {
-        // if-else if
-        const r = processCondition(condition.elseif, initialCtx, ctx);
-
-        ctx = r.ctx;
-        processedCtx.push(r.sctx);
-        returnAlwaysReachableInAllBranches.push(r.returnAlwaysReachable);
-    } else {
-        throwInternalCompilerError("Impossible");
-    }
+    // Process false branch
+    const r2 = processStatements(condition.falseStatements, initialCtx, ctx);
+    ctx = r2.ctx;
+    processedCtx.push(r2.sctx);
+    returnAlwaysReachableInAllBranches.push(r2.returnAlwaysReachable);
 
     // Merge statement contexts
     const removed: string[] = [];

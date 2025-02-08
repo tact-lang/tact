@@ -931,7 +931,6 @@ semantics.addOperation<A.AstNode>("astOfStatement", {
             condition: condition.astOfExpression(),
             trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
             falseStatements: null,
-            elseif: null,
             loc: createRef(this),
         });
     },
@@ -951,7 +950,6 @@ semantics.addOperation<A.AstNode>("astOfStatement", {
             condition: condition.astOfExpression(),
             trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
             falseStatements: elseBlock.children.map((s) => s.astOfStatement()),
-            elseif: null,
             loc: createRef(this),
         });
     },
@@ -968,8 +966,7 @@ semantics.addOperation<A.AstNode>("astOfStatement", {
             kind: "statement_condition",
             condition: condition.astOfExpression(),
             trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
-            falseStatements: null,
-            elseif: elseifClause.astOfStatement(),
+            falseStatements: [elseifClause.astOfStatement()],
             loc: createRef(this),
         });
     },

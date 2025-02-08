@@ -333,11 +333,10 @@ export const getAstSchema = (
                 expression,
                 loc: toSrcInfo(loc),
             }),
-        Condition: (
+        StatementCondition: (
             condition: A.AstExpression,
             trueStatements: A.AstStatement[],
             falseStatements: A.AstStatement[] | null,
-            elseif: A.AstStatementCondition | null,
             loc: Loc,
         ): A.AstStatementCondition =>
             createNode<A.AstStatementCondition>({
@@ -345,7 +344,6 @@ export const getAstSchema = (
                 condition,
                 trueStatements,
                 falseStatements,
-                elseif,
                 loc: toSrcInfo(loc),
             }),
         StatementWhile: (
