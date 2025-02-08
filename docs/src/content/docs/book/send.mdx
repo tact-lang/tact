@@ -101,9 +101,11 @@ send(SendParameters{
 
 ## Outbound message processing
 
-Each transaction on TON Blockchain consists of [multiple phases][phases]. Outbound messages are evaluated in [compute phase][compute], but are **not** sent in that phase. Instead, they're queued in order of appearance for the [action phase][phases], where all actions listed in [compute phase][compute], like outbound messages or [reserve requests](/ref/core-advanced#nativereserve), are executed.
+Each transaction on TON Blockchain consists of [multiple phases][phases]. Outbound messages are evaluated in [compute phase][compute], but are **not** sent in that phase. Instead, they're queued for execution in the [action phase][phases] in order of their appearance in the compute phase.
 
-As all the values are computed in [compute phase][compute], all the fees computed by the end of it, and exceptions do not revert the transaction during [action phase][phases], outbound message sends can fail without bounce due to insufficient [action fees](https://docs.ton.org/develop/howto/fees-low-level#action-fee) or [forward fees][fwdfee].
+Outgoing message sends may fail in [action phase][phases] due to insufficient [action fees](https://docs.ton.org/develop/howto/fees-low-level#action-fee) or [forward fees][fwdfee], in which case they won't bounce and **won't revert** the transaction. This can happen because all values are calculated in the [compute phase][compute], all fees are computed by the end of it, and exceptions do not roll back the transaction during the [action phase][phases].
+
+To skip or ignore the queued messages at the [action phase][phases] in case they cannot be sent, set the optional [`SendIgnoreErrors{:tact}`](/book/message-mode#optional-flags) flag when composing the message.
 
 Consider the following example:
 
@@ -178,7 +180,9 @@ contract IfItDiesItDies {
 
 :::
 
-Previous examples discussed a case where the contract has $0$ [nanoToncoins][nano] on the balance, which is rather rare — in most real-world scenarios there would be some funds present. As such, it's usually better to use the [`SendRemainingBalance{:tact}`](/book/message-mode#base-modes) base mode, paired with the _necessary_ call to the [`nativeReserve(){:tact}`](/ref/core-advanced#nativereserve) function:
+Previous examples discussed a case where the contract has $0$ [nanoToncoins][nano] on the balance, which is rather rare — in most real-world scenarios there would be some funds present. As such, it's usually better to use the [`SendRemainingBalance{:tact}`](/book/message-mode#base-modes) base mode, paired with the _necessary_ call to the [`nativeReserve(){:tact}`](/ref/core-advanced#nativereserve) function.
+
+Like outbound messages, [reserve requests](/ref/core-advanced#nativereserve) are queued during the [compute phase][compute] and executed during the [action phase][phases].
 
 ```tact
 // This contract has some Toncoins on the balance, say, 0.2 or more
