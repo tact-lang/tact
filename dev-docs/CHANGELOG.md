@@ -93,7 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the `description` property to the frontmatter of the each page for better SEO: PR [#916](https://github.com/tact-lang/tact/pull/916)
 - Added Google Analytics tags per every page: PR [#921](https://github.com/tact-lang/tact/pull/921)
 - Added Ston.fi cookbook: PR [#956](https://github.com/tact-lang/tact/pull/956)
-- Added NFTs cookbook: PR [#958](https://github.com/tact-lang/tact/pull/958)
+- Added NFTs cookbook: PR [#958](https://github.com/tact-lang/tact/pull/958), PR [#1747](https://github.com/tact-lang/tact/pull/1747)
 - Added security best practices: PR [#1070](https://github.com/tact-lang/tact/pull/1070)
 - Added automatic links to Web IDE from all code blocks: PR [#994](https://github.com/tact-lang/tact/pull/994)
 - Added initial semi-automated Chinese translation of the documentation: PR [#942](https://github.com/tact-lang/tact/pull/942)
