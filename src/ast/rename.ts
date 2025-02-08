@@ -373,11 +373,6 @@ export class AstRenamer {
                     falseStatements: stmt.falseStatements
                         ? this.renameStatements(stmt.falseStatements)
                         : null,
-                    elseif: stmt.elseif
-                        ? (this.renameStatement(
-                              stmt.elseif,
-                          ) as A.AstStatementCondition)
-                        : null,
                 };
             case "statement_while":
             case "statement_until":
