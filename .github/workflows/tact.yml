@@ -76,52 +76,33 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [22]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "yarn"
-
-      - name: Install dependencies
-        run: |
-          corepack enable
-          yarn install
-
-      - name: List installed packages
-        run: |
-          yarn list
-
-      - name: Print some environment info
-        run: |
-          yarn cross-env echo $NODE_ENV
-
-      - name: Build Tact compiler
-        run: |
-          yarn clean
-          yarn gen
-          yarn build
-
-      - name: Test Tact compiler
-        run: |
-          yarn coverage
-
-      - name: Show an example .pkg file on Windows
-        if: runner.os == 'Windows'
-        run: |
-          type examples\output\echo_Echo.pkg
-
-      - name: Link Tact yarn package
-        run: |
-          yarn link
-
+      - uses: ./.github/actions/test
       - name: Test compatibility with tact-template
         run: |
+          # !!!!!!! Don't forget to update test-windows below !!!!!!!
+          git clone https://github.com/tact-lang/tact-template.git
+          cd tact-template
+          yarn install
+          yarn link @tact-lang/compiler
+          yarn build
+          yarn test
+
+  test-windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22]
+        os: [windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: ./.github/actions/test
+      - name: Test compatibility with tact-template
+        run: |
+          # !!!!!!! Don't forget to update test above !!!!!!!
+          $ErrorActionPreference = 'Stop'
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
           yarn install
