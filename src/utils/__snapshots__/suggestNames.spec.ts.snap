@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`suggestFunctions Snapshot for query "  storeInt  " - Query with leading/trailing whitespace; should match storeInt 1`] = `
+exports[`suggestSignatures Snapshot for query "  storeInt  " - Query with leading/trailing whitespace; should match storeInt 1`] = `
 [
   {
     "name": "storeInt",
@@ -9,7 +9,7 @@ exports[`suggestFunctions Snapshot for query "  storeInt  " - Query with leading
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "AS_slice" - mixed case with underscore in asSlice 1`] = `
+exports[`suggestSignatures Snapshot for query "AS_slice" - mixed case with underscore in asSlice 1`] = `
 [
   {
     "name": "asSlice",
@@ -18,7 +18,7 @@ exports[`suggestFunctions Snapshot for query "AS_slice" - mixed case with unders
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "GAS_conumed" - Mixed case with underscore; should now return only gasConsumed 1`] = `
+exports[`suggestSignatures Snapshot for query "GAS_conumed" - Mixed case with underscore; should now return only gasConsumed 1`] = `
 [
   {
     "name": "gasConsumed",
@@ -27,7 +27,7 @@ exports[`suggestFunctions Snapshot for query "GAS_conumed" - Mixed case with und
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "GAS_conumed" - underscore and missing letter in gasConsumed 1`] = `
+exports[`suggestSignatures Snapshot for query "GAS_conumed" - underscore and missing letter in gasConsumed 1`] = `
 [
   {
     "name": "gasConsumed",
@@ -36,7 +36,7 @@ exports[`suggestFunctions Snapshot for query "GAS_conumed" - underscore and miss
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "STOREINT" - All uppercase query; should match storeInt 1`] = `
+exports[`suggestSignatures Snapshot for query "STOREINT" - All uppercase query; should match storeInt 1`] = `
 [
   {
     "name": "storeInt",
@@ -45,7 +45,7 @@ exports[`suggestFunctions Snapshot for query "STOREINT" - All uppercase query; s
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "Stroe_Int" - transposition and underscore in storeInt 1`] = `
+exports[`suggestSignatures Snapshot for query "Stroe_Int" - transposition and underscore in storeInt 1`] = `
 [
   {
     "name": "storeInt",
@@ -54,7 +54,7 @@ exports[`suggestFunctions Snapshot for query "Stroe_Int" - transposition and und
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "asSlic" - missing letter in asSlice 1`] = `
+exports[`suggestSignatures Snapshot for query "asSlic" - missing letter in asSlice 1`] = `
 [
   {
     "name": "asSlice",
@@ -63,7 +63,7 @@ exports[`suggestFunctions Snapshot for query "asSlic" - missing letter in asSlic
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "bgncell" - transposition in beginCell 1`] = `
+exports[`suggestSignatures Snapshot for query "bgncell" - transposition in beginCell 1`] = `
 [
   {
     "name": "beginCell",
@@ -72,7 +72,7 @@ exports[`suggestFunctions Snapshot for query "bgncell" - transposition in beginC
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "blokLt" - missing letter in blockLt 1`] = `
+exports[`suggestSignatures Snapshot for query "blokLt" - missing letter in blockLt 1`] = `
 [
   {
     "name": "blockLt",
@@ -81,7 +81,7 @@ exports[`suggestFunctions Snapshot for query "blokLt" - missing letter in blockL
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "conTract_adresx" - multiple typos in contractAddressExt (extra letter 'x' instead of expected 't') 1`] = `
+exports[`suggestSignatures Snapshot for query "conTract_adresx" - multiple typos in contractAddressExt (extra letter 'x' instead of expected 't') 1`] = `
 [
   {
     "name": "contractAddress",
@@ -94,7 +94,7 @@ exports[`suggestFunctions Snapshot for query "conTract_adresx" - multiple typos 
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "conractAddress" - typo in contractAddress 1`] = `
+exports[`suggestSignatures Snapshot for query "conractAddress" - typo in contractAddress 1`] = `
 [
   {
     "name": "contractAddress",
@@ -103,7 +103,7 @@ exports[`suggestFunctions Snapshot for query "conractAddress" - typo in contract
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "contrac adress" - Missing letter and space in contractAddress; should match contractAddress 1`] = `
+exports[`suggestSignatures Snapshot for query "contrac adress" - Missing letter and space in contractAddress; should match contractAddress 1`] = `
 [
   {
     "name": "contractAddress",
@@ -112,7 +112,7 @@ exports[`suggestFunctions Snapshot for query "contrac adress" - Missing letter a
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "contractAdressExt" - missing letter in contractAddressExt 1`] = `
+exports[`suggestSignatures Snapshot for query "contractAdressExt" - missing letter in contractAddressExt 1`] = `
 [
   {
     "name": "contractAddressExt",
@@ -121,7 +121,7 @@ exports[`suggestFunctions Snapshot for query "contractAdressExt" - missing lette
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "contrctadress_ext" - missing letters and underscore in contractAddressExt 1`] = `
+exports[`suggestSignatures Snapshot for query "contrctadress_ext" - missing letters and underscore in contractAddressExt 1`] = `
 [
   {
     "name": "contractAddressExt",
@@ -130,7 +130,7 @@ exports[`suggestFunctions Snapshot for query "contrctadress_ext" - missing lette
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "cur lt" - Query with space in curLt; should match curLt 1`] = `
+exports[`suggestSignatures Snapshot for query "cur lt" - Query with space in curLt; should match curLt 1`] = `
 [
   {
     "name": "curLt",
@@ -139,7 +139,7 @@ exports[`suggestFunctions Snapshot for query "cur lt" - Query with space in curL
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "gas   conumed" - Extra spaces in gasConsumed; should now correctly filter to gasConsumed 1`] = `
+exports[`suggestSignatures Snapshot for query "gas   conumed" - Extra spaces in gasConsumed; should now correctly filter to gasConsumed 1`] = `
 [
   {
     "name": "gasConsumed",
@@ -148,7 +148,7 @@ exports[`suggestFunctions Snapshot for query "gas   conumed" - Extra spaces in g
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "gasConumed" - missing letter in gasConsumed 1`] = `
+exports[`suggestSignatures Snapshot for query "gasConumed" - missing letter in gasConsumed 1`] = `
 [
   {
     "name": "gasConsumed",
@@ -157,7 +157,7 @@ exports[`suggestFunctions Snapshot for query "gasConumed" - missing letter in ga
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "geT_foRwrd_fee" - mixed case, underscore and transposition in getForwardFee 1`] = `
+exports[`suggestSignatures Snapshot for query "geT_foRwrd_fee" - mixed case, underscore and transposition in getForwardFee 1`] = `
 [
   {
     "name": "getForwardFee",
@@ -166,7 +166,7 @@ exports[`suggestFunctions Snapshot for query "geT_foRwrd_fee" - mixed case, unde
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "get comput fee" - Query with extra spaces; should match getComputeFee 1`] = `
+exports[`suggestSignatures Snapshot for query "get comput fee" - Query with extra spaces; should match getComputeFee 1`] = `
 [
   {
     "name": "getComputeFee",
@@ -175,7 +175,7 @@ exports[`suggestFunctions Snapshot for query "get comput fee" - Query with extra
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "get original fwd fee" - Query with spaces; should match getOriginalFwdFee 1`] = `
+exports[`suggestSignatures Snapshot for query "get original fwd fee" - Query with spaces; should match getOriginalFwdFee 1`] = `
 [
   {
     "name": "getOriginalFwdFee",
@@ -184,7 +184,7 @@ exports[`suggestFunctions Snapshot for query "get original fwd fee" - Query with
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "get" - Generic query 'get' should ideally return only high-confidence 'get' functions 1`] = `
+exports[`suggestSignatures Snapshot for query "get" - Generic query 'get' should ideally return only high-confidence 'get' functions 1`] = `
 [
   {
     "name": "getSeed",
@@ -193,7 +193,7 @@ exports[`suggestFunctions Snapshot for query "get" - Generic query 'get' should 
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "get-" - Query with punctuation; should ignore the hyphen 1`] = `
+exports[`suggestSignatures Snapshot for query "get-" - Query with punctuation; should ignore the hyphen 1`] = `
 [
   {
     "name": "getSeed",
@@ -202,7 +202,7 @@ exports[`suggestFunctions Snapshot for query "get-" - Query with punctuation; sh
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "getComputFee" - missing letter in getComputeFee 1`] = `
+exports[`suggestSignatures Snapshot for query "getComputFee" - missing letter in getComputeFee 1`] = `
 [
   {
     "name": "getComputeFee",
@@ -211,7 +211,7 @@ exports[`suggestFunctions Snapshot for query "getComputFee" - missing letter in 
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "getForwadFee" - transposition in getForwardFee 1`] = `
+exports[`suggestSignatures Snapshot for query "getForwadFee" - transposition in getForwardFee 1`] = `
 [
   {
     "name": "getForwardFee",
@@ -220,7 +220,7 @@ exports[`suggestFunctions Snapshot for query "getForwadFee" - transposition in g
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "getOriginalFwdFe" - missing letter in getOriginalFwdFee 1`] = `
+exports[`suggestSignatures Snapshot for query "getOriginalFwdFe" - missing letter in getOriginalFwdFee 1`] = `
 [
   {
     "name": "getOriginalFwdFee",
@@ -229,7 +229,7 @@ exports[`suggestFunctions Snapshot for query "getOriginalFwdFe" - missing letter
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "getSead" - transposition in getSeed 1`] = `
+exports[`suggestSignatures Snapshot for query "getSead" - transposition in getSeed 1`] = `
 [
   {
     "name": "getSeed",
@@ -238,7 +238,7 @@ exports[`suggestFunctions Snapshot for query "getSead" - transposition in getSee
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "getStoragFee" - missing letter in getStorageFee 1`] = `
+exports[`suggestSignatures Snapshot for query "getStoragFee" - missing letter in getStorageFee 1`] = `
 [
   {
     "name": "getStorageFee",
@@ -247,7 +247,7 @@ exports[`suggestFunctions Snapshot for query "getStoragFee" - missing letter in 
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "gtsed" - transposition in getSeed 1`] = `
+exports[`suggestSignatures Snapshot for query "gtsed" - transposition in getSeed 1`] = `
 [
   {
     "name": "getSeed",
@@ -256,7 +256,7 @@ exports[`suggestFunctions Snapshot for query "gtsed" - transposition in getSeed 
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "mcode" - transposition in myCode 1`] = `
+exports[`suggestSignatures Snapshot for query "mcode" - transposition in myCode 1`] = `
 [
   {
     "name": "myCode",
@@ -265,7 +265,7 @@ exports[`suggestFunctions Snapshot for query "mcode" - transposition in myCode 1
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "my  cdoe" - Multiple spaces and a transposition in myCode; should match myCode 1`] = `
+exports[`suggestSignatures Snapshot for query "my  cdoe" - Multiple spaces and a transposition in myCode; should match myCode 1`] = `
 [
   {
     "name": "myCode",
@@ -274,7 +274,7 @@ exports[`suggestFunctions Snapshot for query "my  cdoe" - Multiple spaces and a 
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "myAddres" - missing letter in myAddress 1`] = `
+exports[`suggestSignatures Snapshot for query "myAddres" - missing letter in myAddress 1`] = `
 [
   {
     "name": "myAddress",
@@ -283,7 +283,7 @@ exports[`suggestFunctions Snapshot for query "myAddres" - missing letter in myAd
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "myBalanace" - transposition in myBalance 1`] = `
+exports[`suggestSignatures Snapshot for query "myBalanace" - transposition in myBalance 1`] = `
 [
   {
     "name": "myBalance",
@@ -292,7 +292,7 @@ exports[`suggestFunctions Snapshot for query "myBalanace" - transposition in myB
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "myBlnace" - transposition in myBalance 1`] = `
+exports[`suggestSignatures Snapshot for query "myBlnace" - transposition in myBalance 1`] = `
 [
   {
     "name": "myBalance",
@@ -301,7 +301,7 @@ exports[`suggestFunctions Snapshot for query "myBlnace" - transposition in myBal
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "myCdoe" - transposition in myCode 1`] = `
+exports[`suggestSignatures Snapshot for query "myCdoe" - transposition in myCode 1`] = `
 [
   {
     "name": "myCode",
@@ -310,7 +310,7 @@ exports[`suggestFunctions Snapshot for query "myCdoe" - transposition in myCode 
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "myStroageDue" - transposition in myStorageDue 1`] = `
+exports[`suggestSignatures Snapshot for query "myStroageDue" - transposition in myStorageDue 1`] = `
 [
   {
     "name": "myStorageDue",
@@ -319,7 +319,7 @@ exports[`suggestFunctions Snapshot for query "myStroageDue" - transposition in m
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "newAdress" - missing letter in newAddress 1`] = `
+exports[`suggestSignatures Snapshot for query "newAdress" - missing letter in newAddress 1`] = `
 [
   {
     "name": "newAddress",
@@ -328,7 +328,7 @@ exports[`suggestFunctions Snapshot for query "newAdress" - missing letter in new
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "parse_std_adres" - underscored query with missing letter in parseStdAddress 1`] = `
+exports[`suggestSignatures Snapshot for query "parse_std_adres" - underscored query with missing letter in parseStdAddress 1`] = `
 [
   {
     "name": "parseStdAddress",
@@ -337,7 +337,7 @@ exports[`suggestFunctions Snapshot for query "parse_std_adres" - underscored que
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "parseStd-Address" - Query with hyphen; should match parseStdAddress 1`] = `
+exports[`suggestSignatures Snapshot for query "parseStd-Address" - Query with hyphen; should match parseStdAddress 1`] = `
 [
   {
     "name": "parseStdAddress",
@@ -346,7 +346,7 @@ exports[`suggestFunctions Snapshot for query "parseStd-Address" - Query with hyp
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "parseStdAdress" - missing letter in parseStdAddress 1`] = `
+exports[`suggestSignatures Snapshot for query "parseStdAdress" - missing letter in parseStdAddress 1`] = `
 [
   {
     "name": "parseStdAddress",
@@ -355,7 +355,7 @@ exports[`suggestFunctions Snapshot for query "parseStdAdress" - missing letter i
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "parseVarAdress" - missing letter in parseVarAddress 1`] = `
+exports[`suggestSignatures Snapshot for query "parseVarAdress" - missing letter in parseVarAddress 1`] = `
 [
   {
     "name": "parseVarAddress",
@@ -364,7 +364,7 @@ exports[`suggestFunctions Snapshot for query "parseVarAdress" - missing letter i
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "sEtSeAd" - mixed case transposition in setSeed 1`] = `
+exports[`suggestSignatures Snapshot for query "sEtSeAd" - mixed case transposition in setSeed 1`] = `
 [
   {
     "name": "setSeed",
@@ -373,7 +373,7 @@ exports[`suggestFunctions Snapshot for query "sEtSeAd" - mixed case transpositio
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "set  gas  limit" - Multiple spaces in setGasLimit; should match setGasLimit 1`] = `
+exports[`suggestSignatures Snapshot for query "set  gas  limit" - Multiple spaces in setGasLimit; should match setGasLimit 1`] = `
 [
   {
     "name": "setGasLimit",
@@ -382,7 +382,7 @@ exports[`suggestFunctions Snapshot for query "set  gas  limit" - Multiple spaces
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "setGasLimt" - missing letter in setGasLimit 1`] = `
+exports[`suggestSignatures Snapshot for query "setGasLimt" - missing letter in setGasLimit 1`] = `
 [
   {
     "name": "setGasLimit",
@@ -391,7 +391,7 @@ exports[`suggestFunctions Snapshot for query "setGasLimt" - missing letter in se
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "setSead" - transposition in setSeed 1`] = `
+exports[`suggestSignatures Snapshot for query "setSead" - transposition in setSeed 1`] = `
 [
   {
     "name": "setSeed",
@@ -400,7 +400,7 @@ exports[`suggestFunctions Snapshot for query "setSead" - transposition in setSee
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "st" - Very short query; ambiguous (likely returns nothing or many candidates) 1`] = `
+exports[`suggestSignatures Snapshot for query "st" - Very short query; ambiguous (likely returns nothing or many candidates) 1`] = `
 [
   {
     "name": "storeBit",
@@ -421,7 +421,7 @@ exports[`suggestFunctions Snapshot for query "st" - Very short query; ambiguous 
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "storBit" - missing letter in storeBit 1`] = `
+exports[`suggestSignatures Snapshot for query "storBit" - missing letter in storeBit 1`] = `
 [
   {
     "name": "storeBit",
@@ -430,7 +430,7 @@ exports[`suggestFunctions Snapshot for query "storBit" - missing letter in store
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "storVar_int32" - missing letter in storeVarInt32 with inconsistent casing 1`] = `
+exports[`suggestSignatures Snapshot for query "storVar_int32" - missing letter in storeVarInt32 with inconsistent casing 1`] = `
 [
   {
     "name": "storeVarInt32",
@@ -439,7 +439,7 @@ exports[`suggestFunctions Snapshot for query "storVar_int32" - missing letter in
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "store    var" - Multiple spaces in storevar; ambiguous but useful 1`] = `
+exports[`suggestSignatures Snapshot for query "store    var" - Multiple spaces in storevar; ambiguous but useful 1`] = `
 [
   {
     "name": "storeVarInt16",
@@ -460,7 +460,7 @@ exports[`suggestFunctions Snapshot for query "store    var" - Multiple spaces in
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "store int" - Query with a space instead of underscore; should match storeInt 1`] = `
+exports[`suggestSignatures Snapshot for query "store int" - Query with a space instead of underscore; should match storeInt 1`] = `
 [
   {
     "name": "storeInt",
@@ -469,7 +469,7 @@ exports[`suggestFunctions Snapshot for query "store int" - Query with a space in
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "store-int" - Hyphenated query; should match storeInt 1`] = `
+exports[`suggestSignatures Snapshot for query "store-int" - Hyphenated query; should match storeInt 1`] = `
 [
   {
     "name": "storeInt",
@@ -486,7 +486,7 @@ exports[`suggestFunctions Snapshot for query "store-int" - Hyphenated query; sho
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "storeit" - missing letter in storeInt 1`] = `
+exports[`suggestSignatures Snapshot for query "storeit" - missing letter in storeInt 1`] = `
 [
   {
     "name": "storeBit",
@@ -503,7 +503,7 @@ exports[`suggestFunctions Snapshot for query "storeit" - missing letter in store
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "storevar16" - Query with number appended; should match storeVarUint16 1`] = `
+exports[`suggestSignatures Snapshot for query "storevar16" - Query with number appended; should match storeVarUint16 1`] = `
 [
   {
     "name": "storeVarInt16",
@@ -516,7 +516,7 @@ exports[`suggestFunctions Snapshot for query "storevar16" - Query with number ap
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "storevar32" - Query with number appended; should match storeVarUint32 1`] = `
+exports[`suggestSignatures Snapshot for query "storevar32" - Query with number appended; should match storeVarUint32 1`] = `
 [
   {
     "name": "storeVarInt32",
@@ -529,7 +529,7 @@ exports[`suggestFunctions Snapshot for query "storevar32" - Query with number ap
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "stroe   bool" - Extra spaces in storeBool; should match storeBool 1`] = `
+exports[`suggestSignatures Snapshot for query "stroe   bool" - Extra spaces in storeBool; should match storeBool 1`] = `
 [
   {
     "name": "storeBool",
@@ -538,7 +538,7 @@ exports[`suggestFunctions Snapshot for query "stroe   bool" - Extra spaces in st
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "stroe__int" - transposition with extra underscore in storeInt 1`] = `
+exports[`suggestSignatures Snapshot for query "stroe__int" - transposition with extra underscore in storeInt 1`] = `
 [
   {
     "name": "storeInt",
@@ -547,7 +547,7 @@ exports[`suggestFunctions Snapshot for query "stroe__int" - transposition with e
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "stroe_bool" - transposition with underscore in storeBool 1`] = `
+exports[`suggestSignatures Snapshot for query "stroe_bool" - transposition with underscore in storeBool 1`] = `
 [
   {
     "name": "storeBool",
@@ -556,7 +556,7 @@ exports[`suggestFunctions Snapshot for query "stroe_bool" - transposition with u
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "stroeBool" - transposition in storeBool 1`] = `
+exports[`suggestSignatures Snapshot for query "stroeBool" - transposition in storeBool 1`] = `
 [
   {
     "name": "storeBool",
@@ -565,7 +565,7 @@ exports[`suggestFunctions Snapshot for query "stroeBool" - transposition in stor
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "stroeInt" - transposition in storeInt 1`] = `
+exports[`suggestSignatures Snapshot for query "stroeInt" - transposition in storeInt 1`] = `
 [
   {
     "name": "storeInt",
@@ -574,7 +574,7 @@ exports[`suggestFunctions Snapshot for query "stroeInt" - transposition in store
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "stroeUint" - transposition in storeUint 1`] = `
+exports[`suggestSignatures Snapshot for query "stroeUint" - transposition in storeUint 1`] = `
 [
   {
     "name": "storeUint",
@@ -583,7 +583,7 @@ exports[`suggestFunctions Snapshot for query "stroeUint" - transposition in stor
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "stroeVAr_uint16" - multiple typos in storeVarUint16 (transposition and inconsistent casing) 1`] = `
+exports[`suggestSignatures Snapshot for query "stroeVAr_uint16" - multiple typos in storeVarUint16 (transposition and inconsistent casing) 1`] = `
 [
   {
     "name": "storeVarUint16",
@@ -592,7 +592,7 @@ exports[`suggestFunctions Snapshot for query "stroeVAr_uint16" - multiple typos 
 ]
 `;
 
-exports[`suggestFunctions Snapshot for query "stsed" - transposition in setSeed 1`] = `
+exports[`suggestSignatures Snapshot for query "stsed" - transposition in setSeed 1`] = `
 [
   {
     "name": "setSeed",

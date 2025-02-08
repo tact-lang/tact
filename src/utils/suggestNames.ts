@@ -1,4 +1,4 @@
-export interface FunctionSignature {
+export interface Signature {
     name: string;
     signature: string;
 }
@@ -151,7 +151,7 @@ function computeCompositeScore(
 }
 
 /**
- * Suggests function signatures similar to the unknown function name.
+ * Suggests signatures similar to the unknown name.
  *
  * - Returns [] if the unknown query is empty.
  * - Computes a composite score for each candidate.
@@ -162,10 +162,10 @@ function computeCompositeScore(
  * - Finally, returns only candidates whose score is within TOLERANCE of the best score.
  * - Limits the final returned list to at most 3 suggestions.
  */
-export function suggestFunctions(
+export function suggestSignatures(
     unknown: string,
-    functions: FunctionSignature[],
-): FunctionSignature[] {
+    signatures: Signature[],
+): Signature[] {
     if (unknown.trim() === "") return [];
 
     const ABS_MIN_SCORE = 0.7;
@@ -173,7 +173,7 @@ export function suggestFunctions(
     const TOLERANCE = 0.05;
 
     // Score candidates.
-    const scoredCandidates = functions.map((f) => {
+    const scoredCandidates = signatures.map((f) => {
         const { score, normQuery, normCandidate, contains } =
             computeCompositeScore(unknown, f.name);
         return { ...f, score, normQuery, normCandidate, contains };

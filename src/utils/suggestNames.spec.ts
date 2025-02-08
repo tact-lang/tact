@@ -1,7 +1,7 @@
-import { suggestFunctions, FunctionSignature } from "./suggestFunctions";
+import { suggestSignatures, Signature } from "./suggestNames";
 
 // List of real functions
-const functions: FunctionSignature[] = [
+const functions: Signature[] = [
     { name: "beginCell", signature: "asm fun beginCell(): Builder { NEWC }" },
     {
         name: "storeInt",
@@ -328,10 +328,10 @@ const testCases = [
     },
 ];
 
-describe("suggestFunctions", () => {
+describe("suggestSignatures", () => {
     testCases.forEach(({ query, description }) => {
         test(`Snapshot for query "${query}" - ${description}`, () => {
-            const suggestions = suggestFunctions(query, functions);
+            const suggestions = suggestSignatures(query, functions);
             expect(suggestions).toMatchSnapshot();
         });
     });
