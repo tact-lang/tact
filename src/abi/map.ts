@@ -353,7 +353,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
                 const [self] = args;
                 checkMapType(self, ref);
 
-                return { kind: "ref", name: "Cell", optional: true };
+                return { kind: "ref", name: "Cell", optional: false };
             },
             generate(
                 ctx: WriterContext,
