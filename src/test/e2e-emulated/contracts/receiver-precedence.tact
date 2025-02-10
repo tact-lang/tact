@@ -2,6 +2,34 @@ message Message {
     msg: String;
 }
 
+message BinaryIntOperation {
+    op: String;
+    val1: Int;
+    val2: Int;
+}
+
+message BinaryIntResult {
+    val: Int;
+}
+
+// This contract receives binary arithmetic requests.
+// It only supports divisions.
+contract Calculator {
+
+    receive("deploy") {}
+
+    receive(request: BinaryIntOperation) {
+        require(request.op == "/", "Only divisions are currently supported.");
+        let result = request.val1 / request.val2;
+        send(SendParameters{
+            to: sender(),
+            bounce: false,
+            value: ton("1"),
+            body: BinaryIntResult{val: result}.toCell(), 
+            });
+    }
+}
+
 contract ReceiverTester {
 
     receiverKind: String = "unknown";
@@ -35,6 +63,61 @@ contract ReceiverTester {
         } else {
             self.receiverKind = "fallback";
         }
+    }
+
+    // Bounced testing
+
+    // Initiate a request to the calculator, with an unsupported arithmetic operation: 1 + 1
+    receive("do_unsupported_op") {
+        let addr = contractAddress(initOf Calculator());
+        send(SendParameters{
+                to: addr,
+                bounce: true,
+                value: ton("1"),
+                body: BinaryIntOperation{op: "+", val1: 1, val2: 1}.toCell(),
+                });
+    }
+
+    // Initiate a request to the calculator, with a division by zero: 10/0
+    receive("do_div_by_zero") {
+        let addr = contractAddress(initOf Calculator());
+        send(SendParameters{
+                to: addr,
+                bounce: true,
+                value: ton("1"),
+                body: BinaryIntOperation{op: "/", val1: 10, val2: 0}.toCell(),
+                });
+    }
+
+    // Initiate a request to the calculator: 10/2
+    receive("do_success_div") {
+        let addr = contractAddress(initOf Calculator());
+        send(SendParameters{
+                to: addr,
+                bounce: true,
+                value: ton("1"),
+                body: BinaryIntOperation{op: "/", val1: 10, val2: 2}.toCell(),
+                });
+    }
+
+    // Initiate a non-arithmetic request to the calculator.
+    // The calculator will reject the request
+    receive("do_unknown_request") {
+        let addr = contractAddress(initOf Calculator());
+        send(SendParameters{
+                to: addr,
+                bounce: true,
+                value: ton("1"),
+                body: "do_something".asComment(),
+                });
+    }
+
+    bounced(msg: bounced<BinaryIntOperation>) {
+        self.receiverKind = "bounced_binary_message";
+    }
+
+    bounced(msg: Slice) {
+        self.receiverKind = "bounced_fallback";
     }
 
     get fun receiverKind(): String {

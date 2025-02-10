@@ -1,12 +1,14 @@
 import { beginCell, Cell, toNano } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { ReceiverTester } from "./contracts/output/receiver-precedence_ReceiverTester";
+import { Calculator } from "./contracts/output/receiver-precedence_Calculator";
 import "@ton/test-utils";
 
 describe("receivers-precedence", () => {
     let blockchain: Blockchain;
     let treasure: SandboxContract<TreasuryContract>;
     let contract: SandboxContract<ReceiverTester>;
+    let calculator: SandboxContract<Calculator>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
@@ -14,6 +16,7 @@ describe("receivers-precedence", () => {
         treasure = await blockchain.treasury("treasure");
 
         contract = blockchain.openContract(await ReceiverTester.fromInit());
+        calculator = blockchain.openContract(await Calculator.fromInit());
 
         const deployResult = await contract.send(
             treasure.getSender(),
@@ -23,6 +26,18 @@ describe("receivers-precedence", () => {
         expect(deployResult.transactions).toHaveTransaction({
             from: treasure.address,
             to: contract.address,
+            success: true,
+            deploy: true,
+        });
+
+        const calcDeploy = await calculator.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            "deploy",
+        );
+        expect(calcDeploy.transactions).toHaveTransaction({
+            from: treasure.address,
+            to: calculator.address,
             success: true,
             deploy: true,
         });
@@ -132,5 +147,54 @@ describe("receivers-precedence", () => {
         expect(receiver9 === "fallback").toBe(true);
 
         // In all the cases, "error_comment" did not execute, as it should be.
+    });
+
+    it("should implement bounced receiver precedence correctly", async () => {
+        // Tell the contract to send a request to the calculator with an unsupported arithmetical operation.
+        // The contract will send the request: 1 + 1
+        await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            "do_unsupported_op",
+        );
+        const receiver1 = await contract.getReceiverKind();
+        // The request was bounced back, because the calculator does not do additions.
+        // Note the bounced fallback receiver did not execute
+        expect(receiver1 === "bounced_binary_message").toBe(true);
+
+        // Tell the contract to send a request to the calculator with a division by zero.
+        // The contract will send the request: 10/0
+        await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            "do_div_by_zero",
+        );
+        const receiver2 = await contract.getReceiverKind();
+        // The request was bounced back, because the calculator got a division by zero error
+        // Note the bounced fallback receiver did not execute
+        expect(receiver2 === "bounced_binary_message").toBe(true);
+
+        // Tell the contract to send a request to the calculator with a successful division.
+        // The contract will send the request: 10/2
+        await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            "do_success_div",
+        );
+        const receiver3 = await contract.getReceiverKind();
+        // The request was successful, since the contract does not receive BinaryIntResult messages (as returned by the calculator),
+        // The contract processed the result in the fallback receiver (NOT the bounced fallback receiver).
+        expect(receiver3 === "fallback").toBe(true);
+
+        // Tell the contract to send an unknown non-arithmetical request to the calculator.
+        await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            "do_unknown_request",
+        );
+        const receiver4 = await contract.getReceiverKind();
+        // The request was bounced back, because the calculator does not know how to process it.
+        // The contract gets the request bounced back into its bounced fallback receiver.
+        expect(receiver4 === "bounced_fallback").toBe(true);
     });
 });
