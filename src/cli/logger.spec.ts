@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-confusing-void-expression */
 import { throwInternal } from "../error/errors";
 import { Logger, SourceLogger } from "../error/logger-util";
 import { Range } from "../error/range";
@@ -10,7 +11,7 @@ const catchProcessExit = <T>(fn: () => T): T | string => {
     });
 
     let result: T | null = null;
-    let caughtError: unknown | null = null;
+    let caughtError: unknown = null;
 
     try {
         result = fn();
@@ -114,7 +115,7 @@ describe("TerminalLogger", () => {
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
             return TerminalLogger("info", colors, (log) => {
-                log.source("/foo/bar", "Hello, world", (log) => {
+                log.source("/foo/bar", "Hello, world", () => {
                     throwInternal(`OMG`);
                 });
             });
@@ -162,7 +163,7 @@ describe("TerminalLogger", () => {
     test("uncaught error", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger("info", colors, () => {
                 throw new Error("Uncaught!");
             });
         });

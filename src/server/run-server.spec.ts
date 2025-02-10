@@ -36,7 +36,7 @@ describe("runServer", () => {
 
     test("raw internal error in source", () => {
         const result = runServer((log) => {
-            log.source("/foo/bar", "Hello, world", (log) => {
+            log.source("/foo/bar", "Hello, world", () => {
                 throwInternal(`OMG`);
             });
         });

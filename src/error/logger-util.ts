@@ -84,8 +84,12 @@ export const mapBaseLogger = <M1, M2, R>(
     exitIfErrored: log.exitIfErrored,
     internal: (m) => log.internal(f(m)),
     error: (m) => log.error(f(m)),
-    warn: (m) => log.warn(f(m)),
-    info: (m) => log.info(f(m)),
+    warn: (m) => {
+        log.warn(f(m))
+    },
+    info: (m) => {
+        log.info(f(m))
+    },
 });
 
 /**
