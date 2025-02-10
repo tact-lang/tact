@@ -74,7 +74,7 @@ export const ops = {
 
     // Functions
     extension: (type: string, nullable: boolean, name: string) =>
-        `$${type}${nullable ? "_nullable" : ""}$_fun_${name}`,
+        `$${type}${nullable ? "_optional" : ""}$_fun_${name}`,
     global: (name: string) => `$global_${name}`,
     nonModifying: (name: string) => `${name}$not_mut`,
 

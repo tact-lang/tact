@@ -790,7 +790,7 @@ export function writeGetter(f: FunctionDescription, wCtx: WriterContext) {
 
         // Execute get method
         wCtx.append(
-            `var res = self~${wCtx.used(ops.extension(self.name, self.nullable, f.name))}(${f.params.map((v) => funcIdOf(v.name)).join(", ")});`,
+            `var res = self~${wCtx.used(ops.extension(self.name, self.optional, f.name))}(${f.params.map((v) => funcIdOf(v.name)).join(", ")});`,
         );
 
         // Pack if needed

@@ -23,7 +23,7 @@ export type TypeDescription = {
     dependsOn: TypeDescription[];
     interfaces: string[];
     constants: ConstantDescription[];
-    nullable: boolean;
+    optional: boolean;
 };
 
 export type TypeRef =

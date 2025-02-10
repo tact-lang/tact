@@ -154,7 +154,7 @@ export async function writeProgram(
     const emittedTypes: string[] = [];
     const types = getSortedTypes(ctx);
     for (const t of types) {
-        if (t.nullable) {
+        if (t.optional) {
             // no need to generate anything for T?
             continue;
         }
@@ -316,7 +316,7 @@ function writeAll(
     // Serializers
     const sortedTypes = getSortedTypes(ctx);
     for (const t of sortedTypes) {
-        if (t.nullable) {
+        if (t.optional) {
             // no need to generate serialization for T?
             continue;
         }
@@ -352,7 +352,7 @@ function writeAll(
 
     // Accessors
     for (const t of allTypes) {
-        if (t.nullable) {
+        if (t.optional) {
             // no need to generate accessors for T?
             continue;
         }

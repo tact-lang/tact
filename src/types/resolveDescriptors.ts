@@ -316,7 +316,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         interfaces: [],
                         constants: [],
                         partialFieldCount: 0,
-                        nullable: false,
+                        optional: false,
                     });
                 }
                 break;
@@ -340,7 +340,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         interfaces: a.attributes.map((v) => v.name.value),
                         constants: [],
                         partialFieldCount: 0,
-                        nullable: false,
+                        optional: false,
                     });
                 }
                 break;
@@ -365,7 +365,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         interfaces: [],
                         constants: [],
                         partialFieldCount: 0,
-                        nullable: false,
+                        optional: false,
                     });
                 }
                 break;
@@ -388,7 +388,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     interfaces: a.attributes.map((v) => v.name.value),
                     constants: [],
                     partialFieldCount: 0,
-                    nullable: false,
+                    optional: false,
                 });
             }
         }
@@ -2018,14 +2018,14 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 );
             }
 
-            const name = r.self.name + (r.self.optional ? "_nullable" : "");
+            const name = r.self.name + (r.self.optional ? "_optional" : "");
 
             if (r.self.optional && !types.has(name)) {
-                const notNullableType = types.get(r.self.name)!;
+                const optionInnerType = types.get(r.self.name)!;
                 types.set(name, {
-                    ...notNullableType,
+                    ...optionInnerType,
                     functions: new Map(),
-                    nullable: true,
+                    optional: true,
                 });
             }
 
@@ -2106,7 +2106,7 @@ export function getType(
 ): TypeDescription {
     const name =
         (typeof ident === "string" ? ident : idText(ident)) +
-        (optional ? "_nullable" : "");
+        (optional ? "_optional" : "");
     const r = store.get(ctx, name);
     if (!r) {
         throwInternalCompilerError(`Type ${name} not found`);
