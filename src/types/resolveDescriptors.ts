@@ -2020,11 +2020,12 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
             const name = r.self.name + (r.self.optional ? "_optional" : "");
 
+            // Here we create a new type `T?` from `T` on demand
             if (r.self.optional && !types.has(name)) {
                 const optionInnerType = types.get(r.self.name)!;
                 types.set(name, {
                     ...optionInnerType,
-                    functions: new Map(),
+                    functions: new Map(), // `T?` has its own functions
                     optional: true,
                 });
             }
