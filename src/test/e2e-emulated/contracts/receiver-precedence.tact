@@ -11,19 +11,19 @@ contract ReceiverTester {
     }
 
     receive("message") {
-        self.receiverKind = "message";
+        self.receiverKind = "comment";
     }
 
     receive(msg: String) {
         if (msg == "message") {
-            self.receiverKind = "message_string";
+            self.receiverKind = "error_comment";
         } else {
-            self.receiverKind = "string";
+            self.receiverKind = "comment_fallback";
         }
     }
 
     receive(msg: Message) {
-        self.receiverKind = "Message_struct";
+        self.receiverKind = "binary_message";
     }
 
     receive(msg: Slice) {
@@ -33,7 +33,7 @@ contract ReceiverTester {
         if (m == "message") {
             self.receiverKind = "message_slice";
         } else {
-            self.receiverKind = "slice";
+            self.receiverKind = "fallback";
         }
     }
 

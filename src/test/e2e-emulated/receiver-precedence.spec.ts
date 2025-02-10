@@ -40,8 +40,8 @@ describe("receivers-precedence", () => {
             "message",
         );
         const receiver2 = await contract.getReceiverKind();
-        // Note the receiver "message_string" did not execute
-        expect(receiver2 === "message").toBe(true);
+        // Note the receiver "error_comment" did not execute
+        expect(receiver2 === "comment").toBe(true);
 
         // Send now an arbitrary string different from "message"
         await contract.send(
@@ -51,8 +51,8 @@ describe("receivers-precedence", () => {
         );
         const receiver3 = await contract.getReceiverKind();
         // Now, the receiver for general strings executed.
-        // Note that "message_string" still does not execute, nor the "message_slice" receiver.
-        expect(receiver3 === "string").toBe(true);
+        // Note that "error_comment" still does not execute, nor the "message_slice" receiver.
+        expect(receiver3 === "comment_fallback").toBe(true);
 
         // Send now a Message (note the capital letter in Message)
         await contract.send(
@@ -62,7 +62,7 @@ describe("receivers-precedence", () => {
         );
         const receiver4 = await contract.getReceiverKind();
         // Now, the receiver for Message executed.
-        expect(receiver4 === "Message_struct").toBe(true);
+        expect(receiver4 === "binary_message").toBe(true);
 
         // Now, simulate different kinds of messages using slices
 
@@ -88,8 +88,8 @@ describe("receivers-precedence", () => {
                 .asSlice(),
         );
         const receiver6 = await contract.getReceiverKind();
-        // Note the receiver "message_string" did not execute, nor the receiver "message_slice".
-        expect(receiver6 === "message").toBe(true);
+        // Note the receiver "error_comment" did not execute, nor the receiver "message_slice".
+        expect(receiver6 === "comment").toBe(true);
 
         // Send now an arbitrary string different from "message"
         await contract.send(
@@ -104,8 +104,8 @@ describe("receivers-precedence", () => {
         );
         const receiver7 = await contract.getReceiverKind();
         // Now, the receiver for general strings executed.
-        // Note that "message_string" still does not execute.
-        expect(receiver7 === "string").toBe(true);
+        // Note that "error_comment" still does not execute.
+        expect(receiver7 === "comment_fallback").toBe(true);
 
         // Note that it is possible to trigger the "message_slice" receiver by passing an operation code different from 0, for example 10.
         await contract.send(
@@ -129,8 +129,8 @@ describe("receivers-precedence", () => {
         );
         const receiver9 = await contract.getReceiverKind();
         // Now, the receiver for slices executed.
-        expect(receiver9 === "slice").toBe(true);
+        expect(receiver9 === "fallback").toBe(true);
 
-        // In all the cases, "message_string" did not execute, as it should be.
+        // In all the cases, "error_comment" did not execute, as it should be.
     });
 });
