@@ -591,7 +591,7 @@ function resolveStaticCall(
         const t = getExpType(ctx, e);
         if (!isAssignable(t, a.type)) {
             throwCompilationError(
-                `Invalid type "${printTypeRef(t)}" for argument ${idTextErr(a.name)}, expected "${printTypeRef(a.type)}"`,
+                `Cannot pass a value of type "${printTypeRef(t)}" to the parameter ${idTextErr(a.name)} of type "${printTypeRef(a.type)}"`,
                 e.loc,
             );
         }
@@ -658,7 +658,7 @@ function resolveCall(
                 const t = getExpType(ctx, e);
                 if (!isAssignable(t, a.type)) {
                     throwCompilationError(
-                        `Invalid type "${printTypeRef(t)}" for argument ${idTextErr(a.name)}, expected "${printTypeRef(a.type)}"`,
+                        `Cannot pass a value of type "${printTypeRef(t)}" to the parameter ${idTextErr(a.name)} of type "${printTypeRef(a.type)}"`,
                         e.loc,
                     );
                 }
@@ -783,7 +783,7 @@ function resolveInitOf(
         const t = getExpType(ctx, e);
         if (!isAssignable(t, a.type)) {
             throwCompilationError(
-                `Invalid type "${printTypeRef(t)}" for argument ${idTextErr(a.name)}, expected "${printTypeRef(a.type)}"`,
+                `Cannot pass a value of type "${printTypeRef(t)}" to the parameter ${idTextErr(a.name)} of type "${printTypeRef(a.type)}"`,
                 e.loc,
             );
         }

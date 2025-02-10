@@ -100,7 +100,7 @@ exports[`resolveStatements should fail statements for contract-getter-with-metho
 `;
 
 exports[`resolveStatements should fail statements for contract-initof-wrong-arg 1`] = `
-"<unknown>:26:25: Invalid type "String" for argument "owner", expected "Int"
+"<unknown>:26:25: Cannot pass a value of type "String" to the parameter "owner" of type "Int"
   25 |     get fun newInit(): StateInit {
 > 26 |         return initOf A("hello");
                                ^~~~~~~
@@ -385,7 +385,7 @@ exports[`resolveStatements should fail statements for expr-field-does-not-exist-
 `;
 
 exports[`resolveStatements should fail statements for expr-internal-fun-call-bool-param.tact 1`] = `
-"<unknown>:20:27: Invalid type "Bool" for argument "b", expected "Int"
+"<unknown>:20:27: Cannot pass a value of type "Bool" to the parameter "b" of type "Int"
   19 |     fun f2(a: Int): Int {
 > 20 |         return self.f1(a, true);
                                  ^~~~
@@ -448,7 +448,7 @@ exports[`resolveStatements should fail statements for expr-method-does-not-exist
 `;
 
 exports[`resolveStatements should fail statements for expr-module-fun-call-bool-param 1`] = `
-"<unknown>:13:18: Invalid type "Bool" for argument "b", expected "Int"
+"<unknown>:13:18: Cannot pass a value of type "Bool" to the parameter "b" of type "Int"
   12 | fun f2(a: Int): Int {
 > 13 |     return f1(a, true);
                         ^~~~
