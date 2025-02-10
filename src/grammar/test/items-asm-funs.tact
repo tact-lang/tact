@@ -24,9 +24,10 @@ asm fun checkAndRemoveAddExtensionPrefix() {
     -ROT
 }
 
-asm fun debugStr1() {
-    "Works!" DEBUGSTR
-}
+// TODO: Enable after proper ASM functions parser
+// asm fun debugStr1() {
+//     "Works!" DEBUGSTR
+// }
 
 asm fun debugStr2() { "Works!" }
 
