@@ -22,6 +22,10 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     // Structs
     const types: ABIType[] = [];
     for (const t of allTypes) {
+        if (t.nullable) {
+            continue;
+        }
+
         if (t.kind === "struct") {
             types.push({
                 name: t.name,
