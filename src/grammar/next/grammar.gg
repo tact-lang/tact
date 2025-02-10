@@ -164,7 +164,6 @@ assemblySequence = assemblyItem*;
 assemblyItem
     = "{" assemblySequence "}"
     / comment
-    / "\"" [^"]* "\""
     / (!(["{}] / "//" / "/*") .)+;
 
 ascription = ":" @type;

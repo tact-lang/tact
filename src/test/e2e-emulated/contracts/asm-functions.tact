@@ -37,7 +37,8 @@ contract AsmFunctionsTester {
     }
 
     get fun testAsmDebugStr(): Bool {
-        asmDebugStr();
+        // TODO: Enable after proper ASM functions parser
+        // asmDebugStr();
         return true;
     }
 
@@ -84,7 +85,8 @@ asm(b a) fun asmSecondToLast(a: Two, b: Two): Int { DROP DROP DROP }
 
 asm(a c b) fun asmFirst(a: TwoInTwo, b: TwoInTwo, c: TwoInTwo): Int { DROP2 DROP2 DROP2 DROP2 DROP2 DROP }
 
-asm fun asmDebugStr() { "Works!" DEBUGSTR }
+// TODO: Enable after proper ASM functions parser
+// asm fun asmDebugStr() { "Works!" DEBUGSTR }
 
 asm fun asmCreateUseWord(x: Int): Int {
     { INC INC INC } : 🥰🥰🥰
