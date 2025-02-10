@@ -9674,7 +9674,6 @@ exports[`grammar should parse stmt-if 1`] = `
               "loc": null,
             },
           },
-          "elseif": null,
           "falseStatements": null,
           "id": 12,
           "kind": "statement_condition",
@@ -9785,7 +9784,6 @@ exports[`grammar should parse stmt-if-else 1`] = `
               "loc": null,
             },
           },
-          "elseif": null,
           "falseStatements": [
             {
               "expression": {
