@@ -72,7 +72,7 @@ describe("send", () => {
         );
         let balanceAfter = await contract.getBalance();
         // The difference is exactly 0.05 that were reserved on top of the balance
-        expect(abs(balanceBefore - balanceAfter)).toBe(toNano("0.05"));
+        expect(abs(balanceBefore - balanceAfter) === toNano("0.05")).toBe(true);
 
         // send, nativeReserve, send
         balanceBefore = await contract.getBalance();
@@ -83,7 +83,7 @@ describe("send", () => {
         );
         balanceAfter = await contract.getBalance();
         // The difference is exactly in 0.05 that were reserved on top of the balance
-        expect(abs(balanceBefore - balanceAfter)).toBe(toNano("0.05"));
+        expect(abs(balanceBefore - balanceAfter) === toNano("0.05")).toBe(true);
     });
 });
 
