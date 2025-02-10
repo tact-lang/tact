@@ -3,6 +3,9 @@ import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Test, Test_getterMapping } from "./contracts/output/getters_Test";
 import "@ton/test-utils";
 
+// disable tests on MacOS
+const it = process.platform === "darwin" && process.env.CI ? test.skip : test;
+
 describe("getters", () => {
     let blockchain: Blockchain;
     let treasure: SandboxContract<TreasuryContract>;

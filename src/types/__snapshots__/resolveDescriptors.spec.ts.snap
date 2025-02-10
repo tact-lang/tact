@@ -145,7 +145,7 @@ exports[`resolveDescriptors should fail descriptors for contract-const-override-
 `;
 
 exports[`resolveDescriptors should fail descriptors for contract-decl-remainder-in-the-middle 1`] = `
-"<unknown>:8:5: The "remainder" field can only be the last field of the contract
+"<unknown>:8:5: The "as remaining" field can only be the last field of the contract
   7 |     a: Int = 0;
 > 8 |     s: Cell as remaining;
           ^~~~~~~~~~~~~~~~~~~~
@@ -402,7 +402,7 @@ exports[`resolveDescriptors should fail descriptors for init-self-reassign-in-if
 `;
 
 exports[`resolveDescriptors should fail descriptors for message-decl-remainder-in-the-middle 1`] = `
-"<unknown>:8:5: The "remainder" field can only be the last field of the message
+"<unknown>:8:5: The "as remaining" field can only be the last field of the message
   7 |     a: Int;
 > 8 |     s: Cell as remaining;
           ^~~~~~~~~~~~~~~~~~~~
@@ -826,7 +826,7 @@ exports[`resolveDescriptors should fail descriptors for struct-decl-mutually-rec
 `;
 
 exports[`resolveDescriptors should fail descriptors for struct-decl-remainder-in-the-middle 1`] = `
-"<unknown>:8:5: The "remainder" field can only be the last field of the struct
+"<unknown>:8:5: The "as remaining" field can only be the last field of the struct
   7 |     a: Int;
 > 8 |     s: Cell as remaining;
           ^~~~~~~~~~~~~~~~~~~~
@@ -28072,7 +28072,6 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
             "loc": true,
             "value": true,
           },
-          "elseif": null,
           "falseStatements": null,
           "id": 43,
           "kind": "statement_condition",
