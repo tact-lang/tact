@@ -57,6 +57,7 @@ Ints
 ipfs
 IPFS
 ipld
+Jaro
 Jesús
 jetton
 Jetton
@@ -163,6 +164,7 @@ varint
 varuint
 viiii
 vogons
+Winkler
 workchain
 workchains
 xffff
