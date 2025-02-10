@@ -87,6 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Forbid traits inherit implicitly from BaseTrait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
 - Forbid the `override` modifier for constants without the corresponding super-constant: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
 - Remove "remainder" from error messages: PR [#1699](https://github.com/tact-lang/tact/pull/1699)
+- Support `T` and `T?` methods with the same name: PR [#1758](https://github.com/tact-lang/tact/pull/1758)
 
 ### Docs
 
