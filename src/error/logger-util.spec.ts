@@ -42,7 +42,7 @@ describe("handleTopLevelErrors", () => {
                 throw new Error(`process.exit called with code ${code}`);
             });
 
-        let caughtError: unknown | null = null;
+        let caughtError: unknown = null;
 
         try {
             handleTopLevelErrors(mockLogger, cb, exit);
@@ -72,7 +72,7 @@ describe("handleTopLevelErrors", () => {
                 throw new Error(`process.exit called with code ${code}`);
             });
 
-        let caughtError: unknown | null = null;
+        let caughtError: unknown = null;
 
         try {
             handleTopLevelErrors(mockLogger, cb, exit);
@@ -101,7 +101,7 @@ describe("handleTopLevelErrors", () => {
                 throw new Error(`process.exit called with code ${code}`);
             });
 
-        let caughtError: unknown | null = null;
+        let caughtError: unknown = null;
 
         try {
             handleTopLevelErrors(mockLogger, cb, exit);
@@ -138,7 +138,7 @@ describe("handleTopLevelErrors", () => {
                 throw new Error(`process.exit called with code ${code}`);
             });
 
-        let caughtError: unknown | null = null;
+        let caughtError: unknown = null;
 
         try {
             await handleTopLevelErrors(mockLogger, cb, exit);
@@ -166,7 +166,7 @@ describe("handleTopLevelErrors", () => {
                 throw new Error(`process.exit called with code ${code}`);
             });
 
-        let caughtError: unknown | null = null;
+        let caughtError: unknown = null;
 
         try {
             await handleTopLevelErrors(mockLogger, cb, exit);
@@ -193,7 +193,7 @@ describe("handleTopLevelErrors", () => {
                 throw new Error(`process.exit called with code ${code}`);
             });
 
-        let caughtError: unknown | null = null;
+        let caughtError: unknown = null;
 
         try {
             await handleTopLevelErrors(mockLogger, cb, exit);

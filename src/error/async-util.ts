@@ -23,10 +23,13 @@ export const catchUncolored = <T>(
 export const thenUncolored = <T, U>(
     t: T,
     f: (t: T) => U,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): T extends Promise<any> ? Promise<U> : U => {
     if (t instanceof Promise) {
+        // eslint-disable-next-line @typescript-eslint/require-await,  @typescript-eslint/no-explicit-any -- this is absolutely intended
         return t.then(async (t) => f(t)) as any;
     } else {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return f(t) as any;
     }
 };

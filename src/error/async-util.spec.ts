@@ -4,7 +4,7 @@ describe("catchUncolored", () => {
     it("should return the result of a synchronous function when it does not throw an error", () => {
         const result = catchUncolored(
             () => 1,
-            (e) => {
+            () => {
                 throw new Error("Rethrow");
             },
         );
@@ -12,7 +12,7 @@ describe("catchUncolored", () => {
     });
 
     it("should call onError callback when the synchronous function throws an error", () => {
-        const onError = jest.fn((e) => "Handled");
+        const onError = jest.fn(() => "Handled");
         const result = catchUncolored(() => {
             throw new Error("Test Error");
         }, onError);
@@ -22,8 +22,8 @@ describe("catchUncolored", () => {
 
     it("should return the result of an asynchronous function", async () => {
         const result = await catchUncolored(
-            async () => 3,
-            (e) => {
+            () => Promise.resolve(3),
+            () => {
                 throw new Error("Rethrow");
             },
         );
@@ -32,8 +32,10 @@ describe("catchUncolored", () => {
 
     it("should handle error in asynchronous function and return result from synchronous onError", async () => {
         const onError = jest.fn(() => "Handled");
+        // eslint-disable-next-line @typescript-eslint/require-await
         const result = await catchUncolored(async () => {
             throw new Error("Async Error");
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }, onError as any);
         expect(result).toBe("Handled");
         expect(onError).toHaveBeenCalledWith(expect.any(Error));
@@ -41,6 +43,7 @@ describe("catchUncolored", () => {
 
     it("should handle error in asynchronous function and return result from asynchronous onError", async () => {
         const onError = jest.fn(async () => "Handled");
+        // eslint-disable-next-line @typescript-eslint/require-await
         const result = await catchUncolored(async () => {
             throw new Error("Async Error");
         }, onError);
@@ -50,8 +53,10 @@ describe("catchUncolored", () => {
 
     it("should return result from synchronous onError when async function throws an error", async () => {
         const onError = jest.fn(() => "Handled");
+        // eslint-disable-next-line @typescript-eslint/require-await
         const result = await catchUncolored(async () => {
             throw new Error("Async Error");
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }, onError as any);
         expect(result).toBe("Handled");
         expect(onError).toHaveBeenCalledWith(expect.any(Error));
@@ -59,6 +64,7 @@ describe("catchUncolored", () => {
 
     it("should return result from asynchronous onError when async function throws an error", async () => {
         const onError = jest.fn(async () => "Handled");
+        // eslint-disable-next-line @typescript-eslint/require-await
         const result = await catchUncolored(async () => {
             throw new Error("Async Error");
         }, onError);
