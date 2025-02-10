@@ -576,7 +576,11 @@ export function writeExpression(
         // Reference type
         if (selfTyRef.kind === "ref") {
             // Render function call
-            const selfTy = getType(wCtx.ctx, selfTyRef.name);
+            const selfTy = getType(
+                wCtx.ctx,
+                selfTyRef.name,
+                selfTyRef.optional,
+            );
 
             // Check struct ABI
             if (selfTy.kind === "struct") {
@@ -596,7 +600,11 @@ export function writeExpression(
 
             // Resolve function
             const methodDescr = selfTy.functions.get(idText(f.method))!;
-            let name = ops.extension(selfTyRef.name, idText(f.method));
+            let name = ops.extension(
+                selfTyRef.name,
+                selfTyRef.optional,
+                idText(f.method),
+            );
             if (
                 methodDescr.ast.kind === "function_def" ||
                 methodDescr.ast.kind === "function_decl" ||

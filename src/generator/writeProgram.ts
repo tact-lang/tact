@@ -154,6 +154,11 @@ export async function writeProgram(
     const emittedTypes: string[] = [];
     const types = getSortedTypes(ctx);
     for (const t of types) {
+        if (t.nullable) {
+            // no need to generate anything for T?
+            continue;
+        }
+
         const ffs: WrittenFunction[] = [];
         if (t.kind === "struct" || t.kind === "contract" || t.kind == "trait") {
             const typeFunctions = tryExtractModule(
@@ -311,6 +316,11 @@ function writeAll(
     // Serializers
     const sortedTypes = getSortedTypes(ctx);
     for (const t of sortedTypes) {
+        if (t.nullable) {
+            // no need to generate serialization for T?
+            continue;
+        }
+
         if (t.kind === "contract" || t.kind === "struct") {
             const allocation = getAllocation(ctx, t.name);
             const allocationBounced = getAllocation(ctx, toBounced(t.name));
@@ -342,6 +352,11 @@ function writeAll(
 
     // Accessors
     for (const t of allTypes) {
+        if (t.nullable) {
+            // no need to generate accessors for T?
+            continue;
+        }
+
         if (t.kind === "contract" || t.kind === "struct") {
             writeAccessors(t, t.origin, wCtx);
         }

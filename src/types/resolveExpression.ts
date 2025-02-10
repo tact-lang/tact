@@ -629,7 +629,7 @@ function resolveCall(
     // Handle ref
     if (src.kind === "ref") {
         // Register return type
-        const srcT = getType(ctx, src.name);
+        const srcT = getType(ctx, src.name, src.optional);
 
         // Check struct ABI
         if (srcT.kind === "struct") {

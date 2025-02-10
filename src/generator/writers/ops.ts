@@ -73,7 +73,8 @@ export const ops = {
     receiveBounceAny: (type: string) => `$${type}$_receive_bounce`,
 
     // Functions
-    extension: (type: string, name: string) => `$${type}$_fun_${name}`,
+    extension: (type: string, nullable: boolean, name: string) =>
+        `$${type}${nullable ? "_nullable" : ""}$_fun_${name}`,
     global: (name: string) => `$global_${name}`,
     nonModifying: (name: string) => `${name}$not_mut`,
 

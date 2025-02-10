@@ -535,7 +535,7 @@ function writeCondition(
 export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
     const [self, isSelfOpt] =
         f.self?.kind === "ref"
-            ? [getType(ctx.ctx, f.self.name), f.self.optional]
+            ? [getType(ctx.ctx, f.self.name, f.self.optional), f.self.optional]
             : [null, false];
 
     // Write function header
@@ -582,7 +582,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
         case "asm_function_def": {
             const name = self
-                ? ops.extension(self.name, f.name)
+                ? ops.extension(self.name, self.nullable, f.name)
                 : ops.global(f.name);
             ctx.fun(name, () => {
                 const { functionParams, shuffle } = getAsmFunctionSignature(
@@ -616,7 +616,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
         case "function_def": {
             const name = self
-                ? ops.extension(self.name, f.name)
+                ? ops.extension(self.name, self.nullable, f.name)
                 : ops.global(f.name);
 
             ctx.fun(name, () => {
@@ -790,7 +790,7 @@ export function writeGetter(f: FunctionDescription, wCtx: WriterContext) {
 
         // Execute get method
         wCtx.append(
-            `var res = self~${wCtx.used(ops.extension(self.name, f.name))}(${f.params.map((v) => funcIdOf(v.name)).join(", ")});`,
+            `var res = self~${wCtx.used(ops.extension(self.name, self.nullable, f.name))}(${f.params.map((v) => funcIdOf(v.name)).join(", ")});`,
         );
 
         // Pack if needed

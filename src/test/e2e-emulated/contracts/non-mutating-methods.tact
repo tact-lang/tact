@@ -6,6 +6,10 @@ extends fun equal(self: SomeStruct?, other: SomeStruct?): Bool {
     return self!!.i == other!!.i && self!!.b == other!!.b;
 }
 
+extends fun equal(self: SomeStruct, other: SomeStruct): Bool {
+    return self.i == other.i && self.b == other.b;
+}
+
 contract Tester {
     receive() { }
 
