@@ -3519,7 +3519,7 @@ exports[`grammar should parse expr-with-var 1`] = `
 
 exports[`grammar should parse items-asm-funs 1`] = `
 {
-  "id": 65,
+  "id": 63,
   "imports": [],
   "items": [
     {
@@ -3887,27 +3887,6 @@ exports[`grammar should parse items-asm-funs 1`] = `
       "attributes": [],
       "id": 47,
       "instructions": [
-        ""Works!"",
-      ],
-      "kind": "asm_function_def",
-      "loc": asm fun debugStr2() { "Works!" },
-      "name": {
-        "id": 46,
-        "kind": "id",
-        "loc": debugStr2,
-        "text": "debugStr2",
-      },
-      "params": [],
-      "return": null,
-      "shuffle": {
-        "args": [],
-        "ret": [],
-      },
-    },
-    {
-      "attributes": [],
-      "id": 49,
-      "instructions": [
         "{ INC }",
       ],
       "kind": "asm_function_def",
@@ -3915,7 +3894,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
     { INC }
 },
       "name": {
-        "id": 48,
+        "id": 46,
         "kind": "id",
         "loc": createWord,
         "text": "createWord",
@@ -3929,7 +3908,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
     },
     {
       "attributes": [],
-      "id": 52,
+      "id": 50,
       "instructions": [
         "{ INC }",
         ":",
@@ -3943,14 +3922,14 @@ exports[`grammar should parse items-asm-funs 1`] = `
     41 incinc
 },
       "name": {
-        "id": 50,
+        "id": 48,
         "kind": "id",
         "loc": createAndUseWord1,
         "text": "createAndUseWord1",
       },
       "params": [],
       "return": {
-        "id": 51,
+        "id": 49,
         "kind": "type_id",
         "loc": Int,
         "text": "Int",
@@ -3962,7 +3941,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
     },
     {
       "attributes": [],
-      "id": 55,
+      "id": 53,
       "instructions": [
         "{ INC }",
         ":",
@@ -3976,14 +3955,14 @@ exports[`grammar should parse items-asm-funs 1`] = `
 : incinc 41 incinc
 },
       "name": {
-        "id": 53,
+        "id": 51,
         "kind": "id",
         "loc": createAndUseWord2,
         "text": "createAndUseWord2",
       },
       "params": [],
       "return": {
-        "id": 54,
+        "id": 52,
         "kind": "type_id",
         "loc": Int,
         "text": "Int",
@@ -3995,7 +3974,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
     },
     {
       "attributes": [],
-      "id": 58,
+      "id": 56,
       "instructions": [
         "{ INC }",
         ":",
@@ -4014,14 +3993,14 @@ incinc
 incinc
 },
       "name": {
-        "id": 56,
+        "id": 54,
         "kind": "id",
         "loc": createAndUseWord3,
         "text": "createAndUseWord3",
       },
       "params": [],
       "return": {
-        "id": 57,
+        "id": 55,
         "kind": "type_id",
         "loc": Int,
         "text": "Int",
@@ -4033,7 +4012,7 @@ incinc
     },
     {
       "attributes": [],
-      "id": 64,
+      "id": 62,
       "instructions": [
         "<{",
         "TRY:<{",
@@ -4064,24 +4043,24 @@ incinc
     }>CONT 1 1 CALLXARGS
 },
       "name": {
-        "id": 59,
+        "id": 57,
         "kind": "id",
         "loc": isIntAnInt,
         "text": "isIntAnInt",
       },
       "params": [
         {
-          "id": 63,
+          "id": 61,
           "kind": "typed_parameter",
           "loc": x: Int,
           "name": {
-            "id": 61,
+            "id": 59,
             "kind": "id",
             "loc": x,
             "text": "x",
           },
           "type": {
-            "id": 62,
+            "id": 60,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -4089,7 +4068,7 @@ incinc
         },
       ],
       "return": {
-        "id": 60,
+        "id": 58,
         "kind": "type_id",
         "loc": Int,
         "text": "Int",
