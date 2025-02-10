@@ -120,6 +120,47 @@ contract ReceiverTester {
         self.receiverKind = "bounced_fallback";
     }
 
+    // External receiver testing
+
+    external() {
+        acceptMessage();
+        self.receiverKind = "external_empty";
+    }
+
+    external("message") {
+        acceptMessage();
+        self.receiverKind = "external_comment";
+    }
+
+    external(msg: String) {
+        acceptMessage();
+        if (msg == "message") {
+            self.receiverKind = "external_error_comment";
+        } else {
+            self.receiverKind = "external_comment_fallback";
+        }
+    }
+
+    external(msg: Message) {
+        acceptMessage();
+        self.receiverKind = "external_binary_message";
+    }
+
+    // We cannot declare an external receiver for slices due to issue
+    // https://github.com/tact-lang/tact/issues/1669 
+    //
+    // external(msg: Slice) {
+    //    acceptMessage();
+    //    // Drop the op code
+    //    msg.loadUint(32); 
+    //    let m = msg.asString();
+    //    if (m == "message") {
+    //        self.receiverKind = "external_message_slice";
+    //    } else {
+    //        self.receiverKind = "external_fallback";
+    //    }
+    //}
+
     get fun receiverKind(): String {
         return self.receiverKind;
     }

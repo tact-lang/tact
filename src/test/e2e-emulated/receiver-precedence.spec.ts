@@ -197,4 +197,94 @@ describe("receivers-precedence", () => {
         // The contract gets the request bounced back into its bounced fallback receiver.
         expect(receiver4 === "bounced_fallback").toBe(true);
     });
+
+    it("should implement external receiver precedence correctly", async () => {
+        // These tests are very similar to the tests for internal messages.
+
+        // Send an empty message
+        await contract.sendExternal(null);
+        const receiver1 = await contract.getReceiverKind();
+        expect(receiver1 === "external_empty").toBe(true);
+
+        // Send now a "message"
+        await contract.sendExternal("message");
+        const receiver2 = await contract.getReceiverKind();
+        // Note the external receiver "external_error_comment" did not execute
+        expect(receiver2 === "external_comment").toBe(true);
+
+        // Send now an arbitrary string different from "message"
+        await contract.sendExternal("msg");
+        const receiver3 = await contract.getReceiverKind();
+        // Now, the external receiver for general strings executed.
+        // Note that "external_error_comment" still does not execute, nor the "external_message_slice" receiver.
+        expect(receiver3 === "external_comment_fallback").toBe(true);
+
+        // Send now a Message
+        await contract.sendExternal({ $$type: "Message", msg: "message" });
+        const receiver4 = await contract.getReceiverKind();
+        // Now, the external receiver for Message executed.
+        expect(receiver4 === "external_binary_message").toBe(true);
+
+        // The following tests which simulate different kinds of messages using slices
+        // cannot be carried out due to issue: https://github.com/tact-lang/tact/issues/1669
+
+        /*
+        // First, an empty message, which can be simulated with an empty slice
+        await contract.sendExternal(
+            new Cell().asSlice(),
+        );
+        // The empty external receiver executed
+        const receiver5 = await contract.getReceiverKind();
+        expect(receiver5 === "external_empty").toBe(true);
+
+        // Send now a "message" simulated as slice
+        await contract.sendExternal(
+            // String receivers are triggered by passing an operation code 0 at the start of the slice
+            beginCell()
+                .storeUint(0, 32)
+                .storeStringTail("message")
+                .endCell()
+                .asSlice(),
+        );
+        const receiver6 = await contract.getReceiverKind();
+        // Note the external receiver "external_error_comment" did not execute, nor the "external_message_slice".
+        expect(receiver6 === "external_comment").toBe(true);
+
+        // Send now an arbitrary string different from "message"
+        await contract.sendExternal(
+            // String receivers are triggered by passing an operation code 0 at the start of the slice
+            beginCell()
+                .storeUint(0, 32)
+                .storeStringTail("msg")
+                .endCell()
+                .asSlice(),
+        );
+        const receiver7 = await contract.getReceiverKind();
+        // Now, the external receiver for general strings executed.
+        // Note that "external_error_comment" still does not execute.
+        expect(receiver7 === "external_comment_fallback").toBe(true);
+
+        // Note that it is possible to trigger the "external_message_slice" by passing an operation code different from 0, for example 10.
+        await contract.sendExternal(
+            beginCell()
+                .storeUint(10, 32)
+                .storeStringTail("message")
+                .endCell()
+                .asSlice(),
+        );
+        const receiver8 = await contract.getReceiverKind();
+        // Now, the external receiver for slices takes the "message" path
+        expect(receiver8 === "external_message_slice").toBe(true);
+
+        // Send now an arbitrary slice
+        await contract.sendExternal(
+            beginCell().storeUint(10, 32).endCell().asSlice(),
+        );
+        const receiver9 = await contract.getReceiverKind();
+        // Now, the external receiver for slices executed.
+        expect(receiver9 === "external_fallback").toBe(true);
+        */
+
+        // In all the cases, "external_error_comment" did not execute, as it should be.
+    });
 });
