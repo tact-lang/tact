@@ -146,9 +146,10 @@ contract ReceiverTester {
         self.receiverKind = "external_binary_message";
     }
 
-    // We cannot declare an external receiver for slices due to issue
+    // FIXME: We cannot declare an external receiver for slices due to issue
     // https://github.com/tact-lang/tact/issues/1669 
-    //
+    // Remove the commented code below once the issue is resolved.
+    
     // external(msg: Slice) {
     //    acceptMessage();
     //    // Drop the op code
