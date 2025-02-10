@@ -13,12 +13,12 @@ function makeCRC16Table(polynomial: number): Uint16Array {
                     ? ((crc << 1) ^ polynomial) & 0xffff
                     : (crc << 1) & 0xffff;
         }
-        table[n] = crc;
+        table[n] = crc & 0xffff;
     }
     return table;
 }
 
-// Precompute the CRC16 table once at module load.
+// Precompute the CRC-16-CCITT (XMODEM) table once at module load.
 const CRC16_TABLE = makeCRC16Table(0x1021);
 
 /**
