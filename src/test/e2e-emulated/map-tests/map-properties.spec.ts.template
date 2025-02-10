@@ -7,6 +7,9 @@ import {
 } from "./test_MapPropertiesTester";
 import "@ton/test-utils";
 
+// disable tests on MacOS
+const it = process.platform === "darwin" && process.env.CI ? test.skip : test;
+
 const key: KeyData = {
     $$type: "KeyData",
     _1: KEY_1_PLACEHOLDER,

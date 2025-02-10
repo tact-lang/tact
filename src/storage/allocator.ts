@@ -43,7 +43,7 @@ function getOperationSize(src: AllocationOperationType): {
                     case "remainder": {
                         if (src.optional) {
                             throwInternalCompilerError(
-                                "Remainder cell cannot be optional",
+                                `"as remaining" cell cannot be optional`,
                             );
                         }
                         return { bits: 0, refs: 0 };
