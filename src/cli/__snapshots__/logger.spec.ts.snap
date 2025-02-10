@@ -1,0 +1,209 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TerminalLogger all info logs are logged 1`] = `undefined`;
+
+exports[`TerminalLogger all info logs are logged 2`] = `
+[
+  [
+    "Info 1",
+  ],
+  [
+    "Info 2",
+  ],
+]
+`;
+
+exports[`TerminalLogger exit on error 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger exit on error 2`] = `
+[
+  [
+    "Error: foo",
+  ],
+  [
+    "Error: bar",
+  ],
+]
+`;
+
+exports[`TerminalLogger internal error in source at range 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger internal error in source at range 2`] = `
+[
+  [
+    "Internal compiler error: ./bar:1:4 - OMG
+> 1 | Hello, world
+         ^~
+Please report at https://github.com/tact-lang/tact/issues",
+  ],
+]
+`;
+
+exports[`TerminalLogger logger internal error 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger logger internal error 2`] = `
+[
+  [
+    "Internal compiler error: OMG
+Please report at https://github.com/tact-lang/tact/issues",
+  ],
+]
+`;
+
+exports[`TerminalLogger logger internal error in source 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger logger internal error in source 2`] = `
+[
+  [
+    "Internal compiler error: /foo/bar: OMG
+Please report at https://github.com/tact-lang/tact/issues",
+  ],
+]
+`;
+
+exports[`TerminalLogger multiple errors 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger multiple errors 2`] = `
+[
+  [
+    "Error: foo",
+  ],
+  [
+    "Error: bar",
+  ],
+]
+`;
+
+exports[`TerminalLogger multiple errors inside source 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger multiple errors inside source 2`] = `
+[
+  [
+    "Error: ./bar:1:4 - foo
+> 1 | Hello, world
+         ^~",
+  ],
+  [
+    "Error: /foo/bar: bar",
+  ],
+]
+`;
+
+exports[`TerminalLogger only first error without error recovery 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger only first error without error recovery 2`] = `
+[
+  [
+    "Error: Error 1",
+  ],
+]
+`;
+
+exports[`TerminalLogger path is resolved relative to cwd 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger path is resolved relative to cwd 2`] = `
+[
+  [
+    "Error: See ./bar.",
+  ],
+]
+`;
+
+exports[`TerminalLogger raw internal error 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger raw internal error 2`] = `
+[
+  [
+    "Internal compiler error: OMG
+Please report at https://github.com/tact-lang/tact/issues",
+  ],
+]
+`;
+
+exports[`TerminalLogger raw internal error in source 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger raw internal error in source 2`] = `
+[
+  [
+    "Internal compiler error: OMG
+while compiling /foo/bar
+Please report at https://github.com/tact-lang/tact/issues",
+  ],
+]
+`;
+
+exports[`TerminalLogger source inside multiple errors 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger source inside multiple errors 2`] = `
+[
+  [
+    "Error: ./bar:1:4 - foo
+> 1 | Hello, world
+         ^~",
+  ],
+  [
+    "Error: /foo/bar: bar",
+  ],
+]
+`;
+
+exports[`TerminalLogger typed errors 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger typed errors 2`] = `
+[
+  [
+    "Error: Foo!",
+  ],
+  [
+    "Error: Bar!",
+  ],
+]
+`;
+
+exports[`TerminalLogger typed errors for source 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger typed errors for source 2`] = `
+[
+  [
+    "Error: ./bar:1:4 - Foo!
+> 1 | Hello, world
+         ^~",
+  ],
+  [
+    "Error: /foo/bar: Bar!",
+  ],
+]
+`;
+
+exports[`TerminalLogger uncaught error 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger uncaught error 2`] = `
+[
+  [
+    "Internal compiler error: Unhandled: Error: Uncaught!
+Please report at https://github.com/tact-lang/tact/issues",
+  ],
+]
+`;
+
+exports[`TerminalLogger uncaught error in source 1`] = `"process.exit called with code 30"`;
+
+exports[`TerminalLogger uncaught error in source 2`] = `
+[
+  [
+    "Internal compiler error: Unhandled: Error: hehe
+while compiling /foo/bar
+Please report at https://github.com/tact-lang/tact/issues",
+  ],
+]
+`;
+
+exports[`TerminalLogger warn verbosity does not show info 1`] = `undefined`;
+
+exports[`TerminalLogger warn verbosity does not show info 2`] = `
+[
+  [
+    "Warning: Warn",
+  ],
+]
+`;
