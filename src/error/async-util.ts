@@ -8,6 +8,7 @@ export const catchUncolored = <T>(
     try {
         const result = cb();
         if (result instanceof Promise) {
+            // eslint-disable-next-line @typescript-eslint/require-await
             return result.catch(async (e) => onError(e)) as T;
         } else {
             return result;

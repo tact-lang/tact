@@ -64,7 +64,7 @@ describe("runServer", () => {
     });
 
     test("uncaught error", () => {
-        const result = runServer((log) => {
+        const result = runServer(() => {
             throw new Error("Uncaught!");
         });
         expect(result).toMatchSnapshot();
