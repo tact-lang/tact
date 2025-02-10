@@ -73,6 +73,7 @@ langle
 langtools
 letrec
 Liskov
+LOGENTRY
 logomark
 lparen
 lvalue
@@ -134,6 +135,7 @@ Stonfi
 storer
 struct
 structs
+stry
 styleguide
 subfolders
 subtyping
