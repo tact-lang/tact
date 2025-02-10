@@ -28,8 +28,8 @@ asm fun checkAndRemoveAddExtensionPrefix() {
 // asm fun debugStr1() {
 //     "Works!" DEBUGSTR
 // }
-
-asm fun debugStr2() { "Works!" }
+//
+// asm fun debugStr2() { "Works!" }
 
 asm fun createWord() {
     { INC }
