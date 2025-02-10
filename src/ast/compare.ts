@@ -400,19 +400,16 @@ export class AstComparator {
                     condition: cond1,
                     trueStatements: true1,
                     falseStatements: false1,
-                    elseif: condElseIf1,
                 } = node1 as A.AstStatementCondition;
                 const {
                     condition: cond2,
                     trueStatements: true2,
                     falseStatements: false2,
-                    elseif: condElseIf2,
                 } = node2 as A.AstStatementCondition;
                 return (
                     this.compare(cond1, cond2) &&
                     this.compareArray(true1, true2) &&
-                    this.compareNullableArray(false1, false2) &&
-                    this.compareNullableNodes(condElseIf1, condElseIf2)
+                    this.compareNullableArray(false1, false2)
                 );
             }
 
