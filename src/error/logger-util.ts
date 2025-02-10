@@ -77,7 +77,7 @@ export interface BaseLogger<M, R> {
  *
  * Used when we need to add something to every message
  */
-export const mapBaseLogger = <M1, M2, R>(
+const mapBaseLogger = <M1, M2, R>(
     log: BaseLogger<M1, R>,
     f: (m: M2) => M1,
 ): BaseLogger<M2, R> => ({
