@@ -1,20 +1,37 @@
+inline fun newAddress(chain: Int, hash: Int): Address {
+    return beginCell()
+        .storeUint(2, 2)
+        .storeUint(0, 1)
+        .storeInt(chain, 8)
+        .storeInt(hash, 256)
+        .endCell()
+        .asSlice()
+        .toAddressUnsafe();
+}
+
+asm extends fun toAddressUnsafe(self: Slice): Address { NOP }
+asm extends fun asSlice(self: Address): Slice { NOP }
+
+inline fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address {
+    let hash = beginCell()
+        .storeUint(0, 2)
+        .storeUint(3, 2)
+        .storeUint(0, 1)
+        .storeRef(code)
+        .storeRef(data)
+        .endCell()
+        .hash();
+    return newAddress(chain, hash);
+}
+
 struct StateInit {
     code: Cell;
     data: Cell;
 }
 
-@name(__tact_compute_contract_address)
-native contractAddressExt(chain: Int, code: Cell, data: Cell): Address;
-
 inline fun contractAddress(s: StateInit): Address {
     return contractAddressExt(0, s.code, s.data);
 }
-
-@name(__tact_address_to_slice)
-extends native asSlice(self: Address): Slice;
-
-@name(__tact_create_address)
-native newAddress(chain: Int, hash: Int): Address;
 
 asm fun myAddress(): Address { MYADDR }
 
