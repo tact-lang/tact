@@ -228,7 +228,7 @@ describe("receivers-precedence", () => {
         // FIXME: The following tests which simulate different kinds of messages using slices
         // cannot be carried out due to issue: https://github.com/tact-lang/tact/issues/1669
         // Remove the commented code below once the issue is resolved.
-        
+
         /*
         // First, an empty message, which can be simulated with an empty slice
         await contract.sendExternal(
