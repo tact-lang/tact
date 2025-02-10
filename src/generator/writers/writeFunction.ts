@@ -582,7 +582,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
         case "asm_function_def": {
             const name = self
-                ? ops.extension(self.name, self.nullable, f.name)
+                ? ops.extension(self.name, self.optional, f.name)
                 : ops.global(f.name);
             ctx.fun(name, () => {
                 const { functionParams, shuffle } = getAsmFunctionSignature(
@@ -616,7 +616,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
         case "function_def": {
             const name = self
-                ? ops.extension(self.name, self.nullable, f.name)
+                ? ops.extension(self.name, self.optional, f.name)
                 : ops.global(f.name);
 
             ctx.fun(name, () => {
