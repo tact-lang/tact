@@ -269,7 +269,6 @@ export type AstStatementCondition = {
     readonly condition: AstExpression;
     readonly trueStatements: readonly AstStatement[];
     readonly falseStatements: readonly AstStatement[] | null;
-    readonly elseif: AstStatementCondition | null;
     readonly id: number;
     readonly loc: SrcInfo;
 };

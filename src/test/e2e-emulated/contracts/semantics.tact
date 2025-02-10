@@ -1912,6 +1912,100 @@ contract SemanticsTester {
         return result;
     }
 
+    /// Tests _ ? _ : _ short-circuiting with mutating functions
+    get fun ternaryMutateShortCircuit(): Bool {
+
+        let s = 1;
+
+        // It will evaluate the full expression to false and increment s to 2. The false branch will not increment s again.
+        let m1 = true ? s.increment() > 2 : s.increment() > 2;
+
+        let result = s == 2;
+
+        // It will evaluate the full expression to true and increment s to 3. The true branch will not increment s again.
+        let m2 = false ? s.increment() > 2 : s.increment() > 2;
+
+        result &&= s == 3;
+
+        // Condition evaluates to false, so that s should not be incremented. m3 is true.
+        let m3 = s > 3 ? s.increment() > 2 : s > 2;
+
+        result &&= s == 3;
+
+        // Condition evaluates to true, so that s should not be incremented. m4 is true.
+        let m4 = s >= 3 ? s > 2 : s.increment() > 2;
+
+        result &&= s == 3;
+
+        // Condition will increment s to 4 and evaluate to true. False branch does not increment s again. m5 is true.
+        let m5 = s.increment() > 3 ? s == 4 : s.increment() > 3;
+
+        result &&= s == 4;
+
+        // Condition will increment s to 5 and evaluate to false. True branch does not increment s again. m6 is false.
+        let m6 = s.increment() > 5 ? s.increment() > 3 : s > 5 ;
+        
+        result &&= s == 5;
+
+        // Condition will increment s to 6 and evaluate to true. True branch increments s again. m7 is true.
+        let m7 = s.increment() > 5 ? s.increment() == 7 : s == 6;
+
+        result &&= s == 7;
+
+        // Condition will increment s to 8 and evaluate to false. False branch increments s again. m8 is true.
+        let m8 = s.increment() > 8 ? s == 8 : s.increment() == 9;
+        
+        result &&= s == 9;
+
+        result &&= !m1 && m2 && m3 && m4 && m5 && !m6 && m7 && m8;
+
+        return result;
+    }
+
+    /// Tests _ ? _ : _ short-circuiting with infinite loops
+    get fun ternaryInfiniteLoopShortCircuit(): Bool {
+
+        let s = 1;
+
+        // It will evaluate the full expression to false. The false branch will not execute the loop.
+        let l1 = true ? s > 1 : infiniteLoop();
+
+        // It will evaluate the full expression to false. The true branch will not execute the loop.
+        let l2 = false ? infiniteLoop() : s > 1;
+
+        // It will evaluate the full expression to false. The false branch will not execute the loop.
+        let l3 = s >= 1 ? s > 1 : infiniteLoop();
+
+        // It will evaluate the full expression to false. The true branch will not execute the loop.
+        let l4 = s > 1 ? infiniteLoop() : s > 1;
+
+        let result = !l1 && !l2 && !l3 && !l4;
+
+        return result;
+    }
+
+    /// Tests _ ? _ : _ short-circuiting with exception throwing
+    get fun ternaryExceptionShortCircuit(): Bool {
+
+        let s = 1;
+
+        // It will evaluate the full expression to false. The false branch will not throw an exception.
+        let t1 = true ? s > 1 : throwException(s-1);
+
+        // It will evaluate the full expression to false. The true branch will not throw an exception.
+        let t2 = false ? throwException(s-1) : s > 1;
+
+        // It will evaluate the full expression to false. The false branch will not throw an exception.
+        let t3 = s >= 1 ? s > 1 : throwException(s-1);
+
+        // It will evaluate the full expression to false. The true branch will not throw an exception.
+        let t4 = s > 1 ? throwException(s-1) : s > 1;
+
+        let result = !t1 && !t2 && !t3 && !t4;
+
+        return result;
+    }
+
 
     /*************** Addresses ********************/
 

@@ -4,6 +4,7 @@
   "project": ["src/**/*.ts"],
   "ignore": [
     "src/ast/ast.ts",
+    "src/ast/ast-constants.ts",
     "src/config/parseConfig.ts",
     "src/ast/ast-printer.ts",
     "src/error/display-to-json.ts",

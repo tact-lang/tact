@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better error message for `extend function without parameters` error: PR [#1624](https://github.com/tact-lang/tact/pull/1624)
 - Don't generate `lazy_deployment_completed` by default: PR [#1717](https://github.com/tact-lang/tact/pull/1717)
 - Optimized `emptyCell()` and `emptySlice()` functions: PR [#1696](https://github.com/tact-lang/tact/pull/1696)
+- Rearrange parameters of some asm methods in order described in `AsmShuffle`: PR [#1702](https://github.com/tact-lang/tact/pull/1702)
 - Error message for invalid type for function argument now shows expected type: PR [#1738](https://github.com/tact-lang/tact/pull/1738)
 
 ### Fixed
@@ -86,13 +87,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support overriding constants and methods of BaseTrait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
 - Forbid traits inherit implicitly from BaseTrait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
 - Forbid the `override` modifier for constants without the corresponding super-constant: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
+- Remove "remainder" from error messages: PR [#1699](https://github.com/tact-lang/tact/pull/1699)
 
 ### Docs
 
 - Added the `description` property to the frontmatter of the each page for better SEO: PR [#916](https://github.com/tact-lang/tact/pull/916)
 - Added Google Analytics tags per every page: PR [#921](https://github.com/tact-lang/tact/pull/921)
 - Added Ston.fi cookbook: PR [#956](https://github.com/tact-lang/tact/pull/956)
-- Added NFTs cookbook: PR [#958](https://github.com/tact-lang/tact/pull/958)
+- Added NFTs cookbook: PR [#958](https://github.com/tact-lang/tact/pull/958), PR [#1747](https://github.com/tact-lang/tact/pull/1747)
 - Added security best practices: PR [#1070](https://github.com/tact-lang/tact/pull/1070)
 - Added automatic links to Web IDE from all code blocks: PR [#994](https://github.com/tact-lang/tact/pull/994)
 - Added initial semi-automated Chinese translation of the documentation: PR [#942](https://github.com/tact-lang/tact/pull/942)

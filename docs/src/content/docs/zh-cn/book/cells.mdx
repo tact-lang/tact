@@ -55,7 +55,7 @@ description: Cells、Builders 和 Slices 是 TON 区块链的底层单元
 
 标准 [`Cell{:tact}`](#cells) 表示法是 [tvm.pdf](https://docs.ton.org/tvm.pdf) 中首次描述的 cells 通用序列化格式。 它的算法以八进制（字节）序列表示cell，首先将称为描述符的第一个 $2$ 字节序列化：
 
-- _引用描述符_（Refs descriptor）根据以下公式计算：$r + 8 _ k + 32 _ l$，其中 $r$ 是 cell 中包含的引用数量（介于 $0$ 和 $4$ 之间），$k$ 是 cell 类型的标志（$0$ 表示[普通](#cells-kinds)，$1$ 表示[特殊](#cells-kinds)），$l$ 是 
+- _引用描述符_（Refs descriptor）根据以下公式计算：$r + 8 _ k + 32 _ l$，其中 $r$ 是 cell 中包含的引用数量（介于 $0$ 和 $4$ 之间），$k$ 是 cell 类型的标志（$0$ 表示[普通](#cells-kinds)，$1$ 表示[特殊](#cells-kinds)），$l$ 是
   cell 的[层级](#cells-levels)（介于 $0$ 和 $3$ 之间）。
 - _位描述符_（Bits descriptor）根据以下公式计算：$\lfloor\frac{b}{8}\rfloor + \lceil\frac{b}{8}\rceil$，其中 $b$ 是 cell 中的位数（介于 $0$ 和 $1023$ 之间）。
 
