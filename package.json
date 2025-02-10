@@ -36,7 +36,7 @@
     "fmt": "yarn prettier -l -w .",
     "fmt:check": "yarn prettier --check .",
     "spell": "yarn cspell --no-progress \"**\"",
-    "knip": "ls .",
+    "knip": "knip",
     "lint:all": "yarn lint && yarn fmt:check && yarn spell && yarn knip",
     "all": "yarn clean && yarn gen && yarn build && yarn coverage && yarn lint:all",
     "postinstall": "node .husky/install.mjs || true",
