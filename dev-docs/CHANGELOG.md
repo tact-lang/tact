@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Don't generate `lazy_deployment_completed` by default: PR [#1717](https://github.com/tact-lang/tact/pull/1717)
 - Optimized `emptyCell()` and `emptySlice()` functions: PR [#1696](https://github.com/tact-lang/tact/pull/1696)
 - Rearrange parameters of some asm methods in order described in `AsmShuffle`: PR [#1702](https://github.com/tact-lang/tact/pull/1702)
+- Error message for invalid type for function argument now shows expected type: PR [#1738](https://github.com/tact-lang/tact/pull/1738)
 
 ### Fixed
 
