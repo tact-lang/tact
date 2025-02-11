@@ -514,15 +514,19 @@ function writeCondition(
         }
     });
     if (f.falseStatements && f.falseStatements.length > 0) {
-        ctx.append(`} else {`);
-        ctx.inIndent(() => {
-            for (const s of f.falseStatements!) {
-                writeStatement(s, self, returns, ctx);
-            }
-        });
-        ctx.append(`}`);
-    } else if (f.elseif) {
-        writeCondition(f.elseif, self, true, returns, ctx);
+        const [head, ...tail] = f.falseStatements;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+        if (head && tail.length === 0 && head.kind === "statement_condition") {
+            writeCondition(head, self, true, returns, ctx);
+        } else {
+            ctx.append(`} else {`);
+            ctx.inIndent(() => {
+                for (const s of f.falseStatements!) {
+                    writeStatement(s, self, returns, ctx);
+                }
+            });
+            ctx.append(`}`);
+        }
     } else {
         ctx.append(`}`);
     }
@@ -581,20 +585,21 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                 ? ops.extension(self.name, f.name)
                 : ops.global(f.name);
             ctx.fun(name, () => {
-                ctx.signature(`${returns} ${name}(${params.join(", ")})`);
+                const { functionParams, shuffle } = getAsmFunctionSignature(
+                    f,
+                    fAst,
+                    params,
+                );
+
+                ctx.signature(
+                    `${returns} ${name}(${functionParams.join(", ")})`,
+                );
                 ctx.flag("impure");
                 if (f.origin === "stdlib") {
                     ctx.context("stdlib");
                 }
-                // we need to do some renames (prepending $ to identifiers)
-                const asmShuffleEscaped: A.AstAsmShuffle = {
-                    ...fAst.shuffle,
-                    args: fAst.shuffle.args.map((id) => idOfText(funcIdOf(id))),
-                };
-                ctx.asm(
-                    ppAsmShuffle(asmShuffleEscaped),
-                    fAst.instructions.join(" "),
-                );
+
+                ctx.asm(shuffle, fAst.instructions.join(" "));
             });
             if (f.isMutating) {
                 writeNonMutatingFunction(
@@ -680,6 +685,50 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
             );
         }
     }
+}
+
+function getAsmFunctionSignature(
+    f: FunctionDescription,
+    fAst: A.AstAsmFunctionDef,
+    params: string[],
+) {
+    const isMutable = fAst.attributes.some((a) => a.type === "mutates");
+    const hasSelfParam = fAst.params[0]?.name.text === "self";
+    const needRearrange =
+        fAst.shuffle.ret.length === 0 &&
+        fAst.shuffle.args.length > 1 &&
+        fAst.params.length > 1 &&
+        hasSelfParam &&
+        !isMutable;
+
+    if (!needRearrange) {
+        const asmShuffleEscaped: A.AstAsmShuffle = {
+            ...fAst.shuffle,
+            args: fAst.shuffle.args.map((id) => idOfText(funcIdOf(id))),
+        };
+
+        return {
+            functionParams: params,
+            shuffle: ppAsmShuffle(asmShuffleEscaped),
+        };
+    }
+
+    // Rearranges the parameters in the order described in Asm Shuffle
+    //
+    // Foe example:
+    // `asm(other self) fun foo(self: Type, other: Type2)` generates as
+    //                  fun foo(other: Type2, self: Type)
+    const paramsDict = Object.fromEntries(
+        params.map((param, i) => [
+            i === 0 ? "self" : f.params[i - 1]!.name.text,
+            param,
+        ]),
+    );
+
+    return {
+        functionParams: fAst.shuffle.args.map((arg) => paramsDict[arg.text]!),
+        shuffle: "",
+    };
 }
 
 // Write a function in non-mutating form

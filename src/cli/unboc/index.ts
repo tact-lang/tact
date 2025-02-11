@@ -1,10 +1,10 @@
-import { execFileSync } from "child_process";
 import { readFileSync } from "fs";
 import { decompileAll } from "@tact-lang/opcode";
 import { ArgConsumer } from "../arg-consumer";
 import { ArgParser, GetParserResult } from "../arg-parser";
 import { CliLogger } from "../logger";
 import { UnbocErrors } from "./error-schema";
+import { showCommit } from "../version";
 
 const unbocVersion = "0.0.1";
 
@@ -72,7 +72,8 @@ const parseArgs = (Errors: UnbocErrors, Args: Args) => {
 
     if (Args.single("version")) {
         if (noUnknownParams(Errors, Args)) {
-            showVersion();
+            console.log(unbocVersion);
+            showCommit();
         }
         return;
     }
@@ -102,19 +103,4 @@ const noUnknownParams = (Errors: UnbocErrors, Args: Args): boolean => {
     }
     showHelp();
     return false;
-};
-
-const showVersion = () => {
-    console.log(unbocVersion);
-    // if working inside a git repository
-    // also print the current git commit hash
-    try {
-        const gitCommit = execFileSync("git", ["rev-parse", "HEAD"], {
-            encoding: "utf8",
-            stdio: ["ignore", "pipe", "ignore"],
-        }).trim();
-        console.log(`git commit: ${gitCommit}`);
-    } finally {
-        process.exit(0);
-    }
 };
