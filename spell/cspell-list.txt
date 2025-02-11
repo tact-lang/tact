@@ -15,6 +15,7 @@ cheatsheet
 Cheatsheet
 cheatsheets
 Cheatsheets
+CCITT
 cleanall
 codegen
 compilables
@@ -166,5 +167,6 @@ vogons
 workchain
 workchains
 xffff
+XMODEM
 xtwitter
 привет
