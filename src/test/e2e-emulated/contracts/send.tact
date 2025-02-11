@@ -14,10 +14,9 @@ contract SendTester with Deployable {
     /// A no-op receiver for incoming funds
     receive("topup") {}
 
-    /// A getter to get contracts balance
-    get fun balance(): Int { return myBalance(); }
-
-    /// Sends a message, keeps the original balance, sends the rest in the next message
+    /// Sends a message via emit(),
+    /// keeps the original balance,
+    /// then sends the rest in the next message via send()
     receive("ReserveAtMost_1") {
         emit("Have you seen this message?".asComment());
 
@@ -31,7 +30,9 @@ contract SendTester with Deployable {
         });
     }
 
-    /// Sends a message, keeps the original balance, sends the rest in the next message
+    /// Sends a message to our "topup" receiver via send(),
+    /// keeps the original balance,
+    /// then sends the rest in the next message via send()
     receive("ReserveAtMost_2") {
         send(SendParameters{
             to: myAddress(),

@@ -64,26 +64,29 @@ describe("send", () => {
 
     it("should send with intermediate reservations", async () => {
         // emit, nativeReserve, send
-        let balanceBefore = await contract.getBalance();
-        await expectMessageFromTo(
+        let balanceBefore = (await blockchain.getContract(contract.address))
+            .balance;
+        await expectMessageFromToWithDefaults({
             treasure,
             contract,
-            textMsg("ReserveAtMost_1"),
-        );
-        let balanceAfter = await contract.getBalance();
-        // The difference is exactly 0.05 that were reserved on top of the balance
-        expect(abs(balanceBefore - balanceAfter) <= 50000000n).toBe(true);
+            body: textMsg("ReserveAtMost_1"),
+        });
+        let balanceAfter = (await blockchain.getContract(contract.address))
+            .balance;
+        // The difference is at most 0.05 Toncoin reserved on top of the previous balance
+        expect(balanceAfter - balanceBefore <= toNano("0.05")).toBe(true);
 
         // send, nativeReserve, send
-        balanceBefore = await contract.getBalance();
-        await expectMessageFromTo(
+        balanceBefore = (await blockchain.getContract(contract.address))
+            .balance;
+        await expectMessageFromToWithDefaults({
             treasure,
             contract,
-            textMsg("ReserveAtMost_2"),
-        );
-        balanceAfter = await contract.getBalance();
-        // The difference is exactly in 0.05 that were reserved on top of the balance
-        expect(abs(balanceBefore - balanceAfter) <= 50000000n).toBe(true);
+            body: textMsg("ReserveAtMost_2"),
+        });
+        balanceAfter = (await blockchain.getContract(contract.address)).balance;
+        // The difference is at most 0.05 Toncoin reserved on top of the previous balance
+        expect(balanceAfter - balanceBefore <= toNano("0.05")).toBe(true);
     });
 });
 
@@ -92,35 +95,53 @@ describe("send", () => {
  * with specified `value` and `bounce` values, and then expect that transaction
  * to be successful or not (`success`), and if not — expect a certain exit code from it
  */
-async function expectMessageFromTo(
-    treasure: SandboxContract<TreasuryContract>,
-    contract: SandboxContract<SendTester>,
-    body: Cell | null = null,
-    value: bigint = toNano("10"),
-    bounce: boolean = false,
-    success: boolean = true,
-    exitCode: number = 0,
-) {
-    const sendResult = await treasure.send({
-        to: contract.address,
-        value,
-        bounce,
-        body,
+async function expectMessageFromTo(args: {
+    treasure: SandboxContract<TreasuryContract>;
+    contract: SandboxContract<SendTester>;
+    body: Cell | null;
+    value: bigint;
+    bounce: boolean;
+    success: boolean;
+    exitCode: number;
+}) {
+    const sendResult = await args.treasure.send({
+        to: args.contract.address,
+        value: args.value,
+        bounce: args.bounce,
+        body: args.body,
     });
     expect(sendResult.transactions).toHaveTransaction({
-        from: treasure.address,
-        to: contract.address,
-        success,
-        exitCode,
+        from: args.treasure.address,
+        to: args.contract.address,
+        success: args.success,
+        exitCode: args.exitCode,
+    });
+}
+
+/**
+ * Like `expectMessageFromTo`, but with common defaults set:
+ * * value: `toNano("10")`
+ * * bounce: `false`
+ * * success: `true`
+ * * exitCode: `0`
+ */
+async function expectMessageFromToWithDefaults(args: {
+    treasure: SandboxContract<TreasuryContract>;
+    contract: SandboxContract<SendTester>;
+    body: Cell | null;
+}) {
+    await expectMessageFromTo({
+        treasure: args.treasure,
+        contract: args.contract,
+        body: args.body,
+        value: toNano("10"),
+        bounce: false,
+        success: true,
+        exitCode: 0,
     });
 }
 
 /** Creates a Cell message body from the passed `src` string */
 function textMsg(src: string): Cell {
     return beginCell().storeUint(0, 32).storeStringTail(src).endCell();
-}
-
-/** Math.abs, but for bigint */
-function abs(n: bigint) {
-    return n < 0n ? -n : n;
 }

@@ -91,14 +91,19 @@ No other [allowed key or value types](#allowed-types) besides [`Int{:tact}`][int
 
 ### Declare, `emptyMap()` {#emptymap}
 
-As a [local variable](/book/statements#let), using `emptyMap(){:tact}` function of standard library:
+```tact
+// K and V correspond to the key and value types of the target map
+fun emptyMap(): map<K, V>;
+```
+
+Declaring a map as a [local variable](/book/statements#let), using `emptyMap(){:tact}` function of standard library:
 
 ```tact
 let fizz: map<Int, Int> = emptyMap();
 let fizz: map<Int, Int> = null; // identical to the previous line, but less descriptive
 ```
 
-As a [persistent state variable](/book/contracts#variables):
+Declaring a map as a [persistent state variable](/book/contracts#variables):
 
 ```tact
 contract Example {
@@ -412,7 +417,7 @@ There, both maps are formed manually and both contain the same key-value pair. I
 
 ```tact
 // K and V correspond to the key and value types of the given map
-extends fun asCell(self: map<K, V>): Cell;
+extends fun asCell(self: map<K, V>): Cell?;
 ```
 
 On [TVM][tvm], maps are represented as a [`Cell{:tact}`][cell] type and it's possible to construct and parse them directly. However, doing so is highly error-prone and quite messy, which is why Tact provides maps as a standalone composite type with many of the helper methods mentioned above.
