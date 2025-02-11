@@ -4,9 +4,6 @@ export const isColorSupported = () => {
     if (process.env.CI) {
         return true;
     }
-    if (process.env.JEST) {
-        return false;
-    }
     if (process.platform === "win32") {
         const [major, _, build] = release().split(".").map(Number);
         // Windows 10, Build 10586+
@@ -20,21 +17,23 @@ export const isColorSupported = () => {
     return false;
 };
 
-const format = (code: number) => (input: string) =>
-    `\x1b[${code}m${input}\x1b[39m`;
+const format = (code: number) => (s: string) => `\x1b[${code}m${s}\x1b[39m`;
 
-const id = () => (s: string) => s;
+const cond =
+    (isEnabled: boolean) => (f: (x: string) => string) => (x: string) =>
+        isEnabled ? f(x) : x;
 
-export const getColors = (isEnabled: boolean, f = isEnabled ? format : id) => ({
-    reset: (input: string) => `\x1b[0m${input}`,
-    red: f(31),
-    green: f(32),
-    yellow: f(33),
-    blue: f(34),
-    magenta: f(35),
-    cyan: f(36),
-    white: f(37),
-    gray: f(90),
+export const getColors = (isEnabled: boolean, f = cond(isEnabled)) => ({
+    reset: f((s) => `\x1b[0m${s}`),
+    bold: f((s) => `\x1b[1m${s}\x1b[22m`),
+    red: f(format(31)),
+    green: f(format(32)),
+    yellow: f(format(33)),
+    blue: f(format(34)),
+    magenta: f(format(35)),
+    cyan: f(format(36)),
+    white: f(format(37)),
+    gray: f(format(90)),
 });
 
 export type Colors = ReturnType<typeof getColors>;
