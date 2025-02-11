@@ -8,12 +8,9 @@ function makeCRC16Table(polynomial: number): Uint16Array {
         // Initialize crc for this byte. (Note the left shift by 8)
         let crc = n << 8;
         for (let k = 0; k < 8; k++) {
-            crc =
-                crc & 0x8000
-                    ? ((crc << 1) ^ polynomial) & 0xffff
-                    : (crc << 1) & 0xffff;
+            crc = (crc & 0x8000 ? (crc << 1) ^ polynomial : crc << 1) & 0xffff;
         }
-        table[n] = crc & 0xffff;
+        table[n] = crc;
     }
     return table;
 }
