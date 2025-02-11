@@ -12,10 +12,6 @@ export {
     projectSchema,
     configSchema,
 } from "./config/parseConfig";
-export { AstSorter } from "./ast/sort";
-export { AstRenamer } from "./ast/rename";
-export { AstHasher } from "./ast/hash";
-export { AstComparator } from "./ast/compare";
 
 export {
     Config,

@@ -210,8 +210,6 @@ Some other codegen tests are as follows:
 
 The entry point to the Tact AST pretty-printer is [src/ast/ast-printer.ts](../src/ast/ast-printer.ts). It is going to be used for the Tact source code formatter once the parser keeps comments and other relevant information.
 
-The AST comparator is defined in [src/ast/compare.ts](../src/ast/compare.ts). This is useful, for instance, for static analysis tools which can re-use the Tact TypeScript API.
-
 The corresponding test spec files can be found in [src/test](../src/test) folder with the test contracts in [src/test/contracts](../src/test/contracts) folder.
 
 ## Build scripts and test helpers
