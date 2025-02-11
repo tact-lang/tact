@@ -33,8 +33,8 @@ const catchProcessExit = <T>(fn: () => T): T | string => {
 };
 
 const os = [
-    ['Windows', pathWindows],
-    ['POSIX', pathPosix],
+    ["Windows", pathWindows],
+    ["POSIX", pathPosix],
 ] as const;
 
 describe.each(os)("TerminalLogger %s", (_, pathApi) => {
