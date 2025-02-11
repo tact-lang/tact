@@ -4,6 +4,8 @@ import { Logger, SourceLogger } from "../error/logger-util";
 import { Range } from "../error/range";
 import { getColors } from "./colors";
 import { TerminalLogger } from "./logger";
+import pathWindows from "path/win32";
+import pathPosix from "path/posix";
 
 const catchProcessExit = <T>(fn: () => T): T | string => {
     const exitSpy = jest.spyOn(process, "exit").mockImplementation((code) => {
@@ -30,13 +32,18 @@ const catchProcessExit = <T>(fn: () => T): T | string => {
     return result as T;
 };
 
-describe("TerminalLogger", () => {
+const os = [
+    ['Windows', pathWindows],
+    ['POSIX', pathPosix],
+] as const;
+
+describe.each(os)("TerminalLogger %s", (_, pathApi) => {
     const colors = getColors(false);
 
     test("only first error without error recovery", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger(pathApi, "info", colors, (log) => {
                 log.error(log.text`Error 1`);
                 log.error(log.text`Error 2`);
             });
@@ -49,7 +56,7 @@ describe("TerminalLogger", () => {
     test("all info logs are logged", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger(pathApi, "info", colors, (log) => {
                 log.info(log.text`Info 1`);
                 log.info(log.text`Info 2`);
             });
@@ -62,7 +69,7 @@ describe("TerminalLogger", () => {
     test("warn verbosity does not show info", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
-            return TerminalLogger("warn", colors, (log) => {
+            return TerminalLogger(pathApi, "warn", colors, (log) => {
                 log.warn(log.text`Warn`);
                 log.info(log.text`Info`);
             });
@@ -76,7 +83,7 @@ describe("TerminalLogger", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger(pathApi, "info", colors, (log) => {
                 log.error(log.text`See ${log.path("/foo/bar")}.`);
             });
         });
@@ -89,7 +96,7 @@ describe("TerminalLogger", () => {
     test("raw internal error", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (_log) => {
+            return TerminalLogger(pathApi, "info", colors, (_log) => {
                 throwInternal(`OMG`);
             });
         });
@@ -101,7 +108,7 @@ describe("TerminalLogger", () => {
     test("logger internal error", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger(pathApi, "info", colors, (log) => {
                 log.internal(log.text`OMG`);
             });
         });
@@ -114,7 +121,7 @@ describe("TerminalLogger", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger(pathApi, "info", colors, (log) => {
                 log.source("/foo/bar", "Hello, world", () => {
                     throwInternal(`OMG`);
                 });
@@ -130,7 +137,7 @@ describe("TerminalLogger", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger(pathApi, "info", colors, (log) => {
                 log.source("/foo/bar", "Hello, world", (log) => {
                     log.internal(log.text`OMG`);
                     log.info(log.text`Impossible`);
@@ -147,7 +154,7 @@ describe("TerminalLogger", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger(pathApi, "info", colors, (log) => {
                 log.source("/foo/bar", "Hello, world", (log) => {
                     log.at({ start: 3, end: 5 }).internal(log.text`OMG`);
                     log.info(log.text`Impossible`);
@@ -163,7 +170,7 @@ describe("TerminalLogger", () => {
     test("uncaught error", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, () => {
+            return TerminalLogger(pathApi, "info", colors, () => {
                 throw new Error("Uncaught!");
             });
         });
@@ -176,7 +183,7 @@ describe("TerminalLogger", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger(pathApi, "info", colors, (log) => {
                 return log.source("/foo/bar", "Hello, world", () => {
                     throw new Error("hehe");
                 });
@@ -191,7 +198,7 @@ describe("TerminalLogger", () => {
     test("multiple errors", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger(pathApi, "info", colors, (log) => {
                 log.recover((log) => {
                     log.error(log.text`foo`);
                     log.error(log.text`bar`);
@@ -206,7 +213,7 @@ describe("TerminalLogger", () => {
     test("exit on error", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger(pathApi, "info", colors, (log) => {
                 log.recover((log) => {
                     log.error(log.text`foo`);
                     log.error(log.text`bar`);
@@ -224,7 +231,7 @@ describe("TerminalLogger", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger(pathApi, "info", colors, (log) => {
                 log.source("/foo/bar", "Hello, world", (log) => {
                     log.recover((log) => {
                         log.at({ start: 3, end: 5 }).error(log.text`foo`);
@@ -245,7 +252,7 @@ describe("TerminalLogger", () => {
         const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
         const cwdSpy = jest.spyOn(process, "cwd").mockReturnValue("/foo");
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger(pathApi, "info", colors, (log) => {
                 log.recover((log) => {
                     log.source("/foo/bar", "Hello, world", (log) => {
                         log.at({ start: 3, end: 5 }).error(log.text`foo`);
@@ -270,7 +277,7 @@ describe("TerminalLogger", () => {
             barError: () => l.error(l.text`Bar!`),
         });
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger(pathApi, "info", colors, (log) => {
                 log.recover((log) => {
                     const l = fooBarSchema(log);
                     l.fooError();
@@ -292,7 +299,7 @@ describe("TerminalLogger", () => {
             barError: () => l.error(l.text`Bar!`),
         });
         const result = catchProcessExit(() => {
-            return TerminalLogger("info", colors, (log) => {
+            return TerminalLogger(pathApi, "info", colors, (log) => {
                 log.source("/foo/bar", "Hello, world", (log) => {
                     log.recover((log) => {
                         const l = fooBarSchemaSrc(log);

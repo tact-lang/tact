@@ -4,7 +4,6 @@ import {
     showExpectedText,
     showTemplate,
 } from "../error/string-util";
-import { normalize, relative, sep } from "path";
 import { cwd } from "process";
 import { throwInternal } from "../error/errors";
 import { Colors } from "./colors";
@@ -25,17 +24,20 @@ export const CliLogger = () => {
 
 export type Verbosity = "error" | "warn" | "info";
 
+type PathApi = typeof import("path");
+
 export const TerminalLogger = <T>(
+    pathApi: PathApi,
     verbosity: Verbosity,
     colors: Colors,
     compile: (log: Logger<string, never>) => T,
 ) => {
     // path is displayed relative to cwd(), so that in VSCode terminal it's a link
     const showResolvedPath = (path: string) => {
-        const relativePath = normalize(relative(cwd(), path));
+        const relativePath = pathApi.normalize(pathApi.relative(cwd(), path));
         const fixedPath = relativePath.startsWith(".")
             ? relativePath
-            : `.${sep}${relativePath}`;
+            : `.${pathApi.sep}${relativePath}`;
         return colors.blue(fixedPath);
     };
 
@@ -64,7 +66,7 @@ export const TerminalLogger = <T>(
         path: showResolvedPath,
         locatedId: (id) => id,
         expected: showExpectedText,
-        atPath: (path, message) => `${path}: ${message}`,
+        atPath: (path, message) => `${showResolvedPath(path)}: ${message}`,
         atRange: (path, code, range, message) =>
             printError({
                 path: showResolvedPath(path),
