@@ -1407,9 +1407,9 @@
     "@babel/types" "^7.20.7"
 
 "@types/diff@^7.0.0":
-  version "7.0.0"
-  resolved "https://registry.npmjs.org/@types/diff/-/diff-7.0.0.tgz#e9f6a33a72164b3a80b983114a1cef9a6f0c2165"
-  integrity sha512-sVpkpbnTJL9CYoDf4U+tHaQLe5HiTaHWY7m9FuYA7oMCHwC9ie0Vh9eIGapyzYrU3+pILlSY2fAc4elfw5m4dg==
+  version "7.0.1"
+  resolved "https://registry.npmjs.org/@types/diff/-/diff-7.0.1.tgz#acc505eb2e8337ca400503283a6ab44a59906d9f"
+  integrity sha512-R/BHQFripuhW6XPXy05hIvXJQdQ4540KnTvEFHSLjXfHYM41liOLKgIJEyYYiQe796xpaMHfe4Uj/p7Uvng2vA==
 
 "@types/glob@^8.1.0":
   version "8.1.0"
@@ -1469,9 +1469,9 @@
   integrity sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==
 
 "@types/node@*", "@types/node@>=13.7.0", "@types/node@^22.5.0":
-  version "22.13.0"
-  resolved "https://registry.npmjs.org/@types/node/-/node-22.13.0.tgz#d376dd9a0ee2f9382d86c2d5d7beb4d198b4ea8c"
-  integrity sha512-ClIbNe36lawluuvq3+YYhnIN2CELi+6q8NpnM7PYp4hBn/TatfboPgVSm2rwKRfnV2M+Ty9GWDFI64KEe+kysA==
+  version "22.13.1"
+  resolved "https://registry.npmjs.org/@types/node/-/node-22.13.1.tgz#a2a3fefbdeb7ba6b89f40371842162fac0934f33"
+  integrity sha512-jK8uzQlrvXqEU91UxiK5J7pKHyzgnI1Qnl0QDHIgVGuolJhRb9EEl28Cj9b3rGR8B2lhFCtvIm5os8lFnO/1Ew==
   dependencies:
     undici-types "~6.20.0"
 
@@ -3467,9 +3467,9 @@ kleur@^3.0.3:
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
 knip@^5.24.1:
-  version "5.43.5"
-  resolved "https://registry.npmjs.org/knip/-/knip-5.43.5.tgz#2d5416d730d556d3ab3f1380a7054221aad4adfa"
-  integrity sha512-B5cexyDF+me8EjmihxF3XASybB+T8HUzZBSZLNr9CGS8WrceMOR5Qa2qdBXwU0MxphAgH2nzLQcKsCuqXYOJUg==
+  version "5.43.6"
+  resolved "https://registry.npmjs.org/knip/-/knip-5.43.6.tgz#7faed2462ddc27e5b2f47a9224b7f51150b71f9b"
+  integrity sha512-bUCFlg44imdV5vayYxu0pIAB373S8Ufjda0qaI9oRZDH6ltJFwUoAO2j7nafxDmo5G0ZeP4IiLAHqlc3wYIONQ==
   dependencies:
     "@nodelib/fs.walk" "3.0.1"
     "@snyk/github-codeowners" "1.1.0"
@@ -3913,9 +3913,9 @@ prelude-ls@^1.2.1:
   integrity sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
 
 prettier@^3.2.5:
-  version "3.4.2"
-  resolved "https://registry.npmjs.org/prettier/-/prettier-3.4.2.tgz#a5ce1fb522a588bf2b78ca44c6e6fe5aa5a2b13f"
-  integrity sha512-e9MewbtFo+Fevyuxn/4rrcDAaq0IYxPGLvObpQjiZBMAzB9IGmzlnG9RZy3FFas+eBMu2vA0CszMeduow5dIuQ==
+  version "3.5.0"
+  resolved "https://registry.npmjs.org/prettier/-/prettier-3.5.0.tgz#50325a28887c6dfdf2ca3f8eaba02b66a8429ca7"
+  integrity sha512-quyMrVt6svPS7CjQ9gKb3GLEX/rl3BCL2oa/QkNcXv4YNVBC9olt3s+H7ukto06q7B1Qz46PbrKLO34PR6vXcA==
 
 pretty-format@^29.0.0, pretty-format@^29.7.0:
   version "29.7.0"

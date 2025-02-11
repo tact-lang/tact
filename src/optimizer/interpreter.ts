@@ -1768,8 +1768,6 @@ export class Interpreter {
                     this,
                 );
             });
-        } else if (ast.elseif !== null) {
-            this.interpretConditionStatement(ast.elseif);
         } else if (ast.falseStatements !== null) {
             this.envStack.executeInNewEnvironment(() => {
                 ast.falseStatements!.forEach(

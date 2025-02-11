@@ -90,10 +90,7 @@ export class AstHasher {
                 const falseStatementsHash = node.falseStatements
                     ? this.hashStatements(node.falseStatements)
                     : "null";
-                const elseifHash = node.elseif
-                    ? this.hash(node.elseif)
-                    : "null";
-                return `${node.kind}|${this.hash(node.condition)}|${trueStatementsHash}|${falseStatementsHash}|${elseifHash}`;
+                return `${node.kind}|${this.hash(node.condition)}|${trueStatementsHash}|${falseStatementsHash}`;
             }
             case "statement_while":
                 return `${node.kind}|${this.hash(node.condition)}|${this.hashStatements(node.statements)}`;

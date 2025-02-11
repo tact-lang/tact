@@ -203,7 +203,6 @@ export function traverseAndCheck(
                     traverseAndCheck(e, callback);
                 });
             }
-            if (node.elseif) traverseAndCheck(node.elseif, callback);
             break;
         case "statement_while":
         case "statement_until":

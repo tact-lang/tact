@@ -502,27 +502,24 @@ const parseStatementCondition =
     }: $ast.StatementCondition): Handler<A.AstStatementCondition> =>
     (ctx) => {
         if (typeof falseBranch === "undefined") {
-            return ctx.ast.Condition(
+            return ctx.ast.StatementCondition(
                 parseExpression(condition)(ctx),
                 parseStatements(trueBranch)(ctx),
-                null,
                 null,
                 loc,
             );
         } else if (falseBranch.$ === "FalseBranch") {
-            return ctx.ast.Condition(
+            return ctx.ast.StatementCondition(
                 parseExpression(condition)(ctx),
                 parseStatements(trueBranch)(ctx),
                 parseStatements(falseBranch.body)(ctx),
-                null,
                 loc,
             );
         } else {
-            return ctx.ast.Condition(
+            return ctx.ast.StatementCondition(
                 parseExpression(condition)(ctx),
                 parseStatements(trueBranch)(ctx),
-                null,
-                parseStatementCondition(falseBranch)(ctx),
+                [parseStatementCondition(falseBranch)(ctx)],
                 loc,
             );
         }
