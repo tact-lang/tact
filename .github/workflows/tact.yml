@@ -79,7 +79,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: ./.github/actions/test
+      - uses: ../actions/test
       - name: Test compatibility with tact-template
         run: |
           # !!!!!!! Don't forget to update test-windows below !!!!!!!
@@ -98,7 +98,7 @@ jobs:
         os: [windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: ./.github/actions/test
+      - uses: ../actions/test
       - name: Test compatibility with tact-template
         run: |
           # !!!!!!! Don't forget to update test above !!!!!!!
