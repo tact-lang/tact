@@ -1,22 +1,11 @@
 /* Generated. Do not edit. */
 /* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 /* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as $ from "@tonstudio/parser-runtime";
 export namespace $ast {
-    export type NamedRun = $.Located<{
-        readonly $: "NamedRun";
-        readonly name: enter;
-        readonly log: log;
-    }>;
-    export type UnnamedRun = $.Located<{
-        readonly $: "UnnamedRun";
-        readonly bc: BlockchainMessage;
-        readonly vm: VmMessage | undefined;
-    }>;
-    export type run = NamedRun | UnnamedRun;
-    export type log = readonly run[];
     export type BlockchainMessage = $.Located<{
         readonly $: "BlockchainMessage";
         readonly entries: readonly (BcEntry | BcUnknown)[];
@@ -91,60 +80,21 @@ export namespace $ast {
         readonly $: "Stack";
         readonly stack: string;
     }>;
-    export type enter = string;
-    export type exit = string;
     export type $number = string;
 }
-export const NamedRun: $.Parser<$ast.NamedRun> = $.loc(
-    $.field(
-        $.pure("NamedRun"),
-        "$",
-        $.field(
-            $.lazy(() => enter),
-            "name",
-            $.field(
-                $.lazy(() => log),
-                "log",
-                $.right(
-                    $.lazy(() => exit),
-                    $.eps,
-                ),
-            ),
-        ),
-    ),
-);
-export const UnnamedRun: $.Parser<$ast.UnnamedRun> = $.loc(
-    $.field(
-        $.pure("UnnamedRun"),
-        "$",
-        $.field(
-            $.lazy(() => BlockchainMessage),
-            "bc",
-            $.field($.opt($.lazy(() => VmMessage)), "vm", $.eps),
-        ),
-    ),
-);
-export const run: $.Parser<$ast.run> = $.alt(NamedRun, UnnamedRun);
-export const log: $.Parser<$ast.log> = $.star(run);
 export const BlockchainMessage: $.Parser<$ast.BlockchainMessage> = $.loc(
     $.field(
         $.pure("BlockchainMessage"),
         "$",
-        $.right(
-            $.str("%LOGENTRY%"),
-            $.right(
-                $.lookPos($.str("[")),
-                $.field(
-                    $.plus(
-                        $.alt(
-                            $.lazy(() => BcEntry),
-                            $.lazy(() => BcUnknown),
-                        ),
-                    ),
-                    "entries",
-                    $.eps,
+        $.field(
+            $.plus(
+                $.alt(
+                    $.lazy(() => BcEntry),
+                    $.lazy(() => BcUnknown),
                 ),
             ),
+            "entries",
+            $.eps,
         ),
     ),
 );
@@ -330,26 +280,14 @@ export const BcUnknown: $.Parser<$ast.BcUnknown> = $.loc(
     $.field(
         $.pure("BcUnknown"),
         "$",
-        $.right(
-            $.lookNeg($.str("%LOGENTRY%")),
-            $.right(
-                $.lookNeg($.str("%ENTER%")),
-                $.right(
-                    $.lookNeg($.str("%EXIT%")),
-                    $.field(
-                        $.stry(
-                            $.plus(
-                                $.regex<"\n">(
-                                    "^\\n",
-                                    $.negateExps([$.ExpString("\n")]),
-                                ),
-                            ),
-                        ),
-                        "text",
-                        $.right($.str("\n"), $.eps),
-                    ),
+        $.field(
+            $.stry(
+                $.plus(
+                    $.regex<"\n">("^\\n", $.negateExps([$.ExpString("\n")])),
                 ),
             ),
+            "text",
+            $.right($.str("\n"), $.eps),
         ),
     ),
 );
@@ -357,10 +295,7 @@ export const VmMessage: $.Parser<$ast.VmMessage> = $.loc(
     $.field(
         $.pure("VmMessage"),
         "$",
-        $.right(
-            $.str("%LOGENTRY%"),
-            $.field($.plus($.lazy(() => VmEntry)), "entries", $.eps),
-        ),
+        $.field($.star($.lazy(() => VmEntry)), "entries", $.eps),
     ),
 );
 export const VmEntry: $.Parser<$ast.VmEntry> = $.loc(
@@ -460,27 +395,18 @@ export const VmUnknown: $.Parser<$ast.VmUnknown> = $.loc(
         $.pure("VmUnknown"),
         "$",
         $.right(
-            $.lookNeg($.str("%LOGENTRY%")),
-            $.right(
-                $.lookNeg($.str("%ENTER%")),
-                $.right(
-                    $.lookNeg($.str("%EXIT%")),
-                    $.right(
-                        $.lookNeg($.str("stack")),
-                        $.field(
-                            $.stry(
-                                $.plus(
-                                    $.regex<"\n">(
-                                        "^\\n",
-                                        $.negateExps([$.ExpString("\n")]),
-                                    ),
-                                ),
-                            ),
-                            "text",
-                            $.right($.str("\n"), $.eps),
+            $.lookNeg($.str("stack")),
+            $.field(
+                $.stry(
+                    $.plus(
+                        $.regex<"\n">(
+                            "^\\n",
+                            $.negateExps([$.ExpString("\n")]),
                         ),
                     ),
                 ),
+                "text",
+                $.right($.str("\n"), $.eps),
             ),
         ),
     ),
@@ -508,24 +434,6 @@ export const Stack: $.Parser<$ast.Stack> = $.loc(
                 $.right($.str("\n"), $.eps),
             ),
         ),
-    ),
-);
-export const enter: $.Parser<$ast.enter> = $.right(
-    $.str("%LOGENTRY%%ENTER%"),
-    $.left(
-        $.stry(
-            $.star($.regex<"\n">("^\\n", $.negateExps([$.ExpString("\n")]))),
-        ),
-        $.str("\n"),
-    ),
-);
-export const exit: $.Parser<$ast.exit> = $.right(
-    $.str("%LOGENTRY%%EXIT%"),
-    $.left(
-        $.stry(
-            $.star($.regex<"\n">("^\\n", $.negateExps([$.ExpString("\n")]))),
-        ),
-        $.str("\n"),
     ),
 );
 export const $number: $.Parser<$ast.$number> = $.stry(

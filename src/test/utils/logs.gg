@@ -1,10 +1,4 @@
-log = @run*;
-run = NamedRun / UnnamedRun;
-NamedRun = name:enter log:log exit;
-UnnamedRun = bc:BlockchainMessage vm:VmMessage?;
-
-BlockchainMessage = "%LOGENTRY%" &"[" entries:(BcEntry / BcUnknown)+;
-
+BlockchainMessage = entries:(BcEntry / BcUnknown)+;
 BcEntry =
     "[ " [1234] "]"
     "[t 0]"
@@ -13,46 +7,33 @@ BcEntry =
     "\t"
     info:bcLine
     "\n";
-
 bcLine = BcLimits / BcSteps / BcVmLog;
-
 BcLimits =
     "gas limits: max=" max:number
     ", limit=" limit:number
     ", credit=" credit:number;
-
 BcSteps =
     "steps: " steps:number
     " gas: used=" used:number
     ", max=" max:number
     ", limit=" limit:number
     ", credit=" credit:number;
-
 BcVmLog = "VM log\n" entries:VmEntry+;
+BcUnknown = text:$[^\n]+ "\n";
 
-BcUnknown = !"%LOGENTRY%" !"%ENTER%" !"%EXIT%" text:$[^\n]+ "\n";
-
-VmMessage = "%LOGENTRY%" entries:VmEntry+;
-
-VmEntry =
-    stack:Stack
-    other:vmLine+;
-
-vmLine = VmLoc / VmExecute / VmLimitChanged / VmGasRemaining / VmUnknown;
-
+VmMessage = entries:VmEntry*;
+VmEntry = stack:Stack other:vmLine+;
+vmLine
+    = VmLoc
+    / VmExecute
+    / VmLimitChanged
+    / VmGasRemaining
+    / VmUnknown;
 Stack = "stack" stack:$[^\n]+ "\n";
-
 VmLoc = "code cell hash: " hash:$[0-9A-F]+" offset: " offset:$[0-9]+ "\n";
-
 VmExecute = "execute " instr:$[^\n]+ "\n";
-
 VmLimitChanged = "changing gas limit to " limit:$[0-9]+ "\n";
-
 VmGasRemaining = "gas remaining: " gas:$[0-9]+ "\n";
-
-VmUnknown = !"%LOGENTRY%" !"%ENTER%" !"%EXIT%" !"stack" text:$[^\n]+ "\n";
-
-enter = "%LOGENTRY%%ENTER%" @$[^\n]* "\n";
-exit = "%LOGENTRY%%EXIT%" @$[^\n]* "\n";
+VmUnknown = !"stack" text:$[^\n]+ "\n";
 
 number = $[0-9]+;
