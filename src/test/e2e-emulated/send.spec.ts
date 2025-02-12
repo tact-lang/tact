@@ -1,4 +1,5 @@
-import { toNano, beginCell, Cell } from "@ton/core";
+import { toNano, beginCell } from "@ton/core";
+import type { Cell } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { SendTester } from "./contracts/output/send_SendTester";
