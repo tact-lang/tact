@@ -1,0 +1,110 @@
+[
+    {
+        "lineNum": 20,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 16,
+        "source": "@stdlib/libs/ownable.tact"
+    },
+    {
+        "lineNum": 22,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 26,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 31,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 35,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 37,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 38,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 10,
+        "source": "@stdlib/std/internal/contract.tact"
+    },
+    {
+        "lineNum": 40,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 13,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 14,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 15,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 60,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 61,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 62,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 10,
+        "source": "@stdlib/std/internal/contract.tact"
+    },
+    {
+        "lineNum": 65,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 71,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 72,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 73,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 74,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 75,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 77,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 80,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 96,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    },
+    {
+        "lineNum": 97,
+        "source": "/home/user/Documents/work/tact1/src/test/benchmarks/contracts/jetton_wallet.tact"
+    }
+]

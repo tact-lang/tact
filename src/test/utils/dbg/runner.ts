@@ -103,7 +103,7 @@ export const main = async () => {
             steps.push(line);
         }
     }
-    await writeFile(symbolsPath, JSON.stringify(steps), 'utf-8');
+    await writeFile(symbolsPath, JSON.stringify(steps, null, 4), 'utf-8');
 };
 
 type Step = {
