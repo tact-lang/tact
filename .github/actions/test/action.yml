@@ -13,33 +13,40 @@ runs:
         cache: "yarn"
 
     - name: Install dependencies
+      shell: bash
       run: |
         corepack enable
         yarn install
 
     - name: List installed packages
+      shell: bash
       run: |
         yarn list
 
     - name: Print some environment info
+      shell: bash
       run: |
         yarn cross-env echo $NODE_ENV
 
     - name: Build Tact compiler
+      shell: bash
       run: |
         yarn clean
         yarn gen
         yarn build
 
     - name: Test Tact compiler
+      shell: bash
       run: |
         yarn coverage
 
     - name: Show an example .pkg file on Windows
+      shell: pwsh
       if: runner.os == 'Windows'
       run: |
         type examples\output\echo_Echo.pkg
 
     - name: Link Tact yarn package
+      shell: bash
       run: |
         yarn link
