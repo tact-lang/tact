@@ -41,7 +41,7 @@ runs:
         yarn coverage
 
     - name: Show an example .pkg file on Windows
-      shell: bash
+      shell: pwsh
       if: runner.os == 'Windows'
       run: |
         type examples\output\echo_Echo.pkg
