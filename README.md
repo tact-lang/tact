@@ -14,7 +14,7 @@ A next-gen smart contract language for TON focused on efficiency and simplicity.
 - [Tact Documentation](https://docs.tact-lang.org)
 - [Awesome Tact](https://github.com/tact-lang/awesome-tact)
 
-## Integrity
+## Security
 
 - [Security audit of Tact by the Trail of Bits (2025, PDF)](https://tact-lang.org/assets/pdfs/2025-01-ton-studio-tact-compiler-securityreview.pdf)
   - Backup link: [PDF Report](https://github.com/tact-lang/website/blob/416073ed4056034639de257cb1e2815227f497cb/pdfs/2025-01-ton-studio-tact-compiler-securityreview.pdf)
