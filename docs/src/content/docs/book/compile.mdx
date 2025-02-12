@@ -14,6 +14,23 @@ With the proper [configuration settings](/book/config), you can customize the be
 
 Since the Tact compiler is a command-line program, some of the configuration settings can be set directly. When inside a folder with a Tact-based project, such as one created using the [Blueprint][bp] or from the [tact-template](https://github.com/tact-lang/tact-template), refer to the `npx tact --help{:shell}` command for further instructions.
 
+## Single Contract Compilation
+
+When compiling a single contract file directly, you can use command line flags to control the compilation process. For example:
+
+```shell
+tact contract.tact --check     # Only perform syntax and type checking
+tact contract.tact --func      # Output intermediate FunC code
+```
+
+You can also specify a custom output directory using the `-o` or `--output` flag:
+
+```shell
+tact contract.tact --output ./custom-output
+```
+
+This will place all generated files in the specified directory. If not specified, the files will be generated in the same directory as the input file.
+
 ## Compiler upgrades {#upgrades}
 
 Work on the compiler is active and extensive, so be sure to check out [NPM](https://www.npmjs.com/package/@tact-lang/compiler) whenever we push new releases. To follow updates, see the [Tact Kitchen in Telegram](https://t.me/tact_kitchen) for the short scoop, or our [GitHub organization](https://github.com/tact-lang) for the whole picture in all its details.
@@ -95,7 +112,15 @@ If you want to pin down a specific version of the compiler, run the following co
 
 A number of build artifacts can be produced per compilation of each contract. Some of the artifacts can be omitted using [configuration settings](/book/config).
 
-The location of the artifacts depends on the [`output`](/book/config#projects-output) field of the [`tact.config.json`](/book/config). In [Blueprint][bp]-based projects, `output` is not used and all generated files are always placed in `build/ProjectName/`.
+The location of the artifacts depends on the compilation method:
+- For projects using `tact.config.json`, use the [`output`](/book/config#projects-output) field in the config file
+- For single contract compilation, you can specify the output directory using the `-o` or `--output` flag:
+  ```shell
+  tact contract.tact --output ./custom-output
+  ```
+  If not specified, the files will be generated in the same directory as the input file.
+
+In [Blueprint][bp]-based projects, `output` is not used and all generated files are always placed in `build/ProjectName/`.
 
 ### Compilation report, `.md` {#report}
 
