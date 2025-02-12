@@ -12,13 +12,13 @@ const SendBounceIfActionFail: Int = 16;
 const SendOnlyEstimateFee: Int = 1024;
 
 struct SendParameters {
-    bounce: Bool = true;
-    to: Address;
-    value: Int;
     mode: Int = 0;
     body: Cell? = null;
     code: Cell? = null;
     data: Cell? = null;
+    value: Int;
+    to: Address;
+    bounce: Bool = true;
 }
 
 
@@ -47,9 +47,6 @@ asm fun send(params: SendParameters) {
     //   body:(Either X ^X)
     // = MessageRelaxed X;
 
-    // Group 1: Rearrangements
-    3 4 BLKSWAP
-    s2 XCHG0
     // → Stack state
     // s0: `params.bounce`
     // s1: `params.to`
@@ -60,7 +57,7 @@ asm fun send(params: SendParameters) {
     // s6: `params.mode`
     // For brevity, the "params" prefix will be omitted from now on.
 
-    // Group 2: Storing the `bounce`, `to` and `value` into a Builder
+    // Group 1: Storing the `bounce`, `to` and `value` into a Builder
     NEWC
     b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
     1 STI               // store `bounce`
@@ -77,7 +74,7 @@ asm fun send(params: SendParameters) {
     // s3: `body`
     // s4: `mode`
 
-    // Group 3: Placing the Builder after code and data, then checking those for nullability
+    // Group 2: Placing the Builder after code and data, then checking those for nullability
     s2 XCHG0
     DUP2
     ISNULL
@@ -92,14 +89,14 @@ asm fun send(params: SendParameters) {
     // s4: `body`
     // s5: `mode`
 
-    // Group 4: Left branch of the IFELSE, executed if s0 is -1 (true)
+    // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
     <{
         DROP2 // drop `data` and `code`, since either of those is null
         NULL  // push a single null
         SWAP  // place Builder on top
     }> PUSHCONT
 
-    // Group 4: Right branch of the IFELSE, executed if s0 is 0 (false)
+    // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
     <{
         // _ split_depth:(Maybe (## 5))
         //   special:(Maybe TickTock)
@@ -117,7 +114,7 @@ asm fun send(params: SendParameters) {
         b{1} STSLICECONST  // an extra bit for storing StateInit as ref
     }> PUSHCONT
 
-    // Group 4: IFELSE that does the branching shown above
+    // Group 3: IFELSE that does the branching shown above
     IFELSE
     // → Stack state
     // s0: Builder
@@ -125,7 +122,7 @@ asm fun send(params: SendParameters) {
     // s2: `body`
     // s3: `mode`
 
-    // Group 5: Finalizing the message
+    // Group 4: Finalizing the message
     STDICT // store StateInit
     STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
     ENDC
@@ -133,9 +130,135 @@ asm fun send(params: SendParameters) {
     // s0: Cell
     // s1: `mode`
 
-    // Group 6: Sending the message, with `mode` on top
+    // Group 5: Sending the message, with `mode` on top
     SWAP
     SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
+}
+
+struct DeployParameters {
+    mode: Int = SendDefaultMode;
+    body: Cell? = null;
+    value: Int;
+    bounce: Bool = true;
+    init: StateInit;
+}
+
+/// Deploys a contract in basechain with specified StateInit
+asm fun deploy(params: DeployParameters): Cell {
+    // Group 1: Preparation of needed params
+    //
+    // Params are specified above
+    //
+    // → Stack state
+    // ....
+    // s1: code
+    // s0: data
+    4 1 BLKPUSH
+    // → Stack state
+    // ....
+    // s5: code
+    // s4: data
+    // s3: code
+    // s2: data
+    // s1: code
+    // s0: data
+    HASHCU
+    SWAP
+    HASHCU
+    // → Stack state
+    // ....
+    // s5: code
+    // s4: data
+    // s3: code
+    // s2: data
+    // s1: hash(data)
+    // s0: hash(code)
+    SWAP2
+    CDEPTH
+    SWAP
+    CDEPTH
+    // → Stack state
+    // ....
+    // s5: code
+    // s4: data
+    // s3: hash(data)
+    // s2: hash(code)
+    // s1: depth(data)
+    // s0: depth(code)
+    //
+    // Group 2: Calculating destination address
+    //
+    NEWC
+    b{000000100000000100110100} STSLICECONST // Consult https://docs.tact-lang.org/book/cells/#cells-representation for more information
+    // The main trick we are doing here is calculating hash-part of address without using ENDC.
+    16 STU
+    16 STU
+    256 STU
+    256 STU
+    ONE // Argument of HASHEXT_SHA256 - We need to hash only one builder
+    HASHEXT_SHA256
+    //
+    // Group 3: Building a message
+    //
+    // → Stack state
+    // s6: params.mode
+    // s5: params.body
+    // s4: params.value
+    // s3: params.bounce
+    // s2: code
+    // s1: data
+    // s0: destAddr(hash part)
+    s3 XCHG0
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI
+    // → Stack state
+    // s6: params.mode
+    // s5: params.body
+    // s4: params.value
+    // s3: destAddr(hash part)
+    // s2: code
+    // s1: data
+    // s0: msgBuilder
+    s1 s2 XCHG
+    STREF // Save code (we are builing inline StateInit, bits for StateInit will be stored futher)
+    STREF // Save data
+    b{00010000000000} STSLICECONST
+    // 0 + 00 + 10 + 0 + 00000000
+    // 1) 0 - bounced = false
+    // 2) 00 - src = addr_none
+    // 3) 10 - tag of addr_std (part of dest)
+    // 4) 0 - Maybe Anycast = false
+    // 5) 00000000 - workchain_id (part of dest)
+    256 STU // Store address (hash part)
+    // → Stack state
+    // s3: params.mode
+    // s2: params.body
+    // s1: params.value
+    // s0: msgBuilder
+    SWAP
+    STGRAMS // Store value
+    105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+    STZEROES // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+    // Finished building CommonMsgInfoRelaxed and building remaining of MessageRelaxed
+    b{1000110} STSLICECONST
+    // 10 + 0 + 0 + 1 + 1 + 0
+    // 10 - Maybe (Either StateInit ^StateInit) = true false
+    // 0 - split_depth:(Maybe (## 5)) = false
+    // 0 = special:(Maybe TickTock) = false
+    // 1 = code:(Maybe ^Cell) = true
+    // 1 = data:(Maybe ^Cell) = true
+    // 0 = library:(Maybe ^Cell) = false
+    //
+    // → Stack state
+    // s2: params.mode
+    // s1: params.body
+    // s0: msgBuilder
+    STDICT // Store body (using STDICT as body may be null)
+    ENDC
+    // Group 4: Sending the message, with `mode` on top
+    SWAP
+    SENDRAWMSG
 }
 
 inline fun emit(body: Cell) {

@@ -61,10 +61,10 @@
       "discovery": "10067"
     },
     {
-      "label": "master",
-      "transfer": "21402",
-      "burn": "16029",
-      "discovery": "10067"
+      "label": "1.5.3 with reordered SendParameters",
+      "transfer": "21314",
+      "burn": "15985",
+      "discovery": "10041"
     }
   ]
 }
