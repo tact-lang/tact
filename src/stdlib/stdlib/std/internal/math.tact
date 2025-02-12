@@ -424,3 +424,46 @@ fun sqrt(num: Int): Int {
 
     return x;
 }
+
+/// Global function. Available since Tact 1.6.0.
+///
+/// Computes the integer square root of the `Int` value `num`. Returns the result rounded down (floor).
+/// This is equivalent to finding the largest integer `x` such that `x * x <= num`.
+///
+/// Attempts to specify a negative value of `num` throw an exception with exit code 5: `Integer out of expected range`.
+///
+/// ```tact
+/// fun examples() {
+///     isqrt(4);  // 2
+///     isqrt(3);  // 1
+///     isqrt(2);  // 1
+///     isqrt(1);  // 1
+///     isqrt(0);  // 0
+///     isqrt(-1); // ERROR! Exit code 5: Integer out of expected range
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-math#isqrt
+///
+fun isqrt(num: Int): Int {
+    if (num == 0) {
+        return 0;
+    }
+
+    let s: Int = log2(num);
+    let x: Int = (s == 1 ? (num - 1) / 2 + 1 : 1 << ((s + 1) / 2));
+
+    let q: Int = 0;
+
+    do {
+        q = (divc(num, x) - x) / 2;
+        x += q;
+    } until (q == 0);
+
+    if (x * x > num) {
+        x -= 1;
+    }
+
+    return x;
+}
+

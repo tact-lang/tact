@@ -466,4 +466,8 @@ contract MathTester with Deployable {
     get fun sqrt(x: Int): Int {
         return sqrt(x);
     }
+
+    get fun isqrt(x: Int): Int {
+        return isqrt(x);
+    }
 }

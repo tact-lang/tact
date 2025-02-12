@@ -564,6 +564,18 @@ describe("math", () => {
                 "Unable to execute get method. Got exit_code: 5",
             );
         }
+
+        // isqrt: floor(sqrt(num))
+        for (let num = 0n; num <= 100n; num++) {
+            expect(await contract.getIsqrt(num)).toBe(
+                BigInt(Math.floor(Math.sqrt(Number(num)))),
+            );
+        }
+        for (let num = -3n; num < 0n; num++) {
+            await expect(contract.getIsqrt(num)).rejects.toThrow(
+                "Unable to execute get method. Got exit_code: 5",
+            );
+        }
     });
 
     it("should perform left shifts with comparisons correctly", async () => {
