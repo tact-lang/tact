@@ -2,5 +2,30 @@
   "name": "@tact-lang/eslint-plugin-local-rules",
   "version": "0.0.0",
   "private": true,
-  "main": "index.js"
+  "main": "./lib/index.js",
+  "exports": "./lib/index.js",
+  "scripts": {
+    "lint": "npm run lint:eslint-docs && npm run lint:js",
+    "lint:eslint-docs": "eslint-doc-generator --check",
+    "lint:js": "eslint .",
+    "test": "mocha tests --recursive",
+    "update:eslint-docs": "eslint-doc-generator"
+  },
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "8.21.0",
+    "@typescript-eslint/parser": "8.21.0",
+    "@typescript-eslint/utils": "8.21.0",
+    "typescript": "5.6.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/rule-tester": "8.21.0",
+    "eslint": "^8.57.0",
+    "eslint-doc-generator": "^1.0.0",
+    "eslint-plugin-eslint-plugin": "^5.0.0",
+    "eslint-plugin-node": "^11.1.0",
+    "mocha": "^10.0.0"
+  },
+  "peerDependencies": {
+    "eslint": ">=7"
+  }
 }
