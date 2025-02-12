@@ -6,7 +6,7 @@ import {
 } from "../error/string-util";
 import { cwd } from "process";
 import { throwInternal } from "../error/errors";
-import { Colors } from "./colors";
+import { AnsiMarkup } from "./colors";
 
 export const CliLogger = () => {
     let hadErrors = false;
@@ -29,7 +29,7 @@ type PathApi = typeof import("path");
 export const TerminalLogger = <T>(
     pathApi: PathApi,
     verbosity: Verbosity,
-    colors: Colors,
+    ansi: AnsiMarkup,
     compile: (log: Logger<string, never>) => T,
 ) => {
     // path is displayed relative to cwd(), so that in VSCode terminal it's a link
@@ -38,23 +38,23 @@ export const TerminalLogger = <T>(
         const fixedPath = relativePath.startsWith(".")
             ? relativePath
             : `.${pathApi.sep}${relativePath}`;
-        return colors.blue(fixedPath);
+        return ansi.blue(fixedPath);
     };
 
     const termIface: LoggerHandlers<string, never> = {
         internal: (message) => {
             console.log(
-                colors.red("Internal compiler error: ") +
+                ansi.red("Internal compiler error: ") +
                     message +
                     `\nPlease report at https://github.com/tact-lang/tact/issues`,
             );
         },
         error: (message) => {
-            console.log(colors.red("Error: ") + message);
+            console.log(ansi.red("Error: ") + message);
         },
         warn: (message) => {
             if (verbosity === "warn" || verbosity === "info") {
-                console.log(colors.yellow("Warning: ") + message);
+                console.log(ansi.yellow("Warning: ") + message);
             }
         },
         info: (message) => {
@@ -74,7 +74,7 @@ export const TerminalLogger = <T>(
                 message,
                 range,
                 onInternalError: throwInternal,
-                colors,
+                ansiMarkup: ansi,
             }),
         onExit: () => {
             // Now the only thing left to handle is ExitError, which

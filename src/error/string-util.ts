@@ -37,9 +37,9 @@ export const showTemplate = (
 };
 
 export type Colors = {
-    gray: (s: string) => string;
-    red: (s: string) => string;
-    yellow: (s: string) => string;
+    readonly gray: (s: string) => string;
+    readonly red: (s: string) => string;
+    readonly yellow: (s: string) => string;
 };
 
 const id = (s: string) => s;
@@ -54,27 +54,27 @@ export type PrintErrorParams = {
     /**
      * Rendered absolute path to source file
      */
-    path: string;
+    readonly path: string;
     /**
      * Source code
      */
-    code: string;
+    readonly code: string;
     /**
      * Rendered message
      */
-    message: string;
+    readonly message: string;
     /**
      * 0-based position range [start; end[
      */
-    range: Range;
+    readonly range: Range;
     /**
      * Throw internal error
      */
-    onInternalError?: (error: string) => void;
+    readonly onInternalError?: (error: string) => void;
     /**
      * Use colors
      */
-    colors?: Colors;
+    readonly ansiMarkup?: Colors;
 };
 
 const defaultInternalError = (message: string) => {
@@ -95,11 +95,11 @@ export function printError({
     message,
     range,
     onInternalError = defaultInternalError,
-    colors = defaultColors,
+    ansiMarkup: ansi = defaultColors,
 }: PrintErrorParams): string {
     // Display all lines of source file
     const lines = toLines(code).flatMap((line) =>
-        displayLine(line, range, colors),
+        displayLine(line, range, ansi),
     );
 
     // Find first and lines lines with error message
@@ -141,7 +141,7 @@ export function printError({
     const colNum = range.start - lineStartPos + 1;
 
     const displayLines = paddedLines.join("\n");
-    return `${path}:${colors.yellow(lineNum + ":" + colNum)} - ${message}\n${displayLines}`;
+    return `${path}:${ansi.yellow(lineNum + ":" + colNum)} - ${message}\n${displayLines}`;
 }
 
 const displayLine = (line: Line, range: Range, colors: Colors) => {

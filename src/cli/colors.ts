@@ -23,7 +23,7 @@ const cond =
     (isEnabled: boolean) => (f: (x: string) => string) => (x: string) =>
         isEnabled ? f(x) : x;
 
-export const getColors = (isEnabled: boolean, f = cond(isEnabled)) => ({
+export const getAnsiMarkup = (isEnabled: boolean, f = cond(isEnabled)) => ({
     reset: f((s) => `\x1b[0m${s}`),
     bold: f((s) => `\x1b[1m${s}\x1b[22m`),
     red: f(format(31)),
@@ -36,4 +36,4 @@ export const getColors = (isEnabled: boolean, f = cond(isEnabled)) => ({
     gray: f(format(90)),
 });
 
-export type Colors = ReturnType<typeof getColors>;
+export type AnsiMarkup = ReturnType<typeof getAnsiMarkup>;
