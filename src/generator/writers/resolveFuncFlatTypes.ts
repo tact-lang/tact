@@ -2,6 +2,7 @@ import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription, TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { resolveFuncType } from "./resolveFuncType";
+import { throwInternalCompilerError } from "../../error/errors";
 
 export function resolveFuncFlatTypes(
     descriptor: TypeRef | TypeDescription | string,
@@ -25,10 +26,12 @@ export function resolveFuncFlatTypes(
         return ["cell"];
     }
     if (descriptor.kind === "ref_bounced") {
-        throw Error("Unimplemented");
+        throwInternalCompilerError("Unimplemented");
     }
     if (descriptor.kind === "void") {
-        throw Error("Void type is not allowed in function arguments");
+        throwInternalCompilerError(
+            "Void type is not allowed in function arguments",
+        );
     }
 
     // TypeDescription
@@ -53,5 +56,5 @@ export function resolveFuncFlatTypes(
     }
 
     // Unreachable
-    throw Error("Unknown type: " + descriptor.kind);
+    throwInternalCompilerError("Unknown type: " + descriptor.kind);
 }

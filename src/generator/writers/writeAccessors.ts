@@ -10,6 +10,7 @@ import { resolveFuncFlatTypes } from "./resolveFuncFlatTypes";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { ItemOrigin } from "../../imports/source";
+import { throwInternalCompilerError } from "../../error/errors";
 
 function chainVars(vars: string[]): string[] {
     // let's say we have vars = ['v1', 'v2, ..., 'v32']
@@ -70,8 +71,11 @@ export function writeAccessors(
             }
             const flatPack = resolveFuncFlatPack(type, "vvv", ctx);
             const flatTypes = resolveFuncFlatTypes(type, ctx);
-            if (flatPack.length !== flatTypes.length)
-                throw Error("Flat pack and flat types length mismatch");
+            if (flatPack.length !== flatTypes.length) {
+                throwInternalCompilerError(
+                    "Flat pack and flat types length mismatch",
+                );
+            }
             const pairs = flatPack.map((v, i) => `${flatTypes[i]} ${v}`);
             if (flatPack.length <= maxTupleSize) {
                 ctx.used(`__tact_tuple_destroy_${flatPack.length}`);

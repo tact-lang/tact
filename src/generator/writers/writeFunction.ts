@@ -259,7 +259,7 @@ export function writeStatement(
 
             const t = getExpType(ctx.ctx, f.map);
             if (t.kind !== "map") {
-                throw Error("Unknown map type");
+                throwInternalCompilerError("Unknown map type");
             }
 
             const flag = freshIdentifier("flag");
@@ -494,8 +494,6 @@ export function writeStatement(
             return;
         }
     }
-
-    throw Error("Unknown statement kind");
 }
 
 function writeCondition(
@@ -769,7 +767,9 @@ export function writeGetter(f: FunctionDescription, wCtx: WriterContext) {
     // Render tensors
     const self = f.self?.kind === "ref" ? getType(wCtx.ctx, f.self.name) : null;
     if (!self) {
-        throw new Error(`No self type for getter ${idTextErr(f.name)}`); // Impossible
+        throwInternalCompilerError(
+            `No self type for getter ${idTextErr(f.name)}`,
+        ); // Impossible
     }
     wCtx.append(
         `_ %${f.name}(${f.params.map((v) => resolveFuncTupleType(v.type, wCtx) + " " + funcIdOf(v.name)).join(", ")}) method_id(${f.methodId!}) {`,

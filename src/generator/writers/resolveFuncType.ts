@@ -1,6 +1,7 @@
 import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription, TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
+import { throwInternalCompilerError } from "../../error/errors";
 
 export function resolveFuncType(
     descriptor: TypeRef | TypeDescription | string,
@@ -61,7 +62,9 @@ export function resolveFuncType(
         } else if (descriptor.name === "StringBuilder") {
             return "tuple";
         } else {
-            throw Error("Unknown primitive type: " + descriptor.name);
+            throwInternalCompilerError(
+                "Unknown primitive type: " + descriptor.name,
+            );
         }
     } else if (descriptor.kind === "struct") {
         const fieldsToUse = usePartialFields
@@ -97,5 +100,5 @@ export function resolveFuncType(
     }
 
     // Unreachable
-    throw Error("Unknown type: " + descriptor.kind);
+    throwInternalCompilerError("Unknown type: " + descriptor.kind);
 }

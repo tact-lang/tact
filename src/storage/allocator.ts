@@ -83,7 +83,9 @@ export function getAllocationOperationFromField(
             if (src.type === "int") {
                 if (typeof src.format === "number") {
                     if (src.format < 1 || src.format > 257) {
-                        throw Error("Unsupported int format " + src.format);
+                        throwInternalCompilerError(
+                            "Unsupported int format " + src.format,
+                        );
                     }
                     return {
                         kind: "int",

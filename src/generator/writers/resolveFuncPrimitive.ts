@@ -1,6 +1,7 @@
 import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription, TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
+import { throwInternalCompilerError } from "../../error/errors";
 
 export function resolveFuncPrimitive(
     descriptor: TypeRef | TypeDescription | string,
@@ -19,7 +20,7 @@ export function resolveFuncPrimitive(
         return true;
     }
     if (descriptor.kind === "ref_bounced") {
-        throw Error("Unimplemented");
+        throwInternalCompilerError("Unimplemented");
     }
     if (descriptor.kind === "void") {
         return true;
@@ -44,7 +45,9 @@ export function resolveFuncPrimitive(
         } else if (descriptor.name === "StringBuilder") {
             return true;
         } else {
-            throw Error("Unknown primitive type: " + descriptor.name);
+            throwInternalCompilerError(
+                "Unknown primitive type: " + descriptor.name,
+            );
         }
     } else if (descriptor.kind === "struct") {
         return false;
@@ -53,5 +56,5 @@ export function resolveFuncPrimitive(
     }
 
     // Unreachable
-    throw Error("Unknown type: " + descriptor.kind);
+    throwInternalCompilerError("Unknown type: " + descriptor.kind);
 }

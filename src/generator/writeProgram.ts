@@ -28,6 +28,7 @@ import {
 import { funcInitIdOf } from "./writers/id";
 import { idToHex } from "../utils/idToHex";
 import { trimIndent } from "../utils/text";
+import { throwCompilationError } from "../error/errors";
 
 export async function writeProgram(
     ctx: CompilerContext,
@@ -302,7 +303,7 @@ function writeAll(
     const contracts = allTypes.filter((v) => v.kind === "contract");
     const c = contracts.find((v) => v.name === name);
     if (!c) {
-        throw Error(`Contract "${name}" not found`);
+        throwCompilationError(`Contract "${name}" not found`);
     }
 
     // Stdlib

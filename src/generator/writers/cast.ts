@@ -2,6 +2,7 @@ import { getType } from "../../types/resolveDescriptors";
 import { TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
 import { ops } from "./ops";
+import { throwInternalCompilerError } from "../../error/errors";
 
 export function cast(
     from: TypeRef,
@@ -11,7 +12,7 @@ export function cast(
 ) {
     if (from.kind === "ref" && to.kind === "ref") {
         if (from.name !== to.name) {
-            throw Error("Impossible");
+            throwInternalCompilerError("Impossible");
         }
         if (!from.optional && to.optional) {
             const type = getType(ctx.ctx, from.name);

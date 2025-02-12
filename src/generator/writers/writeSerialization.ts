@@ -203,7 +203,7 @@ function writeSerializerField(
                 case "remainder":
                     {
                         if (op.optional) {
-                            throw Error("Impossible");
+                            throwInternalCompilerError("Impossible");
                         }
                         ctx.append(
                             `build_${gen} = build_${gen}.store_slice(${fieldName}.begin_parse());`,
@@ -230,7 +230,7 @@ function writeSerializerField(
                     break;
                 case "remainder": {
                     if (op.optional) {
-                        throw Error("Impossible");
+                        throwInternalCompilerError("Impossible");
                     }
                     ctx.append(
                         `build_${gen} = build_${gen}.store_slice(${fieldName});`,
@@ -256,7 +256,7 @@ function writeSerializerField(
                     break;
                 case "remainder": {
                     if (op.optional) {
-                        throw Error("Impossible");
+                        throwInternalCompilerError("Impossible");
                     }
                     ctx.append(
                         `build_${gen} = build_${gen}.store_slice(${fieldName}.end_cell().begin_parse());`,
@@ -295,7 +295,7 @@ function writeSerializerField(
         }
         case "struct": {
             if (op.ref) {
-                throw Error("Not implemented");
+                throwInternalCompilerError("Not implemented");
             }
             if (op.optional) {
                 ctx.append(
@@ -529,7 +529,7 @@ function writeFieldParser(
         case "cell": {
             if (op.optional) {
                 if (op.format !== "default") {
-                    throw new Error(`Impossible`);
+                    throwInternalCompilerError("Impossible");
                 }
                 ctx.append(
                     `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_ref() : null();`,
@@ -553,7 +553,7 @@ function writeFieldParser(
         case "slice": {
             if (op.optional) {
                 if (op.format !== "default") {
-                    throw new Error(`Impossible`);
+                    throwInternalCompilerError("Impossible");
                 }
                 ctx.append(
                     `${varName} = sc_${gen}~load_int(1) ? sc_${gen}~load_ref().begin_parse() : null();`,
@@ -579,7 +579,7 @@ function writeFieldParser(
         case "builder": {
             if (op.optional) {
                 if (op.format !== "default") {
-                    throw new Error(`Impossible`);
+                    throwInternalCompilerError("Impossible");
                 }
                 ctx.append(
                     `${varName} = sc_${gen}~load_int(1) ? begin_cell().store_slice(sc_${gen}~load_ref().begin_parse()) : null();`,
@@ -633,7 +633,7 @@ function writeFieldParser(
         case "struct": {
             if (op.optional) {
                 if (op.ref) {
-                    throw Error("Not implemented");
+                    throwInternalCompilerError("Not implemented");
                 } else {
                     ctx.append(
                         `${varName} = sc_${gen}~load_int(1) ? ${ops.typeAsOptional(op.type, ctx)}(sc_${gen}~${ops.reader(op.type, ctx)}()) : null();`,
@@ -641,7 +641,7 @@ function writeFieldParser(
                 }
             } else {
                 if (op.ref) {
-                    throw Error("Not implemented");
+                    throwInternalCompilerError("Not implemented");
                 } else {
                     ctx.append(
                         `${varName} = sc_${gen}~${ops.reader(op.type, ctx)}();`,
