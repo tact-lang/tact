@@ -1,4 +1,4 @@
-import { AllocationCell, AllocationOperation } from "./operation";
+import type { AllocationCell, AllocationOperation } from "./operation";
 
 export type StorageAllocation = {
     ops: AllocationOperation[];

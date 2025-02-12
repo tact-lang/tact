@@ -3,9 +3,9 @@
  */
 
 import { throwInternalCompilerError } from "./errors";
-import { SrcInfo } from "../grammar";
+import type { SrcInfo } from "../grammar";
 import { srcInfoEqual } from "../grammar/src-info";
-import { ErrorDisplay } from "./display";
+import type { ErrorDisplay } from "./display";
 
 export type ErrorJson = ErrorSub | ErrorText | ErrorLink | ErrorAt;
 

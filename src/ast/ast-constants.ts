@@ -1,5 +1,5 @@
 import { keys } from "../utils/tricks";
-import {
+import type {
     AstAugmentedAssignOperation,
     AstBinaryOperation,
     AstFunctionAttributeName,

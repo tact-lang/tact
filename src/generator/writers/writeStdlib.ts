@@ -1,7 +1,7 @@
 import { contractErrors } from "../../abi/errors";
 import { maxTupleSize } from "../../bindings/typescript/writeStruct";
 import { match } from "../../utils/tricks";
-import { WriterContext } from "../Writer";
+import type { WriterContext } from "../Writer";
 
 export function writeStdlib(ctx: WriterContext): void {
     //

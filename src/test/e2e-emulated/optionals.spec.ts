@@ -1,12 +1,14 @@
 import { randomAddress } from "../utils/random-utils";
-import {
-    ContractWithOptionals,
+import type {
     SomeGenericStruct,
     StructWithOptionals,
 } from "./contracts/output/optionals_ContractWithOptionals";
+import { ContractWithOptionals } from "./contracts/output/optionals_ContractWithOptionals";
 import { Opt4 } from "./contracts/output/optionals_Opt4";
-import { Address, beginCell, Cell, toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { Address, Cell } from "@ton/core";
+import { beginCell, toNano } from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import "@ton/test-utils";
 
 function strEq2(a: StructWithOptionals | null, b: StructWithOptionals | null) {
