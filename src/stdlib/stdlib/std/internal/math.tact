@@ -427,8 +427,8 @@ fun sqrt(num: Int): Int {
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Computes the integer square root of the `Int` value `num`. Returns the result rounded down (floor).
-/// This is equivalent to finding the largest integer `x` such that `x * x <= num`.
+/// Computes the integer square root of the `Int` value `num`. Returns the rounded down result.
+/// This is equivalent to finding the largest integer `x` such that `x * x ≤ num`.
 ///
 /// Attempts to specify a negative value of `num` throw an exception with exit code 5: `Integer out of expected range`.
 ///

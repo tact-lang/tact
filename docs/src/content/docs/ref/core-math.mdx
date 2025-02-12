@@ -114,7 +114,7 @@ sqrt(-1); // ERROR! Exit code 5: Integer out of expected range
 fun isqrt(num: Int): Int;
 ```
 
-Computes the [integer square root](https://en.wikipedia.org/wiki/Integer_square_root) of the [`Int{:tact}`][int] value `num`. Returns the result rounded down (floor). This is equivalent to finding the largest integer `x` such that `x * x <= num`.
+Computes the [integer square root](https://en.wikipedia.org/wiki/Integer_square_root) of the [`Int{:tact}`][int] value `num`. Returns the [rounded down](https://en.wikipedia.org/wiki/Rounding#Rounding_down) result. This is equivalent to finding the largest integer `x` such that `x * x ≤ num`.
 
 Attempts to specify a negative value of `num` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
