@@ -221,7 +221,7 @@ asm fun deploy(params: DeployParameters): Cell {
     // s1: data
     // s0: msgBuilder
     s1 s2 XCHG
-    STREF // Save code (we are builing inline StateInit, bits for StateInit will be stored futher)
+    STREF // Save code (we are building inline StateInit, StateInit bits will be stored further)
     STREF // Save data
     b{00010000000000} STSLICECONST
     // 0 + 00 + 10 + 0 + 00000000
