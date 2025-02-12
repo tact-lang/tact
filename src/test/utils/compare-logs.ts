@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { Entry, parseLog } from "./parse-log";
+import { Transaction, parseLog } from "./parse-log";
 
 // yarn ts-node src/test/utils/compare-logs.ts src/test/benchmarks/jetton/output/log.txt src/test/benchmarks/jetton/output/log.txt
 
@@ -42,8 +42,8 @@ const main = async () => {
 
 const matchLogs = (
     name: string,
-    before: readonly Entry[],
-    after: readonly Entry[],
+    before: readonly Transaction[],
+    after: readonly Transaction[],
 ) => {
     if (before.length !== after.length) {
         console.log(`Number of transactions doesn't match`);
@@ -113,7 +113,7 @@ const formatNumber = (s: number) => {
 type TransactionStats = Record<string, CommandStats>;
 type CommandStats = { count: number; gas: number };
 
-const getStats = ({ asm }: Entry) => {
+const getStats = ({ asm }: Transaction) => {
     const commands: TransactionStats = {};
     for (const { command, gas } of asm) {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug

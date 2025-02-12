@@ -112,6 +112,8 @@ export const projectSchema = z
     })
     .strict();
 
+export type Project = z.infer<typeof projectSchema>
+
 export const configSchema = z
     .object({
         /**

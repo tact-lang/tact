@@ -28,12 +28,15 @@ import {
 import { funcInitIdOf } from "./writers/id";
 import { idToHex } from "../utils/idToHex";
 import { trimIndent } from "../utils/text";
+import { Counter, dummyCounter } from "../test/utils/dbg/counter";
 
 export async function writeProgram(
     ctx: CompilerContext,
     abiSrc: ContractABI,
     basename: string,
     debug: boolean = false,
+    counter: Counter = dummyCounter,
+    generateIds: boolean = false,
 ) {
     //
     // Load ABI (required for generator)
@@ -46,7 +49,7 @@ export async function writeProgram(
     // Render contract
     //
 
-    const wCtx = new WriterContext(ctx, abiSrc.name!);
+    const wCtx = new WriterContext(ctx, abiSrc.name!, counter, generateIds);
     writeAll(ctx, wCtx, abiSrc.name!, abiLink);
     const functions = wCtx.extract(debug);
 
@@ -243,6 +246,7 @@ export async function writeProgram(
         entrypoint: basename + ".code.fc",
         files: [{ name: basename + ".code.fc", code }],
         abi,
+        locations: 0,
     };
 }
 

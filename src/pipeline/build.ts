@@ -23,6 +23,7 @@ import { getAstFactory, FactoryAst, idText } from "../ast/ast-helpers";
 import { TactError, TactErrorCollection } from "../error/errors";
 import { getParser, Parser } from "../grammar";
 import { defaultParser } from "../grammar/grammar";
+import { Counter, dummyCounter } from "../test/utils/dbg/counter";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -63,7 +64,9 @@ export async function build(args: {
     logger?: ILogger;
     parser?: Parser;
     ast?: FactoryAst;
-}): Promise<{ ok: boolean; error: TactErrorCollection[] }> {
+    counter?: Counter
+    generateIds?: boolean;
+}): Promise<{ ok: boolean; error: TactErrorCollection[]; locations?: number }> {
     const { config, project } = args;
     const stdlib =
         typeof args.stdlib === "string"
@@ -117,6 +120,7 @@ export async function build(args: {
           }
         | undefined
     > = {};
+    let locations = 0;
     for (const contract of getContracts(ctx)) {
         const pathAbi = project.resolve(
             config.output,
@@ -146,6 +150,8 @@ export async function build(args: {
                 ctx,
                 contract,
                 config.name + "_" + contract,
+                args.counter ?? dummyCounter,
+                args.generateIds ?? false,
             );
             for (const files of res.output.files) {
                 const ffc = project.resolve(config.output, files.name);
@@ -158,6 +164,7 @@ export async function build(args: {
                 content: v.code,
             }));
             codeEntrypoint = res.output.entrypoint;
+            locations += res.output.locations;
         } catch (e) {
             logger.error("Tact compilation failed");
             // show an error with a backtrace only in verbose mode
@@ -209,6 +216,7 @@ export async function build(args: {
                 logger,
             });
             if (!c.ok) {
+                console.log(c.log);
                 const match = c.log.match(
                     /undefined function `([^`]+)`, defining a global function of unknown type/,
                 );
@@ -257,6 +265,7 @@ export async function build(args: {
             }
         }
     }
+
     if (!ok) {
         logger.info("💥 Compilation failed. Skipping packaging");
         return { ok: false, error: errorMessages };
@@ -408,5 +417,5 @@ export async function build(args: {
         }
     }
 
-    return { ok: true, error: [] };
+    return { ok: true, error: [], locations };
 }

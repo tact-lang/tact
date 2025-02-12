@@ -3,6 +3,7 @@ import { escapeUnicodeControlCodes, trimIndent } from "../utils/text";
 import { topologicalSort } from "../utils/utils";
 import { Writer } from "../utils/Writer";
 import { TactInternalCompilerError } from "../error/errors";
+import { Counter } from "../test/utils/dbg/counter";
 
 type Flag = "inline" | "impure" | "inline_ref";
 
@@ -46,10 +47,14 @@ export class WriterContext {
     #nextId = 0;
     // #headers: string[] = [];
     #rendered: Set<string> = new Set();
+    public counter: Counter;
+    public generateIds: boolean;
 
-    constructor(ctx: CompilerContext, name: string) {
+    constructor(ctx: CompilerContext, name: string, counter: Counter, generateIds: boolean) {
         this.ctx = ctx;
         this.#name = name;
+        this.counter = counter
+        this.generateIds = generateIds;
     }
 
     get name() {
@@ -57,7 +62,7 @@ export class WriterContext {
     }
 
     clone() {
-        const res = new WriterContext(this.ctx, this.#name);
+        const res = new WriterContext(this.ctx, this.#name, this.counter, this.generateIds);
         res.#functions = new Map(this.#functions);
         res.#nextId = this.#nextId;
         // res.#headers = [...this.#headers];

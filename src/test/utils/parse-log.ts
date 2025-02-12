@@ -28,14 +28,14 @@ export type Asm = {
     readonly location: Loc | undefined;
 };
 
-export type Entry = {
+export type Transaction = {
     readonly asm: readonly Asm[];
     readonly used: number;
 };
 
 export type Log = {
     readonly name: string;
-    readonly transactions: readonly Entry[];
+    readonly transactions: readonly Transaction[];
 };
 
 export const parseLog = async (path: string): Promise<Log[]> => {
@@ -44,9 +44,7 @@ export const parseLog = async (path: string): Promise<Log[]> => {
     const result = reports.map(({ name, messages }) => {
         return {
             name,
-            transactions: pairUp(path, name, messages).flatMap(([bc, vm]) =>
-                convert(bc, vm),
-            ),
+            transactions: getTransactions(messages),
         };
     });
     const names = result.map((x) => x.name);
@@ -56,7 +54,14 @@ export const parseLog = async (path: string): Promise<Log[]> => {
     return result;
 };
 
-const convert = (bc: $ast.BlockchainMessage, vm: $ast.VmMessage): Entry[] => {
+export const getTransactions = (messages: readonly string[]) => {
+    return pairUp(messages).flatMap(([bc, vm]) => convertPair(bc, vm));
+};
+
+const convertPair = (
+    bc: $ast.BlockchainMessage,
+    vm: $ast.VmMessage,
+): Transaction[] => {
     let limits: $ast.BcLimits | undefined;
     let steps: $ast.BcSteps | undefined;
     for (const entry of bc.entries) {
@@ -143,26 +148,26 @@ const convert = (bc: $ast.BlockchainMessage, vm: $ast.VmMessage): Entry[] => {
     return [result];
 };
 
-const pairUp = (path: string, name: string, messages: readonly string[]) => {
+const pairUp = (messages: readonly string[]) => {
     const result: [$ast.BlockchainMessage, $ast.VmMessage][] = [];
     for (let i = 0, len = messages.length; i < len; ++i) {
         const message1 = messages[i];
         if (!message1?.startsWith("[")) {
             console.error(
-                `Bad blockchain log entry for ${name}:\n${message1?.substring(0, 100)}`,
+                `Bad blockchain log entry for:\n${message1?.substring(0, 100)}`,
             );
             continue;
         }
         ++i;
         if (i >= len) {
             console.error(
-                `Unpaired message for ${name}:\n${message1?.substring(0, 100)}`,
+                `Unpaired message for:\n${message1?.substring(0, 100)}`,
             );
         }
         const message2 = messages[i];
         if (!message2?.startsWith("stack")) {
             console.error(
-                `Bad VM log entry for ${name}:\n${message2?.substring(0, 100)}`,
+                `Bad VM log entry for:\n${message2?.substring(0, 100)}`,
             );
             continue;
         }
@@ -172,7 +177,7 @@ const pairUp = (path: string, name: string, messages: readonly string[]) => {
             space: str("SPACE"),
         });
         if (bcEntry.$ === "error") {
-            showError(message1, path, bcEntry.error.position);
+            showError(message1, "", bcEntry.error.position);
             continue;
         }
         const vmEntry = parse({
@@ -181,7 +186,7 @@ const pairUp = (path: string, name: string, messages: readonly string[]) => {
             space: str("SPACE"),
         });
         if (vmEntry.$ === "error") {
-            showError(message1, path, vmEntry.error.position);
+            showError(message1, "", vmEntry.error.position);
             continue;
         }
         result.push([bcEntry.value, vmEntry.value]);

@@ -18,6 +18,7 @@ import { build } from "../../pipeline/build";
 import { TactErrorCollection } from "../../error/errors";
 import files from "../../stdlib/stdlib";
 import { cwd } from "process";
+import { Counter, dummyCounter } from "../../test/utils/dbg/counter";
 
 export const main = async () => {
     const Log = CliLogger();
@@ -249,6 +250,8 @@ export async function run(args: {
     config: Config;
     project: VirtualFileSystem;
     stdlib: VirtualFileSystem;
+    counter?: Counter,
+    generateIds?: boolean;
 }) {
     // Resolve projects
     const projects = args.config.projects;
@@ -256,6 +259,7 @@ export async function run(args: {
     // Compile
     let success = true;
     let errorMessages: TactErrorCollection[] = [];
+    let locations: number | undefined;
 
     for (const config of projects) {
         args.logger.info(`💼 Compiling project ${config.name} ...`);
@@ -265,13 +269,16 @@ export async function run(args: {
             project: args.project,
             stdlib: args.stdlib,
             logger: args.logger,
+            counter: args.counter ?? dummyCounter,
+            generateIds: args.generateIds,
         });
         success = success && built.ok;
+        locations = built.locations;
         if (!built.ok && built.error.length > 0) {
             errorMessages = [...errorMessages, ...built.error];
         }
     }
-    return { ok: success, error: errorMessages };
+    return { ok: success, error: errorMessages, locations };
 }
 
 const filterConfig = (

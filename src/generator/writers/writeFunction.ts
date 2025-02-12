@@ -66,6 +66,14 @@ export function writeStatement(
     returns: TypeRef | null,
     ctx: WriterContext,
 ) {
+    if (ctx.generateIds) {
+        ctx.counter.lines.push({
+            lineNum: f.loc.interval.getLineAndColumn().lineNum,
+            source: f.loc.file ?? '',
+        })
+        ctx.append(`__tact_foo${ctx.counter.ref}();`);
+    }
+    ++ctx.counter.ref;
     switch (f.kind) {
         case "statement_return": {
             if (f.expression) {
