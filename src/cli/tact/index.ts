@@ -143,16 +143,17 @@ const parseArgs = async (Errors: CliErrors, Args: Args) => {
     if (filePath) {
         const normalizedPath = resolve(cwd(), dirname(filePath));
         const Fs = createNodeFileSystem(normalizedPath, false);
-        const config = createSingleFileConfig(basename(filePath));
 
         // Handle output directory flag
         const outputDir = Args.single("output");
-        if (outputDir) {
-            const relativeOutputDir = normalize(
-                join(dirname(filePath), outputDir),
-            );
-            (config.projects[0] as ConfigProject).output = relativeOutputDir;
-        }
+        const relativeOutputDir = outputDir
+            ? normalize(join(dirname(filePath), outputDir))
+            : "./";
+
+        const config = createSingleFileConfig(
+            basename(filePath),
+            relativeOutputDir,
+        );
 
         await compile(Args, Errors, Fs, config);
         return;
@@ -179,13 +180,16 @@ const parseConfigSafe = (
     }
 };
 
-export const createSingleFileConfig = (fileName: string) =>
+export const createSingleFileConfig = (
+    fileName: string,
+    outputDir: string = "./",
+) =>
     ({
         projects: [
             {
                 name: fileName,
                 path: ensureExtension(fileName),
-                output: "./",
+                output: outputDir,
                 options: {
                     debug: true,
                     external: true,
