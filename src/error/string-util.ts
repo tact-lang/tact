@@ -1,4 +1,4 @@
-import type { Range} from "./range";
+import type { Range } from "./range";
 import { intersect, shift } from "./range";
 
 /**

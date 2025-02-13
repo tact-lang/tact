@@ -1,5 +1,5 @@
 import { thenUncolored } from "../error/async-util";
-import type { Logger, LoggerHandlers} from "../error/logger-util";
+import type { Logger, LoggerHandlers } from "../error/logger-util";
 import { makeLogger } from "../error/logger-util";
 import type { Range } from "../error/range";
 
