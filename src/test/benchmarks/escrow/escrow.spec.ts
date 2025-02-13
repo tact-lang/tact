@@ -37,6 +37,7 @@ describe("Escrow Gas Tests", () => {
         );
     }
 
+    // each new escrow deal is new contract instance
     beforeEach(async () => {
         blockchain = await Blockchain.create();
 
@@ -87,7 +88,7 @@ describe("Escrow Gas Tests", () => {
         });
 
         const gasUsed = getUsedGas(fundingResult);
-        expect(gasUsed).toEqual(expectedResult.gas["tonFunding"]);
+        expect(gasUsed).toEqual(expectedResult.gas["fundingTon"]);
     });
 
     it("update jetton wallet code", async () => {
@@ -110,7 +111,7 @@ describe("Escrow Gas Tests", () => {
             },
         );
 
-        const newJwalletCode = beginCell().endCell();
+        const newJettonWalletCode = beginCell().endCell();
 
         const updateResult = await escrowContract.send(
             seller.getSender(),
@@ -119,7 +120,7 @@ describe("Escrow Gas Tests", () => {
             },
             {
                 $$type: "UpdateJettonWalletCode",
-                newJettonWalletCode: newJwalletCode, // example cell
+                newJettonWalletCode: newJettonWalletCode, // example cell
             },
         );
 

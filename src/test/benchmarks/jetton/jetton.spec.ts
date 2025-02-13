@@ -1,6 +1,5 @@
 import { Address, beginCell, Builder, Cell, Sender, toNano } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import chalk from "chalk";
 
 import {
     JettonMinter,
@@ -16,107 +15,8 @@ import {
 
 import "@ton/test-utils";
 import { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
-import Table from "cli-table3";
-import { getUsedGas } from "../util";
+import { generateResults, getUsedGas, printBenchmarkTable } from "../util";
 import benchmarkResults from "./results.json";
-
-type BenchmarkResult = {
-    label: string;
-    transfer: number;
-    burn: number;
-    discovery: number;
-};
-
-const results: BenchmarkResult[] = benchmarkResults.results.map((result) => ({
-    label: result.label,
-    transfer: Number(result.transfer),
-    burn: Number(result.burn),
-    discovery: Number(result.discovery),
-}));
-
-type MetricKey = "transfer" | "burn" | "discovery";
-const METRICS: readonly MetricKey[] = ["transfer", "burn", "discovery"];
-
-function calculateChange(prev: number, curr: number): string {
-    const change = (((curr - prev) / prev) * 100).toFixed(2);
-    const number = parseFloat(change);
-    if (number === 0) {
-        return chalk.gray(`same`);
-    }
-    return number >= 0
-        ? chalk.redBright(`(+${change}%)`)
-        : chalk.green(`(${change}%)`);
-}
-
-function calculateChanges(results: BenchmarkResult[]): string[][] {
-    return results.reduce<string[][]>((changes, currentResult, index) => {
-        if (index === 0) {
-            return [METRICS.map(() => "")];
-        }
-
-        const previousResult = results.at(index - 1);
-        const rowChanges =
-            typeof previousResult !== "undefined"
-                ? METRICS.map((metric) =>
-                      calculateChange(
-                          previousResult[metric],
-                          currentResult[metric],
-                      ),
-                  )
-                : [];
-
-        return [...changes, rowChanges];
-    }, []);
-}
-
-function printBenchmarkTable(results: BenchmarkResult[]): void {
-    if (results.length === 0) {
-        console.log("No benchmark results to display.");
-        return;
-    }
-
-    const table = new Table({
-        head: ["Run", "Transfer", "Burn", "Discovery"],
-        style: {
-            head: ["cyan"],
-            border: ["gray"],
-        },
-    });
-
-    const changes = calculateChanges(results);
-
-    results
-        .map(({ label, transfer, burn, discovery }, i) => [
-            label,
-            `${transfer} ${changes[i]?.[0] ?? ""}`,
-            `${burn} ${changes[i]?.[1] ?? ""}`,
-            `${discovery} ${changes[i]?.[2] ?? ""}`,
-        ])
-        .forEach((arr) => {
-            table.push(arr);
-        });
-
-    const output = [];
-    output.push(table.toString());
-
-    const first = results[0]!;
-    const last = results[results.length - 1]!;
-
-    output.push("\nComparison with FunC implementation:");
-    output.push(
-        ...METRICS.map((metric) => {
-            const ratio = (Number(last[metric]) / Number(first[metric])) * 100;
-
-            return `${metric.charAt(0).toUpperCase() + metric.slice(1)}: ${
-                ratio > 100
-                    ? chalk.redBright(`${ratio.toFixed(2)}%`)
-                    : chalk.green(`${ratio.toFixed(2)}%`)
-            } of FunC gas usage`;
-        }),
-    );
-
-    console.log(output.join("\n"));
-}
 
 const getJettonBalance = async (
     userWallet: SandboxContract<JettonWallet>,
@@ -220,6 +120,7 @@ describe("Jetton", () => {
 
     let defaultContent: Cell;
 
+    const results = generateResults(benchmarkResults);
     const expectedResult = results.at(-1)!;
 
     beforeAll(async () => {
@@ -311,7 +212,7 @@ describe("Jetton", () => {
         });
 
         const gasUsed = getUsedGas(sendResult);
-        expect(gasUsed).toEqual(expectedResult.transfer);
+        expect(gasUsed).toEqual(expectedResult.gas["transfer"]);
     });
 
     it("burn", async () => {
@@ -351,7 +252,7 @@ describe("Jetton", () => {
         expect(data.totalSupply).toEqual(initialTotalSupply - burnAmount);
 
         const gasUsed = getUsedGas(burnResult);
-        expect(gasUsed).toEqual(expectedResult.burn);
+        expect(gasUsed).toEqual(expectedResult.gas["burn"]);
     });
 
     it("discovery", async () => {
@@ -370,6 +271,6 @@ describe("Jetton", () => {
         });
 
         const gasUsed = getUsedGas(discoveryResult);
-        expect(gasUsed).toEqual(expectedResult.discovery);
+        expect(gasUsed).toEqual(expectedResult.gas["discovery"]);
     });
 });

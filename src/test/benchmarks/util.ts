@@ -14,16 +14,16 @@ export function getUsedGas(sendEnough: SendMessageResult): number {
         .reduceRight((prev, cur) => prev + cur);
 }
 
-export type BenchmarkResult = {
+type BenchmarkResult = {
     label: string;
     commit: string | null;
-    gas: Record<string, bigint>;
+    gas: Record<string, number>;
 };
 
-export type RawBenchmarkResult = {
+type RawBenchmarkResult = {
     results: {
         label: string;
-        commit: string | null;
+        commit?: string;
         gas: Record<string, string>;
     }[];
 };
@@ -33,18 +33,18 @@ export function generateResults(
 ): BenchmarkResult[] {
     return benchmarkResults.results.map((result) => ({
         label: result.label,
-        commit: result.commit,
+        commit: result.commit ?? null,
         gas: Object.fromEntries(
             Object.entries(result.gas).map(([key, value]) => [
                 key,
-                BigInt(value),
+                Number(value),
             ]),
         ),
     }));
 }
 
-function calculateChange(prev: bigint, curr: bigint): string {
-    const change = ((Number(curr - prev) / Number(prev)) * 100).toFixed(2);
+function calculateChange(prev: number, curr: number): string {
+    const change = (((curr - prev) / prev) * 100).toFixed(2);
     const number = parseFloat(change);
     if (number === 0) {
         return chalk.gray(`same`);

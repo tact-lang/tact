@@ -58,7 +58,7 @@ contract Escrow with Deployable {
         self.buyerAddress = null;
     }
 
-    fun sendJettons(reciever: Address, amount: Int, mode: Int) {
+    fun sendJettons(receiver: Address, amount: Int, mode: Int) {
         let escrowJettonWalletAddress = calculateJettonWalletAddress(myAddress(),
             self.assetAddress!!,
             self.jettonWalletCode!!
@@ -69,7 +69,7 @@ contract Escrow with Deployable {
                 body: TokenTransfer{
                     query_id: 0,
                     amount: amount,
-                    destination: reciever,
+                    destination: receiver,
                     response_destination: null,
                     forward_ton_amount: 0,
                     forward_payload: emptySlice(),
@@ -164,7 +164,7 @@ contract Escrow with Deployable {
         }
     }
 
-    // on-chain data access, could be usefull to guarantor contract
+    // on-chain data access, could be useful to guarantor contract
     receive("provideEscrowData"){
         self.reply(TakeEscrowData{escrowData: self.escrowInfo()}.toCell());
     }
