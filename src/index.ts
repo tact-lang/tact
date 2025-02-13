@@ -7,18 +7,7 @@ export {
     TactConstEvalError,
     TactErrorCollection,
 } from "./error/errors";
-export {
-    optionsSchema,
-    projectSchema,
-    configSchema,
-} from "./config/parseConfig";
-
-export {
-    Config,
-    ConfigProject,
-    parseConfig,
-    verifyConfig,
-} from "./config/parseConfig";
+export * from "./config/parseConfig";
 
 export { PackageFileFormat } from "./packaging/fileFormat";
 
