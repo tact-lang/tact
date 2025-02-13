@@ -1,4 +1,4 @@
-import { AstId } from "../../ast/ast";
+import type { AstId } from "../../ast/ast";
 import { idText } from "../../ast/ast-helpers";
 
 export function funcIdOf(ident: AstId | string): string {

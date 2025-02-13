@@ -1,5 +1,5 @@
-import * as A from "./ast";
-import { AstId } from "./ast";
+import type * as A from "./ast";
+import type { AstId } from "./ast";
 import { throwInternalCompilerError } from "../error/errors";
 import { dummySrcInfo } from "../grammar";
 

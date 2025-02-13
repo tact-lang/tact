@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `nullChecks` config option to disable run-time null checks for the `!!` operator in order to save gas: PR [#1660](https://github.com/tact-lang/tact/pull/1660)
 - `loadVarInt16`, `loadVarUint16`, `loadVarInt32`, `loadVarUint32` methods for the `Slice` type: PR [#1667](https://github.com/tact-lang/tact/pull/1667)
 - New functions in stdlib from `stdlib.fc` and `math.fc`: `Builder.depth`, `Slice.skipLastBits`, `Slice.firstBits`, `Slice.lastBits`, `Slice.depth`, `Cell.computeDataSize`, `Slice.computeDataSize`, `Cell.depth`, `curLt`, `blockLt`, `setGasLimit`, `getSeed`, `setSeed`, `myCode`, `sign`, `divc`, `muldivc`, `mulShiftRight`, `mulShiftRightRound`, `mulShiftRightCeil`, `sqrt`: PR [#986](https://github.com/tact-lang/tact/pull/986)
+- The `--output` CLI flag for specifying custom output directory in single-contract compilation: PR [#1793](https://github.com/tact-lang/tact/pull/1793)
 
 ### Changed
 
@@ -47,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better error message for `extend function without parameters` error: PR [#1624](https://github.com/tact-lang/tact/pull/1624)
 - Don't generate `lazy_deployment_completed` by default: PR [#1717](https://github.com/tact-lang/tact/pull/1717)
 - Optimized `emptyCell()` and `emptySlice()` functions: PR [#1696](https://github.com/tact-lang/tact/pull/1696)
+- Internal `crc16` function is now verifiable and covered with tests: PR [#1739](https://github.com/tact-lang/tact/pull/1739)
 - Rearrange parameters of some asm methods in order described in `AsmShuffle`: PR [#1702](https://github.com/tact-lang/tact/pull/1702)
 - Error message for invalid type for function argument now shows expected type: PR [#1738](https://github.com/tact-lang/tact/pull/1738)
 
