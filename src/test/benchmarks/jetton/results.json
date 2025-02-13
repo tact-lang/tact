@@ -2,63 +2,93 @@
   "results": [
     {
       "label": "FunC",
-      "transfer": "15064",
-      "burn": "11895",
-      "discovery": "5915"
+      "gas": {
+        "transfer": "15064",
+        "burn": "11895",
+        "discovery": "5915"
+      },
+      "commit": null
     },
     {
       "label": "1.5.3",
-      "transfer": "40678",
-      "burn": "25852",
-      "discovery": "15265"
+      "gas": {
+        "transfer": "40678",
+        "burn": "25852",
+        "discovery": "15265"
+      },
+      "commit": null
     },
     {
       "label": "1.5.3 without address validation",
-      "transfer": "31470",
-      "burn": "26594",
-      "discovery": "15408"
+      "gas": {
+        "transfer": "31470",
+        "burn": "26594",
+        "discovery": "15408"
+      },
+      "commit": null
     },
     {
       "label": "1.5.3 without self-code in system cell",
-      "transfer": "26876",
-      "burn": "17898",
-      "discovery": "11135"
+      "gas": {
+        "transfer": "26876",
+        "burn": "17898",
+        "discovery": "11135"
+      },
+      "commit": null
     },
     {
       "label": "1.5.3 with removed JettonWallet duplicate",
-      "transfer": "26852",
-      "burn": "17728",
-      "discovery": "11055"
+      "gas": {
+        "transfer": "26852",
+        "burn": "17728",
+        "discovery": "11055"
+      },
+      "commit": null
     },
     {
       "label": "1.5.3 with #1586 and #1589",
-      "transfer": "26568",
-      "burn": "17718",
-      "discovery": "11063"
+      "gas": {
+        "transfer": "26568",
+        "burn": "17718",
+        "discovery": "11063"
+      },
+      "commit": null
     },
     {
       "label": "1.5.3 with faster readForwardFee",
-      "transfer": "26121",
-      "burn": "17718",
-      "discovery": "11063"
+      "gas": {
+        "transfer": "26121",
+        "burn": "17718",
+        "discovery": "11063"
+      },
+      "commit": null
     },
     {
       "label": "1.5.3 without run-time null checks for `!!`",
-      "transfer": "25860",
-      "burn": "17686",
-      "discovery": "11039"
+      "gas": {
+        "transfer": "25860",
+        "burn": "17686",
+        "discovery": "11039"
+      },
+      "commit": null
     },
     {
       "label": "1.5.3 with optimized send()",
-      "transfer": "21464",
-      "burn": "16029",
-      "discovery": "10093"
+      "gas": {
+        "transfer": "21464",
+        "burn": "16029",
+        "discovery": "10093"
+      },
+      "commit": null
     },
     {
       "label": "1.5.3 with improved storeBool (#1702)",
-      "transfer": "21402",
-      "burn": "16029",
-      "discovery": "10067"
+      "gas": {
+        "transfer": "21402",
+        "burn": "16029",
+        "discovery": "10067"
+      },
+      "commit": null
     },
     {
       "label": "1.5.3 with address functions in Tact (#1766)",
@@ -71,6 +101,12 @@
       "transfer": "20930",
       "burn": "15575",
       "discovery": "9767"
+      "gas": {
+        "transfer": "20930",
+        "burn": "15575",
+        "discovery": "9767"
+      },
+      "commit": null
     }
   ]
 }

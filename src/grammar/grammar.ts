@@ -1,10 +1,10 @@
 import { getParser as getParserNext } from "./next";
-import { FactoryAst } from "../ast/ast-helpers";
-import * as A from "../ast/ast";
+import type { FactoryAst } from "../ast/ast-helpers";
+import type * as A from "../ast/ast";
 
 import { getParser as getParserPrev } from "./prev/grammar";
 
-import { Source } from "../imports/source";
+import type { Source } from "../imports/source";
 
 export type Parser = {
     parse: (source: Source) => A.AstModule;

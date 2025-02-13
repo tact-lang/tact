@@ -1,6 +1,6 @@
 import { stat } from "fs/promises";
 import { makeCodegen, runCommand } from "../test-util.build";
-import { join, normalize } from "path";
+import { join, normalize, dirname } from "path";
 
 // disable tests on windows
 const testWin =
@@ -100,6 +100,20 @@ describe("tact foo.tact", () => {
 
         expect(result).toMatchObject({ kind: "exited", code: 0 });
     });
+
+    testWin(
+        "Check single-contract compilation with custom output directory",
+        async () => {
+            const path = await codegen.contract(`single-output`, goodContract);
+            const customOutput = "custom-output";
+            const result = await tact(`${path} --output ${customOutput}`);
+
+            expect(result).toMatchObject({ kind: "exited", code: 0 });
+
+            const statPromise = stat(join(dirname(path), customOutput));
+            await expect(statPromise).resolves.not.toThrow();
+        },
+    );
 
     testWin("Check single-contract compilation with --check", async () => {
         const path = await codegen.contract(`single-check`, goodContract);

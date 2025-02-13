@@ -1,7 +1,7 @@
 import { contractErrors } from "../../abi/errors";
 import { maxTupleSize } from "../../bindings/typescript/writeStruct";
 import { match } from "../../utils/tricks";
-import { WriterContext } from "../Writer";
+import type { WriterContext } from "../Writer";
 
 export function writeStdlib(ctx: WriterContext): void {
     //
@@ -1032,22 +1032,6 @@ export function writeStdlib(ctx: WriterContext): void {
                 while (num >= base) {
                     num /= base;
                     result += 1;
-                }
-                return result;
-            `);
-        });
-    });
-
-    ctx.fun(`__tact_pow`, () => {
-        ctx.signature(`int __tact_pow(int base, int exp)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                throw_unless(5, exp >= 0);
-                int result = 1;
-                repeat (exp) {
-                    result *= base;
                 }
                 return result;
             `);

@@ -1,5 +1,7 @@
-import { storeTransfer, Transfer, Wallet } from "./output/wallet_Wallet";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { Transfer } from "./output/wallet_Wallet";
+import { storeTransfer, Wallet } from "./output/wallet_Wallet";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { beginCell, toNano } from "@ton/core";
 import { sign } from "@ton/crypto";
 import { randomKey } from "../src/test/utils/random-utils";

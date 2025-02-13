@@ -1,5 +1,5 @@
 import { throwInternalCompilerError } from "../error/errors";
-import { ItemOrigin } from "../imports/source";
+import type { ItemOrigin } from "../imports/source";
 
 type LineAndColumnInfo = {
     lineNum: number;
