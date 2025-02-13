@@ -311,7 +311,7 @@ describe("Jetton", () => {
         });
 
         const gasUsed = getUsedGas(sendResult);
-        expect(gasUsed).toBe(expectedResult.transfer);
+        expect(gasUsed).toEqual(expectedResult.transfer);
     });
 
     it("burn", async () => {
@@ -344,14 +344,14 @@ describe("Jetton", () => {
             exitCode: 0,
         });
 
-        expect(await getJettonBalance(deployerJettonWallet)).toBe(
+        expect(await getJettonBalance(deployerJettonWallet)).toEqual(
             initialJettonBalance - burnAmount,
         );
         const data = await jettonMinter.getGetJettonData();
-        expect(data.totalSupply).toBe(initialTotalSupply - burnAmount);
+        expect(data.totalSupply).toEqual(initialTotalSupply - burnAmount);
 
         const gasUsed = getUsedGas(burnResult);
-        expect(gasUsed).toBe(expectedResult.burn);
+        expect(gasUsed).toEqual(expectedResult.burn);
     });
 
     it("discovery", async () => {
@@ -370,6 +370,6 @@ describe("Jetton", () => {
         });
 
         const gasUsed = getUsedGas(discoveryResult);
-        expect(gasUsed).toBe(expectedResult.discovery);
+        expect(gasUsed).toEqual(expectedResult.discovery);
     });
 });
