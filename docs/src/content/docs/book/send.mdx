@@ -9,13 +9,13 @@ Messages in Tact are commonly composed using a built-in [Struct](/book/structs-a
 
 Field    | Type                   | Description
 :------- | :--------------------- | :----------
-`bounce` | [`Bool{:tact}`][p]     | When set to `true` (default) message bounces back to the sender if the receiver contract doesn't exist or wasn't able to process the message.
-`to`     | [`Address{:tact}`][p]  | Receiver internal [`Address{:tact}`][p] in TON blockchain.
-`value`  | [`Int{:tact}`][int]    | The amount of [nanoToncoins][nano] you want to send with the message. This value is usually used to cover [forward fees][fwdfee], unless the optional flag [`SendPayGasSeparately{:tact}`](/book/message-mode#optional-flags) is used.
 `mode`   | [`Int{:tact}`][int]    | An 8-bit value that configures how to send a message, defaults to $0$. See: [Message `mode`](/book/message-mode).
 `body`   | [`Cell?{:tact}`][cell] | [Optional][opt] message body as a [`Cell{:tact}`][cell]
 `code`   | [`Cell?{:tact}`][cell] | [Optional][opt] initial code of the contract (the compiled bytecode)
 `data`   | [`Cell?{:tact}`][cell] | [Optional][opt] initial data of the contract (arguments of [`init(){:tact}` function](/book/contracts#init-function) of the contract)
+`value`  | [`Int{:tact}`][int]    | The amount of [nanoToncoins][nano] you want to send with the message. This value is usually used to cover [forward fees][fwdfee], unless the optional flag [`SendPayGasSeparately{:tact}`](/book/message-mode#optional-flags) is used.
+`to`     | [`Address{:tact}`][p]  | Receiver internal [`Address{:tact}`][p] in TON blockchain.
+`bounce` | [`Bool{:tact}`][p]     | When set to `true` (default) message bounces back to the sender if the receiver contract doesn't exist or wasn't able to process the message.
 
 Fields `code` and `data` are what's called an [init package](/book/expressions#initof), which is used in deployments of new contracts.
 
