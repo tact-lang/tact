@@ -236,7 +236,7 @@ asm fun log2(num: Int): Int { DUP 5 THROWIFNOT UBITSIZE DEC }
 /// * https://docs.tact-lang.org/ref/core-math#pow2
 ///
 inline fun pow(base: Int, exp: Int): Int {
-    nativeThrowIf(5, exp < 0);
+    nativeThrowUnless(5, exp >= 0);
     let result = 1;
     repeat(exp) {
         result *= base;
