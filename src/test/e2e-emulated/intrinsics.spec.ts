@@ -1,5 +1,6 @@
 import { Address, beginCell, Cell, toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { IntrinsicsTester } from "./contracts/output/intrinsics_IntrinsicsTester";
 import "@ton/test-utils";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";

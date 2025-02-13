@@ -1,7 +1,7 @@
 import { createVirtualFileSystem } from "../vfs/createVirtualFileSystem";
 import { fromString } from "./path";
 import { resolveLibrary } from "./resolveLibrary";
-import { Source } from "./source";
+import type { Source } from "./source";
 
 const project = createVirtualFileSystem("/project", {
     ["main.tact"]: "",

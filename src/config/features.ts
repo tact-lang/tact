@@ -1,4 +1,5 @@
-import { CompilerContext, createContextStore } from "../context/context";
+import type { CompilerContext } from "../context/context";
+import { createContextStore } from "../context/context";
 
 const featureStore = createContextStore<boolean | null | string>();
 

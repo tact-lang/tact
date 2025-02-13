@@ -1,17 +1,16 @@
+
 import { Address, beginCell, Builder, Cell, Sender, toNano } from "@ton/core";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 
-import {
-    JettonMinter,
+import type {
     Mint,
     ProvideWalletAddress,
     TokenBurn,
     TokenUpdateContent,
 } from "../contracts/output/jetton_minter_discoverable_JettonMinter";
-import {
-    JettonWallet,
-    TokenTransfer,
-} from "../contracts/output/jetton_minter_discoverable_JettonWallet";
+import { JettonMinter } from "../contracts/output/jetton_minter_discoverable_JettonMinter";
+import type { TokenTransfer } from "../contracts/output/jetton_minter_discoverable_JettonWallet";
+import { JettonWallet } from "../contracts/output/jetton_minter_discoverable_JettonWallet";
 
 import "@ton/test-utils";
 import { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";

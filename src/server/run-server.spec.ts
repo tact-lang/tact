@@ -1,6 +1,6 @@
 import { throwInternal } from "../error/errors";
-import { Logger, SourceLogger } from "../error/logger-util";
-import { Range } from "../error/range";
+import type { Logger, SourceLogger } from "../error/logger-util";
+import type { Range } from "../error/range";
 import { runServer } from "./run-server";
 
 describe("runServer", () => {

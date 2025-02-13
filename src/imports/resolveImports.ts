@@ -1,8 +1,8 @@
-import { Parser } from "../grammar";
-import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
+import type { Parser } from "../grammar";
+import type { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { throwCompilationError } from "../error/errors";
 import { resolveLibrary } from "./resolveLibrary";
-import { Language, Source } from "./source";
+import type { Language, Source } from "./source";
 
 type ResolveImportsArgs = {
     readonly entrypoint: string;

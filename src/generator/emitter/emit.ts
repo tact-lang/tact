@@ -1,6 +1,6 @@
-import { Maybe } from "@ton/core/dist/utils/maybe";
+import type { Maybe } from "@ton/core/dist/utils/maybe";
 import { trimIndent } from "../../utils/text";
-import { WrittenFunction } from "../Writer";
+import type { WrittenFunction } from "../Writer";
 import { createPadded } from "./createPadded";
 
 export function emit(args: {
