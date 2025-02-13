@@ -86,6 +86,8 @@ jobs:
           # !!!!!!! Don't forget to update test-windows below !!!!!!!
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
+          # Hijack the dependency on Tact to avoid redundant npm downloads
+          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json && mv temp.json package.json
           yarn install
           yarn link @tact-lang/compiler
           yarn build
@@ -107,6 +109,8 @@ jobs:
           $ErrorActionPreference = 'Stop'
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
+          # Hijack the dependency on Tact to avoid redundant npm downloads
+          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json && mv temp.json package.json
           yarn install
           yarn link @tact-lang/compiler
           yarn build
