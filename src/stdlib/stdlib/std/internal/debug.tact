@@ -1,14 +1,9 @@
-// these are builtin functions, these get special treatment from FunC
-// hence, no asm here
+asm fun throw() { THROW }
+asm fun throwIf() { THROWARGIF }
+asm fun throwUnless() { THROWARGIFNOT }
 
-@name(throw)
-native nativeThrow(code: Int);
+// for backward compatibility
 
-@name(throw_if)
-native nativeThrowIf(code: Int, condition: Bool);
-
-@name(throw)
-native throw(code: Int);
-
-@name(throw_unless)
-native nativeThrowUnless(code: Int, condition: Bool);
+asm fun nativeThrow() { THROW }
+asm fun nativeThrowIf() { THROWARGIF }
+asm fun nativeThrowUnless() { THROWARGIFNOT }
