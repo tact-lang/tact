@@ -6,7 +6,7 @@ import { $ast } from "./grammar";
 import { TactCompilationError } from "../../error/errors";
 import { SyntaxErrors, syntaxErrorSchema } from "../parser-error";
 import { AstSchema, getAstSchema } from "../../ast/getAstSchema";
-import { getSrcInfo } from "../src-info";
+import { dummySrcInfo, getSrcInfo, SrcInfo } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
 import { makeMakeVisitor } from "../../utils/tricks";
 import { Language, Source } from "../../imports/source";
@@ -15,8 +15,14 @@ import { emptyPath, fromString } from "../../imports/path";
 const makeVisitor = makeMakeVisitor("$");
 
 type Context = {
-    ast: AstSchema;
+    // AST constructors that take Loc
+    ast: AstSchema<$.Loc>;
+    // AST constructors that take SrcInfo
+    postAst: AstSchema<SrcInfo>;
+    // Errors that take Loc
     err: SyntaxErrors<(loc: $.Loc) => never>;
+    // Errors that take SrcInfo
+    postErr: SyntaxErrors<(loc: SrcInfo) => never>;
 };
 
 type Handler<T> = (ctx: Context) => T;
@@ -749,120 +755,239 @@ const parseTypeId =
         return ctx.ast.TypeId(name, loc);
     };
 
-const parseTypeOptional =
-    ({ type, loc }: $ast.$type): Handler<A.AstType> =>
+const parseTypeAs =
+    ({ type, as }: $ast.TypeAs): Handler<A.AstTypeNext> =>
     (ctx) => {
-        const {
-            type: innerType,
-            optionals: [firstOption, ...restOption],
-            loc: optionalLoc,
-        } = type;
+        const result = parseTypeNext(type)(ctx);
+
+        return as.reduce<A.AstTypeNext>(
+            (acc, as) =>
+                ctx.ast.TypeAs(acc, ctx.ast.Id(as.name, as.loc), as.loc),
+            result,
+        );
+    };
+
+const flattenName = (name: $ast.TypeId | $ast.MapKeyword | $ast.Bounced) => {
+    if (name.$ === "MapKeyword") {
+        return "map";
+    } else if (name.$ === "Bounced") {
+        return "bounced";
+    } else {
+        return name.name;
+    }
+};
+
+const parseTypeGeneric =
+    ({ name, args, loc }: $ast.TypeGeneric): Handler<A.AstTypeNext> =>
+    (ctx) => {
+        return ctx.ast.TypeGeneric(
+            ctx.ast.TypeId(flattenName(name), name.loc),
+            map(parseList(args), parseTypeAs)(ctx),
+            loc,
+        );
+    };
+
+const parseTypeOptional =
+    ({ type, optionals }: $ast.TypeOptional): Handler<A.AstTypeNext> =>
+    (ctx) => {
+        return optionals.reduce((acc, optional) => {
+            return ctx.ast.TypeGeneric(
+                ctx.ast.TypeId("Maybe", optional.loc),
+                [acc],
+                optional.loc,
+            );
+        }, parseTypeNext(type)(ctx));
+    };
+
+const parseTypeRegular =
+    ({ child }: $ast.TypeRegular): Handler<A.AstTypeNext> =>
+    (ctx) => {
+        return ctx.ast.TypeId(child.name, child.loc);
+    };
+
+const parseTypeTensor =
+    ({ head, tail, loc }: $ast.TypeTensor): Handler<A.AstTypeNext> =>
+    (ctx) => {
+        return ctx.ast.TypeTensor(
+            map([head, ...tail], parseTypeNext)(ctx),
+            loc,
+        );
+    };
+
+const parseTypeTuple =
+    ({ types, loc }: $ast.TypeTuple): Handler<A.AstTypeNext> =>
+    (ctx) => {
+        return ctx.ast.TypeTuple(
+            map(parseList(types), parseTypeNext)(ctx),
+            loc,
+        );
+    };
+
+const parseTypeUnit =
+    ({ loc }: $ast.TypeUnit): Handler<A.AstTypeNext> =>
+    (ctx) => {
+        return ctx.ast.TypeUnit(loc);
+    };
+
+type RawType =
+    | $ast.TypeAs
+    | $ast.TypeGeneric
+    | $ast.TypeRegular
+    | $ast.TypeOptional
+    | $ast.TypeTensor
+    | $ast.TypeUnit
+    | $ast.TypeTuple;
+
+const parseTypeNext: (node: RawType) => Handler<A.AstTypeNext> =
+    makeVisitor<RawType>()({
+        TypeAs: parseTypeAs,
+        TypeGeneric: parseTypeGeneric,
+        TypeOptional: parseTypeOptional,
+        TypeRegular: parseTypeRegular,
+        TypeTensor: parseTypeTensor,
+        TypeTuple: parseTypeTuple,
+        TypeUnit: parseTypeUnit,
+    });
+
+const recoveryType: A.AstTypeId = {
+    kind: "type_id",
+    text: "ERROR",
+    id: -1,
+    loc: dummySrcInfo,
+};
+
+const toLegacyMapArg =
+    (
+        type: "key" | "value",
+        node: A.AstTypeNext,
+        hasAsAround: boolean,
+    ): Handler<[A.AstTypeId, A.AstId | null]> =>
+    (ctx) => {
+        if (node.kind === "as_type") {
+            if (!hasAsAround) {
+                const [ast] = toLegacyMapArg(type, node.typeArg, true)(ctx);
+                return [ast, node.name];
+            } else {
+                ctx.postErr.onlyOneAs()(node.loc);
+                return [recoveryType, null];
+            }
+        } else if (node.kind === "type_id") {
+            return [node, null];
+        } else {
+            ctx.postErr.onlyTypeId("key")(node.loc);
+            return [recoveryType, null];
+        }
+    };
+
+const toLegacyMap =
+    (node: A.AstTypeGeneric): Handler<A.AstMapType | A.AstTypeId> =>
+    (ctx) => {
+        const [keyArg, valueArg, ...rest] = node.typeArgs;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (!keyArg || !valueArg || rest.length > 0) {
+            ctx.postErr.genericArgCount(
+                "map",
+                2,
+                node.typeArgs.length,
+            )(node.loc);
+            return recoveryType;
+        }
+        const [key, keyAs] = toLegacyMapArg("key", keyArg, false)(ctx);
+        const [value, valueAs] = toLegacyMapArg("value", valueArg, false)(ctx);
+
+        return ctx.postAst.MapType(key, keyAs, value, valueAs, node.loc);
+    };
+
+const toLegacyBounced =
+    ({
+        typeArgs,
+        loc,
+    }: A.AstTypeGeneric): Handler<A.AstBouncedMessageType | A.AstTypeId> =>
+    (ctx) => {
+        const [arg, ...rest] = typeArgs;
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-        if (firstOption) {
-            if (restOption.length !== 0) {
-                ctx.err.multipleOptionals()(optionalLoc);
-            }
-            if (innerType.$ !== "TypeRegular") {
-                ctx.err.onlyOptionalOfNamed()(optionalLoc);
-                return ctx.ast.OptionalType(
-                    ctx.ast.TypeId("ERROR", innerType.loc),
-                    optionalLoc,
-                );
-            }
-            const { child } = innerType;
-            return ctx.ast.OptionalType(
-                ctx.ast.TypeId(child.name, child.loc),
-                optionalLoc,
-            );
+        if (!arg || rest.length > 0) {
+            ctx.postErr.genericArgCount("bounced", 1, typeArgs.length)(loc);
+            return recoveryType;
         }
-        if (innerType.$ === "TypeRegular") {
-            const { name, loc } = innerType.child;
-            return ctx.ast.TypeId(name, loc);
+        if (arg.kind !== "type_id") {
+            ctx.postErr.onlyBouncedOfNamed()(loc);
+            return recoveryType;
         }
-        const { name, args, loc: genericLoc } = innerType;
-        if (name.$ === "MapKeyword") {
-            const parsedArgs = parseList(args);
-            const [key, value, ...rest] = parsedArgs;
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-            if (!key || !value || rest.length > 0) {
-                ctx.err.genericArgCount(
-                    "map",
-                    2,
-                    parsedArgs.length,
-                )(genericLoc);
-                return ctx.ast.TypeId("ERROR", genericLoc);
-            }
-            const [keyAs, ...restKeyAs] = key.as;
-            if (restKeyAs.length > 0) {
-                ctx.err.mapOnlyOneAs("key")(genericLoc);
-            }
-            if (key.type.optionals.length > 0) {
-                ctx.err.cannotBeOptional("key")(genericLoc);
-            }
-            if (key.type.type.$ !== "TypeRegular") {
-                ctx.err.onlyTypeId("key")(genericLoc);
-                return ctx.ast.TypeId("ERROR", genericLoc);
-            }
-            const [valueAs, ...restValueAs] = value.as;
-            if (restValueAs.length > 0) {
-                ctx.err.mapOnlyOneAs("value")(genericLoc);
-            }
-            if (value.type.optionals.length > 0) {
-                ctx.err.cannotBeOptional("value")(genericLoc);
-            }
-            if (value.type.type.$ !== "TypeRegular") {
-                ctx.err.onlyTypeId("value")(genericLoc);
-                return ctx.ast.TypeId("ERROR", genericLoc);
-            }
-            const keyType = key.type.type.child;
-            const valueType = value.type.type.child;
-            return ctx.ast.MapType(
-                ctx.ast.TypeId(keyType.name, keyType.loc),
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-                keyAs ? ctx.ast.Id(keyAs.name, keyAs.loc) : null,
-                ctx.ast.TypeId(valueType.name, valueType.loc),
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-                valueAs ? ctx.ast.Id(valueAs.name, valueAs.loc) : null,
-                genericLoc,
-            );
+        return ctx.postAst.BouncedMessageType(arg, loc);
+    };
+
+const toLegacyOptional =
+    ({
+        typeArgs,
+        loc,
+    }: A.AstTypeGeneric): Handler<A.AstOptionalType | A.AstTypeId> =>
+    (ctx) => {
+        const [arg, ...rest] = typeArgs;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
+        if (!arg || rest.length > 0) {
+            ctx.postErr.genericArgCount("optional", 1, typeArgs.length)(loc);
+            return recoveryType;
         }
-        if (name.$ === "Bounced") {
-            const parsedArgs = parseList(args);
-            const [arg, ...rest] = parsedArgs;
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-            if (!arg || rest.length > 0) {
-                ctx.err.genericArgCount(
-                    "bounced",
-                    1,
-                    parsedArgs.length,
-                )(genericLoc);
-                return ctx.ast.TypeId("ERROR", genericLoc);
-            }
-            if (
-                arg.as.length > 0 ||
-                arg.type.optionals.length > 0 ||
-                arg.type.type.$ !== "TypeRegular"
-            ) {
-                ctx.err.onlyBouncedOfNamed()(genericLoc);
-                return ctx.ast.TypeId("ERROR", genericLoc);
-            }
-            const type = arg.type.type.child;
-            return ctx.ast.BouncedMessageType(
-                ctx.ast.TypeId(type.name, type.loc),
-                loc,
-            );
+        if (arg.kind !== "type_id") {
+            ctx.postErr.onlyOptionalOfNamed()(loc);
+            return recoveryType;
         }
-        ctx.err.unknownGeneric()(genericLoc);
-        return ctx.ast.TypeId("ERROR", genericLoc);
+        return ctx.postAst.OptionalType(arg, loc);
+    };
+
+const toLegacy =
+    (
+        node: A.AstTypeNext,
+        hasAsAround: boolean,
+    ): Handler<[A.AstType, A.AstId | null]> =>
+    (ctx) => {
+        switch (node.kind) {
+            case "as_type": {
+                if (!hasAsAround) {
+                    const [ast] = toLegacy(node.typeArg, true)(ctx);
+                    return [ast, node.name];
+                } else {
+                    ctx.postErr.onlyOneAs()(node.loc);
+                    return [recoveryType, null];
+                }
+            }
+            case "generic_type": {
+                if (node.name.text === "map") {
+                    return [toLegacyMap(node)(ctx), null];
+                } else if (node.name.text === "bounced") {
+                    return [toLegacyBounced(node)(ctx), null];
+                } else if (node.name.text === "Maybe") {
+                    return [toLegacyOptional(node)(ctx), null];
+                } else {
+                    ctx.postErr.unknownGeneric()(node.loc);
+                    return [recoveryType, null];
+                }
+            }
+            case "type_id": {
+                return [node, null];
+            }
+            case "tensor_type":
+            case "unit_type": {
+                ctx.postErr.noTensorsYet()(node.loc);
+                return [recoveryType, null];
+            }
+            case "tuple_type": {
+                ctx.postErr.noTensorsYet()(node.loc);
+                return [recoveryType, null];
+            }
+        }
     };
 
 const parseType =
     (node: $ast.$type): Handler<A.AstType> =>
     (ctx) => {
-        if (node.as.length > 0) {
-            ctx.err.asNotAllowed()(node.loc);
+        const typeNext = parseTypeNext(node)(ctx);
+        const [type, as] = toLegacy(typeNext, false)(ctx);
+        if (as) {
+            ctx.postErr.asNotAllowed()(as.loc);
         }
-        return parseTypeOptional(node)(ctx);
+        return type;
     };
 
 const parseFieldDecl =
@@ -875,19 +1000,9 @@ const parseFieldDecl =
     (ctx) => {
         const id = parseId(name)(ctx);
         const expr = expression ? parseExpression(expression)(ctx) : null;
-        const [as, ...restAs] = type.as;
-        if (restAs.length > 0) {
-            ctx.err.fieldOnlyOneAs()(loc);
-        }
-        const ty = parseTypeOptional(type)(ctx);
-        return ctx.ast.FieldDecl(
-            id,
-            ty,
-            expr,
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-            as ? ctx.ast.Id(as.name, as.loc) : null,
-            loc,
-        );
+        const typeNext = parseTypeNext(type)(ctx);
+        const [ast, as] = toLegacy(typeNext, false)(ctx);
+        return ctx.ast.FieldDecl(id, ast, expr, as, loc);
     };
 
 const parseReceiverParam =
@@ -1395,6 +1510,16 @@ export const getParser = (ast: FactoryAst) => {
             },
         );
 
+        const postErr = syntaxErrorSchema(
+            display,
+            (message: string) => (srcInfo: SrcInfo) => {
+                throw new TactCompilationError(
+                    display.at(srcInfo, message),
+                    srcInfo,
+                );
+            },
+        );
+
         const result = $.parse({
             grammar,
             space: G.space,
@@ -1410,7 +1535,9 @@ export const getParser = (ast: FactoryAst) => {
         }
         const ctx = {
             ast: getAstSchema(ast, locationToSrcInfo),
+            postAst: getAstSchema(ast, (srcInfo: SrcInfo) => srcInfo),
             err,
+            postErr,
         };
         return handler(result.value)(ctx);
     };
@@ -1431,6 +1558,13 @@ export const getParser = (ast: FactoryAst) => {
         },
         parseStatement: (code: string): A.AstStatement => {
             return doParse(G.statement, parseStatement, {
+                code,
+                path: "<repl>",
+                origin: "user",
+            });
+        },
+        parseType: (code: string) => {
+            return doParse(G.$type, parseType, {
                 code,
                 path: "<repl>",
                 origin: "user",

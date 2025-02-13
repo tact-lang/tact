@@ -1216,7 +1216,7 @@ exports[`grammar should parse contract-optional-semicolon-for-last-const-def 1`]
 
 exports[`grammar should parse contract-optional-semicolon-for-last-storage-var 1`] = `
 {
-  "id": 8,
+  "id": 10,
   "imports": [],
   "items": [
     {
@@ -1224,7 +1224,7 @@ exports[`grammar should parse contract-optional-semicolon-for-last-storage-var 1
       "declarations": [
         {
           "as": null,
-          "id": 6,
+          "id": 8,
           "initializer": null,
           "kind": "field_decl",
           "loc": m: map<Int, Int>,
@@ -1235,10 +1235,10 @@ exports[`grammar should parse contract-optional-semicolon-for-last-storage-var 1
             "text": "m",
           },
           "type": {
-            "id": 5,
+            "id": 7,
             "keyStorageType": null,
             "keyType": {
-              "id": 3,
+              "id": 4,
               "kind": "type_id",
               "loc": Int,
               "text": "Int",
@@ -1247,7 +1247,7 @@ exports[`grammar should parse contract-optional-semicolon-for-last-storage-var 1
             "loc": map<Int, Int>,
             "valueStorageType": null,
             "valueType": {
-              "id": 4,
+              "id": 5,
               "kind": "type_id",
               "loc": Int,
               "text": "Int",
@@ -1255,7 +1255,7 @@ exports[`grammar should parse contract-optional-semicolon-for-last-storage-var 1
           },
         },
       ],
-      "id": 7,
+      "id": 9,
       "kind": "contract",
       "loc": contract Test { m: map<Int, Int> },
       "name": {
@@ -2446,7 +2446,7 @@ exports[`grammar should parse expr-arith-bool-var 1`] = `
 
 exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
 {
-  "id": 25,
+  "id": 27,
   "imports": [],
   "items": [
     {
@@ -2459,7 +2459,7 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
             "loc": coins,
             "text": "coins",
           },
-          "id": 12,
+          "id": 13,
           "initializer": {
             "id": 9,
             "kind": "op_binary",
@@ -2522,21 +2522,21 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
         },
         {
           "as": {
-            "id": 22,
+            "id": 23,
             "kind": "id",
             "loc": coins,
             "text": "coins",
           },
-          "id": 23,
+          "id": 25,
           "initializer": {
-            "id": 20,
+            "id": 21,
             "kind": "op_binary",
             "left": {
-              "id": 17,
+              "id": 18,
               "kind": "op_binary",
               "left": {
                 "base": 10,
-                "id": 14,
+                "id": 15,
                 "kind": "number",
                 "loc": 123,
                 "value": 123n,
@@ -2544,13 +2544,13 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
               "loc": 123 + -456,
               "op": "+",
               "right": {
-                "id": 16,
+                "id": 17,
                 "kind": "op_unary",
                 "loc": -456,
                 "op": "-",
                 "operand": {
                   "base": 10,
-                  "id": 15,
+                  "id": 16,
                   "kind": "number",
                   "loc": 456,
                   "value": 456n,
@@ -2560,13 +2560,13 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
             "loc": 123 + -456 +- 789,
             "op": "+",
             "right": {
-              "id": 19,
+              "id": 20,
               "kind": "op_unary",
               "loc": - 789,
               "op": "-",
               "operand": {
                 "base": 10,
-                "id": 18,
+                "id": 19,
                 "kind": "number",
                 "loc": 789,
                 "value": 789n,
@@ -2576,20 +2576,20 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
           "kind": "field_decl",
           "loc": b: Int as coins = 123 + -456 +- 789,
           "name": {
-            "id": 13,
+            "id": 14,
             "kind": "id",
             "loc": b,
             "text": "b",
           },
           "type": {
-            "id": 21,
+            "id": 22,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
           },
         },
       ],
-      "id": 24,
+      "id": 26,
       "kind": "contract",
       "loc": contract Foo {
     a: Int as coins = 123 + -456 + +789;
@@ -2610,7 +2610,7 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
 
 exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
 {
-  "id": 31,
+  "id": 33,
   "imports": [],
   "items": [
     {
@@ -2623,7 +2623,7 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
             "loc": coins,
             "text": "coins",
           },
-          "id": 15,
+          "id": 16,
           "initializer": {
             "id": 12,
             "kind": "op_binary",
@@ -2705,21 +2705,21 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
         },
         {
           "as": {
-            "id": 28,
+            "id": 29,
             "kind": "id",
             "loc": coins,
             "text": "coins",
           },
-          "id": 29,
+          "id": 31,
           "initializer": {
-            "id": 26,
+            "id": 27,
             "kind": "op_binary",
             "left": {
-              "id": 20,
+              "id": 21,
               "kind": "op_binary",
               "left": {
                 "base": 10,
-                "id": 17,
+                "id": 18,
                 "kind": "number",
                 "loc": 123,
                 "value": 123n,
@@ -2727,13 +2727,13 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
               "loc": 123 + -456,
               "op": "+",
               "right": {
-                "id": 19,
+                "id": 20,
                 "kind": "op_unary",
                 "loc": -456,
                 "op": "-",
                 "operand": {
                   "base": 10,
-                  "id": 18,
+                  "id": 19,
                   "kind": "number",
                   "loc": 456,
                   "value": 456n,
@@ -2743,16 +2743,16 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
             "loc": 123 + -456 - -(987 / +654),
             "op": "-",
             "right": {
-              "id": 25,
+              "id": 26,
               "kind": "op_unary",
               "loc": -(987 / +654),
               "op": "-",
               "operand": {
-                "id": 24,
+                "id": 25,
                 "kind": "op_binary",
                 "left": {
                   "base": 10,
-                  "id": 21,
+                  "id": 22,
                   "kind": "number",
                   "loc": 987,
                   "value": 987n,
@@ -2760,13 +2760,13 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
                 "loc": 987 / +654,
                 "op": "/",
                 "right": {
-                  "id": 23,
+                  "id": 24,
                   "kind": "op_unary",
                   "loc": +654,
                   "op": "+",
                   "operand": {
                     "base": 10,
-                    "id": 22,
+                    "id": 23,
                     "kind": "number",
                     "loc": 654,
                     "value": 654n,
@@ -2778,20 +2778,20 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
           "kind": "field_decl",
           "loc": b: Int as coins = 123 + -456 - -(987 / +654),
           "name": {
-            "id": 16,
+            "id": 17,
             "kind": "id",
             "loc": b,
             "text": "b",
           },
           "type": {
-            "id": 27,
+            "id": 28,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
           },
         },
       ],
-      "id": 30,
+      "id": 32,
       "kind": "contract",
       "loc": contract Foo {
     a: Int as coins = 123 + -456 + +(987 * -654);
@@ -2812,7 +2812,7 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
 
 exports[`grammar should parse expr-binary-operators 1`] = `
 {
-  "id": 19,
+  "id": 21,
   "imports": [],
   "items": [
     {
@@ -2825,7 +2825,7 @@ exports[`grammar should parse expr-binary-operators 1`] = `
             "loc": coins,
             "text": "coins",
           },
-          "id": 9,
+          "id": 10,
           "initializer": {
             "id": 6,
             "kind": "op_binary",
@@ -2869,18 +2869,18 @@ exports[`grammar should parse expr-binary-operators 1`] = `
         },
         {
           "as": {
-            "id": 16,
+            "id": 17,
             "kind": "id",
             "loc": coins,
             "text": "coins",
           },
-          "id": 17,
+          "id": 19,
           "initializer": {
-            "id": 14,
+            "id": 15,
             "kind": "op_binary",
             "left": {
               "base": 10,
-              "id": 11,
+              "id": 12,
               "kind": "number",
               "loc": 123,
               "value": 123n,
@@ -2888,13 +2888,13 @@ exports[`grammar should parse expr-binary-operators 1`] = `
             "loc": 123 + -456,
             "op": "+",
             "right": {
-              "id": 13,
+              "id": 14,
               "kind": "op_unary",
               "loc": -456,
               "op": "-",
               "operand": {
                 "base": 10,
-                "id": 12,
+                "id": 13,
                 "kind": "number",
                 "loc": 456,
                 "value": 456n,
@@ -2904,20 +2904,20 @@ exports[`grammar should parse expr-binary-operators 1`] = `
           "kind": "field_decl",
           "loc": b: Int as coins = 123 + -456,
           "name": {
-            "id": 10,
+            "id": 11,
             "kind": "id",
             "loc": b,
             "text": "b",
           },
           "type": {
-            "id": 15,
+            "id": 16,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
           },
         },
       ],
-      "id": 18,
+      "id": 20,
       "kind": "contract",
       "loc": contract Foo {
     a: Int as coins = 123 - -456;
@@ -2938,12 +2938,12 @@ exports[`grammar should parse expr-binary-operators 1`] = `
 
 exports[`grammar should parse expr-chaining-unbox 1`] = `
 {
-  "id": 18,
+  "id": 20,
   "imports": [],
   "items": [
     {
       "attributes": [],
-      "id": 17,
+      "id": 19,
       "kind": "function_def",
       "loc": fun testFunc(m: map<Int, Int>): Int {
     return m.asCell()!!.hash();
@@ -2956,7 +2956,7 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
       },
       "params": [
         {
-          "id": 7,
+          "id": 9,
           "kind": "typed_parameter",
           "loc": m: map<Int, Int>,
           "name": {
@@ -2966,10 +2966,10 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
             "text": "m",
           },
           "type": {
-            "id": 6,
+            "id": 8,
             "keyStorageType": null,
             "keyType": {
-              "id": 4,
+              "id": 5,
               "kind": "type_id",
               "loc": Int,
               "text": "Int",
@@ -2978,7 +2978,7 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
             "loc": map<Int, Int>,
             "valueStorageType": null,
             "valueType": {
-              "id": 5,
+              "id": 6,
               "kind": "type_id",
               "loc": Int,
               "text": "Int",
@@ -2996,33 +2996,33 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
         {
           "expression": {
             "args": [],
-            "id": 15,
+            "id": 17,
             "kind": "method_call",
             "loc": m.asCell()!!.hash(),
             "method": {
-              "id": 13,
+              "id": 15,
               "kind": "id",
               "loc": hash,
               "text": "hash",
             },
             "self": {
-              "id": 12,
+              "id": 14,
               "kind": "op_unary",
               "loc": m.asCell()!!,
               "op": "!!",
               "operand": {
                 "args": [],
-                "id": 11,
+                "id": 13,
                 "kind": "method_call",
                 "loc": m.asCell(),
                 "method": {
-                  "id": 9,
+                  "id": 11,
                   "kind": "id",
                   "loc": asCell,
                   "text": "asCell",
                 },
                 "self": {
-                  "id": 8,
+                  "id": 10,
                   "kind": "id",
                   "loc": m,
                   "text": "m",
@@ -3030,7 +3030,7 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
               },
             },
           },
-          "id": 16,
+          "id": 18,
           "kind": "statement_return",
           "loc": return m.asCell()!!.hash();,
         },
@@ -9598,12 +9598,12 @@ exports[`grammar should parse stmt-destructuring 1`] = `
 
 exports[`grammar should parse stmt-if 1`] = `
 {
-  "id": 16,
+  "id": 18,
   "imports": [],
   "items": [
     {
       "attributes": [],
-      "id": 15,
+      "id": 17,
       "kind": "function_def",
       "loc": fun testFunc(src: Int?): Int {
     if (src != null) {
@@ -9619,7 +9619,7 @@ exports[`grammar should parse stmt-if 1`] = `
       },
       "params": [
         {
-          "id": 6,
+          "id": 8,
           "kind": "typed_parameter",
           "loc": src: Int?,
           "name": {
@@ -9629,9 +9629,9 @@ exports[`grammar should parse stmt-if 1`] = `
             "text": "src",
           },
           "type": {
-            "id": 5,
+            "id": 7,
             "kind": "optional_type",
-            "loc": Int?,
+            "loc": ?,
             "typeArg": {
               "id": 4,
               "kind": "type_id",
@@ -9650,10 +9650,10 @@ exports[`grammar should parse stmt-if 1`] = `
       "statements": [
         {
           "condition": {
-            "id": 9,
+            "id": 11,
             "kind": "op_binary",
             "left": {
-              "id": 7,
+              "id": 9,
               "kind": "id",
               "loc": src,
               "text": "src",
@@ -9661,13 +9661,13 @@ exports[`grammar should parse stmt-if 1`] = `
             "loc": src != null,
             "op": "!=",
             "right": {
-              "id": 8,
+              "id": 10,
               "kind": "null",
               "loc": null,
             },
           },
           "falseStatements": null,
-          "id": 12,
+          "id": 14,
           "kind": "statement_condition",
           "loc": if (src != null) {
         return src;
@@ -9675,12 +9675,12 @@ exports[`grammar should parse stmt-if 1`] = `
           "trueStatements": [
             {
               "expression": {
-                "id": 10,
+                "id": 12,
                 "kind": "id",
                 "loc": src,
                 "text": "src",
               },
-              "id": 11,
+              "id": 13,
               "kind": "statement_return",
               "loc": return src;,
             },
@@ -9689,12 +9689,12 @@ exports[`grammar should parse stmt-if 1`] = `
         {
           "expression": {
             "base": 10,
-            "id": 13,
+            "id": 15,
             "kind": "number",
             "loc": 0,
             "value": 0n,
           },
-          "id": 14,
+          "id": 16,
           "kind": "statement_return",
           "loc": return 0;,
         },
@@ -9707,12 +9707,12 @@ exports[`grammar should parse stmt-if 1`] = `
 
 exports[`grammar should parse stmt-if-else 1`] = `
 {
-  "id": 16,
+  "id": 18,
   "imports": [],
   "items": [
     {
       "attributes": [],
-      "id": 15,
+      "id": 17,
       "kind": "function_def",
       "loc": fun testFunc(src: Int?): Int {
     if (src != null) {
@@ -9729,7 +9729,7 @@ exports[`grammar should parse stmt-if-else 1`] = `
       },
       "params": [
         {
-          "id": 6,
+          "id": 8,
           "kind": "typed_parameter",
           "loc": src: Int?,
           "name": {
@@ -9739,9 +9739,9 @@ exports[`grammar should parse stmt-if-else 1`] = `
             "text": "src",
           },
           "type": {
-            "id": 5,
+            "id": 7,
             "kind": "optional_type",
-            "loc": Int?,
+            "loc": ?,
             "typeArg": {
               "id": 4,
               "kind": "type_id",
@@ -9760,10 +9760,10 @@ exports[`grammar should parse stmt-if-else 1`] = `
       "statements": [
         {
           "condition": {
-            "id": 9,
+            "id": 11,
             "kind": "op_binary",
             "left": {
-              "id": 7,
+              "id": 9,
               "kind": "id",
               "loc": src,
               "text": "src",
@@ -9771,7 +9771,7 @@ exports[`grammar should parse stmt-if-else 1`] = `
             "loc": src != null,
             "op": "!=",
             "right": {
-              "id": 8,
+              "id": 10,
               "kind": "null",
               "loc": null,
             },
@@ -9780,17 +9780,17 @@ exports[`grammar should parse stmt-if-else 1`] = `
             {
               "expression": {
                 "base": 10,
-                "id": 12,
+                "id": 14,
                 "kind": "number",
                 "loc": 10,
                 "value": 10n,
               },
-              "id": 13,
+              "id": 15,
               "kind": "statement_return",
               "loc": return 10;,
             },
           ],
-          "id": 14,
+          "id": 16,
           "kind": "statement_condition",
           "loc": if (src != null) {
         return src;
@@ -9800,12 +9800,12 @@ exports[`grammar should parse stmt-if-else 1`] = `
           "trueStatements": [
             {
               "expression": {
-                "id": 10,
+                "id": 12,
                 "kind": "id",
                 "loc": src,
                 "text": "src",
               },
-              "id": 11,
+              "id": 13,
               "kind": "statement_return",
               "loc": return src;,
             },
@@ -10605,7 +10605,7 @@ exports[`grammar should parse struct-field-punning 1`] = `
 
 exports[`grammar should parse struct-msg-as 1`] = `
 {
-  "id": 12,
+  "id": 13,
   "imports": [],
   "items": [
     {
@@ -10651,7 +10651,7 @@ exports[`grammar should parse struct-msg-as 1`] = `
             "loc": coin,
             "text": "coin",
           },
-          "id": 10,
+          "id": 11,
           "initializer": null,
           "kind": "field_decl",
           "loc": x: Int as coin,
@@ -10669,7 +10669,7 @@ exports[`grammar should parse struct-msg-as 1`] = `
           },
         },
       ],
-      "id": 11,
+      "id": 12,
       "kind": "message_decl",
       "loc": message B {
     x: Int as coin;
@@ -10689,7 +10689,7 @@ exports[`grammar should parse struct-msg-as 1`] = `
 
 exports[`grammar should parse struct-msg-initializers 1`] = `
 {
-  "id": 18,
+  "id": 19,
   "imports": [],
   "items": [
     {
@@ -10741,7 +10741,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
             "loc": coins,
             "text": "coins",
           },
-          "id": 12,
+          "id": 13,
           "initializer": {
             "base": 10,
             "id": 9,
@@ -10766,9 +10766,9 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
         },
         {
           "as": null,
-          "id": 16,
+          "id": 17,
           "initializer": {
-            "id": 14,
+            "id": 15,
             "kind": "boolean",
             "loc": true,
             "value": true,
@@ -10776,20 +10776,20 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
           "kind": "field_decl",
           "loc": y: Bool = true,
           "name": {
-            "id": 13,
+            "id": 14,
             "kind": "id",
             "loc": y,
             "text": "y",
           },
           "type": {
-            "id": 15,
+            "id": 16,
             "kind": "type_id",
             "loc": Bool,
             "text": "Bool",
           },
         },
       ],
-      "id": 17,
+      "id": 18,
       "kind": "message_decl",
       "loc": message B {
     x: Int as coins = 1000;
@@ -11454,14 +11454,14 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
 
 exports[`grammar should parse type-struct-with-map 1`] = `
 {
-  "id": 15,
+  "id": 19,
   "imports": [],
   "items": [
     {
       "fields": [
         {
           "as": null,
-          "id": 6,
+          "id": 8,
           "initializer": null,
           "kind": "field_decl",
           "loc": y: map<Int, Int>,
@@ -11472,10 +11472,10 @@ exports[`grammar should parse type-struct-with-map 1`] = `
             "text": "y",
           },
           "type": {
-            "id": 5,
+            "id": 7,
             "keyStorageType": null,
             "keyType": {
-              "id": 3,
+              "id": 4,
               "kind": "type_id",
               "loc": Int,
               "text": "Int",
@@ -11484,7 +11484,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
             "loc": map<Int, Int>,
             "valueStorageType": null,
             "valueType": {
-              "id": 4,
+              "id": 5,
               "kind": "type_id",
               "loc": Int,
               "text": "Int",
@@ -11492,7 +11492,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
           },
         },
       ],
-      "id": 7,
+      "id": 9,
       "kind": "struct_decl",
       "loc": struct A {
     y: map<Int, Int>;
@@ -11508,21 +11508,21 @@ exports[`grammar should parse type-struct-with-map 1`] = `
       "fields": [
         {
           "as": null,
-          "id": 13,
+          "id": 17,
           "initializer": null,
           "kind": "field_decl",
           "loc": x: map<Int, Int>,
           "name": {
-            "id": 9,
+            "id": 11,
             "kind": "id",
             "loc": x,
             "text": "x",
           },
           "type": {
-            "id": 12,
+            "id": 16,
             "keyStorageType": null,
             "keyType": {
-              "id": 10,
+              "id": 13,
               "kind": "type_id",
               "loc": Int,
               "text": "Int",
@@ -11531,7 +11531,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
             "loc": map<Int, Int>,
             "valueStorageType": null,
             "valueType": {
-              "id": 11,
+              "id": 14,
               "kind": "type_id",
               "loc": Int,
               "text": "Int",
@@ -11539,13 +11539,13 @@ exports[`grammar should parse type-struct-with-map 1`] = `
           },
         },
       ],
-      "id": 14,
+      "id": 18,
       "kind": "message_decl",
       "loc": message B {
     x: map<Int, Int>;
 },
       "name": {
-        "id": 8,
+        "id": 10,
         "kind": "id",
         "loc": B,
         "text": "B",
@@ -11559,12 +11559,12 @@ exports[`grammar should parse type-struct-with-map 1`] = `
 
 exports[`grammar should parse types-optional 1`] = `
 {
-  "id": 19,
+  "id": 21,
   "imports": [],
   "items": [
     {
       "attributes": [],
-      "id": 18,
+      "id": 20,
       "kind": "function_def",
       "loc": fun testFunc(src: Int?): Int {
     return 1 + 2 + (123 + 3)!! > 123;
@@ -11577,7 +11577,7 @@ exports[`grammar should parse types-optional 1`] = `
       },
       "params": [
         {
-          "id": 6,
+          "id": 8,
           "kind": "typed_parameter",
           "loc": src: Int?,
           "name": {
@@ -11587,9 +11587,9 @@ exports[`grammar should parse types-optional 1`] = `
             "text": "src",
           },
           "type": {
-            "id": 5,
+            "id": 7,
             "kind": "optional_type",
-            "loc": Int?,
+            "loc": ?,
             "typeArg": {
               "id": 4,
               "kind": "type_id",
@@ -11608,17 +11608,17 @@ exports[`grammar should parse types-optional 1`] = `
       "statements": [
         {
           "expression": {
-            "id": 16,
+            "id": 18,
             "kind": "op_binary",
             "left": {
-              "id": 14,
+              "id": 16,
               "kind": "op_binary",
               "left": {
-                "id": 9,
+                "id": 11,
                 "kind": "op_binary",
                 "left": {
                   "base": 10,
-                  "id": 7,
+                  "id": 9,
                   "kind": "number",
                   "loc": 1,
                   "value": 1n,
@@ -11627,7 +11627,7 @@ exports[`grammar should parse types-optional 1`] = `
                 "op": "+",
                 "right": {
                   "base": 10,
-                  "id": 8,
+                  "id": 10,
                   "kind": "number",
                   "loc": 2,
                   "value": 2n,
@@ -11636,16 +11636,16 @@ exports[`grammar should parse types-optional 1`] = `
               "loc": 1 + 2 + (123 + 3)!!,
               "op": "+",
               "right": {
-                "id": 13,
+                "id": 15,
                 "kind": "op_unary",
                 "loc": (123 + 3)!!,
                 "op": "!!",
                 "operand": {
-                  "id": 12,
+                  "id": 14,
                   "kind": "op_binary",
                   "left": {
                     "base": 10,
-                    "id": 10,
+                    "id": 12,
                     "kind": "number",
                     "loc": 123,
                     "value": 123n,
@@ -11654,7 +11654,7 @@ exports[`grammar should parse types-optional 1`] = `
                   "op": "+",
                   "right": {
                     "base": 10,
-                    "id": 11,
+                    "id": 13,
                     "kind": "number",
                     "loc": 3,
                     "value": 3n,
@@ -11666,13 +11666,13 @@ exports[`grammar should parse types-optional 1`] = `
             "op": ">",
             "right": {
               "base": 10,
-              "id": 15,
+              "id": 17,
               "kind": "number",
               "loc": 123,
               "value": 123n,
             },
           },
-          "id": 17,
+          "id": 19,
           "kind": "statement_return",
           "loc": return 1 + 2 + (123 + 3)!! > 123;,
         },
@@ -11681,4 +11681,307 @@ exports[`grammar should parse types-optional 1`] = `
   ],
   "kind": "module",
 }
+`;
+
+exports[`parse type ((T as U)?) 1`] = `
+[Error: <repl>:1:10: Only named type can be optional
+> 1 | ((T as U)?)
+               ^
+]
+`;
+
+exports[`parse type ((T?) as U) 1`] = `
+[Error: <repl>:1:10: "as" type is not allowed here
+> 1 | ((T?) as U)
+               ^
+]
+`;
+
+exports[`parse type () 1`] = `
+[Error: <repl>:1:1: Tensors are not supported yet
+> 1 | ()
+      ^~
+]
+`;
+
+exports[`parse type (T as U as V) 1`] = `
+[Error: <repl>:1:7: Cannot use several "as"
+> 1 | (T as U as V)
+            ^
+]
+`;
+
+exports[`parse type (T as U) as V 1`] = `
+[Error: <repl>:1:7: Cannot use several "as"
+> 1 | (T as U) as V
+            ^
+]
+`;
+
+exports[`parse type (T as U)? 1`] = `
+[Error: <repl>:1:9: Only named type can be optional
+> 1 | (T as U)?
+              ^
+]
+`;
+
+exports[`parse type (T) 1`] = `
+{
+  "id": 1,
+  "kind": "type_id",
+  "loc": T,
+  "text": "T",
+}
+`;
+
+exports[`parse type (T, U) 1`] = `
+[Error: <repl>:1:1: Tensors are not supported yet
+> 1 | (T, U)
+      ^~~~~~
+]
+`;
+
+exports[`parse type (T, U,) 1`] = `
+[Error: <repl>:1:1: Tensors are not supported yet
+> 1 | (T, U,)
+      ^~~~~~~
+]
+`;
+
+exports[`parse type (T,) 1`] = `
+[Error: <repl>:1:4: Expected "(", "[", "bounced", "map", or capitalized identifier
+> 1 | (T,)
+         ^
+]
+`;
+
+exports[`parse type (T?) as U 1`] = `
+[Error: <repl>:1:9: "as" type is not allowed here
+> 1 | (T?) as U
+              ^
+]
+`;
+
+exports[`parse type (T?)? 1`] = `
+[Error: <repl>:1:5: Only named type can be optional
+> 1 | (T?)?
+          ^
+]
+`;
+
+exports[`parse type (T??) 1`] = `
+[Error: <repl>:1:4: Only named type can be optional
+> 1 | (T??)
+         ^
+]
+`;
+
+exports[`parse type [] 1`] = `
+[Error: <repl>:1:1: Tensors are not supported yet
+> 1 | []
+      ^~
+]
+`;
+
+exports[`parse type [T, U,] 1`] = `
+[Error: <repl>:1:1: Tensors are not supported yet
+> 1 | [T, U,]
+      ^~~~~~~
+]
+`;
+
+exports[`parse type [T, U] 1`] = `
+[Error: <repl>:1:1: Tensors are not supported yet
+> 1 | [T, U]
+      ^~~~~~
+]
+`;
+
+exports[`parse type [T] 1`] = `
+[Error: <repl>:1:1: Tensors are not supported yet
+> 1 | [T]
+      ^~~
+]
+`;
+
+exports[`parse type Foo 1`] = `
+{
+  "id": 1,
+  "kind": "type_id",
+  "loc": Foo,
+  "text": "Foo",
+}
+`;
+
+exports[`parse type Foo<
+T,
+U,
+> 1`] = `
+[Error: <repl>:1:1: Unknown generic type
+> 1 | Foo<
+      ^~~~
+  2 | T,
+]
+`;
+
+exports[`parse type Foo<T, U> 1`] = `
+[Error: <repl>:1:1: Unknown generic type
+> 1 | Foo<T, U>
+      ^~~~~~~~~
+]
+`;
+
+exports[`parse type Foo<T> 1`] = `
+[Error: <repl>:1:1: Unknown generic type
+> 1 | Foo<T>
+      ^~~~~~
+]
+`;
+
+exports[`parse type T as U 1`] = `
+[Error: <repl>:1:6: "as" type is not allowed here
+> 1 | T as U
+           ^
+]
+`;
+
+exports[`parse type T as U as V 1`] = `
+[Error: <repl>:1:6: Cannot use several "as"
+> 1 | T as U as V
+           ^
+]
+`;
+
+exports[`parse type T? 1`] = `
+{
+  "id": 4,
+  "kind": "optional_type",
+  "loc": ?,
+  "typeArg": {
+    "id": 1,
+    "kind": "type_id",
+    "loc": T,
+    "text": "T",
+  },
+}
+`;
+
+exports[`parse type T? as U 1`] = `
+[Error: <repl>:1:7: "as" type is not allowed here
+> 1 | T? as U
+            ^
+]
+`;
+
+exports[`parse type T?? 1`] = `
+[Error: <repl>:1:3: Only named type can be optional
+> 1 | T??
+        ^
+]
+`;
+
+exports[`parse type bounced 1`] = `
+[Error: <repl>:1:8: Expected "<"
+> 1 | bounced
+             ^
+]
+`;
+
+exports[`parse type bounced<> 1`] = `
+[Error: <repl>:1:9: Expected "(", "[", "bounced", "map", or capitalized identifier
+> 1 | bounced<>
+              ^
+]
+`;
+
+exports[`parse type bounced<T, U> 1`] = `
+[Error: <repl>:1:1: bounced<> expects exactly 1 argument, but got 2
+> 1 | bounced<T, U>
+      ^~~~~~~~~~~~~
+]
+`;
+
+exports[`parse type bounced<T> 1`] = `
+{
+  "id": 4,
+  "kind": "bounced_message_type",
+  "loc": bounced<T>,
+  "messageType": {
+    "id": 2,
+    "kind": "type_id",
+    "loc": T,
+    "text": "T",
+  },
+}
+`;
+
+exports[`parse type foo 1`] = `
+[Error: <repl>:1:1: Expected "(", "[", "bounced", "map", or capitalized identifier
+> 1 | foo
+      ^
+]
+`;
+
+exports[`parse type foo<> 1`] = `
+[Error: <repl>:1:1: Expected "(", "[", "bounced", "map", or capitalized identifier
+> 1 | foo<>
+      ^
+]
+`;
+
+exports[`parse type foo<T> 1`] = `
+[Error: <repl>:1:1: Expected "(", "[", "bounced", "map", or capitalized identifier
+> 1 | foo<T>
+      ^
+]
+`;
+
+exports[`parse type map 1`] = `
+[Error: <repl>:1:4: Expected "<" or not identifier character
+> 1 | map
+         ^
+]
+`;
+
+exports[`parse type map<> 1`] = `
+[Error: <repl>:1:5: Expected "(", "[", "bounced", "map", or capitalized identifier
+> 1 | map<>
+          ^
+]
+`;
+
+exports[`parse type map<T, U, V> 1`] = `
+[Error: <repl>:1:1: map<> expects exactly 2 arguments, but got 3
+> 1 | map<T, U, V>
+      ^~~~~~~~~~~~
+]
+`;
+
+exports[`parse type map<T, U> 1`] = `
+{
+  "id": 5,
+  "keyStorageType": null,
+  "keyType": {
+    "id": 2,
+    "kind": "type_id",
+    "loc": T,
+    "text": "T",
+  },
+  "kind": "map_type",
+  "loc": map<T, U>,
+  "valueStorageType": null,
+  "valueType": {
+    "id": 3,
+    "kind": "type_id",
+    "loc": U,
+    "text": "U",
+  },
+}
+`;
+
+exports[`parse type map<T> 1`] = `
+[Error: <repl>:1:1: map<> expects exactly 2 arguments, but got 1
+> 1 | map<T>
+      ^~~~~~
+]
 `;

@@ -129,12 +129,10 @@ export const syntaxErrorSchema = <T, U>(
             expectedCount: number,
             gotCount: number,
         ) => {
+            const args = text(expectedCount > 1 ? "arguments" : "argument");
             return handle(
-                sub`${text(name)}<> expects exactly ${text(String(expectedCount))} arguments, but got ${text(String(gotCount))}`,
+                sub`${text(name)}<> expects exactly ${text(String(expectedCount))} ${args}, but got ${text(String(gotCount))}`,
             );
-        },
-        unknownType: (name: string) => {
-            return handle(sub`Unknown generic type: ${text(name)}`);
         },
         onlyBouncedOfNamed: () => {
             return handle(sub`Only named type can be bounced<>`);
@@ -150,8 +148,8 @@ export const syntaxErrorSchema = <T, U>(
         onlyTypeId: (name: "key" | "value") => {
             return handle(sub`${text(name)} can only be a named type`);
         },
-        fieldOnlyOneAs: () => {
-            return handle(sub`Cannot use several "as" on a field type`);
+        onlyOneAs: () => {
+            return handle(sub`Cannot use several "as"`);
         },
         noOptionalFieldType: () => {
             return handle(sub`Field type cannot be optional`);
@@ -161,6 +159,12 @@ export const syntaxErrorSchema = <T, U>(
         },
         unknownGeneric: () => {
             return handle(sub`Unknown generic type`);
+        },
+        noTensorsYet: () => {
+            return handle(sub`Tensors are not supported yet`);
+        },
+        noTuplesYet: () => {
+            return handle(sub`Tuples are not supported yet`);
         },
     };
 };

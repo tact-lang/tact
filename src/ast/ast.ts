@@ -380,6 +380,54 @@ export type AstBouncedMessageType = {
 };
 
 //
+// Types (for typechecker refactoring)
+//
+
+export type AstTypeNext =
+    | AstTypeId
+    | AstTypeAs
+    | AstTypeTuple
+    | AstTypeUnit
+    | AstTypeTensor
+    | AstTypeGeneric;
+
+export type AstTypeTuple = {
+    readonly kind: "tuple_type";
+    readonly typeArgs: readonly AstTypeNext[];
+    readonly id: number;
+    readonly loc: SrcInfo;
+};
+
+export type AstTypeUnit = {
+    readonly kind: "unit_type";
+    readonly id: number;
+    readonly loc: SrcInfo;
+};
+
+export type AstTypeTensor = {
+    readonly kind: "tensor_type";
+    readonly typeArgs: readonly AstTypeNext[];
+    readonly id: number;
+    readonly loc: SrcInfo;
+};
+
+export type AstTypeAs = {
+    readonly kind: "as_type";
+    readonly typeArg: AstTypeNext;
+    readonly name: AstId;
+    readonly id: number;
+    readonly loc: SrcInfo;
+};
+
+export type AstTypeGeneric = {
+    readonly kind: "generic_type";
+    readonly name: AstTypeId;
+    readonly typeArgs: readonly AstTypeNext[];
+    readonly id: number;
+    readonly loc: SrcInfo;
+};
+
+//
 // Expressions
 //
 

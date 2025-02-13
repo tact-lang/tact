@@ -3,14 +3,13 @@
  * We have this file so that the "current id" state would not be stored globally
  */
 
-import { Loc } from "@tonstudio/parser-runtime";
 import * as A from "./ast";
 import { FactoryAst } from "../ast/ast-helpers";
 import { SrcInfo } from "../grammar/src-info";
 
-export const getAstSchema = (
+export const getAstSchema = <T>(
     factory: FactoryAst,
-    toSrcInfo: (location: Loc) => SrcInfo,
+    handle: (arg: T) => SrcInfo,
 ) => {
     const createNode = <T>(src: Omit<T, "id">): T => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,17 +22,17 @@ export const getAstSchema = (
             items: A.AstModuleItem[],
         ): A.AstModule =>
             createNode<A.AstModule>({ kind: "module", imports, items }),
-        Import: (source: A.ImportPath, loc: Loc): A.AstImport =>
+        Import: (source: A.ImportPath, loc: T): A.AstImport =>
             createNode<A.AstImport>({
                 kind: "import",
                 importPath: source,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
-        PrimitiveTypeDecl: (name: A.AstId, loc: Loc): A.AstPrimitiveTypeDecl =>
+        PrimitiveTypeDecl: (name: A.AstId, loc: T): A.AstPrimitiveTypeDecl =>
             createNode<A.AstPrimitiveTypeDecl>({
                 kind: "primitive_type_decl",
                 name,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         FunctionDef: (
             attributes: A.AstFunctionAttribute[],
@@ -41,7 +40,7 @@ export const getAstSchema = (
             retType: A.AstType | null,
             params: A.AstTypedParameter[],
             statements: A.AstStatement[],
-            loc: Loc,
+            loc: T,
         ): A.AstFunctionDef =>
             createNode<A.AstFunctionDef>({
                 kind: "function_def",
@@ -50,7 +49,7 @@ export const getAstSchema = (
                 return: retType,
                 params,
                 statements,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         AsmFunctionDef: (
             shuffle: A.AstAsmShuffle,
@@ -59,7 +58,7 @@ export const getAstSchema = (
             retType: A.AstType | null,
             params: A.AstTypedParameter[],
             instructions: A.AstAsmInstruction[],
-            loc: Loc,
+            loc: T,
         ): A.AstAsmFunctionDef =>
             createNode<A.AstAsmFunctionDef>({
                 kind: "asm_function_def",
@@ -69,14 +68,14 @@ export const getAstSchema = (
                 return: retType,
                 params,
                 instructions,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         FunctionDecl: (
             attributes: A.AstFunctionAttribute[],
             name: A.AstId,
             retType: A.AstType | null,
             params: A.AstTypedParameter[],
-            loc: Loc,
+            loc: T,
         ): A.AstFunctionDecl =>
             createNode<A.AstFunctionDecl>({
                 kind: "function_decl",
@@ -84,7 +83,7 @@ export const getAstSchema = (
                 name,
                 return: retType,
                 params,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         NativeFunctionDecl: (
             attributes: A.AstFunctionAttribute[],
@@ -92,7 +91,7 @@ export const getAstSchema = (
             nativeName: A.AstFuncId,
             params: A.AstTypedParameter[],
             retType: A.AstType | null,
-            loc: Loc,
+            loc: T,
         ): A.AstNativeFunctionDecl =>
             createNode<A.AstNativeFunctionDecl>({
                 kind: "native_function_decl",
@@ -101,14 +100,14 @@ export const getAstSchema = (
                 nativeName,
                 params,
                 return: retType,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         ConstantDef: (
             attributes: A.AstConstantAttribute[],
             name: A.AstId,
             type: A.AstType,
             initializer: A.AstExpression,
-            loc: Loc,
+            loc: T,
         ): A.AstConstantDef =>
             createNode<A.AstConstantDef>({
                 kind: "constant_def",
@@ -116,51 +115,51 @@ export const getAstSchema = (
                 name,
                 type,
                 initializer,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         ConstantDecl: (
             attributes: A.AstConstantAttribute[],
             name: A.AstId,
             type: A.AstType,
-            loc: Loc,
+            loc: T,
         ): A.AstConstantDecl =>
             createNode<A.AstConstantDecl>({
                 kind: "constant_decl",
                 attributes,
                 name,
                 type,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StructDecl: (
             name: A.AstId,
             fields: A.AstFieldDecl[],
-            loc: Loc,
+            loc: T,
         ): A.AstStructDecl =>
             createNode<A.AstStructDecl>({
                 kind: "struct_decl",
                 name,
                 fields,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         MessageDecl: (
             name: A.AstId,
             opcode: A.AstExpression | null,
             fields: A.AstFieldDecl[],
-            loc: Loc,
+            loc: T,
         ): A.AstMessageDecl =>
             createNode<A.AstMessageDecl>({
                 kind: "message_decl",
                 name,
                 opcode,
                 fields,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         Contract: (
             name: A.AstId,
             traits: A.AstId[],
             attributes: A.AstContractAttribute[],
             declarations: A.AstContractDeclaration[],
-            loc: Loc,
+            loc: T,
         ): A.AstContract =>
             createNode<A.AstContract>({
                 kind: "contract",
@@ -168,14 +167,14 @@ export const getAstSchema = (
                 traits,
                 attributes,
                 declarations,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         Trait: (
             name: A.AstId,
             traits: A.AstId[],
             attributes: A.AstContractAttribute[],
             declarations: A.AstTraitDeclaration[],
-            loc: Loc,
+            loc: T,
         ): A.AstTrait =>
             createNode<A.AstTrait>({
                 kind: "trait",
@@ -183,14 +182,14 @@ export const getAstSchema = (
                 traits,
                 attributes,
                 declarations,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         FieldDecl: (
             name: A.AstId,
             type: A.AstType,
             initializer: A.AstExpression | null,
             as: A.AstId | null,
-            loc: Loc,
+            loc: T,
         ): A.AstFieldDecl =>
             createNode<A.AstFieldDecl>({
                 kind: "field_decl",
@@ -198,18 +197,18 @@ export const getAstSchema = (
                 type,
                 initializer,
                 as,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         Receiver: (
             selector: A.AstReceiverKind,
             statements: A.AstStatement[],
-            loc: Loc,
+            loc: T,
         ): A.AstReceiver =>
             createNode<A.AstReceiver>({
                 kind: "receiver",
                 selector,
                 statements,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         ReceiverSimple: (param: A.AstTypedParameter): A.AstReceiverSimple =>
             createNode<A.AstReceiverSimple>({
@@ -227,61 +226,61 @@ export const getAstSchema = (
             }),
         ReceiverInternal: (
             subKind: A.AstReceiverSubKind,
-            loc: Loc,
+            loc: T,
         ): A.AstReceiverInternal =>
             createNode<A.AstReceiverInternal>({
                 kind: "internal",
                 subKind,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         ReceiverExternal: (
             subKind: A.AstReceiverSubKind,
-            loc: Loc,
+            loc: T,
         ): A.AstReceiverExternal =>
             createNode<A.AstReceiverExternal>({
                 kind: "external",
                 subKind,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         ReceiverBounce: (
             param: A.AstTypedParameter,
-            loc: Loc,
+            loc: T,
         ): A.AstReceiverBounce =>
             createNode<A.AstReceiverBounce>({
                 kind: "bounce",
                 param,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         ContractInit: (
             params: A.AstTypedParameter[],
             statements: A.AstStatement[],
-            loc: Loc,
+            loc: T,
         ): A.AstContractInit =>
             createNode<A.AstContractInit>({
                 kind: "contract_init",
                 params,
                 statements,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StatementLet: (
             name: A.AstId,
             type: A.AstType | null,
             expression: A.AstExpression,
-            loc: Loc,
+            loc: T,
         ): A.AstStatementLet =>
             createNode<A.AstStatementLet>({
                 kind: "statement_let",
                 name,
                 type,
                 expression,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StatementDestruct: (
             type: A.AstTypeId,
             identifiers: Map<string, [A.AstId, A.AstId]>,
             ignoreUnspecifiedFields: boolean,
             expression: A.AstExpression,
-            loc: Loc,
+            loc: T,
         ): A.AstStatementDestruct =>
             createNode<A.AstStatementDestruct>({
                 kind: "statement_destruct",
@@ -289,99 +288,99 @@ export const getAstSchema = (
                 identifiers,
                 ignoreUnspecifiedFields,
                 expression,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StatementReturn: (
             expression: A.AstExpression | null,
-            loc: Loc,
+            loc: T,
         ): A.AstStatementReturn =>
             createNode<A.AstStatementReturn>({
                 kind: "statement_return",
                 expression,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StatementExpression: (
             expression: A.AstExpression,
-            loc: Loc,
+            loc: T,
         ): A.AstStatementExpression =>
             createNode<A.AstStatementExpression>({
                 kind: "statement_expression",
                 expression,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StatementAssign: (
             path: A.AstExpression,
             expression: A.AstExpression,
-            loc: Loc,
+            loc: T,
         ): A.AstStatementAssign =>
             createNode<A.AstStatementAssign>({
                 kind: "statement_assign",
                 path,
                 expression,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StatementAugmentedAssign: (
             op: A.AstAugmentedAssignOperation,
             path: A.AstExpression,
             expression: A.AstExpression,
-            loc: Loc,
+            loc: T,
         ): A.AstStatementAugmentedAssign =>
             createNode<A.AstStatementAugmentedAssign>({
                 kind: "statement_augmentedassign",
                 op,
                 path,
                 expression,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StatementCondition: (
             condition: A.AstExpression,
             trueStatements: A.AstStatement[],
             falseStatements: A.AstStatement[] | null,
-            loc: Loc,
+            loc: T,
         ): A.AstStatementCondition =>
             createNode<A.AstStatementCondition>({
                 kind: "statement_condition",
                 condition,
                 trueStatements,
                 falseStatements,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StatementWhile: (
             condition: A.AstExpression,
             statements: A.AstStatement[],
-            loc: Loc,
+            loc: T,
         ): A.AstStatementWhile =>
             createNode<A.AstStatementWhile>({
                 kind: "statement_while",
                 condition,
                 statements,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StatementUntil: (
             condition: A.AstExpression,
             statements: A.AstStatement[],
-            loc: Loc,
+            loc: T,
         ): A.AstStatementUntil =>
             createNode<A.AstStatementUntil>({
                 kind: "statement_until",
                 condition,
                 statements,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StatementRepeat: (
             iterations: A.AstExpression,
             statements: A.AstStatement[],
-            loc: Loc,
+            loc: T,
         ): A.AstStatementRepeat =>
             createNode<A.AstStatementRepeat>({
                 kind: "statement_repeat",
                 iterations,
                 statements,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StatementTry: (
             statements: A.AstStatement[],
-            loc: Loc,
+            loc: T,
             catchBlock?: {
                 catchName: A.AstId;
                 catchStatements: A.AstStatement[];
@@ -391,14 +390,14 @@ export const getAstSchema = (
                 kind: "statement_try",
                 statements,
                 catchBlock: catchBlock,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StatementForEach: (
             keyName: A.AstId,
             valueName: A.AstId,
             map: A.AstExpression,
             statements: A.AstStatement[],
-            loc: Loc,
+            loc: T,
         ): A.AstStatementForEach =>
             createNode<A.AstStatementForEach>({
                 kind: "statement_foreach",
@@ -406,35 +405,35 @@ export const getAstSchema = (
                 valueName,
                 map,
                 statements,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StatementBlock: (
             statements: A.AstStatement[],
-            loc: Loc,
+            loc: T,
         ): A.AstStatementBlock =>
             createNode<A.AstStatementBlock>({
                 kind: "statement_block",
                 statements,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
-        TypeId: (text: string, loc: Loc): A.AstTypeId =>
+        TypeId: (text: string, loc: T): A.AstTypeId =>
             createNode<A.AstTypeId>({
                 kind: "type_id",
                 text,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
-        OptionalType: (typeArg: A.AstType, loc: Loc): A.AstOptionalType =>
+        OptionalType: (typeArg: A.AstType, loc: T): A.AstOptionalType =>
             createNode<A.AstOptionalType>({
                 kind: "optional_type",
                 typeArg,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         MapType: (
             keyType: A.AstTypeId,
             keyStorageType: A.AstId | null,
             valueType: A.AstTypeId,
             valueStorageType: A.AstId | null,
-            loc: Loc,
+            loc: T,
         ): A.AstMapType =>
             createNode<A.AstMapType>({
                 kind: "map_type",
@@ -442,191 +441,232 @@ export const getAstSchema = (
                 keyStorageType,
                 valueType,
                 valueStorageType,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         BouncedMessageType: (
             messageType: A.AstTypeId,
-            loc: Loc,
+            loc: T,
         ): A.AstBouncedMessageType =>
             createNode<A.AstBouncedMessageType>({
                 kind: "bounced_message_type",
                 messageType,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         OpBinary: (
             op: A.AstBinaryOperation,
             left: A.AstExpression,
             right: A.AstExpression,
-            loc: Loc,
+            loc: T,
         ): A.AstOpBinary =>
             createNode<A.AstOpBinary>({
                 kind: "op_binary",
                 op,
                 left,
                 right,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         OpUnary: (
             op: A.AstUnaryOperation,
             operand: A.AstExpression,
-            loc: Loc,
+            loc: T,
         ): A.AstOpUnary =>
             createNode<A.AstOpUnary>({
                 kind: "op_unary",
                 op,
                 operand,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         FieldAccess: (
             aggregate: A.AstExpression,
             field: A.AstId,
-            loc: Loc,
+            loc: T,
         ): A.AstFieldAccess =>
             createNode<A.AstFieldAccess>({
                 kind: "field_access",
                 aggregate,
                 field,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         MethodCall: (
             self: A.AstExpression,
             method: A.AstId,
             args: A.AstExpression[],
-            loc: Loc,
+            loc: T,
         ): A.AstMethodCall =>
             createNode<A.AstMethodCall>({
                 kind: "method_call",
                 self,
                 method,
                 args,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StaticCall: (
             funcId: A.AstId,
             args: A.AstExpression[],
-            loc: Loc,
+            loc: T,
         ): A.AstStaticCall =>
             createNode<A.AstStaticCall>({
                 kind: "static_call",
                 function: funcId,
                 args,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StructInstance: (
             type: A.AstId,
             args: A.AstStructFieldInitializer[],
-            loc: Loc,
+            loc: T,
         ): A.AstStructInstance =>
             createNode<A.AstStructInstance>({
                 kind: "struct_instance",
                 type,
                 args,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         StructFieldInitializer: (
             field: A.AstId,
             initializer: A.AstExpression,
-            loc: Loc,
+            loc: T,
         ): A.AstStructFieldInitializer =>
             createNode<A.AstStructFieldInitializer>({
                 kind: "struct_field_initializer",
                 field,
                 initializer,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         InitOf: (
             contract: A.AstId,
             args: A.AstExpression[],
-            loc: Loc,
+            loc: T,
         ): A.AstInitOf =>
             createNode<A.AstInitOf>({
                 kind: "init_of",
                 contract,
                 args,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         Conditional: (
             condition: A.AstExpression,
             thenBranch: A.AstExpression,
             elseBranch: A.AstExpression,
-            loc: Loc,
+            loc: T,
         ): A.AstConditional =>
             createNode<A.AstConditional>({
                 kind: "conditional",
                 condition,
                 thenBranch,
                 elseBranch,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
-        Id: (text: string, loc: Loc): A.AstId =>
-            createNode<A.AstId>({ kind: "id", text, loc: toSrcInfo(loc) }),
-        FuncId: (text: string, loc: Loc): A.AstFuncId =>
+        Id: (text: string, loc: T): A.AstId =>
+            createNode<A.AstId>({ kind: "id", text, loc: handle(loc) }),
+        FuncId: (text: string, loc: T): A.AstFuncId =>
             createNode<A.AstFuncId>({
                 kind: "func_id",
                 text,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
-        Null: (loc: Loc): A.AstNull =>
-            createNode<A.AstNull>({ kind: "null", loc: toSrcInfo(loc) }),
-        String: (value: string, loc: Loc): A.AstString =>
+        Null: (loc: T): A.AstNull =>
+            createNode<A.AstNull>({ kind: "null", loc: handle(loc) }),
+        String: (value: string, loc: T): A.AstString =>
             createNode<A.AstString>({
                 kind: "string",
                 value,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
-        Boolean: (value: boolean, loc: Loc): A.AstBoolean =>
+        Boolean: (value: boolean, loc: T): A.AstBoolean =>
             createNode<A.AstBoolean>({
                 kind: "boolean",
                 value,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
-        Number: (base: A.AstNumberBase, value: bigint, loc: Loc): A.AstNumber =>
+        Number: (base: A.AstNumberBase, value: bigint, loc: T): A.AstNumber =>
             createNode<A.AstNumber>({
                 kind: "number",
                 base,
                 value,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         ContractAttribute: (
             name: A.AstString,
-            loc: Loc,
+            loc: T,
         ): A.AstContractAttribute =>
             createNode<A.AstContractAttribute>({
                 type: "interface",
                 name,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
             }),
         FunctionAttributeGet: (
             methodId: A.AstExpression | null,
-            loc: Loc,
+            loc: T,
         ): A.AstFunctionAttributeGet => ({
             kind: "function_attribute",
             type: "get",
             methodId,
-            loc: toSrcInfo(loc),
+            loc: handle(loc),
         }),
         FunctionAttribute: (
             type: A.AstFunctionAttributeName,
-            loc: Loc,
+            loc: T,
         ): A.AstFunctionAttributeRest => ({
             kind: "function_attribute",
             type,
-            loc: toSrcInfo(loc),
+            loc: handle(loc),
         }),
         ConstantAttribute: (
             type: A.AstConstantAttributeName,
-            loc: Loc,
-        ): A.AstConstantAttribute => ({ type, loc: toSrcInfo(loc) }),
+            loc: T,
+        ): A.AstConstantAttribute => ({ type, loc: handle(loc) }),
         TypedParameter: (
             name: A.AstId,
             type: A.AstType,
-            loc: Loc,
+            loc: T,
         ): A.AstTypedParameter =>
             createNode<A.AstTypedParameter>({
                 kind: "typed_parameter",
                 name,
                 type,
-                loc: toSrcInfo(loc),
+                loc: handle(loc),
+            }),
+        TypeTuple: (
+            typeArgs: readonly A.AstTypeNext[],
+            loc: T,
+        ): A.AstTypeTuple =>
+            createNode<A.AstTypeTuple>({
+                kind: "tuple_type",
+                typeArgs,
+                loc: handle(loc),
+            }),
+        TypeUnit: (loc: T): A.AstTypeUnit =>
+            createNode<A.AstTypeUnit>({
+                kind: "unit_type",
+                loc: handle(loc),
+            }),
+        TypeTensor: (
+            typeArgs: readonly A.AstTypeNext[],
+            loc: T,
+        ): A.AstTypeTensor =>
+            createNode<A.AstTypeTensor>({
+                kind: "tensor_type",
+                typeArgs,
+                loc: handle(loc),
+            }),
+        TypeAs: (typeArg: A.AstTypeNext, name: A.AstId, loc: T): A.AstTypeAs =>
+            createNode<A.AstTypeAs>({
+                kind: "as_type",
+                typeArg,
+                name,
+                loc: handle(loc),
+            }),
+        TypeGeneric: (
+            name: A.AstTypeId,
+            typeArgs: readonly A.AstTypeNext[],
+            loc: T,
+        ): A.AstTypeGeneric =>
+            createNode<A.AstTypeGeneric>({
+                kind: "generic_type",
+                name,
+                typeArgs,
+                loc: handle(loc),
             }),
     };
 };
@@ -634,4 +674,4 @@ export const getAstSchema = (
 /**
  * List of all constructors for AST nodes
  */
-export type AstSchema = ReturnType<typeof getAstSchema>;
+export type AstSchema<T> = ReturnType<typeof getAstSchema<T>>;
