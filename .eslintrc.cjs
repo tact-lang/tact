@@ -14,6 +14,45 @@ module.exports = {
     node: true,
     es2021: true,
   },
+  overrides: [
+    {
+      files: ["**/*.ts"],
+      excludedFiles: [
+        "**/*.build.ts",
+        "**/*.spec.ts",
+        "**/*.test.ts",
+        "**/test/**",
+        "src/error/errors.ts",
+      ],
+      rules: {
+        "no-restricted-syntax": [
+          "error",
+          {
+            selector: "ThrowStatement > NewExpression[callee.name='Error']",
+            message:
+              "Use throwCompilationError() for user-facing errors or throwInternalCompilationError() for internal errors",
+          },
+          {
+            selector: "ThrowStatement > CallExpression[callee.name='Error']",
+            message:
+              "Use throwCompilationError() for user-facing errors or throwInternalCompilationError() for internal errors",
+          },
+          {
+            selector:
+              "ThrowStatement > NewExpression[callee.name='TactCompilationError']",
+            message:
+              "Use throwCompilationError() instead of directly instantiating TactCompilationError",
+          },
+          {
+            selector:
+              "ThrowStatement > NewExpression[callee.name='TactInternalCompilationError']",
+            message:
+              "Use throwInternalCompilationError() instead of directly instantiating TactInternalCompilationError",
+          },
+        ],
+      },
+    },
+  ],
   rules: {
     "@typescript-eslint/no-unused-vars": [
       "error",
