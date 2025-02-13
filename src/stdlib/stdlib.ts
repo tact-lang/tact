@@ -564,10 +564,11 @@ files["std/internal/crypto.tact"] =
     "VSB9Cgphc20gZnVuIGNoZWNrU2lnbmF0dXJlKGhhc2g6IEludCwgc2lnbmF0dXJlOiBTbGljZSwgcHVibGljX2tleTogSW50KTogQm9vbCB7IENIS1NJR05VIH0KCmFz" +
     "bSBmdW4gY2hlY2tEYXRhU2lnbmF0dXJlKGRhdGE6IFNsaWNlLCBzaWduYXR1cmU6IFNsaWNlLCBwdWJsaWNfa2V5OiBJbnQpOiBCb29sIHsgQ0hLU0lHTlMgfQo=";
 files["std/internal/debug.tact"] =
-    "Ly8gdGhlc2UgYXJlIGJ1aWx0aW4gZnVuY3Rpb25zLCB0aGVzZSBnZXQgc3BlY2lhbCB0cmVhdG1lbnQgZnJvbSBGdW5DCi8vIGhlbmNlLCBubyBhc20gaGVyZQoKQG5h" +
-    "bWUodGhyb3cpCm5hdGl2ZSBuYXRpdmVUaHJvdyhjb2RlOiBJbnQpOwoKQG5hbWUodGhyb3dfaWYpCm5hdGl2ZSBuYXRpdmVUaHJvd0lmKGNvZGU6IEludCwgY29uZGl0" +
-    "aW9uOiBCb29sKTsKCkBuYW1lKHRocm93KQpuYXRpdmUgdGhyb3coY29kZTogSW50KTsKCkBuYW1lKHRocm93X3VubGVzcykKbmF0aXZlIG5hdGl2ZVRocm93VW5sZXNz" +
-    "KGNvZGU6IEludCwgY29uZGl0aW9uOiBCb29sKTs=";
+    "YXNtIGZ1biB0aHJvdyhjb2RlOiBJbnQpIHsgVEhST1cgfQphc20gZnVuIHRocm93SWYoY29kZTogSW50LCBjb25kaXRpb246IEJvb2wpIHsgVEhST1dBUkdJRiB9CmFz" +
+    "bSBmdW4gdGhyb3dVbmxlc3MoY29kZTogSW50LCBjb25kaXRpb246IEJvb2wpIHsgVEhST1dBUkdJRk5PVCB9CgovLyBmb3IgYmFja3dhcmQgY29tcGF0aWJpbGl0eSAo" +
+    "d2lsbCBiZSByZW1vdmVkIGluIFRhY3QgMi4wKQoKYXNtIGZ1biBuYXRpdmVUaHJvdyhjb2RlOiBJbnQpIHsgVEhST1cgfQphc20gZnVuIG5hdGl2ZVRocm93SWYoY29k" +
+    "ZTogSW50LCBjb25kaXRpb246IEJvb2wpIHsgVEhST1dBUkdJRiB9CmFzbSBmdW4gbmF0aXZlVGhyb3dVbmxlc3MoY29kZTogSW50LCBjb25kaXRpb246IEJvb2wpIHsg" +
+    "VEhST1dBUkdJRk5PVCB9Cg==";
 files["std/internal/math.tact"] =
     "Ly8gUHJlcGFyZSByYW5kb20KCi8vLyBHbG9iYWwgZnVuY3Rpb24uCi8vLwovLy8gUmFuZG9taXplcyB0aGUgcHNldWRvcmFuZG9tIG51bWJlciBnZW5lcmF0b3Igd2l0" +
     "aCB0aGUgc3BlY2lmaWVkIHVuc2lnbmVkIDI1Ni1iaXQgYEludGAgYHhgIGJ5IG1peGluZyBpdCB3aXRoIHRoZSBjdXJyZW50IHNlZWQuIFRoZSBuZXcgc2VlZCBpcyB0" +
