@@ -455,13 +455,13 @@ export function writeStdlib(ctx: WriterContext): void {
     ctx.fun("__tact_to_tuple", () => {
         ctx.signature(`forall X -> tuple __tact_to_tuple(X x)`);
         ctx.context("stdlib");
-        ctx.asm("", "NOP");
+        ctx.asm("", "//\n");
     });
 
     ctx.fun("__tact_from_tuple", () => {
         ctx.signature(`forall X -> X __tact_from_tuple(tuple x)`);
         ctx.context("stdlib");
-        ctx.asm("", "NOP");
+        ctx.asm("", "//\n");
     });
 
     //
