@@ -1,7 +1,7 @@
 import path from "path";
 import { cwd } from "process";
-import { AstFuncId, AstId, AstTypeId } from "../ast/ast";
-import { SrcInfo } from "../grammar";
+import type { AstFuncId, AstId, AstTypeId } from "../ast/ast";
+import type { SrcInfo } from "../grammar";
 
 export class TactInternalError extends Error {
     constructor(public formattedMessage: string) {

@@ -1,9 +1,9 @@
 import { TactInternalError } from "./errors";
+import type { Logger } from "./logger-util";
 import {
     _exit,
     _ExitError,
     handleTopLevelErrors,
-    Logger,
     rethrowWithPath,
 } from "./logger-util";
 
