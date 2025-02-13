@@ -86,7 +86,7 @@ jobs:
           # !!!!!!! Don't forget to update test-windows below !!!!!!!
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
-          yarn install
+          yarn install --ignore-optional
           yarn link @tact-lang/compiler
           yarn build
           yarn test
@@ -107,7 +107,7 @@ jobs:
           $ErrorActionPreference = 'Stop'
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
-          yarn install
+          yarn install --ignore-optional
           yarn link @tact-lang/compiler
           yarn build
           yarn test
