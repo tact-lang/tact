@@ -15,7 +15,12 @@ import {
     hasStaticConstant,
     hasStaticFunction,
 } from "./resolveDescriptors";
-import { printTypeRef, TypeRef, typeRefEquals } from "./types";
+import {
+    FunctionParameter,
+    printTypeRef,
+    TypeRef,
+    typeRefEquals,
+} from "./types";
 import { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
@@ -526,6 +531,20 @@ function resolveFieldAccess(
     }
 }
 
+function checkParameterType(
+    expression: A.AstExpression,
+    parameter: FunctionParameter,
+    ctx: CompilerContext,
+) {
+    const t = getExpType(ctx, expression);
+    if (!isAssignable(t, parameter.type)) {
+        throwCompilationError(
+            `Cannot pass an expression of type "${printTypeRef(t)}" to the parameter ${idTextErr(parameter.name)} of type "${printTypeRef(parameter.type)}"`,
+            expression.loc,
+        );
+    }
+}
+
 function resolveStaticCall(
     exp: A.AstStaticCall,
     sctx: StatementContext,
@@ -587,14 +606,7 @@ function resolveStaticCall(
         );
     }
     for (const [i, a] of f.params.entries()) {
-        const e = exp.args[i]!;
-        const t = getExpType(ctx, e);
-        if (!isAssignable(t, a.type)) {
-            throwCompilationError(
-                `Invalid type "${printTypeRef(t)}" for argument ${idTextErr(a.name)}`,
-                e.loc,
-            );
-        }
+        checkParameterType(exp.args[i]!, a, ctx);
     }
 
     // Resolve return type
@@ -654,14 +666,7 @@ function resolveCall(
                 );
             }
             for (const [i, a] of f.params.entries()) {
-                const e = exp.args[i]!;
-                const t = getExpType(ctx, e);
-                if (!isAssignable(t, a.type)) {
-                    throwCompilationError(
-                        `Invalid type "${printTypeRef(t)}" for argument ${idTextErr(a.name)}`,
-                        e.loc,
-                    );
-                }
+                checkParameterType(exp.args[i]!, a, ctx);
             }
 
             return registerExpType(ctx, exp, f.returns);
@@ -779,14 +784,7 @@ function resolveInitOf(
         );
     }
     for (const [i, a] of type.init.params.entries()) {
-        const e = ast.args[i]!;
-        const t = getExpType(ctx, e);
-        if (!isAssignable(t, a.type)) {
-            throwCompilationError(
-                `Invalid type "${printTypeRef(t)}" for argument ${idTextErr(a.name)}`,
-                e.loc,
-            );
-        }
+        checkParameterType(ast.args[i]!, a, ctx);
     }
 
     // Register return type

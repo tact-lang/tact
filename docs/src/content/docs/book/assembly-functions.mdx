@@ -478,7 +478,7 @@ When there are literals involved, they'll be shown as is. Additionally, when val
 
 ```tact
 // Computes and returns the Keccak-256 hash as an 256-bit unsigned `Int`
-// from a passed `Slice` `s`. Uses the Ethereum-compatible implementation.
+// from a passed `Slice` `s`. Uses the Ethereum-compatible* implementation.
 asm fun keccak256(s: Slice): Int {
     // s:Slice → s:Slice, 1
     // —————————————————————
@@ -498,8 +498,8 @@ The [`HASHEXT_KECCAK512`](https://docs.ton.org/v3/documentation/tvm/instructions
 
 ```tact
 // Computes and returns the Keccak-512 hash in two 256-bit unsigned `Int`
-// values from a passed `Slice` `s`. Uses the Ethereum-compatible implementation.
-asm fun keccak256(s: Slice): Hash512 {
+// values from a passed `Slice` `s`. Uses the Ethereum-compatible* implementation.
+asm fun keccak512(s: Slice): Hash512 {
     // s:Slice → s:Slice, 1
     // —————————————————————
     // s0      → s1       s0
@@ -519,6 +519,12 @@ asm fun keccak256(s: Slice): Hash512 {
 // Helper Struct
 struct Hash512 { h1: Int; h2: Int }
 ```
+
+While it is said that these sample `keccak256(){:tact}` and `keccak512(){:tact}` functions use the Ethereum-compatible implementation, note that the underlying `HASHEXT` family of [TVM][tvm] instructions has its own drawbacks.
+
+These drawbacks stem from the limitations of the [`Slice{:tact}`][slice] type itself — `HASHEXT_KECCAK256` and other hashing instructions of the `HASHEXT` family ignore any references present in the passed slice(s), i.e. only up to $1023$ bits of its data are used.
+
+To work around this, you can recursively load all the refs from the given [`Slice{:tact}`][slice], and then hash them all at once by specifying their exact number instead of the `ONE` [TVM][tvm] instruction used earlier. See an example below: [`onchainSha256`](#onchainsha256).
 
 :::note[Useful links:]
 
