@@ -25,8 +25,8 @@
       "gas": {
         "fundingTon": "6376",
         "changeCode": "5500",
-        "approveTon": "11402",
-        "cancelTon": "8727"
+        "approveTon": "11164",
+        "cancelTon": "8663"
       },
       "commit": "https://github.com/tact-lang/tact/tree/main"
     }

@@ -132,6 +132,132 @@ asm fun send(params: SendParameters) {
     SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
 }
 
+struct DeployParameters {
+    mode: Int = SendDefaultMode;
+    body: Cell? = null;
+    value: Int;
+    bounce: Bool = true;
+    init: StateInit;
+}
+
+/// Deploys a contract in basechain with specified StateInit
+asm fun deploy(params: DeployParameters) {
+    // Group 1: Preparation of needed params
+    //
+    // Params are specified above
+    //
+    // → Stack state
+    // ....
+    // s1: code
+    // s0: data
+    4 1 BLKPUSH
+    // → Stack state
+    // ....
+    // s5: code
+    // s4: data
+    // s3: code
+    // s2: data
+    // s1: code
+    // s0: data
+    HASHCU
+    SWAP
+    HASHCU
+    // → Stack state
+    // ....
+    // s5: code
+    // s4: data
+    // s3: code
+    // s2: data
+    // s1: hash(data)
+    // s0: hash(code)
+    SWAP2
+    CDEPTH
+    SWAP
+    CDEPTH
+    // → Stack state
+    // ....
+    // s5: code
+    // s4: data
+    // s3: hash(data)
+    // s2: hash(code)
+    // s1: depth(data)
+    // s0: depth(code)
+    //
+    // Group 2: Calculating destination address
+    //
+    NEWC
+    b{000000100000000100110100} STSLICECONST // Consult https://docs.tact-lang.org/book/cells/#cells-representation for more information
+    // The main trick we are doing here is calculating hash-part of address without using ENDC.
+    16 STU
+    16 STU
+    256 STU
+    256 STU
+    ONE // Argument of HASHEXT_SHA256 - We need to hash only one builder
+    HASHEXT_SHA256
+    //
+    // Group 3: Building a message
+    //
+    // → Stack state
+    // s6: params.mode
+    // s5: params.body
+    // s4: params.value
+    // s3: params.bounce
+    // s2: code
+    // s1: data
+    // s0: destAddr(hash part)
+    s3 XCHG0
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI
+    // → Stack state
+    // s6: params.mode
+    // s5: params.body
+    // s4: params.value
+    // s3: destAddr(hash part)
+    // s2: code
+    // s1: data
+    // s0: msgBuilder
+    s1 s2 XCHG
+    STREF // Save code (we are building inline StateInit, StateInit bits will be stored further)
+    STREF // Save data
+    b{00010000000000} STSLICECONST
+    // 0 + 00 + 10 + 0 + 00000000
+    // 1) 0 - bounced = false
+    // 2) 00 - src = addr_none
+    // 3) 10 - tag of addr_std (part of dest)
+    // 4) 0 - Maybe Anycast = false
+    // 5) 00000000 - workchain_id (part of dest)
+    256 STU // Store address (hash part)
+    // → Stack state
+    // s3: params.mode
+    // s2: params.body
+    // s1: params.value
+    // s0: msgBuilder
+    SWAP
+    STGRAMS // Store value
+    105 PUSHINT         // 1 + 4 + 4 + 64 + 32
+    STZEROES // store currency_collection, ihr_fee, fwd_fee, created_lt and created_at
+    // Finished building CommonMsgInfoRelaxed and building remaining of MessageRelaxed
+    b{1000110} STSLICECONST
+    // 10 + 0 + 0 + 1 + 1 + 0
+    // 10 - Maybe (Either StateInit ^StateInit) = true false
+    // 0 - split_depth:(Maybe (## 5)) = false
+    // 0 = special:(Maybe TickTock) = false
+    // 1 = code:(Maybe ^Cell) = true
+    // 1 = data:(Maybe ^Cell) = true
+    // 0 = library:(Maybe ^Cell) = false
+    //
+    // → Stack state
+    // s2: params.mode
+    // s1: params.body
+    // s0: msgBuilder
+    STDICT // Store body (using STDICT as body may be null)
+    ENDC
+    // Group 4: Sending the message, with `mode` on top
+    SWAP
+    SENDRAWMSG
+}
+
 inline fun emit(body: Cell) {
     // ext_out_msg_info$11 src:MsgAddressInt dest:MsgAddressExt created_lt:uint64 created_at:uint32
     //                     maybe: stateInit (false) bodyRef: bool (true)
