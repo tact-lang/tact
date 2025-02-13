@@ -103,10 +103,10 @@ asm fun send(params: SendParameters) {
         //   data:(Maybe ^Cell)
         //   library:(Maybe ^Cell)
         // = StateInit;
-        ROT // Place message Builder on top
-        b{10} STSLICECONST // Save Maybe = true, Either = false (init:(Maybe (Either StateInit ^StateInit)))
-        // Start composing StateInit itself
-        b{00} STSLICECONST // split_depth and special
+        ROT                // place message Builder on top
+        b{10} STSLICECONST // store Maybe = true, Either = false
+        // Start composing inlined StateInit
+        b{00} STSLICECONST // store split_depth and special first
         STDICT             // store code
         STDICT             // store data
         b{0} STSLICECONST  // store library
