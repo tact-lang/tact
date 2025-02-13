@@ -58,6 +58,7 @@ Ints
 ipfs
 IPFS
 ipld
+isqrt
 Jesús
 jetton
 Jetton
