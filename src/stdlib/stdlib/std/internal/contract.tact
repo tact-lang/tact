@@ -1,7 +1,6 @@
 inline fun newAddress(chain: Int, hash: Int): Address {
     return beginCell()
-        .storeUint(2, 2)
-        .storeUint(0, 1)
+        .storeUint(0b10_0, 3)
         .storeInt(chain, 8)
         .storeUint(hash, 256)
         .endCell()
@@ -15,8 +14,7 @@ asm extends fun asSlice(self: Address): Slice { NOP }
 inline fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address {
     let hash = beginCell()
         .storeUint(0, 2)
-        .storeUint(3, 2)
-        .storeUint(0, 1)
+        .storeUint(0b11_0, 3)
         .storeRef(code)
         .storeRef(data)
         .endCell()
