@@ -73,7 +73,7 @@ const convert = (bc: $ast.BlockchainMessage, vm: $ast.VmMessage): Entry[] => {
         showErrorAtLoc("", "", bc.loc);
         return [];
     }
-    const max = parseInt(limits.max, 10);
+    const max = parseInt(limits.limit, 10);
     const used = parseInt(steps.used, 10);
     const credit = parseInt(limits.credit, 10);
     let gasLimit = credit ? credit : Math.min(max, 1000000);
@@ -119,12 +119,14 @@ const convert = (bc: $ast.BlockchainMessage, vm: $ast.VmMessage): Entry[] => {
             const spentBefore = gasLimit - prevGas;
             const spentBeforeWithNewLimit = newLimit - spentBefore;
             const spentOnAccept = spentBeforeWithNewLimit - gasRemaining;
+            if (spentOnAccept > 1000) debugger;
             prevGas = gasRemaining;
             gasLimit = newLimit;
             used2 += spentOnAccept;
             asm.push({ command, args, gas: spentOnAccept, location });
         } else {
             const gas = prevGas - gasRemaining;
+            if (gas > 1000) debugger;
             prevGas = gasRemaining;
             used2 += gas;
             asm.push({ command, args, gas, location });

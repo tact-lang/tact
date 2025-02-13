@@ -14,7 +14,7 @@ const main = async () => {
     const beforeMap = new Map(
         logsBefore.map((log) => [log.name, log.transactions]),
     );
-    const logsAfter = await parseLog(before);
+    const logsAfter = await parseLog(after);
     const afterMap = new Map(
         logsAfter.map((log) => [log.name, log.transactions]),
     );
