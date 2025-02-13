@@ -19,11 +19,13 @@ import "@ton/test-utils";
 import { CellsCreation } from "./contracts/output/cells_CellsCreation";
 import { getUsedGas } from "./util";
 
-function measureGas(txs: BlockchainTransaction[]) {
-    return (
-        (txs[1]!.description as TransactionDescriptionGeneric)
-            .computePhase as TransactionComputeVm
-    ).gasUsed;
+function measureGas(txs: BlockchainTransaction[]): number {
+    return Number(
+        (
+            (txs[1]!.description as TransactionDescriptionGeneric)
+                .computePhase as TransactionComputeVm
+        ).gasUsed,
+    );
 }
 
 describe("benchmarks", () => {
