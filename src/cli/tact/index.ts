@@ -180,10 +180,7 @@ const parseConfigSafe = (
     }
 };
 
-export const createSingleFileConfig = (
-    fileName: string,
-    outputDir: string = "./",
-) =>
+export const createSingleFileConfig = (fileName: string, outputDir: string) =>
     ({
         projects: [
             {
