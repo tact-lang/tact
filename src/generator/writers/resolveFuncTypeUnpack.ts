@@ -1,6 +1,7 @@
 import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription, TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
+import { throwInternalCompilerError } from "../../error/errors";
 
 export function resolveFuncTypeUnpack(
     descriptor: TypeRef | TypeDescription | string,
@@ -43,7 +44,9 @@ export function resolveFuncTypeUnpack(
         );
     }
     if (descriptor.kind === "void") {
-        throw Error("Void type is not allowed in function arguments: " + name);
+        throwInternalCompilerError(
+            "Void type is not allowed in function arguments: " + name,
+        );
     }
 
     // TypeDescription
@@ -95,5 +98,5 @@ export function resolveFuncTypeUnpack(
     }
 
     // Unreachable
-    throw Error("Unknown type: " + descriptor.kind);
+    throwInternalCompilerError("Unknown type: " + descriptor.kind);
 }

@@ -1,6 +1,7 @@
 import { ABITypeRef } from "@ton/core";
 import { getType } from "../../types/resolveDescriptors";
 import { WriterContext } from "../Writer";
+import { throwInternalCompilerError } from "../../error/errors";
 
 export function resolveFuncTypeFromAbi(
     fields: ABITypeRef[],
@@ -39,7 +40,9 @@ export function resolveFuncTypeFromAbi(
                 } else {
                     const t = getType(ctx.ctx, f.type);
                     if (t.kind !== "struct") {
-                        throw Error("Unsupported type: " + t.kind);
+                        throwInternalCompilerError(
+                            "Unsupported type: " + t.kind,
+                        );
                     }
                     if (f.optional ?? t.fields.length === 0) {
                         res.push("tuple");

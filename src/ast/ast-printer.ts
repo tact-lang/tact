@@ -897,10 +897,10 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     struct_field_initializer: exprNode(ppAstStructFieldInit),
     struct_field_value: exprNode(ppAstStructFieldValue),
     destruct_mapping: () => {
-        throw new Error("Not implemented");
+        throwInternalCompilerError("Not implemented");
     },
     destruct_end: () => {
-        throw new Error("Not implemented");
+        throwInternalCompilerError("Not implemented");
     },
     simple: exprNode(ppReceiverSubKind),
     fallback: exprNode(ppReceiverSubKind),

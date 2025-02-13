@@ -2,6 +2,7 @@ import { Maybe } from "@ton/core/dist/utils/maybe";
 import { trimIndent } from "../../utils/text";
 import { WrittenFunction } from "../Writer";
 import { createPadded } from "./createPadded";
+import { throwInternalCompilerError } from "../../error/errors";
 
 export function emit(args: {
     header?: Maybe<string>;
@@ -46,7 +47,7 @@ export function emit(args: {
                     }
                     res += `${sig} asm${f.code.shuffle} """\n    ${f.code.code}\n""";`;
                 } else {
-                    throw new Error(`Unknown function body kind`);
+                    throwInternalCompilerError(`Unknown function body kind`);
                 }
             }
         }
@@ -55,7 +56,9 @@ export function emit(args: {
         const m = args.functions.find((v) => v.name === "$main");
         if (m) {
             if (m.code.kind !== "generic") {
-                throw new Error(`Main function should have generic body`);
+                throwInternalCompilerError(
+                    `Main function should have generic body`,
+                );
             }
             if (res !== "") {
                 res += "\n\n";

@@ -6,6 +6,7 @@ import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
 import { getAllTypes } from "../types/resolveDescriptors";
 import { getAllErrors } from "../types/resolveErrors";
 import { idText } from "../ast/ast-helpers";
+import { throwCompilationError } from "../error/errors";
 
 export function createABI(ctx: CompilerContext, name: string): ContractABI {
     const allTypes = getAllTypes(ctx);
@@ -13,10 +14,10 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     // Contract
     const contract = allTypes.find((v) => v.name === name);
     if (!contract) {
-        throw Error(`Contract "${name}" not found`);
+        throwCompilationError(`Contract "${name}" not found`);
     }
     if (contract.kind !== "contract") {
-        throw Error("Not a contract");
+        throwCompilationError("Not a contract");
     }
 
     // Structs

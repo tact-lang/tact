@@ -33,7 +33,7 @@ export function createVirtualFileSystem(
             const name = filePath.slice(normalizedRoot.length);
             const content = fs[name];
             if (typeof content !== "string") {
-                throw Error(`File ${name} not found at ${filePath}`);
+                throw new Error(`File ${name} not found at ${filePath}`);
             } else {
                 return Buffer.from(content, "base64");
             }

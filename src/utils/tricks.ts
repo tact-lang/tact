@@ -1,3 +1,5 @@
+import { throwInternalCompilerError } from "../error/errors";
+
 /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/consistent-indexed-object-style */
 type Extend<T extends any[], H> = H extends infer A ? [...T, A] : never;
 type Flat<TS extends any[], R extends any[] = []> = TS extends [
@@ -85,11 +87,9 @@ export const match = <const I extends any[]>(
                 ),
     });
     return rec<Flat<I>, never>(() => {
-        throw new Error("Not exhaustive");
+        throwInternalCompilerError("Not exhaustive");
     }) as MV<Flat<I>, never>;
 };
-
-import { throwInternalCompilerError } from "../error/errors";
 
 /**
  * Convert union to intersection. See https://stackoverflow.com/q/50374908

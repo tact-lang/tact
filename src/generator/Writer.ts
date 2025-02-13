@@ -2,7 +2,7 @@ import { CompilerContext } from "../context/context";
 import { escapeUnicodeControlCodes, trimIndent } from "../utils/text";
 import { topologicalSort } from "../utils/utils";
 import { Writer } from "../utils/Writer";
-import { TactInternalCompilerError } from "../error/errors";
+import { throwInternalCompilerError } from "../error/errors";
 
 type Flag = "inline" | "impure" | "inline_ref";
 
@@ -84,7 +84,7 @@ export class WriterContext {
             }
         }
         if (missing.size > 0) {
-            throw new TactInternalCompilerError(
+            throwInternalCompilerError(
                 `Functions ${Array.from(missing.keys())
                     .map((v) => `"${v}"`)
                     .join(", ")} wasn't processed and generated`,
@@ -134,10 +134,10 @@ export class WriterContext {
         //
 
         if (this.#functions.has(name)) {
-            throw new Error(`Function "${name}" already defined`); // Should not happen
+            throwInternalCompilerError(`Function "${name}" already defined`); // Should not happen
         }
         if (this.#functionsRendering.has(name)) {
-            throw new Error(`Function "${name}" already rendering`); // Should not happen
+            throwInternalCompilerError(`Function "${name}" already rendering`); // Should not happen
         }
 
         //
@@ -191,11 +191,11 @@ export class WriterContext {
         const comment = this.#pendingComment;
         const context = this.#pendingContext;
         if (!signature && name !== "$main") {
-            throw new Error(`Function "${name}" signature not set`);
+            throwInternalCompilerError(`Function "${name}" signature not set`);
         }
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!code) {
-            throw new Error(`Function "${name}" body not set`);
+            throwInternalCompilerError(`Function "${name}" body not set`);
         }
         this.#pendingDepends = null;
         this.#pendingWriter = null;
@@ -222,13 +222,13 @@ export class WriterContext {
                 code,
             };
         } else {
-            throw new Error(`ASM can be set only inside function`);
+            throwInternalCompilerError(`ASM can be set only inside function`);
         }
     }
 
     body(handler: () => void) {
         if (this.#pendingWriter) {
-            throw new Error(`Body can be set only once`);
+            throwInternalCompilerError(`Body can be set only once`);
         }
         this.#pendingWriter = new Writer();
         handler();
@@ -250,7 +250,9 @@ export class WriterContext {
         if (this.#pendingName) {
             this.#pendingSignature = sig;
         } else {
-            throw new Error(`Signature can be set only inside function`);
+            throwInternalCompilerError(
+                `Signature can be set only inside function`,
+            );
         }
     }
 
@@ -258,7 +260,7 @@ export class WriterContext {
         if (this.#pendingName) {
             this.#pendingFlags!.add(flag);
         } else {
-            throw new Error(`Flag can be set only inside function`);
+            throwInternalCompilerError(`Flag can be set only inside function`);
         }
     }
 
@@ -273,7 +275,9 @@ export class WriterContext {
         if (this.#pendingName) {
             this.#pendingComment = escapeUnicodeControlCodes(trimIndent(src));
         } else {
-            throw new Error(`Comment can be set only inside function`);
+            throwInternalCompilerError(
+                `Comment can be set only inside function`,
+            );
         }
     }
 
@@ -281,7 +285,9 @@ export class WriterContext {
         if (this.#pendingName) {
             this.#pendingContext = src;
         } else {
-            throw new Error(`Context can be set only inside function`);
+            throwInternalCompilerError(
+                `Context can be set only inside function`,
+            );
         }
     }
 
@@ -323,7 +329,7 @@ export class WriterContext {
 
     markRendered(key: string) {
         if (this.#rendered.has(key)) {
-            throw new Error(`Key "${key}" already rendered`);
+            throwInternalCompilerError(`Key "${key}" already rendered`);
         }
         this.#rendered.add(key);
     }

@@ -81,7 +81,7 @@ function writeStructConstructor(
                 } else if (v.default !== undefined) {
                     return writeValue(v.default, ctx);
                 } else {
-                    throw Error(
+                    throwInternalCompilerError(
                         `Missing argument for field "${v.name}" in struct "${type.name}"`,
                     ); // Must not happen
                 }
@@ -346,8 +346,8 @@ export function writeExpression(
         ) {
             const file = f.loc.file;
             const loc_info = f.loc.interval.getLineAndColumn();
-            throw Error(
-                `(Internal Compiler Error) Invalid types for binary operation: ${file}:${loc_info.lineNum}:${loc_info.colNum}`,
+            throwInternalCompilerError(
+                `Invalid types for binary operation: ${file}:${loc_info.lineNum}:${loc_info.colNum}`,
             ); // Should be unreachable
         }
 
@@ -695,7 +695,7 @@ export function writeExpression(
         }
 
         if (selfTyRef.kind === "ref_bounced") {
-            throw Error("Unimplemented");
+            throwInternalCompilerError("Unimplemented");
         }
 
         throwCompilationError(
@@ -728,5 +728,5 @@ export function writeExpression(
     // Unreachable
     //
 
-    throw Error("Unknown expression");
+    throwInternalCompilerError("Unknown expression");
 }

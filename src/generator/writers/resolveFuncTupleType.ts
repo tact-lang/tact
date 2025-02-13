@@ -1,6 +1,7 @@
 import { getType } from "../../types/resolveDescriptors";
 import { TypeDescription, TypeRef } from "../../types/types";
 import { WriterContext } from "../Writer";
+import { throwInternalCompilerError } from "../../error/errors";
 
 export function resolveFuncTupleType(
     descriptor: TypeRef | TypeDescription | string,
@@ -19,7 +20,7 @@ export function resolveFuncTupleType(
         return "cell";
     }
     if (descriptor.kind === "ref_bounced") {
-        throw Error("Unimplemented");
+        throwInternalCompilerError("Unimplemented");
     }
     if (descriptor.kind === "void") {
         return "()";
@@ -44,12 +45,13 @@ export function resolveFuncTupleType(
         } else if (descriptor.name === "StringBuilder") {
             return "tuple";
         } else {
-            throw Error("Unknown primitive type: " + descriptor.name);
+            throwInternalCompilerError(
+                "Unknown primitive type: " + descriptor.name,
+            );
         }
     } else if (descriptor.kind === "struct" || descriptor.kind === "contract") {
         return "tuple";
     }
 
-    // Unreachable
-    throw Error("Unknown type: " + descriptor.kind);
+    throwInternalCompilerError("Unknown type: " + descriptor.kind);
 }

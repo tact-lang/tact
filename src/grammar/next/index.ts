@@ -3,7 +3,7 @@ import * as A from "../../ast/ast";
 import { FactoryAst } from "../../ast/ast-helpers";
 import * as G from "./grammar";
 import { $ast } from "./grammar";
-import { TactCompilationError } from "../../error/errors";
+import { throwCompilationError } from "../../error/errors";
 import { SyntaxErrors, syntaxErrorSchema } from "../parser-error";
 import { AstSchema, getAstSchema } from "../../ast/getAstSchema";
 import { getSrcInfo } from "../src-info";
@@ -1388,10 +1388,7 @@ export const getParser = (ast: FactoryAst) => {
             display,
             (message: string) => (source: $.Loc) => {
                 const srcInfo = locationToSrcInfo(source);
-                throw new TactCompilationError(
-                    display.at(srcInfo, message),
-                    srcInfo,
-                );
+                throwCompilationError(message, srcInfo);
             },
         );
 

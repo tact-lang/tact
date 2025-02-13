@@ -8,7 +8,10 @@ import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeStatement } from "./writeFunction";
 import { AstNumber, AstReceiver } from "../../ast/ast";
-import { throwCompilationError } from "../../error/errors";
+import {
+    throwCompilationError,
+    throwInternalCompilerError,
+} from "../../error/errors";
 
 export function commentPseudoOpcode(comment: string, ast: AstReceiver): string {
     const buffer = Buffer.from(comment, "utf8");
@@ -77,7 +80,9 @@ export function writeRouter(
                 for (const r of bounceReceivers) {
                     const selector = r.selector;
                     if (selector.kind !== "bounce-binary")
-                        throw Error("Invalid selector type: " + selector.kind); // Should not happen
+                        throwInternalCompilerError(
+                            "Invalid selector type: " + selector.kind,
+                        ); // Should not happen
                     const allocation = getType(ctx.ctx, selector.type);
                     ctx.append(
                         `;; Bounced handler for ${selector.type} message`,
@@ -106,7 +111,9 @@ export function writeRouter(
                 if (fallbackReceiver) {
                     const selector = fallbackReceiver.selector;
                     if (selector.kind !== "bounce-fallback")
-                        throw Error("Invalid selector type: " + selector.kind);
+                        throwInternalCompilerError(
+                            "Invalid selector type: " + selector.kind,
+                        );
 
                     // Execute function
                     ctx.append(`;; Fallback bounce receiver`);
@@ -146,7 +153,9 @@ export function writeRouter(
             ) {
                 const allocation = getType(ctx.ctx, selector.type);
                 if (!allocation.header) {
-                    throw Error("Invalid allocation: " + selector.type);
+                    throwInternalCompilerError(
+                        "Invalid allocation: " + selector.type,
+                    );
                 }
                 ctx.append();
                 ctx.append(`;; Receive ${selector.type} message`);
