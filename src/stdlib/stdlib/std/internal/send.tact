@@ -15,7 +15,7 @@ struct SendParameters {
     bounce: Bool = true;
     to: Address;
     value: Int;
-    mode: Int = 0;
+    mode: Int = SendDefaultMode;
     body: Cell? = null;
     code: Cell? = null;
     data: Cell? = null;
