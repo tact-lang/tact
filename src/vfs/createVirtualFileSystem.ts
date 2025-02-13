@@ -1,5 +1,6 @@
 import normalize from "path-normalize";
 import { VirtualFileSystem } from "./VirtualFileSystem";
+import { throwCompilationError } from "../error/errors";
 
 export function createVirtualFileSystem(
     root: string,
@@ -14,7 +15,7 @@ export function createVirtualFileSystem(
         root: normalizedRoot,
         exists(filePath: string): boolean {
             if (!filePath.startsWith(normalizedRoot)) {
-                throw new Error(
+                throwCompilationError(
                     `Path '${filePath}' is outside of the root directory '${normalizedRoot}'`,
                 );
             }
@@ -26,24 +27,24 @@ export function createVirtualFileSystem(
         },
         readFile(filePath): Buffer {
             if (!filePath.startsWith(normalizedRoot)) {
-                throw new Error(
+                throwCompilationError(
                     `Path '${filePath}' is outside of the root directory '${normalizedRoot}'`,
                 );
             }
             const name = filePath.slice(normalizedRoot.length);
             const content = fs[name];
             if (typeof content !== "string") {
-                throw new Error(`File ${name} not found at ${filePath}`);
+                throwCompilationError(`File ${name} not found at ${filePath}`);
             } else {
                 return Buffer.from(content, "base64");
             }
         },
         writeFile(filePath, content): void {
             if (readonly) {
-                throw new Error("File system is readonly");
+                throwCompilationError("File system is readonly");
             }
             if (!filePath.startsWith(normalizedRoot)) {
-                throw new Error(
+                throwCompilationError(
                     `Path '${filePath}' is outside of the root directory '${normalizedRoot}'`,
                 );
             }

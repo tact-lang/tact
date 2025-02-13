@@ -1,6 +1,7 @@
 import { VirtualFileSystem } from "./VirtualFileSystem";
 import fs from "fs";
 import path from "path";
+import { throwCompilationError } from "../error/errors";
 
 export function createNodeFileSystem(
     root: string,
@@ -14,7 +15,7 @@ export function createNodeFileSystem(
         root: normalizedRoot,
         exists(filePath: string): boolean {
             if (!filePath.startsWith(normalizedRoot)) {
-                throw new Error(
+                throwCompilationError(
                     `Path '${filePath}' is outside of the root directory '${normalizedRoot}'`,
                 );
             }
@@ -25,7 +26,7 @@ export function createNodeFileSystem(
         },
         readFile(filePath) {
             if (!filePath.startsWith(normalizedRoot)) {
-                throw new Error(
+                throwCompilationError(
                     `Path '${filePath}' is outside of the root directory '${normalizedRoot}'`,
                 );
             }
@@ -33,10 +34,10 @@ export function createNodeFileSystem(
         },
         writeFile(filePath, content) {
             if (readonly) {
-                throw new Error("File system is readonly");
+                throwCompilationError("File system is readonly");
             }
             if (!filePath.startsWith(normalizedRoot)) {
-                throw new Error(
+                throwCompilationError(
                     `Path '${filePath}' is outside of the root directory '${normalizedRoot}'`,
                 );
             }

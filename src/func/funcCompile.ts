@@ -1,4 +1,8 @@
 import { ILogger } from "../context/logger";
+import {
+    throwCompilationError,
+    throwInternalCompilerError,
+} from "../error/errors";
 
 // Wasm Imports
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -112,7 +116,9 @@ export async function funcCompile(args: {
                                 (v) => v.path === data,
                             );
                             if (!fl) {
-                                throw Error("File not found: " + data);
+                                throwCompilationError(
+                                    "File not found: " + data,
+                                );
                             }
                             allocatedPointers.push(
                                 writeToCStringPtr(mod, fl.content, contents),
@@ -181,7 +187,7 @@ export async function funcCompile(args: {
         }
     } catch (e) {
         args.logger.error(e as Error);
-        throw Error("Unexpected compiler response");
+        return throwInternalCompilerError("Unexpected compiler response");
     } finally {
         for (const i of allocatedFunctions) {
             mod.removeFunction(i);
@@ -190,5 +196,5 @@ export async function funcCompile(args: {
             mod._free(i);
         }
     }
-    throw Error("Unexpected compiler response");
+    throwInternalCompilerError("Unexpected compiler response");
 }

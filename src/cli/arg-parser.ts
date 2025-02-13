@@ -1,4 +1,5 @@
 import type { Unwrap } from "../utils/tricks";
+import { throwInternalCompilerError } from "../error/errors";
 
 type Token<K, V> = Parser<[K, V]>;
 type Parser<T> = (argv: Argv) => Match<T>;
@@ -126,11 +127,11 @@ export const ArgParser = (Errors: ArgParserErrors) => {
                         res.value(result as Unwrap<TokenMap<T>>);
                         argv = res.rest;
                     } else {
-                        throw new Error("Unhandled failure");
+                        throwInternalCompilerError("Unhandled failure");
                     }
                 }
             }
-            throw new Error("Iteration limit reached");
+            throwInternalCompilerError("Iteration limit reached");
         },
     });
 
