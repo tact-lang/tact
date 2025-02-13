@@ -62,15 +62,15 @@
     },
     {
       "label": "1.5.3 with address functions in Tact (#1766)",
-      "transfer": "21298",
-      "burn": "15792",
-      "discovery": "9997"
+      "transfer": "20930",
+      "burn": "15575",
+      "discovery": "9767"
     },
     {
       "label": "master",
-      "transfer": "21298",
-      "burn": "15792",
-      "discovery": "9997"
+      "transfer": "20930",
+      "burn": "15575",
+      "discovery": "9767"
     }
   ]
 }

@@ -12,14 +12,38 @@ asm extends fun toAddressUnsafe(self: Slice): Address { NOP }
 asm extends fun asSlice(self: Address): Slice { NOP }
 
 inline fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address {
-    let hash = beginCell()
-        .storeUint(0, 2)
-        .storeUint(0b11_0, 3)
-        .storeRef(code)
-        .storeRef(data)
-        .endCell()
-        .hash();
+    let hash = calculateAddressHash(code, data);
     return newAddress(chain, hash);
+}
+
+inline fun calculateAddressHash(code: Cell, data: Cell): Int {
+    let builder = beginCell()
+        // refs_descriptor:bits8 bits_descriptor:bits8 data:bitsN
+        .storeUint(
+            // refs_descriptor: ref_count + ((exotic? & 1) * 8) + (mask * 32)
+            //                  2 refs (code + data), non-exotic, zero-mask
+            (2 << 16)
+            // bits_descriptor: floor(bit_count / 8) + ceil(bit_count, 8)
+            //                  floor (5 bits / 8) + ceil(5 bits / 8) = 0 + 1 = 1
+            | (1 << 8)
+            // data: [0b00110] + [0b100] = [0b00110100] = 0x34 (data + augmented bits)
+            //       0b00110 - data (split_depth, special, code, data, Library)
+            //       0b100 - augmented bits (Leading 1 + zeroes to make section multiple of eight)
+            | 0x34,
+            24
+        )
+        // depth_descriptors
+        .storeUint(code.depth(), 16)
+        .storeUint(data.depth(), 16)
+        // ref hashes
+        .storeUint(code.hash(), 256)
+        .storeUint(data.hash(), 256);
+    return builderSha256(builder);
+}
+
+asm fun builderSha256(b: Builder): Int {
+    1 PUSHINT
+    HASHEXT_SHA256
 }
 
 struct StateInit {
