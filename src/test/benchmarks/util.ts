@@ -16,14 +16,14 @@ export function getUsedGas(sendEnough: SendMessageResult): number {
 
 type BenchmarkResult = {
     label: string;
-    commit: string | null;
+    commit: string | undefined;
     gas: Record<string, number>;
 };
 
 type RawBenchmarkResult = {
     results: {
         label: string;
-        commit?: string;
+        commit: string | null;
         gas: Record<string, string>;
     }[];
 };
@@ -33,7 +33,7 @@ export function generateResults(
 ): BenchmarkResult[] {
     return benchmarkResults.results.map((result) => ({
         label: result.label,
-        commit: result.commit ?? null,
+        commit: result.commit ?? undefined,
         gas: Object.fromEntries(
             Object.entries(result.gas).map(([key, value]) => [
                 key,
@@ -56,17 +56,17 @@ function calculateChange(prev: number, curr: number): string {
 
 function calculateChanges(
     results: BenchmarkResult[],
-    METRICS: readonly string[],
+    metrics: readonly string[],
 ): string[][] {
     return results.reduce<string[][]>((changes, currentResult, index) => {
         if (index === 0) {
-            return [METRICS.map(() => "")];
+            return [metrics.map(() => "")];
         }
 
         const previousResult = results.at(index - 1);
         const rowChanges =
             typeof previousResult !== "undefined"
-                ? METRICS.map((metric) =>
+                ? metrics.map((metric) =>
                       calculateChange(
                           previousResult.gas[metric]!,
                           currentResult.gas[metric]!,
