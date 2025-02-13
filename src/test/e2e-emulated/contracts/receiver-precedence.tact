@@ -38,10 +38,6 @@ contract ReceiverTester {
         self.receiverKind = "empty";
     }
 
-    receive("message") {
-        self.receiverKind = "comment";
-    }
-
     receive(msg: String) {
         if (msg == "message") {
             self.receiverKind = "error_comment";
@@ -63,6 +59,10 @@ contract ReceiverTester {
         } else {
             self.receiverKind = "fallback";
         }
+    }
+
+    receive("message") {
+        self.receiverKind = "comment";
     }
 
     // Bounced testing
@@ -112,25 +112,15 @@ contract ReceiverTester {
                 });
     }
 
-    bounced(msg: bounced<BinaryIntOperation>) {
-        self.receiverKind = "bounced_binary_message";
-    }
-
     bounced(msg: Slice) {
         self.receiverKind = "bounced_fallback";
     }
 
+    bounced(msg: bounced<BinaryIntOperation>) {
+        self.receiverKind = "bounced_binary_message";
+    }
+
     // External receiver testing
-
-    external() {
-        acceptMessage();
-        self.receiverKind = "external_empty";
-    }
-
-    external("message") {
-        acceptMessage();
-        self.receiverKind = "external_comment";
-    }
 
     external(msg: String) {
         acceptMessage();
@@ -139,6 +129,16 @@ contract ReceiverTester {
         } else {
             self.receiverKind = "external_comment_fallback";
         }
+    }
+    
+    external() {
+        acceptMessage();
+        self.receiverKind = "external_empty";
+    }
+
+    external("message") {
+        acceptMessage();
+        self.receiverKind = "external_comment";
     }
 
     external(msg: Message) {
