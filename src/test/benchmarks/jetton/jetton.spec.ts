@@ -1,44 +1,44 @@
-import { Address, beginCell, Builder, Cell, Sender, toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { Sender } from "@ton/core";
+import { Address, beginCell, Builder, Cell, toNano } from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import chalk from "chalk";
 
-import {
-    JettonMinter,
+import type {
     Mint,
     ProvideWalletAddress,
     TokenBurn,
     TokenUpdateContent,
 } from "../contracts/output/jetton_minter_discoverable_JettonMinter";
-import {
-    JettonWallet,
-    TokenTransfer,
-} from "../contracts/output/jetton_minter_discoverable_JettonWallet";
+import { JettonMinter } from "../contracts/output/jetton_minter_discoverable_JettonMinter";
+import type { TokenTransfer } from "../contracts/output/jetton_minter_discoverable_JettonWallet";
+import { JettonWallet } from "../contracts/output/jetton_minter_discoverable_JettonWallet";
 
 import "@ton/test-utils";
-import { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
+import type { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
 import Table from "cli-table3";
 import { getUsedGas } from "../util";
 import benchmarkResults from "./results.json";
 
 type BenchmarkResult = {
     label: string;
-    transfer: bigint;
-    burn: bigint;
-    discovery: bigint;
+    transfer: number;
+    burn: number;
+    discovery: number;
 };
 
 const results: BenchmarkResult[] = benchmarkResults.results.map((result) => ({
     label: result.label,
-    transfer: BigInt(result.transfer),
-    burn: BigInt(result.burn),
-    discovery: BigInt(result.discovery),
+    transfer: Number(result.transfer),
+    burn: Number(result.burn),
+    discovery: Number(result.discovery),
 }));
 
 type MetricKey = "transfer" | "burn" | "discovery";
 const METRICS: readonly MetricKey[] = ["transfer", "burn", "discovery"];
 
-function calculateChange(prev: bigint, curr: bigint): string {
-    const change = ((Number(curr - prev) / Number(prev)) * 100).toFixed(2);
+function calculateChange(prev: number, curr: number): string {
+    const change = (((curr - prev) / prev) * 100).toFixed(2);
     const number = parseFloat(change);
     if (number === 0) {
         return chalk.gray(`same`);

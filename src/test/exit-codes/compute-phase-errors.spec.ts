@@ -1,9 +1,8 @@
 import { toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import {
-    ComputePhaseErrorsTester as TestContract,
-    ExitCode4,
-} from "./contracts/output/compute-phase-errors_ComputePhaseErrorsTester";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
+import type { ExitCode4 } from "./contracts/output/compute-phase-errors_ComputePhaseErrorsTester";
+import { ComputePhaseErrorsTester as TestContract } from "./contracts/output/compute-phase-errors_ComputePhaseErrorsTester";
 import "@ton/test-utils";
 
 describe("compute phase errors", () => {

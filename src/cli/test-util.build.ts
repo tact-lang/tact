@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 import { join } from "path";
 import { writeFile, mkdir } from "fs/promises";
-import { Config, Project } from "../config/parseConfig";
+import type { Config, Project } from "../config/parseConfig";
 
 type Result = Exited | Signaled;
 type Exited = { kind: "exited"; code: number; stdout: string };

@@ -1,33 +1,26 @@
-import * as A from "../ast/ast";
-import {
-    eqNames,
-    FactoryAst,
-    idText,
-    isSelfId,
-    isSlice,
-    selfId,
-} from "../ast/ast-helpers";
+import type * as A from "../ast/ast";
+import type { FactoryAst } from "../ast/ast-helpers";
+import { eqNames, idText, isSelfId, isSlice, selfId } from "../ast/ast-helpers";
 import { traverse, traverseAndCheck } from "../ast/iterators";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
 } from "../error/errors";
-import { CompilerContext, createContextStore, Store } from "../context/context";
-import {
+import type { CompilerContext, Store } from "../context/context";
+import { createContextStore } from "../context/context";
+import type {
     ConstantDescription,
     FieldDescription,
     FunctionDescription,
     FunctionParameter,
     InitDescription,
     InitParameter,
-    printTypeRef,
     ReceiverSelector,
-    receiverSelectorName,
     TypeDescription,
     TypeRef,
-    typeRefEquals,
 } from "./types";
+import { printTypeRef, receiverSelectorName, typeRefEquals } from "./types";
 import { getRawAST } from "../context/store";
 import { cloneNode } from "../ast/clone";
 import { crc16 } from "../utils/crc16";
@@ -44,8 +37,9 @@ import { GlobalFunctions } from "../abi/global";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { addVariable, emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
-import { AstUtil, getAstUtil } from "../ast/util";
-import { ItemOrigin } from "../imports/source";
+import type { AstUtil } from "../ast/util";
+import { getAstUtil } from "../ast/util";
+import type { ItemOrigin } from "../imports/source";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();

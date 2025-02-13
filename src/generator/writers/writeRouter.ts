@@ -1,13 +1,13 @@
 import { beginCell } from "@ton/core";
 import { getType } from "../../types/resolveDescriptors";
-import { ReceiverDescription, TypeDescription } from "../../types/types";
-import { WriterContext } from "../Writer";
+import type { ReceiverDescription, TypeDescription } from "../../types/types";
+import type { WriterContext } from "../Writer";
 import { funcIdOf } from "./id";
 import { ops } from "./ops";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeStatement } from "./writeFunction";
-import { AstNumber, AstReceiver } from "../../ast/ast";
+import type { AstNumber, AstReceiver } from "../../ast/ast";
 import { throwCompilationError } from "../../error/errors";
 
 export function commentPseudoOpcode(comment: string, ast: AstReceiver): string {

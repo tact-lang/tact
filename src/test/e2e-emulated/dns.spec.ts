@@ -1,5 +1,6 @@
 import { beginCell, toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { DNSTester } from "./contracts/output/dns_DNSTester";
 import "@ton/test-utils";
 

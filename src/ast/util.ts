@@ -1,7 +1,9 @@
-import { Address, Cell, Slice } from "@ton/core";
-import * as A from "./ast";
-import { isLiteral, FactoryAst } from "./ast-helpers";
-import { dummySrcInfo, SrcInfo } from "../grammar";
+import type { Address, Cell, Slice } from "@ton/core";
+import type * as A from "./ast";
+import type { FactoryAst } from "./ast-helpers";
+import { isLiteral } from "./ast-helpers";
+import type { SrcInfo } from "../grammar";
+import { dummySrcInfo } from "../grammar";
 
 export const getAstUtil = ({ createNode }: FactoryAst) => {
     function makeUnaryExpression(

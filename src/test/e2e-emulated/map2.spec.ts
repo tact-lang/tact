@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { randomAddress } from "../utils/random-utils";
-import {
-    MapTestContract,
+import type {
     MapTestContract$Data,
     SetAllMaps,
     DelAllMaps,
     ReplaceAllMaps,
     ReplaceGetAllMaps,
 } from "./contracts/output/maps2_MapTestContract";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Address, beginCell, Dictionary, toNano } from "@ton/core";
+import { MapTestContract } from "./contracts/output/maps2_MapTestContract";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
+import type { Address } from "@ton/core";
+import { beginCell, Dictionary, toNano } from "@ton/core";
 import "@ton/test-utils";
 
 // Type definitions for keys and values to make them type-safe
