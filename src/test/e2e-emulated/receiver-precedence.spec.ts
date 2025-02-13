@@ -187,7 +187,7 @@ describe("receivers-precedence", () => {
         expect(receiver3).toBe("fallback");
 
         // Tell the contract to send an unknown non-arithmetical request to the calculator.
-        await contract.send(
+        const { transactions } = await contract.send(
             treasure.getSender(),
             { value: toNano("10") },
             "do_unknown_request",
@@ -196,6 +196,13 @@ describe("receivers-precedence", () => {
         // The request was bounced back, because the calculator does not know how to process it.
         // The contract gets the request bounced back into its bounced fallback receiver.
         expect(receiver4).toBe("bounced_fallback");
+
+        // Additionally, the transaction in the calculator fails with exit code 130
+        expect(transactions).toHaveTransaction({
+            from: contract.address,
+            to: calculator.address,
+            exitCode: 130,
+        });
     });
 
     it("should implement external receiver precedence correctly", async () => {
