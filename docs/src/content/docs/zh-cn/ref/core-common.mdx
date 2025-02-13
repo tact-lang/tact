@@ -93,12 +93,12 @@ fun context(): Context;
 
 返回 `Context{:tact}` [Struct](/zh-cn/book/structs-and-messages#structs)，包含：
 
-| 字段        | 类型                        | 描述                                                                                                                                                                                                                                                    |
-| :-------- | :------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bounced` | [`Bool{:tact}`][bool]     | 传入消息的[Bounced](https://ton.org/docs/learn/overviews/addses#bounceable-vs-non-ounceable-addresses) 标志.                                                                                                                                                 |
-| `sender`  | [`Address{:tact}`][p]     | 发送方在 TON 区块链上的内部地址。                                                                                                                                                                                                                                   |
-| `value`   | [`Int{:tact}`][int]       | 信息中 [nanoToncoins](/zh-cn/book/integers#nanotoncoin) 的数量。                                                                                                                                                                                                   |
-| `raw`     | [`Slice{:tact}`][slice]   | 信息的其余部分作为 [`Slice{:tact}`][slice]。 它遵循 TON 的 [内部消息布局](https://docs.ton.org/develop/smart-contracts/messages#message-layout)，从目标 [`Address{:tact}`][p] (`dest:MsgAddressInt` 在 [TL-B 记法](https://docs.ton.org/develop/data-formats/tl-b-language)) 开始。 |
+| 字段      | 类型                      | 描述
+| :-------- | :------------------------ | :---
+| `bounced` | [`Bool{:tact}`][bool]     | 传入消息的[Bounced](https://ton.org/docs/learn/overviews/addresses#bounceable-vs-non-bounceable-addresses) 标志.
+| `sender`  | [`Address{:tact}`][p]     | 发送方在 TON 区块链上的内部地址。
+| `value`   | [`Int{:tact}`][int]       | 信息中 [nanoToncoins](/zh-cn/book/integers#nanotoncoin) 的数量。
+| `raw`     | [`Slice{:tact}`][slice]   | 信息的其余部分作为 [`Slice{:tact}`][slice]。 它遵循 TON 的 [内部消息布局](https://docs.ton.org/develop/smart-contracts/messages#message-layout)，从目标 [`Address{:tact}`][p] (`dest:MsgAddressInt` 在 [TL-B 记法](https://docs.ton.org/develop/data-formats/tl-b-language)) 开始。
 
 示例用法：
 

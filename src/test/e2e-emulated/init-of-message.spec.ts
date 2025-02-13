@@ -1,6 +1,8 @@
 import { toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { InitData, Test } from "./contracts/output/init-of-message_Test";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
+import type { InitData } from "./contracts/output/init-of-message_Test";
+import { Test } from "./contracts/output/init-of-message_Test";
 import "@ton/test-utils";
 
 describe("init-of-message", () => {

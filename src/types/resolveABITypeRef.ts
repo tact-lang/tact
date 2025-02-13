@@ -1,5 +1,5 @@
-import { ABITypeRef } from "@ton/core";
-import * as A from "../ast/ast";
+import type { ABITypeRef } from "@ton/core";
+import type * as A from "../ast/ast";
 import {
     eqNames,
     idText,
@@ -17,10 +17,10 @@ import {
     throwCompilationError,
     throwInternalCompilerError,
 } from "../error/errors";
-import { TypeRef } from "./types";
-import { CompilerContext } from "../context/context";
+import type { TypeRef } from "./types";
+import type { CompilerContext } from "../context/context";
 import { getType } from "./resolveDescriptors";
-import { SrcInfo } from "../grammar";
+import type { SrcInfo } from "../grammar";
 
 type FormatDef = Record<
     string,

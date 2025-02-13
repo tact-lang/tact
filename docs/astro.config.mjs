@@ -285,6 +285,7 @@ export default defineConfig({
 					},
 					items: [
 						{ slug: 'ecosystem' },
+						{ slug: 'ecosystem/security-audits' },
 						{
 							label: 'Tools',
 							translations: { 'zh-CN': '工具' },

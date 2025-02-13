@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 import { join } from "path";
 import { writeFile, mkdir } from "fs/promises";
-import { Config, ConfigProject } from "../config/parseConfig";
+import type { Config, Project } from "../config/parseConfig";
 
 type Result = Exited | Signaled;
 type Exited = { kind: "exited"; code: number; stdout: string };
@@ -40,7 +40,7 @@ export const makeCodegen = (outputDir: string) => {
     const config = async (
         name: string,
         code: string,
-        partialConfig: Pick<ConfigProject, "options" | "mode">,
+        partialConfig: Pick<Project, "options" | "mode">,
     ) => {
         await mkdir(outputDir, { recursive: true });
         const outDir = outputDir;

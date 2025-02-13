@@ -1,6 +1,6 @@
 import { getType } from "../../types/resolveDescriptors";
-import { TypeDescription, TypeRef } from "../../types/types";
-import { WriterContext } from "../Writer";
+import type { TypeDescription, TypeRef } from "../../types/types";
+import type { WriterContext } from "../Writer";
 
 export function resolveFuncType(
     descriptor: TypeRef | TypeDescription | string,

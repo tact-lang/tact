@@ -15,6 +15,7 @@ cheatsheet
 Cheatsheet
 cheatsheets
 Cheatsheets
+CCITT
 cleanall
 codegen
 compilables
@@ -47,6 +48,7 @@ Georgiy
 getsimpleforwardfee
 gettest
 Héctor
+hehe
 heisenbugs
 idict
 infixl
@@ -166,5 +168,6 @@ vogons
 workchain
 workchains
 xffff
+XMODEM
 xtwitter
 привет

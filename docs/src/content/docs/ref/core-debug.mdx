@@ -21,7 +21,7 @@ The algorithm for generating the exit code works as follows:
 
 * First, the [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) hash of `error` message [`String{:tact}`][p] is obtained.
 * Then, its value is read as a 32-bit [big-endian](https://en.wikipedia.org/wiki/Endianness) number modulo $63000$ plus $1000$, in that order.
-* Finally, it's put into the `.md` compilation report file, which resides with the other compilation artifacts in your project's `outputs/` or `build/` directories.
+* Finally, it's put into the [`.md` compilation report file](/book/compile#report), which resides with the other compilation artifacts in your project's `outputs/` or `build/` directories.
 
 The generated exit code is guaranteed to be outside the common $0 - 255$ range reserved for TVM and Tact contract errors, which makes it possible to distinguish exit codes from `require(){:tact}` and any other [standard exit codes](/book/exit-codes).
 

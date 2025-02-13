@@ -1,7 +1,7 @@
-import { Address, Cell, Slice } from "@ton/core";
-import { SrcInfo } from "../grammar/src-info";
-import { RelativePath } from "../imports/path";
-import { Language } from "../imports/source";
+import type { Address, Cell, Slice } from "@ton/core";
+import type { SrcInfo } from "../grammar/src-info";
+import type { RelativePath } from "../imports/path";
+import type { Language } from "../imports/source";
 
 export type AstModule = {
     readonly kind: "module";
