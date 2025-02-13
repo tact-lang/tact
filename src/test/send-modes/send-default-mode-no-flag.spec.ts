@@ -1,12 +1,13 @@
 import { MessageModeTester } from "./contracts/output/message-mode-tester_MessageModeTester";
 import { Calculator } from "./contracts/output/message-mode-tester_Calculator";
-import {
-    Blockchain,
+import { Blockchain } from "@ton/sandbox";
+import type {
     BlockchainTransaction,
     SandboxContract,
     TreasuryContract,
 } from "@ton/sandbox";
-import { Message, toNano } from "@ton/core";
+import { toNano } from "@ton/core";
+import type { Message } from "@ton/core";
 import { findTransaction } from "@ton/test-utils";
 
 type OutMessageInfo = { validatorsForwardFee: bigint; value: bigint };
