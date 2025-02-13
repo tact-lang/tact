@@ -38,12 +38,7 @@ inline fun calculateAddressHash(code: Cell, data: Cell): Int {
         // ref hashes
         .storeUint(code.hash(), 256)
         .storeUint(data.hash(), 256);
-    return builderSha256(builder);
-}
-
-asm fun builderSha256(b: Builder): Int {
-    1 PUSHINT
-    HASHEXT_SHA256
+    return builder.hash();
 }
 
 struct StateInit {
