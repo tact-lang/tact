@@ -12,6 +12,11 @@
     "src/grammar/next/grammar.ts",
     "src/func/funcCompile.ts",
     "src/utils/tricks.ts",
+    "src/cli/colors.ts",
+    "src/cli/logger.ts",
+    "src/error/logger-util.ts",
+    "src/error/string-util.ts",
+    "src/server/run-server.ts",
     ".github/workflows/tact*.yml",
     ".github/actions/**/*.yml"
   ],

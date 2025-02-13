@@ -3,6 +3,22 @@ import { cwd } from "process";
 import type { AstFuncId, AstId, AstTypeId } from "../ast/ast";
 import type { SrcInfo } from "../grammar";
 
+export class TactInternalError extends Error {
+    constructor(public formattedMessage: string) {
+        super();
+    }
+}
+
+/**
+ * Throw internal error
+ */
+export const throwInternal = (string: string) => {
+    throw new TactInternalError(string);
+};
+
+/**
+ * @deprecated Use log.error()
+ */
 export class TactError extends Error {
     readonly loc?: SrcInfo;
     constructor(message: string, loc?: SrcInfo) {
@@ -11,14 +27,21 @@ export class TactError extends Error {
     }
 }
 
-// Any regular compilation error shown to user:
-// parsing, typechecking, code generation
+/**
+ * Any regular compilation error shown to user:
+ * parsing, typechecking, code generation
+ *
+ * @deprecated Use log.error()
+ */
 export class TactCompilationError extends TactError {
     constructor(message: string, loc?: SrcInfo) {
         super(message, loc);
     }
 }
 
+/**
+ * @deprecated Use throwInternal(), or log.internal() if context is known
+ */
 export class TactInternalCompilerError extends TactError {
     constructor(message: string, loc?: SrcInfo) {
         super(message, loc);
@@ -33,6 +56,9 @@ export class TactConstEvalError extends TactCompilationError {
     }
 }
 
+/**
+ * @deprecated Use log.source() and log.at().error()
+ */
 export function locationStr(sourceInfo: SrcInfo): string {
     if (sourceInfo.file) {
         const loc = sourceInfo.interval.getLineAndColumn() as {
@@ -46,6 +72,9 @@ export function locationStr(sourceInfo: SrcInfo): string {
     }
 }
 
+/**
+ * @deprecated Use log.error()
+ */
 export function throwCompilationError(
     message: string,
     source?: SrcInfo,
@@ -57,6 +86,9 @@ export function throwCompilationError(
     throw new TactCompilationError(msg, source);
 }
 
+/**
+ * @deprecated Use throwInternal(), or log.internal() if context is known
+ */
 export function throwInternalCompilerError(
     message: string,
     source?: SrcInfo,
@@ -82,6 +114,9 @@ export function throwConstEvalError(
     );
 }
 
+/**
+ * @deprecated Use loc.locatedId()
+ */
 export function idTextErr(
     ident: AstId | AstFuncId | AstTypeId | string,
 ): string {
@@ -91,6 +126,9 @@ export function idTextErr(
     return `"${ident.text}"`;
 }
 
+/**
+ * @deprecated Use `LogEntry` for external tooling
+ */
 export type TactErrorCollection =
     | Error
     | TactCompilationError

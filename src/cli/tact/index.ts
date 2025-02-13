@@ -4,7 +4,7 @@ import { createNodeFileSystem } from "../../vfs/createNodeFileSystem";
 import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";
 import { parseAndEvalExpression } from "../../optimizer/interpreter";
 import { showValue } from "../../types/types";
-import type { Config, ConfigProject } from "../../config/parseConfig";
+import type { Config, Project } from "../../config/parseConfig";
 import { parseConfig } from "../../config/parseConfig";
 import type { GetParserResult } from "../arg-parser";
 import { ArgParser } from "../arg-parser";
@@ -169,25 +169,26 @@ const parseConfigSafe = (
     }
 };
 
-export const createSingleFileConfig = (fileName: string): Config => ({
-    projects: [
-        {
-            name: fileName,
-            path: ensureExtension(fileName),
-            output: "./",
-            options: {
-                debug: true,
-                external: true,
-                ipfsAbiGetter: false,
-                interfacesGetter: false,
-                safety: {
-                    nullChecks: true,
+export const createSingleFileConfig = (fileName: string) =>
+    ({
+        projects: [
+            {
+                name: fileName,
+                path: ensureExtension(fileName),
+                output: "./",
+                options: {
+                    debug: true,
+                    external: true,
+                    ipfsAbiGetter: false,
+                    interfacesGetter: false,
+                    safety: {
+                        nullChecks: true,
+                    },
                 },
+                mode: "full",
             },
-            mode: "full",
-        },
-    ],
-});
+        ],
+    }) as const;
 
 const ensureExtension = (path: string): string => {
     return path.endsWith(".tact") ? path : `${path}.tact`;
@@ -300,7 +301,7 @@ const filterConfig = (
     };
 };
 
-type ExtraOptions = Pick<ConfigProject, "mode">;
+type ExtraOptions = Pick<Project, "mode">;
 
 const setConfigOptions = (config: Config, options: ExtraOptions): void => {
     for (const project of config.projects) {

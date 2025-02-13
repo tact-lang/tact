@@ -2,7 +2,7 @@ import { beginCell, Cell, Dictionary } from "@ton/core";
 import { decompileAll } from "@tact-lang/opcode";
 import { writeTypescript } from "../bindings/writeTypescript";
 import { featureEnable } from "../config/features";
-import type { ConfigProject } from "../config/parseConfig";
+import type { Project } from "../config/parseConfig";
 import { CompilerContext } from "../context/context";
 import { funcCompile } from "../func/funcCompile";
 import { writeReport } from "../generator/writeReport";
@@ -31,7 +31,7 @@ import { defaultParser } from "../grammar/grammar";
 export function enableFeatures(
     ctx: CompilerContext,
     logger: ILogger,
-    config: ConfigProject,
+    config: Project,
 ): CompilerContext {
     if (config.options === undefined) {
         return ctx;
@@ -61,7 +61,7 @@ export function enableFeatures(
 }
 
 export async function build(args: {
-    config: ConfigProject;
+    config: Project;
     project: VirtualFileSystem;
     stdlib: string | VirtualFileSystem;
     logger?: ILogger;
