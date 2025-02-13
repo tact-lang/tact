@@ -22,23 +22,23 @@ import benchmarkResults from "./results.json";
 
 type BenchmarkResult = {
     label: string;
-    transfer: bigint;
-    burn: bigint;
-    discovery: bigint;
+    transfer: number;
+    burn: number;
+    discovery: number;
 };
 
 const results: BenchmarkResult[] = benchmarkResults.results.map((result) => ({
     label: result.label,
-    transfer: BigInt(result.transfer),
-    burn: BigInt(result.burn),
-    discovery: BigInt(result.discovery),
+    transfer: Number(result.transfer),
+    burn: Number(result.burn),
+    discovery: Number(result.discovery),
 }));
 
 type MetricKey = "transfer" | "burn" | "discovery";
 const METRICS: readonly MetricKey[] = ["transfer", "burn", "discovery"];
 
-function calculateChange(prev: bigint, curr: bigint): string {
-    const change = ((Number(curr - prev) / Number(prev)) * 100).toFixed(2);
+function calculateChange(prev: number, curr: number): string {
+    const change = (((curr - prev) / prev) * 100).toFixed(2);
     const number = parseFloat(change);
     if (number === 0) {
         return chalk.gray(`same`);
