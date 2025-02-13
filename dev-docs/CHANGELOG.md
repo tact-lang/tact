@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Don't generate `lazy_deployment_completed` by default: PR [#1717](https://github.com/tact-lang/tact/pull/1717)
 - Optimized `emptyCell()` and `emptySlice()` functions: PR [#1696](https://github.com/tact-lang/tact/pull/1696)
 - Rearrange parameters of some asm methods in order described in `AsmShuffle`: PR [#1702](https://github.com/tact-lang/tact/pull/1702)
+- Error message for invalid type for function argument now shows expected type: PR [#1738](https://github.com/tact-lang/tact/pull/1738)
 
 ### Fixed
 
@@ -86,7 +87,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support overriding constants and methods of BaseTrait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
 - Forbid traits inherit implicitly from BaseTrait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
 - Forbid the `override` modifier for constants without the corresponding super-constant: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
+- Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
 - Remove "remainder" from error messages: PR [#1699](https://github.com/tact-lang/tact/pull/1699)
+- Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
 
 ### Docs
 
@@ -123,7 +126,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed the notion of the non-standard TL-B syntax `remainder<X>`: PR [#1599](https://github.com/tact-lang/tact/pull/1599)
 - Added description of `.boc`, `.ts`, `.abi`, `.pkg` files and completed Compilation page: PR [#1676](https://github.com/tact-lang/tact/pull/1676)
 - Marked gas-expensive functions and expressions: PR [#1703](https://github.com/tact-lang/tact/pull/1703)
-- Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
+- Added a Security audits page, with the first assessment from the Trail of Bits: PR [#1791](https://github.com/tact-lang/tact/pull/1791)
+- Listed functions with implicit mode and further clarified the interactions of message sending functions and their modes: PR [#1634](https://github.com/tact-lang/tact/pull/1634)
 
 ### Release contributors
 
