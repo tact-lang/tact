@@ -1,6 +1,7 @@
-
-import { Address, beginCell, Builder, Cell, Sender, toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { Sender } from "@ton/core";
+import { Address, beginCell, Builder, Cell, toNano } from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 
 import type {
     Mint,
@@ -13,7 +14,7 @@ import type { TokenTransfer } from "../contracts/output/jetton_minter_discoverab
 import { JettonWallet } from "../contracts/output/jetton_minter_discoverable_JettonWallet";
 
 import "@ton/test-utils";
-import { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
+import type { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
 import { generateResults, getUsedGas, printBenchmarkTable } from "../util";
 import benchmarkResults from "./results.json";
 

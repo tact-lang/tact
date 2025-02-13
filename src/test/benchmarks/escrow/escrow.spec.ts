@@ -1,5 +1,7 @@
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Address, beginCell, toNano } from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
+import type { Address } from "@ton/core";
+import { beginCell, toNano } from "@ton/core";
 import "@ton/test-utils";
 
 import { Escrow } from "../contracts/output/escrow_Escrow";

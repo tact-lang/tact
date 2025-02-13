@@ -1,4 +1,4 @@
-import { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
+import type { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
 import chalk from "chalk";
 import Table from "cli-table3";
 
