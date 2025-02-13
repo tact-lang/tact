@@ -46,7 +46,7 @@ describe("receivers-precedence", () => {
     it("should implement receivers precedence correctly", async () => {
         // Initially, since we sent a deploy message with empty message, the empty receiver executed
         const receiver1 = await contract.getReceiverKind();
-        expect(receiver1 === "empty").toBe(true);
+        expect(receiver1).toBe("empty");
 
         // Send now a "message"
         await contract.send(
@@ -56,7 +56,7 @@ describe("receivers-precedence", () => {
         );
         const receiver2 = await contract.getReceiverKind();
         // Note the receiver "error_comment" did not execute
-        expect(receiver2 === "comment").toBe(true);
+        expect(receiver2).toBe("comment");
 
         // Send now an arbitrary string different from "message"
         await contract.send(
@@ -67,7 +67,7 @@ describe("receivers-precedence", () => {
         const receiver3 = await contract.getReceiverKind();
         // Now, the receiver for general strings executed.
         // Note that "error_comment" still does not execute, nor the "message_slice" receiver.
-        expect(receiver3 === "comment_fallback").toBe(true);
+        expect(receiver3).toBe("comment_fallback");
 
         // Send now a Message (note the capital letter in Message)
         await contract.send(
@@ -77,7 +77,7 @@ describe("receivers-precedence", () => {
         );
         const receiver4 = await contract.getReceiverKind();
         // Now, the receiver for Message executed.
-        expect(receiver4 === "binary_message").toBe(true);
+        expect(receiver4).toBe("binary_message");
 
         // Now, simulate different kinds of messages using slices
 
@@ -89,7 +89,7 @@ describe("receivers-precedence", () => {
         );
         // The empty receiver executed
         const receiver5 = await contract.getReceiverKind();
-        expect(receiver5 === "empty").toBe(true);
+        expect(receiver5).toBe("empty");
 
         // Send now a "message" simulated as slice
         await contract.send(
@@ -104,7 +104,7 @@ describe("receivers-precedence", () => {
         );
         const receiver6 = await contract.getReceiverKind();
         // Note the receiver "error_comment" did not execute, nor the receiver "message_slice".
-        expect(receiver6 === "comment").toBe(true);
+        expect(receiver6).toBe("comment");
 
         // Send now an arbitrary string different from "message"
         await contract.send(
@@ -120,7 +120,7 @@ describe("receivers-precedence", () => {
         const receiver7 = await contract.getReceiverKind();
         // Now, the receiver for general strings executed.
         // Note that "error_comment" still does not execute.
-        expect(receiver7 === "comment_fallback").toBe(true);
+        expect(receiver7).toBe("comment_fallback");
 
         // Note that it is possible to trigger the "message_slice" receiver by passing an operation code different from 0, for example 10.
         await contract.send(
@@ -134,7 +134,7 @@ describe("receivers-precedence", () => {
         );
         const receiver8 = await contract.getReceiverKind();
         // Now, the receiver for slices takes the "message" path
-        expect(receiver8 === "message_slice").toBe(true);
+        expect(receiver8).toBe("message_slice");
 
         // Send now an arbitrary slice
         await contract.send(
@@ -144,7 +144,7 @@ describe("receivers-precedence", () => {
         );
         const receiver9 = await contract.getReceiverKind();
         // Now, the receiver for slices executed.
-        expect(receiver9 === "fallback").toBe(true);
+        expect(receiver9).toBe("fallback");
 
         // In all the cases, "error_comment" did not execute, as it should be.
     });
@@ -160,7 +160,7 @@ describe("receivers-precedence", () => {
         const receiver1 = await contract.getReceiverKind();
         // The request was bounced back, because the calculator does not do additions.
         // Note the bounced fallback receiver did not execute
-        expect(receiver1 === "bounced_binary_message").toBe(true);
+        expect(receiver1).toBe("bounced_binary_message");
 
         // Tell the contract to send a request to the calculator with a division by zero.
         // The contract will send the request: 10/0
@@ -172,7 +172,7 @@ describe("receivers-precedence", () => {
         const receiver2 = await contract.getReceiverKind();
         // The request was bounced back, because the calculator got a division by zero error
         // Note the bounced fallback receiver did not execute
-        expect(receiver2 === "bounced_binary_message").toBe(true);
+        expect(receiver2).toBe("bounced_binary_message");
 
         // Tell the contract to send a request to the calculator with a successful division.
         // The contract will send the request: 10/2
@@ -184,7 +184,7 @@ describe("receivers-precedence", () => {
         const receiver3 = await contract.getReceiverKind();
         // The request was successful, since the contract does not receive BinaryIntResult messages (as returned by the calculator),
         // The contract processed the result in the fallback receiver (NOT the bounced fallback receiver).
-        expect(receiver3 === "fallback").toBe(true);
+        expect(receiver3).toBe("fallback");
 
         // Tell the contract to send an unknown non-arithmetical request to the calculator.
         await contract.send(
@@ -195,7 +195,7 @@ describe("receivers-precedence", () => {
         const receiver4 = await contract.getReceiverKind();
         // The request was bounced back, because the calculator does not know how to process it.
         // The contract gets the request bounced back into its bounced fallback receiver.
-        expect(receiver4 === "bounced_fallback").toBe(true);
+        expect(receiver4).toBe("bounced_fallback");
     });
 
     it("should implement external receiver precedence correctly", async () => {
@@ -204,26 +204,26 @@ describe("receivers-precedence", () => {
         // Send an empty message
         await contract.sendExternal(null);
         const receiver1 = await contract.getReceiverKind();
-        expect(receiver1 === "external_empty").toBe(true);
+        expect(receiver1).toBe("external_empty");
 
         // Send now a "message"
         await contract.sendExternal("message");
         const receiver2 = await contract.getReceiverKind();
         // Note the external receiver "external_error_comment" did not execute
-        expect(receiver2 === "external_comment").toBe(true);
+        expect(receiver2).toBe("external_comment");
 
         // Send now an arbitrary string different from "message"
         await contract.sendExternal("msg");
         const receiver3 = await contract.getReceiverKind();
         // Now, the external receiver for general strings executed.
         // Note that "external_error_comment" still does not execute, nor the "external_message_slice" receiver.
-        expect(receiver3 === "external_comment_fallback").toBe(true);
+        expect(receiver3).toBe("external_comment_fallback");
 
         // Send now a Message
         await contract.sendExternal({ $$type: "Message", msg: "message" });
         const receiver4 = await contract.getReceiverKind();
         // Now, the external receiver for Message executed.
-        expect(receiver4 === "external_binary_message").toBe(true);
+        expect(receiver4).toBe("external_binary_message");
 
         // Tests for fallback external receiver (i.e., external receiver with Slice parameter),
         // will be added here once issue https://github.com/tact-lang/tact/issues/1669 is solved.
