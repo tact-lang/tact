@@ -12,7 +12,7 @@ const SendBounceIfActionFail: Int = 16;
 const SendOnlyEstimateFee: Int = 1024;
 
 struct SendParameters {
-    mode: Int = 0;
+    mode: Int = SendDefaultMode;
     body: Cell? = null;
     code: Cell? = null;
     data: Cell? = null;
