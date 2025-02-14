@@ -163,10 +163,8 @@ asm extends fun refs(self: Builder): Int { BREFS }
 
 asm extends fun bits(self: Builder): Int { BBITS }
 
-asm extends fun hash(self: Builder): Int {
-    1 PUSHINT
-    HASHEXT_SHA256
-}
+// FIXME: to be removed, see the `asm`-related comments in the PR
+asm extends fun hash(self: Builder): Int { ONE HASHEXT_SHA256 }
 
 /// Extension function for the `Builder`. Available since Tact 1.6.0.
 ///
