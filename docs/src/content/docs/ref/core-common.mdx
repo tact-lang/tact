@@ -196,6 +196,38 @@ let initPkg: StateInit = initOf SomeContract();
 let hereBeDragons: Address = contractAddressExt(0, initPkg.code, initPkg.data);
 ```
 
+### contractHash
+
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+```tact
+fun contractHash(code: Cell, data: Cell): Int;
+```
+
+Computes and returns an [`Int{:tact}`][int] value of the [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) hash of the `code` and `data` of the given contract. To assemble the `code` and `data` cells together for hashing, the [standard `Cell{:tact}` representation](/book/cells#cells-representation) is used.
+
+This hash is commonly called [account ID][account-id]. Together with the [workchain ID][workchain-id] it deterministically forms the address of the contract on TON Blockchain.
+
+Usage example:
+
+```tact
+let initPkg: StateInit = initOf SomeContract();
+let accountId: Int = contractHash(initPkg.code, initPkg.data);
+let basechainAddr: Address = newAddress(0, accountId);
+let basechainAddr2: Address = contractAddressExt(0, initPkg.code, initPkg.data);
+
+basechainAddr == basechainAddr2; // true
+```
+
+:::note[Useful links:]
+
+  [`chain` (Workchain ID) in TON Docs][workchain-id]\
+  [`hash` (Account ID) in TON Docs][account-id]\
+  [Contract's init package (`StateInit{:tact}`)](/book/expressions#initof)\
+  [Standard `Cell{:tact}` representation](/book/cells#cells-representation)
+
+:::
+
 ## Communication
 
 ### send

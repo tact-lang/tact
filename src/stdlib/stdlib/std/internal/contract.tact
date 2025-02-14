@@ -89,7 +89,30 @@ inline fun newAddress(chain: Int, hash: Int): Address {
         .asAddressUnsafe();
 }
 
-inline fun calculateAddressHash(code: Cell, data: Cell): Int {
+/// Global function. Available since Tact 1.6.0.
+///
+/// Computes and returns an `Int` value of the SHA-256 hash of the `code` and `data` of the given contract. To assemble the `code` and `data` cells together for hashing, the standard `Cell` representation is used.
+///
+/// This hash is commonly called account ID. Together with the workchain ID it deterministically forms the address of the contract on TON Blockchain.
+///
+/// ```tact
+/// fun example() {
+///     let initPkg: StateInit = initOf SomeContract();
+///     let accountId: Int = contractHash(initPkg.code, initPkg.data);
+///     let basechainAddr: Address = newAddress(0, accountId);
+///     let basechainAddr2: Address = contractAddressExt(0, initPkg.code, initPkg.data);
+///
+///     basechainAddr == basechainAddr2; // true
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-common#contracthash
+/// * https://docs.tact-lang.org/ref/core-common#newaddress
+/// * https://docs.tact-lang.org/ref/core-common#contractaddressext
+///
+// FIXME: to be replaced with an `asm` counterpart, see the comments in the PR
+inline fun contractHash(code: Cell, data: Cell): Int {
     let builder = beginCell()
         // refs_descriptor:bits8 bits_descriptor:bits8 data:bitsN
         .storeUint(
@@ -134,6 +157,7 @@ inline fun calculateAddressHash(code: Cell, data: Cell): Int {
 /// * https://docs.tact-lang.org/book/expressions#initof
 ///
 inline fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address {
+    let hash = contractHash(code, data);
     return newAddress(chain, hash);
 }
 
