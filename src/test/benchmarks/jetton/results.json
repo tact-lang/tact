@@ -91,7 +91,7 @@
       "commit": null
     },
     {
-      "label": "1.5.3 with more optimized send()",
+      "label": "1.5.3 with more optimized send (#1800)",
       "gas": {
         "transfer": "19164",
         "burn": "15909",
