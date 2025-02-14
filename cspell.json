@@ -56,6 +56,7 @@
     "src/test/exit-codes/contracts/compute-phase-errors.tact",
     "src/test/e2e-emulated/map-tests/build",
     "src/test/e2e-emulated/map-tests/map-properties-key-value-types.ts",
+    "src/utils/suggestNames.spec.ts",
     "/docs"
   ]
 }
