@@ -21,7 +21,7 @@
       "commit": "https://github.com/tact-lang/tact/commit/c98892a714c274a4d551a98b6e8e28e307fe95a4"
     },
     {
-      "label": "1.5.1 with improved send",
+      "label": "1.5.3 with improved send",
       "gas": {
         "fundingTon": "6376",
         "changeCode": "5500",
