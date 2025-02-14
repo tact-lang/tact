@@ -79,10 +79,8 @@ contract JettonMinter with OwnableTransferable {
         //But there is no any check in Howard's code and in official funC code,
         self.totalSupply += msg.amount; // Update total supply
 
-        let walletInit: StateInit = self.getJettonWalletInit(msg.receiver);
 
-        send(SendParameters{
-            to: contractAddress(walletInit),
+        deploy(DeployParameters{
             value: 0,
             bounce: true,
             mode: SendRemainingValue,
@@ -94,8 +92,7 @@ contract JettonMinter with OwnableTransferable {
                 forward_ton_amount: 1, // 1 nanoton is enough to send a notification
                 forward_payload: emptySlice()
             }.toCell(),
-        code: walletInit.code,
-        data: walletInit.data
+            init: self.getJettonWalletInit(msg.receiver)
         });
     }
 

@@ -34,24 +34,20 @@ contract JettonWallet with Ownable {
         //We shouldn't send transfers to masterchain due to higher gas price
         require(parseStdAddress(msg.destination.asSlice()).workchain == 0, "Invalid workchain of destination address");
 
-        let init: StateInit = initOf JettonWallet(msg.destination, self.master);
-        let wallet_address: Address = contractAddress(init);
 
-        send(SendParameters{
-            to: wallet_address,
+        deploy(DeployParameters{
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
-            body: TokenTransferInternal {
-            query_id: msg.query_id,
+            body: TokenTransferInternal{
+                query_id: msg.query_id,
                 amount: msg.amount,
                 from: self.owner,
                 response_destination: msg.response_destination,
                 forward_ton_amount: msg.forward_ton_amount,
                 forward_payload: msg.forward_payload
             }.toCell(),
-            code: init.code,
-            data: init.data
+            init: initOf JettonWallet(msg.destination, self.master)
         });
     }
 
@@ -145,10 +141,10 @@ contract JettonWallet with Ownable {
 
     get fun get_wallet_data(): JettonWalletData {
         return JettonWalletData{
-        balance: self.balance,
-        owner: self.owner,
-        master: self.master,
-        code: myCode() //may be replaced by "initOf JettonDefaultWallet(self.owner, self.master).code"
+            balance: self.balance,
+            owner: self.owner,
+            master: self.master,
+            code: myCode() //may be replaced by "initOf JettonDefaultWallet(self.owner, self.master).code"
         };
     }
 }

@@ -523,6 +523,54 @@ exports[`local-type-inference should automatically set types for let statements 
     {
       "fields": [
         {
+          "name": "mode",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "body",
+          "type": {
+            "kind": "simple",
+            "optional": true,
+            "type": "cell",
+          },
+        },
+        {
+          "name": "value",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "bounce",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
+        {
+          "name": "init",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "StateInit",
+          },
+        },
+      ],
+      "header": null,
+      "name": "DeployParameters",
+    },
+    {
+      "fields": [
+        {
           "name": "queryId",
           "type": {
             "format": 64,

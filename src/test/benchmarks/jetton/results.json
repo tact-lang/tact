@@ -98,6 +98,15 @@
         "discovery": "10003"
       },
       "commit": null
+    },
+    {
+      "label": "1.5.3 with deploy instead of send (#1832)",
+      "gas": {
+        "transfer": "19164",
+        "burn": "15909",
+        "discovery": "10003"
+      },
+      "commit": null
     }
   ]
 }
