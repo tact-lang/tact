@@ -71,7 +71,7 @@ contract Escrow with Deployable {
                     amount: amount,
                     destination: receiver,
                     responseDestination: receiver,
-                    forwardTonAmount: 10000000,
+                    forwardTonAmount: ton("0.01"),
                     forwardPayload: emptySlice(),
                     customPayload: null
                 }.toCell(),
