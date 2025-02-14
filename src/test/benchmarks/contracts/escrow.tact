@@ -70,8 +70,8 @@ contract Escrow with Deployable {
                     queryId: 0,
                     amount: amount,
                     destination: receiver,
-                    responseDestination: null,
-                    forwardTonAmount: 0,
+                    responseDestination: receiver,
+                    forwardTonAmount: 10000000,
                     forwardPayload: emptySlice(),
                     customPayload: null
                 }.toCell(),
@@ -113,7 +113,7 @@ contract Escrow with Deployable {
         require(self.dealAmount == msg.amount, "wrong fund amount");
 
         self.isFunded = true;
-        self.buyerAddress = msg.from;
+        self.buyerAddress = msg.sender;
     }
 
     // send funds to seller and royalty to guarantor
