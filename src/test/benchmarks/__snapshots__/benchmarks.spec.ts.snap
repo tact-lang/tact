@@ -11,3 +11,21 @@ exports[`benchmarks benchmark functions: gas used 1`] = `2769`;
 exports[`benchmarks benchmark readFwdFee: code size 1`] = `157`;
 
 exports[`benchmarks benchmark readFwdFee: gas used 1`] = `2799`;
+
+exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2907`;
+
+exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2908`;
+
+exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2910`;
+
+exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2384`;
+
+exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2384`;
+
+exports[`benchmarks benchmark sha256: gas hash string small 1`] = `2384`;
+
+exports[`benchmarks benchmark sha256: gas hash string small repeated 1`] = `2384`;
+
+exports[`benchmarks benchmark sha256: gas hash string small repeated more 1`] = `2384`;
+
+exports[`benchmarks benchmark sha256: gas hash string string repeated more 1`] = `2384`;
