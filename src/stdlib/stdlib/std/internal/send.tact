@@ -12,13 +12,13 @@ const SendBounceIfActionFail: Int = 16;
 const SendOnlyEstimateFee: Int = 1024;
 
 struct SendParameters {
-    bounce: Bool = true;
-    to: Address;
-    value: Int;
     mode: Int = SendDefaultMode;
     body: Cell? = null;
     code: Cell? = null;
     data: Cell? = null;
+    value: Int;
+    to: Address;
+    bounce: Bool = true;
 }
 
 
@@ -47,9 +47,6 @@ asm fun send(params: SendParameters) {
     //   body:(Either X ^X)
     // = MessageRelaxed X;
 
-    // Group 1: Rearrangements
-    3 4 BLKSWAP
-    s2 XCHG0
     // → Stack state
     // s0: `params.bounce`
     // s1: `params.to`
@@ -60,7 +57,7 @@ asm fun send(params: SendParameters) {
     // s6: `params.mode`
     // For brevity, the "params" prefix will be omitted from now on.
 
-    // Group 2: Storing the `bounce`, `to` and `value` into a Builder
+    // Group 1: Storing the `bounce`, `to` and `value` into a Builder
     NEWC
     b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
     1 STI               // store `bounce`
@@ -77,7 +74,7 @@ asm fun send(params: SendParameters) {
     // s3: `body`
     // s4: `mode`
 
-    // Group 3: Placing the Builder after code and data, then checking those for nullability
+    // Group 2: Placing the Builder after code and data, then checking those for nullability
     s2 XCHG0
     DUP2
     ISNULL
@@ -92,14 +89,13 @@ asm fun send(params: SendParameters) {
     // s4: `body`
     // s5: `mode`
 
-    // Group 4: Left branch of the IFELSE, executed if s0 is -1 (true)
+    // Group 3: Left branch of the IFELSE, executed if s0 is -1 (true)
     <{
         DROP2 // drop `data` and `code`, since either of those is null
-        NULL  // push a single null
-        SWAP  // place Builder on top
+        b{0} STSLICECONST
     }> PUSHCONT
 
-    // Group 4: Right branch of the IFELSE, executed if s0 is 0 (false)
+    // Group 3: Right branch of the IFELSE, executed if s0 is 0 (false)
     <{
         // _ split_depth:(Maybe (## 5))
         //   special:(Maybe TickTock)
@@ -107,17 +103,16 @@ asm fun send(params: SendParameters) {
         //   data:(Maybe ^Cell)
         //   library:(Maybe ^Cell)
         // = StateInit;
-        NEWC               // start composing StateInit
-        b{00} STSLICECONST // split_depth and special
+        ROT                // place message Builder on top
+        b{10} STSLICECONST // store Maybe = true, Either = false
+        // Start composing inlined StateInit
+        b{00} STSLICECONST // store split_depth and special first
         STDICT             // store code
         STDICT             // store data
         b{0} STSLICECONST  // store library
-        ENDC               // end composing StateInit
-        SWAP               // place Builder on top
-        b{1} STSLICECONST  // an extra bit for storing StateInit as ref
     }> PUSHCONT
 
-    // Group 4: IFELSE that does the branching shown above
+    // Group 3: IFELSE that does the branching shown above
     IFELSE
     // → Stack state
     // s0: Builder
@@ -125,15 +120,14 @@ asm fun send(params: SendParameters) {
     // s2: `body`
     // s3: `mode`
 
-    // Group 5: Finalizing the message
-    STDICT // store StateInit
+    // Group 4: Finalizing the message
     STDICT // store `body` as ref with an extra Maybe bit, since `body` might be null
     ENDC
     // → Stack state
     // s0: Cell
     // s1: `mode`
 
-    // Group 6: Sending the message, with `mode` on top
+    // Group 5: Sending the message, with `mode` on top
     SWAP
     SENDRAWMSG // https://github.com/tact-lang/tact/issues/1558
 }

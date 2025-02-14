@@ -91,11 +91,11 @@
       "commit": null
     },
     {
-      "label": "master",
+      "label": "1.5.3 with more optimized send (#1800)",
       "gas": {
-        "transfer": "21402",
-        "burn": "16029",
-        "discovery": "10067"
+        "transfer": "20714",
+        "burn": "15909",
+        "discovery": "10003"
       },
       "commit": null
     }
