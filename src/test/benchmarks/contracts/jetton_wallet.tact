@@ -45,7 +45,7 @@ contract JettonWallet with Ownable {
             body: JettonTransferInternal {
             queryId: msg.queryId,
                 amount: msg.amount,
-                from: self.owner,
+                sender: self.owner,
                 responseDestination: msg.responseDestination,
                 forwardTonAmount: msg.forwardTonAmount,
                 forwardPayload: msg.forwardPayload
@@ -58,7 +58,7 @@ contract JettonWallet with Ownable {
     receive(msg: JettonTransferInternal) {
         // This message should come only from master, or from other JettonWallet
         if (sender() != self.master) {
-            let init: StateInit = initOf JettonWallet(msg.from, self.master);
+            let init: StateInit = initOf JettonWallet(msg.sender, self.master);
             require(contractAddress(init) == sender(), "Sender is not another JettonWallet or JettonMaster");
         }
         // Update balance
@@ -87,7 +87,7 @@ contract JettonWallet with Ownable {
                 body: JettonNotification{ // 0x7362d09c -- Remind the new Owner
                     queryId: msg.queryId,
                     amount: msg.amount,
-                    from: msg.from,
+                    sender: msg.sender,
                     forwardPayload: msg.forwardPayload
             }.toCell()
             });
@@ -110,7 +110,6 @@ contract JettonWallet with Ownable {
     receive(msg: JettonBurn){
         self.requireOwner();
 
-        let ctx: Context = context();
         self.balance -= msg.amount; // Update balance
         require(self.balance >= 0, "Invalid balance after burn");
 

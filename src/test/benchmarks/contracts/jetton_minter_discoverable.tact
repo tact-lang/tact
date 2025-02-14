@@ -89,7 +89,7 @@ contract JettonMinter with OwnableTransferable {
             body: JettonTransferInternal{
                 queryId: 0,
                 amount: msg.amount,
-                from: myAddress(),
+                sender: myAddress(),
                 responseDestination: self.owner, // Owner is minting, so send excess to owner
                 forwardTonAmount: 1, // 1 nanoton is enough to send a notification
                 forwardPayload: emptySlice()

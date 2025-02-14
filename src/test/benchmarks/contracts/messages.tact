@@ -34,7 +34,7 @@ message(0xf8a7ea5) JettonTransfer {
 message(0x178d4519) JettonTransferInternal {
     queryId: Int as uint64;
     amount: Int as coins;
-    from: Address;
+    sender: Address;
     responseDestination: Address?;
     forwardTonAmount: Int as coins;
     forwardPayload: Slice as remaining;
@@ -43,7 +43,7 @@ message(0x178d4519) JettonTransferInternal {
 message(0x7362d09c) JettonNotification {
     queryId: Int as uint64;
     amount: Int as coins;
-    from: Address;
+    sender: Address;
     forwardPayload: Slice as remaining;
 }
 
