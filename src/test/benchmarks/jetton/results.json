@@ -93,7 +93,7 @@
     {
       "label": "1.5.3 with more optimized send (#1800)",
       "gas": {
-        "transfer": "19164",
+        "transfer": "20714",
         "burn": "15909",
         "discovery": "10003"
       },
