@@ -12,13 +12,15 @@ TON is a distributed blockchain which means that communication between contracts
 
 To receive a message of the required type, you need to declare a receiver function, for example, `receive("increment"){:tact}`. This notation means the declaration of a receiver function that will be called when a text with the value `"increment"{:tact}` is sent to the contract. The function body can modify the state of the contract and send messages to other contracts. It is impossible to call a receiver directly. If you need to reuse some logic you can declare a function and call it from the receiver.
 
-There are several receiver functions. All receiver functions are processed in the order they are listed below:
+There are several receiver functions. All receiver functions are processed in the order they are listed below. The first receiver that matches the message type will process the message:
 
 * `receive(){:tact}` - called when an empty message is sent to the contract
 * `receive("message"){:tact}` - called when a text message with a specific comment is sent to the contract (maximum `"message"{:tact}` length is 123 bytes)
 * `receive(str: String){:tact}` - called when an arbitrary text message is sent to the contract
 * `receive(msg: MyMessage){:tact}` - called when a binary message of type `MyMessage` is sent to the contract
 * `receive(msg: Slice){:tact}` - called when binary message of unknown type is sent to the contract
+
+For example, an empty message gets processed by `receive(){:tact}` and not by `receive(msg: Slice){:tact}`, because the former occurs before the later in the above list. Similarly, a message with specific comment `"message"{:tact}` gets processed by `receive("message"){:tact}` and not by `receive(str: String){:tact}`.
 
 ```tact
 message MyMessage {
@@ -43,6 +45,14 @@ contract MyContract {
     }
 }
 ```
+
+In a contract, the order of declaration of receivers has no effect on how receivers process messages. Hence, changing the order of receivers in the above contract produces an equivalent contract.
+
+Contracts are not required to declare receivers for all possible message types. If a contract does not have a receiver for a specific message type, the message will be processed by the next receiver that matches the message type in the receiver execution order list. For example, if we remove the receiver `receive("message"){:tact}` in the above contract, then if a message with comment `"message"{:tact}` arrives, it will get processed by `receive(str: String){:tact}`. 
+
+Note that receiver `receive(msg: Slice){:tact}` acts as a fallback that catches all messages that did not match the previous receivers in the execution order list.
+
+If there is no receiver to process a message type and the fallback receiver `receive(msg: Slice){:tact}` is not declared, the transaction will fail with exit code [130](/book/exit-codes/#130).
 
 Naming a parameter of the receiver function with an underscore `_{:tact}` makes its value considered unused and discarded. This is useful when you don't need to inspect the message received and you only want it to convey a specific opcode:
 
