@@ -1,6 +1,7 @@
 import { thenUncolored } from "../error/async-util";
-import { Logger, LoggerHandlers, makeLogger } from "../error/logger-util";
-import { Range } from "../error/range";
+import type { Logger, LoggerHandlers } from "../error/logger-util";
+import { makeLogger } from "../error/logger-util";
+import type { Range } from "../error/range";
 
 /**
  * Error level

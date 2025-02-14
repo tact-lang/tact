@@ -95,7 +95,15 @@ If you want to pin down a specific version of the compiler, run the following co
 
 A number of build artifacts can be produced per compilation of each contract. Some of the artifacts can be omitted using [configuration settings](/book/config).
 
-The location of the artifacts depends on the [`output`](/book/config#projects-output) field of the [`tact.config.json`](/book/config). In [Blueprint][bp]-based projects, `output` is not used and all generated files are always placed in `build/ProjectName/`.
+The location of the artifacts depends on the compilation method:
+- For projects using `tact.config.json`, use the [`output`](/book/config#projects-output) field in the config file
+- For single contract compilation, you can specify the output directory using the `-o` or `--output` flag:
+  ```shell
+  tact contract.tact --output ./custom-output
+  ```
+  If not specified, the files will be generated in the same directory as the input file.
+
+In [Blueprint][bp]-based projects, `output` is not used and all generated files are always placed in `build/ProjectName/`.
 
 ### Compilation report, `.md` {#report}
 

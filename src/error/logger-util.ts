@@ -1,6 +1,6 @@
 import { catchUncolored } from "./async-util";
 import { TactInternalError } from "./errors";
-import { Range } from "./range";
+import type { Range } from "./range";
 
 /**
  * Methods for formatting an error message

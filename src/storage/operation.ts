@@ -1,4 +1,4 @@
-import { ABITypeRef } from "@ton/core";
+import type { ABITypeRef } from "@ton/core";
 
 export type AllocationCell = {
     ops: AllocationOperation[];

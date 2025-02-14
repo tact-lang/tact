@@ -1,10 +1,10 @@
-import { MatchResult } from "ohm-js";
-import { ErrorDisplay } from "../../error/display";
+import type { MatchResult } from "ohm-js";
+import type { ErrorDisplay } from "../../error/display";
 import { TactCompilationError } from "../../error/errors";
 import { syntaxErrorSchema } from "../parser-error";
-import { SrcInfo } from "../src-info";
+import type { SrcInfo } from "../src-info";
 import { getSrcInfoFromOhm } from "./src-info";
-import { ItemOrigin } from "../../imports/source";
+import type { ItemOrigin } from "../../imports/source";
 
 /**
  * @deprecated

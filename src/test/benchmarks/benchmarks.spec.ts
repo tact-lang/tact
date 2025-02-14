@@ -1,15 +1,14 @@
-import {
-    beginCell,
-    toNano,
+import type {
     TransactionComputeVm,
     TransactionDescriptionGeneric,
 } from "@ton/core";
-import {
-    Blockchain,
+import { beginCell, toNano } from "@ton/core";
+import type {
     BlockchainTransaction,
     SandboxContract,
     TreasuryContract,
 } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { Functions } from "./contracts/output/functions_Functions";
 import { Sha256Small } from "./contracts/output/benchmark_sha256_small_Sha256Small";
 import { Sha256Big } from "./contracts/output/benchmark_sha256_big_Sha256Big";

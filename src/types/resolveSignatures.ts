@@ -1,6 +1,6 @@
 import * as changeCase from "change-case";
-import { ABIField } from "@ton/core";
-import { CompilerContext } from "../context/context";
+import type { ABIField } from "@ton/core";
+import type { CompilerContext } from "../context/context";
 import { idToHex } from "../utils/idToHex";
 import {
     idTextErr,
@@ -8,15 +8,15 @@ import {
     throwInternalCompilerError,
 } from "../error/errors";
 import { getType, getAllTypes } from "./resolveDescriptors";
-import {
+import type {
     BinaryReceiverSelector,
     CommentReceiverSelector,
     ReceiverDescription,
     TypeDescription,
 } from "./types";
 import { throwCompilationError } from "../error/errors";
-import { AstNumber, AstReceiver } from "../ast/ast";
-import { FactoryAst } from "../ast/ast-helpers";
+import type { AstNumber, AstReceiver } from "../ast/ast";
+import type { FactoryAst } from "../ast/ast-helpers";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 import { dummySrcInfo } from "../grammar";
 import { ensureInt } from "../optimizer/interpreter";
