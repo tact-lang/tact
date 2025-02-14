@@ -135,8 +135,12 @@ export function writeRouter(
         ctx.append(`}`);
         ctx.append();
 
-        // Non-empty receivers
-        for (const f of type.receivers) {
+        // Non-empty binary receivers
+        for (const f of type.receivers.filter(
+            (r) =>
+                r.selector.kind ===
+                (internal ? "internal-binary" : "external-binary"),
+        )) {
             const selector = f.selector;
 
             // Generic receiver
@@ -167,24 +171,33 @@ export function writeRouter(
                 });
                 ctx.append(`}`);
             }
-
-            if (
-                selector.kind ===
-                (internal ? "internal-empty" : "external-empty")
-            ) {
-                ctx.append();
-                ctx.append(`;; Receive empty message`);
-                ctx.append(`if ((op == 0) & (slice_bits(in_msg) <= 32)) {`);
-                ctx.inIndent(() => {
-                    // Execute function
-                    ctx.append(`self~${ops.receiveEmpty(type.name, kind)}();`);
-
-                    // Exit
-                    ctx.append("return (self, true);");
-                });
-                ctx.append(`}`);
-            }
         }
+
+        const emptyReceiver = type.receivers.find(
+            (v) =>
+                v.selector.kind ===
+                (internal ? "internal-empty" : "external-empty"),
+        );
+
+        if (emptyReceiver) {
+            ctx.append();
+            ctx.append(`;; Receive empty message`);
+            ctx.append(`if ((op == 0) & (slice_bits(in_msg) <= 32)) {`);
+            ctx.inIndent(() => {
+                // Execute function
+                ctx.append(`self~${ops.receiveEmpty(type.name, kind)}();`);
+
+                // Exit
+                ctx.append("return (self, true);");
+            });
+            ctx.append(`}`);
+        }
+
+        const fallbackReceiver = type.receivers.find(
+            (v) =>
+                v.selector.kind ===
+                (internal ? "internal-fallback" : "external-fallback"),
+        );
 
         // Text resolvers
         const hasComments = !!type.receivers.find((v) =>
@@ -194,82 +207,83 @@ export function writeRouter(
                 : v.selector.kind === "external-comment" ||
                   v.selector.kind === "external-comment-fallback",
         );
+
+        const generateTextReceivers = () => {
+            if (
+                type.receivers.find(
+                    (v) =>
+                        v.selector.kind ===
+                        (internal ? "internal-comment" : "external-comment"),
+                )
+            ) {
+                ctx.append(`var text_op = slice_hash(in_msg);`);
+                for (const r of type.receivers) {
+                    const selector = r.selector;
+                    if (
+                        selector.kind ===
+                        (internal ? "internal-comment" : "external-comment")
+                    ) {
+                        const hash = commentPseudoOpcode(
+                            selector.comment,
+                            r.ast,
+                        );
+                        ctx.append();
+                        ctx.append(`;; Receive "${selector.comment}" message`);
+                        ctx.append(`if (text_op == 0x${hash}) {`);
+                        ctx.inIndent(() => {
+                            // Execute function
+                            ctx.append(
+                                `self~${ops.receiveText(type.name, kind, hash)}();`,
+                            );
+
+                            // Exit
+                            ctx.append("return (self, true);");
+                        });
+                        ctx.append(`}`);
+                    }
+                }
+            }
+
+            // Comment fallback resolver
+            const fallback = type.receivers.find(
+                (v) =>
+                    v.selector.kind ===
+                    (internal
+                        ? "internal-comment-fallback"
+                        : "external-comment-fallback"),
+            );
+            if (fallback) {
+                ctx.append(`if (slice_bits(in_msg) >= 32) {`);
+                ctx.inIndent(() => {
+                    // Execute function
+                    ctx.append(
+                        `self~${ops.receiveAnyText(type.name, kind)}(in_msg.skip_bits(32));`,
+                    );
+
+                    // Exit
+                    ctx.append("return (self, true);");
+                });
+
+                ctx.append(`}`);
+            }
+        };
+
         if (hasComments) {
             ctx.append();
             ctx.append(`;; Text Receivers`);
-            ctx.append(`if (op == 0) {`);
-            ctx.inIndent(() => {
-                if (
-                    type.receivers.find(
-                        (v) =>
-                            v.selector.kind ===
-                            (internal
-                                ? "internal-comment"
-                                : "external-comment"),
-                    )
-                ) {
-                    ctx.append(`var text_op = slice_hash(in_msg);`);
-                    for (const r of type.receivers) {
-                        const selector = r.selector;
-                        if (
-                            selector.kind ===
-                            (internal ? "internal-comment" : "external-comment")
-                        ) {
-                            const hash = commentPseudoOpcode(
-                                selector.comment,
-                                r.ast,
-                            );
-                            ctx.append();
-                            ctx.append(
-                                `;; Receive "${selector.comment}" message`,
-                            );
-                            ctx.append(`if (text_op == 0x${hash}) {`);
-                            ctx.inIndent(() => {
-                                // Execute function
-                                ctx.append(
-                                    `self~${ops.receiveText(type.name, kind, hash)}();`,
-                                );
-
-                                // Exit
-                                ctx.append("return (self, true);");
-                            });
-                            ctx.append(`}`);
-                        }
-                    }
-                }
-
-                // Comment fallback resolver
-                const fallback = type.receivers.find(
-                    (v) =>
-                        v.selector.kind ===
-                        (internal
-                            ? "internal-comment-fallback"
-                            : "external-comment-fallback"),
-                );
-                if (fallback) {
-                    ctx.append(`if (slice_bits(in_msg) >= 32) {`);
-                    ctx.inIndent(() => {
-                        // Execute function
-                        ctx.append(
-                            `self~${ops.receiveAnyText(type.name, kind)}(in_msg.skip_bits(32));`,
-                        );
-
-                        // Exit
-                        ctx.append("return (self, true);");
-                    });
-
-                    ctx.append(`}`);
-                }
-            });
-            ctx.append(`}`);
+            // Skip `if check` if no fallback receiver
+            if (fallbackReceiver) {
+                ctx.append(`if (op == 0) {`);
+                ctx.inIndent(() => {
+                    generateTextReceivers();
+                });
+                ctx.append(`}`);
+            } else {
+                generateTextReceivers();
+            }
         }
 
         // Fallback
-        const fallbackReceiver = type.receivers.find(
-            (v) =>
-                v.selector.kind ===
-                (internal ? "internal-fallback" : "external-fallback"),
-        );
         if (fallbackReceiver) {
             ctx.append();
             ctx.append(`;; Receiver fallback`);
