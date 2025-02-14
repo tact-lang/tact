@@ -2596,6 +2596,14 @@ exports[`resolveStatements should resolve statements for expr-maps-exists-method
 exports[`resolveStatements should resolve statements for expr-method-call-null 1`] = `
 [
   [
+    "null",
+    "<null>",
+  ],
+  [
+    "null.foo()",
+    "Bool",
+  ],
+  [
     "self",
     "Int?",
   ],
@@ -2627,6 +2635,11 @@ exports[`resolveStatements should resolve statements for expr-method-call-null 1
     "self!! == 42",
     "Bool",
   ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for expr-method-call-null2 1`] = `
+[
   [
     "null",
     "<null>",
@@ -2635,11 +2648,14 @@ exports[`resolveStatements should resolve statements for expr-method-call-null 1
     "null.foo()",
     "Bool",
   ],
-]
-`;
-
-exports[`resolveStatements should resolve statements for expr-method-call-null2 1`] = `
-[
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "null.bar()",
+    "Bool",
+  ],
   [
     "self",
     "Int?",
@@ -2704,27 +2720,23 @@ exports[`resolveStatements should resolve statements for expr-method-call-null2 
     "self!! == 69",
     "Bool",
   ],
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "null.foo()",
-    "Bool",
-  ],
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "null.bar()",
-    "Bool",
-  ],
 ]
 `;
 
 exports[`resolveStatements should resolve statements for expr-method-call-null3 1`] = `
 [
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "x",
+    "Int?",
+  ],
+  [
+    "x.foo()",
+    "Bool",
+  ],
   [
     "self",
     "Int?",
@@ -2787,18 +2799,6 @@ exports[`resolveStatements should resolve statements for expr-method-call-null3 
   ],
   [
     "self!! == "hello"",
-    "Bool",
-  ],
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "x",
-    "Int?",
-  ],
-  [
-    "x.foo()",
     "Bool",
   ],
 ]
@@ -2891,38 +2891,6 @@ exports[`resolveStatements should resolve statements for fun-extends-optional 1`
     "Int",
   ],
   [
-    "self",
-    "Int?",
-  ],
-  [
-    "null",
-    "<null>",
-  ],
-  [
-    "self == null",
-    "Bool",
-  ],
-  [
-    "y",
-    "Int",
-  ],
-  [
-    "self",
-    "Int?",
-  ],
-  [
-    "self!!",
-    "Int",
-  ],
-  [
-    "y",
-    "Int",
-  ],
-  [
-    "self!! + y",
-    "Int",
-  ],
-  [
     "y",
     "Int?",
   ],
@@ -2952,6 +2920,38 @@ exports[`resolveStatements should resolve statements for fun-extends-optional 1`
   ],
   [
     "self",
+    "Int",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "null",
+    "<null>",
+  ],
+  [
+    "self == null",
+    "Bool",
+  ],
+  [
+    "y",
+    "Int",
+  ],
+  [
+    "self",
+    "Int?",
+  ],
+  [
+    "self!!",
+    "Int",
+  ],
+  [
+    "y",
+    "Int",
+  ],
+  [
+    "self!! + y",
     "Int",
   ],
   [

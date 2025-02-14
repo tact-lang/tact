@@ -310,6 +310,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         interfaces: [],
                         constants: [],
                         partialFieldCount: 0,
+                        optional: false,
                     });
                 }
                 break;
@@ -333,6 +334,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         interfaces: a.attributes.map((v) => v.name.value),
                         constants: [],
                         partialFieldCount: 0,
+                        optional: false,
                     });
                 }
                 break;
@@ -357,6 +359,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         interfaces: [],
                         constants: [],
                         partialFieldCount: 0,
+                        optional: false,
                     });
                 }
                 break;
@@ -379,6 +382,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     interfaces: a.attributes.map((v) => v.name.value),
                     constants: [],
                     partialFieldCount: 0,
+                    optional: false,
                 });
             }
         }
@@ -2007,13 +2011,26 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     r.ast.loc,
                 );
             }
-            if (types.get(r.self.name)!.functions.has(r.name)) {
+
+            const name = r.self.name + (r.self.optional ? "_optional" : "");
+
+            // Here we create a new type `T?` from `T` on demand
+            if (r.self.optional && !types.has(name)) {
+                const optionInnerType = types.get(r.self.name)!;
+                types.set(name, {
+                    ...optionInnerType,
+                    functions: new Map(), // `T?` has its own functions
+                    optional: true,
+                });
+            }
+
+            if (types.get(name)!.functions.has(r.name)) {
                 throwCompilationError(
-                    `Function "${r.name}" already exists in type "${r.self.name}"`,
+                    `Function "${r.name}" already exists in type "${printTypeRef(r.self)}"`,
                     r.ast.loc,
                 );
             }
-            types.get(r.self.name)!.functions.set(r.name, r);
+            types.get(name)!.functions.set(r.name, r);
         } else {
             if (staticFunctions.has(r.name) || GlobalFunctions.has(r.name)) {
                 throwCompilationError(
@@ -2080,8 +2097,11 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 export function getType(
     ctx: CompilerContext,
     ident: A.AstId | A.AstTypeId | string,
+    optional?: boolean,
 ): TypeDescription {
-    const name = typeof ident === "string" ? ident : idText(ident);
+    const name =
+        (typeof ident === "string" ? ident : idText(ident)) +
+        (optional ? "_optional" : "");
     const r = store.get(ctx, name);
     if (!r) {
         throwInternalCompilerError(`Type ${name} not found`);
