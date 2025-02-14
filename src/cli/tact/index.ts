@@ -1,4 +1,4 @@
-import { basename, dirname, normalize, resolve } from "path";
+import { basename, dirname, normalize, resolve, join } from "path";
 import { ZodError } from "zod";
 import { createNodeFileSystem } from "../../vfs/createNodeFileSystem";
 import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";
@@ -62,6 +62,7 @@ const ArgSchema = (Parser: ArgParser) => {
         .add(Parser.string("eval", "e", "EXPRESSION"))
         .add(Parser.boolean("version", "v"))
         .add(Parser.boolean("help", "h"))
+        .add(Parser.string("output", "o", "DIR"))
         .add(Parser.immediate).end;
 };
 
@@ -77,6 +78,7 @@ Flags
   --func                      Output intermediate FunC code and exit
   --check                     Perform syntax and type checking, then exit
   -e, --eval EXPRESSION       Evaluate a Tact expression and exit
+  -o, --output DIR            Specify output directory for compiled files
   -v, --version               Print Tact compiler version and exit
   -h, --help                  Display this text and exit
 
@@ -143,7 +145,18 @@ const parseArgs = async (Errors: CliErrors, Args: Args) => {
     if (filePath) {
         const normalizedPath = resolve(cwd(), dirname(filePath));
         const Fs = createNodeFileSystem(normalizedPath, false);
-        const config = createSingleFileConfig(basename(filePath));
+
+        // Handle output directory flag
+        const outputDir = Args.single("output");
+        const relativeOutputDir = outputDir
+            ? normalize(join(dirname(filePath), outputDir))
+            : "./";
+
+        const config = createSingleFileConfig(
+            basename(filePath),
+            relativeOutputDir,
+        );
+
         await compile(Args, Errors, Fs, config);
         return;
     }
@@ -169,13 +182,13 @@ const parseConfigSafe = (
     }
 };
 
-export const createSingleFileConfig = (fileName: string) =>
+export const createSingleFileConfig = (fileName: string, outputDir: string) =>
     ({
         projects: [
             {
                 name: fileName,
                 path: ensureExtension(fileName),
-                output: "./",
+                output: outputDir,
                 options: {
                     debug: true,
                     external: true,

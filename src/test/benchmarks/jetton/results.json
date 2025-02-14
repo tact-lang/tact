@@ -91,18 +91,9 @@
       "commit": null
     },
     {
-      "label": "1.5.3 with more optimized send()",
+      "label": "1.5.3 with more optimized send (#1800)",
       "gas": {
         "transfer": "20714",
-        "burn": "15909",
-        "discovery": "10003"
-      },
-      "commit": null
-    },
-    {
-      "label": "1.5.3 with deploy()",
-      "gas": {
-        "transfer": "19164",
         "burn": "15909",
         "discovery": "10003"
       },
