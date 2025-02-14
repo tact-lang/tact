@@ -66,14 +66,14 @@ contract Escrow with Deployable {
         send(SendParameters{
                 to: escrowJettonWalletAddress,
                 value: self.JETTON_TRANSFER_GAS,
-                body: TokenTransfer{
-                    query_id: 0,
+                body: JettonTransfer{
+                    queryId: 0,
                     amount: amount,
                     destination: receiver,
-                    response_destination: null,
-                    forward_ton_amount: 0,
-                    forward_payload: emptySlice(),
-                    custom_payload: null
+                    responseDestination: null,
+                    forwardTonAmount: 0,
+                    forwardPayload: emptySlice(),
+                    customPayload: null
                 }.toCell(),
                 mode: mode
             }
@@ -99,7 +99,7 @@ contract Escrow with Deployable {
         self.jettonWalletCode = msg.newJettonWalletCode;
     }
 
-    receive(msg: TokenNotification){
+    receive(msg: JettonNotification){
         require(self.isFunded == false, "already funded");
         require(self.assetAddress != null, "wrong asset type");
         require(self.jettonWalletCode != null, "empty jetton wallet code");
