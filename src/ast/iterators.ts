@@ -1,4 +1,4 @@
-import { AstNode } from "./ast";
+import type { AstNode } from "./ast";
 
 /**
  * Recursively iterates over each node in an AstNode and applies a callback to each AST element.

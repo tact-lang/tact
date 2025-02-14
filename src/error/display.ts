@@ -2,7 +2,7 @@
  * Describes DSL for displaying errors
  */
 
-import { SrcInfo } from "../grammar";
+import type { SrcInfo } from "../grammar";
 
 /**
  * @deprecated Use `Logger` from src/error/logger-util.ts

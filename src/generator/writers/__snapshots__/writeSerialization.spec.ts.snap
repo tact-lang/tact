@@ -1629,25 +1629,6 @@ return result;",
   },
   {
     "code": {
-      "code": "throw_unless(5, exp >= 0);
-int result = 1;
-repeat (exp) {
-    result *= base;
-}
-return result;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_pow",
-    "signature": "int __tact_pow(int base, int exp)",
-  },
-  {
-    "code": {
       "code": "var (r, ok) = __tact_dict_get(d, kl, k);
 if (ok) {
     return r;
@@ -7372,25 +7353,6 @@ return result;",
   },
   {
     "code": {
-      "code": "throw_unless(5, exp >= 0);
-int result = 1;
-repeat (exp) {
-    result *= base;
-}
-return result;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_pow",
-    "signature": "int __tact_pow(int base, int exp)",
-  },
-  {
-    "code": {
       "code": "var (r, ok) = __tact_dict_get(d, kl, k);
 if (ok) {
     return r;
@@ -13112,25 +13074,6 @@ return result;",
     },
     "name": "__tact_log",
     "signature": "int __tact_log(int num, int base)",
-  },
-  {
-    "code": {
-      "code": "throw_unless(5, exp >= 0);
-int result = 1;
-repeat (exp) {
-    result *= base;
-}
-return result;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_pow",
-    "signature": "int __tact_pow(int base, int exp)",
   },
   {
     "code": {

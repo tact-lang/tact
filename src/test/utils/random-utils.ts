@@ -1,5 +1,6 @@
 import Prando from "prando";
-import { KeyPair, keyPairFromSeed } from "@ton/crypto";
+import type { KeyPair } from "@ton/crypto";
+import { keyPairFromSeed } from "@ton/crypto";
 import { Address } from "@ton/core";
 
 export function randomKey(seed: string): KeyPair {

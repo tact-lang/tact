@@ -2,7 +2,7 @@
  * Render error message to string for compiler CLI
  */
 
-import { ErrorDisplay } from "./display";
+import type { ErrorDisplay } from "./display";
 import { locationStr } from "./errors";
 
 /**
