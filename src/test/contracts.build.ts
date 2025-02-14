@@ -9,6 +9,7 @@ const main = async () => {
         "e2e-emulated/contracts/*.tact",
         "codegen/all-contracts.tact",
         "exit-codes/contracts/*.tact",
+        "send-modes/contracts/*.tact",
     ]);
 };
 
