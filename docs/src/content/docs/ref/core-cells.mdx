@@ -1299,6 +1299,53 @@ let buzz: Cell = beginCell().storeSlice(s).endCell();
 fizz == buzz; // true
 ```
 
+### Slice.asAddressUnsafe
+
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun asAddressUnsafe(self: Slice): Address;
+```
+
+Extension function for the [`Slice{:tact}`][slice].
+
+Unsafely casts the [`Slice{:tact}`][slice] to an [`Address{:tact}`][p] and returns it. The inverse of [`Address.asSlice(){:tact}`](#addressasslice).
+
+This function does **not** perform any checks on the contents of the [`Slice{:tact}`][slice].
+
+Usage example:
+
+```tact
+let a: Address = myAddress();
+let a2: Address = a.asSlice().asAddressUnsafe();
+
+a == a2; // true
+```
+
+:::caution
+
+  Use it only if you want to optimize the code for gas and can guarantee in advance that the [`Slice{:tact}`][slice] contains the data of an [`Address{:tact}`][p].
+
+  Otherwise, it is better to do similar checks before calling this function:
+
+  ```tact
+  // The `s` is a Slice you've obtained elsewhere
+
+  // Checking correct length
+  let rightLength = 267; // 11 bits for the prefix,
+                         // 256 bits for the address itself
+  nativeThrowUnless(136, s.bits() == rightLength);
+
+  // Checking correct prefix
+  let basechainAddrPrefix = 1024; // use 1279 for the masterchain prefix check
+  nativeThrowUnless(136, s.preloadUint(11) == basechainAddrPrefix);
+
+  // Now we can safely perform the cast
+  let addr = s.asAddressUnsafe();
+  ```
+
+:::
+
 ## Address.asSlice
 
 ```tact
@@ -1307,14 +1354,14 @@ extends fun asSlice(self: Address): Slice;
 
 Extension function for the [`Address{:tact}`][p].
 
-Converts the [`Address{:tact}`][p] to a [`Slice{:tact}`][slice] and returns it. Alias to `beginCell().storeAddress(self).asSlice(){:tact}`.
+Casts the [`Address{:tact}`][p] back to the underlying [`Slice{:tact}`][slice] and returns it. The inverse of [`Slice.asAddressUnsafe(){:tact}`](#sliceasaddressunsafe).
 
 Usage example:
 
 ```tact
 let a: Address = myAddress();
-let fizz: Slice = a.asSlice();
-let buzz: Slice = beginCell().storeAddress(a).asSlice();
+let fizz: Slice = beginCell().storeAddress(a).asSlice();
+let buzz: Slice = a.asSlice(); // cheap, unlike the previous statement
 
 fizz == buzz; // true
 ```

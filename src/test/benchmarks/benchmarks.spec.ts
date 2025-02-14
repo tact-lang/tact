@@ -14,6 +14,7 @@ import { Sha256Small } from "./contracts/output/benchmark_sha256_small_Sha256Sma
 import { Sha256Big } from "./contracts/output/benchmark_sha256_big_Sha256Big";
 import { Sha256AsSlice } from "./contracts/output/benchmark_sha256_as_slice_Sha256AsSlice";
 import { Forward } from "./contracts/output/forward_Forward";
+import { Addresses } from "./contracts/output/address_Addresses";
 import "@ton/test-utils";
 import { CellsCreation } from "./contracts/output/cells_CellsCreation";
 import { getUsedGas } from "./util";
@@ -184,5 +185,23 @@ describe("benchmarks", () => {
             await blockchain.runGetMethod(testContract.address, "emptySlice")
         ).gasUsed;
         expect(gasUsed2).toMatchSnapshot("gas used emptySlice");
+    });
+
+    it("benchmark contractAddressExt", async () => {
+        const testContract = blockchain.openContract(
+            await Addresses.fromInit(),
+        );
+        await testContract.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            null,
+        );
+        const gasUsed = (
+            await blockchain.runGetMethod(
+                testContract.address,
+                "contractAddressExt",
+            )
+        ).gasUsed;
+        expect(gasUsed).toMatchSnapshot("gas used contractAddressExt");
     });
 });

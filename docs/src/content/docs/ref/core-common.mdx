@@ -29,7 +29,7 @@ let timeOffset: Int = now() + 1000; // thousand seconds from now()
 fun myBalance(): Int;
 ```
 
-Returns the [nanoToncoin](/book/integers#nanotoncoin) balance of the smart contract as it was at the start of the [compute phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase) of the current transaction.
+Returns the [nanoToncoin](/book/integers#nanotoncoin) [`Int{:tact}`][int] balance of the smart contract as it was at the start of the [compute phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase) of the current transaction.
 
 Usage example:
 
@@ -39,7 +39,7 @@ let iNeedADolla: Int = myBalance();
 
 :::caution
 
-  Beware, that [all message-sending functions](/book/send#message-sending-functions) of Tact can change the _actual_ contract's balance, but they _won't_ update the value returned by this function.
+  Beware, that [all message-sending functions](/book/send#message-sending-functions) of Tact can change the _actual_ contract's balance, but they **won't** update the value returned by this function.
 
 :::
 
@@ -125,7 +125,7 @@ require(ctx.value != 68 + 1, "Invalid amount of nanoToncoins, bye!");
 fun newAddress(chain: Int, hash: Int): Address;
 ```
 
-Creates a new [`Address{:tact}`][p] based on the [`chain` id](https://ton-blockchain.github.io/docs/#/overviews/TON_blockchain_overview) and the [SHA-256](/ref/core-math#sha256) encoded [`hash` value](https://docs.ton.org/learn/overviews/addresses#account-id).
+Creates a new [`Address{:tact}`][p] based on the [`chain` ID](https://ton-blockchain.github.io/docs/#/overviews/TON_blockchain_overview) and the [SHA-256](/ref/core-math#sha256) encoded [`hash` value (account ID)][account-id].
 
 This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
 
@@ -136,22 +136,21 @@ Usage example:
 ```tact
 let oldTonFoundationAddr: Address =
     newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
-    //         ↑  ------------------------------------------------------------------
-    //         |  ↑
+    //         ↑  ↑
     //         |  sha-256 hash of contract's init package (StateInit)
     //         chain id: 0 is a workchain, -1 is a masterchain
 ```
 
 :::caution
 
-  Make sure your specify only supported chain IDs: $0$ for the basechain and $-1$ for the masterchain.
+  Make sure your specify only supported workchain IDs: $0$ for the basechain and $-1$ for the masterchain.
 
 :::
 
 :::note[Useful links:]
 
-  [`chain` (Workchain ID) in TON Docs](https://docs.ton.org/learn/overviews/addresses#workchain-id)\
-  [`hash` (Account ID) in TON Docs](https://docs.ton.org/learn/overviews/addresses#account-id)\
+  [`chain` (Workchain ID) in TON Docs][workchain-id]\
+  [`hash` (Account ID) in TON Docs][account-id]\
   [Contract's init package (`StateInit{:tact}`)](/book/expressions#initof)
 
 :::
@@ -164,12 +163,16 @@ let oldTonFoundationAddr: Address =
 fun contractAddress(s: StateInit): Address;
 ```
 
-Computes smart contract's [`Address{:tact}`][p] in a workchain $0$ based on its [`StateInit{:tact}`](/book/expressions#initof).
+Computes smart contract's [`Address{:tact}`][p] in the workchain ID $0$ (basechain) using the [`StateInit{:tact}`](/book/expressions#initof) `s` of the contract. Alias to `contractAddressExt(0, s.code, s.data){:tact}`.
 
 Usage example:
 
 ```tact
-let foundMeSome: Address = contractAddress(initOf SomeContract());
+let s: StateInit = initOf SomeContract();
+let foundMeSome: Address = contractAddress(s);
+let andSomeMore: Address = contractAddressExt(0, s.code, s.data);
+
+foundMeSome == andSomeMore; // true
 ```
 
 ### contractAddressExt
@@ -180,7 +183,7 @@ let foundMeSome: Address = contractAddress(initOf SomeContract());
 fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address;
 ```
 
-Computes smart contract's [`Address{:tact}`][p] based on the `chain` id, contract's `code` and contract's initial state `data`. Use [`initOf{:tact}`](/book/expressions#initof) expression to obtain initial `code` and initial `data` of a given contract.
+Computes smart contract's [`Address{:tact}`][p] in the `chain` ID using the contract's `code` and the contract's initial state `data`. Use the [`initOf{:tact}`](/book/expressions#initof) expression to obtain the initial `code` and initial `data` of a given contract.
 
 This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
 
@@ -192,6 +195,38 @@ Usage example:
 let initPkg: StateInit = initOf SomeContract();
 let hereBeDragons: Address = contractAddressExt(0, initPkg.code, initPkg.data);
 ```
+
+### contractHash
+
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+```tact
+fun contractHash(code: Cell, data: Cell): Int;
+```
+
+Computes and returns an [`Int{:tact}`][int] value of the [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) hash of the `code` and `data` of the given contract. To assemble the `code` and `data` cells together for hashing, the [standard `Cell{:tact}` representation](/book/cells#cells-representation) is used.
+
+This hash is commonly called [account ID][account-id]. Together with the [workchain ID][workchain-id] it deterministically forms the address of the contract on TON Blockchain.
+
+Usage example:
+
+```tact
+let initPkg: StateInit = initOf SomeContract();
+let accountId: Int = contractHash(initPkg.code, initPkg.data);
+let basechainAddr: Address = newAddress(0, accountId);
+let basechainAddr2: Address = contractAddressExt(0, initPkg.code, initPkg.data);
+
+basechainAddr == basechainAddr2; // true
+```
+
+:::note[Useful links:]
+
+  [`chain` (Workchain ID) in TON Docs][workchain-id]\
+  [`hash` (Account ID) in TON Docs][account-id]\
+  [Contract's init package (`StateInit{:tact}`)](/book/expressions#initof)\
+  [Standard `Cell{:tact}` representation](/book/cells#cells-representation)
+
+:::
 
 ## Communication
 
@@ -257,3 +292,6 @@ emit("Catch me if you can, Mr. Holmes".asComment()); // asComment() converts a S
 [bool]: /book/types#booleans
 [int]: /book/integers
 [slice]: /book/cells#slices
+
+[workchain-id]: https://docs.ton.org/learn/overviews/addresses#workchain-id
+[account-id]: https://docs.ton.org/learn/overviews/addresses#account-id
