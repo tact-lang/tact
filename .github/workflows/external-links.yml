@@ -42,3 +42,20 @@ jobs:
           output: "/dev/stdout"
           fail: true
           failIfEmpty: false
+
+  linkcheck-stdlib:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: (stdlib) Check broken HTTP(S) links in doc comments
+        uses: lycheeverse/lychee-action@v2
+        id: lychee_dev
+        with:
+          args: >
+            -n -s https -s http
+            './src/stdlib/stdlib/**/*.tact'
+          output: "/dev/stdout"
+          fail: true
+          failIfEmpty: false
