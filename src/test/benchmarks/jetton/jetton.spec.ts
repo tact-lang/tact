@@ -6,11 +6,8 @@ import { Blockchain } from "@ton/sandbox";
 import type {
     Mint,
     ProvideWalletAddress,
-    TokenBurn,
-    TokenUpdateContent,
 } from "../contracts/output/jetton_minter_discoverable_JettonMinter";
 import { JettonMinter } from "../contracts/output/jetton_minter_discoverable_JettonMinter";
-import type { TokenTransfer } from "../contracts/output/jetton_minter_discoverable_JettonWallet";
 import { JettonWallet } from "../contracts/output/jetton_minter_discoverable_JettonWallet";
 
 import "@ton/test-utils";
@@ -19,6 +16,11 @@ import { generateResults, getUsedGas, printBenchmarkTable } from "../util";
 import benchmarkResults from "./results.json";
 import { join } from "path";
 import { type Step, writeLog } from "../../utils/write-vm-log";
+import type {
+    JettonBurn,
+    JettonTransfer,
+    JettonUpdateContent,
+} from "../contracts/output/jetton_wallet_JettonWallet";
 
 const getJettonBalance = async (
     userWallet: SandboxContract<JettonWallet>,
@@ -39,15 +41,15 @@ const sendTransfer = async (
         forwardPayload != null
             ? forwardPayload.beginParse()
             : new Builder().storeUint(0, 1).endCell().beginParse(); //Either bit equals 0
-    const msg: TokenTransfer = {
-        $$type: "TokenTransfer",
-        query_id: 0n,
+    const msg: JettonTransfer = {
+        $$type: "JettonTransfer",
+        queryId: 0n,
         amount: jetton_amount,
         destination: to,
-        response_destination: responseAddress,
-        custom_payload: customPayload,
-        forward_ton_amount: forward_ton_amount,
-        forward_payload: parsedForwardPayload,
+        responseDestination: responseAddress,
+        customPayload: customPayload,
+        forwardTonAmount: forward_ton_amount,
+        forwardPayload: parsedForwardPayload,
     };
 
     return await userWallet.send(via, { value }, msg);
@@ -61,12 +63,12 @@ const sendBurn = async (
     responseAddress: Address,
     customPayload: Cell | null,
 ) => {
-    const msg: TokenBurn = {
-        $$type: "TokenBurn",
-        query_id: 0n,
+    const msg: JettonBurn = {
+        $$type: "JettonBurn",
+        queryId: 0n,
         amount: jetton_amount,
-        response_destination: responseAddress,
-        custom_payload: customPayload,
+        responseDestination: responseAddress,
+        customPayload: customPayload,
     };
 
     return await userWallet.send(via, { value }, msg);
@@ -106,9 +108,9 @@ function sendDiscovery(
 ): Promise<SendMessageResult> {
     const msg: ProvideWalletAddress = {
         $$type: "ProvideWalletAddress",
-        query_id: 0n,
-        owner_address: address,
-        include_address: includeAddress,
+        queryId: 0n,
+        ownerAddress: address,
+        includeAddress: includeAddress,
     };
     return contract.send(via, { value }, msg);
 }
@@ -137,8 +139,8 @@ describe("Jetton", () => {
         notDeployer = await blockchain.treasury("notDeployer");
 
         defaultContent = beginCell().endCell();
-        const msg: TokenUpdateContent = {
-            $$type: "TokenUpdateContent",
+        const msg: JettonUpdateContent = {
+            $$type: "JettonUpdateContent",
             content: new Cell(),
         };
 
