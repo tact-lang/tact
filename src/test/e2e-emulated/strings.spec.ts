@@ -76,6 +76,11 @@ describe("strings", () => {
         expect(await contract.getStringWithNegativeNumber()).toEqual(
             "Hello, your balance: -123",
         );
+
+        for (let x = -100n; x < 100n; x++) {
+            expect(await contract.getIntToString(x)).toEqual(x.toString());
+        }
+
         expect(await contract.getStringWithFloat()).toEqual("9.5");
 
         const base = await contract.getBase64();
