@@ -100,7 +100,7 @@
       "commit": null
     },
     {
-      "label": "1.5.3 with deploy() instead if send()",
+      "label": "1.5.3 with deploy instead of send (#1832)",
       "gas": {
         "transfer": "19164",
         "burn": "15909",
