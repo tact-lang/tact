@@ -7,10 +7,20 @@ import type {
     TreasuryContract,
 } from "@ton/sandbox";
 import { toNano } from "@ton/core";
-import type { Message } from "@ton/core";
+import type {
+    Message,
+    TransactionActionPhase,
+    TransactionComputeVm,
+    TransactionDescriptionGeneric,
+} from "@ton/core";
 import { findTransaction } from "@ton/test-utils";
+import type { Maybe } from "@ton/core/dist/utils/maybe";
 
-type OutMessageInfo = { validatorsForwardFee: bigint; value: bigint };
+type MessageInfo = {
+    validatorsForwardFee: bigint;
+    value: bigint;
+    bounced: boolean;
+};
 
 /* All tests in this spec file have three contracts as participants:
    - The treasury contract, responsible for triggering the tests and deploying the rest of contracts.
@@ -264,11 +274,8 @@ describe("SendDefaultMode with no flags", () => {
             calculatorOutMessageInfo,
         );
         // Balance delta for tester in its second transaction
-        // Since this transaction does not send messages, we pass an empty OutMessageInfo object
-        const testerDelta2 = computeBalanceDelta(testerResultTsx, {
-            validatorsForwardFee: 0n,
-            value: 0n,
-        });
+        // Since this transaction does not send messages, we pass no MessageInfo object
+        const testerDelta2 = computeBalanceDelta(testerResultTsx);
 
         // If we add all the deltas for tester, together with its initial balance, we should get its measured final balance
         expect(
@@ -286,18 +293,761 @@ describe("SendDefaultMode with no flags", () => {
         expect(finalValue === 2n).toBe(true);
     });
 
-    it("should test for errors in computation phase", async () => {
-        // TODO: Send invalid interval to calculator
+    /* This test checks when the tester contract makes a request to the calculator, but the tester does not 
+       include enough funds to pay for message forward fees.
+       
+       The summary of the test is as follows:
+    
+       1) The treasury will send a message to the tester, indicating the tester to start a 
+          request to the calculator for computing the average of the interval [0,4].
+          
+       2) During the computation phase, the tester creates an AverageRequest message (SendDefaultMode with no flags), 
+          indicating that it will include 0 TON in the "value" of the message.
+          The tester sets its "val" contract field to -3 ("op requested, no answer yet").
+          The computation phase for the tester contract succeeds. 
+    
+       3) During the action phase for the tester contract, since there is not enough funds for message forward fees 
+          in the "value" of the request message, the action phase will fail with result code 40. 
+          This means that the request never reaches the calculator.
+    
+       4) The tester's transaction is rolled back. The tester contract field "val" is reset to -1 ("initial state").
+          However, the tester contract still payed for the transaction fees.
+        
+
+       Summary of transactions:
+    
+       T1) Triggered by message sent from treasury to tester. Attempts to send request to calculator in action phase, 
+           but fails and it is rolled back.
+    */
+    it("should test a request with not enough funds to pay for request message forward fees", async () => {
+        // The amount the tester contract will pay in its request message to the calculator contract: 0 TON.
+        // Since this amount does not cover the message forward fees, the tester will fail its action phase
+        // while attempting to send the request to the calculator.
+        const amountToPayInRequest = 0n;
+        // In this test, the calculator never receives the request from the tester. Hence, it is irrelevant
+        // the number we place in the amountToPayInCalculatorResponse. We set it to zero.
+        const amountToPayInCalculatorResponse = 0n;
+
+        // Contract balances before all the transactions
+        const testerBalanceBefore = (
+            await blockchain.getContract(tester.address)
+        ).balance;
+        const calculatorBalanceBefore = (
+            await blockchain.getContract(calculator.address)
+        ).balance;
+
+        // Treasury triggers the test by telling the tester to request the computation of the average of the interval [0,4].
+        // The treasure also indicates that the tester should pay 0 TON in its request, and that the calculator
+        // should pay 0 TON in its response message (in this test, the calculator never receives the request in the first place).
+        const { transactions } = await tester.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            {
+                $$type: "DoCalculatorRequest",
+                from: 0n,
+                to: 4n,
+                amountToPayInRequest,
+                amountToPayInCalculatorResponse,
+            },
+        );
+
+        // Contract balances after all transactions
+        const testerBalanceAfter = (
+            await blockchain.getContract(tester.address)
+        ).balance;
+        const calculatorBalanceAfter = (
+            await blockchain.getContract(calculator.address)
+        ).balance;
+
+        // Check that the transaction for the tester contract exist, and it is a failed transaction.
+        // Transaction T1 (see summary of transactions at the start of the test)
+        const testerRequestTsx = ensureTransactionIsDefined(
+            findTransaction(transactions, {
+                from: treasure.address,
+                to: tester.address,
+                success: false,
+            }),
+        );
+        // Check that the calculator did not execute a transaction
+        expect(
+            findTransaction(transactions, {
+                from: tester.address,
+                to: calculator.address,
+            }),
+        ).toBeUndefined();
+
+        // Check that the transaction did not send a message
+        expect(testerRequestTsx.outMessagesCount).toBe(0);
+
+        // Check that the computation phase in the tester contract was successful.
+        const compPhase = getComputationPhase(testerRequestTsx);
+        expect(compPhase.success).toBe(true);
+
+        // Check that the action phase in the tester contract failed with result code 40
+        const actionPhase = getActionPhase(testerRequestTsx);
+        expect(actionPhase.resultCode).toBe(40);
+        expect(actionPhase.success).toBe(false);
+
+        // Now compute the delta for the tester transaction.
+        // Since the tester did not send a message, we pass no MessageInfo object.
+        const testerDelta = computeBalanceDelta(testerRequestTsx);
+
+        // If we add the tester's delta to its initial balance, we should get its measured final balance.
+        expect(testerBalanceBefore + testerDelta === testerBalanceAfter).toBe(
+            true,
+        );
+        // The calculator did not execute a transaction, hence its balance did not change.
+        expect(calculatorBalanceBefore === calculatorBalanceAfter).toBe(true);
+
+        // Finally, since the tester failed its action phase, the transaction was rolled back
+        // (even though its computation phase was successful).
+        // This means that the "val" field in the tester contract was reset to -1 ("initial state"),
+        // instead of -3 ("op requested, no answer yet").
+        const finalValue = await tester.getCurrentResult();
+        expect(finalValue === -1n).toBe(true);
+
+        // Check that the tester contract actually payed for the transaction fees even though its
+        // transaction was rolled back. This is checked as follows:
+        // IF we remove from the FINAL balance these two items:
+        // - the initial balance.
+        // - the amount gained from the incoming message (i.e., the message sent by the treasury)
+        // THEN, we should get a negative amount which must equal the transaction total fees.
+        const incomingMessageInfo = getMessageInfo(
+            ensureMessageIsDefined(testerRequestTsx.inMessage),
+        );
+        expect(
+            testerBalanceAfter -
+                testerBalanceBefore -
+                incomingMessageInfo.value ===
+                -testerRequestTsx.totalFees.coins,
+        ).toBe(true);
     });
 
-    it("should test for errors in action phase", async () => {
-        // TODO: Send insufficient funds in message.
+    /* This test checks when the tester contract sends an invalid request to the calculator, and the tester contract
+       includes enough funds in the request to receive a bounced message from the calculator, signaling the error.
+       
+       The summary of the test is as follows:
+    
+       1) The treasury will send a message to the tester, indicating the tester to start a 
+          request to the calculator for computing the average of the INVALID interval [4,0].
+          
+       2) During the computation phase, the tester creates an AverageRequest message (SendDefaultMode with no flags), 
+          indicating that it will include 1 TON in the "value" of the message. This amount is enough to cover the
+          calculator's transaction fees and message forward fees for the bounced message. 
+          The tester sets its "val" contract field to -3 ("op requested, no answer yet").
+          The computation phase for the tester contract succeeds. 
+    
+       3) The action phase for the tester contract successfully sends the request.
+    
+       4) The calculator receives the request and aborts its computation phase because the interval [4,0] is 
+          invalid, i.e, there must exist at least one number in the interval because [4,0] is an empty interval.
+       
+       5) The calculator skips its action phase, but enters its bounce phase. 
+          The calculator sends a bounced message back to the tester, because there is still enough funds 
+          in the incoming request to pay for message forward fees in the bounced message (after the transaction fees
+          were deducted from the value in the incoming message).
+        
+       6) The tester receives the bounced message. The tester sets its contract field "val" to -2 ("error").
+
+       Summary of transactions:
+    
+       T1) Triggered by message sent from treasury to tester. Sends request to calculator to compute 
+           average of invalid interval [4,0] with enough funds to receive the bounced message.
+        
+       T2) Triggered by the message sent from tester to calculator. The transaction is aborted during the 
+           computation phase (due to an invalid request from the tester) and sends a bounced message back to the tester,
+           because there was still enough funds in the incoming request.
+
+       T3) Triggered by the bounced message sent from calculator to tester. Receives the bounced message and 
+           sets the tester's field "val" to -2 ("error").
+    */
+    it("should test an invalid request to calculator with enough funds to pay for bounced message forward fees", async () => {
+        // The amount the tester contract will pay in its request message to the calculator contract: 1 TON.
+        const amountToPayInRequest = toNano("1");
+        // In this test, the calculator will fail its computation phase, so that it will never send a response
+        // back to the tester. Hence, it will be irrelevant
+        // the number in amountToPayInCalculatorResponse. We set it to zero.
+        const amountToPayInCalculatorResponse = 0n;
+
+        // Contract balances before all the transactions
+        const testerBalanceBefore = (
+            await blockchain.getContract(tester.address)
+        ).balance;
+        const calculatorBalanceBefore = (
+            await blockchain.getContract(calculator.address)
+        ).balance;
+
+        // Treasury triggers the test by telling the tester to request the computation of the average of the INVALID interval [4,0].
+        // The treasure also indicates that the tester should pay 1 TON in its request, and that the calculator
+        // should pay 0 TON in its response message (in this test, the calculator will not send the response back to the tester due
+        // to an invalid request).
+        const { transactions } = await tester.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            {
+                $$type: "DoCalculatorRequest",
+                from: 4n,
+                to: 0n,
+                amountToPayInRequest,
+                amountToPayInCalculatorResponse,
+            },
+        );
+
+        // Contract balances after all transactions
+        const testerBalanceAfter = (
+            await blockchain.getContract(tester.address)
+        ).balance;
+        const calculatorBalanceAfter = (
+            await blockchain.getContract(calculator.address)
+        ).balance;
+
+        // Check that the transactions exist
+        // Transaction T1 (see summary of transactions at the start of the test)
+        // This transaction sends the invalid request to the calculator.
+        const testerRequestTsx = ensureTransactionIsDefined(
+            findTransaction(transactions, {
+                from: treasure.address,
+                to: tester.address,
+                success: true,
+            }),
+        );
+        // Transaction T2
+        // The calculator aborts the transaction during its computation phase (due to an invalid request from the tester)
+        // and sends a bounced message back to the tester.
+        const calculatorTsx = ensureTransactionIsDefined(
+            findTransaction(transactions, {
+                from: tester.address,
+                to: calculator.address,
+                success: false,
+            }),
+        );
+        // Transaction T3
+        // The transaction that processes the bounced message in the tester
+        const testerBouncedTsx = ensureTransactionIsDefined(
+            findTransaction(transactions, {
+                from: calculator.address,
+                to: tester.address,
+                success: true,
+            }),
+        );
+
+        // Check that the transactions occurred in the logical order
+        // i.e., the tester request transaction executed before the calculator transaction
+        // and the calculator transaction executed before the tester bounced transaction.
+        expect(testerRequestTsx.lt < calculatorTsx.lt).toBe(true);
+        expect(calculatorTsx.lt < testerBouncedTsx.lt).toBe(true);
+
+        // Check that the calculator transaction failed in its computation phase with exit code 25459.
+        // 25459 corresponds to message "There must exist at least one number in the interval"
+        // according to "MessageModeTester.md"
+        const calculatorCompPhase = getComputationPhase(calculatorTsx);
+        expect(calculatorCompPhase.success).toBe(false);
+        expect(calculatorCompPhase.exitCode).toBe(25459);
+
+        // Check that the calculator's action phase did not execute, but its bounce phase did
+        const calculatorTsxDescription =
+            getTransactionDescription(calculatorTsx);
+        expect(calculatorTsxDescription.actionPhase).toBeUndefined();
+        expect(calculatorTsxDescription.bouncePhase).toBeDefined();
+
+        // Extract the only message sent by the tester to the calculator
+        const testerOutMessage = ensureMessageIsDefined(
+            testerRequestTsx.outMessages.get(0),
+        );
+        // Extract the only message sent by the calculator back to the tester (i.e., the bounced message)
+        const calculatorOutMessage = ensureMessageIsDefined(
+            calculatorTsx.outMessages.get(0),
+        );
+        // We will also need the incoming message to the calculator in order to compute the value of the bounced message.
+        const calculatorInMessage = ensureMessageIsDefined(
+            calculatorTsx.inMessage,
+        );
+
+        // Check that the value assigned to testerOutMessage is the original "value" in the send function
+        // but deducted with the message forward fees
+        const testerMessageForwardFee =
+            extractTotalMessageForwardFee(testerRequestTsx);
+        const testerOutMessageInfo = getMessageInfo(testerOutMessage);
+        expect(
+            amountToPayInRequest - testerMessageForwardFee ===
+                testerOutMessageInfo.value,
+        ).toBe(true);
+
+        // For computing the value in bounced messages, the calculator uses this formula:
+        //     outMessage.value = inValue - totalFees - BouncePhaseMessageForwardFees
+        //
+        // where inValue: is the value in the incoming message
+        //       totalFees: is the total transaction fees
+        //       BouncePhaseMessageForwardFees: is the message forward fees computed during the bounce phase
+        //
+        // The message forward fees are computed in the bounce phase, NOT in the action phase (i.e., the action phase did not execute,
+        // because the computation phase failed).
+        //
+        // Additionally, the forward fees for validators in the bounced message is just the BouncePhaseMessageForwardFees
+
+        // Now, obtain BouncePhaseMessageForwardFees from the bounce phase
+        const calculatorBouncePhaseMessageForwardFees =
+            extractTotalBouncedMessageForwardFee(calculatorTsx);
+        const calculatorOutMessageInfo = getMessageInfo(calculatorOutMessage);
+        const calculatorInMessageInfo = getMessageInfo(calculatorInMessage);
+        // Check the bounce message value is according to the above formula
+        expect(
+            calculatorOutMessageInfo.value ===
+                calculatorInMessageInfo.value -
+                    calculatorTsx.totalFees.coins -
+                    calculatorBouncePhaseMessageForwardFees,
+        ).toBe(true);
+        // Check that the forward fee for validators in the bounced message is just the calculator message forward fees
+        expect(
+            calculatorOutMessageInfo.validatorsForwardFee ===
+                calculatorBouncePhaseMessageForwardFees,
+        ).toBe(true);
+
+        // Check that the message sent by the calculator has its bounced flag active
+        expect(calculatorOutMessageInfo.bounced).toBe(true);
+
+        // Now we check that the observed final balances in each contract can actually be obtained from their initial balances
+        // by subtracting the transaction fees, crediting the initial message value, and subtracting the outbound message values.
+        // In other words, we want to check that the relation C_B + D = C_A holds, where C_B is the contract balance BEFORE the transaction,
+        // C_A is the contract balance AFTER the transaction, and D is the "delta" amount encoding the transaction fees and similar quantities.
+        // The explanation on how the "delta" is computed can be seen inside the function computeBalanceDelta.
+
+        // Balance delta for tester in its first transaction. We pass the info of the only message sent during this transaction.
+        const testerDelta1 = computeBalanceDelta(
+            testerRequestTsx,
+            testerOutMessageInfo,
+        );
+        // Balance delta for calculator (in its only transaction). We also pass the info of the only message sent during this transaction.
+        const calculatorDelta = computeBalanceDelta(
+            calculatorTsx,
+            calculatorOutMessageInfo,
+        );
+        // Balance delta for tester in its second transaction
+        // Since this transaction does not send messages, we pass no MessageInfo object
+        const testerDelta2 = computeBalanceDelta(testerBouncedTsx);
+
+        // If we add all the deltas for tester, together with its initial balance, we should get its measured final balance
+        expect(
+            testerBalanceBefore + testerDelta1 + testerDelta2 ===
+                testerBalanceAfter,
+        ).toBe(true);
+        // Similarly for the calculator
+        expect(
+            calculatorBalanceBefore + calculatorDelta ===
+                calculatorBalanceAfter,
+        ).toBe(true);
+
+        // Additionally, we should expect that the balance for the calculator did not change
+        // because it payed its transaction fees from the value of the incoming message
+        // and then sent the remaining value back to the tester.
+        // Indeed, if we expand the terms of the delta for the calculator, we get:
+        //     delta = inValue - totalFees - outMsg.value - outMsg.validatorsForwardFee
+        //           = inValue - totalFees - (inValue - totalFees - BouncePhaseMessageForwardFees) - outMsg.validatorsForwardFee
+        //           = BouncePhaseMessageForwardFees - outMsg.validatorsForwardFee
+        //           = 0
+        //
+        // where the value of the bounced message "outMsg.value" was expanded according to the formula for bounced messages given previously
+        // and BouncePhaseMessageForwardFees = outMsg.validatorsForwardFee as was also checked previously.
+
+        // Check that the calculator delta is actually zero
+        expect(calculatorDelta === 0n).toBe(true);
+
+        // Finally, since the request failed and got bounced, the tester received the bounced message
+        // and stored -2 ("error") in its "val" field.
+        const finalValue = await tester.getCurrentResult();
+        expect(finalValue === -2n).toBe(true);
+    });
+
+    /* This test checks when the tester contract sends a request that causes an out of gas error during the calculator's computation phase, 
+       due to the tester not including enough funds in the request.
+       
+       The summary of the test is as follows:
+    
+       1) The treasury will send a message to the tester, indicating the tester to start a 
+          request to the calculator for computing the average of the interval [0,50]. 
+          
+       2) During the computation phase, the tester creates an AverageRequest message (SendDefaultMode with no flags), 
+          including 0.005 TON in the "value" of the message. This amount is NOT enough to cover the
+          calculator's transaction fees and message forward fees for the bounced message. 
+          The tester sets its "val" contract field to -3 ("op requested, no answer yet").
+          The computation phase for the tester contract succeeds. 
+    
+       3) The action phase for the tester contract successfully sends the request.
+    
+       4) The calculator receives the request and aborts its computation phase because computing the interval [0,50] 
+          takes too much gas. 
+       
+       5) The calculator skips its action phase, but enters its bounce phase. 
+          The calculator does NOT send a bounced message back to the tester, because there are not enough funds 
+          left in the incoming request to pay for message forward fees (after the computation fees
+          were deducted from the value in the incoming message).
+        
+       6) The tester remains with contract field "val" set to -3 ("op requested, no answer yet").
+
+       Summary of transactions:
+    
+       T1) Triggered by message sent from treasury to tester. Sends request to calculator to compute 
+           average of interval [0,50] with NOT enough funds to pay for the calculator's transaction fees.
+        
+       T2) Triggered by the message sent from tester to calculator. The transaction is aborted during the 
+           computation phase (due to an out of gas error). No bounced message is sent back to the tester
+           because there are no funds left in the incoming request.
+    */
+    it("should test error in the calculator's computation phase, but no funds to send the bounced message", async () => {
+        // The amount the tester contract will pay in its request message to the calculator contract.
+        // This is just an amount to cover the request forward fees, but not enough to pay for
+        // calculator's transaction fees and the bounce message.
+        const amountToPayInRequest = toNano("0.005");
+        // In this test, the calculator will fail its computation phase and will be unable to send a bounce message
+        // due to insufficient funds, so that it will never send a response
+        // back to the tester. Hence, it will be irrelevant
+        // the number in amountToPayInCalculatorResponse. We set it to zero.
+        const amountToPayInCalculatorResponse = 0n;
+
+        // Contract balances before all the transactions
+        const testerBalanceBefore = (
+            await blockchain.getContract(tester.address)
+        ).balance;
+        const calculatorBalanceBefore = (
+            await blockchain.getContract(calculator.address)
+        ).balance;
+
+        // Treasury triggers the test by telling the tester to request the computation of the average of the interval [0,50].
+        const { transactions } = await tester.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            {
+                $$type: "DoCalculatorRequest",
+                from: 0n,
+                to: 50n,
+                amountToPayInRequest,
+                amountToPayInCalculatorResponse,
+            },
+        );
+
+        // Contract balances after all transactions
+        const testerBalanceAfter = (
+            await blockchain.getContract(tester.address)
+        ).balance;
+        const calculatorBalanceAfter = (
+            await blockchain.getContract(calculator.address)
+        ).balance;
+
+        // Check that the transactions exist
+        // Transaction T1 (see summary of transactions at the start of the test)
+        // This transaction sends the request to the calculator.
+        const testerRequestTsx = ensureTransactionIsDefined(
+            findTransaction(transactions, {
+                from: treasure.address,
+                to: tester.address,
+                success: true,
+            }),
+        );
+        // Transaction T2
+        // The calculator aborts the transaction during its computation phase (due to out of gas)
+        // and attempts to send a bounce message back to the tester, but there will be not enough funds to do it.
+        const calculatorTsx = ensureTransactionIsDefined(
+            findTransaction(transactions, {
+                from: tester.address,
+                to: calculator.address,
+                success: false,
+            }),
+        );
+        // Check there is no transaction in the tester triggered by the calculator, i.e., the calculator could not send the bounce message.
+        expect(
+            findTransaction(transactions, {
+                from: calculator.address,
+                to: tester.address,
+            }),
+        ).toBeUndefined();
+
+        // Check that the transactions occurred in the logical order
+        // i.e., the tester request transaction executed before the calculator transaction
+        expect(testerRequestTsx.lt < calculatorTsx.lt).toBe(true);
+
+        // Check that the calculator transaction failed in its computation phase with exit code -14 ("Out of gas").
+        const calculatorCompPhase = getComputationPhase(calculatorTsx);
+        expect(calculatorCompPhase.success).toBe(false);
+        expect(calculatorCompPhase.exitCode).toBe(-14);
+
+        // Check that the calculator's action phase did not execute, but its bounce phase did,
+        // with bounce phase type "no-funds"
+        const calculatorTsxDescription =
+            getTransactionDescription(calculatorTsx);
+        expect(calculatorTsxDescription.actionPhase).toBeUndefined();
+        expect(calculatorTsxDescription.bouncePhase).toBeDefined();
+        expect(calculatorTsxDescription.bouncePhase?.type).toBe("no-funds");
+
+        // Extract the only message sent by the tester to the calculator
+        const testerOutMessage = ensureMessageIsDefined(
+            testerRequestTsx.outMessages.get(0),
+        );
+        // Check that the calculator did not send messages
+        expect(calculatorTsx.outMessagesCount).toBe(0);
+
+        // Check that the value assigned to testerOutMessage is the original "value" in the send function
+        // but deducted with the message forward fees
+        const testerMessageForwardFee =
+            extractTotalMessageForwardFee(testerRequestTsx);
+        const testerOutMessageInfo = getMessageInfo(testerOutMessage);
+        expect(
+            amountToPayInRequest - testerMessageForwardFee ===
+                testerOutMessageInfo.value,
+        ).toBe(true);
+
+        // When there are enough funds in the incoming message to cover for transaction fees and bounced message forward fees,
+        // the contract would use the following formula:
+        //     outMessage.value = inValue - totalFees - BouncePhaseMessageForwardFees
+        //
+        // where inValue: is the value in the incoming message
+        //       totalFees: is the total transaction fees
+        //       BouncePhaseMessageForwardFees: is the message forward fees computed during the bounce phase
+        //
+        // However, in this test, the above formula becomes zero, because the total fees reach the incoming message value
+        // during the computation phase (the amount BouncePhaseMessageForwardFees is not even computed, since
+        // "inValue - totalFees" is already zero before entering the bounce phase).
+
+        // As such, there are no remaining funds in the incoming message value to
+        // send a bounced message.
+
+        // Check that the amount "inValue - totalFees" is actually zero.
+        // Get the incoming message that triggered the calculator's transaction.
+        const calculatorInMessage = ensureMessageIsDefined(
+            calculatorTsx.inMessage,
+        );
+        const calculatorInMessageInfo = getMessageInfo(calculatorInMessage);
+        // Check the amount to be zero.
+        expect(
+            calculatorInMessageInfo.value - calculatorTsx.totalFees.coins ===
+                0n,
+        ).toBe(true);
+
+        // Now we check that the observed final balances in each contract can actually be obtained from their initial balances
+        // by subtracting the transaction fees, crediting the initial message value, and subtracting the outbound message values.
+        // In other words, we want to check that the relation C_B + D = C_A holds, where C_B is the contract balance BEFORE the transaction,
+        // C_A is the contract balance AFTER the transaction, and D is the "delta" amount encoding the transaction fees and similar quantities.
+        // The explanation on how the "delta" is computed can be seen inside the function computeBalanceDelta.
+
+        // Balance delta for tester (in its only transaction). We pass the info of the only message sent during this transaction.
+        const testerDelta = computeBalanceDelta(
+            testerRequestTsx,
+            testerOutMessageInfo,
+        );
+        // Balance delta for calculator (in its only transaction).
+        // Calculator did not send a bounced message, so we do not pass a messageInfo object.
+        const calculatorDelta = computeBalanceDelta(calculatorTsx);
+
+        // If we add the delta for tester, together with its initial balance, we should get its measured final balance
+        expect(testerBalanceBefore + testerDelta === testerBalanceAfter).toBe(
+            true,
+        );
+        // Similarly for the calculator
+        expect(
+            calculatorBalanceBefore + calculatorDelta ===
+                calculatorBalanceAfter,
+        ).toBe(true);
+
+        // Additionally, we should expect that the balance for the calculator did not change
+        // because it payed its transaction fees from the value of the incoming message,
+        // which then depleted during the computation phase.
+        // Indeed, if we expand the terms of the delta for the calculator, we get:
+        //     delta = inValue - totalFees - outMsg.value - outMsg.validatorsForwardFee
+        //           = inValue - totalFees - 0 - 0
+        //           = 0
+        //
+        // where inValue - totalFees = 0 as we checked previously, and
+        // outMsg.value = 0 and outMsg.validatorsForwardFee = 0 since there was no bounce message.
+
+        // Check that the calculator delta is actually zero
+        expect(calculatorDelta === 0n).toBe(true);
+
+        // Finally, since the tester never receives the bounced message,
+        // the tester remains with status -3 ("op requested, no answer yet") in its "val" field.
+        const finalValue = await tester.getCurrentResult();
+        expect(finalValue === -3n).toBe(true);
+    });
+
+    /* This test checks when the tester contract sends a request that successfully passes the calculator's computation phase, 
+       but fails during the calculator's action phase.
+       
+       The summary of the test is as follows:
+    
+       1) The treasury will send a message to the tester, indicating the tester to start a 
+          request to the calculator for computing the average of the interval [0,4]. 
+          
+       2) During the computation phase, the tester creates an AverageRequest message (SendDefaultMode with no flags), 
+          including 1 TON in the "value" of the message. This amount is enough to cover the
+          calculator's transaction fees. 
+          The tester sets its "val" contract field to -3 ("op requested, no answer yet").
+          The computation phase for the tester contract succeeds. 
+    
+       3) The action phase for the tester contract successfully sends the request.
+    
+       4) The calculator receives the request and successfully computes the average of the interval [0,4].
+          The calculator creates an AverageResponse message (SendDefaultMode with no flags),
+          including 0 TON in the "value" of the message. This means that the calculator will fail its action
+          phase because the response message does not have enough funds to pay message forward fees.
+
+       5) The calculator enters its action phase and fails to send the response message back to the tester,
+          since the response message does not have funds to pay for forward fees.
+        
+       6) The tester remains with contract field "val" set to -3 ("op requested, no answer yet").
+
+       Summary of transactions:
+    
+       T1) Triggered by message sent from treasury to tester. Sends request to calculator to compute 
+           average of interval [0,4] with enough funds to pay for the calculator's transaction fees.
+        
+       T2) Triggered by the message sent from tester to calculator. The transaction passes the computation 
+           phase but fails its action phase because the calculator did not include enough funds to pay for forward
+           fees in the response message. No response message is sent back to the tester.
+    */
+    it("should test a successful computation phase in calculator but failure in its action phase", async () => {
+        // The amount the tester contract will pay in its request message to the calculator contract.
+        // 1 TON will cover all transaction fees in the calculator.
+        const amountToPayInRequest = toNano("1");
+        // In this test, we force the calculator to not pay for the response message,
+        // forcing a failure in its action phase because there is not enough TON to pay for message forward fees in the
+        // response back to the tester. So, set the amount to 0.
+        const amountToPayInCalculatorResponse = 0n;
+
+        // Contract balances before all the transactions
+        const testerBalanceBefore = (
+            await blockchain.getContract(tester.address)
+        ).balance;
+        const calculatorBalanceBefore = (
+            await blockchain.getContract(calculator.address)
+        ).balance;
+
+        // Treasury triggers the test by telling the tester to request the computation of the average of the interval [0,4].
+        const { transactions } = await tester.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            {
+                $$type: "DoCalculatorRequest",
+                from: 0n,
+                to: 4n,
+                amountToPayInRequest,
+                amountToPayInCalculatorResponse,
+            },
+        );
+
+        // Contract balances after all transactions
+        const testerBalanceAfter = (
+            await blockchain.getContract(tester.address)
+        ).balance;
+        const calculatorBalanceAfter = (
+            await blockchain.getContract(calculator.address)
+        ).balance;
+
+        // Check that the transactions exist
+        // Transaction T1 (see summary of transactions at the start of the test)
+        // This transaction sends the request to the calculator.
+        const testerRequestTsx = ensureTransactionIsDefined(
+            findTransaction(transactions, {
+                from: treasure.address,
+                to: tester.address,
+                success: true,
+            }),
+        );
+        // Transaction T2
+        // The calculator successfully executes the computation phase, but fails its action phase
+        // because it did not pay for the message forward fees in the response message.
+        // As a result, the tester receives neither a response message, nor a bounced message.
+        const calculatorTsx = ensureTransactionIsDefined(
+            findTransaction(transactions, {
+                from: tester.address,
+                to: calculator.address,
+                success: false,
+            }),
+        );
+        // Check there is no transaction in the tester triggered by the calculator,
+        // i.e., the calculator sent neither a response message, nor a bounced message.
+        expect(
+            findTransaction(transactions, {
+                from: calculator.address,
+                to: tester.address,
+            }),
+        ).toBeUndefined();
+
+        // Check that the transactions occurred in the logical order
+        // i.e., the tester request transaction executed before the calculator transaction
+        expect(testerRequestTsx.lt < calculatorTsx.lt).toBe(true);
+
+        // Check that the calculator transaction successfully executes its computation phase
+        const calculatorCompPhase = getComputationPhase(calculatorTsx);
+        expect(calculatorCompPhase.success).toBe(true);
+
+        // Check that the calculator's action phase failed with result code 40.
+        const calculatorActionPhase = getActionPhase(calculatorTsx);
+        expect(calculatorActionPhase.success).toBe(false);
+        expect(calculatorActionPhase.resultCode).toBe(40);
+
+        // Check that the calculator bounce phase did not execute
+        const calculatorTsxDescription =
+            getTransactionDescription(calculatorTsx);
+        expect(calculatorTsxDescription.bouncePhase).toBeUndefined();
+
+        // Extract the only message sent by the tester to the calculator
+        const testerOutMessage = ensureMessageIsDefined(
+            testerRequestTsx.outMessages.get(0),
+        );
+        // Check that the calculator did not send messages
+        expect(calculatorTsx.outMessagesCount).toBe(0);
+
+        // Check that the value assigned to testerOutMessage is the original "value" in the send function
+        // but deducted with the message forward fees
+        const testerMessageForwardFee =
+            extractTotalMessageForwardFee(testerRequestTsx);
+        const testerOutMessageInfo = getMessageInfo(testerOutMessage);
+        expect(
+            amountToPayInRequest - testerMessageForwardFee ===
+                testerOutMessageInfo.value,
+        ).toBe(true);
+
+        // Now we check that the observed final balances in each contract can actually be obtained from their initial balances
+        // by subtracting the transaction fees, crediting the initial message value, and subtracting the outbound message values.
+        // In other words, we want to check that the relation C_B + D = C_A holds, where C_B is the contract balance BEFORE the transaction,
+        // C_A is the contract balance AFTER the transaction, and D is the "delta" amount encoding the transaction fees and similar quantities.
+        // The explanation on how the "delta" is computed can be seen inside the function computeBalanceDelta.
+
+        // Balance delta for tester (in its only transaction). We pass the info of the only message sent during this transaction.
+        const testerDelta = computeBalanceDelta(
+            testerRequestTsx,
+            testerOutMessageInfo,
+        );
+        // Balance delta for calculator (in its only transaction).
+        // Calculator did not send a response message, so we do not pass a messageInfo object.
+        const calculatorDelta = computeBalanceDelta(calculatorTsx);
+
+        // If we add the delta for tester, together with its initial balance, we should get its measured final balance
+        expect(testerBalanceBefore + testerDelta === testerBalanceAfter).toBe(
+            true,
+        );
+        // Similarly for the calculator
+        expect(
+            calculatorBalanceBefore + calculatorDelta ===
+                calculatorBalanceAfter,
+        ).toBe(true);
+
+        // Check that the calculator's delta is positive, meaning that the calculator's balance increased after the transaction,
+        // since it never sends back to the tester the remaining funds.
+        expect(calculatorDelta > 0n).toBe(true);
+
+        // Finally, since the tester never receives the response message or a bounced message,
+        // the tester remains with status -3 ("op requested, no answer yet") in its "val" field.
+        const finalValue = await tester.getCurrentResult();
+        expect(finalValue === -3n).toBe(true);
     });
 });
 
 function computeBalanceDelta(
     tsx: BlockchainTransaction,
-    outMsgInfo: OutMessageInfo,
+    outMsgInfo: MessageInfo = {
+        validatorsForwardFee: 0n,
+        value: 0n,
+        bounced: false,
+    },
 ): bigint {
     if (tsx.inMessage?.info.type === "internal") {
         /* For transactions initiated by an internal message, the delta consists on the following formula:
@@ -355,7 +1105,7 @@ function computeBalanceDelta(
     throw new Error("Unsupported inbound message type.");
 }
 
-function getMessageInfo(msg: Message): OutMessageInfo {
+function getMessageInfo(msg: Message): MessageInfo {
     if (msg.info.type === "internal") {
         /* WARNING: According to TON Documentation https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees-low-level#ihr, 
            there is an extra IHR Fee in internal messages that should be set to 0 because IHR is yet not implemented. 
@@ -367,10 +1117,11 @@ function getMessageInfo(msg: Message): OutMessageInfo {
         return {
             validatorsForwardFee: msg.info.forwardFee,
             value: msg.info.value.coins,
+            bounced: msg.info.bounced,
         };
     }
 
-    throw new Error("Unsupported outbound message type.");
+    throw new Error("Unsupported message type.");
 }
 
 function ensureTransactionIsDefined(
@@ -383,16 +1134,67 @@ function ensureTransactionIsDefined(
     }
 }
 
-function ensureMessageIsDefined(msg: Message | undefined): Message {
-    if (typeof msg === "undefined") {
-        throw new Error("Message was expected to be defined");
+function ensureMessageIsDefined(msg: Maybe<Message>): Message {
+    if (msg) {
+        return msg;
     }
-    return msg;
+    throw new Error("Message was expected to be defined");
 }
 
 function extractTotalMessageForwardFee(tsx: BlockchainTransaction): bigint {
     if (tsx.description.type === "generic") {
         return tsx.description.actionPhase?.totalFwdFees ?? 0n;
+    }
+
+    throw new Error("Unrecognized transaction type");
+}
+
+function extractTotalBouncedMessageForwardFee(
+    tsx: BlockchainTransaction,
+): bigint {
+    if (tsx.description.type === "generic") {
+        if (tsx.description.bouncePhase?.type === "ok") {
+            return tsx.description.bouncePhase.forwardFees;
+        } else {
+            throw new Error("Expected bounce phase to execute without errors");
+        }
+    }
+
+    throw new Error("Unrecognized transaction type");
+}
+
+function getComputationPhase(tsx: BlockchainTransaction): TransactionComputeVm {
+    if (tsx.description.type === "generic") {
+        const compPhase = tsx.description.computePhase;
+        if (compPhase.type === "vm") {
+            return compPhase;
+        } else {
+            throw new Error(
+                "Computation phase was expected to execute (i.e. not skipped)",
+            );
+        }
+    }
+
+    throw new Error("Unrecognized transaction type");
+}
+
+function getActionPhase(tsx: BlockchainTransaction): TransactionActionPhase {
+    if (tsx.description.type === "generic") {
+        if (tsx.description.actionPhase) {
+            return tsx.description.actionPhase;
+        } else {
+            throw new Error("Action phase was expected to exist");
+        }
+    }
+
+    throw new Error("Unrecognized transaction type");
+}
+
+function getTransactionDescription(
+    tsx: BlockchainTransaction,
+): TransactionDescriptionGeneric {
+    if (tsx.description.type === "generic") {
+        return tsx.description;
     }
 
     throw new Error("Unrecognized transaction type");
