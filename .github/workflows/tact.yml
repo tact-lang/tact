@@ -87,7 +87,8 @@ jobs:
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
           # Hijack the dependency on Tact to avoid redundant npm downloads
-          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json && mv temp.json package.json
+          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json
+          mv temp.json package.json
           yarn install
           yarn link @tact-lang/compiler
           yarn build
@@ -110,7 +111,8 @@ jobs:
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
           # Hijack the dependency on Tact to avoid redundant npm downloads
-          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json && mv temp.json package.json
+          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M | Set-Content temp.json
+          Move-Item temp.json package.json -Force
           yarn install
           yarn link @tact-lang/compiler
           yarn build
