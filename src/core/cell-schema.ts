@@ -3,92 +3,92 @@ import { Just, Maybe, Nothing } from "./maybe";
 import { singleton } from "../utils/tricks";
 import { Address, AddrExtern, AddrNone, AddrStd, AddrVar } from "./address";
 
-// const getPreload = <T>(f: (s: Slice) => T) => (s: Slice) => {
-//     const priv = s as unknown as { _reader: BitReader };
-//     try {
-//         priv._reader.save();
-//         return f(s);
-//     } finally {
-//         priv._reader.reset();
-//     }
-// };
+export const getPreload = <T>(f: (s: Slice) => T) => (s: Slice) => {
+    const priv = s as unknown as { _reader: BitReader };
+    try {
+        priv._reader.save();
+        return f(s);
+    } finally {
+        priv._reader.reset();
+    }
+};
 
 export interface Type<T> {
     store: (t: T, b: Builder) => void;
     load: (s: Slice) => T;
-    // preload: (s: Slice) => T;
+    preload: (s: Slice) => T;
 }
 
 export const pure = <T>(t: T): Type<T> => ({
     store: (_t, _b) => {},
     load: (_s) => t,
-    // preload: (_s) => t,
+    preload: (_s) => t,
 });
 
 export const ref: Type<Cell> = ({
     store: (t, b) => b.storeRef(t),
     load: (s) => s.loadRef(),
-    // preload: (s) => s.preloadRef(),
+    preload: (s) => s.preloadRef(),
 });
 
 export const bit: Type<boolean> = ({
     store: (t, b) => b.storeBit(t),
     load: (s) => s.loadBit(),
-    // preload: (s) => s.preloadBit(),
+    preload: (s) => s.preloadBit(),
 });
 
 export const int = (bits: number): Type<number> => ({
     store: (t, b) => b.storeInt(t, bits),
     load: (s) => s.loadInt(bits),
-    // preload: (s) => s.preloadInt(bits),
+    preload: (s) => s.preloadInt(bits),
 });
 
 export const uint = (bits: number): Type<number> => ({
     store: (t, b) => b.storeUint(t, bits),
     load: (s) => s.loadUint(bits),
-    // preload: (s) => s.loadUint(bits),
+    preload: (s) => s.loadUint(bits),
 });
 
 export const intVar = (bits: number): Type<number> => ({
     store: (t, b) => b.storeVarInt(t, bits),
     load: (s) => s.loadVarInt(bits),
-    // preload: (s) => s.preloadVarInt(bits),
+    preload: (s) => s.preloadVarInt(bits),
 });
 
 export const coins: Type<bigint> = ({
     store: (t, b) => b.storeCoins(t),
     load: (s) => s.loadCoins(),
-    // preload: (s) => s.preloadCoins(),
+    preload: (s) => s.preloadCoins(),
 });
 
 export const uintVar = (bits: number): Type<number> => ({
     store: (t, b) => b.storeVarUint(t, bits),
     load: (s) => s.loadVarUint(bits),
-    // preload: (s) => s.preloadVarUint(bits),
+    preload: (s) => s.preloadVarUint(bits),
 });
 
 export const intBig = (bits: number): Type<bigint> => ({
     store: (t, b) => b.storeInt(t, bits),
     load: (s) => s.loadIntBig(bits),
-    // preload: (s) => s.preloadIntBig(bits),
+    preload: (s) => s.preloadIntBig(bits),
 });
 
 export const uintBig = (bits: number): Type<bigint> => ({
     store: (t, b) => b.storeUint(t, bits),
     load: (s) => s.loadUintBig(bits),
-    // preload: (s) => s.preloadUintBig(bits),
+    preload: (s) => s.preloadUintBig(bits),
 });
 
 export const intVarBig = (bits: number): Type<bigint> => ({
     store: (t, b) => b.storeVarInt(t, bits),
     load: (s) => s.loadVarIntBig(bits),
-    // preload: (s) => s.preloadVarIntBig(bits),
+    preload: (s) => s.preloadVarIntBig(bits),
 });
 
 export const uintVarBig = (bits: number): Type<bigint> => ({
     store: (t, b) => b.storeVarUint(t, bits),
     load: (s) => s.loadVarUintBig(bits),
-    // preload: (s) => s.preloadVarUintBig(bits),
+    preload: (s) => s.preloadVarUintBig(bits),
 });
 
 const loadAddress = (s: Slice): Address => {
@@ -98,9 +98,6 @@ const loadAddress = (s: Slice): Address => {
         return AddrNone;
     } else if (type === 1) {
         // addr_extern$01 len:(## 9) external_address:(bits len)
-        if (s.loadUint(1) !== 0) {
-            throw Error('Anycast not supported');
-        }
         const len = s.loadUint(9);
         return AddrExtern(len, s.loadUintBig(len));
     } else if (type === 2) {
@@ -166,7 +163,7 @@ const storeAddress = (t: Address, b: Builder) => {
 export const address: Type<Address> = ({
     store: storeAddress,
     load: loadAddress,
-    // preload: getPreload(loadAddress),
+    preload: getPreload(loadAddress),
 });
 
 export const maybe = <T>(type: Type<T>): Type<Maybe<T>> => {
@@ -185,8 +182,8 @@ export const maybe = <T>(type: Type<T>): Type<Maybe<T>> => {
             return Nothing;
         }
     };
-    // const preload = getPreload(load);
-    return { store, load };
+    const preload = getPreload(load);
+    return { store, load, preload };
 };
 
 interface BuildSeq<T> {
@@ -204,21 +201,21 @@ const makeBuildSeq = <T>(end: Type<T>): BuildSeq<T> => {
             ...end.load(s),
             ...singleton(k, t.load(s)),
         });
-        // const preload = getPreload(load);
-        return makeBuildSeq({ store, load });
+        const preload = getPreload(load);
+        return makeBuildSeq({ store, load, preload });
     };
     return { end, add };
 };
 
 export const object = makeBuildSeq(pure({}));
 
-interface BuildSel<K, T> {
-    end: Type<T>;
-    add: <V>(k: K, t: Type<V>) => BuildSel<K, T | V>;
-}
-export const sel = <K>(t: Type<K>): BuildSel<K, never> => {
+// interface BuildSel<K, T> {
+//     end: Type<T>;
+//     add: <V>(k: K, t: Type<V>) => BuildSel<K, T | V>;
+// }
+// export const sel = <K>(t: Type<K>): BuildSel<K, never> => {
     
-};
+// };
 
 // storeBuilder
 
