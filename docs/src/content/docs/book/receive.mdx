@@ -20,7 +20,7 @@ There are several receiver functions. All receiver functions are processed in th
 * `receive(msg: MyMessage){:tact}` - called when a binary message of type `MyMessage` is sent to the contract
 * `receive(msg: Slice){:tact}` - called when binary message of unknown type is sent to the contract
 
-For example, an empty message gets processed by `receive(){:tact}` and not by `receive(msg: Slice){:tact}`, because the former occurs before the later in the above list. Similarly, a message with specific comment `"message"{:tact}` gets processed by `receive("message"){:tact}` and not by `receive(str: String){:tact}`.
+For example, an empty message gets processed by `receive(){:tact}` and not by `receive(msg: Slice){:tact}`, because the former occurs before the latter in the above list. Similarly, a message with specific comment `"message"{:tact}` gets processed by `receive("message"){:tact}` and not by `receive(str: String){:tact}`.
 
 ```tact
 message MyMessage {
