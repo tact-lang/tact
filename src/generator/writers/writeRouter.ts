@@ -59,7 +59,6 @@ export function writeRouter(
     );
 }
 
-// TODO: take TypeDescription instead of contractName and contractFuncType
 function writeInternalRouter(
     internalReceivers: Receivers,
     bouncedReceivers: BouncedReceivers,
@@ -109,7 +108,6 @@ function writeNonBouncedRouter(
     wCtx: WriterContext,
 ): void {
     // - Special case: there are no receivers at all
-    // TODO: in this case we need to refactor the whole recv_internal
     if (
         typeof receivers.empty === "undefined" &&
         receivers.binary.length === 0 &&
@@ -143,7 +141,6 @@ function writeNonBouncedRouter(
     wCtx.append("int op = 0;");
     wCtx.append("int in_msg_length = slice_bits(in_msg);");
     wCtx.inBlock("if (in_msg_length >= 32)", () => {
-        // TODO: check quiet version of load_uint
         wCtx.append(`op = in_msg${opcodeReader}_uint(32);`);
     });
 
@@ -412,7 +409,6 @@ function writeBouncedRouter(
         wCtx.append("in_msg~skip_bits(32);");
         wCtx.append(`int op = 0;`);
         wCtx.inBlock("if (slice_bits(in_msg) >= 32)", () => {
-            // TODO: check quiet version of load_uint
             wCtx.append(`op = in_msg${opcodeReader}_uint(32);`);
         });
         bouncedReceivers.binary.forEach((bouncedRcv) => {
