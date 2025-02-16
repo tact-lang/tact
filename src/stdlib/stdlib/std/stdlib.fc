@@ -115,7 +115,7 @@ forall X, Y, Z -> Z triple_third([X, Y, Z] p) asm "THIRD";
 forall X -> X null() asm "PUSHNULL";
 
 ;;; Moves a variable [x] to the top of the stack
-forall X -> (X, ()) ~impure_touch(X x) impure asm "NOP";
+forall X -> (X, ()) ~impure_touch(X x) impure asm "//";
 
 
 
