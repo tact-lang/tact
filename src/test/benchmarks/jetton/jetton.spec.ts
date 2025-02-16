@@ -21,6 +21,8 @@ import type {
     JettonTransfer,
     JettonUpdateContent,
 } from "../contracts/output/jetton_wallet_JettonWallet";
+import { join } from "path";
+import { type Step, writeLog } from "../../utils/write-vm-log";
 
 const getJettonBalance = async (
     userWallet: SandboxContract<JettonWallet>,
