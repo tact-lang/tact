@@ -100,7 +100,7 @@
       "commit": null
     },
     {
-      "label": "1.5.3 without double checking of message opcodes (#TODO)",
+      "label": "1.5.3 without double checking of message opcodes (#1854)",
       "gas": {
         "transfer": "20368",
         "burn": "15655",
