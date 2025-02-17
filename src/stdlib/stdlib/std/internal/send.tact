@@ -187,6 +187,8 @@ asm fun deploy(params: DeployParameters) {
     //
     NEWC
     b{000000100000000100110100} STSLICECONST // Consult https://docs.tact-lang.org/book/cells/#cells-representation for more information
+    // This number is also well-described here https://github.com/tact-lang/tact/pull/1766#issuecomment-2658464665
+
     // The main trick we are doing here is calculating hash-part of address without using ENDC.
     16 STU
     16 STU
