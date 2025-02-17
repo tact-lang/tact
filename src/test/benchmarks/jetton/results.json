@@ -120,7 +120,7 @@
     {
       "label": "1.5.3 without double checking of message opcodes",
       "gas": {
-        "transfer": "19598",
+        "transfer": "18492",
         "burn": "15311",
         "discovery": "9458"
       },
