@@ -11,11 +11,11 @@ blockstore
 bocchi
 bounceable
 Brujin
+CCITT
 cheatsheet
 Cheatsheet
 cheatsheets
 Cheatsheets
-CCITT
 cleanall
 codegen
 compilables
@@ -38,6 +38,7 @@ dnsresolve
 Domínguez
 elseifnot
 Epva
+errno
 forall
 formedness
 frontmatter
@@ -136,6 +137,7 @@ Stonfi
 storer
 struct
 structs
+stry
 styleguide
 subfolders
 subtyping
@@ -163,6 +165,7 @@ unixfs
 untypable
 varint
 varuint
+verytactical
 viiii
 vogons
 workchain
