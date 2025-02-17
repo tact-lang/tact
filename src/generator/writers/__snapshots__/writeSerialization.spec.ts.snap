@@ -48,17 +48,6 @@ exports[`writeSerialization should write serializer for A 1`] = `
   },
   {
     "code": {
-      "kind": "skip",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_address_to_slice",
-    "signature": "<unknown>",
-  },
-  {
-    "code": {
       "code": "slice raw = cs~load_msg_addr();
 return (cs, raw);",
       "kind": "generic",
@@ -126,49 +115,6 @@ return (cs, raw);",
     },
     "name": "__tact_store_address_opt",
     "signature": "builder __tact_store_address_opt(builder b, slice address)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-b = b.store_uint(2, 2);
-b = b.store_uint(0, 1);
-b = b.store_int(chain, 8);
-b = b.store_uint(hash, 256);
-var addr = b.end_cell().begin_parse();
-return addr;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_create_address",
-    "signature": "slice __tact_create_address(int chain, int hash)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-b = b.store_uint(0, 2);
-b = b.store_uint(3, 2);
-b = b.store_uint(0, 1);
-b = b.store_ref(code);
-b = b.store_ref(data);
-var hash = cell_hash(b.end_cell());
-return __tact_create_address(chain, hash);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_create_address",
-    },
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_compute_contract_address",
-    "signature": "slice __tact_compute_contract_address(int chain, cell code, cell data)",
   },
   {
     "code": {
@@ -5826,17 +5772,6 @@ exports[`writeSerialization should write serializer for B 1`] = `
   },
   {
     "code": {
-      "kind": "skip",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_address_to_slice",
-    "signature": "<unknown>",
-  },
-  {
-    "code": {
       "code": "slice raw = cs~load_msg_addr();
 return (cs, raw);",
       "kind": "generic",
@@ -5904,49 +5839,6 @@ return (cs, raw);",
     },
     "name": "__tact_store_address_opt",
     "signature": "builder __tact_store_address_opt(builder b, slice address)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-b = b.store_uint(2, 2);
-b = b.store_uint(0, 1);
-b = b.store_int(chain, 8);
-b = b.store_uint(hash, 256);
-var addr = b.end_cell().begin_parse();
-return addr;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_create_address",
-    "signature": "slice __tact_create_address(int chain, int hash)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-b = b.store_uint(0, 2);
-b = b.store_uint(3, 2);
-b = b.store_uint(0, 1);
-b = b.store_ref(code);
-b = b.store_ref(data);
-var hash = cell_hash(b.end_cell());
-return __tact_create_address(chain, hash);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_create_address",
-    },
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_compute_contract_address",
-    "signature": "slice __tact_compute_contract_address(int chain, cell code, cell data)",
   },
   {
     "code": {
@@ -11604,17 +11496,6 @@ exports[`writeSerialization should write serializer for C 1`] = `
   },
   {
     "code": {
-      "kind": "skip",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_address_to_slice",
-    "signature": "<unknown>",
-  },
-  {
-    "code": {
       "code": "slice raw = cs~load_msg_addr();
 return (cs, raw);",
       "kind": "generic",
@@ -11682,49 +11563,6 @@ return (cs, raw);",
     },
     "name": "__tact_store_address_opt",
     "signature": "builder __tact_store_address_opt(builder b, slice address)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-b = b.store_uint(2, 2);
-b = b.store_uint(0, 1);
-b = b.store_int(chain, 8);
-b = b.store_uint(hash, 256);
-var addr = b.end_cell().begin_parse();
-return addr;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_create_address",
-    "signature": "slice __tact_create_address(int chain, int hash)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-b = b.store_uint(0, 2);
-b = b.store_uint(3, 2);
-b = b.store_uint(0, 1);
-b = b.store_ref(code);
-b = b.store_ref(data);
-var hash = cell_hash(b.end_cell());
-return __tact_create_address(chain, hash);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_create_address",
-    },
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_compute_contract_address",
-    "signature": "slice __tact_compute_contract_address(int chain, cell code, cell data)",
   },
   {
     "code": {
