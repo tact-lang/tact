@@ -1,7 +1,7 @@
 import { contractErrors } from "../../abi/errors";
 import { maxTupleSize } from "../../bindings/typescript/writeStruct";
 import { match } from "../../utils/tricks";
-import { WriterContext } from "../Writer";
+import type { WriterContext } from "../Writer";
 
 export function writeStdlib(ctx: WriterContext): void {
     //
@@ -12,7 +12,6 @@ export function writeStdlib(ctx: WriterContext): void {
     ctx.skip("__tact_nop");
     ctx.skip("__tact_str_to_slice");
     ctx.skip("__tact_slice_to_str");
-    ctx.skip("__tact_address_to_slice");
 
     //
     // Addresses
@@ -72,43 +71,6 @@ export function writeStdlib(ctx: WriterContext): void {
                 } else {
                     return ${ctx.used(`__tact_store_address`)}(b, address);
                 }
-            `);
-        });
-    });
-
-    ctx.fun("__tact_create_address", () => {
-        ctx.signature(`slice __tact_create_address(int chain, int hash)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                var b = begin_cell();
-                b = b.store_uint(2, 2);
-                b = b.store_uint(0, 1);
-                b = b.store_int(chain, 8);
-                b = b.store_uint(hash, 256);
-                var addr = b.end_cell().begin_parse();
-                return addr;
-        `);
-        });
-    });
-
-    ctx.fun("__tact_compute_contract_address", () => {
-        ctx.signature(
-            `slice __tact_compute_contract_address(int chain, cell code, cell data)`,
-        );
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                var b = begin_cell();
-                b = b.store_uint(0, 2);
-                b = b.store_uint(3, 2);
-                b = b.store_uint(0, 1);
-                b = b.store_ref(code);
-                b = b.store_ref(data);
-                var hash = cell_hash(b.end_cell());
-                return ${ctx.used(`__tact_create_address`)}(chain, hash);
             `);
         });
     });
@@ -1070,22 +1032,6 @@ export function writeStdlib(ctx: WriterContext): void {
                 while (num >= base) {
                     num /= base;
                     result += 1;
-                }
-                return result;
-            `);
-        });
-    });
-
-    ctx.fun(`__tact_pow`, () => {
-        ctx.signature(`int __tact_pow(int base, int exp)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                throw_unless(5, exp >= 0);
-                int result = 1;
-                repeat (exp) {
-                    result *= base;
                 }
                 return result;
             `);

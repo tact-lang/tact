@@ -1,6 +1,7 @@
-import { Interval } from "ohm-js";
-import { getSrcInfo, SrcInfo } from "../src-info";
-import { ItemOrigin } from "../../imports/source";
+import type { Interval } from "ohm-js";
+import type { SrcInfo } from "../src-info";
+import { getSrcInfo } from "../src-info";
+import type { ItemOrigin } from "../../imports/source";
 
 /**
  * @deprecated

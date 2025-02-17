@@ -1,7 +1,7 @@
-import { ImportPath } from "../ast/ast";
-import { VirtualFileSystem } from "../vfs/VirtualFileSystem";
+import type { ImportPath } from "../ast/ast";
+import type { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { asString } from "./path";
-import { ItemOrigin, Language, Source } from "./source";
+import type { ItemOrigin, Language, Source } from "./source";
 
 type ResolveLibraryArgs = {
     readonly importPath: ImportPath;

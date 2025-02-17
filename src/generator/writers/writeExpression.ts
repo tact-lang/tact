@@ -4,7 +4,7 @@ import {
     throwCompilationError,
     throwInternalCompilerError,
 } from "../../error/errors";
-import * as A from "../../ast/ast";
+import type * as A from "../../ast/ast";
 import { getExpType } from "../../types/resolveExpression";
 import {
     getStaticConstant,
@@ -12,12 +12,9 @@ import {
     getType,
     hasStaticConstant,
 } from "../../types/resolveDescriptors";
-import {
-    FieldDescription,
-    printTypeRef,
-    TypeDescription,
-} from "../../types/types";
-import { WriterContext } from "../Writer";
+import type { FieldDescription, TypeDescription } from "../../types/types";
+import { printTypeRef } from "../../types/types";
+import type { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { MapFunctions } from "../../abi/map";
 import { GlobalFunctions } from "../../abi/global";

@@ -1,5 +1,6 @@
 import { toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { TraitsConstantContract } from "./contracts/output/base-trait-constant-override-1_TraitsConstantContract";
 import "@ton/test-utils";
 

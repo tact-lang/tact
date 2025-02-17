@@ -4,10 +4,12 @@ exports[`benchmarks benchmark cells creation: gas used emptyCell 1`] = `931n`;
 
 exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `935n`;
 
+exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2846n`;
+
 exports[`benchmarks benchmark functions: code size 1`] = `211`;
 
-exports[`benchmarks benchmark functions: gas used 1`] = `2769n`;
+exports[`benchmarks benchmark functions: gas used 1`] = `2769`;
 
 exports[`benchmarks benchmark readFwdFee: code size 1`] = `157`;
 
-exports[`benchmarks benchmark readFwdFee: gas used 1`] = `2799n`;
+exports[`benchmarks benchmark readFwdFee: gas used 1`] = `2799`;

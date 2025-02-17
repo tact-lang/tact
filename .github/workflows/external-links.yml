@@ -1,4 +1,4 @@
-name: Link check
+name: External link check
 
 on:
   workflow_dispatch: # on demand launches, if needed
@@ -22,8 +22,14 @@ jobs:
             --exclude '\.(?:jpg|png)$'
             docs/README.md './docs/**/*.mdx'
           output: "/dev/stdout"
-          fail: false
+          fail: true
           failIfEmpty: false
+
+  linkcheck-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: (dev-docs) Check broken HTTP(S) links
         uses: lycheeverse/lychee-action@v2
@@ -34,5 +40,22 @@ jobs:
             --exclude-path node_modules --exclude-path docs
             './**/*.md'
           output: "/dev/stdout"
-          fail: false
+          fail: true
+          failIfEmpty: false
+
+  linkcheck-stdlib:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: (stdlib) Check broken HTTP(S) links in doc comments
+        uses: lycheeverse/lychee-action@v2
+        id: lychee_dev
+        with:
+          args: >
+            -n -s https -s http
+            './src/stdlib/stdlib/**/*.tact'
+          output: "/dev/stdout"
+          fail: true
           failIfEmpty: false

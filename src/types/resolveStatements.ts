@@ -1,5 +1,5 @@
-import * as A from "../ast/ast";
-import { CompilerContext } from "../context/context";
+import type * as A from "../ast/ast";
+import type { CompilerContext } from "../context/context";
 import { isAssignable } from "./subtyping";
 import {
     tryExtractPath,
@@ -23,8 +23,9 @@ import {
     getAllTypes,
 } from "./resolveDescriptors";
 import { getExpType, resolveExpression } from "./resolveExpression";
-import { FunctionDescription, printTypeRef, TypeRef } from "./types";
-import { SrcInfo } from "../grammar";
+import type { FunctionDescription, TypeRef } from "./types";
+import { printTypeRef } from "./types";
+import type { SrcInfo } from "../grammar";
 
 export type StatementContext = {
     root: SrcInfo;

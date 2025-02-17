@@ -1,14 +1,15 @@
-import { AstNode } from "../ast/ast";
-import { FactoryAst } from "../ast/ast-helpers";
+import type { AstNode } from "../ast/ast";
+import type { FactoryAst } from "../ast/ast-helpers";
 import { traverse } from "../ast/iterators";
-import { AstUtil, getAstUtil } from "../ast/util";
-import { CompilerContext } from "../context/context";
+import type { AstUtil } from "../ast/util";
+import { getAstUtil } from "../ast/util";
+import type { CompilerContext } from "../context/context";
 import {
     TactConstEvalError,
     throwCompilationError,
     throwConstEvalError,
 } from "../error/errors";
-import { SrcInfo } from "../grammar";
+import type { SrcInfo } from "../grammar";
 import { evalConstantExpression } from "../optimizer/constEval";
 import { ensureInt } from "../optimizer/interpreter";
 import { crc16 } from "../utils/crc16";
@@ -17,7 +18,7 @@ import {
     getAllStaticFunctions,
     getAllTypes,
 } from "./resolveDescriptors";
-import { ConstantDescription, FunctionDescription } from "./types";
+import type { ConstantDescription, FunctionDescription } from "./types";
 
 function initializeConstants(
     constants: ConstantDescription[],

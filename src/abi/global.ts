@@ -9,7 +9,7 @@ import {
 import { writeExpression } from "../generator/writers/writeExpression";
 import { throwCompilationError } from "../error/errors";
 import { getErrorId } from "../types/resolveErrors";
-import { AbiFunction } from "./AbiFunction";
+import type { AbiFunction } from "./AbiFunction";
 import path from "path";
 import { cwd } from "process";
 import { posixNormalize } from "../utils/filePath";

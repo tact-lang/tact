@@ -1,4 +1,4 @@
-import { VirtualFileSystem } from "./VirtualFileSystem";
+import type { VirtualFileSystem } from "./VirtualFileSystem";
 import fs from "fs";
 import path from "path";
 
