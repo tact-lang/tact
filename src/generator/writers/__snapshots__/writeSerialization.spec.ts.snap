@@ -48,17 +48,6 @@ exports[`writeSerialization should write serializer for A 1`] = `
   },
   {
     "code": {
-      "kind": "skip",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_address_to_slice",
-    "signature": "<unknown>",
-  },
-  {
-    "code": {
       "code": "slice raw = cs~load_msg_addr();
 return (cs, raw);",
       "kind": "generic",
@@ -126,49 +115,6 @@ return (cs, raw);",
     },
     "name": "__tact_store_address_opt",
     "signature": "builder __tact_store_address_opt(builder b, slice address)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-b = b.store_uint(2, 2);
-b = b.store_uint(0, 1);
-b = b.store_int(chain, 8);
-b = b.store_uint(hash, 256);
-var addr = b.end_cell().begin_parse();
-return addr;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_create_address",
-    "signature": "slice __tact_create_address(int chain, int hash)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-b = b.store_uint(0, 2);
-b = b.store_uint(3, 2);
-b = b.store_uint(0, 1);
-b = b.store_ref(code);
-b = b.store_ref(data);
-var hash = cell_hash(b.end_cell());
-return __tact_create_address(chain, hash);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_create_address",
-    },
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_compute_contract_address",
-    "signature": "slice __tact_compute_contract_address(int chain, cell code, cell data)",
   },
   {
     "code": {
@@ -1553,53 +1499,6 @@ return builders;",
     "flags": Set {},
     "name": "__tact_string_builder_append_not_mut",
     "signature": "(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-if (src < 0) {
-    b = b.store_uint(45, 8);
-    src = - src;
-}
-
-if (src < 1000000000000000000000000000000) {
-    int len = 0;
-    int value = 0;
-    int mult = 1;
-    do {
-        (src, int res) = src.divmod(10);
-        value = value + (res + 48) * mult;
-        mult = mult * 256;
-        len = len + 1;
-    } until (src == 0);
-
-    b = b.store_uint(value, len * 8);
-} else {
-    tuple t = empty_tuple();
-    int len = 0;
-    do {
-        int digit = src % 10;
-        t~tpush(digit);
-        len = len + 1;
-        src = src / 10;
-    } until (src == 0);
-
-    int c = len - 1;
-    repeat(len) {
-        int v = t.at(c);
-        b = b.store_uint(v + 48, 8);
-        c = c - 1;
-    }
-}
-return b.end_cell().begin_parse();",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_int_to_string",
-    "signature": "slice __tact_int_to_string(int src)",
   },
   {
     "code": {
@@ -5826,17 +5725,6 @@ exports[`writeSerialization should write serializer for B 1`] = `
   },
   {
     "code": {
-      "kind": "skip",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_address_to_slice",
-    "signature": "<unknown>",
-  },
-  {
-    "code": {
       "code": "slice raw = cs~load_msg_addr();
 return (cs, raw);",
       "kind": "generic",
@@ -5904,49 +5792,6 @@ return (cs, raw);",
     },
     "name": "__tact_store_address_opt",
     "signature": "builder __tact_store_address_opt(builder b, slice address)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-b = b.store_uint(2, 2);
-b = b.store_uint(0, 1);
-b = b.store_int(chain, 8);
-b = b.store_uint(hash, 256);
-var addr = b.end_cell().begin_parse();
-return addr;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_create_address",
-    "signature": "slice __tact_create_address(int chain, int hash)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-b = b.store_uint(0, 2);
-b = b.store_uint(3, 2);
-b = b.store_uint(0, 1);
-b = b.store_ref(code);
-b = b.store_ref(data);
-var hash = cell_hash(b.end_cell());
-return __tact_create_address(chain, hash);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_create_address",
-    },
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_compute_contract_address",
-    "signature": "slice __tact_compute_contract_address(int chain, cell code, cell data)",
   },
   {
     "code": {
@@ -7331,53 +7176,6 @@ return builders;",
     "flags": Set {},
     "name": "__tact_string_builder_append_not_mut",
     "signature": "(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-if (src < 0) {
-    b = b.store_uint(45, 8);
-    src = - src;
-}
-
-if (src < 1000000000000000000000000000000) {
-    int len = 0;
-    int value = 0;
-    int mult = 1;
-    do {
-        (src, int res) = src.divmod(10);
-        value = value + (res + 48) * mult;
-        mult = mult * 256;
-        len = len + 1;
-    } until (src == 0);
-
-    b = b.store_uint(value, len * 8);
-} else {
-    tuple t = empty_tuple();
-    int len = 0;
-    do {
-        int digit = src % 10;
-        t~tpush(digit);
-        len = len + 1;
-        src = src / 10;
-    } until (src == 0);
-
-    int c = len - 1;
-    repeat(len) {
-        int v = t.at(c);
-        b = b.store_uint(v + 48, 8);
-        c = c - 1;
-    }
-}
-return b.end_cell().begin_parse();",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_int_to_string",
-    "signature": "slice __tact_int_to_string(int src)",
   },
   {
     "code": {
@@ -11604,17 +11402,6 @@ exports[`writeSerialization should write serializer for C 1`] = `
   },
   {
     "code": {
-      "kind": "skip",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_address_to_slice",
-    "signature": "<unknown>",
-  },
-  {
-    "code": {
       "code": "slice raw = cs~load_msg_addr();
 return (cs, raw);",
       "kind": "generic",
@@ -11682,49 +11469,6 @@ return (cs, raw);",
     },
     "name": "__tact_store_address_opt",
     "signature": "builder __tact_store_address_opt(builder b, slice address)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-b = b.store_uint(2, 2);
-b = b.store_uint(0, 1);
-b = b.store_int(chain, 8);
-b = b.store_uint(hash, 256);
-var addr = b.end_cell().begin_parse();
-return addr;",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_create_address",
-    "signature": "slice __tact_create_address(int chain, int hash)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-b = b.store_uint(0, 2);
-b = b.store_uint(3, 2);
-b = b.store_uint(0, 1);
-b = b.store_ref(code);
-b = b.store_ref(data);
-var hash = cell_hash(b.end_cell());
-return __tact_create_address(chain, hash);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {
-      "__tact_create_address",
-    },
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_compute_contract_address",
-    "signature": "slice __tact_compute_contract_address(int chain, cell code, cell data)",
   },
   {
     "code": {
@@ -13109,53 +12853,6 @@ return builders;",
     "flags": Set {},
     "name": "__tact_string_builder_append_not_mut",
     "signature": "(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-if (src < 0) {
-    b = b.store_uint(45, 8);
-    src = - src;
-}
-
-if (src < 1000000000000000000000000000000) {
-    int len = 0;
-    int value = 0;
-    int mult = 1;
-    do {
-        (src, int res) = src.divmod(10);
-        value = value + (res + 48) * mult;
-        mult = mult * 256;
-        len = len + 1;
-    } until (src == 0);
-
-    b = b.store_uint(value, len * 8);
-} else {
-    tuple t = empty_tuple();
-    int len = 0;
-    do {
-        int digit = src % 10;
-        t~tpush(digit);
-        len = len + 1;
-        src = src / 10;
-    } until (src == 0);
-
-    int c = len - 1;
-    repeat(len) {
-        int v = t.at(c);
-        b = b.store_uint(v + 48, 8);
-        c = c - 1;
-    }
-}
-return b.end_cell().begin_parse();",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_int_to_string",
-    "signature": "slice __tact_int_to_string(int src)",
   },
   {
     "code": {
