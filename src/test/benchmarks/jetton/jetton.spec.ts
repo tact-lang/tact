@@ -14,8 +14,6 @@ import "@ton/test-utils";
 import type { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
 import { generateResults, getUsedGas, printBenchmarkTable } from "../util";
 import benchmarkResults from "./results.json";
-import { join } from "path";
-import { type Step, writeLog } from "../../utils/write-vm-log";
 import type {
     JettonBurn,
     JettonTransfer,
