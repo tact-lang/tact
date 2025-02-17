@@ -275,7 +275,8 @@ describe("SendDefaultMode with no flags", () => {
         );
         // Balance delta for tester in its second transaction
         // Since this transaction does not send messages, we pass no MessageInfo object
-        const testerDelta2 = computeBalanceDelta(testerResultTsx);
+        const testerDelta2 =
+            computeBalanceDeltaWithNoOutputMessage(testerResultTsx);
 
         // If we add all the deltas for tester, together with its initial balance, we should get its measured final balance
         expect(
@@ -390,7 +391,8 @@ describe("SendDefaultMode with no flags", () => {
 
         // Now compute the delta for the tester transaction.
         // Since the tester did not send a message, we pass no MessageInfo object.
-        const testerDelta = computeBalanceDelta(testerRequestTsx);
+        const testerDelta =
+            computeBalanceDeltaWithNoOutputMessage(testerRequestTsx);
 
         // If we add the tester's delta to its initial balance, we should get its measured final balance.
         expect(testerBalanceBefore + testerDelta === testerBalanceAfter).toBe(
@@ -624,7 +626,8 @@ describe("SendDefaultMode with no flags", () => {
         );
         // Balance delta for tester in its second transaction
         // Since this transaction does not send messages, we pass no MessageInfo object
-        const testerDelta2 = computeBalanceDelta(testerBouncedTsx);
+        const testerDelta2 =
+            computeBalanceDeltaWithNoOutputMessage(testerBouncedTsx);
 
         // If we add all the deltas for tester, together with its initial balance, we should get its measured final balance
         expect(
@@ -835,7 +838,8 @@ describe("SendDefaultMode with no flags", () => {
         );
         // Balance delta for calculator (in its only transaction).
         // Calculator did not send a bounced message, so we do not pass a messageInfo object.
-        const calculatorDelta = computeBalanceDelta(calculatorTsx);
+        const calculatorDelta =
+            computeBalanceDeltaWithNoOutputMessage(calculatorTsx);
 
         // If we add the delta for tester, together with its initial balance, we should get its measured final balance
         expect(testerBalanceBefore + testerDelta === testerBalanceAfter).toBe(
@@ -1018,7 +1022,8 @@ describe("SendDefaultMode with no flags", () => {
         );
         // Balance delta for calculator (in its only transaction).
         // Calculator did not send a response message, so we do not pass a messageInfo object.
-        const calculatorDelta = computeBalanceDelta(calculatorTsx);
+        const calculatorDelta =
+            computeBalanceDeltaWithNoOutputMessage(calculatorTsx);
 
         // If we add the delta for tester, together with its initial balance, we should get its measured final balance
         expect(testerBalanceBefore + testerDelta === testerBalanceAfter).toBe(
@@ -1041,13 +1046,20 @@ describe("SendDefaultMode with no flags", () => {
     });
 });
 
-function computeBalanceDelta(
+function computeBalanceDeltaWithNoOutputMessage(
     tsx: BlockchainTransaction,
-    outMsgInfo: MessageInfo = {
+): bigint {
+    // When computing a delta, sending no message is equivalent to passing an empty messageInfo object.
+    return computeBalanceDelta(tsx, {
         validatorsForwardFee: 0n,
         value: 0n,
         bounced: false,
-    },
+    });
+}
+
+function computeBalanceDelta(
+    tsx: BlockchainTransaction,
+    outMsgInfo: MessageInfo,
 ): bigint {
     if (tsx.inMessage?.info.type === "internal") {
         /* For transactions initiated by an internal message, the delta consists on the following formula:
