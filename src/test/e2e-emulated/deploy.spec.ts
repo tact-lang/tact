@@ -1,9 +1,9 @@
 import type { Slice } from "@ton/core";
-import {beginCell, toNano} from "@ton/core";
+import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import type { DeployParamsMsg} from "./contracts/output/deploy_DeployContract";
-import {DeployContract} from "./contracts/output/deploy_DeployContract";
+import type { DeployParamsMsg } from "./contracts/output/deploy_DeployContract";
+import { DeployContract } from "./contracts/output/deploy_DeployContract";
 import "@ton/test-utils";
 
 const counter = () => {
@@ -17,9 +17,7 @@ type DeployParams = {
     bounce: boolean;
     body: Slice;
     mode: bigint;
-}
-
-
+};
 
 describe("Deploy() correctness", () => {
     let blockchain: Blockchain;
@@ -34,7 +32,7 @@ describe("Deploy() correctness", () => {
             body: params.body,
             contractNum: deployedContractId,
             mode: params.mode,
-        }
+        };
         const sendResult = await contract.send(
             treasure.getSender(),
             { value: toNano("1") },
@@ -52,7 +50,9 @@ describe("Deploy() correctness", () => {
         blockchain.verbosity.print = false;
         treasure = await blockchain.treasury("treasure");
 
-        contract = blockchain.openContract(await DeployContract.fromInit(nextContractId()));
+        contract = blockchain.openContract(
+            await DeployContract.fromInit(nextContractId()),
+        );
 
         const deployResult = await contract.send(
             treasure.getSender(),
@@ -69,13 +69,19 @@ describe("Deploy() correctness", () => {
     it("should work with any bounce flag", async () => {
         await checkCorrectness({
             bounce: true,
-            body: beginCell().storeStringTail("Hello world!").endCell().asSlice(),
+            body: beginCell()
+                .storeStringTail("Hello world!")
+                .endCell()
+                .asSlice(),
             mode: 64n,
         });
 
         await checkCorrectness({
             bounce: false,
-            body: beginCell().storeStringTail("Hello world!").endCell().asSlice(),
+            body: beginCell()
+                .storeStringTail("Hello world!")
+                .endCell()
+                .asSlice(),
             mode: 64n,
         });
     });
@@ -83,22 +89,28 @@ describe("Deploy() correctness", () => {
     it("should work with any mode", async () => {
         await checkCorrectness({
             bounce: true,
-            body: beginCell().storeStringTail("Hello world!").endCell().asSlice(),
+            body: beginCell()
+                .storeStringTail("Hello world!")
+                .endCell()
+                .asSlice(),
             mode: 64n,
         });
 
         await checkCorrectness({
             bounce: true,
-            body: beginCell().storeStringTail("Hello world!").endCell().asSlice(),
+            body: beginCell()
+                .storeStringTail("Hello world!")
+                .endCell()
+                .asSlice(),
             mode: 128n,
         });
     });
 
     it("should work with any body", async () => {
-       await checkCorrectness({
-           bounce: false,
-           body: beginCell().endCell().asSlice(), // empty slice
-           mode: 64n,
-       });
+        await checkCorrectness({
+            bounce: false,
+            body: beginCell().endCell().asSlice(), // empty slice
+            mode: 64n,
+        });
     });
 });
