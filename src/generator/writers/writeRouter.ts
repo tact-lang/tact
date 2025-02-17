@@ -446,8 +446,7 @@ function writeBouncedReceiver(
 
     wCtx.append(`;; Bounced handler for ${selector.type} message`);
     const allocation = getType(wCtx.ctx, selector.type);
-    wCtx.append(`if (op == ${messageOpcode(allocation.header!)}) {`);
-    wCtx.inIndent(() => {
+    wCtx.inBlock(`if (op == ${messageOpcode(allocation.header!)})`, () => {
         if (opcodeReader === ".preload_uint") {
             wCtx.append("in_msg~skip_bits(32);");
         }
@@ -464,7 +463,6 @@ function writeBouncedReceiver(
         // Exit
         wCtx.append("return (self, true);");
     });
-    wCtx.append("}");
 }
 
 function messageOpcode(n: AstNumber): string {
