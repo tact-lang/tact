@@ -21,12 +21,22 @@
       "commit": "https://github.com/tact-lang/tact/commit/c98892a714c274a4d551a98b6e8e28e307fe95a4"
     },
     {
+      "label": "Improved send",
+      "gas": {
+        "fundingTon": "6376",
+        "changeCode": "5500",
+        "approveTon": "11164",
+        "cancelTon": "8663"
+      },
+      "commit": "https://github.com/tact-lang/tact/pull/1800"
+    },
+    {
       "label": "master",
       "gas": {
         "fundingTon": "6376",
         "changeCode": "5500",
-        "approveTon": "11402",
-        "cancelTon": "8727"
+        "approveTon": "11164",
+        "cancelTon": "8663"
       },
       "commit": "https://github.com/tact-lang/tact/tree/main"
     }
