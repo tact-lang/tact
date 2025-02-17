@@ -33,8 +33,43 @@ extends native toSlice(self: StringBuilder): Slice;
 // String conversion
 //
 
-@name(__tact_int_to_string)
-extends native toString(self: Int): String;
+asm extends fun toString(self: Int): String {
+    // x
+    
+    <{
+        // x
+        NEWC // x b
+        OVER // x b x
+        0 LESSINT // x b <0?
+        <{
+            // x b
+            45 PUSHINT // x b 45
+            SWAP // x 45 b
+            8 STU // x b
+            SWAP // b x
+            NEGATE // b -x
+            SWAP // -x b
+        }>CONT IF
+        // x b
+
+        SWAP // b x
+
+        <{
+            // b x
+            10 PUSHINT DIVMOD // b x/10 x%10 
+            48 ADDCONST // b x/10 (x%10+48)
+            s2 s2 s0 XC2PU ISZERO // (x%10+48) b x/10 x/10==0?
+        }>CONT UNTIL
+        // ... b x
+
+        DROP // ... b
+        DEPTH DEC // ... b n
+        <{ 8 STU }>CONT REPEAT // b
+    }>CONT 1 1 CALLXARGS
+    // b
+
+    ENDC CTOS // s
+}
 
 @name(__tact_float_to_string)
 extends native toFloatString(self: Int, digits: Int): String;
