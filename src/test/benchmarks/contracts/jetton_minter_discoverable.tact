@@ -26,23 +26,23 @@ contract JettonMinter with OwnableTransferable {
         self.jettonContent = jettonContent;
     }
 
-    receive(msg: TokenBurnNotification) {
+    receive(msg: JettonBurnNotification) {
         //Check that the message is from msg.sender's jetton_wallet
         require(sender() == self.getJettonWalletByOwner(msg.sender), "Not wallet owner");
 
         self.totalSupply -= msg.amount;
         send(SendParameters{
-            to: msg.response_destination,
+            to: msg.responseDestination,
             value: 0,
             bounce: false,
             mode: SendRemainingValue | SendIgnoreErrors, //ignore errors, because supply already been updated
-            body: TokenExcesses{
-                query_id: msg.query_id
+            body: JettonExcesses{
+                queryId: msg.queryId
             }.toCell()
         });
     }
 
-    receive(msg: TokenUpdateContent){
+    receive(msg: JettonUpdateContent){
         self.requireOwner(); // Allow changing content only by owner
         self.jettonContent = msg.content; // Update content
     }
@@ -51,7 +51,7 @@ contract JettonMinter with OwnableTransferable {
     receive(msg: ProvideWalletAddress) {
         //require(context().value >= ton("0.006625199"), "Insufficient gas");
         let includedAddress: Address? = null;
-        let workchain: Int = parseStdAddress(msg.owner_address.asSlice()).workchain;
+        let workchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
         //Note, that emptyAddress != null, it is different values.
         //We do like that according to TEP above
         let targetJettonWallet: Address = emptyAddress();
@@ -59,16 +59,16 @@ contract JettonMinter with OwnableTransferable {
         //Here was no such check in Howard's code
         if(workchain == 0) {
             //Only in this case (address is from basechain) we can calculate the address
-            targetJettonWallet = contractAddress(initOf JettonWallet(msg.owner_address, myAddress()));
+            targetJettonWallet = contractAddress(initOf JettonWallet(msg.ownerAddress, myAddress()));
         }
-        if (msg.include_address) {
-            includedAddress = msg.owner_address;
+        if (msg.includeAddress) {
+            includedAddress = msg.ownerAddress;
         }
         send(SendParameters{
             to: sender(),
             value: 0,
             mode: SendRemainingValue,
-            body: self.takeWalletBody(targetJettonWallet, includedAddress, msg.query_id)
+            body: self.takeWalletBody(targetJettonWallet, includedAddress, msg.queryId)
         });
     }
     receive(msg: Mint) {
@@ -84,19 +84,19 @@ contract JettonMinter with OwnableTransferable {
             value: 0,
             bounce: true,
             mode: SendRemainingValue,
-            body: TokenTransferInternal{
-                query_id: 0,
+            body: JettonTransferInternal{
+                queryId: 0,
                 amount: msg.amount,
-                from: myAddress(),
-                response_destination: self.owner, // Owner is minting, so send excess to owner
-                forward_ton_amount: 1, // 1 nanoton is enough to send a notification
-                forward_payload: emptySlice()
+                sender: myAddress(),
+                responseDestination: self.owner, // Owner is minting, so send excess to owner
+                forwardTonAmount: 1, // 1 nanoton is enough to send a notification
+                forwardPayload: emptySlice()
             }.toCell(),
             init: self.getJettonWalletInit(msg.receiver)
         });
     }
 
-    bounced(msg: bounced<TokenTransferInternal>){
+    bounced(msg: bounced<JettonTransferInternal>){
         self.totalSupply -= msg.amount;
     }
     inline fun takeWalletBody(targetJettonWallet: Address, includedAddress: Address?, query_id: Int): Cell {
@@ -114,8 +114,8 @@ contract JettonMinter with OwnableTransferable {
         return body.endCell();
     }
 
-    inline fun getJettonWalletByOwner(jetton_wallet_owner: Address): Address {
-        let jwInit: StateInit = self.getJettonWalletInit(jetton_wallet_owner);
+    inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {
+        let jwInit: StateInit = self.getJettonWalletInit(jettonWalletOwner);
         return contractAddress(jwInit);
     }
 

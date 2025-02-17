@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `loadVarInt16`, `loadVarUint16`, `loadVarInt32`, `loadVarUint32` methods for the `Slice` type: PR [#1667](https://github.com/tact-lang/tact/pull/1667)
 - New functions in stdlib from `stdlib.fc` and `math.fc`: `Builder.depth`, `Slice.skipLastBits`, `Slice.firstBits`, `Slice.lastBits`, `Slice.depth`, `Cell.computeDataSize`, `Slice.computeDataSize`, `Cell.depth`, `curLt`, `blockLt`, `setGasLimit`, `getSeed`, `setSeed`, `myCode`, `sign`, `divc`, `muldivc`, `mulShiftRight`, `mulShiftRightRound`, `mulShiftRightCeil`, `sqrt`: PR [#986](https://github.com/tact-lang/tact/pull/986)
 - The `--output` CLI flag for specifying custom output directory in single-contract compilation: PR [#1793](https://github.com/tact-lang/tact/pull/1793)
+- New functions `Slice.asAddressUnsafe` and `contractHash` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
 
 ### Changed
 
@@ -133,6 +134,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Listed functions with implicit mode and further clarified the interactions of message sending functions and their modes: PR [#1634](https://github.com/tact-lang/tact/pull/1634)
 
 ### Release contributors
+
+## [1.5.4] - 2025-02-04
+
+### Fixed
+
+- Allowed importing FunC files with `.func` extension. Resolves the `TOB-TACT-1` issue
+- Issue understandable error on circular trait dependencies. Resolves the `TOB-TACT-2` issue
+- Forbade accessing files via symlinks. Resolves the `TOB-TACT-3` issue
+- Bit shift FunC compilation errors for incorrect bit widths. Partially resolves the `TOB-TACT-5` issue
+- Streamlined `renameModuleItems` function. Resolves the `TOB-TACT-6` issue
+- Documented the parser limitations for nested expressions. Alleviates the `TOB-TACT-7` issue
+- Bit shift FunC compilation errors for incorrect bit widths
+- Throwing from functions with non-trivial branching in the `try` statement
+
+### Notes
+
+Handling the Unicode in the Tact grammar as per the `TOB-TACT-4` issue has been left unchanged and will be addressed in the future Tact releases.
+
+### Release contributors
+
+- [Anton Trunov](https://github.com/anton-trunov): security audit fixes
+- [@verytactical](https://github.com/verytactical): internal review of the security audit fixes
+- [Trail of Bits](https://www.trailofbits.com): the security audit of the Tact compiler v1.5.0 (commit 0106ea14857bcf3c40dd10135243d0de96012871) and the audit of the fixes
 
 ## [1.5.3] - 2024-11-28
 
