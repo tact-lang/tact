@@ -16,9 +16,9 @@ import {
 import type { SrcInfo } from "../../grammar";
 
 type ContractReceivers = {
-    internal: Receivers;
-    external: Receivers;
-    bounced: BouncedReceivers;
+    readonly internal: Receivers;
+    readonly external: Receivers;
+    readonly bounced: BouncedReceivers;
 };
 
 // External or internal receivers
@@ -135,13 +135,15 @@ function writeNonBouncedRouter(
 
     // If there is a fallback receiver and binary/string receivers, we need to keep in_msg intact,
     // otherwise we can modify in_msg in-place
-    const opcodeReader: "~load" | ".preload" =
-        typeof receivers.fallback === "undefined" ? "~load" : ".preload";
+    const opcodeReader: "~load_uint" | ".preload_uint" =
+        typeof receivers.fallback === "undefined"
+            ? "~load_uint"
+            : ".preload_uint";
 
     wCtx.append("int op = 0;");
     wCtx.append("int in_msg_length = slice_bits(in_msg);");
     wCtx.inBlock("if (in_msg_length >= 32)", () => {
-        wCtx.append(`op = in_msg${opcodeReader}_uint(32);`);
+        wCtx.append(`op = in_msg${opcodeReader}(32);`);
     });
 
     receivers.binary.forEach((binRcv) => {
@@ -188,7 +190,7 @@ function writeNonBouncedRouter(
 function writeBinaryReceiver(
     binaryReceiver: ReceiverDescription,
     kind: "internal" | "external",
-    opcodeReader: ".preload" | "~load",
+    opcodeReader: ".preload_uint" | "~load_uint",
     contractName: string,
     wCtx: WriterContext,
 ): void {
@@ -211,7 +213,7 @@ function writeBinaryReceiver(
     }
     wCtx.append(`;; Receive ${selector.type} message`);
     wCtx.inBlock(`if (op == ${messageOpcode(allocation.header)})`, () => {
-        if (opcodeReader === ".preload") {
+        if (opcodeReader === ".preload_uint") {
             wCtx.append("in_msg~skip_bits(32);");
         }
         // Read message
@@ -231,7 +233,7 @@ function writeCommentReceivers(
     commentReceivers: ReceiverDescription[],
     commentFallbackReceiver: ReceiverDescription | undefined,
     kind: "internal" | "external",
-    opcodeReader: ".preload" | "~load",
+    opcodeReader: ".preload_uint" | "~load_uint",
     contractName: string,
     wCtx: WriterContext,
 ): void {
@@ -245,7 +247,9 @@ function writeCommentReceivers(
     const writeFallbackTextReceiver = () => {
         wCtx.append(";; Fallback Text Receiver");
         const inMsg =
-            opcodeReader === ".preload" ? "in_msg.skip_bits(32)" : "in_msg";
+            opcodeReader === ".preload_uint"
+                ? "in_msg.skip_bits(32)"
+                : "in_msg";
         wCtx.append(
             `self~${ops.receiveAnyText(contractName, kind)}(${inMsg});`,
         );
@@ -276,7 +280,7 @@ function writeCommentReceivers(
             }
             const hash = commentPseudoOpcode(
                 commentRcv.selector.comment,
-                opcodeReader === ".preload",
+                opcodeReader === ".preload_uint",
                 commentRcv.ast.loc,
             );
             const hashForReceiverFunctionName = commentPseudoOpcode(
@@ -401,15 +405,17 @@ function writeBouncedRouter(
 
     // If there is a fallback receiver and bounced message receivers, we need to keep in_msg intact,
     // otherwise we can modify in_msg in-place
-    const opcodeReader: "~load" | ".preload" =
-        typeof bouncedReceivers.fallback === "undefined" ? "~load" : ".preload";
+    const opcodeReader: "~load_uint" | ".preload_uint" =
+        typeof bouncedReceivers.fallback === "undefined"
+            ? "~load_uint"
+            : ".preload_uint";
 
     wCtx.inBlock("if (msg_bounced)", () => {
         wCtx.append(";; Skip 0xFFFFFFFF prefix of a bounced message");
         wCtx.append("in_msg~skip_bits(32);");
         wCtx.append(`int op = 0;`);
         wCtx.inBlock("if (slice_bits(in_msg) >= 32)", () => {
-            wCtx.append(`op = in_msg${opcodeReader}_uint(32);`);
+            wCtx.append(`op = in_msg${opcodeReader}(32);`);
         });
         bouncedReceivers.binary.forEach((bouncedRcv) => {
             writeBouncedReceiver(bouncedRcv, opcodeReader, contractName, wCtx);
@@ -427,7 +433,7 @@ function writeBouncedRouter(
 
 function writeBouncedReceiver(
     bouncedReceiver: ReceiverDescription,
-    opcodeReader: ".preload" | "~load",
+    opcodeReader: ".preload_uint" | "~load_uint",
     contractName: string,
     wCtx: WriterContext,
 ): void {
@@ -442,7 +448,7 @@ function writeBouncedReceiver(
     const allocation = getType(wCtx.ctx, selector.type);
     wCtx.append(`if (op == ${messageOpcode(allocation.header!)}) {`);
     wCtx.inIndent(() => {
-        if (opcodeReader === ".preload") {
+        if (opcodeReader === ".preload_uint") {
             wCtx.append("in_msg~skip_bits(32);");
         }
         // Read message
