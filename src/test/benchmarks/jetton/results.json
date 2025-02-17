@@ -100,13 +100,22 @@
       "commit": null
     },
     {
-      "label": "1.5.3 without double checking of message opcodes (#1854)",
+      "label": "1.5.3 with address functions in Tact",
+      "gas": {
+        "transfer": "19944",
+        "burn": "15565",
+        "discovery": "9613"
+      },
+      "commit": "https://github.com/tact-lang/tact/pull/1766/"
+    },
+    {
+      "label": "1.5.3 without double checking of message opcodes",
       "gas": {
         "transfer": "20368",
         "burn": "15655",
         "discovery": "9848"
       },
-      "commit": null
+      "commit": "https://github.com/tact-lang/tact/pull/1854/"
     }
   ]
 }
