@@ -40,7 +40,7 @@ contract JettonWallet with Ownable {
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
-            body: TokenTransferInternal{
+            body: JettonTransferInternal{
                 queryId: msg.queryId,
                 amount: msg.amount,
                 sender: self.owner,
