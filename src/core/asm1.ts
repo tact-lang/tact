@@ -1312,37 +1312,39 @@ const instructions = {
     HASHEXTAR: version(4, cat('crypto', mkfixedn(0xf907, 16, 8, seq1(hash), `exec_hash_ext`))),
 
     STREF: cat('cell_serialize', mksimple(0xcc, 8, `(_1) => exec_store_ref(_1, false)`)),
-    STREF: cat('cell_serialize', mksimple(0xcf10, 16, `(_1) => exec_store_ref(_1, false)`)),
+    // STREF BAD
+    // STREF: cat('cell_serialize', mksimple(0xcf10, 16, `(_1) => exec_store_ref(_1, false)`)),
 
     STSLICE: cat('cell_serialize', mksimple(0xce, 8, `(_1) => exec_store_slice(_1, false)`)),
-    STSLICE: cat('cell_serialize', mksimple(0xcf12, 16, `(_1) => exec_store_slice(_1, false)`)),
+    // STSLICE: cat('cell_serialize', mksimple(0xcf12, 16, `(_1) => exec_store_slice(_1, false)`)),
 
-    RSHIFT: cat('shift_logic', mksimple(0xad, 8, `(_1) => exec_rshift(_1, false)`)),
-    RSHIFT: cat('div', mksimple(0xa924, 16, `(_1, _2) => exec_shrmod(_1, _2, 0)`)),
+    RSHIFTX: cat('shift_logic', mksimple(0xad, 8, `(_1) => exec_rshift(_1, false)`)),
+    // RSHIFT: cat('div', mksimple(0xa924, 16, `(_1, _2) => exec_shrmod(_1, _2, 0)`)),
     RSHIFT: cat('shift_logic', mkfixedn(0xab, 8, 8, seq1(delta(1, uint(8))), `(_1, _2) => exec_rshift_tinyint8(_1, _2, false)`)),
 
-    QRSHIFT: cat('shift_logic', mksimple(0xb7ad, 16, `(_1) => exec_rshift(_1, true)`)),
-    QRSHIFT: cat('div', mksimple(0xb7a924, 24, `(_1, _2) => exec_shrmod(_1, _2, 1)`)),
+    QRSHIFTX: cat('shift_logic', mksimple(0xb7ad, 16, `(_1) => exec_rshift(_1, true)`)),
+    // QRSHIFT: cat('div', mksimple(0xb7a924, 24, `(_1, _2) => exec_shrmod(_1, _2, 1)`)),
     QRSHIFT: cat('shift_logic', mkfixedn(0xb7ab, 16, 8, seq1(delta(1, uint(8))), `(_1, _2) => exec_rshift_tinyint8(_1, _2, true)`)),
 
     THROWANYIF: cat('exception', mksimple(0xf2f2, 16, `exec_throw_any`)),
-    THROWANYIF: cat('exception', mksimple(0xf2f6, 16, `exec_throw_any`)),
 
     THROWARGANYIF: cat('exception', mksimple(0xf2f3, 16, `exec_throw_any`)),
-    THROWARGANYIF: cat('exception', mksimple(0xf2f7, 16, `exec_throw_any`)),
 
     LSHIFT: cat('shift_logic', mksimple(0xac, 8, `(_1) => exec_lshift(_1, false)`)),
     LSHIFT: cat('shift_logic', mkfixedn(0xaa, 8, 8, seq1(delta(1, uint(8))), `(_1, _2) => exec_lshift_tinyint8(_1, _2, false)`)),
 
-    QLSHIFT: cat('shift_logic', mksimple(0xb7ac, 16, `(_1) => exec_lshift(_1, true)`)),
+    QLSHIFTX: cat('shift_logic', mksimple(0xb7ac, 16, `(_1) => exec_lshift(_1, true)`)),
     QLSHIFT: cat('shift_logic', mkfixedn(0xb7aa, 16, 8, seq1(delta(1, uint(8))), `(_1, _2) => exec_lshift_tinyint8(_1, _2, true)`)),
 
-    BCHKBITS: cat('cell_serialize', mksimple(0xcf39, 16, `(_1) => exec_builder_chk_bits_refs(_1, 1)`)),
+    BCHKBITSX: cat('cell_serialize', mksimple(0xcf39, 16, `(_1) => exec_builder_chk_bits_refs(_1, 1)`)),
     BCHKBITS: cat('cell_serialize', mkfixedn(0xcf38, 16, 8, seq1(delta(1, uint(8))), `(_1, _2) => exec_builder_chk_bits(_1, _2, false)`)),
 
-    BCHKBITSQ: cat('cell_serialize', mksimple(0xcf3d, 16, `(_1) => exec_builder_chk_bits_refs(_1, 5)`)),
+    BCHKBITSQX: cat('cell_serialize', mksimple(0xcf3d, 16, `(_1) => exec_builder_chk_bits_refs(_1, 5)`)),
     BCHKBITSQ: cat('cell_serialize', mkfixedn(0xcf3c, 16, 8, seq1(delta(1, uint(8))), `(_1, _2) => exec_builder_chk_bits(_1, _2, true)`)),
 
+    // CALLDICT #
+    // CALLDICT SHORT #
+    // CALLDICT LONG #
     CALLDICT: cat('continuation_dict_jump', mkfixedn(0xf0, 8, 8, seq1(uint(8)), `exec_calldict_short`)),
     CALLDICT: cat('continuation_dict_jump', mkfixedn(0xf10 >> 2, 10, 14, seq1(uint(14)), `exec_calldict`)),
 
@@ -1356,38 +1358,44 @@ const instructions = {
     THROWIFNOT: cat('exception', mkfixedn(0xf2e0 >> 3, 13, 11, seq1(uint(11)), `(_1, _2) => exec_throw_fixed(_1, _2, 0x7ff, 2)`)),
 
     XCHG3: cat('stack', mkfixedn(0x4, 4, 12, seq3(stack(4), stack(4), stack(4)), `exec_xchg3`)),
-    XCHG3: cat('stack', mkfixedn(0x540, 12, 12, seq3(stack(4), stack(4), stack(4)), `exec_xchg3`)),
+    // XCHG3: cat('stack', mkfixedn(0x540, 12, 12, seq3(stack(4), stack(4), stack(4)), `exec_xchg3`)),
 
     STI: cat('cell_serialize', mkfixedn(0xca, 8, 8, seq1(delta(1, uint(8))), `(_1, _2) => exec_store_int(_1, _2, true)`)),
-    STI: cat('cell_serialize', mkfixedn(0xcf08, 16, 8, seq1(delta(1, uint(8))), `exec_store_int_fixed`)),
+    // STI: cat('cell_serialize', mkfixedn(0xcf08, 16, 8, seq1(delta(1, uint(8))), `exec_store_int_fixed`)),
 
     STU: cat('cell_serialize', mkfixedn(0xcb, 8, 8, seq1(delta(1, uint(8))), `(_1, _2) => exec_store_int(_1, _2, false)`)),
-    STU: cat('cell_serialize', mkfixedn(0xcf09, 16, 8, seq1(delta(1, uint(8))), `exec_store_int_fixed`)),
+    // STU: cat('cell_serialize', mkfixedn(0xcf09, 16, 8, seq1(delta(1, uint(8))), `exec_store_int_fixed`)),
 
     LDI: cat('cell_deserialize', mkfixedn(0xd2, 8, 8, seq1(delta(1, uint(8))), `(_1, _2) => exec_load_int_fixed(_1, _2, 0)`)),
-    LDI: cat('cell_deserialize', mkfixedn(0xd708, 16, 8, seq1(delta(1, uint(8))), `exec_load_int_fixed2`)),
+    // LDI: cat('cell_deserialize', mkfixedn(0xd708, 16, 8, seq1(delta(1, uint(8))), `exec_load_int_fixed2`)),
 
     LDU: cat('cell_deserialize', mkfixedn(0xd3, 8, 8, seq1(delta(1, uint(8))), `(_1, _2) => exec_load_int_fixed(_1, _2, 1)`)),
-    LDU: cat('cell_deserialize', mkfixedn(0xd709, 16, 8, seq1(delta(1, uint(8))), `exec_load_int_fixed2`)),
+    // LDU: cat('cell_deserialize', mkfixedn(0xd709, 16, 8, seq1(delta(1, uint(8))), `exec_load_int_fixed2`)),
 
     LDSLICE: cat('cell_deserialize', mkfixedn(0xd6, 8, 8, seq1(delta(1, uint(8))), `exec_load_slice_fixed`)),
-    LDSLICE: cat('cell_deserialize', mkfixedn(0xd71c, 16, 8, seq1(delta(1, uint(8))), `exec_load_slice_fixed2`)),
+    // LDSLICE: cat('cell_deserialize', mkfixedn(0xd71c, 16, 8, seq1(delta(1, uint(8))), `exec_load_slice_fixed2`)),
 
+    // это все одна инструкция с дырками в аргументе
     DEBUG: cat('debug_disabled', mkfixedrangen(0xfe00, 0xfef0, 16, 8, seq1(uint(8)), `exec_dummy_debug`)),
     DEBUG: cat('debug_enabled', mkfixedrangen(0xfe01, 0xfe14, 16, 8, seq1(uint(8)), `exec_dummy_debug`)),
     DEBUG: cat('debug_enabled', mkfixedrangen(0xfe15, 0xfe20, 16, 8, seq1(uint(8)), `exec_dummy_debug`)),
     DEBUG: cat('debug_enabled', mkfixedrangen(0xfe30, 0xfef0, 16, 8, seq1(uint(8)), `exec_dummy_debug`)),
 
+    // PUSH c*
+    // PUSH c6 -> ошибка
+    // PUSH s*
+    // PUSH SHORT s*
+    // PUSH LONG s*
     PUSH: cat('continuation_change', mkfixedrangen(0xed40, 0xed44, 16, 4, seq1(control), `exec_push_ctr`)),
     PUSH: cat('continuation_change', mkfixedrangen(0xed44, 0xed46, 16, 4, seq1(control), `exec_push_ctr`)),
     PUSH: cat('continuation_change', mkfixedrangen(0xed47, 0xed48, 16, 4, seq1(control), `exec_push_ctr`)),
-    PUSH: cat('stack', mkfixedn(0x56, 8, 8, stack(8), `exec_push_l`)),
+    PUSH: cat('stack', mkfixedn(0x56, 8, 8, seq1(stack(8)), `exec_push_l`)),
     PUSH: cat('stack', mkfixedrangen(0x22, 0x30, 8, 4, seq1(stack(4)), `exec_push`)),
 
     POP: cat('continuation_change', mkfixedrangen(0xed50, 0xed54, 16, 4, seq1(control), `exec_pop_ctr`)),
     POP: cat('continuation_change', mkfixedrangen(0xed54, 0xed56, 16, 4, seq1(control), `exec_pop_ctr`)),
     POP: cat('continuation_change', mkfixedrangen(0xed57, 0xed58, 16, 4, seq1(control), `exec_pop_ctr`)),
-    POP: cat('stack', mkfixedn(0x57, 8, 8, stack(8), `exec_pop_l`)),
+    POP: cat('stack', mkfixedn(0x57, 8, 8, seq1(stack(8)), `exec_pop_l`)),
     POP: cat('stack', mkfixedrangen(0x32, 0x40, 8, 4, seq1(stack(4)), `exec_pop`)),
 
     SETCONTCTR: cat('continuation_change', mkfixedrangen(0xed60, 0xed64, 16, 4, seq1(control), `exec_setcont_ctr`)),
@@ -1421,7 +1429,9 @@ const instructions = {
     CALLXARGS: cat('continuation_jump', mkfixedn(0xdb0, 12, 4, seq2(uint(4), minusOne), `exec_callx_args_p`)),
     CALLXARGS: cat('continuation_jump', mkfixedn(0xda, 8, 8, seq2(uint(4), uint(4)), `exec_callx_args`)),
 
-    PUSHSLICE: cat('cell_const', mkext(0, 0x8b, 8, 4, slice(uint(4), 4), `exec_push_slice`)),
+    // SLICE
+    // <{ <{}> PUSHCONT }> SLICE
+    PUSHSLICE: cat('cell_const', mkext(0, 0x8b,        8, 4, slice(uint(4), 4), `exec_push_slice`)),
     PUSHSLICE: cat('cell_const', mkext(1, 0x8c0 >> 2, 10, 5, slice(uint(5), 1), `exec_push_slice_r`)),
     PUSHSLICE: cat('cell_const', mkext(2, 0x8c4 >> 2, 10, 5, slice(uint(5), 1), `exec_push_slice_r`)),
     PUSHSLICE: cat('cell_const', mkext(3, 0x8c8 >> 2, 10, 5, slice(uint(5), 1), `exec_push_slice_r`)),
@@ -1432,6 +1442,7 @@ const instructions = {
     PUSHSLICE: cat('cell_const', mkext(3, 0x8d6 >> 1, 11, 7, slice(uint(7), 6), `exec_push_slice_r2`)),
     PUSHSLICE: cat('cell_const', mkext(4, 0x8d8 >> 1, 11, 7, slice(uint(7), 6), `exec_push_slice_r2`)),
 
+    // CONT {}
     PUSHCONT: cat('cell_const', mkext(0, 0x8e0 >> 3, 9, 7, slice(uint(7), 0), `exec_push_cont`)),
     PUSHCONT: cat('cell_const', mkext(1, 0x8e8 >> 3, 9, 7, slice(uint(7), 0), `exec_push_cont`)),
     PUSHCONT: cat('cell_const', mkext(2, 0x8f0 >> 3, 9, 7, slice(uint(7), 0), `exec_push_cont`)),
@@ -1458,6 +1469,9 @@ const instructions = {
 
     SETCP: cat('codepage', mkfixedrangen(0xff00, 0xfff0, 16, 8, seq1(uint(8)), `exec_set_cp`)),
     SETCP: cat('codepage', mkfixedrangen(0xfff1, 0x10000, 16, 8, seq1(delta(-256, uint(8))), `exec_set_cp`)),
+
+    // алиасы
+    // HASHEXT, RUNVM
 };
 
 const sorted = instructions.sort((a, b) => a.min - b.min);
