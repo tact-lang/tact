@@ -150,7 +150,7 @@ function writeNonBouncedRouter(
         writeBinaryReceiver(
             binRcv,
             receivers.kind,
-            opcodeReader,
+            opcodeReader === "~load_uint",
             contractName,
             wCtx,
         );
@@ -171,7 +171,7 @@ function writeNonBouncedRouter(
         receivers.comment,
         receivers.commentFallback,
         receivers.kind,
-        opcodeReader,
+        opcodeReader === "~load_uint",
         contractName,
         wCtx,
     );
@@ -190,7 +190,7 @@ function writeNonBouncedRouter(
 function writeBinaryReceiver(
     binaryReceiver: ReceiverDescription,
     kind: "internal" | "external",
-    opcodeReader: ".preload_uint" | "~load_uint",
+    msgOpcodeRemoved: boolean,
     contractName: string,
     wCtx: WriterContext,
 ): void {
@@ -213,7 +213,7 @@ function writeBinaryReceiver(
     }
     wCtx.append(`;; Receive ${selector.type} message`);
     wCtx.inBlock(`if (op == ${messageOpcode(allocation.header)})`, () => {
-        if (opcodeReader === ".preload_uint") {
+        if (!msgOpcodeRemoved) {
             wCtx.append("in_msg~skip_bits(32);");
         }
         // Read message
@@ -233,7 +233,7 @@ function writeCommentReceivers(
     commentReceivers: ReceiverDescription[],
     commentFallbackReceiver: ReceiverDescription | undefined,
     kind: "internal" | "external",
-    opcodeReader: ".preload_uint" | "~load_uint",
+    msgOpcodeRemoved: boolean,
     contractName: string,
     wCtx: WriterContext,
 ): void {
@@ -246,10 +246,7 @@ function writeCommentReceivers(
     }
     const writeFallbackTextReceiver = () => {
         wCtx.append(";; Fallback Text Receiver");
-        const inMsg =
-            opcodeReader === ".preload_uint"
-                ? "in_msg.skip_bits(32)"
-                : "in_msg";
+        const inMsg = msgOpcodeRemoved ? "in_msg" : "in_msg.skip_bits(32)";
         wCtx.append(
             `self~${ops.receiveAnyText(contractName, kind)}(${inMsg});`,
         );
@@ -280,7 +277,7 @@ function writeCommentReceivers(
             }
             const hash = commentPseudoOpcode(
                 commentRcv.selector.comment,
-                opcodeReader === ".preload_uint",
+                !msgOpcodeRemoved,
                 commentRcv.ast.loc,
             );
             const hashForReceiverFunctionName = commentPseudoOpcode(
@@ -418,7 +415,12 @@ function writeBouncedRouter(
             wCtx.append(`op = in_msg${opcodeReader}(32);`);
         });
         bouncedReceivers.binary.forEach((bouncedRcv) => {
-            writeBouncedReceiver(bouncedRcv, opcodeReader, contractName, wCtx);
+            writeBouncedReceiver(
+                bouncedRcv,
+                opcodeReader === "~load_uint",
+                contractName,
+                wCtx,
+            );
             wCtx.append();
         });
         if (typeof bouncedReceivers.fallback !== "undefined") {
@@ -433,7 +435,7 @@ function writeBouncedRouter(
 
 function writeBouncedReceiver(
     bouncedReceiver: ReceiverDescription,
-    opcodeReader: ".preload_uint" | "~load_uint",
+    msgOpcodeRemoved: boolean,
     contractName: string,
     wCtx: WriterContext,
 ): void {
@@ -447,7 +449,7 @@ function writeBouncedReceiver(
     wCtx.append(`;; Bounced handler for ${selector.type} message`);
     const allocation = getType(wCtx.ctx, selector.type);
     wCtx.inBlock(`if (op == ${messageOpcode(allocation.header!)})`, () => {
-        if (opcodeReader === ".preload_uint") {
+        if (!msgOpcodeRemoved) {
             wCtx.append("in_msg~skip_bits(32);");
         }
         // Read message
