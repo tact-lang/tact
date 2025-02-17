@@ -1517,19 +1517,19 @@
     "@types/yargs-parser" "*"
 
 "@typescript-eslint/eslint-plugin@^8.21.0":
-  version "8.21.0"
-  resolved "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.21.0.tgz#395014a75112ecdb81142b866ab6bb62e3be0f2a"
-  integrity sha512-eTH+UOR4I7WbdQnG4Z48ebIA6Bgi7WO8HvFEneeYBxG8qCOYgTOFPSg6ek9ITIDvGjDQzWHcoWHCDO2biByNzA==
+  version "8.24.1"
+  resolved "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.24.1.tgz#d104c2a6212304c649105b18af2c110b4a1dd4ae"
+  integrity sha512-ll1StnKtBigWIGqvYDVuDmXJHVH4zLVot1yQ4fJtLpL7qacwkxJc1T0bptqw+miBQ/QfUbhl1TcQ4accW5KUyA==
   dependencies:
     "@eslint-community/regexpp" "^4.10.0"
-    "@typescript-eslint/scope-manager" "8.21.0"
-    "@typescript-eslint/type-utils" "8.21.0"
-    "@typescript-eslint/utils" "8.21.0"
-    "@typescript-eslint/visitor-keys" "8.21.0"
+    "@typescript-eslint/scope-manager" "8.24.1"
+    "@typescript-eslint/type-utils" "8.24.1"
+    "@typescript-eslint/utils" "8.24.1"
+    "@typescript-eslint/visitor-keys" "8.24.1"
     graphemer "^1.4.0"
     ignore "^5.3.1"
     natural-compare "^1.4.0"
-    ts-api-utils "^2.0.0"
+    ts-api-utils "^2.0.1"
 
 "@typescript-eslint/parser@^8.21.0":
   version "8.21.0"
@@ -1550,20 +1550,33 @@
     "@typescript-eslint/types" "8.21.0"
     "@typescript-eslint/visitor-keys" "8.21.0"
 
-"@typescript-eslint/type-utils@8.21.0":
-  version "8.21.0"
-  resolved "https://registry.npmjs.org/@typescript-eslint/type-utils/-/type-utils-8.21.0.tgz#2e69d1a93cdbedc73fe694cd6ae4dfedd00430a0"
-  integrity sha512-95OsL6J2BtzoBxHicoXHxgk3z+9P3BEcQTpBKriqiYzLKnM2DeSqs+sndMKdamU8FosiadQFT3D+BSL9EKnAJQ==
+"@typescript-eslint/scope-manager@8.24.1":
+  version "8.24.1"
+  resolved "https://registry.npmjs.org/@typescript-eslint/scope-manager/-/scope-manager-8.24.1.tgz#1e1e76ec4560aa85077ab36deb9b2bead4ae124e"
+  integrity sha512-OdQr6BNBzwRjNEXMQyaGyZzgg7wzjYKfX2ZBV3E04hUCBDv3GQCHiz9RpqdUIiVrMgJGkXm3tcEh4vFSHreS2Q==
   dependencies:
-    "@typescript-eslint/typescript-estree" "8.21.0"
-    "@typescript-eslint/utils" "8.21.0"
+    "@typescript-eslint/types" "8.24.1"
+    "@typescript-eslint/visitor-keys" "8.24.1"
+
+"@typescript-eslint/type-utils@8.24.1":
+  version "8.24.1"
+  resolved "https://registry.npmjs.org/@typescript-eslint/type-utils/-/type-utils-8.24.1.tgz#99113e1df63d1571309d87eef68967344c78dd65"
+  integrity sha512-/Do9fmNgCsQ+K4rCz0STI7lYB4phTtEXqqCAs3gZW0pnK7lWNkvWd5iW545GSmApm4AzmQXmSqXPO565B4WVrw==
+  dependencies:
+    "@typescript-eslint/typescript-estree" "8.24.1"
+    "@typescript-eslint/utils" "8.24.1"
     debug "^4.3.4"
-    ts-api-utils "^2.0.0"
+    ts-api-utils "^2.0.1"
 
 "@typescript-eslint/types@8.21.0":
   version "8.21.0"
   resolved "https://registry.npmjs.org/@typescript-eslint/types/-/types-8.21.0.tgz#58f30aec8db8212fd886835dc5969cdf47cb29f5"
   integrity sha512-PAL6LUuQwotLW2a8VsySDBwYMm129vFm4tMVlylzdoTybTHaAi0oBp7Ac6LhSrHHOdLM3efH+nAR6hAWoMF89A==
+
+"@typescript-eslint/types@8.24.1":
+  version "8.24.1"
+  resolved "https://registry.npmjs.org/@typescript-eslint/types/-/types-8.24.1.tgz#8777a024f3afc4ace5e48f9a804309c6dd38f95a"
+  integrity sha512-9kqJ+2DkUXiuhoiYIUvIYjGcwle8pcPpdlfkemGvTObzgmYfJ5d0Qm6jwb4NBXP9W1I5tss0VIAnWFumz3mC5A==
 
 "@typescript-eslint/typescript-estree@8.21.0":
   version "8.21.0"
@@ -1579,15 +1592,29 @@
     semver "^7.6.0"
     ts-api-utils "^2.0.0"
 
-"@typescript-eslint/utils@8.21.0":
-  version "8.21.0"
-  resolved "https://registry.npmjs.org/@typescript-eslint/utils/-/utils-8.21.0.tgz#bc4874fbc30feb3298b926e3b03d94570b3999c5"
-  integrity sha512-xcXBfcq0Kaxgj7dwejMbFyq7IOHgpNMtVuDveK7w3ZGwG9owKzhALVwKpTF2yrZmEwl9SWdetf3fxNzJQaVuxw==
+"@typescript-eslint/typescript-estree@8.24.1":
+  version "8.24.1"
+  resolved "https://registry.npmjs.org/@typescript-eslint/typescript-estree/-/typescript-estree-8.24.1.tgz#3bb479401f8bd471b3c6dd3db89e7256977c54db"
+  integrity sha512-UPyy4MJ/0RE648DSKQe9g0VDSehPINiejjA6ElqnFaFIhI6ZEiZAkUI0D5MCk0bQcTf/LVqZStvQ6K4lPn/BRg==
+  dependencies:
+    "@typescript-eslint/types" "8.24.1"
+    "@typescript-eslint/visitor-keys" "8.24.1"
+    debug "^4.3.4"
+    fast-glob "^3.3.2"
+    is-glob "^4.0.3"
+    minimatch "^9.0.4"
+    semver "^7.6.0"
+    ts-api-utils "^2.0.1"
+
+"@typescript-eslint/utils@8.24.1":
+  version "8.24.1"
+  resolved "https://registry.npmjs.org/@typescript-eslint/utils/-/utils-8.24.1.tgz#08d14eac33cfb3456feeee5a275b8ad3349e52ed"
+  integrity sha512-OOcg3PMMQx9EXspId5iktsI3eMaXVwlhC8BvNnX6B5w9a4dVgpkQZuU8Hy67TolKcl+iFWq0XX+jbDGN4xWxjQ==
   dependencies:
     "@eslint-community/eslint-utils" "^4.4.0"
-    "@typescript-eslint/scope-manager" "8.21.0"
-    "@typescript-eslint/types" "8.21.0"
-    "@typescript-eslint/typescript-estree" "8.21.0"
+    "@typescript-eslint/scope-manager" "8.24.1"
+    "@typescript-eslint/types" "8.24.1"
+    "@typescript-eslint/typescript-estree" "8.24.1"
 
 "@typescript-eslint/visitor-keys@8.21.0":
   version "8.21.0"
@@ -1595,6 +1622,14 @@
   integrity sha512-BkLMNpdV6prozk8LlyK/SOoWLmUFi+ZD+pcqti9ILCbVvHGk1ui1g4jJOc2WDLaeExz2qWwojxlPce5PljcT3w==
   dependencies:
     "@typescript-eslint/types" "8.21.0"
+    eslint-visitor-keys "^4.2.0"
+
+"@typescript-eslint/visitor-keys@8.24.1":
+  version "8.24.1"
+  resolved "https://registry.npmjs.org/@typescript-eslint/visitor-keys/-/visitor-keys-8.24.1.tgz#8bdfe47a89195344b34eb21ef61251562148202b"
+  integrity sha512-EwVHlp5l+2vp8CoqJm9KikPZgi3gbdZAtabKT9KPShGeOcJhsv4Zdo3oc8T8I0uKEmYoU4ItyxbptjF08enaxg==
+  dependencies:
+    "@typescript-eslint/types" "8.24.1"
     eslint-visitor-keys "^4.2.0"
 
 "@typescript/vfs@^1.5.0":
@@ -4649,10 +4684,10 @@ tr46@~0.0.3:
   resolved "https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz"
   integrity sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==
 
-ts-api-utils@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/ts-api-utils/-/ts-api-utils-2.0.0.tgz#b9d7d5f7ec9f736f4d0f09758b8607979044a900"
-  integrity sha512-xCt/TOAc+EOHS1XPnijD3/yzpH6qg2xppZO1YDqGoVsNXfQfzHpOdNuXwrwOU8u4ITXJyDCTyt8w5g1sZv9ynQ==
+ts-api-utils@^2.0.0, ts-api-utils@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/ts-api-utils/-/ts-api-utils-2.0.1.tgz#660729385b625b939aaa58054f45c058f33f10cd"
+  integrity sha512-dnlgjFSVetynI8nzgJ+qF62efpglpWRk8isUEWZGWlJYySCTD6aKvbUDu+zbPeDakk3bg5H4XpitHukgfL1m9w==
 
 ts-jest@^29.0.3:
   version "29.2.5"
