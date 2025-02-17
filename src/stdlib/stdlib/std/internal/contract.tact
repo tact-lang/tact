@@ -1,23 +1,242 @@
+/// Extension function for the `Slice`. Available since Tact 1.6.0.
+///
+/// Unsafely casts the `Slice` to an `Address` and returns it. The inverse of `Address.asSlice()`.
+///
+/// This function does **not** perform any checks on the contents of the `Slice`.
+///
+/// ```tact
+/// fun example() {
+///     let a: Address = myAddress();
+///     let a2: Address = a.asSlice().asAddressUnsafe();
+///
+///     a == a2; // true
+/// }
+/// ```
+///
+/// Use it only if you want to optimize the code for gas and can guarantee in advance that the `Slice` contains the data of an `Address`.
+///
+/// Otherwise, it is better to do similar checks before calling this function:
+///
+/// ```tact
+/// fun example(s: Slice) {
+///     // Checking correct length
+///     let rightLength = 267; // 11 bits for the prefix,
+///                            // 256 bits for the address itself
+///     nativeThrowUnless(136, s.bits() == rightLength);
+///
+///     // Checking correct prefix
+///     let basechainAddrPrefix = 1024; // use 1279 for the masterchain prefix check
+///     nativeThrowUnless(136, s.preloadUint(11) == basechainAddrPrefix);
+///
+///     // Now we can safely perform the cast
+///     let addr = s.asAddressUnsafe();
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceasaddressunsafe
+/// * https://docs.tact-lang.org/ref/core-cells#addressasslice
+///
+asm extends fun asAddressUnsafe(self: Slice): Address { NOP }
+
+/// Extension function for the `Address`.
+///
+/// Casts the `Address` back to the underlying `Slice` and returns it. The inverse of `Slice.asAddressUnsafe()`.
+///
+/// ```tact
+/// fun example() {
+///     let a: Address = myAddress();
+///     let fizz: Slice = beginCell().storeAddress(a).asSlice();
+///     let buzz: Slice = a.asSlice(); // cheap, unlike the previous statement
+///
+///     fizz == buzz; // true
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#addressasslice
+/// * https://docs.tact-lang.org/ref/core-cells#sliceasaddressunsafe
+///
+asm extends fun asSlice(self: Address): Slice { NOP }
+
+/// Global function.
+///
+/// Creates a new `Address` based on the `chain` ID and the SHA-256 encoded `hash` value (account ID).
+///
+/// This function tries to resolve constant values in compile-time whenever possible.
+///
+/// Attempts to specify an invalid `chain` ID (not -1 or 0) that can be detected in compile-time will result in a compilation error.
+///
+/// ```tact
+/// fun example() {
+///     let oldTonFoundationAddr: Address =
+///         newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+///         //         ↑  ↑
+///         //         |  sha-256 hash of contract's init package (StateInit)
+///         //         chain id: 0 is a workchain, -1 is a masterchain
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-common#newaddress
+///
+inline fun newAddress(chain: Int, hash: Int): Address {
+    return beginCell()
+        .storeUint(0b10_0, 3)
+        .storeInt(chain, 8)
+        .storeUint(hash, 256)
+        .endCell()
+        .asSlice()
+        .asAddressUnsafe();
+}
+
+/// Global function. Available since Tact 1.6.0.
+///
+/// Computes and returns an `Int` value of the SHA-256 hash of the `code` and `data` of the given contract. To assemble the `code` and `data` cells together for hashing, the standard `Cell` representation is used.
+///
+/// This hash is commonly called account ID. Together with the workchain ID it deterministically forms the address of the contract on TON Blockchain.
+///
+/// ```tact
+/// fun example() {
+///     let initPkg: StateInit = initOf SomeContract();
+///     let accountId: Int = contractHash(initPkg.code, initPkg.data);
+///     let basechainAddr: Address = newAddress(0, accountId);
+///     let basechainAddr2: Address = contractAddressExt(0, initPkg.code, initPkg.data);
+///
+///     basechainAddr == basechainAddr2; // true
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-common#contracthash
+/// * https://docs.tact-lang.org/ref/core-common#newaddress
+/// * https://docs.tact-lang.org/ref/core-common#contractaddressext
+///
+asm fun contractHash(code: Cell, data: Cell): Int {
+    // According to the https://docs.tact-lang.org/book/cells#cells-representation,
+    // the layout for the Builder to hash goes as follows:
+    // 1) refs_descriptor:bits8 | bits_descriptor:bits8 | data:bitsN
+    //
+    //  refs_descriptor: ref_count + ((exotic? & 1) * 8) + (mask * 32)
+    //                   2 refs (code + data), non-exotic, zero-mask
+    //
+    //  bits_descriptor: floor(bit_count / 8) + ceil(bit_count, 8)
+    //                   floor (5 bits / 8) + ceil(5 bits / 8) = 0 + 1 = 1
+    //
+    //  data: [0b00110] + [0b100] = [0b00110100] = 0x34 (data + augmented bits)
+    //        0b00110 - data (split_depth, special, code, data, Library)
+    //        0b100 - augmented bits (Leading 1 + zeroes to make section multiple of eight)
+    //
+    //  That is: (2 << 16) | (1 << 8) | 0x34 = 131380 for all three.
+    //
+    // 2) and 3) depth_descriptors: CDEPTH of `code` and CDEPTH of `data`
+    // 4) and 5) ref hashes: HASHCU of `code` and HASHCU of `data`
+
+    // Group 1: Computations and arrangements
+    s0 PUSH HASHCU // `data` hash
+    s2 PUSH HASHCU // `code` hash
+    SWAP2
+    CDEPTH         // `data` depth
+    SWAP
+    CDEPTH         // `code` depth
+    131380 INT     // (2 << 16) | (1 << 8) | 0x34
+
+    // Group 2: Composition of the Builder
+    NEWC
+    24 STU  // store refs_descriptor | bits_descriptor | data
+    16 STU  // store depth_descriptor for `code`
+    16 STU  // store depth_descriptor for `data`
+    256 STU // store `code` hash
+    256 STU // store `data` hash
+
+    // Group 3: SHA256 hash of the resulting Builder
+    ONE HASHEXT_SHA256
+}
+
+/// Global function.
+///
+/// Computes smart contract's `Address` in the `chain` ID using the contract's `code` and the contract's initial state `data`. Use the `initOf` expression to obtain the initial `code` and initial `data` of a given contract.
+///
+/// This function tries to resolve constant values in compile-time whenever possible.
+///
+/// Attempts to specify an invalid `chain` ID (not -1 or 0) that can be detected in compile-time will result in a compilation error.
+///
+/// ```tact
+/// fun example() {
+///     let initPkg: StateInit = initOf SomeContract();
+///     let hereBeDragons: Address = contractAddressExt(0, initPkg.code, initPkg.data);
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-common#contractaddressext
+/// * https://docs.tact-lang.org/book/expressions#initof
+///
+inline fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address {
+    let hash = contractHash(code, data);
+    return newAddress(chain, hash);
+}
+
+/// Struct containing the initial state, i.e. initial code and initial data of the given contract upon its deployment.
+///
+/// See: https://docs.tact-lang.org/book/expressions#initof
+///
 struct StateInit {
+    /// Initial code of the contract (compiled bitcode)
     code: Cell;
+
+    /// Initial data of the contract (parameters of `init()` function)
     data: Cell;
 }
 
-@name(__tact_compute_contract_address)
-native contractAddressExt(chain: Int, code: Cell, data: Cell): Address;
-
+/// Global function.
+///
+/// Computes smart contract's `Address` in the workchain ID 0 (basechain) using the `StateInit` `s` of the contract. Alias to `contractAddressExt(0, s.code, s.data)`.
+///
+/// ```tact
+/// fun example() {
+///     let s: StateInit = initOf SomeContract();
+///     let foundMeSome: Address = contractAddress(s);
+///     let andSomeMore: Address = contractAddressExt(0, s.code, s.data);
+///
+///     foundMeSome == andSomeMore; // true
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-common#contractaddress
+/// * https://docs.tact-lang.org/ref/core-common#contractaddressext
+/// * https://docs.tact-lang.org/book/expressions#initof
+///
 inline fun contractAddress(s: StateInit): Address {
     return contractAddressExt(0, s.code, s.data);
 }
 
-@name(__tact_address_to_slice)
-extends native asSlice(self: Address): Slice;
-
-@name(__tact_create_address)
-native newAddress(chain: Int, hash: Int): Address;
-
+/// Global function.
+///
+/// Returns the address of the current smart contract as an `Address`.
+///
+/// ```tact
+/// fun example() {
+///     let meMyselfAndI: Address = myAddress();
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-common#myaddress
+///
 asm fun myAddress(): Address { MYADDR }
 
+/// Global function.
+///
+/// Returns the nanoToncoin `Int` balance of the smart contract as it was at the start of the compute phase of the current transaction.
+///
+/// ```tact
+/// fun example() {
+///     let iNeedADolla: Int = myBalance();
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-common#mybalance
+///
 asm fun myBalance(): Int { BALANCE FIRST }
 
 /// Global function. Available since Tact 1.5.0.

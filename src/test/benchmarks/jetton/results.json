@@ -98,6 +98,15 @@
         "discovery": "10003"
       },
       "commit": null
+    },
+    {
+      "label": "1.5.3 with address functions in Tact (#1766)",
+      "gas": {
+        "transfer": "19944",
+        "burn": "15565",
+        "discovery": "9613"
+      },
+      "commit": "https://github.com/tact-lang/tact/pull/1766/"
     }
   ]
 }
