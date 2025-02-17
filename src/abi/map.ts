@@ -1,13 +1,15 @@
-import { CompilerContext } from "../context/context";
-import { SrcInfo } from "../grammar";
-import { TypeRef } from "../types/types";
-import { WriterContext } from "../generator/Writer";
+import type { CompilerContext } from "../context/context";
+import type { SrcInfo } from "../grammar";
+import type { TypeRef } from "../types/types";
+import { printTypeRef } from "../types/types";
+import type { WriterContext } from "../generator/Writer";
 import { ops } from "../generator/writers/ops";
 import { writeExpression } from "../generator/writers/writeExpression";
 import { throwCompilationError } from "../error/errors";
 import { getType } from "../types/resolveDescriptors";
-import { AbiFunction } from "./AbiFunction";
-import { AstExpression } from "../ast/ast";
+import type { AbiFunction } from "./AbiFunction";
+import type { AstExpression } from "../ast/ast";
+import { isAssignable } from "../types/subtyping";
 
 // Helper functions to avoid redundancy
 function checkArgumentsLength(
@@ -491,6 +493,13 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
                 const [self, other] = args;
                 checkMapType(self, ref);
                 checkMapType(other, ref);
+
+                if (!isAssignable(self, other)) {
+                    throwCompilationError(
+                        `Type mismatch: cannot pass argument of type "${printTypeRef(other)}" to parameter of type "${printTypeRef(self)}"`,
+                        ref,
+                    );
+                }
 
                 return { kind: "ref", name: "Bool", optional: false };
             },

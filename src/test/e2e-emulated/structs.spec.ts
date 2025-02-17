@@ -1,6 +1,7 @@
 import { Dictionary, beginCell, toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import {
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
+import type {
     IntFields,
     MyMessage1,
     MyStruct1,
@@ -8,8 +9,10 @@ import {
     MyStruct3,
     OptionalFields,
     S1,
-    StructsTester,
     UintFields,
+} from "./contracts/output/structs_StructsTester";
+import {
+    StructsTester,
     loadMyMessage1,
     loadMyStruct1,
     loadMyStruct2,

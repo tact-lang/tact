@@ -339,7 +339,7 @@ If set to `true{:json}`, enables inlining of all functions in contracts. This ca
 
 #### `safety` {#options-safety}
 
-<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
 
 Options that affect the safety of contracts.
 
@@ -360,7 +360,7 @@ Options that affect the safety of contracts.
 
 ##### `nullChecks` {#safety-nullChecks}
 
-<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
 
 `true{:json}` by default.
 
@@ -385,9 +385,32 @@ Null checks are always enabled in the [`debug`](#options-debug) mode.
 }
 ```
 
+#### `enableLazyDeploymentCompletedGetter` {#options-enablelazydeploymentcompletedgetter}
+
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+`false{:json}` by default.
+
+If set to `true{:json}`, enables generation of `lazy_deployment_completed()` getter.
+
+```json filename="tact.config.json" {8}
+{
+  "projects": [
+    {
+      "name": "contract",
+      "path": "./contract.tact",
+      "output": "./output",
+      "options": {
+        "enableLazyDeploymentCompletedGetter": true
+      }
+    }
+  ]
+}
+```
+
 ### `verbose` {#verbose}
 
-<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
 
 `1{:json}` by default.
 

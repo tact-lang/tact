@@ -1,9 +1,8 @@
 import { toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import {
-    ExitCode128,
-    ReservedContractErrorsTester as TestContract,
-} from "./contracts/output/tact-reserved-contract-errors_ReservedContractErrorsTester";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
+import type { ExitCode128 } from "./contracts/output/tact-reserved-contract-errors_ReservedContractErrorsTester";
+import { ReservedContractErrorsTester as TestContract } from "./contracts/output/tact-reserved-contract-errors_ReservedContractErrorsTester";
 import "@ton/test-utils";
 
 describe("Tact-reserved contract errors", () => {

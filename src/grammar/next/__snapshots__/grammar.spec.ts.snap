@@ -617,7 +617,7 @@ exports[`grammar should fail struct-double-semicolon 1`] = `
 `;
 
 exports[`grammar should fail struct-missing-semicolon-between-fields 1`] = `
-"<unknown>:2:19: Expected ";", "=", "?", "as", or "}"
+"<unknown>:2:19: Expected ";", "<", "=", "?", "as", or "}"
   1 | // missing ; between fields
 > 2 | struct B { x: Int y: Int }
                         ^
@@ -2461,14 +2461,14 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
           },
           "id": 12,
           "initializer": {
-            "id": 10,
+            "id": 9,
             "kind": "op_binary",
             "left": {
-              "id": 7,
+              "id": 6,
               "kind": "op_binary",
               "left": {
                 "base": 10,
-                "id": 4,
+                "id": 3,
                 "kind": "number",
                 "loc": 123,
                 "value": 123n,
@@ -2476,13 +2476,13 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
               "loc": 123 + -456,
               "op": "+",
               "right": {
-                "id": 6,
+                "id": 5,
                 "kind": "op_unary",
                 "loc": -456,
                 "op": "-",
                 "operand": {
                   "base": 10,
-                  "id": 5,
+                  "id": 4,
                   "kind": "number",
                   "loc": 456,
                   "value": 456n,
@@ -2492,13 +2492,13 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
             "loc": 123 + -456 + +789,
             "op": "+",
             "right": {
-              "id": 9,
+              "id": 8,
               "kind": "op_unary",
               "loc": +789,
               "op": "+",
               "operand": {
                 "base": 10,
-                "id": 8,
+                "id": 7,
                 "kind": "number",
                 "loc": 789,
                 "value": 789n,
@@ -2514,7 +2514,7 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
             "text": "a",
           },
           "type": {
-            "id": 3,
+            "id": 10,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -2529,14 +2529,14 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
           },
           "id": 23,
           "initializer": {
-            "id": 21,
+            "id": 20,
             "kind": "op_binary",
             "left": {
-              "id": 18,
+              "id": 17,
               "kind": "op_binary",
               "left": {
                 "base": 10,
-                "id": 15,
+                "id": 14,
                 "kind": "number",
                 "loc": 123,
                 "value": 123n,
@@ -2544,13 +2544,13 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
               "loc": 123 + -456,
               "op": "+",
               "right": {
-                "id": 17,
+                "id": 16,
                 "kind": "op_unary",
                 "loc": -456,
                 "op": "-",
                 "operand": {
                   "base": 10,
-                  "id": 16,
+                  "id": 15,
                   "kind": "number",
                   "loc": 456,
                   "value": 456n,
@@ -2560,13 +2560,13 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
             "loc": 123 + -456 +- 789,
             "op": "+",
             "right": {
-              "id": 20,
+              "id": 19,
               "kind": "op_unary",
               "loc": - 789,
               "op": "-",
               "operand": {
                 "base": 10,
-                "id": 19,
+                "id": 18,
                 "kind": "number",
                 "loc": 789,
                 "value": 789n,
@@ -2582,7 +2582,7 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
             "text": "b",
           },
           "type": {
-            "id": 14,
+            "id": 21,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -2625,14 +2625,14 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
           },
           "id": 15,
           "initializer": {
-            "id": 13,
+            "id": 12,
             "kind": "op_binary",
             "left": {
-              "id": 7,
+              "id": 6,
               "kind": "op_binary",
               "left": {
                 "base": 10,
-                "id": 4,
+                "id": 3,
                 "kind": "number",
                 "loc": 123,
                 "value": 123n,
@@ -2640,13 +2640,13 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
               "loc": 123 + -456,
               "op": "+",
               "right": {
-                "id": 6,
+                "id": 5,
                 "kind": "op_unary",
                 "loc": -456,
                 "op": "-",
                 "operand": {
                   "base": 10,
-                  "id": 5,
+                  "id": 4,
                   "kind": "number",
                   "loc": 456,
                   "value": 456n,
@@ -2656,16 +2656,16 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
             "loc": 123 + -456 + +(987 * -654),
             "op": "+",
             "right": {
-              "id": 12,
+              "id": 11,
               "kind": "op_unary",
               "loc": +(987 * -654),
               "op": "+",
               "operand": {
-                "id": 11,
+                "id": 10,
                 "kind": "op_binary",
                 "left": {
                   "base": 10,
-                  "id": 8,
+                  "id": 7,
                   "kind": "number",
                   "loc": 987,
                   "value": 987n,
@@ -2673,13 +2673,13 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
                 "loc": 987 * -654,
                 "op": "*",
                 "right": {
-                  "id": 10,
+                  "id": 9,
                   "kind": "op_unary",
                   "loc": -654,
                   "op": "-",
                   "operand": {
                     "base": 10,
-                    "id": 9,
+                    "id": 8,
                     "kind": "number",
                     "loc": 654,
                     "value": 654n,
@@ -2697,7 +2697,7 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
             "text": "a",
           },
           "type": {
-            "id": 3,
+            "id": 13,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -2712,14 +2712,14 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
           },
           "id": 29,
           "initializer": {
-            "id": 27,
+            "id": 26,
             "kind": "op_binary",
             "left": {
-              "id": 21,
+              "id": 20,
               "kind": "op_binary",
               "left": {
                 "base": 10,
-                "id": 18,
+                "id": 17,
                 "kind": "number",
                 "loc": 123,
                 "value": 123n,
@@ -2727,13 +2727,13 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
               "loc": 123 + -456,
               "op": "+",
               "right": {
-                "id": 20,
+                "id": 19,
                 "kind": "op_unary",
                 "loc": -456,
                 "op": "-",
                 "operand": {
                   "base": 10,
-                  "id": 19,
+                  "id": 18,
                   "kind": "number",
                   "loc": 456,
                   "value": 456n,
@@ -2743,16 +2743,16 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
             "loc": 123 + -456 - -(987 / +654),
             "op": "-",
             "right": {
-              "id": 26,
+              "id": 25,
               "kind": "op_unary",
               "loc": -(987 / +654),
               "op": "-",
               "operand": {
-                "id": 25,
+                "id": 24,
                 "kind": "op_binary",
                 "left": {
                   "base": 10,
-                  "id": 22,
+                  "id": 21,
                   "kind": "number",
                   "loc": 987,
                   "value": 987n,
@@ -2760,13 +2760,13 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
                 "loc": 987 / +654,
                 "op": "/",
                 "right": {
-                  "id": 24,
+                  "id": 23,
                   "kind": "op_unary",
                   "loc": +654,
                   "op": "+",
                   "operand": {
                     "base": 10,
-                    "id": 23,
+                    "id": 22,
                     "kind": "number",
                     "loc": 654,
                     "value": 654n,
@@ -2784,7 +2784,7 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
             "text": "b",
           },
           "type": {
-            "id": 17,
+            "id": 27,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -2827,11 +2827,11 @@ exports[`grammar should parse expr-binary-operators 1`] = `
           },
           "id": 9,
           "initializer": {
-            "id": 7,
+            "id": 6,
             "kind": "op_binary",
             "left": {
               "base": 10,
-              "id": 4,
+              "id": 3,
               "kind": "number",
               "loc": 123,
               "value": 123n,
@@ -2839,13 +2839,13 @@ exports[`grammar should parse expr-binary-operators 1`] = `
             "loc": 123 - -456,
             "op": "-",
             "right": {
-              "id": 6,
+              "id": 5,
               "kind": "op_unary",
               "loc": -456,
               "op": "-",
               "operand": {
                 "base": 10,
-                "id": 5,
+                "id": 4,
                 "kind": "number",
                 "loc": 456,
                 "value": 456n,
@@ -2861,7 +2861,7 @@ exports[`grammar should parse expr-binary-operators 1`] = `
             "text": "a",
           },
           "type": {
-            "id": 3,
+            "id": 7,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -2876,11 +2876,11 @@ exports[`grammar should parse expr-binary-operators 1`] = `
           },
           "id": 17,
           "initializer": {
-            "id": 15,
+            "id": 14,
             "kind": "op_binary",
             "left": {
               "base": 10,
-              "id": 12,
+              "id": 11,
               "kind": "number",
               "loc": 123,
               "value": 123n,
@@ -2888,13 +2888,13 @@ exports[`grammar should parse expr-binary-operators 1`] = `
             "loc": 123 + -456,
             "op": "+",
             "right": {
-              "id": 14,
+              "id": 13,
               "kind": "op_unary",
               "loc": -456,
               "op": "-",
               "operand": {
                 "base": 10,
-                "id": 13,
+                "id": 12,
                 "kind": "number",
                 "loc": 456,
                 "value": 456n,
@@ -2910,7 +2910,7 @@ exports[`grammar should parse expr-binary-operators 1`] = `
             "text": "b",
           },
           "type": {
-            "id": 11,
+            "id": 15,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -9666,7 +9666,6 @@ exports[`grammar should parse stmt-if 1`] = `
               "loc": null,
             },
           },
-          "elseif": null,
           "falseStatements": null,
           "id": 12,
           "kind": "statement_condition",
@@ -9777,7 +9776,6 @@ exports[`grammar should parse stmt-if-else 1`] = `
               "loc": null,
             },
           },
-          "elseif": null,
           "falseStatements": [
             {
               "expression": {
@@ -10701,7 +10699,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
           "id": 5,
           "initializer": {
             "base": 10,
-            "id": 4,
+            "id": 3,
             "kind": "number",
             "loc": 1000,
             "value": 1000n,
@@ -10715,7 +10713,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
             "text": "x",
           },
           "type": {
-            "id": 3,
+            "id": 4,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -10746,7 +10744,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
           "id": 12,
           "initializer": {
             "base": 10,
-            "id": 10,
+            "id": 9,
             "kind": "number",
             "loc": 1000,
             "value": 1000n,
@@ -10760,7 +10758,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
             "text": "x",
           },
           "type": {
-            "id": 9,
+            "id": 10,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -10770,7 +10768,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
           "as": null,
           "id": 16,
           "initializer": {
-            "id": 15,
+            "id": 14,
             "kind": "boolean",
             "loc": true,
             "value": true,
@@ -10784,7 +10782,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
             "text": "y",
           },
           "type": {
-            "id": 14,
+            "id": 15,
             "kind": "type_id",
             "loc": Bool,
             "text": "Bool",
@@ -10924,7 +10922,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "id": 21,
           "initializer": {
             "base": 10,
-            "id": 20,
+            "id": 19,
             "kind": "number",
             "loc": 42,
             "value": 42n,
@@ -10938,7 +10936,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
             "text": "y",
           },
           "type": {
-            "id": 19,
+            "id": 20,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -10962,7 +10960,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "id": 27,
           "initializer": {
             "base": 10,
-            "id": 26,
+            "id": 25,
             "kind": "number",
             "loc": 42,
             "value": 42n,
@@ -10976,7 +10974,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
             "text": "x",
           },
           "type": {
-            "id": 25,
+            "id": 26,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -11123,7 +11121,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "id": 52,
           "initializer": {
             "base": 10,
-            "id": 51,
+            "id": 50,
             "kind": "number",
             "loc": 42,
             "value": 42n,
@@ -11137,7 +11135,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
             "text": "y",
           },
           "type": {
-            "id": 50,
+            "id": 51,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -11162,7 +11160,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           "id": 58,
           "initializer": {
             "base": 10,
-            "id": 57,
+            "id": 56,
             "kind": "number",
             "loc": 42,
             "value": 42n,
@@ -11176,7 +11174,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
             "text": "x",
           },
           "type": {
-            "id": 56,
+            "id": 57,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",

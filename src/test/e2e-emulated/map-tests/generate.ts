@@ -63,6 +63,7 @@ const compileAndExitOnError = async (tactFilePath: string) => {
     const compilationResult = await run({
         config: createSingleFileConfig(
             basename(tactFilePath, extname(tactFilePath)),
+            dirname(tactFilePath),
         ),
         logger: new Logger(LogLevel.NONE),
         stdlib,

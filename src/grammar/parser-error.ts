@@ -1,4 +1,4 @@
-import { ErrorDisplay } from "../error/display";
+import type { ErrorDisplay } from "../error/display";
 
 const attributeSchema =
     (name: string) =>
@@ -114,6 +114,53 @@ export const syntaxErrorSchema = <T, U>(
             return handle(
                 sub`Standard library imports should be inside its root`,
             );
+        },
+        asNotAllowed: () => {
+            return handle(sub`"as" type is not allowed here`);
+        },
+        multipleOptionals: () => {
+            return handle(sub`Nested optional types are not allowed`);
+        },
+        onlyOptionalOfNamed: () => {
+            return handle(sub`Only named type can be optional`);
+        },
+        genericArgCount: (
+            name: string,
+            expectedCount: number,
+            gotCount: number,
+        ) => {
+            return handle(
+                sub`${text(name)}<> expects exactly ${text(String(expectedCount))} arguments, but got ${text(String(gotCount))}`,
+            );
+        },
+        unknownType: (name: string) => {
+            return handle(sub`Unknown generic type: ${text(name)}`);
+        },
+        onlyBouncedOfNamed: () => {
+            return handle(sub`Only named type can be bounced<>`);
+        },
+        mapOnlyOneAs: (name: "key" | "value") => {
+            return handle(
+                sub`Cannot use several "as" on ${text(name)} of a map`,
+            );
+        },
+        cannotBeOptional: (name: "key" | "value") => {
+            return handle(sub`${text(name)} cannot be optional`);
+        },
+        onlyTypeId: (name: "key" | "value") => {
+            return handle(sub`${text(name)} can only be a named type`);
+        },
+        fieldOnlyOneAs: () => {
+            return handle(sub`Cannot use several "as" on a field type`);
+        },
+        noOptionalFieldType: () => {
+            return handle(sub`Field type cannot be optional`);
+        },
+        fieldMustBeNamed: () => {
+            return handle(sub`Only named type can be a type of a field`);
+        },
+        unknownGeneric: () => {
+            return handle(sub`Unknown generic type`);
         },
     };
 };

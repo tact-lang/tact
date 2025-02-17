@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `nullChecks` config option to disable run-time null checks for the `!!` operator in order to save gas: PR [#1660](https://github.com/tact-lang/tact/pull/1660)
 - `loadVarInt16`, `loadVarUint16`, `loadVarInt32`, `loadVarUint32` methods for the `Slice` type: PR [#1667](https://github.com/tact-lang/tact/pull/1667)
 - New functions in stdlib from `stdlib.fc` and `math.fc`: `Builder.depth`, `Slice.skipLastBits`, `Slice.firstBits`, `Slice.lastBits`, `Slice.depth`, `Cell.computeDataSize`, `Slice.computeDataSize`, `Cell.depth`, `curLt`, `blockLt`, `setGasLimit`, `getSeed`, `setSeed`, `myCode`, `sign`, `divc`, `muldivc`, `mulShiftRight`, `mulShiftRightRound`, `mulShiftRightCeil`, `sqrt`: PR [#986](https://github.com/tact-lang/tact/pull/986)
+- The `--output` CLI flag for specifying custom output directory in single-contract compilation: PR [#1793](https://github.com/tact-lang/tact/pull/1793)
+- New functions `Slice.asAddressUnsafe` and `contractHash` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
 
 ### Changed
 
@@ -45,6 +47,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better error message for `unresolved name` error: PR [#1595](https://github.com/tact-lang/tact/pull/1595)
 - Better error message for `unresolved global function` error: PR [#1610](https://github.com/tact-lang/tact/pull/1610)
 - Better error message for `extend function without parameters` error: PR [#1624](https://github.com/tact-lang/tact/pull/1624)
+- Don't generate `lazy_deployment_completed` by default: PR [#1717](https://github.com/tact-lang/tact/pull/1717)
+- Optimized `emptyCell()` and `emptySlice()` functions: PR [#1696](https://github.com/tact-lang/tact/pull/1696)
+- Internal `crc16` function is now verifiable and covered with tests: PR [#1739](https://github.com/tact-lang/tact/pull/1739)
+- Rearrange parameters of some asm methods in order described in `AsmShuffle`: PR [#1702](https://github.com/tact-lang/tact/pull/1702)
+- Error message for invalid type for function argument now shows expected type: PR [#1738](https://github.com/tact-lang/tact/pull/1738)
 
 ### Fixed
 
@@ -80,13 +87,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Runtime `sha256` now work for arbitrary strings with length >= 128: PR [#1626](https://github.com/tact-lang/tact/pull/1626)
 - Generated code in TypeScript wrappers for contract with `init(init: Init)`: PR [#1709](https://github.com/tact-lang/tact/pull/1709)
 - Error message for comment (text) receivers with 124 bytes or more: PR [#1711](https://github.com/tact-lang/tact/pull/1711)
+- Support overriding constants and methods of BaseTrait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
+- Forbid traits inherit implicitly from BaseTrait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
+- Forbid the `override` modifier for constants without the corresponding super-constant: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
+- Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
+- Remove "remainder" from error messages: PR [#1699](https://github.com/tact-lang/tact/pull/1699)
+- Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
 
 ### Docs
 
 - Added the `description` property to the frontmatter of the each page for better SEO: PR [#916](https://github.com/tact-lang/tact/pull/916)
 - Added Google Analytics tags per every page: PR [#921](https://github.com/tact-lang/tact/pull/921)
 - Added Ston.fi cookbook: PR [#956](https://github.com/tact-lang/tact/pull/956)
-- Added NFTs cookbook: PR [#958](https://github.com/tact-lang/tact/pull/958)
+- Added NFTs cookbook: PR [#958](https://github.com/tact-lang/tact/pull/958), PR [#1747](https://github.com/tact-lang/tact/pull/1747)
 - Added security best practices: PR [#1070](https://github.com/tact-lang/tact/pull/1070)
 - Added automatic links to Web IDE from all code blocks: PR [#994](https://github.com/tact-lang/tact/pull/994)
 - Added initial semi-automated Chinese translation of the documentation: PR [#942](https://github.com/tact-lang/tact/pull/942)
@@ -116,8 +129,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed the notion of the non-standard TL-B syntax `remainder<X>`: PR [#1599](https://github.com/tact-lang/tact/pull/1599)
 - Added description of `.boc`, `.ts`, `.abi`, `.pkg` files and completed Compilation page: PR [#1676](https://github.com/tact-lang/tact/pull/1676)
 - Marked gas-expensive functions and expressions: PR [#1703](https://github.com/tact-lang/tact/pull/1703)
+- Added a Security audits page, with the first assessment from the Trail of Bits: PR [#1791](https://github.com/tact-lang/tact/pull/1791)
+- Listed functions with implicit mode and further clarified the interactions of message sending functions and their modes: PR [#1634](https://github.com/tact-lang/tact/pull/1634)
 
 ### Release contributors
+
+## [1.5.4] - 2025-02-04
+
+### Fixed
+
+- Allowed importing FunC files with `.func` extension. Resolves the `TOB-TACT-1` issue
+- Issue understandable error on circular trait dependencies. Resolves the `TOB-TACT-2` issue
+- Forbade accessing files via symlinks. Resolves the `TOB-TACT-3` issue
+- Bit shift FunC compilation errors for incorrect bit widths. Partially resolves the `TOB-TACT-5` issue
+- Streamlined `renameModuleItems` function. Resolves the `TOB-TACT-6` issue
+- Documented the parser limitations for nested expressions. Alleviates the `TOB-TACT-7` issue
+- Bit shift FunC compilation errors for incorrect bit widths
+- Throwing from functions with non-trivial branching in the `try` statement
+
+### Notes
+
+Handling the Unicode in the Tact grammar as per the `TOB-TACT-4` issue has been left unchanged and will be addressed in the future Tact releases.
+
+### Release contributors
+
+- [Anton Trunov](https://github.com/anton-trunov): security audit fixes
+- [@verytactical](https://github.com/verytactical): internal review of the security audit fixes
+- [Trail of Bits](https://www.trailofbits.com): the security audit of the Tact compiler v1.5.0 (commit 0106ea14857bcf3c40dd10135243d0de96012871) and the audit of the fixes
 
 ## [1.5.3] - 2024-11-28
 

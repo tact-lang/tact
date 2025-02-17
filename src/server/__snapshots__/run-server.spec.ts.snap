@@ -1,0 +1,362 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`runServer all info logs are logged 1`] = `
+[
+  {
+    "level": "info",
+    "message": {
+      "kind": "text",
+      "parts": [
+        "Info 1",
+      ],
+      "subst": [],
+    },
+  },
+  {
+    "level": "info",
+    "message": {
+      "kind": "text",
+      "parts": [
+        "Info 2",
+      ],
+      "subst": [],
+    },
+  },
+]
+`;
+
+exports[`runServer exit on error 1`] = `
+[
+  {
+    "level": "error",
+    "message": {
+      "kind": "text",
+      "parts": [
+        "foo",
+      ],
+      "subst": [],
+    },
+  },
+  {
+    "level": "error",
+    "message": {
+      "kind": "text",
+      "parts": [
+        "bar",
+      ],
+      "subst": [],
+    },
+  },
+]
+`;
+
+exports[`runServer internal error in source at range 1`] = `
+[
+  {
+    "level": "internal",
+    "message": {
+      "kind": "source",
+      "message": {
+        "kind": "text",
+        "parts": [
+          "OMG",
+        ],
+        "subst": [],
+      },
+      "path": "/foo/bar",
+      "range": {
+        "end": 5,
+        "start": 3,
+      },
+    },
+  },
+]
+`;
+
+exports[`runServer logger internal error 1`] = `
+[
+  {
+    "level": "internal",
+    "message": {
+      "kind": "text",
+      "parts": [
+        "OMG",
+      ],
+      "subst": [],
+    },
+  },
+]
+`;
+
+exports[`runServer logger internal error in source 1`] = `
+[
+  {
+    "level": "internal",
+    "message": {
+      "kind": "source",
+      "message": {
+        "kind": "text",
+        "parts": [
+          "OMG",
+        ],
+        "subst": [],
+      },
+      "path": "/foo/bar",
+      "range": undefined,
+    },
+  },
+]
+`;
+
+exports[`runServer multiple errors 1`] = `
+[
+  {
+    "level": "error",
+    "message": {
+      "kind": "text",
+      "parts": [
+        "foo",
+      ],
+      "subst": [],
+    },
+  },
+  {
+    "level": "error",
+    "message": {
+      "kind": "text",
+      "parts": [
+        "bar",
+      ],
+      "subst": [],
+    },
+  },
+]
+`;
+
+exports[`runServer multiple errors inside source 1`] = `
+[
+  {
+    "level": "error",
+    "message": {
+      "kind": "source",
+      "message": {
+        "kind": "text",
+        "parts": [
+          "foo",
+        ],
+        "subst": [],
+      },
+      "path": "/foo/bar",
+      "range": {
+        "end": 5,
+        "start": 3,
+      },
+    },
+  },
+  {
+    "level": "error",
+    "message": {
+      "kind": "source",
+      "message": {
+        "kind": "text",
+        "parts": [
+          "bar",
+        ],
+        "subst": [],
+      },
+      "path": "/foo/bar",
+      "range": undefined,
+    },
+  },
+]
+`;
+
+exports[`runServer only first error without error recovery 1`] = `
+[
+  {
+    "level": "error",
+    "message": {
+      "kind": "text",
+      "parts": [
+        "Error 1",
+      ],
+      "subst": [],
+    },
+  },
+]
+`;
+
+exports[`runServer raw internal error 1`] = `
+[
+  {
+    "level": "internal",
+    "message": {
+      "kind": "text",
+      "parts": [
+        "",
+        "",
+      ],
+      "subst": [
+        "OMG",
+      ],
+    },
+  },
+]
+`;
+
+exports[`runServer raw internal error in source 1`] = `
+[
+  {
+    "level": "internal",
+    "message": {
+      "kind": "text",
+      "parts": [
+        "",
+        "",
+      ],
+      "subst": [
+        "OMG
+while compiling /foo/bar",
+      ],
+    },
+  },
+]
+`;
+
+exports[`runServer source inside multiple errors 1`] = `
+[
+  {
+    "level": "error",
+    "message": {
+      "kind": "source",
+      "message": {
+        "kind": "text",
+        "parts": [
+          "foo",
+        ],
+        "subst": [],
+      },
+      "path": "/foo/bar",
+      "range": {
+        "end": 5,
+        "start": 3,
+      },
+    },
+  },
+  {
+    "level": "error",
+    "message": {
+      "kind": "source",
+      "message": {
+        "kind": "text",
+        "parts": [
+          "bar",
+        ],
+        "subst": [],
+      },
+      "path": "/foo/bar",
+      "range": undefined,
+    },
+  },
+]
+`;
+
+exports[`runServer typed errors 1`] = `
+[
+  {
+    "level": "error",
+    "message": {
+      "kind": "text",
+      "parts": [
+        "Foo!",
+      ],
+      "subst": [],
+    },
+  },
+  {
+    "level": "error",
+    "message": {
+      "kind": "text",
+      "parts": [
+        "Bar!",
+      ],
+      "subst": [],
+    },
+  },
+]
+`;
+
+exports[`runServer typed errors for source 1`] = `
+[
+  {
+    "level": "error",
+    "message": {
+      "kind": "source",
+      "message": {
+        "kind": "text",
+        "parts": [
+          "Foo!",
+        ],
+        "subst": [],
+      },
+      "path": "/foo/bar",
+      "range": {
+        "end": 5,
+        "start": 3,
+      },
+    },
+  },
+  {
+    "level": "error",
+    "message": {
+      "kind": "source",
+      "message": {
+        "kind": "text",
+        "parts": [
+          "Bar!",
+        ],
+        "subst": [],
+      },
+      "path": "/foo/bar",
+      "range": undefined,
+    },
+  },
+]
+`;
+
+exports[`runServer uncaught error 1`] = `
+[
+  {
+    "level": "internal",
+    "message": {
+      "kind": "text",
+      "parts": [
+        "Unhandled: ",
+        "",
+      ],
+      "subst": [
+        "Error: Uncaught!",
+      ],
+    },
+  },
+]
+`;
+
+exports[`runServer uncaught error in source 1`] = `
+[
+  {
+    "level": "internal",
+    "message": {
+      "kind": "text",
+      "parts": [
+        "Unhandled: ",
+        "",
+      ],
+      "subst": [
+        "Error: hehe
+while compiling /foo/bar",
+      ],
+    },
+  },
+]
+`;

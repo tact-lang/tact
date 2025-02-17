@@ -1,14 +1,17 @@
 import { contractErrors } from "../../abi/errors";
 import { throwInternalCompilerError } from "../../error/errors";
 import { dummySrcInfo } from "../../grammar";
-import { AllocationCell, AllocationOperation } from "../../storage/operation";
-import { StorageAllocation } from "../../storage/StorageAllocation";
+import type {
+    AllocationCell,
+    AllocationOperation,
+} from "../../storage/operation";
+import type { StorageAllocation } from "../../storage/StorageAllocation";
 import { getType } from "../../types/resolveDescriptors";
-import { WriterContext } from "../Writer";
+import type { WriterContext } from "../Writer";
 import { ops } from "./ops";
 import { resolveFuncTypeFromAbi } from "./resolveFuncTypeFromAbi";
 import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
-import { ItemOrigin } from "../../imports/source";
+import type { ItemOrigin } from "../../imports/source";
 
 const SMALL_STRUCT_MAX_FIELDS = 5;
 

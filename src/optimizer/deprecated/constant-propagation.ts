@@ -4,10 +4,11 @@
 // the simplification is: the analyzer stops when it reaches a join point of two or more branches.
 // FIXME: Remove this entire file once constant propagation is implemented.
 
-import * as A from "../../ast/ast";
-import { FactoryAst, idText, tryExtractPath } from "../../ast/ast-helpers";
+import type * as A from "../../ast/ast";
+import type { FactoryAst } from "../../ast/ast-helpers";
+import { idText, tryExtractPath } from "../../ast/ast-helpers";
 import { getAstUtil } from "../../ast/util";
-import { CompilerContext } from "../../context/context";
+import type { CompilerContext } from "../../context/context";
 import {
     TactConstEvalError,
     TactInternalCompilerError,
@@ -344,9 +345,6 @@ export function constantPropagationAnalysis(
                         executeStatements(falseStmts);
                     });
                 }
-                if (ast.elseif !== null) {
-                    interpretConditionStatement(ast.elseif);
-                }
             }
         } else {
             // Branching point detected. Check all branches, but then stop, since we cannot join branches.
@@ -354,23 +352,10 @@ export function constantPropagationAnalysis(
                 executeStatements(ast.trueStatements);
             });
 
-            if (ast.falseStatements !== null && ast.elseif !== null) {
-                throwInternalCompilerError(
-                    "Incorrect AST: 'else' and `else if' cannot occur simultaneously in an AstStatementCondition",
-                );
-            }
-
             if (ast.falseStatements !== null) {
                 const falseStmts = ast.falseStatements;
                 simulateBranch(() => {
                     executeStatements(falseStmts);
-                });
-            }
-
-            if (ast.elseif !== null) {
-                const elseif = ast.elseif;
-                simulateBranch(() => {
-                    interpretConditionStatement(elseif);
                 });
             }
 

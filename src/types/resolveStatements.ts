@@ -1,9 +1,9 @@
-import * as A from "../ast/ast";
-import { CompilerContext } from "../context/context";
+import type * as A from "../ast/ast";
+import type { CompilerContext } from "../context/context";
 import { isAssignable } from "./subtyping";
+import type { FactoryAst } from "../ast/ast-helpers";
 import {
     tryExtractPath,
-    FactoryAst,
     eqNames,
     isWildcard,
     isSelfId,
@@ -25,12 +25,14 @@ import {
     getAllTypes,
 } from "./resolveDescriptors";
 import { getExpType, resolveExpression } from "./resolveExpression";
-import { FunctionDescription, printTypeRef, TypeRef } from "./types";
+import type { FunctionDescription, TypeRef } from "./types";
+import { printTypeRef } from "./types";
 import { evalConstantExpression } from "../optimizer/constEval";
 import { ensureInt } from "../optimizer/interpreter";
 import { crc16 } from "../utils/crc16";
-import { SrcInfo } from "../grammar";
-import { AstUtil, getAstUtil } from "../ast/util";
+import type { SrcInfo } from "../grammar";
+import type { AstUtil } from "../ast/util";
+import { getAstUtil } from "../ast/util";
 
 export type StatementContext = {
     root: SrcInfo;
@@ -145,7 +147,7 @@ function processCondition(
     let initialCtx = sctx;
 
     // Simple if
-    if (condition.falseStatements === null && condition.elseif === null) {
+    if (condition.falseStatements === null) {
         const r = processStatements(condition.trueStatements, initialCtx, ctx);
         ctx = r.ctx;
         return { ctx, sctx: initialCtx, returnAlwaysReachable: false };
@@ -156,31 +158,16 @@ function processCondition(
     const returnAlwaysReachableInAllBranches: boolean[] = [];
 
     // Process true branch
-    const r = processStatements(condition.trueStatements, initialCtx, ctx);
-    ctx = r.ctx;
-    processedCtx.push(r.sctx);
-    returnAlwaysReachableInAllBranches.push(r.returnAlwaysReachable);
+    const r1 = processStatements(condition.trueStatements, initialCtx, ctx);
+    ctx = r1.ctx;
+    processedCtx.push(r1.sctx);
+    returnAlwaysReachableInAllBranches.push(r1.returnAlwaysReachable);
 
-    // Process else/elseif branch
-    if (condition.falseStatements !== null && condition.elseif === null) {
-        // if-else
-        const r = processStatements(condition.falseStatements, initialCtx, ctx);
-        ctx = r.ctx;
-        processedCtx.push(r.sctx);
-        returnAlwaysReachableInAllBranches.push(r.returnAlwaysReachable);
-    } else if (
-        condition.falseStatements === null &&
-        condition.elseif !== null
-    ) {
-        // if-else if
-        const r = processCondition(condition.elseif, initialCtx, ctx);
-
-        ctx = r.ctx;
-        processedCtx.push(r.sctx);
-        returnAlwaysReachableInAllBranches.push(r.returnAlwaysReachable);
-    } else {
-        throwInternalCompilerError("Impossible");
-    }
+    // Process false branch
+    const r2 = processStatements(condition.falseStatements, initialCtx, ctx);
+    ctx = r2.ctx;
+    processedCtx.push(r2.sctx);
+    returnAlwaysReachableInAllBranches.push(r2.returnAlwaysReachable);
 
     // Merge statement contexts
     const removed: string[] = [];

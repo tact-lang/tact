@@ -1,7 +1,8 @@
 import fc from "fast-check";
-import * as A from "./ast";
+import type * as A from "./ast";
 import { dummySrcInfo } from "../grammar/src-info";
 import { diffJson } from "diff";
+import { astBinaryOperations, astUnaryOperations } from "./ast-constants";
 
 /**
  * An array of reserved words that cannot be used as contract or variable names in tests.
@@ -100,7 +101,7 @@ function randomAstOpUnary(
     return dummyAstNode(
         fc.record({
             kind: fc.constant("op_unary"),
-            op: fc.constantFrom("+", "-", "!", "!!", "~"),
+            op: fc.constantFrom(...astUnaryOperations),
             operand: operand,
         }),
     );
@@ -112,26 +113,7 @@ function randomAstOpBinary(
     return dummyAstNode(
         fc.record({
             kind: fc.constant("op_binary"),
-            op: fc.constantFrom(
-                "+",
-                "-",
-                "*",
-                "/",
-                "!=",
-                ">",
-                "<",
-                ">=",
-                "<=",
-                "==",
-                "&&",
-                "||",
-                "%",
-                "<<",
-                ">>",
-                "&",
-                "|",
-                "^",
-            ),
+            op: fc.constantFrom(...astBinaryOperations),
             left: leftExpression,
             right: rightExpression,
         }),

@@ -1,5 +1,6 @@
 import { toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { LaikaContract } from "./contracts/output/traits_LaikaContract";
 import "@ton/test-utils";
 
@@ -32,5 +33,10 @@ describe("traits", () => {
     it("should implement traits correctly", async () => {
         // Check the contract's behavior after deployment
         expect(await contract.getSay()).toBe("I am a Laika and I say Woof");
+    });
+
+    it("should override constant correctly", async () => {
+        // Check the contract's behavior after deployment
+        expect(await contract.getFooConstant()).toBe(100n);
     });
 });

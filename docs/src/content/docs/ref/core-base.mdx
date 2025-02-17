@@ -6,7 +6,13 @@ prev:
   label: "OTP-006: Contract Package"
 ---
 
-Every [contract](/book/contracts) and [trait](/book/types#traits) in Tact implicitly [inherits](/book/contracts#traits) the `BaseTrait{:tact}` trait, which contains a number of the most useful [internal functions](/book/contracts#internal-functions) for any kind of contract, and a constant `self.storageReserve{:tact}` aimed at advanced users of Tact.
+Every [contract](/book/contracts) in Tact implicitly [inherits](/book/contracts#traits) the `BaseTrait{:tact}` trait, which contains a number of the most useful [internal functions](/book/contracts#internal-functions) for any kind of contract, and a constant `self.storageReserve{:tact}` aimed at advanced users of Tact.
+
+:::tip
+
+  Prior to 1.6.0, `BaseTrait{:tact}` was also implicitly inherited by traits, but now you must explicitly specify `with BaseTrait{:tact}` for your traits to use it.
+
+:::
 
 ## Constants
 
@@ -85,14 +91,14 @@ virtual fun forward(to: Address, body: Cell?, bounce: Bool, init: StateInit?);
 
 [Queues the message](/book/send#outbound-message-processing) (bounceable or non-bounceable) to be sent to the specified address `to`. Optionally, you may provide a `body` of the message and the [`init` package](/book/expressions#initof).
 
-When [`self.storageReserve{:tact}`](#self-storagereserve) constant is overwritten to be $> 0$, before sending a message it also tries to reserve the `self.storageReserve{:tact}` amount of [nanoToncoins][nano] from the remaining balance before making the send in the [`SendRemainingBalance{:tact}`](https://docs.tact-lang.org/book/message-mode#base-modes) ($128$) mode.
+When [`self.storageReserve{:tact}`](#self-storagereserve) constant is overwritten to be greater than $0$, before sending a message it also tries to reserve the `self.storageReserve{:tact}` amount of [nanoToncoins][nano] from the remaining balance before making the send in the [`SendRemainingBalance{:tact}`](/book/message-mode#base-modes) ($128$) mode.
 
-In case reservation attempt fails and in the default case without the attempt, the message is sent with the [`SendRemainingValue{:tact}`](https://docs.tact-lang.org/book/message-mode#base-modes) ($64$) mode instead.
+In case reservation attempt fails and in the default case without the attempt, the message is sent with the [`SendRemainingValue{:tact}`](/book/message-mode#base-modes) ($64$) mode instead.
 
 :::note
 
   Note, that `self.forward(){:tact}` never sends additional [nanoToncoins][nano] on top of what's available on the balance.\
-  To be able to send more [nanoToncoins][nano] with a single message, use the the [`send(){:tact}`](/ref/core-common#send) function.
+  To be able to send more [nanoToncoins][nano] with a single message, use the [`send(){:tact}`](/ref/core-common#send) function.
 
 :::
 

@@ -1,4 +1,5 @@
-import { CompilerContext, createContextStore } from "../context/context";
+import type { CompilerContext } from "../context/context";
+import { createContextStore } from "../context/context";
 
 const featureStore = createContextStore<boolean | null | string>();
 
@@ -24,6 +25,10 @@ export function enabledInterfacesGetter(ctx: CompilerContext) {
 
 export function enabledNullChecks(ctx: CompilerContext) {
     return featureEnabled(ctx, "nullChecks");
+}
+
+export function enabledLazyDeploymentCompletedGetter(ctx: CompilerContext) {
+    return featureEnabled(ctx, "lazyDeploymentCompletedGetter");
 }
 
 function featureEnabled(ctx: CompilerContext, key: string) {

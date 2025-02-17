@@ -12,8 +12,7 @@ extends native storeInt(self: Builder, value: Int, bits: Int): Builder;
 @name(store_uint)
 extends native storeUint(self: Builder, value: Int, bits: Int): Builder;
 
-@name(__tact_store_bool)
-extends native storeBool(self: Builder, value: Bool): Builder;
+asm(value self) extends fun storeBool(self: Builder, value: Bool): Builder { 1 STI }
 
 /// Extension function for the `Builder`. Alias to `Builder.storeBool()`. Available since Tact 1.5.0.
 ///
@@ -27,8 +26,7 @@ extends native storeBool(self: Builder, value: Bool): Builder;
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#builderstorebit
 ///
-@name(__tact_store_bool)
-extends native storeBit(self: Builder, value: Bool): Builder;
+asm(value self) extends fun storeBit(self: Builder, value: Bool): Builder { 1 STI }
 
 /// Extension function for the `Builder`.
 ///
@@ -467,12 +465,12 @@ inline extends fun asCell(self: Builder): Cell {
     return self.endCell();
 }
 
-inline fun emptyCell(): Cell {
-    return beginCell().endCell();
+asm fun emptyCell(): Cell {
+    <b b> PUSHREF // Pure Fift: "<b" creates a builder, "b>" turns it into a cell at compile time
 }
 
-inline fun emptySlice(): Slice {
-    return emptyCell().asSlice();
+asm fun emptySlice(): Slice {
+    b{} PUSHSLICE
 }
 
 /// Struct for holding values computed by the `Cell.computeDataSize()` and `Slice.computeDataSize()` extension functions. Available since Tact 1.6.0.

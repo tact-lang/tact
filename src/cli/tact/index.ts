@@ -1,23 +1,24 @@
-import { readFileSync } from "fs";
-import { basename, dirname, join, normalize, resolve } from "path";
-import { execFileSync } from "child_process";
-import { z, ZodError } from "zod";
+import { basename, dirname, normalize, resolve, join } from "path";
+import { ZodError } from "zod";
 import { createNodeFileSystem } from "../../vfs/createNodeFileSystem";
 import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";
 import { parseAndEvalExpression } from "../../optimizer/interpreter";
 import { showValue } from "../../types/types";
-import { Config, ConfigProject, parseConfig } from "../../config/parseConfig";
-import { ArgParser, GetParserResult } from "../arg-parser";
+import type { Config, Project } from "../../config/parseConfig";
+import { parseConfig } from "../../config/parseConfig";
+import type { GetParserResult } from "../arg-parser";
+import { ArgParser } from "../arg-parser";
 import { CliErrors } from "./error-schema";
 import { CliLogger } from "../logger";
 import { ArgConsumer } from "../arg-consumer";
-import { VirtualFileSystem } from "../../vfs/VirtualFileSystem";
+import type { VirtualFileSystem } from "../../vfs/VirtualFileSystem";
 import { entries } from "../../utils/tricks";
 import { Logger, LogLevel } from "../../context/logger";
 import { build } from "../../pipeline/build";
-import { TactErrorCollection } from "../../error/errors";
+import type { TactErrorCollection } from "../../error/errors";
 import files from "../../stdlib/stdlib";
 import { cwd } from "process";
+import { getVersion, showCommit } from "../version";
 
 export const main = async () => {
     const Log = CliLogger();
@@ -46,7 +47,7 @@ const processArgs = async (Errors: CliErrors, argv: string[]) => {
 
         await parseArgs(Errors, Args);
     } else {
-        showHelp();
+        await showHelp();
     }
 };
 
@@ -61,10 +62,11 @@ const ArgSchema = (Parser: ArgParser) => {
         .add(Parser.string("eval", "e", "EXPRESSION"))
         .add(Parser.boolean("version", "v"))
         .add(Parser.boolean("help", "h"))
+        .add(Parser.string("output", "o", "DIR"))
         .add(Parser.immediate).end;
 };
 
-const showHelp = () => {
+const showHelp = async () => {
     console.log(`Usage
 $ tact [...flags] (--config CONFIG | FILE)
 
@@ -76,12 +78,13 @@ Flags
   --func                      Output intermediate FunC code and exit
   --check                     Perform syntax and type checking, then exit
   -e, --eval EXPRESSION       Evaluate a Tact expression and exit
+  -o, --output DIR            Specify output directory for compiled files
   -v, --version               Print Tact compiler version and exit
   -h, --help                  Display this text and exit
 
 Examples
   $ tact --version
-  ${getVersion()}
+  ${await getVersion()}
 
 Learn more about Tact:        https://docs.tact-lang.org
 Join Telegram group:          https://t.me/tactlang
@@ -92,22 +95,23 @@ type Args = ArgConsumer<GetParserResult<ReturnType<typeof ArgSchema>>>;
 
 const parseArgs = async (Errors: CliErrors, Args: Args) => {
     if (Args.single("help")) {
-        if (noUnknownParams(Errors, Args)) {
-            showHelp();
+        if (await noUnknownParams(Errors, Args)) {
+            await showHelp();
         }
         return;
     }
 
     if (Args.single("version")) {
-        if (noUnknownParams(Errors, Args)) {
-            showVersion();
+        if (await noUnknownParams(Errors, Args)) {
+            console.log(await getVersion());
+            showCommit();
         }
         return;
     }
 
     const expression = Args.single("eval");
     if (expression) {
-        if (noUnknownParams(Errors, Args)) {
+        if (await noUnknownParams(Errors, Args)) {
             evaluate(expression);
         }
         return;
@@ -141,13 +145,24 @@ const parseArgs = async (Errors: CliErrors, Args: Args) => {
     if (filePath) {
         const normalizedPath = resolve(cwd(), dirname(filePath));
         const Fs = createNodeFileSystem(normalizedPath, false);
-        const config = createSingleFileConfig(basename(filePath));
+
+        // Handle output directory flag
+        const outputDir = Args.single("output");
+        const relativeOutputDir = outputDir
+            ? normalize(join(dirname(filePath), outputDir))
+            : "./";
+
+        const config = createSingleFileConfig(
+            basename(filePath),
+            relativeOutputDir,
+        );
+
         await compile(Args, Errors, Fs, config);
         return;
     }
 
-    if (noUnknownParams(Errors, Args)) {
-        showHelp();
+    if (await noUnknownParams(Errors, Args)) {
+        await showHelp();
     }
 };
 
@@ -167,25 +182,26 @@ const parseConfigSafe = (
     }
 };
 
-export const createSingleFileConfig = (fileName: string): Config => ({
-    projects: [
-        {
-            name: fileName,
-            path: ensureExtension(fileName),
-            output: "./",
-            options: {
-                debug: true,
-                external: true,
-                ipfsAbiGetter: false,
-                interfacesGetter: false,
-                safety: {
-                    nullChecks: true,
+export const createSingleFileConfig = (fileName: string, outputDir: string) =>
+    ({
+        projects: [
+            {
+                name: fileName,
+                path: ensureExtension(fileName),
+                output: outputDir,
+                options: {
+                    debug: true,
+                    external: true,
+                    ipfsAbiGetter: false,
+                    interfacesGetter: false,
+                    safety: {
+                        nullChecks: true,
+                    },
                 },
+                mode: "full",
             },
-            mode: "full",
-        },
-    ],
-});
+        ],
+    }) as const;
 
 const ensureExtension = (path: string): string => {
     return path.endsWith(".tact") ? path : `${path}.tact`;
@@ -228,7 +244,7 @@ const compile = async (
 
     const stdlib = createVirtualFileSystem("@stdlib", files);
 
-    if (noUnknownParams(Errors, Args)) {
+    if (await noUnknownParams(Errors, Args)) {
         // TODO: all flags on the cli should take precedence over flags in the config
         // Make a nice model for it instead of the current mess
         // Consider making overwrites right here or something.
@@ -298,7 +314,7 @@ const filterConfig = (
     };
 };
 
-type ExtraOptions = Pick<ConfigProject, "mode">;
+type ExtraOptions = Pick<Project, "mode">;
 
 const setConfigOptions = (config: Config, options: ExtraOptions): void => {
     for (const project of config.projects) {
@@ -306,7 +322,10 @@ const setConfigOptions = (config: Config, options: ExtraOptions): void => {
     }
 };
 
-const noUnknownParams = (Errors: CliErrors, Args: Args): boolean => {
+const noUnknownParams = async (
+    Errors: CliErrors,
+    Args: Args,
+): Promise<boolean> => {
     const leftoverArgs = Args.leftover();
 
     if (leftoverArgs.length === 0) {
@@ -316,23 +335,8 @@ const noUnknownParams = (Errors: CliErrors, Args: Args): boolean => {
     for (const argument of leftoverArgs) {
         Errors.unexpectedArgument(argument);
     }
-    showHelp();
+    await showHelp();
     return false;
-};
-
-const showVersion = () => {
-    console.log(getVersion());
-    // if working inside a git repository
-    // also print the current git commit hash
-    try {
-        const gitCommit = execFileSync("git", ["rev-parse", "HEAD"], {
-            encoding: "utf8",
-            stdio: ["ignore", "pipe", "ignore"],
-        }).trim();
-        console.log(`git commit: ${gitCommit}`);
-    } finally {
-        process.exit(0);
-    }
 };
 
 const evaluate = (expression: string) => {
@@ -347,18 +351,4 @@ const evaluate = (expression: string) => {
             process.exit(30);
         }
     }
-};
-
-const getVersion = () => {
-    const packageSchema = z.object({
-        version: z.string(),
-    });
-
-    const packageJsonPath = join(__dirname, "..", "..", "..", "package.json");
-
-    const pkg = packageSchema.parse(
-        JSON.parse(readFileSync(packageJsonPath, "utf-8")),
-    );
-
-    return pkg.version;
 };
