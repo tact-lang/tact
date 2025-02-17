@@ -1114,7 +1114,7 @@ function computeBalanceDelta(
         return delta;
     }
 
-    throw new Error("Unsupported inbound message type.");
+    throw new Error("Unsupported message type.");
 }
 
 function getMessageInfo(msg: Message): MessageInfo {
