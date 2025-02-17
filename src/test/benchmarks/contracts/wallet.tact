@@ -73,7 +73,7 @@ contract Wallet {
     fun processActions(actions: Slice, isExternal: Bool, isExtension: Bool) {
         let mode: Int = actions.loadUint(8);
 
-        if (mode == 0) { // Multiop
+        if (mode == 0) { // multiple actions
             while(actions.refs() > 0) {
                 self.processActions(actions.loadRef().beginParse(), isExternal, isExtension);
             }
