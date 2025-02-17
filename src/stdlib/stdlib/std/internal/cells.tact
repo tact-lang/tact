@@ -163,9 +163,6 @@ asm extends fun refs(self: Builder): Int { BREFS }
 
 asm extends fun bits(self: Builder): Int { BBITS }
 
-// FIXME: to be removed, see the `asm`-related comments in the PR
-asm extends fun hash(self: Builder): Int { ONE HASHEXT_SHA256 }
-
 /// Extension function for the `Builder`. Available since Tact 1.6.0.
 ///
 /// Computes and returns the `Int` depth of the `Builder`. Produces 0 if the `Builder` has no references stored so far, otherwise 1 plus the maximum of the depths of the referenced cells.

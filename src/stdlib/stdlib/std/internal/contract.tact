@@ -111,30 +111,45 @@ inline fun newAddress(chain: Int, hash: Int): Address {
 /// * https://docs.tact-lang.org/ref/core-common#newaddress
 /// * https://docs.tact-lang.org/ref/core-common#contractaddressext
 ///
-// FIXME: to be replaced with an `asm` counterpart, see the comments in the PR
-inline fun contractHash(code: Cell, data: Cell): Int {
-    let builder = beginCell()
-        // refs_descriptor:bits8 bits_descriptor:bits8 data:bitsN
-        .storeUint(
-            // refs_descriptor: ref_count + ((exotic? & 1) * 8) + (mask * 32)
-            //                  2 refs (code + data), non-exotic, zero-mask
-            (2 << 16)
-            // bits_descriptor: floor(bit_count / 8) + ceil(bit_count, 8)
-            //                  floor (5 bits / 8) + ceil(5 bits / 8) = 0 + 1 = 1
-            | (1 << 8)
-            // data: [0b00110] + [0b100] = [0b00110100] = 0x34 (data + augmented bits)
-            //       0b00110 - data (split_depth, special, code, data, Library)
-            //       0b100 - augmented bits (Leading 1 + zeroes to make section multiple of eight)
-            | 0x34,
-            24
-        )
-        // depth_descriptors
-        .storeUint(code.depth(), 16)
-        .storeUint(data.depth(), 16)
-        // ref hashes
-        .storeUint(code.hash(), 256)
-        .storeUint(data.hash(), 256);
-    return builder.hash();
+asm fun contractHash(code: Cell, data: Cell): Int {
+    // According to the https://docs.tact-lang.org/book/cells#cells-representation,
+    // the layout for the Builder to hash goes as follows:
+    // 1) refs_descriptor:bits8 | bits_descriptor:bits8 | data:bitsN
+    //
+    //  refs_descriptor: ref_count + ((exotic? & 1) * 8) + (mask * 32)
+    //                   2 refs (code + data), non-exotic, zero-mask
+    //
+    //  bits_descriptor: floor(bit_count / 8) + ceil(bit_count, 8)
+    //                   floor (5 bits / 8) + ceil(5 bits / 8) = 0 + 1 = 1
+    //
+    //  data: [0b00110] + [0b100] = [0b00110100] = 0x34 (data + augmented bits)
+    //        0b00110 - data (split_depth, special, code, data, Library)
+    //        0b100 - augmented bits (Leading 1 + zeroes to make section multiple of eight)
+    //
+    //  That is: (2 << 16) | (1 << 8) | 0x34 = 131380 for all three.
+    //
+    // 2) and 3) depth_descriptors: CDEPTH of `code` and CDEPTH of `data`
+    // 4) and 5) ref hashes: HASHCU of `code` and HASHCU of `data`
+
+    // Group 1: Computations and arrangements
+    s0 PUSH HASHCU // `data` hash
+    s2 PUSH HASHCU // `code` hash
+    SWAP2
+    CDEPTH         // `data` depth
+    SWAP
+    CDEPTH         // `code` depth
+    131380 INT     // (2 << 16) | (1 << 8) | 0x34
+
+    // Group 2: Composition of the Builder
+    NEWC
+    24 STU  // store refs_descriptor | bits_descriptor | data
+    16 STU  // store depth_descriptor for `code`
+    16 STU  // store depth_descriptor for `data`
+    256 STU // store `code` hash
+    256 STU // store `data` hash
+
+    // Group 3: SHA256 hash of the resulting Builder
+    ONE HASHEXT_SHA256
 }
 
 /// Global function.
