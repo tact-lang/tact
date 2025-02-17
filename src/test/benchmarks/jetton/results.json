@@ -111,9 +111,9 @@
     {
       "label": "1.5.3 without double checking of message opcodes",
       "gas": {
-        "transfer": "20368",
-        "burn": "15655",
-        "discovery": "9848"
+        "transfer": "19598",
+        "burn": "15311",
+        "discovery": "9458"
       },
       "commit": "https://github.com/tact-lang/tact/pull/1854/"
     }
