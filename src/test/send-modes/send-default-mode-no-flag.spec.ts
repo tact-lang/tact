@@ -242,20 +242,22 @@ describe("SendDefaultMode with no flags", () => {
         const testerMessageForwardFee =
             extractTotalMessageForwardFee(testerRequestTsx);
         const testerOutMessageInfo = getMessageInfo(testerOutMessage);
-        expect(
-            amountToPayInRequest - testerMessageForwardFee ===
-                testerOutMessageInfo.value,
-        ).toBe(true);
+        const expectedTesterOutMessageValue =
+            amountToPayInRequest - testerMessageForwardFee;
+        expect(expectedTesterOutMessageValue.toString()).toBe(
+            testerOutMessageInfo.value.toString(),
+        );
 
         // Check that the value assigned to calculatorOutMessage is the original "value" in the send function
         // but deducted with the message forward fees.
         const calculatorMessageForwardFee =
             extractTotalMessageForwardFee(calculatorTsx);
         const calculatorOutMessageInfo = getMessageInfo(calculatorOutMessage);
-        expect(
-            amountToPayInCalculatorResponse - calculatorMessageForwardFee ===
-                calculatorOutMessageInfo.value,
-        ).toBe(true);
+        const expectedCalculatorOutMessageValue =
+            amountToPayInCalculatorResponse - calculatorMessageForwardFee;
+        expect(expectedCalculatorOutMessageValue.toString()).toBe(
+            calculatorOutMessageInfo.value.toString(),
+        );
 
         // Now we check that the observed final balances in each contract can actually be obtained from their initial balances
         // by subtracting the transaction fees, crediting the initial message value, and subtracting the outbound message values.
@@ -279,19 +281,21 @@ describe("SendDefaultMode with no flags", () => {
             computeBalanceDeltaWithNoOutputMessage(testerResultTsx);
 
         // If we add all the deltas for tester, together with its initial balance, we should get its measured final balance
-        expect(
-            testerBalanceBefore + testerDelta1 + testerDelta2 ===
-                testerBalanceAfter,
-        ).toBe(true);
+        const expectedTesterBalanceAfter =
+            testerBalanceBefore + testerDelta1 + testerDelta2;
+        expect(expectedTesterBalanceAfter.toString()).toBe(
+            testerBalanceAfter.toString(),
+        );
         // Similarly for the calculator
-        expect(
-            calculatorBalanceBefore + calculatorDelta ===
-                calculatorBalanceAfter,
-        ).toBe(true);
+        const expectedCalculatorBalanceAfter =
+            calculatorBalanceBefore + calculatorDelta;
+        expect(expectedCalculatorBalanceAfter.toString()).toBe(
+            calculatorBalanceAfter.toString(),
+        );
 
         // Finally, since the average of [0,4] is 2, we should have that value in the tester
         const finalValue = await tester.getCurrentResult();
-        expect(finalValue === 2n).toBe(true);
+        expect(finalValue.toString()).toBe("2");
     });
 
     /* This test checks when the tester contract makes a request to the calculator, but the tester does not 
@@ -395,18 +399,22 @@ describe("SendDefaultMode with no flags", () => {
             computeBalanceDeltaWithNoOutputMessage(testerRequestTsx);
 
         // If we add the tester's delta to its initial balance, we should get its measured final balance.
-        expect(testerBalanceBefore + testerDelta === testerBalanceAfter).toBe(
-            true,
+        const expectedTesterBalanceAfter = testerBalanceBefore + testerDelta;
+        expect(expectedTesterBalanceAfter.toString()).toBe(
+            testerBalanceAfter.toString(),
         );
         // The calculator did not execute a transaction, hence its balance did not change.
-        expect(calculatorBalanceBefore === calculatorBalanceAfter).toBe(true);
+
+        expect(calculatorBalanceBefore.toString()).toBe(
+            calculatorBalanceAfter.toString(),
+        );
 
         // Finally, since the tester failed its action phase, the transaction was rolled back
         // (even though its computation phase was successful).
         // This means that the "val" field in the tester contract was reset to -1 ("initial state"),
         // instead of -3 ("op requested, no answer yet").
         const finalValue = await tester.getCurrentResult();
-        expect(finalValue === -1n).toBe(true);
+        expect(finalValue.toString()).toBe("-1");
 
         // Check that the tester contract actually payed for the transaction fees even though its
         // transaction was rolled back. This is checked as follows:
@@ -417,12 +425,14 @@ describe("SendDefaultMode with no flags", () => {
         const incomingMessageInfo = getMessageInfo(
             ensureMessageIsDefined(testerRequestTsx.inMessage),
         );
-        expect(
+        const expectedPayedTotalFees = -(
             testerBalanceAfter -
-                testerBalanceBefore -
-                incomingMessageInfo.value ===
-                -testerRequestTsx.totalFees.coins,
-        ).toBe(true);
+            testerBalanceBefore -
+            incomingMessageInfo.value
+        );
+        expect(expectedPayedTotalFees.toString()).toBe(
+            testerRequestTsx.totalFees.coins.toString(),
+        );
     });
 
     /* This test checks when the tester contract sends an invalid request to the calculator, and the tester contract
@@ -570,10 +580,11 @@ describe("SendDefaultMode with no flags", () => {
         const testerMessageForwardFee =
             extractTotalMessageForwardFee(testerRequestTsx);
         const testerOutMessageInfo = getMessageInfo(testerOutMessage);
-        expect(
-            amountToPayInRequest - testerMessageForwardFee ===
-                testerOutMessageInfo.value,
-        ).toBe(true);
+        const expectedTesterOutMessageValue =
+            amountToPayInRequest - testerMessageForwardFee;
+        expect(expectedTesterOutMessageValue.toString()).toBe(
+            testerOutMessageInfo.value.toString(),
+        );
 
         // For computing the value in bounced messages, the calculator uses this formula:
         //     outMessage.value = inValue - totalFees - BouncePhaseMessageForwardFees
@@ -593,17 +604,17 @@ describe("SendDefaultMode with no flags", () => {
         const calculatorOutMessageInfo = getMessageInfo(calculatorOutMessage);
         const calculatorInMessageInfo = getMessageInfo(calculatorInMessage);
         // Check the bounce message value is according to the above formula
-        expect(
-            calculatorOutMessageInfo.value ===
-                calculatorInMessageInfo.value -
-                    calculatorTsx.totalFees.coins -
-                    calculatorBouncePhaseMessageForwardFees,
-        ).toBe(true);
+        const expectedCalculatorOutMessageValue =
+            calculatorInMessageInfo.value -
+            calculatorTsx.totalFees.coins -
+            calculatorBouncePhaseMessageForwardFees;
+        expect(expectedCalculatorOutMessageValue.toString()).toBe(
+            calculatorOutMessageInfo.value.toString(),
+        );
         // Check that the forward fee for validators in the bounced message is just the calculator message forward fees
-        expect(
-            calculatorOutMessageInfo.validatorsForwardFee ===
-                calculatorBouncePhaseMessageForwardFees,
-        ).toBe(true);
+        expect(calculatorOutMessageInfo.validatorsForwardFee.toString()).toBe(
+            calculatorBouncePhaseMessageForwardFees.toString(),
+        );
 
         // Check that the message sent by the calculator has its bounced flag active
         expect(calculatorOutMessageInfo.bounced).toBe(true);
@@ -630,15 +641,17 @@ describe("SendDefaultMode with no flags", () => {
             computeBalanceDeltaWithNoOutputMessage(testerBouncedTsx);
 
         // If we add all the deltas for tester, together with its initial balance, we should get its measured final balance
-        expect(
-            testerBalanceBefore + testerDelta1 + testerDelta2 ===
-                testerBalanceAfter,
-        ).toBe(true);
+        const expectedTesterBalanceAfter =
+            testerBalanceBefore + testerDelta1 + testerDelta2;
+        expect(expectedTesterBalanceAfter.toString()).toBe(
+            testerBalanceAfter.toString(),
+        );
         // Similarly for the calculator
-        expect(
-            calculatorBalanceBefore + calculatorDelta ===
-                calculatorBalanceAfter,
-        ).toBe(true);
+        const expectedCalculatorBalanceAfter =
+            calculatorBalanceBefore + calculatorDelta;
+        expect(expectedCalculatorBalanceAfter.toString()).toBe(
+            calculatorBalanceAfter.toString(),
+        );
 
         // Additionally, we should expect that the balance for the calculator did not change
         // because it payed its transaction fees from the value of the incoming message
@@ -653,12 +666,12 @@ describe("SendDefaultMode with no flags", () => {
         // and BouncePhaseMessageForwardFees = outMsg.validatorsForwardFee as was also checked previously.
 
         // Check that the calculator delta is actually zero
-        expect(calculatorDelta === 0n).toBe(true);
+        expect(calculatorDelta.toString()).toBe("0");
 
         // Finally, since the request failed and got bounced, the tester received the bounced message
         // and stored -2 ("error") in its "val" field.
         const finalValue = await tester.getCurrentResult();
-        expect(finalValue === -2n).toBe(true);
+        expect(finalValue.toString()).toBe("-2");
     });
 
     /* This test checks when the tester contract sends a request that causes an out of gas error during the calculator's computation phase, 
@@ -793,10 +806,11 @@ describe("SendDefaultMode with no flags", () => {
         const testerMessageForwardFee =
             extractTotalMessageForwardFee(testerRequestTsx);
         const testerOutMessageInfo = getMessageInfo(testerOutMessage);
-        expect(
-            amountToPayInRequest - testerMessageForwardFee ===
-                testerOutMessageInfo.value,
-        ).toBe(true);
+        const expectedTesterOutMessageValue =
+            amountToPayInRequest - testerMessageForwardFee;
+        expect(expectedTesterOutMessageValue.toString()).toBe(
+            testerOutMessageInfo.value.toString(),
+        );
 
         // When there are enough funds in the incoming message to cover for transaction fees and bounced message forward fees,
         // the contract would use the following formula:
@@ -820,10 +834,9 @@ describe("SendDefaultMode with no flags", () => {
         );
         const calculatorInMessageInfo = getMessageInfo(calculatorInMessage);
         // Check the amount to be zero.
-        expect(
-            calculatorInMessageInfo.value - calculatorTsx.totalFees.coins ===
-                0n,
-        ).toBe(true);
+        const expectedRemainingAmount =
+            calculatorInMessageInfo.value - calculatorTsx.totalFees.coins;
+        expect(expectedRemainingAmount.toString()).toBe("0");
 
         // Now we check that the observed final balances in each contract can actually be obtained from their initial balances
         // by subtracting the transaction fees, crediting the initial message value, and subtracting the outbound message values.
@@ -842,14 +855,16 @@ describe("SendDefaultMode with no flags", () => {
             computeBalanceDeltaWithNoOutputMessage(calculatorTsx);
 
         // If we add the delta for tester, together with its initial balance, we should get its measured final balance
-        expect(testerBalanceBefore + testerDelta === testerBalanceAfter).toBe(
-            true,
+        const expectedTesterBalanceAfter = testerBalanceBefore + testerDelta;
+        expect(expectedTesterBalanceAfter.toString()).toBe(
+            testerBalanceAfter.toString(),
         );
         // Similarly for the calculator
-        expect(
-            calculatorBalanceBefore + calculatorDelta ===
-                calculatorBalanceAfter,
-        ).toBe(true);
+        const expectedCalculatorBalanceAfter =
+            calculatorBalanceBefore + calculatorDelta;
+        expect(expectedCalculatorBalanceAfter.toString()).toBe(
+            calculatorBalanceAfter.toString(),
+        );
 
         // Additionally, we should expect that the balance for the calculator did not change
         // because it payed its transaction fees from the value of the incoming message,
@@ -863,12 +878,12 @@ describe("SendDefaultMode with no flags", () => {
         // outMsg.value = 0 and outMsg.validatorsForwardFee = 0 since there was no bounce message.
 
         // Check that the calculator delta is actually zero
-        expect(calculatorDelta === 0n).toBe(true);
+        expect(calculatorDelta.toString()).toBe("0");
 
         // Finally, since the tester never receives the bounced message,
         // the tester remains with status -3 ("op requested, no answer yet") in its "val" field.
         const finalValue = await tester.getCurrentResult();
-        expect(finalValue === -3n).toBe(true);
+        expect(finalValue.toString()).toBe("-3");
     });
 
     /* This test checks when the tester contract sends a request that successfully passes the calculator's computation phase, 
@@ -1004,10 +1019,11 @@ describe("SendDefaultMode with no flags", () => {
         const testerMessageForwardFee =
             extractTotalMessageForwardFee(testerRequestTsx);
         const testerOutMessageInfo = getMessageInfo(testerOutMessage);
-        expect(
-            amountToPayInRequest - testerMessageForwardFee ===
-                testerOutMessageInfo.value,
-        ).toBe(true);
+        const expectedTesterOutMessageValue =
+            amountToPayInRequest - testerMessageForwardFee;
+        expect(expectedTesterOutMessageValue.toString()).toBe(
+            testerOutMessageInfo.value.toString(),
+        );
 
         // Now we check that the observed final balances in each contract can actually be obtained from their initial balances
         // by subtracting the transaction fees, crediting the initial message value, and subtracting the outbound message values.
@@ -1026,14 +1042,16 @@ describe("SendDefaultMode with no flags", () => {
             computeBalanceDeltaWithNoOutputMessage(calculatorTsx);
 
         // If we add the delta for tester, together with its initial balance, we should get its measured final balance
-        expect(testerBalanceBefore + testerDelta === testerBalanceAfter).toBe(
-            true,
+        const expectedTesterBalanceAfter = testerBalanceBefore + testerDelta;
+        expect(expectedTesterBalanceAfter.toString()).toBe(
+            testerBalanceAfter.toString(),
         );
         // Similarly for the calculator
-        expect(
-            calculatorBalanceBefore + calculatorDelta ===
-                calculatorBalanceAfter,
-        ).toBe(true);
+        const expectedCalculatorBalanceAfter =
+            calculatorBalanceBefore + calculatorDelta;
+        expect(expectedCalculatorBalanceAfter.toString()).toBe(
+            calculatorBalanceAfter.toString(),
+        );
 
         // Check that the calculator's delta is positive, meaning that the calculator's balance increased after the transaction,
         // since it never sends back to the tester the remaining funds.
@@ -1042,7 +1060,7 @@ describe("SendDefaultMode with no flags", () => {
         // Finally, since the tester never receives the response message or a bounced message,
         // the tester remains with status -3 ("op requested, no answer yet") in its "val" field.
         const finalValue = await tester.getCurrentResult();
-        expect(finalValue === -3n).toBe(true);
+        expect(finalValue.toString()).toBe("-3");
     });
 });
 
@@ -1102,7 +1120,7 @@ function computeBalanceDelta(
            In these tests, I am assuming that IHR fee is zero; hence, I am adding assertions that IHR fee is zero.
         */
         expect(tsx.inMessage.info.ihrDisabled).toBe(true);
-        expect(tsx.inMessage.info.ihrFee === 0n).toBe(true);
+        expect(tsx.inMessage.info.ihrFee.toString()).toBe("0");
 
         const inValue = tsx.inMessage.info.value.coins;
         const totalFees = tsx.totalFees.coins;
@@ -1124,7 +1142,7 @@ function getMessageInfo(msg: Message): MessageInfo {
            In these tests, I am assuming that IHR fee is zero; hence, I am adding assertions that IHR fee is zero.
         */
         expect(msg.info.ihrDisabled).toBe(true);
-        expect(msg.info.ihrFee === 0n).toBe(true);
+        expect(msg.info.ihrFee.toString()).toBe("0");
 
         return {
             validatorsForwardFee: msg.info.forwardFee,
