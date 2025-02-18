@@ -125,6 +125,15 @@
         "discovery": "9458"
       },
       "commit": "https://github.com/tact-lang/tact/pull/1832"
+    },
+    {
+      "label": "1.5.3 with optimized routing",
+      "gas": {
+        "transfer": "18327",
+        "burn": "15139",
+        "discovery": "9363"
+      },
+      "commit": "https://github.com/tact-lang/tact/pull/1832"
     }
   ]
 }

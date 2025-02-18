@@ -6,17 +6,19 @@ exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `935n`;
 
 exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2846n`;
 
-exports[`benchmarks benchmark functions: code size 1`] = `184`;
+exports[`benchmarks benchmark functions: code size 1`] = `180`;
 
-exports[`benchmarks benchmark functions: gas used 1`] = `2642`;
+exports[`benchmarks benchmark functions: gas used 1`] = `2547`;
 
-exports[`benchmarks benchmark readFwdFee: code size 1`] = `143`;
+exports[`benchmarks benchmark readFwdFee: code size 1`] = `139`;
 
-exports[`benchmarks benchmark readFwdFee: gas used 1`] = `2672`;
+exports[`benchmarks benchmark readFwdFee: gas used 1`] = `2595`;
 
 exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2808`;
 
 exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2809`;
+
+exports[`benchmarks benchmark sha256: gas hash string big repeated 2`] = `2809`;
 
 exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2811`;
 

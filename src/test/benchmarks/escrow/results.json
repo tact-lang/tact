@@ -41,12 +41,12 @@
       "commit": "https://github.com/tact-lang/tact/pull/1854"
     },
     {
-      "label": "master",
+      "label": "1.5.3 with optimized routing",
       "gas": {
-        "fundingTon": "6414",
-        "changeCode": "5373",
-        "approveTon": "11202",
-        "cancelTon": "8701"
+        "fundingTon": "6259",
+        "changeCode": "5343",
+        "approveTon": "11047",
+        "cancelTon": "8546"
       },
       "commit": "https://github.com/tact-lang/tact/tree/main"
     }
