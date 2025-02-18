@@ -3,19 +3,21 @@ title: Sending messages
 description: "TON Blockchain is message-based — to communicate with other contracts and to deploy new ones you need to send messages."
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 TON Blockchain is message-based — to communicate with other contracts and to deploy new ones you need to send messages.
 
-Messages in Tact are commonly composed using a built-in [Struct](/book/structs-and-messages#structs) `SendParameters{:tact}`, which consists of:
+Messages in Tact are commonly composed using a built-in [Struct](/book/structs-and-messages#structs) `SendParameters{:tact}` which consists of the following fields:
 
 Field    | Type                   | Description
 :------- | :--------------------- | :----------
 `mode`   | [`Int{:tact}`][int]    | An 8-bit value that configures how to send a message, defaults to $0$. See: [Message `mode`](/book/message-mode).
-`body`   | [`Cell?{:tact}`][cell] | [Optional][opt] message body as a [`Cell{:tact}`][cell]
-`code`   | [`Cell?{:tact}`][cell] | [Optional][opt] initial code of the contract (the compiled bytecode)
-`data`   | [`Cell?{:tact}`][cell] | [Optional][opt] initial data of the contract (arguments of [`init(){:tact}` function](/book/contracts#init-function) of the contract)
-`value`  | [`Int{:tact}`][int]    | The amount of [nanoToncoins][nano] you want to send with the message. This value is usually used to cover [forward fees][fwdfee], unless the optional flag [`SendPayGasSeparately{:tact}`](/book/message-mode#optional-flags) is used.
-`to`     | [`Address{:tact}`][p]  | Receiver internal [`Address{:tact}`][p] in TON blockchain.
-`bounce` | [`Bool{:tact}`][p]     | When set to `true` (default) message bounces back to the sender if the receiver contract doesn't exist or wasn't able to process the message.
+`body`   | [`Cell?{:tact}`][cell] | [Optional][opt] message body as a [`Cell{:tact}`][cell].
+`code`   | [`Cell?{:tact}`][cell] | [Optional][opt] initial code of the contract (compiled bitcode).
+`data`   | [`Cell?{:tact}`][cell] | [Optional][opt] initial data of the contract (arguments of [`init(){:tact}` function](/book/contracts#init-function)).
+`value`  | [`Int{:tact}`][int]    | The amount of [nanoToncoins][nano] you want to send with the message. This value is used to cover [forward fees][fwdfee], unless the optional flag [`SendPayGasSeparately{:tact}`](/book/message-mode#optional-flags) is used.
+`to`     | [`Address{:tact}`][p]  | Recipient internal [`Address{:tact}`][p] on TON Blockchain.
+`bounce` | [`Bool{:tact}`][p]     | When set to `true` (default) message bounces back to the sender if the recipient contract doesn't exist or wasn't able to process the message.
 
 Fields `code` and `data` are what's called an [init package](/book/expressions#initof), which is used in deployments of new contracts.
 
@@ -52,7 +54,7 @@ send(SendParameters{
     // bounce is set to true by default
     to: recipient,
     value: value,
-    mode: SendIgnoreErrors, // will send the message despite any errors
+    mode: SendIgnoreErrors, // skip the message in case of errors
     body: "Hello, World!".asComment(),
 });
 ```
@@ -75,7 +77,7 @@ send(SendParameters{
     // bounce is set to true by default
     to: recipient,
     value: value,
-    mode: SendIgnoreErrors, // don't stop in case of errors
+    mode: SendIgnoreErrors, // skip the message in case of errors
     body: SomeMessage{arg1: 123, arg2: 1234}.toCell(),
 });
 ```
@@ -92,10 +94,28 @@ send(SendParameters{
     // bounce is set to true by default
     to: address,
     value: value,
-    mode: SendIgnoreErrors, // don't stop in case of errors
+    mode: SendIgnoreErrors, // skip the message in case of errors
     code: init.code,
     data: init.data,
     body: "Hello, World!".asComment(), // not necessary, can be omitted
+});
+```
+
+<p/><Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+For cheaper on-chain deployments prefer using the [`deploy(){:tact}`](/ref/core-common#deploy) function instead. It computes the address of the contract based on its initial code and data and efficiently composes the resulting message:
+
+```tact
+let init: StateInit = initOf SecondContract(arg1, arg2);
+deploy(DeployParameters{
+    // bounce is set to true by default
+    mode: SendIgnoreErrors, // skip the message in case of errors
+    value: ton("1"), // a whole Toncoin
+    body: "Hello, World!".asComment(), // not necessary, can be omitted
+    init: StateInit{
+        code: init.code,
+        data: init.data,
+    },
 });
 ```
 
@@ -238,6 +258,7 @@ Attempts to queue more throw an exception with an [exit code 33](/book/exit-code
 Read more about all message-sending functions in the Reference:
 
 * [`send(){:tact}`](/ref/core-common#send)
+* [`deploy(){:tact}`](/ref/core-common#deploy)
 * [`emit(){:tact}`](/ref/core-common#emit)
 * [`self.notify(){:tact}`](/ref/core-base#self-notify)
 * [`self.reply(){:tact}`](/ref/core-base#self-reply)

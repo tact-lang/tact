@@ -238,7 +238,7 @@ basechainAddr == basechainAddr2; // true
 fun send(params: SendParameters);
 ```
 
-[Queues the message](/book/send#outbound-message-processing) to be sent using a [`SendParameters{:tact}`](/book/send) [Struct](/book/structs-and-messages#structs).
+[Queues the message](/book/send#outbound-message-processing) to be sent using a [`SendParameters{:tact}`](/book/send) [Struct][struct].
 
 Attempts to queue more than $255$ messages throw an exception with an [exit code 33](/book/exit-codes#33): `Action list is too long`.
 
@@ -257,6 +257,47 @@ send(SendParameters{
   [Sending messages in the Book](/book/send)\
   [Message `mode` in the Book](/book/message-mode)\
   [Single-contract communication in the Cookbook](/cookbook/single-communication)
+
+:::
+
+### deploy
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+```tact
+fun deploy(params: DeployParameters);
+```
+
+[Queues](/book/send#outbound-message-processing) the [contract deployment message](/book/deploy) to be sent using the `DeployParameters{:tact}` [Struct][struct]. Allows for cheaper on-chain deployments compared to the [`send(){:tact}`](#send) function.
+
+The `DeployParameters{:tact}` [Struct][struct] consists of the following fields:
+
+Field    | Type                          | Description
+:------- | :---------------------------- | :----------
+`mode`   | [`Int{:tact}`][int]           | An 8-bit value that configures how to send a message, defaults to $0$. See: [Message `mode`](/book/message-mode).
+`body`   | [`Cell?{:tact}`][cell]        | [Optional][opt] message body as a [`Cell{:tact}`][cell].
+`value`  | [`Int{:tact}`][int]           | The amount of [nanoToncoins][nano] you want to send with the message. This value is used to cover [forward fees][fwdfee], unless the optional flag [`SendPayGasSeparately{:tact}`](/book/message-mode#optional-flags) is used.
+`bounce` | [`Bool{:tact}`][p]            | When set to `true` (default) message bounces back to the sender if the recipient contract doesn't exist or wasn't able to process the message.
+`init`   | [`StateInit{:tact}`][initpkg] | [Initial package][initpkg] of the contract (initial code and initial data). See: [`initOf{:tact}`][initpkg].
+
+Attempts to queue more than $255$ messages throw an exception with an [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
+Usage example:
+
+```tact
+deploy(DeployParameters{
+    mode: SendIgnoreErrors,      // skip the message in case of errors,
+    value: ton("1"),             // send 1 Toncoin (1_000_000_000 nanoToncoin),
+    init: initOf SomeContract(), // with initial code and data of SomeContract
+                                 // and no additional message body
+});
+```
+
+:::note[Useful links:]
+
+  [Sending messages in the Book](/book/send)\
+  [Message `mode` in the Book](/book/message-mode)
 
 :::
 
@@ -291,7 +332,14 @@ emit("Catch me if you can, Mr. Holmes".asComment()); // asComment() converts a S
 [p]: /book/types#primitive-types
 [bool]: /book/types#booleans
 [int]: /book/integers
+[cell]: /book/cells#cells
 [slice]: /book/cells#slices
+[struct]: /book/structs-and-messages#structs
+[opt]: /book/optionals
 
+[nano]: /book/integers#nanotoncoin
+[initpkg]: /book/expressions#initof
+
+[fwdfee]: https://docs.ton.org/develop/howto/fees-low-level#forward-fees
 [workchain-id]: https://docs.ton.org/learn/overviews/addresses#workchain-id
 [account-id]: https://docs.ton.org/learn/overviews/addresses#account-id
