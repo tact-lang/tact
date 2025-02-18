@@ -138,9 +138,9 @@
     {
       "label": "1.5.3 with optimized routing",
       "gas": {
-        "transfer": "18327",
-        "burn": "15139",
-        "discovery": "9363"
+        "transfer": "18147",
+        "burn": "14941",
+        "discovery": "9319"
       },
       "commit": "https://github.com/tact-lang/tact/pull/1832"
     }
