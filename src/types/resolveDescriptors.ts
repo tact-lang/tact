@@ -843,7 +843,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             !isExtends &&
             isSelfId(firstParam.name)
         ) {
-            // if isExtends, the head is not even the first parameter
             throwCompilationError(
                 'Parameter name "self" is reserved for functions with "extends" modifier',
                 firstParam.loc,
