@@ -40,6 +40,7 @@ import { isAssignable } from "./subtyping";
 import type { AstUtil } from "../ast/util";
 import { getAstUtil } from "../ast/util";
 import type { ItemOrigin } from "../imports/source";
+import { isUndefined } from "../utils/array";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -786,6 +787,8 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             throwCompilationError("Getters cannot be inline", isInline.loc);
         }
 
+        const exNames: Set<string> = new Set();
+
         // Validate mutating
         if (isExtends) {
             if (self) {
@@ -822,6 +825,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
             // Update self and remove first parameter
             self = firstParam.type;
+            exNames.add(idText(firstParam.name));
             params = params.slice(1);
         }
 
@@ -833,18 +837,29 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             );
         }
 
-        // Check parameter names
-        const exNames: Set<string> = new Set();
+        const firstParam = params[0];
+
+        if (
+            !isUndefined(firstParam) &&
+            !isExtends &&
+            isSelfId(firstParam.name)
+        ) {
+            throwCompilationError(
+                'Parameter name "self" is reserved for functions with "extends" modifier',
+                firstParam.loc,
+            );
+        }
+
         for (const param of params) {
-            if (isSelfId(param.name)) {
-                throwCompilationError(
-                    'Parameter name "self" is reserved',
-                    param.loc,
-                );
-            }
             if (exNames.has(idText(param.name))) {
                 throwCompilationError(
                     `Parameter name ${idTextErr(param.name)} is already used`,
+                    param.loc,
+                );
+            }
+            if (isSelfId(param.name)) {
+                throwCompilationError(
+                    'Parameter name "self" is reserved',
                     param.loc,
                 );
             }
