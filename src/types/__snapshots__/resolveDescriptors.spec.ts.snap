@@ -495,6 +495,24 @@ exports[`resolveDescriptors should fail descriptors for native-fun-getter 1`] = 
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for not-extend-function-self-param 1`] = `
+"<unknown>:3:30: Parameter name "self" is reserved for functions with "extends" modifier
+  2 | 
+> 3 | asm(other self) fun testFunc(self: Int, other: Int) { 2 BLKDROP }
+                                   ^~~~~~~~~
+  4 | 
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for not-extend-function-self-param-2 1`] = `
+"<unknown>:4:28: Parameter name "self" is already used
+  3 | 
+> 4 | extends fun foo(self: Int, self: String) { }
+                                 ^~~~~~~~~~~~
+  5 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for override-for-non-existing-constant-in-contract-from-base-trait 1`] = `
 "<unknown>:8:5: Constant "BAR" overrides nothing, remove "override" modifier or inherit any traits with this constant
   7 | contract Test {
