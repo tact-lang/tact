@@ -1,3 +1,5 @@
+import "@stdlib/deploy";
+
 /*
 struct OutActions {
     mode: Int as uint8;
@@ -17,9 +19,16 @@ struct SignedRequest {
 }
 */
 
+struct InternalOperation {
+    walletId: Int as uint32;
+    validUntil: Int as uint32;
+    seqno: Int as uint32;
+    actions: Slice as remaining;
+}
+
 message SignedRequest {
     signature: Slice as bytes64;
-    operation: Slice as remaining;
+    operation: InternalOperation;
 }
 
 message InternalSignedRequest {
@@ -31,15 +40,17 @@ message InternalExtensionRequest {
     actions: Slice as remaining;
 }
 
-contract Wallet {
+asm fun countTrailingZeroess(s: Slice): Int { SDCNTTRAIL0 }
+
+contract Wallet with Deployable {
     isSignatureAllowed: Bool;
     seqno: Int as uint32;
     walletId: Int as int32;
     publicKey: Int as int256;
     extensions: map<Address, Bool>;
 
-    init(isSignatureAllowed: Bool, publicKey: Int, walletId: Int, extensions: map<Address, Bool>) {
-        self.isSignatureAllowed = isSignatureAllowed;
+    init(publicKey: Int, walletId: Int, extensions: map<Address, Bool>) {
+        self.isSignatureAllowed = true;
         self.publicKey = publicKey;
         self.seqno = 0;
         self.walletId = walletId;
@@ -47,16 +58,16 @@ contract Wallet {
     }
 
     fun processSignedRequest(msg: SignedRequest, isExternal: Bool) {
-        require(checkSignature(msg.operation.hash(), msg.signature, self.publicKey), "Invalid signature");
+        require(checkSignature(msg.operation.toCell().hash(), msg.signature, self.publicKey), "Invalid signature");
 
-        let ds = msg.operation;
-        let walletId: Int = ds.loadInt(32);
-        let validUntil: Int = ds.loadInt(32);
-        let seqno: Int = ds.loadUint(32);
+        // let ds = msg.operation;
+        // let walletId: Int = ds.loadInt(32);
+        // let validUntil: Int = ds.loadInt(32);
+        // let seqno: Int = ds.loadUint(32);
 
-        require(seqno == self.seqno, "Invalid seqno");
-        require(walletId == self.walletId, "Invalid walletId");
-        require(now() < validUntil, "Operation expired");
+        require(msg.operation.seqno == self.seqno, "Invalid seqno");
+        require(msg.operation.walletId == self.walletId, "Invalid walletId");
+        require(now() < msg.operation.validUntil, "Operation expired");
 
         if (isExternal) {
             acceptMessage();
@@ -67,7 +78,7 @@ contract Wallet {
         // Commit state for reply protection
         commit();
 
-        self.processActions(ds, isExternal, false);
+        self.processActions(msg.operation.actions, isExternal, false);
     }
 
     fun processActions(actions: Slice, isExternal: Bool, isExtension: Bool) {
@@ -105,9 +116,14 @@ contract Wallet {
         let count = 0;
 
         while(msg.refs() > 0) {
+            // enforce that send_mode has +2 bit (ignore errors) set for external message.
+            nativeThrowIf(137, isExternal && (countTrailingZeroess(msg.preloadBits(7)) > 0));
+
             let mode: Int = msg.loadInt(8);
             let body: Cell = msg.loadRef();
+
             nativeSendMessage(body, mode);
+
             count += 1;
             require(count <= 255, "Exceeded max message count");
         }
