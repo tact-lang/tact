@@ -120,9 +120,9 @@
     {
       "label": "1.5.3 with deploy instead of send",
       "gas": {
-        "transfer": "18838",
-        "burn": "15565",
-        "discovery": "9613"
+        "transfer": "18517",
+        "burn": "15311",
+        "discovery": "9458"
       },
       "commit": "https://github.com/tact-lang/tact/pull/1832"
     }
