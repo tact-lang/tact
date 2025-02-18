@@ -142,7 +142,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
             case "simple": {
                 let base = createTypeFormat(
                     src.type.type,
-                    src.type.format ? src.type.format : null,
+                    src.type.format ?? null,
                 );
                 if (src.type.optional) {
                     base = "Maybe " + base;
@@ -162,11 +162,11 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
                 }
                 const key = createTypeFormat(
                     src.type.key,
-                    src.type.keyFormat ? src.type.keyFormat : null,
+                    src.type.keyFormat ?? null,
                 );
                 const value = createTypeFormat(
                     src.type.value,
-                    src.type.valueFormat ? src.type.valueFormat : null,
+                    src.type.valueFormat ?? null,
                 );
                 return src.name + ":dict<" + key + ", " + value + ">";
             }

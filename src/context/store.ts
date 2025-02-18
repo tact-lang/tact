@@ -63,9 +63,7 @@ export function openContext(
     parser: Parser,
     parsedModules?: A.AstModule[],
 ): CompilerContext {
-    const modules = parsedModules
-        ? parsedModules
-        : parseModules(sources, parser);
+    const modules = parsedModules ?? parseModules(sources, parser);
     const types: A.AstTypeDecl[] = [];
     const functions: (
         | A.AstNativeFunctionDecl
