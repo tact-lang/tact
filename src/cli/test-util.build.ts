@@ -4,22 +4,31 @@ import { writeFile, mkdir } from "fs/promises";
 import type { Config, Project } from "../config/parseConfig";
 
 type Result = Exited | Signaled;
-type Exited = { kind: "exited"; code: number; stdout: string };
+type Exited = { kind: "exited"; code: number; stdout: string; stderr: string };
 type Signaled = { kind: "signaled"; signal: NodeJS.Signals };
 
 export const runCommand = (command: string, cwd: string = process.cwd()) => {
     const thread = exec(command, { cwd });
     return new Promise<Result>((resolve, reject) => {
-        const chunks: string[] = [];
+        const chunksOut: string[] = [];
+        const chunksErr: string[] = [];
         thread.stdout?.on("data", (chunk) => {
-            chunks.push(chunk);
+            chunksOut.push(chunk);
+        });
+        thread.stderr?.on("data", (chunk) => {
+            chunksErr.push(chunk);
         });
         thread.on("error", (code) => {
             reject(code);
         });
         thread.on("exit", (code, signal) => {
             if (code !== null) {
-                resolve({ kind: "exited", code, stdout: chunks.join("") });
+                resolve({
+                    kind: "exited",
+                    code,
+                    stdout: chunksOut.join(""),
+                    stderr: chunksErr.join(""),
+                });
             } else if (signal !== null) {
                 resolve({ kind: "signaled", signal });
             } else {
