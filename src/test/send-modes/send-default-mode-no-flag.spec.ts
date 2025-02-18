@@ -586,7 +586,7 @@ describe("SendDefaultMode with no flags", () => {
             testerOutMessageInfo.value.toString(),
         );
 
-        // For computing the value in bounced messages, the calculator uses this formula:
+        // For computing the value in bounced messages, we can estimate it by using this formula:
         //     outMessage.value = inValue - totalFees - BouncePhaseMessageForwardFees
         //
         // where inValue: is the value in the incoming message
@@ -597,20 +597,26 @@ describe("SendDefaultMode with no flags", () => {
         // because the computation phase failed).
         //
         // Additionally, the forward fees for validators in the bounced message is just the BouncePhaseMessageForwardFees
+        //
+        // There is a problem though. totalFees is subject to real number rounding.
+        // See for example that total fees uses a toFixed that rounds the numbers in this
+        // calculator in the TON Docs: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees#basic-fees-formula
+        // This means that the above formula for estimating outMessage.value sometimes will miss the value stored in outMessage.value
+        // by a very small amount due to rounding in totalFees.
 
         // Now, obtain BouncePhaseMessageForwardFees from the bounce phase
         const calculatorBouncePhaseMessageForwardFees =
             extractTotalBouncedMessageForwardFee(calculatorTsx);
         const calculatorOutMessageInfo = getMessageInfo(calculatorOutMessage);
         const calculatorInMessageInfo = getMessageInfo(calculatorInMessage);
-        // Check the bounce message value is according to the above formula
+        // Check the bounce message value is according to the above formula within a small error
         const expectedCalculatorOutMessageValue =
             calculatorInMessageInfo.value -
             calculatorTsx.totalFees.coins -
             calculatorBouncePhaseMessageForwardFees;
-        expect(expectedCalculatorOutMessageValue.toString()).toBe(
-            calculatorOutMessageInfo.value.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedCalculatorOutMessageValue),
+        ).toContain(calculatorOutMessageInfo.value.toString());
         // Check that the forward fee for validators in the bounced message is just the calculator message forward fees
         expect(calculatorOutMessageInfo.validatorsForwardFee.toString()).toBe(
             calculatorBouncePhaseMessageForwardFees.toString(),
@@ -665,8 +671,10 @@ describe("SendDefaultMode with no flags", () => {
         // where the value of the bounced message "outMsg.value" was expanded according to the formula for bounced messages given previously
         // and BouncePhaseMessageForwardFees = outMsg.validatorsForwardFee as was also checked previously.
 
+        // But again, since totalFees are subject to rounding, we should expect that the delta is 0 within a a small error
+
         // Check that the calculator delta is actually zero
-        expect(calculatorDelta.toString()).toBe("0");
+        expect(computeErrorIntervalOfNumber(calculatorDelta)).toContain("0");
 
         // Finally, since the request failed and got bounced, the tester received the bounced message
         // and stored -2 ("error") in its "val" field.
@@ -813,7 +821,7 @@ describe("SendDefaultMode with no flags", () => {
         );
 
         // When there are enough funds in the incoming message to cover for transaction fees and bounced message forward fees,
-        // the contract would use the following formula:
+        // we could use the following formula to estimate the value in the outbound message:
         //     outMessage.value = inValue - totalFees - BouncePhaseMessageForwardFees
         //
         // where inValue: is the value in the incoming message
@@ -827,16 +835,20 @@ describe("SendDefaultMode with no flags", () => {
         // As such, there are no remaining funds in the incoming message value to
         // send a bounced message.
 
-        // Check that the amount "inValue - totalFees" is actually zero.
+        // Check that the amount "inValue - totalFees" is actually zero. But again, since totalFees is subject to rounding.
+        // This amount will be 0 within a small error
+
         // Get the incoming message that triggered the calculator's transaction.
         const calculatorInMessage = ensureMessageIsDefined(
             calculatorTsx.inMessage,
         );
         const calculatorInMessageInfo = getMessageInfo(calculatorInMessage);
-        // Check the amount to be zero.
+        // Check the amount to be zero within a small error
         const expectedRemainingAmount =
             calculatorInMessageInfo.value - calculatorTsx.totalFees.coins;
-        expect(expectedRemainingAmount.toString()).toBe("0");
+        expect(computeErrorIntervalOfNumber(expectedRemainingAmount)).toContain(
+            "0",
+        );
 
         // Now we check that the observed final balances in each contract can actually be obtained from their initial balances
         // by subtracting the transaction fees, crediting the initial message value, and subtracting the outbound message values.
@@ -877,8 +889,8 @@ describe("SendDefaultMode with no flags", () => {
         // where inValue - totalFees = 0 as we checked previously, and
         // outMsg.value = 0 and outMsg.validatorsForwardFee = 0 since there was no bounce message.
 
-        // Check that the calculator delta is actually zero
-        expect(calculatorDelta.toString()).toBe("0");
+        // Check that the calculator delta is actually zero within a small error
+        expect(computeErrorIntervalOfNumber(calculatorDelta)).toContain("0");
 
         // Finally, since the tester never receives the bounced message,
         // the tester remains with status -3 ("op requested, no answer yet") in its "val" field.
@@ -1228,4 +1240,9 @@ function getTransactionDescription(
     }
 
     throw new Error("Unrecognized transaction type");
+}
+
+function computeErrorIntervalOfNumber(num: bigint): string[] {
+    const interval = [num - 1n, num, num + 1n];
+    return interval.map((n) => n.toString());
 }
