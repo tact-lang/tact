@@ -460,7 +460,7 @@ fun isqrt(num: Int): Int {
         x += q;
     } until (q == 0);
 
-    if (x * x > num) {
+    if (x > num / x) {
         x -= 1;
     }
 
