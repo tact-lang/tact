@@ -19,8 +19,7 @@
 extends fun asAddress(self: Slice, chain: Int): Address {
     // 11 bits for the prefix,
     // 256 bits for the address itself
-    let rightLength = 267;
-    nativeThrowUnless(136, self.bits() == rightLength);
+    nativeThrowUnless(136, self.bits() == 267);
 
     let basechainAddrPrefix = chain == -1 ? 1279 : 1024;
     nativeThrowUnless(136, self.preloadUint(11) == basechainAddrPrefix);
