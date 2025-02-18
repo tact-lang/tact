@@ -505,7 +505,7 @@ exports[`resolveDescriptors should fail descriptors for not-extend-function-self
 `;
 
 exports[`resolveDescriptors should fail descriptors for not-extend-function-self-param-2 1`] = `
-"<unknown>:4:28: Parameter name "self" is reserved
+"<unknown>:4:28: Parameter name "self" is already used
   3 | 
 > 4 | extends fun foo(self: Int, self: String) { }
                                  ^~~~~~~~~~~~
