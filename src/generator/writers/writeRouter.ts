@@ -193,7 +193,7 @@ function writeNonBouncedRouter(
         }
     });
 
-    // NOTE: It should be more efficent to write all binary receivers inside
+    // NOTE: It should be more efficient to write all binary receivers inside
     //       `in_msg_length` length if-check regardless of text receivers,
     //       but while using Fift this way is better
     if (!doesHaveTextReceivers) {
