@@ -1,4 +1,5 @@
-import { Logger, LoggerHandlers, makeLogger } from "../error/logger-util";
+import type { Logger, LoggerHandlers } from "../error/logger-util";
+import { makeLogger } from "../error/logger-util";
 import {
     printError,
     showExpectedText,
@@ -6,7 +7,8 @@ import {
 } from "../error/string-util";
 import { cwd } from "process";
 import { throwInternal } from "../error/errors";
-import { AnsiMarkup } from "./colors";
+import type { AnsiMarkup } from "./colors";
+import type * as path from "path";
 
 export const CliLogger = () => {
     let hadErrors = false;
@@ -24,7 +26,7 @@ export const CliLogger = () => {
 
 export type Verbosity = "error" | "warn" | "info";
 
-type PathApi = typeof import("path");
+type PathApi = typeof path;
 
 export const TerminalLogger = <T>(
     pathApi: PathApi,

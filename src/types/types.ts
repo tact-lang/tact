@@ -1,9 +1,9 @@
-import { ABIField } from "@ton/core";
+import type { ABIField } from "@ton/core";
 import { throwInternalCompilerError } from "../error/errors";
-import * as A from "../ast/ast";
-import { SrcInfo } from "../grammar";
+import type * as A from "../ast/ast";
+import type { SrcInfo } from "../grammar";
 import { idText } from "../ast/ast-helpers";
-import { ItemOrigin } from "../imports/source";
+import type { ItemOrigin } from "../imports/source";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";

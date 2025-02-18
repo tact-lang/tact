@@ -1,7 +1,8 @@
 import { readFileSync } from "fs";
 import { decompileAll } from "@tact-lang/opcode";
 import { ArgConsumer } from "../arg-consumer";
-import { ArgParser, GetParserResult } from "../arg-parser";
+import type { GetParserResult } from "../arg-parser";
+import { ArgParser } from "../arg-parser";
 import { CliLogger } from "../logger";
 import { UnbocErrors } from "./error-schema";
 import { showCommit } from "../version";

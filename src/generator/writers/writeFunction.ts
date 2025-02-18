@@ -1,5 +1,5 @@
 import { enabledInline } from "../../config/features";
-import * as A from "../../ast/ast";
+import type * as A from "../../ast/ast";
 import {
     idOfText,
     idText,
@@ -8,8 +8,8 @@ import {
 } from "../../ast/ast-helpers";
 import { getType, resolveTypeRef } from "../../types/resolveDescriptors";
 import { getExpType } from "../../types/resolveExpression";
-import { FunctionDescription, TypeRef } from "../../types/types";
-import { WriterContext } from "../Writer";
+import type { FunctionDescription, TypeRef } from "../../types/types";
+import type { WriterContext } from "../Writer";
 import { resolveFuncPrimitive } from "./resolveFuncPrimitive";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";

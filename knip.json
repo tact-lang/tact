@@ -17,6 +17,10 @@
     "src/error/logger-util.ts",
     "src/error/string-util.ts",
     "src/server/run-server.ts",
+    "src/test/utils/parse-log.ts",
+    "src/test/utils/markdown.ts",
+    "src/test/utils/with-log.ts",
+    "src/utils/array.ts",
     ".github/workflows/tact*.yml",
     ".github/actions/**/*.yml"
   ],

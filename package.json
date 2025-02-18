@@ -10,6 +10,8 @@
   "author": "Steve Korshakov <steve@korshakov.com>",
   "license": "MIT",
   "scripts": {
+    "compare": "ts-node src/test/utils/compare-logs.ts",
+    "build:fast": "yarn clean && yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && tsc --project tsconfig.fast.json && yarn copy:stdlib && yarn copy:grammar && yarn copy:func",
     "gen:config": "ts-to-zod -k --skipValidation src/config/config.ts src/config/config.zod.ts",
     "gen:grammar:old": "ohm generateBundles --withTypes src/grammar/prev/*.ohm",
     "gen:grammar:new": "pgen src/grammar/next/grammar.gg -o src/grammar/next/grammar.ts",
