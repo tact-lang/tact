@@ -7,6 +7,7 @@ import { MapTestContract } from "../../contracts/output/map-property-based_MapTe
 import type {
     ClearRequest,
     SetKeyValue,
+    DeleteKey,
 } from "../../contracts/output/map-property-based_MapTestContract";
 
 function generateKeyValuePairs<K, V>(
@@ -34,7 +35,7 @@ type ContractWithContext = {
 
 function sendMessageToContract(
     contract: ContractWithContext,
-    message: SetKeyValue | ClearRequest | null,
+    message: SetKeyValue | ClearRequest | DeleteKey | null,
 ) {
     return contract.contract.send(
         contract.treasury.getSender(),
@@ -57,7 +58,6 @@ async function initializeContract(
     return contract;
 }
 
-fc.configureGlobal({ verbose: 2 });
 describe("Map property based tests", () => {
     let contractWithContext: ContractWithContext;
 
@@ -83,12 +83,6 @@ describe("Map property based tests", () => {
                     fc.integer(),
                     fc.integer(),
                     async (keyValuePairs, testKey, testValue) => {
-                        expect(
-                            (
-                                await contractWithContext.contract.getWholeMap()
-                            ).keys().length,
-                        ).toBe(0);
-
                         const initializedContract = await initializeContract(
                             contractWithContext,
                             keyValuePairs,
@@ -116,6 +110,97 @@ describe("Map property based tests", () => {
                         $$type: "ClearRequest",
                     });
                 }),
+        );
+    });
+
+    it("creates empty map", async () => {
+        const initializedContract = await initializeContract(
+            contractWithContext,
+            [],
+        );
+        const map = await initializedContract.contract.getWholeMap();
+        expect(map.keys().length).toBe(0);
+    });
+
+    it("gets element from tact 'map' exactly like from ton's 'Dictionary'", async () => {
+        await fc.assert(
+            fc
+                .asyncProperty(
+                    generateKeyValuePairs(fc.integer, fc.integer),
+                    fc.integer(),
+                    async (keyValuePairs, testKey) => {
+                        const initializedContract = await initializeContract(
+                            contractWithContext,
+                            keyValuePairs,
+                        );
+                        const map =
+                            await initializedContract.contract.getWholeMap();
+
+                        expect(
+                            await initializedContract.contract.getGetValue(
+                                BigInt(testKey),
+                            ),
+                        ).toBe(map.get(BigInt(testKey)) ?? null);
+                    },
+                )
+                .afterEach(async () => {
+                    //Clear previous map data for next tests
+                    await sendMessageToContract(contractWithContext, {
+                        $$type: "ClearRequest",
+                    });
+                }),
+        );
+    });
+
+    it("deletes key from tact's 'map' exactly like from ton's 'Dictionary'", async () => {
+        await fc.check(
+            fc.asyncProperty(
+                generateKeyValuePairs(fc.integer, fc.integer),
+                fc.integer(),
+                async (keyValuePairs, testKey) => {
+                    const initializedContract = await initializeContract(
+                        contractWithContext,
+                        keyValuePairs,
+                    );
+
+                    const initialMap =
+                        await initializedContract.contract.getWholeMap();
+                    initialMap.delete(BigInt(testKey));
+
+                    await sendMessageToContract(contractWithContext, {
+                        $$type: "DeleteKey",
+                        key: BigInt(testKey),
+                    });
+
+                    const finalMap =
+                        await contractWithContext.contract.getWholeMap();
+
+                    return compareDicts(initialMap, finalMap);
+                },
+            ),
+        );
+    });
+
+    it("check if element exists in tact's 'map' exactly like in ton's 'Dictionary'", async () => {
+        await fc.check(
+            fc.asyncProperty(
+                generateKeyValuePairs(fc.integer, fc.integer),
+                fc.integer(),
+                async (keyValuePairs, testKey) => {
+                    const initializedContract = await initializeContract(
+                        contractWithContext,
+                        keyValuePairs,
+                    );
+                    const map =
+                        await initializedContract.contract.getWholeMap();
+
+                    expect(
+                        await initializedContract.contract.getExists(
+                            BigInt(testKey),
+                        ),
+                    ).toBe(map.has(BigInt(testKey)));
+                },
+            ),
         );
     });
 });
