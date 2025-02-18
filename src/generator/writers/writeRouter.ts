@@ -172,6 +172,7 @@ function writeNonBouncedRouter(
         receivers.commentFallback,
         receivers.kind,
         opcodeReader === "~load_uint",
+        typeof receivers.fallback !== "undefined",
         contractName,
         wCtx,
     );
@@ -234,6 +235,7 @@ function writeCommentReceivers(
     commentFallbackReceiver: ReceiverDescription | undefined,
     kind: "internal" | "external",
     msgOpcodeRemoved: boolean,
+    fallbackReceiverExists: boolean,
     contractName: string,
     wCtx: WriterContext,
 ): void {
@@ -253,8 +255,7 @@ function writeCommentReceivers(
         wCtx.append("return (self, true);");
     };
 
-    wCtx.append(";; Empty Receiver and Text Receivers");
-    wCtx.inBlock("if (op == 0)", () => {
+    const writeTextReceivers = () => {
         // - Special case: only fallback comment receiver
         if (
             typeof commentFallbackReceiver !== "undefined" &&
@@ -298,7 +299,15 @@ function writeCommentReceivers(
         if (typeof commentFallbackReceiver !== "undefined") {
             writeFallbackTextReceiver();
         }
-    });
+    };
+
+    wCtx.append(";; Empty Receiver and Text Receivers");
+    if (fallbackReceiverExists) {
+        wCtx.inBlock("if (op == 0)", writeTextReceivers);
+    } else {
+        // - Special case: no fallback receiver
+        writeTextReceivers();
+    }
 }
 
 function groupContractReceivers(contract: TypeDescription): ContractReceivers {
