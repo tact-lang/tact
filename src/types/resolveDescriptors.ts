@@ -841,8 +841,8 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
         const exNames: Set<string> = new Set();
 
-        if (params.length > 0) {
-            const [firstParam, ...restParams] = params;
+        const [head, ...restParams] = params;
+        if (!isUndefined(head)) {  // from ../utils/array
             // Assert that firstParam is not undefined.
             const head = firstParam!;
 
