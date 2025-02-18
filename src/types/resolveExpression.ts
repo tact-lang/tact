@@ -676,13 +676,13 @@ function resolveCall(
         const field = srcT.fields.find((v) => eqNames(v.name, exp.method));
         if (field) {
             throwCompilationError(
-                `Type "${src.name}" does not have a function named "${exp.method.text}()", did you mean field "${exp.method.text}" instead?`,
+                `Type "${printTypeRef(src)}" does not have a function named "${exp.method.text}()", did you mean field "${exp.method.text}" instead?`,
                 exp.loc,
             );
         }
 
         throwCompilationError(
-            `Type "${src.name}" does not have a function named ${idTextErr(exp.method)}`,
+            `Type "${printTypeRef(src)}" does not have a function named ${idTextErr(exp.method)}`,
             exp.loc,
         );
     }

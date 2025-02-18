@@ -2022,9 +2022,9 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
             // Here we create a new type `T?` from `T` on demand
             if (r.self.optional && !types.has(name)) {
-                const optionInnerType = types.get(r.self.name)!;
+                const optionalInnerType = types.get(r.self.name)!;
                 types.set(name, {
-                    ...optionInnerType,
+                    ...optionalInnerType,
                     functions: new Map(), // `T?` has its own functions
                     optional: true,
                 });
@@ -2105,10 +2105,21 @@ export function getType(
     ident: A.AstId | A.AstTypeId | string,
     optional?: boolean,
 ): TypeDescription {
-    const name =
-        (typeof ident === "string" ? ident : idText(ident)) +
-        (optional ? "_optional" : "");
+    const nonOptionalName = typeof ident === "string" ? ident : idText(ident);
+    const name = nonOptionalName + (optional ? "_optional" : "");
     const r = store.get(ctx, name);
+    if (!r && optional) {
+        const nonOptionalType = store.get(ctx, nonOptionalName);
+        if (nonOptionalType) {
+            const optionalType = {
+                ...nonOptionalType,
+                functions: new Map(), // `T?` has its own functions
+                optional: true,
+            };
+            store.set(ctx, name, optionalType);
+            return optionalType;
+        }
+    }
     if (!r) {
         throwInternalCompilerError(`Type ${name} not found`);
     }
