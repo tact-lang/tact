@@ -1,7 +1,6 @@
 /// Ordinary message (default).
 ///
-/// This constant is available since Tact 1.6.0,
-/// but the mode value itself (0) is accessible in all versions of Tact.
+/// This constant is available since Tact 1.6.0.
 ///
 /// See: https://docs.tact-lang.org/book/message-mode#base-modes
 ///
@@ -24,8 +23,7 @@ const SendRemainingBalance: Int = 128;
 /// Doesn't send the message, only estimates the forward fees
 /// if the message-sending function computes those.
 ///
-/// This constant is available since Tact 1.5.0,
-/// but the mode value itself (1024) is accessible in all versions of Tact.
+/// This constant is available since Tact 1.5.0.
 ///
 /// See:
 /// * https://docs.tact-lang.org/book/message-mode#base-modes
@@ -244,10 +242,10 @@ struct DeployParameters {
 /// ```tact
 /// fun example() {
 ///     deploy(DeployParameters{
-///         mode: SendIgnoreErrors,      // skip the message in case of errors,
-///         value: ton("1"),             // send 1 Toncoin (1_000_000_000 nanoToncoin),
 ///         init: initOf SomeContract(), // with initial code and data of SomeContract
 ///                                      // and no additional message body
+///         mode: SendIgnoreErrors,      // skip the message in case of errors
+///         value: ton("1"),             // send 1 Toncoin (1_000_000_000 nanoToncoin)
 ///     });
 /// }
 /// ```

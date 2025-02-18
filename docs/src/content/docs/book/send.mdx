@@ -106,16 +106,12 @@ send(SendParameters{
 For cheaper on-chain deployments prefer using the [`deploy(){:tact}`](/ref/core-common#deploy) function instead. It computes the address of the contract based on its initial code and data and efficiently composes the resulting message:
 
 ```tact
-let init: StateInit = initOf SecondContract(arg1, arg2);
 deploy(DeployParameters{
     // bounce is set to true by default
+    init: initOf SecondContract(arg1, arg2), // initial code and data
     mode: SendIgnoreErrors, // skip the message in case of errors
     value: ton("1"), // a whole Toncoin
     body: "Hello, World!".asComment(), // not necessary, can be omitted
-    init: StateInit{
-        code: init.code,
-        data: init.data,
-    },
 });
 ```
 

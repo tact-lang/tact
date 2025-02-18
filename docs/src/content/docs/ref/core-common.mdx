@@ -287,10 +287,10 @@ Usage example:
 
 ```tact
 deploy(DeployParameters{
-    mode: SendIgnoreErrors,      // skip the message in case of errors,
-    value: ton("1"),             // send 1 Toncoin (1_000_000_000 nanoToncoin),
     init: initOf SomeContract(), // with initial code and data of SomeContract
                                  // and no additional message body
+    mode: SendIgnoreErrors,      // skip the message in case of errors
+    value: ton("1"),             // send 1 Toncoin (1_000_000_000 nanoToncoin)
 });
 ```
 
