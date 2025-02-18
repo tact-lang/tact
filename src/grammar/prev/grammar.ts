@@ -269,6 +269,7 @@ semantics.addOperation<A.AstNode>("astOfModuleItem", {
             attributes: attributes.children.map((ca) =>
                 ca.astOfContractAttributes(),
             ),
+            params: undefined,
             declarations: contractItems.children.map((item) =>
                 item.astOfItem(),
             ),

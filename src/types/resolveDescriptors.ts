@@ -433,6 +433,76 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     }
 
     for (const a of ast.types) {
+        if (a.kind === "contract" && a.params !== undefined) {
+            const s = types.get(idText(a.name))!;
+            for (const d of a.declarations) {
+                if (d.kind === 'contract_init') {
+                    throwCompilationError(
+                        `Initialization was already defined on contract ${a.name.text}`,
+                        d.loc,
+                    );
+                }
+            }
+
+            const params: InitParameter[] = [];
+            const args: A.AstTypedParameter[] = [];
+            const statements: A.AstStatement[] = [];
+            for (const r of a.params) {
+                const type = buildTypeRef(r.type, types);
+                params.push({
+                    name: r.name,
+                    type,
+                    as: r.as?.text ?? null,
+                    loc: r.loc,
+                });
+                if (isRuntimeType(type)) {
+                    throwCompilationError(
+                        printTypeRef(type) +
+                            " is a runtime-only type and can't be used as a init function parameter",
+                        r.loc,
+                    );
+                }
+                statements.push(Ast.createNode({
+                    kind: 'statement_assign',
+                    path: Ast.createNode({
+                        kind: 'field_access',
+                        aggregate: Ast.createNode({
+                            kind: 'id',
+                            text: 'self',
+                            loc: r.loc,
+                        }) as A.AstExpression,
+                        field: Ast.cloneNode(r.name),
+                        loc: r.loc,
+                    }) as A.AstExpression,
+                    expression: Ast.cloneNode(r.name),
+                    loc: r.loc,
+                }) as A.AstStatement);
+                if (
+                    s.fields.find((v) => eqNames(v.name, r.name))
+                ) {
+                    throwCompilationError(
+                        `Field ${idTextErr(r.name)} already exists`,
+                        r.loc,
+                    );
+                }
+                s.fields.push(
+                    buildFieldDescription(r, s.fields.length),
+                );
+            }
+
+            s.init = {
+                params,
+                ast: Ast.createNode({
+                    kind: "contract_init",
+                    params: args,
+                    statements,
+                    loc: a.loc,
+                }) as A.AstContractInit,
+            }
+        }
+    }
+
+    for (const a of ast.types) {
         // Contract
         if (a.kind === "contract") {
             for (const f of a.declarations) {
