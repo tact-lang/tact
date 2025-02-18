@@ -1207,74 +1207,74 @@
     ignore "^5.1.8"
     p-map "^4.0.0"
 
-"@swc/core-darwin-arm64@1.10.14":
-  version "1.10.14"
-  resolved "https://registry.npmjs.org/@swc/core-darwin-arm64/-/core-darwin-arm64-1.10.14.tgz#707857281d202614e4b0b37590c9345da7056c23"
-  integrity sha512-Dh4VyrhDDb05tdRmqJ/MucOPMTnrB4pRJol18HVyLlqu1HOT5EzonUniNTCdQbUXjgdv5UVJSTE1lYTzrp+myA==
+"@swc/core-darwin-arm64@1.10.16":
+  version "1.10.16"
+  resolved "https://registry.npmjs.org/@swc/core-darwin-arm64/-/core-darwin-arm64-1.10.16.tgz#2aa09f2bcea4cfdaac67673b4661fca1e5422dc2"
+  integrity sha512-iikIxwqCQ4Bvz79vJ4ELh26efPf1u5D9TFdmXSJUBs7C3mmMHvk5zyWD9A9cTowXiW6WHs2gE58U1R9HOTTIcg==
 
-"@swc/core-darwin-x64@1.10.14":
-  version "1.10.14"
-  resolved "https://registry.npmjs.org/@swc/core-darwin-x64/-/core-darwin-x64-1.10.14.tgz#7cad2f3b8f88959f4f2d0adc179e98790d0bc65b"
-  integrity sha512-KpzotL/I0O12RE3tF8NmQErINv0cQe/0mnN/Q50ESFzB5kU6bLgp2HMnnwDTm/XEZZRJCNe0oc9WJ5rKbAJFRQ==
+"@swc/core-darwin-x64@1.10.16":
+  version "1.10.16"
+  resolved "https://registry.npmjs.org/@swc/core-darwin-x64/-/core-darwin-x64-1.10.16.tgz#fbcd585956e381e2eb7fe395d6205d1dea6e0847"
+  integrity sha512-R2Eb9aktWd62vPfW9H/c/OaQ0e94iURibBo4uzUUcgxNNmB4+wb6piKbHxGdr/5bEsT+vJ1lwZFSRzfb45E7DA==
 
-"@swc/core-linux-arm-gnueabihf@1.10.14":
-  version "1.10.14"
-  resolved "https://registry.npmjs.org/@swc/core-linux-arm-gnueabihf/-/core-linux-arm-gnueabihf-1.10.14.tgz#d9c010d22cd5f40f0c4e6a93372a30f4358e4760"
-  integrity sha512-20yRXZjMJVz1wp1TcscKiGTVXistG+saIaxOmxSNQia1Qun3hSWLL+u6+5kXbfYGr7R2N6kqSwtZbIfJI25r9Q==
+"@swc/core-linux-arm-gnueabihf@1.10.16":
+  version "1.10.16"
+  resolved "https://registry.npmjs.org/@swc/core-linux-arm-gnueabihf/-/core-linux-arm-gnueabihf-1.10.16.tgz#249cad76197ff6ac68dd1ae189996d88b8f8809b"
+  integrity sha512-mkqN3HBAMnuiSGZ/k2utScuH8rAPshvNj0T1LjBWon+X9DkMNHSA+aMLdWsy0yZKF1zjOPc4L3Uq2l2wzhUlzA==
 
-"@swc/core-linux-arm64-gnu@1.10.14":
-  version "1.10.14"
-  resolved "https://registry.npmjs.org/@swc/core-linux-arm64-gnu/-/core-linux-arm64-gnu-1.10.14.tgz#906418b7518eca146f4cbd02b0db075246c57d4a"
-  integrity sha512-Gy7cGrNkiMfPxQyLGxdgXPwyWzNzbHuWycJFcoKBihxZKZIW8hkPBttkGivuLC+0qOgsV2/U+S7tlvAju7FtmQ==
+"@swc/core-linux-arm64-gnu@1.10.16":
+  version "1.10.16"
+  resolved "https://registry.npmjs.org/@swc/core-linux-arm64-gnu/-/core-linux-arm64-gnu-1.10.16.tgz#5d9ce61a1f0ef220fa6b073282563ac287393005"
+  integrity sha512-PH/+q/L5nVZJ91CU07CL6Q9Whs6iR6nneMZMAgtVF9Ix8ST0cWVItdUhs6D38kFklCFhaOrpHhS01HlMJ72vWw==
 
-"@swc/core-linux-arm64-musl@1.10.14":
-  version "1.10.14"
-  resolved "https://registry.npmjs.org/@swc/core-linux-arm64-musl/-/core-linux-arm64-musl-1.10.14.tgz#7235abbdbb81313c51f9dbac9f6945af0ef86975"
-  integrity sha512-+oYVqJvFw62InZ8PIy1rBACJPC2WTe4vbVb9kM1jJj2D7dKLm9acnnYIVIDsM5Wo7Uab8RvPHXVbs19IBurzuw==
+"@swc/core-linux-arm64-musl@1.10.16":
+  version "1.10.16"
+  resolved "https://registry.npmjs.org/@swc/core-linux-arm64-musl/-/core-linux-arm64-musl-1.10.16.tgz#99798b7dbe8ce35c7410d4d5f741362517bfd9c9"
+  integrity sha512-1169+C9XbydKKc6Ec1XZxTGKtHjZHDIFn0r+Nqp/QSVwkORrOY1Vz2Hdu7tn/lWMg36ZkGePS+LnnyV67s/7yg==
 
-"@swc/core-linux-x64-gnu@1.10.14":
-  version "1.10.14"
-  resolved "https://registry.npmjs.org/@swc/core-linux-x64-gnu/-/core-linux-x64-gnu-1.10.14.tgz#cbb8459e618c5682fbb37fb3c224e26d58fe03e1"
-  integrity sha512-OmEbVEKQFLQVHwo4EJl9osmlulURy46k232Opfpn/1ji0t2KcNCci3POsnfMuoZjLkGJv8vGNJdPQxX+CP+wSA==
+"@swc/core-linux-x64-gnu@1.10.16":
+  version "1.10.16"
+  resolved "https://registry.npmjs.org/@swc/core-linux-x64-gnu/-/core-linux-x64-gnu-1.10.16.tgz#ad3bdb5ca57d99b479912b496bcd6510616e9a11"
+  integrity sha512-n2rV0XwkjoHn4MDJmpYp5RBrnyi94/6GsJVpbn6f+/eqSrZn3mh3dT7pdZc9zCN1Qp9eDHo+uI6e/wgvbL22uA==
 
-"@swc/core-linux-x64-musl@1.10.14":
-  version "1.10.14"
-  resolved "https://registry.npmjs.org/@swc/core-linux-x64-musl/-/core-linux-x64-musl-1.10.14.tgz#f4874cd79db209370489911c21b6a3ec27bf1193"
-  integrity sha512-OZW+Icm8DMPqHbhdxplkuG8qrNnPk5i7xJOZWYi1y5bTjgGFI4nEzrsmmeHKMdQTaWwsFrm3uK1rlyQ48MmXmg==
+"@swc/core-linux-x64-musl@1.10.16":
+  version "1.10.16"
+  resolved "https://registry.npmjs.org/@swc/core-linux-x64-musl/-/core-linux-x64-musl-1.10.16.tgz#07d92aa670c4873116c5cf54b721e6e09fecc914"
+  integrity sha512-EevCpwreBrkPrJjQVIbiM81lK42ukNNSlBmrSRxxbx2V9VGmOd5qxX0cJBn0TRRSLIPi62BuMS76F9iYjqsjgg==
 
-"@swc/core-win32-arm64-msvc@1.10.14":
-  version "1.10.14"
-  resolved "https://registry.npmjs.org/@swc/core-win32-arm64-msvc/-/core-win32-arm64-msvc-1.10.14.tgz#d3f21329c9f1c4e29ad81dca75bb991b8faea695"
-  integrity sha512-sTvc+xrDQXy3HXZFtTEClY35Efvuc3D+busYm0+rb1+Thau4HLRY9WP+sOKeGwH9/16rzfzYEqD7Ds8A9ykrHw==
+"@swc/core-win32-arm64-msvc@1.10.16":
+  version "1.10.16"
+  resolved "https://registry.npmjs.org/@swc/core-win32-arm64-msvc/-/core-win32-arm64-msvc-1.10.16.tgz#2a8b13914b79235291a50f252c9ed2736d75d832"
+  integrity sha512-BvE7RWAnKJeELVQWLok6env5I4GUVBTZSvaSN/VPgxnTjF+4PsTeQptYx0xCYhp5QCv68wWYsBnZKuPDS+SBsw==
 
-"@swc/core-win32-ia32-msvc@1.10.14":
-  version "1.10.14"
-  resolved "https://registry.npmjs.org/@swc/core-win32-ia32-msvc/-/core-win32-ia32-msvc-1.10.14.tgz#737475de2c973503e8b13d515d72898c1cb0a181"
-  integrity sha512-j2iQ4y9GWTKtES5eMU0sDsFdYni7IxME7ejFej25Tv3Fq4B+U9tgtYWlJwh1858nIWDXelHiKcSh/UICAyVMdQ==
+"@swc/core-win32-ia32-msvc@1.10.16":
+  version "1.10.16"
+  resolved "https://registry.npmjs.org/@swc/core-win32-ia32-msvc/-/core-win32-ia32-msvc-1.10.16.tgz#f3c31df61748cd211e0f5b3f9912360f3ffe5bd6"
+  integrity sha512-7Jf/7AeCgbLR/JsQgMJuacHIq4Jeie3knf6+mXxn8aCvRypsOTIEu0eh7j24SolOboxK1ijqJ86GyN1VA2Rebg==
 
-"@swc/core-win32-x64-msvc@1.10.14":
-  version "1.10.14"
-  resolved "https://registry.npmjs.org/@swc/core-win32-x64-msvc/-/core-win32-x64-msvc-1.10.14.tgz#02cd4bca09d49d0b5533035dfb8a1828b07353e8"
-  integrity sha512-TYtWkUSMkjs0jGPeWdtWbex4B+DlQZmN/ySVLiPI+EltYCLEXsFMkVFq6aWn48dqFHggFK0UYfvDrJUR2c3Qxg==
+"@swc/core-win32-x64-msvc@1.10.16":
+  version "1.10.16"
+  resolved "https://registry.npmjs.org/@swc/core-win32-x64-msvc/-/core-win32-x64-msvc-1.10.16.tgz#0a7aa33a24cb9f09908e62de06366d28add3e845"
+  integrity sha512-p0blVm0R8bjaTtmW+FoPmLxLSQdRNbqhuWcR/8g80OzMSkka9mk5/J3kn/5JRVWh+MaR9LHRHZc1Q1L8zan13g==
 
 "@swc/core@^1.10.7":
-  version "1.10.14"
-  resolved "https://registry.npmjs.org/@swc/core/-/core-1.10.14.tgz#95e52321302f6744897640b358b12c5d470780f8"
-  integrity sha512-WSrnE6JRnH20ZYjOOgSS4aOaPv9gxlkI2KRkN24kagbZnPZMnN8bZZyzw1rrLvwgpuRGv17Uz+hflosbR+SP6w==
+  version "1.10.16"
+  resolved "https://registry.npmjs.org/@swc/core/-/core-1.10.16.tgz#ee5e973ee68b51844b52629adfed311c7f23b390"
+  integrity sha512-nOINg/OUcZazCW7B55QV2/UB8QAqz9FYe4+z229+4RYboBTZ102K7ebOEjY5sKn59JgAkhjZTz+5BKmXpDFopw==
   dependencies:
     "@swc/counter" "^0.1.3"
     "@swc/types" "^0.1.17"
   optionalDependencies:
-    "@swc/core-darwin-arm64" "1.10.14"
-    "@swc/core-darwin-x64" "1.10.14"
-    "@swc/core-linux-arm-gnueabihf" "1.10.14"
-    "@swc/core-linux-arm64-gnu" "1.10.14"
-    "@swc/core-linux-arm64-musl" "1.10.14"
-    "@swc/core-linux-x64-gnu" "1.10.14"
-    "@swc/core-linux-x64-musl" "1.10.14"
-    "@swc/core-win32-arm64-msvc" "1.10.14"
-    "@swc/core-win32-ia32-msvc" "1.10.14"
-    "@swc/core-win32-x64-msvc" "1.10.14"
+    "@swc/core-darwin-arm64" "1.10.16"
+    "@swc/core-darwin-x64" "1.10.16"
+    "@swc/core-linux-arm-gnueabihf" "1.10.16"
+    "@swc/core-linux-arm64-gnu" "1.10.16"
+    "@swc/core-linux-arm64-musl" "1.10.16"
+    "@swc/core-linux-x64-gnu" "1.10.16"
+    "@swc/core-linux-x64-musl" "1.10.16"
+    "@swc/core-win32-arm64-msvc" "1.10.16"
+    "@swc/core-win32-ia32-msvc" "1.10.16"
+    "@swc/core-win32-x64-msvc" "1.10.16"
 
 "@swc/counter@^0.1.3":
   version "0.1.3"
@@ -5009,12 +5009,7 @@ zod-validation-error@^3.0.3:
   resolved "https://registry.npmjs.org/zod-validation-error/-/zod-validation-error-3.3.0.tgz"
   integrity sha512-Syib9oumw1NTqEv4LT0e6U83Td9aVRk9iTXPUQr1otyV1PuXQKOvOwhMNqZIq5hluzHP2pMgnOmHEo7kPdI2mw==
 
-zod@^3.20.2, zod@^3.22.4:
-  version "3.24.1"
-  resolved "https://registry.npmjs.org/zod/-/zod-3.24.1.tgz#27445c912738c8ad1e9de1bea0359fa44d9d35ee"
-  integrity sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==
-
-zod@^3.23.8:
+zod@^3.20.2, zod@^3.22.4, zod@^3.23.8:
   version "3.24.2"
   resolved "https://registry.npmjs.org/zod/-/zod-3.24.2.tgz#8efa74126287c675e92f46871cfc8d15c34372b3"
   integrity sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==
