@@ -17,6 +17,8 @@
 /// * https://docs.tact-lang.org/ref/core-cells#addressasslice
 ///
 extends fun asAddress(self: Slice, chain: Int): Address {
+    // 11 bits for the prefix,
+    // 256 bits for the address itself
     let rightLength = 267;
     nativeThrowUnless(136, self.bits() == rightLength);
 
