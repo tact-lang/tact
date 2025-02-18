@@ -46,6 +46,7 @@ import { addVariable, emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
 import { AstUtil, getAstUtil } from "../ast/util";
 import { ItemOrigin } from "../imports/source";
+import { isUndefined } from "../utils/array";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -842,10 +843,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         const exNames: Set<string> = new Set();
 
         const [head, ...restParams] = params;
-        if (!isUndefined(head)) {  // from ../utils/array
-            // Assert that firstParam is not undefined.
-            const head = firstParam!;
-
+        if (!isUndefined(head)) {
             // Process the first parameter (head)
             if (isSelfId(head.name)) {
                 throwCompilationError(
