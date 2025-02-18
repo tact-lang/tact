@@ -17,18 +17,6 @@ export function writeStdlib(ctx: WriterContext): void {
     // Addresses
     //
 
-    ctx.fun("__tact_load_address", () => {
-        ctx.signature(`(slice, slice) __tact_load_address(slice cs)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                slice raw = cs~load_msg_addr();
-                return (cs, raw);
-            `);
-        });
-    });
-
     ctx.fun("__tact_load_address_opt", () => {
         ctx.signature(`(slice, slice) __tact_load_address_opt(slice cs)`);
         ctx.flag("inline");
