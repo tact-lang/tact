@@ -41,12 +41,22 @@
       "commit": "https://github.com/tact-lang/tact/pull/1854"
     },
     {
+      "label": "Inline __tact_load_address",
+      "gas": {
+        "fundingTon": "6342",
+        "changeCode": "5301",
+        "approveTon": "11130",
+        "cancelTon": "8629"
+      },
+      "commit": "https://github.com/tact-lang/tact/pull/TODO"
+    },
+    {
       "label": "master",
       "gas": {
-        "fundingTon": "6414",
-        "changeCode": "5373",
-        "approveTon": "11202",
-        "cancelTon": "8701"
+        "fundingTon": "6342",
+        "changeCode": "5301",
+        "approveTon": "11130",
+        "cancelTon": "8629"
       },
       "commit": "https://github.com/tact-lang/tact/tree/main"
     }
