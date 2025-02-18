@@ -40,6 +40,7 @@ import { isAssignable } from "./subtyping";
 import type { AstUtil } from "../ast/util";
 import { getAstUtil } from "../ast/util";
 import type { ItemOrigin } from "../imports/source";
+import { isUndefined } from "../utils/array";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -835,13 +836,17 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
         const exNames: Set<string> = new Set();
 
-        const [head, ..._rest] = params;
+        const firstParam = params[0];
 
-        if (!isUndefined(head) && !isExtends && isSelfId(head.name)) {
+        if (
+            !isUndefined(firstParam) &&
+            !isExtends &&
+            isSelfId(firstParam.name)
+        ) {
             // if isExtends, the head is not even the first parameter
             throwCompilationError(
                 'Parameter name "self" is reserved for functions with "extends" modifier',
-                head.loc,
+                firstParam.loc,
             );
         }
 
