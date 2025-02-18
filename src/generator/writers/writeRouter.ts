@@ -169,30 +169,7 @@ function writeNonBouncedRouter(
         receivers.comment.length > 0 ||
         typeof receivers.commentFallback !== "undefined";
 
-    wCtx.append("int op = 0;");
-    wCtx.append("int in_msg_length = slice_bits(in_msg);");
-    wCtx.inBlock("if (in_msg_length >= 32)", () => {
-        wCtx.append(`op = in_msg${opcodeReader}(32);`);
-
-        if (doesHaveTextReceivers) {
-            receivers.binary.forEach((binRcv) => {
-                wCtx.append();
-
-                writeBinaryReceiver(
-                    binRcv,
-                    receivers.kind,
-                    opcodeReader === "~load_uint",
-                    contractName,
-                    wCtx,
-                );
-            });
-        }
-    });
-
-    // NOTE: It should be more efficent to write all binary receivers inside
-    //       `in_msg_length` length if-check regardless of text receivers,
-    //       but while using Fift this way is better
-    if (!doesHaveTextReceivers) {
+    const writeBinaryReceivers = () => {
         receivers.binary.forEach((binRcv) => {
             writeBinaryReceiver(
                 binRcv,
@@ -201,8 +178,26 @@ function writeNonBouncedRouter(
                 contractName,
                 wCtx,
             );
+
             wCtx.append();
         });
+    };
+
+    wCtx.append("int op = 0;");
+    wCtx.append("int in_msg_length = slice_bits(in_msg);");
+    wCtx.inBlock("if (in_msg_length >= 32)", () => {
+        wCtx.append(`op = in_msg${opcodeReader}(32);`);
+
+        if (doesHaveTextReceivers) {
+            writeBinaryReceivers();
+        }
+    });
+
+    // NOTE: It should be more efficent to write all binary receivers inside
+    //       `in_msg_length` length if-check regardless of text receivers,
+    //       but while using Fift this way is better
+    if (!doesHaveTextReceivers) {
+        writeBinaryReceivers();
     }
 
     if (typeof receivers.empty !== "undefined") {
@@ -295,12 +290,21 @@ function writeCommentReceivers(
         return;
     }
     const writeFallbackTextReceiver = () => {
-        wCtx.append(";; Fallback Text Receiver");
-        const inMsg = msgOpcodeRemoved ? "in_msg" : "in_msg.skip_bits(32)";
-        wCtx.append(
-            `self~${ops.receiveAnyText(contractName, kind)}(${inMsg});`,
-        );
-        wCtx.append("return (self, true);");
+        const writeFallbackTextReceiverInternal = () => {
+            wCtx.append(";; Fallback Text Receiver");
+            const inMsg = msgOpcodeRemoved ? "in_msg" : "in_msg.skip_bits(32)";
+            wCtx.append(
+                `self~${ops.receiveAnyText(contractName, kind)}(${inMsg});`,
+            );
+            wCtx.append("return (self, true);");
+        };
+
+        // We optimize fallback
+        if (!fallbackReceiverExists) {
+            wCtx.inBlock("if (op == 0)", writeFallbackTextReceiverInternal);
+        } else {
+            writeFallbackTextReceiverInternal();
+        }
     };
 
     const writeTextReceivers = () => {
