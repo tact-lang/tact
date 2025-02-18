@@ -2,6 +2,7 @@ import { __DANGER__disableVersionNumber } from "../../pipeline/version";
 import { allInFolder } from "../utils/all-in-folder.build";
 import { promises as fs } from "fs";
 import path from "path";
+
 const main = async () => {
     // Disable version number in packages
     __DANGER__disableVersionNumber();
