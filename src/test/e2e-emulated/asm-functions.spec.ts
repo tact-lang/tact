@@ -1,5 +1,6 @@
 import { beginCell, toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { AsmFunctionsTester as TestContract } from "./contracts/output/asm-functions_AsmFunctionsTester";
 import "@ton/test-utils";
 

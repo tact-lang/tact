@@ -3,10 +3,10 @@
  * We have this file so that the "current id" state would not be stored globally
  */
 
-import { Loc } from "@tonstudio/parser-runtime";
-import * as A from "./ast";
-import { FactoryAst } from "../ast/ast-helpers";
-import { SrcInfo } from "../grammar/src-info";
+import type { Loc } from "@tonstudio/parser-runtime";
+import type * as A from "./ast";
+import type { FactoryAst } from "../ast/ast-helpers";
+import type { SrcInfo } from "../grammar/src-info";
 
 export const getAstSchema = (
     factory: FactoryAst,
@@ -333,11 +333,10 @@ export const getAstSchema = (
                 expression,
                 loc: toSrcInfo(loc),
             }),
-        Condition: (
+        StatementCondition: (
             condition: A.AstExpression,
             trueStatements: A.AstStatement[],
             falseStatements: A.AstStatement[] | null,
-            elseif: A.AstStatementCondition | null,
             loc: Loc,
         ): A.AstStatementCondition =>
             createNode<A.AstStatementCondition>({
@@ -345,7 +344,6 @@ export const getAstSchema = (
                 condition,
                 trueStatements,
                 falseStatements,
-                elseif,
                 loc: toSrcInfo(loc),
             }),
         StatementWhile: (

@@ -1,7 +1,7 @@
 import { Address, beginCell, BitString, Cell, toNano } from "@ton/core";
 import { paddedBufferToBits } from "@ton/core/dist/boc/utils/paddedBits";
 import { crc32 } from "../utils/crc32";
-import * as A from "../ast/ast";
+import type * as A from "../ast/ast";
 import { evalConstantExpression } from "./constEval";
 import { CompilerContext } from "../context/context";
 import {
@@ -11,7 +11,8 @@ import {
     throwConstEvalError,
     throwInternalCompilerError,
 } from "../error/errors";
-import { AstUtil, getAstUtil } from "../ast/util";
+import type { AstUtil } from "../ast/util";
+import { getAstUtil } from "../ast/util";
 import {
     getStaticConstant,
     getStaticFunction,
@@ -20,13 +21,16 @@ import {
     hasStaticFunction,
 } from "../types/resolveDescriptors";
 import { getExpType } from "../types/resolveExpression";
-import { showValue, TypeRef } from "../types/types";
-import { defaultParser, getParser, Parser } from "../grammar/grammar";
-import { dummySrcInfo, SrcInfo } from "../grammar";
+import type { TypeRef } from "../types/types";
+import { showValue } from "../types/types";
+import type { Parser } from "../grammar/grammar";
+import { defaultParser, getParser } from "../grammar/grammar";
+import type { SrcInfo } from "../grammar";
+import { dummySrcInfo } from "../grammar";
+import type { FactoryAst } from "../ast/ast-helpers";
 import {
     eqExpressions,
     eqNames,
-    FactoryAst,
     getAstFactory,
     idText,
     isSelfId,
@@ -1768,8 +1772,6 @@ export class Interpreter {
                     this,
                 );
             });
-        } else if (ast.elseif !== null) {
-            this.interpretConditionStatement(ast.elseif);
         } else if (ast.falseStatements !== null) {
             this.envStack.executeInNewEnvironment(() => {
                 ast.falseStatements!.forEach(

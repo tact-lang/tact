@@ -1,5 +1,5 @@
-import { AstNode } from "./ast";
-import { FactoryAst } from "./ast-helpers";
+import type { AstNode } from "./ast";
+import type { FactoryAst } from "./ast-helpers";
 import { throwInternalCompilerError } from "../error/errors";
 
 export function cloneNode<T extends AstNode>(
@@ -43,7 +43,6 @@ export function cloneNode<T extends AstNode>(
                 falseStatements: src.falseStatements
                     ? src.falseStatements.map(recurse)
                     : null,
-                elseif: src.elseif ? recurse(src.elseif) : null,
             });
         } else if (src.kind === "statement_block") {
             return cloneNode({

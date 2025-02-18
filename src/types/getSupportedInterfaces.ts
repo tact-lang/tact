@@ -1,6 +1,6 @@
 import { enabledDebug } from "../config/features";
-import { CompilerContext } from "../context/context";
-import { TypeDescription } from "./types";
+import type { CompilerContext } from "../context/context";
+import type { TypeDescription } from "./types";
 
 export function getSupportedInterfaces(
     type: TypeDescription,

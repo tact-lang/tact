@@ -1,4 +1,4 @@
-import { CompilerContext } from "../context/context";
+import type { CompilerContext } from "../context/context";
 import { createABI } from "../generator/createABI";
 import { writeProgram } from "../generator/writeProgram";
 

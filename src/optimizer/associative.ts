@@ -1,15 +1,16 @@
 // This module includes rules involving associative rewrites of expressions
 
-import { SrcInfo } from "../grammar";
-import * as A from "../ast/ast";
+import type { SrcInfo } from "../grammar";
+import type * as A from "../ast/ast";
 import { isLiteral } from "../ast/ast-helpers";
 import * as iM from "./interpreter";
-import { ExpressionTransformer, Rule } from "./types";
+import type { ExpressionTransformer } from "./types";
+import { Rule } from "./types";
+import type { AstUtil } from "../ast/util";
 import {
     checkIsBinaryOpNode,
     checkIsBinaryOp_With_RightValue,
     checkIsBinaryOp_With_LeftValue,
-    AstUtil,
 } from "../ast/util";
 import { abs, sign } from "./util";
 

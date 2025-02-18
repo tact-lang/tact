@@ -1,5 +1,5 @@
 import fc from "fast-check";
-import * as A from "./ast";
+import type * as A from "./ast";
 import { dummySrcInfo } from "../grammar/src-info";
 import { diffJson } from "diff";
 import { astBinaryOperations, astUnaryOperations } from "./ast-constants";

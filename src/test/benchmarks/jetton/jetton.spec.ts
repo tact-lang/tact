@@ -1,122 +1,26 @@
-import { Address, beginCell, Builder, Cell, Sender, toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
-import chalk from "chalk";
+import type { Sender } from "@ton/core";
+import { Address, beginCell, Builder, Cell, toNano } from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 
-import {
-    JettonMinter,
+import type {
     Mint,
     ProvideWalletAddress,
-    TokenBurn,
-    TokenUpdateContent,
 } from "../contracts/output/jetton_minter_discoverable_JettonMinter";
-import {
-    JettonWallet,
-    TokenTransfer,
-} from "../contracts/output/jetton_minter_discoverable_JettonWallet";
+import { JettonMinter } from "../contracts/output/jetton_minter_discoverable_JettonMinter";
+import { JettonWallet } from "../contracts/output/jetton_minter_discoverable_JettonWallet";
 
 import "@ton/test-utils";
-import { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
-import Table from "cli-table3";
-import { getUsedGas } from "../util";
+import type { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
+import { generateResults, getUsedGas, printBenchmarkTable } from "../util";
 import benchmarkResults from "./results.json";
-
-type BenchmarkResult = {
-    label: string;
-    transfer: bigint;
-    burn: bigint;
-    discovery: bigint;
-};
-
-const results: BenchmarkResult[] = benchmarkResults.results.map((result) => ({
-    label: result.label,
-    transfer: BigInt(result.transfer),
-    burn: BigInt(result.burn),
-    discovery: BigInt(result.discovery),
-}));
-
-type MetricKey = "transfer" | "burn" | "discovery";
-const METRICS: readonly MetricKey[] = ["transfer", "burn", "discovery"];
-
-function calculateChange(prev: bigint, curr: bigint): string {
-    const change = ((Number(curr - prev) / Number(prev)) * 100).toFixed(2);
-    const number = parseFloat(change);
-    if (number === 0) {
-        return chalk.gray(`same`);
-    }
-    return number >= 0
-        ? chalk.redBright(`(+${change}%)`)
-        : chalk.green(`(${change}%)`);
-}
-
-function calculateChanges(results: BenchmarkResult[]): string[][] {
-    return results.reduce<string[][]>((changes, currentResult, index) => {
-        if (index === 0) {
-            return [METRICS.map(() => "")];
-        }
-
-        const previousResult = results.at(index - 1);
-        const rowChanges =
-            typeof previousResult !== "undefined"
-                ? METRICS.map((metric) =>
-                      calculateChange(
-                          previousResult[metric],
-                          currentResult[metric],
-                      ),
-                  )
-                : [];
-
-        return [...changes, rowChanges];
-    }, []);
-}
-
-function printBenchmarkTable(results: BenchmarkResult[]): void {
-    if (results.length === 0) {
-        console.log("No benchmark results to display.");
-        return;
-    }
-
-    const table = new Table({
-        head: ["Run", "Transfer", "Burn", "Discovery"],
-        style: {
-            head: ["cyan"],
-            border: ["gray"],
-        },
-    });
-
-    const changes = calculateChanges(results);
-
-    results
-        .map(({ label, transfer, burn, discovery }, i) => [
-            label,
-            `${transfer} ${changes[i]?.[0] ?? ""}`,
-            `${burn} ${changes[i]?.[1] ?? ""}`,
-            `${discovery} ${changes[i]?.[2] ?? ""}`,
-        ])
-        .forEach((arr) => {
-            table.push(arr);
-        });
-
-    const output = [];
-    output.push(table.toString());
-
-    const first = results[0]!;
-    const last = results[results.length - 1]!;
-
-    output.push("\nComparison with FunC implementation:");
-    output.push(
-        ...METRICS.map((metric) => {
-            const ratio = (Number(last[metric]) / Number(first[metric])) * 100;
-
-            return `${metric.charAt(0).toUpperCase() + metric.slice(1)}: ${
-                ratio > 100
-                    ? chalk.redBright(`${ratio.toFixed(2)}%`)
-                    : chalk.green(`${ratio.toFixed(2)}%`)
-            } of FunC gas usage`;
-        }),
-    );
-
-    console.log(output.join("\n"));
-}
+import type {
+    JettonBurn,
+    JettonTransfer,
+    JettonUpdateContent,
+} from "../contracts/output/jetton_wallet_JettonWallet";
+import { join } from "path";
+import { type Step, writeLog } from "../../utils/write-vm-log";
 
 const getJettonBalance = async (
     userWallet: SandboxContract<JettonWallet>,
@@ -137,15 +41,15 @@ const sendTransfer = async (
         forwardPayload != null
             ? forwardPayload.beginParse()
             : new Builder().storeUint(0, 1).endCell().beginParse(); //Either bit equals 0
-    const msg: TokenTransfer = {
-        $$type: "TokenTransfer",
-        query_id: 0n,
+    const msg: JettonTransfer = {
+        $$type: "JettonTransfer",
+        queryId: 0n,
         amount: jetton_amount,
         destination: to,
-        response_destination: responseAddress,
-        custom_payload: customPayload,
-        forward_ton_amount: forward_ton_amount,
-        forward_payload: parsedForwardPayload,
+        responseDestination: responseAddress,
+        customPayload: customPayload,
+        forwardTonAmount: forward_ton_amount,
+        forwardPayload: parsedForwardPayload,
     };
 
     return await userWallet.send(via, { value }, msg);
@@ -159,12 +63,12 @@ const sendBurn = async (
     responseAddress: Address,
     customPayload: Cell | null,
 ) => {
-    const msg: TokenBurn = {
-        $$type: "TokenBurn",
-        query_id: 0n,
+    const msg: JettonBurn = {
+        $$type: "JettonBurn",
+        queryId: 0n,
         amount: jetton_amount,
-        response_destination: responseAddress,
-        custom_payload: customPayload,
+        responseDestination: responseAddress,
+        customPayload: customPayload,
     };
 
     return await userWallet.send(via, { value }, msg);
@@ -204,9 +108,9 @@ function sendDiscovery(
 ): Promise<SendMessageResult> {
     const msg: ProvideWalletAddress = {
         $$type: "ProvideWalletAddress",
-        query_id: 0n,
-        owner_address: address,
-        include_address: includeAddress,
+        queryId: 0n,
+        ownerAddress: address,
+        includeAddress: includeAddress,
     };
     return contract.send(via, { value }, msg);
 }
@@ -215,21 +119,28 @@ describe("Jetton", () => {
     let blockchain: Blockchain;
     let jettonMinter: SandboxContract<JettonMinter>;
     let deployer: SandboxContract<TreasuryContract>;
+    let step: Step;
 
     let notDeployer: SandboxContract<TreasuryContract>;
 
     let defaultContent: Cell;
 
+    const results = generateResults(benchmarkResults);
     const expectedResult = results.at(-1)!;
 
     beforeAll(async () => {
         blockchain = await Blockchain.create();
+        step = writeLog({
+            path: join(__dirname, "output", "log.yaml"),
+            blockchain,
+        });
+
         deployer = await blockchain.treasury("deployer");
         notDeployer = await blockchain.treasury("notDeployer");
 
         defaultContent = beginCell().endCell();
-        const msg: TokenUpdateContent = {
-            $$type: "TokenUpdateContent",
+        const msg: JettonUpdateContent = {
+            $$type: "JettonUpdateContent",
             content: new Cell(),
         };
 
@@ -287,16 +198,18 @@ describe("Jetton", () => {
             ),
         );
 
-        const sendResult = await sendTransfer(
-            deployerJettonWallet,
-            deployer.getSender(),
-            toNano(1),
-            1n,
-            someAddress,
-            deployer.address,
-            null,
-            0n,
-            null,
+        const sendResult = await step("transfer", () =>
+            sendTransfer(
+                deployerJettonWallet,
+                deployer.getSender(),
+                toNano(1),
+                1n,
+                someAddress,
+                deployer.address,
+                null,
+                0n,
+                null,
+            ),
         );
 
         expect(sendResult.transactions).not.toHaveTransaction({
@@ -311,7 +224,7 @@ describe("Jetton", () => {
         });
 
         const gasUsed = getUsedGas(sendResult);
-        expect(gasUsed).toEqual(expectedResult.transfer);
+        expect(gasUsed).toEqual(expectedResult.gas["transfer"]);
     });
 
     it("burn", async () => {
@@ -329,13 +242,15 @@ describe("Jetton", () => {
 
         await blockchain.loadFrom(snapshot);
 
-        const burnResult = await sendBurn(
-            deployerJettonWallet,
-            deployer.getSender(),
-            toNano(10),
-            burnAmount,
-            deployer.address,
-            null,
+        const burnResult = await step("burn", () =>
+            sendBurn(
+                deployerJettonWallet,
+                deployer.getSender(),
+                toNano(10),
+                burnAmount,
+                deployer.address,
+                null,
+            ),
         );
 
         expect(burnResult.transactions).toHaveTransaction({
@@ -351,16 +266,18 @@ describe("Jetton", () => {
         expect(data.totalSupply).toEqual(initialTotalSupply - burnAmount);
 
         const gasUsed = getUsedGas(burnResult);
-        expect(gasUsed).toEqual(expectedResult.burn);
+        expect(gasUsed).toEqual(expectedResult.gas["burn"]);
     });
 
     it("discovery", async () => {
-        const discoveryResult = await sendDiscovery(
-            jettonMinter,
-            deployer.getSender(),
-            notDeployer.address,
-            false,
-            toNano(10),
+        const discoveryResult = await step("discovery", () =>
+            sendDiscovery(
+                jettonMinter,
+                deployer.getSender(),
+                notDeployer.address,
+                false,
+                toNano(10),
+            ),
         );
 
         expect(discoveryResult.transactions).toHaveTransaction({
@@ -370,6 +287,6 @@ describe("Jetton", () => {
         });
 
         const gasUsed = getUsedGas(discoveryResult);
-        expect(gasUsed).toEqual(expectedResult.discovery);
+        expect(gasUsed).toEqual(expectedResult.gas["discovery"]);
     });
 });
