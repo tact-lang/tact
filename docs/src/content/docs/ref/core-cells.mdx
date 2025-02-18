@@ -1298,6 +1298,27 @@ let buzz: Cell = beginCell().storeSlice(s).endCell();
 
 fizz == buzz; // true
 ```
+### Slice.asAddress
+
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun asAddress(self: Slice, chain: Int): Address;
+```
+
+Extension function for the [`Slice{:tact}`][slice].
+
+Safely casts the [`Slice{:tact}`][slice] to an [`Address{:tact}`][p] and returns it. The inverse of [`Address.asSlice(){:tact}`](#addressasslice).
+The safe version of [`Slice.asAddressUnsafe(){:tact}`](#sliceasaddressunsafe).
+
+Usage example:
+
+```tact
+let a: Address = myAddress();
+let a2: Address = a.asSlice().asAddress();
+
+a == a2; // true
+```
 
 ### Slice.asAddressUnsafe
 
@@ -1325,24 +1346,7 @@ a == a2; // true
 :::caution
 
   Use it only if you want to optimize the code for gas and can guarantee in advance that the [`Slice{:tact}`][slice] contains the data of an [`Address{:tact}`][p].
-
-  Otherwise, it is better to do similar checks before calling this function:
-
-  ```tact
-  // The `s` is a Slice you've obtained elsewhere
-
-  // Checking correct length
-  let rightLength = 267; // 11 bits for the prefix,
-                         // 256 bits for the address itself
-  nativeThrowUnless(136, s.bits() == rightLength);
-
-  // Checking correct prefix
-  let basechainAddrPrefix = 1024; // use 1279 for the masterchain prefix check
-  nativeThrowUnless(136, s.preloadUint(11) == basechainAddrPrefix);
-
-  // Now we can safely perform the cast
-  let addr = s.asAddressUnsafe();
-  ```
+  Otherwise, use a slower but safer [`Slice.asAddress()`](#sliceasaddress) function.
 
 :::
 

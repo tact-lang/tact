@@ -1,5 +1,33 @@
 /// Extension function for the `Slice`. Available since Tact 1.6.0.
 ///
+/// Safely casts the `Slice` to an `Address` and returns it. The inverse of `Address.asSlice()`.
+/// The safe version of `Slice.asAddressUnsafe()`.
+/// 
+/// ```tact
+/// fun example() {
+///     let a: Address = myAddress();
+///     let a2: Address = a.asSlice().asAddress();
+///
+///     a == a2; // true
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceasaddress
+/// * https://docs.tact-lang.org/ref/core-cells#addressasslice
+///
+extends fun asAddress(self: Slice, chain: Int): Address {
+    let rightLength = 267;
+    nativeThrowUnless(136, self.bits() == rightLength);
+
+    let basechainAddrPrefix = chain == -1 ? 1279 : 1024;
+    nativeThrowUnless(136, self.preloadUint(11) == basechainAddrPrefix);
+
+    return self.asAddressUnsafe();
+}
+
+/// Extension function for the `Slice`. Available since Tact 1.6.0.
+///
 /// Unsafely casts the `Slice` to an `Address` and returns it. The inverse of `Address.asSlice()`.
 ///
 /// This function does **not** perform any checks on the contents of the `Slice`.
@@ -14,27 +42,11 @@
 /// ```
 ///
 /// Use it only if you want to optimize the code for gas and can guarantee in advance that the `Slice` contains the data of an `Address`.
-///
-/// Otherwise, it is better to do similar checks before calling this function:
-///
-/// ```tact
-/// fun example(s: Slice) {
-///     // Checking correct length
-///     let rightLength = 267; // 11 bits for the prefix,
-///                            // 256 bits for the address itself
-///     nativeThrowUnless(136, s.bits() == rightLength);
-///
-///     // Checking correct prefix
-///     let basechainAddrPrefix = 1024; // use 1279 for the masterchain prefix check
-///     nativeThrowUnless(136, s.preloadUint(11) == basechainAddrPrefix);
-///
-///     // Now we can safely perform the cast
-///     let addr = s.asAddressUnsafe();
-/// }
-/// ```
+/// Otherwise, use a slower but safer `Slice.asAddressUnsafe()` function.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddressunsafe
+/// * https://docs.tact-lang.org/ref/core-cells#sliceasaddress
 /// * https://docs.tact-lang.org/ref/core-cells#addressasslice
 ///
 asm extends fun asAddressUnsafe(self: Slice): Address { NOP }
