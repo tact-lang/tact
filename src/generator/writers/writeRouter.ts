@@ -133,6 +133,31 @@ function writeNonBouncedRouter(
         return;
     }
 
+    // - Special case: only binary receivers
+    if (
+        typeof receivers.empty === "undefined" &&
+        receivers.comment.length === 0 &&
+        typeof receivers.commentFallback === "undefined" &&
+        typeof receivers.fallback === "undefined"
+    ) {
+        wCtx.append(`var (op, _) = in_msg~load_uint_quiet(32);`);
+
+        receivers.binary.forEach((binRcv) => {
+            wCtx.append();
+
+            writeBinaryReceiver(
+                binRcv,
+                receivers.kind,
+                true,
+                contractName,
+                wCtx,
+            );
+        });
+
+        wCtx.append("return (self, false);");
+        return;
+    }
+
     // If there is a fallback receiver and binary/string receivers, we need to keep in_msg intact,
     // otherwise we can modify in_msg in-place
     const opcodeReader: "~load_uint" | ".preload_uint" =
@@ -164,8 +189,8 @@ function writeNonBouncedRouter(
         }
     });
 
-    // NOTE: It should be more efficent to write all binary receivers inside 
-    //       `in_msg_length` length if-check regardless of text receivers, 
+    // NOTE: It should be more efficent to write all binary receivers inside
+    //       `in_msg_length` length if-check regardless of text receivers,
     //       but while using Fift this way is better
     if (!doesHaveTextReceivers) {
         receivers.binary.forEach((binRcv) => {

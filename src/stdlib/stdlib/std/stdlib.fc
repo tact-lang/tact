@@ -697,3 +697,7 @@ int get_original_fwd_fee(int workchain, int fwd_fee) asm(fwd_fee workchain) "GET
 int my_storage_due() asm "DUEPAYMENT";
 
 tuple get_fee_configs() asm "UNPACKEDCONFIGTUPLE";
+
+
+;;; Loads an unsigned [len]-bit integer from a slice [s].
+(slice, (int, int)) ~load_uint_quiet(slice s, int len) asm( -> 1 0 2) "LDUXQ NULLROTRIFNOT";
