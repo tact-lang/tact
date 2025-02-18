@@ -46,7 +46,9 @@ export function writeStorageOps(
             ctx.append(`if ($loaded) {`);
             ctx.inIndent(() => {
                 if (type.fields.length > 0) {
-                    ctx.append(`return $sc~${ops.reader(type.name, ctx)}();`);
+                    ctx.append(
+                        `return $sc~${ops.reader(type.name, "with-opcode", ctx)}();`,
+                    );
                 } else {
                     ctx.append(`return null();`);
                 }
@@ -56,7 +58,7 @@ export function writeStorageOps(
                 // Load arguments
                 if (type.init!.params.length > 0) {
                     ctx.append(
-                        `(${type.init!.params.map((v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) = $sc~${ops.reader(funcInitIdOf(type.name), ctx)}();`,
+                        `(${type.init!.params.map((v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) = $sc~${ops.reader(funcInitIdOf(type.name), "with-opcode", ctx)}();`,
                     );
                     ctx.append(`$sc.end_parse();`);
                 }
@@ -315,10 +317,8 @@ export function writeMainContract(
         const hasExternal = type.receivers.find((v) =>
             v.selector.kind.startsWith("external-"),
         );
-        writeRouter(type, "internal", ctx);
-        if (hasExternal) {
-            writeRouter(type, "external", ctx);
-        }
+
+        writeRouter(type, ctx);
 
         // Render internal receiver
         ctx.append(

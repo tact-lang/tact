@@ -15,7 +15,16 @@ export const ops = {
         used(`$${type}$_store_cell`, ctx),
     writerCellOpt: (type: string, ctx: WriterContext) =>
         used(`$${type}$_store_opt`, ctx),
-    reader: (type: string, ctx: WriterContext) => used(`$${type}$_load`, ctx),
+    reader: (
+        type: string,
+        opcode: "with-opcode" | "no-opcode",
+        ctx: WriterContext,
+    ) => {
+        return used(
+            `$${type}$_load${opcode === "no-opcode" ? "_without_opcode" : ""}`,
+            ctx,
+        );
+    },
     readerNonModifying: (type: string, ctx: WriterContext) =>
         used(`$${type}$_load_not_mut`, ctx),
     readerBounced: (type: string, ctx: WriterContext) =>
@@ -70,7 +79,7 @@ export const ops = {
         `$${type}$_${kind}_any`,
     receiveTypeBounce: (type: string, msg: string) =>
         `$${type}$_receive_binary_bounce_${msg}`,
-    receiveBounceAny: (type: string) => `$${type}$_receive_bounce`,
+    receiveBounceAny: (type: string) => `$${type}$_receive_bounce_fallback`,
 
     // Functions
     extension: (type: string, name: string) => `$${type}$_fun_${name}`,
