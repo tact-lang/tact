@@ -1,5 +1,6 @@
 import { beginCell, toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { StringsTester } from "./contracts/output/strings_StringsTester";
 import "@ton/test-utils";
 
@@ -75,6 +76,18 @@ describe("strings", () => {
         expect(await contract.getStringWithNegativeNumber()).toEqual(
             "Hello, your balance: -123",
         );
+
+        for (let x = -100n; x < 100n; x++) {
+            expect(await contract.getIntToString(x)).toEqual(x.toString());
+        }
+        await expect(contract.getIntToString(-(2n ** 256n))).rejects.toThrow(); // algorithm works with positive numbers so when negating -2^256 we get 2^256 which is out of range
+        expect(await contract.getIntToString(-(2n ** 256n) + 1n)).toEqual(
+            (-(2n ** 256n) + 1n).toString(),
+        );
+        expect(await contract.getIntToString(2n ** 256n - 1n)).toEqual(
+            (2n ** 256n - 1n).toString(),
+        );
+
         expect(await contract.getStringWithFloat()).toEqual("9.5");
 
         const base = await contract.getBase64();

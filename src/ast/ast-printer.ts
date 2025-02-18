@@ -1,4 +1,4 @@
-import * as A from "./ast";
+import type * as A from "./ast";
 import { groupBy, intercalate, isUndefined } from "../utils/array";
 import { makeVisitor } from "../utils/tricks";
 import { astNumToString, idText } from "./ast-helpers";

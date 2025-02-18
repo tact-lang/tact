@@ -1,5 +1,5 @@
-import { ABITypeRef } from "@ton/core";
-import {
+import type { ABITypeRef } from "@ton/core";
+import type {
     AllocationCell,
     AllocationOperation,
     AllocationOperationType,
@@ -88,13 +88,13 @@ export function getAllocationOperationFromField(
                     return {
                         kind: "int",
                         bits: src.format,
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                     };
                 }
                 if (src.format === "varint16" || src.format === "varint32") {
                     return {
                         kind: src.format,
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                     };
                 }
                 if (src.format !== null && src.format !== undefined) {
@@ -105,7 +105,7 @@ export function getAllocationOperationFromField(
                 return {
                     kind: "int",
                     bits: 257,
-                    optional: src.optional ? src.optional : false,
+                    optional: src.optional ?? false,
                 };
             }
             if (src.type === "uint") {
@@ -118,19 +118,19 @@ export function getAllocationOperationFromField(
                     return {
                         kind: "uint",
                         bits: src.format,
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                     };
                 }
                 if (src.format === "coins") {
                     return {
                         kind: "varuint16",
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                     };
                 }
                 if (src.format === "varuint16" || src.format === "varuint32") {
                     return {
                         kind: src.format,
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                     };
                 }
                 if (src.format !== null && src.format !== undefined) {
@@ -141,7 +141,7 @@ export function getAllocationOperationFromField(
                 return {
                     kind: "uint",
                     bits: 256,
-                    optional: src.optional ? src.optional : false,
+                    optional: src.optional ?? false,
                 };
             }
             if (src.type === "bool") {
@@ -152,14 +152,14 @@ export function getAllocationOperationFromField(
                 }
                 return {
                     kind: "boolean",
-                    optional: src.optional ? src.optional : false,
+                    optional: src.optional ?? false,
                 };
             }
             if (src.type === "cell") {
                 if (src.format === "remainder") {
                     return {
                         kind: "cell",
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                         format: "remainder",
                     };
                 } else if (src.format !== null && src.format !== undefined) {
@@ -169,7 +169,7 @@ export function getAllocationOperationFromField(
                 }
                 return {
                     kind: "cell",
-                    optional: src.optional ? src.optional : false,
+                    optional: src.optional ?? false,
                     format: "default",
                 };
             }
@@ -177,7 +177,7 @@ export function getAllocationOperationFromField(
                 if (src.format === "remainder") {
                     return {
                         kind: "slice",
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                         format: "remainder",
                     };
                 } else if (src.format !== null && src.format !== undefined) {
@@ -187,7 +187,7 @@ export function getAllocationOperationFromField(
                 }
                 return {
                     kind: "slice",
-                    optional: src.optional ? src.optional : false,
+                    optional: src.optional ?? false,
                     format: "default",
                 };
             }
@@ -195,7 +195,7 @@ export function getAllocationOperationFromField(
                 if (src.format === "remainder") {
                     return {
                         kind: "builder",
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                         format: "remainder",
                     };
                 } else if (src.format !== null && src.format !== undefined) {
@@ -205,14 +205,14 @@ export function getAllocationOperationFromField(
                 }
                 return {
                     kind: "builder",
-                    optional: src.optional ? src.optional : false,
+                    optional: src.optional ?? false,
                     format: "default",
                 };
             }
             if (src.type === "address") {
                 return {
                     kind: "address",
-                    optional: src.optional ? src.optional : false,
+                    optional: src.optional ?? false,
                 };
             }
             if (src.type === "fixed-bytes") {
@@ -220,7 +220,7 @@ export function getAllocationOperationFromField(
                     return {
                         kind: "fixed-bytes",
                         bytes: src.format,
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                     };
                 } else {
                     throwInternalCompilerError(
@@ -236,7 +236,7 @@ export function getAllocationOperationFromField(
                 }
                 return {
                     kind: "string",
-                    optional: src.optional ? src.optional : false,
+                    optional: src.optional ?? false,
                 };
             }
 
@@ -247,7 +247,7 @@ export function getAllocationOperationFromField(
                     kind: "struct",
                     type: src.type,
                     ref: true,
-                    optional: src.optional ? src.optional : false,
+                    optional: src.optional ?? false,
                     size,
                 };
             } else if (src.format !== undefined && src.format !== null) {
@@ -259,7 +259,7 @@ export function getAllocationOperationFromField(
                     kind: "struct",
                     type: src.type,
                     ref: false,
-                    optional: src.optional ? src.optional : false,
+                    optional: src.optional ?? false,
                     size,
                 };
             }

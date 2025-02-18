@@ -459,31 +459,6 @@ exports[`local-type-inference should automatically set types for let statements 
     {
       "fields": [
         {
-          "name": "bounce",
-          "type": {
-            "kind": "simple",
-            "optional": false,
-            "type": "bool",
-          },
-        },
-        {
-          "name": "to",
-          "type": {
-            "kind": "simple",
-            "optional": false,
-            "type": "address",
-          },
-        },
-        {
-          "name": "value",
-          "type": {
-            "format": 257,
-            "kind": "simple",
-            "optional": false,
-            "type": "int",
-          },
-        },
-        {
           "name": "mode",
           "type": {
             "format": 257,
@@ -516,9 +491,82 @@ exports[`local-type-inference should automatically set types for let statements 
             "type": "cell",
           },
         },
+        {
+          "name": "value",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "to",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "address",
+          },
+        },
+        {
+          "name": "bounce",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
       ],
       "header": null,
       "name": "SendParameters",
+    },
+    {
+      "fields": [
+        {
+          "name": "mode",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "body",
+          "type": {
+            "kind": "simple",
+            "optional": true,
+            "type": "cell",
+          },
+        },
+        {
+          "name": "value",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "bounce",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
+        {
+          "name": "init",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "StateInit",
+          },
+        },
+      ],
+      "header": null,
+      "name": "DeployParameters",
     },
     {
       "fields": [

@@ -4,7 +4,7 @@ import { Logger, LogLevel } from "../../context/logger";
 import files from "../../stdlib/stdlib";
 import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";
 import { join } from "path";
-import { Options } from "../../config/parseConfig";
+import type { Options } from "../../config/parseConfig";
 
 // helper to reduce boilerplate
 export function itShouldNotCompile(params: {
@@ -13,10 +13,12 @@ export function itShouldNotCompile(params: {
 }) {
     it(`should not compile ${params.testName}`, async () => {
         const fileName = `${params.testName}.tact`;
-        const options: Options = {};
-        if (params.testName.includes("external")) {
-            options.external = true;
-        }
+        const options: Options = params.testName.includes("external")
+            ? {
+                  external: true,
+              }
+            : {};
+
         const result = await run({
             config: {
                 projects: [

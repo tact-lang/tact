@@ -1,6 +1,6 @@
 import * as changeCase from "change-case";
 import { Writer } from "../utils/Writer";
-import { ABIArgument, ABIType, ContractABI } from "@ton/core";
+import type { ABIArgument, ABIType, ContractABI } from "@ton/core";
 import {
     writeArgumentToStack,
     writeDictParser,
@@ -13,7 +13,7 @@ import {
     writeTupleParser,
     writeTupleSerializer,
 } from "./typescript/writeStruct";
-import { AllocationCell } from "../storage/operation";
+import type { AllocationCell } from "../storage/operation";
 import { throwInternalCompilerError } from "../error/errors";
 import { topologicalSort } from "../utils/utils";
 import {
@@ -594,7 +594,7 @@ export function writeTypescript(
         if (abi.getters) {
             for (const g of abi.getters) {
                 w.append(
-                    `async get${getterNames.get(g.name)}(${["provider: ContractProvider", ...writeArguments(g.arguments ? g.arguments : [])].join(", ")}) {`,
+                    `async get${getterNames.get(g.name)}(${["provider: ContractProvider", ...writeArguments(g.arguments ?? [])].join(", ")}) {`,
                 );
                 w.inIndent(() => {
                     w.append(`const builder = new TupleBuilder();`);

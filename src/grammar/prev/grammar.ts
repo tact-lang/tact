@@ -1,13 +1,14 @@
-import { Node, IterationNode, NonterminalNode } from "ohm-js";
+import type { Node, IterationNode, NonterminalNode } from "ohm-js";
 import tactGrammar from "./grammar.ohm-bundle";
 import { throwInternalCompilerError } from "../../error/errors";
-import * as A from "../../ast/ast";
-import { FactoryAst } from "../../ast/ast-helpers";
-import { SrcInfo } from "../src-info";
+import type * as A from "../../ast/ast";
+import type { FactoryAst } from "../../ast/ast-helpers";
+import type { SrcInfo } from "../src-info";
 import { displayToString } from "../../error/display-to-string";
-import { ParserErrors, parserErrorSchema } from "./parser-error";
+import type { ParserErrors } from "./parser-error";
+import { parserErrorSchema } from "./parser-error";
 import { getSrcInfoFromOhm } from "./src-info";
-import { ItemOrigin, Language, Source } from "../../imports/source";
+import type { ItemOrigin, Language, Source } from "../../imports/source";
 import { emptyPath, fromString } from "../../imports/path";
 
 type Context = {

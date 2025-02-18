@@ -1,5 +1,6 @@
 import { beginCell, toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { SampleJetton } from "./contracts/output/sample-jetton_SampleJetton";
 import { JettonDefaultWallet } from "./contracts/output/sample-jetton_JettonDefaultWallet";
 import "@ton/test-utils";

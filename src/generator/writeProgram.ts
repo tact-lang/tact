@@ -1,11 +1,12 @@
-import { CompilerContext } from "../context/context";
+import type { CompilerContext } from "../context/context";
 import { getAllocation, getSortedTypes } from "../storage/resolveAllocation";
 import {
     getAllStaticFunctions,
     getAllTypes,
     toBounced,
 } from "../types/resolveDescriptors";
-import { WriterContext, WrittenFunction } from "./Writer";
+import type { WrittenFunction } from "./Writer";
+import { WriterContext } from "./Writer";
 import {
     writeBouncedParser,
     writeOptionalParser,
@@ -15,7 +16,7 @@ import {
 } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
-import { ContractABI } from "@ton/core";
+import type { ContractABI } from "@ton/core";
 import { writeFunction } from "./writers/writeFunction";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
 import { getRawAST } from "../context/store";
@@ -325,6 +326,15 @@ function writeAll(
             writeParser(
                 t.name,
                 t.kind === "contract",
+                "with-opcode",
+                allocation,
+                t.origin,
+                wCtx,
+            );
+            writeParser(
+                t.name,
+                t.kind === "contract",
+                "no-opcode",
                 allocation,
                 t.origin,
                 wCtx,
@@ -361,6 +371,7 @@ function writeAll(
             writeParser(
                 funcInitIdOf(t.name),
                 false,
+                "with-opcode",
                 allocation,
                 t.origin,
                 wCtx,

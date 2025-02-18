@@ -1,9 +1,10 @@
-import { CompilerContext, createContextStore } from "../context/context";
+import type { CompilerContext } from "../context/context";
+import { createContextStore } from "../context/context";
 import { getType, toBounced, getAllTypes } from "../types/resolveDescriptors";
-import { TypeDescription } from "../types/types";
+import type { TypeDescription } from "../types/types";
 import { topologicalSort } from "../utils/utils";
-import { StorageAllocation } from "./StorageAllocation";
-import { AllocationOperation } from "./operation";
+import type { StorageAllocation } from "./StorageAllocation";
+import type { AllocationOperation } from "./operation";
 import { allocate, getAllocationOperationFromField } from "./allocator";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
 import { funcInitIdOf } from "../generator/writers/id";
