@@ -139,31 +139,31 @@ describe("benchmarks", () => {
         await hashStringSmall(sha256Small, "hello world");
         await hashStringAsSLice(sha256AsSlice, "hello world");
 
-        expect(await hashStringBig(sha256Big, "hello world")).toEqual(3039);
-        expect(await hashStringSmall(sha256Small, "hello world")).toEqual(2516);
+        expect(await hashStringBig(sha256Big, "hello world")).toEqual(2808);
+        expect(await hashStringSmall(sha256Small, "hello world")).toEqual(2285);
         expect(await hashStringAsSLice(sha256AsSlice, "hello world")).toEqual(
-            2516,
+            2285,
         );
 
         expect(await hashStringBig(sha256Big, "hello world".repeat(5))).toEqual(
-            3040,
+            2809,
         );
         expect(
             await hashStringSmall(sha256Small, "hello world".repeat(5)),
-        ).toEqual(2516);
+        ).toEqual(2285);
         expect(
             await hashStringAsSLice(sha256AsSlice, "hello world".repeat(5)),
-        ).toEqual(2516);
+        ).toEqual(2285);
 
         expect(
             await hashStringBig(sha256Big, "hello world".repeat(10)),
-        ).toEqual(3042);
+        ).toEqual(2811);
         expect(
             await hashStringSmall(sha256Small, "hello world".repeat(10)),
-        ).toEqual(2516);
+        ).toEqual(2285);
         expect(
             await hashStringAsSLice(sha256AsSlice, "hello world".repeat(10)),
-        ).toEqual(2516);
+        ).toEqual(2285);
     });
 
     it("benchmark cells creation", async () => {

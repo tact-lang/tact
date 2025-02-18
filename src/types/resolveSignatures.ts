@@ -319,14 +319,16 @@ function checkCommentMessageReceiver(
     rcvAst: AstReceiver,
     usedOpcodes: Map<commentOpcode, messageType>,
 ) {
-    const opcode = commentPseudoOpcode(rcv.comment, rcvAst);
-    if (usedOpcodes.has(opcode)) {
+    const opcode1 = commentPseudoOpcode(rcv.comment, true, rcvAst.loc);
+    const opcode2 = commentPseudoOpcode(rcv.comment, false, rcvAst.loc);
+    if (usedOpcodes.has(opcode1) || usedOpcodes.has(opcode2)) {
         throwCompilationError(
-            `Receive functions of a contract or trait cannot process comments with the same hashes: hashes of comment strings "${rcv.comment}" and "${usedOpcodes.get(opcode)}" are equal`,
+            `Receive functions of a contract or trait cannot process comments with the same hashes: hashes of comment strings "${rcv.comment}" and "${usedOpcodes.get(opcode1)}" are equal`,
             rcvAst.loc,
         );
     } else {
-        usedOpcodes.set(opcode, rcv.comment);
+        usedOpcodes.set(opcode1, rcv.comment);
+        usedOpcodes.set(opcode2, rcv.comment);
     }
 }
 

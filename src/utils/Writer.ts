@@ -10,6 +10,12 @@ export class Writer {
         this.indent--;
     };
 
+    inBlock = (beforeCurlyBrace: string, handler: () => void) => {
+        this.append(`${beforeCurlyBrace} {`);
+        this.inIndent(handler);
+        this.append("}");
+    };
+
     append(src: string = "") {
         this.lines.push(" ".repeat(this.indent * 4) + src);
     }
