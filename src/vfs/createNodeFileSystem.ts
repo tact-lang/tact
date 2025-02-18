@@ -48,7 +48,9 @@ export function createNodeFileSystem(
                 throw new Error("File system is readonly");
             }
             ensureInsideProjectRoot(filePath, normalizedRoot);
-            ensureNotSymlink(filePath);
+            if (fs.existsSync(filePath)) {
+                ensureNotSymlink(filePath);
+            }
             fs.mkdirSync(path.dirname(filePath), { recursive: true });
             fs.writeFileSync(filePath, content);
         },
