@@ -85,7 +85,7 @@ struct SwapAdditionalData {
 }
 ```
 
-[STON.fi SDK](https://github.com/ston-fi/sdk) 定义了一些[常量用于处理费用](https://github.com/ston-fi/sdk/blob/786ece758794bd5c575db8b38f5e5de19f43f0d1/pubes/sdk/src/contracts/dex/v2_1/router/BaseRouterV2_1.s)。 请注意这些是硬编码值，但最佳做法是[用当前配置参数动态计算费用](https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation)
+[STON.fi SDK](https://github.com/ston-fi/sdk) 定义了一些[常量用于处理费用](https://github.com/ston-fi/sdk/blob/1c8c6678858956f6d9a0e70b9f80628319dbe2ce/packages/sdk/src/contracts/dex/v2_1/router/BaseRouterV2_1.ts)。 请注意这些是硬编码值，但最佳做法是[用当前配置参数动态计算费用](https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation)
 
 ```tact
 /// Hardcoded fee value to pay for sending a message to the Jetton wallet
