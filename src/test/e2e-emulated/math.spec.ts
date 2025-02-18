@@ -564,6 +564,9 @@ describe("math", () => {
                 "Unable to execute get method. Got exit_code: 5",
             );
         }
+        for (let num = 2n ** 256n - 1n; num >= 2n ** 256n - 100n; num--) {
+            expect(await contract.getSqrt(num)).toBe(2n ** 128n);
+        }
 
         // isqrt: floor(sqrt(num))
         for (let num = 0n; num <= 100n; num++) {
@@ -575,6 +578,9 @@ describe("math", () => {
             await expect(contract.getIsqrt(num)).rejects.toThrow(
                 "Unable to execute get method. Got exit_code: 5",
             );
+        }
+        for (let num = 2n ** 256n - 1n; num >= 2n ** 256n - 100n; num--) {
+            expect(await contract.getIsqrt(num)).toBe(2n ** 128n - 1n);
         }
     });
 
