@@ -127,6 +127,15 @@
       "commit": "https://github.com/tact-lang/tact/pull/1832"
     },
     {
+      "label": "1.5.3 with inlining of __tact_load_address",
+      "gas": {
+        "transfer": "18337",
+        "burn": "15113",
+        "discovery": "9386"
+      },
+      "commit": "https://github.com/tact-lang/tact/pull/1895"
+    },
+    {
       "label": "1.5.3 with optimized routing",
       "gas": {
         "transfer": "18327",
