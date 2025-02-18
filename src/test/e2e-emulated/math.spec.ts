@@ -571,9 +571,9 @@ describe("math", () => {
 
         // isqrt: floor(sqrt(num))
         for (let num = 0n; num <= 100n; num++) {
-            expect(await contract.getIsqrt(num)).toBe(
-                BigInt(Math.floor(Math.sqrt(Number(num)))),
-            );
+            const x = await contract.getIsqrt(num);
+            expect(x * x <= num).toBe(true);
+            expect((x + 1n) * (x + 1n) > num).toBe(true);
         }
         for (let num = -3n; num < 0n; num++) {
             await expect(contract.getIsqrt(num)).rejects.toThrow(
