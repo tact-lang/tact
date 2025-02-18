@@ -34,6 +34,17 @@ type MessageInfo = {
    All the test in this file explore the behavior of sending requests to the Calculator using the message mode SendDefaultMode
    with no flags.
 */
+
+/* TECHNICAL OBSERVATION: When comparing amounts of TON in equalities of `expect` assertions, 
+   instead of strict equality use equality within an error interval (an error of 1 unit seems to be enough), 
+   just to be on the safe side. The reason is that the computation of some fees are subject to rounding and it is
+   unclear if Sandbox uses the rounded quantities or the quantities previous to rounding to compute some amounts or 
+   how the rounding errors get propagated.
+   For example, the total transaction fees are subject to rounding: 
+   https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees#basic-fees-formula
+
+   These tests use equality testing within an error interval of 1 unit.
+*/
 describe("SendDefaultMode with no flags", () => {
     let blockchain: Blockchain;
     let treasure: SandboxContract<TreasuryContract>;
@@ -244,9 +255,9 @@ describe("SendDefaultMode with no flags", () => {
         const testerOutMessageInfo = getMessageInfo(testerOutMessage);
         const expectedTesterOutMessageValue =
             amountToPayInRequest - testerMessageForwardFee;
-        expect(expectedTesterOutMessageValue.toString()).toBe(
-            testerOutMessageInfo.value.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedTesterOutMessageValue),
+        ).toContain(testerOutMessageInfo.value.toString());
 
         // Check that the value assigned to calculatorOutMessage is the original "value" in the send function
         // but deducted with the message forward fees.
@@ -255,9 +266,9 @@ describe("SendDefaultMode with no flags", () => {
         const calculatorOutMessageInfo = getMessageInfo(calculatorOutMessage);
         const expectedCalculatorOutMessageValue =
             amountToPayInCalculatorResponse - calculatorMessageForwardFee;
-        expect(expectedCalculatorOutMessageValue.toString()).toBe(
-            calculatorOutMessageInfo.value.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedCalculatorOutMessageValue),
+        ).toContain(calculatorOutMessageInfo.value.toString());
 
         // Now we check that the observed final balances in each contract can actually be obtained from their initial balances
         // by subtracting the transaction fees, crediting the initial message value, and subtracting the outbound message values.
@@ -283,15 +294,15 @@ describe("SendDefaultMode with no flags", () => {
         // If we add all the deltas for tester, together with its initial balance, we should get its measured final balance
         const expectedTesterBalanceAfter =
             testerBalanceBefore + testerDelta1 + testerDelta2;
-        expect(expectedTesterBalanceAfter.toString()).toBe(
-            testerBalanceAfter.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedTesterBalanceAfter),
+        ).toContain(testerBalanceAfter.toString());
         // Similarly for the calculator
         const expectedCalculatorBalanceAfter =
             calculatorBalanceBefore + calculatorDelta;
-        expect(expectedCalculatorBalanceAfter.toString()).toBe(
-            calculatorBalanceAfter.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedCalculatorBalanceAfter),
+        ).toContain(calculatorBalanceAfter.toString());
 
         // Finally, since the average of [0,4] is 2, we should have that value in the tester
         const finalValue = await tester.getCurrentResult();
@@ -400,9 +411,9 @@ describe("SendDefaultMode with no flags", () => {
 
         // If we add the tester's delta to its initial balance, we should get its measured final balance.
         const expectedTesterBalanceAfter = testerBalanceBefore + testerDelta;
-        expect(expectedTesterBalanceAfter.toString()).toBe(
-            testerBalanceAfter.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedTesterBalanceAfter),
+        ).toContain(testerBalanceAfter.toString());
         // The calculator did not execute a transaction, hence its balance did not change.
 
         expect(calculatorBalanceBefore.toString()).toBe(
@@ -430,7 +441,7 @@ describe("SendDefaultMode with no flags", () => {
             testerBalanceBefore -
             incomingMessageInfo.value
         );
-        expect(expectedPayedTotalFees.toString()).toBe(
+        expect(computeErrorIntervalOfNumber(expectedPayedTotalFees)).toContain(
             testerRequestTsx.totalFees.coins.toString(),
         );
     });
@@ -582,9 +593,9 @@ describe("SendDefaultMode with no flags", () => {
         const testerOutMessageInfo = getMessageInfo(testerOutMessage);
         const expectedTesterOutMessageValue =
             amountToPayInRequest - testerMessageForwardFee;
-        expect(expectedTesterOutMessageValue.toString()).toBe(
-            testerOutMessageInfo.value.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedTesterOutMessageValue),
+        ).toContain(testerOutMessageInfo.value.toString());
 
         // For computing the value in bounced messages, we can estimate it by using this formula:
         //     outMessage.value = inValue - totalFees - BouncePhaseMessageForwardFees
@@ -597,12 +608,6 @@ describe("SendDefaultMode with no flags", () => {
         // because the computation phase failed).
         //
         // Additionally, the forward fees for validators in the bounced message is just the BouncePhaseMessageForwardFees
-        //
-        // There is a problem though. totalFees is subject to real number rounding.
-        // See for example that total fees uses a toFixed that rounds the numbers in this
-        // calculator in the TON Docs: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees#basic-fees-formula
-        // This means that the above formula for estimating outMessage.value sometimes will miss the value stored in outMessage.value
-        // by a very small amount due to rounding in totalFees.
 
         // Now, obtain BouncePhaseMessageForwardFees from the bounce phase
         const calculatorBouncePhaseMessageForwardFees =
@@ -618,9 +623,11 @@ describe("SendDefaultMode with no flags", () => {
             computeErrorIntervalOfNumber(expectedCalculatorOutMessageValue),
         ).toContain(calculatorOutMessageInfo.value.toString());
         // Check that the forward fee for validators in the bounced message is just the calculator message forward fees
-        expect(calculatorOutMessageInfo.validatorsForwardFee.toString()).toBe(
-            calculatorBouncePhaseMessageForwardFees.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(
+                calculatorOutMessageInfo.validatorsForwardFee,
+            ),
+        ).toContain(calculatorBouncePhaseMessageForwardFees.toString());
 
         // Check that the message sent by the calculator has its bounced flag active
         expect(calculatorOutMessageInfo.bounced).toBe(true);
@@ -649,15 +656,15 @@ describe("SendDefaultMode with no flags", () => {
         // If we add all the deltas for tester, together with its initial balance, we should get its measured final balance
         const expectedTesterBalanceAfter =
             testerBalanceBefore + testerDelta1 + testerDelta2;
-        expect(expectedTesterBalanceAfter.toString()).toBe(
-            testerBalanceAfter.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedTesterBalanceAfter),
+        ).toContain(testerBalanceAfter.toString());
         // Similarly for the calculator
         const expectedCalculatorBalanceAfter =
             calculatorBalanceBefore + calculatorDelta;
-        expect(expectedCalculatorBalanceAfter.toString()).toBe(
-            calculatorBalanceAfter.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedCalculatorBalanceAfter),
+        ).toContain(calculatorBalanceAfter.toString());
 
         // Additionally, we should expect that the balance for the calculator did not change
         // because it payed its transaction fees from the value of the incoming message
@@ -670,8 +677,6 @@ describe("SendDefaultMode with no flags", () => {
         //
         // where the value of the bounced message "outMsg.value" was expanded according to the formula for bounced messages given previously
         // and BouncePhaseMessageForwardFees = outMsg.validatorsForwardFee as was also checked previously.
-
-        // But again, since totalFees are subject to rounding, we should expect that the delta is 0 within a a small error
 
         // Check that the calculator delta is actually zero
         expect(computeErrorIntervalOfNumber(calculatorDelta)).toContain("0");
@@ -816,9 +821,9 @@ describe("SendDefaultMode with no flags", () => {
         const testerOutMessageInfo = getMessageInfo(testerOutMessage);
         const expectedTesterOutMessageValue =
             amountToPayInRequest - testerMessageForwardFee;
-        expect(expectedTesterOutMessageValue.toString()).toBe(
-            testerOutMessageInfo.value.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedTesterOutMessageValue),
+        ).toContain(testerOutMessageInfo.value.toString());
 
         // When there are enough funds in the incoming message to cover for transaction fees and bounced message forward fees,
         // we could use the following formula to estimate the value in the outbound message:
@@ -835,8 +840,7 @@ describe("SendDefaultMode with no flags", () => {
         // As such, there are no remaining funds in the incoming message value to
         // send a bounced message.
 
-        // Check that the amount "inValue - totalFees" is actually zero. But again, since totalFees is subject to rounding.
-        // This amount will be 0 within a small error
+        // Check that the amount "inValue - totalFees" is actually zero.
 
         // Get the incoming message that triggered the calculator's transaction.
         const calculatorInMessage = ensureMessageIsDefined(
@@ -868,15 +872,15 @@ describe("SendDefaultMode with no flags", () => {
 
         // If we add the delta for tester, together with its initial balance, we should get its measured final balance
         const expectedTesterBalanceAfter = testerBalanceBefore + testerDelta;
-        expect(expectedTesterBalanceAfter.toString()).toBe(
-            testerBalanceAfter.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedTesterBalanceAfter),
+        ).toContain(testerBalanceAfter.toString());
         // Similarly for the calculator
         const expectedCalculatorBalanceAfter =
             calculatorBalanceBefore + calculatorDelta;
-        expect(expectedCalculatorBalanceAfter.toString()).toBe(
-            calculatorBalanceAfter.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedCalculatorBalanceAfter),
+        ).toContain(calculatorBalanceAfter.toString());
 
         // Additionally, we should expect that the balance for the calculator did not change
         // because it payed its transaction fees from the value of the incoming message,
@@ -1033,9 +1037,9 @@ describe("SendDefaultMode with no flags", () => {
         const testerOutMessageInfo = getMessageInfo(testerOutMessage);
         const expectedTesterOutMessageValue =
             amountToPayInRequest - testerMessageForwardFee;
-        expect(expectedTesterOutMessageValue.toString()).toBe(
-            testerOutMessageInfo.value.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedTesterOutMessageValue),
+        ).toContain(testerOutMessageInfo.value.toString());
 
         // Now we check that the observed final balances in each contract can actually be obtained from their initial balances
         // by subtracting the transaction fees, crediting the initial message value, and subtracting the outbound message values.
@@ -1055,15 +1059,15 @@ describe("SendDefaultMode with no flags", () => {
 
         // If we add the delta for tester, together with its initial balance, we should get its measured final balance
         const expectedTesterBalanceAfter = testerBalanceBefore + testerDelta;
-        expect(expectedTesterBalanceAfter.toString()).toBe(
-            testerBalanceAfter.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedTesterBalanceAfter),
+        ).toContain(testerBalanceAfter.toString());
         // Similarly for the calculator
         const expectedCalculatorBalanceAfter =
             calculatorBalanceBefore + calculatorDelta;
-        expect(expectedCalculatorBalanceAfter.toString()).toBe(
-            calculatorBalanceAfter.toString(),
-        );
+        expect(
+            computeErrorIntervalOfNumber(expectedCalculatorBalanceAfter),
+        ).toContain(calculatorBalanceAfter.toString());
 
         // Check that the calculator's delta is positive, meaning that the calculator's balance increased after the transaction,
         // since it never sends back to the tester the remaining funds.
