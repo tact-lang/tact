@@ -88,9 +88,8 @@ trait Jetton with Ownable {
         require(self.totalSupply + amount <= self.max_supply, "The total supply will be overlapping.");
         self.totalSupply = self.totalSupply + amount; // Update total supply
 
-        let wInit: StateInit = self.getJettonWalletInit(to); // Create message
-        send(SendParameters{
-            to: contractAddress(wInit), 
+        deploy(DeployParameters{
+            init: self.getJettonWalletInit(to),
             value: 0, 
             bounce: false,
             mode: SendRemainingValue,
@@ -102,8 +101,6 @@ trait Jetton with Ownable {
                 forward_ton_amount: 0,
                 forward_payload: emptySlice()
             }.toCell(),
-            code: wInit.code,
-            data: wInit.data
         });
     }
 
@@ -213,10 +210,8 @@ contract JettonDefaultWallet {
         self.balance = self.balance - msg.amount; // Update balance
         require(self.balance >= 0, "Invalid balance");
 
-        let init: StateInit = initOf JettonDefaultWallet(self.master, msg.destination);  
-        let walletAddress: Address = contractAddress(init);
-        send(SendParameters{
-                to: walletAddress, 
+        deploy(DeployParameters{
+                init: initOf JettonDefaultWallet(self.master, msg.destination),
                 value: 0,
                 mode: SendRemainingValue, 
                 bounce: false,
@@ -228,8 +223,6 @@ contract JettonDefaultWallet {
                     forward_ton_amount: msg.forward_ton_amount,
                     forward_payload: msg.forward_payload
                 }.toCell(),
-                code: init.code,
-                data: init.data
             });
     }
 
