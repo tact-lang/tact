@@ -504,6 +504,15 @@ exports[`resolveDescriptors should fail descriptors for not-extend-function-self
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for not-extend-function-self-param-2 1`] = `
+"<unknown>:4:28: Parameter name "self" is reserved
+  3 | 
+> 4 | extends fun foo(self: Int, self: String) { }
+                                 ^~~~~~~~~~~~
+  5 | 
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for override-for-non-existing-constant-in-contract-from-base-trait 1`] = `
 "<unknown>:8:5: Constant "BAR" overrides nothing, remove "override" modifier or inherit any traits with this constant
   7 | contract Test {

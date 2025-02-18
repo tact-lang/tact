@@ -842,39 +842,30 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
         const exNames: Set<string> = new Set();
 
-        const [head, ...restParams] = params;
-        if (!isUndefined(head)) {
-            // Process the first parameter (head)
-            if (isSelfId(head.name)) {
-                throwCompilationError(
-                    'Parameter name "self" is reserved for functions with "extends" modifier',
-                    head.loc,
-                );
-            }
-            if (exNames.has(idText(head.name))) {
-                throwCompilationError(
-                    `Parameter name ${idTextErr(head.name)} is already used`,
-                    head.loc,
-                );
-            }
-            exNames.add(idText(head.name));
+        const [head, ..._rest] = params;
 
-            // Process the remaining parameters (tail)
-            for (const param of restParams) {
-                if (isSelfId(param.name)) {
-                    throwCompilationError(
-                        'Parameter name "self" is reserved',
-                        param.loc,
-                    );
-                }
-                if (exNames.has(idText(param.name))) {
-                    throwCompilationError(
-                        `Parameter name ${idTextErr(param.name)} is already used`,
-                        param.loc,
-                    );
-                }
-                exNames.add(idText(param.name));
+        if (!isUndefined(head) && !isExtends && isSelfId(head.name)) {
+            // if isExtends, the head is not even the first parameter
+            throwCompilationError(
+                'Parameter name "self" is reserved for functions with "extends" modifier',
+                head.loc,
+            );
+        }
+
+        for (const param of params) {
+            if (isSelfId(param.name)) {
+                throwCompilationError(
+                    'Parameter name "self" is reserved',
+                    param.loc,
+                );
             }
+            if (exNames.has(idText(param.name))) {
+                throwCompilationError(
+                    `Parameter name ${idTextErr(param.name)} is already used`,
+                    param.loc,
+                );
+            }
+            exNames.add(idText(param.name));
         }
 
         // Check for runtime types in getters
