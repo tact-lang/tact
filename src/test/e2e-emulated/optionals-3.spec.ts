@@ -1,5 +1,6 @@
 import { toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { Opt5 } from "./contracts/output/optionals-3_Opt5";
 import "@ton/test-utils";
 
