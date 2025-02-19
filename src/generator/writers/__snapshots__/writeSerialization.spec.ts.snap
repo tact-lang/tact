@@ -48,21 +48,6 @@ exports[`writeSerialization should write serializer for A 1`] = `
   },
   {
     "code": {
-      "code": "slice raw = cs~load_msg_addr();
-return (cs, raw);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_load_address",
-    "signature": "(slice, slice) __tact_load_address(slice cs)",
-  },
-  {
-    "code": {
       "code": "if (cs.preload_uint(2) != 0) {
     slice raw = cs~load_msg_addr();
     return (cs, raw);
@@ -5722,21 +5707,6 @@ exports[`writeSerialization should write serializer for B 1`] = `
     "flags": Set {},
     "name": "__tact_slice_to_str",
     "signature": "<unknown>",
-  },
-  {
-    "code": {
-      "code": "slice raw = cs~load_msg_addr();
-return (cs, raw);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_load_address",
-    "signature": "(slice, slice) __tact_load_address(slice cs)",
   },
   {
     "code": {
@@ -11402,21 +11372,6 @@ exports[`writeSerialization should write serializer for C 1`] = `
   },
   {
     "code": {
-      "code": "slice raw = cs~load_msg_addr();
-return (cs, raw);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_load_address",
-    "signature": "(slice, slice) __tact_load_address(slice cs)",
-  },
-  {
-    "code": {
       "code": "if (cs.preload_uint(2) != 0) {
     slice raw = cs~load_msg_addr();
     return (cs, raw);
@@ -17005,15 +16960,13 @@ var v'd = sc_1~load_int(1) ? sc_1~load_ref().begin_parse() : null();
 var v'e = sc_1~load_int(1);
 var v'f = sc_1~load_int(257);
 var v'g = sc_1~load_int(257);
-var v'h = sc_1~__tact_load_address();
+var v'h = sc_1~load_msg_addr();
 return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h));",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:C",
-    "depends": Set {
-      "__tact_load_address",
-    },
+    "depends": Set {},
     "flags": Set {},
     "name": "$C$_load",
     "signature": "(slice, ((cell, cell, slice, slice, int, int, int, slice))) $C$_load(slice sc_0)",

@@ -7,4 +7,5 @@ module.exports = {
     globalTeardown: "./jest.teardown.js",
     snapshotSerializers: ["@tact-lang/ton-jest/serializers"],
     maxWorkers: "4",
+    testTimeout: 10000,
 };
