@@ -1,4 +1,4 @@
-import type { ABIError, Cell } from "@ton/core";
+import type { Cell } from "@ton/core";
 import { Builder } from "@ton/core";
 import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, Treasury, TreasuryContract } from "@ton/sandbox";
@@ -8,7 +8,6 @@ import { SampleUpgradeContract } from "./contracts/output/upgrade_SampleUpgradeC
 import { SampleUpgradeContractV2 } from "./contracts/output/upgrade_v2_SampleUpgradeContractV2";
 import { SampleUpgradeContractV3 } from "./contracts/output/upgrade_v3_SampleUpgradeContractV3";
 import "@ton/test-utils";
-import type { Maybe } from "@ton/core/dist/utils/maybe";
 
 describe("upgrade", () => {
     let blockchain: Blockchain;
@@ -51,20 +50,12 @@ describe("upgrade", () => {
             nonOwner.getSender(),
             newContract.init,
         );
-        const errorCodeForInvalidSender = findErrorCodeByMessage(
-            contract.abi.errors,
-            "Upgradable: Sender is not a contract owner",
-        );
-
-        if (errorCodeForInvalidSender === null) {
-            throw new Error("cannot find message");
-        }
 
         expect(nonOwnerResult.transactions).toHaveTransaction({
             from: nonOwner.address,
             to: contract.address,
             success: false,
-            exitCode: errorCodeForInvalidSender,
+            exitCode: 132,
         });
     });
 
@@ -179,18 +170,5 @@ describe("upgrade", () => {
                 value: toNano("0.95"),
             }),
         );
-    }
-
-    function findErrorCodeByMessage(
-        errors: Maybe<Record<number, ABIError>>,
-        errorMessage: string,
-    ) {
-        if (!errors) return null;
-        for (const [code, error] of Object.entries(errors)) {
-            if (error.message === errorMessage) {
-                return parseInt(code, 10);
-            }
-        }
-        return null;
     }
 });

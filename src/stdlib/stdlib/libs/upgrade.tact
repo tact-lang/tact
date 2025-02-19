@@ -1,3 +1,5 @@
+import "@stdlib/ownable";
+
 /// Message for upgrading contract code and data.
 message Upgrade {
     /// Optional new contract code as Cell.
@@ -17,7 +19,7 @@ message Confirm {}
 
 /// Trait that enables contract upgradeability.
 /// Implements basic upgrade mechanism with owner validation.
-trait Upgradable {
+trait Upgradable with Ownable {
     /// Contract owner address that can perform upgrades.
     owner: Address;
     
@@ -37,7 +39,7 @@ trait Upgradable {
     /// Validates upgrade request.
     /// By default only allows owner to upgrade. Can be overridden.
     virtual inline fun upgrade_validate(ctx: Context, _: Upgrade) {
-        require(ctx.sender == self.owner, "Upgradable: Sender is not a contract owner");
+        self.requireOwner();
     }
 
     /// Performs the actual upgrade.

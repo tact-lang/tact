@@ -25,7 +25,7 @@ describe("delayed upgrade", () => {
         blockchain = await Blockchain.create();
         owner = await blockchain.treasury("owner");
         nonOwner = await blockchain.treasury("non-owner");
-        blockchain.verbosity.vmLogs = "vm_logs";
+        blockchain.verbosity.print = false;
         treasure = await blockchain.treasury("treasure");
         contract = blockchain.openContract(
             await SampleDelayedUpgradeContract.fromInit(owner.address),
@@ -59,20 +59,12 @@ describe("delayed upgrade", () => {
                 data: null,
             },
         );
-        const errorCodeForInvalidSender = findErrorCodeByMessage(
-            contract.abi.errors,
-            "Upgradable: Sender is not a contract owner",
-        );
-
-        if (errorCodeForInvalidSender === null) {
-            throw new Error("cannot find message");
-        }
 
         expect(nonOwnerResult.transactions).toHaveTransaction({
             from: nonOwner.address,
             to: contract.address,
             success: false,
-            exitCode: errorCodeForInvalidSender,
+            exitCode: 132,
         });
     });
 
