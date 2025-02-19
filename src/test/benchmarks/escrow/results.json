@@ -31,7 +31,7 @@
       "commit": "https://github.com/tact-lang/tact/pull/1800"
     },
     {
-      "label": "No double checking of message opcodes",
+      "label": "1.5.3 with no double checking of message opcodes",
       "gas": {
         "fundingTon": "6414",
         "changeCode": "5373",
@@ -41,7 +41,7 @@
       "commit": "https://github.com/tact-lang/tact/pull/1854"
     },
     {
-      "label": "Inline __tact_load_address",
+      "label": "1.5.3 with inline __tact_load_address",
       "gas": {
         "fundingTon": "6342",
         "changeCode": "5301",

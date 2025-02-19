@@ -169,7 +169,7 @@ describe("Jetton", () => {
         printBenchmarkTable(results);
     });
 
-    it("send transfer", async () => {
+    it("transfer", async () => {
         const mintResult = await sendMint(
             jettonMinter,
             deployer.getSender(),

@@ -14,13 +14,13 @@ export function getUsedGas(sendEnough: SendMessageResult): number {
         .reduceRight((prev, cur) => prev + cur);
 }
 
-type BenchmarkResult = {
+export type BenchmarkResult = {
     label: string;
     commit: string | undefined;
     gas: Record<string, number>;
 };
 
-type RawBenchmarkResult = {
+export type RawBenchmarkResult = {
     results: {
         label: string;
         commit: string | null;
