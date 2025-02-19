@@ -33,6 +33,7 @@
     "test": "jest",
     "test:fast": "jest --config=./jest-fast.config.js",
     "bench": "yarn gen:contracts:benchmarks && jest ./src/test/benchmarks",
+    "bench:upgrade": "yarn gen:contracts:benchmarks && ts-node src/test/benchmarks/benchmarks.update.ts",
     "coverage": "cross-env COVERAGE=true jest --config=./jest-ci.config.js",
     "type": "tsc --noEmit",
     "lint": "yarn eslint .",

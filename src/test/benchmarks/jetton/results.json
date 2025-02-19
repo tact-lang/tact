@@ -7,7 +7,7 @@
         "burn": "11895",
         "discovery": "5915"
       },
-      "commit": null
+      "pr": null
     },
     {
       "label": "1.5.3",
@@ -16,7 +16,7 @@
         "burn": "25852",
         "discovery": "15265"
       },
-      "commit": null
+      "pr": "https://github.com/tact-lang/tact/pull/1390"
     },
     {
       "label": "1.5.3 without address validation",
@@ -25,7 +25,7 @@
         "burn": "26594",
         "discovery": "15408"
       },
-      "commit": null
+      "pr": null
     },
     {
       "label": "1.5.3 without self-code in system cell",
@@ -34,7 +34,7 @@
         "burn": "17898",
         "discovery": "11135"
       },
-      "commit": null
+      "pr": null
     },
     {
       "label": "1.5.3 with removed JettonWallet duplicate",
@@ -43,7 +43,7 @@
         "burn": "17728",
         "discovery": "11055"
       },
-      "commit": null
+      "pr": null
     },
     {
       "label": "1.5.3 with #1586 and #1589",
@@ -52,7 +52,7 @@
         "burn": "17718",
         "discovery": "11063"
       },
-      "commit": null
+      "pr": null
     },
     {
       "label": "1.5.3 with faster readForwardFee",
@@ -61,7 +61,7 @@
         "burn": "17718",
         "discovery": "11063"
       },
-      "commit": null
+      "pr": null
     },
     {
       "label": "1.5.3 without run-time null checks for `!!`",
@@ -70,7 +70,7 @@
         "burn": "17686",
         "discovery": "11039"
       },
-      "commit": null
+      "pr": null
     },
     {
       "label": "1.5.3 with optimized send()",
@@ -79,7 +79,7 @@
         "burn": "16029",
         "discovery": "10093"
       },
-      "commit": null
+      "pr": null
     },
     {
       "label": "1.5.3 with improved storeBool",
@@ -88,7 +88,7 @@
         "burn": "16029",
         "discovery": "10067"
       },
-      "commit": "https://github.com/tact-lang/tact/pull/1702"
+      "pr": "https://github.com/tact-lang/tact/pull/1702"
     },
     {
       "label": "1.5.3 with more optimized send",
@@ -97,7 +97,7 @@
         "burn": "15909",
         "discovery": "10003"
       },
-      "commit": "https://github.com/tact-lang/tact/pull/1800"
+      "pr": "https://github.com/tact-lang/tact/pull/1800"
     },
     {
       "label": "1.5.3 with address functions in Tact",
@@ -106,7 +106,7 @@
         "burn": "15565",
         "discovery": "9613"
       },
-      "commit": "https://github.com/tact-lang/tact/pull/1766"
+      "pr": "https://github.com/tact-lang/tact/pull/1766"
     },
     {
       "label": "1.5.3 without double checking of message opcodes",
@@ -115,7 +115,7 @@
         "burn": "15311",
         "discovery": "9458"
       },
-      "commit": "https://github.com/tact-lang/tact/pull/1854"
+      "pr": "https://github.com/tact-lang/tact/pull/1854"
     },
     {
       "label": "1.5.3 with deploy instead of send",
@@ -124,7 +124,7 @@
         "burn": "15311",
         "discovery": "9458"
       },
-      "commit": "https://github.com/tact-lang/tact/pull/1832"
+      "pr": "https://github.com/tact-lang/tact/pull/1832"
     },
     {
       "label": "1.5.3 with inlining of __tact_load_address",
@@ -133,7 +133,7 @@
         "burn": "15113",
         "discovery": "9386"
       },
-      "commit": "https://github.com/tact-lang/tact/pull/1895"
+      "pr": "https://github.com/tact-lang/tact/pull/1895"
     },
     {
       "label": "1.5.3 with optimized routing",
@@ -142,7 +142,7 @@
         "burn": "14941",
         "discovery": "9319"
       },
-      "commit": "https://github.com/tact-lang/tact/pull/1841"
+      "pr": "https://github.com/tact-lang/tact/pull/1841"
     }
   ]
 }
