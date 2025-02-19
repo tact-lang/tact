@@ -18,8 +18,6 @@ exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2808`;
 
 exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2809`;
 
-exports[`benchmarks benchmark sha256: gas hash string big repeated 2`] = `2809`;
-
 exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2811`;
 
 exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2285`;
