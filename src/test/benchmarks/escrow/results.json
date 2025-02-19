@@ -18,7 +18,7 @@
         "approveTon": "16355",
         "cancelTon": "12941"
       },
-      "commit": "https://github.com/tact-lang/tact/commit/c98892a714c274a4d551a98b6e8e28e307fe95a4"
+      "commit": "https://github.com/tact-lang/tact/pull/1390"
     },
     {
       "label": "1.5.3 with improved send",

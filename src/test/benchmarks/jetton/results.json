@@ -16,7 +16,7 @@
         "burn": "25852",
         "discovery": "15265"
       },
-      "commit": null
+      "commit": "https://github.com/tact-lang/tact/pull/1390"
     },
     {
       "label": "1.5.3 without address validation",
