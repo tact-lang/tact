@@ -1,6 +1,14 @@
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { Address, Cell, SenderArguments, Slice } from "@ton/core";
+import {
+    Address,
+    Cell,
+    MessageRelaxed,
+    SenderArguments,
+    SendMode,
+    Slice,
+    storeMessageRelaxed,
+} from "@ton/core";
 import { beginCell, Dictionary, toNano } from "@ton/core";
 import "@ton/test-utils";
 
@@ -30,7 +38,8 @@ type MultipleAction = {
 
 type SendMsgAction = {
     mode: 1;
-    sendArgs: SenderArguments;
+    sendMode: SendMode;
+    outMsg: MessageRelaxed;
 };
 
 type ChangeSignaturePolicyAction = {
@@ -55,6 +64,8 @@ type WalletAction =
     | RemoveExtensionAction
     | MultipleAction;
 
+type ActionCell = Cell;
+
 function collectMultipleActions(actions: WalletAction[]): MultipleAction {
     return {
         mode: 0,
@@ -62,24 +73,41 @@ function collectMultipleActions(actions: WalletAction[]): MultipleAction {
     };
 }
 
-function createActionsSlice(actions: MultipleAction): Slice {
+function createActionsSlice(actions: MultipleAction): ActionCell {
     const actionSlice = beginCell().storeUint(actions.mode, 8);
 
-    const result = []
-
     for (const action of actions.args) {
-        
+        const slice = beginCell().storeUint(actions.mode, 8);
+
         switch (action.mode) {
             case 0:
                 break;
             case 1:
-
-
-
+                slice
+                    .storeUint(action.sendMode, 8 | SendMode.IGNORE_ERRORS)
+                    .storeRef(
+                        beginCell()
+                            .store(storeMessageRelaxed(action.outMsg))
+                            .endCell(),
+                    );
+                break;
+            case 2:
+                slice.storeBit(action.isAllowed);
+                break;
+            case 3:
+                slice.storeAddress(action.extensionAddress);
+                break;
+            case 4:
+                slice.storeAddress(action.extensionAddress);
+                break;
             default:
                 break;
         }
+
+        actionSlice.storeRef(slice.endCell());
     }
+
+    return actionSlice.endCell();
 }
 
 describe("Wallet Gas Tests", () => {
@@ -95,7 +123,7 @@ describe("Wallet Gas Tests", () => {
     const results = generateResults(benchmarkResults);
     const expectedResult = results.at(-1)!;
 
-    async function sendSignedExternaldBody(actions: Cell) {
+    async function sendSignedExternaldBody(actions: ActionCell) {
         const signature = sign(actions.hash(), keypair.secretKey);
 
         return await wallet.sendExternal({

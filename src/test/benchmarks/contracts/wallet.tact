@@ -74,8 +74,7 @@ contract Wallet with Deployable {
         }
 
         self.seqno = (self.seqno + 1);
-
-        // Commit state for reply protection
+        // NOTE: rewrite state save in asm
         commit();
 
         self.processActions(msg.operation.actions, isExternal, false);
