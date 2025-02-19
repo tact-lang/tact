@@ -195,7 +195,6 @@ export function writeInit(
         if (enabledInline(ctx.ctx)) {
             ctx.flag("inline");
         }
-        ctx.used(`$${t.name}$_child_get_code`);
         ctx.context("type:" + t.name + "$init");
         ctx.body(() => {
             ctx.append(";; Build init code cell");
@@ -230,7 +229,7 @@ export function writeInit(
                 } else {
                     ctx.write(`
                     ;; Contract Code: ${t.name}
-                    cell init_code = ${ops.contractChildGetCode(t.name, ctx)}();
+                    cell init_code = ${ctx.used(`$${t.name}$_child_get_code`)}();
                     `);
                 }
                 ctx.append();
