@@ -153,9 +153,6 @@ describe("benchmarks", () => {
             await hashStringBig(sha256Big, "hello world".repeat(5)),
         ).toMatchSnapshot("gas hash string big repeated");
         expect(
-            await hashStringBig(sha256Big, "hello world".repeat(5)),
-        ).toMatchSnapshot("gas hash string big repeated");
-        expect(
             await hashStringSmall(sha256Small, "hello world".repeat(5)),
         ).toMatchSnapshot("gas hash string small repeated");
         expect(
