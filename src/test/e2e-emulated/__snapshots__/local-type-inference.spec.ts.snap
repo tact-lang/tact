@@ -39,6 +39,9 @@ exports[`local-type-inference should automatically set types for let statements 
     "135": {
       "message": "Code of a contract was not found",
     },
+    "136": {
+      "message": "Invalid standard address",
+    },
     "14": {
       "message": "Virtualization error",
     },
