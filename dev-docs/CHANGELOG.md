@@ -134,6 +134,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Marked gas-expensive functions and expressions: PR [#1703](https://github.com/tact-lang/tact/pull/1703)
 - Added a Security audits page, with the first assessment from the Trail of Bits: PR [#1791](https://github.com/tact-lang/tact/pull/1791)
 - Listed functions with implicit mode and further clarified the interactions of message sending functions and their modes: PR [#1634](https://github.com/tact-lang/tact/pull/1634)
+- Added `Deployable` trait to all contracts in the Cookbook: PR [#1906](https://github.com/tact-lang/tact/pull/1906)
 
 ### Release contributors
 
