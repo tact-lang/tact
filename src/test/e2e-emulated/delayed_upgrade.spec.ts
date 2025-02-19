@@ -1,4 +1,5 @@
 import type { ABIError, Cell } from "@ton/core";
+import { Builder } from "@ton/core";
 import { beginCell } from "@ton/core";
 import { toNano } from "@ton/core";
 import type { SandboxContract, Treasury, TreasuryContract } from "@ton/sandbox";
@@ -24,7 +25,7 @@ describe("delayed upgrade", () => {
         blockchain = await Blockchain.create();
         owner = await blockchain.treasury("owner");
         nonOwner = await blockchain.treasury("non-owner");
-        blockchain.verbosity.print = false;
+        blockchain.verbosity.vmLogs = "vm_logs";
         treasure = await blockchain.treasury("treasure");
         contract = blockchain.openContract(
             await SampleDelayedUpgradeContract.fromInit(owner.address),
@@ -53,7 +54,10 @@ describe("delayed upgrade", () => {
         const nonOwnerResult = await initiateUpdateContract(
             nonOwner.getSender(),
             0n,
-            newContract.init?.code,
+            {
+                code: newContract.init!.code,
+                data: null,
+            },
         );
         const errorCodeForInvalidSender = findErrorCodeByMessage(
             contract.abi.errors,
@@ -92,11 +96,10 @@ describe("delayed upgrade", () => {
         const newContract = await SampleDelayedUpgradeContractV2.fromInit(
             owner.address,
         );
-        await initiateUpdateContract(
-            owner.getSender(),
-            0n,
-            newContract.init?.code,
-        );
+        await initiateUpdateContract(owner.getSender(), 0n, {
+            code: newContract.init!.code,
+            data: null,
+        });
 
         await confirmUpdateContract(owner.getSender());
 
@@ -134,11 +137,10 @@ describe("delayed upgrade", () => {
         const newContract = await SampleDelayedUpgradeContractV2.fromInit(
             owner.address,
         );
-        await initiateUpdateContract(
-            owner.getSender(),
-            NANOSECONDS_1S,
-            newContract.init?.code,
-        );
+        await initiateUpdateContract(owner.getSender(), NANOSECONDS_1S, {
+            code: newContract.init!.code,
+            data: null,
+        });
 
         // imitate actual timeout
         await new Promise((resolve) => setTimeout(resolve, MILLISECONDS_1S));
@@ -163,11 +165,10 @@ describe("delayed upgrade", () => {
         const newContract = await SampleDelayedUpgradeContractV2.fromInit(
             owner.address,
         );
-        await initiateUpdateContract(
-            owner.getSender(),
-            60n * NANOSECONDS_1S,
-            newContract.init?.code,
-        );
+        await initiateUpdateContract(owner.getSender(), 60n * NANOSECONDS_1S, {
+            code: newContract.init!.code,
+            data: null,
+        });
 
         const earlyConfirmRes = await confirmUpdateContract(owner.getSender());
 
@@ -193,11 +194,10 @@ describe("delayed upgrade", () => {
         const newContract = await SampleDelayedUpgradeContractV3.fromInit(
             owner.address,
         );
-        await initiateUpdateContract(
-            owner.getSender(),
-            NANOSECONDS_1S,
-            newContract.init?.code,
-        );
+        await initiateUpdateContract(owner.getSender(), NANOSECONDS_1S, {
+            code: newContract.init!.code,
+            data: null,
+        });
 
         // imitate actual timeout
         await new Promise((resolve) => setTimeout(resolve, MILLISECONDS_1S));
@@ -215,12 +215,40 @@ describe("delayed upgrade", () => {
         expect(await contract.getIsUpgradable()).toEqual(true);
     });
 
+    it("should implement upgrade of simple contract with new data correctly", async () => {
+        const builder = new Builder();
+        builder.storeUint(1, 1); // we need to reload on message so we set 1 here
+        builder.storeInt(100, 32); // version
+        builder.storeInt(0, 257); // initiated_at
+
+        builder.storeUint(537627911, 32); // struct
+        builder.storeBit(false); // upgrade_info.code
+        builder.storeBit(false); // upgrade_info.data
+        builder.storeInt(0, 257); // upgrade_info.timeout
+
+        builder.storeAddress(owner.address);
+        builder.storeUint(999, 32); // counter
+
+        const newData = builder.endCell();
+
+        await initiateUpdateContract(owner.getSender(), 0n, {
+            code: null,
+            data: newData,
+        });
+        await confirmUpdateContract(owner.getSender());
+
+        // Check counter
+        expect(await contract.getCounter()).toEqual(999n);
+        expect(await contract.getVersion()).toEqual(100n);
+        expect(await contract.getIsUpgradable()).toEqual(true);
+    });
+
     async function initiateUpdateContract(
         sender: Treasury,
         timeout: bigint,
-        code: Cell | undefined,
+        init?: { code: Cell | null; data: Cell | null },
     ) {
-        if (code === undefined) {
+        if (init === undefined) {
             throw new Error("invalid argument");
         }
 
@@ -230,8 +258,8 @@ describe("delayed upgrade", () => {
             { value: toNano(1) },
             {
                 $$type: "Upgrade",
-                code: code,
-                data: null,
+                code: init.code,
+                data: init.data,
                 timeout: timeout,
             },
         );

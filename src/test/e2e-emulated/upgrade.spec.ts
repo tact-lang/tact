@@ -1,4 +1,5 @@
 import type { ABIError, Cell } from "@ton/core";
+import { Builder } from "@ton/core";
 import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, Treasury, TreasuryContract } from "@ton/sandbox";
 import { internal } from "@ton/sandbox";
@@ -48,7 +49,7 @@ describe("upgrade", () => {
         );
         const nonOwnerResult = await updateContract(
             nonOwner.getSender(),
-            newContract.init?.code,
+            newContract.init,
         );
         const errorCodeForInvalidSender = findErrorCodeByMessage(
             contract.abi.errors,
@@ -87,7 +88,10 @@ describe("upgrade", () => {
         const newContract = await SampleUpgradeContractV2.fromInit(
             owner.address,
         );
-        await updateContract(owner.getSender(), newContract.init?.code);
+        await updateContract(owner.getSender(), {
+            code: newContract.init!.code,
+            data: null,
+        });
 
         // Should add 100 instead of 1
         // Increment counter
@@ -108,7 +112,10 @@ describe("upgrade", () => {
         const newContract = await SampleUpgradeContractV3.fromInit(
             owner.address,
         );
-        await updateContract(owner.getSender(), newContract.init?.code);
+        await updateContract(owner.getSender(), {
+            code: newContract.init!.code,
+            data: null,
+        });
 
         // Decrement counter with new receiver
         await sendRawMessage(
@@ -121,19 +128,41 @@ describe("upgrade", () => {
         expect(await contract.getIsUpgradable()).toEqual(true);
     });
 
-    async function updateContract(sender: Treasury, code: Cell | undefined) {
-        if (code === undefined) {
+    it("should implement upgrade of simple contract with new data correctly", async () => {
+        const builder = new Builder();
+        builder.storeUint(1, 1); // we need to reload on message so we set 1 here
+        builder.storeInt(100, 32); // version
+        builder.storeAddress(owner.address);
+        builder.storeInt(999, 32); // counter
+        const newData = builder.endCell();
+
+        await updateContract(owner.getSender(), {
+            code: contract.init!.code,
+            data: newData,
+        });
+
+        // Check counter
+        expect(await contract.getCounter()).toEqual(999n);
+        expect(await contract.getVersion()).toEqual(100n);
+        expect(await contract.getIsUpgradable()).toEqual(true);
+    });
+
+    async function updateContract(
+        sender: Treasury,
+        init?: { code: Cell; data: Cell | null },
+    ) {
+        if (init === undefined) {
             throw new Error("invalid argument");
         }
 
         // Update code
-        return await contract.send(
+        return contract.send(
             sender,
             { value: toNano(1) },
             {
                 $$type: "Upgrade",
-                code: code,
-                data: null,
+                code: init.code,
+                data: init.data,
                 timeout: 0n,
             },
         );

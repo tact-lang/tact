@@ -22,7 +22,7 @@ trait Upgradable {
     owner: Address;
     
     /// Current contract version, increments after each upgrade.
-    version: Int;
+    version: Int as uint32;
 
     /// Handles upgrade message.
     /// Validates sender, performs upgrade and increments version.
@@ -48,6 +48,7 @@ trait Upgradable {
         }
         if (msg.data != null) {
             setData(msg.data!!);
+            throw(0);
         }
     }
 
@@ -72,7 +73,7 @@ trait DelayedUpgradable with Upgradable {
     owner: Address;
     
     /// Current contract version, increments after each upgrade.
-    version: Int;
+    version: Int as uint32;
 
     /// Timestamp when upgrade was initiated.
     /// Used to enforce timeout period before confirmation.
@@ -92,6 +93,7 @@ trait DelayedUpgradable with Upgradable {
         }
         if (self.upgrade_info.data != null) {
             setData(self.upgrade_info.data!!);
+            throw(0);
         }
     }
 
@@ -106,4 +108,4 @@ trait DelayedUpgradable with Upgradable {
 native setCode(code: Cell);
 
 @name(set_data)
-native setData(d: Cell);
+native setData(data: Cell);

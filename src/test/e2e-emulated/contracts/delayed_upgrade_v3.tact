@@ -6,7 +6,7 @@ message Add {
 }
 
 contract SampleDelayedUpgradeContractV3 with DelayedUpgradable {
-    version: Int = 0;
+    version: Int as uint32 = 0;
     initiated_at: Int = 0;
     upgrade_info: Upgrade = Upgrade{};
 

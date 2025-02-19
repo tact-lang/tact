@@ -6,7 +6,7 @@ message Add {
 }
 
 contract SampleUpgradeContractV3 with Upgradable {
-    version: Int = 0;
+    version: Int as uint32 = 0;
 
     owner: Address;
     counter: Int as int32;
