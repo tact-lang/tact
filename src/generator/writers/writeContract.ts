@@ -3,7 +3,8 @@ import {
     enabledInline,
     enabledInterfacesGetter,
     enabledIpfsAbiGetter,
-    enabledLazyDeploymentCompletedGetter, enabledOptimizedChildCode,
+    enabledLazyDeploymentCompletedGetter,
+    enabledOptimizedChildCode,
 } from "../../config/features";
 import type { InitDescription, TypeDescription } from "../../types/types";
 import type { WriterContext } from "../Writer";
@@ -258,7 +259,10 @@ export function writeInit(
                 }
                 ctx.append();
                 ctx.append("builder b = begin_cell();");
-                if (t.dependsOn.length > 0 && !enabledOptimizedChildCode(ctx.ctx)) {
+                if (
+                    t.dependsOn.length > 0 &&
+                    !enabledOptimizedChildCode(ctx.ctx)
+                ) {
                     ctx.append(
                         `b = b.store_ref(begin_cell().store_dict(contracts).end_cell());`,
                     );

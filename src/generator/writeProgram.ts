@@ -50,13 +50,7 @@ export async function writeProgram(
     //
 
     const wCtx = new WriterContext(ctx, abiSrc.name!);
-    writeAll(
-        ctx,
-        wCtx,
-        abiSrc.name!,
-        abiLink,
-        contractCodes,
-    );
+    writeAll(ctx, wCtx, abiSrc.name!, abiLink, contractCodes);
     const functions = wCtx.extract(debug);
 
     //
