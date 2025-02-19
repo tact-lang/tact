@@ -1,20 +1,24 @@
 import type { ABIError, Cell } from "@ton/core";
-import { beginCell, toNano } from "@ton/core";
+import { beginCell } from "@ton/core";
+import { toNano } from "@ton/core";
 import type { SandboxContract, Treasury, TreasuryContract } from "@ton/sandbox";
 import { internal } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { SampleUpgradeContract } from "./contracts/output/upgrade_SampleUpgradeContract";
-import { SampleUpgradeContractV2 } from "./contracts/output/upgrade_v2_SampleUpgradeContractV2";
-import { SampleUpgradeContractV3 } from "./contracts/output/upgrade_v3_SampleUpgradeContractV3";
+import { SampleDelayedUpgradeContract } from "./contracts/output/delayed_upgrade_SampleDelayedUpgradeContract";
+import { SampleDelayedUpgradeContractV2 } from "./contracts/output/delayed_upgrade_v2_SampleDelayedUpgradeContractV2";
+import { SampleDelayedUpgradeContractV3 } from "./contracts/output/delayed_upgrade_v3_SampleDelayedUpgradeContractV3";
 import "@ton/test-utils";
 import type { Maybe } from "@ton/core/dist/utils/maybe";
 
-describe("upgrade", () => {
+describe("delayed upgrade", () => {
     let blockchain: Blockchain;
     let treasure: SandboxContract<TreasuryContract>;
     let owner: SandboxContract<TreasuryContract>;
     let nonOwner: SandboxContract<TreasuryContract>;
-    let contract: SandboxContract<SampleUpgradeContract>;
+    let contract: SandboxContract<SampleDelayedUpgradeContract>;
+
+    const NANOSECONDS_1S = 1_000_000_000n;
+    const MILLISECONDS_1S = 1_000;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
@@ -23,7 +27,7 @@ describe("upgrade", () => {
         blockchain.verbosity.print = false;
         treasure = await blockchain.treasury("treasure");
         contract = blockchain.openContract(
-            await SampleUpgradeContract.fromInit(owner.address),
+            await SampleDelayedUpgradeContract.fromInit(owner.address),
         );
 
         const result = await contract.send(
@@ -43,11 +47,12 @@ describe("upgrade", () => {
     });
 
     it("non owner cannot update contract", async () => {
-        const newContract = await SampleUpgradeContractV2.fromInit(
+        const newContract = await SampleDelayedUpgradeContractV2.fromInit(
             owner.address,
         );
-        const nonOwnerResult = await updateContract(
+        const nonOwnerResult = await initiateUpdateContract(
             nonOwner.getSender(),
+            0n,
             newContract.init?.code,
         );
         const errorCodeForInvalidSender = findErrorCodeByMessage(
@@ -67,7 +72,7 @@ describe("upgrade", () => {
         });
     });
 
-    it("should implement upgrade of simple contract correctly", async () => {
+    it("should implement delayed upgrade with timeout=0 of contract correctly", async () => {
         expect(await contract.getIsUpgradable()).toEqual(true);
 
         // Check counter
@@ -84,10 +89,16 @@ describe("upgrade", () => {
         expect(await contract.getCounter()).toEqual(1n);
         expect(await contract.getVersion()).toEqual(0n);
 
-        const newContract = await SampleUpgradeContractV2.fromInit(
+        const newContract = await SampleDelayedUpgradeContractV2.fromInit(
             owner.address,
         );
-        await updateContract(owner.getSender(), newContract.init?.code);
+        await initiateUpdateContract(
+            owner.getSender(),
+            0n,
+            newContract.init?.code,
+        );
+
+        await confirmUpdateContract(owner.getSender());
 
         // Should add 100 instead of 1
         // Increment counter
@@ -103,12 +114,95 @@ describe("upgrade", () => {
         expect(await contract.getIsUpgradable()).toEqual(true);
     });
 
-    it("should implement upgrade of simple contract with new receiver correctly", async () => {
-        // Note, in new version counter has int32 type, not uint32!
-        const newContract = await SampleUpgradeContractV3.fromInit(
+    it("should implement delayed upgrade with timeout=1s of contract correctly", async () => {
+        expect(await contract.getIsUpgradable()).toEqual(true);
+
+        // Check counter
+        expect(await contract.getCounter()).toEqual(0n);
+
+        // Increment counter
+        await contract.send(
+            owner.getSender(),
+            { value: toNano(1) },
+            "increment",
+        );
+
+        // Check counter
+        expect(await contract.getCounter()).toEqual(1n);
+        expect(await contract.getVersion()).toEqual(0n);
+
+        const newContract = await SampleDelayedUpgradeContractV2.fromInit(
             owner.address,
         );
-        await updateContract(owner.getSender(), newContract.init?.code);
+        await initiateUpdateContract(
+            owner.getSender(),
+            NANOSECONDS_1S,
+            newContract.init?.code,
+        );
+
+        // imitate actual timeout
+        await new Promise((resolve) => setTimeout(resolve, MILLISECONDS_1S));
+
+        await confirmUpdateContract(owner.getSender());
+
+        // Should add 100 instead of 1
+        // Increment counter
+        await contract.send(
+            owner.getSender(),
+            { value: toNano(1) },
+            "increment",
+        );
+
+        // Check counter
+        expect(await contract.getCounter()).toEqual(101n);
+        expect(await contract.getVersion()).toEqual(1n);
+        expect(await contract.getIsUpgradable()).toEqual(true);
+    });
+
+    it("should fail delayed upgrade with timeout=1m without actual waiting correctly", async () => {
+        const newContract = await SampleDelayedUpgradeContractV2.fromInit(
+            owner.address,
+        );
+        await initiateUpdateContract(
+            owner.getSender(),
+            60n * NANOSECONDS_1S,
+            newContract.init?.code,
+        );
+
+        const earlyConfirmRes = await confirmUpdateContract(owner.getSender());
+
+        const errorCodeForInvalidSender = findErrorCodeByMessage(
+            contract.abi.errors,
+            "DelayedUpgradable: Cannot confirm upgrade before timeout",
+        );
+
+        if (errorCodeForInvalidSender === null) {
+            throw new Error("cannot find message");
+        }
+
+        expect(earlyConfirmRes.transactions).toHaveTransaction({
+            from: owner.address,
+            to: contract.address,
+            aborted: true,
+            exitCode: errorCodeForInvalidSender,
+        });
+    });
+
+    it("should implement delayed upgrade of contract with new receiver correctly", async () => {
+        // Note, in new version counter has int32 type, not uint32!
+        const newContract = await SampleDelayedUpgradeContractV3.fromInit(
+            owner.address,
+        );
+        await initiateUpdateContract(
+            owner.getSender(),
+            NANOSECONDS_1S,
+            newContract.init?.code,
+        );
+
+        // imitate actual timeout
+        await new Promise((resolve) => setTimeout(resolve, MILLISECONDS_1S));
+
+        await confirmUpdateContract(owner.getSender());
 
         // Decrement counter with new receiver
         await sendRawMessage(
@@ -121,7 +215,11 @@ describe("upgrade", () => {
         expect(await contract.getIsUpgradable()).toEqual(true);
     });
 
-    async function updateContract(sender: Treasury, code: Cell | undefined) {
+    async function initiateUpdateContract(
+        sender: Treasury,
+        timeout: bigint,
+        code: Cell | undefined,
+    ) {
         if (code === undefined) {
             throw new Error("invalid argument");
         }
@@ -134,7 +232,17 @@ describe("upgrade", () => {
                 $$type: "Upgrade",
                 code: code,
                 data: null,
-                timeout: 0n,
+                timeout: timeout,
+            },
+        );
+    }
+
+    async function confirmUpdateContract(sender: Treasury) {
+        return await contract.send(
+            sender,
+            { value: toNano(1) },
+            {
+                $$type: "Confirm",
             },
         );
     }

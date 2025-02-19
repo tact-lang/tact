@@ -85,10 +85,10 @@ trait DelayedUpgradable with Upgradable {
     /// Confirms and executes pending upgrade after timeout period.
     /// Can only be called after `upgrade_info.timeout` nanoseconds have passed.
     receive(msg: Confirm) {
-        require(now() > self.initiated_at + self.upgrade_info.timeout, "cannot confirm upgrade before timeout");
+        require(now() > self.initiated_at + self.upgrade_info.timeout, "DelayedUpgradable: Cannot confirm upgrade before timeout");
 
         if (self.upgrade_info.code != null) {
-            setData(self.upgrade_info.code!!);
+            setCode(self.upgrade_info.code!!);
         }
         if (self.upgrade_info.data != null) {
             setData(self.upgrade_info.data!!);

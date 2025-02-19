@@ -5,11 +5,13 @@ message Add {
     amount: Int as uint32;
 }
 
-contract SampleUpgradeContractV2 with Upgradable {
+contract SampleDelayedUpgradeContractV3 with DelayedUpgradable {
     version: Int = 0;
+    initiated_at: Int = 0;
+    upgrade_info: Upgrade = Upgrade{};
 
     owner: Address;
-    counter: Int as uint32;
+    counter: Int as int32;
 
     init(owner: Address) {
         self.owner = owner;
@@ -27,6 +29,10 @@ contract SampleUpgradeContractV2 with Upgradable {
 
     receive("increment") {
         self.add(100);
+    }
+
+    receive("decrement") {
+        self.counter -= 1;
     }
 
     get fun counter(): Int {

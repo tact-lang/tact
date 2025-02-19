@@ -5,8 +5,10 @@ message Add {
     amount: Int as uint32;
 }
 
-contract SampleUpgradeContractV2 with Upgradable {
+contract SampleDelayedUpgradeContractV2 with DelayedUpgradable {
     version: Int = 0;
+    initiated_at: Int = 0;
+    upgrade_info: Upgrade = Upgrade{};
 
     owner: Address;
     counter: Int as uint32;
