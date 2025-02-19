@@ -16,14 +16,14 @@ export function getUsedGas(sendEnough: SendMessageResult): number {
 
 export type BenchmarkResult = {
     label: string;
-    commit: string | undefined;
+    pr: string | undefined;
     gas: Record<string, number>;
 };
 
 export type RawBenchmarkResult = {
     results: {
         label: string;
-        commit: string | null;
+        pr: string | null;
         gas: Record<string, string>;
     }[];
 };
@@ -33,7 +33,7 @@ export function generateResults(
 ): BenchmarkResult[] {
     return benchmarkResults.results.map((result) => ({
         label: result.label,
-        commit: result.commit ?? undefined,
+        pr: result.pr ?? undefined,
         gas: Object.fromEntries(
             Object.entries(result.gas).map(([key, value]) => [
                 key,
@@ -97,7 +97,7 @@ export function printBenchmarkTable(results: BenchmarkResult[]): void {
     const changes = calculateChanges(results, METRICS);
 
     results
-        .map(({ label, gas, commit }, i) => [
+        .map(({ label, gas, pr: commit }, i) => [
             label,
             ...METRICS.map((metric, j) => `${gas[metric]} ${changes[i]?.[j]}`),
             commit

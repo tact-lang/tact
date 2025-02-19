@@ -1,7 +1,6 @@
 import { exec } from "child_process";
 import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
-import { execSync } from "child_process";
 import { z } from "zod";
 import type { BenchmarkResult, RawBenchmarkResult } from "./util";
 
@@ -65,12 +64,9 @@ const parseBenchmarkOutput = (output: string): BenchmarkResult | undefined => {
                 assertion.failureDetails[0]!.matcherResult.actual;
         });
 
-    // Get current git commit
-    const commitHash = execSync("git rev-parse HEAD").toString().trim();
-
     return {
         label: `Benchmark ${new Date().toISOString().split("T")[0]}`,
-        commit: `https://github.com/tact-lang/tact/commit/${commitHash}`,
+        pr: undefined,
         gas: gasUpdates,
     };
 };
@@ -89,7 +85,7 @@ const updateResultsFile = async (
 
     benchmarkResults.results.push({
         label: newResult.label,
-        commit: newResult.commit ?? null,
+        pr: newResult.pr ?? null,
         gas: Object.fromEntries(
             Object.entries(lastResult.gas).map(([key, value]) => [
                 key,
