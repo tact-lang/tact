@@ -13,7 +13,11 @@ import { Logger } from "../context/logger";
 import type { PackageFileFormat } from "../packaging/fileFormat";
 import { packageCode } from "../packaging/packageCode";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
-import { getContracts, getType } from "../types/resolveDescriptors";
+import {
+    getAllTypes,
+    getContracts,
+    getType,
+} from "../types/resolveDescriptors";
 import { posixNormalize } from "../utils/filePath";
 import { createVirtualFileSystem } from "../vfs/createVirtualFileSystem";
 import type { VirtualFileSystem } from "../vfs/VirtualFileSystem";
@@ -27,6 +31,7 @@ import { TactError } from "../error/errors";
 import type { Parser } from "../grammar";
 import { getParser } from "../grammar";
 import { defaultParser } from "../grammar/grammar";
+import type { TypeDescription } from "../types/types";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -121,35 +126,108 @@ export async function build(args: {
           }
         | undefined
     > = {};
-    for (const contract of getContracts(ctx)) {
+
+    const contracts1 = getAllTypes(ctx).filter((v) => v.kind === "contract");
+
+    function topSortContracts(allContracts: TypeDescription[]) {
+        const visitedCheckCycle: Record<string, number> = {};
+        const visitedTopSort: Record<string, number> = {};
+
+        function checkCycleDfs(cur: TypeDescription, color: number): boolean {
+            visitedCheckCycle[cur.name] = color;
+            for (const dep of cur.dependsOn) {
+                if (dep.kind !== "contract" || dep.name == cur.name) continue;
+
+                if (visitedCheckCycle[dep.name] === color) {
+                    return true;
+                }
+                if (checkCycleDfs(dep, color)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function checkCycle(allContracts: TypeDescription[]) {
+            let color = 1;
+            for (const contract of allContracts) {
+                if (
+                    !visitedCheckCycle[contract.name] &&
+                    checkCycleDfs(contract, color)
+                ) {
+                    return true;
+                }
+                color++;
+            }
+            return false;
+        }
+
+        if (!checkCycle(allContracts)) {
+            const res: TypeDescription[] = [];
+
+            const topSort = (cur: TypeDescription, color: number) => {
+                visitedTopSort[cur.name] = color;
+                for (const dep of cur.dependsOn) {
+                    if (dep.kind !== "contract" || dep.name == cur.name)
+                        continue;
+                    if (!visitedTopSort[dep.name]) {
+                        topSort(dep, color);
+                    }
+                }
+                res.push(cur);
+            };
+            let color = 1;
+            for (const cur of allContracts) {
+                if (!visitedTopSort[cur.name]) {
+                    topSort(cur, color);
+                }
+                color++;
+            }
+
+            return res;
+        }
+        return undefined;
+    }
+
+    const sortedContracts = topSortContracts(contracts1);
+    // if(sortedContracts !== undefined) {
+    //     ctx = featureEnable(ctx, "optimizedChildCode");
+    // }
+    const optimizedChildCode = sortedContracts !== undefined;
+    //const optimizedChildCode = false;
+    for (const contract of sortedContracts ?? contracts1) {
+        const contractName = contract.name;
+
         const pathAbi = project.resolve(
             config.output,
-            config.name + "_" + contract + ".abi",
+            config.name + "_" + contractName + ".abi",
         );
 
         const pathCodeBoc = project.resolve(
             config.output,
-            config.name + "_" + contract + ".code.boc",
+            config.name + "_" + contractName + ".code.boc",
         );
         const pathCodeFif = project.resolve(
             config.output,
-            config.name + "_" + contract + ".code.fif",
+            config.name + "_" + contractName + ".code.fif",
         );
         const pathCodeFifDec = project.resolve(
             config.output,
-            config.name + "_" + contract + ".code.rev.fif",
+            config.name + "_" + contractName + ".code.rev.fif",
         );
         let codeFc: { path: string; content: string }[];
         let codeEntrypoint: string;
 
-        // Compiling contract to func
-        logger.info(`   > ${contract}: tact compiler`);
+        // Compiling contractName to func
+        logger.info(`   > ${contractName}: tact compiler`);
         let abi: string;
         try {
             const res = await compile(
                 ctx,
-                contract,
-                config.name + "_" + contract,
+                contractName,
+                config.name + "_" + contractName,
+                built,
+                optimizedChildCode,
             );
             for (const files of res.output.files) {
                 const ffc = project.resolve(config.output, files.name);
@@ -183,8 +261,8 @@ export async function build(args: {
             continue;
         }
 
-        // Compiling contract to TVM
-        logger.info(`   > ${contract}: func compiler`);
+        // Compiling contractName to TVM
+        logger.info(`   > ${contractName}: func compiler`);
         let codeBoc: Buffer;
         try {
             const stdlibPath = stdlib.resolve("std/stdlib.fc");
@@ -240,14 +318,14 @@ export async function build(args: {
         }
 
         // Add to built map
-        built[contract] = {
+        built[contractName] = {
             codeBoc,
             abi,
         };
 
         if (config.mode === "fullWithDecompilation") {
             // Fift decompiler for generated code debug
-            logger.info(`   > ${contract}: fift decompiler`);
+            logger.info(`   > ${contractName}: fift decompiler`);
             let codeFiftDecompiled: string;
             try {
                 codeFiftDecompiled = decompileAll({ src: codeBoc });

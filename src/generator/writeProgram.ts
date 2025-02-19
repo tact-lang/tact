@@ -29,12 +29,15 @@ import {
 import { funcInitIdOf } from "./writers/id";
 import { idToHex } from "../utils/idToHex";
 import { trimIndent } from "../utils/text";
+import type { ContractsCodes } from "./writers/writeContract";
 
 export async function writeProgram(
     ctx: CompilerContext,
     abiSrc: ContractABI,
     basename: string,
     debug: boolean = false,
+    contractCodes: ContractsCodes,
+    optimizedChildCode: boolean,
 ) {
     //
     // Load ABI (required for generator)
@@ -48,7 +51,14 @@ export async function writeProgram(
     //
 
     const wCtx = new WriterContext(ctx, abiSrc.name!);
-    writeAll(ctx, wCtx, abiSrc.name!, abiLink);
+    writeAll(
+        ctx,
+        wCtx,
+        abiSrc.name!,
+        abiLink,
+        contractCodes,
+        optimizedChildCode,
+    );
     const functions = wCtx.extract(debug);
 
     //
@@ -297,6 +307,8 @@ function writeAll(
     wCtx: WriterContext,
     name: string,
     abiLink: string,
+    contractCodes: ContractsCodes,
+    optimizedChildCode: boolean,
 ) {
     // Load all types
     const allTypes = getAllTypes(ctx);
@@ -405,7 +417,7 @@ function writeAll(
     for (const c of contracts) {
         // Init
         if (c.init) {
-            writeInit(c, c.init, wCtx);
+            writeInit(c, c.init, wCtx, contractCodes, optimizedChildCode);
         }
 
         // Functions
