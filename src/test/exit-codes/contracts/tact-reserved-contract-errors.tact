@@ -119,7 +119,22 @@ contract ReservedContractErrorsTester with Ownable {
         }
         require(failed, "Slice.asAddress() didn't error on invalid tag prefix for a masterchain address");
 
-        // Case 2: Invalid tag prefix in workchain (and necessarily a basechain)
+        // Case 2: Invalid tag prefix in basechain
+        try {
+            let chainID = 0; // basechain
+            let addrSlice = beginCell()
+                .storeUint(0b10_1, 3) // WRONG prefix!
+                .storeInt(chainID, 8) // chain ID 0
+                .storeUint(0, 256)    // account ID 0
+                .asSlice();
+            dump(addrSlice.asAddress(chainID));
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed, "Slice.asAddress() didn't error on invalid tag prefix for a basechain address");
+
+        // Case 3: Invalid tag prefix in some workchain
         try {
             let chainID = 1; // some workchain
             let addrSlice = beginCell()
@@ -134,7 +149,7 @@ contract ReservedContractErrorsTester with Ownable {
         }
         require(failed, "Slice.asAddress() didn't error on invalid tag prefix for a workchain address");
 
-        // Case 3: Invalid account ID size in any chain
+        // Case 4: Valid tag prefix in chain ID 0, but invalid account ID size
         try {
             let chainID = 0; // basechain
             let addrSlice = beginCell()
@@ -147,7 +162,37 @@ contract ReservedContractErrorsTester with Ownable {
         } catch (exitCode) {
             nativeThrowIf(exitCode, exitCode != targetCode);
         }
-        require(failed, "Slice.asAddress() didn't error on invalid account ID size");
+        require(failed, "Slice.asAddress() didn't error on invalid account ID size for a basechain address");
+
+        // Case 5: Valid tag prefix in chain ID -1, but invalid account ID size
+        try {
+            let chainID = -1; // masterchain
+            let addrSlice = beginCell()
+                .storeUint(0b10_0, 3) // correct prefix
+                .storeInt(chainID, 8) // chain ID -1
+                .storeUint(0, 42)     // WRONG size of the account ID!
+                .asSlice();
+            dump(addrSlice.asAddress(chainID));
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed, "Slice.asAddress() didn't error on invalid account ID size for a masterchain address");
+
+        // Case 6: Valid tag prefix in chain ID 1, but invalid account ID size
+        try {
+            let chainID = 1; // some workchain
+            let addrSlice = beginCell()
+                .storeUint(0b10_0, 3) // correct prefix
+                .storeInt(chainID, 8) // chain ID 0
+                .storeUint(0, 42)     // WRONG size of the account ID!
+                .asSlice();
+            dump(addrSlice.asAddress(chainID));
+            failed = false;
+        } catch (exitCode) {
+            nativeThrowIf(exitCode, exitCode != targetCode);
+        }
+        require(failed, "Slice.asAddress() didn't error on invalid account ID size for a workchain address");
 
         // As we got here, everything above caused the target exit code,
         // so let's throw it explicitly now for the tests on Blueprint's side
