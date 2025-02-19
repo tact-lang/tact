@@ -21,7 +21,7 @@
       "commit": "https://github.com/tact-lang/tact/commit/c98892a714c274a4d551a98b6e8e28e307fe95a4"
     },
     {
-      "label": "Improved send",
+      "label": "1.5.3 with improved send",
       "gas": {
         "fundingTon": "6376",
         "changeCode": "5500",
@@ -51,14 +51,14 @@
       "commit": "https://github.com/tact-lang/tact/pull/1895"
     },
     {
-      "label": "master",
+      "label": "1.5.3 with optimized routing",
       "gas": {
-        "fundingTon": "6342",
-        "changeCode": "5301",
-        "approveTon": "11130",
-        "cancelTon": "8629"
+        "fundingTon": "6187",
+        "changeCode": "5271",
+        "approveTon": "10975",
+        "cancelTon": "8474"
       },
-      "commit": "https://github.com/tact-lang/tact/tree/main"
+      "commit": "https://github.com/tact-lang/tact/pull/1841"
     }
   ]
 }
