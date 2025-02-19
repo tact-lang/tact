@@ -37,7 +37,6 @@ export async function writeProgram(
     basename: string,
     debug: boolean = false,
     contractCodes: ContractsCodes,
-    optimizedChildCode: boolean,
 ) {
     //
     // Load ABI (required for generator)
@@ -57,7 +56,6 @@ export async function writeProgram(
         abiSrc.name!,
         abiLink,
         contractCodes,
-        optimizedChildCode,
     );
     const functions = wCtx.extract(debug);
 
@@ -308,7 +306,6 @@ function writeAll(
     name: string,
     abiLink: string,
     contractCodes: ContractsCodes,
-    optimizedChildCode: boolean,
 ) {
     // Load all types
     const allTypes = getAllTypes(ctx);
@@ -417,7 +414,7 @@ function writeAll(
     for (const c of contracts) {
         // Init
         if (c.init) {
-            writeInit(c, c.init, wCtx, contractCodes, optimizedChildCode);
+            writeInit(c, c.init, wCtx, contractCodes);
         }
 
         // Functions

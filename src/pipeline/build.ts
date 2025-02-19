@@ -190,11 +190,9 @@ export async function build(args: {
     }
 
     const sortedContracts = topSortContracts(contracts1);
-    // if(sortedContracts !== undefined) {
-    //     ctx = featureEnable(ctx, "optimizedChildCode");
-    // }
-    const optimizedChildCode = sortedContracts !== undefined;
-    //const optimizedChildCode = false;
+    if(sortedContracts !== undefined) {
+        ctx = featureEnable(ctx, "optimizedChildCode");
+    }
     for (const contract of sortedContracts ?? contracts1) {
         const contractName = contract.name;
 
@@ -227,7 +225,6 @@ export async function build(args: {
                 contractName,
                 config.name + "_" + contractName,
                 built,
-                optimizedChildCode,
             );
             for (const files of res.output.files) {
                 const ffc = project.resolve(config.output, files.name);

@@ -8,7 +8,6 @@ export async function compile(
     name: string,
     basename: string,
     contractCodes: ContractsCodes,
-    optimizedChildCode: boolean,
 ) {
     const abi = createABI(ctx, name);
     const output = await writeProgram(
@@ -17,7 +16,6 @@ export async function compile(
         basename,
         undefined,
         contractCodes,
-        optimizedChildCode,
     );
     const cOutput = output;
     return { output: cOutput, ctx };
