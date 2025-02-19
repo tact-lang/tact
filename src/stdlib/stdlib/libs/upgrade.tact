@@ -48,6 +48,7 @@ trait Upgradable {
         }
         if (msg.data != null) {
             setData(msg.data!!);
+            // prevents second call of `set_data` later in FunC compiled code
             throw(0);
         }
     }
