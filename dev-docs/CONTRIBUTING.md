@@ -71,6 +71,20 @@ To run benchmarks:
 yarn bench
 ```
 
+## Updating benchmarks
+
+To update snapshot-based benchmarks:
+
+```shell
+yarn bench -u
+```
+
+To update historical benchmarks with `results.json`:
+
+```shell
+yarn bench:upgrade
+```
+
 ### Adding a new benchmark
 
 To add a new benchmark:
