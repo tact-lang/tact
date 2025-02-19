@@ -345,8 +345,7 @@ asm( -> 1 0) extends mutates fun loadVarUint32(self: Slice): Int { LDVARUINT32 }
 ///
 asm( -> 1 0) extends mutates fun loadVarInt32(self: Slice): Int { LDVARINT32 }
 
-@name(__tact_load_address)
-extends mutates native loadAddress(self: Slice): Address;
+asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 
 asm extends mutates fun skipBits(self: Slice, l: Int) { SDSKIPFIRST }
 

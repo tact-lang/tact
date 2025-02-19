@@ -522,8 +522,7 @@ function writeFieldParser(
                 ctx.used(`__tact_load_address_opt`);
                 ctx.append(`${varName} = sc_${gen}~__tact_load_address_opt();`);
             } else {
-                ctx.used(`__tact_load_address`);
-                ctx.append(`${varName} = sc_${gen}~__tact_load_address();`);
+                ctx.append(`${varName} = sc_${gen}~load_msg_addr();`);
             }
             return;
         }
