@@ -150,6 +150,8 @@ describe("Wallet Gas Tests", () => {
 
         seqno = 0n;
 
+        console.log(keypair.publicKey.toString("hex"));
+
         wallet = blockchain.openContract(
             await Wallet.fromInit(
                 bufferToBigInt(keypair.publicKey),
@@ -181,5 +183,9 @@ describe("Wallet Gas Tests", () => {
         printBenchmarkTable(results);
     });
 
-    it("send external signed", async () => {});
+    it("send external signed", async () => {
+        const walletSeqno = await wallet.getSeqno();
+
+        expect(walletSeqno).toBe(seqno);
+    });
 });
