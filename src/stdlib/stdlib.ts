@@ -107,7 +107,7 @@ files["libs/stoppable.tact"] =
     "IFJlc3VtYWJsZSB3aXRoIFN0b3BwYWJsZSB7CiAgICBzdG9wcGVkOiBCb29sOwogICAgb3duZXI6IEFkZHJlc3M7CgogICAgcmVjZWl2ZSgiUmVzdW1lIikgewogICAg" +
     "ICAgIHNlbGYucmVxdWlyZU93bmVyKCk7CiAgICAgICAgc2VsZi5yZXF1aXJlU3RvcHBlZCgpOwogICAgICAgIHNlbGYuc3RvcHBlZCA9IGZhbHNlOwogICAgICAgIHNl" +
     "bGYucmVwbHkoIlJlc3VtZWQiLmFzQ29tbWVudCgpKTsKICAgIH0KfQ==";
-files["libs/upgradable.tact"] =
+files["libs/upgrade.tact"] =
     "Ly8vIE1lc3NhZ2UgZm9yIHVwZ3JhZGluZyBjb250cmFjdCBjb2RlIGFuZCBkYXRhLgptZXNzYWdlIFVwZ3JhZGUgewogICAgLy8vIE9wdGlvbmFsIG5ldyBjb250cmFj" +
     "dCBjb2RlIGFzIENlbGwuCiAgICBjb2RlOiBDZWxsPyA9IG51bGw7CiAgICAvLy8gT3B0aW9uYWwgbmV3IGNvbnRyYWN0IGRhdGEgYXMgQ2VsbC4KICAgIGRhdGE6IENl" +
     "bGw/ID0gbnVsbDsKICAgIC8vLyBEZWxheSBpbiBuYW5vc2Vjb25kcyBiZWZvcmUgdXBncmFkZSBjYW4gYmUgY29uZmlybWVkLgogICAgLy8vIFplcm8gbWVhbnMgdXBn" +
