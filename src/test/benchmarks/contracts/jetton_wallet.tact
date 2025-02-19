@@ -7,6 +7,7 @@ contract JettonWallet with Ownable {
     master: Address;
     const minTonsForStorage: Int = ton("0.015"); // 0.01 TON in original funC implementation. Increased as we have approx. x2 code size
     const gasConsumption: Int = ton("0.015"); // 0.015 TON in original funC implementation. 0.13 TON is Howard's constant
+
     // According to tests, 23k gas is maximum gas consumption in transfer. 23k gas is 0.0092 TON
     // More precisely, max gas I could get is 22725
     init(owner: Address, master: Address) {
@@ -15,11 +16,13 @@ contract JettonWallet with Ownable {
         self.master = master;
     }
 
-
     receive(msg: JettonTransfer) {
         self.requireOwner();
 
-        let totalFees: Int = (2 * context().readForwardFee() + 2 * self.gasConsumption) + self.minTonsForStorage + msg.forwardTonAmount;
+        let totalFees: Int =
+            2 * (context().readForwardFee() + self.gasConsumption) +
+            self.minTonsForStorage +
+            msg.forwardTonAmount;
 
         //Context() returns Structure with info about incoming message
         //require(context().value > totalFees, "insufficient amount of TON attached");
@@ -30,28 +33,22 @@ contract JettonWallet with Ownable {
         //however when doing calculations it's value may be negative, so the check is correct
         require(self.balance >= 0, "Invalid balance");
 
-
         //We shouldn't send transfers to masterchain due to higher gas price
         require(parseStdAddress(msg.destination.asSlice()).workchain == 0, "Invalid workchain of destination address");
 
-        let init: StateInit = initOf JettonWallet(msg.destination, self.master);
-        let walletAddress: Address = contractAddress(init);
-
-        send(SendParameters{
-            to: walletAddress,
+        deploy(DeployParameters{
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
-            body: JettonTransferInternal {
-            queryId: msg.queryId,
+            body: JettonTransferInternal{
+                queryId: msg.queryId,
                 amount: msg.amount,
                 sender: self.owner,
                 responseDestination: msg.responseDestination,
                 forwardTonAmount: msg.forwardTonAmount,
                 forwardPayload: msg.forwardPayload
             }.toCell(),
-            code: init.code,
-            data: init.data
+            init: initOf JettonWallet(msg.destination, self.master),
         });
     }
 
@@ -61,13 +58,14 @@ contract JettonWallet with Ownable {
             let init: StateInit = initOf JettonWallet(msg.sender, self.master);
             require(contractAddress(init) == sender(), "Sender is not another JettonWallet or JettonMaster");
         }
+
         // Update balance
         self.balance += msg.amount;
 
         //Commented require() here because self.balance and msg.amount are coins, so they are unsigned
         //require(self.balance >= 0, "Invalid balance");
-        // Get value for gas
 
+        // Get value for gas
         let ctx: Context = context(); //Context of current message
         let msgValue: Int = ctx.value;
         let tonBalanceBeforeMsg = myBalance() - msgValue;
@@ -75,7 +73,6 @@ contract JettonWallet with Ownable {
         msgValue -= (storageFee + self.gasConsumption);
 
         let fwd_fee: Int = ctx.readForwardFee();
-
 
         if (msg.forwardTonAmount > 0) {
             msgValue = ((msgValue - msg.forwardTonAmount) - fwd_fee);
@@ -88,10 +85,11 @@ contract JettonWallet with Ownable {
                     queryId: msg.queryId,
                     amount: msg.amount,
                     sender: msg.sender,
-                    forwardPayload: msg.forwardPayload
-            }.toCell()
+                    forwardPayload: msg.forwardPayload,
+                }.toCell(),
             });
         }
+
         // 0xd53276db -- Cashback to the original Sender
         if (msg.responseDestination != null && msgValue > 0) {
             send(SendParameters{
@@ -100,14 +98,12 @@ contract JettonWallet with Ownable {
                 mode: SendIgnoreErrors, // Jetton transfer is already succeeded, Here was only PayGasSeparately in Howard's code
                 //In official funC implementation it is SendIgnoreErrors
                 bounce: false,
-                body: JettonExcesses{
-                    queryId: msg.queryId
-                }.toCell()
+                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
             });
         }
     }
 
-    receive(msg: JettonBurn){
+    receive(msg: JettonBurn) {
         self.requireOwner();
 
         self.balance -= msg.amount; // Update balance
@@ -128,26 +124,25 @@ contract JettonWallet with Ownable {
                 queryId: msg.queryId,
                 amount: msg.amount,
                 sender: self.owner,
-                responseDestination: msg.responseDestination
-                }.toCell()
-        }
-        );
+                responseDestination: msg.responseDestination,
+            }.toCell(),
+        });
     }
 
-    bounced(msg: bounced<JettonTransferInternal>){
+    bounced(msg: bounced<JettonTransferInternal>) {
         self.balance += msg.amount;
     }
 
-    bounced(msg: bounced<JettonBurnNotification>){
+    bounced(msg: bounced<JettonBurnNotification>) {
         self.balance += msg.amount;
     }
 
     get fun get_wallet_data(): JettonWalletData {
         return JettonWalletData{
-        balance: self.balance,
-        owner: self.owner,
-        master: self.master,
-        code: myCode() //may be replaced by "initOf JettonDefaultWallet(self.owner, self.master).code"
+            balance: self.balance,
+            owner: self.owner,
+            master: self.master,
+            code: myCode() //may be replaced by "initOf JettonDefaultWallet(self.owner, self.master).code"
         };
     }
 }

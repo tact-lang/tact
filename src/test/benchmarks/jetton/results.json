@@ -82,31 +82,67 @@
       "commit": null
     },
     {
-      "label": "1.5.3 with improved storeBool (#1702)",
+      "label": "1.5.3 with improved storeBool",
       "gas": {
         "transfer": "21402",
         "burn": "16029",
         "discovery": "10067"
       },
-      "commit": null
+      "commit": "https://github.com/tact-lang/tact/pull/1702"
     },
     {
-      "label": "1.5.3 with more optimized send (#1800)",
+      "label": "1.5.3 with more optimized send",
       "gas": {
         "transfer": "20714",
         "burn": "15909",
         "discovery": "10003"
       },
-      "commit": null
+      "commit": "https://github.com/tact-lang/tact/pull/1800"
     },
     {
-      "label": "1.5.3 with address functions in Tact (#1766)",
+      "label": "1.5.3 with address functions in Tact",
       "gas": {
         "transfer": "19944",
         "burn": "15565",
         "discovery": "9613"
       },
-      "commit": "https://github.com/tact-lang/tact/pull/1766/"
+      "commit": "https://github.com/tact-lang/tact/pull/1766"
+    },
+    {
+      "label": "1.5.3 without double checking of message opcodes",
+      "gas": {
+        "transfer": "19598",
+        "burn": "15311",
+        "discovery": "9458"
+      },
+      "commit": "https://github.com/tact-lang/tact/pull/1854"
+    },
+    {
+      "label": "1.5.3 with deploy instead of send",
+      "gas": {
+        "transfer": "18517",
+        "burn": "15311",
+        "discovery": "9458"
+      },
+      "commit": "https://github.com/tact-lang/tact/pull/1832"
+    },
+    {
+      "label": "1.5.3 with inlining of __tact_load_address",
+      "gas": {
+        "transfer": "18337",
+        "burn": "15113",
+        "discovery": "9386"
+      },
+      "commit": "https://github.com/tact-lang/tact/pull/1895"
+    },
+    {
+      "label": "1.5.3 with optimized routing",
+      "gas": {
+        "transfer": "18147",
+        "burn": "14941",
+        "discovery": "9319"
+      },
+      "commit": "https://github.com/tact-lang/tact/pull/1841"
     }
   ]
 }
