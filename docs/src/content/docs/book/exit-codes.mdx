@@ -62,7 +62,7 @@ Exit code     | Origin                              | Brief description
 [$133$](#133) | Tact compiler ([Compute phase][c])  | Contract stopped. Reserved, but never thrown.
 [$134$](#134) | Tact compiler ([Compute phase][c])  | Invalid argument.
 [$135$](#135) | Tact compiler ([Compute phase][c])  | Code of a contract was not found.
-~~[$136$](#136)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Invalid address.~~ Removed since Tact 1.6 (not released yet)
+[$136$](#136) | Tact compiler ([Compute phase][c])  | Invalid standard address.
 ~~[$137$](#137)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Masterchain support is not enabled for this contract.~~ Removed since Tact 1.6 (not released yet)
 
 :::note
@@ -631,24 +631,26 @@ try {
 
 If the code of the contract doesn't match the one saved in TypeScript wrappers, the error with exit code $135$ will be thrown: `Code of a contract was not found`.
 
-### 136: Invalid address {#136}
+### 136: Invalid standard address {#136}
 
-<Badge text="Removed since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+A value of type [`Address{:tact}`][p] is considered a valid internal standard address if:
 
-A value of type [`Address{:tact}`][p] is valid in Tact when:
+* It occupies $267$ bits: $3$ bits for its tag prefix, $8$ bits for the [chain ID](https://docs.ton.org/learn/overviews/addresses#workchain-id) and $256$ bits for the [account ID](https://docs.ton.org/learn/overviews/addresses#account-id).
+* Its prefix is `0b100`, meaning it's an [`addr_std` in TL-B notation](https://docs.ton.org/v3/documentation/data-formats/tlb/msg-tlb#addr_std10) with no optional data.
 
-* It occupies $267$ bits: $11$ bits for the chain ID prefix and $256$ bits for the [address itself](https://docs.ton.org/learn/overviews/addresses#address-of-smart-contract).
-* It belongs to either basechain (ID $0$) or masterchain (ID $-1$).
-
-If the [`Address{:tact}`][p] isn't valid, the error with exit code $136$ will be thrown: `Invalid address`.
+Such checks are currently only performed in the [`Slice.asAddress(){:tact}`](/ref/core-cells#sliceasaddress) function. If any of the above is false, the function throws an error with exit code $136$: `Invalid standard address`.
 
 ```tact
-// Only basechain (ID 0) or masterchain (ID -1) are supported by Tact
-let unsupportedChainID = 1;
+let basechainID = 0;
+let addrSlice = beginCell()
+    .storeUint(0b10_1, 3) // unsupported prefix!
+    .storeInt(basechainID, 8) // chain ID 0
+    .storeUint(0, 42) // and a wrong size of the account ID!
+    .asSlice();
 
 try {
-    // Zero address in unsupported workchain
-    dump(newAddress(unsupportedChainID, 0));
+    // The tag prefix and account ID are both incorrect
+    dump(addrSlice.asAddress(basechainID));
 } catch (exitCode) {
     // exitCode is 136
 }

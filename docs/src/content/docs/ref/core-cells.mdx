@@ -1298,6 +1298,7 @@ let buzz: Cell = beginCell().storeSlice(s).endCell();
 
 fizz == buzz; // true
 ```
+
 ### Slice.asAddress
 
 <Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
@@ -1308,17 +1309,26 @@ extends fun asAddress(self: Slice, chain: Int): Address;
 
 Extension function for the [`Slice{:tact}`][slice].
 
-Safely casts the [`Slice{:tact}`][slice] to an [`Address{:tact}`][p] and returns it. The inverse of [`Address.asSlice(){:tact}`](#addressasslice).
-The safe version of [`Slice.asAddressUnsafe(){:tact}`](#sliceasaddressunsafe).
+Casts the [`Slice{:tact}`][slice] to an [`Address{:tact}`][p] in a given `chain` ID and returns it. The inverse of [`Address.asSlice(){:tact}`](#addressasslice) and a safe but more gas-expensive version of [`Slice.asAddressUnsafe(){:tact}`](#sliceasaddressunsafe).
+
+Attempts to specify a [`Slice{:tact}`][slice] with an invalid [account ID](https://docs.ton.org/learn/overviews/addresses#account-id) length throw an error with [exit code 136](/book/exit-codes#): `Invalid standard address`.
+
+Attempts to specify a [`Slice{:tact}`][slice] with an invalid tag prefix (not `0b100`) or with an invalid [account ID](https://docs.ton.org/learn/overviews/addresses#account-id) length (not $256$ bits) throw an error with [exit code 136](/book/exit-codes#): `Invalid standard address`.
 
 Usage example:
 
 ```tact
-let a: Address = myAddress();
-let a2: Address = a.asSlice().asAddress();
+let a: Address = myAddress(); // let's assume we're in a basechain
+let a2: Address = a.asSlice().asAddress(0); // so the chain ID is 0
 
 a == a2; // true
 ```
+
+:::note
+
+  Because of the checks performed, this function is more gas-expensive than its unsafe but cheap counterpart: [`Slice.asAddressUnsafe(){:tact}`](#sliceasaddressunsafe).
+
+:::
 
 ### Slice.asAddressUnsafe
 
@@ -1346,7 +1356,8 @@ a == a2; // true
 :::caution
 
   Use it only if you want to optimize the code for gas and can guarantee in advance that the [`Slice{:tact}`][slice] contains the data of an [`Address{:tact}`][p].
-  Otherwise, use a slower but safer [`Slice.asAddress()`](#sliceasaddress) function.
+
+  Otherwise, use a safer but more gas-expensive [`Slice.asAddress(){:tact}`](#sliceasaddress) function.
 
 :::
 

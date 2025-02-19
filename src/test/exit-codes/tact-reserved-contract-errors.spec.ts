@@ -65,6 +65,11 @@ describe("Tact-reserved contract errors", () => {
 
     // 135: Code of a contract was not found
     // NOTE: Reserved, but one has to replace the contract code to trigger it
+
+    // 136: Invalid address
+    it("should test exit code 136", async () => {
+        await testReservedExitCode(136, contract, treasure);
+    });
 });
 
 async function testReservedExitCode(
@@ -74,8 +79,8 @@ async function testReservedExitCode(
 ) {
     expect(code).toBeGreaterThanOrEqual(128);
     expect(code).toBeLessThan(256);
-    expect([128, 130, 132, 134]).toContain(code);
-    type testedExitCodes = "128" | "130" | "132" | "134";
+    expect([128, 130, 132, 134, 136]).toContain(code);
+    type testedExitCodes = "128" | "130" | "132" | "134" | "136";
 
     const sendResult = await contract.send(
         treasure.getSender(),

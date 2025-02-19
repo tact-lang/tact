@@ -1,30 +1,41 @@
 /// Extension function for the `Slice`. Available since Tact 1.6.0.
 ///
-/// Safely casts the `Slice` to an `Address` and returns it. The inverse of `Address.asSlice()`.
-/// The safe version of `Slice.asAddressUnsafe()`.
+/// Casts the `Slice` to an `Address` in a given `chain` ID and returns it. The inverse of `Address.asSlice()` and a safe but more gas-expensive version of `Slice.asAddressUnsafe()`.
 /// 
+/// Attempts to specify a `Slice` with an invalid account ID length throw an error with exit code 136: `Invalid standard address`.
+/// 
+/// Attempts to specify a `Slice` with an invalid tag prefix (not `0b100`) or with an invalid account ID length (not 256 bits) throw an error with exit code 136: `Invalid standard address`.
+///
 /// ```tact
 /// fun example() {
-///     let a: Address = myAddress();
-///     let a2: Address = a.asSlice().asAddress();
+///     let a: Address = myAddress(); // let's assume we're in a basechain
+///     let a2: Address = a.asSlice().asAddress(0); // so the chain ID is 0
 ///
 ///     a == a2; // true
 /// }
 /// ```
-/// 
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddress
+/// * https://docs.tact-lang.org/ref/core-cells#sliceasaddressunsafe
 /// * https://docs.tact-lang.org/ref/core-cells#addressasslice
 ///
 extends fun asAddress(self: Slice, chain: Int): Address {
     // 11 bits for the prefix,
     // 256 bits for the address itself
-    let rightLength = 267;
-    nativeThrowUnless(136, self.bits() == rightLength);
+    nativeThrowUnless(136, self.bits() == 267);
 
-    let basechainAddrPrefix = chain == -1 ? 1279 : 1024;
-    nativeThrowUnless(136, self.preloadUint(11) == basechainAddrPrefix);
+    if (chain == -1) {
+        // 1279 = 0b100_1111_1111,
+        // i.e. internal address prefix and chain ID -1
+        nativeThrowUnless(136, self.preloadUint(11) == 1279);
+    } else {
+        // Only check the correct internal address prefix,
+        // but do not verify the chain ID
+        nativeThrowUnless(136, self.preloadUint(3) == 4);
+    }
 
+    // Proceed with the cast
     return self.asAddressUnsafe();
 }
 
@@ -44,7 +55,8 @@ extends fun asAddress(self: Slice, chain: Int): Address {
 /// ```
 ///
 /// Use it only if you want to optimize the code for gas and can guarantee in advance that the `Slice` contains the data of an `Address`.
-/// Otherwise, use a slower but safer `Slice.asAddressUnsafe()` function.
+///
+/// Otherwise, use a safer but more gas-expensive `Slice.asAddress()` function.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddressunsafe
