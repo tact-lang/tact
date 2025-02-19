@@ -7,6 +7,18 @@ import { Badge } from '@astrojs/starlight/components';
 
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
 
+:::danger
+
+  Current assembly functions are highly experimental and may change in future releases. Please be sure to follow our updates in the [Tact Kitchen](https://t.me/tact_kitchen) or monitor the release changelogs to see when we will update this feature.
+
+  The change is necessary because the current assembly described and used is a remnant of the current FunC backend of Tact. To further improve compilation speed, reduce gas usage, and provide better type safety, we need to eventually prepare and present our own assembly for composing [Bags of Cells (BoC)](/book/cells#cells-boc) of compiled contracts.
+
+  When that happens, almost all the [TVM instructions](#tvm) _inside_ the `asm` function bodies on this page will be rewritten.
+
+  However, virtually everything else will stay as it is now, including the general syntax of the `asm` function declarations and arrangements, stack calling conventions and many limitations of assembly functions. After all, the fundamental principles of how TON Blockchain works won't be changed by internal improvements of Tact, so you should read about both.
+
+:::
+
 :::caution
 
   These are very advanced functions that require experience and vigilance in both definitions and usage. The logical errors in them are extremely hard to spot, the error messages are abysmal, and type checking isn't currently provided by Tact.
