@@ -11,7 +11,7 @@ export function getUsedGas(
         : getUsedGasInternal(sendEnough);
 }
 
-export function getUsedGasExternal(sendResult: SendMessageResult): number {
+function getUsedGasExternal(sendResult: SendMessageResult): number {
     const externalTx = sendResult.transactions[0];
 
     if (typeof externalTx === "undefined") {
@@ -24,7 +24,7 @@ export function getUsedGasExternal(sendResult: SendMessageResult): number {
         : 0;
 }
 
-export function getUsedGasInternal(sendResult: SendMessageResult): number {
+function getUsedGasInternal(sendResult: SendMessageResult): number {
     return sendResult.transactions
         .slice(1)
         .map((t) =>

@@ -124,7 +124,7 @@ describe("Wallet Gas Tests", () => {
     const results = generateResults(benchmarkResults);
     const expectedResult = results.at(-1)!;
 
-    async function sendSignedExternaldBody(actions: ActionCell) {
+    async function sendSignedExternalBody(actions: ActionCell) {
         const internalOperation: InternalOperation = {
             $$type: "InternalOperation",
             walletId: SUBWALLET_ID,
@@ -245,7 +245,7 @@ describe("Wallet Gas Tests", () => {
         const actionsSlice = createActionsSlice(actions);
 
         const externalTransferSendResult =
-            await sendSignedExternaldBody(actionsSlice);
+            await sendSignedExternalBody(actionsSlice);
 
         // external and transfer
         expect(externalTransferSendResult.transactions.length).toEqual(2);

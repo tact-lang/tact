@@ -175,3 +175,4 @@ XMODEM
 xtwitter
 привет
 subwallet
+keypair

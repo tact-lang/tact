@@ -38,7 +38,7 @@ message InternalExtensionRequest {
     actions: Slice as remaining;
 }
 
-asm fun countTrailingZeroess(s: Slice): Int { SDCNTTRAIL0 }
+asm fun countTrailingZeroes(s: Slice): Int { SDCNTTRAIL0 }
 
 contract Wallet with Deployable {
     isSignatureAllowed: Bool;
@@ -109,7 +109,7 @@ contract Wallet with Deployable {
         // action_send_msg#01 mode:(## 8) out_msg:^(MessageRelaxed Any) = ExtendedAction;
         while(msg.refs() > 0) {
             // enforce that send_mode has +2 bit (ignore errors) set for external message.
-            nativeThrowIf(137, isExternal && (countTrailingZeroess(msg.preloadBits(7)) > 0));
+            nativeThrowIf(137, isExternal && (countTrailingZeroes(msg.preloadBits(7)) > 0));
 
             let mode: Int = msg.loadInt(8);
             let body: Cell = msg.loadRef();
