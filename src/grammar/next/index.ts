@@ -729,8 +729,14 @@ const parseConstantAttributes =
         nodes: readonly $ast.ConstantAttribute[],
         isAbstract: boolean,
         loc: $.Loc,
+        noAttributes: boolean,
     ): Handler<A.AstConstantAttribute[]> =>
     (ctx) => {
+        const [head] = nodes;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (noAttributes && head) {
+            ctx.err.topLevelConstantWithAttribute()(head.loc);
+        }
         checkAttributes("constant")(ctx, isAbstract, nodes, loc);
         return map(nodes, parseConstantAttribute)(ctx);
     };
@@ -1034,26 +1040,21 @@ const parseContractInit =
 const parseConstantDefInModule =
     (node: $ast.Constant): Handler<A.AstConstantDef> =>
     (ctx) => {
-        const result = parseConstantDef(node)(ctx);
-        const firstAttribute = result.attributes[0];
-        if (typeof firstAttribute !== "undefined") {
-            // FIXME: should be `firstAttribute.loc`
-            // https://github.com/tact-lang/tact/issues/1255
-            ctx.err.topLevelConstantWithAttribute()(node.loc);
-            return { ...result, attributes: [] };
-        }
-        return result;
+        return parseConstantDef(node, true)(ctx);
     };
 
 const parseConstantDef =
-    (node: $ast.Constant): Handler<A.AstConstantDef> =>
+    (
+        node: $ast.Constant,
+        noAttributes: boolean = false,
+    ): Handler<A.AstConstantDef> =>
     (ctx) => {
-        const result = parseConstant(node)(ctx);
+        const result = parseConstant(node, noAttributes)(ctx);
 
         if (result.kind !== "constant_def") {
             ctx.err.noConstantDecl()(node.loc);
             return {
-                ...parseConstant(node)(ctx),
+                ...result,
                 kind: "constant_def",
                 initializer: ctx.ast.Number(10, 0n, node.loc),
             };
@@ -1063,7 +1064,10 @@ const parseConstantDef =
     };
 
 const parseConstant =
-    (node: $ast.Constant): Handler<A.AstConstantDecl | A.AstConstantDef> =>
+    (
+        node: $ast.Constant,
+        noAttributes: boolean = false,
+    ): Handler<A.AstConstantDecl | A.AstConstantDef> =>
     (ctx) => {
         const name = parseId(node.name)(ctx);
         const type = parseType(node.type)(ctx);
@@ -1073,6 +1077,7 @@ const parseConstant =
                 node.attributes,
                 true,
                 node.loc,
+                noAttributes,
             )(ctx);
             return ctx.ast.ConstantDecl(attributes, name, type, node.loc);
         } else {
@@ -1080,6 +1085,7 @@ const parseConstant =
                 node.attributes,
                 false,
                 node.loc,
+                noAttributes,
             )(ctx);
             const initializer = parseExpression(node.body.expression)(ctx);
             return ctx.ast.ConstantDef(
