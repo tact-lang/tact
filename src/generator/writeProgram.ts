@@ -35,8 +35,8 @@ export async function writeProgram(
     ctx: CompilerContext,
     abiSrc: ContractABI,
     basename: string,
-    debug: boolean = false,
     contractCodes: ContractsCodes,
+    debug: boolean,
 ) {
     //
     // Load ABI (required for generator)

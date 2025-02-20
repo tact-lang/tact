@@ -4,6 +4,9 @@ struct Context {
     value: Int;
     raw: Slice;
 }
+extends fun getBounced(self: Context): Bool {
+    return self.bounced;
+}
 
 @name(__tact_context_get)
 native context(): Context;

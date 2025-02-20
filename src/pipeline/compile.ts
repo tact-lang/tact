@@ -14,8 +14,8 @@ export async function compile(
         ctx,
         abi,
         basename,
-        undefined,
         contractCodes,
+        false,
     );
     const cOutput = output;
     return { output: cOutput, ctx };
