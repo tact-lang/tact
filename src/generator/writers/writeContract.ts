@@ -329,11 +329,12 @@ export function writeMainContract(
             ctx.append();
             ctx.append(`;; Context`);
             ctx.append(`var cs = in_msg_cell.begin_parse();`);
-            ctx.append(`var msg_flags = cs~load_uint(4);`); // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
-            ctx.append(`var msg_bounced = -(msg_flags & 1);`);
+            ctx.append(`cs~skip_bits(2);`);
+            ctx.append(`var msg_bounceable = cs~load_int(1);`);
+            ctx.append(`var msg_bounced = cs~load_int(1);`);
             ctx.append(`slice msg_sender_addr = cs~load_msg_addr();`);
             ctx.append(
-                `__tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);`,
+                `__tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);`,
             );
             ctx.append(`__tact_context_sender = msg_sender_addr;`);
             ctx.append();
