@@ -149,7 +149,7 @@
       "gas": {
         "transfer": "18147",
         "burn": "14897",
-        "discovery": "9181"
+        "discovery": "9145"
       },
       "pr": "https://github.com/tact-lang/tact/pull/TODO"
     }

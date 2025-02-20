@@ -118,11 +118,10 @@ inline fun takeWalletBody(targetJettonWallet: Address, includedAddress: Address?
     let body: Builder = beginCell()
         .storeUint(0xd1735400, 32)
         .storeUint(query_id, 64)
-        .storeSlice(targetJettonWallet.asSlice());
+        .storeAddress(targetJettonWallet);
     if (includedAddress != null) {
-        let includedAddressCell: Cell = beginCell().storeSlice(includedAddress!!.asSlice()).endCell();
         body = body.storeBit(true); // Maybe bit
-        body = body.storeRef(includedAddressCell);
+        body = body.storeRef(beginCell().storeAddress(includedAddress!!).endCell());
     } else {
         body = body.storeBit(false); // Maybe bit
     }
