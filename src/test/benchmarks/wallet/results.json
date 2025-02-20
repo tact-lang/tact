@@ -6,7 +6,8 @@
         "externalTransfer": "5049",
         "addExtension": "6220",
         "deleteExtension": "5975",
-        "multipleActions": "10919"
+        "multipleActions": "10919",
+        "internalTransfer": "5446"
       },
       "pr": "https://github.com/ton-blockchain/wallet-contract-v5"
     },
@@ -17,7 +18,8 @@
         "externalTransfer": "5817",
         "addExtension": "5974",
         "deleteExtension": "5481",
-        "multipleActions": "13256"
+        "multipleActions": "13256",
+        "internalTransfer": "7279"
       }
     }
   ]
