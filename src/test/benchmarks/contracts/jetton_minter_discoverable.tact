@@ -8,6 +8,7 @@ const Workchain: Int = 0;
 
 struct JettonMasterState {
     totalSupply: Int as coins;
+    mintable: Bool;
     adminAddress: Address;
     jettonContent: Cell;
     jettonWalletCode: Cell;
@@ -99,6 +100,7 @@ contract JettonMinter {
     get fun get_jetton_data(): JettonMasterState {
         return JettonMasterState {
             totalSupply: self.totalSupply,
+            mintable: true,
             adminAddress: self.owner,
             jettonContent: self.jettonContent,
             // Owner may be any address, what matters here is the code, not data.
