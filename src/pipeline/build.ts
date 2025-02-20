@@ -129,9 +129,9 @@ export async function build(args: {
 
     const contracts1 = getAllTypes(ctx).filter((v) => v.kind === "contract");
 
-    function topSortContracts(
+    const topSortContracts = (
         allContracts: TypeDescription[],
-    ): TypeDescription[] | undefined {
+    ): TypeDescription[] | undefined => {
         const visitingNow: Set<TypeDescription> = new Set();
         const visited: Set<TypeDescription> = new Set();
         const result: TypeDescription[] = [];
@@ -163,7 +163,7 @@ export async function build(args: {
             }
         }
         return result;
-    }
+    };
 
     const sortedContracts = topSortContracts(contracts1);
     if (sortedContracts !== undefined) {
