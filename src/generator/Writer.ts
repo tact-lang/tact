@@ -112,6 +112,7 @@ export class WriterContext {
         const sorted = topologicalSort(all, (f) =>
             Array.from(f.depends).map((v) => this.#functions.get(v)!),
         );
+
         return sorted;
     }
 

@@ -127,7 +127,7 @@ export async function build(args: {
         | undefined
     > = {};
 
-    const contracts1 = getAllTypes(ctx).filter((v) => v.kind === "contract");
+    const allContracts = getAllTypes(ctx).filter((v) => v.kind === "contract");
 
     const topSortContracts = (
         allContracts: TypeDescription[],
@@ -165,11 +165,11 @@ export async function build(args: {
         return result;
     };
 
-    const sortedContracts = topSortContracts(contracts1);
+    const sortedContracts = topSortContracts(allContracts);
     if (sortedContracts !== undefined) {
         ctx = featureEnable(ctx, "optimizedChildCode");
     }
-    for (const contract of sortedContracts ?? contracts1) {
+    for (const contract of sortedContracts ?? allContracts) {
         const contractName = contract.name;
 
         const pathAbi = project.resolve(
@@ -192,7 +192,7 @@ export async function build(args: {
         let codeFc: { path: string; content: string }[];
         let codeEntrypoint: string;
 
-        // Compiling contractName to func
+        // Compiling contract to func
         logger.info(`   > ${contractName}: tact compiler`);
         let abi: string;
         try {
@@ -234,7 +234,7 @@ export async function build(args: {
             continue;
         }
 
-        // Compiling contractName to TVM
+        // Compiling contract to TVM
         logger.info(`   > ${contractName}: func compiler`);
         let codeBoc: Buffer;
         try {
