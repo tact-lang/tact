@@ -60,10 +60,10 @@ contract JettonMinter with OwnableTransferable {
         if (msg.responseDestination.isNotNone()) {
             send(SendParameters {
                 to: msg.responseDestination,
+                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
                 value: 0,
                 bounce: false,
                 mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply has already been updated
-                body: JettonExcesses{ queryId: msg.queryId }.toCell()
             });
         }
     }
