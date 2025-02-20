@@ -19,6 +19,9 @@ import type { TactErrorCollection } from "../../error/errors";
 import files from "../../stdlib/stdlib";
 import { cwd } from "process";
 import { getVersion, showCommit } from "../version";
+import { watchAndCompile } from "./watch";
+
+export type Args = ArgConsumer<GetParserResult<ReturnType<typeof ArgSchema>>>;
 
 export const main = async () => {
     const Log = CliLogger();
@@ -63,6 +66,7 @@ const ArgSchema = (Parser: ArgParser) => {
         .add(Parser.boolean("version", "v"))
         .add(Parser.boolean("help", "h"))
         .add(Parser.string("output", "o", "DIR"))
+        .add(Parser.boolean("watch", "w"))
         .add(Parser.immediate).end;
 };
 
@@ -81,6 +85,7 @@ Flags
   -o, --output DIR            Specify output directory for compiled files
   -v, --version               Print Tact compiler version and exit
   -h, --help                  Display this text and exit
+  -w, --watch                 Watch for changes and recompile
 
 Examples
   $ tact --version
@@ -90,8 +95,6 @@ Learn more about Tact:        https://docs.tact-lang.org
 Join Telegram group:          https://t.me/tactlang
 Follow X/Twitter account:     https://twitter.com/tact_language`);
 };
-
-type Args = ArgConsumer<GetParserResult<ReturnType<typeof ArgSchema>>>;
 
 const parseArgs = async (Errors: CliErrors, Args: Args) => {
     if (Args.single("help")) {
@@ -137,7 +140,19 @@ const parseArgs = async (Errors: CliErrors, Args: Args) => {
         if (!config) {
             return;
         }
-        await compile(Args, Errors, Fs, config);
+
+        if (Args.single("watch")) {
+            await watchAndCompile(
+                Args,
+                Errors,
+                Fs,
+                config,
+                normalizedDirPath,
+                compile,
+            );
+        } else {
+            await compile(Args, Errors, Fs, config);
+        }
         return;
     }
 
@@ -157,7 +172,18 @@ const parseArgs = async (Errors: CliErrors, Args: Args) => {
             relativeOutputDir,
         );
 
-        await compile(Args, Errors, Fs, config);
+        if (Args.single("watch")) {
+            await watchAndCompile(
+                Args,
+                Errors,
+                Fs,
+                config,
+                normalizedPath,
+                compile,
+            );
+        } else {
+            await compile(Args, Errors, Fs, config);
+        }
         return;
     }
 
