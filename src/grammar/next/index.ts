@@ -1044,10 +1044,7 @@ const parseConstantDefInModule =
     };
 
 const parseConstantDef =
-    (
-        node: $ast.Constant,
-        noAttributes: boolean = false,
-    ): Handler<A.AstConstantDef> =>
+    (node: $ast.Constant, noAttributes: boolean): Handler<A.AstConstantDef> =>
     (ctx) => {
         const result = parseConstant(node, noAttributes)(ctx);
 
@@ -1063,10 +1060,13 @@ const parseConstantDef =
         return result;
     };
 
+const parseConstantDefLocal = (node: $ast.Constant) =>
+    parseConstantDef(node, false);
+
 const parseConstant =
     (
         node: $ast.Constant,
-        noAttributes: boolean = false,
+        noAttributes: boolean,
     ): Handler<A.AstConstantDecl | A.AstConstantDef> =>
     (ctx) => {
         const name = parseId(node.name)(ctx);
@@ -1097,6 +1097,8 @@ const parseConstant =
             );
         }
     };
+
+const parseConstantLocal = (node: $ast.Constant) => parseConstant(node, false);
 
 const parseContract =
     ({
@@ -1256,7 +1258,7 @@ const parseContractItem: (
     FieldDecl: parseFieldDecl,
     Receiver: parseReceiver,
     Function: parseFunctionDef,
-    Constant: parseConstantDef,
+    Constant: parseConstantDefLocal,
 });
 
 const parseTraitItem: (
@@ -1265,7 +1267,7 @@ const parseTraitItem: (
     FieldDecl: parseFieldDecl,
     Receiver: parseReceiver,
     Function: parseFunction,
-    Constant: parseConstant,
+    Constant: parseConstantLocal,
 });
 
 const parseModuleItem: (input: $ast.moduleItem) => Handler<A.AstModuleItem> =
