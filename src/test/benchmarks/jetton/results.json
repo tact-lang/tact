@@ -157,7 +157,7 @@
       "label": "1.5.3 with optimized flag handling",
       "gas": {
         "transfer": "17950",
-        "burn": "14992",
+        "burn": "14492",
         "discovery": "9044"
       },
       "pr": "https://github.com/tact-lang/tact/pull/1934"
