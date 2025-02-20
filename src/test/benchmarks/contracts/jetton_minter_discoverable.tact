@@ -1,3 +1,5 @@
+// https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md
+
 import "@stdlib/ownable";
 import "@stdlib/deploy";
 import "./jetton_wallet";
@@ -5,7 +7,6 @@ import "./messages";
 
 struct JettonMasterState {
     totalSupply: Int as coins;
-    mintable: Bool;
     adminAddress: Address;
     jettonContent: Cell;
     jettonWalletCode: Cell;
@@ -13,19 +14,17 @@ struct JettonMasterState {
 
 contract JettonMinter with OwnableTransferable {
     totalSupply: Int as coins;
-    mintable: Bool;
     owner: Address;
     jettonContent: Cell;
 
     init(owner: Address, jettonContent: Cell) {
         self.totalSupply = 0;
-        self.mintable = true;
         self.owner = owner;
         self.jettonContent = jettonContent;
     }
 
     receive(msg: JettonBurnNotification) {
-        //Check that the message is from msg.sender's jetton_wallet
+        // Check that the message is from msg.sender's jetton_wallet
         require(sender() == getJettonWalletByOwner(msg.sender), "Not wallet owner");
 
         self.totalSupply -= msg.amount;
@@ -33,10 +32,8 @@ contract JettonMinter with OwnableTransferable {
             to: msg.responseDestination,
             value: 0,
             bounce: false,
-            mode: SendRemainingValue | SendIgnoreErrors, //ignore errors, because supply already been updated
-            body: JettonExcesses{
-                queryId: msg.queryId
-            }.toCell()
+            mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply already been updated
+            body: JettonExcesses{ queryId: msg.queryId }.toCell()
         });
     }
 
@@ -45,18 +42,16 @@ contract JettonMinter with OwnableTransferable {
         self.jettonContent = msg.content; // Update content
     }
 
-    // https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md
     receive(msg: ProvideWalletAddress) {
         //require(context().value >= ton("0.006625199"), "Insufficient gas");
         let includedAddress: Address? = null;
         let workchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
-        //Note, that emptyAddress != null, it is different values.
-        //We do like that according to TEP above
+        // Note, that emptyAddress != null, it is different values.
+        // We do like that according to TEP above
         let targetJettonWallet: Address = emptyAddress();
 
-        //Here was no such check in Howard's code
         if(workchain == 0) {
-            //Only in this case (address is from basechain) we can calculate the address
+            // Only in this case (address is from basechain) we can calculate the address
             targetJettonWallet = contractAddress(initOf JettonWallet(msg.ownerAddress, myAddress()));
         }
         if (msg.includeAddress) {
@@ -69,12 +64,11 @@ contract JettonMinter with OwnableTransferable {
             body: takeWalletBody(targetJettonWallet, includedAddress, msg.queryId)
         });
     }
+
     receive(msg: Mint) {
         self.requireOwner(); // Allow minting only by owner
-        require(self.mintable, "Not mintable");
-        //Maybe we should check that msg.value is enough to cover the gas fees
-        //Or, maybe we should do self.totalSupply -= msg.amount if bounced.
-        //But there is no any check in Howard's code and in official funC code,
+        // Maybe we should check that msg.value is enough to cover the gas fees
+        // Or, maybe we should do self.totalSupply -= msg.amount if bounced.
         self.totalSupply += msg.amount; // Update total supply
 
         deploy(DeployParameters{
@@ -100,10 +94,9 @@ contract JettonMinter with OwnableTransferable {
     get fun get_jetton_data(): JettonMasterState {
         return JettonMasterState {
             totalSupply: self.totalSupply,
-            mintable: self.mintable,
             adminAddress: self.owner,
             jettonContent: self.jettonContent,
-                                                //Owner may be any address, what matters here is the code, not data.
+            // Owner may be any address, what matters here is the code, not data.
             jettonWalletCode: initOf JettonWallet(myAddress(), myAddress()).code
         }
     }
