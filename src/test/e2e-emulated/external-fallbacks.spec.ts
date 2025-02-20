@@ -1,4 +1,4 @@
-import { toNano } from "@ton/core";
+import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { ExternalFallbacksTester } from "./contracts/output/external-fallbacks_ExternalFallbacksTester";
@@ -69,5 +69,15 @@ describe("external fallbacks", () => {
             success: true,
         });
         expect(await contract.getGetA()).toBe(220n);
+
+        // Test the external fallback handling (Slice external message)
+        const fallbackSliceResult = await contract.sendExternal(
+            beginCell().storeUint(0n, 32).asSlice(),
+        );
+        expect(fallbackSliceResult.transactions).toHaveTransaction({
+            to: contract.address,
+            success: true,
+        });
+        expect(await contract.getGetA()).toBe(320n);
     });
 });
