@@ -56,13 +56,16 @@ contract JettonMinter with OwnableTransferable {
         nativeThrowUnless(74, sender() == getJettonWalletByOwner(msg.sender));
 
         self.totalSupply -= msg.amount;
-        send(SendParameters{
-            to: msg.responseDestination,
-            value: 0,
-            bounce: false,
-            mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply already been updated
-            body: JettonExcesses{ queryId: msg.queryId }.toCell()
-        });
+
+        if (msg.responseDestination.isNotNone()) {
+            send(SendParameters {
+                to: msg.responseDestination,
+                value: 0,
+                bounce: false,
+                mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply has already been updated
+                body: JettonExcesses{ queryId: msg.queryId }.toCell()
+            });
+        }
     }
 
     receive(msg: JettonUpdateContent){
@@ -141,3 +144,5 @@ inline fun fwdFee(ctxRaw: Slice): Int {
     ctxRaw.loadCoins();
     return ctxRaw.loadCoins();
 }
+
+inline extends fun isNotNone(self: Address): Bool { return self.asSlice().preloadUint(2) != 0 }
