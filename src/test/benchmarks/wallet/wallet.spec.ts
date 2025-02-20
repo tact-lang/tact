@@ -1,6 +1,7 @@
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import type { Address, Cell, MessageRelaxed } from "@ton/core";
+import type { Cell, MessageRelaxed } from "@ton/core";
+import { Address } from "@ton/core";
 import { SendMode, storeMessageRelaxed } from "@ton/core";
 import { beginCell, Dictionary, toNano } from "@ton/core";
 import "@ton/test-utils";
@@ -140,6 +141,8 @@ describe("Wallet Gas Tests", () => {
 
         const signature = sign(operationHash, keypair.secretKey);
 
+        seqno++;
+
         return await wallet.sendExternal({
             $$type: "SignedRequest",
             signature,
@@ -267,5 +270,85 @@ describe("Wallet Gas Tests", () => {
 
         const gasUsed = getUsedGas(externalTransferSendResult, true);
         expect(gasUsed).toEqual(expectedResult.gas["externalTransfer"]);
+    });
+
+    it("addExtension", async () => {
+        const testExtension = Address.parse(
+            "EQAvDfWFG0oYX19jwNDNBBL1rKNT9XfaGP9HyTb5nb2Eml6y",
+        );
+
+        const actions = collectMultipleActions([
+            {
+                mode: 3,
+                extensionAddress: testExtension,
+            },
+        ]);
+
+        const actionsSlice = createActionsSlice(actions);
+
+        const addExtensionSendResult =
+            await sendSignedExternalBody(actionsSlice);
+
+        expect(addExtensionSendResult.transactions).toHaveTransaction({
+            from: undefined,
+            to: wallet.address,
+            success: true,
+            exitCode: 0,
+        });
+
+        const extensions = await wallet.getGetPluginList();
+
+        expect(extensions.size).toEqual(1);
+        expect(extensions.get(testExtension)).toEqual(true);
+
+        const gasUsed = getUsedGas(addExtensionSendResult, true);
+        expect(gasUsed).toEqual(expectedResult.gas["addExtension"]);
+    });
+
+    it("deleteExtension", async () => {
+        const testExtension = Address.parse(
+            "EQAvDfWFG0oYX19jwNDNBBL1rKNT9XfaGP9HyTb5nb2Eml6y",
+        );
+
+        const actions = collectMultipleActions([
+            {
+                mode: 3,
+                extensionAddress: testExtension,
+            },
+        ]);
+
+        await sendSignedExternalBody(createActionsSlice(actions));
+
+        const isExtensionAdded = await wallet.getIsPluginInstalled(
+            BigInt(testExtension.workChain),
+            bufferToBigInt(testExtension.hash),
+        );
+
+        expect(isExtensionAdded).toEqual(true);
+
+        const actionsDelete = collectMultipleActions([
+            {
+                mode: 4,
+                extensionAddress: testExtension,
+            },
+        ]);
+
+        const deleteExtensionSendResult = await sendSignedExternalBody(
+            createActionsSlice(actionsDelete),
+        );
+
+        expect(deleteExtensionSendResult.transactions).not.toHaveTransaction({
+            success: false,
+        });
+
+        const isExtensionDeleted = !(await wallet.getIsPluginInstalled(
+            BigInt(testExtension.workChain),
+            bufferToBigInt(testExtension.hash),
+        ));
+
+        expect(isExtensionDeleted).toEqual(true);
+
+        const gasUsed = getUsedGas(deleteExtensionSendResult, true);
+        expect(gasUsed).toEqual(expectedResult.gas["deleteExtension"]);
     });
 });

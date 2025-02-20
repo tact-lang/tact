@@ -95,10 +95,10 @@ contract Wallet with Deployable {
             require(parsedExtension.workchain == parsedOwn.workchain, "Invalid workchain");
 
             if (mode == 3) {
-                self.extensions.set(actions.loadAddress(), true);
+                self.extensions.set(extensionAddress, true);
             }
             if (mode == 4) {
-                self.extensions.set(actions.loadAddress(), null);
+                self.extensions.set(extensionAddress, null);
             }
         }
     }

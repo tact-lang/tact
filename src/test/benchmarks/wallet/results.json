@@ -1,18 +1,22 @@
 {
-  "results": [
-    {
-      "label": "FunC",
-      "gas": {
-        "externalTransfer": "5049"
-      },
-      "pr": "https://github.com/ton-blockchain/wallet-contract-v5"
-    },
-    {
-      "label": "1.5.3 initial",
-      "pr": "https://github.com/tact-lang/tact/pull/1859",
-      "gas": {
-        "externalTransfer": "5817"
-      }
-    }
-  ]
+    "results": [
+        {
+            "label": "FunC",
+            "gas": {
+                "externalTransfer": "5049",
+                "addExtension": "6220",
+                "deleteExtension": "5975"
+            },
+            "pr": "https://github.com/ton-blockchain/wallet-contract-v5"
+        },
+        {
+            "label": "1.5.3 initial",
+            "pr": "https://github.com/tact-lang/tact/pull/1859",
+            "gas": {
+                "externalTransfer": "5817",
+                "addExtension": "5974",
+                "deleteExtension": "5481"
+            }
+        }
+    ]
 }
