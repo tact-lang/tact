@@ -5,11 +5,17 @@ description: "Book section — an introductory book about the Tact language"
 
 import { LinkCard, CardGrid, Steps } from '@astrojs/starlight/components';
 
-Welcome to **The Tact Book** section (or just **The Book**), — an introductory book about the Tact language.
+Welcome to **The Tact Book** section (or just **The Book**), — an introductory book about the Tact language. It is a cohesive and streamlined sequence of educational materials about Tact. Whenever there's an existing explanation of the broader TON concept in the main TON documentation, this Book tries to reference it as well.
+
+In general, it assumes that you’re reading it in sequence from front to back. Later parts build on concepts in earlier parts, and earlier parts might not delve into details on a particular topic but will revisit the topic in a later part.
+
+Book also assumes that you’ve written code in another programming language but doesn’t make any assumptions about which one. We’ve tried to make the material broadly accessible to those from a wide variety of programming backgrounds. We don’t spend a lot of time talking about what programming _is_ or how to think about it. If you’re entirely new to programming, you would be better served by reading a [book that specifically provides an introduction to programming](https://johnwhitington.net/ocamlfromtheverybeginning/index.html).
 
 Here are its main contents:
 
 <Steps>
+
+{/*
 
 1. #### Cheatsheets
 
@@ -22,18 +28,55 @@ Here are its main contents:
      />
    </CardGrid>
 
-2. #### Book
+*/}
 
-   [**The Tact Book**](/book/types) is a cohesive and streamlined sequence of educational materials about Tact. In general, it assumes that you’re reading it in sequence from front to back. Later parts build on concepts in earlier parts, and earlier parts might not delve into details on a particular topic but will revisit the topic in a later part.
+1. #### Fundamentals of Tact
 
-   Additionally, there are many references to the Language section of the documentation, where many primitives of the language are described in much more fine detail. Additionally, whenever there's an existing explanation of the broader TON concept in the main TON documentation, this Book tries to reference it as well.
-
-   Book also assumes that you’ve written code in another programming language but doesn’t make any assumptions about which one. We’ve tried to make the material broadly accessible to those from a wide variety of programming backgrounds. We don’t spend a lot of time talking about what programming _is_ or how to think about it. If you’re entirely new to programming, you would be better served by reading a book that specifically provides an introduction to programming.
+   The subsection [Fundamentals of Tact](/book/types) describes the type system: primitive and composite types, then the structure of each Tact contract and lists all the defined exit codes, i.e. possible error points.
 
    <CardGrid>
      <LinkCard
-       title="Proceed to the Book itself"
+       title="Type system overview"
        href="/book/types"
+     />
+   </CardGrid>
+
+2. #### Expressiveness
+
+   [Expressiveness](/book/operators) subsection starts with the list of available operators and gradually builds up, eventually reaching the description of functions and their interactions. Finally, it descends down to discuss the functions most close to how the TON Virtual Machine (TVM) actually operates — assembly (`asm`) functions.
+
+   <CardGrid>
+     <LinkCard
+       title="Operators"
+       href="/book/operators"
+     />
+   </CardGrid>
+
+3. #### Communication
+
+   TON is a distributed blockchain based on the idea of the [actor model](https://en.wikipedia.org/wiki/Actor_model). Therefore, the means of communication is one of the most important aspects.
+
+   The [Communication](/book/receive) subsection covers everything you want and need to know about sending and receiving messages, as well as the general transaction flow.
+
+   <CardGrid>
+     <LinkCard
+       title="Receive messages"
+       href="/book/receive"
+     />
+   </CardGrid>
+
+4. #### Going places
+
+   Finally, to put all our Tact and TON knowledge in action, it's necessary to have the auxiliary tools and concise descriptions of their use.
+
+   Subsection [Going places](/book/compile) explains how to compile, debug and test Tact contracts locally. From there, it moves on to provide descriptions of deployment of the contracts on TON Blockchain.
+
+   Finally, it shows how to further tweak the compiler with its configuration options, interface with existing FunC code, and discusses best practices for securing your smart contracts.
+
+   <CardGrid>
+     <LinkCard
+       title="Compilation"
+       href="/book/compile"
      />
    </CardGrid>
 
