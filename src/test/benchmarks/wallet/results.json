@@ -5,7 +5,8 @@
       "gas": {
         "externalTransfer": "5049",
         "addExtension": "6220",
-        "deleteExtension": "5975"
+        "deleteExtension": "5975",
+        "multipleActions": "10919"
       },
       "pr": "https://github.com/ton-blockchain/wallet-contract-v5"
     },
@@ -15,7 +16,8 @@
       "gas": {
         "externalTransfer": "5817",
         "addExtension": "5974",
-        "deleteExtension": "5481"
+        "deleteExtension": "5481",
+        "multipleActions": "13256"
       }
     }
   ]

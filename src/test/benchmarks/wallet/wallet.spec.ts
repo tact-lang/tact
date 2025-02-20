@@ -107,7 +107,9 @@ function createActionsSlice(actions: MultipleAction): ActionCell {
 
     const actionSlice = beginCell().storeUint(actions.mode, 8);
 
-    actions.args.map(serializeAction).forEach(actionSlice.storeRef);
+    actions.args.map(serializeAction).forEach((ac) => {
+        actionSlice.storeRef(ac);
+    });
 
     return actionSlice.endCell();
 }
@@ -350,5 +352,84 @@ describe("Wallet Gas Tests", () => {
 
         const gasUsed = getUsedGas(deleteExtensionSendResult, true);
         expect(gasUsed).toEqual(expectedResult.gas["deleteExtension"]);
+    });
+
+    it("multipleActions", async () => {
+        const testExtension1 = Address.parse(
+            "EQA2pT4d8T7TyRsjW2BpGpGYga-lMA4JjQb4D2tc1PXMX5Bf",
+        );
+        const testExtension2 = Address.parse(
+            "EQCgYDKqfTh7zVj9BQwOIPs4SuOhM7wnIjb6bdtM2AJf_Z9G",
+        );
+
+        const testReceiver = Address.parse(
+            "EQAvDfWFG0oYX19jwNDNBBL1rKNT9XfaGP9HyTb5nb2Eml6y",
+        );
+        const forwardValue = toNano(0.001);
+
+        const receiverBalanceBefore = (
+            await blockchain.getContract(testReceiver)
+        ).balance;
+
+        const actions = collectMultipleActions([
+            {
+                mode: 3,
+                extensionAddress: testExtension1,
+            },
+            {
+                mode: 3,
+                extensionAddress: testExtension2,
+            },
+            {
+                mode: 1,
+                sendMode: SendMode.PAY_GAS_SEPARATELY,
+                outMsg: {
+                    body: beginCell().endCell(),
+                    info: {
+                        type: "internal",
+                        bounce: false,
+                        bounced: false,
+                        dest: testReceiver,
+                        value: {
+                            coins: forwardValue,
+                        },
+                        createdAt: 1,
+                        createdLt: 1n,
+                        forwardFee: 0n,
+                        ihrDisabled: true,
+                        ihrFee: 0n,
+                    },
+                },
+            },
+        ]);
+
+        const multipleActionsResult = await sendSignedExternalBody(
+            createActionsSlice(actions),
+        );
+
+        expect(multipleActionsResult.transactions).toHaveTransaction({
+            from: wallet.address,
+            to: testReceiver,
+            value: forwardValue,
+        });
+
+        expect(multipleActionsResult.transactions.length).toEqual(2);
+
+        const fee = multipleActionsResult.transactions[1]!.totalFees.coins;
+
+        const receiverBalanceAfter = (
+            await blockchain.getContract(testReceiver)
+        ).balance;
+
+        expect(receiverBalanceAfter).toEqual(
+            receiverBalanceBefore + forwardValue - fee,
+        );
+
+        const extDict = await wallet.getGetPluginList();
+
+        expect(extDict.size).toEqual(2);
+
+        const gasUsed = getUsedGas(multipleActionsResult, true);
+        expect(gasUsed).toEqual(expectedResult.gas["multipleActions"]);
     });
 });
