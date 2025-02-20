@@ -118,6 +118,7 @@ Contract =
     attributes:ContractAttribute*
     keyword<"contract">
     name:Id
+    parameters:parameterList<Parameter>?
     traits:inheritedTraits?
     "{"
     declarations:contractItemDecl*

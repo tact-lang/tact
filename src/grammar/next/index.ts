@@ -1096,15 +1096,27 @@ const parseContract =
     ({
         name,
         attributes,
+        parameters,
         traits,
         declarations,
         loc,
     }: $ast.Contract): Handler<A.AstContract> =>
     (ctx) => {
+        const params = parseList(parameters).map(param => {
+            return parseFieldDecl({
+                $: 'FieldDecl',
+                name: param.name,
+                type: param.type,
+                expression: undefined,
+                loc: param.loc,
+            })(ctx);
+        });
+
         return ctx.ast.Contract(
             parseId(name)(ctx),
             map(parseList(traits), parseId)(ctx),
             map(attributes, parseContractAttribute)(ctx),
+            parameters ? params : undefined,
             map(declarations, parseContractItem)(ctx),
             loc,
         );
