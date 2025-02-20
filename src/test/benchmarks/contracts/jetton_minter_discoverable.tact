@@ -5,6 +5,8 @@ import "@stdlib/deploy";
 import "./jetton_wallet";
 import "./messages";
 
+const provideAddressGasConsumption: Int = 10000000;
+
 struct JettonMasterState {
     totalSupply: Int as coins;
     adminAddress: Address;
@@ -43,20 +45,20 @@ contract JettonMinter with OwnableTransferable {
     }
 
     receive(msg: ProvideWalletAddress) {
-        //require(context().value >= ton("0.006625199"), "Insufficient gas");
-        let includedAddress: Address? = null;
-        let workchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
-        // Note, that emptyAddress != null, it is different values.
-        // We do like that according to TEP above
-        let targetJettonWallet: Address = emptyAddress();
+        // we use message fwdFee for estimation of forward_payload costs
+        let ctx = context();
+        let fwdFee = muldivc(fwdFee(ctx.raw), 3, 2);
+        nativeThrowUnless(75,ctx.value > fwdFee + provideAddressGasConsumption);
 
-        if(workchain == 0) {
+        let workchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
+        let includedAddress: Address? = msg.includeAddress ? msg.ownerAddress : null;
+
+        let targetJettonWallet: Address =
+            (workchain == 0) ?
             // Only in this case (address is from basechain) we can calculate the address
-            targetJettonWallet = contractAddress(initOf JettonWallet(msg.ownerAddress, myAddress()));
-        }
-        if (msg.includeAddress) {
-            includedAddress = msg.ownerAddress;
-        }
+            contractAddress(initOf JettonWallet(msg.ownerAddress, myAddress()))
+            : emptyAddress();
+
         send(SendParameters{
             to: sender(),
             value: 0,
@@ -127,4 +129,12 @@ inline fun getJettonWalletInit(address: Address): StateInit {
 
 inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {
     return contractAddress(getJettonWalletInit(jettonWalletOwner));
+}
+
+inline fun fwdFee(ctxRaw: Slice): Int {
+    ctxRaw.loadAddress();
+    ctxRaw.loadCoins();
+    ctxRaw.skipBits(1);
+    ctxRaw.loadCoins();
+    return ctxRaw.loadCoins();
 }
