@@ -1,7 +1,6 @@
 // https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md
 
 import "@stdlib/ownable";
-import "@stdlib/deploy";
 import "./jetton_wallet";
 import "./messages";
 
