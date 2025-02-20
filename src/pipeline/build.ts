@@ -129,74 +129,43 @@ export async function build(args: {
 
     const contracts1 = getAllTypes(ctx).filter((v) => v.kind === "contract");
 
-    function topSortContracts(allContracts: TypeDescription[]) {
-        const visitedCheckCycle: Record<string, number> = {};
-        const visitedTopSort: Record<string, number> = {};
-
-        function checkCycleDfs(cur: TypeDescription, color: number): boolean {
-            visitedCheckCycle[cur.name] = color;
-            for (const dep of cur.dependsOn) {
-                if (dep.kind !== "contract" || dep.name == cur.name) continue;
-
-                if (visitedCheckCycle[dep.name] === color) {
-                    return true;
+    function topSortContracts(allContracts: TypeDescription[]): TypeDescription[] | undefined {
+        const visitingNow: Set<TypeDescription> = new Set();
+        const visited: Set<TypeDescription> = new Set();
+        const result: TypeDescription[] = [];
+        const dfs = (contract: TypeDescription): boolean => {
+            visitingNow.add(contract);
+            for (const c of contract.dependsOn) {
+                if (c.kind !== "contract") {
+                    continue;
                 }
-                if (checkCycleDfs(dep, color)) {
-                    return true;
+                if (visitingNow.has(c)) {
+                    return false;
                 }
-            }
-            return false;
-        }
-
-        function checkCycle(allContracts: TypeDescription[]) {
-            let color = 1;
-            for (const contract of allContracts) {
-                if (
-                    !visitedCheckCycle[contract.name] &&
-                    checkCycleDfs(contract, color)
-                ) {
-                    return true;
-                }
-                color++;
-            }
-            return false;
-        }
-
-        if (!checkCycle(allContracts)) {
-            const res: TypeDescription[] = [];
-
-            const topSort = (cur: TypeDescription, color: number) => {
-                visitedTopSort[cur.name] = color;
-                for (const dep of cur.dependsOn) {
-                    if (dep.kind !== "contract" || dep.name == cur.name)
-                        continue;
-                    if (!visitedTopSort[dep.name]) {
-                        topSort(dep, color);
+                if (!visited.has(c)) {
+                    if (!dfs(c)) {
+                        return false;
                     }
                 }
-                res.push(cur);
-            };
-            let color = 1;
-            for (const cur of allContracts) {
-                if (!visitedTopSort[cur.name]) {
-                    topSort(cur, color);
-                }
-                color++;
             }
-
-            return res;
+            visitingNow.delete(contract);
+            visited.add(contract);
+            result.push(contract);
+            return true;
+        };
+        for (const contract of allContracts) {
+            if (!visited.has(contract)) {
+                if (!dfs(contract)) {
+                    return undefined;
+                }
+            }
         }
-        return undefined;
+        return result;
     }
 
     const sortedContracts = topSortContracts(contracts1);
     if (sortedContracts !== undefined) {
         ctx = featureEnable(ctx, "optimizedChildCode");
-    }
-    if (enabledOptimizedChildCode(ctx)) {
-        logger.info("✔️ Optimized child code generation enabled.");
-    } else {
-        logger.info("✔️ Optimized child code generation disabled.");
     }
     for (const contract of sortedContracts ?? contracts1) {
         const contractName = contract.name;
