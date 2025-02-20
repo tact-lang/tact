@@ -1,6 +1,5 @@
 // https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md
 
-import "@stdlib/ownable";
 import "./jetton_wallet";
 import "./messages";
 
@@ -14,7 +13,7 @@ struct JettonMasterState {
     jettonWalletCode: Cell;
 }
 
-contract JettonMinter with OwnableTransferable {
+contract JettonMinter {
     totalSupply: Int as coins;
     owner: Address;
     jettonContent: Cell;
@@ -67,15 +66,13 @@ contract JettonMinter with OwnableTransferable {
         }
     }
 
-    receive(msg: JettonUpdateContent){
-        self.requireOwner(); // Allow changing content only by owner
-        self.jettonContent = msg.content; // Update content
+    receive(msg: JettonUpdateContent) {
+        nativeThrowUnless(73, sender() == self.owner);
+        self.jettonContent = msg.content;
     }
 
     receive(msg: Mint) {
-        self.requireOwner(); // Allow minting only by owner
-        // Maybe we should check that msg.value is enough to cover the gas fees
-        // Or, maybe we should do self.totalSupply -= msg.amount if bounced.
+        nativeThrowUnless(73, sender() == self.owner);
         self.totalSupply += msg.amount; // Update total supply
 
         deploy(DeployParameters{
@@ -92,6 +89,11 @@ contract JettonMinter with OwnableTransferable {
             }.toCell(),
             init: getJettonWalletInit(msg.receiver)
         });
+    }
+
+    receive(msg: ChangeOwner) {
+        nativeThrowUnless(73, sender() == self.owner);
+        self.owner = msg.newOwner;
     }
 
     get fun get_jetton_data(): JettonMasterState {
