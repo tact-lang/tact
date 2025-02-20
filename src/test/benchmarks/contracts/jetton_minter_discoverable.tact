@@ -5,7 +5,8 @@ import "@stdlib/deploy";
 import "./jetton_wallet";
 import "./messages";
 
-const provideAddressGasConsumption: Int = 10000000;
+const ProvideAddressGasConsumption: Int = 10000000;
+const Workchain: Int = 0;
 
 struct JettonMasterState {
     totalSupply: Int as coins;
@@ -48,22 +49,24 @@ contract JettonMinter with OwnableTransferable {
         // we use message fwdFee for estimation of forward_payload costs
         let ctx = context();
         let fwdFee = muldivc(fwdFee(ctx.raw), 3, 2);
-        nativeThrowUnless(75,ctx.value > fwdFee + provideAddressGasConsumption);
+        nativeThrowUnless(75, ctx.value > fwdFee + ProvideAddressGasConsumption);
 
-        let workchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
         let includedAddress: Address? = msg.includeAddress ? msg.ownerAddress : null;
 
+        let workchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
+
         let targetJettonWallet: Address =
-            (workchain == 0) ?
-            // Only in this case (address is from basechain) we can calculate the address
+            (workchain == Workchain) ?
             contractAddress(initOf JettonWallet(msg.ownerAddress, myAddress()))
             : emptyAddress();
 
-        send(SendParameters{
+        let outMsg = takeWalletBody(targetJettonWallet, includedAddress, msg.queryId);
+
+        send(SendParameters {
+            body: outMsg,
             to: sender(),
             value: 0,
             mode: SendRemainingValue,
-            body: takeWalletBody(targetJettonWallet, includedAddress, msg.queryId)
         });
     }
 
