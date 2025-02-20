@@ -154,7 +154,7 @@ contract Wallet with Deployable {
     }
 
     get fun is_plugin_installed(wc: Int, addressHash: Int): Bool {
-        return self.extensions.get(newAddress(wc, addressHash)) != null;
+        return self.extensions.exists(newAddress(wc, addressHash));
     }
 
     get fun get_plugin_list(): map<Address, Bool> {
