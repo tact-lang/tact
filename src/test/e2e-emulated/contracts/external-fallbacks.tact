@@ -27,6 +27,11 @@ contract ExternalFallbacksTester {
         self.a += msg.x;
     }
 
+    external(s: Slice) {
+        acceptMessage();
+        self.a += 100;
+    }
+
     get fun getA(): Int {
         return self.a;
     }

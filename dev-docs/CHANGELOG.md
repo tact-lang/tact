@@ -98,6 +98,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
 - Remove "remainder" from error messages: PR [#1699](https://github.com/tact-lang/tact/pull/1699)
 - Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
+- Bump used `@tact-lang/opcode` version to `0.2` which fixes many issues in CI runs: PR [#1922](https://github.com/tact-lang/tact/pull/1922)
+- Generation of the fallback receiver for external messages: PR [#1926](https://github.com/tact-lang/tact/pull/1926)
 
 ### Docs
 
