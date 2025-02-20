@@ -1,7 +1,7 @@
 import { beginCell, Cell, Dictionary } from "@ton/core";
 import { decompileAll } from "@tact-lang/opcode";
 import { writeTypescript } from "../bindings/writeTypescript";
-import { enabledOptimizedChildCode, featureEnable } from "../config/features";
+import { featureEnable } from "../config/features";
 import type { Project } from "../config/parseConfig";
 import { CompilerContext } from "../context/context";
 import { funcCompile } from "../func/funcCompile";
@@ -129,7 +129,9 @@ export async function build(args: {
 
     const contracts1 = getAllTypes(ctx).filter((v) => v.kind === "contract");
 
-    function topSortContracts(allContracts: TypeDescription[]): TypeDescription[] | undefined {
+    function topSortContracts(
+        allContracts: TypeDescription[],
+    ): TypeDescription[] | undefined {
         const visitingNow: Set<TypeDescription> = new Set();
         const visited: Set<TypeDescription> = new Set();
         const result: TypeDescription[] = [];
