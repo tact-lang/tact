@@ -53,7 +53,7 @@ contract JettonMinter with OwnableTransferable {
 
     receive(msg: JettonBurnNotification) {
         // Check that the message is from msg.sender's jetton_wallet
-        require(sender() == getJettonWalletByOwner(msg.sender), "Not wallet owner");
+        nativeThrowUnless(74, sender() == getJettonWalletByOwner(msg.sender));
 
         self.totalSupply -= msg.amount;
         send(SendParameters{

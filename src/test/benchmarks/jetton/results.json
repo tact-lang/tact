@@ -148,7 +148,7 @@
       "label": "1.5.3 with Jetton optimizations and fixes",
       "gas": {
         "transfer": "18147",
-        "burn": "14914",
+        "burn": "14781",
         "discovery": "9072"
       },
       "pr": "https://github.com/tact-lang/tact/pull/TODO"
