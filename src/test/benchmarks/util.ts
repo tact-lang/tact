@@ -2,8 +2,30 @@ import type { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain"
 import chalk from "chalk";
 import Table from "cli-table3";
 
-export function getUsedGas(sendEnough: SendMessageResult): number {
-    return sendEnough.transactions
+export function getUsedGas(
+    sendEnough: SendMessageResult,
+    isExternal: boolean,
+): number {
+    return isExternal
+        ? getUsedGasExternal(sendEnough)
+        : getUsedGasInternal(sendEnough);
+}
+
+export function getUsedGasExternal(sendResult: SendMessageResult): number {
+    const externalTx = sendResult.transactions[0];
+
+    if (typeof externalTx === "undefined") {
+        return 0;
+    }
+
+    return externalTx.description.type === "generic" &&
+        externalTx.description.computePhase.type === "vm"
+        ? Number(externalTx.description.computePhase.gasUsed)
+        : 0;
+}
+
+export function getUsedGasInternal(sendResult: SendMessageResult): number {
+    return sendResult.transactions
         .slice(1)
         .map((t) =>
             t.description.type === "generic" &&

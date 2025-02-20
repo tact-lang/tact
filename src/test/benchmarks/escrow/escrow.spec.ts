@@ -89,7 +89,7 @@ describe("Escrow Gas Tests", () => {
             exitCode: 0,
         });
 
-        const gasUsed = getUsedGas(fundingResult);
+        const gasUsed = getUsedGas(fundingResult, false);
         expect(gasUsed).toEqual(expectedResult.gas["fundingTon"]);
     });
 
@@ -132,7 +132,7 @@ describe("Escrow Gas Tests", () => {
             success: true,
         });
 
-        const gasUsed = getUsedGas(updateResult);
+        const gasUsed = getUsedGas(updateResult, false);
         expect(gasUsed).toEqual(expectedResult.gas["changeCode"]);
     });
 
@@ -180,7 +180,7 @@ describe("Escrow Gas Tests", () => {
             endStatus: "non-existing", // escrow should be destroyed after cancel
         });
 
-        const gasUsed = getUsedGas(approveResult);
+        const gasUsed = getUsedGas(approveResult, false);
         expect(gasUsed).toEqual(expectedResult.gas["approveTon"]);
     });
 
@@ -227,7 +227,7 @@ describe("Escrow Gas Tests", () => {
             endStatus: "non-existing", // escrow should be destroyed after cancel
         });
 
-        const gasUsed = getUsedGas(cancelResult);
+        const gasUsed = getUsedGas(cancelResult, false);
         expect(gasUsed).toEqual(expectedResult.gas["cancelTon"]);
     });
 });

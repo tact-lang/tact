@@ -1,22 +1,20 @@
 import "@stdlib/deploy";
 
 /*
-struct OutActions {
-    mode: Int as uint8;
-    body: Slice;
-}
+    TODO: fix tags
+    actions
 
-struct InternalOperation {
-    walletId: Int as uint32;
-    validUntil: Int as uint32;
-    seqno: Int as uint32;
-    actions: OutActions as remaining;
-}
+    out_list$_ {n:#} prev:^(OutList n) action:OutAction = OutList (n + 1);
+    action_send_msg#0ec3c86d mode:(## 8) out_msg:^(MessageRelaxed Any) = OutAction;
 
-struct SignedRequest {
-    signature: Slice as bytes64;
-    operation: InternalOperation as remaining;
-}
+    action_list_basic$_ {n:#} actions:^(OutList n) = ActionList n 0;
+    action_list_extended$_ {m:#} {n:#} action:ExtendedAction prev:^(ActionList n m) = ActionList n (m+1);
+    
+    action_list#00 actions:^(OutList n) = ExtendedAction;
+    action_send_msg#01 mode:(## 8) out_msg:^(MessageRelaxed Any) = ExtendedAction;
+    action_set_signature_policy#02 is_allowed:(## 1) = ExtendedAction;
+    action_add_ext#03 addr:MsgAddressInt = ExtendedAction;
+    action_delete_ext#04 addr:MsgAddressInt = ExtendedAction;
 */
 
 struct InternalOperation {
@@ -46,7 +44,7 @@ contract Wallet with Deployable {
     isSignatureAllowed: Bool;
     seqno: Int as uint32;
     walletId: Int as int32;
-    publicKey: Int as int256;
+    publicKey: Int as uint256;
     extensions: map<Address, Bool>;
 
     init(publicKey: Int, walletId: Int, extensions: map<Address, Bool>) {
@@ -60,11 +58,6 @@ contract Wallet with Deployable {
     fun processSignedRequest(msg: SignedRequest, isExternal: Bool) {
         require(checkSignature(msg.operation.toCell().hash(), msg.signature, self.publicKey), "Invalid signature");
 
-        // let ds = msg.operation;
-        // let walletId: Int = ds.loadInt(32);
-        // let validUntil: Int = ds.loadInt(32);
-        // let seqno: Int = ds.loadUint(32);
-
         require(msg.operation.seqno == self.seqno, "Invalid seqno");
         require(msg.operation.walletId == self.walletId, "Invalid walletId");
         require(now() < msg.operation.validUntil, "Operation expired");
@@ -74,7 +67,8 @@ contract Wallet with Deployable {
         }
 
         self.seqno = (self.seqno + 1);
-        // NOTE: rewrite state save in asm
+        // NOTE: currently unsafe!
+        // TODO: add c4 save in asm here 
         commit();
 
         self.processActions(msg.operation.actions, isExternal, false);
@@ -95,7 +89,6 @@ contract Wallet with Deployable {
             self.isSignatureAllowed = actions.loadBool();
         } else {
             let extensionAddress = actions.loadAddress();
-
             let parsedExtension = parseStdAddress(extensionAddress.asSlice());
             let parsedOwn = parseStdAddress(myAddress().asSlice());
 
@@ -104,7 +97,6 @@ contract Wallet with Deployable {
             if (mode == 3) {
                 self.extensions.set(actions.loadAddress(), true);
             }
-
             if (mode == 4) {
                 self.extensions.set(actions.loadAddress(), null);
             }
@@ -114,6 +106,7 @@ contract Wallet with Deployable {
     fun processSendMessages(msg: Slice, isExternal: Bool) {
         let count = 0;
 
+        // action_send_msg#01 mode:(## 8) out_msg:^(MessageRelaxed Any) = ExtendedAction;
         while(msg.refs() > 0) {
             // enforce that send_mode has +2 bit (ignore errors) set for external message.
             nativeThrowIf(137, isExternal && (countTrailingZeroess(msg.preloadBits(7)) > 0));
