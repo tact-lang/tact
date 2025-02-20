@@ -1,7 +1,6 @@
-import "@stdlib/ownable";
 import "./messages";
 
-contract JettonWallet with Ownable {
+contract JettonWallet {
     balance: Int as coins;
     owner: Address;
     master: Address;
@@ -17,7 +16,7 @@ contract JettonWallet with Ownable {
     }
 
     receive(msg: JettonTransfer) {
-        self.requireOwner();
+        nativeThrowUnless(705, sender() == self.owner);
 
         let totalFees: Int =
             2 * (context().readForwardFee() + self.gasConsumption) +
@@ -104,7 +103,7 @@ contract JettonWallet with Ownable {
     }
 
     receive(msg: JettonBurn) {
-        self.requireOwner();
+        nativeThrowUnless(705, sender() == self.owner);
 
         self.balance -= msg.amount; // Update balance
         require(self.balance >= 0, "Invalid balance after burn");
