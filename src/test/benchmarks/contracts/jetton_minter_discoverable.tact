@@ -3,8 +3,6 @@ import "@stdlib/deploy";
 import "./jetton_wallet";
 import "./messages";
 
-asm fun emptyAddress(): Address { b{00} PUSHSLICE }
-
 struct JettonMasterState {
     totalSupply: Int as coins;
     mintable: Bool;
@@ -28,7 +26,7 @@ contract JettonMinter with OwnableTransferable {
 
     receive(msg: JettonBurnNotification) {
         //Check that the message is from msg.sender's jetton_wallet
-        require(sender() == self.getJettonWalletByOwner(msg.sender), "Not wallet owner");
+        require(sender() == getJettonWalletByOwner(msg.sender), "Not wallet owner");
 
         self.totalSupply -= msg.amount;
         send(SendParameters{
@@ -68,7 +66,7 @@ contract JettonMinter with OwnableTransferable {
             to: sender(),
             value: 0,
             mode: SendRemainingValue,
-            body: self.takeWalletBody(targetJettonWallet, includedAddress, msg.queryId)
+            body: takeWalletBody(targetJettonWallet, includedAddress, msg.queryId)
         });
     }
     receive(msg: Mint) {
@@ -78,7 +76,6 @@ contract JettonMinter with OwnableTransferable {
         //Or, maybe we should do self.totalSupply -= msg.amount if bounced.
         //But there is no any check in Howard's code and in official funC code,
         self.totalSupply += msg.amount; // Update total supply
-
 
         deploy(DeployParameters{
             value: 0,
@@ -92,35 +89,12 @@ contract JettonMinter with OwnableTransferable {
                 forwardTonAmount: 1, // 1 nanoton is enough to send a notification
                 forwardPayload: emptySlice()
             }.toCell(),
-            init: self.getJettonWalletInit(msg.receiver)
+            init: getJettonWalletInit(msg.receiver)
         });
     }
 
     bounced(msg: bounced<JettonTransferInternal>){
         self.totalSupply -= msg.amount;
-    }
-    inline fun takeWalletBody(targetJettonWallet: Address, includedAddress: Address?, query_id: Int): Cell {
-        let body: Builder = beginCell()
-        .storeUint(0xd1735400, 32)
-        .storeUint(query_id, 64)
-        .storeSlice(targetJettonWallet.asSlice());
-        if (includedAddress != null) {
-            let includedAddressCell: Cell = beginCell().storeSlice(includedAddress!!.asSlice()).endCell();
-            body = body.storeBit(true); // Maybe bit
-            body = body.storeRef(includedAddressCell);
-        } else {
-            body = body.storeBit(false); // Maybe bit
-        }
-        return body.endCell();
-    }
-
-    inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {
-        let jwInit: StateInit = self.getJettonWalletInit(jettonWalletOwner);
-        return contractAddress(jwInit);
-    }
-
-    inline fun getJettonWalletInit(address: Address): StateInit {
-        return initOf JettonWallet(address, myAddress());
     }
 
     get fun get_jetton_data(): JettonMasterState {
@@ -134,6 +108,31 @@ contract JettonMinter with OwnableTransferable {
         }
     }
     get fun get_wallet_address(ownerAddress: Address): Address {
-        return self.getJettonWalletByOwner(ownerAddress);
+        return getJettonWalletByOwner(ownerAddress);
     }
+}
+
+asm fun emptyAddress(): Address { b{00} PUSHSLICE }
+
+inline fun takeWalletBody(targetJettonWallet: Address, includedAddress: Address?, query_id: Int): Cell {
+    let body: Builder = beginCell()
+        .storeUint(0xd1735400, 32)
+        .storeUint(query_id, 64)
+        .storeSlice(targetJettonWallet.asSlice());
+    if (includedAddress != null) {
+        let includedAddressCell: Cell = beginCell().storeSlice(includedAddress!!.asSlice()).endCell();
+        body = body.storeBit(true); // Maybe bit
+        body = body.storeRef(includedAddressCell);
+    } else {
+        body = body.storeBit(false); // Maybe bit
+    }
+    return body.endCell();
+}
+
+inline fun getJettonWalletInit(address: Address): StateInit {
+    return initOf JettonWallet(address, myAddress());
+}
+
+inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {
+    return contractAddress(getJettonWalletInit(jettonWalletOwner));
 }
