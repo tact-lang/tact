@@ -26,25 +26,6 @@ contract JettonMinter with OwnableTransferable {
         self.jettonContent = jettonContent;
     }
 
-    receive(msg: JettonBurnNotification) {
-        // Check that the message is from msg.sender's jetton_wallet
-        require(sender() == getJettonWalletByOwner(msg.sender), "Not wallet owner");
-
-        self.totalSupply -= msg.amount;
-        send(SendParameters{
-            to: msg.responseDestination,
-            value: 0,
-            bounce: false,
-            mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply already been updated
-            body: JettonExcesses{ queryId: msg.queryId }.toCell()
-        });
-    }
-
-    receive(msg: JettonUpdateContent){
-        self.requireOwner(); // Allow changing content only by owner
-        self.jettonContent = msg.content; // Update content
-    }
-
     receive(msg: ProvideWalletAddress) {
         // we use message fwdFee for estimation of forward_payload costs
         let ctx = context();
@@ -68,6 +49,25 @@ contract JettonMinter with OwnableTransferable {
             value: 0,
             mode: SendRemainingValue,
         });
+    }
+
+    receive(msg: JettonBurnNotification) {
+        // Check that the message is from msg.sender's jetton_wallet
+        require(sender() == getJettonWalletByOwner(msg.sender), "Not wallet owner");
+
+        self.totalSupply -= msg.amount;
+        send(SendParameters{
+            to: msg.responseDestination,
+            value: 0,
+            bounce: false,
+            mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply already been updated
+            body: JettonExcesses{ queryId: msg.queryId }.toCell()
+        });
+    }
+
+    receive(msg: JettonUpdateContent){
+        self.requireOwner(); // Allow changing content only by owner
+        self.jettonContent = msg.content; // Update content
     }
 
     receive(msg: Mint) {
