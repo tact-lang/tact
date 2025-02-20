@@ -223,7 +223,7 @@ describe("Jetton", () => {
             exitCode: 0,
         });
 
-        const gasUsed = getUsedGas(sendResult);
+        const gasUsed = getUsedGas(sendResult, false);
         expect(gasUsed).toEqual(expectedResult.gas["transfer"]);
     });
 
@@ -265,7 +265,7 @@ describe("Jetton", () => {
         const data = await jettonMinter.getGetJettonData();
         expect(data.totalSupply).toEqual(initialTotalSupply - burnAmount);
 
-        const gasUsed = getUsedGas(burnResult);
+        const gasUsed = getUsedGas(burnResult, false);
         expect(gasUsed).toEqual(expectedResult.gas["burn"]);
     });
 
@@ -286,7 +286,7 @@ describe("Jetton", () => {
             success: true,
         });
 
-        const gasUsed = getUsedGas(discoveryResult);
+        const gasUsed = getUsedGas(discoveryResult, false);
         expect(gasUsed).toEqual(expectedResult.gas["discovery"]);
     });
 });
