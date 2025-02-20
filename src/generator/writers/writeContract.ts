@@ -219,12 +219,12 @@ export function writeInit(
             } else {
                 if (!enabledOptimizedChildCode(ctx.ctx)) {
                     ctx.write(`
-                    slice sc' = __tact_child_contract_codes.begin_parse();
-                    cell source = sc'~load_dict();
+                        slice sc' = __tact_child_contract_codes.begin_parse();
+                        cell source = sc'~load_dict();
                     `);
                     ctx.write(`
-                    ;; Contract Code: ${t.name}
-                    cell init_code = ${ctx.used("__tact_dict_get_code")}(source, ${t.uid});
+                        ;; Contract Code: ${t.name}
+                        cell init_code = ${ctx.used("__tact_dict_get_code")}(source, ${t.uid});
                     `);
                 } else {
                     ctx.write(`
@@ -237,8 +237,8 @@ export function writeInit(
                     ctx.append(";; Build init data cell");
                     if (t.dependsOn.length > 0) {
                         ctx.write(`
-                    cell contracts = new_dict();
-                `);
+                            cell contracts = new_dict();
+                        `);
                     }
                     // Copy contracts code
                     for (const c of t.dependsOn) {
@@ -250,8 +250,8 @@ export function writeInit(
                             );
                         } else {
                             ctx.write(`
-                            cell code_${c.uid} = ${ctx.used("__tact_dict_get_code")}(source, ${c.uid});
-                            contracts = ${ctx.used("__tact_dict_set_code")}(contracts, ${c.uid}, code_${c.uid});
+                                cell code_${c.uid} = ${ctx.used("__tact_dict_get_code")}(source, ${c.uid});
+                                contracts = ${ctx.used("__tact_dict_set_code")}(contracts, ${c.uid}, code_${c.uid});
                             `);
                         }
                     }
