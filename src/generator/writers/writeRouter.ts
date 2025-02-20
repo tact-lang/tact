@@ -715,38 +715,39 @@ export function writeReceiver(
         return;
     }
 
-    // Handle remaining selector.kind === "bounce-binary"
-
-    const args = [
-        selfType + " " + funcIdOf("self"),
-        resolveFuncType(selector.type, ctx, false, selector.bounced) +
-            " " +
-            funcIdOf(selector.name),
-    ];
-    ctx.append(
-        `((${selfType}), ()) ${ops.receiveTypeBounce(self.name, selector.type)}(${args.join(", ")}) impure inline {`,
-    );
-    ctx.inIndent(() => {
-        ctx.append(selfUnpack);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (selector.kind === "bounce-binary") {
+        const args = [
+            selfType + " " + funcIdOf("self"),
+            resolveFuncType(selector.type, ctx, false, selector.bounced) +
+                " " +
+                funcIdOf(selector.name),
+        ];
         ctx.append(
-            `var ${resolveFuncTypeUnpack(selector.type, funcIdOf(selector.name), ctx, false, selector.bounced)} = ${funcIdOf(selector.name)};`,
+            `((${selfType}), ()) ${ops.receiveTypeBounce(self.name, selector.type)}(${args.join(", ")}) impure inline {`,
         );
+        ctx.inIndent(() => {
+            ctx.append(selfUnpack);
+            ctx.append(
+                `var ${resolveFuncTypeUnpack(selector.type, funcIdOf(selector.name), ctx, false, selector.bounced)} = ${funcIdOf(selector.name)};`,
+            );
 
-        for (const s of f.ast.statements) {
-            writeStatement(s, selfRes, null, ctx);
-        }
+            for (const s of f.ast.statements) {
+                writeStatement(s, selfRes, null, ctx);
+            }
 
-        if (
-            f.ast.statements.length === 0 ||
-            f.ast.statements[f.ast.statements.length - 1]!.kind !==
-                "statement_return"
-        ) {
-            ctx.append(`return (${selfRes}, ());`);
-        }
-    });
-    ctx.append(`}`);
-    ctx.append();
-    return;
+            if (
+                f.ast.statements.length === 0 ||
+                f.ast.statements[f.ast.statements.length - 1]!.kind !==
+                    "statement_return"
+            ) {
+                ctx.append(`return (${selfRes}, ());`);
+            }
+        });
+        ctx.append(`}`);
+        ctx.append();
+        return;
+    }
 }
 
 export function commentPseudoOpcode(
