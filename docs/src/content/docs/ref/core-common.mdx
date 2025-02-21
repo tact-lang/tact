@@ -95,12 +95,12 @@ fun context(): Context;
 
 Returns `Context{:tact}` [Struct](/book/structs-and-messages#structs), that consists of:
 
-Field     | Type                  | Description
-:-------- | :-------------------- | :----------
-`bounced` | [`Bool{:tact}`][bool] | [Bounced](https://ton.org/docs/learn/overviews/addresses#bounceable-vs-non-bounceable-addresses) flag of the received message.
-`sender`  | [`Address{:tact}`][p] | Internal address of the sender on the TON blockchain.
-`value`   | [`Int{:tact}`][int]   | Amount of [nanoToncoins](/book/integers#nanotoncoin) in the received message.
-`raw`     | [`Slice{:tact}`][slice]   | The remainder of the received message as a [`Slice{:tact}`][slice]. It follows [internal message layout](https://docs.ton.org/develop/smart-contracts/messages#message-layout) of TON starting from the destination [`Address{:tact}`][p] (`MsgAddressInt` in [TL-B notation](https://docs.ton.org/develop/data-formats/tl-b-language)).
+Field        | Type                    | Description
+:----------- | :---------------------- | :----------
+`bounceable` | [`Bool{:tact}`][bool]   | Can the received message [bounce back](https://docs.ton.org/v3/documentation/smart-contracts/message-management/non-bounceable-messages) or not.
+`sender`     | [`Address{:tact}`][p]   | Internal address of the sender on the TON blockchain.
+`value`      | [`Int{:tact}`][int]     | Amount of [nanoToncoins](/book/integers#nanotoncoin) in the received message.
+`raw`        | [`Slice{:tact}`][slice] | The remainder of the received message as a [`Slice{:tact}`][slice]. It follows [internal message layout](https://docs.ton.org/develop/smart-contracts/messages#message-layout) of TON starting from the destination [`Address{:tact}`][p] (`MsgAddressInt` in [TL-B notation](https://docs.ton.org/develop/data-formats/tl-b-language)).
 
 Usage example:
 

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### BREAKING CHANGES
+
+- `Context.bounced` field was replaced with `Context.bounceable` field: PR [#1934](https://github.com/tact-lang/tact/pull/1934)
+
 ### Added
 
 - `deploy()` function, that optimizes the deployment of a child contract: PR [#1832](https://github.com/tact-lang/tact/pull/1832)
@@ -139,6 +143,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a Security audits page, with the first assessment from the Trail of Bits: PR [#1791](https://github.com/tact-lang/tact/pull/1791)
 - Listed functions with implicit mode and further clarified the interactions of message sending functions and their modes: PR [#1634](https://github.com/tact-lang/tact/pull/1634)
 - Added `Deployable` trait to all contracts in the Cookbook: PR [#1906](https://github.com/tact-lang/tact/pull/1906)
+- Added a note on the Debug page about high gas use of functions enabled with debug mode: PR [#1938](https://github.com/tact-lang/tact/pull/1938)
 
 ### Release contributors
 
