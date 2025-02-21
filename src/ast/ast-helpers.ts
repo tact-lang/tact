@@ -189,7 +189,7 @@ export function eqExpressions(
                 eqArrays(ast1.args, (ast2 as A.AstInitOf).args, eqExpressions)
             );
         case "code_of":
-            return eqNames(ast1.contract, (ast2 as A.AstInitOf).contract);
+            return eqNames(ast1.contract, (ast2 as A.AstCodeOf).contract);
         case "op_unary":
             return (
                 ast1.op === (ast2 as A.AstOpUnary).op &&
