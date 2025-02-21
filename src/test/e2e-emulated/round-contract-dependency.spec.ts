@@ -44,8 +44,12 @@ describe("Diamond-shaped dependencies", () => {
     it("Should work for A", async () => {
         const FirstAboutSecond = await contractA.getGetNext();
 
-        expect(FirstAboutSecond.code.equals(contractB.init!.code!)).toBeTruthy();
-        expect(FirstAboutSecond.data.equals(contractB.init!.data!)).toBeTruthy();
+        expect(
+            FirstAboutSecond.code.equals(contractB.init!.code!),
+        ).toBeTruthy();
+        expect(
+            FirstAboutSecond.data.equals(contractB.init!.data!),
+        ).toBeTruthy();
 
         const FirstAboutThird = await contractA.getGetNestedNext();
         expect(FirstAboutThird.code.equals(contractC.init!.code!)).toBeTruthy();
@@ -55,13 +59,21 @@ describe("Diamond-shaped dependencies", () => {
     it("Should work for B", async () => {
         const SecondAboutThird = await contractB.getGetNext();
 
-        expect(SecondAboutThird.code.equals(contractC.init!.code!)).toBeTruthy();
-        expect(SecondAboutThird.data.equals(contractC.init!.data!)).toBeTruthy();
+        expect(
+            SecondAboutThird.code.equals(contractC.init!.code!),
+        ).toBeTruthy();
+        expect(
+            SecondAboutThird.data.equals(contractC.init!.data!),
+        ).toBeTruthy();
 
         const SecondAboutFirst = await contractB.getGetNestedNext();
 
-        expect(SecondAboutFirst.code.equals(contractA.init!.code!)).toBeTruthy();
-        expect(SecondAboutFirst.data.equals(contractA.init!.data!)).toBeTruthy();
+        expect(
+            SecondAboutFirst.code.equals(contractA.init!.code!),
+        ).toBeTruthy();
+        expect(
+            SecondAboutFirst.data.equals(contractA.init!.data!),
+        ).toBeTruthy();
     });
 
     it("Should work for C", async () => {
@@ -72,7 +84,11 @@ describe("Diamond-shaped dependencies", () => {
 
         const ThirdAboutSecond = await contractC.getGetNestedNext();
 
-        expect(ThirdAboutSecond.code.equals(contractB.init!.code!)).toBeTruthy();
-        expect(ThirdAboutSecond.data.equals(contractB.init!.data!)).toBeTruthy();
+        expect(
+            ThirdAboutSecond.code.equals(contractB.init!.code!),
+        ).toBeTruthy();
+        expect(
+            ThirdAboutSecond.data.equals(contractB.init!.data!),
+        ).toBeTruthy();
     });
 });
