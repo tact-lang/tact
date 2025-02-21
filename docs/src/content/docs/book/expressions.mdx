@@ -299,6 +299,29 @@ Field  | Type                  | Description
 
 :::
 
+## `codeOf` {#codeof}
+
+Expression `codeOf{:tact}` returns [`Cell{:tact}`][cell] with the code of a [contract](/book/contracts):
+
+```tact
+codeOf ExampleContract; // returns a Cell with ExampleContract code
+//     ---------------
+//     ↑
+//     name of the contract
+```
+
+`codeOf ContractName{:tact}` is shorthand for `initOf ContractName(initParam1, initParam2).code{:tact}` with much less gas usage.
+
+If `codeOf{:tact}` is used for the current contract, its result is equivalent to calling `myCode(){:tact}`.
+
+```tact
+contract ExampleContract {
+    receive() {
+        myCode() == codeOf ExampleContract; // true
+    }
+}
+```
+
 [p]: /book/types#primitive-types
 [cell]: /book/cells#cells
 [s]: /book/structs-and-messages#structs
