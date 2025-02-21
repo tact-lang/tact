@@ -51,11 +51,6 @@
                 "default": false,
                 "description": "False by default. If set to true, enables generation of a getter the information on the interfaces provided by the contract.\n\nRead more about supported interfaces: https://docs.tact-lang.org/ref/evolution/OTP-001."
               },
-              "optimizedChildCode": {
-                "type": "boolean",
-                "default": true,
-                "description": "It actually does not have a default value. It's internal compiler feature. It is turned on, there is no dependency cycle in contract system. It gets turned off otherwise."
-              },
               "experimental": {
                 "type": "object",
                 "description": "Experimental options that might be removed in the future. Use with caution!",
