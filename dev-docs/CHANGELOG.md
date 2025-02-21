@@ -61,6 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Error message for invalid type for function argument now shows expected type: PR [#1738](https://github.com/tact-lang/tact/pull/1738)
 - `Int.toString` now consumes up to 64% less gas: PR [#1837](https://github.com/tact-lang/tact/pull/1837)
 - Error message for reserved `self` function parameter now suggests using `extends` function modifier: PR [#1737](https://github.com/tact-lang/tact/pull/1737)
+- `Int.toFloatString` now consumes up to 62% less gas: PR [#1956](https://github.com/tact-lang/tact/pull/1956)
 
 ### Fixed
 
