@@ -1,6 +1,5 @@
 import type { TypeDescription } from "../types/types";
 
-
 /**
  * This function sorts contracts in topological order.
  * It also checks for cycles in the graph of dependencies and returns undefined if a cycle is found.
@@ -17,7 +16,8 @@ export const topSortContracts = (
     const dfs = (contract: TypeDescription): boolean => {
         visitingNow.add(contract);
         for (const c of contract.dependsOn) {
-            if (c.kind !== "contract") { // This check should also be false. As contracts should be filtered out before calling this function.
+            if (c.kind !== "contract") {
+                // This check should also be false. As contracts should be filtered out before calling this function.
                 continue;
             }
             if (visitingNow.has(c)) {
