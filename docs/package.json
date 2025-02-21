@@ -31,5 +31,11 @@
     "unist-util-visit": "^5.0.0"
   },
   "packageManager": "yarn@1.22.22",
-  "version": ""
+  "version": "",
+  "resolutions": {
+    "esbuild": "^0.25.0"
+  },
+  "overrides": {
+    "esbuild": "^0.25.0"
+  }
 }

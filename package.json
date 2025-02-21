@@ -10,6 +10,8 @@
   "author": "Steve Korshakov <steve@korshakov.com>",
   "license": "MIT",
   "scripts": {
+    "compare": "ts-node src/test/utils/compare-logs.ts",
+    "build:fast": "yarn clean && yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && tsc --project tsconfig.fast.json && yarn copy:stdlib && yarn copy:grammar && yarn copy:func",
     "gen:config": "ts-to-zod -k --skipValidation src/config/config.ts src/config/config.zod.ts",
     "gen:grammar:old": "ohm generateBundles --withTypes src/grammar/prev/*.ohm",
     "gen:grammar:new": "pgen src/grammar/next/grammar.gg -o src/grammar/next/grammar.ts",
@@ -31,6 +33,7 @@
     "test": "jest",
     "test:fast": "jest --config=./jest-fast.config.js",
     "bench": "yarn gen:contracts:benchmarks && jest ./src/test/benchmarks",
+    "bench:upgrade": "yarn gen:contracts:benchmarks && ts-node src/test/benchmarks/benchmarks.update.ts",
     "coverage": "cross-env COVERAGE=true jest --config=./jest-ci.config.js",
     "type": "tsc --noEmit",
     "lint": "yarn eslint .",
@@ -66,7 +69,7 @@
     "unboc": "bin/unboc.js"
   },
   "dependencies": {
-    "@tact-lang/opcode": "^0.0.18",
+    "@tact-lang/opcode": "^0.2.0",
     "@ton/core": "0.60.0",
     "@ton/crypto": "^3.2.0",
     "@tonstudio/parser-runtime": "^0.0.1",
@@ -85,7 +88,7 @@
     "@tact-lang/coverage": "^0.0.8",
     "@tact-lang/ton-abi": "^0.0.3",
     "@tact-lang/ton-jest": "^0.0.4",
-    "@ton/sandbox": "^0.24.0",
+    "@ton/sandbox": "^0.26.0",
     "@ton/test-utils": "^0.5.0",
     "@tonstudio/pgen": "^0.0.1",
     "@types/diff": "^7.0.0",

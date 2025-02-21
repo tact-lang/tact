@@ -250,7 +250,7 @@ const compile = async (
     }
 
     const suppressLog = Args.single("quiet") ?? false;
-    const logger = new Logger(suppressLog ? LogLevel.NONE : LogLevel.INFO);
+    const logger = new Logger(suppressLog ? LogLevel.ERROR : LogLevel.INFO);
 
     const flags = entries({
         checkOnly: Args.single("check"),

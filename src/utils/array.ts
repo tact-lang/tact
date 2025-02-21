@@ -1,3 +1,11 @@
+export const zip = <T, U>(arr1: T[], arr2: U[]): [T, U][] => {
+    const length = Math.min(arr1.length, arr2.length);
+    return arr1.slice(0, length).flatMap((item1, index) => {
+        const item2 = arr2[index];
+        return item2 !== undefined ? [[item1, item2]] : [];
+    });
+};
+
 const range = (from: number, to: number) => {
     return new Array(to - from + 1).fill(0).map((_, i) => from + i);
 };

@@ -5,15 +5,11 @@ contract A {
     }
 
     receive("Message") {
-        let init: StateInit = initOf B(myAddress());
-        let address: Address = contractAddress(init);
-        send(SendParameters{
+        deploy(DeployParameters{
+            init: initOf B(myAddress()),
             value: 0, 
-            to: address, 
             mode: SendRemainingValue | SendIgnoreErrors,
             bounce: true,
-            code: init.code,
-            data: init.data,
             body: "Message".asComment()
         });
     }
@@ -30,6 +26,8 @@ contract B {
     }
 
     receive("Message") {
+        // note this uses `send` and not `deploy` on purpose:
+        // to also test this way of deploying contracts
         let init: StateInit = initOf C(myAddress());
         let address: Address = contractAddress(init);
         send(SendParameters{

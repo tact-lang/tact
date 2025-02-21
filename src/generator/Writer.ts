@@ -297,6 +297,10 @@ export class WriterContext {
         this.#pendingWriter!.inIndent(handler);
     };
 
+    inBlock = (beforeCurlyBrace: string, handler: () => void) => {
+        this.#pendingWriter!.inBlock(beforeCurlyBrace, handler);
+    };
+
     append(src: string = "") {
         this.#pendingWriter!.append(src);
     }

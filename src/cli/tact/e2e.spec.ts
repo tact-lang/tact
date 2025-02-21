@@ -184,6 +184,22 @@ describe("tact --config config.json", () => {
     });
 });
 
+describe.only("tact -q foo.tact", () => {
+    testWin("-q shows errors ", async () => {
+        const path = await codegen.contract(
+            `quiet`,
+            `contract Test { x: Int = A }`,
+        );
+        const result = await tact(`-q ${path}`);
+
+        expect(
+            result.kind === "exited" &&
+                result.stderr.includes("Cannot find 'A'"),
+        ).toBe(true);
+        expect(result).toMatchObject({ kind: "exited", code: 30 });
+    });
+});
+
 describe("Wrong flags", () => {
     testWin("--func --check are mutually exclusive ", async () => {
         const path = await codegen.contract(`func-check`, goodContract);
