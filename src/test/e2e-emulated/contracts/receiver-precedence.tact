@@ -14,6 +14,12 @@ message BinaryIntResult {
 
 message SendCellToAddress {
     address: Address;
+    body: Cell;
+}
+
+message DeployAddress {
+    address: Address;
+    code: Cell;
     data: Cell;
 }
 
@@ -152,13 +158,25 @@ contract ReceiverTester {
     }
 
     // Initiate a request to the specified address with the spcified cell as message body
+    // This message will also deploy the contract
     receive(msg: SendCellToAddress) {
-        send(SendParameters{
+        send(SendParameters {
                 to: msg.address,
                 bounce: false,
                 value: ton("5"),
-                body: msg.data,
+                body: msg.body,
                 });
+    }
+
+    // This is just to send a message to deploy contracts
+    receive(msg: DeployAddress) {
+        send(SendParameters {
+            to: msg.address,
+            bounce: false,
+            value: ton("1"),
+            code: msg.code,
+            data: msg.data,
+        });
     }
 
     get fun receiverKind(): String {
@@ -254,9 +272,11 @@ contract SliceReceiverTester {
     receive(msg: Slice) {
         self.receiver = "fallback";
     }
-    
-    // Currently, we cannot implement external fallback receivers
-    // See issue https://github.com/tact-lang/tact/issues/1669
+
+    external(msg: Slice) {
+       acceptMessage();
+       self.receiver = "external_fallback";
+    }
 
     get fun receiver(): String {
         return self.receiver;
@@ -364,6 +384,11 @@ contract EmptyAndSliceReceiverTester {
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
 
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
+
     get fun receiver(): String {
         return self.receiver;
     }
@@ -442,6 +467,11 @@ contract CommentAndSliceReceiverTester {
 
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
+
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
     
     get fun receiver(): String {
         return self.receiver;
@@ -495,6 +525,11 @@ contract StringAndSliceReceiverTester {
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
 
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
+
     get fun receiver(): String {
         return self.receiver;
     }
@@ -519,6 +554,11 @@ contract BinaryAndSliceReceiverTester {
 
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
+
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
 
     get fun receiver(): String {
         return self.receiver;
@@ -626,6 +666,11 @@ contract EmptyAndCommentAndSliceReceiverTester {
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
 
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
+
     get fun receiver(): String {
         return self.receiver;
     }
@@ -696,6 +741,11 @@ contract EmptyAndStringAndSliceReceiverTester {
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
 
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
+
     get fun receiver(): String {
         return self.receiver;
     }
@@ -729,6 +779,11 @@ contract EmptyAndBinaryAndSliceReceiverTester {
 
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
+
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
 
     get fun receiver(): String {
         return self.receiver;
@@ -800,6 +855,11 @@ contract CommentAndStringAndSliceReceiverTester {
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
 
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
+
     get fun receiver(): String {
         return self.receiver;
     }
@@ -834,6 +894,11 @@ contract CommentAndBinaryAndSliceReceiverTester {
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
 
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
+
     get fun receiver(): String {
         return self.receiver;
     }
@@ -867,6 +932,11 @@ contract StringAndBinaryAndSliceReceiverTester {
 
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
+
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
 
     get fun receiver(): String {
         return self.receiver;
@@ -956,6 +1026,11 @@ contract EmptyAndCommentAndStringAndSliceReceiverTester {
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
 
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
+
     get fun receiver(): String {
         return self.receiver;
     }
@@ -998,6 +1073,11 @@ contract EmptyAndCommentAndBinaryAndSliceReceiverTester {
 
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
+
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
 
     get fun receiver(): String {
         return self.receiver;
@@ -1042,6 +1122,11 @@ contract EmptyAndStringAndBinaryAndSliceReceiverTester {
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
 
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
+
     get fun receiver(): String {
         return self.receiver;
     }
@@ -1084,6 +1169,11 @@ contract CommentAndStringAndBinaryAndSliceReceiverTester {
 
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
+
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
 
     get fun receiver(): String {
         return self.receiver;
@@ -1136,6 +1226,11 @@ contract AllReceiverTester {
 
     // Currently, we cannot implement external fallback receivers
     // See issue https://github.com/tact-lang/tact/issues/1669
+
+    //external(msg: Slice) {
+    //    acceptMessage();
+    //    self.receiver = "external_fallback";
+    //}
 
     get fun receiver(): String {
         return self.receiver;

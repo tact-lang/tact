@@ -1,5 +1,5 @@
-import { beginCell, Cell, toNano } from "@ton/core";
-import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Address, beginCell, Cell, ContractProvider, toNano } from "@ton/core";
+import type { SandboxContract, SendMessageResult, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { ReceiverTester } from "./contracts/output/receiver-precedence_ReceiverTester";
 import { Calculator } from "./contracts/output/receiver-precedence_Calculator";
@@ -77,6 +77,11 @@ describe("receivers-precedence", () => {
     let commentAndStringAndBinaryAndSliceReceiver: SandboxContract<CommentAndStringAndBinaryAndSliceReceiverTester>;
     let allReceivers: SandboxContract<AllReceiverTester>;
 
+    // Alternative providers
+    // This is a hack to be able to bypass the "sendExternal" function in a contract that restricts 
+    // the kind of messages one can send to external receivers. 
+    // So that instead we can call the "external" function in the provider directly  
+    let noReceiversAltProvider: ContractProvider;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
@@ -143,6 +148,54 @@ describe("receivers-precedence", () => {
             success: true,
             deploy: true,
         });
+
+        // Deploy contracts
+        noReceiversAltProvider = await deploy(noReceivers.address, await NoReceiverTester.init());
+        await deploy(emptyReceiver.address, await EmptyReceiverTester.init());
+        await deploy(commentReceiver.address, await CommentReceiverTester.init());
+        await deploy(stringReceiver.address, await StringReceiverTester.init());
+        await deploy(binaryReceiver.address, await BinaryReceiverTester.init());
+        await deploy(sliceReceiver.address, await SliceReceiverTester.init());
+        await deploy(emptyAndCommentReceiver.address, await EmptyAndCommentReceiverTester.init());
+        await deploy(emptyAndStringReceiver .address, await EmptyAndStringReceiverTester.init());
+        await deploy(emptyAndBinaryReceiver .address, await EmptyAndBinaryReceiverTester.init());
+        await deploy(emptyAndSliceReceiver.address, await EmptyAndSliceReceiverTester.init());
+        await deploy(commentAndStringReceiver.address, await CommentAndStringReceiverTester.init());
+        await deploy(commentAndBinaryReceiver.address, await CommentAndBinaryReceiverTester.init());
+        await deploy(commentAndSliceReceiver.address, await CommentAndSliceReceiverTester.init());
+        await deploy(stringAndBinaryReceiver.address, await StringAndBinaryReceiverTester.init());
+        await deploy(stringAndSliceReceiver.address, await StringAndSliceReceiverTester.init());
+        await deploy(binaryAndSliceReceiver.address, await BinaryAndSliceReceiverTester.init());
+        await deploy(emptyAndCommentAndStringReceiver.address, await EmptyAndCommentAndStringReceiverTester.init());
+        await deploy(emptyAndCommentAndBinaryReceiver.address, await EmptyAndCommentAndBinaryReceiverTester.init());
+        await deploy(emptyAndCommentAndSliceReceiver.address, await EmptyAndCommentAndSliceReceiverTester.init());
+        await deploy(emptyAndStringAndBinaryReceiver.address, await EmptyAndStringAndBinaryReceiverTester.init());
+        await deploy(emptyAndStringAndSliceReceiver.address, await EmptyAndStringAndSliceReceiverTester.init());
+        await deploy(emptyAndBinaryAndSliceReceiver.address, await EmptyAndBinaryAndSliceReceiverTester.init());
+        await deploy(commentAndStringAndBinaryReceiver.address, await CommentAndStringAndBinaryReceiverTester.init());
+        await deploy(commentAndStringAndSliceReceiver.address, await CommentAndStringAndSliceReceiverTester.init());
+        await deploy(commentAndBinaryAndSliceReceiver.address, await CommentAndBinaryAndSliceReceiverTester.init());
+        await deploy(stringAndBinaryAndSliceReceiver.address, await StringAndBinaryAndSliceReceiverTester.init());
+        await deploy(emptyAndCommentAndStringAndBinaryReceiver.address, await EmptyAndCommentAndStringAndBinaryReceiverTester.init());
+        await deploy(emptyAndCommentAndStringAndSliceReceiver.address, await EmptyAndCommentAndStringAndSliceReceiverTester.init());
+        await deploy(emptyAndCommentAndBinaryAndSliceReceiver.address, await EmptyAndCommentAndBinaryAndSliceReceiverTester.init());
+        await deploy(emptyAndStringAndBinaryAndSliceReceiver.address, await EmptyAndStringAndBinaryAndSliceReceiverTester.init());
+        await deploy(commentAndStringAndBinaryAndSliceReceiver.address, await CommentAndStringAndBinaryAndSliceReceiverTester.init());
+        await deploy(allReceivers.address, await AllReceiverTester.init());
+
+        async function deploy(addr: Address, init: {code: Cell, data: Cell}): Promise<ContractProvider> {
+            const { transactions } = await contract.send(
+                treasure.getSender(),
+                { value: toNano("100") },
+                {$$type: "DeployAddress", address: addr, code: init.code, data: init.data}
+            );
+            expect(transactions).toHaveTransaction({from: contract.address,
+                to: addr,
+                deploy: true,}
+            );
+
+            return blockchain.provider(addr, init);
+        }
     });
 
     it("should implement receivers precedence correctly", async () => {
@@ -342,488 +395,459 @@ describe("receivers-precedence", () => {
     });
 
     it("internal receivers should process empty messages and empty strings correctly", async () => {
-        // Message bodies with integer of size less than 32 bits will be processed by empty receivers (if present).
+        // Message bodies with integer of size less than 32 bits will be processed by empty receivers (if present),
+        // irrespective of the value of the integer
         const lessThan32Bits = beginCell().storeUint(10,30).endCell();
         // An actual empty message body
         const emptyBody = new Cell();
         // Message bodies with integers of size exactly 32 bits but value 0 will be processed by empty receivers (if present).
         const zeroOf32Bits = beginCell().storeUint(0,32).endCell();
-        // The empty string
+        // The empty string will be processed by empty receivers (if present)
         const emptyString = beginCell().storeUint(0,32).storeStringTail("").endCell();
 
         const bodiesToTry = [lessThan32Bits, emptyBody, zeroOf32Bits, emptyString];
 
-        // noReceivers should fail in all the cases with exit code 130
-        for (const body of bodiesToTry) {
+        // Some utility functions that carry out the actual tests and assertions
+
+        async function shouldFailInAllCases(testedContract: Address, exitCode: number) {
+            for (const body of bodiesToTry) {
+                const { transactions } = await contract.send(
+                    treasure.getSender(),
+                    { value: toNano("10") },
+                    { $$type: "SendCellToAddress", address: testedContract, body},
+                );
+        
+                expect(transactions).toHaveTransaction({from: contract.address, to: testedContract, success: false, exitCode});
+            }
+        }
+
+        async function shouldAcceptAllCases(testedContract: Address, receiverGetter: () => Promise<string>, expectedReceiver: string) {
+            for (const body of bodiesToTry) {
+                const { transactions } = await contract.send(
+                    treasure.getSender(),
+                    { value: toNano("10") },
+                    { $$type: "SendCellToAddress", address: testedContract, body},
+                );
+        
+                expect(transactions).toHaveTransaction({from: contract.address, to: testedContract, success: true});
+                expect(await receiverGetter()).toBe(expectedReceiver);
+            }
+        }
+
+        async function shouldFailIncompleteOpCode(testedContract: Address, exitCode: number) {
+                const { transactions } = await contract.send(
+                    treasure.getSender(),
+                    { value: toNano("10") },
+                    { $$type: "SendCellToAddress", address: testedContract, body: lessThan32Bits},
+                );
+        
+                expect(transactions).toHaveTransaction({from: contract.address, to: testedContract, success: false, exitCode: exitCode});
+        }
+
+        async function shouldAcceptFrom(testedContract: Address, from: number, receiverGetter: () => Promise<string>, 
+        expectedRestReceiver: string) {
+            for (const body of bodiesToTry.slice(from)) {
+                const { transactions } = await contract.send(
+                    treasure.getSender(),
+                    { value: toNano("10") },
+                    { $$type: "SendCellToAddress", address: testedContract, body},
+                );
+        
+                expect(transactions).toHaveTransaction({from: contract.address, to: testedContract, success: true});
+                expect(await receiverGetter()).toBe(expectedRestReceiver);
+            }
+        }
+
+        async function shouldFailEmptyBody(testedContract: Address, exitCode: number) {
             const { transactions } = await contract.send(
                 treasure.getSender(),
                 { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: noReceivers.address, data: body},
+                { $$type: "SendCellToAddress", address: testedContract, body: emptyBody},
             );
     
-            expect(transactions).toHaveTransaction({from: contract.address, to: noReceivers.address, success: false, exitCode: 130});
-        }
+            expect(transactions).toHaveTransaction({from: contract.address, to: testedContract, success: false, exitCode: exitCode});
+    }
+
+    async function shouldAcceptIncompleteOpCode(testedContract: Address, receiverGetter: () => Promise<string>, expectedReceiver: string) {
+        const { transactions } = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            { $$type: "SendCellToAddress", address: testedContract, body: lessThan32Bits},
+        );
+
+        expect(transactions).toHaveTransaction({from: contract.address, to: testedContract, success: true});
+        expect(await receiverGetter()).toBe(expectedReceiver);
+}
+       
+async function shouldAcceptEmptyBody(testedContract: Address, receiverGetter: () => Promise<string>, expectedReceiver: string) {
+    const { transactions } = await contract.send(
+        treasure.getSender(),
+        { value: toNano("10") },
+        { $$type: "SendCellToAddress", address: testedContract, body: emptyBody},
+    );
+
+    expect(transactions).toHaveTransaction({from: contract.address, to: testedContract, success: true});
+    expect(await receiverGetter()).toBe(expectedReceiver);
+}
+
+        // Tests start here
+        
+        // noReceivers should fail in all the cases with exit code 130
+        await shouldFailInAllCases(noReceivers.address, 130);
 
         // emptyReceiver should accept all the cases
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyReceiver.address, success: true});
-            expect(await emptyReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyReceiver.address, emptyReceiver.getReceiver, "empty");
 
         // commentReceiver should fail in all the cases with exit code 130
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: commentReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: commentReceiver.address, success: false, exitCode: 130});
-        }
+        await shouldFailInAllCases(commentReceiver.address, 130);
 
-        // stringReceiver should fail in the first one
-        {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: stringReceiver.address, data: lessThan32Bits},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: stringReceiver.address, success: false, exitCode: 130});
-        }
-
-        // But should succeed in the rest
-        for (const body of bodiesToTry.slice(1)) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: stringReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: stringReceiver.address, success: true});
-            expect(await stringReceiver.getReceiver()).toBe("fallback_string");
-        }
+        // stringReceiver should fail in the first and second cases with exit code 130, but accept the rest
+        await shouldFailIncompleteOpCode(stringReceiver.address, 130);
+        await shouldFailEmptyBody(stringReceiver.address, 130);
+        await shouldAcceptFrom(stringReceiver.address, 2, stringReceiver.getReceiver, "fallback_string");
 
         // binaryReceiver should fail in all the cases with exit code 130
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: binaryReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: binaryReceiver.address, success: false, exitCode: 130});
-        }
+        await shouldFailInAllCases(binaryReceiver.address, 130);
 
         // sliceReceiver should accept all the cases
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: sliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: sliceReceiver.address, success: true});
-            expect(await sliceReceiver.getReceiver()).toBe("fallback");
-        }
+        await shouldAcceptAllCases(sliceReceiver.address, sliceReceiver.getReceiver, "fallback");
 
         // emptyAndCommentReceiver should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyAndCommentReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyAndCommentReceiver.address, success: true});
-            expect(await emptyAndCommentReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyAndCommentReceiver.address, emptyAndCommentReceiver.getReceiver, "empty");
 
         // emptyAndStringReceiver should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyAndStringReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyAndStringReceiver.address, success: true});
-            expect(await emptyAndStringReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyAndStringReceiver.address, emptyAndStringReceiver.getReceiver, "empty");
 
         // emptyAndBinaryReceiver should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyAndBinaryReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyAndBinaryReceiver.address, success: true});
-            expect(await emptyAndBinaryReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyAndBinaryReceiver.address, emptyAndBinaryReceiver.getReceiver, "empty");
 
         // emptyAndSliceReceiver should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyAndSliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyAndSliceReceiver.address, success: true});
-            expect(await emptyAndSliceReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyAndSliceReceiver.address, emptyAndSliceReceiver.getReceiver, "empty");
 
-        // commentAndStringReceiver should fail in the first one
-        {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: commentAndStringReceiver.address, data: lessThan32Bits},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: commentAndStringReceiver.address, success: false, exitCode: 130});
-        }
-
-        // But should succeed in the rest in the string receiver
-        for (const body of bodiesToTry.slice(1)) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: commentAndStringReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: commentAndStringReceiver.address, success: true});
-            expect(await commentAndStringReceiver.getReceiver()).toBe("fallback_string");
-        }
+        // commentAndStringReceiver should fail in the first and second, but accept the rest in the string receiver
+        await shouldFailIncompleteOpCode(commentAndStringReceiver.address, 130);
+        await shouldFailEmptyBody(commentAndStringReceiver.address, 130);
+        await shouldAcceptFrom(commentAndStringReceiver.address, 2, commentAndStringReceiver.getReceiver, "fallback_string");
 
         // commentAndBinaryReceiver should fail in all the cases with exit code 130
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: commentAndBinaryReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: commentAndBinaryReceiver.address, success: false, exitCode: 130});
-        }
+        await shouldFailInAllCases(commentAndBinaryReceiver.address, 130);
 
         // commentAndSliceReceiver should accept all the cases in the fallback receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: commentAndSliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: commentAndSliceReceiver.address, success: true});
-            expect(await commentAndSliceReceiver.getReceiver()).toBe("fallback");
-        }
+        await shouldAcceptAllCases(commentAndSliceReceiver.address, commentAndSliceReceiver.getReceiver, "fallback");
 
-        // stringAndBinaryReceiver should fail in the first one
-        {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: stringAndBinaryReceiver.address, data: lessThan32Bits},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: stringAndBinaryReceiver.address, success: false, exitCode: 130});
-        }
+        // stringAndBinaryReceiver should fail in the first and second, but accept the rest in the string receiver
+        await shouldFailIncompleteOpCode(stringAndBinaryReceiver.address, 130);
+        await shouldFailEmptyBody(stringAndBinaryReceiver.address, 130);
+        await shouldAcceptFrom(stringAndBinaryReceiver.address, 2, stringAndBinaryReceiver.getReceiver, "fallback_string");
 
-        // But should succeed in the rest in the string receiver
-        for (const body of bodiesToTry.slice(1)) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: stringAndBinaryReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: stringAndBinaryReceiver.address, success: true});
-            expect(await stringAndBinaryReceiver.getReceiver()).toBe("fallback_string");
-        }
-
-        // stringAndSliceReceiver should accept the first one in the fallback receiver
-        {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: stringAndSliceReceiver.address, data: lessThan32Bits},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: stringAndSliceReceiver.address, success: true});
-            expect(await stringAndSliceReceiver.getReceiver()).toBe("fallback");
-        }
-
-        // But should accept the rest in the string receiver
-        for (const body of bodiesToTry.slice(1)) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: stringAndSliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: stringAndSliceReceiver.address, success: true});
-            expect(await stringAndSliceReceiver.getReceiver()).toBe("fallback_string");
-        }
+        // stringAndSliceReceiver should accept the first and second in the fallback receiver
+        // and the rest in the string receiver
+        await shouldAcceptIncompleteOpCode(stringAndSliceReceiver.address, stringAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptEmptyBody(stringAndSliceReceiver.address, stringAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptFrom(stringAndSliceReceiver.address, 2, stringAndSliceReceiver.getReceiver, "fallback_string");
 
         // binaryAndSliceReceiver should accept all the cases in the fallback receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: binaryAndSliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: binaryAndSliceReceiver.address, success: true});
-            expect(await binaryAndSliceReceiver.getReceiver()).toBe("fallback");
-        }
+        await shouldAcceptAllCases(binaryAndSliceReceiver.address, binaryAndSliceReceiver.getReceiver, "fallback");
 
         // emptyAndCommentAndStringReceiver should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyAndCommentAndStringReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyAndCommentAndStringReceiver.address, success: true});
-            expect(await emptyAndCommentAndStringReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyAndCommentAndStringReceiver.address, emptyAndCommentAndStringReceiver.getReceiver, "empty");
         
         // emptyAndCommentAndBinaryReceiver should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyAndCommentAndBinaryReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyAndCommentAndBinaryReceiver.address, success: true});
-            expect(await emptyAndCommentAndBinaryReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyAndCommentAndBinaryReceiver.address, emptyAndCommentAndBinaryReceiver.getReceiver, "empty");
 
         // emptyAndCommentAndSliceReceiver should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyAndCommentAndSliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyAndCommentAndSliceReceiver.address, success: true});
-            expect(await emptyAndCommentAndSliceReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyAndCommentAndSliceReceiver.address, emptyAndCommentAndSliceReceiver.getReceiver, "empty");
 
         // emptyAndStringAndBinaryReceiver should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyAndStringAndBinaryReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyAndStringAndBinaryReceiver.address, success: true});
-            expect(await emptyAndStringAndBinaryReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyAndStringAndBinaryReceiver.address, emptyAndStringAndBinaryReceiver.getReceiver, "empty");
 
         // emptyAndStringAndSliceReceiver should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyAndStringAndSliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyAndStringAndSliceReceiver.address, success: true});
-            expect(await emptyAndStringAndSliceReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyAndStringAndSliceReceiver.address, emptyAndStringAndSliceReceiver.getReceiver, "empty");
 
         // emptyAndBinaryAndSliceReceiver should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyAndBinaryAndSliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyAndBinaryAndSliceReceiver.address, success: true});
-            expect(await emptyAndBinaryAndSliceReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyAndBinaryAndSliceReceiver.address, emptyAndBinaryAndSliceReceiver.getReceiver, "empty");
 
-        // commentAndStringAndBinaryReceiver should fail in the first one
-        {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: commentAndStringAndBinaryReceiver.address, data: lessThan32Bits},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: commentAndStringAndBinaryReceiver.address, success: false, exitCode: 130});
-        }
+        // commentAndStringAndBinaryReceiver should fail in the first and second
+        // but accept the rest in the string receiver
+        await shouldFailIncompleteOpCode(commentAndStringAndBinaryReceiver.address, 130);
+        await shouldFailEmptyBody(commentAndStringAndBinaryReceiver.address, 130);
+        await shouldAcceptFrom(commentAndStringAndBinaryReceiver.address, 2, commentAndStringAndBinaryReceiver.getReceiver, "fallback_string");
 
-        // But should succeed in the rest in the string receiver
-        for (const body of bodiesToTry.slice(1)) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: commentAndStringAndBinaryReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: commentAndStringAndBinaryReceiver.address, success: true});
-            expect(await commentAndStringAndBinaryReceiver.getReceiver()).toBe("fallback_string");
-        }
-
-        // commentAndStringAndSliceReceiver should accept the first one in the fallback receiver
-        {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: commentAndStringAndSliceReceiver.address, data: lessThan32Bits},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: commentAndStringAndSliceReceiver.address, success: true});
-            expect(await commentAndStringAndSliceReceiver.getReceiver()).toBe("fallback");
-        }
-
-        // But should accept the rest in the string receiver
-        for (const body of bodiesToTry.slice(1)) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: commentAndStringAndSliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: commentAndStringAndSliceReceiver.address, success: true});
-            expect(await commentAndStringAndSliceReceiver.getReceiver()).toBe("fallback_string");
-        }
+        // commentAndStringAndSliceReceiver should accept the first and second in the fallback receiver,
+        // but should accept the rest in the string receiver
+        await shouldAcceptIncompleteOpCode(commentAndStringAndSliceReceiver.address, commentAndStringAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptEmptyBody(commentAndStringAndSliceReceiver.address, commentAndStringAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptFrom(commentAndStringAndSliceReceiver.address, 2, commentAndStringAndSliceReceiver.getReceiver, "fallback_string");
 
         // commentAndBinaryAndSliceReceiver should accept all the cases in the fallback receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: commentAndBinaryAndSliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: commentAndBinaryAndSliceReceiver.address, success: true});
-            expect(await commentAndBinaryAndSliceReceiver.getReceiver()).toBe("fallback");
-        }
+        await shouldAcceptAllCases(commentAndBinaryAndSliceReceiver.address, commentAndBinaryAndSliceReceiver.getReceiver, "fallback");
 
-        // stringAndBinaryAndSliceReceiver should accept the first one in the fallback receiver
-        {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: stringAndBinaryAndSliceReceiver.address, data: lessThan32Bits},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: stringAndBinaryAndSliceReceiver.address, success: true});
-            expect(await stringAndBinaryAndSliceReceiver.getReceiver()).toBe("fallback");
-        }
-
-        // But should accept the rest in the string receiver
-        for (const body of bodiesToTry.slice(1)) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: stringAndBinaryAndSliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: stringAndBinaryAndSliceReceiver.address, success: true});
-            expect(await stringAndBinaryAndSliceReceiver.getReceiver()).toBe("fallback_string");
-        }
+        // stringAndBinaryAndSliceReceiver should accept the first and second in the fallback receiver,
+        // but should accept the rest in the string receiver
+        await shouldAcceptIncompleteOpCode(stringAndBinaryAndSliceReceiver.address, stringAndBinaryAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptEmptyBody(stringAndBinaryAndSliceReceiver.address, stringAndBinaryAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptFrom(stringAndBinaryAndSliceReceiver.address, 2, stringAndBinaryAndSliceReceiver.getReceiver, "fallback_string");
 
         // emptyAndCommentAndStringAndBinaryReceiver should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyAndCommentAndStringAndBinaryReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyAndCommentAndStringAndBinaryReceiver.address, success: true});
-            expect(await emptyAndCommentAndStringAndBinaryReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyAndCommentAndStringAndBinaryReceiver.address, emptyAndCommentAndStringAndBinaryReceiver.getReceiver, "empty");
 
         // emptyAndCommentAndStringAndSliceReceiver should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyAndCommentAndStringAndSliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyAndCommentAndStringAndSliceReceiver.address, success: true});
-            expect(await emptyAndCommentAndStringAndSliceReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyAndCommentAndStringAndSliceReceiver.address, emptyAndCommentAndStringAndSliceReceiver.getReceiver, "empty");
 
         // emptyAndCommentAndBinaryAndSliceReceiver should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyAndCommentAndBinaryAndSliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyAndCommentAndBinaryAndSliceReceiver.address, success: true});
-            expect(await emptyAndCommentAndBinaryAndSliceReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyAndCommentAndBinaryAndSliceReceiver.address, emptyAndCommentAndBinaryAndSliceReceiver.getReceiver, "empty");
 
         // emptyAndStringAndBinaryAndSliceReceiver should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: emptyAndStringAndBinaryAndSliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: emptyAndStringAndBinaryAndSliceReceiver.address, success: true});
-            expect(await emptyAndStringAndBinaryAndSliceReceiver.getReceiver()).toBe("empty");
-        }
+        await shouldAcceptAllCases(emptyAndStringAndBinaryAndSliceReceiver.address, emptyAndStringAndBinaryAndSliceReceiver.getReceiver, "empty");
 
-        // commentAndStringAndBinaryAndSliceReceiver should accept the first one in the fallback receiver
-        {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: commentAndStringAndBinaryAndSliceReceiver.address, data: lessThan32Bits},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: commentAndStringAndBinaryAndSliceReceiver.address, success: true});
-            expect(await commentAndStringAndBinaryAndSliceReceiver.getReceiver()).toBe("fallback");
-        }
-
-        // But should accept the rest in the string receiver
-        for (const body of bodiesToTry.slice(1)) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: commentAndStringAndBinaryAndSliceReceiver.address, data: body},
-            );
-    
-            expect(transactions).toHaveTransaction({from: contract.address, to: commentAndStringAndBinaryAndSliceReceiver.address, success: true});
-            expect(await commentAndStringAndBinaryAndSliceReceiver.getReceiver()).toBe("fallback_string");
-        }
+        // commentAndStringAndBinaryAndSliceReceiver should accept the first and second in the fallback receiver,
+        // but should accept the rest in the string receiver
+        await shouldAcceptIncompleteOpCode(commentAndStringAndBinaryAndSliceReceiver.address, commentAndStringAndBinaryAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptEmptyBody(commentAndStringAndBinaryAndSliceReceiver.address, commentAndStringAndBinaryAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptFrom(commentAndStringAndBinaryAndSliceReceiver.address, 2, commentAndStringAndBinaryAndSliceReceiver.getReceiver, "fallback_string");
 
         // allReceivers should accept all the cases in the empty receiver
-        for (const body of bodiesToTry) {
+        await shouldAcceptAllCases(allReceivers.address, allReceivers.getReceiver, "empty");
+    });
+
+    it("external receivers should process empty messages and empty strings correctly", async () => {
+        // Message bodies with integer of size less than 32 bits will be processed by empty receivers (if present),
+        // irrespective of the value of the integer
+        const lessThan32Bits = beginCell().storeUint(10,30).endCell();
+        // An actual empty message body
+        const emptyBody = new Cell();
+        // Message bodies with integers of size exactly 32 bits but value 0 will be processed by empty receivers (if present).
+        const zeroOf32Bits = beginCell().storeUint(0,32).endCell();
+        // The empty string will be processed by empty receivers (if present)
+        const emptyString = beginCell().storeUint(0,32).storeStringTail("").endCell();
+
+        const bodiesToTry = [lessThan32Bits, emptyBody, zeroOf32Bits, emptyString];
+
+        // For the case of extenal receivers, the "sendExternal" function allows to send an
+        // arbitrary Slice only when the contract implements the external fallback receiver.
+        // The rest of cases we can only send a particular message (like null or the empty string explicitly)
+
+        // Some utility functions that carry out the actual tests and assertions
+        
+        async function shouldFailInAllCases(testedContract: Address, exitCode: number) {
+            for (const body of bodiesToTry) {
+                const { transactions } = await contract.send(
+                    treasure.getSender(),
+                    { value: toNano("10") },
+                    { $$type: "SendCellToAddress", address: testedContract, body},
+                );
+        
+                noReceiversAltProvider.external(emptyBody);
+                blockchain
+                //expect(transactions).toHaveTransaction({from: contract.address, to: testedContract, success: false, exitCode});
+            }
+        }
+
+        async function shouldAcceptAllCases(testedContract: Address, receiverGetter: () => Promise<string>, expectedReceiver: string) {
+            for (const body of bodiesToTry) {
+                const { transactions } = await contract.send(
+                    treasure.getSender(),
+                    { value: toNano("10") },
+                    { $$type: "SendCellToAddress", address: testedContract, body},
+                );
+        
+                expect(transactions).toHaveTransaction({from: contract.address, to: testedContract, success: true});
+                expect(await receiverGetter()).toBe(expectedReceiver);
+            }
+        }
+
+        async function shouldFailIncompleteOpCode(testedContract: Address, exitCode: number) {
+                const { transactions } = await contract.send(
+                    treasure.getSender(),
+                    { value: toNano("10") },
+                    { $$type: "SendCellToAddress", address: testedContract, body: lessThan32Bits},
+                );
+        
+                expect(transactions).toHaveTransaction({from: contract.address, to: testedContract, success: false, exitCode: exitCode});
+        }
+
+        async function shouldAcceptFrom(testedContract: Address, from: number, receiverGetter: () => Promise<string>, 
+        expectedRestReceiver: string) {
+            for (const body of bodiesToTry.slice(from)) {
+                const { transactions } = await contract.send(
+                    treasure.getSender(),
+                    { value: toNano("10") },
+                    { $$type: "SendCellToAddress", address: testedContract, body},
+                );
+        
+                expect(transactions).toHaveTransaction({from: contract.address, to: testedContract, success: true});
+                expect(await receiverGetter()).toBe(expectedRestReceiver);
+            }
+        }
+
+        async function shouldFailEmptyBody(testedContract: Address, exitCode: number) {
             const { transactions } = await contract.send(
                 treasure.getSender(),
                 { value: toNano("10") },
-                { $$type: "SendCellToAddress", address: allReceivers.address, data: body},
+                { $$type: "SendCellToAddress", address: testedContract, body: emptyBody},
             );
     
-            expect(transactions).toHaveTransaction({from: contract.address, to: allReceivers.address, success: true});
-            expect(await allReceivers.getReceiver()).toBe("empty");
-        }
+            expect(transactions).toHaveTransaction({from: contract.address, to: testedContract, success: false, exitCode: exitCode});
+    }
+
+    async function shouldAcceptIncompleteOpCode(testedContract: Address, receiverGetter: () => Promise<string>, expectedReceiver: string) {
+        const { transactions } = await contract.send(
+            treasure.getSender(),
+            { value: toNano("10") },
+            { $$type: "SendCellToAddress", address: testedContract, body: lessThan32Bits},
+        );
+
+        expect(transactions).toHaveTransaction({from: contract.address, to: testedContract, success: true});
+        expect(await receiverGetter()).toBe(expectedReceiver);
+}
+       
+async function shouldAcceptEmptyBody(testedContract: Address, receiverGetter: () => Promise<string>, expectedReceiver: string) {
+    const { transactions } = await contract.send(
+        treasure.getSender(),
+        { value: toNano("10") },
+        { $$type: "SendCellToAddress", address: testedContract, body: emptyBody},
+    );
+
+    expect(transactions).toHaveTransaction({from: contract.address, to: testedContract, success: true});
+    expect(await receiverGetter()).toBe(expectedReceiver);
+}
+
+     async function shouldAcceptNull(contractAddr: Address, sendExternal: (msg: null) => Promise<SendMessageResult>, receiverGetter: () => Promise<string>, expectedReceiver: string) {
+        const { transactions } = await sendExternal(null);
+        expect(transactions).toHaveTransaction({to: contractAddr, success: true});
+                expect(await receiverGetter()).toBe(expectedReceiver);
+     }
+
+     async function shouldAcceptEmptyString(contractAddr: Address, sendExternal: (msg: string) => Promise<SendMessageResult>, receiverGetter: () => Promise<string>, expectedReceiver: string) {
+        const { transactions } = await sendExternal("");
+        expect(transactions).toHaveTransaction({to: contractAddr, success: true});
+                expect(await receiverGetter()).toBe(expectedReceiver);
+     }
+
+        // Tests start here
+        
+        // noReceivers
+        // We cannot send an external message to noReceivers, because 
+        // there is no "sendExternal" function in the object noReceivers. 
+        // Something similar happens in the rest of cases below. Only when the contract
+        // has the fallback external receiver, the API allows us to send to the contract arbitrary cells.
+        // I do not know how to bypass this restriction in the API.
+
+        // emptyReceiver
+        // We can only test sending null, which will be captured by the empty receiver
+        await shouldAcceptNull(emptyReceiver.address, emptyReceiver.sendExternal, emptyReceiver.getReceiver, "empty");
+
+        // commentReceiver 
+        // We cannot test sending null or the empty string, since "sendExternal" function expects the specific string "message"
+
+        // stringReceiver
+        // We can only test sending the empty string, which will be captured by the string receiver
+        await shouldAcceptEmptyString(stringReceiver.address, stringReceiver.sendExternal, stringReceiver.getReceiver, "fallback_string");
+
+        // binaryReceiver
+        // We cannot test sending null or the empty string, since "sendExternal" function expects a struct
+
+        // sliceReceiver should accept all the cases
+        await shouldAcceptNull(sliceReceiver.address, sliceReceiver.sendExternal, sliceReceiver.getReceiver, "empty");
+        await shouldAcceptEmptyString(sliceReceiver.address, sliceReceiver.sendExternal, sliceReceiver.getReceiver, "fallback_string");
+        await shouldAcceptAllCases(sliceReceiver.address, sliceReceiver.getReceiver, "fallback");
+
+        // emptyAndCommentReceiver should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(emptyAndCommentReceiver.address, emptyAndCommentReceiver.getReceiver, "empty");
+
+        // emptyAndStringReceiver should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(emptyAndStringReceiver.address, emptyAndStringReceiver.getReceiver, "empty");
+
+        // emptyAndBinaryReceiver should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(emptyAndBinaryReceiver.address, emptyAndBinaryReceiver.getReceiver, "empty");
+
+        // emptyAndSliceReceiver should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(emptyAndSliceReceiver.address, emptyAndSliceReceiver.getReceiver, "empty");
+
+        // commentAndStringReceiver should fail in the first and second, but accept the rest in the string receiver
+        await shouldFailIncompleteOpCode(commentAndStringReceiver.address, 130);
+        await shouldFailEmptyBody(commentAndStringReceiver.address, 130);
+        await shouldAcceptFrom(commentAndStringReceiver.address, 2, commentAndStringReceiver.getReceiver, "fallback_string");
+
+        // commentAndBinaryReceiver should fail in all the cases with exit code 130
+        //await shouldFailInAllCases(commentAndBinaryReceiverProvider, 130);
+
+        // commentAndSliceReceiver should accept all the cases in the fallback receiver
+        await shouldAcceptAllCases(commentAndSliceReceiver.address, commentAndSliceReceiver.getReceiver, "fallback");
+
+        // stringAndBinaryReceiver should fail in the first and second, but accept the rest in the string receiver
+        await shouldFailIncompleteOpCode(stringAndBinaryReceiver.address, 130);
+        await shouldFailEmptyBody(stringAndBinaryReceiver.address, 130);
+        await shouldAcceptFrom(stringAndBinaryReceiver.address, 2, stringAndBinaryReceiver.getReceiver, "fallback_string");
+
+        // stringAndSliceReceiver should accept the first and second in the fallback receiver
+        // and the rest in the string receiver
+        await shouldAcceptIncompleteOpCode(stringAndSliceReceiver.address, stringAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptEmptyBody(stringAndSliceReceiver.address, stringAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptFrom(stringAndSliceReceiver.address, 2, stringAndSliceReceiver.getReceiver, "fallback_string");
+
+        // binaryAndSliceReceiver should accept all the cases in the fallback receiver
+        await shouldAcceptAllCases(binaryAndSliceReceiver.address, binaryAndSliceReceiver.getReceiver, "fallback");
+
+        // emptyAndCommentAndStringReceiver should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(emptyAndCommentAndStringReceiver.address, emptyAndCommentAndStringReceiver.getReceiver, "empty");
+        
+        // emptyAndCommentAndBinaryReceiver should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(emptyAndCommentAndBinaryReceiver.address, emptyAndCommentAndBinaryReceiver.getReceiver, "empty");
+
+        // emptyAndCommentAndSliceReceiver should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(emptyAndCommentAndSliceReceiver.address, emptyAndCommentAndSliceReceiver.getReceiver, "empty");
+
+        // emptyAndStringAndBinaryReceiver should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(emptyAndStringAndBinaryReceiver.address, emptyAndStringAndBinaryReceiver.getReceiver, "empty");
+
+        // emptyAndStringAndSliceReceiver should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(emptyAndStringAndSliceReceiver.address, emptyAndStringAndSliceReceiver.getReceiver, "empty");
+
+        // emptyAndBinaryAndSliceReceiver should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(emptyAndBinaryAndSliceReceiver.address, emptyAndBinaryAndSliceReceiver.getReceiver, "empty");
+
+        // commentAndStringAndBinaryReceiver should fail in the first and second
+        // but accept the rest in the string receiver
+        await shouldFailIncompleteOpCode(commentAndStringAndBinaryReceiver.address, 130);
+        await shouldFailEmptyBody(commentAndStringAndBinaryReceiver.address, 130);
+        await shouldAcceptFrom(commentAndStringAndBinaryReceiver.address, 2, commentAndStringAndBinaryReceiver.getReceiver, "fallback_string");
+
+        // commentAndStringAndSliceReceiver should accept the first and second in the fallback receiver,
+        // but should accept the rest in the string receiver
+        await shouldAcceptIncompleteOpCode(commentAndStringAndSliceReceiver.address, commentAndStringAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptEmptyBody(commentAndStringAndSliceReceiver.address, commentAndStringAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptFrom(commentAndStringAndSliceReceiver.address, 2, commentAndStringAndSliceReceiver.getReceiver, "fallback_string");
+
+        // commentAndBinaryAndSliceReceiver should accept all the cases in the fallback receiver
+        await shouldAcceptAllCases(commentAndBinaryAndSliceReceiver.address, commentAndBinaryAndSliceReceiver.getReceiver, "fallback");
+
+        // stringAndBinaryAndSliceReceiver should accept the first and second in the fallback receiver,
+        // but should accept the rest in the string receiver
+        await shouldAcceptIncompleteOpCode(stringAndBinaryAndSliceReceiver.address, stringAndBinaryAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptEmptyBody(stringAndBinaryAndSliceReceiver.address, stringAndBinaryAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptFrom(stringAndBinaryAndSliceReceiver.address, 2, stringAndBinaryAndSliceReceiver.getReceiver, "fallback_string");
+
+        // emptyAndCommentAndStringAndBinaryReceiver should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(emptyAndCommentAndStringAndBinaryReceiver.address, emptyAndCommentAndStringAndBinaryReceiver.getReceiver, "empty");
+
+        // emptyAndCommentAndStringAndSliceReceiver should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(emptyAndCommentAndStringAndSliceReceiver.address, emptyAndCommentAndStringAndSliceReceiver.getReceiver, "empty");
+
+        // emptyAndCommentAndBinaryAndSliceReceiver should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(emptyAndCommentAndBinaryAndSliceReceiver.address, emptyAndCommentAndBinaryAndSliceReceiver.getReceiver, "empty");
+
+        // emptyAndStringAndBinaryAndSliceReceiver should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(emptyAndStringAndBinaryAndSliceReceiver.address, emptyAndStringAndBinaryAndSliceReceiver.getReceiver, "empty");
+
+        // commentAndStringAndBinaryAndSliceReceiver should accept the first and second in the fallback receiver,
+        // but should accept the rest in the string receiver
+        await shouldAcceptIncompleteOpCode(commentAndStringAndBinaryAndSliceReceiver.address, commentAndStringAndBinaryAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptEmptyBody(commentAndStringAndBinaryAndSliceReceiver.address, commentAndStringAndBinaryAndSliceReceiver.getReceiver, "fallback");
+        await shouldAcceptFrom(commentAndStringAndBinaryAndSliceReceiver.address, 2, commentAndStringAndBinaryAndSliceReceiver.getReceiver, "fallback_string");
+
+        // allReceivers should accept all the cases in the empty receiver
+        await shouldAcceptAllCases(allReceivers.address, allReceivers.getReceiver, "empty");
     });
 
 });
