@@ -54,7 +54,7 @@
               "optimizedChildCode": {
                 "type": "boolean",
                 "default": true,
-                "description": "It actually does not have a default value. It's internal compiler feature. It is turned on, there is no depencency cycle in contract system. It gets turned off otherwise."
+                "description": "It actually does not have a default value. It's internal compiler feature. It is turned on, there is no dependency cycle in contract system. It gets turned off otherwise."
               },
               "experimental": {
                 "type": "object",
