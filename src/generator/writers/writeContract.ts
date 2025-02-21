@@ -250,11 +250,11 @@ export function writeInit(
         });
     });
 
-    ctx.fun(ops.contractInitChildCode(t.name, ctx), () => {
+    ctx.fun(ops.contractCodeChild(t.name, ctx), () => {
         const args = init.params.map(
             (v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name),
         );
-        const sig = `cell ${ops.contractInitChildCode(t.name, ctx)}(${args.join(", ")})`;
+        const sig = `cell ${ops.contractCodeChild(t.name, ctx)}(${args.join(", ")})`;
         ctx.signature(sig);
         ctx.flag("inline");
         ctx.context("type:" + t.name + "$init");

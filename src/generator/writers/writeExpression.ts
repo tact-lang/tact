@@ -723,7 +723,7 @@ export function writeExpression(
             return `my_code()`;
         }
 
-        return `${ops.contractInitChildCode(idText(f.contract), wCtx)}()`;
+        return `${ops.contractCodeChild(idText(f.contract), wCtx)}()`;
     }
 
     //
