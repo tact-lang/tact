@@ -22,7 +22,7 @@ contract CodeOfTester {
     }
 
     get fun testThatMyCodeNotEqualToCodeOfChild(): Bool {
-        return myCode() == codeOf ChildContract;
+        return myCode() != codeOf ChildContract;
     }
 
     get fun testThatInitOfSelfCodeEqualToCodeOf(): Bool {
@@ -34,7 +34,7 @@ contract CodeOfTester {
     }
 
     get fun testThatInitOfSelfCodeNotEqualToCodeOfChild(): Bool {
-        return initOf CodeOfTester(0, false).code == codeOf ChildContract;
+        return initOf CodeOfTester(0, false).code != codeOf ChildContract;
     }
 }
 

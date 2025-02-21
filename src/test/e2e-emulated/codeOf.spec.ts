@@ -68,9 +68,9 @@ describe("codeOf", () => {
         ).toEqual(true);
         expect(
             await contract.getTestThatInitOfSelfCodeNotEqualToCodeOfChild(),
-        ).toEqual(false);
+        ).toEqual(true);
         expect(await contract.getTestThatMyCodeNotEqualToCodeOfChild()).toEqual(
-            false,
+            true,
         );
     });
 });
