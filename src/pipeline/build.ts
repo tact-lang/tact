@@ -133,6 +133,8 @@ export async function build(args: {
 
     const allContracts = getAllTypes(ctx).filter((v) => v.kind === "contract");
 
+    // Sort contracts in topological order
+    // If a cycle is found, return undefined
     const sortedContracts = topSortContracts(allContracts);
     if (sortedContracts !== undefined) {
         ctx = featureEnable(ctx, "optimizedChildCode");
