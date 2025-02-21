@@ -376,7 +376,7 @@ exports[`local-type-inference should automatically set types for let statements 
     {
       "fields": [
         {
-          "name": "bounced",
+          "name": "bounceable",
           "type": {
             "kind": "simple",
             "optional": false,
