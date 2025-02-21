@@ -42,37 +42,37 @@ describe("Diamond-shaped dependencies", () => {
     });
 
     it("Should work for A", async () => {
-        const AaboutB = await contractA.getGetNext();
+        const FirstAboutSecond = await contractA.getGetNext();
 
-        expect(AaboutB.code.equals(contractB.init!.code!)).toBeTruthy();
-        expect(AaboutB.data.equals(contractB.init!.data!)).toBeTruthy();
+        expect(FirstAboutSecond.code.equals(contractB.init!.code!)).toBeTruthy();
+        expect(FirstAboutSecond.data.equals(contractB.init!.data!)).toBeTruthy();
 
-        const AaboutC = await contractA.getGetNestedNext();
-        expect(AaboutC.code.equals(contractC.init!.code!)).toBeTruthy();
-        expect(AaboutC.data.equals(contractC.init!.data!)).toBeTruthy();
+        const FirstAboutThird = await contractA.getGetNestedNext();
+        expect(FirstAboutThird.code.equals(contractC.init!.code!)).toBeTruthy();
+        expect(FirstAboutThird.data.equals(contractC.init!.data!)).toBeTruthy();
     });
 
     it("Should work for B", async () => {
-        const BaboutC = await contractB.getGetNext();
+        const SecondAboutThird = await contractB.getGetNext();
 
-        expect(BaboutC.code.equals(contractC.init!.code!)).toBeTruthy();
-        expect(BaboutC.data.equals(contractC.init!.data!)).toBeTruthy();
+        expect(SecondAboutThird.code.equals(contractC.init!.code!)).toBeTruthy();
+        expect(SecondAboutThird.data.equals(contractC.init!.data!)).toBeTruthy();
 
-        const BaboutA = await contractB.getGetNestedNext();
+        const SecondAboutFirst = await contractB.getGetNestedNext();
 
-        expect(BaboutA.code.equals(contractA.init!.code!)).toBeTruthy();
-        expect(BaboutA.data.equals(contractA.init!.data!)).toBeTruthy();
+        expect(SecondAboutFirst.code.equals(contractA.init!.code!)).toBeTruthy();
+        expect(SecondAboutFirst.data.equals(contractA.init!.data!)).toBeTruthy();
     });
 
     it("Should work for C", async () => {
-        const CaboutA = await contractC.getGetNext();
+        const ThirdAboutFirst = await contractC.getGetNext();
 
-        expect(CaboutA.code.equals(contractA.init!.code!)).toBeTruthy();
-        expect(CaboutA.data.equals(contractA.init!.data!)).toBeTruthy();
+        expect(ThirdAboutFirst.code.equals(contractA.init!.code!)).toBeTruthy();
+        expect(ThirdAboutFirst.data.equals(contractA.init!.data!)).toBeTruthy();
 
-        const CaboutB = await contractC.getGetNestedNext();
+        const ThirdAboutSecond = await contractC.getGetNestedNext();
 
-        expect(CaboutB.code.equals(contractB.init!.code!)).toBeTruthy();
-        expect(CaboutB.data.equals(contractB.init!.data!)).toBeTruthy();
+        expect(ThirdAboutSecond.code.equals(contractB.init!.code!)).toBeTruthy();
+        expect(ThirdAboutSecond.data.equals(contractB.init!.data!)).toBeTruthy();
     });
 });
