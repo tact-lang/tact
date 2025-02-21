@@ -118,6 +118,15 @@ exports[`grammar should fail contract-const-virtual-virtual 1`] = `
 "
 `;
 
+exports[`grammar should fail contract-duplicate-attribute 1`] = `
+"<unknown>:3:14: Duplicate constant attribute "override"
+  2 | contract Test {
+> 3 |     override override const Foo: Int = 42;
+                   ^~~~~~~~
+  4 | }
+"
+`;
+
 exports[`grammar should fail contract-empty-traits-list-with-keyword 1`] = `
 "<unknown>:1:20: Expected "_", "A".."Z", or "a".."z"
 
@@ -688,6 +697,15 @@ exports[`grammar should fail trait-const-abstract-with-initializer 1`] = `
 > 5 |   abstract const Foo: Int = 42;
         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   6 | }
+"
+`;
+
+exports[`grammar should fail trait-duplicate-attribute 1`] = `
+"<unknown>:3:14: Duplicate constant attribute "abstract"
+  2 | trait Test {
+> 3 |     abstract abstract const Foo: Int = 42;
+                   ^~~~~~~~
+  4 | }
 "
 `;
 
