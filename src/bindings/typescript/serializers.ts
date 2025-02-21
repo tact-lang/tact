@@ -74,12 +74,12 @@ const intSerializer: Serializer<{ bits: number; optional: boolean }> = {
                 if (typeof src.format === "number") {
                     return {
                         bits: src.format,
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                     };
                 } else if (src.format === null || src.format === undefined) {
                     return {
                         bits: 257,
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                     };
                 }
             }
@@ -130,12 +130,12 @@ const uintSerializer: Serializer<{ bits: number; optional: boolean }> = {
                 if (typeof src.format === "number") {
                     return {
                         bits: src.format,
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                     };
                 } else if (src.format === null || src.format === undefined) {
                     return {
                         bits: 256,
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                     };
                 }
             }
@@ -184,7 +184,7 @@ const coinsSerializer: Serializer<{ optional: boolean }> = {
         if (src.kind === "simple") {
             if (src.type === "uint") {
                 if (src.format === "coins") {
-                    return { optional: src.optional ? src.optional : false };
+                    return { optional: src.optional ?? false };
                 }
             }
         }
@@ -254,7 +254,7 @@ const varIntSerializer: Serializer<{
                 ) {
                     return {
                         format: src.format,
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                     };
                 }
             }
@@ -303,7 +303,7 @@ const boolSerializer: Serializer<{ optional: boolean }> = {
         if (src.kind === "simple") {
             if (src.type === "bool") {
                 if (src.format === null || src.format === undefined) {
-                    return { optional: src.optional ? src.optional : false };
+                    return { optional: src.optional ?? false };
                 }
             }
         }
@@ -343,7 +343,7 @@ const addressSerializer: Serializer<{ optional: boolean }> = {
         if (src.kind === "simple") {
             if (src.type === "address") {
                 if (src.format === null || src.format === undefined) {
-                    return { optional: src.optional ? src.optional : false };
+                    return { optional: src.optional ?? false };
                 }
             }
         }
@@ -437,7 +437,7 @@ const cellSerializer: Serializer<{
                     src.format === "ref"
                 ) {
                     return {
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                         kind: src.type,
                     };
                 }
@@ -530,7 +530,7 @@ const fixedBytesSerializer: Serializer<{ bytes: number; optional: boolean }> = {
                 if (typeof src.format === "number") {
                     return {
                         bytes: src.format,
-                        optional: src.optional ? src.optional : false,
+                        optional: src.optional ?? false,
                     };
                 }
             }
@@ -579,7 +579,7 @@ const stringSerializer: Serializer<{ optional: boolean }> = {
         if (src.kind === "simple") {
             if (src.type === "string") {
                 if (src.format === null || src.format === undefined) {
-                    return { optional: src.optional ? src.optional : false };
+                    return { optional: src.optional ?? false };
                 }
             }
         }
@@ -592,7 +592,7 @@ const guard: Serializer<unknown> = {
         if (src.kind === "simple") {
             if (primitiveTypes.includes(src.type)) {
                 throwInternalCompilerError(
-                    `Unable to resolve serializer for ${src.type} with ${src.format ? src.format : null} format`,
+                    `Unable to resolve serializer for ${src.type} with ${src.format ?? null} format`,
                 );
             }
         }
@@ -623,7 +623,7 @@ const struct: Serializer<{ name: string; optional: boolean }> = {
             }
             return {
                 name: src.type,
-                optional: src.optional ? src.optional : false,
+                optional: src.optional ?? false,
             };
         }
         return null;

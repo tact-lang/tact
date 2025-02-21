@@ -594,7 +594,7 @@ export function writeTypescript(
         if (abi.getters) {
             for (const g of abi.getters) {
                 w.append(
-                    `async get${getterNames.get(g.name)}(${["provider: ContractProvider", ...writeArguments(g.arguments ? g.arguments : [])].join(", ")}) {`,
+                    `async get${getterNames.get(g.name)}(${["provider: ContractProvider", ...writeArguments(g.arguments ?? [])].join(", ")}) {`,
                 );
                 w.inIndent(() => {
                     w.append(`const builder = new TupleBuilder();`);
