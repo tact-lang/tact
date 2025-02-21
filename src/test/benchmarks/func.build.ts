@@ -45,12 +45,13 @@ const allInFolderFunc = async (folder: string, globs: string[]) => {
                 const stdlibExPath = stdlib.resolve("std/stdlib_ex.fc");
                 const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
 
-                // i need to regex match the imports and add the stdlib path to them
+                // we need to regex match the imports and add them to sources
                 // statements like #include "params.fc";
                 const contractCode = project
                     .readFile(project.resolve(contractInfo.path))
                     .toString();
 
+                // skip if no recv_internal
                 if (!isContractRegex.test(contractCode)) {
                     continue;
                 }
