@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `--output` CLI flag for specifying custom output directory in single-contract compilation: PR [#1793](https://github.com/tact-lang/tact/pull/1793)
 - New functions `Slice.asAddressUnsafe` and `contractHash` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
 - New function `Slice.asAddress` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
+- `-w` / `--watch` CLI flags to watch for changes in the contract and automatically recompile it: PR [#1844](https://github.com/tact-lang/tact/pull/1844)
 
 ### Changed
 
