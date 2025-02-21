@@ -164,12 +164,12 @@
     },
     {
       "label": "1.5.3 with optimized initOf",
-      "pr": null,
       "gas": {
-        "transfer": "18147",
-        "burn": "14379",
-        "discovery": "8757"
-      }
+        "transfer": "17950",
+        "burn": "13930",
+        "discovery": "8482"
+      },
+      "pr": "https://github.com/tact-lang/tact/pull/1907"
     }
   ]
 }
