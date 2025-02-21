@@ -25,13 +25,24 @@ describe("Diamond-shaped dependencies", () => {
         contractC = blockchain.openContract(await C.fromInit());
 
         // Deploy contracts
-        await contractA.send(deployer.getSender(), { value: toNano("1") }, null);
-        await contractB.send(deployer.getSender(), { value: toNano("1") }, null);
-        await contractC.send(deployer.getSender(), { value: toNano("1") }, null);
+        await contractA.send(
+            deployer.getSender(),
+            { value: toNano("1") },
+            null,
+        );
+        await contractB.send(
+            deployer.getSender(),
+            { value: toNano("1") },
+            null,
+        );
+        await contractC.send(
+            deployer.getSender(),
+            { value: toNano("1") },
+            null,
+        );
     });
 
     it("Should work for A", async () => {
-
         const AaboutB = await contractA.getGetNext();
 
         expect(AaboutB.code.equals(contractB.init!.code!)).toBeTruthy();
@@ -55,7 +66,6 @@ describe("Diamond-shaped dependencies", () => {
     });
 
     it("Should work for C", async () => {
-
         const CaboutA = await contractC.getGetNext();
 
         expect(CaboutA.code.equals(contractA.init!.code!)).toBeTruthy();
@@ -65,6 +75,5 @@ describe("Diamond-shaped dependencies", () => {
 
         expect(CaboutB.code.equals(contractB.init!.code!)).toBeTruthy();
         expect(CaboutB.data.equals(contractB.init!.data!)).toBeTruthy();
-
     });
 });

@@ -215,12 +215,11 @@ export function writeInit(
                 ctx.append(";; Build init data cell");
                 ctx.append();
                 ctx.append("builder b = begin_cell();");
-                if (!enabledOptimizedChildCode(ctx.ctx)) {
-                    if (t.dependsOn.length > 0) {
-                        ctx.append(
-                            "b = b.store_ref(__tact_child_contract_codes);",
-                        );
-                    }
+                if (
+                    !enabledOptimizedChildCode(ctx.ctx) &&
+                    t.dependsOn.length > 0
+                ) {
+                    ctx.append("b = b.store_ref(__tact_child_contract_codes);");
                 }
             } else {
                 if (!enabledOptimizedChildCode(ctx.ctx)) {
@@ -265,8 +264,8 @@ export function writeInit(
                 ctx.append();
                 ctx.append("builder b = begin_cell();");
                 if (
-                    t.dependsOn.length > 0 &&
-                    !enabledOptimizedChildCode(ctx.ctx)
+                    !enabledOptimizedChildCode(ctx.ctx) &&
+                    t.dependsOn.length > 0
                 ) {
                     ctx.append(
                         `b = b.store_ref(begin_cell().store_dict(contracts).end_cell());`,
