@@ -48,21 +48,6 @@ exports[`writeSerialization should write serializer for A 1`] = `
   },
   {
     "code": {
-      "code": "slice raw = cs~load_msg_addr();
-return (cs, raw);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_load_address",
-    "signature": "(slice, slice) __tact_load_address(slice cs)",
-  },
-  {
-    "code": {
       "code": "if (cs.preload_uint(2) != 0) {
     slice raw = cs~load_msg_addr();
     return (cs, raw);
@@ -1499,53 +1484,6 @@ return builders;",
     "flags": Set {},
     "name": "__tact_string_builder_append_not_mut",
     "signature": "(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-if (src < 0) {
-    b = b.store_uint(45, 8);
-    src = - src;
-}
-
-if (src < 1000000000000000000000000000000) {
-    int len = 0;
-    int value = 0;
-    int mult = 1;
-    do {
-        (src, int res) = src.divmod(10);
-        value = value + (res + 48) * mult;
-        mult = mult * 256;
-        len = len + 1;
-    } until (src == 0);
-
-    b = b.store_uint(value, len * 8);
-} else {
-    tuple t = empty_tuple();
-    int len = 0;
-    do {
-        int digit = src % 10;
-        t~tpush(digit);
-        len = len + 1;
-        src = src / 10;
-    } until (src == 0);
-
-    int c = len - 1;
-    repeat(len) {
-        int v = t.at(c);
-        b = b.store_uint(v + 48, 8);
-        c = c - 1;
-    }
-}
-return b.end_cell().begin_parse();",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_int_to_string",
-    "signature": "slice __tact_int_to_string(int src)",
   },
   {
     "code": {
@@ -5772,21 +5710,6 @@ exports[`writeSerialization should write serializer for B 1`] = `
   },
   {
     "code": {
-      "code": "slice raw = cs~load_msg_addr();
-return (cs, raw);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_load_address",
-    "signature": "(slice, slice) __tact_load_address(slice cs)",
-  },
-  {
-    "code": {
       "code": "if (cs.preload_uint(2) != 0) {
     slice raw = cs~load_msg_addr();
     return (cs, raw);
@@ -7223,53 +7146,6 @@ return builders;",
     "flags": Set {},
     "name": "__tact_string_builder_append_not_mut",
     "signature": "(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-if (src < 0) {
-    b = b.store_uint(45, 8);
-    src = - src;
-}
-
-if (src < 1000000000000000000000000000000) {
-    int len = 0;
-    int value = 0;
-    int mult = 1;
-    do {
-        (src, int res) = src.divmod(10);
-        value = value + (res + 48) * mult;
-        mult = mult * 256;
-        len = len + 1;
-    } until (src == 0);
-
-    b = b.store_uint(value, len * 8);
-} else {
-    tuple t = empty_tuple();
-    int len = 0;
-    do {
-        int digit = src % 10;
-        t~tpush(digit);
-        len = len + 1;
-        src = src / 10;
-    } until (src == 0);
-
-    int c = len - 1;
-    repeat(len) {
-        int v = t.at(c);
-        b = b.store_uint(v + 48, 8);
-        c = c - 1;
-    }
-}
-return b.end_cell().begin_parse();",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_int_to_string",
-    "signature": "slice __tact_int_to_string(int src)",
   },
   {
     "code": {
@@ -11496,21 +11372,6 @@ exports[`writeSerialization should write serializer for C 1`] = `
   },
   {
     "code": {
-      "code": "slice raw = cs~load_msg_addr();
-return (cs, raw);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_load_address",
-    "signature": "(slice, slice) __tact_load_address(slice cs)",
-  },
-  {
-    "code": {
       "code": "if (cs.preload_uint(2) != 0) {
     slice raw = cs~load_msg_addr();
     return (cs, raw);
@@ -12947,53 +12808,6 @@ return builders;",
     "flags": Set {},
     "name": "__tact_string_builder_append_not_mut",
     "signature": "(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc)",
-  },
-  {
-    "code": {
-      "code": "var b = begin_cell();
-if (src < 0) {
-    b = b.store_uint(45, 8);
-    src = - src;
-}
-
-if (src < 1000000000000000000000000000000) {
-    int len = 0;
-    int value = 0;
-    int mult = 1;
-    do {
-        (src, int res) = src.divmod(10);
-        value = value + (res + 48) * mult;
-        mult = mult * 256;
-        len = len + 1;
-    } until (src == 0);
-
-    b = b.store_uint(value, len * 8);
-} else {
-    tuple t = empty_tuple();
-    int len = 0;
-    do {
-        int digit = src % 10;
-        t~tpush(digit);
-        len = len + 1;
-        src = src / 10;
-    } until (src == 0);
-
-    int c = len - 1;
-    repeat(len) {
-        int v = t.at(c);
-        b = b.store_uint(v + 48, 8);
-        c = c - 1;
-    }
-}
-return b.end_cell().begin_parse();",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_int_to_string",
-    "signature": "slice __tact_int_to_string(int src)",
   },
   {
     "code": {
@@ -17146,15 +16960,13 @@ var v'd = sc_1~load_int(1) ? sc_1~load_ref().begin_parse() : null();
 var v'e = sc_1~load_int(1);
 var v'f = sc_1~load_int(257);
 var v'g = sc_1~load_int(257);
-var v'h = sc_1~__tact_load_address();
+var v'h = sc_1~load_msg_addr();
 return (sc_0, (v'a, v'b, v'c, v'd, v'e, v'f, v'g, v'h));",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:C",
-    "depends": Set {
-      "__tact_load_address",
-    },
+    "depends": Set {},
     "flags": Set {},
     "name": "$C$_load",
     "signature": "(slice, ((cell, cell, slice, slice, int, int, int, slice))) $C$_load(slice sc_0)",

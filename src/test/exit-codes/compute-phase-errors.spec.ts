@@ -144,7 +144,7 @@ async function testComputePhaseExitCode(
     expect(sendResult.transactions).toHaveTransaction({
         from: treasure.address,
         to: contract.address,
-        success: code === 0 || code === 1 ? true : false,
+        success: code === 0 || code === 1,
         exitCode: code === 13 ? -14 : code,
     });
 }

@@ -17,18 +17,6 @@ export function writeStdlib(ctx: WriterContext): void {
     // Addresses
     //
 
-    ctx.fun("__tact_load_address", () => {
-        ctx.signature(`(slice, slice) __tact_load_address(slice cs)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                slice raw = cs~load_msg_addr();
-                return (cs, raw);
-            `);
-        });
-    });
-
     ctx.fun("__tact_load_address_opt", () => {
         ctx.signature(`(slice, slice) __tact_load_address_opt(slice cs)`);
         ctx.flag("inline");
@@ -914,51 +902,6 @@ export function writeStdlib(ctx: WriterContext): void {
             ctx.write(`
                 builders~${ctx.used("__tact_string_builder_append")}(sc);
                 return builders;
-            `);
-        });
-    });
-
-    ctx.fun(`__tact_int_to_string`, () => {
-        ctx.signature(`slice __tact_int_to_string(int src)`);
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                var b = begin_cell();
-                if (src < 0) {
-                    b = b.store_uint(45, 8);
-                    src = - src;
-                }
-
-                if (src < ${(10n ** 30n).toString(10)}) {
-                    int len = 0;
-                    int value = 0;
-                    int mult = 1;
-                    do {
-                        (src, int res) = src.divmod(10);
-                        value = value + (res + 48) * mult;
-                        mult = mult * 256;
-                        len = len + 1;
-                    } until (src == 0);
-
-                    b = b.store_uint(value, len * 8);
-                } else {
-                    tuple t = empty_tuple();
-                    int len = 0;
-                    do {
-                        int digit = src % 10;
-                        t~tpush(digit);
-                        len = len + 1;
-                        src = src / 10;
-                    } until (src == 0);
-
-                    int c = len - 1;
-                    repeat(len) {
-                        int v = t.at(c);
-                        b = b.store_uint(v + 48, 8);
-                        c = c - 1;
-                    }
-                }
-                return b.end_cell().begin_parse();
             `);
         });
     });

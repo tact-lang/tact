@@ -86,6 +86,7 @@ describe("writeSerialization", () => {
             writeParser(
                 getType(ctx, s).name,
                 false,
+                "with-opcode",
                 getAllocation(ctx, s),
                 "user",
                 wCtx,

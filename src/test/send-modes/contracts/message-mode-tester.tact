@@ -42,9 +42,9 @@ contract Calculator {
 }
 
 // This message is used by the treasury to initiate the tests.
-// It represents the data the tester needs to start the test:
+// It represents the data the MessageModeTester needs to start the test:
 // - The interval to compute its average [from, to]
-// - The amount the tester will set in the request message value: amountToPayInRequest
+// - The amount the MessageModeTester will set in the request message value: amountToPayInRequest
 // - The amount the calculator will set in the response message value: amountToPayInCalculatorResponse
 message DoCalculatorRequest {
     from: Int as uint32;
@@ -68,7 +68,7 @@ contract MessageModeTester {
         self.val = msg.res;
     }
 
-    bounced(msg: AverageResult) {
+    bounced(msg: bounced<AverageRequest>) {
         self.val = -2;
     }
     
@@ -76,7 +76,7 @@ contract MessageModeTester {
         return self.val;
     }
 
-    // Instruct tester to do a request to the calculator
+    // Instruct MessageModeTester to do a request to the calculator
     // Using default mode, no flags
     receive(msg: DoCalculatorRequest) {
         let addr = contractAddress(initOf Calculator());

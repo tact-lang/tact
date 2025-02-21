@@ -89,6 +89,7 @@ function sendMint(
     }
     const msg: Mint = {
         $$type: "Mint",
+        queryId: 0n,
         amount: jetton_amount,
         receiver: to,
     };
@@ -141,6 +142,7 @@ describe("Jetton", () => {
         defaultContent = beginCell().endCell();
         const msg: JettonUpdateContent = {
             $$type: "JettonUpdateContent",
+            queryId: 0n,
             content: new Cell(),
         };
 
@@ -169,7 +171,7 @@ describe("Jetton", () => {
         printBenchmarkTable(results);
     });
 
-    it("send transfer", async () => {
+    it("transfer", async () => {
         const mintResult = await sendMint(
             jettonMinter,
             deployer.getSender(),

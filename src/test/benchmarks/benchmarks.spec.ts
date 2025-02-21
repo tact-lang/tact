@@ -139,31 +139,35 @@ describe("benchmarks", () => {
         await hashStringSmall(sha256Small, "hello world");
         await hashStringAsSLice(sha256AsSlice, "hello world");
 
-        expect(await hashStringBig(sha256Big, "hello world")).toEqual(3039);
-        expect(await hashStringSmall(sha256Small, "hello world")).toEqual(2516);
-        expect(await hashStringAsSLice(sha256AsSlice, "hello world")).toEqual(
-            2516,
+        expect(await hashStringBig(sha256Big, "hello world")).toMatchSnapshot(
+            "gas hash string big",
         );
+        expect(
+            await hashStringSmall(sha256Small, "hello world"),
+        ).toMatchSnapshot("gas hash string small");
+        expect(
+            await hashStringAsSLice(sha256AsSlice, "hello world"),
+        ).toMatchSnapshot("gas hash string slice");
 
-        expect(await hashStringBig(sha256Big, "hello world".repeat(5))).toEqual(
-            3040,
-        );
+        expect(
+            await hashStringBig(sha256Big, "hello world".repeat(5)),
+        ).toMatchSnapshot("gas hash string big repeated");
         expect(
             await hashStringSmall(sha256Small, "hello world".repeat(5)),
-        ).toEqual(2516);
+        ).toMatchSnapshot("gas hash string small repeated");
         expect(
             await hashStringAsSLice(sha256AsSlice, "hello world".repeat(5)),
-        ).toEqual(2516);
+        ).toMatchSnapshot("gas hash string slice repeated");
 
         expect(
             await hashStringBig(sha256Big, "hello world".repeat(10)),
-        ).toEqual(3042);
+        ).toMatchSnapshot("gas hash string big repeated more");
         expect(
             await hashStringSmall(sha256Small, "hello world".repeat(10)),
-        ).toEqual(2516);
+        ).toMatchSnapshot("gas hash string small repeated more");
         expect(
             await hashStringAsSLice(sha256AsSlice, "hello world".repeat(10)),
-        ).toEqual(2516);
+        ).toMatchSnapshot("gas hash string string repeated more");
     });
 
     it("benchmark cells creation", async () => {

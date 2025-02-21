@@ -53,7 +53,7 @@ describe("Escrow Gas Tests", () => {
         printBenchmarkTable(results);
     });
 
-    it("send ton funding", async () => {
+    it("fundingTon", async () => {
         const dealAmount = toNano(1); // 1 ton
 
         const escrowContract = await generateEscrowContract(
@@ -93,7 +93,7 @@ describe("Escrow Gas Tests", () => {
         expect(gasUsed).toEqual(expectedResult.gas["fundingTon"]);
     });
 
-    it("update jetton wallet code", async () => {
+    it("changeCode", async () => {
         const dealAmount = toNano(5); // 5 jetton
 
         const escrowContract = await generateEscrowContract(
@@ -136,7 +136,7 @@ describe("Escrow Gas Tests", () => {
         expect(gasUsed).toEqual(expectedResult.gas["changeCode"]);
     });
 
-    it("guarantor approve ton", async () => {
+    it("approveTon", async () => {
         const dealAmount = toNano(1); // 1 ton
 
         const escrowContract = await generateEscrowContract(
@@ -184,7 +184,7 @@ describe("Escrow Gas Tests", () => {
         expect(gasUsed).toEqual(expectedResult.gas["approveTon"]);
     });
 
-    it("guarantor cancel ton", async () => {
+    it("cancelTon", async () => {
         const dealAmount = toNano(1); // 1 ton
 
         const escrowContract = await generateEscrowContract(

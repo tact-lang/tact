@@ -46,7 +46,9 @@ export function writeStorageOps(
             ctx.append(`if ($loaded) {`);
             ctx.inIndent(() => {
                 if (type.fields.length > 0) {
-                    ctx.append(`return $sc~${ops.reader(type.name, ctx)}();`);
+                    ctx.append(
+                        `return $sc~${ops.reader(type.name, "with-opcode", ctx)}();`,
+                    );
                 } else {
                     ctx.append(`return null();`);
                 }
@@ -56,7 +58,7 @@ export function writeStorageOps(
                 // Load arguments
                 if (type.init!.params.length > 0) {
                     ctx.append(
-                        `(${type.init!.params.map((v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) = $sc~${ops.reader(funcInitIdOf(type.name), ctx)}();`,
+                        `(${type.init!.params.map((v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) = $sc~${ops.reader(funcInitIdOf(type.name), "with-opcode", ctx)}();`,
                     );
                     ctx.append(`$sc.end_parse();`);
                 }
@@ -315,10 +317,8 @@ export function writeMainContract(
         const hasExternal = type.receivers.find((v) =>
             v.selector.kind.startsWith("external-"),
         );
-        writeRouter(type, "internal", ctx);
-        if (hasExternal) {
-            writeRouter(type, "external", ctx);
-        }
+
+        writeRouter(type, ctx);
 
         // Render internal receiver
         ctx.append(
@@ -329,11 +329,12 @@ export function writeMainContract(
             ctx.append();
             ctx.append(`;; Context`);
             ctx.append(`var cs = in_msg_cell.begin_parse();`);
-            ctx.append(`var msg_flags = cs~load_uint(4);`); // int_msg_info$0 ihr_disabled:Bool bounce:Bool bounced:Bool
-            ctx.append(`var msg_bounced = -(msg_flags & 1);`);
+            ctx.append(`cs~skip_bits(2);`); // skip int_msg_info$0 ihr_disabled:Bool
+            ctx.append(`var msg_bounceable = cs~load_int(1);`); // bounce:Bool
+            ctx.append(`var msg_bounced = cs~load_int(1);`); // bounced:Bool
             ctx.append(`slice msg_sender_addr = cs~load_msg_addr();`);
             ctx.append(
-                `__tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);`,
+                `__tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);`,
             );
             ctx.append(`__tact_context_sender = msg_sender_addr;`);
             ctx.append();
