@@ -10,7 +10,6 @@ import type { Args } from "./index";
 import { parseConfig } from "../../config/parseConfig";
 import { ZodError } from "zod";
 
-let currentCompilation: Promise<void> | null = null;
 let abortController: AbortController | null = null;
 
 async function processWatchEvent(
@@ -29,83 +28,66 @@ async function processWatchEvent(
         signal?: AbortSignal,
     ) => Promise<void>,
 ) {
+    // Only handle .tact or tact.config.json changes
     if (
-        event.filename?.endsWith(".tact") ||
-        event.filename === "tact.config.json"
+        !event.filename ||
+        (!event.filename.endsWith(".tact") &&
+            event.filename !== "tact.config.json")
     ) {
-        logger.info(`🔄 Change detected in ${event.filename}, rebuilding...`);
+        return;
+    }
 
-        // Cancel previous compilation if it's still running
-        if (abortController) {
-            abortController.abort();
+    logger.info(`🔄 Change detected in ${event.filename}, rebuilding...`);
+
+    // Cancel previous compilation if it's still running
+    if (abortController) {
+        abortController.abort();
+    }
+    abortController = new AbortController();
+
+    // Small delay to batch up rapid-fire changes
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    try {
+        // Create a fresh file system instance each time
+        const freshFs = createNodeFileSystem(Fs.root, false);
+
+        // Check if the changed file still exists
+        const changedFilePath = join(watchPath, event.filename);
+        if (!freshFs.exists(changedFilePath)) {
+            logger.error(`❌ File not found after change: ${event.filename}`);
+            return;
         }
 
-        // Create new abort controller for this compilation
-        abortController = new AbortController();
-
-        // Small delay to handle multiple rapid changes
-        await new Promise((resolve) => setTimeout(resolve, 100));
-
-        try {
-            // Create a fresh file system instance using the original root
-            const freshFs = createNodeFileSystem(Fs.root, false);
-
-            // If it's a config file, reload the config
-            if (event.filename === "tact.config.json") {
-                const configPath = join(watchPath, "tact.config.json");
-                if (!freshFs.exists(configPath)) {
-                    logger.error("❌ Config file not found after change");
-                    return;
-                }
-                const configText = freshFs
-                    .readFile(configPath)
-                    .toString("utf-8");
-                try {
-                    const newConfig = parseConfig(configText);
-                    config = newConfig;
-                } catch (e) {
-                    if (e instanceof ZodError) {
-                        logger.error(`❌ Config error: ${e.toString()}`);
-                    } else {
-                        throw e;
-                    }
-                    return;
-                }
-            }
-
-            // For .tact files, verify the file exists and is readable
-            if (event.filename.endsWith(".tact")) {
-                const filePath = join(watchPath, event.filename);
-                if (!freshFs.exists(filePath)) {
-                    logger.error(
-                        `❌ File not found after change: ${event.filename}`,
-                    );
-                    return;
-                }
-            }
-
-            currentCompilation = compile(
-                Args,
-                Errors,
-                freshFs,
-                config,
-                abortController.signal,
-            );
-            await currentCompilation;
-            logger.info("✅ Build completed successfully");
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                if (
-                    error.name === "AbortError" ||
-                    error.message === "AbortError"
-                ) {
-                    logger.info("🛑 Build cancelled");
+        // If it's the config file, parse a new config
+        if (event.filename === "tact.config.json") {
+            const configText = freshFs
+                .readFile(changedFilePath)
+                .toString("utf-8");
+            try {
+                config = parseConfig(configText);
+            } catch (e) {
+                if (e instanceof ZodError) {
+                    logger.error(`❌ Config error: ${e.toString()}`);
                 } else {
-                    logger.error(`❌ Build failed: ${error.message}`);
+                    throw e;
                 }
-            } else {
-                logger.error("❌ Build failed with unknown error");
+                return;
             }
+        }
+
+        // Run the compile process
+        await compile(Args, Errors, freshFs, config, abortController.signal);
+        logger.info("✅ Build completed successfully");
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            if (error.name === "AbortError" || error.message === "AbortError") {
+                logger.info("🛑 Build cancelled");
+            } else {
+                logger.error(`❌ Build failed: ${error.message}`);
+            }
+        } else {
+            logger.error("❌ Build failed with unknown error");
         }
     }
 }
@@ -130,13 +112,14 @@ export const watchAndCompile = async (
     logger.info("👀 Watching for changes...");
 
     try {
+        // Start watching the directory
         const watcher = watch(watchPath, { recursive: true });
 
-        // Initial compilation
-        currentCompilation = compile(Args, Errors, Fs, config);
-        await currentCompilation;
+        // Perform an initial compilation
+        await compile(Args, Errors, Fs, config);
         logger.info("✅ Initial build completed successfully");
 
+        // Process events as they come in
         for await (const event of watcher) {
             await processWatchEvent(
                 event,
