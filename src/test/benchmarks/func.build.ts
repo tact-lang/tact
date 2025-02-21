@@ -26,7 +26,7 @@ const allInFolderFunc = async (folder: string, globs: string[]) => {
                 path: contractPath,
                 output: join(
                     dirname(contractPath),
-                    "../../output/func",
+                    "../output/",
                     `${name}.boc`,
                 ),
             };
@@ -113,6 +113,8 @@ const allInFolderFunc = async (folder: string, globs: string[]) => {
                     continue;
                 }
 
+                console.log(contractInfo.output);
+
                 project.writeFile(
                     project.resolve(contractInfo.output),
                     compilationResult.output!,
@@ -133,7 +135,7 @@ const main = async () => {
     // Disable version number in packages
     __DANGER__disableVersionNumber();
 
-    const outputDir = path.join(__dirname, "contracts/output/func");
+    const outputDir = path.join(__dirname, "contracts/func/output");
     try {
         await fs.access(outputDir);
         await fs.rm(outputDir, { recursive: true, force: true });
