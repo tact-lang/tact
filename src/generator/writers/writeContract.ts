@@ -216,8 +216,8 @@ export function writeInit(
                 ctx.append();
                 ctx.append("builder b = begin_cell();");
                 if (
-                    !enabledOptimizedChildCode(ctx.ctx) &&
-                    t.dependsOn.length > 0
+                    t.dependsOn.length > 0 &&
+                    !enabledOptimizedChildCode(ctx.ctx)
                 ) {
                     ctx.append("b = b.store_ref(__tact_child_contract_codes);");
                 }
