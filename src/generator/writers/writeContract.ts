@@ -249,6 +249,24 @@ export function writeInit(
             ctx.append(`return (init_code, b.end_cell());`);
         });
     });
+
+    ctx.fun(ops.contractInitChildCode(t.name, ctx), () => {
+        const args = init.params.map(
+            (v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name),
+        );
+        const sig = `cell ${ops.contractInitChildCode(t.name, ctx)}(${args.join(", ")})`;
+        ctx.signature(sig);
+        ctx.flag("inline");
+        ctx.context("type:" + t.name + "$init");
+        ctx.body(() => {
+            ctx.write(`
+                slice sc' = __tact_child_contract_codes.begin_parse();
+                cell source = sc'~load_dict();
+                ;; Contract Code: ${t.name}
+                return ${ctx.used("__tact_dict_get_code")}(source, ${t.uid});
+            `);
+        });
+    });
 }
 
 export function writeMainContract(

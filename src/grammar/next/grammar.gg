@@ -259,6 +259,7 @@ primary
     / IntegerLiteral
     / BoolLiteral
     / InitOf
+    / CodeOf
     / Null
     / StringLiteral
     / Id;
@@ -270,6 +271,7 @@ Parens = child:parens;
 
 StructInstance = type:TypeId "{" fields:commaList<StructFieldInitializer>? "}";
 InitOf = keyword<"initOf"> name:Id params:parameterList<expression>;
+CodeOf = keyword<"codeOf"> name:Id;
 
 StructFieldInitializer = name:Id init:(":" @expression)?;
 
@@ -321,7 +323,7 @@ reservedWord "reserved word" = keyword<(
     "fun" / "let" / "return" / "receive" / "native" / "primitive" / "null" /
     "if" / "else" / "while" / "repeat" / "do" / "until" / "try" / "catch" /
     "foreach" / "as" / "map" / "mutates" / "extends" / "external" / "import"
-    / "with" / "trait" / "initOf" / "override" / "abstract" / "virtual" /
+    / "with" / "trait" / "initOf" / "codeOf" / "override" / "abstract" / "virtual" /
     "inline" / "const"
 )>;
 

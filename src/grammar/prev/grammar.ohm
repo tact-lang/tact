@@ -235,6 +235,7 @@ Tact {
                       | id
                       | null
                       | ExpressionInitOf
+                      | ExpressionCodeOf
                       | stringLiteral
 
     ExpressionParens = "(" Expression ")"
@@ -244,6 +245,7 @@ Tact {
     ExpressionStaticCall = id Arguments
 
     ExpressionInitOf = initOf id Arguments
+    ExpressionCodeOf = codeOf id
 
     StructFieldInitializer = id ":" Expression --full
                            | id --punned   // shorthand for `id: id`
@@ -378,6 +380,7 @@ Tact {
             | with
             | trait
             | initOf
+            | codeOf
             | override
             | abstract
             | virtual
@@ -412,6 +415,7 @@ Tact {
     with = "with" ~idPart
     trait = "trait" ~idPart
     initOf = "initOf" ~idPart
+    codeOf = "codeOf" ~idPart
     virtual = "virtual" ~idPart
     override = "override" ~idPart
     inline = "inline" ~idPart

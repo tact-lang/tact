@@ -365,10 +365,14 @@ export namespace $ast {
     readonly name: Id;
     readonly params: parameterList<expression>;
   }>;
+  export type CodeOf = $.Located<{
+    readonly $: "CodeOf";
+    readonly name: Id;
+  }>;
   export type Null = $.Located<{
     readonly $: "Null";
   }>;
-  export type primary = Parens | StructInstance | IntegerLiteral | BoolLiteral | InitOf | Null | StringLiteral | Id;
+  export type primary = Parens | StructInstance | IntegerLiteral | BoolLiteral | InitOf | CodeOf | Null | StringLiteral | Id;
   export type parens = expression;
   export type StructFieldInitializer = $.Located<{
     readonly $: "StructFieldInitializer";
@@ -398,7 +402,7 @@ export namespace $ast {
   }>;
   export type hexDigit = string | string | string;
   export type escapeChar = "\\" | "\"" | "n" | "r" | "t" | "v" | "b" | "f" | string | string | string;
-  export type reservedWord = keyword<"extend" | "public" | "fun" | "let" | "return" | "receive" | "native" | "primitive" | "null" | "if" | "else" | "while" | "repeat" | "do" | "until" | "try" | "catch" | "foreach" | "as" | "map" | "mutates" | "extends" | "external" | "import" | "with" | "trait" | "initOf" | "override" | "abstract" | "virtual" | "inline" | "const">;
+  export type reservedWord = keyword<"extend" | "public" | "fun" | "let" | "return" | "receive" | "native" | "primitive" | "null" | "if" | "else" | "while" | "repeat" | "do" | "until" | "try" | "catch" | "foreach" | "as" | "map" | "mutates" | "extends" | "external" | "import" | "with" | "trait" | "initOf" | "codeOf" | "override" | "abstract" | "virtual" | "inline" | "const">;
   export type space = " " | "\t" | "\r" | "\n" | comment;
   export type JustImports = $.Located<{
     readonly $: "JustImports";
@@ -507,8 +511,9 @@ export const StructInstance: $.Parser<$ast.StructInstance> = $.loc($.field($.pur
 export const IntegerLiteral: $.Parser<$ast.IntegerLiteral> = $.loc($.field($.pure("IntegerLiteral"), "$", $.field($.alt($.lazy(() => IntegerLiteralHex), $.alt($.lazy(() => IntegerLiteralBin), $.alt($.lazy(() => IntegerLiteralOct), IntegerLiteralDec))), "value", $.eps)));
 export const BoolLiteral: $.Parser<$ast.BoolLiteral> = $.loc($.field($.pure("BoolLiteral"), "$", $.field($.alt($.str("true"), $.str("false")), "value", $.right($.lookNeg($.lazy(() => idPart)), $.eps))));
 export const InitOf: $.Parser<$ast.InitOf> = $.loc($.field($.pure("InitOf"), "$", $.right(keyword($.str("initOf")), $.field(Id, "name", $.field($.lazy(() => parameterList(expression)), "params", $.eps)))));
+export const CodeOf: $.Parser<$ast.CodeOf> = $.loc($.field($.pure("CodeOf"), "$", $.right(keyword($.str("codeOf")), $.field(Id, "name", $.eps))));
 export const Null: $.Parser<$ast.Null> = $.loc($.field($.pure("Null"), "$", $.right(keyword($.str("null")), $.eps)));
-export const primary: $.Parser<$ast.primary> = $.alt(Parens, $.alt(StructInstance, $.alt(IntegerLiteral, $.alt(BoolLiteral, $.alt(InitOf, $.alt(Null, $.alt(StringLiteral, Id)))))));
+export const primary: $.Parser<$ast.primary> = $.alt(Parens, $.alt(StructInstance, $.alt(IntegerLiteral, $.alt(BoolLiteral, $.alt(InitOf, $.alt(CodeOf, $.alt(Null, $.alt(StringLiteral, Id))))))));
 export const parens: $.Parser<$ast.parens> = $.right($.str("("), $.left(expression, $.str(")")));
 export const StructFieldInitializer: $.Parser<$ast.StructFieldInitializer> = $.loc($.field($.pure("StructFieldInitializer"), "$", $.field(Id, "name", $.field($.opt($.right($.str(":"), expression)), "init", $.eps))));
 export const parameterList = <T,>(T: $.Parser<T>): $.Parser<$ast.parameterList<T>> => $.right($.str("("), $.left($.opt(commaList($.lazy(() => T))), $.str(")")));
@@ -521,6 +526,6 @@ export const idPart: $.Parser<$ast.idPart> = $.named("identifier character", $.r
 export const FuncId: $.Parser<$ast.FuncId> = $.named("FunC identifier", $.loc($.field($.pure("FuncId"), "$", $.field($.opt($.regex<"." | "~">(".~", [$.ExpString("."), $.ExpString("~")])), "accessor", $.field($.stry($.alt($.right($.str("`"), $.right($.plus($.regex<"`" | "\r" | "\n">("^`\\r\\n", $.negateExps([$.ExpString("`"), $.ExpString("\r"), $.ExpString("\n")]))), $.right($.str("`"), $.eps))), $.plus($.regex<" " | "\t" | "\r" | "\n" | "(" | ")" | "[" | string | "," | "." | ";" | "~">("^ \\t\\r\\n()[\\],.;~", $.negateExps([$.ExpString(" "), $.ExpString("\t"), $.ExpString("\r"), $.ExpString("\n"), $.ExpString("("), $.ExpString(")"), $.ExpString("["), $.ExpString("\"\\]\""), $.ExpString(","), $.ExpString("."), $.ExpString(";"), $.ExpString("~")]))))), "id", $.eps)))));
 export const hexDigit: $.Parser<$ast.hexDigit> = $.named("hexadecimal digit", $.regex<string | string | string>("0-9a-fA-F", [$.ExpRange("0", "9"), $.ExpRange("a", "f"), $.ExpRange("A", "F")]));
 export const escapeChar: $.Parser<$ast.escapeChar> = $.alt($.regex<"\\" | "\"" | "n" | "r" | "t" | "v" | "b" | "f">("\\\\\"nrtvbf", [$.ExpString("\\"), $.ExpString("\""), $.ExpString("n"), $.ExpString("r"), $.ExpString("t"), $.ExpString("v"), $.ExpString("b"), $.ExpString("f")]), $.alt($.right($.str("u{"), $.left($.stry($.right(hexDigit, $.right($.opt(hexDigit), $.right($.opt(hexDigit), $.right($.opt(hexDigit), $.right($.opt(hexDigit), $.right($.opt(hexDigit), $.eps))))))), $.str("}"))), $.alt($.right($.str("u"), $.stry($.right(hexDigit, $.right(hexDigit, $.right(hexDigit, $.right(hexDigit, $.eps)))))), $.right($.str("x"), $.stry($.right(hexDigit, $.right(hexDigit, $.eps)))))));
-export const reservedWord: $.Parser<$ast.reservedWord> = $.named("reserved word", keyword($.alt($.str("extend"), $.alt($.str("public"), $.alt($.str("fun"), $.alt($.str("let"), $.alt($.str("return"), $.alt($.str("receive"), $.alt($.str("native"), $.alt($.str("primitive"), $.alt($.str("null"), $.alt($.str("if"), $.alt($.str("else"), $.alt($.str("while"), $.alt($.str("repeat"), $.alt($.str("do"), $.alt($.str("until"), $.alt($.str("try"), $.alt($.str("catch"), $.alt($.str("foreach"), $.alt($.str("as"), $.alt($.str("map"), $.alt($.str("mutates"), $.alt($.str("extends"), $.alt($.str("external"), $.alt($.str("import"), $.alt($.str("with"), $.alt($.str("trait"), $.alt($.str("initOf"), $.alt($.str("override"), $.alt($.str("abstract"), $.alt($.str("virtual"), $.alt($.str("inline"), $.str("const"))))))))))))))))))))))))))))))))));
+export const reservedWord: $.Parser<$ast.reservedWord> = $.named("reserved word", keyword($.alt($.str("extend"), $.alt($.str("public"), $.alt($.str("fun"), $.alt($.str("let"), $.alt($.str("return"), $.alt($.str("receive"), $.alt($.str("native"), $.alt($.str("primitive"), $.alt($.str("null"), $.alt($.str("if"), $.alt($.str("else"), $.alt($.str("while"), $.alt($.str("repeat"), $.alt($.str("do"), $.alt($.str("until"), $.alt($.str("try"), $.alt($.str("catch"), $.alt($.str("foreach"), $.alt($.str("as"), $.alt($.str("map"), $.alt($.str("mutates"), $.alt($.str("extends"), $.alt($.str("external"), $.alt($.str("import"), $.alt($.str("with"), $.alt($.str("trait"), $.alt($.str("initOf"), $.alt($.str("codeOf"), $.alt($.str("override"), $.alt($.str("abstract"), $.alt($.str("virtual"), $.alt($.str("inline"), $.str("const")))))))))))))))))))))))))))))))))));
 export const space: $.Parser<$ast.space> = $.named("space", $.alt($.regex<" " | "\t" | "\r" | "\n">(" \\t\\r\\n", [$.ExpString(" "), $.ExpString("\t"), $.ExpString("\r"), $.ExpString("\n")]), comment));
 export const JustImports: $.Parser<$ast.JustImports> = $.loc($.field($.pure("JustImports"), "$", $.field($.star(Import), "imports", $.right($.star($.any), $.eps))));
