@@ -233,8 +233,8 @@ export function writeInit(
                     `);
                 } else {
                     ctx.write(`
-                    ;; Contract Code: ${t.name}
-                    cell init_code = ${ctx.used(`$${t.name}$_child_get_code`)}();
+                        ;; Contract Code: ${t.name}
+                        cell init_code = ${ctx.used(`$${t.name}$_child_get_code`)}();
                     `);
                 }
                 ctx.append();

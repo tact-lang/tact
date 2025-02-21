@@ -18,7 +18,6 @@ describe("Diamond-shaped dependencies", () => {
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
-        //blockchain.verbosity.vmLogs = "vm_logs_verbose";
         deployer = await blockchain.treasury("deployer");
         contractA = blockchain.openContract(await A.fromInit());
         contractB = blockchain.openContract(await B.fromInit());
