@@ -418,17 +418,6 @@ export function writeStdlib(ctx: WriterContext): void {
     // Address
     //
 
-    ctx.fun(`__tact_slice_eq_bits`, () => {
-        ctx.signature(`int __tact_slice_eq_bits(slice a, slice b)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                return equal_slices_bits(a, b);
-            `);
-        });
-    });
-
     ctx.fun(`__tact_slice_eq_bits_nullable_one`, () => {
         ctx.signature(
             `int __tact_slice_eq_bits_nullable_one(slice a, slice b)`,
