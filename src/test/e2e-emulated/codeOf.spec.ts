@@ -15,8 +15,12 @@ describe("codeOf", () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
         treasure = await blockchain.treasury("treasure");
-        contract = blockchain.openContract(await CodeOfTester.fromInit());
-        childContract = blockchain.openContract(await ChildContract.fromInit());
+        contract = blockchain.openContract(
+            await CodeOfTester.fromInit(0n, true),
+        );
+        childContract = blockchain.openContract(
+            await ChildContract.fromInit(0n),
+        );
 
         const result = await contract.send(
             treasure.getSender(),
@@ -49,6 +53,24 @@ describe("codeOf", () => {
 
         expect((await contract.getChildCode()).toString()).toEqual(
             childInit.code.toString(),
+        );
+    });
+
+    it("should pass internal tests correctly", async () => {
+        expect(await contract.getTestThatMyCodeEqualToCodeOfSelf()).toEqual(
+            true,
+        );
+        expect(await contract.getTestThatInitOfSelfCodeEqualToCodeOf()).toEqual(
+            true,
+        );
+        expect(
+            await contract.getTestThatInitOfChildCodeEqualToCodeOf(),
+        ).toEqual(true);
+        expect(
+            await contract.getTestThatInitOfSelfCodeNotEqualToCodeOfChild(),
+        ).toEqual(false);
+        expect(await contract.getTestThatMyCodeNotEqualToCodeOfChild()).toEqual(
+            false,
         );
     });
 });
