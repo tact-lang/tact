@@ -103,8 +103,7 @@ contract JettonMinter {
             mintable: true,
             adminAddress: self.owner,
             jettonContent: self.jettonContent,
-            // Owner may be any address, what matters here is the code, not data.
-            jettonWalletCode: codeOf JettonWallet
+            jettonWalletCode: codeOf JettonWallet,
         }
     }
     get fun get_wallet_address(ownerAddress: Address): Address {
