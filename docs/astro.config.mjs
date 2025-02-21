@@ -130,14 +130,14 @@ export default defineConfig({
 					},
 					items: [
 						{ slug: 'book' },
-						{
-							label: 'Cheatsheets',
-							translations: {
-								'zh-CN': '小抄',
-							},
-							collapsed: true,
-							autogenerate: { directory: 'book/cs' },
-						},
+						// {
+						// 	label: 'Cheatsheets',
+						// 	translations: {
+						// 		'zh-CN': '小抄',
+						// 	},
+						// 	collapsed: true,
+						// 	autogenerate: { directory: 'book/cs' },
+						// },
 						{
 							label: 'Fundamentals of Tact',
 							translations: { 'zh-CN': 'Tact 语言基础' },

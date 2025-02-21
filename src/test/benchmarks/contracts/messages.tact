@@ -17,7 +17,8 @@ struct MaybeAddress {
     address: Address?;
 }
 
-message JettonUpdateContent {
+message(4) JettonUpdateContent {
+    queryId: Int as uint64;
     content: Cell;
 }
 
@@ -78,6 +79,12 @@ message(0xd1735400) TakeWalletAddress {
 }
 
 message(0xfc708bd2) Mint {
+    queryId: Int as uint64;
     amount: Int;
     receiver: Address;
+}
+
+message(3) ChangeOwner {
+    queryId: Int as uint64;
+    newOwner: Address;
 }

@@ -79,7 +79,7 @@ contract Example {
 fun rawSlice(hex: String): Slice;
 ```
 
-A compile-time function that converts `hex` [`String{:tact}`][p] with hex-encoded and optionally bit-padded contents as a [`Slice{:tact}`][slice] into the contract.
+A compile-time function that converts `hex` [`String{:tact}`][p] with hex-encoded and optionally bit-padded contents as a [`Slice{:tact}`][slice] and embeds it into the contract.
 
 Contents are bit-padded if there's an underscore `_` at the very end of [`String{:tact}`][p]. The padding removes all the trailing zeros and the last $1$ bit before them:
 
