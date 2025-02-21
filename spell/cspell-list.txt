@@ -174,3 +174,5 @@ xffff
 XMODEM
 xtwitter
 привет
+extracurrency
+nobounce

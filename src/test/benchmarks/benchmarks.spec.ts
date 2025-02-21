@@ -18,6 +18,9 @@ import { Addresses } from "./contracts/output/address_Addresses";
 import "@ton/test-utils";
 import { CellsCreation } from "./contracts/output/cells_CellsCreation";
 import { getUsedGas } from "./util";
+import type { Step } from "../utils/write-vm-log";
+import { writeLog } from "../utils/write-vm-log";
+import { join } from "path";
 
 function measureGas(txs: BlockchainTransaction[]): number {
     return Number(
@@ -32,21 +35,31 @@ describe("benchmarks", () => {
     let blockchain: Blockchain;
     let treasure: SandboxContract<TreasuryContract>;
 
-    beforeEach(async () => {
+    let step: Step;
+
+    beforeAll(async () => {
         blockchain = await Blockchain.create();
-        blockchain.verbosity.print = false;
+
+        step = writeLog({
+            path: join(__dirname, "output", "log.yaml"),
+            blockchain,
+        });
+    });
+
+    beforeEach(async () => {
         treasure = await blockchain.treasury("benchmarks");
     });
 
     it("benchmark functions", async () => {
         const functions = blockchain.openContract(await Functions.fromInit());
 
-        const sendResult = await functions.send(
-            treasure.getSender(),
-            { value: toNano(1) },
-            { $$type: "Add", value: 10n },
+        const sendResult = await step("benchmark functions", () =>
+            functions.send(
+                treasure.getSender(),
+                { value: toNano(1) },
+                { $$type: "Add", value: 10n },
+            ),
         );
-
         const gasUsed = measureGas(sendResult.transactions);
 
         expect(gasUsed).toMatchSnapshot("gas used");

@@ -51,9 +51,9 @@ const loadFunCJettonsBoc = () => {
 const deployFuncJettonMinter = async (
     via: SandboxContract<TreasuryContract>,
 ) => {
-    const bocs = loadFunCJettonsBoc();
-    const minterCell = Cell.fromBoc(bocs.bocMinter)[0]!;
-    const walletCell = Cell.fromBoc(bocs.bocWallet)[0]!;
+    const jettonData = loadFunCJettonsBoc();
+    const minterCell = Cell.fromBoc(jettonData.bocMinter)[0]!;
+    const walletCell = Cell.fromBoc(jettonData.bocWallet)[0]!;
 
     const stateInitMinter = beginCell()
         .storeCoins(0)
