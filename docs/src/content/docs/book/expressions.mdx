@@ -301,18 +301,20 @@ Field  | Type                  | Description
 
 ## `codeOf` {#codeof}
 
-Expression `codeOf{:tact}` returns [`Cell{:tact}`][cell] with the code of a [contract](/book/contracts):
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+Expression `codeOf{:tact}` returns a [`Cell{:tact}`][cell] with the code of a [contract](/book/contracts):
 
 ```tact
-codeOf ExampleContract; // returns a Cell with ExampleContract code
+codeOf ExampleContract; // a Cell with ExampleContract code
 //     ---------------
 //     ↑
 //     name of the contract
 ```
 
-`codeOf ContractName{:tact}` is shorthand for `initOf ContractName(initParam1, initParam2).code{:tact}` with much less gas usage.
-
-If `codeOf{:tact}` is used for the current contract, its result is equivalent to calling `myCode(){:tact}`.
+If `codeOf{:tact}` is used for the current contract, its result is equivalent to calling [`myCode(){:tact}`](/ref/core-advanced#mycode).
 
 ```tact
 contract ExampleContract {
@@ -321,6 +323,8 @@ contract ExampleContract {
     }
 }
 ```
+
+If you only need the code of the given contract and not its [`StateInit{:tact}`](#initof), prefer using `codeOf ContractName{:tact}` over [`initOf ContactName(param1, param2, ...){:tact}`](#initof) to **significantly** reduce gas usage.
 
 [p]: /book/types#primitive-types
 [cell]: /book/cells#cells
