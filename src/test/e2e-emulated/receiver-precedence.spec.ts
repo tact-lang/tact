@@ -337,19 +337,6 @@ describe("receivers-precedence", () => {
             );
 
             expect(trans.endStatus).toBe("active");
-
-            //const { transactions } = await contract.send(
-            //    treasure.getSender(),
-            //    { value: toNano("100") },
-            //    {$$type: "DeployAddress", address: addr, code: init.code, data: init.data}
-            //);
-            //const trans = findTransaction(transactions, {from: contract.address,
-            //    to: addr,});
-
-            //expect(transactions).toHaveTransaction({from: contract.address,
-            //    to: addr,
-            //    deploy: true,}
-            //);
         }
     });
 
