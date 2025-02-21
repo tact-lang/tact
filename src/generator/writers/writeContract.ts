@@ -46,7 +46,10 @@ export function writeStorageOps(
             ctx.append(`slice $sc = get_data().begin_parse();`);
 
             // Load context
-            if (type.dependsOn.length > 0) {
+            if (
+                type.dependsOn.length > 0 &&
+                !enabledOptimizedChildCode(ctx.ctx)
+            ) {
                 ctx.append(`__tact_child_contract_codes = $sc~load_ref();`);
             }
 
@@ -94,7 +97,10 @@ export function writeStorageOps(
             ctx.append(`builder b = begin_cell();`);
 
             // Persist system cell
-            if (type.dependsOn.length > 0) {
+            if (
+                type.dependsOn.length > 0 &&
+                !enabledOptimizedChildCode(ctx.ctx)
+            ) {
                 ctx.append(`b = b.store_ref(__tact_child_contract_codes);`);
             }
 

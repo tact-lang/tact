@@ -149,8 +149,8 @@
       "pr": null,
       "gas": {
         "transfer": "18147",
-        "burn": "14507",
-        "discovery": "8885"
+        "burn": "14379",
+        "discovery": "8757"
       }
     }
   ]

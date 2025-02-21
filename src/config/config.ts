@@ -60,6 +60,12 @@ export type Options = {
      * If set to true, enables generation of `lazy_deployment_completed()` getter.
      */
     readonly enableLazyDeploymentCompletedGetter?: boolean;
+    /**
+     * If set to true, enables optimized child code generation.
+     * This feature is internal and should not be used directly.
+     * It gets enabled automatically when there is no cycles in the contract's dependencies.
+     */
+    readonly optimizedChildCode?: boolean;
 };
 
 export type Mode = "fullWithDecompilation" | "full" | "funcOnly" | "checkOnly";

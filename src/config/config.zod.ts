@@ -61,6 +61,12 @@ export const optionsSchema: z.ZodType<C.Options> = z.object({
      * If set to true, enables generation of `lazy_deployment_completed()` getter.
      */
     enableLazyDeploymentCompletedGetter: z.boolean().optional(),
+    /**
+     * If set to true, enables optimized child code generation.
+     * This feature is internal and should not be used directly.
+     * It gets enabled automatically when there is no cycles in the contract's dependencies.
+     */
+    optimizedChildCode: z.boolean().optional(),
 });
 
 export const modeSchema: z.ZodType<C.Mode> = z.union([

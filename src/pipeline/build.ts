@@ -31,7 +31,7 @@ import { TactError } from "../error/errors";
 import type { Parser } from "../grammar";
 import { getParser } from "../grammar";
 import { defaultParser } from "../grammar/grammar";
-import type { TypeDescription } from "../types/types";
+import { topSortContracts } from "./utils";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -128,42 +128,6 @@ export async function build(args: {
     > = {};
 
     const allContracts = getAllTypes(ctx).filter((v) => v.kind === "contract");
-
-    const topSortContracts = (
-        allContracts: TypeDescription[],
-    ): TypeDescription[] | undefined => {
-        const visitingNow: Set<TypeDescription> = new Set();
-        const visited: Set<TypeDescription> = new Set();
-        const result: TypeDescription[] = [];
-        const dfs = (contract: TypeDescription): boolean => {
-            visitingNow.add(contract);
-            for (const c of contract.dependsOn) {
-                if (c.kind !== "contract") {
-                    continue;
-                }
-                if (visitingNow.has(c)) {
-                    return false;
-                }
-                if (!visited.has(c)) {
-                    if (!dfs(c)) {
-                        return false;
-                    }
-                }
-            }
-            visitingNow.delete(contract);
-            visited.add(contract);
-            result.push(contract);
-            return true;
-        };
-        for (const contract of allContracts) {
-            if (!visited.has(contract)) {
-                if (!dfs(contract)) {
-                    return undefined;
-                }
-            }
-        }
-        return result;
-    };
 
     const sortedContracts = topSortContracts(allContracts);
     if (sortedContracts !== undefined) {
@@ -421,7 +385,7 @@ export async function build(args: {
             return { ok: false, error: errorMessages };
         }
         try {
-            const bindingsServer = writeTypescript(JSON.parse(pkg.abi), {
+            const bindingsServer = writeTypescript(JSON.parse(pkg.abi), ctx, {
                 code: pkg.code,
                 prefix: pkg.init.prefix,
                 system: pkg.init.deployment.system,

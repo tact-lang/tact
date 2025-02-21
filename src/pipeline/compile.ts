@@ -10,13 +10,7 @@ export async function compile(
     contractCodes: ContractsCodes,
 ) {
     const abi = createABI(ctx, name);
-    const output = await writeProgram(
-        ctx,
-        abi,
-        basename,
-        contractCodes,
-        false,
-    );
+    const output = await writeProgram(ctx, abi, basename, contractCodes, false);
     const cOutput = output;
     return { output: cOutput, ctx };
 }
