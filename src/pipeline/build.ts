@@ -1,5 +1,9 @@
 import { beginCell, Cell, Dictionary } from "@ton/core";
-import { decompileAll } from "@tact-lang/opcode";
+import {
+    disassembleRoot,
+    Cell as OpcodeCell,
+    AssemblyWriter,
+} from "@tact-lang/opcode";
 import { writeTypescript } from "../bindings/writeTypescript";
 import { featureEnable } from "../config/features";
 import type { Project } from "../config/parseConfig";
@@ -265,7 +269,15 @@ export async function build(args: {
             logger.info(`   > ${contractName}: fift decompiler`);
             let codeFiftDecompiled: string;
             try {
-                codeFiftDecompiled = decompileAll({ src: codeBoc });
+                const cell = OpcodeCell.fromBoc(codeBoc).at(0);
+                if (typeof cell === "undefined") {
+                    throw new Error("Cannot create Cell from BoC file");
+                }
+
+                const program = disassembleRoot(cell, { computeRefs: true });
+                codeFiftDecompiled = AssemblyWriter.write(program, {
+                    useAliases: true,
+                });
                 project.writeFile(pathCodeFifDec, codeFiftDecompiled);
             } catch (e) {
                 logger.error("Fift decompiler crashed");

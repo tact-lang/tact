@@ -661,9 +661,14 @@ export function writeReceiver(
     }
 
     // Fallback
-    if (selector.kind === "internal-fallback") {
+    if (
+        selector.kind === "internal-fallback" ||
+        selector.kind === "external-fallback"
+    ) {
+        const kind =
+            selector.kind === "internal-fallback" ? "internal" : "external";
         ctx.append(
-            `(${selfType}, ()) ${ops.receiveAny(self.name, "internal")}(${selfType} ${funcIdOf("self")}, slice ${funcIdOf(selector.name)}) impure inline {`,
+            `(${selfType}, ()) ${ops.receiveAny(self.name, kind)}(${selfType} ${funcIdOf("self")}, slice ${funcIdOf(selector.name)}) impure inline {`,
         );
         ctx.inIndent(() => {
             ctx.append(selfUnpack);
@@ -710,6 +715,7 @@ export function writeReceiver(
         return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (selector.kind === "bounce-binary") {
         const args = [
             selfType + " " + funcIdOf("self"),

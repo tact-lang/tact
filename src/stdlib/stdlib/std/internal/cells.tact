@@ -133,9 +133,6 @@ asm extends fun storeSlice(self: Builder, cell: Slice): Builder { STSLICER }
 ///
 asm extends fun storeBuilder(self: Builder, cell: Builder): Builder { STBR }
 
-@name(__tact_store_address)
-extends native storeAddress(self: Builder, address: Address): Builder;
-
 /// Extension function for the `Builder`. Available since Tact 1.5.0.
 ///
 /// If the `cell` is not `null`, stores 1 as a single bit and then reference `cell` into the copy of the `Builder`. Returns that copy.
@@ -344,8 +341,6 @@ asm( -> 1 0) extends mutates fun loadVarUint32(self: Slice): Int { LDVARUINT32 }
 /// See: https://docs.tact-lang.org/ref/core-cells#sliceloadvarint32
 ///
 asm( -> 1 0) extends mutates fun loadVarInt32(self: Slice): Int { LDVARINT32 }
-
-asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 
 asm extends mutates fun skipBits(self: Slice, l: Int) { SDSKIPFIRST }
 
