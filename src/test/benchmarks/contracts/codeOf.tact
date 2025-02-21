@@ -8,6 +8,14 @@ contract CodeOfVsInitOf {
     get fun withInitOf(): Cell {
         return (initOf Child()).code;
     }
+
+    get fun codeOfSelf(): Cell {
+        return codeOf CodeOfVsInitOf;
+    }
+
+    get fun myCode(): Cell {
+        return myCode();
+    }
 }
 
 contract Child {

@@ -229,4 +229,24 @@ describe("benchmarks", () => {
         ).gasUsed;
         expect(gasUsed2).toMatchSnapshot("gas used withInitOf");
     });
+
+    it("benchmark codeOf vs myCode()", async () => {
+        const testContract = blockchain.openContract(
+            await CodeOfVsInitOf.fromInit(),
+        );
+        await testContract.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            null,
+        );
+        const gasUsed = (
+            await blockchain.runGetMethod(testContract.address, "codeOfSelf")
+        ).gasUsed;
+        expect(gasUsed).toMatchSnapshot("gas used codeOf for current contract");
+
+        const gasUsed2 = (
+            await blockchain.runGetMethod(testContract.address, "myCode")
+        ).gasUsed;
+        expect(gasUsed2).toMatchSnapshot("gas used myCode");
+    });
 });

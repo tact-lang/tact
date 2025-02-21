@@ -8,6 +8,14 @@ exports[`benchmarks benchmark codeOf vs initOf: gas used withCodeOf 1`] = `1431n
 
 exports[`benchmarks benchmark codeOf vs initOf: gas used withInitOf 1`] = `2214n`;
 
+exports[`benchmarks benchmark codeOf vs myCode(): gas used codeOf for current contract 1`] = `1105n`;
+
+exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `1105n`;
+
+exports[`benchmarks benchmark codeOf vs myCode(): gas used withCodeOf 1`] = `1531n`;
+
+exports[`benchmarks benchmark codeOf vs myCode(): gas used withInitOf 1`] = `2314n`;
+
 exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2846n`;
 
 exports[`benchmarks benchmark functions: code size 1`] = `180`;
