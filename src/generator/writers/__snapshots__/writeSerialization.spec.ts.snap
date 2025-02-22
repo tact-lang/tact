@@ -1487,62 +1487,6 @@ return builders;",
   },
   {
     "code": {
-      "code": "throw_if(134, (digits <= 0) | (digits > 77));
-builder b = begin_cell();
-
-if (src < 0) {
-    b = b.store_uint(45, 8);
-    src = - src;
-}
-
-;; Process rem part
-int skip = true;
-int len = 0;
-int rem = 0;
-tuple t = empty_tuple();
-repeat(digits) {
-    (src, rem) = src.divmod(10);
-    if ( ~ ( skip & ( rem == 0 ) ) ) {
-        skip = false;
-        t~tpush(rem + 48);
-        len = len + 1;
-    }
-}
-
-;; Process dot
-if (~ skip) {
-    t~tpush(46);
-    len = len + 1;
-}
-
-;; Main
-do {
-    (src, rem) = src.divmod(10);
-    t~tpush(rem + 48);
-    len = len + 1;
-} until (src == 0);
-
-;; Assemble
-int c = len - 1;
-repeat(len) {
-    int v = t.at(c);
-    b = b.store_uint(v, 8);
-    c = c - 1;
-}
-
-;; Result
-return b.end_cell().begin_parse();",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_float_to_string",
-    "signature": "slice __tact_float_to_string(int src, int digits)",
-  },
-  {
-    "code": {
       "code": "throw_unless(5, num > 0);
 throw_unless(5, base > 1);
 if (num < base) {
@@ -7149,62 +7093,6 @@ return builders;",
   },
   {
     "code": {
-      "code": "throw_if(134, (digits <= 0) | (digits > 77));
-builder b = begin_cell();
-
-if (src < 0) {
-    b = b.store_uint(45, 8);
-    src = - src;
-}
-
-;; Process rem part
-int skip = true;
-int len = 0;
-int rem = 0;
-tuple t = empty_tuple();
-repeat(digits) {
-    (src, rem) = src.divmod(10);
-    if ( ~ ( skip & ( rem == 0 ) ) ) {
-        skip = false;
-        t~tpush(rem + 48);
-        len = len + 1;
-    }
-}
-
-;; Process dot
-if (~ skip) {
-    t~tpush(46);
-    len = len + 1;
-}
-
-;; Main
-do {
-    (src, rem) = src.divmod(10);
-    t~tpush(rem + 48);
-    len = len + 1;
-} until (src == 0);
-
-;; Assemble
-int c = len - 1;
-repeat(len) {
-    int v = t.at(c);
-    b = b.store_uint(v, 8);
-    c = c - 1;
-}
-
-;; Result
-return b.end_cell().begin_parse();",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_float_to_string",
-    "signature": "slice __tact_float_to_string(int src, int digits)",
-  },
-  {
-    "code": {
       "code": "throw_unless(5, num > 0);
 throw_unless(5, base > 1);
 if (num < base) {
@@ -12808,62 +12696,6 @@ return builders;",
     "flags": Set {},
     "name": "__tact_string_builder_append_not_mut",
     "signature": "(tuple) __tact_string_builder_append_not_mut(tuple builders, slice sc)",
-  },
-  {
-    "code": {
-      "code": "throw_if(134, (digits <= 0) | (digits > 77));
-builder b = begin_cell();
-
-if (src < 0) {
-    b = b.store_uint(45, 8);
-    src = - src;
-}
-
-;; Process rem part
-int skip = true;
-int len = 0;
-int rem = 0;
-tuple t = empty_tuple();
-repeat(digits) {
-    (src, rem) = src.divmod(10);
-    if ( ~ ( skip & ( rem == 0 ) ) ) {
-        skip = false;
-        t~tpush(rem + 48);
-        len = len + 1;
-    }
-}
-
-;; Process dot
-if (~ skip) {
-    t~tpush(46);
-    len = len + 1;
-}
-
-;; Main
-do {
-    (src, rem) = src.divmod(10);
-    t~tpush(rem + 48);
-    len = len + 1;
-} until (src == 0);
-
-;; Assemble
-int c = len - 1;
-repeat(len) {
-    int v = t.at(c);
-    b = b.store_uint(v, 8);
-    c = c - 1;
-}
-
-;; Result
-return b.end_cell().begin_parse();",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_float_to_string",
-    "signature": "slice __tact_float_to_string(int src, int digits)",
   },
   {
     "code": {

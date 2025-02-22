@@ -906,60 +906,6 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
-    ctx.fun(`__tact_float_to_string`, () => {
-        ctx.signature(`slice __tact_float_to_string(int src, int digits)`);
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                throw_if(${contractErrors.invalidArgument.id}, (digits <= 0) | (digits > 77));
-                builder b = begin_cell();
-
-                if (src < 0) {
-                    b = b.store_uint(45, 8);
-                    src = - src;
-                }
-
-                ;; Process rem part
-                int skip = true;
-                int len = 0;
-                int rem = 0;
-                tuple t = empty_tuple();
-                repeat(digits) {
-                    (src, rem) = src.divmod(10);
-                    if ( ~ ( skip & ( rem == 0 ) ) ) {
-                        skip = false;
-                        t~tpush(rem + 48);
-                        len = len + 1;
-                    }
-                }
-
-                ;; Process dot
-                if (~ skip) {
-                    t~tpush(46);
-                    len = len + 1;
-                }
-
-                ;; Main
-                do {
-                    (src, rem) = src.divmod(10);
-                    t~tpush(rem + 48);
-                    len = len + 1;
-                } until (src == 0);
-
-                ;; Assemble
-                int c = len - 1;
-                repeat(len) {
-                    int v = t.at(c);
-                    b = b.store_uint(v, 8);
-                    c = c - 1;
-                }
-
-                ;; Result
-                return b.end_cell().begin_parse();
-            `);
-        });
-    });
-
     ctx.fun(`__tact_log`, () => {
         ctx.signature(`int __tact_log(int num, int base)`);
         ctx.flag("inline");
