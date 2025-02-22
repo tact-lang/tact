@@ -1285,12 +1285,10 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffl
       "attributes": [],
       "id": 9,
       "instructions": [
-        "NOP",
+        "",
       ],
       "kind": "asm_function_def",
-      "loc": asm(-> 0) fun foo(x: Int): Int {
-    NOP
-},
+      "loc": asm(-> 0) fun foo(x: Int): Int {},
       "name": {
         "id": 4,
         "kind": "id",
