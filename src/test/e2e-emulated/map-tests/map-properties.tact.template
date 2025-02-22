@@ -106,9 +106,9 @@ fun size(m: map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER>): Int {
     return res;
 }
 
-asm fun castToMap(c: Cell): map<Int as uint8, Bool> { NOP }
+asm fun castToMap(c: Cell): map<Int as uint8, Bool> {}
 
-asm extends fun asMap(self: Cell): map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> { NOP }
+asm extends fun asMap(self: Cell): map<KEY_TYPE_PLACEHOLDER, VAL_TYPE_PLACEHOLDER> {}
 
 contract MapPropertiesTester {
     const ExitCodeEqualKeys: Int = 1024;
