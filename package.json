@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
   "name": "@tact-lang/compiler",
   "version": "1.5.3",
   "repository": {
@@ -7,8 +8,17 @@
   },
   "homepage": "https://tact-lang.org",
   "description": "Tact is a next-gen smart contract language for TON",
-  "author": "Steve Korshakov <steve@korshakov.com>",
   "license": "MIT",
+  "contributors": [
+    {
+      "name": "Steve Korshakov",
+      "email": "steve@korshakov.com"
+    },
+    {
+      "name": "TON Studio",
+      "url": "https://tonstudio.io/"
+    }
+  ],
   "scripts": {
     "compare": "ts-node src/test/utils/compare-logs.ts",
     "build:fast": "yarn clean && yarn gen:grammar && yarn gen:stdlib && yarn gen:func-js && tsc --project tsconfig.fast.json && yarn copy:stdlib && yarn copy:grammar && yarn copy:func",
