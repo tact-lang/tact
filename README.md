@@ -7,6 +7,8 @@
 A next-gen smart contract programming language for TON Blockchain, focused on efficiency and ease of development.
 Tact is a good fit for complex smart contracts, quick onboarding and rapid prototyping.
 
+Developed by [TON Studio](https://tonstudio.io), powered by the community.
+
 **[Try online!] • [Key resources] • [Security] • [Installation] • [Community] • [Contributing]**
 
 [Try online!]: https://ide.ton.org
