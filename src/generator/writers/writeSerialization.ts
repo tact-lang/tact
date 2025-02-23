@@ -181,9 +181,8 @@ function writeSerializerField(
                     `build_${gen} = __tact_store_address_opt(build_${gen}, ${fieldName});`,
                 );
             } else {
-                ctx.used(`__tact_store_address`);
                 ctx.append(
-                    `build_${gen} = __tact_store_address(build_${gen}, ${fieldName});`,
+                    `build_${gen} = build_${gen}.store_slice(${fieldName});`,
                 );
             }
             return;

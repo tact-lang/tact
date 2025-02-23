@@ -34,17 +34,6 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
-    ctx.fun("__tact_store_address", () => {
-        ctx.signature(`builder __tact_store_address(builder b, slice address)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                return b.store_slice(address);
-            `);
-        });
-    });
-
     ctx.fun("__tact_store_address_opt", () => {
         ctx.signature(
             `builder __tact_store_address_opt(builder b, slice address)`,
@@ -57,7 +46,7 @@ export function writeStdlib(ctx: WriterContext): void {
                     b = b.store_uint(0, 2);
                     return b;
                 } else {
-                    return ${ctx.used(`__tact_store_address`)}(b, address);
+                    return b.store_slice(address);
                 }
             `);
         });
