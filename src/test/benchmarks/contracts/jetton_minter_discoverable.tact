@@ -29,7 +29,7 @@ contract JettonMinter {
         // we use message fwdFee for estimation of forward_payload costs
         let ctx = context();
         let fwdFee = muldivc(fwdFee(ctx.raw), 3, 2);
-        nativeThrowUnless(75, ctx.value > fwdFee + ProvideAddressGasConsumption);
+        throwUnless(75, ctx.value > fwdFee + ProvideAddressGasConsumption);
 
         let includedAddress: Address? = msg.includeAddress ? msg.ownerAddress : null;
 
@@ -52,7 +52,7 @@ contract JettonMinter {
 
     receive(msg: JettonBurnNotification) {
         // Check that the message is from msg.sender's jetton_wallet
-        nativeThrowUnless(74, sender() == getJettonWalletByOwner(msg.sender));
+       throwUnless(74, sender() == getJettonWalletByOwner(msg.sender));
 
         self.totalSupply -= msg.amount;
 
@@ -68,12 +68,12 @@ contract JettonMinter {
     }
 
     receive(msg: JettonUpdateContent) {
-        nativeThrowUnless(73, sender() == self.owner);
+        throwUnless(73, sender() == self.owner);
         self.jettonContent = msg.content;
     }
 
     receive(msg: Mint) {
-        nativeThrowUnless(73, sender() == self.owner);
+        throwUnless(73, sender() == self.owner);
         self.totalSupply += msg.amount; // Update total supply
 
         deploy(DeployParameters{
@@ -93,7 +93,7 @@ contract JettonMinter {
     }
 
     receive(msg: ChangeOwner) {
-        nativeThrowUnless(73, sender() == self.owner);
+        throwUnless(73, sender() == self.owner);
         self.owner = msg.newOwner;
     }
 
