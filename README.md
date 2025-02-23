@@ -1,6 +1,6 @@
 # Tact Language Compiler
 
-<center>
+<div align="center">
 
 <img src="https://raw.githubusercontent.com/tact-lang/tact-docs/main/public/banner.jpeg" alt="" />
 
@@ -22,7 +22,7 @@ Tact is a good fit for complex smart contracts, quick onboarding and rapid proto
 [![Telegram](https://img.shields.io/badge/Community_Chat-white?logo=telegram&style=flat)](https://t.me/tactlang)
 [![Telegram](https://img.shields.io/badge/Tact_Kitchen_🥣-white?logo=telegram&style=flat)](https://t.me/tact_kitchen)
 
-</center>
+</div>
 
 ## Key Resources
 
