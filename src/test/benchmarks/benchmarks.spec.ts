@@ -15,6 +15,7 @@ import { Sha256Big } from "./contracts/output/benchmark_sha256_big_Sha256Big";
 import { Sha256AsSlice } from "./contracts/output/benchmark_sha256_as_slice_Sha256AsSlice";
 import { Forward } from "./contracts/output/forward_Forward";
 import { Addresses } from "./contracts/output/address_Addresses";
+import { CodeOfVsInitOf } from "./contracts/output/codeOf_CodeOfVsInitOf";
 import "@ton/test-utils";
 import { CellsCreation } from "./contracts/output/cells_CellsCreation";
 import { getUsedGas } from "./util";
@@ -220,5 +221,45 @@ describe("benchmarks", () => {
             )
         ).gasUsed;
         expect(gasUsed).toMatchSnapshot("gas used contractAddressExt");
+    });
+
+    it("benchmark codeOf vs initOf", async () => {
+        const testContract = blockchain.openContract(
+            await CodeOfVsInitOf.fromInit(),
+        );
+        await testContract.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            null,
+        );
+        const gasUsed = (
+            await blockchain.runGetMethod(testContract.address, "withCodeOf")
+        ).gasUsed;
+        expect(gasUsed).toMatchSnapshot("gas used withCodeOf");
+
+        const gasUsed2 = (
+            await blockchain.runGetMethod(testContract.address, "withInitOf")
+        ).gasUsed;
+        expect(gasUsed2).toMatchSnapshot("gas used withInitOf");
+    });
+
+    it("benchmark codeOf vs myCode()", async () => {
+        const testContract = blockchain.openContract(
+            await CodeOfVsInitOf.fromInit(),
+        );
+        await testContract.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            null,
+        );
+        const gasUsed = (
+            await blockchain.runGetMethod(testContract.address, "codeOfSelf")
+        ).gasUsed;
+        expect(gasUsed).toMatchSnapshot("gas used codeOf for current contract");
+
+        const gasUsed2 = (
+            await blockchain.runGetMethod(testContract.address, "myCode")
+        ).gasUsed;
+        expect(gasUsed2).toMatchSnapshot("gas used myCode");
     });
 });
