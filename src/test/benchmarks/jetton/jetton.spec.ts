@@ -32,17 +32,22 @@ import type {
 import { resolve } from "path";
 import { readFileSync } from "fs";
 import { storeProvideWalletAddress } from "../contracts/output/escrow_Escrow";
+import { posixNormalize } from "../../../utils/filePath";
 
 const loadFunCJettonsBoc = () => {
     const bocMinter = readFileSync(
-        resolve(
-            __dirname,
-            "../contracts/func/output/jetton-minter-discoverable.boc",
+        posixNormalize(
+            resolve(
+                __dirname,
+                "../contracts/func/output/jetton-minter-discoverable.boc",
+            ),
         ),
     );
 
     const bocWallet = readFileSync(
-        resolve(__dirname, "../contracts/func/output/jetton-wallet.boc"),
+        posixNormalize(
+            resolve(__dirname, "../contracts/func/output/jetton-wallet.boc"),
+        ),
     );
 
     return { bocMinter, bocWallet };

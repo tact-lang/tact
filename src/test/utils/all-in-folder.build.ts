@@ -56,16 +56,23 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
 
     const contractsPaths = globSync(globs, { cwd: folder });
 
+    const project = createNodeFileSystem(folder, false);
+
     const contracts = contractsPaths.map((contractPath) => {
         const name = basename(contractPath, extname(contractPath));
         return {
             name,
             path: contractPath,
-            output: join(dirname(contractPath), "../output/", `${name}.boc`),
+            output: posixNormalize(
+                project.resolve(
+                    dirname(contractPath),
+                    "../output/",
+                    `${name}.boc`,
+                ),
+            ),
         };
     });
 
-    const project = createNodeFileSystem(folder, false);
     const logger = new Logger();
 
     const importRegex = /#include\s+"([^"]+)"/g;
@@ -101,7 +108,7 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
 
         const includePaths = includes.map((include) =>
             posixNormalize(
-                project.resolve(join(dirname(contractInfo.path), include)),
+                project.resolve(dirname(contractInfo.path), include),
             ),
         );
 
