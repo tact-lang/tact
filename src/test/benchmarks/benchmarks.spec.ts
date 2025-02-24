@@ -85,7 +85,7 @@ describe("benchmarks", () => {
             { $$type: "HashData", value: s },
         );
 
-        return getUsedGas(result);
+        return getUsedGas(result, false);
     }
 
     async function hashStringBig(
@@ -98,7 +98,7 @@ describe("benchmarks", () => {
             { $$type: "HashData", value: s },
         );
 
-        return getUsedGas(result);
+        return getUsedGas(result, false);
     }
 
     async function hashStringAsSLice(
@@ -111,7 +111,7 @@ describe("benchmarks", () => {
             { $$type: "HashData", value: s },
         );
 
-        return getUsedGas(result);
+        return getUsedGas(result, false);
     }
 
     it("benchmark sha256", async () => {

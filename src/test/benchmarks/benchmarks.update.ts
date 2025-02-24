@@ -102,6 +102,7 @@ const main = async () => {
         const benchmarkPaths = [
             join(__dirname, "jetton", "jetton.spec.ts"),
             join(__dirname, "escrow", "escrow.spec.ts"),
+            join(__dirname, "wallet", "wallet.spec.ts"),
         ];
 
         const fetchBenchmarkResults = async (specPath: string) => {
