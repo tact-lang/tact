@@ -1956,7 +1956,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     for (const [k, t] of types) {
         const dependsOn: Set<string> = new Set();
         const handler = (src: A.AstNode) => {
-            if (src.kind === "init_of") {
+            if (src.kind === "init_of" || src.kind === "code_of") {
                 if (!types.has(idText(src.contract))) {
                     throwCompilationError(
                         `Type ${idTextErr(src.contract)} not found`,

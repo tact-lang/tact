@@ -426,6 +426,14 @@ The [TVM][tvm] places a couple of values onto its stack upon initialization, and
 
 Therefore, to access details such as the amount of [nanoToncoins](/book/integers#nanotoncoin) in a message or the [`Address{:tact}`][p] of the sender it's strongly recommended to call the [`context(){:tact}`](/ref/core-common#context) or [`sender(){:tact}`](/ref/core-common#sender) functions instead of attempting to look for those values on the stack.
 
+### Don't rely on order of fields in structures in the standard library {#caveats-stdlib-structures}
+
+To reduce the number of stack-manipulating statements and to save gas, the order of the fields of structures in the standard library may change between releases. Such changes do not affect any other kinds of functions, expect for `asm{:tact}` functions.
+
+That's because assembly functions, unlike all others, require a certain order of values on the stack before and after their execution. If this order is disrupted, the whole logic of such function can be broken in an instant.
+
+Hence, when writing assembly functions, make sure that you are not using the built-in [Structs] and [Messages] from Tact's library. If you want to target a specific structure, make a copy of it in your code, and then use that copy so that it won't be affected by future Tact updates.
+
 ## Debugging {#debugging}
 
 The number of values the stack has at any given time is called the _depth_, and it's accessible via the [`DEPTH`](https://docs.ton.org/v3/documentation/tvm/instructions#68) instruction. It's quite handy for seeing the number of values before and after calling the assembly functions you're debugging, and can be used within asm logic.

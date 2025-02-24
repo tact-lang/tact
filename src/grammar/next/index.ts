@@ -255,6 +255,12 @@ const parseInitOf =
         );
     };
 
+const parseCodeOf =
+    ({ name, loc }: $ast.CodeOf): Handler<A.AstCodeOf> =>
+    (ctx) => {
+        return ctx.ast.CodeOf(parseId(name)(ctx), loc);
+    };
+
 const parseConditional =
     ({ head, tail, loc }: $ast.Conditional): Handler<A.AstExpression> =>
     (ctx) => {
@@ -393,6 +399,7 @@ type Expression =
     | $ast.IntegerLiteral
     | $ast.BoolLiteral
     | $ast.InitOf
+    | $ast.CodeOf
     | $ast.Null
     | $ast.StringLiteral
     | $ast.Id;
@@ -408,6 +415,7 @@ const parseExpression: (input: Expression) => Handler<A.AstExpression> =
         IntegerLiteral: parseIntegerLiteral,
         BoolLiteral: parseBoolLiteral,
         InitOf: parseInitOf,
+        CodeOf: parseCodeOf,
         Null: parseNull,
         StringLiteral: parseStringLiteral,
         Id: parseId,
@@ -729,8 +737,14 @@ const parseConstantAttributes =
         nodes: readonly $ast.ConstantAttribute[],
         isAbstract: boolean,
         loc: $.Loc,
+        noAttributes: boolean,
     ): Handler<A.AstConstantAttribute[]> =>
     (ctx) => {
+        const [head] = nodes;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (noAttributes && head) {
+            ctx.err.topLevelConstantWithAttribute()(head.loc);
+        }
         checkAttributes("constant")(ctx, isAbstract, nodes, loc);
         return map(nodes, parseConstantAttribute)(ctx);
     };
@@ -1034,26 +1048,18 @@ const parseContractInit =
 const parseConstantDefInModule =
     (node: $ast.Constant): Handler<A.AstConstantDef> =>
     (ctx) => {
-        const result = parseConstantDef(node)(ctx);
-        const firstAttribute = result.attributes[0];
-        if (typeof firstAttribute !== "undefined") {
-            // FIXME: should be `firstAttribute.loc`
-            // https://github.com/tact-lang/tact/issues/1255
-            ctx.err.topLevelConstantWithAttribute()(node.loc);
-            return { ...result, attributes: [] };
-        }
-        return result;
+        return parseConstantDef(node, true)(ctx);
     };
 
 const parseConstantDef =
-    (node: $ast.Constant): Handler<A.AstConstantDef> =>
+    (node: $ast.Constant, noAttributes: boolean): Handler<A.AstConstantDef> =>
     (ctx) => {
-        const result = parseConstant(node)(ctx);
+        const result = parseConstant(node, noAttributes)(ctx);
 
         if (result.kind !== "constant_def") {
             ctx.err.noConstantDecl()(node.loc);
             return {
-                ...parseConstant(node)(ctx),
+                ...result,
                 kind: "constant_def",
                 initializer: ctx.ast.Number(10, 0n, node.loc),
             };
@@ -1062,8 +1068,14 @@ const parseConstantDef =
         return result;
     };
 
+const parseConstantDefLocal = (node: $ast.Constant) =>
+    parseConstantDef(node, false);
+
 const parseConstant =
-    (node: $ast.Constant): Handler<A.AstConstantDecl | A.AstConstantDef> =>
+    (
+        node: $ast.Constant,
+        noAttributes: boolean,
+    ): Handler<A.AstConstantDecl | A.AstConstantDef> =>
     (ctx) => {
         const name = parseId(node.name)(ctx);
         const type = parseType(node.type)(ctx);
@@ -1073,6 +1085,7 @@ const parseConstant =
                 node.attributes,
                 true,
                 node.loc,
+                noAttributes,
             )(ctx);
             return ctx.ast.ConstantDecl(attributes, name, type, node.loc);
         } else {
@@ -1080,6 +1093,7 @@ const parseConstant =
                 node.attributes,
                 false,
                 node.loc,
+                noAttributes,
             )(ctx);
             const initializer = parseExpression(node.body.expression)(ctx);
             return ctx.ast.ConstantDef(
@@ -1091,6 +1105,8 @@ const parseConstant =
             );
         }
     };
+
+const parseConstantLocal = (node: $ast.Constant) => parseConstant(node, false);
 
 const parseContract =
     ({
@@ -1250,7 +1266,7 @@ const parseContractItem: (
     FieldDecl: parseFieldDecl,
     Receiver: parseReceiver,
     Function: parseFunctionDef,
-    Constant: parseConstantDef,
+    Constant: parseConstantDefLocal,
 });
 
 const parseTraitItem: (
@@ -1259,7 +1275,7 @@ const parseTraitItem: (
     FieldDecl: parseFieldDecl,
     Receiver: parseReceiver,
     Function: parseFunction,
-    Constant: parseConstant,
+    Constant: parseConstantLocal,
 });
 
 const parseModuleItem: (input: $ast.moduleItem) => Handler<A.AstModuleItem> =

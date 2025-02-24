@@ -1,0 +1,11 @@
+;; moved to the separate file to keep hex of the previous codes unchanged
+#include "params.fc";
+
+int op::provide_wallet_address() asm "0x2c76b973 PUSHINT";
+int op::take_wallet_address() asm "0xd1735400 PUSHINT";
+
+int is_resolvable?(slice addr) inline {
+    (int wc, _) = parse_std_addr(addr);
+
+    return wc == workchain();
+}

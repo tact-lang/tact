@@ -50,7 +50,9 @@ Using individual means of storage often becomes cumbersome, so there are ways to
 
 In addition to the composite types above, Tact provides a special type constructor [`bounced<T>{:tact}`](/book/bounced), which can only be specified in [bounced message receivers](/book/bounced).
 
-Note, while [contracts](#contracts) and [traits](#traits) are also considered a part of the Tacts type system, one can't pass them around like [Structs and Messages](#structs-and-messages). Instead, it's possible to obtain the initial state of the given contract by using the [`initOf{:tact}`](/book/expressions#initof) expression.
+While [contracts](#contracts) and [traits](#traits) are also considered a part of the Tacts type system, one can't pass them around like [Structs and Messages](#structs-and-messages). Instead, it's possible to obtain the initial state of the given contract by using the [`initOf{:tact}`](/book/expressions#initof) expression.
+
+And it's also possible to obtain only the code of the given contract by using the [`codeOf{:tact}`](/book/expressions#codeof) expression.
 
 ### Maps
 
@@ -155,7 +157,7 @@ trait Ownable {
 
     // Internal function
     fun requireOwner() {
-        nativeThrowUnless(132, context().sender == self.owner);
+        throwUnless(132, context().sender == self.owner);
     }
 
     // Getter function with return type Address

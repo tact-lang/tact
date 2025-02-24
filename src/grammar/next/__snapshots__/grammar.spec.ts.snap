@@ -10,10 +10,10 @@ exports[`grammar should fail abstract-const-without-modifier 1`] = `
 `;
 
 exports[`grammar should fail const-abstract-abstract 1`] = `
-"<unknown>:4:10: Duplicate constant attribute "abstract"
+"<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | abstract abstract const Foo: Int = 42;
-               ^~~~~~~~
+      ^~~~~~~~
   5 | 
 "
 `;
@@ -22,16 +22,16 @@ exports[`grammar should fail const-override 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | override const Foo: Int = 42;
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      ^~~~~~~~
   5 | 
 "
 `;
 
 exports[`grammar should fail const-override-override 1`] = `
-"<unknown>:4:10: Duplicate constant attribute "override"
+"<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | override override const Foo: Int = 42;
-               ^~~~~~~~
+      ^~~~~~~~
   5 | 
 "
 `;
@@ -40,7 +40,7 @@ exports[`grammar should fail const-override-virtual 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | override virtual const Foo: Int = 42;
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      ^~~~~~~~
   5 | 
 "
 `;
@@ -49,7 +49,7 @@ exports[`grammar should fail const-virtual 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | virtual const Foo: Int = 42;
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      ^~~~~~~
   5 | 
 "
 `;
@@ -58,16 +58,16 @@ exports[`grammar should fail const-virtual-override 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | virtual override const Foo: Int = 42;
-      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      ^~~~~~~
   5 | 
 "
 `;
 
 exports[`grammar should fail const-virtual-virtual 1`] = `
-"<unknown>:4:9: Duplicate constant attribute "virtual"
+"<unknown>:4:1: Module-level constants do not support attributes
   3 | 
 > 4 | virtual virtual const Foo: Int = 42;
-              ^~~~~~~
+      ^~~~~~~
   5 | 
 "
 `;
@@ -117,6 +117,15 @@ exports[`grammar should fail contract-const-virtual-virtual 1`] = `
 "
 `;
 
+exports[`grammar should fail contract-duplicate-attribute 1`] = `
+"<unknown>:3:14: Duplicate constant attribute "override"
+  2 | contract Test {
+> 3 |     override override const Foo: Int = 42;
+                   ^~~~~~~~
+  4 | }
+"
+`;
+
 exports[`grammar should fail contract-empty-traits-list-with-keyword 1`] = `
 "<unknown>:1:20: Expected identifier
 > 1 | contract Name with {}
@@ -126,7 +135,7 @@ exports[`grammar should fail contract-empty-traits-list-with-keyword 1`] = `
 `;
 
 exports[`grammar should fail contract-getter-parens-no-method-id 1`] = `
-"<unknown>:2:9: Expected "!", "(", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+"<unknown>:2:9: Expected "!", "(", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
   1 | contract Test {
 > 2 |     get() fun test(): Int {
               ^
@@ -170,7 +179,7 @@ exports[`grammar should fail destructuring-duplicate-source-id 1`] = `
 `;
 
 exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
-"<unknown>:6:14: Expected "!", "(", ")", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+"<unknown>:6:14: Expected "!", "(", ")", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
   5 | fun b(): Int {
 > 6 |     return a(,);
                    ^
@@ -179,7 +188,7 @@ exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
 `;
 
 exports[`grammar should fail expr-method-call-trailing-comma-no-args 1`] = `
-"<unknown>:2:24: Expected "!", "(", ")", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+"<unknown>:2:24: Expected "!", "(", ")", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
   1 | fun another() {
 > 2 |     return 42.toString(,);
                              ^
@@ -643,6 +652,15 @@ exports[`grammar should fail trait-const-abstract-with-initializer 1`] = `
 "
 `;
 
+exports[`grammar should fail trait-duplicate-attribute 1`] = `
+"<unknown>:3:14: Duplicate constant attribute "abstract"
+  2 | trait Test {
+> 3 |     abstract abstract const Foo: Int = 42;
+                   ^~~~~~~~
+  4 | }
+"
+`;
+
 exports[`grammar should fail trait-empty-traits-list-with-keyword 1`] = `
 "<unknown>:1:17: Expected identifier
 > 1 | trait Name with {}
@@ -1028,6 +1046,130 @@ exports[`grammar should parse case-35 1`] = `
         "kind": "id",
         "loc": ReceiveTestContract,
         "text": "ReceiveTestContract",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse codeOf 1`] = `
+{
+  "id": 8,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "id": 6,
+          "kind": "contract_init",
+          "loc": init() {
+        let code = codeOf Foo;
+    },
+          "params": [],
+          "statements": [
+            {
+              "expression": {
+                "contract": {
+                  "id": 3,
+                  "kind": "id",
+                  "loc": Foo,
+                  "text": "Foo",
+                },
+                "id": 4,
+                "kind": "code_of",
+                "loc": codeOf Foo,
+              },
+              "id": 5,
+              "kind": "statement_let",
+              "loc": let code = codeOf Foo;,
+              "name": {
+                "id": 2,
+                "kind": "id",
+                "loc": code,
+                "text": "code",
+              },
+              "type": null,
+            },
+          ],
+        },
+      ],
+      "id": 7,
+      "kind": "contract",
+      "loc": contract Foo {
+    init() {
+        let code = codeOf Foo;
+    }
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Foo,
+        "text": "Foo",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse codeOf 2`] = `
+{
+  "id": 8,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "id": 6,
+          "kind": "contract_init",
+          "loc": init() {
+        let code = codeOf Foo;
+    },
+          "params": [],
+          "statements": [
+            {
+              "expression": {
+                "contract": {
+                  "id": 3,
+                  "kind": "id",
+                  "loc": Foo,
+                  "text": "Foo",
+                },
+                "id": 4,
+                "kind": "code_of",
+                "loc": codeOf Foo,
+              },
+              "id": 5,
+              "kind": "statement_let",
+              "loc": let code = codeOf Foo;,
+              "name": {
+                "id": 2,
+                "kind": "id",
+                "loc": code,
+                "text": "code",
+              },
+              "type": null,
+            },
+          ],
+        },
+      ],
+      "id": 7,
+      "kind": "contract",
+      "loc": contract Foo {
+    init() {
+        let code = codeOf Foo;
+    }
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Foo,
+        "text": "Foo",
       },
       "traits": [],
     },
