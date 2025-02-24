@@ -11,6 +11,10 @@ export function enabledDebug(ctx: CompilerContext) {
     return featureEnabled(ctx, "debug");
 }
 
+export function enabledOptimizedChildCode(ctx: CompilerContext) {
+    return featureEnabled(ctx, "optimizedChildCode");
+}
+
 export function enabledExternals(ctx: CompilerContext) {
     return featureEnabled(ctx, "external");
 }
