@@ -117,7 +117,7 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
             );
 
             includePaths.push({
-                path: posixNormalize(includePath),
+                path: `${project.resolve(dirname(contractInfo.path))}/${include}`,
                 content: project.readFile(includePath).toString(),
             });
         }
