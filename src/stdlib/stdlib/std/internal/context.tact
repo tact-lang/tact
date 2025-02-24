@@ -1,5 +1,5 @@
 struct Context {
-    bounced: Bool;
+    bounceable: Bool;
     sender: Address;
     value: Int;
     raw: Slice;
