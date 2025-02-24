@@ -792,6 +792,27 @@ function resolveInitOf(
     });
 }
 
+function resolveCodeOf(
+    ast: A.AstCodeOf,
+    ctx: CompilerContext,
+): CompilerContext {
+    // Resolve type
+    const type = getType(ctx, ast.contract);
+    if (type.kind !== "contract") {
+        throwCompilationError(
+            `Type ${idTextErr(ast.contract)} is not a contract`,
+            ast.loc,
+        );
+    }
+
+    // Register return type
+    return registerExpType(ctx, ast, {
+        kind: "ref",
+        name: "Cell",
+        optional: false,
+    });
+}
+
 function resolveConditional(
     ast: A.AstConditional,
     sctx: StatementContext,
@@ -945,6 +966,9 @@ export function resolveExpression(
         }
         case "init_of": {
             return resolveInitOf(exp, sctx, ctx);
+        }
+        case "code_of": {
+            return resolveCodeOf(exp, ctx);
         }
         case "conditional": {
             return resolveConditional(exp, sctx, ctx);

@@ -15,9 +15,13 @@ import { Sha256Big } from "./contracts/output/benchmark_sha256_big_Sha256Big";
 import { Sha256AsSlice } from "./contracts/output/benchmark_sha256_as_slice_Sha256AsSlice";
 import { Forward } from "./contracts/output/forward_Forward";
 import { Addresses } from "./contracts/output/address_Addresses";
+import { CodeOfVsInitOf } from "./contracts/output/codeOf_CodeOfVsInitOf";
 import "@ton/test-utils";
 import { CellsCreation } from "./contracts/output/cells_CellsCreation";
 import { getUsedGas } from "./util";
+import type { Step } from "../utils/write-vm-log";
+import { writeLog } from "../utils/write-vm-log";
+import { join } from "path";
 
 function measureGas(txs: BlockchainTransaction[]): number {
     return Number(
@@ -32,21 +36,31 @@ describe("benchmarks", () => {
     let blockchain: Blockchain;
     let treasure: SandboxContract<TreasuryContract>;
 
-    beforeEach(async () => {
+    let step: Step;
+
+    beforeAll(async () => {
         blockchain = await Blockchain.create();
-        blockchain.verbosity.print = false;
+
+        step = writeLog({
+            path: join(__dirname, "output", "log.yaml"),
+            blockchain,
+        });
+    });
+
+    beforeEach(async () => {
         treasure = await blockchain.treasury("benchmarks");
     });
 
     it("benchmark functions", async () => {
         const functions = blockchain.openContract(await Functions.fromInit());
 
-        const sendResult = await functions.send(
-            treasure.getSender(),
-            { value: toNano(1) },
-            { $$type: "Add", value: 10n },
+        const sendResult = await step("benchmark functions", () =>
+            functions.send(
+                treasure.getSender(),
+                { value: toNano(1) },
+                { $$type: "Add", value: 10n },
+            ),
         );
-
         const gasUsed = measureGas(sendResult.transactions);
 
         expect(gasUsed).toMatchSnapshot("gas used");
@@ -207,5 +221,45 @@ describe("benchmarks", () => {
             )
         ).gasUsed;
         expect(gasUsed).toMatchSnapshot("gas used contractAddressExt");
+    });
+
+    it("benchmark codeOf vs initOf", async () => {
+        const testContract = blockchain.openContract(
+            await CodeOfVsInitOf.fromInit(),
+        );
+        await testContract.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            null,
+        );
+        const gasUsed = (
+            await blockchain.runGetMethod(testContract.address, "withCodeOf")
+        ).gasUsed;
+        expect(gasUsed).toMatchSnapshot("gas used withCodeOf");
+
+        const gasUsed2 = (
+            await blockchain.runGetMethod(testContract.address, "withInitOf")
+        ).gasUsed;
+        expect(gasUsed2).toMatchSnapshot("gas used withInitOf");
+    });
+
+    it("benchmark codeOf vs myCode()", async () => {
+        const testContract = blockchain.openContract(
+            await CodeOfVsInitOf.fromInit(),
+        );
+        await testContract.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            null,
+        );
+        const gasUsed = (
+            await blockchain.runGetMethod(testContract.address, "codeOfSelf")
+        ).gasUsed;
+        expect(gasUsed).toMatchSnapshot("gas used codeOf for current contract");
+
+        const gasUsed2 = (
+            await blockchain.runGetMethod(testContract.address, "myCode")
+        ).gasUsed;
+        expect(gasUsed2).toMatchSnapshot("gas used myCode");
     });
 });

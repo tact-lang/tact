@@ -365,10 +365,14 @@ export namespace $ast {
     readonly name: Id;
     readonly params: parameterList<expression>;
   }>;
+  export type CodeOf = $.Located<{
+    readonly $: "CodeOf";
+    readonly name: Id;
+  }>;
   export type Null = $.Located<{
     readonly $: "Null";
   }>;
-  export type primary = Parens | StructInstance | IntegerLiteral | BoolLiteral | InitOf | Null | StringLiteral | Id;
+  export type primary = Parens | StructInstance | IntegerLiteral | BoolLiteral | InitOf | CodeOf | Null | StringLiteral | Id;
   export type parens = expression;
   export type StructFieldInitializer = $.Located<{
     readonly $: "StructFieldInitializer";
@@ -507,8 +511,9 @@ export const StructInstance: $.Parser<$ast.StructInstance> = $.loc($.field($.pur
 export const IntegerLiteral: $.Parser<$ast.IntegerLiteral> = $.loc($.field($.pure("IntegerLiteral"), "$", $.field($.alt($.lazy(() => IntegerLiteralHex), $.alt($.lazy(() => IntegerLiteralBin), $.alt($.lazy(() => IntegerLiteralOct), IntegerLiteralDec))), "value", $.eps)));
 export const BoolLiteral: $.Parser<$ast.BoolLiteral> = $.loc($.field($.pure("BoolLiteral"), "$", $.field($.alt($.str("true"), $.str("false")), "value", $.right($.lookNeg($.lazy(() => idPart)), $.eps))));
 export const InitOf: $.Parser<$ast.InitOf> = $.loc($.field($.pure("InitOf"), "$", $.right(keyword($.str("initOf")), $.field(Id, "name", $.field($.lazy(() => parameterList(expression)), "params", $.eps)))));
+export const CodeOf: $.Parser<$ast.CodeOf> = $.loc($.field($.pure("CodeOf"), "$", $.right($.str("codeOf"), $.field(Id, "name", $.eps))));
 export const Null: $.Parser<$ast.Null> = $.loc($.field($.pure("Null"), "$", $.right(keyword($.str("null")), $.eps)));
-export const primary: $.Parser<$ast.primary> = $.alt(Parens, $.alt(StructInstance, $.alt(IntegerLiteral, $.alt(BoolLiteral, $.alt(InitOf, $.alt(Null, $.alt(StringLiteral, Id)))))));
+export const primary: $.Parser<$ast.primary> = $.alt(Parens, $.alt(StructInstance, $.alt(IntegerLiteral, $.alt(BoolLiteral, $.alt(InitOf, $.alt(CodeOf, $.alt(Null, $.alt(StringLiteral, Id))))))));
 export const parens: $.Parser<$ast.parens> = $.right($.str("("), $.left(expression, $.str(")")));
 export const StructFieldInitializer: $.Parser<$ast.StructFieldInitializer> = $.loc($.field($.pure("StructFieldInitializer"), "$", $.field(Id, "name", $.field($.opt($.right($.str(":"), expression)), "init", $.eps))));
 export const parameterList = <T,>(T: $.Parser<T>): $.Parser<$ast.parameterList<T>> => $.right($.str("("), $.left($.opt(commaList($.lazy(() => T))), $.str(")")));

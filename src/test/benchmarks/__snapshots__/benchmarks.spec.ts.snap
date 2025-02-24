@@ -4,6 +4,14 @@ exports[`benchmarks benchmark cells creation: gas used emptyCell 1`] = `931n`;
 
 exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `935n`;
 
+exports[`benchmarks benchmark codeOf vs initOf: gas used withCodeOf 1`] = `1031n`;
+
+exports[`benchmarks benchmark codeOf vs initOf: gas used withInitOf 1`] = `1814n`;
+
+exports[`benchmarks benchmark codeOf vs myCode(): gas used codeOf for current contract 1`] = `1039n`;
+
+exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `1039n`;
+
 exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2846n`;
 
 exports[`benchmarks benchmark functions: code size 1`] = `188`;

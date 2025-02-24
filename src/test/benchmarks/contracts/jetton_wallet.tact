@@ -141,7 +141,7 @@ contract JettonWallet {
             balance: self.balance,
             owner: self.owner,
             master: self.master,
-            code: myCode() //may be replaced by "initOf JettonDefaultWallet(self.owner, self.master).code"
+            code: myCode()
         };
     }
 }

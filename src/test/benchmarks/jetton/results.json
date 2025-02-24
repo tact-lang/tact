@@ -3,9 +3,9 @@
     {
       "label": "FunC",
       "gas": {
-        "transfer": "15064",
-        "burn": "11895",
-        "discovery": "5915"
+        "transfer": "16864",
+        "burn": "12414",
+        "discovery": "6554"
       },
       "pr": null
     },
