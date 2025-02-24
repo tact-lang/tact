@@ -78,7 +78,9 @@ describe("Escrow Gas Tests", () => {
             {
                 value: dealAmount,
             },
-            "funding",
+            {
+                $$type: "Funding",
+            },
         );
 
         expect(fundingResult.transactions).toHaveTransaction({
@@ -161,7 +163,9 @@ describe("Escrow Gas Tests", () => {
             {
                 value: dealAmount,
             },
-            "funding",
+            {
+                $$type: "Funding",
+            },
         );
 
         const approveResult = await escrowContract.send(
@@ -169,7 +173,9 @@ describe("Escrow Gas Tests", () => {
             {
                 value: toNano("0.05"),
             },
-            "approve",
+            {
+                $$type: "Approve",
+            },
         );
 
         expect(approveResult.transactions).toHaveTransaction({
@@ -209,7 +215,9 @@ describe("Escrow Gas Tests", () => {
             {
                 value: dealAmount,
             },
-            "funding",
+            {
+                $$type: "Funding",
+            },
         );
 
         const cancelResult = await escrowContract.send(
@@ -217,7 +225,9 @@ describe("Escrow Gas Tests", () => {
             {
                 value: toNano("0.05"),
             },
-            "cancel",
+            {
+                $$type: "Cancel",
+            },
         );
 
         expect(cancelResult.transactions).toHaveTransaction({

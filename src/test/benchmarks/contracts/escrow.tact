@@ -12,6 +12,12 @@ message UpdateJettonWalletCode {
 message TakeEscrowData {
     escrowData: EscrowData;
 }
+
+message Funding {}
+message Approve {}
+message Cancel {}
+message ProvideEscrowData {}
+
 struct EscrowData {
     id: Int as uint32; // contract address salt
     sellerAddress: Address;
@@ -80,7 +86,7 @@ contract Escrow with Deployable {
         );
     }
 
-    receive("funding"){
+    receive(_: Funding){
         require(self.isFunded == false, "already funded");
         require(self.assetAddress == null, "wrong asset type");
 
@@ -117,7 +123,7 @@ contract Escrow with Deployable {
     }
 
     // send funds to seller and royalty to guarantor
-    receive("approve"){
+    receive(_: Approve){
         require(self.isFunded == true, "not funded");
         let ctx: Context = context();
 
@@ -146,7 +152,7 @@ contract Escrow with Deployable {
     }
 
     // send funds back to buyer
-    receive("cancel"){
+    receive(_: Cancel){
         require(self.isFunded == true, "not funded");
         let ctx: Context = context();
         require(self.guarantorAddress == ctx.sender, "not guarantor");
@@ -165,7 +171,7 @@ contract Escrow with Deployable {
     }
 
     // on-chain data access, could be useful to guarantor contract
-    receive("provideEscrowData"){
+    receive(_: ProvideEscrowData){
         self.reply(TakeEscrowData{escrowData: self.escrowInfo()}.toCell());
     }
 
