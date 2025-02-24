@@ -168,7 +168,7 @@ type EmptyReceiverSelector =
           kind: "external-empty";
       };
 
-type FallbackReceiverSelector =
+export type FallbackReceiverSelector =
     | {
           kind: "internal-comment-fallback";
           name: A.AstId;
