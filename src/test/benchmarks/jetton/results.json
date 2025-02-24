@@ -181,12 +181,12 @@
       "pr": "https://github.com/tact-lang/tact/pull/1907"
     },
     {
-      "label": "Benchmark 2025-02-24",
-      "pr": null,
+      "label": "1.5.3 with fixed routing",
+      "pr": "https://github.com/tact-lang/tact/pull/1949",
       "gas": {
         "transfer": "17764",
-        "burn": "14174",
-        "discovery": "8884"
+        "burn": "13612",
+        "discovery": "8322"
       }
     }
   ]
