@@ -10,7 +10,7 @@ import { funcIdOf } from "./id";
 import { ops } from "./ops";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeStatement } from "./writeFunction";
-import type { AstNumber, AstReceiver } from "../../ast/ast";
+import type { AstNumber, AstReceiver, AstStatement } from "../../ast/ast";
 import {
     throwCompilationError,
     throwInternal,
@@ -131,11 +131,7 @@ export function writeNonBouncedRouter(
         const emptyRcv = receivers.empty;
         wCtx.append(";; Receive empty message");
         wCtx.inBlock("if ((op == 0) & (in_msg_length <= 32))", () => {
-            emptyRcv.ast.statements.forEach((stmt) => {
-                writeStatement(stmt, null, null, wCtx);
-            });
-            writeStoreContractVariables(contract, wCtx);
-            wCtx.append("return ();");
+            writeReceiverBody(emptyRcv.ast.statements, contract, wCtx);
         });
     }
 
@@ -195,12 +191,7 @@ function writeBinaryReceiver(
             `var ${msgFields} = in_msg~${ops.reader(selector.type, "no-opcode", wCtx)}();`,
         );
 
-        for (const stmt of binaryReceiver.ast.statements) {
-            writeStatement(stmt, null, null, wCtx);
-        }
-
-        writeStoreContractVariables(contract, wCtx);
-        wCtx.append("return ();");
+        writeReceiverBody(binaryReceiver.ast.statements, contract, wCtx);
     });
 }
 
@@ -272,11 +263,7 @@ function writeCommentReceivers(
             wCtx.append(`;; Receive "${commentRcv.selector.comment}" message`);
 
             wCtx.inBlock(`if (text_op == 0x${hash})`, () => {
-                commentRcv.ast.statements.forEach((stmt) => {
-                    writeStatement(stmt, null, null, wCtx);
-                });
-                writeStoreContractVariables(contract, wCtx);
-                wCtx.append("return ();");
+                writeReceiverBody(commentRcv.ast.statements, contract, wCtx);
             });
         });
 
@@ -455,11 +442,7 @@ function writeFallbackReceiver(
     wCtx: WriterContext,
 ): void {
     wCtx.append(`slice ${funcIdOf(fbRcv.selector.name)} = ${inMsg};`);
-    for (const stmt of fbRcv.ast.statements) {
-        writeStatement(stmt, null, null, wCtx);
-    }
-    writeStoreContractVariables(contract, wCtx);
-    wCtx.append("return ();");
+    writeReceiverBody(fbRcv.ast.statements, contract, wCtx);
 }
 
 function writeBouncedReceiver(
@@ -494,12 +477,20 @@ function writeBouncedReceiver(
             : ops.reader(selector.type, "no-opcode", wCtx);
         wCtx.append(`var ${msgFields} = in_msg~${msgReader}();`);
 
-        for (const stmt of bouncedReceiver.ast.statements) {
-            writeStatement(stmt, null, null, wCtx);
-        }
-        writeStoreContractVariables(contract, wCtx);
-        wCtx.append("return ();");
+        writeReceiverBody(bouncedReceiver.ast.statements, contract, wCtx);
     });
+}
+
+function writeReceiverBody(
+    statements: readonly AstStatement[],
+    contract: TypeDescription,
+    wCtx: WriterContext,
+): void {
+    for (const stmt of statements) {
+        writeStatement(stmt, null, null, wCtx);
+    }
+    writeStoreContractVariables(contract, wCtx);
+    wCtx.append("return ();");
 }
 
 function messageOpcode(n: AstNumber): string {
