@@ -34,17 +34,6 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
-    ctx.fun("__tact_store_address", () => {
-        ctx.signature(`builder __tact_store_address(builder b, slice address)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                return b.store_slice(address);
-            `);
-        });
-    });
-
     ctx.fun("__tact_store_address_opt", () => {
         ctx.signature(
             `builder __tact_store_address_opt(builder b, slice address)`,
@@ -57,7 +46,7 @@ export function writeStdlib(ctx: WriterContext): void {
                     b = b.store_uint(0, 2);
                     return b;
                 } else {
-                    return ${ctx.used(`__tact_store_address`)}(b, address);
+                    return b.store_slice(address);
                 }
             `);
         });
@@ -402,32 +391,9 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
-    ctx.fun("__tact_to_tuple", () => {
-        ctx.signature(`forall X -> tuple __tact_to_tuple(X x)`);
-        ctx.context("stdlib");
-        ctx.asm("", "NOP");
-    });
-
-    ctx.fun("__tact_from_tuple", () => {
-        ctx.signature(`forall X -> X __tact_from_tuple(tuple x)`);
-        ctx.context("stdlib");
-        ctx.asm("", "NOP");
-    });
-
     //
     // Address
     //
-
-    ctx.fun(`__tact_slice_eq_bits`, () => {
-        ctx.signature(`int __tact_slice_eq_bits(slice a, slice b)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                return equal_slices_bits(a, b);
-            `);
-        });
-    });
 
     ctx.fun(`__tact_slice_eq_bits_nullable_one`, () => {
         ctx.signature(
