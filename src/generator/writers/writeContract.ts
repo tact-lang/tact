@@ -64,11 +64,38 @@ export function writeStorageOps(
                 ctx.append(`__tact_child_contract_codes = $sc~load_ref();`);
             }
 
-            ctx.append(`int $loaded = $sc~load_int(1);`);
+            if (type.init?.kind !== 'contract') {
+                ctx.append(`int $loaded = $sc~load_int(1);`);
 
-            // Load data
-            ctx.append(`if ($loaded) {`);
-            ctx.inIndent(() => {
+                // Load data
+                ctx.append(`if ($loaded) {`);
+                ctx.inIndent(() => {
+                    if (type.fields.length > 0) {
+                        ctx.append(
+                            `return $sc~${ops.reader(type.name, "with-opcode", ctx)}();`,
+                        );
+                    } else {
+                        ctx.append(`return null();`);
+                    }
+                });
+                ctx.append(`} else {`);
+                ctx.inIndent(() => {
+                    // Load arguments
+                    if (type.init!.params.length > 0) {
+                        ctx.append(
+                            `(${type.init!.params.map((v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) = $sc~${ops.reader(funcInitIdOf(type.name), "with-opcode", ctx)}();`,
+                        );
+                        ctx.append(`$sc.end_parse();`);
+                    }
+
+                    // Execute init function
+                    ctx.append(
+                        `return ${ops.contractInit(type.name, ctx)}(${[...type.init!.params.map((v) => funcIdOf(v.name))].join(", ")});`,
+                    );
+                });
+
+                ctx.append(`}`);
+            } else {
                 if (type.fields.length > 0) {
                     ctx.append(
                         `return $sc~${ops.reader(type.name, "with-opcode", ctx)}();`,
@@ -76,24 +103,7 @@ export function writeStorageOps(
                 } else {
                     ctx.append(`return null();`);
                 }
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                // Load arguments
-                if (type.init!.params.length > 0) {
-                    ctx.append(
-                        `(${type.init!.params.map((v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) = $sc~${ops.reader(funcInitIdOf(type.name), "with-opcode", ctx)}();`,
-                    );
-                    ctx.append(`$sc.end_parse();`);
-                }
-
-                // Execute init function
-                ctx.append(
-                    `return ${ops.contractInit(type.name, ctx)}(${[...type.init!.params.map((v) => funcIdOf(v.name))].join(", ")});`,
-                );
-            });
-
-            ctx.append(`}`);
+            }
         });
     });
 

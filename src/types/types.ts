@@ -105,13 +105,6 @@ export type FunctionParameter = {
     loc: SrcInfo;
 };
 
-export type InitParameter = {
-    name: A.AstId;
-    type: TypeRef;
-    as: string | null;
-    loc: SrcInfo;
-};
-
 export type FunctionDescription = {
     name: string;
     origin: ItemOrigin;
@@ -224,10 +217,27 @@ export type ReceiverDescription = {
     ast: A.AstReceiver;
 };
 
-export type InitDescription = {
+export type InitParameter = {
+    name: A.AstId;
+    type: TypeRef;
+    as: string | null;
+    loc: SrcInfo;
+};
+
+export type InitDescription = SeparateInitDescription | ContractInitDescription;
+
+export type SeparateInitDescription = {
+    kind: 'separate';
     params: InitParameter[];
     ast: A.AstContractInit;
-};
+}
+
+export type ContractInitDescription = {
+    kind: 'contract';
+    params: InitParameter[];
+    ast: A.AstContractInit;
+    contract: A.AstContract;
+}
 
 export function printTypeRef(src: TypeRef): string {
     switch (src.kind) {

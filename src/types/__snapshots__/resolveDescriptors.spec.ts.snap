@@ -2625,6 +2625,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -2640,6 +2641,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -3248,6 +3250,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -3263,6 +3266,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -3647,6 +3651,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "loc": TestContract,
         "text": "TestContract",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 11,
@@ -3718,6 +3723,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -4082,6 +4088,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "loc": TestContract,
         "text": "TestContract",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 12,
@@ -4153,6 +4160,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -4560,6 +4568,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -4774,6 +4783,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
           },
         ],
       },
+      "kind": "separate",
       "params": [
         {
           "as": null,
@@ -5115,6 +5125,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -5138,6 +5149,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -5530,6 +5542,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "loc": TestContract,
         "text": "TestContract",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 11,
@@ -5622,6 +5635,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -6065,6 +6079,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "loc": TestContract,
         "text": "TestContract",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 13,
@@ -6157,6 +6172,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -6564,6 +6580,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
         "loc": SomeContract,
         "text": "SomeContract",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 12,
@@ -6634,6 +6651,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -7764,6 +7782,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "loc": HelloWorld,
         "text": "HelloWorld",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -7936,6 +7955,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -8672,6 +8692,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "loc": Main,
         "text": "Main",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -8906,6 +8927,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           },
         ],
       },
+      "kind": "separate",
       "params": [
         {
           "as": null,
@@ -9890,6 +9912,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         "loc": Main,
         "text": "Main",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -10240,6 +10263,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -10945,6 +10969,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
         "loc": Main,
         "text": "Main",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -11627,6 +11652,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -12332,6 +12358,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
         "loc": Main,
         "text": "Main",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -13014,6 +13041,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -13659,6 +13687,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
         "loc": Foo,
         "text": "Foo",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -13676,6 +13705,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -13983,6 +14013,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 12,
@@ -14054,6 +14085,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -14386,6 +14418,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 10,
@@ -14457,6 +14490,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -14821,6 +14855,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 14,
@@ -14898,6 +14933,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -15466,6 +15502,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 22,
@@ -15625,6 +15662,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -21542,6 +21580,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 10,
@@ -21614,6 +21653,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -22080,6 +22120,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 14,
@@ -22222,6 +22263,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -22656,6 +22698,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 8,
@@ -22722,6 +22765,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -22984,6 +23028,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -23043,6 +23088,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -23783,6 +23829,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 14,
@@ -23849,6 +23896,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -24923,6 +24971,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 14,
@@ -24989,6 +25038,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -28102,6 +28152,7 @@ exports[`resolveDescriptors should resolve descriptors for receive-message-with-
         "loc": Foo,
         "text": "Foo",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -28119,6 +28170,7 @@ exports[`resolveDescriptors should resolve descriptors for receive-message-with-
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],
@@ -30234,6 +30286,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 21,
@@ -30387,6 +30440,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
         "params": [],
         "statements": [],
       },
+      "kind": "separate",
       "params": [],
     },
     "interfaces": [],

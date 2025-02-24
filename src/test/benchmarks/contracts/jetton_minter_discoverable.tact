@@ -14,17 +14,11 @@ struct JettonMasterState {
     jettonWalletCode: Cell;
 }
 
-contract JettonMinter {
-    totalSupply: Int as coins;
-    owner: Address;
-    jettonContent: Cell;
-
-    init(owner: Address, jettonContent: Cell) {
-        self.totalSupply = 0;
-        self.owner = owner;
-        self.jettonContent = jettonContent;
-    }
-
+contract JettonMinter(
+    totalSupply: Int as coins,
+    owner: Address,
+    jettonContent: Cell,
+) {
     receive(msg: ProvideWalletAddress) {
         // we use message fwdFee for estimation of forward_payload costs
         let ctx = context();
@@ -37,7 +31,7 @@ contract JettonMinter {
 
         let targetJettonWallet: Address =
             (workchain == Workchain) ?
-            contractAddress(initOf JettonWallet(msg.ownerAddress, myAddress()))
+            contractAddress(initOf JettonWallet(0, msg.ownerAddress, myAddress()))
             : emptyAddress();
 
         let outMsg = takeWalletBody(targetJettonWallet, includedAddress, msg.queryId);
@@ -121,7 +115,7 @@ inline fun takeWalletBody(targetJettonWallet: Address, includedAddress: Address?
 }
 
 inline fun getJettonWalletInit(address: Address): StateInit {
-    return initOf JettonWallet(address, myAddress());
+    return initOf JettonWallet(0, address, myAddress());
 }
 
 inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {
