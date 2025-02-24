@@ -65,23 +65,6 @@ export const ops = {
         used(`$${type}$_contract_load`, ctx),
     contractStore: (type: string, ctx: WriterContext) =>
         used(`$${type}$_contract_store`, ctx),
-    contractRouter: (type: string, kind: "internal" | "external") =>
-        `$${type}$_contract_router_${kind}`, // Not rendered as dependency
-
-    // Router operations
-    receiveEmpty: (type: string, kind: "internal" | "external") =>
-        `%$${type}$_${kind}_empty`,
-    receiveType: (type: string, kind: "internal" | "external", msg: string) =>
-        `$${type}$_${kind}_binary_${msg}`,
-    receiveAnyText: (type: string, kind: "internal" | "external") =>
-        `$${type}$_${kind}_any_text`,
-    receiveText: (type: string, kind: "internal" | "external", hash: string) =>
-        `$${type}$_${kind}_text_${hash}`,
-    receiveAny: (type: string, kind: "internal" | "external") =>
-        `$${type}$_${kind}_any`,
-    receiveTypeBounce: (type: string, msg: string) =>
-        `$${type}$_receive_binary_bounce_${msg}`,
-    receiveBounceAny: (type: string) => `$${type}$_receive_bounce_fallback`,
 
     // Functions
     extension: (type: string, name: string) => `$${type}$_fun_${name}`,
