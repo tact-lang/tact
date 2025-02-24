@@ -29,7 +29,7 @@ const op::top_up = "op::top_up"c;
 const op::change_wallet_code = "op::change_wallet_code"c;
 
 const royalties_constant = 1000; ;; for floating point royalties (up to 3 digits)
-;; gas consumption constants (could be further optimised)
+;; gas consumption constants (could be further optimized)
 const int fee_per_jetton = 50000000; ;; 0.05 ton
 const int send_fee = 15000000; ;; 0.015 TON
 
@@ -117,7 +117,7 @@ int calculate_gauarantor_royalty() inline {
 
     send_raw_message(begin_cell()
         .store_uint(0x18, 6)
-        .store_slice(escrow_jetton_wallet) ;; recepient address
+        .store_slice(escrow_jetton_wallet) ;; recipient address
         .store_coins(fee_per_jetton)
         .store_uint(1, 107)
         .store_ref(begin_cell()
@@ -146,7 +146,7 @@ int calculate_gauarantor_royalty() inline {
                   .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
                 .end_cell();
 
-    send_raw_message(msg, 1); ;; pays transfer fees separetely
+    send_raw_message(msg, 1); ;; pays transfer fees separately
 
     cell royalty_msg = begin_cell()
                           .store_uint(0x10, 6) ;; no bouncable messages
@@ -168,7 +168,7 @@ int calculate_gauarantor_royalty() inline {
     send_tokens(guarantor_address, royalty, 128 + 32);
 }
 
-() handle_cancell_ton() impure {
+() handle_cancel_ton() impure {
     ;; it's up to business logic whether guarantor should receive
     ;; royalty in case of cancelled deal, in this implementation he will not
 
@@ -182,7 +182,7 @@ int calculate_gauarantor_royalty() inline {
     send_raw_message(msg, 128 + 32); ;; refund to buyer & send all remaining, destroy
 }
 
-() handle_cancell_jetton() impure {
+() handle_cancel_jetton() impure {
     send_tokens(buyer_address, deal_amount, 128 + 32);
 }
 
@@ -277,24 +277,24 @@ int calculate_gauarantor_royalty() inline {
 
         ;; refund buyer
         if (null?(asset_address)) {
-            handle_cancell_ton();
+            handle_cancel_ton();
         } else {
-            handle_cancell_jetton();
+            handle_cancel_jetton();
         }
 
         return ();
     }
 
 {-
-    change_wallet_code#9eacde91 new_jwallet_code:^Cell = ChangeWalletCode;
+    change_wallet_code#9eacde91 new_jetton_wallet_code:^Cell = ChangeWalletCode;
 -}
 
     if (op == op::change_wallet_code) {
         throw_unless(400, state == 0 | null?(asset_address));
         throw_unless(403, equal_slices_bits(sender_address, seller_address)); ;; only seller can change wallet code
 
-        cell new_jwallet_code = in_msg_body~load_ref();
-        jetton_wallet_code = new_jwallet_code;
+        cell new_jetton_wallet_code = in_msg_body~load_ref();
+        jetton_wallet_code = new_jetton_wallet_code;
         save_data();
 
         return ();
@@ -316,7 +316,7 @@ int get_state() method_id {
     return state;
 }
 
-int get_guarator_royalty() method_id {
+int get_guarantor_royalty() method_id {
     load_data();
     return calculate_gauarantor_royalty();
 }
