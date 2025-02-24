@@ -16,7 +16,7 @@ contract JettonWallet {
     }
 
     receive(msg: JettonTransfer) {
-        nativeThrowUnless(705, sender() == self.owner);
+        throwUnless(705, sender() == self.owner);
 
         let totalFees: Int =
             2 * (context().readForwardFee() + self.gasConsumption) +
@@ -103,7 +103,7 @@ contract JettonWallet {
     }
 
     receive(msg: JettonBurn) {
-        nativeThrowUnless(705, sender() == self.owner);
+        throwUnless(705, sender() == self.owner);
 
         self.balance -= msg.amount; // Update balance
         require(self.balance >= 0, "Invalid balance after burn");
@@ -141,7 +141,7 @@ contract JettonWallet {
             balance: self.balance,
             owner: self.owner,
             master: self.master,
-            code: myCode() //may be replaced by "initOf JettonDefaultWallet(self.owner, self.master).code"
+            code: myCode()
         };
     }
 }

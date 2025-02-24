@@ -395,7 +395,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 // Slice case
                 if (arg0.name === "Slice") {
                     const exp = writeExpression(resolved[0]!, ctx);
-                    return `string_hash(${exp})`;
+                    return `__tact_sha256(${exp})`;
                 }
 
                 throwCompilationError(

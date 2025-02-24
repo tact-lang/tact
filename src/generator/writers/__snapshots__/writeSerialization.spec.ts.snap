@@ -68,33 +68,17 @@ exports[`writeSerialization should write serializer for A 1`] = `
   },
   {
     "code": {
-      "code": "return b.store_slice(address);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_store_address",
-    "signature": "builder __tact_store_address(builder b, slice address)",
-  },
-  {
-    "code": {
       "code": "if (null?(address)) {
     b = b.store_uint(0, 2);
     return b;
 } else {
-    return __tact_store_address(b, address);
+    return b.store_slice(address);
 }",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
-    "depends": Set {
-      "__tact_store_address",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
@@ -559,48 +543,6 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
     },
     "name": "__tact_prepare_random",
     "signature": "() __tact_prepare_random()",
-  },
-  {
-    "code": {
-      "code": "NOP",
-      "kind": "asm",
-      "shuffle": "",
-      "singleLine": true,
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_to_tuple",
-    "signature": "forall X -> tuple __tact_to_tuple(X x)",
-  },
-  {
-    "code": {
-      "code": "NOP",
-      "kind": "asm",
-      "shuffle": "",
-      "singleLine": true,
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_from_tuple",
-    "signature": "forall X -> X __tact_from_tuple(tuple x)",
-  },
-  {
-    "code": {
-      "code": "return equal_slices_bits(a, b);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_slice_eq_bits",
-    "signature": "int __tact_slice_eq_bits(slice a, slice b)",
   },
   {
     "code": {
@@ -5727,33 +5669,17 @@ exports[`writeSerialization should write serializer for B 1`] = `
   },
   {
     "code": {
-      "code": "return b.store_slice(address);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_store_address",
-    "signature": "builder __tact_store_address(builder b, slice address)",
-  },
-  {
-    "code": {
       "code": "if (null?(address)) {
     b = b.store_uint(0, 2);
     return b;
 } else {
-    return __tact_store_address(b, address);
+    return b.store_slice(address);
 }",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
-    "depends": Set {
-      "__tact_store_address",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
@@ -6218,48 +6144,6 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
     },
     "name": "__tact_prepare_random",
     "signature": "() __tact_prepare_random()",
-  },
-  {
-    "code": {
-      "code": "NOP",
-      "kind": "asm",
-      "shuffle": "",
-      "singleLine": true,
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_to_tuple",
-    "signature": "forall X -> tuple __tact_to_tuple(X x)",
-  },
-  {
-    "code": {
-      "code": "NOP",
-      "kind": "asm",
-      "shuffle": "",
-      "singleLine": true,
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_from_tuple",
-    "signature": "forall X -> X __tact_from_tuple(tuple x)",
-  },
-  {
-    "code": {
-      "code": "return equal_slices_bits(a, b);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_slice_eq_bits",
-    "signature": "int __tact_slice_eq_bits(slice a, slice b)",
   },
   {
     "code": {
@@ -11386,33 +11270,17 @@ exports[`writeSerialization should write serializer for C 1`] = `
   },
   {
     "code": {
-      "code": "return b.store_slice(address);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_store_address",
-    "signature": "builder __tact_store_address(builder b, slice address)",
-  },
-  {
-    "code": {
       "code": "if (null?(address)) {
     b = b.store_uint(0, 2);
     return b;
 } else {
-    return __tact_store_address(b, address);
+    return b.store_slice(address);
 }",
       "kind": "generic",
     },
     "comment": null,
     "context": "stdlib",
-    "depends": Set {
-      "__tact_store_address",
-    },
+    "depends": Set {},
     "flags": Set {
       "inline",
     },
@@ -11877,48 +11745,6 @@ return __tact_base64_encode(user_friendly_address_with_checksum);",
     },
     "name": "__tact_prepare_random",
     "signature": "() __tact_prepare_random()",
-  },
-  {
-    "code": {
-      "code": "NOP",
-      "kind": "asm",
-      "shuffle": "",
-      "singleLine": true,
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_to_tuple",
-    "signature": "forall X -> tuple __tact_to_tuple(X x)",
-  },
-  {
-    "code": {
-      "code": "NOP",
-      "kind": "asm",
-      "shuffle": "",
-      "singleLine": true,
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {},
-    "name": "__tact_from_tuple",
-    "signature": "forall X -> X __tact_from_tuple(tuple x)",
-  },
-  {
-    "code": {
-      "code": "return equal_slices_bits(a, b);",
-      "kind": "generic",
-    },
-    "comment": null,
-    "context": "stdlib",
-    "depends": Set {},
-    "flags": Set {
-      "inline",
-    },
-    "name": "__tact_slice_eq_bits",
-    "signature": "int __tact_slice_eq_bits(slice a, slice b)",
   },
   {
     "code": {
@@ -16119,16 +15945,14 @@ build_1 = ~ null?(v'd) ? build_1.store_int(true, 1).store_ref(begin_cell().store
 build_1 = build_1.store_int(v'e, 1);
 build_1 = build_1.store_int(v'f, 257);
 build_1 = build_1.store_int(v'g, 257);
-build_1 = __tact_store_address(build_1, v'h);
+build_1 = build_1.store_slice(v'h);
 build_0 = store_ref(build_0, build_1.end_cell());
 return build_0;",
       "kind": "generic",
     },
     "comment": null,
     "context": "type:C",
-    "depends": Set {
-      "__tact_store_address",
-    },
+    "depends": Set {},
     "flags": Set {},
     "name": "$C$_store",
     "signature": "builder $C$_store(builder build_0, (cell, cell, slice, slice, int, int, int, slice) v)",

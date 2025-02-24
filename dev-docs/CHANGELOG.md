@@ -33,6 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New functions `Slice.asAddressUnsafe` and `contractHash` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
 - New function `Slice.asAddress` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
 - `-w` / `--watch` CLI flags to watch for changes in the project and automatically recompile it: PR [#1844](https://github.com/tact-lang/tact/pull/1844)
+- New functions `throwIf` and `throwUnless` in stdlib, deprecated their aliases `nativeThrowIf` and `nativeThrowUnless`: PR [#1974](https://github.com/tact-lang/tact/pull/1974)
+- New `codeOf T` expression to get code of the contract: PR [#1948](https://github.com/tact-lang/tact/pull/1948)
 
 ### Changed
 
@@ -95,7 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Incorrect call generation to a mutation function: PR [#1608](https://github.com/tact-lang/tact/pull/1608)
 - Allow constant/trait constants depend on each other: PR [#1622](https://github.com/tact-lang/tact/pull/1622)
 - Combine all generated FunC code into a single file: PR [#1698](https://github.com/tact-lang/tact/pull/1698)
-- Runtime `sha256` now work for arbitrary strings with length >= 128: PR [#1626](https://github.com/tact-lang/tact/pull/1626)
+- Runtime calls to `sha256()` now work for arbitrary strings with length >= 128: PR [#1626](https://github.com/tact-lang/tact/pull/1626)
 - Generated code in TypeScript wrappers for contract with `init(init: Init)`: PR [#1709](https://github.com/tact-lang/tact/pull/1709)
 - Error message for comment (text) receivers with 124 bytes or more: PR [#1711](https://github.com/tact-lang/tact/pull/1711)
 - Support overriding constants and methods of BaseTrait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
@@ -106,6 +108,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
 - Bump used `@tact-lang/opcode` version to `0.2` which fixes many issues in CI runs: PR [#1922](https://github.com/tact-lang/tact/pull/1922)
 - Generation of the fallback receiver for external messages: PR [#1926](https://github.com/tact-lang/tact/pull/1926)
+- Runtime calls to `sha256()` now work for arbitrary slices with length >= 128: PR [#1936](https://github.com/tact-lang/tact/pull/1936)
 
 ### Docs
 
@@ -146,6 +149,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Listed functions with implicit mode and further clarified the interactions of message sending functions and their modes: PR [#1634](https://github.com/tact-lang/tact/pull/1634)
 - Added `Deployable` trait to all contracts in the Cookbook: PR [#1906](https://github.com/tact-lang/tact/pull/1906)
 - Added a note on the Debug page about high gas use of functions enabled with debug mode: PR [#1938](https://github.com/tact-lang/tact/pull/1938)
+- Added a note on the Assembly functions page regarding the ordering of fields in stdlib structures: PR [#1976](https://github.com/tact-lang/tact/pull/1976)
 
 ### Release contributors
 

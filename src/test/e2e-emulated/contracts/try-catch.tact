@@ -16,7 +16,7 @@ contract TryCatchTester {
     receive("incrementTryCatch") {
         try {
             self.counter += 1;
-            nativeThrow(123);
+            throw(123);
         }
     }
 
@@ -27,7 +27,7 @@ contract TryCatchTester {
             self.counter += 1;
             self.reply("hello world 2".asComment());
             emit("Something".asComment());
-            nativeThrow(123);
+            throw(123);
         }
     }
 
@@ -37,7 +37,7 @@ contract TryCatchTester {
 
     get fun testTryCatch1(): Int {
         try {
-            nativeThrowUnless(101, false);
+            throwUnless(101, false);
             return 42;
         }
         return 7;
@@ -45,7 +45,7 @@ contract TryCatchTester {
 
     get fun testTryCatch2(): Int {
         try {
-            nativeThrowIf(101, true);
+            throwIf(101, true);
             return 42;
         } catch (e) {
             return e;
@@ -57,7 +57,7 @@ contract TryCatchTester {
             let xs: Slice = beginCell().storeUint(0, 1).endCell().beginParse();
             let x: Int = xs.loadUint(1);
             try {
-                nativeThrowUnless(101, false);
+                throwUnless(101, false);
             } catch (e) {
                 return e / x; // division by zero, exit code = 4
             }

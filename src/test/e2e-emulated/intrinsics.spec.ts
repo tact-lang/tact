@@ -270,6 +270,14 @@ describe("intrinsics", () => {
         expect(actual.toString(16)).toEqual(expected.toString(16));
     };
 
+    const checkSha256Slice = async (input: string) => {
+        const expected = sha256(input).value;
+        const actual = await contract.getGetHashLongRuntimeSlice(
+            beginCell().storeStringTail(input).asSlice(),
+        );
+        expect(actual.toString(16)).toEqual(expected.toString(16));
+    };
+
     const generateString = (length: number): string => {
         const chars =
             "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -285,6 +293,7 @@ describe("intrinsics", () => {
             return sha256(src).value;
         }
         expect(await contract.getGetHash()).toBe(sha256Hex("hello world"));
+        expect(await contract.getGetHashSlice()).toBe(sha256Hex("hello world"));
         expect(await contract.getGetHash2()).toBe(sha256Hex("hello world"));
         expect(
             await contract.getGetHash3(
@@ -302,13 +311,29 @@ describe("intrinsics", () => {
 
         const input256bytes = generateString(256);
 
-        // check various length input
-        await checkSha256(generateString(15));
-        await checkSha256(generateString(127));
-        await checkSha256(generateString(128));
+        // check various length input for strings and slices
+        const s1 = generateString(15);
+        await checkSha256(s1);
+        await checkSha256Slice(s1);
+
+        const s2 = generateString(127);
+        await checkSha256(s2);
+        await checkSha256Slice(s2);
+
+        const s3 = generateString(128);
+        await checkSha256(s3);
+        await checkSha256Slice(s3);
+
         await checkSha256(input256bytes);
-        await checkSha256(generateString(1024));
-        await checkSha256(generateString(16999));
+        await checkSha256Slice(input256bytes);
+
+        const s5 = generateString(1024);
+        await checkSha256(s5);
+        await checkSha256Slice(s5);
+
+        const s6 = generateString(16999);
+        await checkSha256(s6);
+        await checkSha256Slice(s6);
 
         // check that we hash all string, not just first 127 bytes
         const first128bytesOf256bytesString = input256bytes.slice(0, 128);
@@ -319,6 +344,54 @@ describe("intrinsics", () => {
 
         expect(first128bytesOf256bytesStringHash).not.toEqual(
             input256bytesStringHash,
+        );
+
+        // check that we hash all slice, not just first 127 bytes
+        const first128bytesOf256bytesSliceHash =
+            await contract.getGetHashLongRuntimeSlice(
+                beginCell()
+                    .storeStringTail(first128bytesOf256bytesString)
+                    .asSlice(),
+            );
+        const input256bytesSliceHash =
+            await contract.getGetHashLongRuntimeSlice(
+                beginCell().storeStringTail(input256bytes).asSlice(),
+            );
+
+        expect(first128bytesOf256bytesSliceHash).not.toEqual(
+            input256bytesSliceHash,
+        );
+
+        // NOTE:
+        // The SHA256U instruction is used by string_hash() from FunC stdlib,
+        // which was previously used by Tact for runtime hashing of String and Slice values.
+
+        // check that SHA256U instruction hashes ONLY first 127 bytes
+        const first128bytesOf256bytesSHA256U = await contract.getGetHashSha256U(
+            beginCell()
+                .storeStringTail(first128bytesOf256bytesString)
+                .asSlice(),
+        );
+        const input256bytesSHA256U = await contract.getGetHashSha256U(
+            beginCell().storeStringTail(input256bytes).asSlice(),
+        );
+
+        expect(first128bytesOf256bytesSHA256U).toEqual(input256bytesSHA256U);
+
+        // check that HASHEXT_SHA256 instruction hashes ONLY first 127 bytes
+        const first128bytesOf256bytesHASHEXTSHA256 =
+            await contract.getGetHashHashextsha256(
+                beginCell()
+                    .storeStringTail(first128bytesOf256bytesString)
+                    .asSlice(),
+            );
+        const input256bytesHASHEXTSHA256 =
+            await contract.getGetHashHashextsha256(
+                beginCell().storeStringTail(input256bytes).asSlice(),
+            );
+
+        expect(first128bytesOf256bytesHASHEXTSHA256).toEqual(
+            input256bytesHASHEXTSHA256,
         );
     });
 });
