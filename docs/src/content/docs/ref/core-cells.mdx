@@ -459,6 +459,8 @@ Extension function for the [`Builder{:tact}`][builder].
 
 Stores the `address` in the copy of the [`Builder{:tact}`][builder]. Returns that copy.
 
+Attempts to store an address into `self` will result in [exit code 8](/book/exit-codes#8): `Cell overflow` if `self` cannot fit the address.
+
 Usage example:
 
 ```tact
