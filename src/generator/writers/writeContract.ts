@@ -3,6 +3,7 @@ import {
     enabledInterfacesGetter,
     enabledIpfsAbiGetter,
     enabledLazyDeploymentCompletedGetter,
+    enabledOptimizedChildCode,
 } from "../../config/features";
 import type { InitDescription, TypeDescription } from "../../types/types";
 import type { WriterContext } from "../Writer";
@@ -23,6 +24,15 @@ import type { ItemOrigin } from "../../imports/source";
 import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import { getAllocation } from "../../storage/resolveAllocation";
 
+export type ContractsCodes = Record<
+    string,
+    | {
+          codeBoc: Buffer;
+          abi: string;
+      }
+    | undefined
+>;
+
 export function writeStorageOps(
     type: TypeDescription,
     origin: ItemOrigin,
@@ -41,7 +51,10 @@ export function writeStorageOps(
             ctx.append(`slice $sc = get_data().begin_parse();`);
 
             // Load context
-            if (type.dependsOn.length > 0) {
+            if (
+                type.dependsOn.length > 0 &&
+                !enabledOptimizedChildCode(ctx.ctx)
+            ) {
                 ctx.append(`__tact_child_contract_codes = $sc~load_ref();`);
             }
 
@@ -89,7 +102,10 @@ export function writeStorageOps(
             ctx.append(`builder b = begin_cell();`);
 
             // Persist system cell
-            if (type.dependsOn.length > 0) {
+            if (
+                type.dependsOn.length > 0 &&
+                !enabledOptimizedChildCode(ctx.ctx)
+            ) {
                 ctx.append(`b = b.store_ref(__tact_child_contract_codes);`);
             }
 
@@ -111,6 +127,7 @@ export function writeInit(
     t: TypeDescription,
     init: InitDescription,
     ctx: WriterContext,
+    codes: ContractsCodes,
 ) {
     ctx.fun(ops.contractInit(t.name, ctx), () => {
         const args = init.params.map(
@@ -169,6 +186,17 @@ export function writeInit(
         });
     });
 
+    ctx.fun(ops.contractChildGetCode(t.name, ctx), () => {
+        ctx.signature(`cell ${ops.contractChildGetCode(t.name, ctx)}()`);
+        ctx.context("type:" + t.name + "$init");
+        ctx.flag("inline");
+        ctx.flag("impure");
+        ctx.asm(
+            "",
+            `B{${codes[t.name]?.codeBoc.toString("hex")}} B>boc PUSHREF`,
+        );
+    });
+
     ctx.fun(ops.contractInitChild(t.name, ctx), () => {
         const args = init.params.map(
             (v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name),
@@ -192,43 +220,58 @@ export function writeInit(
                 ctx.append(";; Build init data cell");
                 ctx.append();
                 ctx.append("builder b = begin_cell();");
-                if (t.dependsOn.length > 0) {
+                if (
+                    t.dependsOn.length > 0 &&
+                    !enabledOptimizedChildCode(ctx.ctx)
+                ) {
                     ctx.append("b = b.store_ref(__tact_child_contract_codes);");
                 }
             } else {
-                ctx.write(`
-                    slice sc' = __tact_child_contract_codes.begin_parse();
-                    cell source = sc'~load_dict();
-                `);
-                ctx.write(`
-                    ;; Contract Code: ${t.name}
-                    cell init_code = ${ctx.used("__tact_dict_get_code")}(source, ${t.uid});
-                    `);
-                ctx.append();
-                ctx.append(";; Build init data cell");
-                if (t.dependsOn.length > 0) {
+                if (!enabledOptimizedChildCode(ctx.ctx)) {
                     ctx.write(`
-                        cell contracts = new_dict();
+                        slice sc' = __tact_child_contract_codes.begin_parse();
+                        cell source = sc'~load_dict();
+                    `);
+                    ctx.write(`
+                        ;; Contract Code: ${t.name}
+                        cell init_code = ${ctx.used("__tact_dict_get_code")}(source, ${t.uid});
+                    `);
+                } else {
+                    ctx.write(`
+                        ;; Contract Code: ${t.name}
+                        cell init_code = ${ctx.used(`$${t.name}$_child_get_code`)}();
                     `);
                 }
-                // Copy contracts code
-                for (const c of t.dependsOn) {
-                    ctx.append();
-                    ctx.append(`;; Contract Code: ${c.name}`);
-                    if (c.name === ctx.name) {
-                        ctx.append(
-                            `contracts = ${ctx.used("__tact_dict_set_code")}(contracts, ${c.uid}, my_code());`,
-                        );
-                    } else {
+                ctx.append();
+                if (!enabledOptimizedChildCode(ctx.ctx)) {
+                    ctx.append(";; Build init data cell");
+                    if (t.dependsOn.length > 0) {
                         ctx.write(`
-                        cell code_${c.uid} = ${ctx.used("__tact_dict_get_code")}(source, ${c.uid});
-                        contracts = ${ctx.used("__tact_dict_set_code")}(contracts, ${c.uid}, code_${c.uid});
+                            cell contracts = new_dict();
                         `);
+                    }
+                    // Copy contracts code
+                    for (const c of t.dependsOn) {
+                        ctx.append();
+                        ctx.append(`;; Contract Code: ${c.name}`);
+                        if (c.name === ctx.name) {
+                            ctx.append(
+                                `contracts = ${ctx.used("__tact_dict_set_code")}(contracts, ${c.uid}, my_code());`,
+                            );
+                        } else {
+                            ctx.write(`
+                                cell code_${c.uid} = ${ctx.used("__tact_dict_get_code")}(source, ${c.uid});
+                                contracts = ${ctx.used("__tact_dict_set_code")}(contracts, ${c.uid}, code_${c.uid});
+                            `);
+                        }
                     }
                 }
                 ctx.append();
                 ctx.append("builder b = begin_cell();");
-                if (t.dependsOn.length > 0) {
+                if (
+                    !enabledOptimizedChildCode(ctx.ctx) &&
+                    t.dependsOn.length > 0
+                ) {
                     ctx.append(
                         `b = b.store_ref(begin_cell().store_dict(contracts).end_cell());`,
                     );
