@@ -1519,13 +1519,13 @@ describe("receivers-precedence", () => {
                     { value: toNano("10") },
                     {
                         $$type: "SendCellToAddress",
-                        address: emptyReceiver.address,
+                        address: noReceivers.address,
                         body,
                     },
                 );
 
                 expect(requestResult.transactions).toHaveTransaction({
-                    from: emptyReceiver.address,
+                    from: noReceivers.address,
                     to: testedContract,
                     success: true,
                 });
@@ -1564,13 +1564,13 @@ describe("receivers-precedence", () => {
                 { value: toNano("10") },
                 {
                     $$type: "SendCellToAddress",
-                    address: emptyReceiver.address,
+                    address: noReceivers.address,
                     body: emptyMessageStruct,
                 },
             );
 
             expect(transactions).toHaveTransaction({
-                from: emptyReceiver.address,
+                from: noReceivers.address,
                 to: testedContract,
                 success: true,
             });
