@@ -101,16 +101,26 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
 
         logger.info(`💼 Compiling FunC contract ${contractInfo.name}...`);
 
-        const includes: string[] = Array.from(
-            contractCode.matchAll(importRegex),
-            (m) => m[1]!,
-        );
+        const includePaths: {
+            path: string;
+            content: string;
+        }[] = [];
 
-        const includePaths = includes.map((include) =>
-            posixNormalize(
-                project.resolve(dirname(contractInfo.path), include),
-            ),
-        );
+        for (const [, include] of contractCode.matchAll(importRegex)) {
+            if (typeof include === "undefined") {
+                continue;
+            }
+
+            const includePath = project.resolve(
+                dirname(contractInfo.path),
+                include,
+            );
+
+            includePaths.push({
+                path: posixNormalize(includePath),
+                content: project.readFile(includePath).toString(),
+            });
+        }
 
         const funcArgs = {
             entries: [
@@ -127,10 +137,7 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
                     path: stdlibExPath,
                     content: stdlibExCode,
                 },
-                ...includePaths.map((includePath) => ({
-                    path: includePath,
-                    content: project.readFile(includePath).toString(),
-                })),
+                ...includePaths,
                 {
                     path: posixNormalize(project.resolve(contractInfo.path)),
                     content: project
