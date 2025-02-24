@@ -157,7 +157,7 @@ trait Ownable {
 
     // Internal function
     fun requireOwner() {
-        nativeThrowUnless(132, context().sender == self.owner);
+        throwUnless(132, context().sender == self.owner);
     }
 
     // Getter function with return type Address

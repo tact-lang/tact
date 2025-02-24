@@ -14,7 +14,7 @@ trait Ownable with B {
     receive("message") { }
 
     fun requireOwner() {
-        nativeThrowUnless(132, context().sender == self.owner);
+        throwUnless(132, context().sender == self.owner);
     }
 
     get fun owner(): Address {
