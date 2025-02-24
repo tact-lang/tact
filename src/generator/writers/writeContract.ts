@@ -1,9 +1,9 @@
-import { contractErrors } from "../../abi/errors";
 import {
     enabledInline,
     enabledInterfacesGetter,
     enabledIpfsAbiGetter,
     enabledLazyDeploymentCompletedGetter,
+    enabledOptimizedChildCode,
 } from "../../config/features";
 import type { InitDescription, TypeDescription } from "../../types/types";
 import type { WriterContext } from "../Writer";
@@ -15,8 +15,23 @@ import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeValue } from "./writeExpression";
 import { writeGetter, writeStatement } from "./writeFunction";
 import { writeInterfaces } from "./writeInterfaces";
-import { writeReceiver, writeRouter } from "./writeRouter";
+import {
+    groupContractReceivers,
+    writeBouncedRouter,
+    writeNonBouncedRouter,
+} from "./writeRouter";
 import type { ItemOrigin } from "../../imports/source";
+import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
+import { getAllocation } from "../../storage/resolveAllocation";
+
+export type ContractsCodes = Record<
+    string,
+    | {
+          codeBoc: Buffer;
+          abi: string;
+      }
+    | undefined
+>;
 
 export function writeStorageOps(
     type: TypeDescription,
@@ -36,7 +51,10 @@ export function writeStorageOps(
             ctx.append(`slice $sc = get_data().begin_parse();`);
 
             // Load context
-            if (type.dependsOn.length > 0) {
+            if (
+                type.dependsOn.length > 0 &&
+                !enabledOptimizedChildCode(ctx.ctx)
+            ) {
                 ctx.append(`__tact_child_contract_codes = $sc~load_ref();`);
             }
 
@@ -84,7 +102,10 @@ export function writeStorageOps(
             ctx.append(`builder b = begin_cell();`);
 
             // Persist system cell
-            if (type.dependsOn.length > 0) {
+            if (
+                type.dependsOn.length > 0 &&
+                !enabledOptimizedChildCode(ctx.ctx)
+            ) {
                 ctx.append(`b = b.store_ref(__tact_child_contract_codes);`);
             }
 
@@ -106,6 +127,7 @@ export function writeInit(
     t: TypeDescription,
     init: InitDescription,
     ctx: WriterContext,
+    codes: ContractsCodes,
 ) {
     ctx.fun(ops.contractInit(t.name, ctx), () => {
         const args = init.params.map(
@@ -164,6 +186,17 @@ export function writeInit(
         });
     });
 
+    ctx.fun(ops.contractChildGetCode(t.name, ctx), () => {
+        ctx.signature(`cell ${ops.contractChildGetCode(t.name, ctx)}()`);
+        ctx.context("type:" + t.name + "$init");
+        ctx.flag("inline");
+        ctx.flag("impure");
+        ctx.asm(
+            "",
+            `B{${codes[t.name]?.codeBoc.toString("hex")}} B>boc PUSHREF`,
+        );
+    });
+
     ctx.fun(ops.contractInitChild(t.name, ctx), () => {
         const args = init.params.map(
             (v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name),
@@ -187,43 +220,58 @@ export function writeInit(
                 ctx.append(";; Build init data cell");
                 ctx.append();
                 ctx.append("builder b = begin_cell();");
-                if (t.dependsOn.length > 0) {
+                if (
+                    t.dependsOn.length > 0 &&
+                    !enabledOptimizedChildCode(ctx.ctx)
+                ) {
                     ctx.append("b = b.store_ref(__tact_child_contract_codes);");
                 }
             } else {
-                ctx.write(`
-                    slice sc' = __tact_child_contract_codes.begin_parse();
-                    cell source = sc'~load_dict();
-                `);
-                ctx.write(`
-                    ;; Contract Code: ${t.name}
-                    cell init_code = ${ctx.used("__tact_dict_get_code")}(source, ${t.uid});
-                    `);
-                ctx.append();
-                ctx.append(";; Build init data cell");
-                if (t.dependsOn.length > 0) {
+                if (!enabledOptimizedChildCode(ctx.ctx)) {
                     ctx.write(`
-                        cell contracts = new_dict();
+                        slice sc' = __tact_child_contract_codes.begin_parse();
+                        cell source = sc'~load_dict();
+                    `);
+                    ctx.write(`
+                        ;; Contract Code: ${t.name}
+                        cell init_code = ${ctx.used("__tact_dict_get_code")}(source, ${t.uid});
+                    `);
+                } else {
+                    ctx.write(`
+                        ;; Contract Code: ${t.name}
+                        cell init_code = ${ctx.used(`$${t.name}$_child_get_code`)}();
                     `);
                 }
-                // Copy contracts code
-                for (const c of t.dependsOn) {
-                    ctx.append();
-                    ctx.append(`;; Contract Code: ${c.name}`);
-                    if (c.name === ctx.name) {
-                        ctx.append(
-                            `contracts = ${ctx.used("__tact_dict_set_code")}(contracts, ${c.uid}, my_code());`,
-                        );
-                    } else {
+                ctx.append();
+                if (!enabledOptimizedChildCode(ctx.ctx)) {
+                    ctx.append(";; Build init data cell");
+                    if (t.dependsOn.length > 0) {
                         ctx.write(`
-                        cell code_${c.uid} = ${ctx.used("__tact_dict_get_code")}(source, ${c.uid});
-                        contracts = ${ctx.used("__tact_dict_set_code")}(contracts, ${c.uid}, code_${c.uid});
+                            cell contracts = new_dict();
                         `);
+                    }
+                    // Copy contracts code
+                    for (const c of t.dependsOn) {
+                        ctx.append();
+                        ctx.append(`;; Contract Code: ${c.name}`);
+                        if (c.name === ctx.name) {
+                            ctx.append(
+                                `contracts = ${ctx.used("__tact_dict_set_code")}(contracts, ${c.uid}, my_code());`,
+                            );
+                        } else {
+                            ctx.write(`
+                                cell code_${c.uid} = ${ctx.used("__tact_dict_get_code")}(source, ${c.uid});
+                                contracts = ${ctx.used("__tact_dict_set_code")}(contracts, ${c.uid}, code_${c.uid});
+                            `);
+                        }
                     }
                 }
                 ctx.append();
                 ctx.append("builder b = begin_cell();");
-                if (t.dependsOn.length > 0) {
+                if (
+                    !enabledOptimizedChildCode(ctx.ctx) &&
+                    t.dependsOn.length > 0
+                ) {
                     ctx.append(
                         `b = b.store_ref(begin_cell().store_dict(contracts).end_cell());`,
                     );
@@ -252,148 +300,124 @@ export function writeInit(
 }
 
 export function writeMainContract(
-    type: TypeDescription,
+    contract: TypeDescription,
     abiLink: string,
-    ctx: WriterContext,
+    wCtx: WriterContext,
 ) {
     // Main field
-    ctx.main(() => {
-        // Comments
-        ctx.append(`;;`);
-        ctx.append(`;; Receivers of a Contract ${type.name}`);
-        ctx.append(`;;`);
-        ctx.append(``);
-
-        // Write receivers
-        for (const r of type.receivers) {
-            writeReceiver(type, r, ctx);
-        }
-
-        // Comments
-        ctx.append(`;;`);
-        ctx.append(`;; Get methods of a Contract ${type.name}`);
-        ctx.append(`;;`);
-        ctx.append(``);
+    wCtx.main(() => {
+        wCtx.append(`;;`);
+        wCtx.append(`;; Get methods of a Contract ${contract.name}`);
+        wCtx.append(`;;`);
+        wCtx.append();
 
         // Getters
-        for (const f of type.functions.values()) {
+        for (const f of contract.functions.values()) {
             if (f.isGetter) {
-                writeGetter(f, ctx);
+                writeGetter(f, wCtx);
             }
         }
 
         // Interfaces
-        if (enabledInterfacesGetter(ctx.ctx)) {
-            writeInterfaces(type, ctx);
+        if (enabledInterfacesGetter(wCtx.ctx)) {
+            writeInterfaces(contract, wCtx);
         }
 
         // ABI
-        if (enabledIpfsAbiGetter(ctx.ctx)) {
-            ctx.append(`_ get_abi_ipfs() method_id {`);
-            ctx.inIndent(() => {
-                ctx.append(`return "${abiLink}";`);
+        if (enabledIpfsAbiGetter(wCtx.ctx)) {
+            wCtx.append(`_ get_abi_ipfs() method_id {`);
+            wCtx.inIndent(() => {
+                wCtx.append(`return "${abiLink}";`);
             });
-            ctx.append(`}`);
-            ctx.append();
+            wCtx.append(`}`);
+            wCtx.append();
         }
 
-        if (enabledLazyDeploymentCompletedGetter(ctx.ctx)) {
+        if (enabledLazyDeploymentCompletedGetter(wCtx.ctx)) {
             // Deployed
-            ctx.append(`_ lazy_deployment_completed() method_id {`);
-            ctx.inIndent(() => {
-                ctx.append(`return get_data().begin_parse().load_int(1);`);
+            wCtx.append(`_ lazy_deployment_completed() method_id {`);
+            wCtx.inIndent(() => {
+                wCtx.append(`return get_data().begin_parse().load_int(1);`);
             });
-            ctx.append(`}`);
-            ctx.append();
+            wCtx.append(`}`);
+            wCtx.append();
         }
 
-        // Comments
-        ctx.append(`;;`);
-        ctx.append(`;; Routing of a Contract ${type.name}`);
-        ctx.append(`;;`);
-        ctx.append(``);
+        wCtx.append(`;;`);
+        wCtx.append(`;; Routing of a Contract ${contract.name}`);
+        wCtx.append(`;;`);
+        wCtx.append();
 
-        // Render body
-        const hasExternal = type.receivers.find((v) =>
-            v.selector.kind.startsWith("external-"),
-        );
-
-        writeRouter(type, ctx);
+        const contractReceivers = groupContractReceivers(contract);
 
         // Render internal receiver
-        ctx.append(
-            `() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {`,
+        wCtx.inBlock(
+            "() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure",
+            () => {
+                wCtx.append();
+                wCtx.append(`;; Context`);
+                wCtx.append(`var cs = in_msg_cell.begin_parse();`);
+                wCtx.append(`cs~skip_bits(2);`); // skip int_msg_info$0 ihr_disabled:Bool
+                wCtx.append(`var msg_bounceable = cs~load_int(1);`); // bounce:Bool
+                wCtx.append(`var msg_bounced = cs~load_int(1);`); // bounced:Bool
+                wCtx.append(`slice msg_sender_addr = cs~load_msg_addr();`);
+                wCtx.append(
+                    `__tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);`,
+                );
+                wCtx.append(`__tact_context_sender = msg_sender_addr;`);
+                wCtx.append();
+
+                // Load self
+                wCtx.append(`;; Load contract data`);
+                const contractVariables = resolveFuncTypeFromAbiUnpack(
+                    "$self",
+                    getAllocation(wCtx.ctx, contract.name).ops,
+                    wCtx,
+                );
+                wCtx.append(
+                    `var ${contractVariables} = ${ops.contractLoad(contract.name, wCtx)}();`,
+                );
+                wCtx.append();
+
+                writeBouncedRouter(contractReceivers.bounced, contract, wCtx);
+
+                writeNonBouncedRouter(
+                    contractReceivers.internal,
+                    contract,
+                    wCtx,
+                );
+            },
         );
-        ctx.inIndent(() => {
-            // Load context
-            ctx.append();
-            ctx.append(`;; Context`);
-            ctx.append(`var cs = in_msg_cell.begin_parse();`);
-            ctx.append(`cs~skip_bits(2);`); // skip int_msg_info$0 ihr_disabled:Bool
-            ctx.append(`var msg_bounceable = cs~load_int(1);`); // bounce:Bool
-            ctx.append(`var msg_bounced = cs~load_int(1);`); // bounced:Bool
-            ctx.append(`slice msg_sender_addr = cs~load_msg_addr();`);
-            ctx.append(
-                `__tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);`,
-            );
-            ctx.append(`__tact_context_sender = msg_sender_addr;`);
-            ctx.append();
-
-            // Load self
-            ctx.append(`;; Load contract data`);
-            ctx.append(`var self = ${ops.contractLoad(type.name, ctx)}();`);
-            ctx.append();
-
-            // Process operation
-            ctx.append(`;; Handle operation`);
-            ctx.append(
-                `int handled = self~${ops.contractRouter(type.name, "internal")}(in_msg, msg_bounced);`,
-            );
-            ctx.append();
-
-            // Throw if not handled
-            ctx.append(`;; Throw if not handled`);
-            ctx.append(
-                `throw_unless(${contractErrors.invalidMessage.id}, handled);`,
-            );
-            ctx.append();
-
-            // Persist state
-            ctx.append(`;; Persist state`);
-            ctx.append(`${ops.contractStore(type.name, ctx)}(self);`);
-        });
-        ctx.append("}");
-        ctx.append();
+        wCtx.append();
 
         // Render external receiver
+        const hasExternal = !(
+            contractReceivers.external.binary.length === 0 &&
+            contractReceivers.external.comment.length === 0 &&
+            typeof contractReceivers.external.commentFallback === "undefined" &&
+            typeof contractReceivers.external.empty === "undefined" &&
+            typeof contractReceivers.external.fallback === "undefined"
+        );
         if (hasExternal) {
-            ctx.append(`() recv_external(slice in_msg) impure {`);
-            ctx.inIndent(() => {
+            wCtx.inBlock("() recv_external(slice in_msg) impure", () => {
                 // Load self
-                ctx.append(`;; Load contract data`);
-                ctx.append(`var self = ${ops.contractLoad(type.name, ctx)}();`);
-                ctx.append();
-
-                // Process operation
-                ctx.append(`;; Handle operation`);
-                ctx.append(
-                    `int handled = self~${ops.contractRouter(type.name, "external")}(in_msg);`,
+                wCtx.append(`;; Load contract data`);
+                const contractVariables = resolveFuncTypeFromAbiUnpack(
+                    "$self",
+                    getAllocation(wCtx.ctx, contract.name).ops,
+                    wCtx,
                 );
-                ctx.append();
-
-                // Throw if not handled
-                ctx.append(`;; Throw if not handled`);
-                ctx.append(
-                    `throw_unless(${contractErrors.invalidMessage.id}, handled);`,
+                wCtx.append(
+                    `var ${contractVariables} = ${ops.contractLoad(contract.name, wCtx)}();`,
                 );
-                ctx.append();
+                wCtx.append();
 
-                // Persist state
-                ctx.append(`;; Persist state`);
-                ctx.append(`${ops.contractStore(type.name, ctx)}(self);`);
+                writeNonBouncedRouter(
+                    contractReceivers.external,
+                    contract,
+                    wCtx,
+                );
             });
-            ctx.append("}");
-            ctx.append();
         }
     });
 }
