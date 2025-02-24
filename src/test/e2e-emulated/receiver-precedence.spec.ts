@@ -1,7 +1,8 @@
-import type { Address, TransactionDescriptionGeneric } from "@ton/core";
+import type { Address, Sender, TransactionDescriptionGeneric } from "@ton/core";
 import { beginCell, Cell, external, toNano } from "@ton/core";
 import type {
     SandboxContract,
+    SendMessageResult,
     SmartContractTransaction,
     TreasuryContract,
 } from "@ton/sandbox";
@@ -41,6 +42,11 @@ import { StringAndBinaryAndSliceReceiverTester } from "./contracts/output/receiv
 import { StringAndBinaryReceiverTester } from "./contracts/output/receiver-precedence_StringAndBinaryReceiverTester";
 import { StringAndSliceReceiverTester } from "./contracts/output/receiver-precedence_StringAndSliceReceiverTester";
 import { StringReceiverTester } from "./contracts/output/receiver-precedence_StringReceiverTester";
+import { AllBouncedTester } from "./contracts/output/receiver-precedence_AllBouncedTester";
+import { EmptyBouncedTester } from "./contracts/output/receiver-precedence_EmptyBouncedTester";
+import { BinaryBouncedTester } from "./contracts/output/receiver-precedence_BinaryBouncedTester";
+import { SliceBouncedTester } from "./contracts/output/receiver-precedence_SliceBouncedTester";
+import type { SendCellToAddress } from "./contracts/output/receiver-precedence_EmptyBouncedTester";
 
 describe("receivers-precedence", () => {
     let blockchain: Blockchain;
@@ -81,6 +87,11 @@ describe("receivers-precedence", () => {
     let emptyAndStringAndBinaryAndSliceReceiver: SandboxContract<EmptyAndStringAndBinaryAndSliceReceiverTester>;
     let commentAndStringAndBinaryAndSliceReceiver: SandboxContract<CommentAndStringAndBinaryAndSliceReceiverTester>;
     let allReceivers: SandboxContract<AllReceiverTester>;
+
+    let emptyBounced: SandboxContract<EmptyBouncedTester>;
+    let binaryBounced: SandboxContract<BinaryBouncedTester>;
+    let sliceBounced: SandboxContract<SliceBouncedTester>;
+    let allBounced: SandboxContract<AllBouncedTester>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
@@ -187,6 +198,17 @@ describe("receivers-precedence", () => {
         allReceivers = blockchain.openContract(
             await AllReceiverTester.fromInit(),
         );
+
+        emptyBounced = blockchain.openContract(
+            await EmptyBouncedTester.fromInit(),
+        );
+        binaryBounced = blockchain.openContract(
+            await BinaryBouncedTester.fromInit(),
+        );
+        sliceBounced = blockchain.openContract(
+            await SliceBouncedTester.fromInit(),
+        );
+        allBounced = blockchain.openContract(await AllBouncedTester.fromInit());
 
         const deployResult = await contract.send(
             treasure.getSender(),
@@ -323,6 +345,11 @@ describe("receivers-precedence", () => {
             await CommentAndStringAndBinaryAndSliceReceiverTester.init(),
         );
         await deploy(allReceivers.address, await AllReceiverTester.init());
+
+        await deploy(emptyBounced.address, await EmptyBouncedTester.init());
+        await deploy(binaryBounced.address, await BinaryBouncedTester.init());
+        await deploy(sliceBounced.address, await SliceBouncedTester.init());
+        await deploy(allBounced.address, await AllBouncedTester.init());
 
         async function deploy(addr: Address, init: { code: Cell; data: Cell }) {
             const deployable = await blockchain.getContract(addr);
@@ -1441,6 +1468,182 @@ describe("receivers-precedence", () => {
             allReceivers.address,
             allReceivers.getReceiver,
             "external_empty",
+        );
+    });
+
+    it("external receivers should process empty messages and empty strings correctly", async () => {
+        // A message struct with empty string inside
+        const emptyMessageStruct = beginCell()
+            .storeUint(100, 32)
+            .storeStringRefTail("")
+            .endCell();
+        // Message body with less than 32 bits in its opcode.
+        const lessThan32Bits = beginCell().storeUint(10, 30).endCell();
+        // An actual empty message body
+        const emptyBody = new Cell();
+        // Message body with integer of size exactly 32 bits but value 0.
+        const zeroOf32Bits = beginCell().storeUint(0, 32).endCell();
+        // Empty string
+        const emptyString = beginCell()
+            .storeUint(0, 32)
+            .storeStringTail("")
+            .endCell();
+
+        const bodiesToTry = [
+            emptyMessageStruct,
+            lessThan32Bits,
+            emptyBody,
+            zeroOf32Bits,
+            emptyString,
+        ];
+
+        // Some utility functions that carry out the actual tests and assertions
+
+        async function shouldAcceptFrom(
+            from: number,
+            testedContract: Address,
+            testedContractSend: (
+                sender: Sender,
+                args: { value: bigint },
+                body: SendCellToAddress | "reset",
+            ) => Promise<SendMessageResult>,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            for (const body of bodiesToTry.slice(from)) {
+                // Request testedContract to send a message to the contract that has no receivers.
+                // Such contract will reject all messages and bounce them back into the
+                // testedContract
+                const requestResult = await testedContractSend(
+                    treasure.getSender(),
+                    { value: toNano("10") },
+                    {
+                        $$type: "SendCellToAddress",
+                        address: emptyReceiver.address,
+                        body,
+                    },
+                );
+
+                expect(requestResult.transactions).toHaveTransaction({
+                    from: emptyReceiver.address,
+                    to: testedContract,
+                    success: true,
+                });
+                expect(await receiverGetter()).toBe(expectedReceiver);
+
+                const resetResult = await testedContractSend(
+                    treasure.getSender(),
+                    { value: toNano("10") },
+                    "reset",
+                );
+
+                expect(resetResult.transactions).toHaveTransaction({
+                    from: treasure.address,
+                    to: testedContract,
+                    success: true,
+                });
+                expect(await receiverGetter()).toBe("unknown");
+            }
+        }
+
+        async function shouldAcceptEmptyMessageStruct(
+            testedContract: Address,
+            testedContractSend: (
+                sender: Sender,
+                args: { value: bigint },
+                body: SendCellToAddress | "reset",
+            ) => Promise<SendMessageResult>,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            // Request testedContract to send a message to the contract that has no receivers.
+            // Such contract will reject all messages and bounce them back into the
+            // testedContract
+            const { transactions } = await testedContractSend(
+                treasure.getSender(),
+                { value: toNano("10") },
+                {
+                    $$type: "SendCellToAddress",
+                    address: emptyReceiver.address,
+                    body: emptyMessageStruct,
+                },
+            );
+
+            expect(transactions).toHaveTransaction({
+                from: emptyReceiver.address,
+                to: testedContract,
+                success: true,
+            });
+            expect(await receiverGetter()).toBe(expectedReceiver);
+
+            const resetResult = await testedContractSend(
+                treasure.getSender(),
+                { value: toNano("10") },
+                "reset",
+            );
+
+            expect(resetResult.transactions).toHaveTransaction({
+                from: treasure.address,
+                to: testedContract,
+                success: true,
+            });
+            expect(await receiverGetter()).toBe("unknown");
+        }
+
+        // Tests start here
+
+        // emptyBounced should ignore all bounced messages without errors.
+        // It succeeds its transaction for all cases but remains in "unknown" receiver
+        await shouldAcceptFrom(
+            0,
+            emptyBounced.address,
+            emptyBounced.send,
+            emptyBounced.getReceiver,
+            "unknown",
+        );
+
+        // binaryBounced
+        // It will catch the bounced binary message
+        // The rest will ignore them without error, and remain in "unknown".
+        await shouldAcceptEmptyMessageStruct(
+            binaryBounced.address,
+            binaryBounced.send,
+            binaryBounced.getReceiver,
+            "bounced_binary",
+        );
+        await shouldAcceptFrom(
+            1,
+            binaryBounced.address,
+            binaryBounced.send,
+            binaryBounced.getReceiver,
+            "unknown",
+        );
+
+        // sliceBounced
+        // It will catch all cases in the fallback bounced receiver
+        await shouldAcceptFrom(
+            0,
+            sliceBounced.address,
+            sliceBounced.send,
+            sliceBounced.getReceiver,
+            "bounced_fallback",
+        );
+
+        // allBounced
+        // It will catch the bounced binary message in the binary bounced receiver
+        // The rest in the fallback bounced receiver
+        await shouldAcceptEmptyMessageStruct(
+            allBounced.address,
+            allBounced.send,
+            allBounced.getReceiver,
+            "bounced_binary",
+        );
+        await shouldAcceptFrom(
+            1,
+            allBounced.address,
+            allBounced.send,
+            allBounced.getReceiver,
+            "bounced_fallback",
         );
     });
 });

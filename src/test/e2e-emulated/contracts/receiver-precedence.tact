@@ -1,4 +1,4 @@
-message Message {
+message(100) Message {
     msg: String;
 }
 
@@ -1173,3 +1173,112 @@ contract AllReceiverTester {
         return self.receiver;
     }
 }
+
+// This contract does not process bounced messages
+contract EmptyBouncedTester {
+    receiver: String = "unknown";
+
+    // Initiate a request to the specified address with the specified cell as message body
+    receive(msg: SendCellToAddress) {
+        send(SendParameters {
+                to: msg.address,
+                bounce: true,
+                value: ton("5"),
+                body: msg.body,
+                });
+    }
+
+    receive("reset") {
+        self.receiver = "unknown";
+    }
+
+    get fun receiver(): String {
+        return self.receiver;
+    }
+}
+
+// This contract only processes binary bounced messages
+contract BinaryBouncedTester {
+    receiver: String = "unknown";
+
+    bounced(msg: bounced<Message>) {
+        self.receiver = "bounced_binary"
+    }
+
+    // Initiate a request to the specified address with the specified cell as message body
+    receive(msg: SendCellToAddress) {
+        send(SendParameters {
+                to: msg.address,
+                bounce: true,
+                value: ton("5"),
+                body: msg.body,
+                });
+    }
+
+    receive("reset") {
+        self.receiver = "unknown";
+    }
+
+    get fun receiver(): String {
+        return self.receiver;
+    }
+}
+
+// This contract only processes slice bounced messages
+contract SliceBouncedTester {
+    receiver: String = "unknown";
+
+    bounced(msg: Slice) {
+        self.receiver = "bounced_fallback"
+    }
+
+    // Initiate a request to the specified address with the specified cell as message body
+    receive(msg: SendCellToAddress) {
+        send(SendParameters {
+                to: msg.address,
+                bounce: true,
+                value: ton("5"),
+                body: msg.body,
+                });
+    }
+
+    receive("reset") {
+        self.receiver = "unknown";
+    }
+
+    get fun receiver(): String {
+        return self.receiver;
+    }
+}
+
+// This contract process all kinds of bounced messages
+contract AllBouncedTester {
+    receiver: String = "unknown";
+
+    bounced(msg: bounced<Message>) {
+        self.receiver = "bounced_binary"
+    }
+
+    bounced(msg: Slice) {
+        self.receiver = "bounced_fallback"
+    }
+
+    // Initiate a request to the specified address with the specified cell as message body
+    receive(msg: SendCellToAddress) {
+        send(SendParameters {
+                to: msg.address,
+                bounce: true,
+                value: ton("5"),
+                body: msg.body,
+                });
+    }
+
+    receive("reset") {
+        self.receiver = "unknown";
+    }
+
+    get fun receiver(): String {
+        return self.receiver;
+    }
+}
+
