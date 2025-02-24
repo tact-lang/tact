@@ -228,7 +228,6 @@ function writeCommentReceivers(
                     inMsg,
                     wCtx,
                 );
-                wCtx.append("return ();");
             });
         };
 
