@@ -239,7 +239,7 @@ export function writeInit(
                 } else {
                     ctx.write(`
                         ;; Contract Code: ${t.name}
-                        cell init_code = ${ctx.used(`$${t.name}$_child_get_code`)}();
+                        cell init_code = ${ops.contractChildGetCode(t.name, ctx)}();
                     `);
                 }
                 ctx.append();
@@ -295,6 +295,27 @@ export function writeInit(
                 `b = ${ops.writer(funcInitIdOf(t.name), ctx)}(${args});`,
             );
             ctx.append(`return (init_code, b.end_cell());`);
+        });
+    });
+
+    ctx.fun(ops.contractCodeChild(t.name, ctx), () => {
+        const sig = `cell ${ops.contractCodeChild(t.name, ctx)}()`;
+        ctx.signature(sig);
+        ctx.flag("inline");
+        ctx.context("type:" + t.name + "$init");
+        ctx.body(() => {
+            if (!enabledOptimizedChildCode(ctx.ctx)) {
+                ctx.write(`
+                    slice sc' = __tact_child_contract_codes.begin_parse();
+                    cell source = sc'~load_dict();
+                    ;; Contract Code: ${t.name}
+                    return ${ctx.used("__tact_dict_get_code")}(source, ${t.uid});
+                `);
+            } else {
+                ctx.write(`
+                    return ${ctx.used(ops.contractChildGetCode(t.name, ctx))}();
+                `);
+            }
         });
     });
 }

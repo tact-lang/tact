@@ -137,7 +137,7 @@ exports[`grammar should fail contract-empty-traits-list-with-keyword 1`] = `
 `;
 
 exports[`grammar should fail contract-getter-parens-no-method-id 1`] = `
-"<unknown>:2:9: Expected "\\"", "initOf", "null", "_", "A".."Z", "a".."z", "false", "true", "0", "1".."9", "0O", "0o", "0B", "0b", "0X", "0x", "(", "~", "!", "+", or "-"
+"<unknown>:2:9: Expected "\\"", "initOf", "null", "_", "A".."Z", "a".."z", "false", "true", "0", "1".."9", "0O", "0o", "0B", "0b", "0X", "0x", "codeOf", "(", "~", "!", "+", or "-"
 
   1 | contract Test {
 > 2 |     get() fun test(): Int {
@@ -947,6 +947,68 @@ exports[`grammar should parse case-35 1`] = `
         "kind": "id",
         "loc": ReceiveTestContract,
         "text": "ReceiveTestContract",
+      },
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse codeOf 1`] = `
+{
+  "id": 8,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "id": 6,
+          "kind": "contract_init",
+          "loc": init() {
+        let code = codeOf Foo;
+    },
+          "params": [],
+          "statements": [
+            {
+              "expression": {
+                "contract": {
+                  "id": 3,
+                  "kind": "id",
+                  "loc": Foo,
+                  "text": "Foo",
+                },
+                "id": 4,
+                "kind": "code_of",
+                "loc": codeOf Foo,
+              },
+              "id": 5,
+              "kind": "statement_let",
+              "loc": let code = codeOf Foo;,
+              "name": {
+                "id": 2,
+                "kind": "id",
+                "loc": code,
+                "text": "code",
+              },
+              "type": null,
+            },
+          ],
+        },
+      ],
+      "id": 7,
+      "kind": "contract",
+      "loc": contract Foo {
+    init() {
+        let code = codeOf Foo;
+    }
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Foo,
+        "text": "Foo",
       },
       "traits": [],
     },

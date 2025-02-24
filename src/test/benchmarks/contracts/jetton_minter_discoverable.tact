@@ -74,20 +74,13 @@ contract JettonMinter {
 
     receive(msg: Mint) {
         throwUnless(73, sender() == self.owner);
-        self.totalSupply += msg.amount; // Update total supply
+        self.totalSupply += msg.mintMessage.amount; // Update total supply
 
         deploy(DeployParameters{
             value: 0,
             bounce: true,
             mode: SendRemainingValue,
-            body: JettonTransferInternal{
-                queryId: 0,
-                amount: msg.amount,
-                sender: myAddress(),
-                responseDestination: self.owner, // Owner is minting, so send excess to owner
-                forwardTonAmount: 1, // 1 nanoton is enough to send a notification
-                forwardPayload: emptySlice()
-            }.toCell(),
+            body: msg.mintMessage.toCell(),
             init: getJettonWalletInit(msg.receiver)
         });
     }
@@ -103,8 +96,7 @@ contract JettonMinter {
             mintable: true,
             adminAddress: self.owner,
             jettonContent: self.jettonContent,
-            // Owner may be any address, what matters here is the code, not data.
-            jettonWalletCode: initOf JettonWallet(myAddress(), myAddress()).code
+            jettonWalletCode: codeOf JettonWallet,
         }
     }
     get fun get_wallet_address(ownerAddress: Address): Address {

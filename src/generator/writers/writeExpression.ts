@@ -710,6 +710,19 @@ export function writeExpression(
     }
 
     //
+    // Code of
+    //
+
+    if (f.kind === "code_of") {
+        // In case of using `codeOf T` in contract `T`, we simply use MYCODE.
+        if (wCtx.name === f.contract.text) {
+            return `my_code()`;
+        }
+
+        return `${ops.contractCodeChild(idText(f.contract), wCtx)}()`;
+    }
+
+    //
     // Ternary operator
     //
 

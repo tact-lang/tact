@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New function `Slice.asAddress` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
 - `-w` / `--watch` CLI flags to watch for changes in the project and automatically recompile it: PR [#1844](https://github.com/tact-lang/tact/pull/1844)
 - New functions `throwIf` and `throwUnless` in stdlib, deprecated their aliases `nativeThrowIf` and `nativeThrowUnless`: PR [#1974](https://github.com/tact-lang/tact/pull/1974)
+- New `codeOf T` expression to get code of the contract: PR [#1948](https://github.com/tact-lang/tact/pull/1948)
 
 ### Changed
 
