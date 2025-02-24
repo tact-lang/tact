@@ -13,7 +13,7 @@ trait Ownable with BaseTrait {
     owner: Address;
 
     fun requireOwner() {
-        nativeThrowUnless(132, sender() == self.owner);
+        throwUnless(132, sender() == self.owner);
     }
 
     get fun owner(): Address {
