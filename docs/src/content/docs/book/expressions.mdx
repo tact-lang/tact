@@ -299,6 +299,33 @@ Field  | Type                  | Description
 
 :::
 
+## `codeOf` {#codeof}
+
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+Expression `codeOf{:tact}` returns a [`Cell{:tact}`][cell] with the code of a [contract](/book/contracts):
+
+```tact
+codeOf ExampleContract; // a Cell with ExampleContract code
+//     ---------------
+//     ↑
+//     name of the contract
+```
+
+If `codeOf{:tact}` is used for the current contract, its result is equivalent to calling [`myCode(){:tact}`](/ref/core-advanced#mycode).
+
+```tact
+contract ExampleContract {
+    receive() {
+        myCode() == codeOf ExampleContract; // true
+    }
+}
+```
+
+If you only need the code of the given contract and not its [`StateInit{:tact}`](#initof), prefer using `codeOf ContractName{:tact}` over [`initOf ContactName(param1, param2, ...){:tact}`](#initof) to **significantly** reduce gas usage.
+
 [p]: /book/types#primitive-types
 [cell]: /book/cells#cells
 [s]: /book/structs-and-messages#structs

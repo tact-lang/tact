@@ -57,8 +57,12 @@ export const ops = {
     // Contract operations
     contractInit: (type: string, ctx: WriterContext) =>
         used(`$${type}$_contract_init`, ctx),
+    contractChildGetCode: (type: string, ctx: WriterContext) =>
+        used(`$${type}$_child_get_code`, ctx),
     contractInitChild: (type: string, ctx: WriterContext) =>
         used(`$${type}$_init_child`, ctx),
+    contractCodeChild: (type: string, ctx: WriterContext) =>
+        used(`$${type}$_code_child`, ctx),
     contractLoad: (type: string, ctx: WriterContext) =>
         used(`$${type}$_contract_load`, ctx),
     contractStore: (type: string, ctx: WriterContext) =>

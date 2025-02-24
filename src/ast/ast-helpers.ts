@@ -188,6 +188,8 @@ export function eqExpressions(
                 eqNames(ast1.contract, (ast2 as A.AstInitOf).contract) &&
                 eqArrays(ast1.args, (ast2 as A.AstInitOf).args, eqExpressions)
             );
+        case "code_of":
+            return eqNames(ast1.contract, (ast2 as A.AstCodeOf).contract);
         case "op_unary":
             return (
                 ast1.op === (ast2 as A.AstOpUnary).op &&
@@ -389,6 +391,7 @@ function checkLiteral<T>(
         case "id":
         case "method_call":
         case "init_of":
+        case "code_of":
         case "op_unary":
         case "op_binary":
         case "conditional":

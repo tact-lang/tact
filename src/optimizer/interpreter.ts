@@ -890,6 +890,8 @@ export class Interpreter {
                 return this.interpretMethodCall(ast);
             case "init_of":
                 return this.interpretInitOf(ast);
+            case "code_of":
+                return this.interpretCodeOf(ast);
             case "null":
                 return this.interpretNull(ast);
             case "boolean":
@@ -993,6 +995,13 @@ export class Interpreter {
     private interpretInitOf(ast: A.AstInitOf): A.AstLiteral {
         throwNonFatalErrorConstEval(
             "initOf is not supported at this moment",
+            ast.loc,
+        );
+    }
+
+    private interpretCodeOf(ast: A.AstCodeOf): A.AstLiteral {
+        throwNonFatalErrorConstEval(
+            "codeOf is not supported at this moment",
             ast.loc,
         );
     }
