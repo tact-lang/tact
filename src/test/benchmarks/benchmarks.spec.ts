@@ -181,7 +181,7 @@ describe("benchmarks", () => {
         ).toMatchSnapshot("gas hash string small repeated more");
         expect(
             await hashStringAsSLice(sha256AsSlice, "hello world".repeat(10)),
-        ).toMatchSnapshot("gas hash string string repeated more");
+        ).toMatchSnapshot("gas hash string slice repeated more");
     });
 
     it("benchmark cells creation", async () => {

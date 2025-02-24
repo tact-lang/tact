@@ -31,7 +31,7 @@ let fizz: StringBuilder = beginString();
 fun beginComment(): StringBuilder;
 ```
 
-Creates and returns an empty [`StringBuilder{:tact}`][p] for building a comment string, which prefixes the resulting [`String{:tact}`][p] with four null bytes. This format is used for passing text comments as message bodies.
+Creates and returns an empty [`StringBuilder{:tact}`][p] for building a comment string, which prefixes the resulting [`String{:tact}`][p] with four null bytes. [This format](https://docs.ton.org/v3/guidelines/dapps/asset-processing/nft-processing/metadata-parsing#snake-data-encoding) is used for passing text comments as message bodies.
 
 Usage example:
 

@@ -80,6 +80,10 @@ contract IntrinsicsTester {
         return sha256("hello world");
     }
 
+    get fun getHashSlice(): Int {
+        return sha256("hello world".asSlice());
+    }
+
     get fun getHash2(): Int {
         return self.f;
     }
@@ -98,6 +102,18 @@ contract IntrinsicsTester {
 
     get fun getHashLongRuntime(src: String): Int {
         return sha256(src);
+    }
+
+    get fun getHashLongRuntimeSlice(src: Slice): Int {
+        return sha256(src);
+    }
+
+    get fun getHashSHA256U(src: Slice): Int {
+        return hashSHA256U(src);
+    }
+
+    get fun getHashHASHEXTSHA256(src: Slice): Int {
+        return hashHASHEXTSHA256(src);
     }
 
     receive("emit_1") {
@@ -240,3 +256,7 @@ contract IntrinsicsTester {
         return self.v;
     }
 }
+
+asm fun hashSHA256U(src: Slice): Int { SHA256U }
+
+asm fun hashHASHEXTSHA256(src: Slice): Int { ONE HASHEXT_SHA256 }
