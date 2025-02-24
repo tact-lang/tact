@@ -107,8 +107,6 @@ trait DelayedUpgradable with Upgradable {
     }
 }
 
-@name(set_code)
-native setCode(code: Cell);
+asm fun setCode(code: Cell) { SETCODE }
 
-@name(set_data)
-native setData(data: Cell);
+asm fun setData(data: Cell) { c4 POP }
