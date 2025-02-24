@@ -1,0 +1,207 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`effects should correctly compute effects: contractStorageAnalysis 1`] = `
+[
+  {
+    "contract": "StorageAnalysis",
+    "receivers": [
+      {
+        "effects": Set {},
+        "kind": "internal-empty",
+      },
+      {
+        "comment": "direct regular assignment into storage var",
+        "effects": Set {
+          "contractStorageWrite",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "direct regular assignment into storage struct field",
+        "effects": Set {
+          "contractStorageWrite",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "direct regular assignment: no storage write",
+        "effects": Set {
+          "contractStorageRead",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "direct augmented assignment into storage",
+        "effects": Set {
+          "contractStorageWrite",
+          "contractStorageRead",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "direct augmented assignment into storage struct field",
+        "effects": Set {
+          "contractStorageWrite",
+          "contractStorageRead",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "direct augmented assignment: no storage",
+        "effects": Set {},
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "calling a mutating method on a contract variable: mutates",
+        "effects": Set {
+          "contractStorageRead",
+          "contractStorageWrite",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "calling a mutating method on a contract struct field: mutates",
+        "effects": Set {
+          "contractStorageRead",
+          "contractStorageWrite",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "calling a mutating method on a contract struct: mutates",
+        "effects": Set {
+          "contractStorageRead",
+          "contractStorageWrite",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "calling a mutating method on a struct: no mutates",
+        "effects": Set {},
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "calling a mutating method on a contract variable and struct field: no mutation",
+        "effects": Set {
+          "contractStorageRead",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "rewrite in a contract method",
+        "effects": Set {
+          "contractStorageWrite",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "transitively modifying contract method",
+        "effects": Set {
+          "contractStorageWrite",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "read and modify in a contract method",
+        "effects": Set {
+          "contractStorageWrite",
+          "contractStorageRead",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "non-modifying contract method",
+        "effects": Set {
+          "contractStorageRead",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "asm function modifies contract storage via assigning to \`self\`: swapStorage",
+        "effects": Set {
+          "contractStorageWrite",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "asm function modifies contract storage via assigning to \`self\`: setStorage",
+        "effects": Set {
+          "contractStorageWrite",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "modifying map method on a contract map",
+        "effects": Set {
+          "contractStorageRead",
+          "contractStorageWrite",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "non-modifying map method on a contract map",
+        "effects": Set {
+          "contractStorageRead",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "modifying external contract method",
+        "effects": Set {
+          "contractStorageRead",
+          "contractStorageWrite",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "non-modifying external contract method",
+        "effects": Set {
+          "contractStorageRead",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "non-modifying recursive contract method",
+        "effects": Set {},
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "modifying recursive contract method",
+        "effects": Set {
+          "contractStorageWrite",
+          "contractStorageRead",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "modifying recursive external contract method",
+        "effects": Set {
+          "contractStorageWrite",
+          "contractStorageRead",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "modifying getter as a contract method",
+        "effects": Set {
+          "contractStorageWrite",
+        },
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "non-modifying getter as a contract method",
+        "effects": Set {},
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "complex control flow with deeply nested contract modification",
+        "effects": Set {
+          "contractStorageRead",
+          "contractStorageWrite",
+        },
+        "kind": "internal-comment",
+      },
+    ],
+  },
+]
+`;
