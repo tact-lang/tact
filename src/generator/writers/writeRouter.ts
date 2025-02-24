@@ -71,7 +71,8 @@ export function writeNonBouncedRouter(
         typeof receivers.fallback !== "undefined" &&
         receivers.binary.length === 0 &&
         receivers.comment.length === 0 &&
-        typeof receivers.commentFallback === "undefined"
+        typeof receivers.commentFallback === "undefined" &&
+        typeof receivers.empty === "undefined"
     ) {
         writeFallbackReceiver(receivers.fallback, contract, "in_msg", wCtx);
         return;
