@@ -230,6 +230,7 @@ Tact {
     ExpressionPrimary = ExpressionStaticCall
                       | ExpressionParens
                       | ExpressionStructInstance
+                      | ExpressionCodeOf
                       | integerLiteral
                       | boolLiteral
                       | id
@@ -244,6 +245,7 @@ Tact {
     ExpressionStaticCall = id Arguments
 
     ExpressionInitOf = initOf id Arguments
+    ExpressionCodeOf = "codeOf" id
 
     StructFieldInitializer = id ":" Expression --full
                            | id --punned   // shorthand for `id: id`

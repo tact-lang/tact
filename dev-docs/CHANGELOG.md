@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### BREAKING CHANGES
+
+- `Context.bounced` field was replaced with `Context.bounceable` field: PR [#1934](https://github.com/tact-lang/tact/pull/1934)
+
 ### Added
 
 - `deploy()` function, that optimizes the deployment of a child contract: PR [#1832](https://github.com/tact-lang/tact/pull/1832)
@@ -28,6 +32,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `--output` CLI flag for specifying custom output directory in single-contract compilation: PR [#1793](https://github.com/tact-lang/tact/pull/1793)
 - New functions `Slice.asAddressUnsafe` and `contractHash` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
 - New function `Slice.asAddress` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
+- `-w` / `--watch` CLI flags to watch for changes in the project and automatically recompile it: PR [#1844](https://github.com/tact-lang/tact/pull/1844)
+- New functions `throwIf` and `throwUnless` in stdlib, deprecated their aliases `nativeThrowIf` and `nativeThrowUnless`: PR [#1974](https://github.com/tact-lang/tact/pull/1974)
+- New `codeOf T` expression to get code of the contract: PR [#1948](https://github.com/tact-lang/tact/pull/1948)
 
 ### Changed
 
@@ -56,6 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Error message for invalid type for function argument now shows expected type: PR [#1738](https://github.com/tact-lang/tact/pull/1738)
 - `Int.toString` now consumes up to 64% less gas: PR [#1837](https://github.com/tact-lang/tact/pull/1837)
 - Error message for reserved `self` function parameter now suggests using `extends` function modifier: PR [#1737](https://github.com/tact-lang/tact/pull/1737)
+- `Int.toFloatString` now consumes up to 62% less gas: PR [#1956](https://github.com/tact-lang/tact/pull/1956)
 
 ### Fixed
 
@@ -139,6 +147,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Listed functions with implicit mode and further clarified the interactions of message sending functions and their modes: PR [#1634](https://github.com/tact-lang/tact/pull/1634)
 - Added `Deployable` trait to all contracts in the Cookbook: PR [#1906](https://github.com/tact-lang/tact/pull/1906)
 - Added a note on the Debug page about high gas use of functions enabled with debug mode: PR [#1938](https://github.com/tact-lang/tact/pull/1938)
+- Added a note on the Assembly functions page regarding the ordering of fields in stdlib structures: PR [#1976](https://github.com/tact-lang/tact/pull/1976)
 
 ### Release contributors
 

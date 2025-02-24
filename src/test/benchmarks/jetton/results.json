@@ -3,9 +3,9 @@
     {
       "label": "FunC",
       "gas": {
-        "transfer": "15064",
-        "burn": "11895",
-        "discovery": "5915"
+        "transfer": "16864",
+        "burn": "12414",
+        "discovery": "6554"
       },
       "pr": null
     },
@@ -152,6 +152,42 @@
         "discovery": "9064"
       },
       "pr": "https://github.com/tact-lang/tact/pull/1931"
+    },
+    {
+      "label": "1.5.3 with optimized flag handling",
+      "gas": {
+        "transfer": "17950",
+        "burn": "14492",
+        "discovery": "9044"
+      },
+      "pr": "https://github.com/tact-lang/tact/pull/1934"
+    },
+    {
+      "label": "1.5.3 with inlined router",
+      "gas": {
+        "transfer": "17696",
+        "burn": "14106",
+        "discovery": "8850"
+      },
+      "pr": "https://github.com/tact-lang/tact/pull/1968"
+    },
+    {
+      "label": "1.5.3 with optimized initOf",
+      "gas": {
+        "transfer": "17696",
+        "burn": "13544",
+        "discovery": "8288"
+      },
+      "pr": "https://github.com/tact-lang/tact/pull/1907"
+    },
+    {
+      "label": "1.5.3 with fixed routing",
+      "pr": "https://github.com/tact-lang/tact/pull/1949",
+      "gas": {
+        "transfer": "17764",
+        "burn": "13612",
+        "discovery": "8322"
+      }
     }
   ]
 }

@@ -42,7 +42,7 @@ contract ComputePhaseErrorsTester {
             self.tmpI = pow(2, 255) - 1 + pow(2, 255) + msg.val1;
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Addition didn't cause an integer overflow");
 
@@ -51,7 +51,7 @@ contract ComputePhaseErrorsTester {
             self.tmpI = -pow(2, 255) - pow(2, 255) - msg.val1;
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Subtraction didn't cause an integer overflow");
 
@@ -60,7 +60,7 @@ contract ComputePhaseErrorsTester {
             self.tmpI = -(-pow(2, 255) - pow(2, 255) + msg.val0);
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Negation didn't cause an integer overflow");
 
@@ -69,7 +69,7 @@ contract ComputePhaseErrorsTester {
             self.tmpI = pow(2, 255) * (msg.val1 + 1);
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Multiplication didn't cause an integer overflow");
 
@@ -78,7 +78,7 @@ contract ComputePhaseErrorsTester {
             self.tmpI = (-pow(2, 255) - pow(2, 255)) / (-msg.val1);
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Division didn't cause an integer overflow");
 
@@ -87,7 +87,7 @@ contract ComputePhaseErrorsTester {
             self.tmpI = 1 / msg.val0;
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Division by zero didn't cause an integer overflow");
 
@@ -96,7 +96,7 @@ contract ComputePhaseErrorsTester {
             self.tmpI = 1 % msg.val0;
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Modulo by zero didn't cause an integer overflow");
 
@@ -139,7 +139,7 @@ contract ComputePhaseErrorsTester {
                 .endCell();
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "1024 bits didn't cause the cell overflow");
 
@@ -154,7 +154,7 @@ contract ComputePhaseErrorsTester {
                 .endCell();
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "5 refs didn't cause the cell overflow");
 
@@ -174,7 +174,7 @@ contract ComputePhaseErrorsTester {
             self.tmpI = emptySlice().loadInt(1);
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Loading 1 bit from an empty Slice didn't cause the cell underflow");
 
@@ -183,7 +183,7 @@ contract ComputePhaseErrorsTester {
             self.tmpC = emptySlice().loadRef();
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Loading 1 ref from an empty Slice didn't cause the cell underflow");
 

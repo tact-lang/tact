@@ -153,6 +153,8 @@ Toncoins
 tonstudio
 Topup
 Trunov
+tactlang
+thetonstudio
 typechecker
 udict
 uintptr
@@ -174,3 +176,5 @@ xffff
 XMODEM
 xtwitter
 привет
+extracurrency
+nobounce

@@ -116,7 +116,7 @@ trait Jetton with Ownable {
 
     // Get Methods //
     get fun get_jetton_data(): JettonData {
-        let code: Cell = self.getJettonWalletInit(myAddress()).code;
+        let code: Cell = codeOf JettonDefaultWallet;
         return JettonData{ 
             totalSupply: self.totalSupply, 
             mintable: self.mintable, 
@@ -314,7 +314,7 @@ contract JettonDefaultWallet {
             balance: self.balance,
             owner: self.owner,
             master: self.master,
-            walletCode: (initOf JettonDefaultWallet(self.master, self.owner)).code
+            walletCode: codeOf JettonDefaultWallet,
         };
     }
 }

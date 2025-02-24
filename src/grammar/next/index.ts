@@ -255,6 +255,12 @@ const parseInitOf =
         );
     };
 
+const parseCodeOf =
+    ({ name, loc }: $ast.CodeOf): Handler<A.AstCodeOf> =>
+    (ctx) => {
+        return ctx.ast.CodeOf(parseId(name)(ctx), loc);
+    };
+
 const parseConditional =
     ({ head, tail, loc }: $ast.Conditional): Handler<A.AstExpression> =>
     (ctx) => {
@@ -393,6 +399,7 @@ type Expression =
     | $ast.IntegerLiteral
     | $ast.BoolLiteral
     | $ast.InitOf
+    | $ast.CodeOf
     | $ast.Null
     | $ast.StringLiteral
     | $ast.Id;
@@ -408,6 +415,7 @@ const parseExpression: (input: Expression) => Handler<A.AstExpression> =
         IntegerLiteral: parseIntegerLiteral,
         BoolLiteral: parseBoolLiteral,
         InitOf: parseInitOf,
+        CodeOf: parseCodeOf,
         Null: parseNull,
         StringLiteral: parseStringLiteral,
         Id: parseId,

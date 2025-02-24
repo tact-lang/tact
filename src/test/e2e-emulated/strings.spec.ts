@@ -88,6 +88,47 @@ describe("strings", () => {
             (2n ** 256n - 1n).toString(),
         );
 
+        function toFloatString(x: bigint, digits: number): string {
+            const sign = x < 0n ? "-" : "";
+            const xAbs = x < 0n ? -x : x;
+            const factor = 10n ** BigInt(digits);
+            const q = xAbs / factor;
+            const r = xAbs % factor;
+
+            if (r === 0n) {
+                return sign + q.toString();
+            } else {
+                // Pad r with leading zeros to ensure a length of `digits`
+                const fracStr = r
+                    .toString()
+                    .padStart(digits, "0")
+                    .replace(/0+$/, "");
+                if (fracStr === "") {
+                    return sign + q.toString();
+                } else {
+                    return sign + q.toString() + "." + fracStr;
+                }
+            }
+        }
+
+        for (let x = -100n; x < 100n; x++) {
+            for (let digits = 1; digits < 5; digits++) {
+                expect(
+                    await contract.getFloatToString(x, BigInt(digits)),
+                ).toEqual(toFloatString(x, digits));
+            }
+        }
+
+        await expect(
+            contract.getFloatToString(-(2n ** 256n), 2n),
+        ).rejects.toThrow(); // algorithm works with positive numbers so when negating -2^256 we get 2^256 which is out of range
+        await expect(contract.getFloatToString(123n, 0n)).rejects.toThrow(); // 0 digits is not allowed
+        await expect(contract.getFloatToString(123n, -1n)).rejects.toThrow(); // negative digits is not allowed
+        expect(await contract.getFloatToString(123n, 77n)).toEqual(
+            "0." + "0".repeat(74) + "123",
+        );
+        await expect(contract.getFloatToString(123n, 78n)).rejects.toThrow(); // >77 digits is not allowed
+
         expect(await contract.getStringWithFloat()).toEqual("9.5");
 
         const base = await contract.getBase64();

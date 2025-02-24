@@ -173,6 +173,10 @@ export function cloneNode<T extends AstNode>(
                 ...src,
                 args: src.args.map(recurse),
             });
+        } else if (src.kind === "code_of") {
+            return cloneNode({
+                ...src,
+            });
         } else if (src.kind === "constant_def") {
             return cloneNode({
                 ...src,
