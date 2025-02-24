@@ -92,7 +92,8 @@ export function writeNonBouncedRouter(
         typeof receivers.commentFallback === "undefined" &&
         typeof receivers.fallback === "undefined"
     ) {
-        wCtx.append(`var (op, _) = in_msg~load_uint_quiet(32);`);
+        wCtx.append(`var (op, is_loaded) = in_msg~load_uint_quiet(32);`);
+        wCtx.append(`throw_if(130, ~ is_loaded);`);
 
         writeBinaryReceivers(true);
 
