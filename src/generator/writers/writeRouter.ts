@@ -216,14 +216,18 @@ function writeCommentReceivers(
     ) => {
         const writeFallbackTextReceiverInternal = () => {
             wCtx.append(";; Fallback Text Receiver");
-            const inMsg = msgOpcodeRemoved ? "in_msg" : "in_msg.skip_bits(32)";
-            writeFallbackReceiver(
-                commentFallbackReceiver,
-                contract,
-                inMsg,
-                wCtx,
-            );
-            wCtx.append("return ();");
+            wCtx.inBlock("if (in_msg_length >= 32)", () => {
+                const inMsg = msgOpcodeRemoved
+                    ? "in_msg"
+                    : "in_msg.skip_bits(32)";
+                writeFallbackReceiver(
+                    commentFallbackReceiver,
+                    contract,
+                    inMsg,
+                    wCtx,
+                );
+                wCtx.append("return ();");
+            });
         };
 
         // We optimize fallback
