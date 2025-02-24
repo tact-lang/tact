@@ -29,20 +29,20 @@ import type {
     JettonTransfer,
     JettonUpdateContent,
 } from "../contracts/output/jetton_wallet_JettonWallet";
-import { join } from "path";
+import { resolve } from "path";
 import { readFileSync } from "fs";
 import { storeProvideWalletAddress } from "../contracts/output/escrow_Escrow";
 
 const loadFunCJettonsBoc = () => {
     const bocMinter = readFileSync(
-        join(
+        resolve(
             __dirname,
             "../contracts/func/output/jetton-minter-discoverable.boc",
         ),
     );
 
     const bocWallet = readFileSync(
-        join(__dirname, "../contracts/func/output/jetton-wallet.boc"),
+        resolve(__dirname, "../contracts/func/output/jetton-wallet.boc"),
     );
 
     return { bocMinter, bocWallet };
