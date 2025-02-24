@@ -363,9 +363,6 @@ contract EmptyAndSliceReceiverTester {
         self.receiver = "external_empty";
     }
 
-    // Currently, we cannot implement external fallback receivers
-    // See issue https://github.com/tact-lang/tact/issues/1669
-
     external(msg: Slice) {
        acceptMessage();
        self.receiver = "external_fallback";
