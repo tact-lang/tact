@@ -37,15 +37,18 @@ native throw(code: Int);
 /// Attempts to specify the `code` outside of 0-65535 range cause an exception with exit code 5: `Integer out of expected range`.
 ///
 /// ```tact
-/// fun thisWillTerminateAbruptly() {
-///     throwIf(1042, true); // throwing with exit code 1042
-/// }
+/// contract Ownership {
+///     owner: Address;
 ///
-/// fun butThisWont() {
-///     try {
-///         throwIf(1042, true); // throwing with exit code 1042
+///     init() {
+///         self.owner = myAddress();
 ///     }
-///     // ... follow-up logic ...
+///
+///     receive() {
+///         // Check the sender is the owner of the contract,
+///         // and throw exit code 1024 if it's not
+///         throwIf(1024, sender() != self.owner);
+///     }
 /// }
 /// ```
 ///
@@ -65,15 +68,18 @@ native throwIf(code: Int, condition: Bool);
 /// Attempts to specify the `code` outside of 0-65535 range cause an exception with exit code 5: `Integer out of expected range`.
 ///
 /// ```tact
-/// fun thisWillTerminateAbruptly() {
-///     throwUnless(1042, false); // throwing with exit code 1042
-/// }
+/// contract Ownership {
+///     owner: Address;
 ///
-/// fun butThisWont() {
-///     try {
-///         throwUnless(1042, false); // throwing with exit code 1042
+///     init() {
+///         self.owner = myAddress();
 ///     }
-///     // ... follow-up logic ...
+///
+///     receive() {
+///         // Check the sender is the owner of the contract,
+///         // and throw exit code 1024 if it's not
+///         throwUnless(1024, sender() == self.owner);
+///     }
 /// }
 /// ```
 ///
