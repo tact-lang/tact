@@ -185,5 +185,4 @@ asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 
 asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 
-@name(__tact_store_address)
-extends native storeAddress(self: Builder, address: Address): Builder;
+asm extends fun storeAddress(self: Builder, address: Address): Builder { STSLICER }

@@ -69,6 +69,16 @@
         "cancelTon": "8454"
       },
       "pr": "https://github.com/tact-lang/tact/pull/1934"
+    },
+    {
+      "label": "1.5.3 with inlined router",
+      "gas": {
+        "fundingTon": "6236",
+        "changeCode": "5474",
+        "approveTon": "11014",
+        "cancelTon": "8637"
+      },
+      "pr": "https://github.com/tact-lang/tact/pull/1968"
     }
   ]
 }

@@ -259,10 +259,7 @@ export function writeExpression(
             lt.name === "Address" &&
             rt.name === "Address"
         ) {
-            let prefix = "";
-            if (f.op == "!=") {
-                prefix = "~ ";
-            }
+            const prefix = f.op == "!=" ? "~ " : "";
             if (lt.optional && rt.optional) {
                 wCtx.used(`__tact_slice_eq_bits_nullable`);
                 return `( ${prefix}__tact_slice_eq_bits_nullable(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
@@ -275,8 +272,7 @@ export function writeExpression(
                 wCtx.used(`__tact_slice_eq_bits_nullable_one`);
                 return `( ${prefix}__tact_slice_eq_bits_nullable_one(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)}) )`;
             }
-            wCtx.used(`__tact_slice_eq_bits`);
-            return `( ${prefix}__tact_slice_eq_bits(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)}) )`;
+            return `( ${prefix}equal_slices_bits(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)}) )`;
         }
 
         // Case for cells equality
