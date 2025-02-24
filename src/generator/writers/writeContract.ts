@@ -266,7 +266,7 @@ export function writeMainContract(
         wCtx.append(`;;`);
         wCtx.append(`;; Get methods of a Contract ${contract.name}`);
         wCtx.append(`;;`);
-        wCtx.append(``);
+        wCtx.append();
 
         // Getters
         for (const f of contract.functions.values()) {
@@ -303,7 +303,7 @@ export function writeMainContract(
         wCtx.append(`;;`);
         wCtx.append(`;; Routing of a Contract ${contract.name}`);
         wCtx.append(`;;`);
-        wCtx.append(``);
+        wCtx.append();
 
         const contractReceivers = groupContractReceivers(contract);
 

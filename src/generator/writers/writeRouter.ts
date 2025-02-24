@@ -201,13 +201,6 @@ function writeBinaryReceiver(
 
         writeStoreContractVariables(contract, wCtx);
         wCtx.append("return ();");
-        // if (
-        //     binaryReceiver.ast.statements.length === 0 ||
-        //     binaryReceiver.ast.statements[binaryReceiver.ast.statements.length - 1]!.kind !==
-        //         "statement_return"
-        // ) {
-        //     wCtx.append("return ());");
-        // }
     });
 }
 
@@ -496,9 +489,10 @@ function writeBouncedReceiver(
             selector.bounced,
         );
 
-        wCtx.append(
-            `var ${msgFields} = in_msg~${selector.bounced ? ops.readerBounced(selector.type, wCtx) : ops.reader(selector.type, "no-opcode", wCtx)}();`,
-        );
+        const msgReader = selector.bounced
+            ? ops.readerBounced(selector.type, wCtx)
+            : ops.reader(selector.type, "no-opcode", wCtx);
+        wCtx.append(`var ${msgFields} = in_msg~${msgReader}();`);
 
         for (const stmt of bouncedReceiver.ast.statements) {
             writeStatement(stmt, null, null, wCtx);
