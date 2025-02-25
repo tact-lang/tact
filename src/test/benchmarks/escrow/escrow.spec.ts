@@ -148,8 +148,7 @@ describe("Escrow Gas Tests", () => {
                 value: toNano("0.1"),
             },
             {
-                $$type: "Deploy",
-                queryId: 0n,
+                $$type: "ProvideEscrowData",
             },
         );
 

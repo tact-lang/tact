@@ -1,4 +1,3 @@
-import "@stdlib/deploy";
 import "./messages";
 
 fun calculateJettonWalletAddress(owner: Address, master: Address, code: Cell): Address {
@@ -30,7 +29,7 @@ struct EscrowData {
     buyerAddress: Address?; // null if not funded, set after funding
 }
 
-contract Escrow with Deployable {
+contract Escrow {
     id: Int as uint32;
     sellerAddress: Address;
     guarantorAddress: Address;
@@ -170,7 +169,19 @@ contract Escrow with Deployable {
 
     // on-chain data access, could be useful to guarantor contract
     receive(_: ProvideEscrowData) {
-        self.reply(TakeEscrowData{escrowData: self.escrowInfo()}.toCell());
+        self.reply(TakeEscrowData{
+                escrowData: EscrowData {
+                    id: self.id,
+                    sellerAddress: self.sellerAddress,
+                    guarantorAddress: self.guarantorAddress,
+                    dealAmount: self.dealAmount,
+                    guarantorRoyaltyPercent: self.guarantorRoyaltyPercent,
+                    isFunded: self.isFunded,
+                    assetAddress: self.assetAddress,
+                    jettonWalletCode: self.jettonWalletCode,
+                    buyerAddress: self.buyerAddress
+                }
+            }.toCell());
     }
 
     get fun calculateRoyaltyAmount(): Int {
@@ -189,18 +200,7 @@ contract Escrow with Deployable {
         return calculateJettonWalletAddress(myAddress(), self.assetAddress!!, self.jettonWalletCode!!);
     }
 
-    get fun escrowInfo(): EscrowData {
-        return
-            EscrowData{
-                id: self.id,
-                sellerAddress: self.sellerAddress,
-                guarantorAddress: self.guarantorAddress,
-                dealAmount: self.dealAmount,
-                guarantorRoyaltyPercent: self.guarantorRoyaltyPercent,
-                isFunded: self.isFunded,
-                assetAddress: self.assetAddress,
-                jettonWalletCode: self.jettonWalletCode,
-                buyerAddress: self.buyerAddress
-            };
+    get fun escrowInfo(): Escrow {
+        return self;
     }
 }
