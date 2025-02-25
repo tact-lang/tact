@@ -88,6 +88,10 @@ struct SendParameters {
     bounce: Bool = true;
 }
 
+/// Struct for specifying the message parameters of the `message()` function. Available since Tact 1.6.0.
+///
+/// See: https://docs.tact-lang.org/ref/core-common#message
+///
 struct MessageParameters {
     /// An 8-bit value that configures how to send a message, defaults to 0.
     /// See: https://docs.tact-lang.org/book/message-mode
@@ -95,6 +99,7 @@ struct MessageParameters {
 
     /// Optional message body as a `Cell`.
     body: Cell? = null;
+
     /// The amount of nanoToncoins you want to send with
     /// the message. This value is used to cover forward fees,
     /// unless the optional flag `SendPayGasSeparately` is used.
@@ -108,6 +113,28 @@ struct MessageParameters {
     bounce: Bool = true;
 }
 
+/// Global function. Available since Tact 1.6.0.
+///
+/// Queues the message to be sent using the `MessageParameters` Struct. Allows for cheaper non-deployment, regular messages compared to the `send()` function.
+///
+/// The `MessageParameters` Struct is similar to `SendParameters` Struct, but without the `body` and `code` fields.
+///
+/// Attempts to queue more than 255 messages throw an exception with an exit code 33: `Action list is too long`.
+///
+/// ```tact
+/// fun example() {
+///     message(MessageParameters{
+///         to: sender(),    // back to the sender,
+///         value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
+///                          // and no message body
+///     });
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-common#message
+/// * https://docs.tact-lang.org/book/message-mode
+///
 asm fun message(params: MessageParameters) {
     NEWC
     b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
