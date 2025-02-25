@@ -179,6 +179,15 @@
         "discovery": "8288"
       },
       "pr": "https://github.com/tact-lang/tact/pull/1907"
+    },
+    {
+      "label": "1.5.3 with optimized Address",
+      "gas": {
+        "transfer": "17696",
+        "burn": "13544",
+        "discovery": "7729"
+      },
+      "pr": "TODO"
     }
   ]
 }

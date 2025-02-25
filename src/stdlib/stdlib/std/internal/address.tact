@@ -115,6 +115,8 @@ inline fun newAddress(chain: Int, hash: Int): Address {
         .asAddressUnsafe();
 }
 
+asm fun addressNone(): Address { b{00} PUSHSLICE }
+
 /// Struct representing the standard address on TON Blockchain with signed 8-bit `workchain` ID and an unsigned 256-bit `address` in the specified `workchain`. Available since Tact 1.5.0.
 ///
 /// At the moment, only `workchain` IDs used on TON are 0 of the basechain and -1 of the masterchain.
@@ -186,3 +188,28 @@ asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 
 asm extends fun storeAddress(self: Builder, address: Address): Builder { STSLICER }
+
+struct MasterchainAddress {
+    hash: Int;
+}
+
+fun emptyMasterchainAddress(): MasterchainAddress { return MasterchainAddress{ hash: 0 } }
+
+inline fun newMasterchainAddress(hash: Int): MasterchainAddress {
+    return MasterchainAddress{ hash }
+}
+
+inline fun contractMasterchainAddress(s: StateInit): MasterchainAddress {
+    let hash = contractHash(s.code, s.data);
+    return newMasterchainAddress(hash);
+}
+
+extends fun storeMasterchainAddress(self: Builder, address: MasterchainAddress): Builder {
+    if (address.hash == 0) {
+        return self.storeUint(0, 2); // 0b00
+    }
+
+    return self
+        .storeUint(0b10_0_00000000, 3 + 8)
+        .storeUint(address.hash, 256);
+}
