@@ -1,5 +1,5 @@
 import "@stdlib/deploy";
-import "./upgradable";
+import "./upgradeable";
 
 message Add {
     amount: Int as uint32;
