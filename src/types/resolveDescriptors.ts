@@ -2109,8 +2109,12 @@ export function getType(
     const name = typeof ident === "string" ? ident : idText(ident);
     const r = store.get(ctx, name);
     if (!r) {
-        if (loc) {
-            throwCompilationError(`Type ${idTextErr(name)} not found`, loc);
+        const errorLoc = typeof ident === "string" ? loc : ident.loc;
+        if (errorLoc) {
+            throwCompilationError(
+                `Type ${idTextErr(name)} not found`,
+                errorLoc,
+            );
         }
         throwInternalCompilerError(`Type ${idTextErr(name)} not found`);
     }
