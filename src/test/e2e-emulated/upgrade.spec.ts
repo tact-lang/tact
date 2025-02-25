@@ -154,7 +154,6 @@ describe("upgrade", () => {
                 $$type: "Upgrade",
                 code: init.code,
                 data: init.data,
-                timeout: 0n,
             },
         );
     }
