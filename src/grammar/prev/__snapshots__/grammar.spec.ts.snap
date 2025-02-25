@@ -201,6 +201,15 @@ exports[`grammar should fail expr-method-call-trailing-comma-no-args 1`] = `
 "
 `;
 
+exports[`grammar should fail extends-asm-fun-error 1`] = `
+"<unknown>:1:9: Expected "fun", "abstract", "inline", "override", "virtual", "extends", "mutates", or "get"
+
+> 1 | extends asm fun readForwardFee(self: Context): Int {
+              ^
+  2 |     LDMSGADDR
+"
+`;
+
 exports[`grammar should fail funcid-native-fun-arith-operator 1`] = `
 "<unknown>:1:7: Expected not a funcInvalidId or "\`"
 

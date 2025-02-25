@@ -88,6 +88,16 @@ export const syntaxErrorSchema = <T, U>(
             return handle(sub`Only full function definitions are allowed here`);
         },
         expected: (expects: ReadonlySet<string>) => {
+            if (
+                expects.has('"fun"') &&
+                [...expects].some((e) => e === '"asm"' || e === '"extends"')
+            ) {
+                return handle(
+                    text(
+                        `Expected ${getExpectedText(expects)}. Maybe you meant: "asm extends fun" instead of "extends asm fun"?`,
+                    ),
+                );
+            }
             return handle(text(`Expected ${getExpectedText(expects)}`));
         },
         invalidFuncId: () => {

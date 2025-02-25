@@ -161,7 +161,7 @@ exports[`grammar should fail contract-trailing-comma-empty-traits-list 1`] = `
 `;
 
 exports[`grammar should fail contract-with-imports 1`] = `
-"<unknown>:6:1: Expected "@interface", "@name", "abstract", "asm", "const", "contract", "extends", "fun", "get", "inline", "message", "mutates", "override", "primitive", "struct", "trait", or "virtual"
+"<unknown>:6:1: Expected "@interface", "@name", "abstract", "asm", "const", "contract", "extends", "fun", "get", "inline", "message", "mutates", "override", "primitive", "struct", "trait", or "virtual". Maybe you meant: "asm extends fun" instead of "extends asm fun"?
   5 | // all imports must be at the very top of the file
 > 6 | import "@stdlib/not-allowed";
       ^
@@ -193,6 +193,14 @@ exports[`grammar should fail expr-method-call-trailing-comma-no-args 1`] = `
 > 2 |     return 42.toString(,);
                              ^
   3 | }
+"
+`;
+
+exports[`grammar should fail extends-asm-fun-error 1`] = `
+"<unknown>:1:9: Expected "abstract", "extends", "fun", "get", "inline", "mutates", "override", or "virtual". Maybe you meant: "asm extends fun" instead of "extends asm fun"?
+> 1 | extends asm fun readForwardFee(self: Context): Int {
+              ^
+  2 |     LDMSGADDR
 "
 `;
 
@@ -545,7 +553,7 @@ exports[`grammar should fail items-asm-fun-4 1`] = `
 `;
 
 exports[`grammar should fail items-asm-fun-5 1`] = `
-"<unknown>:3:5: Expected "@interface", "@name", "abstract", "asm", "const", "contract", "extends", "fun", "get", "inline", "message", "mutates", "override", "primitive", "struct", "trait", or "virtual"
+"<unknown>:3:5: Expected "@interface", "@name", "abstract", "asm", "const", "contract", "extends", "fun", "get", "inline", "message", "mutates", "override", "primitive", "struct", "trait", or "virtual". Maybe you meant: "asm extends fun" instead of "extends asm fun"?
   2 |     { INC } : }
 > 3 |     5 }
           ^
