@@ -15,7 +15,7 @@ message TakeEscrowData {
 message(0x9451eca9) Funding {}
 message(0xe8c15681) Approve {}
 message(0xcc0f2526) Cancel {}
-message ProvideEscrowData {}
+message(0xc33b3126) ProvideEscrowData {}
 
 struct EscrowData {
     id: Int as uint32; // contract address salt

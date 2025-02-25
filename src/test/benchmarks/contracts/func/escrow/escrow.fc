@@ -27,6 +27,7 @@ const op::cancel = "op::cancel"c;
 const op::buyer_transfer = "op::buyer_transfer"c;
 const op::top_up = "op::top_up"c;
 const op::change_wallet_code = "op::change_wallet_code"c;
+const op::provide_escrow_data = "op::provide_escrow_data"c;
 
 const royalties_constant = 1000; ;; for floating point royalties (up to 3 digits)
 ;; gas consumption constants (could be further optimized)
@@ -305,6 +306,17 @@ int calculate_guarantor_royalty() inline {
 -}
 
     if (op == op::top_up) {
+        return ();
+    }
+
+    if (op == op::provide_escrow_data) {
+        send_raw_message(begin_cell()
+            .store_uint(0x18, 6)
+            .store_slice(sender_address) ;; recipient address
+            .store_coins(send_fee)
+            .store_uint(1, 107)
+            .store_ref(get_data())
+            .end_cell(), 1);
         return ();
     }
 
