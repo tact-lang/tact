@@ -109,6 +109,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Generation of the fallback receiver for external messages: PR [#1926](https://github.com/tact-lang/tact/pull/1926)
 - Runtime calls to `sha256()` now work for arbitrary slices with length >= 128: PR [#1936](https://github.com/tact-lang/tact/pull/1936)
 - Better error messages for empty `bounced()` and `bounced("string")`: PR [#1998](https://github.com/tact-lang/tact/pull/1998)
+- Contract data types in compilation reports are now generated correctly: PR [#2004](https://github.com/tact-lang/tact/pull/2004)
 
 ### Docs
 
