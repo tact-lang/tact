@@ -186,6 +186,21 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
             throwInternalCompilerError(`Unsupported type: ${name}`);
         }
 
+        for (const field of t.fields) {
+            const type = field.type;
+            if (type.kind !== "ref") {
+                continue;
+            }
+
+            const t = getType(ctx, type.name);
+            if (t.kind === "contract") {
+                throwCompilationError(
+                    `Fields with a contract type are not supported yet`,
+                    field.loc,
+                );
+            }
+        }
+
         // Check for no "as remaining" in the middle of the struct or contract
         for (const field of t.fields.slice(0, -1)) {
             if (field.as === "remaining") {
