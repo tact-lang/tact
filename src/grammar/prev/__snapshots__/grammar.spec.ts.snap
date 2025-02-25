@@ -184,13 +184,17 @@ exports[`grammar should fail destructuring-duplicate-source-id 1`] = `
 `;
 
 exports[`grammar should fail empty-bounced-receiver 1`] = `
-"<unknown>:2:13: Expected "_", "A".."Z", or "a".."z"
-
-  1 | contract Test {
-> 2 |     bounced() {}
-                  ^
-  3 | }
-"
+"Missing semantic action for '_iter' in operation 'astOfDeclaration'.
+NOTE: as of Ohm v16, there is no default action for iteration nodes — see 
+  https://ohmjs.org/d/dsa for details.
+Action stack (most recent call last):
+  astOfModule > Module
+  astOfModuleItem > default action for 'ModuleItem'
+  astOfModuleItem > Contract
+  astOfItem > default action for 'ContractItemDecl'
+  astOfItem > default action for 'Receiver'
+  astOfItem > Receiver_bounced
+  astOfDeclaration > _iter"
 `;
 
 exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
@@ -672,7 +676,7 @@ exports[`grammar should fail literal-underscore-after-leading-zero 1`] = `
 `;
 
 exports[`grammar should fail string-bounced-receiver 1`] = `
-"<unknown>:2:13: Expected "_", "A".."Z", or "a".."z"
+"<unknown>:2:13: Expected ")"
 
   1 | contract Test {
 > 2 |     bounced("hello") {}

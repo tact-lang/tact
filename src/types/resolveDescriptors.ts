@@ -41,6 +41,7 @@ import type { AstUtil } from "../ast/util";
 import { getAstUtil } from "../ast/util";
 import type { ItemOrigin } from "../imports/source";
 import { isUndefined } from "../utils/array";
+import type { SrcInfo } from "../grammar";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -136,7 +137,7 @@ export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
 export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
     switch (type.kind) {
         case "type_id": {
-            const t = getType(ctx, idText(type));
+            const t = getType(ctx, idText(type), type.loc);
             return {
                 kind: "ref",
                 name: t.name,
@@ -150,7 +151,7 @@ export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
                     type.typeArg.loc,
                 );
             }
-            const t = getType(ctx, idText(type.typeArg));
+            const t = getType(ctx, idText(type.typeArg), type.typeArg.loc);
             return {
                 kind: "ref",
                 name: t.name,
@@ -158,8 +159,12 @@ export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
             };
         }
         case "map_type": {
-            const keyTy = getType(ctx, idText(type.keyType));
-            const valTy = getType(ctx, idText(type.valueType));
+            const keyTy = getType(ctx, idText(type.keyType), type.keyType.loc);
+            const valTy = getType(
+                ctx,
+                idText(type.valueType),
+                type.valueType.loc,
+            );
             verifyMapType(type, valTy.kind === "struct");
             return {
                 kind: "map",
@@ -176,7 +181,11 @@ export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
             };
         }
         case "bounced_message_type": {
-            const t = getType(ctx, idText(type.messageType));
+            const t = getType(
+                ctx,
+                idText(type.messageType),
+                type.messageType.loc,
+            );
             return {
                 kind: "ref_bounced",
                 name: t.name,
@@ -2095,11 +2104,15 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 export function getType(
     ctx: CompilerContext,
     ident: A.AstId | A.AstTypeId | string,
+    loc?: SrcInfo,
 ): TypeDescription {
     const name = typeof ident === "string" ? ident : idText(ident);
     const r = store.get(ctx, name);
     if (!r) {
-        throwInternalCompilerError(`Type ${name} not found`);
+        if (loc) {
+            throwCompilationError(`Type ${idTextErr(name)} not found`, loc);
+        }
+        throwInternalCompilerError(`Type ${idTextErr(name)} not found`);
     }
     return r;
 }
