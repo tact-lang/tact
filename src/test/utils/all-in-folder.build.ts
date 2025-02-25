@@ -116,8 +116,13 @@ const runFuncBuild = async (folder: string, globs: string[]) => {
                 include,
             );
 
+            // we need this weird path hacks to make func compiler path resolution work
+            const funcCompilerCompatibleInputPath = posixNormalize(
+                `${project.resolve(dirname(contractInfo.path))}/${include}`,
+            );
+
             includePaths.push({
-                path: posixNormalize(includePath),
+                path: funcCompilerCompatibleInputPath,
                 content: project.readFile(includePath).toString(),
             });
         }

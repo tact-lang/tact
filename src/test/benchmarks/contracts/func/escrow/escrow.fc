@@ -1,0 +1,350 @@
+#include "../jetton/params.fc";
+#include "../jetton/jetton-utils.fc";
+#include "../jetton/op-codes.fc";
+
+;; Escrow Smart Contract with TON/Jetton payments
+
+{-
+
+params: guarantor_address, deal_amount, guarantor_fee_percent, asset_address, seller_address
+
+messages:
+    buyer:
+        - send funds (ton/jetton)
+    guarantor:
+        - approve
+        - cancel
+    anyone:
+        - top up
+
+flow:
+seller::deploy -> buyer::send_funds -> guarantor::approve/cancel -> send funds to seller + royalties or refund
+
+-}
+
+const op::approve = "op::approve"c;
+const op::cancel = "op::cancel"c; 
+const op::buyer_transfer = "op::buyer_transfer"c;
+const op::top_up = "op::top_up"c;
+const op::change_wallet_code = "op::change_wallet_code"c;
+const op::provide_escrow_data = "op::provide_escrow_data"c;
+
+const royalties_constant = 1000; ;; for floating point royalties (up to 3 digits)
+;; gas consumption constants (could be further optimized)
+const int fee_per_jetton = 50000000; ;; 0.05 ton
+const int send_fee = 15000000; ;; 0.015 TON
+
+global int ctx_id; ;; for address salt
+global slice seller_address;
+global slice guarantor_address;
+global int deal_amount;
+global slice asset_address; ;; null slice to represent ton, minter jetton address otherwise
+global int guarantor_royalty_percent; ;; see calculate_guarantor_royalty
+global slice buyer_address; ;; initially null, set after funding
+global int state; ;; 0 - init, 1 - funded
+global cell jetton_wallet_code;
+
+{-
+  Storage
+  storage#_ ctx_id:uint32 seller_address:MsgAddressInt guarantor_address:MsgAddressInt deal_amount:uint64 asset_address:^Cell
+            guarantor_royalty_percent:uint32 buyer_address:(Maybe ^MsgAddressInt)
+            state:uint2 jetton_wallet_code:(Maybe ^Cell) = Storage;
+            
+-}
+
+() load_data() impure {
+    slice ds = get_data().begin_parse();
+
+    ctx_id = ds~load_uint(32);
+    seller_address = ds~load_msg_addr();
+    guarantor_address = ds~load_msg_addr();
+    deal_amount = ds~load_uint(64);
+
+    if (ds.preload_uint(2) != 0) {
+        asset_address = ds~load_msg_addr();
+    } else {
+        ds~skip_bits(2);
+        asset_address = null();
+    }
+
+    slice ds2 = ds~load_ref().begin_parse();
+    guarantor_royalty_percent = ds2~load_uint(32);
+    buyer_address = ds2~load_msg_addr();
+    state = ds2~load_uint(2);
+    jetton_wallet_code = ds2~load_maybe_ref();
+}
+
+() save_data() impure inline {
+    builder b = begin_cell()
+                    .store_uint(ctx_id, 32)
+                    .store_slice(seller_address)
+                    .store_slice(guarantor_address)
+                    .store_uint(deal_amount, 64);
+
+    if (null?(asset_address)) {
+        b = b.store_uint(0, 2);
+    } else {
+        b = b.store_slice(asset_address);
+    }
+
+    cell b2 = begin_cell()
+                    .store_uint(guarantor_royalty_percent, 32)
+                    .store_slice(buyer_address)
+                    .store_uint(state, 2)
+                    .store_maybe_ref(jetton_wallet_code)
+                .end_cell();
+
+    set_data(b.store_ref(b2)
+            .end_cell()
+    );
+}
+
+int calculate_guarantor_royalty() inline {
+    ;; use royalties_constant (set to 1_000) to represent
+    ;; floating point percents less than 1%
+    ;; e.g. 0,05% actual royalty would be 50 in state_init
+    int percent = guarantor_royalty_percent;
+
+    ;; max royalty percent is 90%
+    if (percent > 90000) {
+        percent = 90000;
+    }
+
+    return deal_amount / (100 * royalties_constant) * percent;
+}
+
+() send_tokens(slice recipient, int amount, int mode) impure {
+    slice escrow_jetton_wallet = calculate_user_jetton_wallet_address(my_address(), asset_address, jetton_wallet_code);
+
+    send_raw_message(begin_cell()
+        .store_uint(0x18, 6)
+        .store_slice(escrow_jetton_wallet) ;; recipient address
+        .store_coins(fee_per_jetton)
+        .store_uint(1, 107)
+        .store_ref(begin_cell()
+            .store_uint(op::transfer(), 32)
+            .store_uint(0, 64) ;;query id
+            .store_coins(amount)
+            .store_slice(recipient)
+            .store_slice(recipient)
+            .store_uint(0, 1)
+            .store_coins(0)
+            .store_uint(0, 1)
+            .end_cell())
+        .end_cell(), mode);
+}
+
+() handle_approve_ton() impure {
+    int royalty = calculate_guarantor_royalty();
+
+    [int balance, _] = get_balance();
+    throw_unless(404, balance > (deal_amount + 2 * send_fee)); ;; check balance for both fees, so we don't abort after first
+
+    cell msg = begin_cell()
+                  .store_uint(0x10, 6) ;; no bounceable messages
+                  .store_slice(seller_address)
+                  .store_coins(deal_amount - royalty)
+                  .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .end_cell();
+
+    send_raw_message(msg, 1); ;; pays transfer fees separately
+
+    cell royalty_msg = begin_cell()
+                          .store_uint(0x10, 6) ;; no bounceable messages
+                          .store_slice(guarantor_address)
+                          .store_coins(0)
+                          .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                       .end_cell();
+
+    send_raw_message(royalty_msg, 128 + 32); ;; send the remaining balance of contract, destroy
+}
+
+() handle_approve_jetton() impure {
+    int royalty = calculate_guarantor_royalty();
+
+    [int balance, _] = get_balance();
+    throw_unless(404, balance > (2 * fee_per_jetton));
+
+    send_tokens(seller_address, deal_amount - royalty, 1);
+    send_tokens(guarantor_address, royalty, 128 + 32);
+}
+
+() handle_cancel_ton() impure {
+    ;; it's up to business logic whether guarantor should receive
+    ;; royalty in case of cancelled deal, in this implementation he will not
+
+    cell msg = begin_cell()
+                    .store_uint(0x10, 6) ;; no bounceable messages
+                    .store_slice(buyer_address)
+                    .store_coins(0)
+                    .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .end_cell();
+
+    send_raw_message(msg, 128 + 32); ;; refund to buyer & send all remaining, destroy
+}
+
+() handle_cancel_jetton() impure {
+    send_tokens(buyer_address, deal_amount, 128 + 32);
+}
+
+() recv_internal(int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    if (in_msg_body.slice_empty?()) { ;; ignore empty messages
+        return ();
+    }
+    slice cs = in_msg_full.begin_parse();
+    int flags = cs~load_uint(4);
+
+    if (flags & 1) { ;; ignore all bounced messages
+
+        return ();
+    }
+
+    slice sender_address = cs~load_msg_addr();
+    load_data();
+
+    int op = in_msg_body~load_uint(32);
+
+{-
+    buyer_transfer#9451eca9 = BuyerTransfer;
+-}
+    if (op == op::buyer_transfer) {
+        throw_unless(400, state == 0);
+        throw_unless(400, null?(asset_address));
+        throw_unless(401, msg_value == deal_amount);
+
+        state = 1;
+        buyer_address = sender_address;
+        ;; seller can be same as buyer, allow it
+        save_data();
+
+        return ();
+    }
+
+{-
+  In compliance with https://github.com/ton-blockchain/TIPs/issues/74
+
+  transfer_notification#7362d09c query_id:uint64 amount:(VarUInteger 16) 
+                                 sender:MsgAddress forward_payload:(Either Cell ^Cell)
+                                 = InternalMsgBody;
+-}
+
+    if (op == op::transfer_notification()) {
+        throw_unless(400, state == 0);
+        throw_unless(400, (~ null?(asset_address)));
+
+        in_msg_body~load_uint(64); ;; skip query id
+        int jetton_amount = in_msg_body~load_coins();
+        slice from_address = in_msg_body~load_msg_addr();
+        ;; verify escrow jetton wallet
+        throw_unless(402,
+            equal_slices_bits(
+                calculate_user_jetton_wallet_address(my_address(), asset_address, jetton_wallet_code), 
+                sender_address
+            )
+        );
+
+        throw_unless(401, jetton_amount == deal_amount);
+
+        state = 1;
+        buyer_address = from_address;
+        save_data();
+
+        return ();
+    }
+
+{-
+    approve#e8c15681 = Approve;
+-}
+    if (op == op::approve) {
+        throw_unless(403, (state == 1));
+        throw_unless(403, equal_slices_bits(sender_address, guarantor_address));
+
+        ;; send funds to seller, royalties to guarantor
+        if (null?(asset_address)) {
+            handle_approve_ton();
+        } else {
+            handle_approve_jetton();
+        }
+
+        return ();
+    }
+
+{-
+    cancel#cc0f2526 = Cancel;
+-}
+    if (op == op::cancel) {
+        throw_unless(403, state == 1);
+        throw_unless(403, equal_slices_bits(sender_address, guarantor_address));
+
+        ;; refund buyer
+        if (null?(asset_address)) {
+            handle_cancel_ton();
+        } else {
+            handle_cancel_jetton();
+        }
+
+        return ();
+    }
+
+{-
+    change_wallet_code#9eacde91 new_jetton_wallet_code:^Cell = ChangeWalletCode;
+-}
+
+    if (op == op::change_wallet_code) {
+        throw_unless(400, state == 0 & (~ null?(asset_address)));
+        throw_unless(403, equal_slices_bits(sender_address, seller_address)); ;; only seller can change wallet code
+
+        cell new_jetton_wallet_code = in_msg_body~load_ref();
+        jetton_wallet_code = new_jetton_wallet_code;
+        save_data();
+
+        return ();
+    }
+
+{-
+    top_up#ae98db22 = TopUp;
+-}
+
+    if (op == op::top_up) {
+        return ();
+    }
+
+    if (op == op::provide_escrow_data) {
+        send_raw_message(begin_cell()
+            .store_uint(0x18, 6)
+            .store_slice(sender_address) ;; recipient address
+            .store_coins(send_fee)
+            .store_uint(1, 107)
+            .store_ref(get_data())
+            .end_cell(), 1);
+        return ();
+    }
+
+    throw(0xffff);
+}
+
+int get_state() method_id {
+    load_data();
+    return state;
+}
+
+int get_guarantor_royalty() method_id {
+    load_data();
+    return calculate_guarantor_royalty();
+}
+
+(int, slice, slice, int, slice, int, slice, int, cell) get_escrow_data() method_id {
+    load_data();
+
+    return (
+        ctx_id,
+        seller_address,
+        guarantor_address,
+        deal_amount,
+        asset_address,
+        guarantor_royalty_percent,
+        buyer_address,
+        state,
+        jetton_wallet_code
+    );
+}
