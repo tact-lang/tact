@@ -182,15 +182,19 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
             return signatures.get(name)!;
         }
         const t = getType(ctx, name);
-        if (t.kind !== "struct") {
+        if (t.kind !== "struct" && t.kind !== "contract") {
             throwInternalCompilerError(`Unsupported type: ${name}`);
         }
 
-        // Check for no "as remaining" in the middle of the struct
+        // Check for no "as remaining" in the middle of the struct or contract
         for (const field of t.fields.slice(0, -1)) {
             if (field.as === "remaining") {
                 const kind =
-                    t.ast.kind === "message_decl" ? "message" : "struct";
+                    t.ast.kind === "message_decl"
+                        ? "message"
+                        : t.ast.kind === "contract"
+                          ? "contract"
+                          : "struct";
                 throwCompilationError(
                     `The "as remaining" field can only be the last field of the ${kind}`,
                     field.loc,
@@ -267,7 +271,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
     }
 
     getAllTypes(ctx).forEach((t) => {
-        if (t.kind === "struct") {
+        if (t.kind === "struct" || t.kind === "contract") {
             const r = createTupleSignature(t.name);
             t.tlb = r.tlb;
             t.signature = r.signature;

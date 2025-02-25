@@ -18,16 +18,16 @@
   ],
   "dictionaries": ["main-list", "fift-words", "tvm-instructions"],
   "ignoreRegExpList": [
-    "\\(#.*\\)",
-    "^\\[.+\\]: .+",       // link declarations like [foo]: /ref/stdlib-ownable#bar
-    "\\[.+\\]\\[.+\\]",    // links like [`Resumable{:tact}`][res]
-    "\\[.+\\]\\(.+\\)",    // links like [`self.toCell().asSlice(){:tact}`](/ref/core-cells#cellasslice)
-    "\\b(?:address|crc32|cell|slice|rawSlice)\\(\".+\"\\)", // Comptime functions
-    "mathrm\\{.+\\}",      // LaTeX subset
-    "\\[#.+\\]",           // [#nativereserve-combining-modes-with-flags]
-    "\\{#.+\\}",           // {#some-other-custom-heading-link}
-    "href=\".+\"",         // href="/cookbook/dexes/stonfi"
-    "\".+\": \".+\"",      // "from": "kQBrSAP2y7QIUw4_1q0qciHfqdFmOYR9CC1oinn7kyWWRuoV"
+    "\\(#.*?\\)",
+    "^\\[.+?\\]: .+$",       // link declarations like [foo]: /ref/stdlib-ownable#bar
+    "\\[.+?\\]\\[.+?\\]",    // links like [`Resumable{:tact}`][res]
+    "\\[.+?\\]\\(.+?\\)",    // links like [`self.toCell().asSlice(){:tact}`](/ref/core-cells#cellasslice)
+    "\\b(?:address|crc32|cell|slice|rawSlice)\\(\".+?\"\\)", // Comptime functions
+    "mathrm\\{.+?\\}",      // LaTeX subset
+    "\\[#.+?\\]",           // [#nativereserve-combining-modes-with-flags]
+    "\\{#.+?\\}",           // {#some-other-custom-heading-link}
+    "href=\".+?\"",         // href="/cookbook/dexes/stonfi"
+    "\".+?\": \".+?\"",      // "from": "kQBrSAP2y7QIUw4_1q0qciHfqdFmOYR9CC1oinn7kyWWRuoV"
     "Urls"
   ],
   "flagWords": [],

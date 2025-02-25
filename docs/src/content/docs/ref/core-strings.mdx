@@ -73,7 +73,7 @@ let fizz: StringBuilder = beginStringFromBuilder(beginString());
 extends mutates fun append(self: StringBuilder, s: String);
 ```
 
-Extension mutation function for the [`StringBuilder{:tact}`][p].
+Extension mutation function for the [`StringBuilder{:tact}`][p] type.
 
 Appends a [`String{:tact}`][p] `s` to the [`StringBuilder{:tact}`][p].
 
@@ -92,7 +92,7 @@ fizz.append("Tact!");
 extends fun concat(self: StringBuilder, s: String): StringBuilder;
 ```
 
-Extension function for the [`StringBuilder{:tact}`][p].
+Extension function for the [`StringBuilder{:tact}`][p] type.
 
 Returns a new [`StringBuilder{:tact}`][p] after concatinating it with a [`String{:tact}`][p] `s`. Can be chained, unlike [`StringBuilder.append(){:tact}`](#stringbuilderappend).
 
@@ -113,7 +113,7 @@ let fizz: StringBuilder = beginString()
 extends fun toString(self: StringBuilder): String;
 ```
 
-Extension function for the [`StringBuilder{:tact}`][p].
+Extension function for the [`StringBuilder{:tact}`][p] type.
 
 Returns a built [`String{:tact}`][p] from a [`StringBuilder{:tact}`][p].
 
@@ -132,7 +132,7 @@ let buzz: String = fizz.toString();
 extends fun toCell(self: StringBuilder): Cell;
 ```
 
-Extension function for the [`StringBuilder{:tact}`][p].
+Extension function for the [`StringBuilder{:tact}`][p] type.
 
 Returns an assembled [`Cell{:tact}`][cell] from a [`StringBuilder{:tact}`][p].
 
@@ -151,7 +151,7 @@ let buzz: Cell = fizz.toCell();
 extends fun toSlice(self: StringBuilder): Slice;
 ```
 
-Extension function for the [`StringBuilder{:tact}`][p].
+Extension function for the [`StringBuilder{:tact}`][p] type.
 
 Returns an assembled [`Cell{:tact}`][cell] as a [`Slice{:tact}`][slice] from a [`StringBuilder{:tact}`][p]. Alias to [`self.toCell().asSlice(){:tact}`](/ref/core-cells#cellasslice).
 
@@ -171,7 +171,7 @@ fizz == buzz; // true
 extends fun asSlice(self: String): Slice;
 ```
 
-Extension function for the [`String{:tact}`][p].
+Extension function for the [`String{:tact}`][p] type.
 
 Returns a [`Slice{:tact}`][slice] from a [`String{:tact}`][p] by trying to pack all of its bits into a continuous list of [Cells][p], each referencing the next one and opening them all for future parsing.
 
@@ -201,7 +201,7 @@ fizz == buzz; // true, but be careful as it's not always the case
 extends fun asComment(self: String): Cell;
 ```
 
-Extension function for the [`String{:tact}`][p].
+Extension function for the [`String{:tact}`][p] type.
 
 Returns a [`Cell{:tact}`][cell] from a [`String{:tact}`][p] by prefixing the latter with four null bytes. This format is used for passing text comments as message bodies.
 
@@ -224,7 +224,7 @@ fizz == buzz; // true
 extends fun fromBase64(self: String): Slice;
 ```
 
-Extension function for the [`String{:tact}`][p].
+Extension function for the [`String{:tact}`][p] type.
 
 Returns a [`Slice{:tact}`][slice] out of the decoded [Base64](https://en.wikipedia.org/wiki/Base64) [`String{:tact}`][p]. Alias to `self.asSlice().fromBase64(){:tact}`.
 
@@ -248,7 +248,7 @@ fizz == buzz; // true
 extends fun asString(self: Slice): String;
 ```
 
-Extension function for the [`Slice{:tact}`][slice].
+Extension function for the [`Slice{:tact}`][slice] type.
 
 Returns a [`String{:tact}`][p] from a [`Slice{:tact}`][slice] by trying to load all of its bits without looking for its references, if any.
 
@@ -270,7 +270,7 @@ fizz == buzz; // true, but be careful as it's not always the case
 extends fun fromBase64(self: Slice): Slice;
 ```
 
-Extension function for the [`Slice{:tact}`][slice].
+Extension function for the [`Slice{:tact}`][slice] type.
 
 Returns a new [`Slice{:tact}`][slice] out of the decoded [Base64](https://en.wikipedia.org/wiki/Base64) [`Slice{:tact}`][slice].
 
@@ -293,7 +293,7 @@ let fizz: Slice = s.fromBase64();
 extends fun toString(self: Int): String;
 ```
 
-Extension function for the [`Int{:tact}`][int].
+Extension function for the [`Int{:tact}`][int] type.
 
 Returns a [`String{:tact}`][p] from an [`Int{:tact}`][int] value.
 
@@ -311,7 +311,7 @@ let fizz: String = (84 - 42).toString();
 extends fun toFloatString(self: Int, digits: Int): String;
 ```
 
-Extension function for the [`Int{:tact}`][int].
+Extension function for the [`Int{:tact}`][int] type.
 
 Returns a [`String{:tact}`][p] from an [`Int{:tact}`][int] value using a [fixed-point representation](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) of a fractional number, where `self` is a significant part of the number and `digits` is a number of digits in the fractional part.
 
@@ -331,7 +331,7 @@ let fizz: String = (42).toFloatString(9); // "0.000000042"
 extends fun toCoinsString(self: Int): String;
 ```
 
-Extension function for the [`Int{:tact}`][int].
+Extension function for the [`Int{:tact}`][int] type.
 
 Returns a [`String{:tact}`][p] from an [`Int{:tact}`][int] value using a [fixed-point representation](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) of a fractional number. Alias to `self.toFloatString(9){:tact}`.
 
@@ -355,7 +355,7 @@ fizz == buzz; // true, both store "0.000000042"
 extends fun toString(self: Address): String;
 ```
 
-Extension function for the [`Address{:tact}`][p].
+Extension function for the [`Address{:tact}`][p] type.
 
 Returns a [`String{:tact}`][p] from an [`Address{:tact}`][p].
 

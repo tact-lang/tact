@@ -3,10 +3,10 @@
     {
       "label": "FunC",
       "gas": {
-        "fundingTon": "4648",
-        "changeCode": "5226",
-        "approveTon": "7540",
-        "cancelTon": "5451"
+        "fundingTon": "4508",
+        "changeCode": "5104",
+        "approveTon": "7300",
+        "cancelTon": "5411"
       },
       "pr": "https://github.com/tact-lang/tact/pull/1390"
     },
@@ -81,13 +81,13 @@
       "pr": "https://github.com/tact-lang/tact/pull/1968"
     },
     {
-      "label": "1.5.3 with message() instead of send()",
-      "pr": "https://github.com/tact-lang/tact/pull/1999",
+      "label": "1.5.3 with binary receivers",
+      "pr": "https://github.com/tact-lang/tact/pull/1981",
       "gas": {
-        "fundingTon": "6236",
-        "changeCode": "5474",
-        "approveTon": "10424",
-        "cancelTon": "8292"
+        "fundingTon": "5016",
+        "changeCode": "5222",
+        "approveTon": "10018",
+        "cancelTon": "7407"
       }
     }
   ]
