@@ -91,7 +91,7 @@ struct SendParameters {
 struct TransferParameters {
     /// An 8-bit value that configures how to send a message, defaults to 0.
     /// See: https://docs.tact-lang.org/book/message-mode
-    mode: Int = 0;
+    mode: Int = SendDefaultMode;
 
     /// Optional message body as a `Cell`.
     body: Cell? = null;
