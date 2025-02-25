@@ -68,7 +68,7 @@ contract Escrow {
             self.assetAddress!!,
             self.jettonWalletCode!!
         );
-        send(SendParameters{
+        message(MessageParameters{
                 to: escrowJettonWalletAddress,
                 value: self.JETTON_TRANSFER_GAS,
                 body: JettonTransfer{
@@ -129,13 +129,13 @@ contract Escrow {
 
         if (self.assetAddress == null) {
             throwUnless(404, ctx.value > (2 * self.TON_TRANSFER_GAS));
-            send(SendParameters{
+            message(MessageParameters{
                     to: self.sellerAddress,
                     value: self.dealAmount - royaltyAmount,
                     mode: SendPayGasSeparately
                 }
             );
-            send(SendParameters{
+            message(MessageParameters{
                     to: self.guarantorAddress,
                     value: royaltyAmount,
                     mode: SendRemainingBalance | SendDestroyIfZero // send all remaining and destroy escrow
@@ -156,7 +156,7 @@ contract Escrow {
         // it's up to business logic to decide if guarantor gets royalty in case of cancel
         // in this implementation we don't pay royalty in case of cancel
         if (self.assetAddress == null) {
-            send(SendParameters{
+            message(MessageParameters{
                     to: self.buyerAddress!!,
                     value: self.dealAmount,
                     mode: SendRemainingBalance | SendDestroyIfZero // send all remaining and destroy escrow
@@ -169,7 +169,7 @@ contract Escrow {
 
     // on-chain data access, could be useful to guarantor contract
     receive(_: ProvideEscrowData) {
-        send(SendParameters{
+        message(MessageParameters{
             bounce: false,
             value: 0,
             to: sender(),
