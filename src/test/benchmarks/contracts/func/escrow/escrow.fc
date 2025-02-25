@@ -38,7 +38,7 @@ global slice seller_address;
 global slice guarantor_address;
 global int deal_amount;
 global slice asset_address; ;; null slice to represent ton, minter jetton address otherwise
-global int guarantor_royalty_percent; ;; see calculate_gauarantor_royalty
+global int guarantor_royalty_percent; ;; see calculate_guarantor_royalty
 global slice buyer_address; ;; initially null, set after funding
 global int state; ;; 0 - init, 1 - funded
 global cell jetton_wallet_code;
@@ -98,7 +98,7 @@ global cell jetton_wallet_code;
     );
 }
 
-int calculate_gauarantor_royalty() inline {
+int calculate_guarantor_royalty() inline {
     ;; use royalties_constant (set to 1_000) to represent
     ;; floating point percents less than 1%
     ;; e.g. 0,05% actual royalty would be 50 in state_init
@@ -134,7 +134,7 @@ int calculate_gauarantor_royalty() inline {
 }
 
 () handle_approve_ton() impure {
-    int royalty = calculate_gauarantor_royalty();
+    int royalty = calculate_guarantor_royalty();
 
     [int balance, _] = get_balance();
     throw_unless(404, balance > (deal_amount + 2 * send_fee)); ;; check balance for both fees, so we don't abort after first
@@ -159,7 +159,7 @@ int calculate_gauarantor_royalty() inline {
 }
 
 () handle_approve_jetton() impure {
-    int royalty = calculate_gauarantor_royalty();
+    int royalty = calculate_guarantor_royalty();
 
     [int balance, _] = get_balance();
     throw_unless(404, balance > (2 * fee_per_jetton));
@@ -318,7 +318,7 @@ int get_state() method_id {
 
 int get_guarantor_royalty() method_id {
     load_data();
-    return calculate_gauarantor_royalty();
+    return calculate_guarantor_royalty();
 }
 
 (int, slice, slice, int, slice, int, slice, int, cell) get_escrow_data() method_id {

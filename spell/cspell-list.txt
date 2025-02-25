@@ -179,4 +179,4 @@ xtwitter
 extracurrency
 nobounce
 bounceable
-gauarantor
+guarantor
