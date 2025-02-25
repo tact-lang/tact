@@ -182,7 +182,7 @@
     },
     {
       "label": "1.5.3 with transfer() instead of send()",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/1999",
       "gas": {
         "transfer": "17315",
         "burn": "12892",
