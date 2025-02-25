@@ -3,7 +3,7 @@ message EchoMessage {}
 contract Echo {
 
     init(a: Int) {
-        
+        // Do nothing
     }
 
     receive(msg: EchoMessage) {
