@@ -117,7 +117,7 @@ struct MessageParameters {
 ///
 /// Queues the message to be sent using the `MessageParameters` struct. Allows for cheaper non-deployment, regular messages compared to the `send()` function.
 ///
-/// The `MessageParameters` Struct is similar to `SendParameters` Struct, but without the `body` and `code` fields.
+/// The `MessageParameters` struct is similar to `SendParameters` struct, but without the `body` and `code` fields.
 ///
 /// Attempts to queue more than 255 messages throw an exception with an exit code 33: `Action list is too long`.
 ///
