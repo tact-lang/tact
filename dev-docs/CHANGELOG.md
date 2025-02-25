@@ -65,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Int.toString` now consumes up to 64% less gas: PR [#1837](https://github.com/tact-lang/tact/pull/1837)
 - Error message for reserved `self` function parameter now suggests using `extends` function modifier: PR [#1737](https://github.com/tact-lang/tact/pull/1737)
 - `Int.toFloatString` now consumes up to 62% less gas: PR [#1956](https://github.com/tact-lang/tact/pull/1956)
+- Don't show internal error for unknown types for variables: PR [#2005](https://github.com/tact-lang/tact/pull/2005)
 
 ### Fixed
 
@@ -111,6 +112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Runtime calls to `sha256()` now work for arbitrary slices with length >= 128: PR [#1936](https://github.com/tact-lang/tact/pull/1936)
 - Better error messages for empty `bounced()` and `bounced("string")`: PR [#1998](https://github.com/tact-lang/tact/pull/1998)
 - Contract data types in compilation reports are now generated correctly: PR [#2004](https://github.com/tact-lang/tact/pull/2004)
+- Updated contracts in `./examples`: PR [#2008](https://github.com/tact-lang/tact/pull/2008)
 
 ### Docs
 
