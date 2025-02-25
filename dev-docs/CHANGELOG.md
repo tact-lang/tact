@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Context.bounced` field was replaced with `Context.bounceable` field: PR [#1934](https://github.com/tact-lang/tact/pull/1934)
 
 ### Added
+
 - `transfer()` function, that optimizes message sending without deploying a contract: PR [#1999](https://github.com/tact-lang/tact/pull/1999)
 - `deploy()` function, that optimizes the deployment of a child contract: PR [#1832](https://github.com/tact-lang/tact/pull/1832)
 - `&&=`, `||=`, `>>=` and `<<=` augmented assignment operators: PR [#853](https://github.com/tact-lang/tact/pull/853)
