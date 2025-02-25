@@ -188,6 +188,15 @@
         "burn": "12892",
         "discovery": "8025"
       }
+    },
+    {
+      "label": "1.5.3 with more inlining for small contracts and structs",
+      "pr": null,
+      "gas": {
+        "transfer": "16472",
+        "burn": "12463",
+        "discovery": "7868"
+      }
     }
   ]
 }
