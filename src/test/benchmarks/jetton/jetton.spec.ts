@@ -353,7 +353,7 @@ describe("Jetton", () => {
         expect(transferGasUsedFunC).toEqual(funcResult.gas["transfer"]);
     });
 
-    it.only("burn", async () => {
+    it("burn", async () => {
         const runBurnTest = async (minterAddress: Address) => {
             const deployerJettonWalletAddress = await getJettonWalletRaw(
                 minterAddress,

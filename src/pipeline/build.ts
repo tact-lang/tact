@@ -1,4 +1,4 @@
-import { ABITypeRef, beginCell, Cell, Dictionary } from "@ton/core";
+import { beginCell, Cell, Dictionary } from "@ton/core";
 import {
     disassembleRoot,
     Cell as OpcodeCell,

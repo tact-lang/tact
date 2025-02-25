@@ -125,8 +125,10 @@ export function writeStorageOps(
                 ctx.append(`b = b.store_ref(__tact_child_contract_codes);`);
             }
 
-            // Persist deployment flag
-            ctx.append(`b = b.store_int(true, 1);`);
+            if (type.init?.kind === 'separate') {
+                // Persist deployment flag
+                ctx.append(`b = b.store_int(true, 1);`);
+            }
 
             // Build data
             if (type.fields.length > 0) {
@@ -296,7 +298,9 @@ export function writeInit(
             }
 
             // store initialization bit and contract variables
-            ctx.append(`b = b.store_int(false, 1);`);
+            if (init.kind === 'separate') {
+                ctx.append(`b = b.store_int(false, 1);`);
+            }
             const args =
                 t.init!.params.length > 0
                     ? [
