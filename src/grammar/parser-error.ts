@@ -75,12 +75,12 @@ export const syntaxErrorSchema = <T, U>(
         },
         noBouncedWithoutArg: () => {
             return handle(
-                sub`bounced() receiver should accept one of Message, bounced<Message> or Slice`,
+                sub`bounced() receiver should accept a Message, bounced<Message> or Slice`,
             );
         },
         noBouncedWithString: () => {
             return handle(
-                sub`bounced() receiver can only accept Message, bounced<Message> or Slice`,
+                sub`bounced() receiver can only accept a Message, bounced<Message> or Slice`,
             );
         },
         noConstantDecl: () => {

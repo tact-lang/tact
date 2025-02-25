@@ -179,7 +179,7 @@ exports[`grammar should fail destructuring-duplicate-source-id 1`] = `
 `;
 
 exports[`grammar should fail empty-bounced-receiver 1`] = `
-"<unknown>:2:5: bounced() receiver should accept one of Message, bounced<Message> or Slice
+"<unknown>:2:5: bounced() receiver should accept a Message, bounced<Message> or Slice
   1 | contract Test {
 > 2 |     bounced() {}
           ^~~~~~~~~~~~
@@ -626,7 +626,7 @@ exports[`grammar should fail literal-underscore-after-leading-zero 1`] = `
 `;
 
 exports[`grammar should fail string-bounced-receiver 1`] = `
-"<unknown>:2:5: bounced() receiver can only accept Message, bounced<Message> or Slice
+"<unknown>:2:5: bounced() receiver can only accept a Message, bounced<Message> or Slice
   1 | contract Test {
 > 2 |     bounced("hello") {}
           ^~~~~~~~~~~~~~~~~~~
