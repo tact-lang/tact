@@ -178,5 +178,5 @@ xtwitter
 привет
 extracurrency
 nobounce
-bouncable
+bounceable
 gauarantor

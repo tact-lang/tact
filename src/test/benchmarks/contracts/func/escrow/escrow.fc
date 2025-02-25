@@ -140,7 +140,7 @@ int calculate_gauarantor_royalty() inline {
     throw_unless(404, balance > (deal_amount + 2 * send_fee)); ;; check balance for both fees, so we don't abort after first
 
     cell msg = begin_cell()
-                  .store_uint(0x10, 6) ;; no bouncable messages
+                  .store_uint(0x10, 6) ;; no bounceable messages
                   .store_slice(seller_address)
                   .store_coins(deal_amount - royalty)
                   .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
@@ -149,7 +149,7 @@ int calculate_gauarantor_royalty() inline {
     send_raw_message(msg, 1); ;; pays transfer fees separately
 
     cell royalty_msg = begin_cell()
-                          .store_uint(0x10, 6) ;; no bouncable messages
+                          .store_uint(0x10, 6) ;; no bounceable messages
                           .store_slice(guarantor_address)
                           .store_coins(0)
                           .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
@@ -173,7 +173,7 @@ int calculate_gauarantor_royalty() inline {
     ;; royalty in case of cancelled deal, in this implementation he will not
 
     cell msg = begin_cell()
-                    .store_uint(0x10, 6) ;; no bouncable messages
+                    .store_uint(0x10, 6) ;; no bounceable messages
                     .store_slice(buyer_address)
                     .store_coins(0)
                     .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
