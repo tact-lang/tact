@@ -136,7 +136,7 @@ export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
 export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
     switch (type.kind) {
         case "type_id": {
-            const t = getType(ctx, idText(type));
+            const t = getType(ctx, type);
             return {
                 kind: "ref",
                 name: t.name,
@@ -150,7 +150,7 @@ export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
                     type.typeArg.loc,
                 );
             }
-            const t = getType(ctx, idText(type.typeArg));
+            const t = getType(ctx, type.typeArg);
             return {
                 kind: "ref",
                 name: t.name,
@@ -158,8 +158,8 @@ export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
             };
         }
         case "map_type": {
-            const keyTy = getType(ctx, idText(type.keyType));
-            const valTy = getType(ctx, idText(type.valueType));
+            const keyTy = getType(ctx, type.keyType);
+            const valTy = getType(ctx, type.valueType);
             verifyMapType(type, valTy.kind === "struct");
             return {
                 kind: "map",
@@ -176,7 +176,7 @@ export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
             };
         }
         case "bounced_message_type": {
-            const t = getType(ctx, idText(type.messageType));
+            const t = getType(ctx, type.messageType);
             return {
                 kind: "ref_bounced",
                 name: t.name,
@@ -2099,7 +2099,14 @@ export function getType(
     const name = typeof ident === "string" ? ident : idText(ident);
     const r = store.get(ctx, name);
     if (!r) {
-        throwInternalCompilerError(`Type ${name} not found`);
+        const errorLoc = typeof ident === "string" ? undefined : ident.loc;
+        if (errorLoc) {
+            throwCompilationError(
+                `Type ${idTextErr(name)} not found`,
+                errorLoc,
+            );
+        }
+        throwInternalCompilerError(`Type ${idTextErr(name)} not found`);
     }
     return r;
 }

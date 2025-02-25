@@ -4,7 +4,6 @@ import "./native.fc";
 native helloWorld(): Int;
 
 contract Native {
-    
     value: Int;
 
     init() {
@@ -12,6 +11,6 @@ contract Native {
     }
 
     receive("Increment") {
-        self.value = self.value + helloWorld();
+        self.value += helloWorld();
     }
 }
