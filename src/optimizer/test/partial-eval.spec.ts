@@ -392,6 +392,12 @@ function dummyEval(
                 };
                 return cloneNode(copy);
             }
+            case "code_of": {
+                const copy: A.AstCodeOf = {
+                    ...ast,
+                };
+                return cloneNode(copy);
+            }
             case "op_unary": {
                 const copy: A.AstOpUnary = {
                     ...ast,

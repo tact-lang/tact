@@ -23,6 +23,8 @@ import {
 import { serializers } from "./typescript/serializers";
 
 import { eqNames } from "../ast/ast-helpers";
+import { enabledOptimizedChildCode } from "../config/features";
+import type { CompilerContext } from "../context/context";
 
 function writeArguments(args: ABIArgument[]) {
     const res: string[] = [];
@@ -44,6 +46,7 @@ function writeArguments(args: ABIArgument[]) {
 
 export function writeTypescript(
     abi: ContractABI,
+    ctx: CompilerContext,
     init?: {
         code: string;
         system: string | null;
@@ -174,7 +177,7 @@ export function writeTypescript(
             w.append(`const __code = Cell.fromBase64('${init.code}');`);
             w.append("const builder = beginCell();");
 
-            if (init.system !== null) {
+            if (init.system !== null && !enabledOptimizedChildCode(ctx)) {
                 w.append(`const __system = Cell.fromBase64('${init.system}');`);
                 w.append(`builder.storeRef(__system);`);
             }

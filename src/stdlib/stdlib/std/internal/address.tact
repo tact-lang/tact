@@ -23,16 +23,16 @@
 extends fun asAddress(self: Slice, chain: Int): Address {
     // 11 bits for the prefix,
     // 256 bits for the address itself
-    nativeThrowUnless(136, self.bits() == 267);
+    throwUnless(136, self.bits() == 267);
 
     if (chain == -1) {
         // 1279 = 0b100_1111_1111,
         // i.e. internal address prefix and chain ID -1
-        nativeThrowUnless(136, self.preloadUint(11) == 1279);
+        throwUnless(136, self.preloadUint(11) == 1279);
     } else {
         // Only check the correct internal address prefix,
         // but do not verify the chain ID
-        nativeThrowUnless(136, self.preloadUint(3) == 4);
+        throwUnless(136, self.preloadUint(3) == 4);
     }
 
     // Proceed with the cast

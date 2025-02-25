@@ -545,6 +545,12 @@ export const getAstSchema = (
                 args,
                 loc: toSrcInfo(loc),
             }),
+        CodeOf: (contract: A.AstId, loc: Loc): A.AstCodeOf =>
+            createNode<A.AstCodeOf>({
+                kind: "code_of",
+                contract,
+                loc: toSrcInfo(loc),
+            }),
         Conditional: (
             condition: A.AstExpression,
             thenBranch: A.AstExpression,
