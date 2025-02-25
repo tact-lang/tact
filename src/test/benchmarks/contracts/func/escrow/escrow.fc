@@ -290,7 +290,7 @@ int calculate_guarantor_royalty() inline {
 -}
 
     if (op == op::change_wallet_code) {
-        throw_unless(400, state == 0 | null?(asset_address));
+        throw_unless(400, state == 0 & (~ null?(asset_address)));
         throw_unless(403, equal_slices_bits(sender_address, seller_address)); ;; only seller can change wallet code
 
         cell new_jetton_wallet_code = in_msg_body~load_ref();

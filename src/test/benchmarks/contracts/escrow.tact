@@ -86,52 +86,50 @@ contract Escrow with Deployable {
         );
     }
 
-    receive(_: Funding){
-        require(self.isFunded == false, "already funded");
-        require(self.assetAddress == null, "wrong asset type");
-
+    receive(_: Funding) {
+        throwUnless(400, !self.isFunded);
+        throwUnless(400, self.assetAddress == null);
+        
         let ctx: Context = context();
-        require(ctx.value == self.dealAmount, "wrong fund amount");
+        throwUnless(401, ctx.value == self.dealAmount);
 
         self.isFunded = true;
         self.buyerAddress = ctx.sender;
     }
 
-    receive(msg: UpdateJettonWalletCode){
-        require(self.isFunded == false, "already funded");
-        require(self.assetAddress != null, "wrong asset type");
-        require(self.sellerAddress == context().sender, "only seller can change wallet code");
+    receive(msg: UpdateJettonWalletCode) {
+        throwUnless(400, !self.isFunded && self.assetAddress != null);
+        throwUnless(403, self.sellerAddress == context().sender);
 
         self.jettonWalletCode = msg.newJettonWalletCode;
     }
 
-    receive(msg: JettonNotification){
-        require(self.isFunded == false, "already funded");
-        require(self.assetAddress != null, "wrong asset type");
-        require(self.jettonWalletCode != null, "empty jetton wallet code");
+    receive(msg: JettonNotification) {
+        throwUnless(400, !self.isFunded);
+        throwUnless(400, self.assetAddress != null);
 
         let escrowJettonWalletAddress = calculateJettonWalletAddress(myAddress(),
             self.assetAddress!!,
             self.jettonWalletCode!!
         );
-
-        require(sender() == escrowJettonWalletAddress, "notification not from escrow jetton wallet");
-        require(self.dealAmount == msg.amount, "wrong fund amount");
+        throwUnless(402, sender() == escrowJettonWalletAddress);
+        throwUnless(401, self.dealAmount == msg.amount);
 
         self.isFunded = true;
         self.buyerAddress = msg.sender;
     }
 
     // send funds to seller and royalty to guarantor
-    receive(_: Approve){
-        require(self.isFunded == true, "not funded");
+    receive(_: Approve) {
+        throwUnless(403, self.isFunded);
+
         let ctx: Context = context();
 
-        require(self.guarantorAddress == ctx.sender, "not guarantor");
+        throwUnless(403, self.guarantorAddress == ctx.sender);
         let royaltyAmount: Int = self.calculateRoyaltyAmount();
 
         if (self.assetAddress == null) {
-            require(ctx.value > (2 * self.TON_TRANSFER_GAS), "low msg value");
+            throwUnless(404, ctx.value > (2 * self.TON_TRANSFER_GAS));
             send(SendParameters{
                     to: self.sellerAddress,
                     value: self.dealAmount - royaltyAmount,
@@ -145,16 +143,17 @@ contract Escrow with Deployable {
                 }
             );
         } else {
-            require(ctx.value > (2 * self.JETTON_TRANSFER_GAS), "low msg value");
+            throwUnless(404, ctx.value > (2 * self.JETTON_TRANSFER_GAS));
             self.sendJettons(self.sellerAddress, self.dealAmount - royaltyAmount, SendPayGasSeparately);
             self.sendJettons(self.guarantorAddress, royaltyAmount, SendRemainingBalance | SendDestroyIfZero);
         }
     }
 
     // send funds back to buyer
-    receive(_: Cancel){
-        require(self.isFunded == true, "not funded");
-        require(self.guarantorAddress == sender(), "not guarantor");
+    receive(_: Cancel) {
+        throwUnless(403, self.isFunded);
+        throwUnless(403, self.guarantorAddress == sender());
+
         // it's up to business logic to decide if guarantor gets royalty in case of cancel
         // in this implementation we don't pay royalty in case of cancel
         if (self.assetAddress == null) {
@@ -170,7 +169,7 @@ contract Escrow with Deployable {
     }
 
     // on-chain data access, could be useful to guarantor contract
-    receive(_: ProvideEscrowData){
+    receive(_: ProvideEscrowData) {
         self.reply(TakeEscrowData{escrowData: self.escrowInfo()}.toCell());
     }
 
