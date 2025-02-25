@@ -2,20 +2,20 @@ import { toNano, beginCell } from "@ton/core";
 import type { Cell } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { TransferTester } from "./contracts/output/transfer_TransferTester";
+import { MessageTester } from "./contracts/output/message_MessageTester";
 import "@ton/test-utils";
 
-describe("transfer", () => {
+describe("message", () => {
     let blockchain: Blockchain;
     let treasure: SandboxContract<TreasuryContract>;
-    let contract: SandboxContract<TransferTester>;
+    let contract: SandboxContract<MessageTester>;
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
         treasure = await blockchain.treasury("treasure");
 
-        contract = blockchain.openContract(await TransferTester.fromInit());
+        contract = blockchain.openContract(await MessageTester.fromInit());
 
         const deployResult = await contract.send(
             treasure.getSender(),
@@ -99,7 +99,7 @@ describe("transfer", () => {
  */
 async function expectMessageFromTo(args: {
     treasure: SandboxContract<TreasuryContract>;
-    contract: SandboxContract<TransferTester>;
+    contract: SandboxContract<MessageTester>;
     body: Cell | null;
     value: bigint;
     bounce: boolean;
@@ -129,7 +129,7 @@ async function expectMessageFromTo(args: {
  */
 async function expectMessageFromToWithDefaults(args: {
     treasure: SandboxContract<TreasuryContract>;
-    contract: SandboxContract<TransferTester>;
+    contract: SandboxContract<MessageTester>;
     body: Cell | null;
 }) {
     await expectMessageFromTo({

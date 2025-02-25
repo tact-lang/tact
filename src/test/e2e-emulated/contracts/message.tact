@@ -1,6 +1,6 @@
 import "@stdlib/deploy";
 
-contract TransferTester with Deployable {
+contract MessageTester with Deployable {
 
     init() {
         emit("Deploy success".asComment());
@@ -22,7 +22,7 @@ contract TransferTester with Deployable {
 
         nativeReserve(ton("0.05"), ReserveAtMost | ReserveAddOriginalBalance);
 
-        transfer(TransferParameters{
+        message(MessageParameters{
             to: sender(),
             value: 0,
             mode: SendRemainingBalance,
@@ -34,7 +34,7 @@ contract TransferTester with Deployable {
     /// keeps the original balance,
     /// then sends the rest in the next message via send()
     receive("ReserveAtMost_2") {
-        transfer(TransferParameters{
+        message(MessageParameters{
             to: myAddress(),
             value: 0,
             mode: SendDefaultMode | SendPayGasSeparately,
@@ -43,7 +43,7 @@ contract TransferTester with Deployable {
 
         nativeReserve(ton("0.05"), ReserveAtMost | ReserveAddOriginalBalance);
 
-        transfer(TransferParameters{
+        message(MessageParameters{
             to: sender(),
             value: 0,
             mode: SendRemainingBalance,
