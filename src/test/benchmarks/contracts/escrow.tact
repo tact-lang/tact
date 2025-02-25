@@ -63,7 +63,7 @@ contract Escrow with Deployable {
             self.assetAddress!!,
             self.jettonWalletCode!!
         );
-        send(SendParameters{
+        message(MessageParameters{
                 to: escrowJettonWalletAddress,
                 value: self.JETTON_TRANSFER_GAS,
                 body: JettonTransfer{
@@ -126,13 +126,13 @@ contract Escrow with Deployable {
 
         if (self.assetAddress == null) {
             require(ctx.value > (2 * self.TON_TRANSFER_GAS), "low msg value");
-            send(SendParameters{
+            message(MessageParameters{
                     to: self.sellerAddress,
                     value: self.dealAmount - royaltyAmount,
                     mode: SendPayGasSeparately
                 }
             );
-            send(SendParameters{
+            message(MessageParameters{
                     to: self.guarantorAddress,
                     value: royaltyAmount,
                     mode: SendRemainingBalance | SendDestroyIfZero // send all remaining and destroy escrow
@@ -153,7 +153,7 @@ contract Escrow with Deployable {
         // it's up to business logic to decide if guarantor gets royalty in case of cancel
         // in this implementation we don't pay royalty in case of cancel
         if (self.assetAddress == null) {
-            send(SendParameters{
+            message(MessageParameters{
                     to: self.buyerAddress!!,
                     value: self.dealAmount,
                     mode: SendRemainingBalance | SendDestroyIfZero // send all remaining and destroy escrow

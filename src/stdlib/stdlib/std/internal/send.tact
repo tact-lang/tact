@@ -88,7 +88,7 @@ struct SendParameters {
     bounce: Bool = true;
 }
 
-struct TransferParameters {
+struct MessageParameters {
     /// An 8-bit value that configures how to send a message, defaults to 0.
     /// See: https://docs.tact-lang.org/book/message-mode
     mode: Int = SendDefaultMode;
@@ -108,7 +108,7 @@ struct TransferParameters {
     bounce: Bool = true;
 }
 
-asm fun transfer(params: TransferParameters) {
+asm fun message(params: MessageParameters) {
     NEWC
     b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
     1 STI               // store `bounce`

@@ -79,6 +79,16 @@
         "cancelTon": "8637"
       },
       "pr": "https://github.com/tact-lang/tact/pull/1968"
+    },
+    {
+      "label": "Benchmark 2025-02-25",
+      "pr": "https://github.com/tact-lang/tact/pull/1999",
+      "gas": {
+        "fundingTon": "6236",
+        "changeCode": "5474",
+        "approveTon": "10424",
+        "cancelTon": "8292"
+      }
     }
   ]
 }
