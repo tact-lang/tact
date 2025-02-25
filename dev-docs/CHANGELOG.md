@@ -108,6 +108,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump used `@tact-lang/opcode` version to `0.2` which fixes many issues in CI runs: PR [#1922](https://github.com/tact-lang/tact/pull/1922)
 - Generation of the fallback receiver for external messages: PR [#1926](https://github.com/tact-lang/tact/pull/1926)
 - Runtime calls to `sha256()` now work for arbitrary slices with length >= 128: PR [#1936](https://github.com/tact-lang/tact/pull/1936)
+- Better error messages for empty `bounced()` and `bounced("string")`: PR [#1998](https://github.com/tact-lang/tact/pull/1998)
 
 ### Docs
 
