@@ -296,6 +296,16 @@ export default defineConfig({
 						{ slug: 'ecosystem/vscode' },
 						{ slug: 'ecosystem/jetbrains' },
 						{ slug: 'ecosystem/misti' },
+						{
+							label: 'Wayfinding',
+							translations: { 'zh-CN': '迷津' },
+							attrs: { class: 'sidebar-separator' },
+							link: '#',
+						},
+						{
+							label: 'Awesome Tact →',
+							link: 'https://github.com/tact-lang/awesome-tact',
+						},
 					],
 				},
 				{
