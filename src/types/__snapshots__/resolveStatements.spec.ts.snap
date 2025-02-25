@@ -1278,6 +1278,33 @@ exports[`resolveStatements should fail statements for stmt-while-int 1`] = `
 "
 `;
 
+exports[`resolveStatements should fail statements for unknown-map-key-type-in-variable-declaration 1`] = `
+"<unknown>:4:19: Type "Int2" not found
+  3 | fun foo() {
+> 4 |     let addr: map<Int2, Int> = 10;
+                        ^~~~
+  5 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for unknown-optional-type-in-variable-declaration 1`] = `
+"<unknown>:2:15: Type "Foo" not found
+  1 | fun foo() {
+> 2 |     let addr: Foo? = 10;
+                    ^~~
+  3 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for unknown-type-in-variable-declaration 1`] = `
+"<unknown>:2:15: Type "Foo" not found
+  1 | fun foo() {
+> 2 |     let addr: Foo = 10;
+                    ^~~
+  3 | }
+"
+`;
+
 exports[`resolveStatements should fail statements for usage-of-bounced-field-in-type-that-is-too-big 1`] = `
 "<unknown>:14:29: Maximum size of the bounced message is 224 bytes, but the "amount" field of type "Withdraw" cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes
   13 |         self.balance += msg.data; // ok
