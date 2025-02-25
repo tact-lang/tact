@@ -115,7 +115,7 @@ struct MessageParameters {
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Queues the message to be sent using the `MessageParameters` Struct. Allows for cheaper non-deployment, regular messages compared to the `send()` function.
+/// Queues the message to be sent using the `MessageParameters` struct. Allows for cheaper non-deployment, regular messages compared to the `send()` function.
 ///
 /// The `MessageParameters` Struct is similar to `SendParameters` Struct, but without the `body` and `code` fields.
 ///
