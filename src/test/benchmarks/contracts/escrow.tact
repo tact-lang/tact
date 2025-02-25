@@ -169,7 +169,11 @@ contract Escrow {
 
     // on-chain data access, could be useful to guarantor contract
     receive(_: ProvideEscrowData) {
-        self.reply(TakeEscrowData{
+        send(SendParameters{
+            bounce: false,
+            value: 0,
+            to: sender(),
+            body: TakeEscrowData{
                 escrowData: EscrowData {
                     id: self.id,
                     sellerAddress: self.sellerAddress,
@@ -181,7 +185,9 @@ contract Escrow {
                     jettonWalletCode: self.jettonWalletCode,
                     buyerAddress: self.buyerAddress
                 }
-            }.toCell());
+            }.toCell(),
+            mode: SendRemainingValue
+        });
     }
 
     get fun calculateRoyaltyAmount(): Int {
