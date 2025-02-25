@@ -1,9 +1,9 @@
 /// Extension function for the `Slice` type. Available since Tact 1.6.0.
 ///
-/// Casts `self` to an `Address` in a given `chain` ID and returns it. The inverse of `Address.asSlice()` and a safe but more gas-expensive version of `Slice.asAddressUnsafe()`.
-/// 
+/// Casts the `Slice` to an `Address` in a given `chain` ID and returns it. The inverse of `Address.asSlice()` and a safe but more gas-expensive version of `Slice.asAddressUnsafe()`.
+///
 /// Attempts to specify a slice with an invalid account ID length throw an error with exit code 136: `Invalid standard address`.
-/// 
+///
 /// Attempts to specify a slice with an invalid tag prefix (not `0b100`) or with an invalid account ID length (not 256 bits) throw an error with exit code 136: `Invalid standard address`.
 ///
 /// ```tact
@@ -41,9 +41,9 @@ extends fun asAddress(self: Slice, chain: Int): Address {
 
 /// Extension function for the `Slice` type. Available since Tact 1.6.0.
 ///
-/// Unsafely casts `self` to an `Address` and returns it. The inverse of `Address.asSlice()`.
+/// Unsafely casts the `Slice` to an `Address` and returns it. The inverse of `Address.asSlice()`.
 ///
-/// This function does **not** perform any checks on the contents of the slice.
+/// This function does **not** perform any checks on the contents of the `Slice`.
 ///
 /// ```tact
 /// fun example() {
@@ -54,7 +54,7 @@ extends fun asAddress(self: Slice, chain: Int): Address {
 /// }
 /// ```
 ///
-/// Use it only if you want to optimize the code for gas and can guarantee in advance that the slice contains the data of an `Address`.
+/// Use it only if you want to optimize the code for gas and can guarantee in advance that the `Slice` contains the data of an `Address`.
 ///
 /// Otherwise, use a safer but more gas-expensive `Slice.asAddress()` function.
 ///
@@ -143,7 +143,7 @@ struct VarAddress {
 
 /// Global function. Available since Tact 1.5.0.
 ///
-/// Converts `slice` containing an address into the `StdAddress` struct and returns it.
+/// Converts a `slice` containing an address into the `StdAddress` Struct and returns it.
 ///
 /// ```tact
 /// fun example() {
@@ -161,7 +161,7 @@ asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
 
 /// Global function. Available since Tact 1.5.0.
 ///
-/// Converts `slice` containing an address of variable length into the `VarAddress` struct and returns it.
+/// Converts a `slice` containing an address of variable length into the `VarAddress` Struct and returns it.
 ///
 /// ```tact
 /// fun example() {
@@ -185,33 +185,36 @@ asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 
 /// Extension mutation function for the `Slice` type.
 ///
-/// Loads from the `self` slice its prefix which should be a valid message address and returns it.
+/// Loads and returns an `Address` from the `Slice`.
 ///
-/// Attempts to load a message address when `self` doesn’t contain it throw an exception with exit code 8: Cell overflow.
-/// Attempts to load more data than `self` contains throw an exception with exit code 9: Cell underflow.
+/// Attempts to load such `Address` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+///
+/// Attempts to load more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
 ///
 /// ```tact
-/// let s: Slice = beginCell().storeAddress(myAddress()).asSlice();
-/// let fizz: Address = s.loadAddress();
+/// fun example() {
+///     let s: Slice = beginCell().storeAddress(myAddress()).asSlice();
+///     let fizz: Address = s.loadAddress();
+/// }
 /// ```
 ///
-/// See:
-/// * https://docs.tact-lang.org/ref/core-cells/#sliceloadaddress
+/// See: https://docs.tact-lang.org/ref/core-cells/#sliceloadaddress
 ///
 asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 
 /// Extension function for the `Builder` type.
 ///
-/// Stores `address` in the copy of the `self` builder. Returns that copy.
+/// Stores the `address` in the copy of the `Builder`. Returns that copy.
 ///
-/// Attempts to store an address into `self` will result in exit code 8: Cell overflow if `self` cannot fit the address.
+/// Attempts to store an `address` into the `Builder` `self`, if `self` cannot fit it, throw an exception with exit code 8: `Cell overflow`.
 ///
 /// ```tact
-/// let b: Builder = beginCell();
-/// let fizz: Builder = b.storeAddress(myAddress());
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b.storeAddress(myAddress());
+/// }
 /// ```
 ///
-/// See:
-/// * https://docs.tact-lang.org/ref/core-cells/#builderstoreaddress
+/// See: https://docs.tact-lang.org/ref/core-cells/#builderstoreaddress
 ///
 asm extends fun storeAddress(self: Builder, address: Address): Builder { STSLICER }
