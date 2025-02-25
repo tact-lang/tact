@@ -565,10 +565,12 @@ describe("receivers-precedence", () => {
 
     it("internal receivers should process empty messages and empty strings correctly", async () => {
         // A message struct with empty string inside. Should only be accepted by binary receivers
-        const emptyMessageStruct = beginCell()
+        const emptyStringInMessageStruct = beginCell()
             .storeUint(100, 32)
             .storeStringRefTail("")
             .endCell();
+        // An empty message struct, should only be accepted by binary receivers.
+        const emptyMessageStruct = beginCell().storeUint(101, 32).endCell();
         // Message bodies with integer of size less than 32 bits will be processed by empty receivers (if present),
         // irrespective of the value of the integer
         const lessThan32Bits = beginCell().storeUint(10, 30).endCell();
@@ -583,6 +585,7 @@ describe("receivers-precedence", () => {
             .endCell();
 
         const bodiesToTry = [
+            emptyStringInMessageStruct,
             emptyMessageStruct,
             lessThan32Bits,
             emptyBody,
@@ -598,45 +601,8 @@ describe("receivers-precedence", () => {
             exitCode: number,
         ) {
             for (const body of bodiesToTry.slice(from)) {
-                const { transactions } = await contract.send(
-                    treasure.getSender(),
-                    { value: toNano("10") },
-                    {
-                        $$type: "SendCellToAddress",
-                        address: testedContract,
-                        body,
-                    },
-                );
-
-                expect(transactions).toHaveTransaction({
-                    from: contract.address,
-                    to: testedContract,
-                    success: false,
-                    exitCode,
-                });
+                await shouldFailBody(testedContract, exitCode, body);
             }
-        }
-
-        async function shouldFailIncompleteOpCode(
-            testedContract: Address,
-            exitCode: number,
-        ) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                {
-                    $$type: "SendCellToAddress",
-                    address: testedContract,
-                    body: lessThan32Bits,
-                },
-            );
-
-            expect(transactions).toHaveTransaction({
-                from: contract.address,
-                to: testedContract,
-                success: false,
-                exitCode: exitCode,
-            });
         }
 
         async function shouldAcceptFrom(
@@ -646,67 +612,45 @@ describe("receivers-precedence", () => {
             expectedRestReceiver: string,
         ) {
             for (const body of bodiesToTry.slice(from)) {
-                const { transactions } = await contract.send(
-                    treasure.getSender(),
-                    { value: toNano("10") },
-                    {
-                        $$type: "SendCellToAddress",
-                        address: testedContract,
-                        body,
-                    },
+                await shouldAcceptBody(
+                    testedContract,
+                    receiverGetter,
+                    expectedRestReceiver,
+                    body,
                 );
-
-                expect(transactions).toHaveTransaction({
-                    from: contract.address,
-                    to: testedContract,
-                    success: true,
-                });
-                expect(await receiverGetter()).toBe(expectedRestReceiver);
             }
+        }
+
+        async function shouldFailIncompleteOpCode(
+            testedContract: Address,
+            exitCode: number,
+        ) {
+            await shouldFailBody(testedContract, exitCode, lessThan32Bits);
         }
 
         async function shouldFailEmptyBody(
             testedContract: Address,
             exitCode: number,
         ) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                {
-                    $$type: "SendCellToAddress",
-                    address: testedContract,
-                    body: emptyBody,
-                },
-            );
-
-            expect(transactions).toHaveTransaction({
-                from: contract.address,
-                to: testedContract,
-                success: false,
-                exitCode: exitCode,
-            });
+            await shouldFailBody(testedContract, exitCode, emptyBody);
         }
 
         async function shouldFailMessageStruct(
             testedContract: Address,
             exitCode: number,
         ) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                {
-                    $$type: "SendCellToAddress",
-                    address: testedContract,
-                    body: emptyMessageStruct,
-                },
+            await shouldFailBody(
+                testedContract,
+                exitCode,
+                emptyStringInMessageStruct,
             );
+        }
 
-            expect(transactions).toHaveTransaction({
-                from: contract.address,
-                to: testedContract,
-                success: false,
-                exitCode: exitCode,
-            });
+        async function shouldFailEmptyMessageStruct(
+            testedContract: Address,
+            exitCode: number,
+        ) {
+            await shouldFailBody(testedContract, exitCode, emptyMessageStruct);
         }
 
         async function shouldAcceptIncompleteOpCode(
@@ -714,22 +658,12 @@ describe("receivers-precedence", () => {
             receiverGetter: () => Promise<string>,
             expectedReceiver: string,
         ) {
-            const { transactions } = await contract.send(
-                treasure.getSender(),
-                { value: toNano("10") },
-                {
-                    $$type: "SendCellToAddress",
-                    address: testedContract,
-                    body: lessThan32Bits,
-                },
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                lessThan32Bits,
             );
-
-            expect(transactions).toHaveTransaction({
-                from: contract.address,
-                to: testedContract,
-                success: true,
-            });
-            expect(await receiverGetter()).toBe(expectedReceiver);
         }
 
         async function shouldAcceptEmptyBody(
@@ -737,13 +671,53 @@ describe("receivers-precedence", () => {
             receiverGetter: () => Promise<string>,
             expectedReceiver: string,
         ) {
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                emptyBody,
+            );
+        }
+
+        async function shouldAcceptMessageStruct(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                emptyStringInMessageStruct,
+            );
+        }
+
+        async function shouldAcceptEmptyMessageStruct(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                emptyMessageStruct,
+            );
+        }
+
+        async function shouldAcceptBody(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+            body: Cell,
+        ) {
             const { transactions } = await contract.send(
                 treasure.getSender(),
                 { value: toNano("10") },
                 {
                     $$type: "SendCellToAddress",
                     address: testedContract,
-                    body: emptyBody,
+                    body: body,
                 },
             );
 
@@ -755,10 +729,10 @@ describe("receivers-precedence", () => {
             expect(await receiverGetter()).toBe(expectedReceiver);
         }
 
-        async function shouldAcceptMessageStruct(
+        async function shouldFailBody(
             testedContract: Address,
-            receiverGetter: () => Promise<string>,
-            expectedReceiver: string,
+            exitCode: number,
+            body: Cell,
         ) {
             const { transactions } = await contract.send(
                 treasure.getSender(),
@@ -766,16 +740,16 @@ describe("receivers-precedence", () => {
                 {
                     $$type: "SendCellToAddress",
                     address: testedContract,
-                    body: emptyMessageStruct,
+                    body: body,
                 },
             );
 
             expect(transactions).toHaveTransaction({
                 from: contract.address,
                 to: testedContract,
-                success: true,
+                success: false,
+                exitCode: exitCode,
             });
-            expect(await receiverGetter()).toBe(expectedReceiver);
         }
 
         // Tests start here
@@ -784,12 +758,13 @@ describe("receivers-precedence", () => {
         await shouldFailFrom(noReceivers.address, 0, 130);
 
         // emptyReceiver
-        // Should fail on message struct
+        // Should fail on message structs
         // And accept the rest
         await shouldFailMessageStruct(emptyReceiver.address, 130);
+        await shouldFailEmptyMessageStruct(emptyReceiver.address, 130);
         await shouldAcceptFrom(
             emptyReceiver.address,
-            1,
+            2,
             emptyReceiver.getReceiver,
             "empty",
         );
@@ -797,26 +772,32 @@ describe("receivers-precedence", () => {
         // commentReceiver should fail in all the cases with exit code 130
         await shouldFailFrom(commentReceiver.address, 0, 130);
 
-        // stringReceiver should fail in first, second and third cases with exit code 130, but accept the rest
+        // stringReceiver should accept from 4 onwards on string receiver
         await shouldFailMessageStruct(stringReceiver.address, 130);
+        await shouldFailEmptyMessageStruct(stringReceiver.address, 130);
         await shouldFailIncompleteOpCode(stringReceiver.address, 130);
         await shouldFailEmptyBody(stringReceiver.address, 130);
         await shouldAcceptFrom(
             stringReceiver.address,
-            3,
+            4,
             stringReceiver.getReceiver,
             "fallback_string",
         );
 
         // binaryReceiver
-        // Accepts the first case
+        // Accepts binary cases
         // and fails in the rest with exit code 130
         await shouldAcceptMessageStruct(
             binaryReceiver.address,
             binaryReceiver.getReceiver,
             "binary",
         );
-        await shouldFailFrom(binaryReceiver.address, 1, 130);
+        await shouldAcceptEmptyMessageStruct(
+            binaryReceiver.address,
+            binaryReceiver.getReceiver,
+            "binary_empty_message",
+        );
+        await shouldFailFrom(binaryReceiver.address, 2, 130);
 
         // sliceReceiver should accept all the cases
         await shouldAcceptFrom(
@@ -827,77 +808,101 @@ describe("receivers-precedence", () => {
         );
 
         // emptyAndCommentReceiver
-        // Fails in the message struct
+        // Fails in the message structs
         // and accepts the rest of cases in the empty receiver
         await shouldFailMessageStruct(emptyAndCommentReceiver.address, 130);
+        await shouldFailEmptyMessageStruct(
+            emptyAndCommentReceiver.address,
+            130,
+        );
         await shouldAcceptFrom(
             emptyAndCommentReceiver.address,
-            1,
+            2,
             emptyAndCommentReceiver.getReceiver,
             "empty",
         );
 
         // emptyAndStringReceiver
-        // Fails in the message struct
+        // Fails in the message structs
         // and accepts the rest of cases in the empty receiver
         await shouldFailMessageStruct(emptyAndStringReceiver.address, 130);
+        await shouldFailEmptyMessageStruct(emptyAndStringReceiver.address, 130);
         await shouldAcceptFrom(
             emptyAndStringReceiver.address,
-            1,
+            2,
             emptyAndStringReceiver.getReceiver,
             "empty",
         );
 
         // emptyAndBinaryReceiver
-        // Accepts the message struct in the binary receiver
+        // Accepts the message structs in the binary receiver
         // and accepts the rest of cases in the empty receiver
         await shouldAcceptMessageStruct(
             emptyAndBinaryReceiver.address,
             emptyAndBinaryReceiver.getReceiver,
             "binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndBinaryReceiver.address,
+            emptyAndBinaryReceiver.getReceiver,
+            "binary_empty_message",
+        );
         await shouldAcceptFrom(
             emptyAndBinaryReceiver.address,
-            1,
+            2,
             emptyAndBinaryReceiver.getReceiver,
             "empty",
         );
 
         // emptyAndSliceReceiver
-        // Accepts the message struct in the fallback receiver
+        // Accepts the message structs in the fallback receiver
         // and accepts the rest of cases in the empty receiver
         await shouldAcceptMessageStruct(
             emptyAndSliceReceiver.address,
             emptyAndSliceReceiver.getReceiver,
             "fallback",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndSliceReceiver.address,
+            emptyAndSliceReceiver.getReceiver,
+            "fallback",
+        );
         await shouldAcceptFrom(
             emptyAndSliceReceiver.address,
-            1,
+            2,
             emptyAndSliceReceiver.getReceiver,
             "empty",
         );
 
-        // commentAndStringReceiver should fail in the first, second, and third, but accept the rest in the string receiver
+        // commentAndStringReceiver accepts from 4 onwards on string receiver
         await shouldFailMessageStruct(commentAndStringReceiver.address, 130);
+        await shouldFailEmptyMessageStruct(
+            commentAndStringReceiver.address,
+            130,
+        );
         await shouldFailIncompleteOpCode(commentAndStringReceiver.address, 130);
         await shouldFailEmptyBody(commentAndStringReceiver.address, 130);
         await shouldAcceptFrom(
             commentAndStringReceiver.address,
-            3,
+            4,
             commentAndStringReceiver.getReceiver,
             "fallback_string",
         );
 
         // commentAndBinaryReceiver
-        // Accepts the message struct in the binary receiver
+        // Accepts the message structs in the binary receiver
         // and fails in the rest
         await shouldAcceptMessageStruct(
             commentAndBinaryReceiver.address,
             commentAndBinaryReceiver.getReceiver,
             "binary",
         );
-        await shouldFailFrom(commentAndBinaryReceiver.address, 1, 130);
+        await shouldAcceptEmptyMessageStruct(
+            commentAndBinaryReceiver.address,
+            commentAndBinaryReceiver.getReceiver,
+            "binary_empty_message",
+        );
+        await shouldFailFrom(commentAndBinaryReceiver.address, 2, 130);
 
         // commentAndSliceReceiver should accept all the cases in the fallback receiver
         await shouldAcceptFrom(
@@ -908,25 +913,35 @@ describe("receivers-precedence", () => {
         );
 
         // stringAndBinaryReceiver
-        // should accept the first in binary receiver.
-        // should fail in the second and third, but accept the rest in the string receiver
+        // should accepts structs in binary receivers.
+        // accepts from 4 onwards in the string receiver
         await shouldAcceptMessageStruct(
             stringAndBinaryReceiver.address,
             stringAndBinaryReceiver.getReceiver,
             "binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            stringAndBinaryReceiver.address,
+            stringAndBinaryReceiver.getReceiver,
+            "binary_empty_message",
+        );
         await shouldFailIncompleteOpCode(stringAndBinaryReceiver.address, 130);
         await shouldFailEmptyBody(stringAndBinaryReceiver.address, 130);
         await shouldAcceptFrom(
             stringAndBinaryReceiver.address,
-            3,
+            4,
             stringAndBinaryReceiver.getReceiver,
             "fallback_string",
         );
 
-        // stringAndSliceReceiver should accept first, second and third in the fallback receiver
-        // and the rest in the string receiver
+        // stringAndSliceReceiver should accept firsts in fallback receiver
+        // and the rest from 4 onwards in the string receiver
         await shouldAcceptMessageStruct(
+            stringAndSliceReceiver.address,
+            stringAndSliceReceiver.getReceiver,
+            "fallback",
+        );
+        await shouldAcceptEmptyMessageStruct(
             stringAndSliceReceiver.address,
             stringAndSliceReceiver.getReceiver,
             "fallback",
@@ -943,117 +958,155 @@ describe("receivers-precedence", () => {
         );
         await shouldAcceptFrom(
             stringAndSliceReceiver.address,
-            3,
+            4,
             stringAndSliceReceiver.getReceiver,
             "fallback_string",
         );
 
         // binaryAndSliceReceiver
-        // should accept the first in binary receiver and rest in the fallback receiver
+        // should accept structs in binary receivers and rest in the fallback receiver
         await shouldAcceptMessageStruct(
             binaryAndSliceReceiver.address,
             binaryAndSliceReceiver.getReceiver,
             "binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            binaryAndSliceReceiver.address,
+            binaryAndSliceReceiver.getReceiver,
+            "binary_empty_message",
+        );
         await shouldAcceptFrom(
             binaryAndSliceReceiver.address,
-            1,
+            2,
             binaryAndSliceReceiver.getReceiver,
             "fallback",
         );
 
         // emptyAndCommentAndStringReceiver
-        // should fail on message struct
+        // should fail on message structs
         // but accept all the rest in the empty receiver
         await shouldFailMessageStruct(
             emptyAndCommentAndStringReceiver.address,
             130,
         );
+        await shouldFailEmptyMessageStruct(
+            emptyAndCommentAndStringReceiver.address,
+            130,
+        );
         await shouldAcceptFrom(
             emptyAndCommentAndStringReceiver.address,
-            1,
+            2,
             emptyAndCommentAndStringReceiver.getReceiver,
             "empty",
         );
 
         // emptyAndCommentAndBinaryReceiver
-        // should accept the first in binary receiver and the rest in the empty receiver
+        // should accept structs in binary receivers and the rest in the empty receiver
         await shouldAcceptMessageStruct(
             emptyAndCommentAndBinaryReceiver.address,
             emptyAndCommentAndBinaryReceiver.getReceiver,
             "binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndCommentAndBinaryReceiver.address,
+            emptyAndCommentAndBinaryReceiver.getReceiver,
+            "binary_empty_message",
+        );
         await shouldAcceptFrom(
             emptyAndCommentAndBinaryReceiver.address,
-            1,
+            2,
             emptyAndCommentAndBinaryReceiver.getReceiver,
             "empty",
         );
 
         // emptyAndCommentAndSliceReceiver
-        // should accept the first in fallback and the rest in the empty receiver
+        // should accept the structs in fallback and the rest in the empty receiver
         await shouldAcceptMessageStruct(
+            emptyAndCommentAndSliceReceiver.address,
+            emptyAndCommentAndSliceReceiver.getReceiver,
+            "fallback",
+        );
+        await shouldAcceptEmptyMessageStruct(
             emptyAndCommentAndSliceReceiver.address,
             emptyAndCommentAndSliceReceiver.getReceiver,
             "fallback",
         );
         await shouldAcceptFrom(
             emptyAndCommentAndSliceReceiver.address,
-            1,
+            2,
             emptyAndCommentAndSliceReceiver.getReceiver,
             "empty",
         );
 
         // emptyAndStringAndBinaryReceiver
-        // should accept the first in binary and the rest in the empty receiver
+        // should accept structs in binary and the rest in the empty receiver
         await shouldAcceptMessageStruct(
             emptyAndStringAndBinaryReceiver.address,
             emptyAndStringAndBinaryReceiver.getReceiver,
             "binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndStringAndBinaryReceiver.address,
+            emptyAndStringAndBinaryReceiver.getReceiver,
+            "binary_empty_message",
+        );
         await shouldAcceptFrom(
             emptyAndStringAndBinaryReceiver.address,
-            1,
+            2,
             emptyAndStringAndBinaryReceiver.getReceiver,
             "empty",
         );
 
         // emptyAndStringAndSliceReceiver
-        // should accept the first in fallback and the rest in the empty receiver
+        // should accept structs in fallback and the rest in the empty receiver
         await shouldAcceptMessageStruct(
+            emptyAndStringAndSliceReceiver.address,
+            emptyAndStringAndSliceReceiver.getReceiver,
+            "fallback",
+        );
+        await shouldAcceptEmptyMessageStruct(
             emptyAndStringAndSliceReceiver.address,
             emptyAndStringAndSliceReceiver.getReceiver,
             "fallback",
         );
         await shouldAcceptFrom(
             emptyAndStringAndSliceReceiver.address,
-            1,
+            2,
             emptyAndStringAndSliceReceiver.getReceiver,
             "empty",
         );
 
         // emptyAndBinaryAndSliceReceiver
-        // should accept the first in binary and the rest in the empty receiver
+        // should accept structs in binary and the rest in the empty receiver
         await shouldAcceptMessageStruct(
             emptyAndBinaryAndSliceReceiver.address,
             emptyAndBinaryAndSliceReceiver.getReceiver,
             "binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndBinaryAndSliceReceiver.address,
+            emptyAndBinaryAndSliceReceiver.getReceiver,
+            "binary_empty_message",
+        );
         await shouldAcceptFrom(
             emptyAndBinaryAndSliceReceiver.address,
-            1,
+            2,
             emptyAndBinaryAndSliceReceiver.getReceiver,
             "empty",
         );
 
         // commentAndStringAndBinaryReceiver
-        // should accept first in binary receiver
-        // should fail in the second and third
-        // but accept the rest in the string receiver
+        // should accept structs in binary receivers
+        // and accept from 4 onwards at the string receiver
         await shouldAcceptMessageStruct(
             commentAndStringAndBinaryReceiver.address,
             commentAndStringAndBinaryReceiver.getReceiver,
             "binary",
+        );
+        await shouldAcceptEmptyMessageStruct(
+            commentAndStringAndBinaryReceiver.address,
+            commentAndStringAndBinaryReceiver.getReceiver,
+            "binary_empty_message",
         );
         await shouldFailIncompleteOpCode(
             commentAndStringAndBinaryReceiver.address,
@@ -1065,19 +1118,24 @@ describe("receivers-precedence", () => {
         );
         await shouldAcceptFrom(
             commentAndStringAndBinaryReceiver.address,
-            3,
+            4,
             commentAndStringAndBinaryReceiver.getReceiver,
             "fallback_string",
         );
 
         // commentAndStringAndSliceReceiver
-        // should accept first, second and third in fallback
+        // should accept firsts in fallback
         // but accept the rest in the string receiver
         await shouldAcceptMessageStruct(
             commentAndStringAndSliceReceiver.address,
             commentAndStringAndSliceReceiver.getReceiver,
             "fallback",
         );
+        await shouldAcceptEmptyMessageStruct(
+            commentAndStringAndSliceReceiver.address,
+            commentAndStringAndSliceReceiver.getReceiver,
+            "fallback",
+        );
         await shouldAcceptIncompleteOpCode(
             commentAndStringAndSliceReceiver.address,
             commentAndStringAndSliceReceiver.getReceiver,
@@ -1090,34 +1148,44 @@ describe("receivers-precedence", () => {
         );
         await shouldAcceptFrom(
             commentAndStringAndSliceReceiver.address,
-            3,
+            4,
             commentAndStringAndSliceReceiver.getReceiver,
             "fallback_string",
         );
 
         // commentAndBinaryAndSliceReceiver
-        // should accept the first in binary
+        // should accept structs in binary
         // should accept the rest in the fallback receiver
         await shouldAcceptMessageStruct(
             commentAndBinaryAndSliceReceiver.address,
             commentAndBinaryAndSliceReceiver.getReceiver,
             "binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            commentAndBinaryAndSliceReceiver.address,
+            commentAndBinaryAndSliceReceiver.getReceiver,
+            "binary_empty_message",
+        );
         await shouldAcceptFrom(
             commentAndBinaryAndSliceReceiver.address,
-            1,
+            2,
             commentAndBinaryAndSliceReceiver.getReceiver,
             "fallback",
         );
 
         // stringAndBinaryAndSliceReceiver
-        // should accept the first in binary
-        // should accept second and third in fallback
-        // but should accept the rest in the string receiver
+        // should accept the structs in binary
+        // should accept middle ones in fallback
+        // and the rest in the string receiver
         await shouldAcceptMessageStruct(
             stringAndBinaryAndSliceReceiver.address,
             stringAndBinaryAndSliceReceiver.getReceiver,
             "binary",
+        );
+        await shouldAcceptEmptyMessageStruct(
+            stringAndBinaryAndSliceReceiver.address,
+            stringAndBinaryAndSliceReceiver.getReceiver,
+            "binary_empty_message",
         );
         await shouldAcceptIncompleteOpCode(
             stringAndBinaryAndSliceReceiver.address,
@@ -1131,79 +1199,104 @@ describe("receivers-precedence", () => {
         );
         await shouldAcceptFrom(
             stringAndBinaryAndSliceReceiver.address,
-            3,
+            4,
             stringAndBinaryAndSliceReceiver.getReceiver,
             "fallback_string",
         );
 
         // emptyAndCommentAndStringAndBinaryReceiver
-        // first in binary
+        // structs in binary
         // rest in empty
         await shouldAcceptMessageStruct(
             emptyAndCommentAndStringAndBinaryReceiver.address,
             emptyAndCommentAndStringAndBinaryReceiver.getReceiver,
             "binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndCommentAndStringAndBinaryReceiver.address,
+            emptyAndCommentAndStringAndBinaryReceiver.getReceiver,
+            "binary_empty_message",
+        );
         await shouldAcceptFrom(
             emptyAndCommentAndStringAndBinaryReceiver.address,
-            1,
+            2,
             emptyAndCommentAndStringAndBinaryReceiver.getReceiver,
             "empty",
         );
 
         // emptyAndCommentAndStringAndSliceReceiver
-        // first in fallback
+        // structs in fallback
         // rest in empty
         await shouldAcceptMessageStruct(
             emptyAndCommentAndStringAndSliceReceiver.address,
             emptyAndCommentAndStringAndSliceReceiver.getReceiver,
             "fallback",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndCommentAndStringAndSliceReceiver.address,
+            emptyAndCommentAndStringAndSliceReceiver.getReceiver,
+            "fallback",
+        );
         await shouldAcceptFrom(
             emptyAndCommentAndStringAndSliceReceiver.address,
-            1,
+            2,
             emptyAndCommentAndStringAndSliceReceiver.getReceiver,
             "empty",
         );
 
         // emptyAndCommentAndBinaryAndSliceReceiver
-        // first in binary
+        // structs in binary
         // rest in empty
         await shouldAcceptMessageStruct(
             emptyAndCommentAndBinaryAndSliceReceiver.address,
             emptyAndCommentAndBinaryAndSliceReceiver.getReceiver,
             "binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndCommentAndBinaryAndSliceReceiver.address,
+            emptyAndCommentAndBinaryAndSliceReceiver.getReceiver,
+            "binary_empty_message",
+        );
         await shouldAcceptFrom(
             emptyAndCommentAndBinaryAndSliceReceiver.address,
-            1,
+            2,
             emptyAndCommentAndBinaryAndSliceReceiver.getReceiver,
             "empty",
         );
 
         // emptyAndStringAndBinaryAndSliceReceiver
-        // first in binary
+        // structs in binary
         // rest in empty
         await shouldAcceptMessageStruct(
             emptyAndStringAndBinaryAndSliceReceiver.address,
             emptyAndStringAndBinaryAndSliceReceiver.getReceiver,
             "binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndStringAndBinaryAndSliceReceiver.address,
+            emptyAndStringAndBinaryAndSliceReceiver.getReceiver,
+            "binary_empty_message",
+        );
         await shouldAcceptFrom(
             emptyAndStringAndBinaryAndSliceReceiver.address,
-            1,
+            2,
             emptyAndStringAndBinaryAndSliceReceiver.getReceiver,
             "empty",
         );
 
         // commentAndStringAndBinaryAndSliceReceiver
-        // first in binary
-        // second and third in the fallback receiver,
-        // but should accept the rest in the string receiver
+        // structs in binary
+        // middle ones in the fallback receiver,
+        // and the rest in the string receiver
         await shouldAcceptMessageStruct(
             commentAndStringAndBinaryAndSliceReceiver.address,
             commentAndStringAndBinaryAndSliceReceiver.getReceiver,
             "binary",
+        );
+        await shouldAcceptEmptyMessageStruct(
+            commentAndStringAndBinaryAndSliceReceiver.address,
+            commentAndStringAndBinaryAndSliceReceiver.getReceiver,
+            "binary_empty_message",
         );
         await shouldAcceptIncompleteOpCode(
             commentAndStringAndBinaryAndSliceReceiver.address,
@@ -1217,22 +1310,27 @@ describe("receivers-precedence", () => {
         );
         await shouldAcceptFrom(
             commentAndStringAndBinaryAndSliceReceiver.address,
-            3,
+            4,
             commentAndStringAndBinaryAndSliceReceiver.getReceiver,
             "fallback_string",
         );
 
-        // allReceivers should accept all the cases in the empty receiver
-        // first in binary
+        // allReceivers
+        // structs in binary
         // the rest in the empty receiver
         await shouldAcceptMessageStruct(
             allReceivers.address,
             allReceivers.getReceiver,
             "binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            allReceivers.address,
+            allReceivers.getReceiver,
+            "binary_empty_message",
+        );
         await shouldAcceptFrom(
             allReceivers.address,
-            1,
+            2,
             allReceivers.getReceiver,
             "empty",
         );
@@ -1240,10 +1338,12 @@ describe("receivers-precedence", () => {
 
     it("external receivers should process empty messages and empty strings correctly", async () => {
         // A message struct with empty string inside. Should only be accepted by binary receivers
-        const emptyMessageStruct = beginCell()
+        const emptyStringInMessageStruct = beginCell()
             .storeUint(100, 32)
             .storeStringRefTail("")
             .endCell();
+        // An empty message struct, should only be accepted by binary receivers.
+        const emptyMessageStruct = beginCell().storeUint(101, 32).endCell();
         // Message bodies with integer of size less than 32 bits will be processed by empty receivers (if present),
         // irrespective of the value of the integer
         const lessThan32Bits = beginCell().storeUint(10, 30).endCell();
@@ -1258,6 +1358,8 @@ describe("receivers-precedence", () => {
             .endCell();
 
         const bodiesToTry = [
+            emptyStringInMessageStruct,
+            emptyMessageStruct,
             lessThan32Bits,
             emptyBody,
             zeroOf32Bits,
@@ -1267,48 +1369,8 @@ describe("receivers-precedence", () => {
         // Some utility functions that carry out the actual tests and assertions
 
         async function shouldFailFrom(testedContract: Address, from: number) {
-            const contract = await blockchain.getContract(testedContract);
             for (const body of bodiesToTry.slice(from)) {
-                try {
-                    await contract.receiveMessage(
-                        external({
-                            to: contract.address,
-                            body: body,
-                        }),
-                    );
-
-                    // It should not reach here
-                    expect(false).toBe(true);
-                } catch (e) {
-                    expect(e instanceof Error).toBe(true);
-                    if (e instanceof Error) {
-                        expect(e.message).toContain(
-                            "External message not accepted by smart contract",
-                        );
-                    }
-                }
-            }
-        }
-
-        async function shouldFailIncompleteOpCode(testedContract: Address) {
-            const contract = await blockchain.getContract(testedContract);
-            try {
-                await contract.receiveMessage(
-                    external({
-                        to: contract.address,
-                        body: lessThan32Bits,
-                    }),
-                );
-
-                // It should not reach here
-                expect(false).toBe(true);
-            } catch (e) {
-                expect(e instanceof Error).toBe(true);
-                if (e instanceof Error) {
-                    expect(e.message).toContain(
-                        "External message not accepted by smart contract",
-                    );
-                }
+                await shouldFailBody(testedContract, body);
             }
         }
 
@@ -1318,41 +1380,30 @@ describe("receivers-precedence", () => {
             receiverGetter: () => Promise<string>,
             expectedRestReceiver: string,
         ) {
-            const contract = await blockchain.getContract(testedContract);
             for (const body of bodiesToTry.slice(from)) {
-                const transaction = await contract.receiveMessage(
-                    external({
-                        to: contract.address,
-                        body: body,
-                    }),
+                await shouldAcceptBody(
+                    testedContract,
+                    receiverGetter,
+                    expectedRestReceiver,
+                    body,
                 );
-
-                const transDesc = getTransactionDescription(transaction);
-                expect(transDesc.aborted).toBe(false);
-                expect(await receiverGetter()).toBe(expectedRestReceiver);
             }
         }
 
-        async function shouldFailEmptyBody(testedContract: Address) {
-            const contract = await blockchain.getContract(testedContract);
-            try {
-                await contract.receiveMessage(
-                    external({
-                        to: contract.address,
-                        body: emptyBody,
-                    }),
-                );
+        async function shouldFailIncompleteOpCode(testedContract: Address) {
+            await shouldFailBody(testedContract, lessThan32Bits);
+        }
 
-                // It should not reach here
-                expect(false).toBe(true);
-            } catch (e) {
-                expect(e instanceof Error).toBe(true);
-                if (e instanceof Error) {
-                    expect(e.message).toContain(
-                        "External message not accepted by smart contract",
-                    );
-                }
-            }
+        async function shouldFailEmptyBody(testedContract: Address) {
+            await shouldFailBody(testedContract, emptyBody);
+        }
+
+        async function shouldFailMessageStruct(testedContract: Address) {
+            await shouldFailBody(testedContract, emptyStringInMessageStruct);
+        }
+
+        async function shouldFailEmptyMessageStruct(testedContract: Address) {
+            await shouldFailBody(testedContract, emptyMessageStruct);
         }
 
         async function shouldAcceptIncompleteOpCode(
@@ -1360,17 +1411,12 @@ describe("receivers-precedence", () => {
             receiverGetter: () => Promise<string>,
             expectedReceiver: string,
         ) {
-            const contract = await blockchain.getContract(testedContract);
-            const transaction = await contract.receiveMessage(
-                external({
-                    to: contract.address,
-                    body: lessThan32Bits,
-                }),
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                lessThan32Bits,
             );
-
-            const transDesc = getTransactionDescription(transaction);
-            expect(transDesc.aborted).toBe(false);
-            expect(await receiverGetter()).toBe(expectedReceiver);
         }
 
         async function shouldAcceptEmptyBody(
@@ -1378,26 +1424,66 @@ describe("receivers-precedence", () => {
             receiverGetter: () => Promise<string>,
             expectedReceiver: string,
         ) {
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                emptyBody,
+            );
+        }
+
+        async function shouldAcceptMessageStruct(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                emptyStringInMessageStruct,
+            );
+        }
+
+        async function shouldAcceptEmptyMessageStruct(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                emptyMessageStruct,
+            );
+        }
+
+        async function shouldAcceptBody(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedRestReceiver: string,
+            body: Cell,
+        ) {
             const contract = await blockchain.getContract(testedContract);
             const transaction = await contract.receiveMessage(
                 external({
                     to: contract.address,
-                    body: emptyBody,
+                    body: body,
                 }),
             );
 
             const transDesc = getTransactionDescription(transaction);
             expect(transDesc.aborted).toBe(false);
-            expect(await receiverGetter()).toBe(expectedReceiver);
+            expect(await receiverGetter()).toBe(expectedRestReceiver);
         }
 
-        async function shouldFailMessageStruct(testedContract: Address) {
+        async function shouldFailBody(testedContract: Address, body: Cell) {
             const contract = await blockchain.getContract(testedContract);
             try {
                 await contract.receiveMessage(
                     external({
                         to: contract.address,
-                        body: emptyMessageStruct,
+                        body: body,
                     }),
                 );
 
@@ -1411,24 +1497,6 @@ describe("receivers-precedence", () => {
                     );
                 }
             }
-        }
-
-        async function shouldAcceptMessageStruct(
-            testedContract: Address,
-            receiverGetter: () => Promise<string>,
-            expectedReceiver: string,
-        ) {
-            const contract = await blockchain.getContract(testedContract);
-            const transaction = await contract.receiveMessage(
-                external({
-                    to: contract.address,
-                    body: emptyMessageStruct,
-                }),
-            );
-
-            const transDesc = getTransactionDescription(transaction);
-            expect(transDesc.aborted).toBe(false);
-            expect(await receiverGetter()).toBe(expectedReceiver);
         }
 
         // Tests start here
@@ -1437,12 +1505,13 @@ describe("receivers-precedence", () => {
         await shouldFailFrom(noReceivers.address, 0);
 
         // emptyReceiver
-        // Should fail on message struct
-        // And accept the rest in empty receiver.
+        // Should fail on message structs
+        // And accept the rest
         await shouldFailMessageStruct(emptyReceiver.address);
+        await shouldFailEmptyMessageStruct(emptyReceiver.address);
         await shouldAcceptFrom(
             emptyReceiver.address,
-            1,
+            2,
             emptyReceiver.getReceiver,
             "external_empty",
         );
@@ -1450,26 +1519,32 @@ describe("receivers-precedence", () => {
         // commentReceiver should fail in all the cases
         await shouldFailFrom(commentReceiver.address, 0);
 
-        // stringReceiver should fail in first, second and third cases, but accept the rest
+        // stringReceiver should accept from 4 onwards on string receiver
         await shouldFailMessageStruct(stringReceiver.address);
+        await shouldFailEmptyMessageStruct(stringReceiver.address);
         await shouldFailIncompleteOpCode(stringReceiver.address);
         await shouldFailEmptyBody(stringReceiver.address);
         await shouldAcceptFrom(
             stringReceiver.address,
-            3,
+            4,
             stringReceiver.getReceiver,
             "external_fallback_string",
         );
 
         // binaryReceiver
-        // Accepts the first case
+        // Accepts binary cases
         // and fails in the rest
         await shouldAcceptMessageStruct(
             binaryReceiver.address,
             binaryReceiver.getReceiver,
             "external_binary",
         );
-        await shouldFailFrom(binaryReceiver.address, 1);
+        await shouldAcceptEmptyMessageStruct(
+            binaryReceiver.address,
+            binaryReceiver.getReceiver,
+            "external_binary_empty_message",
+        );
+        await shouldFailFrom(binaryReceiver.address, 2);
 
         // sliceReceiver should accept all the cases
         await shouldAcceptFrom(
@@ -1480,77 +1555,95 @@ describe("receivers-precedence", () => {
         );
 
         // emptyAndCommentReceiver
-        // Fails in the message struct
+        // Fails in the message structs
         // and accepts the rest of cases in the empty receiver
         await shouldFailMessageStruct(emptyAndCommentReceiver.address);
+        await shouldFailEmptyMessageStruct(emptyAndCommentReceiver.address);
         await shouldAcceptFrom(
             emptyAndCommentReceiver.address,
-            1,
+            2,
             emptyAndCommentReceiver.getReceiver,
             "external_empty",
         );
 
         // emptyAndStringReceiver
-        // Fails in the message struct
+        // Fails in the message structs
         // and accepts the rest of cases in the empty receiver
         await shouldFailMessageStruct(emptyAndStringReceiver.address);
+        await shouldFailEmptyMessageStruct(emptyAndStringReceiver.address);
         await shouldAcceptFrom(
             emptyAndStringReceiver.address,
-            1,
+            2,
             emptyAndStringReceiver.getReceiver,
             "external_empty",
         );
 
         // emptyAndBinaryReceiver
-        // Accepts the message struct in the binary receiver
+        // Accepts the message structs in the binary receiver
         // and accepts the rest of cases in the empty receiver
         await shouldAcceptMessageStruct(
             emptyAndBinaryReceiver.address,
             emptyAndBinaryReceiver.getReceiver,
             "external_binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndBinaryReceiver.address,
+            emptyAndBinaryReceiver.getReceiver,
+            "external_binary_empty_message",
+        );
         await shouldAcceptFrom(
             emptyAndBinaryReceiver.address,
-            1,
+            2,
             emptyAndBinaryReceiver.getReceiver,
             "external_empty",
         );
 
         // emptyAndSliceReceiver
-        // Accepts the message struct in the fallback receiver
+        // Accepts the message structs in the fallback receiver
         // and accepts the rest of cases in the empty receiver
         await shouldAcceptMessageStruct(
             emptyAndSliceReceiver.address,
             emptyAndSliceReceiver.getReceiver,
             "external_fallback",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndSliceReceiver.address,
+            emptyAndSliceReceiver.getReceiver,
+            "external_fallback",
+        );
         await shouldAcceptFrom(
             emptyAndSliceReceiver.address,
-            1,
+            2,
             emptyAndSliceReceiver.getReceiver,
             "external_empty",
         );
 
-        // commentAndStringReceiver should fail in the first, second, and third, but accept the rest in the string receiver
+        // commentAndStringReceiver accepts from 4 onwards on string receiver
         await shouldFailMessageStruct(commentAndStringReceiver.address);
+        await shouldFailEmptyMessageStruct(commentAndStringReceiver.address);
         await shouldFailIncompleteOpCode(commentAndStringReceiver.address);
         await shouldFailEmptyBody(commentAndStringReceiver.address);
         await shouldAcceptFrom(
             commentAndStringReceiver.address,
-            3,
+            4,
             commentAndStringReceiver.getReceiver,
             "external_fallback_string",
         );
 
         // commentAndBinaryReceiver
-        // Accepts the message struct in the binary receiver
+        // Accepts the message structs in the binary receiver
         // and fails in the rest
         await shouldAcceptMessageStruct(
             commentAndBinaryReceiver.address,
             commentAndBinaryReceiver.getReceiver,
             "external_binary",
         );
-        await shouldFailFrom(commentAndBinaryReceiver.address, 1);
+        await shouldAcceptEmptyMessageStruct(
+            commentAndBinaryReceiver.address,
+            commentAndBinaryReceiver.getReceiver,
+            "external_binary_empty_message",
+        );
+        await shouldFailFrom(commentAndBinaryReceiver.address, 2);
 
         // commentAndSliceReceiver should accept all the cases in the fallback receiver
         await shouldAcceptFrom(
@@ -1561,25 +1654,35 @@ describe("receivers-precedence", () => {
         );
 
         // stringAndBinaryReceiver
-        // should accept the first
-        // should fail in the second and third, but accept the rest in the string receiver
+        // should accepts structs in binary receivers.
+        // accepts from 4 onwards in the string receiver
         await shouldAcceptMessageStruct(
             stringAndBinaryReceiver.address,
             stringAndBinaryReceiver.getReceiver,
             "external_binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            stringAndBinaryReceiver.address,
+            stringAndBinaryReceiver.getReceiver,
+            "external_binary_empty_message",
+        );
         await shouldFailIncompleteOpCode(stringAndBinaryReceiver.address);
         await shouldFailEmptyBody(stringAndBinaryReceiver.address);
         await shouldAcceptFrom(
             stringAndBinaryReceiver.address,
-            3,
+            4,
             stringAndBinaryReceiver.getReceiver,
             "external_fallback_string",
         );
 
-        // stringAndSliceReceiver should accept first, second and third in the fallback receiver
-        // and the rest in the string receiver
+        // stringAndSliceReceiver should accept firsts in fallback receiver
+        // and the rest from 4 onwards in the string receiver
         await shouldAcceptMessageStruct(
+            stringAndSliceReceiver.address,
+            stringAndSliceReceiver.getReceiver,
+            "external_fallback",
+        );
+        await shouldAcceptEmptyMessageStruct(
             stringAndSliceReceiver.address,
             stringAndSliceReceiver.getReceiver,
             "external_fallback",
@@ -1596,114 +1699,151 @@ describe("receivers-precedence", () => {
         );
         await shouldAcceptFrom(
             stringAndSliceReceiver.address,
-            3,
+            4,
             stringAndSliceReceiver.getReceiver,
             "external_fallback_string",
         );
 
         // binaryAndSliceReceiver
-        // should accept the first in binary receiver and rest in the fallback receiver
+        // should accept structs in binary receivers and rest in the fallback receiver
         await shouldAcceptMessageStruct(
             binaryAndSliceReceiver.address,
             binaryAndSliceReceiver.getReceiver,
             "external_binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            binaryAndSliceReceiver.address,
+            binaryAndSliceReceiver.getReceiver,
+            "external_binary_empty_message",
+        );
         await shouldAcceptFrom(
             binaryAndSliceReceiver.address,
-            1,
+            2,
             binaryAndSliceReceiver.getReceiver,
             "external_fallback",
         );
 
         // emptyAndCommentAndStringReceiver
-        // should fail on message struct
+        // should fail on message structs
         // but accept all the rest in the empty receiver
         await shouldFailMessageStruct(emptyAndCommentAndStringReceiver.address);
+        await shouldFailEmptyMessageStruct(
+            emptyAndCommentAndStringReceiver.address,
+        );
         await shouldAcceptFrom(
             emptyAndCommentAndStringReceiver.address,
-            1,
+            2,
             emptyAndCommentAndStringReceiver.getReceiver,
             "external_empty",
         );
 
         // emptyAndCommentAndBinaryReceiver
-        // should accept the first in binary receiver and the rest in the empty receiver
+        // should accept structs in binary receivers and the rest in the empty receiver
         await shouldAcceptMessageStruct(
             emptyAndCommentAndBinaryReceiver.address,
             emptyAndCommentAndBinaryReceiver.getReceiver,
             "external_binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndCommentAndBinaryReceiver.address,
+            emptyAndCommentAndBinaryReceiver.getReceiver,
+            "external_binary_empty_message",
+        );
         await shouldAcceptFrom(
             emptyAndCommentAndBinaryReceiver.address,
-            1,
+            2,
             emptyAndCommentAndBinaryReceiver.getReceiver,
             "external_empty",
         );
 
         // emptyAndCommentAndSliceReceiver
-        // should accept the first in fallback and the rest in the empty receiver
+        // should accept the structs in fallback and the rest in the empty receiver
         await shouldAcceptMessageStruct(
+            emptyAndCommentAndSliceReceiver.address,
+            emptyAndCommentAndSliceReceiver.getReceiver,
+            "external_fallback",
+        );
+        await shouldAcceptEmptyMessageStruct(
             emptyAndCommentAndSliceReceiver.address,
             emptyAndCommentAndSliceReceiver.getReceiver,
             "external_fallback",
         );
         await shouldAcceptFrom(
             emptyAndCommentAndSliceReceiver.address,
-            1,
+            2,
             emptyAndCommentAndSliceReceiver.getReceiver,
             "external_empty",
         );
 
         // emptyAndStringAndBinaryReceiver
-        // should accept the first in binary and the rest in the empty receiver
+        // should accept structs in binary and the rest in the empty receiver
         await shouldAcceptMessageStruct(
             emptyAndStringAndBinaryReceiver.address,
             emptyAndStringAndBinaryReceiver.getReceiver,
             "external_binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndStringAndBinaryReceiver.address,
+            emptyAndStringAndBinaryReceiver.getReceiver,
+            "external_binary_empty_message",
+        );
         await shouldAcceptFrom(
             emptyAndStringAndBinaryReceiver.address,
-            1,
+            2,
             emptyAndStringAndBinaryReceiver.getReceiver,
             "external_empty",
         );
 
         // emptyAndStringAndSliceReceiver
-        // should accept the first in fallback and the rest in the empty receiver
+        // should accept structs in fallback and the rest in the empty receiver
         await shouldAcceptMessageStruct(
+            emptyAndStringAndSliceReceiver.address,
+            emptyAndStringAndSliceReceiver.getReceiver,
+            "external_fallback",
+        );
+        await shouldAcceptEmptyMessageStruct(
             emptyAndStringAndSliceReceiver.address,
             emptyAndStringAndSliceReceiver.getReceiver,
             "external_fallback",
         );
         await shouldAcceptFrom(
             emptyAndStringAndSliceReceiver.address,
-            1,
+            2,
             emptyAndStringAndSliceReceiver.getReceiver,
             "external_empty",
         );
 
         // emptyAndBinaryAndSliceReceiver
-        // should accept the first in binary and the rest in the empty receiver
+        // should accept structs in binary and the rest in the empty receiver
         await shouldAcceptMessageStruct(
             emptyAndBinaryAndSliceReceiver.address,
             emptyAndBinaryAndSliceReceiver.getReceiver,
             "external_binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndBinaryAndSliceReceiver.address,
+            emptyAndBinaryAndSliceReceiver.getReceiver,
+            "external_binary_empty_message",
+        );
         await shouldAcceptFrom(
             emptyAndBinaryAndSliceReceiver.address,
-            1,
+            2,
             emptyAndBinaryAndSliceReceiver.getReceiver,
             "external_empty",
         );
 
         // commentAndStringAndBinaryReceiver
-        // should accept first in binary receiver
-        // should fail in the second and third
-        // but accept the rest in the string receiver
+        // should accept structs in binary receivers
+        // and accept from 4 onwards at the string receiver
         await shouldAcceptMessageStruct(
             commentAndStringAndBinaryReceiver.address,
             commentAndStringAndBinaryReceiver.getReceiver,
             "external_binary",
+        );
+        await shouldAcceptEmptyMessageStruct(
+            commentAndStringAndBinaryReceiver.address,
+            commentAndStringAndBinaryReceiver.getReceiver,
+            "external_binary_empty_message",
         );
         await shouldFailIncompleteOpCode(
             commentAndStringAndBinaryReceiver.address,
@@ -1711,19 +1851,24 @@ describe("receivers-precedence", () => {
         await shouldFailEmptyBody(commentAndStringAndBinaryReceiver.address);
         await shouldAcceptFrom(
             commentAndStringAndBinaryReceiver.address,
-            3,
+            4,
             commentAndStringAndBinaryReceiver.getReceiver,
             "external_fallback_string",
         );
 
         // commentAndStringAndSliceReceiver
-        // should accept first, second and third in fallback
+        // should accept firsts in fallback
         // but accept the rest in the string receiver
         await shouldAcceptMessageStruct(
             commentAndStringAndSliceReceiver.address,
             commentAndStringAndSliceReceiver.getReceiver,
             "external_fallback",
         );
+        await shouldAcceptEmptyMessageStruct(
+            commentAndStringAndSliceReceiver.address,
+            commentAndStringAndSliceReceiver.getReceiver,
+            "external_fallback",
+        );
         await shouldAcceptIncompleteOpCode(
             commentAndStringAndSliceReceiver.address,
             commentAndStringAndSliceReceiver.getReceiver,
@@ -1736,34 +1881,44 @@ describe("receivers-precedence", () => {
         );
         await shouldAcceptFrom(
             commentAndStringAndSliceReceiver.address,
-            3,
+            4,
             commentAndStringAndSliceReceiver.getReceiver,
             "external_fallback_string",
         );
 
         // commentAndBinaryAndSliceReceiver
-        // should accept the first in binary
+        // should accept structs in binary
         // should accept the rest in the fallback receiver
         await shouldAcceptMessageStruct(
             commentAndBinaryAndSliceReceiver.address,
             commentAndBinaryAndSliceReceiver.getReceiver,
             "external_binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            commentAndBinaryAndSliceReceiver.address,
+            commentAndBinaryAndSliceReceiver.getReceiver,
+            "external_binary_empty_message",
+        );
         await shouldAcceptFrom(
             commentAndBinaryAndSliceReceiver.address,
-            1,
+            2,
             commentAndBinaryAndSliceReceiver.getReceiver,
             "external_fallback",
         );
 
         // stringAndBinaryAndSliceReceiver
-        // should accept the first in binary
-        // should accept second and third in fallback
-        // but should accept the rest in the string receiver
+        // should accept the structs in binary
+        // should accept middle ones in fallback
+        // and the rest in the string receiver
         await shouldAcceptMessageStruct(
             stringAndBinaryAndSliceReceiver.address,
             stringAndBinaryAndSliceReceiver.getReceiver,
             "external_binary",
+        );
+        await shouldAcceptEmptyMessageStruct(
+            stringAndBinaryAndSliceReceiver.address,
+            stringAndBinaryAndSliceReceiver.getReceiver,
+            "external_binary_empty_message",
         );
         await shouldAcceptIncompleteOpCode(
             stringAndBinaryAndSliceReceiver.address,
@@ -1777,79 +1932,104 @@ describe("receivers-precedence", () => {
         );
         await shouldAcceptFrom(
             stringAndBinaryAndSliceReceiver.address,
-            3,
+            4,
             stringAndBinaryAndSliceReceiver.getReceiver,
             "external_fallback_string",
         );
 
         // emptyAndCommentAndStringAndBinaryReceiver
-        // first in binary
+        // structs in binary
         // rest in empty
         await shouldAcceptMessageStruct(
             emptyAndCommentAndStringAndBinaryReceiver.address,
             emptyAndCommentAndStringAndBinaryReceiver.getReceiver,
             "external_binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndCommentAndStringAndBinaryReceiver.address,
+            emptyAndCommentAndStringAndBinaryReceiver.getReceiver,
+            "external_binary_empty_message",
+        );
         await shouldAcceptFrom(
             emptyAndCommentAndStringAndBinaryReceiver.address,
-            1,
+            2,
             emptyAndCommentAndStringAndBinaryReceiver.getReceiver,
             "external_empty",
         );
 
         // emptyAndCommentAndStringAndSliceReceiver
-        // first in fallback
+        // structs in fallback
         // rest in empty
         await shouldAcceptMessageStruct(
             emptyAndCommentAndStringAndSliceReceiver.address,
             emptyAndCommentAndStringAndSliceReceiver.getReceiver,
             "external_fallback",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndCommentAndStringAndSliceReceiver.address,
+            emptyAndCommentAndStringAndSliceReceiver.getReceiver,
+            "external_fallback",
+        );
         await shouldAcceptFrom(
             emptyAndCommentAndStringAndSliceReceiver.address,
-            1,
+            2,
             emptyAndCommentAndStringAndSliceReceiver.getReceiver,
             "external_empty",
         );
 
         // emptyAndCommentAndBinaryAndSliceReceiver
-        // first in binary
+        // structs in binary
         // rest in empty
         await shouldAcceptMessageStruct(
             emptyAndCommentAndBinaryAndSliceReceiver.address,
             emptyAndCommentAndBinaryAndSliceReceiver.getReceiver,
             "external_binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndCommentAndBinaryAndSliceReceiver.address,
+            emptyAndCommentAndBinaryAndSliceReceiver.getReceiver,
+            "external_binary_empty_message",
+        );
         await shouldAcceptFrom(
             emptyAndCommentAndBinaryAndSliceReceiver.address,
-            1,
+            2,
             emptyAndCommentAndBinaryAndSliceReceiver.getReceiver,
             "external_empty",
         );
 
         // emptyAndStringAndBinaryAndSliceReceiver
-        // first in binary
+        // structs in binary
         // rest in empty
         await shouldAcceptMessageStruct(
             emptyAndStringAndBinaryAndSliceReceiver.address,
             emptyAndStringAndBinaryAndSliceReceiver.getReceiver,
             "external_binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            emptyAndStringAndBinaryAndSliceReceiver.address,
+            emptyAndStringAndBinaryAndSliceReceiver.getReceiver,
+            "external_binary_empty_message",
+        );
         await shouldAcceptFrom(
             emptyAndStringAndBinaryAndSliceReceiver.address,
-            1,
+            2,
             emptyAndStringAndBinaryAndSliceReceiver.getReceiver,
             "external_empty",
         );
 
         // commentAndStringAndBinaryAndSliceReceiver
-        // first in binary
-        // second and third in the fallback receiver,
-        // but should accept the rest in the string receiver
+        // structs in binary
+        // middle ones in the fallback receiver,
+        // and the rest in the string receiver
         await shouldAcceptMessageStruct(
             commentAndStringAndBinaryAndSliceReceiver.address,
             commentAndStringAndBinaryAndSliceReceiver.getReceiver,
             "external_binary",
+        );
+        await shouldAcceptEmptyMessageStruct(
+            commentAndStringAndBinaryAndSliceReceiver.address,
+            commentAndStringAndBinaryAndSliceReceiver.getReceiver,
+            "external_binary_empty_message",
         );
         await shouldAcceptIncompleteOpCode(
             commentAndStringAndBinaryAndSliceReceiver.address,
@@ -1863,22 +2043,27 @@ describe("receivers-precedence", () => {
         );
         await shouldAcceptFrom(
             commentAndStringAndBinaryAndSliceReceiver.address,
-            3,
+            4,
             commentAndStringAndBinaryAndSliceReceiver.getReceiver,
             "external_fallback_string",
         );
 
         // allReceivers
-        // first in binary
+        // structs in binary
         // the rest in the empty receiver
         await shouldAcceptMessageStruct(
             allReceivers.address,
             allReceivers.getReceiver,
             "external_binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            allReceivers.address,
+            allReceivers.getReceiver,
+            "external_binary_empty_message",
+        );
         await shouldAcceptFrom(
             allReceivers.address,
-            1,
+            2,
             allReceivers.getReceiver,
             "external_empty",
         );
@@ -1886,10 +2071,12 @@ describe("receivers-precedence", () => {
 
     it("bounced receivers should process empty messages and empty strings correctly", async () => {
         // A message struct with empty string inside
-        const emptyMessageStruct = beginCell()
+        const emptyStringInMessageStruct = beginCell()
             .storeUint(100, 32)
             .storeStringRefTail("")
             .endCell();
+        // An empty message struct
+        const emptyMessageStruct = beginCell().storeUint(101, 32).endCell();
         // Message body with less than 32 bits in its opcode.
         const lessThan32Bits = beginCell().storeUint(10, 30).endCell();
         // An actual empty message body
@@ -1903,6 +2090,7 @@ describe("receivers-precedence", () => {
             .endCell();
 
         const bodiesToTry = [
+            emptyStringInMessageStruct,
             emptyMessageStruct,
             lessThan32Bits,
             emptyBody,
@@ -1924,39 +2112,33 @@ describe("receivers-precedence", () => {
             expectedReceiver: string,
         ) {
             for (const body of bodiesToTry.slice(from)) {
-                // Request testedContract to send a message to the contract that has no receivers.
-                // Such contract will reject all messages and bounce them back into the
-                // testedContract
-                const requestResult = await testedContractSend(
-                    treasure.getSender(),
-                    { value: toNano("10") },
-                    {
-                        $$type: "SendCellToAddress",
-                        address: noReceivers.address,
-                        body,
-                    },
+                await shouldAcceptBody(
+                    testedContract,
+                    testedContractSend,
+                    receiverGetter,
+                    expectedReceiver,
+                    body,
                 );
-
-                expect(requestResult.transactions).toHaveTransaction({
-                    from: noReceivers.address,
-                    to: testedContract,
-                    success: true,
-                });
-                expect(await receiverGetter()).toBe(expectedReceiver);
-
-                const resetResult = await testedContractSend(
-                    treasure.getSender(),
-                    { value: toNano("10") },
-                    "reset",
-                );
-
-                expect(resetResult.transactions).toHaveTransaction({
-                    from: treasure.address,
-                    to: testedContract,
-                    success: true,
-                });
-                expect(await receiverGetter()).toBe("unknown");
             }
+        }
+
+        async function shouldAcceptMessageStruct(
+            testedContract: Address,
+            testedContractSend: (
+                sender: Sender,
+                args: { value: bigint },
+                body: SendCellToAddress | "reset",
+            ) => Promise<SendMessageResult>,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            await shouldAcceptBody(
+                testedContract,
+                testedContractSend,
+                receiverGetter,
+                expectedReceiver,
+                emptyStringInMessageStruct,
+            );
         }
 
         async function shouldAcceptEmptyMessageStruct(
@@ -1969,6 +2151,26 @@ describe("receivers-precedence", () => {
             receiverGetter: () => Promise<string>,
             expectedReceiver: string,
         ) {
+            await shouldAcceptBody(
+                testedContract,
+                testedContractSend,
+                receiverGetter,
+                expectedReceiver,
+                emptyMessageStruct,
+            );
+        }
+
+        async function shouldAcceptBody(
+            testedContract: Address,
+            testedContractSend: (
+                sender: Sender,
+                args: { value: bigint },
+                body: SendCellToAddress | "reset",
+            ) => Promise<SendMessageResult>,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+            body: Cell,
+        ) {
             // Request testedContract to send a message to the contract that has no receivers.
             // Such contract will reject all messages and bounce them back into the
             // testedContract
@@ -1978,7 +2180,7 @@ describe("receivers-precedence", () => {
                 {
                     $$type: "SendCellToAddress",
                     address: noReceivers.address,
-                    body: emptyMessageStruct,
+                    body: body,
                 },
             );
 
@@ -2016,16 +2218,22 @@ describe("receivers-precedence", () => {
         );
 
         // binaryBounced
-        // It will catch the bounced binary message
+        // It will catch the bounced binary messages.
         // The rest will ignore them without error, and remain in "unknown".
-        await shouldAcceptEmptyMessageStruct(
+        await shouldAcceptMessageStruct(
             binaryBounced.address,
             binaryBounced.send,
             binaryBounced.getReceiver,
             "bounced_binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            binaryBounced.address,
+            binaryBounced.send,
+            binaryBounced.getReceiver,
+            "bounced_binary_empty_message",
+        );
         await shouldAcceptFrom(
-            1,
+            2,
             binaryBounced.address,
             binaryBounced.send,
             binaryBounced.getReceiver,
@@ -2043,16 +2251,22 @@ describe("receivers-precedence", () => {
         );
 
         // allBounced
-        // It will catch the bounced binary message in the binary bounced receiver
+        // It will catch the bounced binary messages in the binary bounced receivers
         // The rest in the fallback bounced receiver
-        await shouldAcceptEmptyMessageStruct(
+        await shouldAcceptMessageStruct(
             allBounced.address,
             allBounced.send,
             allBounced.getReceiver,
             "bounced_binary",
         );
+        await shouldAcceptEmptyMessageStruct(
+            allBounced.address,
+            allBounced.send,
+            allBounced.getReceiver,
+            "bounced_binary_empty_message",
+        );
         await shouldAcceptFrom(
-            1,
+            2,
             allBounced.address,
             allBounced.send,
             allBounced.getReceiver,

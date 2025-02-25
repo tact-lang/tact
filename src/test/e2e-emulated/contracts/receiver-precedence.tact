@@ -2,6 +2,8 @@ message(100) Message {
     msg: String;
 }
 
+message(101) Empty { }
+
 message BinaryIntOperation {
     op: String;
     val1: Int;
@@ -229,12 +231,21 @@ contract StringReceiverTester {
     }
 }
 
-// This contract only has the binary message receiver 
+// This contract only has the binary message receivers
 contract BinaryReceiverTester {
     receiver: String = "unknown";
 
     receive(msg: Message) {
         self.receiver = "binary";
+    }
+
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
     }
     
     external(msg: Message) {
@@ -330,6 +341,15 @@ contract EmptyAndBinaryReceiverTester {
     receive(msg: Message) {
         self.receiver = "binary";
     }
+
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
+    }
     
     external() {
         acceptMessage();
@@ -411,6 +431,15 @@ contract CommentAndBinaryReceiverTester {
     receive(msg: Message) {
         self.receiver = "binary";
     }
+
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
+    }
     
     external("message") {
         acceptMessage();
@@ -465,6 +494,15 @@ contract StringAndBinaryReceiverTester {
     receive(msg: Message) {
         self.receiver = "binary";
     }
+
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
+    }
     
     external(msg: String) {
         acceptMessage();
@@ -518,6 +556,15 @@ contract BinaryAndSliceReceiverTester {
     
     receive(msg: Slice) {
         self.receiver = "fallback";
+    }
+
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
     }
 
     external(msg: Message) {
@@ -585,6 +632,15 @@ contract EmptyAndCommentAndBinaryReceiverTester {
 
     receive(msg: Message) {
         self.receiver = "binary";
+    }
+
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
     }
 
     external() {
@@ -658,6 +714,15 @@ contract EmptyAndStringAndBinaryReceiverTester {
     receive(msg: Message) {
         self.receiver = "binary";
     }
+
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
+    }
     
     external() {
         acceptMessage();
@@ -730,6 +795,15 @@ contract EmptyAndBinaryAndSliceReceiverTester {
     receive(msg: Slice) {
         self.receiver = "fallback";
     }
+
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
+    }
     
     external() {
         acceptMessage();
@@ -765,6 +839,15 @@ contract CommentAndStringAndBinaryReceiverTester {
 
     receive(msg: Message) {
         self.receiver = "binary";
+    }
+
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
     }
 
     external("message") {
@@ -823,7 +906,7 @@ contract CommentAndStringAndSliceReceiverTester {
     }
 }
 
-// This contract has the specific comment, string and fallback receivers
+// This contract has the specific comment, binary and fallback receivers
 contract CommentAndBinaryAndSliceReceiverTester {
     receiver: String = "unknown";
 
@@ -837,6 +920,15 @@ contract CommentAndBinaryAndSliceReceiverTester {
 
     receive(msg: Slice) {
         self.receiver = "fallback";
+    }
+
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
     }
 
     external("message") {
@@ -873,6 +965,15 @@ contract StringAndBinaryAndSliceReceiverTester {
 
     receive(msg: Slice) {
         self.receiver = "fallback";
+    }
+
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
     }
 
     external(msg: String) {
@@ -913,6 +1014,15 @@ contract EmptyAndCommentAndStringAndBinaryReceiverTester {
 
     receive(msg: Message) {
         self.receiver = "binary";
+    }
+
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
     }
 
     external() {
@@ -1005,6 +1115,15 @@ contract EmptyAndCommentAndBinaryAndSliceReceiverTester {
         self.receiver = "fallback";
     }
 
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
+    }
+
     external() {
         acceptMessage();
         self.receiver = "external_empty";
@@ -1050,6 +1169,15 @@ contract EmptyAndStringAndBinaryAndSliceReceiverTester {
         self.receiver = "fallback";
     }
 
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
+    }
+
     external() {
         acceptMessage();
         self.receiver = "external_empty";
@@ -1093,6 +1221,15 @@ contract CommentAndStringAndBinaryAndSliceReceiverTester {
     
     receive(msg: Slice) {
         self.receiver = "fallback";
+    }
+
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
     }
 
     external("message") {
@@ -1142,6 +1279,15 @@ contract AllReceiverTester {
     
     receive(msg: Slice) {
         self.receiver = "fallback";
+    }
+
+    receive(msg: Empty) {
+        self.receiver = "binary_empty_message";
+    }
+
+    external(msg: Empty) {
+        acceptMessage();
+        self.receiver = "external_binary_empty_message";
     }
 
     external() {
@@ -1205,6 +1351,10 @@ contract BinaryBouncedTester {
         self.receiver = "bounced_binary"
     }
 
+    bounced(msg: Empty) {
+        self.receiver = "bounced_binary_empty_message"
+    }
+
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
         send(SendParameters {
@@ -1261,6 +1411,10 @@ contract AllBouncedTester {
 
     bounced(msg: Slice) {
         self.receiver = "bounced_fallback"
+    }
+
+    bounced(msg: Empty) {
+        self.receiver = "bounced_binary_empty_message"
     }
 
     // Initiate a request to the specified address with the specified cell as message body
