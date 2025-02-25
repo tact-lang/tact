@@ -154,8 +154,7 @@ contract Escrow with Deployable {
     // send funds back to buyer
     receive(_: Cancel){
         require(self.isFunded == true, "not funded");
-        let ctx: Context = context();
-        require(self.guarantorAddress == ctx.sender, "not guarantor");
+        require(self.guarantorAddress == sender(), "not guarantor");
         // it's up to business logic to decide if guarantor gets royalty in case of cancel
         // in this implementation we don't pay royalty in case of cancel
         if (self.assetAddress == null) {
