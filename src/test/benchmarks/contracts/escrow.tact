@@ -6,16 +6,16 @@ fun calculateJettonWalletAddress(owner: Address, master: Address, code: Cell): A
     return contractAddress(StateInit{code: code, data: initData.toCell()});
 }
 
-message UpdateJettonWalletCode {
+message(0x9eacde91) UpdateJettonWalletCode {
     newJettonWalletCode: Cell;
 }
 message TakeEscrowData {
     escrowData: EscrowData;
 }
 
-message Funding {}
-message Approve {}
-message Cancel {}
+message(0x9451eca9) Funding {}
+message(0xe8c15681) Approve {}
+message(0xcc0f2526) Cancel {}
 message ProvideEscrowData {}
 
 struct EscrowData {
