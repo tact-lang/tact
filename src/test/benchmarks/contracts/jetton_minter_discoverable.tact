@@ -42,7 +42,7 @@ contract JettonMinter {
 
         let outMsg = takeWalletBody(targetJettonWallet, includedAddress, msg.queryId);
 
-        send(SendParameters {
+        transfer(TransferParameters {
             body: outMsg,
             to: sender(),
             value: 0,
@@ -57,7 +57,7 @@ contract JettonMinter {
         self.totalSupply -= msg.amount;
 
         if (msg.responseDestination.isNotNone()) {
-            send(SendParameters {
+            transfer(TransferParameters {
                 to: msg.responseDestination,
                 body: JettonExcesses{ queryId: msg.queryId }.toCell(),
                 value: 0,

@@ -88,6 +88,48 @@ struct SendParameters {
     bounce: Bool = true;
 }
 
+struct TransferParameters {
+    /// An 8-bit value that configures how to send a message, defaults to 0.
+    /// See: https://docs.tact-lang.org/book/message-mode
+    mode: Int = 0;
+
+    /// Optional message body as a `Cell`.
+    body: Cell? = null;
+    /// The amount of nanoToncoins you want to send with
+    /// the message. This value is used to cover forward fees,
+    /// unless the optional flag `SendPayGasSeparately` is used.
+    value: Int;
+
+    /// Recipient internal `Address` on TON Blockchain.
+    to: Address;
+
+    /// When set to `true` (default) message bounces back to the sender if
+    /// the recipient contract doesn't exist or wasn't able to process the message.
+    bounce: Bool = true;
+}
+
+asm fun transfer(params: TransferParameters) {
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+    STZEROES
+    // → Stack state
+    // s0: Builder
+    // s1: `data`
+    // s2: `code`
+    // s3: `body`
+    // s4: `mode`
+    STDICT
+    ENDC
+    SWAP
+    SENDRAWMSG
+}
+
 /// Global function. Queues the message to be sent using a `SendParameters` Struct.
 ///
 /// Attempts to queue more than 255 messages throw an exception with an exit code 33: `Action list is too long`.

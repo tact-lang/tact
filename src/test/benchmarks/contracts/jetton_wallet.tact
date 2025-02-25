@@ -75,7 +75,7 @@ contract JettonWallet {
 
         if (msg.forwardTonAmount > 0) {
             msgValue = ((msgValue - msg.forwardTonAmount) - fwd_fee);
-            send(SendParameters{
+            transfer(TransferParameters{
                 to: self.owner,
                 value: msg.forwardTonAmount,
                 mode: SendPayGasSeparately,
@@ -91,7 +91,7 @@ contract JettonWallet {
 
         // 0xd53276db -- Cashback to the original Sender
         if (msg.responseDestination != null && msgValue > 0) {
-            send(SendParameters{
+            transfer(TransferParameters{
                 to: msg.responseDestination!!,
                 value: msgValue,
                 mode: SendIgnoreErrors, // Jetton transfer is already succeeded, Here was only PayGasSeparately in Howard's code
@@ -114,7 +114,7 @@ contract JettonWallet {
         //let fwd_fee: Int = ctx.readForwardFee(); // Gas checks
         //require(ctx.value > ((fwd_fee + 2 * self.gasConsumption) + self.minTonsForStorage), "Invalid value - Burn");
         // Burn tokens
-        send(SendParameters{
+        transfer(TransferParameters{
             to: self.master,
             value: 0,
             mode: SendRemainingValue,
