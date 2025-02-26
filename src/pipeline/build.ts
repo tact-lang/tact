@@ -131,6 +131,11 @@ export async function build(args: {
         | undefined
     > = {};
 
+    const constants: Map<
+        string,
+        { name: string; value: string | undefined }[]
+    > = new Map();
+
     const allContracts = getAllTypes(ctx).filter((v) => v.kind === "contract");
 
     // Sort contracts in topological order
@@ -183,6 +188,7 @@ export async function build(args: {
                 content: v.code,
             }));
             codeEntrypoint = res.output.entrypoint;
+            constants.set(contractName, res.output.constants);
         } catch (e) {
             logger.error("Tact compilation failed");
             // show an error with a backtrace only in verbose mode
@@ -399,12 +405,17 @@ export async function build(args: {
             return { ok: false, error: errorMessages };
         }
         try {
-            const bindingsServer = writeTypescript(JSON.parse(pkg.abi), ctx, {
-                code: pkg.code,
-                prefix: pkg.init.prefix,
-                system: pkg.init.deployment.system,
-                args: pkg.init.args,
-            });
+            const bindingsServer = writeTypescript(
+                JSON.parse(pkg.abi),
+                ctx,
+                constants.get(pkg.name) ?? [],
+                {
+                    code: pkg.code,
+                    prefix: pkg.init.prefix,
+                    system: pkg.init.deployment.system,
+                    args: pkg.init.args,
+                },
+            );
             project.writeFile(
                 project.resolve(
                     config.output,

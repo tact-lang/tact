@@ -47,6 +47,7 @@ function writeArguments(args: ABIArgument[]) {
 export function writeTypescript(
     abi: ContractABI,
     ctx: CompilerContext,
+    constants: { name: string; value: string | undefined }[],
     init?: {
         code: string;
         system: string | null;
@@ -73,6 +74,7 @@ export function writeTypescript(
             TupleReader, 
             Dictionary, 
             contractAddress, 
+            address, 
             ContractProvider, 
             Sender, 
             Contract, 
@@ -270,6 +272,15 @@ export function writeTypescript(
     });
     w.append(`]`);
     w.append();
+
+    for (const constant of constants) {
+        if (typeof constant.value === "undefined") continue;
+        w.append(`export const ${constant.name} = ${constant.value};`);
+    }
+
+    if (constants.length > 0) {
+        w.append("");
+    }
 
     // Wrapper
     w.append(`export class ${abi.name} implements Contract {`);

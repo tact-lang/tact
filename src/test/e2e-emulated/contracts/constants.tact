@@ -13,6 +13,8 @@ const globalConst10: Int = factorial_recursive(globalConst3);  // 4! = 24
 const globalConst11: Int = factorial_iterative(globalConst3);  // 4! = 24
 const globalConst12: Int = fibonacci_recursive(globalConst3 + 2);  // fibonacci(6) = 8
 const globalConst13: Int = fibonacci_iterative(globalConst3 + 2);  // fibonacci(6) = 8
+const globalConst14: Cell = cell("te6cckEBCAEApAABFP8A9KQT9LzyyAsBAgFiAgMAptAB0HLXIdIA0gD6QCEQNFBmbwT4YQL4Yu1E0NIAAZT6QAExkzD4KOICkVvgcCHXSSDCH5UxAdMfMJEy4sAAAcEhsJvIfwHKAAHPFsntVOAw8sCCAgFIBAYBK7i9TtRNDSAAGU+kABMZMw+Cji2zwxgFAAJ6ASu4Ud7UTQ0gABlPpAATGTMPgo4ts8MYBwACIDervOk=");
+const globalConst15: Slice = slice("te6cckEBCAEApAABFP8A9KQT9LzyyAsBAgFiAgMAptAB0HLXIdIA0gD6QCEQNFBmbwT4YQL4Yu1E0NIAAZT6QAExkzD4KOICkVvgcCHXSSDCH5UxAdMfMJEy4sAAAcEhsJvIfwHKAAHPFsntVOAw8sCCAgFIBAYBK7i9TtRNDSAAGU+kABMZMw+Cji2zwxgFAAJ6ASu4Ud7UTQ0gABlPpAATGTMPgo4ts8MYBwACIDervOk=");
 
 const beforeDefinedC: Int = beforeDefinedA + beforeDefinedB;
 const beforeDefinedA: Int = beforeDefinedB;
@@ -345,6 +347,8 @@ contract ConstantTester {
     get fun globalConst11(): Int { return globalConst11; }
     get fun globalConst12(): Int { return globalConst12; }
     get fun globalConst13(): Int { return globalConst13; }
+    get fun globalConst14(): Cell { return globalConst14; }
+    get fun globalConst15(): Slice { return globalConst15; }
 
     get fun beforeDefinedA(): Int { return beforeDefinedA; }
     get fun beforeDefinedC(): Int { return beforeDefinedC; }

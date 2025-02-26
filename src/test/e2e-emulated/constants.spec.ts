@@ -1,7 +1,16 @@
 import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { ConstantTester } from "./contracts/output/constants_ConstantTester";
+import {
+    ConstantTester,
+    ConstantTester_something1,
+    ConstantTester_something5,
+    ConstantTester_something9,
+    ConstantTester_something35,
+    ConstantTester_something37,
+    globalConst14,
+    globalConst15,
+} from "./contracts/output/constants_ConstantTester";
 import "@ton/test-utils";
 
 describe("constants", () => {
@@ -32,15 +41,24 @@ describe("constants", () => {
     it("should implement constants correctly", async () => {
         // Check methods
         expect(await contract.getSomething1()).toEqual(11n);
+        expect(await contract.getSomething1()).toEqual(
+            ConstantTester_something1,
+        );
         expect(await contract.getSomething2()).toBeNull();
         expect(await contract.getSomething3()).toEqual(toNano("123"));
         expect(await contract.getSomething4()).toEqual(toNano("456"));
         expect(await contract.getSomething5()).toEqual("Hello world!");
+        expect(await contract.getSomething5()).toEqual(
+            ConstantTester_something5,
+        );
         expect(await contract.getSomething6()).toEqual(10n);
         expect(await contract.getSomething7()).toEqual(5n);
         expect(await contract.getSomething8()).toEqual(4n);
         expect((await contract.getSomething9()).toRawString()).toEqual(
             "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
+        );
+        expect((await contract.getSomething9()).toRawString()).toEqual(
+            ConstantTester_something9.toRawString(),
         );
         expect((await contract.getSomething10()).toRawString()).toEqual(
             "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
@@ -90,6 +108,9 @@ describe("constants", () => {
             a: false,
             b: 42n,
         });
+        expect(await contract.getSomething35()).toEqual(
+            ConstantTester_something35,
+        );
         expect(await contract.getSomething36()).toEqual({
             $$type: "S",
             a: false,
@@ -100,6 +121,9 @@ describe("constants", () => {
             a: 42n,
             s: { $$type: "S", a: true, b: 42n },
         });
+        expect(await contract.getSomething37()).toEqual(
+            ConstantTester_something37,
+        );
         expect(await contract.getSomething38()).toEqual(4n);
         expect(await contract.getSomething39()).toEqual(true);
         expect(await contract.getSomething40()).toEqual(true);
@@ -130,6 +154,15 @@ describe("constants", () => {
         expect(await contract.getGlobalConst11()).toEqual(24n);
         expect(await contract.getGlobalConst12()).toEqual(8n);
         expect(await contract.getGlobalConst13()).toEqual(8n);
+        expect(
+            (await contract.getGlobalConst14()).toBoc().toString("base64"),
+        ).toEqual(globalConst14.toBoc().toString("base64"));
+        expect(
+            (await contract.getGlobalConst15())
+                .asCell()
+                .toBoc()
+                .toString("base64"),
+        ).toEqual(globalConst15.asCell().toBoc().toString("base64"));
 
         expect(await contract.getBeforeDefinedA()).toEqual(10n);
         expect(await contract.getBeforeDefinedC()).toEqual(20n);
