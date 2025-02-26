@@ -199,12 +199,12 @@
       }
     },
     {
-      "label": "Benchmark 2025-02-26",
+      "label": "1.5.3 with optimized NOP instructions",
       "pr": null,
       "gas": {
-        "transfer": "16472",
-        "burn": "12463",
-        "discovery": "7868"
+        "transfer": "16436",
+        "burn": "12427",
+        "discovery": "7750"
       }
     }
   ]
