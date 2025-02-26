@@ -10,6 +10,8 @@ import {
     ADDR,
     CELL,
     SLICE,
+    SIMPLE_STRUCT,
+    NESTED_STRUCT,
 } from "./contracts/output/constants-for-wrappers_ConstantTester";
 import "@ton/test-utils";
 
@@ -58,6 +60,9 @@ describe("constants-for-wrappers", () => {
                 .toString("base64"),
         ).toEqual(SLICE.asCell().toBoc().toString("base64"));
 
+        expect(await contract.getGlobalSimpleStruct()).toEqual(SIMPLE_STRUCT);
+        expect(await contract.getGlobalNestedStruct()).toEqual(NESTED_STRUCT);
+
         expect(await contract.getContractInt()).toEqual(ConstantTester.INT);
         expect(await contract.getContractString()).toEqual(
             ConstantTester.STRING,
@@ -78,5 +83,12 @@ describe("constants-for-wrappers", () => {
                 .toBoc()
                 .toString("base64"),
         ).toEqual(ConstantTester.SLICE.asCell().toBoc().toString("base64"));
+
+        expect(await contract.getContractSimpleStruct()).toEqual(
+            ConstantTester.SIMPLE_STRUCT,
+        );
+        expect(await contract.getContractNestedStruct()).toEqual(
+            ConstantTester.NESTED_STRUCT,
+        );
     });
 });
