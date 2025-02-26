@@ -58,6 +58,14 @@ contract StdlibTest {
         return bl.storeMaybeRef(c);
     }
 
+    get fun loadMaybeRef(c: Slice): Cell? {
+        return c.loadMaybeRef();
+    }
+
+    get fun preloadMaybeRef(c: Slice): Cell? {
+        return c.preloadMaybeRef();
+    }
+
     get fun parseStdAddress(slice: Slice): StdAddress {
         return parseStdAddress(slice);
     }
