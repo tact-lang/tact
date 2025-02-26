@@ -194,11 +194,21 @@ export function writeInit(
 
     const codeBoc = codes[t.name]?.codeBoc;
     ctx.fun(ops.contractChildGetCode(t.name, ctx), () => {
+        if (typeof codeBoc === "undefined") {
+            ctx.comment(
+                "This function should be removed by the compiler. If you see it in your code, please report it at https://github.com/tact-lang/tact/issues",
+            );
+        }
         ctx.signature(`cell ${ops.contractChildGetCode(t.name, ctx)}()`);
         ctx.context("type:" + t.name + "$init");
         ctx.flag("inline");
         ctx.flag("impure");
-        ctx.asm("", `B{${codeBoc?.toString("hex")}} B>boc PUSHREF`);
+
+        const boc =
+            typeof codeBoc === "undefined"
+                ? "internal bug, please report to https://github.com/tact-lang/tact/issues"
+                : codeBoc.toString("hex");
+        ctx.asm("", `B{${boc}} B>boc PUSHREF`);
     });
 
     ctx.fun(ops.contractInitChild(t.name, ctx), () => {

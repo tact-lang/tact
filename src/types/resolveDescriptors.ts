@@ -2014,22 +2014,24 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
             if (src.kind === "static_call") {
                 const name = idText(src.function);
-                const sf = staticFunctions.get(name);
-                if (sf) {
-                    queuePush(sf.name, sf.ast);
+                const func = staticFunctions.get(name);
+                if (func) {
+                    queuePush(func.name, func.ast);
                 }
             }
         };
 
         // Traverse functions
         for (const f of t.functions.values()) {
-            queue.push(f.ast);
+            const fqn = `${t.name}.${f.name}`;
+            queuePush(fqn, f.ast);
         }
         for (const f of t.receivers) {
             queue.push(f.ast);
         }
         if (t.init) {
-            queue.push(t.init.ast);
+            const fqn = `${t.name}.init`;
+            queuePush(fqn, t.init.ast);
         }
 
         while (queue.length > 0) {
