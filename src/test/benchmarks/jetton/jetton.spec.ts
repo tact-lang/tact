@@ -21,14 +21,6 @@ import {
 } from "../contracts/output/jetton_minter_discoverable_JettonMinter";
 
 import "@ton/test-utils";
-import {
-    generateCodeSizeResults,
-    generateResults,
-    getUsedGas,
-    printBenchmarkTable,
-    getStateSizeForAccount,
-} from "../util";
-import benchmarkResults from "./results_gas.json";
 import benchmarkCodeSizeResults from "./results_code_size.json";
 import type {
     JettonBurn,
@@ -36,8 +28,14 @@ import type {
     JettonUpdateContent,
 } from "../contracts/output/jetton_minter_discoverable_JettonMinter";
 
-import { generateResults, getUsedGas, printBenchmarkTable } from "../util";
-import benchmarkResults from "./results.json";
+import {
+    generateCodeSizeResults,
+    generateResults,
+    getStateSizeForAccount,
+    getUsedGas,
+    printBenchmarkTable
+} from "../util";
+import benchmarkResults from "./results_gas.json";
 import { join, resolve } from "path";
 import { readFileSync } from "fs";
 import { storeProvideWalletAddress } from "../contracts/output/escrow_Escrow";
