@@ -99,7 +99,7 @@ asm extends fun asSlice(self: Address): Slice {}
 ///         newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
 ///         //         ↑  ↑
 ///         //         |  sha-256 hash of contract's init package (StateInit)
-///         //         chain id: 0 is a workchain, -1 is a Basechain
+///         //         chain id: 0 is a workchain, -1 is a masterchain
 /// }
 /// ```
 ///
@@ -117,7 +117,7 @@ inline fun newAddress(chain: Int, hash: Int): Address {
 
 /// Struct representing the standard address on TON Blockchain with signed 8-bit `workchain` ID and an unsigned 256-bit `address` in the specified `workchain`. Available since Tact 1.5.0.
 ///
-/// At the moment, only `workchain` IDs used on TON are 0 of the basechain and -1 of the Basechain.
+/// At the moment, only `workchain` IDs used on TON are 0 of the basechain and -1 of the masterchain.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-advanced#parsestdaddress
