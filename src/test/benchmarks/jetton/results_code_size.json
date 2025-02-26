@@ -3,31 +3,21 @@
     {
       "label": "FunC",
       "size": {
-        "minter cells": "16864",
-        "minter bits": "12414",
-        "wallet cells": "16864",
-        "wallet bits": "12414"
+        "minter cells": "34",
+        "minter bits": "11449",
+        "wallet cells": "37",
+        "wallet bits": "12752"
       },
       "pr": null
     },
     {
-      "label": "1.5.3",
+      "label": "1.5.4 with NOPs optimized",
+      "pr": "https://github.com/tact-lang/tact/pull/1959",
       "size": {
-        "minter cells": "16864",
-        "minter bits": "12414",
-        "wallet cells": "16864",
-        "wallet bits": "12414"
-      },
-      "pr": "https://github.com/tact-lang/tact/pull/1390"
-    },
-    {
-      "label": "Benchmark 2025-02-26",
-      "pr": null,
-      "size": {
-        "minter cells": "34",
-        "minter bits": "15518",
+        "minter cells": "33",
+        "minter bits": "15470",
         "wallet cells": "16",
-        "wallet bits": "8359"
+        "wallet bits": "8343"
       }
     }
   ]

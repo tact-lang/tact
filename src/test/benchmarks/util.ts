@@ -22,7 +22,7 @@ type BenchmarkResult = {
     gas: Record<string, number>;
 };
 
-type RawBenchmarkResult = {
+export type RawBenchmarkResult = {
     results: {
         label: string;
         pr: string | null;
@@ -98,18 +98,18 @@ export async function getStateSizeForAccount(
     blockchain: Blockchain,
     address: Address,
 ): Promise<{ cells: number; bits: number }> {
-    const minterState = (await blockchain.getContract(address)).accountState;
-    if (!minterState || minterState.type !== "active") {
-        throw new Error("Minter state not found");
+    const accountState = (await blockchain.getContract(address)).accountState;
+    if (!accountState || accountState.type !== "active") {
+        throw new Error("Account state not found");
     }
-    if (!minterState.state.code || !minterState.state.data) {
-        throw new Error("Minter state code or data not found");
+    if (!accountState.state.code || !accountState.state.data) {
+        throw new Error("Account state code or data not found");
     }
-    const minterCode = minterState.state.code;
-    const minterData = minterState.state.data;
+    const accountCode = accountState.state.code;
+    const accountData = accountState.state.data;
 
-    const codeSize = calculateCellsAndBits(minterCode);
-    const dataSize = calculateCellsAndBits(minterData);
+    const codeSize = calculateCellsAndBits(accountCode);
+    const dataSize = calculateCellsAndBits(accountData);
 
     return {
         cells: codeSize.cells + dataSize.cells,
@@ -128,9 +128,10 @@ function calculateChange(prev: number, curr: number): string {
         : chalk.green(`(${change}%)`);
 }
 
-function calculateChanges(
-    results: BenchmarkResult[],
+function calculateChanges<T extends { gas?: Record<string, number>; size?: Record<string, number> }>(
+    results: T[],
     metrics: readonly string[],
+    type: "gas" | "size",
 ): string[][] {
     return results.reduce<string[][]>((changes, currentResult, index) => {
         if (index === 0) {
@@ -142,8 +143,8 @@ function calculateChanges(
             typeof previousResult !== "undefined"
                 ? metrics.map((metric) =>
                       calculateChange(
-                          previousResult.gas[metric]!,
-                          currentResult.gas[metric]!,
+                          previousResult[type]![metric]!,
+                          currentResult[type]![metric]!,
                       ),
                   )
                 : [];
@@ -152,10 +153,11 @@ function calculateChanges(
     }, []);
 }
 
-export function printBenchmarkTable(results: BenchmarkResult[]): void {
-    const METRICS: readonly string[] = Object.keys(results[0]!.gas);
+export function printBenchmarkTable(benchmarkResults: BenchmarkResult[], codeSizeResults: CodeSizeResult[]): void {
+    const METRICS: readonly string[] = Object.keys(benchmarkResults[0]!.gas);
+    const codeSizeMetrics = Object.keys(codeSizeResults[0]!.size);
 
-    if (results.length === 0) {
+    if (benchmarkResults.length === 0) {
         console.log("No benchmark results to display.");
         return;
     }
@@ -168,9 +170,8 @@ export function printBenchmarkTable(results: BenchmarkResult[]): void {
         },
     });
 
-    const changes = calculateChanges(results, METRICS);
-
-    results
+    const changes = calculateChanges(benchmarkResults, METRICS, "gas");
+benchmarkResults
         .map(({ label, gas, pr: commit }, i) => [
             label,
             ...METRICS.map((metric, j) => `${gas[metric]} ${changes[i]?.[j]}`),
@@ -185,11 +186,38 @@ export function printBenchmarkTable(results: BenchmarkResult[]): void {
             table.push(arr);
         });
 
+    const codeSizeTable = new Table({
+        head: ["Run", ...codeSizeMetrics, "PR #"],
+        style: {
+            head: ["cyan"],
+            border: ["gray"],
+        },
+    });
+
+    const codeSizeChanges = calculateChanges(codeSizeResults, codeSizeMetrics, "size");
+
+    codeSizeResults
+        .map(({ label, size, pr: commit }, i) => [
+            label,
+            ...codeSizeMetrics.map((metric, j) => `${size[metric]} ${codeSizeChanges[i]?.[j]}`),
+            commit
+                ? commit.substring(
+                    commit.lastIndexOf("/") + 1,
+                    commit.lastIndexOf("/") + 8,
+                )
+                : "-",
+        ])
+        .forEach((arr) => {
+            codeSizeTable.push(arr);
+        });
+
     const output = [];
     output.push(table.toString());
+    output.push("\nCode Size Results:");
+    output.push(codeSizeTable.toString());
 
-    const first = results[0]!;
-    const last = results[results.length - 1]!;
+    const first = benchmarkResults[0]!;
+    const last = benchmarkResults[benchmarkResults.length - 1]!;
 
     output.push("\nComparison with FunC implementation:");
     output.push(

@@ -295,7 +295,7 @@ describe("Jetton", () => {
     });
 
     afterAll(() => {
-        printBenchmarkTable(results);
+        printBenchmarkTable(results, codeSizeResults);
     });
 
     it("transfer", async () => {
