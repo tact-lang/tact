@@ -208,6 +208,15 @@
       }
     },
     {
+      "label": "1.5.3 with no lazy init",
+      "pr": "https://github.com/tact-lang/tact/pull/1985",
+      "gas": {
+        "transfer": "16092",
+        "burn": "12123",
+        "discovery": "7683"
+      }
+    },
+    {
       "label": "1.5.3 with BasechainAddress",
       "pr": "https://github.com/tact-lang/tact/pull/2035",
       "gas": {

@@ -1,3 +1,4 @@
+import "@ton/test-utils";
 import {
     Address,
     beginCell,
@@ -10,29 +11,27 @@ import {
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 
-import type {
-    Mint,
-    ProvideWalletAddress,
-} from "../contracts/output/jetton_minter_discoverable_JettonMinter";
 import {
+    type Mint,
+    type ProvideWalletAddress,
     JettonMinter,
     storeJettonBurn,
     storeJettonTransfer,
     storeMint,
 } from "../contracts/output/jetton_minter_discoverable_JettonMinter";
-
-import "@ton/test-utils";
-import { generateResults, getUsedGas, printBenchmarkTable } from "../util";
-import benchmarkResults from "./results.json";
 import type {
     JettonBurn,
     JettonTransfer,
     JettonUpdateContent,
-} from "../contracts/output/jetton_wallet_JettonWallet";
-import { resolve } from "path";
+} from "../contracts/output/jetton_minter_discoverable_JettonMinter";
+
+import { generateResults, getUsedGas, printBenchmarkTable } from "../util";
+import benchmarkResults from "./results.json";
+import { join, resolve } from "path";
 import { readFileSync } from "fs";
 import { storeProvideWalletAddress } from "../contracts/output/escrow_Escrow";
 import { posixNormalize } from "../../../utils/filePath";
+import { type Step, writeLog } from "../../utils/write-vm-log";
 
 const loadFunCJettonsBoc = () => {
     const bocMinter = readFileSync(
@@ -232,6 +231,7 @@ describe("Jetton", () => {
     let jettonMinter: SandboxContract<JettonMinter>;
     let jettonMinterFuncAddress: Address;
     let deployer: SandboxContract<TreasuryContract>;
+    let step: Step;
 
     let notDeployer: SandboxContract<TreasuryContract>;
 
@@ -243,6 +243,10 @@ describe("Jetton", () => {
 
     beforeAll(async () => {
         blockchain = await Blockchain.create();
+        step = writeLog({
+            path: join(__dirname, "output", "log.yaml"),
+            blockchain,
+        });
 
         deployer = await blockchain.treasury("deployer");
         notDeployer = await blockchain.treasury("notDeployer");
@@ -267,7 +271,7 @@ describe("Jetton", () => {
         };
 
         jettonMinter = blockchain.openContract(
-            await JettonMinter.fromInit(deployer.address, defaultContent),
+            await JettonMinter.fromInit(0n, deployer.address, defaultContent),
         );
         const deployResult = await jettonMinter.send(
             deployer.getSender(),
@@ -289,13 +293,15 @@ describe("Jetton", () => {
 
     it("transfer", async () => {
         const runMintTest = async (minterAddress: Address) => {
-            const mintResult = await sendMintRaw(
-                minterAddress,
-                deployer,
-                deployer.address,
-                toNano(100000),
-                toNano("0.05"),
-                toNano("1"),
+            const mintResult = await step("mint", () =>
+                sendMintRaw(
+                    minterAddress,
+                    deployer,
+                    deployer.address,
+                    toNano(100000),
+                    toNano("0.05"),
+                    toNano("1"),
+                ),
             );
 
             const deployerJettonWalletAddress = await getJettonWalletRaw(
@@ -315,16 +321,18 @@ describe("Jetton", () => {
                 "EQD__________________________________________0vo",
             );
 
-            const sendResult = await sendTransferRaw(
-                deployerJettonWalletAddress,
-                deployer,
-                toNano(1),
-                1n,
-                someAddress,
-                deployer.address,
-                null,
-                0n,
-                null,
+            const sendResult = await step("transfer", () =>
+                sendTransferRaw(
+                    deployerJettonWalletAddress,
+                    deployer,
+                    toNano(1),
+                    1n,
+                    someAddress,
+                    deployer.address,
+                    null,
+                    0n,
+                    null,
+                ),
             );
 
             expect(sendResult.transactions).not.toHaveTransaction({
@@ -359,13 +367,15 @@ describe("Jetton", () => {
 
             const burnAmount = toNano("0.01");
 
-            const burnResult = await sendBurnRaw(
-                deployerJettonWalletAddress,
-                deployer,
-                toNano(10),
-                burnAmount,
-                deployer.address,
-                null,
+            const burnResult = await step("burn", () =>
+                sendBurnRaw(
+                    deployerJettonWalletAddress,
+                    deployer,
+                    toNano(10),
+                    burnAmount,
+                    deployer.address,
+                    null,
+                ),
             );
 
             expect(burnResult.transactions).toHaveTransaction({
@@ -388,12 +398,14 @@ describe("Jetton", () => {
 
     it("discovery", async () => {
         const runDiscoveryTest = async (minterAddress: Address) => {
-            const discoveryResult = await sendDiscoveryRaw(
-                minterAddress,
-                deployer,
-                notDeployer.address,
-                false,
-                toNano(10),
+            const discoveryResult = await step("discovery", () =>
+                sendDiscoveryRaw(
+                    minterAddress,
+                    deployer,
+                    notDeployer.address,
+                    false,
+                    toNano(10),
+                ),
             );
 
             expect(discoveryResult.transactions).toHaveTransaction({
