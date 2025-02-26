@@ -209,7 +209,7 @@
     },
     {
       "label": "1.5.3 with optimized Address",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2035",
       "gas": {
         "transfer": "16436",
         "burn": "12427",
