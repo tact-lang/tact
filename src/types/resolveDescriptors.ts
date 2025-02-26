@@ -2035,66 +2035,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     }
 
     //
-    // Register dependencies
-    //
-
-    for (const [k, t] of types) {
-        const dependsOn: Set<string> = new Set();
-        const handler = (src: A.AstNode) => {
-            if (src.kind === "init_of" || src.kind === "code_of") {
-                if (!types.has(idText(src.contract))) {
-                    throwCompilationError(
-                        `Type ${idTextErr(src.contract)} not found`,
-                        src.loc,
-                    );
-                }
-                dependsOn.add(idText(src.contract));
-            }
-        };
-
-        // Traverse functions
-        for (const f of t.functions.values()) {
-            traverse(f.ast, handler);
-        }
-        for (const f of t.receivers) {
-            traverse(f.ast, handler);
-        }
-        if (t.init) traverse(t.init.ast, handler);
-
-        // Add dependencies
-        for (const s of dependsOn) {
-            if (s !== k) {
-                t.dependsOn.push(types.get(s)!);
-            }
-        }
-    }
-
-    //
-    // Register transient dependencies
-    //
-
-    function collectTransient(name: string, to: Set<string>) {
-        const t = types.get(name)!;
-        for (const d of t.dependsOn) {
-            if (to.has(d.name)) {
-                continue;
-            }
-            to.add(d.name);
-            collectTransient(d.name, to);
-        }
-    }
-    for (const k of types.keys()) {
-        const dependsOn: Set<string> = new Set();
-        dependsOn.add(k);
-        collectTransient(k, dependsOn);
-        for (const s of dependsOn) {
-            if (s !== k && !types.get(k)!.dependsOn.find((v) => v.name === s)) {
-                types.get(k)!.dependsOn.push(types.get(s)!);
-            }
-        }
-    }
-
-    //
     // Resolve static functions
     //
 
@@ -2128,6 +2068,93 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 );
             }
             staticFunctions.set(r.name, r);
+        }
+    }
+
+    //
+    // Register dependencies
+    //
+
+    for (const [k, t] of types) {
+        const visited: Set<string> = new Set();
+        const queue: A.AstNode[] = [];
+
+        const queuePush = (name: string, element: A.AstNode) => {
+            if (visited.has(name)) return;
+            visited.add(name);
+            queue.push(element);
+        };
+
+        const dependsOn: Set<string> = new Set();
+        const handler = (src: A.AstNode) => {
+            if (src.kind === "init_of" || src.kind === "code_of") {
+                if (!types.has(idText(src.contract))) {
+                    throwCompilationError(
+                        `Type ${idTextErr(src.contract)} not found`,
+                        src.loc,
+                    );
+                }
+                dependsOn.add(idText(src.contract));
+            }
+
+            if (src.kind === "static_call") {
+                const name = idText(src.function);
+                const func = staticFunctions.get(name);
+                if (func) {
+                    queuePush(func.name, func.ast);
+                }
+            }
+        };
+
+        // Traverse functions
+        for (const f of t.functions.values()) {
+            const fqn = `${t.name}.${f.name}`;
+            queuePush(fqn, f.ast);
+        }
+        for (const f of t.receivers) {
+            queue.push(f.ast);
+        }
+        if (t.init && t.init.kind === "init-function") {
+            const fqn = `${t.name}.init`;
+            queuePush(fqn, t.init.ast);
+        }
+
+        while (queue.length > 0) {
+            const elem = queue.shift();
+            if (typeof elem === "undefined") break;
+            traverse(elem, handler);
+        }
+
+        // Add dependencies
+        for (const s of dependsOn) {
+            if (s !== k) {
+                t.dependsOn.push(types.get(s)!);
+            }
+        }
+    }
+
+    //
+    // Register transient dependencies
+    //
+
+    function collectTransient(name: string, to: Set<string>) {
+        const t = types.get(name)!;
+        for (const d of t.dependsOn) {
+            if (to.has(d.name)) {
+                continue;
+            }
+            to.add(d.name);
+            collectTransient(d.name, to);
+        }
+    }
+    for (const k of types.keys()) {
+        const dependsOn: Set<string> = new Set();
+        dependsOn.add(k);
+        collectTransient(k, dependsOn);
+        for (const s of dependsOn) {
+            if (s !== k && !types.get(k)!.dependsOn.find((v) => v.name === s)) {
+                types.get(k)!.dependsOn.push(types.get(s)!);
+            }
         }
     }
 

@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for block statements: PR [#1334](https://github.com/tact-lang/tact/pull/1334)
 - `nullChecks` config option to disable run-time null checks for the `!!` operator in order to save gas: PR [#1660](https://github.com/tact-lang/tact/pull/1660)
 - `loadVarInt16`, `loadVarUint16`, `loadVarInt32`, `loadVarUint32` methods for the `Slice` type: PR [#1667](https://github.com/tact-lang/tact/pull/1667)
-- New functions in stdlib from `stdlib.fc` and `math.fc`: `Builder.depth`, `Slice.skipLastBits`, `Slice.firstBits`, `Slice.lastBits`, `Slice.depth`, `Cell.computeDataSize`, `Slice.computeDataSize`, `Cell.depth`, `curLt`, `blockLt`, `setGasLimit`, `getSeed`, `setSeed`, `myCode`, `sign`, `divc`, `muldivc`, `mulShiftRight`, `mulShiftRightRound`, `mulShiftRightCeil`, `sqrt`: PR [#986](https://github.com/tact-lang/tact/pull/986)
+- New functions in stdlib from `stdlib.fc` and `math.fc`: `Builder.depth`, `Slice.skipLastBits`, `Slice.firstBits`, `Slice.lastBits`, `Slice.depth`, `Cell.computeDataSize`, `Slice.computeDataSize`, `Cell.depth`, `curLt`, `blockLt`, `setGasLimit`, `getSeed`, `setSeed`, `myCode`, `sign`, `divc`, `muldivc`, `mulShiftRight`, `mulShiftRightRound`, `mulShiftRightCeil`, `sqrt`, `loadMaybeRef`, `preloadMaybeRef`: PR [#986](https://github.com/tact-lang/tact/pull/986), PR [#2040](https://github.com/tact-lang/tact/pull/2040)
 - The `--output` CLI flag for specifying custom output directory in single-contract compilation: PR [#1793](https://github.com/tact-lang/tact/pull/1793)
 - New functions `Slice.asAddressUnsafe` and `contractHash` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
 - New function `Slice.asAddress` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
@@ -118,6 +118,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Contract data types in compilation reports are now generated correctly: PR [#2004](https://github.com/tact-lang/tact/pull/2004)
 - Updated contracts in `./examples`: PR [#2008](https://github.com/tact-lang/tact/pull/2008)
 - Show better error for fields with a contract type: PR [#2011](https://github.com/tact-lang/tact/pull/2011)
+- Optimized `initOf` with dependency in global function used inside `init()`: PR [#2027](https://github.com/tact-lang/tact/pull/2027)
 
 ### Docs
 
