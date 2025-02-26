@@ -191,7 +191,7 @@
     },
     {
       "label": "1.5.3 with more inlining for small contracts and structs",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2016",
       "gas": {
         "transfer": "16472",
         "burn": "12463",
