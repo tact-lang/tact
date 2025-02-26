@@ -35,10 +35,10 @@ contract JettonMinter {
 
         let workchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
 
-        let targetJettonWallet: MasterchainAddress =
+        let targetJettonWallet: BasechainAddress =
             (workchain == Workchain) ?
-            contractMasterchainAddress(initOf JettonWallet(msg.ownerAddress, myAddress()))
-            : emptyMasterchainAddress();
+            contractBasechainAddress(initOf JettonWallet(msg.ownerAddress, myAddress()))
+            : emptyBasechainAddress();
 
         let outMsg = takeWalletBody(targetJettonWallet, includedAddress, msg.queryId);
 
@@ -106,11 +106,11 @@ contract JettonMinter {
 
 asm fun emptyAddress(): Address { b{00} PUSHSLICE }
 
-inline fun takeWalletBody(targetJettonWallet: MasterchainAddress, includedAddress: Address?, query_id: Int): Cell {
+inline fun takeWalletBody(targetJettonWallet: BasechainAddress, includedAddress: Address?, query_id: Int): Cell {
     let body: Builder = beginCell()
         .storeUint(0xd1735400, 32)
         .storeUint(query_id, 64)
-        .storeMasterchainAddress(targetJettonWallet);
+        .storeBasechainAddress(targetJettonWallet);
 
     if (includedAddress != null) {
         body = body.storeBit(true); // Maybe bit
