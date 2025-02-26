@@ -125,7 +125,7 @@ export function writeStorageOps(
                 ctx.append(`b = b.store_ref(__tact_child_contract_codes);`);
             }
 
-            if (type.init?.kind === "separate") {
+            if (type.init?.kind !== "contract") {
                 // Persist deployment flag
                 ctx.append(`b = b.store_int(true, 1);`);
             }
@@ -298,7 +298,7 @@ export function writeInit(
             }
 
             // store initialization bit and contract variables
-            if (init.kind === "separate") {
+            if (init.kind !== "contract") {
                 ctx.append(`b = b.store_int(false, 1);`);
             }
             const args =

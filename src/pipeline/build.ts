@@ -359,7 +359,7 @@ export async function build(args: {
         const init = descriptor.init!;
 
         const args =
-            init.kind === "separate"
+            init.kind !== "contract"
                 ? init.params.map((v) => ({
                       name: idText(v.name),
                       type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
@@ -378,7 +378,7 @@ export async function build(args: {
                 kind: "direct",
                 args,
                 prefix:
-                    init.kind === "separate"
+                    init.kind !== "contract"
                         ? {
                               bits: 1,
                               value: 0,

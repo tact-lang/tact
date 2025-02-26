@@ -1174,7 +1174,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 }
                 if (d.kind === "contract_init") {
                     if (s.init) {
-                        if (s.init.kind === "separate") {
+                        if (s.init.kind !== "contract") {
                             throwCompilationError(
                                 "Init function already exists",
                                 d.loc,
