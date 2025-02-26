@@ -50,16 +50,8 @@ describe("constants-for-wrappers", () => {
         expect((await contract.getGlobalAddress()).toRawString()).toEqual(
             ADDR.toRawString(),
         );
-        expect(
-            (await contract.getGlobalCell()).toBoc().toString("base64"),
-        ).toEqual(CELL.toBoc().toString("base64"));
-        expect(
-            (await contract.getGlobalSlice())
-                .asCell()
-                .toBoc()
-                .toString("base64"),
-        ).toEqual(SLICE.asCell().toBoc().toString("base64"));
-
+        expect(await contract.getGlobalCell()).toEqualCell(CELL);
+        expect(await contract.getGlobalSlice()).toEqualSlice(SLICE);
         expect(await contract.getGlobalSimpleStruct()).toEqual(SIMPLE_STRUCT);
         expect(await contract.getGlobalNestedStruct()).toEqual(NESTED_STRUCT);
 
@@ -74,16 +66,12 @@ describe("constants-for-wrappers", () => {
         expect((await contract.getContractAddress()).toRawString()).toEqual(
             ConstantTester.ADDR.toRawString(),
         );
-        expect(
-            (await contract.getContractCell()).toBoc().toString("base64"),
-        ).toEqual(ConstantTester.CELL.toBoc().toString("base64"));
-        expect(
-            (await contract.getContractSlice())
-                .asCell()
-                .toBoc()
-                .toString("base64"),
-        ).toEqual(ConstantTester.SLICE.asCell().toBoc().toString("base64"));
-
+        expect(await contract.getContractCell()).toEqualCell(
+            ConstantTester.CELL,
+        );
+        expect(await contract.getContractSlice()).toEqualSlice(
+            ConstantTester.SLICE,
+        );
         expect(await contract.getContractSimpleStruct()).toEqual(
             ConstantTester.SIMPLE_STRUCT,
         );
