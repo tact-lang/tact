@@ -104,10 +104,10 @@
       "label": "1.5.3 with fixed routing",
       "pr": "https://github.com/tact-lang/tact/pull/1949",
       "gas": {
-        "fundingTon": "5050",
-        "changeCode": "5256",
-        "approveTon": "9452",
-        "cancelTon": "7178"
+        "fundingTon": "5032",
+        "changeCode": "5238",
+        "approveTon": "9434",
+        "cancelTon": "7160"
       }
     }
   ]

@@ -229,9 +229,9 @@
       "label": "1.5.3 with fixed routing",
       "pr": "https://github.com/tact-lang/tact/pull/1949",
       "gas": {
-        "transfer": "16160",
-        "burn": "12191",
-        "discovery": "7086"
+        "transfer": "16124",
+        "burn": "12155",
+        "discovery": "7068"
       }
     }
   ]
