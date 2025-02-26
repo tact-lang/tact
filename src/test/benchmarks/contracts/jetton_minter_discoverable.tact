@@ -111,10 +111,6 @@ inline fun takeWalletBody(targetJettonWallet: MasterchainAddress, includedAddres
         .storeUint(0xd1735400, 32)
         .storeUint(query_id, 64)
         .storeMasterchainAddress(targetJettonWallet);
-//        .storeUint(0b10_0_00000000, 3 + 8)
-        // .storeInt(targetJettonWallet.chain, 0)
-//        .storeUint(targetJettonWallet.hash, 256);
-        // .storeSlice(targetJettonWallet.asSlice());
 
     if (includedAddress != null) {
         body = body.storeBit(true); // Maybe bit
