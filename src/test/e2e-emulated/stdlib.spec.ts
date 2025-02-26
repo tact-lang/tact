@@ -78,8 +78,18 @@ describe("stdlib", () => {
         ).toEqualCell(beginCell().storeMaybeRef(null).endCell());
 
         expect(
-            await 
-        )
+            await contract.getLoadMaybeRef(
+                beginCell()
+                    .storeMaybeRef(beginCell().storeUint(123, 64).endCell())
+                    .asSlice(),
+            ),
+        ).toEqualCell(beginCell().storeUint(123, 64).endCell());
+
+        expect(
+            await contract.getLoadMaybeRef(
+                beginCell().storeMaybeRef(null).asSlice(),
+            ),
+        ).toBe(null);
 
         const addrStd = await contract.getParseStdAddress(
             beginCell()
