@@ -2324,8 +2324,8 @@ exports[`resolveAllocation should write program 1`] = `
       "origin": "user",
       "partialFieldCount": 0,
       "receivers": [],
-      "signature": null,
-      "tlb": null,
+      "signature": "Sample{v:int257}",
+      "tlb": "_ v:int257 = Sample",
       "traits": [
         {
           "ast": {

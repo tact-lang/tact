@@ -188,6 +188,15 @@
         "burn": "13612",
         "discovery": "8322"
       }
+    },
+    {
+      "label": "1.5.3 with message() instead of send()",
+      "pr": "https://github.com/tact-lang/tact/pull/1999",
+      "gas": {
+        "transfer": "17315",
+        "burn": "12892",
+        "discovery": "8025"
+      }
     }
   ]
 }
