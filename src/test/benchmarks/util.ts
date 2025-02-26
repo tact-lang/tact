@@ -22,7 +22,7 @@ type BenchmarkResult = {
     gas: Record<string, number>;
 };
 
-export type RawBenchmarkResult = {
+type RawBenchmarkResult = {
     results: {
         label: string;
         pr: string | null;
