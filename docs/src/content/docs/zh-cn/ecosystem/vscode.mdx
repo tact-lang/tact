@@ -3,62 +3,58 @@ title: VS Code扩展
 description: 广泛支持Visual Studio 代码中的 Tact 语言：语法高亮、错误诊断、代码片断、悬停信息和更多
 ---
 
-在 Visual Studio 代码中为 Tact 语言提供广泛支持：
+在 Visual Studio Code (VSCode) 中为 Tact 语言提供广泛支持：
 
-- 语法高亮
-- 高亮显示错误
-- 代码片段
-- 悬停信息
-- 所有变量、函数、全局参数和 Tact 独特类型的代码自动完成
-- 对当前文件中的所有合约/库以及所有引用的导入进行代码补全
-- 格式化
+- [语义语法高亮][l1]
+- [代码补全][l2] [自动导入][l3]、[后缀补全][l4]、片段、[导入补全][l5]
+- 转到 [定义][l6]、实现、[类型定义][l7］
+- 查找所有引用、工作区符号搜索、符号重命名
+- 悬停时的类型和文档
+- [类型][l8]、[参数名][l9] 和 [更多][l10] 的镶嵌提示
+- 具有快速修复功能的即时检查
+- 调用、“initOf ”和结构体初始化内部的签名帮助
+- 带有实现/引用计数的[透镜][l11］
+- 汇编函数的[气体估计][l12］
+- 基于蓝图和 Tact 模板构建和测试项目
+- 集成 Tact 编译器和 [Misti 静态分析器](/ecosystem/misti)
 
-VS Code Marketplace 上的扩展： [支持 TON 区块链的 Tact 语言](https://marketplace.visualstudio.com/items?itemName=KonVik.tact-lang-vscode)
+[l1]: https://github.com/tact-lang/tact-language-server/blob/master/docs/manual/features/highlighting.md
+[l2]: https://github.com/tact-lang/tact-language-server/blob/master/docs/manual/features/completion.md
+[l3]: https://github.com/tact-lang/tact-language-server/blob/master/docs/manual/features/completion.md#auto-import
+[l4]: https://github.com/tact-lang/tact-language-server/blob/master/docs/manual/features/completion.md#postfix-completion
+[l5]: https://github.com/tact-lang/tact-language-server/blob/master/docs/manual/features/completion.md#imports-completion
+[l6]: https://github.com/tact-lang/tact-language-server/blob/master/docs/manual/features/navigation.md#go-to-definition
+[l7]: https://github.com/tact-lang/tact-language-server/blob/master/docs/manual/features/navigation.md#go-to-type-definition
+[l8]: https://github.com/tact-lang/tact-language-server/blob/master/docs/manual/features/inlay-hints.md#type-hints
+[l9]: https://github.com/tact-lang/tact-language-server/blob/master/docs/manual/features/inlay-hints.md#parameter-hints
+[l10]: https://github.com/tact-lang/tact-language-server/blob/master/docs/manual/features/inlay-hints.md#additional-hints
+[l11]: https://github.com/tact-lang/tact-language-server/blob/master/docs/manual/features/code-lenses.md
+[l12]: https://github.com/tact-lang/tact-language-server/blob/master/docs/manual/features/gas-calculation.md
 
-## 安装手册
+## 快速启动
 
-1. 打开 Visual Studio Code（简称 VS Code）。
+为 VS Code 和基于 VSCode 的编辑器（如 VSCodium、Cursor、Windsurf 等）下载扩展：
 
-2. 单击窗口侧面活动栏中的 "扩展 "图标，导航至 "扩展 "视图。 它看起来就像一个正方形中的正方形。
+- 在 [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=tonstudio.vscode-tact) 上获取。
+- 在 [Open VSX Registry](https://open-vsx.org/extension/tonstudio/vscode-tact) 上获取。
+- 或者从[夜间版本中的`.vsix`文件](https://github.com/tact-lang/tact-language-server/releases)中安装。
 
-3. 在扩展视图输入框中，请输入“Tact Language”。 你应该看到一个下拉菜单，其中包含由 KonVik 提供的扩展 "Tact Language"。 也许你会看到TON Community 提供类似的扩展，但是一个已经废弃的扩展，**我们应该使用 KonVik的一个**。
+对于非基于 VSCode 的编辑器，请安装 [Language Server (LSP Server)](https://github.com/tact-lang/tact-language-server) 。它支持 Sublime Text、(Neo)Vim、Helix 以及其他任何支持 LSP 的编辑器。
 
-4. 点击扩展名称旁边的安装按钮。  等待安装完成。
+## VSCode 安装手册
 
-5. 安装扩展后，您可能需要重新加载 VS Code。  如有必要，扩展名旁边会有一个重新加载按钮。 如果出现该按钮，请单击该按钮。
+1. 打开 Visual Studio Code (VSCode)。
 
-6. 现在，Tact 语言扩展应该已安装到您的 VS 代码中。
+2. 点击窗口侧面活动栏中的 “扩展 ”图标，进入扩展视图。它看起来就像一个正方形中的正方形。
 
-## 启用 "保存时格式化" {#format-on-save}
+3. 在扩展视图中，输入 “Tact 语言”。你会在下拉菜单中看到 [TON Studio](https://tonstudio.io) 提供的扩展 “Tact Language”。你还会看到其他由社区提供的扩展，但你应该使用 TON Studio 提供的扩展，因为它是由 Tact 团队正式支持和开发的。
 
-本指南将提供有关如何通过命令面板和编辑 JSON 设置文件来启用 VS Code 中 Tact Language 扩展的“保存时格式化”功能的说明。
+4. 点击扩展名称旁边的 “安装 ”按钮。等待安装完成。
 
-1. 在命令面板中输入 `Preferences: Open Settings (JSON)`。 在命令调板中输入 "首选项：在命令调板中输入 "首选项：打开设置 (JSON)"。 这将打开你的 `settings.json` 文件。
+5. 安装扩展后，你可能需要重新加载 VS Code。你可能会在扩展旁边看到一个 “重新加载”（Reload）按钮。出现该按钮时点击它。
 
-2. 编辑 JSON 设置
+## 参考文献和资源
 
-   - 您将看到一个 JSON 对象。 我们将为该对象添加一些属性，以启用 Tact 语言扩展的保存格式。
-
-   - 在 JSON 对象中添加以下几行：
-
-     ```json
-     {
-     	"[tact]": {
-     		"editor.formatOnSave": true,
-     		"editor.defaultFormatter": "KonVik.tact-lang-vscode"
-     	}
-     }
-     ```
-
-   - 这将启用保存时格式化（`"editor.formatOnSave": true`），并将 Tact 文件的默认格式化器设置为 Tact Language 扩展（`"[tact]": {"editor.defaultFormatter": "KonVik.tact-lang-vscode"}`）。
-
-3. 保存和关闭设置
-   - 添加完这些行后，保存您的 `settings.json` 文件（可按 `Ctrl+S` 保存）。
-   - 关闭 `settings.json` 选项卡或按 `Ctrl+W`。
-
-现在，当您保存文件时，您的 Tact Language VS Code 扩展程序会自动格式化您的文件。 如果您没有看到这些更改立即生效，您可能需要重新加载 VS 代码。
-
-## 参考资料和资源
-
-- [Extension on GitHub](https://github.com/tact-lang/tact-vscode)
-- [Extension on the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=KonVik.tact-lang-vscode)
+- [GitHub上的扩展](https://github.com/tact-lang/tact-language-server)
+- [Visual Studio Marketplace 上的扩展](https://marketplace.visualstudio.com/items?itemName=tonstudio.vscode-tact)
+- [开放 VSX 注册表上的扩展](https://open-vsx.org/extension/tonstudio/vscode-tact)

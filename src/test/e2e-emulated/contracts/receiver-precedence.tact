@@ -153,6 +153,18 @@ contract ReceiverTester {
         self.receiverKind = "external_binary_message";
     }
 
+    external(msg: Slice) {
+        acceptMessage();
+        // Drop the op code
+        msg.loadUint(32); 
+        let m = msg.asString();
+        if (m == "message") {
+            self.receiverKind = "external_message_slice";
+        } else {
+            self.receiverKind = "external_fallback";
+        }
+    }
+
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
         send(SendParameters {
