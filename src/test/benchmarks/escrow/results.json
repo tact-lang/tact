@@ -101,8 +101,8 @@
       }
     },
     {
-      "label": "Benchmark 2025-02-26",
-      "pr": null,
+      "label": "1.5.3 with fixed routing",
+      "pr": "https://github.com/tact-lang/tact/pull/1949",
       "gas": {
         "fundingTon": "5050",
         "changeCode": "5256",
