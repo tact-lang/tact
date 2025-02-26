@@ -436,7 +436,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         if (a.kind === "contract" && a.params !== undefined) {
             const s = types.get(idText(a.name))!;
             for (const d of a.declarations) {
-                if (d.kind === 'contract_init') {
+                if (d.kind === "contract_init") {
                     throwCompilationError(
                         `Initialization was already defined on contract ${a.name.text}`,
                         d.loc,
@@ -462,36 +462,34 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         r.loc,
                     );
                 }
-                statements.push(Ast.createNode({
-                    kind: 'statement_assign',
-                    path: Ast.createNode({
-                        kind: 'field_access',
-                        aggregate: Ast.createNode({
-                            kind: 'id',
-                            text: 'self',
+                statements.push(
+                    Ast.createNode({
+                        kind: "statement_assign",
+                        path: Ast.createNode({
+                            kind: "field_access",
+                            aggregate: Ast.createNode({
+                                kind: "id",
+                                text: "self",
+                                loc: r.loc,
+                            }) as A.AstExpression,
+                            field: Ast.cloneNode(r.name),
                             loc: r.loc,
                         }) as A.AstExpression,
-                        field: Ast.cloneNode(r.name),
+                        expression: Ast.cloneNode(r.name),
                         loc: r.loc,
-                    }) as A.AstExpression,
-                    expression: Ast.cloneNode(r.name),
-                    loc: r.loc,
-                }) as A.AstStatement);
-                if (
-                    s.fields.find((v) => eqNames(v.name, r.name))
-                ) {
+                    }) as A.AstStatement,
+                );
+                if (s.fields.find((v) => eqNames(v.name, r.name))) {
                     throwCompilationError(
                         `Field ${idTextErr(r.name)} already exists`,
                         r.loc,
                     );
                 }
-                s.fields.push(
-                    buildFieldDescription(r, s.fields.length),
-                );
+                s.fields.push(buildFieldDescription(r, s.fields.length));
             }
 
             s.init = {
-                kind: 'contract',
+                kind: "contract",
                 params,
                 ast: Ast.createNode({
                     kind: "contract_init",
@@ -1176,7 +1174,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 }
                 if (d.kind === "contract_init") {
                     if (s.init) {
-                        if (s.init.kind === 'separate') {
+                        if (s.init.kind === "separate") {
                             throwCompilationError(
                                 "Init function already exists",
                                 d.loc,
@@ -1546,7 +1544,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         if (t.kind === "contract") {
             if (!t.init) {
                 t.init = {
-                    kind: 'separate',
+                    kind: "separate",
                     params: [],
                     ast: Ast.createNode({
                         kind: "contract_init",

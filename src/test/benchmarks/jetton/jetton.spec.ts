@@ -293,14 +293,16 @@ describe("Jetton", () => {
 
     it("transfer", async () => {
         const runMintTest = async (minterAddress: Address) => {
-            const mintResult = await step("mint", () => sendMintRaw(
-                minterAddress,
-                deployer,
-                deployer.address,
-                toNano(100000),
-                toNano("0.05"),
-                toNano("1"),
-            ));
+            const mintResult = await step("mint", () =>
+                sendMintRaw(
+                    minterAddress,
+                    deployer,
+                    deployer.address,
+                    toNano(100000),
+                    toNano("0.05"),
+                    toNano("1"),
+                ),
+            );
 
             const deployerJettonWalletAddress = await getJettonWalletRaw(
                 minterAddress,
@@ -319,17 +321,19 @@ describe("Jetton", () => {
                 "EQD__________________________________________0vo",
             );
 
-            const sendResult = await step("transfer", () => sendTransferRaw(
-                deployerJettonWalletAddress,
-                deployer,
-                toNano(1),
-                1n,
-                someAddress,
-                deployer.address,
-                null,
-                0n,
-                null,
-            ));
+            const sendResult = await step("transfer", () =>
+                sendTransferRaw(
+                    deployerJettonWalletAddress,
+                    deployer,
+                    toNano(1),
+                    1n,
+                    someAddress,
+                    deployer.address,
+                    null,
+                    0n,
+                    null,
+                ),
+            );
 
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
@@ -363,14 +367,16 @@ describe("Jetton", () => {
 
             const burnAmount = toNano("0.01");
 
-            const burnResult = await step("burn", () => sendBurnRaw(
-                deployerJettonWalletAddress,
-                deployer,
-                toNano(10),
-                burnAmount,
-                deployer.address,
-                null,
-            ));
+            const burnResult = await step("burn", () =>
+                sendBurnRaw(
+                    deployerJettonWalletAddress,
+                    deployer,
+                    toNano(10),
+                    burnAmount,
+                    deployer.address,
+                    null,
+                ),
+            );
 
             expect(burnResult.transactions).toHaveTransaction({
                 from: deployerJettonWalletAddress,
@@ -392,13 +398,15 @@ describe("Jetton", () => {
 
     it("discovery", async () => {
         const runDiscoveryTest = async (minterAddress: Address) => {
-            const discoveryResult = await step("discovery", () => sendDiscoveryRaw(
-                minterAddress,
-                deployer,
-                notDeployer.address,
-                false,
-                toNano(10),
-            ));
+            const discoveryResult = await step("discovery", () =>
+                sendDiscoveryRaw(
+                    minterAddress,
+                    deployer,
+                    notDeployer.address,
+                    false,
+                    toNano(10),
+                ),
+            );
 
             expect(discoveryResult.transactions).toHaveTransaction({
                 from: deployer.address,

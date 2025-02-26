@@ -79,13 +79,16 @@ export type ResolveTypeOptions = {
     readonly type: A.AstType;
     readonly as: A.AstId | null;
     readonly loc: SrcInfo;
-}
+};
 
-export function resolveABIType({ type, as, loc }: ResolveTypeOptions): ABITypeRef {
+export function resolveABIType({
+    type,
+    as,
+    loc,
+}: ResolveTypeOptions): ABITypeRef {
     if (
         type.kind === "type_id" ||
-        (type.kind === "optional_type" &&
-            type.typeArg.kind == "type_id")
+        (type.kind === "optional_type" && type.typeArg.kind == "type_id")
     ) {
         //
         // Primitive types
@@ -273,8 +276,7 @@ export function resolveABIType({ type, as, loc }: ResolveTypeOptions): ABITypeRe
         if (isInt(type.keyType)) {
             key = "int";
             if (type.keyStorageType) {
-                const format =
-                    intMapKeyFormats[idText(type.keyStorageType)];
+                const format = intMapKeyFormats[idText(type.keyStorageType)];
                 if (!format) {
                     throwCompilationError(
                         `Unsupported format ${idTextErr(type.keyStorageType)} for map key`,
@@ -303,8 +305,7 @@ export function resolveABIType({ type, as, loc }: ResolveTypeOptions): ABITypeRe
         if (isInt(type.valueType)) {
             value = "int";
             if (type.valueStorageType) {
-                const format =
-                    intMapValFormats[idText(type.valueStorageType)];
+                const format = intMapValFormats[idText(type.valueStorageType)];
                 if (!format) {
                     throwCompilationError(
                         `Unsupported format ${idText(type.valueStorageType)} for map value`,

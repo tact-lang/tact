@@ -227,17 +227,17 @@ export type InitParameter = {
 export type InitDescription = SeparateInitDescription | ContractInitDescription;
 
 export type SeparateInitDescription = {
-    kind: 'separate';
+    kind: "separate";
     params: InitParameter[];
     ast: A.AstContractInit;
-}
+};
 
 export type ContractInitDescription = {
-    kind: 'contract';
+    kind: "contract";
     params: InitParameter[];
     ast: A.AstContractInit;
     contract: A.AstContract;
-}
+};
 
 export function printTypeRef(src: TypeRef): string {
     switch (src.kind) {

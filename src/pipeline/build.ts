@@ -16,7 +16,10 @@ import type { ILogger } from "../context/logger";
 import { Logger } from "../context/logger";
 import type { PackageFileFormat } from "../packaging/fileFormat";
 import { packageCode } from "../packaging/packageCode";
-import { createABITypeRefFromTypeRef, resolveABIType } from "../types/resolveABITypeRef";
+import {
+    createABITypeRefFromTypeRef,
+    resolveABIType,
+} from "../types/resolveABITypeRef";
 import {
     getAllTypes,
     getContracts,
@@ -355,13 +358,16 @@ export async function build(args: {
         const descriptor = getType(ctx, contract);
         const init = descriptor.init!;
 
-        const args = init.kind === 'separate' ? init.params.map((v) => ({
-            name: idText(v.name),
-            type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
-        })) : (init.contract.params ?? []).map(v => ({
-            name: idText(v.name),
-            type: resolveABIType(v),
-        }));
+        const args =
+            init.kind === "separate"
+                ? init.params.map((v) => ({
+                      name: idText(v.name),
+                      type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
+                  }))
+                : (init.contract.params ?? []).map((v) => ({
+                      name: idText(v.name),
+                      type: resolveABIType(v),
+                  }));
 
         // Package
         const pkg: PackageFileFormat = {
@@ -371,10 +377,13 @@ export async function build(args: {
             init: {
                 kind: "direct",
                 args,
-                prefix: init.kind === 'separate' ? {
-                    bits: 1,
-                    value: 0,
-                } : undefined,
+                prefix:
+                    init.kind === "separate"
+                        ? {
+                              bits: 1,
+                              value: 0,
+                          }
+                        : undefined,
                 deployment: {
                     kind: "system-cell",
                     system: systemCell?.toBoc().toString("base64") ?? null,
