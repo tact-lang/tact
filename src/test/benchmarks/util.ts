@@ -16,13 +16,13 @@ export function getUsedGas(sendEnough: SendMessageResult): number {
         .reduceRight((prev, cur) => prev + cur);
 }
 
-export type BenchmarkResult = {
+type BenchmarkResult = {
     label: string;
     pr: string | undefined;
     gas: Record<string, number>;
 };
 
-export type RawBenchmarkResult = {
+type RawBenchmarkResult = {
     results: {
         label: string;
         pr: string | null;
@@ -53,7 +53,7 @@ export type RawCodeSizeResult = {
     }[];
 };
 
-export type CodeSizeResult = {
+type CodeSizeResult = {
     label: string;
     pr: string | undefined;
     size: Record<string, number>;
