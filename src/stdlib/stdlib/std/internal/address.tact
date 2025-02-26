@@ -223,10 +223,12 @@ struct MasterchainAddress {
     hash: Int?;
 }
 
-fun emptyMasterchainAddress(): MasterchainAddress { return MasterchainAddress{ hash: null } }
+fun emptyMasterchainAddress(): MasterchainAddress {
+    return MasterchainAddress { hash: null }
+}
 
 inline fun newMasterchainAddress(hash: Int): MasterchainAddress {
-    return MasterchainAddress{ hash }
+    return MasterchainAddress { hash }
 }
 
 inline fun contractMasterchainAddress(s: StateInit): MasterchainAddress {
