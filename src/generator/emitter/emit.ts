@@ -44,10 +44,11 @@ export function emit(args: {
                     if (f.flags.has("impure")) {
                         sig = `${sig} impure`;
                     }
+                    res += `${sig} asm${f.code.shuffle} `;
                     if (f.code.singleLine) {
-                        res += `${sig} asm${f.code.shuffle} "${f.code.code}";`;
+                        res += `"${f.code.code}";`;
                     } else {
-                        res += `${sig} asm${f.code.shuffle} """\n    ${f.code.code}\n""";`;
+                        res += `"""\n    ${f.code.code}\n""";`;
                     }
                 } else {
                     throw new Error(`Unknown function body kind`);
