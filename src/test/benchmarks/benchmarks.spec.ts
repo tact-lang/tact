@@ -266,7 +266,9 @@ describe("benchmarks", () => {
     });
 
     it("benchmark deployable trait vs raw deploy", async () => {
-        const withDeployTrait = blockchain.openContract(await WithDeploy.fromInit());
+        const withDeployTrait = blockchain.openContract(
+            await WithDeploy.fromInit(),
+        );
         const withoutDeploy = blockchain.openContract(
             await WithoutDeploy.fromInit(),
         );
