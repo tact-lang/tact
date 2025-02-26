@@ -73,6 +73,7 @@ contract Filter with FilterTrait {
 ## Extension function
 
 Extension functions allow you to implement extensions for any possible type.
+This is an example of an extension function in a language that allows adding functionality to existing types without modifying their source code. The code you've provided looks like it's written in a Kotlin-inspired syntax or a similar language that supports extension functions.
 
 > **Warning**
 > The name of the first argument MUST be named `self` and the type of this argument is the type you are extending.
@@ -86,6 +87,8 @@ extends fun customPow(self: Int, c: Int): Int {
     return res;
 }
 ```
+
+The `customPow` function is an extension function that adds new behavior to the `Int` type, allowing you to use it as if it's a built-in method for any `Int` object. The first argument, `self`, represents the object being extended (in this case, an `Int`) and must be named `self` by convention. The function calculates the power of a number by multiplying `self` by itself `c` times, storing the result in a variable `res`, and then returning that value. With this extension, you can call `customPow` on any `Int` object, like `5.customPow(3)`, which would return 125.
 
 ## Mutation functions
 
