@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New functions `throwIf` and `throwUnless` in stdlib, deprecated their aliases `nativeThrowIf` and `nativeThrowUnless`: PR [#1974](https://github.com/tact-lang/tact/pull/1974)
 - New `codeOf T` expression to get code of the contract: PR [#1948](https://github.com/tact-lang/tact/pull/1948)
 - Add `BasechainAddress` as more optimized version of `Address`: PR [#2035](https://github.com/tact-lang/tact/pull/2035)
+- Generation constants in TypeScript wrappers: PR [#2043](https://github.com/tact-lang/tact/pull/2043)
 
 ### Changed
 
