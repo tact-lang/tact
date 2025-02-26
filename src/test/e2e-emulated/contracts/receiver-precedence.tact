@@ -146,6 +146,18 @@ contract ReceiverTester {
         self.receiverKind = "external_binary_message";
     }
 
+    external(msg: Slice) {
+        acceptMessage();
+        // Drop the op code
+        msg.loadUint(32); 
+        let m = msg.asString();
+        if (m == "message") {
+            self.receiverKind = "external_message_slice";
+        } else {
+            self.receiverKind = "external_fallback";
+        }
+    }
+
     get fun receiverKind(): String {
         return self.receiverKind;
     }
