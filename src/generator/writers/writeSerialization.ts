@@ -13,7 +13,7 @@ import { resolveFuncTypeFromAbi } from "./resolveFuncTypeFromAbi";
 import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import type { ItemOrigin } from "../../imports/source";
 
-const SMALL_STRUCT_MAX_FIELDS = 5;
+const SMALL_STRUCT_MAX_FIELDS = 10;
 
 //
 // Serializer
