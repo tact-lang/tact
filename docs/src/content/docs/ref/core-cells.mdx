@@ -1058,16 +1058,14 @@ otherwise returns `null`. In both cases modifies the original `Slice`.
 Usage examples:
 
 ```tact
-fun examples() {
-    let s1: Slice = beginCell().storeMaybeRef(emptyCell()).asSlice();
-    let fizz: Cell = s1.loadMaybeRef(); // returns emptyCell() and modifies s1
+let cs = msg.asSlice();
+let outActions = cs.loadMaybeRef();
 
-    let s2: Slice = beginCell()
-        .storeMaybeRef(null)
-        .asSlice();
-
-    let buzz: Cell = s2.loadMaybeRef(); // returns null and modifies s2
-    buzz == null; // true
+if (outActions != null) {
+    let actions = outActions!;
+    // process actions
+} else {
+  return;
 }
 ```
 
@@ -1090,19 +1088,14 @@ otherwise returns `null`. In both cases doesn't modify the original `Slice`.
 Usage examples:
 
 ```tact
-fun examples() {
-    let s1: Slice = beginCell().storeMaybeRef(emptyCell()).asSlice();
-    let fizz: Cell = s1.preloadMaybeRef(); // returns emptyCell() and doesn't modify s1
+let cs = msg.asSlice();
+let outActions = cs.preloadMaybeRef();
 
-    let s2: Slice = beginCell()
-        .storeMaybeRef(null)
-        .storeMaybeRef(s1.asCell())
-        .asSlice();
-
-    let ref1: Cell = s2.preloadMaybeRef(); // returns null and doesn't modify s2
-    let ref2: Cell = s2.preloadMaybeRef(); // same effect
-    ref1 == null; // true
-    ref1 == ref2; // true
+if (outActions != null) {
+    cs.skipBits(1);     // skip Maybe bit
+    processActions(cs); // can directly load actions inside
+} else {
+  return;
 }
 ```
 
