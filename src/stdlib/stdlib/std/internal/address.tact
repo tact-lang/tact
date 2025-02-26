@@ -219,23 +219,78 @@ asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 ///
 asm extends fun storeAddress(self: Builder, address: Address): Builder { STSLICER }
 
+/// Struct representing a basechain address. Available since Tact 1.6.0.
+///
+/// A basechain address (workchain 0) can be either empty (null hash) or contain a 256-bit hash value.
+/// 
 struct BasechainAddress {
     hash: Int?;
 }
 
+/// Global function. Available since Tact 1.6.0.
+///
+/// Creates and returns an empty basechain address with a null hash.
+///
+/// When serialized, an empty basechain address is represented as `addr_none`.
+/// 
+/// ```tact
+/// fun example() {
+///     let emptyAddr: BasechainAddress = emptyBasechainAddress();
+///     emptyAddr.hash == null; // true
+/// }
+/// ```
+///
 inline fun emptyBasechainAddress(): BasechainAddress {
     return BasechainAddress { hash: null }
 }
 
+/// Global function. Available since Tact 1.6.0.
+///
+/// Creates and returns a new basechain address with the specified hash value.
+///
+/// ```tact
+/// fun example() {
+///     let addr: BasechainAddress = newBasechainAddress(0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+/// }
+/// ```
+///
 inline fun newBasechainAddress(hash: Int): BasechainAddress {
     return BasechainAddress { hash }
 }
 
+/// Global function. Available since Tact 1.6.0.
+///
+/// Creates and returns a basechain address derived from a contract's `StateInit` (code and data).
+///
+/// ```tact
+/// fun example() {
+///     let code: Cell = loadCell(); // load contract code
+///     let data: Cell = loadCell(); // load contract data
+///     let state: StateInit = StateInit { code, data };
+///     let addr: BasechainAddress = contractBasechainAddress(state);
+/// }
+/// ```
+///
 inline fun contractBasechainAddress(s: StateInit): BasechainAddress {
     let hash = contractHash(s.code, s.data);
     return newBasechainAddress(hash);
 }
 
+/// Extension function for the `Builder` type. Available since Tact 1.6.0.
+///
+/// Stores the basechain address in the copy of the Builder and returns that copy.
+///
+/// If the address has a `null` hash, stores 0b00 (`addr_none`). Otherwise, stores the full address
+/// with prefix 0b100 followed by workchain (0) and the 256-bit hash.
+///
+/// ```tact
+/// fun example() {
+///     let addr: BasechainAddress = newBasechainAddress(0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+///     let b: Builder = beginCell();
+///     let b2: Builder = b.storeBasechainAddress(addr);
+/// }
+/// ```
+///
 extends fun storeBasechainAddress(self: Builder, address: BasechainAddress): Builder {
     if (address.hash == null) {
         return self.storeUint(0, 2); // 0b00
