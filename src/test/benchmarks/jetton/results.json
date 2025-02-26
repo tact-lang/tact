@@ -179,6 +179,33 @@
         "discovery": "8288"
       },
       "pr": "https://github.com/tact-lang/tact/pull/1907"
+    },
+    {
+      "label": "1.5.3 with message() instead of send()",
+      "pr": "https://github.com/tact-lang/tact/pull/1999",
+      "gas": {
+        "transfer": "17315",
+        "burn": "12892",
+        "discovery": "8025"
+      }
+    },
+    {
+      "label": "1.5.3 with more inlining for small contracts and structs",
+      "pr": "https://github.com/tact-lang/tact/pull/2016",
+      "gas": {
+        "transfer": "16472",
+        "burn": "12463",
+        "discovery": "7868"
+      }
+    },
+    {
+      "label": "1.5.3 with optimized NOP instructions",
+      "pr": null,
+      "gas": {
+        "transfer": "16436",
+        "burn": "12427",
+        "discovery": "7750"
+      }
     }
   ]
 }

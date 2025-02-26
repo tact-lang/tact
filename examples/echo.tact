@@ -1,11 +1,6 @@
 message EchoMessage {}
 
 contract Echo {
-
-    init(a: Int) {
-        
-    }
-
     receive(msg: EchoMessage) {
         self.reply(msg.toCell());
     }

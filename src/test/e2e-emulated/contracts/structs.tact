@@ -382,7 +382,7 @@ contract StructsTester {
 
     receive(msg: Foo) {
         let d = Dict.fromSlice(msg.s);
-        send(SendParameters{
+        message(MessageParameters{
             bounce: false,
             to: sender(),
             value: ton("0.01"),

@@ -17,29 +17,31 @@ message Executed {
 
 contract MultisigContract {
     seqno: Int as uint32 = 0;
-    user1_key: Int as uint256;
-    user2_key: Int as uint256;
-    user3_key: Int as uint256;
+    user1Key: Int as uint256;
+    user2Key: Int as uint256;
+    user3Key: Int as uint256;
 
     init(key1: Int, key2: Int, key3: Int) {
-        self.user1_key = key1;
-        self.user2_key = key2;
-        self.user3_key = key3;
+        self.user1Key = key1;
+        self.user2Key = key2;
+        self.user3Key = key3;
     }
 
-    receive("Deploy") {
-        // Do nothing
-    }
+    // deploy
+    receive(_: Slice) {}
 
     receive(msg: Execute) {
-
         // Check all signatures
-        let op_hash: Int = msg.operation.toCell().hash();
-        let ok1: Bool = checkSignature(op_hash, msg.signature1, self.user1_key);
-        let ok2: Bool = checkSignature(op_hash, msg.signature2, self.user2_key);
-        let ok3: Bool = checkSignature(op_hash, msg.signature3, self.user3_key);
+        let operationHash: Int = msg.operation.toCell().hash();
+        let ok1: Bool = checkSignature(operationHash, msg.signature1, self.user1Key);
+        let ok2: Bool = checkSignature(operationHash, msg.signature2, self.user2Key);
+        let ok3: Bool = checkSignature(operationHash, msg.signature3, self.user3Key);
+        
         require(msg.operation.seqno == self.seqno, "Invalid seqno");
         require(ok1 && ok2 && ok3, "Invalid signature");
+
+        self.seqno += 1;
+        commit();
 
         // Send messages
         self.execute(msg.operation);
@@ -50,15 +52,15 @@ contract MultisigContract {
     }
 
     get fun key1(): Int {
-        return self.user1_key;
+        return self.user1Key;
     }
 
     get fun key2(): Int {
-        return self.user2_key;
+        return self.user2Key;
     }
 
     get fun key3(): Int {
-        return self.user3_key;
+        return self.user3Key;
     }
 
     get fun seqno(): Int {

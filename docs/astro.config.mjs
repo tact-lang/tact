@@ -299,7 +299,11 @@ export default defineConfig({
 					],
 				},
 				{
-					label: '✈️ Telegram →',
+					label: '⭐ Awesome Tact →',
+					link: 'https://github.com/tact-lang/awesome-tact',
+				},
+				{
+					label: '✈️ Telegram Chat →',
 					link: 'https://t.me/tactlang',
 					attrs: { target: '_blank' }
 				},

@@ -599,7 +599,14 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
                     ctx.context("stdlib");
                 }
 
-                ctx.asm(shuffle, fAst.instructions.join(" "));
+                if (
+                    fAst.instructions.length > 1 ||
+                    fAst.instructions[0] !== ""
+                ) {
+                    ctx.asm(shuffle, fAst.instructions.join(" "));
+                } else {
+                    ctx.asm(shuffle, "NOP", true);
+                }
             });
             if (f.isMutating) {
                 writeNonMutatingFunction(
