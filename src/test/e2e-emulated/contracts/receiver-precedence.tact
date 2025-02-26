@@ -28,7 +28,7 @@ contract Calculator {
     receive(request: BinaryIntOperation) {
         require(request.op == "/", "Only divisions are currently supported.");
         let result = request.val1 / request.val2;
-        send(SendParameters{
+        message(MessageParameters{
             to: sender(),
             bounce: false,
             value: ton("1"),
@@ -77,7 +77,7 @@ contract ReceiverTester {
     // Initiate a request to the calculator, with an unsupported arithmetic operation: 1 + 1
     receive("do_unsupported_op") {
         let addr = contractAddress(initOf Calculator());
-        send(SendParameters{
+        message(MessageParameters{
                 to: addr,
                 bounce: true,
                 value: ton("1"),
@@ -88,7 +88,7 @@ contract ReceiverTester {
     // Initiate a request to the calculator, with a division by zero: 10/0
     receive("do_div_by_zero") {
         let addr = contractAddress(initOf Calculator());
-        send(SendParameters{
+        message(MessageParameters{
                 to: addr,
                 bounce: true,
                 value: ton("1"),
@@ -99,7 +99,7 @@ contract ReceiverTester {
     // Initiate a request to the calculator: 10/2
     receive("do_success_div") {
         let addr = contractAddress(initOf Calculator());
-        send(SendParameters{
+        message(MessageParameters{
                 to: addr,
                 bounce: true,
                 value: ton("1"),
@@ -111,7 +111,7 @@ contract ReceiverTester {
     // The calculator will reject the request
     receive("do_unknown_request") {
         let addr = contractAddress(initOf Calculator());
-        send(SendParameters{
+        message(MessageParameters{
                 to: addr,
                 bounce: true,
                 value: ton("1"),

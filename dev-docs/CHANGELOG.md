@@ -113,6 +113,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better error messages for empty `bounced()` and `bounced("string")`: PR [#1998](https://github.com/tact-lang/tact/pull/1998)
 - Contract data types in compilation reports are now generated correctly: PR [#2004](https://github.com/tact-lang/tact/pull/2004)
 - Updated contracts in `./examples`: PR [#2008](https://github.com/tact-lang/tact/pull/2008)
+- Show better error for fields with a contract type: PR [#2011](https://github.com/tact-lang/tact/pull/2011)
 
 ### Docs
 
@@ -154,6 +155,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `Deployable` trait to all contracts in the Cookbook: PR [#1906](https://github.com/tact-lang/tact/pull/1906)
 - Added a note on the Debug page about high gas use of functions enabled with debug mode: PR [#1938](https://github.com/tact-lang/tact/pull/1938)
 - Added a note on the Assembly functions page regarding the ordering of fields in stdlib structures: PR [#1976](https://github.com/tact-lang/tact/pull/1976)
+- Added a link to Awesome Tact after the Ecosystem section: PR [#2015](https://github.com/tact-lang/tact/pull/2015)
 
 ### Release contributors
 
