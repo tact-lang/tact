@@ -752,9 +752,9 @@ export function writeTypescriptValue(
         case "address":
             return `address("${val.value.toString()}")`;
         case "cell":
-            return `Cell.fromBase64("${val.value.toBoc().toString("base64")}")`;
+            return `Cell.fromHex("${val.value.toBoc().toString("hex")}")`;
         case "slice":
-            return `Cell.fromBase64("${val.value.asCell().toBoc().toString("base64")}").beginParse()`;
+            return `Cell.fromHex("${val.value.asCell().toBoc().toString("hex")}").beginParse()`;
         case "null":
             return "null";
         case "struct_value": {
