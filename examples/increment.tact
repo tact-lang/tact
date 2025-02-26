@@ -29,10 +29,6 @@ contract IncrementContract with Deployable {
     counters4: map<Address, Int>;
     counters5: map<Int, Something>;
 
-    init() {
-        // Nothing to do
-    }
-
     receive(msg: Increment) {
         self.counters.set(msg.key, msg.value);
         self.counters4.set(sender(), msg.value);
