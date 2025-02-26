@@ -153,6 +153,8 @@ Toncoins
 tonstudio
 Topup
 Trunov
+tactlang
+thetonstudio
 typechecker
 udict
 uintptr
@@ -176,3 +178,7 @@ xtwitter
 привет
 subwallet
 keypair
+extracurrency
+nobounce
+bounceable
+guarantor

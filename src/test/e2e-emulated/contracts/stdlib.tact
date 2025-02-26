@@ -70,7 +70,7 @@ contract StdlibTest {
         msg.skipBits(4); //Skip tags
         msg.loadAddress(); // Skip source
         let ctx: Context = Context{
-            bounced: false,
+            bounceable: false,
             sender: myAddress(),
             value: ton("1"),
             raw: msg

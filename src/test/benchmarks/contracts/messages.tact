@@ -78,10 +78,11 @@ message(0xd1735400) TakeWalletAddress {
     ownerAddress: Cell?; //It is Maybe ^Address, just encoded it like this
 }
 
-message(0xfc708bd2) Mint {
+message(21) Mint {
     queryId: Int as uint64;
-    amount: Int;
     receiver: Address;
+    tonAmount: Int as coins;
+    mintMessage: JettonTransferInternal;
 }
 
 message(3) ChangeOwner {

@@ -393,6 +393,7 @@ export type AstExpression =
     | AstStructInstance
     | AstId
     | AstInitOf
+    | AstCodeOf
     | AstString
     | AstLiteral;
 
@@ -491,6 +492,13 @@ export type AstInitOf = {
     readonly kind: "init_of";
     readonly contract: AstId;
     readonly args: readonly AstExpression[];
+    readonly id: number;
+    readonly loc: SrcInfo;
+};
+
+export type AstCodeOf = {
+    readonly kind: "code_of";
+    readonly contract: AstId;
     readonly id: number;
     readonly loc: SrcInfo;
 };

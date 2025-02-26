@@ -22,7 +22,7 @@ contract ReservedContractErrorsTester with Ownable {
 
     /// Exit code 130
     receive("130") {
-        send(SendParameters{
+        message(MessageParameters{
             to: myAddress(), // Send a message back to this contract
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
@@ -50,7 +50,7 @@ contract ReservedContractErrorsTester with Ownable {
                 .fromBase64());
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Slice.fromBase64() didn't error on invalid Base64");
 
@@ -60,7 +60,7 @@ contract ReservedContractErrorsTester with Ownable {
             dump("\x00".fromBase64());
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "String.fromBase64() didn't error on invalid Base64");
 
@@ -69,7 +69,7 @@ contract ReservedContractErrorsTester with Ownable {
             dump((42).toFloatString(-1));
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Int.toFloatString() didn't error on digits -1");
 
@@ -78,7 +78,7 @@ contract ReservedContractErrorsTester with Ownable {
             dump((42).toFloatString(78));
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Int.toFloatString() didn't error on digits 78");
 
@@ -89,7 +89,7 @@ contract ReservedContractErrorsTester with Ownable {
             dump(dnsInternalNormalize(sliceWithRef));
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "dnsInternalNormalize() didn't error on Slice with refs");
 
@@ -115,7 +115,7 @@ contract ReservedContractErrorsTester with Ownable {
             dump(addrSlice.asAddress(chainID));
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Slice.asAddress() didn't error on invalid tag prefix for a masterchain address");
 
@@ -130,7 +130,7 @@ contract ReservedContractErrorsTester with Ownable {
             dump(addrSlice.asAddress(chainID));
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Slice.asAddress() didn't error on invalid tag prefix for a basechain address");
 
@@ -145,7 +145,7 @@ contract ReservedContractErrorsTester with Ownable {
             dump(addrSlice.asAddress(chainID));
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Slice.asAddress() didn't error on invalid tag prefix for a workchain address");
 
@@ -160,7 +160,7 @@ contract ReservedContractErrorsTester with Ownable {
             dump(addrSlice.asAddress(chainID));
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Slice.asAddress() didn't error on invalid account ID size for a basechain address");
 
@@ -175,7 +175,7 @@ contract ReservedContractErrorsTester with Ownable {
             dump(addrSlice.asAddress(chainID));
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Slice.asAddress() didn't error on invalid account ID size for a masterchain address");
 
@@ -190,7 +190,7 @@ contract ReservedContractErrorsTester with Ownable {
             dump(addrSlice.asAddress(chainID));
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Slice.asAddress() didn't error on invalid account ID size for a workchain address");
 

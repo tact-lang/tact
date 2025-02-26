@@ -239,7 +239,7 @@ Can only be applied to values of type [`Int{:tact}`][int]:
 ```tact
 let two: Int = 2;
 two % 2; // 0
-two % 1; // 1
+two % 1; // 0
 
 1 % 5;   // 1
 -1 % 5;  // 4
@@ -337,7 +337,7 @@ pow(2, 254) >> 254; // 1
 
 #### Shift left, `<<` {#binary-bitwise-shift-left}
 
-Binary double greater than (_bitwise shift left_) operator `<<{:tact}` returns an integer which binary representation is the _left operand_ value shifted by the _right operand_ number of bits to the left. Excess bits shifted off to the left are discarded, and zero bits are shifted in from the right. This is a more effective way to multiply the _left operand_ by $2^n$, where $n$ is equal to the _right operand_. Going beyond the maximum value of an [`Int{:tact}`][int] will result in an error with [exit code 4](/book/exit-codes#4): `Integer overflow`.
+Binary double less than (_bitwise shift left_) operator `<<{:tact}` returns an integer which binary representation is the _left operand_ value shifted by the _right operand_ number of bits to the left. Excess bits shifted off to the left are discarded, and zero bits are shifted in from the right. This is a more effective way to multiply the _left operand_ by $2^n$, where $n$ is equal to the _right operand_. Going beyond the maximum value of an [`Int{:tact}`][int] will result in an error with [exit code 4](/book/exit-codes#4): `Integer overflow`.
 
 Can only be applied to values of type [`Int{:tact}`][int]:
 
@@ -348,7 +348,7 @@ two << 1; // 4
 2 << 5;   // 2 * 2^5, which is 64
 
 pow(2, 254) == (1 << 254); // true
-pow(2, 254) == 1 << 254; // true, no parentheses needed due to higher precedence of >> over ==
+pow(2, 254) == 1 << 254; // true, no parentheses needed due to higher precedence of << over ==
 pow(2, 255) == 1 << 255; // true, but we're very close to overflow here!
 ```
 
@@ -375,7 +375,7 @@ two > 2; // false
 
 #### Greater than or equal to, `>=` {#binary-greater-equal}
 
-Binary _greater than or equal to_ operator `>={:tact}` returns `true{:tact}` if the left operand is greater than or to the right operand, and `false{:tact}` otherwise. Can only be applied to values of type [`Int{:tact}`][int]:
+Binary _greater than or equal to_ operator `>={:tact}` returns `true{:tact}` if the left operand is greater than or equal to the right operand, and `false{:tact}` otherwise. Can only be applied to values of type [`Int{:tact}`][int]:
 
 ```tact
 let two: Int = 2;

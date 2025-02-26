@@ -16,7 +16,7 @@ contract JettonWallet {
     }
 
     receive(msg: JettonTransfer) {
-        nativeThrowUnless(705, sender() == self.owner);
+        throwUnless(705, sender() == self.owner);
 
         let totalFees: Int =
             2 * (context().readForwardFee() + self.gasConsumption) +
@@ -75,7 +75,7 @@ contract JettonWallet {
 
         if (msg.forwardTonAmount > 0) {
             msgValue = ((msgValue - msg.forwardTonAmount) - fwd_fee);
-            send(SendParameters{
+            message(MessageParameters{
                 to: self.owner,
                 value: msg.forwardTonAmount,
                 mode: SendPayGasSeparately,
@@ -91,7 +91,7 @@ contract JettonWallet {
 
         // 0xd53276db -- Cashback to the original Sender
         if (msg.responseDestination != null && msgValue > 0) {
-            send(SendParameters{
+            message(MessageParameters{
                 to: msg.responseDestination!!,
                 value: msgValue,
                 mode: SendIgnoreErrors, // Jetton transfer is already succeeded, Here was only PayGasSeparately in Howard's code
@@ -103,7 +103,7 @@ contract JettonWallet {
     }
 
     receive(msg: JettonBurn) {
-        nativeThrowUnless(705, sender() == self.owner);
+        throwUnless(705, sender() == self.owner);
 
         self.balance -= msg.amount; // Update balance
         require(self.balance >= 0, "Invalid balance after burn");
@@ -114,7 +114,7 @@ contract JettonWallet {
         //let fwd_fee: Int = ctx.readForwardFee(); // Gas checks
         //require(ctx.value > ((fwd_fee + 2 * self.gasConsumption) + self.minTonsForStorage), "Invalid value - Burn");
         // Burn tokens
-        send(SendParameters{
+        message(MessageParameters{
             to: self.master,
             value: 0,
             mode: SendRemainingValue,
@@ -141,7 +141,7 @@ contract JettonWallet {
             balance: self.balance,
             owner: self.owner,
             master: self.master,
-            code: myCode() //may be replaced by "initOf JettonDefaultWallet(self.owner, self.master).code"
+            code: myCode()
         };
     }
 }

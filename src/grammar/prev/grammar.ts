@@ -1542,6 +1542,13 @@ semantics.addOperation<A.AstNode>("astOfExpression", {
             loc: createRef(this),
         });
     },
+    ExpressionCodeOf(_initOfKwd, contractId) {
+        return createNode({
+            kind: "code_of",
+            contract: contractId.astOfExpression(),
+            loc: createRef(this),
+        });
+    },
 
     // Ternary conditional
     ExpressionConditional_ternary(

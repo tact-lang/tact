@@ -109,7 +109,7 @@ export function printBenchmarkTable(results: BenchmarkResult[]): void {
     }
 
     const table = new Table({
-        head: ["Run", ...METRICS, "Commit"],
+        head: ["Run", ...METRICS, "PR #"],
         style: {
             head: ["cyan"],
             border: ["gray"],
