@@ -63,7 +63,7 @@ extends fun asAddress(self: Slice, chain: Int): Address {
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddress
 /// * https://docs.tact-lang.org/ref/core-cells#addressasslice
 ///
-asm extends fun asAddressUnsafe(self: Slice): Address { NOP }
+asm extends fun asAddressUnsafe(self: Slice): Address {}
 
 /// Extension function for the `Address` type.
 ///
@@ -83,7 +83,7 @@ asm extends fun asAddressUnsafe(self: Slice): Address { NOP }
 /// * https://docs.tact-lang.org/ref/core-cells#addressasslice
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddressunsafe
 ///
-asm extends fun asSlice(self: Address): Slice { NOP }
+asm extends fun asSlice(self: Address): Slice {}
 
 /// Global function.
 ///
