@@ -64,6 +64,7 @@ export async function writeProgram(
         .map((it) => ({
             name: it.name,
             value: writeTypescriptValue(it.value),
+            fromContract: false,
         }));
 
     const files: { name: string; code: string }[] = [];
@@ -191,8 +192,9 @@ export async function writeProgram(
 
             constants.push(
                 ...t.constants.map((it) => ({
-                    name: t.name + "_" + it.name,
+                    name: it.name,
                     value: writeTypescriptValue(it.value),
+                    fromContract: true,
                 })),
             );
         }

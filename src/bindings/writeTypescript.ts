@@ -44,10 +44,16 @@ function writeArguments(args: ABIArgument[]) {
     return res;
 }
 
+export type WrappersConstantDescription = {
+    name: string;
+    value: string | undefined;
+    fromContract: boolean;
+};
+
 export function writeTypescript(
     abi: ContractABI,
     ctx: CompilerContext,
-    constants: { name: string; value: string | undefined }[],
+    constants: WrappersConstantDescription[],
     init?: {
         code: string;
         system: string | null;
@@ -274,18 +280,40 @@ export function writeTypescript(
     w.append();
 
     for (const constant of constants) {
-        if (typeof constant.value === "undefined") continue;
+        if (typeof constant.value === "undefined" || constant.fromContract) {
+            continue;
+        }
         w.append(`export const ${constant.name} = ${constant.value};`);
     }
 
     if (constants.length > 0) {
-        w.append("");
+        w.append();
     }
 
     // Wrapper
     w.append(`export class ${abi.name} implements Contract {`);
     w.inIndent(() => {
         w.append();
+
+        const addedContractConstants: Set<string> = new Set();
+        for (const constant of constants) {
+            if (
+                typeof constant.value === "undefined" ||
+                !constant.fromContract ||
+                addedContractConstants.has(constant.name)
+            ) {
+                continue;
+            }
+            w.append(
+                `public static readonly ${constant.name} = ${constant.value};`,
+            );
+
+            addedContractConstants.add(constant.name);
+        }
+
+        if (constants.length > 0) {
+            w.append();
+        }
 
         if (init) {
             w.append(

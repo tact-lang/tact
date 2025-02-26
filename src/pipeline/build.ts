@@ -4,6 +4,7 @@ import {
     Cell as OpcodeCell,
     AssemblyWriter,
 } from "@tact-lang/opcode";
+import type { WrappersConstantDescription } from "../bindings/writeTypescript";
 import { writeTypescript } from "../bindings/writeTypescript";
 import { featureEnable } from "../config/features";
 import type { Project } from "../config/parseConfig";
@@ -130,14 +131,10 @@ export async function build(args: {
         | {
               codeBoc: Buffer;
               abi: string;
+              constants: WrappersConstantDescription[];
           }
         | undefined
     > = {};
-
-    const constants: Map<
-        string,
-        { name: string; value: string | undefined }[]
-    > = new Map();
 
     const allContracts = getAllTypes(ctx).filter((v) => v.kind === "contract");
 
@@ -173,6 +170,7 @@ export async function build(args: {
         // Compiling contract to func
         logger.info(`   > ${contractName}: tact compiler`);
         let abi: string;
+        const constants: WrappersConstantDescription[] = [];
         try {
             const res = await compile(
                 ctx,
@@ -191,7 +189,7 @@ export async function build(args: {
                 content: v.code,
             }));
             codeEntrypoint = res.output.entrypoint;
-            constants.set(contractName, res.output.constants);
+            constants.push(...res.output.constants);
         } catch (e) {
             logger.error("Tact compilation failed");
             // show an error with a backtrace only in verbose mode
@@ -273,6 +271,7 @@ export async function build(args: {
         built[contractName] = {
             codeBoc,
             abi,
+            constants,
         };
 
         if (config.mode === "fullWithDecompilation") {
@@ -425,7 +424,7 @@ export async function build(args: {
             const bindingsServer = writeTypescript(
                 JSON.parse(pkg.abi),
                 ctx,
-                constants.get(pkg.name) ?? [],
+                built[pkg.name]?.constants ?? [],
                 {
                     code: pkg.code,
                     prefix: pkg.init.prefix,
