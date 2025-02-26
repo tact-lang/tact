@@ -75,7 +75,7 @@ const builderFormats: FormatDef = {
     remaining: { type: "builder", format: "remainder" },
 };
 
-export type ResolveTypeOptions = {
+type ResolveTypeOptions = {
     readonly type: A.AstType;
     readonly as: A.AstId | null;
     readonly loc: SrcInfo;
