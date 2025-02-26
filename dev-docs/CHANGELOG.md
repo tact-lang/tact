@@ -66,6 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Error message for reserved `self` function parameter now suggests using `extends` function modifier: PR [#1737](https://github.com/tact-lang/tact/pull/1737)
 - `Int.toFloatString` now consumes up to 62% less gas: PR [#1956](https://github.com/tact-lang/tact/pull/1956)
 - Don't show internal error for unknown types for variables: PR [#2005](https://github.com/tact-lang/tact/pull/2005)
+- Struct serialization and parsing functions are now inlined more aggressively to save gas: PR [#2016](https://github.com/tact-lang/tact/pull/2016)
 
 ### Fixed
 
