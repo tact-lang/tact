@@ -45,9 +45,9 @@ function writeArguments(args: ABIArgument[]) {
 }
 
 export type WrappersConstantDescription = {
-    name: string;
-    value: string | undefined;
-    fromContract: boolean;
+    readonly name: string;
+    readonly value: string | undefined;
+    readonly fromContract: boolean;
 };
 
 export function writeTypescript(
