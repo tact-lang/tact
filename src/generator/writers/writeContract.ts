@@ -457,9 +457,16 @@ export function writeMainContract(
         <{
             SETCP0 DUP
             IFNOTJMP:<{
-                DROP over <s ref@ 0 swap @procdictkeylen idict@ { "internal error" abort } ifnot @addop
-            }>
-            swap <s ref@
+                DROP over <s ref@ 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot @addop
+            }>`);
+
+        if (hasExternal) {
+            wCtx.append(`DUP -1 EQINT IFJMP:<{
+                DROP over <s ref@ -1 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot @addop
+            }>`);
+        }
+
+        wCtx.append(`swap <s ref@
             0 swap @procdictkeylen idict- drop
             -1 swap @procdictkeylen idict- drop
             65535 swap @procdictkeylen idict- drop
