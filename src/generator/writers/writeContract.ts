@@ -64,11 +64,38 @@ export function writeStorageOps(
                 ctx.append(`__tact_child_contract_codes = $sc~load_ref();`);
             }
 
-            ctx.append(`int $loaded = $sc~load_int(1);`);
+            if (type.init?.kind !== "contract-params") {
+                ctx.append(`int $loaded = $sc~load_int(1);`);
 
-            // Load data
-            ctx.append(`if ($loaded) {`);
-            ctx.inIndent(() => {
+                // Load data
+                ctx.append(`if ($loaded) {`);
+                ctx.inIndent(() => {
+                    if (type.fields.length > 0) {
+                        ctx.append(
+                            `return $sc~${ops.reader(type.name, "with-opcode", ctx)}();`,
+                        );
+                    } else {
+                        ctx.append(`return null();`);
+                    }
+                });
+                ctx.append(`} else {`);
+                ctx.inIndent(() => {
+                    // Load arguments
+                    if (type.init!.params.length > 0) {
+                        ctx.append(
+                            `(${type.init!.params.map((v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) = $sc~${ops.reader(funcInitIdOf(type.name), "with-opcode", ctx)}();`,
+                        );
+                        ctx.append(`$sc.end_parse();`);
+                    }
+
+                    // Execute init function
+                    ctx.append(
+                        `return ${ops.contractInit(type.name, ctx)}(${[...type.init!.params.map((v) => funcIdOf(v.name))].join(", ")});`,
+                    );
+                });
+
+                ctx.append(`}`);
+            } else {
                 if (type.fields.length > 0) {
                     ctx.append(
                         `return $sc~${ops.reader(type.name, "with-opcode", ctx)}();`,
@@ -76,24 +103,7 @@ export function writeStorageOps(
                 } else {
                     ctx.append(`return null();`);
                 }
-            });
-            ctx.append(`} else {`);
-            ctx.inIndent(() => {
-                // Load arguments
-                if (type.init!.params.length > 0) {
-                    ctx.append(
-                        `(${type.init!.params.map((v) => resolveFuncType(v.type, ctx) + " " + funcIdOf(v.name)).join(", ")}) = $sc~${ops.reader(funcInitIdOf(type.name), "with-opcode", ctx)}();`,
-                    );
-                    ctx.append(`$sc.end_parse();`);
-                }
-
-                // Execute init function
-                ctx.append(
-                    `return ${ops.contractInit(type.name, ctx)}(${[...type.init!.params.map((v) => funcIdOf(v.name))].join(", ")});`,
-                );
-            });
-
-            ctx.append(`}`);
+            }
         });
     });
 
@@ -115,8 +125,10 @@ export function writeStorageOps(
                 ctx.append(`b = b.store_ref(__tact_child_contract_codes);`);
             }
 
-            // Persist deployment flag
-            ctx.append(`b = b.store_int(true, 1);`);
+            if (type.init?.kind !== "contract-params") {
+                // Persist deployment flag
+                ctx.append(`b = b.store_int(true, 1);`);
+            }
 
             // Build data
             if (type.fields.length > 0) {
@@ -192,15 +204,23 @@ export function writeInit(
         });
     });
 
+    const codeBoc = codes[t.name]?.codeBoc;
     ctx.fun(ops.contractChildGetCode(t.name, ctx), () => {
+        if (typeof codeBoc === "undefined") {
+            ctx.comment(
+                "This function should be removed by the compiler. If you see it in your code, please report it at https://github.com/tact-lang/tact/issues",
+            );
+        }
         ctx.signature(`cell ${ops.contractChildGetCode(t.name, ctx)}()`);
         ctx.context("type:" + t.name + "$init");
         ctx.flag("inline");
         ctx.flag("impure");
-        ctx.asm(
-            "",
-            `B{${codes[t.name]?.codeBoc.toString("hex")}} B>boc PUSHREF`,
-        );
+
+        const boc =
+            typeof codeBoc === "undefined"
+                ? "internal bug, please report to https://github.com/tact-lang/tact/issues"
+                : codeBoc.toString("hex");
+        ctx.asm("", `B{${boc}} B>boc PUSHREF`);
     });
 
     ctx.fun(ops.contractInitChild(t.name, ctx), () => {
@@ -286,7 +306,9 @@ export function writeInit(
             }
 
             // store initialization bit and contract variables
-            ctx.append(`b = b.store_int(false, 1);`);
+            if (init.kind !== "contract-params") {
+                ctx.append(`b = b.store_int(false, 1);`);
+            }
             const args =
                 t.init!.params.length > 0
                     ? [

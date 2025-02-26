@@ -133,6 +133,7 @@ export type AstContract = {
     readonly name: AstId;
     readonly traits: readonly AstId[];
     readonly attributes: readonly AstContractAttribute[];
+    readonly params: undefined | readonly AstFieldDecl[];
     readonly declarations: readonly AstContractDeclaration[];
     readonly id: number;
     readonly loc: SrcInfo;
