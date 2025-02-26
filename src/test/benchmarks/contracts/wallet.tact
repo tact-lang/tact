@@ -24,6 +24,16 @@ struct InternalOperation {
     actions: Slice as remaining;
 }
 
+struct CompatibleSignedRequest {
+    signature: Slice as bytes64;
+    walletId: Int as uint32;
+    validUntil: Int as uint32;
+    seqno: Int as uint32;
+    outActions: Cell?;
+    hasOtherActions: Bool;
+    actions: Slice as remaining;
+}
+
 message SignedRequest {
     signature: Slice as bytes64;
     operation: InternalOperation;
@@ -55,13 +65,47 @@ contract Wallet with Deployable {
         self.extensions = extensions;
     }
 
+    fun processSignedRequestCompatible(msg: CompatibleSignedRequest, isExternal: Bool) {
+        let signature = msg.signature;
+        let signedSlice = msg.toSlice();
+        signedSlice.skipBits(256);
+
+        let isSignatureValid = checkSignature(signedSlice.hash(), signature, self.publicKey);
+        if (!isSignatureValid) {
+            if (isExternal) {
+                throw(135);
+            } else {
+                return;
+            }
+        }
+
+        throwIf(132, !self.isSignatureAllowed && self.extensions.isEmpty());
+        throwUnless(1, msg.seqno == self.seqno);
+        throwUnless(1, msg.walletId == self.walletId);
+        throwIf(1, msg.validUntil <= now());
+
+        if (isExternal) {
+            acceptMessage();
+        }
+
+        self.seqno += 1;
+        commit();
+
+        signedSlice.skipBits(32 + 32 + 32);
+        self.processActionsCompatible(signedSlice, isExternal, false);
+    }
+
+    fun processActionsCompatible(actions: Slice, isExternal: Bool, isExtension: Bool) {
+        let outActions = actions.loadRef()
+    }
+
     fun processSignedRequest(msg: SignedRequest, isExternal: Bool) {
         require(checkSignature(msg.operation.toCell().hash(), msg.signature, self.publicKey), "Invalid signature");
 
         require(msg.operation.seqno == self.seqno, "Invalid seqno");
         require(msg.operation.walletId == self.walletId, "Invalid walletId");
         require(now() < msg.operation.validUntil, "Operation expired");
-
+        
         if (isExternal) {
             acceptMessage();
         }
