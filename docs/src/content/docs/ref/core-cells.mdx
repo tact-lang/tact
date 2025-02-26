@@ -1034,6 +1034,7 @@ let s2: Slice = beginCell()
     .storeRef(emptyCell())
     .storeRef(s1.asCell())
     .asSlice();
+
 let ref1: Cell = s2.preloadRef();
 let ref2: Cell = s2.preloadRef();
 ref1 == ref2; // true
@@ -1041,7 +1042,7 @@ ref1 == ref2; // true
 
 ### Slice.loadMaybeRef
 
-<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
 
 ```tact
 extends mutates fun loadMaybeRef(self: Slice): Cell?;
@@ -1049,29 +1050,27 @@ extends mutates fun loadMaybeRef(self: Slice): Cell?;
 
 Extension mutation function for the [`Slice{:tact}`][slice] type.
 
-Loads the next `Maybe^ Cell` reference from the [`Slice{:tact}`][slice] as a [`Cell?{:tact}`][cell].
+Loads a single bit from the [`Slice{:tact}`][slice]: if it's $1$, then the referenced [`Cell{:tact}`][cell] is loaded and returned. If the loaded bit is $0$, then nothing else is loaded and `null{:tact}` is returned.
 
-In other words loads 1 bit and if it is true
-loads first ref and return it,
-otherwise returns `null`. In both cases modifies the original `Slice`.
+Attempts to load such reference [`Cell{:tact}`][cell] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
 
-Usage examples:
+Attempts to load more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
 
 ```tact
-let cs = msg.asSlice();
-let outActions = cs.loadMaybeRef();
+let s = msg.asSlice();
+let outActions = s.loadMaybeRef();
 
 if (outActions != null) {
-    let actions = outActions!;
+    let actions = outActions!!;
     // process actions
-} else {
-  return;
 }
 ```
 
 ### Slice.preloadMaybeRef
 
-<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
 
 ```tact
 extends fun preloadMaybeRef(self: Slice): Cell?;
@@ -1079,24 +1078,27 @@ extends fun preloadMaybeRef(self: Slice): Cell?;
 
 Extension function for the [`Slice{:tact}`][slice] type.
 
-Preloads the next `Maybe^ Cell` reference from the [`Slice{:tact}`][slice] as a [`Cell?{:tact}`][cell].
+Preloads a single bit from the [`Slice{:tact}`][slice]: if it's $1$, then the referenced [`Cell{:tact}`][cell] is preloaded and returned. If the preloaded bit is $0$, then `null{:tact}` is returned. Doesn't modify the original [`Slice{:tact}`][slice].
 
-In other words loads 1 bit and if it is true
-loads first ref and return it,
-otherwise returns `null`. In both cases doesn't modify the original `Slice`.
+Attempts to preload such reference [`Cell{:tact}`][cell] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to preload more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage examples:
 
 ```tact
-let cs = msg.asSlice();
-let outActions = cs.preloadMaybeRef();
+let s1: Slice = beginCell().storeMaybeRef(emptyCell()).asSlice();
+let fizz: Cell = s1.preloadMaybeRef(); // returns emptyCell() and doesn't modify s1
 
-if (outActions != null) {
-    cs.skipBits(1);     // skip Maybe bit
-    processActions(cs); // can directly load actions inside
-} else {
-  return;
-}
+let s2: Slice = beginCell()
+    .storeMaybeRef(null)
+    .storeMaybeRef(s1.asCell())
+    .asSlice();
+
+let ref1: Cell = s2.preloadMaybeRef(); // returns null and doesn't modify s2
+let ref2: Cell = s2.preloadMaybeRef(); // same effect
+ref1 == null; // true
+ref1 == ref2; // true
 ```
 
 ### Slice.refs

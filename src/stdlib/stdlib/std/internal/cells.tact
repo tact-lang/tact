@@ -204,6 +204,7 @@ asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
 ///         .storeRef(emptyCell())
 ///         .storeRef(s1.asCell())
 ///         .asSlice();
+///
 ///     let ref1: Cell = s2.preloadRef();
 ///     let ref2: Cell = s2.preloadRef();
 ///     ref1 == ref2; // true
@@ -218,33 +219,38 @@ asm extends fun preloadRef(self: Slice): Cell { PLDREF }
 
 /// Extension function for the `Slice` type. Available since Tact 1.6.0.
 ///
-/// Preloads the next `Maybe^ Cell` reference from the `Slice` as a `Cell?`.
+/// Loads a single bit from the `Slice`: if it's 1, then the referenced `Cell` is loaded and returned. If the loaded bit is 0, then nothing else is loaded and `null` is returned.
 ///
-/// In other words loads 1 bit and if it is true
-/// loads first ref and return it,
-/// otherwise returns `null`. In both cases modifies the original `Slice`.
+/// Attempts to load such reference `Cell` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+///
+/// Attempts to load more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
 /// ```tact
-/// fun examples() {
-///     let s1: Slice = beginCell().storeMaybeRef(emptyCell()).asSlice();
-///     let fizz: Cell = s1.loadMaybeRef(); // returns emptyCell() and modifies s1
+/// fun example() {
+///     let s = msg.asSlice();
+///     let outActions = s.loadMaybeRef();
 ///
-///     let s2: Slice = beginCell()
-///         .storeMaybeRef(null)
-///         .asSlice();
-///
-///     let buzz: Cell = s2.loadMaybeRef(); // returns null and modifies s2
-///     buzz == null; // true
+///     if (outActions != null) {
+///         let actions = outActions!!;
+///         // ...process actions...
+///     }
 /// }
 /// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceloadmayberef
+/// * https://docs.tact-lang.org/book/exit-codes
+///
 asm(-> 1 0) extends mutates fun loadMaybeRef(self: Slice): Cell? { LDOPTREF }
 
 /// Extension function for the `Slice` type. Available since Tact 1.6.0.
 ///
-/// Loads the next `Maybe^ Cell` reference from the `Slice` as a `Cell?`. Doesn't modify the original `Slice`.
+/// Preloads a single bit from the `Slice`: if it's 1, then the referenced `Cell` is preloaded and returned. If the preloaded bit is 0, then `null` is returned. Doesn't modify the original `Slice`.
 ///
-/// In other words loads 1 bit and if it is true
-/// loads first ref and return it,
-/// otherwise returns `null`. In both cases doesn't modify the original `Slice`.
+/// Attempts to preload such reference `Cell` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+///
+/// Attempts to preload more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
 /// ```tact
 /// fun examples() {
 ///     let s1: Slice = beginCell().storeMaybeRef(emptyCell()).asSlice();
@@ -261,6 +267,11 @@ asm(-> 1 0) extends mutates fun loadMaybeRef(self: Slice): Cell? { LDOPTREF }
 ///     ref1 == ref2; // true
 /// }
 /// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#slicepreloadmayberef
+/// * https://docs.tact-lang.org/book/exit-codes
+///
 asm extends fun preloadMaybeRef(self: Slice): Cell? { PLDOPTREF }
 
 // special treatment in Func compiler, so not replaced with asm "LDSLICEX"
