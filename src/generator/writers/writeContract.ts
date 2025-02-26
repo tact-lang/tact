@@ -186,15 +186,13 @@ export function writeInit(
         });
     });
 
+    const codeBoc = codes[t.name]?.codeBoc;
     ctx.fun(ops.contractChildGetCode(t.name, ctx), () => {
         ctx.signature(`cell ${ops.contractChildGetCode(t.name, ctx)}()`);
         ctx.context("type:" + t.name + "$init");
         ctx.flag("inline");
         ctx.flag("impure");
-        ctx.asm(
-            "",
-            `B{${codes[t.name]?.codeBoc.toString("hex")}} B>boc PUSHREF`,
-        );
+        ctx.asm("", `B{${codeBoc?.toString("hex")}} B>boc PUSHREF`);
     });
 
     ctx.fun(ops.contractInitChild(t.name, ctx), () => {
