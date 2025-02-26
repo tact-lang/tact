@@ -159,6 +159,7 @@ export const getAstSchema = (
             name: A.AstId,
             traits: A.AstId[],
             attributes: A.AstContractAttribute[],
+            params: undefined | readonly A.AstFieldDecl[],
             declarations: A.AstContractDeclaration[],
             loc: Loc,
         ): A.AstContract =>
@@ -167,6 +168,7 @@ export const getAstSchema = (
                 name,
                 traits,
                 attributes,
+                params,
                 declarations,
                 loc: toSrcInfo(loc),
             }),

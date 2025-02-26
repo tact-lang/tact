@@ -75,181 +75,190 @@ const builderFormats: FormatDef = {
     remaining: { type: "builder", format: "remainder" },
 };
 
-export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
+type ResolveTypeOptions = {
+    readonly type: A.AstType;
+    readonly as: A.AstId | null;
+    readonly loc: SrcInfo;
+};
+
+export function resolveABIType({
+    type,
+    as,
+    loc,
+}: ResolveTypeOptions): ABITypeRef {
     if (
-        src.type.kind === "type_id" ||
-        (src.type.kind === "optional_type" &&
-            src.type.typeArg.kind == "type_id")
+        type.kind === "type_id" ||
+        (type.kind === "optional_type" && type.typeArg.kind == "type_id")
     ) {
         //
         // Primitive types
         //
 
         const typeId: A.AstTypeId =
-            src.type.kind === "type_id"
-                ? src.type
-                : src.type.typeArg.kind === "type_id"
-                  ? src.type.typeArg
+            type.kind === "type_id"
+                ? type
+                : type.typeArg.kind === "type_id"
+                  ? type.typeArg
                   : throwInternalCompilerError(
                         "Only optional type identifiers are supported now",
-                        src.type.typeArg.loc,
+                        type.typeArg.loc,
                     );
 
         if (isInt(typeId)) {
-            if (src.as) {
-                const fmt = intFormats[idText(src.as)];
+            if (as) {
+                const fmt = intFormats[idText(as)];
                 if (!fmt) {
                     throwCompilationError(
-                        `Unsupported format ${idTextErr(src.as)}`,
-                        src.loc,
+                        `Unsupported format ${idTextErr(as)}`,
+                        loc,
                     );
                 }
                 return {
                     kind: "simple",
                     type: fmt.type,
-                    optional: src.type.kind === "optional_type",
+                    optional: type.kind === "optional_type",
                     format: fmt.format,
                 };
             }
             return {
                 kind: "simple",
                 type: "int",
-                optional: src.type.kind === "optional_type",
+                optional: type.kind === "optional_type",
                 format: 257,
             }; // Default is maximum size int
         }
         if (isBool(typeId)) {
-            if (src.as) {
+            if (as) {
                 throwCompilationError(
-                    `Unsupported format ${idTextErr(src.as)}`,
-                    src.loc,
+                    `Unsupported format ${idTextErr(as)}`,
+                    loc,
                 );
             }
             return {
                 kind: "simple",
                 type: "bool",
-                optional: src.type.kind === "optional_type",
+                optional: type.kind === "optional_type",
             };
         }
         if (isCell(typeId)) {
-            if (src.as) {
-                const fmt = cellFormats[idText(src.as)];
+            if (as) {
+                const fmt = cellFormats[idText(as)];
                 if (!fmt) {
                     throwCompilationError(
-                        `Unsupported format ${idTextErr(src.as)}`,
-                        src.loc,
+                        `Unsupported format ${idTextErr(as)}`,
+                        loc,
                     );
                 }
                 return {
                     kind: "simple",
                     type: fmt.type,
-                    optional: src.type.kind === "optional_type",
+                    optional: type.kind === "optional_type",
                     format: fmt.format,
                 };
             }
             return {
                 kind: "simple",
                 type: "cell",
-                optional: src.type.kind === "optional_type",
+                optional: type.kind === "optional_type",
             };
         }
         if (isSlice(typeId)) {
-            if (src.as) {
-                const fmt = sliceFormats[idText(src.as)];
+            if (as) {
+                const fmt = sliceFormats[idText(as)];
                 if (!fmt) {
                     throwCompilationError(
-                        `Unsupported format ${idTextErr(src.as)}`,
-                        src.loc,
+                        `Unsupported format ${idTextErr(as)}`,
+                        loc,
                     );
                 }
                 return {
                     kind: "simple",
                     type: fmt.type,
-                    optional: src.type.kind === "optional_type",
+                    optional: type.kind === "optional_type",
                     format: fmt.format,
                 };
             }
             return {
                 kind: "simple",
                 type: "slice",
-                optional: src.type.kind === "optional_type",
+                optional: type.kind === "optional_type",
             };
         }
         if (isBuilder(typeId)) {
-            if (src.as) {
-                const fmt = builderFormats[idText(src.as)];
+            if (as) {
+                const fmt = builderFormats[idText(as)];
                 if (!fmt) {
                     throwCompilationError(
-                        `Unsupported format ${idTextErr(src.as)}`,
-                        src.loc,
+                        `Unsupported format ${idTextErr(as)}`,
+                        loc,
                     );
                 }
                 return {
                     kind: "simple",
                     type: fmt.type,
-                    optional: src.type.kind === "optional_type",
+                    optional: type.kind === "optional_type",
                     format: fmt.format,
                 };
             }
             return {
                 kind: "simple",
                 type: "builder",
-                optional: src.type.kind === "optional_type",
+                optional: type.kind === "optional_type",
             };
         }
         if (isAddress(typeId)) {
-            if (src.as) {
+            if (as) {
                 throwCompilationError(
-                    `Unsupported format ${idTextErr(src.as)}`,
-                    src.loc,
+                    `Unsupported format ${idTextErr(as)}`,
+                    loc,
                 );
             }
             return {
                 kind: "simple",
                 type: "address",
-                optional: src.type.kind === "optional_type",
+                optional: type.kind === "optional_type",
             };
         }
         if (isString(typeId)) {
-            if (src.as) {
+            if (as) {
                 throwCompilationError(
-                    `Unsupported format ${idTextErr(src.as)}`,
-                    src.loc,
+                    `Unsupported format ${idTextErr(as)}`,
+                    loc,
                 );
             }
             return {
                 kind: "simple",
                 type: "string",
-                optional: src.type.kind === "optional_type",
+                optional: type.kind === "optional_type",
             };
         }
         if (isStringBuilder(typeId)) {
-            throwCompilationError(`Unsupported type StringBuilder`, src.loc);
+            throwCompilationError(`Unsupported type StringBuilder`, loc);
         }
 
         //
         // Structs
         //
 
-        if (src.as) {
-            if (eqNames(src.as, "reference")) {
+        if (as) {
+            if (eqNames(as, "reference")) {
                 return {
                     kind: "simple",
                     type: idText(typeId),
-                    optional: src.type.kind === "optional_type",
+                    optional: type.kind === "optional_type",
                     format: "ref",
                 };
             } else {
                 throwCompilationError(
-                    `Unsupported format ${idTextErr(src.as)}`,
-                    src.loc,
+                    `Unsupported format ${idTextErr(as)}`,
+                    loc,
                 );
             }
         }
         return {
             kind: "simple",
             type: idText(typeId),
-            optional: src.type.kind === "optional_type",
+            optional: type.kind === "optional_type",
         };
     }
 
@@ -257,113 +266,111 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
     // Map
     //
 
-    if (src.type.kind === "map_type") {
+    if (type.kind === "map_type") {
         let key: string;
         let keyFormat: string | number | undefined = undefined;
         let value: string;
         let valueFormat: string | number | undefined = undefined;
 
         // Resolve key type
-        if (isInt(src.type.keyType)) {
+        if (isInt(type.keyType)) {
             key = "int";
-            if (src.type.keyStorageType) {
-                const format =
-                    intMapKeyFormats[idText(src.type.keyStorageType)];
+            if (type.keyStorageType) {
+                const format = intMapKeyFormats[idText(type.keyStorageType)];
                 if (!format) {
                     throwCompilationError(
-                        `Unsupported format ${idTextErr(src.type.keyStorageType)} for map key`,
-                        src.loc,
+                        `Unsupported format ${idTextErr(type.keyStorageType)} for map key`,
+                        loc,
                     );
                 }
                 key = format.type;
                 keyFormat = format.format;
             }
-        } else if (isAddress(src.type.keyType)) {
+        } else if (isAddress(type.keyType)) {
             key = "address";
-            if (src.type.keyStorageType) {
+            if (type.keyStorageType) {
                 throwCompilationError(
-                    `Unsupported format ${idTextErr(src.type.keyStorageType)} for map key`,
-                    src.loc,
+                    `Unsupported format ${idTextErr(type.keyStorageType)} for map key`,
+                    loc,
                 );
             }
         } else {
             throwCompilationError(
-                `Unsupported map key type ${idTextErr(src.type.keyType)}`,
-                src.loc,
+                `Unsupported map key type ${idTextErr(type.keyType)}`,
+                loc,
             );
         }
 
         // Resolve value type
-        if (isInt(src.type.valueType)) {
+        if (isInt(type.valueType)) {
             value = "int";
-            if (src.type.valueStorageType) {
-                const format =
-                    intMapValFormats[idText(src.type.valueStorageType)];
+            if (type.valueStorageType) {
+                const format = intMapValFormats[idText(type.valueStorageType)];
                 if (!format) {
                     throwCompilationError(
-                        `Unsupported format ${idText(src.type.valueStorageType)} for map value`,
-                        src.loc,
+                        `Unsupported format ${idText(type.valueStorageType)} for map value`,
+                        loc,
                     );
                 }
                 value = format.type;
                 valueFormat = format.format;
             }
-        } else if (isBool(src.type.valueType)) {
+        } else if (isBool(type.valueType)) {
             value = "bool";
-            if (src.type.valueStorageType) {
+            if (type.valueStorageType) {
                 throwCompilationError(
-                    `Unsupported format ${idTextErr(src.type.valueStorageType)} for map value`,
-                    src.loc,
+                    `Unsupported format ${idTextErr(type.valueStorageType)} for map value`,
+                    loc,
                 );
             }
-        } else if (isCell(src.type.valueType)) {
+        } else if (isCell(type.valueType)) {
             value = "cell";
             valueFormat = "ref";
             if (
-                src.type.valueStorageType &&
-                eqNames(src.type.valueStorageType, "reference")
+                type.valueStorageType &&
+                eqNames(type.valueStorageType, "reference")
             ) {
                 throwCompilationError(
-                    `Unsupported format ${idTextErr(src.type.valueStorageType)} for map value`,
-                    src.loc,
+                    `Unsupported format ${idTextErr(type.valueStorageType)} for map value`,
+                    loc,
                 );
             }
-        } else if (isSlice(src.type.valueType)) {
+        } else if (isSlice(type.valueType)) {
             throwCompilationError(
-                `Unsupported map value type ${idTextErr(src.type.valueType)}`,
-                src.loc,
+                `Unsupported map value type ${idTextErr(type.valueType)}`,
+                loc,
             );
-        } else if (isAddress(src.type.valueType)) {
+        } else if (isAddress(type.valueType)) {
             value = "address";
-            if (src.type.valueStorageType) {
+            if (type.valueStorageType) {
                 throwCompilationError(
-                    `Unsupported format ${idTextErr(src.type.valueStorageType)} for map value`,
-                    src.loc,
+                    `Unsupported format ${idTextErr(type.valueStorageType)} for map value`,
+                    loc,
                 );
             }
-        } else if (isString(src.type.valueType)) {
+        } else if (isString(type.valueType)) {
             throwCompilationError(
-                `Unsupported map value type ${idTextErr(src.type.valueType)}`,
-                src.loc,
+                `Unsupported map value type ${idTextErr(type.valueType)}`,
+                loc,
             );
         } else if (
-            isStringBuilder(src.type.valueType) ||
-            isBuilder(src.type.valueType)
+            isStringBuilder(type.valueType) ||
+            isBuilder(type.valueType)
         ) {
             throwCompilationError(
-                `Unsupported map value type ${idTextErr(src.type.valueType)}`,
-                src.loc,
+                `Unsupported map value type ${idTextErr(type.valueType)}`,
+                loc,
             );
         } else {
-            value = idText(src.type.valueType);
+            value = idText(type.valueType);
             valueFormat = "ref";
             if (
-                src.type.valueStorageType &&
-                eqNames(src.type.valueStorageType, "reference")
+                type.valueStorageType &&
+                eqNames(type.valueStorageType, "reference")
             ) {
                 throwCompilationError(
-                    `Unsupported format ${idTextErr(src.type.valueStorageType)} for map value`,
-                    src.loc,
+                    `Unsupported format ${idTextErr(type.valueStorageType)} for map value`,
+                    loc,
                 );
             }
         }
@@ -371,7 +378,7 @@ export function resolveABIType(src: A.AstFieldDecl): ABITypeRef {
         return { kind: "dict", key, keyFormat, value, valueFormat };
     }
 
-    throwCompilationError(`Unsupported type`, src.loc);
+    throwCompilationError(`Unsupported type`, loc);
 }
 
 export function createABITypeRefFromTypeRef(
