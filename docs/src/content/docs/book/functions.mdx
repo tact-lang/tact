@@ -89,7 +89,14 @@ extends fun customPow(self: Int, c: Int): Int {
 
 ## Mutation functions
 
-Mutation functions are performing mutation of a value replacing it with an execution result. To perform mutation, the function must change the `self` value.
+The `mutates` keyword in the function declaration indicates that the function will **mutate** or **modify** the value of the `self` argument. This means that the function will directly change the value of `self`, rather than returning a new value or leaving `self` unchanged.
+
+When you add `mutates` to a function, it signals that the function is intentionally altering the state of the object it's called on, rather than just performing calculations or returning a result without modifying the original object.
+
+
+> - Without `mutates`: The function performs an action but doesn't change the original object or variable (it might return a new value, but `self` remains the same).
+> - With `mutates`: The function **directly modifies** the original object (`self`), changing its state.
+
 
 ```tact
 extends mutates fun customPow(self: Int, c: Int) {
@@ -97,9 +104,11 @@ extends mutates fun customPow(self: Int, c: Int) {
     repeat(c) {
         res *= self;
     }
-    self = res;
+    self = res; // This changes the value of 'self'
 }
 ```
+
+In this case, `self` is changed to the result of the power calculation, because the function is marked with `mutates`. This modifies the original value of `self` rather than returning a new value.
 
 ## Native functions
 
