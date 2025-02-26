@@ -410,6 +410,24 @@ exports[`resolveDescriptors should fail descriptors for message-decl-remainder-i
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for message-field-with-contract-type 1`] = `
+"<unknown>:6:5: Fields with a contract type are not supported yet
+  5 | message TakeEscrowData {
+> 6 |     escrowData: Escrow;
+          ^~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for message-field-with-optional-contract-type 1`] = `
+"<unknown>:6:5: Fields with a contract type are not supported yet
+  5 | message TakeEscrowData {
+> 6 |     escrowData: Escrow?;
+          ^~~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for message-negative-opcode-1 1`] = `
 "<unknown>:1:9: Opcode of message "Foo" is negative ('-1') which is not allowed
 > 1 | message(-1) Foo { }
@@ -870,6 +888,15 @@ exports[`resolveDescriptors should fail descriptors for struct-decl-self-referen
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for struct-field-with-contract-type 1`] = `
+"<unknown>:6:5: Fields with a contract type are not supported yet
+  5 | struct TakeEscrowData {
+> 6 |     escrowData: Escrow;
+          ^~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for trait-circular-deps 1`] = `
 "<unknown>:3:1: Circular dependency detected for type "A"
   2 | 
@@ -1285,12 +1312,10 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffl
       "attributes": [],
       "id": 9,
       "instructions": [
-        "NOP",
+        "",
       ],
       "kind": "asm_function_def",
-      "loc": asm(-> 0) fun foo(x: Int): Int {
-    NOP
-},
+      "loc": asm(-> 0) fun foo(x: Int): Int {},
       "name": {
         "id": 4,
         "kind": "id",

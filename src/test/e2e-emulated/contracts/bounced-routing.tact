@@ -52,7 +52,7 @@ contract SampleContract {
 
     receive(msg: EntryFirst) {
         self.a = self.a - msg.amountToAdd;
-        send(SendParameters{
+        message(MessageParameters{
             to: msg.toAddress,
             value: ton("1"), 
             mode: SendIgnoreErrors, 
@@ -63,7 +63,7 @@ contract SampleContract {
     
     receive(msg: EntrySecond) {
         self.a = self.a - msg.amountToAdd;
-        send(SendParameters{
+        message(MessageParameters{
             to: msg.toAddress,
             value: ton("1"), 
             mode: SendIgnoreErrors, 

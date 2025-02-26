@@ -1,6 +1,6 @@
 import "@stdlib/deploy";
 
-contract SendTester with Deployable {
+contract MessageTester with Deployable {
 
     init() {
         emit("Deploy success".asComment());

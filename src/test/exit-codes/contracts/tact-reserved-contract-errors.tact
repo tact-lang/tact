@@ -22,7 +22,7 @@ contract ReservedContractErrorsTester with Ownable {
 
     /// Exit code 130
     receive("130") {
-        send(SendParameters{
+        message(MessageParameters{
             to: myAddress(), // Send a message back to this contract
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,

@@ -24,6 +24,8 @@ import type { ItemOrigin } from "../../imports/source";
 import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import { getAllocation } from "../../storage/resolveAllocation";
 
+const SMALL_CONTRACT_MAX_FIELDS = 5;
+
 export type ContractsCodes = Record<
     string,
     | {
@@ -38,13 +40,17 @@ export function writeStorageOps(
     origin: ItemOrigin,
     ctx: WriterContext,
 ) {
+    const isSmall = type.fields.length <= SMALL_CONTRACT_MAX_FIELDS;
+
     // Load function
     ctx.fun(ops.contractLoad(type.name, ctx), () => {
         ctx.signature(
             `${resolveFuncType(type, ctx)} ${ops.contractLoad(type.name, ctx)}()`,
         );
         ctx.flag("impure");
-        // ctx.flag('inline');
+        if (isSmall) {
+            ctx.flag("inline");
+        }
         ctx.context("type:" + type.name + "$init");
         ctx.body(() => {
             // Load data slice
@@ -205,6 +211,7 @@ export function writeInit(
             ctx.flag("inline");
         }
         ctx.context("type:" + t.name + "$init");
+        ctx.flag("inline");
         ctx.body(() => {
             ctx.append(";; Build init code cell");
             ctx.append();
