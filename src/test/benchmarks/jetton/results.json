@@ -209,12 +209,12 @@
     },
     {
       "label": "1.5.3 with optimized Address",
+      "pr": null,
       "gas": {
-        "transfer": "17696",
-        "burn": "13544",
-        "discovery": "7729"
-      },
-      "pr": "TODO"
+        "transfer": "16436",
+        "burn": "12427",
+        "discovery": "7201"
+      }
     }
   ]
 }

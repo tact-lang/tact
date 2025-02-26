@@ -222,10 +222,10 @@ asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 asm extends fun storeAddress(self: Builder, address: Address): Builder { STSLICER }
 
 struct MasterchainAddress {
-    hash: Int;
+    hash: Int?;
 }
 
-fun emptyMasterchainAddress(): MasterchainAddress { return MasterchainAddress{ hash: 0 } }
+fun emptyMasterchainAddress(): MasterchainAddress { return MasterchainAddress{ hash: null } }
 
 inline fun newMasterchainAddress(hash: Int): MasterchainAddress {
     return MasterchainAddress{ hash }
@@ -237,11 +237,11 @@ inline fun contractMasterchainAddress(s: StateInit): MasterchainAddress {
 }
 
 extends fun storeMasterchainAddress(self: Builder, address: MasterchainAddress): Builder {
-    if (address.hash == 0) {
+    if (address.hash == null) {
         return self.storeUint(0, 2); // 0b00
     }
 
     return self
         .storeUint(0b10_0_00000000, 3 + 8)
-        .storeUint(address.hash, 256);
+        .storeUint(address.hash!!, 256);
 }
