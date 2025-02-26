@@ -16,7 +16,10 @@ import type { ILogger } from "../context/logger";
 import { Logger } from "../context/logger";
 import type { PackageFileFormat } from "../packaging/fileFormat";
 import { packageCode } from "../packaging/packageCode";
-import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
+import {
+    createABITypeRefFromTypeRef,
+    resolveABIType,
+} from "../types/resolveABITypeRef";
 import {
     getAllTypes,
     getContracts,
@@ -352,6 +355,20 @@ export async function build(args: {
             }
         }
 
+        const descriptor = getType(ctx, contract);
+        const init = descriptor.init!;
+
+        const args =
+            init.kind !== "contract-params"
+                ? init.params.map((v) => ({
+                      name: idText(v.name),
+                      type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
+                  }))
+                : (init.contract.params ?? []).map((v) => ({
+                      name: idText(v.name),
+                      type: resolveABIType(v),
+                  }));
+
         // Package
         const pkg: PackageFileFormat = {
             name: contract,
@@ -359,14 +376,14 @@ export async function build(args: {
             code: artifacts.codeBoc.toString("base64"),
             init: {
                 kind: "direct",
-                args: getType(ctx, contract).init!.params.map((v) => ({
-                    name: idText(v.name),
-                    type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
-                })),
-                prefix: {
-                    bits: 1,
-                    value: 0,
-                },
+                args,
+                prefix:
+                    init.kind !== "contract-params"
+                        ? {
+                              bits: 1,
+                              value: 0,
+                          }
+                        : undefined,
                 deployment: {
                     kind: "system-cell",
                     system: systemCell?.toBoc().toString("base64") ?? null,
