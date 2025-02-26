@@ -99,6 +99,16 @@
         "approveTon": "9418",
         "cancelTon": "7144"
       }
+    },
+    {
+      "label": "Benchmark 2025-02-26",
+      "pr": null,
+      "gas": {
+        "fundingTon": "5050",
+        "changeCode": "5256",
+        "approveTon": "9452",
+        "cancelTon": "7178"
+      }
     }
   ]
 }
