@@ -22,6 +22,8 @@ import { getUsedGas } from "./util";
 import type { Step } from "../utils/write-vm-log";
 import { writeLog } from "../utils/write-vm-log";
 import { join } from "path";
+import { WithDeploy } from "./contracts/output/deploy_WithDeploy";
+import { WithoutDeploy } from "./contracts/output/deploy_WithoutDeploy";
 
 function measureGas(txs: BlockchainTransaction[]): number {
     return Number(
@@ -261,5 +263,33 @@ describe("benchmarks", () => {
             await blockchain.runGetMethod(testContract.address, "myCode")
         ).gasUsed;
         expect(gasUsed2).toMatchSnapshot("gas used myCode");
+    });
+
+    it("benchmark deployable trait vs raw deploy", async () => {
+        const withDeployTrait = blockchain.openContract(await WithDeploy.fromInit());
+        const withoutDeploy = blockchain.openContract(
+            await WithoutDeploy.fromInit(),
+        );
+
+        const deployResultTrait = await withDeployTrait.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            {
+                $$type: "Deploy",
+                queryId: 1n,
+            },
+        );
+
+        const deployRawResult = await withoutDeploy.send(
+            treasure.getSender(),
+            { value: toNano(1) },
+            beginCell().endCell().beginParse(),
+        );
+
+        const gasUsed = measureGas(deployResultTrait.transactions);
+        expect(gasUsed).toMatchSnapshot("gas used deploy trait");
+
+        const gasUsedRaw = measureGas(deployRawResult.transactions);
+        expect(gasUsedRaw).toMatchSnapshot("gas used raw deploy");
     });
 });
