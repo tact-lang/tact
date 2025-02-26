@@ -99,6 +99,16 @@
         "approveTon": "9418",
         "cancelTon": "7144"
       }
+    },
+    {
+      "label": "1.5.3 with custom selector",
+      "pr": null,
+      "gas": {
+        "fundingTon": "4946",
+        "changeCode": "5152",
+        "approveTon": "9348",
+        "cancelTon": "7074"
+      }
     }
   ]
 }

@@ -206,6 +206,15 @@
         "burn": "12427",
         "discovery": "7750"
       }
+    },
+    {
+      "label": "1.5.3 with custom selector",
+      "pr": null,
+      "gas": {
+        "transfer": "16296",
+        "burn": "12259",
+        "discovery": "7652"
+      }
     }
   ]
 }

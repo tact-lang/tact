@@ -1,45 +1,45 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`benchmarks benchmark cells creation: gas used emptyCell 1`] = `823n`;
+exports[`benchmarks benchmark cells creation: gas used emptyCell 1`] = `785n`;
 
-exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `827n`;
+exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `789n`;
 
-exports[`benchmarks benchmark codeOf vs initOf: gas used withCodeOf 1`] = `923n`;
+exports[`benchmarks benchmark codeOf vs initOf: gas used withCodeOf 1`] = `885n`;
 
-exports[`benchmarks benchmark codeOf vs initOf: gas used withInitOf 1`] = `1575n`;
+exports[`benchmarks benchmark codeOf vs initOf: gas used withInitOf 1`] = `1537n`;
 
-exports[`benchmarks benchmark codeOf vs myCode(): gas used codeOf for current contract 1`] = `931n`;
+exports[`benchmarks benchmark codeOf vs myCode(): gas used codeOf for current contract 1`] = `893n`;
 
-exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `931n`;
+exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `893n`;
 
-exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2589n`;
+exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2551n`;
 
-exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `4576`;
+exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `4496`;
 
-exports[`benchmarks benchmark deployable trait vs raw deploy: gas used raw deploy 1`] = `1585`;
+exports[`benchmarks benchmark deployable trait vs raw deploy: gas used raw deploy 1`] = `1505`;
 
-exports[`benchmarks benchmark functions: code size 1`] = `184`;
+exports[`benchmarks benchmark functions: code size 1`] = `185`;
 
-exports[`benchmarks benchmark functions: gas used 1`] = `2236`;
+exports[`benchmarks benchmark functions: gas used 1`] = `2156`;
 
-exports[`benchmarks benchmark readFwdFee: code size 1`] = `120`;
+exports[`benchmarks benchmark readFwdFee: code size 1`] = `121`;
 
-exports[`benchmarks benchmark readFwdFee: gas used 1`] = `2058`;
+exports[`benchmarks benchmark readFwdFee: gas used 1`] = `1978`;
 
-exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2562`;
+exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2539`;
 
-exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2563`;
+exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2540`;
 
-exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2565`;
+exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2542`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2562`;
+exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2539`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2563`;
+exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2540`;
 
-exports[`benchmarks benchmark sha256: gas hash string slice repeated more 1`] = `2565`;
+exports[`benchmarks benchmark sha256: gas hash string slice repeated more 1`] = `2542`;
 
-exports[`benchmarks benchmark sha256: gas hash string small 1`] = `2039`;
+exports[`benchmarks benchmark sha256: gas hash string small 1`] = `1969`;
 
-exports[`benchmarks benchmark sha256: gas hash string small repeated 1`] = `2039`;
+exports[`benchmarks benchmark sha256: gas hash string small repeated 1`] = `1969`;
 
-exports[`benchmarks benchmark sha256: gas hash string small repeated more 1`] = `2039`;
+exports[`benchmarks benchmark sha256: gas hash string small repeated more 1`] = `1969`;

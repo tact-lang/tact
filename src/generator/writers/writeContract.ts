@@ -461,7 +461,8 @@ export function writeMainContract(
             }>
             swap <s ref@
             0 swap @procdictkeylen idict- drop
-            777 swap @procdictkeylen idict- drop
+            -1 swap @procdictkeylen idict- drop
+            65535 swap @procdictkeylen idict- drop
 
             @procdictkeylen DICTPUSHCONST DICTIGETJMPZ 11 THROWARG
         }> b>
@@ -470,7 +471,7 @@ export function writeMainContract(
 } does @atend !
 """;`);
 
-        wCtx.append(`() __tact_selector_hack() method_id {
+        wCtx.append(`() __tact_selector_hack() method_id(65535) {
     return __tact_selector_hack_asm();
 }`);
     });

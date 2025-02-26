@@ -38,7 +38,7 @@ PROGRAM{
                 }>
                 swap <s ref@
                 0 swap @procdictkeylen idict- drop
-                777 swap @procdictkeylen idict- drop
+                -1 swap @procdictkeylen idict- drop
 
                 @procdictkeylen DICTPUSHCONST DICTIGETJMPZ 11 THROWARG
             }> b>
