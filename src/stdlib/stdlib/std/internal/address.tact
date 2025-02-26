@@ -223,7 +223,7 @@ struct MasterchainAddress {
     hash: Int?;
 }
 
-fun emptyMasterchainAddress(): MasterchainAddress {
+inline fun emptyMasterchainAddress(): MasterchainAddress {
     return MasterchainAddress { hash: null }
 }
 
