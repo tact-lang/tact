@@ -200,7 +200,7 @@
     },
     {
       "label": "1.5.3 with optimized NOP instructions",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/1959",
       "gas": {
         "transfer": "16436",
         "burn": "12427",
@@ -209,7 +209,7 @@
     },
     {
       "label": "1.5.3 with custom selector",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2038",
       "gas": {
         "transfer": "16296",
         "burn": "12259",
