@@ -1,8 +1,8 @@
 import type { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
 import chalk from "chalk";
 import Table from "cli-table3";
-import {Blockchain} from "@ton/sandbox";
-import {Address, Cell} from "@ton/core";
+import type { Blockchain } from "@ton/sandbox";
+import type { Address, Cell } from "@ton/core";
 
 export function getUsedGas(sendEnough: SendMessageResult): number {
     return sendEnough.transactions
@@ -51,13 +51,13 @@ export type RawCodeSizeResult = {
         pr: string | null;
         size: Record<string, string>;
     }[];
-}
+};
 
 export type CodeSizeResult = {
     label: string;
     pr: string | undefined;
     size: Record<string, number>;
-}
+};
 
 export function generateCodeSizeResults(
     benchmarkResults: RawCodeSizeResult,
@@ -74,8 +74,11 @@ export function generateCodeSizeResults(
     }));
 }
 
-const calculateCellsAndBits = (root: Cell, visited: Set<string> = new Set<string>()) => {
-    const hash = root.hash().toString('hex');
+const calculateCellsAndBits = (
+    root: Cell,
+    visited: Set<string> = new Set<string>(),
+) => {
+    const hash = root.hash().toString("hex");
     if (visited.has(hash)) {
         return { cells: 0, bits: 0 };
     }
@@ -83,14 +86,13 @@ const calculateCellsAndBits = (root: Cell, visited: Set<string> = new Set<string
 
     let cells = 1;
     let bits = root.bits.length;
-    for(const ref of root.refs) {
+    for (const ref of root.refs) {
         const childRes = calculateCellsAndBits(ref, visited);
         cells += childRes.cells;
         bits += childRes.bits;
     }
-    return { cells, bits }
-}
-
+    return { cells, bits };
+};
 
 export async function getStateSizeForAccount(
     blockchain: Blockchain,
@@ -109,9 +111,11 @@ export async function getStateSizeForAccount(
     const codeSize = calculateCellsAndBits(minterCode);
     const dataSize = calculateCellsAndBits(minterData);
 
-    return {cells: codeSize.cells + dataSize.cells, bits: codeSize.bits + dataSize.bits};
+    return {
+        cells: codeSize.cells + dataSize.cells,
+        bits: codeSize.bits + dataSize.bits,
+    };
 }
-
 
 function calculateChange(prev: number, curr: number): string {
     const change = (((curr - prev) / prev) * 100).toFixed(2);

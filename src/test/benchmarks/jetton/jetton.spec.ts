@@ -22,7 +22,13 @@ import {
 } from "../contracts/output/jetton_minter_discoverable_JettonMinter";
 
 import "@ton/test-utils";
-import {generateCodeSizeResults, generateResults, getUsedGas, printBenchmarkTable, getStateSizeForAccount} from "../util";
+import {
+    generateCodeSizeResults,
+    generateResults,
+    getUsedGas,
+    printBenchmarkTable,
+    getStateSizeForAccount,
+} from "../util";
 import benchmarkResults from "./results_gas.json";
 import benchmarkCodeSizeResults from "./results_code_size.json";
 import type {
@@ -424,28 +430,64 @@ describe("Jetton", () => {
     });
 
     it("minter cells", async () => {
-       expect((await getStateSizeForAccount(blockchain, jettonMinter.address)).cells).toEqual(expectedCodeSize.size["minter cells"]);
-       expect((await getStateSizeForAccount(blockchain, jettonMinterFuncAddress)).cells).toEqual(funcCodeSize.size["minter cells"]);
+        expect(
+            (await getStateSizeForAccount(blockchain, jettonMinter.address))
+                .cells,
+        ).toEqual(expectedCodeSize.size["minter cells"]);
+        expect(
+            (await getStateSizeForAccount(blockchain, jettonMinterFuncAddress))
+                .cells,
+        ).toEqual(funcCodeSize.size["minter cells"]);
     });
 
     it("minter bits", async () => {
-       expect((await getStateSizeForAccount(blockchain, jettonMinter.address)).bits).toEqual(expectedCodeSize.size["minter bits"]);
-       expect((await getStateSizeForAccount(blockchain, jettonMinterFuncAddress)).bits).toEqual(funcCodeSize.size["minter bits"]);
+        expect(
+            (await getStateSizeForAccount(blockchain, jettonMinter.address))
+                .bits,
+        ).toEqual(expectedCodeSize.size["minter bits"]);
+        expect(
+            (await getStateSizeForAccount(blockchain, jettonMinterFuncAddress))
+                .bits,
+        ).toEqual(funcCodeSize.size["minter bits"]);
     });
 
     it("wallet cells", async () => {
-         const walletAddress = await getJettonWalletRaw(jettonMinter.address, blockchain, deployer.address);
-         expect((await getStateSizeForAccount(blockchain, walletAddress)).cells).toEqual(expectedCodeSize.size["wallet cells"]);
+        const walletAddress = await getJettonWalletRaw(
+            jettonMinter.address,
+            blockchain,
+            deployer.address,
+        );
+        expect(
+            (await getStateSizeForAccount(blockchain, walletAddress)).cells,
+        ).toEqual(expectedCodeSize.size["wallet cells"]);
 
-         const walletAddressFunc = await getJettonWalletRaw(jettonMinterFuncAddress, blockchain, deployer.address);
-         expect((await getStateSizeForAccount(blockchain, walletAddressFunc)).cells).toEqual(funcCodeSize.size["wallet cells"]);
+        const walletAddressFunc = await getJettonWalletRaw(
+            jettonMinterFuncAddress,
+            blockchain,
+            deployer.address,
+        );
+        expect(
+            (await getStateSizeForAccount(blockchain, walletAddressFunc)).cells,
+        ).toEqual(funcCodeSize.size["wallet cells"]);
     });
 
     it("wallet bits", async () => {
-        const walletAddress = await getJettonWalletRaw(jettonMinter.address, blockchain, deployer.address);
-        expect((await getStateSizeForAccount(blockchain, walletAddress)).bits).toEqual(expectedCodeSize.size["wallet bits"]);
+        const walletAddress = await getJettonWalletRaw(
+            jettonMinter.address,
+            blockchain,
+            deployer.address,
+        );
+        expect(
+            (await getStateSizeForAccount(blockchain, walletAddress)).bits,
+        ).toEqual(expectedCodeSize.size["wallet bits"]);
 
-        const walletAddressFunc = await getJettonWalletRaw(jettonMinterFuncAddress, blockchain, deployer.address);
-        expect((await getStateSizeForAccount(blockchain, walletAddressFunc)).bits).toEqual(funcCodeSize.size["wallet bits"]);
+        const walletAddressFunc = await getJettonWalletRaw(
+            jettonMinterFuncAddress,
+            blockchain,
+            deployer.address,
+        );
+        expect(
+            (await getStateSizeForAccount(blockchain, walletAddressFunc)).bits,
+        ).toEqual(funcCodeSize.size["wallet bits"]);
     });
 });

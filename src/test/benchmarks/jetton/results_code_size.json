@@ -19,6 +19,16 @@
         "wallet bits": "12414"
       },
       "pr": "https://github.com/tact-lang/tact/pull/1390"
+    },
+    {
+      "label": "Benchmark 2025-02-26",
+      "pr": null,
+      "size": {
+        "minter cells": "34",
+        "minter bits": "15518",
+        "wallet cells": "16",
+        "wallet bits": "8359"
+      }
     }
   ]
 }

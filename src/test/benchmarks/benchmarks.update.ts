@@ -2,12 +2,7 @@ import { exec } from "child_process";
 import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
 import { z } from "zod";
-import type {
-    BenchmarkResult,
-    CodeSizeResult,
-    RawBenchmarkResult,
-    RawCodeSizeResult,
-} from "./util";
+import type { RawBenchmarkResult, RawCodeSizeResult } from "./util";
 
 const runBenchmark = (specPath: string): Promise<string> => {
     return new Promise((resolve) => {
@@ -45,11 +40,11 @@ const JestOutputSchema = z.object({
 
 type BenchmarkDiff = {
     label: string;
-    gas: Record<string, number>;
+    diff: Record<string, number>;
 };
 
 const parseBenchmarkOutput = (output: string): BenchmarkDiff | undefined => {
-    const jestOutput = output.split("\n")[2];
+    const jestOutput = output.split("\n")[1];
     if (typeof jestOutput === "undefined") {
         return;
     }
@@ -76,47 +71,15 @@ const parseBenchmarkOutput = (output: string): BenchmarkDiff | undefined => {
 
     return {
         label: `Benchmark ${new Date().toISOString().split("T")[0]}`,
-        gas: gasUpdates,
+        diff: gasUpdates,
     };
 };
 
-const updateResultsFile = async (
-    filePaths: string[],
+const updateGasResultsFile = async (
+    filePath: string,
     newResult: BenchmarkDiff,
 ) => {
-    for (const filePath of filePaths) {
-        try {
-            const fileContent = await readFile(filePath, "utf-8");
-            const benchmarkResults: RawBenchmarkResult | RawCodeSizeResult =
-                JSON.parse(fileContent);
-
-            const lastResult = benchmarkResults.results.at(-1);
-
-            if (typeof lastResult === "undefined") {
-                return;
-            }
-
-            const handleGasBenchmark = (diff: RawCodeSizeResult, results: ) => {
-
-            }
-
-            const benchmarkRecords =
-                "gas" in lastResult ? lastResult.gas : lastResult.size;
-
-            benchmarkResults.results.push({
-                label: newResult.label,
-                pr: null,
-                ["gas" in lastResult ? "gas" : "size"]: {},
-            });
-
-            await writeFile(
-                filePath,
-                JSON.stringify(benchmarkResults, null, 2),
-            );
-        } catch (_) {
-            return;
-        }
-    }
+    const fileContent = await readFile(filePath, "utf-8");
     const benchmarkResults: RawBenchmarkResult = JSON.parse(fileContent);
 
     const lastResult = benchmarkResults.results.at(-1);
@@ -124,13 +87,21 @@ const updateResultsFile = async (
         return;
     }
 
+    const changedKeys = Object.keys(newResult.diff).filter(
+        (key) => typeof lastResult.gas[key] !== "undefined",
+    );
+
+    if (changedKeys.length === 0) {
+        return;
+    }
+
     benchmarkResults.results.push({
         label: newResult.label,
-        pr: newResult.pr ?? null,
+        pr: null,
         gas: Object.fromEntries(
             Object.entries(lastResult.gas).map(([key, value]) => [
                 key,
-                newResult.gas[key] ? newResult.gas[key].toString() : value,
+                newResult.diff[key] ? newResult.diff[key].toString() : value,
             ]),
         ),
     });
@@ -140,7 +111,7 @@ const updateResultsFile = async (
 
 const updateCodeSizeResultsFile = async (
     filePath: string,
-    newResult: CodeSizeResult,
+    newResult: BenchmarkDiff,
 ) => {
     const fileContent = await readFile(filePath, "utf-8");
     const benchmarkResults: RawCodeSizeResult = JSON.parse(fileContent);
@@ -150,18 +121,38 @@ const updateCodeSizeResultsFile = async (
         return;
     }
 
+    const changedKeys = Object.keys(newResult.diff).filter(
+        (key) => typeof lastResult.size[key] !== "undefined",
+    );
+
+    if (changedKeys.length === 0) {
+        return;
+    }
+
     benchmarkResults.results.push({
         label: newResult.label,
-        pr: newResult.pr ?? null,
+        pr: null,
         size: Object.fromEntries(
             Object.entries(lastResult.size).map(([key, value]) => [
                 key,
-                newResult.size[key] ? newResult.size[key].toString() : value,
+                newResult.diff[key] ? newResult.diff[key].toString() : value,
             ]),
         ),
     });
 
     await writeFile(filePath, JSON.stringify(benchmarkResults, null, 2));
+};
+
+const updateBenchmarkResults = async (
+    filePath: string,
+    newResult: BenchmarkDiff,
+    type: "gas" | "code_size",
+) => {
+    if (type === "gas") {
+        await updateGasResultsFile(filePath, newResult);
+    } else {
+        await updateCodeSizeResultsFile(filePath, newResult);
+    }
 };
 
 const main = async () => {
@@ -181,8 +172,6 @@ const main = async () => {
                 return;
             }
 
-            console.log(newResult);
-
             const resultsGas = join(specPath, "..", "results_gas.json");
             const resultsCodeSize = join(
                 specPath,
@@ -190,8 +179,12 @@ const main = async () => {
                 "results_code_size.json",
             );
 
-            // await updateResultsFile(resultsGas, newResult);
-            // await updateCodeSizeResultsFile(resultsCodeSize, newResult);
+            await updateBenchmarkResults(resultsGas, newResult, "gas");
+            await updateBenchmarkResults(
+                resultsCodeSize,
+                newResult,
+                "code_size",
+            );
             console.log(`Updated benchmarks for ${resultsGas}`);
         };
 
