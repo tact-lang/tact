@@ -216,6 +216,53 @@ asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
 ///
 asm extends fun preloadRef(self: Slice): Cell { PLDREF }
 
+/// Extension function for the `Slice` type. Available since Tact 1.6.0.
+///
+/// Preloads the next `Maybe^ Cell` reference from the `Slice` as a `Cell?`.
+///
+/// In other words loads 1 bit and if it is true
+/// loads first ref and return it,
+/// otherwise returns `null`. In both cases modifies the original `Slice`.
+/// ```tact
+/// fun examples() {
+///     let s1: Slice = beginCell().storeMaybeRef(emptyCell()).asSlice();
+///     let fizz: Cell = s1.loadMaybeRef(); // returns emptyCell() and modifies s1
+///
+///     let s2: Slice = beginCell()
+///         .storeMaybeRef(null)
+///         .asSlice();
+///
+///     let buzz: Cell = s2.loadMaybeRef(); // returns null and modifies s2
+///     buzz == null; // true
+/// }
+/// ```
+asm(-> 1 0) extends mutates fun loadMaybeRef(self: Slice): Cell? { LDOPTREF }
+
+/// Extension function for the `Slice` type. Available since Tact 1.6.0.
+///
+/// Loads the next `Maybe^ Cell` reference from the `Slice` as a `Cell?`. Doesn't modify the original `Slice`.
+///
+/// In other words loads 1 bit and if it is true
+/// loads first ref and return it,
+/// otherwise returns `null`. In both cases doesn't modify the original `Slice`.
+/// ```tact
+/// fun examples() {
+///     let s1: Slice = beginCell().storeMaybeRef(emptyCell()).asSlice();
+///     let fizz: Cell = s1.preloadMaybeRef(); // returns emptyCell() and doesn't modify s1
+///
+///     let s2: Slice = beginCell()
+///         .storeMaybeRef(null)
+///         .storeMaybeRef(s1.asCell())
+///         .asSlice();
+///
+///     let ref1: Cell = s2.preloadMaybeRef(); // returns null and doesn't modify s2
+///     let ref2: Cell = s2.preloadMaybeRef(); // same effect
+///     ref1 == null; // true
+///     ref1 == ref2; // true
+/// }
+/// ```
+asm extends fun preloadMaybeRef(self: Slice): Cell { PLDOPTREF }
+
 // special treatment in Func compiler, so not replaced with asm "LDSLICEX"
 @name(load_bits)
 extends mutates native loadBits(self: Slice, l: Int): Slice;
