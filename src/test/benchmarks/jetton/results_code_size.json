@@ -1,0 +1,24 @@
+{
+  "results": [
+    {
+      "label": "FunC",
+      "size": {
+        "minter cells": "16864",
+        "minter bits": "12414",
+        "wallet cells": "16864",
+        "wallet bits": "12414"
+      },
+      "pr": null
+    },
+    {
+      "label": "1.5.3",
+      "size": {
+        "minter cells": "16864",
+        "minter bits": "12414",
+        "wallet cells": "16864",
+        "wallet bits": "12414"
+      },
+      "pr": "https://github.com/tact-lang/tact/pull/1390"
+    }
+  ]
+}

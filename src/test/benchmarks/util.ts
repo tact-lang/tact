@@ -1,6 +1,8 @@
 import type { SendMessageResult } from "@ton/sandbox/dist/blockchain/Blockchain";
 import chalk from "chalk";
 import Table from "cli-table3";
+import {Blockchain} from "@ton/sandbox";
+import {Address, Cell} from "@ton/core";
 
 export function getUsedGas(sendEnough: SendMessageResult): number {
     return sendEnough.transactions
@@ -42,6 +44,74 @@ export function generateResults(
         ),
     }));
 }
+
+export type RawCodeSizeResult = {
+    results: {
+        label: string;
+        pr: string | null;
+        size: Record<string, string>;
+    }[];
+}
+
+export type CodeSizeResult = {
+    label: string;
+    pr: string | undefined;
+    size: Record<string, number>;
+}
+
+export function generateCodeSizeResults(
+    benchmarkResults: RawCodeSizeResult,
+): CodeSizeResult[] {
+    return benchmarkResults.results.map((result) => ({
+        label: result.label,
+        pr: result.pr ?? undefined,
+        size: Object.fromEntries(
+            Object.entries(result.size).map(([key, value]) => [
+                key,
+                Number(value),
+            ]),
+        ),
+    }));
+}
+
+const calculateCellsAndBits = (root: Cell, visited: Set<string> = new Set<string>()) => {
+    const hash = root.hash().toString('hex');
+    if (visited.has(hash)) {
+        return { cells: 0, bits: 0 };
+    }
+    visited.add(hash);
+
+    let cells = 1;
+    let bits = root.bits.length;
+    for(const ref of root.refs) {
+        const childRes = calculateCellsAndBits(ref, visited);
+        cells += childRes.cells;
+        bits += childRes.bits;
+    }
+    return { cells, bits }
+}
+
+
+export async function getStateSizeForAccount(
+    blockchain: Blockchain,
+    address: Address,
+): Promise<{ cells: number; bits: number }> {
+    const minterState = (await blockchain.getContract(address)).accountState;
+    if (!minterState || minterState.type !== "active") {
+        throw new Error("Minter state not found");
+    }
+    if (!minterState.state.code || !minterState.state.data) {
+        throw new Error("Minter state code or data not found");
+    }
+    const minterCode = minterState.state.code;
+    const minterData = minterState.state.data;
+
+    const codeSize = calculateCellsAndBits(minterCode);
+    const dataSize = calculateCellsAndBits(minterData);
+
+    return {cells: codeSize.cells + dataSize.cells, bits: codeSize.bits + dataSize.bits};
+}
+
 
 function calculateChange(prev: number, curr: number): string {
     const change = (((curr - prev) / prev) * 100).toFixed(2);

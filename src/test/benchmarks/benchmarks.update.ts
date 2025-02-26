@@ -2,7 +2,7 @@ import { exec } from "child_process";
 import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
 import { z } from "zod";
-import type { BenchmarkResult, RawBenchmarkResult } from "./util";
+import type {BenchmarkResult, CodeSizeResult, RawBenchmarkResult, RawCodeSizeResult} from "./util";
 
 const runBenchmark = (specPath: string): Promise<string> => {
     return new Promise((resolve) => {
@@ -97,6 +97,32 @@ const updateResultsFile = async (
     await writeFile(filePath, JSON.stringify(benchmarkResults, null, 2));
 };
 
+const updateCodeSizeResultsFile = async (
+    filePath: string,
+    newResult: CodeSizeResult,
+) => {
+    const fileContent = await readFile(filePath, "utf-8");
+    const benchmarkResults: RawCodeSizeResult = JSON.parse(fileContent);
+
+    const lastResult = benchmarkResults.results.at(-1);
+    if (typeof lastResult === "undefined") {
+        return;
+    }
+
+    benchmarkResults.results.push({
+        label: newResult.label,
+        pr: newResult.pr ?? null,
+        size: Object.fromEntries(
+            Object.entries(lastResult.size).map(([key, value]) => [
+                key,
+                newResult.size[key] ? newResult.size[key].toString() : value,
+            ]),
+        ),
+    });
+
+    await writeFile(filePath, JSON.stringify(benchmarkResults, null, 2));
+}
+
 const main = async () => {
     try {
         const benchmarkPaths = [
@@ -114,10 +140,12 @@ const main = async () => {
                 return;
             }
 
-            const resultsFilePath = join(specPath, "..", "results.json");
-            await updateResultsFile(resultsFilePath, newResult);
+            const resultsGas = join(specPath, "..", "results_gas.json");
+            const resultsCodeSize = join(specPath, "..", "results_code_size.json");
 
-            console.log(`Updated benchmarks for ${resultsFilePath}`);
+            await updateResultsFile(resultsGas, newResult);
+            await updateCodeSizeResultsFile(resultsCodeSize, newResult);
+            console.log(`Updated benchmarks for ${resultsGas}`);
         };
 
         await Promise.all(benchmarkPaths.map(fetchBenchmarkResults));

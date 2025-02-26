@@ -197,6 +197,15 @@
         "burn": "12463",
         "discovery": "7868"
       }
+    },
+    {
+      "label": "Benchmark 2025-02-26",
+      "pr": null,
+      "gas": {
+        "transfer": "16472",
+        "burn": "12463",
+        "discovery": "7868"
+      }
     }
   ]
 }
