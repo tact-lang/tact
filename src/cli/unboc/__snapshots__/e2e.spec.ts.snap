@@ -4,7 +4,9 @@ exports[`unboc foo.boc Default run 1`] = `
 {
   "code": 0,
   "kind": "exited",
-  "stderr": "",
+  "stderr": "Debugger attached.
+Waiting for the debugger to disconnect...
+",
   "stdout": ""Asm.fif" include
 PROGRAM{
   DECLPROC recv_internal
@@ -67,7 +69,9 @@ exports[`unboc foo.boc With bitcode 1`] = `
 {
   "code": 0,
   "kind": "exited",
-  "stderr": "",
+  "stderr": "Debugger attached.
+Waiting for the debugger to disconnect...
+",
   "stdout": ""Asm.fif" include
 PROGRAM{
   DECLPROC recv_internal
@@ -130,7 +134,9 @@ exports[`unboc foo.boc Without aliases 1`] = `
 {
   "code": 0,
   "kind": "exited",
-  "stderr": "",
+  "stderr": "Debugger attached.
+Waiting for the debugger to disconnect...
+",
   "stdout": ""Asm.fif" include
 PROGRAM{
   DECLPROC recv_internal
@@ -193,7 +199,9 @@ exports[`unboc foo.boc Without refs 1`] = `
 {
   "code": 0,
   "kind": "exited",
-  "stderr": "",
+  "stderr": "Debugger attached.
+Waiting for the debugger to disconnect...
+",
   "stdout": ""Asm.fif" include
 PROGRAM{
   DECLPROC recv_internal

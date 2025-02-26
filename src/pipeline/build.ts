@@ -363,8 +363,6 @@ export async function build(args: {
             type: resolveABIType(v),
         }));
 
-        // if (contract === 'JettonMinter') debugger;
-
         // Package
         const pkg: PackageFileFormat = {
             name: contract,

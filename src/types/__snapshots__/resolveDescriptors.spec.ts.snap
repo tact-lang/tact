@@ -365,6 +365,24 @@ exports[`resolveDescriptors should fail descriptors for getter-outside-contract 
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for init-on-contract-no-fields 1`] = `
+"<unknown>:6:5: All fields must be defined in contract initializer if it exists
+  5 | ) {
+> 6 |     foo: Int as int16 = 0;
+          ^~~~~~~~~~~~~~~~~~~~~
+  7 |     get fun getFoo(): Int {
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for init-on-contract-no-init 1`] = `
+"<unknown>:6:5: Initialization was already defined on contract Contract
+  5 | ) {
+> 6 |     init(bar: Int) {
+          ^~~~~~~~~~~~~~~~
+  7 |         self.bar = bar;
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for init-self-augmented-reassign-with 1`] = `
 "<unknown>:5:9: cannot reassign \`self\` in \`init\` function
   4 |     init() {

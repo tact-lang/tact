@@ -383,11 +383,11 @@ describe("Jetton", () => {
 
         const burnGasUsedTact = await runBurnTest(jettonMinter.address);
 
-        // const burnGasUsedFunC = await runBurnTest(jettonMinterFuncAddress);
+        const burnGasUsedFunC = await runBurnTest(jettonMinterFuncAddress);
 
         expect(burnGasUsedTact).toEqual(expectedResult.gas["burn"]);
 
-        // expect(burnGasUsedFunC).toEqual(funcResult.gas["burn"]);
+        expect(burnGasUsedFunC).toEqual(funcResult.gas["burn"]);
     });
 
     it("discovery", async () => {
@@ -413,12 +413,12 @@ describe("Jetton", () => {
             jettonMinter.address,
         );
 
-        // const discoveryGasUsedFunC = await runDiscoveryTest(
-        //     jettonMinterFuncAddress,
-        // );
+        const discoveryGasUsedFunC = await runDiscoveryTest(
+            jettonMinterFuncAddress,
+        );
 
         expect(discoveryGasUsedTact).toEqual(expectedResult.gas["discovery"]);
 
-        // expect(discoveryGasUsedFunC).toEqual(funcResult.gas["discovery"]);
+        expect(discoveryGasUsedFunC).toEqual(funcResult.gas["discovery"]);
     });
 });
