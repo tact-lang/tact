@@ -153,7 +153,7 @@ export function resolveAllocations(ctx: CompilerContext): CompilerContext {
 
             // Resolve opts
             const ops: AllocationOperation[] = [];
-            if (s.init.kind !== "contract") {
+            if (s.init.kind !== "contract-params") {
                 for (const f of s.init.params) {
                     const abiType = createABITypeRefFromTypeRef(
                         ctx,

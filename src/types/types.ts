@@ -227,13 +227,13 @@ export type InitParameter = {
 export type InitDescription = SeparateInitDescription | ContractInitDescription;
 
 type SeparateInitDescription = {
-    kind: "separate";
+    kind: "init-function";
     params: InitParameter[];
     ast: A.AstContractInit;
 };
 
 type ContractInitDescription = {
-    kind: "contract";
+    kind: "contract-params";
     params: InitParameter[];
     ast: A.AstContractInit;
     contract: A.AstContract;

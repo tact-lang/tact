@@ -64,7 +64,7 @@ export function writeStorageOps(
                 ctx.append(`__tact_child_contract_codes = $sc~load_ref();`);
             }
 
-            if (type.init?.kind !== "contract") {
+            if (type.init?.kind !== "contract-params") {
                 ctx.append(`int $loaded = $sc~load_int(1);`);
 
                 // Load data
@@ -125,7 +125,7 @@ export function writeStorageOps(
                 ctx.append(`b = b.store_ref(__tact_child_contract_codes);`);
             }
 
-            if (type.init?.kind !== "contract") {
+            if (type.init?.kind !== "contract-params") {
                 // Persist deployment flag
                 ctx.append(`b = b.store_int(true, 1);`);
             }
@@ -298,7 +298,7 @@ export function writeInit(
             }
 
             // store initialization bit and contract variables
-            if (init.kind !== "contract") {
+            if (init.kind !== "contract-params") {
                 ctx.append(`b = b.store_int(false, 1);`);
             }
             const args =

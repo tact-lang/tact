@@ -438,7 +438,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             for (const d of a.declarations) {
                 if (d.kind === "contract_init") {
                     throwCompilationError(
-                        `Initialization was already defined on contract ${a.name.text}`,
+                        `init() cannot be used along with contract parameters`,
                         d.loc,
                     );
                 }
@@ -489,7 +489,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             }
 
             s.init = {
-                kind: "contract",
+                kind: "contract-params",
                 params,
                 ast: Ast.createNode({
                     kind: "contract_init",
@@ -509,7 +509,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 if (f.kind === "field_decl") {
                     if (a.params) {
                         throwCompilationError(
-                            `All fields must be defined in contract initializer if it exists`,
+                            `Cannot define contract fields along with contract parameters`,
                             f.loc,
                         );
                     }
@@ -1135,7 +1135,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         });
 
         return {
-            kind: "separate",
+            kind: "init-function",
             params,
             ast,
         };
@@ -1174,14 +1174,14 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 }
                 if (d.kind === "contract_init") {
                     if (s.init) {
-                        if (s.init.kind !== "contract") {
+                        if (s.init.kind !== "contract-params") {
                             throwCompilationError(
                                 "Init function already exists",
                                 d.loc,
                             );
                         } else {
                             throwCompilationError(
-                                "Cannot define init() on a contract that has contract initializer",
+                                "Cannot define init() on a contract that has contract parameters",
                                 d.loc,
                             );
                         }
@@ -1544,7 +1544,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         if (t.kind === "contract") {
             if (!t.init) {
                 t.init = {
-                    kind: "separate",
+                    kind: "init-function",
                     params: [],
                     ast: Ast.createNode({
                         kind: "contract_init",
