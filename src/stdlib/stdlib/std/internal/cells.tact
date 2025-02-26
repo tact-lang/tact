@@ -261,7 +261,7 @@ asm(-> 1 0) extends mutates fun loadMaybeRef(self: Slice): Cell? { LDOPTREF }
 ///     ref1 == ref2; // true
 /// }
 /// ```
-asm extends fun preloadMaybeRef(self: Slice): Cell { PLDOPTREF }
+asm extends fun preloadMaybeRef(self: Slice): Cell? { PLDOPTREF }
 
 // special treatment in Func compiler, so not replaced with asm "LDSLICEX"
 @name(load_bits)
