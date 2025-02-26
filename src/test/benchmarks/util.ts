@@ -128,11 +128,9 @@ function calculateChange(prev: number, curr: number): string {
         : chalk.green(`(${change}%)`);
 }
 
-function calculateChanges<T extends { gas?: Record<string, number>; size?: Record<string, number> }>(
-    results: T[],
-    metrics: readonly string[],
-    type: "gas" | "size",
-): string[][] {
+function calculateChanges<
+    T extends { gas?: Record<string, number>; size?: Record<string, number> },
+>(results: T[], metrics: readonly string[], type: "gas" | "size"): string[][] {
     return results.reduce<string[][]>((changes, currentResult, index) => {
         if (index === 0) {
             return [metrics.map(() => "")];
@@ -153,7 +151,10 @@ function calculateChanges<T extends { gas?: Record<string, number>; size?: Recor
     }, []);
 }
 
-export function printBenchmarkTable(benchmarkResults: BenchmarkResult[], codeSizeResults: CodeSizeResult[]): void {
+export function printBenchmarkTable(
+    benchmarkResults: BenchmarkResult[],
+    codeSizeResults: CodeSizeResult[],
+): void {
     const METRICS: readonly string[] = Object.keys(benchmarkResults[0]!.gas);
     const codeSizeMetrics = Object.keys(codeSizeResults[0]!.size);
 
@@ -171,7 +172,7 @@ export function printBenchmarkTable(benchmarkResults: BenchmarkResult[], codeSiz
     });
 
     const changes = calculateChanges(benchmarkResults, METRICS, "gas");
-benchmarkResults
+    benchmarkResults
         .map(({ label, gas, pr: commit }, i) => [
             label,
             ...METRICS.map((metric, j) => `${gas[metric]} ${changes[i]?.[j]}`),
@@ -194,17 +195,23 @@ benchmarkResults
         },
     });
 
-    const codeSizeChanges = calculateChanges(codeSizeResults, codeSizeMetrics, "size");
+    const codeSizeChanges = calculateChanges(
+        codeSizeResults,
+        codeSizeMetrics,
+        "size",
+    );
 
     codeSizeResults
         .map(({ label, size, pr: commit }, i) => [
             label,
-            ...codeSizeMetrics.map((metric, j) => `${size[metric]} ${codeSizeChanges[i]?.[j]}`),
+            ...codeSizeMetrics.map(
+                (metric, j) => `${size[metric]} ${codeSizeChanges[i]?.[j]}`,
+            ),
             commit
                 ? commit.substring(
-                    commit.lastIndexOf("/") + 1,
-                    commit.lastIndexOf("/") + 8,
-                )
+                      commit.lastIndexOf("/") + 1,
+                      commit.lastIndexOf("/") + 8,
+                  )
                 : "-",
         ])
         .forEach((arr) => {

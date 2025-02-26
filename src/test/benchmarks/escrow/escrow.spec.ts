@@ -17,7 +17,7 @@ import {
     generateResults,
     printBenchmarkTable,
     generateCodeSizeResults,
-    getStateSizeForAccount
+    getStateSizeForAccount,
 } from "../util";
 import benchmarkResults from "./results.json";
 import { readFileSync } from "fs";
@@ -431,10 +431,24 @@ describe("Escrow Gas Tests", () => {
             1n,
         );
 
-        expect((await getStateSizeForAccount(blockchain, escrowContractFunC.escrowAddress)).cells).toEqual(funcCodeSize.size["cells"]);
+        expect(
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    escrowContractFunC.escrowAddress,
+                )
+            ).cells,
+        ).toEqual(funcCodeSize.size["cells"]);
 
-        expect((await getStateSizeForAccount(blockchain, escrowContractTact.escrowAddress)).cells).toEqual(expectedCodeSize.size["cells"]);
-    })
+        expect(
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    escrowContractTact.escrowAddress,
+                )
+            ).cells,
+        ).toEqual(expectedCodeSize.size["cells"]);
+    });
 
     it("escrow bits", async () => {
         const escrowContractFunC = await deployEscrowContractFunC(
@@ -449,8 +463,22 @@ describe("Escrow Gas Tests", () => {
             1n,
         );
 
-        expect((await getStateSizeForAccount(blockchain, escrowContractFunC.escrowAddress)).bits).toEqual(funcCodeSize.size["bits"]);
+        expect(
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    escrowContractFunC.escrowAddress,
+                )
+            ).bits,
+        ).toEqual(funcCodeSize.size["bits"]);
 
-        expect((await getStateSizeForAccount(blockchain, escrowContractTact.escrowAddress)).bits).toEqual(expectedCodeSize.size["bits"]);
+        expect(
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    escrowContractTact.escrowAddress,
+                )
+            ).bits,
+        ).toEqual(expectedCodeSize.size["bits"]);
     });
 });
