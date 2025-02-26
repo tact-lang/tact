@@ -14,17 +14,11 @@ struct JettonMasterState {
     jettonWalletCode: Cell;
 }
 
-contract JettonMinter {
-    totalSupply: Int as coins;
-    owner: Address;
-    jettonContent: Cell;
-
-    init(owner: Address, jettonContent: Cell) {
-        self.totalSupply = 0;
-        self.owner = owner;
-        self.jettonContent = jettonContent;
-    }
-
+contract JettonMinter(
+    totalSupply: Int as coins,
+    owner: Address,
+    jettonContent: Cell,
+) {
     receive(msg: ProvideWalletAddress) {
         // we use message fwdFee for estimation of forward_payload costs
         let ctx = context();
@@ -35,10 +29,10 @@ contract JettonMinter {
 
         let workchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
 
-        let targetJettonWallet: Address =
+        let targetJettonWallet: BasechainAddress =
             (workchain == Workchain) ?
-            contractAddress(initOf JettonWallet(msg.ownerAddress, myAddress()))
-            : emptyAddress();
+            contractBasechainAddress(initOf JettonWallet(0, msg.ownerAddress, myAddress()))
+            : emptyBasechainAddress();
 
         let outMsg = takeWalletBody(targetJettonWallet, includedAddress, msg.queryId);
 
@@ -106,11 +100,12 @@ contract JettonMinter {
 
 asm fun emptyAddress(): Address { b{00} PUSHSLICE }
 
-inline fun takeWalletBody(targetJettonWallet: Address, includedAddress: Address?, query_id: Int): Cell {
+inline fun takeWalletBody(targetJettonWallet: BasechainAddress, includedAddress: Address?, query_id: Int): Cell {
     let body: Builder = beginCell()
         .storeUint(0xd1735400, 32)
         .storeUint(query_id, 64)
-        .storeAddress(targetJettonWallet);
+        .storeBasechainAddress(targetJettonWallet);
+
     if (includedAddress != null) {
         body = body.storeBit(true); // Maybe bit
         body = body.storeRef(beginCell().storeAddress(includedAddress!!).endCell());
@@ -121,7 +116,7 @@ inline fun takeWalletBody(targetJettonWallet: Address, includedAddress: Address?
 }
 
 inline fun getJettonWalletInit(address: Address): StateInit {
-    return initOf JettonWallet(address, myAddress());
+    return initOf JettonWallet(0, address, myAddress());
 }
 
 inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {

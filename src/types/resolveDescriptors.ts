@@ -433,10 +433,86 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     }
 
     for (const a of ast.types) {
+        if (a.kind === "contract" && a.params !== undefined) {
+            const s = types.get(idText(a.name))!;
+            for (const d of a.declarations) {
+                if (d.kind === "contract_init") {
+                    throwCompilationError(
+                        `init() cannot be used along with contract parameters`,
+                        d.loc,
+                    );
+                }
+            }
+
+            const params: InitParameter[] = [];
+            const args: A.AstTypedParameter[] = [];
+            const statements: A.AstStatement[] = [];
+            for (const r of a.params) {
+                const type = buildTypeRef(r.type, types);
+                params.push({
+                    name: r.name,
+                    type,
+                    as: r.as?.text ?? null,
+                    loc: r.loc,
+                });
+                if (isRuntimeType(type)) {
+                    throwCompilationError(
+                        printTypeRef(type) +
+                            " is a runtime-only type and can't be used as a init function parameter",
+                        r.loc,
+                    );
+                }
+                statements.push(
+                    Ast.createNode({
+                        kind: "statement_assign",
+                        path: Ast.createNode({
+                            kind: "field_access",
+                            aggregate: Ast.createNode({
+                                kind: "id",
+                                text: "self",
+                                loc: r.loc,
+                            }) as A.AstExpression,
+                            field: Ast.cloneNode(r.name),
+                            loc: r.loc,
+                        }) as A.AstExpression,
+                        expression: Ast.cloneNode(r.name),
+                        loc: r.loc,
+                    }) as A.AstStatement,
+                );
+                if (s.fields.find((v) => eqNames(v.name, r.name))) {
+                    throwCompilationError(
+                        `Field ${idTextErr(r.name)} already exists`,
+                        r.loc,
+                    );
+                }
+                s.fields.push(buildFieldDescription(r, s.fields.length));
+            }
+
+            s.init = {
+                kind: "contract-params",
+                params,
+                ast: Ast.createNode({
+                    kind: "contract_init",
+                    params: args,
+                    statements,
+                    loc: a.loc,
+                }) as A.AstContractInit,
+                contract: a,
+            };
+        }
+    }
+
+    for (const a of ast.types) {
         // Contract
         if (a.kind === "contract") {
             for (const f of a.declarations) {
                 if (f.kind === "field_decl") {
+                    if (a.params) {
+                        throwCompilationError(
+                            `Cannot define contract fields along with contract parameters`,
+                            f.loc,
+                        );
+                    }
                     if (
                         types
                             .get(idText(a.name))!
@@ -1059,6 +1135,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         });
 
         return {
+            kind: "init-function",
             params,
             ast,
         };
@@ -1097,10 +1174,17 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 }
                 if (d.kind === "contract_init") {
                     if (s.init) {
-                        throwCompilationError(
-                            "Init function already exists",
-                            d.loc,
-                        );
+                        if (s.init.kind !== "contract-params") {
+                            throwCompilationError(
+                                "Init function already exists",
+                                d.loc,
+                            );
+                        } else {
+                            throwCompilationError(
+                                "Cannot define init() on a contract that has contract parameters",
+                                d.loc,
+                            );
+                        }
                     }
                     s.init = resolveInitFunction(d);
                 }
@@ -1460,6 +1544,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         if (t.kind === "contract") {
             if (!t.init) {
                 t.init = {
+                    kind: "init-function",
                     params: [],
                     ast: Ast.createNode({
                         kind: "contract_init",
