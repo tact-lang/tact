@@ -1,0 +1,141 @@
+#include "stdlib.fc";
+
+() ret() impure asm "RET";
+() return_if(int cond) impure asm "IFRET";
+(slice) udict_get_or_throw_400?(cell dict, int key_len, int index) asm(index dict key_len) "DICTUGET" "400 THROWIFNOT";
+
+cell get_storage() inline {
+    return get_data().begin_parse().preload_ref();
+}
+
+cell wrap_storage(int version_id, cell storage) inline {
+    ;; add additional data required for versioning in this cell
+    return begin_cell()
+        .store_uint(version_id, 32)
+        .store_ref(storage)
+        .end_cell();
+}
+
+;; Return the current version of the smart contract
+int version() method_id {
+    return get_data().begin_parse().preload_uint(32);
+}
+
+;; <<<<< Custom version-specific code begins
+
+cell process_message(cell storage, int msg_value, int balance, cell in_msg_full, slice in_msg_body) impure {
+    slice cs = storage.begin_parse();
+    int current_amount = cs.preload_uint(32);
+    return begin_cell().store_uint(current_amount + 1, 32).end_cell();
+}
+
+cell migrate_one(cell old_storage) {
+    return old_storage;
+}
+
+;; Custom version-specific code ends >>>>>
+
+cell trigger(cell c) method_id(888) { return migrate_one(c); }
+
+(cell) execute_cc(cont fun, cell old_storage) asm(old_storage fun) "EXECUTE";
+
+() recv_internal(int msg_value, int balance, cell in_msg_full, slice in_msg_body) impure {
+    ;; if (in_msg_body.slice_empty?()) { return(); } ;; deploy / ordinary
+    return_if(in_msg_body.slice_empty?());
+
+    int expected_version = in_msg_body~load_uint(32);
+    ifnot (expected_version) {
+        set_data(wrap_storage(1, get_data()));
+        {-
+        ret();
+        expected_version~impure_touch();
+        in_msg_body~impure_touch();
+        in_msg_full~impure_touch();
+        balance~impure_touch();
+        msg_value~impure_touch();
+        -}
+        return ();
+    }
+
+    cell expected_code = in_msg_body~load_maybe_ref();
+    cell migrations = in_msg_body~load_dict();
+    cell payload = in_msg_body.preload_ref();
+
+    slice ds = get_data().begin_parse();
+    int version = ds~load_uint(32);
+    cell storage = ds.preload_ref();
+
+    if (version == expected_version) {
+
+        storage = process_message(storage, msg_value, balance, in_msg_full, payload.begin_parse());
+        set_data(wrap_storage(version, storage));
+        return();
+
+    } else {
+
+        while (version != expected_version) {
+            ;; ~dump([version, expected_version]);
+            slice mig = migrations.udict_get_or_throw_400?(32, version);
+            ;; throw_unless(400, found);
+            ;; mig~dump();
+            int next = mig~load_uint(32);
+            cell mc = mig.preload_maybe_ref();
+            ;; ~dump([next, mc]);
+            ifnot (mc.null?()) {
+                ;; set_c3(mc.begin_parse().bless());
+                ;; storage = migrate_one(storage);
+                storage = mc.begin_parse().bless().execute_cc(storage);
+            }
+            ;; throw_if(400, version == next);
+            version = next;
+        }
+
+        throw_if(200, expected_code.null?());
+        set_c3(expected_code.begin_parse().bless());
+        set_code(expected_code);
+
+        storage = process_message(storage, msg_value, balance, in_msg_full, payload.begin_parse());
+        set_data(wrap_storage(version, storage));
+        return();
+
+    }
+
+    {-
+    ret();
+    migrations~impure_touch();
+    expected_code~impure_touch();
+    expected_version~impure_touch();
+    -}
+}
+
+;; uses the mistake in tests that causes ids of process_message and migrate_one to swap
+() __rabbit_hole__() impure asm
+"@atend @ 1 { execute"
+"    current@ context@ current!"
+"    {"
+"        }END> b>"
+"       <{"
+"       migrate_one 4 ="
+;;      NORMAL (process_message = 3, migrate_one = 4)
+"       {"
+"        SETCP0 DUP"
+"        IFNOTJMP:<{"
+"            DROP over <s ref@ 0 swap @procdictkeylen idict@ { B{6E6F206D657468203936} B>$ abort } ifnot @addop"
+"        }>"
+"        swap <s ref@"
+"         0  swap @procdictkeylen idict- drop"
+"         4  swap @procdictkeylen idict- drop"
+"        777 swap @procdictkeylen idict- drop"
+"        888 swap @procdictkeylen idict- drop"
+"        @procdictkeylen DICTPUSHCONST DICTIGETJMPZ 11 THROWARG"
+"       }"
+;;      MIGRATION (migrate_one = 3, process_message = 4)
+"       { swap <s ref@ 3 swap @procdictkeylen idict@ { B{343034} B>$ abort } ifnot @addop }"
+"       cond"
+"       }> b>"
+"    } : }END>c"
+"    current@ context! current!"
+"} does @atend !"
+;
+
+() __down_the_rabbit_hole__() method_id(777) { __rabbit_hole__(); }

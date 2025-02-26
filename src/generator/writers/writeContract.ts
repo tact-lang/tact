@@ -442,13 +442,25 @@ export function writeMainContract(
         }
 
         wCtx.append(`() __tact_selector_hack_asm() impure asm """
-    }> }END>c drop
-    <{ DUMPSTK }>c
-    dup hashB B>X $>B "hex" B>file
-    2 boc+>B dup
-    "res" B>file
-    B>base64 $>B "boc" B>file
-    bye
+@atend @ 1 {
+    execute current@ context@ current!
+    {
+        }END> b>
+        
+        <{
+            SETCP0 DUP
+            IFNOTJMP:<{
+                DROP over <s ref@ 0 swap @procdictkeylen idict@ { "internal error" abort } ifnot @addop
+            }>
+            swap <s ref@
+            0 swap @procdictkeylen idict- drop
+            777 swap @procdictkeylen idict- drop
+
+            @procdictkeylen DICTPUSHCONST DICTIGETJMPZ 11 THROWARG
+        }> b>
+    } : }END>c
+    current@ context! current!
+} does @atend !
 """;`);
 
         wCtx.append(`() __tact_selector_hack() method_id {
