@@ -2114,7 +2114,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         for (const f of t.receivers) {
             queue.push(f.ast);
         }
-        if (t.init) {
+        if (t.init && t.init.kind === "init-function") {
             const fqn = `${t.name}.init`;
             queuePush(fqn, t.init.ast);
         }
