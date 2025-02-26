@@ -440,5 +440,19 @@ export function writeMainContract(
                 );
             });
         }
+
+        wCtx.append(`() __tact_selector_hack_asm() impure asm """
+    }> }END>c drop
+    <{ DUMPSTK }>c
+    dup hashB B>X $>B "hex" B>file
+    2 boc+>B dup
+    "res" B>file
+    B>base64 $>B "boc" B>file
+    bye
+""";`);
+
+        wCtx.append(`() __tact_selector_hack() method_id {
+    return __tact_selector_hack_asm();
+}`);
     });
 }

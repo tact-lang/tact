@@ -1,0 +1,98 @@
+"Asm.fif" include
+
+// 1000000000 // my_balance
+// 100000000 // msg_value
+
+// in_msg_full
+// B{b5ee9c724101020100af0001b168008d0d4580cd8f09522be7c0390a7a632bda4a99291c435b767c95367ebe78e9af0010d853fbfcdc4aee85c9a022d39903f51587c403f2c7201f78126f766aae48c810ee6b2800060e39b200000000016e3602cf7c4a0cc00100a20f8a7ea50000000000000000101801ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0011a1a8b019b1e12a457cf807214f4c657b49532523886b6ecf92a6cfd7cf1d35c04f0979f2} B>boc
+
+// in_msg_body
+// B{b5ee9c724101010100530000a20f8a7ea50000000000000000101801ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0011a1a8b019b1e12a457cf807214f4c657b49532523886b6ecf92a6cfd7cf1d35c0d88d0211} B>boc <s
+
+// 0 // recv_internal
+
+PROGRAM{
+  DECLPROC recv_external
+  DECLPROC recv_internal
+  DECLPROC __tact_selector_hack
+
+  recv_external PROC:<{
+    123 PUSHINT
+  }>
+
+  recv_internal PROC:<{
+    456 PUSHINT
+    recv_external CALLDICT
+  }>
+
+  __tact_selector_hack PROC:<{
+    
+    }> }END>c
+
+    <s dup csr.
+    ref@
+    0 swap
+    14
+    .s
+    idict@
+    .s
+    
+    drop <{
+        123 PUSHINT
+    }>c 2 boc+>B "res" B>file bye
+
+  }>
+}END>s
+
+B{b5ee9c7241010101004c000093b2d79883d20004004686a2c066c784a915f3e01c853d3195ed254c948e21adbb3e4a9b3f5f3c74d7801297ec0f413753ed15b5511277e6dd2025331b2543086ea30f0f8e2876a922ed108055f377} B>boc
+
+//
+// c7
+//
+
+124711402
+0
+0
+1740211754
+11000000
+11000000
+109847978124672825557446361107572522240241866964885438974574812119010074852781
+
+1030379601
+null
+2 tuple
+
+<b b> <s
+<b b>
+<b b>
+
+
+1000000000
+null
+2 tuple
+
+0
+null
+
+<b b> <s
+null
+<b b> <s
+<b b> <s
+<b b> <s
+x{EA0000000000061A800000000001900000000000009C4000000001800055555555}
+null
+7 tuple
+
+0
+null
+
+17 tuple
+1 tuple
+
+//
+// c7
+//
+
+runvmctx .s
+
+// main: 8147

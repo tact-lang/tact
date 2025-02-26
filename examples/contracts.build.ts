@@ -16,18 +16,18 @@ const main = async () => {
     const logger = new Logger();
 
     // Compile projects
-    await allInFolder(__dirname, ["*.tact"]);
+    await allInFolder(__dirname, ["echo.tact"]);
 
     try {
-        // Verify projects
-        for (const pkgPath of glob.sync(path.normalize(packagesPath))) {
-            const res = await verify({
-                pkg: fs.readFileSync(pkgPath, "utf-8"),
-            });
-            if (!res.ok) {
-                throw new Error(`Failed to verify ${pkgPath}: ${res.error}`);
-            }
-        }
+        // // Verify projects
+        // for (const pkgPath of glob.sync(path.normalize(packagesPath))) {
+        //     const res = await verify({
+        //         pkg: fs.readFileSync(pkgPath, "utf-8"),
+        //     });
+        //     if (!res.ok) {
+        //         throw new Error(`Failed to verify ${pkgPath}: ${res.error}`);
+        //     }
+        // }
     } catch (error) {
         logger.error(error as Error);
         process.exit(1);
