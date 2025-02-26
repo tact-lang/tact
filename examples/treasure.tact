@@ -13,12 +13,16 @@ contract Treasure with OwnableTransferable {
     }
 
     fun doWithdraw(amount: Int, mode: Int) {
-        
         // Only owner can withdraw
         self.requireOwner();
 
         // Perform withdraw
-        send(SendParameters{value: amount, to: self.owner, mode: mode, body: beginCell().endCell()});
+        send(SendParameters{
+            value: amount,
+            to: self.owner,
+            mode,
+            body: emptyCell()
+        });
     }
 
     receive(msg: Withdraw) {

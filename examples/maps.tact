@@ -49,8 +49,9 @@ struct SomeStruct2 {
 
 contract MapTestContract {
     init() {
-        // Nothing to do
+        // Do nothing
     }
+
     //
     // Int Maps
     //

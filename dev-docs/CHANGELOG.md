@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `message()` function, that optimizes message sending without deploying a contract: PR [#1999](https://github.com/tact-lang/tact/pull/1999)
 - `deploy()` function, that optimizes the deployment of a child contract: PR [#1832](https://github.com/tact-lang/tact/pull/1832)
 - `&&=`, `||=`, `>>=` and `<<=` augmented assignment operators: PR [#853](https://github.com/tact-lang/tact/pull/853)
 - New CSpell dictionaries: TVM instructions and adjusted list of Fift words: PR [#881](https://github.com/tact-lang/tact/pull/881)
@@ -64,6 +65,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Int.toString` now consumes up to 64% less gas: PR [#1837](https://github.com/tact-lang/tact/pull/1837)
 - Error message for reserved `self` function parameter now suggests using `extends` function modifier: PR [#1737](https://github.com/tact-lang/tact/pull/1737)
 - `Int.toFloatString` now consumes up to 62% less gas: PR [#1956](https://github.com/tact-lang/tact/pull/1956)
+- Don't show internal error for unknown types for variables: PR [#2005](https://github.com/tact-lang/tact/pull/2005)
+- Struct serialization and parsing functions are now inlined more aggressively to save gas: PR [#2016](https://github.com/tact-lang/tact/pull/2016)
 - `NOP` instructions and empty asm functions are now properly optimized: PR [#1959](https://github.com/tact-lang/tact/pull/1959)
 
 ### Fixed
@@ -109,6 +112,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump used `@tact-lang/opcode` version to `0.2` which fixes many issues in CI runs: PR [#1922](https://github.com/tact-lang/tact/pull/1922)
 - Generation of the fallback receiver for external messages: PR [#1926](https://github.com/tact-lang/tact/pull/1926)
 - Runtime calls to `sha256()` now work for arbitrary slices with length >= 128: PR [#1936](https://github.com/tact-lang/tact/pull/1936)
+- Better error messages for empty `bounced()` and `bounced("string")`: PR [#1998](https://github.com/tact-lang/tact/pull/1998)
+- Contract data types in compilation reports are now generated correctly: PR [#2004](https://github.com/tact-lang/tact/pull/2004)
+- Updated contracts in `./examples`: PR [#2008](https://github.com/tact-lang/tact/pull/2008)
+- Show better error for fields with a contract type: PR [#2011](https://github.com/tact-lang/tact/pull/2011)
 
 ### Docs
 
@@ -150,6 +157,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `Deployable` trait to all contracts in the Cookbook: PR [#1906](https://github.com/tact-lang/tact/pull/1906)
 - Added a note on the Debug page about high gas use of functions enabled with debug mode: PR [#1938](https://github.com/tact-lang/tact/pull/1938)
 - Added a note on the Assembly functions page regarding the ordering of fields in stdlib structures: PR [#1976](https://github.com/tact-lang/tact/pull/1976)
+- Added a link to Awesome Tact after the Ecosystem section: PR [#2015](https://github.com/tact-lang/tact/pull/2015)
 
 ### Release contributors
 

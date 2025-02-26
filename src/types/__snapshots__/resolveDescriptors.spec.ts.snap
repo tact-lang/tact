@@ -410,6 +410,24 @@ exports[`resolveDescriptors should fail descriptors for message-decl-remainder-i
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for message-field-with-contract-type 1`] = `
+"<unknown>:6:5: Fields with a contract type are not supported yet
+  5 | message TakeEscrowData {
+> 6 |     escrowData: Escrow;
+          ^~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for message-field-with-optional-contract-type 1`] = `
+"<unknown>:6:5: Fields with a contract type are not supported yet
+  5 | message TakeEscrowData {
+> 6 |     escrowData: Escrow?;
+          ^~~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for message-negative-opcode-1 1`] = `
 "<unknown>:1:9: Opcode of message "Foo" is negative ('-1') which is not allowed
 > 1 | message(-1) Foo { }
@@ -867,6 +885,15 @@ exports[`resolveDescriptors should fail descriptors for struct-decl-self-referen
 > 4 | struct A {
              ^
   5 |   a: Int;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for struct-field-with-contract-type 1`] = `
+"<unknown>:6:5: Fields with a contract type are not supported yet
+  5 | struct TakeEscrowData {
+> 6 |     escrowData: Escrow;
+          ^~~~~~~~~~~~~~~~~~
+  7 | }
 "
 `;
 
@@ -2709,8 +2736,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         },
       },
     ],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -3374,8 +3401,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         },
       },
     ],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -3699,8 +3726,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "TestContract{}",
+    "tlb": "_  = TestContract",
     "traits": [
       {
         "ast": {
@@ -4134,8 +4161,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "TestContract{}",
+    "tlb": "_  = TestContract",
     "traits": [
       {
         "ast": {
@@ -4771,8 +4798,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{a:int257,b:int257,s:remainder<cell>}",
+    "tlb": "_ a:int257 b:int257 s:remainder<cell> = Test",
     "traits": [
       {
         "ast": {
@@ -5214,8 +5241,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         },
       },
     ],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -5603,8 +5630,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "TestContract{}",
+    "tlb": "_  = TestContract",
     "traits": [
       {
         "ast": {
@@ -6138,8 +6165,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "TestContract{}",
+    "tlb": "_  = TestContract",
     "traits": [
       {
         "ast": {
@@ -6615,8 +6642,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "SomeContract{f:int32}",
+    "tlb": "_ f:int32 = SomeContract",
     "traits": [
       {
         "ast": {
@@ -7917,8 +7944,8 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "HelloWorld{a:int257,b:bool}",
+    "tlb": "_ a:int257 b:bool = HelloWorld",
     "traits": [
       {
         "ast": {
@@ -8903,8 +8930,8 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Main{a:int257}",
+    "tlb": "_ a:int257 = Main",
     "traits": [
       {
         "ast": {
@@ -10221,8 +10248,8 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Main{m:dict<int, coins>}",
+    "tlb": "_ m:dict<int, coins> = Main",
     "traits": [
       {
         "ast": {
@@ -11608,8 +11635,8 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Main{m1:dict<int, varint16>,m2:dict<int, varint32>}",
+    "tlb": "_ m1:dict<int, varint16> m2:dict<int, varint32> = Main",
     "traits": [
       {
         "ast": {
@@ -12995,8 +13022,8 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Main{m1:dict<int, varuint16>,m2:dict<int, varuint32>}",
+    "tlb": "_ m1:dict<int, varuint16> m2:dict<int, varuint32> = Main",
     "traits": [
       {
         "ast": {
@@ -13702,8 +13729,8 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
         },
       },
     ],
-    "signature": null,
-    "tlb": null,
+    "signature": "Foo{}",
+    "tlb": "_  = Foo",
     "traits": [
       {
         "ast": {
@@ -14035,8 +14062,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -14438,8 +14465,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -14879,8 +14906,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -15606,8 +15633,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -21595,8 +21622,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -22203,8 +22230,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -22703,8 +22730,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -23024,8 +23051,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -23830,8 +23857,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -24970,8 +24997,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -28128,8 +28155,8 @@ exports[`resolveDescriptors should resolve descriptors for receive-message-with-
         },
       },
     ],
-    "signature": null,
-    "tlb": null,
+    "signature": "Foo{}",
+    "tlb": "_  = Foo",
     "traits": [
       {
         "ast": {
@@ -30368,8 +30395,8 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{m:dict<int, int>}",
+    "tlb": "_ m:dict<int, int> = Test",
     "traits": [
       {
         "ast": {
