@@ -1287,6 +1287,29 @@ let s: Slice = beginCell().asSlice();
 let fizz: Int = s.hash();
 ```
 
+### Slice.hashData
+
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun hashData(self: Slice): Int;
+```
+
+Extension function for the [`Slice{:tact}`][slice] type.
+
+Calculates and returns an [`Int{:tact}`][int] value of the [SHA-256][sha-2] hash of the data bits from the given [`Slice{:tact}`][slice], which should have a number of bits divisible by $8$.
+
+Unlike [`sha256(){:tact}`](/ref/core-math#sha256), this function is gas-efficient and **only** hashes the data of the given [`Slice{:tact}`][slice], i.e. up to $1023$ bits, ignoring the refs.
+
+Attempts to specify a [`Slice{:tact}`][slice] with number of bits **not** divisible by $8$ throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell().asSlice();
+let fizz: Int = s.hashData(); // just the hash of the data
+```
+
 ### Slice.asCell
 
 <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
