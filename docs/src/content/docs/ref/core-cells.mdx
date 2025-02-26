@@ -1039,6 +1039,73 @@ let ref2: Cell = s2.preloadRef();
 ref1 == ref2; // true
 ```
 
+### Slice.loadMaybeRef
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun loadMaybeRef(self: Slice): Cell?;
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Loads the next `Maybe^ Cell` reference from the [`Slice{:tact}`][slice] as a [`Cell?{:tact}`][cell].
+
+In other words loads 1 bit and if it is true
+loads first ref and return it,
+otherwise returns `null`. In both cases modifies the original `Slice`.
+
+Usage examples:
+
+```tact
+fun examples() {
+    let s1: Slice = beginCell().storeMaybeRef(emptyCell()).asSlice();
+    let fizz: Cell = s1.loadMaybeRef(); // returns emptyCell() and modifies s1
+
+    let s2: Slice = beginCell()
+        .storeMaybeRef(null)
+        .asSlice();
+
+    let buzz: Cell = s2.loadMaybeRef(); // returns null and modifies s2
+    buzz == null; // true
+}
+```
+
+### Slice.preloadMaybeRef
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun preloadMaybeRef(self: Slice): Cell?;
+```
+
+Extension function for the [`Slice{:tact}`][slice] type.
+
+Preloads the next `Maybe^ Cell` reference from the [`Slice{:tact}`][slice] as a [`Cell?{:tact}`][cell].
+
+In other words loads 1 bit and if it is true
+loads first ref and return it,
+otherwise returns `null`. In both cases doesn't modify the original `Slice`.
+
+Usage examples:
+
+```tact
+fun examples() {
+    let s1: Slice = beginCell().storeMaybeRef(emptyCell()).asSlice();
+    let fizz: Cell = s1.preloadMaybeRef(); // returns emptyCell() and doesn't modify s1
+
+    let s2: Slice = beginCell()
+        .storeMaybeRef(null)
+        .storeMaybeRef(s1.asCell())
+        .asSlice();
+
+    let ref1: Cell = s2.preloadMaybeRef(); // returns null and doesn't modify s2
+    let ref2: Cell = s2.preloadMaybeRef(); // same effect
+    ref1 == null; // true
+    ref1 == ref2; // true
+}
+```
+
 ### Slice.refs
 
 ```tact
