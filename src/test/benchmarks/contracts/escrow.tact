@@ -1,4 +1,3 @@
-import "@stdlib/deploy";
 import "./messages";
 
 fun calculateJettonWalletAddress(owner: Address, master: Address, code: Cell): Address {
@@ -6,12 +5,18 @@ fun calculateJettonWalletAddress(owner: Address, master: Address, code: Cell): A
     return contractAddress(StateInit{code: code, data: initData.toCell()});
 }
 
-message UpdateJettonWalletCode {
+message(0x9eacde91) UpdateJettonWalletCode {
     newJettonWalletCode: Cell;
 }
 message TakeEscrowData {
     escrowData: EscrowData;
 }
+
+message(0x9451eca9) Funding {}
+message(0xe8c15681) Approve {}
+message(0xcc0f2526) Cancel {}
+message(0xc33b3126) ProvideEscrowData {}
+
 struct EscrowData {
     id: Int as uint32; // contract address salt
     sellerAddress: Address;
@@ -24,7 +29,7 @@ struct EscrowData {
     buyerAddress: Address?; // null if not funded, set after funding
 }
 
-contract Escrow with Deployable {
+contract Escrow {
     id: Int as uint32;
     sellerAddress: Address;
     guarantorAddress: Address;
@@ -63,7 +68,7 @@ contract Escrow with Deployable {
             self.assetAddress!!,
             self.jettonWalletCode!!
         );
-        send(SendParameters{
+        message(MessageParameters{
                 to: escrowJettonWalletAddress,
                 value: self.JETTON_TRANSFER_GAS,
                 body: JettonTransfer{
@@ -80,80 +85,78 @@ contract Escrow with Deployable {
         );
     }
 
-    receive("funding"){
-        require(self.isFunded == false, "already funded");
-        require(self.assetAddress == null, "wrong asset type");
-
+    receive(_: Funding) {
+        throwUnless(400, !self.isFunded);
+        throwUnless(400, self.assetAddress == null);
+        
         let ctx: Context = context();
-        require(ctx.value == self.dealAmount, "wrong fund amount");
+        throwUnless(401, ctx.value == self.dealAmount);
 
         self.isFunded = true;
         self.buyerAddress = ctx.sender;
     }
 
-    receive(msg: UpdateJettonWalletCode){
-        require(self.isFunded == false, "already funded");
-        require(self.assetAddress != null, "wrong asset type");
-        require(self.sellerAddress == context().sender, "only seller can change wallet code");
+    receive(msg: UpdateJettonWalletCode) {
+        throwUnless(400, !self.isFunded && self.assetAddress != null);
+        throwUnless(403, self.sellerAddress == context().sender);
 
         self.jettonWalletCode = msg.newJettonWalletCode;
     }
 
-    receive(msg: JettonNotification){
-        require(self.isFunded == false, "already funded");
-        require(self.assetAddress != null, "wrong asset type");
-        require(self.jettonWalletCode != null, "empty jetton wallet code");
+    receive(msg: JettonNotification) {
+        throwUnless(400, !self.isFunded);
+        throwUnless(400, self.assetAddress != null);
 
         let escrowJettonWalletAddress = calculateJettonWalletAddress(myAddress(),
             self.assetAddress!!,
             self.jettonWalletCode!!
         );
-
-        require(sender() == escrowJettonWalletAddress, "notification not from escrow jetton wallet");
-        require(self.dealAmount == msg.amount, "wrong fund amount");
+        throwUnless(402, sender() == escrowJettonWalletAddress);
+        throwUnless(401, self.dealAmount == msg.amount);
 
         self.isFunded = true;
         self.buyerAddress = msg.sender;
     }
 
     // send funds to seller and royalty to guarantor
-    receive("approve"){
-        require(self.isFunded == true, "not funded");
+    receive(_: Approve) {
+        throwUnless(403, self.isFunded);
+
         let ctx: Context = context();
 
-        require(self.guarantorAddress == ctx.sender, "not guarantor");
+        throwUnless(403, self.guarantorAddress == ctx.sender);
         let royaltyAmount: Int = self.calculateRoyaltyAmount();
 
         if (self.assetAddress == null) {
-            require(ctx.value > (2 * self.TON_TRANSFER_GAS), "low msg value");
-            send(SendParameters{
+            throwUnless(404, ctx.value > (2 * self.TON_TRANSFER_GAS));
+            message(MessageParameters{
                     to: self.sellerAddress,
                     value: self.dealAmount - royaltyAmount,
                     mode: SendPayGasSeparately
                 }
             );
-            send(SendParameters{
+            message(MessageParameters{
                     to: self.guarantorAddress,
                     value: royaltyAmount,
                     mode: SendRemainingBalance | SendDestroyIfZero // send all remaining and destroy escrow
                 }
             );
         } else {
-            require(ctx.value > (2 * self.JETTON_TRANSFER_GAS), "low msg value");
+            throwUnless(404, ctx.value > (2 * self.JETTON_TRANSFER_GAS));
             self.sendJettons(self.sellerAddress, self.dealAmount - royaltyAmount, SendPayGasSeparately);
             self.sendJettons(self.guarantorAddress, royaltyAmount, SendRemainingBalance | SendDestroyIfZero);
         }
     }
 
     // send funds back to buyer
-    receive("cancel"){
-        require(self.isFunded == true, "not funded");
-        let ctx: Context = context();
-        require(self.guarantorAddress == ctx.sender, "not guarantor");
+    receive(_: Cancel) {
+        throwUnless(403, self.isFunded);
+        throwUnless(403, self.guarantorAddress == sender());
+
         // it's up to business logic to decide if guarantor gets royalty in case of cancel
         // in this implementation we don't pay royalty in case of cancel
         if (self.assetAddress == null) {
-            send(SendParameters{
+            message(MessageParameters{
                     to: self.buyerAddress!!,
                     value: self.dealAmount,
                     mode: SendRemainingBalance | SendDestroyIfZero // send all remaining and destroy escrow
@@ -165,8 +168,26 @@ contract Escrow with Deployable {
     }
 
     // on-chain data access, could be useful to guarantor contract
-    receive("provideEscrowData"){
-        self.reply(TakeEscrowData{escrowData: self.escrowInfo()}.toCell());
+    receive(_: ProvideEscrowData) {
+        message(MessageParameters{
+            bounce: false,
+            value: 0,
+            to: sender(),
+            body: TakeEscrowData{
+                escrowData: EscrowData {
+                    id: self.id,
+                    sellerAddress: self.sellerAddress,
+                    guarantorAddress: self.guarantorAddress,
+                    dealAmount: self.dealAmount,
+                    guarantorRoyaltyPercent: self.guarantorRoyaltyPercent,
+                    isFunded: self.isFunded,
+                    assetAddress: self.assetAddress,
+                    jettonWalletCode: self.jettonWalletCode,
+                    buyerAddress: self.buyerAddress
+                }
+            }.toCell(),
+            mode: SendRemainingValue
+        });
     }
 
     get fun calculateRoyaltyAmount(): Int {
@@ -185,18 +206,7 @@ contract Escrow with Deployable {
         return calculateJettonWalletAddress(myAddress(), self.assetAddress!!, self.jettonWalletCode!!);
     }
 
-    get fun escrowInfo(): EscrowData {
-        return
-            EscrowData{
-                id: self.id,
-                sellerAddress: self.sellerAddress,
-                guarantorAddress: self.guarantorAddress,
-                dealAmount: self.dealAmount,
-                guarantorRoyaltyPercent: self.guarantorRoyaltyPercent,
-                isFunded: self.isFunded,
-                assetAddress: self.assetAddress,
-                jettonWalletCode: self.jettonWalletCode,
-                buyerAddress: self.buyerAddress
-            };
+    get fun escrowInfo(): Escrow {
+        return self;
     }
 }

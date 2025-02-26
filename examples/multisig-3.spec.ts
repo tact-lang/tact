@@ -1,4 +1,4 @@
-import { toNano } from "@ton/core";
+import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { MultisigContract } from "./output/multisig-3_MultisigContract";
@@ -25,7 +25,7 @@ describe("multisig-3", () => {
         const deployResult = await contract.send(
             treasure.getSender(),
             { value: toNano("10") },
-            "Deploy",
+            beginCell().endCell().beginParse(),
         );
 
         expect(deployResult.transactions).toHaveTransaction({

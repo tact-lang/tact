@@ -13,7 +13,6 @@ message Signed {
 }
 
 contract MultisigSigner {
-
     master: Address;
 
     // Voting state
@@ -38,7 +37,6 @@ contract MultisigSigner {
     }
 
     receive("YES") {
-
         // Checks
         require(self.request.timeout > now(), "Timeout");
         require(!self.completed, "Completed");
@@ -46,10 +44,11 @@ contract MultisigSigner {
         // Load weight
         let sender: Address = sender();
         let weight: Int = self.members.get(sender)!!;
-        self.members.set(sender, null);
+        self.members.del(sender);
 
         // Update weight
-        self.weight = self.weight + weight;
+        self.weight += weight;
+
         if (self.weight >= self.requiredWeight) {
             self.completed = true;
             send(SendParameters{
@@ -83,7 +82,6 @@ contract Multisig {
 
     // Request new pending transaction
     receive(msg: Request) {
-
         // Check sender
         let sender: Address = sender();
         let weight: Int = self.members.get(sender)!!;
@@ -92,6 +90,7 @@ contract Multisig {
         // Create message
         let opInit: StateInit = initOf MultisigSigner(myAddress(), self.members, self.requiredWeight, msg);
         let opAddress: Address = contractAddress(opInit);
+
         send(SendParameters{
             value: 0, 
             to: opAddress, 
@@ -103,12 +102,12 @@ contract Multisig {
     }
 
     receive(msg: Signed) {
-
         // Check parameters
         // NOTE: this will check members, required weight, master address
         let sender: Address = sender();
         let opInit: StateInit = initOf MultisigSigner(myAddress(), self.members, self.requiredWeight, msg.request);
         let opAddress: Address = contractAddress(opInit);
+
         require(opAddress == sender, "Invalid sender");
         require(msg.request.timeout > now(), "Timeout");
 
