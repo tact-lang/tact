@@ -15,6 +15,7 @@ type Body =
           kind: "asm";
           shuffle: string;
           code: string;
+          singleLine: boolean;
       }
     | {
           kind: "skip";
@@ -214,12 +215,13 @@ export class WriterContext {
         });
     }
 
-    asm(shuffle: string, code: string) {
+    asm(shuffle: string, code: string, singleLine: boolean = false) {
         if (this.#pendingName) {
             this.#pendingCode = {
                 kind: "asm",
                 shuffle,
                 code,
+                singleLine,
             };
         } else {
             throw new Error(`ASM can be set only inside function`);
