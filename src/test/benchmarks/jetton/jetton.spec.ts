@@ -33,7 +33,7 @@ import {
     generateResults,
     getStateSizeForAccount,
     getUsedGas,
-    printBenchmarkTable
+    printBenchmarkTable,
 } from "../util";
 import benchmarkResults from "./results_gas.json";
 import { join, resolve } from "path";

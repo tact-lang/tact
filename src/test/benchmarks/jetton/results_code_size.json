@@ -14,10 +14,10 @@
       "label": "1.5.4 with NOPs optimized",
       "pr": "https://github.com/tact-lang/tact/pull/1959",
       "size": {
-        "minter cells": "33",
-        "minter bits": "15470",
-        "wallet cells": "16",
-        "wallet bits": "8343"
+        "minter cells": "32",
+        "minter bits": "14445",
+        "wallet cells": "15",
+        "wallet bits": "7942"
       }
     }
   ]
