@@ -115,8 +115,6 @@ inline fun newAddress(chain: Int, hash: Int): Address {
         .asAddressUnsafe();
 }
 
-asm fun addressNone(): Address { b{00} PUSHSLICE }
-
 /// Struct representing the standard address on TON Blockchain with signed 8-bit `workchain` ID and an unsigned 256-bit `address` in the specified `workchain`. Available since Tact 1.5.0.
 ///
 /// At the moment, only `workchain` IDs used on TON are 0 of the basechain and -1 of the masterchain.
