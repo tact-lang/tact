@@ -85,6 +85,9 @@ contract JettonWallet(
             });
         }
     }
+    receive(msg: Slice) {
+        throw(0xffff);
+    }
 
     receive(msg: JettonBurn) {
         throwUnless(705, sender() == self.owner);
