@@ -4,6 +4,7 @@ import type * as A from "../ast/ast";
 import type { SrcInfo } from "../grammar";
 import { idText } from "../ast/ast-helpers";
 import type { ItemOrigin } from "../imports/source";
+import type { Effect } from "./effects";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";
@@ -215,6 +216,7 @@ export function receiverSelectorName(selector: ReceiverSelector): string {
 export type ReceiverDescription = {
     selector: ReceiverSelector;
     ast: A.AstReceiver;
+    effects: ReadonlySet<Effect>;
 };
 
 export type InitParameter = {

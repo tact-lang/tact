@@ -41,6 +41,7 @@ import type { AstUtil } from "../ast/util";
 import { getAstUtil } from "../ast/util";
 import type { ItemOrigin } from "../imports/source";
 import { isUndefined } from "../utils/array";
+import type { Effect } from "./effects";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -1251,6 +1252,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                                     name: param.name,
                                                 },
                                                 ast: d,
+                                                effects: new Set<Effect>(),
                                             });
                                         } else if (t.name === "String") {
                                             // Check for existing receiver
@@ -1278,6 +1280,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                                     name: param.name,
                                                 },
                                                 ast: d,
+                                                effects: new Set<Effect>(),
                                             });
                                         } else {
                                             throwCompilationError(
@@ -1328,6 +1331,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                                 type: idText(param.type),
                                             },
                                             ast: d,
+                                            effects: new Set<Effect>(),
                                         });
                                     }
                                     break;
@@ -1363,6 +1367,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                             comment: c,
                                         },
                                         ast: d,
+                                        effects: new Set<Effect>(),
                                     });
                                     break;
                                 }
@@ -1389,6 +1394,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                                 : "external-empty",
                                         },
                                         ast: d,
+                                        effects: new Set<Effect>(),
                                     });
                                     break;
                                 }
@@ -1419,6 +1425,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                             name: param.name,
                                         },
                                         ast: d,
+                                        effects: new Set<Effect>(),
                                     });
                                 } else {
                                     const type = types.get(idText(param.type));
@@ -1464,6 +1471,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                             bounced: false,
                                         },
                                         ast: d,
+                                        effects: new Set<Effect>(),
                                     });
                                 }
                             } else if (param.type.kind === "optional_type") {
@@ -1522,6 +1530,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                         bounced: true,
                                     },
                                     ast: d,
+                                    effects: new Set<Effect>(),
                                 });
                             } else {
                                 throwCompilationError(
@@ -1985,6 +1994,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 contractOrTrait.receivers.push({
                     selector: f.selector,
                     ast: cloneNode(f.ast, Ast),
+                    effects: new Set<Effect>(),
                 });
             }
 
