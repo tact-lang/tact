@@ -2,5 +2,5 @@ const mainConfig = require("./jest.config");
 
 module.exports = {
     ...mainConfig,
-    maxWorkers: "1",
+    maxWorkers: "25%",
 };
