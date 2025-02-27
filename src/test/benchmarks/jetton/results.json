@@ -242,6 +242,15 @@
         "burn": "12052",
         "discovery": "7024"
       }
+    },
+    {
+      "label": "1.5.3 with reworked JettonWallet",
+      "pr": "https://github.com/tact-lang/tact/pull/2059",
+      "gas": {
+        "transfer": "15884",
+        "burn": "12701",
+        "discovery": "7024"
+      }
     }
   ]
 }

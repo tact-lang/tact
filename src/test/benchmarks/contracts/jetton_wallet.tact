@@ -11,12 +11,13 @@ contract JettonWallet(
     receive(msg: JettonTransfer) {
         throwUnless(333, parseStdAddress(msg.destination.asSlice()).workchain == 0);
         throwUnless(705, sender() == self.owner);
+
         self.balance -= msg.amount;
         throwUnless(706, self.balance >= 0);
         throwUnless(708, msg.forwardPayload.bits() >= 1);
 
         let ctx = context();
-        let fwdCount = msg.forwardTonAmount > 0 ? 2 : 1;
+        let fwdCount = 1 + msg.forwardTonAmount & 1;
         throwUnless(709, ctx.value >
             msg.forwardTonAmount +
             fwdCount * muldivc(fwdFee(ctx.raw), 3, 2) +
@@ -44,9 +45,9 @@ contract JettonWallet(
         self.balance += msg.amount;
 
         // This message should come only from master, or from other JettonWallet
-        if (sender() != self.master) {
-            let init: StateInit = initOf JettonWallet(0, msg.sender, self.master);
-            throwUnless(707, contractAddress(init) == sender());
+        let init: StateInit = initOf JettonWallet(0, msg.sender, self.master);
+        if (sender() != contractAddress(init)) {
+            throwUnless(707, self.master == sender());
         }
 
         // Get value for gas
@@ -55,7 +56,6 @@ contract JettonWallet(
         let tonBalanceBeforeMsg = myBalance() - msgValue;
         let storageFee = self.minTonsForStorage - min(tonBalanceBeforeMsg, self.minTonsForStorage);
         msgValue -= (storageFee + self.gasConsumption);
-
 
         if (msg.forwardTonAmount > 0) {
             let fwdFee: Int = muldivc(fwdFee(ctx.raw), 3, 2);
@@ -84,9 +84,6 @@ contract JettonWallet(
                 body: JettonExcesses{ queryId: msg.queryId }.toCell(),
             });
         }
-    }
-    receive(msg: Slice) {
-        throw(0xffff);
     }
 
     receive(msg: JettonBurn) {
@@ -119,11 +116,6 @@ contract JettonWallet(
     bounced(msg: bounced<JettonBurnNotification>) {
         self.balance += msg.amount;
     }
-
-    bounced(msg: Slice) {
-        throw(709);
-    }
-
     get fun get_wallet_data(): JettonWalletData {
         return JettonWalletData{
             balance: self.balance,
