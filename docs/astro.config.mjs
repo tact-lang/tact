@@ -211,6 +211,7 @@ export default defineConfig({
 						{ slug: 'cookbook/algo' },
 						{ slug: 'cookbook/time' },
 						{ slug: 'cookbook/access' },
+						{ slug: 'cookbook/upgrades' },
 						{ slug: 'cookbook/random' },
 						{ slug: 'cookbook/misc' },
 						{
