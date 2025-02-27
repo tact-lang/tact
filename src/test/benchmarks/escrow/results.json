@@ -112,7 +112,7 @@
     },
     {
       "label": "1.5.3 with optimized calculations",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2058",
       "gas": {
         "fundingTon": "4988",
         "changeCode": "5112",
