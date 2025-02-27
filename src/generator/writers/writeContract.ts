@@ -384,7 +384,10 @@ export function writeMainContract(
             wCtx.append();
         }
 
-        if (enabledLazyDeploymentCompletedGetter(wCtx.ctx)) {
+        if (
+            enabledLazyDeploymentCompletedGetter(wCtx.ctx) &&
+            contract.init?.kind !== "contract-params"
+        ) {
             // Deployed
             wCtx.append(`_ lazy_deployment_completed() method_id {`);
             wCtx.inIndent(() => {
