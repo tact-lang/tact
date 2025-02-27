@@ -71,7 +71,8 @@ export function writeNonBouncedRouter(
         typeof receivers.fallback !== "undefined" &&
         receivers.binary.length === 0 &&
         receivers.comment.length === 0 &&
-        typeof receivers.commentFallback === "undefined"
+        typeof receivers.commentFallback === "undefined" &&
+        typeof receivers.empty === "undefined"
     ) {
         writeFallbackReceiver(receivers.fallback, contract, "in_msg", wCtx);
         return;
@@ -91,7 +92,7 @@ export function writeNonBouncedRouter(
         typeof receivers.commentFallback === "undefined" &&
         typeof receivers.fallback === "undefined"
     ) {
-        wCtx.append(`var (op, _) = in_msg~load_uint_quiet(32);`);
+        wCtx.append("var op = in_msg~load_opcode();");
 
         writeBinaryReceivers(true);
 
@@ -216,14 +217,17 @@ function writeCommentReceivers(
     ) => {
         const writeFallbackTextReceiverInternal = () => {
             wCtx.append(";; Fallback Text Receiver");
-            const inMsg = msgOpcodeRemoved ? "in_msg" : "in_msg.skip_bits(32)";
-            writeFallbackReceiver(
-                commentFallbackReceiver,
-                contract,
-                inMsg,
-                wCtx,
-            );
-            wCtx.append("return ();");
+            wCtx.inBlock("if (in_msg_length >= 32)", () => {
+                const inMsg = msgOpcodeRemoved
+                    ? "in_msg"
+                    : "in_msg.skip_bits(32)";
+                writeFallbackReceiver(
+                    commentFallbackReceiver,
+                    contract,
+                    inMsg,
+                    wCtx,
+                );
+            });
         };
 
         // We optimize fallback
