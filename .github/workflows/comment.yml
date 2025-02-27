@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Telegram
-    runs-on: ubuntu-latest
+    runs-on: tact-runner-linux
     if: ${{ github.event.issue.pull_request }}
     steps:
       - name: Send telegram message on push

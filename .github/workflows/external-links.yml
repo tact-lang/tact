@@ -7,7 +7,7 @@ on:
 
 jobs:
   linkcheck:
-    runs-on: ubuntu-latest
+    runs-on: tact-runner-linux
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
           failIfEmpty: false
 
   linkcheck-dev:
-    runs-on: ubuntu-latest
+    runs-on: tact-runner-linux
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
           failIfEmpty: false
 
   linkcheck-stdlib:
-    runs-on: ubuntu-latest
+    runs-on: tact-runner-linux
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

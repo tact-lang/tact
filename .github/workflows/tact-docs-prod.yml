@@ -24,7 +24,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: tact-runner-linux
     if: github.ref == 'refs/heads/main'
 
     steps:
@@ -41,7 +41,7 @@ jobs:
           # stores the artifact in docs/dist/
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: tact-runner-linux
     if: github.ref == 'refs/heads/main'
     needs: build
     environment:
