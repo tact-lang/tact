@@ -1,6 +1,5 @@
 import "./messages";
 
-
 contract JettonWallet(
     balance: Int as coins,
     owner: Address,
@@ -10,21 +9,21 @@ contract JettonWallet(
     const gasConsumption: Int = ton("0.015");
 
     receive(msg: JettonTransfer) {
-        throwUnless(333, parseStdAddress(msg.destination.asSlice()).workchain == 0); 
+        throwUnless(333, parseStdAddress(msg.destination.asSlice()).workchain == 0);
         throwUnless(705, sender() == self.owner);
         self.balance -= msg.amount;
         throwUnless(706, self.balance >= 0);
-        throwUnless(708, msg.forwardPayload.bits() >= 1);    
-        
+        throwUnless(708, msg.forwardPayload.bits() >= 1);
+
         //Context() returns Structure with info about incoming message
         let ctx = context();
         let fwdCount = msg.forwardTonAmount > 0 ? 2 : 1;
         throwUnless(709, ctx.value >
-            msg.forwardTonAmount + 
-            fwdCount * muldiv(fwdFee(ctx.raw), 3, 2) + 
+            msg.forwardTonAmount +
+            fwdCount * muldiv(fwdFee(ctx.raw), 3, 2) +
             (2 * self.gasConsumption + self.minTonsForStorage)
         );
-        
+
         deploy(DeployParameters{
             value: 0,
             mode: SendRemainingValue,
@@ -44,11 +43,11 @@ contract JettonWallet(
     receive(msg: JettonTransferInternal) {
         // Update balance
         self.balance += msg.amount;
-        
+
         // This message should come only from master, or from other JettonWallet
         if (sender() != self.master) {
             let init: StateInit = initOf JettonWallet(0, msg.sender, self.master);
-            nativeThrow(707, contractAddress(init) == sender()); 
+            throwUnless(707, contractAddress(init) == sender());
         }
 
         // Get value for gas
