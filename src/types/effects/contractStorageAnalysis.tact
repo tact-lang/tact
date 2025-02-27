@@ -12,7 +12,7 @@ asm fun swapStorage(x: StorageAnalysis): StorageAnalysis { SWAP }
 
 asm fun setStorage(): StorageAnalysis { 41 PUSHINT 43 PUSHINT }
 
-asm fun throw(code: Int) { THROWARG}
+asm fun throw(code: Int) { THROWARG }
 
 fun throwUnless(code: Int, condition: Bool) { if (condition) { throw(code) } }   
 
@@ -124,7 +124,7 @@ contract StorageAnalysis {
     }
 
     receive("modifying map method on a contract map") {
-        self.map1.set(1,1);
+        self.map1.set(1, 1);
     }
 
     receive("non-modifying map method on a contract map") {
