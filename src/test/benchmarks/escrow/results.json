@@ -111,17 +111,7 @@
       }
     },
     {
-      "label": "Benchmark 2025-02-27",
-      "pr": null,
-      "gas": {
-        "fundingTon": "4988",
-        "changeCode": "5112",
-        "approveTon": "9185",
-        "cancelTon": "7116"
-      }
-    },
-    {
-      "label": "Benchmark 2025-02-27",
+      "label": "1.5.3 with optimized calculations",
       "pr": null,
       "gas": {
         "fundingTon": "4988",
