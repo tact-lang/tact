@@ -10,9 +10,7 @@ message TestGetFwdFee {
     any: Slice;
 }
 
-asm fun touch(x: Int) {
-    NOP
-}
+asm fun touch(x: Int) {}
 
 contract Functions {
     value: Int;

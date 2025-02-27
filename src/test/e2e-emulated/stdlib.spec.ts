@@ -57,7 +57,7 @@ describe("stdlib", () => {
                 .toString(),
         ).toBe(beginCell().storeBit(true).endCell().toString());
 
-        expect(await contract.getTvm_2023_07Upgrade()).toEqual(1389n);
+        expect(await contract.getTvm_2023_07Upgrade()).toEqual(1281n);
         expect(await contract.getTvm_2024_04Upgrade()).toEqual(82009144n);
 
         expect(
@@ -76,6 +76,20 @@ describe("stdlib", () => {
         expect(
             (await contract.getStoreMaybeRef(beginCell(), null)).endCell(),
         ).toEqualCell(beginCell().storeMaybeRef(null).endCell());
+
+        expect(
+            await contract.getLoadMaybeRef(
+                beginCell()
+                    .storeMaybeRef(beginCell().storeUint(123, 64).endCell())
+                    .asSlice(),
+            ),
+        ).toEqualCell(beginCell().storeUint(123, 64).endCell());
+
+        expect(
+            await contract.getLoadMaybeRef(
+                beginCell().storeMaybeRef(null).asSlice(),
+            ),
+        ).toBe(null);
 
         const addrStd = await contract.getParseStdAddress(
             beginCell()
@@ -164,8 +178,8 @@ describe("stdlib", () => {
 
         expect(await contract.getBlockLt()).toBe(0n);
 
-        expect(await contract.getSetGasLimit(5000n)).toBe(3931n); // 5000 just to make sure it's enough, 3931 is how much it actually costs
-        await expect(contract.getSetGasLimit(3930n)).rejects.toThrow("-14"); // 3996 gas is not enough for sure
+        expect(await contract.getSetGasLimit(5000n)).toBe(3823n); // 5000 just to make sure it's enough, 3823 is how much it actually costs
+        await expect(contract.getSetGasLimit(3822n)).rejects.toThrow("-14"); // 3822 gas is not enough for sure
 
         expect(await contract.getGetSeed()).toBe(0n);
 

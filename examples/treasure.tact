@@ -30,6 +30,6 @@ contract Treasure with OwnableTransferable {
     }
 
     receive("Destroy") {
-        self.doWithdraw(0, 32 + 128);
+        self.doWithdraw(0, SendRemainingBalance | SendDestroyIfZero);
     }
 }

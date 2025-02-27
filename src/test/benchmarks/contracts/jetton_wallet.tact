@@ -1,19 +1,12 @@
 import "./messages";
 
-contract JettonWallet {
-    balance: Int as coins;
-    owner: Address;
-    master: Address;
+contract JettonWallet(
+    balance: Int as coins,
+    owner: Address,
+    master: Address,
+) {
     const minTonsForStorage: Int = ton("0.015"); // 0.01 TON in original funC implementation. Increased as we have approx. x2 code size
     const gasConsumption: Int = ton("0.015"); // 0.015 TON in original funC implementation. 0.13 TON is Howard's constant
-
-    // According to tests, 23k gas is maximum gas consumption in transfer. 23k gas is 0.0092 TON
-    // More precisely, max gas I could get is 22725
-    init(owner: Address, master: Address) {
-        self.balance = 0;
-        self.owner = owner;
-        self.master = master;
-    }
 
     receive(msg: JettonTransfer) {
         throwUnless(705, sender() == self.owner);
@@ -47,14 +40,14 @@ contract JettonWallet {
                 forwardTonAmount: msg.forwardTonAmount,
                 forwardPayload: msg.forwardPayload
             }.toCell(),
-            init: initOf JettonWallet(msg.destination, self.master),
+            init: initOf JettonWallet(0, msg.destination, self.master),
         });
     }
 
     receive(msg: JettonTransferInternal) {
         // This message should come only from master, or from other JettonWallet
         if (sender() != self.master) {
-            let init: StateInit = initOf JettonWallet(msg.sender, self.master);
+            let init: StateInit = initOf JettonWallet(0, msg.sender, self.master);
             require(contractAddress(init) == sender(), "Sender is not another JettonWallet or JettonMaster");
         }
 

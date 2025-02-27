@@ -736,3 +736,38 @@ export function writeExpression(
 
     throw Error("Unknown expression");
 }
+
+export function writeTypescriptValue(
+    val: A.AstLiteral | undefined,
+): string | undefined {
+    if (typeof val === "undefined") return undefined;
+
+    switch (val.kind) {
+        case "number":
+            return val.value.toString(10) + "n";
+        case "simplified_string":
+            return JSON.stringify(val.value);
+        case "boolean":
+            return val.value ? "true" : "false";
+        case "address":
+            return `address("${val.value.toString()}")`;
+        case "cell":
+            return `Cell.fromHex("${val.value.toBoc().toString("hex")}")`;
+        case "slice":
+            return `Cell.fromHex("${val.value.asCell().toBoc().toString("hex")}").beginParse()`;
+        case "null":
+            return "null";
+        case "struct_value": {
+            const typeName = val.type.text;
+            const args = val.args
+                .map(
+                    (it) =>
+                        it.field.text +
+                        ": " +
+                        writeTypescriptValue(it.initializer),
+                )
+                .join(", ");
+            return `{ $$type: "${typeName}" as const, ${args} }`;
+        }
+    }
+}

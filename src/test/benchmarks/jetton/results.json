@@ -188,6 +188,51 @@
         "burn": "12892",
         "discovery": "8025"
       }
+    },
+    {
+      "label": "1.5.3 with more inlining for small contracts and structs",
+      "pr": "https://github.com/tact-lang/tact/pull/2016",
+      "gas": {
+        "transfer": "16472",
+        "burn": "12463",
+        "discovery": "7868"
+      }
+    },
+    {
+      "label": "1.5.3 with optimized NOP instructions",
+      "pr": null,
+      "gas": {
+        "transfer": "16436",
+        "burn": "12427",
+        "discovery": "7750"
+      }
+    },
+    {
+      "label": "1.5.3 with no lazy init",
+      "pr": "https://github.com/tact-lang/tact/pull/1985",
+      "gas": {
+        "transfer": "16092",
+        "burn": "12123",
+        "discovery": "7683"
+      }
+    },
+    {
+      "label": "1.5.3 with BasechainAddress",
+      "pr": "https://github.com/tact-lang/tact/pull/2035",
+      "gas": {
+        "transfer": "16092",
+        "burn": "12123",
+        "discovery": "7052"
+      }
+    },
+    {
+      "label": "1.5.3 with fixed routing",
+      "pr": "https://github.com/tact-lang/tact/pull/1949",
+      "gas": {
+        "transfer": "16036",
+        "burn": "12067",
+        "discovery": "7024"
+      }
     }
   ]
 }

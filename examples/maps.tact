@@ -48,14 +48,9 @@ struct SomeStruct2 {
 }
 
 contract MapTestContract {
-    init() {
-        // Do nothing
-    }
-
     //
     // Int Maps
     //
-
     intMap1: map<Int as uint8, Int as uint8>;
     intMap2: map<Int, Bool>;
     intMap3: map<Int, Cell>;
@@ -112,7 +107,6 @@ contract MapTestContract {
     //
     // Address Keys
     //
-
     addrMap1: map<Address, Int>;
     addrMap2: map<Address, Bool>;
     addrMap3: map<Address, Cell>;
