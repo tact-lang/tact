@@ -12,7 +12,7 @@ contract JettonWallet(
         throwUnless(705, sender() == self.owner);
 
         let totalFees: Int =
-            2 * (context().readForwardFee() + self.gasConsumption) +
+            2 * (forwardFee() + self.gasConsumption) +
             self.minTonsForStorage +
             msg.forwardTonAmount;
 
@@ -58,13 +58,13 @@ contract JettonWallet(
         //require(self.balance >= 0, "Invalid balance");
 
         // Get value for gas
-        let ctx: Context = context(); //Context of current message
-        let msgValue: Int = ctx.value;
+        // let ctx: Context = context(); //Context of current message
+        let msgValue: Int = getValue();
         let tonBalanceBeforeMsg = myBalance() - msgValue;
         let storageFee = self.minTonsForStorage - min(tonBalanceBeforeMsg, self.minTonsForStorage);
         msgValue -= (storageFee + self.gasConsumption);
 
-        let fwd_fee: Int = ctx.readForwardFee();
+        let fwd_fee: Int = forwardFee();
 
         if (msg.forwardTonAmount > 0) {
             msgValue = ((msgValue - msg.forwardTonAmount) - fwd_fee);
