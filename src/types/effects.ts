@@ -389,18 +389,15 @@ function methodEffects(
     return new Set<Effect>();
 }
 
-export function addToSet<T>(set: ReadonlySet<T>, element: T): ReadonlySet<T> {
+function addToSet<T>(set: ReadonlySet<T>, element: T): ReadonlySet<T> {
     return new Set([...set, element]);
 }
 
-export function union<T>(
-    left: ReadonlySet<T>,
-    right: ReadonlySet<T>,
-): ReadonlySet<T> {
+function union<T>(left: ReadonlySet<T>, right: ReadonlySet<T>): ReadonlySet<T> {
     return new Set([...left, ...right]);
 }
 
-export function unionAll<T>(sets: readonly ReadonlySet<T>[]): ReadonlySet<T> {
+function unionAll<T>(sets: readonly ReadonlySet<T>[]): ReadonlySet<T> {
     return new Set(sets.flatMap((set) => [...set]));
 }
 
