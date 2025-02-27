@@ -94,7 +94,7 @@ contract JettonWallet(
         throwUnless(705, sender() == self.owner);
 
         self.balance -= msg.amount; // Update balance
-        require(self.balance >= 0, "Invalid balance after burn");
+        throwUnless(706, self.balance >= 0);
 
         // This is minimal possible amount of TONs for attached. But still, maybe we should increase it?
         //require(ctx.value > ton("0.011217199"), "Too little TONs for gas attached");
