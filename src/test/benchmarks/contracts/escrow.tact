@@ -126,7 +126,7 @@ contract Escrow {
 
         throwUnless(403, self.guarantorAddress == ctx.sender);
         let percent: Int = max(self.guarantorRoyaltyPercent, self.GUARANTOR_PERCENT_MAX);
-        let royaltyAmount: Int = (percent * self.dealAmount) / self.GUARANTOR_PERCENT_CONST;
+        let royaltyAmount: Int = muldivc(percent, self.dealAmount, self.GUARANTOR_PERCENT_CONST);
 
         if (self.assetAddress == null) {
             throwUnless(404, ctx.value > (2 * self.TON_TRANSFER_GAS));
@@ -196,7 +196,7 @@ contract Escrow {
         // see https://tact-by-example.org/04-decimal-point
         let percent: Int = max(self.guarantorRoyaltyPercent, self.GUARANTOR_PERCENT_MAX);
 
-        return (percent * self.dealAmount) / self.GUARANTOR_PERCENT_CONST;
+        return muldivc(percent, self.dealAmount, self.GUARANTOR_PERCENT_CONST);
     }
 
     get fun walletAddress(): Address {
