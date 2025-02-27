@@ -71,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Don't show internal error for unknown types for variables: PR [#2005](https://github.com/tact-lang/tact/pull/2005)
 - Struct serialization and parsing functions are now inlined more aggressively to save gas: PR [#2016](https://github.com/tact-lang/tact/pull/2016)
 - `NOP` instructions and empty asm functions are now properly optimized: PR [#1959](https://github.com/tact-lang/tact/pull/1959)
+- Contracts are now compiled with custom optimized function selector with a shortcut for `recv_internal` and `recv_external`: PR [#2038](https://github.com/tact-lang/tact/pull/2038)
 
 ### Fixed
 
