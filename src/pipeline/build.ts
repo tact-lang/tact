@@ -4,6 +4,7 @@ import {
     Cell as OpcodeCell,
     AssemblyWriter,
 } from "@tact-lang/opcode";
+import type { WrappersConstantDescription } from "../bindings/writeTypescript";
 import { writeTypescript } from "../bindings/writeTypescript";
 import { featureEnable } from "../config/features";
 import type { Project } from "../config/parseConfig";
@@ -16,7 +17,10 @@ import type { ILogger } from "../context/logger";
 import { Logger } from "../context/logger";
 import type { PackageFileFormat } from "../packaging/fileFormat";
 import { packageCode } from "../packaging/packageCode";
-import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
+import {
+    createABITypeRefFromTypeRef,
+    resolveABIType,
+} from "../types/resolveABITypeRef";
 import {
     getAllTypes,
     getContracts,
@@ -127,6 +131,7 @@ export async function build(args: {
         | {
               codeBoc: Buffer;
               abi: string;
+              constants: WrappersConstantDescription[];
           }
         | undefined
     > = {};
@@ -165,6 +170,7 @@ export async function build(args: {
         // Compiling contract to func
         logger.info(`   > ${contractName}: tact compiler`);
         let abi: string;
+        const constants: WrappersConstantDescription[] = [];
         try {
             const res = await compile(
                 ctx,
@@ -183,6 +189,7 @@ export async function build(args: {
                 content: v.code,
             }));
             codeEntrypoint = res.output.entrypoint;
+            constants.push(...res.output.constants);
         } catch (e) {
             logger.error("Tact compilation failed");
             // show an error with a backtrace only in verbose mode
@@ -264,6 +271,7 @@ export async function build(args: {
         built[contractName] = {
             codeBoc,
             abi,
+            constants,
         };
 
         if (config.mode === "fullWithDecompilation") {
@@ -352,6 +360,20 @@ export async function build(args: {
             }
         }
 
+        const descriptor = getType(ctx, contract);
+        const init = descriptor.init!;
+
+        const args =
+            init.kind !== "contract-params"
+                ? init.params.map((v) => ({
+                      name: idText(v.name),
+                      type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
+                  }))
+                : (init.contract.params ?? []).map((v) => ({
+                      name: idText(v.name),
+                      type: resolveABIType(v),
+                  }));
+
         // Package
         const pkg: PackageFileFormat = {
             name: contract,
@@ -359,14 +381,14 @@ export async function build(args: {
             code: artifacts.codeBoc.toString("base64"),
             init: {
                 kind: "direct",
-                args: getType(ctx, contract).init!.params.map((v) => ({
-                    name: idText(v.name),
-                    type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
-                })),
-                prefix: {
-                    bits: 1,
-                    value: 0,
-                },
+                args,
+                prefix:
+                    init.kind !== "contract-params"
+                        ? {
+                              bits: 1,
+                              value: 0,
+                          }
+                        : undefined,
                 deployment: {
                     kind: "system-cell",
                     system: systemCell?.toBoc().toString("base64") ?? null,
@@ -399,12 +421,17 @@ export async function build(args: {
             return { ok: false, error: errorMessages };
         }
         try {
-            const bindingsServer = writeTypescript(JSON.parse(pkg.abi), ctx, {
-                code: pkg.code,
-                prefix: pkg.init.prefix,
-                system: pkg.init.deployment.system,
-                args: pkg.init.args,
-            });
+            const bindingsServer = writeTypescript(
+                JSON.parse(pkg.abi),
+                ctx,
+                built[pkg.name]?.constants ?? [],
+                {
+                    code: pkg.code,
+                    prefix: pkg.init.prefix,
+                    system: pkg.init.deployment.system,
+                    args: pkg.init.args,
+                },
+            );
             project.writeFile(
                 project.resolve(
                     config.output,

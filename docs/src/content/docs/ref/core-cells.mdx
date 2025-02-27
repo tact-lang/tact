@@ -1034,8 +1034,70 @@ let s2: Slice = beginCell()
     .storeRef(emptyCell())
     .storeRef(s1.asCell())
     .asSlice();
+
 let ref1: Cell = s2.preloadRef();
 let ref2: Cell = s2.preloadRef();
+ref1 == ref2; // true
+```
+
+### Slice.loadMaybeRef
+
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun loadMaybeRef(self: Slice): Cell?;
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Loads a single bit from the [`Slice{:tact}`][slice]: if it's $1$, then the referenced [`Cell{:tact}`][cell] is loaded and returned. If the loaded bit is $0$, then nothing else is loaded and `null{:tact}` is returned.
+
+Attempts to load such reference [`Cell{:tact}`][cell] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to load more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s = msg.asSlice();
+let outActions = s.loadMaybeRef();
+
+if (outActions != null) {
+    let actions = outActions!!;
+    // process actions
+}
+```
+
+### Slice.preloadMaybeRef
+
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun preloadMaybeRef(self: Slice): Cell?;
+```
+
+Extension function for the [`Slice{:tact}`][slice] type.
+
+Preloads a single bit from the [`Slice{:tact}`][slice]: if it's $1$, then the referenced [`Cell{:tact}`][cell] is preloaded and returned. If the preloaded bit is $0$, then `null{:tact}` is returned. Doesn't modify the original [`Slice{:tact}`][slice].
+
+Attempts to preload such reference [`Cell{:tact}`][cell] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to preload more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage examples:
+
+```tact
+let s1: Slice = beginCell().storeMaybeRef(emptyCell()).asSlice();
+let fizz: Cell = s1.preloadMaybeRef(); // returns emptyCell() and doesn't modify s1
+
+let s2: Slice = beginCell()
+    .storeMaybeRef(null)
+    .storeMaybeRef(s1.asCell())
+    .asSlice();
+
+let ref1: Cell = s2.preloadMaybeRef(); // returns null and doesn't modify s2
+let ref2: Cell = s2.preloadMaybeRef(); // same effect
+ref1 == null; // true
 ref1 == ref2; // true
 ```
 
