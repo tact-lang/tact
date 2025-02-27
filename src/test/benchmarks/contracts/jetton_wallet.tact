@@ -41,7 +41,6 @@ contract JettonWallet(
     }
 
     receive(msg: JettonTransferInternal) {
-        // Update balance
         self.balance += msg.amount;
 
         // This message should come only from master, or from other JettonWallet
@@ -50,8 +49,7 @@ contract JettonWallet(
             throwUnless(707, self.master == sender());
         }
 
-        // Get value for gas
-        let ctx: Context = context(); //Context of current message
+        let ctx: Context = context();
         let msgValue: Int = ctx.value;
         let tonBalanceBeforeMsg = myBalance() - msgValue;
         let storageFee = self.minTonsForStorage - min(tonBalanceBeforeMsg, self.minTonsForStorage);
@@ -59,7 +57,7 @@ contract JettonWallet(
 
         if (msg.forwardTonAmount > 0) {
             let fwdFee: Int = muldivc(fwdFee(ctx.raw), 3, 2);
-            msgValue = ((msgValue - msg.forwardTonAmount) - fwdFee);
+            msgValue -= msg.forwardTonAmount + fwdFee;
             message(MessageParameters{
                 to: self.owner,
                 value: msg.forwardTonAmount,
@@ -89,12 +87,13 @@ contract JettonWallet(
     receive(msg: JettonBurn) {
         throwUnless(705, sender() == self.owner);
 
-        self.balance -= msg.amount; // Update balance
+        self.balance -= msg.amount;
         throwUnless(706, self.balance >= 0);
+
         let ctx = context();
-        let fwd_fee: Int = muldivc(fwdFee(ctx.raw), 3, 2); // Gas checks
+        let fwd_fee: Int = muldivc(fwdFee(ctx.raw), 3, 2);
         throwUnless(707, ctx.value > (fwd_fee + 2 * self.gasConsumption));
-        // Burn tokens
+
         message(MessageParameters{
             to: self.master,
             value: 0,
@@ -116,6 +115,7 @@ contract JettonWallet(
     bounced(msg: bounced<JettonBurnNotification>) {
         self.balance += msg.amount;
     }
+
     get fun get_wallet_data(): JettonWalletData {
         return JettonWalletData{
             balance: self.balance,
