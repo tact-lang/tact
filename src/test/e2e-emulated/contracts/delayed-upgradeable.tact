@@ -27,6 +27,13 @@ message Confirm {}
 /// 1. Owner initiates an upgrade by sending the `Upgrade` message.
 /// 2. After some timeout period owner confirms upgrade with the `Confirm` message.
 trait DelayedUpgradable with Upgradable {
+    /// Contract owner address that can perform upgrades.
+    owner: Address;
+
+    /// Current contract version, auto-increments after each upgrade.
+    /// Meant to be private and only accessible through the relevant getter.
+    _version: Int as uint32;
+
     /// Timestamp that is used to enforce a timeout period
     /// before the confirmation.
     initiatedAt: Int;
@@ -51,7 +58,7 @@ trait DelayedUpgradable with Upgradable {
     /// Instead of performing an upgrade right away,
     /// saves details for delayed execution.
     override inline fun upgrade(_: Context, msg: Upgrade) {
-        self.upgrade_info = msg;
+        self.upgradeInfo = msg;
     }
 }
 
@@ -63,14 +70,14 @@ trait Upgradable with Ownable {
     owner: Address;
 
     /// Meant to be private and only accessible through the relevant getter.
-    _version: Int as uint32 = 0; // meant to be private
+    _version: Int as uint32;
 
     receive(msg: Upgrade) {
         let ctx = context();
         self.validateUpgrade(ctx, msg);
         self.upgrade(ctx, msg);
 
-        self.version += 1;
+        self._version += 1;
     }
 
     virtual inline fun validateUpgrade(ctx: Context, _: Upgrade) {

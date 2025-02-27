@@ -14,11 +14,11 @@ message Upgrade {
 /// Implements basic upgrade mechanism with owner validation.
 trait Upgradable with Ownable {
     /// Contract owner address that can perform upgrades.
-    owner: Address; // requires initialization in the contract!
+    owner: Address;
 
     /// Current contract version, auto-increments after each upgrade.
     /// Meant to be private and only accessible through the relevant getter.
-    _version: Int as uint32 = 0;
+    _version: Int as uint32;
 
     /// Checks the sender, performs an upgrade and increments the version.
     receive(msg: Upgrade) {
@@ -26,7 +26,7 @@ trait Upgradable with Ownable {
         self.validateUpgrade(ctx, msg);
         self.upgrade(ctx, msg);
 
-        self.version += 1;
+        self._version += 1;
     }
 
     /// Checks that the sender is the owner.
