@@ -177,7 +177,7 @@ Extension function for the [`String{:tact}`][p] type.
 
 Calculates and returns an [`Int{:tact}`][int] value of the [SHA-256][sha-2] hash of the data bits from the given [`String{:tact}`][p], which should have a number of bits divisible by $8$.
 
-Unlike [`sha256(){:tact}`](/ref/core-math#sha256), this function is gas-efficient and **only** hashes up to $127$ bytes of the given [`String{:tact}`][p]. Using longer strings would cause collisions if their first $127$ bytes are the same.
+Unlike [`sha256(){:tact}`](/ref/core-math#sha256), this function is gas-efficient and **only** hashes up to $127$ bytes of the given string. Using longer strings would cause collisions if their first $127$ bytes are the same.
 
 Attempts to specify a [`String{:tact}`][p] with number of bits **not** divisible by $8$ throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 

@@ -11,9 +11,23 @@ asm extends fun hash(self: Slice): Int { HASHSU }
 /// Attempts to specify a `Slice` with number of bits **not** divisible by 8 throw an exception with exit code 9: `Cell underflow`.
 ///
 /// ```tact
-/// fun example() {
-///     let s: Slice = beginCell().asSlice();
-///     let fizz: Int = s.hashData(); // just the hash of the data
+/// fun examples() {
+///     // Base64-encoded BoC with "Hello, World!"
+///     let short: Slice = slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=");
+///
+///     // It's enough to only take the hash of the data
+///     sha256(short) == short.hashData(); // true
+///
+///     // But if we construct a slice larger than 1023 bits with all refs combined,
+///     // we must use sha256() or we'll get skewed results or even collisions
+///
+///     let tmp: Builder = beginCell();
+///     repeat (127) { tmp = tmp.storeUint(69, 8) } // storing 127 bytes
+///     let ref: Cell = beginCell().storeUint(33, 8).endCell();
+///     let long: Slice = tmp.storeRef(ref).asSlice(); // plus a ref with a single byte
+///
+///     // Hashing just the data bits in the current slice isn't enough
+///     sha256(long) == long.hashData(); // false!
 /// }
 /// ```
 ///
@@ -25,7 +39,7 @@ asm extends fun hashData(self: Slice): Int { ONE HASHEXT_SHA256 }
 ///
 /// Calculates and returns an `Int` value of the SHA-256 hash of the data bits from the given `String`, which should have a number of bits divisible by 8.
 ///
-/// Unlike `sha256()`, this function is gas-efficient and **only** hashes up to 127 bytes of the given `String`. Using longer strings would cause collisions if their first 127 bytes are the same.
+/// Unlike `sha256()`, this function is gas-efficient and **only** hashes up to 127 bytes of the given string. Using longer strings would cause collisions if their first 127 bytes are the same.
 ///
 /// Attempts to specify a `String` with number of bits **not** divisible by 8 throw an exception with exit code 9: `Cell underflow`.
 ///
