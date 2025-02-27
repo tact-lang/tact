@@ -123,12 +123,4 @@ inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {
     return contractAddress(getJettonWalletInit(jettonWalletOwner));
 }
 
-inline fun fwdFee(ctxRaw: Slice): Int {
-    ctxRaw.loadAddress();
-    ctxRaw.loadCoins();
-    ctxRaw.skipBits(1);
-    ctxRaw.loadCoins();
-    return ctxRaw.loadCoins();
-}
-
 inline extends fun isNotNone(self: Address): Bool { return self.asSlice().preloadUint(2) != 0 }
