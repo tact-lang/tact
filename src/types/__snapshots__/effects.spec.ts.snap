@@ -76,8 +76,15 @@ exports[`effects should correctly compute effects: contractStorageAnalysis 1`] =
         "kind": "internal-comment",
       },
       {
-        "comment": "calling a mutating method on a struct: no mutates",
+        "comment": "calling a mutating method on a struct: no mutates - 1",
         "effects": Set {},
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "calling a mutating method on a struct: no mutates - 2",
+        "effects": Set {
+          "contractStorageRead",
+        },
         "kind": "internal-comment",
       },
       {

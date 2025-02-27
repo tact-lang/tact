@@ -77,8 +77,13 @@ contract StorageAnalysis {
         if (true) { self.pair.modifyPair() }
     }
 
-    receive("calling a mutating method on a struct: no mutates") {
+    receive("calling a mutating method on a struct: no mutates - 1") {
         let pair = Pair { x: 0, y: 0 };
+        if (true) { pair.modifyPair() }
+    }
+
+    receive("calling a mutating method on a struct: no mutates - 2") {
+        let pair = self.pair;
         if (true) { pair.modifyPair() }
     }
 
