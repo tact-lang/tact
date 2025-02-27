@@ -81,7 +81,7 @@
     "unboc": "bin/unboc.js"
   },
   "dependencies": {
-    "@tact-lang/opcode": "^0.2.0",
+    "@tact-lang/opcode": "^0.3.0",
     "@ton/core": "0.60.0",
     "@ton/crypto": "^3.2.0",
     "@tonstudio/parser-runtime": "^0.0.1",
