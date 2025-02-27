@@ -1313,10 +1313,10 @@
   resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.0.14.tgz"
   integrity sha512-8FKHK2jwvViRBReO2t40DCkHAP9KPTRWZof4kdsAUJFlyeWIC8SsRQSl9QkZxF+48WvjDduKNqN5Ltb80paufA==
 
-"@tact-lang/opcode@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.2.0.tgz#9697de5dfa4e18b1357292a5e66d831e6ed910aa"
-  integrity sha512-Y3eqVgD2SR5fdk8FRknq42hs7UmZxsRG4+931p4Oq3yY4f95BaoAM0Ru51HyR76Q7Q5MygZg/Uh0YwjN0ah1BQ==
+"@tact-lang/opcode@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.3.0.tgz#c127b420a71bfeb383e0954b0de325f5e260c803"
+  integrity sha512-kSzdBR7r5B0I0gXqmRpqBwaYfkpGaSt4RT6oWs50yOB6OlB7bDZ45vumjGUFb0aEd0T6xeeM4yxMOgqiomtq8w==
   dependencies:
     "@ton/core" "^0.60.0"
     "@ton/crypto" "^3.3.0"
