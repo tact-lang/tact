@@ -241,9 +241,9 @@ fun ignore(s: Many) {
 
   fun example() {
       let prep = First { nested: Second { field: 42 } };
-      let First { nested: { field: thing } } = prep;
-      //                  ^ this will result in the parse error:
-      //                  expected "_", "A".."Z", or "a".."z"
+      let First { nested: Second { field: thing } } = prep;
+      //                         ^ this will result in the parse error:
+      //                         expected "," or "}"
   }
   ```
 

@@ -1349,6 +1349,43 @@ let s: Slice = beginCell().asSlice();
 let fizz: Int = s.hash();
 ```
 
+### Slice.hashData
+
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun hashData(self: Slice): Int;
+```
+
+Extension function for the [`Slice{:tact}`][slice] type.
+
+Calculates and returns an [`Int{:tact}`][int] value of the [SHA-256][sha-2] hash of the data bits from the given [`Slice{:tact}`][slice], which should have a number of bits divisible by $8$.
+
+Unlike [`sha256(){:tact}`](/ref/core-math#sha256), this function is gas-efficient and **only** hashes the data of the given [`Slice{:tact}`][slice], i.e. up to $1023$ bits, ignoring the refs.
+
+Attempts to specify a [`Slice{:tact}`][slice] with number of bits **not** divisible by $8$ throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage examples:
+
+```tact
+// Base64-encoded BoC with "Hello, World!"
+let short: Slice = slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw=");
+
+// It's enough to only take the hash of the data
+sha256(short) == short.hashData(); // true
+
+// But if we construct a slice larger than 1023 bits with all refs combined,
+// we must use sha256() or we'll get skewed results or even collisions
+
+let tmp: Builder = beginCell();
+repeat (127) { tmp = tmp.storeUint(69, 8) } // storing 127 bytes
+let ref: Cell = beginCell().storeUint(33, 8).endCell();
+let long: Slice = tmp.storeRef(ref).asSlice(); // plus a ref with a single byte
+
+// Hashing just the data bits in the current slice isn't enough
+sha256(long) == long.hashData(); // false!
+```
+
 ### Slice.asCell
 
 <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
