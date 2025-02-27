@@ -158,10 +158,11 @@ cell verify_c5_actions(cell c5, int is_external) inline {
 ;; ------------------------------------------------------------------------------------------------
 
 () process_signed_request(slice in_msg_body, int is_external) impure inline {
-  slice signature = in_msg_body.get_last_bits(size::signature);
-  slice signed_slice = in_msg_body.remove_last_bits(size::signature);
+  slice signature = in_msg_body~load_bits(size::signature);
+  slice signed_slice = in_msg_body;
+  slice cs = in_msg_body;
 
-  slice cs = signed_slice.skip_bits(size::message_operation_prefix); ;; skip signed_internal or signed_external prefix
+  ;; slice cs = signed_slice.skip_bits(size::message_operation_prefix); ;; skip signed_internal or signed_external prefix
   (int wallet_id, int valid_until, int seqno) = (cs~load_uint(size::wallet_id), cs~load_uint(size::valid_until), cs~load_uint(size::seqno));
 
   slice data_slice = get_data().begin_parse();

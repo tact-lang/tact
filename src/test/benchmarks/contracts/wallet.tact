@@ -24,7 +24,7 @@ struct InternalOperation {
     actions: Slice as remaining;
 }
 
-struct CompatibleSignedRequest {
+message(0x7369676E) CompatibleSignedRequest {
     signature: Slice as bytes64;
     walletId: Int as uint32;
     validUntil: Int as uint32;
@@ -95,8 +95,28 @@ contract Wallet with Deployable {
         self.processActionsCompatible(signedSlice, isExternal, false);
     }
 
+    /*
+    actions has the following structure:
+
+    {
+        outActions: Cell?;
+        hasOtherActions: Bool;
+        actions: Slice as remaining;
+    }
+    */
     fun processActionsCompatible(actions: Slice, isExternal: Bool, isExtension: Bool) {
-        let outActions = actions.loadRef()
+        let outActions = actions.loadMaybeRef();
+        if (outActions != null) {
+            // self.processSendMessages(outActions, isExternal);
+        }
+
+        if (!actions.loadBool()) {
+            return;
+        }
+
+        while (true) {
+            // check tag, process action, try to load next ref while we can
+        }
     }
 
     fun processSignedRequest(msg: SignedRequest, isExternal: Bool) {
@@ -181,8 +201,12 @@ contract Wallet with Deployable {
         self.processSignedRequest(msg.signed, false);
     }
 
-    external(msg: SignedRequest) {
-        self.processSignedRequest(msg, true);
+    // external(msg: SignedRequest) {
+    //     self.processSignedRequest(msg, true);
+    // }
+
+    external(msg: CompatibleSignedRequest) {
+        self.processSignedRequestCompatible(msg, true);
     }
 
     get fun seqno(): Int {
