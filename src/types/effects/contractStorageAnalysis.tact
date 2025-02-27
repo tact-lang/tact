@@ -163,6 +163,20 @@ contract StorageAnalysis {
         self.modifyingRecursiveExternalContractMethod();
     }
 
+    receive("non-modifying mutually recursive contract methods") {
+        self.evenNonModifying(42) && self.oddNonModifying(41);
+    }
+
+    fun evenNonModifying(x: Int): Bool { return (x == 0) || self.oddNonModifying(x - 1) }
+    fun oddNonModifying(x: Int): Bool { return (x == 1) || self.evenNonModifying(x - 1) }
+
+    receive("modifying mutually recursive contract methods") {
+        self.evenModifying(42);
+    }
+
+    fun evenModifying(x: Int): Bool { return (x == 0) || self.oddModifying(x - 1) }
+    fun oddModifying(x: Int): Bool { self.x1 = 41; return (x == 1) || self.evenModifying(x - 1) }
+
     receive("modifying getter as a contract method") {
         self.modifyingGetter();
     }

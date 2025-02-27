@@ -348,7 +348,6 @@ function methodEffects(
                         : new Set<Effect>(["contractStorageRead"]);
                 }
                 case "function_def": {
-                    // TODO handle recursion
                     // essentially we inline contract method calls (modulo recursion)
                     return statementListEffects(
                         methodDescr.ast.statements,

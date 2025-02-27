@@ -189,6 +189,18 @@ exports[`effects should correctly compute effects: contractStorageAnalysis 1`] =
         "kind": "internal-comment",
       },
       {
+        "comment": "non-modifying mutually recursive contract methods",
+        "effects": Set {},
+        "kind": "internal-comment",
+      },
+      {
+        "comment": "modifying mutually recursive contract methods",
+        "effects": Set {
+          "contractStorageWrite",
+        },
+        "kind": "internal-comment",
+      },
+      {
         "comment": "modifying getter as a contract method",
         "effects": Set {
           "contractStorageWrite",
