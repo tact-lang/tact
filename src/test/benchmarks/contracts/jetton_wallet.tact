@@ -15,12 +15,11 @@ contract JettonWallet(
         throwUnless(706, self.balance >= 0);
         throwUnless(708, msg.forwardPayload.bits() >= 1);
 
-        //Context() returns Structure with info about incoming message
         let ctx = context();
         let fwdCount = msg.forwardTonAmount > 0 ? 2 : 1;
         throwUnless(709, ctx.value >
             msg.forwardTonAmount +
-            fwdCount * muldiv(fwdFee(ctx.raw), 3, 2) +
+            fwdCount * muldivc(fwdFee(ctx.raw), 3, 2) +
             (2 * self.gasConsumption + self.minTonsForStorage)
         );
 
@@ -59,8 +58,8 @@ contract JettonWallet(
 
 
         if (msg.forwardTonAmount > 0) {
-            let fwdFee: Int = muldiv(fwdFee(ctx.raw), 3, 2);
-            msgValue = ((msgValue - msg.forwardTonAmount) - fwd_fee);
+            let fwdFee: Int = muldivc(fwdFee(ctx.raw), 3, 2);
+            msgValue = ((msgValue - msg.forwardTonAmount) - fwdFee);
             message(MessageParameters{
                 to: self.owner,
                 value: msg.forwardTonAmount,
@@ -92,11 +91,8 @@ contract JettonWallet(
 
         self.balance -= msg.amount; // Update balance
         throwUnless(706, self.balance >= 0);
-
-        // This is minimal possible amount of TONs for attached. But still, maybe we should increase it?
-        //require(ctx.value > ton("0.011217199"), "Too little TONs for gas attached");
-
-        let fwd_fee: Int = muldiv(ctx.raw, 3, 2); // Gas checks
+        let ctx = context();
+        let fwd_fee: Int = muldivc(fwdFee(ctx.raw), 3, 2); // Gas checks
         throwUnless(707, ctx.value > (fwd_fee + 2 * self.gasConsumption));
         // Burn tokens
         message(MessageParameters{
