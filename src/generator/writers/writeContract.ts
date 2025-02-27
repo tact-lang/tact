@@ -423,9 +423,9 @@ export function writeMainContract(
                 wCtx.append(`var msg_bounceable = cs~load_int(1);`); // bounce:Bool
                 wCtx.append(`var msg_bounced = cs~load_int(1);`); // bounced:Bool
                 wCtx.append(`slice msg_sender_addr = cs~load_msg_addr();`);
-                wCtx.append(
-                    `__tact_context = (msg_bounceable, msg_sender_addr, msg_value, cs);`,
-                );
+                wCtx.append(`__tact_context_bounceable = msg_bounceable;`);
+                wCtx.append(`__tact_context_value = msg_value;`);
+                wCtx.append(`__tact_context_cs = cs;`);
                 wCtx.append(`__tact_context_sender = msg_sender_addr;`);
                 wCtx.append();
 

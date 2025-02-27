@@ -363,7 +363,34 @@ export function writeStdlib(ctx: WriterContext): void {
         ctx.flag("inline");
         ctx.context("stdlib");
         ctx.body(() => {
-            ctx.write(`return __tact_context;`);
+            ctx.write(`return (__tact_context_bounceable, __tact_context_sender, __tact_context_value, __tact_context_cs);`);
+        });
+    });
+
+    ctx.fun("__tact_context_get_bounceable", () => {
+        ctx.signature(`int __tact_context_get_bounceable()`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`return __tact_context_bounceable;`);
+        });
+    });
+
+    ctx.fun("__tact_context_get_value", () => {
+        ctx.signature(`int __tact_context_get_value()`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`return __tact_context_value;`);
+        });
+    });
+
+    ctx.fun("__tact_context_get_cs", () => {
+        ctx.signature(`slice __tact_context_get_cs()`);
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.body(() => {
+            ctx.write(`return __tact_context_cs;`);
         });
     });
 
