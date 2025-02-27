@@ -11,11 +11,6 @@ contract JettonWallet(
     receive(msg: JettonTransfer) {
         throwUnless(705, sender() == self.owner);
 
-        let totalFees: Int =
-            2 * (context().readForwardFee() + self.gasConsumption) +
-            self.minTonsForStorage +
-            msg.forwardTonAmount;
-
         //Context() returns Structure with info about incoming message
         //require(context().value > totalFees, "insufficient amount of TON attached");
         self.balance -= msg.amount;
@@ -23,10 +18,10 @@ contract JettonWallet(
         //coins type is unsigned type, so
         //self.balance is unsigned when storing and loading (msg.amount is unsigned too),
         //however when doing calculations it's value may be negative, so the check is correct
-        require(self.balance >= 0, "Invalid balance");
+        throwUnless(706, self.balance >= 0);
 
         //We shouldn't send transfers to masterchain due to higher gas price
-        require(parseStdAddress(msg.destination.asSlice()).workchain == 0, "Invalid workchain of destination address");
+        throwUnless(333, parseStdAddress(msg.destination.asSlice()).workchain == 0);
 
         deploy(DeployParameters{
             value: 0,
