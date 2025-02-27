@@ -13,7 +13,7 @@ export function computeReceiversEffects(ctx: CompilerContext) {
             for (const receiver of type.receivers) {
                 receiver.effects = statementListEffects(
                     receiver.ast.statements,
-                    new Set(),
+                    new Set<AstId>(),
                     ctx,
                 );
             }
@@ -26,12 +26,8 @@ function statementListEffects(
     processedContractMethods: ReadonlySet<AstId>,
     ctx: CompilerContext,
 ): ReadonlySet<Effect> {
-    return statements.reduce(
-        (effects, stmt) =>
-            effects.union(
-                statementEffects(stmt, processedContractMethods, ctx),
-            ),
-        new Set<Effect>(),
+    return mapUnionAll(statements, (stmt) =>
+        statementEffects(stmt, processedContractMethods, ctx),
     );
 }
 
@@ -70,6 +66,11 @@ function statementEffects(
                 );
             }
 
+            const rhsEffects = expressionEffects(
+                stmt.expression,
+                processedContractMethods,
+                ctx,
+            );
             if (isSelfId(head)) {
                 const lvalueEffects =
                     stmt.kind === "statement_augmentedassign"
@@ -78,94 +79,81 @@ function statementEffects(
                               "contractStorageRead",
                           ])
                         : new Set<Effect>(["contractStorageWrite"]);
-                return lvalueEffects.union(
-                    expressionEffects(
-                        stmt.expression,
-                        processedContractMethods,
-                        ctx,
-                    ),
-                );
+                return union(lvalueEffects, rhsEffects);
             } else {
-                return expressionEffects(
-                    stmt.expression,
-                    processedContractMethods,
-                    ctx,
-                );
+                return rhsEffects;
             }
         }
         case "statement_condition": {
-            return expressionEffects(
+            const conditionEffects = expressionEffects(
                 stmt.condition,
                 processedContractMethods,
                 ctx,
-            )
-                .union(
-                    statementListEffects(
-                        stmt.trueStatements,
-                        processedContractMethods,
-                        ctx,
-                    ),
-                )
-                .union(
-                    statementListEffects(
-                        stmt.falseStatements ?? [],
-                        processedContractMethods,
-                        ctx,
-                    ),
-                );
+            );
+            const thenEffects = statementListEffects(
+                stmt.trueStatements,
+                processedContractMethods,
+                ctx,
+            );
+            const elseEffects = statementListEffects(
+                stmt.falseStatements ?? [],
+                processedContractMethods,
+                ctx,
+            );
+            return unionAll([conditionEffects, thenEffects, elseEffects]);
         }
         case "statement_while":
         case "statement_until": {
-            return expressionEffects(
+            const conditionEffects = expressionEffects(
                 stmt.condition,
                 processedContractMethods,
                 ctx,
-            ).union(
-                statementListEffects(
-                    stmt.statements,
-                    processedContractMethods,
-                    ctx,
-                ),
             );
-        }
-        case "statement_repeat": {
-            return expressionEffects(
-                stmt.iterations,
-                processedContractMethods,
-                ctx,
-            ).union(
-                statementListEffects(
-                    stmt.statements,
-                    processedContractMethods,
-                    ctx,
-                ),
-            );
-        }
-        case "statement_try": {
-            return statementListEffects(
+            const bodyEffects = statementListEffects(
                 stmt.statements,
                 processedContractMethods,
                 ctx,
-            ).union(
-                statementListEffects(
-                    stmt.catchBlock?.catchStatements ?? [],
-                    processedContractMethods,
-                    ctx,
-                ),
             );
+            return union(conditionEffects, bodyEffects);
+        }
+        case "statement_repeat": {
+            const iterationsEffects = expressionEffects(
+                stmt.iterations,
+                processedContractMethods,
+                ctx,
+            );
+            const bodyEffects = statementListEffects(
+                stmt.statements,
+                processedContractMethods,
+                ctx,
+            );
+            return union(iterationsEffects, bodyEffects);
+        }
+        case "statement_try": {
+            const tryEffects = statementListEffects(
+                stmt.statements,
+                processedContractMethods,
+                ctx,
+            );
+            const catchEffects = statementListEffects(
+                stmt.catchBlock?.catchStatements ?? [],
+                processedContractMethods,
+                ctx,
+            );
+            return union(tryEffects, catchEffects);
         }
         case "statement_foreach": {
-            return expressionEffects(
+            const mapExpressionEffects = expressionEffects(
                 stmt.map,
                 processedContractMethods,
                 ctx,
-            ).union(
-                statementListEffects(
-                    stmt.statements,
-                    processedContractMethods,
-                    ctx,
-                ),
             );
+            const bodyEffects = statementListEffects(
+                stmt.statements,
+                processedContractMethods,
+                ctx,
+            );
+            return union(mapExpressionEffects, bodyEffects);
         }
         case "statement_block": {
             return statementListEffects(
@@ -198,30 +186,22 @@ function expressionEffects(
                   );
         }
         case "method_call": {
-            const selfAndArgsEffects = expr.args
-                .reduce(
-                    (effects, argExpr) =>
-                        effects.union(
-                            expressionEffects(
-                                argExpr,
-                                processedContractMethods,
-                                ctx,
-                            ),
-                        ),
-                    new Set<Effect>(),
-                )
-                .union(
-                    expressionEffects(expr.self, processedContractMethods, ctx),
-                );
-
-            return selfAndArgsEffects.union(
-                methodEffects(
-                    expr.self,
-                    expr.method,
-                    processedContractMethods,
-                    ctx,
-                ),
+            const argsEffects = mapUnionAll(expr.args, (arg) =>
+                expressionEffects(arg, processedContractMethods, ctx),
             );
+            const selfEffects = expressionEffects(
+                expr.self,
+                processedContractMethods,
+                ctx,
+            );
+            const methodCallEffects = methodEffects(
+                expr.self,
+                expr.method,
+                processedContractMethods,
+                ctx,
+            );
+
+            return unionAll([argsEffects, selfEffects, methodCallEffects]);
         }
         case "string":
         case "number":
@@ -236,13 +216,17 @@ function expressionEffects(
             return new Set<Effect>();
         }
         case "op_binary": {
-            return expressionEffects(
+            const leftEffects = expressionEffects(
                 expr.left,
                 processedContractMethods,
                 ctx,
-            ).union(
-                expressionEffects(expr.right, processedContractMethods, ctx),
             );
+            const rightEffects = expressionEffects(
+                expr.right,
+                processedContractMethods,
+                ctx,
+            );
+            return union(leftEffects, rightEffects);
         }
         case "op_unary": {
             return expressionEffects(
@@ -252,52 +236,37 @@ function expressionEffects(
             );
         }
         case "conditional": {
-            return expressionEffects(
+            const conditionEffects = expressionEffects(
                 expr.condition,
                 processedContractMethods,
                 ctx,
-            )
-                .union(
-                    expressionEffects(
-                        expr.thenBranch,
-                        processedContractMethods,
-                        ctx,
-                    ),
-                )
-                .union(
-                    expressionEffects(
-                        expr.elseBranch,
-                        processedContractMethods,
-                        ctx,
-                    ),
-                );
+            );
+            const thenEffects = expressionEffects(
+                expr.thenBranch,
+                processedContractMethods,
+                ctx,
+            );
+            const elseEffects = expressionEffects(
+                expr.elseBranch,
+                processedContractMethods,
+                ctx,
+            );
+            return unionAll([conditionEffects, thenEffects, elseEffects]);
         }
         case "init_of":
         case "static_call": {
             // global (static) functions cannot change contract storage because of the call-by-value semantics, so we don't analyze their bodies
-            return expr.args.reduce(
-                (effects, argExpr) =>
-                    effects.union(
-                        expressionEffects(
-                            argExpr,
-                            processedContractMethods,
-                            ctx,
-                        ),
-                    ),
-                new Set<Effect>(),
+            return mapUnionAll(expr.args, (arg) =>
+                expressionEffects(arg, processedContractMethods, ctx),
             );
         }
         case "struct_instance": {
-            return expr.args.reduce(
-                (effects, field) =>
-                    effects.union(
-                        expressionEffects(
-                            field.initializer,
-                            processedContractMethods,
-                            ctx,
-                        ),
-                    ),
-                new Set<Effect>(),
+            return mapUnionAll(expr.args, (field) =>
+                expressionEffects(
+                    field.initializer,
+                    processedContractMethods,
+                    ctx,
+                ),
             );
         }
     }
@@ -351,7 +320,7 @@ function methodEffects(
                     // essentially we inline contract method calls (modulo recursion)
                     return statementListEffects(
                         methodDescr.ast.statements,
-                        processedContractMethods.union(new Set([method])),
+                        addToSet(processedContractMethods, method),
                         ctx,
                     );
                 }
@@ -418,4 +387,29 @@ function methodEffects(
         }
     }
     return new Set<Effect>();
+}
+
+export function addToSet<T>(set: ReadonlySet<T>, element: T): ReadonlySet<T> {
+    return new Set([...set, element]);
+}
+
+export function union<T>(
+    left: ReadonlySet<T>,
+    right: ReadonlySet<T>,
+): ReadonlySet<T> {
+    return new Set([...left, ...right]);
+}
+
+export function unionAll<T>(sets: readonly ReadonlySet<T>[]): ReadonlySet<T> {
+    return new Set(sets.flatMap((set) => [...set]));
+}
+
+function mapUnionAll<S, T>(
+    xs: readonly S[],
+    f: (x: S) => ReadonlySet<T>,
+): ReadonlySet<T> {
+    return xs.reduce<ReadonlySet<T>>(
+        (acc, x) => union(acc, f(x)),
+        new Set<T>(),
+    );
 }
