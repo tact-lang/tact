@@ -4,6 +4,7 @@ import {
     Cell as OpcodeCell,
     AssemblyWriter,
 } from "@tact-lang/opcode";
+import type { WrappersConstantDescription } from "../bindings/writeTypescript";
 import { writeTypescript } from "../bindings/writeTypescript";
 import { featureEnable } from "../config/features";
 import type { Project } from "../config/parseConfig";
@@ -130,6 +131,7 @@ export async function build(args: {
         | {
               codeBoc: Buffer;
               abi: string;
+              constants: WrappersConstantDescription[];
           }
         | undefined
     > = {};
@@ -168,6 +170,7 @@ export async function build(args: {
         // Compiling contract to func
         logger.info(`   > ${contractName}: tact compiler`);
         let abi: string;
+        const constants: WrappersConstantDescription[] = [];
         try {
             const res = await compile(
                 ctx,
@@ -186,6 +189,7 @@ export async function build(args: {
                 content: v.code,
             }));
             codeEntrypoint = res.output.entrypoint;
+            constants.push(...res.output.constants);
         } catch (e) {
             logger.error("Tact compilation failed");
             // show an error with a backtrace only in verbose mode
@@ -267,6 +271,7 @@ export async function build(args: {
         built[contractName] = {
             codeBoc,
             abi,
+            constants,
         };
 
         if (config.mode === "fullWithDecompilation") {
@@ -416,12 +421,17 @@ export async function build(args: {
             return { ok: false, error: errorMessages };
         }
         try {
-            const bindingsServer = writeTypescript(JSON.parse(pkg.abi), ctx, {
-                code: pkg.code,
-                prefix: pkg.init.prefix,
-                system: pkg.init.deployment.system,
-                args: pkg.init.args,
-            });
+            const bindingsServer = writeTypescript(
+                JSON.parse(pkg.abi),
+                ctx,
+                built[pkg.name]?.constants ?? [],
+                {
+                    code: pkg.code,
+                    prefix: pkg.init.prefix,
+                    system: pkg.init.deployment.system,
+                    args: pkg.init.args,
+                },
+            );
             project.writeFile(
                 project.resolve(
                     config.output,

@@ -23,6 +23,7 @@ import {
 import type { ItemOrigin } from "../../imports/source";
 import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import { getAllocation } from "../../storage/resolveAllocation";
+import { contractErrors } from "../../abi/errors";
 
 const SMALL_CONTRACT_MAX_FIELDS = 5;
 
@@ -392,6 +393,14 @@ export function writeMainContract(
             wCtx.append(`}`);
             wCtx.append();
         }
+
+        wCtx.append(";; message opcode reader utility");
+        wCtx.append(
+            `;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code`,
+        );
+        wCtx.append(
+            `(slice, int) ~load_opcode(slice s) asm( -> 1 0) "32 LDUQ ${contractErrors.invalidMessage.id} THROWIFNOT";`,
+        );
 
         wCtx.append(`;;`);
         wCtx.append(`;; Routing of a Contract ${contract.name}`);

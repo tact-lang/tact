@@ -101,13 +101,13 @@
       }
     },
     {
-      "label": "1.5.3 with custom selector",
-      "pr": "https://github.com/tact-lang/tact/pull/2038",
+      "label": "1.5.3 with fixed routing",
+      "pr": "https://github.com/tact-lang/tact/pull/1949",
       "gas": {
-        "fundingTon": "4946",
-        "changeCode": "5152",
-        "approveTon": "9348",
-        "cancelTon": "7074"
+        "fundingTon": "4988",
+        "changeCode": "5194",
+        "approveTon": "9390",
+        "cancelTon": "7116"
       }
     }
   ]

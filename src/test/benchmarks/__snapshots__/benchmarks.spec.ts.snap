@@ -14,17 +14,17 @@ exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `893n`;
 
 exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2551n`;
 
-exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `4496`;
+exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `4548`;
 
 exports[`benchmarks benchmark deployable trait vs raw deploy: gas used raw deploy 1`] = `1505`;
 
-exports[`benchmarks benchmark functions: code size 1`] = `185`;
+exports[`benchmarks benchmark functions: code size 1`] = `183`;
 
-exports[`benchmarks benchmark functions: gas used 1`] = `2156`;
+exports[`benchmarks benchmark functions: gas used 1`] = `2208`;
 
 exports[`benchmarks benchmark readFwdFee: code size 1`] = `121`;
 
-exports[`benchmarks benchmark readFwdFee: gas used 1`] = `1978`;
+exports[`benchmarks benchmark readFwdFee: gas used 1`] = `2048`;
 
 exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2539`;
 

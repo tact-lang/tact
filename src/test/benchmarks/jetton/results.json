@@ -226,12 +226,12 @@
       }
     },
     {
-      "label": "1.5.3 with shortcutted selector",
-      "pr": "https://github.com/tact-lang/tact/pull/2038",
+      "label": "1.5.3 with fixed routing",
+      "pr": "https://github.com/tact-lang/tact/pull/1949",
       "gas": {
-        "transfer": "15952",
-        "burn": "11983",
-        "discovery": "6982"
+        "transfer": "16036",
+        "burn": "12067",
+        "discovery": "7024"
       }
     }
   ]
