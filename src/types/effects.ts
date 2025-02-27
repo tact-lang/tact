@@ -376,7 +376,7 @@ function methodEffects(
                       ])
                     : new Set<Effect>(["contractStorageRead"]);
             }
-            case "ref_bounced":
+            case "ref_bounced": // Extend functions must have a reference type as the first parameter
             case "void":
             case "null": {
                 throwInternalCompilerError(

@@ -31,6 +31,10 @@ extends fun modifyingRecursiveExternalContractMethod(self: StorageAnalysis) {
     if (self.x1 > 0) { self.modifyingRecursiveExternalContractMethod() }
 }
 
+extends mutates fun incIfNotNull(self: Int?) {
+    if (self != null) { self = self!! + 1 }
+}
+
 contract StorageAnalysis {
     x1: Int = 0;
     x2: Int = 0;
@@ -211,5 +215,9 @@ contract StorageAnalysis {
                 }
             }
         } until (x < 0);
+    }
+
+    receive("method call on null") {
+        null.incIfNotNull();
     }
 }

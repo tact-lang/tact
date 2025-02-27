@@ -220,6 +220,11 @@ exports[`effects should correctly compute effects: contractStorageAnalysis 1`] =
         },
         "kind": "internal-comment",
       },
+      {
+        "comment": "method call on null",
+        "effects": Set {},
+        "kind": "internal-comment",
+      },
     ],
   },
 ]
