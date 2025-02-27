@@ -68,6 +68,7 @@ export const optionsSchema: z.ZodType<C.Options> = z.object({
     optimizations: optimizationOptionsSchema.optional(),
     /**
      * If set to true, enables generation of `lazy_deployment_completed()` getter.
+     * Does nothing if contract parameters are declared.
      */
     enableLazyDeploymentCompletedGetter: z.boolean().optional(),
 });

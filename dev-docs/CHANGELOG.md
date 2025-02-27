@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `BasechainAddress` as more optimized version of `Address`: PR [#2035](https://github.com/tact-lang/tact/pull/2035)
 - Generation constants in TypeScript wrappers: PR [#2043](https://github.com/tact-lang/tact/pull/2043)
 - Added `Slice.hashData()` and `String.hashData()` functions to the stdlib: PR [#2039](https://github.com/tact-lang/tact/pull/2039)
+- Introduced contract parameters as a replacement for the lazy initialization via `init()` function: PR [#1985](https://github.com/tact-lang/tact/pull/1985), PR [#2071](https://github.com/tact-lang/tact/pull/2071)
 
 ### Changed
 

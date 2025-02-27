@@ -93,7 +93,7 @@ struct StateInit {
     /// Initial code of the contract (compiled bitcode)
     code: Cell;
 
-    /// Initial data of the contract (parameters of `init()` function)
+    /// Initial data of the contract (parameters of `init()` function or contract parameters)
     data: Cell;
 }
 
