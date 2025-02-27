@@ -3,8 +3,8 @@ title: Contract upgrades
 description: "Tact compiler allows, but does not encourage, code changes or upgrades after the contract is deployed."
 ---
 
-Tact compiler allows, but does not encourage, code changes or upgrades after the contract is deployed. While nice in theory, runtime code replacements introduce possible security, stability, and trust issues.
+The Tact compiler allows, but does not encourage, code changes or upgrades after the contract is deployed. While nice in theory, runtime code replacements introduce possible security, stability, and trust issues.
 
 The latter is not negligible — many people expect smart contracts to behave like regular contracts, i.e. something that can only be changed or reverted only by introducing a different contract, and **not** by modifying the existing one. Giving the owner a way to replace the code of an entire smart contract is usually considered a bad practice that can easily lead to rug pulls or other malicious actions that result in the loss of funds of the smart contract users.
 
-It's safer to impose some restrictions, such as a time-locked upgrade that is applied only after it has been thoroughly tested and discussed within your community. For an example, read the following Cookbook page at your discretion and apply at your own risk: [Code and data upgrades](/cookbook/upgrades).
+It's safer to impose some restrictions, such as a time-locked upgrade that is applied only after it has been thoroughly tested and discussed within your community. For a sample implementation, read the following Cookbook page at your discretion and apply at your own risk: [Code and data upgrades](/cookbook/upgrades).

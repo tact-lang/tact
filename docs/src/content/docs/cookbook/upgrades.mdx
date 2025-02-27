@@ -3,7 +3,7 @@ title: Code and data upgrades
 description: "This page lists examples of traits that can be used to allow upgrading the code or data of your smart contracts"
 ---
 
-This page lists examples of traits that can be used to allow upgrading the code or data of your smart contracts.
+Traits and helper functions that can be used to upgrade your smart contract's code, data, or both.
 
 :::caution
 
@@ -47,7 +47,7 @@ trait Upgradable with Ownable {
 
     /// Checks that the sender is the owner.
     /// Can be overridden.
-    virtual inline fun validateUpgrade(ctx: Context, _: Upgrade) {
+    virtual inline fun validateUpgrade(_: Context, __: Upgrade) {
         self.requireOwner();
     }
 
@@ -56,14 +56,17 @@ trait Upgradable with Ownable {
     /// Can be overridden.
     virtual inline fun upgrade(_: Context, msg: Upgrade) {
         if (msg.code != null) {
-            // Change of code will be applied by the end of this transaction
+            // Change of code will be applied at the end of this transaction
             setCode(msg.code!!);
         }
         if (msg.data != null) {
             // Change of data will be immediate
             setData(msg.data!!);
 
-            // To prevent further duplicate calls
+            // By the end of every transaction,
+            // Tact compiler automatically adds a call to setData() for your convenience.
+            // However, we've already set the data ourselves,
+            // so let's stop the execution now to prevent a secondary call to setData().
             throw(0);
         }
     }
@@ -145,10 +148,17 @@ trait DelayedUpgradable with Upgradable {
         require(now() > self.initiatedAt + self.upgradeInfo.timeout, "DelayedUpgradable: Cannot confirm upgrade before timeout");
 
         if (self.upgradeInfo.code != null) {
+            // Change of code will be applied at the end of this transaction
             setCode(self.upgradeInfo.code!!);
         }
         if (self.upgradeInfo.data != null) {
+            // Change of data will be immediate
             setData(self.upgradeInfo.data!!);
+
+            // By the end of every transaction,
+            // Tact compiler automatically adds a call to setData() for your convenience.
+            // However, we've already set the data ourselves,
+            // so let's stop the execution now to prevent a secondary call to setData().
             throw(0);
         }
     }
@@ -161,13 +171,11 @@ trait DelayedUpgradable with Upgradable {
 }
 
 //
-// Helper traits described earlier on this page
+// Helper traits and functions described earlier on this page
 //
 
 trait Upgradable with Ownable {
     owner: Address;
-
-    /// Meant to be private and only accessible through the relevant getter.
     _version: Int as uint32;
 
     receive(msg: Upgrade) {
@@ -178,20 +186,16 @@ trait Upgradable with Ownable {
         self._version += 1;
     }
 
-    virtual inline fun validateUpgrade(ctx: Context, _: Upgrade) {
+    virtual inline fun validateUpgrade(_: Context, __: Upgrade) {
         self.requireOwner();
     }
 
     virtual inline fun upgrade(_: Context, msg: Upgrade) {
         if (msg.code != null) {
-            // Change of code will be applied by the end of this transaction
             setCode(msg.code!!);
         }
         if (msg.data != null) {
-            // Change of data will be immediate
             setData(msg.data!!);
-
-            // To prevent further duplicate calls
             throw(0);
         }
     }

@@ -31,7 +31,7 @@ trait Upgradable with Ownable {
 
     /// Checks that the sender is the owner.
     /// Can be overridden.
-    virtual inline fun validateUpgrade(ctx: Context, _: Upgrade) {
+    virtual inline fun validateUpgrade(_: Context, __: Upgrade) {
         self.requireOwner();
     }
 
@@ -40,14 +40,17 @@ trait Upgradable with Ownable {
     /// Can be overridden.
     virtual inline fun upgrade(_: Context, msg: Upgrade) {
         if (msg.code != null) {
-            // Change of code will be applied by the end of this transaction
+            // Change of code will be applied at the end of this transaction
             setCode(msg.code!!);
         }
         if (msg.data != null) {
             // Change of data will be immediate
             setData(msg.data!!);
 
-            // To prevent further duplicate calls
+            // By the end of every transaction,
+            // Tact compiler automatically adds a call to setData() for your convenience.
+            // However, we've already set the data ourselves,
+            // so let's stop the execution now to prevent a secondary call to setData().
             throw(0);
         }
     }

@@ -5,9 +5,9 @@ import { toNano } from "@ton/core";
 import type { SandboxContract, Treasury, TreasuryContract } from "@ton/sandbox";
 import { internal } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { SampleDelayedUpgradeContract } from "./contracts/output/delayed_upgrade_SampleDelayedUpgradeContract";
-import { SampleDelayedUpgradeContractV2 } from "./contracts/output/delayed_upgrade_v2_SampleDelayedUpgradeContractV2";
-import { SampleDelayedUpgradeContractV3 } from "./contracts/output/delayed_upgrade_v3_SampleDelayedUpgradeContractV3";
+import { SampleDelayedUpgradeContract } from "./contracts/output/delayed-upgrade_SampleDelayedUpgradeContract";
+import { SampleDelayedUpgradeContractV2 } from "./contracts/output/delayed-upgrade-v2_SampleDelayedUpgradeContractV2";
+import { SampleDelayedUpgradeContractV3 } from "./contracts/output/delayed-upgrade-v3_SampleDelayedUpgradeContractV3";
 import "@ton/test-utils";
 import type { Maybe } from "@ton/core/dist/utils/maybe";
 
@@ -36,7 +36,7 @@ describe("delayed upgrade", () => {
             {
                 value: toNano("10"),
             },
-            null, // No specific message, sending a basic transfer
+            null,
         );
 
         expect(result.transactions).toHaveTransaction({
@@ -182,7 +182,7 @@ describe("delayed upgrade", () => {
     });
 
     it("should implement delayed upgrade of contract with new receiver correctly", async () => {
-        // Note, in new version counter has int32 type, not uint32!
+        // NOTE: After the upgrade, the new version counter has an int32 type, not uint32
         const newContract = await SampleDelayedUpgradeContractV3.fromInit(
             owner.address,
         );

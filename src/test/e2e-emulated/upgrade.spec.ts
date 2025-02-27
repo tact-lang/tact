@@ -5,8 +5,8 @@ import type { SandboxContract, Treasury, TreasuryContract } from "@ton/sandbox";
 import { internal } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { SampleUpgradeContract } from "./contracts/output/upgrade_SampleUpgradeContract";
-import { SampleUpgradeContractV2 } from "./contracts/output/upgrade_v2_SampleUpgradeContractV2";
-import { SampleUpgradeContractV3 } from "./contracts/output/upgrade_v3_SampleUpgradeContractV3";
+import { SampleUpgradeContractV2 } from "./contracts/output/upgrade-v2_SampleUpgradeContractV2";
+import { SampleUpgradeContractV3 } from "./contracts/output/upgrade-v3_SampleUpgradeContractV3";
 import "@ton/test-utils";
 
 describe("upgrade", () => {
@@ -31,7 +31,7 @@ describe("upgrade", () => {
             {
                 value: toNano("10"),
             },
-            null, // No specific message, sending a basic transfer
+            null,
         );
 
         expect(result.transactions).toHaveTransaction({
@@ -99,7 +99,7 @@ describe("upgrade", () => {
     });
 
     it("should implement upgrade of simple contract with new receiver correctly", async () => {
-        // Note, in new version counter has int32 type, not uint32!
+        // NOTE: After the upgrade, the new version counter has an int32 type, not uint32
         const newContract = await SampleUpgradeContractV3.fromInit(
             owner.address,
         );
