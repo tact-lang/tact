@@ -45,8 +45,7 @@ contract JettonMinter(
     }
 
     receive(msg: JettonBurnNotification) {
-        // Check that the message is from msg.sender's jetton_wallet
-       throwUnless(74, sender() == getJettonWalletByOwner(msg.sender));
+        throwUnless(74, sender() == getJettonWalletByOwner(msg.sender));
 
         self.totalSupply -= msg.amount;
 
@@ -68,7 +67,7 @@ contract JettonMinter(
 
     receive(msg: Mint) {
         throwUnless(73, sender() == self.owner);
-        self.totalSupply += msg.mintMessage.amount; // Update total supply
+        self.totalSupply += msg.mintMessage.amount;
 
         deploy(DeployParameters{
             value: 0,
@@ -93,6 +92,7 @@ contract JettonMinter(
             jettonWalletCode: codeOf JettonWallet,
         }
     }
+
     get fun get_wallet_address(ownerAddress: Address): Address {
         return getJettonWalletByOwner(ownerAddress);
     }
