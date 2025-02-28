@@ -23,7 +23,7 @@ contract JettonMinter(
         let sender = parseStdAddress(sender().asSlice());
         let wallet = getJettonBasechainWalletByOwner(msg.sender);
 
-        throwUnless(74, sender.address == wallet.hash!!);
+        throwUnless(74, sender.workchain == 0 && sender.address == wallet.hash!!);
 
         self.totalSupply -= msg.amount;
 

@@ -101,7 +101,7 @@ contract Escrow (
         );
         let sender = parseStdAddress(sender().asSlice());
 
-        throwUnless(74, sender.address == escrowJettonWalletAddress.hash!!);
+        throwUnless(74, sender.workchain == 0 && sender.address == escrowJettonWalletAddress.hash!!);
 
         throwUnless(401, self.dealAmount == msg.amount);
 
