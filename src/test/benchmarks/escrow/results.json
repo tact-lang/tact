@@ -146,8 +146,8 @@
       "gas": {
         "fundingTon": "4768",
         "changeCode": "4892",
-        "approveTon": "6968",
-        "cancelTon": "4997"
+        "approveTon": "6940",
+        "cancelTon": "4869"
       }
     }
   ]
