@@ -138,7 +138,7 @@ describe("upgrade", () => {
         expect(await contract.getIsUpgradable()).toEqual(true);
     });
 
-    async function updateContract(
+    function updateContract(
         sender: Treasury,
         init?: { code: Cell; data: Cell | null },
     ) {
