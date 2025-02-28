@@ -72,7 +72,7 @@ struct SendParameters {
     /// Optional initial code of the contract (compiled bitcode).
     code: Cell? = null;
 
-    /// Optional initial data of the contract (arguments of `init()` function).
+    /// Optional initial data of the contract (arguments of `init()` function or values of contract parameters).
     data: Cell? = null;
 
     /// The amount of nanoToncoins you want to send with

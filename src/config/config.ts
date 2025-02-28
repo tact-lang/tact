@@ -72,6 +72,7 @@ export type Options = {
     readonly optimizations?: OptimizationOptions;
     /**
      * If set to true, enables generation of `lazy_deployment_completed()` getter.
+     * Does nothing if contract parameters are declared.
      */
     readonly enableLazyDeploymentCompletedGetter?: boolean;
 };

@@ -174,9 +174,18 @@ contract Treasure with Ownable {
     // Persistent state variable, which MUST be defined in the contract
     owner: Address;
 
-    // Constructor function init(), where all the variables are initialized
+    // Constructor function init(), where all the variables are initialized on-chain
     init(owner: Address) {
         self.owner = owner;
     }
 }
+```
+
+Alternatively, a contract may declare use the [contract parameters syntax](/book/contracts#parameters), in which case they must list all the persistent state variables inherited from all of its traits:
+
+```tact
+contract Treasure(
+    // Persistent state variable, to be defined at deployment
+    owner: Address,
+) with Ownable {}
 ```
