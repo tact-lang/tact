@@ -27,7 +27,7 @@ describe("effects", () => {
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
-            ctx = resolveStatements(ctx, Ast);
+            ctx = resolveStatements(ctx);
             computeReceiversEffects(ctx);
             const receiverEffects = getAllTypes(ctx)
                 .filter((type) => type.kind === "contract")

@@ -10,6 +10,7 @@ import type { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import type { AstModule } from "../ast/ast";
 import type { FactoryAst } from "../ast/ast-helpers";
 import type { Parser } from "../grammar";
+import { evalComptimeExpressions } from "../types/evalComptimeExpressions";
 import { computeReceiversEffects } from "../types/effects";
 
 export function precompile(
@@ -31,11 +32,30 @@ export function precompile(
     //       they all have valid signatures
     ctx = resolveDescriptors(ctx, ast);
 
+    // This checks and resolves all statements
+    ctx = resolveStatements(ctx);
+
+    // From this point onwards, it is safe to call evalConstantExpression.
+
+    /* Evaluate all comp-time expressions:
+       constants, default contract fields, default struct fields, method Ids
+       
+       The original code inside constant, field and method id initialization actually mutated the CompilerContext object, 
+       while the rest of the typechecker's code built a new CompilerContext every time it changed something.
+       Hence the reason of why this line is not written as:
+
+       ctx = evalComptimeExpressions(ctx, ast);
+
+       The code mutates fields in ConstantDescription, FieldDescription and FunctionDescription.
+
+       Evaluation of Message op-codes is done later in resolveSignatures. It was left there because 
+       the computation of those op-codes is more involved than the computation of method ids, and so
+       it is hard to extract the call to evalConstantExpression in resolveSignatures.
+    */
+    evalComptimeExpressions(ctx, ast);
+
     // This creates TLB-style type definitions
     ctx = resolveSignatures(ctx, ast);
-
-    // This checks and resolves all statements
-    ctx = resolveStatements(ctx, ast);
 
     // This extracts error messages
     ctx = resolveErrors(ctx, ast);

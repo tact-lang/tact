@@ -13,6 +13,8 @@ import { getParser } from "../grammar";
 import { getAstFactory } from "../ast/ast-helpers";
 import { isSrcInfo } from "../grammar/src-info";
 import { defaultParser } from "../grammar/grammar";
+import { resolveStatements } from "./resolveStatements";
+import { evalComptimeExpressions } from "./evalComptimeExpressions";
 
 expect.addSnapshotSerializer({
     test: (src) => isSrcInfo(src),
@@ -48,6 +50,10 @@ describe("resolveDescriptors", () => {
             ctx = featureEnable(ctx, "external");
             expect(() => {
                 ctx = resolveDescriptors(ctx, Ast);
+                // These following two lines are required for the test "const-eval-overflow"
+                // which must throw an integer overflow in a shift operator
+                ctx = resolveStatements(ctx);
+                evalComptimeExpressions(ctx, Ast);
                 ctx = resolveSignatures(ctx, Ast);
             }).toThrowErrorMatchingSnapshot();
         });
