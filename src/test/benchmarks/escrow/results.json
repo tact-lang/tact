@@ -144,6 +144,16 @@
       "label": "1.5.3 with contract parameters (no lazy init)",
       "pr": "https://github.com/tact-lang/tact/pull/2077",
       "gas": {
+        "fundingTon": "4768",
+        "changeCode": "4892",
+        "approveTon": "6968",
+        "cancelTon": "4997"
+      }
+    },
+    {
+      "label": "1.5.3 with global inlining + basechain address + small optimizations",
+      "pr": "https://github.com/tact-lang/tact/pull/2088",
+      "gas": {
         "fundingTon": "4750",
         "changeCode": "4831",
         "approveTon": "6940",
