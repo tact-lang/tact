@@ -208,7 +208,7 @@ cell verify_c5_actions(cell c5, int is_external) inline {
 
 () recv_external(slice in_msg_body) impure inline {
   throw_unless(error::invalid_message_operation, in_msg_body.preload_uint(size::message_operation_prefix) == prefix::signed_external);
-  process_signed_request(in_msg_body, true);
+  process_signed_request(in_msg_body.skip_bits(size::message_operation_prefix), true);
 }
 
 ;; ------------------------------------------------------------------------------------------------

@@ -141,7 +141,7 @@ describe("Wallet Gas Tests", () => {
     async function sendSignedActionBody(
         walletAddress: Address,
         actions: Cell,
-        isExternal: boolean = true,
+        // isExternal: boolean = true,
     ) {
         const requestToSign = beginCell()
             .storeUint(SUBWALLET_ID, 32)
@@ -150,10 +150,22 @@ describe("Wallet Gas Tests", () => {
             .storeMaybeRef(actions)
             .storeBit(false)
             .storeBuilder(beginCell().asSlice().asBuilder())
-            .endCell();
+            .endCell().asSlice();
 
-        const operationHash = requestToSign.hash();
+        const operationHash = requestToSign.;
         const signature = sign(operationHash, keypair.secretKey);
+
+        const resCell = beginCell()
+            .storeUint(0x7369676E, 32)
+            .storeBuffer(signature, 64)
+            .storeUint(SUBWALLET_ID, 32)
+            .storeUint(validUntil(), 32)
+            .storeUint(seqno, 32)
+            .storeMaybeRef(actions)
+            .storeBit(false)
+            .storeBuilder(beginCell().asSlice().asBuilder())
+            .endCell();
+            
 
         const compatibleSignedRequest: CompatibleSignedRequest = {
             $$type: "CompatibleSignedRequest",
