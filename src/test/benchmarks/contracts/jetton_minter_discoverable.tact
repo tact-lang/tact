@@ -20,7 +20,10 @@ contract JettonMinter(
     jettonContent: Cell,
 ) {
     receive(msg: JettonBurnNotification) {
-        throwUnless(74, sender() == getJettonWalletByOwner(msg.sender));
+        let sender = parseStdAddress(sender().asSlice());
+        let wallet = getJettonBasechainWalletByOwner(msg.sender);
+
+        throwUnless(74, sender.address == wallet.hash!!);
 
         self.totalSupply -= msg.amount;
 
@@ -121,6 +124,10 @@ inline fun getJettonWalletInit(address: Address): StateInit {
 
 inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {
     return contractAddress(getJettonWalletInit(jettonWalletOwner));
+}
+
+inline fun getJettonBasechainWalletByOwner(jettonWalletOwner: Address): BasechainAddress {
+    return contractBasechainAddress(getJettonWalletInit(jettonWalletOwner));
 }
 
 inline extends fun isNotNone(self: Address): Bool { return self.asSlice().preloadUint(2) != 0 }
