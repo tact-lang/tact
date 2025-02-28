@@ -165,6 +165,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a note on the Assembly functions page regarding the ordering of fields in stdlib structures: PR [#1976](https://github.com/tact-lang/tact/pull/1976)
 - Added a link to Awesome Tact after the Ecosystem section: PR [#2015](https://github.com/tact-lang/tact/pull/2015)
 - Updated VSCode page in the Ecosystem with the new extension and language server: PR [#2031](https://github.com/tact-lang/tact/pull/2031)
+- Added `Upgradable` and `DelayedUpgradable` traits to the Cookbook: PR [#1896](https://github.com/tact-lang/tact/pull/1896), PR [#2079](https://github.com/tact-lang/tact/pull/2079)
 
 ### Release contributors
 
