@@ -17,11 +17,11 @@
       }
     },
     {
-      "label": "Benchmark 2025-02-28",
-      "pr": null,
+      "label": "1.5.3 with optimized calculations",
+      "pr": "https://github.com/tact-lang/tact/pull/2058",
       "size": {
-        "cells": "23",
-        "bits": "11068"
+        "cells": "24",
+        "bits": "11052"
       }
     }
   ]

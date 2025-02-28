@@ -21,13 +21,13 @@
       }
     },
     {
-      "label": "Benchmark 2025-02-28",
-      "pr": null,
+      "label": "1.5.3 with reworked JettonWallet",
+      "pr": "https://github.com/tact-lang/tact/pull/2059",
       "size": {
-        "minter cells": "31",
-        "minter bits": "14560",
-        "wallet cells": "14",
-        "wallet bits": "7963"
+        "minter cells": "33",
+        "minter bits": "14945",
+        "wallet cells": "16",
+        "wallet bits": "8348"
       }
     }
   ]
