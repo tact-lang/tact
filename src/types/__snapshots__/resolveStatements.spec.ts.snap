@@ -81,6 +81,15 @@ exports[`resolveStatements should fail statements for bounced-type-is-smaller 1`
 "
 `;
 
+exports[`resolveStatements should fail statements for codeOf 1`] = `
+"<unknown>:7:9: Type mismatch: "Cell" is not assignable to "Int"
+  6 |     init() {
+> 7 |         let code: Int = codeOf Foo;
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+  8 |     }
+"
+`;
+
 exports[`resolveStatements should fail statements for contract-getter-with-method-id-1 1`] = `
 "<unknown>:5:9: Invalid type "String" for binary operator "+"
   4 | contract Test {
@@ -1266,6 +1275,33 @@ exports[`resolveStatements should fail statements for stmt-while-int 1`] = `
 >  9 |     while(x) {
            ^~~~~~~~~~
   10 |         x = x + 1;
+"
+`;
+
+exports[`resolveStatements should fail statements for unknown-map-key-type-in-variable-declaration 1`] = `
+"<unknown>:4:19: Type "Int2" not found
+  3 | fun foo() {
+> 4 |     let addr: map<Int2, Int> = 10;
+                        ^~~~
+  5 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for unknown-optional-type-in-variable-declaration 1`] = `
+"<unknown>:2:15: Type "Foo" not found
+  1 | fun foo() {
+> 2 |     let addr: Foo? = 10;
+                    ^~~
+  3 | }
+"
+`;
+
+exports[`resolveStatements should fail statements for unknown-type-in-variable-declaration 1`] = `
+"<unknown>:2:15: Type "Foo" not found
+  1 | fun foo() {
+> 2 |     let addr: Foo = 10;
+                    ^~~
+  3 | }
 "
 `;
 
@@ -3037,6 +3073,55 @@ exports[`resolveStatements should resolve statements for fun-extends-optional 1`
   [
     "self",
     "Int?",
+  ],
+]
+`;
+
+exports[`resolveStatements should resolve statements for init-on-contract 1`] = `
+[
+  [
+    "foo: Int as int16",
+    "Contract",
+  ],
+  [
+    "foo: Int as int16",
+    "Int",
+  ],
+  [
+    "foo",
+    "Int",
+  ],
+  [
+    "bar: Int as int16",
+    "Contract",
+  ],
+  [
+    "bar: Int as int16",
+    "Int",
+  ],
+  [
+    "bar",
+    "Int",
+  ],
+  [
+    "self",
+    "Contract",
+  ],
+  [
+    "self.foo",
+    "Int",
+  ],
+  [
+    "self",
+    "Contract",
+  ],
+  [
+    "self.bar",
+    "Int",
+  ],
+  [
+    "self.foo + self.bar",
+    "Int",
   ],
 ]
 `;

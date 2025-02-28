@@ -26,7 +26,7 @@ contract Child {
     }
 
     receive() {
-        send(SendParameters {
+        message(MessageParameters {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,

@@ -148,12 +148,12 @@ fun nativeThrow(code: Int);
 
 ```tact {2,7}
 fun thisWillTerminate() {
-    nativeThrow(42); // throwing with exit code 42
+    nativeThrow(1042); // throwing with exit code 1042
 }
 
 fun butThisDoesNot() {
     try {
-        nativeThrow(42); // throwing with exit code 42
+        nativeThrow(1042); // throwing with exit code 1042
     }
 
     // ... follow-up logic ...
@@ -174,12 +174,12 @@ fun nativeThrowIf(code: Int, condition: Bool);
 
 ```tact {2,7}
 fun thisWillTerminate() {
-    nativeThrowIf(42, true); // throwing with exit code 42
+    nativeThrowIf(1042, true); // throwing with exit code 1042
 }
 
 fun butThisDoesNot() {
     try {
-        nativeThrowIf(42, true); // throwing with exit code 42
+        nativeThrowIf(1042, true); // throwing with exit code 1042
     }
     // ... follow-up logic ...
 }
@@ -199,12 +199,12 @@ fun nativeThrowUnless(code: Int, condition: Bool);
 
 ```tact {2,7}
 fun thisWillTerminate() {
-    nativeThrowUnless(42, false); // throwing with exit code 42
+    nativeThrowUnless(1042, false); // throwing with exit code 1042
 }
 
 fun butThisDoesNot() {
     try {
-        nativeThrowUnless(42, false); // throwing with exit code 42
+        nativeThrowUnless(1042, false); // throwing with exit code 1042
     }
     // ... follow-up logic ...
 }

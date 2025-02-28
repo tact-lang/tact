@@ -11,6 +11,10 @@ export function enabledDebug(ctx: CompilerContext) {
     return featureEnabled(ctx, "debug");
 }
 
+export function enabledOptimizedChildCode(ctx: CompilerContext) {
+    return featureEnabled(ctx, "optimizedChildCode");
+}
+
 export function enabledExternals(ctx: CompilerContext) {
     return featureEnabled(ctx, "external");
 }
@@ -25,6 +29,10 @@ export function enabledInterfacesGetter(ctx: CompilerContext) {
 
 export function enabledNullChecks(ctx: CompilerContext) {
     return featureEnabled(ctx, "nullChecks");
+}
+
+export function enabledAlwaysSaveContractData(ctx: CompilerContext) {
+    return featureEnabled(ctx, "alwaysSaveContractData");
 }
 
 export function enabledLazyDeploymentCompletedGetter(ctx: CompilerContext) {

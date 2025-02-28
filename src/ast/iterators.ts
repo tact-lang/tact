@@ -311,6 +311,9 @@ export function traverseAndCheck(
                 traverseAndCheck(e, callback);
             });
             break;
+        case "code_of":
+            traverseAndCheck(node.contract, callback);
+            break;
         case "conditional":
             traverseAndCheck(node.condition, callback);
             traverseAndCheck(node.thenBranch, callback);

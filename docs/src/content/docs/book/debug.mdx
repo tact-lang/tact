@@ -70,7 +70,7 @@ It involves actively placing [`dump(){:tact}`][dump] and [`dumpStack(){:tact}`](
 
 :::
 
-In addition to dumping values, it's often helpful to use assertive functions like [`require(){:tact}`](/ref/core-debug#require), [`nativeThrowIf(){:tact}`](/ref/core-debug#nativethrowif) and [`nativeThrowUnless(){:tact}`](/ref/core-debug#nativethrowunless). They help stating your assumptions clear, and are handy for setting up "trip wires" for catching issues in the future.
+In addition to dumping values, it's often helpful to use assertive functions like [`require(){:tact}`](/ref/core-debug#require), [`throwIf(){:tact}`](/ref/core-debug#throwif) and [`throwUnless(){:tact}`](/ref/core-debug#throwunless). They help stating your assumptions clear, and are handy for setting up "trip wires" for catching issues in the future.
 
 And if you didn't find or cannot resolve the cause of your issues, try asking the community in Tact's [Telegram chat][tg] or, if your issue or question is generally related to TON more than it's related to Tact, hop into [TON Dev Telegram chat](https://t.me/tondev_eng).
 
@@ -156,6 +156,8 @@ Then, a `beforeEach(){:tact}` [Jest][jest] function is called — it specifies a
 :::note
 
   It is strongly advised not to modify the contents of `beforeEach(){:tact}`, unless you really need some specific behavior for each test closure or parameters of your [`init(){:tact}`](/book/contracts#init-function) function have changed.
+
+  Additionally, you may need to edit `beforeEach(){:tact}` contents if you've changed the [contract parameters](/book/contracts#parameters).
 
 :::
 

@@ -1,10 +1,10 @@
-/// Extension function for the `Slice`. Available since Tact 1.6.0.
+/// Extension function for the `Slice` type. Available since Tact 1.6.0.
 ///
 /// Casts the `Slice` to an `Address` in a given `chain` ID and returns it. The inverse of `Address.asSlice()` and a safe but more gas-expensive version of `Slice.asAddressUnsafe()`.
-/// 
-/// Attempts to specify a `Slice` with an invalid account ID length throw an error with exit code 136: `Invalid standard address`.
-/// 
-/// Attempts to specify a `Slice` with an invalid tag prefix (not `0b100`) or with an invalid account ID length (not 256 bits) throw an error with exit code 136: `Invalid standard address`.
+///
+/// Attempts to specify a slice with an invalid account ID length throw an error with exit code 136: `Invalid standard address`.
+///
+/// Attempts to specify a slice with an invalid tag prefix (not `0b100`) or with an invalid account ID length (not 256 bits) throw an error with exit code 136: `Invalid standard address`.
 ///
 /// ```tact
 /// fun example() {
@@ -23,23 +23,23 @@
 extends fun asAddress(self: Slice, chain: Int): Address {
     // 11 bits for the prefix,
     // 256 bits for the address itself
-    nativeThrowUnless(136, self.bits() == 267);
+    throwUnless(136, self.bits() == 267);
 
     if (chain == -1) {
         // 1279 = 0b100_1111_1111,
         // i.e. internal address prefix and chain ID -1
-        nativeThrowUnless(136, self.preloadUint(11) == 1279);
+        throwUnless(136, self.preloadUint(11) == 1279);
     } else {
         // Only check the correct internal address prefix,
         // but do not verify the chain ID
-        nativeThrowUnless(136, self.preloadUint(3) == 4);
+        throwUnless(136, self.preloadUint(3) == 4);
     }
 
     // Proceed with the cast
     return self.asAddressUnsafe();
 }
 
-/// Extension function for the `Slice`. Available since Tact 1.6.0.
+/// Extension function for the `Slice` type. Available since Tact 1.6.0.
 ///
 /// Unsafely casts the `Slice` to an `Address` and returns it. The inverse of `Address.asSlice()`.
 ///
@@ -63,11 +63,11 @@ extends fun asAddress(self: Slice, chain: Int): Address {
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddress
 /// * https://docs.tact-lang.org/ref/core-cells#addressasslice
 ///
-asm extends fun asAddressUnsafe(self: Slice): Address { NOP }
+asm extends fun asAddressUnsafe(self: Slice): Address {}
 
-/// Extension function for the `Address`.
+/// Extension function for the `Address` type.
 ///
-/// Casts the `Address` back to the underlying `Slice` and returns it. The inverse of `Slice.asAddressUnsafe()`.
+/// Casts `self` back to the underlying `Slice` and returns it. The inverse of `Slice.asAddressUnsafe()`.
 ///
 /// ```tact
 /// fun example() {
@@ -83,7 +83,7 @@ asm extends fun asAddressUnsafe(self: Slice): Address { NOP }
 /// * https://docs.tact-lang.org/ref/core-cells#addressasslice
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddressunsafe
 ///
-asm extends fun asSlice(self: Address): Slice { NOP }
+asm extends fun asSlice(self: Address): Slice {}
 
 /// Global function.
 ///
@@ -141,9 +141,9 @@ struct VarAddress {
     address: Slice;
 }
 
-/// Assembly function. Available since Tact 1.5.0.
+/// Global function. Available since Tact 1.5.0.
 ///
-/// Converts a `Slice` containing an address into the `StdAddress` Struct and returns it.
+/// Converts a `slice` containing an address into the `StdAddress` Struct and returns it.
 ///
 /// ```tact
 /// fun example() {
@@ -159,9 +159,9 @@ struct VarAddress {
 ///
 asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
 
-/// Assembly function. Available since Tact 1.5.0.
+/// Global function. Available since Tact 1.5.0.
 ///
-/// Converts a `Slice` containing an address of variable length into the `VarAddress` Struct and returns it.
+/// Converts a `slice` containing an address of variable length into the `VarAddress` Struct and returns it.
 ///
 /// ```tact
 /// fun example() {
@@ -183,7 +183,120 @@ asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
 ///
 asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 
+/// Extension mutation function for the `Slice` type.
+///
+/// Loads and returns an `Address` from the `Slice`.
+///
+/// Attempts to load such `Address` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+///
+/// Attempts to load more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeAddress(myAddress()).asSlice();
+///     let fizz: Address = s.loadAddress();
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells/#sliceloadaddress
+///
 asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 
-@name(__tact_store_address)
-extends native storeAddress(self: Builder, address: Address): Builder;
+/// Extension function for the `Builder` type.
+///
+/// Stores the `address` in the copy of the `Builder`. Returns that copy.
+///
+/// Attempts to store an `address` into the `Builder` `self`, if `self` cannot fit it, throw an exception with exit code 8: `Cell overflow`.
+///
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b.storeAddress(myAddress());
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells/#builderstoreaddress
+///
+asm extends fun storeAddress(self: Builder, address: Address): Builder { STSLICER }
+
+/// Struct representing a basechain address. Available since Tact 1.6.0.
+///
+/// A basechain address (workchain 0) can be either empty (null hash) or contain a 256-bit hash value.
+/// 
+struct BasechainAddress {
+    hash: Int?;
+}
+
+/// Global function. Available since Tact 1.6.0.
+///
+/// Creates and returns an empty basechain address with a null hash.
+///
+/// When serialized, an empty basechain address is represented as `addr_none`.
+/// 
+/// ```tact
+/// fun example() {
+///     let emptyAddr: BasechainAddress = emptyBasechainAddress();
+///     emptyAddr.hash == null; // true
+/// }
+/// ```
+///
+inline fun emptyBasechainAddress(): BasechainAddress {
+    return BasechainAddress { hash: null }
+}
+
+/// Global function. Available since Tact 1.6.0.
+///
+/// Creates and returns a new basechain address with the specified hash value.
+///
+/// ```tact
+/// fun example() {
+///     let addr: BasechainAddress = newBasechainAddress(0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+/// }
+/// ```
+///
+inline fun newBasechainAddress(hash: Int): BasechainAddress {
+    return BasechainAddress { hash }
+}
+
+/// Global function. Available since Tact 1.6.0.
+///
+/// Creates and returns a basechain address derived from a contract's `StateInit` (code and data).
+///
+/// ```tact
+/// fun example() {
+///     let code: Cell = loadCell(); // load contract code
+///     let data: Cell = loadCell(); // load contract data
+///     let state: StateInit = StateInit { code, data };
+///     let addr: BasechainAddress = contractBasechainAddress(state);
+/// }
+/// ```
+///
+inline fun contractBasechainAddress(s: StateInit): BasechainAddress {
+    let hash = contractHash(s.code, s.data);
+    return newBasechainAddress(hash);
+}
+
+/// Extension function for the `Builder` type. Available since Tact 1.6.0.
+///
+/// Stores the basechain address in the copy of the Builder and returns that copy.
+///
+/// If the address has a `null` hash, stores 0b00 (`addr_none`). Otherwise, stores the full address
+/// with prefix 0b100 followed by workchain (0) and the 256-bit hash.
+///
+/// ```tact
+/// fun example() {
+///     let addr: BasechainAddress = newBasechainAddress(0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+///     let b: Builder = beginCell();
+///     let b2: Builder = b.storeBasechainAddress(addr);
+/// }
+/// ```
+///
+extends fun storeBasechainAddress(self: Builder, address: BasechainAddress): Builder {
+    if (address.hash == null) {
+        return self.storeUint(0, 2); // 0b00
+    }
+
+    return self
+        .storeUint(0b10_0_00000000, 3 + 8)
+        .storeUint(address.hash!!, 256);
+}

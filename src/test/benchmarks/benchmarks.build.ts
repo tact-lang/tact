@@ -19,6 +19,7 @@ const main = async () => {
         debug: false,
         experimental: { inline: false },
         safety: { nullChecks: false },
+        optimizations: { alwaysSaveContractData: false },
     });
 };
 

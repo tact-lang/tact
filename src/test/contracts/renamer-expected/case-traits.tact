@@ -14,7 +14,7 @@ trait trait_3 with B {
     receive("message") { }
 
     fun function_def_6() {
-        nativeThrowUnless(132, context().sender == self.owner);
+        throwUnless(132, context().sender == self.owner);
     }
 
     get fun function_def_7(): Address {

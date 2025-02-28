@@ -6,13 +6,13 @@ const MasterchainNotEnabled: Int = 1137;
 
 fun verifyAddress(addr: Address, enabledMasterChain: Bool) {
     let addrSlice = addr.asSlice();
-    nativeThrowUnless(InvalidAddressExitCode, addrSlice.bits() == 267);
+    throwUnless(InvalidAddressExitCode, addrSlice.bits() == 267);
     let h = addrSlice.preloadUint(11);
     if (enabledMasterChain) {
-        nativeThrowUnless(InvalidAddressExitCode, (h == 1024) || (h == 1279));
+        throwUnless(InvalidAddressExitCode, (h == 1024) || (h == 1279));
     } else {
-        nativeThrowIf(MasterchainNotEnabled, h == 1279);
-        nativeThrowUnless(InvalidAddressExitCode, h == 1024);
+        throwIf(MasterchainNotEnabled, h == 1279);
+        throwUnless(InvalidAddressExitCode, h == 1024);
     }
 }
 

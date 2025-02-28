@@ -3,11 +3,20 @@
     {
       "label": "FunC",
       "gas": {
-        "transfer": "15064",
-        "burn": "11895",
-        "discovery": "5915"
+        "transfer": "16864",
+        "burn": "12414",
+        "discovery": "6554"
       },
-      "pr": null
+      "pr": "https://github.com/ton-blockchain/token-contract"
+    },
+    {
+      "label": "NotCoin",
+      "gas": {
+        "transfer": "16984",
+        "burn": "12732",
+        "discovery": "6545"
+      },
+      "pr": "https://github.com/OpenBuilders/notcoin-contract"
     },
     {
       "label": "1.5.3",
@@ -161,6 +170,105 @@
         "discovery": "9044"
       },
       "pr": "https://github.com/tact-lang/tact/pull/1934"
+    },
+    {
+      "label": "1.5.3 with inlined router",
+      "gas": {
+        "transfer": "17696",
+        "burn": "14106",
+        "discovery": "8850"
+      },
+      "pr": "https://github.com/tact-lang/tact/pull/1968"
+    },
+    {
+      "label": "1.5.3 with optimized initOf",
+      "gas": {
+        "transfer": "17696",
+        "burn": "13544",
+        "discovery": "8288"
+      },
+      "pr": "https://github.com/tact-lang/tact/pull/1907"
+    },
+    {
+      "label": "1.5.3 with message() instead of send()",
+      "pr": "https://github.com/tact-lang/tact/pull/1999",
+      "gas": {
+        "transfer": "17315",
+        "burn": "12892",
+        "discovery": "8025"
+      }
+    },
+    {
+      "label": "1.5.3 with more inlining for small contracts and structs",
+      "pr": "https://github.com/tact-lang/tact/pull/2016",
+      "gas": {
+        "transfer": "16472",
+        "burn": "12463",
+        "discovery": "7868"
+      }
+    },
+    {
+      "label": "1.5.3 with optimized NOP instructions",
+      "pr": "https://github.com/tact-lang/tact/pull/1959",
+      "gas": {
+        "transfer": "16436",
+        "burn": "12427",
+        "discovery": "7750"
+      }
+    },
+    {
+      "label": "1.5.3 with no lazy init",
+      "pr": "https://github.com/tact-lang/tact/pull/1985",
+      "gas": {
+        "transfer": "16092",
+        "burn": "12123",
+        "discovery": "7683"
+      }
+    },
+    {
+      "label": "1.5.3 with BasechainAddress",
+      "pr": "https://github.com/tact-lang/tact/pull/2035",
+      "gas": {
+        "transfer": "16092",
+        "burn": "12123",
+        "discovery": "7052"
+      }
+    },
+    {
+      "label": "1.5.3 with fixed routing",
+      "pr": "https://github.com/tact-lang/tact/pull/1949",
+      "gas": {
+        "transfer": "16036",
+        "burn": "12067",
+        "discovery": "7024"
+      }
+    },
+    {
+      "label": "1.5.3 with custom selector",
+      "pr": "https://github.com/tact-lang/tact/pull/2038",
+      "gas": {
+        "transfer": "15896",
+        "burn": "11927",
+        "discovery": "6954"
+      }
+    },
+    {
+      "label": "1.5.3 with optimized contract storage saving",
+      "pr": null,
+      "gas": {
+        "transfer": "15896",
+        "burn": "11927",
+        "discovery": "6250"
+      }
+    },
+    {
+      "label": "1.5.3 with reworked JettonWallet",
+      "pr": "https://github.com/tact-lang/tact/pull/2059",
+      "gas": {
+        "transfer": "15778",
+        "burn": "12541",
+        "discovery": "6230"
+      }
     }
   ]
 }

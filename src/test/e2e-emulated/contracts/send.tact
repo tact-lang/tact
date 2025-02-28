@@ -22,7 +22,7 @@ contract SendTester with Deployable {
 
         nativeReserve(ton("0.05"), ReserveAtMost | ReserveAddOriginalBalance);
 
-        send(SendParameters{
+        message(MessageParameters{
             to: sender(),
             value: 0,
             mode: SendRemainingBalance,
@@ -34,7 +34,7 @@ contract SendTester with Deployable {
     /// keeps the original balance,
     /// then sends the rest in the next message via send()
     receive("ReserveAtMost_2") {
-        send(SendParameters{
+        message(MessageParameters{
             to: myAddress(),
             value: 0,
             mode: SendDefaultMode | SendPayGasSeparately,
@@ -43,7 +43,7 @@ contract SendTester with Deployable {
 
         nativeReserve(ton("0.05"), ReserveAtMost | ReserveAddOriginalBalance);
 
-        send(SendParameters{
+        message(MessageParameters{
             to: sender(),
             value: 0,
             mode: SendRemainingBalance,

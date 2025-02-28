@@ -726,7 +726,7 @@ describe("SendDefaultMode with no flags", () => {
         // The amount the tester contract will pay in its request message to the calculator contract.
         // This is just an amount to cover the request forward fees, but not enough to pay for
         // calculator's transaction fees and the bounce message.
-        const amountToPayInRequest = toNano("0.005");
+        const amountToPayInRequest = toNano("0.004");
         // In this test, the calculator will fail its computation phase and will be unable to send a bounce message
         // due to insufficient funds, so that it will never send a response
         // back to the tester. Hence, it will be irrelevant

@@ -581,6 +581,9 @@ export function constantPropagationAnalysis(
             case "init_of":
                 return interpretInitOf(expr);
 
+            case "code_of":
+                return interpretCodeOf(expr);
+
             default:
                 throwInternalCompilerError("Unrecognized expression kind");
         }
@@ -855,6 +858,11 @@ export function constantPropagationAnalysis(
         } else {
             return undefined;
         }
+    }
+
+    function interpretCodeOf(expr: A.AstCodeOf): A.AstLiteral | undefined {
+        // Pass it directly to the interpreter, since it does not have arguments
+        return interpreter.interpretExpression(expr);
     }
 
     function simulateBranch(code: () => void) {

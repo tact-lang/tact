@@ -72,7 +72,7 @@ struct SendParameters {
     /// Optional initial code of the contract (compiled bitcode).
     code: Cell? = null;
 
-    /// Optional initial data of the contract (arguments of `init()` function).
+    /// Optional initial data of the contract (arguments of `init()` function or values of contract parameters).
     data: Cell? = null;
 
     /// The amount of nanoToncoins you want to send with
@@ -86,6 +86,75 @@ struct SendParameters {
     /// When set to `true` (default) message bounces back to the sender if
     /// the recipient contract doesn't exist or wasn't able to process the message.
     bounce: Bool = true;
+}
+
+/// Struct for specifying the message parameters of the `message()` function. Available since Tact 1.6.0.
+///
+/// See: https://docs.tact-lang.org/ref/core-common#message
+///
+struct MessageParameters {
+    /// An 8-bit value that configures how to send a message, defaults to 0.
+    /// See: https://docs.tact-lang.org/book/message-mode
+    mode: Int = SendDefaultMode;
+
+    /// Optional message body as a `Cell`.
+    body: Cell? = null;
+
+    /// The amount of nanoToncoins you want to send with
+    /// the message. This value is used to cover forward fees,
+    /// unless the optional flag `SendPayGasSeparately` is used.
+    value: Int;
+
+    /// Recipient internal `Address` on TON Blockchain.
+    to: Address;
+
+    /// When set to `true` (default) message bounces back to the sender if
+    /// the recipient contract doesn't exist or wasn't able to process the message.
+    bounce: Bool = true;
+}
+
+/// Global function. Available since Tact 1.6.0.
+///
+/// Queues the message to be sent using the `MessageParameters` struct. Allows for cheaper non-deployment, regular messages compared to the `send()` function.
+///
+/// The `MessageParameters` struct is similar to `SendParameters` struct, but without the `body` and `code` fields.
+///
+/// Attempts to queue more than 255 messages throw an exception with an exit code 33: `Action list is too long`.
+///
+/// ```tact
+/// fun example() {
+///     message(MessageParameters{
+///         to: sender(),    // back to the sender,
+///         value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
+///                          // and no message body
+///     });
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-common#message
+/// * https://docs.tact-lang.org/book/message-mode
+///
+asm fun message(params: MessageParameters) {
+    NEWC
+    b{01} STSLICECONST  // store tag = $0 and ihr_disabled = true
+    1 STI               // store `bounce`
+    b{000} STSLICECONST // store bounced = false and src = addr_none
+    STSLICE             // store `to`
+    SWAP
+    STGRAMS             // store `value`
+    106 PUSHINT         // 1 + 4 + 4 + 64 + 32 + 1
+    STZEROES
+    // → Stack state
+    // s0: Builder
+    // s1: `data`
+    // s2: `code`
+    // s3: `body`
+    // s4: `mode`
+    STDICT
+    ENDC
+    SWAP
+    SENDRAWMSG
 }
 
 /// Global function. Queues the message to be sent using a `SendParameters` Struct.

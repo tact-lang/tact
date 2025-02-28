@@ -11,6 +11,7 @@ import type { AstModule } from "../ast/ast";
 import type { FactoryAst } from "../ast/ast-helpers";
 import type { Parser } from "../grammar";
 import { constantPropagationAnalysis } from "../optimizer/deprecated/constant-propagation";
+import { computeReceiversEffects } from "../types/effects";
 
 export function precompile(
     ctx: CompilerContext,
@@ -42,6 +43,9 @@ export function precompile(
 
     // This creates allocations for all defined types
     ctx = resolveAllocations(ctx);
+
+    // To use in code generation to decide if a receiver needs to call the contract storage function
+    computeReceiversEffects(ctx);
 
     // FIXME: Replace this when proper constant propagation is implemented.
     // Delete this line to deactivate constant propagation.
