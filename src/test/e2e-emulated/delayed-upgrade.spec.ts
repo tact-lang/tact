@@ -71,7 +71,7 @@ describe("delayed upgrade", () => {
         expect(await contract.getIsUpgradable()).toBe(true);
 
         // Check counter
-        expect((await contract.getCounter()) === 0n).toBe(true);
+        expect(Number(await contract.getCounter()) === 0).toBe(true);
 
         // Increment counter
         await contract.send(
@@ -81,8 +81,8 @@ describe("delayed upgrade", () => {
         );
 
         // Check counter
-        expect((await contract.getCounter()) === 1n).toBe(true);
-        expect((await contract.getVersion()) === 0n).toBe(true);
+        expect(Number(await contract.getCounter()) === 1).toBe(true);
+        expect(Number(await contract.getVersion()) === 0).toBe(true);
 
         const newContract = await SampleDelayedUpgradeContractV2.fromInit(
             owner.address,
@@ -103,8 +103,8 @@ describe("delayed upgrade", () => {
         );
 
         // Check counter
-        expect((await contract.getCounter()) === 101n).toBe(true);
-        expect((await contract.getVersion()) === 1n).toBe(true);
+        expect(Number(await contract.getCounter()) === 101).toBe(true);
+        expect(Number(await contract.getVersion()) === 1).toBe(true);
         expect(await contract.getIsUpgradable()).toBe(true);
     });
 
@@ -112,7 +112,7 @@ describe("delayed upgrade", () => {
         expect(await contract.getIsUpgradable()).toBe(true);
 
         // Check counter
-        expect((await contract.getCounter()) === 0n).toBe(true);
+        expect(Number(await contract.getCounter()) === 0).toBe(true);
 
         // Increment counter
         await contract.send(
@@ -122,8 +122,8 @@ describe("delayed upgrade", () => {
         );
 
         // Check counter
-        expect((await contract.getCounter()) === 1n).toBe(true);
-        expect((await contract.getVersion()) === 0n).toBe(true);
+        expect(Number(await contract.getCounter()) === 1).toBe(true);
+        expect(Number(await contract.getVersion()) === 0).toBe(true);
 
         const newContract = await SampleDelayedUpgradeContractV2.fromInit(
             owner.address,
@@ -147,12 +147,13 @@ describe("delayed upgrade", () => {
         );
 
         // Check counter
-        expect((await contract.getCounter()) === 101n).toBe(true);
-        expect((await contract.getVersion()) === 1n).toBe(true);
+        expect(Number(await contract.getCounter()) === 101).toBe(true);
+        expect(Number(await contract.getVersion()) === 1).toBe(true);
         expect(await contract.getIsUpgradable()).toBe(true);
     });
 
     it("should fail delayed upgrade with timeout=1m without actual waiting correctly", async () => {
+        const currentInitTime = await contract.getInitiatedAt();
         const newContract = await SampleDelayedUpgradeContractV2.fromInit(
             owner.address,
         );
@@ -160,7 +161,14 @@ describe("delayed upgrade", () => {
             code: newContract.init!.code,
             data: null,
         });
+        const updatedInitTime = await contract.getInitiatedAt();
+        expect(updatedInitTime >= currentInitTime).toBe(true);
 
+        // Timeout didn't elapse
+        const now = Math.floor(Date.now() / 1000);
+        expect(now - Number(updatedInitTime) <= 60).toBe(true);
+
+        // Confirmation cannot be granted
         const earlyConfirmRes = await confirmUpdateContract(owner.getSender());
 
         const errorCodeCannotConfirmBeforeTimeout = findErrorCodeByMessage(
@@ -201,8 +209,8 @@ describe("delayed upgrade", () => {
         );
 
         // Check counter
-        expect((await contract.getCounter()) === -1n).toBe(true);
-        expect((await contract.getVersion()) === 1n).toBe(true);
+        expect(Number(await contract.getCounter()) === -1).toBe(true);
+        expect(Number(await contract.getVersion()) === 1).toBe(true);
         expect(await contract.getIsUpgradable()).toBe(true);
     });
 
@@ -229,8 +237,8 @@ describe("delayed upgrade", () => {
         await confirmUpdateContract(owner.getSender());
 
         // Check counter
-        expect((await contract.getCounter()) === 999n).toBe(true);
-        expect((await contract.getVersion()) === 100n).toBe(true);
+        expect(Number(await contract.getCounter()) === 999).toBe(true);
+        expect(Number(await contract.getVersion()) === 100).toBe(true);
         expect(await contract.getIsUpgradable()).toBe(true);
     });
 
