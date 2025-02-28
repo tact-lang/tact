@@ -91,8 +91,8 @@ contract JettonWallet(
         throwUnless(706, self.balance >= 0);
 
         let ctx = context();
-        let fwd_fee: Int = ctx.readForwardFee();
-        throwUnless(707, ctx.value > (fwd_fee + 2 * self.gasConsumption));
+        let fwdFee: Int = ctx.readForwardFee();
+        throwUnless(707, ctx.value > (fwdFee + 2 * self.gasConsumption));
 
         message(MessageParameters{
             to: self.master,
