@@ -34,4 +34,8 @@ contract SampleDelayedUpgradeContractV2 with DelayedUpgradable {
     get fun counter(): Int {
         return self.counter;
     }
+
+    get fun initiatedAt(): Int {
+        return self.initiatedAt;
+    }
 }
