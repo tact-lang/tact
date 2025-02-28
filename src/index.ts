@@ -19,3 +19,5 @@ export * from "./browser";
 export * from "./context/logger";
 export * from "./error/errors";
 export { ItemOrigin } from "./imports/source";
+
+export * from "./verify";
