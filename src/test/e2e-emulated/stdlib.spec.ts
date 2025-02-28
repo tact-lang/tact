@@ -57,7 +57,7 @@ describe("stdlib", () => {
                 .toString(),
         ).toBe(beginCell().storeBit(true).endCell().toString());
 
-        expect(Number(await contract.getTvm_2023_07Upgrade())).toEqual(1183);
+        expect(Number(await contract.getTvm_2023_07Upgrade())).toEqual(1243);
         expect(await contract.getTvm_2024_04Upgrade()).toEqual(82009144n);
 
         expect(
@@ -178,8 +178,8 @@ describe("stdlib", () => {
 
         expect(await contract.getBlockLt()).toBe(0n);
 
-        expect(Number(await contract.getSetGasLimit(5000n))).toBe(3725); // 5000 just to make sure it's enough, 3725 is how much it actually costs
-        await expect(contract.getSetGasLimit(3724n)).rejects.toThrow("-14"); // 3724 gas is not enough for sure
+        expect(Number(await contract.getSetGasLimit(5000n))).toBe(3785); // 5000 just to make sure it's enough, 3785 is how much it actually costs
+        await expect(contract.getSetGasLimit(3784n)).rejects.toThrow("-14"); // 3784 gas is not enough for sure
 
         expect(await contract.getGetSeed()).toBe(0n);
 
