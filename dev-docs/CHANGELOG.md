@@ -198,7 +198,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Georgiy Komarov](https://github.com/jubnzv)
 - [Ikko Eltociear Ashimine](https://github.com/eltociear)
 - [Jesús Héctor Domínguez Sánchez](https://github.com/jeshecdom)
-- [Kaladin13](https://github.com/Kaladin13)
+- [Maksim Lagus](https://github.com/Kaladin13)
 - [Novus Nota](https://github.com/novusnota)
 - [Petr Makhnev](https://github.com/i582)
 - [Shvetc Andrei](https://github.com/Shvandre)

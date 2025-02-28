@@ -84,6 +84,7 @@ keccak
 knip
 Komarov
 Korshakov
+Lagus
 Laika
 langle
 langtools
@@ -94,6 +95,7 @@ lparen
 lvalue
 lvalues
 Makhnev
+Maksim
 masterchain
 Masterchain
 mathrm
@@ -112,6 +114,7 @@ nocheck
 noexcept
 nonterminal
 Nonterminal
+notcoin
 Novus
 Offchain
 omelander
@@ -147,6 +150,7 @@ shardchains
 shiki
 Shvetc
 Stateinit
+statinit
 stdlib
 stdlibs
 stmts
