@@ -1153,4 +1153,19 @@ contract StructsTester {
     get fun destructuringTest8Const(): Int {
         return destructuringTest8();
     }
+
+    get fun destructuringTest9(): Int {
+        let start: Point = Point{ x: 1, y: 2};
+        let end: Point = Point{ x: 3, y: 4};
+
+        let loc = Location {
+            idx: 2,
+            line1: Line {start: start, end: end},
+            line2: Line {start: start, end: end}
+        };
+
+        let Location { line1, .. } = loc;
+
+        return line1.start.x;
+    }
 }
