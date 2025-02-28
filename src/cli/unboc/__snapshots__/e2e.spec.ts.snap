@@ -12,6 +12,7 @@ PROGRAM{
   DECLPROC ?fun_ref_92183b49329bb4e4
   recv_internal PROC:<{
     DROP
+    DROP
     CTOS
     TWO
     SDSKIPFIRST
@@ -74,6 +75,7 @@ PROGRAM{
   78250 DECLMETHOD ?fun_78250
   DECLPROC ?fun_ref_92183b49329bb4e4
   recv_internal PROC:<{
+    DROP                                          // 0x3 0
     DROP                                          // 0x3 0
     CTOS                                          // 0xD0
     TWO                                           // 0x7 2
@@ -138,6 +140,7 @@ PROGRAM{
   DECLPROC ?fun_ref_92183b49329bb4e4
   recv_internal PROC:<{
     s0 POP
+    s0 POP
     CTOS
     2 PUSHINT
     SDSKIPFIRST
@@ -199,6 +202,7 @@ PROGRAM{
   DECLPROC recv_internal
   78250 DECLMETHOD ?fun_78250
   recv_internal PROC:<{
+    DROP
     DROP
     CTOS
     TWO

@@ -60,6 +60,11 @@ export function enableFeatures(
             name: "nullChecks",
         },
         {
+            option:
+                config.options.optimizations?.alwaysSaveContractData ?? false,
+            name: "alwaysSaveContractData",
+        },
+        {
             option: config.options.enableLazyDeploymentCompletedGetter ?? false,
             name: "lazyDeploymentCompletedGetter",
         },

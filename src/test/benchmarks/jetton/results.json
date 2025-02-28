@@ -200,7 +200,7 @@
     },
     {
       "label": "1.5.3 with optimized NOP instructions",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/1959",
       "gas": {
         "transfer": "16436",
         "burn": "12427",
@@ -235,12 +235,21 @@
       }
     },
     {
-      "label": "1.5.3 with optimized throws",
-      "pr": "https://github.com/tact-lang/tact/pull/2059",
+      "label": "1.5.3 with custom selector",
+      "pr": "https://github.com/tact-lang/tact/pull/2038",
       "gas": {
-        "transfer": "15466",
-        "burn": "12052",
-        "discovery": "7024"
+        "transfer": "15896",
+        "burn": "11927",
+        "discovery": "6954"
+      }
+    },
+    {
+      "label": "1.5.3 with optimized contract storage saving",
+      "pr": null,
+      "gas": {
+        "transfer": "15896",
+        "burn": "11927",
+        "discovery": "6250"
       }
     },
     {

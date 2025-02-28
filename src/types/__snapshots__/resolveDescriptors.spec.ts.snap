@@ -2703,6 +2703,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
           },
           "statements": [],
         },
+        "effects": Set {},
         "selector": {
           "kind": "internal-binary",
           "name": {
@@ -2745,6 +2746,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
           },
           "statements": [],
         },
+        "effects": Set {},
         "selector": {
           "kind": "bounce-fallback",
           "name": {
@@ -3328,6 +3330,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           },
           "statements": [],
         },
+        "effects": Set {},
         "selector": {
           "kind": "internal-binary",
           "name": {
@@ -3410,6 +3413,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             },
           ],
         },
+        "effects": Set {},
         "selector": {
           "bounced": true,
           "kind": "bounce-binary",
@@ -5224,6 +5228,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
             },
           ],
         },
+        "effects": Set {},
         "selector": {
           "kind": "external-binary",
           "name": {
@@ -5266,6 +5271,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
             },
           ],
         },
+        "effects": Set {},
         "selector": {
           "kind": "external-empty",
         },
@@ -13765,6 +13771,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
           },
           "statements": [],
         },
+        "effects": Set {},
         "selector": {
           "kind": "internal-binary",
           "name": {
@@ -28219,6 +28226,7 @@ exports[`resolveDescriptors should resolve descriptors for receive-message-with-
           },
           "statements": [],
         },
+        "effects": Set {},
         "selector": {
           "comment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "kind": "internal-comment",
