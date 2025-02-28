@@ -7,7 +7,7 @@
         "burn": "12414",
         "discovery": "6554"
       },
-      "pr": null
+      "pr": "https://github.com/ton-blockchain/token-contract"
     },
     {
       "label": "NotCoin",
@@ -16,7 +16,7 @@
         "burn": "12732",
         "discovery": "6545"
       },
-      "pr": null
+      "pr": "https://github.com/OpenBuilders/notcoin-contract"
     },
     {
       "label": "1.5.3",
