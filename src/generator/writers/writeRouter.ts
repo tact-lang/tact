@@ -10,7 +10,7 @@ import { funcIdOf } from "./id";
 import { ops } from "./ops";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeStatement } from "./writeFunction";
-import type { AstNumber, AstReceiver, AstStatement } from "../../ast/ast";
+import type { AstNumber, AstReceiver } from "../../ast/ast";
 import {
     throwCompilationError,
     throwInternal,
@@ -20,6 +20,8 @@ import type { SrcInfo } from "../../grammar";
 import { contractErrors } from "../../abi/errors";
 import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import { getAllocation } from "../../storage/resolveAllocation";
+import type { Effect } from "../../types/effects";
+import { enabledAlwaysSaveContractData } from "../../config/features";
 
 type ContractReceivers = {
     readonly internal: Receivers;
@@ -40,6 +42,7 @@ type Receivers = {
 
 type FallbackReceiver = {
     selector: FallbackReceiverSelector;
+    effects: ReadonlySet<Effect>;
     ast: AstReceiver;
 };
 
@@ -71,7 +74,8 @@ export function writeNonBouncedRouter(
         typeof receivers.fallback !== "undefined" &&
         receivers.binary.length === 0 &&
         receivers.comment.length === 0 &&
-        typeof receivers.commentFallback === "undefined"
+        typeof receivers.commentFallback === "undefined" &&
+        typeof receivers.empty === "undefined"
     ) {
         writeFallbackReceiver(receivers.fallback, contract, "in_msg", wCtx);
         return;
@@ -91,7 +95,7 @@ export function writeNonBouncedRouter(
         typeof receivers.commentFallback === "undefined" &&
         typeof receivers.fallback === "undefined"
     ) {
-        wCtx.append(`var (op, _) = in_msg~load_uint_quiet(32);`);
+        wCtx.append("var op = in_msg~load_opcode();");
 
         writeBinaryReceivers(true);
 
@@ -131,7 +135,7 @@ export function writeNonBouncedRouter(
         const emptyRcv = receivers.empty;
         wCtx.append(";; Receive empty message");
         wCtx.inBlock("if ((op == 0) & (in_msg_length <= 32))", () => {
-            writeReceiverBody(emptyRcv.ast.statements, contract, wCtx);
+            writeReceiverBody(emptyRcv, contract, wCtx);
         });
     }
 
@@ -191,7 +195,7 @@ function writeBinaryReceiver(
             `var ${msgFields} = in_msg~${ops.reader(selector.type, "no-opcode", wCtx)}();`,
         );
 
-        writeReceiverBody(binaryReceiver.ast.statements, contract, wCtx);
+        writeReceiverBody(binaryReceiver, contract, wCtx);
     });
 }
 
@@ -216,14 +220,17 @@ function writeCommentReceivers(
     ) => {
         const writeFallbackTextReceiverInternal = () => {
             wCtx.append(";; Fallback Text Receiver");
-            const inMsg = msgOpcodeRemoved ? "in_msg" : "in_msg.skip_bits(32)";
-            writeFallbackReceiver(
-                commentFallbackReceiver,
-                contract,
-                inMsg,
-                wCtx,
-            );
-            wCtx.append("return ();");
+            wCtx.inBlock("if (in_msg_length >= 32)", () => {
+                const inMsg = msgOpcodeRemoved
+                    ? "in_msg"
+                    : "in_msg.skip_bits(32)";
+                writeFallbackReceiver(
+                    commentFallbackReceiver,
+                    contract,
+                    inMsg,
+                    wCtx,
+                );
+            });
         };
 
         // We optimize fallback
@@ -263,7 +270,7 @@ function writeCommentReceivers(
             wCtx.append(`;; Receive "${commentRcv.selector.comment}" message`);
 
             wCtx.inBlock(`if (text_op == 0x${hash})`, () => {
-                writeReceiverBody(commentRcv.ast.statements, contract, wCtx);
+                writeReceiverBody(commentRcv, contract, wCtx);
             });
         });
 
@@ -322,12 +329,14 @@ export function groupContractReceivers(
             case "internal-comment-fallback":
                 contractReceivers.internal.commentFallback = {
                     selector,
+                    effects: receiver.effects,
                     ast: receiver.ast,
                 };
                 break;
             case "internal-fallback":
                 contractReceivers.internal.fallback = {
                     selector,
+                    effects: receiver.effects,
                     ast: receiver.ast,
                 };
                 break;
@@ -343,12 +352,14 @@ export function groupContractReceivers(
             case "external-comment-fallback":
                 contractReceivers.external.commentFallback = {
                     selector,
+                    effects: receiver.effects,
                     ast: receiver.ast,
                 };
                 break;
             case "external-fallback":
                 contractReceivers.external.fallback = {
                     selector,
+                    effects: receiver.effects,
                     ast: receiver.ast,
                 };
                 break;
@@ -358,6 +369,7 @@ export function groupContractReceivers(
             case "bounce-fallback":
                 contractReceivers.bounced.fallback = {
                     selector,
+                    effects: receiver.effects,
                     ast: receiver.ast,
                 };
                 break;
@@ -442,7 +454,7 @@ function writeFallbackReceiver(
     wCtx: WriterContext,
 ): void {
     wCtx.append(`slice ${funcIdOf(fbRcv.selector.name)} = ${inMsg};`);
-    writeReceiverBody(fbRcv.ast.statements, contract, wCtx);
+    writeReceiverBody(fbRcv, contract, wCtx);
 }
 
 function writeBouncedReceiver(
@@ -477,19 +489,24 @@ function writeBouncedReceiver(
             : ops.reader(selector.type, "no-opcode", wCtx);
         wCtx.append(`var ${msgFields} = in_msg~${msgReader}();`);
 
-        writeReceiverBody(bouncedReceiver.ast.statements, contract, wCtx);
+        writeReceiverBody(bouncedReceiver, contract, wCtx);
     });
 }
 
 function writeReceiverBody(
-    statements: readonly AstStatement[],
+    rcv: ReceiverDescription,
     contract: TypeDescription,
     wCtx: WriterContext,
 ): void {
-    for (const stmt of statements) {
+    for (const stmt of rcv.ast.statements) {
         writeStatement(stmt, null, null, wCtx);
     }
-    writeStoreContractVariables(contract, wCtx);
+    if (
+        enabledAlwaysSaveContractData(wCtx.ctx) ||
+        rcv.effects.has("contractStorageWrite")
+    ) {
+        writeStoreContractVariables(contract, wCtx);
+    }
     wCtx.append("return ();");
 }
 

@@ -23,6 +23,7 @@ import {
 import type { ItemOrigin } from "../../imports/source";
 import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import { getAllocation } from "../../storage/resolveAllocation";
+import { contractErrors } from "../../abi/errors";
 
 const SMALL_CONTRACT_MAX_FIELDS = 5;
 
@@ -204,15 +205,23 @@ export function writeInit(
         });
     });
 
+    const codeBoc = codes[t.name]?.codeBoc;
     ctx.fun(ops.contractChildGetCode(t.name, ctx), () => {
+        if (typeof codeBoc === "undefined") {
+            ctx.comment(
+                "This function should be removed by the compiler. If you see it in your code, please report it at https://github.com/tact-lang/tact/issues",
+            );
+        }
         ctx.signature(`cell ${ops.contractChildGetCode(t.name, ctx)}()`);
         ctx.context("type:" + t.name + "$init");
         ctx.flag("inline");
         ctx.flag("impure");
-        ctx.asm(
-            "",
-            `B{${codes[t.name]?.codeBoc.toString("hex")}} B>boc PUSHREF`,
-        );
+
+        const boc =
+            typeof codeBoc === "undefined"
+                ? "internal bug, please report to https://github.com/tact-lang/tact/issues"
+                : codeBoc.toString("hex");
+        ctx.asm("", `B{${boc}} B>boc PUSHREF`);
     });
 
     ctx.fun(ops.contractInitChild(t.name, ctx), () => {
@@ -375,7 +384,10 @@ export function writeMainContract(
             wCtx.append();
         }
 
-        if (enabledLazyDeploymentCompletedGetter(wCtx.ctx)) {
+        if (
+            enabledLazyDeploymentCompletedGetter(wCtx.ctx) &&
+            contract.init?.kind !== "contract-params"
+        ) {
             // Deployed
             wCtx.append(`_ lazy_deployment_completed() method_id {`);
             wCtx.inIndent(() => {
@@ -384,6 +396,14 @@ export function writeMainContract(
             wCtx.append(`}`);
             wCtx.append();
         }
+
+        wCtx.append(";; message opcode reader utility");
+        wCtx.append(
+            `;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code`,
+        );
+        wCtx.append(
+            `(slice, int) ~load_opcode(slice s) asm( -> 1 0) "32 LDUQ ${contractErrors.invalidMessage.id} THROWIFNOT";`,
+        );
 
         wCtx.append(`;;`);
         wCtx.append(`;; Routing of a Contract ${contract.name}`);
@@ -461,5 +481,39 @@ export function writeMainContract(
                 );
             });
         }
+
+        wCtx.append(`() __tact_selector_hack_asm() impure asm """
+@atend @ 1 {
+    execute current@ context@ current!
+    {
+        }END> b>
+        
+        <{
+            SETCP0 DUP
+            IFNOTJMP:<{
+                DROP over <s ref@ 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot @addop
+            }>`);
+
+        if (hasExternal) {
+            wCtx.append(`DUP -1 EQINT IFJMP:<{
+                DROP over <s ref@ -1 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot @addop
+            }>`);
+        }
+
+        wCtx.append(`swap <s ref@
+            0 swap @procdictkeylen idict- drop
+            -1 swap @procdictkeylen idict- drop
+            65535 swap @procdictkeylen idict- drop
+
+            @procdictkeylen DICTPUSHCONST DICTIGETJMPZ 11 THROWARG
+        }> b>
+    } : }END>c
+    current@ context! current!
+} does @atend !
+""";`);
+
+        wCtx.append(`() __tact_selector_hack() method_id(65535) {
+    return __tact_selector_hack_asm();
+}`);
     });
 }

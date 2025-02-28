@@ -29,13 +29,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for block statements: PR [#1334](https://github.com/tact-lang/tact/pull/1334)
 - `nullChecks` config option to disable run-time null checks for the `!!` operator in order to save gas: PR [#1660](https://github.com/tact-lang/tact/pull/1660)
 - `loadVarInt16`, `loadVarUint16`, `loadVarInt32`, `loadVarUint32` methods for the `Slice` type: PR [#1667](https://github.com/tact-lang/tact/pull/1667)
-- New functions in stdlib from `stdlib.fc` and `math.fc`: `Builder.depth`, `Slice.skipLastBits`, `Slice.firstBits`, `Slice.lastBits`, `Slice.depth`, `Cell.computeDataSize`, `Slice.computeDataSize`, `Cell.depth`, `curLt`, `blockLt`, `setGasLimit`, `getSeed`, `setSeed`, `myCode`, `sign`, `divc`, `muldivc`, `mulShiftRight`, `mulShiftRightRound`, `mulShiftRightCeil`, `sqrt`: PR [#986](https://github.com/tact-lang/tact/pull/986)
+- New functions in stdlib from `stdlib.fc` and `math.fc`: `Builder.depth`, `Slice.skipLastBits`, `Slice.firstBits`, `Slice.lastBits`, `Slice.depth`, `Cell.computeDataSize`, `Slice.computeDataSize`, `Cell.depth`, `curLt`, `blockLt`, `setGasLimit`, `getSeed`, `setSeed`, `myCode`, `sign`, `divc`, `muldivc`, `mulShiftRight`, `mulShiftRightRound`, `mulShiftRightCeil`, `sqrt`, `Slice.loadMaybeRef`, `Slice.preloadMaybeRef`: PR [#986](https://github.com/tact-lang/tact/pull/986), PR [#2040](https://github.com/tact-lang/tact/pull/2040)
 - The `--output` CLI flag for specifying custom output directory in single-contract compilation: PR [#1793](https://github.com/tact-lang/tact/pull/1793)
 - New functions `Slice.asAddressUnsafe` and `contractHash` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
 - New function `Slice.asAddress` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
 - `-w` / `--watch` CLI flags to watch for changes in the project and automatically recompile it: PR [#1844](https://github.com/tact-lang/tact/pull/1844)
 - New functions `throwIf` and `throwUnless` in stdlib, deprecated their aliases `nativeThrowIf` and `nativeThrowUnless`: PR [#1974](https://github.com/tact-lang/tact/pull/1974)
 - New `codeOf T` expression to get code of the contract: PR [#1948](https://github.com/tact-lang/tact/pull/1948)
+- Add `BasechainAddress` as more optimized version of `Address`: PR [#2035](https://github.com/tact-lang/tact/pull/2035)
+- Generation constants in TypeScript wrappers: PR [#2043](https://github.com/tact-lang/tact/pull/2043)
+- Added `Slice.hashData()` and `String.hashData()` functions to the stdlib: PR [#2039](https://github.com/tact-lang/tact/pull/2039)
 
 ### Changed
 
@@ -68,6 +71,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Don't show internal error for unknown types for variables: PR [#2005](https://github.com/tact-lang/tact/pull/2005)
 - Struct serialization and parsing functions are now inlined more aggressively to save gas: PR [#2016](https://github.com/tact-lang/tact/pull/2016)
 - `NOP` instructions and empty asm functions are now properly optimized: PR [#1959](https://github.com/tact-lang/tact/pull/1959)
+- Contracts are now compiled with custom optimized function selector with a shortcut for `recv_internal` and `recv_external`: PR [#2038](https://github.com/tact-lang/tact/pull/2038)
+- Contract receivers do not update the contract data cell at the end of execution if the receiver does not modify the contract storage: PR [#2067](https://github.com/tact-lang/tact/pull/2067)
 
 ### Fixed
 
@@ -116,6 +121,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Contract data types in compilation reports are now generated correctly: PR [#2004](https://github.com/tact-lang/tact/pull/2004)
 - Updated contracts in `./examples`: PR [#2008](https://github.com/tact-lang/tact/pull/2008)
 - Show better error for fields with a contract type: PR [#2011](https://github.com/tact-lang/tact/pull/2011)
+- Optimized `initOf` with dependency in global function used inside `init()`: PR [#2027](https://github.com/tact-lang/tact/pull/2027)
 
 ### Docs
 
