@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Forbid traits inherit implicitly from `BaseTrait`: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
 - [fix] Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
 - [fix] Generate the fallback receiver for external messages: PR [#1926](https://github.com/tact-lang/tact/pull/1926)
-- [fix] Destruct statement for struct with several fields: PR [#2084](https://github.com/tact-lang/tact/pull/2084)
+- [fix] Destruct statement for struct with nested struct fields: PR [#2084](https://github.com/tact-lang/tact/pull/2084)
 
 ### Standard library
 
