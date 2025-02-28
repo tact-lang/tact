@@ -22,7 +22,7 @@ contract JettonMinter(
     receive(msg: ProvideWalletAddress) {
         // we use message fwdFee for estimation of forward_payload costs
         let ctx = context();
-        let fwdFee = muldivc(fwdFee(ctx.raw), 3, 2);
+        let fwdFee = ctx.readForwardFee();
         throwUnless(75, ctx.value > fwdFee + ProvideAddressGasConsumption);
 
         let includedAddress: Address? = msg.includeAddress ? msg.ownerAddress : null;

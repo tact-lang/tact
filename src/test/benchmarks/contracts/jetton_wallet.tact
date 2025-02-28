@@ -20,7 +20,7 @@ contract JettonWallet(
         let fwdCount = 1 + msg.forwardTonAmount & 1;
         throwUnless(709, ctx.value >
             msg.forwardTonAmount +
-            fwdCount * muldivc(fwdFee(ctx.raw), 3, 2) +
+            fwdCount * ctx.readForwardFee() +
             (2 * self.gasConsumption + self.minTonsForStorage)
         );
 
@@ -56,7 +56,7 @@ contract JettonWallet(
         msgValue -= (storageFee + self.gasConsumption);
 
         if (msg.forwardTonAmount > 0) {
-            let fwdFee: Int = muldivc(fwdFee(ctx.raw), 3, 2);
+            let fwdFee: Int = ctx.readForwardFee();
             msgValue -= msg.forwardTonAmount + fwdFee;
             message(MessageParameters{
                 to: self.owner,
@@ -91,7 +91,7 @@ contract JettonWallet(
         throwUnless(706, self.balance >= 0);
 
         let ctx = context();
-        let fwd_fee: Int = muldivc(fwdFee(ctx.raw), 3, 2);
+        let fwd_fee: Int = ctx.readForwardFee();
         throwUnless(707, ctx.value > (fwd_fee + 2 * self.gasConsumption));
 
         message(MessageParameters{
@@ -124,12 +124,4 @@ contract JettonWallet(
             code: myCode()
         };
     }
-}
-
-inline fun fwdFee(ctxRaw: Slice): Int {
-    ctxRaw.loadAddress();
-    ctxRaw.loadCoins();
-    ctxRaw.skipBits(1);
-    ctxRaw.loadCoins();
-    return ctxRaw.loadCoins();
 }

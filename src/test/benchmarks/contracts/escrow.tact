@@ -98,7 +98,7 @@ contract Escrow {
 
     receive(msg: UpdateJettonWalletCode) {
         throwUnless(400, !self.isFunded && self.assetAddress != null);
-        throwUnless(403, self.sellerAddress == sender());
+        throwUnless(403, self.sellerAddress == context().sender);
 
         self.jettonWalletCode = msg.newJettonWalletCode;
     }
@@ -125,8 +125,7 @@ contract Escrow {
         let ctx: Context = context();
 
         throwUnless(403, self.guarantorAddress == ctx.sender);
-        let percent: Int = max(self.guarantorRoyaltyPercent, self.GUARANTOR_PERCENT_MAX);
-        let royaltyAmount: Int = muldivc(percent, self.dealAmount, self.GUARANTOR_PERCENT_CONST);
+        let royaltyAmount: Int = self.calculateRoyaltyAmount();
 
         if (self.assetAddress == null) {
             throwUnless(404, ctx.value > (2 * self.TON_TRANSFER_GAS));
@@ -194,9 +193,13 @@ contract Escrow {
     get fun calculateRoyaltyAmount(): Int {
         // using integer math to avoid floating point issues
         // see https://tact-by-example.org/04-decimal-point
-        let percent: Int = max(self.guarantorRoyaltyPercent, self.GUARANTOR_PERCENT_MAX);
+        let percent: Int = self.guarantorRoyaltyPercent;
 
-        return muldivc(percent, self.dealAmount, self.GUARANTOR_PERCENT_CONST);
+        if (percent >= self.GUARANTOR_PERCENT_MAX) {
+            percent = self.GUARANTOR_PERCENT_MAX;
+        }
+
+        return (self.dealAmount * percent) / self.GUARANTOR_PERCENT_CONST;
     }
 
     get fun walletAddress(): Address {
