@@ -88,11 +88,6 @@ describe("receivers-precedence", () => {
     let commentAndStringAndBinaryAndSliceReceiver: SandboxContract<CommentAndStringAndBinaryAndSliceReceiverTester>;
     let allReceivers: SandboxContract<AllReceiverTester>;
 
-    let emptyBounced: SandboxContract<EmptyBouncedTester>;
-    let binaryBounced: SandboxContract<BinaryBouncedTester>;
-    let sliceBounced: SandboxContract<SliceBouncedTester>;
-    let allBounced: SandboxContract<AllBouncedTester>;
-
     beforeEach(async () => {
         blockchain = await Blockchain.create();
         blockchain.verbosity.print = false;
@@ -198,17 +193,6 @@ describe("receivers-precedence", () => {
         allReceivers = blockchain.openContract(
             await AllReceiverTester.fromInit(),
         );
-
-        emptyBounced = blockchain.openContract(
-            await EmptyBouncedTester.fromInit(),
-        );
-        binaryBounced = blockchain.openContract(
-            await BinaryBouncedTester.fromInit(),
-        );
-        sliceBounced = blockchain.openContract(
-            await SliceBouncedTester.fromInit(),
-        );
-        allBounced = blockchain.openContract(await AllBouncedTester.fromInit());
 
         const deployResult = await contract.send(
             treasure.getSender(),
@@ -345,27 +329,22 @@ describe("receivers-precedence", () => {
             await CommentAndStringAndBinaryAndSliceReceiverTester.init(),
         );
         await deploy(allReceivers.address, await AllReceiverTester.init());
-
-        await deploy(emptyBounced.address, await EmptyBouncedTester.init());
-        await deploy(binaryBounced.address, await BinaryBouncedTester.init());
-        await deploy(sliceBounced.address, await SliceBouncedTester.init());
-        await deploy(allBounced.address, await AllBouncedTester.init());
-
-        async function deploy(addr: Address, init: { code: Cell; data: Cell }) {
-            const deployable = await blockchain.getContract(addr);
-            const trans = await deployable.receiveMessage(
-                internal({
-                    from: treasure.address,
-                    to: deployable.address,
-                    value: toNano("10"),
-                    stateInit: init,
-                    bounce: false,
-                }),
-            );
-
-            expect(trans.endStatus).toBe("active");
-        }
     });
+
+    async function deploy(addr: Address, init: { code: Cell; data: Cell }) {
+        const deployable = await blockchain.getContract(addr);
+        const trans = await deployable.receiveMessage(
+            internal({
+                from: treasure.address,
+                to: deployable.address,
+                value: toNano("10"),
+                stateInit: init,
+                bounce: false,
+            }),
+        );
+
+        expect(trans.endStatus).toBe("active");
+    }
 
     it("should implement receivers precedence correctly", async () => {
         // Initially, since we sent a deploy message with empty message, the empty receiver executed
@@ -2159,6 +2138,7 @@ describe("receivers-precedence", () => {
             ) => Promise<SendMessageResult>,
             receiverGetter: () => Promise<string>,
             expectedReceiver: string,
+            bodiesToTry: Cell[],
         ) {
             for (const body of bodiesToTry.slice(from)) {
                 await shouldAcceptBody(
@@ -2254,6 +2234,21 @@ describe("receivers-precedence", () => {
             expect(await receiverGetter()).toBe("unknown");
         }
 
+        // Deployments
+
+        const emptyBounced: SandboxContract<EmptyBouncedTester> =
+            blockchain.openContract(await EmptyBouncedTester.fromInit());
+        const binaryBounced: SandboxContract<BinaryBouncedTester> =
+            blockchain.openContract(await BinaryBouncedTester.fromInit());
+        const sliceBounced: SandboxContract<SliceBouncedTester> =
+            blockchain.openContract(await SliceBouncedTester.fromInit());
+        const allBounced: SandboxContract<AllBouncedTester> =
+            blockchain.openContract(await AllBouncedTester.fromInit());
+        await deploy(emptyBounced.address, await EmptyBouncedTester.init());
+        await deploy(binaryBounced.address, await BinaryBouncedTester.init());
+        await deploy(sliceBounced.address, await SliceBouncedTester.init());
+        await deploy(allBounced.address, await AllBouncedTester.init());
+
         // Tests start here
 
         // emptyBounced should ignore all bounced messages without errors.
@@ -2264,6 +2259,7 @@ describe("receivers-precedence", () => {
             emptyBounced.send,
             emptyBounced.getReceiver,
             "unknown",
+            bodiesToTry,
         );
 
         // binaryBounced
@@ -2287,6 +2283,7 @@ describe("receivers-precedence", () => {
             binaryBounced.send,
             binaryBounced.getReceiver,
             "unknown",
+            bodiesToTry,
         );
 
         // sliceBounced
@@ -2297,6 +2294,7 @@ describe("receivers-precedence", () => {
             sliceBounced.send,
             sliceBounced.getReceiver,
             "bounced_fallback",
+            bodiesToTry,
         );
 
         // allBounced
@@ -2320,6 +2318,7 @@ describe("receivers-precedence", () => {
             allBounced.send,
             allBounced.getReceiver,
             "bounced_fallback",
+            bodiesToTry,
         );
     });
 });
