@@ -19,6 +19,16 @@
         "wallet cells": "15",
         "wallet bits": "7942"
       }
+    },
+    {
+      "label": "Benchmark 2025-02-28",
+      "pr": null,
+      "size": {
+        "minter cells": "31",
+        "minter bits": "14560",
+        "wallet cells": "14",
+        "wallet bits": "7963"
+      }
     }
   ]
 }
