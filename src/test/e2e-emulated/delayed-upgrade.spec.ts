@@ -153,11 +153,14 @@ describe("delayed upgrade", () => {
     });
 
     it("should fail delayed upgrade with timeout=1m without actual waiting correctly", async () => {
+        const timeout = 60;
         const currentInitTime = await contract.getInitiatedAt();
+
+        // Upgrade the code and measure initiatedAt
         const newContract = await SampleDelayedUpgradeContractV2.fromInit(
             owner.address,
         );
-        await initiateUpdateContract(owner.getSender(), 60n, {
+        await initiateUpdateContract(owner.getSender(), BigInt(timeout), {
             code: newContract.init!.code,
             data: null,
         });
@@ -166,7 +169,7 @@ describe("delayed upgrade", () => {
 
         // Timeout didn't elapse
         const now = Math.floor(Date.now() / 1000);
-        expect(now - Number(updatedInitTime) <= 60).toBe(true);
+        expect(now - Number(updatedInitTime) < timeout).toBe(true);
 
         // Confirmation cannot be granted
         const earlyConfirmRes = await confirmUpdateContract(owner.getSender());
