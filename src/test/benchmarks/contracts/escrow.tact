@@ -29,40 +29,23 @@ struct EscrowData {
     buyerAddress: Address?; // null if not funded, set after funding
 }
 
-contract Escrow {
-    id: Int as uint32;
-    sellerAddress: Address;
-    guarantorAddress: Address;
-    buyerAddress: Address?;
-    dealAmount: Int as coins;
-    guarantorRoyaltyPercent: Int as uint32;
-    isFunded: Bool;
-    assetAddress: Address?;
-    jettonWalletCode: Cell?;
+contract Escrow (
+    id: Int as uint32,
+    sellerAddress: Address,
+    guarantorAddress: Address,
+    buyerAddress: Address?,
+    dealAmount: Int as coins,
+    guarantorRoyaltyPercent: Int as uint32,
+    isFunded: Bool,
+    assetAddress: Address?,
+    jettonWalletCode: Cell?,
+) {
 
     const GUARANTOR_PERCENT_CONST: Int = 100000;
     const GUARANTOR_PERCENT_MAX: Int = 90000;
     const JETTON_TRANSFER_GAS: Int = ton("0.05");
     const TON_TRANSFER_GAS: Int = ton("0.015");
     
-    init(id: Int,
-        sellerAddress: Address,
-        guarantorAddress: Address,
-        dealAmount: Int,
-        guarantorRoyaltyPercent: Int,
-        assetAddress: Address?,
-        jettonWalletCode: Cell?){
-        self.id = id;
-        self.sellerAddress = sellerAddress;
-        self.guarantorAddress = guarantorAddress;
-        self.dealAmount = dealAmount;
-        self.guarantorRoyaltyPercent = guarantorRoyaltyPercent;
-        self.assetAddress = assetAddress;
-        self.jettonWalletCode = jettonWalletCode;
-        self.isFunded = false;
-        self.buyerAddress = null;
-    }
-
     fun sendJettons(receiver: Address, amount: Int, mode: Int) {
         let escrowJettonWalletAddress = calculateJettonWalletAddress(myAddress(),
             self.assetAddress!!,
@@ -98,7 +81,7 @@ contract Escrow {
 
     receive(msg: UpdateJettonWalletCode) {
         throwUnless(400, !self.isFunded && self.assetAddress != null);
-        throwUnless(403, self.sellerAddress == context().sender);
+        throwUnless(403, self.sellerAddress == sender());
 
         self.jettonWalletCode = msg.newJettonWalletCode;
     }
@@ -125,7 +108,8 @@ contract Escrow {
         let ctx: Context = context();
 
         throwUnless(403, self.guarantorAddress == ctx.sender);
-        let royaltyAmount: Int = self.calculateRoyaltyAmount();
+        let percent: Int = max(self.guarantorRoyaltyPercent, self.GUARANTOR_PERCENT_MAX);
+        let royaltyAmount: Int = muldivc(percent, self.dealAmount, self.GUARANTOR_PERCENT_CONST);
 
         if (self.assetAddress == null) {
             throwUnless(404, ctx.value > (2 * self.TON_TRANSFER_GAS));
@@ -193,13 +177,9 @@ contract Escrow {
     get fun calculateRoyaltyAmount(): Int {
         // using integer math to avoid floating point issues
         // see https://tact-by-example.org/04-decimal-point
-        let percent: Int = self.guarantorRoyaltyPercent;
+        let percent: Int = max(self.guarantorRoyaltyPercent, self.GUARANTOR_PERCENT_MAX);
 
-        if (percent >= self.GUARANTOR_PERCENT_MAX) {
-            percent = self.GUARANTOR_PERCENT_MAX;
-        }
-
-        return (self.dealAmount * percent) / self.GUARANTOR_PERCENT_CONST;
+        return muldivc(percent, self.dealAmount, self.GUARANTOR_PERCENT_CONST);
     }
 
     get fun walletAddress(): Address {

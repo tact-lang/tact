@@ -6,6 +6,11 @@ export const safetyOptionsSchema: z.ZodType<C.SafetyOptions> = z.object({
     nullChecks: z.boolean().optional(),
 });
 
+export const optimizationOptionsSchema: z.ZodType<C.OptimizationOptions> =
+    z.object({
+        alwaysSaveContractData: z.boolean().optional(),
+    });
+
 /**
  * Per-project configuration options
  *
@@ -58,7 +63,12 @@ export const optionsSchema: z.ZodType<C.Options> = z.object({
      */
     safety: safetyOptionsSchema.optional(),
     /**
+     * Optimization options for the contract.
+     */
+    optimizations: optimizationOptionsSchema.optional(),
+    /**
      * If set to true, enables generation of `lazy_deployment_completed()` getter.
+     * Does nothing if contract parameters are declared.
      */
     enableLazyDeploymentCompletedGetter: z.boolean().optional(),
 });

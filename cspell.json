@@ -56,6 +56,8 @@
     "src/test/exit-codes/contracts/compute-phase-errors.tact",
     "src/test/e2e-emulated/map-tests/build",
     "src/test/e2e-emulated/map-tests/map-properties-key-value-types.ts",
-    "/docs"
+    "/docs",
+    "src/test/benchmarks/contracts/func/notcoin/stdlib-custom.fc",
+    "src/test/benchmarks/contracts/func/notcoin/gas.fc"
   ]
 }

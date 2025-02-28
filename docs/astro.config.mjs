@@ -212,6 +212,7 @@ export default defineConfig({
 						{ slug: 'cookbook/time' },
 						{ slug: 'cookbook/access' },
 						{ slug: 'cookbook/random' },
+						{ slug: 'cookbook/upgrades' },
 						{ slug: 'cookbook/misc' },
 						{
 							label: 'Multiple contracts',
