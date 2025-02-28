@@ -48,7 +48,7 @@ describe("debug", () => {
 
         expect(debugLogs).toStrictEqual(`File ${filePath}:10:9:
 dumpStack()
-stack(2 values) : 10000000000 () 
+stack(1 values) : 10000000000 
 File ${filePath}:11:9:
 dump("Hello world!")
 Hello world!

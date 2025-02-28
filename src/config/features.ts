@@ -31,6 +31,10 @@ export function enabledNullChecks(ctx: CompilerContext) {
     return featureEnabled(ctx, "nullChecks");
 }
 
+export function enabledAlwaysSaveContractData(ctx: CompilerContext) {
+    return featureEnabled(ctx, "alwaysSaveContractData");
+}
+
 export function enabledLazyDeploymentCompletedGetter(ctx: CompilerContext) {
     return featureEnabled(ctx, "lazyDeploymentCompletedGetter");
 }

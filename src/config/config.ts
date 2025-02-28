@@ -5,6 +5,16 @@ export type SafetyOptions = {
     readonly nullChecks?: boolean;
 };
 
+export type OptimizationOptions = {
+    /**
+     * If set to `false`, updates the contract storage if a receiver modifies it, otherwise updates the contract storage in any case. Default is `false`.
+     * The analysis is conservative and might still update the storage in some tricky cases even if it wasn't modified.
+     *
+     * Read more: https://docs.tact-lang.org/book/config#alwayssavecontractdata
+     */
+    readonly alwaysSaveContractData?: boolean;
+};
+
 export type ExperimentalOptions = {
     /**
      * If set to true, enables inlining of all functions in contracts.
@@ -56,6 +66,10 @@ export type Options = {
      * Safety options for the contract.
      */
     readonly safety?: SafetyOptions;
+    /**
+     * Optimization options for the contract.
+     */
+    readonly optimizations?: OptimizationOptions;
     /**
      * If set to true, enables generation of `lazy_deployment_completed()` getter.
      */
