@@ -362,7 +362,15 @@ describe("Jetton", () => {
     });
 
     afterAll(() => {
-        printBenchmarkTable(results);
+        printBenchmarkTable(results, {
+            implementationName: "FunC",
+            isFullTable: true,
+        });
+
+        printBenchmarkTable(results.slice(1), {
+            implementationName: "NotCoin",
+            isFullTable: false,
+        });
     });
 
     it("transfer", async () => {

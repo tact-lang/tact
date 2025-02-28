@@ -227,7 +227,10 @@ describe("Escrow Gas Tests", () => {
     });
 
     afterAll(() => {
-        printBenchmarkTable(results);
+        printBenchmarkTable(results, {
+            implementationName: "FunC",
+            isFullTable: true,
+        });
     });
 
     it("fundingTon", async () => {
