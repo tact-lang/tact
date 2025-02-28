@@ -1,0 +1,92 @@
+#include "workchain.fc";
+
+const ONE_TON = 1000000000;
+
+const MIN_STORAGE_DURATION = 5 * 365 * 24 * 3600; ;; 5 years
+
+;;# Precompiled constants
+;;
+;;All of the contents are result of contract emulation tests
+;;
+
+;;## Minimal fees
+;;
+;;- Transfer [/sandbox_tests/JettonWallet.spec.ts#L935](L935) `0.028627415` TON
+;;- Burn [/sandbox_tests/JettonWallet.spec.ts#L1185](L1185) `0.016492002` TON
+
+
+;;## Storage
+;;
+;;Get calculated in a separate test file [/sandbox_tests/StateInit.spec.ts](StateInit.spec.ts)
+
+;;- `JETTON_WALLET_BITS` [/sandbox_tests/StateInit.spec.ts#L92](L92)
+const JETTON_WALLET_BITS  = 1033;
+
+;;- `JETTON_WALLET_CELLS`: [/sandbox_tests/StateInit.spec.ts#L92](L92)
+const JETTON_WALLET_CELLS = 3;
+
+;; difference in JETTON_WALLET_BITS/JETTON_WALLET_INITSTATE_BITS is difference in
+;; StateInit and AccountStorage (https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb)
+;; we count bits as if balances are max possible
+;;- `JETTON_WALLET_INITSTATE_BITS` [/sandbox_tests/StateInit.spec.ts#L95](L95)
+const JETTON_WALLET_INITSTATE_BITS  = 931;
+;;- `JETTON_WALLET_INITSTATE_CELLS` [/sandbox_tests/StateInit.spec.ts#L95](L95)
+const JETTON_WALLET_INITSTATE_CELLS = 3;
+
+;; jetton-wallet.fc#L163 - maunal bits counting
+const BURN_NOTIFICATION_BITS = 754; ;; body = 32+64+124+(3+8+256)+(3+8+256)
+const BURN_NOTIFICATION_CELLS = 1; ;; body always in ref
+
+;;## Gas
+;;
+;;Gas constants are calculated in the main test suite.
+;;First the related transaction is found, and then it's
+;;resulting gas consumption is printed to the console.
+
+;;- `SEND_TRANSFER_GAS_CONSUMPTION` [/sandbox_tests/JettonWallet.spec.ts#L853](L853)
+const SEND_TRANSFER_GAS_CONSUMPTION    = 10065;
+
+;;- `RECEIVE_TRANSFER_GAS_CONSUMPTION` [/sandbox_tests/JettonWallet.spec.ts#L862](L862)
+const RECEIVE_TRANSFER_GAS_CONSUMPTION = 10435;
+
+;;- `SEND_BURN_GAS_CONSUMPTION` [/sandbox_tests/JettonWallet.spec.ts#L1154](L1154)
+const SEND_BURN_GAS_CONSUMPTION    = 5891;
+
+;;- `RECEIVE_BURN_GAS_CONSUMPTION` [/sandbox_tests/JettonWallet.spec.ts#L1155](L1155)
+const RECEIVE_BURN_GAS_CONSUMPTION = 6757;
+
+
+int calculate_jetton_wallet_min_storage_fee() inline {
+    return get_storage_fee(MY_WORKCHAIN, MIN_STORAGE_DURATION, JETTON_WALLET_BITS, JETTON_WALLET_CELLS);
+}
+
+int forward_init_state_overhead() inline {
+    return get_simple_forward_fee(MY_WORKCHAIN, JETTON_WALLET_INITSTATE_BITS, JETTON_WALLET_INITSTATE_CELLS);
+}
+
+() check_amount_is_enough_to_transfer(int msg_value, int forward_ton_amount, int fwd_fee) impure inline {
+    int fwd_count = forward_ton_amount ? 2 : 1; ;; second sending (forward) will be cheaper that first
+
+    int jetton_wallet_gas_consumption = get_precompiled_gas_consumption();
+    int send_transfer_gas_consumption = null?(jetton_wallet_gas_consumption) ? SEND_TRANSFER_GAS_CONSUMPTION : jetton_wallet_gas_consumption;
+    int receive_transfer_gas_consumption = null?(jetton_wallet_gas_consumption) ? RECEIVE_TRANSFER_GAS_CONSUMPTION : jetton_wallet_gas_consumption;
+
+    throw_unless(error::not_enough_gas, msg_value >
+    forward_ton_amount +
+    ;; 3 messages: wal1->wal2,  wal2->owner, wal2->response
+    ;; but last one is optional (it is ok if it fails)
+    fwd_count * fwd_fee +
+    forward_init_state_overhead() + ;; additional fwd fees related to initstate in iternal_transfer
+    get_compute_fee(MY_WORKCHAIN, send_transfer_gas_consumption) +
+    get_compute_fee(MY_WORKCHAIN, receive_transfer_gas_consumption) +
+    calculate_jetton_wallet_min_storage_fee() );
+}
+
+
+
+() check_amount_is_enough_to_burn(int msg_value) impure inline {
+    int jetton_wallet_gas_consumption = get_precompiled_gas_consumption();
+    int send_burn_gas_consumption = null?(jetton_wallet_gas_consumption) ? SEND_BURN_GAS_CONSUMPTION : jetton_wallet_gas_consumption;
+
+    throw_unless(error::not_enough_gas, msg_value > get_forward_fee(MY_WORKCHAIN, BURN_NOTIFICATION_BITS, BURN_NOTIFICATION_CELLS) + get_compute_fee(MY_WORKCHAIN, send_burn_gas_consumption) + get_compute_fee(MY_WORKCHAIN, RECEIVE_BURN_GAS_CONSUMPTION));
+}

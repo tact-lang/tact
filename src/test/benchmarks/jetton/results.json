@@ -10,6 +10,15 @@
       "pr": null
     },
     {
+      "label": "NotCoin",
+      "gas": {
+        "transfer": "16984",
+        "burn": "12732",
+        "discovery": "6545"
+      },
+      "pr": null
+    },
+    {
       "label": "1.5.3",
       "gas": {
         "transfer": "40678",
