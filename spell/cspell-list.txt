@@ -182,3 +182,5 @@ extracurrency
 nobounce
 bounceable
 guarantor
+statinit
+notcoin
