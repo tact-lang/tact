@@ -29,40 +29,23 @@ struct EscrowData {
     buyerAddress: Address?; // null if not funded, set after funding
 }
 
-contract Escrow {
-    id: Int as uint32;
-    sellerAddress: Address;
-    guarantorAddress: Address;
-    buyerAddress: Address?;
-    dealAmount: Int as coins;
-    guarantorRoyaltyPercent: Int as uint32;
-    isFunded: Bool;
-    assetAddress: Address?;
-    jettonWalletCode: Cell?;
+contract Escrow (
+    id: Int as uint32,
+    sellerAddress: Address,
+    guarantorAddress: Address,
+    buyerAddress: Address?,
+    dealAmount: Int as coins,
+    guarantorRoyaltyPercent: Int as uint32,
+    isFunded: Bool,
+    assetAddress: Address?,
+    jettonWalletCode: Cell?,
+) {
 
     const GUARANTOR_PERCENT_CONST: Int = 100000;
     const GUARANTOR_PERCENT_MAX: Int = 90000;
     const JETTON_TRANSFER_GAS: Int = ton("0.05");
     const TON_TRANSFER_GAS: Int = ton("0.015");
     
-    init(id: Int,
-        sellerAddress: Address,
-        guarantorAddress: Address,
-        dealAmount: Int,
-        guarantorRoyaltyPercent: Int,
-        assetAddress: Address?,
-        jettonWalletCode: Cell?){
-        self.id = id;
-        self.sellerAddress = sellerAddress;
-        self.guarantorAddress = guarantorAddress;
-        self.dealAmount = dealAmount;
-        self.guarantorRoyaltyPercent = guarantorRoyaltyPercent;
-        self.assetAddress = assetAddress;
-        self.jettonWalletCode = jettonWalletCode;
-        self.isFunded = false;
-        self.buyerAddress = null;
-    }
-
     fun sendJettons(receiver: Address, amount: Int, mode: Int) {
         let escrowJettonWalletAddress = calculateJettonWalletAddress(myAddress(),
             self.assetAddress!!,
