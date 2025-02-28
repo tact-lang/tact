@@ -54,7 +54,7 @@ Exit code     | Origin                              | Brief description
 [$42$](#42)   | [Action phase][a]                   | Library change action error.
 [$43$](#43)   | [Action phase][a]                   | Exceeded maximum number of cells in the library or the maximum depth of the Merkle tree.
 [$50$](#50)   | [Action phase][a]                   | Account state size exceeded limits.
-[$128$](#128) | Tact compiler ([Compute phase][c])  | Null reference exception. Configurable since Tact 1.6 (not released yet).
+[$128$](#128) | Tact compiler ([Compute phase][c])  | Null reference exception. Configurable since Tact 1.6.
 [$129$](#129) | Tact compiler ([Compute phase][c])  | Invalid serialization prefix.
 [$130$](#130) | Tact compiler ([Compute phase][c])  | Invalid incoming message — there's no receiver for the opcode of the received message.
 [$131$](#131) | Tact compiler ([Compute phase][c])  | Constraints error. Reserved, but never thrown.
@@ -63,7 +63,7 @@ Exit code     | Origin                              | Brief description
 [$134$](#134) | Tact compiler ([Compute phase][c])  | Invalid argument.
 [$135$](#135) | Tact compiler ([Compute phase][c])  | Code of a contract was not found.
 [$136$](#136) | Tact compiler ([Compute phase][c])  | Invalid standard address.
-~~[$137$](#137)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Masterchain support is not enabled for this contract.~~ Removed since Tact 1.6 (not released yet)
+~~[$137$](#137)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Masterchain support is not enabled for this contract.~~ Removed since Tact 1.6
 
 :::note
 
@@ -658,7 +658,7 @@ try {
 
 ### 137: Masterchain support is not enabled for this contract {#137}
 
-<Badge text="Removed since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+<Badge text="Removed since Tact 1.6" variant="tip" size="medium"/><p/>
 
 Prior to removal, any attempts to point to masterchain (ID $-1$) or otherwise interact with it without enabling masterchain support were throwing an exception with exit code $137$: `Masterchain support is not enabled for this contract`.
 
