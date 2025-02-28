@@ -74,7 +74,7 @@ contract Escrow (
     }
 
     receive(_: Funding) {
-        throwUnless(400, !self.isFunded);
+        throwIf(400, self.isFunded);
         throwUnless(400, self.assetAddress == null);
         
         let ctx: Context = context();
@@ -85,7 +85,8 @@ contract Escrow (
     }
 
     receive(msg: UpdateJettonWalletCode) {
-        throwUnless(400, !self.isFunded && self.assetAddress != null);
+        throwIf(400, self.isFunded);
+        throwIf(400, self.assetAddress == null);
         throwUnless(403, self.sellerAddress == sender());
 
         self.jettonWalletCode = msg.newJettonWalletCode;
