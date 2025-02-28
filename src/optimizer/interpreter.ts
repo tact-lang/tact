@@ -36,6 +36,7 @@ import {
     isSelfId,
 } from "../ast/ast-helpers";
 import { divFloor, modFloor } from "./util";
+import { cloneNode } from "../ast/clone";
 import { sha256 } from "../utils/sha256";
 
 // TVM integers are signed 257-bit integers
@@ -116,7 +117,7 @@ function ensureArgumentForEquality(val: A.AstLiteral): A.AstLiteral {
     }
 }
 
-function ensureRepeatInt(val: A.AstExpression): A.AstNumber {
+export function ensureRepeatInt(val: A.AstExpression): A.AstNumber {
     if (val.kind !== "number") {
         throwErrorConstEval(
             `integer expected, but got expression of kind '${val.kind}'`,
@@ -506,21 +507,31 @@ export type InterpreterConfig = {
 
 const WILDCARD_NAME: string = "_";
 
-type Environment = {
-    values: Map<string, A.AstLiteral>;
-    parent?: Environment;
-};
+type ActiveBinding = { value: A.AstLiteral; state: "active" };
+type InactiveBinding = { state: "inactive" };
+type BindingState = ActiveBinding | InactiveBinding;
 
-class EnvironmentStack {
+type Environment = { values: Map<string, BindingState>; parent?: Environment };
+
+export class EnvironmentStack {
     private currentEnv: Environment;
+    private copyLiteral: (literal: A.AstLiteral) => A.AstLiteral;
 
-    constructor() {
+    constructor(copyLiteral: (literal: A.AstLiteral) => A.AstLiteral) {
+        this.currentEnv = { values: new Map() };
+        this.copyLiteral = copyLiteral;
+    }
+
+    /* 
+    Removes all bindings from the stack
+    */
+    public clear() {
         this.currentEnv = { values: new Map() };
     }
 
     private findBindingMap(
         name: string,
-    ): Map<string, A.AstLiteral> | undefined {
+    ): Map<string, BindingState> | undefined {
         let env: Environment | undefined = this.currentEnv;
         while (env !== undefined) {
             if (env.values.has(name)) {
@@ -530,6 +541,30 @@ class EnvironmentStack {
             }
         }
         return undefined;
+    }
+
+    private copyValue(val: BindingState): BindingState {
+        switch (val.state) {
+            case "active":
+                return { state: "active", value: this.copyLiteral(val.value) };
+            case "inactive":
+                return val;
+        }
+    }
+
+    private copyEnvironment(env: Environment): Environment {
+        const newMap: Map<string, BindingState> = new Map();
+
+        for (const [name, val] of env.values) {
+            newMap.set(name, this.copyValue(val));
+        }
+
+        const newParent =
+            typeof env.parent !== "undefined"
+                ? this.copyEnvironment(env.parent)
+                : undefined;
+
+        return { values: newMap, parent: newParent };
     }
 
     /*
@@ -580,7 +615,7 @@ class EnvironmentStack {
     */
     public setNewBinding(name: string, val: A.AstLiteral) {
         if (name !== WILDCARD_NAME) {
-            this.currentEnv.values.set(name, val);
+            this.currentEnv.values.set(name, { state: "active", value: val });
         }
     }
 
@@ -594,8 +629,8 @@ class EnvironmentStack {
     public updateBinding(name: string, val: A.AstLiteral) {
         if (name !== WILDCARD_NAME) {
             const bindings = this.findBindingMap(name);
-            if (bindings !== undefined) {
-                bindings.set(name, val);
+            if (typeof bindings !== "undefined") {
+                bindings.set(name, { state: "active", value: val });
             }
         }
     }
@@ -612,15 +647,79 @@ class EnvironmentStack {
             return undefined;
         }
         const bindings = this.findBindingMap(name);
-        if (bindings !== undefined) {
-            return bindings.get(name);
-        } else {
-            return undefined;
+        if (typeof bindings !== "undefined") {
+            const val = bindings.get(name);
+            if (typeof val !== "undefined" && val.state === "active") {
+                return val.value;
+            }
+        }
+        return undefined;
+    }
+
+    /* Sets the binding to inactive state, or having no value.
+    An inactive binding acts as if it was deleted from the stack
+    but its name remains in the stack in order to retain 
+    information of the environment where it was created.
+    A deactivated binding can become active with a call to updateBinding.
+    
+    For example, if the stack consists on (rightmost environment is the top of the stack):
+
+    a = 5 <------- b = 7 <-------- t = 2 <------- y = 0
+
+    deactivating "b" will change the stack to:
+    
+    a = 5 <------- b = _ <-------- t = 2 <------- y = 0
+
+    If we make a call to updateBinding("b", 22), then the stack will change to:
+
+    a = 5 <------- b = 22 <-------- t = 2 <------- y = 0
+
+    Deactivating bindings is useful, for example, for constant propagation. To give an example, in this code:
+
+    fun test(v: Int) {
+       let a = 10;   (1)
+       a = v;        (2)
+       {
+         let c = 5;  (3)
+         a = 10;     (4)
+       }
+    }
+
+    the stack will change as follows as the analyzer executes. After line (1):
+
+    a = 10
+
+    After line (2), a is deactivated because it does not have a particular value:
+
+    a = _
+
+    After line (3), the block opens a new node in the stack:
+
+    a = _ <----- c = 5
+
+    After line (4), the analyzer updates the value of a, making it active again:
+
+    a = 10 <----- c = 5
+
+    */
+
+    public deactivateBinding(name: string) {
+        if (name === WILDCARD_NAME) {
+            return;
+        }
+        const bindings = this.findBindingMap(name);
+        if (typeof bindings !== "undefined") {
+            bindings.set(name, { state: "inactive" });
         }
     }
 
     public selfInEnvironment(): boolean {
-        return this.findBindingMap("self") !== undefined;
+        const bindings = this.findBindingMap("self");
+        if (typeof bindings !== "undefined") {
+            const val = bindings.get("self");
+            return typeof val !== "undefined" && val.state === "active";
+        }
+        return false;
     }
 
     /**
@@ -661,6 +760,30 @@ class EnvironmentStack {
         } finally {
             this.currentEnv = oldEnv;
         }
+    }
+
+    public simulate<T>(code: () => T): T {
+        // Make a copy of the current environment
+        const envCopy = this.copyEnvironment(this.currentEnv);
+
+        // Save the current environment for restoring it once
+        // the execution finishes
+        const currentEnv = this.currentEnv;
+
+        // All the changes will be made to the copy
+        this.currentEnv = envCopy;
+
+        try {
+            const result = code();
+            return result;
+        } finally {
+            // Restore the environment as it was before execution of the code
+            this.currentEnv = currentEnv;
+        }
+    }
+
+    public simulateInNewEnvironment<T>(code: () => T): T {
+        return this.simulate(() => this.executeInNewEnvironment(code));
     }
 }
 
@@ -755,10 +878,20 @@ export class Interpreter {
         context: CompilerContext = new CompilerContext(),
         config: InterpreterConfig = defaultInterpreterConfig,
     ) {
-        this.envStack = new EnvironmentStack();
+        this.envStack = new EnvironmentStack((expr: A.AstLiteral) =>
+            cloneNode(expr, util.getAstFactory()),
+        );
         this.context = context;
         this.config = config;
         this.util = util;
+    }
+
+    public getConfig(): InterpreterConfig {
+        return this.config;
+    }
+
+    public setEnvironmentStack(envSack: EnvironmentStack) {
+        this.envStack = envSack;
     }
 
     /**
@@ -933,7 +1066,10 @@ export class Interpreter {
         if (hasStaticConstant(this.context, name)) {
             const constant = getStaticConstant(this.context, name);
             if (constant.value !== undefined) {
-                return constant.value;
+                return this.util.changeLocationOfLiteral(
+                    constant.value,
+                    ast.loc,
+                );
             }
 
             // Since we call `interpretExpression` on a constant value below, we don't want
@@ -954,7 +1090,10 @@ export class Interpreter {
                 constant.value = this.inComputationPath(name, () =>
                     this.interpretExpressionInternal(astNode.initializer),
                 );
-                return constant.value;
+                return this.util.changeLocationOfLiteral(
+                    constant.value,
+                    ast.loc,
+                );
             }
 
             throwErrorConstEval(
@@ -964,7 +1103,7 @@ export class Interpreter {
         }
         const variableBinding = this.envStack.getBinding(name);
         if (variableBinding !== undefined) {
-            return variableBinding;
+            return this.util.changeLocationOfLiteral(variableBinding, ast.loc);
         }
         throwNonFatalErrorConstEval("cannot evaluate a variable", ast.loc);
     }
@@ -1183,7 +1322,10 @@ export class Interpreter {
                 }
 
                 if (foundContractConst.value !== undefined) {
-                    return foundContractConst.value;
+                    return this.util.changeLocationOfLiteral(
+                        foundContractConst.value,
+                        ast.loc,
+                    );
                 }
 
                 const name = `self.${idText(ast.field)}`;
@@ -1203,7 +1345,10 @@ export class Interpreter {
                         name,
                         () => this.interpretExpression(astNode.initializer),
                     );
-                    return foundContractConst.value;
+                    return this.util.changeLocationOfLiteral(
+                        foundContractConst.value,
+                        ast.loc,
+                    );
                 }
 
                 throwErrorConstEval(
@@ -1223,7 +1368,10 @@ export class Interpreter {
             (f) => idText(ast.field) === idText(f.field),
         );
         if (typeof field !== "undefined") {
-            return field.initializer;
+            return this.util.changeLocationOfLiteral(
+                field.initializer,
+                ast.loc,
+            );
         } else {
             // this cannot happen in a well-typed program
             throwInternalCompilerError(
