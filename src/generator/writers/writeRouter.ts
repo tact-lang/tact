@@ -503,6 +503,7 @@ function writeReceiverBody(
     }
     if (
         enabledAlwaysSaveContractData(wCtx.ctx) ||
+        contract.init?.kind !== "contract-params" ||
         rcv.effects.has("contractStorageWrite")
     ) {
         writeStoreContractVariables(contract, wCtx);
