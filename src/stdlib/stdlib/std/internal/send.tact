@@ -498,4 +498,5 @@ asm fun acceptMessage() { ACCEPT }
 ///
 /// See: https://docs.tact-lang.org/ref/core-advanced#commit
 ///
-asm fun commit() { COMMIT }
+@name(__tact_commit)
+native commit();

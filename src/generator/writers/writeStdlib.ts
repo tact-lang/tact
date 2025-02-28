@@ -13,6 +13,15 @@ export function writeStdlib(ctx: WriterContext): void {
     ctx.skip("__tact_str_to_slice");
     ctx.skip("__tact_slice_to_str");
 
+    // Commit function
+    ctx.fun("__tact_commit", () => {
+        ctx.signature(`() __tact_commit()`);
+        ctx.flag("impure");
+        ctx.flag("inline");
+        ctx.context("stdlib");
+        ctx.asm("", "COMMIT");
+    });
+
     //
     // Addresses
     //
