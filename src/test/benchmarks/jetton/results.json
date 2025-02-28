@@ -269,6 +269,15 @@
         "burn": "12541",
         "discovery": "6230"
       }
+    },
+    {
+      "label": "1.5.3 with more optimizations for JettonMinter + global inlining",
+      "pr": "https://github.com/tact-lang/tact/pull/TODO",
+      "gas": {
+        "transfer": "15778",
+        "burn": "12456",
+        "discovery": "6207"
+      }
     }
   ]
 }

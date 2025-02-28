@@ -19,6 +19,22 @@ contract JettonMinter(
     owner: Address,
     jettonContent: Cell,
 ) {
+    receive(msg: JettonBurnNotification) {
+        throwUnless(74, sender() == getJettonWalletByOwner(msg.sender));
+
+        self.totalSupply -= msg.amount;
+
+        if (msg.responseDestination.isNotNone()) {
+            message(MessageParameters {
+                to: msg.responseDestination,
+                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
+                value: 0,
+                bounce: false,
+                mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply has already been updated
+            });
+        }
+    }
+
     receive(msg: ProvideWalletAddress) {
         // we use message fwdFee for estimation of forward_payload costs
         let ctx = context();
@@ -42,22 +58,6 @@ contract JettonMinter(
             value: 0,
             mode: SendRemainingValue,
         });
-    }
-
-    receive(msg: JettonBurnNotification) {
-        throwUnless(74, sender() == getJettonWalletByOwner(msg.sender));
-
-        self.totalSupply -= msg.amount;
-
-        if (msg.responseDestination.isNotNone()) {
-            message(MessageParameters {
-                to: msg.responseDestination,
-                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
-                value: 0,
-                bounce: false,
-                mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply has already been updated
-            });
-        }
     }
 
     receive(msg: JettonUpdateContent) {
