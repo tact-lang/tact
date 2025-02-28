@@ -340,6 +340,10 @@ fun destructuringTest8(): Int {
     return b;
 }
 
+struct StateInitWrapper {
+    f: StateInit;
+}
+
 contract StructsTester {
     s1: S = S {a: false, b: 21 + 21};
     s2: S;
@@ -1152,5 +1156,41 @@ contract StructsTester {
 
     get fun destructuringTest8Const(): Int {
         return destructuringTest8();
+    }
+
+    get fun destructuringTest9(): Int {
+        let start: Point = Point{ x: 1, y: 2};
+        let end: Point = Point{ x: 3, y: 4};
+
+        let loc = Location {
+            idx: 2,
+            line1: Line {start: start, end: end},
+            line2: Line {start: start, end: end}
+        };
+
+        let Location { line1, .. } = loc;
+
+        return line1.start.x;
+    }
+
+    get fun destructuringTest10(): Int {
+        let start: Point = Point{ x: 1, y: 2};
+        let end: Point = Point{ x: 3, y: 4};
+
+        let loc = Location {
+            idx: 2,
+            line1: Line {start: start, end: end},
+            line2: Line {start: start, end: end}
+        };
+
+        let Location { line1: otherLine, idx, .. } = loc;
+
+        return otherLine.start.x + idx;
+    }
+
+    get fun destructuringTest11(): Int {
+        let StateInitWrapper { f: stateInit } = StateInitWrapper{ f: initOf StructsTester() };
+        let addr: Address = contractAddress(stateInit);
+        return addr.asSlice().bits();
     }
 }
