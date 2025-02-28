@@ -11,6 +11,11 @@ contract JettonWallet(
     receive(msg: JettonTransfer) {
         throwUnless(705, sender() == self.owner);
 
+        let totalFees: Int =
+            2 * (context().readForwardFee() + self.gasConsumption) +
+            self.minTonsForStorage +
+            msg.forwardTonAmount;
+
         //Context() returns Structure with info about incoming message
         //require(context().value > totalFees, "insufficient amount of TON attached");
         self.balance -= msg.amount;
@@ -18,10 +23,10 @@ contract JettonWallet(
         //coins type is unsigned type, so
         //self.balance is unsigned when storing and loading (msg.amount is unsigned too),
         //however when doing calculations it's value may be negative, so the check is correct
-        throwUnless(706, self.balance >= 0);
+        require(self.balance >= 0, "Invalid balance");
 
         //We shouldn't send transfers to masterchain due to higher gas price
-        throwUnless(333, parseStdAddress(msg.destination.asSlice()).workchain == 0);
+        require(parseStdAddress(msg.destination.asSlice()).workchain == 0, "Invalid workchain of destination address");
 
         deploy(DeployParameters{
             value: 0,
@@ -94,7 +99,7 @@ contract JettonWallet(
         throwUnless(705, sender() == self.owner);
 
         self.balance -= msg.amount; // Update balance
-        throwUnless(706, self.balance >= 0);
+        require(self.balance >= 0, "Invalid balance after burn");
 
         // This is minimal possible amount of TONs for attached. But still, maybe we should increase it?
         //require(ctx.value > ton("0.011217199"), "Too little TONs for gas attached");
