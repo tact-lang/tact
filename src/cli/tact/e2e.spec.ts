@@ -1,6 +1,6 @@
 import { stat } from "fs/promises";
 import { makeCodegen, runCommand } from "../test-util.build";
-import { join, normalize } from "path";
+import { join, normalize, dirname } from "path";
 
 // disable tests on windows
 const testWin =
@@ -101,6 +101,20 @@ describe("tact foo.tact", () => {
         expect(result).toMatchObject({ kind: "exited", code: 0 });
     });
 
+    testWin(
+        "Check single-contract compilation with custom output directory",
+        async () => {
+            const path = await codegen.contract(`single-output`, goodContract);
+            const customOutput = "custom-output";
+            const result = await tact(`${path} --output ${customOutput}`);
+
+            expect(result).toMatchObject({ kind: "exited", code: 0 });
+
+            const statPromise = stat(join(dirname(path), customOutput));
+            await expect(statPromise).resolves.not.toThrow();
+        },
+    );
+
     testWin("Check single-contract compilation with --check", async () => {
         const path = await codegen.contract(`single-check`, goodContract);
         const result = await tact(`--check ${path}`);
@@ -167,6 +181,22 @@ describe("tact --config config.json", () => {
 
         const statPromise = stat(r.outputPath("pkg"));
         await expect(statPromise).rejects.toThrow();
+    });
+});
+
+describe.only("tact -q foo.tact", () => {
+    testWin("-q shows errors ", async () => {
+        const path = await codegen.contract(
+            `quiet`,
+            `contract Test { x: Int = A }`,
+        );
+        const result = await tact(`-q ${path}`);
+
+        expect(
+            result.kind === "exited" &&
+                result.stderr.includes("Cannot find 'A'"),
+        ).toBe(true);
+        expect(result).toMatchObject({ kind: "exited", code: 30 });
     });
 });
 

@@ -1,6 +1,6 @@
-import { ABIGetter, ABIReceiver, ABIType, ContractABI } from "@ton/core";
+import type { ABIGetter, ABIReceiver, ABIType, ContractABI } from "@ton/core";
 import { contractErrors } from "../abi/errors";
-import { CompilerContext } from "../context/context";
+import type { CompilerContext } from "../context/context";
 import { getSupportedInterfaces } from "../types/getSupportedInterfaces";
 import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
 import { getAllTypes } from "../types/resolveDescriptors";

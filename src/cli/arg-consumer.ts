@@ -1,4 +1,4 @@
-import { Intersect } from "../utils/tricks";
+import type { Intersect } from "../utils/tricks";
 
 type ArgConsumerErrors = {
     duplicateArgument: (name: string) => void;

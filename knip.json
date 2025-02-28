@@ -3,6 +3,7 @@
   "entry": ["src/index.ts", "src/cli/tact/index.ts", "src/cli/unboc/index.ts"],
   "project": ["src/**/*.ts"],
   "ignore": [
+    "**/.testing/",
     "src/ast/ast.ts",
     "src/ast/ast-constants.ts",
     "src/config/parseConfig.ts",
@@ -12,6 +13,15 @@
     "src/grammar/next/grammar.ts",
     "src/func/funcCompile.ts",
     "src/utils/tricks.ts",
+    "src/cli/colors.ts",
+    "src/cli/logger.ts",
+    "src/error/logger-util.ts",
+    "src/error/string-util.ts",
+    "src/server/run-server.ts",
+    "src/test/utils/parse-log.ts",
+    "src/test/utils/markdown.ts",
+    "src/test/utils/with-log.ts",
+    "src/utils/array.ts",
     ".github/workflows/tact*.yml",
     ".github/actions/**/*.yml"
   ],

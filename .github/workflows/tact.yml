@@ -8,6 +8,10 @@ on:
     branches: ["**"]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   backwards-compat:
     strategy:
@@ -38,7 +42,7 @@ jobs:
           # Test some specific things for backwards compatibility.
           # It's important to restrain from using too much of Node.js 22+ features
           # until it goes into maintenance LTS state and majority of users catches up
-          yarn test isSubsetOf
+          yarn cross-env NODE_OPTIONS=--max_old_space_size=4096 jest isSubsetOf
           # Clean-up
           yarn cleanall
           yarn config delete ignore-engines
@@ -86,6 +90,9 @@ jobs:
           # !!!!!!! Don't forget to update test-windows below !!!!!!!
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
+          # Hijack the dependency on Tact to avoid redundant npm downloads
+          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M > temp.json
+          mv temp.json package.json
           yarn install
           yarn link @tact-lang/compiler
           yarn build
@@ -107,6 +114,9 @@ jobs:
           $ErrorActionPreference = 'Stop'
           git clone https://github.com/tact-lang/tact-template.git
           cd tact-template
+          # Hijack the dependency on Tact to avoid redundant npm downloads
+          jq 'del(.dependencies."@tact-lang/compiler")' package.json -M | Set-Content temp.json
+          Move-Item temp.json package.json -Force
           yarn install
           yarn link @tact-lang/compiler
           yarn build

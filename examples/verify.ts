@@ -1,8 +1,10 @@
 import normalize from "path-normalize";
 import { Cell } from "@ton/core";
-import { Config, Options } from "../src/config/parseConfig";
-import { ILogger, Logger } from "../src/context/logger";
-import { PackageFileFormat, run } from "../src";
+import type { Config, Options } from "../src/config/parseConfig";
+import type { ILogger } from "../src/context/logger";
+import { Logger } from "../src/context/logger";
+import type { PackageFileFormat } from "../src";
+import { run } from "../src";
 import { fileFormat } from "../src/packaging/fileFormat";
 import { getCompilerVersion } from "../src/pipeline/version";
 

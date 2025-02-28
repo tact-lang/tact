@@ -1,4 +1,4 @@
-import * as A from "./ast";
+import type * as A from "./ast";
 import { groupBy, intercalate, isUndefined } from "../utils/array";
 import { makeVisitor } from "../utils/tricks";
 import { astNumToString, idText } from "./ast-helpers";
@@ -184,6 +184,9 @@ export const ppAstStructValue = ({ type, args }: A.AstStructValue) =>
 export const ppAstInitOf = ({ contract, args }: A.AstInitOf) =>
     `initOf ${ppAstId(contract)}(${ppExprArgs(args)})`;
 
+export const ppAstCodeOf = ({ contract }: A.AstCodeOf) =>
+    `codeOf ${ppAstId(contract)}`;
+
 export const ppAstNumber = astNumToString;
 export const ppAstBoolean = ({ value }: A.AstBoolean) => value.toString();
 export const ppAstId = ({ text }: A.AstId) => text;
@@ -260,6 +263,7 @@ export const ppAstExpressionNested = makeVisitor<A.AstExpression>()({
     id: ppLeaf(ppAstId),
     null: ppLeaf(ppAstNull),
     init_of: ppLeaf(ppAstInitOf),
+    code_of: ppLeaf(ppAstCodeOf),
     string: ppLeaf(ppAstString),
     static_call: ppLeaf(ppAstStaticCall),
     simplified_string: ppLeaf(ppAstSimplifiedString),
@@ -880,6 +884,7 @@ export const ppAstNode: Printer<A.AstNode> = makeVisitor<A.AstNode>()({
     struct_instance: exprNode(ppAstExpression),
     struct_value: exprNode(ppAstStructValue),
     init_of: exprNode(ppAstExpression),
+    code_of: exprNode(ppAstExpression),
     conditional: exprNode(ppAstExpression),
     number: exprNode(ppAstExpression),
     id: exprNode(ppAstExpression),

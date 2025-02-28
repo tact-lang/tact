@@ -2,9 +2,12 @@
  * Render error message to string for compiler CLI
  */
 
-import { ErrorDisplay } from "./display";
+import type { ErrorDisplay } from "./display";
 import { locationStr } from "./errors";
 
+/**
+ * @deprecated Use `Logger` from src/error/logger-util.ts
+ */
 export const displayToString: ErrorDisplay<string> = {
     text: (text) => text,
     sub: (parts, ...subst) => {

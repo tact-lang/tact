@@ -1,7 +1,7 @@
 import { contractErrors } from "../../abi/errors";
 import { maxTupleSize } from "../../bindings/typescript/writeStruct";
 import { match } from "../../utils/tricks";
-import { WriterContext } from "../Writer";
+import type { WriterContext } from "../Writer";
 
 export function writeStdlib(ctx: WriterContext): void {
     //
@@ -12,23 +12,10 @@ export function writeStdlib(ctx: WriterContext): void {
     ctx.skip("__tact_nop");
     ctx.skip("__tact_str_to_slice");
     ctx.skip("__tact_slice_to_str");
-    ctx.skip("__tact_address_to_slice");
 
     //
     // Addresses
     //
-
-    ctx.fun("__tact_load_address", () => {
-        ctx.signature(`(slice, slice) __tact_load_address(slice cs)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                slice raw = cs~load_msg_addr();
-                return (cs, raw);
-            `);
-        });
-    });
 
     ctx.fun("__tact_load_address_opt", () => {
         ctx.signature(`(slice, slice) __tact_load_address_opt(slice cs)`);
@@ -47,17 +34,6 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
-    ctx.fun("__tact_store_address", () => {
-        ctx.signature(`builder __tact_store_address(builder b, slice address)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                return b.store_slice(address);
-            `);
-        });
-    });
-
     ctx.fun("__tact_store_address_opt", () => {
         ctx.signature(
             `builder __tact_store_address_opt(builder b, slice address)`,
@@ -70,45 +46,8 @@ export function writeStdlib(ctx: WriterContext): void {
                     b = b.store_uint(0, 2);
                     return b;
                 } else {
-                    return ${ctx.used(`__tact_store_address`)}(b, address);
+                    return b.store_slice(address);
                 }
-            `);
-        });
-    });
-
-    ctx.fun("__tact_create_address", () => {
-        ctx.signature(`slice __tact_create_address(int chain, int hash)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                var b = begin_cell();
-                b = b.store_uint(2, 2);
-                b = b.store_uint(0, 1);
-                b = b.store_int(chain, 8);
-                b = b.store_uint(hash, 256);
-                var addr = b.end_cell().begin_parse();
-                return addr;
-        `);
-        });
-    });
-
-    ctx.fun("__tact_compute_contract_address", () => {
-        ctx.signature(
-            `slice __tact_compute_contract_address(int chain, cell code, cell data)`,
-        );
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                var b = begin_cell();
-                b = b.store_uint(0, 2);
-                b = b.store_uint(3, 2);
-                b = b.store_uint(0, 1);
-                b = b.store_ref(code);
-                b = b.store_ref(data);
-                var hash = cell_hash(b.end_cell());
-                return ${ctx.used(`__tact_create_address`)}(chain, hash);
             `);
         });
     });
@@ -452,32 +391,9 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
-    ctx.fun("__tact_to_tuple", () => {
-        ctx.signature(`forall X -> tuple __tact_to_tuple(X x)`);
-        ctx.context("stdlib");
-        ctx.asm("", "NOP");
-    });
-
-    ctx.fun("__tact_from_tuple", () => {
-        ctx.signature(`forall X -> X __tact_from_tuple(tuple x)`);
-        ctx.context("stdlib");
-        ctx.asm("", "NOP");
-    });
-
     //
     // Address
     //
-
-    ctx.fun(`__tact_slice_eq_bits`, () => {
-        ctx.signature(`int __tact_slice_eq_bits(slice a, slice b)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                return equal_slices_bits(a, b);
-            `);
-        });
-    });
 
     ctx.fun(`__tact_slice_eq_bits_nullable_one`, () => {
         ctx.signature(
@@ -956,105 +872,6 @@ export function writeStdlib(ctx: WriterContext): void {
         });
     });
 
-    ctx.fun(`__tact_int_to_string`, () => {
-        ctx.signature(`slice __tact_int_to_string(int src)`);
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                var b = begin_cell();
-                if (src < 0) {
-                    b = b.store_uint(45, 8);
-                    src = - src;
-                }
-
-                if (src < ${(10n ** 30n).toString(10)}) {
-                    int len = 0;
-                    int value = 0;
-                    int mult = 1;
-                    do {
-                        (src, int res) = src.divmod(10);
-                        value = value + (res + 48) * mult;
-                        mult = mult * 256;
-                        len = len + 1;
-                    } until (src == 0);
-
-                    b = b.store_uint(value, len * 8);
-                } else {
-                    tuple t = empty_tuple();
-                    int len = 0;
-                    do {
-                        int digit = src % 10;
-                        t~tpush(digit);
-                        len = len + 1;
-                        src = src / 10;
-                    } until (src == 0);
-
-                    int c = len - 1;
-                    repeat(len) {
-                        int v = t.at(c);
-                        b = b.store_uint(v + 48, 8);
-                        c = c - 1;
-                    }
-                }
-                return b.end_cell().begin_parse();
-            `);
-        });
-    });
-
-    ctx.fun(`__tact_float_to_string`, () => {
-        ctx.signature(`slice __tact_float_to_string(int src, int digits)`);
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                throw_if(${contractErrors.invalidArgument.id}, (digits <= 0) | (digits > 77));
-                builder b = begin_cell();
-
-                if (src < 0) {
-                    b = b.store_uint(45, 8);
-                    src = - src;
-                }
-
-                ;; Process rem part
-                int skip = true;
-                int len = 0;
-                int rem = 0;
-                tuple t = empty_tuple();
-                repeat(digits) {
-                    (src, rem) = src.divmod(10);
-                    if ( ~ ( skip & ( rem == 0 ) ) ) {
-                        skip = false;
-                        t~tpush(rem + 48);
-                        len = len + 1;
-                    }
-                }
-
-                ;; Process dot
-                if (~ skip) {
-                    t~tpush(46);
-                    len = len + 1;
-                }
-
-                ;; Main
-                do {
-                    (src, rem) = src.divmod(10);
-                    t~tpush(rem + 48);
-                    len = len + 1;
-                } until (src == 0);
-
-                ;; Assemble
-                int c = len - 1;
-                repeat(len) {
-                    int v = t.at(c);
-                    b = b.store_uint(v, 8);
-                    c = c - 1;
-                }
-
-                ;; Result
-                return b.end_cell().begin_parse();
-            `);
-        });
-    });
-
     ctx.fun(`__tact_log`, () => {
         ctx.signature(`int __tact_log(int num, int base)`);
         ctx.flag("inline");
@@ -1070,22 +887,6 @@ export function writeStdlib(ctx: WriterContext): void {
                 while (num >= base) {
                     num /= base;
                     result += 1;
-                }
-                return result;
-            `);
-        });
-    });
-
-    ctx.fun(`__tact_pow`, () => {
-        ctx.signature(`int __tact_pow(int base, int exp)`);
-        ctx.flag("inline");
-        ctx.context("stdlib");
-        ctx.body(() => {
-            ctx.write(`
-                throw_unless(5, exp >= 0);
-                int result = 1;
-                repeat (exp) {
-                    result *= base;
                 }
                 return result;
             `);

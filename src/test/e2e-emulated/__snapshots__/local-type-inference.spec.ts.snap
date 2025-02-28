@@ -39,6 +39,9 @@ exports[`local-type-inference should automatically set types for let statements 
     "135": {
       "message": "Code of a contract was not found",
     },
+    "136": {
+      "message": "Invalid standard address",
+    },
     "14": {
       "message": "Virtualization error",
     },
@@ -373,6 +376,205 @@ exports[`local-type-inference should automatically set types for let statements 
     {
       "fields": [
         {
+          "name": "bounceable",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
+        {
+          "name": "sender",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "address",
+          },
+        },
+        {
+          "name": "value",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "raw",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "slice",
+          },
+        },
+      ],
+      "header": null,
+      "name": "Context",
+    },
+    {
+      "fields": [
+        {
+          "name": "mode",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "body",
+          "type": {
+            "kind": "simple",
+            "optional": true,
+            "type": "cell",
+          },
+        },
+        {
+          "name": "code",
+          "type": {
+            "kind": "simple",
+            "optional": true,
+            "type": "cell",
+          },
+        },
+        {
+          "name": "data",
+          "type": {
+            "kind": "simple",
+            "optional": true,
+            "type": "cell",
+          },
+        },
+        {
+          "name": "value",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "to",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "address",
+          },
+        },
+        {
+          "name": "bounce",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
+      ],
+      "header": null,
+      "name": "SendParameters",
+    },
+    {
+      "fields": [
+        {
+          "name": "mode",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "body",
+          "type": {
+            "kind": "simple",
+            "optional": true,
+            "type": "cell",
+          },
+        },
+        {
+          "name": "value",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "to",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "address",
+          },
+        },
+        {
+          "name": "bounce",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
+      ],
+      "header": null,
+      "name": "MessageParameters",
+    },
+    {
+      "fields": [
+        {
+          "name": "mode",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "body",
+          "type": {
+            "kind": "simple",
+            "optional": true,
+            "type": "cell",
+          },
+        },
+        {
+          "name": "value",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        {
+          "name": "bounce",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
+        {
+          "name": "init",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "StateInit",
+          },
+        },
+      ],
+      "header": null,
+      "name": "DeployParameters",
+    },
+    {
+      "fields": [
+        {
           "name": "workchain",
           "type": {
             "format": 8,
@@ -420,105 +622,17 @@ exports[`local-type-inference should automatically set types for let statements 
     {
       "fields": [
         {
-          "name": "bounced",
-          "type": {
-            "kind": "simple",
-            "optional": false,
-            "type": "bool",
-          },
-        },
-        {
-          "name": "sender",
-          "type": {
-            "kind": "simple",
-            "optional": false,
-            "type": "address",
-          },
-        },
-        {
-          "name": "value",
+          "name": "hash",
           "type": {
             "format": 257,
             "kind": "simple",
-            "optional": false,
+            "optional": true,
             "type": "int",
-          },
-        },
-        {
-          "name": "raw",
-          "type": {
-            "kind": "simple",
-            "optional": false,
-            "type": "slice",
           },
         },
       ],
       "header": null,
-      "name": "Context",
-    },
-    {
-      "fields": [
-        {
-          "name": "bounce",
-          "type": {
-            "kind": "simple",
-            "optional": false,
-            "type": "bool",
-          },
-        },
-        {
-          "name": "to",
-          "type": {
-            "kind": "simple",
-            "optional": false,
-            "type": "address",
-          },
-        },
-        {
-          "name": "value",
-          "type": {
-            "format": 257,
-            "kind": "simple",
-            "optional": false,
-            "type": "int",
-          },
-        },
-        {
-          "name": "mode",
-          "type": {
-            "format": 257,
-            "kind": "simple",
-            "optional": false,
-            "type": "int",
-          },
-        },
-        {
-          "name": "body",
-          "type": {
-            "kind": "simple",
-            "optional": true,
-            "type": "cell",
-          },
-        },
-        {
-          "name": "code",
-          "type": {
-            "kind": "simple",
-            "optional": true,
-            "type": "cell",
-          },
-        },
-        {
-          "name": "data",
-          "type": {
-            "kind": "simple",
-            "optional": true,
-            "type": "cell",
-          },
-        },
-      ],
-      "header": null,
-      "name": "SendParameters",
+      "name": "BasechainAddress",
     },
     {
       "fields": [

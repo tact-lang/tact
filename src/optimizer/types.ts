@@ -1,5 +1,5 @@
-import { AstExpression } from "../ast/ast";
-import { AstUtil } from "../ast/util";
+import type { AstExpression } from "../ast/ast";
+import type { AstUtil } from "../ast/util";
 
 export interface ExpressionTransformer {
     util: AstUtil;

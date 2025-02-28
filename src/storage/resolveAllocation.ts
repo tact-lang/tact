@@ -1,11 +1,15 @@
-import { CompilerContext, createContextStore } from "../context/context";
+import type { CompilerContext } from "../context/context";
+import { createContextStore } from "../context/context";
 import { getType, toBounced, getAllTypes } from "../types/resolveDescriptors";
-import { TypeDescription } from "../types/types";
+import type { TypeDescription } from "../types/types";
 import { topologicalSort } from "../utils/utils";
-import { StorageAllocation } from "./StorageAllocation";
-import { AllocationOperation } from "./operation";
+import type { StorageAllocation } from "./StorageAllocation";
+import type { AllocationOperation } from "./operation";
 import { allocate, getAllocationOperationFromField } from "./allocator";
-import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
+import {
+    createABITypeRefFromTypeRef,
+    resolveABIType,
+} from "../types/resolveABITypeRef";
 import { funcInitIdOf } from "../generator/writers/id";
 import { throwInternalCompilerError } from "../error/errors";
 
@@ -149,16 +153,34 @@ export function resolveAllocations(ctx: CompilerContext): CompilerContext {
 
             // Resolve opts
             const ops: AllocationOperation[] = [];
-            for (const f of s.init.params) {
-                const abiType = createABITypeRefFromTypeRef(ctx, f.type, f.loc);
-                ops.push({
-                    name: idText(f.name),
-                    type: abiType,
-                    op: getAllocationOperationFromField(
-                        abiType,
-                        (name) => getAllocation(ctx, name)!.size,
-                    ),
-                });
+            if (s.init.kind !== "contract-params") {
+                for (const f of s.init.params) {
+                    const abiType = createABITypeRefFromTypeRef(
+                        ctx,
+                        f.type,
+                        f.loc,
+                    );
+                    ops.push({
+                        name: idText(f.name),
+                        type: abiType,
+                        op: getAllocationOperationFromField(
+                            abiType,
+                            (name) => getAllocation(ctx, name)!.size,
+                        ),
+                    });
+                }
+            } else {
+                for (const f of s.init.contract.params ?? []) {
+                    const abiType = resolveABIType(f);
+                    ops.push({
+                        name: idText(f.name),
+                        type: abiType,
+                        op: getAllocationOperationFromField(
+                            abiType,
+                            (name) => getAllocation(ctx, name)!.size,
+                        ),
+                    });
+                }
             }
 
             // Perform allocation

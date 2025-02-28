@@ -1,5 +1,6 @@
-import { Config, verifyConfig } from "./config/parseConfig";
-import { ILogger } from "./context/logger";
+import type { Config } from "./config/parseConfig";
+import { verifyConfig } from "./config/parseConfig";
+import type { ILogger } from "./context/logger";
 import { build } from "./pipeline/build";
 import { createVirtualFileSystem } from "./vfs/createVirtualFileSystem";
 

@@ -1,5 +1,5 @@
-import { AstNode } from "./ast";
-import { FactoryAst } from "./ast-helpers";
+import type { AstNode } from "./ast";
+import type { FactoryAst } from "./ast-helpers";
 import { throwInternalCompilerError } from "../error/errors";
 
 export function cloneNode<T extends AstNode>(
@@ -172,6 +172,10 @@ export function cloneNode<T extends AstNode>(
             return cloneNode({
                 ...src,
                 args: src.args.map(recurse),
+            });
+        } else if (src.kind === "code_of") {
+            return cloneNode({
+                ...src,
             });
         } else if (src.kind === "constant_def") {
             return cloneNode({

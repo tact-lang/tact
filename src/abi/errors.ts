@@ -9,4 +9,5 @@ export const contractErrors = {
     contractStopped: { id: 133, message: "Contract stopped" },
     invalidArgument: { id: 134, message: "Invalid argument" },
     codeNotFound: { id: 135, message: "Code of a contract was not found" },
+    invalidStdAddress: { id: 136, message: "Invalid standard address" },
 };

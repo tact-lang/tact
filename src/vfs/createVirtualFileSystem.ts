@@ -1,5 +1,5 @@
 import normalize from "path-normalize";
-import { VirtualFileSystem } from "./VirtualFileSystem";
+import type { VirtualFileSystem } from "./VirtualFileSystem";
 
 export function createVirtualFileSystem(
     root: string,

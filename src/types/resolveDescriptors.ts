@@ -1,33 +1,26 @@
-import * as A from "../ast/ast";
-import {
-    eqNames,
-    FactoryAst,
-    idText,
-    isSelfId,
-    isSlice,
-    selfId,
-} from "../ast/ast-helpers";
+import type * as A from "../ast/ast";
+import type { FactoryAst } from "../ast/ast-helpers";
+import { eqNames, idText, isSelfId, isSlice, selfId } from "../ast/ast-helpers";
 import { traverse, traverseAndCheck } from "../ast/iterators";
 import {
     idTextErr,
     throwCompilationError,
     throwInternalCompilerError,
 } from "../error/errors";
-import { CompilerContext, createContextStore, Store } from "../context/context";
-import {
+import type { CompilerContext, Store } from "../context/context";
+import { createContextStore } from "../context/context";
+import type {
     ConstantDescription,
     FieldDescription,
     FunctionDescription,
     FunctionParameter,
     InitDescription,
     InitParameter,
-    printTypeRef,
     ReceiverSelector,
-    receiverSelectorName,
     TypeDescription,
     TypeRef,
-    typeRefEquals,
 } from "./types";
+import { printTypeRef, receiverSelectorName, typeRefEquals } from "./types";
 import { getRawAST } from "../context/store";
 import { cloneNode } from "../ast/clone";
 import { crc16 } from "../utils/crc16";
@@ -44,8 +37,11 @@ import { GlobalFunctions } from "../abi/global";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { addVariable, emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
-import { AstUtil, getAstUtil } from "../ast/util";
-import { ItemOrigin } from "../imports/source";
+import type { AstUtil } from "../ast/util";
+import { getAstUtil } from "../ast/util";
+import type { ItemOrigin } from "../imports/source";
+import { isUndefined } from "../utils/array";
+import type { Effect } from "./effects";
 
 const store = createContextStore<TypeDescription>();
 const staticFunctionsStore = createContextStore<FunctionDescription>();
@@ -141,7 +137,7 @@ export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
 export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
     switch (type.kind) {
         case "type_id": {
-            const t = getType(ctx, idText(type));
+            const t = getType(ctx, type);
             return {
                 kind: "ref",
                 name: t.name,
@@ -155,7 +151,7 @@ export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
                     type.typeArg.loc,
                 );
             }
-            const t = getType(ctx, idText(type.typeArg));
+            const t = getType(ctx, type.typeArg);
             return {
                 kind: "ref",
                 name: t.name,
@@ -163,8 +159,8 @@ export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
             };
         }
         case "map_type": {
-            const keyTy = getType(ctx, idText(type.keyType));
-            const valTy = getType(ctx, idText(type.valueType));
+            const keyTy = getType(ctx, type.keyType);
+            const valTy = getType(ctx, type.valueType);
             verifyMapType(type, valTy.kind === "struct");
             return {
                 kind: "map",
@@ -181,7 +177,7 @@ export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
             };
         }
         case "bounced_message_type": {
-            const t = getType(ctx, idText(type.messageType));
+            const t = getType(ctx, type.messageType);
             return {
                 kind: "ref_bounced",
                 name: t.name,
@@ -438,10 +434,86 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     }
 
     for (const a of ast.types) {
+        if (a.kind === "contract" && a.params !== undefined) {
+            const s = types.get(idText(a.name))!;
+            for (const d of a.declarations) {
+                if (d.kind === "contract_init") {
+                    throwCompilationError(
+                        `init() cannot be used along with contract parameters`,
+                        d.loc,
+                    );
+                }
+            }
+
+            const params: InitParameter[] = [];
+            const args: A.AstTypedParameter[] = [];
+            const statements: A.AstStatement[] = [];
+            for (const r of a.params) {
+                const type = buildTypeRef(r.type, types);
+                params.push({
+                    name: r.name,
+                    type,
+                    as: r.as?.text ?? null,
+                    loc: r.loc,
+                });
+                if (isRuntimeType(type)) {
+                    throwCompilationError(
+                        printTypeRef(type) +
+                            " is a runtime-only type and can't be used as a init function parameter",
+                        r.loc,
+                    );
+                }
+                statements.push(
+                    Ast.createNode({
+                        kind: "statement_assign",
+                        path: Ast.createNode({
+                            kind: "field_access",
+                            aggregate: Ast.createNode({
+                                kind: "id",
+                                text: "self",
+                                loc: r.loc,
+                            }) as A.AstExpression,
+                            field: Ast.cloneNode(r.name),
+                            loc: r.loc,
+                        }) as A.AstExpression,
+                        expression: Ast.cloneNode(r.name),
+                        loc: r.loc,
+                    }) as A.AstStatement,
+                );
+                if (s.fields.find((v) => eqNames(v.name, r.name))) {
+                    throwCompilationError(
+                        `Field ${idTextErr(r.name)} already exists`,
+                        r.loc,
+                    );
+                }
+                s.fields.push(buildFieldDescription(r, s.fields.length));
+            }
+
+            s.init = {
+                kind: "contract-params",
+                params,
+                ast: Ast.createNode({
+                    kind: "contract_init",
+                    params: args,
+                    statements,
+                    loc: a.loc,
+                }) as A.AstContractInit,
+                contract: a,
+            };
+        }
+    }
+
+    for (const a of ast.types) {
         // Contract
         if (a.kind === "contract") {
             for (const f of a.declarations) {
                 if (f.kind === "field_decl") {
+                    if (a.params) {
+                        throwCompilationError(
+                            `Cannot define contract fields along with contract parameters`,
+                            f.loc,
+                        );
+                    }
                     if (
                         types
                             .get(idText(a.name))!
@@ -792,6 +864,8 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             throwCompilationError("Getters cannot be inline", isInline.loc);
         }
 
+        const exNames: Set<string> = new Set();
+
         // Validate mutating
         if (isExtends) {
             if (self) {
@@ -828,6 +902,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
             // Update self and remove first parameter
             self = firstParam.type;
+            exNames.add(idText(firstParam.name));
             params = params.slice(1);
         }
 
@@ -839,18 +914,29 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             );
         }
 
-        // Check parameter names
-        const exNames: Set<string> = new Set();
+        const firstParam = params[0];
+
+        if (
+            !isUndefined(firstParam) &&
+            !isExtends &&
+            isSelfId(firstParam.name)
+        ) {
+            throwCompilationError(
+                'Parameter name "self" is reserved for functions with "extends" modifier',
+                firstParam.loc,
+            );
+        }
+
         for (const param of params) {
-            if (isSelfId(param.name)) {
-                throwCompilationError(
-                    'Parameter name "self" is reserved',
-                    param.loc,
-                );
-            }
             if (exNames.has(idText(param.name))) {
                 throwCompilationError(
                     `Parameter name ${idTextErr(param.name)} is already used`,
+                    param.loc,
+                );
+            }
+            if (isSelfId(param.name)) {
+                throwCompilationError(
+                    'Parameter name "self" is reserved',
                     param.loc,
                 );
             }
@@ -1050,6 +1136,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         });
 
         return {
+            kind: "init-function",
             params,
             ast,
         };
@@ -1088,10 +1175,17 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 }
                 if (d.kind === "contract_init") {
                     if (s.init) {
-                        throwCompilationError(
-                            "Init function already exists",
-                            d.loc,
-                        );
+                        if (s.init.kind !== "contract-params") {
+                            throwCompilationError(
+                                "Init function already exists",
+                                d.loc,
+                            );
+                        } else {
+                            throwCompilationError(
+                                "Cannot define init() on a contract that has contract parameters",
+                                d.loc,
+                            );
+                        }
                     }
                     s.init = resolveInitFunction(d);
                 }
@@ -1158,6 +1252,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                                     name: param.name,
                                                 },
                                                 ast: d,
+                                                effects: new Set<Effect>(),
                                             });
                                         } else if (t.name === "String") {
                                             // Check for existing receiver
@@ -1185,6 +1280,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                                     name: param.name,
                                                 },
                                                 ast: d,
+                                                effects: new Set<Effect>(),
                                             });
                                         } else {
                                             throwCompilationError(
@@ -1235,6 +1331,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                                 type: idText(param.type),
                                             },
                                             ast: d,
+                                            effects: new Set<Effect>(),
                                         });
                                     }
                                     break;
@@ -1270,6 +1367,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                             comment: c,
                                         },
                                         ast: d,
+                                        effects: new Set<Effect>(),
                                     });
                                     break;
                                 }
@@ -1296,6 +1394,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                                 : "external-empty",
                                         },
                                         ast: d,
+                                        effects: new Set<Effect>(),
                                     });
                                     break;
                                 }
@@ -1326,6 +1425,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                             name: param.name,
                                         },
                                         ast: d,
+                                        effects: new Set<Effect>(),
                                     });
                                 } else {
                                     const type = types.get(idText(param.type));
@@ -1371,6 +1471,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                             bounced: false,
                                         },
                                         ast: d,
+                                        effects: new Set<Effect>(),
                                     });
                                 }
                             } else if (param.type.kind === "optional_type") {
@@ -1429,6 +1530,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                         bounced: true,
                                     },
                                     ast: d,
+                                    effects: new Set<Effect>(),
                                 });
                             } else {
                                 throwCompilationError(
@@ -1451,6 +1553,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         if (t.kind === "contract") {
             if (!t.init) {
                 t.init = {
+                    kind: "init-function",
                     params: [],
                     ast: Ast.createNode({
                         kind: "contract_init",
@@ -1891,6 +1994,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 contractOrTrait.receivers.push({
                     selector: f.selector,
                     ast: cloneNode(f.ast, Ast),
+                    effects: new Set<Effect>(),
                 });
             }
 
@@ -1941,66 +2045,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     }
 
     //
-    // Register dependencies
-    //
-
-    for (const [k, t] of types) {
-        const dependsOn: Set<string> = new Set();
-        const handler = (src: A.AstNode) => {
-            if (src.kind === "init_of") {
-                if (!types.has(idText(src.contract))) {
-                    throwCompilationError(
-                        `Type ${idTextErr(src.contract)} not found`,
-                        src.loc,
-                    );
-                }
-                dependsOn.add(idText(src.contract));
-            }
-        };
-
-        // Traverse functions
-        for (const f of t.functions.values()) {
-            traverse(f.ast, handler);
-        }
-        for (const f of t.receivers) {
-            traverse(f.ast, handler);
-        }
-        if (t.init) traverse(t.init.ast, handler);
-
-        // Add dependencies
-        for (const s of dependsOn) {
-            if (s !== k) {
-                t.dependsOn.push(types.get(s)!);
-            }
-        }
-    }
-
-    //
-    // Register transient dependencies
-    //
-
-    function collectTransient(name: string, to: Set<string>) {
-        const t = types.get(name)!;
-        for (const d of t.dependsOn) {
-            if (to.has(d.name)) {
-                continue;
-            }
-            to.add(d.name);
-            collectTransient(d.name, to);
-        }
-    }
-    for (const k of types.keys()) {
-        const dependsOn: Set<string> = new Set();
-        dependsOn.add(k);
-        collectTransient(k, dependsOn);
-        for (const s of dependsOn) {
-            if (s !== k && !types.get(k)!.dependsOn.find((v) => v.name === s)) {
-                types.get(k)!.dependsOn.push(types.get(s)!);
-            }
-        }
-    }
-
-    //
     // Resolve static functions
     //
 
@@ -2034,6 +2078,93 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 );
             }
             staticFunctions.set(r.name, r);
+        }
+    }
+
+    //
+    // Register dependencies
+    //
+
+    for (const [k, t] of types) {
+        const visited: Set<string> = new Set();
+        const queue: A.AstNode[] = [];
+
+        const queuePush = (name: string, element: A.AstNode) => {
+            if (visited.has(name)) return;
+            visited.add(name);
+            queue.push(element);
+        };
+
+        const dependsOn: Set<string> = new Set();
+        const handler = (src: A.AstNode) => {
+            if (src.kind === "init_of" || src.kind === "code_of") {
+                if (!types.has(idText(src.contract))) {
+                    throwCompilationError(
+                        `Type ${idTextErr(src.contract)} not found`,
+                        src.loc,
+                    );
+                }
+                dependsOn.add(idText(src.contract));
+            }
+
+            if (src.kind === "static_call") {
+                const name = idText(src.function);
+                const func = staticFunctions.get(name);
+                if (func) {
+                    queuePush(func.name, func.ast);
+                }
+            }
+        };
+
+        // Traverse functions
+        for (const f of t.functions.values()) {
+            const fqn = `${t.name}.${f.name}`;
+            queuePush(fqn, f.ast);
+        }
+        for (const f of t.receivers) {
+            queue.push(f.ast);
+        }
+        if (t.init && t.init.kind === "init-function") {
+            const fqn = `${t.name}.init`;
+            queuePush(fqn, t.init.ast);
+        }
+
+        while (queue.length > 0) {
+            const elem = queue.shift();
+            if (typeof elem === "undefined") break;
+            traverse(elem, handler);
+        }
+
+        // Add dependencies
+        for (const s of dependsOn) {
+            if (s !== k) {
+                t.dependsOn.push(types.get(s)!);
+            }
+        }
+    }
+
+    //
+    // Register transient dependencies
+    //
+
+    function collectTransient(name: string, to: Set<string>) {
+        const t = types.get(name)!;
+        for (const d of t.dependsOn) {
+            if (to.has(d.name)) {
+                continue;
+            }
+            to.add(d.name);
+            collectTransient(d.name, to);
+        }
+    }
+    for (const k of types.keys()) {
+        const dependsOn: Set<string> = new Set();
+        dependsOn.add(k);
+        collectTransient(k, dependsOn);
+        for (const s of dependsOn) {
+            if (s !== k && !types.get(k)!.dependsOn.find((v) => v.name === s)) {
+                types.get(k)!.dependsOn.push(types.get(s)!);
+            }
         }
     }
 
@@ -2090,7 +2221,14 @@ export function getType(
     const name = typeof ident === "string" ? ident : idText(ident);
     const r = store.get(ctx, name);
     if (!r) {
-        throwInternalCompilerError(`Type ${name} not found`);
+        const errorLoc = typeof ident === "string" ? undefined : ident.loc;
+        if (errorLoc) {
+            throwCompilationError(
+                `Type ${idTextErr(name)} not found`,
+                errorLoc,
+            );
+        }
+        throwInternalCompilerError(`Type ${idTextErr(name)} not found`);
     }
     return r;
 }

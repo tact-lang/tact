@@ -1,23 +1,151 @@
+/// Global function. Available since Tact 1.6.0.
+///
+/// Computes and returns an `Int` value of the SHA-256 hash of the `code` and `data` of the given contract. To assemble the `code` and `data` cells together for hashing, the standard `Cell` representation is used.
+///
+/// This hash is commonly called account ID. Together with the workchain ID it deterministically forms the address of the contract on TON Blockchain.
+///
+/// ```tact
+/// fun example() {
+///     let initPkg: StateInit = initOf SomeContract();
+///     let accountId: Int = contractHash(initPkg.code, initPkg.data);
+///     let basechainAddr: Address = newAddress(0, accountId);
+///     let basechainAddr2: Address = contractAddressExt(0, initPkg.code, initPkg.data);
+///
+///     basechainAddr == basechainAddr2; // true
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-common#contracthash
+/// * https://docs.tact-lang.org/ref/core-common#newaddress
+/// * https://docs.tact-lang.org/ref/core-common#contractaddressext
+///
+asm fun contractHash(code: Cell, data: Cell): Int {
+    // According to the https://docs.tact-lang.org/book/cells#cells-representation,
+    // the layout for the Builder to hash goes as follows:
+    // 1) refs_descriptor:bits8 | bits_descriptor:bits8 | data:bitsN
+    //
+    //  refs_descriptor: ref_count + ((exotic? & 1) * 8) + (mask * 32)
+    //                   2 refs (code + data), non-exotic, zero-mask
+    //
+    //  bits_descriptor: floor(bit_count / 8) + ceil(bit_count, 8)
+    //                   floor (5 bits / 8) + ceil(5 bits / 8) = 0 + 1 = 1
+    //
+    //  data: [0b00110] + [0b100] = [0b00110100] = 0x34 (data + augmented bits)
+    //        0b00110 - data (split_depth, special, code, data, Library)
+    //        0b100 - augmented bits (Leading 1 + zeroes to make section multiple of eight)
+    //
+    //  That is: (2 << 16) | (1 << 8) | 0x34 = 131380 for all three.
+    //
+    // 2) and 3) depth_descriptors: CDEPTH of `code` and CDEPTH of `data`
+    // 4) and 5) ref hashes: HASHCU of `code` and HASHCU of `data`
+
+    // Group 1: Computations and arrangements
+    s0 PUSH HASHCU // `data` hash
+    s2 PUSH HASHCU // `code` hash
+    SWAP2
+    CDEPTH         // `data` depth
+    SWAP
+    CDEPTH         // `code` depth
+    131380 INT     // (2 << 16) | (1 << 8) | 0x34
+
+    // Group 2: Composition of the Builder
+    NEWC
+    24 STU  // store refs_descriptor | bits_descriptor | data
+    16 STU  // store depth_descriptor for `code`
+    16 STU  // store depth_descriptor for `data`
+    256 STU // store `code` hash
+    256 STU // store `data` hash
+
+    // Group 3: SHA256 hash of the resulting Builder
+    ONE HASHEXT_SHA256
+}
+
+/// Global function.
+///
+/// Computes smart contract's `Address` in the `chain` ID using the contract's `code` and the contract's initial state `data`. Use the `initOf` expression to obtain the initial `code` and initial `data` of a given contract.
+///
+/// This function tries to resolve constant values in compile-time whenever possible.
+///
+/// Attempts to specify an invalid `chain` ID (not -1 or 0) that can be detected in compile-time will result in a compilation error.
+///
+/// ```tact
+/// fun example() {
+///     let initPkg: StateInit = initOf SomeContract();
+///     let hereBeDragons: Address = contractAddressExt(0, initPkg.code, initPkg.data);
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-common#contractaddressext
+/// * https://docs.tact-lang.org/book/expressions#initof
+///
+inline fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address {
+    let hash = contractHash(code, data);
+    return newAddress(chain, hash);
+}
+
+/// Struct containing the initial state, i.e. initial code and initial data of the given contract upon its deployment.
+///
+/// See: https://docs.tact-lang.org/book/expressions#initof
+///
 struct StateInit {
+    /// Initial code of the contract (compiled bitcode)
     code: Cell;
+
+    /// Initial data of the contract (parameters of `init()` function or contract parameters)
     data: Cell;
 }
 
-@name(__tact_compute_contract_address)
-native contractAddressExt(chain: Int, code: Cell, data: Cell): Address;
-
+/// Global function.
+///
+/// Computes smart contract's `Address` in the workchain ID 0 (basechain) using the `StateInit` `s` of the contract. Alias to `contractAddressExt(0, s.code, s.data)`.
+///
+/// ```tact
+/// fun example() {
+///     let s: StateInit = initOf SomeContract();
+///     let foundMeSome: Address = contractAddress(s);
+///     let andSomeMore: Address = contractAddressExt(0, s.code, s.data);
+///
+///     foundMeSome == andSomeMore; // true
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-common#contractaddress
+/// * https://docs.tact-lang.org/ref/core-common#contractaddressext
+/// * https://docs.tact-lang.org/book/expressions#initof
+///
 inline fun contractAddress(s: StateInit): Address {
     return contractAddressExt(0, s.code, s.data);
 }
 
-@name(__tact_address_to_slice)
-extends native asSlice(self: Address): Slice;
-
-@name(__tact_create_address)
-native newAddress(chain: Int, hash: Int): Address;
-
+/// Global function.
+///
+/// Returns the address of the current smart contract as an `Address`.
+///
+/// ```tact
+/// fun example() {
+///     let meMyselfAndI: Address = myAddress();
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-common#myaddress
+///
 asm fun myAddress(): Address { MYADDR }
 
+/// Global function.
+///
+/// Returns the nanoToncoin `Int` balance of the smart contract as it was at the start of the compute phase of the current transaction.
+///
+/// ```tact
+/// fun example() {
+///     let iNeedADolla: Int = myBalance();
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-common#mybalance
+///
 asm fun myBalance(): Int { BALANCE FIRST }
 
 /// Global function. Available since Tact 1.5.0.
@@ -172,74 +300,6 @@ asm fun getSimpleForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { G
 /// * https://docs.tact-lang.org/ref/core-advanced#contextreadforwardfee
 ///
 asm fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int { GETORIGINALFWDFEE }
-
-/// Struct representing the standard address on TON Blockchain with signed 8-bit `workchain` ID and an unsigned 256-bit `address` in the specified `workchain`. Available since Tact 1.5.0.
-///
-/// At the moment, only `workchain` IDs used on TON are 0 of the basechain and -1 of the masterchain.
-///
-/// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#parsestdaddress
-/// * https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb#L105-L106
-///
-struct StdAddress {
-    workchain: Int as int8;
-    address: Int as uint256;
-}
-
-/// Struct representing the address of variable length with signed 32-bit `workchain` ID and a `Slice` containing unsigned `address` in the specified `workchain`. Available since Tact 1.5.0.
-///
-/// Variable-length addresses are intended for future extensions, and while validators must be ready to accept them in inbound messages, the standard (non-variable) addresses are used whenever possible.
-///
-/// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#parsevaraddress
-/// * https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb#L107-L108
-///
-struct VarAddress {
-    workchain: Int as int32;
-    address: Slice;
-}
-
-/// Assembly function. Available since Tact 1.5.0.
-///
-/// Converts a `Slice` containing an address into the `StdAddress` Struct and returns it.
-///
-/// ```tact
-/// fun example() {
-///     let addr = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
-///     let parsedAddr = parseStdAddress(addr.asSlice());
-///
-///     parsedAddr.workchain; // 0
-///     parsedAddr.address;   // 107...287
-/// }
-/// ```
-///
-/// See: https://docs.tact-lang.org/ref/core-advanced#parsestdaddress
-///
-asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
-
-/// Assembly function. Available since Tact 1.5.0.
-///
-/// Converts a `Slice` containing an address of variable length into the `VarAddress` Struct and returns it.
-///
-/// ```tact
-/// fun example() {
-///     let varAddrSlice = beginCell()
-///         .storeUint(6, 3)     // to recognize the following as a VarAddress
-///         .storeUint(123, 9)   // make address occupy 123 bits
-///         .storeUint(234, 32)  // specify workchain ID of 234
-///         .storeUint(345, 123) // specify address of 345
-///         .asSlice();
-///     let parsedVarAddr = parseVarAddress(varAddrSlice);
-///
-///     parsedVarAddr.workchain;             // 234
-///     parsedVarAddr.address;               // CS{Cell{002...2b3} bits: 44..167; refs: 0..0}
-///     parsedVarAddr.address.loadUint(123); // 345
-/// }
-/// ```
-///
-/// See: https://docs.tact-lang.org/ref/core-advanced#parsevaraddress
-///
-asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 
 /// Global function. Available since Tact 1.6.0.
 ///

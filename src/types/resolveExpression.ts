@@ -1,4 +1,4 @@
-import * as A from "../ast/ast";
+import type * as A from "../ast/ast";
 import { eqNames, getAstFactory, idText, isWildcard } from "../ast/ast-helpers";
 import {
     idTextErr,
@@ -6,7 +6,8 @@ import {
     throwCompilationError,
     throwInternalCompilerError,
 } from "../error/errors";
-import { CompilerContext, createContextStore } from "../context/context";
+import type { CompilerContext } from "../context/context";
+import { createContextStore } from "../context/context";
 import {
     getAllTypes,
     getStaticConstant,
@@ -15,13 +16,9 @@ import {
     hasStaticConstant,
     hasStaticFunction,
 } from "./resolveDescriptors";
-import {
-    FunctionParameter,
-    printTypeRef,
-    TypeRef,
-    typeRefEquals,
-} from "./types";
-import { StatementContext } from "./resolveStatements";
+import type { FunctionParameter, TypeRef } from "./types";
+import { printTypeRef, typeRefEquals } from "./types";
+import type { StatementContext } from "./resolveStatements";
 import { MapFunctions } from "../abi/map";
 import { GlobalFunctions } from "../abi/global";
 import { isAssignable, moreGeneralType } from "./subtyping";
@@ -795,6 +792,27 @@ function resolveInitOf(
     });
 }
 
+function resolveCodeOf(
+    ast: A.AstCodeOf,
+    ctx: CompilerContext,
+): CompilerContext {
+    // Resolve type
+    const type = getType(ctx, ast.contract);
+    if (type.kind !== "contract") {
+        throwCompilationError(
+            `Type ${idTextErr(ast.contract)} is not a contract`,
+            ast.loc,
+        );
+    }
+
+    // Register return type
+    return registerExpType(ctx, ast, {
+        kind: "ref",
+        name: "Cell",
+        optional: false,
+    });
+}
+
 function resolveConditional(
     ast: A.AstConditional,
     sctx: StatementContext,
@@ -948,6 +966,9 @@ export function resolveExpression(
         }
         case "init_of": {
             return resolveInitOf(exp, sctx, ctx);
+        }
+        case "code_of": {
+            return resolveCodeOf(exp, ctx);
         }
         case "conditional": {
             return resolveConditional(exp, sctx, ctx);

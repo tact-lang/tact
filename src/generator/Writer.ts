@@ -1,4 +1,4 @@
-import { CompilerContext } from "../context/context";
+import type { CompilerContext } from "../context/context";
 import { escapeUnicodeControlCodes, trimIndent } from "../utils/text";
 import { topologicalSort } from "../utils/utils";
 import { Writer } from "../utils/Writer";
@@ -15,6 +15,7 @@ type Body =
           kind: "asm";
           shuffle: string;
           code: string;
+          singleLine: boolean;
       }
     | {
           kind: "skip";
@@ -214,12 +215,13 @@ export class WriterContext {
         });
     }
 
-    asm(shuffle: string, code: string) {
+    asm(shuffle: string, code: string, singleLine: boolean = false) {
         if (this.#pendingName) {
             this.#pendingCode = {
                 kind: "asm",
                 shuffle,
                 code,
+                singleLine,
             };
         } else {
             throw new Error(`ASM can be set only inside function`);
@@ -295,6 +297,10 @@ export class WriterContext {
 
     inIndent = (handler: () => void) => {
         this.#pendingWriter!.inIndent(handler);
+    };
+
+    inBlock = (beforeCurlyBrace: string, handler: () => void) => {
+        this.#pendingWriter!.inBlock(beforeCurlyBrace, handler);
     };
 
     append(src: string = "") {

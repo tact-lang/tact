@@ -1,4 +1,4 @@
-import { AstNode } from "./ast";
+import type { AstNode } from "./ast";
 
 /**
  * Recursively iterates over each node in an AstNode and applies a callback to each AST element.
@@ -310,6 +310,9 @@ export function traverseAndCheck(
             node.args.forEach((e) => {
                 traverseAndCheck(e, callback);
             });
+            break;
+        case "code_of":
+            traverseAndCheck(node.contract, callback);
             break;
         case "conditional":
             traverseAndCheck(node.condition, callback);

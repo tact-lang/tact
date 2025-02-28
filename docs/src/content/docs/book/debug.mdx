@@ -70,7 +70,7 @@ It involves actively placing [`dump(){:tact}`][dump] and [`dumpStack(){:tact}`](
 
 :::
 
-In addition to dumping values, it's often helpful to use assertive functions like [`require(){:tact}`](/ref/core-debug#require), [`nativeThrowIf(){:tact}`](/ref/core-debug#nativethrowif) and [`nativeThrowUnless(){:tact}`](/ref/core-debug#nativethrowunless). They help stating your assumptions clear, and are handy for setting up "trip wires" for catching issues in the future.
+In addition to dumping values, it's often helpful to use assertive functions like [`require(){:tact}`](/ref/core-debug#require), [`throwIf(){:tact}`](/ref/core-debug#throwif) and [`throwUnless(){:tact}`](/ref/core-debug#throwunless). They help stating your assumptions clear, and are handy for setting up "trip wires" for catching issues in the future.
 
 And if you didn't find or cannot resolve the cause of your issues, try asking the community in Tact's [Telegram chat][tg] or, if your issue or question is generally related to TON more than it's related to Tact, hop into [TON Dev Telegram chat](https://t.me/tondev_eng).
 
@@ -81,6 +81,12 @@ Tact provides a handful amount of various functions useful for debugging: [Core 
 ## Enabling debug mode in compilation options {#debug-mode}
 
 In order to make certain functions like [`dump(){:tact}`][dump] or [`dumpStack(){:tact}`](/ref/core-debug#dumpstack) work, one needs to enable debug mode.
+
+:::note
+
+  Make sure to disable debug mode in production, as the [`dump(){:tact}`][dump] and [`dumpStack(){:tact}`](/ref/core-debug#dumpstack) functions are very gas-expensive and should only be used for local debugging.
+
+:::
 
 The simplest and recommended approach is to modify a [`tact.config.json`](/book/config) file in the root of your project (or create it if it didn't exist yet), and [set the `debug` property to `true{:json}`](/book/config#options-debug).
 
@@ -150,6 +156,8 @@ Then, a `beforeEach(){:tact}` [Jest][jest] function is called — it specifies a
 :::note
 
   It is strongly advised not to modify the contents of `beforeEach(){:tact}`, unless you really need some specific behavior for each test closure or parameters of your [`init(){:tact}`](/book/contracts#init-function) function have changed.
+
+  Additionally, you may need to edit `beforeEach(){:tact}` contents if you've changed the [contract parameters](/book/contracts#parameters).
 
 :::
 

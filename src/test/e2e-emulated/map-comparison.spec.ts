@@ -1,5 +1,7 @@
-import { Address, beginCell, Cell, Dictionary, toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { Cell } from "@ton/core";
+import { Address, beginCell, Dictionary, toNano } from "@ton/core";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { MapComparisonTestContract } from "./contracts/output/map-comparison_MapComparisonTestContract";
 import "@ton/test-utils";
 

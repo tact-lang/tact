@@ -1,4 +1,5 @@
-import { CompilerContext, createContextStore } from "../context/context";
+import type { CompilerContext } from "../context/context";
+import { createContextStore } from "../context/context";
 
 const featureStore = createContextStore<boolean | null | string>();
 
@@ -8,6 +9,10 @@ export function enabledInline(ctx: CompilerContext) {
 
 export function enabledDebug(ctx: CompilerContext) {
     return featureEnabled(ctx, "debug");
+}
+
+export function enabledOptimizedChildCode(ctx: CompilerContext) {
+    return featureEnabled(ctx, "optimizedChildCode");
 }
 
 export function enabledExternals(ctx: CompilerContext) {
@@ -24,6 +29,10 @@ export function enabledInterfacesGetter(ctx: CompilerContext) {
 
 export function enabledNullChecks(ctx: CompilerContext) {
     return featureEnabled(ctx, "nullChecks");
+}
+
+export function enabledAlwaysSaveContractData(ctx: CompilerContext) {
+    return featureEnabled(ctx, "alwaysSaveContractData");
 }
 
 export function enabledLazyDeploymentCompletedGetter(ctx: CompilerContext) {

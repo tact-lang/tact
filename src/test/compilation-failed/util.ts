@@ -4,7 +4,7 @@ import { Logger, LogLevel } from "../../context/logger";
 import files from "../../stdlib/stdlib";
 import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";
 import { join } from "path";
-import { Options } from "../../config/parseConfig";
+import type { Options } from "../../config/parseConfig";
 
 // helper to reduce boilerplate
 export function itShouldNotCompile(params: {

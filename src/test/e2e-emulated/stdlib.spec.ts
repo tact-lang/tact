@@ -1,5 +1,6 @@
 import { Address, beginCell, Cell, toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { StdlibTest } from "./contracts/output/stdlib_StdlibTest";
 import "@ton/test-utils";
 
@@ -56,7 +57,7 @@ describe("stdlib", () => {
                 .toString(),
         ).toBe(beginCell().storeBit(true).endCell().toString());
 
-        expect(await contract.getTvm_2023_07Upgrade()).toEqual(1389n);
+        expect(Number(await contract.getTvm_2023_07Upgrade())).toEqual(1243);
         expect(await contract.getTvm_2024_04Upgrade()).toEqual(82009144n);
 
         expect(
@@ -75,6 +76,20 @@ describe("stdlib", () => {
         expect(
             (await contract.getStoreMaybeRef(beginCell(), null)).endCell(),
         ).toEqualCell(beginCell().storeMaybeRef(null).endCell());
+
+        expect(
+            await contract.getLoadMaybeRef(
+                beginCell()
+                    .storeMaybeRef(beginCell().storeUint(123, 64).endCell())
+                    .asSlice(),
+            ),
+        ).toEqualCell(beginCell().storeUint(123, 64).endCell());
+
+        expect(
+            await contract.getLoadMaybeRef(
+                beginCell().storeMaybeRef(null).asSlice(),
+            ),
+        ).toBe(null);
 
         const addrStd = await contract.getParseStdAddress(
             beginCell()
@@ -163,8 +178,8 @@ describe("stdlib", () => {
 
         expect(await contract.getBlockLt()).toBe(0n);
 
-        expect(await contract.getSetGasLimit(5000n)).toBe(3931n); // 5000 just to make sure it's enough, 3931 is how much it actually costs
-        await expect(contract.getSetGasLimit(3930n)).rejects.toThrow("-14"); // 3996 gas is not enough for sure
+        expect(Number(await contract.getSetGasLimit(5000n))).toBe(3785); // 5000 just to make sure it's enough, 3785 is how much it actually costs
+        await expect(contract.getSetGasLimit(3784n)).rejects.toThrow("-14"); // 3784 gas is not enough for sure
 
         expect(await contract.getGetSeed()).toBe(0n);
 

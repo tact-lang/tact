@@ -2,14 +2,14 @@ import { contractErrors } from "../../abi/errors";
 import { maxTupleSize } from "../../bindings/typescript/writeStruct";
 import { enabledDebug, enabledNullChecks } from "../../config/features";
 import { getType } from "../../types/resolveDescriptors";
-import { TypeDescription } from "../../types/types";
-import { WriterContext } from "../Writer";
+import type { TypeDescription } from "../../types/types";
+import type { WriterContext } from "../Writer";
 import { ops } from "./ops";
 import { resolveFuncFlatPack } from "./resolveFuncFlatPack";
 import { resolveFuncFlatTypes } from "./resolveFuncFlatTypes";
 import { resolveFuncType } from "./resolveFuncType";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
-import { ItemOrigin } from "../../imports/source";
+import type { ItemOrigin } from "../../imports/source";
 
 function chainVars(vars: string[]): string[] {
     // let's say we have vars = ['v1', 'v2, ..., 'v32']
@@ -54,7 +54,7 @@ export function writeAccessors(
             `(${resolveFuncType(type, ctx)}) ${ops.typeTensorCast(type.name, ctx)}(${resolveFuncType(type, ctx)} v)`,
         );
         ctx.context("type:" + type.name);
-        ctx.asm("", "NOP");
+        ctx.asm("", "NOP", true);
     });
 
     // Not null

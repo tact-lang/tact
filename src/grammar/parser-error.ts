@@ -1,4 +1,4 @@
-import { ErrorDisplay } from "../error/display";
+import type { ErrorDisplay } from "../error/display";
 
 const attributeSchema =
     (name: string) =>
@@ -74,11 +74,13 @@ export const syntaxErrorSchema = <T, U>(
             return handle(sub`Expression is not callable`);
         },
         noBouncedWithoutArg: () => {
-            return handle(sub`bounced() cannot be used as fallback`);
+            return handle(
+                sub`bounced() receiver should accept a Message, bounced<Message> or Slice`,
+            );
         },
         noBouncedWithString: () => {
             return handle(
-                sub`bounced() cannot be used with a string literal name`,
+                sub`bounced() receiver can only accept a Message, bounced<Message> or Slice`,
             );
         },
         noConstantDecl: () => {

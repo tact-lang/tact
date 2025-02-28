@@ -328,11 +328,11 @@ if (2 + 2 == 3) {
 fun braveAndTrue() {
     // Lets try and do something erroneous
     try {
-        nativeThrow(42); // throwing with exit code 42
+        throw(1042); // throwing with exit code 1042
     }
 
     // The following will be executed as the erroneous code above was wrapped in a try block
-    dump(42);
+    dump(1042);
 }
 ```
 
@@ -342,9 +342,9 @@ fun braveAndTrue() {
 fun niceCatch() {
     // Lets try and do something erroneous
     try {
-        nativeThrow(42); // throwing with exit code 42
+        throw(1042); // throwing with exit code 1042
     } catch (err) {
-        dump(err);       // this will dump the exit code caught, which is 42
+        dump(err);       // this will dump the exit code caught, which is 1042
     }
 }
 ```

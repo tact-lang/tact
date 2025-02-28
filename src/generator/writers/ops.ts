@@ -1,4 +1,4 @@
-import { WriterContext } from "../Writer";
+import type { WriterContext } from "../Writer";
 
 function used(name: string, ctx: WriterContext) {
     const c = ctx.currentContext();
@@ -15,7 +15,16 @@ export const ops = {
         used(`$${type}$_store_cell`, ctx),
     writerCellOpt: (type: string, ctx: WriterContext) =>
         used(`$${type}$_store_opt`, ctx),
-    reader: (type: string, ctx: WriterContext) => used(`$${type}$_load`, ctx),
+    reader: (
+        type: string,
+        opcode: "with-opcode" | "no-opcode",
+        ctx: WriterContext,
+    ) => {
+        return used(
+            `$${type}$_load${opcode === "no-opcode" ? "_without_opcode" : ""}`,
+            ctx,
+        );
+    },
     readerNonModifying: (type: string, ctx: WriterContext) =>
         used(`$${type}$_load_not_mut`, ctx),
     readerBounced: (type: string, ctx: WriterContext) =>
@@ -48,29 +57,16 @@ export const ops = {
     // Contract operations
     contractInit: (type: string, ctx: WriterContext) =>
         used(`$${type}$_contract_init`, ctx),
+    contractChildGetCode: (type: string, ctx: WriterContext) =>
+        used(`$${type}$_child_get_code`, ctx),
     contractInitChild: (type: string, ctx: WriterContext) =>
         used(`$${type}$_init_child`, ctx),
+    contractCodeChild: (type: string, ctx: WriterContext) =>
+        used(`$${type}$_code_child`, ctx),
     contractLoad: (type: string, ctx: WriterContext) =>
         used(`$${type}$_contract_load`, ctx),
     contractStore: (type: string, ctx: WriterContext) =>
         used(`$${type}$_contract_store`, ctx),
-    contractRouter: (type: string, kind: "internal" | "external") =>
-        `$${type}$_contract_router_${kind}`, // Not rendered as dependency
-
-    // Router operations
-    receiveEmpty: (type: string, kind: "internal" | "external") =>
-        `%$${type}$_${kind}_empty`,
-    receiveType: (type: string, kind: "internal" | "external", msg: string) =>
-        `$${type}$_${kind}_binary_${msg}`,
-    receiveAnyText: (type: string, kind: "internal" | "external") =>
-        `$${type}$_${kind}_any_text`,
-    receiveText: (type: string, kind: "internal" | "external", hash: string) =>
-        `$${type}$_${kind}_text_${hash}`,
-    receiveAny: (type: string, kind: "internal" | "external") =>
-        `$${type}$_${kind}_any`,
-    receiveTypeBounce: (type: string, msg: string) =>
-        `$${type}$_receive_binary_bounce_${msg}`,
-    receiveBounceAny: (type: string) => `$${type}$_receive_bounce`,
 
     // Functions
     extension: (type: string, name: string) => `$${type}$_fun_${name}`,

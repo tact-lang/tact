@@ -1,6 +1,6 @@
 import * as changeCase from "change-case";
 import { Writer } from "../utils/Writer";
-import { ABIArgument, ABIType, ContractABI } from "@ton/core";
+import type { ABIArgument, ABIType, ContractABI } from "@ton/core";
 import {
     writeArgumentToStack,
     writeDictParser,
@@ -13,7 +13,7 @@ import {
     writeTupleParser,
     writeTupleSerializer,
 } from "./typescript/writeStruct";
-import { AllocationCell } from "../storage/operation";
+import type { AllocationCell } from "../storage/operation";
 import { throwInternalCompilerError } from "../error/errors";
 import { topologicalSort } from "../utils/utils";
 import {
@@ -23,6 +23,8 @@ import {
 import { serializers } from "./typescript/serializers";
 
 import { eqNames } from "../ast/ast-helpers";
+import { enabledOptimizedChildCode } from "../config/features";
+import type { CompilerContext } from "../context/context";
 
 function writeArguments(args: ABIArgument[]) {
     const res: string[] = [];
@@ -42,8 +44,16 @@ function writeArguments(args: ABIArgument[]) {
     return res;
 }
 
+export type WrappersConstantDescription = {
+    readonly name: string;
+    readonly value: string | undefined;
+    readonly fromContract: boolean;
+};
+
 export function writeTypescript(
     abi: ContractABI,
+    ctx: CompilerContext,
+    constants: WrappersConstantDescription[],
     init?: {
         code: string;
         system: string | null;
@@ -70,6 +80,7 @@ export function writeTypescript(
             TupleReader, 
             Dictionary, 
             contractAddress, 
+            address, 
             ContractProvider, 
             Sender, 
             Contract, 
@@ -174,7 +185,7 @@ export function writeTypescript(
             w.append(`const __code = Cell.fromBase64('${init.code}');`);
             w.append("const builder = beginCell();");
 
-            if (init.system !== null) {
+            if (init.system !== null && !enabledOptimizedChildCode(ctx)) {
                 w.append(`const __system = Cell.fromBase64('${init.system}');`);
                 w.append(`builder.storeRef(__system);`);
             }
@@ -268,10 +279,41 @@ export function writeTypescript(
     w.append(`]`);
     w.append();
 
+    for (const constant of constants) {
+        if (typeof constant.value === "undefined" || constant.fromContract) {
+            continue;
+        }
+        w.append(`export const ${constant.name} = ${constant.value};`);
+    }
+
+    if (constants.length > 0) {
+        w.append();
+    }
+
     // Wrapper
     w.append(`export class ${abi.name} implements Contract {`);
     w.inIndent(() => {
         w.append();
+
+        const addedContractConstants: Set<string> = new Set();
+        for (const constant of constants) {
+            if (
+                typeof constant.value === "undefined" ||
+                !constant.fromContract ||
+                addedContractConstants.has(constant.name)
+            ) {
+                continue;
+            }
+            w.append(
+                `public static readonly ${constant.name} = ${constant.value};`,
+            );
+
+            addedContractConstants.add(constant.name);
+        }
+
+        if (constants.length > 0) {
+            w.append();
+        }
 
         if (init) {
             w.append(
@@ -594,7 +636,7 @@ export function writeTypescript(
         if (abi.getters) {
             for (const g of abi.getters) {
                 w.append(
-                    `async get${getterNames.get(g.name)}(${["provider: ContractProvider", ...writeArguments(g.arguments ? g.arguments : [])].join(", ")}) {`,
+                    `async get${getterNames.get(g.name)}(${["provider: ContractProvider", ...writeArguments(g.arguments ?? [])].join(", ")}) {`,
                 );
                 w.inIndent(() => {
                     w.append(`const builder = new TupleBuilder();`);

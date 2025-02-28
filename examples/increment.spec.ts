@@ -1,5 +1,6 @@
 import { IncrementContract } from "./output/increment_IncrementContract";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { toNano } from "@ton/core";
 import "@ton/test-utils";
 

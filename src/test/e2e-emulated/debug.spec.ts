@@ -1,5 +1,6 @@
 import { Address, toNano } from "@ton/core";
-import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
+import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
+import { Blockchain } from "@ton/sandbox";
 import { Debug } from "./contracts/output/debug_Debug";
 import { posixNormalize } from "../../utils/filePath";
 import "@ton/test-utils";

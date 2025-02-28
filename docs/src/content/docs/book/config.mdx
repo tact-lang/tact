@@ -385,13 +385,59 @@ Null checks are always enabled in the [`debug`](#options-debug) mode.
 }
 ```
 
+#### `optimizations` {#options-optimizations}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+Options that affect the optimizations of contracts.
+
+```json filename="tact.config.json" {8,14}
+{
+  "projects": [
+    {
+      "name": "contract",
+      "path": "./contract.tact",
+      "output": "./output",
+      "options": {
+        "optimizations": {}
+      }
+    }
+  ]
+}
+```
+
+##### `alwaysSaveContractData` {#optimizations-alwayssavecontractdata}
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+`false{:json}` by default.
+
+If set to `false{:json}`, enables saving the contract state at the end of a receiver execution if it modified the contract state, otherwise the contract data cell is not overwritten. Setting the option to `true{:json}` will result in each receiver updating the contract data cell regardless of contract state modifications thus resulting in an increase of gas consumption: this can be used for extra safety level or for debugging.
+
+```json filename="tact.config.json" {9,17}
+{
+  "projects": [
+    {
+      "name": "contract",
+      "path": "./contract.tact",
+      "output": "./output",
+      "options": {
+        "optimizations": {
+          "alwaysSaveContractData": false
+        }
+      }
+    }
+  ]
+}
+```
+
 #### `enableLazyDeploymentCompletedGetter` {#options-enablelazydeploymentcompletedgetter}
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 `false{:json}` by default.
 
-If set to `true{:json}`, enables generation of `lazy_deployment_completed()` getter.
+If set to `true{:json}`, enables generation of `lazy_deployment_completed()` getter. Does nothing if [contract parameters](/book/contracts#parameters) are declared.
 
 ```json filename="tact.config.json" {8}
 {

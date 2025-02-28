@@ -2,8 +2,8 @@
 title: Type system overview
 description: "Every variable, item, and value in Tact programs has a type"
 prev:
-  link: /book/cs/from-solidity
-  label: Coming from Solidity
+  link: /book/
+  label: Book overview
 ---
 
 Every variable, item, and value in Tact programs has a type. They can be:
@@ -30,7 +30,7 @@ Tact supports a number of primitive data types that are tailored for smart contr
 
 The primitive type `Bool{:tact}` is the classical boolean type, which can hold only the two values: `true{:tact}` and `false{:tact}`. It's convenient for boolean and logical operations, as well as for storing flags.
 
-There are no implicit type conversions in Tact, so addition ([`+{:tact}`](/book/operators#binary-add)) of two boolean values isn't possible. Hovewer, many comparison [operators](/book/operators) are available, such as:
+There are no implicit type conversions in Tact, so addition ([`+{:tact}`](/book/operators#binary-add)) of two boolean values isn't possible. However, many comparison [operators](/book/operators) are available, such as:
 
 * `&&{:tact}` for [logical AND](/book/operators#binary-logical-and),
 * `||{:tact}` for [logical OR](/book/operators#binary-logical-or),
@@ -50,7 +50,9 @@ Using individual means of storage often becomes cumbersome, so there are ways to
 
 In addition to the composite types above, Tact provides a special type constructor [`bounced<T>{:tact}`](/book/bounced), which can only be specified in [bounced message receivers](/book/bounced).
 
-Note, while [contracts](#contracts) and [traits](#traits) are also considered a part of the Tacts type system, one can't pass them around like [Structs and Messages](#structs-and-messages). Instead, it's possible to obtain the initial state of the given contract by using the [`initOf{:tact}`](/book/expressions#initof) expression.
+While [contracts](#contracts) and [traits](#traits) are also considered a part of the Tacts type system, one can't pass them around like [Structs and Messages](#structs-and-messages). Instead, it's possible to obtain the initial state of the given contract by using the [`initOf{:tact}`](/book/expressions#initof) expression.
+
+And it's also possible to obtain only the code of the given contract by using the [`codeOf{:tact}`](/book/expressions#codeof) expression.
 
 ### Maps
 
@@ -155,7 +157,7 @@ trait Ownable {
 
     // Internal function
     fun requireOwner() {
-        nativeThrowUnless(132, context().sender == self.owner);
+        throwUnless(132, context().sender == self.owner);
     }
 
     // Getter function with return type Address
@@ -172,9 +174,18 @@ contract Treasure with Ownable {
     // Persistent state variable, which MUST be defined in the contract
     owner: Address;
 
-    // Constructor function init(), where all the variables are initialized
+    // Constructor function init(), where all the variables are initialized on-chain
     init(owner: Address) {
         self.owner = owner;
     }
 }
+```
+
+Alternatively, a contract may declare use the [contract parameters syntax](/book/contracts#parameters), in which case they must list all the persistent state variables inherited from all of its traits:
+
+```tact
+contract Treasure(
+    // Persistent state variable, to be defined at deployment
+    owner: Address,
+) with Ownable {}
 ```

@@ -29,10 +29,6 @@ contract IncrementContract with Deployable {
     counters4: map<Address, Int>;
     counters5: map<Int, Something>;
 
-    init() {
-        // Nothing to do
-    }
-
     receive(msg: Increment) {
         self.counters.set(msg.key, msg.value);
         self.counters4.set(sender(), msg.value);
@@ -43,21 +39,22 @@ contract IncrementContract with Deployable {
         if (ex == null) {
             self.counters2.set(msg.key, true);
         } else {
-            self.counters2.set(msg.key, !(ex!!));
+            let val: Bool = ex!!;
+            self.counters2.set(msg.key, !val);
         }
     }
 
     receive(msg: Persist) {
-        require(self.counters3.get(msg.key) == null, "Empty counter");
+        require(!self.counters3.exists(msg.key), "Empty counter");
         self.counters3.set(msg.key, msg.content);
     }
 
     receive(msg: Reset) {
-        self.counters.set(msg.key, null);
-        self.counters2.set(msg.key, null);
-        self.counters3.set(msg.key, null);
-        self.counters4.set(sender(), null);
-        self.counters5.set(msg.key, null);
+        self.counters.del(msg.key);
+        self.counters2.del(msg.key);
+        self.counters3.del(msg.key);
+        self.counters4.del(sender());
+        self.counters5.del(msg.key);
     }
 
     get fun counters(): map<Int, Int> {

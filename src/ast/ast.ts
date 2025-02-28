@@ -1,7 +1,7 @@
-import { Address, Cell, Slice } from "@ton/core";
-import { SrcInfo } from "../grammar/src-info";
-import { RelativePath } from "../imports/path";
-import { Language } from "../imports/source";
+import type { Address, Cell, Slice } from "@ton/core";
+import type { SrcInfo } from "../grammar/src-info";
+import type { RelativePath } from "../imports/path";
+import type { Language } from "../imports/source";
 
 export type AstModule = {
     readonly kind: "module";
@@ -133,6 +133,7 @@ export type AstContract = {
     readonly name: AstId;
     readonly traits: readonly AstId[];
     readonly attributes: readonly AstContractAttribute[];
+    readonly params: undefined | readonly AstFieldDecl[];
     readonly declarations: readonly AstContractDeclaration[];
     readonly id: number;
     readonly loc: SrcInfo;
@@ -393,6 +394,7 @@ export type AstExpression =
     | AstStructInstance
     | AstId
     | AstInitOf
+    | AstCodeOf
     | AstString
     | AstLiteral;
 
@@ -491,6 +493,13 @@ export type AstInitOf = {
     readonly kind: "init_of";
     readonly contract: AstId;
     readonly args: readonly AstExpression[];
+    readonly id: number;
+    readonly loc: SrcInfo;
+};
+
+export type AstCodeOf = {
+    readonly kind: "code_of";
+    readonly contract: AstId;
     readonly id: number;
     readonly loc: SrcInfo;
 };

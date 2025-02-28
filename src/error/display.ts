@@ -2,8 +2,11 @@
  * Describes DSL for displaying errors
  */
 
-import { SrcInfo } from "../grammar";
+import type { SrcInfo } from "../grammar";
 
+/**
+ * @deprecated Use `Logger` from src/error/logger-util.ts
+ */
 export interface ErrorDisplay<T> {
     // Specify main error location
     at: (loc: SrcInfo, body: T) => T;

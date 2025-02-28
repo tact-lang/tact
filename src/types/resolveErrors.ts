@@ -1,6 +1,8 @@
-import { CompilerContext, createContextStore } from "../context/context";
-import { AstNode } from "../ast/ast";
-import { FactoryAst, isRequire } from "../ast/ast-helpers";
+import type { CompilerContext } from "../context/context";
+import { createContextStore } from "../context/context";
+import type { AstNode } from "../ast/ast";
+import type { FactoryAst } from "../ast/ast-helpers";
+import { isRequire } from "../ast/ast-helpers";
 import { traverse } from "../ast/iterators";
 import { evalConstantExpression } from "../optimizer/constEval";
 import { throwInternalCompilerError } from "../error/errors";
@@ -10,7 +12,8 @@ import {
     getAllStaticConstants,
 } from "./resolveDescriptors";
 import { ensureSimplifiedString } from "../optimizer/interpreter";
-import { AstUtil, getAstUtil } from "../ast/util";
+import type { AstUtil } from "../ast/util";
+import { getAstUtil } from "../ast/util";
 import { sha256, highest32ofSha256 } from "../utils/sha256";
 
 type Exception = { value: string; id: number };

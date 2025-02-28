@@ -23,7 +23,13 @@ import {
   existsSync,
 } from 'node:fs';
 import { chdir, cwd } from 'node:process';
-// TODO(?): check the proper dir (from git) and automatically change the working dir
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// TODO(?): Use git for this instead, since scripts/ might move some day
+//          and CI might change the starting working directory as well
+// chdir(`${__dirname}/../../`); // docs, presumably
 
 /*******************/
 /* Utility helpers */
@@ -114,10 +120,11 @@ const extractTactCodeBlocks = (src) => {
  * @returns {{ ok: true } | { ok: false, error: string }}
  */
 const checkTactFile = (filepath) => {
-  // Using the latest publicly available compiler to ensure that current users
-  // can compile and run the code, not just the compiler developers
-  const res = spawnSync('npx',
-    ['-y', '@tact-lang/compiler@latest', '--check', filepath],
+  // Using the built Tact compiler from the parent folder to
+  // 1. Ensure everything still builds
+  // 2. Prevent excessive compiler downloads in CI
+  const res = spawnSync('node',
+    [`${__dirname}/../../bin/tact.js`, '--check', filepath],
     { encoding: 'utf8' }
   );
 
@@ -167,7 +174,7 @@ for (let i = 0; i < mdxFileNames.length; i += 1) {
     // Perform individual checks (see TODO above)
     const checkRes = checkTactFile(tactFile);
     chdir(savedCwd);
-    
+
     if (checkRes.ok === false) {
       console.log(`Error: check of ${tactFile} has failed:\n\n${checkRes.error}`);
       process.exit(1);

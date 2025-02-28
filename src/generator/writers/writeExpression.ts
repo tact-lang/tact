@@ -4,7 +4,7 @@ import {
     throwCompilationError,
     throwInternalCompilerError,
 } from "../../error/errors";
-import * as A from "../../ast/ast";
+import type * as A from "../../ast/ast";
 import { getExpType } from "../../types/resolveExpression";
 import {
     getStaticConstant,
@@ -12,12 +12,9 @@ import {
     getType,
     hasStaticConstant,
 } from "../../types/resolveDescriptors";
-import {
-    FieldDescription,
-    printTypeRef,
-    TypeDescription,
-} from "../../types/types";
-import { WriterContext } from "../Writer";
+import type { FieldDescription, TypeDescription } from "../../types/types";
+import { printTypeRef } from "../../types/types";
+import type { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { MapFunctions } from "../../abi/map";
 import { GlobalFunctions } from "../../abi/global";
@@ -262,10 +259,7 @@ export function writeExpression(
             lt.name === "Address" &&
             rt.name === "Address"
         ) {
-            let prefix = "";
-            if (f.op == "!=") {
-                prefix = "~ ";
-            }
+            const prefix = f.op == "!=" ? "~ " : "";
             if (lt.optional && rt.optional) {
                 wCtx.used(`__tact_slice_eq_bits_nullable`);
                 return `( ${prefix}__tact_slice_eq_bits_nullable(${writeExpression(f.left, wCtx)}, ${writeExpression(f.right, wCtx)}) )`;
@@ -278,8 +272,7 @@ export function writeExpression(
                 wCtx.used(`__tact_slice_eq_bits_nullable_one`);
                 return `( ${prefix}__tact_slice_eq_bits_nullable_one(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)}) )`;
             }
-            wCtx.used(`__tact_slice_eq_bits`);
-            return `( ${prefix}__tact_slice_eq_bits(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)}) )`;
+            return `( ${prefix}equal_slices_bits(${writeExpression(f.right, wCtx)}, ${writeExpression(f.left, wCtx)}) )`;
         }
 
         // Case for cells equality
@@ -717,6 +710,19 @@ export function writeExpression(
     }
 
     //
+    // Code of
+    //
+
+    if (f.kind === "code_of") {
+        // In case of using `codeOf T` in contract `T`, we simply use MYCODE.
+        if (wCtx.name === f.contract.text) {
+            return `my_code()`;
+        }
+
+        return `${ops.contractCodeChild(idText(f.contract), wCtx)}()`;
+    }
+
+    //
     // Ternary operator
     //
 
@@ -729,4 +735,39 @@ export function writeExpression(
     //
 
     throw Error("Unknown expression");
+}
+
+export function writeTypescriptValue(
+    val: A.AstLiteral | undefined,
+): string | undefined {
+    if (typeof val === "undefined") return undefined;
+
+    switch (val.kind) {
+        case "number":
+            return val.value.toString(10) + "n";
+        case "simplified_string":
+            return JSON.stringify(val.value);
+        case "boolean":
+            return val.value ? "true" : "false";
+        case "address":
+            return `address("${val.value.toString()}")`;
+        case "cell":
+            return `Cell.fromHex("${val.value.toBoc().toString("hex")}")`;
+        case "slice":
+            return `Cell.fromHex("${val.value.asCell().toBoc().toString("hex")}").beginParse()`;
+        case "null":
+            return "null";
+        case "struct_value": {
+            const typeName = val.type.text;
+            const args = val.args
+                .map(
+                    (it) =>
+                        it.field.text +
+                        ": " +
+                        writeTypescriptValue(it.initializer),
+                )
+                .join(", ");
+            return `{ $$type: "${typeName}" as const, ${args} }`;
+        }
+    }
 }

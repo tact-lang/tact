@@ -1,7 +1,8 @@
 import { readFileSync } from "fs";
-import { decompileAll } from "@tact-lang/opcode";
+import { AssemblyWriter, Cell, disassembleRoot } from "@tact-lang/opcode";
 import { ArgConsumer } from "../arg-consumer";
-import { ArgParser, GetParserResult } from "../arg-parser";
+import type { GetParserResult } from "../arg-parser";
+import { ArgParser } from "../arg-parser";
 import { CliLogger } from "../logger";
 import { UnbocErrors } from "./error-schema";
 import { showCommit } from "../version";
@@ -41,6 +42,9 @@ const processArgs = (Errors: UnbocErrors, argv: string[]) => {
 
 const ArgSchema = (Parser: ArgParser) => {
     return Parser.tokenizer
+        .add(Parser.boolean("no-compute-refs", undefined))
+        .add(Parser.boolean("no-aliases", undefined))
+        .add(Parser.boolean("show-bitcode", undefined))
         .add(Parser.boolean("version", "v"))
         .add(Parser.boolean("help", "h"))
         .add(Parser.immediate).end;
@@ -52,6 +56,9 @@ const showHelp = () => {
       $ unboc [...flags] BOC-FILE
 
     Flags
+          --no-compute-refs       Don't extract CALLREF to separate functions for better readability
+          --no-aliases            Don't replace instructions with aliases for better readability
+          --show-bitcode          Show HEX bitcode after instruction
       -v, --version               Print unboc version and exit
       -h, --help                  Display this text and exit
 
@@ -81,8 +88,20 @@ const parseArgs = (Errors: UnbocErrors, Args: Args) => {
     const filePath = Args.single("immediate");
     if (filePath) {
         const boc = readFileSync(filePath);
-        const disasmResult = decompileAll({ src: Buffer.from(boc) });
-        console.log(disasmResult);
+        const noComputeRefs = Args.single("no-compute-refs") ?? false;
+        const noAliases = Args.single("no-aliases") ?? false;
+        const outputBitcodeAfterInstruction =
+            Args.single("show-bitcode") ?? false;
+
+        const disasmResult = decompileAll(
+            Buffer.from(boc),
+            !noComputeRefs,
+            !noAliases,
+            outputBitcodeAfterInstruction,
+        );
+        if (disasmResult) {
+            console.log(disasmResult);
+        }
         return;
     }
 
@@ -103,4 +122,21 @@ const noUnknownParams = (Errors: UnbocErrors, Args: Args): boolean => {
     }
     showHelp();
     return false;
+};
+
+const decompileAll = (
+    src: Buffer,
+    computeRefs: boolean,
+    useAliases: boolean,
+    outputBitcodeAfterInstruction: boolean,
+): string | undefined => {
+    const cell = Cell.fromBoc(src).at(0);
+    if (typeof cell === "undefined") return undefined;
+
+    const program = disassembleRoot(cell, { computeRefs });
+
+    return AssemblyWriter.write(program, {
+        useAliases,
+        outputBitcodeAfterInstruction,
+    });
 };

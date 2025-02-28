@@ -80,6 +80,14 @@ contract StringsTester {
         return 95.toFloatString(1);
     }
 
+    get fun intToString(x: Int): String {
+        return x.toString();
+    }
+
+    get fun floatToString(x: Int, digits: Int): String {
+        return x.toFloatString(digits);
+    }
+
     get fun base64(): Slice {
         return "TWFueSBoYW5kcyBtYWtlIGxpZ2h0IHdvcmsu".fromBase64();
     }

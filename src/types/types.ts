@@ -1,9 +1,10 @@
-import { ABIField } from "@ton/core";
+import type { ABIField } from "@ton/core";
 import { throwInternalCompilerError } from "../error/errors";
-import * as A from "../ast/ast";
-import { SrcInfo } from "../grammar";
+import type * as A from "../ast/ast";
+import type { SrcInfo } from "../grammar";
 import { idText } from "../ast/ast-helpers";
-import { ItemOrigin } from "../imports/source";
+import type { ItemOrigin } from "../imports/source";
+import type { Effect } from "./effects";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";
@@ -105,13 +106,6 @@ export type FunctionParameter = {
     loc: SrcInfo;
 };
 
-export type InitParameter = {
-    name: A.AstId;
-    type: TypeRef;
-    as: string | null;
-    loc: SrcInfo;
-};
-
 export type FunctionDescription = {
     name: string;
     origin: ItemOrigin;
@@ -168,7 +162,7 @@ type EmptyReceiverSelector =
           kind: "external-empty";
       };
 
-type FallbackReceiverSelector =
+export type FallbackReceiverSelector =
     | {
           kind: "internal-comment-fallback";
           name: A.AstId;
@@ -222,11 +216,29 @@ export function receiverSelectorName(selector: ReceiverSelector): string {
 export type ReceiverDescription = {
     selector: ReceiverSelector;
     ast: A.AstReceiver;
+    effects: ReadonlySet<Effect>;
 };
 
-export type InitDescription = {
+export type InitParameter = {
+    name: A.AstId;
+    type: TypeRef;
+    as: string | null;
+    loc: SrcInfo;
+};
+
+export type InitDescription = SeparateInitDescription | ContractInitDescription;
+
+type SeparateInitDescription = {
+    kind: "init-function";
     params: InitParameter[];
     ast: A.AstContractInit;
+};
+
+type ContractInitDescription = {
+    kind: "contract-params";
+    params: InitParameter[];
+    ast: A.AstContractInit;
+    contract: A.AstContract;
 };
 
 export function printTypeRef(src: TypeRef): string {

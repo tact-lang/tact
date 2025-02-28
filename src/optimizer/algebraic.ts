@@ -1,6 +1,7 @@
-import * as A from "../ast/ast";
+import type * as A from "../ast/ast";
 import { eqExpressions, isLiteral } from "../ast/ast-helpers";
-import { ExpressionTransformer, Rule } from "./types";
+import type { ExpressionTransformer } from "./types";
+import { Rule } from "./types";
 import {
     checkIsBinaryOpNode,
     checkIsBoolean,

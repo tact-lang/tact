@@ -1,5 +1,5 @@
 import fc from "fast-check";
-import * as A from "./ast";
+import type * as A from "./ast";
 import { dummySrcInfo } from "../grammar/src-info";
 import { diffJson } from "diff";
 import { astBinaryOperations, astUnaryOperations } from "./ast-constants";
@@ -180,6 +180,15 @@ function randomAstInitOf(
     );
 }
 
+function randomAstCodeOf(): fc.Arbitrary<A.AstCodeOf> {
+    return dummyAstNode(
+        fc.record({
+            kind: fc.constant("code_of"),
+            contract: randomAstId(),
+        }),
+    );
+}
+
 function randomAstStaticCall(
     expression: fc.Arbitrary<A.AstExpression>,
 ): fc.Arbitrary<A.AstStaticCall> {
@@ -313,6 +322,7 @@ export function randomAstExpression(
                     randomAstStructFieldInitializer(subExpr()),
                 ),
                 randomAstInitOf(subExpr()),
+                randomAstCodeOf(),
                 randomAstString(),
                 randomAstOpUnary(subExpr()),
                 randomAstOpBinary(subExpr(), subExpr()),

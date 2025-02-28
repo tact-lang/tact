@@ -15,6 +15,14 @@ module.exports = {
     es2021: true,
   },
   rules: {
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        prefer: "type-imports",
+        fixStyle: "separate-type-imports",
+        disallowTypeAnnotations: true,
+      },
+    ],
     "@typescript-eslint/no-unused-vars": [
       "error",
       {

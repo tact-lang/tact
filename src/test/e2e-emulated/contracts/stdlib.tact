@@ -58,6 +58,14 @@ contract StdlibTest {
         return bl.storeMaybeRef(c);
     }
 
+    get fun loadMaybeRef(c: Slice): Cell? {
+        return c.loadMaybeRef();
+    }
+
+    get fun preloadMaybeRef(c: Slice): Cell? {
+        return c.preloadMaybeRef();
+    }
+
     get fun parseStdAddress(slice: Slice): StdAddress {
         return parseStdAddress(slice);
     }
@@ -70,7 +78,7 @@ contract StdlibTest {
         msg.skipBits(4); //Skip tags
         msg.loadAddress(); // Skip source
         let ctx: Context = Context{
-            bounced: false,
+            bounceable: false,
             sender: myAddress(),
             value: ton("1"),
             raw: msg
