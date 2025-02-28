@@ -122,12 +122,12 @@
     },
     {
       "label": "1.5.3 with optimized contract storage saving",
-      "pr": "https://github.com/tact-lang/tact/pull/TODO",
+      "pr": "https://github.com/tact-lang/tact/pull/2067",
       "gas": {
-        "fundingTon": "4917",
-        "changeCode": "5123",
-        "approveTon": "7131",
-        "cancelTon": "4957"
+        "fundingTon": "4768",
+        "changeCode": "4974",
+        "approveTon": "7171",
+        "cancelTon": "4997"
       }
     }
   ]
