@@ -159,7 +159,7 @@ const main = async () => {
     try {
         const benchmarkPaths = [
             join(__dirname, "jetton", "jetton.spec.ts"),
-            // join(__dirname, "escrow", "escrow.spec.ts"),
+            join(__dirname, "escrow", "escrow.spec.ts"),
         ];
 
         const fetchBenchmarkResults = async (specPath: string) => {

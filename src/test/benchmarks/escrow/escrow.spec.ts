@@ -19,7 +19,7 @@ import {
     generateCodeSizeResults,
     getStateSizeForAccount,
 } from "../util";
-import benchmarkResults from "./results.json";
+import benchmarkResults from "./results_gas.json";
 import { readFileSync } from "fs";
 import { posixNormalize } from "../../../utils/filePath";
 import { resolve } from "path";
@@ -418,7 +418,7 @@ describe("Escrow Gas Tests", () => {
         expect(cancelGasTact).toEqual(expectedResult.gas["cancelTon"]);
     });
 
-    it("escrow cells", async () => {
+    it("cells", async () => {
         const escrowContractFunC = await deployEscrowContractFunC(
             null,
             toNano(1),
@@ -450,7 +450,7 @@ describe("Escrow Gas Tests", () => {
         ).toEqual(expectedCodeSize.size["cells"]);
     });
 
-    it("escrow bits", async () => {
+    it("bits", async () => {
         const escrowContractFunC = await deployEscrowContractFunC(
             null,
             toNano(1),

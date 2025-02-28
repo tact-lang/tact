@@ -15,6 +15,14 @@
         "cells": "28",
         "bits": "11648"
       }
+    },
+    {
+      "label": "Benchmark 2025-02-28",
+      "pr": null,
+      "size": {
+        "cells": "23",
+        "bits": "11068"
+      }
     }
   ]
 }
