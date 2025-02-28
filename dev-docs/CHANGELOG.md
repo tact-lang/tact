@@ -107,7 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### `unboc` CLI
 
 - Introduced `unboc`: a standalone CLI utility to expose Tact's TVM disassembler: PR [#1259](https://github.com/tact-lang/tact/pull/1259)
-- Bump used `@tact-lang/opcode` version to `0.2` which fixes many issues in CI runs: PR [#1922](https://github.com/tact-lang/tact/pull/1922)
+- Bump used `@tact-lang/opcode` version to `0.3` which fixes many issues in CI runs: PR [#1922](https://github.com/tact-lang/tact/pull/1922)
 
 #### Compilation report
 
