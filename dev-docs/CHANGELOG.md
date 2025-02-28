@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calling methods on `null` when `self` is of an optional type is now allowed: PR [#1567](https://github.com/tact-lang/tact/pull/1567)
 - Constants and trait constants can now depend on each other: PR [#1622](https://github.com/tact-lang/tact/pull/1622)
 - Support overriding constants and methods of the `BaseTrait` trait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
+- Introduced contract parameters as a replacement for the lazy initialization via `init()` function: PR [#1985](https://github.com/tact-lang/tact/pull/1985), PR [#2071](https://github.com/tact-lang/tact/pull/2071)
 - [fix] Collisions in getter method ids are now handled and reported properly: PR [#875](https://github.com/tact-lang/tact/pull/875), PR [#1052](https://github.com/tact-lang/tact/pull/1052)
 - [fix] The `as coins` map value serialization type is now handled correctly: PR [#987](https://github.com/tact-lang/tact/pull/987)
 - [fix] Fixed type checking of `foreach` loops in trait methods: PR [#1017](https://github.com/tact-lang/tact/pull/1017)
