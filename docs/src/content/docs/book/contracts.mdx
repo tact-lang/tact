@@ -20,6 +20,15 @@ contract Example {
         self.foo = 42; // <- referencing variable foo through self.
     }
 }
+
+contract ExampleParams(
+    // persistent state variables
+    foo: Int,
+) {
+    receive() {
+        self.foo = 42; // <- referencing variable foo through self.
+    }
+}
 ```
 
 ## Structure
@@ -56,16 +65,22 @@ contract Plural with
 {}
 ```
 
-As [traits][trait] are not allowed to have [`init(){:tact}` function](#init-function), a contract inheriting a trait with any [persistent state variables](#variables) declared must initialize them by providing its own [`init(){:tact}` function](#init-function).
+As [traits][trait] are not allowed to have [`init(){:tact}` function](#init-function), a contract inheriting a trait with any [persistent state variables](#variables) declared must either provide its own [`init(){:tact}` function](#init-function) or declare [contract parameters](#parameters).
 
 ```tact
 trait Supe { omelander: Bool }
 
-contract Vot with Supe {
-    init() {
-        self.omelander = true;
-    }
+// This contract will perform lazy initialization,
+// setting its data on-chain after the initial deployment
+contract LazyVot with Supe {
+    init() { self.omelander = false }
 }
+
+// This contract will directly set its values with the
+// initial data received from the deployment message
+contract Vot(
+    omelander: Bool,
+) with Supe {}
 ```
 
 If declared or defined in a trait, internal functions and constants can be marked as [virtual or abstract](/book/functions#virtual-and-abstract-functions) and overridden in contracts inheriting from the trait.
@@ -275,7 +290,7 @@ Unlike [variables](#variables), constants cannot change. Their values are calcul
 
 There isn't much difference between constants defined outside of a contract (global constants) and inside the contract (contract constants). Those defined outside can be used by other contracts in your project.
 
-Constant initializations must be relatively simple and only rely on values known during compilation. If you add two numbers for example, the compiler will calculate the result during build and put the result in your compiled code.
+Constant initialization must be relatively simple and only rely on values known during compilation. If you add two numbers for example, the compiler will calculate the result during build and put the result in your compiled code.
 
 You can read constants both in [receivers](#receiver-functions) and in [getters](#getter-functions).
 
@@ -306,7 +321,7 @@ Read more about constants on their dedicated page: [Constants](/book/constants).
 
 ### Constructor function `init()` {#init-function}
 
-On deployment of the contract, the constructor function `init(){:tact}` is run.
+On deployment of the contract, the constructor function `init(){:tact}` is run. Unlike [contract parameters](#parameters), it performs a delayed initialization of the contract data, setting the values of persistent state variables on-chain.
 
 If a contract has any [persistent state variables](#variables) without default values specified, it must initialize them in this function.
 
