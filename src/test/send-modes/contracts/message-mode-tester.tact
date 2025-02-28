@@ -31,7 +31,7 @@ contract Calculator {
             count += 1;
         }
         let result = sum / n;
-        send(SendParameters{
+        message(MessageParameters{
             to: sender(),
             bounce: false,
             // SendDefaultMode with no flags is default
@@ -80,7 +80,7 @@ contract MessageModeTester {
     // Using default mode, no flags
     receive(msg: DoCalculatorRequest) {
         let addr = contractAddress(initOf Calculator());
-        send(SendParameters{
+        message(MessageParameters{
                 to: addr,
                 bounce: true,
                 value: msg.amountToPayInRequest,

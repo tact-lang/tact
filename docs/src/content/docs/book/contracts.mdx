@@ -3,6 +3,8 @@ title: Contracts
 description: "Contracts in Tact are similar to classes in popular object-oriented languages, except that their instances are deployed on the blockchain and they can't be passed around like Structs and Messages"
 ---
 
+import { Badge } from '@astrojs/starlight/components';
+
 Contracts in Tact are similar to classes in popular object-oriented languages, except that their instances are deployed on the blockchain and they can't be passed around like [Structs and Messages](/book/structs-and-messages).
 
 ## Self-references {#self}
@@ -18,14 +20,24 @@ contract Example {
         self.foo = 42; // <- referencing variable foo through self.
     }
 }
+
+contract ExampleParams(
+    // persistent state variables
+    foo: Int,
+) {
+    receive() {
+        self.foo = 42; // <- referencing variable foo through self.
+    }
+}
 ```
 
 ## Structure
 
-Each contract can contain:
+Each contract can be defined with or contain:
 
 * [Inherited traits](#traits)
 * [Supported interfaces](#interfaces)
+* [Contract parameters](#parameters)
 * [Persistent state variables](#variables)
 * [Constructor function `init(){:tact}`](#init-function)
 * [Contract constants](#constants)
@@ -53,16 +65,22 @@ contract Plural with
 {}
 ```
 
-As [traits][trait] are not allowed to have [`init(){:tact}` function](#init-function), a contract inheriting a trait with any [persistent state variables](#variables) declared must initialize them by providing its own [`init(){:tact}` function](#init-function).
+As [traits][trait] are not allowed to have [`init(){:tact}` function](#init-function), a contract inheriting a trait with any [persistent state variables](#variables) declared must either provide its own [`init(){:tact}` function](#init-function) or declare [contract parameters](#parameters).
 
 ```tact
 trait Supe { omelander: Bool }
 
-contract Vot with Supe {
-    init() {
-        self.omelander = true;
-    }
+// This contract will perform lazy initialization,
+// setting its data on-chain after the initial deployment
+contract LazyVot with Supe {
+    init() { self.omelander = false }
 }
+
+// This contract will directly set its values with the
+// initial data received from the deployment message
+contract Vot(
+    omelander: Bool,
+) with Supe {}
 ```
 
 If declared or defined in a trait, internal functions and constants can be marked as [virtual or abstract](/book/functions#virtual-and-abstract-functions) and overridden in contracts inheriting from the trait.
@@ -135,13 +153,57 @@ In addition to that, [`tact.config.json`](/book/config) may still be used in [Bl
 
 :::
 
+### Contract parameters {#parameters}
+
+<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+
+Most of the contracts do not need any on-chain deployment logic that runs just once after the contract's deployment is completed. As such, the costly lazy deployment strategy provided by the [`init(){:tact}`](#init-function) is generally discouraged in favor of simple, direct deployments with [initial code and initial data](/book/expressions#initof).
+
+To declare [persistent state variables](#variables) for their values to be set during such deployments, use the following _contract parameters_ syntax:
+
+```tact
+contract ContractParameters(
+    // persistent state variables declared via the contract parameters syntax
+    val: Int,              // Int
+    val32: Int as uint32,  // Int serialized to an 32-bit unsigned
+    mapVal: map<Int, Int>, // Int keys to Int values
+    optVal: Int?,          // Int or null
+) {
+    // ...
+}
+```
+
+State variables declared in this way have **no** default value. Instead, they get their initial data only when the contract is deployed, which is much cheaper compared to deployments with an extra initialization step in the [`init(){:tact}`](#init-function).
+
+The use of contract parameters syntax conflicts with using an [`init(){:tact}`](#init-function) function or declaring persistent state variables via the [contract fields syntax](#variables). Whenever possible, prefer using contract parameters unless you need some on-chain deployment logic that needs to be run only once, i.e. via [`init(){:tact}`](#init-function) function.
+
+```tact
+contract ParamParamParam(
+    param1: Int,
+    param2: Int,
+) {
+    // COMPILATION ERROR! init() cannot be used along with contract parameters
+    init(param1: Int, param2: Int) {}
+}
+```
+
+:::note
+
+  To obtain initial state of the target contract in [internal functions](#internal-functions), [receivers](#receiver-functions) or [getters](#getter-functions) use the [`initOf{:tact}`](/book/expressions#initof) expression.
+
+  To only get the contract's code, use the [`codeOf{:tact}`](/book/expressions#codeof) expression.
+
+:::
+
 ### Persistent state variables {#variables}
 
 Contracts can define state variables that persist between contract calls, and thus commonly referred to as _storage_ variables. Contracts in TON [pay rent](https://docs.ton.org/develop/smart-contracts/fees#storage-fee) in proportion to the amount of persistent space they consume, so [compact representations via serialization](/book/integers#serialization) are encouraged.
 
+The storage variables can be defined by using the [contract parameters](#parameters) or by using the following _contract fields_ syntax:
+
 ```tact
-contract Example {
-    // persistent state variables
+contract ContractFields {
+    // persistent state variables declared via the contract fields syntax
     val: Int;              // Int
     val32: Int as uint32;  // Int serialized to an 32-bit unsigned
     mapVal: map<Int, Int>; // Int keys to Int values
@@ -149,7 +211,7 @@ contract Example {
 }
 ```
 
-State variables must have a default value or be initialized in the [`init(){:tact}`](#init-function) function that runs once on deployment of the contract. The only exception are persistent state variables of type [`map<K, V>{:tact}`](/book/maps), since they are initialized empty by default.
+State variables defined via the contract fields syntax must have a default value or be initialized in the [`init(){:tact}`](#init-function) function that runs once on deployment of the contract. The only exception are persistent state variables of type [`map<K, V>{:tact}`](/book/maps), since they are initialized empty by default.
 
 The default value of state variables is assigned before any values could be assigned in the [`init(){:tact}`](#init-function) function.
 
@@ -203,6 +265,19 @@ contract Zero {
 }
 ```
 
+The above contract fields syntax for declaring persistent state variables conflicts with the use of [contract parameters](#parameters). Use one or the other, but not both.
+
+```tact
+contract ParamParamParam(
+    param1: Int,
+    param2: Int,
+) {
+    // COMPILATION ERROR! cannot use contract fields along with contract parameters
+    field1: Int;
+    field2: Int;
+}
+```
+
 :::note
 
   Tact supports local, non-persistent-state variables too, see: [Variable declaration](/book/statements#let).
@@ -215,7 +290,7 @@ Unlike [variables](#variables), constants cannot change. Their values are calcul
 
 There isn't much difference between constants defined outside of a contract (global constants) and inside the contract (contract constants). Those defined outside can be used by other contracts in your project.
 
-Constant initializations must be relatively simple and only rely on values known during compilation. If you add two numbers for example, the compiler will calculate the result during build and put the result in your compiled code.
+Constant initialization must be relatively simple and only rely on values known during compilation. If you add two numbers for example, the compiler will calculate the result during build and put the result in your compiled code.
 
 You can read constants both in [receivers](#receiver-functions) and in [getters](#getter-functions).
 
@@ -246,7 +321,7 @@ Read more about constants on their dedicated page: [Constants](/book/constants).
 
 ### Constructor function `init()` {#init-function}
 
-On deployment of the contract, the constructor function `init(){:tact}` is run.
+On deployment of the contract, the constructor function `init(){:tact}` is run. Unlike [contract parameters](#parameters), it performs a delayed initialization of the contract data, setting the values of persistent state variables on-chain.
 
 If a contract has any [persistent state variables](#variables) without default values specified, it must initialize them in this function.
 
@@ -265,7 +340,7 @@ contract Example {
 }
 ```
 
-If a contract doesn't have any persistent state variables, or they all have their default value specified, it may omit the `init(){:tact}` function declaration altogether. That's because unless explicitly declared, the empty `init(){:tact}` function is present by default in all contracts.
+If a contract doesn't have any persistent state variables, or they all have their default value specified, it may omit the `init(){:tact}` function declaration altogether. That's because unless explicitly declared, the empty `init(){:tact}` function is present by default in all contracts that do not declare the [contract parameters](#parameters).
 
 The following is an example of a valid empty contract:
 
@@ -286,9 +361,23 @@ contract TheySeeMeTrailing {
 }
 ```
 
+Usage of the `init(){:tact}` function conflicts with the use of [contract parameters](#parameters). Use one or the other, but not both.
+
+```tact
+contract ParamParamParam(
+    param1: Int,
+    param2: Int,
+) {
+    // COMPILATION ERROR! init() cannot be used along with contract parameters
+    init(param1: Int, param2: Int) {}
+}
+```
+
 :::note
 
-  To obtain initial state of the target contract in [internal functions](#internal-functions), [receivers](#receiver-functions) or [getters](#getter-functions) use [`initOf{:tact}`](/book/expressions#initof) expression.
+  To obtain initial state of the target contract in [internal functions](#internal-functions), [receivers](#receiver-functions) or [getters](#getter-functions) use the [`initOf{:tact}`](/book/expressions#initof) expression.
+
+  To only get the contract's code, use the [`codeOf{:tact}`](/book/expressions#codeof) expression.
 
 :::
 

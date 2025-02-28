@@ -159,6 +159,7 @@ export const getAstSchema = (
             name: A.AstId,
             traits: A.AstId[],
             attributes: A.AstContractAttribute[],
+            params: undefined | readonly A.AstFieldDecl[],
             declarations: A.AstContractDeclaration[],
             loc: Loc,
         ): A.AstContract =>
@@ -167,6 +168,7 @@ export const getAstSchema = (
                 name,
                 traits,
                 attributes,
+                params,
                 declarations,
                 loc: toSrcInfo(loc),
             }),
@@ -543,6 +545,12 @@ export const getAstSchema = (
                 kind: "init_of",
                 contract,
                 args,
+                loc: toSrcInfo(loc),
+            }),
+        CodeOf: (contract: A.AstId, loc: Loc): A.AstCodeOf =>
+            createNode<A.AstCodeOf>({
+                kind: "code_of",
+                contract,
                 loc: toSrcInfo(loc),
             }),
         Conditional: (

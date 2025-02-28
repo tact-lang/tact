@@ -7,105 +7,146 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### BREAKING CHANGES
+### Language features
 
-- `Context.bounced` field was replaced with `Context.bounceable` field: PR [#1934](https://github.com/tact-lang/tact/pull/1934)
+- Added `&&=`, `||=`, `>>=` and `<<=` augmented assignment operators: PR [#853](https://github.com/tact-lang/tact/pull/853)
+- Added non-nested `let`-destructuring of structs and messages: PR [#856](https://github.com/tact-lang/tact/pull/856), PR [#964](https://github.com/tact-lang/tact/pull/964), PR [#969](https://github.com/tact-lang/tact/pull/969)
+- Introduced the ability to specify a compile-time _method ID_ expression for getters: PR [#922](https://github.com/tact-lang/tact/pull/922) and PR [#932](https://github.com/tact-lang/tact/pull/932)
+- Ability to specify a compile-time message opcode _expression_: PR [#1188](https://github.com/tact-lang/tact/pull/1188)
+- The maps methods has been extended with the new `replace` and `replaceGet`: PR [#941](https://github.com/tact-lang/tact/pull/941)
+- Added support for block statements: PR [#1334](https://github.com/tact-lang/tact/pull/1334)
+- Added the new `codeOf` expression to get the code of child contracts: PR [#1948](https://github.com/tact-lang/tact/pull/1948)
+- Optional types for `self` argument in `extends mutates` functions are now allowed: PR [#854](https://github.com/tact-lang/tact/pull/854)
+- Stop automatically validate all addresses when receiving/sending messages or using address manipulating functions: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
+- Removed `org.ton.chain.any.v0` interface: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
+- Don't generate the `lazy_deployment_completed` getter by default: PR [#1717](https://github.com/tact-lang/tact/pull/1717)
+- To reduce gas usage, Tact no longer stores the parent contract code in the system cell that holds all the child contract codes used in `initOf`. Instead, the `MYCODE` instruction is used: PR [#1213](https://github.com/tact-lang/tact/pull/1213)
+- Trait fields can now have serialization specifiers: PR [#1303](https://github.com/tact-lang/tact/pull/1303)
+- Calling methods on `null` when `self` is of an optional type is now allowed: PR [#1567](https://github.com/tact-lang/tact/pull/1567)
+- Constants and trait constants can now depend on each other: PR [#1622](https://github.com/tact-lang/tact/pull/1622)
+- Support overriding constants and methods of the `BaseTrait` trait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
+- Introduced contract parameters as a replacement for the lazy initialization via `init()` function: PR [#1985](https://github.com/tact-lang/tact/pull/1985), PR [#2071](https://github.com/tact-lang/tact/pull/2071)
+- [fix] Collisions in getter method ids are now handled and reported properly: PR [#875](https://github.com/tact-lang/tact/pull/875), PR [#1052](https://github.com/tact-lang/tact/pull/1052)
+- [fix] The `as coins` map value serialization type is now handled correctly: PR [#987](https://github.com/tact-lang/tact/pull/987)
+- [fix] Fixed type checking of `foreach` loops in trait methods: PR [#1017](https://github.com/tact-lang/tact/pull/1017)
+- [fix] The `sha256()` function no longer throws on statically known strings of any length: PR [#907](https://github.com/tact-lang/tact/pull/907)
+- [fix] The `foreach` loop now properly handles the `as coins` map value serialization type: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
+- [fix] The typechecker now rejects integer map key types with variable width (`coins`, `varint16`, `varint32`, `varuint16`, `varuint32`): PR [#1276](https://github.com/tact-lang/tact/pull/1276)
+- [fix] The typechecker now rejects `as remaining` fields in the middle of a contract storage: PR [#1301](https://github.com/tact-lang/tact/pull/1301)
+- [fix] The `override` modifier for functions without the corresponding super-function is not allowed: PR [#1302](https://github.com/tact-lang/tact/pull/1302)
+- [fix] The `override` modifier for constants without the corresponding super-constant is not allowed: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
+- [fix] Allowed importing FunC files with `.func` extension: PR [#1451](https://github.com/tact-lang/tact/pull/1451)
+- [fix] Bit shift FunC compilation errors for incorrect bit widths: PR [#1453](https://github.com/tact-lang/tact/pull/1453)
+- [fix] Process `else if` statements during constant evaluation: PR [#1500](https://github.com/tact-lang/tact/pull/1500)
+- [fix] Incorrect arithmetic bit shift operations optimizations: PR [#1501](https://github.com/tact-lang/tact/pull/1501)
+- [fix] Throwing from functions with non-trivial branching in the `try` statement: PR [#1501](https://github.com/tact-lang/tact/pull/1501)
+- [fix] Forbid reading and writing to self in contract init function: PR [#1482](https://github.com/tact-lang/tact/pull/1482)
+- [fix] Support for using a constant within another constant and for the default value of a struct field before constant declaration: PR [#1478](https://github.com/tact-lang/tact/pull/1478)
+- [fix] Incorrect call generation to a mutation function: PR [#1608](https://github.com/tact-lang/tact/pull/1608)
+- [fix] Runtime calls to `sha256()` now work for arbitrary _strings_ with length >= 128: PR [#1626](https://github.com/tact-lang/tact/pull/1626)
+- [fix] Runtime calls to `sha256()` now work for arbitrary _slices_ with length >= 128: PR [#1936](https://github.com/tact-lang/tact/pull/1936)
+- [fix] Forbid traits inherit implicitly from `BaseTrait`: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
+- [fix] Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
+- [fix] Generate the fallback receiver for external messages: PR [#1926](https://github.com/tact-lang/tact/pull/1926)
+- [fix] Destruct statement for struct with nested struct fields: PR [#2084](https://github.com/tact-lang/tact/pull/2084)
 
-### Added
+### Standard library
 
-- `deploy()` function, that optimizes the deployment of a child contract: PR [#1832](https://github.com/tact-lang/tact/pull/1832)
-- `&&=`, `||=`, `>>=` and `<<=` augmented assignment operators: PR [#853](https://github.com/tact-lang/tact/pull/853)
-- New CSpell dictionaries: TVM instructions and adjusted list of Fift words: PR [#881](https://github.com/tact-lang/tact/pull/881)
-- Ability to specify a compile-time method ID expression for getters: PR [#922](https://github.com/tact-lang/tact/pull/922) and PR [#932](https://github.com/tact-lang/tact/pull/932)
-- Destructuring of structs and messages: PR [#856](https://github.com/tact-lang/tact/pull/856), PR [#964](https://github.com/tact-lang/tact/pull/964), PR [#969](https://github.com/tact-lang/tact/pull/969)
-- The `SendDefaultMode` send mode constant to the standard library: PR [#1010](https://github.com/tact-lang/tact/pull/1010)
-- The `replace` and `replaceGet` methods for the `Map` type: PR [#941](https://github.com/tact-lang/tact/pull/941)
-- Utility for logging errors in code that was supposed to be unreachable: PR [#991](https://github.com/tact-lang/tact/pull/991)
-- Ability to specify a compile-time message opcode expression: PR [#1188](https://github.com/tact-lang/tact/pull/1188)
-- The `VarInt16`, `VarInt32`, `VarUint16`, `VarUint32` integer serialization types and relevant `storeVarInt16`, `storeVarUint16`, `storeVarInt32`, `storeVarUint32` methods for the `Builder` type: PR [#1186](https://github.com/tact-lang/tact/pull/1186), PR [#1274](https://github.com/tact-lang/tact/pull/1274)
-- `unboc`: a standalone CLI utility to expose Tact's TVM disassembler: PR [#1259](https://github.com/tact-lang/tact/pull/1259)
-- Added alternative parser: PR [#1258](https://github.com/tact-lang/tact/pull/1258)
-- Support for block statements: PR [#1334](https://github.com/tact-lang/tact/pull/1334)
-- `nullChecks` config option to disable run-time null checks for the `!!` operator in order to save gas: PR [#1660](https://github.com/tact-lang/tact/pull/1660)
-- `loadVarInt16`, `loadVarUint16`, `loadVarInt32`, `loadVarUint32` methods for the `Slice` type: PR [#1667](https://github.com/tact-lang/tact/pull/1667)
-- New functions in stdlib from `stdlib.fc` and `math.fc`: `Builder.depth`, `Slice.skipLastBits`, `Slice.firstBits`, `Slice.lastBits`, `Slice.depth`, `Cell.computeDataSize`, `Slice.computeDataSize`, `Cell.depth`, `curLt`, `blockLt`, `setGasLimit`, `getSeed`, `setSeed`, `myCode`, `sign`, `divc`, `muldivc`, `mulShiftRight`, `mulShiftRightRound`, `mulShiftRightCeil`, `sqrt`: PR [#986](https://github.com/tact-lang/tact/pull/986)
-- The `--output` CLI flag for specifying custom output directory in single-contract compilation: PR [#1793](https://github.com/tact-lang/tact/pull/1793)
-- New functions `Slice.asAddressUnsafe` and `contractHash` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
-- New function `Slice.asAddress` in stdlib: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
+- **BREAKING CHANGE:** `Context.bounced` field was replaced with `Context.bounceable` field: PR [#1934](https://github.com/tact-lang/tact/pull/1934)
+- Added the `message()` function to optimize message sending without deploying a contract: PR [#1999](https://github.com/tact-lang/tact/pull/1999)
+- Added the `deploy()` function to optimize the deployment of a child contract: PR [#1832](https://github.com/tact-lang/tact/pull/1832)
+- Introduced the new `SendDefaultMode` send mode constant: PR [#1010](https://github.com/tact-lang/tact/pull/1010)
+- Added the `VarInt16`, `VarInt32`, `VarUint16`, `VarUint32` integer serialization types and the corresponding `storeVarInt16`, `storeVarUint16`, `storeVarInt32`, `storeVarUint32` methods for the `Builder` type: PR [#1186](https://github.com/tact-lang/tact/pull/1186), PR [#1274](https://github.com/tact-lang/tact/pull/1274)
+- Added `loadVarInt16`, `loadVarUint16`, `loadVarInt32`, `loadVarUint32` methods for the `Slice` type: PR [#1667](https://github.com/tact-lang/tact/pull/1667)
+- Added new functions in stdlib: `Builder.depth`, `Slice.skipLastBits`, `Slice.firstBits`, `Slice.lastBits`, `Slice.depth`, `Cell.computeDataSize`, `Slice.computeDataSize`, `Cell.depth`, `curLt`, `blockLt`, `setGasLimit`, `getSeed`, `setSeed`, `myCode`, `sign`, `divc`, `muldivc`, `mulShiftRight`, `mulShiftRightRound`, `mulShiftRightCeil`, `sqrt`, `Slice.loadMaybeRef`, `Slice.preloadMaybeRef`: PR [#986](https://github.com/tact-lang/tact/pull/986), PR [#2040](https://github.com/tact-lang/tact/pull/2040)
+- Added new functions `Slice.asAddress`, `Slice.asAddressUnsafe` and `contractHash`: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
+- Added new functions `throwIf` and `throwUnless` and deprecated their aliases `nativeThrowIf` and `nativeThrowUnless`: PR [#1974](https://github.com/tact-lang/tact/pull/1974)
+- Added the `BasechainAddress` type as a more optimized version of the `Address` type: PR [#2035](https://github.com/tact-lang/tact/pull/2035)
+- Added the `Slice.hashData()` and `String.hashData()` functions: PR [#2039](https://github.com/tact-lang/tact/pull/2039)
+- Optimized the `emptyCell()` and `emptySlice()` functions: PR [#1696](https://github.com/tact-lang/tact/pull/1696)
+- The `Int.toString` function now consumes up to 64% less gas: PR [#1837](https://github.com/tact-lang/tact/pull/1837)
+- The `Int.toFloatString` now consumes up to 62% less gas: PR [#1956](https://github.com/tact-lang/tact/pull/1956)
 
-### Changed
+### Error reporting
+
+- Removed duplicate line and column info from error messages: PR [#1362](https://github.com/tact-lang/tact/pull/1362)
+- Improved the error message for the missing message field error message for bounced types: PR [#1111](https://github.com/tact-lang/tact/pull/1111)
+- Improved the error message for the `unresolved name` error: PR [#1595](https://github.com/tact-lang/tact/pull/1595)
+- Improved the error message for the `unresolved global function` error: PR [#1610](https://github.com/tact-lang/tact/pull/1610)
+- Improved the error message for the `extend function without parameters` error: PR [#1624](https://github.com/tact-lang/tact/pull/1624)
+- The error message for invalid type for function argument now shows expected type: PR [#1738](https://github.com/tact-lang/tact/pull/1738)
+- The error message for the reserved `self` function parameter now suggests using the `extends` function modifier: PR [#1737](https://github.com/tact-lang/tact/pull/1737)
+- Improved the error message for the undefined type error: PR [#2005](https://github.com/tact-lang/tact/pull/2005)
+- 'The "remainder" field can only be the last field:' inspection now shows location: PR [#1300](https://github.com/tact-lang/tact/pull/1300)
+- Remove "remainder" from error messages: PR [#1699](https://github.com/tact-lang/tact/pull/1699)
+- Show better error for fields with a contract type: PR [#2011](https://github.com/tact-lang/tact/pull/2011)
+- Show stacktrace of a compiler error only in verbose mode: PR [#1375](https://github.com/tact-lang/tact/pull/1375)
+- Improved error messages for empty `bounced()` and `bounced("string")` receivers which are both not allowed: PR [#1998](https://github.com/tact-lang/tact/pull/1998)
+- [fix] Show error on circular trait dependencies: PR [#1452](https://github.com/tact-lang/tact/pull/1452)
+- [fix] Error message for comment (text) receivers with 124 bytes or more: PR [#1711](https://github.com/tact-lang/tact/pull/1711)
+
+### TypeScript wrappers
+
+- Module- and contract- level Tact constants get their counter-parts in the generated TS wrappers: PR [#2043](https://github.com/tact-lang/tact/pull/2043)
+- TS wrappers now use `const` where possible for variable declarations: PR [#1292](https://github.com/tact-lang/tact/pull/1292)
+- [fix] Non-null struct fields after null ones are treated correctly in Sandbox tests after updating `@ton/core` to 0.59.0: PR [#933](https://github.com/tact-lang/tact/pull/933)
+- [fix] Messages with single quote are treated correctly: PR [#1106](https://github.com/tact-lang/tact/pull/1106)
+- [fix] The name clash for init-functions of the form `init(init: Init)`: PR [#1709](https://github.com/tact-lang/tact/pull/1709)
+
+### Compiler configuration
+
+- **BREAKING CHANGE:** Removed the `enabledMasterchain` compiler config option from `tact.config.json`: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
+- Added `nullChecks` config option to disable run-time null checks for the `!!` operator in order to save gas: PR [#1660](https://github.com/tact-lang/tact/pull/1660)
+
+### Tooling
+
+#### `tact` CLI
+
+- The new `--output` CLI flag for specifying custom output directory in single-contract compilation: PR [#1793](https://github.com/tact-lang/tact/pull/1793)
+- The new `-w` / `--watch` CLI flags to watch for changes in the project and automatically recompile it: PR [#1844](https://github.com/tact-lang/tact/pull/1844)
+- [fix] Fix the `--help` output (`--project` to `--projects`): PR [#1419](https://github.com/tact-lang/tact/pull/1419)
+
+#### `unboc` CLI
+
+- Introduced `unboc`: a standalone CLI utility to expose Tact's TVM disassembler: PR [#1259](https://github.com/tact-lang/tact/pull/1259)
+- Bump used `@tact-lang/opcode` version to `0.3` which fixes many issues in CI runs: PR [#1922](https://github.com/tact-lang/tact/pull/1922)
+
+#### Compilation report
+
+- The generated error codes are now formatted as a list: PR [#1051](https://github.com/tact-lang/tact/pull/1051)
+- [fix] Contract data types in compilation reports are now generated correctly: PR [#2004](https://github.com/tact-lang/tact/pull/2004)
+
+### TypeScript third-party API
 
 - The `parseImports` function now returns AST import nodes instead of raw strings: PR [#966](https://github.com/tact-lang/tact/pull/966)
-- Optional types for `self` argument in `extends mutates` functions are now allowed: PR [#854](https://github.com/tact-lang/tact/pull/854)
-- Error codes in the report are now formatted as a list: PR [#1051](https://github.com/tact-lang/tact/pull/1051)
-- Clarify error message for bounced types from which accessed a field that does not fit in 224 bytes: PR [#1111](https://github.com/tact-lang/tact/pull/1111)
-- Do not automatically validate all addresses when receiving/sending messages or using address manipulating functions: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
-- Remove `enabledMasterchain` compiler config option from `tact.config.json`: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
-- Remove `org.ton.chain.any.v0` interface: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
-- To reduce fees, Tact no longer stores the parent contract code in the system cell that holds all the child contract codes used in `initOf`. Instead, the `MYCODE` instruction is used: PR [#1213](https://github.com/tact-lang/tact/pull/1213)
-- Generated TS wrappers now use `const` where possible for variable declarations: PR [#1292](https://github.com/tact-lang/tact/pull/1292)
-- Allow serialization specifiers for trait fields PR: [#1303](https://github.com/tact-lang/tact/pull/1303)
-- Remove unused typechecker wrapper with the file `check.ts` it is contained in: PR [#1313](https://github.com/tact-lang/tact/pull/1313)
 - Unified `StatementTry` and `StatementTryCatch` AST nodes: PR [#1418](https://github.com/tact-lang/tact/pull/1418)
-- Calling methods on `null` when `self` is of an optional type is now allowed: PR [#1567](https://github.com/tact-lang/tact/pull/1567)
+- [fix] AST printer: format empty blocks without extra empty line: PR [#1346](https://github.com/tact-lang/tact/pull/1346)
+- [fix] AST printer: support `AstTypedParameter` AST node: PR [#1347](https://github.com/tact-lang/tact/pull/1347)
+
+### Internal infrastructure
+
+- Added alternative parser: PR [#1258](https://github.com/tact-lang/tact/pull/1258)
+- New CSpell dictionaries: TVM instructions and adjusted list of Fift words: PR [#881](https://github.com/tact-lang/tact/pull/881)
+- Utility for logging errors in code that was supposed to be unreachable: PR [#991](https://github.com/tact-lang/tact/pull/991)
+- Remove unused typechecker wrapper with the file `check.ts` it is contained in: PR [#1313](https://github.com/tact-lang/tact/pull/1313)
+- The internal `crc16` function is now verifiable and covered with tests: PR [#1739](https://github.com/tact-lang/tact/pull/1739)
+- All generated FunC code is combined into a single file: PR [#1698](https://github.com/tact-lang/tact/pull/1698)
+
+### Code generation
+
 - Make `msg_bounced` last parameter of `*_contract_router_internal` for better code generation: PR [#1585](https://github.com/tact-lang/tact/pull/1585)
 - Inline `*_contract_init` function: PR [#1589](https://github.com/tact-lang/tact/pull/1589)
-- Better error message for `unresolved name` error: PR [#1595](https://github.com/tact-lang/tact/pull/1595)
-- Better error message for `unresolved global function` error: PR [#1610](https://github.com/tact-lang/tact/pull/1610)
-- Better error message for `extend function without parameters` error: PR [#1624](https://github.com/tact-lang/tact/pull/1624)
-- Don't generate `lazy_deployment_completed` by default: PR [#1717](https://github.com/tact-lang/tact/pull/1717)
-- Optimized `emptyCell()` and `emptySlice()` functions: PR [#1696](https://github.com/tact-lang/tact/pull/1696)
-- Internal `crc16` function is now verifiable and covered with tests: PR [#1739](https://github.com/tact-lang/tact/pull/1739)
-- Rearrange parameters of some asm methods in order described in `AsmShuffle`: PR [#1702](https://github.com/tact-lang/tact/pull/1702)
-- Error message for invalid type for function argument now shows expected type: PR [#1738](https://github.com/tact-lang/tact/pull/1738)
-- `Int.toString` now consumes up to 64% less gas: PR [#1837](https://github.com/tact-lang/tact/pull/1837)
-- Error message for reserved `self` function parameter now suggests using `extends` function modifier: PR [#1737](https://github.com/tact-lang/tact/pull/1737)
-
-### Fixed
-
-- Collisions in getter method ids are now handled and reported properly: PR [#875](https://github.com/tact-lang/tact/pull/875), PR [#1052](https://github.com/tact-lang/tact/pull/1052)
-- Non-null struct fields after null ones are treated correctly in Sandbox tests after updating `@ton/core` to 0.59.0: PR [#933](https://github.com/tact-lang/tact/pull/933)
-- Prevent inline code snippets from changing their background color: PR [#935](https://github.com/tact-lang/tact/pull/935)
-- `as coins` map value serialization type is now handled correctly: PR [#987](https://github.com/tact-lang/tact/pull/987)
-- Type checking for `foreach` loops in trait methods: PR [#1017](https://github.com/tact-lang/tact/pull/1017)
-- The `sha256()` function no longer throws on statically known strings of any length: PR [#907](https://github.com/tact-lang/tact/pull/907)
-- TypeScript wrappers generation for messages with single quote: PR [#1106](https://github.com/tact-lang/tact/pull/1106)
-- `foreach` loops now properly handle `as coins` map value serialization type: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
-- The typechecker now rejects integer map key types with variable width (`coins`, `varint16`, `varint32`, `varuint16`, `varuint32`): PR [#1276](https://github.com/tact-lang/tact/pull/1276)
-- Code generation for `self` argument in optional struct methods: PR [#1284](https://github.com/tact-lang/tact/pull/1284)
-- 'The "remainder" field can only be the last field:' inspection now shows location: PR [#1300](https://github.com/tact-lang/tact/pull/1300)
-- Forbid "remainder" field at the middle of a contract storage: PR [#1301](https://github.com/tact-lang/tact/pull/1301)
-- Forbid the `override` modifier for functions without the corresponding super-function: PR [#1302](https://github.com/tact-lang/tact/pull/1302)
-- Format empty blocks without extra empty line: PR [#1346](https://github.com/tact-lang/tact/pull/1346)
-- Remove duplicate line and column info from error messages: PR [#1362](https://github.com/tact-lang/tact/pull/1362)
-- Support `AstTypedParameter` AST node in pretty printer: PR [#1347](https://github.com/tact-lang/tact/pull/1347)
-- Show stacktrace of a compiler error only in verbose mode: PR [#1375](https://github.com/tact-lang/tact/pull/1375)
-- Flag name in help (`--project` to `--projects`): PR [#1419](https://github.com/tact-lang/tact/pull/1419)
-- Allow importing FunC files with `.func` extension: PR [#1451](https://github.com/tact-lang/tact/pull/1451)
-- Error on circular trait dependencies: PR [#1452](https://github.com/tact-lang/tact/pull/1452)
-- Bit shift FunC compilation errors for incorrect bit widths: PR [#1453](https://github.com/tact-lang/tact/pull/1453)
-- Process `else if` statements in the interpreter: PR [#1500](https://github.com/tact-lang/tact/pull/1500)
-- Incorrect arithmetic bit shift operations optimizations: PR [#1501](https://github.com/tact-lang/tact/pull/1501)
-- Throwing from functions with non-trivial branching in the `try` statement: PR [#1501](https://github.com/tact-lang/tact/pull/1501)
-- Forbid read and write to self in contract init function: PR [#1482](https://github.com/tact-lang/tact/pull/1482)
-- Support for using a constant within another constant and for the default value of a struct field before constant declaration: PR [#1478](https://github.com/tact-lang/tact/pull/1478)
-- Incorrect call generation to a mutation function: PR [#1608](https://github.com/tact-lang/tact/pull/1608)
-- Allow constant/trait constants depend on each other: PR [#1622](https://github.com/tact-lang/tact/pull/1622)
-- Combine all generated FunC code into a single file: PR [#1698](https://github.com/tact-lang/tact/pull/1698)
-- Runtime `sha256` now work for arbitrary strings with length >= 128: PR [#1626](https://github.com/tact-lang/tact/pull/1626)
-- Generated code in TypeScript wrappers for contract with `init(init: Init)`: PR [#1709](https://github.com/tact-lang/tact/pull/1709)
-- Error message for comment (text) receivers with 124 bytes or more: PR [#1711](https://github.com/tact-lang/tact/pull/1711)
-- Support overriding constants and methods of BaseTrait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
-- Forbid traits inherit implicitly from BaseTrait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
-- Forbid the `override` modifier for constants without the corresponding super-constant: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
-- Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
-- Remove "remainder" from error messages: PR [#1699](https://github.com/tact-lang/tact/pull/1699)
-- Check map types for `deepEquals` method: PR [#1718](https://github.com/tact-lang/tact/pull/1718)
-- Bump used `@tact-lang/opcode` version to `0.2` which fixes many issues in CI runs: PR [#1922](https://github.com/tact-lang/tact/pull/1922)
-- Generation of the fallback receiver for external messages: PR [#1926](https://github.com/tact-lang/tact/pull/1926)
+- Rearrange parameters of some `asm` methods in order described in `AsmShuffle`: PR [#1702](https://github.com/tact-lang/tact/pull/1702)
+- Struct serialization and parsing functions are now inlined more aggressively to save gas: PR [#2016](https://github.com/tact-lang/tact/pull/2016)
+- `NOP` instructions and empty asm functions are now properly optimized: PR [#1959](https://github.com/tact-lang/tact/pull/1959)
+- Contracts are now compiled with custom optimized function selector with a shortcut for `recv_internal` and `recv_external`: PR [#2038](https://github.com/tact-lang/tact/pull/2038)
+- Contract receivers do not update the contract data cell at the end of execution if the receiver does not modify the contract storage: PR [#2067](https://github.com/tact-lang/tact/pull/2067), PR [#2077](https://github.com/tact-lang/tact/pull/2077)
+- [fix] Fixed code generation for `self` argument in optional struct methods: PR [#1284](https://github.com/tact-lang/tact/pull/1284)
+- [fix] Fixed `initOf` with dependency in global function used inside `init()`: PR [#2027](https://github.com/tact-lang/tact/pull/2027)
 
 ### Docs
 
+- Prevent inline code snippets from changing their background color: PR [#935](https://github.com/tact-lang/tact/pull/935)
 - Added the `description` property to the frontmatter of the each page for better SEO: PR [#916](https://github.com/tact-lang/tact/pull/916)
 - Added Google Analytics tags per every page: PR [#921](https://github.com/tact-lang/tact/pull/921)
 - Added Ston.fi cookbook: PR [#956](https://github.com/tact-lang/tact/pull/956)
@@ -143,8 +184,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Listed functions with implicit mode and further clarified the interactions of message sending functions and their modes: PR [#1634](https://github.com/tact-lang/tact/pull/1634)
 - Added `Deployable` trait to all contracts in the Cookbook: PR [#1906](https://github.com/tact-lang/tact/pull/1906)
 - Added a note on the Debug page about high gas use of functions enabled with debug mode: PR [#1938](https://github.com/tact-lang/tact/pull/1938)
+- Added a note on the Assembly functions page regarding the ordering of fields in stdlib structures: PR [#1976](https://github.com/tact-lang/tact/pull/1976)
+- Added a link to Awesome Tact after the Ecosystem section: PR [#2015](https://github.com/tact-lang/tact/pull/2015)
+- Updated VSCode page in the Ecosystem with the new extension and language server: PR [#2031](https://github.com/tact-lang/tact/pull/2031)
+- Updated contracts in `./examples`: PR [#2008](https://github.com/tact-lang/tact/pull/2008)
+- Added `Upgradable` and `DelayedUpgradable` traits to the Cookbook: PR [#1896](https://github.com/tact-lang/tact/pull/1896), PR [#2079](https://github.com/tact-lang/tact/pull/2079)
 
 ### Release contributors
+
+- [Aliaksandr Bahdanau](https://github.com/a-bahdanau)
+- [Anton Trunov](https://github.com/anton-trunov)
+- [Daniil Sedov](https://github.com/Gusarich)
+- [Danil Ovchinnikov](https://github.com/Danil42Russia)
+- [Esorat](https://github.com/Esorat)
+- [Georgiy Komarov](https://github.com/jubnzv)
+- [Ikko Eltociear Ashimine](https://github.com/eltociear)
+- [Jesús Héctor Domínguez Sánchez](https://github.com/jeshecdom)
+- [Maksim Lagus](https://github.com/Kaladin13)
+- [Novus Nota](https://github.com/novusnota)
+- [Petr Makhnev](https://github.com/i582)
+- [Shvetc Andrei](https://github.com/Shvandre)
+- [Vodka2134156](https://github.com/Vodka2134156)
+- [Vsevolod](https://github.com/sraibaby)
+- [sansx](https://github.com/sansx)
+- [verytactical](https://github.com/verytactical)
+- [xpyctumo](https://github.com/xpyctumo)
 
 ## [1.5.4] - 2025-02-04
 

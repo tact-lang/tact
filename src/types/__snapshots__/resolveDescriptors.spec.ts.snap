@@ -365,6 +365,24 @@ exports[`resolveDescriptors should fail descriptors for getter-outside-contract 
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for init-on-contract-no-fields 1`] = `
+"<unknown>:6:5: Cannot define contract fields along with contract parameters
+  5 | ) {
+> 6 |     foo: Int as int16 = 0;
+          ^~~~~~~~~~~~~~~~~~~~~
+  7 |     get fun getFoo(): Int {
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for init-on-contract-no-init 1`] = `
+"<unknown>:6:5: init() cannot be used along with contract parameters
+  5 | ) {
+> 6 |     init(bar: Int) {
+          ^~~~~~~~~~~~~~~~
+  7 |         self.bar = bar;
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for init-self-augmented-reassign-with 1`] = `
 "<unknown>:5:9: cannot reassign \`self\` in \`init\` function
   4 |     init() {
@@ -407,6 +425,24 @@ exports[`resolveDescriptors should fail descriptors for message-decl-remainder-i
 > 8 |     s: Cell as remaining;
           ^~~~~~~~~~~~~~~~~~~~
   9 |     b: Int;
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for message-field-with-contract-type 1`] = `
+"<unknown>:6:5: Fields with a contract type are not supported yet
+  5 | message TakeEscrowData {
+> 6 |     escrowData: Escrow;
+          ^~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
+exports[`resolveDescriptors should fail descriptors for message-field-with-optional-contract-type 1`] = `
+"<unknown>:6:5: Fields with a contract type are not supported yet
+  5 | message TakeEscrowData {
+> 6 |     escrowData: Escrow?;
+          ^~~~~~~~~~~~~~~~~~~
+  7 | }
 "
 `;
 
@@ -870,6 +906,15 @@ exports[`resolveDescriptors should fail descriptors for struct-decl-self-referen
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for struct-field-with-contract-type 1`] = `
+"<unknown>:6:5: Fields with a contract type are not supported yet
+  5 | struct TakeEscrowData {
+> 6 |     escrowData: Escrow;
+          ^~~~~~~~~~~~~~~~~~
+  7 | }
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for trait-circular-deps 1`] = `
 "<unknown>:3:1: Circular dependency detected for type "A"
   2 | 
@@ -1285,12 +1330,10 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-arg-shuffl
       "attributes": [],
       "id": 9,
       "instructions": [
-        "NOP",
+        "",
       ],
       "kind": "asm_function_def",
-      "loc": asm(-> 0) fun foo(x: Int): Int {
-    NOP
-},
+      "loc": asm(-> 0) fun foo(x: Int): Int {},
       "name": {
         "id": 4,
         "kind": "id",
@@ -2590,6 +2633,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -2605,6 +2649,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -2648,6 +2693,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
           },
           "statements": [],
         },
+        "effects": Set {},
         "selector": {
           "kind": "internal-binary",
           "name": {
@@ -2690,6 +2736,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
           },
           "statements": [],
         },
+        "effects": Set {},
         "selector": {
           "kind": "bounce-fallback",
           "name": {
@@ -2701,8 +2748,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         },
       },
     ],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -3213,6 +3260,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -3228,6 +3276,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -3271,6 +3320,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           },
           "statements": [],
         },
+        "effects": Set {},
         "selector": {
           "kind": "internal-binary",
           "name": {
@@ -3353,6 +3403,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             },
           ],
         },
+        "effects": Set {},
         "selector": {
           "bounced": true,
           "kind": "bounce-binary",
@@ -3366,8 +3417,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         },
       },
     ],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -3612,6 +3663,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "loc": TestContract,
         "text": "TestContract",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 11,
@@ -3677,6 +3729,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -3685,8 +3738,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "TestContract{}",
+    "tlb": "_  = TestContract",
     "traits": [
       {
         "ast": {
@@ -4035,6 +4088,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "loc": TestContract,
         "text": "TestContract",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 12,
@@ -4100,6 +4154,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -4108,8 +4163,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-const-overri
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "TestContract{}",
+    "tlb": "_  = TestContract",
     "traits": [
       {
         "ast": {
@@ -4501,6 +4556,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -4703,6 +4759,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
           },
         ],
       },
+      "kind": "init-function",
       "params": [
         {
           "as": null,
@@ -4727,8 +4784,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{a:int257,b:int257,s:remainder<cell>}",
+    "tlb": "_ a:int257 b:int257 s:remainder<cell> = Test",
     "traits": [
       {
         "ast": {
@@ -5044,6 +5101,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -5067,6 +5125,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -5123,6 +5182,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
             },
           ],
         },
+        "effects": Set {},
         "selector": {
           "kind": "external-binary",
           "name": {
@@ -5165,13 +5225,14 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
             },
           ],
         },
+        "effects": Set {},
         "selector": {
           "kind": "external-empty",
         },
       },
     ],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -5459,6 +5520,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "loc": TestContract,
         "text": "TestContract",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 11,
@@ -5551,6 +5613,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -5559,8 +5622,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "TestContract{}",
+    "tlb": "_  = TestContract",
     "traits": [
       {
         "ast": {
@@ -5994,6 +6057,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "loc": TestContract,
         "text": "TestContract",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 13,
@@ -6086,6 +6150,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -6094,8 +6159,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "TestContract{}",
+    "tlb": "_  = TestContract",
     "traits": [
       {
         "ast": {
@@ -6493,6 +6558,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
         "loc": SomeContract,
         "text": "SomeContract",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 12,
@@ -6563,6 +6629,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -6571,8 +6638,8 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "SomeContract{f:int32}",
+    "tlb": "_ f:int32 = SomeContract",
     "traits": [
       {
         "ast": {
@@ -7693,6 +7760,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "loc": HelloWorld,
         "text": "HelloWorld",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -7865,6 +7933,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -7873,8 +7942,8 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "HelloWorld{a:int257,b:bool}",
+    "tlb": "_ a:int257 b:bool = HelloWorld",
     "traits": [
       {
         "ast": {
@@ -8601,6 +8670,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "loc": Main,
         "text": "Main",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -8835,6 +8905,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           },
         ],
       },
+      "kind": "init-function",
       "params": [
         {
           "as": null,
@@ -8859,8 +8930,8 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Main{a:int257}",
+    "tlb": "_ a:int257 = Main",
     "traits": [
       {
         "ast": {
@@ -9819,6 +9890,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         "loc": Main,
         "text": "Main",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -10169,6 +10241,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -10177,8 +10250,8 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Main{m:dict<int, coins>}",
+    "tlb": "_ m:dict<int, coins> = Main",
     "traits": [
       {
         "ast": {
@@ -10874,6 +10947,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
         "loc": Main,
         "text": "Main",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -11556,6 +11630,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -11564,8 +11639,8 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Main{m1:dict<int, varint16>,m2:dict<int, varint32>}",
+    "tlb": "_ m1:dict<int, varint16> m2:dict<int, varint32> = Main",
     "traits": [
       {
         "ast": {
@@ -12261,6 +12336,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
         "loc": Main,
         "text": "Main",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -12943,6 +13019,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -12951,8 +13028,8 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Main{m1:dict<int, varuint16>,m2:dict<int, varuint32>}",
+    "tlb": "_ m1:dict<int, varuint16> m2:dict<int, varuint32> = Main",
     "traits": [
       {
         "ast": {
@@ -13588,6 +13665,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
         "loc": Foo,
         "text": "Foo",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -13605,6 +13683,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -13646,6 +13725,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
           },
           "statements": [],
         },
+        "effects": Set {},
         "selector": {
           "kind": "internal-binary",
           "name": {
@@ -13658,8 +13738,8 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
         },
       },
     ],
-    "signature": null,
-    "tlb": null,
+    "signature": "Foo{}",
+    "tlb": "_  = Foo",
     "traits": [
       {
         "ast": {
@@ -13906,6 +13986,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 12,
@@ -13971,6 +14052,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -13979,8 +14061,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -14291,6 +14373,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 10,
@@ -14356,6 +14439,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -14364,8 +14448,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -14708,6 +14792,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 14,
@@ -14779,6 +14864,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -14787,8 +14873,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -15323,6 +15409,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 22,
@@ -15464,6 +15551,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -15472,8 +15560,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -21105,6 +21193,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 10,
@@ -21177,6 +21266,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -21185,8 +21275,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -21643,6 +21733,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 14,
@@ -21785,6 +21876,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -21793,8 +21885,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -22219,6 +22311,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 8,
@@ -22285,6 +22378,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -22293,8 +22387,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -22547,6 +22641,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -22606,6 +22701,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -22614,8 +22710,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -23346,6 +23442,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 14,
@@ -23412,6 +23509,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -23420,8 +23518,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -24486,6 +24584,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 14,
@@ -24552,6 +24651,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -24560,8 +24660,8 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{}",
+    "tlb": "_  = Test",
     "traits": [
       {
         "ast": {
@@ -27665,6 +27765,7 @@ exports[`resolveDescriptors should resolve descriptors for receive-message-with-
         "loc": Foo,
         "text": "Foo",
       },
+      "params": undefined,
       "traits": [],
     },
     "constants": [],
@@ -27682,6 +27783,7 @@ exports[`resolveDescriptors should resolve descriptors for receive-message-with-
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -27712,14 +27814,15 @@ exports[`resolveDescriptors should resolve descriptors for receive-message-with-
           },
           "statements": [],
         },
+        "effects": Set {},
         "selector": {
           "comment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "kind": "internal-comment",
         },
       },
     ],
-    "signature": null,
-    "tlb": null,
+    "signature": "Foo{}",
+    "tlb": "_  = Foo",
     "traits": [
       {
         "ast": {
@@ -29787,6 +29890,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 21,
@@ -29940,6 +30044,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
         "params": [],
         "statements": [],
       },
+      "kind": "init-function",
       "params": [],
     },
     "interfaces": [],
@@ -29948,8 +30053,8 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
     "origin": "user",
     "partialFieldCount": 0,
     "receivers": [],
-    "signature": null,
-    "tlb": null,
+    "signature": "Test{m:dict<int, int>}",
+    "tlb": "_ m:dict<int, int> = Test",
     "traits": [
       {
         "ast": {

@@ -1,6 +1,7 @@
 import type { CompilerContext } from "../context/context";
 import { getAllocation, getSortedTypes } from "../storage/resolveAllocation";
 import {
+    getAllStaticConstants,
     getAllStaticFunctions,
     getAllTypes,
     toBounced,
@@ -29,12 +30,15 @@ import {
 import { funcInitIdOf } from "./writers/id";
 import { idToHex } from "../utils/idToHex";
 import { trimIndent } from "../utils/text";
+import type { ContractsCodes } from "./writers/writeContract";
+import { writeTypescriptValue } from "./writers/writeExpression";
 
 export async function writeProgram(
     ctx: CompilerContext,
     abiSrc: ContractABI,
     basename: string,
-    debug: boolean = false,
+    contractCodes: ContractsCodes,
+    debug: boolean,
 ) {
     //
     // Load ABI (required for generator)
@@ -48,12 +52,20 @@ export async function writeProgram(
     //
 
     const wCtx = new WriterContext(ctx, abiSrc.name!);
-    writeAll(ctx, wCtx, abiSrc.name!, abiLink);
+    writeAll(ctx, wCtx, abiSrc.name!, abiLink, contractCodes);
     const functions = wCtx.extract(debug);
 
     //
     // Emit files
     //
+
+    const constants = getAllStaticConstants(ctx)
+        .filter((it) => it.loc.origin === "user")
+        .map((it) => ({
+            name: it.name,
+            value: writeTypescriptValue(it.value),
+            fromContract: false,
+        }));
 
     const files: { name: string; code: string }[] = [];
     const imported: string[] = [];
@@ -177,6 +189,14 @@ export async function writeProgram(
                 imported.push("type:" + t.name + "$init");
                 ffs.push(...typeFunctions);
             }
+
+            constants.push(
+                ...t.constants.map((it) => ({
+                    name: it.name,
+                    value: writeTypescriptValue(it.value),
+                    fromContract: true,
+                })),
+            );
         }
         if (ffs.length > 0) {
             const header: string[] = [];
@@ -243,6 +263,7 @@ export async function writeProgram(
     return {
         entrypoint: basename + ".code.fc",
         files: [{ name: basename + ".code.fc", code }],
+        constants,
         abi,
     };
 }
@@ -297,6 +318,7 @@ function writeAll(
     wCtx: WriterContext,
     name: string,
     abiLink: string,
+    contractCodes: ContractsCodes,
 ) {
     // Load all types
     const allTypes = getAllTypes(ctx);
@@ -405,7 +427,7 @@ function writeAll(
     for (const c of contracts) {
         // Init
         if (c.init) {
-            writeInit(c, c.init, wCtx);
+            writeInit(c, c.init, wCtx, contractCodes);
         }
 
         // Functions

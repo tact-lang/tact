@@ -269,6 +269,7 @@ semantics.addOperation<A.AstNode>("astOfModuleItem", {
             attributes: attributes.children.map((ca) =>
                 ca.astOfContractAttributes(),
             ),
+            params: undefined,
             declarations: contractItems.children.map((item) =>
                 item.astOfItem(),
             ),
@@ -1539,6 +1540,13 @@ semantics.addOperation<A.AstNode>("astOfExpression", {
             kind: "init_of",
             contract: contractId.astOfExpression(),
             args: initArguments.astsOfList(),
+            loc: createRef(this),
+        });
+    },
+    ExpressionCodeOf(_initOfKwd, contractId) {
+        return createNode({
+            kind: "code_of",
+            contract: contractId.astOfExpression(),
             loc: createRef(this),
         });
     },

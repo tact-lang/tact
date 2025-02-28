@@ -11,7 +11,6 @@ message CanPayoutResponse {
 }
 
 contract Beacon with Ownable {
-
     master: Address;
     owner: Address;
     completed: Bool;
@@ -23,21 +22,18 @@ contract Beacon with Ownable {
     }
 
     receive(msg: CanPayout) {
-
         // Check context
-        let ctx: Context = context();
-        require(ctx.sender == self.master, "Invalid sender");
+        require(sender() == self.master, "Invalid sender");
 
         // Reserve funds
         nativeReserve(ton("0.1"), ReserveExact);
 
         // Send response
-        if (self.completed) {
-            self.completed = true;    
-            self.reply(CanPayoutResponse{ok: true, amount: msg.amount, address: self.owner}.toCell());
-        } else {
-            self.reply(CanPayoutResponse{ok: false, amount: msg.amount, address: self.owner}.toCell());
-        }        
+        self.reply(CanPayoutResponse{
+            ok: self.completed, 
+            amount: msg.amount, 
+            address: self.owner
+        }.toCell());
     }
 
     bounced(msg: Slice) {
@@ -56,7 +52,6 @@ contract Payouts with OwnableTransferable {
     }
 
     receive(msg: String) {
-
         // Check context
         let ctx: Context = context();
         require(ctx.value >= ton("1"), "Invalid value");
@@ -67,35 +62,37 @@ contract Payouts with OwnableTransferable {
         let signature: Slice = data.loadBits(512);
         
         // Verify signature
-        let dataToSign: Builder = beginCell();
-        dataToSign = dataToSign.storeAddress(ctx.sender);
-        dataToSign = dataToSign.storeCoins(amount);
-        let hash: Int = dataToSign.asCell().hash();
+        let hash: Int = beginCell()
+            .storeAddress(ctx.sender)
+            .storeCoins(amount)
+            .asCell()
+            .hash();
+
         require(checkSignature(hash, signature, self.publicKey), "Invalid signature");
 
         // Request funds transfer
         let init: StateInit = initOf Beacon(myAddress(), ctx.sender);
         let address: Address = contractAddress(init);
+
         send(SendParameters{
             to: address, 
             value: 0, 
             mode: SendRemainingValue | SendIgnoreErrors,
             bounce: true, 
-            body: CanPayout{amount: amount}.toCell()
+            body: CanPayout{ amount }.toCell()
         });
     }
 
     receive(msg: CanPayoutResponse) {
-
-        // Check context
-        let ctx: Context = context();
         let init: StateInit = initOf Beacon(myAddress(), msg.address);
         let address: Address = contractAddress(init);
-        require(ctx.sender == address, "Invalid sender");
+
+        // Check sender
+        require(sender() == address, "Invalid sender");
 
         if (msg.ok) {
-            
             // Check that we have enough funds
+            let ctx: Context = context();
             require(myBalance() - ctx.value - ton("1") - msg.amount > 0, "Invalid balance");
 
             // Send response

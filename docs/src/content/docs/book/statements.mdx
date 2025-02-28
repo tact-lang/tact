@@ -241,9 +241,9 @@ fun ignore(s: Many) {
 
   fun example() {
       let prep = First { nested: Second { field: 42 } };
-      let First { nested: { field: thing } } = prep;
-      //                  ^ this will result in the parse error:
-      //                  expected "_", "A".."Z", or "a".."z"
+      let First { nested: Second { field: thing } } = prep;
+      //                         ^ this will result in the parse error:
+      //                         expected "," or "}"
   }
   ```
 
@@ -328,11 +328,11 @@ Regular `try{:tact}` statement:
 fun braveAndTrue() {
     // Lets try and do something erroneous
     try {
-        nativeThrow(42); // throwing with exit code 42
+        throw(1042); // throwing with exit code 1042
     }
 
     // The following will be executed as the erroneous code above was wrapped in a try block
-    dump(42);
+    dump(1042);
 }
 ```
 
@@ -342,9 +342,9 @@ With `catch (e){:tact}` block:
 fun niceCatch() {
     // Lets try and do something erroneous
     try {
-        nativeThrow(42); // throwing with exit code 42
+        throw(1042); // throwing with exit code 1042
     } catch (err) {
-        dump(err);       // this will dump the exit code caught, which is 42
+        dump(err);       // this will dump the exit code caught, which is 1042
     }
 }
 ```

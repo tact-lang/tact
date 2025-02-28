@@ -135,7 +135,7 @@ exports[`grammar should fail contract-empty-traits-list-with-keyword 1`] = `
 `;
 
 exports[`grammar should fail contract-getter-parens-no-method-id 1`] = `
-"<unknown>:2:9: Expected "!", "(", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+"<unknown>:2:9: Expected "!", "(", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
   1 | contract Test {
 > 2 |     get() fun test(): Int {
               ^
@@ -178,8 +178,17 @@ exports[`grammar should fail destructuring-duplicate-source-id 1`] = `
 "
 `;
 
+exports[`grammar should fail empty-bounced-receiver 1`] = `
+"<unknown>:2:5: bounced() receiver should accept a Message, bounced<Message> or Slice
+  1 | contract Test {
+> 2 |     bounced() {}
+          ^~~~~~~~~~~~
+  3 | }
+"
+`;
+
 exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
-"<unknown>:6:14: Expected "!", "(", ")", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+"<unknown>:6:14: Expected "!", "(", ")", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
   5 | fun b(): Int {
 > 6 |     return a(,);
                    ^
@@ -188,7 +197,7 @@ exports[`grammar should fail expr-fun-call-trailing-comma-no-args 1`] = `
 `;
 
 exports[`grammar should fail expr-method-call-trailing-comma-no-args 1`] = `
-"<unknown>:2:24: Expected "!", "(", ")", "+", "-", "0", "\\"", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+"<unknown>:2:24: Expected "!", "(", ")", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
   1 | fun another() {
 > 2 |     return 42.toString(,);
                              ^
@@ -616,6 +625,15 @@ exports[`grammar should fail literal-underscore-after-leading-zero 1`] = `
 "
 `;
 
+exports[`grammar should fail string-bounced-receiver 1`] = `
+"<unknown>:2:5: bounced() receiver can only accept a Message, bounced<Message> or Slice
+  1 | contract Test {
+> 2 |     bounced("hello") {}
+          ^~~~~~~~~~~~~~~~~~~
+  3 | }
+"
+`;
+
 exports[`grammar should fail struct-double-semicolon 1`] = `
 "<unknown>:2:19: Expected "}" or identifier
   1 | // too many semicolons
@@ -804,6 +822,7 @@ exports[`grammar should parse asm-instruction-no-whitespace-1 1`] = `
         "loc": Foo,
         "text": "Foo",
       },
+      "params": undefined,
       "traits": [],
     },
   ],
@@ -855,6 +874,7 @@ exports[`grammar should parse asm-instruction-no-whitespace-2 1`] = `
         "loc": Foo,
         "text": "Foo",
       },
+      "params": undefined,
       "traits": [],
     },
   ],
@@ -905,6 +925,7 @@ exports[`grammar should parse asm-instruction-no-whitespace-3 1`] = `
         "loc": Foo,
         "text": "Foo",
       },
+      "params": undefined,
       "traits": [],
     },
   ],
@@ -1047,6 +1068,133 @@ exports[`grammar should parse case-35 1`] = `
         "loc": ReceiveTestContract,
         "text": "ReceiveTestContract",
       },
+      "params": undefined,
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse codeOf 1`] = `
+{
+  "id": 8,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "id": 6,
+          "kind": "contract_init",
+          "loc": init() {
+        let code = codeOf Foo;
+    },
+          "params": [],
+          "statements": [
+            {
+              "expression": {
+                "contract": {
+                  "id": 3,
+                  "kind": "id",
+                  "loc": Foo,
+                  "text": "Foo",
+                },
+                "id": 4,
+                "kind": "code_of",
+                "loc": codeOf Foo,
+              },
+              "id": 5,
+              "kind": "statement_let",
+              "loc": let code = codeOf Foo;,
+              "name": {
+                "id": 2,
+                "kind": "id",
+                "loc": code,
+                "text": "code",
+              },
+              "type": null,
+            },
+          ],
+        },
+      ],
+      "id": 7,
+      "kind": "contract",
+      "loc": contract Foo {
+    init() {
+        let code = codeOf Foo;
+    }
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Foo,
+        "text": "Foo",
+      },
+      "params": undefined,
+      "traits": [],
+    },
+  ],
+  "kind": "module",
+}
+`;
+
+exports[`grammar should parse codeOf 2`] = `
+{
+  "id": 8,
+  "imports": [],
+  "items": [
+    {
+      "attributes": [],
+      "declarations": [
+        {
+          "id": 6,
+          "kind": "contract_init",
+          "loc": init() {
+        let code = codeOf Foo;
+    },
+          "params": [],
+          "statements": [
+            {
+              "expression": {
+                "contract": {
+                  "id": 3,
+                  "kind": "id",
+                  "loc": Foo,
+                  "text": "Foo",
+                },
+                "id": 4,
+                "kind": "code_of",
+                "loc": codeOf Foo,
+              },
+              "id": 5,
+              "kind": "statement_let",
+              "loc": let code = codeOf Foo;,
+              "name": {
+                "id": 2,
+                "kind": "id",
+                "loc": code,
+                "text": "code",
+              },
+              "type": null,
+            },
+          ],
+        },
+      ],
+      "id": 7,
+      "kind": "contract",
+      "loc": contract Foo {
+    init() {
+        let code = codeOf Foo;
+    }
+},
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Foo,
+        "text": "Foo",
+      },
+      "params": undefined,
       "traits": [],
     },
   ],
@@ -1175,6 +1323,7 @@ exports[`grammar should parse contract-getter-with-method-id 1`] = `
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [],
     },
   ],
@@ -1225,6 +1374,7 @@ exports[`grammar should parse contract-optional-semicolon-for-last-const-def 1`]
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [],
     },
   ],
@@ -1282,6 +1432,7 @@ exports[`grammar should parse contract-optional-semicolon-for-last-storage-var 1
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [],
     },
   ],
@@ -1339,6 +1490,7 @@ exports[`grammar should parse contract-with-const-override 1`] = `
         "loc": Contract,
         "text": "Contract",
       },
+      "params": undefined,
       "traits": [],
     },
   ],
@@ -1380,6 +1532,7 @@ exports[`grammar should parse contract-with-imports 1`] = `
         "loc": Test,
         "text": "Test",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 4,
@@ -1560,6 +1713,7 @@ exports[`grammar should parse contract-with-init 1`] = `
         "loc": Sample,
         "text": "Sample",
       },
+      "params": undefined,
       "traits": [],
     },
   ],
@@ -1741,6 +1895,7 @@ exports[`grammar should parse contract-with-trait 1`] = `
         "loc": Main,
         "text": "Main",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 14,
@@ -1929,6 +2084,7 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
         "loc": Main,
         "text": "Main",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 14,
@@ -2619,6 +2775,7 @@ exports[`grammar should parse expr-binary-chained-operators-1 1`] = `
         "loc": Foo,
         "text": "Foo",
       },
+      "params": undefined,
       "traits": [],
     },
   ],
@@ -2821,6 +2978,7 @@ exports[`grammar should parse expr-binary-chained-operators-2 1`] = `
         "loc": Foo,
         "text": "Foo",
       },
+      "params": undefined,
       "traits": [],
     },
   ],
@@ -2947,6 +3105,7 @@ exports[`grammar should parse expr-binary-operators 1`] = `
         "loc": Foo,
         "text": "Foo",
       },
+      "params": undefined,
       "traits": [],
     },
   ],
@@ -5404,6 +5563,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
         "loc": TestContract,
         "text": "TestContract",
       },
+      "params": undefined,
       "traits": [],
     },
     {
@@ -11456,6 +11616,7 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
         "loc": Main,
         "text": "Main",
       },
+      "params": undefined,
       "traits": [
         {
           "id": 15,

@@ -2148,6 +2148,7 @@ exports[`resolveAllocation should write program 1`] = `
           "loc": {},
           "text": "Sample",
         },
+        "params": undefined,
         "traits": [],
       },
       "constants": [],
@@ -2310,6 +2311,7 @@ exports[`resolveAllocation should write program 1`] = `
           "params": [],
           "statements": [],
         },
+        "kind": "init-function",
         "params": [],
       },
       "interfaces": [],
@@ -2318,8 +2320,8 @@ exports[`resolveAllocation should write program 1`] = `
       "origin": "user",
       "partialFieldCount": 0,
       "receivers": [],
-      "signature": null,
-      "tlb": null,
+      "signature": "Sample{v:int257}",
+      "tlb": "_ v:int257 = Sample",
       "traits": [
         {
           "ast": {

@@ -9,11 +9,10 @@ exports[`unboc foo.boc Default run 1`] = `
 PROGRAM{
   DECLPROC recv_internal
   78250 DECLMETHOD ?fun_78250
-  DECLPROC ?fun_ref_0cd12ec96bb24bd7
-  DECLPROC ?fun_ref_272cf0193c781008
   DECLPROC ?fun_ref_92183b49329bb4e4
   recv_internal PROC:<{
-    SWAP
+    DROP
+    DROP
     CTOS
     TWO
     SDSKIPFIRST
@@ -22,29 +21,11 @@ PROGRAM{
     LDMSGADDR
     OVER
     s3 s4 XCHG
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     1 SETGLOB
-    s0 s2 XCHG
-    2 SETGLOB
-    ?fun_ref_0cd12ec96bb24bd7 INLINECALLDICT
-    s0 s2 XCHG
-    ?fun_ref_272cf0193c781008 INLINECALLDICT
-    130 THROWIFNOT
-    DROP
-    NEWC
-    -1 PUSHINT
     SWAP
-    1 STI
-    ENDC
-    POPROOT
-  }>
-  ?fun_78250 PROC:<{
-    ?fun_ref_0cd12ec96bb24bd7 INLINECALLDICT
-    ?fun_ref_92183b49329bb4e4 INLINECALLDICT
-    NIP
-  }>
-  ?fun_ref_0cd12ec96bb24bd7 PROCREF:<{
+    2 SETGLOB
     PUSHROOT
     CTOS
     1 LDI
@@ -52,16 +33,28 @@ PROGRAM{
     <{
       NULL
     }> PUSHCONT
-    IFJMP
-    NULL
-  }>
-  ?fun_ref_272cf0193c781008 PROCREF:<{
-    NIP
     <{
-      -1 PUSHINT
+      NULL
     }> PUSHCONT
-    IFJMP
-    ZERO
+    IFELSE
+    DROP
+    IFRET
+    130 THROW
+  }>
+  ?fun_78250 PROC:<{
+    PUSHROOT
+    CTOS
+    1 LDI
+    DROP
+    <{
+      NULL
+    }> PUSHCONT
+    <{
+      NULL
+    }> PUSHCONT
+    IFELSE
+    ?fun_ref_92183b49329bb4e4 INLINECALLDICT
+    NIP
   }>
   ?fun_ref_92183b49329bb4e4 PROCREF:<{
     x{68656C6C6F20776F726C64} PUSHSLICE
@@ -80,11 +73,10 @@ exports[`unboc foo.boc With bitcode 1`] = `
 PROGRAM{
   DECLPROC recv_internal
   78250 DECLMETHOD ?fun_78250
-  DECLPROC ?fun_ref_0cd12ec96bb24bd7
-  DECLPROC ?fun_ref_272cf0193c781008
   DECLPROC ?fun_ref_92183b49329bb4e4
   recv_internal PROC:<{
-    SWAP                                          // 0x0 1
+    DROP                                          // 0x3 0
+    DROP                                          // 0x3 0
     CTOS                                          // 0xD0
     TWO                                           // 0x7 2
     SDSKIPFIRST                                   // 0xD721
@@ -93,29 +85,11 @@ PROGRAM{
     LDMSGADDR                                     // 0xFA40
     OVER                                          // 0x2 1
     s3 s4 XCHG                                    // 0x10 3 4
-    s6 s6 XCHG2                                   // 0x50 6 6
+    s5 s5 XCHG2                                   // 0x50 5 5
     4 TUPLE                                       // 0x6F0 4
     1 SETGLOB                                     // 0xF87_ 0C_
-    s0 s2 XCHG                                    // 0x0 2
-    2 SETGLOB                                     // 0xF87_ 14_
-    ?fun_ref_0cd12ec96bb24bd7 INLINECALLDICT      // 0x
-    s0 s2 XCHG                                    // 0x0 2
-    ?fun_ref_272cf0193c781008 INLINECALLDICT      // 0x
-    130 THROWIFNOT                                // 0xF2E4_ 105_
-    DROP                                          // 0x3 0
-    NEWC                                          // 0xC8
-    -1 PUSHINT                                    // 0x7 F
     SWAP                                          // 0x0 1
-    1 STI                                         // 0xCA 00
-    ENDC                                          // 0xC9
-    POPROOT                                       // 0xED5 4
-  }>
-  ?fun_78250 PROC:<{
-    ?fun_ref_0cd12ec96bb24bd7 INLINECALLDICT      // 0x
-    ?fun_ref_92183b49329bb4e4 INLINECALLDICT      // 0x
-    NIP                                           // 0x3 1
-  }>
-  ?fun_ref_0cd12ec96bb24bd7 PROCREF:<{
+    2 SETGLOB                                     // 0xF87_ 14_
     PUSHROOT                                      // 0xED4 4
     CTOS                                          // 0xD0
     1 LDI                                         // 0xD2 00
@@ -123,16 +97,28 @@ PROGRAM{
     <{
       NULL                                        // 0x6D
     }> PUSHCONT                                   // 0x9 6D
-    IFJMP                                         // 0xE0
-    NULL                                          // 0x6D
-  }>
-  ?fun_ref_272cf0193c781008 PROCREF:<{
-    NIP                                           // 0x3 1
     <{
-      -1 PUSHINT                                  // 0x7 F
-    }> PUSHCONT                                   // 0x9 7F
-    IFJMP                                         // 0xE0
-    ZERO                                          // 0x7 0
+      NULL                                        // 0x6D
+    }> PUSHCONT                                   // 0x9 6D
+    IFELSE                                        // 0xE2
+    DROP                                          // 0x3 0
+    IFRET                                         // 0xDC
+    130 THROW                                     // 0xF2C4_ 105_
+  }>
+  ?fun_78250 PROC:<{
+    PUSHROOT                                      // 0xED4 4
+    CTOS                                          // 0xD0
+    1 LDI                                         // 0xD2 00
+    DROP                                          // 0x3 0
+    <{
+      NULL                                        // 0x6D
+    }> PUSHCONT                                   // 0x9 6D
+    <{
+      NULL                                        // 0x6D
+    }> PUSHCONT                                   // 0x9 6D
+    IFELSE                                        // 0xE2
+    ?fun_ref_92183b49329bb4e4 INLINECALLDICT      // 0x
+    NIP                                           // 0x3 1
   }>
   ?fun_ref_92183b49329bb4e4 PROCREF:<{
     x{68656C6C6F20776F726C64} PUSHSLICE           // 0x8B 68656C6C6F20776F726C64
@@ -151,11 +137,10 @@ exports[`unboc foo.boc Without aliases 1`] = `
 PROGRAM{
   DECLPROC recv_internal
   78250 DECLMETHOD ?fun_78250
-  DECLPROC ?fun_ref_0cd12ec96bb24bd7
-  DECLPROC ?fun_ref_272cf0193c781008
   DECLPROC ?fun_ref_92183b49329bb4e4
   recv_internal PROC:<{
-    s0 s1 XCHG
+    s0 POP
+    s0 POP
     CTOS
     2 PUSHINT
     SDSKIPFIRST
@@ -164,29 +149,11 @@ PROGRAM{
     LDMSGADDR
     s1 PUSH
     s3 s4 XCHG
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     1 SETGLOB
-    s0 s2 XCHG
-    2 SETGLOB
-    ?fun_ref_0cd12ec96bb24bd7 INLINECALLDICT
-    s0 s2 XCHG
-    ?fun_ref_272cf0193c781008 INLINECALLDICT
-    130 THROWIFNOT
-    s0 POP
-    NEWC
-    -1 PUSHINT
     s0 s1 XCHG
-    1 STI
-    ENDC
-    c4 POPCTR
-  }>
-  ?fun_78250 PROC:<{
-    ?fun_ref_0cd12ec96bb24bd7 INLINECALLDICT
-    ?fun_ref_92183b49329bb4e4 INLINECALLDICT
-    s1 POP
-  }>
-  ?fun_ref_0cd12ec96bb24bd7 PROCREF:<{
+    2 SETGLOB
     c4 PUSHCTR
     CTOS
     1 LDI
@@ -194,16 +161,28 @@ PROGRAM{
     <{
       NULL
     }> PUSHCONT
-    IFJMP
-    NULL
-  }>
-  ?fun_ref_272cf0193c781008 PROCREF:<{
-    s1 POP
     <{
-      -1 PUSHINT
+      NULL
     }> PUSHCONT
-    IFJMP
-    0 PUSHINT
+    IFELSE
+    s0 POP
+    IFRET
+    130 THROW
+  }>
+  ?fun_78250 PROC:<{
+    c4 PUSHCTR
+    CTOS
+    1 LDI
+    s0 POP
+    <{
+      NULL
+    }> PUSHCONT
+    <{
+      NULL
+    }> PUSHCONT
+    IFELSE
+    ?fun_ref_92183b49329bb4e4 INLINECALLDICT
+    s1 POP
   }>
   ?fun_ref_92183b49329bb4e4 PROCREF:<{
     x{68656C6C6F20776F726C64} PUSHSLICE
@@ -223,7 +202,8 @@ PROGRAM{
   DECLPROC recv_internal
   78250 DECLMETHOD ?fun_78250
   recv_internal PROC:<{
-    SWAP
+    DROP
+    DROP
     CTOS
     TWO
     SDSKIPFIRST
@@ -232,52 +212,38 @@ PROGRAM{
     LDMSGADDR
     OVER
     s3 s4 XCHG
-    s6 s6 XCHG2
+    s5 s5 XCHG2
     4 TUPLE
     1 SETGLOB
-    s0 s2 XCHG
-    2 SETGLOB
-    <{
-      PUSHROOT
-      CTOS
-      1 LDI
-      DROP
-      <{
-        NULL
-      }> PUSHCONT
-      IFJMP
-      NULL
-    }>c CALLREF
-    s0 s2 XCHG
-    <{
-      NIP
-      <{
-        -1 PUSHINT
-      }> PUSHCONT
-      IFJMP
-      ZERO
-    }>c CALLREF
-    130 THROWIFNOT
-    DROP
-    NEWC
-    -1 PUSHINT
     SWAP
-    1 STI
-    ENDC
-    POPROOT
+    2 SETGLOB
+    PUSHROOT
+    CTOS
+    1 LDI
+    DROP
+    <{
+      NULL
+    }> PUSHCONT
+    <{
+      NULL
+    }> PUSHCONT
+    IFELSE
+    DROP
+    IFRET
+    130 THROW
   }>
   ?fun_78250 PROC:<{
+    PUSHROOT
+    CTOS
+    1 LDI
+    DROP
     <{
-      PUSHROOT
-      CTOS
-      1 LDI
-      DROP
-      <{
-        NULL
-      }> PUSHCONT
-      IFJMP
       NULL
-    }>c CALLREF
+    }> PUSHCONT
+    <{
+      NULL
+    }> PUSHCONT
+    IFELSE
     <{
       x{68656C6C6F20776F726C64} PUSHSLICE
     }>c CALLREF

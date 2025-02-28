@@ -212,6 +212,7 @@ export default defineConfig({
 						{ slug: 'cookbook/time' },
 						{ slug: 'cookbook/access' },
 						{ slug: 'cookbook/random' },
+						{ slug: 'cookbook/upgrades' },
 						{ slug: 'cookbook/misc' },
 						{
 							label: 'Multiple contracts',
@@ -299,7 +300,11 @@ export default defineConfig({
 					],
 				},
 				{
-					label: '✈️ Telegram →',
+					label: '⭐ Awesome Tact →',
+					link: 'https://github.com/tact-lang/awesome-tact',
+				},
+				{
+					label: '✈️ Telegram Chat →',
 					link: 'https://t.me/tactlang',
 					attrs: { target: '_blank' }
 				},

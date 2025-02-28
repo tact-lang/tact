@@ -11,6 +11,7 @@ import type { AstModule } from "../ast/ast";
 import type { FactoryAst } from "../ast/ast-helpers";
 import type { Parser } from "../grammar";
 import { evalComptimeExpressions } from "../types/evalComptimeExpressions";
+import { computeReceiversEffects } from "../types/effects";
 
 export function precompile(
     ctx: CompilerContext,
@@ -61,6 +62,9 @@ export function precompile(
 
     // This creates allocations for all defined types
     ctx = resolveAllocations(ctx);
+
+    // To use in code generation to decide if a receiver needs to call the contract storage function
+    computeReceiversEffects(ctx);
 
     // Prepared context
     return ctx;

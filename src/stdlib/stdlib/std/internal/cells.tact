@@ -14,7 +14,9 @@ extends native storeUint(self: Builder, value: Int, bits: Int): Builder;
 
 asm(value self) extends fun storeBool(self: Builder, value: Bool): Builder { 1 STI }
 
-/// Extension function for the `Builder`. Alias to `Builder.storeBool()`. Available since Tact 1.5.0.
+/// Extension function for the `Builder` type. Available since Tact 1.5.0.
+///
+/// Alias to `Builder.storeBool()`.
 ///
 /// ```tact
 /// fun example() {
@@ -28,7 +30,7 @@ asm(value self) extends fun storeBool(self: Builder, value: Bool): Builder { 1 S
 ///
 asm(value self) extends fun storeBit(self: Builder, value: Bool): Builder { 1 STI }
 
-/// Extension function for the `Builder`.
+/// Extension function for the `Builder` type.
 ///
 /// Stores (serializes) an unsigned `Int` `value` in the range from 0 to 2^120 − 1 inclusive into the copy of the `Builder`. The serialization of `value` consists of a 4-bit unsigned big-endian integer `l`, which is the smallest integer `l` ≥ 0, such that `value` < 2^(8 * `l`), followed by an 8 * `l`-bit unsigned big-endian representation of `value`. Returns that copy of the `Builder`.
 ///
@@ -47,7 +49,9 @@ asm(value self) extends fun storeBit(self: Builder, value: Bool): Builder { 1 ST
 ///
 asm extends fun storeCoins(self: Builder, value: Int): Builder { STVARUINT16 }
 
-/// Extension function for the `Builder`. Alias to `Builder.storeCoins()`. Available since Tact 1.6.0.
+/// Extension function for the `Builder` type. Available since Tact 1.6.0.
+///
+/// Alias to `Builder.storeCoins()`.
 ///
 /// ```tact
 /// fun example() {
@@ -62,7 +66,7 @@ asm extends fun storeCoins(self: Builder, value: Int): Builder { STVARUINT16 }
 ///
 asm extends fun storeVarUint16(self: Builder, value: Int): Builder { STVARUINT16 }
 
-/// Extension function for the `Builder`. Available since Tact 1.6.0.
+/// Extension function for the `Builder` type. Available since Tact 1.6.0.
 ///
 /// Similar to `Builder.storeCoins()`, but with a different `value` range: from -2^119 to 2^119 - 1 inclusive.
 ///
@@ -79,7 +83,7 @@ asm extends fun storeVarUint16(self: Builder, value: Int): Builder { STVARUINT16
 ///
 asm extends fun storeVarInt16(self: Builder, value: Int): Builder { STVARINT16 }
 
-/// Extension function for the `Builder`. Available since Tact 1.6.0.
+/// Extension function for the `Builder` type. Available since Tact 1.6.0.
 ///
 /// Stores (serializes) an unsigned `Int` `value` in the range from 0 to 2^248 − 1 inclusive into the copy of the `Builder`. The serialization of `value` consists of a 5-bit unsigned big-endian integer `l`, which is the smallest integer `l` ≥ 0, such that `value` < 2^8 * `l`, followed by an 8 * `l`-bit unsigned big-endian representation of `value`. Returns that copy of the `Builder`.
 ///
@@ -96,7 +100,7 @@ asm extends fun storeVarInt16(self: Builder, value: Int): Builder { STVARINT16 }
 ///
 asm extends fun storeVarUint32(self: Builder, value: Int): Builder { STVARUINT32 }
 
-/// Extension function for the `Builder`. Available since Tact 1.6.0.
+/// Extension function for the `Builder` type. Available since Tact 1.6.0.
 ///
 /// Similar to `Builder.storeVarUint32()`, but with a different `value` range: from -2^247 to 2^247 - 1 inclusive.
 ///
@@ -117,7 +121,7 @@ asm(cell self) extends fun storeRef(self: Builder, cell: Cell): Builder { STREF 
 
 asm extends fun storeSlice(self: Builder, cell: Slice): Builder { STSLICER }
 
-/// Extension function for the `Builder`. Available since Tact 1.5.0.
+/// Extension function for the `Builder` type. Available since Tact 1.5.0.
 ///
 /// Appends all data from a `Builder` `cell` to the copy of the `Builder`. Returns that copy.
 ///
@@ -133,7 +137,7 @@ asm extends fun storeSlice(self: Builder, cell: Slice): Builder { STSLICER }
 ///
 asm extends fun storeBuilder(self: Builder, cell: Builder): Builder { STBR }
 
-/// Extension function for the `Builder`. Available since Tact 1.5.0.
+/// Extension function for the `Builder` type. Available since Tact 1.5.0.
 ///
 /// If the `cell` is not `null`, stores 1 as a single bit and then reference `cell` into the copy of the `Builder`. Returns that copy.
 ///
@@ -160,7 +164,7 @@ asm extends fun refs(self: Builder): Int { BREFS }
 
 asm extends fun bits(self: Builder): Int { BBITS }
 
-/// Extension function for the `Builder`. Available since Tact 1.6.0.
+/// Extension function for the `Builder` type. Available since Tact 1.6.0.
 ///
 /// Computes and returns the `Int` depth of the `Builder`. Produces 0 if the `Builder` has no references stored so far, otherwise 1 plus the maximum of the depths of the referenced cells.
 ///
@@ -183,7 +187,7 @@ asm extends fun beginParse(self: Cell): Slice { CTOS }
 
 asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
 
-/// Extension function for the `Slice`. Available since Tact 1.5.0.
+/// Extension function for the `Slice` type. Available since Tact 1.5.0.
 ///
 /// Preloads the next reference from the `Slice` as a `Cell`. Doesn't modify the original `Slice`.
 ///
@@ -200,6 +204,7 @@ asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
 ///         .storeRef(emptyCell())
 ///         .storeRef(s1.asCell())
 ///         .asSlice();
+///
 ///     let ref1: Cell = s2.preloadRef();
 ///     let ref2: Cell = s2.preloadRef();
 ///     ref1 == ref2; // true
@@ -211,6 +216,63 @@ asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
 /// * https://docs.tact-lang.org/book/exit-codes
 ///
 asm extends fun preloadRef(self: Slice): Cell { PLDREF }
+
+/// Extension function for the `Slice` type. Available since Tact 1.6.0.
+///
+/// Loads a single bit from the `Slice`: if it's 1, then the referenced `Cell` is loaded and returned. If the loaded bit is 0, then nothing else is loaded and `null` is returned.
+///
+/// Attempts to load such reference `Cell` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+///
+/// Attempts to load more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
+/// ```tact
+/// fun example() {
+///     let s = msg.asSlice();
+///     let outActions = s.loadMaybeRef();
+///
+///     if (outActions != null) {
+///         let actions = outActions!!;
+///         // ...process actions...
+///     }
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceloadmayberef
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+asm(-> 1 0) extends mutates fun loadMaybeRef(self: Slice): Cell? { LDOPTREF }
+
+/// Extension function for the `Slice` type. Available since Tact 1.6.0.
+///
+/// Preloads a single bit from the `Slice`: if it's 1, then the referenced `Cell` is preloaded and returned. If the preloaded bit is 0, then `null` is returned. Doesn't modify the original `Slice`.
+///
+/// Attempts to preload such reference `Cell` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+///
+/// Attempts to preload more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
+/// ```tact
+/// fun examples() {
+///     let s1: Slice = beginCell().storeMaybeRef(emptyCell()).asSlice();
+///     let fizz: Cell = s1.preloadMaybeRef(); // returns emptyCell() and doesn't modify s1
+///
+///     let s2: Slice = beginCell()
+///         .storeMaybeRef(null)
+///         .storeMaybeRef(s1.asCell())
+///         .asSlice();
+///
+///     let ref1: Cell = s2.preloadMaybeRef(); // returns null and doesn't modify s2
+///     let ref2: Cell = s2.preloadMaybeRef(); // same effect
+///     ref1 == null; // true
+///     ref1 == ref2; // true
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#slicepreloadmayberef
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+asm extends fun preloadMaybeRef(self: Slice): Cell? { PLDOPTREF }
 
 // special treatment in Func compiler, so not replaced with asm "LDSLICEX"
 @name(load_bits)
@@ -238,7 +300,9 @@ extends native preloadUint(self: Slice, l: Int): Int;
 
 asm(-> 1 0) extends mutates fun loadBool(self: Slice): Bool { 1 LDI }
 
-/// Extension mutation function for the `Slice`. Alias to `Slice.loadBool()`. Available since Tact 1.5.0.
+/// Extension mutation function for the `Slice` type. Available since Tact 1.5.0.
+///
+/// Alias to `Slice.loadBool()`.
 ///
 /// ```tact
 /// fun example() {
@@ -251,7 +315,7 @@ asm(-> 1 0) extends mutates fun loadBool(self: Slice): Bool { 1 LDI }
 ///
 asm(-> 1 0) extends mutates fun loadBit(self: Slice): Bool { 1 LDI }
 
-/// Extension mutation function for the `Slice`.
+/// Extension mutation function for the `Slice` type.
 ///
 /// Loads and returns a serialized unsigned `Int` value in the range from 0 to 2^120 - 1 inclusive from the `Slice`. This value usually represents the amount in nanoToncoins.
 ///
@@ -270,7 +334,9 @@ asm(-> 1 0) extends mutates fun loadBit(self: Slice): Bool { 1 LDI }
 ///
 asm( -> 1 0) extends mutates fun loadCoins(self: Slice): Int { LDVARUINT16 }
 
-/// Extension mutation function for the `Slice`. Alias to `Slice.loadCoins()`. Available since Tact 1.6.0.
+/// Extension mutation function for the `Slice` type. Available since Tact 1.6.0.
+///
+/// Alias to `Slice.loadCoins()`.
 ///
 /// ```tact
 /// fun example() {
@@ -285,7 +351,7 @@ asm( -> 1 0) extends mutates fun loadCoins(self: Slice): Int { LDVARUINT16 }
 ///
 asm( -> 1 0) extends mutates fun loadVarUint16(self: Slice): Int { LDVARUINT16 }
 
-/// Extension mutation function for the `Slice`. Available since Tact 1.6.0.
+/// Extension mutation function for the `Slice` type. Available since Tact 1.6.0.
 ///
 /// Similar to `Slice.loadCoins()`, but with a different `value` range: from -2^119 to 2^119 - 1 inclusive.
 ///
@@ -304,7 +370,7 @@ asm( -> 1 0) extends mutates fun loadVarUint16(self: Slice): Int { LDVARUINT16 }
 ///
 asm( -> 1 0) extends mutates fun loadVarInt16(self: Slice): Int { LDVARINT16 }
 
-/// Extension mutation function for the `Slice`. Available since Tact 1.6.0.
+/// Extension mutation function for the `Slice` type. Available since Tact 1.6.0.
 ///
 /// Loads and returns a serialized unsigned `Int` value in the range from 0 to 2^248 − 1 inclusive from the `Slice`.
 ///
@@ -323,7 +389,7 @@ asm( -> 1 0) extends mutates fun loadVarInt16(self: Slice): Int { LDVARINT16 }
 ///
 asm( -> 1 0) extends mutates fun loadVarUint32(self: Slice): Int { LDVARUINT32 }
 
-/// Extension mutation function for the `Slice`. Available since Tact 1.6.0.
+/// Extension mutation function for the `Slice` type. Available since Tact 1.6.0.
 ///
 /// Similar to `Slice.loadVarUint32()`, but with a different `value` range: from -2^247 to 2^247 - 1 inclusive.
 ///
@@ -346,7 +412,7 @@ asm extends mutates fun skipBits(self: Slice, l: Int) { SDSKIPFIRST }
 
 asm extends fun endParse(self: Slice) { ENDS }
 
-/// Extension function for the `Slice`. Available since Tact 1.6.0.
+/// Extension function for the `Slice` type. Available since Tact 1.6.0.
 ///
 /// Preloads all but the last 0 ≤ `len` ≤ 1023 bits from the `Slice`.
 ///
@@ -366,7 +432,7 @@ asm extends fun endParse(self: Slice) { ENDS }
 ///
 asm extends fun skipLastBits(self: Slice, len: Int): Slice { SDSKIPLAST }
 
-/// Extension function for the `Slice`. Available since Tact 1.6.0.
+/// Extension function for the `Slice` type. Available since Tact 1.6.0.
 ///
 /// Preloads the first 0 ≤ `len` ≤ 1023 bits from the `Slice`.
 ///
@@ -389,7 +455,7 @@ asm extends fun skipLastBits(self: Slice, len: Int): Slice { SDSKIPLAST }
 ///
 asm extends fun firstBits(self: Slice, len: Int): Slice { SDCUTFIRST }
 
-/// Extension function for the `Slice`. Available since Tact 1.6.0.
+/// Extension function for the `Slice` type. Available since Tact 1.6.0.
 ///
 /// Preloads the last 0 ≤ `len` ≤ 1023 bits from the `Slice`.
 ///
@@ -408,7 +474,7 @@ asm extends fun firstBits(self: Slice, len: Int): Slice { SDCUTFIRST }
 ///
 asm extends fun lastBits(self: Slice, len: Int): Slice { SDCUTLAST }
 
-/// Extension function for the `Slice`. Available since Tact 1.6.0.
+/// Extension function for the `Slice` type. Available since Tact 1.6.0.
 ///
 /// Computes and returns the `Int` depth of the `Slice`. Produces 0 if the `Slice` has no references, otherwise 1 plus the maximum of the depths of the referenced cells.
 ///
@@ -484,7 +550,7 @@ struct DataSize {
     refs: Int;
 }
 
-/// Extension function for the `Cell`. Available since Tact 1.6.0.
+/// Extension function for the `Cell` type. Available since Tact 1.6.0.
 ///
 /// Computes and returns the number of distinct cells, bits and refs in the `Cell` by using a depth-first search (DFS) algorithm, recursively traversing each referenced cell. This function is computationally expensive and can consume a lot of gas. If `self` is `null`, returns `DataSize` with all fields set to 0.
 ///
@@ -516,7 +582,7 @@ struct DataSize {
 ///
 asm extends fun computeDataSize(self: Cell?, maxCells: Int): DataSize { CDATASIZE }
 
-/// Extension function for the `Slice`. Available since Tact 1.6.0.
+/// Extension function for the `Slice` type. Available since Tact 1.6.0.
 ///
 /// Similar to `Cell.computeDataSize()`, but doesn't take into account the cell that contains the `Slice` itself. However, accounts for its bits and refs.
 ///
@@ -548,7 +614,7 @@ asm extends fun computeDataSize(self: Cell?, maxCells: Int): DataSize { CDATASIZ
 ///
 asm extends fun computeDataSize(self: Slice, maxCells: Int): DataSize { SDATASIZE }
 
-/// Extension function for the `Cell`. Available since Tact 1.6.0.
+/// Extension function for the `Cell` type. Available since Tact 1.6.0.
 ///
 /// Computes and returns the `Int` depth of the `Cell`. Produces 0 if the `Cell` has no references, otherwise 1 plus the maximum of the depths of the referenced cells. If c is null, returns zero.
 ///

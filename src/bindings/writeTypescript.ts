@@ -23,6 +23,8 @@ import {
 import { serializers } from "./typescript/serializers";
 
 import { eqNames } from "../ast/ast-helpers";
+import { enabledOptimizedChildCode } from "../config/features";
+import type { CompilerContext } from "../context/context";
 
 function writeArguments(args: ABIArgument[]) {
     const res: string[] = [];
@@ -42,8 +44,16 @@ function writeArguments(args: ABIArgument[]) {
     return res;
 }
 
+export type WrappersConstantDescription = {
+    readonly name: string;
+    readonly value: string | undefined;
+    readonly fromContract: boolean;
+};
+
 export function writeTypescript(
     abi: ContractABI,
+    ctx: CompilerContext,
+    constants: WrappersConstantDescription[],
     init?: {
         code: string;
         system: string | null;
@@ -70,6 +80,7 @@ export function writeTypescript(
             TupleReader, 
             Dictionary, 
             contractAddress, 
+            address, 
             ContractProvider, 
             Sender, 
             Contract, 
@@ -174,7 +185,7 @@ export function writeTypescript(
             w.append(`const __code = Cell.fromBase64('${init.code}');`);
             w.append("const builder = beginCell();");
 
-            if (init.system !== null) {
+            if (init.system !== null && !enabledOptimizedChildCode(ctx)) {
                 w.append(`const __system = Cell.fromBase64('${init.system}');`);
                 w.append(`builder.storeRef(__system);`);
             }
@@ -268,10 +279,41 @@ export function writeTypescript(
     w.append(`]`);
     w.append();
 
+    for (const constant of constants) {
+        if (typeof constant.value === "undefined" || constant.fromContract) {
+            continue;
+        }
+        w.append(`export const ${constant.name} = ${constant.value};`);
+    }
+
+    if (constants.length > 0) {
+        w.append();
+    }
+
     // Wrapper
     w.append(`export class ${abi.name} implements Contract {`);
     w.inIndent(() => {
         w.append();
+
+        const addedContractConstants: Set<string> = new Set();
+        for (const constant of constants) {
+            if (
+                typeof constant.value === "undefined" ||
+                !constant.fromContract ||
+                addedContractConstants.has(constant.name)
+            ) {
+                continue;
+            }
+            w.append(
+                `public static readonly ${constant.name} = ${constant.value};`,
+            );
+
+            addedContractConstants.add(constant.name);
+        }
+
+        if (constants.length > 0) {
+            w.append();
+        }
 
         if (init) {
             w.append(
