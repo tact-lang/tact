@@ -92,6 +92,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Messages with single quote are treated correctly: PR [#1106](https://github.com/tact-lang/tact/pull/1106)
 - [fix] The name clash for init-functions of the form `init(init: Init)`: PR [#1709](https://github.com/tact-lang/tact/pull/1709)
 
+### Compiler configuration
+
 - **BREAKING CHANGE:** Removed the `enabledMasterchain` compiler config option from `tact.config.json`: PR [#1207](https://github.com/tact-lang/tact/pull/1207)
 - Added `nullChecks` config option to disable run-time null checks for the `!!` operator in order to save gas: PR [#1660](https://github.com/tact-lang/tact/pull/1660)
 
