@@ -1,8 +1,13 @@
 import "./messages";
 
-fun calculateJettonWalletAddress(owner: Address, master: Address, code: Cell): Address {
+inline fun calculateJettonWalletAddress(owner: Address, master: Address, code: Cell): Address {
     let initData = JettonWalletData{balance: 0, owner, master, code};
     return contractAddress(StateInit{code: code, data: initData.toCell()});
+}
+
+inline fun calculateJettonBasechainWalletAddress(owner: Address, master: Address, code: Cell): BasechainAddress {
+    let initData = JettonWalletData{balance: 0, owner, master, code};
+    return contractBasechainAddress(StateInit{code: code, data: initData.toCell()});
 }
 
 message(0x9eacde91) UpdateJettonWalletCode {
@@ -90,11 +95,14 @@ contract Escrow (
         throwUnless(400, !self.isFunded);
         throwUnless(400, self.assetAddress != null);
 
-        let escrowJettonWalletAddress = calculateJettonWalletAddress(myAddress(),
+        let escrowJettonWalletAddress = calculateJettonBasechainWalletAddress(myAddress(),
             self.assetAddress!!,
             self.jettonWalletCode!!
         );
-        throwUnless(402, sender() == escrowJettonWalletAddress);
+        let sender = parseStdAddress(sender().asSlice());
+
+        throwUnless(74, sender.address == escrowJettonWalletAddress.hash!!);
+
         throwUnless(401, self.dealAmount == msg.amount);
 
         self.isFunded = true;
