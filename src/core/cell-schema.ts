@@ -19,6 +19,33 @@ export interface Type<T> {
     preload: (s: Slice) => T;
 }
 
+export interface PUSHINT {
+    kind: 'PUSHINT';
+    value: number;
+}
+
+export const pushint: Type<PUSHINT> = {
+    load: (s) => {
+        if (s.loadUint(4) !== 7) {
+            throw new Error();
+        }
+        return {
+            kind: 'PUSHINT',
+            value: ((s.loadUint(4) + 5) & 15) - 5,
+        };
+    },
+    store: ({ value }, b) => {
+        b.storeUint(7, 4);
+        b.storeUint(value, 4);
+    },
+    preload: {} as any,
+};
+
+export interface Instruction<T> {
+    codec: Type<T>;
+    getGas: () => number;
+}
+
 export const pure = <T>(t: T): Type<T> => ({
     store: (_t, _b) => {},
     load: (_s) => t,
