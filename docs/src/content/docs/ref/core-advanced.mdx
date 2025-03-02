@@ -278,7 +278,7 @@ let origFee: Int = getOriginalFwdFee(fee, false);
 
 ## setGasLimit
 
-<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
 fun setGasLimit(limit: Int);
@@ -349,7 +349,7 @@ throw(42); // and this won't fail it
 
 ## myCode
 
-<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
 fun myCode(): Cell;
@@ -393,7 +393,7 @@ let dataStorageFeeConfig: Cell = getConfigParam(18)!!;
 
 ## getSeed
 
-<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
 fun getSeed(): Int;
@@ -420,7 +420,7 @@ setSeed(seed); // from now on the results of pseudorandom number generator
 
 ## setSeed
 
-<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
 fun setSeed(seed: Int);
@@ -448,7 +448,7 @@ setSeed(seed); // from now on the results of pseudorandom number generator
 
 ## curLt
 
-<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
 fun curLt(): Int;
@@ -473,7 +473,7 @@ nativeRandomize(lt); // equivalent to calling nativeRandomizeLt()
 
 ## blockLt
 
-<Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 ```tact
 fun blockLt(): Int;
@@ -680,7 +680,7 @@ nativeReserve(ton("0.1"), ReserveExact | ReserveBounceIfActionFail);
 fun parseStdAddress(slice: Slice): StdAddress;
 ```
 
-Converts a [`Slice{:tact}`][slice] containing an address into the `StdAddress{:tact}` [Struct][s] and returns it. The `StdAddress{:tact}` is a built-in [Struct][s] that consists of:
+Converts a `slice` containing an address into the `StdAddress{:tact}` [Struct][s] and returns it. The `StdAddress{:tact}` is a built-in [Struct][s] that consists of:
 
 Field       | Type                           | Description
 :---------- | :----------------------------- | :----------
@@ -717,7 +717,7 @@ addr2 == addr; // true
 fun parseVarAddress(slice: Slice): VarAddress;
 ```
 
-Converts a [`Slice{:tact}`][slice] containing an address of variable length into the `VarAddress{:tact}` [Struct][s] and returns it. The `VarAddress{:tact}` is a built-in [Struct][s] consisting of:
+Converts a `slice` containing an address of variable length into the `VarAddress{:tact}` [Struct][s] and returns it. The `VarAddress{:tact}` is a built-in [Struct][s] consisting of:
 
 Field       | Type                         | Description
 :---------- | :--------------------------- | :----------

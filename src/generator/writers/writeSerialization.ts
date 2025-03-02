@@ -13,7 +13,7 @@ import { resolveFuncTypeFromAbi } from "./resolveFuncTypeFromAbi";
 import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import type { ItemOrigin } from "../../imports/source";
 
-const SMALL_STRUCT_MAX_FIELDS = 5;
+const SMALL_STRUCT_MAX_FIELDS = 10;
 
 //
 // Serializer
@@ -181,9 +181,8 @@ function writeSerializerField(
                     `build_${gen} = __tact_store_address_opt(build_${gen}, ${fieldName});`,
                 );
             } else {
-                ctx.used(`__tact_store_address`);
                 ctx.append(
-                    `build_${gen} = __tact_store_address(build_${gen}, ${fieldName});`,
+                    `build_${gen} = build_${gen}.store_slice(${fieldName});`,
                 );
             }
             return;
@@ -326,7 +325,6 @@ export function writeParser(
     forceInline: boolean,
     opcode: "with-opcode" | "no-opcode",
     allocation: StorageAllocation,
-    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
     const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
@@ -345,6 +343,7 @@ export function writeParser(
         ctx.body(() => {
             // Check prefix
             if (allocation.header && opcode === "with-opcode") {
+                ctx.flag("impure");
                 ctx.append(
                     `throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(${allocation.header.bits}) == ${allocation.header.value});`,
                 );
@@ -522,8 +521,7 @@ function writeFieldParser(
                 ctx.used(`__tact_load_address_opt`);
                 ctx.append(`${varName} = sc_${gen}~__tact_load_address_opt();`);
             } else {
-                ctx.used(`__tact_load_address`);
-                ctx.append(`${varName} = sc_${gen}~__tact_load_address();`);
+                ctx.append(`${varName} = sc_${gen}~load_msg_addr();`);
             }
             return;
         }

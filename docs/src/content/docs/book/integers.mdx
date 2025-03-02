@@ -55,7 +55,7 @@ Therefore, the amount of $1.25$ Toncoin, which can be represented in Tact as [`t
 
 ## Serialization
 
-When encoding `Int{:tact}` values to persistent state (fields of [contracts](/book/contracts) and [traits](/book/types#traits)), it's usually better to use smaller representations than $257$-bits to reduce [storage costs](https://docs.ton.org/develop/smart-contracts/fees#storage-fee). Usage of such representations is also called "serialization" due to them representing the native [TL-B][tlb] types which TON Blockchain operates on.
+When encoding `Int{:tact}` values to persistent state (fields or parameters of [contracts](/book/contracts) and fields of [traits](/book/types#traits)), it's usually better to use smaller representations than $257$-bits to reduce [storage costs](https://docs.ton.org/develop/smart-contracts/fees#storage-fee). Usage of such representations is also called "serialization" due to them representing the native [TL-B][tlb] types which TON Blockchain operates on.
 
 The persistent state size is specified in every declaration of a state variable after the `as{:tact}` keyword:
 
@@ -177,7 +177,7 @@ Name               | [TL-B][tlb]                 | Inclusive range             |
 `varuint32{:tact}` | [`VarUInteger 32`][varuint] | $0$ to $2^{248} - 1$        | between $5$ and $253$ bits
 `varint32{:tact}`  | `VarInteger 32`             | $-2^{247}$ to $2^{247} - 1$ | between $5$ and $253$ bits
 
-<p/><Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+<p/><Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 The `varuint16{:tact}` format is equivalent to [`coins{:tact}`](#serialization-varint). Its signed variant, `varint16{:tact}`, has the same memory layout except for the signed `value` field, which allows a different range of values: from $-2^{119}$ to $2^{119} - 1$, including both ends.
 

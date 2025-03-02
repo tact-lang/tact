@@ -1,5 +1,10 @@
 import { beginCell, Cell, Dictionary } from "@ton/core";
-import { decompileAll } from "@tact-lang/opcode";
+import {
+    disassembleRoot,
+    Cell as OpcodeCell,
+    AssemblyWriter,
+} from "@tact-lang/opcode";
+import type { WrappersConstantDescription } from "../bindings/writeTypescript";
 import { writeTypescript } from "../bindings/writeTypescript";
 import { featureEnable } from "../config/features";
 import type { Project } from "../config/parseConfig";
@@ -12,8 +17,15 @@ import type { ILogger } from "../context/logger";
 import { Logger } from "../context/logger";
 import type { PackageFileFormat } from "../packaging/fileFormat";
 import { packageCode } from "../packaging/packageCode";
-import { createABITypeRefFromTypeRef } from "../types/resolveABITypeRef";
-import { getContracts, getType } from "../types/resolveDescriptors";
+import {
+    createABITypeRefFromTypeRef,
+    resolveABIType,
+} from "../types/resolveABITypeRef";
+import {
+    getAllTypes,
+    getContracts,
+    getType,
+} from "../types/resolveDescriptors";
 import { posixNormalize } from "../utils/filePath";
 import { createVirtualFileSystem } from "../vfs/createVirtualFileSystem";
 import type { VirtualFileSystem } from "../vfs/VirtualFileSystem";
@@ -27,6 +39,7 @@ import { TactError } from "../error/errors";
 import type { Parser } from "../grammar";
 import { getParser } from "../grammar";
 import { defaultParser } from "../grammar/grammar";
+import { topSortContracts } from "./utils";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -45,6 +58,11 @@ export function enableFeatures(
         {
             option: config.options.safety?.nullChecks ?? true,
             name: "nullChecks",
+        },
+        {
+            option:
+                config.options.optimizations?.alwaysSaveContractData ?? false,
+            name: "alwaysSaveContractData",
         },
         {
             option: config.options.enableLazyDeploymentCompletedGetter ?? false,
@@ -118,38 +136,52 @@ export async function build(args: {
         | {
               codeBoc: Buffer;
               abi: string;
+              constants: WrappersConstantDescription[];
           }
         | undefined
     > = {};
-    for (const contract of getContracts(ctx)) {
+
+    const allContracts = getAllTypes(ctx).filter((v) => v.kind === "contract");
+
+    // Sort contracts in topological order
+    // If a cycle is found, return undefined
+    const sortedContracts = topSortContracts(allContracts);
+    if (sortedContracts !== undefined) {
+        ctx = featureEnable(ctx, "optimizedChildCode");
+    }
+    for (const contract of sortedContracts ?? allContracts) {
+        const contractName = contract.name;
+
         const pathAbi = project.resolve(
             config.output,
-            config.name + "_" + contract + ".abi",
+            config.name + "_" + contractName + ".abi",
         );
 
         const pathCodeBoc = project.resolve(
             config.output,
-            config.name + "_" + contract + ".code.boc",
+            config.name + "_" + contractName + ".code.boc",
         );
         const pathCodeFif = project.resolve(
             config.output,
-            config.name + "_" + contract + ".code.fif",
+            config.name + "_" + contractName + ".code.fif",
         );
         const pathCodeFifDec = project.resolve(
             config.output,
-            config.name + "_" + contract + ".code.rev.fif",
+            config.name + "_" + contractName + ".code.rev.fif",
         );
         let codeFc: { path: string; content: string }[];
         let codeEntrypoint: string;
 
         // Compiling contract to func
-        logger.info(`   > ${contract}: tact compiler`);
+        logger.info(`   > ${contractName}: tact compiler`);
         let abi: string;
+        const constants: WrappersConstantDescription[] = [];
         try {
             const res = await compile(
                 ctx,
-                contract,
-                config.name + "_" + contract,
+                contractName,
+                config.name + "_" + contractName,
+                built,
             );
             for (const files of res.output.files) {
                 const ffc = project.resolve(config.output, files.name);
@@ -162,6 +194,7 @@ export async function build(args: {
                 content: v.code,
             }));
             codeEntrypoint = res.output.entrypoint;
+            constants.push(...res.output.constants);
         } catch (e) {
             logger.error("Tact compilation failed");
             // show an error with a backtrace only in verbose mode
@@ -184,7 +217,7 @@ export async function build(args: {
         }
 
         // Compiling contract to TVM
-        logger.info(`   > ${contract}: func compiler`);
+        logger.info(`   > ${contractName}: func compiler`);
         let codeBoc: Buffer;
         try {
             const stdlibPath = stdlib.resolve("std/stdlib.fc");
@@ -240,17 +273,26 @@ export async function build(args: {
         }
 
         // Add to built map
-        built[contract] = {
+        built[contractName] = {
             codeBoc,
             abi,
+            constants,
         };
 
         if (config.mode === "fullWithDecompilation") {
             // Fift decompiler for generated code debug
-            logger.info(`   > ${contract}: fift decompiler`);
+            logger.info(`   > ${contractName}: fift decompiler`);
             let codeFiftDecompiled: string;
             try {
-                codeFiftDecompiled = decompileAll({ src: codeBoc });
+                const cell = OpcodeCell.fromBoc(codeBoc).at(0);
+                if (typeof cell === "undefined") {
+                    throw new Error("Cannot create Cell from BoC file");
+                }
+
+                const program = disassembleRoot(cell, { computeRefs: true });
+                codeFiftDecompiled = AssemblyWriter.write(program, {
+                    useAliases: true,
+                });
                 project.writeFile(pathCodeFifDec, codeFiftDecompiled);
             } catch (e) {
                 logger.error("Fift decompiler crashed");
@@ -323,6 +365,20 @@ export async function build(args: {
             }
         }
 
+        const descriptor = getType(ctx, contract);
+        const init = descriptor.init!;
+
+        const args =
+            init.kind !== "contract-params"
+                ? init.params.map((v) => ({
+                      name: idText(v.name),
+                      type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
+                  }))
+                : (init.contract.params ?? []).map((v) => ({
+                      name: idText(v.name),
+                      type: resolveABIType(v),
+                  }));
+
         // Package
         const pkg: PackageFileFormat = {
             name: contract,
@@ -330,14 +386,14 @@ export async function build(args: {
             code: artifacts.codeBoc.toString("base64"),
             init: {
                 kind: "direct",
-                args: getType(ctx, contract).init!.params.map((v) => ({
-                    name: idText(v.name),
-                    type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
-                })),
-                prefix: {
-                    bits: 1,
-                    value: 0,
-                },
+                args,
+                prefix:
+                    init.kind !== "contract-params"
+                        ? {
+                              bits: 1,
+                              value: 0,
+                          }
+                        : undefined,
                 deployment: {
                     kind: "system-cell",
                     system: systemCell?.toBoc().toString("base64") ?? null,
@@ -370,12 +426,17 @@ export async function build(args: {
             return { ok: false, error: errorMessages };
         }
         try {
-            const bindingsServer = writeTypescript(JSON.parse(pkg.abi), {
-                code: pkg.code,
-                prefix: pkg.init.prefix,
-                system: pkg.init.deployment.system,
-                args: pkg.init.args,
-            });
+            const bindingsServer = writeTypescript(
+                JSON.parse(pkg.abi),
+                ctx,
+                built[pkg.name]?.constants ?? [],
+                {
+                    code: pkg.code,
+                    prefix: pkg.init.prefix,
+                    system: pkg.init.deployment.system,
+                    args: pkg.init.args,
+                },
+            );
             project.writeFile(
                 project.resolve(
                     config.output,

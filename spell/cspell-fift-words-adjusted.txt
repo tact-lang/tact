@@ -11,6 +11,7 @@
 2dup
 2over
 2swap
+atend
 Base
 Base
 Bcmp
@@ -174,6 +175,7 @@ pfxdict
 pick
 pop
 pos
+procdictkeylen
 priv
 pub
 push

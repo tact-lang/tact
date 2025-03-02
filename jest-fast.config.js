@@ -11,7 +11,6 @@ module.exports = {
         "/src/test/e2e-emulated/map*",
         "/src/cli/e2e.spec.ts",
         "/src/ast/fuzz.spec.ts",
-        "/src/test/benchmarks/jetton/jetton.spec.ts",
     ],
     maxWorkers: "8",
 };

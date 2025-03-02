@@ -1,5 +1,6 @@
 import "@stdlib/ownable";
 import "@stdlib/dns";
+import "./tact-reserved-contract-errors";
 
 message(1478) SpanishInquisition {}
 
@@ -21,7 +22,7 @@ contract ReservedContractErrorsTester with Ownable {
 
     /// Exit code 130
     receive("130") {
-        send(SendParameters{
+        message(MessageParameters{
             to: myAddress(), // Send a message back to this contract
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
@@ -49,7 +50,7 @@ contract ReservedContractErrorsTester with Ownable {
                 .fromBase64());
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Slice.fromBase64() didn't error on invalid Base64");
 
@@ -59,7 +60,7 @@ contract ReservedContractErrorsTester with Ownable {
             dump("\x00".fromBase64());
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "String.fromBase64() didn't error on invalid Base64");
 
@@ -68,7 +69,7 @@ contract ReservedContractErrorsTester with Ownable {
             dump((42).toFloatString(-1));
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Int.toFloatString() didn't error on digits -1");
 
@@ -77,7 +78,7 @@ contract ReservedContractErrorsTester with Ownable {
             dump((42).toFloatString(78));
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "Int.toFloatString() didn't error on digits 78");
 
@@ -88,9 +89,110 @@ contract ReservedContractErrorsTester with Ownable {
             dump(dnsInternalNormalize(sliceWithRef));
             failed = false;
         } catch (exitCode) {
-            nativeThrowIf(exitCode, exitCode != targetCode);
+            throwIf(exitCode, exitCode != targetCode);
         }
         require(failed, "dnsInternalNormalize() didn't error on Slice with refs");
+
+        // As we got here, everything above caused the target exit code,
+        // so let's throw it explicitly now for the tests on Blueprint's side
+        throw(targetCode);
+    }
+
+    /// Exit code 136
+    receive("136") {
+        // Setup
+        let targetCode = 134;
+        let failed = true;
+
+        // Case 1: Invalid tag prefix in masterchain
+        try {
+            let chainID = -1; // masterchain
+            let addrSlice = beginCell()
+                .storeUint(0b10_1, 3) // WRONG prefix!
+                .storeInt(chainID, 8) // chain ID -1
+                .storeUint(0, 256)    // account ID 0
+                .asSlice();
+            dump(addrSlice.asAddress(chainID));
+            failed = false;
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+        require(failed, "Slice.asAddress() didn't error on invalid tag prefix for a masterchain address");
+
+        // Case 2: Invalid tag prefix in basechain
+        try {
+            let chainID = 0; // basechain
+            let addrSlice = beginCell()
+                .storeUint(0b10_1, 3) // WRONG prefix!
+                .storeInt(chainID, 8) // chain ID 0
+                .storeUint(0, 256)    // account ID 0
+                .asSlice();
+            dump(addrSlice.asAddress(chainID));
+            failed = false;
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+        require(failed, "Slice.asAddress() didn't error on invalid tag prefix for a basechain address");
+
+        // Case 3: Invalid tag prefix in some workchain
+        try {
+            let chainID = 1; // some workchain
+            let addrSlice = beginCell()
+                .storeUint(0b10_1, 3) // WRONG prefix!
+                .storeInt(chainID, 8) // chain ID 1
+                .storeUint(0, 256)    // account ID 0
+                .asSlice();
+            dump(addrSlice.asAddress(chainID));
+            failed = false;
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+        require(failed, "Slice.asAddress() didn't error on invalid tag prefix for a workchain address");
+
+        // Case 4: Valid tag prefix in chain ID 0, but invalid account ID size
+        try {
+            let chainID = 0; // basechain
+            let addrSlice = beginCell()
+                .storeUint(0b10_0, 3) // correct prefix
+                .storeInt(chainID, 8) // chain ID 0
+                .storeUint(0, 42)     // WRONG size of the account ID!
+                .asSlice();
+            dump(addrSlice.asAddress(chainID));
+            failed = false;
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+        require(failed, "Slice.asAddress() didn't error on invalid account ID size for a basechain address");
+
+        // Case 5: Valid tag prefix in chain ID -1, but invalid account ID size
+        try {
+            let chainID = -1; // masterchain
+            let addrSlice = beginCell()
+                .storeUint(0b10_0, 3) // correct prefix
+                .storeInt(chainID, 8) // chain ID -1
+                .storeUint(0, 42)     // WRONG size of the account ID!
+                .asSlice();
+            dump(addrSlice.asAddress(chainID));
+            failed = false;
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+        require(failed, "Slice.asAddress() didn't error on invalid account ID size for a masterchain address");
+
+        // Case 6: Valid tag prefix in chain ID 1, but invalid account ID size
+        try {
+            let chainID = 1; // some workchain
+            let addrSlice = beginCell()
+                .storeUint(0b10_0, 3) // correct prefix
+                .storeInt(chainID, 8) // chain ID 0
+                .storeUint(0, 42)     // WRONG size of the account ID!
+                .asSlice();
+            dump(addrSlice.asAddress(chainID));
+            failed = false;
+        } catch (exitCode) {
+            throwIf(exitCode, exitCode != targetCode);
+        }
+        require(failed, "Slice.asAddress() didn't error on invalid account ID size for a workchain address");
 
         // As we got here, everything above caused the target exit code,
         // so let's throw it explicitly now for the tests on Blueprint's side

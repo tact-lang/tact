@@ -153,6 +153,12 @@ export const getOptimizer = (util: AstUtil) => {
                     ast.loc,
                 );
                 break;
+            case "code_of":
+                throwNonFatalErrorConstEval(
+                    "codeOf is not supported at this moment",
+                    ast.loc,
+                );
+                break;
             case "null":
                 return ast;
             case "boolean":

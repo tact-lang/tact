@@ -4,7 +4,6 @@ message TransferMessage {
 }
 
 contract Wallet {
-    
     seqno: Int as uint32 = 0;
     key: Int as uint256;
     walletId: Int as uint64;
@@ -15,10 +14,9 @@ contract Wallet {
     }
 
     receive(msg: TransferMessage) {
-
         // Check Signature
-        let op_hash: Int = msg.transfer.hash();
-        require(checkSignature(op_hash, msg.signature, self.key), "Invalid signature");
+        let operationHash: Int = msg.transfer.hash();
+        require(checkSignature(operationHash, msg.signature, self.key), "Invalid signature");
 
         // Check parameters
         let pkg: Slice = msg.transfer;
@@ -29,6 +27,7 @@ contract Wallet {
 
         // Increment seqno
         self.seqno = (self.seqno + 1) % 65536;
+        commit();
 
         // Send message
         nativeSendMessage(body, mode);

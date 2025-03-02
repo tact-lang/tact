@@ -1,9 +1,10 @@
-import "@stdlib/ownable";
-import "@stdlib/deploy";
+// https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md
+
 import "./jetton_wallet";
 import "./messages";
 
-asm fun emptyAddress(): Address { b{00} PUSHSLICE }
+const ProvideAddressGasConsumption: Int = 10000000;
+const Workchain: Int = 0;
 
 struct JettonMasterState {
     totalSupply: Int as coins;
@@ -13,127 +14,120 @@ struct JettonMasterState {
     jettonWalletCode: Cell;
 }
 
-contract JettonMinter with OwnableTransferable {
-    totalSupply: Int as coins;
-    mintable: Bool;
-    owner: Address;
-    jettonContent: Cell;
-
-    init(owner: Address, jettonContent: Cell) {
-        self.totalSupply = 0;
-        self.mintable = true;
-        self.owner = owner;
-        self.jettonContent = jettonContent;
-    }
-
+contract JettonMinter(
+    totalSupply: Int as coins,
+    owner: Address,
+    jettonContent: Cell,
+) {
     receive(msg: JettonBurnNotification) {
-        //Check that the message is from msg.sender's jetton_wallet
-        require(sender() == self.getJettonWalletByOwner(msg.sender), "Not wallet owner");
+        let sender = parseStdAddress(sender().asSlice());
+        let wallet = getJettonBasechainWalletByOwner(msg.sender);
+
+        throwUnless(74, sender.workchain == Workchain && sender.address == wallet.hash!!);
 
         self.totalSupply -= msg.amount;
-        send(SendParameters{
-            to: msg.responseDestination,
-            value: 0,
-            bounce: false,
-            mode: SendRemainingValue | SendIgnoreErrors, //ignore errors, because supply already been updated
-            body: JettonExcesses{
-                queryId: msg.queryId
-            }.toCell()
-        });
+
+        if (msg.responseDestination.isNotNone()) {
+            message(MessageParameters {
+                to: msg.responseDestination,
+                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
+                value: 0,
+                bounce: false,
+                mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply has already been updated
+            });
+        }
     }
 
-    receive(msg: JettonUpdateContent){
-        self.requireOwner(); // Allow changing content only by owner
-        self.jettonContent = msg.content; // Update content
-    }
-
-    // https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md
     receive(msg: ProvideWalletAddress) {
-        //require(context().value >= ton("0.006625199"), "Insufficient gas");
-        let includedAddress: Address? = null;
-        let workchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
-        //Note, that emptyAddress != null, it is different values.
-        //We do like that according to TEP above
-        let targetJettonWallet: Address = emptyAddress();
+        // we use message fwdFee for estimation of forward_payload costs
+        let ctx = context();
+        let fwdFee = ctx.readForwardFee();
+        throwUnless(75, ctx.value > fwdFee + ProvideAddressGasConsumption);
 
-        //Here was no such check in Howard's code
-        if(workchain == 0) {
-            //Only in this case (address is from basechain) we can calculate the address
-            targetJettonWallet = contractAddress(initOf JettonWallet(msg.ownerAddress, myAddress()));
-        }
-        if (msg.includeAddress) {
-            includedAddress = msg.ownerAddress;
-        }
-        send(SendParameters{
+        let includedAddress: Address? = msg.includeAddress ? msg.ownerAddress : null;
+
+        let workchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
+
+        let targetJettonWallet: BasechainAddress =
+            (workchain == Workchain) ?
+            contractBasechainAddress(initOf JettonWallet(0, msg.ownerAddress, myAddress()))
+            : emptyBasechainAddress();
+
+        let outMsg = takeWalletBody(targetJettonWallet, includedAddress, msg.queryId);
+
+        message(MessageParameters {
+            body: outMsg,
             to: sender(),
             value: 0,
             mode: SendRemainingValue,
-            body: self.takeWalletBody(targetJettonWallet, includedAddress, msg.queryId)
         });
     }
-    receive(msg: Mint) {
-        self.requireOwner(); // Allow minting only by owner
-        require(self.mintable, "Not mintable");
-        //Maybe we should check that msg.value is enough to cover the gas fees
-        //Or, maybe we should do self.totalSupply -= msg.amount if bounced.
-        //But there is no any check in Howard's code and in official funC code,
-        self.totalSupply += msg.amount; // Update total supply
 
+    receive(msg: JettonUpdateContent) {
+        throwUnless(73, sender() == self.owner);
+        self.jettonContent = msg.content;
+    }
+
+    receive(msg: Mint) {
+        throwUnless(73, sender() == self.owner);
+        self.totalSupply += msg.mintMessage.amount;
 
         deploy(DeployParameters{
             value: 0,
             bounce: true,
             mode: SendRemainingValue,
-            body: JettonTransferInternal{
-                queryId: 0,
-                amount: msg.amount,
-                sender: myAddress(),
-                responseDestination: self.owner, // Owner is minting, so send excess to owner
-                forwardTonAmount: 1, // 1 nanoton is enough to send a notification
-                forwardPayload: emptySlice()
-            }.toCell(),
-            init: self.getJettonWalletInit(msg.receiver)
+            body: msg.mintMessage.toCell(),
+            init: getJettonWalletInit(msg.receiver)
         });
     }
 
-    bounced(msg: bounced<JettonTransferInternal>){
-        self.totalSupply -= msg.amount;
-    }
-    inline fun takeWalletBody(targetJettonWallet: Address, includedAddress: Address?, query_id: Int): Cell {
-        let body: Builder = beginCell()
-        .storeUint(0xd1735400, 32)
-        .storeUint(query_id, 64)
-        .storeSlice(targetJettonWallet.asSlice());
-        if (includedAddress != null) {
-            let includedAddressCell: Cell = beginCell().storeSlice(includedAddress!!.asSlice()).endCell();
-            body = body.storeBit(true); // Maybe bit
-            body = body.storeRef(includedAddressCell);
-        } else {
-            body = body.storeBit(false); // Maybe bit
-        }
-        return body.endCell();
-    }
-
-    inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {
-        let jwInit: StateInit = self.getJettonWalletInit(jettonWalletOwner);
-        return contractAddress(jwInit);
-    }
-
-    inline fun getJettonWalletInit(address: Address): StateInit {
-        return initOf JettonWallet(address, myAddress());
+    receive(msg: ChangeOwner) {
+        throwUnless(73, sender() == self.owner);
+        self.owner = msg.newOwner;
     }
 
     get fun get_jetton_data(): JettonMasterState {
         return JettonMasterState {
             totalSupply: self.totalSupply,
-            mintable: self.mintable,
+            mintable: true,
             adminAddress: self.owner,
             jettonContent: self.jettonContent,
-                                                //Owner may be any address, what matters here is the code, not data.
-            jettonWalletCode: initOf JettonWallet(myAddress(), myAddress()).code
+            jettonWalletCode: codeOf JettonWallet,
         }
     }
+
     get fun get_wallet_address(ownerAddress: Address): Address {
-        return self.getJettonWalletByOwner(ownerAddress);
+        return getJettonWalletByOwner(ownerAddress);
     }
 }
+
+asm fun emptyAddress(): Address { b{00} PUSHSLICE }
+
+inline fun takeWalletBody(targetJettonWallet: BasechainAddress, includedAddress: Address?, query_id: Int): Cell {
+    let body: Builder = beginCell()
+        .storeUint(0xd1735400, 32)
+        .storeUint(query_id, 64)
+        .storeBasechainAddress(targetJettonWallet);
+
+    if (includedAddress != null) {
+        body = body.storeBit(true); // Maybe bit
+        body = body.storeRef(beginCell().storeAddress(includedAddress!!).endCell());
+    } else {
+        body = body.storeBit(false); // Maybe bit
+    }
+    return body.endCell();
+}
+
+inline fun getJettonWalletInit(address: Address): StateInit {
+    return initOf JettonWallet(0, address, myAddress());
+}
+
+inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {
+    return contractAddress(getJettonWalletInit(jettonWalletOwner));
+}
+
+inline fun getJettonBasechainWalletByOwner(jettonWalletOwner: Address): BasechainAddress {
+    return contractBasechainAddress(getJettonWalletInit(jettonWalletOwner));
+}
+
+inline extends fun isNotNone(self: Address): Bool { return self.asSlice().preloadUint(2) != 0 }

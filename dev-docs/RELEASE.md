@@ -15,6 +15,7 @@
   $ git push origin vX.Y.Z
   ```
 - [ ] Create the new `vX.Y.Z` release on GitHub: <https://github.com/tact-lang/tact/releases>
+- [ ] `npm pack` and check the contents of the archive
 - [ ] Publish the new `vX.Y.Z` release on NPM: [@tact-lang/compiler](https://www.npmjs.com/package/@tact-lang/compiler)
   ```shell
   $ git checkout vX.Y.Z
@@ -25,12 +26,13 @@
   - [ ] <https://github.com/tact-lang/tree-sitter-tact> (tracked in: )
   - [ ] <https://github.com/tact-lang/tact.vim> (tracked in: )
   - [ ] <https://github.com/tact-lang/tact-sublime> (tracked in: )
-  - [ ] <https://github.com/tact-lang/tact-vscode> (tracked in: )
-  - [ ] A new release of [tact-vscode](https://marketplace.visualstudio.com/items?itemName=KonVik.tact-lang-vscode) on the Visual Studio Marketplace
-  - [ ] <https://github.com/novusnota/prism-ton> (tracked in: )
-  - [ ] <https://github.com/nujan-io/nujan-ide> (tracked in: )
-  - [ ] <https://github.com/ton-org/blueprint> (tracked in: )
+  - [ ] <https://github.com/tact-lang/tact-language-server> (tracked in: )
+  - [ ] A new release of VSCode extension with the [tact-language-server](https://github.com/tact-lang/tact-language-server):
+    - [ ] [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=tonstudio.vscode-tact)
+    - [ ] [Open VSX Registry](https://open-vsx.org/extension/tonstudio/vscode-tact)
+  - [ ] <https://github.com/tact-lang/web-ide> (tracked in: )
+  - [ ] <https://github.com/tact-lang/prism-ton> (tracked in: )
   - [ ] <https://github.com/ton-blockchain/intellij-ton> (tracked in: )
+  - [ ] <https://github.com/ton-blockchain/verifier> (tracked in: )
 - [ ] Write `vX.Y.Z` release notes explaining the newest changes with code examples
 - [ ] [TON Dev News](https://t.me/tondev_news) Telegram channel announcement
-- [ ] Accumulate TON dev chats feedback

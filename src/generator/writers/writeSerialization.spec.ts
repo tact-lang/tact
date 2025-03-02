@@ -88,7 +88,6 @@ describe("writeSerialization", () => {
                 false,
                 "with-opcode",
                 getAllocation(ctx, s),
-                "user",
                 wCtx,
             );
             const extracted = wCtx.extract(true);

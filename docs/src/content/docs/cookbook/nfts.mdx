@@ -116,7 +116,7 @@ message(0x5fcc3d14) NFTTransfer {
     forwardPayload: Slice as remaining; // optional custom data that should be sent to the new owner.
 }
 
-contract Example {
+contract Example with Deployable {
     nftItemAddress: Address;
 
     init(nftItemAddress: Address) {
@@ -149,6 +149,8 @@ Note, that TON Blockchain does not allow contracts to call each other [getters](
 In order to receive data from another contract, you must exchange messages.
 
 ```tact
+import "@stdlib/deploy";
+
 message(0x2fcb26a2) NFTGetStaticData {
     queryId: Int as uint64;
 }
@@ -173,7 +175,7 @@ inline fun calculateNFTAddress(index: Int, collectionAddress: Address, nftCode: 
     return contractAddress(StateInit{code: nftCode, data: initData.toCell()});
 }
 
-contract Example {
+contract Example with Deployable {
     nftCollectionAddress: Address;
     nftItemIndex: Int as uint64;
     nftCode: Cell;
@@ -212,6 +214,8 @@ contract Example {
 NFT royalty params are described [here](https://github.com/ton-blockchain/TEPs/blob/master/text/0066-nft-royalty-standard.md).
 
 ```tact
+import "@stdlib/deploy";
+
 message(0x693d3950) NFTGetRoyaltyParams {
     queryId: Int as uint64;
 }
@@ -223,7 +227,7 @@ message(0xa8cb00ad) NFTReportRoyaltyParams {
     destination: Address;
 }
 
-contract Example {
+contract Example with Deployable {
     nftCollectionAddress: Address;
 
     init(nftCollectionAddress: Address) {
@@ -264,6 +268,8 @@ Note that only NFT owners are allowed to use these methods.
 ### Deploy NFT
 
 ```tact
+import "@stdlib/deploy";
+
 message(0x1) NFTDeploy {
     queryId: Int as uint64;
     itemIndex: Int as uint64;
@@ -271,7 +277,7 @@ message(0x1) NFTDeploy {
     nftContent: Cell;
 }
 
-contract Example {
+contract Example with Deployable {
     nftCollectionAddress: Address;
 
     init(nftCollectionAddress: Address) {
@@ -298,12 +304,14 @@ contract Example {
 ### Change owner
 
 ```tact
+import "@stdlib/deploy";
+
 message(0x3) NFTChangeOwner {
     queryId: Int as uint64;
     newOwner: Address;
 }
 
-contract Example {
+contract Example with Deployable {
     nftCollectionAddress: Address;
 
     init(nftCollectionAddress: Address) {

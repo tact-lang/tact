@@ -455,6 +455,11 @@
             "name": "keyword.operator.new.tact"
           },
           {
+            "comment": "codeOf expression",
+            "match": "\\b(codeOf)\\b",
+            "name": "keyword.operator.new.tact"
+          },
+          {
             "comment": "Ternary expression",
             "begin": "(?!\\?\\.\\s*[^[:digit:]])(\\?)(?!\\?)",
             "beginCaptures": {

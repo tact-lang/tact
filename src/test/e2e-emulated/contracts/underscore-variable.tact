@@ -16,7 +16,7 @@ contract UnderscoreVariableTestContract {
 
     get fun test1(): Int {
         try {
-            nativeThrowIf(1, true);
+            throwIf(1, true);
         } catch (_) {
             return 0;
         }

@@ -1,0 +1,255 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`unboc foo.boc Default run 1`] = `
+{
+  "code": 0,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": ""Asm.fif" include
+PROGRAM{
+  DECLPROC recv_internal
+  78250 DECLMETHOD ?fun_78250
+  DECLPROC ?fun_ref_92183b49329bb4e4
+  recv_internal PROC:<{
+    DROP
+    DROP
+    CTOS
+    TWO
+    SDSKIPFIRST
+    1 LDI
+    1 LDI
+    LDMSGADDR
+    OVER
+    s3 s4 XCHG
+    s5 s5 XCHG2
+    4 TUPLE
+    1 SETGLOB
+    SWAP
+    2 SETGLOB
+    PUSHROOT
+    CTOS
+    1 LDI
+    DROP
+    <{
+      NULL
+    }> PUSHCONT
+    <{
+      NULL
+    }> PUSHCONT
+    IFELSE
+    DROP
+    IFRET
+    130 THROW
+  }>
+  ?fun_78250 PROC:<{
+    PUSHROOT
+    CTOS
+    1 LDI
+    DROP
+    <{
+      NULL
+    }> PUSHCONT
+    <{
+      NULL
+    }> PUSHCONT
+    IFELSE
+    ?fun_ref_92183b49329bb4e4 INLINECALLDICT
+    NIP
+  }>
+  ?fun_ref_92183b49329bb4e4 PROCREF:<{
+    x{68656C6C6F20776F726C64} PUSHSLICE
+  }>
+}END>c
+",
+}
+`;
+
+exports[`unboc foo.boc With bitcode 1`] = `
+{
+  "code": 0,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": ""Asm.fif" include
+PROGRAM{
+  DECLPROC recv_internal
+  78250 DECLMETHOD ?fun_78250
+  DECLPROC ?fun_ref_92183b49329bb4e4
+  recv_internal PROC:<{
+    DROP                                          // 0x3 0
+    DROP                                          // 0x3 0
+    CTOS                                          // 0xD0
+    TWO                                           // 0x7 2
+    SDSKIPFIRST                                   // 0xD721
+    1 LDI                                         // 0xD2 00
+    1 LDI                                         // 0xD2 00
+    LDMSGADDR                                     // 0xFA40
+    OVER                                          // 0x2 1
+    s3 s4 XCHG                                    // 0x10 3 4
+    s5 s5 XCHG2                                   // 0x50 5 5
+    4 TUPLE                                       // 0x6F0 4
+    1 SETGLOB                                     // 0xF87_ 0C_
+    SWAP                                          // 0x0 1
+    2 SETGLOB                                     // 0xF87_ 14_
+    PUSHROOT                                      // 0xED4 4
+    CTOS                                          // 0xD0
+    1 LDI                                         // 0xD2 00
+    DROP                                          // 0x3 0
+    <{
+      NULL                                        // 0x6D
+    }> PUSHCONT                                   // 0x9 6D
+    <{
+      NULL                                        // 0x6D
+    }> PUSHCONT                                   // 0x9 6D
+    IFELSE                                        // 0xE2
+    DROP                                          // 0x3 0
+    IFRET                                         // 0xDC
+    130 THROW                                     // 0xF2C4_ 105_
+  }>
+  ?fun_78250 PROC:<{
+    PUSHROOT                                      // 0xED4 4
+    CTOS                                          // 0xD0
+    1 LDI                                         // 0xD2 00
+    DROP                                          // 0x3 0
+    <{
+      NULL                                        // 0x6D
+    }> PUSHCONT                                   // 0x9 6D
+    <{
+      NULL                                        // 0x6D
+    }> PUSHCONT                                   // 0x9 6D
+    IFELSE                                        // 0xE2
+    ?fun_ref_92183b49329bb4e4 INLINECALLDICT      // 0x
+    NIP                                           // 0x3 1
+  }>
+  ?fun_ref_92183b49329bb4e4 PROCREF:<{
+    x{68656C6C6F20776F726C64} PUSHSLICE           // 0x8B 68656C6C6F20776F726C64
+  }>
+}END>c
+",
+}
+`;
+
+exports[`unboc foo.boc Without aliases 1`] = `
+{
+  "code": 0,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": ""Asm.fif" include
+PROGRAM{
+  DECLPROC recv_internal
+  78250 DECLMETHOD ?fun_78250
+  DECLPROC ?fun_ref_92183b49329bb4e4
+  recv_internal PROC:<{
+    s0 POP
+    s0 POP
+    CTOS
+    2 PUSHINT
+    SDSKIPFIRST
+    1 LDI
+    1 LDI
+    LDMSGADDR
+    s1 PUSH
+    s3 s4 XCHG
+    s5 s5 XCHG2
+    4 TUPLE
+    1 SETGLOB
+    s0 s1 XCHG
+    2 SETGLOB
+    c4 PUSHCTR
+    CTOS
+    1 LDI
+    s0 POP
+    <{
+      NULL
+    }> PUSHCONT
+    <{
+      NULL
+    }> PUSHCONT
+    IFELSE
+    s0 POP
+    IFRET
+    130 THROW
+  }>
+  ?fun_78250 PROC:<{
+    c4 PUSHCTR
+    CTOS
+    1 LDI
+    s0 POP
+    <{
+      NULL
+    }> PUSHCONT
+    <{
+      NULL
+    }> PUSHCONT
+    IFELSE
+    ?fun_ref_92183b49329bb4e4 INLINECALLDICT
+    s1 POP
+  }>
+  ?fun_ref_92183b49329bb4e4 PROCREF:<{
+    x{68656C6C6F20776F726C64} PUSHSLICE
+  }>
+}END>c
+",
+}
+`;
+
+exports[`unboc foo.boc Without refs 1`] = `
+{
+  "code": 0,
+  "kind": "exited",
+  "stderr": "",
+  "stdout": ""Asm.fif" include
+PROGRAM{
+  DECLPROC recv_internal
+  78250 DECLMETHOD ?fun_78250
+  recv_internal PROC:<{
+    DROP
+    DROP
+    CTOS
+    TWO
+    SDSKIPFIRST
+    1 LDI
+    1 LDI
+    LDMSGADDR
+    OVER
+    s3 s4 XCHG
+    s5 s5 XCHG2
+    4 TUPLE
+    1 SETGLOB
+    SWAP
+    2 SETGLOB
+    PUSHROOT
+    CTOS
+    1 LDI
+    DROP
+    <{
+      NULL
+    }> PUSHCONT
+    <{
+      NULL
+    }> PUSHCONT
+    IFELSE
+    DROP
+    IFRET
+    130 THROW
+  }>
+  ?fun_78250 PROC:<{
+    PUSHROOT
+    CTOS
+    1 LDI
+    DROP
+    <{
+      NULL
+    }> PUSHCONT
+    <{
+      NULL
+    }> PUSHCONT
+    IFELSE
+    <{
+      x{68656C6C6F20776F726C64} PUSHSLICE
+    }>c CALLREF
+    NIP
+  }>
+}END>c
+",
+}
+`;

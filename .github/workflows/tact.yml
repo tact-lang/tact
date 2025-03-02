@@ -8,6 +8,10 @@ on:
     branches: ["**"]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   backwards-compat:
     strategy:
@@ -38,7 +42,7 @@ jobs:
           # Test some specific things for backwards compatibility.
           # It's important to restrain from using too much of Node.js 22+ features
           # until it goes into maintenance LTS state and majority of users catches up
-          yarn test isSubsetOf
+          yarn cross-env NODE_OPTIONS=--max_old_space_size=4096 jest isSubsetOf
           # Clean-up
           yarn cleanall
           yarn config delete ignore-engines

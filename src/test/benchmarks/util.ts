@@ -14,16 +14,16 @@ export function getUsedGas(sendEnough: SendMessageResult): number {
         .reduceRight((prev, cur) => prev + cur);
 }
 
-type BenchmarkResult = {
+export type BenchmarkResult = {
     label: string;
-    commit: string | undefined;
+    pr: string | undefined;
     gas: Record<string, number>;
 };
 
-type RawBenchmarkResult = {
+export type RawBenchmarkResult = {
     results: {
         label: string;
-        commit: string | null;
+        pr: string | null;
         gas: Record<string, string>;
     }[];
 };
@@ -33,7 +33,7 @@ export function generateResults(
 ): BenchmarkResult[] {
     return benchmarkResults.results.map((result) => ({
         label: result.label,
-        commit: result.commit ?? undefined,
+        pr: result.pr ?? undefined,
         gas: Object.fromEntries(
             Object.entries(result.gas).map(([key, value]) => [
                 key,
@@ -78,26 +78,39 @@ function calculateChanges(
     }, []);
 }
 
-export function printBenchmarkTable(results: BenchmarkResult[]): void {
+type BenchmarkTableArgs = {
+    implementationName: string;
+    isFullTable: boolean;
+};
+
+export function printBenchmarkTable(
+    results: BenchmarkResult[],
+    args: BenchmarkTableArgs,
+): void {
     const METRICS: readonly string[] = Object.keys(results[0]!.gas);
 
-    if (results.length === 0) {
+    const first = results.at(0)!;
+    const last = results.at(-1)!;
+
+    const tableResults = args.isFullTable ? results : [first, last];
+
+    if (tableResults.length === 0) {
         console.log("No benchmark results to display.");
         return;
     }
 
     const table = new Table({
-        head: ["Run", ...METRICS, "Commit"],
+        head: ["Run", ...METRICS, "PR #"],
         style: {
             head: ["cyan"],
             border: ["gray"],
         },
     });
 
-    const changes = calculateChanges(results, METRICS);
+    const changes = calculateChanges(tableResults, METRICS);
 
-    results
-        .map(({ label, gas, commit }, i) => [
+    tableResults
+        .map(({ label, gas, pr: commit }, i) => [
             label,
             ...METRICS.map((metric, j) => `${gas[metric]} ${changes[i]?.[j]}`),
             commit
@@ -114,10 +127,7 @@ export function printBenchmarkTable(results: BenchmarkResult[]): void {
     const output = [];
     output.push(table.toString());
 
-    const first = results[0]!;
-    const last = results[results.length - 1]!;
-
-    output.push("\nComparison with FunC implementation:");
+    output.push(`\nComparison with ${args.implementationName} implementation:`);
     output.push(
         ...METRICS.map((metric) => {
             const ratio =
@@ -127,7 +137,7 @@ export function printBenchmarkTable(results: BenchmarkResult[]): void {
                 ratio > 100
                     ? chalk.redBright(`${ratio.toFixed(2)}%`)
                     : chalk.green(`${ratio.toFixed(2)}%`)
-            } of FunC gas usage`;
+            } of ${args.implementationName} gas usage`;
         }),
     );
 
