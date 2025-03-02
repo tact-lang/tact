@@ -68,7 +68,7 @@ export const includes = <const K extends string>(
 
 ### Don't use JS object "features"
 
-- **Don't use optional fields** `foo?: Bar`. Every `?` doubles the number of cases that should be tested. Eventually, some combination of non-defined and undefined fields will be non-semantic. Prefer at least an explicit `foo: Bar | undefined`, or better create a type with a descriptive name to make it a properly tagged union.
+- **Don't use optional fields** `foo?: Bar`. Every `?` doubles the number of cases that should be tested. Eventually, some combination of non-defined and undefined fields will be non-semantic. Prefer at least an explicit `foo: Bar | undefined`, or better create a type with a descriptive name to make it a tagged union.
 - _**Don't use optional fields**_. In JS there is a distinction between a field that is not defined and a field that is `undefined` (sic). `'a' in {} === false`, `'a' in { a: undefined } === true`. TypeScript doesn't handle this properly in its type system.
 - **Don't use `Proxy`**. These break the type safety, are incorrectly handled in debuggers, and lead to very unexpected heisenbugs.
 - **Don't use `get` and `set`**. See `Proxy` above. Use explicit `getFoo` and `setFoo` functions, or just avoid mutable state.
