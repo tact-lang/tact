@@ -177,7 +177,7 @@ Name               | [TL-B][tlb]                 | Inclusive range             |
 `varuint32{:tact}` | [`VarUInteger 32`][varuint] | $0$ to $2^{248} - 1$        | between $5$ and $253$ bits
 `varint32{:tact}`  | `VarInteger 32`             | $-2^{247}$ to $2^{247} - 1$ | between $5$ and $253$ bits
 
-<p/><Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+<p/><Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 The `varuint16{:tact}` format is equivalent to [`coins{:tact}`](#serialization-varint). Its signed variant, `varint16{:tact}`, has the same memory layout except for the signed `value` field, which allows a different range of values: from $-2^{119}$ to $2^{119} - 1$, including both ends.
 
