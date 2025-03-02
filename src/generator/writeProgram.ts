@@ -25,7 +25,7 @@ import { emit } from "./emitter/emit";
 import {
     writeInit,
     writeMainContract,
-    writeStorageOps,
+    writeContractStorageOps,
 } from "./writers/writeContract";
 import { funcInitIdOf } from "./writers/id";
 import { idToHex } from "../utils/idToHex";
@@ -404,7 +404,7 @@ function writeAll(
     // Storage Functions
     for (const t of sortedTypes) {
         if (t.kind === "contract") {
-            writeStorageOps(t, t.origin, wCtx);
+            writeContractStorageOps(t, wCtx);
         }
     }
 

@@ -36,9 +36,8 @@ export type ContractsCodes = Record<
     | undefined
 >;
 
-export function writeStorageOps(
+export function writeContractStorageOps(
     type: TypeDescription,
-    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
     // Load function
