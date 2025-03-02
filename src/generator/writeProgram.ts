@@ -261,8 +261,8 @@ export async function writeProgram(
     });
 
     return {
-        entrypoint: basename + ".code.fc",
-        files: [{ name: basename + ".code.fc", code }],
+        entrypoint: `${basename}.fc`,
+        files: [{ name: `${basename}.fc`, code }],
         constants,
         abi,
     };
