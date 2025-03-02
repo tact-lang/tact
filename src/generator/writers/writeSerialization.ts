@@ -325,7 +325,6 @@ export function writeParser(
     forceInline: boolean,
     opcode: "with-opcode" | "no-opcode",
     allocation: StorageAllocation,
-    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
     const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
