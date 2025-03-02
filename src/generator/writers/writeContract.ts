@@ -20,12 +20,9 @@ import {
     writeBouncedRouter,
     writeNonBouncedRouter,
 } from "./writeRouter";
-import type { ItemOrigin } from "../../imports/source";
 import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import { getAllocation } from "../../storage/resolveAllocation";
 import { contractErrors } from "../../abi/errors";
-
-const SMALL_CONTRACT_MAX_FIELDS = 5;
 
 export type ContractsCodes = Record<
     string,
