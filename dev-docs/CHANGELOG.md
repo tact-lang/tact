@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Code generation
+
+- Contract load function is inlined: PR [#2101](https://github.com/tact-lang/tact/pull/2101)
+
+### Release contributors
+
+- [Anton Trunov](https://github.com/anton-trunov)
+
 ## [1.6.0] - 2025-02-28
 
 ### Internal infrastructure
