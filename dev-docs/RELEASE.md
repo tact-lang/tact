@@ -15,6 +15,7 @@
   $ git push origin vX.Y.Z
   ```
 - [ ] Create the new `vX.Y.Z` release on GitHub: <https://github.com/tact-lang/tact/releases>
+- [ ] `npm pack` and check the contents of the archive
 - [ ] Publish the new `vX.Y.Z` release on NPM: [@tact-lang/compiler](https://www.npmjs.com/package/@tact-lang/compiler)
   ```shell
   $ git checkout vX.Y.Z
@@ -35,4 +36,3 @@
   - [ ] <https://github.com/ton-blockchain/verifier> (tracked in: )
 - [ ] Write `vX.Y.Z` release notes explaining the newest changes with code examples
 - [ ] [TON Dev News](https://t.me/tondev_news) Telegram channel announcement
-- [ ] Accumulate TON dev chats feedback
