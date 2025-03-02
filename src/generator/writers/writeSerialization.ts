@@ -343,6 +343,7 @@ export function writeParser(
         ctx.body(() => {
             // Check prefix
             if (allocation.header && opcode === "with-opcode") {
+                ctx.flag("impure");
                 ctx.append(
                     `throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(${allocation.header.bits}) == ${allocation.header.value});`,
                 );
