@@ -41,17 +41,13 @@ export function writeStorageOps(
     origin: ItemOrigin,
     ctx: WriterContext,
 ) {
-    const isSmall = type.fields.length <= SMALL_CONTRACT_MAX_FIELDS;
-
     // Load function
     ctx.fun(ops.contractLoad(type.name, ctx), () => {
         ctx.signature(
             `${resolveFuncType(type, ctx)} ${ops.contractLoad(type.name, ctx)}()`,
         );
         ctx.flag("impure");
-        if (isSmall) {
-            ctx.flag("inline");
-        }
+        ctx.flag("inline");
         ctx.context("type:" + type.name + "$init");
         ctx.body(() => {
             // Load data slice
@@ -429,17 +425,7 @@ export function writeMainContract(
                 wCtx.append(`__tact_context_sender = msg_sender_addr;`);
                 wCtx.append();
 
-                // Load self
-                wCtx.append(`;; Load contract data`);
-                const contractVariables = resolveFuncTypeFromAbiUnpack(
-                    "$self",
-                    getAllocation(wCtx.ctx, contract.name).ops,
-                    wCtx,
-                );
-                wCtx.append(
-                    `var ${contractVariables} = ${ops.contractLoad(contract.name, wCtx)}();`,
-                );
-                wCtx.append();
+                writeLoadContractVariables(contract, wCtx);
 
                 writeBouncedRouter(contractReceivers.bounced, contract, wCtx);
 
@@ -462,17 +448,7 @@ export function writeMainContract(
         );
         if (hasExternal) {
             wCtx.inBlock("() recv_external(slice in_msg) impure", () => {
-                // Load self
-                wCtx.append(`;; Load contract data`);
-                const contractVariables = resolveFuncTypeFromAbiUnpack(
-                    "$self",
-                    getAllocation(wCtx.ctx, contract.name).ops,
-                    wCtx,
-                );
-                wCtx.append(
-                    `var ${contractVariables} = ${ops.contractLoad(contract.name, wCtx)}();`,
-                );
-                wCtx.append();
+                writeLoadContractVariables(contract, wCtx);
 
                 writeNonBouncedRouter(
                     contractReceivers.external,
@@ -516,4 +492,20 @@ export function writeMainContract(
     return __tact_selector_hack_asm();
 }`);
     });
+}
+
+function writeLoadContractVariables(
+    contract: TypeDescription,
+    wCtx: WriterContext,
+): void {
+    wCtx.append(";; Load contract data");
+    const contractVariables = resolveFuncTypeFromAbiUnpack(
+        "$self",
+        getAllocation(wCtx.ctx, contract.name).ops,
+        wCtx,
+    );
+    wCtx.append(
+        `var ${contractVariables} = ${ops.contractLoad(contract.name, wCtx)}();`,
+    );
+    wCtx.append();
 }
