@@ -105,8 +105,7 @@ struct StateInit {
 /// ```tact
 /// fun example() {
 ///     let init = initOf SomeContract();
-///     let sender = sender();
-///     init.hasSameBasechainAddress(sender); // returns true if sender matches contract's basechain address
+///     init.hasSameBasechainAddress(sender()); // returns true if sender matches contract's basechain address
 /// }
 /// ```
 /// 
@@ -115,8 +114,7 @@ struct StateInit {
 /// ```tact
 /// fun example() {
 ///     let init = initOf SomeContract();
-///     let sender = sender();
-///     sender == contractAddress(init); // less efficient approach
+///     sender() == contractAddress(sender()); // less efficient approach
 /// }
 /// ```
 /// 

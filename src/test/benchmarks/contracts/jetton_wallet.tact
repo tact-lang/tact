@@ -44,8 +44,8 @@ contract JettonWallet(
         self.balance += msg.amount;
 
         // This message should come only from master, or from other JettonWallet
-        let init = initOf JettonWallet(0, msg.sender, self.master);
-        if (!init.hasSameBasechainAddress(sender())) {
+        let wallet: StateInit = initOf JettonWallet(0, msg.sender, self.master);
+        if (!wallet.hasSameBasechainAddress(sender())) {
             throwUnless(707, self.master == sender());
         }
 
