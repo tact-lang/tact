@@ -1331,14 +1331,7 @@
   resolved "https://registry.npmjs.org/@tact-lang/ton-jest/-/ton-jest-0.0.4.tgz"
   integrity sha512-FWjfiNvhMlE44ZLLL7tgmHbrszMTPMttmYiaTekf1vwFXV3uAOawM8xM9NldYaCVs9eh8840PjgISdMMUTCSCw==
 
-"@ton/core@0.60.0":
-  version "0.60.0"
-  resolved "https://registry.npmjs.org/@ton/core/-/core-0.60.0.tgz#7968d6a53b63c81149b5b4c91725518bc88a2f87"
-  integrity sha512-vK0itrieVashNQ7geqpvlWcOyXsXKKtIo6h02HcVcMeNo+QxovBaDAvou3BUKDnf7ej6+rRSuXMSOIjBct/zIg==
-  dependencies:
-    symbol.inspect "1.0.1"
-
-"@ton/core@^0.60.0":
+"@ton/core@0.60.1", "@ton/core@^0.60.0":
   version "0.60.1"
   resolved "https://registry.npmjs.org/@ton/core/-/core-0.60.1.tgz#cc9a62fb308d7597b1217dc8e44c7e2dcc0aceaa"
   integrity sha512-8FwybYbfkk57C3l9gvnlRhRBHbLYmeu0LbB1z9N+dhDz0Z+FJW8w0TJlks8CgHrAFxsT3FlR2LsqFnsauMp38w==
