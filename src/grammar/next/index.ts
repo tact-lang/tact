@@ -431,7 +431,7 @@ const parseStatementLet =
     (ctx) => {
         return ctx.ast.StatementLet(
             parseId(name)(ctx),
-            type ? parseType(type)(ctx) : null,
+            type ? parseType(type)(ctx) : undefined,
             parseExpression(init)(ctx),
             loc,
         );
@@ -498,7 +498,7 @@ const parseStatementReturn =
     }: $ast.StatementReturn): Handler<A.AstStatementReturn> =>
     (ctx) => {
         return ctx.ast.StatementReturn(
-            expression ? parseExpression(expression)(ctx) : null,
+            expression ? parseExpression(expression)(ctx) : undefined,
             loc,
         );
     };
@@ -515,7 +515,7 @@ const parseStatementCondition =
             return ctx.ast.StatementCondition(
                 parseExpression(condition)(ctx),
                 parseStatements(trueBranch)(ctx),
-                null,
+                undefined,
                 loc,
             );
         } else if (falseBranch.$ === "FalseBranch") {
@@ -682,7 +682,7 @@ const parseFunctionAttribute =
         return ctx.ast.FunctionAttributeGet(
             node.name.methodId
                 ? parseExpression(node.name.methodId)(ctx)
-                : null,
+                : undefined,
             node.loc,
         );
     };
@@ -835,10 +835,10 @@ const parseTypeOptional =
             return ctx.ast.MapType(
                 ctx.ast.TypeId(keyType.name, keyType.loc),
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-                keyAs ? ctx.ast.Id(keyAs.name, keyAs.loc) : null,
+                keyAs ? ctx.ast.Id(keyAs.name, keyAs.loc) : undefined,
                 ctx.ast.TypeId(valueType.name, valueType.loc),
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-                valueAs ? ctx.ast.Id(valueAs.name, valueAs.loc) : null,
+                valueAs ? ctx.ast.Id(valueAs.name, valueAs.loc) : undefined,
                 genericLoc,
             );
         }
@@ -890,7 +890,7 @@ const parseFieldDecl =
     }: $ast.FieldDecl): Handler<A.AstFieldDecl> =>
     (ctx) => {
         const id = parseId(name)(ctx);
-        const expr = expression ? parseExpression(expression)(ctx) : null;
+        const expr = expression ? parseExpression(expression)(ctx) : undefined;
         const [as, ...restAs] = type.as;
         if (restAs.length > 0) {
             ctx.err.fieldOnlyOneAs()(loc);
@@ -901,7 +901,7 @@ const parseFieldDecl =
             ty,
             expr,
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- eslint bug
-            as ? ctx.ast.Id(as.name, as.loc) : null,
+            as ? ctx.ast.Id(as.name, as.loc) : undefined,
             loc,
         );
     };
@@ -1024,7 +1024,7 @@ const parseAsmFunction =
             parseAsmShuffle(node.shuffle)(ctx),
             parseFunctionAttributes(node.attributes, false, node.loc)(ctx),
             parseId(node.name)(ctx),
-            node.returnType ? parseType(node.returnType)(ctx) : null,
+            node.returnType ? parseType(node.returnType)(ctx) : undefined,
             map(parseList(node.parameters), parseParameter)(ctx),
             [node.instructions.trim()],
             node.loc,
@@ -1161,7 +1161,7 @@ const parseFunction =
         const name = parseId(node.name)(ctx);
         const returnType = node.returnType
             ? parseType(node.returnType)(ctx)
-            : null;
+            : undefined;
         const parameters = map(parseList(node.parameters), parseParameter)(ctx);
 
         if (node.body.$ === "FunctionDeclaration") {
@@ -1205,7 +1205,7 @@ const parseMessageDecl =
     (ctx) => {
         return ctx.ast.MessageDecl(
             parseId(name)(ctx),
-            opcode ? parseExpression(opcode)(ctx) : null,
+            opcode ? parseExpression(opcode)(ctx) : undefined,
             map(parseList(fields), parseFieldDecl)(ctx),
             loc,
         );
@@ -1226,7 +1226,7 @@ const parseNativeFunctionDecl =
             parseId(name)(ctx),
             parseFuncId(nativeName)(ctx),
             map(parseList(parameters), parseParameter)(ctx),
-            returnType ? parseType(returnType)(ctx) : null,
+            returnType ? parseType(returnType)(ctx) : undefined,
             loc,
         );
     };

@@ -32,7 +32,7 @@ export function cloneNode<T extends AstNode>(
         } else if (src.kind === "statement_let") {
             return cloneNode({
                 ...src,
-                type: src.type ? cloneNode(src.type) : null,
+                type: src.type ? cloneNode(src.type) : undefined,
                 expression: recurse(src.expression),
             });
         } else if (src.kind === "statement_condition") {
@@ -42,7 +42,7 @@ export function cloneNode<T extends AstNode>(
                 trueStatements: src.trueStatements.map(recurse),
                 falseStatements: src.falseStatements
                     ? src.falseStatements.map(recurse)
-                    : null,
+                    : undefined,
             });
         } else if (src.kind === "statement_block") {
             return cloneNode({
@@ -101,7 +101,9 @@ export function cloneNode<T extends AstNode>(
         } else if (src.kind === "statement_return") {
             return cloneNode({
                 ...src,
-                expression: src.expression ? recurse(src.expression) : null,
+                expression: src.expression
+                    ? recurse(src.expression)
+                    : undefined,
             });
         } else if (src.kind === "statement_repeat") {
             return cloneNode({
@@ -142,20 +144,20 @@ export function cloneNode<T extends AstNode>(
         } else if (src.kind === "function_def") {
             return cloneNode({
                 ...src,
-                return: src.return ? cloneNode(src.return) : null,
+                return: src.return ? cloneNode(src.return) : undefined,
                 statements: src.statements.map(recurse),
                 params: src.params.map(recurse),
             });
         } else if (src.kind === "function_decl") {
             return cloneNode({
                 ...src,
-                return: src.return ? cloneNode(src.return) : null,
+                return: src.return ? cloneNode(src.return) : undefined,
                 params: src.params.map(recurse),
             });
         } else if (src.kind === "native_function_decl") {
             return cloneNode({
                 ...src,
-                return: src.return ? cloneNode(src.return) : null,
+                return: src.return ? cloneNode(src.return) : undefined,
                 params: src.params.map(recurse),
             });
         } else if (src.kind === "receiver") {

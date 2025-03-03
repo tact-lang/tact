@@ -13,7 +13,7 @@ export const ppAstTypeId = idText;
 
 export const ppAstTypeIdWithStorage = (
     type: A.AstTypeId,
-    storageType: A.AstId | null,
+    storageType: A.AstId | undefined,
 ): string => {
     const alias = storageType ? ` as ${ppAstId(storageType)}` : "";
     return `${ppAstTypeId(type)}${alias}`;
@@ -563,7 +563,7 @@ export const ppAstMessage: Printer<A.AstMessageDecl> =
     ({ name, opcode, fields }) =>
     (c) => {
         const prefixCode =
-            opcode !== null ? `(${ppAstExpression(opcode)})` : "";
+            opcode !== undefined ? `(${ppAstExpression(opcode)})` : "";
 
         return c.concat([
             c.row(`message${prefixCode} ${ppAstId(name)} `),
@@ -685,7 +685,7 @@ export const ppAstFunctionSignature = ({
 export const ppAstFunctionAttribute = (
     attr: A.AstFunctionAttribute,
 ): string => {
-    if (attr.type === "get" && attr.methodId !== null) {
+    if (attr.type === "get" && attr.methodId !== undefined) {
         return `get(${ppAstExpression(attr.methodId)})`;
     } else {
         return attr.type;
@@ -723,7 +723,7 @@ export const ppAsmInstructionsBlock: Printer<readonly A.AstAsmInstruction[]> =
 export const ppAstStatementLet: Printer<A.AstStatementLet> =
     ({ type, name, expression }) =>
     (c) => {
-        const tyAnnotation = type === null ? "" : `: ${ppAstType(type)}`;
+        const tyAnnotation = type === undefined ? "" : `: ${ppAstType(type)}`;
         return c.row(
             `let ${ppAstId(name)}${tyAnnotation} = ${ppAstExpression(expression)};`,
         );

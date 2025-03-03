@@ -140,7 +140,7 @@ function processCondition(
     let initialCtx = sctx;
 
     // Simple if
-    if (condition.falseStatements === null) {
+    if (condition.falseStatements === undefined) {
         const r = processStatements(condition.trueStatements, initialCtx, ctx);
         ctx = r.ctx;
         return { ctx, sctx: initialCtx, returnAlwaysReachable: false };
@@ -242,7 +242,7 @@ function processStatements(
 
                     // Check type
                     const expressionType = getExpType(ctx, s.expression);
-                    if (s.type !== null) {
+                    if (s.type !== undefined) {
                         const variableType = resolveTypeRef(ctx, s.type);
                         if (!isAssignable(expressionType, variableType)) {
                             throwCompilationError(
@@ -814,7 +814,7 @@ export function resolveStatements(ctx: CompilerContext) {
 
             // Required variables
             for (const f of t.fields) {
-                if (f.ast.initializer !== null) {
+                if (f.ast.initializer !== undefined) {
                     // If the field has an initializer, it is not a required variable.
                     continue;
                 }

@@ -54,12 +54,12 @@ const staticConstantsStore = createContextStore<ConstantDescription>();
 // this function does not handle the case of structs
 function verifyMapAsAnnotationsForPrimitiveTypes(
     type: A.AstTypeId,
-    asAnnotation: A.AstId | null,
+    asAnnotation: A.AstId | undefined,
     kind: "keyType" | "valType",
 ): void {
     switch (idText(type)) {
         case "Int": {
-            if (asAnnotation === null) return;
+            if (asAnnotation === undefined) return;
             const ann = idText(asAnnotation);
             switch (kind) {
                 case "keyType":
@@ -83,7 +83,7 @@ function verifyMapAsAnnotationsForPrimitiveTypes(
         case "Address":
         case "Bool":
         case "Cell": {
-            if (asAnnotation !== null) {
+            if (asAnnotation !== undefined) {
                 throwCompilationError(
                     `${idTextErr(type)} type cannot have as-annotation`,
                     asAnnotation.loc,
@@ -99,7 +99,7 @@ function verifyMapAsAnnotationsForPrimitiveTypes(
 
 function verifyMapTypes(
     typeId: A.AstTypeId,
-    asAnnotation: A.AstId | null,
+    asAnnotation: A.AstId | undefined,
     allowedTypeNames: string[],
     kind: "keyType" | "valType",
 ): void {
@@ -124,7 +124,7 @@ function verifyMapType(mapTy: A.AstMapType, isValTypeStruct: boolean) {
     );
 
     // check allowed value types
-    if (isValTypeStruct && mapTy.valueStorageType === null) {
+    if (isValTypeStruct && mapTy.valueStorageType === undefined) {
         return;
     }
     // the case for struct/message is already checked
@@ -170,12 +170,12 @@ export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
                 kind: "map",
                 key: keyTy.name,
                 keyAs:
-                    type.keyStorageType !== null
+                    type.keyStorageType !== undefined
                         ? idText(type.keyStorageType)
                         : null,
                 value: valTy.name,
                 valueAs:
-                    type.valueStorageType !== null
+                    type.valueStorageType !== undefined
                         ? idText(type.valueStorageType)
                         : null,
             };
@@ -246,12 +246,12 @@ function buildTypeRef(
                 kind: "map",
                 key: idText(type.keyType),
                 keyAs:
-                    type.keyStorageType !== null
+                    type.keyStorageType !== undefined
                         ? idText(type.keyStorageType)
                         : null,
                 value: idText(type.valueType),
                 valueAs:
-                    type.valueStorageType !== null
+                    type.valueStorageType !== undefined
                         ? idText(type.valueStorageType)
                         : null,
             };
@@ -415,7 +415,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             name: idText(src.name),
             type: fieldTy,
             index,
-            as: src.as !== null ? idText(src.as) : null,
+            as: src.as !== undefined ? idText(src.as) : null,
             default: undefined, // initializer will be evaluated after typechecking
             loc: src.loc,
             ast: src,
@@ -2414,7 +2414,7 @@ function checkConstantsAndDefaultContractAndStructFields(
                     );
 
                     for (const field of aggregateTy.fields) {
-                        if (field.ast.initializer !== null) {
+                        if (field.ast.initializer !== undefined) {
                             ctx = checkInitializerType(
                                 field.name,
                                 "Struct field",

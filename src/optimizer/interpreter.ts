@@ -1781,7 +1781,7 @@ export class Interpreter {
                     this,
                 );
             });
-        } else if (ast.falseStatements !== null) {
+        } else if (ast.falseStatements !== undefined) {
             this.envStack.executeInNewEnvironment(() => {
                 ast.falseStatements!.forEach(
                     this.interpretStatementInternal,
@@ -1822,7 +1822,7 @@ export class Interpreter {
     }
 
     private interpretReturnStatement(ast: A.AstStatementReturn) {
-        if (ast.expression !== null) {
+        if (ast.expression !== undefined) {
             const val = this.interpretExpressionInternal(ast.expression);
             throw new ReturnSignal(val);
         } else {
