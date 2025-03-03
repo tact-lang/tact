@@ -51,11 +51,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Constants and trait constants can now depend on each other: PR [#1622](https://github.com/tact-lang/tact/pull/1622)
 - Support overriding constants and methods of the `BaseTrait` trait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
 - Introduced contract parameters as a replacement for the lazy initialization via the `init()` function: PR [#1985](https://github.com/tact-lang/tact/pull/1985), PR [#2071](https://github.com/tact-lang/tact/pull/2071)
-- [fix] Collisions in getter method IDs are now handled and reported properly: PR [#875](https://github.com/tact-lang/tact/pull/875), PR [#1052](https://github.com/tact-lang/tact/pull/1052)
+- [fix] Collisions in getter method IDs are now handled and reported correctly: PR [#875](https://github.com/tact-lang/tact/pull/875), PR [#1052](https://github.com/tact-lang/tact/pull/1052)
 - [fix] The `as coins` map value serialization type is now handled correctly: PR [#987](https://github.com/tact-lang/tact/pull/987)
 - [fix] Fixed type checking of `foreach` loops in trait methods: PR [#1017](https://github.com/tact-lang/tact/pull/1017)
 - [fix] The `sha256()` function no longer throws on statically known strings of any length: PR [#907](https://github.com/tact-lang/tact/pull/907)
-- [fix] The `foreach` loop now properly handles the `as coins` map value serialization type: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
+- [fix] The `foreach` loop now correctly handles the `as coins` map value serialization type: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
 - [fix] The typechecker now rejects integer map key types with variable width (`coins`, `varint16`, `varint32`, `varuint16`, `varuint32`): PR [#1276](https://github.com/tact-lang/tact/pull/1276)
 - [fix] The typechecker now rejects `as remaining` fields in the middle of contract storage: PR [#1301](https://github.com/tact-lang/tact/pull/1301)
 - [fix] The `override` modifier for functions without the corresponding super-function is not allowed: PR [#1302](https://github.com/tact-lang/tact/pull/1302)
@@ -134,7 +134,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### `unboc` CLI
 
 - Introduced `unboc`: a standalone CLI utility to expose Tact's TVM disassembler: PR [#1259](https://github.com/tact-lang/tact/pull/1259)
-- Bump used `@tact-lang/opcode` version to `0.3` which fixes many issues in CI runs: PR [#1922](https://github.com/tact-lang/tact/pull/1922)
+- Bump used `@tact-lang/opcode` version to `0.3`, which fixes many issues in CI runs: PR [#1922](https://github.com/tact-lang/tact/pull/1922)
 
 #### Compilation report
 
@@ -163,7 +163,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Inline `*_contract_init` function: PR [#1589](https://github.com/tact-lang/tact/pull/1589)
 - Rearrange parameters of some `asm` methods in the order described in `AsmShuffle`: PR [#1702](https://github.com/tact-lang/tact/pull/1702)
 - Struct serialization and parsing functions are now inlined more aggressively to save gas: PR [#2016](https://github.com/tact-lang/tact/pull/2016)
-- `NOP` instructions and empty asm functions are now properly optimized: PR [#1959](https://github.com/tact-lang/tact/pull/1959)
+- `NOP` instructions and empty asm functions are now adequately optimized: PR [#1959](https://github.com/tact-lang/tact/pull/1959)
 - Contracts are now compiled with custom optimized function selector with a shortcut for `recv_internal` and `recv_external`: PR [#2038](https://github.com/tact-lang/tact/pull/2038)
 - Contract receivers do not update the contract data cell at the end of execution if the receiver does not modify the contract storage: PR [#2067](https://github.com/tact-lang/tact/pull/2067), PR [#2077](https://github.com/tact-lang/tact/pull/2077)
 - [fix] Fixed code generation for `self` argument in optional struct methods: PR [#1284](https://github.com/tact-lang/tact/pull/1284)
