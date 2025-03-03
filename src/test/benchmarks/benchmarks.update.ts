@@ -106,7 +106,7 @@ const updateGasResultsFile = async (
         ),
     });
 
-    await writeFile(filePath, JSON.stringify(benchmarkResults, null, 2));
+    await writeFile(filePath, JSON.stringify(benchmarkResults, null, 2) + '\n');
 };
 
 const updateCodeSizeResultsFile = async (
@@ -140,7 +140,7 @@ const updateCodeSizeResultsFile = async (
         ),
     });
 
-    await writeFile(filePath, JSON.stringify(benchmarkResults, null, 2));
+    await writeFile(filePath, JSON.stringify(benchmarkResults, null, 2) + '\n');
 };
 
 const updateBenchmarkResults = async (
