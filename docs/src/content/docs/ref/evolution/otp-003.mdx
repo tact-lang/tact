@@ -1,15 +1,15 @@
 ---
 title: "OTP-003: Self-ABI reporting"
-description: "This proposal defines how to report the contract's ABI using the IPFS link"
+description: "This proposal defines how to report the contract's ABI using an IPFS link"
 sidebar:
   order: 3
 ---
 
-This proposal defines how to report the contract's ABI using the IPFS link.
+This proposal defines how to report the contract's ABI using an IPFS link.
 
 ## Motivation
 
-Usually, ABI is supplied separately using a third-party service or via some repository on GitHub. This proposal suggests adding a new self-reporting of the contract's ABI using a link to an IPFS. This would allow us to avoid any third-party dependency and allow anyone to build tools that rely on ABI such as explorers, wallets, etc.
+Usually, the ABI is supplied separately using a third-party service or via a repository on GitHub. This proposal suggests adding a new method of self-reporting the contract's ABI using a link to IPFS. This will allow us to avoid any third-party dependency and enable anyone to build tools that rely on the ABI, such as explorers, wallets, etc.
 
 ## Specification
 
@@ -17,4 +17,4 @@ To support this proposal, the contract should implement OTP-001 and report an in
 
 ## Drawbacks
 
-- No way to upgrade ABI without updating a contract. This is a drawback exists only for hardcoded links.
+- There is no way to upgrade the ABI without updating the contract. This drawback exists only for hardcoded links.

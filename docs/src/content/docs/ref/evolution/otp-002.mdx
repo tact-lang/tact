@@ -1,6 +1,6 @@
 ---
 title: "OTP-002: Contract ABI"
-description: "This proposal defines an ABI to communicate with deployed smart contracts"
+description: "This proposal defines an ABI to communicate with deployed smart contracts."
 sidebar:
   order: 2
 ---
@@ -9,11 +9,11 @@ The contract's Application Binary Interface (ABI) defines a format containing in
 
 ## Motivation
 
-ABI is a tool that allows developers to generate handy bindings, UIs, and so on. One of the best consumer usages would be using a DAO and being able to confirm what exactly it is trying to do before signing a transaction.
+An ABI is a tool that allows developers to generate convenient bindings, UIs, and so on. A beneficial consumer use case would be a DAO, as it would enable users to confirm exactly what the DAO is attempting to do before signing a transaction.
 
 ## Specification
 
-ABI is defined as a JSON file, usually with an `.abi` extension:
+An ABI is defined as a JSON file, usually with an `.abi` extension:
 
 ```json
 {
@@ -92,9 +92,9 @@ ABI is defined as a JSON file, usually with an `.abi` extension:
 
 ## Drawbacks
 
-- ABI is in JSON format, which is both human and machine-readable, but not the most compact — binary representation could be better, but is not critical for now.
+- The ABI is in JSON format, which is both human- and machine-readable, but not the most compact. A binary representation could be better but is not critical for now.
 
-- ABI has no strict JSON or TypeScript schema defined, and thus is subject to frequent changes.
+- The ABI has no strict JSON or TypeScript schema defined and thus is subject to frequent changes.
 
 ## Prior art
 
