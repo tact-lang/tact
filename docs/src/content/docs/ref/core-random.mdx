@@ -28,7 +28,7 @@ fun randomInt(): Int;
 
 Generates and returns a new pseudo-random unsigned $256$-bit [`Int{:tact}`][int] value `x`.
 
-The algorithm works as follows: if `r` is the old value of the random seed considered as a $32$-byte array (constructed from the big-endian representation of an unsigned $256$-bit [`Int{:tact}`][int]), then `sha512(r){:tact}` is computed. The first $32$ bytes of this hash are stored as the new value `r'` of the random seed, and the remaining $32$ bytes are returned as the next random value `x`.
+The algorithm works as follows: first, the `sha512(r){:tact}` is computed. There, `r` is an old value of the random seed, which is taken as a $32$-byte array constructed from the big-endian representation of an unsigned $256$-bit [`Int{:tact}`][int]. The first $32$ bytes of this hash are stored as the new value `r'` of the random seed, and the remaining $32$ bytes are returned as the next random value `x`.
 
 Usage example:
 

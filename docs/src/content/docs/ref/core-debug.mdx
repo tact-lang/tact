@@ -50,7 +50,7 @@ try {
 fun dump(arg);
 ```
 
-Prints the argument `arg` to the contract's debug console. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`; otherwise, does nothing.
+Prints the argument `arg` to the contract's debug console. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`. Otherwise does nothing.
 
 This function is computationally expensive and consumes a lot of gas because it prints the location from which it was called—i.e., the filename, line, and column numbers—and the original expression that was the `arg` argument.
 
@@ -114,7 +114,7 @@ dump(emit("msg".asComment())); // As emit() function doesn't return a value, dum
 fun dumpStack();
 ```
 
-Prints the total stack depth and up to 255 of its values from the top to the contract's debug console. The values are positioned bottom-up—from the deepest value on the left to the topmost value on the right. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`; otherwise, does nothing.
+Prints the total stack depth and up to 255 of its values from the top to the contract's debug console. The values are positioned bottom-up—from the deepest value on the left to the topmost value on the right. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`. Otherwise does nothing.
 
 Usage example:
 
