@@ -3,6 +3,7 @@ import { CompilerContext } from "../../context/context";
 import { openContext } from "../../context/store";
 import { getParser } from "../../grammar";
 import { defaultParser } from "../../grammar/grammar";
+import { evalComptimeExpressions } from "../../types/evalComptimeExpressions";
 import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { resolveSignatures } from "../../types/resolveSignatures";
 import { resolveStatements } from "../../types/resolveStatements";
@@ -20,8 +21,9 @@ describe("interpreter-evaluation", () => {
             );
             expect(() => {
                 ctx = resolveDescriptors(ctx, Ast);
-                ctx = resolveStatements(ctx, Ast);
+                ctx = resolveStatements(ctx);
                 ctx = resolveSignatures(ctx, Ast);
+                evalComptimeExpressions(ctx, Ast);
             }).toThrowErrorMatchingSnapshot();
         });
     }
