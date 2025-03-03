@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
   "name": "@tact-lang/compiler",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tact-lang/tact.git"
@@ -46,7 +46,7 @@
     "test:fast": "jest --config=./jest-fast.config.js",
     "bench": "yarn gen:contracts:benchmarks && jest ./src/test/benchmarks",
     "bench:upgrade": "yarn gen:contracts:benchmarks && ts-node src/test/benchmarks/benchmarks.update.ts",
-    "coverage": "cross-env COVERAGE=true jest --config=./jest-ci.config.js",
+    "coverage": "cross-env COVERAGE=true NODE_OPTIONS=--max_old_space_size=4096 jest --config=./jest-ci.config.js",
     "type": "tsc --noEmit",
     "lint": "yarn eslint .",
     "fmt": "yarn prettier -l -w .",
@@ -81,7 +81,7 @@
     "unboc": "bin/unboc.js"
   },
   "dependencies": {
-    "@tact-lang/opcode": "^0.2.0",
+    "@tact-lang/opcode": "^0.3.0",
     "@ton/core": "0.60.0",
     "@ton/crypto": "^3.2.0",
     "@tonstudio/parser-runtime": "^0.0.1",

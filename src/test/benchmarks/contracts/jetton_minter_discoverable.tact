@@ -19,10 +19,29 @@ contract JettonMinter(
     owner: Address,
     jettonContent: Cell,
 ) {
+    receive(msg: JettonBurnNotification) {
+        let sender = parseStdAddress(sender().asSlice());
+        let wallet = getJettonBasechainWalletByOwner(msg.sender);
+
+        throwUnless(74, sender.workchain == Workchain && sender.address == wallet.hash!!);
+
+        self.totalSupply -= msg.amount;
+
+        if (msg.responseDestination.isNotNone()) {
+            message(MessageParameters {
+                to: msg.responseDestination,
+                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
+                value: 0,
+                bounce: false,
+                mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply has already been updated
+            });
+        }
+    }
+
     receive(msg: ProvideWalletAddress) {
         // we use message fwdFee for estimation of forward_payload costs
         let ctx = context();
-        let fwdFee = muldivc(fwdFee(ctx.raw), 3, 2);
+        let fwdFee = ctx.readForwardFee();
         throwUnless(75, ctx.value > fwdFee + ProvideAddressGasConsumption);
 
         let includedAddress: Address? = msg.includeAddress ? msg.ownerAddress : null;
@@ -44,23 +63,6 @@ contract JettonMinter(
         });
     }
 
-    receive(msg: JettonBurnNotification) {
-        // Check that the message is from msg.sender's jetton_wallet
-       throwUnless(74, sender() == getJettonWalletByOwner(msg.sender));
-
-        self.totalSupply -= msg.amount;
-
-        if (msg.responseDestination.isNotNone()) {
-            message(MessageParameters {
-                to: msg.responseDestination,
-                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
-                value: 0,
-                bounce: false,
-                mode: SendRemainingValue | SendIgnoreErrors, // ignore errors, because supply has already been updated
-            });
-        }
-    }
-
     receive(msg: JettonUpdateContent) {
         throwUnless(73, sender() == self.owner);
         self.jettonContent = msg.content;
@@ -68,7 +70,7 @@ contract JettonMinter(
 
     receive(msg: Mint) {
         throwUnless(73, sender() == self.owner);
-        self.totalSupply += msg.mintMessage.amount; // Update total supply
+        self.totalSupply += msg.mintMessage.amount;
 
         deploy(DeployParameters{
             value: 0,
@@ -93,6 +95,7 @@ contract JettonMinter(
             jettonWalletCode: codeOf JettonWallet,
         }
     }
+
     get fun get_wallet_address(ownerAddress: Address): Address {
         return getJettonWalletByOwner(ownerAddress);
     }
@@ -123,12 +126,8 @@ inline fun getJettonWalletByOwner(jettonWalletOwner: Address): Address {
     return contractAddress(getJettonWalletInit(jettonWalletOwner));
 }
 
-inline fun fwdFee(ctxRaw: Slice): Int {
-    ctxRaw.loadAddress();
-    ctxRaw.loadCoins();
-    ctxRaw.skipBits(1);
-    ctxRaw.loadCoins();
-    return ctxRaw.loadCoins();
+inline fun getJettonBasechainWalletByOwner(jettonWalletOwner: Address): BasechainAddress {
+    return contractBasechainAddress(getJettonWalletInit(jettonWalletOwner));
 }
 
 inline extends fun isNotNone(self: Address): Bool { return self.asSlice().preloadUint(2) != 0 }

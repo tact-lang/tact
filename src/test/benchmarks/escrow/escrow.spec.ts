@@ -135,8 +135,10 @@ describe("Escrow Gas Tests", () => {
                 lastCtxId++,
                 seller.address,
                 guarantor.address,
+                null,
                 dealAmount,
                 royalty,
+                false,
                 assetAddress,
                 assetAddress ? stubJettonWalletCode : null,
             ),
@@ -227,7 +229,10 @@ describe("Escrow Gas Tests", () => {
     });
 
     afterAll(() => {
-        printBenchmarkTable(results);
+        printBenchmarkTable(results, {
+            implementationName: "FunC",
+            isFullTable: true,
+        });
     });
 
     it("fundingTon", async () => {

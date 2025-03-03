@@ -17,8 +17,9 @@ const main = async () => {
 
     await allInFolder(__dirname, ["contracts/*.tact"], {
         debug: false,
-        experimental: { inline: false },
+        experimental: { inline: true },
         safety: { nullChecks: false },
+        optimizations: { alwaysSaveContractData: false },
     });
 };
 
