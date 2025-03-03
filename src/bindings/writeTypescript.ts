@@ -207,7 +207,7 @@ export function writeTypescript(
 
     // Errors
     w.append(
-        `const ${abi.name}_errors: { [key: number]: { message: string } } = {`,
+        `export const ${abi.name}_errors = {`,
     );
     w.inIndent(() => {
         if (abi.errors) {
@@ -218,7 +218,23 @@ export function writeTypescript(
             });
         }
     });
-    w.append(`}`);
+    w.append(`} as const`);
+    w.append();
+
+    // Errors (backward)
+    w.append(
+        `export const ${abi.name}_errors_backward = {`,
+    );
+    w.inIndent(() => {
+        if (abi.errors) {
+            Object.entries(abi.errors).forEach(([k, abiError]) => {
+                w.append(
+                    `${JSON.stringify(abiError.message.replaceAll("`", "\\`"))}: ${k},`
+                );
+            });
+        }
+    });
+    w.append(`} as const`);
     w.append();
 
     // Types
@@ -310,6 +326,10 @@ export function writeTypescript(
 
             addedContractConstants.add(constant.name);
         }
+
+        w.append(
+            `public static readonly errors = ${abi.name}_errors_backward;`,
+        );
 
         if (constants.length > 0) {
             w.append();
