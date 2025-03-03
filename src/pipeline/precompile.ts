@@ -10,6 +10,7 @@ import type { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import type { AstModule } from "../ast/ast";
 import type { FactoryAst } from "../ast/ast-helpers";
 import type { Parser } from "../grammar";
+import { constantPropagationAnalysis } from "../optimizer/deprecated/constant-propagation";
 import { computeReceiversEffects } from "../types/effects";
 
 export function precompile(
@@ -45,6 +46,10 @@ export function precompile(
 
     // To use in code generation to decide if a receiver needs to call the contract storage function
     computeReceiversEffects(ctx);
+
+    // FIXME: Replace this when proper constant propagation is implemented.
+    // Delete this line to deactivate constant propagation.
+    constantPropagationAnalysis(ctx, ast);
 
     // Prepared context
     return ctx;

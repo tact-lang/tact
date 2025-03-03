@@ -1,0 +1,1805 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constant-propagation should pass constant propagation analysis for inside-foreach 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "xMap",
+    "map<Int, Int>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for inside-if 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a > 5",
+    "Bool",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for inside-if-else-false-branch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a >= 5",
+    "Bool",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for inside-if-else-true-branch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a > 5",
+    "Bool",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for inside-repeat 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for inside-while 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x > 0",
+    "Bool",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-do-until 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "v > 0",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-do-until-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "x >= 10",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "15",
+    "Int",
+  ],
+  [
+    "a - 15",
+    "Int",
+  ],
+  [
+    "1 / (a - 15)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-foreach 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "xMap",
+    "map<Int, Int>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "xMap.set(1,1)",
+    "<void>",
+  ],
+  [
+    "xMap",
+    "map<Int, Int>",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "k",
+    "Int",
+  ],
+  [
+    "10 + k",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-foreach-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "emptyMap()",
+    "<null>",
+  ],
+  [
+    "xMap",
+    "map<Int, Int>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "xMap.set(1,1)",
+    "<void>",
+  ],
+  [
+    "xMap",
+    "map<Int, Int>",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "k",
+    "Int",
+  ],
+  [
+    "10 + k",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-if 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-if-else 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-if-else-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-if-else-no-assign-false-branch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "a - 6",
+    "Int",
+  ],
+  [
+    "1 / (a - 6)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-if-else-no-assign-false-branch-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-if-else-no-assign-true-branch 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a >= 5",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "a - 6",
+    "Int",
+  ],
+  [
+    "1 / (a - 6)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-if-else-no-assign-true-branch-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a > 5",
+    "Bool",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-if-elseif 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-if-elseif-else-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "x > 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "7",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-if-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "v >= 5",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-repeat 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v - v",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "v - v + 6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-repeat-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-repeat-with-iterations_return-inside 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "1048576",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v - v",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "v - v + 3",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "a - 3",
+    "Int",
+  ],
+  [
+    "1 / (a - 3)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-while 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "v > 0",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v - v",
+    "Int",
+  ],
+  [
+    "6",
+    "Int",
+  ],
+  [
+    "v - v + 6",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-while-mutatingFun 1`] = `
+[
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "x > 0",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutateFun()",
+    "<void>",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for outside-while-with-iterations_return-inside 1`] = `
+[
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "x >= 10",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v",
+    "Int",
+  ],
+  [
+    "v - v",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "v - v + 3",
+    "Int",
+  ],
+  [
+    "x",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "0",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "3",
+    "Int",
+  ],
+  [
+    "a - 3",
+    "Int",
+  ],
+  [
+    "1 / (a - 3)",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "5",
+    "Int",
+  ],
+  [
+    "a - 5",
+    "Int",
+  ],
+  [
+    "1 / (a - 5)",
+    "Int",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for short-circuit-and 1`] = `
+[
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "b",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutator()",
+    "Bool",
+  ],
+  [
+    "b && a.mutator()",
+    "Bool",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a - 10",
+    "Int",
+  ],
+  [
+    "1 / (a - 10)",
+    "Int",
+  ],
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "false",
+    "Bool",
+  ],
+]
+`;
+
+exports[`constant-propagation should pass constant propagation analysis for short-circuit-or 1`] = `
+[
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "b",
+    "Bool",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "a.mutator()",
+    "Bool",
+  ],
+  [
+    "b || a.mutator()",
+    "Bool",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "a",
+    "Int",
+  ],
+  [
+    "10",
+    "Int",
+  ],
+  [
+    "a - 10",
+    "Int",
+  ],
+  [
+    "1 / (a - 10)",
+    "Int",
+  ],
+  [
+    "self",
+    "Int",
+  ],
+  [
+    "1",
+    "Int",
+  ],
+  [
+    "false",
+    "Bool",
+  ],
+]
+`;
