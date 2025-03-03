@@ -39,6 +39,12 @@ function _generateIntBitLength(bitLength: number, signed: boolean = true) {
     }
 }
 
+function _generateCoins() {
+    return fc.integer({min: 1, max: 256}).chain(
+        (bitLength) => _generateIntBitLength(bitLength, false)
+    );
+}
+
 function generateKeyValuePairs<K, V>(
     keyGenerator: () => fc.Arbitrary<K>,
     valueGenerator: () => fc.Arbitrary<V>,
@@ -150,12 +156,9 @@ describe("map property based tests, <<__KEY_TS_TYPE__>, <__VALUE_TS_TYPE__>> cas
                             keyValuePairs,
                         );
 
-                        const initialMap: Dictionary<
-                            <__KEY_TS_TYPE__>,
-                            <__VALUE_TS_TYPE__>
-                        > = await contractWithContext.contract.getWholeMap();
+                        const initialMap = await contractWithContext.contract.getWholeMap();
 
-                        initialMap.set(await testKey, await testValue);
+                        initialMap.set(<__KEY_CAST__>(await testKey), <__VALUE_CAST__>(await testValue));
 
                         await sendMessageToContract(contractWithContext, {
                             $$type: "SetKeyValue",
@@ -201,7 +204,7 @@ describe("map property based tests, <<__KEY_TS_TYPE__>, <__VALUE_TS_TYPE__>> cas
                             await contractWithContext.contract.getGetValue(
                                 await testKey,
                             ),
-                        ).toBe(map.get(await testKey) ?? null);
+                        ).toBe(map.get(<__KEY_CAST__>(await testKey)) ?? null);
                     },
                 ),
                 contractWithContext,
@@ -232,7 +235,7 @@ describe("map property based tests, <<__KEY_TS_TYPE__>, <__VALUE_TS_TYPE__>> cas
 
                         const initialMap =
                             await contractWithContext.contract.getWholeMap();
-                        initialMap.delete(await testKey);
+                        initialMap.delete(<__KEY_CAST__>(await testKey));
 
                         await sendMessageToContract(contractWithContext, {
                             $$type: "DeleteKey",
@@ -277,7 +280,7 @@ describe("map property based tests, <<__KEY_TS_TYPE__>, <__VALUE_TS_TYPE__>> cas
                             await contractWithContext.contract.getExists(
                                 await testKey,
                             ),
-                        ).toBe(map.has(await testKey));
+                        ).toBe(map.has(<__KEY_CAST__>(await testKey)));
                     },
                 ),
                 contractWithContext,

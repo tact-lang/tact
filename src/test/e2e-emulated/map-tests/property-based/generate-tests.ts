@@ -10,12 +10,14 @@ const outputTestDir = pwd("generated-tests");
 const templateContractFilePath = pwd("map-property-based.tact.template");
 const outputContractDir = pwd("contracts");
 
+const keyCastTemplate = "<__KEY_CAST__>"; // basicly a crutch, needed because of this issue: https://github.com/tact-lang/tact/issues/2099.
 const keyTypeTemplate = "<__KEY_TYPE__>";
 const keyTsTypeTemplate = "<__KEY_TS_TYPE__>";
 const keyFilenameTemplate = "<__KEY_FILENAME__>";
 const keyGeneratorTemplate = "<__KEY_GENERATOR__>";
 const keyTypeNoSerializationTemplate = "<__KEY_TYPE_NO_SERIALIZATION__>";
 
+const valueCastTemplate = "<__VALUE_CAST__>"; // same crutch here
 const valueTypeTemplate = "<__VALUE_TYPE__>";
 const valueTsTypeTemplate = "<__VALUE_TS_TYPE__>";
 const valueFilenameTemplate = "<__VALUE_FILENAME__>";
@@ -25,9 +27,15 @@ const valueTypeNoSerializationTemplate = "<__VALUE_TYPE_NO_SERIALIZATION__>";
 const keyTypes = [
     "Int",
     "Address",
+    "Int as uint8",
+    "Int as uint16",
+    "Int as uint32",
     "Int as uint64",
     "Int as uint128",
     "Int as uint256",
+    "Int as int8",
+    "Int as int16",
+    "Int as int32",
     "Int as int64",
     "Int as int128",
     "Int as int256",
@@ -39,13 +47,20 @@ const valueTypes = [
     "Bool",
     "Address",
     "Cell",
+    "Int as uint8",
+    "Int as uint16",
+    "Int as uint32",
     "Int as uint64",
     "Int as uint128",
     "Int as uint256",
+    "Int as int8",
+    "Int as int16",
+    "Int as int32",
     "Int as int64",
     "Int as int128",
     "Int as int256",
     "Int as int257",
+    "Int as coins",
 ] as const;
 
 type keyValueTypes = (typeof keyTypes)[number] | (typeof valueTypes)[number];
@@ -59,44 +74,66 @@ const typeGenerators: Record<keyValueTypes, string> = {
     Address: "_generateAddressLocal",
     Bool: "fc.boolean",
     Cell: "_generateCell",
-    // "Int as uint8": "",
-    // "Int as uint16": "fc.bigInt",
-    // "Int as uint32": "fc.bigInt",
+    "Int as uint8": "(() => _generateIntBitLength(8, false))",
+    "Int as uint16": "(() => _generateIntBitLength(16, false))",
+    "Int as uint32": "(() => _generateIntBitLength(32, false))",
     "Int as uint64": "(() => _generateIntBitLength(64, false))",
     "Int as uint128": "(() => _generateIntBitLength(128, false))",
     "Int as uint256": "(() => _generateIntBitLength(256, false))",
-    // "Int as int8": "fc.bigInt",
-    // "Int as int16": "fc.bigInt",
-    // "Int as int32": "fc.bigInt",
+    "Int as int8": "(() => _generateIntBitLength(8))",
+    "Int as int16": "(() => _generateIntBitLength(16))",
+    "Int as int32": "(() => _generateIntBitLength(32))",
     "Int as int64": "(() => _generateIntBitLength(64))",
     "Int as int128": "(() => _generateIntBitLength(128))",
     "Int as int256": "(() => _generateIntBitLength(256))",
     "Int as int257": "(() => _generateIntBitLength(257))",
-    // "Int as coins": "fc.bigInt",
+    "Int as coins": "_generateCoins",
 };
 
-const tsTypeMapping: Record<
-    (typeof keyTypes)[number] | (typeof valueTypes)[number],
-    string
-> = {
+const smallSerialization: Record<keyValueTypes, boolean> = {
+    Int: false,
+    Address: false,
+    Bool: false,
+    Cell: false,
+    "Int as uint8": true,
+    "Int as uint16": true,
+    "Int as uint32": true,
+    "Int as uint64": false,
+    "Int as uint128": false,
+    "Int as uint256": false,
+    "Int as int8": true,
+    "Int as int16": true,
+    "Int as int32": true,
+    "Int as int64": false,
+    "Int as int128": false,
+    "Int as int256": false,
+    "Int as int257": false,
+    "Int as coins": false,
+};
+
+function getCast(type: keyValueTypes): string {
+    return smallSerialization[type] ? "Number" : "";
+}
+
+const tsTypeMapping: Record<keyValueTypes, string> = {
     Int: "bigint",
     Address: "Address",
     Bool: "boolean",
     Cell: "Cell",
-    // "Int as uint8": "bigint",
-    // "Int as uint16": "bigint",
-    // "Int as uint32": "bigint",
+    "Int as uint8": "bigint",
+    "Int as uint16": "bigint",
+    "Int as uint32": "bigint",
     "Int as uint64": "bigint",
     "Int as uint128": "bigint",
     "Int as uint256": "bigint",
-    // "Int as int8": "bigint",
-    // "Int as int16": "bigint",
-    // "Int as int32": "bigint",
+    "Int as int8": "bigint",
+    "Int as int16": "bigint",
+    "Int as int32": "bigint",
     "Int as int64": "bigint",
     "Int as int128": "bigint",
     "Int as int256": "bigint",
     "Int as int257": "bigint",
-    // "Int as coins": "bigint",
+    "Int as coins": "bigint",
 };
 
 const main = async () => {
@@ -120,6 +157,8 @@ const main = async () => {
             const outputFileName = `map-property-based-${keyFilenameSuffix}-${valueFilenameSuffix}`;
 
             const typedTest = templateTest
+                .replaceAll(keyCastTemplate, getCast(keyType))
+                .replaceAll(valueCastTemplate, getCast(valueType))
                 .replaceAll(keyTsTypeTemplate, tsTypeMapping[keyType])
                 .replaceAll(valueTsTypeTemplate, tsTypeMapping[valueType])
                 .replaceAll(keyFilenameTemplate, keyFilenameSuffix)
