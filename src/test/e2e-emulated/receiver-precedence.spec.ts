@@ -54,39 +54,52 @@ describe("receivers-precedence", () => {
     let contract: SandboxContract<ReceiverTester>;
     let calculator: SandboxContract<Calculator>;
 
-    // All combinations of contracts with receivers
-    let noReceivers: SandboxContract<NoReceiverTester>;
-    let emptyReceiver: SandboxContract<EmptyReceiverTester>;
-    let commentReceiver: SandboxContract<CommentReceiverTester>;
-    let stringReceiver: SandboxContract<StringReceiverTester>;
-    let binaryReceiver: SandboxContract<BinaryReceiverTester>;
-    let sliceReceiver: SandboxContract<SliceReceiverTester>;
-    let emptyAndCommentReceiver: SandboxContract<EmptyAndCommentReceiverTester>;
-    let emptyAndStringReceiver: SandboxContract<EmptyAndStringReceiverTester>;
-    let emptyAndBinaryReceiver: SandboxContract<EmptyAndBinaryReceiverTester>;
-    let emptyAndSliceReceiver: SandboxContract<EmptyAndSliceReceiverTester>;
-    let commentAndStringReceiver: SandboxContract<CommentAndStringReceiverTester>;
-    let commentAndBinaryReceiver: SandboxContract<CommentAndBinaryReceiverTester>;
-    let commentAndSliceReceiver: SandboxContract<CommentAndSliceReceiverTester>;
-    let stringAndBinaryReceiver: SandboxContract<StringAndBinaryReceiverTester>;
-    let stringAndSliceReceiver: SandboxContract<StringAndSliceReceiverTester>;
-    let binaryAndSliceReceiver: SandboxContract<BinaryAndSliceReceiverTester>;
-    let emptyAndCommentAndStringReceiver: SandboxContract<EmptyAndCommentAndStringReceiverTester>;
-    let emptyAndCommentAndBinaryReceiver: SandboxContract<EmptyAndCommentAndBinaryReceiverTester>;
-    let emptyAndCommentAndSliceReceiver: SandboxContract<EmptyAndCommentAndSliceReceiverTester>;
-    let emptyAndStringAndBinaryReceiver: SandboxContract<EmptyAndStringAndBinaryReceiverTester>;
-    let emptyAndStringAndSliceReceiver: SandboxContract<EmptyAndStringAndSliceReceiverTester>;
-    let emptyAndBinaryAndSliceReceiver: SandboxContract<EmptyAndBinaryAndSliceReceiverTester>;
-    let commentAndStringAndBinaryReceiver: SandboxContract<CommentAndStringAndBinaryReceiverTester>;
-    let commentAndStringAndSliceReceiver: SandboxContract<CommentAndStringAndSliceReceiverTester>;
-    let commentAndBinaryAndSliceReceiver: SandboxContract<CommentAndBinaryAndSliceReceiverTester>;
-    let stringAndBinaryAndSliceReceiver: SandboxContract<StringAndBinaryAndSliceReceiverTester>;
-    let emptyAndCommentAndStringAndBinaryReceiver: SandboxContract<EmptyAndCommentAndStringAndBinaryReceiverTester>;
-    let emptyAndCommentAndStringAndSliceReceiver: SandboxContract<EmptyAndCommentAndStringAndSliceReceiverTester>;
-    let emptyAndCommentAndBinaryAndSliceReceiver: SandboxContract<EmptyAndCommentAndBinaryAndSliceReceiverTester>;
-    let emptyAndStringAndBinaryAndSliceReceiver: SandboxContract<EmptyAndStringAndBinaryAndSliceReceiverTester>;
-    let commentAndStringAndBinaryAndSliceReceiver: SandboxContract<CommentAndStringAndBinaryAndSliceReceiverTester>;
-    let allReceivers: SandboxContract<AllReceiverTester>;
+    // Cell bodies common to tests
+
+    // A message struct with empty string inside. Should only be accepted by binary receivers
+    const emptyStringInMessageStruct = beginCell()
+        .storeUint(100, 32)
+        .storeStringRefTail("")
+        .endCell();
+    // An empty message struct, should only be accepted by binary receivers.
+    const emptyMessageStruct = beginCell().storeUint(101, 32).endCell();
+    // Message bodies with integer of size less than 32 bits will be processed by empty receivers (if present),
+    // irrespective of the value of the integer
+    const lessThan32Bits = beginCell().storeUint(10, 30).endCell();
+    // An actual empty message body
+    const emptyBody = new Cell();
+    // Message bodies with integers of size exactly 32 bits but value 0 will be processed by empty receivers (if present).
+    const zeroOf32Bits = beginCell().storeUint(0, 32).endCell();
+    // The empty string will be processed by empty receivers (if present)
+    const emptyString = beginCell()
+        .storeUint(0, 32)
+        .storeStringTail("")
+        .endCell();
+
+    const bodiesToTry = [
+        emptyStringInMessageStruct,
+        emptyMessageStruct,
+        lessThan32Bits,
+        emptyBody,
+        zeroOf32Bits,
+        emptyString,
+    ];
+
+    // Utility function common to tests
+    async function deploy(addr: Address, init: { code: Cell; data: Cell }) {
+        const deployable = await blockchain.getContract(addr);
+        const trans = await deployable.receiveMessage(
+            internal({
+                from: treasure.address,
+                to: deployable.address,
+                value: toNano("10"),
+                stateInit: init,
+                bounce: false,
+            }),
+        );
+
+        expect(trans.endStatus).toBe("active");
+    }
 
     beforeEach(async () => {
         blockchain = await Blockchain.create();
@@ -95,104 +108,6 @@ describe("receivers-precedence", () => {
 
         contract = blockchain.openContract(await ReceiverTester.fromInit());
         calculator = blockchain.openContract(await Calculator.fromInit());
-
-        // All receiver contracts
-        noReceivers = blockchain.openContract(
-            await NoReceiverTester.fromInit(),
-        );
-        emptyReceiver = blockchain.openContract(
-            await EmptyReceiverTester.fromInit(),
-        );
-        commentReceiver = blockchain.openContract(
-            await CommentReceiverTester.fromInit(),
-        );
-        stringReceiver = blockchain.openContract(
-            await StringReceiverTester.fromInit(),
-        );
-        binaryReceiver = blockchain.openContract(
-            await BinaryReceiverTester.fromInit(),
-        );
-        sliceReceiver = blockchain.openContract(
-            await SliceReceiverTester.fromInit(),
-        );
-        emptyAndCommentReceiver = blockchain.openContract(
-            await EmptyAndCommentReceiverTester.fromInit(),
-        );
-        emptyAndStringReceiver = blockchain.openContract(
-            await EmptyAndStringReceiverTester.fromInit(),
-        );
-        emptyAndBinaryReceiver = blockchain.openContract(
-            await EmptyAndBinaryReceiverTester.fromInit(),
-        );
-        emptyAndSliceReceiver = blockchain.openContract(
-            await EmptyAndSliceReceiverTester.fromInit(),
-        );
-        commentAndStringReceiver = blockchain.openContract(
-            await CommentAndStringReceiverTester.fromInit(),
-        );
-        commentAndBinaryReceiver = blockchain.openContract(
-            await CommentAndBinaryReceiverTester.fromInit(),
-        );
-        commentAndSliceReceiver = blockchain.openContract(
-            await CommentAndSliceReceiverTester.fromInit(),
-        );
-        stringAndBinaryReceiver = blockchain.openContract(
-            await StringAndBinaryReceiverTester.fromInit(),
-        );
-        stringAndSliceReceiver = blockchain.openContract(
-            await StringAndSliceReceiverTester.fromInit(),
-        );
-        binaryAndSliceReceiver = blockchain.openContract(
-            await BinaryAndSliceReceiverTester.fromInit(),
-        );
-        emptyAndCommentAndStringReceiver = blockchain.openContract(
-            await EmptyAndCommentAndStringReceiverTester.fromInit(),
-        );
-        emptyAndCommentAndBinaryReceiver = blockchain.openContract(
-            await EmptyAndCommentAndBinaryReceiverTester.fromInit(),
-        );
-        emptyAndCommentAndSliceReceiver = blockchain.openContract(
-            await EmptyAndCommentAndSliceReceiverTester.fromInit(),
-        );
-        emptyAndStringAndBinaryReceiver = blockchain.openContract(
-            await EmptyAndStringAndBinaryReceiverTester.fromInit(),
-        );
-        emptyAndStringAndSliceReceiver = blockchain.openContract(
-            await EmptyAndStringAndSliceReceiverTester.fromInit(),
-        );
-        emptyAndBinaryAndSliceReceiver = blockchain.openContract(
-            await EmptyAndBinaryAndSliceReceiverTester.fromInit(),
-        );
-        commentAndStringAndBinaryReceiver = blockchain.openContract(
-            await CommentAndStringAndBinaryReceiverTester.fromInit(),
-        );
-        commentAndStringAndSliceReceiver = blockchain.openContract(
-            await CommentAndStringAndSliceReceiverTester.fromInit(),
-        );
-        commentAndBinaryAndSliceReceiver = blockchain.openContract(
-            await CommentAndBinaryAndSliceReceiverTester.fromInit(),
-        );
-        stringAndBinaryAndSliceReceiver = blockchain.openContract(
-            await StringAndBinaryAndSliceReceiverTester.fromInit(),
-        );
-        emptyAndCommentAndStringAndBinaryReceiver = blockchain.openContract(
-            await EmptyAndCommentAndStringAndBinaryReceiverTester.fromInit(),
-        );
-        emptyAndCommentAndStringAndSliceReceiver = blockchain.openContract(
-            await EmptyAndCommentAndStringAndSliceReceiverTester.fromInit(),
-        );
-        emptyAndCommentAndBinaryAndSliceReceiver = blockchain.openContract(
-            await EmptyAndCommentAndBinaryAndSliceReceiverTester.fromInit(),
-        );
-        emptyAndStringAndBinaryAndSliceReceiver = blockchain.openContract(
-            await EmptyAndStringAndBinaryAndSliceReceiverTester.fromInit(),
-        );
-        commentAndStringAndBinaryAndSliceReceiver = blockchain.openContract(
-            await CommentAndStringAndBinaryAndSliceReceiverTester.fromInit(),
-        );
-        allReceivers = blockchain.openContract(
-            await AllReceiverTester.fromInit(),
-        );
 
         const deployResult = await contract.send(
             treasure.getSender(),
@@ -217,134 +132,7 @@ describe("receivers-precedence", () => {
             success: true,
             deploy: true,
         });
-
-        // Deploy contracts
-        await deploy(noReceivers.address, await NoReceiverTester.init());
-        await deploy(emptyReceiver.address, await EmptyReceiverTester.init());
-        await deploy(
-            commentReceiver.address,
-            await CommentReceiverTester.init(),
-        );
-        await deploy(stringReceiver.address, await StringReceiverTester.init());
-        await deploy(binaryReceiver.address, await BinaryReceiverTester.init());
-        await deploy(sliceReceiver.address, await SliceReceiverTester.init());
-        await deploy(
-            emptyAndCommentReceiver.address,
-            await EmptyAndCommentReceiverTester.init(),
-        );
-        await deploy(
-            emptyAndStringReceiver.address,
-            await EmptyAndStringReceiverTester.init(),
-        );
-        await deploy(
-            emptyAndBinaryReceiver.address,
-            await EmptyAndBinaryReceiverTester.init(),
-        );
-        await deploy(
-            emptyAndSliceReceiver.address,
-            await EmptyAndSliceReceiverTester.init(),
-        );
-        await deploy(
-            commentAndStringReceiver.address,
-            await CommentAndStringReceiverTester.init(),
-        );
-        await deploy(
-            commentAndBinaryReceiver.address,
-            await CommentAndBinaryReceiverTester.init(),
-        );
-        await deploy(
-            commentAndSliceReceiver.address,
-            await CommentAndSliceReceiverTester.init(),
-        );
-        await deploy(
-            stringAndBinaryReceiver.address,
-            await StringAndBinaryReceiverTester.init(),
-        );
-        await deploy(
-            stringAndSliceReceiver.address,
-            await StringAndSliceReceiverTester.init(),
-        );
-        await deploy(
-            binaryAndSliceReceiver.address,
-            await BinaryAndSliceReceiverTester.init(),
-        );
-        await deploy(
-            emptyAndCommentAndStringReceiver.address,
-            await EmptyAndCommentAndStringReceiverTester.init(),
-        );
-        await deploy(
-            emptyAndCommentAndBinaryReceiver.address,
-            await EmptyAndCommentAndBinaryReceiverTester.init(),
-        );
-        await deploy(
-            emptyAndCommentAndSliceReceiver.address,
-            await EmptyAndCommentAndSliceReceiverTester.init(),
-        );
-        await deploy(
-            emptyAndStringAndBinaryReceiver.address,
-            await EmptyAndStringAndBinaryReceiverTester.init(),
-        );
-        await deploy(
-            emptyAndStringAndSliceReceiver.address,
-            await EmptyAndStringAndSliceReceiverTester.init(),
-        );
-        await deploy(
-            emptyAndBinaryAndSliceReceiver.address,
-            await EmptyAndBinaryAndSliceReceiverTester.init(),
-        );
-        await deploy(
-            commentAndStringAndBinaryReceiver.address,
-            await CommentAndStringAndBinaryReceiverTester.init(),
-        );
-        await deploy(
-            commentAndStringAndSliceReceiver.address,
-            await CommentAndStringAndSliceReceiverTester.init(),
-        );
-        await deploy(
-            commentAndBinaryAndSliceReceiver.address,
-            await CommentAndBinaryAndSliceReceiverTester.init(),
-        );
-        await deploy(
-            stringAndBinaryAndSliceReceiver.address,
-            await StringAndBinaryAndSliceReceiverTester.init(),
-        );
-        await deploy(
-            emptyAndCommentAndStringAndBinaryReceiver.address,
-            await EmptyAndCommentAndStringAndBinaryReceiverTester.init(),
-        );
-        await deploy(
-            emptyAndCommentAndStringAndSliceReceiver.address,
-            await EmptyAndCommentAndStringAndSliceReceiverTester.init(),
-        );
-        await deploy(
-            emptyAndCommentAndBinaryAndSliceReceiver.address,
-            await EmptyAndCommentAndBinaryAndSliceReceiverTester.init(),
-        );
-        await deploy(
-            emptyAndStringAndBinaryAndSliceReceiver.address,
-            await EmptyAndStringAndBinaryAndSliceReceiverTester.init(),
-        );
-        await deploy(
-            commentAndStringAndBinaryAndSliceReceiver.address,
-            await CommentAndStringAndBinaryAndSliceReceiverTester.init(),
-        );
-        await deploy(allReceivers.address, await AllReceiverTester.init());
     });
-
-    async function deploy(addr: Address, init: { code: Cell; data: Cell }) {
-        const deployable = await blockchain.getContract(addr);
-        const trans = await deployable.receiveMessage(
-            internal({
-                from: treasure.address,
-                to: deployable.address,
-                value: toNano("10"),
-                stateInit: init,
-                bounce: false,
-            }),
-        );
-
-        expect(trans.endStatus).toBe("active");
-    }
 
     it("should implement receivers precedence correctly", async () => {
         // Initially, since we sent a deploy message with empty message, the empty receiver executed
@@ -591,36 +379,7 @@ describe("receivers-precedence", () => {
         // In all the cases, "external_error_comment" did not execute, as it should be.
     });
 
-    it("internal receivers should process empty messages and empty strings correctly", async () => {
-        // A message struct with empty string inside. Should only be accepted by binary receivers
-        const emptyStringInMessageStruct = beginCell()
-            .storeUint(100, 32)
-            .storeStringRefTail("")
-            .endCell();
-        // An empty message struct, should only be accepted by binary receivers.
-        const emptyMessageStruct = beginCell().storeUint(101, 32).endCell();
-        // Message bodies with integer of size less than 32 bits will be processed by empty receivers (if present),
-        // irrespective of the value of the integer
-        const lessThan32Bits = beginCell().storeUint(10, 30).endCell();
-        // An actual empty message body
-        const emptyBody = new Cell();
-        // Message bodies with integers of size exactly 32 bits but value 0 will be processed by empty receivers (if present).
-        const zeroOf32Bits = beginCell().storeUint(0, 32).endCell();
-        // The empty string will be processed by empty receivers (if present)
-        const emptyString = beginCell()
-            .storeUint(0, 32)
-            .storeStringTail("")
-            .endCell();
-
-        const bodiesToTry = [
-            emptyStringInMessageStruct,
-            emptyMessageStruct,
-            lessThan32Bits,
-            emptyBody,
-            zeroOf32Bits,
-            emptyString,
-        ];
-
+    it("internal receivers should process empty messages and empty strings correctly (part 1)", async () => {
         // Some utility functions that carry out the actual tests and assertions
 
         async function shouldFailFrom(
@@ -779,6 +538,107 @@ describe("receivers-precedence", () => {
                 exitCode: exitCode,
             });
         }
+
+        // Deployments
+
+        const noReceivers = blockchain.openContract(
+            await NoReceiverTester.fromInit(),
+        );
+        const emptyReceiver = blockchain.openContract(
+            await EmptyReceiverTester.fromInit(),
+        );
+        const commentReceiver = blockchain.openContract(
+            await CommentReceiverTester.fromInit(),
+        );
+        const stringReceiver = blockchain.openContract(
+            await StringReceiverTester.fromInit(),
+        );
+        const binaryReceiver = blockchain.openContract(
+            await BinaryReceiverTester.fromInit(),
+        );
+        const sliceReceiver = blockchain.openContract(
+            await SliceReceiverTester.fromInit(),
+        );
+        const emptyAndCommentReceiver = blockchain.openContract(
+            await EmptyAndCommentReceiverTester.fromInit(),
+        );
+        const emptyAndStringReceiver = blockchain.openContract(
+            await EmptyAndStringReceiverTester.fromInit(),
+        );
+        const emptyAndBinaryReceiver = blockchain.openContract(
+            await EmptyAndBinaryReceiverTester.fromInit(),
+        );
+        const emptyAndSliceReceiver = blockchain.openContract(
+            await EmptyAndSliceReceiverTester.fromInit(),
+        );
+        const commentAndStringReceiver = blockchain.openContract(
+            await CommentAndStringReceiverTester.fromInit(),
+        );
+        const commentAndBinaryReceiver = blockchain.openContract(
+            await CommentAndBinaryReceiverTester.fromInit(),
+        );
+        const commentAndSliceReceiver = blockchain.openContract(
+            await CommentAndSliceReceiverTester.fromInit(),
+        );
+        const stringAndBinaryReceiver = blockchain.openContract(
+            await StringAndBinaryReceiverTester.fromInit(),
+        );
+        const stringAndSliceReceiver = blockchain.openContract(
+            await StringAndSliceReceiverTester.fromInit(),
+        );
+        const binaryAndSliceReceiver = blockchain.openContract(
+            await BinaryAndSliceReceiverTester.fromInit(),
+        );
+
+        await deploy(noReceivers.address, await NoReceiverTester.init());
+        await deploy(emptyReceiver.address, await EmptyReceiverTester.init());
+        await deploy(
+            commentReceiver.address,
+            await CommentReceiverTester.init(),
+        );
+        await deploy(stringReceiver.address, await StringReceiverTester.init());
+        await deploy(binaryReceiver.address, await BinaryReceiverTester.init());
+        await deploy(sliceReceiver.address, await SliceReceiverTester.init());
+        await deploy(
+            emptyAndCommentReceiver.address,
+            await EmptyAndCommentReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndStringReceiver.address,
+            await EmptyAndStringReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndBinaryReceiver.address,
+            await EmptyAndBinaryReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndSliceReceiver.address,
+            await EmptyAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            commentAndStringReceiver.address,
+            await CommentAndStringReceiverTester.init(),
+        );
+        await deploy(
+            commentAndBinaryReceiver.address,
+            await CommentAndBinaryReceiverTester.init(),
+        );
+        await deploy(
+            commentAndSliceReceiver.address,
+            await CommentAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            stringAndBinaryReceiver.address,
+            await StringAndBinaryReceiverTester.init(),
+        );
+        await deploy(
+            stringAndSliceReceiver.address,
+            await StringAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            binaryAndSliceReceiver.address,
+            await BinaryAndSliceReceiverTester.init(),
+        );
 
         // Tests start here
 
@@ -1009,6 +869,278 @@ describe("receivers-precedence", () => {
             binaryAndSliceReceiver.getReceiver,
             "fallback",
         );
+    });
+
+    it("internal receivers should process empty messages and empty strings correctly (part 2)", async () => {
+        // Some utility functions that carry out the actual tests and assertions
+
+        async function shouldAcceptFrom(
+            testedContract: Address,
+            from: number,
+            receiverGetter: () => Promise<string>,
+            expectedRestReceiver: string,
+        ) {
+            for (const body of bodiesToTry.slice(from)) {
+                await shouldAcceptBody(
+                    testedContract,
+                    receiverGetter,
+                    expectedRestReceiver,
+                    body,
+                );
+            }
+        }
+
+        async function shouldFailIncompleteOpCode(
+            testedContract: Address,
+            exitCode: number,
+        ) {
+            await shouldFailBody(testedContract, exitCode, lessThan32Bits);
+        }
+
+        async function shouldFailEmptyBody(
+            testedContract: Address,
+            exitCode: number,
+        ) {
+            await shouldFailBody(testedContract, exitCode, emptyBody);
+        }
+
+        async function shouldFailMessageStruct(
+            testedContract: Address,
+            exitCode: number,
+        ) {
+            await shouldFailBody(
+                testedContract,
+                exitCode,
+                emptyStringInMessageStruct,
+            );
+        }
+
+        async function shouldFailEmptyMessageStruct(
+            testedContract: Address,
+            exitCode: number,
+        ) {
+            await shouldFailBody(testedContract, exitCode, emptyMessageStruct);
+        }
+
+        async function shouldAcceptIncompleteOpCode(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                lessThan32Bits,
+            );
+        }
+
+        async function shouldAcceptEmptyBody(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                emptyBody,
+            );
+        }
+
+        async function shouldAcceptMessageStruct(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                emptyStringInMessageStruct,
+            );
+        }
+
+        async function shouldAcceptEmptyMessageStruct(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                emptyMessageStruct,
+            );
+        }
+
+        async function shouldAcceptBody(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+            body: Cell,
+        ) {
+            const { transactions } = await contract.send(
+                treasure.getSender(),
+                { value: toNano("10") },
+                {
+                    $$type: "SendCellToAddress",
+                    address: testedContract,
+                    body: body,
+                },
+            );
+
+            expect(transactions).toHaveTransaction({
+                from: contract.address,
+                to: testedContract,
+                success: true,
+            });
+            expect(await receiverGetter()).toBe(expectedReceiver);
+        }
+
+        async function shouldFailBody(
+            testedContract: Address,
+            exitCode: number,
+            body: Cell,
+        ) {
+            const { transactions } = await contract.send(
+                treasure.getSender(),
+                { value: toNano("10") },
+                {
+                    $$type: "SendCellToAddress",
+                    address: testedContract,
+                    body: body,
+                },
+            );
+
+            expect(transactions).toHaveTransaction({
+                from: contract.address,
+                to: testedContract,
+                success: false,
+                exitCode: exitCode,
+            });
+        }
+
+        // Second batch of contracts
+
+        const emptyAndCommentAndStringReceiver = blockchain.openContract(
+            await EmptyAndCommentAndStringReceiverTester.fromInit(),
+        );
+        const emptyAndCommentAndBinaryReceiver = blockchain.openContract(
+            await EmptyAndCommentAndBinaryReceiverTester.fromInit(),
+        );
+        const emptyAndCommentAndSliceReceiver = blockchain.openContract(
+            await EmptyAndCommentAndSliceReceiverTester.fromInit(),
+        );
+        const emptyAndStringAndBinaryReceiver = blockchain.openContract(
+            await EmptyAndStringAndBinaryReceiverTester.fromInit(),
+        );
+        const emptyAndStringAndSliceReceiver = blockchain.openContract(
+            await EmptyAndStringAndSliceReceiverTester.fromInit(),
+        );
+        const emptyAndBinaryAndSliceReceiver = blockchain.openContract(
+            await EmptyAndBinaryAndSliceReceiverTester.fromInit(),
+        );
+        const commentAndStringAndBinaryReceiver = blockchain.openContract(
+            await CommentAndStringAndBinaryReceiverTester.fromInit(),
+        );
+        const commentAndStringAndSliceReceiver = blockchain.openContract(
+            await CommentAndStringAndSliceReceiverTester.fromInit(),
+        );
+        const commentAndBinaryAndSliceReceiver = blockchain.openContract(
+            await CommentAndBinaryAndSliceReceiverTester.fromInit(),
+        );
+        const stringAndBinaryAndSliceReceiver = blockchain.openContract(
+            await StringAndBinaryAndSliceReceiverTester.fromInit(),
+        );
+        const emptyAndCommentAndStringAndBinaryReceiver =
+            blockchain.openContract(
+                await EmptyAndCommentAndStringAndBinaryReceiverTester.fromInit(),
+            );
+        const emptyAndCommentAndStringAndSliceReceiver =
+            blockchain.openContract(
+                await EmptyAndCommentAndStringAndSliceReceiverTester.fromInit(),
+            );
+        const emptyAndCommentAndBinaryAndSliceReceiver =
+            blockchain.openContract(
+                await EmptyAndCommentAndBinaryAndSliceReceiverTester.fromInit(),
+            );
+        const emptyAndStringAndBinaryAndSliceReceiver = blockchain.openContract(
+            await EmptyAndStringAndBinaryAndSliceReceiverTester.fromInit(),
+        );
+        const commentAndStringAndBinaryAndSliceReceiver =
+            blockchain.openContract(
+                await CommentAndStringAndBinaryAndSliceReceiverTester.fromInit(),
+            );
+        const allReceivers = blockchain.openContract(
+            await AllReceiverTester.fromInit(),
+        );
+
+        // Deployments
+
+        await deploy(
+            emptyAndCommentAndStringReceiver.address,
+            await EmptyAndCommentAndStringReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndCommentAndBinaryReceiver.address,
+            await EmptyAndCommentAndBinaryReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndCommentAndSliceReceiver.address,
+            await EmptyAndCommentAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndStringAndBinaryReceiver.address,
+            await EmptyAndStringAndBinaryReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndStringAndSliceReceiver.address,
+            await EmptyAndStringAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndBinaryAndSliceReceiver.address,
+            await EmptyAndBinaryAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            commentAndStringAndBinaryReceiver.address,
+            await CommentAndStringAndBinaryReceiverTester.init(),
+        );
+        await deploy(
+            commentAndStringAndSliceReceiver.address,
+            await CommentAndStringAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            commentAndBinaryAndSliceReceiver.address,
+            await CommentAndBinaryAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            stringAndBinaryAndSliceReceiver.address,
+            await StringAndBinaryAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndCommentAndStringAndBinaryReceiver.address,
+            await EmptyAndCommentAndStringAndBinaryReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndCommentAndStringAndSliceReceiver.address,
+            await EmptyAndCommentAndStringAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndCommentAndBinaryAndSliceReceiver.address,
+            await EmptyAndCommentAndBinaryAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndStringAndBinaryAndSliceReceiver.address,
+            await EmptyAndStringAndBinaryAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            commentAndStringAndBinaryAndSliceReceiver.address,
+            await CommentAndStringAndBinaryAndSliceReceiverTester.init(),
+        );
+        await deploy(allReceivers.address, await AllReceiverTester.init());
+
+        // Tests start here
 
         // emptyAndCommentAndStringReceiver
         // should fail on message structs
@@ -1364,36 +1496,7 @@ describe("receivers-precedence", () => {
         );
     });
 
-    it("external receivers should process empty messages and empty strings correctly", async () => {
-        // A message struct with empty string inside. Should only be accepted by binary receivers
-        const emptyStringInMessageStruct = beginCell()
-            .storeUint(100, 32)
-            .storeStringRefTail("")
-            .endCell();
-        // An empty message struct, should only be accepted by binary receivers.
-        const emptyMessageStruct = beginCell().storeUint(101, 32).endCell();
-        // Message bodies with integer of size less than 32 bits will be processed by empty receivers (if present),
-        // irrespective of the value of the integer
-        const lessThan32Bits = beginCell().storeUint(10, 30).endCell();
-        // An actual empty message body
-        const emptyBody = new Cell();
-        // Message bodies with integers of size exactly 32 bits but value 0 will be processed by empty receivers (if present).
-        const zeroOf32Bits = beginCell().storeUint(0, 32).endCell();
-        // The empty string will be processed by empty receivers (if present)
-        const emptyString = beginCell()
-            .storeUint(0, 32)
-            .storeStringTail("")
-            .endCell();
-
-        const bodiesToTry = [
-            emptyStringInMessageStruct,
-            emptyMessageStruct,
-            lessThan32Bits,
-            emptyBody,
-            zeroOf32Bits,
-            emptyString,
-        ];
-
+    it("external receivers should process empty messages and empty strings correctly (part 1)", async () => {
         // Some utility functions that carry out the actual tests and assertions
 
         async function shouldFailFrom(testedContract: Address, from: number) {
@@ -1526,6 +1629,107 @@ describe("receivers-precedence", () => {
                 }
             }
         }
+
+        // Deployments
+
+        const noReceivers = blockchain.openContract(
+            await NoReceiverTester.fromInit(),
+        );
+        const emptyReceiver = blockchain.openContract(
+            await EmptyReceiverTester.fromInit(),
+        );
+        const commentReceiver = blockchain.openContract(
+            await CommentReceiverTester.fromInit(),
+        );
+        const stringReceiver = blockchain.openContract(
+            await StringReceiverTester.fromInit(),
+        );
+        const binaryReceiver = blockchain.openContract(
+            await BinaryReceiverTester.fromInit(),
+        );
+        const sliceReceiver = blockchain.openContract(
+            await SliceReceiverTester.fromInit(),
+        );
+        const emptyAndCommentReceiver = blockchain.openContract(
+            await EmptyAndCommentReceiverTester.fromInit(),
+        );
+        const emptyAndStringReceiver = blockchain.openContract(
+            await EmptyAndStringReceiverTester.fromInit(),
+        );
+        const emptyAndBinaryReceiver = blockchain.openContract(
+            await EmptyAndBinaryReceiverTester.fromInit(),
+        );
+        const emptyAndSliceReceiver = blockchain.openContract(
+            await EmptyAndSliceReceiverTester.fromInit(),
+        );
+        const commentAndStringReceiver = blockchain.openContract(
+            await CommentAndStringReceiverTester.fromInit(),
+        );
+        const commentAndBinaryReceiver = blockchain.openContract(
+            await CommentAndBinaryReceiverTester.fromInit(),
+        );
+        const commentAndSliceReceiver = blockchain.openContract(
+            await CommentAndSliceReceiverTester.fromInit(),
+        );
+        const stringAndBinaryReceiver = blockchain.openContract(
+            await StringAndBinaryReceiverTester.fromInit(),
+        );
+        const stringAndSliceReceiver = blockchain.openContract(
+            await StringAndSliceReceiverTester.fromInit(),
+        );
+        const binaryAndSliceReceiver = blockchain.openContract(
+            await BinaryAndSliceReceiverTester.fromInit(),
+        );
+
+        await deploy(noReceivers.address, await NoReceiverTester.init());
+        await deploy(emptyReceiver.address, await EmptyReceiverTester.init());
+        await deploy(
+            commentReceiver.address,
+            await CommentReceiverTester.init(),
+        );
+        await deploy(stringReceiver.address, await StringReceiverTester.init());
+        await deploy(binaryReceiver.address, await BinaryReceiverTester.init());
+        await deploy(sliceReceiver.address, await SliceReceiverTester.init());
+        await deploy(
+            emptyAndCommentReceiver.address,
+            await EmptyAndCommentReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndStringReceiver.address,
+            await EmptyAndStringReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndBinaryReceiver.address,
+            await EmptyAndBinaryReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndSliceReceiver.address,
+            await EmptyAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            commentAndStringReceiver.address,
+            await CommentAndStringReceiverTester.init(),
+        );
+        await deploy(
+            commentAndBinaryReceiver.address,
+            await CommentAndBinaryReceiverTester.init(),
+        );
+        await deploy(
+            commentAndSliceReceiver.address,
+            await CommentAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            stringAndBinaryReceiver.address,
+            await StringAndBinaryReceiverTester.init(),
+        );
+        await deploy(
+            stringAndSliceReceiver.address,
+            await StringAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            binaryAndSliceReceiver.address,
+            await BinaryAndSliceReceiverTester.init(),
+        );
 
         // Tests start here
 
@@ -1750,6 +1954,256 @@ describe("receivers-precedence", () => {
             binaryAndSliceReceiver.getReceiver,
             "external_fallback",
         );
+    });
+
+    it("external receivers should process empty messages and empty strings correctly (part 2)", async () => {
+        // Some utility functions that carry out the actual tests and assertions
+
+        async function shouldAcceptFrom(
+            testedContract: Address,
+            from: number,
+            receiverGetter: () => Promise<string>,
+            expectedRestReceiver: string,
+        ) {
+            for (const body of bodiesToTry.slice(from)) {
+                await shouldAcceptBody(
+                    testedContract,
+                    receiverGetter,
+                    expectedRestReceiver,
+                    body,
+                );
+            }
+        }
+
+        async function shouldFailIncompleteOpCode(testedContract: Address) {
+            await shouldFailBody(testedContract, lessThan32Bits);
+        }
+
+        async function shouldFailEmptyBody(testedContract: Address) {
+            await shouldFailBody(testedContract, emptyBody);
+        }
+
+        async function shouldFailMessageStruct(testedContract: Address) {
+            await shouldFailBody(testedContract, emptyStringInMessageStruct);
+        }
+
+        async function shouldFailEmptyMessageStruct(testedContract: Address) {
+            await shouldFailBody(testedContract, emptyMessageStruct);
+        }
+
+        async function shouldAcceptIncompleteOpCode(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                lessThan32Bits,
+            );
+        }
+
+        async function shouldAcceptEmptyBody(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                emptyBody,
+            );
+        }
+
+        async function shouldAcceptMessageStruct(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                emptyStringInMessageStruct,
+            );
+        }
+
+        async function shouldAcceptEmptyMessageStruct(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedReceiver: string,
+        ) {
+            await shouldAcceptBody(
+                testedContract,
+                receiverGetter,
+                expectedReceiver,
+                emptyMessageStruct,
+            );
+        }
+
+        async function shouldAcceptBody(
+            testedContract: Address,
+            receiverGetter: () => Promise<string>,
+            expectedRestReceiver: string,
+            body: Cell,
+        ) {
+            const contract = await blockchain.getContract(testedContract);
+            const transaction = await contract.receiveMessage(
+                external({
+                    to: contract.address,
+                    body: body,
+                }),
+            );
+
+            const transDesc = getTransactionDescription(transaction);
+            expect(transDesc.aborted).toBe(false);
+            expect(await receiverGetter()).toBe(expectedRestReceiver);
+        }
+
+        async function shouldFailBody(testedContract: Address, body: Cell) {
+            const contract = await blockchain.getContract(testedContract);
+            try {
+                await contract.receiveMessage(
+                    external({
+                        to: contract.address,
+                        body: body,
+                    }),
+                );
+
+                // It should not reach here
+                expect(false).toBe(true);
+            } catch (e) {
+                expect(e instanceof Error).toBe(true);
+                if (e instanceof Error) {
+                    expect(e.message).toContain(
+                        "External message not accepted by smart contract",
+                    );
+                }
+            }
+        }
+
+        // Second batch of contracts
+
+        const emptyAndCommentAndStringReceiver = blockchain.openContract(
+            await EmptyAndCommentAndStringReceiverTester.fromInit(),
+        );
+        const emptyAndCommentAndBinaryReceiver = blockchain.openContract(
+            await EmptyAndCommentAndBinaryReceiverTester.fromInit(),
+        );
+        const emptyAndCommentAndSliceReceiver = blockchain.openContract(
+            await EmptyAndCommentAndSliceReceiverTester.fromInit(),
+        );
+        const emptyAndStringAndBinaryReceiver = blockchain.openContract(
+            await EmptyAndStringAndBinaryReceiverTester.fromInit(),
+        );
+        const emptyAndStringAndSliceReceiver = blockchain.openContract(
+            await EmptyAndStringAndSliceReceiverTester.fromInit(),
+        );
+        const emptyAndBinaryAndSliceReceiver = blockchain.openContract(
+            await EmptyAndBinaryAndSliceReceiverTester.fromInit(),
+        );
+        const commentAndStringAndBinaryReceiver = blockchain.openContract(
+            await CommentAndStringAndBinaryReceiverTester.fromInit(),
+        );
+        const commentAndStringAndSliceReceiver = blockchain.openContract(
+            await CommentAndStringAndSliceReceiverTester.fromInit(),
+        );
+        const commentAndBinaryAndSliceReceiver = blockchain.openContract(
+            await CommentAndBinaryAndSliceReceiverTester.fromInit(),
+        );
+        const stringAndBinaryAndSliceReceiver = blockchain.openContract(
+            await StringAndBinaryAndSliceReceiverTester.fromInit(),
+        );
+        const emptyAndCommentAndStringAndBinaryReceiver =
+            blockchain.openContract(
+                await EmptyAndCommentAndStringAndBinaryReceiverTester.fromInit(),
+            );
+        const emptyAndCommentAndStringAndSliceReceiver =
+            blockchain.openContract(
+                await EmptyAndCommentAndStringAndSliceReceiverTester.fromInit(),
+            );
+        const emptyAndCommentAndBinaryAndSliceReceiver =
+            blockchain.openContract(
+                await EmptyAndCommentAndBinaryAndSliceReceiverTester.fromInit(),
+            );
+        const emptyAndStringAndBinaryAndSliceReceiver = blockchain.openContract(
+            await EmptyAndStringAndBinaryAndSliceReceiverTester.fromInit(),
+        );
+        const commentAndStringAndBinaryAndSliceReceiver =
+            blockchain.openContract(
+                await CommentAndStringAndBinaryAndSliceReceiverTester.fromInit(),
+            );
+        const allReceivers = blockchain.openContract(
+            await AllReceiverTester.fromInit(),
+        );
+
+        // Deployments
+
+        await deploy(
+            emptyAndCommentAndStringReceiver.address,
+            await EmptyAndCommentAndStringReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndCommentAndBinaryReceiver.address,
+            await EmptyAndCommentAndBinaryReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndCommentAndSliceReceiver.address,
+            await EmptyAndCommentAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndStringAndBinaryReceiver.address,
+            await EmptyAndStringAndBinaryReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndStringAndSliceReceiver.address,
+            await EmptyAndStringAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndBinaryAndSliceReceiver.address,
+            await EmptyAndBinaryAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            commentAndStringAndBinaryReceiver.address,
+            await CommentAndStringAndBinaryReceiverTester.init(),
+        );
+        await deploy(
+            commentAndStringAndSliceReceiver.address,
+            await CommentAndStringAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            commentAndBinaryAndSliceReceiver.address,
+            await CommentAndBinaryAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            stringAndBinaryAndSliceReceiver.address,
+            await StringAndBinaryAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndCommentAndStringAndBinaryReceiver.address,
+            await EmptyAndCommentAndStringAndBinaryReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndCommentAndStringAndSliceReceiver.address,
+            await EmptyAndCommentAndStringAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndCommentAndBinaryAndSliceReceiver.address,
+            await EmptyAndCommentAndBinaryAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            emptyAndStringAndBinaryAndSliceReceiver.address,
+            await EmptyAndStringAndBinaryAndSliceReceiverTester.init(),
+        );
+        await deploy(
+            commentAndStringAndBinaryAndSliceReceiver.address,
+            await CommentAndStringAndBinaryAndSliceReceiverTester.init(),
+        );
+        await deploy(allReceivers.address, await AllReceiverTester.init());
+
+        // Tests start here
 
         // emptyAndCommentAndStringReceiver
         // should fail on message structs
@@ -2236,6 +2690,9 @@ describe("receivers-precedence", () => {
 
         // Deployments
 
+        const noReceivers = blockchain.openContract(
+            await NoReceiverTester.fromInit(),
+        );
         const emptyBounced: SandboxContract<EmptyBouncedTester> =
             blockchain.openContract(await EmptyBouncedTester.fromInit());
         const binaryBounced: SandboxContract<BinaryBouncedTester> =
@@ -2244,6 +2701,8 @@ describe("receivers-precedence", () => {
             blockchain.openContract(await SliceBouncedTester.fromInit());
         const allBounced: SandboxContract<AllBouncedTester> =
             blockchain.openContract(await AllBouncedTester.fromInit());
+
+        await deploy(noReceivers.address, await NoReceiverTester.init());
         await deploy(emptyBounced.address, await EmptyBouncedTester.init());
         await deploy(binaryBounced.address, await BinaryBouncedTester.init());
         await deploy(sliceBounced.address, await SliceBouncedTester.init());
