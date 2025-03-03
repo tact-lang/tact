@@ -32,7 +32,7 @@ struct SwapStep {
     // The pool that will perform the swap, e.g., pairs like TON/USDT or USDT/DUST
     poolAddress: Address;
 
-    // The kind of swap to perform; it can only be 0 as of now
+    // The kind of swap to do: can only be 0 as of now
     kind: Int as uint1 = 0;
 
     // Minimum output of the swap
