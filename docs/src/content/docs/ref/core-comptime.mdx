@@ -119,7 +119,7 @@ contract Example {
 fun ascii(str: String): Int;
 ```
 
-A compile-time function that concatenates the hexadecimal values of the characters in `str` into one value and embeds the resulting [`Int{:tact}`][int] into the contract. This function works only for strings occupying up to $32$ bytes, allowing the representation of up to $32$ [ASCII codes](https://en.wikipedia.org/wiki/ASCII#Control_code_chart) or up to $8$ Unicode code points of $4$ bytes each ([list of Unicode characters](https://en.wikipedia.org/wiki/List_of_Unicode_characters)).
+A compile-time function that concatenates the hexadecimal values of the characters in `str` into one value and embeds the resulting [`Int{:tact}`][int] into the contract. This function works only for strings occupying up to $32$ bytes, allowing the representation of up to $32$ [ASCII codes](https://en.wikipedia.org/wiki/ASCII#Control_code_chart) or up to $8$ [Unicode code points](https://en.wikipedia.org/wiki/List_of_Unicode_characters) of $4$ bytes each.
 
 Usage example:
 

@@ -248,7 +248,7 @@ try {
 
 :::note
 
-  Note that if you only need to obtain logarithms to the base $2$, use the [`log2(){:tact}`](#log2) function, as it's more gas-efficient.
+  If you only need to obtain logarithms to the base $2$, use the [`log2(){:tact}`](#log2) function, as it's more gas-efficient.
 
 :::
 
@@ -455,7 +455,7 @@ sha256(someVariableElsewhere); // will try to resolve at compile-time,
 
   That's because all [SHA-256][sha-2]-related instructions of the [TVM][tvm] consider only the data bits, ignoring possible references to other cells needed to form larger strings.
 
-  Therefore, in general, and in versions of Tact prior to 1.6, it is preferable to use statically known strings whenever possible. When in doubt, use strings of up to 127 bytes in length.
+  Therefore, in general, and in versions of Tact prior to 1.6, it is preferable to use statically known strings whenever possible. When in doubt, use strings of up to 127 bytes long.
 
 :::
 

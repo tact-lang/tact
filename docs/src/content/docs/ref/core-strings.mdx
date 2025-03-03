@@ -337,7 +337,7 @@ Extension function for the [`Int{:tact}`][int] type.
 
 Returns a [`String{:tact}`][p] from an [`Int{:tact}`][int] value using a [fixed-point representation](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) of a fractional number, where `self` is the significant part of the number and `digits` is the number of digits in the fractional part.
 
-More precisely, `digits` is an exponentiation parameter of the expression $10^{-\mathrm{digits}}$, which gives the represented fractional number when multiplied by the actual [`Int{:tact}`][int] value. Parameter `digits` is required to be in the closed interval: $0 < \mathrm{digits} < 78$; otherwise, an exception with [exit code 134](/book/exit-codes#134) will be thrown: `Invalid argument`.
+More precisely, `digits` is an exponentiation parameter of the expression $10^{-\mathrm{digits}}$, which gives the represented fractional number when multiplied by the actual [`Int{:tact}`][int] value. Parameter `digits` is required to be in the closed interval: $0 < \mathrm{digits} < 78$. Otherwise, an exception with [exit code 134](/book/exit-codes#134) will be thrown: `Invalid argument`.
 
 Usage example:
 

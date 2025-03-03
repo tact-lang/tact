@@ -102,7 +102,7 @@ extends fun depth(self: Cell?): Int;
 
 Extension function for the [`Cell{:tact}`][cell] type.
 
-Computes and returns the [`Int{:tact}`][int] [depth][std-repr] of the [`Cell{:tact}`][cell]. Produces $0$ if the [`Cell{:tact}`][cell] has no references; otherwise, it returns $1$ plus the maximum of the depths of the referenced cells. If `self{:tact}` is [`null{:tact}`][null], returns $0$.
+Computes and returns the [`Int{:tact}`][int] [depth][std-repr] of the [`Cell{:tact}`][cell]. Produces $0$ if the [`Cell{:tact}`][cell] has no references. Otherwise, it returns $1$ plus the maximum of the depths of the referenced cells. If `self{:tact}` is [`null{:tact}`][null], returns $0$.
 
 Usage example:
 
@@ -216,7 +216,7 @@ extends fun storeUint(self: Builder, value: Int, bits: Int): Builder;
 
 Extension function for the [`Builder{:tact}`][builder] type.
 
-Stores an unsigned `bits`-bit `value` into the copy of the [`Builder{:tact}`][builder] for $0 ≤ bits ≤ 256$. Returns that copy.
+Stores an unsigned `bits`-bit `value` into the copy of the [`Builder{:tact}`][builder] for 0 ≤ `bits` ≤ 256. Returns that copy.
 
 Attempts to store a negative `value` or provide an insufficient or out-of-bounds `bits` number throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -235,7 +235,7 @@ extends fun storeInt(self: Builder, value: Int, bits: Int): Builder;
 
 Extension function for the [`Builder{:tact}`][builder] type.
 
-Stores a signed `bits`-bit `value` into the copy of the [`Builder{:tact}`][builder] for $0 ≤ bits ≤ 257$. Returns that copy.
+Stores a signed `bits`-bit `value` into the copy of the [`Builder{:tact}`][builder] for 0 ≤ `bits` ≤ 257. Returns that copy.
 
 Attempts to provide an insufficient or out-of-bounds `bits` number throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -328,7 +328,7 @@ extends fun storeCoins(self: Builder, value: Int): Builder;
 
 Extension function for the [`Builder{:tact}`][builder] type.
 
-Stores (serializes) an unsigned [`Int{:tact}`][int] `value` in the range from $0$ to $2^{120}-1$ inclusive into a copy of the [`Builder{:tact}`][builder]. The serialization of `value` consists of a $4$-bit unsigned big-endian integer $l$, which is the smallest integer $l ≥ 0$ such that `value < 2^{8 \cdot l}$, followed by an $8 \cdot l$-bit unsigned big-endian representation of `value`. Returns that copy of the [`Builder{:tact}`][builder].
+Stores (serializes) an unsigned [`Int{:tact}`][int] `value` in the range from $0$ to $2^{120}-1$ inclusive into a copy of the [`Builder{:tact}`][builder]. The serialization of `value` consists of a $4$-bit unsigned big-endian integer $l$, which is the smallest integer $l ≥ 0$ such that `value` $< 2^{8 * l}$, followed by an $8 * l$-bit unsigned big-endian representation of `value`. Returns that copy of the [`Builder{:tact}`][builder].
 
 Attempts to store an out-of-bounds `value` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -409,7 +409,7 @@ extends fun storeVarUint32(self: Builder, value: Int): Builder;
 
 Extension function for the [`Builder{:tact}`][builder] type.
 
-Stores (serializes) an unsigned [`Int{:tact}`][int] `value` in the range from $0$ to $2^{248}-1$ inclusive into a copy of the [`Builder{:tact}`][builder]. The serialization of `value` consists of a $5$-bit unsigned big-endian integer $l$, which is the smallest integer $l ≥ 0$ such that `value < 2^{8 \cdot l}$, followed by an $8 \cdot l$-bit unsigned big-endian representation of `value`. Returns that copy of the [`Builder{:tact}`][builder].
+Stores (serializes) an unsigned [`Int{:tact}`][int] `value` in the range from $0$ to $2^{248}-1$ inclusive into a copy of the [`Builder{:tact}`][builder]. The serialization of `value` consists of a $5$-bit unsigned big-endian integer $l$, which is the smallest integer $l ≥ 0$ such that `value` $< 2^{8 * l}$, followed by an $8 * l$-bit unsigned big-endian representation of `value`. Returns that copy of the [`Builder{:tact}`][builder].
 
 Attempts to store an out-of-bounds `value` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -699,7 +699,7 @@ extends mutates fun loadBits(self: Slice, l: Int): Slice;
 
 Extension mutation function for the [`Slice{:tact}`][slice] type.
 
-Loads $0 ≤ l ≤ 1023$ bits from the [`Slice{:tact}`][slice] and returns them as a separate [`Slice{:tact}`][slice].
+Loads $0 ≤$ `l` $≤ 1023$ bits from the [`Slice{:tact}`][slice] and returns them as a separate [`Slice{:tact}`][slice].
 
 Attempts to specify an out-of-bounds `l` value throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -720,7 +720,7 @@ extends fun preloadBits(self: Slice, l: Int): Slice;
 
 Extension function for the [`Slice{:tact}`][slice] type.
 
-Preloads $0 ≤ l ≤ 1023$ bits from the [`Slice{:tact}`][slice] and returns them as a separate [`Slice{:tact}`][slice]. Doesn't modify the original [`Slice{:tact}`][slice].
+Preloads $0 ≤$ `l` $≤ 1023$ bits from the [`Slice{:tact}`][slice] and returns them as a separate [`Slice{:tact}`][slice]. Doesn't modify the original [`Slice{:tact}`][slice].
 
 Attempts to specify an out-of-bounds `l` value throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -747,7 +747,7 @@ extends mutates fun skipBits(self: Slice, l: Int);
 
 Extension mutation function for the [`Slice{:tact}`][slice] type.
 
-Loads all but the first $0 \le l \le 1023$ bits from the [`Slice{:tact}`][slice].
+Loads all but the first $0 ≤$ `l` $≤ 1023$ bits from the [`Slice{:tact}`][slice].
 
 Attempts to specify an out-of-bounds `l` value throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -771,7 +771,7 @@ extends fun skipLastBits(self: Slice, len: Int);
 
 Extension function for the [`Slice{:tact}`][slice] type.
 
-Preloads all but the last $0 \le len \le 1023$ bits from the [`Slice{:tact}`][slice].
+Preloads all but the last $0 ≤$ `len` $≤ 1023$ bits from the [`Slice{:tact}`][slice].
 
 Attempts to specify an out-of-bounds `len` value throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -1145,7 +1145,7 @@ extends fun firstBits(self: Slice, len: Int): Slice;
 
 Extension function for the [`Slice{:tact}`][slice] type.
 
-Preloads the first $0 \leq \text{len} \leq 1023$ bits from the [`Slice{:tact}`][slice].
+Preloads the first $0 ≤$ `len` $≤ 1023$ bits from the [`Slice{:tact}`][slice].
 
 Attempts to specify an out-of-bounds `len` value throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -1197,7 +1197,7 @@ extends fun depth(self: Slice): Int;
 
 Extension function for the [`Slice{:tact}`][slice] type.
 
-Computes and returns the [`Int{:tact}`][int] [depth][std-repr] of the [`Slice{:tact}`][slice]. Produces $0$ if the [`Slice{:tact}`][slice] has no references; otherwise, it returns $1$ plus the maximum of the depths of the referenced cells.
+Computes and returns the [`Int{:tact}`][int] [depth][std-repr] of the [`Slice{:tact}`][slice]. Produces $0$ if the [`Slice{:tact}`][slice] has no references. Otherwise, it returns $1$ plus the maximum of the depths of the referenced cells.
 
 Usage example:
 
