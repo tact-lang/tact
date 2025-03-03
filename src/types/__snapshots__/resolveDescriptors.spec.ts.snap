@@ -33886,3 +33886,944 @@ exports[`resolveDescriptors should resolve descriptors for wildcard-function-par
   },
 ]
 `;
+
+exports[`resolveDescriptors should resolve descriptors for wildcard-function-param2 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Bool;,
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 6,
+      "kind": "trait",
+      "loc": trait BaseTrait { },
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
+          "id": 18,
+          "kind": "function_def",
+          "loc": virtual fun assure(_: Int, _: Int): Bool {
+        return true;
+    },
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": assure,
+            "text": "assure",
+          },
+          "params": [
+            {
+              "id": 12,
+              "kind": "typed_parameter",
+              "loc": _: Int,
+              "name": {
+                "id": 10,
+                "kind": "id",
+                "loc": _,
+                "text": "_",
+              },
+              "type": {
+                "id": 11,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            {
+              "id": 15,
+              "kind": "typed_parameter",
+              "loc": _: Int,
+              "name": {
+                "id": 13,
+                "kind": "id",
+                "loc": _,
+                "text": "_",
+              },
+              "type": {
+                "id": 14,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "return": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 16,
+                "kind": "boolean",
+                "loc": true,
+                "value": true,
+              },
+              "id": 17,
+              "kind": "statement_return",
+              "loc": return true;,
+            },
+          ],
+        },
+      ],
+      "id": 19,
+      "kind": "trait",
+      "loc": trait WildThing {
+    virtual fun assure(_: Int, _: Int): Bool {
+        return true;
+    }
+},
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "loc": WildThing,
+        "text": "WildThing",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "assure" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
+          "id": 18,
+          "kind": "function_def",
+          "loc": virtual fun assure(_: Int, _: Int): Bool {
+        return true;
+    },
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": assure,
+            "text": "assure",
+          },
+          "params": [
+            {
+              "id": 12,
+              "kind": "typed_parameter",
+              "loc": _: Int,
+              "name": {
+                "id": 10,
+                "kind": "id",
+                "loc": _,
+                "text": "_",
+              },
+              "type": {
+                "id": 11,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            {
+              "id": 15,
+              "kind": "typed_parameter",
+              "loc": _: Int,
+              "name": {
+                "id": 13,
+                "kind": "id",
+                "loc": _,
+                "text": "_",
+              },
+              "type": {
+                "id": 14,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "return": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 16,
+                "kind": "boolean",
+                "loc": true,
+                "value": true,
+              },
+              "id": 17,
+              "kind": "statement_return",
+              "loc": return true;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": true,
+        "methodId": null,
+        "name": "assure",
+        "origin": "user",
+        "params": [
+          {
+            "loc": _: Int,
+            "name": {
+              "id": 10,
+              "kind": "id",
+              "loc": _,
+              "text": "_",
+            },
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+          {
+            "loc": _: Int,
+            "name": {
+              "id": 13,
+              "kind": "id",
+              "loc": _,
+              "text": "_",
+            },
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "returns": {
+          "kind": "ref",
+          "name": "Bool",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "WildThing",
+          "optional": false,
+        },
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "WildThing",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 41038,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 38,
+          "kind": "function_def",
+          "loc": override fun assure(a: Int, b: Int): Bool {
+        return a + b == b + a;
+    },
+          "name": {
+            "id": 22,
+            "kind": "id",
+            "loc": assure,
+            "text": "assure",
+          },
+          "params": [
+            {
+              "id": 26,
+              "kind": "typed_parameter",
+              "loc": a: Int,
+              "name": {
+                "id": 24,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              "type": {
+                "id": 25,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            {
+              "id": 29,
+              "kind": "typed_parameter",
+              "loc": b: Int,
+              "name": {
+                "id": 27,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+              "type": {
+                "id": 28,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "return": {
+            "id": 23,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 36,
+                "kind": "op_binary",
+                "left": {
+                  "id": 32,
+                  "kind": "op_binary",
+                  "left": {
+                    "id": 30,
+                    "kind": "id",
+                    "loc": a,
+                    "text": "a",
+                  },
+                  "loc": a + b,
+                  "op": "+",
+                  "right": {
+                    "id": 31,
+                    "kind": "id",
+                    "loc": b,
+                    "text": "b",
+                  },
+                },
+                "loc": a + b == b + a,
+                "op": "==",
+                "right": {
+                  "id": 35,
+                  "kind": "op_binary",
+                  "left": {
+                    "id": 33,
+                    "kind": "id",
+                    "loc": b,
+                    "text": "b",
+                  },
+                  "loc": b + a,
+                  "op": "+",
+                  "right": {
+                    "id": 34,
+                    "kind": "id",
+                    "loc": a,
+                    "text": "a",
+                  },
+                },
+              },
+              "id": 37,
+              "kind": "statement_return",
+              "loc": return a + b == b + a;,
+            },
+          ],
+        },
+      ],
+      "id": 39,
+      "kind": "contract",
+      "loc": contract YouMakeMyHeartSing with WildThing {
+    override fun assure(a: Int, b: Int): Bool {
+        return a + b == b + a;
+    }
+},
+      "name": {
+        "id": 20,
+        "kind": "id",
+        "loc": YouMakeMyHeartSing,
+        "text": "YouMakeMyHeartSing",
+      },
+      "params": undefined,
+      "traits": [
+        {
+          "id": 21,
+          "kind": "id",
+          "loc": WildThing,
+          "text": "WildThing",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "assure" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 38,
+          "kind": "function_def",
+          "loc": override fun assure(a: Int, b: Int): Bool {
+        return a + b == b + a;
+    },
+          "name": {
+            "id": 22,
+            "kind": "id",
+            "loc": assure,
+            "text": "assure",
+          },
+          "params": [
+            {
+              "id": 26,
+              "kind": "typed_parameter",
+              "loc": a: Int,
+              "name": {
+                "id": 24,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              "type": {
+                "id": 25,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            {
+              "id": 29,
+              "kind": "typed_parameter",
+              "loc": b: Int,
+              "name": {
+                "id": 27,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+              "type": {
+                "id": 28,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "return": {
+            "id": 23,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 36,
+                "kind": "op_binary",
+                "left": {
+                  "id": 32,
+                  "kind": "op_binary",
+                  "left": {
+                    "id": 30,
+                    "kind": "id",
+                    "loc": a,
+                    "text": "a",
+                  },
+                  "loc": a + b,
+                  "op": "+",
+                  "right": {
+                    "id": 31,
+                    "kind": "id",
+                    "loc": b,
+                    "text": "b",
+                  },
+                },
+                "loc": a + b == b + a,
+                "op": "==",
+                "right": {
+                  "id": 35,
+                  "kind": "op_binary",
+                  "left": {
+                    "id": 33,
+                    "kind": "id",
+                    "loc": b,
+                    "text": "b",
+                  },
+                  "loc": b + a,
+                  "op": "+",
+                  "right": {
+                    "id": 34,
+                    "kind": "id",
+                    "loc": a,
+                    "text": "a",
+                  },
+                },
+              },
+              "id": 37,
+              "kind": "statement_return",
+              "loc": return a + b == b + a;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": true,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "assure",
+        "origin": "user",
+        "params": [
+          {
+            "loc": a: Int,
+            "name": {
+              "id": 24,
+              "kind": "id",
+              "loc": a,
+              "text": "a",
+            },
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+          {
+            "loc": b: Int,
+            "name": {
+              "id": 27,
+              "kind": "id",
+              "loc": b,
+              "text": "b",
+            },
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "returns": {
+          "kind": "ref",
+          "name": "Bool",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "YouMakeMyHeartSing",
+          "optional": false,
+        },
+      },
+    },
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 41,
+        "kind": "contract_init",
+        "loc": contract YouMakeMyHeartSing with WildThing {
+    override fun assure(a: Int, b: Int): Bool {
+        return a + b == b + a;
+    }
+},
+        "params": [],
+        "statements": [],
+      },
+      "kind": "init-function",
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "YouMakeMyHeartSing",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "YouMakeMyHeartSing{}",
+    "tlb": "_  = YouMakeMyHeartSing",
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 6,
+          "kind": "trait",
+          "loc": trait BaseTrait { },
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
+              "id": 18,
+              "kind": "function_def",
+              "loc": virtual fun assure(_: Int, _: Int): Bool {
+        return true;
+    },
+              "name": {
+                "id": 8,
+                "kind": "id",
+                "loc": assure,
+                "text": "assure",
+              },
+              "params": [
+                {
+                  "id": 12,
+                  "kind": "typed_parameter",
+                  "loc": _: Int,
+                  "name": {
+                    "id": 10,
+                    "kind": "id",
+                    "loc": _,
+                    "text": "_",
+                  },
+                  "type": {
+                    "id": 11,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                },
+                {
+                  "id": 15,
+                  "kind": "typed_parameter",
+                  "loc": _: Int,
+                  "name": {
+                    "id": 13,
+                    "kind": "id",
+                    "loc": _,
+                    "text": "_",
+                  },
+                  "type": {
+                    "id": 14,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                },
+              ],
+              "return": {
+                "id": 9,
+                "kind": "type_id",
+                "loc": Bool,
+                "text": "Bool",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "id": 16,
+                    "kind": "boolean",
+                    "loc": true,
+                    "value": true,
+                  },
+                  "id": 17,
+                  "kind": "statement_return",
+                  "loc": return true;,
+                },
+              ],
+            },
+          ],
+          "id": 19,
+          "kind": "trait",
+          "loc": trait WildThing {
+    virtual fun assure(_: Int, _: Int): Bool {
+        return true;
+    }
+},
+          "name": {
+            "id": 7,
+            "kind": "id",
+            "loc": WildThing,
+            "text": "WildThing",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "assure" => {
+            "ast": {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
+              "id": 18,
+              "kind": "function_def",
+              "loc": virtual fun assure(_: Int, _: Int): Bool {
+        return true;
+    },
+              "name": {
+                "id": 8,
+                "kind": "id",
+                "loc": assure,
+                "text": "assure",
+              },
+              "params": [
+                {
+                  "id": 12,
+                  "kind": "typed_parameter",
+                  "loc": _: Int,
+                  "name": {
+                    "id": 10,
+                    "kind": "id",
+                    "loc": _,
+                    "text": "_",
+                  },
+                  "type": {
+                    "id": 11,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                },
+                {
+                  "id": 15,
+                  "kind": "typed_parameter",
+                  "loc": _: Int,
+                  "name": {
+                    "id": 13,
+                    "kind": "id",
+                    "loc": _,
+                    "text": "_",
+                  },
+                  "type": {
+                    "id": 14,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                },
+              ],
+              "return": {
+                "id": 9,
+                "kind": "type_id",
+                "loc": Bool,
+                "text": "Bool",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "id": 16,
+                    "kind": "boolean",
+                    "loc": true,
+                    "value": true,
+                  },
+                  "id": 17,
+                  "kind": "statement_return",
+                  "loc": return true;,
+                },
+              ],
+            },
+            "isAbstract": false,
+            "isGetter": false,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": true,
+            "methodId": null,
+            "name": "assure",
+            "origin": "user",
+            "params": [
+              {
+                "loc": _: Int,
+                "name": {
+                  "id": 10,
+                  "kind": "id",
+                  "loc": _,
+                  "text": "_",
+                },
+                "type": {
+                  "kind": "ref",
+                  "name": "Int",
+                  "optional": false,
+                },
+              },
+              {
+                "loc": _: Int,
+                "name": {
+                  "id": 13,
+                  "kind": "id",
+                  "loc": _,
+                  "text": "_",
+                },
+                "type": {
+                  "kind": "ref",
+                  "name": "Int",
+                  "optional": false,
+                },
+              },
+            ],
+            "returns": {
+              "kind": "ref",
+              "name": "Bool",
+              "optional": false,
+            },
+            "self": {
+              "kind": "ref",
+              "name": "WildThing",
+              "optional": false,
+            },
+          },
+        },
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "WildThing",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 41038,
+      },
+    ],
+    "uid": 11255,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for wildcard-function-param2 2`] = `[]`;
