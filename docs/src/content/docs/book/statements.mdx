@@ -32,7 +32,7 @@ let vMap: map<Int, Int> = emptyMap(); // explicit type map<Int, Int>
 let vMapWithSerialization: map<Int as uint8, Int as uint8> = emptyMap();
 ```
 
-Naming a local variable with underscore `_{:tact}` makes its value considered unused and discarded. This is useful when you don't need a return value of some function with side effects, and want to explicitly mark the variable as unused. Note, that such wildcard variable name `_{:tact}` cannot be accessed:
+Naming a local variable with an underscore `_{:tact}` causes its value to be considered unused and discarded. This is useful if you don't need the return value of a function with side effects and want to explicitly mark the variable as unused. Note that such wildcard variable name `_{:tact}` cannot be accessed:
 
 ```tact
 let _ = someFunctionWithSideEffects(); // with type inference
