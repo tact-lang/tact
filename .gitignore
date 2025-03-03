@@ -11,4 +11,6 @@ output/
 src/func/funcfiftlib.wasm.js
 src/test/contracts/pretty-printer-output
 src/test/e2e-emulated/map-tests/build
+src/test/e2e-emulated/map-tests/property-based/contracts
+src/test/e2e-emulated/map-tests/property-based/generated-tests
 **/.testing/

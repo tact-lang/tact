@@ -1,0 +1,44 @@
+message ClearRequest {}
+
+message SetKeyValue {
+    key: <__KEY_TYPE__>;
+    value: <__VALUE_TYPE__>;
+}
+
+message DeleteKey {
+    key: <__KEY_TYPE__>;
+}
+
+contract MapTestContract { 
+    receive() {}
+
+    mapUnderTest: map<<__KEY_TYPE__>, <__VALUE_TYPE__>>;
+
+    init() {
+        self.mapUnderTest = emptyMap();
+    }
+
+    get fun wholeMap(): map<<__KEY_TYPE__>, <__VALUE_TYPE__>> {
+        return self.mapUnderTest;
+    }
+
+    receive(_: ClearRequest) {
+        self.mapUnderTest = emptyMap();
+    }
+
+    receive(data: SetKeyValue) {
+        self.mapUnderTest.set(data.key, data.value);
+    }
+
+    receive(data: DeleteKey) {
+        self.mapUnderTest.del(data.key);
+    }
+
+    get fun getValue(key: <__KEY_TYPE_NO_SERIALIZATION__>) : <__VALUE_TYPE_NO_SERIALIZATION__>? {
+        return self.mapUnderTest.get(key);
+    }
+
+    get fun exists(key: <__KEY_TYPE_NO_SERIALIZATION__>) : Bool {
+        return self.mapUnderTest.exists(key);
+    }
+}
