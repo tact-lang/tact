@@ -3,7 +3,7 @@ title: Learn all about programming in ⚡ Tact
 description: Tact is a new programming language for TON Blockchain focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts.
 template: splash
 hero:
-  tagline: Tact is a new programming language for TON Blockchain that is focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts. Tact is a statically typed language with a simple syntax and a powerful type system.
+  tagline: Tact is a new programming language for TON Blockchain focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts. Tact is a statically typed language with a simple syntax and a powerful type system.
   image:
     dark: /public/logomark-dark.svg
     light: /public/logomark-light.svg
@@ -96,7 +96,8 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
 	     receive(msg: Add) {
 	         self.counter += msg.amount;
 
-	         // Notify the caller that the receiver was executed and forward the remaining value back
+	         // Notify the caller that the receiver was executed
+	         // and forward the remaining value back
 	         self.notify("Cashback".asComment());
 	     }
 
