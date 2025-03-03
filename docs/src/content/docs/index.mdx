@@ -1,6 +1,6 @@
 ---
 title: Learn all about programming in ⚡ Tact
-description: Tact is a new programming language for TON Blockchain that is focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts.
+description: Tact is a new programming language for TON Blockchain focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts.
 template: splash
 hero:
   tagline: Tact is a new programming language for TON Blockchain that is focused on efficiency and simplicity. It is designed to be easy to learn and use, and to be a good fit for smart contracts. Tact is a statically typed language with a simple syntax and a powerful type system.
@@ -44,7 +44,7 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
 
 2. #### Run the following command {#start-2}
 
-   It will create a new project with the simple counter contract:
+   It will create a new project with a simple counter contract:
 
    <Tabs>
      <TabItem label="yarn" icon="seti:yarn">
@@ -72,9 +72,9 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
 
 3. #### That's it! {#start-3}
 
-   Your first contract project is written and compiled already!
+   Your first contract project has already been written and compiled!
 
-   Go check it out by moving into the relevant directory — `cd simple-counter/contracts{:shell}`. Here's how it would look like:
+   Check it out by moving into the relevant directory — `cd simple-counter/contracts{:shell}`. Here's what it would look like:
 
 	 ```tact
 	 import "@stdlib/deploy";
@@ -96,7 +96,7 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
 	     receive(msg: Add) {
 	         self.counter += msg.amount;
 
-	         // Notify the caller that the receiver was executed and forward remaining value back
+	         // Notify the caller that the receiver was executed and forward the remaining value back
 	         self.notify("Cashback".asComment());
 	     }
 
@@ -110,7 +110,7 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
 	 }
 	 ```
 
-   To re-compile or deploy, refer to the commands in the scripts section of `package.json` in the root of this newly created project and to the documentation of [Blueprint](https://github.com/ton-org/blueprint) — this is the tool we've used to create and compile your first simple counter contract in Tact. In fact, Blueprint can do much more than that: including tests, customizations and more.
+   To re-compile or deploy, refer to the commands in the scripts section of `package.json` in the root of this newly created project and to the documentation of [Blueprint](https://github.com/ton-org/blueprint) — this is the tool we've used to create and compile your first simple counter contract in Tact. Blueprint can do much more than that: including tests, customizations, and more.
 
 </Steps>
 
@@ -122,11 +122,11 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
 
 1. #### Have some blockchain knowledge already? {#next-1}
 
-   See the [Tact Cookbook](/cookbook), which is a handy collection of everyday tasks (and solutions) every Tact developer faces during smart contract development. Use it to avoid re-inventing the wheel.
+   See the [Tact Cookbook](/cookbook), which is a handy collection of everyday tasks (and solutions) every Tact developer faces during smart contract development. Use it to avoid reinventing the wheel.
 
    {/*
 
-   Alternatively, check the following cheat sheets to quickly get started:
+   Alternatively, check the following cheat sheets to get started right away:
 
    <CardGrid>
      <LinkCard
@@ -143,7 +143,7 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
 
 2. #### Want to know more? {#next-2}
 
-   For further guidance on compilation, testing and deployment see the respective pages:
+   For further guidance on compilation, testing, and deployment see the respective pages:
 
    * [Testing and debugging](/book/debug) page tells you everything about debugging Tact contracts
    * [Deployment](/book/deploy) page shows what deployment looks like and helps you harness the powers of [Blueprint](https://github.com/ton-org/blueprint) for it.
@@ -178,7 +178,7 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
 
 3. #### Feeling a bit uncomfortable? {#next-3}
 
-   If you ever get stuck, try searching — the search box is right at the top of the documentation. There is also a handy <kbd>Ctrl</kbd> + <kbd>K</kbd> shortcut to quickly focus and start the search as you type.
+   If you ever get stuck, try searching — the search box is at the top of the documentation. There is also a handy <kbd>Ctrl</kbd> + <kbd>K</kbd> shortcut to focus and start the search as you type.
 
    If you can't find the answer in the docs, or you've tried to do some local testing and it still didn't help — don't hesitate to reach out to Tact's flourishing community:
 
