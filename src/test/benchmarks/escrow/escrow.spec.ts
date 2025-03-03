@@ -12,11 +12,18 @@ import {
     storeFunding,
     storeUpdateJettonWalletCode,
 } from "../contracts/output/escrow_Escrow";
-import { getUsedGas, generateResults, printBenchmarkTable } from "../util";
-import benchmarkResults from "./results.json";
+import {
+    getUsedGas,
+    generateResults,
+    printBenchmarkTable,
+    generateCodeSizeResults,
+    getStateSizeForAccount,
+} from "../util";
+import benchmarkResults from "./results_gas.json";
 import { readFileSync } from "fs";
 import { posixNormalize } from "../../../utils/filePath";
 import { resolve } from "path";
+import benchmarkCodeSizeResults from "./results_code_size.json";
 
 const loadFunCEscrowBoc = () => {
     const bocEscrow = readFileSync(
@@ -125,6 +132,10 @@ describe("Escrow Gas Tests", () => {
     const expectedResult = results.at(-1)!;
     const funcResult = results.at(0)!;
 
+    const codeSizeResults = generateCodeSizeResults(benchmarkCodeSizeResults);
+    const expectedCodeSize = codeSizeResults.at(-1)!;
+    const funcCodeSize = codeSizeResults.at(0)!;
+
     async function deployEscrowContractTact(
         assetAddress: Address | null,
         dealAmount: bigint,
@@ -229,7 +240,7 @@ describe("Escrow Gas Tests", () => {
     });
 
     afterAll(() => {
-        printBenchmarkTable(results, {
+        printBenchmarkTable(codeSizeResults, results, {
             implementationName: "FunC",
             isFullTable: true,
         });
@@ -410,5 +421,69 @@ describe("Escrow Gas Tests", () => {
 
         expect(cancelGasFunC).toEqual(funcResult.gas["cancelTon"]);
         expect(cancelGasTact).toEqual(expectedResult.gas["cancelTon"]);
+    });
+
+    it("cells", async () => {
+        const escrowContractFunC = await deployEscrowContractFunC(
+            null,
+            toNano(1),
+            1n,
+        );
+
+        const escrowContractTact = await deployEscrowContractTact(
+            null,
+            toNano(1),
+            1n,
+        );
+
+        expect(
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    escrowContractFunC.escrowAddress,
+                )
+            ).cells,
+        ).toEqual(funcCodeSize.size["cells"]);
+
+        expect(
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    escrowContractTact.escrowAddress,
+                )
+            ).cells,
+        ).toEqual(expectedCodeSize.size["cells"]);
+    });
+
+    it("bits", async () => {
+        const escrowContractFunC = await deployEscrowContractFunC(
+            null,
+            toNano(1),
+            1n,
+        );
+
+        const escrowContractTact = await deployEscrowContractTact(
+            null,
+            toNano(1),
+            1n,
+        );
+
+        expect(
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    escrowContractFunC.escrowAddress,
+                )
+            ).bits,
+        ).toEqual(funcCodeSize.size["bits"]);
+
+        expect(
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    escrowContractTact.escrowAddress,
+                )
+            ).bits,
+        ).toEqual(expectedCodeSize.size["bits"]);
     });
 });
