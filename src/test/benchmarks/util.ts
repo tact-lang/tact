@@ -16,7 +16,7 @@ export function getUsedGas(sendEnough: SendMessageResult): number {
         .reduceRight((prev, cur) => prev + cur);
 }
 
-type BenchmarkResult = {
+export type BenchmarkResult = {
     label: string;
     pr: string | undefined;
     gas: Record<string, number>;
@@ -151,14 +151,24 @@ function calculateChanges<
     }, []);
 }
 
-export function printBenchmarkTable(
-    benchmarkResults: BenchmarkResult[],
-    codeSizeResults: CodeSizeResult[],
-): void {
-    const METRICS: readonly string[] = Object.keys(benchmarkResults[0]!.gas);
-    const codeSizeMetrics = Object.keys(codeSizeResults[0]!.size);
+type BenchmarkTableArgs = {
+    implementationName: string;
+    isFullTable: boolean;
+};
 
-    if (benchmarkResults.length === 0) {
+export function printBenchmarkTable(
+    codeSizeResults: CodeSizeResult[],
+    results: BenchmarkResult[],
+    args: BenchmarkTableArgs,
+): void {
+    const METRICS: readonly string[] = Object.keys(results[0]!.gas);
+    const codeSizeMetrics = Object.keys(codeSizeResults[0]!.size);
+    const first = results.at(0)!;
+    const last = results.at(-1)!;
+
+    const tableResults = args.isFullTable ? results : [first, last];
+
+    if (tableResults.length === 0) {
         console.log("No benchmark results to display.");
         return;
     }
@@ -170,9 +180,13 @@ export function printBenchmarkTable(
             border: ["gray"],
         },
     });
-
     const changes = calculateChanges(benchmarkResults, METRICS, "gas");
     benchmarkResults
+
+    const changes = calculateChanges(tableResults, METRICS);
+
+    tableResults
+
         .map(({ label, gas, pr: commit }, i) => [
             label,
             ...METRICS.map((metric, j) => `${gas[metric]} ${changes[i]?.[j]}`),
@@ -223,10 +237,7 @@ export function printBenchmarkTable(
     output.push("\nCode Size Results:");
     output.push(codeSizeTable.toString());
 
-    const first = benchmarkResults[0]!;
-    const last = benchmarkResults[benchmarkResults.length - 1]!;
-
-    output.push("\nComparison with FunC implementation:");
+    output.push(`\nComparison with ${args.implementationName} implementation:`);
     output.push(
         ...METRICS.map((metric) => {
             const ratio =
@@ -236,7 +247,7 @@ export function printBenchmarkTable(
                 ratio > 100
                     ? chalk.redBright(`${ratio.toFixed(2)}%`)
                     : chalk.green(`${ratio.toFixed(2)}%`)
-            } of FunC gas usage`;
+            } of ${args.implementationName} gas usage`;
         }),
     );
 

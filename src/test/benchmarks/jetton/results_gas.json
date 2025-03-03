@@ -7,7 +7,16 @@
         "burn": "12414",
         "discovery": "6554"
       },
-      "pr": null
+      "pr": "https://github.com/ton-blockchain/token-contract"
+    },
+    {
+      "label": "NotCoin",
+      "gas": {
+        "transfer": "16984",
+        "burn": "12732",
+        "discovery": "6545"
+      },
+      "pr": "https://github.com/OpenBuilders/notcoin-contract"
     },
     {
       "label": "1.5.3",
@@ -259,6 +268,15 @@
         "transfer": "15778",
         "burn": "12541",
         "discovery": "6230"
+      }
+    },
+    {
+      "label": "1.5.3 with more optimizations for JettonMinter + global inlining + basechain address",
+      "pr": "https://github.com/tact-lang/tact/pull/2088",
+      "gas": {
+        "transfer": "15778",
+        "burn": "11773",
+        "discovery": "6207"
       }
     }
   ]

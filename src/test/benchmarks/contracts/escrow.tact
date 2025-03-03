@@ -1,8 +1,13 @@
 import "./messages";
 
-fun calculateJettonWalletAddress(owner: Address, master: Address, code: Cell): Address {
+inline fun calculateJettonWalletAddress(owner: Address, master: Address, code: Cell): Address {
     let initData = JettonWalletData{balance: 0, owner, master, code};
     return contractAddress(StateInit{code: code, data: initData.toCell()});
+}
+
+inline fun calculateJettonBasechainWalletAddress(owner: Address, master: Address, code: Cell): BasechainAddress {
+    let initData = JettonWalletData{balance: 0, owner, master, code};
+    return contractBasechainAddress(StateInit{code: code, data: initData.toCell()});
 }
 
 message(0x9eacde91) UpdateJettonWalletCode {
@@ -29,40 +34,23 @@ struct EscrowData {
     buyerAddress: Address?; // null if not funded, set after funding
 }
 
-contract Escrow {
-    id: Int as uint32;
-    sellerAddress: Address;
-    guarantorAddress: Address;
-    buyerAddress: Address?;
-    dealAmount: Int as coins;
-    guarantorRoyaltyPercent: Int as uint32;
-    isFunded: Bool;
-    assetAddress: Address?;
-    jettonWalletCode: Cell?;
+contract Escrow (
+    id: Int as uint32,
+    sellerAddress: Address,
+    guarantorAddress: Address,
+    buyerAddress: Address?,
+    dealAmount: Int as coins,
+    guarantorRoyaltyPercent: Int as uint32,
+    isFunded: Bool,
+    assetAddress: Address?,
+    jettonWalletCode: Cell?,
+) {
 
     const GUARANTOR_PERCENT_CONST: Int = 100000;
     const GUARANTOR_PERCENT_MAX: Int = 90000;
     const JETTON_TRANSFER_GAS: Int = ton("0.05");
     const TON_TRANSFER_GAS: Int = ton("0.015");
     
-    init(id: Int,
-        sellerAddress: Address,
-        guarantorAddress: Address,
-        dealAmount: Int,
-        guarantorRoyaltyPercent: Int,
-        assetAddress: Address?,
-        jettonWalletCode: Cell?){
-        self.id = id;
-        self.sellerAddress = sellerAddress;
-        self.guarantorAddress = guarantorAddress;
-        self.dealAmount = dealAmount;
-        self.guarantorRoyaltyPercent = guarantorRoyaltyPercent;
-        self.assetAddress = assetAddress;
-        self.jettonWalletCode = jettonWalletCode;
-        self.isFunded = false;
-        self.buyerAddress = null;
-    }
-
     fun sendJettons(receiver: Address, amount: Int, mode: Int) {
         let escrowJettonWalletAddress = calculateJettonWalletAddress(myAddress(),
             self.assetAddress!!,
@@ -86,7 +74,7 @@ contract Escrow {
     }
 
     receive(_: Funding) {
-        throwUnless(400, !self.isFunded);
+        throwIf(400, self.isFunded);
         throwUnless(400, self.assetAddress == null);
         
         let ctx: Context = context();
@@ -97,7 +85,8 @@ contract Escrow {
     }
 
     receive(msg: UpdateJettonWalletCode) {
-        throwUnless(400, !self.isFunded && self.assetAddress != null);
+        throwIf(400, self.isFunded);
+        throwIf(400, self.assetAddress == null);
         throwUnless(403, self.sellerAddress == sender());
 
         self.jettonWalletCode = msg.newJettonWalletCode;
@@ -107,11 +96,14 @@ contract Escrow {
         throwUnless(400, !self.isFunded);
         throwUnless(400, self.assetAddress != null);
 
-        let escrowJettonWalletAddress = calculateJettonWalletAddress(myAddress(),
+        let escrowJettonWalletAddress = calculateJettonBasechainWalletAddress(myAddress(),
             self.assetAddress!!,
             self.jettonWalletCode!!
         );
-        throwUnless(402, sender() == escrowJettonWalletAddress);
+        let sender = parseStdAddress(sender().asSlice());
+
+        throwUnless(74, sender.workchain == 0 && sender.address == escrowJettonWalletAddress.hash!!);
+
         throwUnless(401, self.dealAmount == msg.amount);
 
         self.isFunded = true;

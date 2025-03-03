@@ -325,7 +325,6 @@ export function writeParser(
     forceInline: boolean,
     opcode: "with-opcode" | "no-opcode",
     allocation: StorageAllocation,
-    origin: ItemOrigin,
     ctx: WriterContext,
 ) {
     const isSmall = allocation.ops.length <= SMALL_STRUCT_MAX_FIELDS;
@@ -344,6 +343,7 @@ export function writeParser(
         ctx.body(() => {
             // Check prefix
             if (allocation.header && opcode === "with-opcode") {
+                ctx.flag("impure");
                 ctx.append(
                     `throw_unless(${contractErrors.invalidPrefix.id}, sc_0~load_uint(${allocation.header.bits}) == ${allocation.header.value});`,
                 );

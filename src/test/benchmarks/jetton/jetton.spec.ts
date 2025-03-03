@@ -61,6 +61,28 @@ const loadFunCJettonsBoc = () => {
     return { bocMinter, bocWallet };
 };
 
+const loadNotcoinJettonsBoc = () => {
+    const bocMinter = readFileSync(
+        posixNormalize(
+            resolve(
+                __dirname,
+                "../contracts/func/output/jetton-minter-not.boc",
+            ),
+        ),
+    );
+
+    const bocWallet = readFileSync(
+        posixNormalize(
+            resolve(
+                __dirname,
+                "../contracts/func/output/jetton-wallet-not.boc",
+            ),
+        ),
+    );
+
+    return { bocMinter, bocWallet };
+};
+
 const deployFuncJettonMinter = async (
     via: SandboxContract<TreasuryContract>,
 ) => {
@@ -86,6 +108,40 @@ const deployFuncJettonMinter = async (
             value: toNano("0.1"),
             init,
             body: beginCell().endCell(),
+            sendMode: SendMode.PAY_GAS_SEPARATELY,
+        }),
+    };
+};
+
+const deployNotcoinJettonMinter = async (
+    via: SandboxContract<TreasuryContract>,
+) => {
+    const jettonData = loadNotcoinJettonsBoc();
+    const minterCell = Cell.fromBoc(jettonData.bocMinter)[0]!;
+    const walletCell = Cell.fromBoc(jettonData.bocWallet)[0]!;
+
+    const stateInitMinter = beginCell()
+        .storeCoins(0)
+        .storeAddress(via.address)
+        .storeAddress(null)
+        .storeRef(walletCell)
+        .storeRef(beginCell().storeUint(1, 1).endCell()) // as salt
+        .endCell();
+
+    const init = { code: minterCell, data: stateInitMinter };
+
+    const minterAddress = contractAddress(0, init);
+
+    return {
+        minterNotcoinAddress: minterAddress,
+        result: await via.send({
+            to: minterAddress,
+            value: toNano("0.1"),
+            init,
+            body: beginCell()
+                .storeUint(0xd372158c, 32)
+                .storeUint(0, 64)
+                .endCell(),
             sendMode: SendMode.PAY_GAS_SEPARATELY,
         }),
     };
@@ -239,6 +295,7 @@ describe("Jetton", () => {
     let blockchain: Blockchain;
     let jettonMinter: SandboxContract<JettonMinter>;
     let jettonMinterFuncAddress: Address;
+    let jettonMinterNotcoinAddress: Address;
     let deployer: SandboxContract<TreasuryContract>;
     let step: Step;
 
@@ -253,6 +310,7 @@ describe("Jetton", () => {
 
     const expectedResult = results.at(-1)!;
     const funcResult = results.at(0)!;
+    const notcoinResult = results.at(1)!;
 
     beforeAll(async () => {
         blockchain = await Blockchain.create();
@@ -264,6 +322,7 @@ describe("Jetton", () => {
         deployer = await blockchain.treasury("deployer");
         notDeployer = await blockchain.treasury("notDeployer");
 
+        // deploy func
         const { result: deployFuncJettonMinterResult, minterAddress } =
             await deployFuncJettonMinter(deployer);
 
@@ -275,6 +334,21 @@ describe("Jetton", () => {
         });
 
         jettonMinterFuncAddress = minterAddress;
+
+        // deploy notcoin
+        const {
+            result: deployNotcoinJettonMinterResult,
+            minterNotcoinAddress,
+        } = await deployNotcoinJettonMinter(deployer);
+
+        expect(deployNotcoinJettonMinterResult.transactions).toHaveTransaction({
+            from: deployer.address,
+            to: minterNotcoinAddress,
+            success: true,
+            deploy: true,
+        });
+
+        jettonMinterNotcoinAddress = minterNotcoinAddress;
 
         defaultContent = beginCell().endCell();
         const msg: JettonUpdateContent = {
@@ -301,6 +375,15 @@ describe("Jetton", () => {
     });
 
     afterAll(() => {
+        printBenchmarkTable(results, {
+            implementationName: "FunC",
+            isFullTable: true,
+        });
+
+        printBenchmarkTable(results.slice(1), {
+            implementationName: "NotCoin",
+            isFullTable: false,
+        });
         printBenchmarkTable(results, codeSizeResults);
     });
 
@@ -365,9 +448,15 @@ describe("Jetton", () => {
 
         const transferGasUsedFunC = await runMintTest(jettonMinterFuncAddress);
 
+        const transferGasUsedNotcoin = await runMintTest(
+            jettonMinterNotcoinAddress,
+        );
+
         expect(transferGasUsedTact).toEqual(expectedResult.gas["transfer"]);
 
         expect(transferGasUsedFunC).toEqual(funcResult.gas["transfer"]);
+
+        expect(transferGasUsedNotcoin).toEqual(notcoinResult.gas["transfer"]);
     });
 
     it("burn", async () => {
@@ -404,9 +493,15 @@ describe("Jetton", () => {
 
         const burnGasUsedFunC = await runBurnTest(jettonMinterFuncAddress);
 
+        const burnGasUsedNotcoin = await runBurnTest(
+            jettonMinterNotcoinAddress,
+        );
+
         expect(burnGasUsedTact).toEqual(expectedResult.gas["burn"]);
 
         expect(burnGasUsedFunC).toEqual(funcResult.gas["burn"]);
+
+        expect(burnGasUsedNotcoin).toEqual(notcoinResult.gas["burn"]);
     });
 
     it("discovery", async () => {
@@ -438,9 +533,15 @@ describe("Jetton", () => {
             jettonMinterFuncAddress,
         );
 
+        const discoveryGasUsedNotcoin = await runDiscoveryTest(
+            jettonMinterNotcoinAddress,
+        );
+
         expect(discoveryGasUsedTact).toEqual(expectedResult.gas["discovery"]);
 
         expect(discoveryGasUsedFunC).toEqual(funcResult.gas["discovery"]);
+
+        expect(discoveryGasUsedNotcoin).toEqual(notcoinResult.gas["discovery"]);
     });
 
     it("minter cells", async () => {

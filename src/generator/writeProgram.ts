@@ -25,7 +25,7 @@ import { emit } from "./emitter/emit";
 import {
     writeInit,
     writeMainContract,
-    writeStorageOps,
+    writeContractStorageOps,
 } from "./writers/writeContract";
 import { funcInitIdOf } from "./writers/id";
 import { idToHex } from "../utils/idToHex";
@@ -261,8 +261,8 @@ export async function writeProgram(
     });
 
     return {
-        entrypoint: basename + ".code.fc",
-        files: [{ name: basename + ".code.fc", code }],
+        entrypoint: `${basename}.fc`,
+        files: [{ name: `${basename}.fc`, code }],
         constants,
         abi,
     };
@@ -350,7 +350,6 @@ function writeAll(
                 t.kind === "contract",
                 "with-opcode",
                 allocation,
-                t.origin,
                 wCtx,
             );
             writeParser(
@@ -358,7 +357,6 @@ function writeAll(
                 t.kind === "contract",
                 "no-opcode",
                 allocation,
-                t.origin,
                 wCtx,
             );
             writeOptionalParser(t.name, t.origin, wCtx);
@@ -395,7 +393,6 @@ function writeAll(
                 false,
                 "with-opcode",
                 allocation,
-                t.origin,
                 wCtx,
             );
         }
@@ -404,7 +401,7 @@ function writeAll(
     // Storage Functions
     for (const t of sortedTypes) {
         if (t.kind === "contract") {
-            writeStorageOps(t, t.origin, wCtx);
+            writeContractStorageOps(t, wCtx);
         }
     }
 

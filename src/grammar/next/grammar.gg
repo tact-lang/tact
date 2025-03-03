@@ -323,8 +323,8 @@ reservedWord "reserved word" = keyword<(
 
     "fun" / "let" / "return" / "receive" / "native" / "primitive" / "null" /
     "if" / "else" / "while" / "repeat" / "do" / "until" / "try" / "catch" /
-    "foreach" / "as" / "map" / "mutates" / "extends" / "external" / "import"
-    / "with" / "trait" / "initOf" / "override" / "abstract" / "virtual" /
+    "foreach" / "as" / "map" / "mutates" / "extends" / "external" / "import" /
+    "with" / "trait" / "initOf" / "override" / "abstract" / "virtual" /
     "inline" / "const"
 )>;
 

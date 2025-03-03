@@ -11,7 +11,7 @@
       "pr": "https://github.com/tact-lang/tact/pull/1390"
     },
     {
-      "label": "1.5.3",
+      "label": "1.5.4",
       "gas": {
         "fundingTon": "9194",
         "changeCode": "8682",
@@ -21,7 +21,7 @@
       "pr": "https://github.com/tact-lang/tact/pull/1390"
     },
     {
-      "label": "1.5.3 with improved send",
+      "label": "1.5.4 with improved send",
       "gas": {
         "fundingTon": "6376",
         "changeCode": "5500",
@@ -31,7 +31,7 @@
       "pr": "https://github.com/tact-lang/tact/pull/1800"
     },
     {
-      "label": "1.5.3 with no double checking of message opcodes",
+      "label": "1.5.4 with no double checking of message opcodes",
       "gas": {
         "fundingTon": "6414",
         "changeCode": "5373",
@@ -41,7 +41,7 @@
       "pr": "https://github.com/tact-lang/tact/pull/1854"
     },
     {
-      "label": "1.5.3 with inline __tact_load_address",
+      "label": "1.5.4 with inline __tact_load_address",
       "gas": {
         "fundingTon": "6342",
         "changeCode": "5301",
@@ -51,7 +51,7 @@
       "pr": "https://github.com/tact-lang/tact/pull/1895"
     },
     {
-      "label": "1.5.3 with optimized routing",
+      "label": "1.5.4 with optimized routing",
       "gas": {
         "fundingTon": "6187",
         "changeCode": "5271",
@@ -61,7 +61,7 @@
       "pr": "https://github.com/tact-lang/tact/pull/1841"
     },
     {
-      "label": "1.5.3 with optimized flag handling",
+      "label": "1.5.4 with optimized flag handling",
       "gas": {
         "fundingTon": "6167",
         "changeCode": "5251",
@@ -71,7 +71,7 @@
       "pr": "https://github.com/tact-lang/tact/pull/1934"
     },
     {
-      "label": "1.5.3 with inlined router",
+      "label": "1.5.4 with inlined router",
       "gas": {
         "fundingTon": "6236",
         "changeCode": "5474",
@@ -81,7 +81,7 @@
       "pr": "https://github.com/tact-lang/tact/pull/1968"
     },
     {
-      "label": "1.5.3 with binary receivers",
+      "label": "1.5.4 with binary receivers",
       "pr": "https://github.com/tact-lang/tact/pull/1981",
       "gas": {
         "fundingTon": "5016",
@@ -91,7 +91,7 @@
       }
     },
     {
-      "label": "1.5.3 with message() instead of send()",
+      "label": "1.5.4 with message() instead of send()",
       "pr": "https://github.com/tact-lang/tact/pull/1999",
       "gas": {
         "fundingTon": "5016",
@@ -101,7 +101,7 @@
       }
     },
     {
-      "label": "1.5.3 with fixed routing",
+      "label": "1.5.4 with fixed routing",
       "pr": "https://github.com/tact-lang/tact/pull/1949",
       "gas": {
         "fundingTon": "4988",
@@ -111,7 +111,7 @@
       }
     },
     {
-      "label": "1.5.3 with custom selector",
+      "label": "1.5.4 with custom selector",
       "pr": "https://github.com/tact-lang/tact/pull/2038",
       "gas": {
         "fundingTon": "4918",
@@ -121,8 +121,8 @@
       }
     },
     {
-      "label": "1.5.3 with optimized contract storage saving",
-      "pr": "https://github.com/tact-lang/tact/pull/TODO",
+      "label": "1.5.4 with optimized contract storage saving",
+      "pr": "https://github.com/tact-lang/tact/pull/2067",
       "gas": {
         "fundingTon": "4917",
         "changeCode": "5123",
@@ -131,13 +131,43 @@
       }
     },
     {
-      "label": "1.5.3 with optimized calculations",
+      "label": "1.5.4 with optimized calculations",
       "pr": "https://github.com/tact-lang/tact/pull/2058",
       "gas": {
         "fundingTon": "4917",
         "changeCode": "5041",
         "approveTon": "7010",
         "cancelTon": "4829"
+      }
+    },
+    {
+      "label": "1.5.4 with contract parameters (no lazy init)",
+      "pr": "https://github.com/tact-lang/tact/pull/2077",
+      "gas": {
+        "fundingTon": "4768",
+        "changeCode": "4892",
+        "approveTon": "6968",
+        "cancelTon": "4997"
+      }
+    },
+    {
+      "label": "1.5.4 with global inlining + basechain address + small optimizations",
+      "pr": "https://github.com/tact-lang/tact/pull/2088",
+      "gas": {
+        "fundingTon": "4750",
+        "changeCode": "4831",
+        "approveTon": "6940",
+        "cancelTon": "4869"
+      }
+    },
+    {
+      "label": "1.6.0 with contract load data inlined",
+      "pr": "https://github.com/tact-lang/tact/pull/2088",
+      "gas": {
+        "fundingTon": "4591",
+        "changeCode": "4700",
+        "approveTon": "6809",
+        "cancelTon": "4838"
       }
     }
   ]

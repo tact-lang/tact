@@ -4,8 +4,8 @@
 
 <img src="https://raw.githubusercontent.com/tact-lang/tact-docs/main/public/banner.jpeg" alt="" />
 
-A next-gen smart contract programming language for TON Blockchain, focused on efficiency and ease of development.
-Tact is a good fit for complex smart contracts, quick onboarding and rapid prototyping.
+A next-gen smart contract programming language for TON Blockchain focused on efficiency and ease of development.
+Tact is a good fit for complex smart contracts, quick onboarding, and rapid prototyping.
 
 Developed by [TON Studio](https://tonstudio.io), powered by the community.
 
@@ -32,10 +32,10 @@ Developed by [TON Studio](https://tonstudio.io), powered by the community.
 The most prominent and distinctive features of Tact are:
 
 - Familiar and user-friendly TypeScript-like syntax.
-- Strong static type system with built-in [Structs], [Messages] and [maps], among others.
+- Strong static type system with built-in [Structs], [Messages], and [maps], among others.
 - First-class [maps] support, with many methods and a convenient [`foreach` statement][foreach] for traversing.
 - Automatic (de)serialization of incoming messages and data structures.
-- Automatic routing of [internal, external and bounced messages][recvfun].
+- Automatic routing of [internal, external, and bounced messages][recvfun].
 - Automatic handling of message types, including [binary, text, and fallback slices][recv].
 - No boilerplate functions for [sending messages] and deploying child contracts.
 - Reusable behaviors through [traits].
@@ -105,7 +105,7 @@ This will make the `tact` compiler available on your PATH, as well as a convenie
 
 ###### Extensions and plugins
 
-- [VS Code extension](https://marketplace.visualstudio.com/items?itemName=tonstudio.vscode-tact) - Powerful and feature-rich extension for Visual Studio Code (VSCode) and VSCode-based editors like VSCodium, Cursor, Windsurf and others.
+- [VS Code extension](https://marketplace.visualstudio.com/items?itemName=tonstudio.vscode-tact) - Powerful and feature-rich extension for Visual Studio Code (VSCode) and VSCode-based editors like VSCodium, Cursor, Windsurf, and others.
   - Get it on the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=tonstudio.vscode-tact).
   - Get it on the [Open VSX Registry](https://open-vsx.org/extension/tonstudio/vscode-tact).
   - Or install from the [`.vsix` files in nightly releases](https://github.com/tact-lang/tact-language-server/releases).
@@ -121,7 +121,7 @@ This will make the `tact` compiler available on your PATH, as well as a convenie
 
 ### Getting started
 
-For a quick start, read the ["Let's start!"](https://docs.tact-lang.org/#start) mini-guide in the Tact documentation, which uses the [Blueprint](https://github.com/ton-community/blueprint) development environment for writing, testing and deploying smart contracts on TON Blockchain.
+For a quick start, read the ["Let's start!"](https://docs.tact-lang.org/#start) mini-guide in the Tact documentation, which uses the [Blueprint](https://github.com/ton-community/blueprint) development environment for writing, testing, and deploying smart contracts on TON Blockchain.
 
 If you want more manual control, use [tact-template](https://github.com/tact-lang/tact-template) — it's a ready-to-use template with the development environment set up, including the Tact compiler with TypeScript + Jest, a local TON emulator, AI-based editor support, and examples of how to run tests.
 

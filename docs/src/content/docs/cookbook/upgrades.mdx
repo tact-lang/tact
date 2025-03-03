@@ -111,7 +111,7 @@ message Upgrade {
     /// Defaults to `null`, which keeps the previous data.
     data: Cell? = null;
 
-    /// Delay in nanoseconds before upgrade can be confirmed.
+    /// Delay in seconds before upgrade can be confirmed.
     /// Defaults to zero, which means the upgrade can be confirmed immediately.
     /// Unused in `Upgradable` trait.
     timeout: Int = 0;
@@ -135,17 +135,17 @@ trait DelayedUpgradable with Upgradable {
     /// Meant to be private and only accessible through the relevant getter.
     _version: Int as uint32;
 
-    /// Timestamp that is used to enforce a timeout period
-    /// before the confirmation.
+    /// Timestamp in seconds of the last `Upgrade` message arrival.
+    /// Used to enforce a timeout period before the confirmation.
     initiatedAt: Int;
 
     /// Contains new code, new data and a timeout period.
     upgradeInfo: Upgrade;
 
-    /// Confirms and executes pending upgrade after timeout period.
-    /// Can only be called after `upgradeInfo.timeout` nanoseconds have passed.
+    /// Confirms and executes a pending upgrade only after `upgradeInfo.timeout`
+    /// seconds have passed since the last `_initiatedAt`.
     receive(msg: Confirm) {
-        require(now() > self.initiatedAt + self.upgradeInfo.timeout, "DelayedUpgradable: Cannot confirm upgrade before timeout");
+        require(now() >= self.initiatedAt + self.upgradeInfo.timeout, "DelayedUpgradable: Cannot confirm upgrade before timeout");
 
         if (self.upgradeInfo.code != null) {
             // Change of code will be applied at the end of this transaction
@@ -167,6 +167,7 @@ trait DelayedUpgradable with Upgradable {
     /// saves details for delayed execution.
     override inline fun upgrade(_: Context, msg: Upgrade) {
         self.upgradeInfo = msg;
+        self.initiatedAt = now();
     }
 }
 
