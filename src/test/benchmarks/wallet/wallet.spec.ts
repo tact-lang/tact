@@ -7,7 +7,7 @@ import { SendMode } from "@ton/core";
 import { beginCell, Dictionary, toNano } from "@ton/core";
 import "@ton/test-utils";
 
-import { getUsedGas, generateResults, printBenchmarkTable } from "../util";
+import { getUsedGas, generateResults } from "../util";
 import benchmarkResults from "./results.json";
 import type { KeyPair } from "@ton/crypto";
 import { getSecureRandomBytes, keyPairFromSeed, sign } from "@ton/crypto";
@@ -205,10 +205,10 @@ describe("Wallet Gas Tests", () => {
     });
 
     afterAll(() => {
-        printBenchmarkTable(results, {
-            implementationName: "FunC",
-            isFullTable: true,
-        });
+        // printBenchmarkTable(results, {
+        //     implementationName: "FunC",
+        //     isFullTable: true,
+        // });
     });
 
     it("check correctness of deploy", async () => {
