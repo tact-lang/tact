@@ -42,9 +42,9 @@ message FactoryDeploy {
 
 ### Deployable
 
-Simplest trait `Deployable{:tact}` that provides a handy unified mechanism for deployments by implementing a simple receiver for the [Deploy](#deploy) message.
+A simple trait `Deployable{:tact}` that provides a convenient unified mechanism for deployments by implementing a simple receiver for the [Deploy](#deploy) message.
 
-All contracts are deployed by sending them a message. While any message can be used for this purpose, best practice is to use the special [Deploy](#deploy) message.
+All contracts are deployed by sending them a message. While any message can be used for this purpose, the best practice is to use the special [Deploy](#deploy) message.
 
 This message has a single field, `queryId`, provided by the deployer (usually set to zero). If the deployment succeeds, the contract will reply with a [DeployOk](#deployok) message and echo the same `queryId` in the response.
 
@@ -64,18 +64,18 @@ Usage example:
 import "@stdlib/deploy";
 
 contract ExampleContract with Deployable {
-    // Now, this contract has a receiver for Deploy message
+    // Now, this contract has a receiver for the Deploy message
 }
 ```
 
 ### FactoryDeployable
 
-Trait `FactoryDeployable{:tact}` provides a handy unified mechanism for chained deployments.
+The trait `FactoryDeployable{:tact}` provides a convenient unified mechanism for chained deployments.
 
 Source code:
 
 ```tact
-trait FactoryDeployable  {
+trait FactoryDeployable {
     receive(deploy: FactoryDeploy) {
         self.forward(deploy.cashback, DeployOk{queryId: deploy.queryId}.toCell(), false, null);
     }
@@ -88,7 +88,7 @@ Usage example:
 import "@stdlib/deploy";
 
 contract ExampleContract with FactoryDeployable {
-    // Now, this contract has a receiver for FactoryDeploy message
+    // Now, this contract has a receiver for the FactoryDeploy message
 }
 ```
 
