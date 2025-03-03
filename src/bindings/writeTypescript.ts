@@ -250,7 +250,7 @@ export function writeTypescript(
     w.inIndent(() => {
         if (abi.types) {
             for (const t of abi.types) {
-                if (typeof t.header === 'number') {
+                if (typeof t.header === "number") {
                     w.append(`${JSON.stringify(t.name)}: ${t.header},`);
                 }
             }
@@ -340,9 +340,7 @@ export function writeTypescript(
         w.append(
             `public static readonly errors = ${abi.name}_errors_backward;`,
         );
-        w.append(
-            `public static readonly opcodes = ${abi.name}_opcodes;`,
-        );
+        w.append(`public static readonly opcodes = ${abi.name}_opcodes;`);
 
         if (constants.length > 0) {
             w.append();
