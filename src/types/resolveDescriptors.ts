@@ -25,7 +25,6 @@ import { getRawAST } from "../context/store";
 import { cloneNode } from "../ast/clone";
 import { crc16 } from "../utils/crc16";
 import { isSubsetOf } from "../utils/isSubsetOf";
-import { evalConstantExpression } from "../optimizer/constEval";
 import {
     intMapKeyFormats,
     intMapValFormats,
@@ -37,8 +36,6 @@ import { GlobalFunctions } from "../abi/global";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { addVariable, emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
-import type { AstUtil } from "../ast/util";
-import { getAstUtil } from "../ast/util";
 import type { ItemOrigin } from "../imports/source";
 import { isUndefined } from "../utils/array";
 import type { Effect } from "./effects";
@@ -275,7 +272,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     const staticFunctions: Map<string, FunctionDescription> = new Map();
     const staticConstants: Map<string, ConstantDescription> = new Map();
     const ast = getRawAST(ctx);
-    const util = getAstUtil(Ast);
 
     //
     // Register types
@@ -2206,7 +2202,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     }
 
     // A pass that initializes constants and default field values
-    ctx = initializeConstantsAndDefaultContractAndStructFields(ctx, util);
+    ctx = checkConstantsAndDefaultContractAndStructFields(ctx);
 
     // detect self-referencing or mutually-recursive types
     checkRecursiveTypes(ctx);
@@ -2362,23 +2358,6 @@ function checkInitializerType(
     return ctx;
 }
 
-function initializeConstants(
-    constants: ConstantDescription[],
-    ctx: CompilerContext,
-    util: AstUtil,
-): CompilerContext {
-    for (const constant of constants) {
-        if (constant.ast.kind === "constant_def") {
-            constant.value ??= evalConstantExpression(
-                constant.ast.initializer,
-                ctx,
-                util,
-            );
-        }
-    }
-    return ctx;
-}
-
 function checkConstants(
     constants: ConstantDescription[],
     ctx: CompilerContext,
@@ -2399,9 +2378,8 @@ function checkConstants(
     return ctx;
 }
 
-function initializeConstantsAndDefaultContractAndStructFields(
+function checkConstantsAndDefaultContractAndStructFields(
     ctx: CompilerContext,
-    util: AstUtil,
 ): CompilerContext {
     const staticConstants = getAllStaticConstants(ctx);
 
@@ -2438,35 +2416,13 @@ function initializeConstantsAndDefaultContractAndStructFields(
                                 ctx,
                                 selfTypeRef,
                             );
-                            field.default = evalConstantExpression(
-                                field.ast.initializer,
-                                ctx,
-                                util,
-                            );
-                        } else {
-                            // if a field has optional type and it is missing an explicit initializer
-                            // we consider it to be initialized with the null value
-
-                            field.default =
-                                field.type.kind === "ref" && field.type.optional
-                                    ? util.makeNullLiteral(field.ast.loc)
-                                    : undefined;
                         }
                     }
-
-                    // here we actually initialize constants
-                    // see more detail below
-                    ctx = initializeConstants(aggregateTy.constants, ctx, util);
                 }
                 break;
             }
         }
     }
-
-    // and here we initialize all uninitialized constants,
-    // the constant may already be initialized since we call initialization recursively
-    // if one constant depends on another
-    ctx = initializeConstants(staticConstants, ctx, util);
 
     return ctx;
 }
