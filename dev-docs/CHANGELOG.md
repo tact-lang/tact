@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Standard Library
+
+- Add `StateInit.hasSameBasechainAddress` function: PR [#2187](https://github.com/tact-lang/tact/pull/2187)
+
 ### Code generation
 
 - Contract load function is inlined: PR [#2101](https://github.com/tact-lang/tact/pull/2101)
