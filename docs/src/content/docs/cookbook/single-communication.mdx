@@ -1,14 +1,14 @@
 ---
 title: Single-contract communication
-description: "Common examples of communication of a single deployed contract with other contracts on blockchain"
+description: "Common examples of communication between a single deployed contract and other contracts on blockchain"
 prev:
   link: /cookbook
   label: Cookbook overview
 ---
 
-This page lists examples of communication of a single deployed contract with other contracts on blockchain.
+This page lists examples of communication between a single deployed contract and other contracts on blockchain.
 
-For examples of communication between multiple deployed contracts see: [Multi-contract communication](/cookbook/multi-communication).
+For examples of communication between multiple deployed contracts, see: [Multi-contract communication](/cookbook/multi-communication).
 
 ## How to make a basic reply
 
@@ -30,7 +30,7 @@ contract Example with Deployable {
         send(SendParameters{
             bounce: true, // default
             to: sender(), // or another destination address
-            value: ton("0.01"), // attached amount of Tons to send
+            value: ton("0.01"), // attached amount of TON to send
             body: "Hello from Tact!".asComment(), // comment (optional)
         });
     }
@@ -39,7 +39,7 @@ contract Example with Deployable {
 
 ## How to send a message with the entire balance
 
-If we need to send the whole balance of the smart contract, then we should use the `SendRemainingBalance{:tact}` send mode. Alternatively, we can use `mode: 128{:tact}`, which has the same meaning.
+If we need to send the whole balance of the smart contract, we should use the `SendRemainingBalance{:tact}` send mode. Alternatively, we can use `mode: 128{:tact}`, which has the same meaning.
 
 ```tact
 import "@stdlib/deploy";
@@ -58,7 +58,7 @@ contract Example with Deployable {
 
 ## How to send a message with the remaining value
 
-If we want to make a reply to the same sender, we can use the mode `SendRemainingValue{:tact}` (i.e. `mode: 64{:tact}`), which carries all the remaining value of the inbound message in addition to the value initially indicated in the new message.
+If we want to send a reply to the same sender, we can use the mode `SendRemainingValue{:tact}` (i.e. `mode: 64{:tact}`), which carries all the remaining value of the inbound message in addition to the value initially indicated in the new message.
 
 ```tact
 import "@stdlib/deploy";
@@ -75,7 +75,7 @@ contract Example with Deployable {
 }
 ```
 
-It's often useful to add the `SendIgnoreErrors{:tact}` flag too, in order to ignore any errors arising while processing this message during the action phaseL
+It's often useful to add the `SendIgnoreErrors{:tact}` flag too, in order to ignore any errors arising while processing this message during the action phase:
 
 ```tact
 import "@stdlib/deploy";
@@ -92,11 +92,11 @@ contract Example with Deployable {
 }
 ```
 
-The latter example is identical to using a [`.reply(){:tact}` function](#how-to-make-a-basic-reply).
+The latter example is identical to using the [`.reply(){:tact}` function](#how-to-make-a-basic-reply).
 
 ## How to send a message with a long text comment
 
-If we need to send a message with a lengthy text comment, we should create a [`String{:tact}`](/book/types#primitive-types) that consists of more than $127$ characters. To do this, we can utilize the [`StringBuilder{:tact}`](/book/types#primitive-types) primitive type and its methods called `beginComment(){:tact}` and `append(){:tact}`. Prior to sending, we should convert this string into a cell using the `toCell(){:tact}` method.
+If we need to send a message with a lengthy text comment, we should create a [`String{:tact}`](/book/types#primitive-types) consisting of more than 127 characters. To do this, we can utilize the [`StringBuilder{:tact}`](/book/types#primitive-types) primitive type and its methods `beginComment(){:tact}` and `append(){:tact}`. Prior to sending, we should convert this string into a cell using the `toCell(){:tact}` method.
 
 ```tact
 import "@stdlib/deploy";
@@ -128,6 +128,6 @@ contract Example with Deployable {
 
 :::tip[Hey there!]
 
-  Didn't find your favorite example of a single-contract communication? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
+  Didn't find your favorite example of single-contract communication? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
 
 :::

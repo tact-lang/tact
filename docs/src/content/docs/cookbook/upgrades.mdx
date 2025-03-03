@@ -1,13 +1,13 @@
 ---
 title: Code and data upgrades
-description: "This page lists examples of traits that can be used to allow upgrading the code or data of your smart contracts"
+description: "This page lists examples of traits that can be used to allow upgrading the code or data of your smart contracts."
 ---
 
 Traits and helper functions that can be used to upgrade your smart contract's code, data, or both.
 
 :::caution
 
-  Information is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the TON Studio and Tact compiler authors be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the information or the use or other dealings in the information.
+  Information is provided "as is," without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall TON Studio and the Tact compiler authors be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the information or the use or other dealings in the information.
 
 :::
 
@@ -27,7 +27,7 @@ message Upgrade {
     data: Cell? = null;
 }
 
-/// Implements basic upgrade mechanism with owner validation.
+/// Implements a basic upgrade mechanism with owner validation.
 trait Upgradable with Ownable {
     /// Contract owner address that can perform upgrades.
     owner: Address;
@@ -36,7 +36,7 @@ trait Upgradable with Ownable {
     /// Meant to be private and only accessible through the relevant getter.
     _version: Int as uint32;
 
-    /// Checks the sender, performs an upgrade and increments the version.
+    /// Checks the sender, performs an upgrade, and increments the version.
     receive(msg: Upgrade) {
         let ctx = context();
         self.validateUpgrade(ctx, msg);
@@ -64,7 +64,7 @@ trait Upgradable with Ownable {
             setData(msg.data!!);
 
             // By the end of every transaction,
-            // Tact compiler automatically adds a call to setData() for your convenience.
+            // the Tact compiler automatically adds a call to setData() for your convenience.
             // However, we've already set the data ourselves,
             // so let's stop the execution now to prevent a secondary call to setData().
             throw(0);
@@ -82,7 +82,7 @@ trait Upgradable with Ownable {
     }
 }
 
-/// Change of code is be applied by the end of the current transaction.
+/// Change of code will be applied by the end of the current transaction.
 asm fun setCode(code: Cell) { SETCODE }
 
 /// Change of data is immediate.
@@ -91,17 +91,17 @@ asm fun setData(data: Cell) { c4 POP }
 
 ## Time-locked upgrade
 
-This upgrade is done in two steps by sending two messages:
+This upgrade is performed in two steps by sending two messages:
 
-1. `Upgrade{:tact}` message specifying a timeout before the upgrade can be made.
-2. `Confirm{:tact}` message, after which the last received `Upgrade{:tact}` is applied.
+1. An `Upgrade{:tact}` message specifying a timeout before the upgrade can be completed.
+2. A `Confirm{:tact}` message, after which the last received `Upgrade{:tact}` is applied.
 
-If the second message is sent before the timeout expires, the contract will throw an error and it won't be upgraded.
+If the second message is sent before the timeout expires, the contract will throw an error and will not be upgraded.
 
 ```tact
 import "@stdlib/ownable";
 
-/// Message for upgrading contract code and data with some timeout.
+/// Message for upgrading contract code and data with a timeout.
 message Upgrade {
     /// New code of the contract.
     /// Defaults to `null`, which keeps the previous code.
@@ -122,11 +122,11 @@ message Upgrade {
 /// Can only be processed by contracts that implement the `DelayedUpgradable` trait.
 message Confirm {}
 
-/// Extended version of the `Upgradable` that adds a delay mechanism.
+/// Extended version of `Upgradable` that adds a delay mechanism.
 ///
-/// Upgrade process happens in two steps:
+/// The upgrade process happens in two steps:
 /// 1. Owner initiates an upgrade by sending the `Upgrade` message.
-/// 2. After some timeout period owner confirms upgrade with the `Confirm` message.
+/// 2. After a timeout period, the owner confirms the upgrade by sending the `Confirm` message.
 trait DelayedUpgradable with Upgradable {
     /// Contract owner address that can perform upgrades.
     owner: Address;
@@ -139,7 +139,7 @@ trait DelayedUpgradable with Upgradable {
     /// Used to enforce a timeout period before the confirmation.
     initiatedAt: Int;
 
-    /// Contains new code, new data and a timeout period.
+    /// Contains new code, new data, and a timeout period.
     upgradeInfo: Upgrade;
 
     /// Confirms and executes a pending upgrade only after `upgradeInfo.timeout`
@@ -156,9 +156,9 @@ trait DelayedUpgradable with Upgradable {
             setData(self.upgradeInfo.data!!);
 
             // By the end of every transaction,
-            // Tact compiler automatically adds a call to setData() for your convenience.
-            // However, we've already set the data ourselves,
-            // so let's stop the execution now to prevent a secondary call to setData().
+            // the Tact compiler automatically adds a call to setData() for your convenience.
+            // However, we have already set the data ourselves,
+            // so let us stop the execution now to prevent a secondary call to setData().
             throw(0);
         }
     }
