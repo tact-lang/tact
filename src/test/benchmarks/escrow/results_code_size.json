@@ -23,6 +23,14 @@
         "cells": "24",
         "bits": "11052"
       }
+    },
+    {
+      "label": "1.6.0 with contract load data inlined",
+      "pr": "https://github.com/tact-lang/tact/pull/2088",
+      "size": {
+        "cells": "20",
+        "bits": "12447"
+      }
     }
   ]
 }

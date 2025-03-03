@@ -180,10 +180,7 @@ export function printBenchmarkTable(
             border: ["gray"],
         },
     });
-    const changes = calculateChanges(benchmarkResults, METRICS, "gas");
-    benchmarkResults
-
-    const changes = calculateChanges(tableResults, METRICS);
+    const changes = calculateChanges(tableResults, METRICS, "gas");
 
     tableResults
 

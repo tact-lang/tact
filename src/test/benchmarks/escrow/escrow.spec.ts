@@ -240,8 +240,7 @@ describe("Escrow Gas Tests", () => {
     });
 
     afterAll(() => {
-        printBenchmarkTable(results, codeSizeResults);
-        printBenchmarkTable(results, {
+        printBenchmarkTable(codeSizeResults, results, {
             implementationName: "FunC",
             isFullTable: true,
         });
