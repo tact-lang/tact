@@ -4,6 +4,7 @@ import type { CompilerContext } from "../context/context";
 import { getAllTypes, getType } from "./resolveDescriptors";
 import { idTextErr, throwInternalCompilerError } from "../error/errors";
 import { getExpType } from "./resolveExpression";
+import { StructFunctions } from "../abi/struct";
 
 export type Effect = "contractStorageRead" | "contractStorageWrite";
 
@@ -362,6 +363,16 @@ function methodEffects(
                 break;
             case "ref": {
                 const selfType = getType(ctx, selfTypeRef.name);
+
+                // Check if this is a struct type and if the method is in StructFunctions
+                if (
+                    selfType.kind === "struct" &&
+                    StructFunctions.has(idText(method))
+                ) {
+                    // For struct built-in functions like toCell(), we only need read access
+                    return new Set<Effect>(["contractStorageRead"]);
+                }
+
                 const methodDescr = selfType.functions.get(idText(method));
                 if (typeof methodDescr === "undefined") {
                     throwInternalCompilerError(
