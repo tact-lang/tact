@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Release contributors
 
 - [Anton Trunov](https://github.com/anton-trunov)
+- [Daniil Sedov](https://github.com/Gusarich)
 
 ## [1.6.0] - 2025-02-28
 
