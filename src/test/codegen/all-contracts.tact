@@ -8,4 +8,5 @@ import "./mutating-method-on-non-lvalues";
 import "./var-scope-global-fun-shadowing-allowed";
 import "./map-uint-bool-get";
 import "./emptyMap-in-equality";
+import "./struct-field-to-cell-in-receiver";
 import "./func.func";

@@ -56,22 +56,22 @@ function getTypeNoSerialization(type: keyValueTypes): string {
 
 const typeGenerators: Record<keyValueTypes, string> = {
     Int: "fc.bigInt",
-    Address: "generateAddressLocal",
+    Address: "_generateAddressLocal",
     Bool: "fc.boolean",
-    Cell: "generateCell",
+    Cell: "_generateCell",
     // "Int as uint8": "",
     // "Int as uint16": "fc.bigInt",
     // "Int as uint32": "fc.bigInt",
-    "Int as uint64": "(() => generateIntBitLength(64, false))",
-    "Int as uint128": "(() => generateIntBitLength(128, false))",
-    "Int as uint256": "(() => generateIntBitLength(256, false))",
+    "Int as uint64": "(() => _generateIntBitLength(64, false))",
+    "Int as uint128": "(() => _generateIntBitLength(128, false))",
+    "Int as uint256": "(() => _generateIntBitLength(256, false))",
     // "Int as int8": "fc.bigInt",
     // "Int as int16": "fc.bigInt",
     // "Int as int32": "fc.bigInt",
-    "Int as int64": "(() => generateIntBitLength(64))",
-    "Int as int128": "(() => generateIntBitLength(128))",
-    "Int as int256": "(() => generateIntBitLength(256))",
-    "Int as int257": "(() => generateIntBitLength(257))",
+    "Int as int64": "(() => _generateIntBitLength(64))",
+    "Int as int128": "(() => _generateIntBitLength(128))",
+    "Int as int256": "(() => _generateIntBitLength(256))",
+    "Int as int257": "(() => _generateIntBitLength(257))",
     // "Int as coins": "fc.bigInt",
 };
 
@@ -114,8 +114,8 @@ const main = async () => {
     // Generate files for all combinations of types
     for (const keyType of keyTypes) {
         for (const valueType of valueTypes) {
-            const keyFilenameSuffix = keyType.replaceAll(" ", "");
-            const valueFilenameSuffix = valueType.replaceAll(" ", "");
+            const keyFilenameSuffix = keyType.replaceAll(" ", "-");
+            const valueFilenameSuffix = valueType.replaceAll(" ", "-");
 
             const outputFileName = `map-property-based-${keyFilenameSuffix}-${valueFilenameSuffix}`;
 

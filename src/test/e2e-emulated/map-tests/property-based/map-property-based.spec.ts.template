@@ -1,4 +1,5 @@
-import fc, { IAsyncPropertyWithHooks } from "fast-check";
+import fc from "fast-check";
+import type { IAsyncPropertyWithHooks } from "fast-check";
 import { beginCell, toNano } from "@ton/core";
 import type { Address, Cell, Dictionary, DictionaryKeyTypes } from "@ton/core";
 import { Blockchain } from "@ton/sandbox";
@@ -10,7 +11,7 @@ import type {
     DeleteKey,
 } from "../contracts/output/map-property-based-<__KEY_FILENAME__>-<__VALUE_FILENAME__>_MapTestContract";
 
-function generateAddress(
+function _generateAddress(
     blockchain: Blockchain,
 ): fc.Arbitrary<Promise<Address>> {
     return fc
@@ -20,13 +21,13 @@ function generateAddress(
         );
 }
 
-function generateCell(): fc.Arbitrary<Cell> {
+function _generateCell(): fc.Arbitrary<Cell> {
     return fc.int8Array().map((buf) => {
         return beginCell().storeBuffer(Buffer.from(buf.buffer)).endCell();
     });
 }
 
-function generateIntBitLength(bitLength: number, signed: boolean = true) {
+function _generateIntBitLength(bitLength: number, signed: boolean = true) {
     const maxUnsigned = (1n << BigInt(bitLength)) - 1n;
 
     if (signed) {
@@ -103,7 +104,7 @@ function withClear<Ts>(
 
 describe("map property based tests, <<__KEY_TS_TYPE__>, <__VALUE_TS_TYPE__>> case", () => {
     let contractWithContext: ContractWithContext;
-    const generateAddressLocal = () => generateAddress(contractWithContext.blockchain);
+    const _generateAddressLocal = () => _generateAddress(contractWithContext.blockchain);
 
     beforeAll(async () => {
         // Initialize the blockchain and contracts
