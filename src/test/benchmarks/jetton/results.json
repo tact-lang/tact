@@ -278,6 +278,15 @@
         "burn": "11773",
         "discovery": "6207"
       }
+    },
+    {
+      "label": "1.6.0 with more efficient address validation",
+      "pr": "https://github.com/tact-lang/tact/pull/2187",
+      "gas": {
+        "transfer": "15020",
+        "burn": "11773",
+        "discovery": "6207"
+      }
     }
   ]
 }
