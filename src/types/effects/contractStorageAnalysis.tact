@@ -220,4 +220,9 @@ contract StorageAnalysis {
     receive("method call on null") {
         null.incIfNotNull();
     }
+
+    receive("toCell on struct field") {
+        // This tests the fix for the internal compiler error when calling toCell() on a struct field
+        let cell = self.pair.toCell();
+    }
 }
