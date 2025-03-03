@@ -97,6 +97,40 @@ struct StateInit {
     data: Cell;
 }
 
+/// Global function. Available since Tact 1.6.1.
+/// 
+/// Efficiently compares if the given address matches the basechain address of the contract.
+/// Returns true if addresses are the same, false otherwise.
+/// 
+/// ```tact
+/// fun example() {
+///     let init = initOf SomeContract();
+///     let sender = sender();
+///     init.hasSameBasechainAddress(sender); // returns true if sender matches contract's basechain address
+/// }
+/// ```
+/// 
+/// This function provides a gas-optimized implementation compared to direct address comparison:
+/// 
+/// ```tact
+/// fun example() {
+///     let init = initOf SomeContract();
+///     let sender = sender();
+///     sender == contractAddress(init); // less efficient approach
+/// }
+/// ```
+/// 
+/// Note that this function works only for basechain addresses!
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-common#contractaddress
+/// 
+inline extends fun hasSameBasechainAddress(self: StateInit, sender: Address): Bool {
+    let baseAddress = contractBasechainAddress(self);
+    let senderAddress = parseStdAddress(sender.asSlice()).address;
+    return baseAddress.hash!! == senderAddress;
+}
+
 /// Global function.
 ///
 /// Computes smart contract's `Address` in the workchain ID 0 (basechain) using the `StateInit` `s` of the contract. Alias to `contractAddressExt(0, s.code, s.data)`.
