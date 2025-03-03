@@ -1,13 +1,13 @@
 ---
 title: Maps
-description: "The composite type map is used as a way to associate keys with corresponding values of various types"
+description: "The composite type map is used as a way to associate keys with corresponding values of various types."
 ---
 
 import { Badge } from '@astrojs/starlight/components';
 
 The [composite type](/book/types#composite-types) `map<K, V>{:tact}` is used as a way to associate keys of type `K{:tact}` with corresponding values of type `V{:tact}`.
 
-For example, `map<Int, Int>{:tact}` uses [`Int{:tact}`][int] type for its keys and values:
+For example, `map<Int, Int>{:tact}` uses the [`Int{:tact}`][int] type for its keys and values:
 
 ```tact
 struct IntToInt {
@@ -15,7 +15,7 @@ struct IntToInt {
 }
 ```
 
-Since maps can use any given [Struct][struct] as their [value types](#allowed-types), the nested maps can be created via helper structures like this:
+Since maps can use any given [Struct][struct] as their [value types](#allowed-types), nested maps can be created via helper structures like this:
 
 ```tact
 import "@stdlib/deploy";
@@ -45,7 +45,7 @@ contract NestedMaps with Deployable {
 }
 ```
 
-Keep in mind that on [TVM][tvm], maps are represented as [`Cell{:tact}`][cell] type, which is very gas-intensive. Also, nested maps will reach the [limits](#limits-and-drawbacks) faster than regular maps.
+Keep in mind that on [TVM][tvm], maps are represented as the [`Cell{:tact}`][cell] type, which is very gas-intensive. Also, nested maps will reach the [limits](#limits-and-drawbacks) faster than regular maps.
 
 ## Allowed types
 
@@ -65,17 +65,17 @@ Allowed value types:
 
 ## Serialization
 
-It's possible to do [integer serialization](/book/integers#common-serialization-types) of map keys, values or both to [preserve space and reduce storage costs](/book/integers#serialization):
+It is possible to perform [integer serialization](/book/integers#common-serialization-types) of map keys, values, or both to [preserve space and reduce storage costs](/book/integers#serialization):
 
 ```tact
 struct SerializedMapInside {
-    // Both keys and values here would be serialized as 8-bit unsigned integers,
-    // thus preserving the space and reducing storage costs:
+    // Both keys and values here are serialized as 8-bit unsigned integers,
+    // thus preserving space and reducing storage costs:
     countersButCompact: map<Int as uint8, Int as uint8>;
 }
 ```
 
-Since map keys can only be of fixed-width, [variable integer types](/book/integers#serialization-varint) are not allowed for them. Instead, use [fixed-width serialization formats](/book/integers#serialization-fixed).
+Since map keys can only be of fixed width, [variable integer types](/book/integers#serialization-varint) are not allowed for them. Instead, use [fixed-width serialization formats](/book/integers#serialization-fixed).
 
 However, map values of type [`Int{:tact}`][int] can have either [fixed](/book/integers#serialization-fixed) or [variable](/book/integers#serialization-varint) bit-length serialization formats specified.
 
@@ -96,7 +96,7 @@ No other [allowed key or value types](#allowed-types) besides [`Int{:tact}`][int
 fun emptyMap(): map<K, V>;
 ```
 
-Declaring a map as a [local variable](/book/statements#let), using `emptyMap(){:tact}` function of standard library:
+Declaring a map as a [local variable](/book/statements#let), using the `emptyMap(){:tact}` function from the standard library:
 
 ```tact
 let fizz: map<Int, Int> = emptyMap();
@@ -114,7 +114,7 @@ contract Example {
 }
 ```
 
-Note, that [persistent state variables](/book/contracts#variables) of type `map<K, V>{:tact}` are initialized empty by default and don't need default values or an initialization in the [`init(){:tact}` function](/book/contracts#init-function).
+Note that [persistent state variables](/book/contracts#variables) of type `map<K, V>{:tact}` are initialized empty by default and do not need default values or initialization in the [`init(){:tact}` function](/book/contracts#init-function).
 
 ### Set values, `.set()` {#set}
 
@@ -123,7 +123,7 @@ Note, that [persistent state variables](/book/contracts#variables) of type `map<
 extends mutates fun set(self: map<K, V>, key: K, val: V);
 ```
 
-To set or replace the value under a key call the `.set(){:tact}` [method](/book/functions#extension-function), which is accessible for all maps.
+To set or replace the value under a key, call the `.set(){:tact}` [method](/book/functions#extension-function), which is accessible for all maps.
 
 ```tact
 // Empty map
@@ -144,7 +144,7 @@ fizz.set(7, 68); // key 7 now points to value 68
 extends fun get(self: map<K, V>, key: K): V?;
 ```
 
-To check if a key is found in the map by calling the `.get(){:tact}` [method](/book/functions#extension-function), which is accessible for all maps. This will return [`null{:tact}`](/book/optionals) if the key is missing, or the value if the key is found.
+You can check if a key is found in the map by calling the `.get(){:tact}` [method](/book/functions#extension-function), which is accessible for all maps. This will return [`null{:tact}`](/book/optionals) if the key is missing or the value if the key is found.
 
 ```tact
 // Empty map
@@ -156,9 +156,9 @@ fizz.set(68, 0);
 // Getting the value by its key
 let gotButUnsure: Int? = fizz.get(68);          // returns Int or null, therefore the type is Int?
 let mustHaveGotOrErrored: Int = fizz.get(68)!!; // explicitly asserting that the value must not be null,
-                                                // which may crush at runtime if the value is, in fact, null
+                                                // which may crash at runtime if the value is, in fact, null
 
-// Alternatively, we can check for the key in the if statement
+// Alternatively, we can check for the key in an if statement
 if (gotButUnsure != null) {
     // Hooray, let's use !! without fear now and cast Int? to Int
     let definitelyGotIt: Int = fizz.get(68)!!;
@@ -176,7 +176,7 @@ if (gotButUnsure != null) {
 extends mutates fun replace(self: map<K, V>, key: K, val: V): Bool;
 ```
 
-To replace the value under a key, if such a key exists, use the `.replace(){:tact}` [method](/book/functions#extension-function). It returns `true{:tact}` on successful replacement and `false{:tact}` otherwise.
+To replace the value associated with a key, if such a key exists, use the `.replace(){:tact}` [method](/book/functions#extension-function). It returns `true{:tact}` upon successful replacement and `false{:tact}` otherwise.
 
 ```tact
 // Empty map
@@ -190,12 +190,12 @@ fizz.set(42, 42);
 let replaced1 = fizz.replace(7, 68); // key 7 now points to value 68
 replaced1; // true
 
-// Trying to replace the value in a non-existing key-value pair will do nothing
+// Trying to replace the value of a non-existing key does nothing
 let replaced2 = fizz.replace(8, 68); // no key 8, so nothing was altered
 replaced2; // false
 ```
 
-If the given value is [`null{:tact}`](/book/optionals) and the key exists, the entry will be deleted from the map.
+If the given value is [`null{:tact}`](/book/optionals) and the key exists, the entry is deleted from the map.
 
 ```tact
 // Empty map
@@ -209,7 +209,7 @@ fizz.set(42, 42);
 let replaced1 = fizz.replace(7, null); // the entry under key 7 is now deleted
 replaced1; // true
 
-// Trying to replace the value in a non-existing key-value pair will do nothing
+// Trying to replace the value of a non-existing key does nothing
 let replaced2 = fizz.replace(8, null); // no key 8, so nothing was altered
 replaced2; // false
 ```
@@ -223,7 +223,7 @@ replaced2; // false
 extends mutates fun replaceGet(self: map<K, V>, key: K, val: V): V?;
 ```
 
-Like [`.replace()`](#replace), but instead of returning a [`Bool{:tact}`](/book/types#booleans) it returns the old (pre-replacement) value on successful replacement and [`null{:tact}`](/book/optionals) otherwise.
+Like [`.replace()`](#replace), but instead of returning a [`Bool{:tact}`](/book/types#booleans), it returns the old (pre-replacement) value on a successful replacement and [`null{:tact}`](/book/optionals) otherwise.
 
 ```tact
 // Empty map
@@ -237,7 +237,7 @@ fizz.set(42, 42);
 let oldVal1 = fizz.replaceGet(7, 68); // key 7 now points to value 68
 oldVal1; // 70
 
-// Trying to replace the value in a non-existing key-value pair will do nothing
+// Trying to replace the value of a non-existing key-value pair will do nothing
 let oldVal2 = fizz.replaceGet(8, 68); // no key 8, so nothing was altered
 oldVal2; // null
 ```
@@ -256,7 +256,7 @@ fizz.set(42, 42);
 let oldVal1 = fizz.replaceGet(7, null); // the entry under key 7 is now deleted
 oldVal1; // 70
 
-// Trying to replace the value in a non-existing key-value pair will do nothing
+// Trying to replace the value of a non-existing key-value pair will do nothing
 let oldVal2 = fizz.replaceGet(8, null); // no key 8, so nothing was altered
 oldVal2; // null
 ```
@@ -268,7 +268,7 @@ oldVal2; // null
 extends mutates fun del(self: map<K, V>, key: K): Bool;
 ```
 
-To delete a single key-value pair (single entry), use the `.del(){:tact}` [method](/book/functions#extension-function). It returns `true{:tact}` in the case of successful deletion and `false{:tact}` otherwise.
+To delete a single key-value pair (a single entry), use the `.del(){:tact}` [method](/book/functions#extension-function). It returns `true{:tact}` in the case of successful deletion and `false{:tact}` otherwise.
 
 ```tact
 // Empty map
@@ -279,11 +279,11 @@ fizz.set(7, 123);
 fizz.set(42, 321);
 
 // Deleting one of the keys
-let deletionSuccess: Bool = fizz.del(7); // true, because map contained the entry under key 7
-fizz.del(7);                             // false, because map no longer has an entry under key 7
+let deletionSuccess: Bool = fizz.del(7); // true, because the map contained the entry under key 7
+fizz.del(7);                             // false, because the map no longer has an entry under key 7
 
-// Note, that assigning the `null` value to the key when using the `.set()` method
-//   is equivalent to calling `.del()`, although such approach is much less descriptive
+// Note that assigning the `null` value to a key when using the `.set()` method
+//   is equivalent to calling `.del()`, although this approach is much less descriptive
 //   and is generally discouraged:
 fizz.set(42, null); // the entry under key 42 is now deleted
 ```
@@ -303,7 +303,7 @@ fizz = emptyMap();
 fizz = null; // identical to the previous line, but less descriptive
 ```
 
-With this approach all previous entries of the map are completely discarded from the contract even if the map was declared as its persistent state variable. As a result, assigning maps to `emptyMap(){:tact}` **does not** inflict any hidden or sudden [storage fees](https://docs.ton.org/develop/smart-contracts/fees#storage-fee).
+With this approach, all previous entries of the map are completely discarded from the contract, even if the map was declared as a persistent state variable. As a result, assigning maps to `emptyMap(){:tact}` **does not** incur any hidden or sudden [storage fees](https://docs.ton.org/develop/smart-contracts/fees#storage-fee).
 
 ### Check if entry exists, `.exists()` {#exists}
 
@@ -314,7 +314,7 @@ With this approach all previous entries of the map are completely discarded from
 extends fun exists(self: map<K, V>, key: K): Bool;
 ```
 
-The `.exists(){:tact}` [method](/book/functions#extension-function) on maps returns `true{:tact}` if the value under the given key exists in the map and `false{:tact}` otherwise.
+The `.exists(){:tact}` [method](/book/functions#extension-function) on maps returns `true{:tact}` if a value under the given key exists in the map and `false{:tact}` otherwise.
 
 ```tact
 let fizz: map<Int, Int> = emptyMap();
@@ -355,8 +355,8 @@ if (fizz.isEmpty()) {
     dump("Empty maps are empty, duh!");
 }
 
-// Note, that comparing the map to `null` behaves the same as `.isEmpty()` method,
-// although such direct comparison is much less descriptive and is generally discouraged:
+// Note that comparing the map to `null` behaves the same as the `.isEmpty()` method,
+// although such a direct comparison is much less descriptive and is generally discouraged:
 if (fizz == null) {
     dump("Empty maps are null, which isn't obvious");
 }
@@ -385,7 +385,7 @@ fizz.deepEquals(buzz); // true
 fizz == buzz;          // true, and uses much less gas to compute
 ```
 
-Using `.deepEquals(){:tact}` is very important in cases where a map comes from the third-party source that doesn't provide any guarantees about the [serialization layout][hashmap]. For one such example, consider the following code:
+Using `.deepEquals(){:tact}` is very important in cases where a map comes from a third-party source that doesn't provide any guarantees about the [serialization layout][hashmap]. For one such example, consider the following code:
 
 ```typescript title="some-typescript-code.ts"
 // First map, with long labels
@@ -405,11 +405,11 @@ const m2 = beginCell()
     .endCell();
 ```
 
-There, both maps are formed manually and both contain the same key-value pair. If you were to send both of those maps in a message to the Tact contract, and then compare them with `.deepEquals(){:tact}` and [equality operator `=={:tact}`](/book/operators#binary-equality), the former would produce `true{:tact}` because both maps have the same entry, while the latter would produce `false{:tact}`, because it only does the shallow comparison of map hashes. And those differ since the maps are serialized differently.
+Here, both maps are formed manually and both contain the same key-value pair. If you were to send both of these maps in a message to a Tact contract and then compare them with `.deepEquals(){:tact}` and the [equality operator `=={:tact}`](/book/operators#binary-equality), the former would produce `true{:tact}` because both maps have the same entry, while the latter would produce `false{:tact}` as it performs only a shallow comparison of map hashes, which differ since the maps are serialized differently.
 
 :::note
 
-  This function is very gas expensive, and for the majority of cases it'll be enough to use the shallow comparison via the [equality `=={:tact}`](/book/operators#binary-equality) or [inequality `!={:tact}`](/book/operators#binary-equality) operators.
+  This function is very gas expensive, and for the majority of cases it will be sufficient to use the shallow comparison via the [equality `=={:tact}`](/book/operators#binary-equality) or [inequality `!={:tact}`](/book/operators#binary-equality) operators.
 
 :::
 
@@ -420,11 +420,11 @@ There, both maps are formed manually and both contain the same key-value pair. I
 extends fun asCell(self: map<K, V>): Cell?;
 ```
 
-On [TVM][tvm], maps are represented as a [`Cell{:tact}`][cell] type and it's possible to construct and parse them directly. However, doing so is highly error-prone and quite messy, which is why Tact provides maps as a standalone composite type with many of the helper methods mentioned above.
+On [TVM][tvm], maps are represented as a [`Cell{:tact}`][cell] type, and it's possible to construct and parse them directly. However, doing so is highly error-prone and quite messy, which is why Tact provides maps as a standalone composite type with many of the helper methods mentioned above.
 
 To cast maps back to the underlying [`Cell{:tact}`][cell] type, use the `.asCell(){:tact}` [method](/book/functions#extension-function). Since maps are initialized to `null{:tact}`, calling `.asCell(){:tact}` on a map with no values assigned will return `null{:tact}` and **not** an empty [`Cell{:tact}`][cell].
 
-As an example, this method is useful for sending small maps directly in the body of the reply:
+As an example, this method is useful for sending small maps directly in the body of a reply:
 
 ```tact
 contract Example {
@@ -451,7 +451,7 @@ contract Example {
 
 ### Traverse over entries {#traverse}
 
-To iterate over map entries there is a [`foreach{:tact}`](/book/statements#foreach-loop) loop statement:
+To iterate over map entries, there is a [`foreach{:tact}`](/book/statements#foreach-loop) loop statement:
 
 ```tact
 // Empty map
@@ -461,20 +461,20 @@ let fizz: map<Int, Int> = emptyMap();
 fizz.set(42, 321);
 fizz.set(7, 123);
 
-// Iterating over in a sequential order: from the smallest keys to the biggest ones
+// Iterating in sequential order: from the smallest keys to the biggest ones
 foreach (key, value in fizz) {
-    dump(key); // will dump 7 on the first iteration, then 42 on the second
+    dump(key); // Will dump 7 on the first iteration, then 42 on the second
 }
 ```
 
 Read more about it: [`foreach{:tact}` loop in Book→Statements](/book/statements#foreach-loop).
 
-Note, that it's also possible to use maps as simple arrays if you define a `map<Int, V>{:tact}` with an [`Int{:tact}`][int] type for the keys, any allowed `V{:tact}` type for values and keep track of the number of items in the separate variable:
+Note that it is also possible to use maps as simple arrays if you define a `map<Int, V>{:tact}` with an [`Int{:tact}`][int] type for the keys, any allowed `V{:tact}` type for the values, and keep track of the number of items in a separate variable:
 
 ```tact
 contract Iteration {
     // Persistent state variables
-    counter: Int as uint32;    // counter of map entries, serialized as a 32-bit unsigned
+    counter: Int as uint32;    // Counter of map entries, serialized as a 32-bit unsigned integer
     record: map<Int, Address>; // Int to Address map
 
     // Constructor (initialization) function of the contract
@@ -484,9 +484,9 @@ contract Iteration {
 
     // Internal message receiver, which responds to a String message "Add"
     receive("Add") {
-        // Get the Context Struct
+        // Get the Context struct
         let ctx: Context = context();
-        // Set the entry: counter Int as a key, ctx.sender Address as a value
+        // Set the entry: counter Int as the key, ctx.sender Address as the value
         self.record.set(self.counter, ctx.sender);
         // Increase the counter
         self.counter += 1;
@@ -494,17 +494,17 @@ contract Iteration {
 
     // Internal message receiver, which responds to a String message "Send"
     receive("Send") {
-        // Loop until the value of self.counter (over all the self.record entries)
-        let i: Int = 0; // declare usual i for loop iterations
+        // Loop until reaching the value of self.counter (over all the self.record entries)
+        let i: Int = 0; // Declare i as usual for loop iterations
         while (i < self.counter) {
-           send(SendParameters{
-                bounce: false,              // do not bounce back this message
-                to: self.record.get(i)!!,   // set the sender address, knowing that key i exists in the map
-                value: ton("0.0000001"),    // 100 nanoToncoins (nano-tons)
-                mode: SendIgnoreErrors,     // send ignoring errors in transaction, if any
+            send(SendParameters{
+                bounce: false,              // Do not bounce back this message
+                to: self.record.get(i)!!,   // Set the sender address, knowing that key i exists in the map
+                value: ton("0.0000001"),    // 100 nanoToncoin (nano-tons)
+                mode: SendIgnoreErrors,     // Send ignoring any transaction errors
                 body: "SENDING".asComment() // String "SENDING" converted to a Cell as a message body
             });
-            i += 1; // don't forget to increase the i
+            i += 1; // Don't forget to increase i
         }
     }
 
@@ -524,7 +524,7 @@ It's often useful to set an upper-bound restriction on such maps, so that you [d
 
 :::caution
 
-  Note, that manually keeping track of number of items or checking the length of such map is very error-prone and generally discouraged. Instead, try to wrap your map into the [Struct][struct] and define [extension functions](/book/functions#extension-function) on it. See example in the Cookbook: [How to emulate an array using a map wrapped in a Struct](/cookbook/data-structures#array).
+  Note that manually keeping track of the number of items or checking the length of such maps is very error-prone and generally discouraged. Instead, try to wrap your map into a [Struct][struct] and define [extension functions](/book/functions#extension-function) on it. See an example in the Cookbook: [How to emulate an array using a map wrapped in a Struct](/cookbook/data-structures#array).
 
 :::
 
@@ -540,15 +540,15 @@ It's often useful to set an upper-bound restriction on such maps, so that you [d
 
 ## Limits and drawbacks
 
-While maps can be convenient to work with on a small scale, they cause a number of issues if the number of items is unbounded and map can significantly grow in size:
+While maps can be convenient to work with on a small scale, they cause a number of issues if the number of items is unbounded and the map significantly grows in size:
 
-* As the upper bound of the smart contract state size is around $65\,000$ items of type [`Cell{:tact}`][cell], it constrains the storage limit of maps to be about $30\,000$ key-value pairs for the whole contract.
+* As the upper bound of the smart contract state size is around $65\,000$ items of type [`Cell{:tact}`][cell], it constrains the storage limit of maps to about $30\,000$ key-value pairs for the whole contract.
 
-* The more entries you have in a map, the bigger [compute fees](https://docs.ton.org/develop/howto/fees-low-level#computation-fees) you'll get. Thus, working with large maps makes compute fees tough to predict and manage.
+* The more entries you have in a map, the higher [compute fees](https://docs.ton.org/develop/howto/fees-low-level#computation-fees) you will incur. Thus, working with large maps makes compute fees difficult to predict and manage.
 
-* Using a large map in a single contract doesn't allow to distribute its workload. Hence, it can make the overall performance much worse compared to  using a smaller map and a bunch of interacting smart contracts.
+* Using a large map in a single contract does not allow distributing its workload. Hence, this can significantly degrade overall performance compared to using a smaller map along with multiple interacting smart contracts.
 
-To resolve such issues you can set an upper-bound restriction on a map as a constant and check against it every time you're setting a new value to the map:
+To resolve such issues, you can set an upper-bound restriction on a map as a constant and check against it every time you set a new value in the map:
 
 ```tact
 contract Example {
@@ -562,9 +562,9 @@ contract Example {
     // Internal function for pushing an item to the end of the "array"
     fun arrPush(item: Int) {
         if (self.arrLength >= self.MaxMapSize) {
-            // Do something, stop the operation, for example
+            // Do something, for example, stop the operation
         } else {
-            // Proceed with adding new item
+            // Proceed with adding a new item
             self.arr.set(self.arrLength, item);
             self.arrLength += 1;
         }
@@ -572,7 +572,7 @@ contract Example {
 }
 ```
 
-If you still need a large map or an unbound (infinitely large) map, it's better to architect your smart contracts according to the [asynchronous and actor-based model of TON blockchain](https://docs.ton.org/learn/overviews/ton-blockchain). That is, to use contract sharding and essentially make the whole blockchain a part of your map(s).
+If you still need a large or unbounded (infinitely large) map, it is better to architect your smart contracts according to the [asynchronous and actor-based model of TON blockchain](https://docs.ton.org/learn/overviews/ton-blockchain). That is, use contract sharding and essentially make the entire blockchain part of your map(s).
 
 {/*
   TODO: Add reference to sharding page as per: https://github.com/tact-lang/tact-docs/issues/155
