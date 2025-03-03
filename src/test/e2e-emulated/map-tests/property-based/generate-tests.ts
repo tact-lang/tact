@@ -10,7 +10,7 @@ const outputTestDir = pwd("generated-tests");
 const templateContractFilePath = pwd("map-property-based.tact.template");
 const outputContractDir = pwd("contracts");
 
-const keyCastTemplate = "<__KEY_CAST__>"; // basicly a crutch, needed because of this issue: https://github.com/tact-lang/tact/issues/2099.
+const keyCastTemplate = "<__KEY_CAST__>"; // basically a crutch, needed because of this issue: https://github.com/tact-lang/tact/issues/2099.
 const keyTypeTemplate = "<__KEY_TYPE__>";
 const keyTsTypeTemplate = "<__KEY_TS_TYPE__>";
 const keyFilenameTemplate = "<__KEY_FILENAME__>";
