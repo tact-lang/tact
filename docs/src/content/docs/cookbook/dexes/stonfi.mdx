@@ -1,11 +1,11 @@
 ---
 title: STON.fi
-description: "This page list examples of working with STON.fi, a decentralized automated market maker built on TON Blockchain"
+description: "This page lists examples of working with STON.fi, a decentralized automated market maker built on TON Blockchain."
 sidebar:
   order: 2
 ---
 
-[STON.fi](https://ston.fi) is a decentralized automated market maker (AMM) built on [TON blockchain](https://ton.org) providing virtually zero fees, low slippage, an extremely easy interface, and direct integration with TON wallets.
+[STON.fi](https://ston.fi) is a decentralized automated market maker (AMM) built on [TON blockchain](https://ton.org), providing virtually zero fees, low slippage, an extremely easy interface, and direct integration with TON wallets.
 
 :::caution
 
@@ -27,7 +27,7 @@ Before going further, familiarize yourself with the following:
 
 Read more about swaps in the [STON.fi documentation](https://docs.ston.fi/docs/developer-section/api-reference-v2/example_swap).
 
-Swaps use `StonfiSwap{:tact}` [Message][message] and `SwapAdditionalData{:tact}` [Struct][struct]:
+Swaps use the `StonfiSwap{:tact}` [Message][message] and the `SwapAdditionalData{:tact}` [Struct][struct]:
 
 ```tact
 /// https://docs.ston.fi/docs/developer-section/api-reference-v2/router#swap-0x6664de2a
@@ -45,7 +45,7 @@ message(0x6664de2a) StonfiSwap {
     deadline: Int as uint64;
 
     // Reference to another Cell with additional data,
-    // using the Tact's greedy auto-layout mechanism
+    // using Tact's greedy auto-layout mechanism
     additionalData: SwapAdditionalData;
 }
 
@@ -114,7 +114,7 @@ const FeeSwapToncoinToJetton: Int = ton("0.01") + ton("0.3");
 
   The following example uses STON.fi's API v2, which is currently under development. Thus, all addresses are given in [testnet][testnet].
 
-  In addition, some variables such as `offerAmount` are hardcoded for demonstration purposes. Don't forget to change them in real life scenarios.
+  In addition, some variables such as `offerAmount` are hardcoded for demonstration purposes. Don't forget to change them in real-life scenarios.
 
 :::
 
@@ -127,8 +127,8 @@ const RouterAddress: Address =
 const RouterJettonWallet: Address =
     address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK");
 
-/// NOTE: To calculate and provide Jetton wallet address for the target user,
-///       make sure to check links after this code snippet
+/// NOTE: To calculate and provide the Jetton wallet address for the target user,
+///       make sure to check the links after this code snippet.
 fun jettonToJetton(myJettonWalletAddress: Address) {
     // Amount of Jettons to swap
     let offerAmount: Int = 100_000;
@@ -210,13 +210,13 @@ message(0xf8a7ea5) JettonTransfer {
 
 ### Jetton to Toncoin {#swaps-jetton-to-toncoin}
 
-Jetton to Toncoin swap is very similar to [Jetton to Jetton swap](#swaps-jetton-to-jetton) with the only difference that the `RouterJettonWallet{:tact}` address is replaced with `RouterProxyTonWallet{:tact}`.
+A Jetton to Toncoin swap is very similar to a [Jetton to Jetton swap](#swaps-jetton-to-jetton), with the only difference being that the `RouterJettonWallet{:tact}` address is replaced with `RouterProxyTonWallet{:tact}`.
 
 :::caution
 
   The following example uses STON.fi's API v2, which is currently under development. Thus, all addresses are given in [testnet][testnet].
 
-  In addition, some variables such as `offerAmount` are hardcoded for demonstration purposes. Don't forget to change them in real life scenarios.
+  In addition, some variables, such as `offerAmount`, are hardcoded for demonstration purposes. Don't forget to change them in real-life scenarios.
 
 :::
 
@@ -229,7 +229,7 @@ const RouterAddress: Address =
 const RouterProxyTonWallet: Address =
     address("kQBbJjnahBMGbMUJwhAXLn8BiigcGXMJhSC0l7DBhdYABhG7");
 
-/// NOTE: To calculate and provide Jetton wallet address for the target user,
+/// NOTE: To calculate and provide the Jetton wallet address for the target user,
 ///       make sure to check links after this code snippet
 fun jettonToToncoin(myJettonWalletAddress: Address) {
     // Amount of Jettons to swap
@@ -261,7 +261,7 @@ fun jettonToToncoin(myJettonWalletAddress: Address) {
 }
 
 //
-// Helper Messages, Structs and constants described earlier on this page
+// Helper messages, structs, and constants described earlier on this page
 //
 
 message(0x6664de2a) StonfiSwap {
@@ -324,7 +324,7 @@ message(0x01f3835d) ProxyToncoinTransfer {
     // Toncoin amount for the swap
     tonAmount: Int as coins;
 
-    // Where to send refunds upon a failed swap
+    // Address to send refunds to upon a failed swap
     refundAddress: Address;
 
     // Optional custom payload to attach to the swap
@@ -339,7 +339,7 @@ Notice that `ProxyToncoinTransfer{:tact}` is quite similar to `JettonTransfer{:t
 
   The following example uses STON.fi's API v2, which is currently under development. Thus, all addresses are given in [testnet][testnet].
 
-  In addition, some variables such as `offerAmount` are hardcoded for demonstration purposes. Don't forget to change them in real life scenarios.
+  In addition, some variables such as `offerAmount` are hardcoded for demonstration purposes. Don't forget to change them in real-life scenarios.
 
 :::
 
@@ -379,7 +379,7 @@ fun toncoinToJetton() {
 }
 
 //
-// Helper Messages, Structs and constants described earlier on this page
+// Helper Messages, Structs, and constants described earlier on this page
 //
 
 message(0x01f3835d) ProxyToncoinTransfer {
@@ -421,9 +421,9 @@ const FeeSwapToncoinToJetton: Int = ton("0.3");
 
 Read more about liquidity provision in the [STON.fi documentation](https://docs.ston.fi/docs/developer-section/api-reference-v2/example_lp_provide).
 
-STON.fi allows you to deposit liquidity by specifying only one type of token - the pool will automatically perform the swap and mint liquidity provider (LP) tokens. To do this you need to set `bothPositive` field of `ProvideLiquidity{:tact}` [Message][message] to `false{:tact}`.
+STON.fi allows you to deposit liquidity by specifying only one type of token. The pool will automatically perform the swap and mint liquidity provider (LP) tokens. To do this, you need to set the `bothPositive` field of the `ProvideLiquidity{:tact}` [Message][message] to `false{:tact}`.
 
-Liquidity deposits use `ProvideLiquidity{:tact}` [Message][message] and `ProvideLiquidityAdditionalData{:tact}` [Struct][struct]:
+Liquidity deposits use the `ProvideLiquidity{:tact}` [Message][message] and `ProvideLiquidityAdditionalData{:tact}` [Struct][struct]:
 
 ```tact
 /// https://docs.ston.fi/docs/developer-section/api-reference-v2/router#provide_lp-0x37c096df
@@ -441,7 +441,7 @@ message(0x37c096df) ProvideLiquidity {
     deadline: Int as uint64;
 
     // Reference to another Cell with additional data,
-    // using the Tact's greedy auto-layout mechanism
+    // using Tact's greedy auto-layout mechanism
     additionalData: ProvideLiquidityAdditionalData;
 }
 
@@ -456,22 +456,22 @@ struct ProvideLiquidityAdditionalData {
     receiverAddress: Address;
 
     // Should both tokens in a pair have a positive quantity?
-    // If not, then the pool would perform an additional swap for the lacking token
-    // Defaults to `true`, which means that deposit would only go through
-    //                     when both token amounts are non-zero
+    // If not, then the pool will perform an additional swap for the lacking token.
+    // Defaults to `true`, meaning the deposit will only go through
+    //                        when both token amounts are non-zero.
     bothPositive: Bool = true;
 
-    // Forward fees for the `customPayload` if it's not `null`
+    // Forward fees for the `customPayload` if it is not `null`
     // Defaults to 0
     fwdGas: Int as coins = 0;
 
     // Custom payload that will be sent if provisioning succeeds
-    // Defaults to `null`, which means no payload
+    // Defaults to `null`, meaning no payload
     customPayload: Cell? = null;
 }
 ```
 
-The [STON.fi SDK](https://github.com/ston-fi/sdk) defines some [constants to deal with fees](https://github.com/ston-fi/sdk/blob/786ece758794bd5c575db8b38f5e5de19f43f0d1/packages/sdk/src/contracts/dex/v2_1/router/BaseRouterV2_1.ts). Note that these are hardcoded values, but the best practice is to [calculate fees dynamically using current config params](https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation) instead.
+The [STON.fi SDK](https://github.com/ston-fi/sdk) defines some [constants to deal with fees](https://github.com/ston-fi/sdk/blob/786ece758794bd5c575db8b38f5e5de19f43f0d1/packages/sdk/src/contracts/dex/v2_1/router/BaseRouterV2_1.ts). Note that these are hardcoded values, but the best practice is to [calculate fees dynamically using current config parameters](https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation) instead.
 
 ```tact
 /// Hardcoded fee value to pay for sending a liquidity provisioning message
@@ -498,7 +498,7 @@ const FeeSingleSideProvideLpToncoin: Int = ton("0.01") + ton("0.8");
 
   The following example uses STON.fi's API v2, which is currently under development. Thus, all addresses are given in [testnet][testnet].
 
-  In addition, some variables such as `offerAmount` are hardcoded for demonstration purposes. Don't forget to change them in real life scenarios.
+  In addition, some variables such as `offerAmount` are hardcoded for demonstration purposes. Don't forget to change them in real-life scenarios.
 
 :::
 
@@ -515,8 +515,8 @@ const RouterProxyTonWallet: Address =
 const RouterJettonWallet: Address =
     address("kQAtX3x2s-wMtYTz8CfmAyloHAB73vONzJM5S2idqXl-_5xK"); 
 
-/// NOTE: To calculate and provide Jetton wallet address for the target user,
-///       make sure to check links after this code snippet
+/// NOTE: To calculate and provide the Jetton wallet address for the target user,
+///       make sure to check the links after this code snippet.
 fun jettonDeposit(myJettonWalletAddress: Address) {
     // Amount of Jettons for liquidity provisioning
     let offerAmount = 100_000;
@@ -530,7 +530,7 @@ fun jettonDeposit(myJettonWalletAddress: Address) {
         deadline: now() + 1_000,
         additionalData: ProvideLiquidityAdditionalData{
             receiverAddress: myAddress(),
-            bothPositive: false, // i.e. single side
+            bothPositive: false, // i.e., single side
         },
     };
 
@@ -549,7 +549,7 @@ fun jettonDeposit(myJettonWalletAddress: Address) {
 }
 
 //
-// Helper Messages, Structs and constants described earlier on this page
+// Helper Messages, Structs, and constants described earlier on this page
 //
 
 message(0x37c096df) ProvideLiquidity {
@@ -590,9 +590,9 @@ message(0xf8a7ea5) JettonTransfer {
 
 :::caution
 
-  The following example uses STON.fi's API v2, which is currently under development. Thus, all addresses are given in [testnet][testnet].
+  The following example uses STON.fi's API v2, which is currently under development. Thus, all addresses are given on [testnet][testnet].
 
-  In addition, some variables such as `offerAmount` are hardcoded for demonstration purposes. Don't forget to change them in real life scenarios.
+  In addition, some variables, such as `offerAmount`, are hardcoded for demonstration purposes. Don't forget to change them in real-life scenarios.
 
 :::
 
@@ -634,7 +634,7 @@ fun toncoinDeposit() {
 }
 
 //
-// Helper Messages, Structs and constants described earlier on this page
+// Helper messages, structs, and constants described earlier on this page
 //
 
 message(0x01f3835d) ProxyToncoinTransfer {
@@ -665,7 +665,7 @@ const FeeSingleSideProvideLpToncoin: Int = ton("0.01") + ton("0.8");
 
 ### Withdraw liquidity
 
-To withdraw liquidity, burning LP tokens is required. You can refer to examples of Jetton burning in the [respective section of Jettons Cookbook page](/cookbook/jettons#burning-jetton). However, more Toncoins should be added than for the normal burn, since adding too few may result in LP tokens being burned, but no (or only partial) liquidity being sent from the pool. Therefore, consider attaching at least $0.5$ Toncoin — excess amount will be returned.
+To withdraw liquidity, burning LP tokens is required. You can refer to examples of Jetton burning in the [respective section of the Jettons Cookbook page](/cookbook/jettons#burning-jetton). However, more Toncoin should be added than for a normal burn, since adding too little may result in LP tokens being burned but no (or only partial) liquidity being sent from the pool. Therefore, consider attaching at least $0.5$ Toncoin — any excess amount will be returned.
 
 :::tip[Hey there!]
 
