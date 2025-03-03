@@ -1,6 +1,6 @@
 import type * as A from "../ast/ast";
 import type { FactoryAst } from "../ast/ast-helpers";
-import { eqNames, idText, isSelfId, isSlice, selfId } from "../ast/ast-helpers";
+import { eqNames, idText, isSelfId, isSlice, selfId, isWildcard } from "../ast/ast-helpers";
 import { traverse, traverseAndCheck } from "../ast/iterators";
 import {
     idTextErr,
@@ -928,7 +928,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         }
 
         for (const param of params) {
-            if (exNames.has(idText(param.name))) {
+            if (exNames.has(idText(param.name)) && !isWildcard(param.name)) {
                 throwCompilationError(
                     `Parameter name ${idTextErr(param.name)} is already used`,
                     param.loc,

@@ -33598,3 +33598,291 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-i
 `;
 
 exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-int257-field-with-inheritance-without-typed-field 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for wildcard-function-param 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive String;,
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": String,
+        "text": "String",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "String",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 46199,
+  },
+  {
+    "ast": {
+      "id": 6,
+      "kind": "primitive_type_decl",
+      "loc": primitive Cell;,
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": Cell,
+        "text": "Cell",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Cell",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 26294,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for wildcard-function-param 2`] = `
+[
+  {
+    "ast": {
+      "attributes": [],
+      "id": 25,
+      "kind": "function_def",
+      "loc": fun test(a: Int, _: String, _: Int, _: Cell): Int {
+    return a * 2;
+},
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "loc": test,
+        "text": "test",
+      },
+      "params": [
+        {
+          "id": 11,
+          "kind": "typed_parameter",
+          "loc": a: Int,
+          "name": {
+            "id": 9,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 10,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "id": 14,
+          "kind": "typed_parameter",
+          "loc": _: String,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": _,
+            "text": "_",
+          },
+          "type": {
+            "id": 13,
+            "kind": "type_id",
+            "loc": String,
+            "text": "String",
+          },
+        },
+        {
+          "id": 17,
+          "kind": "typed_parameter",
+          "loc": _: Int,
+          "name": {
+            "id": 15,
+            "kind": "id",
+            "loc": _,
+            "text": "_",
+          },
+          "type": {
+            "id": 16,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "id": 20,
+          "kind": "typed_parameter",
+          "loc": _: Cell,
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "loc": _,
+            "text": "_",
+          },
+          "type": {
+            "id": 19,
+            "kind": "type_id",
+            "loc": Cell,
+            "text": "Cell",
+          },
+        },
+      ],
+      "return": {
+        "id": 8,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "statements": [
+        {
+          "expression": {
+            "id": 23,
+            "kind": "op_binary",
+            "left": {
+              "id": 21,
+              "kind": "id",
+              "loc": a,
+              "text": "a",
+            },
+            "loc": a * 2,
+            "op": "*",
+            "right": {
+              "base": 10,
+              "id": 22,
+              "kind": "number",
+              "loc": 2,
+              "value": 2n,
+            },
+          },
+          "id": 24,
+          "kind": "statement_return",
+          "loc": return a * 2;,
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverride": false,
+    "isVirtual": false,
+    "methodId": null,
+    "name": "test",
+    "origin": "user",
+    "params": [
+      {
+        "loc": a: Int,
+        "name": {
+          "id": 9,
+          "kind": "id",
+          "loc": a,
+          "text": "a",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "loc": _: String,
+        "name": {
+          "id": 12,
+          "kind": "id",
+          "loc": _,
+          "text": "_",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "String",
+          "optional": false,
+        },
+      },
+      {
+        "loc": _: Int,
+        "name": {
+          "id": 15,
+          "kind": "id",
+          "loc": _,
+          "text": "_",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "loc": _: Cell,
+        "name": {
+          "id": 18,
+          "kind": "id",
+          "loc": _,
+          "text": "_",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "Cell",
+          "optional": false,
+        },
+      },
+    ],
+    "returns": {
+      "kind": "ref",
+      "name": "Int",
+      "optional": false,
+    },
+    "self": null,
+  },
+]
+`;
