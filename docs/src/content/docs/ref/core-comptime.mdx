@@ -5,7 +5,7 @@ description: "Various compile-time global functions from the Core library of Tac
 
 import { Badge } from '@astrojs/starlight/components';
 
-This page lists all the built-in [global static functions](/book/functions#global-static-functions), which are evaluated at the time of building the Tact project and cannot work with non-constant, run-time data. These functions are commonly referred to as "compile-time functions" or _comptime_ functions for short.
+This page lists all the built-in [global static functions](/book/functions#global-static-functions) that are evaluated at the time of building the Tact project and cannot work with non-constant runtime data. These functions are commonly referred to as "compile-time functions" or _comptime_ functions for short.
 
 ## address
 
@@ -13,7 +13,7 @@ This page lists all the built-in [global static functions](/book/functions#globa
 fun address(s: String): Address;
 ```
 
-A compile-time function that converts a [`String{:tact}`][p] with an address into the [`Address{:tact}`][p] type and embeds it into the contract.
+A compile-time function that converts a [`String{:tact}`][p] containing an address into the [`Address{:tact}`][p] type and embeds it into the contract.
 
 Usage example:
 
@@ -39,7 +39,7 @@ fun cell(bocBase64: String): Cell;
 
 A compile-time function that embeds a base64-encoded [BoC][boc] `bocBase64` as a [`Cell{:tact}`][cell] into the contract.
 
-Usage examples:
+Usage example:
 
 ```tact
 contract Example {
@@ -60,7 +60,7 @@ fun slice(bocBase64: String): Slice;
 
 A compile-time function that embeds a base64-encoded [BoC][boc] `bocBase64` as a [`Slice{:tact}`][slice] into the contract.
 
-Usage examples:
+Usage example:
 
 ```tact
 contract Example {
@@ -79,9 +79,9 @@ contract Example {
 fun rawSlice(hex: String): Slice;
 ```
 
-A compile-time function that converts `hex` [`String{:tact}`][p] with hex-encoded and optionally bit-padded contents as a [`Slice{:tact}`][slice] and embeds it into the contract.
+A compile-time function that converts the `hex` [`String{:tact}`][p], containing hex-encoded and optionally bit-padded contents, into a [`Slice{:tact}`][slice] and embeds it into the contract.
 
-Contents are bit-padded if there's an underscore `_` at the very end of [`String{:tact}`][p]. The padding removes all the trailing zeros and the last $1$ bit before them:
+Contents are bit-padded if there is an underscore `_` at the very end of the [`String{:tact}`][p]. Padding removes all trailing zeros and the last $1$ bit before them:
 
 ```tact
 // Not bit-padded
@@ -91,7 +91,7 @@ rawSlice("4a").loadUint(8); // 74, or 1001010 in binary
 rawSlice("4a_").loadUint(6); // 18, or 10010 in binary
 ```
 
-Note, that this function is limited and only allows to specify up to $1023$ bits.
+Note that this function is limited and only allows specifying up to $1023$ bits.
 
 Usage example:
 
@@ -119,7 +119,7 @@ contract Example {
 fun ascii(str: String): Int;
 ```
 
-A compile-time function that concatenates the hexadecimal values of the characters in `str` into one and embeds the resulting [`Int{:tact}`][int] into the contract. Only works for strings that occupy up to $32$ bytes, which allows to represent up to $32$ [ASCII codes](https://en.wikipedia.org/wiki/ASCII#Control_code_chart) or up to $8$ $4$-byte [Unicode code points](https://en.wikipedia.org/wiki/List_of_Unicode_characters).
+A compile-time function that concatenates the hexadecimal values of the characters in `str` into one value and embeds the resulting [`Int{:tact}`][int] into the contract. This function works only for strings occupying up to $32$ bytes, allowing the representation of up to $32$ [ASCII codes](https://en.wikipedia.org/wiki/ASCII#Control_code_chart) or up to $8$ Unicode code points of $4$ bytes each ([list of Unicode characters](https://en.wikipedia.org/wiki/List_of_Unicode_characters)).
 
 Usage example:
 
@@ -127,8 +127,8 @@ Usage example:
 contract Example {
     // Persistent state variables
     a: Int = ascii("a");            // 97 or 0x61, one byte in total
-    zap: Int = ascii("⚡");         // 14850721 or 0xE29AA1, 3 bytes in total
-    doubleZap: Int = ascii("⚡⚡"); // 249153768823457 or 0xE29AA1E29AA1, 6 bytes in total
+    zap: Int = ascii("⚡");          // 14850721 or 0xE29AA1, 3 bytes in total
+    doubleZap: Int = ascii("⚡⚡");   // 249153768823457 or 0xE29AA1E29AA1, 6 bytes in total
 }
 ```
 
@@ -146,7 +146,7 @@ contract Example {
 fun crc32(str: String): Int;
 ```
 
-A compile-time function that computes a checksum using [CRC-32](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) algorithm and embeds the resulting [`Int{:tact}`][int] value into the contract.
+A compile-time function that computes a checksum using the [CRC-32](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) algorithm and embeds the resulting [`Int{:tact}`][int] value into the contract.
 
 Usage example:
 
@@ -169,17 +169,17 @@ contract Example {
 fun ton(value: String): Int;
 ```
 
-A compile-time function that converts the given Toncoins `value` from a human-readable format [`String{:tact}`][p] to the [nanoToncoin](/book/integers#nanotoncoin) [`Int{:tact}`][int] format.
+A compile-time function that converts the given Toncoin `value` from a human-readable format [`String{:tact}`][p] to the [nanoToncoin](/book/integers#nanotoncoin) [`Int{:tact}`][int] format.
 
 Usage example:
 
 ```tact
 contract Example {
     // Persistent state variables
-    one: Int = ton("1");            // one Toncoin, which is equivalent to 10^9 nanoToncoins
+    one: Int = ton("1");            // One Toncoin, which is equivalent to 10^9 nanoToncoins
     pointOne: Int = ton("0.1");     // 0.1 Toncoin, which is equivalent to 10^8 nanoToncoins
-    nano: Int = ton("0.000000001"); // 10^-9 Toncoins, which is equivalent to 1 nanoToncoin
-                                    // works at compile-time!
+    nano: Int = ton("0.000000001"); // 10^-9 Toncoin, which is equivalent to 1 nanoToncoin
+                                    // Works at compile-time!
 }
 ```
 
