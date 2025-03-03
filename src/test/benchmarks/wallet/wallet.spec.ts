@@ -1,8 +1,9 @@
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { Cell, contractAddress, MessageRelaxed } from "@ton/core";
-import { Address, external } from "@ton/core";
-import { SendMode, storeMessageRelaxed } from "@ton/core";
+import { Cell, contractAddress } from "@ton/core";
+import type { Address } from "@ton/core";
+import { external } from "@ton/core";
+import { SendMode } from "@ton/core";
 import { beginCell, Dictionary, toNano } from "@ton/core";
 import "@ton/test-utils";
 
@@ -10,14 +11,9 @@ import { getUsedGas, generateResults, printBenchmarkTable } from "../util";
 import benchmarkResults from "./results.json";
 import type { KeyPair } from "@ton/crypto";
 import { getSecureRandomBytes, keyPairFromSeed, sign } from "@ton/crypto";
-import type {
-    CompatibleSignedRequest,
-    InternalOperation,
-    SignedRequest,
-} from "../contracts/output/wallet_Wallet";
+import type { CompatibleSignedRequest } from "../contracts/output/wallet_Wallet";
 import {
     storeCompatibleSignedRequest,
-    storeInternalOperation,
     Wallet,
 } from "../contracts/output/wallet_Wallet";
 import { readFileSync } from "fs";
@@ -32,102 +28,22 @@ function bufferToBigInt(buffer: Buffer): bigint {
     return BigInt("0x" + buffer.toString("hex"));
 }
 
-type MultipleAction = {
-    mode: 0;
-    args: WalletAction[];
-};
-
-type SendMsgAction = {
-    mode: 1;
-    sendMode: SendMode;
-    outMsg: MessageRelaxed;
-};
-
-type ChangeSignaturePolicyAction = {
-    mode: 2;
-    isAllowed: boolean;
-};
-
-type AddExtensionAction = {
-    mode: 3;
-    extensionAddress: Address;
-};
-
-type RemoveExtensionAction = {
-    mode: 4;
-    extensionAddress: Address;
-};
-
-type WalletAction =
-    | SendMsgAction
-    | ChangeSignaturePolicyAction
-    | AddExtensionAction
-    | RemoveExtensionAction
-    | MultipleAction;
-
-type ActionCell = Cell;
-
-function collectMultipleActions(actions: WalletAction[]): MultipleAction {
-    return {
-        mode: 0,
-        args: actions,
-    };
-}
-
-function createActionsSlice(actions: MultipleAction): ActionCell {
-    const serializeAction = (walletAction: WalletAction): ActionCell => {
-        const slice = beginCell().storeUint(walletAction.mode, 8);
-
-        switch (walletAction.mode) {
-            case 0:
-                break;
-            case 1:
-                slice
-                    .storeUint(
-                        walletAction.sendMode | SendMode.IGNORE_ERRORS,
-                        8,
-                    )
-                    .storeRef(
-                        beginCell()
-                            .store(storeMessageRelaxed(walletAction.outMsg))
-                            .endCell(),
-                    );
-                break;
-            case 2:
-                slice.storeBit(walletAction.isAllowed);
-                break;
-            case 3:
-                slice.storeAddress(walletAction.extensionAddress);
-                break;
-            case 4:
-                slice.storeAddress(walletAction.extensionAddress);
-                break;
-            default:
-                break;
-        }
-
-        return slice.endCell();
-    };
-
-    if (actions.args.length === 1) {
-        return serializeAction(actions.args[0]!);
-    }
-
-    const actionSlice = beginCell().storeUint(actions.mode, 8);
-
-    for (const arg of actions.args) {
-        actionSlice.storeRef(serializeAction(arg));
-    }
-
-    return actionSlice.endCell();
-}
-
 describe("Wallet Gas Tests", () => {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
     let receiver: SandboxContract<TreasuryContract>;
     let walletTact: SandboxContract<Wallet>;
-    let seqno: bigint;
+    const seqno = (() => {
+        let seqno = 0n;
+        let step = 0;
+        return () => {
+            if (step++ % 2 === 1) {
+                return seqno++;
+            } else {
+                return seqno;
+            }
+        };
+    })();
 
     let walletFuncAddress: Address;
 
@@ -143,48 +59,35 @@ describe("Wallet Gas Tests", () => {
         actions: Cell,
         // isExternal: boolean = true,
     ) {
+        const seqnoValue = seqno();
+
+        console.log(seqnoValue);
+
         const requestToSign = beginCell()
+            .storeUint(0x7369676e, 32)
             .storeUint(SUBWALLET_ID, 32)
             .storeUint(validUntil(), 32)
-            .storeUint(seqno, 32)
+            .storeUint(seqnoValue, 32)
             .storeMaybeRef(actions)
             .storeBit(false)
-            .storeBuilder(beginCell().asSlice().asBuilder())
-            .endCell().asSlice();
-
-        const operationHash = requestToSign.;
-        const signature = sign(operationHash, keypair.secretKey);
-
-        const resCell = beginCell()
-            .storeUint(0x7369676E, 32)
-            .storeBuffer(signature, 64)
-            .storeUint(SUBWALLET_ID, 32)
-            .storeUint(validUntil(), 32)
-            .storeUint(seqno, 32)
-            .storeMaybeRef(actions)
-            .storeBit(false)
-            .storeBuilder(beginCell().asSlice().asBuilder())
             .endCell();
-            
+
+        const operationHash = requestToSign.hash();
+        const signature = sign(operationHash, keypair.secretKey);
 
         const compatibleSignedRequest: CompatibleSignedRequest = {
             $$type: "CompatibleSignedRequest",
             walletId: SUBWALLET_ID,
             validUntil: validUntil(),
-            seqno,
+            seqno: seqnoValue,
             outActions: actions,
             hasOtherActions: false,
-            actions: beginCell().asSlice(),
-            signature,
+            data: beginCell().storeBuffer(signature, 64).asSlice(),
         };
-
-        seqno++;
 
         const operationMsg = beginCell()
             .store(storeCompatibleSignedRequest(compatibleSignedRequest))
             .endCell();
-
-        console.log(walletTact.address, walletAddress, walletFuncAddress);
 
         return await blockchain.sendMessage(
             external({
@@ -219,7 +122,7 @@ describe("Wallet Gas Tests", () => {
 
         const stateInitWallet = beginCell()
             .storeBit(true)
-            .storeUint(seqno, 32)
+            .storeUint(0, 32)
             .storeUint(SUBWALLET_ID, 32)
             .storeBuffer(keypair.publicKey, 32)
             .storeDict(Dictionary.empty())
@@ -241,7 +144,6 @@ describe("Wallet Gas Tests", () => {
         };
     }
 
-    // each new escrow deal is new contract instance
     beforeEach(async () => {
         blockchain = await Blockchain.create();
 
@@ -249,8 +151,6 @@ describe("Wallet Gas Tests", () => {
 
         deployer = await blockchain.treasury("deployer");
         receiver = await blockchain.treasury("receiver");
-
-        seqno = 0n;
 
         walletTact = blockchain.openContract(
             await Wallet.fromInit(
@@ -295,16 +195,26 @@ describe("Wallet Gas Tests", () => {
         });
 
         walletFuncAddress = walletDeploymentResult.minterAddress;
+
+        // top up wallet balance
+        await deployer.send({
+            to: walletFuncAddress,
+            value: toNano("10"),
+            sendMode: SendMode.PAY_GAS_SEPARATELY,
+        });
     });
 
     afterAll(() => {
-        printBenchmarkTable(results);
+        printBenchmarkTable(results, {
+            implementationName: "FunC",
+            isFullTable: true,
+        });
     });
 
     it("check correctness of deploy", async () => {
         const walletSeqno = await walletTact.getSeqno();
 
-        expect(walletSeqno).toBe(seqno);
+        expect(walletSeqno).toBe(0n);
 
         const walletPublicKey = await walletTact.getGetPublicKey();
 
@@ -324,7 +234,7 @@ describe("Wallet Gas Tests", () => {
     it("externalTransfer", async () => {
         const runExternalTransferTest = async (walletAddress: Address) => {
             const testReceiver = receiver.address;
-            const forwardValue = toNano(0.001);
+            const forwardValue = toNano(1);
 
             const receiverBalanceBefore = (
                 await blockchain.getContract(testReceiver)
@@ -357,6 +267,12 @@ describe("Wallet Gas Tests", () => {
                 outActionCell,
             );
 
+            expect(externalTransferSendResult.transactions).toHaveTransaction({
+                to: walletAddress,
+                success: true,
+                exitCode: 0,
+            });
+
             expect(externalTransferSendResult.transactions.length).toEqual(2);
 
             expect(externalTransferSendResult.transactions).toHaveTransaction({
@@ -385,13 +301,13 @@ describe("Wallet Gas Tests", () => {
             funcResult.gas["externalTransfer"],
         );
 
-        // const externalTransferGasUsedTact = await runExternalTransferTest(
-        //     walletTact.address,
-        // );
+        const externalTransferGasUsedTact = await runExternalTransferTest(
+            walletTact.address,
+        );
 
-        // expect(externalTransferGasUsedTact).toEqual(
-        //     expectedResult.gas["externalTransfer"],
-        // );
+        expect(externalTransferGasUsedTact).toEqual(
+            expectedResult.gas["externalTransfer"],
+        );
     });
 
     // it("externalTransfer", async () => {
