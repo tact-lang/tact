@@ -206,9 +206,7 @@ export function writeTypescript(
     }
 
     // Errors
-    w.append(
-        `export const ${abi.name}_errors = {`,
-    );
+    w.append(`export const ${abi.name}_errors = {`);
     w.inIndent(() => {
         if (abi.errors) {
             Object.entries(abi.errors).forEach(([k, abiError]) => {
@@ -222,14 +220,12 @@ export function writeTypescript(
     w.append();
 
     // Errors (backward)
-    w.append(
-        `export const ${abi.name}_errors_backward = {`,
-    );
+    w.append(`export const ${abi.name}_errors_backward = {`);
     w.inIndent(() => {
         if (abi.errors) {
             Object.entries(abi.errors).forEach(([k, abiError]) => {
                 w.append(
-                    `${JSON.stringify(abiError.message.replaceAll("`", "\\`"))}: ${k},`
+                    `${JSON.stringify(abiError.message.replaceAll("`", "\\`"))}: ${k},`,
                 );
             });
         }
