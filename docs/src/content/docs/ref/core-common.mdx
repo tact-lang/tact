@@ -155,6 +155,37 @@ let oldTonFoundationAddr: Address =
 
 :::
 
+### hasSameBasechainAddress
+
+<Badge text="Available since Tact 1.6.1 (not released yet)" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun hasSameBasechainAddress(self: StateInit, sender: Address): Bool;
+```
+
+Efficiently compares if the given address matches the basechain address of the contract.
+Returns true if addresses are the same, false otherwise.
+
+```tact
+fun example() {
+    let init = initOf SomeContract();
+    init.hasSameBasechainAddress(sender()); // returns true if sender matches contract's basechain address
+}
+```
+
+This function provides a gas-optimized implementation compared to direct address comparison:
+
+```tact
+fun example() {
+    let init = initOf SomeContract();
+    sender() == contractAddress(sender()); // less efficient approach
+}
+```
+
+:::note
+  This function works only for basechain addresses!
+:::
+
 ### contractAddress
 
 <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
