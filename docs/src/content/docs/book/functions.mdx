@@ -30,6 +30,26 @@ fun bar() {
 }
 ```
 
+<p/><Badge text="Available since Tact 1.6.1" variant="tip" size="medium"/><p/>
+
+Naming a parameter with underscore `_{:tact}` causes its value to be considered unused and discarded. This is useful when you don't access the parameter, but want to support it in the signature for possible overrides. Note that such wildcard parameter name `_{:tact}` cannot be accessed.
+
+```tact
+trait WildThing {
+    // Using wildcards for parameter names
+    virtual fun assure(_: Int, _: Int): Bool {
+        return true;
+    }
+}
+
+contract YouMakeMyHeartSing with WildThing {
+    // And then overriding them with concrete names
+    override fun assure(a: Int, b: Int): Bool {
+        return a + b == b + a;
+    }
+}
+```
+
 ## Global static functions
 
 You can define global function anywhere in your program:
