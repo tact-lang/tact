@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Language features
+
+- [fix] The `toCell()` method called in a receiver on a contract field that is a struct is now handled correctly: PR [#2186](https://github.com/tact-lang/tact/pull/2186)
+
 ### Standard Library
 
 - Add `StateInit.hasSameBasechainAddress` function: PR [#2187](https://github.com/tact-lang/tact/pull/2187)
