@@ -69,7 +69,7 @@ abs(-(-(-42))); // 42
 fun sign(x: Int): Int;
 ```
 
-Computes and returns the sign of the [`Int{:tact}`][int] value `x`. Produces $1$ if `x` is positive, $-1$ if `x` is negative, and $0$ if `x` is $0$.
+Computes and returns the sign of the [`Int{:tact}`][int] value `x`. Produces $1$ if the `x` is positive, $-1$ if the `x` is negative, and $0$ if the `x` is $0$.
 
 Usage examples:
 
@@ -113,7 +113,7 @@ sqrt(-1); // ERROR! Exit code 5: Integer out of expected range
 fun divc(x: Int, y: Int): Int;
 ```
 
-Computes and returns the [rounded up][round-up] result of the division of [`Int{:tact}`][int] `x` by [`Int{:tact}`][int] `y`.
+Computes and returns the [rounded up][round-up] result of division of the [`Int{:tact}`][int] `x` by the [`Int{:tact}`][int] `y`.
 
 Attempts to divide by `y` equal to $0$ throw an exception with [exit code 4](/book/exit-codes#4): `Integer overflow`.
 
@@ -136,7 +136,7 @@ fun muldivc(x: Int, y: Int, z: Int): Int;
 
 Computes and returns the [rounded up][round-up] result of `(x * y) / z{:tact}`.
 
-If the value in the calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, or if there's an attempt to divide by `z` equal to $0$, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
+If the value in calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, or if there's an attempt to divide by `z` equal to $0$, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
 
 Usage examples:
 
@@ -157,9 +157,9 @@ muldivc(-3, 0, 0); // ERROR! Exit code 4: Integer overflow
 fun mulShiftRight(x: Int, y: Int, z: Int): Int;
 ```
 
-Computes and returns the [rounded down][round-down] result of `(x * y) / 2^z{:tact}`. It is a more gas-efficient equivalent of performing a [bitwise shift right](/book/operators#binary-bitwise-shift-right) on the result of the multiplication of [`Int{:tact}`][int] `x` times [`Int{:tact}`][int] `y`, where [`Int{:tact}`][int] `z` is the right operand of the shift.
+Computes and returns the [rounded down][round-down] result of `(x * y) / 2^z{:tact}`. It is a more gas-efficient equivalent of doing the [bitwise shift right](/book/operators#binary-bitwise-shift-right) on the result of multiplication of [`Int{:tact}`][int] `x` times [`Int{:tact}`][int] `y`, where [`Int{:tact}`][int] `z` is the right operand of the shift.
 
-If the value in the calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
+If the value in calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
 
 Attempts to specify any value of `z` outside the inclusive range from $0$ to $256$ throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -182,7 +182,7 @@ fun mulShiftRightRound(x: Int, y: Int, z: Int): Int;
 
 Similar to [`mulShiftRight(){:tact}`](#mulshiftright), but instead of [rounding down][round-down], the result value is rounded to the nearest integer. If there are two equally close integers, rounding is done toward the even one.
 
-If the value in the calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
+If the value in calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
 
 Attempts to specify any value of `z` outside the inclusive range from $0$ to $256$ throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -205,7 +205,7 @@ fun mulShiftRightCeil(x: Int, y: Int, z: Int): Int;
 
 Similar to [`mulShiftRight(){:tact}`](#mulshiftright), but instead of [rounding down][round-down], the result value is [rounded up][round-up].
 
-If the value in the calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
+If the value in calculation goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, an exception with [exit code 4](/book/exit-codes#4) is thrown: `Integer overflow`.
 
 Attempts to specify any value of `z` outside the inclusive range from $0$ to $256$ throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -248,7 +248,7 @@ try {
 
 :::note
 
-Note that if you only need to obtain logarithms to the base $2$, use the [`log2(){:tact}`](#log2) function, as it's more gas-efficient.
+  Note, that if you only need to obtain logarithms to the base $2$, use the [`log2(){:tact}`](#log2) function, as it's more gas-efficient.
 
 :::
 
@@ -272,7 +272,7 @@ log2(1024); // 10, as 2^10 is 1024
 
 :::note
 
-In order to reduce gas usage, prefer using this function over calling [`log(){:tact}`](#log) when you only need to obtain logarithms to the base $2$.
+  In order to reduce gas usage, prefer using this function over calling [`log(){:tact}`](#log) when you only need to obtain logarithms to the base $2$.
 
 :::
 
@@ -282,9 +282,9 @@ In order to reduce gas usage, prefer using this function over calling [`log(){:t
 fun pow(base: Int, exp: Int): Int;
 ```
 
-Computes and returns the [exponentiation](https://en.wikipedia.org/wiki/Exponentiation) involving two numbers: the `base` and the exponent (or _power_) `exp`. The exponent `exp` must be non-negative; otherwise, an error with [exit code 5](/book/exit-codes#5) will be thrown: `Integer out of expected range`.
+Computes and returns the [exponentiation](https://en.wikipedia.org/wiki/Exponentiation) involving two numbers: the `base` and the exponent (or _power_) `exp`. Exponent `exp` must be non-negative, otherwise an error with [exit code 5](/book/exit-codes#5) will be thrown: `Integer out of expected range`.
 
-This function tries to resolve constant values at [compile-time](/ref/core-comptime) whenever possible.
+This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
 
 Usage examples:
 
@@ -307,13 +307,13 @@ contract Example {
 
 :::note
 
-If you only need to obtain powers of $2$, use the [`pow2(){:tact}`](#pow2) function, as it's more gas-efficient.
+  If you only need to obtain powers of $2$, use the [`pow2(){:tact}`](#pow2) function, as it's more gas-efficient.
 
 :::
 
 :::note
 
-List of functions that only work at compile-time: [API Comptime](/ref/core-comptime).
+  List of functions that only work at compile-time: [API Comptime](/ref/core-comptime).
 
 :::
 
@@ -323,9 +323,9 @@ List of functions that only work at compile-time: [API Comptime](/ref/core-compt
 fun pow2(exp: Int): Int;
 ```
 
-Similar to [`pow(){:tact}`](#pow), but sets the `base` to $2$. The exponent `exp` must be non-negative; otherwise, an error with [exit code 5](/book/exit-codes#5) will be thrown: `Integer out of expected range`.
+Similar to [`pow(){:tact}`](#pow), but sets the `base` to $2$. Exponent `exp` must be non-negative, otherwise an error with [exit code 5](/book/exit-codes#5) will be thrown: `Integer out of expected range`.
 
-This function tries to resolve constant values at [compile-time](/ref/core-comptime) whenever possible.
+This function tries to resolve constant values in [compile-time](/ref/core-comptime) whenever possible.
 
 Usage examples:
 
@@ -366,9 +366,9 @@ contract Example {
 fun checkSignature(hash: Int, signature: Slice, public_key: Int): Bool;
 ```
 
-Checks the [Ed25519][ed] `signature` of the $256$-bit unsigned [`Int{:tact}`][int] `hash` using a `public_key`, represented by a $256$-bit unsigned [`Int{:tact}`][int] as well. The signature must contain at least $512$ bits of data, but only the first $512$ bits are used.
+Checks the [Ed25519][ed] `signature` of the $256$-bit unsigned [`Int{:tact}`][int] `hash` using a `public_key`, represented by a $256$-bit unsigned [`Int{:tact}`][int] too. The signature must contain at least $512$ bits of data, but only the first $512$ bits are used.
 
-Returns `true{:tact}` if the signature is valid; otherwise, returns `false{:tact}`.
+Returns `true{:tact}` if the signature is valid, `false{:tact}` otherwise.
 
 Usage example:
 
@@ -380,7 +380,7 @@ message ExtMsg {
 
 contract Showcase {
     // Persistent state variables
-    pub: Int as uint256; // public key as a 256-bit unsigned Int
+    pub: Int as uint256; // public key as an 256-bit unsigned Int
 
     // Constructor function init(), where all the variables are initialized
     init(pub: Int) {
@@ -409,9 +409,9 @@ contract Showcase {
 fun checkDataSignature(data: Slice, signature: Slice, public_key: Int): Bool;
 ```
 
-Checks the [Ed25519][ed] `signature` of the `data` using a `public_key`, similar to [`checkSignature(){:tact}`](#checksignature). If the bit length of `data` is not divisible by $8$, this function throws an error with [exit code 9](/book/exit-codes#9): `Cell underflow`. Verification itself is performed indirectly: on a [SHA-256][sha-2] hash of the `data`.
+Checks the [Ed25519][ed] `signature` of the `data` using a `public_key`, similar to [`checkSignature(){:tact}`](#checksignature). If the bit length of `data` is not divisible by $8$, this functions throws an error with [exit code 9](/book/exit-codes#9): `Cell underflow`. Verification itself is being done indirectly: on a [SHA-256][sha-2] hash of the `data`.
 
-Returns `true{:tact}` if the signature is valid; otherwise, returns `false{:tact}`.
+Returns `true{:tact}` if the signature is valid, `false{:tact}` otherwise.
 
 Usage example:
 
@@ -434,28 +434,28 @@ fun sha256(data: String): Int;
 
 Computes and returns the [SHA-256][sha-2] hash as a $256$-bit unsigned [`Int{:tact}`][int] from a passed [`Slice{:tact}`][slice] or [`String{:tact}`][p] `data`, which should have a number of bits divisible by $8$.
 
-In case `data` is a [`Slice{:tact}`][slice], it must have no more than a single reference per cell, as only the first reference of each nested cell will be taken into account.
+In case `data` is a [`Slice{:tact}`][slice] it must have no more than a single reference per cell, because only the first reference of each nested cell will be taken into account.
 
 This function tries to resolve constant string values at [compile-time](/ref/core-comptime) whenever possible.
 
-Attempting to specify a [`Slice{:tact}`][slice] or [`String{:tact}`][p] with a number of bits **not** divisible by $8$ throws an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+Attempts to specify a [`Slice{:tact}`][slice] or [`String{:tact}`][p] with number of bits **not** divisible by $8$ throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage examples:
 
 ```tact
 sha256(beginCell().asSlice());
-sha256("Hello, world!"); // will be resolved at compile-time
+sha256("Hello, world!"); // will be resolved in compile-time
 sha256(someVariableElsewhere); // will try to resolve at compile-time,
-                               // and fall back to run-time evaluation
+                               // and fallback to run-time evaluation
 ```
 
 :::tip[Before Tact 1.6]
 
-  Previously, if a [`String{:tact}`][p] value couldn't be resolved during [compile-time](/ref/core-comptime), the hash was calculated at runtime by the [TVM][tvm] itself. This caused collisions of strings longer than $127$ bytes if their first $127$ bytes were identical.
+  Previously, if a [`String{:tact}`][p] value couldn't be resolved during [compilation time](/ref/core-comptime), the hash was calculated at runtime by the [TVM][tvm] itself. And this caused collisions of strings with more than $127$ bytes if their first $127$ bytes were the same.
 
-  This occurred because all [SHA-256][sha-2]-related instructions of the [TVM][tvm] consider only the data bits, ignoring possible references to other cells needed to form longer strings.
+  That's because all [SHA-256][sha-2]-related instructions of the [TVM][tvm] consider only the data bits, ignoring possible references to other cells needed to form larger strings.
 
-  Therefore, in general, and in versions of Tact prior to 1.6, it is preferable to use statically known strings whenever possible. When in doubt, use strings up to $127$ bytes long.
+  Therefore, in general, and in versions of Tact prior to 1.6, it is preferable to use statically known strings whenever possible. When in doubt, use strings of up to $127$ bytes long.
 
 :::
 

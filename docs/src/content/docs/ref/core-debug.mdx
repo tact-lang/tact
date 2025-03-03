@@ -17,11 +17,11 @@ fun require(condition: Bool, error: String);
 
 Checks the `condition` and throws an error with an [exit code](/book/exit-codes) generated from the `error` message if the `condition` is `false{:tact}`. Does nothing otherwise.
 
-This function is similar to [`throwUnless(){:tact}`](#throwunless), but instead of using the error code directly, it generates it based on the given error message [`String{:tact}`][p].
+This function is similar to [`throwUnless(){:tact}`](#throwunless), but instead of using the error code directly it generates it based on the given error message [`String{:tact}`][p].
 
 The algorithm for generating the exit code works as follows:
 
-* First, the [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) hash of the `error` message [`String{:tact}`][p] is obtained.
+* First, the [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) hash of `error` message [`String{:tact}`][p] is obtained.
 * Then, its value is read as a 32-bit [big-endian](https://en.wikipedia.org/wiki/Endianness) number modulo $63000$ plus $1000$, in that order.
 * Finally, it's put into the [`.md` compilation report file](/book/compile#report), which resides with the other compilation artifacts in your project's `outputs/` or `build/` directories.
 
@@ -30,14 +30,14 @@ The generated exit code is guaranteed to be outside the common $0 - 255$ range r
 Usage examples:
 
 ```tact
-// now() has to return a value greater than 1000; otherwise, an error message will be thrown
+// now() has to return a value greater than 1000, otherwise an error message will be thrown
 require(now() > 1000, "We're in the first 1000 seconds of 1 January 1970!");
 
 try {
     // The following will never be true, so this require would always throw
     require(now() < -1, "Time is an illusion. Lunchtime doubly so.");
 } catch (e) {
-    // e will be outside the range 0–255
+    // e will be outside of range 0-255
     dump(e);
 }
 ```
@@ -50,20 +50,20 @@ try {
 fun dump(arg);
 ```
 
-Prints the argument `arg` to the contract's debug console. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`; otherwise, it does nothing.
+Prints the argument `arg` to the contract's debug console. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`, otherwise does nothing.
 
-This function is computationally expensive and consumes a lot of gas because it prints the location from which it was called, i.e., the filename, line and column numbers, and the original expression that was the `arg` argument.
+This function is computationally expensive and consumes a lot of gas because it prints the location from which it was called, i.e. the filename, line and column numbers, and the original expression that was the `arg` argument.
 
 Can be applied to the following list of types and values:
 
 * [`Int{:tact}`][int]
 * [`Bool{:tact}`][bool]
 * [`Address{:tact}`][p]
-* [`Cell{:tact}`][cell], [`Builder{:tact}`][builder], or [`Slice{:tact}`][slice]
+* [`Cell{:tact}`][cell], [`Builder{:tact}`][builder] or [`Slice{:tact}`][slice]
 * [`String{:tact}`][p] or [`StringBuilder{:tact}`][p]
 * [`map<K, V>{:tact}`](/book/maps)
-* [Optionals and the `null{:tact}` value](/book/optionals)
-* `void`, which is implicitly returned when a function doesn't have a return value defined
+* [Optionals and `null{:tact}` value](/book/optionals)
+* `void`, which is implicitly returned when a function doesn't have return value defined
 
 Usage examples:
 
@@ -81,7 +81,7 @@ dump(false);
 // Address
 dump(myAddress());
 
-// Cell, Builder, or Slice
+// Cell, Builder or Slice
 dump(emptyCell());  // Cell
 dump(beginCell());  // Builder
 dump(emptySlice()); // Slice
@@ -114,7 +114,7 @@ dump(emit("msg".asComment())); // As emit() function doesn't return a value, dum
 fun dumpStack();
 ```
 
-Prints the total stack depth and up to $255$ of its values from the top to the contract's debug console. The values are positioned bottom-up: from the deepest value on the left to the topmost value on the right. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`; otherwise, it does nothing.
+Prints the total stack depth and up to $255$ of its values from the top to the contract's debug console. The values are positioned bottom-up: from the deepest value on the left to the topmost value on the right. Evaluated only if the `debug` option in the [configuration file](/book/config) is set to `true{:json}`, otherwise does nothing.
 
 Usage example:
 
@@ -138,11 +138,11 @@ dumpStack(); // prints:
 fun throw(code: Int);
 ```
 
-Unconditionally throws an exception with the specified error `code`.
+Unconditionally throws an exception with an error `code`.
 
 Execution of the current context stops, statements after `throw` are not executed, and control is passed to the first [`try...catch{:tact}` block](/book/statements#try-catch) on the call stack. If there is no `try{:tact}` or `try...catch{:tact}` block among the calling functions, [TVM](https://docs.ton.org/learn/tvm-instructions/tvm-overview) will terminate the transaction.
 
-Attempts to specify a `code` outside the range $0 - 65535$ cause an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify the `code` outside of $0-65535$ range cause an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage examples:
 
@@ -168,9 +168,9 @@ fun butThisWont() {
 fun throwIf(code: Int, condition: Bool);
 ```
 
-Similar to [`throw(){:tact}`](#throw), but throws the error `code` only if `condition` holds, i.e., if it is equal to `true{:tact}`. Otherwise, it does not throw.
+Similar to [`throw(){:tact}`](#throw), but throws an error `code` only if `condition` holds, i.e. is equal to `true{:tact}`. Doesn't throw otherwise.
 
-Attempts to specify a `code` outside the range $0 - 65535$ cause an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify the `code` outside of $0-65535$ range cause an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage example:
 
@@ -183,8 +183,8 @@ contract Ownership {
     }
 
     receive() {
-        // Check if the sender is the owner of the contract,
-        // and throw exit code 1024 if not
+        // Check the sender is the owner of the contract,
+        // and throw exit code 1024 if it's not
         throwIf(1024, sender() != self.owner);
     }
 }
@@ -198,11 +198,11 @@ contract Ownership {
 fun throwUnless(code: Int, condition: Bool);
 ```
 
-Similar to [`throw(){:tact}`](#throw), but throws an error `code` only if the `condition` does **not** hold, i.e., if `condition` is equal to `false{:tact}`. Otherwise, it does not throw.
+Similar to [`throw(){:tact}`](#throw), but throws an error `code` only if `condition` does **not** hold, i.e. `condition` is equal to `true{:tact}`. Doesn't throw otherwise.
 
-This function is also similar to [`require(){:tact}`](#require), but it uses the specified `code` directly instead of generating one based on the given error message [`String{:tact}`][p].
+This function is also similar to [`require(){:tact}`](#require), but uses the specified `code` directly instead of generating one based on the given error message [`String{:tact}`][p].
 
-Attempts to specify a `code` outside the range $0 - 65535$ cause an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify the `code` outside of $0-65535$ range cause an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage example:
 
@@ -215,8 +215,8 @@ contract Ownership {
     }
 
     receive() {
-        // Check if the sender is the owner of the contract,
-        // and throw exit code 1024 if not
+        // Check the sender is the owner of the contract,
+        // and throw exit code 1024 if it's not
         throwUnless(1024, sender() == self.owner);
     }
 }

@@ -1,11 +1,11 @@
 ---
 title: Advanced
-description: "Advanced, niche, or dangerous functions from the Core library of Tact"
+description: "Advanced, niche or dangerous functions from the Core library of Tact"
 ---
 
 import { Badge } from '@astrojs/starlight/components';
 
-Various niche, dangerous, or unstable features that can produce unexpected results and are meant to be used by more experienced users.
+Various niche, dangerous or unstable features which can produce unexpected results and are meant to be used by the more experienced users.
 
 :::caution
 
@@ -66,11 +66,11 @@ let debt: Int = myStorageDue();
 fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool): Int;
 ```
 
-Calculates and returns the [storage fee][storage-fee] in [nanoToncoin][nanotoncoin] [`Int{:tact}`][int] for storing a contract with a given number of `cells` and `bits` for a number of `seconds`. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from the [config param 18 of TON Blockchain](https://docs.ton.org/develop/howto/blockchain-configs#param-18).
+Calculates and returns the [storage fee][storage-fee] in [nanoToncoins][nanotoncoin] [`Int{:tact}`][int] for storing a contract with a given number of `cells` and `bits` for a number of `seconds`. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from the [config param 18 of TON Blockchain](https://docs.ton.org/develop/howto/blockchain-configs#param-18).
 
-Note that specifying values of `cells` and `bits` higher than their maximum values listed in [account state limits (`max_acc_state_cells` and `max_acc_state_bits`)](/book/exit-codes#50) will have the same result as specifying the exact limits. In addition, make sure you take into account the [deduplication of cells with the same hash][deduplication].
+Note, that specifying values of `cells` and `bits` higher than their maximum values listed in [account state limits (`max_acc_state_cells` and `max_acc_state_bits`)](/book/exit-codes#50) will have the same result as with specifying the exact limits. In addition, make sure you take into account the [deduplication of cells with the same hash][deduplication].
 
-An attempt to specify a negative number of `cells`, `bits`, or `seconds` throws an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify negative number of `cells`, `bits` or `seconds` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage example:
 
@@ -101,11 +101,11 @@ let fee: Int = getStorageFee(1_000, 1_000, 1_000, false);
 fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int;
 ```
 
-Calculates and returns the [compute fee][compute-fee] in [nanoToncoin][nanotoncoin] [`Int{:tact}`][int] for a transaction that consumed `gasUsed` amount of [gas][gas]. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from the [config param 20 for the masterchain and config param 21 for the basechain][param-20-21] of TON Blockchain.
+Calculates and returns the [compute fee][compute-fee] in [nanoToncoins][nanotoncoin] [`Int{:tact}`][int] for a transaction that consumed `gasUsed` amount of [gas][gas]. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from the [config param 20 for the masterchain and config param 21 for the basechain][param-20-21] of TON Blockchain.
 
-When the `gasUsed` is less than a certain threshold called [`flat_gas_limit`][param-20-21], there is a minimum price to pay based on the value of [`flat_gas_price`][param-20-21]. The less gas is used below this threshold, the higher the minimum price will be. See the example for [`getSimpleComputeFee(){:tact}`](#getsimplecomputefee) to derive that threshold.
+When the `gasUsed` is less than a certain threshold called [`flat_gas_limit`][param-20-21], there's a minimum price to pay based on the value of [`flat_gas_price`][param-20-21]. The less gas is used below this threshold, the higher the minimum price will be. See the example for [`getSimpleComputeFee(){:tact}`](#getsimplecomputefee) to derive that threshold.
 
-An attempt to specify a negative value of `gasUsed` throws an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify negative value of `gasUsed` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage example:
 
@@ -135,9 +135,9 @@ let fee: Int = getComputeFee(1_000, false);
 fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int;
 ```
 
-Similar to [`getComputeFee(){:tact}`](#getcomputefee), but without the [`flat_gas_price`][param-20-21], i.e., without a minimum price to pay if the `gasUsed` is less than a certain threshold called [`flat_gas_limit`][param-20-21]. Calculates and returns only the `gasUsed` multiplied by the current gas price.
+Similar to [`getComputeFee(){:tact}`](#getcomputefee), but without the [`flat_gas_price`][param-20-21], i.e. without a minimum price to pay if the `gasUsed` is less than a certain threshold called [`flat_gas_limit`][param-20-21]. Calculates and returns only the `gasUsed` times the current gas price.
 
-Attempts to specify a negative value of `gasUsed` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify negative value of `gasUsed` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage example:
 
@@ -163,7 +163,7 @@ extends fun readForwardFee(self: Context): Int;
 
 Extension function for the [`Context{:tact}`](/ref/core-common#context).
 
-Reads the [forward fee][forward-fee] and returns it as an [`Int{:tact}`][int] amount of [nanoToncoins][nanotoncoin].
+Reads [forward fee][forward-fee] and returns it as [`Int{:tact}`][int] amount of [nanoToncoins][nanotoncoin].
 
 Usage example:
 
@@ -185,15 +185,15 @@ let fwdFee: Int = context().readForwardFee();
 fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int;
 ```
 
-Calculates and returns the [forward fee][forward-fee] in [nanoToncoins][nanotoncoin] as an [`Int{:tact}`][int] for an outgoing message consisting of a given number of `cells` and `bits`. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from [config param 24 for the masterchain and config param 25 for the basechain][param-24-25] of TON Blockchain.
+Calculates and returns the [forward fee][forward-fee] in [nanoToncoins][nanotoncoin] [`Int{:tact}`][int] for an outgoing message consisting of a given number of `cells` and `bits`. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from the [config param 24 for the masterchain and config param 25 for the basechain][param-24-25] of TON Blockchain.
 
-If both the source and the destination addresses are in the [basechain][basechain], then specify `isMasterchain` as `false{:tact}`; otherwise, specify `true{:tact}`.
+If both the source and the destination addresses are in the [basechain][basechain], then specify `isMasterchain` as `false{:tact}`. Otherwise, specify `true{:tact}`.
 
-Note that specifying values of `cells` and `bits` higher than their maximum values as listed in [account state limits (`max_msg_cells` and `max_msg_bits`)](/book/exit-codes#50) will have the same result as specifying the exact limits.
+Note, that specifying values of `cells` and `bits` higher than their maximum values listed in [account state limits (`max_msg_cells` and `max_msg_bits`)](/book/exit-codes#50) will have the same result as with specifying the exact limits.
 
-However, regardless of the values of `cells` and `bits`, this function always adds the minimum price based on the value of [`lump_price`][param-24-25]. See the example for [`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee) to derive it. In addition, make sure you take into account the [deduplication of cells with the same hash][deduplication]; for example, the root cell and its data bits don't count towards the forward fee and are covered by the [`lump_price`][param-24-25].
+However, regardless of the values of `cells` and `bits`, this function always adds the minimum price based on the value of [`lump_price`][param-24-25]. See the example for [`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee) to derive it. In addition, make sure you take into account the [deduplication of cells with the same hash][deduplication], since for example the root cell and its data bits don't count towards the forward fee and are covered by the [`lump_price`][param-24-25].
 
-Attempts to specify negative numbers for `cells` or `bits` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify negative number of `cells` or `bits` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage example:
 
@@ -202,8 +202,8 @@ let fee: Int = getForwardFee(1_000, 1_000, false);
 //                           -----  -----  -----
 //                           ↑      ↑      ↑
 //                           |      |      Both source and destination
-//                           |      |      are not on the masterchain,
-//                           |      |      but on the basechain.
+//                           |      |      isn't on the masterchain,
+//                           |      |      but on the basechain
 //                           |      Number of bits in a message
 //                           Number of cells in a message
 ```
@@ -212,7 +212,7 @@ let fee: Int = getForwardFee(1_000, 1_000, false);
 
   [Forward fee in TON Docs][forward-fee]\
   [Forward fee calculation in TON Docs][forward-fee-calc]\
-  [`CDATASIZEQ` instruction for computing the number of distinct cells, data bits, and refs in a `Cell{:tact}`](https://docs.ton.org/v3/documentation/tvm/instructions#F940)\
+  [`CDATASIZEQ` instruction for computing the number of distinct cells, data bits and refs in a `Cell{:tact}`](https://docs.ton.org/v3/documentation/tvm/instructions#F940)\
   [`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee)\
   [`getOriginalFwdFee(){:tact}`](#getoriginalfwdfee)
 
@@ -226,9 +226,9 @@ let fee: Int = getForwardFee(1_000, 1_000, false);
 fun getSimpleForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int;
 ```
 
-Similar to [`getForwardFee(){:tact}`](#getforwardfee), but without the [`lump_price`][param-24-25], i.e., without the minimum price to pay regardless of the amounts of `cells` or `bits`. Calculates and returns only the number of `cells` multiplied by the current cell price plus the number of `bits` multiplied by the current bit price.
+Similar to [`getForwardFee(){:tact}`](#getforwardfee), but without the [`lump_price`][param-24-25], i.e. without the minimum price to pay regardless of the amount of `cells` or `bits`. Calculates and returns only the `cells` times the current cell price plus `bits` times the current bit price.
 
-Attempts to specify negative numbers for `cells` or `bits` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify negative number of `cells` or `bits` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage example:
 
@@ -254,9 +254,9 @@ let lumpPrice = fee - feeNoLump;
 fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int;
 ```
 
-Calculates and returns the so-called _original_ [forward fee][forward-fee] in [nanoToncoin][nanotoncoin] [`Int{:tact}`][int] for an outgoing message based on the `fwdFee` obtained from the incoming message. If both the source and the destination addresses are in the [basechain][basechain], specify `isMasterchain` as `false{:tact}`. Otherwise, specify it as `true{:tact}`.
+Calculates and returns the so-called _original_ [forward fee][forward-fee] in [nanoToncoins][nanotoncoin] [`Int{:tact}`][int] for an outgoing message based on the `fwdFee` obtained from the incoming message. If both the source and the destination addresses are in the [basechain][basechain], then specify `isMasterchain` as `false{:tact}`. Otherwise, specify `true{:tact}`.
 
-This function is useful when the outgoing message depends heavily on the structure of the incoming message, to such an extent that you cannot fully predict the fee using [`getForwardFee(){:tact}`](#getforwardfee) alone. Even if you could, calculating the exact fee with [nanoToncoin][nanotoncoin]-level precision can be very expensive, therefore the approximation given by this function is often good enough.
+This function is useful when the outgoing message depends heavily on the structure of the incoming message, so much so that you cannot fully predict the fee using [`getForwardFee(){:tact}`](#getforwardfee) alone. Even if you could, calculating the exact fee with [nanoToncoin][nanotoncoin]-level precision can be very expensive, so the approximation given by this function is often good enough.
 
 Attempts to specify a negative value of `fwdFee` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
@@ -264,7 +264,7 @@ Usage example:
 
 ```tact
 let fwdFee: Int = context().readForwardFee();
-let origFee: Int = getOriginalFwdFee(fwdFee, false);
+let origFee: Int = getOriginalFwdFee(fee, false);
 ```
 
 :::note[Useful links:]
@@ -284,9 +284,9 @@ let origFee: Int = getOriginalFwdFee(fwdFee, false);
 fun setGasLimit(limit: Int);
 ```
 
-Sets the [`gas_limit`][param-20-21] to the [`Int{:tact}`][int] `limit` and resets the [`gas_credit`][param-20-21] to $0$. Note that specifying `limit` higher than the maximum allowed value of $2^{63} - 1$ has the same effect as specifying that exact maximum or invoking [`acceptMessage(){:tact}`](#acceptmessage).
+Sets the [`gas_limit`][param-20-21] to the [`Int{:tact}`][int] `limit` and resets the [`gas_credit`][param-20-21] to $0$. Note that specifying the `limit` higher than the maximum allowed value of $2^{63} - 1$ will have the same result as with specifying that exact maximum or calling [`acceptMessage(){:tact}`](#acceptmessage).
 
-Attempting to specify a negative or insufficient value for `limit` causes an exception with [exit code -14](/book/exit-codes#-14): `Out of gas error`.
+Attempts to specify a negative or insufficient value of `limit` will cause an exception with [exit code -14](/book/exit-codes#-14): `Out of gas error`.
 
 Usage example:
 
@@ -306,7 +306,7 @@ setGasLimit(42000);
 fun acceptMessage();
 ```
 
-Agrees to buy some [gas][gas] to finish the current transaction by setting the [`gas_limit`][param-20-21] to its maximum allowed value of $2^{63} - 1$ and resetting the [`gas_credit`][param-20-21] to $0$. This action is required to process external messages that bring no value (hence no gas) themselves.
+Agrees to buy some [gas][gas] to finish the current transaction by setting the [`gas_limit`][param-20-21] to its maximum allowed value of $2^{63} - 1$ and resetting the [`gas_credit`][param-20-21] to $0$. This action is required to process external messages, which bring no value (hence no gas) with themselves.
 
 Usage example:
 
@@ -320,7 +320,7 @@ contract Timeout {
 
     external("timeout") {
         if (now() > self.timeout) {
-            acceptMessage(); // start accepting external messages once timeout has expired
+            acceptMessage(); // start accepting external messages once timeout went out
         }
     }
 }
@@ -338,13 +338,13 @@ contract Timeout {
 fun commit();
 ```
 
-Commits the current state of [registers][registers] `c4` (persistent data) and `c5` (actions), so that the current execution is considered "successful" with the saved values even if an exception is thrown later during the compute phase.
+Commits the current state of [registers][registers] `c4` (persistent data) and `c5` (actions), so that the current execution is considered "successful" with the saved values even if an exception in compute phase is thrown later.
 
 Usage example:
 
 ```tact {1}
 commit();  // now, transaction is considered "successful"
-throw(42); // this won't fail the transaction
+throw(42); // and this won't fail it
 ```
 
 ## myCode
@@ -405,7 +405,7 @@ Usage example:
 
 ```tact
 let seed: Int = getSeed();
-setSeed(seed); // from now on the results of the pseudorandom number generator
+setSeed(seed); // from now on the results of pseudorandom number generator
                // are completely determined by the seed, which can be handy in tests,
                // but must not be used in production code!
 ```
@@ -426,15 +426,15 @@ setSeed(seed); // from now on the results of the pseudorandom number generator
 fun setSeed(seed: Int);
 ```
 
-Sets the [seed][seed] of the random number generator to the unsigned $256$-bit [`Int{:tact}`][int] `seed`, which can be obtained with the [`getSeed(){:tact}`](#getseed) function.
+Sets the [seed][seed] of the random number generator to the unsigned $256$-bit [`Int{:tact}`][int] `seed` which can be obtained with the [`getSeed(){:tact}`](#getseed) function.
 
-Attempts to specify a negative value for `seed` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify a negative value of `seed` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage example:
 
 ```tact
 let seed: Int = getSeed();
-setSeed(seed); // from now on the results of the pseudorandom number generator
+setSeed(seed); // from now on the results of pseudorandom number generator
                // are completely determined by the seed, which can be handy in tests,
                // but must not be used in production code!
 ```
@@ -493,7 +493,7 @@ let time: Int = blockLt();
 fun nativePrepareRandom();
 ```
 
-Prepares the random number generator by using [`nativeRandomizeLt(){:tact}`](#nativerandomizelt). Automatically called by the [`randomInt(){:tact}`](/ref/core-random#randomint) and [`random(){:tact}`](/ref/core-random#random) functions.
+Prepares a random number generator by using [`nativeRandomizeLt(){:tact}`](#nativerandomizelt). Automatically called by [`randomInt(){:tact}`](/ref/core-random#randomint) and [`random(){:tact}`](/ref/core-random#random) functions.
 
 Usage example:
 
@@ -508,9 +508,9 @@ nativePrepareRandom(); // prepare the RNG
 fun nativeRandomize(x: Int);
 ```
 
-Randomizes the pseudorandom number generator with the specified unsigned $256$-bit [`Int{:tact}`][int] `x` by mixing it with the current [seed][seed]. The new seed is the unsigned $256$-bit [`Int{:tact}`][int] value of the [SHA-256][sha-2] hash of the concatenated old seed and `x` in their $32$-byte string's [big-endian](https://en.wikipedia.org/wiki/Endianness) representation.
+Randomizes the pseudorandom number generator with the specified unsigned $256$-bit [`Int{:tact}`][int] `x` by mixing it with the current [seed][seed]. The new seed is the unsigned $256$-bit [`Int{:tact}`][int] value of the [SHA-256][sha-2] hash of concatenated old seed and `x` in their $32$-byte strings [big-endian](https://en.wikipedia.org/wiki/Endianness) representation.
 
-Attempts to specify a negative value for `x` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+Attempts to specify a negative value of `x` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
 Usage example:
 
@@ -557,11 +557,11 @@ let idk: Int = randomInt(); // ???, it's random!
 fun nativeRandom(): Int;
 ```
 
-Generates and returns a $256$-bit random number just like [`randomInt(){:tact}`](/ref/core-random#randomint), but doesn't initialize the random generator with [`nativePrepareRandom(){:tact}`](#nativepreparerandom) beforehand.
+Generates and returns an $256$-bit random number just like [`randomInt(){:tact}`](/ref/core-random#randomint), but doesn't initialize the random generator with [`nativePrepareRandom(){:tact}`](#nativepreparerandom) beforehand.
 
 :::note
 
-  Don't use this function directly; prefer using [`randomInt(){:tact}`](/ref/core-random#randomint) instead.
+  Don't use this function directly, and prefer using [`randomInt(){:tact}`](/ref/core-random#randomint) instead.
 
 :::
 
@@ -571,11 +571,11 @@ Generates and returns a $256$-bit random number just like [`randomInt(){:tact}`]
 fun nativeRandomInterval(max: Int): Int;
 ```
 
-Generates and returns a $256$-bit random number in the range from $0$ to `max`, similar to [`random(){:tact}`](/ref/core-random#random), but doesn't initialize the random generator with [`nativePrepareRandom(){:tact}`](#nativepreparerandom) beforehand.
+Generates and returns a $256$-bit random number in the range from $0$ to `max` similar to [`random(){:tact}`](/ref/core-random#random), but doesn't initialize the random generator with [`nativePrepareRandom(){:tact}`](#nativepreparerandom) beforehand.
 
 :::note
 
-  Do not use this function directly; prefer using [`random(){:tact}`](/ref/core-random#random) instead.
+  Don't use this function directly, and prefer using [`random(){:tact}`](/ref/core-random#random) instead.
 
 :::
 
@@ -587,11 +587,11 @@ fun nativeSendMessage(cell: Cell, mode: Int);
 
 [Queues the message](/book/send#outbound-message-processing) to be sent by specifying the complete `cell` and the [message `mode`](/book/message-mode).
 
-Attempting to queue more than $255$ messages throws an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
+Attempts to queue more than $255$ messages throw an exception with an [exit code 33](/book/exit-codes#33): `Action list is too long`.
 
 :::note
 
-  Prefer using the more common and user-friendly [`send(){:tact}`](/ref/core-common#send) function unless you have complex logic that can't be expressed otherwise.
+  Prefer using a much more common and user-friendly [`send(){:tact}`](/ref/core-common#send) function unless you have a complex logic that can't be expressed otherwise.
 
 :::
 
@@ -606,7 +606,7 @@ fun nativeSendMessageReturnForwardFee(cell: Cell, mode: Int): Int;
 
 Similar to [`nativeSendMessage(){:tact}`](#nativesendmessage), but also calculates and returns the [forward fee][forward-fee] in [nanoToncoins][nanotoncoin].
 
-Attempting to queue more than $255$ messages throws an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
+Attempts to queue more than $255$ messages throw an exception with an [exit code 33](/book/exit-codes#33): `Action list is too long`.
 
 ## nativeReserve
 
@@ -616,7 +616,7 @@ Attempting to queue more than $255$ messages throws an exception with [exit code
 fun nativeReserve(amount: Int, mode: Int);
 ```
 
-Calls the native `raw_reserve` function with the specified amount and mode. The `raw_reserve` is a function that creates an output action to reserve a specific amount of [nanoToncoins][nanotoncoin] from the remaining balance of the account.
+Calls native `raw_reserve` function with specified amount and mode. The `raw_reserve` is a function that creates an output action to reserve a specific amount of [nanoToncoins][nanotoncoin] from the remaining balance of the account.
 
 It has the following signature in FunC:
 
@@ -628,15 +628,15 @@ The function takes two arguments:
 * `amount`: The number of [nanoToncoins][nanotoncoin] to reserve.
 * `mode`: Determines the reservation behavior.
 
-The function `raw_reserve` is roughly equivalent to creating an outbound message carrying the specified `amount` of [nanoToncoins][nanotoncoin] (or `b` $-$ `amount` [nanoToncoins][nanotoncoin], where `b` is the remaining balance) to oneself. This ensures that subsequent output actions cannot spend more money than the remainder.
+Function `raw_reserve` is roughly equivalent to creating an outbound message carrying the specified `amount` of [nanoToncoins][nanotoncoin] (or `b` $-$ `amount` [nanoToncoins][nanotoncoin], where `b` is the remaining balance) to oneself. This ensures that subsequent output actions cannot spend more money than the remainder.
 
-It's possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for convenience, there is a set of constants that you may use to easily construct the compound `mode`. Take a look at the following tables for more information on base modes and optional flags.
+It's possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience there's a set of constants which you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on base modes and optional flags.
 
 :::caution
 
   Currently, `amount` must be a non-negative integer, and `mode` must be in the range $0..31$, inclusive.
 
-  Additionally, attempting to queue more than $255$ reservations in one transaction throws an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
+  Additionally, attempts to queue more than $255$ reservations in one transaction throw an exception with an [exit code 33](/book/exit-codes#33): `Action list is too long`.
 
 :::
 
@@ -647,7 +647,7 @@ The resulting `mode` value can have the following base modes:
 Mode value | Constant name                 | Description
 ---------: | :---------------------------- | -----------
 $0$        | `ReserveExact{:tact}`         | Reserves exactly the specified `amount` of [nanoToncoins][nanotoncoin].
-$1$        | `ReserveAllExcept{:tact}`     | Reserves all but the specified `amount` of [nanoToncoins][nanotoncoin].
+$1$        | `ReserveAllExcept{:tact}`     | Reserves all, but the specified `amount` of [nanoToncoins][nanotoncoin].
 $2$        | `ReserveAtMost{:tact}`        | Reserves at most the specified `amount` of [nanoToncoins][nanotoncoin].
 
 ### Optional flags {#nativereserve-optional-flags}
@@ -662,13 +662,13 @@ $+16$      | `ReserveBounceIfActionFail{:tact}` | Bounces the transaction if res
 
 ### Combining modes with flags {#nativereserve-combining-modes-with-flags}
 
-To create the [`Int{:tact}`][int] value for the `mode` parameter, combine base modes with optional flags using the [bitwise OR](/book/operators#binary-bitwise-or) operation:
+To make the [`Int{:tact}`][int] value for `mode` parameter, you just have to combine base modes with optional flags by applying the [bitwise OR](/book/operators#binary-bitwise-or) operation:
 
 ```tact
 nativeReserve(ton("0.1"), ReserveExact | ReserveBounceIfActionFail);
 //            ----------  ----------------------------------------
 //            ↑           ↑
-//            |           mode, which would bounce the transaction if exact reservation fails
+//            |           mode, which would bounce the transaction if exact reservation would fail
 //            amount of nanoToncoins to reserve
 ```
 
@@ -687,7 +687,7 @@ Field       | Type                           | Description
 `workchain` | [`Int as int8{:tact}`][int]    | Workchain ID of the address, usually $0$ (basechain) or $-1$ (masterchain)
 `address`   | [`Int as uint256{:tact}`][int] | Address in the specified `workchain`
 
-Attempts to pass a [`Slice{:tact}`][slice] with a layout different from the `StdAddress{:tact}` or to load more data than a given [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+Attempts to pass a [`Slice{:tact}`][slice] with layout different from the `StdAddress{:tact}` or to load more data than a given [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage example:
 
@@ -721,10 +721,10 @@ Converts a `slice` containing an address of variable length into the `VarAddress
 
 Field       | Type                         | Description
 :---------- | :--------------------------- | :----------
-`workchain` | [`Int as int32{:tact}`][int] | Workchain ID of the variable-length address
+`workchain` | [`Int as int32{:tact}`][int] | Workchain ID of the variable length address
 `address`   | [`Slice{:tact}`][slice]      | Address in the specified `workchain`
 
-Attempts to pass a [`Slice{:tact}`][slice] with a layout different from the `VarAddress{:tact}` or to load more data than a given [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+Attempts to pass a [`Slice{:tact}`][slice] with layout different from the `VarAddress{:tact}` or to load more data than a given [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage example:
 
