@@ -1,4 +1,3 @@
-// import type { Address, Cell, Slice } from "@ton/core";
 import type { SrcInfo } from "../grammar/src-info";
 import type { RelativePath } from "../imports/path";
 import type { Language } from "../imports/source";
