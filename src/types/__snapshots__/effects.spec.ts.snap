@@ -225,6 +225,13 @@ exports[`effects should correctly compute effects: contractStorageAnalysis 1`] =
         "effects": Set {},
         "kind": "internal-comment",
       },
+      {
+        "comment": "toCell on struct field",
+        "effects": Set {
+          "contractStorageRead",
+        },
+        "kind": "internal-comment",
+      },
     ],
   },
 ]

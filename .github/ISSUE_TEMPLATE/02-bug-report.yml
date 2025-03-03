@@ -23,7 +23,7 @@ body:
     id: logs
     attributes:
       label: Relevant Tact/build system log output
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so there is no need for backticks.
       render: shell
   - type: textarea
     id: actual
