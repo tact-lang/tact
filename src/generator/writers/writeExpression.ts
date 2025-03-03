@@ -39,6 +39,7 @@ import {
     tryExtractPath,
 } from "../../ast/ast-helpers";
 import { enabledDebug, enabledNullChecks } from "../../config/features";
+import { Address, Cell } from "@ton/core";
 
 function isNull(wCtx: WriterContext, expr: A.AstExpression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
@@ -106,17 +107,17 @@ export function writeValue(val: A.AstLiteral, wCtx: WriterContext): string {
         case "boolean":
             return val.value ? "true" : "false";
         case "address": {
-            const res = writeAddress(val.value, wCtx);
+            const res = writeAddress(Address.parseRaw(val.value), wCtx);
             wCtx.used(res);
             return res + "()";
         }
         case "cell": {
-            const res = writeCell(val.value, wCtx);
+            const res = writeCell(Cell.fromHex(val.value), wCtx);
             wCtx.used(res);
             return `${res}()`;
         }
         case "slice": {
-            const res = writeSlice(val.value, wCtx);
+            const res = writeSlice(Cell.fromHex(val.value).asSlice(), wCtx);
             wCtx.used(res);
             return `${res}()`;
         }
@@ -752,9 +753,9 @@ export function writeTypescriptValue(
         case "address":
             return `address("${val.value.toString()}")`;
         case "cell":
-            return `Cell.fromHex("${val.value.toBoc().toString("hex")}")`;
+            return `Cell.fromHex("${Cell.fromHex(val.value).toBoc().toString("hex")}")`;
         case "slice":
-            return `Cell.fromHex("${val.value.asCell().toBoc().toString("hex")}").beginParse()`;
+            return `Cell.fromHex("${Cell.fromHex(val.value).toBoc().toString("hex")}").beginParse()`;
         case "null":
             return "null";
         case "struct_value": {

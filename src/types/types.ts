@@ -63,10 +63,10 @@ export function showValue(val: A.AstLiteral): string {
         case "boolean":
             return val.value ? "true" : "false";
         case "address":
-            return val.value.toRawString();
+            return val.value;
         case "cell":
         case "slice":
-            return val.value.toString();
+            return val.value;
         case "null":
             return "null";
         case "struct_value": {

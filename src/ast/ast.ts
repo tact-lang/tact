@@ -1,4 +1,4 @@
-import type { Address, Cell, Slice } from "@ton/core";
+// import type { Address, Cell, Slice } from "@ton/core";
 import type { SrcInfo } from "../grammar/src-info";
 import type { RelativePath } from "../imports/path";
 import type { Language } from "../imports/source";
@@ -602,21 +602,21 @@ export type AstNull = {
 
 export type AstAddress = {
     readonly kind: "address";
-    readonly value: Address;
+    readonly value: string;
     readonly id: number;
     readonly loc: SrcInfo;
 };
 
 export type AstCell = {
     readonly kind: "cell";
-    readonly value: Cell;
+    readonly value: string;
     readonly id: number;
     readonly loc: SrcInfo;
 };
 
 export type AstSlice = {
     readonly kind: "slice";
-    readonly value: Slice;
+    readonly value: string;
     readonly id: number;
     readonly loc: SrcInfo;
 };
