@@ -1,6 +1,13 @@
 import type * as A from "../ast/ast";
 import type { FactoryAst } from "../ast/ast-helpers";
-import { eqNames, idText, isSelfId, isSlice, selfId, isWildcard } from "../ast/ast-helpers";
+import {
+    eqNames,
+    idText,
+    isSelfId,
+    isSlice,
+    selfId,
+    isWildcard,
+} from "../ast/ast-helpers";
 import { traverse, traverseAndCheck } from "../ast/iterators";
 import {
     idTextErr,
