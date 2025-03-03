@@ -126,8 +126,8 @@ struct StateInit {
 /// * https://docs.tact-lang.org/ref/core-common#contractaddress
 /// 
 inline extends fun hasSameBasechainAddress(self: StateInit, sender: Address): Bool {
-    let baseAddress = contractBasechainAddress(self);
     let senderAddress = parseStdAddress(sender.asSlice()).address;
+    let baseAddress = contractBasechainAddress(self);
     return baseAddress.hash!! == senderAddress;
 }
 
