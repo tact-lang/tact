@@ -257,7 +257,7 @@ In Tact, there are at least two ways to construct and parse cells:
 * [Manually](#cnp-manually), which involves actively using [`Builder{:tact}`](#builders), [`Slice{:tact}`](#slices), and [relevant methods](/ref/core-cells).
 * [Using Structs](#cnp-structs), which is the recommended and much more convenient approach.
 
-#### Manual Construction and Parsing {#cnp-manually}
+#### Manually {#cnp-manually}
 
 Construction via `Builder{:tact}`      | Parsing via `Slice{:tact}`
 :------------------------------------- | :-------------------------
@@ -332,7 +332,7 @@ fun example() {
 }
 ```
 
-Note that Tact's auto-layout algorithm is greedy. For example, `struct Adventure{:tact}` occupies very little space and will not be stored as a reference [`Cell{:tact}`](#cells); instead, it will be provided directly as a [`Slice{:tact}`](#slices).
+Note that Tact's auto-layout algorithm is greedy. For example, `struct Adventure{:tact}` occupies very little space and will not be stored as a reference [`Cell{:tact}`](#cells). Instead, it will be provided directly as a [`Slice{:tact}`](#slices).
 
 By using [Structs][struct] and [Messages][message] instead of manual [`Cell{:tact}`](#cells) composition and parsing, those details will be simplified away and will not cause any hassle when the optimized layout changes.
 

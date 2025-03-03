@@ -412,7 +412,9 @@ Options that affect the optimization of contracts.
 
 `false{:json}` by default.
 
-If set to `false{:json}`, saves the contract state at the end of a receiver execution only if the contract state was modified; otherwise, the contract data cell is not overwritten. Setting the option to `true{:json}` results in each receiver updating the contract data cell regardless of contract state modifications, thus increasing gas consumption. This option can be used to provide an extra safety level or for debugging.
+If set to `false{:json}`, saves the contract state at the end of a receiver execution only if the contract state was modified. Otherwise, the contract data cell is not overwritten. Setting the option to `true{:json}` results in each receiver updating the contract data cell regardless of contract state modifications, thus increasing gas consumption.
+
+This option can be used to provide an extra safety level or for debugging.
 
 ```json filename="tact.config.json" {9,17}
 {
