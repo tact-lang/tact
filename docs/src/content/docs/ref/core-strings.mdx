@@ -5,9 +5,9 @@ description: "Various String and StringBuilder functions from the Core library o
 
 import { Badge } from '@astrojs/starlight/components';
 
-Strings are immutable sequences of characters, which means that once a [`String{:tact}`][p] is created, it cannot be changed. Strings are useful to store text, and so they can be converted to [`Cell{:tact}`][cell] type to be used as message bodies.
+Strings are immutable sequences of characters, which means that once a [`String{:tact}`][p] is created, it cannot be changed. Strings are useful for storing text and can thus be converted to the [`Cell{:tact}`][cell] type to be used as message bodies.
 
-To be able to concatenate strings in a gas-efficient way, use a [`StringBuilder{:tact}`][p].
+To concatenate strings in a gas-efficient way, use a [`StringBuilder{:tact}`][p].
 
 To use [`String{:tact}`][p] literals directly, see: [String literals](/book/expressions#string-literals).
 
@@ -59,7 +59,7 @@ let fizz: StringBuilder = beginTailString();
 fun beginStringFromBuilder(b: StringBuilder): StringBuilder;
 ```
 
-Creates and returns a new [`StringBuilder{:tact}`][p] from existing [`StringBuilder{:tact}`][p] `b`. Useful when you need to serialize an existing [`String{:tact}`][p] to a [`Cell{:tact}`][cell] with some other data.
+Creates and returns a new [`StringBuilder{:tact}`][p] from an existing [`StringBuilder{:tact}`][p] `b`. This is useful when you need to serialize an existing [`String{:tact}`][p] to a [`Cell{:tact}`][cell] with some other data.
 
 Usage example:
 
@@ -75,7 +75,7 @@ extends mutates fun append(self: StringBuilder, s: String);
 
 Extension mutation function for the [`StringBuilder{:tact}`][p] type.
 
-Appends a [`String{:tact}`][p] `s` to the [`StringBuilder{:tact}`][p].
+Appends the [`String{:tact}`][p] `s` to the [`StringBuilder{:tact}`][p].
 
 Usage example:
 
@@ -94,7 +94,7 @@ extends fun concat(self: StringBuilder, s: String): StringBuilder;
 
 Extension function for the [`StringBuilder{:tact}`][p] type.
 
-Returns a new [`StringBuilder{:tact}`][p] after concatinating it with a [`String{:tact}`][p] `s`. Can be chained, unlike [`StringBuilder.append(){:tact}`](#stringbuilderappend).
+Returns a new [`StringBuilder{:tact}`][p] after concatenating it with the [`String{:tact}`][p] `s`. Can be chained, unlike [`StringBuilder.append(){:tact}`](#stringbuilderappend).
 
 Usage example:
 
@@ -179,7 +179,7 @@ Calculates and returns an [`Int{:tact}`][int] value of the [SHA-256][sha-2] hash
 
 Unlike [`sha256(){:tact}`](/ref/core-math#sha256), this function is gas-efficient and **only** hashes up to $127$ bytes of the given string. Using longer strings would cause collisions if their first $127$ bytes are the same.
 
-Attempts to specify a [`String{:tact}`][p] with number of bits **not** divisible by $8$ throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+Attempts to specify a [`String{:tact}`][p] with a number of bits **not** divisible by $8$ would throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
 Usage example:
 
@@ -197,7 +197,7 @@ Extension function for the [`String{:tact}`][p] type.
 
 Returns a [`Slice{:tact}`][slice] from a [`String{:tact}`][p] by trying to pack all of its bits into a continuous list of [Cells][p], each referencing the next one and opening them all for future parsing.
 
-Note, that there's no indication of how many bytes a particular character could take in the [`Slice{:tact}`][slice] or how deep the list of references is going to be, so use this function only if you know what you're doing.
+Note that there's no indication of how many bytes a particular character could take in the [`Slice{:tact}`][slice] or how deep the list of references is going to be, so use this function only if you know what you're doing.
 
 Usage example:
 
@@ -211,7 +211,7 @@ fizz == buzz; // true, but be careful as it's not always the case
 
 :::note
 
-  See how `String.asSlice{:tact}` function can be used in practice: [How to convert a `String` to an `Int`](/cookbook/type-conversion#how-to-convert-a-string-to-an-int).
+  See how the `String.asSlice{:tact}` function can be used in practice: [How to convert a `String` to an `Int`](/cookbook/type-conversion#how-to-convert-a-string-to-an-int).
 
 :::
 
@@ -248,9 +248,9 @@ extends fun fromBase64(self: String): Slice;
 
 Extension function for the [`String{:tact}`][p] type.
 
-Returns a [`Slice{:tact}`][slice] out of the decoded [Base64](https://en.wikipedia.org/wiki/Base64) [`String{:tact}`][p]. Alias to `self.asSlice().fromBase64(){:tact}`.
+Returns a [`Slice{:tact}`][slice] out of the decoded [Base64](https://en.wikipedia.org/wiki/Base64) [`String{:tact}`][p]. Alias for `self.asSlice().fromBase64(){:tact}`.
 
-Note, that this function is limited and only takes the first $1023$ bits of data from the given [`String{:tact}`][p], without throwing an exception when the [`String{:tact}`][p] is larger (i.e. contains more than $1023$ bits of data).
+Note that this function is limited and only takes the first $1023$ bits of data from the given [`String{:tact}`][p], without throwing an exception when the [`String{:tact}`][p] is larger (i.e., contains more than $1023$ bits of data).
 
 If the given [`String{:tact}`][p] contains characters not from the Base64 set, an exception with [exit code 134](/book/exit-codes#134) will be thrown: `Invalid argument`.
 
@@ -272,9 +272,9 @@ extends fun asString(self: Slice): String;
 
 Extension function for the [`Slice{:tact}`][slice] type.
 
-Returns a [`String{:tact}`][p] from a [`Slice{:tact}`][slice] by trying to load all of its bits without looking for its references, if any.
+Returns a [`String{:tact}`][p] from a [`Slice{:tact}`][slice] by trying to load all of its bits without looking into its references, if any.
 
-Note, that this function doesn't look at the references at all and is truncates its output to $1023$ bits, so use it only if you know what you're doing.
+Note that this function doesn't look at the references at all and truncates its output to $1023$ bits, so use it only if you know what you're doing.
 
 Usage example:
 
@@ -294,9 +294,9 @@ extends fun fromBase64(self: Slice): Slice;
 
 Extension function for the [`Slice{:tact}`][slice] type.
 
-Returns a new [`Slice{:tact}`][slice] out of the decoded [Base64](https://en.wikipedia.org/wiki/Base64) [`Slice{:tact}`][slice].
+Returns a new [`Slice{:tact}`][slice] from the decoded [Base64](https://en.wikipedia.org/wiki/Base64) [`Slice{:tact}`][slice].
 
-Note, that this function is limited and only takes the first $1023$ bits of data from the given [`Slice{:tact}`][slice], without throwing an exception if the [`Slice{:tact}`][slice] has more data (i.e., when it has any references).
+Note that this function is limited and only takes the first $1023$ bits of data from the given [`Slice{:tact}`][slice], without throwing an exception if the [`Slice{:tact}`][slice] has more data (i.e., when it has references).
 
 If the given [`Slice{:tact}`][p] contains characters not from the Base64 set, an exception with [exit code 134](/book/exit-codes#134) will be thrown: `Invalid argument`.
 
@@ -335,9 +335,9 @@ extends fun toFloatString(self: Int, digits: Int): String;
 
 Extension function for the [`Int{:tact}`][int] type.
 
-Returns a [`String{:tact}`][p] from an [`Int{:tact}`][int] value using a [fixed-point representation](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) of a fractional number, where `self` is a significant part of the number and `digits` is a number of digits in the fractional part.
+Returns a [`String{:tact}`][p] from an [`Int{:tact}`][int] value using a [fixed-point representation](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) of a fractional number, where `self` is the significant part of the number and `digits` is the number of digits in the fractional part.
 
-More precisely, `digits` is an exponentiation parameter of $10^{-\mathrm{digits}}$ expression, which gives the represented fractional number when multiplied by the actual [`Int{:tact}`][int] value. Parameter `digits` is required to be in the closed interval: $0 <$ `digits` $< 78$, otherwise an exception with [exit code 134](/book/exit-codes#134) will be thrown: `Invalid argument`.
+More precisely, `digits` is an exponentiation parameter of the expression $10^{-\mathrm{digits}}$, which gives the represented fractional number when multiplied by the actual [`Int{:tact}`][int] value. The parameter `digits` is required to be in the closed interval: $0 < \text{digits} < 78$; otherwise, an exception with [exit code 134](/book/exit-codes#134) will be thrown: `Invalid argument`.
 
 Usage example:
 
@@ -355,9 +355,9 @@ extends fun toCoinsString(self: Int): String;
 
 Extension function for the [`Int{:tact}`][int] type.
 
-Returns a [`String{:tact}`][p] from an [`Int{:tact}`][int] value using a [fixed-point representation](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) of a fractional number. Alias to `self.toFloatString(9){:tact}`.
+Returns a [`String{:tact}`][p] from an [`Int{:tact}`][int] value using a [fixed-point representation](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) of a fractional number. It is an alias to `self.toFloatString(9){:tact}`.
 
-This is used to represent [nanoToncoin](/book/integers#nanotoncoin) [`Int{:tact}`][int] values using strings.
+This is used to represent [nanoToncoin](/book/integers#nanotoncoin) [`Int{:tact}`][int] values as strings.
 
 Usage example:
 
