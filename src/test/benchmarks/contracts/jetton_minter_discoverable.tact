@@ -86,6 +86,10 @@ contract JettonMinter(
         self.owner = msg.newOwner;
     }
 
+    bounced(msg: bounced<JettonTransferInternal>) {
+        self.totalSupply -= msg.amount;
+    }
+
     get fun get_jetton_data(): JettonMasterState {
         return JettonMasterState {
             totalSupply: self.totalSupply,
