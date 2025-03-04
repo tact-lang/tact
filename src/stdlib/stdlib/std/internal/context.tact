@@ -1,6 +1,6 @@
 /// Represents the context of the current message.
 struct Context {
-    /// Indicates whether the received message can 
+    /// Indicates whether the received message can
     /// [bounce back](https://docs.ton.org/v3/documentation/smart-contracts/message-management/non-bounceable-messages)
     bounceable: Bool;
 
