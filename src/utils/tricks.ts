@@ -148,3 +148,20 @@ export const entries = Object.entries as <O>(
 ) => { [K in keyof O]: [K, O[K]] }[keyof O][];
 
 export const keys = Object.keys as <O>(o: O) => (keyof O)[];
+
+export type EnumKeys<Enum> = Exclude<keyof Enum, number>
+
+export const enumObject = <Enum extends Record<string, number | string>>(e: Enum) => {
+    const copy = {...e} as { [K in EnumKeys<Enum>]: Enum[K] };
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    Object.values(e).forEach(value => typeof value === 'number' && delete copy[value]);
+    return copy;
+};
+
+export const enumKeys = <Enum extends Record<string, number | string>>(e: Enum) => {
+    return Object.keys(enumObject(e)) as EnumKeys<Enum>[];
+};
+
+export const enumValues = <Enum extends Record<string, number | string>>(e: Enum) => {
+    return [...new Set(Object.values(enumObject(e)))] as Enum[EnumKeys<Enum>][];
+};
