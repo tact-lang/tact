@@ -38,7 +38,7 @@ Exit code     | Origin                              | Brief description
 [$10$](#10)   | [Compute phase][c]                  | Dictionary error.
 [$11$](#11)   | [Compute phase][c]                  | Described in [TVM][tvm] docs as "Unknown error, may be thrown by user programs."
 [$12$](#12)   | [Compute phase][c]                  | Fatal error. Thrown by [TVM][tvm] in situations deemed impossible.
-[$13$](#13)   | [Compute phase][c]                  | Out-of-gas error.
+[$13$](#13)   | [Compute phase][c]                  | Out of gas error.
 [$-14$](#-14) | [Compute phase][c]                  | Same as $13$. Negative, so that it [cannot be faked](#13).
 [$14$](#14)   | [Compute phase][c]                  | VM virtualization error. Reserved, but never thrown.
 [$32$](#32)   | [Action phase][a]                   | Action list is invalid.
@@ -393,7 +393,7 @@ Fatal error. Thrown by TVM in situations deemed impossible.
 
 If there isn't enough gas to complete computations in the [compute phase](#compute), an error with exit code $13$ is thrown: `Out of gas error`.
 
-However, this code isn't immediately shown as is—instead, the bitwise NOT operation is applied, changing the value from $13$ to $-14$. Only then is the code displayed.
+However, this code isn't immediately shown as is — instead, the bitwise NOT operation is applied, changing the value from $13$ to $-14$. Only then is the code displayed.
 
 This is done to prevent the resulting code ($-14$) from being produced artificially in user contracts, as all functions that can [throw an exit code](/ref/core-debug) can only specify integers in the range from $0$ to $65535$ inclusive.
 
@@ -415,7 +415,7 @@ Virtualization error related to [pruned branch cells](/book/cells#cells-kinds). 
 
 ## Action phase {#action}
 
-The [action phase][a] is processed after the successful execution of the [compute phase](#compute). It Attempts to perform the actions stored in the action list by [TVM][tvm] during the compute phase.
+The [action phase][a] is processed after the successful execution of the [compute phase](#compute). It attempts to perform the actions stored in the action list by [TVM][tvm] during the compute phase.
 
 Some actions may fail during processing, in which case those actions may be skipped or the whole transaction may revert depending on the mode of actions. The code indicating the resulting state of the [action phase][a] is called a _result code_. Since it is also a 32-bit signed integer that essentially serves the same purpose as the _exit code_ of the [compute phase](#compute), it is common to call the result code an exit code as well.
 
@@ -448,7 +448,7 @@ There are only four supported actions at the moment: changing the contract code,
 ```tact
 // For example, let's try to send an ill-formed message:
 nativeSendMessage(emptyCell(), 0); // won't fail in the compute phase,
-// but will result in exit code 34 in the Action phase
+                                   // but will result in exit code 34 in the Action phase
 ```
 
 ### 35: Invalid source address in outbound message {#35}
@@ -522,7 +522,7 @@ If the maximum number of cells in the library is exceeded or the maximum depth o
 
 ### 50: Account state size exceeded limits {#50}
 
-If the account state (essentially, contract storage) exceeds any of the limits specified in [config param 43 of TON Blockchain](https://docs.ton.org/develop/howto/blockchain-configs#param-43) by the end of the [action phase](#action), an error with exit code $50$ is thrown: `Account state size exceeded limits`.
+If the account state (contract storage, essentially) exceeds any of the limits specified in [config param 43 of TON Blockchain](https://docs.ton.org/develop/howto/blockchain-configs#param-43) by the end of the [action phase](#action), an error with exit code $50$ is thrown: `Account state size exceeded limits`.
 
 If the configuration is absent, the default values are:
 
@@ -545,7 +545,7 @@ Tact utilizes exit codes from $128$ to $255$. Note that exit codes used by Tact 
 
 If there is a non-null assertion, such as the [`!!{:tact}`](/book/operators#unary-non-null-assert) operator, and the checked value is [`null{:tact}`](/book/optionals), an error with exit code $128$ is thrown: `Null reference exception`.
 
-This behavior can be modified by setting the [`nullChecks`](/book/config#safety-nullChecks) option to `false`, which will disable run-time null checks. This allows saving some gas; however, it is recommended to use it only for well-tested contracts, as it can lead to less recognizable type errors reported by TVM.
+This behavior can be modified by setting the [`nullChecks`](/book/config#safety-nullChecks) option to `false`, which will disable runtime null checks and would allow to save some gas. However, it is recommended to use it only for well-tested contracts, as it can lead to less recognizable type errors reported by TVM.
 
 ```tact
 let gotcha: String? = null;
@@ -614,7 +614,7 @@ If there is an invalid or unexpected argument value, an error with exit code $13
 
 Here are some of the functions in Tact which can throw an error with this exit code:
 
-1. [`Int.toFloatString(digits){:tact}`](/ref/core-strings#inttofloatstring): if `digits` is not in the interval $0 < \text{digits} < 78$.
+1. [`Int.toFloatString(digits){:tact}`](/ref/core-strings#inttofloatstring): if `digits` is not in the interval $0 < digits < 78$.
 
 2. [`String.fromBase64(){:tact}`](/ref/core-strings#stringfrombase64) and [`Slice.fromBase64(){:tact}`](/ref/core-strings#slicefrombase64): if the given [`String{:tact}`][p] or [`Slice{:tact}`][slice] contains non-Base64 characters.
 

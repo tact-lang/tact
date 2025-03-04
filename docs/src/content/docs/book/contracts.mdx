@@ -87,9 +87,9 @@ If declared or defined in a trait, internal functions and constants can be marke
 
 ### Supported interfaces, `@interface(…)` {#interfaces}
 
-It's difficult to determine what a contract does and which [receivers](#receiver-functions) and [getters](#getter-functions) it has without examining its source code. Sometimes the source is unavailable or inaccessible, leaving one to attempt disassembling and introspecting the contract, which is a very messy, error-prone approach with diminishing returns and no real reproducibility.
+It's hard to determine what a contract does and which [receivers](#receiver-functions) and [getters](#getter-functions) it has without examining its source code. Sometimes the source is unavailable or inaccessible, leaving one to try to disassemble and introspect the contract, which is a very messy and error-prone approach with diminishing returns and no real reproducibility.
 
-To resolve this issue, an [OTP-001: Supported Interfaces](/ref/evolution/otp-001) was created. According to it, Tact contracts [can report](/book/config#options-interfacesgetter) the list of supported interfaces through a special `supported_interfaces` [getter](#getter-functions). That getter is accessible off-chain using any TON Blockchain explorer—one simply needs to specify `supported_interfaces` as a method to execute and obtain a list of hexadecimal values.
+To resolve this issue, an [OTP-001: Supported Interfaces](/ref/evolution/otp-001) was created. According to it, Tact contracts [can report](/book/config#options-interfacesgetter) the list of supported interfaces through a special `supported_interfaces` [getter](#getter-functions). That getter is accessible off-chain using any TON Blockchain explorer — one simply needs to specify `supported_interfaces` as a method to execute and obtain a list of hexadecimal values.
 
 These hexadecimal values are truncated to the first 128 bits of [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) hashes of the original [`String{:tact}`][p] values of the supported interfaces. The first value in this list **must** equal $\mathrm{0x5cec3d5d2cae7b1e84ec39d64a851b66}$ in [hexadecimal notation](/book/integers#hexadecimal), which is the first half of the SHA-256 hash for `"org.ton.introspection.v0"{:tact}`. If the first value is incorrect, you must stop trying to introspect the contract, as it does not conform to the [Supported Interfaces](/ref/evolution/otp-001) proposal.
 
@@ -110,7 +110,7 @@ trait Misc {
 
 Tact provides a small set of interfaces under specific conditions:
 
-* `"org.ton.abi.ipfs.v0"{:tact}`, according to [OTP-003: Self-ABI Reporting](/ref/evolution/otp-003)—opt-in via [`ipfsAbiGetter`](/book/config#options-ipfsabigetter) config property
+* `"org.ton.abi.ipfs.v0"{:tact}`, according to [OTP-003: Self-ABI Reporting](/ref/evolution/otp-003) — opt-in via [`ipfsAbiGetter`](/book/config#options-ipfsabigetter) config property
 * `"org.ton.deploy.lazy.v0"{:tact}`, according to [OTP-005: Argument-addressable contracts](/ref/evolution/otp-005)
 * `"org.ton.debug.v0"{:tact}`, but only if [debug mode](/book/debug#debug-mode) is enabled
 
@@ -147,7 +147,7 @@ Additionally, [`tact.config.json`](/book/config) may still be used in [Blueprint
 
 :::caution
 
-  Be aware that adding an interface does not guarantee that the contract actually implements any particular functionality or that it implements it in any particular way. It is simply an off-chain, verifiable promise indicating that a contract _might_ contain some specific code. It is your responsibility to trust—but verify—such claims.
+  Be aware that adding an interface does not guarantee that the contract actually implements any particular functionality or that it implements it in any particular way. It is simply an off-chain, verifiable promise indicating that a contract _might_ contain some specific code. It is your responsibility to trust, but verify, such claims.
 
   In addition, there is no guarantee that there will not be name clashes between different interfaces, although they are unlikely because even the first 128 bits of SHA-256 provide sufficient [collision resistance](https://en.wikipedia.org/wiki/Collision_resistance).
 
@@ -164,8 +164,8 @@ To declare [persistent state variables](#variables) and set their values during 
 ```tact
 contract ContractParameters(
     // persistent state variables declared via the contract parameters syntax
-    val: Int,              // Int
-    val32: Int as uint32,  // Int serialized to a 32-bit unsigned integer
+    val: Int,              // Int, implicitly serialized to a 257-bit signed
+    val32: Int as uint32,  // Int, serialized to a 32-bit unsigned
     mapVal: map<Int, Int>, // Int keys to Int values
     optVal: Int?,          // Int or null
 ) {
@@ -204,8 +204,8 @@ The storage variables can be defined by using [contract parameters](#parameters)
 ```tact
 contract ContractFields {
     // persistent state variables declared via the contract fields syntax
-    val: Int;              // Int
-    val32: Int as uint32;  // Int serialized to a 32-bit unsigned
+    val: Int;              // Int, implicitly serialized to a 257-bit signed
+    val32: Int as uint32;  // Int, serialized to a 32-bit unsigned
     mapVal: map<Int, Int>; // Int keys to Int values
     optVal: Int?;          // Int or null
 }
@@ -468,7 +468,7 @@ contract Example {
 
 ### Internal functions
 
-These functions behave similarly to private methods in popular object-oriented languages—they're internal to contracts and can be called by prefixing them with a special [identifier `self{:tact}`](#self). That's why internal functions are sometimes referred to as "contract methods."
+These functions behave similarly to private methods in popular object-oriented languages  —they're internal to contracts and can be called by prefixing them with a special [identifier `self{:tact}`](#self). That's why internal functions are sometimes referred to as "contract methods."
 
 Internal functions can access the contract's [persistent state variables](#variables) and [constants](#constants).
 

@@ -5,7 +5,7 @@ description: "Various ways to reveal and prevent problems or bugs in Tact code"
 
 import { LinkCard, CardGrid, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
-Without fail, the code we write as smart contract developers doesn't always do what we expect it to do. Sometimes it does something completely different! When the unexpected happens, the next task is to figure out why. To do so, there are various ways to reveal problems or "bugs" in the code. Let's get to *debugging*!
+Without fail, the code we write as smart contract developers doesn't always do what we expect it to do. Sometimes it does something completely different! When the unexpected happens, the next task is to figure out why. To do so, there are various ways to reveal problems or "bugs" in the code. Let's get to _debugging_!
 
 <CardGrid>
   <LinkCard
@@ -151,7 +151,7 @@ Inside that group, you'll have three variables available in all tests within:
 
 :::
 
-Then, a `beforeEach(){:tact}` [Jest][jest] function is called—it specifies all the code to be executed before each of the subsequent test closures.
+Then, a `beforeEach(){:tact}` [Jest][jest] function is called — it specifies all the code to be executed before each of the subsequent test closures.
 
 :::note
 
@@ -421,7 +421,7 @@ expect(
 
 :::note
 
-[Sandbox][sb] has many more utility functions that are often handy. For example, it provides `prettyLogTransaction(){:typescript}` and `prettyLogTransactions(){:typescript}`, which operate on a single or multiple transactions respectively, and pretty-print the flow of values between addresses.
+  [Sandbox][sb] has many more utility functions that are often handy. For example, it provides `prettyLogTransaction(){:typescript}` and `prettyLogTransactions(){:typescript}`, which operate on a single or multiple transactions respectively, and pretty-print the flow of values between addresses.
 
 :::
 
@@ -490,9 +490,9 @@ it('your test clause title', async () => {
 
 ## Logging via `emit` {#logging}
 
-A [global static function](/book/functions#global-static-functions) [`emit(){:tact}`](/ref/core-common#emit) sends a message to the outer world—it doesn't have a specific recipient.
+A [global static function](/book/functions#global-static-functions) [`emit(){:tact}`](/ref/core-common#emit) sends a message to the outer world — it doesn't have a specific recipient.
 
-This function is very handy for logging and analyzing data off-chain—one just has to look at [external messages](/book/external) produced by the contract.
+This function is very handy for logging and analyzing data off-chain — one just has to look at [external messages](/book/external) produced by the contract.
 
 ### Logs in local Sandbox tests {#logging-local}
 
@@ -514,7 +514,7 @@ it('emits', async () => {
 
 ### Logs of a deployed contract {#logging-deployed}
 
-Every transaction on TON Blockchain [contains `out_msgs`](https://docs.ton.org/develop/data-formats/transaction-layout#transaction)—a dictionary that holds the list of outgoing messages created during the transaction execution.
+Every transaction on TON Blockchain [contains `out_msgs`](https://docs.ton.org/develop/data-formats/transaction-layout#transaction) — a dictionary that holds the list of outgoing messages created during the transaction execution.
 
 To see logs from [`emit(){:tact}`](/ref/core-common#emit) in that dictionary, look for external messages without a recipient. In various TON Blockchain explorers, such transactions will be marked as `external-out` with the destination specified as `-` or `empty`.
 
