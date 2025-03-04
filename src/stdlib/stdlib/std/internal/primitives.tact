@@ -26,7 +26,7 @@ primitive Bool;
 /// stored values and cells. 
 /// 
 /// Unlike cells, values of type `Builder` appear only on the [TVM] stack and cannot
-/// be stored in persistent storage.This means, for example, that persistent storage
+/// be stored in persistent storage. This means, for example, that persistent storage
 /// fields with type `Builder` are actually stored as cells under the hood.
 /// 
 /// The `Builder` type represents partially composed cells, for which fast operations 
@@ -47,7 +47,7 @@ primitive Builder;
 /// be stored as cells under the hood.
 ///
 /// The `Slice` type represents either the remainder of a partially parsed cell or a value (subcell) 
-/// residing inside such a cell, extracted from it by a parsing instruction:
+/// residing inside such a cell, extracted from it by a parsing instruction.
 /// 
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells/#slice
@@ -81,7 +81,7 @@ primitive Cell;
 /// [smart contract address]: https://docs.ton.org/learn/overviews/addresses#address-of-smart-contract
 primitive Address;
 
-/// `String` is immutable sequences of characters, which means that once a `String` is created,
+/// `String` is an immutable sequence of characters, which means that once a `String` is created,
 /// it cannot be changed. Strings are useful for storing text, so they can be converted to a `Cell`
 /// type to be used as message bodies.
 /// 
