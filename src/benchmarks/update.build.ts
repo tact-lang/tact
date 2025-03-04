@@ -10,6 +10,7 @@ import {
     type RawCodeSizeResult,
 } from "./util";
 import { createInterface } from "readline/promises";
+import { globSync } from "../test/utils/all-in-folder.build";
 
 const runBenchmark = (specPath: string): Promise<string> => {
     return new Promise((resolve) => {
@@ -194,10 +195,16 @@ const updateCodeSizeResultsFile = async (
 
 const main = async () => {
     try {
-        const benchmarkPaths = [
-            join(__dirname, "jetton", "jetton.spec.ts"),
-            join(__dirname, "escrow", "escrow.spec.ts"),
-        ];
+        const benchmarkPaths = globSync(["**/*.spec.ts"], {
+            cwd: __dirname,
+        });
+
+        const benchmarkName = process.argv[2];
+
+        const actualBenchmarkPaths =
+            typeof benchmarkName === "undefined"
+                ? benchmarkPaths
+                : benchmarkPaths.filter((path) => path.includes(benchmarkName));
 
         const fetchBenchmarkResults = async (specPath: string) => {
             console.log(`\nRunning benchmark: ${specPath}`);
@@ -218,7 +225,6 @@ const main = async () => {
 
             const isUpdate = typeof process.env.ADD !== "undefined";
 
-            // run with `yarn bench:update --yes` to skip the prompt
             if (!process.argv.includes("--yes") && isUpdate) {
                 const { label, pr } = await readBenchInfo();
 
@@ -249,8 +255,8 @@ const main = async () => {
             });
         };
 
-        for (const path of benchmarkPaths) {
-            await fetchBenchmarkResults(path);
+        for (const path of actualBenchmarkPaths) {
+            await fetchBenchmarkResults(join(__dirname, path));
         }
 
         readline.close();
