@@ -164,7 +164,7 @@
       "label": "1.6.0 with contract load data inlined",
       "pr": "https://github.com/tact-lang/tact/pull/2088",
       "gas": {
-        "fundingTon": "4590",
+        "fundingTon": "4591",
         "changeCode": "4700",
         "approveTon": "6809",
         "cancelTon": "4838"
