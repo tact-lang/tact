@@ -1,31 +1,3 @@
-/// Global function. Available since Tact 1.6.1.
-///
-/// Queues an empty message to be sent with the `SendRemainingValue` mode to the destination `Address` `to`. This is the most gas-efficient way to send the remaining value from the incoming message to the given address.
-///
-/// Attempts to queue more than 255 messages throw an exception with exit code 33: `Action list is too long`.
-///
-/// ```tact
-/// fun example() {
-///     // Forward the remaining value back to the sender
-///     cashback(sender());
-/// }
-/// ```
-///
-/// See: https://docs.tact-lang.org/ref/stdlib-deploy/#cashback
-///
-asm fun cashback(to: Address) {
-    24 PUSHINT       // 0x18
-    NEWC
-    6 STU            // .storeUint(0x18, 6)
-    STSLICE          // .storeAddress(to)
-    0 PUSHINT        // 0
-    111 STUR         // .storeUint(0, 111)
-    b{} STSLICECONST // .storeSlice(emptySlice())
-    ENDC
-    66 PUSHINT       // SendRemainingValue | SendIgnoreErrors
-    SENDRAWMSG
-}
-
 /// The trait `EmptyDeployable` provides a simple unified mechanisms for deployments by adding an empty `receive()` function, which handles all incoming messages with an empty body, i.e., `null{:tact}` body.
 ///
 /// To deploy a contract with this trait, send a message with initial code and data and an empty message body.

@@ -409,6 +409,35 @@ asm fun deploy(params: DeployParameters) {
     SENDRAWMSG
 }
 
+/// Global function. Available since Tact 1.6.1.
+///
+/// Queues an empty message to be sent with the `SendRemainingValue` mode and the `SendIgnoreErrors` flag to the destination address `to`.
+/// This is the most gas-efficient way to send the remaining value from the incoming message to the given address.
+///
+/// Attempts to queue more than 255 messages throw an exception with exit code 33: `Action list is too long`.
+///
+/// ```tact
+/// fun example() {
+///     // Forward the remaining value back to the sender
+///     cashback(sender());
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-common/#cashback
+///
+asm fun cashback(to: Address) {
+    24 PUSHINT       // 0x18
+    NEWC
+    6 STU          // .storeUint(0x18, 6)
+    STSLICE        // .storeAddress(to)
+    0 PUSHINT         // 0
+    111 STUR       // .storeUint(0, 111)
+    b{} STSLICECONST // .storeSlice(emptySlice())
+    ENDC
+    66 PUSHINT       // SendRemainingValue | SendIgnoreErrors
+    SENDRAWMSG
+}
+
 /// Global function.
 ///
 /// Queues the message to be sent by specifying the complete `cell` and the message `mode`.
