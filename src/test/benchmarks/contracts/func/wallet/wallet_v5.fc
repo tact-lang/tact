@@ -1,0 +1,297 @@
+const int error::signature_disabled = 132;
+const int error::invalid_seqno = 133;
+const int error::invalid_wallet_id = 134;
+const int error::invalid_signature = 135;
+const int error::expired = 136;
+const int error::external_send_message_must_have_ignore_errors_send_mode = 137;
+const int error::invalid_message_operation = 138;
+const int error::add_extension = 139;
+const int error::remove_extension = 140;
+const int error::unsupported_action = 141;
+const int error::disable_signature_when_extensions_is_empty = 142;
+const int error::this_signature_mode_already_set = 143;
+const int error::remove_last_extension_when_signature_disabled = 144;
+const int error::extension_wrong_workchain = 145;
+const int error::only_extension_can_change_signature_mode = 146;
+const int error::invalid_c5 = 147;
+
+const int size::bool = 1;
+const int size::seqno = 32;
+const int size::wallet_id = 32;
+const int size::public_key = 256;
+const int size::valid_until = 32;
+const int size::message_flags = 4;
+const int size::signature = 512;
+const int size::message_operation_prefix = 32;
+const int size::address_hash_size = 256;
+const int size::query_id = 64;
+
+const int prefix::signed_external = 0x7369676E;
+const int prefix::signed_internal = 0x73696E74;
+const int prefix::extension_action = 0x6578746E;
+
+(slice, int) check_and_remove_add_extension_prefix(slice body) impure asm "x{02} SDBEGINSQ";
+(slice, int) check_and_remove_remove_extension_prefix(slice body) impure asm "x{03} SDBEGINSQ";
+(slice, int) check_and_remove_set_signature_allowed_prefix(slice body) impure asm "x{04} SDBEGINSQ";
+
+;;; returns the number of trailing zeroes in slice s.
+int count_trailing_zeroes(slice s) asm "SDCNTTRAIL0";
+
+;;; returns the last 0 ≤ l ≤ 1023 bits of s.
+slice get_last_bits(slice s, int l) asm "SDCUTLAST";
+;;; returns all but the last 0 ≤ l ≤ 1023 bits of s.
+slice remove_last_bits(slice s, int l) asm "SDSKIPLAST";
+
+;; `action_send_msg` has 0x0ec3c86d prefix
+;; https://github.com/ton-blockchain/ton/blob/5c392e0f2d946877bb79a09ed35068f7b0bd333a/crypto/block/block.tlb#L380
+slice enforce_and_remove_action_send_msg_prefix(slice body) impure asm "x{0ec3c86d} SDBEGINS";
+
+;;; put raw list of OutActions to C5 register.
+;;; OutList TLB-schema - https://github.com/ton-blockchain/ton/blob/5c392e0f2d946877bb79a09ed35068f7b0bd333a/crypto/block/block.tlb#L378
+;;; C5 register - https://docs.ton.org/tvm.pdf, page 11
+() set_c5_actions(cell action_list) impure asm "c5 POP";
+
+;;; transforms an ordinary or exotic cell into a Slice, as if it were an ordinary cell. A flag is returned indicating whether c is exotic. If that be the case, its type can later be deserialized from the first eight bits of s.
+(slice, int) begin_parse_raw(cell c) asm "XCTOS";
+
+cell verify_c5_actions(cell c5, int is_external) inline {
+  ;; XCTOS doesn't automatically load exotic cells (unlike CTOS `begin_parse`).
+  ;; we use it in `verify_c5_actions` because during action phase processing exotic cells in c5 won't be unfolded too.
+  ;; exotic cell starts with 0x02, 0x03 or 0x04 so it will not pass action_send_msg prefix check
+  (slice cs, _) = c5.begin_parse_raw();
+
+  int count = 0;
+
+  while (~ cs.slice_empty?()) {
+    ;; only `action_send_msg` is allowed; `action_set_code`, `action_reserve_currency` or `action_change_library` are not.
+    cs = cs.enforce_and_remove_action_send_msg_prefix();
+
+    throw_unless(error::invalid_c5, cs.slice_bits() == 8); ;; send_mode uint8
+    throw_unless(error::invalid_c5, cs.slice_refs() == 2); ;; next-action-ref and MessageRelaxed ref
+
+    ;; enforce that send_mode has +2 bit (ignore errors) set for external message.
+    ;; if such send_mode is not set and sending fails at the action phase (for example due to insufficient balance) then the seqno will not be increased and the external message will be processed again and again.
+
+    ;; action_send_msg#0ec3c86d mode:(## 8) out_msg:^(MessageRelaxed Any) = OutAction;
+    ;; https://github.com/ton-blockchain/ton/blob/5c392e0f2d946877bb79a09ed35068f7b0bd333a/crypto/block/block.tlb#L380
+    ;; load 7 bits and make sure that they end with 1
+    throw_if(error::external_send_message_must_have_ignore_errors_send_mode, is_external & (count_trailing_zeroes(cs.preload_bits(7)) > 0));
+
+    (cs, _) = cs.preload_ref().begin_parse_raw();
+    count += 1;
+  }
+  throw_unless(error::invalid_c5, count <= 255);
+  throw_unless(error::invalid_c5, cs.slice_refs() == 0);
+
+  return c5;
+}
+
+() process_actions(slice cs, int is_external, int is_extension) impure inline_ref {
+  cell c5_actions = cs~load_maybe_ref();
+  ifnot (cell_null?(c5_actions)) {
+    ;; Simply set the C5 register with all pre-computed actions after verification:
+    set_c5_actions(c5_actions.verify_c5_actions(is_external));
+  }
+  if (cs~load_int(1) == 0) { ;; has_other_actions
+    return ();
+  }
+
+  ;; Loop extended actions
+  while (true) {
+    int is_add_extension = cs~check_and_remove_add_extension_prefix();
+    int is_remove_extension = is_add_extension ? 0 : cs~check_and_remove_remove_extension_prefix();
+    ;; Add/remove extensions
+    if (is_add_extension | is_remove_extension) {
+      (int address_wc, int address_hash) = parse_std_addr(cs~load_msg_addr());
+      (int my_address_wc, _) = parse_std_addr(my_address());
+
+      throw_unless(error::extension_wrong_workchain, my_address_wc == address_wc); ;; the extension must be in the same workchain as the wallet.
+
+      slice data_slice = get_data().begin_parse();
+      slice data_slice_before_extensions = data_slice~load_bits(size::bool + size::seqno + size::wallet_id + size::public_key);
+      cell extensions = data_slice.preload_dict();
+
+      ;; Add extension
+      if (is_add_extension) {
+        (extensions, int is_success) = extensions.udict_add_builder?(size::address_hash_size, address_hash, begin_cell().store_int(-1, 1));
+        throw_unless( error::add_extension, is_success);
+      } else { ;; Remove extension
+        (extensions, int is_success) = extensions.udict_delete?(size::address_hash_size, address_hash);
+        throw_unless(error::remove_extension, is_success);
+        int is_signature_allowed = data_slice_before_extensions.preload_int(size::bool);
+        throw_if(error::remove_last_extension_when_signature_disabled, null?(extensions) & (~ is_signature_allowed));
+      }
+
+      set_data(begin_cell()
+              .store_slice(data_slice_before_extensions)
+              .store_dict(extensions)
+              .end_cell());
+
+    } elseif (cs~check_and_remove_set_signature_allowed_prefix()) { ;; allow/disallow signature
+      throw_unless(error::only_extension_can_change_signature_mode, is_extension);
+      int allow_signature = cs~load_int(1);
+      slice data_slice = get_data().begin_parse();
+      int is_signature_allowed = data_slice~load_int(size::bool);
+      throw_if(error::this_signature_mode_already_set, is_signature_allowed == allow_signature);
+      is_signature_allowed = allow_signature;
+
+      slice data_tail = data_slice; ;; seqno, wallet_id, public_key, extensions
+      ifnot (allow_signature) { ;; disallow
+        int is_extensions_not_empty = data_slice.skip_bits(size::seqno + size::wallet_id + size::public_key).preload_int(1);
+        throw_unless(error::disable_signature_when_extensions_is_empty, is_extensions_not_empty);
+      }
+
+      set_data(begin_cell()
+        .store_int(is_signature_allowed, size::bool)
+        .store_slice(data_tail) ;; seqno, wallet_id, public_key, extensions
+        .end_cell());
+    } else {
+      throw(error::unsupported_action);
+    }
+    ifnot (cs.slice_refs()) {
+      return ();
+    }
+    cs = cs.preload_ref().begin_parse();
+  }
+}
+
+;; ------------------------------------------------------------------------------------------------
+
+() process_signed_request(slice in_msg_body, int is_external) impure inline {
+  slice signature = in_msg_body.get_last_bits(size::signature);
+  slice signed_slice = in_msg_body.remove_last_bits(size::signature);
+
+  slice cs = signed_slice.skip_bits(size::message_operation_prefix); ;; skip signed_internal or signed_external prefix
+  (int wallet_id, int valid_until, int seqno) = (cs~load_uint(size::wallet_id), cs~load_uint(size::valid_until), cs~load_uint(size::seqno));
+
+  slice data_slice = get_data().begin_parse();
+  int is_signature_allowed = data_slice~load_int(size::bool);
+  int stored_seqno = data_slice~load_uint(size::seqno);
+  slice data_tail = data_slice; ;; wallet_id, public_key, extensions
+  int stored_wallet_id = data_slice~load_uint(size::wallet_id);
+  int public_key = data_slice~load_uint(size::public_key);
+  int is_extensions_not_empty = data_slice.preload_int(1);
+
+  int is_signature_valid = check_signature(slice_hash(signed_slice), signature, public_key);
+  ifnot (is_signature_valid) {
+    if (is_external) {
+      throw(error::invalid_signature);
+    } else {
+      return ();
+    }
+  }
+  ;; In case the wallet application has initially, by mistake, deployed a contract with the wrong bit (signature is forbidden and extensions are empty) - we allow such a contract to work.
+  throw_if(error::signature_disabled, (~ is_signature_allowed) & is_extensions_not_empty);
+  throw_unless(error::invalid_seqno, seqno == stored_seqno);
+  throw_unless(error::invalid_wallet_id, wallet_id == stored_wallet_id);
+  throw_if(error::expired, valid_until <= now());
+
+  if (is_external) {
+    accept_message();
+  }
+
+  stored_seqno = stored_seqno + 1;
+  set_data(begin_cell()
+    .store_int(true, size::bool) ;; is_signature_allowed
+    .store_uint(stored_seqno, size::seqno)
+    .store_slice(data_tail) ;; wallet_id, public_key, extensions
+    .end_cell());
+
+  if (is_external) {
+    ;; For external messages we commit seqno changes, so that even if an exception occurs further on, the reply-protection will still work.
+    commit();
+  }
+
+  process_actions(cs, is_external, false);
+}
+
+() recv_external(slice in_msg_body) impure inline {
+  throw_unless(error::invalid_message_operation, in_msg_body.preload_uint(size::message_operation_prefix) == prefix::signed_external);
+  process_signed_request(in_msg_body, true);
+}
+
+;; ------------------------------------------------------------------------------------------------
+
+() recv_internal(cell in_msg_full, slice in_msg_body) impure inline {
+  if (in_msg_body.slice_bits() < size::message_operation_prefix) {
+    return (); ;; just receive Toncoins
+  }
+  int op = in_msg_body.preload_uint(size::message_operation_prefix);
+  if ((op != prefix::extension_action) & (op != prefix::signed_internal)) {
+    return (); ;; just receive Toncoins
+  }
+
+  ;; bounced messages has 0xffffffff prefix and skipped by op check
+
+  if (op == prefix::extension_action) {
+    in_msg_body~skip_bits(size::message_operation_prefix);
+
+    slice in_msg_full_slice = in_msg_full.begin_parse();
+    in_msg_full_slice~skip_bits(size::message_flags);
+    ;; Authenticate extension by its address.
+    (int sender_address_wc, int sender_address_hash) = parse_std_addr(in_msg_full_slice~load_msg_addr());
+    (int my_address_wc, _) = parse_std_addr(my_address());
+
+    if (my_address_wc != sender_address_wc) {
+      return ();
+    }
+
+    cell extensions = get_data().begin_parse()
+      .skip_bits(size::bool + size::seqno + size::wallet_id + size::public_key)
+      .preload_dict();
+
+    ;; Note that some random contract may have deposited funds with this prefix,
+    ;; so we accept the funds silently instead of throwing an error (wallet v4 does the same).
+    (_, int extension_found) = extensions.udict_get?(size::address_hash_size, sender_address_hash);
+    ifnot (extension_found) {
+      return ();
+    }
+
+    in_msg_body~skip_bits(size::query_id); ;; skip query_id
+
+    process_actions(in_msg_body, false, true);
+    return ();
+
+  }
+
+  ;; Before signature checking we handle errors silently (return), after signature checking we throw exceptions.
+
+  ;; Check to make sure that there are enough bits for reading before signature check
+  if (in_msg_body.slice_bits() < size::message_operation_prefix + size::wallet_id + size::valid_until + size::seqno + size::signature) {
+    return ();
+  }
+  process_signed_request(in_msg_body, false);
+}
+
+;; ------------------------------------------------------------------------------------------------
+;; Get methods
+
+int is_signature_allowed() method_id {
+  return get_data().begin_parse()
+    .preload_int(size::bool);
+}
+
+int seqno() method_id {
+  return get_data().begin_parse()
+    .skip_bits(size::bool)
+    .preload_uint(size::seqno);
+}
+
+int get_subwallet_id() method_id {
+  return get_data().begin_parse()
+    .skip_bits(size::bool + size::seqno)
+    .preload_uint(size::wallet_id);
+}
+
+int get_public_key() method_id {
+  return get_data().begin_parse()
+    .skip_bits(size::bool + size::seqno + size::wallet_id)
+    .preload_uint(size::public_key);
+}
+
+;; Returns raw dictionary (or null if empty) where keys are address hashes. Workchains of extensions are same with wallet smart contract workchain.
+cell get_extensions() method_id {
+  return get_data().begin_parse()
+    .skip_bits(size::bool + size::seqno + size::wallet_id + size::public_key)
+    .preload_dict();
+}
