@@ -428,7 +428,7 @@ asm fun deploy(params: DeployParameters) {
 ///         body: null,
 ///         value: 0,
 ///         to: sender(),
-///         bounce: true,
+///         bounce: false,
 ///     });
 /// }
 /// ```
@@ -436,9 +436,9 @@ asm fun deploy(params: DeployParameters) {
 /// See: https://docs.tact-lang.org/ref/core-common/#cashback
 ///
 asm fun cashback(to: Address) {
-    24 PUSHINT       // 0x18
+    16 PUSHINT       // 0x10, i.e. 0x18 but with bounce = false
     NEWC
-    6 STU            // .storeUint(0x18, 6)
+    6 STU            // .storeUint(0x10, 6)
     STSLICE          // .storeAddress(to)
     0 PUSHINT        // 0
     111 STUR         // .storeUint(0, 111)

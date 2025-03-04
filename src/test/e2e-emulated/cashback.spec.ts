@@ -88,6 +88,7 @@ describe("cashback", () => {
             from: contract.address,
             to: treasure.address,
             success: true,
+            inMessageBounceable: false,
             body: beginCell().endCell(),
         });
 
@@ -119,6 +120,7 @@ describe("cashback", () => {
             from: contract.address,
             to: contract.address,
             success: true,
+            inMessageBounceable: false,
             body: beginCell().endCell(),
         });
 
