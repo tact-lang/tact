@@ -65,9 +65,9 @@ const err = () => {
 function unwrapOptNode<T>(
     optional: IterationNode,
     f: (n: Node) => T,
-): T | null {
+): T | undefined {
     const optNode = optional.children[0] as Node | undefined;
-    return optNode !== undefined ? f(optNode) : null;
+    return optNode !== undefined ? f(optNode) : undefined;
 }
 
 function checkVariableName(name: string, loc: SrcInfo) {
@@ -932,7 +932,7 @@ semantics.addOperation<A.AstNode>("astOfStatement", {
             kind: "statement_condition",
             condition: condition.astOfExpression(),
             trueStatements: thenBlock.children.map((s) => s.astOfStatement()),
-            falseStatements: null,
+            falseStatements: undefined,
             loc: createRef(this),
         });
     },

@@ -188,7 +188,7 @@ function resolveStructNew(
     for (const f of tp.fields) {
         if (
             !processed.has(f.name) &&
-            f.ast.initializer === null &&
+            f.ast.initializer === undefined &&
             !(f.type.kind === "ref" && f.type.optional)
         ) {
             throwCompilationError(

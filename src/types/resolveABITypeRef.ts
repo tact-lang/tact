@@ -77,7 +77,7 @@ const builderFormats: FormatDef = {
 
 type ResolveTypeOptions = {
     readonly type: A.AstType;
-    readonly as: A.AstId | null;
+    readonly as: A.AstId | undefined;
     readonly loc: SrcInfo;
 };
 
