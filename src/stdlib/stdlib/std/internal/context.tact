@@ -23,8 +23,7 @@ struct Context {
 /// * `bounceable` — Indicates whether the received message can [bounce back].
 /// * `sender` — Internal address of the sender on the TON blockchain.
 /// * `value` — Amount of [nanoToncoin] in the received message.
-/// * `raw` — The remainder of the received message as a `Slice`. It follows the [internal message layout].
-///   of TON, starting from the destination `Address` (`MsgAddressInt` in [TL-B notation]).
+/// * `raw` — The remainder of the received message as a `Slice`. It follows the [internal message layout] of TON, starting from the destination `Address` (`MsgAddressInt` in [TL-B notation]).
 /// 
 /// ```tact
 /// fun test() {
