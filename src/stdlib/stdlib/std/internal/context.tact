@@ -1,16 +1,16 @@
 /// Represents the context of the current message.
 struct Context {
     /// Indicates whether the received message can
-    /// [bounce back](https://docs.ton.org/v3/documentation/smart-contracts/message-management/non-bounceable-messages)
+    /// [bounce back](https://docs.ton.org/v3/documentation/smart-contracts/message-management/non-bounceable-messages).
     bounceable: Bool;
 
-    /// Internal address of the sender on the TON blockchain
+    /// Internal address of the sender on the TON blockchain.
     sender: Address;
 
-    /// Amount of [nanoToncoin](https://docs.tact-lang.org/book/integers#nanotoncoin) in the received message
+    /// Amount of [nanoToncoin](https://docs.tact-lang.org/book/integers#nanotoncoin) in the received message.
     value: Int;
 
-    /// The remainder of the received message as a `Slice`. It follows the [internal message layout] 
+    /// The remainder of the received message as a `Slice`. It follows the [internal message layout]
     /// of TON, starting from the destination `Address` (`MsgAddressInt` in [TL-B notation]).
     /// 
     /// [internal message layout]: https://docs.ton.org/develop/smart-contracts/messages#message-layout
@@ -20,10 +20,10 @@ struct Context {
 
 /// Returns `Context` struct, which consists of:
 /// 
-/// * `bounceable` — Indicates whether the received message can [bounce back]
-/// * `sender` — Internal address of the sender on the TON blockchain
-/// * `value` — Amount of [nanoToncoin] in the received message
-/// * `raw` — The remainder of the received message as a `Slice`. It follows the [internal message layout] 
+/// * `bounceable` — Indicates whether the received message can [bounce back].
+/// * `sender` — Internal address of the sender on the TON blockchain.
+/// * `value` — Amount of [nanoToncoin] in the received message.
+/// * `raw` — The remainder of the received message as a `Slice`. It follows the [internal message layout].
 ///   of TON, starting from the destination `Address` (`MsgAddressInt` in [TL-B notation]).
 /// 
 /// ```tact
@@ -54,7 +54,7 @@ native context(): Context;
 /// }
 /// ```
 /// 
-/// Note: Behavior is undefined for [getter functions], because they cannot have a sender 
+/// Note: Behavior is undefined for [getter functions], because they cannot have a sender
 /// nor can they send messages.
 /// 
 /// Tip: To reduce gas usage, prefer using this function over calling `context().sender` 
