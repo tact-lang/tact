@@ -305,12 +305,12 @@ b.endCell() == fizz.endCell(); // true
 ### Builder.storeSlice
 
 ```tact
-extends fun storeSlice(self: Builder, cell: Slice): Builder;
+extends fun storeSlice(self: Builder, slice: Slice): Builder;
 ```
 
 Extension function for the [`Builder{:tact}`][builder] type.
 
-Stores a [`Slice{:tact}`][slice] `cell` into a copy of the [`Builder{:tact}`][builder]. Returns that copy.
+Stores a `slice` into a copy of the [`Builder{:tact}`][builder]. Returns that copy.
 
 Usage example:
 
