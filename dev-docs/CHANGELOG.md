@@ -10,15 +10,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Language features
 
 - [fix] The `toCell()` method called in a receiver on a contract field that is a struct is now handled correctly: PR [#2186](https://github.com/tact-lang/tact/pull/2186)
-- Added support for wildcard function parameters: PR [#2189](https://github.com/tact-lang/tact/pull/2189)
+- [fix] Support for multiple wildcard function parameters: PR [#2189](https://github.com/tact-lang/tact/pull/2189)
 
 ### Standard Library
 
 - Add `StateInit.hasSameBasechainAddress` function: PR [#2187](https://github.com/tact-lang/tact/pull/2187)
 
+### TypeScript wrappers
+
+- Export message opcodes and exit codes: PR [#2081](https://github.com/tact-lang/tact/issues/2081)
+
 ### Code generation
 
 - Contract load function is inlined: PR [#2101](https://github.com/tact-lang/tact/pull/2101)
+
+### TypeScript third-party API
+
+- Export more API from `index.ts`, including AST, context, parser, build pipeline, and typechecker functions: PR [#2196](https://github.com/tact-lang/tact/pull/2196)
 
 ### Internal infrastructure
 
@@ -29,6 +37,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Anton Trunov](https://github.com/anton-trunov)
 - [Daniil Sedov](https://github.com/Gusarich)
 - [Petr Makhnev](https://github.com/i582)
+- [Jesús Héctor Domínguez Sánchez](https://github.com/jeshecdom)
+- [verytactical](https://github.com/verytactical)
+- [Shvetc Andrei](https://github.com/Shvandre)
 
 ## [1.6.0] - 2025-02-28
 
