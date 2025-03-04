@@ -47,6 +47,7 @@
     "bench": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=false jest ./src/benchmarks",
     "bench:table": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true jest ./src/benchmarks",
     "bench:update": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true ts-node src/benchmarks/bench.update.ts",
+    "bench:add": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true ADD=true ts-node src/benchmarks/bench.update.ts",
     "coverage": "cross-env COVERAGE=true NODE_OPTIONS=--max_old_space_size=4096 jest --config=./jest-ci.config.js",
     "type": "tsc --noEmit",
     "lint": "yarn eslint .",

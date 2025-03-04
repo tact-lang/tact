@@ -111,6 +111,12 @@ To update historical benchmarks with `results.json`:
 yarn bench:upgrade
 ```
 
+To add new row to `results.json`:
+
+```shell
+yarn bench:add
+```
+
 ### Adding a new benchmark
 
 To add a new benchmark:
