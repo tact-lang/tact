@@ -222,8 +222,8 @@ const main = async () => {
             console.log(`\nUpdated benchmarks for ${resultsGas}\n`);
 
             printBenchmarkTable(gasResult, sizeResult, {
-                isFullTable: true,
                 implementationName: "FunC",
+                printMode: "last-diff",
             });
         };
 

@@ -377,7 +377,12 @@ describe("Jetton", () => {
     afterAll(() => {
         printBenchmarkTable(results, codeSizeResults, {
             implementationName: "FunC",
-            isFullTable: true,
+            printMode: "full",
+        });
+
+        printBenchmarkTable(results.slice(1), undefined, {
+            implementationName: "NotCoin",
+            printMode: "first-last",
         });
     });
 

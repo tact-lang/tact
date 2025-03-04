@@ -153,7 +153,7 @@ function calculateChanges<
 
 type BenchmarkTableArgs = {
     implementationName: string;
-    isFullTable: boolean;
+    printMode: "first-last" | "full" | "last-diff";
 };
 
 function createTable<
@@ -194,6 +194,20 @@ function createTable<
     return table.toString();
 }
 
+const handleTablePrintMode = (
+    results: BenchmarkResult[],
+    arg: BenchmarkTableArgs,
+) => {
+    switch (arg.printMode) {
+        case "first-last":
+            return [results.at(0)!, results.at(-1)!];
+        case "full":
+            return results;
+        case "last-diff":
+            return results.slice(results.length - 3);
+    }
+};
+
 export function printBenchmarkTable(
     results: BenchmarkResult[],
     codeSizeResults: CodeSizeResult[] | undefined,
@@ -210,7 +224,7 @@ export function printBenchmarkTable(
     const first = results.at(0)!;
     const last = results.at(-1)!;
 
-    const tableResults = args.isFullTable ? results : [first, last];
+    const tableResults = handleTablePrintMode(results, args);
 
     if (tableResults.length === 0) {
         console.log("No benchmark results to display.");
