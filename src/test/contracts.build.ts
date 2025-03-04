@@ -19,6 +19,7 @@ const main = async () => {
             "codegen/all-contracts.tact",
             "exit-codes/contracts/*.tact",
             "send-modes/contracts/*.tact",
+            "gas-consumption/contracts/*.tact",
         ],
         options,
     );

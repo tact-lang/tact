@@ -9,19 +9,19 @@ import type {
     TreasuryContract,
 } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
-import { Functions } from "./contracts/output/functions_Functions";
-import { Sha256Small } from "./contracts/output/benchmark_sha256_small_Sha256Small";
-import { Sha256Big } from "./contracts/output/benchmark_sha256_big_Sha256Big";
-import { Sha256AsSlice } from "./contracts/output/benchmark_sha256_as_slice_Sha256AsSlice";
-import { Forward } from "./contracts/output/forward_Forward";
-import { Addresses } from "./contracts/output/address_Addresses";
-import { CodeOfVsInitOf } from "./contracts/output/codeOf_CodeOfVsInitOf";
 import "@ton/test-utils";
-import { CellsCreation } from "./contracts/output/cells_CellsCreation";
-import { getUsedGas } from "./util";
+import { getUsedGas } from "../../benchmarks/util";
 import type { Step } from "../utils/write-vm-log";
 import { writeLog } from "../utils/write-vm-log";
 import { join } from "path";
+import { Functions } from "./contracts/output/functions_Functions";
+import { Forward } from "./contracts/output/forward_Forward";
+import { Sha256Small } from "./contracts/output/benchmark_sha256_small_Sha256Small";
+import { Sha256Big } from "./contracts/output/benchmark_sha256_big_Sha256Big";
+import { Sha256AsSlice } from "./contracts/output/benchmark_sha256_as_slice_Sha256AsSlice";
+import { CellsCreation } from "./contracts/output/cells_CellsCreation";
+import { Addresses } from "./contracts/output/address_Addresses";
+import { CodeOfVsInitOf } from "./contracts/output/codeOf_CodeOfVsInitOf";
 import { WithDeploy } from "./contracts/output/deploy_WithDeploy";
 import { WithoutDeploy } from "./contracts/output/deploy_WithoutDeploy";
 
