@@ -1,13 +1,67 @@
+/// Represents the context of the current message.
 struct Context {
+    /// Indicates whether the received message can 
+    /// [bounce back](https://docs.ton.org/v3/documentation/smart-contracts/message-management/non-bounceable-messages)
     bounceable: Bool;
+
+    /// Internal address of the sender on the TON blockchain
     sender: Address;
+
+    /// Amount of [nanoToncoin](https://docs.tact-lang.org/book/integers#nanotoncoin) in the received message
     value: Int;
+
+    /// The remainder of the received message as a `Slice`. It follows the [internal message layout] 
+    /// of TON, starting from the destination `Address` (`MsgAddressInt` in [TL-B notation]).
+    /// 
+    /// [internal message layout]: https://docs.ton.org/develop/smart-contracts/messages#message-layout
+    /// [TL-B notation]: https://docs.ton.org/develop/data-formats/tl-b-language
     raw: Slice;
 }
 
+/// Returns `Context` struct, which consists of:
+/// 
+/// * `bounceable` — Indicates whether the received message can [bounce back]
+/// * `sender` — Internal address of the sender on the TON blockchain
+/// * `value` — Amount of [nanoToncoin] in the received message
+/// * `raw` — The remainder of the received message as a `Slice`. It follows the [internal message layout] 
+///   of TON, starting from the destination `Address` (`MsgAddressInt` in [TL-B notation]).
+/// 
+/// ```tact
+/// fun test() {
+///     let ctx: Context = context();
+///     require(ctx.value != 68 + 1, "Invalid amount of nanoToncoins, bye!");
+/// }
+/// ```
+/// 
+/// Note: If you only need to know who sent the message, use the `sender()` function, 
+/// as it is less gas-consuming.
+/// 
+/// [bounce back]: https://docs.ton.org/v3/documentation/smart-contracts/message-management/non-bounceable-messages
+/// [nanoToncoin]: https://docs.tact-lang.org/book/integers#nanotoncoin
+/// [internal message layout]: https://docs.ton.org/develop/smart-contracts/messages#message-layout
+/// [TL-B notation]: https://docs.ton.org/develop/data-formats/tl-b-language
+/// 
 @name(__tact_context_get)
 native context(): Context;
 
+/// Returns the `Address` of the sender of the current message.
+/// 
+/// ```tact
+/// contract MeSee {
+///     receive() {
+///         let whoSentMeMessage: Address = sender();
+///     }
+/// }
+/// ```
+/// 
+/// Note: Behavior is undefined for [getter functions], because they cannot have a sender 
+/// nor can they send messages.
+/// 
+/// Tip: To reduce gas usage, prefer using this function over calling `context().sender` 
+/// when you only need to know the sender of the message.
+/// 
+/// [getter functions]: https://docs.tact-lang.org/book/contracts#getter-functions
+/// 
 @name(__tact_context_get_sender)
 native sender(): Address;
 
