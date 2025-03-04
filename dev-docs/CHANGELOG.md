@@ -14,8 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Standard Library
 
-- Add `StateInit.hasSameBasechainAddress` function: PR [#2187](https://github.com/tact-lang/tact/pull/2187)
-- Add an `EmptyDeployable` trait and a `CashbackDeployable` trait with the `cashback` function: PR [#](https://github.com/tact-lang/tact/pull/)
+- Add the `StateInit.hasSameBasechainAddress` function: PR [#2187](https://github.com/tact-lang/tact/pull/2187)
+- Add the `cashback` function: PR [#2241](https://github.com/tact-lang/tact/pull/2241)
 
 ### TypeScript wrappers
 
