@@ -47,7 +47,7 @@ Use underscores (`_`) to improve readability: $\mathrm{0b111\_111\_111}$ is equa
 
 ### NanoToncoin
 
-Arithmetic with dollars requires two decimal places after the dot—these are used for the cents value. But how would we represent the number \$$1.25$ if we are only able to work with integers? The solution is to work with _cents_ directly. In this way, \$$1.25$ becomes $125$ cents. We simply remember that the two rightmost digits represent the numbers after the decimal point.
+Arithmetic with dollars requires two decimal places after the dot — these are used for the cents value. But how would we represent the number \$$1.25$ if we are only able to work with integers? The solution is to work with _cents_ directly. In this way, \$$1.25$ becomes $125$ cents. We simply remember that the two rightmost digits represent the numbers after the decimal point.
 
 Similarly, working with Toncoin, the main currency of TON Blockchain, requires nine decimal places instead of two. One can say that nanoToncoin is one-billionth ($\frac{1}{10^{9}}$) of a Toncoin.
 
@@ -140,7 +140,7 @@ In Tact, the variable `coins{:tact}` format is an alias to [`VarUInteger 16`][va
 This serialization format consists of two [TL-B fields](https://docs.ton.org/develop/data-formats/tl-b-language#field-definitions):
 
 * `len`, a $4$-bit unsigned big-endian integer storing the byte length of the provided value
-* `value`, an $8 \times len$-bit unsigned big-endian representation of the provided value
+* `value`, an $8 * len$-bit unsigned big-endian representation of the provided value
 
 That is, integers serialized as `coins{:tact}` occupy between $4$ and $124$ bits ($4$ bits for `len` and $0$ to $15$ bytes for `value`) and have values in the inclusive range from $0$ to $2^{120} - 1$.
 
