@@ -417,9 +417,19 @@ asm fun deploy(params: DeployParameters) {
 /// Attempts to queue more than 255 messages throw an exception with exit code 33: `Action list is too long`.
 ///
 /// ```tact
-/// fun example() {
+/// fun examples() {
 ///     // Forward the remaining value back to the sender
 ///     cashback(sender());
+///
+///     // The cashback() function above is cheaper, but functionally
+///     // equivalent to the following call to the message() function
+///     message(MessageParameters{
+///         mode: SendRemainingValue | SendIgnoreErrors,
+///         body: null,
+///         value: 0,
+///         to: sender(),
+///         bounce: true,
+///     });
 /// }
 /// ```
 ///
