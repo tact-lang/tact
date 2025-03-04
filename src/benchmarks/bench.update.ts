@@ -2,7 +2,14 @@ import { exec } from "child_process";
 import { readFile, writeFile } from "fs/promises";
 import { join } from "path";
 import { z } from "zod";
-import type { RawBenchmarkResult, RawCodeSizeResult } from "./util";
+import {
+    generateCodeSizeResults,
+    generateResults,
+    printBenchmarkTable,
+    type RawBenchmarkResult,
+    type RawCodeSizeResult,
+} from "./util";
+import { createInterface } from "readline/promises";
 
 const runBenchmark = (specPath: string): Promise<string> => {
     return new Promise((resolve) => {
@@ -38,8 +45,14 @@ const JestOutputSchema = z.object({
         .nonempty(),
 });
 
+const readline = createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
 type BenchmarkDiff = {
     label: string;
+    pr: string | null;
     diff: Record<string, number>;
 };
 
@@ -72,6 +85,26 @@ const parseBenchmarkOutput = (output: string): BenchmarkDiff | undefined => {
     return {
         label: `Benchmark ${new Date().toISOString().split("T")[0]}`,
         diff: gasUpdates,
+        pr: null,
+    };
+};
+
+const readBenchInfo = async (filePath: string) => {
+    console.log(`\nUpdating benchmark for ${filePath}\n`);
+
+    const label = await readline.question(
+        "Enter benchmark label(e.g. 1.6.1): ",
+    );
+    const prNumber = await readline.question(
+        "Enter pr number(e.g. 1450), leave empty for null: ",
+    );
+
+    return {
+        label,
+        pr:
+            prNumber === ""
+                ? null
+                : `https://github.com/tact-lang/tact/pull/${prNumber}`,
     };
 };
 
@@ -97,7 +130,7 @@ const updateGasResultsFile = async (
 
     benchmarkResults.results.push({
         label: newResult.label,
-        pr: null,
+        pr: newResult.pr,
         gas: Object.fromEntries(
             Object.entries(lastResult.gas).map(([key, value]) => [
                 key,
@@ -107,6 +140,7 @@ const updateGasResultsFile = async (
     });
 
     await writeFile(filePath, JSON.stringify(benchmarkResults, null, 2) + "\n");
+    return generateResults(benchmarkResults);
 };
 
 const updateCodeSizeResultsFile = async (
@@ -131,7 +165,7 @@ const updateCodeSizeResultsFile = async (
 
     benchmarkResults.results.push({
         label: newResult.label,
-        pr: null,
+        pr: newResult.pr,
         size: Object.fromEntries(
             Object.entries(lastResult.size).map(([key, value]) => [
                 key,
@@ -141,18 +175,7 @@ const updateCodeSizeResultsFile = async (
     });
 
     await writeFile(filePath, JSON.stringify(benchmarkResults, null, 2) + "\n");
-};
-
-const updateBenchmarkResults = async (
-    filePath: string,
-    newResult: BenchmarkDiff,
-    type: "gas" | "code_size",
-) => {
-    if (type === "gas") {
-        await updateGasResultsFile(filePath, newResult);
-    } else {
-        await updateCodeSizeResultsFile(filePath, newResult);
-    }
+    return generateCodeSizeResults(benchmarkResults);
 };
 
 const main = async () => {
@@ -163,7 +186,7 @@ const main = async () => {
         ];
 
         const fetchBenchmarkResults = async (specPath: string) => {
-            console.log(`Running benchmark: ${specPath}`);
+            console.log(`\nRunning benchmark: ${specPath}`);
 
             const output = await runBenchmark(specPath);
             const newResult = parseBenchmarkOutput(output);
@@ -179,16 +202,36 @@ const main = async () => {
                 "results_code_size.json",
             );
 
-            await updateBenchmarkResults(resultsGas, newResult, "gas");
-            await updateBenchmarkResults(
+            // run with `yarn bench:update --yes` to skip the prompt
+            if (!process.argv.includes("--yes")) {
+                const newBenchInfo = await readBenchInfo(specPath);
+                newResult.label = newBenchInfo.label;
+                newResult.pr = newBenchInfo.pr;
+            }
+
+            const gasResult = await updateGasResultsFile(resultsGas, newResult);
+            const sizeResult = await updateCodeSizeResultsFile(
                 resultsCodeSize,
                 newResult,
-                "code_size",
             );
-            console.log(`Updated benchmarks for ${resultsGas}`);
+
+            if (typeof gasResult === "undefined") {
+                return;
+            }
+
+            console.log(`\nUpdated benchmarks for ${resultsGas}\n`);
+
+            printBenchmarkTable(gasResult, sizeResult, {
+                isFullTable: true,
+                implementationName: "FunC",
+            });
         };
 
-        await Promise.all(benchmarkPaths.map(fetchBenchmarkResults));
+        for (const path of benchmarkPaths) {
+            await fetchBenchmarkResults(path);
+        }
+
+        readline.close();
     } catch (error) {
         console.error(error);
     }
