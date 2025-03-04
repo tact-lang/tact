@@ -107,7 +107,7 @@ yarn bench:table
 To update historical benchmarks with `results.json`:
 
 ```shell
-yarn bench:upgrade
+yarn bench:update
 ```
 
 To add new row to `results.json`:

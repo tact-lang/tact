@@ -10,6 +10,7 @@ import {
     type RawCodeSizeResult,
 } from "./util";
 import { createInterface } from "readline/promises";
+import { getCompilerVersion } from "../pipeline/version";
 
 const runBenchmark = (specPath: string): Promise<string> => {
     return new Promise((resolve) => {
@@ -92,15 +93,17 @@ const parseBenchmarkOutput = (output: string): BenchmarkDiff | undefined => {
 const readBenchInfo = async (filePath: string) => {
     console.log(`\nUpdating benchmark for ${filePath}\n`);
 
+    const version = getCompilerVersion();
+
     const label = await readline.question(
-        "Enter benchmark label(e.g. 1.6.1): ",
+        `Enter benchmark label(e.g. "new routing", it will autocomplete to "${version} with new routing"): `,
     );
     const prNumber = await readline.question(
         "Enter pr number(e.g. 1450), leave empty for null: ",
     );
 
     return {
-        label,
+        label: label === "" ? version : `${version} with ${label}`,
         pr:
             prNumber === ""
                 ? null
