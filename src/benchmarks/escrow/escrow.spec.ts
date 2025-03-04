@@ -21,7 +21,7 @@ import {
 } from "../util";
 import benchmarkResults from "./results_gas.json";
 import { readFileSync } from "fs";
-import { posixNormalize } from "../../../utils/filePath";
+import { posixNormalize } from "../../utils/filePath";
 import { resolve } from "path";
 import benchmarkCodeSizeResults from "./results_code_size.json";
 
@@ -240,9 +240,9 @@ describe("Escrow Gas Tests", () => {
     });
 
     afterAll(() => {
-        printBenchmarkTable(codeSizeResults, results, {
+        printBenchmarkTable(results, codeSizeResults, {
             implementationName: "FunC",
-            isFullTable: true,
+            printMode: "full",
         });
     });
 
