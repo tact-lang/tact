@@ -1,4 +1,4 @@
-/// Calculates and returns an `Int` value of the [SHA-256][sha-2] hash of the 
+/// Calculates and returns an `Int` value of the [SHA-256] hash of the 
 /// [standard `Cell` representation][std-representation] of the given `Cell`.
 /// 
 /// ```tact
@@ -8,12 +8,12 @@
 /// }
 /// ```
 /// 
-/// [sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
+/// [SHA-256]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
 /// [std-representation]: https://docs.tact-lang.org/book/cells#cells-representation
 /// 
 asm extends fun hash(self: Cell): Int { HASHCU }
 
-/// Calculates and returns an `Int` value of the [SHA-256][sha-2] hash of the 
+/// Calculates and returns an `Int` value of the [SHA-256] hash of the 
 /// [standard `Slice` representation][std-representation] of the given `Slice`.
 /// 
 /// NOTE: This function uses 500 gas units or more.
@@ -25,7 +25,7 @@ asm extends fun hash(self: Cell): Int { HASHCU }
 /// }
 /// ```
 /// 
-/// [sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard.
+/// [SHA-256]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
 /// [std-representation]: https://docs.tact-lang.org/book/cells#cells-representation
 /// 
 asm extends fun hash(self: Slice): Int { HASHSU }
@@ -82,7 +82,7 @@ asm extends fun hashData(self: Slice): Int { ONE HASHEXT_SHA256 }
 asm extends fun hashData(self: String): Int { ONE HASHEXT_SHA256 }
 
 /// Checks the [Ed25519] `signature` of the 256-bit unsigned `Int` `hash` using a `public_key`, 
-/// represented by a 256-bit unsigned `Int`. The signature must contain at least 512 bits of data, but 
+/// represented by a 256-bit unsigned `Int`. The signature must contain at least 512 bits of data, but
 /// only the first 512 bits are used.
 /// 
 /// Returns `true` if the signature is valid, `false` otherwise.
@@ -125,7 +125,7 @@ asm fun checkSignature(hash: Int, signature: Slice, public_key: Int): Bool { CHK
 /// Checks the [Ed25519] `signature` of the `data` using a `public_key`, similar to `checkSignature()`. 
 /// If the bit length of `data` is not divisible by 8, this function throws an error with 
 /// [exit code 9]: `Cell underflow`. 
-/// Verification itself is done indirectly on a [SHA-256][sha-2] hash of the `data`.
+/// Verification itself is done indirectly on a [SHA-256] hash of the `data`.
 /// 
 /// Returns `true` if the signature is valid, `false` otherwise.
 /// 
@@ -142,7 +142,7 @@ asm fun checkSignature(hash: Int, signature: Slice, public_key: Int): Bool { CHK
 /// ```
 /// 
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
-/// [ed]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
-/// [sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
+/// [Ed25519]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
+/// [SHA-256]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
 /// 
 asm fun checkDataSignature(data: Slice, signature: Slice, public_key: Int): Bool { CHKSIGNS }
