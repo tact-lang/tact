@@ -156,37 +156,30 @@ type BenchmarkTableArgs = {
     isFullTable: boolean;
 };
 
-export function printBenchmarkTable(
-    codeSizeResults: CodeSizeResult[],
-    results: BenchmarkResult[],
-    args: BenchmarkTableArgs,
-): void {
-    const METRICS: readonly string[] = Object.keys(results[0]!.gas);
-    const codeSizeMetrics = Object.keys(codeSizeResults[0]!.size);
-    const first = results.at(0)!;
-    const last = results.at(-1)!;
-
-    const tableResults = args.isFullTable ? results : [first, last];
-
-    if (tableResults.length === 0) {
-        console.log("No benchmark results to display.");
-        return;
-    }
-
+function createTable<
+    T extends {
+        gas?: Record<string, number>;
+        size?: Record<string, number>;
+        label: string;
+        pr?: string;
+    },
+>(results: T[], metrics: readonly string[], type: "gas" | "size"): string {
     const table = new Table({
-        head: ["Run", ...METRICS, "PR #"],
+        head: ["Run", ...metrics, "PR #"],
         style: {
             head: ["cyan"],
             border: ["gray"],
         },
     });
-    const changes = calculateChanges(tableResults, METRICS, "gas");
 
-    tableResults
+    const changes = calculateChanges(results, metrics, type);
 
-        .map(({ label, gas, pr: commit }, i) => [
+    results
+        .map(({ label, [type]: data, pr: commit }, i) => [
             label,
-            ...METRICS.map((metric, j) => `${gas[metric]} ${changes[i]?.[j]}`),
+            ...metrics.map(
+                (metric, j) => `${data![metric]} ${changes[i]?.[j]}`,
+            ),
             commit
                 ? commit.substring(
                       commit.lastIndexOf("/") + 1,
@@ -198,41 +191,50 @@ export function printBenchmarkTable(
             table.push(arr);
         });
 
-    const codeSizeTable = new Table({
-        head: ["Run", ...codeSizeMetrics, "PR #"],
-        style: {
-            head: ["cyan"],
-            border: ["gray"],
-        },
-    });
+    return table.toString();
+}
 
-    const codeSizeChanges = calculateChanges(
-        codeSizeResults,
-        codeSizeMetrics,
-        "size",
-    );
+export function printBenchmarkTable(
+    results: BenchmarkResult[],
+    codeSizeResults: CodeSizeResult[] | undefined,
+    args: BenchmarkTableArgs,
+): void {
+    if (
+        typeof process.env.PRINT_TABLE === "undefined" ||
+        process.env.PRINT_TABLE === "false"
+    ) {
+        return;
+    }
 
-    codeSizeResults
-        .map(({ label, size, pr: commit }, i) => [
-            label,
-            ...codeSizeMetrics.map(
-                (metric, j) => `${size[metric]} ${codeSizeChanges[i]?.[j]}`,
-            ),
-            commit
-                ? commit.substring(
-                      commit.lastIndexOf("/") + 1,
-                      commit.lastIndexOf("/") + 8,
-                  )
-                : "-",
-        ])
-        .forEach((arr) => {
-            codeSizeTable.push(arr);
-        });
+    const METRICS: readonly string[] = Object.keys(results[0]!.gas);
+    const first = results.at(0)!;
+    const last = results.at(-1)!;
+
+    const tableResults = args.isFullTable ? results : [first, last];
+
+    if (tableResults.length === 0) {
+        console.log("No benchmark results to display.");
+        return;
+    }
+
+    const gasTable = createTable(tableResults, METRICS, "gas");
 
     const output = [];
-    output.push(table.toString());
-    output.push("\nCode Size Results:");
-    output.push(codeSizeTable.toString());
+    output.push("Gas Usage Results:");
+    output.push(gasTable);
+
+    if (typeof codeSizeResults !== "undefined") {
+        const codeSizeMetrics = Object.keys(codeSizeResults[0]!.size);
+
+        const codeSizeTable = createTable(
+            codeSizeResults,
+            codeSizeMetrics,
+            "size",
+        );
+
+        output.push("\nCode Size Results:");
+        output.push(codeSizeTable);
+    }
 
     output.push(`\nComparison with ${args.implementationName} implementation:`);
     output.push(

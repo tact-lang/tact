@@ -375,7 +375,7 @@ describe("Jetton", () => {
     });
 
     afterAll(() => {
-        printBenchmarkTable(codeSizeResults, results, {
+        printBenchmarkTable(results, codeSizeResults, {
             implementationName: "FunC",
             isFullTable: true,
         });
