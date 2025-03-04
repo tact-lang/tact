@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [verytactical](https://github.com/verytactical)
 - [Shvetc Andrei](https://github.com/Shvandre)
 - [Maksim Lagus](https://github.com/Kaladin13)
+- [Novus Nota](https://github.com/novusnota)
 
 ## [1.6.0] - 2025-02-28
 
