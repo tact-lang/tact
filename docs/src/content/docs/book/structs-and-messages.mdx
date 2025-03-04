@@ -1,17 +1,17 @@
 ---
 title: Structs and Messages
-description: "Structs can define complex data types that contain multiple fields of different types, while Messages also have a 32-bit header and are convenient to receive and sent message bodies on TON Blockchain"
+description: "Structs can define complex data types that contain multiple fields of different types, while Messages also have a 32-bit header and are convenient for receiving and sending message bodies on TON Blockchain."
 ---
 
 import { Badge } from '@astrojs/starlight/components';
 
-Tact supports a number of [primitive data types](/book/types#primitive-types) that are tailored for smart contract use. However, using individual means of storage often becomes cumbersome, so there are [Structs](#structs) and [Messages](#messages) which allow combining types together.
+Tact supports a number of [primitive data types](/book/types#primitive-types) that are tailored for smart contract use. However, using individual means of storage often becomes cumbersome, so there are [Structs](#structs) and [Messages](#messages), which allow combining types together.
 
-After a successful compilation, Tact produces a [compilation report](/book/compile), which features all the declared [Structs](#structs) and [Messages](#messages), including those from the Core standard library. See the [Structures section of the compilation report](/book/compile#structures) for details.
+After successful compilation, Tact produces a [compilation report](/book/compile), which features all the declared [Structs](#structs) and [Messages](#messages), including those from the Core standard library. See the [Structures section of the compilation report](/book/compile#structures) for details.
 
 :::caution
 
-  **Warning**: Currently circular types are **not** possible. This means that Struct/Message **A** can't have a field of a Struct/Message **B** that has a field of the Struct/Message **A**.
+  Currently, circular types are **not** possible. This means that struct or message struct `A` can't have a field of struct or message struct type `B` if `B` has a field of type `A`.
 
   Therefore, the following code **won't** compile:
 
@@ -43,7 +43,7 @@ struct Line {
 }
 ```
 
-Structs can also contain default fields and define fields of [optional types](/book/optionals). This can be useful if you have a lot of fields, but don't want to keep having to specify common values for them in [new instances](#instantiate).
+Structs can also contain default fields and define fields of [optional types](/book/optionals). This can be useful if you have a lot of fields but don't want to keep specifying common values for them in [new instances](#instantiate).
 
 ```tact
 struct Params {
@@ -56,7 +56,7 @@ struct Params {
 }
 ```
 
-Structs are also useful as return values from getters or other internal functions. They effectively allow a single getter to return multiple return values.
+Structs are also useful as return values from getters or other internal functions. They effectively allow a single getter to return multiple values.
 
 ```tact
 contract StructsShowcase {
@@ -77,7 +77,7 @@ contract StructsShowcase {
 }
 ```
 
-Note, that the last semicolon `;` in Struct declaration is optional and may be omitted:
+Note that the last semicolon `;` in a Struct declaration is optional and may be omitted:
 
 ```tact
 struct Mad { ness: Bool }
@@ -107,25 +107,25 @@ message Add {
 
 ### Message opcodes
 
-Messages are almost the same thing as [Structs](#structs) with the only difference that Messages have a 32-bit integer header in their serialization containing their unique numeric id, commonly referred to as an _opcode_ (operation code). This allows Messages to be used with [receivers](/book/receive) since the contract can tell different types of messages apart based on this id.
+Messages are almost the same as [Structs](#structs), with the only difference being that Messages have a 32-bit integer header in their serialization containing their unique numeric id, commonly referred to as an _opcode_ (operation code). This allows Messages to be used with [receivers](/book/receive), since the contract can distinguish different types of messages based on this id.
 
-Tact automatically generates those unique ids (opcodes) for every received Message, which can be observed in the [Structures section of the compilation report](/book/compile#structures).
+Tact automatically generates these unique ids (opcodes) for every received Message, which can be observed in the [Structures section of the compilation report](/book/compile#structures).
 
-Besides, opcodes can be overwritten manually:
+Additionally, opcodes can be overridden manually:
 
 ```tact
-// This Message overwrites its unique id (opcode) with 0x7362d09c
+// This Message overrides its unique id (opcode) with 0x7362d09c
 message(0x7362d09c) TokenNotification {
     forwardPayload: Slice as remaining;
 }
 ```
 
-This is useful for cases where you want to handle certain opcodes of a given smart contract, such as [Jetton standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md). The short-list of opcodes this contract is able to process is [given here in FunC](https://github.com/ton-blockchain/token-contract/blob/main/ft/op-codes.fc). They serve as an interface to the smart contract.
+This is useful in cases where you want to handle certain opcodes of a given smart contract, such as the [Jetton standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md). A shortlist of opcodes this contract can process is [provided here in FunC](https://github.com/ton-blockchain/token-contract/blob/main/ft/op-codes.fc). They serve as an interface to the smart contract.
 
-<Badge text="Available since Tact 1.6" variant="tip" size="small"/> A message opcode can be any [compile-time](/ref/core-comptime) expression that evaluates to a positive $32$-bit integer, so the following is also valid:
+<Badge text="Available since Tact 1.6" variant="tip" size="small"/> A message opcode can be any [compile-time](/ref/core-comptime) expression that evaluates to a positive 32-bit integer, so the following is also valid:
 
 ```tact
-// This Message overwrites its unique id (opcode) with 898001897,
+// This Message overrides its unique id (opcode) with 898001897,
 // which is the evaluated integer value of the specified compile-time expression
 message((crc32("Tact") + 42) & 0xFFFF_FFFF) MsgWithExprOpcode {
     field: Int as uint4;
@@ -134,7 +134,7 @@ message((crc32("Tact") + 42) & 0xFFFF_FFFF) MsgWithExprOpcode {
 
 :::note
 
-  For more in-depth information on this see:\
+  For more in-depth information on this, see:\
   [Convert received messages to `op` operations](/book/func#convert-received-messages-to-op-operations)\
   [Internal message body layout in TON Docs](https://docs.ton.org/develop/smart-contracts/guidelines/internal-messages#internal-message-body)\
   [Messages of the Jetton implementation in Tact](https://github.com/howardpen9/jetton-implementation-in-tact/blob/9eee917877a92af218002874a9f2bd3f9c619229/sources/messages.tact)\
@@ -146,7 +146,7 @@ message((crc32("Tact") + 42) & 0xFFFF_FFFF) MsgWithExprOpcode {
 
 ### Instantiate
 
-Creation of [Struct](#structs) and [Message](#messages) instances resembles [function calls](/book/expressions#static-function-call), but instead of parentheses `(){:tact}` one needs to specify arguments in braces `{}{:tact}` (curly brackets):
+The creation of [Struct](#structs) and [Message](#messages) instances resembles [function calls](/book/expressions#static-function-call), but instead of parentheses `(){:tact}`, one needs to specify arguments in braces `{}{:tact}` (curly brackets):
 
 ```tact
 struct StA {
@@ -174,7 +174,7 @@ fun example() {
 }
 ```
 
-When the name of a variable or constant assigned to a field coincides with the name of such field, Tact provides a handy syntactic shortcut sometimes called field punning. With it, you don't have to type more than it's necessary:
+When the name of a variable or constant assigned to a field coincides with the name of that field, Tact provides a handy syntactic shortcut sometimes called field punning. With it, you don't have to type more than necessary:
 
 ```tact
 struct PopQuiz {
@@ -188,11 +188,11 @@ fun example() {
     let nicestNumber: Int = 68 + 1;
 
     // You may instantiate the Struct as usual and assign variables to fields,
-    // but that is a bit repetitive and tedious at times
+    // but that can be a bit repetitive and tedious at times
     PopQuiz{ vogonsCount: vogonsCount, nicestNumber: nicestNumber };
 
     // Let's use field punning and type less,
-    // because our variable names happen to be the same as field names
+    // because our variable names happen to be the same as the field names
     PopQuiz{
         vogonsCount,
         nicestNumber, // trailing comma is allowed here too!
@@ -208,7 +208,7 @@ fun example() {
 
 ### Convert to a `Cell`, `.toCell()` {#tocell}
 
-It's possible to convert an arbitrary [Struct](#structs) or [Message](#messages) to the [`Cell{:tact}`][cell] type by using the `.toCell(){:tact}` [extension function](/book/functions#extension-function):
+It is possible to convert an arbitrary [Struct](#structs) or [Message](#messages) to the [`Cell{:tact}`][cell] type by using the `.toCell(){:tact}` [extension function](/book/functions#extension-function):
 
 ```tact
 struct Big {
@@ -230,7 +230,7 @@ fun conversionFun() {
 
 :::note
 
-  See those extension functions in the Reference:\
+  See these extension functions in the Reference:\
   [`Struct.toCell(){:tact}`](/ref/core-cells#structtocell)\
   [`Message.toCell(){:tact}`](/ref/core-cells#messagetocell)
 
@@ -238,9 +238,9 @@ fun conversionFun() {
 
 ### Obtain from a `Cell` or `Slice`, `.fromCell()` and `.fromSlice()` {#fromcellslice}
 
-Instead of manually parsing a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] via a series of relevant `.loadSomething(){:tact}` function calls, one can use `.fromCell(){:tact}` and `.fromSlice(){:tact}` [extension functions](/book/functions#extension-function) for converting the provided [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] into the needed [Struct](#structs) or [Message](#messages).
+Instead of manually parsing a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] via a series of relevant `.loadSomething(){:tact}` function calls, one can use `.fromCell(){:tact}` and `.fromSlice(){:tact}` [extension functions](/book/functions#extension-function) to convert the provided [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] into the needed [Struct](#structs) or [Message](#messages).
 
-Those extension functions only attempt to parse a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] according to the structure of your [Struct](#structs) or [Message](#messages). In case layouts don't match, various exceptions may be thrown — make sure to wrap your code in [`try...catch{:tact}`](/book/statements#try-catch) blocks to prevent unexpected results.
+These extension functions only attempt to parse a [`Cell{:tact}`][cell] or [`Slice{:tact}`][slice] according to the structure of your [Struct](#structs) or [Message](#messages). In case the layouts don't match, various exceptions may be thrown — make sure to wrap your code in [`try...catch{:tact}`](/book/statements#try-catch) blocks to prevent unexpected results.
 
 ```tact
 struct Fizz { foo: Int }
@@ -257,7 +257,7 @@ fun constructThenParse() {
 
 :::note
 
-  See those extension functions in the Reference:\
+  See these extension functions in the Reference:\
   [`Struct.fromCell(){:tact}`][st-fc]\
   [`Struct.fromSlice(){:tact}`][st-fs]\
   [`Message.fromCell(){:tact}`][msg-fc]\
@@ -269,7 +269,7 @@ fun constructThenParse() {
 
 Whenever one converts between [`Cell{:tact}`][cell]/[`Slice{:tact}`][slice] and [Struct](#structs)/[Message](#messages) via `.toCell(){:tact}` and `.fromCell(){:tact}` functions, the following laws hold:
 
-* For any instance of type [Struct](#structs)/[Message](#messages), calling `.toCell(){:tact}` on it, then applying `Struct.fromCell(){:tact}` (or `Message.fromCell(){:tact}`) to the result gives back the copy of the original instance:
+* For any instance of type [Struct](#structs)/[Message](#messages), calling `.toCell(){:tact}` on it and then applying `Struct.fromCell(){:tact}` (or `Message.fromCell(){:tact}`) to the result gives back a copy of the original instance:
 
 ```tact {8-9,13-14}
 struct ArbitraryStruct {}
@@ -289,7 +289,7 @@ fun lawOne() {
 }
 ```
 
-* For any [`Cell{:tact}`][cell] with the same [TL-B](https://docs.ton.org/develop/data-formats/tl-b-language) layout as a given [Struct](#structs)/[Message](#messages), calling `Struct.fromCell(){:tact}` (or `Message.fromCell(){:tact}`) on it, and then converting the result to a [`Cell{:tact}`][cell] via `.toCell(){:tact}` would give the copy of the original [`Cell{:tact}`][cell]:
+* For any [`Cell{:tact}`][cell] with the same [TL-B](https://docs.ton.org/develop/data-formats/tl-b-language) layout as a given [Struct](#structs)/[Message](#messages), calling `Struct.fromCell(){:tact}` (or `Message.fromCell(){:tact}`) on it and then converting the result to a [`Cell{:tact}`][cell] via `.toCell(){:tact}` will give a copy of the original [`Cell{:tact}`][cell]:
 
 ```tact {9-10,15-16}
 struct ArbitraryStruct { val: Int as uint32 }
@@ -297,7 +297,7 @@ message(0x2A) ArbitraryMessage {}
 
 fun lawTwo() {
     // Using 32 bits to store 42 just so this cellInst can be
-    // re-used for working with both ArbitraryStruct and ArbitraryMessage
+    // reused for working with both ArbitraryStruct and ArbitraryMessage
     let cellInst = beginCell().storeUint(42, 32).endCell();
 
     ArbitraryStruct.fromCell(cellInst).toCell();  // = cellInst
