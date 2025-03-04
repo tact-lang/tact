@@ -1,18 +1,12 @@
-/// Calls the native `raw_reserve` function with the specified amount and mode.
-/// The `raw_reserve` function creates an output action to reserve a specific amount of 
+/// Executes the native `RAWRESERVE` instruction with the specified amount and mode.
+/// The `RAWRESERVE` instruction creates an output action to reserve a specific amount of 
 /// [nanoToncoin] from the remaining balance of the account.
 /// 
-/// It has the following signature in FunC:
-/// 
-/// ```func
-/// raw_reserve(int amount, int mode) impure asm "RAWRESERVE";
-/// ```
-/// 
-/// The function takes two arguments:
+/// The `RAWRESERVE` instruction takes two arguments:
 /// * `amount`: The number of [nanoToncoin] to reserve.
 /// * `mode`: Determines the reservation behavior.
 /// 
-/// The function `raw_reserve` is roughly equivalent to creating an outbound message 
+/// The `RAWRESERVE` instruction is roughly equivalent to creating an outbound message 
 /// carrying the specified `amount` of [nanoToncoin] (or `b - amount` [nanoToncoin], 
 /// where `b` is the remaining balance) to oneself.
 /// This ensures that subsequent output actions cannot spend more money than the remainder.
