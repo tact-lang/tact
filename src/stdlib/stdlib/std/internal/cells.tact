@@ -1007,7 +1007,7 @@ inline extends fun asSlice(self: Cell): Slice {
 /// Converts the `Slice` to a `Cell` and returns it.
 /// An alias to `beginCell().storeSlice(self).endCell()`.
 /// 
-/// NOTE: This function uses 500 gas units or more.
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
 /// 
 /// ```tact
 /// fun example() {

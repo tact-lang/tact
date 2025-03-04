@@ -114,7 +114,7 @@ extends native concat(self: StringBuilder, s: String): StringBuilder;
 ///
 /// Returns an assembled `Cell` from a `StringBuilder`.
 /// 
-/// NOTE: This function uses 500 gas units or more.
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
 ///
 /// ```tact
 /// fun example() {
@@ -133,7 +133,7 @@ extends native toCell(self: StringBuilder): Cell;
 ///
 /// Returns a built `String` from a `StringBuilder`.
 /// 
-/// NOTE: This function uses 500 gas units or more.
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
 ///
 /// ```tact
 /// fun example() {
@@ -153,7 +153,7 @@ extends native toString(self: StringBuilder): String;
 /// Returns an assembled `Cell` as a `Slice` from a `StringBuilder`.
 /// An alias to `self.toCell().asSlice()`.
 /// 
-/// NOTE: This function uses 500 gas units or more.
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
 ///
 /// ```tact
 /// fun example() {
@@ -179,7 +179,7 @@ extends native toSlice(self: StringBuilder): Slice;
 ///
 /// Returns a `String` from an `Int` value.
 /// 
-/// NOTE: This function uses 500 gas units or more.
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
 /// 
 /// ```tact
 /// fun example() {
@@ -234,7 +234,7 @@ asm extends fun toString(self: Int): String {
 /// number, where `self` is the significant part of the number and `digits` is the number 
 /// of digits in the fractional part.
 /// 
-/// NOTE: This function uses 500 gas units or more.
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
 /// 
 /// ```tact
 /// fun example() {
@@ -409,7 +409,7 @@ inline extends fun toCoinsString(self: Int): String {
 /// Returns a `Cell` from a `String` by prefixing the latter with four null bytes.
 /// This format is used for passing text comments as message bodies.
 /// 
-/// NOTE: This function uses 500 gas units or more.
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
 /// 
 /// ```tact
 /// fun example() {
