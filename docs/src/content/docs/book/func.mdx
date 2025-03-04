@@ -9,17 +9,17 @@ Tact itself compiles to FunC and maps all its entities directly to various FunC 
 
 [Primitive types](/book/types#primitive-types) in Tact are directly mapped to FunC ones.
 
-All rules about copying variables are the same. One of the big differences is that there are no visible mutation operators in Tact and most [`Slice{:tact}`](/book/cells#slices) operations mutate variables in place.
+All rules about copying variables are the same. One of the main differences is that there are no visible mutation operators in Tact, and most [`Slice{:tact}`](/book/cells#slices) operations mutate variables in place.
 
 ## Convert serialization
 
-Serialization of [Structs](/book/structs-and-messages#structs) and [Messages](/book/structs-and-messages#messages) in Tact is automatic, unlike FunC where you need to define serialization logic manually.
+Serialization of [Structs](/book/structs-and-messages#structs) and [Messages](/book/structs-and-messages#messages) in Tact is automatic, unlike FunC, where you need to define serialization logic manually.
 
-Tact's auto-layout algorithm is greedy. This means that it takes the next variable, calculates its size, and tries to fit it into a current cell. If it doesn't fit, it creates a new cell and continues. All inner structs for auto-layout are flattened before allocation.
+Tact's auto-layout algorithm is greedy. This means that it takes the next variable, calculates its size, and tries to fit it into the current cell. If it doesn't fit, it creates a new cell and continues. All inner structs for auto-layout are flattened before allocation.
 
 All optional types are serialized as `Maybe` in TL-B, except for [`Address{:tact}`](/book/types#primitive-types).
 
-There is no support for `Either` since it does not define what to pick during serialization in some cases.
+There is no support for `Either` since it does not define which variant to pick during serialization in some cases.
 
 ### Examples
 
@@ -76,7 +76,7 @@ struct SomeValue {
     value1: Int as int256;
     value2: Int as int256;
     value3: Int as int256;
-    flag: Bool; // Flag is written before value4 to avoid auto-layout to allocate it to the next cell
+    flag: Bool; // Flag is written before value4 to prevent auto-layout from allocating it to the next cell
     value4: Int as int256;
 }
 ```
@@ -103,7 +103,7 @@ struct SomeValue {
 
 ## Convert received messages to `op` operations
 
-Tact generates a unique `op` for every received typed message, but it can be overwritten.
+Tact generates a unique `op` for every received typed message, but it can be overridden.
 
 The following code in FunC:
 
@@ -116,7 +116,7 @@ The following code in FunC:
         ;; code...
     }
 
-    ;; Receive MessageWithOverwrittenOP message
+    ;; Receive MessageWithOverwrittenOp message
     if (op == 291) {
         ;; code...
     }
@@ -131,7 +131,7 @@ message MessageWithGeneratedOp {
     amount: Int as uint32;
 }
 
-message(0x123) MessageWithOverwrittenOP {
+message(0x123) MessageWithOverwrittenOp {
     amount: Int as uint32;
 }
 
@@ -142,7 +142,7 @@ contract Contract {
         // code...
     }
 
-    receive(msg: MessageWithOverwrittenOP) {
+    receive(msg: MessageWithOverwrittenOp) {
         // code...
     }
 
@@ -175,9 +175,9 @@ get fun seqno(): Int {
 
 ### Tensor return types
 
-In FunC there is a difference between tensor type `(int, int){:func}` and `(int, (int)){:func}`, but for TVM there are no differences, they all represent a stack of two integers.
+In FunC, there is a difference between the tensor types `(int, int){:func}` and `(int, (int)){:func}`, but for TVM there is no difference; they both represent a stack of two integers.
 
-To convert the tensor that returned from a FunC `get`-method, you need to define a [Struct](/book/structs-and-messages#structs) that has the same field types as the tensor and in the same order.
+To convert the tensor returned from a FunC `get`-method, you need to define a [Struct](/book/structs-and-messages#structs) that has the same field types as the tensor and in the same order.
 
 The following code in FunC:
 
@@ -206,7 +206,7 @@ contract JettonWallet {
 
 ### Tuple return type
 
-In FunC if you are returning a tuple, instead of a tensor you need to follow the process for a tensor type, but define the return type of a `get`-method as optional.
+In FunC, if you are returning a tuple instead of a tensor, you need to follow the same process used for a tensor type but define the return type of a `get`-method as optional.
 
 The following code in FunC:
 
@@ -233,7 +233,7 @@ contract StatefulContract {
 
 ### Mixed tuple and tensor return types
 
-When some of the tensors are a tuple, you need to define a struct as in previous steps and the tuple one must be defined as a separate [Struct](/book/structs-and-messages#structs).
+When some of the returned values are tuples within a tensor, you need to define a struct as in the previous steps, and the tuple itself must be defined as a separate [Struct](/book/structs-and-messages#structs).
 
 The following code in FunC:
 
@@ -265,9 +265,9 @@ contract StatefulContract {
 
 ### Arguments mapping
 
-Conversion of `get`-methods arguments is straightforward. Each argument is mapped _as-is_ to FunC one, and each tuple is mapped to a [Struct](/book/structs-and-messages#structs).
+Conversion of arguments for `get` methods is straightforward. Each argument is mapped _as-is_ to a FunC argument, and each tuple is mapped to a [Struct](/book/structs-and-messages#structs).
 
-The following code in FunC:
+The following FunC code:
 
 ```func
 (int, [int, int]) get_contract_state(int arg1, [int,int] arg2) method_id {
@@ -275,7 +275,7 @@ The following code in FunC:
 }
 ```
 
-Becomes this in Tact:
+becomes this in Tact:
 
 ```tact
 struct ContractStateArg2 {

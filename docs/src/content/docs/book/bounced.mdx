@@ -1,13 +1,13 @@
 ---
 title: Bounced messages
-description: "When a contract sends a message with a flag bounce set to true, then if the message wasn't processed properly, it would bounce back to the sender"
+description: "When a contract sends a message with the flag bounce set to true, then if the message isn't processed properly, it will bounce back to the sender."
 ---
 
-When a contract sends a message with a flag `bounce` set to `true{:tact}`, then if the message wasn't processed properly, it would bounce back to the sender. This is useful when you want to make sure that the message was processed properly and if not — revert the changes.
+When a contract sends a message with the flag `bounce` set to `true{:tact}`, and if the message isn't processed properly, it will bounce back to the sender. This is useful when you want to ensure that the message has been processed properly and, if not, revert the changes.
 
 ## Caveats
 
-Currently, bounced messages in TON have only 224 usable data bits in the message body and don't have any references. This means that you can't recover much of the data from the bounced message. This is a limitation of the TON blockchain and will be fixed in the future. Tact helps you to check if your message fits the limit and in case it doesn't — suggests using a special type constructor `bounced<M>{:tact}` for the bounced message receiver, that would construct a partial representation of the message that fits into the required limits.
+Currently, bounced messages in TON have only 224 usable data bits in the message body and don't have any references. This means that you can't recover much of the data from the bounced message. This is a limitation of the TON blockchain and will be fixed in the future. Tact helps you to check if your message fits the limit, and if it doesn't, suggests using a special type constructor `bounced<M>{:tact}` for the bounced message receiver, which constructs a partial representation of the message that fits within the required limits.
 
 ## Bounced message receiver
 
@@ -27,7 +27,7 @@ contract MyContract {
 }
 ```
 
-To process bounced messages manually, you can use a fallback definition that handles a raw [`Slice{:tact}`](/book/cells#slices) directly. Note, that such receiver will get **all** the bounced messages produced by your contract:
+To process bounced messages manually, you can use a fallback definition that handles a raw [`Slice{:tact}`](/book/cells#slices) directly. Note that such a receiver will get **all** the bounced messages produced by your contract:
 
 ```tact /rawMsg: Slice/
 contract MyContract {

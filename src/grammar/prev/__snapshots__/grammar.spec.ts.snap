@@ -855,7 +855,7 @@ exports[`grammar should parse block-statements 1`] = `
         "text": "foo",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "expression": {
@@ -874,7 +874,7 @@ exports[`grammar should parse block-statements 1`] = `
             "loc": x,
             "text": "x",
           },
-          "type": null,
+          "type": undefined,
         },
         {
           "id": 8,
@@ -900,7 +900,7 @@ exports[`grammar should parse block-statements 1`] = `
                 "loc": y,
                 "text": "y",
               },
-              "type": null,
+              "type": undefined,
             },
           ],
         },
@@ -1013,7 +1013,7 @@ exports[`grammar should parse codeOf 1`] = `
                 "loc": code,
                 "text": "code",
               },
-              "type": null,
+              "type": undefined,
             },
           ],
         },
@@ -1228,9 +1228,9 @@ exports[`grammar should parse contract-optional-semicolon-for-last-storage-var 1
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 6,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m: map<Int, Int>,
           "name": {
@@ -1241,7 +1241,7 @@ exports[`grammar should parse contract-optional-semicolon-for-last-storage-var 1
           },
           "type": {
             "id": 5,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 3,
               "kind": "type_id",
@@ -1250,7 +1250,7 @@ exports[`grammar should parse contract-optional-semicolon-for-last-storage-var 1
             },
             "kind": "map_type",
             "loc": map<Int, Int>,
-            "valueStorageType": null,
+            "valueStorageType": undefined,
             "valueType": {
               "id": 4,
               "kind": "type_id",
@@ -1393,9 +1393,9 @@ exports[`grammar should parse contract-with-init 1`] = `
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 4,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -1412,9 +1412,9 @@ exports[`grammar should parse contract-with-init 1`] = `
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 7,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
@@ -1578,9 +1578,9 @@ exports[`grammar should parse contract-with-trait 1`] = `
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 6,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -1658,9 +1658,9 @@ exports[`grammar should parse contract-with-trait 1`] = `
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 16,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
@@ -1767,9 +1767,9 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 6,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -1847,9 +1847,9 @@ exports[`grammar should parse contract-with-trait-string-literal 1`] = `
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 16,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
@@ -2486,7 +2486,7 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
           },
           "type": {
             "id": 6,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 4,
               "kind": "type_id",
@@ -2495,7 +2495,7 @@ exports[`grammar should parse expr-chaining-unbox 1`] = `
             },
             "kind": "map_type",
             "loc": map<Int, Int>,
-            "valueStorageType": null,
+            "valueStorageType": undefined,
             "valueType": {
               "id": 5,
               "kind": "type_id",
@@ -3807,7 +3807,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
           },
         },
       ],
-      "return": null,
+      "return": undefined,
       "shuffle": {
         "args": [
           {
@@ -3987,7 +3987,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
         "text": "checkAndRemoveAddExtensionPrefix",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "shuffle": {
         "args": [],
         "ret": [],
@@ -4011,7 +4011,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
         "text": "debugStr1",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "shuffle": {
         "args": [],
         "ret": [],
@@ -4032,7 +4032,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
         "text": "debugStr2",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "shuffle": {
         "args": [],
         "ret": [],
@@ -4055,7 +4055,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
         "text": "createWord",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "shuffle": {
         "args": [],
         "ret": [],
@@ -4554,7 +4554,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
           },
         },
       ],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "expression": {
@@ -4650,7 +4650,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
           },
         },
       ],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "expression": {
@@ -4940,7 +4940,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
         "text": "test",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "expression": {
@@ -5018,7 +5018,7 @@ exports[`grammar should parse items-multi-funs 1`] = `
         "text": "testFunc",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "expression": {
@@ -5133,7 +5133,7 @@ native testFunc();,
         "text": "native_name_1",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5216,7 +5216,7 @@ native idTest1();,
         "text": "query'",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5237,7 +5237,7 @@ native idTest2();,
         "text": "query''",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5258,7 +5258,7 @@ native idTest3();,
         "text": "CHECK",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5279,7 +5279,7 @@ native idTest4();,
         "text": "_internal_val",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5300,7 +5300,7 @@ native idTest5();,
         "text": "message_found?",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5321,7 +5321,7 @@ native idTest6();,
         "text": "get_pubkeys&signatures",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5342,7 +5342,7 @@ native idTest7();,
         "text": "dict::udict_set_builder",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5363,7 +5363,7 @@ native idTest8();,
         "text": "_+_",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5384,7 +5384,7 @@ native idTest9();,
         "text": "__",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5405,7 +5405,7 @@ native idTest10();,
         "text": "fatal!",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5426,7 +5426,7 @@ native idTest11();,
         "text": "123validname",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5447,7 +5447,7 @@ native idTest12();,
         "text": "2+2=2*2",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5468,7 +5468,7 @@ native idTest13();,
         "text": "-alsovalidname",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5489,7 +5489,7 @@ native idTest14();,
         "text": "0xefefefhahaha",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5510,7 +5510,7 @@ native idTest15();,
         "text": "{hehehe}",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5531,7 +5531,7 @@ native idTest16();,
         "text": "pa{--}in"\`aaa\`"",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5552,7 +5552,7 @@ native idTest17();,
         "text": "\`I'm a function too\`",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5573,7 +5573,7 @@ native idTest18();,
         "text": "\`any symbols ; ~ () are allowed here...\`",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5594,7 +5594,7 @@ native idTest19();,
         "text": "C4",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5615,7 +5615,7 @@ native idTest20();,
         "text": "C4g",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5636,7 +5636,7 @@ native idTest21();,
         "text": "4C",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5657,7 +5657,7 @@ native idTest22();,
         "text": "_0x0",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5678,7 +5678,7 @@ native idTest23();,
         "text": "_0",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5699,7 +5699,7 @@ native idTest24();,
         "text": "0x_",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5720,7 +5720,7 @@ native idTest25();,
         "text": "0x0_",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5741,7 +5741,7 @@ native idTest26();,
         "text": "0_",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5762,7 +5762,7 @@ native idTest27();,
         "text": "hash#256",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5783,7 +5783,7 @@ native idTest28();,
         "text": "💀💀💀0xDEADBEEF💀💀💀",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5804,7 +5804,7 @@ native idTest29();,
         "text": "__tact_verify_address",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5825,7 +5825,7 @@ native idTest30();,
         "text": "__tact_pow2",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5846,7 +5846,7 @@ native idTest31();,
         "text": "randomize_lt",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5867,7 +5867,7 @@ native idTest32();,
         "text": "fixed248::asin",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5888,7 +5888,7 @@ native idTest33();,
         "text": "fixed248::nrand_fast",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5909,7 +5909,7 @@ native idTest34();,
         "text": "atan_f261_inlined",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5930,7 +5930,7 @@ native idTest35();,
         "text": "~impure_touch",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5951,7 +5951,7 @@ native idTest36();,
         "text": "~udict::delete_get_min",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5972,7 +5972,7 @@ native idTest37();,
         "text": ".something",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -5993,7 +5993,7 @@ native idTest38();,
         "text": "f̷̨͈͚́͌̀i̵̩͔̭̐͐̊n̸̟̝̻̩̎̓͋̕e̸̝̙̒̿͒̾̕",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -6014,7 +6014,7 @@ native idTest39();,
         "text": "❤️❤️❤️thanks❤️❤️❤️",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -6035,7 +6035,7 @@ native idTest40();,
         "text": "intslice",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
     {
       "attributes": [],
@@ -6056,7 +6056,7 @@ native idTest40();,
         "text": "int2",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
     },
   ],
   "kind": "module",
@@ -6071,9 +6071,9 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 4,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -6090,9 +6090,9 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 7,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": y: Int,
           "name": {
@@ -6260,9 +6260,9 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 32,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -6279,9 +6279,9 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 35,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": y: Int,
           "name": {
@@ -6310,7 +6310,7 @@ exports[`grammar should parse items-struct-msg-fun-const 1`] = `
         "loc": B,
         "text": "B",
       },
-      "opcode": null,
+      "opcode": undefined,
     },
     {
       "attributes": [],
@@ -6995,7 +6995,7 @@ exports[`grammar should parse nested-block-statements 1`] = `
         "text": "foo",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "expression": {
@@ -7014,7 +7014,7 @@ exports[`grammar should parse nested-block-statements 1`] = `
             "loc": x,
             "text": "x",
           },
-          "type": null,
+          "type": undefined,
         },
         {
           "id": 11,
@@ -7073,7 +7073,7 @@ exports[`grammar should parse nested-block-statements 1`] = `
                             "loc": y,
                             "text": "y",
                           },
-                          "type": null,
+                          "type": undefined,
                         },
                       ],
                     },
@@ -8302,9 +8302,9 @@ exports[`grammar should parse stmt-destructuring 1`] = `
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 4,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -8321,9 +8321,9 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 7,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
@@ -8340,9 +8340,9 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 10,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": c: Int,
           "name": {
@@ -8376,9 +8376,9 @@ exports[`grammar should parse stmt-destructuring 1`] = `
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 15,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -8395,9 +8395,9 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 18,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
@@ -8426,7 +8426,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
         "loc": M,
         "text": "M",
       },
-      "opcode": null,
+      "opcode": undefined,
     },
     {
       "attributes": [],
@@ -8538,7 +8538,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             "loc": s,
             "text": "s",
           },
-          "type": null,
+          "type": undefined,
         },
         {
           "expression": {
@@ -8907,7 +8907,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             "loc": m,
             "text": "m",
           },
-          "type": null,
+          "type": undefined,
         },
         {
           "expression": {
@@ -9201,7 +9201,7 @@ exports[`grammar should parse stmt-if 1`] = `
               "loc": null,
             },
           },
-          "falseStatements": null,
+          "falseStatements": undefined,
           "id": 12,
           "kind": "statement_condition",
           "loc": if (src != null) {
@@ -9374,7 +9374,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
         "text": "test1",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "expression": {
@@ -9487,7 +9487,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
             "loc": i,
             "text": "i",
           },
-          "type": null,
+          "type": undefined,
         },
       ],
     },
@@ -9503,10 +9503,10 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
         "text": "test2",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
-          "expression": null,
+          "expression": undefined,
           "id": 22,
           "kind": "statement_return",
           "loc": return,
@@ -9646,7 +9646,7 @@ exports[`grammar should parse stmt-while-loop 1`] = `
         "text": "main",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "expression": {
@@ -9790,7 +9790,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
         "text": "main",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "expression": {
@@ -9967,9 +9967,9 @@ exports[`grammar should parse struct-field-punning 1`] = `
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 4,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -9986,9 +9986,9 @@ exports[`grammar should parse struct-field-punning 1`] = `
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 7,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": y: Int,
           "name": {
@@ -10146,9 +10146,9 @@ exports[`grammar should parse struct-msg-as 1`] = `
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 4,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -10187,7 +10187,7 @@ exports[`grammar should parse struct-msg-as 1`] = `
             "text": "coin",
           },
           "id": 10,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": x: Int as coin,
           "name": {
@@ -10215,7 +10215,7 @@ exports[`grammar should parse struct-msg-as 1`] = `
         "loc": B,
         "text": "B",
       },
-      "opcode": null,
+      "opcode": undefined,
     },
   ],
   "kind": "module",
@@ -10230,7 +10230,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 5,
           "initializer": {
             "base": 10,
@@ -10300,7 +10300,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 16,
           "initializer": {
             "id": 15,
@@ -10336,7 +10336,7 @@ exports[`grammar should parse struct-msg-initializers 1`] = `
         "loc": B,
         "text": "B",
       },
-      "opcode": null,
+      "opcode": undefined,
     },
   ],
   "kind": "module",
@@ -10351,9 +10351,9 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 4,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -10383,9 +10383,9 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -10402,9 +10402,9 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 12,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": y: Int,
           "name": {
@@ -10434,9 +10434,9 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 17,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -10453,7 +10453,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 21,
           "initializer": {
             "base": 10,
@@ -10491,7 +10491,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 27,
           "initializer": {
             "base": 10,
@@ -10516,9 +10516,9 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 30,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": y: Int,
           "name": {
@@ -10548,9 +10548,9 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 35,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -10576,14 +10576,14 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         "loc": E,
         "text": "E",
       },
-      "opcode": null,
+      "opcode": undefined,
     },
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 40,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -10600,9 +10600,9 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 43,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": y: Int,
           "name": {
@@ -10628,14 +10628,14 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         "loc": F,
         "text": "F",
       },
-      "opcode": null,
+      "opcode": undefined,
     },
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 48,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": x: Int,
           "name": {
@@ -10652,7 +10652,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 52,
           "initializer": {
             "base": 10,
@@ -10686,12 +10686,12 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         "loc": G,
         "text": "G",
       },
-      "opcode": null,
+      "opcode": undefined,
     },
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 58,
           "initializer": {
             "base": 10,
@@ -10716,9 +10716,9 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 61,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": y: Int,
           "name": {
@@ -10744,7 +10744,7 @@ exports[`grammar should parse struct-msg-trailing-semicolon 1`] = `
         "loc": G,
         "text": "G",
       },
-      "opcode": null,
+      "opcode": undefined,
     },
   ],
   "kind": "module",
@@ -10825,7 +10825,7 @@ exports[`grammar should parse trait-optional-semicolon-for-last-fun-decl 1`] = `
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
         },
       ],
       "id": 4,
@@ -10864,9 +10864,9 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 6,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": c: Int,
           "name": {
@@ -10900,9 +10900,9 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 11,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -10943,9 +10943,9 @@ exports[`grammar should parse traits-inheritance-trailing-comma 1`] = `
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 17,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
@@ -10996,9 +10996,9 @@ exports[`grammar should parse type-struct-with-map 1`] = `
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 6,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": y: map<Int, Int>,
           "name": {
@@ -11009,7 +11009,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
           },
           "type": {
             "id": 5,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 3,
               "kind": "type_id",
@@ -11018,7 +11018,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
             },
             "kind": "map_type",
             "loc": map<Int, Int>,
-            "valueStorageType": null,
+            "valueStorageType": undefined,
             "valueType": {
               "id": 4,
               "kind": "type_id",
@@ -11043,9 +11043,9 @@ exports[`grammar should parse type-struct-with-map 1`] = `
     {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 13,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": x: map<Int, Int>,
           "name": {
@@ -11056,7 +11056,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
           },
           "type": {
             "id": 12,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 10,
               "kind": "type_id",
@@ -11065,7 +11065,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
             },
             "kind": "map_type",
             "loc": map<Int, Int>,
-            "valueStorageType": null,
+            "valueStorageType": undefined,
             "valueType": {
               "id": 11,
               "kind": "type_id",
@@ -11086,7 +11086,7 @@ exports[`grammar should parse type-struct-with-map 1`] = `
         "loc": B,
         "text": "B",
       },
-      "opcode": null,
+      "opcode": undefined,
     },
   ],
   "kind": "module",

@@ -3,17 +3,17 @@ title: Constants
 description: "Immutable values that cannot be changed through reassignment"
 ---
 
-Constants in Tact could be a little bit more advanced than in popular languages: they could be virtual and abstract. Smart contracts often need to implement multiple traits and sometimes you need to configure some of them in compile time. Constructors in traits are prohibited due to their unpredictable behavior. So, we have to use constants and fields instead to pass values to them. It is the job of a main contract to implement values and constants for all traits.
+Constants in Tact can be slightly more advanced than in popular languages: they can be virtual and abstract. Smart contracts often need to implement multiple traits, and sometimes you need to configure some of them at compile time. Constructors in traits are prohibited due to their unpredictable behavior. Therefore, we have to use constants and fields instead to pass values to them. It is the job of the main contract to implement values and constants for all traits.
 
 ## Simple constant
 
-Let's start with a simple constant. It is a value that is defined in compile time and cannot be changed. You can define a constant on the top level or inside a contract/trait. Let's define a constant on top level:
+Let's start with a simple constant. It is a value that is defined at compile time and cannot be changed. You can define a constant at the top level or inside a contract/trait. Let's define a constant at the top level:
 
 ```tact
 const MY_CONSTANT: Int = 42;
 ```
 
-Similar for traits and contracts:
+Similarly for traits and contracts:
 
 ```tact
 trait MyTrait {
@@ -27,7 +27,7 @@ contract MyContract {
 
 ## Virtual and abstract constants
 
-Virtual constants are the constants that could be defined in a trait but changed in a contract. It is useful when you need to configure some of the traits in compile time. Let's define a virtual constant and an abstract one:
+Virtual constants are constants that can be defined in a trait but changed in a contract. This is useful when you need to configure some traits at compile time. Let's define a virtual constant and an abstract one:
 
 ```tact
 trait MyTrait {
@@ -39,7 +39,7 @@ trait MyAbstractTrait {
 }
 ```
 
-Now you can overwrite defaults in the contract:
+Now you can override the defaults in the contract:
 
 ```tact
 contract MyContract with
@@ -51,7 +51,7 @@ contract MyContract with
 }
 ```
 
-This could be very useful to help a compiler to have some values in compile time, for example, you can enable and disable features without needing to change the code and not wasting gas.
+This can be very useful for helping the compiler determine certain values at compile time. For example, you can enable and disable features without needing to change the code and without wasting gas:
 
 ```tact
 trait Treasure {
@@ -60,7 +60,7 @@ trait Treasure {
     receive("Execute") {
         if (self.ENABLE_TIMELOCK) {
             //
-            // This branch would be removed in compile time if ENABLE_TIMELOCK is false
+            // This branch would be removed at compile time if ENABLE_TIMELOCK is false
             //
         }
     }

@@ -38,7 +38,7 @@ export const getAstSchema = (
         FunctionDef: (
             attributes: A.AstFunctionAttribute[],
             name: A.AstId,
-            retType: A.AstType | null,
+            retType: A.AstType | undefined,
             params: A.AstTypedParameter[],
             statements: A.AstStatement[],
             loc: Loc,
@@ -56,7 +56,7 @@ export const getAstSchema = (
             shuffle: A.AstAsmShuffle,
             attributes: A.AstFunctionAttribute[],
             name: A.AstId,
-            retType: A.AstType | null,
+            retType: A.AstType | undefined,
             params: A.AstTypedParameter[],
             instructions: A.AstAsmInstruction[],
             loc: Loc,
@@ -74,7 +74,7 @@ export const getAstSchema = (
         FunctionDecl: (
             attributes: A.AstFunctionAttribute[],
             name: A.AstId,
-            retType: A.AstType | null,
+            retType: A.AstType | undefined,
             params: A.AstTypedParameter[],
             loc: Loc,
         ): A.AstFunctionDecl =>
@@ -91,7 +91,7 @@ export const getAstSchema = (
             name: A.AstId,
             nativeName: A.AstFuncId,
             params: A.AstTypedParameter[],
-            retType: A.AstType | null,
+            retType: A.AstType | undefined,
             loc: Loc,
         ): A.AstNativeFunctionDecl =>
             createNode<A.AstNativeFunctionDecl>({
@@ -144,7 +144,7 @@ export const getAstSchema = (
             }),
         MessageDecl: (
             name: A.AstId,
-            opcode: A.AstExpression | null,
+            opcode: A.AstExpression | undefined,
             fields: A.AstFieldDecl[],
             loc: Loc,
         ): A.AstMessageDecl =>
@@ -190,8 +190,8 @@ export const getAstSchema = (
         FieldDecl: (
             name: A.AstId,
             type: A.AstType,
-            initializer: A.AstExpression | null,
-            as: A.AstId | null,
+            initializer: A.AstExpression | undefined,
+            as: A.AstId | undefined,
             loc: Loc,
         ): A.AstFieldDecl =>
             createNode<A.AstFieldDecl>({
@@ -267,7 +267,7 @@ export const getAstSchema = (
             }),
         StatementLet: (
             name: A.AstId,
-            type: A.AstType | null,
+            type: A.AstType | undefined,
             expression: A.AstExpression,
             loc: Loc,
         ): A.AstStatementLet =>
@@ -294,7 +294,7 @@ export const getAstSchema = (
                 loc: toSrcInfo(loc),
             }),
         StatementReturn: (
-            expression: A.AstExpression | null,
+            expression: A.AstExpression | undefined,
             loc: Loc,
         ): A.AstStatementReturn =>
             createNode<A.AstStatementReturn>({
@@ -338,7 +338,7 @@ export const getAstSchema = (
         StatementCondition: (
             condition: A.AstExpression,
             trueStatements: A.AstStatement[],
-            falseStatements: A.AstStatement[] | null,
+            falseStatements: A.AstStatement[] | undefined,
             loc: Loc,
         ): A.AstStatementCondition =>
             createNode<A.AstStatementCondition>({
@@ -433,9 +433,9 @@ export const getAstSchema = (
             }),
         MapType: (
             keyType: A.AstTypeId,
-            keyStorageType: A.AstId | null,
+            keyStorageType: A.AstId | undefined,
             valueType: A.AstTypeId,
-            valueStorageType: A.AstId | null,
+            valueStorageType: A.AstId | undefined,
             loc: Loc,
         ): A.AstMapType =>
             createNode<A.AstMapType>({
@@ -605,7 +605,7 @@ export const getAstSchema = (
                 loc: toSrcInfo(loc),
             }),
         FunctionAttributeGet: (
-            methodId: A.AstExpression | null,
+            methodId: A.AstExpression | undefined,
             loc: Loc,
         ): A.AstFunctionAttributeGet => ({
             kind: "function_attribute",

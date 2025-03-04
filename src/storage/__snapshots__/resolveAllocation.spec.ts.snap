@@ -81,9 +81,9 @@ exports[`resolveAllocation should write program 1`] = `
       "ast": {
         "fields": [
           {
-            "as": null,
+            "as": undefined,
             "id": 31,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -100,9 +100,9 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "as": null,
+            "as": undefined,
             "id": 34,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -144,9 +144,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 31,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -184,9 +184,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 34,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -287,9 +287,9 @@ exports[`resolveAllocation should write program 1`] = `
       "ast": {
         "fields": [
           {
-            "as": null,
+            "as": undefined,
             "id": 39,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -330,9 +330,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 39,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -477,9 +477,9 @@ exports[`resolveAllocation should write program 1`] = `
       "ast": {
         "fields": [
           {
-            "as": null,
+            "as": undefined,
             "id": 23,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -496,9 +496,9 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "as": null,
+            "as": undefined,
             "id": 26,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -539,9 +539,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 23,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -578,9 +578,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 26,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -977,9 +977,9 @@ exports[`resolveAllocation should write program 1`] = `
       "ast": {
         "fields": [
           {
-            "as": null,
+            "as": undefined,
             "id": 44,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -996,9 +996,9 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "as": null,
+            "as": undefined,
             "id": 47,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1015,9 +1015,9 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "as": null,
+            "as": undefined,
             "id": 50,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1034,9 +1034,9 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "as": null,
+            "as": undefined,
             "id": 53,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1053,9 +1053,9 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "as": null,
+            "as": undefined,
             "id": 56,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1072,9 +1072,9 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "as": null,
+            "as": undefined,
             "id": 59,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1091,9 +1091,9 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "as": null,
+            "as": undefined,
             "id": 62,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1110,9 +1110,9 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "as": null,
+            "as": undefined,
             "id": 65,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1129,9 +1129,9 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "as": null,
+            "as": undefined,
             "id": 68,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1148,9 +1148,9 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "as": null,
+            "as": undefined,
             "id": 71,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1167,9 +1167,9 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "as": null,
+            "as": undefined,
             "id": 74,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1211,9 +1211,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 44,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1251,9 +1251,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 47,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1291,9 +1291,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 50,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1331,9 +1331,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 53,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1371,9 +1371,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 56,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1411,9 +1411,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 59,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1451,9 +1451,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 62,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1491,9 +1491,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 65,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1531,9 +1531,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 68,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1571,9 +1571,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 71,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1611,9 +1611,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 74,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1802,9 +1802,9 @@ exports[`resolveAllocation should write program 1`] = `
       "ast": {
         "fields": [
           {
-            "as": null,
+            "as": undefined,
             "id": 79,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1821,9 +1821,9 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "as": null,
+            "as": undefined,
             "id": 82,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1840,9 +1840,9 @@ exports[`resolveAllocation should write program 1`] = `
             },
           },
           {
-            "as": null,
+            "as": undefined,
             "id": 85,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1883,9 +1883,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 79,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1922,9 +1922,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 82,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -1961,9 +1961,9 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 85,
-            "initializer": null,
+            "initializer": undefined,
             "kind": "field_decl",
             "loc": {},
             "name": {
@@ -2057,7 +2057,7 @@ exports[`resolveAllocation should write program 1`] = `
         "attributes": [],
         "declarations": [
           {
-            "as": null,
+            "as": undefined,
             "id": 91,
             "initializer": {
               "base": 10,
@@ -2135,7 +2135,7 @@ exports[`resolveAllocation should write program 1`] = `
                 },
               },
             ],
-            "return": null,
+            "return": undefined,
             "statements": [],
           },
         ],
@@ -2166,7 +2166,7 @@ exports[`resolveAllocation should write program 1`] = `
           },
           "as": null,
           "ast": {
-            "as": null,
+            "as": undefined,
             "id": 91,
             "initializer": {
               "base": 10,
@@ -2250,7 +2250,7 @@ exports[`resolveAllocation should write program 1`] = `
                 },
               },
             ],
-            "return": null,
+            "return": undefined,
             "statements": [],
           },
           "isAbstract": false,
