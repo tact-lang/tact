@@ -264,7 +264,7 @@ asm(cell self) extends fun storeMaybeRef(self: Builder, cell: Cell?): Builder { 
 /// 
 /// Converts a `Builder` into an ordinary `Cell`.
 ///
-/// NOTE: This function uses 500 gas units and more.
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
 /// 
 /// ```tact
 /// fun example() {
