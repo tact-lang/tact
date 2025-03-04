@@ -99,7 +99,7 @@ yarn bench
 To run benchmarks and print comparison table
 
 ```shell
-yarn bench:table
+yarn bench
 ```
 
 ## Updating benchmarks
