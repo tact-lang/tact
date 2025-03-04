@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Internal infrastructure
 
 - Do not add `.code` to the file names of the generated FunC, Fift, and disassembled Fift: PR [#2103](https://github.com/tact-lang/tact/pull/2103)
+- Moved `benchmarks` to separate folder from tests, added CLI utilities for them: PR [#2234](https://github.com/tact-lang/tact/pull/2234)
 
 ### Release contributors
 
@@ -42,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Jesús Héctor Domínguez Sánchez](https://github.com/jeshecdom)
 - [verytactical](https://github.com/verytactical)
 - [Shvetc Andrei](https://github.com/Shvandre)
+- [Maksim Lagus](https://github.com/Kaladin13)
 
 ## [1.6.0] - 2025-02-28
 

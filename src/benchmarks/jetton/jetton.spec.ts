@@ -39,8 +39,8 @@ import benchmarkResults from "./results_gas.json";
 import { join, resolve } from "path";
 import { readFileSync } from "fs";
 import { storeProvideWalletAddress } from "../contracts/output/escrow_Escrow";
-import { posixNormalize } from "../../../utils/filePath";
-import { type Step, writeLog } from "../../utils/write-vm-log";
+import { posixNormalize } from "../../utils/filePath";
+import { type Step, writeLog } from "../../test/utils/write-vm-log";
 
 const loadFunCJettonsBoc = () => {
     const bocMinter = readFileSync(
@@ -375,9 +375,14 @@ describe("Jetton", () => {
     });
 
     afterAll(() => {
-        printBenchmarkTable(codeSizeResults, results, {
+        printBenchmarkTable(results, codeSizeResults, {
             implementationName: "FunC",
-            isFullTable: true,
+            printMode: "full",
+        });
+
+        printBenchmarkTable(results.slice(1), undefined, {
+            implementationName: "NotCoin",
+            printMode: "first-last",
         });
     });
 
