@@ -3,7 +3,7 @@
 import "./jetton_wallet";
 import "./messages";
 
-const ProvideAddressGasConsumption: Int = 10000000;
+const ProvideAddressGasConsumption: Int = ton("0.01");
 const Workchain: Int = 0;
 
 struct JettonMasterState {
@@ -44,19 +44,15 @@ contract JettonMinter(
         let fwdFee = ctx.readForwardFee();
         throwUnless(75, ctx.value > fwdFee + ProvideAddressGasConsumption);
 
-        let includedAddress: Address? = msg.includeAddress ? msg.ownerAddress : null;
-
-        let workchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
+        let ownerWorkchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
 
         let targetJettonWallet: BasechainAddress =
-            (workchain == Workchain) ?
+            (ownerWorkchain == Workchain) ?
             contractBasechainAddress(initOf JettonWallet(0, msg.ownerAddress, myAddress()))
             : emptyBasechainAddress();
 
-        let outMsg = takeWalletBody(targetJettonWallet, includedAddress, msg.queryId);
-
         message(MessageParameters {
-            body: outMsg,
+            body: makeTakeWalletAddressMsg(targetJettonWallet, msg),
             to: sender(),
             value: 0,
             mode: SendRemainingValue,
@@ -107,19 +103,14 @@ contract JettonMinter(
 
 asm fun emptyAddress(): Address { b{00} PUSHSLICE }
 
-inline fun takeWalletBody(targetJettonWallet: BasechainAddress, includedAddress: Address?, query_id: Int): Cell {
-    let body: Builder = beginCell()
-        .storeUint(0xd1735400, 32)
-        .storeUint(query_id, 64)
-        .storeBasechainAddress(targetJettonWallet);
-
-    if (includedAddress != null) {
-        body = body.storeBit(true); // Maybe bit
-        body = body.storeRef(beginCell().storeAddress(includedAddress!!).endCell());
-    } else {
-        body = body.storeBit(false); // Maybe bit
-    }
-    return body.endCell();
+inline fun makeTakeWalletAddressMsg(targetJettonWallet: BasechainAddress, msg: ProvideWalletAddress): Cell {
+    return
+        beginCell()
+        .storeUint(TakeWalletAddressOpcode, 32)
+        .storeUint(msg.queryId, 64)
+        .storeBasechainAddress(targetJettonWallet)
+        .storeMaybeRef(msg.includeAddress ? beginCell().storeAddress(msg.ownerAddress).endCell() : null)
+        .endCell();
 }
 
 inline fun getJettonWalletInit(address: Address): StateInit {
