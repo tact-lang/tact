@@ -10,13 +10,13 @@ import { Badge, Tabs, TabItem } from '@astrojs/starlight/components';
 
 The Tact compiler can produce various outputs, ranging from the [BoC][boc] of the [compiled contract](#boc) to various supplementary files, such as the [compilation report](#report) or the [contract package](#pkg).
 
-With the proper [configuration settings](/book/config), you can customize the behavior of the compiler to skip the generation of some or all the [build artifacts](#artifacts), and even control the addition or exclusion of [getters for supported interfaces](/book/contracts#interfaces).
+With the proper [configuration settings](/book/config), you can customize the behavior of the compiler to skip the generation of some or all [build artifacts](#artifacts), and even control the addition or exclusion of [getters for supported interfaces](/book/contracts#interfaces).
 
-Since the Tact compiler is a command-line program, some of the configuration settings can be set directly. When inside a folder with a Tact-based project, such as one created using the [Blueprint][bp] or from the [tact-template](https://github.com/tact-lang/tact-template), refer to the `npx tact --help{:shell}` command for further instructions.
+Since the Tact compiler is a command-line program, some of the configuration settings can be set directly. When inside a folder with a Tact-based project, such as one created using the [Blueprint][bp] or from the [tact-template](https://github.com/tact-lang/tact-template), refer to the command `npx tact --help{:shell}` for further instructions.
 
 ## Compiler upgrades {#upgrades}
 
-Work on the compiler is active and extensive, so be sure to check out [NPM](https://www.npmjs.com/package/@tact-lang/compiler) whenever we push new releases. To follow updates, see the [Tact Kitchen in Telegram](https://t.me/tact_kitchen) for the short scoop, or our [GitHub organization](https://github.com/tact-lang) for the whole picture in all its details.
+Work on the compiler is active and extensive, so be sure to check out [NPM](https://www.npmjs.com/package/@tact-lang/compiler) whenever we push new releases. To follow updates, see the [Tact Kitchen in Telegram](https://t.me/tact_kitchen) for the short scoop, or our [GitHub organization](https://github.com/tact-lang) for the full picture in all its details.
 
 To upgrade the Tact compiler to its latest version in a [Blueprint][bp]-based project or a project created from the [tact-template](https://github.com/tact-lang/tact-template), run:
 
@@ -44,9 +44,9 @@ To upgrade the Tact compiler to its latest version in a [Blueprint][bp]-based pr
  </TabItem>
 </Tabs>
 
-Sometimes, bug fixes require us to change the existing behavior, introducing small breaking changes. To be prepared for these, make sure to read the [CHANGELOG.md](https://github.com/tact-lang/tact/blob/main/dev-docs/CHANGELOG.md) and act accordingly. Except for bug fixes, Tact tries its best not to introduce breaking changes in minor or patch versions according to [semantic versioning](https://semver.org/#summary).
+Sometimes, bug fixes require us to change existing behavior, introducing small breaking changes. To be prepared for these, make sure to read the [CHANGELOG.md](https://github.com/tact-lang/tact/blob/main/dev-docs/CHANGELOG.md) and act accordingly. Except for bug fixes, Tact tries its best not to introduce breaking changes in minor or patch versions according to [semantic versioning](https://semver.org/#summary).
 
-If you want to pin down a specific version of the compiler, run the following command. There, `X.Y.Z` is the target version you want to install:
+If you want to pin down a specific version of the compiler, run the following command. Here, `X.Y.Z` is the target version you want to install:
 
 <Tabs>
  <TabItem label="yarn" icon="seti:yarn">
@@ -93,31 +93,31 @@ If you want to pin down a specific version of the compiler, run the following co
 
 ## Build artifacts {#artifacts}
 
-A number of build artifacts can be produced per compilation of each contract. Some of the artifacts can be omitted using [configuration settings](/book/config).
+A number of build artifacts can be produced per compilation of each contract. Some artifacts can be omitted using [configuration settings](/book/config).
 
 The location of the artifacts depends on the compilation method:
-- For projects using `tact.config.json`, use the [`output`](/book/config#projects-output) field in the config file
+- For projects using `tact.config.json`, use the [`output`](/book/config#projects-output) field in the config file.
 - For single contract compilation, you can specify the output directory using the `-o` or `--output` flag:
   ```shell
   tact contract.tact --output ./custom-output
   ```
   If not specified, the files will be generated in the same directory as the input file.
 
-In [Blueprint][bp]-based projects, `output` is not used and all generated files are always placed in `build/ProjectName/`.
+In [Blueprint][bp]-based projects, the `output` field is not used, and all generated files are always placed in `build/ProjectName/`.
 
 ### Compilation report, `.md` {#report}
 
-Every markdown compilation report first features the name of the contract that it was prepared for and then the byte size of the contract compiled to [BoC](/book/cells#cells-boc).
+Every markdown compilation report first features the name of the contract for which it was prepared, followed by the byte size of the contract compiled into [BoC](/book/cells#cells-boc).
 
-The following sub-headings describe the respective sections of the `.md` report.
+The following subheadings describe the respective sections of the `.md` report.
 
 #### Structures {#structures}
 
 <Badge text="Written as '# Types' prior to Tact 1.6" variant="tip" size="medium"/><p/>
 
-The first section introduces the present structures, i.e. some of the [composite types](/book/types#composite-types), [Structs and Messages](/book/structs-and-messages) that are declared or imported directly in the contract code, as well as those exposed from the Core standard library.
+The first section introduces the present structures, i.e., some of the [composite types](/book/types#composite-types), [Structs and Messages](/book/structs-and-messages) declared or imported directly in the contract code, as well as those exposed from the Core standard library.
 
-Along with the number of structures present, each of the [Structs][struct] and [Messages][message] are described with their respective signatures and [TL-B schemas][tlb], which include the [message opcodes](/book/structs-and-messages#message-opcodes).
+Along with the number of structures present, each of the [Structs][struct] and [Messages][message] is described with its respective signature and [TL-B schemas][tlb], which include the [message opcodes](/book/structs-and-messages#message-opcodes).
 
 For example:
 
@@ -135,7 +135,7 @@ Signature: `Deploy{queryId:uint64}`
 ...etc.
 ```
 
-[TL-B schema][tlb] of each [Message][message] contains its opcode, which is handy for looking up the auto-generated opcodes as well as confirming the [manually provided ones](/book/structs-and-messages#message-opcodes). For example, the following [Message][message] declarations:
+The [TL-B schema][tlb] of each [Message][message] contains its opcode, which is handy for looking up the auto-generated opcodes as well as confirming the [manually provided ones](/book/structs-and-messages#message-opcodes). For example, the following [Message][message] declarations:
 
 ```tact
 message GeneratedOpcode { }
@@ -154,7 +154,7 @@ TL-B: `manually_specified_opcode#12345678  = ManuallySpecifiedOpcode`
 Signature: `ManuallySpecifiedOpcode{}`
 ```
 
-where `6dfea180` and `12345678` specified after the `#` in the [constructor definitions](https://docs.ton.org/v3/documentation/data-formats/tlb/tl-b-language#constructors) are opcodes written in hexadecimal notation, representing $32$-bit unsigned integers. Thus, the automatically generated `6dfea180` opcode of the `GeneratedOpcode{:tact}` [Message][message] represents the decimal value of $1845404032$, and the manually provided `12345678` opcode of the `ManuallySpecifiedOpcode{:tact}` [Message][message] represents the decimal value of $305419896$, and **not** $12345678$ as it might appear.
+Here, `6dfea180` and `12345678`, specified after the `#` in the [constructor definitions](https://docs.ton.org/v3/documentation/data-formats/tlb/tl-b-language#constructors), are opcodes written in hexadecimal notation representing 32-bit unsigned integers. Thus, the automatically generated `6dfea180` opcode of the `GeneratedOpcode{:tact}` [Message][message] represents the decimal value 1845404032, and the manually provided `12345678` opcode of the `ManuallySpecifiedOpcode{:tact}` [Message][message] represents the decimal value 305419896, and **not** 12345678 as it might appear.
 
 #### Get methods {#getters}
 
@@ -171,7 +171,7 @@ Argument: x
 ## gas
 ```
 
-There, the `lshift(){:tact}` getter has a single argument `x`, whereas the `gas(){:tact}` getter has no arguments.
+Here, the `lshift(){:tact}` getter has a single argument `x`, whereas the `gas(){:tact}` getter has no arguments.
 
 #### Exit codes {#exit-codes}
 
@@ -187,7 +187,7 @@ For example:
 * 42933: Hey, I'm the error message of require()
 ```
 
-There, the [exit codes](/book/exit-codes) in the range from $0$ to $255$ are those reserved by TON Blockchain or Tact compiler, while the exit code of $42933$ is produced by the respective call to the [`require(){:tact}`](/ref/core-debug#require) function.
+Here, the [exit codes](/book/exit-codes) in the range from $0$ to $255$ are those reserved by TON Blockchain or the Tact compiler, while the exit code of $42933$ is produced by the respective call to the [`require(){:tact}`](/ref/core-debug#require) function.
 
 #### Trait inheritance diagram {#trait-diagram}
 
@@ -197,17 +197,17 @@ For example:
 
 ![Trait inheritance diagram](../../../assets/trait-inheritance-diagram.png)
 
-There, [`JettonWallet`][code-jetton-wallet] inherits the `WalletExitcodes` and `GasConstant` traits, and all inherit the [`BaseTrait{:tact}`](/ref/core-base).
+Here, [`JettonWallet`][code-jetton-wallet] inherits the `WalletExitcodes` and `GasConstant` traits, and all inherit the [`BaseTrait{:tact}`](/ref/core-base).
 
 #### Contract dependency diagram {#contract-diagram}
 
-This section shows a [Mermaid][mm] diagram of [contract](/book/contracts) dependencies, i.e. any calls to [`initOf{:tact}`](/book/expressions#initof) in order to compute the initial state of other contracts and [`codeOf{:tact}`](/book/expressions#codeof) in order to compute the code of other contracts.
+This section shows a [Mermaid][mm] diagram of [contract](/book/contracts) dependencies, i.e., any calls to [`initOf{:tact}`](/book/expressions#initof) to compute the initial state of other contracts and [`codeOf{:tact}`](/book/expressions#codeof) to compute the code of other contracts.
 
 If the contract has no dependencies, only its name is displayed:
 
 ![Contract dependency diagram without dependencies](../../../assets/contract-dependency-diagram.png)
 
-However, if the contract, say `FirstOne`, somewhere in its code computes the [initial state](/book/expressions#initof) of another contract, say `SecondOne`, such a relationship is shown in the diagram:
+However, if the contract, for example `FirstOne`, somewhere in its code computes the [initial state](/book/expressions#initof) of another contract, for example `SecondOne`, such a relationship is shown in the diagram:
 
 ![Contract dependency diagram with a single dependency](../../../assets/contract-dependency-diagram-2.png)
 
@@ -225,13 +225,13 @@ Thus, the following dependency diagram is produced:
 
 ### Compiled contract, `.boc` {#boc}
 
-The end result of compiling each contract is to get its code in the [BoC][boc] format, which is placed in a binary file with the `.boc` extension.
+The end result of compiling each contract is obtaining its code in the [BoC][boc] format, which is placed in a binary file with the `.boc` extension.
 
 By combining the initial code with the initial data for the contract, you can locally and deterministically obtain the blockchain [`Address{:tact}`](/book/types#primitive-types) for the given contract.
 
-From there, you'd only need to send the message containing the initial code and data, usually referred to as initial state or [`StateInit{:tact}`](/book/expressions#initof), to the computed address and provide enough Toncoin for the deployment.
+From there, you only need to send the message containing the initial code and data, usually referred to as the initial state or [`StateInit{:tact}`](/book/expressions#initof), to the computed address and provide enough Toncoin for the deployment.
 
-But instead of doing this manually, prefer using the provided [TypeScript wrappers](#wrap-ts) and other [deployment facilities](/book/deploy).
+However, instead of doing this manually, prefer using the provided [TypeScript wrappers](#wrap-ts) and other [deployment facilities](/book/deploy).
 
 :::note
 
@@ -243,17 +243,17 @@ But instead of doing this manually, prefer using the provided [TypeScript wrappe
 
 ### Contract package, `.pkg` {#pkg}
 
-The contract package is a way to bundle a compiled contract, its dependencies, and all related metadata into a single file. It's is a JSON file with the `.pkg` extension that one can use to [verify the smart contract's origin](https://verifier.ton.org).
+The contract package is a way to bundle a compiled contract, its dependencies, and all related metadata into a single file. It is a JSON file with the `.pkg` extension that one can use to [verify the smart contract's origin](https://verifier.ton.org).
 
-Additionally, the [contract ABI](#abi) is included in the package, as a string.
+Additionally, the [contract ABI](#abi) is included in the package as a string.
 
 Read more: [OTP-006: Contract Package](/ref/evolution/otp-006).
 
 ### Contract ABI, `.abi` {#abi}
 
-Contract's ABI is a JSON file with the `.abi` extension, which describes the contract's data structures, receivers, getters, possible [exit codes](/book/exit-codes) (errors) and [interfaces](/book/contracts#interfaces).
+A contract's ABI is a JSON file with the `.abi` extension, which describes the contract's data structures, receivers, getters, possible [exit codes](/book/exit-codes) (errors), and [interfaces](/book/contracts#interfaces).
 
-Essentially, it's a [compilation report](#report) given in a machine-readable format, although without the diagrams.
+Essentially, it's a [compilation report](#report) provided in a machine-readable format, though without the diagrams.
 
 Note that the contract ABI is included in the [contract package](#pkg) as a string.
 
@@ -265,13 +265,13 @@ Using the [compiled `.boc`](#boc) directly is inconvenient and error-prone, whic
 
 :::note
 
-  Currently, only [TypeScript wrappers](#wrap-ts) are provided. This [may change in the future](https://github.com/tact-lang/tact/issues/255), stay tuned.
+  Currently, only [TypeScript wrappers](#wrap-ts) are provided. This [may change in the future](https://github.com/tact-lang/tact/issues/255).
 
 :::
 
 #### TypeScript wrappers, `.ts` {#wrap-ts}
 
-To aid in [deployment](/book/deploy) and further interactions with the contract, after each successful compilation a `.ts` file with all needed wrappers is produced. The entities added there all use the [@ton/core](https://github.com/ton-org/ton-core) library.
+To aid in [deployment](/book/deploy) and further interactions with the contract, after each successful compilation, a `.ts` file containing all necessary wrappers is produced. The entities added there all use the [@ton/core](https://github.com/ton-org/ton-core) library.
 
 All the [Structs][struct] and [Messages][message] observable in the [compilation report](#structures) are provided as new `type` definitions.
 
@@ -283,7 +283,7 @@ export type StateInit = {
 }
 ```
 
-For each such definition there are `storeStructureName(){:ts}` and `loadStructureName(){:ts}` functions to help compose and parse cells out of those structures.
+For each such definition, there are corresponding `storeStructureName(){:ts}` and `loadStructureName(){:ts}` functions to help compose and parse cells from these structures.
 
 ```ts
 export function storeStateInit(src: StateInit) {
@@ -302,7 +302,7 @@ export function loadStateInit(slice: Slice) {
 }
 ```
 
-Finally, the [ABI declarations](#abi) are defined and a contract wrapper is given. The latter is designed specifically for you to be able to easily [deploy](/book/deploy) and interact with the deployed contract.
+Finally, the [ABI declarations](#abi) are defined and a contract wrapper is provided. The latter is designed specifically to allow you to easily [deploy](/book/deploy) and interact with the deployed contract.
 
 ```ts
 export class Playground implements Contract {
