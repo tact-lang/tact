@@ -441,8 +441,10 @@ asm fun cashback(to: Address) {
     6 STU            // .storeUint(0x10, 6)
     STSLICE          // .storeAddress(to)
     0 PUSHINT        // 0
-    111 STUR         // .storeUint(0, 111)
-    b{} STSLICECONST // .storeSlice(emptySlice())
+    112 STUR         // .storeUint(0, 112)
+                     // 4 zeros for coins
+                     // 107 for lt, fees, etc.
+                     // 1 for the `null` body
     ENDC
     66 PUSHINT       // SendRemainingValue | SendIgnoreErrors
     SENDRAWMSG
