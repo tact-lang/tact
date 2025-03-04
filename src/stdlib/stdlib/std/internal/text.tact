@@ -397,7 +397,7 @@ asm extends fun toFloatString(self: Int, digits: Int): String  {
 /// See:
 /// * https://docs.tact-lang.org/ref/core-strings/
 /// 
-/// [fixed-point representatio]: https://en.wikipedia.org/wiki/Fixed-point_arithmetic
+/// [fixed-point representation]: https://en.wikipedia.org/wiki/Fixed-point_arithmetic
 /// [nanoToncoin]: https://docs.tact-lang.org/book/integers#nanotoncoin
 /// 
 inline extends fun toCoinsString(self: Int): String {
