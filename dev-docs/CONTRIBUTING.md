@@ -97,13 +97,13 @@ To run benchmarks:
 yarn bench
 ```
 
-## Updating benchmarks
-
-To update snapshot-based benchmarks:
+To run benchmarks and print comparison table
 
 ```shell
-yarn bench -u
+yarn bench:table
 ```
+
+## Updating benchmarks
 
 To update historical benchmarks with `results.json`:
 
@@ -115,9 +115,10 @@ yarn bench:upgrade
 
 To add a new benchmark:
 
-1. Add `*.tact` file to `src/test/benchmarks/contracts`
-2. Recompile the benchmarks with `yarn gen:contracts:benchmarks`
-3. Add additional benchmark to `src/test/benchmarks/benchmarks.spec.ts`
+1. Add `*.tact` file to `src/benchmarks/contracts`
+2. Add `*.fc` file which you want to compare against to `src/benchmarks/contracts/func`
+3. Recompile the benchmarks with `yarn gen:contracts:benchmarks`
+4. Add additional benchmark with it results as json to `src/benchmarks/new-bench-folder`
 
 ## Code quality
 
@@ -269,9 +270,19 @@ Note: If you add an end-to-end test contract, you also need to run `yarn gen` to
 
 Some other codegen tests are as follows:
 
-- [`src/test/benchmarks`](../src/test/benchmarks): check gas consumption;
+- [`src/test/gas-consumption`](../src/test/gas-consumption/): check gas consumption;
 - [`src/test/exit-codes`](../src/test/exit-codes): test that certain actions produce the expected exit codes;
 - [`src/test/codegen`](../src/test/codegen): test that these contracts compile just fine without running any dynamic tests: bug fixes for FunC code generation often add tests into this folder.
+
+### Benchmarks
+
+The benchmarks are organized into the following structure:
+
+- [src/benchmarks/contracts/\*.tact](../src/benchmarks/contracts): Contains the Tact contract source files used for benchmarking.
+- [src/benchmarks/\*/results.json](../src/benchmarks/jetton/results_gas.json): Stores the historical benchmark results that further are transformed into comparison tables
+- [src/benchmarks/contracts/func](../src/benchmarks/contracts/func/): Stores FunC implementations that we are benchmarking our contracts against
+
+Benchmarks have CLI commands support for updating and managing them, check [Updating Benchmarks](#benchmarks) section for them
 
 ### Pretty-printer and AST comparators
 
