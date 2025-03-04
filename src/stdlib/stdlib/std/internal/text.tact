@@ -537,7 +537,6 @@ inline extends fun fromBase64(self: String): Slice {
 /// [exit code 134]: https://docs.tact-lang.org/book/exit-codes#134
 /// [base64]: https://en.wikipedia.org/wiki/Base64
 ///
-@name(__tact_str_from_base64)
 extends fun fromBase64(self: Slice): Slice {
     let size: Int = self.bits() / 8;
     let result: Builder = beginCell();
