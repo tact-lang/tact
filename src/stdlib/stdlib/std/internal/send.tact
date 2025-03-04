@@ -428,10 +428,10 @@ asm fun deploy(params: DeployParameters) {
 asm fun cashback(to: Address) {
     24 PUSHINT       // 0x18
     NEWC
-    6 STU          // .storeUint(0x18, 6)
-    STSLICE        // .storeAddress(to)
-    0 PUSHINT         // 0
-    111 STUR       // .storeUint(0, 111)
+    6 STU            // .storeUint(0x18, 6)
+    STSLICE          // .storeAddress(to)
+    0 PUSHINT        // 0
+    111 STUR         // .storeUint(0, 111)
     b{} STSLICECONST // .storeSlice(emptySlice())
     ENDC
     66 PUSHINT       // SendRemainingValue | SendIgnoreErrors
