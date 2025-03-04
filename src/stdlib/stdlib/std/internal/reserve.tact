@@ -13,8 +13,8 @@
 /// * `mode`: Determines the reservation behavior.
 /// 
 /// The function `raw_reserve` is roughly equivalent to creating an outbound message 
-/// carrying the specified `amount` of [nanoToncoins] (or `b - amount` [nanoToncoins], 
-/// where `b` is the remaining balance) to oneself. 
+/// carrying the specified `amount` of [nanoToncoin] (or `b - amount` [nanoToncoin], 
+/// where `b` is the remaining balance) to oneself.
 /// This ensures that subsequent output actions cannot spend more money than the remainder.
 /// 
 /// It is possible to use raw `Int` values and manually provide them for the `mode`, 
@@ -33,16 +33,20 @@
 /// [nanoToncoin]: https://docs.tact-lang.org/book/integers#nanotoncoin
 asm fun nativeReserve(amount: Int, mode: Int) { RAWRESERVE }
 
-/// Reserves exactly the specified `amount` of [nanoToncoin](https://docs.tact-lang.org/book/integers#nanotoncoin).
+/// Reserves exactly the specified `amount` of 
+/// [nanoToncoin](https://docs.tact-lang.org/book/integers#nanotoncoin).
 const ReserveExact: Int = 0;
 
-/// Reserves all but the specified `amount` of [nanoToncoins](https://docs.tact-lang.org/book/integers#nanotoncoin).
+/// Reserves all but the specified `amount` of 
+/// [nanoToncoin](https://docs.tact-lang.org/book/integers#nanotoncoin).
 const ReserveAllExcept: Int = 1;
 
-/// Reserves at most the specified `amount` of [nanoToncoins](https://docs.tact-lang.org/book/integers#nanotoncoin).
+/// Reserves at most the specified `amount` of 
+/// [nanoToncoin](https://docs.tact-lang.org/book/integers#nanotoncoin).
 const ReserveAtMost: Int = 2;
 
-/// Increases the `amount` by the original balance of the current account (before the compute phase), including all extra currencies.
+/// Increases the `amount` by the original balance of the current account 
+/// (before the compute phase), including all extra currencies.
 const ReserveAddOriginalBalance: Int = 4;
 
 /// Negates the `amount` value before performing the reservation.
