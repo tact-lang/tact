@@ -10,7 +10,6 @@ import {
     type RawCodeSizeResult,
 } from "./util";
 import { createInterface } from "readline/promises";
-import { getCompilerVersion } from "../pipeline/version";
 
 const runBenchmark = (specPath: string): Promise<string> => {
     return new Promise((resolve) => {
@@ -90,25 +89,13 @@ const parseBenchmarkOutput = (output: string): BenchmarkDiff | undefined => {
     };
 };
 
-const readBenchInfo = async (filePath: string) => {
-    console.log(`\nUpdating benchmark for ${filePath}\n`);
+const readBenchInfo = async (): Promise<{
+    label: string;
+    pr: string | null;
+}> => {
+    const data = await readFile(join(__dirname, `output`, `prompt.json`));
 
-    const version = getCompilerVersion();
-
-    const label = await readline.question(
-        `Enter benchmark label(e.g. "new routing", it will autocomplete to "${version} with new routing"): `,
-    );
-    const prNumber = await readline.question(
-        "Enter pr number(e.g. 1450), leave empty for null: ",
-    );
-
-    return {
-        label: label === "" ? version : `${version} with ${label}`,
-        pr:
-            prNumber === ""
-                ? null
-                : `https://github.com/tact-lang/tact/pull/${prNumber}`,
-    };
+    return JSON.parse(data.toString());
 };
 
 const updateGasResultsFile = async (
@@ -233,9 +220,10 @@ const main = async () => {
 
             // run with `yarn bench:update --yes` to skip the prompt
             if (!process.argv.includes("--yes") && isUpdate) {
-                const newBenchInfo = await readBenchInfo(specPath);
-                newResult.label = newBenchInfo.label;
-                newResult.pr = newBenchInfo.pr;
+                const { label, pr } = await readBenchInfo();
+
+                newResult.label = label;
+                newResult.pr = pr;
             }
 
             const gasResult = await updateGasResultsFile(
