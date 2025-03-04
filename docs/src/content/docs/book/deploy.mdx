@@ -1,6 +1,6 @@
 ---
 title: Deployment
-description: "Common ways to deploy Tact contracts to testnet or mainnet of TON Blockchain"
+description: "Common ways to deploy Tact contracts to the testnet or mainnet of TON Blockchain"
 ---
 
 :::note
@@ -9,7 +9,7 @@ description: "Common ways to deploy Tact contracts to testnet or mainnet of TON 
 
 :::
 
-Tact Deployer is a small library that integrates with [TON Verifier](https://verifier.ton.org) that allows you to deploy your contracts safely using your favorite wallet without needing to manage keys or deploy contracts manually. Tact Deployer also automatically verifies your contract's source code and you can be sure that your compiler is not compromised.
+Tact Deployer is a small library that integrates with [TON Verifier](https://verifier.ton.org), allowing you to safely deploy your contracts using your favorite wallet without needing to manage keys or deploy contracts manually. Tact Deployer also automatically verifies your contract's source code, ensuring that your compiler is not compromised.
 
 ## Requirements
 
@@ -25,7 +25,7 @@ yarn add @tact-lang/deployer
 
 ## How to use
 
-When you build your smart contracts using Tact, it produces a package (*.pkg) file that has all the required information about the built smart contract. To deploy your smart contract, you need to create a deployer instance, pass your package file to it and provide initial data for your contract.
+When you build your smart contracts using Tact, it produces a package (*.pkg) file that contains all the required information about the built smart contract. To deploy your smart contract, you need to create a deployer instance, pass your package file to it, and provide initial data for your contract.
 
 ```typescript
 import * as fs from 'fs';
@@ -42,13 +42,13 @@ let owner = Address.parse('<put_address_here>');    // Our sample contract has a
 let init = await SampleTactContract.init(owner);    // Create initial data for our contract
 
 // Calculations
-let address = contractAddress(0, init);     // Calculate contract address. MUST match with the address in the verifier
+let address = contractAddress(0, init);     // Calculate contract address. MUST match the address in the verifier
 let data = init.data.toBoc();               // Create init data
 let pkg = fs.readFileSync(                  // Read package file
     path.resolve(outputPath, packageName)
 );
 
-// Prepare deploy
+// Prepare deployment
 let link = await prepareTactDeployment({ pkg, data, testnet });
 
 // Present a deployment link and contract address
@@ -56,4 +56,4 @@ console.log('Address: ' + address.toString({ testOnly: testnet }));
 console.log('Deploy link: ' + link);
 ```
 
-After following this link you will be able to deploy and verify your smart contract.
+After following this link, you will be able to deploy and verify your smart contract.
