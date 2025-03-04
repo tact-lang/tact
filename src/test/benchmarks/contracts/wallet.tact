@@ -33,15 +33,15 @@ message(0x7369676E) CompatibleSignedRequest {
     data: Slice as remaining;
 }
 
+message(0x73696e74) InternalSignedRequest {
+    data: Slice as remaining;
+}
+
 message SignedRequest {
     signature: Slice as bytes64;
     operation: InternalOperation;
 }
 
-message InternalSignedRequest {
-    queryId: Int as uint64;
-    signed: SignedRequest;
-}
 
 message InternalExtensionRequest {
     actions: Slice as remaining;
@@ -55,6 +55,7 @@ struct SliceFlag {
 asm extends fun beginParseRaw(self: Cell): SliceFlag { XCTOS }
 asm extends mutates fun enforceAndRemoveActionSendMsgPrefix(self: Slice) { x{0ec3c86d} SDBEGINS}
 asm fun setC5(outActions: Cell) { c5 POP }
+asm fun hach1(asd: Slice): CompatibleSignedRequest {}
 
 contract Wallet with Deployable {
     isSignatureAllowed: Bool;
@@ -161,7 +162,7 @@ contract Wallet with Deployable {
         // TODO: add c4 save in asm here 
         commit();
 
-        self.processActions(msg.operation.actions, isExternal, false);
+        // self.processActions(msg.operation.actions, isExternal, false);
     }
 
     receive(_: Slice) {
@@ -173,11 +174,11 @@ contract Wallet with Deployable {
             return;
         }
         // require(self.extensions.get(sender()) == true, "Unauthorized extension");
-        self.processActions(msg.actions, false, true);
+        // self.processActions(msg.actions, false, true);
     }
 
     receive(msg: InternalSignedRequest) {
-        self.processSignedRequest(msg.signed, false);
+        self.processSignedRequestCompatible(hach1(msg.data), false);
     }
 
     external(msg: CompatibleSignedRequest) {

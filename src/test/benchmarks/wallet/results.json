@@ -15,7 +15,7 @@
       "label": "1.5.3 initial",
       "pr": "https://github.com/tact-lang/tact/pull/1859",
       "gas": {
-        "externalTransfer": "8158",
+        "externalTransfer": "8132",
         "addExtension": "5974",
         "deleteExtension": "5481",
         "multipleActions": "13256",
