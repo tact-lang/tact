@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Standard Library
 
 - Add `StateInit.hasSameBasechainAddress` function: PR [#2187](https://github.com/tact-lang/tact/pull/2187)
+- Add doc comments for functions and structs: PR [#2267](https://github.com/tact-lang/tact/pull/2267)
 
 ### TypeScript wrappers
 

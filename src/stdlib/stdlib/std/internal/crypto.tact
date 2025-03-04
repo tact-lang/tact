@@ -16,7 +16,7 @@ asm extends fun hash(self: Cell): Int { HASHCU }
 /// Calculates and returns an `Int` value of the [SHA-256] hash of the 
 /// [standard `Slice` representation][std-representation] of the given `Slice`.
 /// 
-/// NOTE: This function uses 500 gas units or more.
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
 /// 
 /// ```tact
 /// fun example() {
@@ -87,7 +87,7 @@ asm extends fun hashData(self: String): Int { ONE HASHEXT_SHA256 }
 /// 
 /// Returns `true` if the signature is valid, `false` otherwise.
 /// 
-/// NOTE: This function uses 500 gas units or more.
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
 /// 
 /// ```tact
 /// message ExtMsg {
@@ -129,7 +129,7 @@ asm fun checkSignature(hash: Int, signature: Slice, public_key: Int): Bool { CHK
 /// 
 /// Returns `true` if the signature is valid, `false` otherwise.
 /// 
-/// NOTE: This function uses 500 gas units or more.
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
 ///
 /// ```tact
 /// fun example() {
