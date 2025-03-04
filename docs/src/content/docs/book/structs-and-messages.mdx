@@ -11,7 +11,7 @@ After successful compilation, Tact produces a [compilation report](/book/compile
 
 :::caution
 
-  **Warning**: Currently, circular types are **not** possible. This means that Struct/Message **A** can't have a field of Struct/Message **B** if Struct/Message **B** has a field of Struct/Message **A**.
+  Currently, circular types are **not** possible. This means that struct or message struct `A` can't have a field of struct or message struct type `B` if `B` has a field of type `A`.
 
   Therefore, the following code **won't** compile:
 

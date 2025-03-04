@@ -66,7 +66,7 @@ Some statements, such as [`let{:tact}`](#let) or [`return{:tact}`](#return), mus
 } // <- end of the block
 
 { dump(2 + 2) } // a block with only one statement,
-                // the last and only semicolon omitted
+                // omitting the last and only semicolon
 
 {
     let nah = 3 * 3 * 3; // a block with two statements,
@@ -89,7 +89,7 @@ Assignment statements use an [assignment operator](/book/operators#assignment) (
 ```tact
 let value: Int; // declaration
 value = 5;      // assignment
-value += 5;     // augmented assignment (one of many; see below)
+value += 5;     // augmented assignment (one of many — see below)
 ```
 
 :::note
@@ -186,7 +186,7 @@ fun naming(s: Example) {
 }
 ```
 
-Note that the order of bindings doesn't matter—all fields retain their values and types under their names regardless of the order in which they appear in their definition in the respective [Struct][s] or [Message][m].
+Note that the order of bindings doesn't matter — all fields retain their values and types under their names regardless of the order in which they appear in their definition in the respective [Struct][s] or [Message][m].
 
 ```tact
 // "first" goes first, then goes "second"
@@ -508,7 +508,7 @@ contract Iterated {
 }
 ```
 
-Note that, similar to the [`let{:tact}` statement](#let), either of the captured key or value (or both) can be discarded by specifying an underscore `_{:tact}` in their place:
+Similar to the [`let{:tact}` statement](#let), either of the captured key or value (or both) can be discarded by specifying an underscore `_{:tact}` in their place:
 
 ```tact
 // Empty map
@@ -537,7 +537,7 @@ foreach (_, _ in quartiles) {
 
 :::caution
 
-  Note that, at the moment, `foreach{:tact}` works only with explicitly provided map identifiers and nested identifier constructions, like `foo.bar.targetMap{:tact}` or `self.baz.targetMap{:tact}`. That is, returning a map from a function and trying to iterate over its entries won't work:
+  At the moment, `foreach{:tact}` works only with explicitly provided map identifiers and nested identifier constructions, like `foo.bar.targetMap{:tact}` or `self.baz.targetMap{:tact}`. That is, returning a map from a function and trying to iterate over its entries won't work:
 
   ```tact
   foreach (k, v in emptyMap()) {
