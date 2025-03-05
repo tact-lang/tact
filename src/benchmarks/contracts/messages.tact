@@ -72,7 +72,8 @@ message(0x2c76b973) ProvideWalletAddress {
     includeAddress: Bool;
 }
 
-message(0xd1735400) TakeWalletAddress {
+const TakeWalletAddressOpcode: Int = 0xd1735400;
+message(TakeWalletAddressOpcode) TakeWalletAddress {
     queryId: Int as uint64;
     walletAddress: Address;
     ownerAddress: Cell?; //It is Maybe ^Address, just encoded it like this

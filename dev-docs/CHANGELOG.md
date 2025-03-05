@@ -7,28 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.1] - 2025-03-04
+
 ### Language features
 
 - [fix] The `toCell()` method called in a receiver on a contract field that is a struct is now handled correctly: PR [#2186](https://github.com/tact-lang/tact/pull/2186)
-- Added support for wildcard function parameters: PR [#2189](https://github.com/tact-lang/tact/pull/2189)
+- [fix] Support for multiple wildcard function parameters: PR [#2189](https://github.com/tact-lang/tact/pull/2189)
 
 ### Standard Library
 
-- Add `StateInit.hasSameBasechainAddress` function: PR [#2187](https://github.com/tact-lang/tact/pull/2187)
+- Add the `StateInit.hasSameBasechainAddress` function: PR [#2187](https://github.com/tact-lang/tact/pull/2187)
+- Add doc comments for most functions and structs: PR [#2267](https://github.com/tact-lang/tact/pull/2267)
+- Add the `cashback` function: PR [#2241](https://github.com/tact-lang/tact/pull/2241)
+
+### TypeScript wrappers
+
+- Export message opcodes and exit codes: PR [#2081](https://github.com/tact-lang/tact/issues/2081)
 
 ### Code generation
 
 - Contract load function is inlined: PR [#2101](https://github.com/tact-lang/tact/pull/2101)
 
+### TypeScript third-party API
+
+- Export more API from `index.ts`, including AST, context, parser, build pipeline, and typechecker functions: PR [#2196](https://github.com/tact-lang/tact/pull/2196)
+
 ### Internal infrastructure
 
 - Do not add `.code` to the file names of the generated FunC, Fift, and disassembled Fift: PR [#2103](https://github.com/tact-lang/tact/pull/2103)
+- Moved `benchmarks` to separate folder from tests, added CLI utilities for them: PR [#2234](https://github.com/tact-lang/tact/pull/2234)
 
 ### Release contributors
 
 - [Anton Trunov](https://github.com/anton-trunov)
 - [Daniil Sedov](https://github.com/Gusarich)
 - [Petr Makhnev](https://github.com/i582)
+- [Jesús Héctor Domínguez Sánchez](https://github.com/jeshecdom)
+- [verytactical](https://github.com/verytactical)
+- [Shvetc Andrei](https://github.com/Shvandre)
+- [Maksim Lagus](https://github.com/Kaladin13)
+- [Novus Nota](https://github.com/novusnota)
 
 ## [1.6.0] - 2025-02-28
 
@@ -51,11 +69,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Constants and trait constants can now depend on each other: PR [#1622](https://github.com/tact-lang/tact/pull/1622)
 - Support overriding constants and methods of the `BaseTrait` trait: PR [#1591](https://github.com/tact-lang/tact/pull/1591)
 - Introduced contract parameters as a replacement for the lazy initialization via the `init()` function: PR [#1985](https://github.com/tact-lang/tact/pull/1985), PR [#2071](https://github.com/tact-lang/tact/pull/2071)
-- [fix] Collisions in getter method IDs are now handled and reported properly: PR [#875](https://github.com/tact-lang/tact/pull/875), PR [#1052](https://github.com/tact-lang/tact/pull/1052)
+- [fix] Collisions in getter method IDs are now handled and reported correctly: PR [#875](https://github.com/tact-lang/tact/pull/875), PR [#1052](https://github.com/tact-lang/tact/pull/1052)
 - [fix] The `as coins` map value serialization type is now handled correctly: PR [#987](https://github.com/tact-lang/tact/pull/987)
 - [fix] Fixed type checking of `foreach` loops in trait methods: PR [#1017](https://github.com/tact-lang/tact/pull/1017)
 - [fix] The `sha256()` function no longer throws on statically known strings of any length: PR [#907](https://github.com/tact-lang/tact/pull/907)
-- [fix] The `foreach` loop now properly handles the `as coins` map value serialization type: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
+- [fix] The `foreach` loop now correctly handles the `as coins` map value serialization type: PR [#1186](https://github.com/tact-lang/tact/pull/1186)
 - [fix] The typechecker now rejects integer map key types with variable width (`coins`, `varint16`, `varint32`, `varuint16`, `varuint32`): PR [#1276](https://github.com/tact-lang/tact/pull/1276)
 - [fix] The typechecker now rejects `as remaining` fields in the middle of contract storage: PR [#1301](https://github.com/tact-lang/tact/pull/1301)
 - [fix] The `override` modifier for functions without the corresponding super-function is not allowed: PR [#1302](https://github.com/tact-lang/tact/pull/1302)
@@ -134,7 +152,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### `unboc` CLI
 
 - Introduced `unboc`: a standalone CLI utility to expose Tact's TVM disassembler: PR [#1259](https://github.com/tact-lang/tact/pull/1259)
-- Bump used `@tact-lang/opcode` version to `0.3` which fixes many issues in CI runs: PR [#1922](https://github.com/tact-lang/tact/pull/1922)
+- Bump used `@tact-lang/opcode` version to `0.3`, which fixes many issues in CI runs: PR [#1922](https://github.com/tact-lang/tact/pull/1922)
 
 #### Compilation report
 
@@ -163,7 +181,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Inline `*_contract_init` function: PR [#1589](https://github.com/tact-lang/tact/pull/1589)
 - Rearrange parameters of some `asm` methods in the order described in `AsmShuffle`: PR [#1702](https://github.com/tact-lang/tact/pull/1702)
 - Struct serialization and parsing functions are now inlined more aggressively to save gas: PR [#2016](https://github.com/tact-lang/tact/pull/2016)
-- `NOP` instructions and empty asm functions are now properly optimized: PR [#1959](https://github.com/tact-lang/tact/pull/1959)
+- `NOP` instructions and empty asm functions are now optimized: PR [#1959](https://github.com/tact-lang/tact/pull/1959)
 - Contracts are now compiled with custom optimized function selector with a shortcut for `recv_internal` and `recv_external`: PR [#2038](https://github.com/tact-lang/tact/pull/2038)
 - Contract receivers do not update the contract data cell at the end of execution if the receiver does not modify the contract storage: PR [#2067](https://github.com/tact-lang/tact/pull/2067), PR [#2077](https://github.com/tact-lang/tact/pull/2077)
 - [fix] Fixed code generation for `self` argument in optional struct methods: PR [#1284](https://github.com/tact-lang/tact/pull/1284)

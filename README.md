@@ -75,7 +75,7 @@ The most prominent and distinctive features of Tact are:
 
 The Tact compiler is distributed as an [NPM package](https://www.npmjs.com/package/@tact-lang/compiler) bundled with the [Tact standard library](https://docs.tact-lang.org/ref/).
 
-The recommended Node.js version is 22 or higher, while the bare minimum Node.js version must be at least 18 or higher.
+The recommended Node.js version is 22 or higher, while the minimum version is 18.
 
 Use your favorite package manager to install it into a Node.js project:
 
@@ -99,7 +99,7 @@ Alternatively, you can install it globally as such:
 npm i -g @tact-lang/compiler
 ```
 
-This will make the `tact` compiler available on your PATH, as well as a convenient `unboc` disassembler of a contract's code compiled into a [Bag of Cells](https://docs.tact-lang.org/book/cells/#cells-boc) `.boc` format.
+It will make the `tact` compiler available on your PATH, as well as a convenient `unboc` disassembler of a contract's code compiled into a [Bag of Cells](https://docs.tact-lang.org/book/cells/#cells-boc) `.boc` format.
 
 ### Tooling
 
@@ -121,9 +121,9 @@ This will make the `tact` compiler available on your PATH, as well as a convenie
 
 ### Getting started
 
-For a quick start, read the ["Let's start!"](https://docs.tact-lang.org/#start) mini-guide in the Tact documentation, which uses the [Blueprint](https://github.com/ton-community/blueprint) development environment for writing, testing, and deploying smart contracts on TON Blockchain.
+For a quick start, read the ["Let's start!"](https://docs.tact-lang.org/#start) mini-guide in the Tact documentation. It uses the [Blueprint](https://github.com/ton-community/blueprint) development environment for writing, testing, and deploying smart contracts on TON Blockchain.
 
-If you want more manual control, use [tact-template](https://github.com/tact-lang/tact-template) — it's a ready-to-use template with the development environment set up, including the Tact compiler with TypeScript + Jest, a local TON emulator, AI-based editor support, and examples of how to run tests.
+If you want more manual control, use [tact-template](https://github.com/tact-lang/tact-template). It's a ready-to-use template with the development environment set up, including the Tact compiler with TypeScript + Jest, a local TON emulator, AI-based editor support, and examples of how to run tests.
 
 ```shell
 git clone https://github.com/tact-lang/tact-template
@@ -143,7 +143,7 @@ If you can’t find the answer in the [docs](https://docs.tact-lang.org), or you
 
 ## Contributing
 
-Contributions are welcome! To help with the development of the compiler, see the [contributing guide](./dev-docs/CONTRIBUTING.md).
+Contributions are welcome! To help develop the compiler, see the [contributing guide](./dev-docs/CONTRIBUTING.md).
 
 In addition, we invite you to create new educational materials in any form, help foster the [community](#community), and write new Tact contracts. The best creations will be featured in [awesome-tact](https://github.com/tact-lang/awesome-tact) and on social media.
 
