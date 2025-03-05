@@ -391,7 +391,7 @@ export function writeTypescript(
         w.append(`};`);
         w.append();
         w.append(
-            `private constructor(address: Address, init?: { code: Cell, data: Cell }) {`,
+            `constructor(address: Address, init?: { code: Cell, data: Cell }) {`,
         );
         w.inIndent(() => {
             w.append("this.address = address;");
