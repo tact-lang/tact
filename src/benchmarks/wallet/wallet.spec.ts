@@ -8,13 +8,18 @@ import { beginCell, Dictionary, toNano } from "@ton/core";
 import "@ton/test-utils";
 
 import { getUsedGas, generateResults, printBenchmarkTable } from "../util";
-import benchmarkResults from "./results.json";
+import benchmarkResults from "./results_gas.json";
 import type { KeyPair } from "@ton/crypto";
 import { getSecureRandomBytes, keyPairFromSeed, sign } from "@ton/crypto";
 import { Wallet } from "../contracts/output/wallet_Wallet";
 import { readFileSync } from "fs";
 import { posixNormalize } from "../../utils/filePath";
 import { resolve } from "path";
+import {
+    createAddExtActionMsg,
+    createSendTxActionMsg,
+    sendInternalMessageFromExtension,
+} from "./utils";
 
 function validUntil(ttlMs = 1000 * 60 * 3) {
     return BigInt(Math.floor((Date.now() + ttlMs) / 1000));
@@ -50,18 +55,6 @@ describe("Wallet Gas Tests", () => {
     let walletFuncAddress: Address;
 
     let keypair: KeyPair;
-
-    const Opcodes = {
-        action_send_msg: 0x0ec3c86d,
-        action_set_code: 0xad4de08e,
-        action_extended_set_data: 0x1ff8ea0b,
-        action_extended_add_extension: 0x02,
-        action_extended_remove_extension: 0x03,
-        action_extended_set_signature_auth_allowed: 0x04,
-        auth_extension: 0x6578746e,
-        auth_signed: 0x7369676e,
-        auth_signed_internal: 0x73696e74,
-    };
 
     const SUBWALLET_ID = 0n;
     const results = generateResults(benchmarkResults);
@@ -236,36 +229,14 @@ describe("Wallet Gas Tests", () => {
                 await blockchain.getContract(testReceiver)
             ).balance;
 
-            const sendTxMsg = beginCell()
-                .storeUint(0x10, 6)
-                .storeAddress(testReceiver)
-                .storeCoins(forwardValue)
-                .storeUint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
-                .storeRef(beginCell().endCell())
-                .endCell();
-
-            const sendTxactionAction = beginCell()
-                .storeUint(0x0ec3c86d, 32)
-                .storeInt(
-                    SendMode.PAY_GAS_SEPARATELY | SendMode.IGNORE_ERRORS,
-                    8,
-                )
-                .storeRef(sendTxMsg)
-                .endCell();
-
-            const actionsList = beginCell()
-                .storeMaybeRef(
-                    beginCell()
-                        .storeRef(beginCell().endCell()) // empty child - end of action list
-                        .storeSlice(sendTxactionAction.beginParse())
-                        .endCell(),
-                )
-                .storeBit(false) // no other_actions
-                .endCell();
+            const sendTxActionsList = createSendTxActionMsg(
+                testReceiver,
+                forwardValue,
+            );
 
             const externalTransferSendResult = await sendSignedActionBody(
                 walletAddress,
-                actionsList,
+                sendTxActionsList,
             );
 
             expect(externalTransferSendResult.transactions).toHaveTransaction({
@@ -320,36 +291,14 @@ describe("Wallet Gas Tests", () => {
                 await blockchain.getContract(testReceiver)
             ).balance;
 
-            const sendTxMsg = beginCell()
-                .storeUint(0x10, 6)
-                .storeAddress(testReceiver)
-                .storeCoins(forwardValue)
-                .storeUint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
-                .storeRef(beginCell().endCell())
-                .endCell();
-
-            const sendTxactionAction = beginCell()
-                .storeUint(0x0ec3c86d, 32)
-                .storeInt(
-                    SendMode.PAY_GAS_SEPARATELY | SendMode.IGNORE_ERRORS,
-                    8,
-                )
-                .storeRef(sendTxMsg)
-                .endCell();
-
-            const actionsList = beginCell()
-                .storeMaybeRef(
-                    beginCell()
-                        .storeRef(beginCell().endCell())
-                        .storeSlice(sendTxactionAction.beginParse())
-                        .endCell(),
-                )
-                .storeBit(false) // no other actions
-                .endCell();
+            const sendTxActionsList = createSendTxActionMsg(
+                testReceiver,
+                forwardValue,
+            );
 
             const externalTransferSendResult = await sendSignedActionBody(
                 walletAddress,
-                actionsList,
+                sendTxActionsList,
                 false,
             );
 
@@ -401,20 +350,11 @@ describe("Wallet Gas Tests", () => {
         const runAddExtensionTest = async (walletAddress: Address) => {
             const testExtension = receiver.address;
 
-            const addExtensionAction = beginCell()
-                .storeUint(Opcodes.action_extended_add_extension, 8)
-                .storeAddress(testExtension)
-                .endCell();
-
-            const actionsList = beginCell()
-                .storeMaybeRef(null) // no c5 out actions
-                .storeBit(true) // have other actions
-                .storeSlice(addExtensionAction.beginParse())
-                .endCell();
+            const addExtActionsList = createAddExtActionMsg(testExtension);
 
             const addExtensionSendResult = await sendSignedActionBody(
                 walletAddress,
-                actionsList,
+                addExtActionsList,
             );
 
             expect(addExtensionSendResult.transactions).toHaveTransaction({
@@ -447,6 +387,88 @@ describe("Wallet Gas Tests", () => {
 
         expect(addExtensionGasUsedTact).toEqual(
             expectedResult.gas["addExtension"],
+        );
+    });
+
+    it("extensionTransfer", async () => {
+        const runExtensionTransferTest = async (walletAddress: Address) => {
+            const testReceiver = receiver.address;
+
+            const forwardValue = toNano(0.001);
+            const receiverBalanceBefore = (
+                await blockchain.getContract(testReceiver)
+            ).balance;
+
+            // add deployer as extension
+            const actionsListAddExt = createAddExtActionMsg(deployer.address);
+            await sendSignedActionBody(walletAddress, actionsListAddExt);
+
+            const walletTest = blockchain.openContract(
+                Wallet.fromAddress(walletAddress),
+            );
+
+            const extensions = await walletTest.getGetExtensions();
+            expect(extensions.get(packAddress(deployer.address))).toEqual(true);
+
+            const sendTxActionsList = createSendTxActionMsg(
+                testReceiver,
+                forwardValue,
+            );
+
+            const extensionTransferResult =
+                await sendInternalMessageFromExtension(
+                    deployer,
+                    walletAddress,
+                    {
+                        body: sendTxActionsList,
+                        value: toNano("0.1"),
+                    },
+                );
+
+            expect(extensionTransferResult.transactions).toHaveTransaction({
+                from: deployer.address,
+                to: walletAddress,
+                success: true,
+                exitCode: 0,
+            });
+
+            // external to ext + internal + ext transfer action
+            expect(extensionTransferResult.transactions.length).toEqual(3);
+
+            expect(extensionTransferResult.transactions).toHaveTransaction({
+                from: walletAddress,
+                to: testReceiver,
+                success: true,
+                value: forwardValue,
+                exitCode: 0,
+            });
+
+            const fee =
+                extensionTransferResult.transactions[2]!.totalFees.coins;
+            const receiverBalanceAfter = (
+                await blockchain.getContract(testReceiver)
+            ).balance;
+
+            expect(receiverBalanceAfter).toEqual(
+                receiverBalanceBefore + forwardValue - fee,
+            );
+
+            return getUsedGas(extensionTransferResult, false);
+        };
+
+        const extensionTransferGasUsedFunC =
+            await runExtensionTransferTest(walletFuncAddress);
+
+        expect(extensionTransferGasUsedFunC).toEqual(
+            funcResult.gas["extensionTransfer"],
+        );
+
+        const extensionTransferGasUsedTact = await runExtensionTransferTest(
+            walletTact.address,
+        );
+
+        expect(extensionTransferGasUsedTact).toEqual(
+            expectedResult.gas["extensionTransfer"],
         );
     });
 });
