@@ -6,9 +6,9 @@ import type { Address, Cell } from "@ton/core";
 
 export function getUsedGas(
     sendEnough: SendMessageResult,
-    isExternal: boolean,
+    kind: "external" | "internal",
 ): number {
-    return isExternal
+    return kind === "external"
         ? getUsedGasExternal(sendEnough)
         : getUsedGasInternal(sendEnough);
 }

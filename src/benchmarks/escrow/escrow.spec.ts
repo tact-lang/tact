@@ -262,7 +262,7 @@ describe("Escrow Gas Tests", () => {
                 exitCode: 0,
             });
 
-            return getUsedGas(fundingResult, false);
+            return getUsedGas(fundingResult, "internal");
         };
 
         const dealAmount = toNano(1); // 1 ton
@@ -306,7 +306,7 @@ describe("Escrow Gas Tests", () => {
                 exitCode: 0,
             });
 
-            return getUsedGas(changeCodeResult, false);
+            return getUsedGas(changeCodeResult, "internal");
         };
 
         const dealAmount = toNano(1); // 1 ton
@@ -352,7 +352,7 @@ describe("Escrow Gas Tests", () => {
                 exitCode: 0,
             });
 
-            return getUsedGas(approveResult, false);
+            return getUsedGas(approveResult, "internal");
         };
 
         const dealAmount = toNano(1); // 1 ton
@@ -394,7 +394,7 @@ describe("Escrow Gas Tests", () => {
                 exitCode: 0,
             });
 
-            return getUsedGas(cancelResult, false);
+            return getUsedGas(cancelResult, "internal");
         };
 
         const dealAmount = toNano(1); // 1 ton

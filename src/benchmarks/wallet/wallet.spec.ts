@@ -263,7 +263,7 @@ describe("Wallet Gas Tests", () => {
                 receiverBalanceBefore + forwardValue - fee,
             );
 
-            return getUsedGas(externalTransferSendResult, true);
+            return getUsedGas(externalTransferSendResult, "external");
         };
 
         const externalTransferGasUsedFunC =
@@ -327,7 +327,7 @@ describe("Wallet Gas Tests", () => {
                 receiverBalanceBefore + forwardValue - fee,
             );
 
-            return getUsedGas(internalTransferSendResult, false);
+            return getUsedGas(internalTransferSendResult, "internal");
         };
 
         const externalTransferGasUsedFunC =
@@ -372,7 +372,7 @@ describe("Wallet Gas Tests", () => {
             expect(extensions.size).toEqual(1);
             expect(extensions.get(packAddress(testExtension))).toEqual(true);
 
-            return getUsedGas(addExtensionSendResult, true);
+            return getUsedGas(addExtensionSendResult, "external");
         };
 
         const addExtensionGasUsedFunC =
@@ -456,7 +456,7 @@ describe("Wallet Gas Tests", () => {
                 receiverBalanceBefore + forwardValue - fee,
             );
 
-            return getUsedGas(extensionTransferResult, false);
+            return getUsedGas(extensionTransferResult, "internal");
         };
 
         const extensionTransferGasUsedFunC =
