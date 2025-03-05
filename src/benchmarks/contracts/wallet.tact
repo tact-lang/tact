@@ -25,6 +25,8 @@ message(0x7369676E) ExternalSignedRequest {
     data: Slice as remaining;
 }
 
+// leave as example for disscusion
+
 // message(0x73696e74) InternalSignedRequest {
 //     data: Slice as remaining;
 // }
@@ -212,10 +214,6 @@ contract Wallet with Deployable {
         return outActions;
     }
 
-    receive(_: Slice) {
-        // Fallback
-    }
-
     receive(msg: InternalExtensionRequest) {
         let myAddr = parseStdAddress(myAddress().asSlice());
         let addr = parseStdAddress(sender().asSlice());
@@ -228,6 +226,10 @@ contract Wallet with Deployable {
 
     receive(msg: InternalSignedRequest) {
         self.processSignedRequestInternal(msg, false);
+    }
+
+    receive(_: Slice) {
+        // Fallback
     }
 
     external(msg: ExternalSignedRequest) {
