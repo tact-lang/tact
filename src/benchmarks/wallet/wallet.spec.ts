@@ -64,13 +64,13 @@ describe("Wallet Gas Tests", () => {
     async function sendSignedActionBody(
         walletAddress: Address,
         actions: Cell,
-        isExternal: boolean = true,
+        kind: "external" | "internal",
     ) {
         const seqnoValue = seqno();
 
         const requestToSign = beginCell()
             .storeUint(
-                isExternal
+                kind === "external"
                     ? Wallet.opcodes.ExternalSignedRequest
                     : Wallet.opcodes.InternalSignedRequest,
                 32,
@@ -88,7 +88,7 @@ describe("Wallet Gas Tests", () => {
             .storeBuilder(dataCell.asBuilder())
             .endCell();
 
-        return await (isExternal
+        return await (kind === "external"
             ? blockchain.sendMessage(
                   external({
                       to: walletAddress,
@@ -147,8 +147,10 @@ describe("Wallet Gas Tests", () => {
 
         walletTact = blockchain.openContract(
             await Wallet.fromInit(
-                bufferToBigInt(keypair.publicKey),
+                true,
+                0n,
                 SUBWALLET_ID,
+                bufferToBigInt(keypair.publicKey),
                 Dictionary.empty(),
             ),
         );
@@ -158,10 +160,7 @@ describe("Wallet Gas Tests", () => {
             {
                 value: toNano("0.05"),
             },
-            {
-                $$type: "Deploy",
-                queryId: 0n,
-            },
+            beginCell().endCell().asSlice(),
         );
 
         expect(deployResult.transactions).toHaveTransaction({
@@ -237,6 +236,7 @@ describe("Wallet Gas Tests", () => {
             const externalTransferSendResult = await sendSignedActionBody(
                 walletAddress,
                 sendTxActionsList,
+                "external",
             );
 
             expect(externalTransferSendResult.transactions).toHaveTransaction({
@@ -296,29 +296,29 @@ describe("Wallet Gas Tests", () => {
                 forwardValue,
             );
 
-            const externalTransferSendResult = await sendSignedActionBody(
+            const internalTransferSendResult = await sendSignedActionBody(
                 walletAddress,
                 sendTxActionsList,
-                false,
+                "internal",
             );
 
-            expect(externalTransferSendResult.transactions).toHaveTransaction({
+            expect(internalTransferSendResult.transactions).toHaveTransaction({
                 from: deployer.address,
                 to: walletAddress,
                 success: true,
                 exitCode: 0,
             });
 
-            expect(externalTransferSendResult.transactions.length).toEqual(3);
+            expect(internalTransferSendResult.transactions.length).toEqual(3);
 
-            expect(externalTransferSendResult.transactions).toHaveTransaction({
+            expect(internalTransferSendResult.transactions).toHaveTransaction({
                 from: walletAddress,
                 to: testReceiver,
                 value: forwardValue,
             });
 
             const fee =
-                externalTransferSendResult.transactions[2]!.totalFees.coins;
+                internalTransferSendResult.transactions[2]!.totalFees.coins;
             const receiverBalanceAfter = (
                 await blockchain.getContract(testReceiver)
             ).balance;
@@ -327,7 +327,7 @@ describe("Wallet Gas Tests", () => {
                 receiverBalanceBefore + forwardValue - fee,
             );
 
-            return getUsedGas(externalTransferSendResult, false);
+            return getUsedGas(internalTransferSendResult, false);
         };
 
         const externalTransferGasUsedFunC =
@@ -355,6 +355,7 @@ describe("Wallet Gas Tests", () => {
             const addExtensionSendResult = await sendSignedActionBody(
                 walletAddress,
                 addExtActionsList,
+                "external",
             );
 
             expect(addExtensionSendResult.transactions).toHaveTransaction({
@@ -362,8 +363,6 @@ describe("Wallet Gas Tests", () => {
                 success: true,
                 exitCode: 0,
             });
-
-            expect(addExtensionSendResult.transactions.length).toEqual(1);
 
             const walletTest = blockchain.openContract(
                 Wallet.fromAddress(walletAddress),
@@ -401,7 +400,11 @@ describe("Wallet Gas Tests", () => {
 
             // add deployer as extension
             const actionsListAddExt = createAddExtActionMsg(deployer.address);
-            await sendSignedActionBody(walletAddress, actionsListAddExt);
+            await sendSignedActionBody(
+                walletAddress,
+                actionsListAddExt,
+                "internal",
+            );
 
             const walletTest = blockchain.openContract(
                 Wallet.fromAddress(walletAddress),

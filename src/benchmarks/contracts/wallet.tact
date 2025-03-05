@@ -1,5 +1,3 @@
-import "@stdlib/deploy";
-
 /*
     actions
 
@@ -61,21 +59,13 @@ asm extends mutates fun checkAndRemoveSetSignAllowedPrefix(self: Slice): Bool {x
 // as example
 asm fun typeCast(asd: InternalSignedRequest): ExternalSignedRequest {}
 
-contract Wallet with Deployable {
-    isSignatureAllowed: Bool;
-    seqno: Int as uint32;
-    walletId: Int as int32;
-    publicKey: Int as uint256;
-    extensions: map<Int as uint256, Bool>;
-
-    init(publicKey: Int, walletId: Int, extensions: map<Int as uint256, Bool>) {
-        self.isSignatureAllowed = true;
-        self.publicKey = publicKey;
-        self.seqno = 0;
-        self.walletId = walletId;
-        self.extensions = extensions;
-    }
-
+contract Wallet(
+    isSignatureAllowed: Bool,
+    seqno: Int as uint32,
+    walletId: Int as int32,
+    publicKey: Int as uint256,
+    extensions: map<Int as uint256, Bool>
+) {
     inline fun processSignedRequestExternal(msg: ExternalSignedRequest, isExternal: Bool) {
         let signature = msg.toSlice().lastBits(512);
         let signedSlice = msg.toSlice().skipLastBits(512);
