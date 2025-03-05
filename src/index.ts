@@ -27,6 +27,14 @@ export * from "./grammar/grammar";
 export * from "./optimizer/constEval";
 export * from "./pipeline/build";
 export * from "./pipeline/precompile";
-export * from "./stdlib/stdlib";
 export * from "./types/resolveDescriptors";
 export * from "./types/types";
+
+export { default as stdLibFiles } from "./stdlib/stdlib";
+export * from "./ast/ast-helpers";
+export * from "./ast/util";
+export * from "./imports/source";
+export * from "./imports/path";
+export * from "./grammar";
+export * from "./grammar/src-info";
+export * from "./optimizer/interpreter";
