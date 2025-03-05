@@ -2,7 +2,7 @@ import type { Address, Cell } from "@ton/core";
 import { beginCell, SendMode } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 
-export const Opcodes = {
+const Opcodes = {
     action_send_msg: 0x0ec3c86d,
     action_set_code: 0xad4de08e,
     action_extended_set_data: 0x1ff8ea0b,
@@ -45,7 +45,7 @@ export function createSendTxActionMsg(
         .storeRef(beginCell().endCell())
         .endCell();
 
-    const sendTxactionAction = beginCell()
+    const sendTxActionAction = beginCell()
         .storeUint(0x0ec3c86d, 32)
         .storeInt(SendMode.PAY_GAS_SEPARATELY | SendMode.IGNORE_ERRORS, 8)
         .storeRef(sendTxMsg)
@@ -55,7 +55,7 @@ export function createSendTxActionMsg(
         .storeMaybeRef(
             beginCell()
                 .storeRef(beginCell().endCell()) // empty child - end of action list
-                .storeSlice(sendTxactionAction.beginParse())
+                .storeSlice(sendTxActionAction.beginParse())
                 .endCell(),
         )
         .storeBit(false) // no other_actions

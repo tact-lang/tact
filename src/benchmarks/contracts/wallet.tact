@@ -25,7 +25,7 @@ message(0x7369676E) ExternalSignedRequest {
     data: Slice as remaining;
 }
 
-// leave as example for disscusion
+// leave as example for discussion
 
 // message(0x73696e74) InternalSignedRequest {
 //     data: Slice as remaining;
@@ -164,7 +164,7 @@ contract Wallet with Deployable {
                 let addr = parseStdAddress(actions.loadAddress().asSlice());
                 let myAddr = parseStdAddress(myAddress().asSlice());
 
-                throwUnless(145, addr.workchain == myAddr.workchain); // force_workcain optimization
+                throwUnless(145, addr.workchain == myAddr.workchain); // force_workchain optimization
 
                 if (isAddExt) {
                     self.extensions.set(addr.address, true);
@@ -218,7 +218,7 @@ contract Wallet with Deployable {
         let myAddr = parseStdAddress(myAddress().asSlice());
         let addr = parseStdAddress(sender().asSlice());
 
-        throwUnless(145, addr.workchain == myAddr.workchain); // force_workcain optimization
+        throwUnless(145, addr.workchain == myAddr.workchain); // force_workchain optimization
         throwUnless(148, self.extensions.exists(addr.address));
 
         self.processActions(msg.actions, false, true);
