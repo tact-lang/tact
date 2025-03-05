@@ -99,12 +99,24 @@ const readBenchInfo = async (): Promise<{
     return JSON.parse(data.toString());
 };
 
+const tryReadFile = async (path: string): Promise<string | undefined> => {
+    try {
+        return await readFile(path, "utf-8");
+    } catch {
+        return undefined;
+    }
+};
+
 const updateGasResultsFile = async (
     filePath: string,
     newResult: BenchmarkDiff,
     isUpdate: boolean,
 ) => {
-    const fileContent = await readFile(filePath, "utf-8");
+    const fileContent = await tryReadFile(filePath);
+    if (typeof fileContent === "undefined") {
+        return;
+    }
+
     const benchmarkResults: RawBenchmarkResult = JSON.parse(fileContent);
 
     const lastResult = benchmarkResults.results.at(-1);
@@ -151,7 +163,11 @@ const updateCodeSizeResultsFile = async (
     newResult: BenchmarkDiff,
     isUpdate: boolean,
 ) => {
-    const fileContent = await readFile(filePath, "utf-8");
+    const fileContent = await tryReadFile(filePath);
+    if (typeof fileContent === "undefined") {
+        return;
+    }
+
     const benchmarkResults: RawCodeSizeResult = JSON.parse(fileContent);
 
     const lastResult = benchmarkResults.results.at(-1);
@@ -225,7 +241,7 @@ const main = async () => {
 
             const isUpdate = typeof process.env.ADD !== "undefined";
 
-            if (!process.argv.includes("--yes") && isUpdate) {
+            if (isUpdate) {
                 const { label, pr } = await readBenchInfo();
 
                 newResult.label = label;

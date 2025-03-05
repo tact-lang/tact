@@ -440,7 +440,7 @@ describe("Jetton", () => {
                 exitCode: 0,
             });
 
-            return getUsedGas(sendResult);
+            return getUsedGas(sendResult, "internal");
         };
 
         const transferGasUsedTact = await runMintTest(jettonMinter.address);
@@ -485,7 +485,7 @@ describe("Jetton", () => {
                 exitCode: 0,
             });
 
-            return getUsedGas(burnResult);
+            return getUsedGas(burnResult, "internal");
         };
 
         const burnGasUsedTact = await runBurnTest(jettonMinter.address);
@@ -521,7 +521,7 @@ describe("Jetton", () => {
                 success: true,
             });
 
-            return getUsedGas(discoveryResult);
+            return getUsedGas(discoveryResult, "internal");
         };
 
         const discoveryGasUsedTact = await runDiscoveryTest(
