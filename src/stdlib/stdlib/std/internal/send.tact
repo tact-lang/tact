@@ -215,7 +215,7 @@ asm fun send(params: SendParameters) {
     ISNULL
     SWAP
     ISNULL
-    MUL // note that -1 * -1 wraps back to -1
+    AND
     // → Stack state
     // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
     // s1: `code`
