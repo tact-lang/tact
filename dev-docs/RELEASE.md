@@ -19,7 +19,11 @@
 - [ ] Publish the new `vX.Y.Z` release on NPM: [@tact-lang/compiler](https://www.npmjs.com/package/@tact-lang/compiler)
   ```shell
   $ git checkout vX.Y.Z
+  # remove the postinstall lifecycle script from the package.json
+  $ jq 'del(.scripts.postinstall)' package.json -M > temp.json && mv temp.json package.json
   $ yarn all && npm publish
+  # reset changes to package.json
+  $ git checkout -- package.json
   ```
 - [ ] Request or perform the plugins/parsers/tools updates and releases:
   - [ ] <https://github.com/tact-lang/tact-template> (tracked in: )
