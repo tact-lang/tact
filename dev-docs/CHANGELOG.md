@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Language features
 
 - [fix] The `toCell()` method called in a receiver on a contract field that is a struct is now handled correctly: PR [#2186](https://github.com/tact-lang/tact/pull/2186)
-- [fix] Support for multiple wildcard function parameters: PR [#2189](https://github.com/tact-lang/tact/pull/2189)
+- [fix] Support for multiple wildcard function parameters: PR [#2188](https://github.com/tact-lang/tact/pull/2188)
 
 ### Standard Library
 
