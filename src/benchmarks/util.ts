@@ -4,8 +4,30 @@ import Table from "cli-table3";
 import type { Blockchain } from "@ton/sandbox";
 import type { Address, Cell } from "@ton/core";
 
-export function getUsedGas(sendEnough: SendMessageResult): number {
-    return sendEnough.transactions
+export function getUsedGas(
+    sendEnough: SendMessageResult,
+    kind: "external" | "internal",
+): number {
+    return kind === "external"
+        ? getUsedGasExternal(sendEnough)
+        : getUsedGasInternal(sendEnough);
+}
+
+function getUsedGasExternal(sendResult: SendMessageResult): number {
+    const externalTx = sendResult.transactions[0];
+
+    if (typeof externalTx === "undefined") {
+        return 0;
+    }
+
+    return externalTx.description.type === "generic" &&
+        externalTx.description.computePhase.type === "vm"
+        ? Number(externalTx.description.computePhase.gasUsed)
+        : 0;
+}
+
+function getUsedGasInternal(sendResult: SendMessageResult): number {
+    return sendResult.transactions
         .slice(1)
         .map((t) =>
             t.description.type === "generic" &&
