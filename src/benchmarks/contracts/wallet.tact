@@ -17,14 +17,7 @@ import "@stdlib/deploy";
     action_delete_ext#04 addr:MsgAddressInt = ExtendedAction;
 */
 
-struct InternalOperation {
-    walletId: Int as uint32;
-    validUntil: Int as uint32;
-    seqno: Int as uint32;
-    actions: Slice as remaining;
-}
-
-message(0x7369676E) CompatibleSignedRequest {
+message(0x7369676E) ExternalSignedRequest {
     walletId: Int as uint32;
     validUntil: Int as uint32;
     seqno: Int as uint32;
@@ -33,15 +26,18 @@ message(0x7369676E) CompatibleSignedRequest {
     data: Slice as remaining;
 }
 
+// message(0x73696e74) InternalSignedRequest {
+//     data: Slice as remaining;
+// }
+
 message(0x73696e74) InternalSignedRequest {
+    walletId: Int as uint32;
+    validUntil: Int as uint32;
+    seqno: Int as uint32;
+    outActions: Cell?;
+    hasOtherActions: Bool;
     data: Slice as remaining;
 }
-
-message SignedRequest {
-    signature: Slice as bytes64;
-    operation: InternalOperation;
-}
-
 
 message InternalExtensionRequest {
     actions: Slice as remaining;
@@ -55,7 +51,7 @@ struct SliceFlag {
 asm extends fun beginParseRaw(self: Cell): SliceFlag { XCTOS }
 asm extends mutates fun enforceAndRemoveActionSendMsgPrefix(self: Slice) { x{0ec3c86d} SDBEGINS}
 asm fun setC5(outActions: Cell) { c5 POP }
-asm fun hach1(asd: Slice): CompatibleSignedRequest {}
+asm fun hach1(asd: InternalSignedRequest): ExternalSignedRequest {}
 
 contract Wallet with Deployable {
     isSignatureAllowed: Bool;
@@ -72,7 +68,7 @@ contract Wallet with Deployable {
         self.extensions = extensions;
     }
 
-    inline fun processSignedRequestCompatible(msg: CompatibleSignedRequest, isExternal: Bool) {
+    inline fun processSignedRequestExternal(msg: ExternalSignedRequest, isExternal: Bool) {
         let signature = msg.toSlice().lastBits(512);
         let signedSlice = msg.toSlice().skipLastBits(512);
 
@@ -81,7 +77,7 @@ contract Wallet with Deployable {
             if (isExternal) {
                 throw(135);
             } else {
-                return;
+                throw(130);
             }
         }
 
@@ -98,7 +94,36 @@ contract Wallet with Deployable {
         commit();
 
         signedSlice.skipBits(32 + 32 + 32 + 32); // skip opcode, walletId, validUntil, seqno
-        self.processActionsCompatible(signedSlice, isExternal, false);
+        self.processActions(signedSlice, isExternal, false);
+    }
+
+    inline fun processSignedRequestInternal(msg: InternalSignedRequest, isExternal: Bool) {
+        let signature = msg.toSlice().lastBits(512);
+        let signedSlice = msg.toSlice().skipLastBits(512);
+
+        let isSignatureValid = checkSignature(signedSlice.hash(), signature, self.publicKey);
+        if (!isSignatureValid) {
+            if (isExternal) {
+                throw(135);
+            } else {
+                throw(130);
+            }
+        }
+
+        throwIf(132, !self.isSignatureAllowed && self.extensions.isEmpty());
+        throwUnless(1, msg.seqno == self.seqno);
+        throwUnless(1, msg.walletId == self.walletId);
+        throwIf(1, msg.validUntil <= now());
+
+        if (isExternal) {
+            acceptMessage();
+        }
+
+        self.seqno += 1;
+        commit();
+
+        signedSlice.skipBits(32 + 32 + 32 + 32); // skip opcode, walletId, validUntil, seqno
+        self.processActions(signedSlice, isExternal, false);
     }
 
     /*
@@ -110,10 +135,10 @@ contract Wallet with Deployable {
         actions: Slice as remaining;
     }
     */
-    inline fun processActionsCompatible(actions: Slice, isExternal: Bool, isExtension: Bool) {
+    inline fun processActions(actions: Slice, isExternal: Bool, isExtension: Bool) {
         let outActions = actions.loadMaybeRef();
         if (outActions != null) {
-            setC5(self.processSendMessagesCompatible(outActions!!, isExternal));
+            setC5(self.processSendMessages(outActions!!, isExternal));
         }
 
         if (!actions.loadBool()) {
@@ -125,7 +150,7 @@ contract Wallet with Deployable {
         }
     }
 
-    inline fun processSendMessagesCompatible(outActions: Cell, isExternal: Bool): Cell {
+    inline fun processSendMessages(outActions: Cell, isExternal: Bool): Cell {
         let cs = outActions.beginParseRaw().data;
         let count = 0;
 
@@ -133,7 +158,7 @@ contract Wallet with Deployable {
             cs.enforceAndRemoveActionSendMsgPrefix();
 
             throwUnless(1, cs.bits() == 8);
-            throwUnless(2, cs.refs() == 2);
+            throwUnless(22, cs.refs() == 2);
             throwIf(3, isExternal && (countTrailingZeroes(cs.preloadBits(7)) > 0));
 
             cs = cs.preloadRef().beginParseRaw().data;
@@ -144,25 +169,6 @@ contract Wallet with Deployable {
         throwUnless(1, cs.refs() == 0);
 
         return outActions;
-    }
-
-    fun processSignedRequest(msg: SignedRequest, isExternal: Bool) {
-        require(checkSignature(msg.operation.toCell().hash(), msg.signature, self.publicKey), "Invalid signature");
-
-        require(msg.operation.seqno == self.seqno, "Invalid seqno");
-        require(msg.operation.walletId == self.walletId, "Invalid walletId");
-        require(now() < msg.operation.validUntil, "Operation expired");
-        
-        if (isExternal) {
-            acceptMessage();
-        }
-
-        self.seqno = (self.seqno + 1);
-        // NOTE: currently unsafe!
-        // TODO: add c4 save in asm here 
-        commit();
-
-        // self.processActions(msg.operation.actions, isExternal, false);
     }
 
     receive(_: Slice) {
@@ -178,11 +184,11 @@ contract Wallet with Deployable {
     }
 
     receive(msg: InternalSignedRequest) {
-        self.processSignedRequestCompatible(hach1(msg.data), false);
+        self.processSignedRequestInternal(msg, false);
     }
 
-    external(msg: CompatibleSignedRequest) {
-        self.processSignedRequestCompatible(msg, true);
+    external(msg: ExternalSignedRequest) {
+        self.processSignedRequestExternal(msg, true);
     }
 
     get fun seqno(): Int {
