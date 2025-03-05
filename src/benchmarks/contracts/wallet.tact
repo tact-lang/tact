@@ -51,6 +51,11 @@ struct SliceFlag {
 asm extends fun beginParseRaw(self: Cell): SliceFlag { XCTOS }
 asm extends mutates fun enforceAndRemoveActionSendMsgPrefix(self: Slice) { x{0ec3c86d} SDBEGINS}
 asm fun setC5(outActions: Cell) { c5 POP }
+
+asm extends mutates fun checkAndRemoveAddExtensionPrefix(self: Slice): Bool {x{02} SDBEGINSQ}
+asm extends mutates fun checkAndRemoveDeleteExtensionPrefix(self: Slice): Bool {x{03} SDBEGINSQ}
+asm extends mutates fun checkAndRemoveSetSignAllowedPrefix(self: Slice): Bool {x{04} SDBEGINSQ}
+
 asm fun hach1(asd: InternalSignedRequest): ExternalSignedRequest {}
 
 contract Wallet with Deployable {
@@ -58,9 +63,9 @@ contract Wallet with Deployable {
     seqno: Int as uint32;
     walletId: Int as int32;
     publicKey: Int as uint256;
-    extensions: map<Address, Bool>;
+    extensions: map<Int as uint256, Bool>;
 
-    init(publicKey: Int, walletId: Int, extensions: map<Address, Bool>) {
+    init(publicKey: Int, walletId: Int, extensions: map<Int as uint256, Bool>) {
         self.isSignatureAllowed = true;
         self.publicKey = publicKey;
         self.seqno = 0;
@@ -147,6 +152,39 @@ contract Wallet with Deployable {
 
         while (true) {
             // check tag, process action, try to load next ref while we can
+            let isAddExt = actions.checkAndRemoveAddExtensionPrefix();
+            let isDeleteExt = isAddExt ? false :  actions.checkAndRemoveDeleteExtensionPrefix();
+
+            if (isAddExt || isDeleteExt) {
+                let addr = parseStdAddress(actions.loadAddress().asSlice());
+                let myAddr = parseStdAddress(myAddress().asSlice());
+
+                throwUnless(123, addr.workchain == myAddr.workchain); // force_workcain optimization
+
+                if (isAddExt) {
+                    self.extensions.set(addr.address, true);
+                } else if (isDeleteExt) {
+                    throwUnless(122, self.extensions.del(addr.address));
+                    throwIf(222, self.extensions.isEmpty() && !self.isSignatureAllowed);
+                }
+            } else if (actions.checkAndRemoveSetSignAllowedPrefix()) {
+                throwUnless(1, isExtension);
+                let res = actions.loadBool();
+                throwIf(333, res == self.isSignatureAllowed);
+                self.isSignatureAllowed = res;
+
+                if (!self.isSignatureAllowed && self.extensions.isEmpty()) {
+                    throw(132);
+                }
+            } else {
+                throw(12333);
+            }
+
+            if (actions.refsEmpty()) {
+                return;
+            }
+
+            actions = actions.preloadRef().beginParse();
         }
     }
 
@@ -176,7 +214,7 @@ contract Wallet with Deployable {
     }
 
     receive(msg: InternalExtensionRequest) {
-        if (self.extensions.get(sender()) != true) {
+        if (self.extensions.get(parseStdAddress(sender().asSlice()).address) != true) {
             return;
         }
         // require(self.extensions.get(sender()) == true, "Unauthorized extension");
@@ -204,10 +242,10 @@ contract Wallet with Deployable {
     }
 
     get fun is_plugin_installed(wc: Int, addressHash: Int): Bool {
-        return self.extensions.exists(newAddress(wc, addressHash));
+        return self.extensions.exists(addressHash);
     }
 
-    get fun get_plugin_list(): map<Address, Bool> {
+    get fun get_extensions(): map<Int as uint256, Bool> {
         return self.extensions;
     }
 }

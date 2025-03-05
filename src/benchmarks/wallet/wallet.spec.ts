@@ -20,6 +20,10 @@ function validUntil(ttlMs = 1000 * 60 * 3) {
     return BigInt(Math.floor((Date.now() + ttlMs) / 1000));
 }
 
+export function packAddress(address: Address) {
+    return bufferToBigInt(address.hash);
+}
+
 function bufferToBigInt(buffer: Buffer): bigint {
     return BigInt("0x" + buffer.toString("hex"));
 }
@@ -47,6 +51,18 @@ describe("Wallet Gas Tests", () => {
 
     let keypair: KeyPair;
 
+    const Opcodes = {
+        action_send_msg: 0x0ec3c86d,
+        action_set_code: 0xad4de08e,
+        action_extended_set_data: 0x1ff8ea0b,
+        action_extended_add_extension: 0x02,
+        action_extended_remove_extension: 0x03,
+        action_extended_set_signature_auth_allowed: 0x04,
+        auth_extension: 0x6578746e,
+        auth_signed: 0x7369676e,
+        auth_signed_internal: 0x73696e74,
+    };
+
     const SUBWALLET_ID = 0n;
     const results = generateResults(benchmarkResults);
     const expectedResult = results.at(-1)!;
@@ -69,8 +85,7 @@ describe("Wallet Gas Tests", () => {
             .storeUint(SUBWALLET_ID, 32)
             .storeUint(validUntil(), 32)
             .storeUint(seqnoValue, 32)
-            .storeMaybeRef(actions)
-            .storeBit(false);
+            .storeSlice(actions.asSlice());
 
         const operationHash = requestToSign.endCell().hash();
         const signature = sign(operationHash, keypair.secretKey);
@@ -205,10 +220,6 @@ describe("Wallet Gas Tests", () => {
 
         expect(walletPublicKey).toBe(bufferToBigInt(keypair.publicKey));
 
-        const pluginList = await walletTact.getGetPluginList();
-
-        expect(pluginList.size).toEqual(0);
-
         const funcSeqnoResult = await blockchain
             .provider(walletFuncAddress)
             .get("seqno", []);
@@ -242,14 +253,19 @@ describe("Wallet Gas Tests", () => {
                 .storeRef(sendTxMsg)
                 .endCell();
 
-            const outActionCell = beginCell()
-                .storeRef(beginCell().endCell()) // empty child - end of action list
-                .storeSlice(sendTxactionAction.beginParse())
+            const actionsList = beginCell()
+                .storeMaybeRef(
+                    beginCell()
+                        .storeRef(beginCell().endCell()) // empty child - end of action list
+                        .storeSlice(sendTxactionAction.beginParse())
+                        .endCell(),
+                )
+                .storeBit(false) // no other_actions
                 .endCell();
 
             const externalTransferSendResult = await sendSignedActionBody(
                 walletAddress,
-                outActionCell,
+                actionsList,
             );
 
             expect(externalTransferSendResult.transactions).toHaveTransaction({
@@ -321,14 +337,19 @@ describe("Wallet Gas Tests", () => {
                 .storeRef(sendTxMsg)
                 .endCell();
 
-            const outActionCell = beginCell()
-                .storeRef(beginCell().endCell()) // empty child - end of action list
-                .storeSlice(sendTxactionAction.beginParse())
+            const actionsList = beginCell()
+                .storeMaybeRef(
+                    beginCell()
+                        .storeRef(beginCell().endCell())
+                        .storeSlice(sendTxactionAction.beginParse())
+                        .endCell(),
+                )
+                .storeBit(false) // no other actions
                 .endCell();
 
             const externalTransferSendResult = await sendSignedActionBody(
                 walletAddress,
-                outActionCell,
+                actionsList,
                 false,
             );
 
@@ -376,162 +397,56 @@ describe("Wallet Gas Tests", () => {
         );
     });
 
-    // it("addExtension", async () => {
-    //     const testExtension = Address.parse(
-    //         "EQAvDfWFG0oYX19jwNDNBBL1rKNT9XfaGP9HyTb5nb2Eml6y",
-    //     );
+    it("addExtension", async () => {
+        const runAddExtensionTest = async (walletAddress: Address) => {
+            const testExtension = receiver.address;
 
-    //     const actions = collectMultipleActions([
-    //         {
-    //             mode: 3,
-    //             extensionAddress: testExtension,
-    //         },
-    //     ]);
+            const addExtensionAction = beginCell()
+                .storeUint(Opcodes.action_extended_add_extension, 8)
+                .storeAddress(testExtension)
+                .endCell();
 
-    //     const actionsSlice = createActionsSlice(actions);
+            const actionsList = beginCell()
+                .storeMaybeRef(null) // no c5 out actions
+                .storeBit(true) // have other actions
+                .storeSlice(addExtensionAction.beginParse())
+                .endCell();
 
-    //     const addExtensionSendResult = await sendSignedActionBody(actionsSlice);
+            const addExtensionSendResult = await sendSignedActionBody(
+                walletAddress,
+                actionsList,
+            );
 
-    //     expect(addExtensionSendResult.transactions).toHaveTransaction({
-    //         from: undefined,
-    //         to: wallet.address,
-    //         success: true,
-    //         exitCode: 0,
-    //     });
+            expect(addExtensionSendResult.transactions).toHaveTransaction({
+                to: walletAddress,
+                success: true,
+                exitCode: 0,
+            });
 
-    //     const extensions = await wallet.getGetPluginList();
+            expect(addExtensionSendResult.transactions.length).toEqual(1);
 
-    //     expect(extensions.size).toEqual(1);
-    //     expect(extensions.get(testExtension)).toEqual(true);
+            const walletTest = blockchain.openContract(
+                Wallet.fromAddress(walletAddress),
+            );
 
-    //     const gasUsed = getUsedGas(addExtensionSendResult, true);
-    //     expect(gasUsed).toEqual(expectedResult.gas["addExtension"]);
-    // });
+            const extensions = await walletTest.getGetExtensions();
+            expect(extensions.size).toEqual(1);
+            expect(extensions.get(packAddress(testExtension))).toEqual(true);
 
-    // it("deleteExtension", async () => {
-    //     const testExtension = Address.parse(
-    //         "EQAvDfWFG0oYX19jwNDNBBL1rKNT9XfaGP9HyTb5nb2Eml6y",
-    //     );
+            return getUsedGas(addExtensionSendResult, true);
+        };
 
-    //     const actions = collectMultipleActions([
-    //         {
-    //             mode: 3,
-    //             extensionAddress: testExtension,
-    //         },
-    //     ]);
+        const addExtensionGasUsedFunC =
+            await runAddExtensionTest(walletFuncAddress);
 
-    //     await sendSignedActionBody(createActionsSlice(actions));
+        expect(addExtensionGasUsedFunC).toEqual(funcResult.gas["addExtension"]);
 
-    //     const isExtensionAdded = await wallet.getIsPluginInstalled(
-    //         BigInt(testExtension.workChain),
-    //         bufferToBigInt(testExtension.hash),
-    //     );
+        const addExtensionGasUsedTact = await runAddExtensionTest(
+            walletTact.address,
+        );
 
-    //     expect(isExtensionAdded).toEqual(true);
-
-    //     const actionsDelete = collectMultipleActions([
-    //         {
-    //             mode: 4,
-    //             extensionAddress: testExtension,
-    //         },
-    //     ]);
-
-    //     const deleteExtensionSendResult = await sendSignedActionBody(
-    //         createActionsSlice(actionsDelete),
-    //     );
-
-    //     expect(deleteExtensionSendResult.transactions).not.toHaveTransaction({
-    //         success: false,
-    //     });
-
-    //     const isExtensionDeleted = !(await wallet.getIsPluginInstalled(
-    //         BigInt(testExtension.workChain),
-    //         bufferToBigInt(testExtension.hash),
-    //     ));
-
-    //     expect(isExtensionDeleted).toEqual(true);
-
-    //     const gasUsed = getUsedGas(deleteExtensionSendResult, true);
-    //     expect(gasUsed).toEqual(expectedResult.gas["deleteExtension"]);
-    // });
-
-    // it("multipleActions", async () => {
-    //     const testExtension1 = Address.parse(
-    //         "EQA2pT4d8T7TyRsjW2BpGpGYga-lMA4JjQb4D2tc1PXMX5Bf",
-    //     );
-    //     const testExtension2 = Address.parse(
-    //         "EQCgYDKqfTh7zVj9BQwOIPs4SuOhM7wnIjb6bdtM2AJf_Z9G",
-    //     );
-
-    //     const testReceiver = Address.parse(
-    //         "EQAvDfWFG0oYX19jwNDNBBL1rKNT9XfaGP9HyTb5nb2Eml6y",
-    //     );
-    //     const forwardValue = toNano(0.001);
-
-    //     const receiverBalanceBefore = (
-    //         await blockchain.getContract(testReceiver)
-    //     ).balance;
-
-    //     // add two extensions and do a transfer
-    //     const actions = collectMultipleActions([
-    //         {
-    //             mode: 3,
-    //             extensionAddress: testExtension1,
-    //         },
-    //         {
-    //             mode: 3,
-    //             extensionAddress: testExtension2,
-    //         },
-    //         {
-    //             mode: 1,
-    //             sendMode: SendMode.PAY_GAS_SEPARATELY,
-    //             outMsg: {
-    //                 body: beginCell().endCell(),
-    //                 info: {
-    //                     type: "internal",
-    //                     bounce: false,
-    //                     bounced: false,
-    //                     dest: testReceiver,
-    //                     value: {
-    //                         coins: forwardValue,
-    //                     },
-    //                     createdAt: 1,
-    //                     createdLt: 1n,
-    //                     forwardFee: 0n,
-    //                     ihrDisabled: true,
-    //                     ihrFee: 0n,
-    //                 },
-    //             },
-    //         },
-    //     ]);
-
-    //     const multipleActionsResult = await sendSignedActionBody(
-    //         createActionsSlice(actions),
-    //     );
-
-    //     expect(multipleActionsResult.transactions).toHaveTransaction({
-    //         from: wallet.address,
-    //         to: testReceiver,
-    //         value: forwardValue,
-    //     });
-
-    //     expect(multipleActionsResult.transactions.length).toEqual(2);
-
-    //     const fee = multipleActionsResult.transactions[1]!.totalFees.coins;
-
-    //     const receiverBalanceAfter = (
-    //         await blockchain.getContract(testReceiver)
-    //     ).balance;
-
-    //     expect(receiverBalanceAfter).toEqual(
-    //         receiverBalanceBefore + forwardValue - fee,
-    //     );
-
-    //     const extDict = await wallet.getGetPluginList();
-
-    //     expect(extDict.size).toEqual(2);
-
-    //     const gasUsed = getUsedGas(multipleActionsResult, true);
-    //     expect(gasUsed).toEqual(expectedResult.gas["multipleActions"]);
-    // });
+        expect(addExtensionGasUsedTact).toEqual(
+            expectedResult.gas["addExtension"],
+        );
+    });
 });
