@@ -17,15 +17,9 @@ fun require(condition: Bool, error: String);
 
 Checks the `condition` and throws an error with an [exit code](/book/exit-codes) generated from the `error` message if the `condition` is `false{:tact}`. Otherwise, does nothing.
 
-This function is similar to [`throwUnless(){:tact}`](#throwunless), but instead of using the error code directly, it generates it based on the given error message [`String{:tact}`][p].
+This function is similar to [`throwUnless(){:tact}`](#throwunless), but instead of using the error code directly, it generates it sequentially starting from 1024 and incrementing it by one based on the number of previously generated exit codes.
 
-The algorithm for generating the exit code works as follows:
-
-* First, the [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) hash of the `error` message [`String{:tact}`][p] is obtained.
-* Then, its value is read as a 32-bit [big-endian](https://en.wikipedia.org/wiki/Endianness) number modulo 63000 plus 1000, in that order.
-* Finally, it's put into the [`.md` compilation report file](/book/compile#report), which resides with the other compilation artifacts in your project's `outputs/` or `build/` directories.
-
-The generated exit code is guaranteed to be outside the common 0–255 range reserved for TVM and Tact contract errors, which makes it possible to distinguish exit codes from `require(){:tact}` and any other [standard exit codes](/book/exit-codes).
+Thus, the generated exit code is guaranteed to be outside the common 0–255 range reserved for TVM and Tact contract errors, which makes it possible to distinguish exit codes from `require(){:tact}` and any other [standard exit codes](/book/exit-codes).
 
 Usage examples:
 
@@ -41,6 +35,20 @@ try {
     dump(e);
 }
 ```
+
+:::tip[Before Tact 1.6.2]
+
+  In previous versions of Tact, the exit code was generated from the given error message [`String{:tact}`][p]. The algorithm for this worked as follows:
+
+  * First, the [SHA-256](https://en.wikipedia.org/wiki/SHA-2#Hash_standard) hash of the `error` message [`String{:tact}`][p] was obtained.
+  * Then, its value was read as a 32-bit [big-endian](https://en.wikipedia.org/wiki/Endianness) number modulo 63000 plus 1000, in that order.
+  * Finally, it was put into the [`.md` compilation report file](/book/compile#report), which resides with the other compilation artifacts in your project's `outputs/` or `build/` directories.
+
+  The generated exit code was guaranteed to be outside the common 0–255 range reserved for TVM and Tact contract errors, which made it possible to distinguish exit codes from `require(){:tact}` and any other [standard exit codes](/book/exit-codes).
+
+  Starting with Tact 1.6.2, the generated exit code is still placed in the compilation report and the guarantees of being outside the 0-255 range are still here. However, its generation algorithm has been drastically simplified to produce smaller values that save more gas when thrown.
+
+:::
 
 ## dump
 
@@ -200,7 +208,7 @@ fun throwUnless(code: Int, condition: Bool);
 
 Similar to [`throw(){:tact}`](#throw), but throws an error `code` only if `condition` does **not** hold, i.e. if `condition` is not equal to `true{:tact}`. Doesn't throw otherwise.
 
-This function is also similar to [`require(){:tact}`](#require), but uses the specified `code` directly instead of generating one based on a given error message [`String{:tact}`][p].
+This function is also similar to [`require(){:tact}`](#require), but uses the specified `code` directly instead of generating it sequentially.
 
 Attempts to specify a `code` outside the range $0-65535$ cause an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
 
