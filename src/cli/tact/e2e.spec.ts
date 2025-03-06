@@ -184,7 +184,7 @@ describe("tact --config config.json", () => {
     });
 });
 
-describe.only("tact -q foo.tact", () => {
+describe("tact -q foo.tact", () => {
     testWin("-q shows errors ", async () => {
         const path = await codegen.contract(
             `quiet`,
