@@ -4,7 +4,7 @@ primitive Bool;
 trait BaseTrait {}
 
 message Add {
-    queryId: Int;
+    queryId: Int as uint8;
     amount: Int;
 }
 

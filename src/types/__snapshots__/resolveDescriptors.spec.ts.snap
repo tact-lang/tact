@@ -28365,11 +28365,16 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
     "ast": {
       "fields": [
         {
-          "as": undefined,
-          "id": 10,
+          "as": {
+            "id": 10,
+            "kind": "id",
+            "loc": uint8,
+            "text": "uint8",
+          },
+          "id": 11,
           "initializer": undefined,
           "kind": "field_decl",
-          "loc": queryId: Int,
+          "loc": queryId: Int as uint8,
           "name": {
             "id": 8,
             "kind": "id",
@@ -28385,28 +28390,28 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
         },
         {
           "as": undefined,
-          "id": 13,
+          "id": 14,
           "initializer": undefined,
           "kind": "field_decl",
           "loc": amount: Int,
           "name": {
-            "id": 11,
+            "id": 12,
             "kind": "id",
             "loc": amount,
             "text": "amount",
           },
           "type": {
-            "id": 12,
+            "id": 13,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
           },
         },
       ],
-      "id": 14,
+      "id": 15,
       "kind": "message_decl",
       "loc": message Add {
-    queryId: Int;
+    queryId: Int as uint8;
     amount: Int;
 },
       "name": {
@@ -28424,19 +28429,24 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
         "abi": {
           "name": "queryId",
           "type": {
-            "format": 257,
+            "format": 8,
             "kind": "simple",
             "optional": false,
-            "type": "int",
+            "type": "uint",
           },
         },
-        "as": null,
+        "as": "uint8",
         "ast": {
-          "as": undefined,
-          "id": 10,
+          "as": {
+            "id": 10,
+            "kind": "id",
+            "loc": uint8,
+            "text": "uint8",
+          },
+          "id": 11,
           "initializer": undefined,
           "kind": "field_decl",
-          "loc": queryId: Int,
+          "loc": queryId: Int as uint8,
           "name": {
             "id": 8,
             "kind": "id",
@@ -28452,7 +28462,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
         },
         "default": undefined,
         "index": 0,
-        "loc": queryId: Int,
+        "loc": queryId: Int as uint8,
         "name": "queryId",
         "type": {
           "kind": "ref",
@@ -28473,18 +28483,18 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
         "as": null,
         "ast": {
           "as": undefined,
-          "id": 13,
+          "id": 14,
           "initializer": undefined,
           "kind": "field_decl",
           "loc": amount: Int,
           "name": {
-            "id": 11,
+            "id": 12,
             "kind": "id",
             "loc": amount,
             "text": "amount",
           },
           "type": {
-            "id": 12,
+            "id": 13,
             "kind": "type_id",
             "loc": Int,
             "text": "Int",
@@ -28507,17 +28517,17 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
       "id": 0,
       "kind": "number",
       "loc": ,
-      "value": 2723072118n,
+      "value": 442638869n,
     },
     "init": null,
     "interfaces": [],
     "kind": "struct",
     "name": "Add",
     "origin": "user",
-    "partialFieldCount": 0,
+    "partialFieldCount": 1,
     "receivers": [],
-    "signature": "Add{queryId:int257,amount:int257}",
-    "tlb": "add#a24ec876 queryId:int257 amount:int257 = Add",
+    "signature": "Add{queryId:uint8,amount:int257}",
+    "tlb": "add#1a622215 queryId:uint8 amount:int257 = Add",
     "traits": [],
     "uid": 49489,
   },
@@ -28526,31 +28536,31 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
       "fields": [
         {
           "as": undefined,
-          "id": 18,
+          "id": 19,
           "initializer": undefined,
           "kind": "field_decl",
           "loc": val: Bool,
           "name": {
-            "id": 16,
+            "id": 17,
             "kind": "id",
             "loc": val,
             "text": "val",
           },
           "type": {
-            "id": 17,
+            "id": 18,
             "kind": "type_id",
             "loc": Bool,
             "text": "Bool",
           },
         },
       ],
-      "id": 19,
+      "id": 20,
       "kind": "message_decl",
       "loc": message Is {
     val: Bool;
 },
       "name": {
-        "id": 15,
+        "id": 16,
         "kind": "id",
         "loc": Is,
         "text": "Is",
@@ -28572,18 +28582,18 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
         "as": null,
         "ast": {
           "as": undefined,
-          "id": 18,
+          "id": 19,
           "initializer": undefined,
           "kind": "field_decl",
           "loc": val: Bool,
           "name": {
-            "id": 16,
+            "id": 17,
             "kind": "id",
             "loc": val,
             "text": "val",
           },
           "type": {
-            "id": 17,
+            "id": 18,
             "kind": "type_id",
             "loc": Bool,
             "text": "Bool",
@@ -28625,31 +28635,31 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
       "attributes": [],
       "declarations": [
         {
-          "id": 26,
+          "id": 27,
           "kind": "receiver",
           "loc": bounced(msg: bounced<Add>) {
         // ...
     },
           "selector": {
-            "id": 25,
+            "id": 26,
             "kind": "bounce",
             "loc": bounced,
             "param": {
-              "id": 24,
+              "id": 25,
               "kind": "typed_parameter",
               "loc": msg: bounced<Add>,
               "name": {
-                "id": 21,
+                "id": 22,
                 "kind": "id",
                 "loc": msg,
                 "text": "msg",
               },
               "type": {
-                "id": 23,
+                "id": 24,
                 "kind": "bounced_message_type",
                 "loc": bounced<Add>,
                 "messageType": {
-                  "id": 22,
+                  "id": 23,
                   "kind": "type_id",
                   "loc": Add,
                   "text": "Add",
@@ -28660,31 +28670,31 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
           "statements": [],
         },
         {
-          "id": 32,
+          "id": 33,
           "kind": "receiver",
           "loc": bounced(msg: bounced<Is>) {
         // ...
     },
           "selector": {
-            "id": 31,
+            "id": 32,
             "kind": "bounce",
             "loc": bounced,
             "param": {
-              "id": 30,
+              "id": 31,
               "kind": "typed_parameter",
               "loc": msg: bounced<Is>,
               "name": {
-                "id": 27,
+                "id": 28,
                 "kind": "id",
                 "loc": msg,
                 "text": "msg",
               },
               "type": {
-                "id": 29,
+                "id": 30,
                 "kind": "bounced_message_type",
                 "loc": bounced<Is>,
                 "messageType": {
-                  "id": 28,
+                  "id": 29,
                   "kind": "type_id",
                   "loc": Is,
                   "text": "Is",
@@ -28695,7 +28705,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
           "statements": [],
         },
       ],
-      "id": 33,
+      "id": 34,
       "kind": "contract",
       "loc": contract Test {
     bounced(msg: bounced<Add>) {
@@ -28707,7 +28717,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
     }
 },
       "name": {
-        "id": 20,
+        "id": 21,
         "kind": "id",
         "loc": Test,
         "text": "Test",
@@ -28722,7 +28732,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
     "header": null,
     "init": {
       "ast": {
-        "id": 35,
+        "id": 36,
         "kind": "contract_init",
         "loc": contract Test {
     bounced(msg: bounced<Add>) {
@@ -28747,31 +28757,31 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
     "receivers": [
       {
         "ast": {
-          "id": 26,
+          "id": 27,
           "kind": "receiver",
           "loc": bounced(msg: bounced<Add>) {
         // ...
     },
           "selector": {
-            "id": 25,
+            "id": 26,
             "kind": "bounce",
             "loc": bounced,
             "param": {
-              "id": 24,
+              "id": 25,
               "kind": "typed_parameter",
               "loc": msg: bounced<Add>,
               "name": {
-                "id": 21,
+                "id": 22,
                 "kind": "id",
                 "loc": msg,
                 "text": "msg",
               },
               "type": {
-                "id": 23,
+                "id": 24,
                 "kind": "bounced_message_type",
                 "loc": bounced<Add>,
                 "messageType": {
-                  "id": 22,
+                  "id": 23,
                   "kind": "type_id",
                   "loc": Add,
                   "text": "Add",
@@ -28786,7 +28796,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
           "bounced": true,
           "kind": "bounce-binary",
           "name": {
-            "id": 21,
+            "id": 22,
             "kind": "id",
             "loc": msg,
             "text": "msg",
@@ -28796,31 +28806,31 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
       },
       {
         "ast": {
-          "id": 32,
+          "id": 33,
           "kind": "receiver",
           "loc": bounced(msg: bounced<Is>) {
         // ...
     },
           "selector": {
-            "id": 31,
+            "id": 32,
             "kind": "bounce",
             "loc": bounced,
             "param": {
-              "id": 30,
+              "id": 31,
               "kind": "typed_parameter",
               "loc": msg: bounced<Is>,
               "name": {
-                "id": 27,
+                "id": 28,
                 "kind": "id",
                 "loc": msg,
                 "text": "msg",
               },
               "type": {
-                "id": 29,
+                "id": 30,
                 "kind": "bounced_message_type",
                 "loc": bounced<Is>,
                 "messageType": {
-                  "id": 28,
+                  "id": 29,
                   "kind": "type_id",
                   "loc": Is,
                   "text": "Is",
@@ -28835,7 +28845,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
           "bounced": true,
           "kind": "bounce-binary",
           "name": {
-            "id": 27,
+            "id": 28,
             "kind": "id",
             "loc": msg,
             "text": "msg",
