@@ -3,49 +3,19 @@
     {
       "label": "FunC",
       "size": {
-        "minter cells": "34",
-        "minter bits": "11449",
-        "wallet cells": "37",
-        "wallet bits": "12752"
+        "minter cells": "38",
+        "minter bits": "15898",
+        "wallet cells": "16",
+        "wallet bits": "7384"
       },
       "pr": null
     },
     {
-      "label": "1.5.4 with NOPs optimized",
-      "pr": "https://github.com/tact-lang/tact/pull/1959",
-      "size": {
-        "minter cells": "32",
-        "minter bits": "14445",
-        "wallet cells": "15",
-        "wallet bits": "7942"
-      }
-    },
-    {
-      "label": "1.5.3 with reworked JettonWallet",
-      "pr": "https://github.com/tact-lang/tact/pull/2059",
-      "size": {
-        "minter cells": "33",
-        "minter bits": "14945",
-        "wallet cells": "16",
-        "wallet bits": "8348"
-      }
-    },
-    {
-      "label": "1.6.0 with contract load data inlined",
-      "pr": "https://github.com/tact-lang/tact/pull/2088",
-      "size": {
-        "minter cells": "29",
-        "minter bits": "14769",
-        "wallet cells": "15",
-        "wallet bits": "8244"
-      }
-    },
-    {
-      "label": "1.6.0 with more efficient ProvideWalletAddress response",
+      "label": "1.6.2",
       "pr": "https://github.com/tact-lang/tact/pull/2229",
       "size": {
-        "minter cells": "29",
-        "minter bits": "14649",
+        "minter cells": "30",
+        "minter bits": "16572",
         "wallet cells": "15",
         "wallet bits": "8244"
       }
