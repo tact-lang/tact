@@ -1132,7 +1132,7 @@ const parseContract =
             parseId(name)(ctx),
             map(parseList(traits), parseId)(ctx),
             map(attributes, parseContractAttribute)(ctx),
-            parameters ? params : undefined,
+            typeof parameters !== "undefined" ? params : undefined,
             map(declarations, parseContractItem)(ctx),
             loc,
         );
