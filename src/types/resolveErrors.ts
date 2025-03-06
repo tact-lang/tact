@@ -15,15 +15,15 @@ import { ensureSimplifiedString } from "../optimizer/interpreter";
 import type { AstUtil } from "../ast/util";
 import { getAstUtil } from "../ast/util";
 
-type Exception = { 
+type Exception = {
     /**
      * Error message, supplied by the user.
      */
-    value: string,
+    value: string;
     /**
      * Unique exit code for the error.
      */
-    id: number,
+    id: number;
 };
 
 const exceptions = createContextStore<Exception>();
