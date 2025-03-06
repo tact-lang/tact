@@ -18,7 +18,7 @@ describe("pre-compilation of ASTs", () => {
     // StateInit is declared in stdlib.
     //
     // contract Test {
-    //    f: StateInit
+    //    f: StateInit;
     //
     //    init() {
     //        self.f = initOf Test();
@@ -148,5 +148,46 @@ describe("pre-compilation of ASTs", () => {
         precompile(ctx, project, stdlib, "empty.tact", parser, astF, [
             makeModule(),
         ]);
+    });
+
+    it("should pass pre-compilation with no manual AST", () => {
+        const ctx = new CompilerContext();
+
+        // The dummy.tact file contains exactly the same declarations
+        // carried out by the function makeModule()
+        const fileSystem = {
+            ["dummy.tact"]: fs
+                .readFileSync(path.join(__dirname, "dummy.tact"))
+                .toString("base64"),
+        };
+
+        const project = createVirtualFileSystem("/", fileSystem, false);
+        const stdlib = createVirtualFileSystem("@stdlib", files);
+        const parser = getParser(astF, defaultParser);
+
+        precompile(ctx, project, stdlib, "dummy.tact", parser, astF);
+    });
+
+    it("should fail pre-compilation when source files and a manual AST have declaration clashes", () => {
+        const ctx = new CompilerContext();
+
+        // The dummy.tact file contains exactly the same declarations
+        // carried out by the function makeModule()
+        const fileSystem = {
+            ["dummy.tact"]: fs
+                .readFileSync(path.join(__dirname, "dummy.tact"))
+                .toString("base64"),
+        };
+
+        const project = createVirtualFileSystem("/", fileSystem, false);
+        const stdlib = createVirtualFileSystem("@stdlib", files);
+        const parser = getParser(astF, defaultParser);
+
+        // So, a clash should occur here, since dummy.tact and makeModule() both declare the contract Test.
+        expect(() =>
+            precompile(ctx, project, stdlib, "dummy.tact", parser, astF, [
+                makeModule(),
+            ]),
+        ).toThrowErrorMatchingSnapshot();
     });
 });
