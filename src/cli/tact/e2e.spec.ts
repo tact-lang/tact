@@ -93,7 +93,7 @@ contract Test {
 }
 `;
 
-describe("tact foo.tact", () => {
+describe("tact foo.tact --...", () => {
     testWin("Check single-contract compilation without flags", async () => {
         const path = await codegen.contract(`single`, goodContract);
         const result = await tact(path);
