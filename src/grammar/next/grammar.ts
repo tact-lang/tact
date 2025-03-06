@@ -66,7 +66,7 @@ export namespace $ast {
     readonly $: "Contract";
     readonly attributes: readonly ContractAttribute[];
     readonly name: Id;
-    readonly parameters: parameterList<Parameter> | undefined;
+    readonly parameters: ParameterList<Parameter> | undefined;
     readonly traits: inheritedTraits | undefined;
     readonly declarations: readonly contractItemDecl[];
   }>;
@@ -380,6 +380,10 @@ export namespace $ast {
     readonly name: Id;
     readonly init: expression | undefined;
   }>;
+  export type ParameterList<T> = $.Located<{
+    readonly $: "ParameterList";
+    readonly values: commaList<T> | undefined;
+  }>;
   export type parameterList<T> = commaList<T> | undefined;
   export type IntegerLiteralHex = $.Located<{
     readonly $: "IntegerLiteralHex";
@@ -419,7 +423,7 @@ export const NativeFunctionDecl: $.Parser<$ast.NativeFunctionDecl> = $.loc($.fie
 export const Constant: $.Parser<$ast.Constant> = $.loc($.field($.pure("Constant"), "$", $.field($.star($.lazy(() => ConstantAttribute)), "attributes", $.right($.lazy(() => keyword($.str("const"))), $.field($.lazy(() => Id), "name", $.field($.lazy(() => ascription), "type", $.field($.alt($.lazy(() => ConstantDefinition), $.lazy(() => ConstantDeclaration)), "body", $.eps)))))));
 export const StructDecl: $.Parser<$ast.StructDecl> = $.loc($.field($.pure("StructDecl"), "$", $.right($.str("struct"), $.field($.lazy(() => TypeId), "name", $.right($.str("{"), $.field($.lazy(() => structFields), "fields", $.right($.str("}"), $.eps)))))));
 export const MessageDecl: $.Parser<$ast.MessageDecl> = $.loc($.field($.pure("MessageDecl"), "$", $.right($.str("message"), $.field($.opt($.right($.str("("), $.left($.lazy(() => expression), $.str(")")))), "opcode", $.field($.lazy(() => TypeId), "name", $.right($.str("{"), $.field($.lazy(() => structFields), "fields", $.right($.str("}"), $.eps))))))));
-export const Contract: $.Parser<$ast.Contract> = $.loc($.field($.pure("Contract"), "$", $.field($.star($.lazy(() => ContractAttribute)), "attributes", $.right($.lazy(() => keyword($.str("contract"))), $.field($.lazy(() => Id), "name", $.field($.opt($.lazy(() => parameterList($.lazy(() => Parameter)))), "parameters", $.field($.opt($.lazy(() => inheritedTraits)), "traits", $.right($.str("{"), $.field($.star($.lazy(() => contractItemDecl)), "declarations", $.right($.str("}"), $.eps))))))))));
+export const Contract: $.Parser<$ast.Contract> = $.loc($.field($.pure("Contract"), "$", $.field($.star($.lazy(() => ContractAttribute)), "attributes", $.right($.lazy(() => keyword($.str("contract"))), $.field($.lazy(() => Id), "name", $.field($.opt($.lazy(() => ParameterList($.lazy(() => Parameter)))), "parameters", $.field($.opt($.lazy(() => inheritedTraits)), "traits", $.right($.str("{"), $.field($.star($.lazy(() => contractItemDecl)), "declarations", $.right($.str("}"), $.eps))))))))));
 export const Trait: $.Parser<$ast.Trait> = $.loc($.field($.pure("Trait"), "$", $.field($.star($.lazy(() => ContractAttribute)), "attributes", $.right($.lazy(() => keyword($.str("trait"))), $.field($.lazy(() => Id), "name", $.field($.opt($.lazy(() => inheritedTraits)), "traits", $.right($.str("{"), $.field($.star($.lazy(() => traitItemDecl)), "declarations", $.right($.str("}"), $.eps)))))))));
 export const moduleItem: $.Parser<$ast.moduleItem> = $.alt(PrimitiveTypeDecl, $.alt($Function, $.alt(AsmFunction, $.alt(NativeFunctionDecl, $.alt(Constant, $.alt(StructDecl, $.alt(MessageDecl, $.alt(Contract, Trait))))))));
 export const ContractInit: $.Parser<$ast.ContractInit> = $.loc($.field($.pure("ContractInit"), "$", $.right($.str("init"), $.field($.lazy(() => parameterList($.lazy(() => Parameter))), "parameters", $.field($.lazy(() => statements), "body", $.eps)))));
@@ -517,6 +521,7 @@ export const Null: $.Parser<$ast.Null> = $.loc($.field($.pure("Null"), "$", $.ri
 export const primary: $.Parser<$ast.primary> = $.alt(Parens, $.alt(StructInstance, $.alt(IntegerLiteral, $.alt(BoolLiteral, $.alt(InitOf, $.alt(CodeOf, $.alt(Null, $.alt(StringLiteral, Id))))))));
 export const parens: $.Parser<$ast.parens> = $.right($.str("("), $.left(expression, $.str(")")));
 export const StructFieldInitializer: $.Parser<$ast.StructFieldInitializer> = $.loc($.field($.pure("StructFieldInitializer"), "$", $.field(Id, "name", $.field($.opt($.right($.str(":"), expression)), "init", $.eps))));
+export const ParameterList = <T,>(T: $.Parser<T>): $.Parser<$ast.ParameterList<T>> => $.loc($.field($.pure("ParameterList"), "$", $.right($.str("("), $.field($.opt(commaList($.lazy(() => T))), "values", $.right($.str(")"), $.eps)))));
 export const parameterList = <T,>(T: $.Parser<T>): $.Parser<$ast.parameterList<T>> => $.right($.str("("), $.left($.opt(commaList($.lazy(() => T))), $.str(")")));
 export const IntegerLiteralHex: $.Parser<$ast.IntegerLiteralHex> = $.loc($.field($.pure("IntegerLiteralHex"), "$", $.field($.lex($.right($.str("0"), $.right($.regex<"x" | "X">("xX", [$.ExpString("x"), $.ExpString("X")]), $.lazy(() => underscored($.lazy(() => hexDigit)))))), "digits", $.eps)));
 export const IntegerLiteralBin: $.Parser<$ast.IntegerLiteralBin> = $.loc($.field($.pure("IntegerLiteralBin"), "$", $.field($.lex($.right($.str("0"), $.right($.regex<"b" | "B">("bB", [$.ExpString("b"), $.ExpString("B")]), $.lazy(() => underscored($.regex<"0" | "1">("01", [$.ExpString("0"), $.ExpString("1")])))))), "digits", $.eps)));
