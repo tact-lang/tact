@@ -802,6 +802,34 @@ let s: Slice = beginCell().storeBool(true).asSlice();
 let fizz: Bool = s.loadBool(); // true
 ```
 
+### Slice.skipBool
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipBool(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Skips a single bit from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadBool()`.
+
+Attempts to skip such [`Bool{:tact}`][bool] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell()
+    .storeBool(true)
+    .storeUint(42, 7)
+    .asSlice();
+
+s.skipBool();
+let fizz: Int = s.loadUint(7); // 42
+```
+
 ### Slice.loadBit
 
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
@@ -848,6 +876,34 @@ let fizz: Int = s.loadCoins(); // 42
 
 :::
 
+### Slice.skipCoins
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipCoins(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Skips a serialized unsigned [`Int{:tact}`][int] value in the range from $0$ to $2^{120} - 1$ inclusive from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadCoins()`.
+
+Attempts to skip such [`Int{:tact}`][int] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell()
+    .storeCoins(239)
+    .storeUint(42, 7)
+    .asSlice();
+
+s.skipCoins();
+let fizz: Int = s.loadUint(7); // 42
+```
+
 ### Slice.loadVarUint16
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
@@ -872,6 +928,30 @@ let fizz: Int = s.loadVarUint16(); // 42
   [Types of variable bit-width](/book/integers#serialization-varint)
 
 :::
+
+### Slice.skipVarUint16
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipVarUint16(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Alias to `Slice.skipCoins()`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell()
+    .storeVarUint16(239)
+    .storeUint(42, 7)
+    .asSlice();
+
+s.skipVarUint16();
+let fizz: Int = s.loadUint(7); // 42
+```
 
 ### Slice.loadVarInt16
 
@@ -902,6 +982,34 @@ let fizz: Int = s.loadVarInt16(); // -42
 
 :::
 
+### Slice.skipVarInt16
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipVarInt16(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Similar to `Slice.skipCoins()`, but with a different `value` range: from $-2^{119}$ to $2^{119} - 1$ inclusive.
+
+Attempts to skip such [`Int{:tact}`][int] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell()
+    .storeVarInt16(-239)
+    .storeUint(42, 7)
+    .asSlice();
+
+s.skipVarInt16();
+let fizz: Int = s.loadUint(7); // 42
+```
+
 ### Slice.loadVarUint32
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
@@ -928,6 +1036,34 @@ let fizz: Int = s.loadVarUint32(); // 420000
   [Types of variable bit-width](/book/integers#serialization-varint)
 
 :::
+
+### Slice.skipVarUint32
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipVarUint32(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Skips a serialized unsigned [`Int{:tact}`][int] value in the range from $0$ to $2^{248} - 1$ inclusive from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadVarUint32()`.
+
+Attempts to skip such [`Int{:tact}`][int] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell()
+    .storeVarUint32(239)
+    .storeUint(42, 7)
+    .asSlice();
+
+s.skipVarUint32();
+let fizz: Int = s.loadUint(7); // 42
+```
 
 ### Slice.loadVarInt32
 
@@ -956,6 +1092,34 @@ let fizz: Int = s.loadVarInt32(); // -420000
 
 :::
 
+### Slice.skipVarInt32
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipVarInt32(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Similar to `Slice.skipVarUint32()`, but with a different `value` range: from $-2^{247}$ to $2^{247} - 1$ inclusive.
+
+Attempts to skip such [`Int{:tact}`][int] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell()
+    .storeVarInt32(-239)
+    .storeUint(42, 7)
+    .asSlice();
+
+s.skipVarInt32();
+let fizz: Int = s.loadUint(7); // 42
+```
+
 ### Slice.loadAddress
 
 ```tact
@@ -975,6 +1139,34 @@ Usage example:
 ```tact
 let s: Slice = beginCell().storeAddress(myAddress()).asSlice();
 let fizz: Address = s.loadAddress();
+```
+
+### Slice.skipAddress
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipAddress(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Skips an [`Address{:tact}`][p] from the [`Slice{:tact}`][slice].
+
+Attempts to skip such [`Address{:tact}`][p] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s1: Slice = beginCell()
+    .storeAddress(myAddress())
+    .storeUint(42, 32)
+    .asSlice();
+
+s1.skipAddress();
+let fizz: Int = s1.loadUint(32); // 42
 ```
 
 ### Slice.loadRef
@@ -1036,6 +1228,35 @@ let ref2: Cell = s2.preloadRef();
 ref1 == ref2; // true
 ```
 
+### Slice.skipRef
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipRef(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Skips the next reference from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadRef()`.
+
+Attempts to skip such reference [`Cell{:tact}`][cell] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s1: Slice = beginCell()
+    .storeRef(emptyCell())
+    .storeUint(42, 32)
+    .asSlice();
+
+s1.skipRef();
+let fizz: Int = s1.loadUint(32); // 42
+```
+
+
 ### Slice.loadMaybeRef
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
@@ -1095,6 +1316,34 @@ let ref1: Cell = s2.preloadMaybeRef(); // returns null and doesn't modify s2
 let ref2: Cell = s2.preloadMaybeRef(); // same effect
 ref1 == null; // true
 ref1 == ref2; // true
+```
+
+### Slice.skipMaybeRef
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipMaybeRef(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Skips `Cell?` from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadMaybeRef()`.
+
+Attempts to skip such reference [`Cell{:tact}`][cell] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s1: Slice = beginCell()
+    .storeMaybeRef(emptyCell())
+    .storeUint(42, 32)
+    .asSlice();
+
+s1.skipMaybeRef();
+let fizz: Int = s1.loadUint(32); // 42
 ```
 
 ### Slice.refs
