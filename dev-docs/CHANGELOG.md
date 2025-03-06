@@ -7,24 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Language features
-
 ### Standard Library
 
+- Add doc comments for functions and structs in `/libs`: PR [#2308](https://github.com/tact-lang/tact/pull/2308)
+
 - Add `Slice.skipRef`, `Slice.skipMaybeRef`, `Slice.skipInt`, `Slice.skipUint`, `Slice.skipBool`, `Slice.skipBit`, `Slice.skipCoins`, `Slice.skipVarUint16`, `Slice.skipVarInt16`, `Slice.skipVarUint32`, `Slice.skipVarInt32` functions: PR [#2305](https://github.com/tact-lang/tact/pull/2305)
-
-### TypeScript wrappers
-
-### Code generation
-
-### TypeScript third-party API
-
-### Internal infrastructure
-
-### Release contributors
-
-- [Maksim Lagus](https://github.com/Kaladin13)
-
 ## [1.6.1] - 2025-03-04
 
 ### Language features
@@ -41,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### TypeScript wrappers
 
 - Export message opcodes and exit codes: PR [#2081](https://github.com/tact-lang/tact/issues/2081)
+- [fix] calling of getters in Blueprint: PR [#2299](https://github.com/tact-lang/tact/issues/2299)
 
 ### Code generation
 
@@ -54,6 +42,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Do not add `.code` to the file names of the generated FunC, Fift, and disassembled Fift: PR [#2103](https://github.com/tact-lang/tact/pull/2103)
 - Moved `benchmarks` to separate folder from tests, added CLI utilities for them: PR [#2234](https://github.com/tact-lang/tact/pull/2234)
+
+### Error reporting
+
+- [fix] Don't give an error for a small enough type for bounce receiver: PR [#2300](https://github.com/tact-lang/tact/pull/2300)
 
 ### Release contributors
 
