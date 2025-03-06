@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Standard Library
 
 - Add doc comments for functions and structs in `/libs`: PR [#2308](https://github.com/tact-lang/tact/pull/2308)
+- Add `Slice.skipRef`, `Slice.skipMaybeRef`, `Slice.skipBool`, `Slice.skipCoins`, `Slice.skipVarUint16`, `Slice.skipVarInt16`, `Slice.skipVarUint32`, `Slice.skipVarInt32`, `Slice.skipAddress` functions: PR [#2305](https://github.com/tact-lang/tact/pull/2305)
 
 ## [1.6.1] - 2025-03-04
 
