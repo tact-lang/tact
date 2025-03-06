@@ -191,6 +191,7 @@ describe.only("tact -q foo.tact", () => {
             `contract Test { x: Int = A }`,
         );
         const result = await tact(`-q ${path}`);
+
         expect(
             result.kind === "exited" &&
                 result.stderr.includes("Cannot find 'A'"),
