@@ -33,7 +33,7 @@ describe("strings", () => {
     it("should implement strings correctly", async () => {
         expect(
             contract.abi.errors![
-                StringsTester.errors["condition can\\`t be..."]
+                StringsTester.errors["condition can`t be..."]
             ]!.message,
         ).toStrictEqual("condition can`t be...");
 
