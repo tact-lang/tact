@@ -40,6 +40,7 @@ import type { Parser } from "../grammar";
 import { getParser } from "../grammar";
 import { defaultParser } from "../grammar/grammar";
 import { topSortContracts } from "./utils";
+import type { TypeDescription } from "../types/types";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -137,6 +138,7 @@ export async function build(args: {
               codeBoc: Buffer;
               abi: string;
               constants: WrappersConstantDescription[];
+              contract: TypeDescription;
           }
         | undefined
     > = {};
@@ -154,20 +156,21 @@ export async function build(args: {
 
         const pathAbi = project.resolve(
             config.output,
-            config.name + "_" + contractName + ".abi",
+            `${config.name}_${contractName}.abi`,
         );
 
         const pathCodeBoc = project.resolve(
             config.output,
-            config.name + "_" + contractName + ".code.boc",
+            // need to keep `.code.boc` here because Blueprint looks for this pattern
+            `${config.name}_${contractName}.code.boc`,
         );
         const pathCodeFif = project.resolve(
             config.output,
-            config.name + "_" + contractName + ".code.fif",
+            `${config.name}_${contractName}.fif`,
         );
         const pathCodeFifDec = project.resolve(
             config.output,
-            config.name + "_" + contractName + ".code.rev.fif",
+            `${config.name}_${contractName}.rev.fif`,
         );
         let codeFc: { path: string; content: string }[];
         let codeEntrypoint: string;
@@ -180,7 +183,7 @@ export async function build(args: {
             const res = await compile(
                 ctx,
                 contractName,
-                config.name + "_" + contractName,
+                `${config.name}_${contractName}`,
                 built,
             );
             for (const files of res.output.files) {
@@ -277,6 +280,7 @@ export async function build(args: {
             codeBoc,
             abi,
             constants,
+            contract,
         };
 
         if (config.mode === "fullWithDecompilation") {
@@ -430,6 +434,7 @@ export async function build(args: {
                 JSON.parse(pkg.abi),
                 ctx,
                 built[pkg.name]?.constants ?? [],
+                built[pkg.name]?.contract,
                 {
                     code: pkg.code,
                     prefix: pkg.init.prefix,

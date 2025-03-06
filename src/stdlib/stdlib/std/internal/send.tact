@@ -215,7 +215,7 @@ asm fun send(params: SendParameters) {
     ISNULL
     SWAP
     ISNULL
-    MUL // note that -1 * -1 wraps back to -1
+    AND
     // → Stack state
     // s0: -1 (true) if `data` and `code` are both null, 0 (false) otherwise
     // s1: `code`
@@ -406,6 +406,45 @@ asm fun deploy(params: DeployParameters) {
 
     // Group 5: Sending the message, with `mode` on top
     SWAP
+    SENDRAWMSG
+}
+
+/// Global function. Available since Tact 1.6.1.
+///
+/// Queues an empty message to be sent with the `SendRemainingValue` mode and the `SendIgnoreErrors` flag to the destination address `to`.
+/// This is the most gas-efficient way to send the remaining value from the incoming message to the given address.
+///
+/// Attempts to queue more than 255 messages throw an exception with exit code 33: `Action list is too long`.
+///
+/// ```tact
+/// fun examples() {
+///     // Forward the remaining value back to the sender
+///     cashback(sender());
+///
+///     // The cashback() function above is cheaper, but functionally
+///     // equivalent to the following call to the message() function
+///     message(MessageParameters{
+///         mode: SendRemainingValue | SendIgnoreErrors,
+///         body: null,
+///         value: 0,
+///         to: sender(),
+///         bounce: false,
+///     });
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-common/#cashback
+///
+asm fun cashback(to: Address) {
+    16 PUSHINT       // 0x10, i.e. 0x18 but with bounce = false
+    NEWC
+    6 STU            // .storeUint(0x10, 6)
+    STSLICE          // .storeAddress(to)
+    0 PUSHINT        // 0
+    111 STUR         // .storeUint(0, 111)
+                     // 4 zeros for coins and 107 zeros for lt, fees, etc.
+    ENDC
+    66 PUSHINT       // SendRemainingValue | SendIgnoreErrors
     SENDRAWMSG
 }
 

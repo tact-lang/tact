@@ -22,6 +22,13 @@ const main = async () => {
         ],
         options,
     );
+
+    await allInFolder(__dirname, ["gas-consumption/contracts/*.tact"], {
+        debug: false,
+        experimental: { inline: true },
+        safety: { nullChecks: false },
+        optimizations: { alwaysSaveContractData: false },
+    });
 };
 
 void main();

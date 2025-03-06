@@ -25,6 +25,7 @@ import { serializers } from "./typescript/serializers";
 import { eqNames } from "../ast/ast-helpers";
 import { enabledOptimizedChildCode } from "../config/features";
 import type { CompilerContext } from "../context/context";
+import type { TypeDescription } from "../types/types";
 
 function writeArguments(args: ABIArgument[]) {
     const res: string[] = [];
@@ -54,6 +55,7 @@ export function writeTypescript(
     abi: ContractABI,
     ctx: CompilerContext,
     constants: WrappersConstantDescription[],
+    contract: undefined | TypeDescription,
     init?: {
         code: string;
         system: string | null;
@@ -206,9 +208,7 @@ export function writeTypescript(
     }
 
     // Errors
-    w.append(
-        `const ${abi.name}_errors: { [key: number]: { message: string } } = {`,
-    );
+    w.append(`export const ${abi.name}_errors = {`);
     w.inIndent(() => {
         if (abi.errors) {
             Object.entries(abi.errors).forEach(([k, abiError]) => {
@@ -218,7 +218,21 @@ export function writeTypescript(
             });
         }
     });
-    w.append(`}`);
+    w.append(`} as const`);
+    w.append();
+
+    // Errors (backward)
+    w.append(`export const ${abi.name}_errors_backward = {`);
+    w.inIndent(() => {
+        if (abi.errors) {
+            Object.entries(abi.errors).forEach(([k, abiError]) => {
+                w.append(
+                    `${JSON.stringify(abiError.message.replaceAll("`", "\\`"))}: ${k},`,
+                );
+            });
+        }
+    });
+    w.append(`} as const`);
     w.append();
 
     // Types
@@ -231,6 +245,20 @@ export function writeTypescript(
         }
     });
     w.append(`]`);
+    w.append();
+
+    // Opcodes
+    w.append(`const ${abi.name}_opcodes = {`);
+    w.inIndent(() => {
+        if (abi.types) {
+            for (const t of abi.types) {
+                if (typeof t.header === "number") {
+                    w.append(`${JSON.stringify(t.name)}: ${t.header},`);
+                }
+            }
+        }
+    });
+    w.append(`}`);
     w.append();
 
     const getterNames: Map<string, string> = new Map();
@@ -311,6 +339,11 @@ export function writeTypescript(
             addedContractConstants.add(constant.name);
         }
 
+        w.append(
+            `public static readonly errors = ${abi.name}_errors_backward;`,
+        );
+        w.append(`public static readonly opcodes = ${abi.name}_opcodes;`);
+
         if (constants.length > 0) {
             w.append();
         }
@@ -360,7 +393,7 @@ export function writeTypescript(
         w.append(`};`);
         w.append();
         w.append(
-            `private constructor(address: Address, init?: { code: Cell, data: Cell }) {`,
+            `constructor(address: Address, init?: { code: Cell, data: Cell }) {`,
         );
         w.inIndent(() => {
             w.append("this.address = address;");
@@ -645,7 +678,16 @@ export function writeTypescript(
                             writeArgumentToStack(a.name, a.type, w);
                         }
                     }
-                    if (g.methodId) {
+
+                    const method = contract?.functions.get(g.name);
+                    const explicitMethodId = method?.ast.attributes.find(
+                        (attr) => attr.type === "get",
+                    )?.methodId;
+
+                    // use call by name for getter if no explicit method id is stated
+                    // since with Blueprint we get this error:
+                    //    Error: Method name must be a string for TonClient provider
+                    if (g.methodId && typeof explicitMethodId !== "undefined") {
                         // 'as any' is used because Sandbox contracts's getters can be called
                         // using the function name or the method id number
                         // but the ContractProvider's interface get methods can only

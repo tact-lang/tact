@@ -144,6 +144,12 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         if: ${{ matrix.package-manager == 'bun' }}
 
+      - name: Check that `build:fast` works in the clean repo
+        run: |
+          yarn install
+          yarn build:fast
+          yarn clean
+
       - name: Prepare Tact compiler
         run: |
           # There are issues with corepack + it disallows the use of pnpm for linkage later on

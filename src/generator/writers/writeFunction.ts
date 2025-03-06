@@ -107,7 +107,7 @@ export function writeStatement(
 
             // Contract/struct case
             const t =
-                f.type === null
+                f.type === undefined
                     ? getExpType(ctx.ctx, f.expression)
                     : resolveTypeRef(ctx.ctx, f.type);
 

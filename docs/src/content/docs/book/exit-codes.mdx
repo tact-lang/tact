@@ -1,42 +1,42 @@
 ---
 title: Exit codes
-description: "An exit code is a 32-bit signed integer, which indicates whether the compute or action phase of the transaction was successful, and if not — holds the code of the exception occurred"
+description: "An exit code is a 32-bit signed integer, which indicates whether the compute or action phase of the transaction was successful, and if not — holds the code of the exception that occurred."
 ---
 
 import { Badge } from '@astrojs/starlight/components';
 
-Each transaction on TON Blockchain consists of [multiple phases](https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases). An _exit code_ is a $32$-bit signed integer, which indicates whether the [compute](#compute) or [action](#action) phase of the transaction was successful, and if not — holds the code of the exception occurred. Each exit code represents its own exception or resulting state of the transaction.
+Each transaction on TON Blockchain consists of [multiple phases](https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases). An _exit code_ is a $32$-bit signed integer that indicates whether the [compute](#compute) or [action](#action) phase of the transaction was successful, and if not — holds the code of the exception that occurred. Each exit code represents its own exception or resulting state of the transaction.
 
-Exit codes $0$ and $1$ indicate normal (successful) execution of the [compute phase](#compute). Exit (or [result](#action)) code $0$ indicates normal (successful) execution of the [action phase](#action). Any other exit code indicates that a certain exception has occurred and that the transaction wasn't successful in one way or another, i.e. transaction was reverted or the inbound message has bounced back.
+Exit codes $0$ and $1$ indicate normal (successful) execution of the [compute phase](#compute). Exit (or [result](#action)) code $0$ indicates normal (successful) execution of the [action phase](#action). Any other exit code indicates that a certain exception has occurred and that the transaction was not successful in one way or another, i.e. the transaction was reverted or the inbound message has bounced back.
 
-TON Blockchain reserves exit code values from $0$ to $127$, while Tact utilizes exit codes from $128$ to $255$. Note, that exit codes used by Tact indicate contract errors which can occur when using Tact-generated FunC code, and are therefore thrown in the transaction's [compute phase](#compute) and not during the compilation.
+TON Blockchain reserves exit code values from $0$ to $127$, while Tact utilizes exit codes from $128$ to $255$. Note that exit codes used by Tact indicate contract errors, which can occur when using Tact-generated FunC code, and are therefore thrown in the transaction's [compute phase](#compute) and not during compilation.
 
 The range from $256$ to $65535$ is free for developer-defined exit codes.
 
 :::note
 
-  While an exit (or [result](#action)) code is a $32$-bit signed integer on TON Blockchain, an attempt to [throw](/ref/core-debug) an exit code out of bounds of the $16$-bit unsigned integer ($0 - 65535$) will cause an error with [exit code 5](#5). That's done intentionally to prevent some exit codes from being produced artificially, such as the [exit code -14](#-14).
+  While an exit (or [result](#action)) code is a $32$-bit signed integer on TON Blockchain, an attempt to [throw](/ref/core-debug) an exit code outside the bounds of a $16$-bit unsigned integer ($0 - 65535$) will cause an error with [exit code 5](#5). This is done intentionally to prevent some exit codes from being produced artificially, such as [exit code -14](#-14).
 
 :::
 
 ## Table of exit codes {#table}
 
-The following table lists exit codes with an origin (where it can occur) and a short description for each. The table doesn't list the exit code of the [`require()`](/ref/core-debug#require), as it generates it depending on the concrete `error` message [String][p]. To see such exit codes, refer to the [Exit codes section of the compilation report](/book/compile#exit-codes).
+The following table lists exit codes with their origin (where they can occur) and a short description for each. The table does not list the exit code of the [`require()`](/ref/core-debug#require), as it generates it depending on the concrete `error` message [String][p]. To see such exit codes, refer to the [Exit codes section of the compilation report](/book/compile#exit-codes).
 
 Exit code     | Origin                              | Brief description
 :------------ | :---------------------------------- | :----------------
 [$0$](#0)     | [Compute][c] and [action][a] phases | Standard successful execution exit code.
-[$1$](#1)     | [Compute phase][c]                  | Alternative successful execution exit code. Reserved, but doesn't occur.
+[$1$](#1)     | [Compute phase][c]                  | Alternative successful execution exit code. Reserved, but does not occur.
 [$2$](#2)     | [Compute phase][c]                  | Stack underflow.
 [$3$](#3)     | [Compute phase][c]                  | Stack overflow.
 [$4$](#4)     | [Compute phase][c]                  | Integer overflow.
-[$5$](#5)     | [Compute phase][c]                  | Range check error — some integer is out of its expected range.
+[$5$](#5)     | [Compute phase][c]                  | Range check error — an integer is out of its expected range.
 [$6$](#6)     | [Compute phase][c]                  | Invalid [TVM][tvm] opcode.
 [$7$](#7)     | [Compute phase][c]                  | Type check error.
 [$8$](#8)     | [Compute phase][c]                  | Cell overflow.
 [$9$](#9)     | [Compute phase][c]                  | Cell underflow.
 [$10$](#10)   | [Compute phase][c]                  | Dictionary error.
-[$11$](#11)   | [Compute phase][c]                  | Described in [TVM][tvm] docs as "Unknown error, may be thrown by user programs".
+[$11$](#11)   | [Compute phase][c]                  | Described in [TVM][tvm] docs as "Unknown error, may be thrown by user programs."
 [$12$](#12)   | [Compute phase][c]                  | Fatal error. Thrown by [TVM][tvm] in situations deemed impossible.
 [$13$](#13)   | [Compute phase][c]                  | Out of gas error.
 [$-14$](#-14) | [Compute phase][c]                  | Same as $13$. Negative, so that it [cannot be faked](#13).
@@ -49,25 +49,25 @@ Exit code     | Origin                              | Brief description
 [$37$](#37)   | [Action phase][a]                   | Not enough Toncoin.
 [$38$](#38)   | [Action phase][a]                   | Not enough extra currencies.
 [$39$](#39)   | [Action phase][a]                   | Outbound message does not fit into a cell after rewriting.
-[$40$](#40)   | [Action phase][a]                   | Cannot process a message — not enough funds, the message is too large or its Merkle depth is too big.
+[$40$](#40)   | [Action phase][a]                   | Cannot process a message — not enough funds, the message is too large, or its Merkle depth is too big.
 [$41$](#41)   | [Action phase][a]                   | Library reference is null during library change action.
 [$42$](#42)   | [Action phase][a]                   | Library change action error.
-[$43$](#43)   | [Action phase][a]                   | Exceeded maximum number of cells in the library or the maximum depth of the Merkle tree.
+[$43$](#43)   | [Action phase][a]                   | Exceeded the maximum number of cells in the library or the maximum depth of the Merkle tree.
 [$50$](#50)   | [Action phase][a]                   | Account state size exceeded limits.
 [$128$](#128) | Tact compiler ([Compute phase][c])  | Null reference exception. Configurable since Tact 1.6.
 [$129$](#129) | Tact compiler ([Compute phase][c])  | Invalid serialization prefix.
-[$130$](#130) | Tact compiler ([Compute phase][c])  | Invalid incoming message — there's no receiver for the opcode of the received message.
+[$130$](#130) | Tact compiler ([Compute phase][c])  | Invalid incoming message — there is no receiver for the opcode of the received message.
 [$131$](#131) | Tact compiler ([Compute phase][c])  | Constraints error. Reserved, but never thrown.
 [$132$](#132) | Tact compiler ([Compute phase][c])  | Access denied — someone other than the owner sent a message to the contract.
 [$133$](#133) | Tact compiler ([Compute phase][c])  | Contract stopped. Reserved, but never thrown.
 [$134$](#134) | Tact compiler ([Compute phase][c])  | Invalid argument.
 [$135$](#135) | Tact compiler ([Compute phase][c])  | Code of a contract was not found.
 [$136$](#136) | Tact compiler ([Compute phase][c])  | Invalid standard address.
-~~[$137$](#137)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Masterchain support is not enabled for this contract.~~ Removed since Tact 1.6
+~~[$137$](#137)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Masterchain support is not enabled for this contract.~~ Removed since Tact 1.6.
 
 :::note
 
-  Often enough you might encounter the exit code $65535$ (or `0xffff`), which usually means the same as the [exit code 130](#130) — the received opcode is unknown to the contract as there were no receivers expecting it. When writing contracts, the exit code $65535$ is set by the developers and not by [TVM][tvm]or the Tact compiler.
+Often enough, you might encounter the exit code $65535$ (or `0xffff`), which usually means the same as the [exit code 130](#130) — the received opcode is unknown to the contract, as there were no receivers expecting it. When writing contracts, the exit code $65535$ is set by the developers and not by [TVM][tvm] or the Tact compiler.
 
 :::
 
@@ -76,7 +76,7 @@ Exit code     | Origin                              | Brief description
 
 ## Exit codes in Blueprint projects {#blueprint}
 
-In [Blueprint][bp] tests, exit codes from the [compute phase](#compute) are specified in the `exitCode` field of the object argument for `toHaveTransaction(){:typescript}` method of `expect(){:typescript}` matcher. The field for the [result](#action) codes (exit codes from the [action phase](#action)) in the same `toHaveTransaction(){:typescript}` method is called `actionResultCode`.
+In [Blueprint][bp] tests, exit codes from the [compute phase](#compute) are specified in the `exitCode` field of the object argument for the `toHaveTransaction(){:typescript}` method of the `expect(){:typescript}` matcher. The field for the [result](#action) codes (exit codes from the [action phase](#action)) in the same `toHaveTransaction(){:typescript}` method is called `actionResultCode`.
 
 :::note
 
@@ -84,17 +84,17 @@ In [Blueprint][bp] tests, exit codes from the [compute phase](#compute) are spec
 
 :::
 
-Additionally, one can take a look at the result of [sending a message to a contract](/book/debug#tests-send) and discover the phases of each transaction and their values, including exit (or result) codes for [compute phase](#compute) (or [action phase](#action)).
+Additionally, one can examine the result of [sending a message to a contract](/book/debug#tests-send) and discover the phases of each transaction and their values, including exit (or result) codes for the [compute phase](#compute) (or [action phase](#action)).
 
-Note, that in order to do so, you'll have to do a couple of type checks before that:
+Note that to do so, you'll have to perform a couple of type checks first:
 
 ```typescript
 it('tests something, you name it', async () => {
   // Send a specific message to our contract and store the results
   const res = await your_contract_name.send(…);
 
-  // Now, we have an access to array of executed transactions,
-  // with the second one (index 1) being the one that we look for
+  // Now, we have access to an array of executed transactions,
+  // with the second one (index 1) being the one we look for
   const tx = res.transactions[1]!;
 
   // To do something useful with it, let's ensure that its type is 'generic'
@@ -114,21 +114,21 @@ it('tests something, you name it', async () => {
 
 ### 0: Normal termination {#0}
 
-This exit (or [result](#action)) code indicates a successful completion of the [compute](#compute) (or [action](#action)) phase of the transaction.
+This exit (or [result](#action)) code indicates the successful completion of the [compute phase](#compute) (or [action phase](#action)) of the transaction.
 
 ## Compute phase {#compute}
 
 [TVM][tvm] initialization and all computations occur in the [compute phase][c].
 
-If the compute phase fails (the resulting exit code isn't [$0$](#0) or [$1$](#1)), the transaction skips the [action phase](#action) and goes to the bounce phase. In it, the bounce message is formed for the transactions initiated by the inbound message.
+If the compute phase fails (the resulting exit code is neither [$0$](#0) nor [$1$](#1)), the transaction skips the [action phase](#action) and proceeds to the bounce phase. In this phase, a bounce message is formed for transactions initiated by the inbound message.
 
 ### 1: Alternative termination {#1}
 
-This is an alternative exit code for the successful execution of the [compute phase](#compute). Reserved, but never occurs.
+This is an alternative exit code for the successful execution of the [compute phase](#compute). It is reserved but never occurs.
 
 ### 2: Stack underflow {#2}
 
-If some operation consumed more elements than there were on the stack, the error with exit code $2$ is thrown: `Stack underflow`.
+If an operation consumes more elements than exist on the stack, an error with exit code $2$ is thrown: `Stack underflow`.
 
 ```tact
 asm fun drop() { DROP }
@@ -153,7 +153,7 @@ contract Loot {
 
 ### 3: Stack overflow {#3}
 
-If there are too many elements copied into a closure continuation, an error with exit code $3$ is thrown: `Stack overflow`. Occurs rarely, unless you're deep in [Fift and TVM assembly](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) trenches:
+If there are too many elements copied into a closure continuation, an error with exit code $3$ is thrown: `Stack overflow`. This occurs rarely unless you're deep in the [Fift and TVM assembly](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) trenches:
 
 ```tact
 // Remember kids, don't try to overflow the stack at home!
@@ -185,7 +185,7 @@ contract ItsSoOver {
 
 ### 4: Integer overflow {#4}
 
-If the [value in calculation](/book/integers#operations) goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, or there's an attempt to [divide](/book/operators#binary-divide) or [modulo](/book/operators#binary-modulo) by zero, an error with exit code $4$ is thrown: `Integer overflow`.
+If the [value in a calculation](/book/integers#operations) goes beyond the range from $-2^{256}$ to $2^{256} - 1$ inclusive, or there's an attempt to [divide](/book/operators#binary-divide) or perform [modulo](/book/operators#binary-modulo) by zero, an error with exit code $4$ is thrown: `Integer overflow`.
 
 ```tact
 let x = -pow(2, 255) - pow(2, 255); // -2^{256}
@@ -209,7 +209,7 @@ try {
     // exitCode is 4
 }
 
-// There can also be an integer overflow when doing:
+// There can also be an integer overflow when performing:
 // addition (+),
 // subtraction (-),
 // division (/) by a negative number or modulo (%) by zero
@@ -217,14 +217,14 @@ try {
 
 ### 5: Integer out of expected range {#5}
 
-Range check error — [some integer](/book/integers#operations) is out of its expected range. I.e. any attempt to store an unexpected amount of data or specify an out-of-bounds value throws an error with exit code $5$: `Integer out of expected range`.
+A range check error occurs when [some integer](/book/integers#operations) is out of its expected range. Any attempt to store an unexpected amount of data or specify an out-of-bounds value throws an error with exit code $5$: `Integer out of expected range`.
 
 Examples of specifying an out-of-bounds value:
 
 ```tact
 try {
-    // Repeat only operates on inclusive range from 1 to 2^{31} - 1
-    // and any valid integer value greater than that causes an error with exit code 5
+    // Repeat only operates on an inclusive range from 1 to 2^{31} - 1
+    // Any valid integer value greater than that causes an error with exit code 5
     repeat (pow(2, 55)) {
         dump("smash. logs. I. must.");
     }
@@ -233,7 +233,7 @@ try {
 }
 
 try {
-    // Builder.storeUint() function can only use up to 256 bits, so 512 is too much:
+    // Builder.storeUint() function can only use up to 256 bits, thus 512 is too much:
     let s: Slice = beginCell().storeUint(-1, 512).asSlice();
 } catch (exitCode) {
     // exitCode is 5
@@ -242,10 +242,10 @@ try {
 
 ### 6: Invalid opcode {#6}
 
-If you specify an instruction that is not defined in the current [TVM][tvm] version or try to set an unsupported [code page](https://docs.ton.org/v3/documentation/tvm/tvm-overview#tvm-state), an error with exit code $6$ is thrown: `Invalid opcode`.
+If you specify an instruction that is not defined in the current [TVM][tvm] version or attempt to set an unsupported [code page](https://docs.ton.org/v3/documentation/tvm/tvm-overview#tvm-state), an error with exit code $6$ is thrown: `Invalid opcode`.
 
 ```tact
-// There's no such codepage, and attempt to set it fails
+// There's no such code page, and an attempt to set it fails
 asm fun invalidOpcode() { 42 SETCP }
 
 contract OpOp {
@@ -261,7 +261,7 @@ contract OpOp {
 
 ### 7: Type check error {#7}
 
-If an argument to a primitive is of an incorrect value type or there's any other mismatch in types during the [compute phase](#compute), an error with exit code $7$ is thrown: `Type check error`.
+If an argument to a primitive is of an incorrect value type or there is any other mismatch in types during the [compute phase](#compute), an error with exit code $7$ is thrown: `Type check error`.
 
 ```tact
 // The actual returned value type doesn't match the declared one
@@ -281,16 +281,16 @@ contract VibeCheck {
 
 ### 8: Cell overflow {#8}
 
-From [Cells, Builders and Slices page](/book/cells#cells) of the Book:
+From the [Cells, Builders and Slices page](/book/cells#cells) of the Book:
 
-> [`Cell{:tact}`][cell] is a [primitive][p] and a data structure, which [ordinarly](/book/cells#cells-kinds) consists of up to $1023$ continuously laid out bits and up to $4$ references (refs) to other cells.
+> [`Cell{:tact}`][cell] is a [primitive][p] and a data structure, which [ordinarily](/book/cells#cells-kinds) consists of up to 1023 continuously laid out bits and up to 4 references (refs) to other cells.
 
-To construct a [`Cell{:tact}`][cell], a [`Builder{:tact}`][builder] is used. If you try to store more than $1023$ bits of data or more than $4$ references to other cells, an error with exit code $8$ is thrown: `Cell overflow`.
+To construct a [`Cell{:tact}`][cell], a [`Builder{:tact}`][builder] is used. If you try to store more than 1023 bits of data or more than 4 references to other cells, an error with exit code $8$ is thrown: `Cell overflow`.
 
 This error can be triggered by [manual construction](/book/cells#cnp-manually) of the cells via [relevant `.loadSomething()` methods](/ref/core-cells) or when [using Structs and Messages and their convenience methods](/book/cells#cnp-structs).
 
 ```tact
-// Too much bits
+// Too many bits
 try {
     let data = beginCell()
         .storeInt(0, 250)
@@ -303,7 +303,7 @@ try {
     // exitCode is 8
 }
 
-// Too much refs
+// Too many refs
 try {
     let data = beginCell()
         .storeRef(emptyCell())
@@ -319,13 +319,13 @@ try {
 
 ### 9: Cell underflow {#9}
 
-From [Cells, Builders and Slices page](/book/cells#cells) of the Book:
+From the [Cells, Builders and Slices page](/book/cells#cells) of the Book:
 
-> `Cell{:tact}` is a [primitive][p] and a data structure, which [ordinarly](/book/cells#cells-kinds) consists of up to $1023$ continuously laid out bits and up to $4$ references (refs) to other cells.
+> `Cell{:tact}` is a [primitive][p] and a data structure, which [ordinarily](/book/cells#cells-kinds) consists of up to 1023 continuously laid-out bits and up to 4 references (refs) to other cells.
 
-To parse a [`Cell{:tact}`][cell], a [`Slice{:tact}`][slice] is used. If you try to load more data or references than `Slice{:tact}` contains, an error with exit code $9$ is thrown: `Cell underflow`.
+To parse a [`Cell{:tact}`][cell], a [`Slice{:tact}`][slice] is used. If you try to load more data or references than a `Slice{:tact}` contains, an error with exit code 9 is thrown: `Cell underflow`.
 
-The most common cause of this error is a mismatch between the expected and actual memory layouts of the cells, so it's recommended to [use Structs and Messages for parsing](/book/cells#cnp-structs) of the cells instead of [manual parsing](/book/cells#cnp-manually) via [relevant `.loadSomething()` methods](/ref/core-cells).
+The most common cause of this error is a mismatch between the expected and actual memory layouts of the cells, so it's recommended to [use Structs and Messages for parsing](/book/cells#cnp-structs) the cells instead of [manual parsing](/book/cells#cnp-manually) via [relevant `.loadSomething()` methods](/ref/core-cells).
 
 ```tact
 // Too few bits
@@ -345,9 +345,9 @@ try {
 
 ### 10: Dictionary error {#10}
 
-In Tact, the [`map<K, V>{:tact}`](/book/maps) type is an abstraction over the ["hash" map dictionaries of FunC](https://docs.ton.org/develop/func/dictionaries#hashmap) and underlying [`HashmapE` type](https://docs.ton.org/develop/data-formats/tl-b-types#hashmap) of [TL-B][tlb] and [TVM][tvm].
+In Tact, the [`map<K, V>{:tact}`](/book/maps) type is an abstraction over the ["hash" map dictionaries of FunC](https://docs.ton.org/develop/func/dictionaries#hashmap) and the underlying [`HashmapE` type](https://docs.ton.org/develop/data-formats/tl-b-types#hashmap) of [TL-B][tlb] and [TVM][tvm].
 
-If there is an incorrect manipulation of dictionaries, such as improper assumptions about their memory layout, an error with exit code $10$ is thrown: `Dictionary error`. Note, that Tact prevents you from getting this error unless you do [Fift and TVM assembly](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) work yourself:
+If there is incorrect manipulation of dictionaries, such as improper assumptions about their memory layout, an error with exit code $10$ is thrown: `Dictionary error`. Note that Tact prevents you from getting this error unless you perform [Fift and TVM assembly](https://docs.ton.org/develop/fift/fift-and-tvm-assembly) work yourself:
 
 ```tact
 /// Pre-computed Int to Int dictionary with two entries — 0: 0 and 1: 1
@@ -373,7 +373,7 @@ contract DictPic {
 
 ### 11: "Unknown" error {#11}
 
-Described in [TVM][tvm] docs as "Unknown error, may be thrown by user programs", although most commonly used for problems with queueing a message send or problems with [get-methods](https://docs.ton.org/develop/smart-contracts/guidelines/get-methods).
+Described in the [TVM][tvm] docs as "Unknown error, may be thrown by user programs," although most commonly used for problems with queuing a message send or problems with [get-methods](https://docs.ton.org/develop/smart-contracts/guidelines/get-methods).
 
 ```tact
 try {
@@ -391,11 +391,11 @@ Fatal error. Thrown by TVM in situations deemed impossible.
 
 ### 13: Out of gas error {#13}
 
-If there isn't enough gas to end computations in the [compute phase](#compute), the error with exit code $13$ is thrown: `Out of gas error`.
+If there isn't enough gas to complete computations in the [compute phase](#compute), an error with exit code $13$ is thrown: `Out of gas error`.
 
-But this code isn't immediately shown as is — instead, the bitwise NOT operation is applied, which changes the value from $13$ to $-14$. And only then the code is shown.
+However, this code isn't immediately shown as is — instead, the bitwise NOT operation is applied, changing the value from $13$ to $-14$. Only then is the code displayed.
 
-That's done in order to prevent the resulting code ($-14$) from being produced artificially in user contracts, since all functions that can [throw an exit code](/ref/core-debug) can only specify integers in the range from $0$ to $65535$ inclusive.
+This is done to prevent the resulting code ($-14$) from being produced artificially in user contracts, as all functions that can [throw an exit code](/ref/core-debug) can only specify integers in the range from $0$ to $65535$ inclusive.
 
 ```tact
 try {
@@ -411,31 +411,31 @@ See [exit code 13](#13).
 
 ### 14: Virtualization error {#14}
 
-Virtualization error, related to [prunned branch cells](/book/cells#cells-kinds). Reserved, but never thrown.
+Virtualization error related to [pruned branch cells](/book/cells#cells-kinds). Reserved but never thrown.
 
 ## Action phase {#action}
 
-The [action phase][a] is processed after the successful execution of the [compute phase](#compute). It attempts to perform the actions stored into the action list by [TVM][tvm] during the compute phase.
+The [action phase][a] is processed after the successful execution of the [compute phase](#compute). It attempts to perform the actions stored in the action list by [TVM][tvm] during the compute phase.
 
-Some actions may fail during processing, in which case those actions may be skipped or the whole transaction may revert depending on the mode of actions. The code indicating the resulting state of the [action phase][a] is called a _result code_. Since it's also a $32$-bit signed integer that essentially serves the same purpose as _exit code_ of [compute phase](#compute), it's common to call the result code an exit code too.
+Some actions may fail during processing, in which case those actions may be skipped or the whole transaction may revert depending on the mode of actions. The code indicating the resulting state of the [action phase][a] is called a _result code_. Since it is also a 32-bit signed integer that essentially serves the same purpose as the _exit code_ of the [compute phase](#compute), it is common to call the result code an exit code as well.
 
 ### 32: Action list is invalid {#32}
 
-If the list of actions contains [exotic cells](/book/cells#cells-kinds), an action entry cell does not have references or some action entry cell couldn't be parsed, an error with exit code $32$ is thrown: `Action list is invalid`.
+If the list of actions contains [exotic cells](/book/cells#cells-kinds), an action entry cell does not have references, or some action entry cell cannot be parsed, an error with exit code 32 is thrown: `Action list is invalid`.
 
 :::note
 
-  Aside from this exit code there's a boolean flag `valid`, which you can find under `description.actionPhase.valid` in the transaction results when working with [Sandbox and Blueprint](#blueprint). Transaction can set this flag to `false` even when there is some other exit code thrown from the action phase.
+  Aside from this exit code, there is a boolean flag `valid`, which you can find under `description.actionPhase.valid` in the transaction results when working with [Sandbox and Blueprint](#blueprint). A transaction can set this flag to `false` even when there is some other exit code thrown from the action phase.
 
 :::
 
 ### 33: Action list is too long {#33}
 
-If there are more than $255$ actions queued for execution, the [action phase](#action) will throw an error with an exit code $33$: `Action list is too long`.
+If there are more than 255 actions queued for execution, the [action phase](#action) will throw an error with an exit code 33: `Action list is too long`.
 
 ```tact
-// For example, let's attempt to queue reservation of specific amount of nanoToncoins
-// This won't fail in compute phase, but will result in exit code 33 in Action phase
+// For example, let's attempt to queue reservation of a specific amount of nanoToncoins
+// This won't fail in the compute phase, but will result in exit code 33 in the action phase
 repeat (256) {
     nativeReserve(ton("0.001"), ReserveAtMost);
 }
@@ -443,31 +443,31 @@ repeat (256) {
 
 ### 34: Invalid or unsupported action {#34}
 
-There are only four supported actions at the moment: changing the contract code, sending a message, reserving a specific amount of [nanoToncoins](/book/integers#nanotoncoin) and changing the library cell. If there's any issue with the specified action (invalid message, unsupported action, etc.), an error with exit code $34$ is thrown: `Invalid or unsupported action`.
+There are only four supported actions at the moment: changing the contract code, sending a message, reserving a specific amount of [nanoToncoins](/book/integers#nanotoncoin), and changing the library cell. If there is any issue with the specified action (invalid message, unsupported action, etc.), an error with exit code $34$ is thrown: `Invalid or unsupported action`.
 
 ```tact
 // For example, let's try to send an ill-formed message:
-nativeSendMessage(emptyCell(), 0); // won't fail in compute phase,
-                                   // but will result in exit code 34 in Action phase
+nativeSendMessage(emptyCell(), 0); // won't fail in the compute phase,
+                                   // but will result in exit code 34 in the Action phase
 ```
 
 ### 35: Invalid source address in outbound message {#35}
 
-If the source address in the outbound message isn't equal to [`addr_none`](https://docs.ton.org/develop/data-formats/msg-tlb#addr_none00) or to the address of the contract that initiated this message, an error with exit code $35$ is thrown: `Invalid source address in outbound message`.
+If the source address in the outbound message is not equal to [`addr_none`](https://docs.ton.org/develop/data-formats/msg-tlb#addr_none00) or to the address of the contract that initiated this message, an error with exit code $35$ is thrown: `Invalid source address in outbound message`.
 
 ### 36: Invalid destination address in outbound message {#36}
 
-If the destination address in the outbound message is invalid, e.g. it doesn't conform to the relevant [TL-B][tlb] schemas, contains unknown workchain ID or it has invalid length for the given workchain, an error with exit code $36$ is thrown: `Invalid destination address in outbound message`.
+If the destination address in the outbound message is invalid, e.g., it does not conform to the relevant [TL-B][tlb] schemas, contains an unknown workchain ID, or has an invalid length for the given workchain, an error with exit code $36$ is thrown: `Invalid destination address in outbound message`.
 
 :::note
 
-  If the [optional flag +2](/book/message-mode#optional-flags) is set, this error won't be thrown and the given message won't be sent.
+  If the [optional flag +2](/book/message-mode#optional-flags) is set, this error won't be thrown, and the given message won't be sent.
 
 :::
 
 ### 37: Not enough Toncoin {#37}
 
-If all funds of the inbound message with [base mode 64](/book/message-mode#base-modes) set had been already consumed and there's not enough funds to pay for the failed action, or the [TL-B][tlb] layout of the provided value ([`CurrencyCollection`](https://docs.ton.org/develop/data-formats/msg-tlb#currencycollection)) is invalid, or there's not enough funds to pay [forward fees](https://docs.ton.org/develop/smart-contracts/guidelines/processing) or not enough funds after deducting fees, an error with exit code $37$ is thrown: `Not enough Toncoin`.
+If all funds of the inbound message with [base mode 64](/book/message-mode#base-modes) set have already been consumed and there are not enough funds to pay for the failed action, or the [TL-B][tlb] layout of the provided value ([`CurrencyCollection`](https://docs.ton.org/develop/data-formats/msg-tlb#currencycollection)) is invalid, or there are not enough funds to pay [forward fees](https://docs.ton.org/develop/smart-contracts/guidelines/processing) or not enough funds after deducting fees, an error with exit code $37$ is thrown: `Not enough Toncoin`.
 
 :::note
 
@@ -477,9 +477,9 @@ If all funds of the inbound message with [base mode 64](/book/message-mode#base-
 
 ### 38: Not enough extra currencies {#38}
 
-Besides the native currency, Toncoin, TON Blockchain supports up to $2^{32}$ extra currencies. They differ from making new [Jettons](/cookbook/jettons) because extra currencies are natively supported — one can potentially just specify an extra [`HashmapE`](https://docs.ton.org/develop/data-formats/tl-b-types#hashmap) of extra currency amounts in addition to the Toncoin amount in the internal message to another contract. Unlike Jettons, extra currencies can only be stored and transferred and do not have any other functionality.
+Besides the native currency, Toncoin, TON Blockchain supports up to $2^{32}$ extra currencies. They differ from creating new [Jettons](/cookbook/jettons) because extra currencies are natively supported — one can potentially just specify an extra [`HashmapE`](https://docs.ton.org/develop/data-formats/tl-b-types#hashmap) of extra currency amounts in addition to the Toncoin amount in the internal message to another contract. Unlike Jettons, extra currencies can only be stored and transferred and do not have any other functionality.
 
-At the moment, **there are no extra currencies** on TON Blockchain, but the exit code $38$ in cases when there is not enough extra currency to send the specified amount of it is already reserved: `Not enough extra currencies`.
+At the moment, **there are no extra currencies** on TON Blockchain, but the exit code $38$ for cases when there is not enough extra currency to send the specified amount is already reserved: `Not enough extra currencies`.
 
 :::note[Useful links:]
 
@@ -490,7 +490,7 @@ At the moment, **there are no extra currencies** on TON Blockchain, but the exit
 
 ### 39: Outbound message doesn't fit into a cell {#39}
 
-When processing the message, TON Blockchain tries to pack it according to the [relevant TL-B schemas](https://docs.ton.org/develop/data-formats/msg-tlb), and if it cannot an error with exit code $39$ is thrown: `Outbound message doesn't fit into a cell`.
+When processing the message, TON Blockchain tries to pack it according to the [relevant TL-B schemas](https://docs.ton.org/develop/data-formats/msg-tlb), and if it cannot, an error with exit code $39$ is thrown: `Outbound message doesn't fit into a cell`.
 
 :::note
 
@@ -500,7 +500,7 @@ When processing the message, TON Blockchain tries to pack it according to the [r
 
 ### 40: Cannot process a message {#40}
 
-If there would not be enough funds to process all the cells in a message, the message is too large or its Merkle depth is too big, an error with exit code $40$ is thrown: `Cannot process a message`.
+If there are not enough funds to process all the cells in a message, the message is too large, or its Merkle depth is too big, an error with exit code $40$ is thrown: `Cannot process a message`.
 
 :::note
 
@@ -510,11 +510,11 @@ If there would not be enough funds to process all the cells in a message, the me
 
 ### 41: Library reference is null {#41}
 
-If the library reference was required during library change action, but it was null, an error with exit code $41$ is thrown: `Library reference is null`.
+If a library reference is required during a library change action but is null, an error with exit code $41$ is thrown: `Library reference is null`.
 
 ### 42: Library change action error {#42}
 
-If there's an error during an attempt at library change action, an error with exit code $42$ is thrown: `Library change action error`.
+If there's an error during an attempt at a library change action, an error with exit code $42$ is thrown: `Library change action error`.
 
 ### 43: Library limits exceeded {#43}
 
@@ -524,7 +524,7 @@ If the maximum number of cells in the library is exceeded or the maximum depth o
 
 If the account state (contract storage, essentially) exceeds any of the limits specified in [config param 43 of TON Blockchain](https://docs.ton.org/develop/howto/blockchain-configs#param-43) by the end of the [action phase](#action), an error with exit code $50$ is thrown: `Account state size exceeded limits`.
 
-If the configuration is absent, default values are:
+If the configuration is absent, the default values are:
 
 * `max_msg_bits` is equal to $2^{21}$ — maximum message size in bits.
 * `max_msg_cells` is equal to $2^{13}$ — maximum number of [cells][cell] a message can occupy.
@@ -533,19 +533,19 @@ If the configuration is absent, default values are:
 * `ext_msg_limits.max_size` is equal to $65535$ — maximum external message size in bits.
 * `ext_msg_limits.max_depth` is equal to $2^{9}$ — maximum external message [depth](/book/cells#cells-representation).
 * `max_acc_state_cells` is equal to $2^{16}$ — maximum number of [cells][cell] that an account state can occupy.
-* `max_acc_state_bits` is equal to $2^{16} * 1023$ — maximum account state size in bits.
+* `max_acc_state_bits` is equal to $2^{16} \times 1023$ — maximum account state size in bits.
 * `max_acc_public_libraries` is equal to $2^{8}$ — maximum number of [library reference cells](/book/cells#cells-kinds) that an account state can use on the masterchain.
-* `defer_out_queue_size_limit` is equal to $2^{8}$ — maximum number of outbound messages to be queued (regards validators and collators).
+* `defer_out_queue_size_limit` is equal to $2^{8}$ — maximum number of outbound messages to be queued (regarding validators and collators).
 
 ## Tact compiler
 
-Tact utilizes exit codes from $128$ to $255$. Note, that exit codes used by Tact indicate contract errors which can occur when using Tact-generated FunC code, and are therefore thrown in the transaction's [compute phase](#compute) and not during the compilation.
+Tact utilizes exit codes from $128$ to $255$. Note that exit codes used by Tact indicate contract errors, which can occur when using Tact-generated FunC code and are therefore thrown in the transaction's [compute phase](#compute), not during compilation.
 
 ### 128: Null reference exception {#128}
 
-If there's a non-null assertion, such as the [`!!{:tact}`](/book/operators#unary-non-null-assert) operator, and the checked value is [`null{:tact}`](/book/optionals), an error with exit code $128$ is thrown: `Null reference exception`.
+If there is a non-null assertion, such as the [`!!{:tact}`](/book/operators#unary-non-null-assert) operator, and the checked value is [`null{:tact}`](/book/optionals), an error with exit code $128$ is thrown: `Null reference exception`.
 
-This behavior can be modified by setting the [`nullChecks`](/book/config#safety-nullChecks) option to `false`, which will disable run-time null checks. This allows to save some gas, however, it is recommended to use it only for well-tested contracts, as it can lead to less recognizable type errors reported by TVM.
+This behavior can be modified by setting the [`nullChecks`](/book/config#safety-nullChecks) option to `false`, which will disable runtime null checks and would allow to save some gas. However, it is recommended to use it only for well-tested contracts, as it can lead to less recognizable type errors reported by TVM.
 
 ```tact
 let gotcha: String? = null;
@@ -560,11 +560,11 @@ try {
 
 ### 129: Invalid serialization prefix {#129}
 
-Reserved, but due to a number of prior checks it cannot be thrown unless one hijacks the contract code before deployment and changes the opcodes of the [Messages][message] expected to be received in the contract.
+Reserved, but due to a number of prior checks, it cannot be thrown unless one hijacks the contract code before deployment and changes the opcodes of the [Messages][message] expected to be received in the contract.
 
 ### 130: Invalid incoming message {#130}
 
-If the received internal or external message isn't handled by the contract, an error with exit code $130$ is thrown: `Invalid incoming message`. It usually happens when the contract doesn't have a receiver for the particular message and its opcode prefix (32-bit integer header).
+If the received internal or external message is not handled by the contract, an error with exit code $130$ is thrown: `Invalid incoming message`. It usually happens when the contract does not have a receiver for the particular message and its opcode prefix (32-bit integer header).
 
 Consider the following contract:
 
@@ -574,7 +574,7 @@ import "@stdlib/deploy";
 contract Dummy with Deployable {}
 ```
 
-If you try to send any message, except for [`Deploy{:tact}`](/ref/stdlib-deploy#deploy) provided by [`@stdlib/deploy`](/ref/stdlib-deploy), the contract won't have a receiver for it and thus would throw an error with exit code $130$.
+If you try to send any message except for [`Deploy{:tact}`](/ref/stdlib-deploy#deploy), provided by [`@stdlib/deploy`](/ref/stdlib-deploy), the contract will not have a receiver for it and thus will throw an error with exit code $130$.
 
 ### 131: Constraints error {#131}
 
@@ -582,7 +582,7 @@ Constraints error. Reserved, but never thrown.
 
 ### 132: Access denied {#132}
 
-If you use the [`Ownable{:tact}`](/ref/stdlib-ownable#ownable) [trait][trait] from the [`@stdlib/ownable`](/ref/stdlib-ownable) library, the helper function `requireOwner(){:tact}` provided by it will throw an error with exit code $132$ if the sender of the inbound message won't match the specified owner: `Access denied`.
+If you use the [`Ownable{:tact}`](/ref/stdlib-ownable#ownable) [trait][trait] from the [`@stdlib/ownable`](/ref/stdlib-ownable) library, the helper function `requireOwner(){:tact}` provided by it will throw an error with exit code $132$ if the sender of the inbound message does not match the specified owner: `Access denied`.
 
 ```tact
 import "@stdlib/ownable";
@@ -595,7 +595,7 @@ contract Hal9k with Ownable {
     }
 
     receive("I'm sorry Dave, I'm afraid I can't do that.") {
-        // Checks that the message sender's address equals to the owner address,
+        // Checks that the message sender's address equals the owner address,
         // and if not — throws an error with exit code 132.
         self.requireOwner();
 
@@ -614,13 +614,13 @@ If there is an invalid or unexpected argument value, an error with exit code $13
 
 Here are some of the functions in Tact which can throw an error with this exit code:
 
-1. [`Int.toFloatString(digits){:tact}`](/ref/core-strings#inttofloatstring): if the `digits` is not in the interval: $0 <$ `digits` $< 78$.
+1. [`Int.toFloatString(digits){:tact}`](/ref/core-strings#inttofloatstring): if `digits` is not in the interval $0 < digits < 78$.
 
 2. [`String.fromBase64(){:tact}`](/ref/core-strings#stringfrombase64) and [`Slice.fromBase64(){:tact}`](/ref/core-strings#slicefrombase64): if the given [`String{:tact}`][p] or [`Slice{:tact}`][slice] contains non-Base64 characters.
 
 ```tact
 try {
-    // 0 is code of NUL in ASCII and it is not valid Base64
+    // 0 is the code of NUL in ASCII, and it is not valid Base64
     let code: Slice = beginCell().storeUint(0, 8).asSlice().fromBase64();
 } catch (exitCode) {
     // exitCode is 134
@@ -629,13 +629,13 @@ try {
 
 ### 135: Code of a contract was not found {#135}
 
-If the code of the contract doesn't match the one saved in TypeScript wrappers, the error with exit code $135$ will be thrown: `Code of a contract was not found`.
+If the code of the contract does not match the one saved in TypeScript wrappers, an error with exit code $135$ will be thrown: `Code of a contract was not found`.
 
 ### 136: Invalid standard address {#136}
 
 A value of type [`Address{:tact}`][p] is considered a valid internal standard address if:
 
-* It occupies $267$ bits: $3$ bits for its tag prefix, $8$ bits for the [chain ID](https://docs.ton.org/learn/overviews/addresses#workchain-id) and $256$ bits for the [account ID](https://docs.ton.org/learn/overviews/addresses#account-id).
+* It occupies $267$ bits: $3$ bits for its tag prefix, $8$ bits for the [chain ID](https://docs.ton.org/learn/overviews/addresses#workchain-id), and $256$ bits for the [account ID](https://docs.ton.org/learn/overviews/addresses#account-id).
 * Its prefix is `0b100`, meaning it's an [`addr_std` in TL-B notation](https://docs.ton.org/v3/documentation/data-formats/tlb/msg-tlb#addr_std10) with no optional data.
 
 Such checks are currently only performed in the [`Slice.asAddress(){:tact}`](/ref/core-cells#sliceasaddress) function. If any of the above is false, the function throws an error with exit code $136$: `Invalid standard address`.
@@ -660,7 +660,7 @@ try {
 
 <Badge text="Removed since Tact 1.6" variant="tip" size="medium"/><p/>
 
-Prior to removal, any attempts to point to masterchain (ID $-1$) or otherwise interact with it without enabling masterchain support were throwing an exception with exit code $137$: `Masterchain support is not enabled for this contract`.
+Prior to removal, any attempts to point to the masterchain (ID $-1$) or otherwise interact with it without enabling masterchain support threw an exception with exit code $137$: `Masterchain support is not enabled for this contract`.
 
 ```tact
 let masterchainID = -1;

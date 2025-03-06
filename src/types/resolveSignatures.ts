@@ -223,7 +223,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
         const signature = name + "{" + fields.join(",") + "}";
         let id: AstNumber | null = null;
         if (t.ast.kind === "message_decl") {
-            if (t.ast.opcode !== null) {
+            if (t.ast.opcode !== undefined) {
                 // Currently, message opcode expressions do not get typechecked, so
                 // ```
                 // message(true ? 42 : false) TypeError { }

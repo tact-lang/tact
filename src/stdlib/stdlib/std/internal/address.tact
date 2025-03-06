@@ -2,8 +2,6 @@
 ///
 /// Casts the `Slice` to an `Address` in a given `chain` ID and returns it. The inverse of `Address.asSlice()` and a safe but more gas-expensive version of `Slice.asAddressUnsafe()`.
 ///
-/// Attempts to specify a slice with an invalid account ID length throw an error with exit code 136: `Invalid standard address`.
-///
 /// Attempts to specify a slice with an invalid tag prefix (not `0b100`) or with an invalid account ID length (not 256 bits) throw an error with exit code 136: `Invalid standard address`.
 ///
 /// ```tact

@@ -1,6 +1,13 @@
 import type * as A from "../ast/ast";
 import type { FactoryAst } from "../ast/ast-helpers";
-import { eqNames, idText, isSelfId, isSlice, selfId } from "../ast/ast-helpers";
+import {
+    eqNames,
+    idText,
+    isSelfId,
+    isSlice,
+    selfId,
+    isWildcard,
+} from "../ast/ast-helpers";
 import { traverse, traverseAndCheck } from "../ast/iterators";
 import {
     idTextErr,
@@ -25,7 +32,6 @@ import { getRawAST } from "../context/store";
 import { cloneNode } from "../ast/clone";
 import { crc16 } from "../utils/crc16";
 import { isSubsetOf } from "../utils/isSubsetOf";
-import { evalConstantExpression } from "../optimizer/constEval";
 import {
     intMapKeyFormats,
     intMapValFormats,
@@ -37,8 +43,6 @@ import { GlobalFunctions } from "../abi/global";
 import { getExpType, resolveExpression } from "./resolveExpression";
 import { addVariable, emptyContext } from "./resolveStatements";
 import { isAssignable } from "./subtyping";
-import type { AstUtil } from "../ast/util";
-import { getAstUtil } from "../ast/util";
 import type { ItemOrigin } from "../imports/source";
 import { isUndefined } from "../utils/array";
 import type { Effect } from "./effects";
@@ -50,12 +54,12 @@ const staticConstantsStore = createContextStore<ConstantDescription>();
 // this function does not handle the case of structs
 function verifyMapAsAnnotationsForPrimitiveTypes(
     type: A.AstTypeId,
-    asAnnotation: A.AstId | null,
+    asAnnotation: A.AstId | undefined,
     kind: "keyType" | "valType",
 ): void {
     switch (idText(type)) {
         case "Int": {
-            if (asAnnotation === null) return;
+            if (asAnnotation === undefined) return;
             const ann = idText(asAnnotation);
             switch (kind) {
                 case "keyType":
@@ -79,7 +83,7 @@ function verifyMapAsAnnotationsForPrimitiveTypes(
         case "Address":
         case "Bool":
         case "Cell": {
-            if (asAnnotation !== null) {
+            if (asAnnotation !== undefined) {
                 throwCompilationError(
                     `${idTextErr(type)} type cannot have as-annotation`,
                     asAnnotation.loc,
@@ -95,7 +99,7 @@ function verifyMapAsAnnotationsForPrimitiveTypes(
 
 function verifyMapTypes(
     typeId: A.AstTypeId,
-    asAnnotation: A.AstId | null,
+    asAnnotation: A.AstId | undefined,
     allowedTypeNames: string[],
     kind: "keyType" | "valType",
 ): void {
@@ -120,7 +124,7 @@ function verifyMapType(mapTy: A.AstMapType, isValTypeStruct: boolean) {
     );
 
     // check allowed value types
-    if (isValTypeStruct && mapTy.valueStorageType === null) {
+    if (isValTypeStruct && mapTy.valueStorageType === undefined) {
         return;
     }
     // the case for struct/message is already checked
@@ -166,12 +170,12 @@ export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
                 kind: "map",
                 key: keyTy.name,
                 keyAs:
-                    type.keyStorageType !== null
+                    type.keyStorageType !== undefined
                         ? idText(type.keyStorageType)
                         : null,
                 value: valTy.name,
                 valueAs:
-                    type.valueStorageType !== null
+                    type.valueStorageType !== undefined
                         ? idText(type.valueStorageType)
                         : null,
             };
@@ -242,12 +246,12 @@ function buildTypeRef(
                 kind: "map",
                 key: idText(type.keyType),
                 keyAs:
-                    type.keyStorageType !== null
+                    type.keyStorageType !== undefined
                         ? idText(type.keyStorageType)
                         : null,
                 value: idText(type.valueType),
                 valueAs:
-                    type.valueStorageType !== null
+                    type.valueStorageType !== undefined
                         ? idText(type.valueStorageType)
                         : null,
             };
@@ -275,7 +279,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     const staticFunctions: Map<string, FunctionDescription> = new Map();
     const staticConstants: Map<string, ConstantDescription> = new Map();
     const ast = getRawAST(ctx);
-    const util = getAstUtil(Ast);
 
     //
     // Register types
@@ -412,7 +415,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             name: idText(src.name),
             type: fieldTy,
             index,
-            as: src.as !== null ? idText(src.as) : null,
+            as: src.as !== undefined ? idText(src.as) : null,
             default: undefined, // initializer will be evaluated after typechecking
             loc: src.loc,
             ast: src,
@@ -928,7 +931,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         }
 
         for (const param of params) {
-            if (exNames.has(idText(param.name))) {
+            if (exNames.has(idText(param.name)) && !isWildcard(param.name)) {
                 throwCompilationError(
                     `Parameter name ${idTextErr(param.name)} is already used`,
                     param.loc,
@@ -2206,7 +2209,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     }
 
     // A pass that initializes constants and default field values
-    ctx = initializeConstantsAndDefaultContractAndStructFields(ctx, util);
+    ctx = checkConstantsAndDefaultContractAndStructFields(ctx);
 
     // detect self-referencing or mutually-recursive types
     checkRecursiveTypes(ctx);
@@ -2362,23 +2365,6 @@ function checkInitializerType(
     return ctx;
 }
 
-function initializeConstants(
-    constants: ConstantDescription[],
-    ctx: CompilerContext,
-    util: AstUtil,
-): CompilerContext {
-    for (const constant of constants) {
-        if (constant.ast.kind === "constant_def") {
-            constant.value ??= evalConstantExpression(
-                constant.ast.initializer,
-                ctx,
-                util,
-            );
-        }
-    }
-    return ctx;
-}
-
 function checkConstants(
     constants: ConstantDescription[],
     ctx: CompilerContext,
@@ -2399,9 +2385,8 @@ function checkConstants(
     return ctx;
 }
 
-function initializeConstantsAndDefaultContractAndStructFields(
+function checkConstantsAndDefaultContractAndStructFields(
     ctx: CompilerContext,
-    util: AstUtil,
 ): CompilerContext {
     const staticConstants = getAllStaticConstants(ctx);
 
@@ -2429,7 +2414,7 @@ function initializeConstantsAndDefaultContractAndStructFields(
                     );
 
                     for (const field of aggregateTy.fields) {
-                        if (field.ast.initializer !== null) {
+                        if (field.ast.initializer !== undefined) {
                             ctx = checkInitializerType(
                                 field.name,
                                 "Struct field",
@@ -2438,35 +2423,13 @@ function initializeConstantsAndDefaultContractAndStructFields(
                                 ctx,
                                 selfTypeRef,
                             );
-                            field.default = evalConstantExpression(
-                                field.ast.initializer,
-                                ctx,
-                                util,
-                            );
-                        } else {
-                            // if a field has optional type and it is missing an explicit initializer
-                            // we consider it to be initialized with the null value
-
-                            field.default =
-                                field.type.kind === "ref" && field.type.optional
-                                    ? util.makeNullLiteral(field.ast.loc)
-                                    : undefined;
                         }
                     }
-
-                    // here we actually initialize constants
-                    // see more detail below
-                    ctx = initializeConstants(aggregateTy.constants, ctx, util);
                 }
                 break;
             }
         }
     }
-
-    // and here we initialize all uninitialized constants,
-    // the constant may already be initialized since we call initialization recursively
-    // if one constant depends on another
-    ctx = initializeConstants(staticConstants, ctx, util);
 
     return ctx;
 }

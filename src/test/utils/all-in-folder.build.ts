@@ -10,7 +10,7 @@ import { posixNormalize } from "../../utils/filePath";
 import { funcCompile } from "../../func/funcCompile";
 
 // node.js 20+ builtin
-const globSync = (globs: string[], options: { cwd: string }) => {
+export const globSync = (globs: string[], options: { cwd: string }) => {
     return globs.flatMap((g) => glob.sync(g, options));
 };
 
