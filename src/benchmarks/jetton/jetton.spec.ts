@@ -18,7 +18,7 @@ import {
     storeJettonBurn,
     storeJettonTransfer,
     storeMint,
-} from "../contracts/output/jetton_minter_discoverable_JettonMinter";
+} from "../contracts/output/jetton-minter-discoverable_JettonMinter";
 
 import "@ton/test-utils";
 import benchmarkCodeSizeResults from "./results_code_size.json";
@@ -26,7 +26,7 @@ import type {
     JettonBurn,
     JettonTransfer,
     JettonUpdateContent,
-} from "../contracts/output/jetton_minter_discoverable_JettonMinter";
+} from "../contracts/output/jetton-minter-discoverable_JettonMinter";
 
 import {
     generateCodeSizeResults,
