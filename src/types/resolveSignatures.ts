@@ -1,4 +1,4 @@
-import * as changeCase from "change-case";
+import * as changeCase from "../utils/change-case";
 import type { ABIField } from "@ton/core";
 import type { CompilerContext } from "../context/context";
 import { idToHex } from "../utils/idToHex";

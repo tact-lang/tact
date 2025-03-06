@@ -1,4 +1,4 @@
-import * as changeCase from "change-case";
+import * as changeCase from "../utils/change-case";
 import { Writer } from "../utils/Writer";
 import type { ABIArgument, ABIType, ContractABI } from "@ton/core";
 import {
