@@ -28269,6 +28269,634 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
 ]
 `;
 
+exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Bool;,
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 6,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "fields": [
+        {
+          "as": {
+            "id": 10,
+            "kind": "id",
+            "loc": uint8,
+            "text": "uint8",
+          },
+          "id": 11,
+          "initializer": undefined,
+          "kind": "field_decl",
+          "loc": queryId: Int as uint8,
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": queryId,
+            "text": "queryId",
+          },
+          "type": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": undefined,
+          "id": 14,
+          "initializer": undefined,
+          "kind": "field_decl",
+          "loc": amount: Int,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": amount,
+            "text": "amount",
+          },
+          "type": {
+            "id": 13,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 15,
+      "kind": "message_decl",
+      "loc": message Add {
+    queryId: Int as uint8;
+    amount: Int;
+},
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "loc": Add,
+        "text": "Add",
+      },
+      "opcode": undefined,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "queryId",
+          "type": {
+            "format": 8,
+            "kind": "simple",
+            "optional": false,
+            "type": "uint",
+          },
+        },
+        "as": "uint8",
+        "ast": {
+          "as": {
+            "id": 10,
+            "kind": "id",
+            "loc": uint8,
+            "text": "uint8",
+          },
+          "id": 11,
+          "initializer": undefined,
+          "kind": "field_decl",
+          "loc": queryId: Int as uint8,
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": queryId,
+            "text": "queryId",
+          },
+          "type": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": queryId: Int as uint8,
+        "name": "queryId",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "abi": {
+          "name": "amount",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": undefined,
+          "id": 14,
+          "initializer": undefined,
+          "kind": "field_decl",
+          "loc": amount: Int,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": amount,
+            "text": "amount",
+          },
+          "type": {
+            "id": 13,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 1,
+        "loc": amount: Int,
+        "name": "amount",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": {
+      "base": 10,
+      "id": 0,
+      "kind": "number",
+      "loc": ,
+      "value": 442638869n,
+    },
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "Add",
+    "origin": "user",
+    "partialFieldCount": 1,
+    "receivers": [],
+    "signature": "Add{queryId:uint8,amount:int257}",
+    "tlb": "add#1a622215 queryId:uint8 amount:int257 = Add",
+    "traits": [],
+    "uid": 49489,
+  },
+  {
+    "ast": {
+      "fields": [
+        {
+          "as": undefined,
+          "id": 19,
+          "initializer": undefined,
+          "kind": "field_decl",
+          "loc": val: Bool,
+          "name": {
+            "id": 17,
+            "kind": "id",
+            "loc": val,
+            "text": "val",
+          },
+          "type": {
+            "id": 18,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+        },
+      ],
+      "id": 20,
+      "kind": "message_decl",
+      "loc": message Is {
+    val: Bool;
+},
+      "name": {
+        "id": 16,
+        "kind": "id",
+        "loc": Is,
+        "text": "Is",
+      },
+      "opcode": undefined,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "val",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": undefined,
+          "id": 19,
+          "initializer": undefined,
+          "kind": "field_decl",
+          "loc": val: Bool,
+          "name": {
+            "id": 17,
+            "kind": "id",
+            "loc": val,
+            "text": "val",
+          },
+          "type": {
+            "id": 18,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": val: Bool,
+        "name": "val",
+        "type": {
+          "kind": "ref",
+          "name": "Bool",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": {
+      "base": 10,
+      "id": 0,
+      "kind": "number",
+      "loc": ,
+      "value": 2269302156n,
+    },
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "Is",
+    "origin": "user",
+    "partialFieldCount": 1,
+    "receivers": [],
+    "signature": "Is{val:bool}",
+    "tlb": "is#8742cd8c val:bool = Is",
+    "traits": [],
+    "uid": 63904,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "id": 27,
+          "kind": "receiver",
+          "loc": bounced(msg: bounced<Add>) {
+        // ...
+    },
+          "selector": {
+            "id": 26,
+            "kind": "bounce",
+            "loc": bounced,
+            "param": {
+              "id": 25,
+              "kind": "typed_parameter",
+              "loc": msg: bounced<Add>,
+              "name": {
+                "id": 22,
+                "kind": "id",
+                "loc": msg,
+                "text": "msg",
+              },
+              "type": {
+                "id": 24,
+                "kind": "bounced_message_type",
+                "loc": bounced<Add>,
+                "messageType": {
+                  "id": 23,
+                  "kind": "type_id",
+                  "loc": Add,
+                  "text": "Add",
+                },
+              },
+            },
+          },
+          "statements": [],
+        },
+        {
+          "id": 33,
+          "kind": "receiver",
+          "loc": bounced(msg: bounced<Is>) {
+        // ...
+    },
+          "selector": {
+            "id": 32,
+            "kind": "bounce",
+            "loc": bounced,
+            "param": {
+              "id": 31,
+              "kind": "typed_parameter",
+              "loc": msg: bounced<Is>,
+              "name": {
+                "id": 28,
+                "kind": "id",
+                "loc": msg,
+                "text": "msg",
+              },
+              "type": {
+                "id": 30,
+                "kind": "bounced_message_type",
+                "loc": bounced<Is>,
+                "messageType": {
+                  "id": 29,
+                  "kind": "type_id",
+                  "loc": Is,
+                  "text": "Is",
+                },
+              },
+            },
+          },
+          "statements": [],
+        },
+      ],
+      "id": 34,
+      "kind": "contract",
+      "loc": contract Test {
+    bounced(msg: bounced<Add>) {
+        // ...
+    }
+
+    bounced(msg: bounced<Is>) {
+        // ...
+    }
+},
+      "name": {
+        "id": 21,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
+      },
+      "params": undefined,
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 36,
+        "kind": "contract_init",
+        "loc": contract Test {
+    bounced(msg: bounced<Add>) {
+        // ...
+    }
+
+    bounced(msg: bounced<Is>) {
+        // ...
+    }
+},
+        "params": [],
+        "statements": [],
+      },
+      "kind": "init-function",
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "Test",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [
+      {
+        "ast": {
+          "id": 27,
+          "kind": "receiver",
+          "loc": bounced(msg: bounced<Add>) {
+        // ...
+    },
+          "selector": {
+            "id": 26,
+            "kind": "bounce",
+            "loc": bounced,
+            "param": {
+              "id": 25,
+              "kind": "typed_parameter",
+              "loc": msg: bounced<Add>,
+              "name": {
+                "id": 22,
+                "kind": "id",
+                "loc": msg,
+                "text": "msg",
+              },
+              "type": {
+                "id": 24,
+                "kind": "bounced_message_type",
+                "loc": bounced<Add>,
+                "messageType": {
+                  "id": 23,
+                  "kind": "type_id",
+                  "loc": Add,
+                  "text": "Add",
+                },
+              },
+            },
+          },
+          "statements": [],
+        },
+        "effects": Set {},
+        "selector": {
+          "bounced": true,
+          "kind": "bounce-binary",
+          "name": {
+            "id": 22,
+            "kind": "id",
+            "loc": msg,
+            "text": "msg",
+          },
+          "type": "Add",
+        },
+      },
+      {
+        "ast": {
+          "id": 33,
+          "kind": "receiver",
+          "loc": bounced(msg: bounced<Is>) {
+        // ...
+    },
+          "selector": {
+            "id": 32,
+            "kind": "bounce",
+            "loc": bounced,
+            "param": {
+              "id": 31,
+              "kind": "typed_parameter",
+              "loc": msg: bounced<Is>,
+              "name": {
+                "id": 28,
+                "kind": "id",
+                "loc": msg,
+                "text": "msg",
+              },
+              "type": {
+                "id": 30,
+                "kind": "bounced_message_type",
+                "loc": bounced<Is>,
+                "messageType": {
+                  "id": 29,
+                  "kind": "type_id",
+                  "loc": Is,
+                  "text": "Is",
+                },
+              },
+            },
+          },
+          "statements": [],
+        },
+        "effects": Set {},
+        "selector": {
+          "bounced": true,
+          "kind": "bounce-binary",
+          "name": {
+            "id": 28,
+            "kind": "id",
+            "loc": msg,
+            "text": "msg",
+          },
+          "type": "Is",
+        },
+      },
+    ],
+    "signature": "Test{}",
+    "tlb": "_  = Test",
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 6,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 44104,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for small-bounced-type 2`] = `[]`;
+
 exports[`resolveDescriptors should resolve descriptors for struct-decl-default-field 1`] = `
 [
   {

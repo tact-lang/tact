@@ -1519,12 +1519,6 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                         d.loc,
                                     );
                                 }
-                                if (t.fields.length === t.partialFieldCount) {
-                                    throwCompilationError(
-                                        "This message is small enough for bounce receiver, you need to remove bounced modifier.",
-                                        d.loc,
-                                    );
-                                }
                                 s.receivers.push({
                                     selector: {
                                         kind: "bounce-binary",

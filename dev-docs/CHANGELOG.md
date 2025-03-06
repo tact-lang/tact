@@ -38,6 +38,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Do not add `.code` to the file names of the generated FunC, Fift, and disassembled Fift: PR [#2103](https://github.com/tact-lang/tact/pull/2103)
 - Moved `benchmarks` to separate folder from tests, added CLI utilities for them: PR [#2234](https://github.com/tact-lang/tact/pull/2234)
 
+### Error reporting
+
+- [fix] Don't give an error for a small enough type for bounce receiver: PR [#2300](https://github.com/tact-lang/tact/pull/2300)
+
 ### Release contributors
 
 - [Anton Trunov](https://github.com/anton-trunov)
