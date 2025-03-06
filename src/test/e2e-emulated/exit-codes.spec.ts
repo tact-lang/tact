@@ -1,4 +1,4 @@
-import { beginCell, toNano } from "@ton/core";
+import { toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { ExitCodesParent } from "./contracts/output/exit-codes-parent_ExitCodesParent";
@@ -11,7 +11,6 @@ describe("exit-codes", () => {
     let treasure: SandboxContract<TreasuryContract>;
     let parent: SandboxContract<ExitCodesParent>;
     let childSameProj: SandboxContract<SameProjectChild>;
-    let childSeparated: SandboxContract<SeparatedChild>;
 
 
     beforeEach(async () => {
@@ -21,7 +20,6 @@ describe("exit-codes", () => {
 
         parent = blockchain.openContract(await ExitCodesParent.fromInit());
         childSameProj = blockchain.openContract(await SameProjectChild.fromInit());
-        childSeparated = blockchain.openContract(await SeparatedChild.fromInit());
 
         const deployResult = await parent.send(
             treasure.getSender(),
@@ -54,7 +52,7 @@ describe("exit-codes", () => {
 
     });
 
-    it("should be same in same project", async () => {
+    it("should be same in same project", () => {
         const firstParentExitCode = ExitCodesParent.errors["first"];
         const secondParentExitCode = ExitCodesParent.errors["second"];
         const childExitCode = SameProjectChild.errors["second"];
@@ -62,10 +60,12 @@ describe("exit-codes", () => {
         expect(new Set([firstParentExitCode, secondParentExitCode, childExitCode])).toEqual(new Set([1024, 1025]));
     });
 
-    it("should be different in different projects", async () => {
+    it("should be different in different projects", () => {
         const parentExitCode = ExitCodesParent.errors["second"];
         const separateExitCode = SeparatedChild.errors["second"];
         expect(separateExitCode).toBe(1024);
+        
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         expect(parentExitCode === 1024 || parentExitCode === 1025).toBe(true);
     });
 });
