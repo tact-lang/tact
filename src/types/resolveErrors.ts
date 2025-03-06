@@ -14,8 +14,6 @@ import {
 import { ensureSimplifiedString } from "../optimizer/interpreter";
 import type { AstUtil } from "../ast/util";
 import { getAstUtil } from "../ast/util";
-import { sha256, highest32ofSha256 } from "../utils/sha256";
-
 
 type Exception = { 
     /**
@@ -32,12 +30,12 @@ const exceptions = createContextStore<Exception>();
 
 /**
  * Generates a unique exit code for an error.
- * This is used to ensure that errors are unique and can be resolved.
+ * This is used to ensure that errors are unique.
  * The exit codes are sequential, starting at 1024.
  * Preferably, the exit codes should fit 11 bits, as it will result in cheaper opcodes.
  * https://github.com/ton-blockchain/ton/blob/master/crypto/func/builtins.cpp#L984-L1003
  *
- * This function works, as string uniqueness is checked in the caller below.
+ * This function works correctly, as string uniqueness is checked in the caller below.
  */
 function getNextExitCode(ctx: CompilerContext): number {
     return exceptions.all(ctx).size + 1024;
