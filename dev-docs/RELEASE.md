@@ -15,10 +15,15 @@
   $ git push origin vX.Y.Z
   ```
 - [ ] Create the new `vX.Y.Z` release on GitHub: <https://github.com/tact-lang/tact/releases>
+- [ ] `npm pack` and check the contents of the archive
 - [ ] Publish the new `vX.Y.Z` release on NPM: [@tact-lang/compiler](https://www.npmjs.com/package/@tact-lang/compiler)
   ```shell
   $ git checkout vX.Y.Z
+  # remove the postinstall lifecycle script from the package.json
+  $ jq 'del(.scripts.postinstall)' package.json -M > temp.json && mv temp.json package.json
   $ yarn all && npm publish
+  # reset changes to package.json
+  $ git checkout -- package.json
   ```
 - [ ] Request or perform the plugins/parsers/tools updates and releases:
   - [ ] <https://github.com/tact-lang/tact-template> (tracked in: )
@@ -35,4 +40,3 @@
   - [ ] <https://github.com/ton-blockchain/verifier> (tracked in: )
 - [ ] Write `vX.Y.Z` release notes explaining the newest changes with code examples
 - [ ] [TON Dev News](https://t.me/tondev_news) Telegram channel announcement
-- [ ] Accumulate TON dev chats feedback

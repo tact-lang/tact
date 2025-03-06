@@ -1,29 +1,29 @@
 ---
 title: Sending messages
-description: "TON Blockchain is message-based — to communicate with other contracts and to deploy new ones you need to send messages."
+description: "TON Blockchain is message-based — to communicate with other contracts and to deploy new ones, you need to send messages."
 ---
 
 import { Badge } from '@astrojs/starlight/components';
 
-TON Blockchain is message-based — to communicate with other contracts and to deploy new ones you need to send messages.
+TON Blockchain is message-based — to communicate with other contracts and to deploy new ones, you need to send messages.
 
-Messages in Tact are commonly composed using a built-in [Struct](/book/structs-and-messages#structs) `SendParameters{:tact}` which consists of the following fields:
+Messages in Tact are commonly composed using a built-in [Struct](/book/structs-and-messages#structs) `SendParameters{:tact}`, which consists of the following fields:
 
 Field    | Type                   | Description
 :------- | :--------------------- | :----------
-`mode`   | [`Int{:tact}`][int]    | An 8-bit value that configures how to send a message, defaults to $0$. See: [Message `mode`](/book/message-mode).
+`mode`   | [`Int{:tact}`][int]    | An 8-bit value that configures how to send a message; defaults to $0$. See: [Message `mode`](/book/message-mode).
 `body`   | [`Cell?{:tact}`][cell] | [Optional][opt] message body as a [`Cell{:tact}`][cell].
 `code`   | [`Cell?{:tact}`][cell] | [Optional][opt] initial code of the contract (compiled bitcode).
-`data`   | [`Cell?{:tact}`][cell] | [Optional][opt] initial data of the contract (arguments of [`init(){:tact}` function](/book/contracts#init-function)).
-`value`  | [`Int{:tact}`][int]    | The amount of [nanoToncoins][nano] you want to send with the message. This value is used to cover [forward fees][fwdfee], unless the optional flag [`SendPayGasSeparately{:tact}`](/book/message-mode#optional-flags) is used.
+`data`   | [`Cell?{:tact}`][cell] | [Optional][opt] initial data of the contract (arguments of the [`init(){:tact}` function](/book/contracts#init-function) or values of [contract parameters](/book/contracts#parameters)).
+`value`  | [`Int{:tact}`][int]    | The amount of [nanoToncoins][nano] you want to send with the message. This value is used to cover [forward fees][fwdfee] unless the optional flag [`SendPayGasSeparately{:tact}`](/book/message-mode#optional-flags) is used.
 `to`     | [`Address{:tact}`][p]  | Recipient internal [`Address{:tact}`][p] on TON Blockchain.
-`bounce` | [`Bool{:tact}`][p]     | When set to `true` (default) message bounces back to the sender if the recipient contract doesn't exist or wasn't able to process the message.
+`bounce` | [`Bool{:tact}`][p]     | When set to `true` (default), the message bounces back to the sender if the recipient contract doesn't exist or wasn't able to process the message.
 
-Fields `code` and `data` are what's called an [init package](/book/expressions#initof), which is used in deployments of new contracts.
+The fields `code` and `data` are what's called an [init package](/book/expressions#initof), which is used in deployments of new contracts.
 
-## Send simple reply
+## Send a simple reply {#send-simple-reply}
 
-The simplest message is a reply to the incoming message returning all excess value of a message:
+The simplest message is a reply to an incoming message that returns all excess value from the message:
 
 ```tact
 self.reply("Hello, World!".asComment()); // asComment converts a String to a Cell with a comment
@@ -31,21 +31,21 @@ self.reply("Hello, World!".asComment()); // asComment converts a String to a Cel
 
 ## Send message
 
-If you need more advanced logic you can use the `send(){:tact}` function and `SendParameters{:tact}` [Struct](/book/structs-and-messages#structs) directly.
+If you need more advanced logic, you can use the `send(){:tact}` function and the `SendParameters{:tact}` [Struct](/book/structs-and-messages#structs) directly.
 
-In fact, the previous example with [`.reply(){:tact}`](#send-simple-reply) can be made using the following call to `send(){:tact}` function:
+In fact, the previous example with [`.reply(){:tact}`](#send-simple-reply) can be made using the following call to the `send(){:tact}` function:
 
 ```tact
 send(SendParameters{
     // bounce is set to true by default
     to: sender(), // sending message back to the sender
-    value: 0, // don't add Toncoins to the message...
-    mode: SendRemainingValue | SendIgnoreErrors, // ...except for ones received from the sender due to SendRemainingValue
+    value: 0, // don't add Toncoin to the message...
+    mode: SendRemainingValue | SendIgnoreErrors, // ...except for the ones received from the sender due to SendRemainingValue
     body: "Hello, World".asComment(), // asComment converts a String to a Cell with a comment
 });
 ```
 
-Another example sends a message to the specified [`Address{:tact}`][p] with a `value` of $1$ TON and the `body` of a comment with a [`String{:tact}`][p] `"Hello, World!"{:tact}`:
+Another example sends a message to the specified [`Address{:tact}`][p] with a `value` of 1 TON and the `body` as a comment containing the [`String{:tact}`][p] `"Hello, World!"{:tact}`:
 
 ```tact
 let recipient: Address = address("...");
@@ -59,7 +59,7 @@ send(SendParameters{
 });
 ```
 
-The [optional flag](/book/message-mode#optional-flags) `SendIgnoreErrors{:tact}` means that if an error occurs during [message send](#outbound-message-processing), it will be ignored and the given message will be skipped. Message-related [action phase][phases] [exit codes](/book/exit-codes) that might be thrown without the `SendIgnoreErrors{:tact}` set are:
+The [optional flag](/book/message-mode#optional-flags) `SendIgnoreErrors{:tact}` means that if an error occurs during [message sending](#outbound-message-processing), it will be ignored, and the given message will be skipped. Message-related [action phase][phases] [exit codes](/book/exit-codes) that might be thrown without the `SendIgnoreErrors{:tact}` set are:
 
 * $36$: [`Invalid destination address in outbound message`](/book/exit-codes#36)
 * $37$: [`Not enough Toncoin`](/book/exit-codes#37)
@@ -68,7 +68,7 @@ The [optional flag](/book/message-mode#optional-flags) `SendIgnoreErrors{:tact}`
 
 ## Send typed message
 
-To send a typed message you can use the following code:
+To send a typed message, you can use the following code:
 
 ```tact
 let recipient: Address = address("...");
@@ -84,7 +84,7 @@ send(SendParameters{
 
 ## Deploy contract
 
-To deploy a contract you need to calculate its address and initial state with [`initOf{:tact}`](/book/expressions#initof), then send them in the initialization message:
+To deploy a contract, you need to calculate its address and initial state with [`initOf{:tact}`](/book/expressions#initof), then send them in the initialization message:
 
 ```tact
 let init: StateInit = initOf SecondContract(arg1, arg2);
@@ -101,9 +101,9 @@ send(SendParameters{
 });
 ```
 
-<p/><Badge text="Available since Tact 1.6 (not released yet)" variant="tip" size="medium"/><p/>
+<p/><Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
-For cheaper on-chain deployments prefer using the [`deploy(){:tact}`](/ref/core-common#deploy) function instead. It computes the address of the contract based on its initial code and data and efficiently composes the resulting message:
+For cheaper on-chain deployments, prefer using the [`deploy(){:tact}`](/ref/core-common#deploy) function instead. It computes the address of the contract based on its initial code and data and efficiently composes the resulting message:
 
 ```tact
 deploy(DeployParameters{
@@ -117,9 +117,9 @@ deploy(DeployParameters{
 
 ## Outbound message processing
 
-Each transaction on TON Blockchain consists of [multiple phases][phases]. Outbound messages are evaluated in [compute phase][compute], but are **not** sent in that phase. Instead, they're queued for execution in the [action phase][phases] in order of their appearance in the compute phase.
+Each transaction on TON Blockchain consists of [multiple phases][phases]. Outbound messages are evaluated in the [compute phase][compute], but are **not** sent in that phase. Instead, they are queued for execution in the [action phase][phases] in the order of their appearance in the compute phase.
 
-Outgoing message sends may fail in [action phase][phases] due to insufficient [action fees](https://docs.ton.org/develop/howto/fees-low-level#action-fee) or [forward fees][fwdfee], in which case they won't bounce and **won't revert** the transaction. This can happen because all values are calculated in the [compute phase][compute], all fees are computed by the end of it, and exceptions do not roll back the transaction during the action phase.
+Outgoing message sends may fail in the [action phase][phases] due to insufficient [action fees](https://docs.ton.org/develop/howto/fees-low-level#action-fee) or [forward fees][fwdfee], in which case they will not bounce and **will not revert** the transaction. This can happen because all values are calculated in the [compute phase][compute], all fees are computed by its end, and exceptions do not roll back the transaction during the action phase.
 
 To skip or ignore the queued messages at the [action phase][phases] in case they cannot be sent, set the optional [`SendIgnoreErrors{:tact}`](/book/message-mode#optional-flags) flag when composing the message.
 
@@ -128,7 +128,7 @@ Consider the following example:
 ```tact
 // This contract initially has 0 nanoToncoins on the balance
 contract FailureIsNothingButAnotherStep {
-    // And all the funds it gets are obtained from inbound internal messages
+    // All the funds it obtains are from inbound internal messages
     receive() {
         // 1st outbound message evaluated and queued (but not yet sent)
         send(SendParameters{
@@ -150,26 +150,26 @@ contract FailureIsNothingButAnotherStep {
 }
 ```
 
-There, the second message won't actually be sent:
+There, the second message will not actually be sent:
 
 * After finishing the [compute phase][compute], the remaining value $\mathrm{R}$ of the contract is computed.
 
-* During the outbound message processing and assuming that there was enough value provided in the inbound message, the first message leaves $\mathrm{R} - (0.042 + \mathrm{forward\_fees})$ [nanoToncoins][nano] on the balance.
+* During outbound message processing and assuming that sufficient value was provided in the inbound message, the first message leaves $\mathrm{R} - (0.042 + \mathrm{forward\_fees})$ [nanoToncoins][nano] on the balance.
 
-* When the second message is processed, contract tries to send $\mathrm{R}$ [nanoToncoins][nano], but fails to do so because there is already a smaller amount left.
+* When the second message is processed, the contract attempts to send $\mathrm{R}$ [nanoToncoins][nano], but fails because a smaller amount remains.
 
 * Thus, an error with [exit code 37](/book/exit-codes#37) is thrown: `Not enough Toncoin`.
 
 Note that such failures are not exclusive to the [`send(){:tact}`](/ref/core-common#send) function and may also occur when using other [message-sending functions](#message-sending-functions).
 
-For instance, let's replace the first call to the [`send(){:tact}`](/ref/core-common#send) function in the previous example with the [`emit(){:tact}`](/ref/core-common#emit) function. The latter queues the message using the default mode, i.e. $0$, and spends some [nanoToncoins][nano] to pay the [forward fees][fwdfee].
+For instance, let us replace the first call to the [`send(){:tact}`](/ref/core-common#send) function in the previous example with the [`emit(){:tact}`](/ref/core-common#emit) function. The latter queues the message using the default mode, i.e. 0, and spends some [nanoToncoins][nano] to pay the [forward fees][fwdfee].
 
 If a subsequent message is then sent with a [`SendRemainingValue{:tact}`](/book/message-mode#base-modes) base mode, it will cause the same error as before:
 
 ```tact
 // This contract initially has 0 nanoToncoins on the balance
 contract IfItDiesItDies {
-    // And all the funds it gets are obtained from inbound internal messages
+    // All the funds it obtains are from inbound internal messages
     receive() {
         // 1st outbound message evaluated and queued (but not yet sent)
         // with the mode 0, which is the default
@@ -196,38 +196,38 @@ contract IfItDiesItDies {
 
 :::
 
-Previous examples discussed a case where the contract has $0$ [nanoToncoins][nano] on the balance, which is rather rare — in most real-world scenarios there would be some funds present. As such, it's usually better to use the [`SendRemainingBalance{:tact}`](/book/message-mode#base-modes) base mode, paired with the _necessary_ call to the [`nativeReserve(){:tact}`](/ref/core-advanced#nativereserve) function.
+The previous examples discussed a case where the contract has 0 [nanoToncoins][nano] on the balance, which is rather rare—in most real-world scenarios, some funds would be present. As such, it is usually better to use the [`SendRemainingBalance{:tact}`](/book/message-mode#base-modes) base mode, paired with the _necessary_ call to the [`nativeReserve(){:tact}`](/ref/core-advanced#nativereserve) function.
 
 Like outbound messages, [reserve requests](/ref/core-advanced#nativereserve) are queued during the [compute phase][compute] and executed during the [action phase][phases].
 
 ```tact
-// This contract has some Toncoins on the balance, say, 0.2 or more
+// This contract has some Toncoins on the balance, e.g., 0.2 or more
 contract MyPrecious {
-    // The extra funds can be received via a "topup" message
+    // Extra funds can be received via a "topup" message
     receive("topup") {}
 
-    // And the rest of the logic is expressed here
+    // The rest of the logic is expressed here
     receive() {
         // 1st outbound message evaluated and queued (but not yet sent)
         // with the mode 0, which is the default
         emit("Have you seen this message?".asComment());
 
-        // Let's try to keep the most out of the balance prior to this transaction
-        // Notice that nativeReserve() only queues an action to be performed during action phase
+        // Try to keep most of the balance from before this transaction
+        // Note that nativeReserve() only queues an action to be performed during the action phase
         nativeReserve(ton("0.05"), ReserveAtMost | ReserveAddOriginalBalance);
         //            -----------  -------------   -------------------------
         //            ↑            ↑               ↑
-        //            |            |               keeping the balance from before the compute phase start
-        //            |            might keep less, but won't fail in doing so
+        //            |            |               keeping the balance from before compute phase start
+        //            |            might keep less, but will not fail in doing so
         //            just a tad more on top of the balance, for the fees
 
         // 2nd outbound message evaluated and queued
-        // with the SendRemainingBalance mode
+        // with SendRemainingBalance mode
         send(SendParameters{
             to: sender(),
             value: 0,
             mode: SendRemainingBalance, // because of the prior nativeReserve(),
-                                        // using this mode is safe and we'll keep
+                                        // using this mode is safe and will keep
                                         // the original balance plus a little more
             body: "I give you my all! Well, all that's not mine!".asComment(),
         });
@@ -235,7 +235,7 @@ contract MyPrecious {
 }
 ```
 
-Instead, if you want all outgoing messages to preserve a fixed amount of funds on the balance and **send the rest of the balance**, consider using one of the following functions instead. Note that they require a prior override of the [`self.storageReserve{:tact}`](/ref/core-base#self-storagereserve) constant:
+If, instead, you want all outgoing messages to preserve a fixed amount of funds on the balance and **send the rest of the balance**, consider using one of the following functions. Note that these functions require a prior override of the [`self.storageReserve{:tact}`](/ref/core-base#self-storagereserve) constant:
 
 * [`self.reply(){:tact}`](/ref/core-base#self-reply)
 * [`self.notify(){:tact}`](/ref/core-base#self-notify)
@@ -245,9 +245,9 @@ If you take only one thing away from this section, please remember this: be very
 
 ## Message sending limits
 
-In total, there could be no more than $255$ actions queued for execution, which means that the maximum allowed number of messages sent per transaction is $255$.
+In total, there can be no more than 255 actions queued for execution, meaning that the maximum allowed number of messages sent per transaction is 255.
 
-Attempts to queue more throw an exception with an [exit code 33](/book/exit-codes#33) during [action phase][phases]: `Action list is too long`.
+Attempts to queue more throw an exception with an [exit code 33](/book/exit-codes#33) during the [action phase][phases]: `Action list is too long`.
 
 ## Message-sending functions
 
@@ -257,6 +257,7 @@ Read more about all message-sending functions in the Reference:
 * [`message(){:tact}`](/ref/core-common#message)
 * [`deploy(){:tact}`](/ref/core-common#deploy)
 * [`emit(){:tact}`](/ref/core-common#emit)
+* [`cashback(){:tact}`](/ref/core-common#cashback)
 * [`self.notify(){:tact}`](/ref/core-base#self-notify)
 * [`self.reply(){:tact}`](/ref/core-base#self-reply)
 * [`self.forward(){:tact}`](/ref/core-base#self-forward)

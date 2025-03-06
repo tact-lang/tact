@@ -206,9 +206,7 @@ export function writeTypescript(
     }
 
     // Errors
-    w.append(
-        `const ${abi.name}_errors: { [key: number]: { message: string } } = {`,
-    );
+    w.append(`export const ${abi.name}_errors = {`);
     w.inIndent(() => {
         if (abi.errors) {
             Object.entries(abi.errors).forEach(([k, abiError]) => {
@@ -218,7 +216,21 @@ export function writeTypescript(
             });
         }
     });
-    w.append(`}`);
+    w.append(`} as const`);
+    w.append();
+
+    // Errors (backward)
+    w.append(`export const ${abi.name}_errors_backward = {`);
+    w.inIndent(() => {
+        if (abi.errors) {
+            Object.entries(abi.errors).forEach(([k, abiError]) => {
+                w.append(
+                    `${JSON.stringify(abiError.message.replaceAll("`", "\\`"))}: ${k},`,
+                );
+            });
+        }
+    });
+    w.append(`} as const`);
     w.append();
 
     // Types
@@ -231,6 +243,20 @@ export function writeTypescript(
         }
     });
     w.append(`]`);
+    w.append();
+
+    // Opcodes
+    w.append(`const ${abi.name}_opcodes = {`);
+    w.inIndent(() => {
+        if (abi.types) {
+            for (const t of abi.types) {
+                if (typeof t.header === "number") {
+                    w.append(`${JSON.stringify(t.name)}: ${t.header},`);
+                }
+            }
+        }
+    });
+    w.append(`}`);
     w.append();
 
     const getterNames: Map<string, string> = new Map();
@@ -311,6 +337,11 @@ export function writeTypescript(
             addedContractConstants.add(constant.name);
         }
 
+        w.append(
+            `public static readonly errors = ${abi.name}_errors_backward;`,
+        );
+        w.append(`public static readonly opcodes = ${abi.name}_opcodes;`);
+
         if (constants.length > 0) {
             w.append();
         }
@@ -360,7 +391,7 @@ export function writeTypescript(
         w.append(`};`);
         w.append();
         w.append(
-            `private constructor(address: Address, init?: { code: Cell, data: Cell }) {`,
+            `constructor(address: Address, init?: { code: Cell, data: Cell }) {`,
         );
         w.inIndent(() => {
             w.append("this.address = address;");

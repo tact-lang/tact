@@ -107,7 +107,7 @@ export function writeStatement(
 
             // Contract/struct case
             const t =
-                f.type === null
+                f.type === undefined
                     ? getExpType(ctx.ctx, f.expression)
                     : resolveTypeRef(ctx.ctx, f.type);
 
@@ -476,14 +476,44 @@ export function writeStatement(
                 );
             }
             const ty = getType(ctx.ctx, t.name);
-            const ids = ty.fields.map((field) => {
-                const id = f.identifiers.get(field.name);
-                return id === undefined || isWildcard(id[1])
-                    ? "_"
-                    : funcIdOf(id[1]);
+
+            const fields = ty.fields.map((field) => {
+                const identifiers = f.identifiers.get(field.name);
+                if (!identifiers) return undefined;
+                return {
+                    field,
+                    ...identifiers,
+                };
             });
+
+            const leftHands = fields.map((field) => {
+                const id =
+                    field === undefined || isWildcard(field[1])
+                        ? "_"
+                        : funcIdOf(field[1]);
+
+                const fieldTy = field?.field.type;
+                if (fieldTy?.kind === "ref") {
+                    const fieldTyDescription = getType(ctx.ctx, fieldTy.name);
+                    if (
+                        fieldTyDescription.kind === "contract" ||
+                        fieldTyDescription.kind === "struct"
+                    ) {
+                        // `(arg'field1, arg'field2)`
+                        return resolveFuncTypeUnpack(
+                            fieldTyDescription,
+                            id,
+                            ctx,
+                        );
+                    }
+                }
+
+                // just `arg`
+                return id;
+            });
+
             ctx.append(
-                `var (${ids.join(", ")}) = ${writeCastedExpression(f.expression, t, ctx)};`,
+                `var (${leftHands.join(", ")}) = ${writeCastedExpression(f.expression, t, ctx)};`,
             );
             return;
         }

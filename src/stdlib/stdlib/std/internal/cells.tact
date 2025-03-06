@@ -2,16 +2,82 @@
 // Builder
 //
 
+/// Creates a new empty `Builder`.
+/// 
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells/#begincell
+/// 
 asm fun beginCell(): Builder { NEWC }
 
-// special treatment in Func compiler, so not replaced with asm "STIX"
-@name(store_int)
+/// Extension function for the `Builder` type.
+///
+/// Stores a signed `bits`-bit `value` into the copy of the `Builder` for 0 ≤ `bits` ≤ 257.
+/// Returns that copy of the `Builder`.
+///
+/// Attempts to provide an insufficient or out-of-bounds `bits` number throw an exception with 
+/// [exit code 5]: `Integer out of expected range`.
+/// 
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b.storeInt(42, 7);
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#builderstoreint
+/// 
+/// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
+///
+@name(store_int) // special treatment in Func compiler, so not replaced with asm "STIX"
 extends native storeInt(self: Builder, value: Int, bits: Int): Builder;
 
-// special treatment in Func compiler, so not replaced with asm "STUX"
-@name(store_uint)
+/// Extension function for the `Builder` type.
+///
+/// Stores an unsigned `bits`-bit `value` into the copy of the `Builder` for 0 ≤ `bits` ≤ 256.
+/// Returns that copy of the `Builder`.
+///
+/// Attempts to store a negative `value` or provide an insufficient or out-of-bounds `bits` 
+/// number throw an exception with [exit code 5]: `Integer out of expected range`.
+/// 
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b.storeUint(42, 6);
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#builderstoreuint
+/// 
+/// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
+/// 
+@name(store_uint) // special treatment in Func compiler, so not replaced with asm "STUX"
 extends native storeUint(self: Builder, value: Int, bits: Int): Builder;
 
+/// Extension function for the `Builder` type.
+/// 
+/// Stores a `Bool` `value` into the copy of the `Builder`. 
+/// Writes 1 as a single bit if `value` is `true`, and writes 0 otherwise.
+/// Returns that copy of the `Builder`.
+/// 
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b.storeBool(true);  // writes 1
+///     let buzz: Builder = b.storeBool(false); // writes 0
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#builderstorebool
+///
 asm(value self) extends fun storeBool(self: Builder, value: Bool): Builder { 1 STI }
 
 /// Extension function for the `Builder` type. Available since Tact 1.5.0.
@@ -117,9 +183,45 @@ asm extends fun storeVarUint32(self: Builder, value: Int): Builder { STVARUINT32
 ///
 asm extends fun storeVarInt32(self: Builder, value: Int): Builder { STVARINT32 }
 
+/// Extension function for the `Builder` type.
+/// 
+/// Stores a reference `cell` into a copy of the `Builder`.
+/// Returns that copy of the `Builder`.
+/// 
+/// As a single `Cell` can store up to 4 references, attempts to store more throw an exception with 
+/// [exit code 8]: `Cell overflow`.
+/// 
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Builder = b.storeRef(emptyCell());
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#builderstoreref
+/// 
+/// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
+/// 
 asm(cell self) extends fun storeRef(self: Builder, cell: Cell): Builder { STREF }
 
-asm extends fun storeSlice(self: Builder, cell: Slice): Builder { STSLICER }
+/// Extension function for the `Builder` type.
+/// 
+/// Stores a `slice` into a copy of the `Builder`.
+/// Returns that copy of the `Builder`.
+/// 
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let s: Slice = emptyCell().asSlice();
+///     let fizz: Builder = b.storeSlice(s);
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#builderstoreslice
+/// 
+asm extends fun storeSlice(self: Builder, slice: Slice): Builder { STSLICER }
 
 /// Extension function for the `Builder` type. Available since Tact 1.5.0.
 ///
@@ -158,10 +260,54 @@ asm extends fun storeBuilder(self: Builder, cell: Builder): Builder { STBR }
 ///
 asm(cell self) extends fun storeMaybeRef(self: Builder, cell: Cell?): Builder { STOPTREF }
 
+/// Extension function for the `Builder` type.
+/// 
+/// Converts a `Builder` into an ordinary `Cell`.
+///
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
+/// 
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let c: Cell = b.endCell();
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#builderendcell
+/// 
 asm extends fun endCell(self: Builder): Cell { ENDC }
 
+/// Extension function for the `Builder` type.
+/// 
+/// Returns the number of cell references already stored in the `Builder` as an `Int`.
+/// 
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let refs: Int = b.refs(); // 0
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#builderrefs
+/// 
 asm extends fun refs(self: Builder): Int { BREFS }
 
+/// Extension function for the `Builder` type.
+///
+/// Returns the number of data bits already stored in the `Builder` as an `Int`.
+/// 
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let bits: Int = b.bits(); // 0
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#builderbits
+/// 
 asm extends fun bits(self: Builder): Int { BBITS }
 
 /// Extension function for the `Builder` type. Available since Tact 1.6.0.
@@ -183,8 +329,50 @@ asm extends fun depth(self: Builder): Int { BDEPTH }
 // Slice
 //
 
+/// Extension function for the `Cell` type.
+///
+/// Opens the `Cell` for parsing and returns it as a `Slice`.
+///
+/// ```tact
+/// fun example() {
+///     let c: Cell = beginCell();
+///     let s: Slice = c.beginParse();
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#cellbeginparse
+/// 
 asm extends fun beginParse(self: Cell): Slice { CTOS }
 
+/// Extension mutation function for the `Slice` type.
+/// 
+/// Loads the next reference from the `Slice` as a `Cell`.
+/// 
+/// Attempts to load such reference `Cell` when `Slice` doesn't contain it throw an exception with 
+/// [exit code 8]: `Cell overflow`.
+/// 
+/// Attempts to load more data than `Slice` contains throw an exception with 
+/// [exit code 9]: `Cell underflow`.
+/// 
+/// ```tact
+/// fun example() {
+///     let s1: Slice = beginCell().storeRef(emptyCell()).asSlice();
+///     let fizz: Cell = s1.loadRef();
+///     
+///     let s2: Slice = beginCell()
+///         .storeRef(emptyCell())
+///         .storeRef(s1.asCell())
+///         .asSlice();
+///     let ref1: Cell = s2.loadRef();
+///     let ref2: Cell = s2.loadRef();
+///     ref1 == ref2; // false
+/// }
+/// ```
+/// 
+/// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+/// 
 asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
 
 /// Extension function for the `Slice` type. Available since Tact 1.5.0.
@@ -274,30 +462,186 @@ asm(-> 1 0) extends mutates fun loadMaybeRef(self: Slice): Cell? { LDOPTREF }
 ///
 asm extends fun preloadMaybeRef(self: Slice): Cell? { PLDOPTREF }
 
-// special treatment in Func compiler, so not replaced with asm "LDSLICEX"
-@name(load_bits)
+/// Extension mutation function for the `Slice` type.
+/// 
+/// Loads 0 ≤ `l` ≤ 1023 bits from the `Slice` and returns them as a separate `Slice`.
+/// 
+/// Attempts to specify an out-of-bounds `l` value throw an exception with 
+/// [exit code 5]: `Integer out of expected range`.
+/// 
+/// Attempts to load more data than the `Slice` contains throw an exception with 
+/// [exit code 9]: `Cell underflow`.
+/// 
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeInt(42, 7).asSlice();
+///     let fizz: Slice = s.loadBits(7);
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells/#sliceloadbits
+/// 
+/// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+/// 
+@name(load_bits) // special treatment in Func compiler, so not replaced with asm "LDSLICEX"
 extends mutates native loadBits(self: Slice, l: Int): Slice;
 
-// special treatment in Func compiler, so not replaced with asm "PLDSLICEX"
-@name(preload_bits)
+/// Extension function for the `Slice` type.
+/// 
+/// Preloads 0 ≤ `l` ≤ 1023 bits from the `Slice` and returns them as a separate `Slice`.
+/// Doesn't modify the original `Slice`.
+/// 
+/// Attempts to specify an out-of-bounds `l` value throw an exception with 
+/// [exit code 5]: `Integer out of expected range`.
+/// 
+/// Attempts to preload more data than the `Slice` contains throw an exception with 
+/// [exit code 9]: `Cell underflow`.
+/// 
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeInt(42, 7).asSlice();
+///     let fizz: Slice = s.preloadBits(7);
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#slicepreloadbits
+/// 
+/// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+/// 
+@name(preload_bits) // special treatment in Func compiler, so not replaced with asm "PLDSLICEX"
 extends native preloadBits(self: Slice, l: Int): Slice;
 
-// special treatment in Func compiler, so not replaced with asm "LDIX"
-@name(load_int)
+/// Extension mutation function for the `Slice` type.
+/// 
+/// Loads and returns a signed `l`-bit `Int` from the `Slice`, for 0 ≤ l ≤ 257.
+/// 
+/// Attempts to specify an out-of-bounds `l` value throw an exception with 
+/// [exit code 5]: `Integer out of expected range`.
+/// 
+/// Attempts to load more data than the `Slice` contains throw an exception with 
+/// [exit code 9]: `Cell underflow`.
+/// 
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeInt(42, 7).asSlice();
+///     let fizz: Int = s.loadInt(7);
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceloadint
+/// 
+/// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+/// 
+@name(load_int) // special treatment in Func compiler, so not replaced with asm "LDIX"
 extends mutates native loadInt(self: Slice, l: Int): Int;
 
-// special treatment in Func compiler, so not replaced with asm "PLDIX"
-@name(preload_int)
+/// Extension function for the `Slice` type.
+/// 
+/// Preloads and returns a signed `l`-bit `Int` from the `Slice`, for 0 ≤ l ≤ 257.
+/// Doesn't modify the `Slice`.
+/// 
+/// Attempts to specify an out-of-bounds `l` value throw an exception with 
+/// [exit code 5]: `Integer out of expected range`.
+/// 
+/// Attempts to preload more data than the `Slice` contains throw an exception with 
+/// [exit code 9]: `Cell underflow`.
+/// 
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeInt(42, 7).asSlice();
+///     let fizz: Int = s.preloadInt(7);
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#slicepreloadint
+/// 
+/// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+/// 
+@name(preload_int) // special treatment in Func compiler, so not replaced with asm "PLDIX"
 extends native preloadInt(self: Slice, l: Int): Int;
 
-// special treatment in Func compiler, so not replaced with asm "LDUX"
-@name(load_uint)
+/// Extension mutation function for the `Slice` type.
+/// 
+/// Loads and returns an unsigned `l`-bit `Int` from the `Slice`, for 0 ≤ l ≤ 256.
+/// 
+/// Attempts to specify an out-of-bounds `l` value throw an exception with 
+/// [exit code 5]: `Integer out of expected range`.
+/// 
+/// Attempts to load more data than the `Slice` contains throw an exception with 
+/// [exit code 9]: `Cell underflow`.
+/// 
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeUint(42, 7).asSlice();
+///     let fizz: Int = s.loadUint(7);
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceloaduint
+/// 
+/// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+/// 
+@name(load_uint) // special treatment in Func compiler, so not replaced with asm "LDUX"
 extends mutates native loadUint(self: Slice, l: Int): Int;
 
-// special treatment in Func compiler, so not replaced with asm "PLDUX"
-@name(preload_uint)
+/// Extension function for the `Slice` type.
+/// 
+/// Preloads and returns an unsigned `l`-bit `Int` from the `Slice`, for 0 ≤ l ≤ 256.
+/// Doesn't modify the `Slice`.
+/// 
+/// Attempts to specify an out-of-bounds `l` value throw an exception with 
+/// [exit code 5]: `Integer out of expected range`.
+/// 
+/// Attempts to preload more data than the `Slice` contains throw an exception with 
+/// [exit code 9]: `Cell underflow`.
+/// 
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeUint(42, 7).asSlice();
+///     let fizz: Int = s.preloadUint(7);
+/// }
+/// ```
+/// 
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#slicepreloaduint
+/// 
+/// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+/// 
+@name(preload_uint) // special treatment in Func compiler, so not replaced with asm "PLDUX"
 extends native preloadUint(self: Slice, l: Int): Int;
 
+/// Extension mutation function for the `Slice` type.
+/// 
+/// Loads a single bit and returns a `Bool` value from the `Slice`. 
+/// Reads `true` if the loaded bit is equal to 1, and reads `false` otherwise.
+/// 
+/// Attempts to load such `Bool` when the `Slice` doesn't contain it throw an exception with 
+/// [exit code 8]: `Cell overflow`.
+/// 
+/// Attempts to load more data than the `Slice` contains throw an exception with 
+/// [exit code 9]: `Cell underflow`.
+/// 
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeBool(true).asSlice();
+///     let fizz: Bool = s.loadBool(); // true
+/// }
+/// ```
+/// 
+/// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+/// 
 asm(-> 1 0) extends mutates fun loadBool(self: Slice): Bool { 1 LDI }
 
 /// Extension mutation function for the `Slice` type. Available since Tact 1.5.0.
@@ -408,8 +752,50 @@ asm( -> 1 0) extends mutates fun loadVarUint32(self: Slice): Int { LDVARUINT32 }
 ///
 asm( -> 1 0) extends mutates fun loadVarInt32(self: Slice): Int { LDVARINT32 }
 
+/// Extension mutation function for the `Slice` type.
+/// 
+/// Loads all but the first 0 ≤ `l` ≤ 1023 bits from the `Slice`.
+/// 
+/// Attempts to specify an out-of-bounds `l` value throw an exception with 
+/// [exit code 5]: `Integer out of expected range`.
+/// 
+/// Attempts to load more data than the `Slice` contains throw an exception with 
+/// [exit code 9]: `Cell underflow`.
+/// 
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeInt(42, 7).asSlice();
+///     s.skipBits(5);                   // all but first 5 bits
+///     let fizz: Slice = s.loadBits(1); // load only 1 bit
+/// }
+/// ```
+/// 
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceskipbits
+/// 
+/// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+/// 
 asm extends mutates fun skipBits(self: Slice, l: Int) { SDSKIPFIRST }
 
+/// Extension function for the `Slice` type.
+/// 
+/// Checks whether the `Slice` is empty (i.e., contains no bits of data and no cell references).
+/// If it is not, it throws an exception with [exit code 9]: `Cell underflow`.
+/// 
+/// ```tact
+/// fun example() {
+///     let emptyOne: Slice = emptySlice();
+///     emptyOne.endParse(); // nothing, as it's empty
+/// 
+///     let paul: Slice = "Fear is the mind-killer".asSlice();
+///     try {
+///         paul.endParse(); // throws exit code 9
+///     }
+/// }
+/// ```
+/// 
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+/// 
 asm extends fun endParse(self: Slice) { ENDS }
 
 /// Extension function for the `Slice` type. Available since Tact 1.6.0.
@@ -493,42 +879,204 @@ asm extends fun depth(self: Slice): Int { SDEPTH }
 // Slice size
 //
 
+/// Extension function for the `Slice` type.
+/// 
+/// Returns the number of references in the `Slice` as an `Int`.
+/// 
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeRef(emptyCell()).asSlice();
+///     let fizz: Int = s.refs();
+/// }
+/// ```
+/// 
+/// See: https://docs.tact-lang.org/ref/core-cells#slicerrefs
+/// 
 asm extends fun refs(self: Slice): Int { SREFS }
 
+/// Extension function for the `Slice` type.
+/// 
+/// Returns the number of data bits in the `Slice` as an `Int`.
+/// 
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeRef(emptyCell()).asSlice();
+///     let fizz: Int = s.bits();
+/// }
+/// ```
+/// 
+/// See: https://docs.tact-lang.org/ref/core-cells#slicebits
+/// 
 asm extends fun bits(self: Slice): Int { SBITS }
 
+/// Extension function for the `Slice` type.
+/// 
+/// Checks whether the `Slice` is empty (i.e., contains no bits of data and no cell references).
+/// Returns `true` if it is empty, `false` otherwise.
+/// 
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeRef(emptyCell()).asSlice();
+///     let fizz: Bool = s.empty();                     // false
+///     let buzz: Bool = beginCell().asSlice().empty(); // true
+/// }
+/// ```
+/// 
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceempty
+/// 
 asm extends fun empty(self: Slice): Bool { SEMPTY }
 
+/// Extension function for the `Slice` type.
+/// 
+/// Checks whether the `Slice` has no bits of data.
+/// Returns `true` if it has no data, `false` otherwise.
+/// 
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeRef(emptyCell()).asSlice();
+///     let fizz: Bool = s.dataEmpty();  // true
+///     
+///     let s2: Slice = beginCell().storeInt(42, 7).asSlice();
+///     let buzz: Bool = s2.dataEmpty(); // false
+/// }
+/// ```
+/// 
+/// See: https://docs.tact-lang.org/ref/core-cells#slicedataempty
+/// 
 asm extends fun dataEmpty(self: Slice): Bool { SDEMPTY }
 
+/// Extension function for the `Slice` type.
+/// 
+/// Checks whether the `Slice` has no references.
+/// Returns `true` if it has no references, `false` otherwise.
+/// 
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().storeRef(emptyCell()).asSlice();
+///     let fizz: Bool = s.refsEmpty();                     // false
+///     let buzz: Bool = beginCell().asSlice().refsEmpty(); // true
+/// }
+/// ```
+/// 
+/// See: https://docs.tact-lang.org/ref/core-cells#slicerfsempty
+/// 
 asm extends fun refsEmpty(self: Slice): Bool { SREMPTY }
 
 //
 // Conversions
 //
 
+/// Extension function for the `Builder` type.
+/// 
+/// Converts the `Builder` into a `Slice` and returns it.
+/// An alias to `self.endCell().beginParse()`.
+/// 
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Slice = b.asSlice();
+/// }
+/// ```
+/// 
+/// See: https://docs.tact-lang.org/ref/core-cells#builderasSlice
+/// 
 inline extends fun asSlice(self: Builder): Slice {
     return self.endCell().beginParse();
 }
 
+/// Extension function for the `Cell` type.
+/// 
+/// Converts the `Cell` to a `Slice` and returns it.
+/// An alias to `self.beginParse()`.
+/// 
+/// ```tact
+/// fun example() {
+///     let c: Cell = emptyCell();
+///     let fizz: Slice = c.asSlice();
+/// }
+/// ```
+/// 
+/// See: https://docs.tact-lang.org/ref/core-cells#cellasSlice
+/// 
 inline extends fun asSlice(self: Cell): Slice {
     return self.beginParse();
 }
 
+/// Extension function for the `Slice` type.
+/// 
+/// Converts the `Slice` to a `Cell` and returns it.
+/// An alias to `beginCell().storeSlice(self).endCell()`.
+/// 
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
+/// 
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().asSlice();
+///     let fizz: Cell = s.asCell();
+///     let buzz: Cell = beginCell().storeSlice(s).endCell();
+///     
+///     fizz == buzz; // true
+/// }
+/// ```
+/// 
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceascell
+/// 
 inline extends fun asCell(self: Slice): Cell {
     return beginCell()
         .storeSlice(self)
         .endCell();
 }
 
+/// Extension function for the `Builder` type.
+/// 
+/// Converts the `Builder` into a `Cell` and returns it.
+/// An alias to `self.endCell()`.
+/// 
+/// ```tact
+/// fun example() {
+///     let b: Builder = beginCell();
+///     let fizz: Cell = b.asCell();
+/// }
+/// ```
+/// 
+/// See: https://docs.tact-lang.org/ref/core-cells#builderascell
+/// 
 inline extends fun asCell(self: Builder): Cell {
     return self.endCell();
 }
 
+/// Creates and returns an empty `Cell` (without data and references).
+/// An alias to `beginCell().endCell()`.
+/// 
+/// ```tact
+/// fun example() {
+///     let fizz: Cell = emptyCell();
+///     let buzz: Cell = beginCell().endCell();
+///     
+///     fizz == buzz; // true
+/// }
+/// ```
+/// 
+/// See: https://docs.tact-lang.org/ref/core-cells/#emptycell
+/// 
 asm fun emptyCell(): Cell {
     <b b> PUSHREF // Pure Fift: "<b" creates a builder, "b>" turns it into a cell at compile time
 }
 
+/// Creates and returns an empty `Slice` (without data and references).
+/// An alias to `emptyCell().asSlice()`.
+/// 
+/// ```tact
+/// fun example() {
+///     let fizz: Slice = emptySlice();
+///     let buzz: Slice = emptyCell().asSlice();
+///     
+///     fizz == buzz; // true
+/// }
+/// ```
+/// 
+/// See: https://docs.tact-lang.org/ref/core-cells/#emptyslice
+/// 
 asm fun emptySlice(): Slice {
     b{} PUSHSLICE
 }
@@ -628,4 +1176,3 @@ asm extends fun computeDataSize(self: Slice, maxCells: Int): DataSize { SDATASIZ
 /// See: https://docs.tact-lang.org/ref/core-cells#celldepth
 ///
 asm extends fun depth(self: Cell?): Int { CDEPTH }
-

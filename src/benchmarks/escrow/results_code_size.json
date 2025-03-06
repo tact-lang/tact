@@ -1,0 +1,36 @@
+{
+  "results": [
+    {
+      "label": "FunC",
+      "size": {
+        "cells": "28",
+        "bits": "8014"
+      },
+      "pr": null
+    },
+    {
+      "label": "1.5.4 with NOPs optimized",
+      "pr": "https://github.com/tact-lang/tact/pull/1959",
+      "size": {
+        "cells": "28",
+        "bits": "11648"
+      }
+    },
+    {
+      "label": "1.5.3 with optimized calculations",
+      "pr": "https://github.com/tact-lang/tact/pull/2058",
+      "size": {
+        "cells": "24",
+        "bits": "11052"
+      }
+    },
+    {
+      "label": "1.6.0 with contract load data inlined",
+      "pr": "https://github.com/tact-lang/tact/pull/2088",
+      "size": {
+        "cells": "20",
+        "bits": "12447"
+      }
+    }
+  ]
+}

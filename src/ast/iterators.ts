@@ -114,7 +114,7 @@ export function traverseAndCheck(
         case "struct_decl":
         case "message_decl":
             traverseAndCheck(node.name, callback);
-            if (node.kind === "message_decl" && node.opcode !== null) {
+            if (node.kind === "message_decl" && node.opcode !== undefined) {
                 traverseAndCheck(node.opcode, callback);
             }
             node.fields.forEach((e) => {
