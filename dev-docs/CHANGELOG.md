@@ -14,23 +14,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add the `StateInit.hasSameBasechainAddress` function: PR [#2187](https://github.com/tact-lang/tact/pull/2187)
 - Add `Slice.skipRef`, `Slice.skipMaybeRef`, `Slice.skipInt`, `Slice.skipUint`, `Slice.skipBool`, `Slice.skipBit`, `Slice.skipCoins`, `Slice.skipVarUint16`, `Slice.skipVarInt16`, `Slice.skipVarUint32`, `Slice.skipVarInt32` functions: PR
 
-
 ### TypeScript wrappers
-
 
 ### Code generation
 
-
 ### TypeScript third-party API
 
-
 ### Internal infrastructure
-
 
 ### Release contributors
 
 - [Maksim Lagus](https://github.com/Kaladin13)
-
 
 ## [1.6.1] - 2025-03-04
 
