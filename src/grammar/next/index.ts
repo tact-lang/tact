@@ -1118,7 +1118,7 @@ const parseContract =
         loc,
     }: $ast.Contract): Handler<A.AstContract> =>
     (ctx) => {
-        const params = parseList<$ast.Parameter>(parameters).map((param) => {
+        const params = parseList<$ast.Parameter>(parameters?.values).map((param) => {
             return parseFieldDecl({
                 $: "FieldDecl",
                 name: param.name,
