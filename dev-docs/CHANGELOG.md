@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### TypeScript wrappers
 
 - Export message opcodes and exit codes: PR [#2081](https://github.com/tact-lang/tact/issues/2081)
+- [fix] calling of getters in Blueprint: PR [#2299](https://github.com/tact-lang/tact/issues/2299)
 
 ### Code generation
 

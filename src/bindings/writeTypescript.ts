@@ -680,7 +680,6 @@ export function writeTypescript(
                     }
 
                     const method = contract?.functions.get(g.name);
-
                     const explicitMethodId = method?.ast.attributes.find(
                         (attr) => attr.type === "get",
                     )?.methodId;
