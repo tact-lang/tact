@@ -19,6 +19,8 @@ export * from "./context/logger";
 export * from "./error/errors";
 export { ItemOrigin } from "./imports/source";
 
+export * from "./verify";
+
 export * from "./ast/ast-printer";
 export * from "./ast/ast";
 export * from "./context/context";

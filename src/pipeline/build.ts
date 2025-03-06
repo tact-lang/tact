@@ -40,6 +40,7 @@ import type { Parser } from "../grammar";
 import { getParser } from "../grammar";
 import { defaultParser } from "../grammar/grammar";
 import { topSortContracts } from "./utils";
+import type { TypeDescription } from "../types/types";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -137,6 +138,7 @@ export async function build(args: {
               codeBoc: Buffer;
               abi: string;
               constants: WrappersConstantDescription[];
+              contract: TypeDescription;
           }
         | undefined
     > = {};
@@ -278,6 +280,7 @@ export async function build(args: {
             codeBoc,
             abi,
             constants,
+            contract,
         };
 
         if (config.mode === "fullWithDecompilation") {
@@ -431,6 +434,7 @@ export async function build(args: {
                 JSON.parse(pkg.abi),
                 ctx,
                 built[pkg.name]?.constants ?? [],
+                built[pkg.name]?.contract,
                 {
                     code: pkg.code,
                     prefix: pkg.init.prefix,
