@@ -86,6 +86,8 @@ Updating a subset of the test snapshots can be done like so:
 yarn test -u spec-name-pattern1 spec-name-pattern2
 ```
 
+Beware that updating snapshots from Javascript Debug Terminal in VSCode might lead to unexpected results. E2E CLI tests check `stderr` of child `tact` processes, but JS Debug Terminal adds "Debugger attached" messages into it.
+
 ## Benchmarks
 
 The benchmark system tracks gas consumption changes after making changes to the compiler.
