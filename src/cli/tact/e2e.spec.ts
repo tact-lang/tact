@@ -184,10 +184,6 @@ describe("tact --config config.json", () => {
     });
 });
 
-/*
- * This tests do not work in JavaScript Debug Terminal, as they use stderr.
- * JS debug terminal adds redundant output to stderr, which breaks the tests.
- */
 describe.only("tact -q foo.tact", () => {
     testWin("-q shows errors ", async () => {
         const path = await codegen.contract(
