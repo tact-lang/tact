@@ -13,6 +13,8 @@ message DeployOk {
 /// Provides a convenient unified mechanism for deployments by implementing a 
 /// simple receiver for the `Deploy` message.
 /// 
+/// NOTE: This trait is deprecated.
+/// 
 /// All contracts are deployed by sending them a message. While any message 
 /// can be used for this purpose, the best practice is to use the special 
 /// `Deploy` message.
@@ -47,6 +49,8 @@ message FactoryDeploy {
 }
 
 /// Provides a convenient unified mechanism for chained deployments.
+/// 
+/// NOTE: This trait is deprecated.
 /// 
 /// ```tact
 /// import "@stdlib/deploy";
