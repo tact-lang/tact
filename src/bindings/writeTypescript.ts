@@ -226,9 +226,7 @@ export function writeTypescript(
     w.inIndent(() => {
         if (abi.errors) {
             Object.entries(abi.errors).forEach(([k, abiError]) => {
-                w.append(
-                    `${JSON.stringify(abiError.message.replaceAll("`", "\\`"))}: ${k},`,
-                );
+                w.append(`${JSON.stringify(abiError.message)}: ${k},`);
             });
         }
     });
