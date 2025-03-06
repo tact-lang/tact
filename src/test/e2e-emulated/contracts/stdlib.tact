@@ -94,13 +94,8 @@ contract StdlibTest {
         return c;
     }
 
-    get fun skipInt(c: Slice, l: Int): Slice {
-        c.skipInt(l);
-        return c;
-    }
-
-    get fun skipUint(c: Slice, l: Int): Slice {
-        c.skipUint(l);
+    get fun skipAddress(c: Slice): Slice {
+        c.skipAddress();
         return c;
     }
 

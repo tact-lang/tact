@@ -594,36 +594,6 @@ extends native preloadBits(self: Slice, l: Int): Slice;
 @name(load_int) // special treatment in Func compiler, so not replaced with asm "LDIX"
 extends mutates native loadInt(self: Slice, l: Int): Int;
 
-/// Extension mutation function for the `Slice` type. Available since Tact 1.6.2.
-/// 
-/// Skips a signed `l`-bit `Int` from the `Slice`, for 0 ≤ l ≤ 257. Similar to discarding the return value of `Slice.loadInt()`.
-/// 
-/// Attempts to specify an out-of-bounds `l` value throw an exception with 
-/// [exit code 5]: `Integer out of expected range`.
-/// 
-/// Attempts to load more data than the `Slice` contains throw an exception with 
-/// [exit code 9]: `Cell underflow`.
-/// 
-/// ```tact
-/// fun example() {
-///     let s: Slice = beginCell()
-///         .storeInt(239, 32)
-///         .storeInt(42, 7)
-///         .asSlice();
-///     
-///     s.skipInt(32);
-///     let fizz: Int = s.loadInt(7); // 42
-/// }
-/// ```
-/// 
-/// See:
-/// * https://docs.tact-lang.org/ref/core-cells#sliceloadint
-/// 
-/// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
-/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
-/// 
-asm extends mutates fun skipInt(self: Slice, l: Int) { LDIX NIP }
-
 /// Extension function for the `Slice` type.
 /// 
 /// Preloads and returns a signed `l`-bit `Int` from the `Slice`, for 0 ≤ l ≤ 257.
@@ -676,36 +646,6 @@ extends native preloadInt(self: Slice, l: Int): Int;
 /// 
 @name(load_uint) // special treatment in Func compiler, so not replaced with asm "LDUX"
 extends mutates native loadUint(self: Slice, l: Int): Int;
-
-/// Extension mutation function for the `Slice` type. Available since Tact 1.6.2.
-/// 
-/// Skips an unsigned `l`-bit `Int` from the `Slice`, for 0 ≤ l ≤ 257. Similar to discarding the return value of `Slice.loadUint()`.
-/// 
-/// Attempts to specify an out-of-bounds `l` value throw an exception with 
-/// [exit code 5]: `Integer out of expected range`.
-/// 
-/// Attempts to load more data than the `Slice` contains throw an exception with 
-/// [exit code 9]: `Cell underflow`.
-/// 
-/// ```tact
-/// fun example() {
-///     let s: Slice = beginCell()
-///         .storeUint(239, 32)
-///         .storeUint(42, 7)
-///         .asSlice();
-///     
-///     s.skipUint(32);
-///     let fizz: Int = s.loadUint(7); // 42
-/// }
-/// ```
-/// 
-/// See:
-/// * https://docs.tact-lang.org/ref/core-cells#sliceloaduint
-/// 
-/// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
-/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
-/// 
-asm extends mutates fun skipUint(self: Slice, l: Int) { LDUX NIP }
 
 /// Extension function for the `Slice` type.
 /// 
@@ -798,26 +738,6 @@ asm extends mutates fun skipBool(self: Slice) { 1 LDI NIP }
 /// See: https://docs.tact-lang.org/ref/core-cells#sliceloadbit
 ///
 asm(-> 1 0) extends mutates fun loadBit(self: Slice): Bool { 1 LDI }
-
-/// Extension mutation function for the `Slice` type. Available since Tact 1.6.2.
-///
-/// Alias to `Slice.skipBool()`.
-///
-/// ```tact
-/// fun example() {
-///     let s: Slice = beginCell()
-///         .storeBool(true)
-///         .storeUint(42, 7)
-///         .asSlice();
-///     
-///     s.skipBit();
-///     let fizz: Int = s.loadUint(7); // 42
-/// }
-/// ```
-///
-/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadbit
-///
-asm extends mutates fun skipBit(self: Slice) { 1 LDI NIP }
 
 /// Extension mutation function for the `Slice` type.
 ///

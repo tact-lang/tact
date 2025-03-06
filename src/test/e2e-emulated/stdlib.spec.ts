@@ -170,16 +170,15 @@ describe("stdlib", () => {
         ).toEqualSlice(beginCell().storeUint(42, 32).asSlice());
 
         expect(
-            await contract.getSkipInt(
-                beginCell().storeInt(-239, 22).storeUint(42, 32).asSlice(),
-                22n,
-            ),
-        ).toEqualSlice(beginCell().storeUint(42, 32).asSlice());
-
-        expect(
-            await contract.getSkipUint(
-                beginCell().storeUint(239, 22).storeUint(42, 32).asSlice(),
-                22n,
+            await contract.getSkipAddress(
+                beginCell()
+                    .storeAddress(
+                        Address.parse(
+                            "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
+                        ),
+                    )
+                    .storeUint(42, 32)
+                    .asSlice(),
             ),
         ).toEqualSlice(beginCell().storeUint(42, 32).asSlice());
 
