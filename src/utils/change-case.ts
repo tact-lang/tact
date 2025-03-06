@@ -157,7 +157,7 @@ function capitalCaseTransformFactory(
     lower: (input: string) => string,
     upper: (input: string) => string,
 ) {
-    return (word: string) => `${upper(word[0])}${lower(word.slice(1))}`;
+    return (word: string) => `${upper(word.at(0) ?? '')}${lower(word.slice(1))}`;
 }
 
 function pascalCaseTransformFactory(
