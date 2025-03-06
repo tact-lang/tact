@@ -622,7 +622,7 @@ extends mutates native loadInt(self: Slice, l: Int): Int;
 /// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 /// 
-asm extends mutates fun skipInt(self: Slice) { LDIX NIP }
+asm extends mutates fun skipInt(self: Slice, l: Int) { LDIX NIP }
 
 /// Extension function for the `Slice` type.
 /// 
@@ -705,7 +705,7 @@ extends mutates native loadUint(self: Slice, l: Int): Int;
 /// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 /// 
-asm extends mutates fun skipUint(self: Slice) { LDUX NIP }
+asm extends mutates fun skipUint(self: Slice, l: Int) { LDUX NIP }
 
 /// Extension function for the `Slice` type.
 /// 

@@ -74,6 +74,36 @@ contract StdlibTest {
         return parseVarAddress(slice);
     }
 
+    get fun skipRef(c: Slice): Slice {
+        c.skipRef();
+        return c;
+    }
+
+    get fun skipMaybeRef(c: Slice): Slice {
+        c.skipMaybeRef();
+        return c;
+    }
+
+    get fun skipBool(c: Slice): Slice {
+        c.skipBool();
+        return c;
+    }
+
+    get fun skipCoins(c: Slice): Slice {
+        c.skipCoins();
+        return c;
+    }
+
+    get fun skipInt(c: Slice, l: Int): Slice {
+        c.skipInt(l);
+        return c;
+    }
+
+    get fun skipUint(c: Slice, l: Int): Slice {
+        c.skipUint(l);
+        return c;
+    }
+
     get fun parseOriginalFwdFee(msg: Slice): Int {
         msg.skipBits(4); //Skip tags
         msg.loadAddress(); // Skip source

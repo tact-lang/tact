@@ -57,7 +57,7 @@ describe("stdlib", () => {
                 .toString(),
         ).toBe(beginCell().storeBit(true).endCell().toString());
 
-        expect(Number(await contract.getTvm_2023_07Upgrade())).toEqual(1243);
+        expect(Number(await contract.getTvm_2023_07Upgrade())).toEqual(1343);
         expect(await contract.getTvm_2024_04Upgrade()).toEqual(82009144n);
 
         expect(
@@ -142,6 +142,46 @@ describe("stdlib", () => {
         expect(await contract.getLastBits(slice, 1n)).toEqualSlice(
             beginCell().storeBit(1).endCell().asSlice(),
         );
+
+        const emptyCell = beginCell().endCell();
+
+        expect(
+            await contract.getSkipRef(
+                beginCell().storeRef(emptyCell).storeUint(42, 32).asSlice(),
+            ),
+        ).toEqualSlice(beginCell().storeUint(42, 32).asSlice());
+
+        expect(
+            await contract.getSkipMaybeRef(
+                beginCell().storeMaybeRef(null).storeUint(42, 32).asSlice(),
+            ),
+        ).toEqualSlice(beginCell().storeUint(42, 32).asSlice());
+
+        expect(
+            await contract.getSkipBool(
+                beginCell().storeBit(true).storeUint(42, 32).asSlice(),
+            ),
+        ).toEqualSlice(beginCell().storeUint(42, 32).asSlice());
+
+        expect(
+            await contract.getSkipCoins(
+                beginCell().storeCoins(239).storeUint(42, 32).asSlice(),
+            ),
+        ).toEqualSlice(beginCell().storeUint(42, 32).asSlice());
+
+        expect(
+            await contract.getSkipInt(
+                beginCell().storeInt(-239, 22).storeUint(42, 32).asSlice(),
+                22n,
+            ),
+        ).toEqualSlice(beginCell().storeUint(42, 32).asSlice());
+
+        expect(
+            await contract.getSkipUint(
+                beginCell().storeUint(239, 22).storeUint(42, 32).asSlice(),
+                22n,
+            ),
+        ).toEqualSlice(beginCell().storeUint(42, 32).asSlice());
 
         expect(await contract.getSliceDepth(slice)).toBe(1n);
 
