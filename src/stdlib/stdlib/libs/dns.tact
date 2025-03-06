@@ -25,7 +25,6 @@ native dnsInternalNormalize(src: Slice): Slice;
 native dnsInternalVerify(subdomain: Slice): Bool;
 
 /// Calculates the length of the top domain in the `subdomain` `Slice`.
-@name(dns_extract_top_domain_length)
 fun dnsExtractTopDomainLength(subdomain: Slice): Int {
     let i: Int = 0;
     let needBreak: Bool = false;
