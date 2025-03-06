@@ -184,6 +184,10 @@ describe("tact --config config.json", () => {
     });
 });
 
+/*
+ * This tests do not work in JavaScript Debug Terminal, as they use stderr.
+ * JS debug terminal adds redunant output to stderr, which breaks the tests.
+ */
 describe.only("tact -q foo.tact", () => {
     testWin("-q shows errors ", async () => {
         const path = await codegen.contract(
@@ -191,7 +195,6 @@ describe.only("tact -q foo.tact", () => {
             `contract Test { x: Int = A }`,
         );
         const result = await tact(`-q ${path}`);
-
         expect(
             result.kind === "exited" &&
                 result.stderr.includes("Cannot find 'A'"),

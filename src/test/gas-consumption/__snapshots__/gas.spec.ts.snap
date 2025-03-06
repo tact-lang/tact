@@ -18,9 +18,9 @@ exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy tr
 
 exports[`benchmarks benchmark deployable trait vs raw deploy: gas used raw deploy 1`] = `1505`;
 
-exports[`benchmarks benchmark functions: code size 1`] = `177`;
+exports[`benchmarks benchmark functions: code size 1`] = `171`;
 
-exports[`benchmarks benchmark functions: gas used 1`] = `1997`;
+exports[`benchmarks benchmark functions: gas used 1`] = `1982`;
 
 exports[`benchmarks benchmark readFwdFee: code size 1`] = `121`;
 

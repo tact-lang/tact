@@ -16,16 +16,31 @@ import type { AstUtil } from "../ast/util";
 import { getAstUtil } from "../ast/util";
 import { sha256, highest32ofSha256 } from "../utils/sha256";
 
-type Exception = { value: string; id: number };
+
+type Exception = { 
+    /**
+     * Error message, supplied by the user.
+     */
+    value: string,
+    /**
+     * Unique exit code for the error.
+     */
+    id: number,
+};
 
 const exceptions = createContextStore<Exception>();
 
-function stringId(src: string): number {
-    return Number(highest32ofSha256(sha256(src)));
-}
-
-function exceptionId(src: string): number {
-    return (stringId(src) % 63000) + 1000;
+/**
+ * Generates a unique exit code for an error.
+ * This is used to ensure that errors are unique and can be resolved.
+ * The exit codes are sequential, starting at 1024.
+ * Preferably, the exit codes should fit 11 bits, as it will result in cheaper opcodes.
+ * https://github.com/ton-blockchain/ton/blob/master/crypto/func/builtins.cpp#L984-L1003
+ *
+ * This function works, as string uniqueness is checked in the caller below.
+ */
+function getNextExitCode(ctx: CompilerContext): number {
+    return exceptions.all(ctx).size + 1024;
 }
 
 function resolveStringsInAST(
@@ -38,21 +53,21 @@ function resolveStringsInAST(
             if (node.args.length !== 2) {
                 return;
             }
-            const resolved = ensureSimplifiedString(
+            const message = ensureSimplifiedString(
                 evalConstantExpression(node.args[1]!, ctx, util),
             ).value;
-            if (!exceptions.get(ctx, resolved)) {
-                const id = exceptionId(resolved);
+            if (!exceptions.get(ctx, message)) {
+                const id = getNextExitCode(ctx);
                 if (
                     Array.from(exceptions.all(ctx).values()).find(
                         (v) => v.id === id,
                     )
                 ) {
                     throwInternalCompilerError(
-                        `Duplicate error id: "${resolved}"`,
+                        `Duplicate error id: "${message}"`,
                     );
                 }
-                ctx = exceptions.set(ctx, resolved, { value: resolved, id });
+                ctx = exceptions.set(ctx, message, { value: message, id });
             }
         }
     });

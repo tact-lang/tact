@@ -565,7 +565,11 @@ describe("SendDefaultMode with no flags", () => {
         // according to "MessageModeTester.md"
         const calculatorCompPhase = getComputationPhase(calculatorTsx);
         expect(calculatorCompPhase.success).toBe(false);
-        expect(calculatorCompPhase.exitCode).toBe(25459);
+        expect(calculatorCompPhase.exitCode).toBe(
+            MessageModeTester.errors[
+                "There must exist at least one number in the interval."
+            ],
+        );
 
         // Check that the calculator's action phase did not execute, but its bounce phase did
         const calculatorTsxDescription =

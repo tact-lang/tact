@@ -31,9 +31,11 @@ describe("strings", () => {
     });
 
     it("should implement strings correctly", async () => {
-        expect(contract.abi.errors!["31733"]!.message).toStrictEqual(
-            "condition can`t be...",
-        );
+        expect(
+            contract.abi.errors![
+                StringsTester.errors["condition can\\`t be..."]
+            ]!.message,
+        ).toStrictEqual("condition can`t be...");
 
         // Check methods
         expect(await contract.getConstantString()).toBe("test string");
