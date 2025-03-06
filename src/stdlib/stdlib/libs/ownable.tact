@@ -14,7 +14,7 @@ message ChangeOwnerOk {
     newOwner: Address;
 }
 
-/// Declares an owner (non-editable) of a contract and provides a helper 
+/// Declares the owner (non-editable) of a contract and provides a helper
 /// function `requireOwner()`, which checks that a message was sent by the owner.
 /// 
 /// This trait requires a field `owner: Address` to be declared and exposes 
