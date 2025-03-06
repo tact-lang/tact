@@ -68,6 +68,8 @@
     "dist/**/*",
     "bin/**/*",
     "!src/**/*",
+    "!src/benchmarks",
+    "!dist/benchmarks",
     "!**/test",
     "!dist/**/output",
     "!/docs",
