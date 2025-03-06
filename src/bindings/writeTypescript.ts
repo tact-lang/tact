@@ -225,7 +225,7 @@ export function writeTypescript(
         if (abi.errors) {
             Object.entries(abi.errors).forEach(([k, abiError]) => {
                 w.append(
-                    `${JSON.stringify(abiError.message.replaceAll("`", "\\`"))}: ${k},`,
+                    `${JSON.stringify(abiError.message)}: ${k},`,
                 );
             });
         }
