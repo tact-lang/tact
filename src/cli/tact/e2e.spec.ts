@@ -166,7 +166,7 @@ describe("tact --config config.json", () => {
         const result = await tact(`--config ${r.config}`);
         expect(result).toMatchObject({ kind: "exited", code: 0 });
 
-        const statPromise = stat(r.outputPath("code.rev.fif"));
+        const statPromise = stat(r.outputPath("rev.fif"));
         await expect(statPromise).resolves.toMatchObject({});
     });
 
