@@ -1,4 +1,4 @@
-import * as changeCase from "../utils/change-case";
+import { toPascalCase } from "../utils/change-case";
 import { Writer } from "../utils/Writer";
 import type { ABIArgument, ABIType, ContractABI } from "@ton/core";
 import {
@@ -270,7 +270,7 @@ export function writeTypescript(
             for (const t of abi.getters) {
                 w.append(JSON.stringify(t) + ",");
 
-                let getterName = changeCase.pascalCase(t.name);
+                let getterName = toPascalCase(t.name);
                 if (Array.from(getterNames.values()).includes(getterName)) {
                     getterName = t.name;
                 }
