@@ -8,7 +8,7 @@
         "wallet cells": "16",
         "wallet bits": "7384"
       },
-      "pr": null
+      "pr": "https://github.com/OpenBuilders/notcoin-contract"
     },
     {
       "label": "1.6.2",
