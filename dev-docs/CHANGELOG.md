@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Docs
+
+- Add descriptions for `&&=`, `||=`, `>>=` and `<<=` augmented assignment operators: PR [#XYZ](https://github.com/tact-lang/tact/pull/XYZ)
+
+### Release contributors
+
+- [Novus Nota](https://github.com/novusnota)
+
 ## [1.6.2] - 2025-03-06
 
 ### Language features
