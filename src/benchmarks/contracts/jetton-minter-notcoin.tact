@@ -1,7 +1,6 @@
 import "./messages";
 import "./jetton-wallet-notcoin";
 
-const ProvideAddressGasConsumption: Int = ton("0.01");
 const Workchain: Int = 0;
 
 struct JettonMasterState {
