@@ -1,8 +1,9 @@
 import { Address, beginCell, Cell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import { Blockchain } from "@ton/sandbox";
+import { Blockchain, GetMethodError } from "@ton/sandbox";
 import { StdlibTest } from "./contracts/output/stdlib_StdlibTest";
 import "@ton/test-utils";
+import { shouldThrowOnTvmGetMethod } from "../utils/throw";
 
 describe("stdlib", () => {
     let blockchain: Blockchain;
@@ -121,6 +122,21 @@ describe("stdlib", () => {
         expect(addrVar.address.asCell()).toEqualCell(
             beginCell().storeUint(345, 123).endCell(),
         );
+
+        const forceBasechainGood = await contract.getForceBasechain(
+            Address.parse(
+                "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
+            ),
+        );
+        expect(forceBasechainGood).toBe(true);
+
+        shouldThrowOnTvmGetMethod(async () => {
+            await contract.getForceBasechain(
+                Address.parse(
+                    "-1:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
+                ),
+            );
+        }, 138);
 
         expect(await contract.getBuilderDepth(beginCell())).toBe(0n);
         expect(

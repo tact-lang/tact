@@ -322,3 +322,22 @@ extends fun storeBasechainAddress(self: Builder, address: BasechainAddress): Bui
         .storeUint(0b10_0_00000000, 3 + 8)
         .storeUint(address.hash!!, 256);
 }
+
+/// Global function. Available since Tact 1.6.3.
+///
+/// Throws an exception with exit code 138: `Not a basechain address` if the `address` is not a basechain address.
+///
+/// ```tact
+/// fun example() {
+///     let someBasechainAddress: Address =
+///         newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+/// 
+///     let someMasterchainAddress: Address =
+///         newAddress(-1, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+/// 
+///     forceBasechain(someBasechainAddress);   // ok
+///     forceBasechain(someMasterchainAddress); // throws 138
+/// }
+/// ```
+///
+asm fun forceBasechain(address: Address) { REWRITESTDADDR DROP 138 THROWIF }
