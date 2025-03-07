@@ -1,5 +1,21 @@
 import "./messages";
 
+const SEND_TRANSFER_GAS_CONSUMPTION: Int = 10065;
+const RECEIVE_TRANSFER_GAS_CONSUMPTION: Int = 10435;
+
+inline fun checkAmountIsEnoughToTransfer(msgValue: Int, forwardTonAmount: Int, fwdFee: Int) {
+    let fwdCount = 1 + forwardTonAmount & 1;
+
+    throwUnless(
+        705,
+        msgValue > fwdCount * fwdFee +
+        getSimpleForwardFee(29, 15000, false) +
+        getComputeFee(SEND_TRANSFER_GAS_CONSUMPTION, false) +
+        getComputeFee(RECEIVE_TRANSFER_GAS_CONSUMPTION, false) +
+        getStorageFee(15, 8000, 5 * 365 * 24 * 3600, false)
+    );
+}
+
 contract JettonWalletNotcoin(
     balance: Int as coins,
     owner: Address,
@@ -17,12 +33,9 @@ contract JettonWalletNotcoin(
         throwUnless(708, msg.forwardPayload.bits() >= 1);
 
         let ctx = context();
-        let fwdCount = 1 + msg.forwardTonAmount & 1;
-        throwUnless(709, ctx.value >
-            msg.forwardTonAmount +
-            fwdCount * ctx.readForwardFee() +
-            (2 * self.gasConsumption + self.minTonsForStorage)
-        );
+
+        let fwdFee = getOriginalFwdFee(ctx.readForwardFee(), false);
+        checkAmountIsEnoughToTransfer(ctx.value, msg.forwardTonAmount, fwdFee);
 
         deploy(DeployParameters{
             value: 0,
@@ -125,3 +138,5 @@ contract JettonWalletNotcoin(
         };
     }
 }
+
+

@@ -14,9 +14,6 @@ struct JettonMasterState {
     jettonWalletCode: Cell;
 }
 
-const SEND_TRANSFER_GAS_CONSUMPTION: Int = 10065;
-const RECEIVE_TRANSFER_GAS_CONSUMPTION: Int = 10435;
-
 contract JettonMinterNotcoin(
     totalSupply: Int as coins,
     owner: Address,
@@ -148,16 +145,3 @@ inline fun getJettonBasechainWalletByOwner(jettonWalletOwner: Address): Basechai
 }
 
 inline extends fun isNotNone(self: Address): Bool { return self.asSlice().preloadUint(2) != 0 }
-
-inline fun checkAmountIsEnoughToTransfer(msgValue: Int, forwardTonAmount: Int, fwdFee: Int) {
-    let fwdCount = 1 + forwardTonAmount & 1;
-
-    throwUnless(
-        705,
-        msgValue > fwdCount * fwdFee +
-        getSimpleForwardFee(29, 15000, false) +
-        getComputeFee(SEND_TRANSFER_GAS_CONSUMPTION, false) +
-        getComputeFee(RECEIVE_TRANSFER_GAS_CONSUMPTION, false) +
-        getStorageFee(15, 8000, 5 * 365 * 24 * 3600, false)
-    );
-}
