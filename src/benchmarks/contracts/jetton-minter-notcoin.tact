@@ -73,7 +73,6 @@ contract JettonMinterNotcoin(
         let fwdFee = getOriginalFwdFee(ctx.readForwardFee(), false);
         // force workchain
 
-        // check amount
         checkAmountIsEnoughToTransfer(ctx.value, msg.mintMessage.forwardTonAmount, fwdFee);
 
         deploy(DeployParameters{

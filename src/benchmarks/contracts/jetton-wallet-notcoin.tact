@@ -1,7 +1,22 @@
 import "./messages";
 
+// gas
 const SEND_TRANSFER_GAS_CONSUMPTION: Int = 10065;
 const RECEIVE_TRANSFER_GAS_CONSUMPTION: Int = 10435;
+const SEND_BURN_GAS_CONSUMPTION: Int = 5891;
+const RECEIVE_BURN_GAS_CONSUMPTION: Int = 6757;
+
+// storage
+const MIN_STORAGE_DURATION: Int = 5 * 365 * 24 * 3600; // 5 years
+
+const JETTON_WALLET_BITS: Int = 1033;
+const JETTON_WALLET_CELLS: Int = 3;
+
+const JETTON_WALLET_INITSTATE_BITS: Int  = 931;
+const JETTON_WALLET_INITSTATE_CELLS: Int = 3;
+
+const BURN_NOTIFICATION_BITS: Int = 754;
+const BURN_NOTIFICATION_CELLS: Int = 1;
 
 inline fun checkAmountIsEnoughToTransfer(msgValue: Int, forwardTonAmount: Int, fwdFee: Int) {
     let fwdCount = 1 + forwardTonAmount & 1;
@@ -9,10 +24,20 @@ inline fun checkAmountIsEnoughToTransfer(msgValue: Int, forwardTonAmount: Int, f
     throwUnless(
         705,
         msgValue > fwdCount * fwdFee +
-        getSimpleForwardFee(29, 15000, false) +
+        getSimpleForwardFee(JETTON_WALLET_INITSTATE_CELLS, JETTON_WALLET_INITSTATE_BITS, false) +
         getComputeFee(SEND_TRANSFER_GAS_CONSUMPTION, false) +
         getComputeFee(RECEIVE_TRANSFER_GAS_CONSUMPTION, false) +
-        getStorageFee(15, 8000, 5 * 365 * 24 * 3600, false)
+        getStorageFee(JETTON_WALLET_CELLS, JETTON_WALLET_BITS, MIN_STORAGE_DURATION, false)
+    );
+}
+
+inline fun checkAmountIsEnoughToBurn(msgValue: Int) {
+    throwUnless(
+        705,
+        msgValue >
+        getForwardFee(BURN_NOTIFICATION_CELLS, BURN_NOTIFICATION_BITS, false) +
+        getComputeFee(SEND_BURN_GAS_CONSUMPTION, false) +
+        getComputeFee(RECEIVE_BURN_GAS_CONSUMPTION, false)
     );
 }
 
@@ -21,9 +46,6 @@ contract JettonWalletNotcoin(
     owner: Address,
     master: Address,
 ) {
-    const minTonsForStorage: Int = ton("0.01");
-    const gasConsumption: Int = ton("0.015");
-
     receive(msg: JettonTransfer) {
         throwUnless(333, parseStdAddress(msg.destination.asSlice()).workchain == 0);
         throwUnless(705, sender() == self.owner);
@@ -62,15 +84,7 @@ contract JettonWalletNotcoin(
             throwUnless(707, self.master == sender());
         }
 
-        let ctx: Context = context();
-        let msgValue: Int = ctx.value;
-        let tonBalanceBeforeMsg = myBalance() - msgValue;
-        let storageFee = self.minTonsForStorage - min(tonBalanceBeforeMsg, self.minTonsForStorage);
-        msgValue -= (storageFee + self.gasConsumption);
-
         if (msg.forwardTonAmount > 0) {
-            let fwdFee: Int = ctx.readForwardFee();
-            msgValue -= msg.forwardTonAmount + fwdFee;
             message(MessageParameters{
                 to: self.owner,
                 value: msg.forwardTonAmount,
@@ -86,11 +100,17 @@ contract JettonWalletNotcoin(
         }
 
         // 0xd53276db -- Cashback to the original Sender
-        if (msg.responseDestination != null && msgValue > 0) {
+        if (msg.responseDestination != null) {
+            let leaveOnBalance: Int = myBalance() - context().value + myStorageDue();
+            nativeReserve(
+                max(leaveOnBalance, getStorageFee(JETTON_WALLET_CELLS, JETTON_WALLET_BITS, MIN_STORAGE_DURATION, false)),
+                2
+            );
+
             message(MessageParameters{
                 to: msg.responseDestination!!,
-                value: msgValue,
-                mode: SendIgnoreErrors,
+                value: 0,
+                mode: SendRemainingBalance | SendIgnoreErrors,
                 bounce: false,
                 body: JettonExcesses{ queryId: msg.queryId }.toCell(),
             });
@@ -103,9 +123,7 @@ contract JettonWalletNotcoin(
         self.balance -= msg.amount;
         throwUnless(706, self.balance >= 0);
 
-        let ctx = context();
-        let fwdFee: Int = ctx.readForwardFee();
-        throwUnless(707, ctx.value > (fwdFee + 2 * self.gasConsumption));
+        checkAmountIsEnoughToBurn(context().value);
 
         message(MessageParameters{
             to: self.master,

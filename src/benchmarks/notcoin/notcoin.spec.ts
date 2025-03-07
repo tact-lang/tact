@@ -321,11 +321,6 @@ describe("NotCoin", () => {
             implementationName: "FunC",
             printMode: "full",
         });
-
-        printBenchmarkTable(results.slice(1), undefined, {
-            implementationName: "NotCoin",
-            printMode: "first-last",
-        });
     });
 
     it("transfer", async () => {
