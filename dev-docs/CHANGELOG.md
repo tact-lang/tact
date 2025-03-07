@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
-- Add descriptions for `&&=`, `||=`, `>>=` and `<<=` augmented assignment operators: PR [#XYZ](https://github.com/tact-lang/tact/pull/XYZ)
+- Add descriptions for `&&=`, `||=`, `>>=` and `<<=` augmented assignment operators: PR [#2328](https://github.com/tact-lang/tact/pull/2328)
 
 ### Release contributors
 
