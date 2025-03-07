@@ -1,4 +1,4 @@
-message DeployMessage {
+message(100) DeployMessage {
     addr: Address;
     data: Cell;
     code: Cell;

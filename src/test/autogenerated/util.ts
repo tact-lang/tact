@@ -1,39 +1,61 @@
-import * as A from "../../ast/ast";
-import { FactoryAst } from "../../ast/ast-helpers";
+import path from "path";
+import type * as A from "../../ast/ast";
+import type { FactoryAst } from "../../ast/ast-helpers";
 import { featureEnable } from "../../config/features";
 import { CompilerContext } from "../../context/context";
 import { Logger } from "../../context/logger";
-import { openContext } from "../../context/store";
 import { funcCompile } from "../../func/funcCompile";
 import { getParser } from "../../grammar";
-import { defaultParser, Parser } from "../../grammar/grammar";
+import { defaultParser } from "../../grammar/grammar";
 import { compile } from "../../pipeline/compile";
+import { precompile } from "../../pipeline/precompile";
 import { topSortContracts } from "../../pipeline/utils";
 import files from "../../stdlib/stdlib";
-import { resolveAllocations } from "../../storage/resolveAllocation";
-import { computeReceiversEffects } from "../../types/effects";
-import { getAllTypes, resolveDescriptors } from "../../types/resolveDescriptors";
-import { resolveErrors } from "../../types/resolveErrors";
-import { resolveSignatures } from "../../types/resolveSignatures";
-import { resolveStatements } from "../../types/resolveStatements";
-
+import * as fs from "fs";
+import { getAllTypes } from "../../types/resolveDescriptors";
 import { posixNormalize } from "../../utils/filePath";
 import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";
+import type {
+    Address,
+    Cell,
+    Contract,
+    ContractProvider,
+    Sender,
+    StateInit,
+} from "@ton/core";
+import { contractAddress } from "@ton/core";
 
-export async function buildModule(astF: FactoryAst, module: A.AstModule): Promise<Map<string,Buffer>> {
+export async function buildModule(
+    astF: FactoryAst,
+    module: A.AstModule,
+): Promise<Map<string, Buffer>> {
     let ctx = new CompilerContext();
     const parser = getParser(astF, defaultParser);
-    const project = createVirtualFileSystem("/", {}, false);
+    const fileSystem = {
+        [`contracts/empty.tact`]: fs
+            .readFileSync(path.join(__dirname, `contracts/empty.tact`))
+            .toString("base64"),
+    };
+    const project = createVirtualFileSystem("/", fileSystem, false);
     const stdlib = createVirtualFileSystem("@stdlib", files);
     const config = {
-        name: "",
-        output: "."
+        name: "test",
+        path: "contracts/empty.tact",
+        output: ".",
     };
     const contractCodes = new Map();
 
-    ctx = precompile(ctx, parser, astF, [module]);
+    ctx = precompile(ctx, project, stdlib, config.path, parser, astF, [module]);
 
-    // Compile contracts
+    const built: Record<
+        string,
+        | {
+              codeBoc: Buffer;
+              abi: string;
+          }
+        | undefined
+    > = {};
+
     const allContracts = getAllTypes(ctx).filter((v) => v.kind === "contract");
 
     // Sort contracts in topological order
@@ -45,21 +67,19 @@ export async function buildModule(astF: FactoryAst, module: A.AstModule): Promis
     for (const contract of sortedContracts ?? allContracts) {
         const contractName = contract.name;
 
-        let codeFc: { path: string; content: string }[];
-
         // Compiling contract to func
-
         const res = await compile(
             ctx,
             contractName,
-            config.name + "_" + contractName,
-            {},
+            `${config.name}_${contractName}`,
+            built,
         );
         for (const files of res.output.files) {
             const ffc = project.resolve(config.output, files.name);
             project.writeFile(ffc, files.code);
         }
-        codeFc = res.output.files.map((v) => ({
+        //project.writeFile(pathAbi, res.output.abi);
+        const codeFc = res.output.files.map((v) => ({
             path: posixNormalize(project.resolve(config.output, v.name)),
             content: v.code,
         }));
@@ -74,9 +94,7 @@ export async function buildModule(astF: FactoryAst, module: A.AstModule): Promis
             entries: [
                 stdlibPath,
                 stdlibExPath,
-                posixNormalize(
-                    project.resolve(config.output, codeEntrypoint),
-                ),
+                posixNormalize(project.resolve(config.output, codeEntrypoint)),
             ],
             sources: [
                 {
@@ -94,43 +112,34 @@ export async function buildModule(astF: FactoryAst, module: A.AstModule): Promis
         if (!c.ok) {
             throw new Error(c.log);
         }
+
+        // Add to built map
+        built[contractName] = {
+            codeBoc: c.output,
+            abi: "",
+        };
+
         contractCodes.set(contractName, c.output);
     }
 
     return contractCodes;
 }
 
-// Like precompile in the main pipeline, but skipping resolveImports
+export class ProxyContract implements Contract {
+    address: Address;
+    init: StateInit;
 
-export function precompile(
-    ctx: CompilerContext,
-    parser: Parser,
-    ast: FactoryAst,
-    parsedModules: A.AstModule[],
-) {
-    // Add information about all the source code entries to the context
-    ctx = openContext(ctx, [], [], parser, parsedModules);
+    constructor(stateInit: StateInit) {
+        this.address = contractAddress(0, stateInit);
+        this.init = stateInit;
+    }
 
-    // First load type descriptors and check that
-    //       they all have valid signatures
-    ctx = resolveDescriptors(ctx, ast);
-
-    // This creates TLB-style type definitions
-    ctx = resolveSignatures(ctx, ast);
-
-    // This checks and resolves all statements
-    ctx = resolveStatements(ctx, ast);
-
-    // This extracts error messages
-    ctx = resolveErrors(ctx, ast);
-
-    // This creates allocations for all defined types
-    ctx = resolveAllocations(ctx);
-
-    // To use in code generation to decide if a receiver needs to call the contract storage function
-    computeReceiversEffects(ctx);
-
-    // Prepared context
-    return ctx;
+    async send(
+        provider: ContractProvider,
+        via: Sender,
+        args: { value: bigint; bounce?: boolean | null | undefined },
+        body: Cell,
+    ) {
+        await provider.internal(via, { ...args, body: body });
+    }
 }
-
