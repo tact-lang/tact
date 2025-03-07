@@ -118,7 +118,7 @@ Contract =
     attributes:ContractAttribute*
     keyword<"contract">
     name:Id
-    parameters:parameterList<Parameter>?
+    parameters:ParameterList<Parameter>?
     traits:inheritedTraits?
     "{"
     declarations:contractItemDecl*
@@ -276,6 +276,7 @@ CodeOf = "codeOf" name:Id;
 
 StructFieldInitializer = name:Id init:(":" @expression)?;
 
+ParameterList<T> = "(" values:commaList<T>? ")";
 parameterList<T> = "(" @commaList<T>? ")";
 Parameter = name:Id type:ascription;
 

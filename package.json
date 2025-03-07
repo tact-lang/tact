@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
   "name": "@tact-lang/compiler",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tact-lang/tact.git"
@@ -68,6 +68,8 @@
     "dist/**/*",
     "bin/**/*",
     "!src/**/*",
+    "!src/benchmarks",
+    "!dist/benchmarks",
     "!**/test",
     "!dist/**/output",
     "!/docs",
@@ -118,6 +120,7 @@
     "cspell": "^8.8.3",
     "diff": "^7.0.0",
     "eslint": "^8.57.0",
+    "eslint-plugin-jest": "^28.11.0",
     "fast-check": "^3.23.2",
     "glob": "^8.1.0",
     "husky": "^9.1.5",
