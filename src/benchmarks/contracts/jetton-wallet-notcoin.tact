@@ -12,8 +12,8 @@ const MIN_STORAGE_DURATION: Int = 5 * 365 * 24 * 3600; // 5 years
 const JETTON_WALLET_BITS: Int = 1033;
 const JETTON_WALLET_CELLS: Int = 3;
 
-const JETTON_WALLET_INITSTATE_BITS: Int  = 931;
-const JETTON_WALLET_INITSTATE_CELLS: Int = 3;
+const JETTON_WALLET_INIT_STATE_BITS: Int  = 931;
+const JETTON_WALLET_INIT_STATE_CELLS: Int = 3;
 
 const BURN_NOTIFICATION_BITS: Int = 754;
 const BURN_NOTIFICATION_CELLS: Int = 1;
@@ -24,7 +24,7 @@ inline fun checkAmountIsEnoughToTransfer(msgValue: Int, forwardTonAmount: Int, f
     throwUnless(
         705,
         msgValue > fwdCount * fwdFee +
-        getSimpleForwardFee(JETTON_WALLET_INITSTATE_CELLS, JETTON_WALLET_INITSTATE_BITS, false) +
+        getSimpleForwardFee(JETTON_WALLET_INIT_STATE_CELLS, JETTON_WALLET_INIT_STATE_BITS, false) +
         getComputeFee(SEND_TRANSFER_GAS_CONSUMPTION, false) +
         getComputeFee(RECEIVE_TRANSFER_GAS_CONSUMPTION, false) +
         getStorageFee(JETTON_WALLET_CELLS, JETTON_WALLET_BITS, MIN_STORAGE_DURATION, false)
