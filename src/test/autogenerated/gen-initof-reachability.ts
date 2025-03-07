@@ -1057,12 +1057,13 @@ function createTestModules(astF: FactoryAst): Test[] {
         );
 
         const exprStmt = makeAssignStatement(makeId("stateInit"), baseExpr);
-        const divByZeroStmt = makeExpressionStatement(
-            makeBinaryExpression(
-                "/",
-                makeInt(1n),
-                makeBinaryExpression("-", makeId("arg"), makeId("arg")),
-            ),
+        const requireArg = makeBinaryExpression(
+            "!=",
+            makeBinaryExpression("-", makeId("arg"), makeId("arg")),
+            makeInt(0n),
+        );
+        const requireStatement = makeExpressionStatement(
+            makeStaticCall(makeId("require"), [requireArg, makeString("")]),
         );
 
         const case1 = makeTryStatement(
@@ -1072,7 +1073,7 @@ function createTestModules(astF: FactoryAst): Test[] {
         );
         const case2 = makeTryStatement(
             makeFreshVarName(),
-            [divByZeroStmt],
+            [requireStatement],
             [exprStmt],
         );
 
