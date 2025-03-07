@@ -1,5 +1,3 @@
-// https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md
-
 import "./messages";
 import "./jetton-wallet-notcoin";
 
@@ -40,11 +38,6 @@ contract JettonMinterNotcoin(
     }
 
     receive(msg: ProvideWalletAddress) {
-        // we use message fwdFee for estimation of forward_payload costs
-        let ctx = context();
-        let fwdFee = ctx.readForwardFee();
-        throwUnless(75, ctx.value > fwdFee + ProvideAddressGasConsumption);
-
         let ownerWorkchain: Int = parseStdAddress(msg.ownerAddress.asSlice()).workchain;
 
         let targetJettonWallet: BasechainAddress =
@@ -58,11 +51,6 @@ contract JettonMinterNotcoin(
             value: 0,
             mode: SendRemainingValue | SendBounceIfActionFail,
         });
-    }
-
-    receive(msg: JettonUpdateContent) {
-        throwUnless(73, sender() == self.owner);
-        self.jettonContent = msg.content;
     }
 
     receive(msg: Mint) {
@@ -82,6 +70,11 @@ contract JettonMinterNotcoin(
             body: msg.mintMessage.toCell(),
             init: getJettonWalletInit(msg.receiver)
         });
+    }
+
+    receive(msg: JettonUpdateContent) {
+        throwUnless(73, sender() == self.owner);
+        self.jettonContent = msg.content;
     }
 
     receive(msg: ChangeAdmin) {
