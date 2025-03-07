@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Docs
+
+- Add descriptions for `&&=`, `||=`, `>>=` and `<<=` augmented assignment operators: PR [#2328](https://github.com/tact-lang/tact/pull/2328)
+
+### Release contributors
+
+- [Novus Nota](https://github.com/novusnota)
+
+## [1.6.2] - 2025-03-06
+
+### Language features
+
+- [fix] Empty `init()` is not implicitly inserted when empty contract parameters are present: PR [#2314](https://github.com/tact-lang/tact/pull/2314)
+
+### Standard Library
+
+- Add doc comments for the functions and structs in `/libs`: PR [#2308](https://github.com/tact-lang/tact/pull/2308)
+- Add the `Slice.skipRef`, `Slice.skipMaybeRef`, `Slice.skipBool`, `Slice.skipCoins`, `Slice.skipVarUint16`, `Slice.skipVarInt16`, `Slice.skipVarUint32`, `Slice.skipVarInt32`, `Slice.skipAddress` functions: PR [#2305](https://github.com/tact-lang/tact/pull/2305)
+
+### Error reporting
+
+- [fix] Don't give an error for a small enough type for bounce receiver: PR [#2300](https://github.com/tact-lang/tact/pull/2300)
+
+### TypeScript wrappers
+
+- [fix] Getters are called by their named and not method_id if it is not explicitly set: PR [#2299](https://github.com/tact-lang/tact/issues/2299)
+- Contract constructors are public now: PR [#2290](https://github.com/tact-lang/tact/issues/2290)
+
+### Release contributors
+
+- [Petr Makhnev](https://github.com/i582)
+- [verytactical](https://github.com/verytactical)
+- [Maksim Lagus](https://github.com/Kaladin13)
+- [Shvetc Andrei](https://github.com/Shvandre)
+- [Daniil Sedov](https://github.com/Gusarich)
+- [Novus Nota](https://github.com/novusnota)
+
 ## [1.6.1] - 2025-03-04
 
 ### Language features

@@ -1,12 +1,12 @@
 import normalize from "path-normalize";
 import { Cell } from "@ton/core";
-import type { Config, Options } from "../src/config/parseConfig";
-import type { ILogger } from "../src/context/logger";
-import { Logger } from "../src/context/logger";
-import type { PackageFileFormat } from "../src";
-import { run } from "../src";
-import { fileFormat } from "../src/packaging/fileFormat";
-import { getCompilerVersion } from "../src/pipeline/version";
+import type { Config, Options } from "./config/parseConfig";
+import type { ILogger } from "./context/logger";
+import { Logger } from "./context/logger";
+import type { PackageFileFormat } from "./index";
+import { run } from "./index";
+import { fileFormat } from "./packaging/fileFormat";
+import { getCompilerVersion } from "./pipeline/version";
 
 export type VerifyResult =
     | {

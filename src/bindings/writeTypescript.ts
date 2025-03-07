@@ -25,6 +25,7 @@ import { serializers } from "./typescript/serializers";
 import { eqNames } from "../ast/ast-helpers";
 import { enabledOptimizedChildCode } from "../config/features";
 import type { CompilerContext } from "../context/context";
+import type { TypeDescription } from "../types/types";
 
 function writeArguments(args: ABIArgument[]) {
     const res: string[] = [];
@@ -54,6 +55,7 @@ export function writeTypescript(
     abi: ContractABI,
     ctx: CompilerContext,
     constants: WrappersConstantDescription[],
+    contract: undefined | TypeDescription,
     init?: {
         code: string;
         system: string | null;
@@ -224,9 +226,7 @@ export function writeTypescript(
     w.inIndent(() => {
         if (abi.errors) {
             Object.entries(abi.errors).forEach(([k, abiError]) => {
-                w.append(
-                    `${JSON.stringify(abiError.message.replaceAll("`", "\\`"))}: ${k},`,
-                );
+                w.append(`${JSON.stringify(abiError.message)}: ${k},`);
             });
         }
     });
@@ -676,7 +676,16 @@ export function writeTypescript(
                             writeArgumentToStack(a.name, a.type, w);
                         }
                     }
-                    if (g.methodId) {
+
+                    const method = contract?.functions.get(g.name);
+                    const explicitMethodId = method?.ast.attributes.find(
+                        (attr) => attr.type === "get",
+                    )?.methodId;
+
+                    // use call by name for getter if no explicit method id is stated
+                    // since with Blueprint we get this error:
+                    //    Error: Method name must be a string for TonClient provider
+                    if (g.methodId && typeof explicitMethodId !== "undefined") {
                         // 'as any' is used because Sandbox contracts's getters can be called
                         // using the function name or the method id number
                         // but the ContractProvider's interface get methods can only

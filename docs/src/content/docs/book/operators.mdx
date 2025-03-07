@@ -643,6 +643,10 @@ List of augmented assignment operators:
 * `&={:tact}`, which uses the [bitwise AND operator `&{:tact}`](#binary-bitwise-and). Can only be applied to values of type [`Int{:tact}`][int].
 * `^={:tact}`, which uses the [bitwise XOR operator `^{:tact}`](#binary-bitwise-xor). Can only be applied to values of type [`Int{:tact}`][int].
 * `|={:tact}`, which uses the [bitwise OR operator `|{:tact}`](#binary-bitwise-or). Can only be applied to values of type [`Int{:tact}`][int].
+* `&&={:tact}`, which uses the [logical AND operator `&&{:tact}`](#binary-logical-and). Can only be applied to values of type [`Bool{:tact}`][p]. Available since Tact 1.6.
+* `||={:tact}`, which uses the [logical OR operator `||{:tact}`](#binary-logical-or). Can only be applied to values of type [`Bool{:tact}`][p]. Available since Tact 1.6.
+* `<<={:tact}`, which uses the [bitwise shift left operator `<<{:tact}`](#binary-bitwise-shift-left). Can only be applied to values of type [`Int{:tact}`][int]. Available since Tact 1.6.
+* `>>={:tact}`, which uses the [bitwise shift right operator `>>{:tact}`](#binary-bitwise-shift-right). Can only be applied to values of type [`Int{:tact}`][int]. Available since Tact 1.6.
 
 ```tact
 let value: Int = 5;
@@ -686,6 +690,32 @@ value ^= 5;        // also bitwise XORs with 5 and assigns result back
 value | 5;         // bitwise ORs with 5
 value = value | 5; // bitwise ORs with 5 and assigns result back
 value |= 5;        // also bitwise ORs with 5 and assigns result back
+
+//
+// The following augmented assignment operators are available since Tact 1.6
+//
+
+// <<=
+value << 5;         // bitwise shifts left by 5
+value = value << 5; // bitwise shifts left by 5 and assigns result back
+value <<= 5;        // also bitwise shifts left by 5 and assigns result back
+
+// >>=
+value >> 5;         // bitwise shifts right by 5
+value = value >> 5; // bitwise shifts right by 5 and assigns result back
+value >>= 5;        // also bitwise shifts right by 5 and assigns result back
+
+let bValue: Bool = true;
+
+// &&=
+bValue && false;          // logically ANDs with false
+bValue = bValue && false; // logically ANDs with false and assigns result back
+bValue &&= false;         // also logically ANDs with false and assigns result back
+
+// ||=
+bValue || true;          // logically ORs with true
+bValue = bValue || true; // logically ORs with true and assigns result back
+bValue ||= true;         // also logically ORs with true and assigns result back
 ```
 
 [p]: /book/types#primitive-types

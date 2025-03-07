@@ -200,6 +200,30 @@ asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 ///
 asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 
+/// Extension mutation function for the `Slice` type. Available since Tact 1.6.2.
+///
+/// Skips an `Address` from the `Slice`.
+///
+/// Attempts to skip such `Address` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+///
+/// Attempts to skip more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
+/// ```tact
+/// fun example() {
+///     let s1: Slice = beginCell()
+///         .storeAddress(myAddress())
+///         .storeUint(42, 32)
+///         .asSlice();
+///
+///     s1.skipAddress();
+///     let fizz: Int = s1.loadUint(32); // 42
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells/#sliceloadaddress
+///
+asm extends mutates fun skipAddress(self: Slice) { LDMSGADDR NIP }
+
 /// Extension function for the `Builder` type.
 ///
 /// Stores the `address` in the copy of the `Builder`. Returns that copy.
