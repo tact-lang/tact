@@ -42,6 +42,9 @@ exports[`local-type-inference should automatically set types for let statements 
     "136": {
       "message": "Invalid standard address",
     },
+    "138": {
+      "message": "Not a basechain address",
+    },
     "14": {
       "message": "Virtualization error",
     },
