@@ -81,7 +81,7 @@ asm extends fun hashData(self: Slice): Int { ONE HASHEXT_SHA256 }
 ///
 asm extends fun hashData(self: String): Int { ONE HASHEXT_SHA256 }
 
-/// Checks the [Ed25519] `signature` of the 256-bit unsigned `Int` `hash` using a `public_key`, 
+/// Checks the [Ed25519] `signature` of the 256-bit unsigned `Int` `hash` using a `publicKey`, 
 /// represented by a 256-bit unsigned `Int`. The signature must contain at least 512 bits of data, but
 /// only the first 512 bits are used.
 /// 
@@ -110,7 +110,7 @@ asm extends fun hashData(self: String): Int { ONE HASHEXT_SHA256 }
 ///         let check: Bool = checkSignature(hash, msg.signature, self.pub);
 ///         //                               ----  -------------  --------
 ///         //                               ↑     ↑              ↑
-///         //                               |     |              public_key stored in our contract
+///         //                               |     |              publicKey stored in our contract
 ///         //                               |     signature obtained from the received message
 ///         //                               hash calculated using the data from the received message
 ///         // ... follow-up logic ...
@@ -120,9 +120,9 @@ asm extends fun hashData(self: String): Int { ONE HASHEXT_SHA256 }
 /// 
 /// [Ed25519]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
 /// 
-asm fun checkSignature(hash: Int, signature: Slice, public_key: Int): Bool { CHKSIGNU }
+asm fun checkSignature(hash: Int, signature: Slice, publicKey: Int): Bool { CHKSIGNU }
 
-/// Checks the [Ed25519] `signature` of the `data` using a `public_key`, similar to `checkSignature()`. 
+/// Checks the [Ed25519] `signature` of the `data` using a `publicKey`, similar to `checkSignature()`. 
 /// If the bit length of `data` is not divisible by 8, this function throws an error with 
 /// [exit code 9]: `Cell underflow`. 
 /// Verification itself is done indirectly on a [SHA-256] hash of the `data`.
@@ -133,11 +133,11 @@ asm fun checkSignature(hash: Int, signature: Slice, public_key: Int): Bool { CHK
 ///
 /// ```tact
 /// fun example() {
-///     let data: Slice = some_data;
-///     let signature: Slice = some_signature;
-///     let public_key: Int = 42;
+///     let data: Slice = someData;
+///     let signature: Slice = someSignature;
+///     let publicKey: Int = 42;
 /// 
-///     let check: Bool = checkDataSignature(data, signature, public_key);
+///     let check: Bool = checkDataSignature(data, signature, publicKey);
 /// }
 /// ```
 /// 
@@ -145,4 +145,4 @@ asm fun checkSignature(hash: Int, signature: Slice, public_key: Int): Bool { CHK
 /// [Ed25519]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
 /// [SHA-256]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
 /// 
-asm fun checkDataSignature(data: Slice, signature: Slice, public_key: Int): Bool { CHKSIGNS }
+asm fun checkDataSignature(data: Slice, signature: Slice, publicKey: Int): Bool { CHKSIGNS }
