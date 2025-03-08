@@ -135,9 +135,9 @@ asm fun checkSignature(hash: Int, signature: Slice, public_key: Int): Bool { CHK
 /// fun example() {
 ///     let data: Slice = some_data;
 ///     let signature: Slice = some_signature;
-///     let publicKey: Int = 42;
+///     let public_key: Int = 42;
 /// 
-///     let check: Bool = checkSignature(data, signature, publicKey);
+///     let check: Bool = checkDataSignature(data, signature, public_key);
 /// }
 /// ```
 /// 
