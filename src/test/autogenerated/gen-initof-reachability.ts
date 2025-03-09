@@ -15,8 +15,8 @@ import type { CommonMessageInfoInternal, Message, StateInit } from "@ton/core";
 import { Cell, beginCell, toNano } from "@ton/core";
 import { findTransaction } from "@ton/test-utils";
 
-type ItemsWithDeclarations<T> = {
-    items: T[];
+type ItemWithDeclarations<T> = {
+    item: T;
     declarations: Declarations;
 };
 
@@ -25,12 +25,12 @@ type Declarations = {
     contractDeclarations: Map<string, A.AstContractDeclaration>;
 };
 
-type ExpressionWithName = {
+type ExpressionWrapper = {
     name: string;
     expression: A.AstExpression;
 };
 
-type StatementsWithName = {
+type StatementsWrapper = {
     name: string;
     statements: A.AstStatement[];
     assignedStateInit: boolean;
@@ -543,61 +543,34 @@ function createTestModules(astF: FactoryAst): Test[] {
     }
     */
 
-    function withEmptyDeclarations<T>(
-        items: T[],
-    ): fc.Arbitrary<ItemsWithDeclarations<T>> {
-        return fc.constant({
-            items: items,
+    function withEmptyDeclarations<T>(item: T): ItemWithDeclarations<T> {
+        return {
+            item: item,
             declarations: {
                 globalDeclarations: new Map(),
                 contractDeclarations: new Map(),
             },
-        });
+        };
     }
 
-    function chainGenerators<T>(
-        gens: fc.Arbitrary<ItemsWithDeclarations<T>>[],
-        initialDecls: Declarations,
-    ): fc.Arbitrary<ItemsWithDeclarations<T>> {
-        const join: (
-            d1: ItemsWithDeclarations<T>,
-            d2: ItemsWithDeclarations<T>,
-        ) => ItemsWithDeclarations<T> = (d1, d2) => {
-            const finalGlobalDecls: Map<string, A.AstModuleItem> = new Map(
-                d1.declarations.globalDeclarations,
-            );
-            const finalContractDecls: Map<string, A.AstContractDeclaration> =
-                new Map(d1.declarations.contractDeclarations);
-            const finalItems: T[] = [...d1.items, ...d2.items];
-            d2.declarations.globalDeclarations.forEach((value, key) => {
-                finalGlobalDecls.set(key, value);
-            });
-            d2.declarations.contractDeclarations.forEach((value, key) => {
-                finalContractDecls.set(key, value);
-            });
-            return {
-                items: finalItems,
-                declarations: {
-                    globalDeclarations: finalGlobalDecls,
-                    contractDeclarations: finalContractDecls,
-                },
-            };
+    function withDeclarations<T>(
+        item: T,
+        declarations: Declarations,
+    ): ItemWithDeclarations<T> {
+        return {
+            item,
+            declarations,
         };
-        return chainGeneratorsAux(
-            {
-                items: [],
-                declarations: initialDecls,
-            },
-            gens,
-            join,
-        );
+    }
+
+    function chainGenerators<T>(gens: fc.Arbitrary<T[]>[]): fc.Arbitrary<T[]> {
+        return chainGeneratorsAux([], gens);
     }
 
     function chainGeneratorsAux<T>(
-        accumulator: T,
-        gens: fc.Arbitrary<T>[],
-        join: (d1: T, d2: T) => T,
-    ): fc.Arbitrary<T> {
+        accumulator: T[],
+        gens: fc.Arbitrary<T[]>[],
+    ): fc.Arbitrary<T[]> {
         if (gens.length === 0) {
             return fc.constant(accumulator);
         }
@@ -605,9 +578,8 @@ function createTestModules(astF: FactoryAst): Test[] {
         const gen = gens[0]!;
         return gen.chain((currData) => {
             return chainGeneratorsAux(
-                join(accumulator, currData),
+                [...accumulator, ...currData],
                 gens.slice(1),
-                join,
             );
         });
     }
@@ -636,54 +608,57 @@ function createTestModules(astF: FactoryAst): Test[] {
     }*/
 
     function initOfGenerator(): fc.Arbitrary<
-        ItemsWithDeclarations<ExpressionWithName>
+        ItemWithDeclarations<ExpressionWrapper>[]
     > {
-        return withEmptyDeclarations([
-            {
+        return fc.constant([
+            withEmptyDeclarations({
                 name: "InitOf",
                 expression: makeInitOf(makeId("Deployer"), []),
-            },
+            }),
         ]);
     }
 
     function staticCallGenerator(
         currentFunCallDepth: number,
-    ): fc.Arbitrary<ItemsWithDeclarations<ExpressionWithName>> {
+    ): fc.Arbitrary<ItemWithDeclarations<ExpressionWrapper>[]> {
         if (currentFunCallDepth >= config.maxFunCallDepth) {
-            return withEmptyDeclarations([]);
+            return fc.constant([]);
         }
 
         return statementGenerator(currentFunCallDepth + 1).chain((genStmts) => {
-            const finalGlobalDecls: Map<string, A.AstModuleItem> = new Map(
-                genStmts.declarations.globalDeclarations,
-            );
-            const finalItems: ExpressionWithName[] = [];
+            const finalItems: ItemWithDeclarations<ExpressionWrapper>[] = [];
 
-            for (const stmtsWithName of genStmts.items) {
-                if (stmtsWithName.assignedStateInit) {
+            for (const stmtsWithName of genStmts) {
+                const finalGlobalDecls: Map<string, A.AstModuleItem> = new Map(
+                    stmtsWithName.declarations.globalDeclarations,
+                );
+
+                if (stmtsWithName.item.assignedStateInit) {
                     const funName = makeFreshFunctionName();
                     const returnStmt = makeReturnStatement(makeId("stateInit"));
                     const funDef = makeFunctionDefinition(
                         funName,
                         [makeTypedParameter("arg", "Int")],
-                        [...stmtsWithName.statements, returnStmt],
+                        [...stmtsWithName.item.statements, returnStmt],
                         [],
                         makeTypeId("StateInit"),
                     );
                     const call = makeStaticCall(funName, [makeId("arg")]);
-                    const testName = `StaticCall_${stmtsWithName.name}`;
+                    const testName = `StaticCall_${stmtsWithName.item.name}`;
                     finalGlobalDecls.set(idText(funName), funDef);
-                    finalItems.push({ name: testName, expression: call });
+                    finalItems.push(
+                        withDeclarations(
+                            { name: testName, expression: call },
+                            {
+                                globalDeclarations: finalGlobalDecls,
+                                contractDeclarations: new Map(),
+                            },
+                        ),
+                    );
                 }
             }
 
-            return fc.constant({
-                items: finalItems,
-                declarations: {
-                    globalDeclarations: finalGlobalDecls,
-                    contractDeclarations: new Map(),
-                },
-            });
+            return fc.constant(finalItems);
         });
     }
 
@@ -771,42 +746,49 @@ function createTestModules(astF: FactoryAst): Test[] {
     */
 
     function letStatementGenerator(
-        baseExpr: A.AstExpression,
-        name: string,
-    ): fc.Arbitrary<ItemsWithDeclarations<StatementsWithName>> {
+        baseExpr: ItemWithDeclarations<ExpressionWrapper>,
+    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
         const varName = makeId("stateInit");
         const varType = makeTypeId("StateInit");
-        const stmtLet = makeLetStatement(varName, varType, baseExpr);
-        const newName = `Let_${name}`;
+        const stmtLet = makeLetStatement(
+            varName,
+            varType,
+            baseExpr.item.expression,
+        );
+        const newName = `Let_${baseExpr.item.name}`;
 
-        return withEmptyDeclarations([
-            {
-                name: newName,
-                statements: [stmtLet],
-                assignedStateInit: true,
-            },
+        return fc.constant([
+            withDeclarations(
+                {
+                    name: newName,
+                    statements: [stmtLet],
+                    assignedStateInit: true,
+                },
+                baseExpr.declarations,
+            ),
         ]);
     }
 
     function expressionStatementGenerator(
-        baseExpr: A.AstExpression,
-        name: string,
-    ): fc.Arbitrary<ItemsWithDeclarations<StatementsWithName>> {
-        const stmtExpr = makeExpressionStatement(baseExpr);
-        const newName = `Expr_${name}`;
-        return withEmptyDeclarations([
-            {
-                name: newName,
-                statements: [stmtExpr],
-                assignedStateInit: false,
-            },
+        baseExpr: ItemWithDeclarations<ExpressionWrapper>,
+    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
+        const stmtExpr = makeExpressionStatement(baseExpr.item.expression);
+        const newName = `Expr_${baseExpr.item.name}`;
+        return fc.constant([
+            withDeclarations(
+                {
+                    name: newName,
+                    statements: [stmtExpr],
+                    assignedStateInit: false,
+                },
+                baseExpr.declarations,
+            ),
         ]);
     }
 
     function conditionStatementGenerator(
-        baseExpr: A.AstExpression,
-        name: string,
-    ): fc.Arbitrary<ItemsWithDeclarations<StatementsWithName>> {
+        baseExpr: ItemWithDeclarations<ExpressionWrapper>,
+    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -827,7 +809,10 @@ function createTestModules(astF: FactoryAst): Test[] {
             makeInt(0n),
         );
 
-        const expr = makeAssignStatement(makeId("stateInit"), baseExpr);
+        const expr = makeAssignStatement(
+            makeId("stateInit"),
+            baseExpr.item.expression,
+        );
         const dummy2 = makeAssignStatement(
             makeId("stateInit"),
             makeInitOf(makeId("Dummy2"), []),
@@ -836,33 +821,34 @@ function createTestModules(astF: FactoryAst): Test[] {
         const case2 = makeConditionStatement(cond1Expr, [expr], [dummy2]);
         const case3 = makeConditionStatement(cond2Expr, [dummy2], [expr]);
 
-        const case1Name = `IfNoElse_${name}`;
-        const case2Name = `IfThen_${name}`;
-        const case3Name = `IfElse_${name}`;
+        const case1Name = `IfNoElse_${baseExpr.item.name}`;
+        const case2Name = `IfThen_${baseExpr.item.name}`;
+        const case3Name = `IfElse_${baseExpr.item.name}`;
 
-        return withEmptyDeclarations([
-            {
-                name: case1Name,
-                statements: [initVarStmt, case1],
-                assignedStateInit: true,
-            },
-            {
-                name: case2Name,
-                statements: [initVarStmt, case2],
-                assignedStateInit: true,
-            },
-            {
-                name: case3Name,
-                statements: [initVarStmt, case3],
-                assignedStateInit: true,
-            },
-        ]);
+        return fc.constant(
+            [
+                {
+                    name: case1Name,
+                    statements: [initVarStmt, case1],
+                    assignedStateInit: true,
+                },
+                {
+                    name: case2Name,
+                    statements: [initVarStmt, case2],
+                    assignedStateInit: true,
+                },
+                {
+                    name: case3Name,
+                    statements: [initVarStmt, case3],
+                    assignedStateInit: true,
+                },
+            ].map((item) => withDeclarations(item, baseExpr.declarations)),
+        );
     }
 
     function whileStatementGenerator(
-        baseExpr: A.AstExpression,
-        name: string,
-    ): fc.Arbitrary<ItemsWithDeclarations<StatementsWithName>> {
+        baseExpr: ItemWithDeclarations<ExpressionWrapper>,
+    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -873,7 +859,10 @@ function createTestModules(astF: FactoryAst): Test[] {
             makeTypeId("Int"),
             makeBinaryExpression("-", makeId("arg"), makeId("arg")),
         );
-        const expr = makeAssignStatement(makeId("stateInit"), baseExpr);
+        const expr = makeAssignStatement(
+            makeId("stateInit"),
+            baseExpr.item.expression,
+        );
         const counterIncr = makeAssignStatement(
             makeId("counter"),
             makeBinaryExpression("+", makeId("counter"), makeInt(1n)),
@@ -881,21 +870,23 @@ function createTestModules(astF: FactoryAst): Test[] {
         const cond = makeBinaryExpression("<=", makeId("counter"), makeInt(2n));
         const loop = makeWhileStatement(cond, [expr, counterIncr]);
 
-        const newName = `While_${name}`;
+        const newName = `While_${baseExpr.item.name}`;
 
-        return withEmptyDeclarations([
-            {
-                name: newName,
-                statements: [initVarStmt, countVarStmt, loop],
-                assignedStateInit: true,
-            },
+        return fc.constant([
+            withDeclarations(
+                {
+                    name: newName,
+                    statements: [initVarStmt, countVarStmt, loop],
+                    assignedStateInit: true,
+                },
+                baseExpr.declarations,
+            ),
         ]);
     }
 
     function untilStatementGenerator(
-        baseExpr: A.AstExpression,
-        name: string,
-    ): fc.Arbitrary<ItemsWithDeclarations<StatementsWithName>> {
+        baseExpr: ItemWithDeclarations<ExpressionWrapper>,
+    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -906,7 +897,10 @@ function createTestModules(astF: FactoryAst): Test[] {
             makeTypeId("Int"),
             makeBinaryExpression("-", makeId("arg"), makeId("arg")),
         );
-        const expr = makeAssignStatement(makeId("stateInit"), baseExpr);
+        const expr = makeAssignStatement(
+            makeId("stateInit"),
+            baseExpr.item.expression,
+        );
         const counterIncr = makeAssignStatement(
             makeId("counter"),
             makeBinaryExpression("+", makeId("counter"), makeInt(1n)),
@@ -914,21 +908,23 @@ function createTestModules(astF: FactoryAst): Test[] {
         const cond = makeBinaryExpression(">=", makeId("counter"), makeInt(2n));
         const loop = makeUntilStatement(cond, [expr, counterIncr]);
 
-        const newName = `Until_${name}`;
+        const newName = `Until_${baseExpr.item.name}`;
 
-        return withEmptyDeclarations([
-            {
-                name: newName,
-                statements: [initVarStmt, countVarStmt, loop],
-                assignedStateInit: true,
-            },
+        return fc.constant([
+            withDeclarations(
+                {
+                    name: newName,
+                    statements: [initVarStmt, countVarStmt, loop],
+                    assignedStateInit: true,
+                },
+                baseExpr.declarations,
+            ),
         ]);
     }
 
     function repeatStatementGenerator(
-        baseExpr: A.AstExpression,
-        name: string,
-    ): fc.Arbitrary<ItemsWithDeclarations<StatementsWithName>> {
+        baseExpr: ItemWithDeclarations<ExpressionWrapper>,
+    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -939,17 +935,23 @@ function createTestModules(astF: FactoryAst): Test[] {
             makeTypeId("Int"),
             makeStaticCall(makeId("random"), [makeInt(1n), makeInt(3n)]),
         );
-        const expr = makeAssignStatement(makeId("stateInit"), baseExpr);
+        const expr = makeAssignStatement(
+            makeId("stateInit"),
+            baseExpr.item.expression,
+        );
         const loop = makeRepeatStatement(makeId("counter"), [expr]);
 
-        const newName = `Repeat_${name}`;
+        const newName = `Repeat_${baseExpr.item.name}`;
 
-        return withEmptyDeclarations([
-            {
-                name: newName,
-                statements: [initVarStmt, countVarStmt, loop],
-                assignedStateInit: true,
-            },
+        return fc.constant([
+            withDeclarations(
+                {
+                    name: newName,
+                    statements: [initVarStmt, countVarStmt, loop],
+                    assignedStateInit: true,
+                },
+                baseExpr.declarations,
+            ),
         ]);
     }
 
@@ -994,14 +996,16 @@ function createTestModules(astF: FactoryAst): Test[] {
     */
 
     function destructStatementGenerator(
-        baseExpr: A.AstExpression,
-        name: string,
-    ): fc.Arbitrary<ItemsWithDeclarations<StatementsWithName>> {
+        baseExpr: ItemWithDeclarations<ExpressionWrapper>,
+    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
         const identifiers: Map<string, [A.AstId, A.AstId]> = new Map();
         identifiers.set("init", [makeId("init"), makeId("stateInit")]);
 
         const wrapped = makeStructInstance(makeId("StateInitWrapper"), [
-            makeStructFieldInitializer(makeId("init"), baseExpr),
+            makeStructFieldInitializer(
+                makeId("init"),
+                baseExpr.item.expression,
+            ),
         ]);
 
         const unwrapped = makeDestructStatement(
@@ -1010,53 +1014,63 @@ function createTestModules(astF: FactoryAst): Test[] {
             makeTypeId("StateInitWrapper"),
         );
 
-        const newName = `Destruct_${name}`;
+        const newName = `Destruct_${baseExpr.item.name}`;
 
-        return withEmptyDeclarations([
-            {
-                name: newName,
-                statements: [unwrapped],
-                assignedStateInit: true,
-            },
+        return fc.constant([
+            withDeclarations(
+                {
+                    name: newName,
+                    statements: [unwrapped],
+                    assignedStateInit: true,
+                },
+                baseExpr.declarations,
+            ),
         ]);
     }
 
     function blockStatementGenerator(
-        baseExpr: A.AstExpression,
-        name: string,
-    ): fc.Arbitrary<ItemsWithDeclarations<StatementsWithName>> {
+        baseExpr: ItemWithDeclarations<ExpressionWrapper>,
+    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
             makeInitOf(makeId("Dummy1"), []),
         );
 
-        const exprStmt = makeAssignStatement(makeId("stateInit"), baseExpr);
+        const exprStmt = makeAssignStatement(
+            makeId("stateInit"),
+            baseExpr.item.expression,
+        );
 
         const stmt = makeBlockStatement([exprStmt]);
 
-        const newName = `Block_${name}`;
+        const newName = `Block_${baseExpr.item.name}`;
 
-        return withEmptyDeclarations([
-            {
-                name: newName,
-                statements: [initVarStmt, stmt],
-                assignedStateInit: true,
-            },
+        return fc.constant([
+            withDeclarations(
+                {
+                    name: newName,
+                    statements: [initVarStmt, stmt],
+                    assignedStateInit: true,
+                },
+                baseExpr.declarations,
+            ),
         ]);
     }
 
     function tryStatementGenerator(
-        baseExpr: A.AstExpression,
-        name: string,
-    ): fc.Arbitrary<ItemsWithDeclarations<StatementsWithName>> {
+        baseExpr: ItemWithDeclarations<ExpressionWrapper>,
+    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
             makeInitOf(makeId("Dummy1"), []),
         );
 
-        const exprStmt = makeAssignStatement(makeId("stateInit"), baseExpr);
+        const exprStmt = makeAssignStatement(
+            makeId("stateInit"),
+            baseExpr.item.expression,
+        );
         const requireArg = makeBinaryExpression(
             "!=",
             makeBinaryExpression("-", makeId("arg"), makeId("arg")),
@@ -1077,26 +1091,28 @@ function createTestModules(astF: FactoryAst): Test[] {
             [exprStmt],
         );
 
-        const case1Name = `Try_${name}`;
-        const case2Name = `Catch_${name}`;
+        const case1Name = `Try_${baseExpr.item.name}`;
+        const case2Name = `Catch_${baseExpr.item.name}`;
 
-        return withEmptyDeclarations([
-            {
-                name: case1Name,
-                statements: [initVarStmt, case1],
-                assignedStateInit: true,
-            },
-            {
-                name: case2Name,
-                statements: [initVarStmt, case2],
-                assignedStateInit: true,
-            },
-        ]);
+        return fc.constant(
+            [
+                {
+                    name: case1Name,
+                    statements: [initVarStmt, case1],
+                    assignedStateInit: true,
+                },
+                {
+                    name: case2Name,
+                    statements: [initVarStmt, case2],
+                    assignedStateInit: true,
+                },
+            ].map((item) => withDeclarations(item, baseExpr.declarations)),
+        );
     }
 
     function expressionGenerator(
         currentFunCallDepth: number,
-    ): fc.Arbitrary<ItemsWithDeclarations<ExpressionWithName>> {
+    ): fc.Arbitrary<ItemWithDeclarations<ExpressionWrapper>[]> {
         const exprGens = [
             initOfGenerator(),
             staticCallGenerator(currentFunCallDepth),
@@ -1106,83 +1122,53 @@ function createTestModules(astF: FactoryAst): Test[] {
         ];
 
         // Chain all the above generators
-        return chainGenerators(exprGens, {
-            globalDeclarations: new Map(),
-            contractDeclarations: new Map(),
-        });
+        return chainGenerators(exprGens);
     }
 
     function statementGenerator(
         currentFunCallDepth: number,
-    ): fc.Arbitrary<ItemsWithDeclarations<StatementsWithName>> {
+    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
         return expressionGenerator(currentFunCallDepth).chain((genExprs) => {
             const generators: fc.Arbitrary<
-                ItemsWithDeclarations<StatementsWithName>
+                ItemWithDeclarations<StatementsWrapper>[]
             >[] = [];
 
-            for (const exprWithName of genExprs.items) {
+            for (const exprWithName of genExprs) {
                 const stmtGens = [
-                    letStatementGenerator(
-                        exprWithName.expression,
-                        exprWithName.name,
-                    ),
-                    expressionStatementGenerator(
-                        exprWithName.expression,
-                        exprWithName.name,
-                    ),
-                    conditionStatementGenerator(
-                        exprWithName.expression,
-                        exprWithName.name,
-                    ),
-                    whileStatementGenerator(
-                        exprWithName.expression,
-                        exprWithName.name,
-                    ),
-                    untilStatementGenerator(
-                        exprWithName.expression,
-                        exprWithName.name,
-                    ),
-                    repeatStatementGenerator(
-                        exprWithName.expression,
-                        exprWithName.name,
-                    ) /*
+                    letStatementGenerator(exprWithName),
+                    expressionStatementGenerator(exprWithName),
+                    conditionStatementGenerator(exprWithName),
+                    whileStatementGenerator(exprWithName),
+                    untilStatementGenerator(exprWithName),
+                    repeatStatementGenerator(exprWithName) /*
                     forEachStatementGenerator(
-                        exprWithName.expression,
-                        exprWithName.name,
+                        exprWithName
                     ),*/,
-                    destructStatementGenerator(
-                        exprWithName.expression,
-                        exprWithName.name,
-                    ),
-                    blockStatementGenerator(
-                        exprWithName.expression,
-                        exprWithName.name,
-                    ),
-                    tryStatementGenerator(
-                        exprWithName.expression,
-                        exprWithName.name,
-                    ),
+                    destructStatementGenerator(exprWithName),
+                    blockStatementGenerator(exprWithName),
+                    tryStatementGenerator(exprWithName),
                 ];
 
                 generators.push(...stmtGens);
             }
 
-            return chainGenerators(generators, genExprs.declarations);
+            return chainGenerators(generators);
         });
     }
 
     function contractWithInitGenerator(
-        stmtsData: StatementsWithName,
-        contractDecls: A.AstContractDeclaration[],
-    ): fc.Arbitrary<ItemsWithDeclarations<A.AstContract>> {
+        stmtsData: ItemWithDeclarations<StatementsWrapper>,
+    ): fc.Arbitrary<ItemWithDeclarations<A.AstContract>[]> {
         const finalContracts: A.AstContract[] = [];
 
-        if (stmtsData.assignedStateInit) {
+        if (stmtsData.item.assignedStateInit) {
             finalContracts.push(
                 makeContract(
-                    makeId(stmtsData.name),
-                    stmtsData.statements,
-                    contractDecls,
+                    makeId(stmtsData.item.name),
+                    stmtsData.item.statements,
+                    Array.from(
+                        stmtsData.declarations.contractDeclarations.values(),
+                    ),
                 ),
             );
         }
@@ -1193,34 +1179,32 @@ function createTestModules(astF: FactoryAst): Test[] {
                 contractDecls,
             )
         );*/
-        return withEmptyDeclarations(finalContracts);
+        return fc.constant(
+            finalContracts.map((item) =>
+                withDeclarations(item, {
+                    globalDeclarations:
+                        stmtsData.declarations.globalDeclarations,
+                    contractDeclarations: new Map(),
+                }),
+            ),
+        );
     }
 
     function contractGenerator(
         currentFunCallDepth: number,
-    ): fc.Arbitrary<ItemsWithDeclarations<A.AstContract>> {
+    ): fc.Arbitrary<ItemWithDeclarations<A.AstContract>[]> {
         return statementGenerator(currentFunCallDepth).chain((genStmts) => {
             const generators: fc.Arbitrary<
-                ItemsWithDeclarations<A.AstContract>
+                ItemWithDeclarations<A.AstContract>[]
             >[] = [];
 
-            for (const stmtsWithName of genStmts.items) {
-                const contractGens = [
-                    contractWithInitGenerator(
-                        stmtsWithName,
-                        Array.from(
-                            genStmts.declarations.contractDeclarations.values(),
-                        ),
-                    ),
-                ];
+            for (const stmtsWithName of genStmts) {
+                const contractGens = [contractWithInitGenerator(stmtsWithName)];
 
                 generators.push(...contractGens);
             }
 
-            return chainGenerators(generators, {
-                globalDeclarations: genStmts.declarations.globalDeclarations,
-                contractDeclarations: new Map(),
-            });
+            return chainGenerators(generators);
         });
     }
 
@@ -1259,15 +1243,15 @@ function createTestModules(astF: FactoryAst): Test[] {
             .toString(),
         origin: "user",
     });
-    const finalGlobalDecls = [
-        ...allCases.declarations.globalDeclarations.values(),
-        ...extraModule.items,
-    ];
 
-    for (const contract of allCases.items) {
+    for (const contract of allCases) {
+        const finalGlobalDecls = [
+            ...contract.declarations.globalDeclarations.values(),
+            ...extraModule.items,
+        ];
         tests.push({
-            module: makeModule(contract, finalGlobalDecls),
-            testName: idText(contract.name),
+            module: makeModule(contract.item, finalGlobalDecls),
+            testName: idText(contract.item.name),
         });
     }
 
@@ -1377,10 +1361,10 @@ async function main() {
     const tests = createTestModules(astF);
 
     console.log(`Generated ${tests.length} tests.`);
+    const fileDescriptor = fs.openSync(path.join(__dirname, "error.log"), "w");
 
     for (const test of tests) {
         console.log(`Compiling test ${test.testName}`);
-
         try {
             // Compile the module
             const contractCodes = await buildModule(astF, test.module);
@@ -1388,10 +1372,19 @@ async function main() {
             await testContracts(test.testName, contractCodes);
             console.log("Passed.");
         } catch (e) {
-            console.log("Test:");
-            console.log(prettyPrint(test.module));
-            console.log("failed with error:");
-            console.log(e);
+            console.log("Failed. See error.log");
+            const tactCode = prettyPrint(test.module);
+            fs.writeSync(fileDescriptor, `${tactCode}\nfailed with error:\n`);
+            if (e instanceof Error) {
+                fs.writeSync(fileDescriptor, e.stack ?? "");
+                fs.writeSync(
+                    fileDescriptor,
+                    "\n----------------------------------\n\n",
+                );
+            } else {
+                // Cannot handle this error. Stop the entire process since this is something unexpected.
+                throw e;
+            }
         }
     }
 }
