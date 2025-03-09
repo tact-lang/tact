@@ -1,7 +1,8 @@
-import { AstFieldDecl, AstExpression, AstId } from "../../../src/ast/ast";
+import type { AstFieldDecl, AstExpression, AstId } from "../../../src/ast/ast";
 import { createSample, generateAstId } from "../util";
-import { tyToAstType, Type } from "../types";
-import { Scope } from "../scope";
+import { tyToAstType } from "../types";
+import type { Type } from "../types";
+import type { Scope } from "../scope";
 import { GenerativeEntity } from "./generator";
 
 import fc from "fast-check";
@@ -34,10 +35,7 @@ export class Field extends GenerativeEntity<AstFieldDecl> {
             );
         }
         super(type);
-        this.name =
-            name === undefined
-                ? createSample(generateAstId(parentScope, "field"))
-                : name;
+        this.name = name ?? createSample(generateAstId(parentScope, "field"));
     }
 
     generate(): fc.Arbitrary<AstFieldDecl> {
@@ -46,8 +44,7 @@ export class Field extends GenerativeEntity<AstFieldDecl> {
             id: fc.constant(this.idx),
             name: fc.constant(this.name!),
             type: fc.constant(tyToAstType(this.type)),
-            initializer:
-                this.init === undefined ? fc.constant(undefined) : this.init,
+            initializer: this.init ?? fc.constant(undefined),
             as: fc.constantFrom(undefined),
             loc: fc.constant(dummySrcInfo),
         });

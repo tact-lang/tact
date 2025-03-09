@@ -1,4 +1,4 @@
-import {
+import type {
     AstBoolean,
     AstExpression,
     AstId,
@@ -12,9 +12,9 @@ import {
     AstSimplifiedString,
     AstStructFieldInitializer,
     AstStructInstance,
-    AstNumberBase,
     AstString,
 } from "../../../src/ast/ast";
+import { AstNumberBase } from "../../../src/ast/ast";
 import JSONbig from "json-bigint";
 import fc from "fast-check";
 
@@ -34,17 +34,16 @@ import {
     tyToString,
     tyEq,
     UtilType,
-    Type,
     throwTyError,
     makeFunctionTy,
-    StructField,
 } from "../types";
+import type { StructField, Type } from "../types";
 import { GlobalContext } from "../context";
-import { Scope } from "../scope";
+import type { Scope } from "../scope";
 import { dummySrcInfo } from "../../../src/grammar/";
 import { FunctionDef } from "./function";
 
-export function generateNumber( //TODO: add random base generation or pass the needed one, where number is generated
+export function generateNumber(
     base?: AstNumberBase,
     constValue?: bigint,
 ): fc.Arbitrary<AstExpression> {
@@ -55,7 +54,7 @@ export function generateNumber( //TODO: add random base generation or pass the n
         id: fc.constant(nextId()),
         value,
         loc: fc.constant(dummySrcInfo),
-        base: fc.constant(base ?? 10),
+        base: base ? fc.constant(base) : fc.constantFrom(2, 8, 10, 16),
     });
 }
 
@@ -235,7 +234,7 @@ export class FieldAccess extends GenerativeEntity<AstFieldAccess> {
     generate(): fc.Arbitrary<AstFieldAccess> {
         return fc.record<AstFieldAccess>({
             kind: fc.constant("field_access"),
-            aggregate: fc.constant(this.src ? this.src : generateThisID()),
+            aggregate: fc.constant(this.src ?? generateThisID()),
             field: fc.constant(this.name!),
             id: fc.constant(this.idx),
             loc: fc.constant(dummySrcInfo),
@@ -703,9 +702,6 @@ export class Expression extends GenerativeEntity<AstExpression> {
                           compileTimeEval: true,
                       }).generate();
             const field = new Field(this.parentScope, ty, init);
-            if (field === undefined) {
-                return undefined;
-            }
             this.parentScope.add("field", field);
             fieldNames.push(field.name?.text!);
         }
@@ -732,9 +728,6 @@ export class Expression extends GenerativeEntity<AstExpression> {
         if (varNames.length === 0) {
             const init = new Expression(this.parentScope, ty).generate();
             const varStmt = new Let(this.parentScope, ty, init);
-            if (varStmt === undefined) {
-                return undefined;
-            }
             this.parentScope.add("let", varStmt);
             varNames.push(varStmt.name?.text!);
         }

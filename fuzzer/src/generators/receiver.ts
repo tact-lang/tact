@@ -1,4 +1,4 @@
-import {
+import type {
     AstReceiver,
     AstStatement,
     AstReceiverKind,
@@ -7,7 +7,8 @@ import {
     AstReceiverFallback,
     AstReceiverComment,
 } from "../../../src/ast/ast";
-import { UtilType, Type, StdlibType, isBouncedMessage } from "../types";
+import { UtilType, StdlibType, isBouncedMessage } from "../types";
+import type { Type } from "../types";
 import { Scope } from "../scope";
 import { GenerativeEntity } from "./generator";
 import { createSample, randomBool, randomElement } from "../util";

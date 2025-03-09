@@ -1,9 +1,9 @@
-import { AstTypeDecl } from "../../src/ast/ast";
+import type { AstTypeDecl } from "../../src/ast/ast";
 import { nextId } from "./id";
 
-import * as path from "path";
-import files from "../../src/stdlib/stdlib";
-import { createVirtualFileSystem } from "../../src/vfs/createVirtualFileSystem";
+// import * as path from "path";
+// import files from "../../src/stdlib/stdlib";
+// import { createVirtualFileSystem } from "../../src/vfs/createVirtualFileSystem";
 import { generateAstIdFromName } from "./util";
 import { dummySrcInfo } from "../../src/grammar/";
 
@@ -19,15 +19,15 @@ import { dummySrcInfo } from "../../src/grammar/";
  * TODO: We should parse its sources instead
  */
 export function getStdlibTraits(): AstTypeDecl[] {
-  return [
-    {
-      kind: "trait",
-      id: nextId(),
-      name: generateAstIdFromName("BaseTrait"),
-      traits: [],
-      attributes: [],
-      declarations: [],
-      loc: dummySrcInfo,
-    },
-  ];
+    return [
+        {
+            kind: "trait",
+            id: nextId(),
+            name: generateAstIdFromName("BaseTrait"),
+            traits: [],
+            attributes: [],
+            declarations: [],
+            loc: dummySrcInfo,
+        },
+    ];
 }

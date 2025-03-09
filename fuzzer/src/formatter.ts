@@ -1,579 +1,578 @@
-import {
-  AstConstantDecl,
-  AstConstantDef,
-  AstImport,
-  AstNativeFunctionDecl,
-  AstModule,
-  AstBouncedMessageType,
-  AstMapType,
-  AstReceiver,
-  AstContractInit,
-  AstStatementRepeat,
-  AstStatementUntil,
-  AstStatementWhile,
-  AstStatementForEach,
-  AstStatementTry,
-  AstStructFieldInitializer,
-  AstStatementCondition,
-  AstStatementAugmentedAssign,
-  AstStatementAssign,
-  AstStatementExpression,
-  AstStatementReturn,
-  AstStatementLet,
-  AstFunctionDef,
-  AstFunctionDecl,
-  AstType,
-  AstStatement,
-  AstExpression,
-  AstFieldDecl,
-  AstPrimitiveTypeDecl,
-  AstStructDecl,
-  AstContract,
-  AstTrait,
-  AstMessageDecl,
-  AstNode,
-  AstTraitDeclaration,
-  AstModuleItem,
-  AstContractDeclaration,
+import type {
+    AstConstantDecl,
+    AstConstantDef,
+    AstImport,
+    AstNativeFunctionDecl,
+    AstModule,
+    AstBouncedMessageType,
+    AstMapType,
+    AstReceiver,
+    AstContractInit,
+    AstStatementRepeat,
+    AstStatementUntil,
+    AstStatementWhile,
+    AstStatementForEach,
+    AstStatementTry,
+    AstStructFieldInitializer,
+    AstStatementCondition,
+    AstStatementAugmentedAssign,
+    AstStatementAssign,
+    AstStatementExpression,
+    AstStatementReturn,
+    AstStatementLet,
+    AstFunctionDef,
+    AstFunctionDecl,
+    AstType,
+    AstStatement,
+    AstExpression,
+    AstFieldDecl,
+    AstPrimitiveTypeDecl,
+    AstStructDecl,
+    AstContract,
+    AstTrait,
+    AstMessageDecl,
+    AstNode,
+    AstTraitDeclaration,
+    AstModuleItem,
+    AstContractDeclaration,
 } from "../../src/ast/ast";
 
 /**
  * PrettyPrinter class provides methods to format and indent Tact code.
  */
 class PrettyPrinter {
-  /**
-   * @param indentLevel Initial level of indentation.
-   * @param indentSpaces Number of spaces per indentation level.
-   */
-  constructor(
-    private indentLevel: number = 0,
-    private readonly indentSpaces: number = 2,
-  ) {}
+    /**
+     * @param indentLevel Initial level of indentation.
+     * @param indentSpaces Number of spaces per indentation level.
+     */
+    constructor(
+        private indentLevel: number = 0,
+        private readonly indentSpaces: number = 2,
+    ) {}
 
-  private increaseIndent() {
-    this.indentLevel += 1;
-  }
-
-  private decreaseIndent() {
-    this.indentLevel -= 1;
-  }
-
-  private indent(): string {
-    return " ".repeat(this.indentLevel * this.indentSpaces);
-  }
-
-  ppAstPrimitive(primitive: AstPrimitiveTypeDecl): string {
-    return `${this.indent()}primitive ${primitive.name.text};`;
-  }
-
-  //
-  // Types
-  //
-
-  ppAstType(typeRef: AstType): string {
-    switch (typeRef.kind) {
-      case "type_id":
-        return typeRef.text;
-      case "optional_type":
-        return `${this.ppAstType(typeRef.typeArg)}?`;
-      case "map_type":
-        return this.ppAstTypeRefMap(typeRef);
-      case "bounced_message_type":
-        return this.ppAstBouncedMessageType(typeRef);
-      default:
-        throw new Error(`Unknown TypeRef kind: ${typeRef}`);
+    private increaseIndent() {
+        this.indentLevel += 1;
     }
-  }
 
-  ppAstTypeRefMap(typeRef: AstMapType): string {
-    const keyAlias = typeRef.keyStorageType
-      ? ` as ${typeRef.keyStorageType}`
-      : "";
-    const valueAlias = typeRef.valueStorageType
-      ? ` as ${typeRef.valueStorageType}`
-      : "";
-    return `map<${typeRef.keyType.text}${keyAlias}, ${typeRef.valueType.text}${valueAlias}>`;
-  }
+    private decreaseIndent() {
+        this.indentLevel -= 1;
+    }
 
-  ppAstBouncedMessageType(type: AstBouncedMessageType): string {
-    return `bounced<${type.messageType.text}>`;
-  }
+    private indent(): string {
+        return " ".repeat(this.indentLevel * this.indentSpaces);
+    }
 
-  //
-  // Expressions
-  //
+    ppAstPrimitive(primitive: AstPrimitiveTypeDecl): string {
+        return `${this.indent()}primitive ${primitive.name.text};`;
+    }
 
-  /**
-   * Returns precedence used in unary/binary operations.
-   * Lower number means higher precedence
-   */
-  getPrecedence(kind: string, op?: string): number {
-    switch (kind) {
-      case "op_binary":
-        switch (op) {
-          case "||":
-            return 1;
-          case "&&":
-            return 2;
-          case "|":
-            return 3;
-          case "^":
-            return 4;
-          case "&":
-            return 5;
-          case "==":
-          case "!=":
-            return 6;
-          case "<":
-          case ">":
-          case "<=":
-          case ">=":
-            return 7;
-          case "+":
-          case "-":
-            return 8;
-          case "*":
-          case "/":
-          case "%":
-            return 9;
-          default:
-            return 11;
+    //
+    // Types
+    //
+
+    ppAstType(typeRef: AstType): string {
+        switch (typeRef.kind) {
+            case "type_id":
+                return typeRef.text;
+            case "optional_type":
+                return `${this.ppAstType(typeRef.typeArg)}?`;
+            case "map_type":
+                return this.ppAstTypeRefMap(typeRef);
+            case "bounced_message_type":
+                return this.ppAstBouncedMessageType(typeRef);
         }
-      case "conditional":
-      case "op_call":
-      case "op_static_call":
-        return 0;
-      case "op_unary":
-        return 10;
-      default:
-        return 11;
-    }
-  }
-
-  ppAstExpression(expr: AstExpression, parentPrecedence: number = 0): string {
-    let result;
-    let currentPrecedence = this.getPrecedence(expr.kind);
-
-    switch (expr.kind) {
-      case "op_binary":
-        currentPrecedence = this.getPrecedence(expr.kind, expr.op);
-        result = `${this.ppAstExpression(expr.left, currentPrecedence)} ${expr.op} ${this.ppAstExpression(expr.right, currentPrecedence)}`;
-        break;
-      case "op_unary":
-        currentPrecedence = this.getPrecedence(expr.kind, expr.op);
-        result = `${expr.op}${this.ppAstExpression(expr.operand, currentPrecedence)}`;
-        break;
-      case "field_access":
-        result = `${this.ppAstExpression(expr.aggregate, currentPrecedence)}.${expr.field.text}`;
-        break;
-      case "method_call":
-        result = `${this.ppAstExpression(expr.self, currentPrecedence)}.${expr.method.text}(${expr.args.map((arg) => this.ppAstExpression(arg, currentPrecedence)).join(", ")})`;
-        break;
-      case "static_call":
-        result = `${expr.function.text}(${expr.args.map((arg) => this.ppAstExpression(arg, currentPrecedence)).join(", ")})`;
-        break;
-      case "struct_instance":
-        result = `${expr.type.text}{${expr.args.map((x) => this.ppAstStructFieldInitializer(x)).join(", ")}}`;
-        break;
-      case "init_of":
-        result = `initOf ${expr.contract.text}(${expr.args.map((arg) => this.ppAstExpression(arg, currentPrecedence)).join(", ")})`;
-        break;
-      case "conditional":
-        result = `${this.ppAstExpression(expr.condition, currentPrecedence)} ? ${this.ppAstExpression(expr.thenBranch, currentPrecedence)} : ${this.ppAstExpression(expr.elseBranch, currentPrecedence)}`;
-        break;
-      case "number":
-        result = expr.value.toString();
-        break;
-      case "id":
-        result = expr.text;
-        break;
-      case "boolean":
-        result = expr.value.toString();
-        break;
-      case "simplified_string":
-        result = `"${expr.value}"`;
-        break;
-      case "null":
-        result = "null";
-        break;
-      default:
-        throw new Error(`Unsupported expression type: ${expr.kind}`);
     }
 
-    // Set parens when needed
-    if (
-      parentPrecedence > 0 &&
-      currentPrecedence > 0 &&
-      currentPrecedence < parentPrecedence
-    ) {
-      result = `(${result})`;
+    ppAstTypeRefMap(typeRef: AstMapType): string {
+        const keyAlias = typeRef.keyStorageType
+            ? ` as ${typeRef.keyStorageType.text}`
+            : "";
+        const valueAlias = typeRef.valueStorageType
+            ? ` as ${typeRef.valueStorageType.text}`
+            : "";
+        return `map<${typeRef.keyType.text}${keyAlias}, ${typeRef.valueType.text}${valueAlias}>`;
     }
 
-    return result;
-  }
+    ppAstBouncedMessageType(type: AstBouncedMessageType): string {
+        return `bounced<${type.messageType.text}>`;
+    }
 
-  ppAstStructFieldInitializer(param: AstStructFieldInitializer): string {
-    return `${param.field.text}: ${this.ppAstExpression(param.initializer)}`;
-  }
+    //
+    // Expressions
+    //
 
-  //
-  // Program
-  //
+    /**
+     * Returns precedence used in unary/binary operations.
+     * Lower number means higher precedence
+     */
+    getPrecedence(kind: string, op?: string): number {
+        switch (kind) {
+            case "op_binary":
+                switch (op) {
+                    case "||":
+                        return 1;
+                    case "&&":
+                        return 2;
+                    case "|":
+                        return 3;
+                    case "^":
+                        return 4;
+                    case "&":
+                        return 5;
+                    case "==":
+                    case "!=":
+                        return 6;
+                    case "<":
+                    case ">":
+                    case "<=":
+                    case ">=":
+                        return 7;
+                    case "+":
+                    case "-":
+                        return 8;
+                    case "*":
+                    case "/":
+                    case "%":
+                        return 9;
+                    default:
+                        return 11;
+                }
+            case "conditional":
+            case "op_call":
+            case "op_static_call":
+                return 0;
+            case "op_unary":
+                return 10;
+            default:
+                return 11;
+        }
+    }
 
-  ppAstProgram(program: AstModule): string {
-    const entriesFormatted = program.items
-      .map((entry, index, array) => {
-        const formattedEntry = this.ppProgramItem(entry);
-        const nextEntry = array[index + 1];
+    ppAstExpression(expr: AstExpression, parentPrecedence: number = 0): string {
+        let result;
+        let currentPrecedence = this.getPrecedence(expr.kind);
+
+        switch (expr.kind) {
+            case "op_binary":
+                currentPrecedence = this.getPrecedence(expr.kind, expr.op);
+                result = `${this.ppAstExpression(expr.left, currentPrecedence)} ${expr.op} ${this.ppAstExpression(expr.right, currentPrecedence)}`;
+                break;
+            case "op_unary":
+                currentPrecedence = this.getPrecedence(expr.kind, expr.op);
+                result = `${expr.op}${this.ppAstExpression(expr.operand, currentPrecedence)}`;
+                break;
+            case "field_access":
+                result = `${this.ppAstExpression(expr.aggregate, currentPrecedence)}.${expr.field.text}`;
+                break;
+            case "method_call":
+                result = `${this.ppAstExpression(expr.self, currentPrecedence)}.${expr.method.text}(${expr.args.map((arg) => this.ppAstExpression(arg, currentPrecedence)).join(", ")})`;
+                break;
+            case "static_call":
+                result = `${expr.function.text}(${expr.args.map((arg) => this.ppAstExpression(arg, currentPrecedence)).join(", ")})`;
+                break;
+            case "struct_instance":
+                result = `${expr.type.text}{${expr.args.map((x) => this.ppAstStructFieldInitializer(x)).join(", ")}}`;
+                break;
+            case "init_of":
+                result = `initOf ${expr.contract.text}(${expr.args.map((arg) => this.ppAstExpression(arg, currentPrecedence)).join(", ")})`;
+                break;
+            case "conditional":
+                result = `${this.ppAstExpression(expr.condition, currentPrecedence)} ? ${this.ppAstExpression(expr.thenBranch, currentPrecedence)} : ${this.ppAstExpression(expr.elseBranch, currentPrecedence)}`;
+                break;
+            case "number":
+                result = expr.value.toString();
+                break;
+            case "id":
+                result = expr.text;
+                break;
+            case "boolean":
+                result = expr.value.toString();
+                break;
+            case "simplified_string":
+                result = `"${expr.value}"`;
+                break;
+            case "null":
+                result = "null";
+                break;
+            default:
+                throw new Error(`Unsupported expression type: ${expr.kind}`);
+        }
+
+        // Set parens when needed
         if (
-          entry.kind === "constant_def" &&
-          nextEntry?.kind === "constant_def"
+            parentPrecedence > 0 &&
+            currentPrecedence > 0 &&
+            currentPrecedence < parentPrecedence
         ) {
-          return formattedEntry;
+            result = `(${result})`;
         }
-        return formattedEntry + "\n";
-      })
-      .join("\n");
-    return entriesFormatted.trim();
-  }
 
-  ppProgramItem(item: AstModuleItem): string {
-    switch (item.kind) {
-      case "struct_decl":
-      case "message_decl":
-        return this.ppAstStruct(item);
-      case "contract":
-        return this.ppAstContract(item);
-      case "primitive_type_decl":
-        return this.ppAstPrimitive(item);
-      case "function_def":
-        return this.ppAstFunction(item);
-      case "native_function_decl":
-        return this.ppAstNativeFunction(item);
-      case "trait":
-        return this.ppAstTrait(item);
-      case "constant_def":
-        return this.ppAstConstant(item);
-      default:
-        return `Unknown Program Item Type: ${item}`;
+        return result;
     }
-  }
 
-  ppAstProgramImport(importItem: AstImport): string {
-    return `${this.indent()}import "${importItem.importPath}";`;
-  } //TODO: there is no more imports in contract?
-
-  ppAstStruct(struct: AstStructDecl | AstMessageDecl): string {
-    const typePrefix = struct.kind === "message_decl" ? "message" : "struct";
-    const prefixFormatted =
-      struct.kind === "message_decl" && struct.opcode !== null
-        ? `(${struct.opcode}) `
-        : "";
-    this.increaseIndent();
-    const fieldsFormatted = struct.fields
-      .map((field) => this.ppAstField(field))
-      .join("\n");
-    this.decreaseIndent();
-    return `${this.indent()}${typePrefix} ${prefixFormatted}${struct.name.text} {\n${fieldsFormatted}\n}`;
-  }
-
-  ppAstTrait(trait: AstTrait): string {
-    const traitsFormatted = trait.traits.map((t) => t.text).join(", ");
-    const attrsRaw = trait.attributes
-      .map((attr) => `@${attr.type}("${attr.name.value}")`)
-      .join(" ");
-    const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
-    this.increaseIndent();
-    const bodyFormatted = trait.declarations
-      .map((dec, index, array) => {
-        const formattedDec = this.ppTraitBody(dec);
-        const nextDec = array[index + 1];
-        if (
-          (dec.kind === "constant_def" && nextDec?.kind === "constant_def") ||
-          (dec.kind === "constant_decl" && nextDec?.kind === "constant_decl") ||
-          (dec.kind === "field_decl" && nextDec?.kind === "field_decl")
-        ) {
-          return formattedDec;
-        }
-        return formattedDec + "\n";
-      })
-      .join("\n");
-    const header = traitsFormatted
-      ? `trait ${trait.name.text} with ${traitsFormatted}`
-      : `trait ${trait.name.text}`;
-    this.decreaseIndent();
-    return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}${this.indent()}}`;
-  }
-
-  ppTraitBody(item: AstTraitDeclaration): string {
-    switch (item.kind) {
-      case "field_decl":
-        return this.ppAstField(item);
-      case "function_decl":
-      case "function_def":
-        return this.ppAstFunction(item);
-      case "receiver":
-        return this.ppAstReceive(item);
-      case "constant_decl":
-      case "constant_def":
-        return this.ppAstConstant(item);
-      default:
-        return `Unknown Trait Body Type: ${item}`;
+    ppAstStructFieldInitializer(param: AstStructFieldInitializer): string {
+        return `${param.field.text}: ${this.ppAstExpression(param.initializer)}`;
     }
-  }
 
-  ppAstField(field: AstFieldDecl): string {
-    const typeFormatted = this.ppAstType(field.type);
-    const initializer = field.initializer
-      ? ` = ${this.ppAstExpression(field.initializer)}`
-      : "";
-    const asAlias = field.as ? ` as ${field.as}` : "";
-    return `${this.indent()}${field.name.text}: ${typeFormatted}${asAlias}${initializer};`;
-  }
+    //
+    // Program
+    //
 
-  ppAstConstant(constant: AstConstantDecl | AstConstantDef): string {
-    const valueFormatted =
-      constant.kind === "constant_def"
-        ? ` = ${this.ppAstExpression(constant.initializer)}`
-        : "";
-    const attrsRaw = constant.attributes.map((attr) => attr.type).join(" ");
-    const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
-    return `${this.indent()}${attrsFormatted}const ${constant.name.text}: ${this.ppAstType(constant.type)}${valueFormatted};`;
-  }
-
-  ppAstContract(contract: AstContract): string {
-    const traitsFormatted = contract.traits
-      .map((trait) => trait.text)
-      .join(", ");
-    this.increaseIndent();
-    const bodyFormatted = contract.declarations
-      .map((dec, index, array) => {
-        const formattedDec = this.ppContractBody(dec);
-        const nextDec = array[index + 1];
-        if (
-          (dec.kind === "constant_def" && nextDec?.kind === "constant_def") ||
-          (dec.kind === "field_decl" && nextDec?.kind === "field_decl")
-        ) {
-          return formattedDec;
-        }
-        return formattedDec + "\n";
-      })
-      .join("\n");
-    this.decreaseIndent();
-    const header = traitsFormatted
-      ? `contract ${contract.name.text} with ${traitsFormatted}`
-      : `contract ${contract.name.text}`;
-    const attrsRaw = contract.attributes
-      .map((attr) => `@interface("${attr.name.value}")`)
-      .join(" ");
-    const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
-    return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}${this.indent()}}`;
-  }
-
-  ppContractBody(declaration: AstContractDeclaration): string {
-    switch (declaration.kind) {
-      case "field_decl":
-        return this.ppAstField(declaration);
-      case "function_def":
-        return this.ppAstFunction(declaration);
-      case "contract_init":
-        return this.ppAstInitFunction(declaration);
-      case "receiver":
-        return this.ppAstReceive(declaration);
-      case "constant_def":
-        return this.ppAstConstant(declaration);
-      default:
-        return `Unknown Contract Body Type: ${declaration}`;
+    ppAstProgram(program: AstModule): string {
+        const entriesFormatted = program.items
+            .map((entry, index, array) => {
+                const formattedEntry = this.ppProgramItem(entry);
+                const nextEntry = array[index + 1];
+                if (
+                    entry.kind === "constant_def" &&
+                    nextEntry.kind === "constant_def"
+                ) {
+                    return formattedEntry;
+                }
+                return formattedEntry + "\n";
+            })
+            .join("\n");
+        return entriesFormatted.trim();
     }
-  }
 
-  public ppAstFunction(func: AstFunctionDecl | AstFunctionDef): string {
-    const argsFormatted = func.params
-      .map((arg) => `${arg.name.text}: ${this.ppAstType(arg.type)}`)
-      .join(", ");
-    const attrsRaw = func.attributes.map((attr) => attr.type).join(" ");
-    const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
-    const returnType = func.return ? `: ${this.ppAstType(func.return)}` : "";
-    this.increaseIndent();
-    const stmtsFormatted =
-      func.kind === "function_def"
-        ? func.statements.map((stmt) => this.ppAstStatement(stmt)).join("\n")
-        : "";
-    const body =
-      func.kind === "function_def"
-        ? ` {\n${stmtsFormatted}\n${this.indent()}}`
-        : ";";
-    this.decreaseIndent();
-    return `${this.indent()}${attrsFormatted}fun ${func.name.text}(${argsFormatted})${returnType}${body}`;
-  }
-
-  ppAstReceive(receive: AstReceiver): string {
-    const header = this.ppAstReceiveHeader(receive);
-    const stmtsFormatted = this.ppStatementBlock(receive.statements);
-    return `${this.indent()}${header} ${stmtsFormatted}`;
-  }
-
-  ppAstReceiveHeader(receive: AstReceiver): string {
-    switch (receive.selector.kind) {
-      case "internal":
-        switch (receive.selector.subKind.kind) {
-          case "simple":
-            return `receive(${receive.selector.subKind.param.name.text}: ${this.ppAstType(receive.selector.subKind.param.type)})`;
-          case "fallback":
-            return `receive()`;
-          case "comment":
-            return `receive("${receive.selector.subKind.comment.value}")`;
+    ppProgramItem(item: AstModuleItem): string {
+        switch (item.kind) {
+            case "struct_decl":
+            case "message_decl":
+                return this.ppAstStruct(item);
+            case "contract":
+                return this.ppAstContract(item);
+            case "primitive_type_decl":
+                return this.ppAstPrimitive(item);
+            case "function_def":
+                return this.ppAstFunction(item);
+            case "native_function_decl":
+                return this.ppAstNativeFunction(item);
+            case "trait":
+                return this.ppAstTrait(item);
+            case "constant_def":
+                return this.ppAstConstant(item);
+            default:
+                return `Unknown Program Item Type: ${item.kind}`;
         }
-      case "bounce":
-        return `bounced(${receive.selector.param.name.text}: ${this.ppAstType(receive.selector.param.type)})`;
-      case "external":
-        switch (receive.selector.subKind.kind) {
-          case "simple":
-            return `external(${receive.selector.subKind.param.name.text}: ${this.ppAstType(receive.selector.subKind.param.type)})`;
-          case "fallback":
-            return `external()`;
-          case "comment":
-            return `external("${receive.selector.subKind.comment.value}")`;
-        }
-    } //TODO: refactor: ends build equally, prefix also
-  }
-
-  ppAstNativeFunction(func: AstNativeFunctionDecl): string {
-    const argsFormatted = func.params
-      .map((arg) => `${arg.name.text}: ${this.ppAstType(arg.type)}`)
-      .join(", ");
-    const returnType = func.return ? `: ${this.ppAstType(func.return)}` : "";
-    let attrs = func.attributes.map((attr) => attr.type).join(" ");
-    attrs = attrs ? attrs + " " : "";
-    return `${this.indent()}@name(${func.nativeName})\n${this.indent()}${attrs}native ${func.name}(${argsFormatted})${returnType};`;
-  }
-
-  ppAstInitFunction(initFunc: AstContractInit): string {
-    const argsFormatted = initFunc.params
-      .map((arg) => `${arg.name.text}: ${this.ppAstType(arg.type)}`)
-      .join(", ");
-
-    this.increaseIndent();
-    const stmtsFormatted = initFunc.statements
-      ? initFunc.statements.map((stmt) => this.ppAstStatement(stmt)).join("\n")
-      : "";
-    this.decreaseIndent();
-
-    return `${this.indent()}init(${argsFormatted}) {${stmtsFormatted == "" ? "" : "\n"}${stmtsFormatted}${stmtsFormatted == "" ? "" : "\n" + this.indent()}}`;
-  }
-
-  //
-  // Statements
-  //
-
-  ppAstStatement(stmt: AstStatement): string {
-    switch (stmt.kind) {
-      case "statement_let":
-        return this.ppAstStatementLet(stmt);
-      case "statement_return":
-        return this.ppAstStatementReturn(stmt);
-      case "statement_expression":
-        return this.ppAstStatementExpression(stmt);
-      case "statement_assign":
-        return this.ppAstStatementAssign(stmt);
-      case "statement_augmentedassign":
-        return this.ppAstStatementAugmentedAssign(stmt);
-      case "statement_condition":
-        return this.ppAstCondition(stmt);
-      case "statement_while":
-        return this.ppAstStatementWhile(stmt);
-      case "statement_until":
-        return this.ppAstStatementUntil(stmt);
-      case "statement_repeat":
-        return this.ppAstStatementRepeat(stmt);
-      case "statement_foreach":
-        return this.ppAstStatementForEach(stmt);
-      case "statement_try":
-        return this.ppAstStatementTry(stmt);
-      default:
-        return `Unsopported statement kind: ${stmt.kind}`;
     }
-  }
 
-  ppStatementBlock(stmts: readonly AstStatement[]): string {
-    this.increaseIndent();
-    const stmntsFormatted = stmts
-      .map((stmt) => this.ppAstStatement(stmt))
-      .join("\n");
-    this.decreaseIndent();
-    const result = `{\n${stmntsFormatted}\n${this.indent()}}`;
-    return result;
-  }
+    ppAstProgramImport(importItem: AstImport): string {
+        return `${this.indent()}import "${importItem.importPath.path.segments.join()}";`;
+    }
 
-  ppAstStatementLet(statement: AstStatementLet): string {
-    const expression = this.ppAstExpression(statement.expression);
-    const tyAnnotation =
-      statement.type === undefined ? "" : `: ${this.ppAstType(statement.type)}`;
-    return `${this.indent()}let ${statement.name.text}${tyAnnotation} = ${expression};`;
-  }
+    ppAstStruct(struct: AstStructDecl | AstMessageDecl): string {
+        const typePrefix =
+            struct.kind === "message_decl" ? "message" : "struct";
+        const prefixFormatted =
+            struct.kind === "message_decl" && struct.opcode !== undefined
+                ? this.ppAstExpression(struct.opcode)
+                : "";
+        this.increaseIndent();
+        const fieldsFormatted = struct.fields
+            .map((field) => this.ppAstField(field))
+            .join("\n");
+        this.decreaseIndent();
+        return `${this.indent()}${typePrefix} ${prefixFormatted}${struct.name.text} {\n${fieldsFormatted}\n}`;
+    }
 
-  ppAstStatementReturn(statement: AstStatementReturn): string {
-    const expression = statement.expression
-      ? this.ppAstExpression(statement.expression)
-      : "";
-    return `${this.indent()}return ${expression};`;
-  }
+    ppAstTrait(trait: AstTrait): string {
+        const traitsFormatted = trait.traits.map((t) => t.text).join(", ");
+        const attrsRaw = trait.attributes
+            .map((attr) => `@${attr.type}("${attr.name.value}")`)
+            .join(" ");
+        const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
+        this.increaseIndent();
+        const bodyFormatted = trait.declarations
+            .map((dec, index, array) => {
+                const formattedDec = this.ppTraitBody(dec);
+                const nextDec = array[index + 1];
+                if (
+                    (dec.kind === "constant_def" &&
+                        nextDec.kind === "constant_def") ||
+                    (dec.kind === "constant_decl" &&
+                        nextDec.kind === "constant_decl") ||
+                    (dec.kind === "field_decl" && nextDec.kind === "field_decl")
+                ) {
+                    return formattedDec;
+                }
+                return formattedDec + "\n";
+            })
+            .join("\n");
+        const header = traitsFormatted
+            ? `trait ${trait.name.text} with ${traitsFormatted}`
+            : `trait ${trait.name.text}`;
+        this.decreaseIndent();
+        return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}${this.indent()}}`;
+    }
 
-  ppAstStatementExpression(statement: AstStatementExpression): string {
-    return `${this.indent()}${this.ppAstExpression(statement.expression)};`;
-  }
+    ppTraitBody(item: AstTraitDeclaration): string {
+        switch (item.kind) {
+            case "field_decl":
+                return this.ppAstField(item);
+            case "function_decl":
+            case "function_def":
+                return this.ppAstFunction(item);
+            case "receiver":
+                return this.ppAstReceive(item);
+            case "constant_decl":
+            case "constant_def":
+                return this.ppAstConstant(item);
+            default:
+                return `Unknown Trait Body Type: ${item.kind}`;
+        }
+    }
 
-  ppAstStatementAssign(statement: AstStatementAssign): string {
-    return `${this.indent()}${this.ppAstExpression(statement.path)} = ${this.ppAstExpression(statement.expression)};`;
-  }
+    ppAstField(field: AstFieldDecl): string {
+        const typeFormatted = this.ppAstType(field.type);
+        const initializer = field.initializer
+            ? ` = ${this.ppAstExpression(field.initializer)}`
+            : "";
+        const asAlias = field.as ? ` as ${field.as.text}` : "";
+        return `${this.indent()}${field.name.text}: ${typeFormatted}${asAlias}${initializer};`;
+    }
 
-  ppAstStatementAugmentedAssign(
-    statement: AstStatementAugmentedAssign,
-  ): string {
-    return `${this.indent()}${this.ppAstExpression(statement.path)} ${statement.op}= ${this.ppAstExpression(statement.expression)};`;
-  }
+    ppAstConstant(constant: AstConstantDecl | AstConstantDef): string {
+        const valueFormatted =
+            constant.kind === "constant_def"
+                ? ` = ${this.ppAstExpression(constant.initializer)}`
+                : "";
+        const attrsRaw = constant.attributes.map((attr) => attr.type).join(" ");
+        const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
+        return `${this.indent()}${attrsFormatted}const ${constant.name.text}: ${this.ppAstType(constant.type)}${valueFormatted};`;
+    }
 
-  ppAstCondition(statement: AstStatementCondition): string {
-    const condition = this.ppAstExpression(statement.condition);
-    const trueBranch = this.ppStatementBlock(statement.trueStatements);
-    const falseBranch = statement.falseStatements
-      ? ` else ${this.ppStatementBlock(statement.falseStatements)}`
-      : "";
-    return `${this.indent()}if (${condition}) ${trueBranch}${falseBranch}`;
-  }
+    ppAstContract(contract: AstContract): string {
+        const traitsFormatted = contract.traits
+            .map((trait) => trait.text)
+            .join(", ");
+        this.increaseIndent();
+        const bodyFormatted = contract.declarations
+            .map((dec, index, array) => {
+                const formattedDec = this.ppContractBody(dec);
+                const nextDec = array[index + 1];
+                if (
+                    (dec.kind === "constant_def" &&
+                        nextDec.kind === "constant_def") ||
+                    (dec.kind === "field_decl" && nextDec.kind === "field_decl")
+                ) {
+                    return formattedDec;
+                }
+                return formattedDec + "\n";
+            })
+            .join("\n");
+        this.decreaseIndent();
+        const header = traitsFormatted
+            ? `contract ${contract.name.text} with ${traitsFormatted}`
+            : `contract ${contract.name.text}`;
+        const attrsRaw = contract.attributes
+            .map((attr) => `@interface("${attr.name.value}")`)
+            .join(" ");
+        const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
+        return `${this.indent()}${attrsFormatted}${header} {\n${bodyFormatted}${this.indent()}}`;
+    }
 
-  ppAstStatementWhile(statement: AstStatementWhile): string {
-    const condition = this.ppAstExpression(statement.condition);
-    const stmts = this.ppStatementBlock(statement.statements);
-    return `${this.indent()}while (${condition}) ${stmts}`;
-  }
+    ppContractBody(declaration: AstContractDeclaration): string {
+        switch (declaration.kind) {
+            case "field_decl":
+                return this.ppAstField(declaration);
+            case "function_def":
+                return this.ppAstFunction(declaration);
+            case "contract_init":
+                return this.ppAstInitFunction(declaration);
+            case "receiver":
+                return this.ppAstReceive(declaration);
+            case "constant_def":
+                return this.ppAstConstant(declaration);
+            default:
+                return `Unknown Contract Body Type: ${declaration.kind}`;
+        }
+    }
 
-  ppAstStatementRepeat(statement: AstStatementRepeat): string {
-    const condition = this.ppAstExpression(statement.iterations);
-    const stmts = this.ppStatementBlock(statement.statements);
-    return `${this.indent()}repeat (${condition}) ${stmts}`;
-  }
+    public ppAstFunction(func: AstFunctionDecl | AstFunctionDef): string {
+        const argsFormatted = func.params
+            .map((arg) => `${arg.name.text}: ${this.ppAstType(arg.type)}`)
+            .join(", ");
+        const attrsRaw = func.attributes.map((attr) => attr.type).join(" ");
+        const attrsFormatted = attrsRaw ? `${attrsRaw} ` : "";
+        const returnType = func.return
+            ? `: ${this.ppAstType(func.return)}`
+            : "";
+        this.increaseIndent();
+        const stmtsFormatted =
+            func.kind === "function_def"
+                ? func.statements
+                      .map((stmt) => this.ppAstStatement(stmt))
+                      .join("\n")
+                : "";
+        const body =
+            func.kind === "function_def"
+                ? ` {\n${stmtsFormatted}\n${this.indent()}}`
+                : ";";
+        this.decreaseIndent();
+        return `${this.indent()}${attrsFormatted}fun ${func.name.text}(${argsFormatted})${returnType}${body}`;
+    }
 
-  ppAstStatementUntil(statement: AstStatementUntil): string {
-    const condition = this.ppAstExpression(statement.condition);
-    const stmts = this.ppStatementBlock(statement.statements);
-    return `${this.indent()}do ${stmts} until (${condition});`;
-  }
+    ppAstReceive(receive: AstReceiver): string {
+        const header = this.ppAstReceiveHeader(receive);
+        const stmtsFormatted = this.ppStatementBlock(receive.statements);
+        return `${this.indent()}${header} ${stmtsFormatted}`;
+    }
 
-  ppAstStatementForEach(statement: AstStatementForEach): string {
-    const header = `foreach (${statement.keyName}, ${statement.valueName} in ${this.ppAstExpression(statement.map)})`;
-    const body = this.ppStatementBlock(statement.statements);
-    return `${this.indent()}${header} ${body}`;
-  }
+    ppAstReceiveHeader(receive: AstReceiver): string {
+        if (receive.selector.kind === "bounce")
+            return `bounced(${receive.selector.param.name.text}: ${this.ppAstType(receive.selector.param.type)})`;
+        const prefix =
+            receive.selector.kind === "internal" ? "receive" : "external";
+        const suffix =
+            receive.selector.subKind.kind === "simple"
+                ? `(${receive.selector.subKind.param.name.text}: ${this.ppAstType(receive.selector.subKind.param.type)})`
+                : receive.selector.subKind.kind === "fallback"
+                  ? "()"
+                  : `("${receive.selector.subKind.comment.value}")`;
+        return prefix + suffix;
+    }
 
-  ppAstStatementTry(statement: AstStatementTry): string {
-    const tryBody = this.ppStatementBlock(statement.statements);
-    const tryPrefix = `${this.indent()}try ${tryBody}`;
-    const catchSuffix = statement.catchBlock
-      ? ` catch (${statement.catchBlock.catchName.text}) ${this.ppStatementBlock(statement.catchBlock.catchStatements)}`
-      : "";
-    return tryPrefix + catchSuffix;
-  }
+    ppAstNativeFunction(func: AstNativeFunctionDecl): string {
+        const argsFormatted = func.params
+            .map((arg) => `${arg.name.text}: ${this.ppAstType(arg.type)}`)
+            .join(", ");
+        const returnType = func.return
+            ? `: ${this.ppAstType(func.return)}`
+            : "";
+        let attrs = func.attributes.map((attr) => attr.type).join(" ");
+        attrs = attrs ? attrs + " " : "";
+        return `${this.indent()}@name(${func.nativeName.text})\n${this.indent()}${attrs}native ${func.name.text}(${argsFormatted})${returnType};`;
+    }
+
+    ppAstInitFunction(initFunc: AstContractInit): string {
+        const argsFormatted = initFunc.params
+            .map((arg) => `${arg.name.text}: ${this.ppAstType(arg.type)}`)
+            .join(", ");
+
+        this.increaseIndent();
+        const stmtsFormatted = initFunc.statements
+            .map((stmt) => this.ppAstStatement(stmt))
+            .join("\n");
+        this.decreaseIndent();
+
+        return `${this.indent()}init(${argsFormatted}) {${stmtsFormatted === "" ? "" : "\n"}${stmtsFormatted}${stmtsFormatted === "" ? "" : "\n" + this.indent()}}`;
+    }
+
+    //
+    // Statements
+    //
+
+    ppAstStatement(stmt: AstStatement): string {
+        switch (stmt.kind) {
+            case "statement_let":
+                return this.ppAstStatementLet(stmt);
+            case "statement_return":
+                return this.ppAstStatementReturn(stmt);
+            case "statement_expression":
+                return this.ppAstStatementExpression(stmt);
+            case "statement_assign":
+                return this.ppAstStatementAssign(stmt);
+            case "statement_augmentedassign":
+                return this.ppAstStatementAugmentedAssign(stmt);
+            case "statement_condition":
+                return this.ppAstCondition(stmt);
+            case "statement_while":
+                return this.ppAstStatementWhile(stmt);
+            case "statement_until":
+                return this.ppAstStatementUntil(stmt);
+            case "statement_repeat":
+                return this.ppAstStatementRepeat(stmt);
+            case "statement_foreach":
+                return this.ppAstStatementForEach(stmt);
+            case "statement_try":
+                return this.ppAstStatementTry(stmt);
+            default:
+                return `Unsopported statement kind: ${stmt.kind}`;
+        }
+    }
+
+    ppStatementBlock(stmts: readonly AstStatement[]): string {
+        this.increaseIndent();
+        const stmntsFormatted = stmts
+            .map((stmt) => this.ppAstStatement(stmt))
+            .join("\n");
+        this.decreaseIndent();
+        const result = `{\n${stmntsFormatted}\n${this.indent()}}`;
+        return result;
+    }
+
+    ppAstStatementLet(statement: AstStatementLet): string {
+        const expression = this.ppAstExpression(statement.expression);
+        const tyAnnotation =
+            statement.type === undefined
+                ? ""
+                : `: ${this.ppAstType(statement.type)}`;
+        return `${this.indent()}let ${statement.name.text}${tyAnnotation} = ${expression};`;
+    }
+
+    ppAstStatementReturn(statement: AstStatementReturn): string {
+        const expression = statement.expression
+            ? this.ppAstExpression(statement.expression)
+            : "";
+        return `${this.indent()}return ${expression};`;
+    }
+
+    ppAstStatementExpression(statement: AstStatementExpression): string {
+        return `${this.indent()}${this.ppAstExpression(statement.expression)};`;
+    }
+
+    ppAstStatementAssign(statement: AstStatementAssign): string {
+        return `${this.indent()}${this.ppAstExpression(statement.path)} = ${this.ppAstExpression(statement.expression)};`;
+    }
+
+    ppAstStatementAugmentedAssign(
+        statement: AstStatementAugmentedAssign,
+    ): string {
+        return `${this.indent()}${this.ppAstExpression(statement.path)} ${statement.op}= ${this.ppAstExpression(statement.expression)};`;
+    }
+
+    ppAstCondition(statement: AstStatementCondition): string {
+        const condition = this.ppAstExpression(statement.condition);
+        const trueBranch = this.ppStatementBlock(statement.trueStatements);
+        const falseBranch = statement.falseStatements
+            ? ` else ${this.ppStatementBlock(statement.falseStatements)}`
+            : "";
+        return `${this.indent()}if (${condition}) ${trueBranch}${falseBranch}`;
+    }
+
+    ppAstStatementWhile(statement: AstStatementWhile): string {
+        const condition = this.ppAstExpression(statement.condition);
+        const stmts = this.ppStatementBlock(statement.statements);
+        return `${this.indent()}while (${condition}) ${stmts}`;
+    }
+
+    ppAstStatementRepeat(statement: AstStatementRepeat): string {
+        const condition = this.ppAstExpression(statement.iterations);
+        const stmts = this.ppStatementBlock(statement.statements);
+        return `${this.indent()}repeat (${condition}) ${stmts}`;
+    }
+
+    ppAstStatementUntil(statement: AstStatementUntil): string {
+        const condition = this.ppAstExpression(statement.condition);
+        const stmts = this.ppStatementBlock(statement.statements);
+        return `${this.indent()}do ${stmts} until (${condition});`;
+    }
+
+    ppAstStatementForEach(statement: AstStatementForEach): string {
+        const header = `foreach (${statement.keyName.text}, ${statement.valueName.text} in ${this.ppAstExpression(statement.map)})`;
+        const body = this.ppStatementBlock(statement.statements);
+        return `${this.indent()}${header} ${body}`;
+    }
+
+    ppAstStatementTry(statement: AstStatementTry): string {
+        const tryBody = this.ppStatementBlock(statement.statements);
+        const tryPrefix = `${this.indent()}try ${tryBody}`;
+        const catchSuffix = statement.catchBlock
+            ? ` catch (${statement.catchBlock.catchName.text}) ${this.ppStatementBlock(statement.catchBlock.catchStatements)}`
+            : "";
+        return tryPrefix + catchSuffix;
+    }
 }
 
 /**
@@ -583,38 +582,38 @@ class PrettyPrinter {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function formatAst(input: AstNode): string {
-  const pp = new PrettyPrinter();
-  switch (input.kind) {
-    case "module":
-      return pp.ppAstProgram(input);
-    case "op_binary":
-    case "op_unary":
-    case "field_access":
-    case "method_call":
-    case "static_call":
-    case "struct_instance":
-    case "init_of":
-    case "conditional":
-    case "number":
-    case "id":
-    case "boolean":
-    case "string":
-    case "null":
-      return pp.ppAstExpression(input);
-    case "struct_decl":
-    case "message_decl":
-      return pp.ppAstStruct(input);
-    case "constant_decl":
-    case "constant_def":
-      return pp.ppAstConstant(input);
-    case "function_decl":
-    case "function_def":
-      return pp.ppAstFunction(input);
-    case "contract":
-      return pp.ppAstContract(input);
-    case "trait":
-      return pp.ppAstTrait(input);
-    default:
-      throw new Error(`Unsupported Ast type: ${input.kind}`);
-  }
+    const pp = new PrettyPrinter();
+    switch (input.kind) {
+        case "module":
+            return pp.ppAstProgram(input);
+        case "op_binary":
+        case "op_unary":
+        case "field_access":
+        case "method_call":
+        case "static_call":
+        case "struct_instance":
+        case "init_of":
+        case "conditional":
+        case "number":
+        case "id":
+        case "boolean":
+        case "string":
+        case "null":
+            return pp.ppAstExpression(input);
+        case "struct_decl":
+        case "message_decl":
+            return pp.ppAstStruct(input);
+        case "constant_decl":
+        case "constant_def":
+            return pp.ppAstConstant(input);
+        case "function_decl":
+        case "function_def":
+            return pp.ppAstFunction(input);
+        case "contract":
+            return pp.ppAstContract(input);
+        case "trait":
+            return pp.ppAstTrait(input);
+        default:
+            throw new Error(`Unsupported Ast type: ${input.kind}`);
+    }
 }
