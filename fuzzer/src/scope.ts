@@ -202,7 +202,10 @@ export class Scope {
                         Type,
                     ],
             )
-            .filter((nameType): nameType is [string, Type] => nameType[0] !== undefined);
+            .filter(
+                (nameType): nameType is [string, Type] =>
+                    nameType[0] !== undefined,
+            );
     }
 
     /**

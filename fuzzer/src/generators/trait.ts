@@ -5,7 +5,7 @@ import { Field } from "./field";
 import { ConstantDecl, ConstantDef } from "./constant";
 import { Expression } from "./expression";
 import { TypeGen, makeFunctionTy, UtilType } from "../types";
-import type {Type} from "../types"; 
+import type { Type } from "../types";
 import { Scope } from "../scope";
 import { GenerativeEntity } from "./generator";
 

@@ -112,7 +112,7 @@ describe("properties", () => {
             };
 
             if (numRuns === Infinity) {
-                for(;;) {
+                for (;;) {
                     await compileAndCheckProperty();
                 }
             } else {
