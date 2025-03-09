@@ -92,7 +92,7 @@ class PrettyPrinter {
     const valueAlias = typeRef.valueStorageType
       ? ` as ${typeRef.valueStorageType}`
       : "";
-    return `map<${typeRef.keyType}${keyAlias}, ${typeRef.valueType}${valueAlias}>`;
+    return `map<${typeRef.keyType.text}${keyAlias}, ${typeRef.valueType.text}${valueAlias}>`;
   }
 
   ppAstBouncedMessageType(type: AstBouncedMessageType): string {
@@ -190,14 +190,14 @@ class PrettyPrinter {
       case "boolean":
         result = expr.value.toString();
         break;
-      case "string":
+      case "simplified_string":
         result = `"${expr.value}"`;
         break;
       case "null":
         result = "null";
         break;
       default:
-        throw new Error(`Unsupported expression type: ${expr}`);
+        throw new Error(`Unsupported expression type: ${expr.kind}`);
     }
 
     // Set parens when needed
