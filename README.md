@@ -126,7 +126,7 @@ For a quick start, read the ["Let's start!"](https://docs.tact-lang.org/#start) 
 If you want more manual control, use [tact-template](https://github.com/tact-lang/tact-template). It's a ready-to-use template with the development environment set up, including the Tact compiler with TypeScript + Jest, a local TON emulator, AI-based editor support, and examples of how to run tests.
 
 ```shell
-git clone https://github.com/tact-lang/tact-template
+git clone --depth 1 https://github.com/tact-lang/tact-template
 ```
 
 ## Community
