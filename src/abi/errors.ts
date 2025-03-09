@@ -10,4 +10,7 @@ export const contractErrors = {
     invalidArgument: { id: 134, message: "Invalid argument" },
     codeNotFound: { id: 135, message: "Code of a contract was not found" },
     invalidStdAddress: { id: 136, message: "Invalid standard address" },
+    // The ID 137 is deliberately skipped because that exit code was deprecated
+    // and is only accessible in versions of Tact before 1.6.0
+    notBasechainAddress: { id: 138, message: "Not a basechain address" },
 };

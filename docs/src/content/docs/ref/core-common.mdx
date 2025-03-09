@@ -125,7 +125,7 @@ require(ctx.value != 68 + 1, "Invalid amount of nanoToncoins, bye!");
 fun newAddress(chain: Int, hash: Int): Address;
 ```
 
-Creates a new [`Address{:tact}`][p] based on the [`chain` ID](https://ton-blockchain.github.io/docs/#/overviews/TON_blockchain_overview) and the [SHA-256](/ref/core-math#sha256) encoded [`hash` value (account ID)][account-id].
+Creates a new [`Address{:tact}`][p] based on the [`chain` ID][workchain-id] and the [SHA-256](/ref/core-math#sha256) encoded [`hash` value (account ID)][account-id].
 
 This function tries to resolve constant values at [compile-time](/ref/core-comptime) whenever possible.
 

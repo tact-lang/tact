@@ -74,6 +74,11 @@ contract StdlibTest {
         return parseVarAddress(slice);
     }
 
+    get fun forceBasechain(addr: Address): Bool {
+        forceBasechain(addr);
+        return true;
+    }
+
     get fun skipRef(c: Slice): Slice {
         c.skipRef();
         return c;

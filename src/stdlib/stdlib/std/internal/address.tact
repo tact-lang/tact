@@ -244,7 +244,7 @@ asm extends fun storeAddress(self: Builder, address: Address): Builder { STSLICE
 /// Struct representing a basechain address. Available since Tact 1.6.0.
 ///
 /// A basechain address (workchain 0) can be either empty (null hash) or contain a 256-bit hash value.
-/// 
+///
 struct BasechainAddress {
     hash: Int?;
 }
@@ -254,7 +254,7 @@ struct BasechainAddress {
 /// Creates and returns an empty basechain address with a null hash.
 ///
 /// When serialized, an empty basechain address is represented as `addr_none`.
-/// 
+///
 /// ```tact
 /// fun example() {
 ///     let emptyAddr: BasechainAddress = emptyBasechainAddress();
@@ -322,3 +322,31 @@ extends fun storeBasechainAddress(self: Builder, address: BasechainAddress): Bui
         .storeUint(0b10_0_00000000, 3 + 8)
         .storeUint(address.hash!!, 256);
 }
+
+/// Global function. Available since Tact 1.6.3.
+///
+/// Checks whether the `address` is in the basechain, i.e., its chain ID is 0. If it is not, throws an exception with exit code 138: `Not a basechain address`.
+///
+/// ```tact
+/// fun examples() {
+///     let someBasechainAddress: Address =
+///         newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+///
+///     let someMasterchainAddress: Address =
+///         newAddress(-1, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+///
+///     // Does not throw because the chain ID is 0
+///     forceBasechain(someBasechainAddress);
+///
+///     try {
+///         // Throws because the chain ID is -1 (masterchain)
+///         forceBasechain(someMasterchainAddress);
+///     } catch (exitCode) {
+///         // exitCode is 138
+///     }
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-advanced#forcebasechain
+///
+asm fun forceBasechain(address: Address) { REWRITESTDADDR DROP 138 THROWIF }
