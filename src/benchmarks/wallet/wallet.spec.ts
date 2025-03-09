@@ -7,7 +7,7 @@ import { SendMode } from "@ton/core";
 import { beginCell, Dictionary, toNano } from "@ton/core";
 import "@ton/test-utils";
 
-import { getUsedGas, generateResults, printBenchmarkTable } from "../util";
+import { getUsedGas, generateResults, printBenchmarkTable } from "../utils/gas";
 import benchmarkResults from "./results_gas.json";
 import type { KeyPair } from "@ton/crypto";
 import { getSecureRandomBytes, keyPairFromSeed, sign } from "@ton/crypto";

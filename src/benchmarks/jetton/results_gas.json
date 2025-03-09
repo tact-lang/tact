@@ -10,15 +10,6 @@
       "pr": "https://github.com/ton-blockchain/token-contract"
     },
     {
-      "label": "NotCoin",
-      "gas": {
-        "transfer": "16984",
-        "burn": "12732",
-        "discovery": "6545"
-      },
-      "pr": "https://github.com/OpenBuilders/notcoin-contract"
-    },
-    {
       "label": "1.5.3",
       "gas": {
         "transfer": "40678",
