@@ -76,7 +76,7 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
     function makeCellLiteral(c: Cell, loc: SrcInfo): A.AstCell {
         const result = createNode({
             kind: "cell",
-            value: c,
+            value: c.toString(),
             loc: loc,
         });
         return result as A.AstCell;
@@ -85,7 +85,7 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
     function makeSliceLiteral(s: Slice, loc: SrcInfo): A.AstSlice {
         const result = createNode({
             kind: "slice",
-            value: s,
+            value: s.toString(),
             loc: loc,
         });
         return result as A.AstSlice;
@@ -94,7 +94,7 @@ export const getAstUtil = ({ createNode }: FactoryAst) => {
     function makeAddressLiteral(a: Address, loc: SrcInfo): A.AstAddress {
         const result = createNode({
             kind: "address",
-            value: a,
+            value: a.toRawString(),
             loc: loc,
         });
         return result as A.AstAddress;
