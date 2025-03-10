@@ -154,5 +154,3 @@ contract JettonWalletNotcoin(
         };
     }
 }
-
-
