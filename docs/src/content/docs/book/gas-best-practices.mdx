@@ -190,7 +190,7 @@ fun example() {
 
 ## Sending messages
 
-### Do not use internal functions provided by the `BaseTrait`
+### Prefer `message` and `cashback` to `self.forward`, `self.reply`, and `self.notify`
 
 Every [contract](/book/contracts) in Tact implicitly [inherits](/book/contracts#traits) the `BaseTrait{:tact}` trait, which contains a number of [internal functions](/book/contracts#internal-functions) for any contract. Those internal functions are gas-expensive for the same reasons as stated earlier.
 
