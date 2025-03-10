@@ -298,7 +298,7 @@
       }
     },
     {
-      "label": "1.6.2 with 1.6.2 with fixed math",
+      "label": "1.6.2 with forward fee calculation",
       "pr": "https://github.com/tact-lang/tact/pull/2338",
       "gas": {
         "transfer": "15002",
