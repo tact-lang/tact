@@ -116,6 +116,8 @@ contract JettonWallet(
         self.balance += msg.amount;
     }
 
+    receive(_: Slice) { throw(0xffff); }
+
     get fun get_wallet_data(): JettonWalletData {
         return JettonWalletData{
             balance: self.balance,

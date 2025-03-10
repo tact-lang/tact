@@ -82,6 +82,8 @@ contract JettonMinter(
         self.owner = msg.newOwner;
     }
 
+    receive(_: Slice) { throw(0xffff); }
+
     get fun get_jetton_data(): JettonMasterState {
         return JettonMasterState {
             totalSupply: self.totalSupply,
