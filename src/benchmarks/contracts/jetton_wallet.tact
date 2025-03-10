@@ -9,7 +9,7 @@ contract JettonWallet(
     const gasConsumption: Int = ton("0.015");
 
     receive(msg: JettonTransfer) {
-        throwUnless(333, parseStdAddress(msg.destination.asSlice()).workchain == 0);
+        forceBasechain(msg.destination);
         throwUnless(705, sender() == self.owner);
 
         self.balance -= msg.amount;
