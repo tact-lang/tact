@@ -300,6 +300,17 @@ export default defineConfig({
 					],
 				},
 				{
+					label: 'Whitepapers',
+					translations: {
+						'zh-CN': '白皮书',
+					},
+					items: [
+						{ slug: 'whitepapers' },
+						{ slug: 'whitepapers/tvm' },
+						// { slug: 'whitepapers/tblkch' }, // TODO
+					],
+				},
+				{
 					label: '⭐ Awesome Tact →',
 					link: 'https://github.com/tact-lang/awesome-tact',
 				},
