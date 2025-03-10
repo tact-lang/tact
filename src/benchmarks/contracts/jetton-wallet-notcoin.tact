@@ -55,9 +55,7 @@ contract JettonWalletNotcoin(
         throwUnless(708, msg.forwardPayload.bits() >= 1);
 
         let ctx = context();
-
-        let fwdFee = getOriginalFwdFee(ctx.readForwardFee(), false);
-        checkAmountIsEnoughToTransfer(ctx.value, msg.forwardTonAmount, fwdFee);
+        checkAmountIsEnoughToTransfer(ctx.value, msg.forwardTonAmount, ctx.readForwardFee());
 
         deploy(DeployParameters{
             value: 0,
