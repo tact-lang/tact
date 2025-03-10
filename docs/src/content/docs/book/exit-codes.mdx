@@ -64,8 +64,7 @@ Exit code     | Origin                              | Brief description
 [$135$](#135) | Tact compiler ([Compute phase][c])  | Code of a contract was not found.
 [$136$](#136) | Tact compiler ([Compute phase][c])  | Invalid standard address.
 ~~[$137$](#137)~~ | ~~Tact compiler ([Compute phase][c])~~  | ~~Masterchain support is not enabled for this contract.~~ Removed since Tact 1.6.
-[$138$](#138) | Tact compiler ([Compute phase][c])  | Not a basechain address. Thrown by `forceBasechain()` + link
-
+[$138$](#138) | Tact compiler ([Compute phase][c])  | Not a basechain address.
 
 :::note
 
@@ -672,6 +671,32 @@ try {
     dump(newAddress(masterchainID, 0));
 } catch (exitCode) {
     // exitCode is 137
+}
+```
+
+### 138: Not a basechain address {#138}
+
+<Badge text="Available since Tact 1.6.3 (not released yet)" variant="tip" size="medium"/><p/>
+
+The value of type [`Address{:tact}`][p] belongs to a basechain, when its [chain ID](https://docs.ton.org/learn/overviews/addresses#workchain-id) is equal to 0.
+
+Such check is currently only performed in the [`forceBasechain(){:tact}`](/ref/core-advanced#forcebasechain) function. If the address does not belong to a basechain, i.e., its chain ID isn't 0, the function throws an error with exit code 138: `Not a basechain address`.
+
+```tact
+let someBasechainAddress: Address =
+    newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+
+let someMasterchainAddress: Address =
+    newAddress(-1, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+
+// Does not throw because the chain ID is 0
+forceBasechain(someBasechainAddress);
+
+try {
+    // Throws because the chain ID is -1 (masterchain)
+    forceBasechain(someMasterchainAddress);
+} catch (exitCode) {
+    // exitCode is 138
 }
 ```
 
