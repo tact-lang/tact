@@ -174,9 +174,9 @@ message(MessageParameters{
 
 ### Use `throwUnless()` over `require()`
 
-The [`require(){:tact}`](/ref/core-debug#require) function is convenient for stating assumptions in code, especially in debug environments. Granted, currently, it generates exit codes outside the range $0-2^{11}$, making it a bit expensive compared to alternatives.
+The [`require(){:tact}`](/ref/core-debug#require) function is convenient for stating assumptions in code, especially in debug environments. Granted, currently, it generates [exit codes](/book/exit-codes) greater than $2^{11}$, making it a bit expensive compared to alternatives.
 
-If you're ready for production and are willing to sacrifice some convenience for gas, use [`throwUnless(){:tact}`](/ref/core-debug#throwunless) function, keep track of your exit codes by declaring them as [constants](/book/constants), and keep exit codes within the inclusive range of $0-2^{11}$.
+If you're ready for production and are willing to sacrifice some convenience for gas, use [`throwUnless(){:tact}`](/ref/core-debug#throwunless) function, keep track of your exit codes by declaring them as [constants](/book/constants), and keep exit codes within the inclusive range of $256-2^{11}$. It's essential to respect the latter range because the exit code values from 0 to 255 are reserved by [TVM][tvm] and the Tact compiler.
 
 ```tact
 const SOMETHING_BAD_1: Int = 700;
