@@ -211,7 +211,8 @@ describe("map-comparison", () => {
                 from: treasure.address,
                 to: contract.address,
                 success: false,
-                exitCode: 53111,
+                exitCode:
+                    MapComparisonTestContract.errors["Maps are not equal"],
             });
 
             result = await treasure.send({

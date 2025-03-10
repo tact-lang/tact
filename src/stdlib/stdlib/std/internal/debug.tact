@@ -63,7 +63,7 @@ native throwIf(code: Int, condition: Bool);
 ///
 /// Similar to `throw()`, but throws an error `code` only if `condition` does **not** hold, i.e. `condition` is equal to `true{:tact}`. Doesn't throw otherwise.
 ///
-/// This function is also similar to `require()`, but uses the specified `code` directly instead of generating one based on the given error message `String`.
+/// This function is also similar to `require()`, but uses the specified `code` directly instead of generating it sequentially.
 ///
 /// Attempts to specify the `code` outside of 0-65535 range cause an exception with exit code 5: `Integer out of expected range`.
 ///
