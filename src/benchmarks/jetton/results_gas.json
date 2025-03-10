@@ -298,6 +298,15 @@
       }
     },
     {
+      "label": "1.6.2 with fixed forward fee calculation",
+      "pr": "https://github.com/tact-lang/tact/pull/2338",
+      "gas": {
+        "transfer": "15002",
+        "burn": "11773",
+        "discovery": "6076"
+      }
+    },
+    {
       "label": "1.6.2 with forceBasechain",
       "pr": "https://github.com/tact-lang/tact/pull/2330",
       "gas": {
