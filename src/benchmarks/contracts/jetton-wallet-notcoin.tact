@@ -19,7 +19,7 @@ const BURN_NOTIFICATION_BITS: Int = 754;
 const BURN_NOTIFICATION_CELLS: Int = 1;
 
 inline fun checkAmountIsEnoughToTransfer(msgValue: Int, forwardTonAmount: Int, fwdFee: Int) {
-    let fwdCount = 1 + forwardTonAmount & 1;
+    let fwdCount = 1 + sign(msg.forwardTonAmount);
 
     throwUnless(
         705,
@@ -47,7 +47,7 @@ contract JettonWalletNotcoin(
     master: Address,
 ) {
     receive(msg: JettonTransfer) {
-        throwUnless(333, parseStdAddress(msg.destination.asSlice()).workchain == 0);
+        forceBasechain(msg.destination);
         throwUnless(705, sender() == self.owner);
 
         self.balance -= msg.amount;

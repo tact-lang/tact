@@ -57,8 +57,7 @@ contract JettonMinterNotcoin(
         throwUnless(73, ctx.sender == self.owner);
         self.totalSupply += msg.mintMessage.amount;
         
-        // force workchain
-
+        forceBasechain(msg.receiver);
         checkAmountIsEnoughToTransfer(ctx.value, msg.mintMessage.forwardTonAmount, ctx.readForwardFee());
 
         deploy(DeployParameters{
