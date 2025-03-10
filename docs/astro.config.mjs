@@ -189,6 +189,7 @@ export default defineConfig({
 						{ slug: 'book/import' },
 						{ slug: 'book/config' },
 						{ slug: 'book/func' },
+						{ slug: 'book/gas-best-practices' },
 						{ slug: 'book/security-best-practices' },
 					],
 				},
