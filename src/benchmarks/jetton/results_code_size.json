@@ -62,7 +62,7 @@
     },
     {
       "label": "1.6.2 with forceBasechain",
-      "pr": "https://github.com/tact-lang/tact/pull/123",
+      "pr": "https://github.com/tact-lang/tact/pull/2330",
       "size": {
         "minter cells": "29",
         "minter bits": "14625",

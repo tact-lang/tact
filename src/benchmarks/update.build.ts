@@ -8,7 +8,7 @@ import {
     printBenchmarkTable,
     type RawBenchmarkResult,
     type RawCodeSizeResult,
-} from "./util";
+} from "./utils/gas";
 import { createInterface } from "readline/promises";
 import { globSync } from "../test/utils/all-in-folder.build";
 

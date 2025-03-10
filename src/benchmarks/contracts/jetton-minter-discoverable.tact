@@ -1,6 +1,6 @@
 // https://github.com/ton-blockchain/TEPs/blob/master/text/0089-jetton-wallet-discovery.md
 
-import "./jetton_wallet";
+import "./jetton-wallet";
 import "./messages";
 
 const ProvideAddressGasConsumption: Int = ton("0.01");

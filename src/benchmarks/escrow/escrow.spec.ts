@@ -18,7 +18,7 @@ import {
     printBenchmarkTable,
     generateCodeSizeResults,
     getStateSizeForAccount,
-} from "../util";
+} from "../utils/gas";
 import benchmarkResults from "./results_gas.json";
 import { readFileSync } from "fs";
 import { posixNormalize } from "../../utils/filePath";
