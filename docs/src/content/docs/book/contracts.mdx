@@ -175,7 +175,7 @@ contract ContractParameters(
 
 State variables declared in this way have **no** default value. Instead, they get their initial data only when the contract is deployed, which is much cheaper compared to deployments with an extra initialization step in the [`init(){:tact}`](#init-function) function.
 
-The use of contract parameters syntax conflicts with using an [`init(){:tact}`](#init-function) function or declaring persistent state variables via the [contract fields syntax](#variables). Whenever possible, prefer using contract parameters unless you need specific on-chain deployment logic that must be run exactly once, i.e. via the `init(){:tact}` function.
+The use of contract parameters syntax conflicts with using an `init(){:tact}` function or declaring persistent state variables via the [contract fields syntax](#variables). Whenever possible, prefer using contract parameters unless you need specific on-chain deployment logic that must be run exactly once, i.e. via the `init(){:tact}` function.
 
 ```tact
 contract ParamParamParam(
@@ -187,7 +187,7 @@ contract ParamParamParam(
 }
 ```
 
-An empty parameter list is still a parameter list, meaning that the contract won't have an implicit or explicit [`init(){:tact}`](#init-function) function and will enjoy storage write optimizations. Removing the empty list makes a contract use the delayed initialization with an implicit `init(){:tact}` function.
+An empty parameter list is still a parameter list, meaning that the contract won't have an implicit or explicit `init(){:tact}` function and will enjoy storage write optimizations. Removing the empty list makes a contract use the delayed initialization with an implicit `init(){:tact}` function.
 
 ```tact
 contract StillParam() {
