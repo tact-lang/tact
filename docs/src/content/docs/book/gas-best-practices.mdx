@@ -45,7 +45,7 @@ import { toNano } from '@ton/core';
 // Default deployment function / script of the Blueprint
 export async function run(provider: NetworkProvider) {
   const contract = provider.open(await ContractParams.fromInit(
-    42,                   // `val1` in the contract
+    42,                  // `val1` in the contract
     "The time has come", // `val2` in the contract
   ));
   await playground.send(
