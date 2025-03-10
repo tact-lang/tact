@@ -175,7 +175,7 @@ contract ContractParameters(
 
 State variables declared in this way have **no** default value. Instead, they get their initial data only when the contract is deployed, which is much cheaper compared to deployments with an extra initialization step in the [`init(){:tact}`](#init-function) function.
 
-The use of contract parameters syntax conflicts with using an [`init(){:tact}`](#init-function) function or declaring persistent state variables via the [contract fields syntax](#variables). Whenever possible, prefer using contract parameters unless you need specific on-chain deployment logic that must be run exactly once, i.e. via the [`init(){:tact}`](#init-function) function.
+The use of contract parameters syntax conflicts with using an [`init(){:tact}`](#init-function) function or declaring persistent state variables via the [contract fields syntax](#variables). Whenever possible, prefer using contract parameters unless you need specific on-chain deployment logic that must be run exactly once, i.e. via the `init(){:tact}` function.
 
 ```tact
 contract ParamParamParam(
@@ -184,6 +184,21 @@ contract ParamParamParam(
 ) {
     // COMPILATION ERROR! init() cannot be used along with contract parameters
     init(param1: Int, param2: Int) {}
+}
+```
+
+An empty parameter list is still a parameter list, meaning that the contract won't have an implicit or explicit [`init(){:tact}`](#init-function) function and will enjoy storage write optimizations. Removing the empty list makes a contract use the delayed initialization with an implicit `init(){:tact}` function.
+
+```tact
+contract StillParam() {
+    // COMPILATION ERROR! init() cannot be used along with contract parameters
+    init() {}
+}
+
+contract LazyInit {
+    // Everything's ok, and the following init() is redundant because there
+    // would be an implicit empty init() anyway in the absence of contract parameters.
+    init() {}
 }
 ```
 
@@ -370,6 +385,21 @@ contract ParamParamParam(
 ) {
     // COMPILATION ERROR! init() cannot be used along with contract parameters
     init(param1: Int, param2: Int) {}
+}
+```
+
+Note that even an empty contract parameter list counts as using [contract parameters syntax](#parameters) and means that the contract won't have any variables in its persistent state. Removing the empty list makes a contract use the delayed initialization with an implicit `init(){:tact}` function.
+
+```tact
+contract StillParam() {
+    // COMPILATION ERROR! init() cannot be used along with contract parameters
+    init() {}
+}
+
+contract LazyInit {
+    // Everything's ok, and the following init() is redundant because there
+    // would be an implicit empty init() anyway in the absence of contract parameters.
+    init() {}
 }
 ```
 
