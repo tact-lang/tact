@@ -17,7 +17,7 @@ Suggestions are given in no particular order as a simple and quick checklist to 
 
 ## General considerations
 
-### Contract parameters vs. `init()` and contract fields
+### Prefer contract parameters to `init()` and contract fields
 
 If you require some on-chain deployment logic that runs just once after the contract's deployment is completed, then use the lazy initialization strategy provided by the [`init(){:tact}` function](/book/contracts#init-function). It uses an extra bit in the contract's persistent state, runs extra checks upon receiving any message, and disables storage write optimizations of Tact compiler.
 
@@ -58,7 +58,7 @@ export async function run(provider: NetworkProvider) {
 }
 ```
 
-### Deployments with `Deployable`
+### Do not deploy contracts with `Deployable` trait
 
 The `Deployable{:tact}` trait is de facto deprecated and should not be used unless you need to use the `queryId`: the unique identifier to trace transactions across multiple contracts.
 
@@ -76,13 +76,13 @@ contract Scrooge {
 }
 ```
 
-### Gas-expensive badge
+### Pay attention to "Gas-expensive" badge
 
 Some functions in the Tact documentation are annotated with a special badge, "Gas-expensive", which marks the functions that use 500 gas units or more. It is placed right under the function name heading and looks like this: <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
 
 If you use one of those functions, consider finding cheaper alternatives.
 
-### Code inlining
+### Inline functions that are rarely called
 
 Some [kinds of functions](/book/functions) allow their code to be inlined by adding an `inline` annotation. If the function is used often, this might result in a significant increase in contract code size, but generally, it allows to save gas on redundant function calls.
 
@@ -90,7 +90,7 @@ Furthermore, you might reach for the [experimental `inline` field](/book/config#
 
 This advice needs benchmarks to decide its usefulness on a case-by-case basis.
 
-### Off-chain string manipulations
+### Prefer manipulating strings off-chain
 
 Strings on-chain are represented as [slices][slice], which are expensive for handling Unicode strings and quite costly even for ASCII ones. Prefer not to manipulate strings on-chain.
 
