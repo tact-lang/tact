@@ -19,7 +19,7 @@ const BURN_NOTIFICATION_BITS: Int = 754;
 const BURN_NOTIFICATION_CELLS: Int = 1;
 
 inline fun checkAmountIsEnoughToTransfer(msgValue: Int, forwardTonAmount: Int, fwdFee: Int) {
-    let fwdCount = 1 + sign(msg.forwardTonAmount);
+    let fwdCount = 1 + sign(forwardTonAmount);
 
     throwUnless(
         705,
