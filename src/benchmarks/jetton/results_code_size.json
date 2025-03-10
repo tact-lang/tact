@@ -49,6 +49,16 @@
         "wallet cells": "15",
         "wallet bits": "8244"
       }
+    },
+    {
+      "label": "1.6.2 with 1.6.2 with fixed forward fee calculation",
+      "pr": "https://github.com/tact-lang/tact/pull/2338",
+      "size": {
+        "minter cells": "29",
+        "minter bits": "14641",
+        "wallet cells": "15",
+        "wallet bits": "8236"
+      }
     }
   ]
 }
