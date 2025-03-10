@@ -65,9 +65,9 @@
       "pr": "https://github.com/tact-lang/tact/pull/123",
       "size": {
         "minter cells": "29",
-        "minter bits": "14633",
+        "minter bits": "14625",
         "wallet cells": "15",
-        "wallet bits": "8228"
+        "wallet bits": "8220"
       }
     }
   ]

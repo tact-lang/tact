@@ -310,7 +310,7 @@
       "label": "1.6.2 with forceBasechain",
       "pr": "https://github.com/tact-lang/tact/pull/2330",
       "gas": {
-        "transfer": "14994",
+        "transfer": "14976",
         "burn": "11773",
         "discovery": "6076"
       }
