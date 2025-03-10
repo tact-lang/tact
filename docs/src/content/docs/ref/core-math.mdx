@@ -363,10 +363,10 @@ contract Example {
 <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
-fun checkSignature(hash: Int, signature: Slice, public_key: Int): Bool;
+fun checkSignature(hash: Int, signature: Slice, publicKey: Int): Bool;
 ```
 
-Checks the [Ed25519][ed] `signature` of the $256$-bit unsigned [`Int{:tact}`][int] `hash` using a `public_key`, represented by a $256$-bit unsigned [`Int{:tact}`][int]. The signature must contain at least $512$ bits of data, but only the first $512$ bits are used.
+Checks the [Ed25519][ed] `signature` of the 256-bit unsigned [`Int{:tact}`][int] `hash` using a `publicKey`, represented by a 256-bit unsigned [`Int{:tact}`][int]. The signature must contain at least 512 bits of data, but only the first 512 bits are used.
 
 Returns `true{:tact}` if the signature is valid, `false{:tact}` otherwise.
 
@@ -393,7 +393,7 @@ contract Showcase {
         let check: Bool = checkSignature(hash, msg.signature, self.pub);
         //                               ----  -------------  --------
         //                               ↑     ↑              ↑
-        //                               |     |              public_key stored in our contract
+        //                               |     |              publicKey stored in our contract
         //                               |     signature obtained from the received message
         //                               hash calculated using the data from the received message
         // ... follow-up logic ...
@@ -406,21 +406,21 @@ contract Showcase {
 <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
-fun checkDataSignature(data: Slice, signature: Slice, public_key: Int): Bool;
+fun checkDataSignature(data: Slice, signature: Slice, publicKey: Int): Bool;
 ```
 
-Checks the [Ed25519][ed] `signature` of the `data` using a `public_key`, similar to [`checkSignature(){:tact}`](#checksignature). If the bit length of `data` is not divisible by $8$, this function throws an error with [exit code 9](/book/exit-codes#9): `Cell underflow`. Verification itself is done indirectly on a [SHA-256][sha-2] hash of the `data`.
+Checks the [Ed25519][ed] `signature` of the `data` using a `publicKey`, similar to [`checkSignature(){:tact}`](#checksignature). If the bit length of `data` is not divisible by 8, this function throws an error with [exit code 9](/book/exit-codes#9): `Cell underflow`. Verification itself is done indirectly on a [SHA-256][sha-2] hash of the `data`.
 
 Returns `true{:tact}` if the signature is valid, `false{:tact}` otherwise.
 
 Usage example:
 
 ```tact
-let data: Slice = some_data;
-let signature: Slice = some_signature;
+let data: Slice = someData;
+let signature: Slice = someSignature;
 let publicKey: Int = 42;
 
-let check: Bool = checkSignature(data, signature, publicKey);
+let check: Bool = checkDataSignature(data, signature, publicKey);
 ```
 
 ## sha256
