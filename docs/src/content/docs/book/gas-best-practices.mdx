@@ -94,7 +94,7 @@ This advice needs benchmarks to decide its usefulness on a case-by-case basis.
 
 Strings on-chain are represented as [slices][slice], which are expensive for handling Unicode strings and quite costly even for ASCII ones. Prefer not to manipulate strings on-chain.
 
-### Arithmetic vs. branching
+### Prefer arithmetic to branching operators
 
 On average, branching uses many more instructions than equivalent arithmetic. Common examples of branching are the [`if...else{:tact}`](/book/statements#if-else) statement and the ternary operator [`?:{:tact}`](/book/operators#ternary).
 
@@ -120,7 +120,7 @@ Read more about them on their dedicated page: [Assembly functions](/book/assembl
 
 ## Receiving messages
 
-### String vs. binary receivers
+### Prefer binary receivers to text receivers
 
 Tact automatically handles various message body types, including binary and string (text) ones. Both message bodies start with a 32-bit integer header (or tag) called an opcode, which helps distinguish their following contents.
 
