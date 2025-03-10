@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added descriptions for `&&=`, `||=`, `>>=` and `<<=` augmented assignment operators: PR [#2328](https://github.com/tact-lang/tact/pull/2328)
 - Added gas best practices page: PR [#2342](https://github.com/tact-lang/tact/pull/2342)
 - Documented semantics of empty contract parameters: PR [#2346](https://github.com/tact-lang/tact/pull/2346)
+- Documented new exit code and opcode records in TypeScript wrappers: PR [#TBD](https://github.com/tact-lang/tact/pull/TBD)
 
 ### Release contributors
 
