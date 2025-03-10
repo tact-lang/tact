@@ -26,7 +26,7 @@ However, most contracts do not require lazy initialization and define their init
 ```tact
 contract ContractParams(
     // Persistent state variables declared via the contract parameters syntax
-    val1: Int, // Int, implicitly serialized to a 257-bit signed
+    val1: Int as uint64, // `as`-annotations are supported
     val2: String,
 ) {
     // For deployments
