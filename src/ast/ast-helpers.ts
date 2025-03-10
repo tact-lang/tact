@@ -155,13 +155,11 @@ export function eqExpressions(
         case "id":
             return eqNames(ast1, ast2 as A.AstId);
         case "address":
-            return ast1.value.equals((ast2 as A.AstAddress).value);
+            return ast1.value === (ast2 as A.AstAddress).value;
         case "cell":
-            return ast1.value.equals((ast2 as A.AstCell).value);
+            return ast1.value === (ast2 as A.AstCell).value;
         case "slice":
-            return ast1.value
-                .asCell()
-                .equals((ast2 as A.AstSlice).value.asCell());
+            return ast1.value === (ast2 as A.AstSlice).value;
         case "simplified_string":
             return ast1.value === (ast2 as A.AstSimplifiedString).value;
         case "struct_value":
