@@ -60,7 +60,7 @@ export async function run(provider: NetworkProvider) {
 
 ### Do not deploy contracts with `Deployable` trait
 
-The `Deployable{:tact}` trait is de facto deprecated and should not be used unless you need to use the `queryId`: the unique identifier to trace transactions across multiple contracts.
+The `Deployable{:tact}` trait is now deprecated and should only be used if you require the `queryId`, which serves as a unique identifier for tracing transactions across multiple contracts.
 
 Instead of inheriting the `Deployable{:tact}` trait, prefer having a simple receiver for the empty message body and deploying your contracts with it.
 
