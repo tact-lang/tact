@@ -91,7 +91,7 @@
     "@tonstudio/parser-runtime": "^0.0.1",
     "blockstore-core": "1.0.5",
     "change-case": "^4.1.2",
-    "ipfs-unixfs-importer": "9.0.10",
+    "ipfs-unixfs-importer": "15.3.2",
     "json-bigint": "^1.0.0",
     "ohm-js": "^17.1.0",
     "path-normalize": "^6.0.13",
