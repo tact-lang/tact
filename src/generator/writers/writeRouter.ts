@@ -92,18 +92,14 @@ export function writeNonBouncedRouter(
     if (
         typeof receivers.empty === "undefined" &&
         receivers.comment.length === 0 &&
-        typeof receivers.commentFallback === "undefined"
+        typeof receivers.commentFallback === "undefined" &&
+        typeof receivers.fallback === "undefined"
     ) {
         wCtx.append("var op = in_msg~load_opcode();");
 
         writeBinaryReceivers(true);
 
-        if (typeof receivers.fallback !== "undefined") {
-            wCtx.append(";; Receiver fallback");
-            writeFallbackReceiver(receivers.fallback, contract, "in_msg", wCtx);
-        } else {
-            wCtx.append(`throw(${contractErrors.invalidMessage.id});`);
-        }
+        wCtx.append(`throw(${contractErrors.invalidMessage.id});`);
         return;
     }
 
