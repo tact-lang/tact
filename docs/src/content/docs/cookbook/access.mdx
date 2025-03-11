@@ -8,16 +8,15 @@ This page lists common examples of working with privileges, ownership, and acces
 ## How to check sender privileges using the Ownable trait
 
 ```tact
-// Ownable has to be imported from stdlib, as well as Deployable, for convenience:
+// Ownable has to be imported from stdlib
 import "@stdlib/ownable";
-import "@stdlib/deploy";
 
 message FooBarMsg {
     newVal: Int as uint32;
 }
 
 // Ownable trait can limit certain actions to the owner only
-contract SenderChecker with Deployable, Ownable {
+contract SenderChecker with Ownable {
     // Persistent state variables
     owner: Address;     // Ownable trait requires you to add this exact state variable
     val: Int as uint32; // some value
@@ -27,6 +26,10 @@ contract SenderChecker with Deployable, Ownable {
         self.owner = sender();
         self.val = 0;
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 
     receive("inc") {
         self.requireOwner(); // Throws exit code 132 if the sender isn't the owner

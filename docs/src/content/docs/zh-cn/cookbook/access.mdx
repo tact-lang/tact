@@ -8,16 +8,15 @@ description: 此页列出了使用特权、所有权和访问控制的常见例�
 ## 如何使用 Ownable trait检查发件人权限
 
 ```tact
-// Ownable has to be imported from stdlib, as well as Deployable, for convenience:
+// Ownable has to be imported from stdlib:
 import "@stdlib/ownable";
-import "@stdlib/deploy";
 
 message FooBarMsg {
     newVal: Int as uint32;
 }
 
 // Ownable trait can limit certain actions to the owner only
-contract SenderChecker with Deployable, Ownable {
+contract SenderChecker with Ownable {
     // Persistent state variables
     owner: Address;     // Ownable trait requires you to add this exact state variable
     val: Int as uint32; // some value
@@ -27,6 +26,8 @@ contract SenderChecker with Deployable, Ownable {
         self.owner = sender();
         self.val = 0;
     }
+
+    receive() { cashback(sender()) } // for the deployment
 
     receive("inc") {
         self.requireOwner(); // throws exit code 132 if the sender isn't an owner

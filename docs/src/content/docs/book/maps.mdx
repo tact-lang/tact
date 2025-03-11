@@ -15,15 +15,17 @@ struct IntToInt {
 }
 ```
 
-Since maps can use any given [Struct][struct] as their [value types](#allowed-types), nested maps can be created via helper structures like this:
+Since maps can use any given [struct][struct] or [message struct][message] as their [value types](#allowed-types), nested maps can be created via helper structures like this:
 
 ```tact
-import "@stdlib/deploy";
-
 // A `map<Address, Int>` packed into the `AllowanceMap` structure
 struct AllowanceMap { unbox: map<Address, Int> }
 
-contract NestedMaps with Deployable {
+contract NestedMaps {
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
+
     get fun test(): Int {
         // An outer map `map<Address, AllowanceMap>`,
         // with `AllowanceMap` Structs as values,
@@ -61,7 +63,7 @@ Allowed value types:
 * [`Cell{:tact}`][cell]
 * [`Address{:tact}`][p]
 * [Struct][struct]
-* [Message](/book/structs-and-messages#messages)
+* [Message][message]
 
 ## Serialization
 
@@ -582,6 +584,7 @@ If you still need a large or unbounded (infinitely large) map, it is better to a
 [int]: /book/integers
 [cell]: /book/cells#cells
 [struct]: /book/structs-and-messages#structs
+[message]: /book/structs-and-messages#messages
 
 [hashmap]: https://docs.ton.org/develop/data-formats/tl-b-types#hashmap
 [tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
