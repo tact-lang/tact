@@ -93,7 +93,7 @@ contract MeSee {
 fun context(): Context;
 ```
 
-Returns `Context{:tact}` [Struct](/book/structs-and-messages#structs), which consists of:
+Returns `Context{:tact}` [struct](/book/structs-and-messages#structs), which consists of:
 
 Field        | Type                    | Description
 :----------- | :---------------------- | :----------
@@ -125,7 +125,7 @@ require(ctx.value != 68 + 1, "Invalid amount of nanoToncoins, bye!");
 fun newAddress(chain: Int, hash: Int): Address;
 ```
 
-Creates a new [`Address{:tact}`][p] based on the [`chain` ID](https://ton-blockchain.github.io/docs/#/overviews/TON_blockchain_overview) and the [SHA-256](/ref/core-math#sha256) encoded [`hash` value (account ID)][account-id].
+Creates a new [`Address{:tact}`][p] based on the [`chain` ID][workchain-id] and the [SHA-256](/ref/core-math#sha256) encoded [`hash` value (account ID)][account-id].
 
 This function tries to resolve constant values at [compile-time](/ref/core-comptime) whenever possible.
 
@@ -372,7 +372,7 @@ deploy(DeployParameters{
 fun cashback(to: Address);
 ```
 
-[Queues](/book/send#outbound-message-processing) an empty message to be sent with the [`SendRemainingValue{:tact}`](/book/message-mode#base-modes) mode with the [`SendIgnoreErrors{:tact}`(/book/message-mode/#optional-flags) to the destination address `to`. It is the most gas-efficient way to send the remaining value from the incoming message to the given address.
+[Queues](/book/send#outbound-message-processing) an empty message to be sent with the [`SendRemainingValue{:tact}`](/book/message-mode#base-modes) mode with the [`SendIgnoreErrors{:tact}`](/book/message-mode/#optional-flags) to the destination address `to`. It is the most gas-efficient way to send the remaining value from the incoming message to the given address.
 
 Attempts to queue more than 255 messages throw an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
 

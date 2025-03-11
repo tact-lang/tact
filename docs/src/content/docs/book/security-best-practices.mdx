@@ -26,15 +26,17 @@ Do **not** send or store sensitive data on-chain.
 ##### Don'ts ❌
 
 ```tact
-import "@stdlib/deploy";
-
 message Login {
     privateKey: Int as uint256;
     signature: Slice;
     data: Slice;
 }
 
-contract Test with Deployable {
+contract Test {
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
+
     receive(msg: Login) {
         let publicKey = getPublicKey(msg.privateKey);
 
@@ -202,7 +204,7 @@ contract Counter with Ownable {
 Do not execute a message without validating the sender's identity!
 
 ```tact
-contract Example with Deployable {
+contract Example {
     myJettonWalletAddress: Address;
     myJettonAmount: Int as coins = 0;
 
@@ -213,6 +215,10 @@ contract Example with Deployable {
             jettonWalletCode,
         );
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 
     receive(msg: JettonTransferNotification) {
         self.myJettonAmount += msg.amount;

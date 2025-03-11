@@ -13,8 +13,7 @@ For examples of communication between multiple deployed contracts, see: [Multi-c
 ## How to make a basic reply
 
 ```tact
-import "@stdlib/deploy";
-contract Example with Deployable {
+contract Example {
     receive() {
         self.reply("Hello, World!".asComment()); // asComment converts a String to a Cell with a comment
     }
@@ -24,8 +23,7 @@ contract Example with Deployable {
 ## How to send a simple message
 
 ```tact
-import "@stdlib/deploy";
-contract Example with Deployable {
+contract Example {
     receive() {
         send(SendParameters{
             bounce: true, // default
@@ -42,8 +40,7 @@ contract Example with Deployable {
 If we need to send the whole balance of the smart contract, we should use the `SendRemainingBalance{:tact}` send mode. Alternatively, we can use `mode: 128{:tact}`, which has the same meaning.
 
 ```tact
-import "@stdlib/deploy";
-contract Example with Deployable {
+contract Example {
     receive() {
         send(SendParameters{
             // bounce = true by default
@@ -61,8 +58,7 @@ contract Example with Deployable {
 If we want to send a reply to the same sender, we can use the mode `SendRemainingValue{:tact}` (i.e. `mode: 64{:tact}`), which carries all the remaining value of the inbound message in addition to the value initially indicated in the new message.
 
 ```tact
-import "@stdlib/deploy";
-contract Example with Deployable {
+contract Example {
     receive() {
         send(SendParameters{
             // bounce = true by default
@@ -78,8 +74,7 @@ contract Example with Deployable {
 It's often useful to add the `SendIgnoreErrors{:tact}` flag too, in order to ignore any errors arising while processing this message during the action phase:
 
 ```tact
-import "@stdlib/deploy";
-contract Example with Deployable {
+contract Example {
     receive() {
         send(SendParameters{
             // bounce = true by default
@@ -99,8 +94,7 @@ The latter example is identical to using the [`.reply(){:tact}` function](#how-t
 If we need to send a message with a lengthy text comment, we should create a [`String{:tact}`](/book/types#primitive-types) consisting of more than 127 characters. To do this, we can utilize the [`StringBuilder{:tact}`](/book/types#primitive-types) primitive type and its methods `beginComment(){:tact}` and `append(){:tact}`. Prior to sending, we should convert this string into a cell using the `toCell(){:tact}` method.
 
 ```tact
-import "@stdlib/deploy";
-contract Example with Deployable {
+contract Example {
     receive() {
         let comment: StringBuilder = beginComment();
         let longString = "..."; // Some string with more than 127 characters.
