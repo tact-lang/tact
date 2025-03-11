@@ -29,19 +29,19 @@ message(0x05138d91) NFTOwnershipAssigned {
 1. 直接保存 NFT 项目地址并进行验证。
 
 ```tact
-import "@stdlib/deploy";
-
 message(0x05138d91) NFTOwnershipAssigned {
     previousOwner: Address;
     forwardPayload: Slice as remaining;
 }
 
-contract SingleNft with Deployable {
+contract SingleNft {
     nftItemAddress: Address;
 
     init(nftItemAddress: Address) {
         self.nftItemAddress = nftItemAddress;
     }
+
+    receive() { cashback(sender()) } // for the deployment
 
     receive(msg: NFTOwnershipAssigned) {
         require(self.nftItemAddress == sender(), "NFT contract is not the sender");
@@ -54,8 +54,6 @@ contract SingleNft with Deployable {
 2. 使用 [`StateInit{:tact}`](/zh-cn/book/expressions#initof) 和派生的 NFT 项目地址。
 
 ```tact
-import "@stdlib/deploy";
-
 message(0x05138d91) NFTOwnershipAssigned {
     previousOwner: Address;
     forwardPayload: Slice as remaining;
@@ -75,7 +73,7 @@ inline fun calculateNFTAddress(index: Int, collectionAddress: Address, nftCode: 
     return contractAddress(StateInit{code: nftCode, data: initData.toCell()});
 }
 
-contract NftInCollection with Deployable {
+contract NftInCollection {
     nftCollectionAddress: Address;
     nftItemIndex: Int as uint64;
     nftCode: Cell;
@@ -85,6 +83,8 @@ contract NftInCollection with Deployable {
         self.nftItemIndex = nftItemIndex;
         self.nftCode = nftCode;
     }
+
+    receive() { cashback(sender()) } // for the deployment
 
     receive(msg: NFTOwnershipAssigned) {
         let expectedNftAddress = calculateNFTAddress(self.nftItemIndex, self.nftCollectionAddress, self.nftCode); // or you can even store expectedNftAddress

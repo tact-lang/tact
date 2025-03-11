@@ -16,8 +16,6 @@ description: 本页列出了在 Tact 中实现的数据结构的便捷集合，�
 下面的示例使用[结构](/zh-cn/book/structs-and-messages#structs)包装的[`map<Int, V>{:tact}`][map]模拟数组，其中`V{:tact}`可以是 map 的任何[允许值类型](/zh-cn/book/maps#allowed-types)：
 
 ```tact
-import "@stdlib/deploy"; // for Deployable trait
-
 struct Array {
     m: map<Int as uint16, Int>; // array of Int values as a map of Ints to Ints,
                                 // with serialization of its keys to uint16 to save space
@@ -119,7 +117,7 @@ fun emptyArray(): Array {
 }
 
 // Contract, with emulating an Array using the map
-contract MapAsArray with Deployable {
+contract MapAsArray {
     // Persistent state variables
     array: Array;
 
@@ -127,6 +125,8 @@ contract MapAsArray with Deployable {
     init() {
         self.array = emptyArray();
     }
+
+    receive() { cashback(sender()) } // for the deployment
 
     // Internal message receiver, which responds to a String message "append"
     receive("append") {
@@ -169,8 +169,6 @@ contract MapAsArray with Deployable {
 下面的示例使用[结构](/zh-cn/book/structs-and-messages#structs)包装的[`map<Int, V>{:tact}`][map]模拟堆栈，其中 `V{:tact}`可以是 map 的任何[允许值类型](/zh-cn/book/maps#allowed-types)：
 
 ```tact
-import "@stdlib/deploy"; // for Deployable trait
-
 struct Stack {
     m: map<Int as uint16, Int>; // stack of Int values as a map of Ints to Ints,
                                 // with serialization of its keys to uint16 to save space
@@ -219,7 +217,7 @@ fun emptyStack(): Stack {
     return Stack{m: emptyMap(), length: 0}; // length defaults to 0
 }
 
-contract MapAsStack with Deployable {
+contract MapAsStack {
     // Persistent state variables
     stack: Stack; // our stack, which uses the map
 
@@ -227,6 +225,8 @@ contract MapAsStack with Deployable {
     init() {
         self.stack = emptyStack();
     }
+
+    receive() { cashback(sender()) } // for the deployment
 
     // Internal message receiver, which responds to a String message "push"
     receive("push") {
@@ -270,8 +270,6 @@ contract MapAsStack with Deployable {
 下面的示例使用包裹在 [Struct](/zh-cn/book/structs-and-messages#structs) 中的 [`map<Int, V>{:tact}`][map]模拟循环缓冲区，其中 `V{:tact}` 可以是 map 的任何 [允许值类型](/zh-cn/book/maps#allowed-types)：
 
 ```tact
-import "@stdlib/deploy"; // for Deployable trait
-
 struct CircularBuffer {
     m: map<Int as uint8, Int>; // circular buffer of Int values as a map of Ints to Ints,
                                // with serialization of its keys to uint8 to save space
@@ -329,7 +327,7 @@ fun emptyCircularBuffer(): CircularBuffer {
 }
 
 // This contract records the last 5 timestamps of when "timer" message was received
-contract MapAsCircularBuffer with Deployable {
+contract MapAsCircularBuffer {
     // Persistent state variables
     cBuf: CircularBuffer; // our circular buffer, which uses a map
 
@@ -337,6 +335,8 @@ contract MapAsCircularBuffer with Deployable {
     init() {
         self.cBuf = emptyCircularBuffer();
     }
+
+    receive() { cashback(sender()) } // for the deployment
 
     // Internal message receiver, which responds to a String message "timer"
     // and records the timestamp when it receives such message

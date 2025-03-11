@@ -74,14 +74,12 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
    进入相关目录查看 - `cd simple-counter/contracts{:shell}`。  这就是它的样子：
 
    ```tact
-   import "@stdlib/deploy";
-
    message Add {
        queryId: Int as uint64;
        amount: Int as uint32;
    }
 
-   contract SimpleCounter with Deployable {
+   contract SimpleCounter {
        id: Int as uint32;
        counter: Int as uint32;
 
@@ -90,11 +88,19 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
            self.counter = 0;
        }
 
+       // Empty receiver for the deployment
+       receive() {
+           // Forward the remaining value in the
+           // incoming message back to the sender
+           cashback(sender());
+       }
+
        receive(msg: Add) {
            self.counter += msg.amount;
 
-           // Notify the caller that the receiver was executed and forward remaining value back
-           self.notify("Cashback".asComment());
+           // Forward the remaining value in the
+           // incoming message back to the sender
+           cashback(sender());
        }
 
        get fun counter(): Int {
