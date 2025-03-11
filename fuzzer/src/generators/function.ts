@@ -17,9 +17,8 @@ import type { FunctionType, Type } from "../types";
 import { Return } from "./statement";
 import { Parameter } from "./parameter";
 import { Scope } from "../scope";
-import { createSample, generateAstId, generateAstIdFromName } from "../util";
+import { createSample, dummySrcInfoPrintable, generateAstId, generateAstIdFromName } from "../util";
 import { GenerativeEntity } from "./generator";
-import { dummySrcInfo } from "../../../src/grammar/";
 
 import fc from "fast-check";
 
@@ -83,7 +82,7 @@ function getAttributes(
         attrs.push({
             kind: "function_attribute",
             type: "get",
-            loc: dummySrcInfo,
+            loc: dummySrcInfoPrintable,
             methodId: undefined,
         });
     }
@@ -92,7 +91,7 @@ function getAttributes(
         attrs.push({
             kind: "function_attribute",
             type: "abstract",
-            loc: dummySrcInfo,
+            loc: dummySrcInfoPrintable,
         });
     }
 
@@ -173,7 +172,7 @@ export class FunctionDef extends GenerativeEntity<AstFunctionDef> {
                 ),
             ),
             statements: this.generateBody(),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 
@@ -226,7 +225,7 @@ export class FunctionDecl extends GenerativeEntity<AstFunctionDecl> {
                     this.scope,
                 ),
             ),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 

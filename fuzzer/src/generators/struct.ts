@@ -3,9 +3,8 @@ import { tyToString, throwTyError } from "../types";
 import type { Type, StructField } from "../types";
 import type { Scope } from "../scope";
 import { Field } from "./field";
-import { generateAstIdFromName, packArbitraries } from "../util";
+import { dummySrcInfoPrintable, generateAstIdFromName, packArbitraries } from "../util";
 import { GenerativeEntity } from "./generator";
-import { dummySrcInfo } from "../../../src/grammar/";
 
 import fc from "fast-check";
 
@@ -50,7 +49,7 @@ export class Struct extends GenerativeEntity<AstStructDecl> {
             id: fc.constant(this.idx),
             name: fc.constant(this.name!),
             fields: packArbitraries(fields),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }
@@ -97,7 +96,7 @@ export class Message extends GenerativeEntity<AstMessageDecl> {
             name: fc.constant(this.name!),
             opcode: fc.constant(undefined),
             fields: packArbitraries(fields),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }

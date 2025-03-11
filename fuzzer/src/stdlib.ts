@@ -4,8 +4,7 @@ import { nextId } from "./id";
 // import * as path from "path";
 // import files from "../../src/stdlib/stdlib";
 // import { createVirtualFileSystem } from "../../src/vfs/createVirtualFileSystem";
-import { generateAstIdFromName } from "./util";
-import { dummySrcInfo } from "../../src/grammar/";
+import { dummySrcInfoPrintable, generateAstIdFromName } from "./util";
 
 // const StdlibFilePath = path.join(__dirname, "..", "..", "src", "stdlib", "stdlib", "std");
 // const StdlibVFS = createVirtualFileSystem(StdlibFilePath, files);
@@ -27,7 +26,7 @@ export function getStdlibTraits(): AstTypeDecl[] {
             traits: [],
             attributes: [],
             declarations: [],
-            loc: dummySrcInfo,
+            loc: dummySrcInfoPrintable,
         },
     ];
 }

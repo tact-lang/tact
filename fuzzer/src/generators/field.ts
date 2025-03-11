@@ -1,12 +1,11 @@
 import type { AstFieldDecl, AstExpression, AstId } from "../../../src/ast/ast";
-import { createSample, generateAstId } from "../util";
+import { createSample, dummySrcInfoPrintable, generateAstId } from "../util";
 import { tyToAstType } from "../types";
 import type { Type } from "../types";
 import type { Scope } from "../scope";
 import { GenerativeEntity } from "./generator";
 
 import fc from "fast-check";
-import { dummySrcInfo } from "../../../src/grammar/";
 
 /**
  * An object that encapsulates a generated AstFieldDecl.
@@ -46,7 +45,7 @@ export class Field extends GenerativeEntity<AstFieldDecl> {
             type: fc.constant(tyToAstType(this.type)),
             initializer: this.init ?? fc.constant(undefined),
             as: fc.constantFrom(undefined),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }

@@ -11,13 +11,12 @@ import { UtilType, StdlibType, isBouncedMessage } from "../types";
 import type { Type } from "../types";
 import { Scope } from "../scope";
 import { GenerativeEntity } from "./generator";
-import { createSample, randomBool, randomElement } from "../util";
+import { createSample, dummySrcInfoPrintable, randomBool, randomElement } from "../util";
 import { Expression, generateString } from "./expression";
 import { Parameter } from "./parameter";
 import { StatementExpression } from "./statement";
 
 import fc from "fast-check";
-import { dummySrcInfo } from "../../../src/grammar/";
 import { nextId } from "../id";
 
 const RECEIVE_RETURN_TY: Type = { kind: "util", type: UtilType.Unit };
@@ -55,7 +54,7 @@ function generateRecieverKind(
         kind: fc.constant(kind),
         subKind,
         id: fc.constant(nextId()),
-        loc: fc.constant(dummySrcInfo),
+        loc: fc.constant(dummySrcInfoPrintable),
     } as any); //TODO: types are correct here, but i don't know how to explain to typescript, what T<A | B> is equal to T<A> | T<B>
 }
 
@@ -112,7 +111,7 @@ export class Receive extends GenerativeEntity<AstReceiver> {
                 kind: fc.constantFrom("bounce"),
                 param: param.generate(),
                 id: fc.constant(nextId()),
-                loc: fc.constant(dummySrcInfo),
+                loc: fc.constant(dummySrcInfoPrintable),
             });
         }
 
@@ -162,7 +161,7 @@ export class Receive extends GenerativeEntity<AstReceiver> {
             id: fc.constant(this.idx),
             selector: this.generateSelector(),
             statements: this.generateBody(),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }

@@ -10,8 +10,8 @@ import type { Scope, ScopeItemKind } from "./scope";
 import { GlobalContext } from "./context";
 import type { Type } from "./types";
 import type { AstId, AstNode } from "../../src/ast/ast";
-import { dummySrcInfo } from "../../src/grammar/";
 import { nextId } from "./id";
+import { getSrcInfo } from "../../src/grammar/src-info";
 
 export const VALID_ID = /^[a-zA-Z_]+[a-zA-Z_0-9]$/;
 export const VALID_TYPE_ID = /^[A-Z]+[a-zA-Z_0-9]$/;
@@ -160,7 +160,7 @@ export function generateAstIdFromName(name: string): AstId {
         kind: "id",
         text: name,
         id: nextId(),
-        loc: dummySrcInfo,
+        loc: dummySrcInfoPrintable,
     };
 }
 
@@ -180,7 +180,7 @@ export function generateAstId(
         kind: fc.constant("id"),
         text: generateName(scope, kind, shadowing, isType),
         id: fc.constant(nextId()),
-        loc: fc.constant(dummySrcInfo),
+        loc: fc.constant(dummySrcInfoPrintable),
     });
 }
 
@@ -232,3 +232,5 @@ export function packArbitraries<T>(
 ): fc.Arbitrary<T[]> {
     return arbs ? fc.tuple(...(arbs as [fc.Arbitrary<T>])) : fc.constant([]);
 }
+
+export const dummySrcInfoPrintable = getSrcInfo("", 10, 11, null, "user");

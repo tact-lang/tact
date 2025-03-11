@@ -4,7 +4,7 @@ import type {
     AstFunctionDef,
     AstFieldDecl,
 } from "../../../src/ast/ast";
-import { createSample, generateAstId } from "../util";
+import { createSample, dummySrcInfoPrintable, generateAstId } from "../util";
 import { FunctionDef } from "./function";
 import type { Trait } from "./trait";
 import { Expression } from "./expression";
@@ -16,7 +16,6 @@ import { GenerativeEntity } from "./generator";
 
 import fc from "fast-check";
 import { Field } from "./field";
-import { dummySrcInfo } from "../../../src/grammar/";
 
 export interface ContractParameters {
     /**
@@ -74,13 +73,13 @@ export class Contract extends GenerativeEntity<AstContract> {
                     return decl
                         .createDefinition(init)
                         .generateWithAttrs([
-                            { type: "override", loc: dummySrcInfo },
+                            { type: "override", loc: dummySrcInfoPrintable },
                         ]);
                 })
                 .concat(
                     this.trait.constantDefinitions.map((def) =>
                         def.generateWithAttrs([
-                            { type: "override", loc: dummySrcInfo },
+                            { type: "override", loc: dummySrcInfoPrintable },
                         ]),
                     ),
                 );
@@ -89,12 +88,12 @@ export class Contract extends GenerativeEntity<AstContract> {
                     {
                         kind: "function_attribute",
                         type: "override",
-                        loc: dummySrcInfo,
+                        loc: dummySrcInfoPrintable,
                     },
                     {
                         kind: "function_attribute",
                         type: "get",
-                        loc: dummySrcInfo,
+                        loc: dummySrcInfoPrintable,
                         methodId: undefined,
                     },
                 ]);
@@ -134,7 +133,7 @@ export class Contract extends GenerativeEntity<AstContract> {
                 ...generatedMethods,
                 ...requestedMethods,
             ),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
             params: fc.constant(undefined),
         });
     }

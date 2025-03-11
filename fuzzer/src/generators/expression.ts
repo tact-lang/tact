@@ -26,6 +26,7 @@ import {
     randomElement,
     packArbitraries,
     generateAstIdFromName,
+    dummySrcInfoPrintable,
 } from "../util";
 import { GenerativeEntity, GenerativeEntityOpt } from "./generator";
 import { nextId } from "../id";
@@ -40,7 +41,6 @@ import {
 import type { StructField, Type } from "../types";
 import { GlobalContext } from "../context";
 import type { Scope } from "../scope";
-import { dummySrcInfo } from "../../../src/grammar/";
 import { FunctionDef } from "./function";
 
 export function generateNumber(
@@ -53,7 +53,7 @@ export function generateNumber(
         kind: fc.constant("number"),
         id: fc.constant(nextId()),
         value,
-        loc: fc.constant(dummySrcInfo),
+        loc: fc.constant(dummySrcInfoPrintable),
         base: base ? fc.constant(base) : fc.constantFrom(2, 8, 10, 16),
     });
 }
@@ -67,7 +67,7 @@ export function generateBoolean(
         kind: fc.constant("boolean"),
         id: fc.constant(nextId()),
         value,
-        loc: fc.constant(dummySrcInfo),
+        loc: fc.constant(dummySrcInfoPrintable),
     });
 }
 
@@ -90,7 +90,7 @@ export function generateSimplifiedString(
         kind: fc.constant("simplified_string"),
         id: fc.constant(nextId()),
         value: generateStringValue(nonEmpty, constValue),
-        loc: fc.constant(dummySrcInfo),
+        loc: fc.constant(dummySrcInfoPrintable),
     });
 }
 
@@ -102,7 +102,7 @@ export function generateString(
         kind: fc.constant("string"),
         id: fc.constant(nextId()),
         value: generateStringValue(nonEmpty, constValue),
-        loc: fc.constant(dummySrcInfo),
+        loc: fc.constant(dummySrcInfoPrintable),
     });
 }
 
@@ -110,7 +110,7 @@ export function generateNull(): fc.Arbitrary<AstNull> {
     return fc.record<AstNull>({
         kind: fc.constant("null"),
         id: fc.constant(nextId()),
-        loc: fc.constant(dummySrcInfo),
+        loc: fc.constant(dummySrcInfoPrintable),
     });
 }
 
@@ -123,12 +123,12 @@ export function generateFieldAccess(
         aggregate: aggregate ?? generateThisID(),
         field: generateAstIdFromName(name),
         id: nextId(),
-        loc: dummySrcInfo,
+        loc: dummySrcInfoPrintable,
     };
 }
 
 export function generateThisID(): AstId {
-    return { kind: "id", id: nextId(), text: "self", loc: dummySrcInfo };
+    return { kind: "id", id: nextId(), text: "self", loc: dummySrcInfoPrintable };
 }
 
 /**
@@ -162,7 +162,7 @@ export function generateStructInit(
                 id: fc.constant(nextId()),
                 field: fc.constant(generateAstIdFromName(field.name)),
                 initializer: new Expression(scope, field.type).generate(),
-                loc: fc.constant(dummySrcInfo),
+                loc: fc.constant(dummySrcInfoPrintable),
             });
         },
     );
@@ -171,7 +171,7 @@ export function generateStructInit(
         id: fc.constantFrom(nextId()),
         type: fc.constantFrom(generateAstIdFromName(tyToString(ty))),
         args: packArbitraries(args),
-        loc: fc.constant(dummySrcInfo),
+        loc: fc.constant(dummySrcInfoPrintable),
     });
 }
 
@@ -237,7 +237,7 @@ export class FieldAccess extends GenerativeEntity<AstFieldAccess> {
             aggregate: fc.constant(this.src ?? generateThisID()),
             field: fc.constant(this.name!),
             id: fc.constant(this.idx),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }
@@ -261,7 +261,7 @@ export class MethodCall extends GenerativeEntity<AstMethodCall> {
             method: fc.constant(this.name!),
             args: packArbitraries(this.args),
             id: fc.constant(this.idx),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }
@@ -283,7 +283,7 @@ export class StaticCall extends GenerativeEntity<AstStaticCall> {
             function: fc.constantFrom(this.name!),
             args: packArbitraries(this.args),
             id: fc.constant(this.idx),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }
@@ -306,7 +306,7 @@ export namespace OpUnary {
                 kind: fc.constant("op_unary"),
                 id: fc.constant(nextId()),
                 op: fc.constantFrom(...allowedOps),
-                loc: fc.constant(dummySrcInfo),
+                loc: fc.constant(dummySrcInfoPrintable),
                 operand: tie("astExpression") as fc.Arbitrary<AstExpression>,
             }),
         })).astOpUnary;
@@ -343,7 +343,7 @@ export namespace OpBinary {
                 op: fc.constantFrom(...allowedOps),
                 left: tie("astExpression") as fc.Arbitrary<AstExpression>,
                 right: tie("astExpression") as fc.Arbitrary<AstExpression>,
-                loc: fc.constant(dummySrcInfo),
+                loc: fc.constant(dummySrcInfoPrintable),
             }),
         })).astOpBinary;
     }
@@ -834,7 +834,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
                                 kind: "id",
                                 id: nextId(),
                                 text: mapName,
-                                loc: dummySrcInfo,
+                                loc: dummySrcInfoPrintable,
                             },
                             [
                                 fc.constantFrom(generateThisID()),
@@ -863,7 +863,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
                                 kind: "id",
                                 id: nextId(),
                                 text: mapName,
-                                loc: dummySrcInfo,
+                                loc: dummySrcInfoPrintable,
                             },
                             [
                                 new Expression(

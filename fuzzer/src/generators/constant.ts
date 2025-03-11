@@ -9,6 +9,7 @@ import {
     createSample,
     generateAstId,
     generateName,
+    dummySrcInfoPrintable,
 } from "../util";
 import { tyToAstType } from "../types";
 import type { Type } from "../types";
@@ -16,7 +17,6 @@ import type { Scope } from "../scope";
 import { GenerativeEntity } from "./generator";
 
 import fc from "fast-check";
-import { dummySrcInfo } from "../../../src/grammar/";
 
 /**
  * An object that encapsulates a generated AstConstantDecl.
@@ -31,7 +31,7 @@ export class ConstantDecl extends GenerativeEntity<AstConstantDecl> {
         extraAttrs: AstConstantAttribute[],
     ): AstConstantAttribute[] {
         const attrs: AstConstantAttribute[] = extraAttrs;
-        attrs.push({ type: "abstract", loc: dummySrcInfo });
+        attrs.push({ type: "abstract", loc: dummySrcInfoPrintable });
         return attrs;
     }
 
@@ -44,7 +44,7 @@ export class ConstantDecl extends GenerativeEntity<AstConstantDecl> {
             name: fc.constant(this.name!),
             type: fc.constant(tyToAstType(this.type)),
             attributes: fc.constantFrom(this.getAttributes(extraAttrs)),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 
@@ -111,7 +111,7 @@ export class ConstantDef extends GenerativeEntity<AstConstantDef> {
             type: fc.constant(tyToAstType(this.type)),
             initializer: choosenInit,
             attributes: fc.constantFrom(extraAttrs),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 

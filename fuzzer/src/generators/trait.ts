@@ -1,5 +1,5 @@
 import type { AstTrait, AstExpression } from "../../../src/ast/ast";
-import { createSample, generateAstId, randomBool } from "../util";
+import { createSample, dummySrcInfoPrintable, generateAstId, randomBool } from "../util";
 import { FunctionDecl } from "./function";
 import { Field } from "./field";
 import { ConstantDecl, ConstantDef } from "./constant";
@@ -10,7 +10,6 @@ import { Scope } from "../scope";
 import { GenerativeEntity } from "./generator";
 
 import fc from "fast-check";
-import { dummySrcInfo } from "../../../src/grammar/";
 
 export interface TraitParameters {
     /**
@@ -126,7 +125,7 @@ export class Trait extends GenerativeEntity<AstTrait> {
             traits: fc.constant([]),
             attributes: fc.constant([]),
             declarations: fc.tuple(...constants, ...fields, ...methods),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }

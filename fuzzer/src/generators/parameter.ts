@@ -1,12 +1,11 @@
 import type { AstTypedParameter } from "../../../src/ast/ast";
-import { createSample, generateAstId } from "../util";
+import { createSample, dummySrcInfoPrintable, generateAstId } from "../util";
 import { tyToAstType } from "../types";
 import type { Type } from "../types";
 import type { Scope } from "../scope";
 import { GenerativeEntity } from "./generator";
 
 import fc from "fast-check";
-import { dummySrcInfo } from "../../../src/grammar/";
 
 /**
  * An object that encapsulates generated AstTypedParameter.
@@ -36,7 +35,7 @@ export class Parameter extends GenerativeEntity<AstTypedParameter> {
             id: fc.constant(this.idx),
             name: fc.constant(this.name!),
             type: fc.constant(tyToAstType(this.type, this.isBounced)),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }

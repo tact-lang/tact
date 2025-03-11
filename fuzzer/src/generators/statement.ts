@@ -38,13 +38,13 @@ import {
     randomElement,
     generateAstId,
     generateAstIdFromName,
+    dummySrcInfoPrintable,
 } from "../util";
 import { GenerativeEntity } from "./generator";
 import { StdlibType, UtilType, tyToAstType } from "../types";
 import type { Type } from "../types";
 import { Scope } from "../scope";
 import type { ScopeItemKind } from "../scope";
-import { dummySrcInfo } from "../../../src/grammar/";
 
 /** Type all the imperative constructions have. */
 const STMT_TY: Type = { kind: "util", type: UtilType.Unit };
@@ -70,7 +70,7 @@ export class Return extends GenerativeEntity<AstStatement> {
                 this.type.kind === "util" && this.type.type === UtilType.Unit
                     ? fc.constant(undefined)
                     : new Expression(this.parentScope, this.type).generate(),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }
@@ -101,7 +101,7 @@ export class Let extends GenerativeEntity<AstStatement> {
             name: fc.constantFrom(this.name!),
             type: fc.constantFrom(tyToAstType(this.type)),
             expression: this.expr,
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }
@@ -132,7 +132,7 @@ export class AssignStatement extends GenerativeEntity<AstStatement> {
                 id: fc.constant(this.idx),
                 path: fc.constant(this.path),
                 expression: this.rhs,
-                loc: fc.constant(dummySrcInfo),
+                loc: fc.constant(dummySrcInfoPrintable),
             }),
         ];
         // Only integer types in augmented assignments are supported.
@@ -154,7 +154,7 @@ export class AssignStatement extends GenerativeEntity<AstStatement> {
                     ),
                     path: fc.constantFrom(this.path),
                     expression: this.rhs,
-                    loc: fc.constant(dummySrcInfo),
+                    loc: fc.constant(dummySrcInfoPrintable),
                 }),
             );
         }
@@ -180,7 +180,7 @@ export class WhileUntilStatement extends GenerativeEntity<AstStatement> {
             id: fc.constant(this.idx),
             condition: this.condition,
             statements: packArbitraries(this.body),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         }) as fc.Arbitrary<AstStatementWhile | AstStatementUntil>;
     }
 }
@@ -206,7 +206,7 @@ export class RepeatStatement extends GenerativeEntity<AstStatement> {
             id: fc.constant(this.idx),
             iterations,
             statements: packArbitraries(this.body),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         }) as fc.Arbitrary<AstStatementRepeat>;
     }
 }
@@ -232,7 +232,7 @@ export class ForeachStatement extends GenerativeEntity<AstStatement> {
             map: this.map,
             statements: packArbitraries(this.body),
             id: fc.constant(this.idx),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }
@@ -263,7 +263,7 @@ export class ConditionStatement extends GenerativeEntity<AstStatementCondition> 
                 ? packArbitraries(this.falseStmts)
                 : fc.constant(undefined),
             id: fc.constant(this.idx),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }
@@ -285,7 +285,7 @@ export class TryCatch extends GenerativeEntity<AstStatement> {
             id: fc.constant(this.idx),
             statements: packArbitraries(this.tryStmts),
             catchBlock: fc.constant(this.catchBlock),
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }
@@ -306,7 +306,7 @@ export class StatementExpression extends GenerativeEntity<AstStatement> {
             kind: fc.constant("statement_expression"),
             id: fc.constant(this.idx),
             expression: this.expr,
-            loc: fc.constant(dummySrcInfo),
+            loc: fc.constant(dummySrcInfoPrintable),
         });
     }
 }

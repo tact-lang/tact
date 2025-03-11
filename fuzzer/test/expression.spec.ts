@@ -12,11 +12,11 @@ import { Scope } from "../src/scope";
 import { SUPPORTED_STDLIB_TYPES } from "../src/types";
 import type { Type } from "../src/types";
 import { createProperty, checkProperty } from "../src/util";
-import { dummySrcInfo } from "../../src/grammar/src-info";
+import { dummySrcInfoPrintable } from "../../src/grammar/src-info";
 
 function emptyContext(): StatementContext {
     return {
-        root: dummySrcInfo,
+        root: dummySrcInfoPrintable,
         returns: { kind: "void" },
         vars: new Map<string, TypeRef>(),
         requiredFields: [],

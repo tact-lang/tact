@@ -11,6 +11,7 @@ import {
     randomInt,
     randomBool,
     generateAstIdFromName,
+    dummySrcInfoPrintable,
 } from "./util";
 import type { Scope } from "./scope";
 import type { TypeRef } from "../../src/types/types";
@@ -18,7 +19,6 @@ import JSONbig from "json-bigint";
 
 import { nextId } from "./id";
 import fc from "fast-check";
-import { dummySrcInfo } from "../../src/grammar/";
 
 /**
  * Types from Tact stdlib.
@@ -134,7 +134,7 @@ namespace make {
             kind,
             id: nextId(),
             name: generateAstIdFromName(name),
-            loc: dummySrcInfo,
+            loc: dummySrcInfoPrintable,
         };
     }
     export function ASTTypeRef(name: string): AstTypeId {
@@ -142,7 +142,7 @@ namespace make {
             kind: "type_id",
             id: nextId(),
             text: name,
-            loc: dummySrcInfo,
+            loc: dummySrcInfoPrintable,
         };
     }
     export function TypeRef(name: string): TypeRef {
@@ -195,7 +195,7 @@ export function tyToAstType(ty: Type, isBounced = false): AstType {
             kind: "type_id",
             text,
             id: nextId(),
-            loc: dummySrcInfo,
+            loc: dummySrcInfoPrintable,
         }) as AstTypeId;
 
     switch (ty.kind) {
@@ -212,14 +212,14 @@ export function tyToAstType(ty: Type, isBounced = false): AstType {
                 kind: "type_id",
                 text: ty.name,
                 id: nextId(),
-                loc: dummySrcInfo,
+                loc: dummySrcInfoPrintable,
             };
             return isBounced
                 ? {
                       kind: "bounced_message_type",
                       messageType: simpleType,
                       id: nextId(),
-                      loc: dummySrcInfo,
+                      loc: dummySrcInfoPrintable,
                   }
                 : simpleType;
         }
@@ -231,7 +231,7 @@ export function tyToAstType(ty: Type, isBounced = false): AstType {
                 keyStorageType: undefined,
                 valueType: generateAstTypeId(tyToString(ty.type.value)),
                 valueStorageType: undefined,
-                loc: dummySrcInfo,
+                loc: dummySrcInfoPrintable,
             };
         default:
             throwTyError(ty);
