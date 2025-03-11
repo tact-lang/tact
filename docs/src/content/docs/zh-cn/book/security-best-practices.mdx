@@ -24,15 +24,15 @@ Tact 智能合约开发者应该意识到一些反模式和潜在的攻击矢量
 ##### Don'ts ❌
 
 ```tact
-import "@stdlib/deploy";
-
 message Login {
     privateKey: Int as uint256;
     signature: Slice;
     data: Slice;
 }
 
-contract Test with Deployable {
+contract Test {
+    receive() { cashback(sender()) } // for the deployment
+
     receive(msg: Login) {
         let publicKey = getPublicKey(msg.privateKey);
 
@@ -200,7 +200,7 @@ contract Counter with Ownable {
 不要在不验证发件人身份的情况下执行消息！
 
 ```tact
-contract Example with Deployable {
+contract Example {
     myJettonWalletAddress: Address;
     myJettonAmount: Int as coins = 0;
 
@@ -211,6 +211,8 @@ contract Example with Deployable {
             jettonWalletCode,
         );
     }
+
+    receive() { cashback(sender()) } // for the deployment
 
     receive(msg: JettonTransferNotification) {
         self.myJettonAmount += msg.amount;

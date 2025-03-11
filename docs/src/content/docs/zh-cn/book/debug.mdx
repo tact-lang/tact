@@ -670,9 +670,9 @@ bounced(msg: YourMessage) {
    用以下代码替换`contracts/playground.tact`中的代码：
 
    ```tact title="contracts/playground.tact" {4-6}
-   import "@stdlib/deploy";
+   contract Playground {
+       receive() { cashback(sender()) } // for the deployment
 
-   contract Playground with Deployable {
        receive("plays") {
            // NOTE: write your test logic here!
        }

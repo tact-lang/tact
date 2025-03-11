@@ -1,19 +1,38 @@
-/// Message sent by the deployer to deploy a contract.
+/// Message struct used in a receiver of the **deprecated** `Deployable` trait.
+///
+/// See: https://docs.tact-lang.org/ref/stdlib-deploy/#deploy
+///
 message Deploy {
-    /// Query ID provided by the deployer.
+    /// Unique identifier for tracking transactions across multiple contracts.
     queryId: Int as uint64;
 }
 
-/// Message sent by the contract to the deployer to confirm the deployment.
+/// Forwarded message struct used in **deprecated**
+/// `Deployable` and `FactoryDeployable` traits.
+///
+/// See: https://docs.tact-lang.org/ref/stdlib-deploy/#deployok
+///
 message DeployOk {
-    /// Query ID provided by the deployer in the `Deploy` message.
+    /// Unique identifier for tracking transactions across multiple contracts.
     queryId: Int as uint64;
 }
 
+/// Message struct used in a receiver of the **deprecated** `FactoryDeployable` trait.
+///
+/// See: https://docs.tact-lang.org/ref/stdlib-deploy/#factorydeploy
+///
+message FactoryDeploy {
+    /// Unique identifier for tracking transactions across multiple contracts.
+    queryId: Int as uint64;
+
+    /// Address to forward `DeployOk` message to.
+    cashback: Address;
+}
+
+/// **Deprecated** since Tact 1.6.0. Unless you need the `queryId`, use a `null` message body receiver instead of this trait.
+///
 /// Provides a convenient unified mechanism for deployments by implementing a 
 /// simple receiver for the `Deploy` message.
-/// 
-/// NOTE: This trait is deprecated.
 /// 
 /// All contracts are deployed by sending them a message. While any message 
 /// can be used for this purpose, the best practice is to use the special 
@@ -31,8 +50,7 @@ message DeployOk {
 /// }
 /// ```
 /// 
-/// See:
-/// * https://docs.tact-lang.org/ref/stdlib-deploy/#deployable
+/// See: https://docs.tact-lang.org/ref/stdlib-deploy/#deployable
 /// 
 trait Deployable with BaseTrait {
     receive(deploy: Deploy) {
@@ -40,17 +58,9 @@ trait Deployable with BaseTrait {
     }
 }
 
-/// Message sent by the deployer to deploy a contract.
-message FactoryDeploy {
-    /// Query ID provided by the deployer.
-    queryId: Int as uint64;
-    /// Address to send the `DeployOk` message to.
-    cashback: Address;
-}
-
+/// **Deprecated** since Tact 1.6.0. Unless you need the `queryId`, use a `null` message body receiver instead of this trait.
+///
 /// Provides a convenient unified mechanism for chained deployments.
-/// 
-/// NOTE: This trait is deprecated.
 /// 
 /// ```tact
 /// import "@stdlib/deploy";
@@ -60,8 +70,7 @@ message FactoryDeploy {
 /// }
 /// ```
 /// 
-/// See:
-/// * https://docs.tact-lang.org/ref/stdlib-deploy/#factorydeployable
+/// See: https://docs.tact-lang.org/ref/stdlib-deploy/#factorydeployable
 /// 
 trait FactoryDeployable with BaseTrait  {
     receive(deploy: FactoryDeploy) {

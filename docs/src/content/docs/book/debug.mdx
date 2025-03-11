@@ -823,10 +823,15 @@ If you're overwhelmed by the testing setup of [Blueprint][bp] or just want to te
 
    Replace the code in `contracts/playground.tact` with the following:
 
-   ```tact title="contracts/playground.tact" {4-6}
-   import "@stdlib/deploy";
+   ```tact title="contracts/playground.tact" {9-11}
+   contract Playground {
+       // Empty receiver for the deployment
+       receive() {
+	         // Forward the remaining value in the
+           // incoming message back to the sender
+           cashback(sender());
+       }
 
-   contract Playground with Deployable {
        receive("plays") {
            // NOTE: write your test logic here!
        }
