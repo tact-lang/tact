@@ -51,6 +51,11 @@
                 "default": false,
                 "description": "False by default. If set to true, enables generation of a getter the information on the interfaces provided by the contract.\n\nRead more about supported interfaces: https://docs.tact-lang.org/ref/evolution/OTP-001."
               },
+              "parser": {
+                "type": "string",
+                "default": "new",
+                "description": "\"new\" by default. If set to \"new\", Tact will compile using the new language parser. If set to \"old\", Tact will compile using the legacy parser, which does not support all features of version 1.6."
+              },
               "experimental": {
                 "type": "object",
                 "description": "Experimental options that might be removed in the future. Use with caution!",
