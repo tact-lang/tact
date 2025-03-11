@@ -175,14 +175,14 @@ struct Scrooge {
 然而，这仍可能导致交易的[计算阶段](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase)**错误**。 请看下面的例子：
 
 ```tact
-import "@stdlib/deploy";
-
-contract ComputeErrorsOhNo with Deployable {
+contract ComputeErrorsOhNo {
     oneByte: Int as uint8; // persistent state variable, max value is 255
 
     init() {
         self.oneByte = 255; // initial value is 255, everything fits
     }
+
+    receive() { cashback(sender()) } // for the deployment
 
     receive("lets break it") {
         let tmp: Int = self.oneByte * 256; // no runtime overflow

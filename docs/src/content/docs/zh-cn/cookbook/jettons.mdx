@@ -82,8 +82,6 @@ message(0x7362d09c) JettonTransferNotification {
 :::
 
 ```tact
-import "@stdlib/deploy";
-
 struct JettonWalletData {
     balance: Int as coins;
     ownerAddress: Address;
@@ -117,7 +115,7 @@ message(0x7362d09c) JettonTransferNotification {
     forwardPayload: Slice as remaining;
 }
 
-contract Example with Deployable {
+contract Example {
     myJettonWalletAddress: Address;
     myJettonAmount: Int as coins = 0;
 
@@ -128,6 +126,8 @@ contract Example with Deployable {
             jettonWalletCode,
         );
     }
+
+    receive() { cashback(sender()) } // for the deployment
 
     receive(msg: JettonTransferNotification) {
         require(
@@ -150,8 +150,6 @@ Jetton 转账是将指定数量的 Jetton 从一个钱包（合约）发送到�
 若要发送Jetton转账，请使用 [`send(){:tact}`](/zh-cn/book/send) 函数。
 
 ```tact
-import "@stdlib/deploy";
-
 message(0xf8a7ea5) JettonTransfer {
     queryId: Int as uint64;
     amount: Int as coins;
@@ -194,7 +192,7 @@ message Withdraw {
     amount: Int as coins;
 }
 
-contract Example with Deployable {
+contract Example {
     myJettonWalletAddress: Address;
     myJettonAmount: Int as coins = 0;
 
@@ -205,6 +203,8 @@ contract Example with Deployable {
             jettonWalletCode,
         );
     }
+
+    receive() { cashback(sender()) } // for the deployment
 
     receive(msg: Withdraw) {
         require(
@@ -248,8 +248,6 @@ contract Example with Deployable {
 Jetton 销毁是将指定数量的 Jetton 永久移出流通的过程，无法恢复。
 
 ```tact
-import "@stdlib/deploy";
-
 message(0x595f07bc) JettonBurn {
     queryId: Int as uint64;
     amount: Int as coins;
@@ -289,7 +287,7 @@ message ThrowAway {
     amount: Int as coins;
 }
 
-contract Example with Deployable {
+contract Example {
     myJettonWalletAddress: Address;
     myJettonAmount: Int as coins = 0;
 
@@ -300,6 +298,8 @@ contract Example with Deployable {
             jettonWalletCode,
         );
     }
+
+    receive() { cashback(sender()) } // for the deployment
 
     receive(msg: ThrowAway) {
         require(
