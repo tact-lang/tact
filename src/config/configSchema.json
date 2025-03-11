@@ -54,6 +54,7 @@
               "parser": {
                 "type": "string",
                 "default": "new",
+                "enum": ["new", "old"],
                 "description": "\"new\" by default. If set to \"new\", Tact will compile using the new language parser. If set to \"old\", Tact will compile using the legacy parser, which does not support all features of version 1.6."
               },
               "experimental": {
