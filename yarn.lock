@@ -1355,9 +1355,9 @@
     tweetnacl "1.0.3"
 
 "@ton/sandbox@^0.27.0":
-  version "0.27.0"
-  resolved "https://registry.npmjs.org/@ton/sandbox/-/sandbox-0.27.0.tgz#dfab82a8087c863db66dc023718fdf020209a804"
-  integrity sha512-jogQHq3HIVKVE1u5KJaNdzLur2DSr8nAxZ/gTu9ffMtkQgczpztd7Zwr/cYwhmiNBq72c685x0upclrM0frsXQ==
+  version "0.27.1"
+  resolved "https://registry.npmjs.org/@ton/sandbox/-/sandbox-0.27.1.tgz#ed24f07ac8c463d9d921faf96db147072d7a55c1"
+  integrity sha512-wgCq92wrAC64WdhcolDboK1cDLj0IQe2vtLklc4GJAMcfMGDAenPkcae9T7ihP6Bz6UvFLWOIgwpapDuUQ7ndQ==
 
 "@ton/test-utils@^0.5.0":
   version "0.5.0"
