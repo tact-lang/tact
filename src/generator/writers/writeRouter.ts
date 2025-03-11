@@ -584,9 +584,7 @@ const zodThrowOnlyFallbackScheme = Zod.object({
         .length(1),
 });
 
-export function handleThrowOnlyFallbackReceiver(
-    receivers: Receivers,
-): number {
+export function handleThrowOnlyFallbackReceiver(receivers: Receivers): number {
     if (typeof receivers.fallback === "undefined") {
         return contractErrors.invalidMessage.id;
     }
