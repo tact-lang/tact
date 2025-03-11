@@ -82,12 +82,12 @@
     },
     {
       "label": "1.6.2 with compatible exit code",
-      "pr": "https://github.com/tact-lang/tact/pull/4444",
+      "pr": "https://github.com/tact-lang/tact/pull/2358",
       "size": {
         "minter cells": "29",
-        "minter bits": "14729",
+        "minter bits": "14705",
         "wallet cells": "15",
-        "wallet bits": "8284"
+        "wallet bits": "8260"
       }
     }
   ]
