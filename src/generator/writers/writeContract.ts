@@ -17,6 +17,7 @@ import { writeGetter, writeStatement } from "./writeFunction";
 import { writeInterfaces } from "./writeInterfaces";
 import {
     groupContractReceivers,
+    handleThrowOnlyFallbackReceiver,
     writeBouncedRouter,
     writeNonBouncedRouter,
 } from "./writeRouter";
@@ -385,20 +386,28 @@ export function writeMainContract(
             wCtx.append();
         }
 
+        const contractReceivers = groupContractReceivers(contract);
+
+        const invalidMessageExitCode = handleThrowOnlyFallbackReceiver(
+            contractReceivers.internal,
+        );
+
         wCtx.append(";; message opcode reader utility");
         wCtx.append(
             `;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code`,
         );
+        const throwOpcode =
+            invalidMessageExitCode === contractErrors.invalidMessage.id
+                ? "THROWIFNOT"
+                : "PUSHINT SWAP THROWANYIFNOT";
         wCtx.append(
-            `(slice, int) ~load_opcode(slice s) asm( -> 1 0) "32 LDUQ ${contractErrors.invalidMessage.id} THROWIFNOT";`,
+            `(slice, int) ~load_opcode(slice s) asm( -> 1 0) "32 LDUQ ${invalidMessageExitCode} ${throwOpcode}";`,
         );
 
         wCtx.append(`;;`);
         wCtx.append(`;; Routing of a Contract ${contract.name}`);
         wCtx.append(`;;`);
         wCtx.append();
-
-        const contractReceivers = groupContractReceivers(contract);
 
         // Render internal receiver
         wCtx.inBlock(
@@ -425,6 +434,7 @@ export function writeMainContract(
                     contractReceivers.internal,
                     contract,
                     wCtx,
+                    invalidMessageExitCode,
                 );
             },
         );
@@ -446,6 +456,7 @@ export function writeMainContract(
                     contractReceivers.external,
                     contract,
                     wCtx,
+                    invalidMessageExitCode,
                 );
             });
         }

@@ -22,6 +22,7 @@ import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import { getAllocation } from "../../storage/resolveAllocation";
 import type { Effect } from "../../types/effects";
 import { enabledAlwaysSaveContractData } from "../../config/features";
+import Zod from "zod";
 
 type ContractReceivers = {
     readonly internal: Receivers;
@@ -56,6 +57,7 @@ export function writeNonBouncedRouter(
     receivers: Receivers,
     contract: TypeDescription,
     wCtx: WriterContext,
+    invalidMessageExitCode: number,
 ): void {
     // - Special case: there are no receivers at all
     if (
@@ -65,7 +67,7 @@ export function writeNonBouncedRouter(
         typeof receivers.commentFallback === "undefined" &&
         typeof receivers.fallback === "undefined"
     ) {
-        wCtx.append(`throw(${contractErrors.invalidMessage.id});`);
+        wCtx.append(`throw(${invalidMessageExitCode});`);
         return;
     }
 
@@ -99,7 +101,7 @@ export function writeNonBouncedRouter(
 
         writeBinaryReceivers(true);
 
-        wCtx.append(`throw(${contractErrors.invalidMessage.id});`);
+        wCtx.append(`throw(${invalidMessageExitCode});`);
         return;
     }
 
@@ -154,7 +156,7 @@ export function writeNonBouncedRouter(
         writeFallbackReceiver(receivers.fallback, contract, "in_msg", wCtx);
     } else {
         wCtx.append(`;; Throw if not handled`);
-        wCtx.append(`throw(${contractErrors.invalidMessage.id});`);
+        wCtx.append(`throw(${invalidMessageExitCode});`);
     }
 }
 
@@ -555,4 +557,46 @@ export function commentPseudoOpcode(
         ? beginCell().storeUint(0, 32).storeBuffer(buffer).endCell()
         : beginCell().storeBuffer(buffer).endCell();
     return cell.hash().toString("hex", 0, 64);
+}
+
+const zodThrowOnlyFallbackScheme = Zod.object({
+    statements: Zod.array(
+        Zod.object({
+            kind: Zod.literal("statement_expression"),
+            expression: Zod.object({
+                kind: Zod.literal("static_call"),
+                function: Zod.object({
+                    kind: Zod.literal("id"),
+                    text: Zod.literal("throw"),
+                }),
+                args: Zod.array(
+                    Zod.object({
+                        kind: Zod.literal("number"),
+                        value: Zod.literal(0xffffn),
+                    }),
+                )
+                    .nonempty()
+                    .length(1),
+            }),
+        }),
+    )
+        .nonempty()
+        .length(1),
+});
+
+export function handleThrowOnlyFallbackReceiver(
+    receivers: Receivers,
+): number {
+    if (typeof receivers.fallback === "undefined") {
+        return contractErrors.invalidMessage.id;
+    }
+
+    const fallback = receivers.fallback;
+    const zodResult = zodThrowOnlyFallbackScheme.safeParse(fallback.ast);
+    if (!zodResult.success) {
+        return contractErrors.invalidMessage.id;
+    }
+
+    receivers.fallback = undefined;
+    return 0xffff;
 }
