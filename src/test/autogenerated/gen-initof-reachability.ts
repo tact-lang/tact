@@ -48,7 +48,7 @@ type GlobalConfig = {
 
 type Test = {
     module: A.AstModule;
-    testName: string;
+    contractNames: string[];
 };
 
 function createTestModules(astF: FactoryAst): Test[] {
@@ -1224,15 +1224,62 @@ function createTestModules(astF: FactoryAst): Test[] {
         return astF.createNode({kind: "import", importPath: {path: fromString(path), type: "relative", language: "tact"}, loc: emptySrcInfo}) as A.AstImport;
     }*/
 
-    function makeModule(
-        contract: A.AstContract,
-        globalDecls: A.AstModuleItem[],
-    ): A.AstModule {
+    function makeModule(decls: A.AstModuleItem[]): A.AstModule {
         return astF.createNode({
             kind: "module",
             imports: [],
-            items: [...globalDecls, contract],
+            items: decls,
         }) as A.AstModule;
+    }
+
+    function createTestsAndGroupBy(
+        items: ItemWithDeclarations<A.AstContract>[],
+        extraModule: A.AstModule,
+        groupBy: number,
+    ): Test[] {
+        const tests: Test[] = [];
+
+        let moduleItemAccumulator: Map<string, A.AstModuleItem> = new Map();
+        let contractNamesAccumulator: string[] = [];
+
+        let counter = 0;
+
+        for (const item of items) {
+            for (const [name, decl] of item.declarations.globalDeclarations) {
+                moduleItemAccumulator.set(name, decl);
+            }
+            const contractName = idText(item.item.name);
+            moduleItemAccumulator.set(contractName, item.item);
+            contractNamesAccumulator.push(contractName);
+            counter++;
+
+            if (counter >= groupBy) {
+                tests.push({
+                    module: makeModule([
+                        ...moduleItemAccumulator.values(),
+                        ...extraModule.items,
+                    ]),
+                    contractNames: contractNamesAccumulator,
+                });
+                counter = 0;
+                moduleItemAccumulator = new Map();
+                contractNamesAccumulator = [];
+            }
+        }
+
+        // if there are elements in the accumulator arrays, it means that the last group
+        // did not fill completely, we need to create a test with the leftovers
+        if (contractNamesAccumulator.length > 0) {
+            tests.push({
+                module: makeModule([
+                    ...moduleItemAccumulator.values(),
+                    ...extraModule.items,
+                ]),
+                contractNames: contractNamesAccumulator,
+            });
+        }
+
+        return tests;
     }
 
     const genResult = fc.sample(contractGenerator(0), 1);
@@ -1243,9 +1290,8 @@ function createTestModules(astF: FactoryAst): Test[] {
     }
     // The unique element in the array is ensured to exist
     const allCases = genResult[0]!;
-    const tests: Test[] = [];
 
-    // Add the Deployer contract and Dummies necessary for tests.
+    // Prepare the Deployer contract and Dummies necessary for tests.
     const parser = getParser(astF, defaultParser);
     const extraModule = parser.parse({
         path: ".",
@@ -1255,18 +1301,7 @@ function createTestModules(astF: FactoryAst): Test[] {
         origin: "user",
     });
 
-    for (const contract of allCases) {
-        const finalGlobalDecls = [
-            ...contract.declarations.globalDeclarations.values(),
-            ...extraModule.items,
-        ];
-        tests.push({
-            module: makeModule(contract.item, finalGlobalDecls),
-            testName: idText(contract.item.name),
-        });
-    }
-
-    return tests;
+    return createTestsAndGroupBy(allCases, extraModule, 30);
 }
 
 async function testContracts(
@@ -1304,6 +1339,7 @@ async function testContracts(
     // The tested contract must have returned with exit code 0 from its computation phase,
     // and result code 0 from its action phase
     const trans1 = ensureTransactionExists(
+        testName,
         findTransaction(transactions, {
             from: deployer.address,
             to: contractToTest.address,
@@ -1315,14 +1351,17 @@ async function testContracts(
     );
     // The tested contract must have sent 1 message, with bounced flag set to false,
     // and destination the deployer
-    ensure(trans1.outMessagesCount).is(1);
-    const outMessage = getOutMessageInfo(trans1.outMessages.get(0));
-    ensure(outMessage.bounced).is(false);
-    ensure(outMessage.dest.toRawString()).is(deployer.address.toRawString());
+    ensure(testName, trans1.outMessagesCount).is(1);
+    const outMessage = getOutMessageInfo(testName, trans1.outMessages.get(0));
+    ensure(testName, outMessage.bounced).is(false);
+    ensure(testName, outMessage.dest.toRawString()).is(
+        deployer.address.toRawString(),
+    );
 
     // The deployer must have received a message from the tested contract,
     // with bounced flag set to false
     ensureTransactionExists(
+        testName,
         findTransaction(transactions, {
             from: contractToTest.address,
             to: deployer.address,
@@ -1361,7 +1400,7 @@ function getTestedContractStateInit(
         .endCell();
     const code = Cell.fromBoc(contractCode)[0];
     if (typeof code === "undefined") {
-        throw new Error("Code cell expected");
+        throw new Error(`Code cell expected for contract ${name}`);
     }
     return { code, data };
 }
@@ -1372,6 +1411,7 @@ async function main() {
     const tests = createTestModules(astF);
 
     console.log(`Generated ${tests.length} tests.`);
+
     const fileDescriptor = fs.openSync(path.join(__dirname, "error.log"), "w");
 
     // Parse the stdlib and filter it with the minimal definitions we need
@@ -1424,7 +1464,7 @@ async function main() {
     };
 
     for (const test of tests) {
-        console.log(`Compiling test ${test.testName}`);
+        console.log(`Compiling next batch...`);
         try {
             // Compile the module
             const contractCodes = await buildModule(
@@ -1433,9 +1473,11 @@ async function main() {
                 customStdlib,
                 true,
             );
-            console.log("Testing...");
-            await testContracts(test.testName, contractCodes);
-            console.log("Passed.");
+            for (const contractName of test.contractNames) {
+                console.log(`Testing contract ${contractName}...`);
+                await testContracts(contractName, contractCodes);
+                console.log("Passed.");
+            }
         } catch (e) {
             console.log("Failed. See error.log");
             const tactCode = prettyPrint(test.module);
@@ -1455,34 +1497,43 @@ async function main() {
 }
 
 function ensureTransactionExists(
+    testName: string,
     tsx: BlockchainTransaction | undefined,
 ): BlockchainTransaction {
     if (typeof tsx === "undefined") {
-        throw new Error("Transaction was expected to exist");
+        throw new Error(`Test ${testName}: Transaction was expected to exist`);
     }
     return tsx;
 }
 
 function getOutMessageInfo(
+    testName: string,
     msg: Message | undefined,
 ): CommonMessageInfoInternal {
     if (typeof msg === "undefined") {
-        throw new Error("Message was expected to exist");
+        throw new Error(`Test ${testName}: Message was expected to exist`);
     }
     if (msg.info.type !== "internal") {
-        throw new Error("Message kind was expected to be internal");
+        throw new Error(
+            `Test ${testName}: Message kind was expected to be internal`,
+        );
     }
     return msg.info;
 }
 
-function ensure(data: string | number | boolean): {
+function ensure(
+    testName: string,
+    data: string | number | boolean,
+): {
     is: (expected: string | number | boolean) => void;
 } {
     return {
         is: (expected: string | number | boolean) => {
             const res = data === expected;
             if (!res) {
-                throw new Error(`${data} was expected to be ${expected}`);
+                throw new Error(
+                    `Test ${testName}: ${data} was expected to be ${expected}`,
+                );
             }
         },
     };

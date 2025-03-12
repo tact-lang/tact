@@ -195,6 +195,8 @@ export async function buildModule(
         const stdlibCode = stdlib.readFile(stdlibPath).toString();
         const stdlibExPath = stdlib.resolve("std/stdlib_ex.fc");
         const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
+
+        //console.profile();
         const c = await funcCompile({
             entries: [
                 stdlibPath,
@@ -214,6 +216,8 @@ export async function buildModule(
             ],
             logger: new Logger(),
         });
+        //console.profileEnd();
+
         if (!c.ok) {
             throw new Error(c.log);
         }
