@@ -3,7 +3,7 @@ import { throwInternalCompilerError } from "../error/errors";
 import type { CompilerContext } from "./context";
 import { createContextStore } from "./context";
 import type { Source } from "../imports/source";
-import {Parser} from "../grammar";
+import { Parser } from "../grammar";
 
 /**
  * Represents the storage for all AST-related data within the compiler context.

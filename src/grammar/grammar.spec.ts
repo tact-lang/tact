@@ -2,7 +2,7 @@ import { getAstFactory } from "../ast/ast-helpers";
 import { loadCases } from "../utils/loadCases";
 import type { SrcInfo } from "./src-info";
 import { isSrcInfo } from "./src-info";
-import {getParser} from "./index";
+import { getParser } from "./index";
 
 expect.addSnapshotSerializer({
     test: (src) => isSrcInfo(src),

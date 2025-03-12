@@ -92,8 +92,7 @@ export async function build(args: {
             ? createVirtualFileSystem(args.stdlib, files)
             : args.stdlib;
     const ast: FactoryAst = args.ast ?? getAstFactory();
-    const parser: Parser =
-        args.parser ?? getParser(ast);
+    const parser: Parser = args.parser ?? getParser(ast);
     const logger: ILogger = args.logger ?? new Logger();
 
     // Configure context
