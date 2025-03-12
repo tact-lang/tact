@@ -19,7 +19,10 @@ const main = async () => {
         debug: false,
         experimental: { inline: true },
         safety: { nullChecks: false },
-        optimizations: { alwaysSaveContractData: false },
+        optimizations: {
+            alwaysSaveContractData: false,
+            internalExternalReceiversOutsideMethodsMap: true,
+        },
     });
 };
 
