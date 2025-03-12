@@ -43,10 +43,6 @@ export const optionsSchema: z.ZodType<C.Options> = z.object({
      */
     interfacesGetter: z.boolean().optional(),
     /**
-     * If set to "new", uses new parser. If set to "old", uses legacy parser, which does not support all features of version 1.6. Defaults to "new".
-     */
-    parser: z.union([z.literal("new"), z.literal("old")]).optional(),
-    /**
      * Experimental options that might be removed in the future. Use with caution!
      */
     experimental: z

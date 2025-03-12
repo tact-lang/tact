@@ -6,7 +6,6 @@ import { CompilerContext } from "../context/context";
 import { featureEnable } from "../config/features";
 import { getParser } from "../grammar";
 import { getAstFactory } from "../ast/ast-helpers";
-import { defaultParser } from "../grammar/grammar";
 import { computeReceiversEffects } from "./effects";
 
 describe("effects", () => {
@@ -23,7 +22,7 @@ describe("effects", () => {
                     },
                 ],
                 [],
-                getParser(Ast, defaultParser),
+                getParser(Ast),
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);

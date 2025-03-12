@@ -6,7 +6,7 @@ import { prettyPrint } from "./ast-printer";
 
 describe("Pretty Print Expressions", () => {
     const maxDepth = 4;
-    const parser = getParser(getAstFactory(), "new");
+    const parser = getParser(getAstFactory());
 
     it(`should parse AstExpression`, () => {
         fc.assert(

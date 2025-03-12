@@ -5,9 +5,7 @@ coverage/
 src/test/**/output/
 src/test/e2e-emulated/map-tests/build
 src/func/funcfiftlib.js
-**/grammar.ohm*.ts
-**/grammar.ohm*.js
-src/grammar/next/grammar.ts
+src/grammar/grammar.ts
 jest.setup.js
 jest.globalSetup.js
 jest.teardown.js

@@ -1,8 +1,7 @@
 //type Test = { expr: string; isValue: boolean };
 
-import { getAstFactory, isLiteral } from "../../ast/ast-helpers";
-import { getParser } from "../";
-import { defaultParser } from "../grammar";
+import { getAstFactory, isLiteral } from "../ast/ast-helpers";
+import { getParser } from "./index";
 
 const valueExpressions: string[] = ["1", "true", "false", "null"];
 
@@ -55,7 +54,7 @@ const notValueExpressions: string[] = [
 
 function testIsValue(expr: string, testResult: boolean) {
     const ast = getAstFactory();
-    const { parseExpression } = getParser(ast, defaultParser);
+    const { parseExpression } = getParser(ast);
     expect(isLiteral(parseExpression(expr))).toBe(testResult);
 }
 
