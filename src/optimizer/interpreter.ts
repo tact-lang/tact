@@ -23,7 +23,7 @@ import {
 import { getExpType } from "../types/resolveExpression";
 import type { TypeRef } from "../types/types";
 import { showValue } from "../types/types";
-import { getParser, Parser, SrcInfo } from "../grammar";
+import { getParser, type Parser, type SrcInfo } from "../grammar";
 import { dummySrcInfo } from "../grammar";
 import type { FactoryAst } from "../ast/ast-helpers";
 import {
