@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.3] - 2025-03-12
+
 ### Compiler configuration
 
 - Added `internalExternalReceiversOutsideMethodsMap` config option as part of optimization options to protect potentially unwanted optimization: PR [#2370](https://github.com/tact-lang/tact/pull/2370)
+
+### Internal infrastructure
+
+- Removed old parser: PR [#2365](https://github.com/tact-lang/tact/pull/2365)
 
 ### Docs
 
@@ -23,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [Novus Nota](https://github.com/novusnota)
 - [Maksim Lagus](https://github.com/Kaladin13)
+- [verytactical](https://github.com/verytactical)
+- [Shvetc Andrei](https://github.com/Shvandre)
+- [Petr Makhnev](https://github.com/i582)
 
 ## [1.6.2] - 2025-03-06
 
