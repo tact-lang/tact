@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Compiler configuration
+
+- Added `internalExternalReceiversOutsideMethodsMap` config option as part of optimization options to protect potentially unwanted optimization: PR [#2370](https://github.com/tact-lang/tact/pull/2370)
+
 ### Docs
 
 - Added descriptions for `&&=`, `||=`, `>>=` and `<<=` augmented assignment operators: PR [#2328](https://github.com/tact-lang/tact/pull/2328)
@@ -18,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Release contributors
 
 - [Novus Nota](https://github.com/novusnota)
+- [Maksim Lagus](https://github.com/Kaladin13)
 
 ## [1.6.2] - 2025-03-06
 
