@@ -13,6 +13,12 @@ export type OptimizationOptions = {
      * Read more: https://docs.tact-lang.org/book/config#alwayssavecontractdata
      */
     readonly alwaysSaveContractData?: boolean;
+
+    /**
+     * If set to `true`, stores internal and external receivers outside of the methods map. Default is `false`.
+     * Saves gas, but as a result of this optimization, the contract might not be correctly recognized and parsed by explorers and user wallets.
+     */
+    readonly internalExternalReceiversOutsideMethodsMap?: boolean;
 };
 
 export type ExperimentalOptions = {
