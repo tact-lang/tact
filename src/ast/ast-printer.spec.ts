@@ -6,7 +6,6 @@ import { trimTrailingCR, CONTRACTS_DIR } from "../test/util";
 import * as assert from "assert";
 import JSONBig from "json-bigint";
 import { getAstFactory } from "./ast-helpers";
-import { defaultParser } from "../grammar/grammar";
 
 describe("formatter", () => {
     it.each(fs.readdirSync(CONTRACTS_DIR, { withFileTypes: true }))(
@@ -16,7 +15,7 @@ describe("formatter", () => {
                 return;
             }
             const Ast = getAstFactory();
-            const { parse } = getParser(Ast, defaultParser);
+            const { parse } = getParser(Ast);
             const path = join(CONTRACTS_DIR, dentry.name);
             const code = trimTrailingCR(fs.readFileSync(path, "utf-8"));
             const ast = parse({ code, path, origin: "user" });
@@ -38,7 +37,7 @@ describe("formatter", () => {
                 return;
             }
             const Ast = getAstFactory();
-            const { parse } = getParser(Ast, defaultParser);
+            const { parse } = getParser(Ast);
             const path = join(CONTRACTS_DIR, dentry.name);
             const code = fs.readFileSync(path, "utf-8");
             const ast = parse({ code, path, origin: "user" });

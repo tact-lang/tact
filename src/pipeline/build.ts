@@ -38,7 +38,6 @@ import type { TactErrorCollection } from "../error/errors";
 import { TactError } from "../error/errors";
 import type { Parser } from "../grammar";
 import { getParser } from "../grammar";
-import { defaultParser } from "../grammar/grammar";
 import { topSortContracts } from "./utils";
 import type { TypeDescription } from "../types/types";
 
@@ -99,8 +98,7 @@ export async function build(args: {
             ? createVirtualFileSystem(args.stdlib, files)
             : args.stdlib;
     const ast: FactoryAst = args.ast ?? getAstFactory();
-    const parser: Parser =
-        args.parser ?? getParser(ast, config.options?.parser ?? defaultParser);
+    const parser: Parser = args.parser ?? getParser(ast);
     const logger: ILogger = args.logger ?? new Logger();
 
     // Configure context

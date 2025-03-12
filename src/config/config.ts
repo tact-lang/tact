@@ -61,10 +61,6 @@ export type Options = {
      */
     readonly interfacesGetter?: boolean;
     /**
-     * If set to "new", uses new parser. If set to "old", uses legacy parser. Default is "old".
-     */
-    readonly parser?: "new" | "old";
-    /**
      * Experimental options that might be removed in the future. Use with caution!
      */
     readonly experimental?: ExperimentalOptions;

@@ -25,7 +25,7 @@ export * from "./ast/ast-printer";
 export * from "./ast/ast";
 export * from "./context/context";
 export * from "./context/store";
-export * from "./grammar/grammar";
+export * from "./grammar";
 export * from "./optimizer/constEval";
 export * from "./pipeline/build";
 export * from "./pipeline/precompile";

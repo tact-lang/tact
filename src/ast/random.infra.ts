@@ -10,7 +10,7 @@ import { astBinaryOperations, astUnaryOperations } from "./ast-constants";
  * These words are reserved for use in the language and may cause errors
  * if attempted to be used as identifiers.
  *
- * @see src/grammar/next/grammar.gg
+ * @see src/grammar/grammar.gg
  */
 const reservedWords = [
     "extend",
