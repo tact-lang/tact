@@ -35,6 +35,10 @@ export function enabledAlwaysSaveContractData(ctx: CompilerContext) {
     return featureEnabled(ctx, "alwaysSaveContractData");
 }
 
+export function enabledInternalExternalReceiversOutsideMethodsMap(ctx: CompilerContext) {
+    return featureEnabled(ctx, "internalExternalReceiversOutsideMethodsMap");
+}
+
 export function enabledLazyDeploymentCompletedGetter(ctx: CompilerContext) {
     return featureEnabled(ctx, "lazyDeploymentCompletedGetter");
 }

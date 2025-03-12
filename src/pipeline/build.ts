@@ -66,6 +66,11 @@ export function enableFeatures(
             name: "alwaysSaveContractData",
         },
         {
+            option:
+                config.options.optimizations?.internalExternalReceiversOutsideMethodsMap ?? false,
+            name: "internalExternalReceiversOutsideMethodsMap",
+        },
+        {
             option: config.options.enableLazyDeploymentCompletedGetter ?? false,
             name: "lazyDeploymentCompletedGetter",
         },
