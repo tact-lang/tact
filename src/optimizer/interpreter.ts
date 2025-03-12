@@ -23,9 +23,7 @@ import {
 import { getExpType } from "../types/resolveExpression";
 import type { TypeRef } from "../types/types";
 import { showValue } from "../types/types";
-import type { Parser } from "../grammar/grammar";
-import { defaultParser, getParser } from "../grammar/grammar";
-import type { SrcInfo } from "../grammar";
+import {getParser, Parser, SrcInfo} from "../grammar";
 import { dummySrcInfo } from "../grammar";
 import type { FactoryAst } from "../ast/ast-helpers";
 import {
@@ -667,7 +665,7 @@ class EnvironmentStack {
 export function parseAndEvalExpression(
     sourceCode: string,
     ast: FactoryAst = getAstFactory(),
-    parser: Parser = getParser(ast, defaultParser),
+    parser: Parser = getParser(ast),
     util: AstUtil = getAstUtil(ast),
 ): EvalResult {
     try {

@@ -10,7 +10,7 @@
     "src/ast/ast-printer.ts",
     "src/error/display-to-json.ts",
     "src/grammar/src-info.ts",
-    "src/grammar/next/grammar.ts",
+    "src/grammar/grammar.ts",
     "src/func/funcCompile.ts",
     "src/utils/tricks.ts",
     "src/cli/colors.ts",
