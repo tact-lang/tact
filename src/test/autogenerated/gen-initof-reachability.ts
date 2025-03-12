@@ -6,7 +6,13 @@ import { prettyPrint } from "../../ast/ast-printer";
 import { getParser } from "../../grammar";
 import * as fs from "fs";
 import fc from "fast-check";
-import { buildModule, ProxyContract } from "./util";
+import {
+    buildModule,
+    filterGlobalDeclarations,
+    loadCustomStdlibFc,
+    parseStandardLibrary,
+    ProxyContract,
+} from "./util";
 import { defaultParser } from "../../grammar/grammar";
 import { getSrcInfo } from "../../grammar/src-info";
 import { Blockchain } from "@ton/sandbox";
@@ -930,10 +936,15 @@ function createTestModules(astF: FactoryAst): Test[] {
             makeTypeId("StateInit"),
             makeInitOf(makeId("Dummy1"), []),
         );
+        const counterExpr = makeBinaryExpression(
+            "+",
+            makeBinaryExpression("-", makeId("arg"), makeId("arg")),
+            makeInt(1n),
+        );
         const countVarStmt = makeLetStatement(
             makeId("counter"),
             makeTypeId("Int"),
-            makeStaticCall(makeId("random"), [makeInt(1n), makeInt(3n)]),
+            counterExpr,
         );
         const expr = makeAssignStatement(
             makeId("stateInit"),
@@ -1363,11 +1374,65 @@ async function main() {
     console.log(`Generated ${tests.length} tests.`);
     const fileDescriptor = fs.openSync(path.join(__dirname, "error.log"), "w");
 
+    // Parse the stdlib and filter it with the minimal definitions we need
+    const stdlibModule = filterGlobalDeclarations(
+        parseStandardLibrary(astF),
+        astF,
+        new Set([
+            "Int",
+            "Bool",
+            "Address",
+            "Cell",
+            "Context",
+            "Slice",
+            "Builder",
+            "String",
+            "StateInit",
+            "SendParameters",
+            "BaseTrait",
+            "SendDefaultMode",
+            "SendRemainingValue",
+            "SendIgnoreErrors",
+            "SendRemainingBalance",
+            "ReserveExact",
+            "sender",
+            "context",
+            "myBalance",
+            "nativeReserve",
+            "contractAddress",
+            "contractAddressExt",
+            "storeUint",
+            "storeInt",
+            "contractHash",
+            "newAddress",
+            "beginCell",
+            "endCell",
+            "send",
+            "asSlice",
+            "asAddressUnsafe",
+            "beginParse",
+        ]),
+    );
+
+    const customStdlibFc = loadCustomStdlibFc();
+
+    // Create the custom stdlib, with the loaded custom FunC stdlib
+    const customStdlib = {
+        modules: [stdlibModule],
+        stdlib_fc: customStdlibFc.stdlib_fc,
+        stdlib_ex_fc: customStdlibFc.stdlib_ex_fc,
+    };
+
     for (const test of tests) {
         console.log(`Compiling test ${test.testName}`);
         try {
             // Compile the module
-            const contractCodes = await buildModule(astF, test.module);
+            const contractCodes = await buildModule(
+                astF,
+                test.module,
+                customStdlib,
+                true,
+            );
             console.log("Testing...");
             await testContracts(test.testName, contractCodes);
             console.log("Passed.");
