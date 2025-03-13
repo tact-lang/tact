@@ -124,7 +124,7 @@ In [Blueprint][bp], these options act as defaults unless modified in `wrappers/C
 
 If set to `true{:json}`, enables debug output for a contract and allows the usage of the [`dump(){:tact}`](/ref/core-debug#dump) function, which is useful for [debugging purposes](/book/debug). With this option enabled, the contract will report that it was compiled in debug mode using the `supported_interfaces` method.
 
-The `debug` mode implies the activation of the [`nullChecks`](#safety-nullChecks) safety option.
+The `debug` mode implies the activation of the [`nullChecks`](#safety-nullchecks) safety option.
 
 ```json filename="tact.config.json" {8,14}
 {
@@ -324,12 +324,18 @@ Options that affect the safety of contracts.
       "options": {
         "safety": {}
       }
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {
+        "safety": {}
+      }
     }
   ]
 }
 ```
 
-##### `nullChecks` {#safety-nullChecks}
+##### `nullChecks` {#safety-nullchecks}
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
@@ -346,6 +352,14 @@ Null checks are always enabled in [`debug`](#options-debug) mode.
       "name": "contract",
       "path": "./contract.tact",
       "output": "./output",
+      "options": {
+        "safety": {
+          "nullChecks": false
+        }
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
       "options": {
         "safety": {
           "nullChecks": false
@@ -369,6 +383,12 @@ Options that affect the optimization of contracts.
       "name": "contract",
       "path": "./contract.tact",
       "output": "./output",
+      "options": {
+        "optimizations": {}
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
       "options": {
         "optimizations": {}
       }
@@ -396,7 +416,15 @@ This option can be used to provide an extra safety level or for debugging.
       "output": "./output",
       "options": {
         "optimizations": {
-          "alwaysSaveContractData": false
+          "alwaysSaveContractData": true
+        }
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {
+        "optimizations": {
+          "alwaysSaveContractData": true
         }
       }
     }
@@ -404,7 +432,7 @@ This option can be used to provide an extra safety level or for debugging.
 }
 ```
 
-##### `internalExternalReceiversOutsideMethodsMap` {#optimizations-internalExternalReceiversOutsideMethodsMap}
+##### `internalExternalReceiversOutsideMethodsMap` {#optimizations-internalexternalreceiversoutsidemethodsmap}
 
 <Badge text="Available since Tact 1.6.3" variant="tip" size="medium"/><p/>
 
@@ -412,7 +440,7 @@ This option can be used to provide an extra safety level or for debugging.
 
 If set to `true{:json}`, stores internal and external receivers outside of the methods map.
 
-Saves gas, but as a result of this optimization, the contract might not be correctly recognized and parsed by explorers and user wallets.
+When enabled, it saves gas but can cause the contract to be incorrectly recognized and misparsed by some explorers and user wallets.
 
 ```json filename="tact.config.json" {9,17}
 {
@@ -421,6 +449,14 @@ Saves gas, but as a result of this optimization, the contract might not be corre
       "name": "contract",
       "path": "./contract.tact",
       "output": "./output",
+      "options": {
+        "optimizations": {
+          "internalExternalReceiversOutsideMethodsMap": true
+        }
+      }
+    },
+    {
+      "name": "ContractUnderBlueprint",
       "options": {
         "optimizations": {
           "internalExternalReceiversOutsideMethodsMap": true
@@ -437,9 +473,9 @@ Saves gas, but as a result of this optimization, the contract might not be corre
 
 `false{:json}` by default.
 
-If set to `true{:json}`, enables the generation of the `lazy_deployment_completed()` getter. This option has no effect if [contract parameters](/book/contracts#parameters) are declared.
+If set to `true{:json}`, enables the generation of the `lazy_deployment_completed(){:tact}` getter. This option has no effect if [contract parameters](/book/contracts#parameters) are declared.
 
-```json filename="tact.config.json" {8}
+```json filename="tact.config.json" {8,14}
 {
   "projects": [
     {
@@ -449,18 +485,24 @@ If set to `true{:json}`, enables the generation of the `lazy_deployment_complete
       "options": {
         "enableLazyDeploymentCompletedGetter": true
       }
+    },
+    {
+      "name": "ContractUnderBlueprint",
+      "options": {
+        "enableLazyDeploymentCompletedGetter": true
+      }
     }
   ]
 }
 ```
 
-### `verbose` {#verbose}
+### `verbose` {#projects-verbose}
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
 `1{:json}` by default.
 
-Sets the verbosity level. Higher values produce more output.
+Sets the verbosity level — higher values produce more output.
 
 ```json filename="tact.config.json" {7}
 {
@@ -531,7 +573,8 @@ In [Blueprint][bp], `mode` is always set to `"full"{:json}` and cannot be overri
       "output": "./contracts/output",
       "options": {
         "debug": true
-      }
+      },
+      "verbose": 2
     },
     {
       "name": "ContractUnderBlueprint",
@@ -545,7 +588,12 @@ In [Blueprint][bp], `mode` is always set to `"full"{:json}` and cannot be overri
         },
         "safety": {
           "nullChecks": false
-        }
+        },
+        "optimizations": {
+          "alwaysSaveContractData": true,
+          "internalExternalReceiversOutsideMethodsMap": true
+        },
+        "enableLazyDeploymentCompletedGetter": true
       }
     }
   ]

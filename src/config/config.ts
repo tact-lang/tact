@@ -16,7 +16,7 @@ export type OptimizationOptions = {
 
     /**
      * If set to `true`, stores internal and external receivers outside of the methods map. Default is `false`.
-     * Saves gas, but as a result of this optimization, the contract might not be correctly recognized and parsed by explorers and user wallets.
+     * When enabled, it saves gas but can cause the contract to be incorrectly recognized and misparsed by some explorers and user wallets.
      */
     readonly internalExternalReceiversOutsideMethodsMap?: boolean;
 };
@@ -119,7 +119,7 @@ export type Project = {
     mode?: Mode;
 
     /**
-     * Set verbosity level (higher = more details), default: 1
+     * Sets the verbosity level — higher values produce more output. Default is 1.
      */
     verbose?: number;
 };

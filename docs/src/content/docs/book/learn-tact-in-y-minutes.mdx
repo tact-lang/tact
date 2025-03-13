@@ -151,7 +151,6 @@ let target: Slice = composed.asSlice(); // let's start parsing `composed` Cell
 // ---
 
 
-// NOTE:
 // Under the hood, Address and String types are a Slice,
 // although with a well-defined distinct data layout for each.
 // While direct type conversions aren't allowed in Tact,
@@ -263,7 +262,7 @@ contract StateActor with Deployable {
 ## Deployment
 
 ```tact
-// TODO: ... + send + initOf + seqno/id
+// TODO: ... + deploy + initOf + seqno/id
 // (move notes here!)
 ```
 
@@ -276,7 +275,7 @@ contract StateActor with Deployable {
 
 ## Example contracts {#examples}
 
-Let's put our newly acquired information of syntax and some semantics to a test.
+Let's put our newly acquired information of syntax and some semantics to the test.
 
 ### Counter contract {#examples-counter}
 
