@@ -210,11 +210,11 @@ For more info, refer to the package's GitHub repository: [`tact-lang/ton-opcode`
 
 ### Parser
 
-The [`src/grammar/grammar.ohm`](../src/grammar/prev/grammar.ohm) file contains the Tact grammar expressed in the PEG-like language of the [Ohm.js](https://ohmjs.org) parser generator.
+The [`src/grammar/grammar.gg`](../src/grammar/grammar.gg) file contains the Tact grammar expressed in the PEG language of the [pgen](https://github.com/tact-lang/syntax-tools/tree/main/packages/pgen) parser generator.
 
-The helper file [`src/grammar/grammar.ts`](../src/grammar/prev/grammar.ts) contains the logic that transforms concrete syntax trees produced with the help of the Ohm.js-generated parser into abstract syntax trees (ASTs) defined in [src/ast/ast.ts](../src/ast/ast.ts). The grammar.ts file also does grammar validation, like checking that function or constant attributes are not duplicated or that user identifiers do not start with specific reserved prefixes.
+The helper file [`src/grammar/index.ts`](../src/grammar/index.ts) contains the logic that transforms concrete syntax trees produced with the help of parser into abstract syntax trees (ASTs) defined in [src/ast/ast.ts](../src/ast/ast.ts). The index.ts file also does grammar validation, like checking that function or constant attributes are not duplicated or that user identifiers do not start with specific reserved prefixes.
 
-The [`src/grammar/test`](../src/grammar/test) folder contains Tact files that are supposed to be parsed without any issues, and the [`src/grammar/test-failed`](../src/grammar/test-failed) folder contains grammatically incorrect test files which should result in parser errors. The parser error messages and the locations they point to are fixed in the [`src/grammar/**snapshots**/grammar.spec.ts.snap`](../src/grammar/prev/__snapshots__/grammar.spec.ts.snap) Jest snapshot file.
+The [`src/grammar/test`](../src/grammar/test) folder contains Tact files that are supposed to be parsed without any issues, and the [`src/grammar/test-failed`](../src/grammar/test-failed) folder contains grammatically incorrect test files which should result in parser errors. The parser error messages and the locations they point to are fixed in the [`src/grammar/**snapshots**/grammar.spec.ts.snap`](../src/grammar/__snapshots__/grammar.spec.ts.snap) Jest snapshot file.
 
 ### Standard Library
 

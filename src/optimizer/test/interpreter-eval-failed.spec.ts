@@ -2,7 +2,6 @@ import { getAstFactory } from "../../ast/ast-helpers";
 import { CompilerContext } from "../../context/context";
 import { openContext } from "../../context/store";
 import { getParser } from "../../grammar";
-import { defaultParser } from "../../grammar/grammar";
 import { evalComptimeExpressions } from "../../types/evalComptimeExpressions";
 import { resolveDescriptors } from "../../types/resolveDescriptors";
 import { resolveSignatures } from "../../types/resolveSignatures";
@@ -17,7 +16,7 @@ describe("interpreter-evaluation", () => {
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
-                getParser(Ast, defaultParser),
+                getParser(Ast),
             );
             expect(() => {
                 ctx = resolveDescriptors(ctx, Ast);

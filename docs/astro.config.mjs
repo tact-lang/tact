@@ -87,7 +87,6 @@ export default defineConfig({
 					langs: [
 						() => JSON.parse(fs.readFileSync('grammars/grammar-tact.json', 'utf-8')),
 						() => JSON.parse(fs.readFileSync('grammars/grammar-func.json', 'utf-8')),
-						() => JSON.parse(fs.readFileSync('grammars/grammar-ohm.json', 'utf-8'))
 					],
 				},
 			},
