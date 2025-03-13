@@ -13,7 +13,7 @@ import {
     parseStandardLibrary,
     ProxyContract,
 } from "./util";
-import { defaultParser } from "../../grammar/grammar";
+import type { CustomStdlib } from "./util";
 import { getSrcInfo } from "../../grammar/src-info";
 import { Blockchain } from "@ton/sandbox";
 import type { BlockchainTransaction } from "@ton/sandbox";
@@ -51,7 +51,38 @@ type Test = {
     contractNames: string[];
 };
 
-function createTestModules(astF: FactoryAst): Test[] {
+const GeneratorFeature = {
+    LET_STATEMENT: "LET",
+    EXPRESSION_STATEMENT: "EXPRESSION",
+    CONDITION_STATEMENT: "CONDITION",
+    WHILE_STATEMENT: "WHILE",
+    UNTIL_STATEMENT: "UNTIL",
+    REPEAT_STATEMENT: "REPEAT",
+    DESTRUCT_STATEMENT: "DESTRUCT",
+    BLOCK_STATEMENT: "BLOCK",
+    TRY_STATEMENT: "TRY",
+
+    STATIC_CALL_EXPRESSION: "STATIC_CALL",
+    INIT_OF_EXPRESSION: "INIT_OF",
+} as const;
+
+type GeneratorFeatureType =
+    (typeof GeneratorFeature)[keyof typeof GeneratorFeature];
+
+type GeneratorDescriptor<T> = {
+    feature: GeneratorFeatureType;
+    // Setting the flag to true, forces the feature to always be included,
+    // independently of the constructed feature set.
+    // If the flag is set to false, then the feature set will be taken into account.
+    ignoreFeatureSet: boolean;
+    generator: fc.Arbitrary<T>;
+};
+
+function createTestModules(
+    astF: FactoryAst,
+    allowedFeatures: Set<GeneratorFeatureType>,
+    compilationBatchSize: number,
+): { tests: Test[]; numberOfContracts: number } {
     let idCounter = 0;
     const emptySrcInfo = getSrcInfo(" ", 0, 0, null, "user");
 
@@ -569,13 +600,15 @@ function createTestModules(astF: FactoryAst): Test[] {
         };
     }
 
-    function chainGenerators<T>(gens: fc.Arbitrary<T[]>[]): fc.Arbitrary<T[]> {
+    function chainGenerators<T>(
+        gens: fc.Arbitrary<readonly T[]>[],
+    ): fc.Arbitrary<T[]> {
         return chainGeneratorsAux([], gens);
     }
 
     function chainGeneratorsAux<T>(
         accumulator: T[],
-        gens: fc.Arbitrary<T[]>[],
+        gens: fc.Arbitrary<readonly T[]>[],
     ): fc.Arbitrary<T[]> {
         if (gens.length === 0) {
             return fc.constant(accumulator);
@@ -613,59 +646,79 @@ function createTestModules(astF: FactoryAst): Test[] {
         }};
     }*/
 
-    function initOfGenerator(): fc.Arbitrary<
-        ItemWithDeclarations<ExpressionWrapper>[]
+    function initOfGenerator(): GeneratorDescriptor<
+        readonly ItemWithDeclarations<ExpressionWrapper>[]
     > {
-        return fc.constant([
+        const generator = fc.constant([
             withEmptyDeclarations({
                 name: "InitOf",
                 expression: makeInitOf(makeId("Deployer"), []),
             }),
         ]);
+
+        return {
+            feature: GeneratorFeature.INIT_OF_EXPRESSION,
+            ignoreFeatureSet: true,
+            generator,
+        };
     }
 
     function staticCallGenerator(
         currentFunCallDepth: number,
-    ): fc.Arbitrary<ItemWithDeclarations<ExpressionWrapper>[]> {
+    ): GeneratorDescriptor<ItemWithDeclarations<ExpressionWrapper>[]> {
         if (currentFunCallDepth >= config.maxFunCallDepth) {
-            return fc.constant([]);
+            return {
+                feature: GeneratorFeature.STATIC_CALL_EXPRESSION,
+                ignoreFeatureSet: false,
+                generator: fc.constant([]),
+            };
         }
 
-        return statementGenerator(currentFunCallDepth + 1).chain((genStmts) => {
-            const finalItems: ItemWithDeclarations<ExpressionWrapper>[] = [];
+        const generator = statementGenerator(currentFunCallDepth + 1).chain(
+            (genStmts) => {
+                const finalItems: ItemWithDeclarations<ExpressionWrapper>[] =
+                    [];
 
-            for (const stmtsWithName of genStmts) {
-                const finalGlobalDecls: Map<string, A.AstModuleItem> = new Map(
-                    stmtsWithName.declarations.globalDeclarations,
-                );
+                for (const stmtsWithName of genStmts) {
+                    const finalGlobalDecls: Map<string, A.AstModuleItem> =
+                        new Map(stmtsWithName.declarations.globalDeclarations);
 
-                if (stmtsWithName.item.assignedStateInit) {
-                    const funName = makeFreshFunctionName();
-                    const returnStmt = makeReturnStatement(makeId("stateInit"));
-                    const funDef = makeFunctionDefinition(
-                        funName,
-                        [makeTypedParameter("arg", "Int")],
-                        [...stmtsWithName.item.statements, returnStmt],
-                        [],
-                        makeTypeId("StateInit"),
-                    );
-                    const call = makeStaticCall(funName, [makeId("arg")]);
-                    const testName = `StaticCall_${stmtsWithName.item.name}`;
-                    finalGlobalDecls.set(idText(funName), funDef);
-                    finalItems.push(
-                        withDeclarations(
-                            { name: testName, expression: call },
-                            {
-                                globalDeclarations: finalGlobalDecls,
-                                contractDeclarations: new Map(),
-                            },
-                        ),
-                    );
+                    if (stmtsWithName.item.assignedStateInit) {
+                        const funName = makeFreshFunctionName();
+                        const returnStmt = makeReturnStatement(
+                            makeId("stateInit"),
+                        );
+                        const funDef = makeFunctionDefinition(
+                            funName,
+                            [makeTypedParameter("arg", "Int")],
+                            [...stmtsWithName.item.statements, returnStmt],
+                            [],
+                            makeTypeId("StateInit"),
+                        );
+                        const call = makeStaticCall(funName, [makeId("arg")]);
+                        const testName = `StaticCall_${stmtsWithName.item.name}`;
+                        finalGlobalDecls.set(idText(funName), funDef);
+                        finalItems.push(
+                            withDeclarations(
+                                { name: testName, expression: call },
+                                {
+                                    globalDeclarations: finalGlobalDecls,
+                                    contractDeclarations: new Map(),
+                                },
+                            ),
+                        );
+                    }
                 }
-            }
 
-            return fc.constant(finalItems);
-        });
+                return fc.constant(finalItems);
+            },
+        );
+
+        return {
+            feature: GeneratorFeature.STATIC_CALL_EXPRESSION,
+            ignoreFeatureSet: false,
+            generator,
+        };
     }
 
     /*
@@ -753,7 +806,7 @@ function createTestModules(astF: FactoryAst): Test[] {
 
     function letStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<readonly ItemWithDeclarations<StatementsWrapper>[]> {
         const varName = makeId("stateInit");
         const varType = makeTypeId("StateInit");
         const stmtLet = makeLetStatement(
@@ -763,7 +816,7 @@ function createTestModules(astF: FactoryAst): Test[] {
         );
         const newName = `Let_${baseExpr.item.name}`;
 
-        return fc.constant([
+        const generator = fc.constant([
             withDeclarations(
                 {
                     name: newName,
@@ -773,14 +826,20 @@ function createTestModules(astF: FactoryAst): Test[] {
                 baseExpr.declarations,
             ),
         ]);
+
+        return {
+            feature: GeneratorFeature.LET_STATEMENT,
+            ignoreFeatureSet: false,
+            generator,
+        };
     }
 
     function expressionStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<readonly ItemWithDeclarations<StatementsWrapper>[]> {
         const stmtExpr = makeExpressionStatement(baseExpr.item.expression);
         const newName = `Expr_${baseExpr.item.name}`;
-        return fc.constant([
+        const generator = fc.constant([
             withDeclarations(
                 {
                     name: newName,
@@ -790,11 +849,17 @@ function createTestModules(astF: FactoryAst): Test[] {
                 baseExpr.declarations,
             ),
         ]);
+
+        return {
+            feature: GeneratorFeature.EXPRESSION_STATEMENT,
+            ignoreFeatureSet: false,
+            generator,
+        };
     }
 
     function conditionStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>[]> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -831,7 +896,7 @@ function createTestModules(astF: FactoryAst): Test[] {
         const case2Name = `IfThen_${baseExpr.item.name}`;
         const case3Name = `IfElse_${baseExpr.item.name}`;
 
-        return fc.constant(
+        const generator = fc.constant(
             [
                 {
                     name: case1Name,
@@ -850,11 +915,17 @@ function createTestModules(astF: FactoryAst): Test[] {
                 },
             ].map((item) => withDeclarations(item, baseExpr.declarations)),
         );
+
+        return {
+            feature: GeneratorFeature.CONDITION_STATEMENT,
+            ignoreFeatureSet: false,
+            generator,
+        };
     }
 
     function whileStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<readonly ItemWithDeclarations<StatementsWrapper>[]> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -878,7 +949,7 @@ function createTestModules(astF: FactoryAst): Test[] {
 
         const newName = `While_${baseExpr.item.name}`;
 
-        return fc.constant([
+        const generator = fc.constant([
             withDeclarations(
                 {
                     name: newName,
@@ -888,11 +959,17 @@ function createTestModules(astF: FactoryAst): Test[] {
                 baseExpr.declarations,
             ),
         ]);
+
+        return {
+            feature: GeneratorFeature.WHILE_STATEMENT,
+            ignoreFeatureSet: false,
+            generator,
+        };
     }
 
     function untilStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<readonly ItemWithDeclarations<StatementsWrapper>[]> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -916,7 +993,7 @@ function createTestModules(astF: FactoryAst): Test[] {
 
         const newName = `Until_${baseExpr.item.name}`;
 
-        return fc.constant([
+        const generator = fc.constant([
             withDeclarations(
                 {
                     name: newName,
@@ -926,11 +1003,17 @@ function createTestModules(astF: FactoryAst): Test[] {
                 baseExpr.declarations,
             ),
         ]);
+
+        return {
+            feature: GeneratorFeature.UNTIL_STATEMENT,
+            ignoreFeatureSet: false,
+            generator,
+        };
     }
 
     function repeatStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<readonly ItemWithDeclarations<StatementsWrapper>[]> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -954,7 +1037,7 @@ function createTestModules(astF: FactoryAst): Test[] {
 
         const newName = `Repeat_${baseExpr.item.name}`;
 
-        return fc.constant([
+        const generator = fc.constant([
             withDeclarations(
                 {
                     name: newName,
@@ -964,6 +1047,12 @@ function createTestModules(astF: FactoryAst): Test[] {
                 baseExpr.declarations,
             ),
         ]);
+
+        return {
+            feature: GeneratorFeature.REPEAT_STATEMENT,
+            ignoreFeatureSet: false,
+            generator,
+        };
     }
 
     /*
@@ -1008,7 +1097,7 @@ function createTestModules(astF: FactoryAst): Test[] {
 
     function destructStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<readonly ItemWithDeclarations<StatementsWrapper>[]> {
         const identifiers: Map<string, [A.AstId, A.AstId]> = new Map();
         identifiers.set("init", [makeId("init"), makeId("stateInit")]);
 
@@ -1027,7 +1116,7 @@ function createTestModules(astF: FactoryAst): Test[] {
 
         const newName = `Destruct_${baseExpr.item.name}`;
 
-        return fc.constant([
+        const generator = fc.constant([
             withDeclarations(
                 {
                     name: newName,
@@ -1037,11 +1126,17 @@ function createTestModules(astF: FactoryAst): Test[] {
                 baseExpr.declarations,
             ),
         ]);
+
+        return {
+            feature: GeneratorFeature.DESTRUCT_STATEMENT,
+            ignoreFeatureSet: false,
+            generator,
+        };
     }
 
     function blockStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<readonly ItemWithDeclarations<StatementsWrapper>[]> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -1057,7 +1152,7 @@ function createTestModules(astF: FactoryAst): Test[] {
 
         const newName = `Block_${baseExpr.item.name}`;
 
-        return fc.constant([
+        const generator = fc.constant([
             withDeclarations(
                 {
                     name: newName,
@@ -1067,11 +1162,16 @@ function createTestModules(astF: FactoryAst): Test[] {
                 baseExpr.declarations,
             ),
         ]);
+        return {
+            feature: GeneratorFeature.BLOCK_STATEMENT,
+            ignoreFeatureSet: false,
+            generator,
+        };
     }
 
     function tryStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>[]> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -1105,7 +1205,7 @@ function createTestModules(astF: FactoryAst): Test[] {
         const case1Name = `Try_${baseExpr.item.name}`;
         const case2Name = `Catch_${baseExpr.item.name}`;
 
-        return fc.constant(
+        const generator = fc.constant(
             [
                 {
                     name: case1Name,
@@ -1119,6 +1219,11 @@ function createTestModules(astF: FactoryAst): Test[] {
                 },
             ].map((item) => withDeclarations(item, baseExpr.declarations)),
         );
+        return {
+            feature: GeneratorFeature.TRY_STATEMENT,
+            ignoreFeatureSet: false,
+            generator,
+        };
     }
 
     function expressionGenerator(
@@ -1132,8 +1237,17 @@ function createTestModules(astF: FactoryAst): Test[] {
             //contractFieldGenerator(initOf)
         ];
 
+        // Keep only those generators allowed by the features
+        const finalGens = exprGens
+            .filter(
+                (genDesc) =>
+                    genDesc.ignoreFeatureSet ||
+                    allowedFeatures.has(genDesc.feature),
+            )
+            .map((genDesc) => genDesc.generator);
+
         // Chain all the above generators
-        return chainGenerators(exprGens);
+        return chainGenerators(finalGens);
     }
 
     function statementGenerator(
@@ -1141,7 +1255,7 @@ function createTestModules(astF: FactoryAst): Test[] {
     ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
         return expressionGenerator(currentFunCallDepth).chain((genExprs) => {
             const generators: fc.Arbitrary<
-                ItemWithDeclarations<StatementsWrapper>[]
+                readonly ItemWithDeclarations<StatementsWrapper>[]
             >[] = [];
 
             for (const exprWithName of genExprs) {
@@ -1160,7 +1274,16 @@ function createTestModules(astF: FactoryAst): Test[] {
                     tryStatementGenerator(exprWithName),
                 ];
 
-                generators.push(...stmtGens);
+                // Keep only those generators allowed by the features
+                const finalGens = stmtGens
+                    .filter(
+                        (genDesc) =>
+                            genDesc.ignoreFeatureSet ||
+                            allowedFeatures.has(genDesc.feature),
+                    )
+                    .map((genDesc) => genDesc.generator);
+
+                generators.push(...finalGens);
             }
 
             return chainGenerators(generators);
@@ -1232,10 +1355,10 @@ function createTestModules(astF: FactoryAst): Test[] {
         }) as A.AstModule;
     }
 
-    function createTestsAndGroupBy(
+    function createTestsInBatches(
         items: ItemWithDeclarations<A.AstContract>[],
         extraModule: A.AstModule,
-        groupBy: number,
+        compilationBatchSize: number,
     ): Test[] {
         const tests: Test[] = [];
 
@@ -1253,7 +1376,7 @@ function createTestModules(astF: FactoryAst): Test[] {
             contractNamesAccumulator.push(contractName);
             counter++;
 
-            if (counter >= groupBy) {
+            if (counter >= compilationBatchSize) {
                 tests.push({
                     module: makeModule([
                         ...moduleItemAccumulator.values(),
@@ -1291,8 +1414,10 @@ function createTestModules(astF: FactoryAst): Test[] {
     // The unique element in the array is ensured to exist
     const allCases = genResult[0]!;
 
+    const numberOfGeneratedContracts = allCases.length;
+
     // Prepare the Deployer contract and Dummies necessary for tests.
-    const parser = getParser(astF, defaultParser);
+    const parser = getParser(astF);
     const extraModule = parser.parse({
         path: ".",
         code: fs
@@ -1301,7 +1426,14 @@ function createTestModules(astF: FactoryAst): Test[] {
         origin: "user",
     });
 
-    return createTestsAndGroupBy(allCases, extraModule, 30);
+    return {
+        tests: createTestsInBatches(
+            allCases,
+            extraModule,
+            compilationBatchSize,
+        ),
+        numberOfContracts: numberOfGeneratedContracts,
+    };
 }
 
 async function testContracts(
@@ -1405,14 +1537,32 @@ function getTestedContractStateInit(
     return { code, data };
 }
 
+// Create a collection of feature sets. The number of feature sets will be random in the closed interval [minNum, maxNum].
+// Each feature set is randomly generated by throwing a coin at each feature.
+function createFeatureSets(
+    minNum: number,
+    maxNum: number,
+): Set<GeneratorFeatureType>[] {
+    const numberOfSets = Math.floor(
+        Math.random() * (maxNum - minNum + 1) + minNum,
+    );
+    const result: Set<GeneratorFeatureType>[] = [];
+
+    for (let i = 1; i <= numberOfSets; i++) {
+        result.push(
+            new Set(
+                Object.values(GeneratorFeature).filter(
+                    (_) => Math.random() >= 0.5,
+                ),
+            ),
+        );
+    }
+
+    return result;
+}
+
 async function main() {
     const astF = getAstFactory();
-
-    const tests = createTestModules(astF);
-
-    console.log(`Generated ${tests.length} tests.`);
-
-    const fileDescriptor = fs.openSync(path.join(__dirname, "error.log"), "w");
 
     // Parse the stdlib and filter it with the minimal definitions we need
     const stdlibModule = filterGlobalDeclarations(
@@ -1463,10 +1613,67 @@ async function main() {
         stdlib_ex_fc: customStdlibFc.stdlib_ex_fc,
     };
 
-    for (const test of tests) {
-        console.log(`Compiling next batch...`);
+    const featureSets = createFeatureSets(2, 2);
+
+    console.log(`Generated ${featureSets.length} feature sets.`);
+
+    const compilationBatchSize = 20;
+
+    const reports = await Promise.all(
+        featureSets.map((featureSet, idx) =>
+            executeTestsOnFeatures(
+                featureSet,
+                idx + 1,
+                astF,
+                compilationBatchSize,
+                customStdlib,
+            ),
+        ),
+    );
+
+    const numberOfErrors = reports.reduce((prev, curr) => prev + curr, 0);
+
+    if (numberOfErrors > 0) {
+        console.log(
+            `There were a total of ${numberOfErrors} errors. See the following log files:`,
+        );
+        reports.forEach((errorCount, idx) => {
+            if (errorCount > 0) {
+                console.log(`error-${idx + 1}.log`);
+            }
+        });
+    } else {
+        console.log("There were no errors.");
+    }
+}
+
+async function executeTestsOnFeatures(
+    featureSet: Set<GeneratorFeatureType>,
+    idx: number,
+    astF: FactoryAst,
+    compilationBatchSize: number,
+    customStdlib: CustomStdlib,
+): Promise<number> {
+    let errorCount = 0;
+
+    const errorFilename = `error-${idx}.log`;
+    const fileDescriptor = fs.openSync(
+        path.join(__dirname, errorFilename),
+        "w",
+    );
+
+    const featureSetString = `{${Array.from(featureSet).join(", ")}}`;
+    console.log(`#${idx}: Using feature set: ${featureSetString}`);
+
+    const tests = createTestModules(astF, featureSet, compilationBatchSize);
+
+    console.log(
+        `#${idx}: Generated ${tests.numberOfContracts} contracts, grouped in ${tests.tests.length} compilation batches.`,
+    );
+
+    nextTest: for (const test of tests.tests) {
+        console.log(`#${idx}: Compiling next batch...`);
         try {
-            // Compile the module
             const contractCodes = await buildModule(
                 astF,
                 test.module,
@@ -1474,26 +1681,61 @@ async function main() {
                 true,
             );
             for (const contractName of test.contractNames) {
-                console.log(`Testing contract ${contractName}...`);
-                await testContracts(contractName, contractCodes);
-                console.log("Passed.");
+                try {
+                    console.log(`#${idx}: Testing contract ${contractName}...`);
+                    await testContracts(contractName, contractCodes);
+                    console.log(`#${idx}: ${contractName} passed.`);
+                } catch (e) {
+                    if (e instanceof Error) {
+                        errorCount++;
+                        console.log(
+                            `#${idx}: ${contractName} failed. See ${errorFilename}.`,
+                        );
+                        handleError(
+                            e,
+                            fileDescriptor,
+                            featureSetString,
+                            test.module,
+                        );
+                        continue nextTest;
+                    } else {
+                        // Cannot handle this error. Stop the entire process since this is something unexpected.
+                        throw e;
+                    }
+                }
             }
         } catch (e) {
-            console.log("Failed. See error.log");
-            const tactCode = prettyPrint(test.module);
-            fs.writeSync(fileDescriptor, `${tactCode}\nfailed with error:\n`);
             if (e instanceof Error) {
-                fs.writeSync(fileDescriptor, e.stack ?? "");
-                fs.writeSync(
-                    fileDescriptor,
-                    "\n----------------------------------\n\n",
+                errorCount++;
+                const batchString = `[${test.contractNames.join(", ")}]`;
+                console.log(
+                    `#${idx}: Batch ${batchString} failed compilation. See ${errorFilename}.`,
                 );
+                handleError(e, fileDescriptor, featureSetString, test.module);
+                continue nextTest;
             } else {
                 // Cannot handle this error. Stop the entire process since this is something unexpected.
                 throw e;
             }
         }
     }
+
+    return errorCount;
+}
+
+function handleError(
+    e: Error,
+    fileDescriptor: number,
+    featureSetString: string,
+    module: A.AstModule,
+) {
+    const tactCode = prettyPrint(module);
+    fs.writeSync(
+        fileDescriptor,
+        `With features: ${featureSetString}, code:\n${tactCode}\nfailed with error:\n`,
+    );
+    fs.writeSync(fileDescriptor, e.stack ?? "");
+    fs.writeSync(fileDescriptor, "\n----------------------------------\n\n");
 }
 
 function ensureTransactionExists(

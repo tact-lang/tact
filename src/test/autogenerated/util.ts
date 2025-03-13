@@ -5,7 +5,6 @@ import { CompilerContext } from "../../context/context";
 import { Logger } from "../../context/logger";
 import { funcCompile } from "../../func/funcCompile";
 import { getParser } from "../../grammar";
-import { defaultParser } from "../../grammar/grammar";
 import { compile } from "../../pipeline/compile";
 import { precompile } from "../../pipeline/precompile";
 import { topSortContracts } from "../../pipeline/utils";
@@ -29,7 +28,7 @@ import { getAllTypes } from "../../types/resolveDescriptors";
 
 export function parseStandardLibrary(astF: FactoryAst): CompilerContext {
     let ctx = new CompilerContext();
-    const parser = getParser(astF, defaultParser);
+    const parser = getParser(astF);
     const fileSystem = {
         [`contracts/empty.tact`]: "",
     };
@@ -96,7 +95,7 @@ export function loadCustomStdlibFc(): {
     };
 }
 
-type CustomStdlib = {
+export type CustomStdlib = {
     // Parsed modules of Tact stdlib
     modules: A.AstModule[];
     // Contents of the stdlib.fc file
@@ -114,7 +113,7 @@ export async function buildModule(
     useCustomStdlib: boolean,
 ): Promise<Map<string, Buffer>> {
     let ctx = new CompilerContext();
-    const parser = getParser(astF, defaultParser);
+    const parser = getParser(astF);
     // We need an entrypoint for precompile, even if it is empty
     const fileSystem = {
         [`contracts/empty.tact`]: "",
@@ -179,11 +178,6 @@ export async function buildModule(
             `${config.name}_${contractName}`,
             built,
         );
-        //for (const files of res.output.files) {
-        //    const ffc = project.resolve(config.output, files.name);
-        //    project.writeFile(ffc, files.code);
-        //}
-        //project.writeFile(pathAbi, res.output.abi);
         const codeFc = res.output.files.map((v) => ({
             path: posixNormalize(project.resolve(config.output, v.name)),
             content: v.code,
@@ -196,7 +190,6 @@ export async function buildModule(
         const stdlibExPath = stdlib.resolve("std/stdlib_ex.fc");
         const stdlibExCode = stdlib.readFile(stdlibExPath).toString();
 
-        //console.profile();
         const c = await funcCompile({
             entries: [
                 stdlibPath,
@@ -216,7 +209,6 @@ export async function buildModule(
             ],
             logger: new Logger(),
         });
-        //console.profileEnd();
 
         if (!c.ok) {
             throw new Error(c.log);
@@ -233,63 +225,6 @@ export async function buildModule(
 
     return contractCodes;
 }
-
-// export function precompile(
-//     ctx: CompilerContext,
-//     project: VirtualFileSystem,
-//     stdlib: VirtualFileSystem,
-//     entrypoint: string,
-//     parser: Parser,
-//     ast: FactoryAst,
-//     parsedModules?: AstModule[],
-// ) {
-//     // Load all sources
-//     const imported = resolveImports({ entrypoint, project, stdlib, parser });
-
-//     // Add information about all the source code entries to the context
-//     ctx = openContext(ctx, imported.tact, imported.func, parser, parsedModules);
-
-//     // First load type descriptors and check that
-//     //       they all have valid signatures
-//     ctx = resolveDescriptors(ctx, ast);
-
-//     // This checks and resolves all statements
-//     ctx = resolveStatements(ctx);
-
-//     // From this point onwards, it is safe to call evalConstantExpression.
-
-//     /* Evaluate all comp-time expressions:
-//        constants, default contract fields, default struct fields, method Ids
-
-//        The original code inside constant, field and method id initialization actually mutated the CompilerContext object,
-//        while the rest of the typechecker's code built a new CompilerContext every time it changed something.
-//        Hence the reason of why this line is not written as:
-
-//        ctx = evalComptimeExpressions(ctx, ast);
-
-//        The code mutates fields in ConstantDescription, FieldDescription and FunctionDescription.
-
-//        Evaluation of Message op-codes is done later in resolveSignatures. It was left there because
-//        the computation of those op-codes is more involved than the computation of method ids, and so
-//        it is hard to extract the call to evalConstantExpression in resolveSignatures.
-//     */
-//     evalComptimeExpressions(ctx, ast);
-
-//     // This creates TLB-style type definitions
-//     ctx = resolveSignatures(ctx, ast);
-
-//     // This extracts error messages
-//     ctx = resolveErrors(ctx, ast);
-
-//     // This creates allocations for all defined types
-//     ctx = resolveAllocations(ctx);
-
-//     // To use in code generation to decide if a receiver needs to call the contract storage function
-//     computeReceiversEffects(ctx);
-
-//     // Prepared context
-//     return ctx;
-// }
 
 export class ProxyContract implements Contract {
     address: Address;
