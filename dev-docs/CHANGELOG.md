@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `internalExternalReceiversOutsideMethodsMap` config option as part of optimization options to protect potentially unwanted optimization: PR [#2370](https://github.com/tact-lang/tact/pull/2370)
 
+### Standard Library
+
+- Added `forceBasechain()` function: PR [#2330](https://github.com/tact-lang/tact/pull/2330)
+
 ### Internal infrastructure
 
 - Removed old parser: PR [#2365](https://github.com/tact-lang/tact/pull/2365)
