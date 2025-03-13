@@ -9,7 +9,10 @@ const main = async () => {
         debug: true,
         experimental: { inline: false },
         safety: { nullChecks: false },
-        optimizations: { alwaysSaveContractData: false },
+        optimizations: {
+            alwaysSaveContractData: false,
+            internalExternalReceiversOutsideMethodsMap: true,
+        },
     };
 
     await allInFolder(
@@ -27,7 +30,10 @@ const main = async () => {
         debug: false,
         experimental: { inline: true },
         safety: { nullChecks: false },
-        optimizations: { alwaysSaveContractData: false },
+        optimizations: {
+            alwaysSaveContractData: false,
+            internalExternalReceiversOutsideMethodsMap: true,
+        },
     });
 };
 
