@@ -1613,7 +1613,7 @@ async function main() {
         stdlib_ex_fc: customStdlibFc.stdlib_ex_fc,
     };
 
-    const featureSets = createFeatureSets(2, 2);
+    const featureSets = createFeatureSets(10, 15);
 
     console.log(`Generated ${featureSets.length} feature sets.`);
 
