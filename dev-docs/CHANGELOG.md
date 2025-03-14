@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [Novus Nota](https://github.com/novusnota)
 - [Anton Trunov](https://github.com/anton-trunov)
+- [Maksim Lagus](https://github.com/Kaladin13)
 
 ## [1.6.3] - 2025-03-12
 
