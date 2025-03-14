@@ -353,7 +353,7 @@ asm fun forceBasechain(address: Address) { REWRITESTDADDR DROP 138 THROWIF }
 
 /// Global function. Available since Tact 1.6.4.
 ///
-/// Checks whether the `address` is in the `workchain`, i.e., its chain ID is equal to `workchain` parameter. If it is not, throws an exception with exit code `errorCode`.
+/// Checks whether the `address` is in the `workchain`, i.e., its chain ID is equal to `workchain`. If it is not, throws an exception with exit code `errorCode`.
 ///
 /// ```tact
 /// fun examples() {

@@ -704,7 +704,9 @@ try {
 fun forceWorkchain(address: Address, workchain: Int, errorCode: Int);
 ```
 
-Parameterized version of `forceBasechain`. Checks whether the `address` is in the `workchain`, i.e., its [chain ID](https://docs.ton.org/learn/overviews/addresses#workchain-id) is equal to `workchain` parameter. If it is not, throws an exception with exit code `errorCode`.
+Parameterized version of [`forceBasechain(){:tact}`](#forcebasechain).
+
+Checks whether the `address` is in the `workchain`, i.e., its [chain ID](https://docs.ton.org/learn/overviews/addresses#workchain-id) is equal to `workchain`. If it is not, throws an exception with exit code `errorCode`.
 
 Usage examples:
 
