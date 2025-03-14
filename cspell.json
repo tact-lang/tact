@@ -22,7 +22,7 @@
     "\\b0[xX][a-fA-F0-9_]*\\b", // hexadecimal numbers
     "\\b(?:address|crc32|cell|slice|rawSlice)\\(\".+?\"\\)", // some comptime functions
     "ince Tact ", // regex in RELEASE.md
-    "core-contextstate",
+    "core-contextstate"
   ],
   "flagWords": [],
   "ignorePaths": [
