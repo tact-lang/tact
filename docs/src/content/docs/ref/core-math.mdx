@@ -360,8 +360,6 @@ contract Example {
 
 ## checkSignature
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
-
 ```tact
 fun checkSignature(hash: Int, signature: Slice, publicKey: Int): Bool;
 ```
@@ -401,9 +399,13 @@ contract Showcase {
 }
 ```
 
-## checkDataSignature
+:::caution
 
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+  The first 10 calls of this function are very cheap regarding gas usage. However, the 11th call and onward consume more than 4 thousand gas units.
+
+:::
+
+## checkDataSignature
 
 ```tact
 fun checkDataSignature(data: Slice, signature: Slice, publicKey: Int): Bool;
@@ -422,6 +424,12 @@ let publicKey: Int = 42;
 
 let check: Bool = checkDataSignature(data, signature, publicKey);
 ```
+
+:::caution
+
+  The first 10 calls of this function are very cheap regarding gas usage. However, the 11th call and onward consume more than 4 thousand gas units.
+
+:::
 
 ## sha256
 
