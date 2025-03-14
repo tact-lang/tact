@@ -144,7 +144,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
                     src.type.type,
                     src.type.format ?? null,
                 );
-                if (src.type.optional && base !== 'address') {
+                if (src.type.optional && base !== "address") {
                     base = "Maybe " + base;
                 }
                 return src.name + ":" + base;
