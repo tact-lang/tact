@@ -162,9 +162,9 @@ describe("stdlib", () => {
                     "-1:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
                 ),
                 42n,
-                239n,
+                593n,
             );
-        }, 239);
+        }, 593);
 
         expect(await contract.getBuilderDepth(beginCell())).toBe(0n);
         expect(
