@@ -194,12 +194,9 @@ export const ppAstNull = (_expr: A.AstNull) => "null";
 export const ppAstString = ({ value }: A.AstString) => `"${value}"`;
 export const ppAstSimplifiedString = ({ value }: A.AstSimplifiedString) =>
     JSON.stringify(value);
-export const ppAstAddress = ({ value }: A.AstAddress) =>
-    `addr("${value.toRawString()}")`;
-export const ppAstCell = ({ value }: A.AstCell) =>
-    `cell("${value.toString()}")`;
-export const ppAstSlice = ({ value }: A.AstSlice) =>
-    `slice("${value.toString()}")`;
+export const ppAstAddress = ({ value }: A.AstAddress) => `addr("${value}")`;
+export const ppAstCell = ({ value }: A.AstCell) => `cell("${value}")`;
+export const ppAstSlice = ({ value }: A.AstSlice) => `slice("${value}")`;
 
 export const ppAstStaticCall = ({ function: func, args }: A.AstStaticCall) => {
     return `${ppAstId(func)}(${ppExprArgs(args)})`;
