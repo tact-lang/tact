@@ -326,6 +326,6 @@ export default defineConfig({
 		'/ecosystem/tools/vscode': '/ecosystem/vscode',
 		'/ecosystem/tools/misti': '/ecosystem/misti',
 		'/ref/core-common': '/ref/core-send',
-		'/ref/core-advanced': '/ref/core-context',
+		'/ref/core-advanced': '/ref/core-contextstate',
 	},
 });
