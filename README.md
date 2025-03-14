@@ -7,7 +7,7 @@
 A next-gen smart contract programming language for TON Blockchain focused on efficiency and ease of development.
 Tact is a good fit for complex smart contracts, quick onboarding, and rapid prototyping.
 
-Developed by [TON Studio](https://tonstudio.io), powered by the community.
+Developed by [TON Studio](https://tonstudio.io), powered by the community — by the end of 2024, the number of _unique code_[^1] contracts deployed on the mainnet reached almost 28 thousand, of which about 33% were written in Tact. You can view some of the selected projects here: [Tact in production](https://github.com/tact-lang/awesome-tact#tact-in-production-).
 
 **[Try online!] • [Features] • [Security] • [Key resources] • [Installation] • [Community] • [Contributing]**
 
@@ -152,3 +152,5 @@ Good luck on your coding adventure with ⚡ Tact!
 ## License
 
 MIT © The Tact Authors: Steve Korshakov; [TON Studio](https://tonstudio.io).
+
+[^1]: The "unique code" means that each contract in the data sample has at least one TVM instruction that differs from the other contracts, excluding many preprocessed wallets with everything inlined — even seqno and a public key for signature verification!
