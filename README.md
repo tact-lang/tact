@@ -7,7 +7,7 @@
 A next-gen smart contract programming language for TON Blockchain focused on efficiency and ease of development.
 Tact is a good fit for complex smart contracts, quick onboarding, and rapid prototyping.
 
-Developed by [TON Studio](https://tonstudio.io), powered by the community.
+Developed by [TON Studio](https://tonstudio.io), powered by the community — by the end of 2024, the number of _unique code_[^1] contracts deployed on the mainnet reached almost 28 thousand, of which about 33% were written in Tact. You can view some of the selected projects here: [Tact in production](#tact-in-production).
 
 **[Try online!] • [Features] • [Security] • [Key resources] • [Installation] • [Community] • [Contributing]**
 
@@ -61,6 +61,25 @@ The most prominent and distinctive features of Tact are:
 
 - [Security audit of Tact by the Trail of Bits (2025, PDF)](https://tact-lang.org/assets/pdfs/2025-01-ton-studio-tact-compiler-securityreview.pdf)
   - Backup link: [PDF Report](https://github.com/tact-lang/website/blob/416073ed4056034639de257cb1e2815227f497cb/pdfs/2025-01-ton-studio-tact-compiler-securityreview.pdf)
+
+## Tact in production
+
+Some selected software and applications based on contracts written in Tact, deployed in production, and consumed by end users:
+
+###### Open source or source available
+
+- [Proof of Capital](https://github.com/proof-of-capital/TON) - [Proof of Capital](https://proofofcapital.org/) is a market-making smart contract that protects interests of all holders.
+  - See the [security audit report](https://raw.githubusercontent.com/nowarp/public-reports/master/2025-01-proof-of-capital.pdf) by [Nowarp](https://nowarp.io).
+
+###### Closed source
+
+- [Tradoor](https://tradoor.io) - Fast and social DEX on TON.
+  - See the [security audit report](https://www.tonbit.xyz/reports/Tradoor-Smart-Contract-Audit-Report-Summary.pdf) by TonBit.
+- [PixelSwap](https://www.pixelswap.io) - First modular and upgradeable DEX on TON.
+  - See the [security audit report](https://github.com/trailofbits/publications/blob/master/reviews/2024-12-pixelswap-dex-securityreview.pdf) by Trail of Bits.
+- [GasPump](https://gaspump.tg) - TON memecoin launchpad and trading platform.
+
+See [Tact in production](https://github.com/tact-lang/awesome-tact#tact-in-production-) on the Awesome Tact list.
 
 ## Key resources
 
@@ -152,3 +171,5 @@ Good luck on your coding adventure with ⚡ Tact!
 ## License
 
 MIT © The Tact Authors: Steve Korshakov; [TON Studio](https://tonstudio.io).
+
+[^1]: The "unique code" means that each contract in the data sample has at least one TVM instruction that differs from the other contracts, excluding many preprocessed wallets with everything inlined — even seqno and a public key for signature verification!

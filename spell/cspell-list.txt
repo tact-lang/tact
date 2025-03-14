@@ -104,6 +104,7 @@ masterchain
 Masterchain
 mathrm
 maxint
+memecoin
 Merkle
 minmax
 mintable
@@ -121,6 +122,7 @@ nonterminal
 Nonterminal
 notcoin
 Novus
+Nowarp
 Offchain
 omelander
 Ovchinnikov
@@ -183,6 +185,7 @@ Toncoin
 Toncoins
 tonstudio
 Topup
+Tradoor
 Trunov
 typechecker
 udict
