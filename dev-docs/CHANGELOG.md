@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed `postinstall` from `package.json` to not run scripts with dev dependencies on the user side: PR [#2382](https://github.com/tact-lang/tact/pull/2382)
 
+### Standard Library
+
+- Added `forceWorkchain()` function: PR [#2387](https://github.com/tact-lang/tact/pull/2387)
+
 ### Docs
 
 - Removed the "gas-expensive" badge from `checkSignature()` and `checkDataSignature()` functions and added a caution note when they do become expensive (from 11th call): PR [#2380](https://github.com/tact-lang/tact/pull/2380)
@@ -19,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [Novus Nota](https://github.com/novusnota)
 - [Anton Trunov](https://github.com/anton-trunov)
+- [Maksim Lagus](https://github.com/Kaladin13)
 
 ## [1.6.3] - 2025-03-12
 
