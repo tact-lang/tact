@@ -350,3 +350,37 @@ extends fun storeBasechainAddress(self: Builder, address: BasechainAddress): Bui
 /// See: https://docs.tact-lang.org/ref/core-advanced#forcebasechain
 ///
 asm fun forceBasechain(address: Address) { REWRITESTDADDR DROP 138 THROWIF }
+
+/// Global function. Available since Tact 1.6.4.
+///
+/// Checks whether the `address` is in the `workchain`, i.e., its chain ID is equal to `workchain`. If it is not, throws an exception with exit code `errorCode`.
+///
+/// ```tact
+/// fun examples() {
+///     let someBasechainAddress: Address =
+///         newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+///
+///     let someMasterchainAddress: Address =
+///         newAddress(-1, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+///
+///     // Does not throw because the chain ID matches workchain parameter
+///     forceWorkchain(someBasechainAddress, 0, 593);
+///     forceWorkchain(someMasterchainAddress, -1, 593);
+///
+///     try {
+///         // Throws because the chain ID is 0 which doesn't match the workchain parameter, -1
+///         forceWorkchain(someBasechainAddress, -1, 593);
+///     } catch (exitCode) {
+///         // exitCode is 593
+///     }
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-advanced#forceworkchain
+///
+asm(errorCode workchain address) fun forceWorkchain(address: Address, workchain: Int, errorCode: Int) {
+    REWRITESTDADDR
+    DROP
+    CMP
+    THROWANYIF
+}
