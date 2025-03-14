@@ -376,6 +376,6 @@ asm fun forceBasechain(address: Address) { REWRITESTDADDR DROP 138 THROWIF }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#forcebasechain
+/// See: https://docs.tact-lang.org/ref/core-advanced#forceworkchain
 ///
 asm(errorCode workchain address) fun forceWorkchain(address: Address, workchain: Int, errorCode: Int) { REWRITESTDADDR DROP CMP THROWANYIF }
