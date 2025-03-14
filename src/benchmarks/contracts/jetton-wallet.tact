@@ -112,6 +112,8 @@ contract JettonWallet(
         });
     }
 
+    receive(_: Slice) { throw(0xffff) }
+
     bounced(msg: bounced<JettonTransferInternal>) {
         self.balance += msg.amount;
     }
