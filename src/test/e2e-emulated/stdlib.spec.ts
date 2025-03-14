@@ -138,6 +138,34 @@ describe("stdlib", () => {
             );
         }, 138);
 
+        const forceWorkchainGoodBasechain = await contract.getForceWorkchain(
+            Address.parse(
+                "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
+            ),
+            0n,
+            123n,
+        );
+        expect(forceWorkchainGoodBasechain).toBe(true);
+
+        const forceWorkchainGoodMasterchain = await contract.getForceWorkchain(
+            Address.parse(
+                "-1:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
+            ),
+            -1n,
+            123n,
+        );
+        expect(forceWorkchainGoodMasterchain).toBe(true);
+
+        await shouldThrowOnTvmGetMethod(async () => {
+            await contract.getForceWorkchain(
+                Address.parse(
+                    "-1:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
+                ),
+                42n,
+                593n,
+            );
+        }, 593);
+
         expect(await contract.getBuilderDepth(beginCell())).toBe(0n);
         expect(
             await contract.getBuilderDepth(beginCell().storeRef(Cell.EMPTY)),

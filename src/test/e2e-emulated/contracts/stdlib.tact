@@ -78,6 +78,11 @@ contract StdlibTest {
         forceBasechain(addr);
         return true;
     }
+    
+    get fun forceWorkchain(addr: Address, workchain: Int, exitCode: Int): Bool {
+        forceWorkchain(addr, workchain, exitCode);
+        return true;
+    }
 
     get fun skipRef(c: Slice): Slice {
         c.skipRef();
