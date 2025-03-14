@@ -16,9 +16,9 @@
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-common#contracthash
-/// * https://docs.tact-lang.org/ref/core-common#newaddress
-/// * https://docs.tact-lang.org/ref/core-common#contractaddressext
+/// * https://docs.tact-lang.org/ref/core-addresses#contracthash
+/// * https://docs.tact-lang.org/ref/core-addresses#newaddress
+/// * https://docs.tact-lang.org/ref/core-addresses#contractaddressext
 ///
 asm fun contractHash(code: Cell, data: Cell): Int {
     // According to the https://docs.tact-lang.org/book/cells#cells-representation,
@@ -77,7 +77,7 @@ asm fun contractHash(code: Cell, data: Cell): Int {
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-common#contractaddressext
+/// * https://docs.tact-lang.org/ref/core-addresses#contractaddressext
 /// * https://docs.tact-lang.org/book/expressions#initof
 ///
 inline fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address {
@@ -98,31 +98,31 @@ struct StateInit {
 }
 
 /// Global function. Available since Tact 1.6.1.
-/// 
+///
 /// Efficiently compares if the given address matches the basechain address of the contract.
 /// Returns true if addresses are the same, false otherwise.
-/// 
+///
 /// ```tact
 /// fun example() {
 ///     let init = initOf SomeContract();
 ///     init.hasSameBasechainAddress(sender()); // returns true if sender matches contract's basechain address
 /// }
 /// ```
-/// 
+///
 /// This function provides a gas-optimized implementation compared to direct address comparison:
-/// 
+///
 /// ```tact
 /// fun example() {
 ///     let init = initOf SomeContract();
 ///     sender() == contractAddress(sender()); // less efficient approach
 /// }
 /// ```
-/// 
+///
 /// Note that this function works only for basechain addresses!
-/// 
+///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-common#contractaddress
-/// 
+/// * https://docs.tact-lang.org/ref/core-addresses#contractaddress
+///
 inline extends fun hasSameBasechainAddress(self: StateInit, sender: Address): Bool {
     let senderAddress = parseStdAddress(sender.asSlice()).address;
     let baseAddress = contractBasechainAddress(self);
@@ -144,8 +144,8 @@ inline extends fun hasSameBasechainAddress(self: StateInit, sender: Address): Bo
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-common#contractaddress
-/// * https://docs.tact-lang.org/ref/core-common#contractaddressext
+/// * https://docs.tact-lang.org/ref/core-addresses#contractaddress
+/// * https://docs.tact-lang.org/ref/core-addresses#contractaddressext
 /// * https://docs.tact-lang.org/book/expressions#initof
 ///
 inline fun contractAddress(s: StateInit): Address {
@@ -162,7 +162,7 @@ inline fun contractAddress(s: StateInit): Address {
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-common#myaddress
+/// See: https://docs.tact-lang.org/ref/core-contextstate#myaddress
 ///
 asm fun myAddress(): Address { MYADDR }
 
@@ -176,7 +176,7 @@ asm fun myAddress(): Address { MYADDR }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-common#mybalance
+/// See: https://docs.tact-lang.org/ref/core-contextstate#mybalance
 ///
 asm fun myBalance(): Int { BALANCE FIRST }
 
@@ -190,7 +190,7 @@ asm fun myBalance(): Int { BALANCE FIRST }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#gasconsumed
+/// See: https://docs.tact-lang.org/ref/core-contextstate#gasconsumed
 ///
 asm fun gasConsumed(): Int { GASCONSUMED }
 
@@ -204,7 +204,7 @@ asm fun gasConsumed(): Int { GASCONSUMED }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#mystoragedue
+/// See: https://docs.tact-lang.org/ref/core-contextstate#mystoragedue
 ///
 asm fun myStorageDue(): Int { DUEPAYMENT }
 
@@ -223,8 +223,8 @@ asm fun myStorageDue(): Int { DUEPAYMENT }
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#getstoragefee
-/// * https://docs.tact-lang.org/ref/core-advanced#getsimplestoragefee
+/// * https://docs.tact-lang.org/ref/core-gas#getstoragefee
+/// * https://docs.tact-lang.org/ref/core-gas#getsimplestoragefee
 ///
 asm fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool): Int { GETSTORAGEFEE }
 
@@ -242,7 +242,7 @@ asm fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool):
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#getcomputefee
+/// See: https://docs.tact-lang.org/ref/core-gas#getcomputefee
 ///
 asm fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEE }
 
@@ -261,8 +261,8 @@ asm fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEE }
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#getsimplestoragefee
-/// * https://docs.tact-lang.org/ref/core-advanced#getstoragefee
+/// * https://docs.tact-lang.org/ref/core-gas#getsimplestoragefee
+/// * https://docs.tact-lang.org/ref/core-gas#getstoragefee
 ///
 asm fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEESIMPLE }
 
@@ -285,9 +285,9 @@ asm fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEES
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#getforwardfee
-/// * https://docs.tact-lang.org/ref/core-advanced#getsimpleforwardfee
-/// * https://docs.tact-lang.org/ref/core-advanced#getoriginalfwdfee
+/// * https://docs.tact-lang.org/ref/core-gas#getforwardfee
+/// * https://docs.tact-lang.org/ref/core-gas#getsimpleforwardfee
+/// * https://docs.tact-lang.org/ref/core-gas#getoriginalfwdfee
 ///
 asm fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { GETFORWARDFEE }
 
@@ -306,8 +306,8 @@ asm fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { GETFORW
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#getsimpleforwardfee
-/// * https://docs.tact-lang.org/ref/core-advanced#getforwardfee
+/// * https://docs.tact-lang.org/ref/core-gas#getsimpleforwardfee
+/// * https://docs.tact-lang.org/ref/core-gas#getforwardfee
 ///
 asm fun getSimpleForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { GETFORWARDFEESIMPLE }
 
@@ -327,9 +327,9 @@ asm fun getSimpleForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { G
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#getoriginalfwdfee
-/// * https://docs.tact-lang.org/ref/core-advanced#getforwardfee
-/// * https://docs.tact-lang.org/ref/core-advanced#contextreadforwardfee
+/// * https://docs.tact-lang.org/ref/core-gas#getoriginalfwdfee
+/// * https://docs.tact-lang.org/ref/core-gas#getforwardfee
+/// * https://docs.tact-lang.org/ref/core-contextstate#contextreadforwardfee
 ///
 asm fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int { GETORIGINALFWDFEE }
 
@@ -345,9 +345,9 @@ asm fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int { GETORIGINALFW
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#curlt
-/// * https://docs.tact-lang.org/ref/core-advanced#nativerandomize
-/// * https://docs.tact-lang.org/ref/core-advanced#nativerandomizelt
+/// * https://docs.tact-lang.org/ref/core-contextstate#curlt
+/// * https://docs.tact-lang.org/ref/core-random#nativerandomize
+/// * https://docs.tact-lang.org/ref/core-random#nativerandomizelt
 ///
 asm fun curLt(): Int { LTIME }
 
@@ -361,7 +361,7 @@ asm fun curLt(): Int { LTIME }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#blocklt
+/// See: https://docs.tact-lang.org/ref/core-contextstate#blocklt
 ///
 asm fun blockLt(): Int { BLOCKLT }
 
@@ -377,7 +377,7 @@ asm fun blockLt(): Int { BLOCKLT }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#setgaslimit
+/// See: https://docs.tact-lang.org/ref/core-gas#setgaslimit
 ///
 asm fun setGasLimit(limit: Int) { SETGASLIMIT }
 
@@ -395,9 +395,9 @@ asm fun setGasLimit(limit: Int) { SETGASLIMIT }
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#getseed
-/// * https://docs.tact-lang.org/ref/core-advanced#setseed
-/// * https://docs.tact-lang.org/ref/core-advanced#nativerandomize
+/// * https://docs.tact-lang.org/ref/core-random#getseed
+/// * https://docs.tact-lang.org/ref/core-random#setseed
+/// * https://docs.tact-lang.org/ref/core-random#nativerandomize
 ///
 asm fun getSeed(): Int { RANDSEED }
 
@@ -417,8 +417,8 @@ asm fun getSeed(): Int { RANDSEED }
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#setseed
-/// * https://docs.tact-lang.org/ref/core-advanced#getseed
+/// * https://docs.tact-lang.org/ref/core-randon#setseed
+/// * https://docs.tact-lang.org/ref/core-random#getseed
 ///
 asm fun setSeed(seed: Int) { SETRAND }
 
@@ -432,6 +432,6 @@ asm fun setSeed(seed: Int) { SETRAND }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#mycode
+/// See: https://docs.tact-lang.org/ref/core-contextstate#mycode
 ///
 asm fun myCode(): Cell { MYCODE }

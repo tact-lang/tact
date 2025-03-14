@@ -630,13 +630,13 @@ it('your test clause title', async () => {
 
 ## Logging via `emit` {#logging}
 
-A [global static function](/book/functions#global-static-functions) [`emit(){:tact}`](/ref/core-common#emit) sends a message to the outer world — it doesn't have a specific recipient.
+A [global static function](/book/functions#global-static-functions) [`emit(){:tact}`](/ref/core-send#emit) sends a message to the outer world — it doesn't have a specific recipient.
 
 This function is very handy for logging and analyzing data off-chain — one just has to look at [external messages](/book/external) produced by the contract.
 
 ### Logs in local Sandbox tests {#logging-local}
 
-When deploying in the [Sandbox][sb], you may call [`emit(){:tact}`](/ref/core-common#emit) from a [receiver function](/book/contracts#receiver-functions) and then observe the list of sent [external messages](/book/external):
+When deploying in the [Sandbox][sb], you may call [`emit(){:tact}`](/ref/core-send#emit) from a [receiver function](/book/contracts#receiver-functions) and then observe the list of sent [external messages](/book/external):
 
 ```typescript {9-10}
 it('emits', async () => {
@@ -656,7 +656,7 @@ it('emits', async () => {
 
 Every transaction on TON Blockchain [contains `out_msgs`](https://docs.ton.org/develop/data-formats/transaction-layout#transaction) — a dictionary that holds the list of outgoing messages created during the transaction execution.
 
-To see logs from [`emit(){:tact}`](/ref/core-common#emit) in that dictionary, look for external messages without a recipient. In various TON Blockchain explorers, such transactions will be marked as `external-out` with the destination specified as `-` or `empty`.
+To see logs from [`emit(){:tact}`](/ref/core-send#emit) in that dictionary, look for external messages without a recipient. In various TON Blockchain explorers, such transactions will be marked as `external-out` with the destination specified as `-` or `empty`.
 
 Note that some explorers deserialize the message body sent for you, while others don't. However, you can always [parse it yourself](#logging-parsing) locally.
 
@@ -697,7 +697,7 @@ it('emits', async () => {
 });
 ```
 
-Here, the `res` object would contain the list of sent [external messages](/book/external) as its `externals` field. Let's access it to parse the first message sent via a call to [`emit(){:tact}`](/ref/core-common#emit) in Tact code (or _emitted_ for short):
+Here, the `res` object would contain the list of sent [external messages](/book/external) as its `externals` field. Let's access it to parse the first message sent via a call to [`emit(){:tact}`](/ref/core-send#emit) in Tact code (or _emitted_ for short):
 
 ```typescript /body/
 it('emits', async () => {

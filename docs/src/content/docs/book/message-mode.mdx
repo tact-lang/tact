@@ -5,7 +5,7 @@ description: "Messages are sent with the mode param of the struct SendParameters
 
 import { Badge } from '@astrojs/starlight/components';
 
-As previously mentioned, messages sent via the [`send(){:tact}`](/ref/core-common#send) function utilize the `mode` parameter of the `SendParameters{:tact}` structure. The `mode` is an [`Int{:tact}`][int] value, which is combined from base modes and optional flags, which are also [`Int{:tact}`][int] values.
+As previously mentioned, messages sent via the [`send(){:tact}`](/ref/core-send#send) function utilize the `mode` parameter of the `SendParameters{:tact}` structure. The `mode` is an [`Int{:tact}`][int] value, which is combined from base modes and optional flags, which are also [`Int{:tact}`][int] values.
 
 It's possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience there is a set of constants you may use to easily construct the compound `mode`. Take a look at the following tables for more information on base modes and optional flags.
 
@@ -68,7 +68,7 @@ Note that there can be only **one** [base mode](#base-modes), but the number of 
 
 Some [message-sending functions](/book/send#message-sending-functions) do not allow setting a mode by passing an argument. This is because their internal logic requires a specific fixed set of modes to be used instead:
 
-* [`emit(){:tact}`](/ref/core-common#emit) sends a message with the `SendDefaultMode{:tact}` ($0$).
+* [`emit(){:tact}`](/ref/core-send#emit) sends a message with the `SendDefaultMode{:tact}` ($0$).
 * [`self.reply(){:tact}`](/ref/core-base#self-reply), [`self.notify(){:tact}`](/ref/core-base#self-notify), and [`self.forward(){:tact}`](/ref/core-base#self-forward) all use the `SendRemainingValue{:tact}` mode unless the [`self.storageReserve{:tact}`](/ref/core-base#self-storagereserve) constant is overridden to be greater than $0$, in which case they attempt to use the `SendRemainingBalance{:tact}` mode.
 
 [int]: /book/integers

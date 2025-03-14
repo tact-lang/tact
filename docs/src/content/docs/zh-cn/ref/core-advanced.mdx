@@ -161,7 +161,7 @@ let maxFlatPrice = fee - feeNoFlat;
 extends fun readForwardFee(self: Context): Int;
 ```
 
-[`Context{:tact}`](/zh-cn/ref/core-common#context) 的扩展函数。
+[`Context{:tact}`](/zh-cn/ref/core-contextstate#context) 的扩展函数。
 
 读取[forward fee](https://docs.ton.org/develop/smart-contracts/guidelines/processing)，然后返回为 [`Int{:tact}`][int] [nanoToncoins][nanotoncoin]。
 
@@ -436,7 +436,7 @@ fun nativeSendMessage(cell: Cell, mode: Int);
 
 :::note
 
-  除非您有无法以其他方式表达的复杂逻辑，否则请优先使用更常见、更方便用户使用的 [`send(){:tact}`](/zh-cn/ref/core-common#send)函数。
+  除非您有无法以其他方式表达的复杂逻辑，否则请优先使用更常见、更方便用户使用的 [`send(){:tact}`](/zh-cn/ref/core-send#send)函数。
 
 :::
 

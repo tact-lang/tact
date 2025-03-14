@@ -33,7 +33,7 @@ message ChangeOwnerOk {
 /// ```
 /// 
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-ownable/#ownable
+/// * https://docs.tact-lang.org/ref/stdlib-ownable#ownable
 /// 
 @interface("org.ton.ownable")
 trait Ownable with BaseTrait {
@@ -71,7 +71,7 @@ trait Ownable with BaseTrait {
 /// ```
 /// 
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-ownable/#ownabletransferable
+/// * https://docs.tact-lang.org/ref/stdlib-ownable#ownabletransferable
 /// 
 @interface("org.ton.ownable.transferable.v2")
 trait OwnableTransferable with Ownable {

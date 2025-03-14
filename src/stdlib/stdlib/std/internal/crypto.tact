@@ -8,6 +8,8 @@
 /// }
 /// ```
 ///
+/// See: https://docs.tact-lang.org/ref/core-cells#cellhash
+///
 /// [SHA-256]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
 /// [std-representation]: https://docs.tact-lang.org/book/cells#cells-representation
 ///
@@ -24,6 +26,8 @@ asm extends fun hash(self: Cell): Int { HASHCU }
 ///     let fizz: Int = s.hash();
 /// }
 /// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#slicehash
 ///
 /// [SHA-256]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
 /// [std-representation]: https://docs.tact-lang.org/book/cells#cells-representation
@@ -59,7 +63,7 @@ asm extends fun hash(self: Slice): Int { HASHSU }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells/#slicehashdata
+/// See: https://docs.tact-lang.org/ref/core-cells#slicehashdata
 ///
 asm extends fun hashData(self: Slice): Int { ONE HASHEXT_SHA256 }
 
@@ -77,7 +81,7 @@ asm extends fun hashData(self: Slice): Int { ONE HASHEXT_SHA256 }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells/#stringhashdata
+/// See: https://docs.tact-lang.org/ref/core-strings#stringhashdata
 ///
 asm extends fun hashData(self: String): Int { ONE HASHEXT_SHA256 }
 
@@ -119,7 +123,7 @@ asm extends fun hashData(self: String): Int { ONE HASHEXT_SHA256 }
 /// NOTE: The first 10 calls of this function are very cheap regarding gas usage. However,
 /// the 11th call and onward consume more than 4 thousand gas units.
 ///
-/// See: https://docs.tact-lang.org/ref/core-math/#checksignature
+/// See: https://docs.tact-lang.org/ref/core-crypto#checksignature
 ///
 /// [Ed25519]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
 ///
@@ -145,7 +149,7 @@ asm fun checkSignature(hash: Int, signature: Slice, publicKey: Int): Bool { CHKS
 /// NOTE: The first 10 calls of this function are very cheap regarding gas usage. However,
 /// the 11th call and onward consume more than 4 thousand gas units.
 ///
-/// See: https://docs.tact-lang.org/ref/core-math/#checkdatasignature
+/// See: https://docs.tact-lang.org/ref/core-crypto#checkdatasignature
 ///
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 /// [Ed25519]: https://en.wikipedia.org/wiki/EdDSA#Ed25519

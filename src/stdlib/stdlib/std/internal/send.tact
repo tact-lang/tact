@@ -59,7 +59,7 @@ const SendDestroyIfZero: Int = 32;
 
 /// Struct for specifying the message parameters of the `send()` function.
 ///
-/// See: https://docs.tact-lang.org/ref/core-common#send
+/// See: https://docs.tact-lang.org/ref/core-send#send
 ///
 struct SendParameters {
     /// An 8-bit value that configures how to send a message, defaults to 0.
@@ -90,7 +90,7 @@ struct SendParameters {
 
 /// Struct for specifying the message parameters of the `message()` function. Available since Tact 1.6.0.
 ///
-/// See: https://docs.tact-lang.org/ref/core-common#message
+/// See: https://docs.tact-lang.org/ref/core-send#message
 ///
 struct MessageParameters {
     /// An 8-bit value that configures how to send a message, defaults to 0.
@@ -132,7 +132,7 @@ struct MessageParameters {
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-common#message
+/// * https://docs.tact-lang.org/ref/core-send#message
 /// * https://docs.tact-lang.org/book/message-mode
 ///
 asm fun message(params: MessageParameters) {
@@ -171,7 +171,7 @@ asm fun message(params: MessageParameters) {
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-common#send
+/// See: https://docs.tact-lang.org/ref/core-send#send
 ///
 asm fun send(params: SendParameters) {
     // Instructions are grouped, and the stack states they produce as a group are shown right after.
@@ -269,7 +269,7 @@ asm fun send(params: SendParameters) {
 
 /// Struct for specifying the deployment message parameters of the `deploy()` function. Available since Tact 1.6.0.
 ///
-/// See: https://docs.tact-lang.org/ref/core-common#deploy
+/// See: https://docs.tact-lang.org/ref/core-send#deploy
 ///
 struct DeployParameters {
     /// An 8-bit value that configures how to send a message, defaults to 0.
@@ -320,7 +320,7 @@ struct DeployParameters {
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-common#deploy
+/// * https://docs.tact-lang.org/ref/core-send#deploy
 /// * https://docs.tact-lang.org/book/message-mode
 ///
 asm fun deploy(params: DeployParameters) {
@@ -414,6 +414,8 @@ asm fun deploy(params: DeployParameters) {
 /// Queues an empty message to be sent with the `SendRemainingValue` mode and the `SendIgnoreErrors` flag to the destination address `to`.
 /// This is the most gas-efficient way to send the remaining value from the incoming message to the given address.
 ///
+/// This function won't forward excess values if any other message-sending functions were called in the same receiver before.
+///
 /// Attempts to queue more than 255 messages throw an exception with exit code 33: `Action list is too long`.
 ///
 /// ```tact
@@ -433,7 +435,7 @@ asm fun deploy(params: DeployParameters) {
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-common/#cashback
+/// See: https://docs.tact-lang.org/ref/core-send#cashback
 ///
 asm fun cashback(to: Address) {
     16 PUSHINT       // 0x10, i.e. 0x18 but with bounce = false
@@ -457,8 +459,8 @@ asm fun cashback(to: Address) {
 /// Prefer using a much more common and user-friendly `send()` function unless you have a complex logic that can't be expressed otherwise.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#nativesendmessage
-/// * https://docs.tact-lang.org/ref/core-common#send
+/// * https://docs.tact-lang.org/ref/core-send#nativesendmessage
+/// * https://docs.tact-lang.org/ref/core-send#send
 ///
 asm fun nativeSendMessage(cell: Cell, mode: Int) { SENDRAWMSG }
 
@@ -469,8 +471,8 @@ asm fun nativeSendMessage(cell: Cell, mode: Int) { SENDRAWMSG }
 /// Attempts to queue more than 255 messages throw an exception with an exit code 33: `Action list is too long`.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#nativesendmessagereturnforwardfee
-/// * https://docs.tact-lang.org/ref/core-advanced#nativesendmessage
+/// * https://docs.tact-lang.org/ref/core-send#nativesendmessagereturnforwardfee
+/// * https://docs.tact-lang.org/ref/core-send#nativesendmessage
 ///
 asm fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int { SENDMSG }
 
@@ -488,7 +490,7 @@ asm fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int { SENDMSG }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-common#emit
+/// See: https://docs.tact-lang.org/ref/core-send#emit
 ///
 inline fun emit(body: Cell) {
     // ext_out_msg_info$11 src:MsgAddressInt dest:MsgAddressExt created_lt:uint64 created_at:uint32
@@ -520,7 +522,7 @@ inline fun emit(body: Cell) {
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#acceptmessage
+/// See: https://docs.tact-lang.org/ref/core-gas#acceptmessage
 ///
 asm fun acceptMessage() { ACCEPT }
 
@@ -535,6 +537,6 @@ asm fun acceptMessage() { ACCEPT }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#commit
+/// See: https://docs.tact-lang.org/ref/core-contextstate#commit
 ///
 asm fun commit() { COMMIT }

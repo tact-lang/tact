@@ -426,7 +426,7 @@ The [TVM][tvm] places a couple of values onto its stack upon initialization, and
 
 :::
 
-Therefore, to access details such as the amount of [nanoToncoins](/book/integers#nanotoncoin) in a message or the [`Address{:tact}`][p] of the sender, it's strongly recommended to call the [`context(){:tact}`](/ref/core-common#context) or [`sender(){:tact}`](/ref/core-common#sender) functions instead of attempting to look for those values on the stack.
+Therefore, to access details such as the amount of [nanoToncoins](/book/integers#nanotoncoin) in a message or the [`Address{:tact}`][p] of the sender, it's strongly recommended to call the [`context(){:tact}`](/ref/core-contextstate#context) or [`sender(){:tact}`](/ref/core-contextstate#sender) functions instead of attempting to look for those values on the stack.
 
 ### Don't rely on the order of fields in structures in the standard library {#caveats-stdlib-structures}
 

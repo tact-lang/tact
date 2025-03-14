@@ -76,11 +76,11 @@ Validation is performed using the Jetton address from the contract:
 3. After successfully accepting the transfer, the contract's Jetton wallet sends a transfer notification to its owner contract.
 4. The contract validates the Jetton message.
 
-You may obtain the contract's Jetton wallet address using the [`contractAddress(){:tact}`](/ref/core-common#contractaddress) function or calculating this address offchain.
+You may obtain the contract's Jetton wallet address using the [`contractAddress(){:tact}`](/ref/core-addresses#contractaddress) function or calculating this address offchain.
 
 To obtain the Jetton wallet's state init, you need the wallet's data and code. While there is a common structure for the initial data layout, it may differ in some cases, such as with [USDT](#usdt-jetton-operations).
 
-Since notifications originate from your contract's Jetton wallet, the function [`myAddress(){:tact}`](/ref/core-common#myaddress) should be used in the `ownerAddress` field.
+Since notifications originate from your contract's Jetton wallet, the function [`myAddress(){:tact}`](/ref/core-contextstate#myaddress) should be used in the `ownerAddress` field.
 
 :::caution
 

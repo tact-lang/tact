@@ -1,0 +1,373 @@
+---
+title: Context and state
+description: "Contextual and state-related functions and structs from the Core library of Tact"
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Contextual and state-related functions and structs.
+
+## Time
+
+### now
+
+```tact
+fun now(): Int;
+```
+
+Returns the current [Unix time](https://en.wikipedia.org/wiki/Unix_time).
+
+Usage example:
+
+```tact
+let timeOffset: Int = now() + 1000; // thousand seconds from now()
+```
+
+### curLt
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun curLt(): Int;
+```
+
+Returns the [`Int{:tact}`][int] value of the [logical time][lt] of the current transaction.
+
+Usage example:
+
+```tact
+let lt: Int = curLt();
+nativeRandomize(lt); // Equivalent to calling nativeRandomizeLt()
+```
+
+:::note[Useful links:]
+
+  [Random seed in Wikipedia][seed]\
+  [`nativeRandomize{:tact}`](/ref/core-random#nativerandomize)\
+  [`nativeRandomizeLt{:tact}`](/ref/core-random#nativerandomizelt)\
+  [Other random-related functions in the Core library](/ref/core-random)
+
+:::
+
+### blockLt
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun blockLt(): Int;
+```
+
+Returns the [`Int{:tact}`][int] value of the [starting logical time][lt] of the current block.
+
+Usage example:
+
+```tact
+let time: Int = blockLt();
+```
+
+## Incoming message
+
+### sender
+
+```tact
+fun sender(): Address;
+```
+
+Returns the [`Address{:tact}`][p] of the sender of the current message.
+
+Usage example:
+
+```tact
+contract MeSee {
+    receive() {
+        let whoSentMeMessage: Address = sender();
+    }
+}
+```
+
+:::caution
+
+  Behavior is undefined for [getter functions](/book/contracts#getter-functions), because they cannot have a sender nor can they send messages.
+
+:::
+
+:::note
+
+  In order to reduce gas usage, prefer using this function over calling [`context().sender{:tact}`](#context) when you only need to know the sender of the message.
+
+:::
+
+### context
+
+```tact
+fun context(): Context;
+```
+
+Returns `Context{:tact}` [struct][struct], which consists of:
+
+Field        | Type                    | Description
+:----------- | :---------------------- | :----------
+`bounceable` | [`Bool{:tact}`][bool]   | Indicates whether the received message can [bounce back](https://docs.ton.org/v3/documentation/smart-contracts/message-management/non-bounceable-messages).
+`sender`     | [`Address{:tact}`][p]   | Internal address of the sender on the TON Blockchain.
+`value`      | [`Int{:tact}`][int]     | Amount of [nanoToncoin][nano] in the received message.
+`raw`        | [`Slice{:tact}`][slice] | The remainder of the received message as a [`Slice{:tact}`][slice]. It follows the [internal message layout](https://docs.ton.org/develop/smart-contracts/messages#message-layout) of TON, starting from the destination [`Address{:tact}`][p] (`MsgAddressInt` in [TL-B notation](https://docs.ton.org/develop/data-formats/tl-b-language)).
+
+Usage example:
+
+```tact
+let ctx: Context = context();
+require(ctx.value != 68 + 1, "Invalid amount of nanoToncoins, bye!");
+```
+
+:::note
+
+  If you only need to know who sent the message, use the [`sender(){:tact}`](#sender) function, as it is less gas-consuming.
+
+:::
+
+### Context.readForwardFee
+
+```tact
+extends fun readForwardFee(self: Context): Int;
+```
+
+Extension function for the [`Context{:tact}`](#context) [struct][struct].
+
+Reads the [forward fee][forward-fee] and returns it as an [`Int{:tact}`][int] amount of [nanoToncoin][nano].
+
+Usage example:
+
+```tact
+let fwdFee: Int = context().readForwardFee();
+```
+
+:::note[Useful links:]
+
+  [`getOriginalFwdFee(){:tact}`](/ref/core-gas#getoriginalfwdfee)\
+  [Other fees and gas-related functions in the Core library](/ref/core-gas)
+
+:::
+
+## Contract and transaction state
+
+### myAddress
+
+```tact
+fun myAddress(): Address;
+```
+
+Returns the address of the current smart contract as an [`Address{:tact}`][p].
+
+Usage example:
+
+```tact
+let meMyselfAndI: Address = myAddress();
+```
+
+:::note[Useful links:]
+
+  [Other address-related functions in the Core library](/ref/core-addresses)
+
+:::
+
+### myCode
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun myCode(): Cell;
+```
+
+Returns the smart contract code [`Cell{:tact}`][cell] obtained from the `c7` [register][registers].
+
+Usage example:
+
+```tact
+let code: Cell = myCode();
+```
+
+### myStorageDue
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun myStorageDue(): Int;
+```
+
+Returns the [nanoToncoin][nano] [`Int{:tact}`][int] amount of the accumulated [storage fee][storage-fee] debt. Storage fees are deducted from the incoming message value before the new contract balance is calculated.
+
+Usage example:
+
+```tact
+let debt: Int = myStorageDue();
+```
+
+:::note[Useful links:]
+
+  [`getStorageFee(){:tact}`](/ref/core-gas#getstoragefee)\
+  [Other fees and gas-related functions in the Core library](/ref/core-gas)
+
+:::
+
+### myBalance
+
+```tact
+fun myBalance(): Int;
+```
+
+Returns the [nanoToncoin][nano] [`Int{:tact}`][int] balance of the smart contract as it was at the start of the [compute phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#compute-phase) of the current transaction.
+
+Usage example:
+
+```tact
+let iNeedADolla: Int = myBalance();
+```
+
+:::caution
+
+  Beware that [all message-sending functions](/book/send#message-sending-functions) of Tact can change the _actual_ balance of the contract, but they **won't** update the value returned by this function.
+
+:::
+
+### gasConsumed
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun gasConsumed(): Int;
+```
+
+Returns the [nanoToncoin][nano] [`Int{:tact}`][int] amount of [gas][gas] consumed by [TVM][tvm] in the current transaction so far. The resulting value includes the cost of calling this function.
+
+Usage example:
+
+```tact
+let gas: Int = gasConsumed();
+```
+
+:::note[Useful links:]
+
+  [Gas in TON Docs][gas]\
+  [Other fees and gas-related functions in the Core library](/ref/core-gas)
+
+:::
+
+### nativeReserve
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
+```tact
+fun nativeReserve(amount: Int, mode: Int);
+```
+
+Executes the native `RAWRESERVE` instruction with the specified amount and mode. The `RAWRESERVE` instruction creates an output action to reserve a specific amount of [nanoToncoin][nano] from the remaining balance of the account.
+
+The `RAWRESERVE` instruction takes two arguments:
+* `amount`: The number of [nanoToncoin][nano] to reserve.
+* `mode`: Determines the reservation behavior.
+
+The `RAWRESERVE` instruction is roughly equivalent to creating an outbound message carrying the specified `amount` of [nanoToncoin][nano] (or `b - amount` [nanoToncoin][nano], where `b` is the remaining balance) to oneself. This ensures that subsequent output actions cannot spend more money than the remainder.
+
+It is possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience, there's a set of constants you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on base modes and optional flags.
+
+:::caution
+
+  Currently, `amount` must be a non-negative integer, and `mode` must be in the range $0..31$, inclusive.
+
+  Additionally, attempts to queue more than $255$ reservations in one transaction throw an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
+:::
+
+#### Base modes {#nativereserve-base-modes}
+
+The resulting `mode` value can have the following base modes:
+
+Mode value | Constant name                 | Description
+---------: | :---------------------------- | -----------
+$0$        | `ReserveExact{:tact}`         | Reserves exactly the specified `amount` of [nanoToncoin][nano].
+$1$        | `ReserveAllExcept{:tact}`     | Reserves all but the specified `amount` of [nanoToncoin][nano].
+$2$        | `ReserveAtMost{:tact}`        | Reserves at most the specified `amount` of [nanoToncoin][nano].
+
+#### Optional flags {#nativereserve-optional-flags}
+
+Additionally, the resulting `mode` can have the following optional flags added:
+
+Flag value | Constant name                      | Description
+---------: | :--------------------------------- | -----------
+$+4$       | `ReserveAddOriginalBalance{:tact}` | Increases the `amount` by the original balance of the current account (before the compute phase), including all extra currencies.
+$+8$       | `ReserveInvertSign{:tact}`         | Negates the `amount` value before performing the reservation.
+$+16$      | `ReserveBounceIfActionFail{:tact}` | Bounces the transaction if the reservation fails.
+
+#### Combining modes with flags {#nativereserve-combining-modes-with-flags}
+
+To construct the [`Int{:tact}`][int] value for the `mode` parameter, combine base modes with optional flags by applying the [bitwise OR](/book/operators#binary-bitwise-or) operation:
+
+```tact
+nativeReserve(ton("0.1"), ReserveExact | ReserveBounceIfActionFail);
+//            ----------  ----------------------------------------
+//            ↑           ↑
+//            |           mode, which would bounce the transaction if exact reservation fails
+//            amount of nanoToncoins to reserve
+```
+
+### commit
+
+```tact
+fun commit();
+```
+
+Commits the current state of [registers][registers] `c4` (persistent data) and `c5` (actions), so that the current execution is considered "successful" with the saved values even if an exception in the compute phase is thrown later.
+
+Usage example:
+
+```tact {1}
+commit();  // now, transaction is considered "successful"
+throw(42); // and this won't fail it
+```
+
+## Blockchain state
+
+### getConfigParam
+
+```tact
+fun getConfigParam(id: Int): Cell?;
+```
+
+Loads a [configuration parameter](https://docs.ton.org/develop/howto/blockchain-configs) of TON Blockchain by its `id` number.
+
+Usage examples:
+
+```tact
+// Parameter 0, address of a special smart contract that stores the blockchain's configuration
+let configAddrAsCell: Cell = getConfigParam(0)!!;
+
+// Parameter 18, configuration for determining the prices for data storage
+let dataStorageFeeConfig: Cell = getConfigParam(18)!!;
+```
+
+:::note
+
+  The standard library [`@stdlib/config`](/ref/stdlib-config) provides two related helper functions:\
+  [`getConfigAddress(){:tact}`](/ref/stdlib-config#getconfigaddress) for retrieving config [`Address{:tact}`][p]\
+  [`getElectorAddress(){:tact}`](/ref/stdlib-config#getconfigaddress) for retrieving elector [`Address{:tact}`][p]
+
+  Read more about other parameters: [Config Parameters in TON Docs](https://docs.ton.org/develop/howto/blockchain-configs).
+
+:::
+
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
+[nano]: /book/integers#nanotoncoin
+[cell]: /book/cells#cells
+[slice]: /book/cells#slices
+[struct]: /book/structs-and-messages#structs
+
+[forward-fee]: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/forward-fees
+[storage-fee]: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees-low-level#storage-fee
+[registers]: https://docs.ton.org/learn/tvm-instructions/tvm-overview#control-registers
+
+[gas]: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees#gas
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
+[lt]: https://docs.ton.org/v3/documentation/smart-contracts/message-management/messages-and-transactions#what-is-a-logical-time
+[seed]: https://en.wikipedia.org/wiki/Random_seed

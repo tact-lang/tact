@@ -78,7 +78,7 @@ fun dnsResolveWallet(address: Address): Cell {
 /// ```
 /// 
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-dns/#dnsresolver
+/// * https://docs.tact-lang.org/ref/stdlib-dns#dnsresolver
 /// 
 trait DNSResolver {
     /// Creates a struct `DNSResolveResult` from subdomain `Slice` bits.

@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Docs
 
 - Removed the "gas-expensive" badge from `checkSignature()` and `checkDataSignature()` functions and added a caution note when they do become expensive (from 11th call): PR [#2380](https://github.com/tact-lang/tact/pull/2380)
+- Fixed descriptions of `Slice.asString()` and `String.asSlice()` functions: PR [#TBD](https://github.com/tact-lang/tact/pull/TBD)
+- Split Core libraries in the reference: `core-common` and `core-advanced` were removed, and their contents distributed across other libraries; `core-crypto`, `core-contextstate`, `core-send`, `core-gas`, and `core-addresses` were introduced: PR [#TBD](https://github.com/tact-lang/tact/pull/TBD)
 
 ### Release contributors
 

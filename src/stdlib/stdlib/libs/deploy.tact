@@ -1,6 +1,6 @@
 /// Message struct used in a receiver of the **deprecated** `Deployable` trait.
 ///
-/// See: https://docs.tact-lang.org/ref/stdlib-deploy/#deploy
+/// See: https://docs.tact-lang.org/ref/stdlib-deploy#deploy
 ///
 message Deploy {
     /// Unique identifier for tracking transactions across multiple contracts.
@@ -10,7 +10,7 @@ message Deploy {
 /// Forwarded message struct used in **deprecated**
 /// `Deployable` and `FactoryDeployable` traits.
 ///
-/// See: https://docs.tact-lang.org/ref/stdlib-deploy/#deployok
+/// See: https://docs.tact-lang.org/ref/stdlib-deploy#deployok
 ///
 message DeployOk {
     /// Unique identifier for tracking transactions across multiple contracts.
@@ -19,7 +19,7 @@ message DeployOk {
 
 /// Message struct used in a receiver of the **deprecated** `FactoryDeployable` trait.
 ///
-/// See: https://docs.tact-lang.org/ref/stdlib-deploy/#factorydeploy
+/// See: https://docs.tact-lang.org/ref/stdlib-deploy#factorydeploy
 ///
 message FactoryDeploy {
     /// Unique identifier for tracking transactions across multiple contracts.
@@ -50,7 +50,7 @@ message FactoryDeploy {
 /// }
 /// ```
 /// 
-/// See: https://docs.tact-lang.org/ref/stdlib-deploy/#deployable
+/// See: https://docs.tact-lang.org/ref/stdlib-deploy#deployable
 /// 
 trait Deployable with BaseTrait {
     receive(deploy: Deploy) {
@@ -70,7 +70,7 @@ trait Deployable with BaseTrait {
 /// }
 /// ```
 /// 
-/// See: https://docs.tact-lang.org/ref/stdlib-deploy/#factorydeployable
+/// See: https://docs.tact-lang.org/ref/stdlib-deploy#factorydeployable
 /// 
 trait FactoryDeployable with BaseTrait  {
     receive(deploy: FactoryDeploy) {

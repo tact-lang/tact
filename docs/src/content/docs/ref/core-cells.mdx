@@ -1606,7 +1606,7 @@ Extension function for the [`Slice{:tact}`][slice] type.
 
 Calculates and returns an [`Int{:tact}`][int] value of the [SHA-256][sha-2] hash of the data bits from the given [`Slice{:tact}`][slice], which should have a number of bits divisible by 8.
 
-Unlike [`sha256(){:tact}`](/ref/core-math#sha256), this function is gas-efficient and **only** hashes the data of the given [`Slice{:tact}`][slice], i.e. up to 1023 bits, ignoring the refs.
+Unlike [`sha256(){:tact}`](/ref/core-crypto#sha256), this function is gas-efficient and **only** hashes the data of the given [`Slice{:tact}`][slice], i.e. up to 1023 bits, ignoring the refs.
 
 Attempts to specify a [`Slice{:tact}`][slice] with a number of bits **not** divisible by 8 throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
@@ -1653,6 +1653,47 @@ let buzz: Cell = beginCell().storeSlice(s).endCell();
 fizz == buzz; // true
 ```
 
+### Slice.asString
+
+```tact
+extends fun asString(self: Slice): String;
+```
+
+Extension function for the [`Slice{:tact}`][slice] type.
+
+Casts the [`Slice{:tact}`][slice] to a [`String{:tact}`][p] and returns it. The inverse of [`String.asSlice(){:tact}`](/ref/core-strings#stringasslice).
+
+Usage example:
+
+```tact
+let s: String = "Keep your Slices close, but your Strings closer.";
+let fizz: String = s;
+let buzz: String = s.asSlice().asString();
+
+fizz == buzz; // true
+```
+
+### Slice.fromBase64
+
+```tact
+extends fun fromBase64(self: Slice): Slice;
+```
+
+Extension function for the [`Slice{:tact}`][slice] type.
+
+Returns a new [`Slice{:tact}`][slice] from the decoded [Base64](https://en.wikipedia.org/wiki/Base64) [`Slice{:tact}`][slice].
+
+Note that this function is limited and only takes the first 1023 bits of data from the given [`Slice{:tact}`][slice], without throwing an exception if the [`Slice{:tact}`][slice] has more data (i.e., when it has any references).
+
+If the given [`Slice{:tact}`][slice] contains characters not from the Base64 set, an exception with [exit code 134](/book/exit-codes#134) will be thrown: `Invalid argument`.
+
+Usage example:
+
+```tact
+let s: Slice = "SSBhbSBHcm9vdC4=".asSlice();
+let fizz: Slice = s.fromBase64();
+```
+
 ### Slice.asAddress
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
@@ -1663,7 +1704,7 @@ extends fun asAddress(self: Slice, chain: Int): Address;
 
 Extension function for the [`Slice{:tact}`][slice] type.
 
-Casts the [`Slice{:tact}`][slice] to an [`Address{:tact}`][p] on a given `chain` ID and returns it. It is the inverse of [`Address.asSlice(){:tact}`](#addressasslice) and a safe but more gas-expensive version of [`Slice.asAddressUnsafe(){:tact}`](#sliceasaddressunsafe).
+Casts the [`Slice{:tact}`][slice] to an [`Address{:tact}`][p] on a given `chain` ID and returns it. It is the inverse of [`Address.asSlice(){:tact}`](/ref/core-addresses#addressasslice) and a safe but more gas-expensive version of [`Slice.asAddressUnsafe(){:tact}`](#sliceasaddressunsafe).
 
 Attempts to specify a [`Slice{:tact}`][slice] with an invalid [account ID](https://docs.ton.org/learn/overviews/addresses#account-id) length throw an error with [exit code 136](/book/exit-codes#): `Invalid standard address`.
 
@@ -1694,7 +1735,7 @@ extends fun asAddressUnsafe(self: Slice): Address;
 
 Extension function for the [`Slice{:tact}`][slice] type.
 
-Unsafely casts the [`Slice{:tact}`][slice] to an [`Address{:tact}`][p] and returns it. The inverse of [`Address.asSlice(){:tact}`](#addressasslice).
+Unsafely casts the [`Slice{:tact}`][slice] to an [`Address{:tact}`][p] and returns it. The inverse of [`Address.asSlice(){:tact}`](/ref/core-addresses#addressasslice).
 
 This function does **not** perform any checks on the contents of the [`Slice{:tact}`][slice].
 
@@ -1714,26 +1755,6 @@ a == a2; // true
   Otherwise, use the safer but more gas-expensive [`Slice.asAddress(){:tact}`](#sliceasaddress) function.
 
 :::
-
-## Address.asSlice
-
-```tact
-extends fun asSlice(self: Address): Slice;
-```
-
-Extension function for the [`Address{:tact}`][p] type.
-
-Casts the [`Address{:tact}`][p] back to the underlying [`Slice{:tact}`][slice] and returns it. The inverse of [`Slice.asAddressUnsafe(){:tact}`](#sliceasaddressunsafe).
-
-Usage example:
-
-```tact
-let a: Address = myAddress();
-let fizz: Slice = beginCell().storeAddress(a).asSlice();
-let buzz: Slice = a.asSlice(); // cheap, unlike the previous statement
-
-fizz == buzz; // true
-```
 
 ## Struct.toCell
 

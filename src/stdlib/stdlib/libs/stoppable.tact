@@ -22,7 +22,7 @@ import "./ownable";
 /// ```
 /// 
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-stoppable/#stoppable
+/// * https://docs.tact-lang.org/ref/stdlib-stoppable#stoppable
 /// 
 /// [getter function]: https://docs.tact-lang.org/book/functions#getter-functions
 /// 
@@ -80,7 +80,7 @@ trait Stoppable with Ownable {
 /// ```
 /// 
 /// See:
-/// * https://docs.tact-lang.org/ref/stdlib-stoppable/#resumable
+/// * https://docs.tact-lang.org/ref/stdlib-stoppable#resumable
 /// 
 @interface("org.ton.resumable")
 trait Resumable with Stoppable {
