@@ -78,16 +78,22 @@ type GeneratorDescriptor<T> = {
     generator: fc.Arbitrary<T>;
 };
 
-function createTestModules(
+function getGeneratorFactory(
     astF: FactoryAst,
     allowedFeatures: Set<GeneratorFeatureType>,
-    compilationBatchSize: number,
-): { tests: Test[]; numberOfContracts: number } {
+): {
+    generator: fc.Arbitrary<ItemWithDeclarations<A.AstContract>[]>;
+    batchBuilder: (
+        items: ItemWithDeclarations<A.AstContract>[],
+        extraModule: A.AstModule,
+        compilationBatchSize: number,
+    ) => Test[];
+} {
     let idCounter = 0;
     const emptySrcInfo = getSrcInfo(" ", 0, 0, null, "user");
 
     const config: GlobalConfig = {
-        maxFunCallDepth: 2,
+        maxFunCallDepth: 10,
     };
 
     function makeInitOf(
@@ -1228,7 +1234,7 @@ function createTestModules(
 
     function expressionGenerator(
         currentFunCallDepth: number,
-    ): fc.Arbitrary<ItemWithDeclarations<ExpressionWrapper>[]> {
+    ): fc.Arbitrary<readonly ItemWithDeclarations<ExpressionWrapper>[]> {
         const exprGens = [
             initOfGenerator(),
             staticCallGenerator(currentFunCallDepth),
@@ -1246,13 +1252,14 @@ function createTestModules(
             )
             .map((genDesc) => genDesc.generator);
 
-        // Chain all the above generators
-        return chainGenerators(finalGens);
+        return finalGens.length === 0
+            ? fc.constant([])
+            : fc.oneof(...finalGens);
     }
 
     function statementGenerator(
         currentFunCallDepth: number,
-    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>[]> {
+    ): fc.Arbitrary<readonly ItemWithDeclarations<StatementsWrapper>[]> {
         return expressionGenerator(currentFunCallDepth).chain((genExprs) => {
             const generators: fc.Arbitrary<
                 readonly ItemWithDeclarations<StatementsWrapper>[]
@@ -1283,9 +1290,14 @@ function createTestModules(
                     )
                     .map((genDesc) => genDesc.generator);
 
-                generators.push(...finalGens);
+                generators.push(
+                    finalGens.length === 0
+                        ? fc.constant([])
+                        : fc.oneof(...finalGens),
+                );
             }
 
+            // This will ensure that for every generated expression, we will choose at least one statement
             return chainGenerators(generators);
         });
     }
@@ -1296,9 +1308,10 @@ function createTestModules(
         const finalContracts: A.AstContract[] = [];
 
         if (stmtsData.item.assignedStateInit) {
+            const newName = `${stmtsData.item.name}_${idCounter++}`;
             finalContracts.push(
                 makeContract(
-                    makeId(stmtsData.item.name),
+                    makeId(newName),
                     stmtsData.item.statements,
                     Array.from(
                         stmtsData.declarations.contractDeclarations.values(),
@@ -1328,17 +1341,19 @@ function createTestModules(
         currentFunCallDepth: number,
     ): fc.Arbitrary<ItemWithDeclarations<A.AstContract>[]> {
         return statementGenerator(currentFunCallDepth).chain((genStmts) => {
-            const generators: fc.Arbitrary<
+            const finalGens: fc.Arbitrary<
                 ItemWithDeclarations<A.AstContract>[]
             >[] = [];
 
             for (const stmtsWithName of genStmts) {
                 const contractGens = [contractWithInitGenerator(stmtsWithName)];
 
-                generators.push(...contractGens);
+                finalGens.push(...contractGens);
             }
 
-            return chainGenerators(generators);
+            return finalGens.length === 0
+                ? fc.constant([])
+                : fc.oneof(...finalGens);
         });
     }
 
@@ -1405,34 +1420,9 @@ function createTestModules(
         return tests;
     }
 
-    const genResult = fc.sample(contractGenerator(0), 1);
-    if (genResult.length !== 1) {
-        throw new Error(
-            "Generator should return exactly one element, which is an array containing all the test cases.",
-        );
-    }
-    // The unique element in the array is ensured to exist
-    const allCases = genResult[0]!;
-
-    const numberOfGeneratedContracts = allCases.length;
-
-    // Prepare the Deployer contract and Dummies necessary for tests.
-    const parser = getParser(astF);
-    const extraModule = parser.parse({
-        path: ".",
-        code: fs
-            .readFileSync(path.join(__dirname, "contracts/deployer.tact"))
-            .toString(),
-        origin: "user",
-    });
-
     return {
-        tests: createTestsInBatches(
-            allCases,
-            extraModule,
-            compilationBatchSize,
-        ),
-        numberOfContracts: numberOfGeneratedContracts,
+        generator: contractGenerator(0),
+        batchBuilder: createTestsInBatches,
     };
 }
 
@@ -1613,6 +1603,16 @@ async function main() {
         stdlib_ex_fc: customStdlibFc.stdlib_ex_fc,
     };
 
+    // Prepare the Deployer contract and Dummies necessary for tests.
+    const parser = getParser(astF);
+    const extraModule = parser.parse({
+        path: ".",
+        code: fs
+            .readFileSync(path.join(__dirname, "contracts/deployer.tact"))
+            .toString(),
+        origin: "user",
+    });
+
     const featureSets = createFeatureSets(10, 15);
 
     console.log(`Generated ${featureSets.length} feature sets.`);
@@ -1627,6 +1627,7 @@ async function main() {
                 astF,
                 compilationBatchSize,
                 customStdlib,
+                extraModule,
             ),
         ),
     );
@@ -1653,6 +1654,7 @@ async function executeTestsOnFeatures(
     astF: FactoryAst,
     compilationBatchSize: number,
     customStdlib: CustomStdlib,
+    extraModule: A.AstModule,
 ): Promise<number> {
     let errorCount = 0;
 
@@ -1665,60 +1667,87 @@ async function executeTestsOnFeatures(
     const featureSetString = `{${Array.from(featureSet).join(", ")}}`;
     console.log(`#${idx}: Using feature set: ${featureSetString}`);
 
-    const tests = createTestModules(astF, featureSet, compilationBatchSize);
+    const testFactory = getGeneratorFactory(astF, featureSet);
 
-    console.log(
-        `#${idx}: Generated ${tests.numberOfContracts} contracts, grouped in ${tests.tests.length} compilation batches.`,
-    );
+    await fc.assert(
+        fc.asyncProperty(
+            fc.array(testFactory.generator, {
+                minLength: compilationBatchSize,
+            }),
+            async (genResult) => {
+                const allCases = genResult.flat();
+                const numberOfGeneratedContracts = allCases.length;
+                const tests = testFactory.batchBuilder(
+                    allCases,
+                    extraModule,
+                    compilationBatchSize,
+                );
 
-    nextTest: for (const test of tests.tests) {
-        console.log(`#${idx}: Compiling next batch...`);
-        try {
-            const contractCodes = await buildModule(
-                astF,
-                test.module,
-                customStdlib,
-                true,
-            );
-            for (const contractName of test.contractNames) {
-                try {
-                    console.log(`#${idx}: Testing contract ${contractName}...`);
-                    await testContracts(contractName, contractCodes);
-                    console.log(`#${idx}: ${contractName} passed.`);
-                } catch (e) {
-                    if (e instanceof Error) {
-                        errorCount++;
-                        console.log(
-                            `#${idx}: ${contractName} failed. See ${errorFilename}.`,
-                        );
-                        handleError(
-                            e,
-                            fileDescriptor,
-                            featureSetString,
+                console.log(
+                    `#${idx}: Generated ${numberOfGeneratedContracts} contracts, grouped in ${tests.length} compilation batches.`,
+                );
+
+                nextTest: for (const test of tests) {
+                    console.log(`#${idx}: Compiling next batch...`);
+                    try {
+                        const contractCodes = await buildModule(
+                            astF,
                             test.module,
+                            customStdlib,
+                            true,
                         );
-                        continue nextTest;
-                    } else {
-                        // Cannot handle this error. Stop the entire process since this is something unexpected.
-                        throw e;
+                        for (const contractName of test.contractNames) {
+                            try {
+                                console.log(
+                                    `#${idx}: Testing contract ${contractName}...`,
+                                );
+                                await testContracts(
+                                    contractName,
+                                    contractCodes,
+                                );
+                                console.log(`#${idx}: ${contractName} passed.`);
+                            } catch (e) {
+                                if (e instanceof Error) {
+                                    errorCount++;
+                                    console.log(
+                                        `#${idx}: ${contractName} failed. See ${errorFilename}.`,
+                                    );
+                                    handleError(
+                                        e,
+                                        fileDescriptor,
+                                        featureSetString,
+                                        test.module,
+                                    );
+                                    continue nextTest;
+                                } else {
+                                    // Cannot handle this error. Stop the entire process since this is something unexpected.
+                                    throw e;
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        if (e instanceof Error) {
+                            errorCount++;
+                            const batchString = `[${test.contractNames.join(", ")}]`;
+                            console.log(
+                                `#${idx}: Batch ${batchString} failed compilation. See ${errorFilename}.`,
+                            );
+                            handleError(
+                                e,
+                                fileDescriptor,
+                                featureSetString,
+                                test.module,
+                            );
+                            continue nextTest;
+                        } else {
+                            // Cannot handle this error. Stop the entire process since this is something unexpected.
+                            throw e;
+                        }
                     }
                 }
-            }
-        } catch (e) {
-            if (e instanceof Error) {
-                errorCount++;
-                const batchString = `[${test.contractNames.join(", ")}]`;
-                console.log(
-                    `#${idx}: Batch ${batchString} failed compilation. See ${errorFilename}.`,
-                );
-                handleError(e, fileDescriptor, featureSetString, test.module);
-                continue nextTest;
-            } else {
-                // Cannot handle this error. Stop the entire process since this is something unexpected.
-                throw e;
-            }
-        }
-    }
+            },
+        ),
+    );
 
     return errorCount;
 }
