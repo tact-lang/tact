@@ -36,7 +36,7 @@ asm fun nativeRandomize(x: Int) { ADDRAND }
 /// See:
 /// * https://docs.tact-lang.org/ref/core-random#nativerandomizelt
 /// * https://docs.tact-lang.org/ref/core-random#nativerandomize
-/// * https://docs.tact-lang.org/ref/core-random#curlt
+/// * https://docs.tact-lang.org/ref/core-contextstate#curlt
 /// * https://docs.tact-lang.org/ref/core-random#randomint
 ///
 asm fun nativeRandomizeLt() { LTIME ADDRAND }

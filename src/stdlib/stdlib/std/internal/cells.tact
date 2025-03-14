@@ -1086,7 +1086,7 @@ asm extends fun depth(self: Slice): Int { SDEPTH }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#slicerrefs
+/// See: https://docs.tact-lang.org/ref/core-cells#slicerefs
 ///
 asm extends fun refs(self: Slice): Int { SREFS }
 
@@ -1154,7 +1154,7 @@ asm extends fun dataEmpty(self: Slice): Bool { SDEMPTY }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#slicerfsempty
+/// See: https://docs.tact-lang.org/ref/core-cells#slicerefsempty
 ///
 asm extends fun refsEmpty(self: Slice): Bool { SREMPTY }
 
@@ -1174,7 +1174,7 @@ asm extends fun refsEmpty(self: Slice): Bool { SREMPTY }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#builderasSlice
+/// See: https://docs.tact-lang.org/ref/core-cells#builderasslice
 ///
 inline extends fun asSlice(self: Builder): Slice {
     return self.endCell().beginParse();
@@ -1192,7 +1192,7 @@ inline extends fun asSlice(self: Builder): Slice {
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#cellasSlice
+/// See: https://docs.tact-lang.org/ref/core-cells#cellasslice
 ///
 inline extends fun asSlice(self: Cell): Slice {
     return self.beginParse();

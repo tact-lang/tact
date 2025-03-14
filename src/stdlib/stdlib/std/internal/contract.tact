@@ -222,9 +222,7 @@ asm fun myStorageDue(): Int { DUEPAYMENT }
 /// }
 /// ```
 ///
-/// See:
-/// * https://docs.tact-lang.org/ref/core-gas#getstoragefee
-/// * https://docs.tact-lang.org/ref/core-gas#getsimplestoragefee
+/// See: https://docs.tact-lang.org/ref/core-gas#getstoragefee
 ///
 asm fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool): Int { GETSTORAGEFEE }
 
@@ -261,8 +259,8 @@ asm fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEE }
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-gas#getsimplestoragefee
-/// * https://docs.tact-lang.org/ref/core-gas#getstoragefee
+/// * https://docs.tact-lang.org/ref/core-gas#getsimplecomputefee
+/// * https://docs.tact-lang.org/ref/core-gas#getcomputefee
 ///
 asm fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEESIMPLE }
 
@@ -417,7 +415,7 @@ asm fun getSeed(): Int { RANDSEED }
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-randon#setseed
+/// * https://docs.tact-lang.org/ref/core-random#setseed
 /// * https://docs.tact-lang.org/ref/core-random#getseed
 ///
 asm fun setSeed(seed: Int) { SETRAND }

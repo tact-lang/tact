@@ -561,7 +561,7 @@ extends fun fromBase64(self: Slice): Slice {
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-addresses#tostring
+/// See: https://docs.tact-lang.org/ref/core-addresses#addresstostring
 ///
 @name(__tact_address_to_user_friendly)
 extends native toString(self: Address): String;
