@@ -265,8 +265,8 @@ export default defineConfig({
 						{ slug: 'ref/core-debug' },
 						{ slug: 'ref/core-gas' },
 						{ slug: 'ref/core-crypto' },
-						{ slug: 'ref/core-random' },
 						{ slug: 'ref/core-math' },
+						{ slug: 'ref/core-random' },
 						{
 							label: 'Standard libraries',
 							translations: { 'zh-CN': '标准库' },

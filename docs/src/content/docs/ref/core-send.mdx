@@ -7,6 +7,8 @@ import { Badge } from '@astrojs/starlight/components';
 
 Primary [message-sending functions](/book/send#message-sending-functions).
 
+To perform [nanoToncoin][nano] reservations, use [`nativeReserve(){:tact}`](/ref/core-contextstate#nativereserve) function from the [context and state-related functions reference page](/ref/core-contextstate).
+
 ## Common
 
 ### send
@@ -35,7 +37,8 @@ send(SendParameters{
 
   [Sending messages in the Book](/book/send)\
   [Message `mode` in the Book](/book/message-mode)\
-  [Single-contract communication in the Cookbook](/cookbook/single-communication)
+  [Single-contract communication in the Cookbook](/cookbook/single-communication)\
+  [`nativeReserve(){:tact}`](/ref/core-contextstate#nativereserve)
 
 :::
 
@@ -67,7 +70,8 @@ message(MessageParameters{
 :::note[Useful links:]
 
   [Sending messages in the Book](/book/send)\
-  [Message `mode` in the Book](/book/message-mode)
+  [Message `mode` in the Book](/book/message-mode)\
+  [`nativeReserve(){:tact}`](/ref/core-contextstate#nativereserve)
 
 :::
 
@@ -108,7 +112,8 @@ deploy(DeployParameters{
 :::note[Useful links:]
 
   [Sending messages in the Book](/book/send)\
-  [Message `mode` in the Book](/book/message-mode)
+  [Message `mode` in the Book](/book/message-mode)\
+  [`nativeReserve(){:tact}`](/ref/core-contextstate#nativereserve)
 
 :::
 
@@ -183,6 +188,8 @@ Various niche, dangerous, or unstable features which can produce unexpected resu
 :::
 
 ### nativeSendMessage
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 fun nativeSendMessage(cell: Cell, mode: Int);
