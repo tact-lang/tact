@@ -16,7 +16,7 @@
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddress
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddressunsafe
-/// * https://docs.tact-lang.org/ref/core-cells#addressasslice
+/// * https://docs.tact-lang.org/ref/core-addresses#addressasslice
 ///
 extends fun asAddress(self: Slice, chain: Int): Address {
     // 11 bits for the prefix,
@@ -59,7 +59,7 @@ extends fun asAddress(self: Slice, chain: Int): Address {
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddressunsafe
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddress
-/// * https://docs.tact-lang.org/ref/core-cells#addressasslice
+/// * https://docs.tact-lang.org/ref/core-addresses#addressasslice
 ///
 asm extends fun asAddressUnsafe(self: Slice): Address {}
 
@@ -78,7 +78,7 @@ asm extends fun asAddressUnsafe(self: Slice): Address {}
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-cells#addressasslice
+/// * https://docs.tact-lang.org/ref/core-addresses#addressasslice
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddressunsafe
 ///
 asm extends fun asSlice(self: Address): Slice {}
@@ -101,7 +101,7 @@ asm extends fun asSlice(self: Address): Slice {}
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-common#newaddress
+/// See: https://docs.tact-lang.org/ref/core-addresses#newaddress
 ///
 inline fun newAddress(chain: Int, hash: Int): Address {
     return beginCell()
@@ -118,7 +118,7 @@ inline fun newAddress(chain: Int, hash: Int): Address {
 /// At the moment, only `workchain` IDs used on TON are 0 of the basechain and -1 of the masterchain.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#parsestdaddress
+/// * https://docs.tact-lang.org/ref/core-addresses#parsestdaddress
 /// * https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb#L105-L106
 ///
 struct StdAddress {
@@ -131,7 +131,7 @@ struct StdAddress {
 /// Variable-length addresses are intended for future extensions, and while validators must be ready to accept them in inbound messages, the standard (non-variable) addresses are used whenever possible.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#parsevaraddress
+/// * https://docs.tact-lang.org/ref/core-addresses#parsevaraddress
 /// * https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb#L107-L108
 ///
 struct VarAddress {
@@ -153,7 +153,7 @@ struct VarAddress {
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#parsestdaddress
+/// See: https://docs.tact-lang.org/ref/core-addresses#parsestdaddress
 ///
 asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
 
@@ -177,7 +177,7 @@ asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#parsevaraddress
+/// See: https://docs.tact-lang.org/ref/core-addresses#parsevaraddress
 ///
 asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 
@@ -196,7 +196,7 @@ asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells/#sliceloadaddress
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadaddress
 ///
 asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 
@@ -220,7 +220,7 @@ asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells/#sliceloadaddress
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadaddress
 ///
 asm extends mutates fun skipAddress(self: Slice) { LDMSGADDR NIP }
 
@@ -237,7 +237,7 @@ asm extends mutates fun skipAddress(self: Slice) { LDMSGADDR NIP }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells/#builderstoreaddress
+/// See: https://docs.tact-lang.org/ref/core-cells#builderstoreaddress
 ///
 asm extends fun storeAddress(self: Builder, address: Address): Builder { STSLICER }
 
@@ -347,7 +347,7 @@ extends fun storeBasechainAddress(self: Builder, address: BasechainAddress): Bui
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#forcebasechain
+/// See: https://docs.tact-lang.org/ref/core-addresses#forcebasechain
 ///
 asm fun forceBasechain(address: Address) { REWRITESTDADDR DROP 138 THROWIF }
 
@@ -376,7 +376,7 @@ asm fun forceBasechain(address: Address) { REWRITESTDADDR DROP 138 THROWIF }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#forceworkchain
+/// See: https://docs.tact-lang.org/ref/core-addresses#forceworkchain
 ///
 asm(errorCode workchain address) fun forceWorkchain(address: Address, workchain: Int, errorCode: Int) {
     REWRITESTDADDR

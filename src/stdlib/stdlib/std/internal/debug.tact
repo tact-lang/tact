@@ -24,8 +24,8 @@
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-debug/#throw
-/// * https://docs.tact-lang.org/book/statements/#try-catch
+/// * https://docs.tact-lang.org/ref/core-debug#throw
+/// * https://docs.tact-lang.org/book/statements#try-catch
 ///
 @name(throw)
 native throw(code: Int);
@@ -53,8 +53,8 @@ native throw(code: Int);
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-debug/#throwif
-/// * https://docs.tact-lang.org/book/statements/#try-catch
+/// * https://docs.tact-lang.org/ref/core-debug#throwif
+/// * https://docs.tact-lang.org/book/statements#try-catch
 ///
 @name(throw_if)
 native throwIf(code: Int, condition: Bool);
@@ -84,9 +84,9 @@ native throwIf(code: Int, condition: Bool);
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-debug/#throwunless
-/// * https://docs.tact-lang.org/ref/core-debug/#require
-/// * https://docs.tact-lang.org/book/statements/#try-catch
+/// * https://docs.tact-lang.org/ref/core-debug#throwunless
+/// * https://docs.tact-lang.org/ref/core-debug#require
+/// * https://docs.tact-lang.org/book/statements#try-catch
 ///
 @name(throw_unless)
 native throwUnless(code: Int, condition: Bool);
@@ -96,8 +96,8 @@ native throwUnless(code: Int, condition: Bool);
 /// Use `throw()` instead.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-debug/#throw
-/// * https://docs.tact-lang.org/ref/core-debug/#nativethrow
+/// * https://docs.tact-lang.org/ref/core-debug#throw
+/// * https://docs.tact-lang.org/ref/core-debug#nativethrow
 ///
 @name(throw)
 native nativeThrow(code: Int);
@@ -107,8 +107,8 @@ native nativeThrow(code: Int);
 /// Use `throwIf()` instead.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-debug/#throwif
-/// * https://docs.tact-lang.org/ref/core-debug/#nativethrowif
+/// * https://docs.tact-lang.org/ref/core-debug#throwif
+/// * https://docs.tact-lang.org/ref/core-debug#nativethrowif
 ///
 @name(throw_if)
 native nativeThrowIf(code: Int, condition: Bool);
@@ -118,8 +118,8 @@ native nativeThrowIf(code: Int, condition: Bool);
 /// Use `throwUnless()` instead.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-debug/#throwunless
-/// * https://docs.tact-lang.org/ref/core-debug/#nativethrowunless
+/// * https://docs.tact-lang.org/ref/core-debug#throwunless
+/// * https://docs.tact-lang.org/ref/core-debug#nativethrowunless
 ///
 @name(throw_unless)
 native nativeThrowUnless(code: Int, condition: Bool);

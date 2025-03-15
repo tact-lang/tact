@@ -1,0 +1,136 @@
+---
+title: Cryptography
+description: "Various cryptographic functions from the Core library of Tact"
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Various cryptographic global functions. Crypto-oriented extension functions for [`Cell{:tact}`][cell], [`Builder{:tact}`][builder], and [`Slice{:tact}`][slice] types are listed on their reference page: [Cells, Builders and Slices](/ref/core-cells).
+
+## checkSignature
+
+```tact
+fun checkSignature(hash: Int, signature: Slice, publicKey: Int): Bool;
+```
+
+Checks the [Ed25519][ed] `signature` of the 256-bit unsigned [`Int{:tact}`][int] `hash` using a `publicKey`, represented by a 256-bit unsigned [`Int{:tact}`][int]. The signature must contain at least 512 bits of data, but only the first 512 bits are used.
+
+Returns `true{:tact}` if the signature is valid, `false{:tact}` otherwise.
+
+Usage example:
+
+```tact {19-24}
+message ExtMsg {
+    signature: Slice;
+    data: Cell;
+}
+
+contract Showcase {
+    // Persistent state variables
+    pub: Int as uint256; // public key as a 256-bit unsigned Int
+
+    // Constructor function init(), where all variables are initialized
+    init(pub: Int) {
+        self.pub = pub; // storing the public key upon contract initialization
+    }
+
+    // External message receiver, which accepts message ExtMsg
+    external(msg: ExtMsg) {
+        let hash: Int = beginCell().storeRef(msg.data).endCell().hash();
+        let check: Bool = checkSignature(hash, msg.signature, self.pub);
+        //                               ----  -------------  --------
+        //                               ↑     ↑              ↑
+        //                               |     |              publicKey stored in our contract
+        //                               |     signature obtained from the received message
+        //                               hash calculated using the data from the received message
+        // ... follow-up logic ...
+    }
+}
+```
+
+:::caution
+
+  The first 10 calls of this function are very cheap regarding gas usage. However, the 11th call and onward consume more than 4 thousand gas units.
+
+:::
+
+## checkDataSignature
+
+```tact
+fun checkDataSignature(data: Slice, signature: Slice, publicKey: Int): Bool;
+```
+
+Checks the [Ed25519][ed] `signature` of the `data` using a `publicKey`, similar to [`checkSignature(){:tact}`](#checksignature). If the bit length of `data` is not divisible by 8, this function throws an error with [exit code 9](/book/exit-codes#9): `Cell underflow`. Verification itself is done indirectly on a [SHA-256][sha-2] hash of the `data`.
+
+Returns `true{:tact}` if the signature is valid, `false{:tact}` otherwise.
+
+Usage example:
+
+```tact
+let data: Slice = someData;
+let signature: Slice = someSignature;
+let publicKey: Int = 42;
+
+let check: Bool = checkDataSignature(data, signature, publicKey);
+```
+
+:::caution
+
+  The first 10 calls of this function are very cheap regarding gas usage. However, the 11th call and onward consume more than 4 thousand gas units.
+
+:::
+
+## sha256
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
+```tact
+fun sha256(data: Slice): Int;
+fun sha256(data: String): Int;
+```
+
+Computes and returns the [SHA-256][sha-2] hash as a $256$-bit unsigned [`Int{:tact}`][int] from the passed [`Slice{:tact}`][slice] or [`String{:tact}`][p] `data`, which should have a number of bits divisible by $8$.
+
+In case `data` is a [`Slice{:tact}`][slice], it must have no more than a single reference per cell, because only the first reference of each nested cell will be taken into account.
+
+This function tries to resolve constant string values at [compile-time](/ref/core-comptime) whenever possible.
+
+Attempts to specify a [`Slice{:tact}`][slice] or [`String{:tact}`][p] with a number of bits **not** divisible by $8$ throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage examples:
+
+```tact
+sha256(beginCell().asSlice());
+sha256("Hello, world!"); // will be resolved at compile-time
+sha256(someVariableElsewhere); // will try to resolve at compile-time,
+                               // and fall back to run-time evaluation
+```
+
+:::tip[Before Tact 1.6]
+
+  Previously, if a [`String{:tact}`][p] value couldn't be resolved during [compile-time](/ref/core-comptime), the hash was calculated at runtime by the [TVM][tvm] itself. This caused collisions of strings with more than 127 bytes if their first 127 bytes were the same.
+
+  That's because all [SHA-256][sha-2]-related instructions of the [TVM][tvm] consider only the data bits, ignoring possible references to other cells needed to form larger strings.
+
+  Therefore, in general, and in versions of Tact prior to 1.6, it is preferable to use statically known strings whenever possible. When in doubt, use strings of up to 127 bytes long.
+
+:::
+
+:::note
+
+  Crypto extension functions for [`Cell{:tact}`][cell], [`Builder{:tact}`][builder], and [`Slice{:tact}`][slice] types are listed on their reference page: [Cells, Builders and Slices](/ref/core-cells).
+
+:::
+
+[p]: /book/types#primitive-types
+[int]: /book/integers
+[cell]: /book/cells#cells
+[builder]: /book/cells#builders
+[slice]: /book/cells#slices
+
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
+[ed]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
+[sha-2]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
+
+[round-up]: https://en.wikipedia.org/wiki/Rounding#Rounding_up
+[round-down]: https://en.wikipedia.org/wiki/Rounding#Rounding_down

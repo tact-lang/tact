@@ -161,9 +161,9 @@ If your contract method does not access any of its persistent state variables, m
 
 ### Use `sender()` over `context().sender`
 
-When you receive an internal message, you can obtain the address of the contract that has sent it. This can be done by calling the [`sender()`](/ref/core-common#sender) function or by accessing the `.sender` field of the `Context{:tact}` [struct][struct] after calling the [`context()`](/ref/core-common#context) function.
+When you receive an internal message, you can obtain the address of the contract that has sent it. This can be done by calling the [`sender()`](/ref/core-contextstate#sender) function or by accessing the `.sender` field of the `Context{:tact}` [struct][struct] after calling the [`context()`](/ref/core-contextstate#context) function.
 
-If you only need the sender's address and no additional context on the incoming message that is contained in the `Context{:tact}` struct, then use the [`sender()`](/ref/core-common#sender) function as it is less gas-consuming.
+If you only need the sender's address and no additional context on the incoming message that is contained in the `Context{:tact}` struct, then use the [`sender()`](/ref/core-contextstate#sender) function as it is less gas-consuming.
 
 ```tact /sender\\(\\)/
 message(MessageParameters{
@@ -194,9 +194,9 @@ fun example() {
 
 Every [contract](/book/contracts) in Tact implicitly [inherits](/book/contracts#traits) the `BaseTrait{:tact}` trait, which contains a number of [internal functions](/book/contracts#internal-functions) for any contract. Those internal functions are gas-expensive for the same reasons as stated earlier.
 
-Calls to `self.forward(){:tact}`, `self.reply(){:tact}` and `self.notify(){:tact}` can be replaced with respective calls to the [`send(){:tact}`](/ref/core-common#send) or [`message(){:tact}`](/ref/core-common#message) functions with suitable values.
+Calls to `self.forward(){:tact}`, `self.reply(){:tact}` and `self.notify(){:tact}` can be replaced with respective calls to the [`send(){:tact}`](/ref/core-send#send) or [`message(){:tact}`](/ref/core-send#message) functions with suitable values.
 
-Moreover, if all you want is to forward the remaining value back to the sender, it is best to use the [`cashback(){:tact}`](/ref/core-common#cashback) function instead of `self.notify(){:tact}` function.
+Moreover, if all you want is to forward the remaining value back to the sender, it is best to use the [`cashback(){:tact}`](/ref/core-send#cashback) function instead of `self.notify(){:tact}` function.
 
 ```tact
 // This
@@ -234,7 +234,7 @@ cashback(sender());
 
 ### Use `deploy()` function for on-chain deployments
 
-There are many [message-sending functions](/book/send#message-sending-functions), and the [`deploy(){:tact}`](/ref/core-common#deploy) function is optimized for cheaper on-chain deployments compared to the [`send(){:tact}`](/ref/core-common#send) function.
+There are many [message-sending functions](/book/send#message-sending-functions), and the [`deploy(){:tact}`](/ref/core-send#deploy) function is optimized for cheaper on-chain deployments compared to the [`send(){:tact}`](/ref/core-send#send) function.
 
 ```tact
 deploy(DeployParameters{
@@ -247,7 +247,7 @@ deploy(DeployParameters{
 
 ### Use `message()` function for non-deployment messages
 
-There are many [message-sending functions](/book/send#message-sending-functions), and the [`message(){:tact}`](/ref/core-common#message) function is optimized for cheaper non-deployment regular messages compared to the [`send(){:tact}`](/ref/core-common#send) function.
+There are many [message-sending functions](/book/send#message-sending-functions), and the [`message(){:tact}`](/ref/core-send#message) function is optimized for cheaper non-deployment regular messages compared to the [`send(){:tact}`](/ref/core-send#send) function.
 
 ```tact
 message(MessageParameters{

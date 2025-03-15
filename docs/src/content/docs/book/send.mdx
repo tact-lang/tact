@@ -103,7 +103,7 @@ send(SendParameters{
 
 <p/><Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
-For cheaper on-chain deployments, prefer using the [`deploy(){:tact}`](/ref/core-common#deploy) function instead. It computes the address of the contract based on its initial code and data and efficiently composes the resulting message:
+For cheaper on-chain deployments, prefer using the [`deploy(){:tact}`](/ref/core-send#deploy) function instead. It computes the address of the contract based on its initial code and data and efficiently composes the resulting message:
 
 ```tact
 deploy(DeployParameters{
@@ -160,9 +160,9 @@ There, the second message will not actually be sent:
 
 * Thus, an error with [exit code 37](/book/exit-codes#37) is thrown: `Not enough Toncoin`.
 
-Note that such failures are not exclusive to the [`send(){:tact}`](/ref/core-common#send) function and may also occur when using other [message-sending functions](#message-sending-functions).
+Note that such failures are not exclusive to the [`send(){:tact}`](/ref/core-send#send) function and may also occur when using other [message-sending functions](#message-sending-functions).
 
-For instance, let us replace the first call to the [`send(){:tact}`](/ref/core-common#send) function in the previous example with the [`emit(){:tact}`](/ref/core-common#emit) function. The latter queues the message using the default mode, i.e. 0, and spends some [nanoToncoins][nano] to pay the [forward fees][fwdfee].
+For instance, let us replace the first call to the [`send(){:tact}`](/ref/core-send#send) function in the previous example with the [`emit(){:tact}`](/ref/core-send#emit) function. The latter queues the message using the default mode, i.e. 0, and spends some [nanoToncoins][nano] to pay the [forward fees][fwdfee].
 
 If a subsequent message is then sent with a [`SendRemainingValue{:tact}`](/book/message-mode#base-modes) base mode, it will cause the same error as before:
 
@@ -196,9 +196,9 @@ contract IfItDiesItDies {
 
 :::
 
-The previous examples discussed a case where the contract has 0 [nanoToncoins][nano] on the balance, which is rather rare—in most real-world scenarios, some funds would be present. As such, it is usually better to use the [`SendRemainingBalance{:tact}`](/book/message-mode#base-modes) base mode, paired with the _necessary_ call to the [`nativeReserve(){:tact}`](/ref/core-advanced#nativereserve) function.
+The previous examples discussed a case where the contract has 0 [nanoToncoins][nano] on the balance, which is rather rare—in most real-world scenarios, some funds would be present. As such, it is usually better to use the [`SendRemainingBalance{:tact}`](/book/message-mode#base-modes) base mode, paired with the _necessary_ call to the [`nativeReserve(){:tact}`](/ref/core-contextstate#nativereserve) function.
 
-Like outbound messages, [reserve requests](/ref/core-advanced#nativereserve) are queued during the [compute phase][compute] and executed during the [action phase][phases].
+Like outbound messages, [reserve requests](/ref/core-contextstate#nativereserve) are queued during the [compute phase][compute] and executed during the [action phase][phases].
 
 ```tact
 // This contract has some Toncoins on the balance, e.g., 0.2 or more
@@ -253,16 +253,16 @@ Attempts to queue more throw an exception with an [exit code 33](/book/exit-code
 
 Read more about all message-sending functions in the Reference:
 
-* [`send(){:tact}`](/ref/core-common#send)
-* [`message(){:tact}`](/ref/core-common#message)
-* [`deploy(){:tact}`](/ref/core-common#deploy)
-* [`emit(){:tact}`](/ref/core-common#emit)
-* [`cashback(){:tact}`](/ref/core-common#cashback)
+* [`send(){:tact}`](/ref/core-send#send)
+* [`message(){:tact}`](/ref/core-send#message)
+* [`deploy(){:tact}`](/ref/core-send#deploy)
+* [`emit(){:tact}`](/ref/core-send#emit)
+* [`cashback(){:tact}`](/ref/core-send#cashback)
 * [`self.notify(){:tact}`](/ref/core-base#self-notify)
 * [`self.reply(){:tact}`](/ref/core-base#self-reply)
 * [`self.forward(){:tact}`](/ref/core-base#self-forward)
-* [`nativeSendMessage(){:tact}`](/ref/core-advanced#nativesendmessage)
-* [`nativeSendMessageReturnForwardFee(){:tact}`](/ref/core-advanced#nativesendmessagereturnforwardfee)
+* [`nativeSendMessage(){:tact}`](/ref/core-send#nativesendmessage)
+* [`nativeSendMessageReturnForwardFee(){:tact}`](/ref/core-send#nativesendmessagereturnforwardfee)
 
 [p]: /book/types#primitive-types
 [int]: /book/integers

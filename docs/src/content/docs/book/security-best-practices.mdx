@@ -299,7 +299,7 @@ A message cascade can be processed over many blocks. Assume that while one messa
 
 ## Handle/Send bounced messages
 
-Send messages with the bounce flag set to `true{:tact}`, which is the default for the [`send(){:tact}`](/ref/core-common#send) function. Messages bounce when the execution of a contract fails. You may want to handle this by rolling back the state of the contract using [`try...catch{:tact}`](/book/statements#try-catch) statements and performing additional processing depending on your logic.
+Send messages with the bounce flag set to `true{:tact}`, which is the default for the [`send(){:tact}`](/ref/core-send#send) function. Messages bounce when the execution of a contract fails. You may want to handle this by rolling back the state of the contract using [`try...catch{:tact}`](/book/statements#try-catch) statements and performing additional processing depending on your logic.
 
 ##### Do's ✅
 
@@ -356,7 +356,7 @@ From the [Sending messages page](/book/send#outbound-message-processing) of the 
 
 > Each transaction on TON Blockchain consists of multiple phases. Outbound messages are evaluated in the compute phase but are **not** sent in that phase. Instead, they're queued in order of appearance for the action phase, where all actions listed in the compute phase, such as outbound messages or reserve requests, are executed.
 
-Hence, if the compute phase fails, [registers](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers) `c4` (persistent data) and `c5` (actions) won't be updated. However, it is possible to manually save their state using the [`commit(){:tact}`](/ref/core-advanced/#commit) function.
+Hence, if the compute phase fails, [registers](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers) `c4` (persistent data) and `c5` (actions) won't be updated. However, it is possible to manually save their state using the [`commit(){:tact}`](/ref/core-contextstate#commit) function.
 
 ## Return gas excesses carefully
 

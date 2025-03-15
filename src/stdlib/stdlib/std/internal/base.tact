@@ -18,7 +18,8 @@ trait BaseTrait {
     /// }
     /// ```
     ///
-    /// See: https://docs.tact-lang.org/ref/core-base/#self-forward
+    /// See: https://docs.tact-lang.org/ref/core-base#self-forward
+    ///
     virtual const storageReserve: Int = 0;
     
     /// Sends a bounceable message back to the sender of the current message.
@@ -33,6 +34,9 @@ trait BaseTrait {
     ///              |         body: Cell?
     ///              to: Address
     /// ```
+    ///
+    /// See: https://docs.tact-lang.org/ref/core-base#self-forward
+    ///
     virtual inline fun reply(body: Cell?) {
         self.forward(sender(), body, true, null);
     }
@@ -49,6 +53,9 @@ trait BaseTrait {
     ///              |         body: Cell?
     ///              to: Address
     /// ```
+    ///
+    /// See: https://docs.tact-lang.org/ref/core-base#self-forward
+    ///
     virtual inline fun notify(body: Cell?) {
         self.forward(sender(), body, false, null);
     }
@@ -66,7 +73,8 @@ trait BaseTrait {
     /// > Note that `self.forward()` never sends additional nanoToncoins on top of what’s available on the balance.
     /// > To be able to send more nanoToncoins with a single message, use the the `send` function.
     ///
-    /// See: https://docs.tact-lang.org/ref/core-base/#self-forward for examples.
+    /// See: https://docs.tact-lang.org/ref/core-base#self-forward
+    ///
     virtual fun forward(to: Address, body: Cell?, bounce: Bool, init: StateInit?) {
         let code: Cell? = null;
         let data: Cell? = null;

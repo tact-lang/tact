@@ -7,9 +7,15 @@ import { Badge } from '@astrojs/starlight/components';
 
 Strings are immutable sequences of characters, which means that once a [`String{:tact}`][p] is created, it cannot be changed. Strings are useful for storing text, so they can be converted to a [`Cell{:tact}`][cell] type to be used as message bodies.
 
-To concatenate strings in a gas-efficient way, use a [`StringBuilder{:tact}`][p].
+To concatenate strings use a [`StringBuilder{:tact}`][p].
 
 To use [`String{:tact}`][p] literals directly, see: [String literals](/book/expressions#string-literals).
+
+:::note
+
+  Strings on-chain are represented as [slices][slice], which are expensive for handling Unicode strings and quite costly even for ASCII ones. Prefer not to manipulate strings on-chain.
+
+:::
 
 ## beginString
 
@@ -67,7 +73,9 @@ Usage example:
 let fizz: StringBuilder = beginStringFromBuilder(beginString());
 ```
 
-## StringBuilder.append
+## StringBuilder
+
+### StringBuilder.append
 
 ```tact
 extends mutates fun append(self: StringBuilder, s: String);
@@ -86,7 +94,7 @@ fizz.append("my");
 fizz.append("Tact!");
 ```
 
-## StringBuilder.concat
+### StringBuilder.concat
 
 ```tact
 extends fun concat(self: StringBuilder, s: String): StringBuilder;
@@ -105,7 +113,7 @@ let fizz: StringBuilder = beginString()
     .concat("Tact!");
 ```
 
-## StringBuilder.toString
+### StringBuilder.toString
 
 <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
@@ -124,7 +132,7 @@ let fizz: StringBuilder = beginString();
 let buzz: String = fizz.toString();
 ```
 
-## StringBuilder.toCell
+### StringBuilder.toCell
 
 <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
@@ -143,7 +151,7 @@ let fizz: StringBuilder = beginString();
 let buzz: Cell = fizz.toCell();
 ```
 
-## StringBuilder.toSlice
+### StringBuilder.toSlice
 
 <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
@@ -165,7 +173,9 @@ let buzz: Slice = s.toCell().asSlice();
 fizz == buzz; // true
 ```
 
-## String.hashData
+## String
+
+### String.hashData
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
 
@@ -177,7 +187,7 @@ Extension function for the [`String{:tact}`][p] type.
 
 Calculates and returns an [`Int{:tact}`][int] value of the [SHA-256][sha-2] hash of the data bits from the given [`String{:tact}`][p], which should have a number of bits divisible by 8.
 
-Unlike [`sha256(){:tact}`](/ref/core-math#sha256), this function is gas-efficient and **only** hashes up to 127 bytes of the given string. Using longer strings will cause collisions if their first 127 bytes are the same.
+Unlike [`sha256(){:tact}`](/ref/core-crypto#sha256), this function is gas-efficient and **only** hashes up to 127 bytes of the given string. Using longer strings will cause collisions if their first 127 bytes are the same.
 
 Attempts to specify a [`String{:tact}`][p] with a number of bits **not** divisible by 8 throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
@@ -187,7 +197,7 @@ Usage example:
 let roll: Int = "Never gonna give you up!".hashData(); // just the hash of the data
 ```
 
-## String.asSlice
+### String.asSlice
 
 ```tact
 extends fun asSlice(self: String): Slice;
@@ -195,9 +205,7 @@ extends fun asSlice(self: String): Slice;
 
 Extension function for the [`String{:tact}`][p] type.
 
-Returns a [`Slice{:tact}`][slice] from a [`String{:tact}`][p] by attempting to pack all of its bits into a continuous list of [Cells][p], each referencing the next one and opening them all for future parsing.
-
-Note that there's no indication of how many bytes a particular character could take in the [`Slice{:tact}`][slice] or how deep the list of references is going to be, so use this function only if you know what you're doing.
+Casts the [`String{:tact}`][p] back to the underlying [`Slice{:tact}`][slice] and returns it. The inverse of [`Slice.asString(){:tact}`](/ref/core-cells#sliceasstring).
 
 Usage example:
 
@@ -206,7 +214,7 @@ let s: String = "It's alive! It's alive!!!";
 let fizz: Slice = s.asSlice();
 let buzz: Slice = s.asSlice().asString().asSlice();
 
-fizz == buzz; // true, but be careful as it's not always the case
+fizz == buzz; // true
 ```
 
 :::note
@@ -215,7 +223,7 @@ fizz == buzz; // true, but be careful as it's not always the case
 
 :::
 
-## String.asComment
+### String.asComment
 
 <Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
@@ -240,7 +248,9 @@ let buzz: Cell = b.toCell();
 fizz == buzz; // true
 ```
 
-## String.fromBase64
+### String.fromBase64
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
 
 ```tact
 extends fun fromBase64(self: String): Slice;
@@ -262,49 +272,6 @@ let fizz: Slice = s.fromBase64();
 let buzz: Slice = s.asSlice().fromBase64();
 
 fizz == buzz; // true
-```
-
-## Slice.asString
-
-```tact
-extends fun asString(self: Slice): String;
-```
-
-Extension function for the [`Slice{:tact}`][slice] type.
-
-Returns a [`String{:tact}`][p] from a [`Slice{:tact}`][slice] by attempting to load all of its bits without looking for its references, if any.
-
-Note that this function doesn't look at the references at all and truncates its output to 1023 bits, so use it only if you know what you're doing.
-
-Usage example:
-
-```tact
-let s: String = "Keep your Slices close, but your Strings closer.";
-let fizz: String = s;
-let buzz: String = s.asSlice().asString();
-
-fizz == buzz; // true, but be careful as it's not always the case
-```
-
-## Slice.fromBase64
-
-```tact
-extends fun fromBase64(self: Slice): Slice;
-```
-
-Extension function for the [`Slice{:tact}`][slice] type.
-
-Returns a new [`Slice{:tact}`][slice] from the decoded [Base64](https://en.wikipedia.org/wiki/Base64) [`Slice{:tact}`][slice].
-
-Note that this function is limited and only takes the first 1023 bits of data from the given [`Slice{:tact}`][slice], without throwing an exception if the [`Slice{:tact}`][slice] has more data (i.e., when it has any references).
-
-If the given [`Slice{:tact}`][slice] contains characters not from the Base64 set, an exception with [exit code 134](/book/exit-codes#134) will be thrown: `Invalid argument`.
-
-Usage example:
-
-```tact
-let s: Slice = "SSBhbSBHcm9vdC4=".asSlice();
-let fizz: Slice = s.fromBase64();
 ```
 
 ## Int.toString
@@ -367,25 +334,6 @@ let fizz: String = nanotons.toCoinsString();
 let buzz: String = nanotons.toFloatString(9);
 
 fizz == buzz; // true, both store "0.000000042"
-```
-
-## Address.toString
-
-<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
-
-```tact
-extends fun toString(self: Address): String;
-```
-
-Extension function for the [`Address{:tact}`][p] type.
-
-Returns a [`String{:tact}`][p] from an [`Address{:tact}`][p].
-
-Usage example:
-
-```tact
-let community: Address = address("UQDpXLZKrkHsOuE_C1aS69C697wE568vTnqSeRfBXZfvmVOo");
-let fizz: String = community.toString();
 ```
 
 [p]: /book/types#primitive-types
