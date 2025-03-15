@@ -470,6 +470,8 @@ extends native asString(self: Slice): String;
 /// If the given `Slice` contains characters not from the base64 set, an exception with
 /// [exit code 134] will be thrown: `Invalid argument`.
 ///
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
+///
 /// ```tact
 /// fun example() {
 ///     let s: Slice = "SSBhbSBHcm9vdC4=".asSlice();
@@ -496,6 +498,8 @@ inline extends fun fromBase64(self: String): Slice {
 ///
 /// If the given `String` contains characters not from the base64 set, an exception with
 /// [exit code 134] will be thrown: `Invalid argument`.
+///
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
 ///
 /// ```tact
 /// fun example() {

@@ -72,7 +72,7 @@ contract ExampleContract with Ownable {
 
 ### OwnableTransferable
 
-`OwnableTransferable{:tact}` is an extension of [`Ownable{:tact}`](#ownable) that allows transferring ownership of a contract to another address. It provides a secure handler for the [message struct](/book/structs-and-messages#messages) [`ChangeOwner{:tact}`](#changeowner). which can only be processed when sent by the current owner.
+`OwnableTransferable{:tact}` is an extension of [`Ownable{:tact}`](#ownable) that allows transferring ownership of a contract to another address. It provides a secure handler for the [message struct](/book/structs-and-messages#messages) [`ChangeOwner{:tact}`](#changeowner), which can only be processed when sent by the current owner.
 
 If the ownership transfer request succeeds, the contract will reply with a [`ChangeOwnerOk{:tact}`](#changeownerok) [Message](/book/structs-and-messages#messages).
 
