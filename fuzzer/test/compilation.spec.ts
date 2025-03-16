@@ -6,7 +6,7 @@ import * as path from "path";
 import fc from "fast-check";
 
 import { Program } from "../src/generators";
-// import { StdlibCode, StdlibPath } from "../src/stdlib";
+import { StdlibCode, StdlibPath } from "../src/stdlib";
 import { withNodeFS, checkAsyncProperty } from "../src/util";
 import {
     compile,
@@ -62,12 +62,12 @@ async function compileProgram(program: AstModule) {
         // contracts currently don't use it.
         const c = await funcCompile({
             entries: [
-                // StdlibPath,
+                StdlibPath,
                 // stdlibExPath,
                 posixNormalize(vfs.resolve(compilationOutput, codeEntrypoint)),
             ],
             sources: [
-                // { path: StdlibPath, content: StdlibCode },
+                { path: StdlibPath, content: StdlibCode },
                 // {
                 //     path: stdlibExPath,
                 //     content: stdlibExCode,

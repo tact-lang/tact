@@ -128,7 +128,12 @@ export function generateFieldAccess(
 }
 
 export function generateThisID(): AstId {
-    return { kind: "id", id: nextId(), text: "self", loc: dummySrcInfoPrintable };
+    return {
+        kind: "id",
+        id: nextId(),
+        text: "self",
+        loc: dummySrcInfoPrintable,
+    };
 }
 
 /**
@@ -945,7 +950,7 @@ export class Expression extends GenerativeEntity<AstExpression> {
                     case StdlibType.Bool:
                         return [generateBoolean()];
                     case StdlibType.String:
-                        return [generateSimplifiedString()];
+                        return [generateString()];
                     default:
                         throwTyError(ty);
                 }

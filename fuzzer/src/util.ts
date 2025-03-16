@@ -233,4 +233,4 @@ export function packArbitraries<T>(
     return arbs ? fc.tuple(...(arbs as [fc.Arbitrary<T>])) : fc.constant([]);
 }
 
-export const dummySrcInfoPrintable = getSrcInfo("", 10, 11, null, "user");
+export const dummySrcInfoPrintable = getSrcInfo(" ", 0, 0, null, "user");

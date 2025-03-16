@@ -11,8 +11,11 @@ import { Expression, NonGenerativeExpressionParams } from "../src/generators";
 import { Scope } from "../src/scope";
 import { SUPPORTED_STDLIB_TYPES } from "../src/types";
 import type { Type } from "../src/types";
-import { createProperty, checkProperty } from "../src/util";
-import { dummySrcInfoPrintable } from "../../src/grammar/src-info";
+import {
+    createProperty,
+    checkProperty,
+    dummySrcInfoPrintable,
+} from "../src/util";
 
 function emptyContext(): StatementContext {
     return {

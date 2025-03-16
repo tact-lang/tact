@@ -149,7 +149,7 @@ class PrettyPrinter {
     }
 
     ppAstExpression(expr: AstExpression, parentPrecedence: number = 0): string {
-        let result : string;
+        let result: string;
         let currentPrecedence = this.getPrecedence(expr.kind);
 
         switch (expr.kind) {
@@ -189,6 +189,7 @@ class PrettyPrinter {
                 result = expr.value.toString();
                 break;
             case "simplified_string":
+            case "string":
                 result = `"${expr.value}"`;
                 break;
             case "null":
