@@ -1169,6 +1169,59 @@ s1.skipAddress();
 let fizz: Int = s1.loadUint(32); // 42
 ```
 
+### Slice.loadBasechainAddress
+
+<Badge text="Available since Tact 1.6.4" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun loadBasechainAddress(self: Slice): BasechainAddress;
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Loads and returns a [`BasechainAddress{:tact}`][base-addr] [struct][struct] from the [`Slice{:tact}`][slice].
+
+Attempts to load such [`BasechainAddress{:tact}`][base-addr] struct when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to load more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell()
+    .storeBasechainAddress(BasechainAddress{ hash: null })
+    .asSlice();
+let fizz: BasechainAddress = s.loadBasechainAddress();
+```
+
+### Slice.skipBasechainAddress
+
+<Badge text="Available since Tact 1.6.4" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipBasechainAddress(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Skips a [`BasechainAddress{:tact}`][base-addr] [struct][struct] from the [`Slice{:tact}`][slice].
+
+Attempts to skip such [`BasechainAddress{:tact}`][base-addr] struct when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s1: Slice = beginCell()
+    .storeBasechainAddress(BasechainAddress{ hash: null })
+    .storeUint(42, 32)
+    .asSlice();
+
+s1.skipBasechainAddress();
+let fizz: Int = s1.loadUint(32); // 42
+```
+
 ### Slice.loadRef
 
 ```tact
@@ -2015,6 +2068,7 @@ fun cautiousParse(payload: Slice): TripleAxe? {
 [message]: /book/structs-and-messages#messages
 [null]: /book/optionals
 
+[base-addr]: /ref/core-addresses#basechainaddress
 [std-repr]: /book/cells#cells-representation
 
 [tlb]: https://docs.ton.org/develop/data-formats/tl-b-language

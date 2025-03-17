@@ -307,11 +307,14 @@ inline fun contractBasechainAddress(s: StateInit): BasechainAddress {
 ///
 /// ```tact
 /// fun example() {
-///     let addr: BasechainAddress = newBasechainAddress(0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+///     let addr: BasechainAddress =
+///         newBasechainAddress(0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
 ///     let b: Builder = beginCell();
 ///     let b2: Builder = b.storeBasechainAddress(addr);
 /// }
 /// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#builder.storebasechainaddress
 ///
 extends fun storeBasechainAddress(self: Builder, address: BasechainAddress): Builder {
     if (address.hash == null) {
@@ -321,6 +324,76 @@ extends fun storeBasechainAddress(self: Builder, address: BasechainAddress): Bui
     return self
         .storeUint(0b10_0_00000000, 3 + 8)
         .storeUint(address.hash!!, 256);
+}
+
+/// Extension mutation function for the `Slice` type. Available since Tact 1.6.4.
+///
+/// Loads and returns a `BasechainAddress` struct from the `Slice`.
+///
+/// Attempts to load such `BasechainAddress` struct when `Slice` doesn't contain it throw an exception with [exit code 8]: `Cell overflow`.
+///
+/// Attempts to load more data than `Slice` contains throw an exception with [exit code 9]: `Cell underflow`.
+///
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell()
+///         .storeBasechainAddress(BasechainAddress{ hash: null })
+///         .asSlice();
+///     let fizz: BasechainAddress = s.loadBasechainAddress();
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceloadbasechainaddress
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+/// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+///
+extends mutates fun loadBasechainAddress(self: Slice): BasechainAddress {
+    if (self.loadUint(2) == 0) {
+        return BasechainAddress{ hash: null };
+    } else {
+        // Skip the remaining prefix
+        self.skipBits(9);
+        // Load the hash (account ID)
+        return BasechainAddress{ hash: self.loadUint(256) };
+    }
+}
+
+/// Extension mutation function for the `Slice` type. Available since Tact 1.6.4.
+///
+/// Skips a `BasechainAddress` struct from the `Slice`.
+///
+/// Attempts to skip such `BasechainAddress` struct when `Slice` doesn't contain it throw an exception with [exit code 8]: `Cell overflow`.
+///
+/// Attempts to skip more data than `Slice` contains throw an exception with [exit code 9]: `Cell underflow`.
+///
+/// ```tact
+/// fun example() {
+///     let s1: Slice = beginCell()
+///         .storeBasechainAddress(BasechainAddress{ hash: null })
+///         .storeUint(42, 32)
+///         .asSlice();
+///
+///     s1.skipBasechainAddress();
+///     let fizz: Int = s1.loadUint(32); // 42
+/// }
+/// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipbasechainaddress
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+/// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+///
+extends mutates fun skipBasechainAddress(self: Slice) {
+    if (self.loadUint(2) != 0) {
+        // 9 bits of the remaining prefix since first 2 are loaded already
+        // plus 256 bits of the hash (account ID)
+        self.skipBits(265);
+    }
 }
 
 /// Global function. Available since Tact 1.6.3.
