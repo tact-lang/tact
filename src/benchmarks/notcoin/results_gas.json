@@ -17,6 +17,24 @@
         "burn": "11862",
         "discovery": "5785"
       }
+    },
+    {
+      "label": "1.6.3 with no selector hack",
+      "pr": null,
+      "gas": {
+        "transfer": "15874",
+        "burn": "12002",
+        "discovery": "5855"
+      }
+    },
+    {
+      "label": "1.6.3 with reworked selector hack",
+      "pr": null,
+      "gas": {
+        "transfer": "15878",
+        "burn": "12006",
+        "discovery": "5857"
+      }
     }
   ]
 }

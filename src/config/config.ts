@@ -15,10 +15,10 @@ export type OptimizationOptions = {
     readonly alwaysSaveContractData?: boolean;
 
     /**
-     * If set to `true`, stores internal and external receivers outside of the methods map. Default is `false`.
-     * Saves gas, but as a result of this optimization, the contract might not be correctly recognized and parsed by explorers and user wallets.
+     * If set not to `"disable"`, stores internal and external receivers outside the methods map. Default is `"explorers-compatible"`.
+     * Saves gas, but as a result of this optimization, the contract might not be correctly recognized and parsed by indexers.
      */
-    readonly internalExternalReceiversOutsideMethodsMap?: boolean;
+    readonly internalExternalReceiversOutsideMethodsMap?: "disable" | "explorers-compatible" | "fast";
 };
 
 export type ExperimentalOptions = {

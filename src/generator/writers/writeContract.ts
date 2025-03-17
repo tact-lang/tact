@@ -1,7 +1,7 @@
 import {
     enabledInline,
     enabledInterfacesGetter,
-    enabledInternalExternalReceiversOutsideMethodsMap,
+    internalExternalReceiversOutsideMethodsMapMode,
     enabledIpfsAbiGetter,
     enabledLazyDeploymentCompletedGetter,
     enabledOptimizedChildCode,
@@ -450,9 +450,7 @@ export function writeMainContract(
                 );
             });
         }
-
-        // fift injection, protected by a feature flag
-        if (enabledInternalExternalReceiversOutsideMethodsMap(wCtx.ctx)) {
+        if(internalExternalReceiversOutsideMethodsMapMode(wCtx.ctx) == "fast") {
             wCtx.append(`() __tact_selector_hack_asm() impure asm """
             @atend @ 1 {
                 execute current@ context@ current!
@@ -486,6 +484,59 @@ export function writeMainContract(
             wCtx.append(`() __tact_selector_hack() method_id(65535) {
                 return __tact_selector_hack_asm();
             }`);
+        }
+
+        if (internalExternalReceiversOutsideMethodsMapMode(wCtx.ctx) == "explorers-compatible") {
+            wCtx.append(`() __tact_selector_hack_asm() impure asm """
+                            @atend @ 1 {
+                                execute current@ context@ current!
+                                {
+                                    }END> b>
+                                    
+                                    <{
+                                        SETCP0
+                                            swap <s ref@ // Here we have the dict on the top of the stack
+                                            // Extract the recv_internal and recv_external from the dict
+                `);
+
+            if (hasExternal) {
+                wCtx.append(`dup -1 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot // recv_external is on the top of the stack
+                swap`);
+            }
+
+            wCtx.append(`dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot // recv_internal is on the top of the stack
+                swap
+                
+            
+                0 swap @procdictkeylen idict- drop // Delete the recv_internal from the dict
+                1 swap @procdictkeylen idict- drop // Delete the recv_external from the dict (it's okay if it's not there)
+                65535 swap @procdictkeylen idict- drop // Delete the __tact_selector_hack from the dict
+                
+                .s
+                depth 1- roll swap dup .s null? dup depth 1- -roll .s { drop } { PUSHREF DEPTH DEC -ROLLX } cond // PUSHREF the dict, so it's the first reference.
+                .s
+                
+                DUP IFNOTJMP:<{
+                    DROP swap @addop // place recv_internal here
+                }>`);
+
+            if (hasExternal) {
+                wCtx.append(`DUP INC IFNOTJMP:<{
+                    DROP swap @addop // place recv_external here
+                }>`)
+            }
+
+            wCtx.append(`swap { DEPTH DEC ROLLX @procdictkeylen PUSHINT DICTIGETJMPZ } ifnot // if dict is empty (not null), we don't need to call from it here
+                    11 THROWARG
+                        }> b>
+                    } : }END>c
+                    current@ context! current!
+                } does @atend !
+                """;`)
+
+            wCtx.append(`() __tact_selector_hack() method_id(65535) {
+                            return __tact_selector_hack_asm();
+                        }`);
         }
     });
 }

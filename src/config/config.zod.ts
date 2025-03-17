@@ -9,7 +9,7 @@ export const safetyOptionsSchema: z.ZodType<C.SafetyOptions> = z.object({
 export const optimizationOptionsSchema: z.ZodType<C.OptimizationOptions> =
     z.object({
         alwaysSaveContractData: z.boolean().optional(),
-        internalExternalReceiversOutsideMethodsMap: z.boolean().optional(),
+        internalExternalReceiversOutsideMethodsMap: z.enum(["disable", "explorers-compatible", "fast"]).optional(),
     });
 
 /**
