@@ -358,14 +358,14 @@ export function writeLoadOpcode(receivers: Receivers, wCtx: WriterContext) {
                 ";; Returns 32 bit message opcode, or -1 if the message is shorter than 32 bits",
             );
             wCtx.append(
-                ` ${loadOpcodeSignature} asm "32 LDUQ NEGATE DUP DUP DROPX ROLLX";`,
+                ` ${loadOpcodeSignature} asm "32 LDUQ NEGATE 2 0 BLKPUSH DROPX ROLLX";`,
             );
             /*
             32 LDUQ
             1. x s′ −1
             2. s 0
 
-            NEGATE DUP DUP
+            NEGATE 2 0 BLKPUSH
             1. x s′ 1 1 1
             2. s 0  0 0
 
