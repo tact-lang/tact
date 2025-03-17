@@ -8,6 +8,7 @@
     "src/ast/ast-constants.ts",
     "src/config/parseConfig.ts",
     "src/ast/ast-printer.ts",
+    "src/core/abi.ts",
     "src/error/display-to-json.ts",
     "src/grammar/src-info.ts",
     "src/grammar/grammar.ts",
