@@ -38,7 +38,7 @@
     "cleanall": "rm -fr dist node_modules",
     "copy:stdlib": "ts-node src/stdlib/copy.build.ts",
     "copy:func": "ts-node src/func/copy.build.ts",
-    "build": "tsc && yarn copy:stdlib && yarn copy:func",
+    "build": "cross-env NODE_OPTIONS=--max_old_space_size=4096 tsc && yarn copy:stdlib && yarn copy:func",
     "test": "jest",
     "test:fast": "jest --config=./jest-fast.config.js",
     "bench": "yarn gen:contracts:benchmarks && cross-env PRINT_TABLE=true jest ./src/benchmarks",
