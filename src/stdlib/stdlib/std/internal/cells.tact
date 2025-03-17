@@ -338,8 +338,7 @@ asm extends fun depth(self: Builder): Int { BDEPTH }
 /// }
 /// ```
 ///
-/// See:
-/// * https://docs.tact-lang.org/ref/core-cells#cellbeginparse
+/// See: https://docs.tact-lang.org/ref/core-cells#cellbeginparse
 ///
 asm extends fun beginParse(self: Cell): Slice { CTOS }
 
@@ -368,6 +367,10 @@ asm extends fun beginParse(self: Cell): Slice { CTOS }
 /// }
 /// ```
 ///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceloadref
+/// * https://docs.tact-lang.org/book/exit-codes
+///
 /// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
@@ -394,6 +397,10 @@ asm(-> 1 0) extends mutates fun loadRef(self: Slice): Cell { LDREF }
 ///     let fizz: Int = s1.loadUint(32); // 42
 /// }
 /// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipref
+/// * https://docs.tact-lang.org/book/exit-codes
 ///
 /// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
@@ -477,7 +484,7 @@ asm(-> 1 0) extends mutates fun loadMaybeRef(self: Slice): Cell? { LDOPTREF }
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-cells#sliceloadmayberef
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipmayberef
 /// * https://docs.tact-lang.org/book/exit-codes
 ///
 asm extends mutates fun skipMaybeRef(self: Slice) { LDOPTREF NIP }
@@ -532,6 +539,7 @@ asm extends fun preloadMaybeRef(self: Slice): Cell? { PLDOPTREF }
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells#sliceloadbits
+/// * https://docs.tact-lang.org/book/exit-codes
 ///
 /// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
@@ -559,6 +567,7 @@ extends mutates native loadBits(self: Slice, l: Int): Slice;
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells#slicepreloadbits
+/// * https://docs.tact-lang.org/book/exit-codes
 ///
 /// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
@@ -585,6 +594,7 @@ extends native preloadBits(self: Slice, l: Int): Slice;
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells#sliceloadint
+/// * https://docs.tact-lang.org/book/exit-codes
 ///
 /// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
@@ -612,6 +622,7 @@ extends mutates native loadInt(self: Slice, l: Int): Int;
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells#slicepreloadint
+/// * https://docs.tact-lang.org/book/exit-codes
 ///
 /// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
@@ -638,6 +649,7 @@ extends native preloadInt(self: Slice, l: Int): Int;
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells#sliceloaduint
+/// * https://docs.tact-lang.org/book/exit-codes
 ///
 /// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
@@ -665,6 +677,7 @@ extends mutates native loadUint(self: Slice, l: Int): Int;
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells#slicepreloaduint
+/// * https://docs.tact-lang.org/book/exit-codes
 ///
 /// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
@@ -689,6 +702,10 @@ extends native preloadUint(self: Slice, l: Int): Int;
 ///     let fizz: Bool = s.loadBool(); // true
 /// }
 /// ```
+///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceloadbool
+/// * https://docs.tact-lang.org/book/exit-codes
 ///
 /// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
@@ -717,6 +734,10 @@ asm(-> 1 0) extends mutates fun loadBool(self: Slice): Bool { 1 LDI }
 /// }
 /// ```
 ///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipbool
+/// * https://docs.tact-lang.org/book/exit-codes
+///
 /// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
@@ -741,9 +762,9 @@ asm(-> 1 0) extends mutates fun loadBit(self: Slice): Bool { 1 LDI }
 ///
 /// Loads and returns a serialized unsigned `Int` value in the range from 0 to 2^120 - 1 inclusive from the `Slice`. This value usually represents the amount in nanoToncoins.
 ///
-/// Attempts to load such `Int` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+/// Attempts to load such `Int` when `Slice` doesn't contain it throw an exception with [exit code 8]: `Cell overflow`.
 ///
-/// Attempts to load more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+/// Attempts to load more data than `Slice` contains throw an exception with [exit code 9]: `Cell underflow`.
 ///
 /// ```tact
 /// fun example() {
@@ -752,7 +773,12 @@ asm(-> 1 0) extends mutates fun loadBit(self: Slice): Bool { 1 LDI }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadcoins
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceloadcoins
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+/// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm( -> 1 0) extends mutates fun loadCoins(self: Slice): Int { LDVARUINT16 }
 
@@ -760,9 +786,9 @@ asm( -> 1 0) extends mutates fun loadCoins(self: Slice): Int { LDVARUINT16 }
 ///
 /// Skips a serialized unsigned `Int` value in the range from 0 to 2^120 - 1 inclusive from the `Slice`. Similar to discarding the return value of `Slice.loadCoins()`.
 ///
-/// Attempts to skip such `Int` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+/// Attempts to skip such `Int` when `Slice` doesn't contain it throw an exception with [exit code 8]: `Cell overflow`.
 ///
-/// Attempts to skip more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+/// Attempts to skip more data than `Slice` contains throw an exception with [exit code 9]: `Cell underflow`.
 ///
 /// ```tact
 /// fun example() {
@@ -776,7 +802,12 @@ asm( -> 1 0) extends mutates fun loadCoins(self: Slice): Int { LDVARUINT16 }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadcoins
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipcoins
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+/// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm extends mutates fun skipCoins(self: Slice) { LDVARUINT16 NIP }
 
@@ -814,8 +845,8 @@ asm( -> 1 0) extends mutates fun loadVarUint16(self: Slice): Int { LDVARUINT16 }
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-cells#sliceloadvaruint16
-/// * https://docs.tact-lang.org/ref/core-cells#sliceloadcoins
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipvaruint16
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipcoins
 ///
 asm extends mutates fun skipVarUint16(self: Slice){ LDVARUINT16 NIP }
 
@@ -823,9 +854,9 @@ asm extends mutates fun skipVarUint16(self: Slice){ LDVARUINT16 NIP }
 ///
 /// Similar to `Slice.loadCoins()`, but with a different `value` range: from -2^119 to 2^119 - 1 inclusive.
 ///
-/// Attempts to load such `Int` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+/// Attempts to load such `Int` when `Slice` doesn't contain it throw an exception with [exit code 8]: `Cell overflow`.
 ///
-/// Attempts to load more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+/// Attempts to load more data than `Slice` contains throw an exception with [exit code 9]: `Cell underflow`.
 ///
 /// ```tact
 /// fun example() {
@@ -834,7 +865,12 @@ asm extends mutates fun skipVarUint16(self: Slice){ LDVARUINT16 NIP }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadvarint16
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceloadvarint16
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+/// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm( -> 1 0) extends mutates fun loadVarInt16(self: Slice): Int { LDVARINT16 }
 
@@ -842,9 +878,9 @@ asm( -> 1 0) extends mutates fun loadVarInt16(self: Slice): Int { LDVARINT16 }
 ///
 /// Similar to `Slice.skipCoins()`, but with a different `value` range: from -2^119 to 2^119 - 1 inclusive.
 ///
-/// Attempts to skip such `Int` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+/// Attempts to skip such `Int` when `Slice` doesn't contain it throw an exception with [exit code 8]: `Cell overflow`.
 ///
-/// Attempts to skip more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+/// Attempts to skip more data than `Slice` contains throw an exception with [exit code 9]: `Cell underflow`.
 ///
 /// ```tact
 /// fun example() {
@@ -858,7 +894,12 @@ asm( -> 1 0) extends mutates fun loadVarInt16(self: Slice): Int { LDVARINT16 }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadvarint16
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipvarint16
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+/// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm extends mutates fun skipVarInt16(self: Slice) { LDVARINT16 NIP }
 
@@ -866,9 +907,9 @@ asm extends mutates fun skipVarInt16(self: Slice) { LDVARINT16 NIP }
 ///
 /// Loads and returns a serialized unsigned `Int` value in the range from 0 to 2^248 − 1 inclusive from the `Slice`.
 ///
-/// Attempts to load such `Int` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+/// Attempts to load such `Int` when `Slice` doesn't contain it throw an exception with [exit code 8]: `Cell overflow`.
 ///
-/// Attempts to load more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+/// Attempts to load more data than `Slice` contains throw an exception with [exit code 9]: `Cell underflow`.
 ///
 /// ```tact
 /// fun example() {
@@ -877,7 +918,12 @@ asm extends mutates fun skipVarInt16(self: Slice) { LDVARINT16 NIP }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadvaruint32
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceloadvaruint32
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+/// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm( -> 1 0) extends mutates fun loadVarUint32(self: Slice): Int { LDVARUINT32 }
 
@@ -885,9 +931,9 @@ asm( -> 1 0) extends mutates fun loadVarUint32(self: Slice): Int { LDVARUINT32 }
 ///
 /// Skips a serialized unsigned `Int` value in the range from 0 to 2^248 − 1 inclusive from the `Slice`. Similar to discarding the return value of `Slice.loadVarUint32()`.
 ///
-/// Attempts to skip such `Int` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+/// Attempts to skip such `Int` when `Slice` doesn't contain it throw an exception with [exit code 8]: `Cell overflow`.
 ///
-/// Attempts to skip more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+/// Attempts to skip more data than `Slice` contains throw an exception with [exit code 9]: `Cell underflow`.
 ///
 /// ```tact
 /// fun example() {
@@ -901,7 +947,12 @@ asm( -> 1 0) extends mutates fun loadVarUint32(self: Slice): Int { LDVARUINT32 }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadvaruint32
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipvaruint32
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+/// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm extends mutates fun skipVarUint32(self: Slice) { LDVARUINT32 NIP }
 
@@ -909,9 +960,9 @@ asm extends mutates fun skipVarUint32(self: Slice) { LDVARUINT32 NIP }
 ///
 /// Similar to `Slice.loadVarUint32()`, but with a different `value` range: from -2^247 to 2^247 - 1 inclusive.
 ///
-/// Attempts to load such `Int` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+/// Attempts to load such `Int` when `Slice` doesn't contain it throw an exception with [exit code 8]: `Cell overflow`.
 ///
-/// Attempts to load more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+/// Attempts to load more data than `Slice` contains throw an exception with [exit code 9]: `Cell underflow`.
 ///
 /// ```tact
 /// fun example() {
@@ -920,7 +971,12 @@ asm extends mutates fun skipVarUint32(self: Slice) { LDVARUINT32 NIP }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadvarint32
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceloadvarint32
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+/// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm( -> 1 0) extends mutates fun loadVarInt32(self: Slice): Int { LDVARINT32 }
 
@@ -928,9 +984,9 @@ asm( -> 1 0) extends mutates fun loadVarInt32(self: Slice): Int { LDVARINT32 }
 ///
 /// Similar to `Slice.skipVarUint32()`, but with a different `value` range: from -2^247 to 2^247 - 1 inclusive.
 ///
-/// Attempts to skip such `Int` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+/// Attempts to skip such `Int` when `Slice` doesn't contain it throw an exception with [exit code 8]: `Cell overflow`.
 ///
-/// Attempts to skip more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+/// Attempts to skip more data than `Slice` contains throw an exception with [exit code 9]: `Cell underflow`.
 ///
 /// ```tact
 /// fun example() {
@@ -944,7 +1000,12 @@ asm( -> 1 0) extends mutates fun loadVarInt32(self: Slice): Int { LDVARINT32 }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadvaruint32
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipvarint32
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+/// [exit code 8]: https://docs.tact-lang.org/book/exit-codes#8
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm extends mutates fun skipVarInt32(self: Slice) { LDVARINT32 NIP }
 
@@ -966,7 +1027,9 @@ asm extends mutates fun skipVarInt32(self: Slice) { LDVARINT32 NIP }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#sliceskipbits
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskipbits
+/// * https://docs.tact-lang.org/book/exit-codes
 ///
 /// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
@@ -990,6 +1053,10 @@ asm extends mutates fun skipBits(self: Slice, l: Int) { SDSKIPFIRST }
 /// }
 /// ```
 ///
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceendparse
+/// * https://docs.tact-lang.org/book/exit-codes
+///
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm extends fun endParse(self: Slice) { ENDS }
@@ -998,9 +1065,9 @@ asm extends fun endParse(self: Slice) { ENDS }
 ///
 /// Preloads all but the last 0 ≤ `len` ≤ 1023 bits from the `Slice`.
 ///
-/// Attempts to specify an out-of-bounds `len` value throw an exception with exit code 5: `Integer out of expected range`.
+/// Attempts to specify an out-of-bounds `len` value throw an exception with [exit code 5]: `Integer out of expected range`.
 ///
-/// Attempts to preload more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+/// Attempts to preload more data than `Slice` contains throw an exception with [exit code 9]: `Cell underflow`.
 ///
 /// ```tact
 /// fun example() {
@@ -1010,7 +1077,12 @@ asm extends fun endParse(self: Slice) { ENDS }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#sliceskiplastbits
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#sliceskiplastbits
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+/// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm extends fun skipLastBits(self: Slice, len: Int): Slice { SDSKIPLAST }
 
@@ -1018,9 +1090,9 @@ asm extends fun skipLastBits(self: Slice, len: Int): Slice { SDSKIPLAST }
 ///
 /// Preloads the first 0 ≤ `len` ≤ 1023 bits from the `Slice`.
 ///
-/// Attempts to specify an out-of-bounds `len` value throw an exception with exit code 5: `Integer out of expected range`.
+/// Attempts to specify an out-of-bounds `len` value throw an exception with [exit code 5]: `Integer out of expected range`.
 ///
-/// Attempts to preload more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+/// Attempts to preload more data than `Slice` contains throw an exception with [exit code 9]: `Cell underflow`.
 ///
 /// ```tact
 /// fun example() {
@@ -1034,6 +1106,10 @@ asm extends fun skipLastBits(self: Slice, len: Int): Slice { SDSKIPLAST }
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells#slicefirstbits
 /// * https://docs.tact-lang.org/ref/core-cells#slicepreloadbits
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+/// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm extends fun firstBits(self: Slice, len: Int): Slice { SDCUTFIRST }
 
@@ -1041,9 +1117,9 @@ asm extends fun firstBits(self: Slice, len: Int): Slice { SDCUTFIRST }
 ///
 /// Preloads the last 0 ≤ `len` ≤ 1023 bits from the `Slice`.
 ///
-/// Attempts to specify an out-of-bounds `len` value throw an exception with exit code 5: `Integer out of expected range`.
+/// Attempts to specify an out-of-bounds `len` value throw an exception with [exit code 5]: `Integer out of expected range`.
 ///
-/// Attempts to preload more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+/// Attempts to preload more data than `Slice` contains throw an exception with [exit code 9]: `Cell underflow`.
 ///
 /// ```tact
 /// fun example() {
@@ -1052,7 +1128,12 @@ asm extends fun firstBits(self: Slice, len: Int): Slice { SDCUTFIRST }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#slicelastbits
+/// See:
+/// * https://docs.tact-lang.org/ref/core-cells#slicelastbits
+/// * https://docs.tact-lang.org/book/exit-codes
+///
+/// [exit code 5]: https://docs.tact-lang.org/book/exit-codes#5
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 asm extends fun lastBits(self: Slice, len: Int): Slice { SDCUTLAST }
 

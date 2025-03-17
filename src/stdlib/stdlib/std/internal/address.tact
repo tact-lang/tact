@@ -220,7 +220,7 @@ asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadaddress
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceskipaddress
 ///
 asm extends mutates fun skipAddress(self: Slice) { LDMSGADDR NIP }
 
