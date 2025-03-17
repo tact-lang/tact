@@ -1306,9 +1306,9 @@
   integrity sha512-8FKHK2jwvViRBReO2t40DCkHAP9KPTRWZof4kdsAUJFlyeWIC8SsRQSl9QkZxF+48WvjDduKNqN5Ltb80paufA==
 
 "@tact-lang/opcode@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.3.0.tgz#c127b420a71bfeb383e0954b0de325f5e260c803"
-  integrity sha512-kSzdBR7r5B0I0gXqmRpqBwaYfkpGaSt4RT6oWs50yOB6OlB7bDZ45vumjGUFb0aEd0T6xeeM4yxMOgqiomtq8w==
+  version "0.3.1"
+  resolved "https://registry.npmjs.org/@tact-lang/opcode/-/opcode-0.3.1.tgz#bd9c7b10771f7a100fe2e5e5f18b33350225dc96"
+  integrity sha512-DfLGz59yl0PPnqFnFzkwr20NNspe4ocZJlBgyTiikGxpS5932wE7Jb9tcKpLqVKzR0TFiqBK0RbOTHM3e6qCRA==
   dependencies:
     "@ton/core" "^0.60.0"
     "@ton/crypto" "^3.3.0"
