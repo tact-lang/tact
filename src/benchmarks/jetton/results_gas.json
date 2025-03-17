@@ -305,6 +305,15 @@
         "burn": "11773",
         "discovery": "6076"
       }
+    },
+    {
+      "label": "1.6.3 with fallback special cases and compatible exit code for Jetton",
+      "pr": "https://github.com/tact-lang/tact/pull/2396",
+      "gas": {
+        "transfer": "15042",
+        "burn": "11839",
+        "discovery": "6109"
+      }
     }
   ]
 }
