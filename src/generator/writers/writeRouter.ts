@@ -332,7 +332,7 @@ export function writeLoadOpcode(receivers: Receivers, wCtx: WriterContext) {
                 `;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code`,
             );
             wCtx.append(
-                ` ${loadOpcodeSignature} asm( -> 1 0) "32 LDUQ ${throwIfNot(exitCode)}";`,
+                `${loadOpcodeSignature} asm( -> 1 0) "32 LDUQ ${throwIfNot(exitCode)}";`,
             );
             return;
         }
@@ -345,7 +345,7 @@ export function writeLoadOpcode(receivers: Receivers, wCtx: WriterContext) {
                 ";; Returns 32 bit message opcode, or returns immediately if the message is shorter than 32 bits",
             );
             wCtx.append(
-                ` ${loadOpcodeSignature} asm( -> 1 0) "32 LDUQ IFNOTRET";`,
+                `${loadOpcodeSignature} asm( -> 1 0) "32 LDUQ IFNOTRET";`,
             );
             return;
         }
@@ -358,7 +358,7 @@ export function writeLoadOpcode(receivers: Receivers, wCtx: WriterContext) {
                 ";; Returns 32 bit message opcode, or -1 if the message is shorter than 32 bits",
             );
             wCtx.append(
-                ` ${loadOpcodeSignature} asm "32 LDUQ NEGATE 2 0 BLKPUSH DROPX ROLLX";`,
+                `${loadOpcodeSignature} asm "32 LDUQ NEGATE 2 0 BLKPUSH DROPX ROLLX";`,
             );
             /*
             32 LDUQ
