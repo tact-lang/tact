@@ -393,6 +393,12 @@ function fallbackReceiverKind(
     fallback: FallbackReceiver | undefined,
     wCtx: WriterContext,
 ): FallbackReceiverKind {
+    // Note the order of the `if` statements is very important
+    // For instance, `receive(foo: Slice) { } and
+    // `receive(_: Slice) { throw(0xFFFF) }` have higher priority
+    // compared to a fallback receiver that does not read its message, i.e.
+    // `receive(_: Slice) { /* body that is not `throw()` and not empty */}`
+
     if (typeof fallback === "undefined") {
         return { kind: "no-fallback" };
     }
