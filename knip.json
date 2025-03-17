@@ -3,7 +3,6 @@
   "entry": ["src/index.ts", "src/cli/tact/index.ts", "src/cli/unboc/index.ts"],
   "project": ["src/**/*.ts"],
   "ignore": [
-    "src/types/resolveStatements.spec.ts",
     "**/.testing/",
     "src/ast/ast.ts",
     "src/ast/ast-constants.ts",

@@ -9,8 +9,6 @@ import { getParser } from "../grammar";
 import { getAstFactory } from "../ast/ast-helpers";
 import { evalComptimeExpressions } from "./evalComptimeExpressions";
 
-export const x: string = 5;
-
 describe("resolveStatements", () => {
     for (const r of loadCases(__dirname + "/stmts/")) {
         it("should resolve statements for " + r.name, () => {
