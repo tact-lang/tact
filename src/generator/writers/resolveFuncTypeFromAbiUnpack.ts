@@ -1,10 +1,10 @@
-import type { ABITypeRef } from "@ton/core";
+import type { AbiTypeRef } from "../../core/abi";
 import { getType } from "../../types/resolveDescriptors";
 import type { WriterContext } from "../Writer";
 
 export function resolveFuncTypeFromAbiUnpack(
     name: string,
-    fields: { name: string; type: ABITypeRef }[],
+    fields: { name: string; type: AbiTypeRef }[],
     ctx: WriterContext,
 ): string {
     if (fields.length === 0) {
@@ -40,7 +40,7 @@ export function resolveFuncTypeFromAbiUnpack(
                         res.push(`${name}'${f.name}`);
                     } else {
                         const t = getType(ctx.ctx, f.type.type);
-                        if (f.type.optional ?? t.fields.length === 0) {
+                        if (f.type.optional || t.fields.length === 0) {
                             res.push(`${name}'${f.name}`);
                         } else {
                             const loaded = t.fields.map((v) => v.abi);

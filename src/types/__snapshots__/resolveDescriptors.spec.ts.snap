@@ -3025,6 +3025,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         "abi": {
           "name": "b",
           "type": {
+            "format": undefined,
             "kind": "simple",
             "optional": false,
             "type": "bool",
@@ -7810,6 +7811,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         "abi": {
           "name": "b",
           "type": {
+            "format": undefined,
             "kind": "simple",
             "optional": false,
             "type": "bool",
@@ -9900,6 +9902,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         "abi": {
           "name": "m",
           "type": {
+            "format": undefined,
             "key": "int",
             "keyFormat": undefined,
             "kind": "dict",
@@ -10957,6 +10960,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
         "abi": {
           "name": "m1",
           "type": {
+            "format": undefined,
             "key": "int",
             "keyFormat": undefined,
             "kind": "dict",
@@ -11018,6 +11022,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
         "abi": {
           "name": "m2",
           "type": {
+            "format": undefined,
             "key": "int",
             "keyFormat": undefined,
             "kind": "dict",
@@ -12346,6 +12351,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
         "abi": {
           "name": "m1",
           "type": {
+            "format": undefined,
             "key": "int",
             "keyFormat": undefined,
             "kind": "dict",
@@ -12407,6 +12413,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
         "abi": {
           "name": "m2",
           "type": {
+            "format": undefined,
             "key": "int",
             "keyFormat": undefined,
             "kind": "dict",
@@ -28574,6 +28581,7 @@ exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`
         "abi": {
           "name": "val",
           "type": {
+            "format": undefined,
             "kind": "simple",
             "optional": false,
             "type": "bool",
@@ -29264,6 +29272,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
         "abi": {
           "name": "b",
           "type": {
+            "format": undefined,
             "kind": "simple",
             "optional": false,
             "type": "bool",
@@ -29356,6 +29365,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
         "abi": {
           "name": "a",
           "type": {
+            "format": undefined,
             "kind": "simple",
             "optional": false,
             "type": "Struct1",
@@ -29582,6 +29592,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
         "abi": {
           "name": "value",
           "type": {
+            "format": undefined,
             "kind": "simple",
             "optional": true,
             "type": "SomeStruct",
@@ -30331,6 +30342,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
         "abi": {
           "name": "m",
           "type": {
+            "format": undefined,
             "key": "int",
             "keyFormat": undefined,
             "kind": "dict",
@@ -30535,6 +30547,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
         "abi": {
           "name": "m",
           "type": {
+            "format": undefined,
             "key": "int",
             "keyFormat": undefined,
             "kind": "dict",
@@ -30826,6 +30839,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
             "abi": {
               "name": "m",
               "type": {
+                "format": undefined,
                 "key": "int",
                 "keyFormat": undefined,
                 "kind": "dict",

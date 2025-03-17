@@ -1,32 +1,41 @@
 import { z } from "zod";
 
+const format = z
+    .union([z.boolean(), z.number(), z.string(), z.undefined()])
+    .optional()
+    .nullable()
+    .transform((val) => (val === null ? undefined : val));
+
+const optional = z
+    .boolean()
+    .default(false)
+    .nullable()
+    .transform((val) => val ?? false);
+
 const typeFormat = z.union([
-    z.object({
-        kind: z.literal("simple"),
-        type: z.string(),
-        optional: z.boolean().optional().nullable(),
-        format: z
-            .union([z.boolean(), z.number(), z.string()])
-            .optional()
-            .nullable(),
-    }),
-    z.object({
-        kind: z.literal("dict"),
-        format: z
-            .union([z.boolean(), z.number(), z.string()])
-            .optional()
-            .nullable(),
-        key: z.string(),
-        keyFormat: z
-            .union([z.boolean(), z.number(), z.string()])
-            .optional()
-            .nullable(),
-        value: z.string(),
-        valueFormat: z
-            .union([z.boolean(), z.number(), z.string()])
-            .optional()
-            .nullable(),
-    }),
+    z
+        .object({
+            kind: z.literal("simple"),
+            type: z.string(),
+            optional: optional,
+            format: format,
+        })
+        .transform((o) => ({ ...o, format: o.format })),
+    z
+        .object({
+            kind: z.literal("dict"),
+            format: format,
+            key: z.string(),
+            keyFormat: format,
+            value: z.string(),
+            valueFormat: format,
+        })
+        .transform((o) => ({
+            ...o,
+            format: o.format,
+            keyFormat: o.keyFormat,
+            valueFormat: o.valueFormat,
+        })),
 ]);
 
 const initFormat = z.object({

@@ -1,10 +1,10 @@
-import type { ABITypeRef } from "@ton/core";
 import type {
     AllocationCell,
     AllocationOperation,
     AllocationOperationType,
 } from "./operation";
 import { throwInternalCompilerError } from "../error/errors";
+import type { AbiTypeRef } from "../core/abi";
 
 const ALLOCATOR_RESERVE_BIT = 1;
 const ALLOCATOR_RESERVE_REF = 1;
@@ -74,7 +74,7 @@ function getOperationSize(src: AllocationOperationType): {
 }
 
 export function getAllocationOperationFromField(
-    src: ABITypeRef,
+    src: AbiTypeRef,
     structLoader: (name: string) => { bits: number; refs: number },
 ): AllocationOperationType {
     // Reference types
@@ -88,16 +88,16 @@ export function getAllocationOperationFromField(
                     return {
                         kind: "int",
                         bits: src.format,
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                     };
                 }
                 if (src.format === "varint16" || src.format === "varint32") {
                     return {
                         kind: src.format,
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                     };
                 }
-                if (src.format !== null && src.format !== undefined) {
+                if (src.format !== undefined) {
                     throwInternalCompilerError(
                         `Unsupported int format: ${src.format}`,
                     );
@@ -105,7 +105,7 @@ export function getAllocationOperationFromField(
                 return {
                     kind: "int",
                     bits: 257,
-                    optional: src.optional ?? false,
+                    optional: src.optional,
                 };
             }
             if (src.type === "uint") {
@@ -118,22 +118,22 @@ export function getAllocationOperationFromField(
                     return {
                         kind: "uint",
                         bits: src.format,
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                     };
                 }
                 if (src.format === "coins") {
                     return {
                         kind: "varuint16",
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                     };
                 }
                 if (src.format === "varuint16" || src.format === "varuint32") {
                     return {
                         kind: src.format,
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                     };
                 }
-                if (src.format !== null && src.format !== undefined) {
+                if (src.format !== undefined) {
                     throwInternalCompilerError(
                         `Unsupported uint format: ${src.format}`,
                     );
@@ -141,35 +141,35 @@ export function getAllocationOperationFromField(
                 return {
                     kind: "uint",
                     bits: 256,
-                    optional: src.optional ?? false,
+                    optional: src.optional,
                 };
             }
             if (src.type === "bool") {
-                if (src.format !== null && src.format !== undefined) {
+                if (src.format !== undefined) {
                     throwInternalCompilerError(
                         `Unsupported bool format: ${src.format}`,
                     );
                 }
                 return {
                     kind: "boolean",
-                    optional: src.optional ?? false,
+                    optional: src.optional,
                 };
             }
             if (src.type === "cell") {
                 if (src.format === "remainder") {
                     return {
                         kind: "cell",
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                         format: "remainder",
                     };
-                } else if (src.format !== null && src.format !== undefined) {
+                } else if (src.format !== undefined) {
                     throwInternalCompilerError(
                         `Unsupported cell format: ${src.format}`,
                     );
                 }
                 return {
                     kind: "cell",
-                    optional: src.optional ?? false,
+                    optional: src.optional,
                     format: "default",
                 };
             }
@@ -177,17 +177,17 @@ export function getAllocationOperationFromField(
                 if (src.format === "remainder") {
                     return {
                         kind: "slice",
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                         format: "remainder",
                     };
-                } else if (src.format !== null && src.format !== undefined) {
+                } else if (src.format !== undefined) {
                     throwInternalCompilerError(
                         `Unsupported slice format: ${src.format}`,
                     );
                 }
                 return {
                     kind: "slice",
-                    optional: src.optional ?? false,
+                    optional: src.optional,
                     format: "default",
                 };
             }
@@ -195,24 +195,24 @@ export function getAllocationOperationFromField(
                 if (src.format === "remainder") {
                     return {
                         kind: "builder",
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                         format: "remainder",
                     };
-                } else if (src.format !== null && src.format !== undefined) {
+                } else if (src.format !== undefined) {
                     throwInternalCompilerError(
                         `Unsupported slice format: ${src.format}`,
                     );
                 }
                 return {
                     kind: "builder",
-                    optional: src.optional ?? false,
+                    optional: src.optional,
                     format: "default",
                 };
             }
             if (src.type === "address") {
                 return {
                     kind: "address",
-                    optional: src.optional ?? false,
+                    optional: src.optional,
                 };
             }
             if (src.type === "fixed-bytes") {
@@ -220,7 +220,7 @@ export function getAllocationOperationFromField(
                     return {
                         kind: "fixed-bytes",
                         bytes: src.format,
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                     };
                 } else {
                     throwInternalCompilerError(
@@ -229,14 +229,14 @@ export function getAllocationOperationFromField(
                 }
             }
             if (src.type === "string") {
-                if (src.format !== null && src.format !== undefined) {
+                if (src.format !== undefined) {
                     throwInternalCompilerError(
                         `Unsupported string format: ${src.format}`,
                     );
                 }
                 return {
                     kind: "string",
-                    optional: src.optional ?? false,
+                    optional: src.optional,
                 };
             }
 
@@ -247,10 +247,10 @@ export function getAllocationOperationFromField(
                     kind: "struct",
                     type: src.type,
                     ref: true,
-                    optional: src.optional ?? false,
+                    optional: src.optional,
                     size,
                 };
-            } else if (src.format !== undefined && src.format !== null) {
+            } else if (src.format !== undefined) {
                 throwInternalCompilerError(
                     `Unsupported struct format: ${src.format}`,
                 );
@@ -259,7 +259,7 @@ export function getAllocationOperationFromField(
                     kind: "struct",
                     type: src.type,
                     ref: false,
-                    optional: src.optional ?? false,
+                    optional: src.optional,
                     size,
                 };
             }
@@ -268,7 +268,7 @@ export function getAllocationOperationFromField(
         // constructions: https://github.com/tact-lang/tact/pull/669/files#r1709420045
         // eslint-disable-next-line no-fallthrough
         case "dict": {
-            if (src.format !== null && src.format !== undefined) {
+            if (src.format !== undefined) {
                 throwInternalCompilerError(
                     `Unsupported map format: ${src.format}`,
                 );

@@ -1,4 +1,3 @@
-import type { ABITypeRef } from "@ton/core";
 import type * as A from "../ast/ast";
 import {
     eqNames,
@@ -21,6 +20,7 @@ import type { TypeRef } from "./types";
 import type { CompilerContext } from "../context/context";
 import { getType } from "./resolveDescriptors";
 import type { SrcInfo } from "../grammar";
+import type { AbiTypeRef } from "../core/abi";
 
 type FormatDef = Record<
     string,
@@ -85,7 +85,7 @@ export function resolveABIType({
     type,
     as,
     loc,
-}: ResolveTypeOptions): ABITypeRef {
+}: ResolveTypeOptions): AbiTypeRef {
     if (
         type.kind === "type_id" ||
         (type.kind === "optional_type" && type.typeArg.kind == "type_id")
@@ -138,6 +138,7 @@ export function resolveABIType({
                 kind: "simple",
                 type: "bool",
                 optional: type.kind === "optional_type",
+                format: undefined,
             };
         }
         if (isCell(typeId)) {
@@ -160,6 +161,7 @@ export function resolveABIType({
                 kind: "simple",
                 type: "cell",
                 optional: type.kind === "optional_type",
+                format: undefined,
             };
         }
         if (isSlice(typeId)) {
@@ -182,6 +184,7 @@ export function resolveABIType({
                 kind: "simple",
                 type: "slice",
                 optional: type.kind === "optional_type",
+                format: undefined,
             };
         }
         if (isBuilder(typeId)) {
@@ -204,6 +207,7 @@ export function resolveABIType({
                 kind: "simple",
                 type: "builder",
                 optional: type.kind === "optional_type",
+                format: undefined,
             };
         }
         if (isAddress(typeId)) {
@@ -217,6 +221,7 @@ export function resolveABIType({
                 kind: "simple",
                 type: "address",
                 optional: type.kind === "optional_type",
+                format: undefined,
             };
         }
         if (isString(typeId)) {
@@ -230,6 +235,7 @@ export function resolveABIType({
                 kind: "simple",
                 type: "string",
                 optional: type.kind === "optional_type",
+                format: undefined,
             };
         }
         if (isStringBuilder(typeId)) {
@@ -259,6 +265,7 @@ export function resolveABIType({
             kind: "simple",
             type: idText(typeId),
             optional: type.kind === "optional_type",
+            format: undefined,
         };
     }
 
@@ -375,7 +382,14 @@ export function resolveABIType({
             }
         }
 
-        return { kind: "dict", key, keyFormat, value, valueFormat };
+        return {
+            kind: "dict",
+            key,
+            keyFormat,
+            value,
+            valueFormat,
+            format: undefined,
+        };
     }
 
     throwCompilationError(`Unsupported type`, loc);
@@ -385,7 +399,7 @@ export function createABITypeRefFromTypeRef(
     ctx: CompilerContext,
     src: TypeRef,
     loc: SrcInfo,
-): ABITypeRef {
+): AbiTypeRef {
     if (src.kind === "ref") {
         // Primitives
         if (src.name === "Int") {
@@ -397,22 +411,52 @@ export function createABITypeRefFromTypeRef(
             }; // Default is maximum size int
         }
         if (src.name === "Bool") {
-            return { kind: "simple", type: "bool", optional: src.optional };
+            return {
+                kind: "simple",
+                type: "bool",
+                optional: src.optional,
+                format: undefined,
+            };
         }
         if (src.name === "Cell") {
-            return { kind: "simple", type: "cell", optional: src.optional };
+            return {
+                kind: "simple",
+                type: "cell",
+                optional: src.optional,
+                format: undefined,
+            };
         }
         if (src.name === "Slice") {
-            return { kind: "simple", type: "slice", optional: src.optional };
+            return {
+                kind: "simple",
+                type: "slice",
+                optional: src.optional,
+                format: undefined,
+            };
         }
         if (src.name === "Builder") {
-            return { kind: "simple", type: "builder", optional: src.optional };
+            return {
+                kind: "simple",
+                type: "builder",
+                optional: src.optional,
+                format: undefined,
+            };
         }
         if (src.name === "Address") {
-            return { kind: "simple", type: "address", optional: src.optional };
+            return {
+                kind: "simple",
+                type: "address",
+                optional: src.optional,
+                format: undefined,
+            };
         }
         if (src.name === "String") {
-            return { kind: "simple", type: "string", optional: src.optional };
+            return {
+                kind: "simple",
+                type: "string",
+                optional: src.optional,
+                format: undefined,
+            };
         }
         if (src.name === "StringBuilder") {
             throwInternalCompilerError(`Unsupported type "${src.name}"`);
@@ -425,9 +469,15 @@ export function createABITypeRefFromTypeRef(
                 kind: "simple",
                 type: src.name + "$Data",
                 optional: src.optional,
+                format: undefined,
             };
         } else {
-            return { kind: "simple", type: src.name, optional: src.optional };
+            return {
+                kind: "simple",
+                type: src.name,
+                optional: src.optional,
+                format: undefined,
+            };
         }
     }
 
@@ -525,7 +575,14 @@ export function createABITypeRefFromTypeRef(
             }
         }
 
-        return { kind: "dict", key, keyFormat, value, valueFormat };
+        return {
+            kind: "dict",
+            key,
+            keyFormat,
+            value,
+            valueFormat,
+            format: undefined,
+        };
     }
 
     if (src.kind === "ref_bounced") {

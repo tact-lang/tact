@@ -1,4 +1,4 @@
-import type { ABIGetter, ABIReceiver, ABIType, ContractABI } from "@ton/core";
+import type { AbiGetter, AbiReceiver, AbiType, ContractAbi } from "../core/abi";
 import { contractErrors } from "../abi/errors";
 import type { CompilerContext } from "../context/context";
 import { getSupportedInterfaces } from "../types/getSupportedInterfaces";
@@ -7,7 +7,7 @@ import { getAllTypes } from "../types/resolveDescriptors";
 import { getAllErrors } from "../types/resolveErrors";
 import { idText } from "../ast/ast-helpers";
 
-export function createABI(ctx: CompilerContext, name: string): ContractABI {
+export function createABI(ctx: CompilerContext, name: string): ContractAbi {
     const allTypes = getAllTypes(ctx);
 
     // Contract
@@ -20,7 +20,7 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     }
 
     // Structs
-    const types: ABIType[] = [];
+    const types: AbiType[] = [];
     for (const t of allTypes) {
         if (t.kind === "struct") {
             types.push({
@@ -38,7 +38,7 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     }
 
     // // Receivers
-    const receivers: ABIReceiver[] = [];
+    const receivers: AbiReceiver[] = [];
     for (const r of contract.receivers) {
         if (r.selector.kind === "internal-binary") {
             receivers.push({
@@ -91,6 +91,7 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
                 receiver: "internal",
                 message: {
                     kind: "text",
+                    text: undefined,
                 },
             });
         } else if (r.selector.kind === "external-comment-fallback") {
@@ -98,6 +99,7 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
                 receiver: "external",
                 message: {
                     kind: "text",
+                    text: undefined,
                 },
             });
         } else if (r.selector.kind === "internal-fallback") {
@@ -118,12 +120,12 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
     }
 
     // Getters
-    const getters: ABIGetter[] = [];
+    const getters: AbiGetter[] = [];
     for (const f of contract.functions.values()) {
         if (f.isGetter) {
             getters.push({
                 name: f.name,
-                methodId: f.methodId,
+                methodId: f.methodId ?? undefined,
                 arguments: f.params.map((v) => ({
                     name: idText(v.name),
                     type: createABITypeRefFromTypeRef(ctx, v.type, v.loc),
@@ -131,7 +133,7 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
                 returnType:
                     f.returns.kind !== "void"
                         ? createABITypeRefFromTypeRef(ctx, f.returns, f.ast.loc)
-                        : null,
+                        : undefined,
             });
         }
     }
@@ -192,5 +194,5 @@ export function createABI(ctx: CompilerContext, name: string): ContractABI {
         getters,
         errors,
         interfaces,
-    } as object;
+    };
 }

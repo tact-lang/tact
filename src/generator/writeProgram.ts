@@ -17,7 +17,7 @@ import {
 } from "./writers/writeSerialization";
 import { writeStdlib } from "./writers/writeStdlib";
 import { writeAccessors } from "./writers/writeAccessors";
-import type { ContractABI } from "@ton/core";
+import type { ContractAbi } from "../core/abi";
 import { writeFunction } from "./writers/writeFunction";
 import { calculateIPFSlink } from "../utils/calculateIPFSlink";
 import { getRawAST } from "../context/store";
@@ -35,7 +35,7 @@ import { writeTypescriptValue } from "./writers/writeExpression";
 
 export async function writeProgram(
     ctx: CompilerContext,
-    abiSrc: ContractABI,
+    abiSrc: ContractAbi,
     basename: string,
     contractCodes: ContractsCodes,
     debug: boolean,

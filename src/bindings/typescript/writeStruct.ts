@@ -1,4 +1,3 @@
-import type { ABIType, ABITypeRef } from "@ton/core";
 import { serializers } from "./serializers";
 import type {
     AllocationCell,
@@ -6,16 +5,17 @@ import type {
 } from "../../storage/operation";
 import { throwInternalCompilerError } from "../../error/errors";
 import type { Writer } from "../../utils/Writer";
+import type { AbiType, AbiTypeRef } from "../../core/abi";
 
 export const maxTupleSize = 15;
 
-function throwUnsupportedType(type: ABITypeRef): never {
+function throwUnsupportedType(type: AbiTypeRef): never {
     throwInternalCompilerError(`Unsupported type: ${JSON.stringify(type)}`);
 }
 
 export function writeStruct(
     name: string,
-    fields: { name: string; type: ABITypeRef }[],
+    fields: readonly { name: string; type: AbiTypeRef }[],
     exp: boolean,
     w: Writer,
 ) {
@@ -37,7 +37,7 @@ export function writeStruct(
     w.append();
 }
 
-export function writeParser(s: ABIType, allocation: AllocationCell, w: Writer) {
+export function writeParser(s: AbiType, allocation: AllocationCell, w: Writer) {
     w.append(`export function load${s.name}(slice: Slice) {`);
     w.inIndent(() => {
         w.append(`const sc_0 = slice;`);
@@ -58,7 +58,7 @@ export function writeParser(s: ABIType, allocation: AllocationCell, w: Writer) {
 function writeParserCell(
     gen: number,
     src: AllocationCell,
-    s: ABIType,
+    s: AbiType,
     w: Writer,
 ) {
     for (const f of src.ops) {
@@ -73,7 +73,7 @@ function writeParserCell(
 function writeParserField(
     gen: number,
     field: AllocationOperation,
-    s: ABIType,
+    s: AbiType,
     w: Writer,
 ) {
     const name = "_" + field.name;
@@ -89,7 +89,7 @@ function writeParserField(
 }
 
 export function writeSerializer(
-    s: ABIType,
+    s: AbiType,
     allocation: AllocationCell,
     w: Writer,
 ) {
@@ -151,7 +151,7 @@ function writeSerializerField(gen: number, s: AllocationOperation, w: Writer) {
     throwUnsupportedType(type);
 }
 
-export function writeTupleParser(s: ABIType, w: Writer) {
+export function writeTupleParser(s: AbiType, w: Writer) {
     w.append(`function loadTuple${s.name}(source: TupleReader) {`);
     w.inIndent(() => {
         if (s.fields.length <= maxTupleSize) {
@@ -179,7 +179,7 @@ export function writeTupleParser(s: ABIType, w: Writer) {
     w.append();
 }
 
-export function writeGetterTupleParser(s: ABIType, w: Writer) {
+export function writeGetterTupleParser(s: AbiType, w: Writer) {
     w.append(`function loadGetterTuple${s.name}(source: TupleReader) {`);
     w.inIndent(() => {
         for (const f of s.fields) {
@@ -193,13 +193,13 @@ export function writeGetterTupleParser(s: ABIType, w: Writer) {
     w.append();
 }
 
-export function writeGetParser(name: string, type: ABITypeRef, w: Writer) {
+export function writeGetParser(name: string, type: AbiTypeRef, w: Writer) {
     writeTupleFieldParser(name, type, w, true);
 }
 
 function writeTupleFieldParser(
     name: string,
-    type: ABITypeRef,
+    type: AbiTypeRef,
     w: Writer,
     fromGet = false,
 ) {
@@ -213,7 +213,7 @@ function writeTupleFieldParser(
     throwUnsupportedType(type);
 }
 
-export function writeTupleSerializer(s: ABIType, w: Writer) {
+export function writeTupleSerializer(s: AbiType, w: Writer) {
     w.append(`function storeTuple${s.name}(source: ${s.name}) {`);
     w.inIndent(() => {
         w.append(`const builder = new TupleBuilder();`);
@@ -226,11 +226,11 @@ export function writeTupleSerializer(s: ABIType, w: Writer) {
     w.append();
 }
 
-export function writeArgumentToStack(name: string, ref: ABITypeRef, w: Writer) {
+export function writeArgumentToStack(name: string, ref: AbiTypeRef, w: Writer) {
     writeVariableToStack(name, ref, w);
 }
 
-function writeVariableToStack(name: string, type: ABITypeRef, w: Writer) {
+function writeVariableToStack(name: string, type: AbiTypeRef, w: Writer) {
     for (const s of serializers) {
         const v = s.abiMatcher(type);
         if (v) {
@@ -241,7 +241,7 @@ function writeVariableToStack(name: string, type: ABITypeRef, w: Writer) {
     throwUnsupportedType(type);
 }
 
-export function writeDictParser(s: ABIType, w: Writer) {
+export function writeDictParser(s: AbiType, w: Writer) {
     w.write(`
         function dictValueParser${s.name}(): DictionaryValue<${s.name}> {
             return {

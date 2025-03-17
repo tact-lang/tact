@@ -1,6 +1,6 @@
-import type { ABITypeRef } from "@ton/core";
 import type { Writer } from "../../utils/Writer";
 import { throwInternalCompilerError } from "../../error/errors";
+import type { AbiTypeRef } from "../../core/abi";
 
 const primitiveTypes = [
     "int",
@@ -29,7 +29,7 @@ type Serializer<T> = {
     tsStoreTuple: (v: T, to: string, field: string, w: Writer) => void;
 
     // Matcher
-    abiMatcher: (src: ABITypeRef) => T | null;
+    abiMatcher: (src: AbiTypeRef) => T | null;
 };
 
 const intSerializer: Serializer<{ bits: number; optional: boolean }> = {
@@ -74,12 +74,12 @@ const intSerializer: Serializer<{ bits: number; optional: boolean }> = {
                 if (typeof src.format === "number") {
                     return {
                         bits: src.format,
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                     };
-                } else if (src.format === null || src.format === undefined) {
+                } else if (src.format === undefined) {
                     return {
                         bits: 257,
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                     };
                 }
             }
@@ -130,12 +130,12 @@ const uintSerializer: Serializer<{ bits: number; optional: boolean }> = {
                 if (typeof src.format === "number") {
                     return {
                         bits: src.format,
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                     };
-                } else if (src.format === null || src.format === undefined) {
+                } else if (src.format === undefined) {
                     return {
                         bits: 256,
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                     };
                 }
             }
@@ -184,7 +184,7 @@ const coinsSerializer: Serializer<{ optional: boolean }> = {
         if (src.kind === "simple") {
             if (src.type === "uint") {
                 if (src.format === "coins") {
-                    return { optional: src.optional ?? false };
+                    return { optional: src.optional };
                 }
             }
         }
@@ -254,7 +254,7 @@ const varIntSerializer: Serializer<{
                 ) {
                     return {
                         format: src.format,
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                     };
                 }
             }
@@ -302,8 +302,8 @@ const boolSerializer: Serializer<{ optional: boolean }> = {
     abiMatcher(src) {
         if (src.kind === "simple") {
             if (src.type === "bool") {
-                if (src.format === null || src.format === undefined) {
-                    return { optional: src.optional ?? false };
+                if (src.format === undefined) {
+                    return { optional: src.optional };
                 }
             }
         }
@@ -342,8 +342,8 @@ const addressSerializer: Serializer<{ optional: boolean }> = {
     abiMatcher(src) {
         if (src.kind === "simple") {
             if (src.type === "address") {
-                if (src.format === null || src.format === undefined) {
-                    return { optional: src.optional ?? false };
+                if (src.format === undefined) {
+                    return { optional: src.optional };
                 }
             }
         }
@@ -431,13 +431,9 @@ const cellSerializer: Serializer<{
                 src.type === "slice" ||
                 src.type === "builder"
             ) {
-                if (
-                    src.format === null ||
-                    src.format === undefined ||
-                    src.format === "ref"
-                ) {
+                if (src.format === undefined || src.format === "ref") {
                     return {
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                         kind: src.type,
                     };
                 }
@@ -530,7 +526,7 @@ const fixedBytesSerializer: Serializer<{ bytes: number; optional: boolean }> = {
                 if (typeof src.format === "number") {
                     return {
                         bytes: src.format,
-                        optional: src.optional ?? false,
+                        optional: src.optional,
                     };
                 }
             }
@@ -578,8 +574,8 @@ const stringSerializer: Serializer<{ optional: boolean }> = {
     abiMatcher(src) {
         if (src.kind === "simple") {
             if (src.type === "string") {
-                if (src.format === null || src.format === undefined) {
-                    return { optional: src.optional ?? false };
+                if (src.format === undefined) {
+                    return { optional: src.optional };
                 }
             }
         }
@@ -618,12 +614,12 @@ const guard: Serializer<unknown> = {
 const struct: Serializer<{ name: string; optional: boolean }> = {
     abiMatcher(src) {
         if (src.kind === "simple") {
-            if (src.format !== null && src.format !== undefined) {
+            if (src.format !== undefined) {
                 return null;
             }
             return {
                 name: src.type,
-                optional: src.optional ?? false,
+                optional: src.optional,
             };
         }
         return null;
@@ -762,7 +758,7 @@ function getValueParser(src: MapSerializerDescrValue) {
 const map: Serializer<MapSerializerDescr> = {
     abiMatcher(src) {
         if (src.kind === "dict") {
-            if (src.format !== null && src.format !== undefined) {
+            if (src.format !== undefined) {
                 return null;
             }
 
@@ -774,25 +770,19 @@ const map: Serializer<MapSerializerDescr> = {
             if (src.key === "int") {
                 if (typeof src.keyFormat === "number") {
                     key = { kind: "int", bits: src.keyFormat };
-                } else if (
-                    src.keyFormat === null ||
-                    src.keyFormat === undefined
-                ) {
+                } else if (src.keyFormat === undefined) {
                     key = { kind: "int", bits: 257 };
                 }
             }
             if (src.key === "uint") {
                 if (typeof src.keyFormat === "number") {
                     key = { kind: "uint", bits: src.keyFormat };
-                } else if (
-                    src.keyFormat === null ||
-                    src.keyFormat === undefined
-                ) {
+                } else if (src.keyFormat === undefined) {
                     key = { kind: "uint", bits: 256 };
                 }
             }
             if (src.key === "address") {
-                if (src.keyFormat === null || src.keyFormat === undefined) {
+                if (src.keyFormat === undefined) {
                     key = { kind: "address" };
                 }
             }
@@ -802,10 +792,7 @@ const map: Serializer<MapSerializerDescr> = {
             if (src.value === "int") {
                 if (typeof src.valueFormat === "number") {
                     value = { kind: "int", bits: src.valueFormat };
-                } else if (
-                    src.valueFormat === null ||
-                    src.valueFormat === undefined
-                ) {
+                } else if (src.valueFormat === undefined) {
                     value = { kind: "int", bits: 257 };
                 } else if (src.valueFormat === "varint16") {
                     value = { kind: "varint", length: 4 };
@@ -816,10 +803,7 @@ const map: Serializer<MapSerializerDescr> = {
             if (src.value === "uint") {
                 if (typeof src.valueFormat === "number") {
                     value = { kind: "uint", bits: src.valueFormat };
-                } else if (
-                    src.valueFormat === null ||
-                    src.valueFormat === undefined
-                ) {
+                } else if (src.valueFormat === undefined) {
                     value = { kind: "uint", bits: 256 };
                 } else if (src.valueFormat === "coins") {
                     value = { kind: "varuint", length: 4 };
@@ -830,13 +814,12 @@ const map: Serializer<MapSerializerDescr> = {
                 }
             }
             if (src.value === "address") {
-                if (src.valueFormat === null || src.valueFormat === undefined) {
+                if (src.valueFormat === undefined) {
                     value = { kind: "address" };
                 }
             }
             if (src.value === "cell") {
                 if (
-                    src.valueFormat === null ||
                     src.valueFormat === undefined ||
                     src.valueFormat === "ref"
                 ) {
@@ -845,7 +828,6 @@ const map: Serializer<MapSerializerDescr> = {
             }
             if (!primitiveTypes.includes(src.value)) {
                 if (
-                    src.valueFormat === null ||
                     src.valueFormat === undefined ||
                     src.valueFormat === "ref"
                 ) {
@@ -853,7 +835,7 @@ const map: Serializer<MapSerializerDescr> = {
                 }
             }
             if (src.value === "bool") {
-                if (src.valueFormat === null || src.valueFormat === undefined) {
+                if (src.valueFormat === undefined) {
                     value = { kind: "boolean" };
                 }
             }

@@ -1,10 +1,10 @@
-import type { ABIField } from "@ton/core";
 import { throwInternalCompilerError } from "../error/errors";
 import type * as A from "../ast/ast";
 import type { SrcInfo } from "../grammar";
 import { idText } from "../ast/ast-helpers";
 import type { ItemOrigin } from "../imports/source";
 import type { Effect } from "./effects";
+import type { AbiField } from "../core/abi";
 
 export type TypeDescription = {
     kind: "struct" | "primitive_type_decl" | "contract" | "trait";
@@ -89,7 +89,7 @@ export type FieldDescription = {
     default: A.AstLiteral | undefined;
     loc: SrcInfo;
     ast: A.AstFieldDecl;
-    abi: ABIField;
+    abi: AbiField;
 };
 
 export type ConstantDescription = {

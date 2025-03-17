@@ -1,5 +1,4 @@
 import * as changeCase from "change-case";
-import type { ABIField } from "@ton/core";
 import type { CompilerContext } from "../context/context";
 import { idToHex } from "../utils/idToHex";
 import {
@@ -23,6 +22,7 @@ import { ensureInt } from "../optimizer/interpreter";
 import { evalConstantExpression } from "../optimizer/constEval";
 import { getAstUtil } from "../ast/util";
 import { sha256, highest32ofSha256 } from "../utils/sha256";
+import type { AbiField } from "../core/abi";
 
 export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
     const util = getAstUtil(Ast);
@@ -137,7 +137,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
         return s.signature;
     }
 
-    function createTLBField(src: ABIField) {
+    function createTLBField(src: AbiField) {
         switch (src.type.kind) {
             case "simple": {
                 let base = createTypeFormat(
@@ -150,7 +150,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
                 return src.name + ":" + base;
             }
             case "dict": {
-                if (src.type.format !== null && src.type.format !== undefined) {
+                if (src.type.format !== undefined) {
                     throwInternalCompilerError(
                         `Unsupported map format: ${src.type.format}`,
                     );

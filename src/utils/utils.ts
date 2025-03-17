@@ -1,6 +1,9 @@
 import { throwInternalCompilerError } from "../error/errors";
 
-export function topologicalSort<T>(src: T[], references: (src: T) => T[]) {
+export function topologicalSort<T>(
+    src: readonly T[],
+    references: (src: T) => readonly T[],
+) {
     const result: T[] = [];
     const visited: Set<T> = new Set();
     const visiting: Set<T> = new Set();

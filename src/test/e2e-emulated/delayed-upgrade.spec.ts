@@ -1,4 +1,4 @@
-import type { ABIError, Cell } from "@ton/core";
+import type { Cell } from "@ton/core";
 import { Builder } from "@ton/core";
 import { beginCell } from "@ton/core";
 import { toNano } from "@ton/core";
@@ -10,6 +10,7 @@ import { SampleDelayedUpgradeContractV2 } from "./contracts/output/delayed-upgra
 import { SampleDelayedUpgradeContractV3 } from "./contracts/output/delayed-upgrade-v3_SampleDelayedUpgradeContractV3";
 import "@ton/test-utils";
 import type { Maybe } from "@ton/core/dist/utils/maybe";
+import type { AbiError } from "../../core/abi";
 
 describe("delayed upgrade", () => {
     let blockchain: Blockchain;
@@ -294,7 +295,7 @@ describe("delayed upgrade", () => {
     }
 
     function findErrorCodeByMessage(
-        errors: Maybe<Record<number, ABIError>>,
+        errors: Maybe<Record<number, AbiError>>,
         errorMessage: string,
     ) {
         if (!errors) return null;

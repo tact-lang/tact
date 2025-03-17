@@ -1,11 +1,6 @@
 import * as changeCase from "change-case";
 import { Writer } from "../utils/Writer";
-import {
-    Cell,
-    type ABIArgument,
-    type ABIType,
-    type ContractABI,
-} from "@ton/core";
+import { Cell } from "@ton/core";
 import {
     writeArgumentToStack,
     writeDictParser,
@@ -31,8 +26,9 @@ import { eqNames } from "../ast/ast-helpers";
 import { enabledOptimizedChildCode } from "../config/features";
 import type { CompilerContext } from "../context/context";
 import type { TypeDescription } from "../types/types";
+import type { AbiArgument, AbiType, ContractAbi } from "../core/abi";
 
-function writeArguments(args: ABIArgument[]) {
+function writeArguments(args: readonly AbiArgument[]) {
     const res: string[] = [];
     outer: for (const f of args) {
         for (const s of serializers) {
@@ -57,14 +53,14 @@ export type WrappersConstantDescription = {
 };
 
 export function writeTypescript(
-    abi: ContractABI,
+    abi: ContractAbi,
     ctx: CompilerContext,
     constants: WrappersConstantDescription[],
     contract: undefined | TypeDescription,
     init?: {
         code: string;
         system: string | null;
-        args: ABIArgument[];
+        args: AbiArgument[];
         prefix?:
             | {
                   value: number;
@@ -112,8 +108,8 @@ export function writeTypescript(
     // Structs
     if (abi.types) {
         // Allocations
-        const refs = (src: ABIType) => {
-            const res: ABIType[] = [];
+        const refs = (src: AbiType) => {
+            const res: AbiType[] = [];
             const t: Set<string> = new Set();
             for (const f of src.fields) {
                 const r = f.type;
@@ -433,10 +429,7 @@ export function writeTypescript(
                         break;
                     case "text":
                         {
-                            if (
-                                r.message.text !== null &&
-                                r.message.text !== undefined
-                            ) {
+                            if (r.message.text !== undefined) {
                                 receivers.push(JSON.stringify(r.message.text));
                             } else {
                                 receivers.push(`string`);
@@ -490,10 +483,7 @@ export function writeTypescript(
                             break;
                         case "text":
                             {
-                                if (
-                                    msg.text === null ||
-                                    msg.text === undefined
-                                ) {
+                                if (msg.text === undefined) {
                                     w.append(
                                         `if (typeof message === 'string') {`,
                                     );
@@ -565,10 +555,7 @@ export function writeTypescript(
                         break;
                     case "text":
                         {
-                            if (
-                                r.message.text !== null &&
-                                r.message.text !== undefined
-                            ) {
+                            if (r.message.text !== undefined) {
                                 receivers.push(`'${r.message.text}'`);
                             } else {
                                 receivers.push(`string`);
@@ -622,10 +609,7 @@ export function writeTypescript(
                             break;
                         case "text":
                             {
-                                if (
-                                    msg.text === null ||
-                                    msg.text === undefined
-                                ) {
+                                if (msg.text === undefined) {
                                     w.append(
                                         `if (typeof message === 'string') {`,
                                     );
