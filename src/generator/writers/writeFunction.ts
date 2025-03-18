@@ -734,7 +734,7 @@ function getAsmFunctionSignature(
     const needRearrange =
         fAst.shuffle.ret.length === 0 &&
         fAst.shuffle.args.length > 1 &&
-        fAst.params.length > 1 &&
+        fAst.params.length === 2 && // apply only for `fun foo(self: Type, param: Type)`
         hasSelfParam &&
         !isMutable;
 
