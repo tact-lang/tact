@@ -1,4 +1,4 @@
-import { toNano } from "@ton/core";
+import { beginCell, toNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { AddressTester } from "./contracts/output/address_AddressTester";
@@ -68,5 +68,30 @@ describe("address", () => {
             cell2.asSlice(),
         );
         expect(addr2.hash === loadedAddr2.hash).toBe(true);
+
+        // Check .load... and .skip... of an addr_var
+        const varAddr = beginCell()
+            .storeUint(6, 3)
+            .storeUint(123, 9)
+            .storeUint(234, 32)
+            .storeUint(345, 123)
+            .endCell()
+            .asSlice();
+        const resLoad1 = await contract.getBasechainAddressTryLoad(varAddr);
+        expect(resLoad1).toBe(false);
+        const resSkip1 = await contract.getBasechainAddressTrySkip(varAddr);
+        expect(resSkip1).toBe(false);
+
+        // Check .load... and .skip... of an addr_extern
+        const externAddr = beginCell()
+            .storeUint(1, 2) // $01
+            .storeUint(42, 9) // len:(## 9)
+            .storeUint(0, 42) // external_address:(bits len)
+            .endCell()
+            .asSlice();
+        const resLoad2 = await contract.getBasechainAddressTryLoad(externAddr);
+        expect(resLoad2).toBe(false);
+        const resSkip2 = await contract.getBasechainAddressTrySkip(externAddr);
+        expect(resSkip2).toBe(false);
     });
 });

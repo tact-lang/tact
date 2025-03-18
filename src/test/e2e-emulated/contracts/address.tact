@@ -29,9 +29,29 @@ contract AddressTester() {
         return ba;
     }
 
+    get fun basechainAddressTryLoad(baCell: Slice): Bool {
+        try {
+            let _ = baCell.loadBasechainAddress();
+            baCell.endParse(); // make sure it's empty
+            return true;
+        } catch (_) {
+            return false;
+        }
+    }
+
     get fun basechainAddressSkip(baCell: Slice): Bool {
         baCell.skipBasechainAddress();
         baCell.endParse(); // make sure it's empty
         return true;
+    }
+
+    get fun basechainAddressTrySkip(baCell: Slice): Bool {
+        try {
+            baCell.skipBasechainAddress();
+            baCell.endParse();
+            return true;
+        } catch(_) {
+            return false;
+        }
     }
 }
