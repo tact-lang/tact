@@ -204,10 +204,10 @@
       "label": "1.6.3 with the new selector hack",
       "pr": "https://github.com/tact-lang/tact/pull/2398",
       "gas": {
-        "fundingTon": "4663",
-        "changeCode": "4772",
-        "approveTon": "6881",
-        "cancelTon": "4910"
+        "fundingTon": "4643",
+        "changeCode": "4752",
+        "approveTon": "6861",
+        "cancelTon": "4890"
       }
     }
   ]

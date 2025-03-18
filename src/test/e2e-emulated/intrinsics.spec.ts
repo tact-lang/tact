@@ -1,4 +1,4 @@
-import { Address, beginCell, Cell, toNano } from "@ton/core";
+import { Address, beginCell, Cell, toNano, fromNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { IntrinsicsTester } from "./contracts/output/intrinsics_IntrinsicsTester";
@@ -34,8 +34,8 @@ describe("intrinsics", () => {
 
     it("should return correct intrinsic results", async () => {
         // Compile-time constants
-        expect(await contract.getGetTons()).toBe(toNano("10.1234"));
-        expect(await contract.getGetTons2()).toBe(toNano("10.1234"));
+        expect(fromNano(await contract.getGetTons()).toString()).toBe("10.1234");
+        expect(fromNano(await contract.getGetTons2()).toString()).toBe("10.1234");
         expect(await contract.getGetString()).toBe("Hello world");
         expect(await contract.getGetString2()).toBe("Hello world");
         expect(
@@ -62,8 +62,8 @@ describe("intrinsics", () => {
                 Cell.fromBase64("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw="),
             ),
         ).toBe(true);
-        expect(await contract.getGetPow()).toBe(512n);
-        expect(await contract.getGetPow2()).toBe(512n);
+        expect((await contract.getGetPow()).toString()).toBe("512");
+        expect((await contract.getGetPow2()).toString()).toBe("512");
 
         // Compile-time optimizations
         expect(

@@ -44,10 +44,10 @@
       "label": "1.6.3 with the new selector hack",
       "pr": "https://github.com/tact-lang/tact/pull/2398",
       "gas": {
-        "externalTransfer": "8151",
-        "addExtension": "8474",
-        "internalTransfer": "8783",
-        "extensionTransfer": "4852"
+        "externalTransfer": "8003",
+        "addExtension": "8326",
+        "internalTransfer": "8845",
+        "extensionTransfer": "4914"
       }
     }
   ]

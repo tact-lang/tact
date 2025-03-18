@@ -40,9 +40,9 @@
       "label": "1.6.3 with the new selector hack",
       "pr": "https://github.com/tact-lang/tact/pull/2398",
       "gas": {
-        "transfer": "15944",
-        "burn": "12072",
-        "discovery": "5890"
+        "transfer": "15904",
+        "burn": "12032",
+        "discovery": "5870"
       }
     }
   ]
