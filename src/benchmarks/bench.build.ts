@@ -21,7 +21,7 @@ const main = async () => {
         safety: { nullChecks: false },
         optimizations: {
             alwaysSaveContractData: false,
-            internalExternalReceiversOutsideMethodsMap: "disable",
+            internalExternalReceiversOutsideMethodsMap: "explorers-compatible",
         },
     });
 };

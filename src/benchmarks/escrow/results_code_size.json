@@ -47,6 +47,22 @@
         "cells": "20",
         "bits": "12495"
       }
+    },
+    {
+      "label": "1.6.3 with no selector hack",
+      "pr": null,
+      "size": {
+        "cells": "21",
+        "bits": "12423"
+      }
+    },
+    {
+      "label": "1.6.3 with the new selector hack",
+      "pr": "https://github.com/tact-lang/tact/pull/2398",
+      "size": {
+        "cells": "20",
+        "bits": "12495"
+      }
     }
   ]
 }
