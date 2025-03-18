@@ -450,7 +450,9 @@ export function writeMainContract(
                 );
             });
         }
-        if(internalExternalReceiversOutsideMethodsMapMode(wCtx.ctx) == "fast") {
+        if (
+            internalExternalReceiversOutsideMethodsMapMode(wCtx.ctx) == "fast"
+        ) {
             wCtx.append(`() __tact_selector_hack_asm() impure asm """
             @atend @ 1 {
                 execute current@ context@ current!
@@ -486,7 +488,10 @@ export function writeMainContract(
             }`);
         }
 
-        if (internalExternalReceiversOutsideMethodsMapMode(wCtx.ctx) == "explorers-compatible") {
+        if (
+            internalExternalReceiversOutsideMethodsMapMode(wCtx.ctx) ==
+            "explorers-compatible"
+        ) {
             wCtx.append(`() __tact_selector_hack_asm() impure asm """
                             @atend @ 1 {
                                 execute current@ context@ current!
@@ -523,7 +528,7 @@ export function writeMainContract(
             if (hasExternal) {
                 wCtx.append(`DUP INC IFNOTJMP:<{
                     DROP swap @addop // place recv_external here
-                }>`)
+                }>`);
             }
 
             wCtx.append(`swap { DEPTH DEC ROLLX @procdictkeylen PUSHINT DICTIGETJMPZ } ifnot // if dict is empty (not null), we don't need to call from it here
@@ -532,7 +537,7 @@ export function writeMainContract(
                     } : }END>c
                     current@ context! current!
                 } does @atend !
-                """;`)
+                """;`);
 
             wCtx.append(`() __tact_selector_hack() method_id(65535) {
                             return __tact_selector_hack_asm();

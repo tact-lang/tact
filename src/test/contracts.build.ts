@@ -11,7 +11,7 @@ const main = async () => {
         safety: { nullChecks: false },
         optimizations: {
             alwaysSaveContractData: false,
-            internalExternalReceiversOutsideMethodsMap: true,
+            internalExternalReceiversOutsideMethodsMap: "explorers-compatible" as const,
         },
     };
 
@@ -32,7 +32,7 @@ const main = async () => {
         safety: { nullChecks: false },
         optimizations: {
             alwaysSaveContractData: false,
-            internalExternalReceiversOutsideMethodsMap: true,
+            internalExternalReceiversOutsideMethodsMap: "explorers-compatible",
         },
     });
 };

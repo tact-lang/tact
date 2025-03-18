@@ -44,7 +44,7 @@ describe("benchmarks", () => {
         blockchain = await Blockchain.create();
 
         step = writeLog({
-            path: join(__dirname, "output", "logWithHack.yaml"),
+            path: join(__dirname, "output", "log.yaml"),
             blockchain,
         });
     });

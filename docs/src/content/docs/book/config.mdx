@@ -408,11 +408,12 @@ This option can be used to provide an extra safety level or for debugging.
 
 <Badge text="Available since Tact 1.6.3" variant="tip" size="medium"/><p/>
 
-`false{:json}` by default.
+`"disable"{:json}` by default.
 
-If set to `true{:json}`, stores internal and external receivers outside of the methods map.
+If not set to `"disable"{:json}`, stores internal and external receivers outside the methods map.
 
 Saves gas, but as a result of this optimization, the contract might not be correctly recognized and parsed by explorers and user wallets.
+Using `"explorers-compatible"{:json}` is a compromise between gas savings and compatibility with explorers and user wallets.
 
 ```json filename="tact.config.json" {9,17}
 {
@@ -423,7 +424,7 @@ Saves gas, but as a result of this optimization, the contract might not be corre
       "output": "./output",
       "options": {
         "optimizations": {
-          "internalExternalReceiversOutsideMethodsMap": true
+          "internalExternalReceiversOutsideMethodsMap": "explorers-compatible"
         }
       }
     }

@@ -1,6 +1,6 @@
 import type { CompilerContext } from "../context/context";
 import { createContextStore } from "../context/context";
-import {throwInternal} from "../error/errors";
+import { throwInternal } from "../error/errors";
 
 const featureStore = createContextStore<boolean | null | string>();
 
@@ -38,15 +38,30 @@ export function enabledAlwaysSaveContractData(ctx: CompilerContext) {
 
 export function internalExternalReceiversOutsideMethodsMapMode(
     ctx: CompilerContext,
-) {
-    const featureMode = featureStore.get(ctx, "internalExternalReceiversOutsideMethodsMap");
-    if(typeof featureMode !== "string") {
-        throwInternal("Expected, that internalExternalReceiversOutsideMethodsMap is a string but got: " + featureMode);
+): "disable" | "explorers-compatible" | "fast" {
+    const featureMode = featureStore.get(
+        ctx,
+        "internalExternalReceiversOutsideMethodsMap",
+    );
+    if (typeof featureMode !== "string") {
+        return throwInternal(
+            "Expected, that internalExternalReceiversOutsideMethodsMap is a string but got: " +
+                featureMode,
+        );
     }
-    if(featureMode !== "disable" && featureMode !== "explorers-compatible" && featureMode !== "fast") {
-        throwInternal("Expected, that internalExternalReceiversOutsideMethodsMap is one of 'disable', 'explorers-compatible', 'fast' but got: " + featureMode);
+    else if (
+        featureMode !== "disable" &&
+        featureMode !== "explorers-compatible" &&
+        featureMode !== "fast"
+    ) {
+        return throwInternal(
+            "Expected, that internalExternalReceiversOutsideMethodsMap is one of 'disable', 'explorers-compatible', 'fast' but got: " +
+                featureMode,
+        );
     }
-    return featureMode;
+    else {
+        return featureMode;
+    }
 }
 
 export function enabledLazyDeploymentCompletedGetter(ctx: CompilerContext) {
