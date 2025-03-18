@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Standard Library
 
 - Added `forceWorkchain()` function: PR [#2387](https://github.com/tact-lang/tact/pull/2387)
-- Added `Slice.store` and functions: PR [#2395](https://github.com/tact-lang/tact/pull/2395)
+- Added `Slice.loadBasechainAddress()` and `Slice.skipBasechainAddress()` functions: PR [#2395](https://github.com/tact-lang/tact/pull/2395)
 
 ### Docs
 
