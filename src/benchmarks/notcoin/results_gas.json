@@ -20,7 +20,7 @@
     },
     {
       "label": "1.6.3 with no selector hack",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2370",
       "gas": {
         "transfer": "15874",
         "burn": "12002",
@@ -29,7 +29,7 @@
     },
     {
       "label": "1.6.3 with reworked selector hack",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2398",
       "gas": {
         "transfer": "15878",
         "burn": "12006",
