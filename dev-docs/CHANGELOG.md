@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Language features
+
+- Apply parameters rearrangement only for ASM methods with a single parameter to avoid confusion: PR [#2410](https://github.com/tact-lang/tact/pull/2410)
+
 ### Internal infrastructure
 
 - Removed `postinstall` from `package.json` to not run scripts with dev dependencies on the user side: PR [#2382](https://github.com/tact-lang/tact/pull/2382)
