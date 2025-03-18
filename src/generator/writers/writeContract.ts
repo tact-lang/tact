@@ -515,9 +515,7 @@ export function writeMainContract(
                 1 swap @procdictkeylen idict- drop // Delete the recv_external from the dict (it's okay if it's not there)
                 65535 swap @procdictkeylen idict- drop // Delete the __tact_selector_hack from the dict
                 
-                .s
-                depth 1- roll swap dup .s null? dup depth 1- -roll .s { drop } { PUSHREF DEPTH DEC -ROLLX } cond // PUSHREF the dict, so it's the first reference.
-                .s
+                depth 1- roll swap dup null? dup depth 1- -roll { drop } { PUSHREF DEPTH DEC -ROLLX } cond // PUSHREF the dict, so it's the first reference.
                 
                 DUP IFNOTJMP:<{
                     DROP swap @addop // place recv_internal here
