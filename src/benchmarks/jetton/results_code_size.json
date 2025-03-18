@@ -71,23 +71,13 @@
       }
     },
     {
-      "label": "1.6.3 with no selector hack",
-      "pr": "https://github.com/tact-lang/tact/pull/2370",
-      "size": {
-        "minter cells": "31",
-        "minter bits": "14566",
-        "wallet cells": "16",
-        "wallet bits": "8191"
-      }
-    },
-    {
-      "label": "1.6.3 with reworked selector hack",
-      "pr": "https://github.com/tact-lang/tact/pull/2398",
+      "label": "1.6.3 with fallback special cases and compatible exit code for Jetton",
+      "pr": "https://github.com/tact-lang/tact/pull/2396",
       "size": {
         "minter cells": "29",
-        "minter bits": "14721",
+        "minter bits": "14705",
         "wallet cells": "15",
-        "wallet bits": "8268"
+        "wallet bits": "8260"
       }
     }
   ]
