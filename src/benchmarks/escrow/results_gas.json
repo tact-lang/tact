@@ -172,7 +172,7 @@
     },
     {
       "label": "1.6.3 with no selector hack",
-      "pr": null,
+      "pr": "https://github.com/tact-lang/tact/pull/2370",
       "gas": {
         "fundingTon": "4689",
         "changeCode": "4798",
