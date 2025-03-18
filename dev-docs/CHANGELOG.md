@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Language features
 
-- [fix] Apply parameters rearrangement only for ASM methods with single parameter: PR [#2410](https://github.com/tact-lang/tact/pull/2410)
+- Apply parameters rearrangement only for ASM methods with a single parameter to avoid confusion: PR [#2410](https://github.com/tact-lang/tact/pull/2410)
 
 ### Internal infrastructure
 
