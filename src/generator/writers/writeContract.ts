@@ -19,11 +19,11 @@ import { writeInterfaces } from "./writeInterfaces";
 import {
     groupContractReceivers,
     writeBouncedRouter,
+    writeLoadOpcode,
     writeNonBouncedRouter,
 } from "./writeRouter";
 import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import { getAllocation } from "../../storage/resolveAllocation";
-import { contractErrors } from "../../abi/errors";
 
 export type ContractsCodes = Record<
     string,
@@ -386,20 +386,15 @@ export function writeMainContract(
             wCtx.append();
         }
 
-        wCtx.append(";; message opcode reader utility");
-        wCtx.append(
-            `;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code`,
-        );
-        wCtx.append(
-            `(slice, int) ~load_opcode(slice s) asm( -> 1 0) "32 LDUQ ${contractErrors.invalidMessage.id} THROWIFNOT";`,
-        );
-
         wCtx.append(`;;`);
         wCtx.append(`;; Routing of a Contract ${contract.name}`);
         wCtx.append(`;;`);
         wCtx.append();
 
         const contractReceivers = groupContractReceivers(contract);
+
+        writeLoadOpcode(contractReceivers.internal, wCtx);
+        wCtx.append();
 
         // Render internal receiver
         wCtx.inBlock(
@@ -440,6 +435,9 @@ export function writeMainContract(
             typeof contractReceivers.external.fallback === "undefined"
         );
         if (hasExternal) {
+            writeLoadOpcode(contractReceivers.external, wCtx);
+            wCtx.append();
+
             wCtx.inBlock("() recv_external(slice in_msg) impure", () => {
                 writeLoadContractVariables(contract, wCtx);
 
