@@ -34,8 +34,12 @@ describe("intrinsics", () => {
 
     it("should return correct intrinsic results", async () => {
         // Compile-time constants
-        expect(fromNano(await contract.getGetTons()).toString()).toBe("10.1234");
-        expect(fromNano(await contract.getGetTons2()).toString()).toBe("10.1234");
+        expect(fromNano(await contract.getGetTons()).toString()).toBe(
+            "10.1234",
+        );
+        expect(fromNano(await contract.getGetTons2()).toString()).toBe(
+            "10.1234",
+        );
         expect(await contract.getGetString()).toBe("Hello world");
         expect(await contract.getGetString2()).toBe("Hello world");
         expect(
