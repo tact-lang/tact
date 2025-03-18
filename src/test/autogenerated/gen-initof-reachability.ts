@@ -24,6 +24,7 @@ import { findTransaction } from "@ton/test-utils";
 type ItemWithDeclarations<T> = {
     item: T;
     declarations: Declarations;
+    featuresTrace: GeneratorFeatureType[];
 };
 
 type Declarations = {
@@ -54,16 +55,21 @@ type Test = {
 const GeneratorFeature = {
     LET_STATEMENT: "LET",
     EXPRESSION_STATEMENT: "EXPRESSION",
-    CONDITION_STATEMENT: "CONDITION",
+    IF_NO_ELSE_STATEMENT: "IF_NO_ELSE",
+    IF_THEN_STATEMENT: "IF_THEN",
+    IF_ELSE_STATEMENT: "IF_ELSE",
     WHILE_STATEMENT: "WHILE",
     UNTIL_STATEMENT: "UNTIL",
     REPEAT_STATEMENT: "REPEAT",
     DESTRUCT_STATEMENT: "DESTRUCT",
     BLOCK_STATEMENT: "BLOCK",
     TRY_STATEMENT: "TRY",
+    CATCH_STATEMENT: "CATCH",
 
     STATIC_CALL_EXPRESSION: "STATIC_CALL",
     INIT_OF_EXPRESSION: "INIT_OF",
+
+    CONTRACT_WITH_INIT: "CONTRACT_WITH_INIT",
 } as const;
 
 type GeneratorFeatureType =
@@ -82,7 +88,7 @@ function getGeneratorFactory(
     astF: FactoryAst,
     allowedFeatures: Set<GeneratorFeatureType>,
 ): {
-    generator: fc.Arbitrary<ItemWithDeclarations<A.AstContract>[]>;
+    generator: fc.Arbitrary<ItemWithDeclarations<A.AstContract>>;
     batchBuilder: (
         items: ItemWithDeclarations<A.AstContract>[],
         extraModule: A.AstModule,
@@ -586,26 +592,33 @@ function getGeneratorFactory(
     }
     */
 
-    function withEmptyDeclarations<T>(item: T): ItemWithDeclarations<T> {
+    function withEmptyDeclarations<T>(
+        item: T,
+        featuresTrace: GeneratorFeatureType[],
+    ): ItemWithDeclarations<T> {
         return {
             item: item,
             declarations: {
                 globalDeclarations: new Map(),
                 contractDeclarations: new Map(),
             },
+            featuresTrace,
         };
     }
 
     function withDeclarations<T>(
         item: T,
         declarations: Declarations,
+        featuresTrace: GeneratorFeatureType[],
     ): ItemWithDeclarations<T> {
         return {
             item,
             declarations,
+            featuresTrace,
         };
     }
 
+    /*
     function chainGenerators<T>(
         gens: fc.Arbitrary<readonly T[]>[],
     ): fc.Arbitrary<T[]> {
@@ -627,7 +640,7 @@ function getGeneratorFactory(
                 gens.slice(1),
             );
         });
-    }
+    }*/
 
     /*
     function contractConstantGenerator(baseExpr: A.AstExpression): GeneratorWithDeclarations<ExpressionWithName> {
@@ -653,14 +666,17 @@ function getGeneratorFactory(
     }*/
 
     function initOfGenerator(): GeneratorDescriptor<
-        readonly ItemWithDeclarations<ExpressionWrapper>[]
+        ItemWithDeclarations<ExpressionWrapper>
     > {
-        const generator = fc.constant([
-            withEmptyDeclarations({
-                name: "InitOf",
-                expression: makeInitOf(makeId("Deployer"), []),
-            }),
-        ]);
+        const generator = fc.constant(
+            withEmptyDeclarations(
+                {
+                    name: "InitOf",
+                    expression: makeInitOf(makeId("Deployer"), []),
+                },
+                [GeneratorFeature.INIT_OF_EXPRESSION],
+            ),
+        );
 
         return {
             feature: GeneratorFeature.INIT_OF_EXPRESSION,
@@ -671,52 +687,67 @@ function getGeneratorFactory(
 
     function staticCallGenerator(
         currentFunCallDepth: number,
-    ): GeneratorDescriptor<ItemWithDeclarations<ExpressionWrapper>[]> {
+    ): GeneratorDescriptor<ItemWithDeclarations<ExpressionWrapper>> {
         if (currentFunCallDepth >= config.maxFunCallDepth) {
-            return {
-                feature: GeneratorFeature.STATIC_CALL_EXPRESSION,
-                ignoreFeatureSet: false,
-                generator: fc.constant([]),
-            };
+            // At the maximum depth, we do not recurse more, but generate
+            // the base initOf Deployer()
+            return initOfGenerator();
         }
 
+        const buildGenerator = (
+            returnStmt: A.AstStatementReturn,
+            genStmt: ItemWithDeclarations<StatementsWrapper>,
+        ) => {
+            const finalGlobalDecls: Map<string, A.AstModuleItem> = new Map(
+                genStmt.declarations.globalDeclarations,
+            );
+
+            const funName = makeFreshFunctionName();
+            const funDef = makeFunctionDefinition(
+                funName,
+                [makeTypedParameter("arg", "Int")],
+                [...genStmt.item.statements, returnStmt],
+                [],
+                makeTypeId("StateInit"),
+            );
+            const call = makeStaticCall(funName, [makeId("arg")]);
+            const testName = `StaticCall_${genStmt.item.name}`;
+            finalGlobalDecls.set(idText(funName), funDef);
+            return fc.constant(
+                withDeclarations(
+                    { name: testName, expression: call },
+                    {
+                        globalDeclarations: finalGlobalDecls,
+                        contractDeclarations: new Map(),
+                    },
+                    [
+                        ...genStmt.featuresTrace,
+                        GeneratorFeature.STATIC_CALL_EXPRESSION,
+                    ],
+                ),
+            );
+        };
+
         const generator = statementGenerator(currentFunCallDepth + 1).chain(
-            (genStmts) => {
-                const finalItems: ItemWithDeclarations<ExpressionWrapper>[] =
-                    [];
-
-                for (const stmtsWithName of genStmts) {
-                    const finalGlobalDecls: Map<string, A.AstModuleItem> =
-                        new Map(stmtsWithName.declarations.globalDeclarations);
-
-                    if (stmtsWithName.item.assignedStateInit) {
-                        const funName = makeFreshFunctionName();
-                        const returnStmt = makeReturnStatement(
-                            makeId("stateInit"),
-                        );
-                        const funDef = makeFunctionDefinition(
-                            funName,
-                            [makeTypedParameter("arg", "Int")],
-                            [...stmtsWithName.item.statements, returnStmt],
-                            [],
-                            makeTypeId("StateInit"),
-                        );
-                        const call = makeStaticCall(funName, [makeId("arg")]);
-                        const testName = `StaticCall_${stmtsWithName.item.name}`;
-                        finalGlobalDecls.set(idText(funName), funDef);
-                        finalItems.push(
-                            withDeclarations(
-                                { name: testName, expression: call },
-                                {
-                                    globalDeclarations: finalGlobalDecls,
-                                    contractDeclarations: new Map(),
-                                },
-                            ),
-                        );
-                    }
+            (genStmt) => {
+                if (!genStmt.item.assignedStateInit) {
+                    // If the statement did not assign the stateInit variable,
+                    // then if we use the statement as such, it would
+                    // result in an invalid function. In this case, default into using
+                    // "return initOf Deployer()"
+                    return initOfGenerator().generator.chain((initOfExpr) =>
+                        buildGenerator(
+                            makeReturnStatement(initOfExpr.item.expression),
+                            genStmt,
+                        ),
+                    );
                 }
 
-                return fc.constant(finalItems);
+                // The statement assigned the stateInit variable, just return it
+                return buildGenerator(
+                    makeReturnStatement(makeId("stateInit")),
+                    genStmt,
+                );
             },
         );
 
@@ -812,7 +843,7 @@ function getGeneratorFactory(
 
     function letStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): GeneratorDescriptor<readonly ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>> {
         const varName = makeId("stateInit");
         const varType = makeTypeId("StateInit");
         const stmtLet = makeLetStatement(
@@ -822,7 +853,7 @@ function getGeneratorFactory(
         );
         const newName = `Let_${baseExpr.item.name}`;
 
-        const generator = fc.constant([
+        const generator = fc.constant(
             withDeclarations(
                 {
                     name: newName,
@@ -830,8 +861,9 @@ function getGeneratorFactory(
                     assignedStateInit: true,
                 },
                 baseExpr.declarations,
+                [...baseExpr.featuresTrace, GeneratorFeature.LET_STATEMENT],
             ),
-        ]);
+        );
 
         return {
             feature: GeneratorFeature.LET_STATEMENT,
@@ -842,10 +874,10 @@ function getGeneratorFactory(
 
     function expressionStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): GeneratorDescriptor<readonly ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>> {
         const stmtExpr = makeExpressionStatement(baseExpr.item.expression);
         const newName = `Expr_${baseExpr.item.name}`;
-        const generator = fc.constant([
+        const generator = fc.constant(
             withDeclarations(
                 {
                     name: newName,
@@ -853,8 +885,12 @@ function getGeneratorFactory(
                     assignedStateInit: false,
                 },
                 baseExpr.declarations,
+                [
+                    ...baseExpr.featuresTrace,
+                    GeneratorFeature.EXPRESSION_STATEMENT,
+                ],
             ),
-        ]);
+        );
 
         return {
             feature: GeneratorFeature.EXPRESSION_STATEMENT,
@@ -863,20 +899,103 @@ function getGeneratorFactory(
         };
     }
 
-    function conditionStatementGenerator(
+    function ifNoElseStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
             makeInitOf(makeId("Dummy1"), []),
         );
-        const cond1Expr = makeBinaryExpression(
+        const condExpr = makeBinaryExpression(
             "==",
             makeBinaryExpression("-", makeId("arg"), makeId("arg")),
             makeInt(0n),
         );
-        const cond2Expr = makeBinaryExpression(
+        const thenStmt = makeAssignStatement(
+            makeId("stateInit"),
+            baseExpr.item.expression,
+        );
+        const stmt = makeConditionStatement(condExpr, [thenStmt], undefined);
+
+        const newName = `IfNoElse_${baseExpr.item.name}`;
+
+        const generator = fc.constant(
+            withDeclarations(
+                {
+                    name: newName,
+                    statements: [initVarStmt, stmt],
+                    assignedStateInit: true,
+                },
+                baseExpr.declarations,
+                [
+                    ...baseExpr.featuresTrace,
+                    GeneratorFeature.IF_NO_ELSE_STATEMENT,
+                ],
+            ),
+        );
+
+        return {
+            feature: GeneratorFeature.IF_NO_ELSE_STATEMENT,
+            ignoreFeatureSet: false,
+            generator,
+        };
+    }
+
+    function ifThenStatementGenerator(
+        baseExpr: ItemWithDeclarations<ExpressionWrapper>,
+    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>> {
+        const initVarStmt = makeLetStatement(
+            makeId("stateInit"),
+            makeTypeId("StateInit"),
+            makeInitOf(makeId("Dummy1"), []),
+        );
+        const condExpr = makeBinaryExpression(
+            "==",
+            makeBinaryExpression("-", makeId("arg"), makeId("arg")),
+            makeInt(0n),
+        );
+
+        const thenStmt = makeAssignStatement(
+            makeId("stateInit"),
+            baseExpr.item.expression,
+        );
+        const elseStmt = makeAssignStatement(
+            makeId("stateInit"),
+            makeInitOf(makeId("Dummy2"), []),
+        );
+        const stmt = makeConditionStatement(condExpr, [thenStmt], [elseStmt]);
+
+        const newName = `IfThen_${baseExpr.item.name}`;
+
+        const generator = fc.constant(
+            withDeclarations(
+                {
+                    name: newName,
+                    statements: [initVarStmt, stmt],
+                    assignedStateInit: true,
+                },
+                baseExpr.declarations,
+                [...baseExpr.featuresTrace, GeneratorFeature.IF_THEN_STATEMENT],
+            ),
+        );
+
+        return {
+            feature: GeneratorFeature.IF_THEN_STATEMENT,
+            ignoreFeatureSet: false,
+            generator,
+        };
+    }
+
+    function ifElseStatementGenerator(
+        baseExpr: ItemWithDeclarations<ExpressionWrapper>,
+    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>> {
+        const initVarStmt = makeLetStatement(
+            makeId("stateInit"),
+            makeTypeId("StateInit"),
+            makeInitOf(makeId("Dummy1"), []),
+        );
+        const condExpr = makeBinaryExpression(
             "==",
             makeBinaryExpression(
                 "+",
@@ -886,44 +1005,34 @@ function getGeneratorFactory(
             makeInt(0n),
         );
 
-        const expr = makeAssignStatement(
-            makeId("stateInit"),
-            baseExpr.item.expression,
-        );
-        const dummy2 = makeAssignStatement(
+        const thenStmt = makeAssignStatement(
             makeId("stateInit"),
             makeInitOf(makeId("Dummy2"), []),
         );
-        const case1 = makeConditionStatement(cond1Expr, [expr], undefined);
-        const case2 = makeConditionStatement(cond1Expr, [expr], [dummy2]);
-        const case3 = makeConditionStatement(cond2Expr, [dummy2], [expr]);
 
-        const case1Name = `IfNoElse_${baseExpr.item.name}`;
-        const case2Name = `IfThen_${baseExpr.item.name}`;
-        const case3Name = `IfElse_${baseExpr.item.name}`;
+        const elseStmt = makeAssignStatement(
+            makeId("stateInit"),
+            baseExpr.item.expression,
+        );
+
+        const stmt = makeConditionStatement(condExpr, [thenStmt], [elseStmt]);
+
+        const newName = `IfElse_${baseExpr.item.name}`;
 
         const generator = fc.constant(
-            [
+            withDeclarations(
                 {
-                    name: case1Name,
-                    statements: [initVarStmt, case1],
+                    name: newName,
+                    statements: [initVarStmt, stmt],
                     assignedStateInit: true,
                 },
-                {
-                    name: case2Name,
-                    statements: [initVarStmt, case2],
-                    assignedStateInit: true,
-                },
-                {
-                    name: case3Name,
-                    statements: [initVarStmt, case3],
-                    assignedStateInit: true,
-                },
-            ].map((item) => withDeclarations(item, baseExpr.declarations)),
+                baseExpr.declarations,
+                [...baseExpr.featuresTrace, GeneratorFeature.IF_ELSE_STATEMENT],
+            ),
         );
 
         return {
-            feature: GeneratorFeature.CONDITION_STATEMENT,
+            feature: GeneratorFeature.IF_ELSE_STATEMENT,
             ignoreFeatureSet: false,
             generator,
         };
@@ -931,7 +1040,7 @@ function getGeneratorFactory(
 
     function whileStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): GeneratorDescriptor<readonly ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -955,7 +1064,7 @@ function getGeneratorFactory(
 
         const newName = `While_${baseExpr.item.name}`;
 
-        const generator = fc.constant([
+        const generator = fc.constant(
             withDeclarations(
                 {
                     name: newName,
@@ -963,8 +1072,9 @@ function getGeneratorFactory(
                     assignedStateInit: true,
                 },
                 baseExpr.declarations,
+                [...baseExpr.featuresTrace, GeneratorFeature.WHILE_STATEMENT],
             ),
-        ]);
+        );
 
         return {
             feature: GeneratorFeature.WHILE_STATEMENT,
@@ -975,7 +1085,7 @@ function getGeneratorFactory(
 
     function untilStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): GeneratorDescriptor<readonly ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -999,7 +1109,7 @@ function getGeneratorFactory(
 
         const newName = `Until_${baseExpr.item.name}`;
 
-        const generator = fc.constant([
+        const generator = fc.constant(
             withDeclarations(
                 {
                     name: newName,
@@ -1007,8 +1117,9 @@ function getGeneratorFactory(
                     assignedStateInit: true,
                 },
                 baseExpr.declarations,
+                [...baseExpr.featuresTrace, GeneratorFeature.UNTIL_STATEMENT],
             ),
-        ]);
+        );
 
         return {
             feature: GeneratorFeature.UNTIL_STATEMENT,
@@ -1019,7 +1130,7 @@ function getGeneratorFactory(
 
     function repeatStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): GeneratorDescriptor<readonly ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -1043,7 +1154,7 @@ function getGeneratorFactory(
 
         const newName = `Repeat_${baseExpr.item.name}`;
 
-        const generator = fc.constant([
+        const generator = fc.constant(
             withDeclarations(
                 {
                     name: newName,
@@ -1051,8 +1162,9 @@ function getGeneratorFactory(
                     assignedStateInit: true,
                 },
                 baseExpr.declarations,
+                [...baseExpr.featuresTrace, GeneratorFeature.REPEAT_STATEMENT],
             ),
-        ]);
+        );
 
         return {
             feature: GeneratorFeature.REPEAT_STATEMENT,
@@ -1103,7 +1215,7 @@ function getGeneratorFactory(
 
     function destructStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): GeneratorDescriptor<readonly ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>> {
         const identifiers: Map<string, [A.AstId, A.AstId]> = new Map();
         identifiers.set("init", [makeId("init"), makeId("stateInit")]);
 
@@ -1122,7 +1234,7 @@ function getGeneratorFactory(
 
         const newName = `Destruct_${baseExpr.item.name}`;
 
-        const generator = fc.constant([
+        const generator = fc.constant(
             withDeclarations(
                 {
                     name: newName,
@@ -1130,8 +1242,12 @@ function getGeneratorFactory(
                     assignedStateInit: true,
                 },
                 baseExpr.declarations,
+                [
+                    ...baseExpr.featuresTrace,
+                    GeneratorFeature.DESTRUCT_STATEMENT,
+                ],
             ),
-        ]);
+        );
 
         return {
             feature: GeneratorFeature.DESTRUCT_STATEMENT,
@@ -1142,7 +1258,7 @@ function getGeneratorFactory(
 
     function blockStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): GeneratorDescriptor<readonly ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -1158,7 +1274,7 @@ function getGeneratorFactory(
 
         const newName = `Block_${baseExpr.item.name}`;
 
-        const generator = fc.constant([
+        const generator = fc.constant(
             withDeclarations(
                 {
                     name: newName,
@@ -1166,8 +1282,9 @@ function getGeneratorFactory(
                     assignedStateInit: true,
                 },
                 baseExpr.declarations,
+                [...baseExpr.featuresTrace, GeneratorFeature.BLOCK_STATEMENT],
             ),
-        ]);
+        );
         return {
             feature: GeneratorFeature.BLOCK_STATEMENT,
             ignoreFeatureSet: false,
@@ -1177,7 +1294,47 @@ function getGeneratorFactory(
 
     function tryStatementGenerator(
         baseExpr: ItemWithDeclarations<ExpressionWrapper>,
-    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>[]> {
+    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>> {
+        const initVarStmt = makeLetStatement(
+            makeId("stateInit"),
+            makeTypeId("StateInit"),
+            makeInitOf(makeId("Dummy1"), []),
+        );
+
+        const exprStmt = makeAssignStatement(
+            makeId("stateInit"),
+            baseExpr.item.expression,
+        );
+
+        const tryStmt = makeTryStatement(
+            makeFreshVarName(),
+            [exprStmt],
+            undefined,
+        );
+
+        const newName = `Try_${baseExpr.item.name}`;
+
+        const generator = fc.constant(
+            withDeclarations(
+                {
+                    name: newName,
+                    statements: [initVarStmt, tryStmt],
+                    assignedStateInit: true,
+                },
+                baseExpr.declarations,
+                [...baseExpr.featuresTrace, GeneratorFeature.TRY_STATEMENT],
+            ),
+        );
+        return {
+            feature: GeneratorFeature.TRY_STATEMENT,
+            ignoreFeatureSet: false,
+            generator,
+        };
+    }
+
+    function catchStatementGenerator(
+        baseExpr: ItemWithDeclarations<ExpressionWrapper>,
+    ): GeneratorDescriptor<ItemWithDeclarations<StatementsWrapper>> {
         const initVarStmt = makeLetStatement(
             makeId("stateInit"),
             makeTypeId("StateInit"),
@@ -1197,36 +1354,27 @@ function getGeneratorFactory(
             makeStaticCall(makeId("require"), [requireArg, makeString("")]),
         );
 
-        const case1 = makeTryStatement(
-            makeFreshVarName(),
-            [exprStmt],
-            undefined,
-        );
-        const case2 = makeTryStatement(
+        const catchStmt = makeTryStatement(
             makeFreshVarName(),
             [requireStatement],
             [exprStmt],
         );
 
-        const case1Name = `Try_${baseExpr.item.name}`;
         const case2Name = `Catch_${baseExpr.item.name}`;
 
         const generator = fc.constant(
-            [
-                {
-                    name: case1Name,
-                    statements: [initVarStmt, case1],
-                    assignedStateInit: true,
-                },
+            withDeclarations(
                 {
                     name: case2Name,
-                    statements: [initVarStmt, case2],
+                    statements: [initVarStmt, catchStmt],
                     assignedStateInit: true,
                 },
-            ].map((item) => withDeclarations(item, baseExpr.declarations)),
+                baseExpr.declarations,
+                [...baseExpr.featuresTrace, GeneratorFeature.CATCH_STATEMENT],
+            ),
         );
         return {
-            feature: GeneratorFeature.TRY_STATEMENT,
+            feature: GeneratorFeature.CATCH_STATEMENT,
             ignoreFeatureSet: false,
             generator,
         };
@@ -1234,55 +1382,157 @@ function getGeneratorFactory(
 
     function expressionGenerator(
         currentFunCallDepth: number,
-    ): fc.Arbitrary<readonly ItemWithDeclarations<ExpressionWrapper>[]> {
-        const exprGens = [
+    ): fc.Arbitrary<ItemWithDeclarations<ExpressionWrapper>> {
+        const baseGens = [
             initOfGenerator(),
-            staticCallGenerator(currentFunCallDepth),
-            //methodCallGenerator(),
             //contractConstantGenerator(initOf),
             //contractFieldGenerator(initOf)
         ];
 
-        // Keep only those generators allowed by the features
-        const finalGens = exprGens
-            .filter(
-                (genDesc) =>
-                    genDesc.ignoreFeatureSet ||
-                    allowedFeatures.has(genDesc.feature),
-            )
-            .map((genDesc) => genDesc.generator);
+        const recursiveGens = [
+            staticCallGenerator(currentFunCallDepth),
+            //methodCallGenerator(),
+        ];
 
-        return finalGens.length === 0
-            ? fc.constant([])
-            : fc.oneof(...finalGens);
+        // Keep only those generators allowed by the features
+        const finalBaseGenDesc = baseGens.filter(
+            (genDesc) =>
+                genDesc.ignoreFeatureSet ||
+                allowedFeatures.has(genDesc.feature),
+        );
+
+        const finalRecursiveGenDesc = recursiveGens.filter(
+            (genDesc) =>
+                genDesc.ignoreFeatureSet ||
+                allowedFeatures.has(genDesc.feature),
+        );
+
+        if (
+            finalBaseGenDesc.length === 0 ||
+            finalRecursiveGenDesc.length === 0
+        ) {
+            // Uniformly choose
+            const finalBaseGens = finalBaseGenDesc.map(
+                (genDesc) => genDesc.generator,
+            );
+            const finalRecursiveGens = finalRecursiveGenDesc.map(
+                (genDesc) => genDesc.generator,
+            );
+            return fc.oneof(...finalBaseGens, ...finalRecursiveGens);
+        }
+
+        // Assign weights proportional to the current function call depth:
+        // Bigger weight to recursive generators when the function call depth is shallow
+        const desiredRecursiveProb =
+            ((0.1 - 0.9) / config.maxFunCallDepth) * currentFunCallDepth + 0.9;
+
+        // Fix a weight for the base generators
+        const baseWeight = 10;
+        const totalBaseWeight = baseWeight * finalBaseGenDesc.length;
+
+        const totalRecursiveWeight =
+            (desiredRecursiveProb * totalBaseWeight) /
+            (1 - desiredRecursiveProb);
+        const recursiveWeight = Math.ceil(
+            totalRecursiveWeight / finalRecursiveGenDesc.length,
+        );
+
+        const finalBaseGens = finalBaseGenDesc.map((genDesc) => {
+            return { arbitrary: genDesc.generator, weight: baseWeight };
+        });
+        const finalRecursiveGens = finalRecursiveGenDesc.map((genDesc) => {
+            return { arbitrary: genDesc.generator, weight: recursiveWeight };
+        });
+
+        return fc.oneof(...finalBaseGens, ...finalRecursiveGens);
     }
 
     function statementGenerator(
         currentFunCallDepth: number,
-    ): fc.Arbitrary<readonly ItemWithDeclarations<StatementsWrapper>[]> {
-        return expressionGenerator(currentFunCallDepth).chain((genExprs) => {
-            const generators: fc.Arbitrary<
-                readonly ItemWithDeclarations<StatementsWrapper>[]
-            >[] = [];
-
-            for (const exprWithName of genExprs) {
-                const stmtGens = [
-                    letStatementGenerator(exprWithName),
-                    expressionStatementGenerator(exprWithName),
-                    conditionStatementGenerator(exprWithName),
-                    whileStatementGenerator(exprWithName),
-                    untilStatementGenerator(exprWithName),
-                    repeatStatementGenerator(exprWithName) /*
+    ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>> {
+        return expressionGenerator(currentFunCallDepth).chain((genExpr) => {
+            const stmtGens = [
+                letStatementGenerator(genExpr),
+                expressionStatementGenerator(genExpr),
+                ifNoElseStatementGenerator(genExpr),
+                ifThenStatementGenerator(genExpr),
+                ifElseStatementGenerator(genExpr),
+                whileStatementGenerator(genExpr),
+                untilStatementGenerator(genExpr),
+                repeatStatementGenerator(genExpr) /*
                     forEachStatementGenerator(
-                        exprWithName
+                        genExpr
                     ),*/,
-                    destructStatementGenerator(exprWithName),
-                    blockStatementGenerator(exprWithName),
-                    tryStatementGenerator(exprWithName),
-                ];
+                destructStatementGenerator(genExpr),
+                blockStatementGenerator(genExpr),
+                tryStatementGenerator(genExpr),
+                catchStatementGenerator(genExpr),
+            ];
 
-                // Keep only those generators allowed by the features
-                const finalGens = stmtGens
+            // Keep only those generators allowed by the features
+            const finalGens = stmtGens
+                .filter(
+                    (genDesc) =>
+                        genDesc.ignoreFeatureSet ||
+                        allowedFeatures.has(genDesc.feature),
+                )
+                .map((genDesc) => genDesc.generator);
+
+            return fc.oneof(...finalGens);
+        });
+    }
+
+    function contractWithInitGenerator(
+        stmtsData: ItemWithDeclarations<StatementsWrapper>,
+    ): GeneratorDescriptor<ItemWithDeclarations<A.AstContract>> {
+        const newName = `${stmtsData.item.name}_${idCounter++}`;
+        const stmtsToUse = stmtsData.item.assignedStateInit
+            ? stmtsData.item.statements
+            : [
+                  ...stmtsData.item.statements,
+                  makeLetStatement(
+                      makeId("stateInit"),
+                      makeTypeId("StateInit"),
+                      makeInitOf(makeId("Deployer"), []),
+                  ),
+              ];
+
+        const contract = makeContract(
+            makeId(newName),
+            stmtsToUse,
+            Array.from(stmtsData.declarations.contractDeclarations.values()),
+        );
+
+        const generator = fc.constant(
+            withDeclarations(
+                contract,
+                {
+                    globalDeclarations:
+                        stmtsData.declarations.globalDeclarations,
+                    contractDeclarations: new Map(),
+                },
+                [
+                    ...stmtsData.featuresTrace,
+                    GeneratorFeature.CONTRACT_WITH_INIT,
+                ],
+            ),
+        );
+
+        return {
+            feature: GeneratorFeature.CONTRACT_WITH_INIT,
+            ignoreFeatureSet: true,
+            generator,
+        };
+    }
+
+    function contractGenerator(
+        currentFunCallDepth: number,
+    ): fc.Arbitrary<ItemWithDeclarations<A.AstContract>> {
+        return statementGenerator(currentFunCallDepth).chain(
+            (stmtsWithName) => {
+                const contractGens = [contractWithInitGenerator(stmtsWithName)];
+
+                const finalGens = contractGens
                     .filter(
                         (genDesc) =>
                             genDesc.ignoreFeatureSet ||
@@ -1290,71 +1540,9 @@ function getGeneratorFactory(
                     )
                     .map((genDesc) => genDesc.generator);
 
-                generators.push(
-                    finalGens.length === 0
-                        ? fc.constant([])
-                        : fc.oneof(...finalGens),
-                );
-            }
-
-            // This will ensure that for every generated expression, we will choose at least one statement
-            return chainGenerators(generators);
-        });
-    }
-
-    function contractWithInitGenerator(
-        stmtsData: ItemWithDeclarations<StatementsWrapper>,
-    ): fc.Arbitrary<ItemWithDeclarations<A.AstContract>[]> {
-        const finalContracts: A.AstContract[] = [];
-
-        if (stmtsData.item.assignedStateInit) {
-            const newName = `${stmtsData.item.name}_${idCounter++}`;
-            finalContracts.push(
-                makeContract(
-                    makeId(newName),
-                    stmtsData.item.statements,
-                    Array.from(
-                        stmtsData.declarations.contractDeclarations.values(),
-                    ),
-                ),
-            );
-        }
-        /*finalContracts.push(
-            makeContractNoSend(
-                makeId(stmtsData.name + "_NoSend"),
-                stmtsData.statements,
-                contractDecls,
-            )
-        );*/
-        return fc.constant(
-            finalContracts.map((item) =>
-                withDeclarations(item, {
-                    globalDeclarations:
-                        stmtsData.declarations.globalDeclarations,
-                    contractDeclarations: new Map(),
-                }),
-            ),
+                return fc.oneof(...finalGens);
+            },
         );
-    }
-
-    function contractGenerator(
-        currentFunCallDepth: number,
-    ): fc.Arbitrary<ItemWithDeclarations<A.AstContract>[]> {
-        return statementGenerator(currentFunCallDepth).chain((genStmts) => {
-            const finalGens: fc.Arbitrary<
-                ItemWithDeclarations<A.AstContract>[]
-            >[] = [];
-
-            for (const stmtsWithName of genStmts) {
-                const contractGens = [contractWithInitGenerator(stmtsWithName)];
-
-                finalGens.push(...contractGens);
-            }
-
-            return finalGens.length === 0
-                ? fc.constant([])
-                : fc.oneof(...finalGens);
-        });
     }
 
     /*
@@ -1619,7 +1807,7 @@ async function main() {
 
     const compilationBatchSize = 20;
 
-    const reports = await Promise.all(
+    await Promise.all(
         featureSets.map((featureSet, idx) =>
             executeTestsOnFeatures(
                 featureSet,
@@ -1631,21 +1819,6 @@ async function main() {
             ),
         ),
     );
-
-    const numberOfErrors = reports.reduce((prev, curr) => prev + curr, 0);
-
-    if (numberOfErrors > 0) {
-        console.log(
-            `There were a total of ${numberOfErrors} errors. See the following log files:`,
-        );
-        reports.forEach((errorCount, idx) => {
-            if (errorCount > 0) {
-                console.log(`error-${idx + 1}.log`);
-            }
-        });
-    } else {
-        console.log("There were no errors.");
-    }
 }
 
 async function executeTestsOnFeatures(
@@ -1655,9 +1828,7 @@ async function executeTestsOnFeatures(
     compilationBatchSize: number,
     customStdlib: CustomStdlib,
     extraModule: A.AstModule,
-): Promise<number> {
-    let errorCount = 0;
-
+) {
     const errorFilename = `error-${idx}.log`;
     const fileDescriptor = fs.openSync(
         path.join(__dirname, errorFilename),
@@ -1674,8 +1845,7 @@ async function executeTestsOnFeatures(
             fc.array(testFactory.generator, {
                 minLength: compilationBatchSize,
             }),
-            async (genResult) => {
-                const allCases = genResult.flat();
+            async (allCases) => {
                 const numberOfGeneratedContracts = allCases.length;
                 const tests = testFactory.batchBuilder(
                     allCases,
@@ -1687,7 +1857,7 @@ async function executeTestsOnFeatures(
                     `#${idx}: Generated ${numberOfGeneratedContracts} contracts, grouped in ${tests.length} compilation batches.`,
                 );
 
-                nextTest: for (const test of tests) {
+                for (const test of tests) {
                     console.log(`#${idx}: Compiling next batch...`);
                     try {
                         const contractCodes = await buildModule(
@@ -1708,7 +1878,6 @@ async function executeTestsOnFeatures(
                                 console.log(`#${idx}: ${contractName} passed.`);
                             } catch (e) {
                                 if (e instanceof Error) {
-                                    errorCount++;
                                     console.log(
                                         `#${idx}: ${contractName} failed. See ${errorFilename}.`,
                                     );
@@ -1718,19 +1887,16 @@ async function executeTestsOnFeatures(
                                         featureSetString,
                                         test.module,
                                     );
-                                    continue nextTest;
-                                } else {
-                                    // Cannot handle this error. Stop the entire process since this is something unexpected.
-                                    throw e;
                                 }
+                                // Interrupt the entire process
+                                throw e;
                             }
                         }
                     } catch (e) {
                         if (e instanceof Error) {
-                            errorCount++;
                             const batchString = `[${test.contractNames.join(", ")}]`;
                             console.log(
-                                `#${idx}: Batch ${batchString} failed compilation. See ${errorFilename}.`,
+                                `#${idx}: Batch ${batchString} failed processing. See ${errorFilename}.`,
                             );
                             handleError(
                                 e,
@@ -1738,18 +1904,14 @@ async function executeTestsOnFeatures(
                                 featureSetString,
                                 test.module,
                             );
-                            continue nextTest;
-                        } else {
-                            // Cannot handle this error. Stop the entire process since this is something unexpected.
-                            throw e;
                         }
+                        // Interrupt the entire process
+                        throw e;
                     }
                 }
             },
         ),
     );
-
-    return errorCount;
 }
 
 function handleError(
@@ -1809,5 +1971,65 @@ function ensure(
         },
     };
 }
+
+/*
+function statistics() {
+    const astF = getAstFactory();
+
+    const featureSet = new Set(Object.values(GeneratorFeature));
+
+    const testFactory = getGeneratorFactory(astF, featureSet);
+
+    const featureCount: Map<string, number> = new Map();
+    const depthCount: Map<number, number> = new Map();
+
+    const samples = fc.sample(testFactory.generator, 100000);
+
+    for (const sample of samples) {
+        for (const feature of sample.featuresTrace) {
+            const count = featureCount.get(feature);
+            if (typeof count === "undefined") {
+                featureCount.set(feature, 1);
+            } else {
+                featureCount.set(feature, count + 1);
+            }
+        }
+
+        // Now count the function call depth
+        const callDepth = sample.featuresTrace.filter(
+            (feature) => feature === GeneratorFeature.STATIC_CALL_EXPRESSION,
+        ).length;
+        const count = depthCount.get(callDepth);
+        if (typeof count === "undefined") {
+            depthCount.set(callDepth, 1);
+        } else {
+            depthCount.set(callDepth, count + 1);
+        }
+    }
+
+    const totalFeatureCount = featureCount
+        .values()
+        .reduce((prev, curr) => prev + curr, 0);
+    const totalDepthCount = depthCount
+        .values()
+        .reduce((prev, curr) => prev + curr, 0);
+
+    for (const [feature, count] of featureCount) {
+        console.log(`${feature}: ${count / totalFeatureCount}`);
+    }
+
+    for (const [depth, count] of depthCount) {
+        console.log(`${depth}: ${count / totalDepthCount}`);
+    }
+
+    fc.statistics(
+        testFactory.generator,
+        (sample) => sample.featuresTrace,
+        100000,
+    );
+}
+
+statistics();
+*/
 
 void main();
