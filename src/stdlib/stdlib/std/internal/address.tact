@@ -314,7 +314,7 @@ inline fun contractBasechainAddress(s: StateInit): BasechainAddress {
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells#builder.storebasechainaddress
+/// See: https://docs.tact-lang.org/ref/core-cells#builderstorebasechainaddress
 ///
 extends fun storeBasechainAddress(self: Builder, address: BasechainAddress): Builder {
     if (address.hash == null) {
@@ -351,14 +351,15 @@ extends fun storeBasechainAddress(self: Builder, address: BasechainAddress): Bui
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 extends mutates fun loadBasechainAddress(self: Slice): BasechainAddress {
+    // addr_none
     if (self.loadUint(2) == 0) {
         return BasechainAddress{ hash: null };
-    } else {
-        // Skip the remaining prefix
-        self.skipBits(9);
-        // Load the hash (account ID)
-        return BasechainAddress{ hash: self.loadUint(256) };
     }
+
+    // addr_std, skip the remaining prefix bits
+    self.skipBits(9);
+    // Load the hash (account ID)
+    return BasechainAddress{ hash: self.loadUint(256) };
 }
 
 /// Extension mutation function for the `Slice` type. Available since Tact 1.6.4.
@@ -389,11 +390,15 @@ extends mutates fun loadBasechainAddress(self: Slice): BasechainAddress {
 /// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
 ///
 extends mutates fun skipBasechainAddress(self: Slice) {
+    // addr_std
     if (self.loadUint(2) != 0) {
         // 9 bits of the remaining prefix since first 2 are loaded already
         // plus 256 bits of the hash (account ID)
         self.skipBits(265);
     }
+
+    // addr_none, nothing to load since its 2 bits
+    // are loaded in the if statement above
 }
 
 /// Global function. Available since Tact 1.6.3.
