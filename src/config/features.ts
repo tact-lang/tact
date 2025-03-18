@@ -75,3 +75,7 @@ function featureEnabled(ctx: CompilerContext, key: string) {
 export function featureEnable(ctx: CompilerContext, key: string) {
     return featureStore.set(ctx, key, true);
 }
+
+export function featureSet(ctx: CompilerContext, key: string, value: boolean | string) {
+    return featureStore.set(ctx, key, value);
+}

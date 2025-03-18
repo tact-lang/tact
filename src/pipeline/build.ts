@@ -6,7 +6,7 @@ import {
 } from "@tact-lang/opcode";
 import type { WrappersConstantDescription } from "../bindings/writeTypescript";
 import { writeTypescript } from "../bindings/writeTypescript";
-import { featureEnable } from "../config/features";
+import { featureEnable, featureSet } from "../config/features";
 import type { Project } from "../config/parseConfig";
 import { CompilerContext } from "../context/context";
 import { funcCompile } from "../func/funcCompile";
@@ -75,13 +75,14 @@ export function enableFeatures(
             name: "lazyDeploymentCompletedGetter",
         },
     ];
-    return features.reduce((currentCtx, { option, name }) => {
+    let currentCtx = ctx;
+    for (const { option, name } of features) {
         if (option) {
-            logger.debug(`   > 👀 Enabling ${name}`);
-            return featureEnable(currentCtx, name);
+            logger.debug(`   > 👀 Setting ${name} to ${option}`);
+            currentCtx = featureSet(currentCtx, name, option);
         }
-        return currentCtx;
-    }, ctx);
+    }
+    return currentCtx;
 }
 
 export async function build(args: {
