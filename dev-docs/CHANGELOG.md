@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Internal infrastructure
 
 - Removed `postinstall` from `package.json` to not run scripts with dev dependencies on the user side: PR [#2382](https://github.com/tact-lang/tact/pull/2382)
-- **BREAKING CHANGE:** Config option `internalExternalReceiversOutsideMethodsMap` is now has 3 variants: "disable", "explorers-compatible", "fast": PR [#2398](https://github.com/tact-lang/tact/pull/2398)
+- **BREAKING CHANGE:** Config option `internalExternalReceiversOutsideMethodsMap` has 3 variants now: "disable", "explorers-compatible", "fast": PR [#2398](https://github.com/tact-lang/tact/pull/2398)
 
 ### Standard Library
 
