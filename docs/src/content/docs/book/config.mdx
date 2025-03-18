@@ -412,8 +412,7 @@ This option can be used to provide an extra safety level or for debugging.
 
 If not set to `"disable"{:json}`, stores internal and external receivers outside the methods map.
 
-Saves gas, but as a result of this optimization, the contract might not be correctly recognized and parsed by explorers and user wallets.
-Using `"explorers-compatible"{:json}` is a compromise between gas savings and compatibility with explorers and user wallets.
+When enabled, it saves gas but can cause the contract to be incorrectly recognized and misparsed by some explorers and user wallets. To ensure compatibility at the cost of fewer gas optimizations, use the `"explorers-compatible"{:json}` option.
 
 ```json filename="tact.config.json" {9,17}
 {
