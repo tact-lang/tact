@@ -649,7 +649,7 @@ export function writeExpression(
                     methodDescr.self &&
                     methodDescr.ast.shuffle.args.length > 1 &&
                     methodDescr.ast.shuffle.ret.length === 0 &&
-                    methodDescr.ast.params.length === 2 // apply only for `fun foo(self: Type, param: Type)`
+                    methodDescr.ast.params.length === 2 // apply only for `fun foo(self: T1, param: T2)`
                 ) {
                     const renderedSelfAndArguments = [s, ...renderedArguments];
                     const selfAndParameters = [
