@@ -39,6 +39,16 @@
         "wallet cells": "15",
         "wallet bits": "8268"
       }
+    },
+    {
+      "label": "1.6.3 with fallback special cases and compatible exit code for Jetton",
+      "pr": "https://github.com/tact-lang/tact/pull/2396",
+      "size": {
+        "minter cells": "31",
+        "minter bits": "16358",
+        "wallet cells": "15",
+        "wallet bits": "8260"
+      }
     }
   ]
 }

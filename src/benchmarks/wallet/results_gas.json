@@ -39,6 +39,16 @@
         "internalTransfer": "9046",
         "extensionTransfer": "5133"
       }
+    },
+    {
+      "label": "1.6.3 with fallback special cases and compatible exit code for Jetton",
+      "pr": "https://github.com/tact-lang/tact/pull/2396",
+      "gas": {
+        "externalTransfer": "8059",
+        "addExtension": "8382",
+        "internalTransfer": "8711",
+        "extensionTransfer": "4780"
+      }
     }
   ]
 }
