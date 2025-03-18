@@ -48,8 +48,7 @@ export function internalExternalReceiversOutsideMethodsMapMode(
             "Expected, that internalExternalReceiversOutsideMethodsMap is a string but got: " +
                 featureMode,
         );
-    }
-    else if (
+    } else if (
         featureMode !== "disable" &&
         featureMode !== "explorers-compatible" &&
         featureMode !== "fast"
@@ -58,8 +57,7 @@ export function internalExternalReceiversOutsideMethodsMapMode(
             "Expected, that internalExternalReceiversOutsideMethodsMap is one of 'disable', 'explorers-compatible', 'fast' but got: " +
                 featureMode,
         );
-    }
-    else {
+    } else {
         return featureMode;
     }
 }
@@ -76,6 +74,10 @@ export function featureEnable(ctx: CompilerContext, key: string) {
     return featureStore.set(ctx, key, true);
 }
 
-export function featureSet(ctx: CompilerContext, key: string, value: boolean | string) {
+export function featureSet(
+    ctx: CompilerContext,
+    key: string,
+    value: boolean | string,
+) {
     return featureStore.set(ctx, key, value);
 }
