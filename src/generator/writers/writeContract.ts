@@ -1,6 +1,7 @@
 import {
     enabledInline,
     enabledInterfacesGetter,
+    enabledInternalExternalReceiversOutsideMethodsMap,
     enabledIpfsAbiGetter,
     enabledLazyDeploymentCompletedGetter,
     enabledOptimizedChildCode,
@@ -18,11 +19,11 @@ import { writeInterfaces } from "./writeInterfaces";
 import {
     groupContractReceivers,
     writeBouncedRouter,
+    writeLoadOpcode,
     writeNonBouncedRouter,
 } from "./writeRouter";
 import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import { getAllocation } from "../../storage/resolveAllocation";
-import { contractErrors } from "../../abi/errors";
 
 export type ContractsCodes = Record<
     string,
@@ -385,20 +386,15 @@ export function writeMainContract(
             wCtx.append();
         }
 
-        wCtx.append(";; message opcode reader utility");
-        wCtx.append(
-            `;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code`,
-        );
-        wCtx.append(
-            `(slice, int) ~load_opcode(slice s) asm( -> 1 0) "32 LDUQ ${contractErrors.invalidMessage.id} THROWIFNOT";`,
-        );
-
         wCtx.append(`;;`);
         wCtx.append(`;; Routing of a Contract ${contract.name}`);
         wCtx.append(`;;`);
         wCtx.append();
 
         const contractReceivers = groupContractReceivers(contract);
+
+        writeLoadOpcode(contractReceivers.internal, wCtx);
+        wCtx.append();
 
         // Render internal receiver
         wCtx.inBlock(
@@ -439,6 +435,9 @@ export function writeMainContract(
             typeof contractReceivers.external.fallback === "undefined"
         );
         if (hasExternal) {
+            writeLoadOpcode(contractReceivers.external, wCtx);
+            wCtx.append();
+
             wCtx.inBlock("() recv_external(slice in_msg) impure", () => {
                 writeLoadContractVariables(contract, wCtx);
 
@@ -450,39 +449,42 @@ export function writeMainContract(
             });
         }
 
-        wCtx.append(`() __tact_selector_hack_asm() impure asm """
-@atend @ 1 {
-    execute current@ context@ current!
-    {
-        }END> b>
-        
-        <{
-            SETCP0 DUP
-            IFNOTJMP:<{
-                DROP over <s ref@ 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot @addop
-            }>`);
+        // fift injection, protected by a feature flag
+        if (enabledInternalExternalReceiversOutsideMethodsMap(wCtx.ctx)) {
+            wCtx.append(`() __tact_selector_hack_asm() impure asm """
+            @atend @ 1 {
+                execute current@ context@ current!
+                {
+                    }END> b>
+                    
+                    <{
+                        SETCP0 DUP
+                        IFNOTJMP:<{
+                            DROP over <s ref@ 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot @addop
+                        }>`);
 
-        if (hasExternal) {
-            wCtx.append(`DUP -1 EQINT IFJMP:<{
-                DROP over <s ref@ -1 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot @addop
-            }>`);
+            if (hasExternal) {
+                wCtx.append(`DUP -1 EQINT IFJMP:<{
+                            DROP over <s ref@ -1 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot @addop
+                        }>`);
+            }
+
+            wCtx.append(`swap <s ref@
+                        0 swap @procdictkeylen idict- drop
+                        -1 swap @procdictkeylen idict- drop
+                        65535 swap @procdictkeylen idict- drop
+            
+                        @procdictkeylen DICTPUSHCONST DICTIGETJMPZ 11 THROWARG
+                    }> b>
+                } : }END>c
+                current@ context! current!
+            } does @atend !
+            """;`);
+
+            wCtx.append(`() __tact_selector_hack() method_id(65535) {
+                return __tact_selector_hack_asm();
+            }`);
         }
-
-        wCtx.append(`swap <s ref@
-            0 swap @procdictkeylen idict- drop
-            -1 swap @procdictkeylen idict- drop
-            65535 swap @procdictkeylen idict- drop
-
-            @procdictkeylen DICTPUSHCONST DICTIGETJMPZ 11 THROWARG
-        }> b>
-    } : }END>c
-    current@ context! current!
-} does @atend !
-""";`);
-
-        wCtx.append(`() __tact_selector_hack() method_id(65535) {
-    return __tact_selector_hack_asm();
-}`);
     });
 }
 

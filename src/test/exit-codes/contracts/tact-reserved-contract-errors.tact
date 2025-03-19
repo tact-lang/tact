@@ -8,6 +8,8 @@ contract ReservedContractErrorsTester with Ownable {
     /// To make Ownable work
     owner: Address;
 
+    const masterchainAddress: Address = newAddress(-1, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873);
+
     /// Setups address of this contract to be its owner
     init() { self.owner = myAddress() }
 
@@ -197,5 +199,9 @@ contract ReservedContractErrorsTester with Ownable {
         // As we got here, everything above caused the target exit code,
         // so let's throw it explicitly now for the tests on Blueprint's side
         throw(targetCode);
+    }
+
+    receive("138") {
+        forceBasechain(self.masterchainAddress);
     }
 }

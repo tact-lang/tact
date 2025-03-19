@@ -8,6 +8,7 @@
     "*.spec.ts",
     "src/test/**/*",
     "examples/**/*",
-    "src/benchmarks/**/*"
+    "src/benchmarks/**/*",
+    "src/cli/**/e2e.spec.ts"
   ]
 }

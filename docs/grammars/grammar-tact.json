@@ -431,7 +431,7 @@
           },
           {
             "comment": "Augmented assignment operators",
-            "match": "(\\+=|-=|\\*=|/=|%=|\\^=|&=|\\|=|<<=|>>=)",
+            "match": "(\\+=|-=|\\*=|/=|%=|\\^=|&=|\\|=|\\|\\|=|&&=|<<=|>>=)",
             "name": "keyword.operator.assignment.tact"
           },
           {

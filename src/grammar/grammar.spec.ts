@@ -1,8 +1,8 @@
-import { getAstFactory } from "../../ast/ast-helpers";
-import { loadCases } from "../../utils/loadCases";
-import { getParser } from "../grammar";
-import type { SrcInfo } from "../src-info";
-import { isSrcInfo } from "../src-info";
+import { getAstFactory } from "../ast/ast-helpers";
+import { loadCases } from "../utils/loadCases";
+import type { SrcInfo } from "./src-info";
+import { isSrcInfo } from "./src-info";
+import { getParser } from "./index";
 
 expect.addSnapshotSerializer({
     test: (src) => isSrcInfo(src),
@@ -10,24 +10,20 @@ expect.addSnapshotSerializer({
 });
 
 describe("grammar", () => {
-    const shouldParsePaths = [__dirname + "/../test/", __dirname + "/test/"];
-
-    for (const path of shouldParsePaths) {
-        for (const r of loadCases(path)) {
-            it("should parse " + r.name, () => {
-                const ast = getAstFactory();
-                const { parse } = getParser(ast, "new");
-                expect(
-                    parse({ code: r.code, path: "<unknown>", origin: "user" }),
-                ).toMatchSnapshot();
-            });
-        }
+    for (const r of loadCases(__dirname + "/test/")) {
+        it("should parse " + r.name, () => {
+            const ast = getAstFactory();
+            const { parse } = getParser(ast);
+            expect(
+                parse({ code: r.code, path: "<unknown>", origin: "user" }),
+            ).toMatchSnapshot();
+        });
     }
 
-    for (const r of loadCases(__dirname + "/../test-failed/")) {
+    for (const r of loadCases(__dirname + "/test-failed/")) {
         it("should fail " + r.name, () => {
             const ast = getAstFactory();
-            const { parse } = getParser(ast, "new");
+            const { parse } = getParser(ast);
             expect(() =>
                 parse({ code: r.code, path: "<unknown>", origin: "user" }),
             ).toThrowErrorMatchingSnapshot();
@@ -36,7 +32,7 @@ describe("grammar", () => {
 });
 
 describe("parse imports", () => {
-    const parser = getParser(getAstFactory(), "new");
+    const parser = getParser(getAstFactory());
 
     const parse = (code: string) => {
         return parser.parse({

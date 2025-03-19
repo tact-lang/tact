@@ -16,7 +16,7 @@
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddress
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddressunsafe
-/// * https://docs.tact-lang.org/ref/core-cells#addressasslice
+/// * https://docs.tact-lang.org/ref/core-addresses#addressasslice
 ///
 extends fun asAddress(self: Slice, chain: Int): Address {
     // 11 bits for the prefix,
@@ -59,7 +59,7 @@ extends fun asAddress(self: Slice, chain: Int): Address {
 /// See:
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddressunsafe
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddress
-/// * https://docs.tact-lang.org/ref/core-cells#addressasslice
+/// * https://docs.tact-lang.org/ref/core-addresses#addressasslice
 ///
 asm extends fun asAddressUnsafe(self: Slice): Address {}
 
@@ -78,7 +78,7 @@ asm extends fun asAddressUnsafe(self: Slice): Address {}
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-cells#addressasslice
+/// * https://docs.tact-lang.org/ref/core-addresses#addressasslice
 /// * https://docs.tact-lang.org/ref/core-cells#sliceasaddressunsafe
 ///
 asm extends fun asSlice(self: Address): Slice {}
@@ -101,7 +101,7 @@ asm extends fun asSlice(self: Address): Slice {}
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-common#newaddress
+/// See: https://docs.tact-lang.org/ref/core-addresses#newaddress
 ///
 inline fun newAddress(chain: Int, hash: Int): Address {
     return beginCell()
@@ -118,7 +118,7 @@ inline fun newAddress(chain: Int, hash: Int): Address {
 /// At the moment, only `workchain` IDs used on TON are 0 of the basechain and -1 of the masterchain.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#parsestdaddress
+/// * https://docs.tact-lang.org/ref/core-addresses#parsestdaddress
 /// * https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb#L105-L106
 ///
 struct StdAddress {
@@ -131,7 +131,7 @@ struct StdAddress {
 /// Variable-length addresses are intended for future extensions, and while validators must be ready to accept them in inbound messages, the standard (non-variable) addresses are used whenever possible.
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#parsevaraddress
+/// * https://docs.tact-lang.org/ref/core-addresses#parsevaraddress
 /// * https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb#L107-L108
 ///
 struct VarAddress {
@@ -153,7 +153,7 @@ struct VarAddress {
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#parsestdaddress
+/// See: https://docs.tact-lang.org/ref/core-addresses#parsestdaddress
 ///
 asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
 
@@ -177,7 +177,7 @@ asm fun parseStdAddress(slice: Slice): StdAddress { REWRITESTDADDR }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-advanced#parsevaraddress
+/// See: https://docs.tact-lang.org/ref/core-addresses#parsevaraddress
 ///
 asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 
@@ -196,9 +196,33 @@ asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells/#sliceloadaddress
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadaddress
 ///
 asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
+
+/// Extension mutation function for the `Slice` type. Available since Tact 1.6.2.
+///
+/// Skips an `Address` from the `Slice`.
+///
+/// Attempts to skip such `Address` when `Slice` doesn't contain it throw an exception with exit code 8: `Cell overflow`.
+///
+/// Attempts to skip more data than `Slice` contains throw an exception with exit code 9: `Cell underflow`.
+///
+/// ```tact
+/// fun example() {
+///     let s1: Slice = beginCell()
+///         .storeAddress(myAddress())
+///         .storeUint(42, 32)
+///         .asSlice();
+///
+///     s1.skipAddress();
+///     let fizz: Int = s1.loadUint(32); // 42
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadaddress
+///
+asm extends mutates fun skipAddress(self: Slice) { LDMSGADDR NIP }
 
 /// Extension function for the `Builder` type.
 ///
@@ -213,14 +237,14 @@ asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells/#builderstoreaddress
+/// See: https://docs.tact-lang.org/ref/core-cells#builderstoreaddress
 ///
 asm extends fun storeAddress(self: Builder, address: Address): Builder { STSLICER }
 
 /// Struct representing a basechain address. Available since Tact 1.6.0.
 ///
 /// A basechain address (workchain 0) can be either empty (null hash) or contain a 256-bit hash value.
-/// 
+///
 struct BasechainAddress {
     hash: Int?;
 }
@@ -230,7 +254,7 @@ struct BasechainAddress {
 /// Creates and returns an empty basechain address with a null hash.
 ///
 /// When serialized, an empty basechain address is represented as `addr_none`.
-/// 
+///
 /// ```tact
 /// fun example() {
 ///     let emptyAddr: BasechainAddress = emptyBasechainAddress();
@@ -297,4 +321,66 @@ extends fun storeBasechainAddress(self: Builder, address: BasechainAddress): Bui
     return self
         .storeUint(0b10_0_00000000, 3 + 8)
         .storeUint(address.hash!!, 256);
+}
+
+/// Global function. Available since Tact 1.6.3.
+///
+/// Checks whether the `address` is in the basechain, i.e., its chain ID is 0. If it is not, throws an exception with exit code 138: `Not a basechain address`.
+///
+/// ```tact
+/// fun examples() {
+///     let someBasechainAddress: Address =
+///         newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+///
+///     let someMasterchainAddress: Address =
+///         newAddress(-1, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+///
+///     // Does not throw because the chain ID is 0
+///     forceBasechain(someBasechainAddress);
+///
+///     try {
+///         // Throws because the chain ID is -1 (masterchain)
+///         forceBasechain(someMasterchainAddress);
+///     } catch (exitCode) {
+///         // exitCode is 138
+///     }
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-addresses#forcebasechain
+///
+asm fun forceBasechain(address: Address) { REWRITESTDADDR DROP 138 THROWIF }
+
+/// Global function. Available since Tact 1.6.4.
+///
+/// Checks whether the `address` is in the `workchain`, i.e., its chain ID is equal to `workchain`. If it is not, throws an exception with exit code `errorCode`.
+///
+/// ```tact
+/// fun examples() {
+///     let someBasechainAddress: Address =
+///         newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+///
+///     let someMasterchainAddress: Address =
+///         newAddress(-1, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+///
+///     // Does not throw because the chain ID matches workchain parameter
+///     forceWorkchain(someBasechainAddress, 0, 593);
+///     forceWorkchain(someMasterchainAddress, -1, 593);
+///
+///     try {
+///         // Throws because the chain ID is 0 which doesn't match the workchain parameter, -1
+///         forceWorkchain(someBasechainAddress, -1, 593);
+///     } catch (exitCode) {
+///         // exitCode is 593
+///     }
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-addresses#forceworkchain
+///
+asm(errorCode workchain address) fun forceWorkchain(address: Address, workchain: Int, errorCode: Int) {
+    REWRITESTDADDR
+    DROP
+    CMP
+    THROWANYIF
 }

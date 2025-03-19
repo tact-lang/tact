@@ -1,0 +1,31 @@
+{
+  "results": [
+    {
+      "label": "FunC",
+      "gas": {
+        "transfer": "16984",
+        "burn": "12732",
+        "discovery": "6545"
+      },
+      "pr": "https://github.com/OpenBuilders/notcoin-contract"
+    },
+    {
+      "label": "1.6.2",
+      "pr": "https://github.com/tact-lang/tact/pull/2329",
+      "gas": {
+        "transfer": "15734",
+        "burn": "11862",
+        "discovery": "5785"
+      }
+    },
+    {
+      "label": "1.6.3 with fallback special cases and compatible exit code for Jetton",
+      "pr": "https://github.com/tact-lang/tact/pull/2396",
+      "gas": {
+        "transfer": "15800",
+        "burn": "11928",
+        "discovery": "5818"
+      }
+    }
+  ]
+}

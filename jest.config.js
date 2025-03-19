@@ -1,5 +1,8 @@
 module.exports = {
     preset: "ts-jest",
+    transform: {
+        "^.+\\.(t|j)sx?$": "@swc/jest",
+    },
     testEnvironment: "node",
     testPathIgnorePatterns: ["/node_modules/", "/dist/"],
     globalSetup: "./jest.globalSetup.js",

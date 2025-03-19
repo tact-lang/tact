@@ -32,5 +32,6 @@ describe("asm-shuffle-in-comptime", () => {
     it("should shuffle arguments correctly", async () => {
         expect(await contract.getFoo(10n)).toEqual(20n);
         expect(await contract.getFoo(100n)).toEqual(100n);
+        expect(await contract.getBar()).toEqual(0n);
     });
 });

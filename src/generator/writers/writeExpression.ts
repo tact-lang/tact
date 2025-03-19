@@ -648,7 +648,8 @@ export function writeExpression(
                     methodDescr.ast.kind === "asm_function_def" &&
                     methodDescr.self &&
                     methodDescr.ast.shuffle.args.length > 1 &&
-                    methodDescr.ast.shuffle.ret.length === 0
+                    methodDescr.ast.shuffle.ret.length === 0 &&
+                    methodDescr.ast.params.length === 2 // apply only for `fun foo(self: T1, param: T2)`
                 ) {
                     const renderedSelfAndArguments = [s, ...renderedArguments];
                     const selfAndParameters = [

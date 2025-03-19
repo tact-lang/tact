@@ -1,0 +1,235 @@
+---
+title: Communication and messaging
+description: "Main functions for sending messages in the Core library of Tact"
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+Primary [message-sending functions](/book/send#message-sending-functions).
+
+To perform [nanoToncoin][nano] reservations, use [`nativeReserve(){:tact}`](/ref/core-contextstate#nativereserve) function from the [context and state-related functions reference page](/ref/core-contextstate).
+
+## Common
+
+### send
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
+```tact
+fun send(params: SendParameters);
+```
+
+[Queues the message](/book/send#outbound-message-processing) to be sent using a [`SendParameters{:tact}`](/book/send) [struct][struct].
+
+Attempts to queue more than 255 messages throw an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
+Usage example:
+
+```tact
+send(SendParameters{
+    to: sender(),    // back to the sender,
+    value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
+                     // and no message body
+});
+```
+
+:::note[Useful links:]
+
+  [Sending messages in the Book](/book/send)\
+  [Message `mode` in the Book](/book/message-mode)\
+  [Single-contract communication in the Cookbook](/cookbook/single-communication)\
+  [`nativeReserve(){:tact}`](/ref/core-contextstate#nativereserve)
+
+:::
+
+### message
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun message(params: MessageParameters);
+```
+
+[Queues the message](/book/send#outbound-message-processing) to be sent using the `MessageParameters{:tact}` [struct][struct]. Allows for cheaper non-deployment regular messages compared to the [`send(){:tact}`](#send) function.
+
+The `MessageParameters{:tact}` [struct][struct] is similar to the [`SendParameters{:tact}`](/book/send) [struct][struct], but without the `code` and `data` fields.
+
+Attempts to queue more than 255 messages throw an exception with an [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
+Usage example:
+
+```tact
+message(MessageParameters{
+    to: sender(),    // back to the sender,
+    value: ton("1"), // with 1 Toncoin (1_000_000_000 nanoToncoin),
+                     // and no message body
+});
+```
+
+:::note[Useful links:]
+
+  [Sending messages in the Book](/book/send)\
+  [Message `mode` in the Book](/book/message-mode)\
+  [`nativeReserve(){:tact}`](/ref/core-contextstate#nativereserve)
+
+:::
+
+### deploy
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun deploy(params: DeployParameters);
+```
+
+[Queues](/book/send#outbound-message-processing) the [contract deployment message](/book/deploy) to be sent using the `DeployParameters{:tact}` [struct][struct]. Allows for cheaper on-chain deployments compared to the [`send(){:tact}`](#send) function.
+
+The `DeployParameters{:tact}` [struct][struct] consists of the following fields:
+
+Field    | Type                          | Description
+:------- | :---------------------------- | :----------
+`mode`   | [`Int{:tact}`][int]           | An 8-bit value that configures how to send a message, defaults to $0$. See: [Message `mode`](/book/message-mode).
+`body`   | [`Cell?{:tact}`][cell]        | [Optional][opt] message body as a [`Cell{:tact}`][cell].
+`value`  | [`Int{:tact}`][int]           | The amount of [nanoToncoins][nano] you want to send with the message. This value is used to cover [forward fees][fwdfee] unless the optional flag [`SendPayGasSeparately{:tact}`](/book/message-mode#optional-flags) is used.
+`bounce` | [`Bool{:tact}`][p]            | When set to `true` (default), the message bounces back to the sender if the recipient contract doesn't exist or isn't able to process the message.
+`init`   | [`StateInit{:tact}`][initpkg] | [Initial package][initpkg] of the contract (initial code and initial data). See: [`initOf{:tact}`][initpkg].
+
+Attempts to queue more than 255 messages throw an exception with an [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
+Usage example:
+
+```tact
+deploy(DeployParameters{
+    init: initOf SomeContract(), // with initial code and data of SomeContract
+                                 // and no additional message body
+    mode: SendIgnoreErrors,      // skip the message in case of errors
+    value: ton("1"),             // send 1 Toncoin (1_000_000_000 nanoToncoin)
+});
+```
+
+:::note[Useful links:]
+
+  [Sending messages in the Book](/book/send)\
+  [Message `mode` in the Book](/book/message-mode)\
+  [`nativeReserve(){:tact}`](/ref/core-contextstate#nativereserve)
+
+:::
+
+### cashback
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="Available since Tact 1.6.1" variant="tip" size="medium"/><p/>
+
+```tact
+fun cashback(to: Address);
+```
+
+[Queues](/book/send#outbound-message-processing) an empty message to be sent with the [`SendRemainingValue{:tact}`](/book/message-mode#base-modes) mode with the [`SendIgnoreErrors{:tact}`](/book/message-mode/#optional-flags) to the destination address `to`. It is the most gas-efficient way to send the remaining value from the incoming message to the given address.
+
+This function won't forward excess values if any other [message-sending functions](/book/send#message-sending-functions) were called in the same receiver before.
+
+Attempts to queue more than 255 messages throw an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
+Usage examples:
+
+```tact
+// Forward the remaining value back to the sender
+cashback(sender());
+
+// The cashback() function above is cheaper, but functionally
+// equivalent to the following call to the message() function
+message(MessageParameters{
+    mode: SendRemainingValue | SendIgnoreErrors,
+    body: null,
+    value: 0,
+    to: sender(),
+    bounce: false,
+});
+```
+
+### emit
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
+```tact
+fun emit(body: Cell);
+```
+
+[Queues the message](/book/send#outbound-message-processing) `body` to be sent to the outer world for the purpose of logging and analyzing it later off-chain. The message does not have a recipient and is more gas-efficient compared to using any other [message-sending functions](/book/send#message-sending-functions) of Tact.
+
+The message is sent with the default mode: [`SendDefaultMode`](/book/message-mode#base-modes) ($0$).
+
+Attempts to queue more than $255$ messages throw an exception with an [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
+Usage example:
+
+```tact
+emit("Catch me if you can, Mr. Holmes".asComment()); // asComment() converts a String to a Cell
+```
+
+:::note
+
+  To analyze `emit(){:tact}` calls, one must look at the [external messages](/book/external) produced by the contract.
+
+  Read more: [Logging via `emit(){:tact}`](/book/debug#logging).
+
+:::
+
+## Advanced
+
+Various niche, dangerous, or unstable features which can produce unexpected results and are meant to be used by more experienced users.
+
+:::caution
+
+  Proceed with caution.
+
+:::
+
+### nativeSendMessage
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
+```tact
+fun nativeSendMessage(cell: Cell, mode: Int);
+```
+
+[Queues the message](/book/send#outbound-message-processing) to be sent by specifying the complete `cell` and the [message `mode`](/book/message-mode).
+
+Attempts to queue more than $255$ messages throw an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
+:::note
+
+  Prefer using the much more common and user-friendly [`send(){:tact}`](#send) function unless you have complex logic that can't be expressed otherwise.
+
+:::
+
+### nativeSendMessageReturnForwardFee
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/>
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun nativeSendMessageReturnForwardFee(cell: Cell, mode: Int): Int;
+```
+
+Similar to [`nativeSendMessage(){:tact}`](#nativesendmessage), but also calculates and returns the [forward fee][fwdfee] in [nanoToncoins][nanotoncoin].
+
+Attempts to queue more than $255$ messages throw an exception with [exit code 33](/book/exit-codes#33): `Action list is too long`.
+
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
+[cell]: /book/cells#cells
+[slice]: /book/cells#slices
+[struct]: /book/structs-and-messages#structs
+[opt]: /book/optionals
+
+[msg-queue]: /book/send#outbound-message-processing
+[nano]: /book/integers#nanotoncoin
+[initpkg]: /book/expressions#initof
+
+[fwdfee]: https://docs.ton.org/develop/howto/fees-low-level#forward-fees
+[workchain-id]: https://docs.ton.org/learn/overviews/addresses#workchain-id
+[account-id]: https://docs.ton.org/learn/overviews/addresses#account-id

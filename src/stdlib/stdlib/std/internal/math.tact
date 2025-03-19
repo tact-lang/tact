@@ -15,7 +15,7 @@
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#nativerandomize
+/// * https://docs.tact-lang.org/ref/core-random#nativerandomize
 /// * https://docs.tact-lang.org/ref/core-random#randomint
 ///
 asm fun nativeRandomize(x: Int) { ADDRAND }
@@ -34,9 +34,9 @@ asm fun nativeRandomize(x: Int) { ADDRAND }
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#nativerandomizelt
-/// * https://docs.tact-lang.org/ref/core-advanced#nativerandomize
-/// * https://docs.tact-lang.org/ref/core-advanced#curlt
+/// * https://docs.tact-lang.org/ref/core-random#nativerandomizelt
+/// * https://docs.tact-lang.org/ref/core-random#nativerandomize
+/// * https://docs.tact-lang.org/ref/core-contextstate#curlt
 /// * https://docs.tact-lang.org/ref/core-random#randomint
 ///
 asm fun nativeRandomizeLt() { LTIME ADDRAND }
@@ -53,8 +53,8 @@ asm fun nativeRandomizeLt() { LTIME ADDRAND }
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#nativepreparerandom
-/// * https://docs.tact-lang.org/ref/core-advanced#nativerandomizelt
+/// * https://docs.tact-lang.org/ref/core-random#nativepreparerandom
+/// * https://docs.tact-lang.org/ref/core-random#nativerandomizelt
 /// * https://docs.tact-lang.org/ref/core-random#randomint
 /// * https://docs.tact-lang.org/ref/core-random#random
 ///
@@ -182,7 +182,7 @@ asm fun abs(x: Int): Int { ABS }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-common#now
+/// See: https://docs.tact-lang.org/ref/core-contextstate#now
 ///
 asm fun now(): Int { NOW }
 

@@ -24,15 +24,15 @@ Tact 智能合约开发者应该意识到一些反模式和潜在的攻击矢量
 ##### Don'ts ❌
 
 ```tact
-import "@stdlib/deploy";
-
 message Login {
     privateKey: Int as uint256;
     signature: Slice;
     data: Slice;
 }
 
-contract Test with Deployable {
+contract Test {
+    receive() { cashback(sender()) } // for the deployment
+
     receive(msg: Login) {
         let publicKey = getPublicKey(msg.privateKey);
 
@@ -200,7 +200,7 @@ contract Counter with Ownable {
 不要在不验证发件人身份的情况下执行消息！
 
 ```tact
-contract Example with Deployable {
+contract Example {
     myJettonWalletAddress: Address;
     myJettonAmount: Int as coins = 0;
 
@@ -211,6 +211,8 @@ contract Example with Deployable {
             jettonWalletCode,
         );
     }
+
+    receive() { cashback(sender()) } // for the deployment
 
     receive(msg: JettonTransferNotification) {
         self.myJettonAmount += msg.amount;
@@ -291,7 +293,7 @@ contract Sample {
 
 ## 处理/发送退回消息
 
-发送反弹标志(bounce flag)设置为 `true{:tact}`的信息，这是 [`send(){:tact}`](/zh-cn/ref/core-common#send)函数的默认设置。 消息在合约执行失败后退出。 您可能希望通过在 [`try...catch{:tact}`](/zh-cn/book/statements#try-catch) 语句中封装代码来回滚合约状态，并根据您的逻辑进行一些额外处理，从而解决这个问题。
+发送反弹标志(bounce flag)设置为 `true{:tact}`的信息，这是 [`send(){:tact}`](/zh-cn/ref/core-send#send)函数的默认设置。 消息在合约执行失败后退出。 您可能希望通过在 [`try...catch{:tact}`](/zh-cn/book/statements#try-catch) 语句中封装代码来回滚合约状态，并根据您的逻辑进行一些额外处理，从而解决这个问题。
 
 ##### Do's ✅
 

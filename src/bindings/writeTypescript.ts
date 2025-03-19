@@ -1,6 +1,11 @@
 import * as changeCase from "change-case";
 import { Writer } from "../utils/Writer";
-import type { ABIArgument, ABIType, ContractABI } from "@ton/core";
+import {
+    Cell,
+    type ABIArgument,
+    type ABIType,
+    type ContractABI,
+} from "@ton/core";
 import {
     writeArgumentToStack,
     writeDictParser,
@@ -184,11 +189,15 @@ export function writeTypescript(
         );
         w.inIndent(() => {
             // Code references
-            w.append(`const __code = Cell.fromBase64('${init.code}');`);
+            const code = Cell.fromBase64(init.code).toBoc().toString("hex");
+            w.append(`const __code = Cell.fromHex('${code}');`);
             w.append("const builder = beginCell();");
 
             if (init.system !== null && !enabledOptimizedChildCode(ctx)) {
-                w.append(`const __system = Cell.fromBase64('${init.system}');`);
+                const system = Cell.fromBase64(init.system)
+                    .toBoc()
+                    .toString("hex");
+                w.append(`const __system = Cell.fromHex('${system}');`);
                 w.append(`builder.storeRef(__system);`);
             }
 
@@ -226,9 +235,7 @@ export function writeTypescript(
     w.inIndent(() => {
         if (abi.errors) {
             Object.entries(abi.errors).forEach(([k, abiError]) => {
-                w.append(
-                    `${JSON.stringify(abiError.message.replaceAll("`", "\\`"))}: ${k},`,
-                );
+                w.append(`${JSON.stringify(abiError.message)}: ${k},`);
             });
         }
     });

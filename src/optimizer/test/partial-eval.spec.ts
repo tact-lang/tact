@@ -7,7 +7,6 @@ import type { ExpressionTransformer, Rule } from "../types";
 import { AssociativeRule3 } from "../associative";
 import { evalBinaryOp, evalUnaryOp } from "../interpreter";
 import { getParser } from "../../grammar";
-import { defaultParser } from "../../grammar/grammar";
 import { throwInternalCompilerError } from "../../error/errors";
 import type { FactoryAst } from "../../ast/ast-helpers";
 import { eqExpressions, getAstFactory, isLiteral } from "../../ast/ast-helpers";
@@ -314,7 +313,7 @@ const booleanExpressions = [
 function testExpression(original: string, simplified: string) {
     it(`should simplify ${original} to ${simplified}`, () => {
         const ast = getAstFactory();
-        const { parseExpression } = getParser(ast, defaultParser);
+        const { parseExpression } = getParser(ast);
         const util = getAstUtil(ast);
         const { partiallyEvalExpression } = getOptimizer(util);
         const originalValue = partiallyEvalExpression(
@@ -334,7 +333,7 @@ function testExpressionWithOptimizer(
 ) {
     it(`should simplify ${original} to ${simplified}`, () => {
         const ast = getAstFactory();
-        const { parseExpression } = getParser(ast, defaultParser);
+        const { parseExpression } = getParser(ast);
         const originalValue = optimizer.applyRules(
             dummyEval(parseExpression(original), ast),
         );

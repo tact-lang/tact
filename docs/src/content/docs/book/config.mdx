@@ -252,35 +252,6 @@ If set to `true{:json}`, enables the generation of a [getter](/book/contracts#ge
 
 :::
 
-#### `parser` {#options-parser}
-
-`"new"{:json}` by default.
-
-If set to `new{:json}`, Tact will compile using the new language parser.
-
-If set to `old{:json}`, Tact will compile using the old language parser.
-
-```json filename="tact.config.json" {8,14}
-{
-  "projects": [
-    {
-      "name": "some_prefix",
-      "path": "./contract.tact",
-      "output": "./contract_output",
-      "options": {
-        "debug": true
-      }
-    },
-    {
-      "name": "ContractUnderBlueprint",
-      "options": {
-        "debug": true
-      }
-    }
-  ]
-}
-```
-
 #### `experimental` {#options-experimental}
 
 Experimental options that might be removed in the future. Use with caution!
@@ -426,6 +397,33 @@ This option can be used to provide an extra safety level or for debugging.
       "options": {
         "optimizations": {
           "alwaysSaveContractData": false
+        }
+      }
+    }
+  ]
+}
+```
+
+##### `internalExternalReceiversOutsideMethodsMap` {#optimizations-internalExternalReceiversOutsideMethodsMap}
+
+<Badge text="Available since Tact 1.6.3" variant="tip" size="medium"/><p/>
+
+`false{:json}` by default.
+
+If set to `true{:json}`, stores internal and external receivers outside of the methods map.
+
+Saves gas, but as a result of this optimization, the contract might not be correctly recognized and parsed by explorers and user wallets.
+
+```json filename="tact.config.json" {9,17}
+{
+  "projects": [
+    {
+      "name": "contract",
+      "path": "./contract.tact",
+      "output": "./output",
+      "options": {
+        "optimizations": {
+          "internalExternalReceiversOutsideMethodsMap": true
         }
       }
     }

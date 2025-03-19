@@ -468,6 +468,31 @@ let b: Builder = beginCell();
 let fizz: Builder = b.storeAddress(myAddress());
 ```
 
+### Builder.storeBasechainAddress
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun storeBasechainAddress(self: Builder, address: BasechainAddress): Builder;
+```
+
+Extension function for the [`Builder{:tact}`][builder] type.
+
+Stores the basechain `address` in the copy of the [`Builder{:tact}`][builder] and returns that copy.
+
+If the address has a `null` hash, stores $0b00$ (`addr_none`).
+Otherwise, store the full address with prefix $0b100$ followed by workchain ($0$) and the 256-bit hash.
+
+Usage example:
+
+```tact
+fun example() {
+    let addr: BasechainAddress = newBasechainAddress(0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+    let b: Builder = beginCell();
+    let b2: Builder = b.storeBasechainAddress(addr);
+}
+```
+
 ### Builder.storeRef
 
 ```tact
@@ -802,6 +827,34 @@ let s: Slice = beginCell().storeBool(true).asSlice();
 let fizz: Bool = s.loadBool(); // true
 ```
 
+### Slice.skipBool
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipBool(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Skips a single bit from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadBool()`.
+
+Attempts to skip such [`Bool{:tact}`][bool] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell()
+    .storeBool(true)
+    .storeUint(42, 7)
+    .asSlice();
+
+s.skipBool();
+let fizz: Int = s.loadUint(7); // 42
+```
+
 ### Slice.loadBit
 
 <Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
@@ -848,6 +901,34 @@ let fizz: Int = s.loadCoins(); // 42
 
 :::
 
+### Slice.skipCoins
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipCoins(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Skips a serialized unsigned [`Int{:tact}`][int] value in the range from $0$ to $2^{120} - 1$ inclusive from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadCoins()`.
+
+Attempts to skip such [`Int{:tact}`][int] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell()
+    .storeCoins(239)
+    .storeUint(42, 7)
+    .asSlice();
+
+s.skipCoins();
+let fizz: Int = s.loadUint(7); // 42
+```
+
 ### Slice.loadVarUint16
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
@@ -872,6 +953,30 @@ let fizz: Int = s.loadVarUint16(); // 42
   [Types of variable bit-width](/book/integers#serialization-varint)
 
 :::
+
+### Slice.skipVarUint16
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipVarUint16(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Alias to `Slice.skipCoins()`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell()
+    .storeVarUint16(239)
+    .storeUint(42, 7)
+    .asSlice();
+
+s.skipVarUint16();
+let fizz: Int = s.loadUint(7); // 42
+```
 
 ### Slice.loadVarInt16
 
@@ -902,6 +1007,34 @@ let fizz: Int = s.loadVarInt16(); // -42
 
 :::
 
+### Slice.skipVarInt16
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipVarInt16(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Similar to `Slice.skipCoins()`, but with a different `value` range: from $-2^{119}$ to $2^{119} - 1$ inclusive.
+
+Attempts to skip such [`Int{:tact}`][int] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell()
+    .storeVarInt16(-239)
+    .storeUint(42, 7)
+    .asSlice();
+
+s.skipVarInt16();
+let fizz: Int = s.loadUint(7); // 42
+```
+
 ### Slice.loadVarUint32
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
@@ -928,6 +1061,34 @@ let fizz: Int = s.loadVarUint32(); // 420000
   [Types of variable bit-width](/book/integers#serialization-varint)
 
 :::
+
+### Slice.skipVarUint32
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipVarUint32(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Skips a serialized unsigned [`Int{:tact}`][int] value in the range from $0$ to $2^{248} - 1$ inclusive from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadVarUint32()`.
+
+Attempts to skip such [`Int{:tact}`][int] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell()
+    .storeVarUint32(239)
+    .storeUint(42, 7)
+    .asSlice();
+
+s.skipVarUint32();
+let fizz: Int = s.loadUint(7); // 42
+```
 
 ### Slice.loadVarInt32
 
@@ -956,6 +1117,34 @@ let fizz: Int = s.loadVarInt32(); // -420000
 
 :::
 
+### Slice.skipVarInt32
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipVarInt32(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Similar to `Slice.skipVarUint32()`, but with a different `value` range: from $-2^{247}$ to $2^{247} - 1$ inclusive.
+
+Attempts to skip such [`Int{:tact}`][int] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s: Slice = beginCell()
+    .storeVarInt32(-239)
+    .storeUint(42, 7)
+    .asSlice();
+
+s.skipVarInt32();
+let fizz: Int = s.loadUint(7); // 42
+```
+
 ### Slice.loadAddress
 
 ```tact
@@ -975,6 +1164,34 @@ Usage example:
 ```tact
 let s: Slice = beginCell().storeAddress(myAddress()).asSlice();
 let fizz: Address = s.loadAddress();
+```
+
+### Slice.skipAddress
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipAddress(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Skips an [`Address{:tact}`][p] from the [`Slice{:tact}`][slice].
+
+Attempts to skip such [`Address{:tact}`][p] when [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s1: Slice = beginCell()
+    .storeAddress(myAddress())
+    .storeUint(42, 32)
+    .asSlice();
+
+s1.skipAddress();
+let fizz: Int = s1.loadUint(32); // 42
 ```
 
 ### Slice.loadRef
@@ -1036,6 +1253,35 @@ let ref2: Cell = s2.preloadRef();
 ref1 == ref2; // true
 ```
 
+### Slice.skipRef
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipRef(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Skips the next reference from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadRef()`.
+
+Attempts to skip such reference [`Cell{:tact}`][cell] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s1: Slice = beginCell()
+    .storeRef(emptyCell())
+    .storeUint(42, 32)
+    .asSlice();
+
+s1.skipRef();
+let fizz: Int = s1.loadUint(32); // 42
+```
+
+
 ### Slice.loadMaybeRef
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
@@ -1095,6 +1341,34 @@ let ref1: Cell = s2.preloadMaybeRef(); // returns null and doesn't modify s2
 let ref2: Cell = s2.preloadMaybeRef(); // same effect
 ref1 == null; // true
 ref1 == ref2; // true
+```
+
+### Slice.skipMaybeRef
+
+<Badge text="Available since Tact 1.6.2" variant="tip" size="medium"/><p/>
+
+```tact
+extends mutates fun skipMaybeRef(self: Slice);
+```
+
+Extension mutation function for the [`Slice{:tact}`][slice] type.
+
+Skips `Cell?` from the [`Slice{:tact}`][slice]. Similar to discarding the return value of `Slice.loadMaybeRef()`.
+
+Attempts to skip such reference [`Cell{:tact}`][cell] when the [`Slice{:tact}`][slice] doesn't contain it throw an exception with [exit code 8](/book/exit-codes#8): `Cell overflow`.
+
+Attempts to skip more data than the [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let s1: Slice = beginCell()
+    .storeMaybeRef(emptyCell())
+    .storeUint(42, 32)
+    .asSlice();
+
+s1.skipMaybeRef();
+let fizz: Int = s1.loadUint(32); // 42
 ```
 
 ### Slice.refs
@@ -1357,7 +1631,7 @@ Extension function for the [`Slice{:tact}`][slice] type.
 
 Calculates and returns an [`Int{:tact}`][int] value of the [SHA-256][sha-2] hash of the data bits from the given [`Slice{:tact}`][slice], which should have a number of bits divisible by 8.
 
-Unlike [`sha256(){:tact}`](/ref/core-math#sha256), this function is gas-efficient and **only** hashes the data of the given [`Slice{:tact}`][slice], i.e. up to 1023 bits, ignoring the refs.
+Unlike [`sha256(){:tact}`](/ref/core-crypto#sha256), this function is gas-efficient and **only** hashes the data of the given [`Slice{:tact}`][slice], i.e. up to 1023 bits, ignoring the refs.
 
 Attempts to specify a [`Slice{:tact}`][slice] with a number of bits **not** divisible by 8 throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
 
@@ -1404,6 +1678,49 @@ let buzz: Cell = beginCell().storeSlice(s).endCell();
 fizz == buzz; // true
 ```
 
+### Slice.asString
+
+```tact
+extends fun asString(self: Slice): String;
+```
+
+Extension function for the [`Slice{:tact}`][slice] type.
+
+Casts the [`Slice{:tact}`][slice] to a [`String{:tact}`][p] and returns it. The inverse of [`String.asSlice(){:tact}`](/ref/core-strings#stringasslice).
+
+Usage example:
+
+```tact
+let s: String = "Keep your Slices close, but your Strings closer.";
+let fizz: String = s;
+let buzz: String = s.asSlice().asString();
+
+fizz == buzz; // true
+```
+
+### Slice.fromBase64
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
+```tact
+extends fun fromBase64(self: Slice): Slice;
+```
+
+Extension function for the [`Slice{:tact}`][slice] type.
+
+Returns a new [`Slice{:tact}`][slice] from the decoded [Base64](https://en.wikipedia.org/wiki/Base64) [`Slice{:tact}`][slice].
+
+Note that this function is limited and only takes the first 1023 bits of data from the given [`Slice{:tact}`][slice], without throwing an exception if the [`Slice{:tact}`][slice] has more data (i.e., when it has any references).
+
+If the given [`Slice{:tact}`][slice] contains characters not from the Base64 set, an exception with [exit code 134](/book/exit-codes#134) will be thrown: `Invalid argument`.
+
+Usage example:
+
+```tact
+let s: Slice = "SSBhbSBHcm9vdC4=".asSlice();
+let fizz: Slice = s.fromBase64();
+```
+
 ### Slice.asAddress
 
 <Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
@@ -1414,7 +1731,7 @@ extends fun asAddress(self: Slice, chain: Int): Address;
 
 Extension function for the [`Slice{:tact}`][slice] type.
 
-Casts the [`Slice{:tact}`][slice] to an [`Address{:tact}`][p] on a given `chain` ID and returns it. It is the inverse of [`Address.asSlice(){:tact}`](#addressasslice) and a safe but more gas-expensive version of [`Slice.asAddressUnsafe(){:tact}`](#sliceasaddressunsafe).
+Casts the [`Slice{:tact}`][slice] to an [`Address{:tact}`][p] on a given `chain` ID and returns it. It is the inverse of [`Address.asSlice(){:tact}`](/ref/core-addresses#addressasslice) and a safe but more gas-expensive version of [`Slice.asAddressUnsafe(){:tact}`](#sliceasaddressunsafe).
 
 Attempts to specify a [`Slice{:tact}`][slice] with an invalid [account ID](https://docs.ton.org/learn/overviews/addresses#account-id) length throw an error with [exit code 136](/book/exit-codes#): `Invalid standard address`.
 
@@ -1445,7 +1762,7 @@ extends fun asAddressUnsafe(self: Slice): Address;
 
 Extension function for the [`Slice{:tact}`][slice] type.
 
-Unsafely casts the [`Slice{:tact}`][slice] to an [`Address{:tact}`][p] and returns it. The inverse of [`Address.asSlice(){:tact}`](#addressasslice).
+Unsafely casts the [`Slice{:tact}`][slice] to an [`Address{:tact}`][p] and returns it. The inverse of [`Address.asSlice(){:tact}`](/ref/core-addresses#addressasslice).
 
 This function does **not** perform any checks on the contents of the [`Slice{:tact}`][slice].
 
@@ -1465,26 +1782,6 @@ a == a2; // true
   Otherwise, use the safer but more gas-expensive [`Slice.asAddress(){:tact}`](#sliceasaddress) function.
 
 :::
-
-## Address.asSlice
-
-```tact
-extends fun asSlice(self: Address): Slice;
-```
-
-Extension function for the [`Address{:tact}`][p] type.
-
-Casts the [`Address{:tact}`][p] back to the underlying [`Slice{:tact}`][slice] and returns it. The inverse of [`Slice.asAddressUnsafe(){:tact}`](#sliceasaddressunsafe).
-
-Usage example:
-
-```tact
-let a: Address = myAddress();
-let fizz: Slice = beginCell().storeAddress(a).asSlice();
-let buzz: Slice = a.asSlice(); // cheap, unlike the previous statement
-
-fizz == buzz; // true
-```
 
 ## Struct.toCell
 
