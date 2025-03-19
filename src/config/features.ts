@@ -1,6 +1,5 @@
 import type { CompilerContext } from "../context/context";
 import { createContextStore } from "../context/context";
-import { throwInternal } from "../error/errors";
 
 const featureStore = createContextStore<boolean | null | string>();
 

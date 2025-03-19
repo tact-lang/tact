@@ -31,7 +31,7 @@
       }
     },
     {
-      "label": "1.6.3 with no selector hack",
+      "label": "1.6.4 with no selector hack",
       "pr": null,
       "size": {
         "minter cells": "33",
@@ -41,7 +41,7 @@
       }
     },
     {
-      "label": "1.6.3 with the new selector hack",
+      "label": "1.6.4 with the new selector hack",
       "pr": "https://github.com/tact-lang/tact/pull/2398",
       "size": {
         "minter cells": "31",

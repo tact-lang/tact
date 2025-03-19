@@ -67,7 +67,7 @@ export function enableFeatures(
         {
             option:
                 config.options.optimizations
-                    ?.internalExternalReceiversOutsideMethodsMap ?? false,
+                    ?.internalExternalReceiversOutsideMethodsMap ?? true,
             name: "internalExternalReceiversOutsideMethodsMap",
         },
         {
