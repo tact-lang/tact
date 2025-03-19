@@ -1,7 +1,7 @@
 import {
     enabledInline,
     enabledInterfacesGetter,
-    internalExternalReceiversOutsideMethodsMapMode,
+    enabledInternalExternalReceiversOutsideMethodsMap,
     enabledIpfsAbiGetter,
     enabledLazyDeploymentCompletedGetter,
     enabledOptimizedChildCode,
@@ -449,57 +449,17 @@ export function writeMainContract(
             });
         }
         if (
-            internalExternalReceiversOutsideMethodsMapMode(wCtx.ctx) == "fast"
+            enabledInternalExternalReceiversOutsideMethodsMap(wCtx.ctx)
         ) {
             wCtx.append(`() __tact_selector_hack_asm() impure asm """
-            @atend @ 1 {
-                execute current@ context@ current!
-                {
-                    }END> b>
-                    
-                    <{
-                        SETCP0 DUP
-                        IFNOTJMP:<{
-                            DROP over <s ref@ 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot @addop
-                        }>`);
-
-            if (hasExternal) {
-                wCtx.append(`DUP -1 EQINT IFJMP:<{
-                            DROP over <s ref@ -1 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot @addop
-                        }>`);
-            }
-
-            wCtx.append(`swap <s ref@
-                        0 swap @procdictkeylen idict- drop
-                        -1 swap @procdictkeylen idict- drop
-                        65535 swap @procdictkeylen idict- drop
+    @atend @ 1 {
+        execute current@ context@ current!
+        {
+            }END> b>
             
-                        @procdictkeylen DICTPUSHCONST DICTIGETJMPZ 11 THROWARG
-                    }> b>
-                } : }END>c
-                current@ context! current!
-            } does @atend !
-            """;`);
-
-            wCtx.append(`() __tact_selector_hack() method_id(65535) {
-                return __tact_selector_hack_asm();
-            }`);
-        }
-
-        if (
-            internalExternalReceiversOutsideMethodsMapMode(wCtx.ctx) ==
-            "explorers-compatible"
-        ) {
-            wCtx.append(`() __tact_selector_hack_asm() impure asm """
-                            @atend @ 1 {
-                                execute current@ context@ current!
-                                {
-                                    }END> b>
-                                    
-                                    <{
-                                        SETCP0
-                                            swap <s ref@ // Here we have the dict on the top of the stack
-                                            // Extract the recv_internal and recv_external from the dict
+            <{
+                SETCP0
+                swap <s ref@ // Here we have the dict on the top of the stack
                 `);
 
             if (hasExternal) {
@@ -507,10 +467,10 @@ export function writeMainContract(
                 swap`);
             }
 
-            wCtx.append(`dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot // recv_internal is on the top of the stack
+            wCtx.append(`
+                dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot // recv_internal is on the top of the stack
                 swap
                 
-            
                 0 swap @procdictkeylen idict- drop // Delete the recv_internal from the dict
                 -1 swap @procdictkeylen idict- drop // Delete the recv_external from the dict (it's okay if it's not there)
                 65535 swap @procdictkeylen idict- drop // Delete the __tact_selector_hack from the dict
@@ -535,21 +495,24 @@ export function writeMainContract(
                 }>`);
 
             if (hasExternal) {
-                wCtx.append(`DUP INC IFNOTJMP:<{
+                wCtx.append(`
+                DUP INC IFNOTJMP:<{
                     DROP swap @addop // place recv_external here
                 }>`);
             }
 
-            wCtx.append(`depth 1- roll { 11 THROWARG } { c3 PUSH JMPX } cond // Jump to selector if dict is not empty, throw 11 otherwise
-                        }> b>
-                    } : }END>c
-                    current@ context! current!
-                } does @atend !
-                """;`);
+            wCtx.append(`
+                depth 1- roll { 11 THROWARG } { c3 PUSH JMPX } cond // Jump to selector if dict is not empty, throw 11 otherwise
+                }> b>
+            } : }END>c
+            current@ context! current!
+        } does @atend !
+        """;`);
 
-            wCtx.append(`() __tact_selector_hack() method_id(65535) {
-                            return __tact_selector_hack_asm();
-                        }`);
+            wCtx.append(`
+() __tact_selector_hack() method_id(65535) {
+    return __tact_selector_hack_asm();
+}`);
         }
     });
 }

@@ -36,30 +36,8 @@ export function enabledAlwaysSaveContractData(ctx: CompilerContext) {
     return featureEnabled(ctx, "alwaysSaveContractData");
 }
 
-export function internalExternalReceiversOutsideMethodsMapMode(
-    ctx: CompilerContext,
-): "disable" | "explorers-compatible" | "fast" {
-    const featureMode = featureStore.get(
-        ctx,
-        "internalExternalReceiversOutsideMethodsMap",
-    );
-    if (typeof featureMode !== "string") {
-        return throwInternal(
-            "Expected, that internalExternalReceiversOutsideMethodsMap is a string but got: " +
-                featureMode,
-        );
-    } else if (
-        featureMode !== "disable" &&
-        featureMode !== "explorers-compatible" &&
-        featureMode !== "fast"
-    ) {
-        return throwInternal(
-            "Expected, that internalExternalReceiversOutsideMethodsMap is one of 'disable', 'explorers-compatible', 'fast' but got: " +
-                featureMode,
-        );
-    } else {
-        return featureMode;
-    }
+export function enabledInternalExternalReceiversOutsideMethodsMap(ctx: CompilerContext) {
+    return featureEnabled(ctx, "internalExternalReceiversOutsideMethodsMap");
 }
 
 export function enabledLazyDeploymentCompletedGetter(ctx: CompilerContext) {
@@ -72,12 +50,4 @@ function featureEnabled(ctx: CompilerContext, key: string) {
 
 export function featureEnable(ctx: CompilerContext, key: string) {
     return featureStore.set(ctx, key, true);
-}
-
-export function featureSet(
-    ctx: CompilerContext,
-    key: string,
-    value: boolean | string,
-) {
-    return featureStore.set(ctx, key, value);
 }

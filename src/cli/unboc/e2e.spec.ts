@@ -33,7 +33,6 @@ contract Test {
 describe("unboc foo.boc", () => {
     testWin("Exits with correct code", async () => {
         const r = await codegen.config(`unboc`, goodContract, {});
-        await tact(`-c ${r.config}`);
         const result = await unboc(r.outputPath("code.boc"));
         expect(result).toMatchObject({ kind: "exited", code: 0 });
     });

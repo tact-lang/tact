@@ -6,7 +6,7 @@ import {
 } from "@tact-lang/opcode";
 import type { WrappersConstantDescription } from "../bindings/writeTypescript";
 import { writeTypescript } from "../bindings/writeTypescript";
-import { featureEnable, featureSet } from "../config/features";
+import { featureEnable } from "../config/features";
 import type { Project } from "../config/parseConfig";
 import { CompilerContext } from "../context/context";
 import { funcCompile } from "../func/funcCompile";
@@ -67,22 +67,21 @@ export function enableFeatures(
         {
             option:
                 config.options.optimizations
-                    ?.internalExternalReceiversOutsideMethodsMap ?? "disable",
+                    ?.internalExternalReceiversOutsideMethodsMap ?? false,
             name: "internalExternalReceiversOutsideMethodsMap",
         },
         {
-            option: config.options.enableLazyDeploymentCompletedGetter ?? false,
+            option: config.options.enableLazyDeploymentCompletedGetter ?? true,
             name: "lazyDeploymentCompletedGetter",
         },
     ];
-    let currentCtx = ctx;
-    for (const { option, name } of features) {
+    return features.reduce((currentCtx, { option, name }) => {
         if (option) {
-            logger.debug(`   > 👀 Setting ${name} to ${option}`);
-            currentCtx = featureSet(currentCtx, name, option);
+            logger.debug(`   > 👀 Enabling ${name}`);
+            return featureEnable(currentCtx, name);
         }
-    }
-    return currentCtx;
+        return currentCtx;
+    }, ctx);
 }
 
 export async function build(args: {
