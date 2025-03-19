@@ -71,7 +71,7 @@ export function enableFeatures(
             name: "internalExternalReceiversOutsideMethodsMap",
         },
         {
-            option: config.options.enableLazyDeploymentCompletedGetter ?? true,
+            option: config.options.enableLazyDeploymentCompletedGetter ?? false,
             name: "lazyDeploymentCompletedGetter",
         },
     ];

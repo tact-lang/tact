@@ -448,6 +448,8 @@ export function writeMainContract(
                 );
             });
         }
+
+        // fift injection, protected by a feature flag
         if (enabledInternalExternalReceiversOutsideMethodsMap(wCtx.ctx)) {
             wCtx.append(`() __tact_selector_hack_asm() impure asm """
     @atend @ 1 {
