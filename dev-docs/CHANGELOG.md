@@ -8,19 +8,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Internal infrastructure
-
-- Removed `postinstall` from `package.json` to not run scripts with dev dependencies on the user side: PR [#2382](https://github.com/tact-lang/tact/pull/2382)
 - **BREAKING CHANGE:** Config option `internalExternalReceiversOutsideMethodsMap` has 3 variants now: "disable", "explorers-compatible", "fast": PR [#2398](https://github.com/tact-lang/tact/pull/2398)
+
+### Release contributors
+- [Shvetc Andrei](https://github.com/Shvandre)
+
+
+## [1.6.4] - 2025-03-18
+
+### Language features
+
+- Applied parameters rearrangement only for ASM methods with a single parameter to avoid confusion: PR [#2410](https://github.com/tact-lang/tact/pull/2410)
+- Reduced gas usage for contracts with some special cases of binary and fallback receivers: PR [#2396](https://github.com/tact-lang/tact/pull/2396)
 
 ### Standard Library
 
 - Added `forceWorkchain()` function: PR [#2387](https://github.com/tact-lang/tact/pull/2387)
 
+#### Compilation report
+
+- [fix] TL-B for `Address?` is not `Maybe Address`, but plain `Address`: PR [#2386](https://github.com/tact-lang/tact/pull/2386)
+
+### Internal infrastructure
+
+- Removed `postinstall` from `package.json` to not run scripts with dev dependencies on the user side: PR [#2382](https://github.com/tact-lang/tact/pull/2382)
+
+### Internal infrastructure
+
+- Removed `postinstall` from `package.json` to not run scripts with dev dependencies on the user side: PR [#2382](https://github.com/tact-lang/tact/pull/2382)
+
 ### Docs
 
 - Removed the "gas-expensive" badge from `checkSignature()` and `checkDataSignature()` functions and added a caution note when they do become expensive (from 11th call): PR [#2380](https://github.com/tact-lang/tact/pull/2380)
 - Fixed descriptions of `Slice.asString()` and `String.asSlice()` functions: PR [#2391](https://github.com/tact-lang/tact/pull/2391)
-- Split Core libraries in the reference: `core-common` and `core-advanced` were removed, and their contents distributed across other libraries; `core-crypto`, `core-contextstate`, `core-send`, `core-gas`, and `core-addresses` were introduced: PR [#2391](https://github.com/tact-lang/tact/pull/2391)
+- Split Core libraries in the reference: `core-common` and `core-advanced` were removed, and their contents were distributed across other libraries; `core-crypto`, `core-contextstate`, `core-send`, `core-gas`, and `core-addresses` were introduced: PR [#2391](https://github.com/tact-lang/tact/pull/2391)
 - Added documentation for `BasechainAddress`, `emptyBasechainAddress`, `newBasechainAddress`, `contractBasechainAddress`, `Builder.storeBasechainAddress`: PR [#2411](https://github.com/tact-lang/tact/pull/2411)
 
 ### Release contributors
@@ -29,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Anton Trunov](https://github.com/anton-trunov)
 - [Maksim Lagus](https://github.com/Kaladin13)
 - [Petr Makhnev](https://github.com/i582)
-- [Shvetc Andrei](https://github.com/Shvandre)
+- [verytactical](https://github.com/verytactical)
 
 ## [1.6.3] - 2025-03-12
 
