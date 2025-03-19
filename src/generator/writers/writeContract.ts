@@ -448,9 +448,7 @@ export function writeMainContract(
                 );
             });
         }
-        if (
-            enabledInternalExternalReceiversOutsideMethodsMap(wCtx.ctx)
-        ) {
+        if (enabledInternalExternalReceiversOutsideMethodsMap(wCtx.ctx)) {
             wCtx.append(`() __tact_selector_hack_asm() impure asm """
     @atend @ 1 {
         execute current@ context@ current!
