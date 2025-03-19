@@ -1,42 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`benchmarks benchmark cells creation: gas used emptyCell 1`] = `750n`;
+exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2440`;
 
-exports[`benchmarks benchmark cells creation: gas used emptySlice 1`] = `754n`;
+exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2441`;
 
-exports[`benchmarks benchmark codeOf vs initOf: gas used withCodeOf 1`] = `850n`;
+exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2443`;
 
-exports[`benchmarks benchmark codeOf vs initOf: gas used withInitOf 1`] = `1502n`;
+exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2440`;
 
-exports[`benchmarks benchmark codeOf vs myCode(): gas used codeOf for current contract 1`] = `858n`;
+exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2441`;
 
-exports[`benchmarks benchmark codeOf vs myCode(): gas used myCode 1`] = `858n`;
-
-exports[`benchmarks benchmark contractAddressExt: gas used contractAddressExt 1`] = `2516n`;
-
-exports[`benchmarks benchmark deployable trait vs raw deploy: gas used deploy trait 1`] = `4419`;
-
-exports[`benchmarks benchmark deployable trait vs raw deploy: gas used raw deploy 1`] = `1505`;
-
-exports[`benchmarks benchmark functions: code size 1`] = `172`;
-
-exports[`benchmarks benchmark functions: gas used 1`] = `1997`;
-
-exports[`benchmarks benchmark readFwdFee: code size 1`] = `116`;
-
-exports[`benchmarks benchmark readFwdFee: gas used 1`] = `1968`;
-
-exports[`benchmarks benchmark sha256: gas hash string big 1`] = `2169`;
-
-exports[`benchmarks benchmark sha256: gas hash string big repeated 1`] = `2169`;
-
-exports[`benchmarks benchmark sha256: gas hash string big repeated more 1`] = `2169`;
-
-exports[`benchmarks benchmark sha256: gas hash string slice 1`] = `2169`;
-
-exports[`benchmarks benchmark sha256: gas hash string slice repeated 1`] = `2169`;
-
-exports[`benchmarks benchmark sha256: gas hash string slice repeated more 1`] = `2169`;
+exports[`benchmarks benchmark sha256: gas hash string slice repeated more 1`] = `2443`;
 
 exports[`benchmarks benchmark sha256: gas hash string small 1`] = `1993`;
 

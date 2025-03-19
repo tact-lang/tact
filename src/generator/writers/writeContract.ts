@@ -512,7 +512,7 @@ export function writeMainContract(
                 
             
                 0 swap @procdictkeylen idict- drop // Delete the recv_internal from the dict
-                1 swap @procdictkeylen idict- drop // Delete the recv_external from the dict (it's okay if it's not there)
+                -1 swap @procdictkeylen idict- drop // Delete the recv_external from the dict (it's okay if it's not there)
                 65535 swap @procdictkeylen idict- drop // Delete the __tact_selector_hack from the dict
                 
                 // Bring the code builder back
@@ -540,8 +540,7 @@ export function writeMainContract(
                 }>`);
             }
 
-            wCtx.append(`depth 1- roll { c3 PUSH JMPX } ifnot // } if // if dict is empty (not null), we don't need to call from it here
-                    11 THROWARG
+            wCtx.append(`depth 1- roll { 11 THROWARG } { c3 PUSH JMPX } cond // Jump to selector if dict is not empty, throw 11 otherwise
                         }> b>
                     } : }END>c
                     current@ context! current!
