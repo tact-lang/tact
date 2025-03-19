@@ -530,7 +530,7 @@ export function writeMainContract(
             }
 
             wCtx.append(`
-                // Bring back the flag, idndicating if the dict is empty or not from the bottom of the stack
+                // Bring back the flag, indicating if the dict is empty or not from the bottom of the stack
                 depth 1- roll 
                 { 
                     // If the dict is empty, throw 11
