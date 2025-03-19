@@ -8,11 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Internal infrastructure
+
 - **BREAKING CHANGE:** Config option `internalExternalReceiversOutsideMethodsMap` has 3 variants now: "disable", "explorers-compatible", "fast": PR [#2398](https://github.com/tact-lang/tact/pull/2398)
 
 ### Release contributors
-- [Shvetc Andrei](https://github.com/Shvandre)
 
+- [Shvetc Andrei](https://github.com/Shvandre)
 
 ## [1.6.4] - 2025-03-18
 
