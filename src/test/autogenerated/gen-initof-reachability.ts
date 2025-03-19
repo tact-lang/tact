@@ -43,10 +43,6 @@ type StatementsWrapper = {
     assignedStateInit: boolean;
 };
 
-type GlobalConfig = {
-    maxFunCallDepth: number;
-};
-
 type Test = {
     module: A.AstModule;
     contractNames: string[];
@@ -77,16 +73,13 @@ type GeneratorFeatureType =
 
 type GeneratorDescriptor<T> = {
     feature: GeneratorFeatureType;
-    // Setting the flag to true, forces the feature to always be included,
-    // independently of the constructed feature set.
-    // If the flag is set to false, then the feature set will be taken into account.
-    ignoreFeatureSet: boolean;
     generator: fc.Arbitrary<T>;
 };
 
 function getGeneratorFactory(
     astF: FactoryAst,
     allowedFeatures: Set<GeneratorFeatureType>,
+    maxFunCallDepth: number,
 ): {
     generator: fc.Arbitrary<ItemWithDeclarations<A.AstContract>>;
     batchBuilder: (
@@ -97,10 +90,6 @@ function getGeneratorFactory(
 } {
     let idCounter = 0;
     const emptySrcInfo = getSrcInfo(" ", 0, 0, null, "user");
-
-    const config: GlobalConfig = {
-        maxFunCallDepth: 10,
-    };
 
     function makeInitOf(
         contract: A.AstId,
@@ -680,20 +669,14 @@ function getGeneratorFactory(
 
         return {
             feature: GeneratorFeature.INIT_OF_EXPRESSION,
-            ignoreFeatureSet: true,
             generator,
         };
     }
 
     function staticCallGenerator(
         currentFunCallDepth: number,
+        desiredFunCallDepth: number,
     ): GeneratorDescriptor<ItemWithDeclarations<ExpressionWrapper>> {
-        if (currentFunCallDepth >= config.maxFunCallDepth) {
-            // At the maximum depth, we do not recurse more, but generate
-            // the base initOf Deployer()
-            return initOfGenerator();
-        }
-
         const buildGenerator = (
             returnStmt: A.AstStatementReturn,
             genStmt: ItemWithDeclarations<StatementsWrapper>,
@@ -728,32 +711,32 @@ function getGeneratorFactory(
             );
         };
 
-        const generator = statementGenerator(currentFunCallDepth + 1).chain(
-            (genStmt) => {
-                if (!genStmt.item.assignedStateInit) {
-                    // If the statement did not assign the stateInit variable,
-                    // then if we use the statement as such, it would
-                    // result in an invalid function. In this case, default into using
-                    // "return initOf Deployer()"
-                    return initOfGenerator().generator.chain((initOfExpr) =>
-                        buildGenerator(
-                            makeReturnStatement(initOfExpr.item.expression),
-                            genStmt,
-                        ),
-                    );
-                }
-
-                // The statement assigned the stateInit variable, just return it
-                return buildGenerator(
-                    makeReturnStatement(makeId("stateInit")),
-                    genStmt,
+        const generator = statementGenerator(
+            currentFunCallDepth + 1,
+            desiredFunCallDepth,
+        ).chain((genStmt) => {
+            if (!genStmt.item.assignedStateInit) {
+                // If the statement did not assign the stateInit variable,
+                // then if we use the statement as such, it would
+                // result in an invalid function. In this case, default into using
+                // "return initOf Deployer()"
+                return initOfGenerator().generator.chain((initOfExpr) =>
+                    buildGenerator(
+                        makeReturnStatement(initOfExpr.item.expression),
+                        genStmt,
+                    ),
                 );
-            },
-        );
+            }
+
+            // The statement assigned the stateInit variable, just return it
+            return buildGenerator(
+                makeReturnStatement(makeId("stateInit")),
+                genStmt,
+            );
+        });
 
         return {
             feature: GeneratorFeature.STATIC_CALL_EXPRESSION,
-            ignoreFeatureSet: false,
             generator,
         };
     }
@@ -867,7 +850,6 @@ function getGeneratorFactory(
 
         return {
             feature: GeneratorFeature.LET_STATEMENT,
-            ignoreFeatureSet: false,
             generator,
         };
     }
@@ -894,7 +876,6 @@ function getGeneratorFactory(
 
         return {
             feature: GeneratorFeature.EXPRESSION_STATEMENT,
-            ignoreFeatureSet: false,
             generator,
         };
     }
@@ -937,7 +918,6 @@ function getGeneratorFactory(
 
         return {
             feature: GeneratorFeature.IF_NO_ELSE_STATEMENT,
-            ignoreFeatureSet: false,
             generator,
         };
     }
@@ -982,7 +962,6 @@ function getGeneratorFactory(
 
         return {
             feature: GeneratorFeature.IF_THEN_STATEMENT,
-            ignoreFeatureSet: false,
             generator,
         };
     }
@@ -1033,7 +1012,6 @@ function getGeneratorFactory(
 
         return {
             feature: GeneratorFeature.IF_ELSE_STATEMENT,
-            ignoreFeatureSet: false,
             generator,
         };
     }
@@ -1078,7 +1056,6 @@ function getGeneratorFactory(
 
         return {
             feature: GeneratorFeature.WHILE_STATEMENT,
-            ignoreFeatureSet: false,
             generator,
         };
     }
@@ -1123,7 +1100,6 @@ function getGeneratorFactory(
 
         return {
             feature: GeneratorFeature.UNTIL_STATEMENT,
-            ignoreFeatureSet: false,
             generator,
         };
     }
@@ -1168,7 +1144,6 @@ function getGeneratorFactory(
 
         return {
             feature: GeneratorFeature.REPEAT_STATEMENT,
-            ignoreFeatureSet: false,
             generator,
         };
     }
@@ -1251,7 +1226,6 @@ function getGeneratorFactory(
 
         return {
             feature: GeneratorFeature.DESTRUCT_STATEMENT,
-            ignoreFeatureSet: false,
             generator,
         };
     }
@@ -1287,7 +1261,6 @@ function getGeneratorFactory(
         );
         return {
             feature: GeneratorFeature.BLOCK_STATEMENT,
-            ignoreFeatureSet: false,
             generator,
         };
     }
@@ -1327,7 +1300,6 @@ function getGeneratorFactory(
         );
         return {
             feature: GeneratorFeature.TRY_STATEMENT,
-            ignoreFeatureSet: false,
             generator,
         };
     }
@@ -1375,13 +1347,13 @@ function getGeneratorFactory(
         );
         return {
             feature: GeneratorFeature.CATCH_STATEMENT,
-            ignoreFeatureSet: false,
             generator,
         };
     }
 
     function expressionGenerator(
         currentFunCallDepth: number,
+        desiredFunCallDepth: number,
     ): fc.Arbitrary<ItemWithDeclarations<ExpressionWrapper>> {
         const baseGens = [
             initOfGenerator(),
@@ -1389,68 +1361,49 @@ function getGeneratorFactory(
             //contractFieldGenerator(initOf)
         ];
 
+        // Keep only those generators allowed by the features
+        const finalBaseGens = baseGens
+            .filter((genDesc) => allowedFeatures.has(genDesc.feature))
+            .map((genDesc) => genDesc.generator);
+
+        if (currentFunCallDepth >= desiredFunCallDepth) {
+            // Use base generators
+            if (finalBaseGens.length === 0) {
+                // Default to use initof generator
+                return initOfGenerator().generator;
+            } else {
+                return fc.oneof(...finalBaseGens);
+            }
+        }
+
+        // We haven't reached the desired function call depth, use
+        // the recursive generators
+
         const recursiveGens = [
-            staticCallGenerator(currentFunCallDepth),
+            staticCallGenerator(currentFunCallDepth, desiredFunCallDepth),
             //methodCallGenerator(),
         ];
 
-        // Keep only those generators allowed by the features
-        const finalBaseGenDesc = baseGens.filter(
-            (genDesc) =>
-                genDesc.ignoreFeatureSet ||
-                allowedFeatures.has(genDesc.feature),
-        );
+        const finalRecursiveGens = recursiveGens
+            .filter((genDesc) => allowedFeatures.has(genDesc.feature))
+            .map((genDesc) => genDesc.generator);
 
-        const finalRecursiveGenDesc = recursiveGens.filter(
-            (genDesc) =>
-                genDesc.ignoreFeatureSet ||
-                allowedFeatures.has(genDesc.feature),
-        );
-
-        if (
-            finalBaseGenDesc.length === 0 ||
-            finalRecursiveGenDesc.length === 0
-        ) {
-            // Uniformly choose
-            const finalBaseGens = finalBaseGenDesc.map(
-                (genDesc) => genDesc.generator,
-            );
-            const finalRecursiveGens = finalRecursiveGenDesc.map(
-                (genDesc) => genDesc.generator,
-            );
-            return fc.oneof(...finalBaseGens, ...finalRecursiveGens);
+        if (finalRecursiveGens.length === 0) {
+            // Default to use initof generator
+            return initOfGenerator().generator;
+        } else {
+            return fc.oneof(...finalRecursiveGens);
         }
-
-        // Assign weights proportional to the current function call depth:
-        // Bigger weight to recursive generators when the function call depth is shallow
-        const desiredRecursiveProb =
-            ((0.1 - 0.9) / config.maxFunCallDepth) * currentFunCallDepth + 0.9;
-
-        // Fix a weight for the base generators
-        const baseWeight = 10;
-        const totalBaseWeight = baseWeight * finalBaseGenDesc.length;
-
-        const totalRecursiveWeight =
-            (desiredRecursiveProb * totalBaseWeight) /
-            (1 - desiredRecursiveProb);
-        const recursiveWeight = Math.ceil(
-            totalRecursiveWeight / finalRecursiveGenDesc.length,
-        );
-
-        const finalBaseGens = finalBaseGenDesc.map((genDesc) => {
-            return { arbitrary: genDesc.generator, weight: baseWeight };
-        });
-        const finalRecursiveGens = finalRecursiveGenDesc.map((genDesc) => {
-            return { arbitrary: genDesc.generator, weight: recursiveWeight };
-        });
-
-        return fc.oneof(...finalBaseGens, ...finalRecursiveGens);
     }
 
     function statementGenerator(
         currentFunCallDepth: number,
+        desiredFunCallDepth: number,
     ): fc.Arbitrary<ItemWithDeclarations<StatementsWrapper>> {
-        return expressionGenerator(currentFunCallDepth).chain((genExpr) => {
+        return expressionGenerator(
+            currentFunCallDepth,
+            desiredFunCallDepth,
+        ).chain((genExpr) => {
             const stmtGens = [
                 letStatementGenerator(genExpr),
                 expressionStatementGenerator(genExpr),
@@ -1471,14 +1424,15 @@ function getGeneratorFactory(
 
             // Keep only those generators allowed by the features
             const finalGens = stmtGens
-                .filter(
-                    (genDesc) =>
-                        genDesc.ignoreFeatureSet ||
-                        allowedFeatures.has(genDesc.feature),
-                )
+                .filter((genDesc) => allowedFeatures.has(genDesc.feature))
                 .map((genDesc) => genDesc.generator);
 
-            return fc.oneof(...finalGens);
+            if (finalGens.length === 0) {
+                // Default to use let statement generator
+                return letStatementGenerator(genExpr).generator;
+            } else {
+                return fc.oneof(...finalGens);
+            }
         });
     }
 
@@ -1520,29 +1474,31 @@ function getGeneratorFactory(
 
         return {
             feature: GeneratorFeature.CONTRACT_WITH_INIT,
-            ignoreFeatureSet: true,
             generator,
         };
     }
 
     function contractGenerator(
         currentFunCallDepth: number,
+        desiredFunCallDepth: number,
     ): fc.Arbitrary<ItemWithDeclarations<A.AstContract>> {
-        return statementGenerator(currentFunCallDepth).chain(
-            (stmtsWithName) => {
-                const contractGens = [contractWithInitGenerator(stmtsWithName)];
+        return statementGenerator(
+            currentFunCallDepth,
+            desiredFunCallDepth,
+        ).chain((stmtsWithName) => {
+            const contractGens = [contractWithInitGenerator(stmtsWithName)];
 
-                const finalGens = contractGens
-                    .filter(
-                        (genDesc) =>
-                            genDesc.ignoreFeatureSet ||
-                            allowedFeatures.has(genDesc.feature),
-                    )
-                    .map((genDesc) => genDesc.generator);
+            const finalGens = contractGens
+                .filter((genDesc) => allowedFeatures.has(genDesc.feature))
+                .map((genDesc) => genDesc.generator);
 
+            if (finalGens.length === 0) {
+                // Default to use let contractWithInitGenerator generator
+                return contractWithInitGenerator(stmtsWithName).generator;
+            } else {
                 return fc.oneof(...finalGens);
-            },
-        );
+            }
+        });
     }
 
     /*
@@ -1608,8 +1564,12 @@ function getGeneratorFactory(
         return tests;
     }
 
+    const generator = fc
+        .nat(maxFunCallDepth)
+        .chain((depth) => contractGenerator(0, depth));
+
     return {
-        generator: contractGenerator(0),
+        generator,
         batchBuilder: createTestsInBatches,
     };
 }
@@ -1740,6 +1700,13 @@ function createFeatureSets(
 }
 
 async function main() {
+    const args = process.argv.slice(2);
+
+    if (args.includes("stats")) {
+        statistics();
+        return;
+    }
+
     const astF = getAstFactory();
 
     // Parse the stdlib and filter it with the minimal definitions we need
@@ -1806,6 +1773,7 @@ async function main() {
     console.log(`Generated ${featureSets.length} feature sets.`);
 
     const compilationBatchSize = 20;
+    const maxFunCallDepth = 10;
 
     await Promise.all(
         featureSets.map((featureSet, idx) =>
@@ -1816,6 +1784,7 @@ async function main() {
                 compilationBatchSize,
                 customStdlib,
                 extraModule,
+                maxFunCallDepth,
             ),
         ),
     );
@@ -1828,6 +1797,7 @@ async function executeTestsOnFeatures(
     compilationBatchSize: number,
     customStdlib: CustomStdlib,
     extraModule: A.AstModule,
+    maxFunCallDepth: number,
 ) {
     const errorFilename = `error-${idx}.log`;
     const fileDescriptor = fs.openSync(
@@ -1838,7 +1808,7 @@ async function executeTestsOnFeatures(
     const featureSetString = `{${Array.from(featureSet).join(", ")}}`;
     console.log(`#${idx}: Using feature set: ${featureSetString}`);
 
-    const testFactory = getGeneratorFactory(astF, featureSet);
+    const testFactory = getGeneratorFactory(astF, featureSet, maxFunCallDepth);
 
     await fc.assert(
         fc.asyncProperty(
@@ -1972,18 +1942,28 @@ function ensure(
     };
 }
 
-/*
 function statistics() {
+    const samplesNumber = 50000;
+    const maxFunctionCallDepth = 10;
+
     const astF = getAstFactory();
 
     const featureSet = new Set(Object.values(GeneratorFeature));
 
-    const testFactory = getGeneratorFactory(astF, featureSet);
+    const testFactory = getGeneratorFactory(
+        astF,
+        featureSet,
+        maxFunctionCallDepth,
+    );
 
     const featureCount: Map<string, number> = new Map();
     const depthCount: Map<number, number> = new Map();
 
-    const samples = fc.sample(testFactory.generator, 100000);
+    console.log(
+        `Generating a sample of ${samplesNumber} contracts, with maximum function call depth of ${maxFunctionCallDepth}...`,
+    );
+
+    const samples = fc.sample(testFactory.generator, samplesNumber);
 
     for (const sample of samples) {
         for (const feature of sample.featuresTrace) {
@@ -2014,22 +1994,17 @@ function statistics() {
         .values()
         .reduce((prev, curr) => prev + curr, 0);
 
+    console.log("\nDistribution of features:");
+
     for (const [feature, count] of featureCount) {
-        console.log(`${feature}: ${count / totalFeatureCount}`);
+        console.log(`${feature}: ${(count / totalFeatureCount) * 100}%`);
     }
+
+    console.log("\nDistribution of function call depths:");
 
     for (const [depth, count] of depthCount) {
-        console.log(`${depth}: ${count / totalDepthCount}`);
+        console.log(`${depth}: ${(count / totalDepthCount) * 100}%`);
     }
-
-    fc.statistics(
-        testFactory.generator,
-        (sample) => sample.featuresTrace,
-        100000,
-    );
 }
-
-statistics();
-*/
 
 void main();
