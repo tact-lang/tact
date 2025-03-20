@@ -1,4 +1,4 @@
-import { Address, beginCell, Cell, toNano } from "@ton/core";
+import { Address, beginCell, Cell, toNano, fromNano } from "@ton/core";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { IntrinsicsTester } from "./contracts/output/intrinsics_IntrinsicsTester";
@@ -34,8 +34,12 @@ describe("intrinsics", () => {
 
     it("should return correct intrinsic results", async () => {
         // Compile-time constants
-        expect(await contract.getGetTons()).toBe(toNano("10.1234"));
-        expect(await contract.getGetTons2()).toBe(toNano("10.1234"));
+        expect(fromNano(await contract.getGetTons()).toString()).toBe(
+            "10.1234",
+        );
+        expect(fromNano(await contract.getGetTons2()).toString()).toBe(
+            "10.1234",
+        );
         expect(await contract.getGetString()).toBe("Hello world");
         expect(await contract.getGetString2()).toBe("Hello world");
         expect(
@@ -62,8 +66,8 @@ describe("intrinsics", () => {
                 Cell.fromBase64("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw="),
             ),
         ).toBe(true);
-        expect(await contract.getGetPow()).toBe(512n);
-        expect(await contract.getGetPow2()).toBe(512n);
+        expect((await contract.getGetPow()).toString()).toBe("512");
+        expect((await contract.getGetPow2()).toString()).toBe("512");
 
         // Compile-time optimizations
         expect(
@@ -240,28 +244,24 @@ describe("intrinsics", () => {
         ).toBe(true);
 
         // Check `ascii`
-        expect(await contract.getGetAscii()).toBe(
-            BigInt("0x68656c6c6f20776f726c64"),
+        expect((await contract.getGetAscii()).toString()).toBe(
+            "126207244316550804821666916",
         );
-        expect(await contract.getGetAscii2()).toBe(
-            BigInt("0x68656c6c6f20776f726c64"),
+        expect((await contract.getGetAscii2()).toString()).toBe(
+            "126207244316550804821666916",
         );
-        expect(await contract.getGetAscii3()).toBe(
-            BigInt(
-                "1563963554659859369353828835329962428465513941646011501275668087180532385",
-            ),
+        expect((await contract.getGetAscii3()).toString()).toBe(
+            "1563963554659859369353828835329962428465513941646011501275668087180532385",
         );
-        expect(await contract.getGetAscii4()).toBe(
-            BigInt(
-                "1563963554659859369353828835329962428465513941646011501275668087180532385",
-            ),
+        expect((await contract.getGetAscii4()).toString()).toBe(
+            "1563963554659859369353828835329962428465513941646011501275668087180532385",
         );
 
         // Check `crc32`
-        expect(await contract.getGetCrc32()).toBe(BigInt(2235694568));
-        expect(await contract.getGetCrc32_2()).toBe(BigInt(2235694568));
-        expect(await contract.getGetCrc32_3()).toBe(0n);
-        expect(await contract.getGetCrc32_4()).toBe(0n);
+        expect((await contract.getGetCrc32()).toString()).toBe("2235694568");
+        expect((await contract.getGetCrc32_2()).toString()).toBe("2235694568");
+        expect((await contract.getGetCrc32_3()).toString()).toBe("0");
+        expect((await contract.getGetCrc32_4()).toString()).toBe("0");
     });
 
     const checkSha256 = async (input: string) => {
@@ -342,8 +342,8 @@ describe("intrinsics", () => {
         const input256bytesStringHash =
             await contract.getGetHashLongRuntime(input256bytes);
 
-        expect(first128bytesOf256bytesStringHash).not.toEqual(
-            input256bytesStringHash,
+        expect(first128bytesOf256bytesStringHash.toString()).not.toEqual(
+            input256bytesStringHash.toString(),
         );
 
         // check that we hash all slice, not just first 127 bytes
@@ -358,8 +358,8 @@ describe("intrinsics", () => {
                 beginCell().storeStringTail(input256bytes).asSlice(),
             );
 
-        expect(first128bytesOf256bytesSliceHash).not.toEqual(
-            input256bytesSliceHash,
+        expect(first128bytesOf256bytesSliceHash.toString()).not.toEqual(
+            input256bytesSliceHash.toString(),
         );
 
         // NOTE:
@@ -376,7 +376,9 @@ describe("intrinsics", () => {
             beginCell().storeStringTail(input256bytes).asSlice(),
         );
 
-        expect(first128bytesOf256bytesSHA256U).toEqual(input256bytesSHA256U);
+        expect(first128bytesOf256bytesSHA256U.toString()).toEqual(
+            input256bytesSHA256U.toString(),
+        );
 
         // check that HASHEXT_SHA256 instruction hashes ONLY first 127 bytes
         const first128bytesOf256bytesHASHEXTSHA256 =
@@ -390,8 +392,8 @@ describe("intrinsics", () => {
                 beginCell().storeStringTail(input256bytes).asSlice(),
             );
 
-        expect(first128bytesOf256bytesHASHEXTSHA256).toEqual(
-            input256bytesHASHEXTSHA256,
+        expect(first128bytesOf256bytesHASHEXTSHA256.toString()).toEqual(
+            input256bytesHASHEXTSHA256.toString(),
         );
     });
 });
