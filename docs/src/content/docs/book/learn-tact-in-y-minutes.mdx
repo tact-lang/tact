@@ -162,7 +162,7 @@ target.skipBool();
 // Manual composition and parsing of Cells is tedious,
 // error-prone and is generally not recommended.
 // Instead, prefer using structures: struct and message struct types.
-// See "Composite types" section below for more info.
+// See the "Composite types" section below for more info.
 
 
 // ---
@@ -205,7 +205,7 @@ let fullQuote: String = sb.toString();
 // such as String.asSlice() or Address.asSlice().
 //
 // Advanced users can introduce their own casts by using assembly functions.
-// See "Functions" section below for more info.
+// See the "Functions" section below for more info.
 ```
 
 Read more: [Primitive types](/book/types#primitive-types).
@@ -215,8 +215,30 @@ Read more: [Primitive types](/book/types#primitive-types).
 ### Optionals {#composite-optionals}
 
 ```tact
-// TODO:
-// (move notes here!)
+// An optional is a value than can be of any type or null.
+// Null is a special value that represents the intentional absence of any other value.
+
+// Int keys to Int values.
+// Type ascription of optionals is mandatory.
+let optionalVal: Int? = null;
+optionalVal = 255;
+
+// If you're certain that the value isn't null at a given moment,
+// use the non-null assertion operator !! to access it.
+dump(optionalVal!!);
+
+// Declared but undefined optional variables and fields hold the null value by default.
+let veryOptional: Bool?; // null
+if (veryOptional != null) {
+    // not happening
+} else {
+    // here we go
+}
+
+// You can make almost any variable or field optional by adding a question mark (?)
+// after its type declaration. The only exceptions are map<K, V> and bounced<Message>,
+// in which you cannot make the inner key/value type (in the case of a map)
+// or the inner message struct (in the case of a bounced) optional.
 ```
 
 Read more: [Optionals](/book/optionals).
@@ -224,17 +246,180 @@ Read more: [Optionals](/book/optionals).
 ### Maps {#composite-maps}
 
 ```tact
-// TODO:
-// (move notes here!)
+// The composite type map<K, V> is used to associate
+// keys of type K with corresponding values of type V.
+
+// A map of Int keys to Int values.
+// Type ascription is mandatory.
+let myMap: map<Int, Int> = emptyMap();
+
+// Maps have a number of built-in methods.
+myMap.set(0, 10);        // key 0 now points to value 10
+myMap.set(0, 42);        // overriding the value under key 0 with 42
+myMap.get(0)!!;          // 42, because get can return null if the key doesn't exist
+myMap.replace(1, 55);    // false, because there was no key 1 and map didn't change
+myMap.replaceGet(0, 10); // 42, because the key 0 exists and the old value there was 42
+myMap.get(0)!!;          // 10, since we've just replaced the value with .replaceGet
+myMap.del(0);            // true, because the map contained an entry under key 0
+myMap.del(0);            // false and not an error, because deletion is idempotent
+myMap.exists(0);         // false, there is no entry under key 0
+myMap.isEmpty();         // true, there is no other entries
+
+// In most cases, to compare two maps it's sufficient to use the shallow
+// comparison via the equality == and inequality != operators.
+myMap == emptyMap(); // true
+
+// To traverse maps, the foreach statement is used.
+// See the "Statements" section below for more info.
+foreach (k, v in myMap) {
+    // ...do something for each entry, if any
+}
+
+// There are many other allowed kinds of map value types for Int keys
+let _: map<Int, Bool> = emptyMap();    // Int keys to Bool values
+let _: map<Int, Cell> = emptyMap();    // Ints to Cells
+let _: map<Int, Address> = emptyMap(); // Ints to Addresses
+let _: map<Int, Struct> = emptyMap();  // Ints to some structs
+let _: map<Int, Message> = emptyMap(); // Ints to some message structs
+
+// And all the same value types for maps with Address keys are also allowed.
+let _: map<Address, Int> = emptyMap();     // Address keys to Int values
+let _: map<Address, Bool> = emptyMap();    // Addresses to Bools
+let _: map<Address, Cell> = emptyMap();    // Addresses to Cells
+let _: map<Address, Address> = emptyMap(); // Addresses to Addresses
+let _: map<Address, Struct> = emptyMap();  // Addresses to some structs
+let _: map<Address, Message> = emptyMap(); // Addresses to some message structs
+
+// Under the hood, empty maps are nulls, which is why it's important to provide a type ascription.
+let _: map<Int, Int> = null; // like emptyMap(), but less descriptive and generally discouraged
+
+// Furthermore, as with many other types, maps are just Cells with a distinct data layout.
+// Therefore, you can type cast any map back to its underlying Cell type.
+myMap.asCell();
+
+// To ignore possible differences in serialization logic of maps,
+// there is a costly method that is guaranteed to compare correctly.
+myMap.deepEquals(emptyMap()); // true, and for the explanation of it see the
+                              // relevant section on the maps page in the Book.
+
+// Serialization of integer keys or values is possible but only meaningful
+// for maps as fields of structures and maps in the contract's persistent state.
+// See the "Structs and message structs" and "Persistent state"
+// sections below for more info.
+
+// Finally, mind the limits — maps are quite gas-expensive
+// and have an upper limit of around 32k entries for the whole contract.
+//
+// On TON, contracts are very limited in their state, and for large
+// or unbounded (infinitely large) maps, it is better to use contract sharding
+// and essentially make the entire blockchain part of your maps.
+//
+// See this approach in action for the Jetton (token)
+// contract system by the end of this tour.
 ```
 
-Read more: [Maps](/book/maps).
+Read more:
 
-### Structs and Messages {#composite-structures}
+* [Maps in the Book](/book/maps).
+* [Map-based array data structure in the Cookbook](/cookbook/data-structures#array).
+
+### Structs and message structs {#composite-structures}
 
 ```tact
-// TODO
-// (move notes here!)
+// Structs and message structs allow multiple values to be packed together
+// in a single type. They are very useful for (de)serialization of Cells
+// and for usage as parameters or return types in functions.
+
+// Struct containing a single value
+struct One { number: Int; }
+
+// Struct with default fields, fields of optional types, and nested structs
+struct Params {
+    name: String = "Satoshi"; // default value
+
+    age: Int?; // field with an optional type Int?
+               // and an implicit default value of null
+
+    val: One; // nested struct One
+}
+
+// You can instruct how to (de)compose the Cells to and from structs
+// by specifying certain serialization options after the `as` keyword.
+struct SeriesXX {
+    i64: Int as int64;  // signed 64-bit integer
+    u32: Int as uint32; // unsigned 32-bit integer
+    ufo51: Int as uint51; // uneven formats are allowed too,
+                          // so this is an unsigned 51-bit integer
+
+    // In general, uint1 through uint256 and int1 through int257
+    // are valid serialization formats for integer values.
+    maxi: Int as int257; // Int is serialized as int257 by default,
+                         // but now it is explicitly specified
+
+    // If this struct will be obtained from some Slice,
+    // you can instruct the compiler to place the remainder of that Slice
+    // as the last field of the struct, and even type cast the value
+    // of that field to Cell, Builder or Slice at runtime.
+    lastFieldName: Cell as remaining; // there can only be a single `remaining` field,
+                                      // and it must be the last one in the struct
+}
+
+// The order of fields matters, as it corresponds to the resulting
+// memory layout when the struct will be used to compose a Cell
+// or to parse a Slice back to the struct.
+struct Order {
+    first: Int;     // 257 continuously laid out bits
+    second: Cell;   // up to 1023 bits,
+                    // which will be placed in a separate ref
+                    // when composing a Cell
+    third: Address; // 267 bits
+}
+
+// Message structs are almost the same as regular structs,
+// but they have a 32-bit integer header in their serialization.
+// This unique numeric ID is commonly referred to as an opcode (operation code),
+// and it allows message structs to be used with special receiver functions
+// that distinguish incoming messages based on this ID.
+message ImplicitlyAssignedId {} // no fields,
+                                // but not empty because of the automatically
+                                // generated and implicitly set 32-bit Int opcode
+
+// You can manually override an opcode with any compile-time expression
+// that evaluates to a non-negative 32-bit integer.
+
+// This message has an opcode of 898001897, which is the evaluated
+// integer value of the specified compile-time expression.
+message((crc32("Tact") + 42) & 0xFFFF_FFFF) MsgWithExprOpcode {
+    // All the contents are defined identical to regular structs.
+    field1: Int as uint4;         // serialization
+    field2: Bool?;                // optionals
+    field3: One;                  // nested structs
+    field4: ImplicitlyAssignedId; // nested message structs
+}
+
+// Some usage examples.
+fun usage() {
+    // Instantiation of a struct.
+    // Notice the lack of the "new" keyword used for this in many
+    // other traditional languages.
+    let val: One = One{ number: 50 };
+
+    // You can omit the fields with default values.
+    let _ = Params{ val }; // the field punning works —
+                           // instead of `val: val` you could write just `val`
+
+    // Convert a struct to a Cell or a Slice.
+    let valCell = val.toCell();
+    let valSlice = val.toSlice();
+
+    // Obtain a struct from a Cell or a Slice.
+    let _ = One.fromCell(valCell);
+    let _ = One.fromSlice(valSlice);
+
+    // Conversion works both ways.
+    One.fromCell(val.toCell()).toCell() == valCell;
+    One.fromSlice(val.toSlice()).toSlice() == valSlice;
+}
 ```
 
 Read more: [Structs and Messages](/book/structs-and-messages).
@@ -242,19 +427,6 @@ Read more: [Structs and Messages](/book/structs-and-messages).
 ## Operators
 
 ```tact
-// Unary postfix  !!
-// Unary prefix   !  ~
-// Multiplicative *   /   %
-// Additive       +   -
-// Equality       ==  !=
-// Bitwise AND    &
-// Bitwise XOR    ^
-// Bitwise OR     |
-// Logical AND    &&
-// Logical OR     ||
-// Ternary        ?:
-// Assignment     = and augmented assignment operators
-
 // Let's omit the type ascriptions and let the compiler infer the types
 let a = 5;
 let b = 4;
@@ -274,17 +446,29 @@ a << 2; // 20
 b >> 2; // 1
 
 // Relations
+// TODO
 // > >= < <=
 
 // Logical checks
+// TODO
 // !, !!, &&, ||, ==, !=
+// Equality       ==  !=
+// Logical AND    &&
+// Logical OR     ||
+// Unary postfix  !!
+// Unary prefix   !
+// Ternary        ?:
 
-// ...
+// TODO
+// Unary prefix   ~
+// Bitwise AND    &
+// Bitwise XOR    ^
+// Bitwise OR     |
 
+// TODO
+// Assignment     = and augmented assignment operators
 // Most of the above have augmented assignment versions,
 // see the "Statements" section below.
-
-// TODO:...
 ```
 
 Read more: [Operators](/book/operators).
@@ -298,7 +482,7 @@ Read more: [Operators](/book/operators).
 
 Read more: [Expressions](/book/expressions).
 
-## Statements
+## Statements and control flow {#statements}
 
 ```tact
 // TODO: ... + + exit codes and try-catch (may be separated then)
@@ -325,20 +509,28 @@ Read more: [Constants](/book/constants).
 
 Read more: [Functions](/book/functions).
 
+## TODO something about gas usage {#gas}
+
 ## Persistent state {#state}
 
 ```tact
-// Contracts can define state variables that persist between contract calls, and thus commonly referred to as _storage_ variables.
-// Contracts in TON pay rent in proportion to the amount of persistent space they consume, so compact representations via serialization are encouraged.
+// Contracts can define state variables that persist between contract calls,
+// and thus commonly referred to as _storage_ variables.
+// Contracts in TON pay rent in proportion to the amount of persistent space they consume,
+// so compact representations via serialization are encouraged.
 
 contract StateActor(
     // Persistent state variables
-    // TODO: ...
+    // TODO: ...serialization options
 ) {
 
     // Contract constants, which do not consume space
     // in the persistent state — their values are always inlined in expressions
     // TODO: ...
+
+    // TODO: a major point about runtime -- Int 257, etc.
+    // Like, serialization formats only work for the state / incoming and outgoing messages,
+    // but does not apply to the runtime stuff.
 }
 ```
 
@@ -560,15 +752,11 @@ contract JettonWallet(
 // which would otherwise be imported from another file
 //
 
-struct JettonData { totalSupply: Int; mintable: Bool; owner: Address; content: Cell; jettonWalletCode: Cell; }
-
-struct JettonWalletData { balance: Int; owner: Address; master: Address; code: Cell; }
-
-struct MaybeAddress { address: Address?; }
-
-message(4) JettonUpdateContent {
-    queryId: Int as uint64;
-    content: Cell;
+struct JettonWalletData {
+    balance: Int;
+    owner: Address;
+    master: Address;
+    code: Cell;
 }
 
 message(0xf8a7ea5) JettonTransfer {
@@ -615,34 +803,7 @@ message(0xd53276db) JettonExcesses {
     queryId: Int as uint64;
 }
 
-message(0x2c76b973) ProvideWalletAddress {
-    queryId: Int as uint64;
-    ownerAddress: Address;
-    includeAddress: Bool;
-}
-
-message(0xd1735400) TakeWalletAddress {
-    queryId: Int as uint64;
-    walletAddress: Address;
-    ownerAddress: Cell?;
-}
-
-message(21) Mint {
-    queryId: Int as uint64;
-    receiver: Address;
-    tonAmount: Int as coins;
-    mintMessage: JettonTransferInternal;
-}
-
-message(22) CloseMinting {}
-
-message(3) ChangeOwner {
-    queryId: Int as uint64;
-    newOwner: Address;
-}
-
 const gasForBurn: Int = 6000;
-const gasForDiscovery: Int = 6500;
 const gasForTransfer: Int = 8000;
 const minTonsForStorage: Int = ton("0.01");
 ```
