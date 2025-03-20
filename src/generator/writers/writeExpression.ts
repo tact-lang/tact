@@ -14,6 +14,7 @@ import {
 } from "../../types/resolveDescriptors";
 import type { FieldDescription, TypeDescription } from "../../types/types";
 import { printTypeRef } from "../../types/types";
+import type { TypeRef } from "../../types/types";
 import type { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { MapFunctions } from "../../abi/map";
@@ -42,6 +43,26 @@ import { enabledDebug, enabledNullChecks } from "../../config/features";
 
 function isNull(wCtx: WriterContext, expr: A.AstExpression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
+}
+
+function handleStructNullTernary(
+    wCtx: WriterContext,
+    condition: A.AstExpression,
+    structExpr: A.AstExpression,
+    structType: TypeRef,
+    isStructInThenBranch: boolean,
+): string {
+    if (structType.kind === "ref") {
+        const type = getType(wCtx.ctx, structType.name);
+        if (type.kind === "struct" || type.kind === "contract") {
+            if (isStructInThenBranch) {
+                return `(${writeExpression(condition, wCtx)} ? ${ops.typeAsOptional(type.name, wCtx)}(${writeExpression(structExpr, wCtx)}) : null())`;
+            } else {
+                return `(${writeExpression(condition, wCtx)} ? null() : ${ops.typeAsOptional(type.name, wCtx)}(${writeExpression(structExpr, wCtx)}))`;
+            }
+        }
+    }
+    return "";
 }
 
 function writeStructConstructor(
@@ -739,10 +760,14 @@ export function writeExpression(
             !elseType.optional
         ) {
             // When the "then" branch is null and "else" is a non-optional struct
-            const type = getType(wCtx.ctx, elseType.name);
-            if (type.kind === "struct" || type.kind === "contract") {
-                return `(${writeExpression(f.condition, wCtx)} ? null() : ${ops.typeAsOptional(type.name, wCtx)}(${writeExpression(f.elseBranch, wCtx)}))`;
-            }
+            const result = handleStructNullTernary(
+                wCtx,
+                f.condition,
+                f.elseBranch,
+                elseType,
+                false,
+            );
+            if (result) return result;
         } else if (
             isNull(wCtx, f.elseBranch) &&
             elseType.kind === "null" &&
@@ -750,10 +775,14 @@ export function writeExpression(
             !thenType.optional
         ) {
             // When the "else" branch is null and "then" is a non-optional struct
-            const type = getType(wCtx.ctx, thenType.name);
-            if (type.kind === "struct" || type.kind === "contract") {
-                return `(${writeExpression(f.condition, wCtx)} ? ${ops.typeAsOptional(type.name, wCtx)}(${writeExpression(f.thenBranch, wCtx)}) : null())`;
-            }
+            const result = handleStructNullTernary(
+                wCtx,
+                f.condition,
+                f.thenBranch,
+                thenType,
+                true,
+            );
+            if (result) return result;
         }
 
         // Default case
