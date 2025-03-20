@@ -1,30 +1,171 @@
-contract WalletV5(
-    isSignatureAllowed: Bool,
+message(0x64737472) RemovePlugin {
+    queryId: Int as uint64;
+}
+
+message(0x706c7567) PluginRequestFunds {
+    queryId: Int as uint64;
+    amount: Int as coins;
+    extra: Cell?;
+}
+
+message ExternalRequest {
+    signature1: Int as uint256; // 512 bits to signature
+    signature2: Int as uint256;
+    walletId: Int as int32;
+    validUntil: Int as uint32;
+    seqno: Int as uint32;
+    op: Int as uint8;
+    payload: Slice as remaining;
+}
+
+contract WalletV4(
     seqno: Int as uint32,
     walletId: Int as int32,
     publicKey: Int as uint256,
-    extensions: map<Int as uint256, Bool>
+    extensions: map<Address, Bool>
 ) {
-    receive(msg: InternalExtensionRequest) {
-        let myAddr = parseStdAddress(myAddress().asSlice());
-        let addr = parseStdAddress(sender().asSlice());
+    receive(msg: PluginRequestFunds) {
+        let addr = sender(); // check gas for ctx
 
-        throwUnless(145, addr.workchain == myAddr.workchain); // force_workchain optimization
-        throwUnless(148, self.extensions.exists(addr.address));
+        if (!self.extensions.exists(addr)) {
+            return;
+        }
 
-        self.processActions(msg.actions, false, true);
+        throwUnless(80, myBalance() - context().value >= msg.amount);
+
+        nativeSendMessage(beginCell()
+            .storeUint(0x18, 6)
+            .storeAddress(addr)
+            .storeCoins(msg.amount)
+            .storeMaybeRef(msg.extra)
+            .storeUint(0, 4 + 4 + 64 + 32 + 1 + 1)
+            .storeUint(0x706c7567 | 0x80000000, 32)
+            .storeUint(msg.queryId, 64)
+            .endCell(),
+            64
+        );
     }
 
-    receive(msg: InternalSignedRequest) {
-        self.processSignedRequestInternal(msg, false);
+    receive(msg: RemovePlugin) {
+        let addr = sender(); // check gas for ctx
+
+        if (!self.extensions.exists(addr)) {
+            return;
+        }
+
+        self.extensions.del(addr);
+
+        if (context().bounceable) {
+            nativeSendMessage(beginCell()
+                .storeUint(0x18, 6)
+                .storeAddress(addr)
+                .storeCoins(0)
+                .storeUint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .storeUint(0x64737472 | 0x80000000, 32)
+                .storeUint(msg.queryId, 64)
+                .endCell(),
+                64
+            );
+        }
     }
 
+    external(msg: ExternalRequest) {
+        throwIf(36, msg.validUntil < now());
+        throwUnless(33, msg.seqno == self.seqno);
+        throwUnless(34, msg.walletId == self.walletId);
+        let signature = msg.toSlice(); // op
+        signature.skipBits(32);
+        let signedSlice = signature;
+        signedSlice.skipBits(512);
+        throwUnless(35, checkSignature(signedSlice.hash(), signature.loadBits(512), self.publicKey));
+
+        acceptMessage();
+        self.seqno += 1;
+        commit(); // NOTE: fix, blocked by #2073
+
+        // simple transfer
+        if (msg.op == 0) {
+            let payload = msg.payload;
+
+            while (payload.refs() > 0) { // check bool cast 
+                let mode = payload.loadUint(8);
+                nativeSendMessage(payload.loadRef(), mode);
+            }
+            return;
+        }
+
+        // deploy and add plugin
+        if (msg.op == 1) {
+            let payload = msg.payload;
+            let wc = payload.loadUint(8);
+            let amount = payload.loadCoins();
+            let stateInit = payload.loadRef();
+            let body = payload.loadRef();
+                        
+            let addr = newAddress(wc, stateInit.hash());
+            // cant use deploy here because of only basechain support
+            nativeSendMessage(beginCell()
+                .storeUint(0x18, 6)
+                .storeAddress(addr)
+                .storeCoins(amount)
+                .storeUint(4 + 2 + 1, 1 + 4 + 4 + 64 + 32 + 1 + 1 + 1)
+                .storeRef(stateInit)
+                .storeRef(body)
+                .endCell(),
+                3
+            );
+
+            self.extensions.set(addr, true);
+            return;
+        }
+
+        // add plugin
+        if (msg.op == 2) {
+            let payload = msg.payload;
+            let addr = payload.loadAddress();
+            let amount = payload.loadCoins();
+            let queryId = payload.loadUint(64);
+
+            self.extensions.set(addr, true);
+
+            nativeSendMessage(beginCell()
+                .storeUint(0x18, 6)
+                .storeAddress(addr)
+                .storeCoins(amount)
+                .storeUint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .storeUint(0x6e6f7465, 32)
+                .storeUint(queryId, 64)
+                .endCell(),
+                3
+            );
+            return;
+        }
+
+        // remove plugin
+        if (msg.op == 3) {
+            let payload = msg.payload;
+            let addr = payload.loadAddress();
+            let amount = payload.loadCoins();
+            let queryId = payload.loadUint(64);
+
+            throwUnless(39, self.extensions.del(addr));
+
+            nativeSendMessage(beginCell()
+                .storeUint(0x18, 6)
+                .storeAddress(addr)
+                .storeCoins(amount)
+                .storeUint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+                .storeUint(0x64737472, 32)
+                .storeUint(queryId, 64)
+                .endCell(),
+                3
+            );
+            return;
+        }
+    }
+    
     receive(_: Slice) {
         // Fallback
-    }
-
-    external(msg: ExternalSignedRequest) {
-        self.processSignedRequestExternal(msg, true);
     }
 
     get fun seqno(): Int {
@@ -39,7 +180,11 @@ contract WalletV5(
         return self.publicKey;
     }
 
-    get fun get_extensions(): map<Int as uint256, Bool> {
+    get fun is_plugin_installed(wc: Int, hash: Int): Bool {
+        return self.extensions.exists(newAddress(wc, hash));
+    }
+
+    get fun get_plugin_list(): map<Address, Bool> {
         return self.extensions;
     }
 }
