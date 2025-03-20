@@ -728,6 +728,35 @@ export function writeExpression(
     //
 
     if (f.kind === "conditional") {
+        const thenType = getExpType(wCtx.ctx, f.thenBranch);
+        const elseType = getExpType(wCtx.ctx, f.elseBranch);
+
+        // Handle special case when one branch is null and the other is a struct
+        if (
+            isNull(wCtx, f.thenBranch) &&
+            thenType.kind === "null" &&
+            elseType.kind === "ref" &&
+            !elseType.optional
+        ) {
+            // When the "then" branch is null and "else" is a non-optional struct
+            const type = getType(wCtx.ctx, elseType.name);
+            if (type.kind === "struct" || type.kind === "contract") {
+                return `(${writeExpression(f.condition, wCtx)} ? null() : ${ops.typeAsOptional(type.name, wCtx)}(${writeExpression(f.elseBranch, wCtx)}))`;
+            }
+        } else if (
+            isNull(wCtx, f.elseBranch) &&
+            elseType.kind === "null" &&
+            thenType.kind === "ref" &&
+            !thenType.optional
+        ) {
+            // When the "else" branch is null and "then" is a non-optional struct
+            const type = getType(wCtx.ctx, thenType.name);
+            if (type.kind === "struct" || type.kind === "contract") {
+                return `(${writeExpression(f.condition, wCtx)} ? ${ops.typeAsOptional(type.name, wCtx)}(${writeExpression(f.thenBranch, wCtx)}) : null())`;
+            }
+        }
+
+        // Default case
         return `(${writeExpression(f.condition, wCtx)} ? ${writeExpression(f.thenBranch, wCtx)} : ${writeExpression(f.elseBranch, wCtx)})`;
     }
 
