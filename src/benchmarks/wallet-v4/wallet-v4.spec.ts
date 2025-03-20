@@ -366,9 +366,7 @@ describe("Wallet Gas Tests", () => {
             "tact",
         );
 
-        expect(addPluginGasUsedTact).toEqual(
-            expectedResult.gas["addPlugin"],
-        );
+        expect(addPluginGasUsedTact).toEqual(expectedResult.gas["addPlugin"]);
     });
 
     it("pluginTransfer", async () => {
