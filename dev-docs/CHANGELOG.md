@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Docs
+
+- Added "Learn Tact in Y minutes" and "Learn TON in Y minutes" pages to the Book: PR [#2375](https://github.com/tact-lang/tact/pull/2375)
+
 ## [1.6.4] - 2025-03-18
 
 ### Language features
