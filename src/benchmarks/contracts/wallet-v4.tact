@@ -116,7 +116,6 @@ contract WalletV4(
             );
 
             self.extensions.set(addr, true);
-            return;
         }
 
         // add plugin
@@ -138,7 +137,6 @@ contract WalletV4(
                 .endCell(),
                 3
             );
-            return;
         }
 
         // remove plugin
@@ -160,7 +158,6 @@ contract WalletV4(
                 .endCell(),
                 3
             );
-            return;
         }
     }
     

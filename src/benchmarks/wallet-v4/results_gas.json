@@ -4,7 +4,7 @@
       "label": "FunC",
       "gas": {
         "externalTransfer": "3308",
-        "addPlugin": "6110",
+        "addPlugin": "5908",
         "internalTransfer": "5645",
         "extensionTransfer": "3854"
       },
@@ -15,7 +15,7 @@
       "pr": "https://github.com/tact-lang/tact/pull/2396",
       "gas": {
         "externalTransfer": "4188",
-        "addPlugin": "8382",
+        "addPlugin": "6905",
         "internalTransfer": "8711",
         "extensionTransfer": "4780"
       }
