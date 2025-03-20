@@ -427,57 +427,139 @@ Read more: [Structs and Messages](/book/structs-and-messages).
 ## Operators
 
 ```tact
-// Let's omit the type ascriptions and let the compiler infer the types
-let a = 5;
-let b = 4;
+// Let's omit the type ascriptions and let the compiler infer the types.
+let five = 5; // = is an assignment operator,
+              // but it can be a part of the assignment statement only,
+              // because there is no assignment expression
+let four = 4;
 
-// Common arithmetic operators have predictable precedences
-a + b - a * b / a % b; // 9
+// Most operators below have augmented assignment versions, like +=, -=, etc.
+// See the "Statements" section below for more info.
 
-// You can change order of operations with parentheses
-(a + (b - a)) * b / (a % b); // 16
+// Common arithmetic operators have predictable precedences.
+five + four - five * four / five % four; // 9
 
-// The % is the modulo, not the remainder operator
-1 % a;  // 1
-1 % -a; // -4
+// You can change order of operations with parentheses.
+(five + (four - five)) * four / (five % four); // 16
 
-// Shifts
-a << 2; // 20
-b >> 2; // 1
+// The % is the modulo, not the remainder operator.
+1 % five;  // 1
+1 % -five; // -4
 
-// Relations
-// TODO
-// > >= < <=
+// Negation and bitwise NOT.
+-five;    // -5: negation of 5
+~five;    // -6: bitwise NOT of 5
+-(~five); // 6: bitwise NOT, then negation
+~(-five); // 4: negation, then bitwise NOT
 
-// Logical checks
-// TODO
-// !, !!, &&, ||, ==, !=
-// Equality       ==  !=
-// Logical AND    &&
-// Logical OR     ||
-// Unary postfix  !!
-// Unary prefix   !
-// Ternary        ?:
+// Bitwise shifts.
+five << 2; // 20
+four >> 2; // 1
+-four >> 2; // -1, because negation is applied first
+            // and >> performs arithmetic or sign-propagating right shift
 
-// TODO
-// Unary prefix   ~
-// Bitwise AND    &
-// Bitwise XOR    ^
-// Bitwise OR     |
+// Other common bitwise operators.
+five & four; // 4, due to bitwise AND
+five | four; // 5, due to bitwise OR
+five ^ four; // 1, due to bitwise XOR
 
-// TODO
-// Assignment     = and augmented assignment operators
-// Most of the above have augmented assignment versions,
-// see the "Statements" section below.
+// Relations.
+five == four;     // false
+five != four;     // true
+five > four;      // true
+five < four;      // false
+five - 1 >= four; // true
+five - 1 <= four; // true
+
+// Logical checks.
+!(five == 5);       // false, because of the inverse ! operator
+false && five == 5; // false, because && is short-circuited
+true || five != 5;  // true, because || is also short-circuited
+
+// Non-null assertion operator raises
+// a compilation error if the value is null, but does nothing otherwise.
+five!!; // 5
+
+// Ternary operator ?: is right-associative.
+false ? 1 : (false ? 2 : 3); // 3
+false ? 1 : true ? 2 : 3;    // 2
 ```
 
 Read more: [Operators](/book/operators).
 
 ## Expressions
 
-```tact
-// TODO: ... + now, require, send (first use)
-// (move notes here!)
+```tact /StdAddress/
+// Integer literals.
+0; 42; 1_000; 020; // decimal, base 10
+0xABC; 0xf; 0x001; // hexadecimal, base 16
+0o777; 0o00000001; // octal, base 8
+0b111010101111010; // binary, base 2
+
+// Boolean literals.
+true; false;
+
+// String literals.
+"foo"; "1234";
+"\\ \" \n \r \t \v \b \f \x00 through \xFF";
+"\u0000 through \uFFFF and \u{0} through \u{FFFFFF}";
+
+// `null` and `self` literals.
+null; // not an instance of a primitive type, but
+      // a special value that represents the intentional absence
+      // of any other value
+
+self; // used to reference the current contract from within
+      // and the value of the currently extended type inside
+      // the extension function. See "Functions" section below for more.
+
+// Identifiers, with usual naming conventions:
+// They may contain Latin lowercase letters `a-z`,
+// Latin uppercase letters `A-Z`, underscores `_`,
+// and digits 0 - 9, but may not start with a digit.
+// No other symbols are allowed, and Unicode identifiers are prohibited.
+// They also cannot start with __gen or __tact since those prefixes
+// are reserved by the Tact compiler.
+azAZ09_;
+
+// Instantiations or instance expressions of structs and message structs.
+let addr = BasechainAddress{ hash: null, };
+
+// Field access.
+addr.hash; // null
+self.storageReserve; // 0, a contract-level constant present in all contracts,
+                     // because they implicitly inherit the BaseTrait
+                     // that defines it.
+
+// Extension function calls (methods).
+self.storageReserve.toString(); // "0"
+self.notify("Cashback".asComment()); // rather expensive,
+                                     // use cashback() instead
+"hey".asComment(); // allowed on literals
+
+// Global function calls.
+now(); // UNIX timestamp in seconds
+cashback(sender());
+
+// Some of the functions can be computed at compile-time given enough data.
+sha256("hey, I'll produce the SHA256 number at compile-time");
+
+// But there are special, compile-time-only functions.
+let _: Address = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
+let _: Cell = cell("");
+let _: Slice = slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw="); // a Slice with Hello world!
+let _: Slice = rawSlice("000DEADBEEF000"); // CS{Cell{03f...430} bits: 588..644; refs: 1..1}
+let _: Int = ascii("⚡"); // 14850721 or 0xE29AA1, 3 bytes in total
+let _: Int = crc32("000DEADBEEF000"); // 1821923098
+let _: Int = ton("1"); // 10^9 nanoToncoin, which is equivalent to one Toncoin,
+                       // the main currency of TON Blockchain
+
+// initOf, which obtains the initial code and initial data
+// of the given contract, i.e., it's initial state.
+initOf MyContract(); // StateInit{ code, data }
+
+// codeOf, which only obtains the code.
+codeOf MyContract;
 ```
 
 Read more: [Expressions](/book/expressions).
@@ -486,6 +568,7 @@ Read more: [Expressions](/book/expressions).
 
 ```tact
 // TODO: ... + + exit codes and try-catch (may be separated then)
+// assignments and augmented assignments
 // (move notes here!)
 ```
 
@@ -509,7 +592,13 @@ Read more: [Constants](/book/constants).
 
 Read more: [Functions](/book/functions).
 
-## TODO something about gas usage {#gas}
+## Contracts and traits
+
+```tact
+// TODO: move notes here
+// TODO: contract structure
+// TODO: traits
+```
 
 ## Persistent state {#state}
 
@@ -534,10 +623,13 @@ contract StateActor(
 }
 ```
 
-## Contract structure {#contract}
+## TODO something about gas usage {#gas}
+
+## Message exchange
 
 ```tact
-// TODO: move notes here
+// TODO: ... + message sending + reserve + receiving messages + refunds + child-parent interactions (or earlier)
+// (move notes here!)
 ```
 
 ## Deployment
@@ -549,13 +641,8 @@ contract StateActor(
 
 ## Debugging
 
-// TODO: require, throw, emit, etc.
-
-## Message exchange
-
 ```tact
-// TODO: ... + message sending + reserve + receiving messages + refunds + child-parent interactions (or earlier)
-// (move notes here!)
+// TODO: require, throw, emit, etc.
 ```
 
 ## Example contracts {#examples}
