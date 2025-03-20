@@ -19,30 +19,11 @@ import {
     storePluginRequestFunds,
     WalletV4,
 } from "../contracts/output/wallet-v4_WalletV4";
-
-function validUntil(ttlMs = 1000 * 60 * 3) {
-    return BigInt(Math.floor((Date.now() + ttlMs) / 1000));
-}
-
-export function packAddress(address: Address) {
-    return bufferToBigInt(address.hash);
-}
-
-function bufferToBigInt(buffer: Buffer): bigint {
-    return BigInt("0x" + buffer.toString("hex"));
-}
-
-function createSeqnoCounter() {
-    let seqno = 0n;
-    let step = 0;
-    return () => {
-        if (step++ % 2 === 1) {
-            return seqno++;
-        } else {
-            return seqno;
-        }
-    };
-}
+import {
+    bufferToBigInt,
+    createSeqnoCounter,
+    validUntil,
+} from "../wallet-v5/utils";
 
 function createSimpleTransferBody(testReceiver: Address, forwardValue: bigint) {
     const msg = beginCell().storeUint(0, 8);
@@ -69,6 +50,7 @@ function createAddPluginBody(
     const msg = beginCell().storeUint(2, 8);
 
     if (kind === "func") {
+        // old way of ~store_msg_address
         const address = beginCell()
             .storeInt(pluginAddress.workChain, 8)
             .storeUint(bufferToBigInt(pluginAddress.hash), 256)
@@ -82,7 +64,7 @@ function createAddPluginBody(
     return msg.storeCoins(amount).storeUint(0, 64).asSlice();
 }
 
-describe("Wallet Gas Tests", () => {
+describe("WalletV4 Gas Tests", () => {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
     let receiver: SandboxContract<TreasuryContract>;
@@ -117,6 +99,7 @@ describe("Wallet Gas Tests", () => {
         const dataCell = beginCell();
 
         if (kind === "tact") {
+            // store opcode for Tact external receiver, doesnt affect signing
             dataCell.storeUint(WalletV4.opcodes.ExternalRequest, 32);
         }
 

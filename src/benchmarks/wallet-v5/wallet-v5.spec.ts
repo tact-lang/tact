@@ -15,34 +15,17 @@ import { readFileSync } from "fs";
 import { posixNormalize } from "../../utils/filePath";
 import { resolve } from "path";
 import {
+    bufferToBigInt,
     createAddExtActionMsg,
     createSendTxActionMsg,
+    createSeqnoCounter,
     sendInternalMessageFromExtension,
+    validUntil,
 } from "./utils";
 import { WalletV5 } from "../contracts/output/wallet-v5_WalletV5";
 
-function validUntil(ttlMs = 1000 * 60 * 3) {
-    return BigInt(Math.floor((Date.now() + ttlMs) / 1000));
-}
-
 export function packAddress(address: Address) {
     return bufferToBigInt(address.hash);
-}
-
-function bufferToBigInt(buffer: Buffer): bigint {
-    return BigInt("0x" + buffer.toString("hex"));
-}
-
-function createSeqnoCounter() {
-    let seqno = 0n;
-    let step = 0;
-    return () => {
-        if (step++ % 2 === 1) {
-            return seqno++;
-        } else {
-            return seqno;
-        }
-    };
 }
 
 describe("Wallet Gas Tests", () => {

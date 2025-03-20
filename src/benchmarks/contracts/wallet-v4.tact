@@ -73,8 +73,8 @@ contract WalletV4(
         throwIf(36, msg.validUntil < now());
         throwUnless(33, msg.seqno == self.seqno);
         throwUnless(34, msg.walletId == self.walletId);
-        let signature = msg.toSlice(); // op
-        signature.skipBits(32);
+        let signature = msg.toSlice();
+        signature.skipBits(32); // tact receiver op skip
         let signedSlice = signature;
         signedSlice.skipBits(512);
         throwUnless(35, checkSignature(signedSlice.hash(), signature.loadBits(512), self.publicKey));
@@ -87,7 +87,7 @@ contract WalletV4(
         if (msg.op == 0) {
             let payload = msg.payload;
 
-            while (payload.refs() > 0) { // check bool cast 
+            while (payload.refs() > 0) {
                 let mode = payload.loadUint(8);
                 nativeSendMessage(payload.loadRef(), mode);
             }
