@@ -2,12 +2,12 @@ import path from "path";
 import type * as A from "../../ast/ast";
 import { getAstFactory } from "../../ast/ast-helpers";
 import { CompilerContext } from "../../context/context";
-import { defaultParser, getParser } from "../../grammar/grammar";
 import { precompile } from "../../pipeline/precompile";
 import files from "../../stdlib/stdlib";
 import { createVirtualFileSystem } from "../../vfs/createVirtualFileSystem";
 import fs from "fs";
 import { getSrcInfo } from "../../grammar/src-info";
+import { getParser } from "../../grammar";
 
 describe("pre-compilation of ASTs", () => {
     const astF = getAstFactory();
@@ -136,14 +136,12 @@ describe("pre-compilation of ASTs", () => {
         // An empty tact file is required so that pre-compile does not complain about
         // non-existence of an entry point.
         const fileSystem = {
-            ["empty.tact"]: fs
-                .readFileSync(path.join(__dirname, "empty.tact"))
-                .toString("base64"),
+            ["empty.tact"]: "",
         };
 
         const project = createVirtualFileSystem("/", fileSystem, false);
         const stdlib = createVirtualFileSystem("@stdlib", files);
-        const parser = getParser(astF, defaultParser);
+        const parser = getParser(astF);
 
         precompile(ctx, project, stdlib, "empty.tact", parser, astF, [
             makeModule(),
@@ -163,9 +161,9 @@ describe("pre-compilation of ASTs", () => {
 
         const project = createVirtualFileSystem("/", fileSystem, false);
         const stdlib = createVirtualFileSystem("@stdlib", files);
-        const parser = getParser(astF, defaultParser);
+        const parser = getParser(astF);
 
-        precompile(ctx, project, stdlib, "dummy.tact", parser, astF);
+        precompile(ctx, project, stdlib, "dummy.tact", parser, astF, []);
     });
 
     it("should fail pre-compilation when source files and a manual AST have declaration clashes", () => {
@@ -181,7 +179,7 @@ describe("pre-compilation of ASTs", () => {
 
         const project = createVirtualFileSystem("/", fileSystem, false);
         const stdlib = createVirtualFileSystem("@stdlib", files);
-        const parser = getParser(astF, defaultParser);
+        const parser = getParser(astF);
 
         // So, a clash should occur here, since dummy.tact and makeModule() both declare the contract Test.
         expect(() =>
