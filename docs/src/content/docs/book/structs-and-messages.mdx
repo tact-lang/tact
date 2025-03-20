@@ -122,7 +122,7 @@ message(0x7362d09c) TokenNotification {
 
 This is useful in cases where you want to handle certain opcodes of a given smart contract, such as the [Jetton standard](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md). A shortlist of opcodes this contract can process is [provided here in FunC](https://github.com/ton-blockchain/token-contract/blob/main/ft/op-codes.fc). They serve as an interface to the smart contract.
 
-<Badge text="Available since Tact 1.6" variant="tip" size="small"/> A message opcode can be any [compile-time](/ref/core-comptime) expression that evaluates to a positive 32-bit integer, so the following is also valid:
+<Badge text="Available since Tact 1.6" variant="tip" size="small"/> A message opcode can be any [compile-time](/ref/core-comptime) expression that evaluates to a non-negative 32-bit integer, so the following is also valid:
 
 ```tact
 // This Message overrides its unique id (opcode) with 898001897,

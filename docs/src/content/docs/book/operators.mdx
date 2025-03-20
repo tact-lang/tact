@@ -321,9 +321,12 @@ Can only be applied to values of type [`Int{:tact}`][int]:
 
 ```tact
 let two: Int = 2;
-two >> 1; // 1
-4 >> 1;   // 2
-5 >> 1;   // 2, due to flooring of integer values
+two >> 1;  // 1
+-two >> 1; // -1, because >> performs arithmetic shift right,
+           // which preserves the sign of the left operand
+
+4 >> 1; // 2
+5 >> 1; // 2, due to flooring of integer values
 
 pow(2, 254) >> 254; // 1
 ```
