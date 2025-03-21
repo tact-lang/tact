@@ -1,4 +1,4 @@
-import type { AstExpression } from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import {
     AddSelf,
     AddZero,
@@ -59,7 +59,7 @@ export class StandardOptimizer implements ExpressionTransformer {
         this.rules.sort((r1, r2) => r1.priority - r2.priority);
     }
 
-    public applyRules = (ast: AstExpression): AstExpression => {
+    public applyRules = (ast: Ast.Expression): Ast.Expression => {
         return this.rules.reduce(
             (prev, prioritizedRule) =>
                 prioritizedRule.rule.applyRule(prev, this),

@@ -29,6 +29,26 @@
         "internalTransfer": "8711",
         "extensionTransfer": "4780"
       }
+    },
+    {
+      "label": "1.6.4 with no selector hack",
+      "pr": null,
+      "gas": {
+        "externalTransfer": "8069",
+        "addExtension": "8392",
+        "internalTransfer": "8991",
+        "extensionTransfer": "5060"
+      }
+    },
+    {
+      "label": "1.6.4 with the new selector hack",
+      "pr": "https://github.com/tact-lang/tact/pull/2398",
+      "gas": {
+        "externalTransfer": "8003",
+        "addExtension": "8326",
+        "internalTransfer": "8845",
+        "extensionTransfer": "4914"
+      }
     }
   ]
 }

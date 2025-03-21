@@ -8,7 +8,7 @@ import { writeExpression } from "../generator/writers/writeExpression";
 import { throwCompilationError } from "../error/errors";
 import { getType } from "../types/resolveDescriptors";
 import type { AbiFunction } from "./AbiFunction";
-import type { AstExpression } from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import { isAssignable } from "../types/subtyping";
 
 // Helper functions to avoid redundancy
@@ -149,7 +149,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
             generate(
                 ctx: WriterContext,
                 args: readonly (TypeRef | undefined)[],
-                exprs: readonly AstExpression[],
+                exprs: readonly Ast.Expression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(args, 3, "set expects two arguments", ref);
@@ -223,7 +223,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
             generate(
                 ctx: WriterContext,
                 args: readonly (TypeRef | undefined)[],
-                exprs: readonly AstExpression[],
+                exprs: readonly Ast.Expression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(args, 2, "get expects one argument", ref);
@@ -309,7 +309,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
             generate(
                 ctx: WriterContext,
                 args: readonly (TypeRef | undefined)[],
-                exprs: readonly AstExpression[],
+                exprs: readonly Ast.Expression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(args, 2, "del expects one argument", ref);
@@ -359,7 +359,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
             generate(
                 ctx: WriterContext,
                 args: readonly (TypeRef | undefined)[],
-                exprs: readonly AstExpression[],
+                exprs: readonly Ast.Expression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -400,7 +400,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
             generate(
                 ctx: WriterContext,
                 args: readonly (TypeRef | undefined)[],
-                exprs: readonly AstExpression[],
+                exprs: readonly Ast.Expression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -443,7 +443,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
             generate(
                 ctx: WriterContext,
                 args: readonly (TypeRef | undefined)[],
-                exprs: readonly AstExpression[],
+                exprs: readonly Ast.Expression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -506,7 +506,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
             generate(
                 ctx: WriterContext,
                 args: readonly (TypeRef | undefined)[],
-                exprs: readonly AstExpression[],
+                exprs: readonly Ast.Expression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -578,7 +578,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
             generate(
                 ctx: WriterContext,
                 args: readonly (TypeRef | undefined)[],
-                exprs: readonly AstExpression[],
+                exprs: readonly Ast.Expression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
@@ -664,7 +664,7 @@ export const MapFunctions: ReadonlyMap<string, AbiFunction> = new Map([
             generate(
                 ctx: WriterContext,
                 args: readonly (TypeRef | undefined)[],
-                exprs: readonly AstExpression[],
+                exprs: readonly Ast.Expression[],
                 ref: SrcInfo,
             ) {
                 checkArgumentsLength(
