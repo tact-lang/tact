@@ -1,14 +1,14 @@
-import type { AstId } from "../../ast/ast";
+import type * as Ast from "../../ast/ast";
 import { idText } from "../../ast/ast-helpers";
 
-export function funcIdOf(ident: AstId | string): string {
+export function funcIdOf(ident: Ast.Id | string): string {
     if (typeof ident === "string") {
         return "$" + ident;
     }
     return "$" + idText(ident);
 }
 
-export function funcInitIdOf(ident: AstId | string): string {
+export function funcInitIdOf(ident: Ast.Id | string): string {
     if (typeof ident === "string") {
         return ident + "$init";
     }

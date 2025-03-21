@@ -1,4 +1,4 @@
-import type { AstExpression, AstId, AstStatement } from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import { idText, isSelfId, tryExtractPath } from "../ast/ast-helpers";
 import type { CompilerContext } from "../context/context";
 import { getAllTypes, getType } from "./resolveDescriptors";
@@ -14,7 +14,7 @@ export function computeReceiversEffects(ctx: CompilerContext) {
             for (const receiver of type.receivers) {
                 receiver.effects = statementListEffects(
                     receiver.ast.statements,
-                    new Set<AstId>(),
+                    new Set<Ast.Id>(),
                     ctx,
                 );
             }
@@ -23,8 +23,8 @@ export function computeReceiversEffects(ctx: CompilerContext) {
 }
 
 function statementListEffects(
-    statements: readonly AstStatement[],
-    processedContractMethods: ReadonlySet<AstId>,
+    statements: readonly Ast.Statement[],
+    processedContractMethods: ReadonlySet<Ast.Id>,
     ctx: CompilerContext,
 ): ReadonlySet<Effect> {
     return mapUnionAll(statements, (stmt) =>
@@ -33,8 +33,8 @@ function statementListEffects(
 }
 
 function statementEffects(
-    stmt: AstStatement,
-    processedContractMethods: ReadonlySet<AstId>,
+    stmt: Ast.Statement,
+    processedContractMethods: ReadonlySet<Ast.Id>,
     ctx: CompilerContext,
 ): ReadonlySet<Effect> {
     switch (stmt.kind) {
@@ -167,8 +167,8 @@ function statementEffects(
 }
 
 function expressionEffects(
-    expr: AstExpression,
-    processedContractMethods: ReadonlySet<AstId>,
+    expr: Ast.Expression,
+    processedContractMethods: ReadonlySet<Ast.Id>,
     ctx: CompilerContext,
 ): ReadonlySet<Effect> {
     switch (expr.kind) {
@@ -274,9 +274,9 @@ function expressionEffects(
 }
 
 function methodEffects(
-    self: AstExpression,
-    method: AstId,
-    processedContractMethods: ReadonlySet<AstId>,
+    self: Ast.Expression,
+    method: Ast.Id,
+    processedContractMethods: ReadonlySet<Ast.Id>,
     ctx: CompilerContext,
 ): ReadonlySet<Effect> {
     const selfTypeRef = getExpType(ctx, self);

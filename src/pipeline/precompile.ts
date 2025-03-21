@@ -7,7 +7,7 @@ import { resolveErrors } from "../types/resolveErrors";
 import { resolveSignatures } from "../types/resolveSignatures";
 import { resolveImports } from "../imports/resolveImports";
 import type { VirtualFileSystem } from "../vfs/VirtualFileSystem";
-import type { AstModule } from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import type { FactoryAst } from "../ast/ast-helpers";
 import type { Parser } from "../grammar";
 import { evalComptimeExpressions } from "../types/evalComptimeExpressions";
@@ -20,7 +20,7 @@ export function precompile(
     entrypoint: string,
     parser: Parser,
     ast: FactoryAst,
-    parsedModules?: AstModule[],
+    parsedModules?: Ast.Module[],
 ) {
     // Load all sources
     const imported = resolveImports({ entrypoint, project, stdlib, parser });

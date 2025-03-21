@@ -4,7 +4,7 @@ import {
     throwCompilationError,
     throwInternalCompilerError,
 } from "../../error/errors";
-import type * as A from "../../ast/ast";
+import type * as Ast from "../../ast/ast";
 import { getExpType } from "../../types/resolveExpression";
 import {
     getStaticConstant,
@@ -40,7 +40,7 @@ import {
 } from "../../ast/ast-helpers";
 import { enabledDebug, enabledNullChecks } from "../../config/features";
 
-function isNull(wCtx: WriterContext, expr: A.AstExpression): boolean {
+function isNull(wCtx: WriterContext, expr: Ast.Expression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
 }
 
@@ -94,7 +94,7 @@ function writeStructConstructor(
     return name;
 }
 
-export function writeValue(val: A.AstLiteral, wCtx: WriterContext): string {
+export function writeValue(val: Ast.Literal, wCtx: WriterContext): string {
     switch (val.kind) {
         case "number":
             return val.value.toString(10);
@@ -124,7 +124,7 @@ export function writeValue(val: A.AstLiteral, wCtx: WriterContext): string {
             return "null()";
         case "struct_value": {
             // Transform the struct fields into a map for lookup
-            const valMap: Map<string, A.AstLiteral> = new Map();
+            const valMap: Map<string, Ast.Literal> = new Map();
             for (const f of val.args) {
                 valMap.set(idText(f.field), f.initializer);
             }
@@ -157,12 +157,12 @@ export function writeValue(val: A.AstLiteral, wCtx: WriterContext): string {
     }
 }
 
-export function writePathExpression(path: A.AstId[]): string {
+export function writePathExpression(path: Ast.Id[]): string {
     return [funcIdOf(idText(path[0]!)), ...path.slice(1).map(idText)].join(`'`);
 }
 
 export function writeExpression(
-    f: A.AstExpression,
+    f: Ast.Expression,
     wCtx: WriterContext,
 ): string {
     // literals and constant expressions are covered here
@@ -739,7 +739,7 @@ export function writeExpression(
 }
 
 export function writeTypescriptValue(
-    val: A.AstLiteral | undefined,
+    val: Ast.Literal | undefined,
 ): string | undefined {
     if (typeof val === "undefined") return undefined;
 
