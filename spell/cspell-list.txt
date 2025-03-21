@@ -114,6 +114,7 @@ mktemp
 multiformats
 nanoton
 nanotons
+Nemo
 Neovim
 nextra
 nobounce

@@ -567,9 +567,102 @@ Read more: [Expressions](/book/expressions).
 ## Statements and control flow {#statements}
 
 ```tact
-// TODO: ... + + exit codes and try-catch (may be separated then)
-// assignments and augmented assignments
-// (move notes here!)
+// let statement to define new variables, as we've seen above.
+let theAnswer = 42;                // type ascription is optional for everything,
+let m: map<Int, Int> = emptyMap(); // except for optionals and maps
+
+// Block statement creates an enclosed scope.
+{
+    // theAnswer is accessible here
+    let privateVal = theAnswer + 27;
+    // but privateVal is no longer visible after this block ends.
+}
+
+// Assignment statement allows reassigning variables.
+theAnswer = -(~theAnswer + 1);
+
+// Almost every binary operator can form an augmented assignment,
+// except for relational and equality ones,
+// and excluding the assignment operator itself.
+theAnswer += 5; // equivalent to: theAnswer = theAnswer + 5;
+theAnswer -= 5; // equivalent to: theAnswer = theAnswer - 5;
+theAnswer *= 5; // and so on, see the Operators page for more.
+
+// Destructuring assignment is a concise way to
+// unpack structures into distinct variables.
+let st = StdAddress{ workchain: 0, address: 0 }; // let statement
+let StdAddress{ address, .. } = st;              // destructuring statement
+//              -------  --
+//              ↑        ↑
+//              |        ignores all unspecified fields
+//              Int as uint256,
+//              a variable out of the second field of StdAddress struct
+address; // 0
+
+// You can also define new names for variables
+// derived from the struct fields.
+let StdAddress { address: someNewName, .. } = st;
+someNewName; // 0
+
+// Conditional branching with if...else.
+if (false) { // curly brackets (code blocks) are required!
+    // ...then branch
+} else if (false) {
+    // ...else branch
+} else {
+    // ...last else
+}
+
+// Try and try...catch, with partial rollback.
+try {
+    throw(777);
+} catch (exitCode) { // 777
+    // An exit code is an integer that indicates whether the transaction
+    // was successful, and if not — holds the code of the exception that occurred.
+    //
+    // The catch block that can catch run-time (compute phase) exit codes
+    // will roll back almost all changes made in the try block,
+    // except for: codepage changes, gas usage counters, etc.
+    //
+    // See the "Test and debug" section below for more info.
+}
+
+// Repeat something N times.
+repeat (2003) {
+    dump("mine"); // greet the Nemo
+}
+
+// Loop with a pre-condition: while.
+while (theAnswer > 42) {
+    theAnswer /= 5;
+}
+
+// Loop with a post-condition: do...until.
+do {
+    // This block will be executed at least once,
+    // because the condition in the until close
+    // is checked after each iteration.
+    m = emptyMap();
+} until (false);
+
+// Traverse over all map entries with foreach.
+m.set(100, 456);
+m.set(23, 500);
+foreach (key, value in m) { // or just k, v: naming is up to you
+    // Goes from smaller to bigger keys:
+    // first iteration key = 23
+    // second iteration key = 100
+}
+
+// If you don't want key, value, or both, then use a wildcard.
+let len = 0;
+foreach (_, _ in m) {
+    len += 1; // don't mind me, just counting the size of the map
+}
+
+// Finally, return statement works as usual.
+return; // implicitly produces nothing (named "void" in the compiler)
+// return 5; // would explicitly produce 5
 ```
 
 Read more: [Statements](/book/statements).
@@ -577,8 +670,46 @@ Read more: [Statements](/book/statements).
 ## Constants
 
 ```tact
-// TODO: with a note on contract constants (later)
-// (move notes here!)
+// Global, top-level constants.
+// Type ascription is mandatory.
+const MY_CONSTANT: Int = 42;
+
+// Trait-level constants.
+trait MyTrait {
+    const iAmOnTheTraitLevel: Int = 420;
+
+    // On the trait-level, you can make constants abstract,
+    // which requires the contracts that inherit this trait
+    // to override those constants with some values
+    abstract const overrideMe: Int;
+
+    // Virtual constants allow overrides, but do not require them.
+    virtual const youCanOverrideMe: Int = crc32("babecafe");
+}
+
+// Contract-level constants.
+contract MyContract() with MyTrait {
+    const iAmOnTheContractLevel: Int = 4200;
+
+    // Because this contract inherits from MyTrait,
+    // the iAmOnTheTraitLevel constant is also in scope of this contract,
+    // but we cannot override it.
+
+    // However, we can override the virtual constant.
+    override const youCanOverrideMe: Int = crc32("deadbeef");
+
+    // And we MUST override and define the value of the abstract constant.
+    override const overrideMe: Int = ton("0.5");
+}
+
+// All constants are inlined, i.e., their values are embedded in the resulting
+// code in all places where their values are referenced in Tact code.
+//
+// The main difference is the scope — global can be referenced
+// from anywhere, while contract and trait-level constants are
+// only accessible within them via self references.
+//
+// See "Contracts and traits" section below for more.
 ```
 
 Read more: [Constants](/book/constants).
@@ -599,6 +730,8 @@ Read more: [Functions](/book/functions).
 // TODO: contract structure
 // TODO: traits
 ```
+
+Read more: [Contracts](/book/contracts).
 
 ## Persistent state {#state}
 
@@ -623,14 +756,18 @@ contract StateActor(
 }
 ```
 
-## TODO something about gas usage {#gas}
-
-## Message exchange
+## Message exchange and communication {#messaging}
 
 ```tact
 // TODO: ... + message sending + reserve + receiving messages + refunds + child-parent interactions (or earlier)
 // (move notes here!)
 ```
+
+Read more:
+
+* [Receive messages](/book/receive).
+* [Send messages](/book/send).
+* [Message mode](/book/message-mode).
 
 ## Deployment
 
@@ -639,11 +776,21 @@ contract StateActor(
 // (move notes here!)
 ```
 
-## Debugging
+Read more: [Deployment](/book/deploy).
+
+## Test and debug {#debug}
 
 ```tact
 // TODO: require, throw, emit, etc.
+// TODO: more on exit codes
 ```
+
+TODO something about gas usage.
+
+Read more:
+
+* [Debugging and testing](/book/debug).
+* [Exit codes](/book/exit-codes).
 
 ## Example contracts {#examples}
 
