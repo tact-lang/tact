@@ -17,6 +17,25 @@ message ExternalRequest {
     payload: Slice as remaining;
 }
 
+struct NativeMsg {
+    bits: Int as uint6 = 0x18;
+    receiver: Address;
+    amount: Int as coins;
+    extra: Cell?;
+    bits2: Int as uint106 = 0; // 4 + 4 + 64 + 32 + 1 + 1
+    op: Int as uint32;
+    queryId: Int as uint64;
+}
+
+struct NativeMsgWithDeploy {
+    bits: Int as uint6 = 0x18;
+    receiver: Address;
+    amount: Int as coins;
+    bits2: Int as uint108 = 4 + 2 + 1; // 1 + 4 + 4 + 64 + 32 + 1 + 1 + 1
+    stateInit: Cell;
+    body: Cell;
+}
+
 contract WalletV4(
     seqno: Int as uint32,
     walletId: Int as int32,
@@ -32,15 +51,13 @@ contract WalletV4(
 
         throwUnless(80, myBalance() - context().value >= msg.amount);
 
-        nativeSendMessage(beginCell()
-            .storeUint(0x18, 6)
-            .storeAddress(addr)
-            .storeCoins(msg.amount)
-            .storeMaybeRef(msg.extra)
-            .storeUint(0, 4 + 4 + 64 + 32 + 1 + 1)
-            .storeUint(0x706c7567 | 0x80000000, 32)
-            .storeUint(msg.queryId, 64)
-            .endCell(),
+        nativeSendMessage(NativeMsg{
+            amount: msg.amount,
+            extra: msg.extra,
+            receiver: addr,
+            op: 0x706c7567 | 0x80000000,
+            queryId: msg.queryId,
+        }.toCell(),
             64
         );
     }
@@ -55,14 +72,13 @@ contract WalletV4(
         self.extensions.del(addr);
 
         if (context().bounceable) {
-            nativeSendMessage(beginCell()
-                .storeUint(0x18, 6)
-                .storeAddress(addr)
-                .storeCoins(0)
-                .storeUint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
-                .storeUint(0x64737472 | 0x80000000, 32)
-                .storeUint(msg.queryId, 64)
-                .endCell(),
+            nativeSendMessage(NativeMsg{
+                amount: 0,
+                extra: null,
+                receiver: addr,
+                op: 0x64737472 | 0x80000000,
+                queryId: msg.queryId,
+            }.toCell(),
                 64
             );
         }
@@ -106,17 +122,15 @@ contract WalletV4(
                         
             let addr = newAddress(wc, stateInit.hash());
             // cant use deploy here because of only basechain support
-            nativeSendMessage(beginCell()
-                .storeUint(0x18, 6)
-                .storeAddress(addr)
-                .storeCoins(amount)
-                .storeUint(4 + 2 + 1, 1 + 4 + 4 + 64 + 32 + 1 + 1 + 1)
-                .storeRef(stateInit)
-                .storeRef(body)
-                .endCell(),
-                3
+            nativeSendMessage(NativeMsgWithDeploy{
+                receiver: addr,
+                amount,
+                body,
+                stateInit,
+            }.toCell(),
+            3
             );
-
+            
             self.extensions.set(addr, true);
         }
 
@@ -129,15 +143,14 @@ contract WalletV4(
 
             self.extensions.set(addr, true);
 
-            nativeSendMessage(beginCell()
-                .storeUint(0x18, 6)
-                .storeAddress(addr)
-                .storeCoins(amount)
-                .storeUint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
-                .storeUint(0x6e6f7465, 32)
-                .storeUint(queryId, 64)
-                .endCell(),
-                3
+            nativeSendMessage(NativeMsg{
+                amount,
+                extra: null,
+                receiver: addr,
+                op: 0x6e6f7465,
+                queryId,
+            }.toCell(),
+                64
             );
         }
 
@@ -150,15 +163,14 @@ contract WalletV4(
 
             throwUnless(39, self.extensions.del(addr));
 
-            nativeSendMessage(beginCell()
-                .storeUint(0x18, 6)
-                .storeAddress(addr)
-                .storeCoins(amount)
-                .storeUint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
-                .storeUint(0x64737472, 32)
-                .storeUint(queryId, 64)
-                .endCell(),
-                3
+            nativeSendMessage(NativeMsg{
+                amount: amount,
+                extra: null,
+                receiver: addr,
+                op: 0x64737472,
+                queryId,
+            }.toCell(),
+                64
             );
         }
     }

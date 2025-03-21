@@ -309,7 +309,7 @@ describe("WalletV4 Gas Tests", () => {
 
             const addExtActionsList = createAddPluginBody(
                 testPlugin,
-                10n,
+                10000000n,
                 kind,
             );
             const addPluginSendResult = await sendSignedActionBody(
@@ -362,7 +362,7 @@ describe("WalletV4 Gas Tests", () => {
 
             const addExtActionsList = createAddPluginBody(
                 deployerAsPlugin,
-                10n,
+                10000000n,
                 kind,
             );
             await sendSignedActionBody(walletAddress, addExtActionsList, kind);
