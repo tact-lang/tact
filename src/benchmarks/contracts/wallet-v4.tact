@@ -52,11 +52,11 @@ contract WalletV4(
         throwUnless(80, myBalance() - context().value >= msg.amount);
 
         nativeSendMessage(NativeMsg {
-                amount: msg.amount,
-                extra: msg.extra,
-                receiver: addr,
-                op: 0x706c7567 | 0x80000000,
                 queryId: msg.queryId,
+                op: 0x706c7567 | 0x80000000,
+                extra: msg.extra,
+                amount: msg.amount,
+                receiver: addr,
             }.toCell(),
             64
         );
@@ -73,11 +73,11 @@ contract WalletV4(
 
         if (context().bounceable) {
             nativeSendMessage(NativeMsg {
-                    amount: 0,
-                    extra: null,
-                    receiver: addr,
-                    op: 0x64737472 | 0x80000000,
                     queryId: msg.queryId,
+                    op: 0x64737472 | 0x80000000,
+                    extra: null,
+                    amount: 0,
+                    receiver: addr,
                 }.toCell(),
                 64
             );
@@ -123,10 +123,10 @@ contract WalletV4(
             let addr = newAddress(wc, stateInit.hash());
             // cant use deploy here because of only basechain support
             nativeSendMessage(NativeMsgWithDeploy {
-                    receiver: addr,
-                    amount,
-                    body,
                     stateInit,
+                    body,
+                    amount,
+                    receiver: addr,
                 }.toCell(),
             3
             );
@@ -144,11 +144,11 @@ contract WalletV4(
             self.extensions.set(addr, true);
 
             nativeSendMessage(NativeMsg {
-                    amount,
-                    extra: null,
-                    receiver: addr,
-                    op: 0x6e6f7465,
                     queryId,
+                    op: 0x6e6f7465,
+                    extra: null,
+                    amount,
+                    receiver: addr,
                 }.toCell(),
                 64
             );
@@ -164,11 +164,11 @@ contract WalletV4(
             throwUnless(39, self.extensions.del(addr));
 
             nativeSendMessage(NativeMsg {
-                    amount: amount,
-                    extra: null,
-                    receiver: addr,
-                    op: 0x64737472,
                     queryId,
+                    op: 0x64737472,
+                    extra: null,
+                    amount: amount,
+                    receiver: addr,
                 }.toCell(),
                 64
             );

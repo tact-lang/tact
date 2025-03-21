@@ -14,8 +14,8 @@
       "pr": "https://github.com/tact-lang/tact/pull/2396",
       "gas": {
         "externalTransfer": "4172",
-        "addPlugin": "7202",
-        "pluginTransfer": "4059"
+        "addPlugin": "7184",
+        "pluginTransfer": "4023"
       }
     }
   ]
