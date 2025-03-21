@@ -1,5 +1,5 @@
 import { enabledInline } from "../../config/features";
-import type * as A from "../../ast/ast";
+import type * as Ast from "../../ast/ast";
 import {
     idOfText,
     idText,
@@ -23,7 +23,7 @@ import { idTextErr, throwInternalCompilerError } from "../../error/errors";
 import { ppAsmShuffle } from "../../ast/ast-printer";
 
 export function writeCastedExpression(
-    expression: A.AstExpression,
+    expression: Ast.Expression,
     to: TypeRef,
     ctx: WriterContext,
 ) {
@@ -61,7 +61,7 @@ function unwrapExternal(
 }
 
 export function writeStatement(
-    f: A.AstStatement,
+    f: Ast.Statement,
     self: string | null,
     returns: TypeRef | null,
     ctx: WriterContext,
@@ -529,7 +529,7 @@ export function writeStatement(
 }
 
 function writeCondition(
-    f: A.AstStatementCondition,
+    f: Ast.StatementCondition,
     self: string | null,
     elseif: boolean,
     returns: TypeRef | null,
@@ -726,7 +726,7 @@ export function writeFunction(f: FunctionDescription, ctx: WriterContext) {
 
 function getAsmFunctionSignature(
     f: FunctionDescription,
-    fAst: A.AstAsmFunctionDef,
+    fAst: Ast.AsmFunctionDef,
     params: string[],
 ) {
     const isMutable = fAst.attributes.some((a) => a.type === "mutates");
@@ -739,7 +739,7 @@ function getAsmFunctionSignature(
         !isMutable;
 
     if (!needRearrange) {
-        const asmShuffleEscaped: A.AstAsmShuffle = {
+        const asmShuffleEscaped: Ast.AsmShuffle = {
             ...fAst.shuffle,
             args: fAst.shuffle.args.map((id) => idOfText(funcIdOf(id))),
         };

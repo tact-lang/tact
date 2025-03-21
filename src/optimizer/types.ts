@@ -1,14 +1,14 @@
-import type { AstExpression } from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import type { AstUtil } from "../ast/util";
 
 export interface ExpressionTransformer {
     util: AstUtil;
-    applyRules(ast: AstExpression): AstExpression;
+    applyRules(ast: Ast.Expression): Ast.Expression;
 }
 
 export abstract class Rule {
     public abstract applyRule(
-        ast: AstExpression,
+        ast: Ast.Expression,
         optimizer: ExpressionTransformer,
-    ): AstExpression;
+    ): Ast.Expression;
 }

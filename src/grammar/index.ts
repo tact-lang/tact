@@ -1,5 +1,5 @@
 import * as $ from "@tonstudio/parser-runtime";
-import type * as A from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import type { FactoryAst } from "../ast/ast-helpers";
 import type { $ast } from "./grammar";
 import * as G from "./grammar";
@@ -38,7 +38,7 @@ const parseList = <T>(node: $ast.inter<T, unknown> | undefined): T[] => {
 };
 
 const parseId =
-    ({ name, loc }: $ast.Id | $ast.TypeId): Handler<A.AstId> =>
+    ({ name, loc }: $ast.Id | $ast.TypeId): Handler<Ast.Id> =>
     (ctx) => {
         if (name.startsWith("__gen")) {
             ctx.err.reservedVarPrefix("__gen")(loc);
@@ -149,7 +149,7 @@ const reservedFuncIds: Set<string> = new Set([
 ]);
 
 const parseFuncId =
-    ({ accessor, id, loc }: $ast.FuncId): Handler<A.AstFuncId> =>
+    ({ accessor, id, loc }: $ast.FuncId): Handler<Ast.FuncId> =>
     (ctx) => {
         if (reservedFuncIds.has(id)) {
             ctx.err.reservedFuncId()(loc);
@@ -178,7 +178,7 @@ const prefixMap = {
 } as const;
 
 const parseIntegerLiteralValue =
-    ({ $, digits, loc }: $ast.IntegerLiteral["value"]): Handler<A.AstNumber> =>
+    ({ $, digits, loc }: $ast.IntegerLiteral["value"]): Handler<Ast.Number> =>
     (ctx) => {
         if (
             $ === "IntegerLiteralDec" &&
@@ -192,25 +192,25 @@ const parseIntegerLiteralValue =
     };
 
 const parseIntegerLiteral =
-    ({ value }: $ast.IntegerLiteral): Handler<A.AstNumber> =>
+    ({ value }: $ast.IntegerLiteral): Handler<Ast.Number> =>
     (ctx) => {
         return parseIntegerLiteralValue(value)(ctx);
     };
 
 const parseStringLiteral =
-    ({ value, loc }: $ast.StringLiteral): Handler<A.AstString> =>
+    ({ value, loc }: $ast.StringLiteral): Handler<Ast.String> =>
     (ctx) => {
         return ctx.ast.String(value, loc);
     };
 
 const parseBoolLiteral =
-    ({ value, loc }: $ast.BoolLiteral): Handler<A.AstBoolean> =>
+    ({ value, loc }: $ast.BoolLiteral): Handler<Ast.Boolean> =>
     (ctx) => {
         return ctx.ast.Boolean(value === "true", loc);
     };
 
 const parseNull =
-    ({ loc }: $ast.Null): Handler<A.AstNull> =>
+    ({ loc }: $ast.Null): Handler<Ast.Null> =>
     (ctx) => {
         return ctx.ast.Null(loc);
     };
@@ -220,7 +220,7 @@ const parseStructFieldInitializer =
         name,
         init,
         loc,
-    }: $ast.StructFieldInitializer): Handler<A.AstStructFieldInitializer> =>
+    }: $ast.StructFieldInitializer): Handler<Ast.AstStructFieldInitializer> =>
     (ctx) => {
         const fieldId = parseId(name)(ctx);
 
@@ -232,11 +232,7 @@ const parseStructFieldInitializer =
     };
 
 const parseStructInstance =
-    ({
-        type,
-        fields,
-        loc,
-    }: $ast.StructInstance): Handler<A.AstStructInstance> =>
+    ({ type, fields, loc }: $ast.StructInstance): Handler<Ast.StructInstance> =>
     (ctx) => {
         return ctx.ast.StructInstance(
             parseId(type)(ctx),
@@ -246,7 +242,7 @@ const parseStructInstance =
     };
 
 const parseInitOf =
-    ({ name, params, loc }: $ast.InitOf): Handler<A.AstInitOf> =>
+    ({ name, params, loc }: $ast.InitOf): Handler<Ast.InitOf> =>
     (ctx) => {
         return ctx.ast.InitOf(
             parseId(name)(ctx),
@@ -256,13 +252,13 @@ const parseInitOf =
     };
 
 const parseCodeOf =
-    ({ name, loc }: $ast.CodeOf): Handler<A.AstCodeOf> =>
+    ({ name, loc }: $ast.CodeOf): Handler<Ast.CodeOf> =>
     (ctx) => {
         return ctx.ast.CodeOf(parseId(name)(ctx), loc);
     };
 
 const parseConditional =
-    ({ head, tail, loc }: $ast.Conditional): Handler<A.AstExpression> =>
+    ({ head, tail, loc }: $ast.Conditional): Handler<Ast.Expression> =>
     (ctx) => {
         const condition = parseExpression(head)(ctx);
         if (!tail) {
@@ -280,10 +276,7 @@ const parseConditional =
 const parseBinary =
     ({
         exprs: { head, tail },
-    }: $ast.Binary<
-        Expression,
-        A.AstBinaryOperation
-    >): Handler<A.AstExpression> =>
+    }: $ast.Binary<Expression, Ast.BinaryOperation>): Handler<Ast.Expression> =>
     (ctx) => {
         return tail.reduce(
             ({ child, range }, { op, right }) => {
@@ -303,7 +296,7 @@ const parseBinary =
     };
 
 const parseUnary =
-    ({ prefixes, expression }: $ast.Unary): Handler<A.AstExpression> =>
+    ({ prefixes, expression }: $ast.Unary): Handler<Ast.Expression> =>
     (ctx) => {
         return prefixes.reduceRight(
             ({ child, range }, { name, loc }) => {
@@ -318,7 +311,7 @@ const parseUnary =
     };
 
 type SuffixHandler = Handler<
-    (child: A.AstExpression, loc: $.Loc) => A.AstExpression
+    (child: Ast.Expression, loc: $.Loc) => Ast.Expression
 >;
 
 const parseSuffixUnboxNotNull =
@@ -367,7 +360,7 @@ const suffixVisitor: (node: $ast.suffix) => SuffixHandler =
     });
 
 const parseSuffix =
-    ({ expression, suffixes }: $ast.Suffix): Handler<A.AstExpression> =>
+    ({ expression, suffixes }: $ast.Suffix): Handler<Ast.Expression> =>
     (ctx) => {
         return suffixes.reduce(
             ({ child, range }, suffix) => {
@@ -381,13 +374,13 @@ const parseSuffix =
         ).child;
     };
 
-const parseParens = ({ child }: $ast.Parens): Handler<A.AstExpression> => {
+const parseParens = ({ child }: $ast.Parens): Handler<Ast.Expression> => {
     return parseExpression(child);
 };
 
 // has to be an interface because of the way TS handles circular type references
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface Binary extends $ast.Binary<Expression, A.AstBinaryOperation> {}
+interface Binary extends $ast.Binary<Expression, Ast.BinaryOperation> {}
 
 type Expression =
     | $ast.Conditional
@@ -404,7 +397,7 @@ type Expression =
     | $ast.StringLiteral
     | $ast.Id;
 
-const parseExpression: (input: Expression) => Handler<A.AstExpression> =
+const parseExpression: (input: Expression) => Handler<Ast.Expression> =
     makeVisitor<Expression>()({
         Conditional: parseConditional,
         Binary: parseBinary,
@@ -422,12 +415,7 @@ const parseExpression: (input: Expression) => Handler<A.AstExpression> =
     });
 
 const parseStatementLet =
-    ({
-        name,
-        type,
-        init,
-        loc,
-    }: $ast.StatementLet): Handler<A.AstStatementLet> =>
+    ({ name, type, init, loc }: $ast.StatementLet): Handler<Ast.StatementLet> =>
     (ctx) => {
         return ctx.ast.StatementLet(
             parseId(name)(ctx),
@@ -438,20 +426,20 @@ const parseStatementLet =
     };
 
 const parsePunnedField =
-    ({ name }: $ast.PunnedField): Handler<[A.AstId, A.AstId]> =>
+    ({ name }: $ast.PunnedField): Handler<[Ast.Id, Ast.Id]> =>
     (ctx) => {
         return [parseId(name)(ctx), parseId(name)(ctx)];
     };
 
 const parseRegularField =
-    ({ fieldName, varName }: $ast.RegularField): Handler<[A.AstId, A.AstId]> =>
+    ({ fieldName, varName }: $ast.RegularField): Handler<[Ast.Id, Ast.Id]> =>
     (ctx) => {
         return [parseId(fieldName)(ctx), parseId(varName)(ctx)];
     };
 
 const parseDestructItem: (
     node: $ast.destructItem,
-) => Handler<[A.AstId, A.AstId]> = makeVisitor<$ast.destructItem>()({
+) => Handler<[Ast.Id, Ast.Id]> = makeVisitor<$ast.destructItem>()({
     PunnedField: parsePunnedField,
     RegularField: parseRegularField,
 });
@@ -463,9 +451,9 @@ const parseStatementDestruct =
         rest,
         init,
         loc,
-    }: $ast.StatementDestruct): Handler<A.AstStatementDestruct> =>
+    }: $ast.StatementDestruct): Handler<Ast.StatementDestruct> =>
     (ctx) => {
-        const ids: Map<string, [A.AstId, A.AstId]> = new Map();
+        const ids: Map<string, [Ast.Id, Ast.Id]> = new Map();
         for (const param of parseList(fields)) {
             const pair = parseDestructItem(param)(ctx);
             const [field] = pair;
@@ -486,16 +474,13 @@ const parseStatementDestruct =
     };
 
 const parseStatementBlock =
-    ({ body, loc }: $ast.StatementBlock): Handler<A.AstStatementBlock> =>
+    ({ body, loc }: $ast.StatementBlock): Handler<Ast.StatementBlock> =>
     (ctx) => {
         return ctx.ast.StatementBlock(parseStatements(body)(ctx), loc);
     };
 
 const parseStatementReturn =
-    ({
-        expression,
-        loc,
-    }: $ast.StatementReturn): Handler<A.AstStatementReturn> =>
+    ({ expression, loc }: $ast.StatementReturn): Handler<Ast.StatementReturn> =>
     (ctx) => {
         return ctx.ast.StatementReturn(
             expression ? parseExpression(expression)(ctx) : undefined,
@@ -509,7 +494,7 @@ const parseStatementCondition =
         trueBranch,
         falseBranch,
         loc,
-    }: $ast.StatementCondition): Handler<A.AstStatementCondition> =>
+    }: $ast.StatementCondition): Handler<Ast.StatementCondition> =>
     (ctx) => {
         if (typeof falseBranch === "undefined") {
             return ctx.ast.StatementCondition(
@@ -540,7 +525,7 @@ const parseStatementWhile =
         condition,
         body,
         loc,
-    }: $ast.StatementWhile): Handler<A.AstStatementWhile> =>
+    }: $ast.StatementWhile): Handler<Ast.StatementWhile> =>
     (ctx) => {
         return ctx.ast.StatementWhile(
             parseExpression(condition)(ctx),
@@ -554,7 +539,7 @@ const parseStatementRepeat =
         condition,
         body,
         loc,
-    }: $ast.StatementRepeat): Handler<A.AstStatementRepeat> =>
+    }: $ast.StatementRepeat): Handler<Ast.StatementRepeat> =>
     (ctx) => {
         return ctx.ast.StatementRepeat(
             parseExpression(condition)(ctx),
@@ -568,7 +553,7 @@ const parseStatementUntil =
         condition,
         body,
         loc,
-    }: $ast.StatementUntil): Handler<A.AstStatementUntil> =>
+    }: $ast.StatementUntil): Handler<Ast.StatementUntil> =>
     (ctx) => {
         return ctx.ast.StatementUntil(
             parseExpression(condition)(ctx),
@@ -578,7 +563,7 @@ const parseStatementUntil =
     };
 
 const parseStatementTry =
-    ({ body, handler, loc }: $ast.StatementTry): Handler<A.AstStatementTry> =>
+    ({ body, handler, loc }: $ast.StatementTry): Handler<Ast.StatementTry> =>
     (ctx) => {
         if (handler) {
             return ctx.ast.StatementTry(parseStatements(body)(ctx), loc, {
@@ -601,7 +586,7 @@ const parseStatementForEach =
         expression,
         body,
         loc,
-    }: $ast.StatementForEach): Handler<A.AstStatementForEach> =>
+    }: $ast.StatementForEach): Handler<Ast.StatementForEach> =>
     (ctx) => {
         return ctx.ast.StatementForEach(
             parseId(key)(ctx),
@@ -616,7 +601,7 @@ const parseStatementExpression =
     ({
         expression,
         loc,
-    }: $ast.StatementExpression): Handler<A.AstStatementExpression> =>
+    }: $ast.StatementExpression): Handler<Ast.StatementExpression> =>
     (ctx) => {
         return ctx.ast.StatementExpression(
             parseExpression(expression)(ctx),
@@ -631,7 +616,7 @@ const parseStatementAssign =
         right,
         loc,
     }: $ast.StatementAssign): Handler<
-        A.AstStatementAssign | A.AstStatementAugmentedAssign
+        Ast.StatementAssign | Ast.StatementAugmentedAssign
     > =>
     (ctx) => {
         if (typeof operator === "undefined") {
@@ -650,7 +635,7 @@ const parseStatementAssign =
         }
     };
 
-const parseStatement: (node: $ast.statement) => Handler<A.AstStatement> =
+const parseStatement: (node: $ast.statement) => Handler<Ast.Statement> =
     makeVisitor<$ast.statement>()({
         StatementLet: parseStatementLet,
         StatementDestruct: parseStatementDestruct,
@@ -667,13 +652,13 @@ const parseStatement: (node: $ast.statement) => Handler<A.AstStatement> =
     });
 
 const parseStatements =
-    (nodes: readonly $ast.statement[]): Handler<A.AstStatement[]> =>
+    (nodes: readonly $ast.statement[]): Handler<Ast.Statement[]> =>
     (ctx) => {
         return map(nodes, parseStatement)(ctx);
     };
 
 const parseFunctionAttribute =
-    (node: $ast.FunctionAttribute): Handler<A.AstFunctionAttribute> =>
+    (node: $ast.FunctionAttribute): Handler<Ast.FunctionAttribute> =>
     (ctx) => {
         if (typeof node.name === "string") {
             return ctx.ast.FunctionAttribute(node.name, node.loc);
@@ -720,14 +705,14 @@ const parseFunctionAttributes =
         nodes: readonly $ast.FunctionAttribute[],
         isAbstract: boolean,
         loc: $.Loc,
-    ): Handler<A.AstFunctionAttribute[]> =>
+    ): Handler<Ast.FunctionAttribute[]> =>
     (ctx) => {
         checkAttributes("function")(ctx, isAbstract, nodes, loc);
         return map(nodes, parseFunctionAttribute)(ctx);
     };
 
 const parseConstantAttribute =
-    ({ name, loc }: $ast.ConstantAttribute): Handler<A.AstConstantAttribute> =>
+    ({ name, loc }: $ast.ConstantAttribute): Handler<Ast.ConstantAttribute> =>
     (ctx) => {
         return ctx.ast.ConstantAttribute(name, loc);
     };
@@ -738,7 +723,7 @@ const parseConstantAttributes =
         isAbstract: boolean,
         loc: $.Loc,
         noAttributes: boolean,
-    ): Handler<A.AstConstantAttribute[]> =>
+    ): Handler<Ast.ConstantAttribute[]> =>
     (ctx) => {
         const [head] = nodes;
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -750,7 +735,7 @@ const parseConstantAttributes =
     };
 
 const parseParameter =
-    ({ name, type, loc }: $ast.Parameter): Handler<A.AstTypedParameter> =>
+    ({ name, type, loc }: $ast.Parameter): Handler<Ast.TypedParameter> =>
     (ctx) => {
         return ctx.ast.TypedParameter(
             parseId(name)(ctx),
@@ -760,13 +745,13 @@ const parseParameter =
     };
 
 const parseTypeId =
-    ({ name, loc }: $ast.TypeId): Handler<A.AstTypeId> =>
+    ({ name, loc }: $ast.TypeId): Handler<Ast.TypeId> =>
     (ctx) => {
         return ctx.ast.TypeId(name, loc);
     };
 
 const parseTypeOptional =
-    ({ type, loc }: $ast.$type): Handler<A.AstType> =>
+    ({ type, loc }: $ast.$type): Handler<Ast.Type> =>
     (ctx) => {
         const {
             type: innerType,
@@ -873,7 +858,7 @@ const parseTypeOptional =
     };
 
 const parseType =
-    (node: $ast.$type): Handler<A.AstType> =>
+    (node: $ast.$type): Handler<Ast.Type> =>
     (ctx) => {
         if (node.as.length > 0) {
             ctx.err.asNotAllowed()(node.loc);
@@ -882,12 +867,7 @@ const parseType =
     };
 
 const parseFieldDecl =
-    ({
-        name,
-        type,
-        expression,
-        loc,
-    }: $ast.FieldDecl): Handler<A.AstFieldDecl> =>
+    ({ name, type, expression, loc }: $ast.FieldDecl): Handler<Ast.FieldDecl> =>
     (ctx) => {
         const id = parseId(name)(ctx);
         const expr = expression ? parseExpression(expression)(ctx) : undefined;
@@ -907,7 +887,7 @@ const parseFieldDecl =
     };
 
 const parseReceiverParam =
-    (param: $ast.receiverParam): Handler<A.AstReceiverSubKind> =>
+    (param: $ast.receiverParam): Handler<Ast.ReceiverSubKind> =>
     (ctx) => {
         return !param
             ? ctx.ast.ReceiverFallback()
@@ -917,7 +897,7 @@ const parseReceiverParam =
     };
 
 const parseReceiverReceive =
-    ({ type, param, body, loc }: $ast.Receiver): Handler<A.AstReceiver> =>
+    ({ type, param, body, loc }: $ast.Receiver): Handler<Ast.Receiver> =>
     (ctx) => {
         return ctx.ast.Receiver(
             ctx.ast.ReceiverInternal(parseReceiverParam(param)(ctx), type.loc),
@@ -927,7 +907,7 @@ const parseReceiverReceive =
     };
 
 const parseReceiverExternal =
-    ({ type, param, body, loc }: $ast.Receiver): Handler<A.AstReceiver> =>
+    ({ type, param, body, loc }: $ast.Receiver): Handler<Ast.Receiver> =>
     (ctx) => {
         return ctx.ast.Receiver(
             ctx.ast.ReceiverExternal(parseReceiverParam(param)(ctx), type.loc),
@@ -967,7 +947,7 @@ const repairParam: $ast.receiverParam = {
 };
 
 const parseReceiverBounced =
-    ({ type, param, body, loc }: $ast.Receiver): Handler<A.AstReceiver> =>
+    ({ type, param, body, loc }: $ast.Receiver): Handler<Ast.Receiver> =>
     (ctx) => {
         if (typeof param === "undefined") {
             ctx.err.noBouncedWithoutArg()(loc);
@@ -988,14 +968,14 @@ const parseReceiverBounced =
 
 const parserByReceiverType: Record<
     $ast.ReceiverType["name"],
-    (node: $ast.Receiver) => Handler<A.AstReceiver>
+    (node: $ast.Receiver) => Handler<Ast.Receiver>
 > = {
     bounced: parseReceiverBounced,
     receive: parseReceiverReceive,
     external: parseReceiverExternal,
 };
 
-const parseReceiver = (node: $ast.Receiver): Handler<A.AstReceiver> => {
+const parseReceiver = (node: $ast.Receiver): Handler<Ast.Receiver> => {
     return parserByReceiverType[node.type.name](node);
 };
 
@@ -1005,7 +985,7 @@ const defaultShuffle = {
 };
 
 const parseAsmShuffle =
-    (node: $ast.shuffle | undefined): Handler<A.AstAsmShuffle> =>
+    (node: $ast.shuffle | undefined): Handler<Ast.AsmShuffle> =>
     (ctx) => {
         if (!node) {
             return defaultShuffle;
@@ -1018,7 +998,7 @@ const parseAsmShuffle =
     };
 
 const parseAsmFunction =
-    (node: $ast.AsmFunction): Handler<A.AstAsmFunctionDef> =>
+    (node: $ast.AsmFunction): Handler<Ast.AsmFunctionDef> =>
     (ctx) => {
         return ctx.ast.AsmFunctionDef(
             parseAsmShuffle(node.shuffle)(ctx),
@@ -1032,11 +1012,7 @@ const parseAsmFunction =
     };
 
 const parseContractInit =
-    ({
-        parameters,
-        body,
-        loc,
-    }: $ast.ContractInit): Handler<A.AstContractInit> =>
+    ({ parameters, body, loc }: $ast.ContractInit): Handler<Ast.ContractInit> =>
     (ctx) => {
         return ctx.ast.ContractInit(
             map(parseList(parameters), parseParameter)(ctx),
@@ -1046,13 +1022,13 @@ const parseContractInit =
     };
 
 const parseConstantDefInModule =
-    (node: $ast.Constant): Handler<A.AstConstantDef> =>
+    (node: $ast.Constant): Handler<Ast.ConstantDef> =>
     (ctx) => {
         return parseConstantDef(node, true)(ctx);
     };
 
 const parseConstantDef =
-    (node: $ast.Constant, noAttributes: boolean): Handler<A.AstConstantDef> =>
+    (node: $ast.Constant, noAttributes: boolean): Handler<Ast.ConstantDef> =>
     (ctx) => {
         const result = parseConstant(node, noAttributes)(ctx);
 
@@ -1075,7 +1051,7 @@ const parseConstant =
     (
         node: $ast.Constant,
         noAttributes: boolean,
-    ): Handler<A.AstConstantDecl | A.AstConstantDef> =>
+    ): Handler<Ast.ConstantDecl | Ast.ConstantDef> =>
     (ctx) => {
         const name = parseId(node.name)(ctx);
         const type = parseType(node.type)(ctx);
@@ -1116,7 +1092,7 @@ const parseContract =
         traits,
         declarations,
         loc,
-    }: $ast.Contract): Handler<A.AstContract> =>
+    }: $ast.Contract): Handler<Ast.Contract> =>
     (ctx) => {
         const params = parseList<$ast.Parameter>(parameters?.values).map(
             (param) => {
@@ -1141,7 +1117,7 @@ const parseContract =
     };
 
 const parseFunctionDef =
-    (node: $ast.$Function): Handler<A.AstFunctionDef> =>
+    (node: $ast.$Function): Handler<Ast.FunctionDef> =>
     (ctx) => {
         const result = parseFunction(node)(ctx);
 
@@ -1158,7 +1134,7 @@ const parseFunctionDef =
     };
 
 const parseFunction =
-    (node: $ast.$Function): Handler<A.AstFunctionDef | A.AstFunctionDecl> =>
+    (node: $ast.$Function): Handler<Ast.FunctionDef | Ast.FunctionDecl> =>
     (ctx) => {
         const name = parseId(node.name)(ctx);
         const returnType = node.returnType
@@ -1203,7 +1179,7 @@ const parseMessageDecl =
         opcode,
         fields,
         loc,
-    }: $ast.MessageDecl): Handler<A.AstMessageDecl> =>
+    }: $ast.MessageDecl): Handler<Ast.MessageDecl> =>
     (ctx) => {
         return ctx.ast.MessageDecl(
             parseId(name)(ctx),
@@ -1221,7 +1197,7 @@ const parseNativeFunctionDecl =
         parameters,
         returnType,
         loc,
-    }: $ast.NativeFunctionDecl): Handler<A.AstNativeFunctionDecl> =>
+    }: $ast.NativeFunctionDecl): Handler<Ast.NativeFunctionDecl> =>
     (ctx) => {
         return ctx.ast.NativeFunctionDecl(
             map(attributes, parseFunctionAttribute)(ctx),
@@ -1234,13 +1210,13 @@ const parseNativeFunctionDecl =
     };
 
 const parsePrimitiveTypeDecl =
-    ({ name, loc }: $ast.PrimitiveTypeDecl): Handler<A.AstPrimitiveTypeDecl> =>
+    ({ name, loc }: $ast.PrimitiveTypeDecl): Handler<Ast.PrimitiveTypeDecl> =>
     (ctx) => {
         return ctx.ast.PrimitiveTypeDecl(parseId(name)(ctx), loc);
     };
 
 const parseStructDecl =
-    ({ name, fields, loc }: $ast.StructDecl): Handler<A.AstStructDecl> =>
+    ({ name, fields, loc }: $ast.StructDecl): Handler<Ast.StructDecl> =>
     (ctx) => {
         return ctx.ast.StructDecl(
             parseId(name)(ctx),
@@ -1250,7 +1226,7 @@ const parseStructDecl =
     };
 
 const parseContractAttribute =
-    ({ name, loc }: $ast.ContractAttribute): Handler<A.AstContractAttribute> =>
+    ({ name, loc }: $ast.ContractAttribute): Handler<Ast.ContractAttribute> =>
     (ctx) => {
         return ctx.ast.ContractAttribute(parseStringLiteral(name)(ctx), loc);
     };
@@ -1262,7 +1238,7 @@ const parseTrait =
         attributes,
         declarations,
         loc,
-    }: $ast.Trait): Handler<A.AstTrait> =>
+    }: $ast.Trait): Handler<Ast.Trait> =>
     (ctx) => {
         return ctx.ast.Trait(
             parseId(name)(ctx),
@@ -1275,7 +1251,7 @@ const parseTrait =
 
 const parseContractItem: (
     input: $ast.contractItemDecl,
-) => Handler<A.AstContractDeclaration> = makeVisitor<$ast.contractItemDecl>()({
+) => Handler<Ast.ContractDeclaration> = makeVisitor<$ast.contractItemDecl>()({
     ContractInit: parseContractInit,
     FieldDecl: parseFieldDecl,
     Receiver: parseReceiver,
@@ -1285,14 +1261,14 @@ const parseContractItem: (
 
 const parseTraitItem: (
     input: $ast.traitItemDecl,
-) => Handler<A.AstTraitDeclaration> = makeVisitor<$ast.traitItemDecl>()({
+) => Handler<Ast.TraitDeclaration> = makeVisitor<$ast.traitItemDecl>()({
     FieldDecl: parseFieldDecl,
     Receiver: parseReceiver,
     Function: parseFunction,
     Constant: parseConstantLocal,
 });
 
-const parseModuleItem: (input: $ast.moduleItem) => Handler<A.AstModuleItem> =
+const parseModuleItem: (input: $ast.moduleItem) => Handler<Ast.ModuleItem> =
     makeVisitor<$ast.moduleItem>()({
         PrimitiveTypeDecl: parsePrimitiveTypeDecl,
         Function: parseFunctionDef,
@@ -1331,7 +1307,7 @@ const guessExtension = (
 const stdlibPrefix = "@stdlib/";
 
 const parseImportString =
-    (importText: string, loc: $.Loc): Handler<A.ImportPath> =>
+    (importText: string, loc: $.Loc): Handler<Ast.ImportPath> =>
     (ctx) => {
         if (importText.endsWith("/")) {
             ctx.err.noFolderImports()(loc);
@@ -1377,7 +1353,7 @@ const parseImportString =
     };
 
 const parseImport =
-    ({ path, loc }: $ast.Import): Handler<A.AstImport> =>
+    ({ path, loc }: $ast.Import): Handler<Ast.Import> =>
     (ctx) => {
         const stringLiteral = parseStringLiteral(path)(ctx);
         const parsedString: string = JSON.parse(`"${stringLiteral.value}"`);
@@ -1385,7 +1361,7 @@ const parseImport =
     };
 
 const parseModule =
-    ({ imports, items }: $ast.Module): Handler<A.AstModule> =>
+    ({ imports, items }: $ast.Module): Handler<Ast.Module> =>
     (ctx) => {
         return ctx.ast.Module(
             map(imports, parseImport)(ctx),
@@ -1394,7 +1370,7 @@ const parseModule =
     };
 
 const parseJustImports =
-    ({ imports }: $ast.JustImports): Handler<A.AstImport[]> =>
+    ({ imports }: $ast.JustImports): Handler<Ast.Import[]> =>
     (ctx) => {
         return map(imports, parseImport)(ctx);
     };
@@ -1448,20 +1424,20 @@ export const getParser = (ast: FactoryAst) => {
     };
 
     return {
-        parse: (source: Source): A.AstModule => {
+        parse: (source: Source): Ast.Module => {
             return doParse(G.Module, parseModule, source);
         },
-        parseExpression: (code: string): A.AstExpression => {
+        parseExpression: (code: string): Ast.Expression => {
             return doParse(G.expression, parseExpression, {
                 code,
                 path: "<repl>",
                 origin: "user",
             });
         },
-        parseImports: (source: Source): A.AstImport[] => {
+        parseImports: (source: Source): Ast.Import[] => {
             return doParse(G.JustImports, parseJustImports, source);
         },
-        parseStatement: (code: string): A.AstStatement => {
+        parseStatement: (code: string): Ast.Statement => {
             return doParse(G.statement, parseStatement, {
                 code,
                 path: "<repl>",
@@ -1472,10 +1448,10 @@ export const getParser = (ast: FactoryAst) => {
 };
 
 export type Parser = {
-    parse: (source: Source) => A.AstModule;
-    parseExpression: (sourceCode: string) => A.AstExpression;
-    parseImports: (source: Source) => A.AstImport[];
-    parseStatement: (sourceCode: string) => A.AstStatement;
+    parse: (source: Source) => Ast.Module;
+    parseExpression: (sourceCode: string) => Ast.Expression;
+    parseImports: (source: Source) => Ast.Import[];
+    parseStatement: (sourceCode: string) => Ast.Statement;
 };
 
 export { dummySrcInfo, SrcInfo } from "./src-info";
