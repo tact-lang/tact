@@ -439,7 +439,7 @@ function dummyEval(
                 const copy: Ast.StructInstance = {
                     ...ast,
                     args: ast.args.map((param) => {
-                        const copy: Ast.AstStructFieldInitializer = {
+                        const copy: Ast.StructFieldInitializer = {
                             ...param,
                             initializer: recurse(param.initializer),
                         };

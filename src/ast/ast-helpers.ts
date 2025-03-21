@@ -247,8 +247,8 @@ export function eqExpressions(
 }
 
 function eqFieldInitializers(
-    arg1: Ast.AstStructFieldInitializer,
-    arg2: Ast.AstStructFieldInitializer,
+    arg1: Ast.StructFieldInitializer,
+    arg2: Ast.StructFieldInitializer,
 ): boolean {
     return (
         eqNames(arg1.field, arg2.field) &&

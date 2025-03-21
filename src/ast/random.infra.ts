@@ -203,7 +203,7 @@ function randomAstStaticCall(
 
 function randomAstStructFieldInitializer(
     expression: fc.Arbitrary<Ast.Expression>,
-): fc.Arbitrary<Ast.AstStructFieldInitializer> {
+): fc.Arbitrary<Ast.StructFieldInitializer> {
     return dummyAstNode(
         fc.record({
             kind: fc.constant("struct_field_initializer"),
@@ -214,7 +214,7 @@ function randomAstStructFieldInitializer(
 }
 
 function randomAstStructInstance(
-    structFieldInitializer: fc.Arbitrary<Ast.AstStructFieldInitializer>,
+    structFieldInitializer: fc.Arbitrary<Ast.StructFieldInitializer>,
 ): fc.Arbitrary<Ast.StructInstance> {
     return dummyAstNode(
         fc.record({

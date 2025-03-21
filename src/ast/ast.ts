@@ -1,4 +1,4 @@
-import type * as Ast from "@ton/core";
+import type * as TonCore from "@ton/core";
 import type { SrcInfo } from "../grammar/src-info";
 import type { RelativePath } from "../imports/path";
 import type { Language } from "../imports/source";
@@ -472,12 +472,12 @@ export type StaticCall = {
 export type StructInstance = {
     readonly kind: "struct_instance";
     readonly type: Id;
-    readonly args: readonly AstStructFieldInitializer[];
+    readonly args: readonly StructFieldInitializer[];
     readonly id: number;
     readonly loc: SrcInfo;
 };
 
-export type AstStructFieldInitializer = {
+export type StructFieldInitializer = {
     readonly kind: "struct_field_initializer";
     readonly field: Id;
     readonly initializer: Expression;
@@ -566,10 +566,10 @@ export type ImportPath = {
 // from standard library is still import with origin: "stdlib"
 export type ImportType = "stdlib" | "relative";
 
-// An AstSimplifiedString is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.
-// An AstString is not a literal because it may contain escaping characters that have not been simplified, like '\\'.
-// AstSimplifiedString is always produced by the interpreter, never directly by the parser. The parser produces AstStrings, which
-// then get transformed into AstSimplifiedString by the interpreter.
+// An SimplifiedString is a string in which escaping characters, like '\\' has been simplified, e.g., '\\' simplified to '\'.
+// An String is not a literal because it may contain escaping characters that have not been simplified, like '\\'.
+// SimplifiedString is always produced by the interpreter, never directly by the parser. The parser produces Strings, which
+// then get transformed into SimplifiedString by the interpreter.
 export type SimplifiedString = {
     readonly kind: "simplified_string";
     readonly value: string;
@@ -598,21 +598,21 @@ export type Null = {
 
 export type Address = {
     readonly kind: "address";
-    readonly value: Ast.Address;
+    readonly value: TonCore.Address;
     readonly id: number;
     readonly loc: SrcInfo;
 };
 
 export type Cell = {
     readonly kind: "cell";
-    readonly value: Ast.Cell;
+    readonly value: TonCore.Cell;
     readonly id: number;
     readonly loc: SrcInfo;
 };
 
 export type Slice = {
     readonly kind: "slice";
-    readonly value: Ast.Slice;
+    readonly value: TonCore.Slice;
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -737,7 +737,7 @@ export type AstNode =
     | FunctionDecl
     | Module
     | NativeFunctionDecl
-    | AstStructFieldInitializer
+    | StructFieldInitializer
     | StructFieldValue
     | Type
     | ContractInit

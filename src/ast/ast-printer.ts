@@ -171,7 +171,7 @@ export const ppExprArgs = (args: readonly Ast.Expression[]) =>
     args.map((arg) => ppAstExpression(arg)).join(", ");
 
 export const ppAstStructFieldInit = (
-    param: Ast.AstStructFieldInitializer,
+    param: Ast.StructFieldInitializer,
 ): string => `${ppAstId(param.field)}: ${ppAstExpression(param.initializer)}`;
 export const ppAstStructFieldValue = (param: Ast.StructFieldValue): string =>
     `${ppAstId(param.field)}: ${ppAstExpression(param.initializer)}`;

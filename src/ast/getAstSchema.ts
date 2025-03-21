@@ -513,7 +513,7 @@ export const getAstSchema = (
             }),
         StructInstance: (
             type: Ast.Id,
-            args: Ast.AstStructFieldInitializer[],
+            args: Ast.StructFieldInitializer[],
             loc: Loc,
         ): Ast.StructInstance =>
             createNode<Ast.StructInstance>({
@@ -526,8 +526,8 @@ export const getAstSchema = (
             field: Ast.Id,
             initializer: Ast.Expression,
             loc: Loc,
-        ): Ast.AstStructFieldInitializer =>
-            createNode<Ast.AstStructFieldInitializer>({
+        ): Ast.StructFieldInitializer =>
+            createNode<Ast.StructFieldInitializer>({
                 kind: "struct_field_initializer",
                 field,
                 initializer,

@@ -220,7 +220,7 @@ const parseStructFieldInitializer =
         name,
         init,
         loc,
-    }: $ast.StructFieldInitializer): Handler<Ast.AstStructFieldInitializer> =>
+    }: $ast.StructFieldInitializer): Handler<Ast.StructFieldInitializer> =>
     (ctx) => {
         const fieldId = parseId(name)(ctx);
 
