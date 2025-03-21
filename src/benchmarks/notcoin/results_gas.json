@@ -26,6 +26,24 @@
         "burn": "11928",
         "discovery": "5818"
       }
+    },
+    {
+      "label": "1.6.4 with no selector hack",
+      "pr": null,
+      "gas": {
+        "transfer": "15940",
+        "burn": "12068",
+        "discovery": "5888"
+      }
+    },
+    {
+      "label": "1.6.4 with the new selector hack",
+      "pr": "https://github.com/tact-lang/tact/pull/2398",
+      "gas": {
+        "transfer": "15904",
+        "burn": "12032",
+        "discovery": "5870"
+      }
     }
   ]
 }
