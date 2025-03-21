@@ -99,7 +99,7 @@ describe("WalletV4 Gas Tests", () => {
         const dataCell = beginCell();
 
         if (kind === "tact") {
-            // store opcode for Tact external receiver, doesnt affect signing
+            // store opcode for Tact external receiver, doesn't affect signing
             dataCell.storeUint(WalletV4.opcodes.ExternalRequest, 32);
         }
 

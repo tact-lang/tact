@@ -9,8 +9,7 @@ message(0x706c7567) PluginRequestFunds {
 }
 
 message ExternalRequest {
-    signature1: Int as uint256; // 512 bits to signature
-    signature2: Int as uint256;
+    signature: Slice as bytes64;
     walletId: Int as int32;
     validUntil: Int as uint32;
     seqno: Int as uint32;
@@ -73,11 +72,9 @@ contract WalletV4(
         throwIf(36, msg.validUntil < now());
         throwUnless(33, msg.seqno == self.seqno);
         throwUnless(34, msg.walletId == self.walletId);
-        let signature = msg.toSlice();
-        signature.skipBits(32); // tact receiver op skip
-        let signedSlice = signature;
-        signedSlice.skipBits(512);
-        throwUnless(35, checkSignature(signedSlice.hash(), signature.loadBits(512), self.publicKey));
+        let msgSlice = msg.toSlice();
+        msgSlice.skipBits(32 + 512); // tact receiver op + signature skip
+        throwUnless(35, checkSignature(msgSlice.hash(), msg.signature, self.publicKey));
 
         acceptMessage();
         self.seqno += 1;
@@ -86,7 +83,12 @@ contract WalletV4(
         // simple transfer
         if (msg.op == 0) {
             let payload = msg.payload;
-
+            /*
+            foreach (ref in payload.refs) {
+                let mode = payload.loadUint(8);
+                nativeSendMessage(ref, mode);
+            }
+            */
             while (payload.refs() > 0) {
                 let mode = payload.loadUint(8);
                 nativeSendMessage(payload.loadRef(), mode);
@@ -181,6 +183,7 @@ contract WalletV4(
         return self.extensions.exists(newAddress(wc, hash));
     }
 
+    // this is different from FunC version, awaiting unbounded tuple impl in Tact
     get fun get_plugin_list(): map<Address, Bool> {
         return self.extensions;
     }
