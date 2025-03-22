@@ -47,8 +47,8 @@ function isNull(wCtx: WriterContext, expr: Ast.Expression): boolean {
 
 function handleStructNullTernary(
     wCtx: WriterContext,
-    condition: A.AstExpression,
-    structExpr: A.AstExpression,
+    condition: Ast.Expression,
+    structExpr: Ast.Expression,
     structType: TypeRef,
     isStructInThenBranch: boolean,
 ): string {
