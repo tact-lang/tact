@@ -7,7 +7,9 @@
 A next-gen smart contract programming language for TON Blockchain focused on efficiency and ease of development.
 Tact is a good fit for complex smart contracts, quick onboarding, and rapid prototyping.
 
-Developed by [TON Studio](https://tonstudio.io), powered by the community — by the end of 2024, the number of _unique code_[^1] contracts deployed on the mainnet reached almost 28 thousand, of which about 33% were written in Tact. You can view some of the selected projects here: [Tact in production](#tact-in-production).
+Developed by [TON Studio](https://tonstudio.io), powered by the community — as of the beginning of 2025, the number of _unique code_[^1] contracts deployed on the mainnet reached almost 28 thousand, of which about 33% were written in Tact. You can view some selected projects here: [Tact in production](#tact-in-production).
+
+Tact has undergone a comprehensive security audit by Trail of Bits, a leading Web3 security firm.
 
 **[Try online!] • [Features] • [Security] • [Key resources] • [Installation] • [Community] • [Contributing]**
 
@@ -21,6 +23,7 @@ Developed by [TON Studio](https://tonstudio.io), powered by the community — by
 
 [![Website](https://img.shields.io/badge/Website-blue?style=flat)](https://tact-lang.org)
 [![Documentation](https://img.shields.io/badge/Documentation-blue?style=flat)](https://docs.tact-lang.org)
+[![Audited by Trail of Bits](https://img.shields.io/badge/Audited%20by-Trail%20of%20Bits-blue?style=flat-square)](https://github.com/trailofbits/publications/blob/master/reviews/2025-01-ton-studio-tact-compiler-securityreview.pdf)
 [![Twitter](https://img.shields.io/badge/X%2FTwitter-white?logo=x&style=flat&logoColor=gray)](https://x.com/tact_language)
 [![Telegram](https://img.shields.io/badge/Community_Chat-white?logo=telegram&style=flat)](https://t.me/tactlang)
 [![Telegram](https://img.shields.io/badge/Tact_Kitchen_🥣-white?logo=telegram&style=flat)](https://t.me/tact_kitchen)
@@ -59,7 +62,7 @@ The most prominent and distinctive features of Tact are:
 
 ## Security
 
-- [Security audit of Tact by the Trail of Bits (2025, PDF)](https://tact-lang.org/assets/pdfs/2025-01-ton-studio-tact-compiler-securityreview.pdf)
+- [Security audit of Tact by the Trail of Bits (2025, PDF)](https://github.com/trailofbits/publications/blob/master/reviews/2025-01-ton-studio-tact-compiler-securityreview.pdf)
   - Backup link: [PDF Report](https://github.com/tact-lang/website/blob/416073ed4056034639de257cb1e2815227f497cb/pdfs/2025-01-ton-studio-tact-compiler-securityreview.pdf)
 
 ## Tact in production
