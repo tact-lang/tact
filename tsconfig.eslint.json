@@ -4,6 +4,6 @@
     "noImplicitReturns": false /* Report error when not all code paths in function return a value. */,
     "noUncheckedIndexedAccess": false /* Include 'undefined' in index signature results */
   },
-  "include": ["src/", "examples/", "scripts/"],
+  "include": ["src/", "examples/", "scripts/", "fuzzer/"],
   "exclude": ["**/*.bind.ts", "src/test/**/output/**/*"]
 }
