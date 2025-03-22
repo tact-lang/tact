@@ -9,7 +9,7 @@ Tact is a good fit for complex smart contracts, quick onboarding, and rapid prot
 
 Developed by [TON Studio](https://tonstudio.io), powered by the community — as of the beginning of 2025, the number of _unique code_[^1] contracts deployed on the mainnet reached almost 28 thousand, of which about 33% were written in Tact. You can view some selected projects here: [Tact in production](#tact-in-production).
 
-Tact has undergone a comprehensive security audit by Trail of Bits, a leading Web3 security firm.
+Tact has undergone a comprehensive security audit by [Trail of Bits](https://www.trailofbits.com), a leading Web3 security firm.
 
 **[Try online!] • [Features] • [Security] • [Key resources] • [Installation] • [Community] • [Contributing]**
 
