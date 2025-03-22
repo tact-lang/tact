@@ -11,45 +11,28 @@ import { getUsedGas, generateResults, printBenchmarkTable } from "../utils/gas";
 import benchmarkResults from "./results_gas.json";
 import type { KeyPair } from "@ton/crypto";
 import { getSecureRandomBytes, keyPairFromSeed, sign } from "@ton/crypto";
-import { Wallet } from "../contracts/output/wallet_Wallet";
 import { readFileSync } from "fs";
 import { posixNormalize } from "../../utils/filePath";
 import { resolve } from "path";
 import {
+    bufferToBigInt,
     createAddExtActionMsg,
     createSendTxActionMsg,
+    createSeqnoCounter,
     sendInternalMessageFromExtension,
+    validUntil,
 } from "./utils";
-
-function validUntil(ttlMs = 1000 * 60 * 3) {
-    return BigInt(Math.floor((Date.now() + ttlMs) / 1000));
-}
+import { WalletV5 } from "../contracts/output/wallet-v5_WalletV5";
 
 export function packAddress(address: Address) {
     return bufferToBigInt(address.hash);
-}
-
-function bufferToBigInt(buffer: Buffer): bigint {
-    return BigInt("0x" + buffer.toString("hex"));
-}
-
-function createSeqnoCounter() {
-    let seqno = 0n;
-    let step = 0;
-    return () => {
-        if (step++ % 2 === 1) {
-            return seqno++;
-        } else {
-            return seqno;
-        }
-    };
 }
 
 describe("Wallet Gas Tests", () => {
     let blockchain: Blockchain;
     let deployer: SandboxContract<TreasuryContract>;
     let receiver: SandboxContract<TreasuryContract>;
-    let walletTact: SandboxContract<Wallet>;
+    let walletTact: SandboxContract<WalletV5>;
     let seqno: () => bigint;
 
     let walletFuncAddress: Address;
@@ -71,8 +54,8 @@ describe("Wallet Gas Tests", () => {
         const requestToSign = beginCell()
             .storeUint(
                 kind === "external"
-                    ? Wallet.opcodes.ExternalSignedRequest
-                    : Wallet.opcodes.InternalSignedRequest,
+                    ? WalletV5.opcodes.ExternalSignedRequest
+                    : WalletV5.opcodes.InternalSignedRequest,
                 32,
             )
             .storeUint(SUBWALLET_ID, 32)
@@ -146,7 +129,7 @@ describe("Wallet Gas Tests", () => {
         seqno = createSeqnoCounter();
 
         walletTact = blockchain.openContract(
-            await Wallet.fromInit(
+            await WalletV5.fromInit(
                 true,
                 0n,
                 SUBWALLET_ID,
@@ -365,7 +348,7 @@ describe("Wallet Gas Tests", () => {
             });
 
             const walletTest = blockchain.openContract(
-                Wallet.fromAddress(walletAddress),
+                WalletV5.fromAddress(walletAddress),
             );
 
             const extensions = await walletTest.getGetExtensions();
@@ -407,7 +390,7 @@ describe("Wallet Gas Tests", () => {
             );
 
             const walletTest = blockchain.openContract(
-                Wallet.fromAddress(walletAddress),
+                WalletV5.fromAddress(walletAddress),
             );
 
             const extensions = await walletTest.getGetExtensions();
