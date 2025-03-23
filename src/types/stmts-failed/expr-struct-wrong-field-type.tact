@@ -12,6 +12,6 @@ struct SomeStruct {
 fun main() {
     let a: SomeStruct = SomeStruct {
         a: 1,
-        b: false // Invalid type
+        b: false, // Invalid type
     };
 }

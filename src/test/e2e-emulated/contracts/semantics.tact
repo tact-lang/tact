@@ -374,9 +374,7 @@ contract SemanticsTester {
     // So, to compare if two structs are equal using ==, one needs to compare each
     // field of both structs manually.
 
-
     get fun checkAllContractFieldsAreUnchanged(): Bool {
-        
         let result = 
                // self.uB is correctly initialized
 
@@ -1218,7 +1216,7 @@ contract SemanticsTester {
     /*************** Contracts ********************/
 
     get fun contractAssign1(): Bool {
-        // Contract assignment works by value, which means that a copy of the contract is created 
+        // Contract assignment works by value, which means that a copy of the contract is created
         // during assignment.
 
         let c = self;
@@ -1298,7 +1296,7 @@ contract SemanticsTester {
 
     get fun paramContract(): Bool {
         // This should not modify self.
-        // This function will copy self and do the following changes to the copy: 
+        // This function will copy self and do the following changes to the copy:
         // Change the uB field and delete entry 1 in mA.
 
         let c = copyAndModifyContract(self);

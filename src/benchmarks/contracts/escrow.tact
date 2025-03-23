@@ -130,7 +130,7 @@ contract Escrow(
             message(MessageParameters {
                 to: self.guarantorAddress,
                 value: royaltyAmount,
-                mode: SendRemainingBalance | SendDestroyIfZero // send all remaining and destroy escrow
+                mode: SendRemainingBalance | SendDestroyIfZero, // send all remaining and destroy escrow
             });
         } else {
             throwUnless(404, ctx.value > (2 * self.JETTON_TRANSFER_GAS));
@@ -150,7 +150,7 @@ contract Escrow(
             message(MessageParameters {
                 to: self.buyerAddress!!,
                 value: self.dealAmount,
-                mode: SendRemainingBalance | SendDestroyIfZero // send all remaining and destroy escrow
+                mode: SendRemainingBalance | SendDestroyIfZero, // send all remaining and destroy escrow
             });
         } else {
             self.sendJettons(self.buyerAddress!!, self.dealAmount, SendRemainingBalance | SendDestroyIfZero);
