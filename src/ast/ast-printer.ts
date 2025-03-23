@@ -177,7 +177,7 @@ export const ppAstStructFieldValue = (param: Ast.StructFieldValue): string =>
     `${ppAstId(param.field)}: ${ppAstExpression(param.initializer)}`;
 
 export const ppAstStructInstance = ({ type, args }: Ast.StructInstance) =>
-    args.length === 0
+    args.length !== 0
         ? `${ppAstId(type)} { ${args.map((x) => ppAstStructFieldInit(x)).join(", ")} }`
         : `${ppAstId(type)} {}`;
 
