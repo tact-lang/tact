@@ -455,7 +455,7 @@ export const ppAstContract: Printer<Ast.Contract> =
     ({ name, traits, declarations, attributes }) =>
     (c) => {
         const attrsCode = attributes
-            .map(({ name: { value } }) => `@interface("${value}") `)
+            .map(({ name: { value } }) => `@interface("${value}")\n`)
             .join("");
         const traitsCode = traits.map((trait) => trait.text).join(", ");
         const header = traitsCode
@@ -531,7 +531,7 @@ export const ppAstTrait: Printer<Ast.Trait> =
     ({ name, traits, attributes, declarations }) =>
     (c) => {
         const attrsCode = attributes
-            .map((attr) => `@${attr.type}("${attr.name.value}") `)
+            .map((attr) => `@${attr.type}("${attr.name.value}")\n`)
             .join("");
         const traitsCode = traits.map((t) => ppAstId(t)).join(", ");
         const header = traitsCode
