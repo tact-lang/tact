@@ -3,41 +3,39 @@
 import type { FactoryAst } from "../ast-helpers";
 import type * as Ast from "../ast";
 import type { SrcInfo } from "../../grammar";
-import type { Address, Cell, Slice } from "@ton/core";
+import type * as TonCore from "@ton/core";
 import { getSrcInfo } from "../../grammar/src-info";
 
 export const getMakeAst = (astF: FactoryAst) => {
     const emptySrcInfo = getSrcInfo(" ", 0, 0, null, "user");
 
-    function makeAstPrimitiveTypeDecl(
-        p_name: Ast.AstId,
+    function makePrimitiveTypeDecl(
+        p_name: Ast.Id,
         p_loc: SrcInfo,
-    ): Ast.AstPrimitiveTypeDecl {
+    ): Ast.PrimitiveTypeDecl {
         return astF.createNode({
             kind: "primitive_type_decl",
             name: p_name,
             loc: p_loc,
-        }) as Ast.AstPrimitiveTypeDecl;
+        }) as Ast.PrimitiveTypeDecl;
     }
 
-    function makeDummyAstPrimitiveTypeDecl(
-        p_name: Ast.AstId,
-    ): Ast.AstPrimitiveTypeDecl {
+    function makeDummyPrimitiveTypeDecl(p_name: Ast.Id): Ast.PrimitiveTypeDecl {
         return astF.createNode({
             kind: "primitive_type_decl",
             name: p_name,
             loc: emptySrcInfo,
-        }) as Ast.AstPrimitiveTypeDecl;
+        }) as Ast.PrimitiveTypeDecl;
     }
 
-    function makeAstFunctionDef(
-        p_attributes: readonly Ast.AstFunctionAttribute[],
-        p_name: Ast.AstId,
-        p_return: Ast.AstType | undefined,
-        p_params: readonly Ast.AstTypedParameter[],
-        p_statements: readonly Ast.AstStatement[],
+    function makeFunctionDef(
+        p_attributes: readonly Ast.FunctionAttribute[],
+        p_name: Ast.Id,
+        p_return: Ast.Type | undefined,
+        p_params: readonly Ast.TypedParameter[],
+        p_statements: readonly Ast.Statement[],
         p_loc: SrcInfo,
-    ): Ast.AstFunctionDef {
+    ): Ast.FunctionDef {
         return astF.createNode({
             kind: "function_def",
             attributes: p_attributes,
@@ -46,16 +44,16 @@ export const getMakeAst = (astF: FactoryAst) => {
             params: p_params,
             statements: p_statements,
             loc: p_loc,
-        }) as Ast.AstFunctionDef;
+        }) as Ast.FunctionDef;
     }
 
-    function makeDummyAstFunctionDef(
-        p_attributes: readonly Ast.AstFunctionAttribute[],
-        p_name: Ast.AstId,
-        p_return: Ast.AstType | undefined,
-        p_params: readonly Ast.AstTypedParameter[],
-        p_statements: readonly Ast.AstStatement[],
-    ): Ast.AstFunctionDef {
+    function makeDummyFunctionDef(
+        p_attributes: readonly Ast.FunctionAttribute[],
+        p_name: Ast.Id,
+        p_return: Ast.Type | undefined,
+        p_params: readonly Ast.TypedParameter[],
+        p_statements: readonly Ast.Statement[],
+    ): Ast.FunctionDef {
         return astF.createNode({
             kind: "function_def",
             attributes: p_attributes,
@@ -64,18 +62,18 @@ export const getMakeAst = (astF: FactoryAst) => {
             params: p_params,
             statements: p_statements,
             loc: emptySrcInfo,
-        }) as Ast.AstFunctionDef;
+        }) as Ast.FunctionDef;
     }
 
-    function makeAstAsmFunctionDef(
-        p_shuffle: Ast.AstAsmShuffle,
-        p_attributes: readonly Ast.AstFunctionAttribute[],
-        p_name: Ast.AstId,
-        p_return: Ast.AstType | undefined,
-        p_params: readonly Ast.AstTypedParameter[],
-        p_instructions: readonly Ast.AstAsmInstruction[],
+    function makeAsmFunctionDef(
+        p_shuffle: Ast.AsmShuffle,
+        p_attributes: readonly Ast.FunctionAttribute[],
+        p_name: Ast.Id,
+        p_return: Ast.Type | undefined,
+        p_params: readonly Ast.TypedParameter[],
+        p_instructions: readonly Ast.AsmInstruction[],
         p_loc: SrcInfo,
-    ): Ast.AstAsmFunctionDef {
+    ): Ast.AsmFunctionDef {
         return astF.createNode({
             kind: "asm_function_def",
             shuffle: p_shuffle,
@@ -85,17 +83,17 @@ export const getMakeAst = (astF: FactoryAst) => {
             params: p_params,
             instructions: p_instructions,
             loc: p_loc,
-        }) as Ast.AstAsmFunctionDef;
+        }) as Ast.AsmFunctionDef;
     }
 
-    function makeDummyAstAsmFunctionDef(
-        p_shuffle: Ast.AstAsmShuffle,
-        p_attributes: readonly Ast.AstFunctionAttribute[],
-        p_name: Ast.AstId,
-        p_return: Ast.AstType | undefined,
-        p_params: readonly Ast.AstTypedParameter[],
-        p_instructions: readonly Ast.AstAsmInstruction[],
-    ): Ast.AstAsmFunctionDef {
+    function makeDummyAsmFunctionDef(
+        p_shuffle: Ast.AsmShuffle,
+        p_attributes: readonly Ast.FunctionAttribute[],
+        p_name: Ast.Id,
+        p_return: Ast.Type | undefined,
+        p_params: readonly Ast.TypedParameter[],
+        p_instructions: readonly Ast.AsmInstruction[],
+    ): Ast.AsmFunctionDef {
         return astF.createNode({
             kind: "asm_function_def",
             shuffle: p_shuffle,
@@ -105,17 +103,17 @@ export const getMakeAst = (astF: FactoryAst) => {
             params: p_params,
             instructions: p_instructions,
             loc: emptySrcInfo,
-        }) as Ast.AstAsmFunctionDef;
+        }) as Ast.AsmFunctionDef;
     }
 
-    function makeAstNativeFunctionDecl(
-        p_attributes: readonly Ast.AstFunctionAttribute[],
-        p_name: Ast.AstId,
-        p_nativeName: Ast.AstFuncId,
-        p_params: readonly Ast.AstTypedParameter[],
-        p_return: Ast.AstType | undefined,
+    function makeNativeFunctionDecl(
+        p_attributes: readonly Ast.FunctionAttribute[],
+        p_name: Ast.Id,
+        p_nativeName: Ast.FuncId,
+        p_params: readonly Ast.TypedParameter[],
+        p_return: Ast.Type | undefined,
         p_loc: SrcInfo,
-    ): Ast.AstNativeFunctionDecl {
+    ): Ast.NativeFunctionDecl {
         return astF.createNode({
             kind: "native_function_decl",
             attributes: p_attributes,
@@ -124,16 +122,16 @@ export const getMakeAst = (astF: FactoryAst) => {
             params: p_params,
             return: p_return,
             loc: p_loc,
-        }) as Ast.AstNativeFunctionDecl;
+        }) as Ast.NativeFunctionDecl;
     }
 
-    function makeDummyAstNativeFunctionDecl(
-        p_attributes: readonly Ast.AstFunctionAttribute[],
-        p_name: Ast.AstId,
-        p_nativeName: Ast.AstFuncId,
-        p_params: readonly Ast.AstTypedParameter[],
-        p_return: Ast.AstType | undefined,
-    ): Ast.AstNativeFunctionDecl {
+    function makeDummyNativeFunctionDecl(
+        p_attributes: readonly Ast.FunctionAttribute[],
+        p_name: Ast.Id,
+        p_nativeName: Ast.FuncId,
+        p_params: readonly Ast.TypedParameter[],
+        p_return: Ast.Type | undefined,
+    ): Ast.NativeFunctionDecl {
         return astF.createNode({
             kind: "native_function_decl",
             attributes: p_attributes,
@@ -142,16 +140,16 @@ export const getMakeAst = (astF: FactoryAst) => {
             params: p_params,
             return: p_return,
             loc: emptySrcInfo,
-        }) as Ast.AstNativeFunctionDecl;
+        }) as Ast.NativeFunctionDecl;
     }
 
-    function makeAstConstantDef(
-        p_attributes: readonly Ast.AstConstantAttribute[],
-        p_name: Ast.AstId,
-        p_type: Ast.AstType,
-        p_initializer: Ast.AstExpression,
+    function makeConstantDef(
+        p_attributes: readonly Ast.ConstantAttribute[],
+        p_name: Ast.Id,
+        p_type: Ast.Type,
+        p_initializer: Ast.Expression,
         p_loc: SrcInfo,
-    ): Ast.AstConstantDef {
+    ): Ast.ConstantDef {
         return astF.createNode({
             kind: "constant_def",
             attributes: p_attributes,
@@ -159,15 +157,15 @@ export const getMakeAst = (astF: FactoryAst) => {
             type: p_type,
             initializer: p_initializer,
             loc: p_loc,
-        }) as Ast.AstConstantDef;
+        }) as Ast.ConstantDef;
     }
 
-    function makeDummyAstConstantDef(
-        p_attributes: readonly Ast.AstConstantAttribute[],
-        p_name: Ast.AstId,
-        p_type: Ast.AstType,
-        p_initializer: Ast.AstExpression,
-    ): Ast.AstConstantDef {
+    function makeDummyConstantDef(
+        p_attributes: readonly Ast.ConstantAttribute[],
+        p_name: Ast.Id,
+        p_type: Ast.Type,
+        p_initializer: Ast.Expression,
+    ): Ast.ConstantDef {
         return astF.createNode({
             kind: "constant_def",
             attributes: p_attributes,
@@ -175,71 +173,71 @@ export const getMakeAst = (astF: FactoryAst) => {
             type: p_type,
             initializer: p_initializer,
             loc: emptySrcInfo,
-        }) as Ast.AstConstantDef;
+        }) as Ast.ConstantDef;
     }
 
-    function makeAstStructDecl(
-        p_name: Ast.AstId,
-        p_fields: readonly Ast.AstFieldDecl[],
+    function makeStructDecl(
+        p_name: Ast.Id,
+        p_fields: readonly Ast.FieldDecl[],
         p_loc: SrcInfo,
-    ): Ast.AstStructDecl {
+    ): Ast.StructDecl {
         return astF.createNode({
             kind: "struct_decl",
             name: p_name,
             fields: p_fields,
             loc: p_loc,
-        }) as Ast.AstStructDecl;
+        }) as Ast.StructDecl;
     }
 
-    function makeDummyAstStructDecl(
-        p_name: Ast.AstId,
-        p_fields: readonly Ast.AstFieldDecl[],
-    ): Ast.AstStructDecl {
+    function makeDummyStructDecl(
+        p_name: Ast.Id,
+        p_fields: readonly Ast.FieldDecl[],
+    ): Ast.StructDecl {
         return astF.createNode({
             kind: "struct_decl",
             name: p_name,
             fields: p_fields,
             loc: emptySrcInfo,
-        }) as Ast.AstStructDecl;
+        }) as Ast.StructDecl;
     }
 
-    function makeAstMessageDecl(
-        p_name: Ast.AstId,
-        p_opcode: Ast.AstExpression | undefined,
-        p_fields: readonly Ast.AstFieldDecl[],
+    function makeMessageDecl(
+        p_name: Ast.Id,
+        p_opcode: Ast.Expression | undefined,
+        p_fields: readonly Ast.FieldDecl[],
         p_loc: SrcInfo,
-    ): Ast.AstMessageDecl {
+    ): Ast.MessageDecl {
         return astF.createNode({
             kind: "message_decl",
             name: p_name,
             opcode: p_opcode,
             fields: p_fields,
             loc: p_loc,
-        }) as Ast.AstMessageDecl;
+        }) as Ast.MessageDecl;
     }
 
-    function makeDummyAstMessageDecl(
-        p_name: Ast.AstId,
-        p_opcode: Ast.AstExpression | undefined,
-        p_fields: readonly Ast.AstFieldDecl[],
-    ): Ast.AstMessageDecl {
+    function makeDummyMessageDecl(
+        p_name: Ast.Id,
+        p_opcode: Ast.Expression | undefined,
+        p_fields: readonly Ast.FieldDecl[],
+    ): Ast.MessageDecl {
         return astF.createNode({
             kind: "message_decl",
             name: p_name,
             opcode: p_opcode,
             fields: p_fields,
             loc: emptySrcInfo,
-        }) as Ast.AstMessageDecl;
+        }) as Ast.MessageDecl;
     }
 
-    function makeAstContract(
-        p_name: Ast.AstId,
-        p_traits: readonly Ast.AstId[],
-        p_attributes: readonly Ast.AstContractAttribute[],
-        p_params: undefined | readonly Ast.AstFieldDecl[],
-        p_declarations: readonly Ast.AstContractDeclaration[],
+    function makeContract(
+        p_name: Ast.Id,
+        p_traits: readonly Ast.Id[],
+        p_attributes: readonly Ast.ContractAttribute[],
+        p_params: undefined | readonly Ast.FieldDecl[],
+        p_declarations: readonly Ast.ContractDeclaration[],
         p_loc: SrcInfo,
-    ): Ast.AstContract {
+    ): Ast.Contract {
         return astF.createNode({
             kind: "contract",
             name: p_name,
@@ -248,16 +246,16 @@ export const getMakeAst = (astF: FactoryAst) => {
             params: p_params,
             declarations: p_declarations,
             loc: p_loc,
-        }) as Ast.AstContract;
+        }) as Ast.Contract;
     }
 
-    function makeDummyAstContract(
-        p_name: Ast.AstId,
-        p_traits: readonly Ast.AstId[],
-        p_attributes: readonly Ast.AstContractAttribute[],
-        p_params: undefined | readonly Ast.AstFieldDecl[],
-        p_declarations: readonly Ast.AstContractDeclaration[],
-    ): Ast.AstContract {
+    function makeDummyContract(
+        p_name: Ast.Id,
+        p_traits: readonly Ast.Id[],
+        p_attributes: readonly Ast.ContractAttribute[],
+        p_params: undefined | readonly Ast.FieldDecl[],
+        p_declarations: readonly Ast.ContractDeclaration[],
+    ): Ast.Contract {
         return astF.createNode({
             kind: "contract",
             name: p_name,
@@ -266,16 +264,16 @@ export const getMakeAst = (astF: FactoryAst) => {
             params: p_params,
             declarations: p_declarations,
             loc: emptySrcInfo,
-        }) as Ast.AstContract;
+        }) as Ast.Contract;
     }
 
-    function makeAstTrait(
-        p_name: Ast.AstId,
-        p_traits: readonly Ast.AstId[],
-        p_attributes: readonly Ast.AstContractAttribute[],
-        p_declarations: readonly Ast.AstTraitDeclaration[],
+    function makeTrait(
+        p_name: Ast.Id,
+        p_traits: readonly Ast.Id[],
+        p_attributes: readonly Ast.ContractAttribute[],
+        p_declarations: readonly Ast.TraitDeclaration[],
         p_loc: SrcInfo,
-    ): Ast.AstTrait {
+    ): Ast.Trait {
         return astF.createNode({
             kind: "trait",
             name: p_name,
@@ -283,15 +281,15 @@ export const getMakeAst = (astF: FactoryAst) => {
             attributes: p_attributes,
             declarations: p_declarations,
             loc: p_loc,
-        }) as Ast.AstTrait;
+        }) as Ast.Trait;
     }
 
-    function makeDummyAstTrait(
-        p_name: Ast.AstId,
-        p_traits: readonly Ast.AstId[],
-        p_attributes: readonly Ast.AstContractAttribute[],
-        p_declarations: readonly Ast.AstTraitDeclaration[],
-    ): Ast.AstTrait {
+    function makeDummyTrait(
+        p_name: Ast.Id,
+        p_traits: readonly Ast.Id[],
+        p_attributes: readonly Ast.ContractAttribute[],
+        p_declarations: readonly Ast.TraitDeclaration[],
+    ): Ast.Trait {
         return astF.createNode({
             kind: "trait",
             name: p_name,
@@ -299,16 +297,16 @@ export const getMakeAst = (astF: FactoryAst) => {
             attributes: p_attributes,
             declarations: p_declarations,
             loc: emptySrcInfo,
-        }) as Ast.AstTrait;
+        }) as Ast.Trait;
     }
 
-    function makeAstFieldDecl(
-        p_name: Ast.AstId,
-        p_type: Ast.AstType,
-        p_initializer: Ast.AstExpression | undefined,
-        p_as: Ast.AstId | undefined,
+    function makeFieldDecl(
+        p_name: Ast.Id,
+        p_type: Ast.Type,
+        p_initializer: Ast.Expression | undefined,
+        p_as: Ast.Id | undefined,
         p_loc: SrcInfo,
-    ): Ast.AstFieldDecl {
+    ): Ast.FieldDecl {
         return astF.createNode({
             kind: "field_decl",
             name: p_name,
@@ -316,15 +314,15 @@ export const getMakeAst = (astF: FactoryAst) => {
             initializer: p_initializer,
             as: p_as,
             loc: p_loc,
-        }) as Ast.AstFieldDecl;
+        }) as Ast.FieldDecl;
     }
 
-    function makeDummyAstFieldDecl(
-        p_name: Ast.AstId,
-        p_type: Ast.AstType,
-        p_initializer: Ast.AstExpression | undefined,
-        p_as: Ast.AstId | undefined,
-    ): Ast.AstFieldDecl {
+    function makeDummyFieldDecl(
+        p_name: Ast.Id,
+        p_type: Ast.Type,
+        p_initializer: Ast.Expression | undefined,
+        p_as: Ast.Id | undefined,
+    ): Ast.FieldDecl {
         return astF.createNode({
             kind: "field_decl",
             name: p_name,
@@ -332,66 +330,66 @@ export const getMakeAst = (astF: FactoryAst) => {
             initializer: p_initializer,
             as: p_as,
             loc: emptySrcInfo,
-        }) as Ast.AstFieldDecl;
+        }) as Ast.FieldDecl;
     }
 
-    function makeAstContractInit(
-        p_params: readonly Ast.AstTypedParameter[],
-        p_statements: readonly Ast.AstStatement[],
+    function makeContractInit(
+        p_params: readonly Ast.TypedParameter[],
+        p_statements: readonly Ast.Statement[],
         p_loc: SrcInfo,
-    ): Ast.AstContractInit {
+    ): Ast.ContractInit {
         return astF.createNode({
             kind: "contract_init",
             params: p_params,
             statements: p_statements,
             loc: p_loc,
-        }) as Ast.AstContractInit;
+        }) as Ast.ContractInit;
     }
 
-    function makeDummyAstContractInit(
-        p_params: readonly Ast.AstTypedParameter[],
-        p_statements: readonly Ast.AstStatement[],
-    ): Ast.AstContractInit {
+    function makeDummyContractInit(
+        p_params: readonly Ast.TypedParameter[],
+        p_statements: readonly Ast.Statement[],
+    ): Ast.ContractInit {
         return astF.createNode({
             kind: "contract_init",
             params: p_params,
             statements: p_statements,
             loc: emptySrcInfo,
-        }) as Ast.AstContractInit;
+        }) as Ast.ContractInit;
     }
 
-    function makeAstReceiver(
-        p_selector: Ast.AstReceiverKind,
-        p_statements: readonly Ast.AstStatement[],
+    function makeReceiver(
+        p_selector: Ast.ReceiverKind,
+        p_statements: readonly Ast.Statement[],
         p_loc: SrcInfo,
-    ): Ast.AstReceiver {
+    ): Ast.Receiver {
         return astF.createNode({
             kind: "receiver",
             selector: p_selector,
             statements: p_statements,
             loc: p_loc,
-        }) as Ast.AstReceiver;
+        }) as Ast.Receiver;
     }
 
-    function makeDummyAstReceiver(
-        p_selector: Ast.AstReceiverKind,
-        p_statements: readonly Ast.AstStatement[],
-    ): Ast.AstReceiver {
+    function makeDummyReceiver(
+        p_selector: Ast.ReceiverKind,
+        p_statements: readonly Ast.Statement[],
+    ): Ast.Receiver {
         return astF.createNode({
             kind: "receiver",
             selector: p_selector,
             statements: p_statements,
             loc: emptySrcInfo,
-        }) as Ast.AstReceiver;
+        }) as Ast.Receiver;
     }
 
-    function makeAstFunctionDecl(
-        p_attributes: readonly Ast.AstFunctionAttribute[],
-        p_name: Ast.AstId,
-        p_return: Ast.AstType | undefined,
-        p_params: readonly Ast.AstTypedParameter[],
+    function makeFunctionDecl(
+        p_attributes: readonly Ast.FunctionAttribute[],
+        p_name: Ast.Id,
+        p_return: Ast.Type | undefined,
+        p_params: readonly Ast.TypedParameter[],
         p_loc: SrcInfo,
-    ): Ast.AstFunctionDecl {
+    ): Ast.FunctionDecl {
         return astF.createNode({
             kind: "function_decl",
             attributes: p_attributes,
@@ -399,15 +397,15 @@ export const getMakeAst = (astF: FactoryAst) => {
             return: p_return,
             params: p_params,
             loc: p_loc,
-        }) as Ast.AstFunctionDecl;
+        }) as Ast.FunctionDecl;
     }
 
-    function makeDummyAstFunctionDecl(
-        p_attributes: readonly Ast.AstFunctionAttribute[],
-        p_name: Ast.AstId,
-        p_return: Ast.AstType | undefined,
-        p_params: readonly Ast.AstTypedParameter[],
-    ): Ast.AstFunctionDecl {
+    function makeDummyFunctionDecl(
+        p_attributes: readonly Ast.FunctionAttribute[],
+        p_name: Ast.Id,
+        p_return: Ast.Type | undefined,
+        p_params: readonly Ast.TypedParameter[],
+    ): Ast.FunctionDecl {
         return astF.createNode({
             kind: "function_decl",
             attributes: p_attributes,
@@ -415,299 +413,299 @@ export const getMakeAst = (astF: FactoryAst) => {
             return: p_return,
             params: p_params,
             loc: emptySrcInfo,
-        }) as Ast.AstFunctionDecl;
+        }) as Ast.FunctionDecl;
     }
 
-    function makeAstConstantDecl(
-        p_attributes: readonly Ast.AstConstantAttribute[],
-        p_name: Ast.AstId,
-        p_type: Ast.AstType,
+    function makeConstantDecl(
+        p_attributes: readonly Ast.ConstantAttribute[],
+        p_name: Ast.Id,
+        p_type: Ast.Type,
         p_loc: SrcInfo,
-    ): Ast.AstConstantDecl {
+    ): Ast.ConstantDecl {
         return astF.createNode({
             kind: "constant_decl",
             attributes: p_attributes,
             name: p_name,
             type: p_type,
             loc: p_loc,
-        }) as Ast.AstConstantDecl;
+        }) as Ast.ConstantDecl;
     }
 
-    function makeDummyAstConstantDecl(
-        p_attributes: readonly Ast.AstConstantAttribute[],
-        p_name: Ast.AstId,
-        p_type: Ast.AstType,
-    ): Ast.AstConstantDecl {
+    function makeDummyConstantDecl(
+        p_attributes: readonly Ast.ConstantAttribute[],
+        p_name: Ast.Id,
+        p_type: Ast.Type,
+    ): Ast.ConstantDecl {
         return astF.createNode({
             kind: "constant_decl",
             attributes: p_attributes,
             name: p_name,
             type: p_type,
             loc: emptySrcInfo,
-        }) as Ast.AstConstantDecl;
+        }) as Ast.ConstantDecl;
     }
 
-    function makeAstStatementLet(
-        p_name: Ast.AstId,
-        p_type: Ast.AstType | undefined,
-        p_expression: Ast.AstExpression,
+    function makeStatementLet(
+        p_name: Ast.Id,
+        p_type: Ast.Type | undefined,
+        p_expression: Ast.Expression,
         p_loc: SrcInfo,
-    ): Ast.AstStatementLet {
+    ): Ast.StatementLet {
         return astF.createNode({
             kind: "statement_let",
             name: p_name,
             type: p_type,
             expression: p_expression,
             loc: p_loc,
-        }) as Ast.AstStatementLet;
+        }) as Ast.StatementLet;
     }
 
-    function makeDummyAstStatementLet(
-        p_name: Ast.AstId,
-        p_type: Ast.AstType | undefined,
-        p_expression: Ast.AstExpression,
-    ): Ast.AstStatementLet {
+    function makeDummyStatementLet(
+        p_name: Ast.Id,
+        p_type: Ast.Type | undefined,
+        p_expression: Ast.Expression,
+    ): Ast.StatementLet {
         return astF.createNode({
             kind: "statement_let",
             name: p_name,
             type: p_type,
             expression: p_expression,
             loc: emptySrcInfo,
-        }) as Ast.AstStatementLet;
+        }) as Ast.StatementLet;
     }
 
-    function makeAstStatementReturn(
-        p_expression: Ast.AstExpression | undefined,
+    function makeStatementReturn(
+        p_expression: Ast.Expression | undefined,
         p_loc: SrcInfo,
-    ): Ast.AstStatementReturn {
+    ): Ast.StatementReturn {
         return astF.createNode({
             kind: "statement_return",
             expression: p_expression,
             loc: p_loc,
-        }) as Ast.AstStatementReturn;
+        }) as Ast.StatementReturn;
     }
 
-    function makeDummyAstStatementReturn(
-        p_expression: Ast.AstExpression | undefined,
-    ): Ast.AstStatementReturn {
+    function makeDummyStatementReturn(
+        p_expression: Ast.Expression | undefined,
+    ): Ast.StatementReturn {
         return astF.createNode({
             kind: "statement_return",
             expression: p_expression,
             loc: emptySrcInfo,
-        }) as Ast.AstStatementReturn;
+        }) as Ast.StatementReturn;
     }
 
-    function makeAstStatementExpression(
-        p_expression: Ast.AstExpression,
+    function makeStatementExpression(
+        p_expression: Ast.Expression,
         p_loc: SrcInfo,
-    ): Ast.AstStatementExpression {
+    ): Ast.StatementExpression {
         return astF.createNode({
             kind: "statement_expression",
             expression: p_expression,
             loc: p_loc,
-        }) as Ast.AstStatementExpression;
+        }) as Ast.StatementExpression;
     }
 
-    function makeDummyAstStatementExpression(
-        p_expression: Ast.AstExpression,
-    ): Ast.AstStatementExpression {
+    function makeDummyStatementExpression(
+        p_expression: Ast.Expression,
+    ): Ast.StatementExpression {
         return astF.createNode({
             kind: "statement_expression",
             expression: p_expression,
             loc: emptySrcInfo,
-        }) as Ast.AstStatementExpression;
+        }) as Ast.StatementExpression;
     }
 
-    function makeAstStatementAssign(
-        p_path: Ast.AstExpression,
-        p_expression: Ast.AstExpression,
+    function makeStatementAssign(
+        p_path: Ast.Expression,
+        p_expression: Ast.Expression,
         p_loc: SrcInfo,
-    ): Ast.AstStatementAssign {
+    ): Ast.StatementAssign {
         return astF.createNode({
             kind: "statement_assign",
             path: p_path,
             expression: p_expression,
             loc: p_loc,
-        }) as Ast.AstStatementAssign;
+        }) as Ast.StatementAssign;
     }
 
-    function makeDummyAstStatementAssign(
-        p_path: Ast.AstExpression,
-        p_expression: Ast.AstExpression,
-    ): Ast.AstStatementAssign {
+    function makeDummyStatementAssign(
+        p_path: Ast.Expression,
+        p_expression: Ast.Expression,
+    ): Ast.StatementAssign {
         return astF.createNode({
             kind: "statement_assign",
             path: p_path,
             expression: p_expression,
             loc: emptySrcInfo,
-        }) as Ast.AstStatementAssign;
+        }) as Ast.StatementAssign;
     }
 
-    function makeAstStatementAugmentedAssign(
-        p_op: Ast.AstAugmentedAssignOperation,
-        p_path: Ast.AstExpression,
-        p_expression: Ast.AstExpression,
+    function makeStatementAugmentedAssign(
+        p_op: Ast.AugmentedAssignOperation,
+        p_path: Ast.Expression,
+        p_expression: Ast.Expression,
         p_loc: SrcInfo,
-    ): Ast.AstStatementAugmentedAssign {
+    ): Ast.StatementAugmentedAssign {
         return astF.createNode({
             kind: "statement_augmentedassign",
             op: p_op,
             path: p_path,
             expression: p_expression,
             loc: p_loc,
-        }) as Ast.AstStatementAugmentedAssign;
+        }) as Ast.StatementAugmentedAssign;
     }
 
-    function makeDummyAstStatementAugmentedAssign(
-        p_op: Ast.AstAugmentedAssignOperation,
-        p_path: Ast.AstExpression,
-        p_expression: Ast.AstExpression,
-    ): Ast.AstStatementAugmentedAssign {
+    function makeDummyStatementAugmentedAssign(
+        p_op: Ast.AugmentedAssignOperation,
+        p_path: Ast.Expression,
+        p_expression: Ast.Expression,
+    ): Ast.StatementAugmentedAssign {
         return astF.createNode({
             kind: "statement_augmentedassign",
             op: p_op,
             path: p_path,
             expression: p_expression,
             loc: emptySrcInfo,
-        }) as Ast.AstStatementAugmentedAssign;
+        }) as Ast.StatementAugmentedAssign;
     }
 
-    function makeAstStatementCondition(
-        p_condition: Ast.AstExpression,
-        p_trueStatements: readonly Ast.AstStatement[],
-        p_falseStatements: readonly Ast.AstStatement[] | undefined,
+    function makeStatementCondition(
+        p_condition: Ast.Expression,
+        p_trueStatements: readonly Ast.Statement[],
+        p_falseStatements: readonly Ast.Statement[] | undefined,
         p_loc: SrcInfo,
-    ): Ast.AstStatementCondition {
+    ): Ast.StatementCondition {
         return astF.createNode({
             kind: "statement_condition",
             condition: p_condition,
             trueStatements: p_trueStatements,
             falseStatements: p_falseStatements,
             loc: p_loc,
-        }) as Ast.AstStatementCondition;
+        }) as Ast.StatementCondition;
     }
 
-    function makeDummyAstStatementCondition(
-        p_condition: Ast.AstExpression,
-        p_trueStatements: readonly Ast.AstStatement[],
-        p_falseStatements: readonly Ast.AstStatement[] | undefined,
-    ): Ast.AstStatementCondition {
+    function makeDummyStatementCondition(
+        p_condition: Ast.Expression,
+        p_trueStatements: readonly Ast.Statement[],
+        p_falseStatements: readonly Ast.Statement[] | undefined,
+    ): Ast.StatementCondition {
         return astF.createNode({
             kind: "statement_condition",
             condition: p_condition,
             trueStatements: p_trueStatements,
             falseStatements: p_falseStatements,
             loc: emptySrcInfo,
-        }) as Ast.AstStatementCondition;
+        }) as Ast.StatementCondition;
     }
 
-    function makeAstStatementWhile(
-        p_condition: Ast.AstExpression,
-        p_statements: readonly Ast.AstStatement[],
+    function makeStatementWhile(
+        p_condition: Ast.Expression,
+        p_statements: readonly Ast.Statement[],
         p_loc: SrcInfo,
-    ): Ast.AstStatementWhile {
+    ): Ast.StatementWhile {
         return astF.createNode({
             kind: "statement_while",
             condition: p_condition,
             statements: p_statements,
             loc: p_loc,
-        }) as Ast.AstStatementWhile;
+        }) as Ast.StatementWhile;
     }
 
-    function makeDummyAstStatementWhile(
-        p_condition: Ast.AstExpression,
-        p_statements: readonly Ast.AstStatement[],
-    ): Ast.AstStatementWhile {
+    function makeDummyStatementWhile(
+        p_condition: Ast.Expression,
+        p_statements: readonly Ast.Statement[],
+    ): Ast.StatementWhile {
         return astF.createNode({
             kind: "statement_while",
             condition: p_condition,
             statements: p_statements,
             loc: emptySrcInfo,
-        }) as Ast.AstStatementWhile;
+        }) as Ast.StatementWhile;
     }
 
-    function makeAstStatementUntil(
-        p_condition: Ast.AstExpression,
-        p_statements: readonly Ast.AstStatement[],
+    function makeStatementUntil(
+        p_condition: Ast.Expression,
+        p_statements: readonly Ast.Statement[],
         p_loc: SrcInfo,
-    ): Ast.AstStatementUntil {
+    ): Ast.StatementUntil {
         return astF.createNode({
             kind: "statement_until",
             condition: p_condition,
             statements: p_statements,
             loc: p_loc,
-        }) as Ast.AstStatementUntil;
+        }) as Ast.StatementUntil;
     }
 
-    function makeDummyAstStatementUntil(
-        p_condition: Ast.AstExpression,
-        p_statements: readonly Ast.AstStatement[],
-    ): Ast.AstStatementUntil {
+    function makeDummyStatementUntil(
+        p_condition: Ast.Expression,
+        p_statements: readonly Ast.Statement[],
+    ): Ast.StatementUntil {
         return astF.createNode({
             kind: "statement_until",
             condition: p_condition,
             statements: p_statements,
             loc: emptySrcInfo,
-        }) as Ast.AstStatementUntil;
+        }) as Ast.StatementUntil;
     }
 
-    function makeAstStatementRepeat(
-        p_iterations: Ast.AstExpression,
-        p_statements: readonly Ast.AstStatement[],
+    function makeStatementRepeat(
+        p_iterations: Ast.Expression,
+        p_statements: readonly Ast.Statement[],
         p_loc: SrcInfo,
-    ): Ast.AstStatementRepeat {
+    ): Ast.StatementRepeat {
         return astF.createNode({
             kind: "statement_repeat",
             iterations: p_iterations,
             statements: p_statements,
             loc: p_loc,
-        }) as Ast.AstStatementRepeat;
+        }) as Ast.StatementRepeat;
     }
 
-    function makeDummyAstStatementRepeat(
-        p_iterations: Ast.AstExpression,
-        p_statements: readonly Ast.AstStatement[],
-    ): Ast.AstStatementRepeat {
+    function makeDummyStatementRepeat(
+        p_iterations: Ast.Expression,
+        p_statements: readonly Ast.Statement[],
+    ): Ast.StatementRepeat {
         return astF.createNode({
             kind: "statement_repeat",
             iterations: p_iterations,
             statements: p_statements,
             loc: emptySrcInfo,
-        }) as Ast.AstStatementRepeat;
+        }) as Ast.StatementRepeat;
     }
 
-    function makeAstStatementTry(
-        p_statements: readonly Ast.AstStatement[],
-        p_catchBlock: Ast.AstCatchBlock | undefined,
+    function makeStatementTry(
+        p_statements: readonly Ast.Statement[],
+        p_catchBlock: Ast.CatchBlock | undefined,
         p_loc: SrcInfo,
-    ): Ast.AstStatementTry {
+    ): Ast.StatementTry {
         return astF.createNode({
             kind: "statement_try",
             statements: p_statements,
             catchBlock: p_catchBlock,
             loc: p_loc,
-        }) as Ast.AstStatementTry;
+        }) as Ast.StatementTry;
     }
 
-    function makeDummyAstStatementTry(
-        p_statements: readonly Ast.AstStatement[],
-        p_catchBlock: Ast.AstCatchBlock | undefined,
-    ): Ast.AstStatementTry {
+    function makeDummyStatementTry(
+        p_statements: readonly Ast.Statement[],
+        p_catchBlock: Ast.CatchBlock | undefined,
+    ): Ast.StatementTry {
         return astF.createNode({
             kind: "statement_try",
             statements: p_statements,
             catchBlock: p_catchBlock,
             loc: emptySrcInfo,
-        }) as Ast.AstStatementTry;
+        }) as Ast.StatementTry;
     }
 
-    function makeAstStatementForEach(
-        p_keyName: Ast.AstId,
-        p_valueName: Ast.AstId,
-        p_map: Ast.AstExpression,
-        p_statements: readonly Ast.AstStatement[],
+    function makeStatementForEach(
+        p_keyName: Ast.Id,
+        p_valueName: Ast.Id,
+        p_map: Ast.Expression,
+        p_statements: readonly Ast.Statement[],
         p_loc: SrcInfo,
-    ): Ast.AstStatementForEach {
+    ): Ast.StatementForEach {
         return astF.createNode({
             kind: "statement_foreach",
             keyName: p_keyName,
@@ -715,15 +713,15 @@ export const getMakeAst = (astF: FactoryAst) => {
             map: p_map,
             statements: p_statements,
             loc: p_loc,
-        }) as Ast.AstStatementForEach;
+        }) as Ast.StatementForEach;
     }
 
-    function makeDummyAstStatementForEach(
-        p_keyName: Ast.AstId,
-        p_valueName: Ast.AstId,
-        p_map: Ast.AstExpression,
-        p_statements: readonly Ast.AstStatement[],
-    ): Ast.AstStatementForEach {
+    function makeDummyStatementForEach(
+        p_keyName: Ast.Id,
+        p_valueName: Ast.Id,
+        p_map: Ast.Expression,
+        p_statements: readonly Ast.Statement[],
+    ): Ast.StatementForEach {
         return astF.createNode({
             kind: "statement_foreach",
             keyName: p_keyName,
@@ -731,16 +729,16 @@ export const getMakeAst = (astF: FactoryAst) => {
             map: p_map,
             statements: p_statements,
             loc: emptySrcInfo,
-        }) as Ast.AstStatementForEach;
+        }) as Ast.StatementForEach;
     }
 
-    function makeAstStatementDestruct(
-        p_type: Ast.AstTypeId,
-        p_identifiers: ReadonlyMap<string, readonly [Ast.AstId, Ast.AstId]>,
+    function makeStatementDestruct(
+        p_type: Ast.TypeId,
+        p_identifiers: ReadonlyMap<string, readonly [Ast.Id, Ast.Id]>,
         p_ignoreUnspecifiedFields: boolean,
-        p_expression: Ast.AstExpression,
+        p_expression: Ast.Expression,
         p_loc: SrcInfo,
-    ): Ast.AstStatementDestruct {
+    ): Ast.StatementDestruct {
         return astF.createNode({
             kind: "statement_destruct",
             type: p_type,
@@ -748,15 +746,15 @@ export const getMakeAst = (astF: FactoryAst) => {
             ignoreUnspecifiedFields: p_ignoreUnspecifiedFields,
             expression: p_expression,
             loc: p_loc,
-        }) as Ast.AstStatementDestruct;
+        }) as Ast.StatementDestruct;
     }
 
-    function makeDummyAstStatementDestruct(
-        p_type: Ast.AstTypeId,
-        p_identifiers: ReadonlyMap<string, readonly [Ast.AstId, Ast.AstId]>,
+    function makeDummyStatementDestruct(
+        p_type: Ast.TypeId,
+        p_identifiers: ReadonlyMap<string, readonly [Ast.Id, Ast.Id]>,
         p_ignoreUnspecifiedFields: boolean,
-        p_expression: Ast.AstExpression,
-    ): Ast.AstStatementDestruct {
+        p_expression: Ast.Expression,
+    ): Ast.StatementDestruct {
         return astF.createNode({
             kind: "statement_destruct",
             type: p_type,
@@ -764,74 +762,72 @@ export const getMakeAst = (astF: FactoryAst) => {
             ignoreUnspecifiedFields: p_ignoreUnspecifiedFields,
             expression: p_expression,
             loc: emptySrcInfo,
-        }) as Ast.AstStatementDestruct;
+        }) as Ast.StatementDestruct;
     }
 
-    function makeAstStatementBlock(
-        p_statements: readonly Ast.AstStatement[],
+    function makeStatementBlock(
+        p_statements: readonly Ast.Statement[],
         p_loc: SrcInfo,
-    ): Ast.AstStatementBlock {
+    ): Ast.StatementBlock {
         return astF.createNode({
             kind: "statement_block",
             statements: p_statements,
             loc: p_loc,
-        }) as Ast.AstStatementBlock;
+        }) as Ast.StatementBlock;
     }
 
-    function makeDummyAstStatementBlock(
-        p_statements: readonly Ast.AstStatement[],
-    ): Ast.AstStatementBlock {
+    function makeDummyStatementBlock(
+        p_statements: readonly Ast.Statement[],
+    ): Ast.StatementBlock {
         return astF.createNode({
             kind: "statement_block",
             statements: p_statements,
             loc: emptySrcInfo,
-        }) as Ast.AstStatementBlock;
+        }) as Ast.StatementBlock;
     }
 
-    function makeAstTypeId(p_text: string, p_loc: SrcInfo): Ast.AstTypeId {
+    function makeTypeId(p_text: string, p_loc: SrcInfo): Ast.TypeId {
         return astF.createNode({
             kind: "type_id",
             text: p_text,
             loc: p_loc,
-        }) as Ast.AstTypeId;
+        }) as Ast.TypeId;
     }
 
-    function makeDummyAstTypeId(p_text: string): Ast.AstTypeId {
+    function makeDummyTypeId(p_text: string): Ast.TypeId {
         return astF.createNode({
             kind: "type_id",
             text: p_text,
             loc: emptySrcInfo,
-        }) as Ast.AstTypeId;
+        }) as Ast.TypeId;
     }
 
-    function makeAstOptionalType(
-        p_typeArg: Ast.AstType,
+    function makeOptionalType(
+        p_typeArg: Ast.Type,
         p_loc: SrcInfo,
-    ): Ast.AstOptionalType {
+    ): Ast.OptionalType {
         return astF.createNode({
             kind: "optional_type",
             typeArg: p_typeArg,
             loc: p_loc,
-        }) as Ast.AstOptionalType;
+        }) as Ast.OptionalType;
     }
 
-    function makeDummyAstOptionalType(
-        p_typeArg: Ast.AstType,
-    ): Ast.AstOptionalType {
+    function makeDummyOptionalType(p_typeArg: Ast.Type): Ast.OptionalType {
         return astF.createNode({
             kind: "optional_type",
             typeArg: p_typeArg,
             loc: emptySrcInfo,
-        }) as Ast.AstOptionalType;
+        }) as Ast.OptionalType;
     }
 
-    function makeAstMapType(
-        p_keyType: Ast.AstTypeId,
-        p_keyStorageType: Ast.AstId | undefined,
-        p_valueType: Ast.AstTypeId,
-        p_valueStorageType: Ast.AstId | undefined,
+    function makeMapType(
+        p_keyType: Ast.TypeId,
+        p_keyStorageType: Ast.Id | undefined,
+        p_valueType: Ast.TypeId,
+        p_valueStorageType: Ast.Id | undefined,
         p_loc: SrcInfo,
-    ): Ast.AstMapType {
+    ): Ast.MapType {
         return astF.createNode({
             kind: "map_type",
             keyType: p_keyType,
@@ -839,15 +835,15 @@ export const getMakeAst = (astF: FactoryAst) => {
             valueType: p_valueType,
             valueStorageType: p_valueStorageType,
             loc: p_loc,
-        }) as Ast.AstMapType;
+        }) as Ast.MapType;
     }
 
-    function makeDummyAstMapType(
-        p_keyType: Ast.AstTypeId,
-        p_keyStorageType: Ast.AstId | undefined,
-        p_valueType: Ast.AstTypeId,
-        p_valueStorageType: Ast.AstId | undefined,
-    ): Ast.AstMapType {
+    function makeDummyMapType(
+        p_keyType: Ast.TypeId,
+        p_keyStorageType: Ast.Id | undefined,
+        p_valueType: Ast.TypeId,
+        p_valueStorageType: Ast.Id | undefined,
+    ): Ast.MapType {
         return astF.createNode({
             kind: "map_type",
             keyType: p_keyType,
@@ -855,869 +851,865 @@ export const getMakeAst = (astF: FactoryAst) => {
             valueType: p_valueType,
             valueStorageType: p_valueStorageType,
             loc: emptySrcInfo,
-        }) as Ast.AstMapType;
+        }) as Ast.MapType;
     }
 
-    function makeAstBouncedMessageType(
-        p_messageType: Ast.AstTypeId,
+    function makeBouncedMessageType(
+        p_messageType: Ast.TypeId,
         p_loc: SrcInfo,
-    ): Ast.AstBouncedMessageType {
+    ): Ast.BouncedMessageType {
         return astF.createNode({
             kind: "bounced_message_type",
             messageType: p_messageType,
             loc: p_loc,
-        }) as Ast.AstBouncedMessageType;
+        }) as Ast.BouncedMessageType;
     }
 
-    function makeDummyAstBouncedMessageType(
-        p_messageType: Ast.AstTypeId,
-    ): Ast.AstBouncedMessageType {
+    function makeDummyBouncedMessageType(
+        p_messageType: Ast.TypeId,
+    ): Ast.BouncedMessageType {
         return astF.createNode({
             kind: "bounced_message_type",
             messageType: p_messageType,
             loc: emptySrcInfo,
-        }) as Ast.AstBouncedMessageType;
+        }) as Ast.BouncedMessageType;
     }
 
-    function makeAstOpBinary(
-        p_op: Ast.AstBinaryOperation,
-        p_left: Ast.AstExpression,
-        p_right: Ast.AstExpression,
+    function makeOpBinary(
+        p_op: Ast.BinaryOperation,
+        p_left: Ast.Expression,
+        p_right: Ast.Expression,
         p_loc: SrcInfo,
-    ): Ast.AstOpBinary {
+    ): Ast.OpBinary {
         return astF.createNode({
             kind: "op_binary",
             op: p_op,
             left: p_left,
             right: p_right,
             loc: p_loc,
-        }) as Ast.AstOpBinary;
+        }) as Ast.OpBinary;
     }
 
-    function makeDummyAstOpBinary(
-        p_op: Ast.AstBinaryOperation,
-        p_left: Ast.AstExpression,
-        p_right: Ast.AstExpression,
-    ): Ast.AstOpBinary {
+    function makeDummyOpBinary(
+        p_op: Ast.BinaryOperation,
+        p_left: Ast.Expression,
+        p_right: Ast.Expression,
+    ): Ast.OpBinary {
         return astF.createNode({
             kind: "op_binary",
             op: p_op,
             left: p_left,
             right: p_right,
             loc: emptySrcInfo,
-        }) as Ast.AstOpBinary;
+        }) as Ast.OpBinary;
     }
 
-    function makeAstOpUnary(
-        p_op: Ast.AstUnaryOperation,
-        p_operand: Ast.AstExpression,
+    function makeOpUnary(
+        p_op: Ast.UnaryOperation,
+        p_operand: Ast.Expression,
         p_loc: SrcInfo,
-    ): Ast.AstOpUnary {
+    ): Ast.OpUnary {
         return astF.createNode({
             kind: "op_unary",
             op: p_op,
             operand: p_operand,
             loc: p_loc,
-        }) as Ast.AstOpUnary;
+        }) as Ast.OpUnary;
     }
 
-    function makeDummyAstOpUnary(
-        p_op: Ast.AstUnaryOperation,
-        p_operand: Ast.AstExpression,
-    ): Ast.AstOpUnary {
+    function makeDummyOpUnary(
+        p_op: Ast.UnaryOperation,
+        p_operand: Ast.Expression,
+    ): Ast.OpUnary {
         return astF.createNode({
             kind: "op_unary",
             op: p_op,
             operand: p_operand,
             loc: emptySrcInfo,
-        }) as Ast.AstOpUnary;
+        }) as Ast.OpUnary;
     }
 
-    function makeAstConditional(
-        p_condition: Ast.AstExpression,
-        p_thenBranch: Ast.AstExpression,
-        p_elseBranch: Ast.AstExpression,
+    function makeConditional(
+        p_condition: Ast.Expression,
+        p_thenBranch: Ast.Expression,
+        p_elseBranch: Ast.Expression,
         p_loc: SrcInfo,
-    ): Ast.AstConditional {
+    ): Ast.Conditional {
         return astF.createNode({
             kind: "conditional",
             condition: p_condition,
             thenBranch: p_thenBranch,
             elseBranch: p_elseBranch,
             loc: p_loc,
-        }) as Ast.AstConditional;
+        }) as Ast.Conditional;
     }
 
-    function makeDummyAstConditional(
-        p_condition: Ast.AstExpression,
-        p_thenBranch: Ast.AstExpression,
-        p_elseBranch: Ast.AstExpression,
-    ): Ast.AstConditional {
+    function makeDummyConditional(
+        p_condition: Ast.Expression,
+        p_thenBranch: Ast.Expression,
+        p_elseBranch: Ast.Expression,
+    ): Ast.Conditional {
         return astF.createNode({
             kind: "conditional",
             condition: p_condition,
             thenBranch: p_thenBranch,
             elseBranch: p_elseBranch,
             loc: emptySrcInfo,
-        }) as Ast.AstConditional;
+        }) as Ast.Conditional;
     }
 
-    function makeAstMethodCall(
-        p_self: Ast.AstExpression,
-        p_method: Ast.AstId,
-        p_args: readonly Ast.AstExpression[],
+    function makeMethodCall(
+        p_self: Ast.Expression,
+        p_method: Ast.Id,
+        p_args: readonly Ast.Expression[],
         p_loc: SrcInfo,
-    ): Ast.AstMethodCall {
+    ): Ast.MethodCall {
         return astF.createNode({
             kind: "method_call",
             self: p_self,
             method: p_method,
             args: p_args,
             loc: p_loc,
-        }) as Ast.AstMethodCall;
+        }) as Ast.MethodCall;
     }
 
-    function makeDummyAstMethodCall(
-        p_self: Ast.AstExpression,
-        p_method: Ast.AstId,
-        p_args: readonly Ast.AstExpression[],
-    ): Ast.AstMethodCall {
+    function makeDummyMethodCall(
+        p_self: Ast.Expression,
+        p_method: Ast.Id,
+        p_args: readonly Ast.Expression[],
+    ): Ast.MethodCall {
         return astF.createNode({
             kind: "method_call",
             self: p_self,
             method: p_method,
             args: p_args,
             loc: emptySrcInfo,
-        }) as Ast.AstMethodCall;
+        }) as Ast.MethodCall;
     }
 
-    function makeAstFieldAccess(
-        p_aggregate: Ast.AstExpression,
-        p_field: Ast.AstId,
+    function makeFieldAccess(
+        p_aggregate: Ast.Expression,
+        p_field: Ast.Id,
         p_loc: SrcInfo,
-    ): Ast.AstFieldAccess {
+    ): Ast.FieldAccess {
         return astF.createNode({
             kind: "field_access",
             aggregate: p_aggregate,
             field: p_field,
             loc: p_loc,
-        }) as Ast.AstFieldAccess;
+        }) as Ast.FieldAccess;
     }
 
-    function makeDummyAstFieldAccess(
-        p_aggregate: Ast.AstExpression,
-        p_field: Ast.AstId,
-    ): Ast.AstFieldAccess {
+    function makeDummyFieldAccess(
+        p_aggregate: Ast.Expression,
+        p_field: Ast.Id,
+    ): Ast.FieldAccess {
         return astF.createNode({
             kind: "field_access",
             aggregate: p_aggregate,
             field: p_field,
             loc: emptySrcInfo,
-        }) as Ast.AstFieldAccess;
+        }) as Ast.FieldAccess;
     }
 
-    function makeAstStaticCall(
-        p_function: Ast.AstId,
-        p_args: readonly Ast.AstExpression[],
+    function makeStaticCall(
+        p_function: Ast.Id,
+        p_args: readonly Ast.Expression[],
         p_loc: SrcInfo,
-    ): Ast.AstStaticCall {
+    ): Ast.StaticCall {
         return astF.createNode({
             kind: "static_call",
             function: p_function,
             args: p_args,
             loc: p_loc,
-        }) as Ast.AstStaticCall;
+        }) as Ast.StaticCall;
     }
 
-    function makeDummyAstStaticCall(
-        p_function: Ast.AstId,
-        p_args: readonly Ast.AstExpression[],
-    ): Ast.AstStaticCall {
+    function makeDummyStaticCall(
+        p_function: Ast.Id,
+        p_args: readonly Ast.Expression[],
+    ): Ast.StaticCall {
         return astF.createNode({
             kind: "static_call",
             function: p_function,
             args: p_args,
             loc: emptySrcInfo,
-        }) as Ast.AstStaticCall;
+        }) as Ast.StaticCall;
     }
 
-    function makeAstStructInstance(
-        p_type: Ast.AstId,
-        p_args: readonly Ast.AstStructFieldInitializer[],
+    function makeStructInstance(
+        p_type: Ast.Id,
+        p_args: readonly Ast.StructFieldInitializer[],
         p_loc: SrcInfo,
-    ): Ast.AstStructInstance {
+    ): Ast.StructInstance {
         return astF.createNode({
             kind: "struct_instance",
             type: p_type,
             args: p_args,
             loc: p_loc,
-        }) as Ast.AstStructInstance;
+        }) as Ast.StructInstance;
     }
 
-    function makeDummyAstStructInstance(
-        p_type: Ast.AstId,
-        p_args: readonly Ast.AstStructFieldInitializer[],
-    ): Ast.AstStructInstance {
+    function makeDummyStructInstance(
+        p_type: Ast.Id,
+        p_args: readonly Ast.StructFieldInitializer[],
+    ): Ast.StructInstance {
         return astF.createNode({
             kind: "struct_instance",
             type: p_type,
             args: p_args,
             loc: emptySrcInfo,
-        }) as Ast.AstStructInstance;
+        }) as Ast.StructInstance;
     }
 
-    function makeAstId(p_text: string, p_loc: SrcInfo): Ast.AstId {
+    function makeId(p_text: string, p_loc: SrcInfo): Ast.Id {
         return astF.createNode({
             kind: "id",
             text: p_text,
             loc: p_loc,
-        }) as Ast.AstId;
+        }) as Ast.Id;
     }
 
-    function makeDummyAstId(p_text: string): Ast.AstId {
+    function makeDummyId(p_text: string): Ast.Id {
         return astF.createNode({
             kind: "id",
             text: p_text,
             loc: emptySrcInfo,
-        }) as Ast.AstId;
+        }) as Ast.Id;
     }
 
-    function makeAstInitOf(
-        p_contract: Ast.AstId,
-        p_args: readonly Ast.AstExpression[],
+    function makeInitOf(
+        p_contract: Ast.Id,
+        p_args: readonly Ast.Expression[],
         p_loc: SrcInfo,
-    ): Ast.AstInitOf {
+    ): Ast.InitOf {
         return astF.createNode({
             kind: "init_of",
             contract: p_contract,
             args: p_args,
             loc: p_loc,
-        }) as Ast.AstInitOf;
+        }) as Ast.InitOf;
     }
 
-    function makeDummyAstInitOf(
-        p_contract: Ast.AstId,
-        p_args: readonly Ast.AstExpression[],
-    ): Ast.AstInitOf {
+    function makeDummyInitOf(
+        p_contract: Ast.Id,
+        p_args: readonly Ast.Expression[],
+    ): Ast.InitOf {
         return astF.createNode({
             kind: "init_of",
             contract: p_contract,
             args: p_args,
             loc: emptySrcInfo,
-        }) as Ast.AstInitOf;
+        }) as Ast.InitOf;
     }
 
-    function makeAstCodeOf(
-        p_contract: Ast.AstId,
-        p_loc: SrcInfo,
-    ): Ast.AstCodeOf {
+    function makeCodeOf(p_contract: Ast.Id, p_loc: SrcInfo): Ast.CodeOf {
         return astF.createNode({
             kind: "code_of",
             contract: p_contract,
             loc: p_loc,
-        }) as Ast.AstCodeOf;
+        }) as Ast.CodeOf;
     }
 
-    function makeDummyAstCodeOf(p_contract: Ast.AstId): Ast.AstCodeOf {
+    function makeDummyCodeOf(p_contract: Ast.Id): Ast.CodeOf {
         return astF.createNode({
             kind: "code_of",
             contract: p_contract,
             loc: emptySrcInfo,
-        }) as Ast.AstCodeOf;
+        }) as Ast.CodeOf;
     }
 
-    function makeAstString(p_value: string, p_loc: SrcInfo): Ast.AstString {
+    function makeString(p_value: string, p_loc: SrcInfo): Ast.String {
         return astF.createNode({
             kind: "string",
             value: p_value,
             loc: p_loc,
-        }) as Ast.AstString;
+        }) as Ast.String;
     }
 
-    function makeDummyAstString(p_value: string): Ast.AstString {
+    function makeDummyString(p_value: string): Ast.String {
         return astF.createNode({
             kind: "string",
             value: p_value,
             loc: emptySrcInfo,
-        }) as Ast.AstString;
+        }) as Ast.String;
     }
 
-    function makeAstNumber(
-        p_base: Ast.AstNumberBase,
+    function makeNumber(
+        p_base: Ast.NumberBase,
         p_value: bigint,
         p_loc: SrcInfo,
-    ): Ast.AstNumber {
+    ): Ast.Number {
         return astF.createNode({
             kind: "number",
             base: p_base,
             value: p_value,
             loc: p_loc,
-        }) as Ast.AstNumber;
+        }) as Ast.Number;
     }
 
-    function makeDummyAstNumber(
-        p_base: Ast.AstNumberBase,
+    function makeDummyNumber(
+        p_base: Ast.NumberBase,
         p_value: bigint,
-    ): Ast.AstNumber {
+    ): Ast.Number {
         return astF.createNode({
             kind: "number",
             base: p_base,
             value: p_value,
             loc: emptySrcInfo,
-        }) as Ast.AstNumber;
+        }) as Ast.Number;
     }
 
-    function makeAstBoolean(p_value: boolean, p_loc: SrcInfo): Ast.AstBoolean {
+    function makeBoolean(p_value: boolean, p_loc: SrcInfo): Ast.Boolean {
         return astF.createNode({
             kind: "boolean",
             value: p_value,
             loc: p_loc,
-        }) as Ast.AstBoolean;
+        }) as Ast.Boolean;
     }
 
-    function makeDummyAstBoolean(p_value: boolean): Ast.AstBoolean {
+    function makeDummyBoolean(p_value: boolean): Ast.Boolean {
         return astF.createNode({
             kind: "boolean",
             value: p_value,
             loc: emptySrcInfo,
-        }) as Ast.AstBoolean;
+        }) as Ast.Boolean;
     }
 
-    function makeAstNull(p_loc: SrcInfo): Ast.AstNull {
+    function makeNull(p_loc: SrcInfo): Ast.Null {
         return astF.createNode({
             kind: "null",
             loc: p_loc,
-        }) as Ast.AstNull;
+        }) as Ast.Null;
     }
 
-    function makeDummyAstNull(): Ast.AstNull {
+    function makeDummyNull(): Ast.Null {
         return astF.createNode({
             kind: "null",
             loc: emptySrcInfo,
-        }) as Ast.AstNull;
+        }) as Ast.Null;
     }
 
-    function makeAstSimplifiedString(
+    function makeSimplifiedString(
         p_value: string,
         p_loc: SrcInfo,
-    ): Ast.AstSimplifiedString {
+    ): Ast.SimplifiedString {
         return astF.createNode({
             kind: "simplified_string",
             value: p_value,
             loc: p_loc,
-        }) as Ast.AstSimplifiedString;
+        }) as Ast.SimplifiedString;
     }
 
-    function makeDummyAstSimplifiedString(
-        p_value: string,
-    ): Ast.AstSimplifiedString {
+    function makeDummySimplifiedString(p_value: string): Ast.SimplifiedString {
         return astF.createNode({
             kind: "simplified_string",
             value: p_value,
             loc: emptySrcInfo,
-        }) as Ast.AstSimplifiedString;
+        }) as Ast.SimplifiedString;
     }
 
-    function makeAstAddress(p_value: Address, p_loc: SrcInfo): Ast.AstAddress {
-        return astF.createNode({
-            kind: "address",
-            value: p_value,
-            loc: p_loc,
-        }) as Ast.AstAddress;
-    }
-
-    function makeDummyAstAddress(p_value: Address): Ast.AstAddress {
-        return astF.createNode({
-            kind: "address",
-            value: p_value,
-            loc: emptySrcInfo,
-        }) as Ast.AstAddress;
-    }
-
-    function makeAstCell(p_value: Cell, p_loc: SrcInfo): Ast.AstCell {
-        return astF.createNode({
-            kind: "cell",
-            value: p_value,
-            loc: p_loc,
-        }) as Ast.AstCell;
-    }
-
-    function makeDummyAstCell(p_value: Cell): Ast.AstCell {
-        return astF.createNode({
-            kind: "cell",
-            value: p_value,
-            loc: emptySrcInfo,
-        }) as Ast.AstCell;
-    }
-
-    function makeAstSlice(p_value: Slice, p_loc: SrcInfo): Ast.AstSlice {
-        return astF.createNode({
-            kind: "slice",
-            value: p_value,
-            loc: p_loc,
-        }) as Ast.AstSlice;
-    }
-
-    function makeDummyAstSlice(p_value: Slice): Ast.AstSlice {
-        return astF.createNode({
-            kind: "slice",
-            value: p_value,
-            loc: emptySrcInfo,
-        }) as Ast.AstSlice;
-    }
-
-    function makeAstStructValue(
-        p_type: Ast.AstId,
-        p_args: readonly Ast.AstStructFieldValue[],
+    function makeAddress(
+        p_value: TonCore.Address,
         p_loc: SrcInfo,
-    ): Ast.AstStructValue {
+    ): Ast.Address {
+        return astF.createNode({
+            kind: "address",
+            value: p_value,
+            loc: p_loc,
+        }) as Ast.Address;
+    }
+
+    function makeDummyAddress(p_value: TonCore.Address): Ast.Address {
+        return astF.createNode({
+            kind: "address",
+            value: p_value,
+            loc: emptySrcInfo,
+        }) as Ast.Address;
+    }
+
+    function makeCell(p_value: TonCore.Cell, p_loc: SrcInfo): Ast.Cell {
+        return astF.createNode({
+            kind: "cell",
+            value: p_value,
+            loc: p_loc,
+        }) as Ast.Cell;
+    }
+
+    function makeDummyCell(p_value: TonCore.Cell): Ast.Cell {
+        return astF.createNode({
+            kind: "cell",
+            value: p_value,
+            loc: emptySrcInfo,
+        }) as Ast.Cell;
+    }
+
+    function makeSlice(p_value: TonCore.Slice, p_loc: SrcInfo): Ast.Slice {
+        return astF.createNode({
+            kind: "slice",
+            value: p_value,
+            loc: p_loc,
+        }) as Ast.Slice;
+    }
+
+    function makeDummySlice(p_value: TonCore.Slice): Ast.Slice {
+        return astF.createNode({
+            kind: "slice",
+            value: p_value,
+            loc: emptySrcInfo,
+        }) as Ast.Slice;
+    }
+
+    function makeStructValue(
+        p_type: Ast.Id,
+        p_args: readonly Ast.StructFieldValue[],
+        p_loc: SrcInfo,
+    ): Ast.StructValue {
         return astF.createNode({
             kind: "struct_value",
             type: p_type,
             args: p_args,
             loc: p_loc,
-        }) as Ast.AstStructValue;
+        }) as Ast.StructValue;
     }
 
-    function makeDummyAstStructValue(
-        p_type: Ast.AstId,
-        p_args: readonly Ast.AstStructFieldValue[],
-    ): Ast.AstStructValue {
+    function makeDummyStructValue(
+        p_type: Ast.Id,
+        p_args: readonly Ast.StructFieldValue[],
+    ): Ast.StructValue {
         return astF.createNode({
             kind: "struct_value",
             type: p_type,
             args: p_args,
             loc: emptySrcInfo,
-        }) as Ast.AstStructValue;
+        }) as Ast.StructValue;
     }
 
-    function makeAstFunctionAttributeGet(
-        p_methodId: Ast.AstExpression | undefined,
+    function makeFunctionAttributeGet(
+        p_methodId: Ast.Expression | undefined,
         p_loc: SrcInfo,
-    ): Ast.AstFunctionAttributeGet {
+    ): Ast.FunctionAttributeGet {
         return astF.createNode({
             kind: "function_attribute",
             type: "get",
             methodId: p_methodId,
             loc: p_loc,
-        }) as Ast.AstFunctionAttributeGet;
+        }) as Ast.FunctionAttributeGet;
     }
 
-    function makeDummyAstFunctionAttributeGet(
-        p_methodId: Ast.AstExpression | undefined,
-    ): Ast.AstFunctionAttributeGet {
+    function makeDummyFunctionAttributeGet(
+        p_methodId: Ast.Expression | undefined,
+    ): Ast.FunctionAttributeGet {
         return astF.createNode({
             kind: "function_attribute",
             type: "get",
             methodId: p_methodId,
             loc: emptySrcInfo,
-        }) as Ast.AstFunctionAttributeGet;
+        }) as Ast.FunctionAttributeGet;
     }
 
-    function makeAstFunctionAttributeRest(
-        p_type: Ast.AstFunctionAttributeName,
+    function makeFunctionAttributeRest(
+        p_type: Ast.FunctionAttributeName,
         p_loc: SrcInfo,
-    ): Ast.AstFunctionAttributeRest {
+    ): Ast.FunctionAttributeRest {
         return astF.createNode({
             kind: "function_attribute",
             type: p_type,
             loc: p_loc,
-        }) as Ast.AstFunctionAttributeRest;
+        }) as Ast.FunctionAttributeRest;
     }
 
-    function makeDummyAstFunctionAttributeRest(
-        p_type: Ast.AstFunctionAttributeName,
-    ): Ast.AstFunctionAttributeRest {
+    function makeDummyFunctionAttributeRest(
+        p_type: Ast.FunctionAttributeName,
+    ): Ast.FunctionAttributeRest {
         return astF.createNode({
             kind: "function_attribute",
             type: p_type,
             loc: emptySrcInfo,
-        }) as Ast.AstFunctionAttributeRest;
+        }) as Ast.FunctionAttributeRest;
     }
 
-    function makeAstReceiverSimple(
-        p_param: Ast.AstTypedParameter,
-    ): Ast.AstReceiverSimple {
+    function makeReceiverSimple(
+        p_param: Ast.TypedParameter,
+    ): Ast.ReceiverSimple {
         return astF.createNode({
             kind: "simple",
             param: p_param,
-        }) as Ast.AstReceiverSimple;
+        }) as Ast.ReceiverSimple;
     }
 
-    function makeAstReceiverFallback(): Ast.AstReceiverFallback {
+    function makeReceiverFallback(): Ast.ReceiverFallback {
         return astF.createNode({
             kind: "fallback",
-        }) as Ast.AstReceiverFallback;
+        }) as Ast.ReceiverFallback;
     }
 
-    function makeAstReceiverComment(
-        p_comment: Ast.AstString,
-    ): Ast.AstReceiverComment {
+    function makeReceiverComment(p_comment: Ast.String): Ast.ReceiverComment {
         return astF.createNode({
             kind: "comment",
             comment: p_comment,
-        }) as Ast.AstReceiverComment;
+        }) as Ast.ReceiverComment;
     }
 
-    function makeAstReceiverInternal(
-        p_subKind: Ast.AstReceiverSubKind,
+    function makeReceiverInternal(
+        p_subKind: Ast.ReceiverSubKind,
         p_loc: SrcInfo,
-    ): Ast.AstReceiverInternal {
+    ): Ast.ReceiverInternal {
         return astF.createNode({
             kind: "internal",
             subKind: p_subKind,
             loc: p_loc,
-        }) as Ast.AstReceiverInternal;
+        }) as Ast.ReceiverInternal;
     }
 
-    function makeDummyAstReceiverInternal(
-        p_subKind: Ast.AstReceiverSubKind,
-    ): Ast.AstReceiverInternal {
+    function makeDummyReceiverInternal(
+        p_subKind: Ast.ReceiverSubKind,
+    ): Ast.ReceiverInternal {
         return astF.createNode({
             kind: "internal",
             subKind: p_subKind,
             loc: emptySrcInfo,
-        }) as Ast.AstReceiverInternal;
+        }) as Ast.ReceiverInternal;
     }
 
-    function makeAstReceiverExternal(
-        p_subKind: Ast.AstReceiverSubKind,
+    function makeReceiverExternal(
+        p_subKind: Ast.ReceiverSubKind,
         p_loc: SrcInfo,
-    ): Ast.AstReceiverExternal {
+    ): Ast.ReceiverExternal {
         return astF.createNode({
             kind: "external",
             subKind: p_subKind,
             loc: p_loc,
-        }) as Ast.AstReceiverExternal;
+        }) as Ast.ReceiverExternal;
     }
 
-    function makeDummyAstReceiverExternal(
-        p_subKind: Ast.AstReceiverSubKind,
-    ): Ast.AstReceiverExternal {
+    function makeDummyReceiverExternal(
+        p_subKind: Ast.ReceiverSubKind,
+    ): Ast.ReceiverExternal {
         return astF.createNode({
             kind: "external",
             subKind: p_subKind,
             loc: emptySrcInfo,
-        }) as Ast.AstReceiverExternal;
+        }) as Ast.ReceiverExternal;
     }
 
-    function makeAstReceiverBounce(
-        p_param: Ast.AstTypedParameter,
+    function makeReceiverBounce(
+        p_param: Ast.TypedParameter,
         p_loc: SrcInfo,
-    ): Ast.AstReceiverBounce {
+    ): Ast.ReceiverBounce {
         return astF.createNode({
             kind: "bounce",
             param: p_param,
             loc: p_loc,
-        }) as Ast.AstReceiverBounce;
+        }) as Ast.ReceiverBounce;
     }
 
-    function makeDummyAstReceiverBounce(
-        p_param: Ast.AstTypedParameter,
-    ): Ast.AstReceiverBounce {
+    function makeDummyReceiverBounce(
+        p_param: Ast.TypedParameter,
+    ): Ast.ReceiverBounce {
         return astF.createNode({
             kind: "bounce",
             param: p_param,
             loc: emptySrcInfo,
-        }) as Ast.AstReceiverBounce;
+        }) as Ast.ReceiverBounce;
     }
 
-    function makeAstFuncId(p_text: string, p_loc: SrcInfo): Ast.AstFuncId {
+    function makeFuncId(p_text: string, p_loc: SrcInfo): Ast.FuncId {
         return astF.createNode({
             kind: "func_id",
             text: p_text,
             loc: p_loc,
-        }) as Ast.AstFuncId;
+        }) as Ast.FuncId;
     }
 
-    function makeDummyAstFuncId(p_text: string): Ast.AstFuncId {
+    function makeDummyFuncId(p_text: string): Ast.FuncId {
         return astF.createNode({
             kind: "func_id",
             text: p_text,
             loc: emptySrcInfo,
-        }) as Ast.AstFuncId;
+        }) as Ast.FuncId;
     }
 
-    function makeAstDestructMapping(
-        p_field: Ast.AstId,
-        p_name: Ast.AstId,
+    function makeDestructMapping(
+        p_field: Ast.Id,
+        p_name: Ast.Id,
         p_loc: SrcInfo,
-    ): Ast.AstDestructMapping {
+    ): Ast.DestructMapping {
         return astF.createNode({
             kind: "destruct_mapping",
             field: p_field,
             name: p_name,
             loc: p_loc,
-        }) as Ast.AstDestructMapping;
+        }) as Ast.DestructMapping;
     }
 
-    function makeDummyAstDestructMapping(
-        p_field: Ast.AstId,
-        p_name: Ast.AstId,
-    ): Ast.AstDestructMapping {
+    function makeDummyDestructMapping(
+        p_field: Ast.Id,
+        p_name: Ast.Id,
+    ): Ast.DestructMapping {
         return astF.createNode({
             kind: "destruct_mapping",
             field: p_field,
             name: p_name,
             loc: emptySrcInfo,
-        }) as Ast.AstDestructMapping;
+        }) as Ast.DestructMapping;
     }
 
-    function makeAstDestructEnd(
+    function makeDestructEnd(
         p_ignoreUnspecifiedFields: boolean,
         p_loc: SrcInfo,
-    ): Ast.AstDestructEnd {
+    ): Ast.DestructEnd {
         return astF.createNode({
             kind: "destruct_end",
             ignoreUnspecifiedFields: p_ignoreUnspecifiedFields,
             loc: p_loc,
-        }) as Ast.AstDestructEnd;
+        }) as Ast.DestructEnd;
     }
 
-    function makeDummyAstDestructEnd(
+    function makeDummyDestructEnd(
         p_ignoreUnspecifiedFields: boolean,
-    ): Ast.AstDestructEnd {
+    ): Ast.DestructEnd {
         return astF.createNode({
             kind: "destruct_end",
             ignoreUnspecifiedFields: p_ignoreUnspecifiedFields,
             loc: emptySrcInfo,
-        }) as Ast.AstDestructEnd;
+        }) as Ast.DestructEnd;
     }
 
-    function makeAstTypedParameter(
-        p_name: Ast.AstId,
-        p_type: Ast.AstType,
+    function makeTypedParameter(
+        p_name: Ast.Id,
+        p_type: Ast.Type,
         p_loc: SrcInfo,
-    ): Ast.AstTypedParameter {
+    ): Ast.TypedParameter {
         return astF.createNode({
             kind: "typed_parameter",
             name: p_name,
             type: p_type,
             loc: p_loc,
-        }) as Ast.AstTypedParameter;
+        }) as Ast.TypedParameter;
     }
 
-    function makeDummyAstTypedParameter(
-        p_name: Ast.AstId,
-        p_type: Ast.AstType,
-    ): Ast.AstTypedParameter {
+    function makeDummyTypedParameter(
+        p_name: Ast.Id,
+        p_type: Ast.Type,
+    ): Ast.TypedParameter {
         return astF.createNode({
             kind: "typed_parameter",
             name: p_name,
             type: p_type,
             loc: emptySrcInfo,
-        }) as Ast.AstTypedParameter;
+        }) as Ast.TypedParameter;
     }
 
-    function makeAstModule(
-        p_imports: readonly Ast.AstImport[],
-        p_items: readonly Ast.AstModuleItem[],
-    ): Ast.AstModule {
+    function makeModule(
+        p_imports: readonly Ast.Import[],
+        p_items: readonly Ast.ModuleItem[],
+    ): Ast.Module {
         return astF.createNode({
             kind: "module",
             imports: p_imports,
             items: p_items,
-        }) as Ast.AstModule;
+        }) as Ast.Module;
     }
 
-    function makeAstStructFieldInitializer(
-        p_field: Ast.AstId,
-        p_initializer: Ast.AstExpression,
+    function makeStructFieldInitializer(
+        p_field: Ast.Id,
+        p_initializer: Ast.Expression,
         p_loc: SrcInfo,
-    ): Ast.AstStructFieldInitializer {
+    ): Ast.StructFieldInitializer {
         return astF.createNode({
             kind: "struct_field_initializer",
             field: p_field,
             initializer: p_initializer,
             loc: p_loc,
-        }) as Ast.AstStructFieldInitializer;
+        }) as Ast.StructFieldInitializer;
     }
 
-    function makeDummyAstStructFieldInitializer(
-        p_field: Ast.AstId,
-        p_initializer: Ast.AstExpression,
-    ): Ast.AstStructFieldInitializer {
+    function makeDummyStructFieldInitializer(
+        p_field: Ast.Id,
+        p_initializer: Ast.Expression,
+    ): Ast.StructFieldInitializer {
         return astF.createNode({
             kind: "struct_field_initializer",
             field: p_field,
             initializer: p_initializer,
             loc: emptySrcInfo,
-        }) as Ast.AstStructFieldInitializer;
+        }) as Ast.StructFieldInitializer;
     }
 
-    function makeAstStructFieldValue(
-        p_field: Ast.AstId,
-        p_initializer: Ast.AstLiteral,
+    function makeStructFieldValue(
+        p_field: Ast.Id,
+        p_initializer: Ast.Literal,
         p_loc: SrcInfo,
-    ): Ast.AstStructFieldValue {
+    ): Ast.StructFieldValue {
         return astF.createNode({
             kind: "struct_field_value",
             field: p_field,
             initializer: p_initializer,
             loc: p_loc,
-        }) as Ast.AstStructFieldValue;
+        }) as Ast.StructFieldValue;
     }
 
-    function makeDummyAstStructFieldValue(
-        p_field: Ast.AstId,
-        p_initializer: Ast.AstLiteral,
-    ): Ast.AstStructFieldValue {
+    function makeDummyStructFieldValue(
+        p_field: Ast.Id,
+        p_initializer: Ast.Literal,
+    ): Ast.StructFieldValue {
         return astF.createNode({
             kind: "struct_field_value",
             field: p_field,
             initializer: p_initializer,
             loc: emptySrcInfo,
-        }) as Ast.AstStructFieldValue;
+        }) as Ast.StructFieldValue;
     }
 
-    function makeAstImport(
+    function makeImport(
         p_importPath: Ast.ImportPath,
         p_loc: SrcInfo,
-    ): Ast.AstImport {
+    ): Ast.Import {
         return astF.createNode({
             kind: "import",
             importPath: p_importPath,
             loc: p_loc,
-        }) as Ast.AstImport;
+        }) as Ast.Import;
     }
 
-    function makeDummyAstImport(p_importPath: Ast.ImportPath): Ast.AstImport {
+    function makeDummyImport(p_importPath: Ast.ImportPath): Ast.Import {
         return astF.createNode({
             kind: "import",
             importPath: p_importPath,
             loc: emptySrcInfo,
-        }) as Ast.AstImport;
+        }) as Ast.Import;
     }
 
     return {
-        makeAstPrimitiveTypeDecl,
-        makeDummyAstPrimitiveTypeDecl,
-        makeAstFunctionDef,
-        makeDummyAstFunctionDef,
-        makeAstAsmFunctionDef,
-        makeDummyAstAsmFunctionDef,
-        makeAstNativeFunctionDecl,
-        makeDummyAstNativeFunctionDecl,
-        makeAstConstantDef,
-        makeDummyAstConstantDef,
-        makeAstStructDecl,
-        makeDummyAstStructDecl,
-        makeAstMessageDecl,
-        makeDummyAstMessageDecl,
-        makeAstContract,
-        makeDummyAstContract,
-        makeAstTrait,
-        makeDummyAstTrait,
-        makeAstFieldDecl,
-        makeDummyAstFieldDecl,
-        makeAstContractInit,
-        makeDummyAstContractInit,
-        makeAstReceiver,
-        makeDummyAstReceiver,
-        makeAstFunctionDecl,
-        makeDummyAstFunctionDecl,
-        makeAstConstantDecl,
-        makeDummyAstConstantDecl,
-        makeAstStatementLet,
-        makeDummyAstStatementLet,
-        makeAstStatementReturn,
-        makeDummyAstStatementReturn,
-        makeAstStatementExpression,
-        makeDummyAstStatementExpression,
-        makeAstStatementAssign,
-        makeDummyAstStatementAssign,
-        makeAstStatementAugmentedAssign,
-        makeDummyAstStatementAugmentedAssign,
-        makeAstStatementCondition,
-        makeDummyAstStatementCondition,
-        makeAstStatementWhile,
-        makeDummyAstStatementWhile,
-        makeAstStatementUntil,
-        makeDummyAstStatementUntil,
-        makeAstStatementRepeat,
-        makeDummyAstStatementRepeat,
-        makeAstStatementTry,
-        makeDummyAstStatementTry,
-        makeAstStatementForEach,
-        makeDummyAstStatementForEach,
-        makeAstStatementDestruct,
-        makeDummyAstStatementDestruct,
-        makeAstStatementBlock,
-        makeDummyAstStatementBlock,
-        makeAstTypeId,
-        makeDummyAstTypeId,
-        makeAstOptionalType,
-        makeDummyAstOptionalType,
-        makeAstMapType,
-        makeDummyAstMapType,
-        makeAstBouncedMessageType,
-        makeDummyAstBouncedMessageType,
-        makeAstOpBinary,
-        makeDummyAstOpBinary,
-        makeAstOpUnary,
-        makeDummyAstOpUnary,
-        makeAstConditional,
-        makeDummyAstConditional,
-        makeAstMethodCall,
-        makeDummyAstMethodCall,
-        makeAstFieldAccess,
-        makeDummyAstFieldAccess,
-        makeAstStaticCall,
-        makeDummyAstStaticCall,
-        makeAstStructInstance,
-        makeDummyAstStructInstance,
-        makeAstId,
-        makeDummyAstId,
-        makeAstInitOf,
-        makeDummyAstInitOf,
-        makeAstCodeOf,
-        makeDummyAstCodeOf,
-        makeAstString,
-        makeDummyAstString,
-        makeAstNumber,
-        makeDummyAstNumber,
-        makeAstBoolean,
-        makeDummyAstBoolean,
-        makeAstNull,
-        makeDummyAstNull,
-        makeAstSimplifiedString,
-        makeDummyAstSimplifiedString,
-        makeAstAddress,
-        makeDummyAstAddress,
-        makeAstCell,
-        makeDummyAstCell,
-        makeAstSlice,
-        makeDummyAstSlice,
-        makeAstStructValue,
-        makeDummyAstStructValue,
-        makeAstFunctionAttributeGet,
-        makeDummyAstFunctionAttributeGet,
-        makeAstFunctionAttributeRest,
-        makeDummyAstFunctionAttributeRest,
-        makeAstReceiverSimple,
-        makeAstReceiverFallback,
-        makeAstReceiverComment,
-        makeAstReceiverInternal,
-        makeDummyAstReceiverInternal,
-        makeAstReceiverExternal,
-        makeDummyAstReceiverExternal,
-        makeAstReceiverBounce,
-        makeDummyAstReceiverBounce,
-        makeAstFuncId,
-        makeDummyAstFuncId,
-        makeAstDestructMapping,
-        makeDummyAstDestructMapping,
-        makeAstDestructEnd,
-        makeDummyAstDestructEnd,
-        makeAstTypedParameter,
-        makeDummyAstTypedParameter,
-        makeAstModule,
-        makeAstStructFieldInitializer,
-        makeDummyAstStructFieldInitializer,
-        makeAstStructFieldValue,
-        makeDummyAstStructFieldValue,
-        makeAstImport,
-        makeDummyAstImport,
+        makePrimitiveTypeDecl,
+        makeDummyPrimitiveTypeDecl,
+        makeFunctionDef,
+        makeDummyFunctionDef,
+        makeAsmFunctionDef,
+        makeDummyAsmFunctionDef,
+        makeNativeFunctionDecl,
+        makeDummyNativeFunctionDecl,
+        makeConstantDef,
+        makeDummyConstantDef,
+        makeStructDecl,
+        makeDummyStructDecl,
+        makeMessageDecl,
+        makeDummyMessageDecl,
+        makeContract,
+        makeDummyContract,
+        makeTrait,
+        makeDummyTrait,
+        makeFieldDecl,
+        makeDummyFieldDecl,
+        makeContractInit,
+        makeDummyContractInit,
+        makeReceiver,
+        makeDummyReceiver,
+        makeFunctionDecl,
+        makeDummyFunctionDecl,
+        makeConstantDecl,
+        makeDummyConstantDecl,
+        makeStatementLet,
+        makeDummyStatementLet,
+        makeStatementReturn,
+        makeDummyStatementReturn,
+        makeStatementExpression,
+        makeDummyStatementExpression,
+        makeStatementAssign,
+        makeDummyStatementAssign,
+        makeStatementAugmentedAssign,
+        makeDummyStatementAugmentedAssign,
+        makeStatementCondition,
+        makeDummyStatementCondition,
+        makeStatementWhile,
+        makeDummyStatementWhile,
+        makeStatementUntil,
+        makeDummyStatementUntil,
+        makeStatementRepeat,
+        makeDummyStatementRepeat,
+        makeStatementTry,
+        makeDummyStatementTry,
+        makeStatementForEach,
+        makeDummyStatementForEach,
+        makeStatementDestruct,
+        makeDummyStatementDestruct,
+        makeStatementBlock,
+        makeDummyStatementBlock,
+        makeTypeId,
+        makeDummyTypeId,
+        makeOptionalType,
+        makeDummyOptionalType,
+        makeMapType,
+        makeDummyMapType,
+        makeBouncedMessageType,
+        makeDummyBouncedMessageType,
+        makeOpBinary,
+        makeDummyOpBinary,
+        makeOpUnary,
+        makeDummyOpUnary,
+        makeConditional,
+        makeDummyConditional,
+        makeMethodCall,
+        makeDummyMethodCall,
+        makeFieldAccess,
+        makeDummyFieldAccess,
+        makeStaticCall,
+        makeDummyStaticCall,
+        makeStructInstance,
+        makeDummyStructInstance,
+        makeId,
+        makeDummyId,
+        makeInitOf,
+        makeDummyInitOf,
+        makeCodeOf,
+        makeDummyCodeOf,
+        makeString,
+        makeDummyString,
+        makeNumber,
+        makeDummyNumber,
+        makeBoolean,
+        makeDummyBoolean,
+        makeNull,
+        makeDummyNull,
+        makeSimplifiedString,
+        makeDummySimplifiedString,
+        makeAddress,
+        makeDummyAddress,
+        makeCell,
+        makeDummyCell,
+        makeSlice,
+        makeDummySlice,
+        makeStructValue,
+        makeDummyStructValue,
+        makeFunctionAttributeGet,
+        makeDummyFunctionAttributeGet,
+        makeFunctionAttributeRest,
+        makeDummyFunctionAttributeRest,
+        makeReceiverSimple,
+        makeReceiverFallback,
+        makeReceiverComment,
+        makeReceiverInternal,
+        makeDummyReceiverInternal,
+        makeReceiverExternal,
+        makeDummyReceiverExternal,
+        makeReceiverBounce,
+        makeDummyReceiverBounce,
+        makeFuncId,
+        makeDummyFuncId,
+        makeDestructMapping,
+        makeDummyDestructMapping,
+        makeDestructEnd,
+        makeDummyDestructEnd,
+        makeTypedParameter,
+        makeDummyTypedParameter,
+        makeModule,
+        makeStructFieldInitializer,
+        makeDummyStructFieldInitializer,
+        makeStructFieldValue,
+        makeDummyStructFieldValue,
+        makeImport,
+        makeDummyImport,
     };
 };
 

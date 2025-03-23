@@ -21,33 +21,33 @@ import type { MakeAstFactory } from "../../ast/generated/make-factory";
 //    }
 // }
 
-function makeModule(mF: MakeAstFactory): A.AstModule {
+function makeModule(mF: MakeAstFactory): A.Module {
     // The contract field
-    const field = mF.makeDummyAstFieldDecl(
-        mF.makeDummyAstId("f"),
-        mF.makeDummyAstTypeId("StateInit"),
+    const field = mF.makeDummyFieldDecl(
+        mF.makeDummyId("f"),
+        mF.makeDummyTypeId("StateInit"),
         undefined,
         undefined,
     );
     // The contract init function
-    const initOfExpr = mF.makeDummyAstInitOf(mF.makeDummyAstId("Test"), []);
-    const path = mF.makeDummyAstFieldAccess(
-        mF.makeDummyAstId("self"),
-        mF.makeDummyAstId("f"),
+    const initOfExpr = mF.makeDummyInitOf(mF.makeDummyId("Test"), []);
+    const path = mF.makeDummyFieldAccess(
+        mF.makeDummyId("self"),
+        mF.makeDummyId("f"),
     );
-    const assignStmt = mF.makeDummyAstStatementAssign(path, initOfExpr);
-    const init = mF.makeDummyAstContractInit([], [assignStmt]);
+    const assignStmt = mF.makeDummyStatementAssign(path, initOfExpr);
+    const init = mF.makeDummyContractInit([], [assignStmt]);
 
     // The contract
-    const contract = mF.makeDummyAstContract(
-        mF.makeDummyAstId("Test"),
+    const contract = mF.makeDummyContract(
+        mF.makeDummyId("Test"),
         [],
         [],
         undefined,
         [field, init],
     );
 
-    return mF.makeAstModule([], [contract]);
+    return mF.makeModule([], [contract]);
 }
 
 describe("pre-compilation of ASTs", () => {

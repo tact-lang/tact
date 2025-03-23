@@ -3,7 +3,7 @@
 import type { FactoryAst } from "../ast-helpers";
 import type * as Ast from "../ast";
 import type { SrcInfo } from "../../grammar";
-import type { Address, Cell, Slice } from "@ton/core";
+import type * as TonCore from "@ton/core";
 import { getSrcInfo } from "../../grammar/src-info";
 
 export const getMakeAst = (astF: FactoryAst) => {

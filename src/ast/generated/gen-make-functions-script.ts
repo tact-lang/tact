@@ -256,10 +256,8 @@ function qualifyType(
                     return typRef;
                 }
             }
-            // Currently unsupported
-            throw new Error(
-                `Unsupported type ${typ.typeName.type} of TSTypeReference`,
-            );
+            // Leave the type as is
+            return typ;
         }
         case "TSUnionType": {
             return t.tsUnionType(

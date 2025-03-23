@@ -1,4 +1,4 @@
-import type * as A from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import { throwInternalCompilerError } from "../error/errors";
 import type { CompilerContext } from "./context";
 import { createContextStore } from "./context";
@@ -16,12 +16,12 @@ export type AstStore = {
     sources: Source[];
     funcSources: { code: string; path: string }[];
     functions: (
-        | A.AstFunctionDef
-        | A.AstNativeFunctionDecl
-        | A.AstAsmFunctionDef
+        | Ast.FunctionDef
+        | Ast.NativeFunctionDecl
+        | Ast.AsmFunctionDef
     )[];
-    constants: A.AstConstantDef[];
-    types: A.AstTypeDecl[];
+    constants: Ast.ConstantDef[];
+    types: Ast.TypeDecl[];
 };
 
 const store = createContextStore<AstStore>();
@@ -45,7 +45,7 @@ export function getRawAST(ctx: CompilerContext): AstStore {
  * Parses multiple Tact source files into AST modules.
  * @public
  */
-export function parseModules(sources: Source[], parser: Parser): A.AstModule[] {
+export function parseModules(sources: Source[], parser: Parser): Ast.Module[] {
     return sources.map((source) => parser.parse(source));
 }
 
@@ -60,15 +60,15 @@ export function openContext(
     ctx: CompilerContext,
     sources: Source[],
     funcSources: { code: string; path: string }[],
-    modules: A.AstModule[],
+    modules: Ast.Module[],
 ): CompilerContext {
-    const types: A.AstTypeDecl[] = [];
+    const types: Ast.TypeDecl[] = [];
     const functions: (
-        | A.AstNativeFunctionDecl
-        | A.AstFunctionDef
-        | A.AstAsmFunctionDef
+        | Ast.NativeFunctionDecl
+        | Ast.FunctionDef
+        | Ast.AsmFunctionDef
     )[] = [];
-    const constants: A.AstConstantDef[] = [];
+    const constants: Ast.ConstantDef[] = [];
     for (const module of modules) {
         for (const item of module.items) {
             switch (item.kind) {
