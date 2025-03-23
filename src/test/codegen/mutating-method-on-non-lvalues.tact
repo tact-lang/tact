@@ -14,4 +14,3 @@ contract MutatingMethodOnNonLvalues {
         Foo { x: 44 }.x.inc();
     }
 }
-

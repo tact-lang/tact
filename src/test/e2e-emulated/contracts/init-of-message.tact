@@ -14,4 +14,3 @@ contract Test {
         // deploy
     }
 }
-

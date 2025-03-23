@@ -5,4 +5,3 @@ contract Test {
     bounced(msg: Msg1) {}
     bounced(msg: Msg2) {}
 }
-

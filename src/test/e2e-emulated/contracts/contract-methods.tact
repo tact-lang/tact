@@ -21,4 +21,3 @@ contract Test {
         return true;
     }
 }
-

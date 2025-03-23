@@ -5,4 +5,3 @@ contract Test {
     external(msg: Msg1) {}
     external(msg: Msg2) {}
 }
-

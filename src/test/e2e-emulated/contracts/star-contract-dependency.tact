@@ -76,4 +76,3 @@ contract Child9 {
     childNum: Int as uint32 = 0;
     receive() {}
 }
-

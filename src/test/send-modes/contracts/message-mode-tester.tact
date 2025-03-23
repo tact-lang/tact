@@ -88,4 +88,3 @@ contract MessageModeTester {
         self.val = -3;
     }
 }
-

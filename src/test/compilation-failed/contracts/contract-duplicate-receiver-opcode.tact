@@ -5,4 +5,3 @@ contract Test {
     receive(msg: Msg1) {}
     receive(msg: Msg2) {}
 }
-
