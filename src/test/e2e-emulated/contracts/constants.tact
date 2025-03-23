@@ -1,18 +1,18 @@
 const someGlobalConst: Int = 100;
 
 const globalConst1: Int = 1;
-const globalConst2: Int = globalConst1 + 1;  // 2
-const globalConst3: Int = globalFun1(globalConst1) + 1;  // 4
-const globalConst4: Int = globalFun2(globalConst1) + globalConst3;  // 15
-const globalConst5: Int = globalFun3(globalConst4);  // 15
-const globalConst6: Int = globalFun4(globalConst5 + 10);  // 26
-const globalConst7: Int = globalFun5(globalConst6 + 1, globalConst5 + 10);  // 27
-const globalConst8: Int = GCD_recursive(globalConst6, globalConst7 + 1);  // GCD(26, 28) = 2
-const globalConst9: Int = GCD_iterative(globalConst6, globalConst7 + 1);  // 2
-const globalConst10: Int = factorial_recursive(globalConst3);  // 4! = 24
-const globalConst11: Int = factorial_iterative(globalConst3);  // 4! = 24
-const globalConst12: Int = fibonacci_recursive(globalConst3 + 2);  // fibonacci(6) = 8
-const globalConst13: Int = fibonacci_iterative(globalConst3 + 2);  // fibonacci(6) = 8
+const globalConst2: Int = globalConst1 + 1; // 2
+const globalConst3: Int = globalFun1(globalConst1) + 1; // 4
+const globalConst4: Int = globalFun2(globalConst1) + globalConst3; // 15
+const globalConst5: Int = globalFun3(globalConst4); // 15
+const globalConst6: Int = globalFun4(globalConst5 + 10); // 26
+const globalConst7: Int = globalFun5(globalConst6 + 1, globalConst5 + 10); // 27
+const globalConst8: Int = GCD_recursive(globalConst6, globalConst7 + 1); // GCD(26, 28) = 2
+const globalConst9: Int = GCD_iterative(globalConst6, globalConst7 + 1); // 2
+const globalConst10: Int = factorial_recursive(globalConst3); // 4! = 24
+const globalConst11: Int = factorial_iterative(globalConst3); // 4! = 24
+const globalConst12: Int = fibonacci_recursive(globalConst3 + 2); // fibonacci(6) = 8
+const globalConst13: Int = fibonacci_iterative(globalConst3 + 2); // fibonacci(6) = 8
 
 const beforeDefinedC: Int = beforeDefinedA + beforeDefinedB;
 const beforeDefinedA: Int = beforeDefinedB;
@@ -65,7 +65,7 @@ fun globalFun1(v: Int): Int {
 // Test repeat
 fun globalFun2(v: Int): Int {
     let j = v;
-    repeat(10) {
+    repeat (10) {
         let i = 1;
         j += i;
     }
@@ -102,7 +102,7 @@ fun globalFun5(a: Int, b: Int): Int {
 // Recursive GCD for non-negative integers
 fun GCD_recursive(a: Int, b: Int): Int {
     if (a < 0 || b < 0) {
-        // there will be a throws error here once 
+        // there will be a throws error here once
         // try-catch is implemented in
         // the interpreter
         return 0;
@@ -118,7 +118,7 @@ fun GCD_recursive(a: Int, b: Int): Int {
 // Iterative GCD for non-negative integers
 fun GCD_iterative(a: Int, b: Int): Int {
     if (a < 0 || b < 0) {
-        // there will be a throws error here once 
+        // there will be a throws error here once
         // try-catch is implemented in
         // the interpreter
         return 0;
@@ -126,7 +126,7 @@ fun GCD_iterative(a: Int, b: Int): Int {
 
     let na = a;
     let nb = b;
-    
+
     while (nb != 0) {
         let temp = nb;
         nb = na % nb;
@@ -137,7 +137,7 @@ fun GCD_iterative(a: Int, b: Int): Int {
 
 fun factorial_recursive(a: Int): Int {
     if (a < 0) {
-        // there will be a throws error here once 
+        // there will be a throws error here once
         // try-catch is implemented in
         // the interpreter
         return 0;
@@ -152,7 +152,7 @@ fun factorial_recursive(a: Int): Int {
 
 fun factorial_iterative(a: Int): Int {
     if (a < 0) {
-        // there will be a throws error here once 
+        // there will be a throws error here once
         // try-catch is implemented in
         // the interpreter
         return 0;
@@ -170,7 +170,7 @@ fun factorial_iterative(a: Int): Int {
 
 fun fibonacci_recursive(a: Int): Int {
     if (a < 0) {
-        // there will be a throws error here once 
+        // there will be a throws error here once
         // try-catch is implemented in
         // the interpreter
         return 0;
@@ -185,7 +185,7 @@ fun fibonacci_recursive(a: Int): Int {
 
 fun fibonacci_iterative(a: Int): Int {
     if (a < 0) {
-        // there will be a throws error here once 
+        // there will be a throws error here once
         // try-catch is implemented in
         // the interpreter
         return 0;
@@ -254,11 +254,11 @@ contract ConstantTester {
     const something33: map<Int, Int> = emptyMap();
     const something34: map<Int, Int> = null;
 
-    const something35: S = S {a: false || false, b: 21 + 21};
-    const something36: S = S {b: 21 + 21, a: false || false};
+    const something35: S = S { a: false || false, b: 21 + 21 };
+    const something36: S = S { b: 21 + 21, a: false || false };
     const something37: T = T {
         a: pow(3, 3) + 3 * 5,
-        s: S {a: true ? 1 == 1 : false, b: ton("0.000000042")}
+        s: S { a: true ? 1 == 1 : false, b: ton("0.000000042") },
     };
 
     const something38: Int = 5 & 6 | 1 << (5 + 11) * 3 % 12 >> 11; // = 4
@@ -272,7 +272,7 @@ contract ConstantTester {
 
     const something40: Bool = T {
         a: pow(3, 3) + 3 * 5,
-        s: S {a: true ? 1 == 1 : false, b: ton("0.000000042")}
+        s: S { a: true ? 1 == 1 : false, b: ton("0.000000042") },
     }.s.a;
 
     const something41: Address = newAddress(0, 0);
@@ -282,9 +282,9 @@ contract ConstantTester {
 
     const something45: Int = elseif(2);
 
-    init() { }
+    init() {}
 
-    receive() { }
+    receive() {}
 
     get fun something1(): Int { return self.something1; }
     get fun something2(): Int? { return self.something2; }
