@@ -453,11 +453,11 @@ contract SemanticsTester {
         let s = self.sA;
 
         // The fields of s and self.sA are equal, and the values did not change
-        return s.a1 == self.sA.a1 && 
+        return s.a1 == self.sA.a1 &&
                s.a2.b1 == self.sA.a2.b1 &&
                s.a2.b2.c1 == self.sA.a2.b2.c1 &&
                s.a2.b3 == self.sA.a2.b3 &&
-               s.a1 == 20 && 
+               s.a1 == 20 &&
                s.a2.b1 == true &&
                s.a2.b2.c1 == 5 &&
                s.a2.b3 == 10 &&
@@ -484,7 +484,7 @@ contract SemanticsTester {
         // the copy t inherits the value b2.c1 = 70 modified by s,
         // the copy s does not change its b3 field.
         return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 50 && 
+               s.a1 == 50 &&
                s.a2.b1 == true &&
                s.a2.b2.c1 == 70 &&
                s.a2.b3 == 10 &&
@@ -499,7 +499,7 @@ contract SemanticsTester {
         let s = getNewStruct(self.sA);
 
         return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 0 && 
+               s.a1 == 0 &&
                s.a2.b1 == false &&
                s.a2.b2.c1 == 0 &&
                s.a2.b3 == 0;
@@ -511,7 +511,7 @@ contract SemanticsTester {
         let s = copyAndModifyStruct(self.sA);
 
         return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 120 && 
+               s.a1 == 120 &&
                s.a2.b1 == true &&
                s.a2.b2.c1 == 6 &&
                s.a2.b3 == 10;
@@ -525,7 +525,7 @@ contract SemanticsTester {
         s.reassignStruct();
 
         return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 0 && 
+               s.a1 == 0 &&
                s.a2.b1 == false &&
                s.a2.b2.c1 == 0 &&
                s.a2.b3 == 0;
@@ -539,7 +539,7 @@ contract SemanticsTester {
         s.changeSomeFields();
 
         return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 120 && 
+               s.a1 == 120 &&
                s.a2.b1 == true &&
                s.a2.b2.c1 == 6 &&
                s.a2.b3 == 10;
@@ -654,19 +654,19 @@ contract SemanticsTester {
         z.incrementIntFields();
 
         return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 20 &&    
-               s.a2.b1 == true &&   
-               s.a2.b2.c1 == 5 &&   
-               s.a2.b3 == 10 &&     
+               s.a1 == 20 &&
+               s.a2.b1 == true &&
+               s.a2.b2.c1 == 5 &&
+               s.a2.b3 == 10 &&
 
-               t.a1 == 21 &&    
-               t.a2.b1 == false &&   
-               t.a2.b2.c1 == 6 &&    
+               t.a1 == 21 &&
+               t.a2.b1 == false &&
+               t.a2.b2.c1 == 6 &&
                t.a2.b3 == 11 &&
 
-               z.a1 == 21 &&    
-               z.a2.b1 == false &&   
-               z.a2.b2.c1 == 6 &&    
+               z.a1 == 21 &&
+               z.a2.b1 == false &&
+               z.a2.b2.c1 == 6 &&
                z.a2.b3 == 11;
     }
 
@@ -683,19 +683,19 @@ contract SemanticsTester {
         z.flipBooleanFields();
 
         return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 21 &&    
-               s.a2.b1 == true &&   
-               s.a2.b2.c1 == 6 &&   
-               s.a2.b3 == 11 &&     
+               s.a1 == 21 &&
+               s.a2.b1 == true &&
+               s.a2.b2.c1 == 6 &&
+               s.a2.b3 == 11 &&
 
-               t.a1 == 21 &&    
-               t.a2.b1 == false &&   
-               t.a2.b2.c1 == 6 &&    
+               t.a1 == 21 &&
+               t.a2.b1 == false &&
+               t.a2.b2.c1 == 6 &&
                t.a2.b3 == 11 &&
 
-               z.a1 == 21 &&    
-               z.a2.b1 == false &&   
-               z.a2.b2.c1 == 6 &&    
+               z.a1 == 21 &&
+               z.a2.b1 == false &&
+               z.a2.b2.c1 == 6 &&
                z.a2.b3 == 11;
     }
 
@@ -712,21 +712,21 @@ contract SemanticsTester {
         z.reflectStruct();
 
         return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 21 &&    
-               s.a2.b1 == true &&   
-               s.a2.b2.c1 == 6 &&   
-               s.a2.b3 == 11 &&     
+               s.a1 == 21 &&
+               s.a2.b1 == true &&
+               s.a2.b2.c1 == 6 &&
+               s.a2.b3 == 11 &&
 
-               t.a1 == 21 &&    
-               t.a2.b1 == false &&   
-               t.a2.b2.c1 == 6 &&    
+               t.a1 == 21 &&
+               t.a2.b1 == false &&
+               t.a2.b2.c1 == 6 &&
                t.a2.b3 == 11 &&
 
-               z.a1 == 21 &&    
-               z.a2.b1 == false &&   
-               z.a2.b2.c1 == 6 &&    
+               z.a1 == 21 &&
+               z.a2.b1 == false &&
+               z.a2.b2.c1 == 6 &&
                z.a2.b3 == 11;
-    }    
+    }
 
     get fun mutatesChainStruct5(): Bool {
         let s = self.sA;
@@ -741,19 +741,19 @@ contract SemanticsTester {
         z.reflectStruct();
 
         return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 20 &&    
-               s.a2.b1 == false &&   
-               s.a2.b2.c1 == 5 &&   
-               s.a2.b3 == 10 &&     
+               s.a1 == 20 &&
+               s.a2.b1 == false &&
+               s.a2.b2.c1 == 5 &&
+               s.a2.b3 == 10 &&
 
-               t.a1 == 21 &&    
-               t.a2.b1 == false &&   
-               t.a2.b2.c1 == 6 &&    
+               t.a1 == 21 &&
+               t.a2.b1 == false &&
+               t.a2.b2.c1 == 6 &&
                t.a2.b3 == 11 &&
 
-               z.a1 == 21 &&    
-               z.a2.b1 == false &&   
-               z.a2.b2.c1 == 6 &&    
+               z.a1 == 21 &&
+               z.a2.b1 == false &&
+               z.a2.b2.c1 == 6 &&
                z.a2.b3 == 11;
     }
 
@@ -770,22 +770,21 @@ contract SemanticsTester {
         z.incrementIntFields();
 
         return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 20 &&    
-               s.a2.b1 == false &&   
-               s.a2.b2.c1 == 5 &&   
-               s.a2.b3 == 10 &&     
+               s.a1 == 20 &&
+               s.a2.b1 == false &&
+               s.a2.b2.c1 == 5 &&
+               s.a2.b3 == 10 &&
 
-               t.a1 == 21 &&    
-               t.a2.b1 == false &&   
-               t.a2.b2.c1 == 6 &&    
+               t.a1 == 21 &&
+               t.a2.b1 == false &&
+               t.a2.b2.c1 == 6 &&
                t.a2.b3 == 11 &&
 
-               z.a1 == 21 &&    
-               z.a2.b1 == false &&   
-               z.a2.b2.c1 == 6 &&    
+               z.a1 == 21 &&
+               z.a2.b1 == false &&
+               z.a2.b2.c1 == 6 &&
                z.a2.b3 == 11;
     }
-
 
     /*************** Maps ********************/
 
@@ -961,7 +960,7 @@ contract SemanticsTester {
     }
 
     get fun testReturnedMaps1(): Bool {
-        // The "get" function for maps always creates a copy of the input map 
+        // The "get" function for maps always creates a copy of the input map
         // because "get" is a non-mutating function. This means that
         // the following expression will not change the struct in entry 2 of self.mA,
         // even if "changeSomeFields" is a mutating function for structs.
@@ -973,7 +972,7 @@ contract SemanticsTester {
         // Everything remains the same
 
         return self.checkAllContractFieldsAreUnchanged();
-    } 
+    }
 
     /* 
     The following test cannot be carried out because FunC reports errors. See issue #866.
@@ -1489,15 +1488,15 @@ contract SemanticsTester {
         // Now, check that the changes in c are now in self.
         // Note that checkFieldsEqualTo is called on self now.
 
-        result &&= self.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
+        result &&= self.checkFieldsEqualTo(SB { b1: true, b2: SC { c1: 77 }, b3: 88 }, 35);
 
         return result;
     }
 
     get fun testReturnedContracts(): Bool {
         // The call to the non-mutating extends function "copyContract" always makes a copy
-        // of the parameter contract. Therefore, passing the result to the mutating function 
-        // "changeSomeContractFields" will modify the copy, not the original contract. 
+        // of the parameter contract. Therefore, passing the result to the mutating function
+        // "changeSomeContractFields" will modify the copy, not the original contract.
 
         self.copyContract().changeSomeContractFields();
 
