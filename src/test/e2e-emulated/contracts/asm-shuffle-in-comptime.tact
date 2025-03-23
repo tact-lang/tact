@@ -28,6 +28,6 @@ contract Test {
         let c = beginCell()
             .storeTwo(s.loadBool(), s.loadInt(257))
             .endCell();
-        return c.depth() // just to keep the code above
+        return c.depth(); // just to keep the code above
     }
 }
