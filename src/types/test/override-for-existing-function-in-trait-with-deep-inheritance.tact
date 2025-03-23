@@ -1,6 +1,8 @@
 trait BaseTrait {}
 
-trait T1 { fun foo() {} }
+trait T1 {
+    fun foo() {}
+}
 
 trait T2 with T1 {}
 

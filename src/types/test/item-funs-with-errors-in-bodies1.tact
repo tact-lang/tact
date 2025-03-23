@@ -1,9 +1,7 @@
 primitive Int;
 primitive Bool;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 fun testFunc(): Int {
     return 0;

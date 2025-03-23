@@ -1,21 +1,15 @@
 primitive Int;
 primitive Slice;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 message A {
-  a: Int as uint32;
+    a: Int as uint32;
 }
 
 contract Test {
-  init() {}
-  receive(src: A) {
-    
-  }
-  
-  bounced(src: Slice) {
-    
-  }
+    init() {}
+    receive(src: A) {}
+
+    bounced(src: Slice) {}
 }

@@ -1,9 +1,7 @@
 primitive Int;
 primitive Cell;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 struct StateInit {
     code: Cell;
@@ -18,9 +16,7 @@ contract A {
 }
 
 contract B {
-    init() {
-
-    }
+    init() {}
 
     get fun newInit(): StateInit {
         return initOf A("hello");

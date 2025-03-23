@@ -11,7 +11,7 @@ contract TestContract {
     s: S;
 
     init() {
-        self.s = S {a: 0, b: 0};
+        self.s = S { a: 0, b: 0 };
     }
 
     get fun test(): Int {

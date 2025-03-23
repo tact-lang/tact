@@ -1,8 +1,6 @@
 primitive Int;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 message A {
     a: Int as uint32;

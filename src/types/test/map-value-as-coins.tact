@@ -1,8 +1,6 @@
 primitive Int;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 contract Main {
     m: map<Int, Int as coins>;
