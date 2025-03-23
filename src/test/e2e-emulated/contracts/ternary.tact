@@ -1,9 +1,6 @@
 contract TernaryTester {
+    init() {}
 
-    init() {
-        
-    }
-    
     receive() {
         // Deploy
     }
@@ -27,7 +24,9 @@ contract TernaryTester {
     // ternary operator is right-associative (see the next test)
     // returns 1
     get fun test5(): Int {
-        return true ? 1 : false ? 2 : 3;
+        return true
+            ? 1
+            : false ? 2 : 3;
     }
 
     // the following parentheses are actually not needed
@@ -38,12 +37,16 @@ contract TernaryTester {
 
     // returns 2
     get fun test7(): Int {
-        return false ? 1 : true ? 2 : 3;
+        return false
+            ? 1
+            : true ? 2 : 3;
     }
 
     // returns 3
     get fun test8(): Int {
-        return false ? 1 : false ? 2 : 3;
+        return false
+            ? 1
+            : false ? 2 : 3;
     }
 
     // returns 3
@@ -53,10 +56,10 @@ contract TernaryTester {
 
     // the following is equivalent to an `if ... else if ... else if ... else ...` chain
     get fun test10(a: Int): Int {
-        return
-              (a == 1) ? 42
-            : (a == 2) ? 43
-            : (a == 3) ? 44
-            : 45;
+        return (a == 1)
+            ? 42
+            : (a == 2)
+                ? 43
+                : (a == 3) ? 44 : 45;
     }
 }
