@@ -1357,13 +1357,9 @@ contract EmptyBouncedTester {
 contract BinaryBouncedTester {
     receiver: String = "unknown";
 
-    bounced(msg: bounced<Message>) {
-        self.receiver = "bounced_binary"
-    }
+    bounced(msg: bounced<Message>) { self.receiver = "bounced_binary" }
 
-    bounced(msg: Empty) {
-        self.receiver = "bounced_binary_empty_message"
-    }
+    bounced(msg: Empty) { self.receiver = "bounced_binary_empty_message" }
 
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
@@ -1388,9 +1384,7 @@ contract BinaryBouncedTester {
 contract SliceBouncedTester {
     receiver: String = "unknown";
 
-    bounced(msg: Slice) {
-        self.receiver = "bounced_fallback"
-    }
+    bounced(msg: Slice) { self.receiver = "bounced_fallback" }
 
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
@@ -1415,17 +1409,11 @@ contract SliceBouncedTester {
 contract AllBouncedTester {
     receiver: String = "unknown";
 
-    bounced(msg: bounced<Message>) {
-        self.receiver = "bounced_binary"
-    }
+    bounced(msg: bounced<Message>) { self.receiver = "bounced_binary" }
 
-    bounced(msg: Slice) {
-        self.receiver = "bounced_fallback"
-    }
+    bounced(msg: Slice) { self.receiver = "bounced_fallback" }
 
-    bounced(msg: Empty) {
-        self.receiver = "bounced_binary_empty_message"
-    }
+    bounced(msg: Empty) { self.receiver = "bounced_binary_empty_message" }
 
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
@@ -1445,4 +1433,3 @@ contract AllBouncedTester {
         return self.receiver;
     }
 }
-

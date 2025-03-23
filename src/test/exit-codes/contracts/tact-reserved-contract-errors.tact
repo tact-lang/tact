@@ -112,7 +112,7 @@ contract ReservedContractErrorsTester with Ownable {
             let addrSlice = beginCell()
                 .storeUint(0b10_1, 3) // WRONG prefix!
                 .storeInt(chainID, 8) // chain ID -1
-                .storeUint(0, 256)    // account ID 0
+                .storeUint(0, 256) // account ID 0
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -127,7 +127,7 @@ contract ReservedContractErrorsTester with Ownable {
             let addrSlice = beginCell()
                 .storeUint(0b10_1, 3) // WRONG prefix!
                 .storeInt(chainID, 8) // chain ID 0
-                .storeUint(0, 256)    // account ID 0
+                .storeUint(0, 256) // account ID 0
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -142,7 +142,7 @@ contract ReservedContractErrorsTester with Ownable {
             let addrSlice = beginCell()
                 .storeUint(0b10_1, 3) // WRONG prefix!
                 .storeInt(chainID, 8) // chain ID 1
-                .storeUint(0, 256)    // account ID 0
+                .storeUint(0, 256) // account ID 0
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -157,7 +157,7 @@ contract ReservedContractErrorsTester with Ownable {
             let addrSlice = beginCell()
                 .storeUint(0b10_0, 3) // correct prefix
                 .storeInt(chainID, 8) // chain ID 0
-                .storeUint(0, 42)     // WRONG size of the account ID!
+                .storeUint(0, 42) // WRONG size of the account ID!
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -172,7 +172,7 @@ contract ReservedContractErrorsTester with Ownable {
             let addrSlice = beginCell()
                 .storeUint(0b10_0, 3) // correct prefix
                 .storeInt(chainID, 8) // chain ID -1
-                .storeUint(0, 42)     // WRONG size of the account ID!
+                .storeUint(0, 42) // WRONG size of the account ID!
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
@@ -187,7 +187,7 @@ contract ReservedContractErrorsTester with Ownable {
             let addrSlice = beginCell()
                 .storeUint(0b10_0, 3) // correct prefix
                 .storeInt(chainID, 8) // chain ID 0
-                .storeUint(0, 42)     // WRONG size of the account ID!
+                .storeUint(0, 42) // WRONG size of the account ID!
                 .asSlice();
             dump(addrSlice.asAddress(chainID));
             failed = false;
