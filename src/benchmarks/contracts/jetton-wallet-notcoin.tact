@@ -12,7 +12,7 @@ const MIN_STORAGE_DURATION: Int = 5 * 365 * 24 * 3600; // 5 years
 const JETTON_WALLET_BITS: Int = 1033;
 const JETTON_WALLET_CELLS: Int = 3;
 
-const JETTON_WALLET_INIT_STATE_BITS: Int  = 931;
+const JETTON_WALLET_INIT_STATE_BITS: Int = 931;
 const JETTON_WALLET_INIT_STATE_CELLS: Int = 3;
 
 const BURN_NOTIFICATION_BITS: Int = 754;
@@ -57,17 +57,17 @@ contract JettonWalletNotcoin(
         let ctx = context();
         checkAmountIsEnoughToTransfer(ctx.value, msg.forwardTonAmount, ctx.readForwardFee());
 
-        deploy(DeployParameters{
+        deploy(DeployParameters {
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
-            body: JettonTransferInternal{
+            body: JettonTransferInternal {
                 queryId: msg.queryId,
                 amount: msg.amount,
                 sender: self.owner,
                 responseDestination: msg.responseDestination,
                 forwardTonAmount: msg.forwardTonAmount,
-                forwardPayload: msg.forwardPayload
+                forwardPayload: msg.forwardPayload,
             }.toCell(),
             init: initOf JettonWalletNotcoin(0, msg.destination, self.master),
         });
@@ -83,7 +83,7 @@ contract JettonWalletNotcoin(
         }
 
         if (msg.forwardTonAmount > 0) {
-            message(MessageParameters{
+            message(MessageParameters {
                 to: self.owner,
                 value: msg.forwardTonAmount,
                 mode: SendPayGasSeparately,
@@ -102,15 +102,15 @@ contract JettonWalletNotcoin(
             let leaveOnBalance: Int = myBalance() - context().value + myStorageDue();
             nativeReserve(
                 max(leaveOnBalance, getStorageFee(JETTON_WALLET_CELLS, JETTON_WALLET_BITS, MIN_STORAGE_DURATION, false)),
-                2
+                2,
             );
 
-            message(MessageParameters{
+            message(MessageParameters {
                 to: msg.responseDestination!!,
                 value: 0,
                 mode: SendRemainingBalance | SendIgnoreErrors,
                 bounce: false,
-                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
+                body: JettonExcesses { queryId: msg.queryId }.toCell(),
             });
         }
     }
@@ -123,12 +123,12 @@ contract JettonWalletNotcoin(
 
         checkAmountIsEnoughToBurn(context().value);
 
-        message(MessageParameters{
+        message(MessageParameters {
             to: self.master,
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
-            body: JettonBurnNotification{
+            body: JettonBurnNotification {
                 queryId: msg.queryId,
                 amount: msg.amount,
                 sender: self.owner,
@@ -148,11 +148,11 @@ contract JettonWalletNotcoin(
     }
 
     get fun get_wallet_data(): JettonWalletData {
-        return JettonWalletData{
+        return JettonWalletData {
             balance: self.balance,
             owner: self.owner,
             master: self.master,
-            code: myCode()
+            code: myCode(),
         };
     }
 }

@@ -28,17 +28,17 @@ contract JettonWallet(
             (2 * self.gasConsumption + self.minTonsForStorage)
         );
 
-        deploy(DeployParameters{
+        deploy(DeployParameters {
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
-            body: JettonTransferInternal{
+            body: JettonTransferInternal {
                 queryId: msg.queryId,
                 amount: msg.amount,
                 sender: self.owner,
                 responseDestination: msg.responseDestination,
                 forwardTonAmount: msg.forwardTonAmount,
-                forwardPayload: msg.forwardPayload
+                forwardPayload: msg.forwardPayload,
             }.toCell(),
             init: initOf JettonWallet(0, msg.destination, self.master),
         });
@@ -62,7 +62,7 @@ contract JettonWallet(
         if (msg.forwardTonAmount > 0) {
             let fwdFee: Int = ctx.readForwardFee();
             msgValue -= msg.forwardTonAmount + fwdFee;
-            message(MessageParameters{
+            message(MessageParameters {
                 to: self.owner,
                 value: msg.forwardTonAmount,
                 mode: SendPayGasSeparately,
@@ -78,12 +78,12 @@ contract JettonWallet(
 
         // 0xd53276db -- Cashback to the original Sender
         if (msg.responseDestination != null && msgValue > 0) {
-            message(MessageParameters{
+            message(MessageParameters {
                 to: msg.responseDestination!!,
                 value: msgValue,
                 mode: SendIgnoreErrors,
                 bounce: false,
-                body: JettonExcesses{ queryId: msg.queryId }.toCell(),
+                body: JettonExcesses { queryId: msg.queryId }.toCell(),
             });
         }
     }
@@ -98,12 +98,12 @@ contract JettonWallet(
         let fwdFee: Int = ctx.readForwardFee();
         throwUnless(707, ctx.value > (fwdFee + 2 * self.gasConsumption));
 
-        message(MessageParameters{
+        message(MessageParameters {
             to: self.master,
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
-            body: JettonBurnNotification{
+            body: JettonBurnNotification {
                 queryId: msg.queryId,
                 amount: msg.amount,
                 sender: self.owner,
@@ -123,11 +123,11 @@ contract JettonWallet(
     }
 
     get fun get_wallet_data(): JettonWalletData {
-        return JettonWalletData{
+        return JettonWalletData {
             balance: self.balance,
             owner: self.owner,
             master: self.master,
-            code: myCode()
+            code: myCode(),
         };
     }
 }
