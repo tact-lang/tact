@@ -1,8 +1,5 @@
 contract LargeContract {
-
-    init() {
-
-    }
+    init() {}
 
     testMap0: map<Int, Int>;
     testMap1: map<Int, Int>;
@@ -53,7 +50,7 @@ contract LargeContract {
     testMap46: map<Int, Int>;
     testMap47: map<Int, Int>;
     testMap48: map<Int, Int>;
-    testMap49: map<Int, Int>; 
+    testMap49: map<Int, Int>;
     testMap50: map<Int, Int>;
     testMap51: map<Int, Int>;
     testMap52: map<Int, Int>;
@@ -63,7 +60,7 @@ contract LargeContract {
     testMap56: map<Int, Int>;
     testMap57: map<Int, Int>;
     testMap58: map<Int, Int>;
-    testMap59: map<Int, Int>; 
+    testMap59: map<Int, Int>;
     testMap60: map<Int, Int>;
     testMap61: map<Int, Int>;
     testMap62: map<Int, Int>;
