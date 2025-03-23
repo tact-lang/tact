@@ -20,7 +20,7 @@ contract MultisigSigner {
     weight: Int = 0;
     requiredWeight: Int;
     completed: Bool;
-    
+
     // Request
     request: Request;
 
@@ -51,12 +51,12 @@ contract MultisigSigner {
 
         if (self.weight >= self.requiredWeight) {
             self.completed = true;
-            send(SendParameters{
-                value: 0, 
-                to: self.master, 
+            send(SendParameters {
+                value: 0,
+                to: self.master,
                 mode: SendRemainingBalance | SendIgnoreErrors,
-                bounce: false, 
-                body: Signed{ request: self.request }.toCell()
+                bounce: false,
+                body: Signed { request: self.request }.toCell(),
             });
         }
     }
@@ -91,13 +91,13 @@ contract Multisig {
         let opInit: StateInit = initOf MultisigSigner(myAddress(), self.members, self.requiredWeight, msg);
         let opAddress: Address = contractAddress(opInit);
 
-        send(SendParameters{
-            value: 0, 
-            to: opAddress, 
+        send(SendParameters {
+            value: 0,
+            to: opAddress,
             mode: SendRemainingValue | SendIgnoreErrors,
             bounce: true,
             code: opInit.code,
-            data: opInit.data
+            data: opInit.data,
         });
     }
 
@@ -112,12 +112,12 @@ contract Multisig {
         require(msg.request.timeout > now(), "Timeout");
 
         // Send operation
-        send(SendParameters{
-            to: msg.request.to, 
-            value: msg.request.value, 
-            mode: msg.request.mode, 
-            bounce: msg.request.bounce, 
-            body: msg.request.body
+        send(SendParameters {
+            to: msg.request.to,
+            value: msg.request.value,
+            mode: msg.request.mode,
+            bounce: msg.request.bounce,
+            body: msg.request.body,
         });
     }
 

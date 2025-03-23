@@ -29,10 +29,10 @@ contract Beacon with Ownable {
         nativeReserve(ton("0.1"), ReserveExact);
 
         // Send response
-        self.reply(CanPayoutResponse{
-            ok: self.completed, 
-            amount: msg.amount, 
-            address: self.owner
+        self.reply(CanPayoutResponse {
+            ok: self.completed,
+            amount: msg.amount,
+            address: self.owner,
         }.toCell());
     }
 
@@ -60,7 +60,7 @@ contract Payouts with OwnableTransferable {
         let data: Slice = msg.fromBase64();
         let amount: Int = data.loadCoins();
         let signature: Slice = data.loadBits(512);
-        
+
         // Verify signature
         let hash: Int = beginCell()
             .storeAddress(ctx.sender)
@@ -74,12 +74,12 @@ contract Payouts with OwnableTransferable {
         let init: StateInit = initOf Beacon(myAddress(), ctx.sender);
         let address: Address = contractAddress(init);
 
-        send(SendParameters{
-            to: address, 
-            value: 0, 
+        send(SendParameters {
+            to: address,
+            value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            bounce: true, 
-            body: CanPayout{ amount }.toCell()
+            bounce: true,
+            body: CanPayout { amount }.toCell(),
         });
     }
 
@@ -96,20 +96,20 @@ contract Payouts with OwnableTransferable {
             require(myBalance() - ctx.value - ton("1") - msg.amount > 0, "Invalid balance");
 
             // Send response
-            send(SendParameters{
-                to: msg.address, 
-                value: msg.amount, 
+            send(SendParameters {
+                to: msg.address,
+                value: msg.amount,
                 mode: SendRemainingValue | SendIgnoreErrors,
-                bounce: false, 
-                body: "Success".asComment()
+                bounce: false,
+                body: "Success".asComment(),
             });
         } else {
-            send(SendParameters{
-                to: msg.address, 
-                value: 0, 
+            send(SendParameters {
+                to: msg.address,
+                value: 0,
                 mode: SendRemainingValue | SendIgnoreErrors,
-                bounce: false, 
-                body: "Already paid".asComment()
+                bounce: false,
+                body: "Already paid".asComment(),
             });
         }
     }

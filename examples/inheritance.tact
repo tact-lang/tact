@@ -1,5 +1,4 @@
 trait VirtualTrait {
-
     const b: Int = 20;
 
     virtual const b2: Int = 40;
@@ -10,7 +9,6 @@ trait VirtualTrait {
 }
 
 trait AbstractTrait {
-
     const c: Int = 30;
 
     abstract const c2: Int;
@@ -23,13 +21,12 @@ trait AbstractTrait {
 }
 
 contract Contract with VirtualTrait, AbstractTrait {
-
     const a: Int = 10;
 
     override const c2: Int = 50;
 
     init() {}
-    
+
     override fun executeAbs(): Int {
         return 1000;
     }

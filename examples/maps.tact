@@ -131,7 +131,7 @@ contract MapTestContract {
     get fun addrMap1(): map<Address, Int> {
         return self.addrMap1;
     }
-    
+
     get fun addrMap1Value(key: Address): Int? {
         return self.addrMap1.get(key);
     }

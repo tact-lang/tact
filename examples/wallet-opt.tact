@@ -7,7 +7,7 @@ contract Wallet {
     seqno: Int as uint32 = 0;
     key: Int as uint256;
     walletId: Int as uint64;
-    
+
     init(key: Int, walletId: Int) {
         self.key = key;
         self.walletId = walletId;
