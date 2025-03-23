@@ -336,12 +336,12 @@ exports[`resolveStatements should fail statements for expr-eq-stringbuilder 1`] 
 `;
 
 exports[`resolveStatements should fail statements for expr-eq-struct 1`] = `
-"<unknown>:10:16: Expressions of "S" type cannot be used for (non)equality operator "=="
+"<unknown>:13:16: Expressions of "S" type cannot be used for (non)equality operator "=="
  See https://docs.tact-lang.org/book/operators#binary-equality
-   9 |         let s: S = S {x: 42, y: 0};
-> 10 |         return s == s;
+  12 |         let s: S = S { x: 42, y: 0 };
+> 13 |         return s == s;
                       ^~~~~~
-  11 |     }
+  14 |     }
 "
 `;
 
@@ -376,29 +376,29 @@ exports[`resolveStatements should fail statements for expr-eq-void2 1`] = `
 `;
 
 exports[`resolveStatements should fail statements for expr-field-does-not-exist 1`] = `
-"<unknown>:14:7: Type "Slice" does not have a field named "bits"
-  13 |     let s: Slice = "123".asSlice();
-> 14 |     s.bits;
+"<unknown>:12:7: Type "Slice" does not have a field named "bits"
+  11 |     let s: Slice = "123".asSlice();
+> 12 |     s.bits;
              ^~~~
-  15 | }
+  13 | }
 "
 `;
 
 exports[`resolveStatements should fail statements for expr-field-does-not-exist-but-method-does 1`] = `
-"<unknown>:17:5: Type "Slice" does not have a field named "bits", did you mean "bits()" instead?
-  16 |     let s: Slice = "123".asSlice();
-> 17 |     s.bits;
+"<unknown>:15:5: Type "Slice" does not have a field named "bits", did you mean "bits()" instead?
+  14 |     let s: Slice = "123".asSlice();
+> 15 |     s.bits;
            ^~~~~~
-  18 | }
+  16 | }
 "
 `;
 
 exports[`resolveStatements should fail statements for expr-internal-fun-call-bool-param.tact 1`] = `
-"<unknown>:20:27: Cannot pass an expression of type "Bool" to the parameter "b" of type "Int"
-  19 |     fun f2(a: Int): Int {
-> 20 |         return self.f1(a, true);
+"<unknown>:15:27: Cannot pass an expression of type "Bool" to the parameter "b" of type "Int"
+  14 |     fun f2(a: Int): Int {
+> 15 |         return self.f1(a, true);
                                  ^~~~
-  21 |     }
+  16 |     }
 "
 `;
 
@@ -448,20 +448,20 @@ exports[`resolveStatements should fail statements for expr-method-call-null-not-
 `;
 
 exports[`resolveStatements should fail statements for expr-method-does-not-exist-but-field-does 1`] = `
-"<unknown>:13:5: Type "S" does not have a function named "x()", did you mean field "x" instead?
-  12 |     let s: S = S{ x: 1 };
-> 13 |     s.x();
+"<unknown>:11:5: Type "S" does not have a function named "x()", did you mean field "x" instead?
+  10 |     let s: S = S { x: 1 };
+> 11 |     s.x();
            ^~~~~
-  14 | }
+  12 | }
 "
 `;
 
 exports[`resolveStatements should fail statements for expr-module-fun-call-bool-param 1`] = `
-"<unknown>:13:18: Cannot pass an expression of type "Bool" to the parameter "b" of type "Int"
-  12 | fun f2(a: Int): Int {
-> 13 |     return f1(a, true);
+"<unknown>:11:18: Cannot pass an expression of type "Bool" to the parameter "b" of type "Int"
+  10 | fun f2(a: Int): Int {
+> 11 |     return f1(a, true);
                         ^~~~
-  14 | }
+  12 | }
 "
 `;
 
@@ -538,29 +538,29 @@ exports[`resolveStatements should fail statements for expr-shift-right-bits-out-
 `;
 
 exports[`resolveStatements should fail statements for expr-struct-duplicate-field 1`] = `
-"<unknown>:17:9: Duplicate fields "a"
-  16 |         a: 1,
-> 17 |         a: 2,
+"<unknown>:15:9: Duplicate fields "a"
+  14 |         a: 1,
+> 15 |         a: 2,
                ^~~~
-  18 |         b: 3
+  16 |         b: 3,
 "
 `;
 
 exports[`resolveStatements should fail statements for expr-struct-impossible-field-punning 1`] = `
-"<unknown>:14:26: Unknown fields "b" in type "A"
-  13 | fun function() {
-> 14 |     let D: A = A { x: a, b };
+"<unknown>:13:26: Unknown fields "b" in type "A"
+  12 | fun function() {
+> 13 |     let D: A = A { x: a, b };
                                 ^
-  15 | }
+  14 | }
 "
 `;
 
 exports[`resolveStatements should fail statements for expr-struct-missing-field 1`] = `
-"<unknown>:16:25: Missing field "c" in type "SomeStruct"
-  15 | fun main() {
-> 16 |     let a: SomeStruct = SomeStruct{
-                               ^~~~~~~~~~~
-  17 |         a: 1,
+"<unknown>:14:25: Missing field "c" in type "SomeStruct"
+  13 | fun main() {
+> 14 |     let a: SomeStruct = SomeStruct {
+                               ^~~~~~~~~~~~
+  15 |         a: 1,
 "
 `;
 
@@ -574,29 +574,29 @@ exports[`resolveStatements should fail statements for expr-struct-wrong-field-ty
 `;
 
 exports[`resolveStatements should fail statements for expr-var-int-bool 1`] = `
-"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
-   8 | fun isZero(x: Int): Bool {
->  9 |     return x;
-           ^~~~~~~~~
-  10 | }
+"<unknown>:7:5: Type mismatch: "Int" is not assignable to "Bool"
+  6 | fun isZero(x: Int): Bool {
+> 7 |     return x;
+          ^~~~~~~~~
+  8 | }
 "
 `;
 
 exports[`resolveStatements should fail statements for expr-wrong-arity-internal-fun 1`] = `
-"<unknown>:20:16: Function "f1" expects 2 arguments, got 1
-  19 |     fun f2(a: Int): Int {
-> 20 |         return self.f1(a);
+"<unknown>:16:16: Function "f1" expects 2 arguments, got 1
+  15 |     fun f2(a: Int): Int {
+> 16 |         return self.f1(a);
                       ^~~~~~~~~~
-  21 |     }
+  17 |     }
 "
 `;
 
 exports[`resolveStatements should fail statements for expr-wrong-arity-module-fun 1`] = `
-"<unknown>:13:12: Function "f1" expects 2 arguments, got 1
-  12 | fun f2(a: Int): Int {
-> 13 |     return f1(a);
+"<unknown>:11:12: Function "f1" expects 2 arguments, got 1
+  10 | fun f2(a: Int): Int {
+> 11 |     return f1(a);
                   ^~~~~
-  14 | }
+  12 | }
 "
 `;
 
@@ -623,7 +623,7 @@ Pick a different getter name or explicit method ID to avoid collisions
 exports[`resolveStatements should fail statements for getter-collision-with-reserved_opt1 1`] = `
 "<unknown>:10:9: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
    9 | 
-> 10 |     get(115390) fun _lazy_deployment_completed(): String{
+> 10 |     get(115390) fun _lazy_deployment_completed(): String {
                ^~~~~~
   11 |         return "not ok";
 "
@@ -632,7 +632,7 @@ exports[`resolveStatements should fail statements for getter-collision-with-rese
 exports[`resolveStatements should fail statements for getter-collision-with-reserved_opt2 1`] = `
 "<unknown>:10:9: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
    9 | 
-> 10 |     get(121275) fun _get_abi_ipfs(): Int{
+> 10 |     get(121275) fun _get_abi_ipfs(): Int {
                ^~~~~~
   11 |         return 123;
 "
@@ -641,7 +641,7 @@ exports[`resolveStatements should fail statements for getter-collision-with-rese
 exports[`resolveStatements should fail statements for getter-collision-with-reserved_opt3 1`] = `
 "<unknown>:10:9: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
    9 | 
-> 10 |     get(113617) fun _supported_interfaces(): String{
+> 10 |     get(113617) fun _supported_interfaces(): String {
                ^~~~~~
   11 |         return "ok";
 "
@@ -650,8 +650,8 @@ exports[`resolveStatements should fail statements for getter-collision-with-rese
 exports[`resolveStatements should fail statements for getter-collision-with-reserved1 1`] = `
 "<unknown>:10:5: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
    9 | 
-> 10 |     get fun lazy_deployment_completed(): String{
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 10 |     get fun lazy_deployment_completed(): String {
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   11 |         return "not ok";
 "
 `;
@@ -659,8 +659,8 @@ exports[`resolveStatements should fail statements for getter-collision-with-rese
 exports[`resolveStatements should fail statements for getter-collision-with-reserved2 1`] = `
 "<unknown>:10:5: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
    9 | 
-> 10 |     get fun get_abi_ipfs(): Int{
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 10 |     get fun get_abi_ipfs(): Int {
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   11 |         return 123;
 "
 `;
@@ -668,8 +668,8 @@ exports[`resolveStatements should fail statements for getter-collision-with-rese
 exports[`resolveStatements should fail statements for getter-collision-with-reserved3 1`] = `
 "<unknown>:10:5: method ids cannot overlap with Tact reserved method ids: 113617, 115390, 121275
    9 | 
-> 10 |     get fun supported_interfaces(): String{
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 10 |     get fun supported_interfaces(): String {
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   11 |         return "ok";
 "
 `;
@@ -685,11 +685,11 @@ Pick a different getter name or explicit method ID to avoid collisions
 `;
 
 exports[`resolveStatements should fail statements for init-vars-analysis-if 1`] = `
-"<unknown>:10:5: Field "value" is not set
-   9 |     value: Int;
-> 10 |     init(arg: Bool) {
-           ^~~~~~~~~~~~~~~~~
-  11 |         if (arg) {
+"<unknown>:8:5: Field "value" is not set
+  7 |     value: Int;
+> 8 |     init(arg: Bool) {
+          ^~~~~~~~~~~~~~~~~
+  9 |         if (arg) {
 "
 `;
 
@@ -703,11 +703,11 @@ exports[`resolveStatements should fail statements for init-vars-analysis-implici
 `;
 
 exports[`resolveStatements should fail statements for init-vars-analysis-missing-storage-var 1`] = `
-"<unknown>:10:5: Field "value" is not set
-   9 |     value: Int;
-> 10 |     init() {
-           ^~~~~~~~
-  11 | 
+"<unknown>:8:5: Field "value" is not set
+  7 |     value: Int;
+> 8 |     init() {}
+          ^~~~~~~~~
+  9 | }
 "
 `;
 
@@ -730,65 +730,65 @@ exports[`resolveStatements should fail statements for init-vars-analysis-used-un
 `;
 
 exports[`resolveStatements should fail statements for init-vars-analysis-used-uninit-storage-override-fun-call 1`] = `
-"<unknown>:15:9: Cannot access self before init
-  14 |     init(arg: Bool) {
-> 15 |         self.execute();
+"<unknown>:13:9: Cannot access self before init
+  12 |     init(arg: Bool) {
+> 13 |         self.execute();
                ^~~~~~~~~~~~~~
-  16 |         self.value = 1;
+  14 |         self.value = 1;
 "
 `;
 
 exports[`resolveStatements should fail statements for init-vars-analysis-used-uninit-storage-struct1 1`] = `
-"<unknown>:17:27: Field "value2" is not initialized
-  16 |     init(arg: Bool) {
-> 17 |         self.value = self.value2.a + 1;
+"<unknown>:15:27: Field "value2" is not initialized
+  14 |     init(arg: Bool) {
+> 15 |         self.value = self.value2.a + 1;
                                  ^~~~~~
-  18 |         self.value2 = A{ a: 1, b: 2 };
+  16 |         self.value2 = A { a: 1, b: 2 };
 "
 `;
 
 exports[`resolveStatements should fail statements for init-vars-analysis-used-uninit-storage-struct2 1`] = `
-"<unknown>:17:40: Field "value" is not initialized
-  16 |     init(arg: Bool) {
-> 17 |         self.value2 = A{ a: 1, b: self.value };
-                                              ^~~~~
-  18 |         self.value = self.value2.a + 1;
+"<unknown>:15:41: Field "value" is not initialized
+  14 |     init(arg: Bool) {
+> 15 |         self.value2 = A { a: 1, b: self.value };
+                                               ^~~~~
+  16 |         self.value = self.value2.a + 1;
 "
 `;
 
 exports[`resolveStatements should fail statements for init-vars-analysis-used-uninit-storage-var 1`] = `
-"<unknown>:12:27: Field "value2" is not initialized
-  11 |     init(arg: Bool) {
-> 12 |         self.value = self.value2 + 1;
+"<unknown>:10:27: Field "value2" is not initialized
+   9 |     init(arg: Bool) {
+> 10 |         self.value = self.value2 + 1;
                                  ^~~~~~
-  13 |         self.value2 = 10;
+  11 |         self.value2 = 10;
 "
 `;
 
 exports[`resolveStatements should fail statements for init-vars-analysis-used-uninit-storage-var-fun-call 1`] = `
-"<unknown>:16:9: Cannot access self before init
-  15 |     init(arg: Bool) {
-> 16 |         self.update();
+"<unknown>:14:9: Cannot access self before init
+  13 |     init(arg: Bool) {
+> 14 |         self.update();
                ^~~~~~~~~~~~~
-  17 |         self.value = 1;
+  15 |         self.value = 1;
 "
 `;
 
 exports[`resolveStatements should fail statements for init-vars-analysis-with-if-else 1`] = `
-"<unknown>:10:5: Field "value" is not set
-   9 |     value: Int;
-> 10 |     init(arg: Bool) {
-           ^~~~~~~~~~~~~~~~~
-  11 |         if (arg) {
+"<unknown>:8:5: Field "value" is not set
+  7 |     value: Int;
+> 8 |     init(arg: Bool) {
+          ^~~~~~~~~~~~~~~~~
+  9 |         if (arg) {
 "
 `;
 
 exports[`resolveStatements should fail statements for init-vars-analysis-with-if-elseif 1`] = `
-"<unknown>:10:5: Field "value" is not set
-   9 |     value: Int;
-> 10 |     init(arg: Bool) {
-           ^~~~~~~~~~~~~~~~~
-  11 |         if (arg) {
+"<unknown>:8:5: Field "value" is not set
+  7 |     value: Int;
+> 8 |     init(arg: Bool) {
+          ^~~~~~~~~~~~~~~~~
+  9 |         if (arg) {
 "
 `;
 
@@ -955,11 +955,11 @@ exports[`resolveStatements should fail statements for return-analysis-while 1`] 
 `;
 
 exports[`resolveStatements should fail statements for stmt-assgn-int-string 1`] = `
-"<unknown>:9:5: Type mismatch: "String" is not assignable to "Int"
-   8 | fun isZero(x: Int): Bool {
->  9 |     x = "hello world";
-           ^~~~~~~~~~~~~~~~~~
-  10 |     return true;
+"<unknown>:7:5: Type mismatch: "String" is not assignable to "Int"
+  6 | fun isZero(x: Int): Bool {
+> 7 |     x = "hello world";
+          ^~~~~~~~~~~~~~~~~~
+  8 |     return true;
 "
 `;
 
@@ -973,11 +973,11 @@ exports[`resolveStatements should fail statements for stmt-augmented-assgn-bool 
 `;
 
 exports[`resolveStatements should fail statements for stmt-augmented-assgn-bool-int 1`] = `
-"<unknown>:9:5: Type error: Augmented assignment += is only allowed for Int type
-   8 | fun test(x: Bool): Bool {
->  9 |     x += 1;
-           ^
-  10 |     return x;
+"<unknown>:7:5: Type error: Augmented assignment += is only allowed for Int type
+  6 | fun test(x: Bool): Bool {
+> 7 |     x += 1;
+          ^
+  8 |     return x;
 "
 `;
 
@@ -991,20 +991,20 @@ exports[`resolveStatements should fail statements for stmt-augmented-assgn-int 1
 `;
 
 exports[`resolveStatements should fail statements for stmt-augmented-assgn-int-bool 1`] = `
-"<unknown>:9:5: Type error: Augmented assignment &&= is only allowed for Bool type
-   8 | fun test(x: Int): Int {
->  9 |     x &&= true;
-           ^
-  10 |     return x;
+"<unknown>:7:5: Type error: Augmented assignment &&= is only allowed for Bool type
+  6 | fun test(x: Int): Int {
+> 7 |     x &&= true;
+          ^
+  8 |     return x;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-augmented-assgn-not-matching 1`] = `
-"<unknown>:10:10: Type error: Augmented assignment += is only allowed for Int type
-   9 |     let x: Int = 42;
-> 10 |     x += true;
-                ^~~~
-  11 |     return x;
+"<unknown>:8:10: Type error: Augmented assignment += is only allowed for Int type
+  7 |     let x: Int = 42;
+> 8 |     x += true;
+               ^~~~
+  9 |     return x;
 "
 `;
 
@@ -1027,200 +1027,200 @@ exports[`resolveStatements should fail statements for stmt-conditional-expr-stmt
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-duplicate-id 1`] = `
-"<unknown>:15:22: Variable already exists: "x"
-  14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S { a: x, b: x, c: y } = s;
+"<unknown>:13:22: Variable already exists: "x"
+  12 |     let s = S { a: 1, b: 2, c: 3 };
+> 13 |     let S { a: x, b: x, c: y } = s;
                             ^
-  16 |     return x + y;
+  14 |     return x + y;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-destructable 1`] = `
-"<unknown>:16:25: Type 'map<Int, Int>' cannot be destructured
-  15 |     let m: map<Int, Int> = emptyMap();
-> 16 |     let S { a, b, c } = m;
+"<unknown>:14:25: Type 'map<Int, Int>' cannot be destructured
+  13 |     let m: map<Int, Int> = emptyMap();
+> 14 |     let S { a, b, c } = m;
                                ^
-  17 |     return a + b + c;
+  15 |     return a + b + c;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-destructable-opt 1`] = `
-"<unknown>:15:25: Type 'S?' is optional and cannot be destructured
-  14 |     let s: S? = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S { a, b, c } = s;
+"<unknown>:13:25: Type 'S?' is optional and cannot be destructured
+  12 |     let s: S? = S { a: 1, b: 2, c: 3 };
+> 13 |     let S { a, b, c } = s;
                                ^
-  16 |     return a + b + c;
+  14 |     return a + b + c;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-destructable2 1`] = `
-"<unknown>:16:29: Type 'Test' cannot be destructured
-  15 |         let s = S{ a: 1, b: 2, c: 3 };
-> 16 |         let S { a, b, c } = self;
+"<unknown>:14:29: Type 'Test' cannot be destructured
+  13 |         let s = S { a: 1, b: 2, c: 3 };
+> 14 |         let S { a, b, c } = self;
                                    ^~~~
-  17 |         return a + b + c;
+  15 |         return a + b + c;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-existing 1`] = `
-"<unknown>:15:19: Field '"d"' not found in type 'S'
-  14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S { a, b, d: e } = s;
+"<unknown>:13:19: Field '"d"' not found in type 'S'
+  12 |     let s = S { a: 1, b: 2, c: 3 };
+> 13 |     let S { a, b, d: e } = s;
                          ^
-  16 |     return a + b + e;
+  14 |     return a + b + e;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-existing-punned 1`] = `
-"<unknown>:15:16: Field '"bb"' not found in type 'S'
-  14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S { a, bb, c } = s;
+"<unknown>:13:16: Field '"bb"' not found in type 'S'
+  12 |     let s = S { a: 1, b: 2, c: 3 };
+> 13 |     let S { a, bb, c } = s;
                       ^~
-  16 |     return a + bb + c;
+  14 |     return a + bb + c;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-existing-punned2 1`] = `
-"<unknown>:15:19: Field '"d"' not found in type 'S'
-  14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S { a, b, d } = s;
+"<unknown>:13:19: Field '"d"' not found in type 'S'
+  12 |     let s = S { a: 1, b: 2, c: 3 };
+> 13 |     let S { a, b, d } = s;
                          ^
-  16 |     return a + b + d;
+  14 |     return a + b + d;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-non-existing-underscore 1`] = `
-"<unknown>:15:12: Field '"_"' not found in type 'S'
-  14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S {_, b, c} =  s;
-                  ^
-  16 |     return b + c;
+"<unknown>:13:13: Field '"_"' not found in type 'S'
+  12 |     let s = S { a: 1, b: 2, c: 3 };
+> 13 |     let S { _, b, c } = s;
+                   ^
+  14 |     return b + c;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-shadowed-const-id 1`] = `
-"<unknown>:17:16: Variable "x" is trying to shadow an existing constant with the same name
-  16 |     let s = S{ a: 1, b: 2, c: 3 };
-> 17 |     let S { a: x, b: b, c: c } = s;
+"<unknown>:15:16: Variable "x" is trying to shadow an existing constant with the same name
+  14 |     let s = S { a: 1, b: 2, c: 3 };
+> 15 |     let S { a: x, b: b, c: c } = s;
                       ^
-  18 |     return x + b + c;
+  16 |     return x + b + c;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-shadowed-id 1`] = `
-"<unknown>:16:16: Variable already exists: "x"
-  15 |     let x = 0;
-> 16 |     let S { a: x, b: b, c: c } = s;
+"<unknown>:14:16: Variable already exists: "x"
+  13 |     let x = 0;
+> 14 |     let S { a: x, b: b, c: c } = s;
                       ^
-  17 |     return x + b + c;
+  15 |     return x + b + c;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-wrong-count 1`] = `
-"<unknown>:15:5: Expected 3 fields, but got 2
-  14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S { a, b } = s;
+"<unknown>:13:5: Expected 3 fields, but got 2
+  12 |     let s = S { a: 1, b: 2, c: 3 };
+> 13 |     let S { a, b } = s;
            ^~~~~~~~~~~~~~~~~~~
-  16 |     return a + b;
+  14 |     return a + b;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-wrong-count2 1`] = `
-"<unknown>:15:5: Expected 3 fields, but got 4
-  14 |     let s = S{ a: 1, b: 2, c: 3 };
-> 15 |     let S { a, b, c, d } = s;
+"<unknown>:13:5: Expected 3 fields, but got 4
+  12 |     let s = S { a: 1, b: 2, c: 3 };
+> 13 |     let S { a, b, c, d } = s;
            ^~~~~~~~~~~~~~~~~~~~~~~~~
-  16 |     return a + b + c + d;
+  14 |     return a + b + c + d;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-destructuring-fields-wrong-type 1`] = `
-"<unknown>:18:21: Type mismatch: "S2" is not assignable to "S1"
-  17 | fun testFunc(): Int {
-> 18 |     let S1 {x, y} = S2 {x: 42, y: 43};
-                           ^~~~~~~~~~~~~~~~~
-  19 |     return x + y;
+"<unknown>:16:23: Type mismatch: "S2" is not assignable to "S1"
+  15 | fun testFunc(): Int {
+> 16 |     let S1 { x, y } = S2 { x: 42, y: 43 };
+                             ^~~~~~~~~~~~~~~~~~~
+  17 |     return x + y;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-do-int 1`] = `
-"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
-   8 | fun isZero(x: Int): Bool {
->  9 |     do {
-           ^~~~
-  10 |         x = x + 1;
+"<unknown>:7:5: Type mismatch: "Int" is not assignable to "Bool"
+  6 | fun isZero(x: Int): Bool {
+> 7 |     do {
+          ^~~~
+  8 |         x = x + 1;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-foreach-non-map 1`] = `
-"<unknown>:8:22: foreach can only be used on maps, but "x" has type "Int"
-  7 | fun foo(x: Int) {
-> 8 |     foreach (k, v in x) {
+"<unknown>:6:22: foreach can only be used on maps, but "x" has type "Int"
+  5 | fun foo(x: Int) {
+> 6 |     foreach (k, v in x) {
                            ^
-  9 |         throw(1042);
+  7 |         throw(1042);
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-foreach-non-path-map 1`] = `
-"<unknown>:12:22: foreach is only allowed over maps that are path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"
-  11 | fun foo(x: Int) {
-> 12 |     foreach (k, v in mapFun()) {
+"<unknown>:10:22: foreach is only allowed over maps that are path expressions, i.e. identifiers, or sequences of direct contract/struct/message accesses, like "self.foo" or "self.structure.field"
+   9 | fun foo(x: Int) {
+> 10 |     foreach (k, v in mapFun()) {
                             ^~~~~~~~
-  13 |         throw(1042);
+  11 |         throw(1042);
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-if-int 1`] = `
-"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
-   8 | fun isZero(x: Int): Bool {
->  9 |     if (x) {
-           ^~~~~~~~
-  10 |         x = x + 1;
+"<unknown>:7:5: Type mismatch: "Int" is not assignable to "Bool"
+  6 | fun isZero(x: Int): Bool {
+> 7 |     if (x) {
+          ^~~~~~~~
+  8 |         x = x + 1;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-let-unknown-type-inference 1`] = `
-"<unknown>:8:5: Cannot infer type for "a"
-  7 | fun test() {
-> 8 |     let a = null;
+"<unknown>:6:5: Cannot infer type for "a"
+  5 | fun test() {
+> 6 |     let a = null;
           ^~~~~~~~~~~~~
-  9 | }
+  7 | }
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-let-unknown-type-inference2 1`] = `
-"<unknown>:8:5: Cannot infer type for "a"
-  7 | fun test() {
-> 8 |     let a = emptyMap();
+"<unknown>:6:5: Cannot infer type for "a"
+  5 | fun test() {
+> 6 |     let a = emptyMap();
           ^~~~~~~~~~~~~~~~~~~
-  9 | }
+  7 | }
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-let-void-inference 1`] = `
-"<unknown>:12:9: The inferred type of variable "voidVar" is "void", which is not allowed
-  11 |     get fun foo(): Int {
-> 12 |         let voidVar = foo();
+"<unknown>:9:9: The inferred type of variable "voidVar" is "void", which is not allowed
+   8 |     get fun foo(): Int {
+>  9 |         let voidVar = foo();
                ^~~~~~~~~~~~~~~~~~~~
-  13 |         return 42;
+  10 |         return 42;
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-let-wrong-rhs 1`] = `
-"<unknown>:10:5: Type mismatch: "Int" is not assignable to "Bool"
-   9 |     let a: Int = 0;
-> 10 |     let b: Bool = 0;
-           ^~~~~~~~~~~~~~~~
-  11 | }
+"<unknown>:8:5: Type mismatch: "Int" is not assignable to "Bool"
+  7 |     let a: Int = 0;
+> 8 |     let b: Bool = 0;
+          ^~~~~~~~~~~~~~~~
+  9 | }
 "
 `;
 
 exports[`resolveStatements should fail statements for stmt-repeat-bool 1`] = `
-"<unknown>:9:5: Type mismatch: "Bool" is not assignable to "Int"
-   8 | fun isZero(x: Int): Bool {
->  9 |     repeat(true) {
-           ^~~~~~~~~~~~~~
-  10 |         x = x + 1;
+"<unknown>:7:5: Type mismatch: "Bool" is not assignable to "Int"
+  6 | fun isZero(x: Int): Bool {
+> 7 |     repeat (true) {
+          ^~~~~~~~~~~~~~~
+  8 |         x = x + 1;
 "
 `;
 
@@ -1270,11 +1270,11 @@ exports[`resolveStatements should fail statements for stmt-unboxing-expr-stmt-vo
 `;
 
 exports[`resolveStatements should fail statements for stmt-while-int 1`] = `
-"<unknown>:9:5: Type mismatch: "Int" is not assignable to "Bool"
-   8 | fun isZero(x: Int): Bool {
->  9 |     while(x) {
-           ^~~~~~~~~~
-  10 |         x = x + 1;
+"<unknown>:7:5: Type mismatch: "Int" is not assignable to "Bool"
+  6 | fun isZero(x: Int): Bool {
+> 7 |     while (x) {
+          ^~~~~~~~~~~
+  8 |         x = x + 1;
 "
 `;
 
@@ -1315,17 +1315,17 @@ exports[`resolveStatements should fail statements for usage-of-bounced-field-in-
 `;
 
 exports[`resolveStatements should fail statements for usage-of-bounced-field-in-type-that-is-too-big-2 1`] = `
-"<unknown>:26:29: Maximum size of the bounced message is 224 bytes, but the "amount" field of type "Withdraw" cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes
-  25 | 
-> 26 |         self.balance += msg.amount;
+"<unknown>:25:29: Maximum size of the bounced message is 224 bytes, but the "amount" field of type "Withdraw" cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes
+  24 | 
+> 25 |         self.balance += msg.amount;
                                    ^~~~~~
-  27 |     }
+  26 |     }
 "
 `;
 
 exports[`resolveStatements should fail statements for usage-of-bounced-field-that-is-too-big 1`] = `
 "<unknown>:12:29: Maximum size of the bounced message is 224 bytes, but the "amount" field of type "Withdraw" cannot fit into it because its too big, so it cannot be accessed. Reduce the type of this field so that it fits into 224 bytes
-  11 |     bounced(msg: bounced<Withdraw>){
+  11 |     bounced(msg: bounced<Withdraw>) {
 > 12 |         self.balance += msg.amount;
                                    ^~~~~~
   13 |     }
@@ -1418,7 +1418,7 @@ exports[`resolveStatements should fail statements for var-scope-catch-param-is-n
   4 |     try {
 > 5 |         return e;
                      ^
-  6 |     } catch (e) {
+  6 |     } catch (e) {}
 "
 `;
 
@@ -1461,7 +1461,7 @@ exports[`resolveStatements should fail statements for var-scope-const-shadowing-
 exports[`resolveStatements should fail statements for var-scope-const-shadowing-let 1`] = `
 "<unknown>:6:9: Variable "foo" is trying to shadow an existing constant with the same name
   5 | fun bar(): Int {
-> 6 |     let foo = 43;  // <-- local var \`foo\` shadows global const \`foo\`
+> 6 |     let foo = 43; // <-- local var \`foo\` shadows global const \`foo\`
               ^~~
   7 |     return foo;
 "
@@ -1666,11 +1666,11 @@ exports[`resolveStatements should fail statements for var-scope-if-then-shadows-
 `;
 
 exports[`resolveStatements should fail statements for var-scope-local-catch-param-does-not-escape 1`] = `
-"<unknown>:9:12: Cannot find 'e'
-   8 |     }
->  9 |     return e;
-                  ^
-  10 | }
+"<unknown>:5:12: Cannot find 'e'
+  4 |     try {} catch (e) {}
+> 5 |     return e;
+                 ^
+  6 | }
 "
 `;
 
@@ -1758,7 +1758,7 @@ exports[`resolveStatements should fail statements for var-scope-rec-fun-shadowin
 exports[`resolveStatements should fail statements for var-scope-rec-fun-shadowing-let 1`] = `
 "<unknown>:4:9: Variable cannot have the same name as its enclosing function: "rec"
   3 | fun rec(): Int {
-> 4 |     let rec: Int = 42;  // shadowing error
+> 4 |     let rec: Int = 42; // shadowing error
               ^~~
   5 |     return rec;
 "
@@ -2271,7 +2271,7 @@ exports[`resolveStatements should resolve statements for expr-conditional-with-s
   ],
   [
     "Bar {
-        a: cond ? Baz { b: 42 }.toCell() : x
+        a: cond ? Baz { b: 42 }.toCell() : x,
     }",
     "Bar",
   ],
@@ -2903,9 +2903,9 @@ exports[`resolveStatements should resolve statements for expr-struct-constructio
     "Int",
   ],
   [
-    "SomeStruct{
+    "SomeStruct {
         a: 1,
-        b: 2
+        b: 2,
     }",
     "SomeStruct",
   ],
@@ -3261,7 +3261,7 @@ exports[`resolveStatements should resolve statements for init-vars-analysis-with
     "Int",
   ],
   [
-    "S{ a: 1, b: self.value }",
+    "S { a: 1, b: self.value }",
     "S",
   ],
   [
@@ -3557,7 +3557,7 @@ exports[`resolveStatements should resolve statements for stmt-destructuring 1`] 
     "Int",
   ],
   [
-    "S{ a: 1, b: 2, c: 3 }",
+    "S { a: 1, b: 2, c: 3 }",
     "S",
   ],
   [
@@ -3597,7 +3597,7 @@ exports[`resolveStatements should resolve statements for stmt-destructuring 1`] 
     "Int",
   ],
   [
-    "M{ a: 1, b: 2 }",
+    "M { a: 1, b: 2 }",
     "M",
   ],
   [
