@@ -24,7 +24,6 @@ message(0x7369676E) ExternalSignedRequest {
 }
 
 // leave as example for discussion
-
 // message(0x73696e74) InternalSignedRequest {
 //     data: Slice as remaining;
 // }
