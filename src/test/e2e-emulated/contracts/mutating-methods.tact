@@ -78,7 +78,8 @@ contract Tester {
             s: beginCell()
                 .storeUint(3, 2)
                 .storeUint(1, 2)
-                .endCell().asSlice(), // bits: 1101
+                .endCell()
+                .asSlice(), // bits: 1101
         };
         foo.s.loadBits(1); // should mutate foo.s, making it point to 101
         return foo.s.loadUint(3); // if the previous line mutated foo.s, should return 5, otherwise 6

@@ -265,10 +265,10 @@ struct S1 {
 fun destructuringTest1(): Int {
     let s = S {
         a: true,
-        b: 42
+        b: 42,
     };
 
-    let S {a, b} = s;
+    let S { a, b } = s;
 
     return (a ? 1 : 0) + b;
 }
@@ -276,10 +276,10 @@ fun destructuringTest1(): Int {
 fun destructuringTest2(): Int {
     let s = S {
         a: true,
-        b: 42
+        b: 42,
     };
 
-    let S {a: _, b} = s;
+    let S { a: _, b } = s;
 
     return b;
 }
@@ -287,10 +287,10 @@ fun destructuringTest2(): Int {
 fun destructuringTest3(): Int {
     let s = S {
         a: true,
-        b: 42
+        b: 42,
     };
 
-    let S {b, a} = s;
+    let S { b, a } = s;
 
     return (a ? 1 : 0) + b;
 }
@@ -298,10 +298,10 @@ fun destructuringTest3(): Int {
 fun destructuringTest4(): Int {
     let s = S {
         a: true,
-        b: 42
+        b: 42,
     };
 
-    let S {b: b, a: a} = s;
+    let S { b: b, a: a } = s;
 
     return (a ? 1 : 0) + b;
 }
@@ -309,10 +309,10 @@ fun destructuringTest4(): Int {
 fun destructuringTest5(): Int {
     let s = S {
         a: true,
-        b: 42
+        b: 42,
     };
 
-    let S {b: a, a: b} = s;
+    let S { b: a, a: b } = s;
 
     return (b ? 1 : 0) + a;
 }
@@ -326,16 +326,16 @@ fun destructuringTest6(): Int {
 fun destructuringTest7(): S1 {
     let s = S1 { a: 1, b: 2, c: 3 };
     let S1 { a, c: e, b: b } = s;
-    return S1 {a: e, b: b, c: a};
+    return S1 { a: e, b: b, c: a };
 }
 
 fun destructuringTest8(): Int {
     let s = S {
         a: true,
-        b: 42
+        b: 42,
     };
 
-    let S {b, ..} = s;
+    let S { b, .. } = s;
 
     return b;
 }
@@ -345,9 +345,9 @@ struct StateInitWrapper {
 }
 
 contract StructsTester {
-    s1: S = S {a: false, b: 21 + 21};
+    s1: S = S { a: false, b: 21 + 21 };
     s2: S;
-    t1: T = T {a: 43, s: S {a: true, b: 44}};
+    t1: T = T { a: 43, s: S { a: true, b: 44 } };
     t2: T;
     mapWithLongStructs15: map<Int, LongStruct15> = emptyMap();
     mapWithLongStructs16: map<Int, LongStruct16> = emptyMap();
@@ -377,21 +377,21 @@ contract StructsTester {
     const contractStructConst: MyStruct3 = MyStruct3 { s: "contract const struct test" };
 
     init() {
-        self.s2 = S {a: false || false, b: 42};
-        self.t2 = T {a: 40 + 3, s: S {a: true && true, b: 44 | 4}};
+        self.s2 = S { a: false || false, b: 42 };
+        self.t2 = T { a: 40 + 3, s: S { a: true && true, b: 44 | 4 } };
     }
 
     // Deploy
-    receive() { }
+    receive() {}
 
     receive(msg: Foo) {
         let d = Dict.fromSlice(msg.s);
-        message(MessageParameters{
+        message(MessageParameters {
             bounce: false,
             to: sender(),
             value: ton("0.01"),
             mode: SendPayGasSeparately,
-            body: d.toCell()
+            body: d.toCell(),
         });
     }
 
@@ -491,9 +491,9 @@ contract StructsTester {
     receive("example") {
         let coin = directParse(
             beginCell()
-            .storeCoins(42)
-            .storeUint(35, 31)
-            .endCell()
+                .storeCoins(42)
+                .storeUint(35, 31)
+                .endCell(),
         );
         dump(coin.first);
         dump(coin.second);
@@ -502,11 +502,11 @@ contract StructsTester {
     receive("exampleVarIntegers") {
         let varInts = directParseVarIntegers(
             beginCell()
-            .storeVarInt16(1)
-            .storeVarInt32(2)
-            .storeVarUint16(3)
-            .storeVarUint32(4)
-            .endCell()
+                .storeVarInt16(1)
+                .storeVarInt32(2)
+                .storeVarUint16(3)
+                .storeVarUint32(4)
+                .endCell(),
         );
         dump(varInts.a);
         dump(varInts.b);
@@ -530,7 +530,7 @@ contract StructsTester {
             x12: 12,
             x13: 13,
             x14: 14,
-            x15: 15
+            x15: 15,
         };
 
         s.x1 = 1;
@@ -557,7 +557,7 @@ contract StructsTester {
             x13: 13,
             x14: 14,
             x15: 15,
-            x16: 16
+            x16: 16,
         };
 
         s.x1 = 1;
@@ -600,7 +600,7 @@ contract StructsTester {
             x29: 29,
             x30: 30,
             x31: 31,
-            x32: 32
+            x32: 32,
         };
 
         s.x1 = 1;
@@ -647,7 +647,7 @@ contract StructsTester {
                 x12: 12,
                 x13: 13,
                 x14: 14,
-                x15: 15
+                x15: 15,
             },
             s2: LongStruct16 {
                 x1: 1,
@@ -665,7 +665,7 @@ contract StructsTester {
                 x13: 13,
                 x14: 14,
                 x15: 15,
-                x16: 16
+                x16: 16,
             },
             s3: LongStruct32 {
                 x1: 1,
@@ -699,8 +699,8 @@ contract StructsTester {
                 x29: 29,
                 x30: 30,
                 x31: 31,
-                x32: 32
-            }
+                x32: 32,
+            },
         };
 
         return s;
@@ -745,7 +745,7 @@ contract StructsTester {
                 x13: 13,
                 x14: 14,
                 x15: 15,
-                x16: 16
+                x16: 16,
             },
             s3: LongStruct32 {
                 x1: 1,
@@ -779,8 +779,8 @@ contract StructsTester {
                 x29: 29,
                 x30: 30,
                 x31: 31,
-                x32: 32
-            }
+                x32: 32,
+            },
         };
 
         return s;
@@ -794,25 +794,25 @@ contract StructsTester {
     // https://github.com/tact-lang/tact/issues/690
 
     get fun location1(): Location {
-        let start: Point = Point{ x: 1, y: 2};
-        let end: Point = Point{ x: 3, y: 4};
+        let start: Point = Point { x: 1, y: 2 };
+        let end: Point = Point { x: 3, y: 4 };
 
         return Location {
             idx: 1,
-            line1: Line {start: start, end: end},
-            line2: null
-        }
+            line1: Line { start: start, end: end },
+            line2: null,
+        };
     }
 
     get fun location2(): Location {
-        let start: Point = Point{ x: 1, y: 2};
-        let end: Point = Point{ x: 3, y: 4};
+        let start: Point = Point { x: 1, y: 2 };
+        let end: Point = Point { x: 3, y: 4 };
 
         return Location {
             idx: 2,
-            line1: Line {start: start, end: end},
-            line2: Line {start: start, end: end}
-        }
+            line1: Line { start: start, end: end },
+            line2: Line { start: start, end: end },
+        };
     }
 
     get fun tripleNestedStructOpt1(): TripleNestedStructOpt {
@@ -823,17 +823,17 @@ contract StructsTester {
                 s: MyStruct1 {
                     a: 3,
                     b: 4,
-                    c: 5
-                }
-            }
-        }
+                    c: 5,
+                },
+            },
+        };
     }
 
     get fun tripleNestedStructOpt2(): TripleNestedStructOpt {
         return TripleNestedStructOpt {
             a: 1,
-            s: null
-        }
+            s: null,
+        };
     }
 
     get fun tripleNestedStructOpt3(): TripleNestedStructOpt {
@@ -841,9 +841,9 @@ contract StructsTester {
             a: 1,
             s: DoubleNestedStructOpt {
                 a: 2,
-                s: null
-            }
-        }
+                s: null,
+            },
+        };
     }
 
     get fun longAndDeepNestedStruct1(): LongAndDeepNestedStruct {
@@ -871,9 +871,9 @@ contract StructsTester {
                     s: MyStruct1 {
                         a: 3,
                         b: 4,
-                        c: 5
-                    }
-                }
+                        c: 5,
+                    },
+                },
             },
             s2: TripleNestedStructOpt {
                 a: 6,
@@ -882,13 +882,13 @@ contract StructsTester {
                     s: MyStruct1 {
                         a: 8,
                         b: 9,
-                        c: 10
-                    }
-                }
+                        c: 10,
+                    },
+                },
             },
             s3: null,
-            s4: null
-        }
+            s4: null,
+        };
     }
 
     get fun longAndDeepNestedStruct2(): LongAndDeepNestedStruct {
@@ -916,9 +916,9 @@ contract StructsTester {
                     s: MyStruct1 {
                         a: 3,
                         b: 4,
-                        c: 5
-                    }
-                }
+                        c: 5,
+                    },
+                },
             },
             s2: TripleNestedStructOpt {
                 a: 6,
@@ -927,9 +927,9 @@ contract StructsTester {
                     s: MyStruct1 {
                         a: 8,
                         b: 9,
-                        c: 10
-                    }
-                }
+                        c: 10,
+                    },
+                },
             },
             s3: TripleNestedStructOpt {
                 a: 11,
@@ -938,9 +938,9 @@ contract StructsTester {
                     s: MyStruct1 {
                         a: 13,
                         b: 14,
-                        c: 15
-                    }
-                }
+                        c: 15,
+                    },
+                },
             },
             s4: TripleNestedStructOpt {
                 a: 16,
@@ -949,11 +949,11 @@ contract StructsTester {
                     s: MyStruct1 {
                         a: 18,
                         b: 19,
-                        c: 20
-                    }
-                }
-            }
-        }
+                        c: 20,
+                    },
+                },
+            },
+        };
     }
 
     get fun longAndDeepNestedStruct3(): LongAndDeepNestedStruct {
@@ -981,9 +981,9 @@ contract StructsTester {
                     s: MyStruct1 {
                         a: 3,
                         b: 4,
-                        c: 5
-                    }
-                }
+                        c: 5,
+                    },
+                },
             },
             s2: TripleNestedStructOpt {
                 a: 6,
@@ -992,9 +992,9 @@ contract StructsTester {
                     s: MyStruct1 {
                         a: 8,
                         b: 9,
-                        c: 10
-                    }
-                }
+                        c: 10,
+                    },
+                },
             },
             s3: null,
             s4: TripleNestedStructOpt {
@@ -1004,15 +1004,15 @@ contract StructsTester {
                     s: MyStruct1 {
                         a: 18,
                         b: 19,
-                        c: 20
-                    }
-                }
-            }
-        }
+                        c: 20,
+                    },
+                },
+            },
+        };
     }
 
     get fun intFieldsStruct(): IntFields {
-        return IntFields{
+        return IntFields {
             i1: -1,
             i2: -2,
             i3: -4,
@@ -1027,7 +1027,7 @@ contract StructsTester {
     }
 
     get fun uintFieldsMessage(): UintFields {
-        return UintFields{
+        return UintFields {
             u1: 1,
             u2: 3,
             u3: 7,
@@ -1045,16 +1045,16 @@ contract StructsTester {
         return OptionalFields {
             nickname: null,
             avatar: "non-null string",
-        }
+        };
     }
 
     get fun destructuringTest1(): Int {
         let s = S {
             a: true,
-            b: 42
+            b: 42,
         };
 
-        let S {a, b} = s;
+        let S { a, b } = s;
 
         return (a ? 1 : 0) + b;
     }
@@ -1066,10 +1066,10 @@ contract StructsTester {
     get fun destructuringTest2(): Int {
         let s = S {
             a: true,
-            b: 42
+            b: 42,
         };
 
-        let S {a: _, b} = s;
+        let S { a: _, b } = s;
 
         return b;
     }
@@ -1081,10 +1081,10 @@ contract StructsTester {
     get fun destructuringTest3(): Int {
         let s = S {
             a: true,
-            b: 42
+            b: 42,
         };
 
-        let S {b, a} = s;
+        let S { b, a } = s;
 
         return (a ? 1 : 0) + b;
     }
@@ -1096,10 +1096,10 @@ contract StructsTester {
     get fun destructuringTest4(): Int {
         let s = S {
             a: true,
-            b: 42
+            b: 42,
         };
 
-        let S {b: b, a: a} = s;
+        let S { b: b, a: a } = s;
 
         return (a ? 1 : 0) + b;
     }
@@ -1111,10 +1111,10 @@ contract StructsTester {
     get fun destructuringTest5(): Int {
         let s = S {
             a: true,
-            b: 42
+            b: 42,
         };
 
-        let S {b: a, a: b} = s;
+        let S { b: a, a: b } = s;
 
         return (b ? 1 : 0) + a;
     }
@@ -1132,11 +1132,11 @@ contract StructsTester {
     get fun destructuringTest6Const(): Int {
         return destructuringTest6();
     }
-    
+
     get fun destructuringTest7(): S1 {
         let s = S1 { a: 1, b: 2, c: 3 };
         let S1 { a, c: e, b: b } = s;
-        return S1 {a: e, b: b, c: a};
+        return S1 { a: e, b: b, c: a };
     }
 
     get fun destructuringTest7Const(): S1 {
@@ -1146,10 +1146,10 @@ contract StructsTester {
     get fun destructuringTest8(): Int {
         let s = S {
             a: true,
-            b: 42
+            b: 42,
         };
 
-        let S {b, ..} = s;
+        let S { b, .. } = s;
 
         return b;
     }
@@ -1159,13 +1159,13 @@ contract StructsTester {
     }
 
     get fun destructuringTest9(): Int {
-        let start: Point = Point{ x: 1, y: 2};
-        let end: Point = Point{ x: 3, y: 4};
+        let start: Point = Point { x: 1, y: 2 };
+        let end: Point = Point { x: 3, y: 4 };
 
         let loc = Location {
             idx: 2,
-            line1: Line {start: start, end: end},
-            line2: Line {start: start, end: end}
+            line1: Line { start: start, end: end },
+            line2: Line { start: start, end: end },
         };
 
         let Location { line1, .. } = loc;
@@ -1174,13 +1174,13 @@ contract StructsTester {
     }
 
     get fun destructuringTest10(): Int {
-        let start: Point = Point{ x: 1, y: 2};
-        let end: Point = Point{ x: 3, y: 4};
+        let start: Point = Point { x: 1, y: 2 };
+        let end: Point = Point { x: 3, y: 4 };
 
         let loc = Location {
             idx: 2,
-            line1: Line {start: start, end: end},
-            line2: Line {start: start, end: end}
+            line1: Line { start: start, end: end },
+            line2: Line { start: start, end: end },
         };
 
         let Location { line1: otherLine, idx, .. } = loc;
@@ -1189,7 +1189,7 @@ contract StructsTester {
     }
 
     get fun destructuringTest11(): Int {
-        let StateInitWrapper { f: stateInit } = StateInitWrapper{ f: initOf StructsTester() };
+        let StateInitWrapper { f: stateInit } = StateInitWrapper { f: initOf StructsTester() };
         let addr: Address = contractAddress(stateInit);
         return addr.asSlice().bits();
     }

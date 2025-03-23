@@ -1,4 +1,4 @@
-struct Foo { x : Int }
+struct Foo { x: Int }
 
 extends mutates fun inc(self: Int) { self += 1 }
 

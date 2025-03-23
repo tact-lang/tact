@@ -1,5 +1,5 @@
 primitive Int;
-trait BaseTrait { }
+trait BaseTrait {}
 
 message SetIntMap4 {
     key: Int;
