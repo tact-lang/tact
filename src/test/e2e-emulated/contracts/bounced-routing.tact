@@ -52,26 +52,26 @@ contract SampleContract {
 
     receive(msg: EntryFirst) {
         self.a = self.a - msg.amountToAdd;
-        message(MessageParameters{
+        message(MessageParameters {
             to: msg.toAddress,
-            value: ton("1"), 
-            mode: SendIgnoreErrors, 
-            bounce: true, 
-            body: First{amount: msg.amountToAdd, myCoins: 3, myBool3: false, anAddress: sender()}.toCell()
+            value: ton("1"),
+            mode: SendIgnoreErrors,
+            bounce: true,
+            body: First { amount: msg.amountToAdd, myCoins: 3, myBool3: false, anAddress: sender() }.toCell(),
         });
     }
-    
+
     receive(msg: EntrySecond) {
         self.a = self.a - msg.amountToAdd;
-        message(MessageParameters{
+        message(MessageParameters {
             to: msg.toAddress,
-            value: ton("1"), 
-            mode: SendIgnoreErrors, 
-            bounce: true, 
-            body: Second{amount_bigger: msg.amountToAdd, myBool: false, thisDoesNotFit: 1, myAddress: sender(), myBool2: false, myStruct: MyStruct{amount: 1}, myStruct2: MyStruct{amount: 2}}.toCell()
+            value: ton("1"),
+            mode: SendIgnoreErrors,
+            bounce: true,
+            body: Second { amount_bigger: msg.amountToAdd, myBool: false, thisDoesNotFit: 1, myAddress: sender(), myBool2: false, myStruct: MyStruct { amount: 1 }, myStruct2: MyStruct { amount: 2 } }.toCell(),
         });
     }
-    
+
     receive(msg: First) {
         // do something with the Second struct
         let x: First = msg;
@@ -90,7 +90,7 @@ contract SampleContract {
         let y: Int = msg.loadUint(32);
         self.a = 77;
     }
-    
+
     bounced(msg: bounced<First>) {
         dump("In bounce of first");
         // only the first 224 bits are populated into a partial First struct
@@ -99,7 +99,7 @@ contract SampleContract {
         // let z: Address = msg.anAddress; // This would throw
         let z: bounced<First> = msg;
     }
-    
+
     bounced(msg: bounced<Second>) {
         dump("In bounce of second");
         self.a = self.a + msg.amount_bigger - 4;
@@ -126,14 +126,13 @@ contract SampleContract {
 contract SampleContract2 {
     init() {}
 
-    receive() {
-    }
+    receive() {}
 
     receive(msg: First) {
         dump("Bouncing First!");
         throw(144);
     }
-    
+
     receive(msg: Second) {
         dump("Bouncing Second!");
         throw(145);

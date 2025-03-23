@@ -1,11 +1,7 @@
 contract AddressTester {
-    init() {
-        
-    }
+    init() {}
 
-    receive() {
-
-    }
+    receive() {}
 
     get fun test1(): Address {
         return address("UQBKgXCNLPexWhs2L79kiARR1phGH1LwXxRbNsCFF9doczSI");

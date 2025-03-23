@@ -1,2 +1,3 @@
 import "./symlink-child";
-contract Test { }
+
+contract Test {}

@@ -2,7 +2,7 @@ message(100) Message {
     msg: String;
 }
 
-message(101) Empty { }
+message(101) Empty {}
 
 message BinaryIntOperation {
     op: String;
@@ -22,23 +22,21 @@ message SendCellToAddress {
 // This contract receives binary arithmetic requests.
 // It only supports divisions.
 contract Calculator {
-
     receive("deploy") {}
 
     receive(request: BinaryIntOperation) {
         require(request.op == "/", "Only divisions are currently supported.");
         let result = request.val1 / request.val2;
-        message(MessageParameters{
+        message(MessageParameters {
             to: sender(),
             bounce: false,
             value: ton("1"),
-            body: BinaryIntResult{val: result}.toCell(), 
-            });
+            body: BinaryIntResult { val: result }.toCell(),
+        });
     }
 }
 
 contract ReceiverTester {
-
     receiverKind: String = "unknown";
 
     receive() {
@@ -59,7 +57,7 @@ contract ReceiverTester {
 
     receive(msg: Slice) {
         // Drop the op code
-        msg.loadUint(32); 
+        msg.loadUint(32);
         let m = msg.asString();
         if (m == "message") {
             self.receiverKind = "message_slice";
@@ -77,46 +75,46 @@ contract ReceiverTester {
     // Initiate a request to the calculator, with an unsupported arithmetic operation: 1 + 1
     receive("do_unsupported_op") {
         let addr = contractAddress(initOf Calculator());
-        message(MessageParameters{
-                to: addr,
-                bounce: true,
-                value: ton("1"),
-                body: BinaryIntOperation{op: "+", val1: 1, val2: 1}.toCell(),
-                });
+        message(MessageParameters {
+            to: addr,
+            bounce: true,
+            value: ton("1"),
+            body: BinaryIntOperation { op: "+", val1: 1, val2: 1 }.toCell(),
+        });
     }
 
     // Initiate a request to the calculator, with a division by zero: 10/0
     receive("do_div_by_zero") {
         let addr = contractAddress(initOf Calculator());
-        message(MessageParameters{
-                to: addr,
-                bounce: true,
-                value: ton("1"),
-                body: BinaryIntOperation{op: "/", val1: 10, val2: 0}.toCell(),
-                });
+        message(MessageParameters {
+            to: addr,
+            bounce: true,
+            value: ton("1"),
+            body: BinaryIntOperation { op: "/", val1: 10, val2: 0 }.toCell(),
+        });
     }
 
     // Initiate a request to the calculator: 10/2
     receive("do_success_div") {
         let addr = contractAddress(initOf Calculator());
-        message(MessageParameters{
-                to: addr,
-                bounce: true,
-                value: ton("1"),
-                body: BinaryIntOperation{op: "/", val1: 10, val2: 2}.toCell(),
-                });
+        message(MessageParameters {
+            to: addr,
+            bounce: true,
+            value: ton("1"),
+            body: BinaryIntOperation { op: "/", val1: 10, val2: 2 }.toCell(),
+        });
     }
 
     // Initiate a non-arithmetic request to the calculator.
     // The calculator will reject the request
     receive("do_unknown_request") {
         let addr = contractAddress(initOf Calculator());
-        message(MessageParameters{
-                to: addr,
-                bounce: true,
-                value: ton("1"),
-                body: "do_something".asComment(),
-                });
+        message(MessageParameters {
+            to: addr,
+            bounce: true,
+            value: ton("1"),
+            body: "do_something".asComment(),
+        });
     }
 
     bounced(msg: Slice) {
@@ -137,7 +135,7 @@ contract ReceiverTester {
             self.receiverKind = "external_comment_fallback";
         }
     }
-    
+
     external() {
         acceptMessage();
         self.receiverKind = "external_empty";
@@ -156,7 +154,7 @@ contract ReceiverTester {
     external(msg: Slice) {
         acceptMessage();
         // Drop the op code
-        msg.loadUint(32); 
+        msg.loadUint(32);
         let m = msg.asString();
         if (m == "message") {
             self.receiverKind = "external_message_slice";
@@ -168,11 +166,11 @@ contract ReceiverTester {
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
         send(SendParameters {
-                to: msg.address,
-                bounce: false,
-                value: ton("5"),
-                body: msg.body,
-                });
+            to: msg.address,
+            bounce: false,
+            value: ton("5"),
+            body: msg.body,
+        });
     }
 
     get fun receiverKind(): String {
@@ -214,7 +212,7 @@ contract CommentReceiverTester {
     receive("message") {
         self.receiver = "comment";
     }
-    
+
     external("message") {
         acceptMessage();
         self.receiver = "external_comment";
@@ -232,7 +230,7 @@ contract StringReceiverTester {
     receive(msg: String) {
         self.receiver = "fallback_string";
     }
-    
+
     external(msg: String) {
         acceptMessage();
         self.receiver = "external_fallback_string";
@@ -259,7 +257,7 @@ contract BinaryReceiverTester {
         acceptMessage();
         self.receiver = "external_binary_empty_message";
     }
-    
+
     external(msg: Message) {
         acceptMessage();
         self.receiver = "external_binary";
@@ -270,7 +268,7 @@ contract BinaryReceiverTester {
     }
 }
 
-// This contract only has the fallback receiver 
+// This contract only has the fallback receiver
 contract SliceReceiverTester {
     receiver: String = "unknown";
 
@@ -279,8 +277,8 @@ contract SliceReceiverTester {
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -315,7 +313,7 @@ contract EmptyAndCommentReceiverTester {
     }
 }
 
-// This contract has the empty and fallback string receivers 
+// This contract has the empty and fallback string receivers
 contract EmptyAndStringReceiverTester {
     receiver: String = "unknown";
 
@@ -326,7 +324,7 @@ contract EmptyAndStringReceiverTester {
     receive(msg: String) {
         self.receiver = "fallback_string";
     }
-    
+
     external() {
         acceptMessage();
         self.receiver = "external_empty";
@@ -342,7 +340,7 @@ contract EmptyAndStringReceiverTester {
     }
 }
 
-// This contract has the empty and binary message receivers 
+// This contract has the empty and binary message receivers
 contract EmptyAndBinaryReceiverTester {
     receiver: String = "unknown";
 
@@ -362,7 +360,7 @@ contract EmptyAndBinaryReceiverTester {
         acceptMessage();
         self.receiver = "external_binary_empty_message";
     }
-    
+
     external() {
         acceptMessage();
         self.receiver = "external_empty";
@@ -378,7 +376,7 @@ contract EmptyAndBinaryReceiverTester {
     }
 }
 
-// This contract has the empty and fallback receivers 
+// This contract has the empty and fallback receivers
 contract EmptyAndSliceReceiverTester {
     receiver: String = "unknown";
 
@@ -389,15 +387,15 @@ contract EmptyAndSliceReceiverTester {
     receive(msg: Slice) {
         self.receiver = "fallback";
     }
-    
+
     external() {
         acceptMessage();
         self.receiver = "external_empty";
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -405,7 +403,7 @@ contract EmptyAndSliceReceiverTester {
     }
 }
 
-// This contract has the specific comment and fallback string receivers 
+// This contract has the specific comment and fallback string receivers
 contract CommentAndStringReceiverTester {
     receiver: String = "unknown";
 
@@ -416,7 +414,7 @@ contract CommentAndStringReceiverTester {
     receive(msg: String) {
         self.receiver = "fallback_string";
     }
-    
+
     external("message") {
         acceptMessage();
         self.receiver = "external_comment";
@@ -432,7 +430,7 @@ contract CommentAndStringReceiverTester {
     }
 }
 
-// This contract has the specific comment and binary message receivers 
+// This contract has the specific comment and binary message receivers
 contract CommentAndBinaryReceiverTester {
     receiver: String = "unknown";
 
@@ -452,7 +450,7 @@ contract CommentAndBinaryReceiverTester {
         acceptMessage();
         self.receiver = "external_binary_empty_message";
     }
-    
+
     external("message") {
         acceptMessage();
         self.receiver = "external_comment";
@@ -468,7 +466,7 @@ contract CommentAndBinaryReceiverTester {
     }
 }
 
-// This contract has the specific comment and fallback receivers 
+// This contract has the specific comment and fallback receivers
 contract CommentAndSliceReceiverTester {
     receiver: String = "unknown";
 
@@ -486,23 +484,23 @@ contract CommentAndSliceReceiverTester {
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
-    
+
     get fun receiver(): String {
         return self.receiver;
     }
 }
 
-// This contract has the fallback string and binary message receivers 
+// This contract has the fallback string and binary message receivers
 contract StringAndBinaryReceiverTester {
     receiver: String = "unknown";
 
     receive(msg: String) {
         self.receiver = "fallback_string";
     }
-    
+
     receive(msg: Message) {
         self.receiver = "binary";
     }
@@ -515,12 +513,12 @@ contract StringAndBinaryReceiverTester {
         acceptMessage();
         self.receiver = "external_binary_empty_message";
     }
-    
+
     external(msg: String) {
         acceptMessage();
         self.receiver = "external_fallback_string";
     }
-    
+
     external(msg: Message) {
         acceptMessage();
         self.receiver = "external_binary";
@@ -531,26 +529,26 @@ contract StringAndBinaryReceiverTester {
     }
 }
 
-// This contract has the fallback string and fallback receivers 
+// This contract has the fallback string and fallback receivers
 contract StringAndSliceReceiverTester {
     receiver: String = "unknown";
 
     receive(msg: String) {
         self.receiver = "fallback_string";
     }
-    
+
     receive(msg: Slice) {
         self.receiver = "fallback";
     }
-    
+
     external(msg: String) {
         acceptMessage();
         self.receiver = "external_fallback_string";
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -558,14 +556,14 @@ contract StringAndSliceReceiverTester {
     }
 }
 
-// This contract has the binary message and fallback receivers 
+// This contract has the binary message and fallback receivers
 contract BinaryAndSliceReceiverTester {
     receiver: String = "unknown";
-    
+
     receive(msg: Message) {
         self.receiver = "binary";
     }
-    
+
     receive(msg: Slice) {
         self.receiver = "fallback";
     }
@@ -585,8 +583,8 @@ contract BinaryAndSliceReceiverTester {
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -594,7 +592,7 @@ contract BinaryAndSliceReceiverTester {
     }
 }
 
-// This contract has the empty, specific comment and fallback string receivers 
+// This contract has the empty, specific comment and fallback string receivers
 contract EmptyAndCommentAndStringReceiverTester {
     receiver: String = "unknown";
 
@@ -630,7 +628,7 @@ contract EmptyAndCommentAndStringReceiverTester {
     }
 }
 
-// This contract has the empty, specific comment and binary string receivers 
+// This contract has the empty, specific comment and binary string receivers
 contract EmptyAndCommentAndBinaryReceiverTester {
     receiver: String = "unknown";
 
@@ -675,7 +673,7 @@ contract EmptyAndCommentAndBinaryReceiverTester {
     }
 }
 
-// This contract has the empty, specific comment and fallback receivers 
+// This contract has the empty, specific comment and fallback receivers
 contract EmptyAndCommentAndSliceReceiverTester {
     receiver: String = "unknown";
 
@@ -702,8 +700,8 @@ contract EmptyAndCommentAndSliceReceiverTester {
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -711,7 +709,7 @@ contract EmptyAndCommentAndSliceReceiverTester {
     }
 }
 
-// This contract has the empty, fallback string and binary receivers 
+// This contract has the empty, fallback string and binary receivers
 contract EmptyAndStringAndBinaryReceiverTester {
     receiver: String = "unknown";
 
@@ -735,7 +733,7 @@ contract EmptyAndStringAndBinaryReceiverTester {
         acceptMessage();
         self.receiver = "external_binary_empty_message";
     }
-    
+
     external() {
         acceptMessage();
         self.receiver = "external_empty";
@@ -756,7 +754,7 @@ contract EmptyAndStringAndBinaryReceiverTester {
     }
 }
 
-// This contract has the empty, fallback string and fallback receivers 
+// This contract has the empty, fallback string and fallback receivers
 contract EmptyAndStringAndSliceReceiverTester {
     receiver: String = "unknown";
 
@@ -783,8 +781,8 @@ contract EmptyAndStringAndSliceReceiverTester {
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -816,7 +814,7 @@ contract EmptyAndBinaryAndSliceReceiverTester {
         acceptMessage();
         self.receiver = "external_binary_empty_message";
     }
-    
+
     external() {
         acceptMessage();
         self.receiver = "external_empty";
@@ -828,8 +826,8 @@ contract EmptyAndBinaryAndSliceReceiverTester {
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -909,8 +907,8 @@ contract CommentAndStringAndSliceReceiverTester {
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -954,8 +952,8 @@ contract CommentAndBinaryAndSliceReceiverTester {
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -999,8 +997,8 @@ contract StringAndBinaryAndSliceReceiverTester {
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -1008,7 +1006,7 @@ contract StringAndBinaryAndSliceReceiverTester {
     }
 }
 
-// This contract has the empty, specific comment, fallback string, and binary receivers 
+// This contract has the empty, specific comment, fallback string, and binary receivers
 contract EmptyAndCommentAndStringAndBinaryReceiverTester {
     receiver: String = "unknown";
 
@@ -1062,7 +1060,7 @@ contract EmptyAndCommentAndStringAndBinaryReceiverTester {
     }
 }
 
-// This contract has the empty, specific comment, fallback string, and fallback receivers 
+// This contract has the empty, specific comment, fallback string, and fallback receivers
 contract EmptyAndCommentAndStringAndSliceReceiverTester {
     receiver: String = "unknown";
 
@@ -1077,7 +1075,7 @@ contract EmptyAndCommentAndStringAndSliceReceiverTester {
     receive(msg: String) {
         self.receiver = "fallback_string";
     }
-    
+
     receive(msg: Slice) {
         self.receiver = "fallback";
     }
@@ -1098,8 +1096,8 @@ contract EmptyAndCommentAndStringAndSliceReceiverTester {
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -1107,7 +1105,7 @@ contract EmptyAndCommentAndStringAndSliceReceiverTester {
     }
 }
 
-// This contract has the empty, specific comment, binary, and fallback receivers 
+// This contract has the empty, specific comment, binary, and fallback receivers
 contract EmptyAndCommentAndBinaryAndSliceReceiverTester {
     receiver: String = "unknown";
 
@@ -1122,7 +1120,7 @@ contract EmptyAndCommentAndBinaryAndSliceReceiverTester {
     receive(msg: Message) {
         self.receiver = "binary";
     }
-    
+
     receive(msg: Slice) {
         self.receiver = "fallback";
     }
@@ -1152,8 +1150,8 @@ contract EmptyAndCommentAndBinaryAndSliceReceiverTester {
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -1161,7 +1159,7 @@ contract EmptyAndCommentAndBinaryAndSliceReceiverTester {
     }
 }
 
-// This contract has the empty, string, binary and fallback receivers 
+// This contract has the empty, string, binary and fallback receivers
 contract EmptyAndStringAndBinaryAndSliceReceiverTester {
     receiver: String = "unknown";
 
@@ -1176,7 +1174,7 @@ contract EmptyAndStringAndBinaryAndSliceReceiverTester {
     receive(msg: Message) {
         self.receiver = "binary";
     }
-    
+
     receive(msg: Slice) {
         self.receiver = "fallback";
     }
@@ -1206,8 +1204,8 @@ contract EmptyAndStringAndBinaryAndSliceReceiverTester {
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -1215,7 +1213,7 @@ contract EmptyAndStringAndBinaryAndSliceReceiverTester {
     }
 }
 
-// This contract has the specific comment, string, binary and fallback receivers 
+// This contract has the specific comment, string, binary and fallback receivers
 contract CommentAndStringAndBinaryAndSliceReceiverTester {
     receiver: String = "unknown";
 
@@ -1230,7 +1228,7 @@ contract CommentAndStringAndBinaryAndSliceReceiverTester {
     receive(msg: Message) {
         self.receiver = "binary";
     }
-    
+
     receive(msg: Slice) {
         self.receiver = "fallback";
     }
@@ -1260,8 +1258,8 @@ contract CommentAndStringAndBinaryAndSliceReceiverTester {
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -1288,7 +1286,7 @@ contract AllReceiverTester {
     receive(msg: Message) {
         self.receiver = "binary";
     }
-    
+
     receive(msg: Slice) {
         self.receiver = "fallback";
     }
@@ -1323,8 +1321,8 @@ contract AllReceiverTester {
     }
 
     external(msg: Slice) {
-       acceptMessage();
-       self.receiver = "external_fallback";
+        acceptMessage();
+        self.receiver = "external_fallback";
     }
 
     get fun receiver(): String {
@@ -1339,11 +1337,11 @@ contract EmptyBouncedTester {
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
         send(SendParameters {
-                to: msg.address,
-                bounce: true,
-                value: ton("5"),
-                body: msg.body,
-                });
+            to: msg.address,
+            bounce: true,
+            value: ton("5"),
+            body: msg.body,
+        });
     }
 
     receive("reset") {
@@ -1370,11 +1368,11 @@ contract BinaryBouncedTester {
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
         send(SendParameters {
-                to: msg.address,
-                bounce: true,
-                value: ton("5"),
-                body: msg.body,
-                });
+            to: msg.address,
+            bounce: true,
+            value: ton("5"),
+            body: msg.body,
+        });
     }
 
     receive("reset") {
@@ -1397,11 +1395,11 @@ contract SliceBouncedTester {
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
         send(SendParameters {
-                to: msg.address,
-                bounce: true,
-                value: ton("5"),
-                body: msg.body,
-                });
+            to: msg.address,
+            bounce: true,
+            value: ton("5"),
+            body: msg.body,
+        });
     }
 
     receive("reset") {
@@ -1432,11 +1430,11 @@ contract AllBouncedTester {
     // Initiate a request to the specified address with the specified cell as message body
     receive(msg: SendCellToAddress) {
         send(SendParameters {
-                to: msg.address,
-                bounce: true,
-                value: ton("5"),
-                body: msg.body,
-                });
+            to: msg.address,
+            bounce: true,
+            value: ton("5"),
+            body: msg.body,
+        });
     }
 
     receive("reset") {

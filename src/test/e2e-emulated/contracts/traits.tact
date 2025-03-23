@@ -4,11 +4,11 @@ trait Animal with BaseTrait {
 
     get fun say(): String {
         return beginString()
-          .concat("I am a ")
-          .concat(self.getType())
-          .concat(" and I say ")
-          .concat(self.getSound())
-          .toString();
+            .concat("I am a ")
+            .concat(self.getType())
+            .concat(" and I say ")
+            .concat(self.getSound())
+            .toString();
     }
     receive("make sound") {
         self.reply(self.say().asComment());

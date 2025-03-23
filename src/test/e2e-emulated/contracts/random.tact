@@ -1,7 +1,6 @@
 import "@stdlib/deploy";
 
 contract RandomContract with Deployable {
-
     init() {
         // do nothing
     }

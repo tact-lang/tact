@@ -1,9 +1,6 @@
 contract IntegerLiteralsTester {
+    init() {}
 
-    init() {
-        
-    }
-    
     receive() {
         // Deploy
     }

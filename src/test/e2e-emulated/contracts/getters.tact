@@ -62,12 +62,15 @@ contract Test with Deployable {
     get((crc32("methodId") + 42) & 0b111111111111111111) fun methodIdExpr(): Bool {
         return true;
     }
+
     get(METHOD_ID) fun methodIdConst(): Int {
         return METHOD_ID;
     }
+
     get(-pow2(18)) fun methodIdMin(): Bool {
         return true;
     }
+
     get(pow2(18) - 1) fun methodIdMax(): Bool {
         return true;
     }

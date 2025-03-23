@@ -2,7 +2,7 @@
 native youDo();
 
 contract Test {
-   get fun test() {
-       youDo();
-   }
+    get fun test() {
+        youDo();
+    }
 }

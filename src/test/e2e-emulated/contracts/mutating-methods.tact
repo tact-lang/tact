@@ -21,7 +21,7 @@ struct MyStruct {
 }
 
 fun returnMyStruct(): MyStruct {
-    return MyStruct{ age: 10 };
+    return MyStruct { age: 10 };
 }
 
 extends mutates fun setAge(self: MyStruct, age: Int): Int {
@@ -32,12 +32,13 @@ extends mutates fun setAge(self: MyStruct, age: Int): Int {
 
 contract Tester {
     s: Slice;
-    
+
     init() {
         self.s = beginCell().storeUint(3, 2).storeUint(1, 2).endCell().asSlice();
     }
+
     receive() {}
-    
+
     get fun test1(): Int {
         let x: Int = beginCell().storeUint(0, 1).endCell().beginParse().loadUint(1);
         return x;
@@ -74,13 +75,13 @@ contract Tester {
 
     get fun test8(): Int {
         let foo: Foo = Foo {
-              s: beginCell()
-                 .storeUint(3, 2)
-                 .storeUint(1, 2)
-                 .endCell().asSlice(),  // bits: 1101
-            };
+            s: beginCell()
+                .storeUint(3, 2)
+                .storeUint(1, 2)
+                .endCell().asSlice(), // bits: 1101
+        };
         foo.s.loadBits(1); // should mutate foo.s, making it point to 101
-        return foo.s.loadUint(3);  // if the previous line mutated foo.s, should return 5, otherwise 6
+        return foo.s.loadUint(3); // if the previous line mutated foo.s, should return 5, otherwise 6
     }
 
     get fun test9(): Int {
