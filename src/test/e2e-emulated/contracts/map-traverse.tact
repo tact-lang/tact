@@ -17,7 +17,7 @@ contract MapTraverseTestContract {
         self.m.set(2, 200);
         self.m.set(3, 300);
 
-        self.s = MyStructWithMap{m: self.m};
+        self.s = MyStructWithMap { m: self.m };
     }
 
     receive() {
@@ -136,10 +136,10 @@ contract MapTraverseTestContract {
 
     get fun test_int_struct(): Int {
         let m: map<Int, MyStruct> = emptyMap();
-        m.set(1, MyStruct{a: 100, b: true});
-        m.set(2, MyStruct{a: 200, b: false});
-        m.set(3, MyStruct{a: 300, b: true});
-        m.set(4, MyStruct{a: 400, b: false});
+        m.set(1, MyStruct { a: 100, b: true });
+        m.set(2, MyStruct { a: 200, b: false });
+        m.set(3, MyStruct { a: 300, b: true });
+        m.set(4, MyStruct { a: 400, b: false });
 
         let sum11: Int = 0;
         let sum12: Int = 0;
@@ -173,7 +173,7 @@ contract MapTraverseTestContract {
             sum1 += s.loadUint(3);
             sum2 += v;
         }
-        
+
         return sum1 + sum2;
     }
 
@@ -192,7 +192,7 @@ contract MapTraverseTestContract {
             sum1 += s.loadUint(3);
             sum2 += v;
         }
-        
+
         return sum1 + sum2;
     }
 
@@ -211,7 +211,7 @@ contract MapTraverseTestContract {
             sum1 += s.loadUint(3);
             sum2 += v;
         }
-        
+
         return sum1 + sum2;
     }
 
@@ -282,10 +282,10 @@ contract MapTraverseTestContract {
 
     get fun test_address_struct(): Int {
         let m: map<Address, MyStruct> = emptyMap();
-        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873), MyStruct{a: 100, b: true});
-        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76874), MyStruct{a: 200, b: false});
-        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76875), MyStruct{a: 300, b: true});
-        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76876), MyStruct{a: 400, b: false});
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873), MyStruct { a: 100, b: true });
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76874), MyStruct { a: 200, b: false });
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76875), MyStruct { a: 300, b: true });
+        m.set(newAddress(0, 0x4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76876), MyStruct { a: 400, b: false });
 
         let sum11: Int = 0;
         let sum12: Int = 0;

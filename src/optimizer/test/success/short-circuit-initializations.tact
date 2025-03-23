@@ -1,7 +1,7 @@
 primitive Bool;
 primitive Int;
 
-trait BaseTrait { }
+trait BaseTrait {}
 
 const COL: Bool = true || loop();
 const COE: Bool = true || exception(0);
@@ -10,8 +10,7 @@ const CAL: Bool = false && loop();
 const CAE: Bool = false && exception(0);
 
 fun loop(): Bool {
-    while(true) {
-    }
+    while (true) {}
     return true;
 }
 
