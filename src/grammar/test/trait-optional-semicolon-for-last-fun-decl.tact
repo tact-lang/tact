@@ -1,1 +1,3 @@
-trait Test { abstract fun foo() }
+trait Test {
+    abstract fun foo();
+}
