@@ -1,4 +1,4 @@
-trait BaseTrait { }
+trait BaseTrait {}
 
 contract Test {
     receive() {

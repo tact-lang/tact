@@ -6,7 +6,7 @@ fun notAlwaysReachableReturn(b: Bool): Int {
         try {
             let x: Int = 1 / (b ? 0 : 1);
             return 42;
-        } catch(e) {
+        } catch (e) {
             return 43;
         }
     } else {

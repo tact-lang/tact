@@ -2,9 +2,7 @@ primitive Int;
 primitive Bool;
 primitive Cell;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 struct Point {
     x: Int;

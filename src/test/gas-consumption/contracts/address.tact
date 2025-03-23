@@ -1,5 +1,5 @@
 contract Addresses {
-    receive() { }
+    receive() {}
 
     init() {}
 

@@ -1,5 +1,5 @@
 primitive Int;
-trait BaseTrait { }
+trait BaseTrait {}
 
 const SHIFT_VAL: Int = 1000;
 

@@ -1,13 +1,13 @@
 primitive String;
 
-trait BaseTrait { }
+trait BaseTrait {}
 
 contract TestContract {
     get fun getter1() {
         return;
     }
 
-    get fun supported_interfaces(): String{
+    get fun supported_interfaces(): String {
         return "ok";
     }
 }

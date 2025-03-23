@@ -32,6 +32,7 @@ contract Functions {
         require(msg.value > 0, "Value must be greater than 0");
         self.update(-msg.value);
     }
+
     receive(msg: TestGetFwdFee) {
         touch(context().readForwardFee());
     }

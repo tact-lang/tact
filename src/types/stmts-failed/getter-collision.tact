@@ -1,4 +1,4 @@
-trait BaseTrait { }
+trait BaseTrait {}
 
 contract TestContract {
     get fun getter1() {

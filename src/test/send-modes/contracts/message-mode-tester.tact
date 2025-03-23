@@ -1,7 +1,7 @@
 
 
 // Request average of all numbers in the interval [from,to], inclusive.
-// When the calculator sends the response back, it will pay the amount 
+// When the calculator sends the response back, it will pay the amount
 // amountToPayInResponse in the message value.
 message AverageRequest {
     from: Int as uint32;
@@ -13,9 +13,8 @@ message AverageResult {
     res: Int as uint32;
 }
 
-// This contract computes averages and sends them back 
+// This contract computes averages and sends them back
 contract Calculator {
-
     // Used for deployment
     receive() {}
 
@@ -31,13 +30,13 @@ contract Calculator {
             count += 1;
         }
         let result = sum / n;
-        message(MessageParameters{
+        message(MessageParameters {
             to: sender(),
             bounce: false,
             // SendDefaultMode with no flags is default
             value: request.amountToPayInResponse,
-            body: AverageResult{res: result}.toCell(), 
-            });
+            body: AverageResult { res: result }.toCell(),
+        });
     }
 }
 
@@ -54,7 +53,6 @@ message DoCalculatorRequest {
 }
 
 contract MessageModeTester {
-
     // -1 means "initial state".
     // -2 means "error"
     // -3 means "op requested, no answer yet"
@@ -71,7 +69,7 @@ contract MessageModeTester {
     bounced(msg: bounced<AverageRequest>) {
         self.val = -2;
     }
-    
+
     get fun currentResult(): Int {
         return self.val;
     }
@@ -80,13 +78,13 @@ contract MessageModeTester {
     // Using default mode, no flags
     receive(msg: DoCalculatorRequest) {
         let addr = contractAddress(initOf Calculator());
-        message(MessageParameters{
-                to: addr,
-                bounce: true,
-                value: msg.amountToPayInRequest,
-                mode: SendDefaultMode,
-                body: AverageRequest{from: msg.from, to: msg.to, amountToPayInResponse: msg.amountToPayInCalculatorResponse}.toCell(),
-                });
+        message(MessageParameters {
+            to: addr,
+            bounce: true,
+            value: msg.amountToPayInRequest,
+            mode: SendDefaultMode,
+            body: AverageRequest { from: msg.from, to: msg.to, amountToPayInResponse: msg.amountToPayInCalculatorResponse }.toCell(),
+        });
         self.val = -3;
     }
 }

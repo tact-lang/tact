@@ -2,9 +2,7 @@ primitive Int;
 primitive Bool;
 primitive Cell;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 fun main() {
     let a: Int = 10;

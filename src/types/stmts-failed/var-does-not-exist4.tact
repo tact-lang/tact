@@ -1,6 +1,6 @@
 primitive Int;
 
-trait BaseTrait { }
+trait BaseTrait {}
 
 trait TestTrait {
     someField: Int;

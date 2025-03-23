@@ -1,9 +1,7 @@
 primitive Int;
 primitive Bool;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 struct A {
     a: Int;

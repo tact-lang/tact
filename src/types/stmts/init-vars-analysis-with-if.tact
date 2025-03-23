@@ -1,9 +1,7 @@
 primitive Int;
 primitive Bool;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 contract Contract {
     value: Int;
@@ -28,7 +26,7 @@ contract Contract2 {
     value2: S;
     init(arg: Bool) {
         self.value = 1;
-        self.value2 = S{ a: 1, b: self.value };
+        self.value2 = S { a: 1, b: self.value };
     }
 }
 

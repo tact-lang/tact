@@ -1,8 +1,6 @@
 primitive Int;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 struct S {
     a: Int;
@@ -13,7 +11,7 @@ struct S {
 const x: Int = 5;
 
 fun testFunc(): Int {
-    let s = S{ a: 1, b: 2, c: 3 };
+    let s = S { a: 1, b: 2, c: 3 };
     let S { a: x, b: b, c: c } = s;
     return x + b + c;
 }

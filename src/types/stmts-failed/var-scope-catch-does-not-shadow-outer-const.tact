@@ -3,7 +3,7 @@ primitive String;
 
 const e: String = "qwe";
 
-fun test(): String {   
+fun test(): String {
     try {
         return e;
     } catch (err) {

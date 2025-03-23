@@ -2,9 +2,7 @@ primitive Int;
 primitive Bool;
 primitive Cell;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 struct SomeStruct {
     a: Int;
@@ -12,8 +10,8 @@ struct SomeStruct {
 }
 
 fun main() {
-    let a: SomeStruct = SomeStruct{
+    let a: SomeStruct = SomeStruct {
         a: 1,
-        b: 2
+        b: 2,
     };
 }

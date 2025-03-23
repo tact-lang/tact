@@ -1,13 +1,13 @@
 primitive Int;
 
-trait BaseTrait { }
+trait BaseTrait {}
 
 contract TestContract {
     get fun getter1() {
         return;
     }
 
-    get(121275) fun _get_abi_ipfs(): Int{
+    get(121275) fun _get_abi_ipfs(): Int {
         return 123;
     }
 }

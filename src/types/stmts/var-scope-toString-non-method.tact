@@ -1,7 +1,8 @@
 import "@stdlib/deploy";
+
 primitive Int;
 
-trait BaseTrait { }
+trait BaseTrait {}
 
 fun toString(): Int {
     return 123;

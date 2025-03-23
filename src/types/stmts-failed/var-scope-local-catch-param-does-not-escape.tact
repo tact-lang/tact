@@ -1,10 +1,6 @@
 primitive Int;
 
 fun test() {
-    try {
-
-    } catch (e) {
-
-    }
+    try {} catch (e) {}
     return e;
 }

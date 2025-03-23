@@ -1,5 +1,5 @@
 primitive Int;
-trait BaseTrait { }
+trait BaseTrait {}
 
 message Withdraw {
     amount: Int as uint256; // too big
@@ -8,7 +8,7 @@ message Withdraw {
 contract Fund {
     balance: Int as uint256 = 0;
 
-    bounced(msg: bounced<Withdraw>){
+    bounced(msg: bounced<Withdraw>) {
         self.balance += msg.amount;
     }
 }

@@ -32,7 +32,7 @@ contract RepeatRangeTester {
 
         return counter == 1;
     }
-    
+
     /// from 1 to 2^{31} - 1, including both ends
     receive("testMaxEffectiveRange") {
         let counter = pow(2, 31) - 1;

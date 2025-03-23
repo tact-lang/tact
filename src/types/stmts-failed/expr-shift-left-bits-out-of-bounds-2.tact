@@ -1,5 +1,5 @@
 primitive Int;
-trait BaseTrait { }
+trait BaseTrait {}
 
 contract Test {
     get fun shift(x: Int): Int {

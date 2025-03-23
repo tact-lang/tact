@@ -1,6 +1,6 @@
 primitive Int;
 primitive Bool;
-trait BaseTrait { }
+trait BaseTrait {}
 
 contract Foo {
     get fun noReturn() {

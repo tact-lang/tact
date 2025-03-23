@@ -1,13 +1,11 @@
 primitive Int;
 primitive Bool;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 fun isZero(x: Int): Bool {
     do {
         x = x + 1;
-    } until(x);
+    } until (x);
     return true;
 }
