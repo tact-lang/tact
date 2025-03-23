@@ -4952,7 +4952,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       "loc": fun anotherFunction(
     a: Int,
     b: Int,
-    ): Int {
+): Int {
     return (a >> b) || (a << (32 - b));
 },
       "name": {
@@ -5348,7 +5348,7 @@ exports[`grammar should parse items-method-def-initof-trailing-comma-shifts 1`] 
       "loc": fun oneMoreFunction(
     a: Int,
     b: Int,
-    ): Int {
+): Int {
     return anotherFunction(
         a,
         b,

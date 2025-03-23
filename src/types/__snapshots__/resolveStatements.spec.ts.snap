@@ -55,29 +55,29 @@ exports[`resolveStatements should fail statements for assign-const-global 1`] = 
 `;
 
 exports[`resolveStatements should fail statements for assign-const-struct-contract 1`] = `
-"<unknown>:12:9: Modifications of constant expressions are not allowed
-  11 |         self.baz.x = 1; // ok
-> 12 |         self.foo.y = 42 // <-- trying to assign to a constant
+"<unknown>:15:9: Modifications of constant expressions are not allowed
+  14 |         self.baz.x = 1; // ok
+> 15 |         self.foo.y = 42 // <-- trying to assign to a constant
                ^~~~~~~~~~
-  13 |     }
+  16 |     }
 "
 `;
 
 exports[`resolveStatements should fail statements for assign-const-struct-global 1`] = `
-"<unknown>:10:5: Modifications of constant expressions are not allowed
-   9 |     baz.x = 1; // ok
-> 10 |     foo.y = 42 // <-- trying to assign to a constant
+"<unknown>:13:5: Modifications of constant expressions are not allowed
+  12 |     baz.x = 1; // ok
+> 13 |     foo.y = 42 // <-- trying to assign to a constant
            ^~~~~
-  11 | }
+  14 | }
 "
 `;
 
 exports[`resolveStatements should fail statements for bounced-type-is-smaller 1`] = `
-"<unknown>:23:22: Maximum size of the bounced message is 224 bytes, but the "c" field of type "A" cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes
-  22 |     let y: Bool = src.b;
-> 23 |     let z: Int = src.c;
-                            ^
-  24 |   }
+"<unknown>:19:26: Maximum size of the bounced message is 224 bytes, but the "c" field of type "A" cannot fit into it due to the size of previous fields or its own size, so it cannot be accessed. Make the type of the fields before this one smaller, or reduce the type of this field so that it fits into 224 bytes
+  18 |         let y: Bool = src.b;
+> 19 |         let z: Int = src.c;
+                                ^
+  20 |     }
 "
 `;
 
@@ -109,11 +109,11 @@ exports[`resolveStatements should fail statements for contract-getter-with-metho
 `;
 
 exports[`resolveStatements should fail statements for contract-initof-wrong-arg 1`] = `
-"<unknown>:26:25: Cannot pass an expression of type "String" to the parameter "owner" of type "Int"
-  25 |     get fun newInit(): StateInit {
-> 26 |         return initOf A("hello");
+"<unknown>:22:25: Cannot pass an expression of type "String" to the parameter "owner" of type "Int"
+  21 |     get fun newInit(): StateInit {
+> 22 |         return initOf A("hello");
                                ^~~~~~~
-  27 |     }
+  23 |     }
 "
 `;
 
@@ -306,12 +306,12 @@ exports[`resolveStatements should fail statements for expr-eq-optional-stringbui
 `;
 
 exports[`resolveStatements should fail statements for expr-eq-optional-struct 1`] = `
-"<unknown>:10:16: Expressions of "S?" type cannot be used for (non)equality operator "=="
+"<unknown>:13:16: Expressions of "S?" type cannot be used for (non)equality operator "=="
  See https://docs.tact-lang.org/book/operators#binary-equality
-   9 |         let s: S? = S {x: 42, y: 0};
-> 10 |         return s == s;
+  12 |         let s: S? = S { x: 42, y: 0 };
+> 13 |         return s == s;
                       ^~~~~~
-  11 |     }
+  14 |     }
 "
 `;
 
@@ -565,11 +565,11 @@ exports[`resolveStatements should fail statements for expr-struct-missing-field 
 `;
 
 exports[`resolveStatements should fail statements for expr-struct-wrong-field-type 1`] = `
-"<unknown>:17:9: Invalid type "Bool" for field "b" with type "Int" in type "SomeStruct"
-  16 |         a: 1,
-> 17 |         b: false // Invalid type
+"<unknown>:15:9: Invalid type "Bool" for field "b" with type "Int" in type "SomeStruct"
+  14 |         a: 1,
+> 15 |         b: false // Invalid type
                ^~~~~~~~
-  18 |     };
+  16 |     };
 "
 `;
 
