@@ -1,6 +1,6 @@
 import path from "path";
 import { cwd } from "process";
-import type { AstFuncId, AstId, AstTypeId } from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import type { SrcInfo } from "../grammar";
 
 export class TactInternalError extends Error {
@@ -118,7 +118,7 @@ export function throwConstEvalError(
  * @deprecated Use loc.locatedId()
  */
 export function idTextErr(
-    ident: AstId | AstFuncId | AstTypeId | string,
+    ident: Ast.Id | Ast.FuncId | Ast.TypeId | string,
 ): string {
     if (typeof ident === "string") {
         return `"${ident}"`;

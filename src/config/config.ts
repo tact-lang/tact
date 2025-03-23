@@ -15,7 +15,7 @@ export type OptimizationOptions = {
     readonly alwaysSaveContractData?: boolean;
 
     /**
-     * If set to `true`, stores internal and external receivers outside of the methods map. Default is `false`.
+     * If set to `true`, stores internal and external receivers outside of the methods map. Default is `true`.
      * When enabled, it saves gas but can cause the contract to be incorrectly recognized and misparsed by some explorers and user wallets.
      */
     readonly internalExternalReceiversOutsideMethodsMap?: boolean;

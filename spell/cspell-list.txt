@@ -111,6 +111,7 @@ memecoin
 Merkle
 minmax
 mintable
+misparse
 misparsed
 mktemp
 multiformats

@@ -11,7 +11,7 @@ import { funcIdOf } from "./id";
 import { ops } from "./ops";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { writeStatement } from "./writeFunction";
-import type { AstNumber, AstReceiver } from "../../ast/ast";
+import type * as Ast from "../../ast/ast";
 import {
     throwCompilationError,
     throwInternal,
@@ -47,7 +47,7 @@ type Receivers = {
 type FallbackReceiver = {
     selector: FallbackReceiverSelector;
     effects: ReadonlySet<Effect>;
-    ast: AstReceiver;
+    ast: Ast.Receiver;
 };
 
 type BouncedReceivers = {
@@ -685,7 +685,7 @@ function writeReceiverBody(
     wCtx.append("return ();");
 }
 
-function messageOpcode(n: AstNumber): string {
+function messageOpcode(n: Ast.Number): string {
     // FunC does not support binary and octal numerals
     switch (n.base) {
         case 10:
