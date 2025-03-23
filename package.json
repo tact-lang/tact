@@ -56,6 +56,7 @@
     "all": "yarn clean && yarn gen && yarn build && yarn coverage && yarn lint:all",
     "next-version": "ts-node version.build.ts",
     "random-ast": "ts-node ./src/ast/random-ast.ts",
+    "gen-make-functions": "ts-node ./src/ast/generated/gen-make-functions-script.ts && yarn prettier -w ./src/ast/generated/make-factory.ts",
     "top10": "find . -type f -exec du -h {} + | sort -rh | head -n 10"
   },
   "files": [
@@ -106,6 +107,9 @@
     "@types/node": "^22.5.0",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",
+    "@babel/generator": "^7.26.10",
+    "@babel/parser": "^7.26.10",
+    "@babel/types": "^7.26.10",
     "chalk": "4.1.2",
     "cli-table3": "^0.6.5",
     "cross-env": "^7.0.3",
