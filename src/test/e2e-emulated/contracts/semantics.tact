@@ -310,8 +310,7 @@ contract SemanticsTester {
 
     mutateContractStateResult: Bool = false;
 
-    init() { 
-
+    init() {
         /***** Structs *****/
 
         self.uB.b1 = false;       // What is the meaning of this? self.uB is not initialized.
@@ -797,7 +796,7 @@ contract SemanticsTester {
 
     // Assigning a map to a variable preserves contents
 
-    get fun mapAssign1(): Bool { 
+    get fun mapAssign1(): Bool {
         let s = self.mA;
 
         // The entries of s and self.mA are equal, and the values did not change
@@ -843,12 +842,12 @@ contract SemanticsTester {
 
     // Assignment of maps is done by value
 
-    get fun mapAssign2(): Bool { 
+    get fun mapAssign2(): Bool {
         // Make a local copy of the map
         let s = self.mA;
 
         // Modify an entry in the local copy
-        s.set(1, SA {a1: 0, a2: SB {b1: false, b2: self.sC, b3: 2}});
+        s.set(1, SA { a1: 0, a2: SB { b1: false, b2: self.sC, b3: 2 } });
 
         // The compiler does not allow directly changing the contents of a struct inside an entry:
         // s.get(2)!!.a2.b2.c1 = 7;
@@ -883,7 +882,6 @@ contract SemanticsTester {
     }
 
     get fun paramMap1(): Bool {
-        
         // This should not modify self.mA.
 
         let s = getNewMap(self.mA);
@@ -904,7 +902,6 @@ contract SemanticsTester {
     }
 
     get fun paramMap2(): Bool {
-        
         // This should not modify self.mA.
         // In the copy: it will delete entries 2 and 3 and modify entry 1.
         let s = copyAndModifyMap(self.mA);
@@ -925,8 +922,7 @@ contract SemanticsTester {
     }
 
     get fun mutateParamMap1(): Bool {
-
-        let s = MapWrapper {m: self.mA};
+        let s = MapWrapper { m: self.mA };
 
         // This should reassign s.m, but leave self.mA unchanged.
 
@@ -948,8 +944,7 @@ contract SemanticsTester {
     }
 
     get fun mutateParamMap2(): Bool {
-
-        let s = MapWrapper {m: self.mA};
+        let s = MapWrapper { m: self.mA };
 
         // This should mutate entry 1 in s.m, and delete entries 2 and 3, but leave self.mA unchanged.
         
@@ -1172,12 +1167,12 @@ contract SemanticsTester {
         //         ]
 
         // First build the map containing the updated s and wrap it
-        let nestedMap1: map<Int,SA> = emptyMap();
+        let nestedMap1: map<Int, SA> = emptyMap();
         nestedMap1.set(10, s);
-        let wrappedNested1 = MapWrapper {m: nestedMap1};
+        let wrappedNested1 = MapWrapper { m: nestedMap1 };
 
         // As a side note: we can also achieve the same result by doing this:
-        let wrappedNested2 = MapWrapper {m: emptyMap()};
+        let wrappedNested2 = MapWrapper { m: emptyMap() };
         wrappedNested2.m.set(10, s);
 
         // Indeed, wrappedNested1 and wrappedNested2 are equal
@@ -1229,10 +1224,9 @@ contract SemanticsTester {
     /*************** Contracts ********************/
 
     get fun contractAssign1(): Bool {
-        
         // Contract assignment works by value, which means that a copy of the contract is created 
         // during assignment.
-        
+
         let c = self;
 
         // What does it mean that c is a copy? It does NOT mean that 
@@ -1309,9 +1303,7 @@ contract SemanticsTester {
         return result;
     }
 
-
     get fun paramContract(): Bool {
-        
         // This should not modify self.
         // This function will copy self and do the following changes to the copy: 
         // Change the uB field and delete entry 1 in mA.
@@ -1359,7 +1351,6 @@ contract SemanticsTester {
     }
 
     get fun mutateParamContract(): Bool {
-
         // First, make a copy of the contract
         let c = self;
         
@@ -1571,7 +1562,6 @@ contract SemanticsTester {
     get fun changesPersisted(): Bool {
         return self.checkFieldsEqualTo(SB { b1: true, b2: SC { c1: 77 }, b3: 88 }, 35);
     }
-
 
     /*************** Integers ********************/
 
