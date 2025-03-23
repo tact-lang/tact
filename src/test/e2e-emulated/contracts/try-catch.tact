@@ -74,7 +74,7 @@ contract TryCatchTester {
         try {
             x = 20;
             throwWithElseIf(42);
-        } catch(_) {
+        } catch (_) {
             return true; // x == 10;
         }
         return false;
