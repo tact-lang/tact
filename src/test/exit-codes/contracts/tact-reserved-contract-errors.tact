@@ -24,11 +24,11 @@ contract ReservedContractErrorsTester with Ownable {
 
     /// Exit code 130
     receive("130") {
-        message(MessageParameters{
+        message(MessageParameters {
             to: myAddress(), // Send a message back to this contract
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            body: SpanishInquisition{}.toCell(), // Nobody expects it!
+            body: SpanishInquisition {}.toCell(), // Nobody expects it!
         });
     }
 

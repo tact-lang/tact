@@ -1,9 +1,7 @@
 contract A {
     number: Int as uint32 = 0; // Different numbers to get different StateInit
 
-    receive() {
-
-    }
+    receive() {}
 
     get fun getNext(): StateInit {
         return initOf B();
@@ -17,9 +15,7 @@ contract A {
 contract B {
     number: Int as uint32 = 1; // Different numbers to get different StateInit
 
-    receive() {
-
-    }
+    receive() {}
 
     get fun getNext(): StateInit {
         return initOf C();
@@ -33,9 +29,7 @@ contract B {
 contract C {
     number: Int as uint32 = 2; // Different numbers to get different StateInit
 
-    receive() {
-
-    }
+    receive() {}
 
     get fun getNext(): StateInit {
         return initOf A();

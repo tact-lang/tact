@@ -1,4 +1,3 @@
-
 // Request average of all numbers in the interval [from,to], inclusive.
 // When the calculator sends the response back, it will pay the amount
 // amountToPayInResponse in the message value.

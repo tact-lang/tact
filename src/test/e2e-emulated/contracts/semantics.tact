@@ -299,9 +299,9 @@ contract SemanticsTester {
 
     // Declare some maps
 
-    mA: map<Int,SA>;
-    mB: map<Int,Bool>;
-    mC: map<Int,MapWrapper>;   // Simulate nested maps by wrapping them in a struct, 
+    mA: map<Int, SA>;
+    mB: map<Int, Bool>;
+    mC: map<Int, MapWrapper>;   // Simulate nested maps by wrapping them in a struct,
                                // "Morally", mC has type map<Int,map<Int,SA>>.
 
 
@@ -349,7 +349,7 @@ contract SemanticsTester {
         self.mA.set(3, s);
 
         // Initialize the mC map. The nested map will contain a copy of self.sA.
-        let nestedMap = MapWrapper {m: emptyMap()};
+        let nestedMap = MapWrapper { m: emptyMap() };
         nestedMap.m.set(10, self.sA);
         self.mC.set(100, nestedMap);
         
@@ -449,7 +449,7 @@ contract SemanticsTester {
 
     // Assigning a struct to a variable preserves fields
 
-    get fun structAssign1(): Bool { 
+    get fun structAssign1(): Bool {
         let s = self.sA;
 
         // The fields of s and self.sA are equal, and the values did not change
@@ -466,7 +466,7 @@ contract SemanticsTester {
 
     // Assignment of structs is done by value
 
-    get fun structAssign2(): Bool { 
+    get fun structAssign2(): Bool {
         // Make a local copy of the struct
         let s = self.sA;
 
@@ -479,7 +479,7 @@ contract SemanticsTester {
 
         // Modify the copy
         t.b3 = 100;
-        
+
         // self.sA remains unchanged,
         // the copy t inherits the value b2.c1 = 70 modified by s,
         // the copy s does not change its b3 field.
@@ -494,7 +494,6 @@ contract SemanticsTester {
     }
 
     get fun paramStruct1(): Bool {
-        
         // This should not modify self.sA.
 
         let s = getNewStruct(self.sA);
@@ -507,7 +506,6 @@ contract SemanticsTester {
     }
 
     get fun paramStruct2(): Bool {
-        
         // This should not modify self.sA.
 
         let s = copyAndModifyStruct(self.sA);
@@ -520,7 +518,6 @@ contract SemanticsTester {
     }
 
     get fun mutateParamStruct1(): Bool {
-
         let s = self.sA;
 
         // This should reassign s, but leave self.sA unchanged.
@@ -535,7 +532,6 @@ contract SemanticsTester {
     }
 
     get fun mutateParamStruct2(): Bool {
-
         let s = self.sA;
 
         // This should mutate some fields of s, but leave self.sA unchanged.
@@ -615,11 +611,11 @@ contract SemanticsTester {
 
     get fun mutatesChainStruct1(): Bool {
         let s = self.sA;
-        s.reflectStruct().incrementIntFields().flipBooleanFields();  // s changed only by the first function
-        
+        s.reflectStruct().incrementIntFields().flipBooleanFields(); // s changed only by the first function
+
         let t = self.sA;
         t = t.reflectStruct().incrementIntFields().flipBooleanFields(); // Assign back to t the struct returned by the last function
-        
+
         // The less confusing solution is to simply break the chain.
         // This solution even works when the last function in the chain has void return type.
         // Each step changes z
@@ -649,10 +645,10 @@ contract SemanticsTester {
     get fun mutatesChainStruct2(): Bool {
         let s = self.sA;
         s.reflectStruct().flipBooleanFields().incrementIntFields();
-        
+
         let t = self.sA;
         t = t.reflectStruct().flipBooleanFields().incrementIntFields();
-        
+
         let z = self.sA;
         z.reflectStruct();
         z.flipBooleanFields();
@@ -681,7 +677,7 @@ contract SemanticsTester {
 
         let t = self.sA;
         t = t.incrementIntFields().reflectStruct().flipBooleanFields();
-        
+
         let z = self.sA;
         z.incrementIntFields();
         z.reflectStruct();
@@ -1690,8 +1686,8 @@ contract SemanticsTester {
 
         result &&= s == 2;
 
-        // It will evaluate the first and second conjuncts and short-circuit at the 
-        // second conjunct to false. So s will be incremented at the second conjunct to 3, 
+        // It will evaluate the first and second conjuncts and short-circuit at the
+        // second conjunct to false. So s will be incremented at the second conjunct to 3,
         // but it should not be incremented to 4 in the third conjunct.
         let m4 = s == 2 && s.increment() > 3 && s.increment() > 3;
 
@@ -1702,9 +1698,9 @@ contract SemanticsTester {
 
         result &&= s == 5;
 
-        // It will evaluate the first and second conjuncts and short-circuit at the 
-        // second conjunct to false. So s will be incremented at the second conjunct to 6, 
-        // but it should not be incremented to 7 in the third conjunct or to 8 in the 
+        // It will evaluate the first and second conjuncts and short-circuit at the
+        // second conjunct to false. So s will be incremented at the second conjunct to 6,
+        // but it should not be incremented to 7 in the third conjunct or to 8 in the
         // fourth conjunct.
         let m6 = s == 5 && s.increment() > 6 && s.increment() > 6 && s.increment() > 6;
 
@@ -1720,23 +1716,23 @@ contract SemanticsTester {
         let s = 1;
 
         // Short-circuits to false, so no infinite loop happens.
-        // Note this implicitly tests the interpreter as well, because the 
+        // Note this implicitly tests the interpreter as well, because the
         // interpreter will be able to simplify the expression.
         let l1 = false && infiniteLoop();
 
         // Short-circuits to false, so no infinite loop happens.
         let l2 = s > 1 && infiniteLoop();
 
-        // It will evaluate the first and second conjuncts and short-circuit at the 
-        // second conjunct to false. So s will be incremented at the second conjunct to 2, 
+        // It will evaluate the first and second conjuncts and short-circuit at the
+        // second conjunct to false. So s will be incremented at the second conjunct to 2,
         // And no infinite loop happens in the third conjunct.
         let l3 = s == 1 && s.increment() > 2 && infiniteLoop();
 
         let result = s == 2;
 
-        // It will evaluate the first and second conjuncts and short-circuit at the 
-        // second conjunct to false. So s will be incremented at the second conjunct to 3, 
-        // And no infinite loop happens in the third conjunct and no increment happens at 
+        // It will evaluate the first and second conjuncts and short-circuit at the
+        // second conjunct to false. So s will be incremented at the second conjunct to 3,
+        // And no infinite loop happens in the third conjunct and no increment happens at
         // the fourth conjunct.
         let l4 = s == 2 && s.increment() > 3 && infiniteLoop() && s.increment() > 3;
 
@@ -1757,16 +1753,16 @@ contract SemanticsTester {
         // Short-circuits to false, so no exception thrown.
         let t2 = s > 1 && throwException(s - 1);
 
-        // It will evaluate the first and second conjuncts and short-circuit at the 
-        // second conjunct to false. So s will be incremented at the second conjunct to 2, 
+        // It will evaluate the first and second conjuncts and short-circuit at the
+        // second conjunct to false. So s will be incremented at the second conjunct to 2,
         // And no exception happens in the third conjunct.
         let t3 = s == 1 && s.increment() > 2 && throwException(s - 2);
 
         let result = s == 2;
 
-        // It will evaluate the first and second conjuncts and short-circuit at the 
-        // second conjunct to false. So s will be incremented at the second conjunct to 3, 
-        // And no exception happens in the third conjunct and no increment happens at 
+        // It will evaluate the first and second conjuncts and short-circuit at the
+        // second conjunct to false. So s will be incremented at the second conjunct to 3,
+        // And no exception happens in the third conjunct and no increment happens at
         // the fourth conjunct.
         let t4 = s == 2 && s.increment() > 3 && throwException(s - 3) && s.increment() > 3;
 
@@ -1796,8 +1792,8 @@ contract SemanticsTester {
 
         result &&= s == 2;
 
-        // It will evaluate the first and second disjuncts and short-circuit at the 
-        // second disjunct to true. So s will be incremented at the second disjunct to 3, 
+        // It will evaluate the first and second disjuncts and short-circuit at the
+        // second disjunct to true. So s will be incremented at the second disjunct to 3,
         // but it should not be incremented to 4 in the third one.
         let m4 = s != 2 || s.increment() >= 3 || s.increment() > 3;
 
@@ -1808,9 +1804,9 @@ contract SemanticsTester {
 
         result &&= s == 5;
 
-        // It will evaluate the first and second disjuncts and short-circuit at the 
-        // second disjunct to true. So s will be incremented at the second disjunct to 6, 
-        // but it should not be incremented to 7 in the third disjunct or to 8 in the 
+        // It will evaluate the first and second disjuncts and short-circuit at the
+        // second disjunct to true. So s will be incremented at the second disjunct to 6,
+        // but it should not be incremented to 7 in the third disjunct or to 8 in the
         // fourth one.
         let m6 = s != 5 || s.increment() >= 6 || s.increment() > 6 || s.increment() > 6;
 
@@ -1826,23 +1822,23 @@ contract SemanticsTester {
         let s = 1;
 
         // Short-circuits to true, so no infinite loop happens.
-        // Note this implicitly tests the interpreter as well, because the 
+        // Note this implicitly tests the interpreter as well, because the
         // interpreter will be able to simplify the expression.
         let l1 = true || infiniteLoop();
 
         // Short-circuits to true, so no infinite loop happens.
         let l2 = s >= 1 || infiniteLoop();
 
-        // It will evaluate the first and second disjuncts and short-circuit at the 
-        // second disjunct to true. So s will be incremented at the second disjunct to 2, 
+        // It will evaluate the first and second disjuncts and short-circuit at the
+        // second disjunct to true. So s will be incremented at the second disjunct to 2,
         // And no infinite loop happens in the third disjunct.
         let l3 = s != 1 || s.increment() >= 2 || infiniteLoop();
 
         let result = s == 2;
 
-        // It will evaluate the first and second disjuncts and short-circuit at the 
-        // second disjunct to true. So s will be incremented at the second disjunct to 3, 
-        // And no infinite loop happens in the third disjunct and no increment happens at 
+        // It will evaluate the first and second disjuncts and short-circuit at the
+        // second disjunct to true. So s will be incremented at the second disjunct to 3,
+        // And no infinite loop happens in the third disjunct and no increment happens at
         // the fourth one.
         let l4 = s != 2 || s.increment() >= 3 || infiniteLoop() || s.increment() > 3;
 
@@ -1863,16 +1859,16 @@ contract SemanticsTester {
         // Short-circuits to true, so no exception thrown.
         let t2 = s >= 1 || throwException(s - 1);
 
-        // It will evaluate the first and second disjuncts and short-circuit at the 
-        // second disjunct to true. So s will be incremented at the second disjunct to 2, 
+        // It will evaluate the first and second disjuncts and short-circuit at the
+        // second disjunct to true. So s will be incremented at the second disjunct to 2,
         // And no exception happens in the third disjunct.
         let t3 = s != 1 || s.increment() >= 2 || throwException(s - 2);
 
         let result = s == 2;
 
-        // It will evaluate the first and second disjuncts and short-circuit at the 
-        // second disjunct to true. So s will be incremented at the second disjunct to 3, 
-        // And no exception happens in the third disjunct and no increment happens at 
+        // It will evaluate the first and second disjuncts and short-circuit at the
+        // second disjunct to true. So s will be incremented at the second disjunct to 3,
+        // And no exception happens in the third disjunct and no increment happens at
         // the fourth one.
         let t4 = s != 2 || s.increment() >= 3 || throwException(s - 3) || s.increment() > 3;
 
@@ -2032,8 +2028,8 @@ contract SemanticsTester {
         let result = slice1 == slice2;
 
         // But now, let us read the first integer in slice1, but not in slice2.
-        // Naming convention of integer variables: 
-        // i1_s1 means "integer 1 of slice 1", 
+        // Naming convention of integer variables:
+        // i1_s1 means "integer 1 of slice 1",
         // i2_s1 means "integer 2 of slice 1",
         // i1_s2 means  "integer 1 of slice 2".... and so on.
         let i1_s1 = slice1.loadInt(6); // 10
@@ -2084,7 +2080,7 @@ contract SemanticsTester {
         result &&= i1_s3 == 10;
 
         // Now, make a copy of the slice (assignments are by value)
-        // This means that slice4 still has two integers to read as well. 
+        // This means that slice4 still has two integers to read as well.
         let slice4 = slice3;
 
         // Naturally, the slices are equal.
@@ -2172,7 +2168,7 @@ contract SemanticsTester {
         let slice4 = cell4.asSlice();
         let slice5 = cell5.asSlice();
 
-        // Slices 3 and 4 are equal, because they still need to read an integer and a reference to two equal cells (cells 1 and 2). 
+        // Slices 3 and 4 are equal, because they still need to read an integer and a reference to two equal cells (cells 1 and 2).
         let result = slice3 == slice4;
 
         // Slice 5 differs from slices 3 and 4, because slice 5 still needs to read an integer and a reference to an empty cell.
@@ -2309,8 +2305,10 @@ contract SemanticsTester {
         // Naming convention of data variables:
         // d1_s1 means "data 1 of slice 1", 
         // d2_s1 means "data 2 of slice 1", 
+        // d1_s1 means "data 1 of slice 1",
+        // d2_s1 means "data 2 of slice 1",
         // d1_s3 means "data 1 of slice 3",
-        // and so on 
+        // and so on
         let d1_s1 = slice1.loadInt(6); // 10
         let d1_s3 = slice3.loadBool(); // true
 
@@ -2405,7 +2403,7 @@ contract SemanticsTester {
         result &&= d1_s3 == 5 && d1_s4 == 5 && d1_s5 == 5;
 
         // Transforming the slices to cells produce two equal cells and one that differs:
-        // cells from slices 3 and 4 are equal because the slices still need to read 
+        // cells from slices 3 and 4 are equal because the slices still need to read
         // the references, which are references to equal cells.
         // Instead, the cell from slice 5 differs because it has a reference to an empty cell.
         result &&= slice3.asCell() == slice4.asCell() && slice3.asCell() != slice5.asCell() && slice4.asCell() != slice5.asCell();
