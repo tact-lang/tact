@@ -7,9 +7,9 @@ fun multiplyByTwoDeepBlocks(n: Int): Int {
         return -multiplyByTwoDeepBlocks(-n);
     } else if (n == 0) {
         return 0;
-    } else {     
-        {        
-            { 
+    } else {
+        {
+            {
                 {
                     {
                         {
@@ -44,4 +44,4 @@ fun multiplyByTwoDeepBlocks(n: Int): Int {
             }
         }
     }
-} 
+}
