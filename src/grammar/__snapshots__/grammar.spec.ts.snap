@@ -815,7 +815,7 @@ exports[`grammar should parse asm-instruction-no-whitespace-1 1`] = `
       "declarations": [],
       "id": 5,
       "kind": "contract",
-      "loc": contract Foo { },
+      "loc": contract Foo {},
       "name": {
         "id": 4,
         "kind": "id",
@@ -867,7 +867,7 @@ exports[`grammar should parse asm-instruction-no-whitespace-2 1`] = `
       "declarations": [],
       "id": 5,
       "kind": "contract",
-      "loc": contract Foo { },
+      "loc": contract Foo {},
       "name": {
         "id": 4,
         "kind": "id",
@@ -918,7 +918,7 @@ exports[`grammar should parse asm-instruction-no-whitespace-3 1`] = `
       "declarations": [],
       "id": 5,
       "kind": "contract",
-      "loc": contract Foo { },
+      "loc": contract Foo {},
       "name": {
         "id": 4,
         "kind": "id",
@@ -1287,7 +1287,7 @@ exports[`grammar should parse contract-optional-semicolon-for-last-const-def 1`]
             "value": 42n,
           },
           "kind": "constant_def",
-          "loc": const foo: Int = 42,
+          "loc": const foo: Int = 42;,
           "name": {
             "id": 2,
             "kind": "id",
@@ -1304,7 +1304,9 @@ exports[`grammar should parse contract-optional-semicolon-for-last-const-def 1`]
       ],
       "id": 6,
       "kind": "contract",
-      "loc": contract Test { const foo: Int = 42 },
+      "loc": contract Test {
+    const foo: Int = 42;
+},
       "name": {
         "id": 1,
         "kind": "id",
@@ -1362,7 +1364,9 @@ exports[`grammar should parse contract-optional-semicolon-for-last-storage-var 1
       ],
       "id": 7,
       "kind": "contract",
-      "loc": contract Test { m: map<Int, Int> },
+      "loc": contract Test {
+    m: map<Int, Int>;
+},
       "name": {
         "id": 1,
         "kind": "id",
@@ -1462,7 +1466,7 @@ exports[`grammar should parse contract-with-imports 1`] = `
       "declarations": [],
       "id": 5,
       "kind": "contract",
-      "loc": contract Test with Deploy { },
+      "loc": contract Test with Deploy {},
       "name": {
         "id": 3,
         "kind": "id",
@@ -1638,7 +1642,7 @@ exports[`grammar should parse contract-with-init 1`] = `
       "loc": contract Sample {
     a: Int;
     b: Int;
-    
+
     init(a: Int, b: Int) {
         self.a = a;
         self.b = b;
@@ -4290,7 +4294,7 @@ exports[`grammar should parse items-asm-funs 1`] = `
         "LDVARUINT16",
       ],
       "kind": "asm_function_def",
-      "loc": asm( -> 1 0) extends fun loadCoins(self: Slice): Int {
+      "loc": asm(-> 1 0) extends fun loadCoins(self: Slice): Int {
     LDVARUINT16
 },
       "name": {
@@ -9013,7 +9017,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
       "id": 125,
       "kind": "function_def",
       "loc": fun testFunc(): Int {
-    let s = S{ a: 1, b: 2, c: 3 };
+    let s = S { a: 1, b: 2, c: 3 };
     let S { a, b, c } = s;
     let S { a: a1, .. } = s;
     let S { b: b1, .. } = s;
@@ -9022,7 +9026,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
     let S { a: a3, c: c3, .. } = s;
     let S { b: b4, c: c4, .. } = s;
 
-    let m = M{ a: 1, b: 2 };
+    let m = M { a: 1, b: 2 };
     let M { a: a_m, b: b_m } = m;
 
     return a + b + c + a1 + b1 + c1 + a2 + b2 + a3 + c3 + b4 + c4 + a_m + b_m;
@@ -9101,7 +9105,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
             "id": 33,
             "kind": "struct_instance",
-            "loc": S{ a: 1, b: 2, c: 3 },
+            "loc": S { a: 1, b: 2, c: 3 },
             "type": {
               "id": 23,
               "kind": "id",
@@ -9111,7 +9115,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
           "id": 34,
           "kind": "statement_let",
-          "loc": let s = S{ a: 1, b: 2, c: 3 };,
+          "loc": let s = S { a: 1, b: 2, c: 3 };,
           "name": {
             "id": 22,
             "kind": "id",
@@ -9470,7 +9474,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
             ],
             "id": 88,
             "kind": "struct_instance",
-            "loc": M{ a: 1, b: 2 },
+            "loc": M { a: 1, b: 2 },
             "type": {
               "id": 81,
               "kind": "id",
@@ -9480,7 +9484,7 @@ exports[`grammar should parse stmt-destructuring 1`] = `
           },
           "id": 89,
           "kind": "statement_let",
-          "loc": let m = M{ a: 1, b: 2 };,
+          "loc": let m = M { a: 1, b: 2 };,
           "name": {
             "id": 80,
             "kind": "id",
@@ -10215,7 +10219,7 @@ exports[`grammar should parse stmt-while-loop 1`] = `
       "kind": "function_def",
       "loc": fun main() {
     let i: Int = 1;
-    while(i >= 10 || i <= 100) {
+    while (i >= 10 || i <= 100) {
         i = i + 1;
     }
 },
@@ -10299,7 +10303,7 @@ exports[`grammar should parse stmt-while-loop 1`] = `
           },
           "id": 18,
           "kind": "statement_while",
-          "loc": while(i >= 10 || i <= 100) {
+          "loc": while (i >= 10 || i <= 100) {
         i = i + 1;
     },
           "statements": [
@@ -10353,15 +10357,15 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
       "kind": "function_def",
       "loc": fun main() {
     let i: Int = 1;
-    while(true) {
+    while (true) {
         i = i + 1;
     }
-    repeat(10) {
+    repeat (10) {
         i = i * 10;
     }
     do {
         i = i - 1;
-    } until(false);
+    } until (false);
 },
       "name": {
         "id": 1,
@@ -10405,7 +10409,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
           },
           "id": 12,
           "kind": "statement_while",
-          "loc": while(true) {
+          "loc": while (true) {
         i = i + 1;
     },
           "statements": [
@@ -10451,7 +10455,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
             "value": 10n,
           },
           "kind": "statement_repeat",
-          "loc": repeat(10) {
+          "loc": repeat (10) {
         i = i * 10;
     },
           "statements": [
@@ -10498,7 +10502,7 @@ exports[`grammar should parse stmt-while-repeat-do-loops 1`] = `
           "kind": "statement_until",
           "loc": do {
         i = i - 1;
-    } until(false);,
+    } until (false);,
           "statements": [
             {
               "expression": {
@@ -11348,7 +11352,7 @@ exports[`grammar should parse trait-optional-semicolon-for-last-const-decl 1`] =
           ],
           "id": 4,
           "kind": "constant_decl",
-          "loc": abstract const foo: Int,
+          "loc": abstract const foo: Int;,
           "name": {
             "id": 2,
             "kind": "id",
@@ -11365,7 +11369,9 @@ exports[`grammar should parse trait-optional-semicolon-for-last-const-decl 1`] =
       ],
       "id": 5,
       "kind": "trait",
-      "loc": trait Test { abstract const foo: Int },
+      "loc": trait Test {
+    abstract const foo: Int;
+},
       "name": {
         "id": 1,
         "kind": "id",
@@ -11397,7 +11403,7 @@ exports[`grammar should parse trait-optional-semicolon-for-last-fun-decl 1`] = `
           ],
           "id": 3,
           "kind": "function_decl",
-          "loc": abstract fun foo(),
+          "loc": abstract fun foo();,
           "name": {
             "id": 2,
             "kind": "id",
@@ -11410,7 +11416,9 @@ exports[`grammar should parse trait-optional-semicolon-for-last-fun-decl 1`] = `
       ],
       "id": 4,
       "kind": "trait",
-      "loc": trait Test { abstract fun foo() },
+      "loc": trait Test {
+    abstract fun foo();
+},
       "name": {
         "id": 1,
         "kind": "id",
