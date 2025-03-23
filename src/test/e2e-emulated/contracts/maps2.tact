@@ -549,9 +549,7 @@ message ReplaceGetAllMaps {
     valueCoins: Int?;
 }
 
-message CheckNullReference {
-    
-}
+message CheckNullReference {}
 
 // ===============================
 // Test Contract

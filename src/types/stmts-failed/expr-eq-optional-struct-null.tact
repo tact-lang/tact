@@ -8,4 +8,3 @@ fun foo(s: S?): Bool {
     }
     return false;
 }
-

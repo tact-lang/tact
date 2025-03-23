@@ -1,8 +1,6 @@
 contract StringsTester {
-    init() {
-        
-    }
-    
+    init() {}
+
     receive() {
         // Deploy
     }

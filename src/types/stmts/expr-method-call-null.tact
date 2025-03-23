@@ -1,7 +1,7 @@
 primitive Bool;
 primitive Int;
 
-trait BaseTrait { }
+trait BaseTrait {}
 
 extends fun foo(self: Int?): Bool {
     if (self == null) { return false }

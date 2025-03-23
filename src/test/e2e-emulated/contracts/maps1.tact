@@ -549,9 +549,7 @@ message ReplaceGetAllMaps {
     valueStruct: SomeStruct?;
 }
 
-message CheckNullReference {
-    
-}
+message CheckNullReference {}
 
 // ===============================
 // Test Contract

@@ -84,7 +84,7 @@ fun copyAndModifyMap(m: map<Int, SA>): map<Int, SA> {
     // Change some entries in the map given as parameter
     // Since maps are passed by value, this does not change the map passed as parameter to the function
 
-    // Note that it is not possible to directly change the struct in entry 1 like 
+    // Note that it is not possible to directly change the struct in entry 1 like
     // m.get(1)!!.a2.b2.c1 += 40;
     // because the compiler only allows path expressions on the left of assignments.
     // So, we need to read m.get(1) and store it in a variable:
@@ -547,13 +547,12 @@ contract SemanticsTester {
 
     get fun testReturnedStructs(): Bool {
         // The call to the non-mutating extends function "copyStruct" always makes a copy
-        // of the parameter struct. Therefore, passing the result to the mutating function 
-        // "changeSomeFields" will modify the copy, not the original struct. 
-    
+        // of the parameter struct. Therefore, passing the result to the mutating function
+        // "changeSomeFields" will modify the copy, not the original struct.
+
         self.sA.copyStruct().changeSomeFields();
 
-        let result = 
-               self.checkAllContractFieldsAreUnchanged();
+        let result = self.checkAllContractFieldsAreUnchanged();
 
         // For the following test, make a copy of self.sA.
         let s = self.sA;
@@ -1254,10 +1253,9 @@ contract SemanticsTester {
     }
 
     get fun contractAssign2(): Bool {
-        
-        // Contract assignment works by value, which means that a copy of the contract is created 
+        // Contract assignment works by value, which means that a copy of the contract is created
         // during assignment.
-        
+
         let c = self;
 
         // Delete entries 1 and 2 in c.mA. This should not affect self.
@@ -2303,8 +2301,8 @@ contract SemanticsTester {
 
         // Read the first data in both slices
         // Naming convention of data variables:
-        // d1_s1 means "data 1 of slice 1", 
-        // d2_s1 means "data 2 of slice 1", 
+        // d1_s1 means "data 1 of slice 1",
+        // d2_s1 means "data 2 of slice 1",
         // d1_s1 means "data 1 of slice 1",
         // d2_s1 means "data 2 of slice 1",
         // d1_s3 means "data 1 of slice 3",
