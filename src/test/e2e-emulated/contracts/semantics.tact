@@ -15,16 +15,14 @@ struct SC {
 
 // Wrapper struct in order to pass maps to mutating functions. See issue #815.
 // Also, it is useful for nesting maps inside maps.
-struct MapWrapper {
-    m: map<Int,SA>
-}
+struct MapWrapper { m: map<Int, SA> }
 
 /**** Auxiliary functions for structs **********/
 
 fun getNewStruct(s: SA): SA {
     // Reassign the parameter value
     // This does not change the struct passed as parameter to the function
-    s = SA {a1: 0, a2: SB {b1: false, b2: SC {c1: 0}, b3: 0}};
+    s = SA { a1: 0, a2: SB { b1: false, b2: SC { c1: 0 }, b3: 0 } };
     return s;
 }
 
@@ -38,7 +36,7 @@ fun copyAndModifyStruct(s: SA): SA {
 
 extends mutates fun reassignStruct(self: SA) {
     // Reassigning the parameter will change the struct given as parameter
-    self = SA {a1: 0, a2: SB {b1: false, b2: SC {c1: 0}, b3: 0}};
+    self = SA { a1: 0, a2: SB { b1: false, b2: SC { c1: 0 }, b3: 0 } };
 }
 
 extends mutates fun changeSomeFields(self: SA) {
@@ -70,20 +68,19 @@ extends mutates fun flipBooleanFields(self: SA): SA {
     return self;
 }
 
-
 /**** Auxiliary functions for maps **********/
 
-fun getNewMap(m: map<Int,SA>): map<Int,SA> {
+fun getNewMap(m: map<Int, SA>): map<Int, SA> {
     // Reassign the parameter value
     // This does not change the map passed as parameter to the function
     m = emptyMap();
-    
-    m.set(1, SA {a1: 0, a2: SB {b1: false, b2: SC {c1: 0}, b3: 0}});
+
+    m.set(1, SA { a1: 0, a2: SB { b1: false, b2: SC { c1: 0 }, b3: 0 } });
 
     return m;
 }
 
-fun copyAndModifyMap(m: map<Int,SA>): map<Int,SA> {
+fun copyAndModifyMap(m: map<Int, SA>): map<Int, SA> {
     // Change some entries in the map given as parameter
     // Since maps are passed by value, this does not change the map passed as parameter to the function
 
@@ -128,8 +125,8 @@ One workaround is to wrap the map using a struct, since structs are allowed in e
 
 extends mutates fun reassignMap(self: MapWrapper) {
     // Reassigning the parameter will change the map given as parameter
-    self = MapWrapper {m: emptyMap()};
-    self.m.set(1, SA {a1: 0, a2: SB {b1: false, b2: SC {c1: 0}, b3: 0}});
+    self = MapWrapper { m: emptyMap() };
+    self.m.set(1, SA { a1: 0, a2: SB { b1: false, b2: SC { c1: 0 }, b3: 0 } });
 }
 
 extends mutates fun changeSomeEntries(self: MapWrapper) {
@@ -139,7 +136,7 @@ extends mutates fun changeSomeEntries(self: MapWrapper) {
     // Similar to comments in function copyAndModifyMap, it is not possible
     // to directly mutate the struct in entry 1 of the map.
     // So, first make a local copy of the struct.
-    
+
     let c = self.m.get(1)!!;
 
     // Modify the struct
@@ -161,13 +158,13 @@ extends mutates fun changeSomeEntries(self: MapWrapper) {
     self.m.del(3);
 }
 
-extends fun unwrapAndCopyMap(self: MapWrapper): map<Int,SA> {
+extends fun unwrapAndCopyMap(self: MapWrapper): map<Int, SA> {
     // Since structs are passed by value, "self" will be a copy of the wrapped map given as parameter
     // Hence, the unwrapped map is a copy of the map.
     return self.m;
 }
 
-extends mutates fun unwrapMap(self: MapWrapper): map<Int,SA> {
+extends mutates fun unwrapMap(self: MapWrapper): map<Int, SA> {
     // Even though "self" is a copy, the mutates function will assign the copy back into "self" once the function finishes.
     // Observe that the function will return a copy of the wrapped map as well.
     // This means that there are actually TWO assignments when one does something like this:
@@ -189,7 +186,7 @@ fun copyAndModifyContract(c: SemanticsTester): SemanticsTester {
     // In other words, c is a copy of the contract passed as parameter to the function.
 
     // Let us modify some fields in the copy c
-    c.uB = SB {b1: true, b2: SC {c1: 99}, b3: 98};
+    c.uB = SB { b1: true, b2: SC { c1: 99 }, b3: 98 };
     c.mA.del(1);
 
     // It is also possible to call contract functions on the copy
@@ -202,7 +199,7 @@ fun copyAndModifyContract(c: SemanticsTester): SemanticsTester {
 extends mutates fun changeSomeContractFields(self: SemanticsTester) {
     // Change some fields in the contract given as parameter
     // This will change the contract passed as parameter to the function
-    self.uB = SB {b1: true, b2: SC {c1: 77}, b3: 88};
+    self.uB = SB { b1: true, b2: SC { c1: 77 }, b3: 88 };
     self.sA.a2.b2.c1 += 30;
 }
 
@@ -227,7 +224,6 @@ extends mutates fun flipBooleanFieldsInUB(self: SemanticsTester): SemanticsTeste
     return self;
 }
 
-
 /**** Auxiliary functions for integers **********/
 
 extends mutates fun multiplyBy2(self: Int): Int {
@@ -244,7 +240,6 @@ extends mutates fun doNothing(self: Int): Int {
     return self;
 }
 
-
 /**** Auxiliary functions for boolean expressions **********/
 
 fun infiniteLoop(): Bool {
@@ -258,15 +253,13 @@ fun throwException(v: Int): Bool {
     return 1 / v > 0;
 }
 
-
-
 /***** Auxiliary functions for slices */
 
 // Reads two 6-bit integers (with values 5 and 2) from the slice and checks that the slice is empty afterwards.
 // This will not modify the slice given as parameter.
 fun fullyReadSlice(s: Slice): Bool {
-    let i1 = s.loadInt(6);  // 5
-    let i2 = s.loadInt(6);  // 2
+    let i1 = s.loadInt(6); // 5
+    let i2 = s.loadInt(6); // 2
     s.endParse();
 
     return i1 == 5 && i2 == 2 && s.empty();
@@ -275,34 +268,30 @@ fun fullyReadSlice(s: Slice): Bool {
 // Reads two 6-bit integers (with values 5 and 2) from the slice and checks that the slice is empty afterwards.
 // This will modify the slice given as parameter.
 extends mutates fun fullyReadAndModifySlice(self: Slice): Bool {
-    let i1 = self.loadInt(6);  // 5
-    let i2 = self.loadInt(6);  // 2
+    let i1 = self.loadInt(6); // 5
+    let i2 = self.loadInt(6); // 2
     self.endParse();
 
     return i1 == 5 && i2 == 2 && self.empty();
 }
 
-
-
 contract SemanticsTester {
-
     // Currently, declaring fields like this:
-    // 
-    // sC: SC = SC {c1: 5}; 
+    //
+    // sC: SC = SC {c1: 5};
     // sB: SB = SB {b1: true, b2: sC, b3: 10};
     // sA: SA = SA {a1: 20, a2: sB};
     //
     // or like this:
     //
-    // sC: SC = SC {c1: 5}; 
+    // sC: SC = SC {c1: 5};
     // sB: SB = SB {b1: true, b2: self.sC, b3: 10};
     // sA: SA = SA {a1: 20, a2: self.sB};
     //
     // gives a compilation error. So, we need to define the fields like this:
-
-    sC: SC = SC {c1: 5}; 
-    sB: SB = SB {b1: true, b2: SC {c1: 5}, b3: 10};
-    sA: SA = SA {a1: 20, a2: SB {b1: true, b2: SC {c1: 5}, b3: 10}};
+    sC: SC = SC { c1: 5 };
+    sB: SB = SB { b1: true, b2: SC { c1: 5 }, b3: 10 };
+    sA: SA = SA { a1: 20, a2: SB { b1: true, b2: SC { c1: 5 }, b3: 10 } };
     uB: SB;
 
     // An alternative would be to assign them in the init() function, which allows the use of self.
@@ -375,7 +364,7 @@ contract SemanticsTester {
         */
     }
 
-    receive() { }
+    receive() {}
 
     receive("mutate") {
         self.mutateContractStateResult = self.mutateContractState();
@@ -1524,11 +1513,10 @@ contract SemanticsTester {
         // The call to the non-mutating extends function "copyContract" always makes a copy
         // of the parameter contract. Therefore, passing the result to the mutating function 
         // "changeSomeContractFields" will modify the copy, not the original contract. 
-    
+
         self.copyContract().changeSomeContractFields();
 
-        let result = 
-               self.checkAllContractFieldsAreUnchanged();
+        let result = self.checkAllContractFieldsAreUnchanged();
 
         // For the following test, make a copy of self.
         let c = self;
@@ -1574,15 +1562,14 @@ contract SemanticsTester {
                c.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 1}, b3: 15}, 5);
 
         return result;
-
     }
 
-    get fun mutateContractStateFlag(): Bool {   
+    get fun mutateContractStateFlag(): Bool {
         return self.mutateContractStateResult;
     }
 
     get fun changesPersisted(): Bool {
-        return self.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
+        return self.checkFieldsEqualTo(SB { b1: true, b2: SC { c1: 77 }, b3: 88 }, 35);
     }
 
 
@@ -1600,8 +1587,8 @@ contract SemanticsTester {
     */
     get fun mutatesChainInt1(): Bool {
         let s = 2;
-        s.multiplyBy2().increment().doNothing();  // s is changed only by the first mutating function.
-        
+        s.multiplyBy2().increment().doNothing(); // s is changed only by the first mutating function.
+
         let t = 2;
         t = t.multiplyBy2().increment().doNothing(); // t reassigned with the value returned by the last function.
         
@@ -1620,14 +1607,14 @@ contract SemanticsTester {
     get fun mutatesChainInt2(): Bool {
         let s = 2;
         s.multiplyBy2().doNothing().increment();
-        
+
         let t = 2;
-        t = t.multiplyBy2().doNothing().increment();  
-        
+        t = t.multiplyBy2().doNothing().increment();
+
         let z = 2;
         z.multiplyBy2();
         z.doNothing();
-        z.increment();  
+        z.increment();
 
         return s == 4 && t == 5 && z == 5;
     }
@@ -1638,7 +1625,7 @@ contract SemanticsTester {
 
         let t = 2;
         t = t.doNothing().multiplyBy2().increment();
-        
+
         let z = 2;
         z.doNothing();
         z.multiplyBy2();
@@ -1660,7 +1647,7 @@ contract SemanticsTester {
         z.multiplyBy2();
 
         return s == 2 && t == 6 && z == 6;
-    }    
+    }
 
     get fun mutatesChainInt5(): Bool {
         let s = 2;
@@ -1696,7 +1683,6 @@ contract SemanticsTester {
 
     /*** Tests && short-circuiting with mutating functions ***/
     get fun andMutateShortCircuit(): Bool {
-
         let s = 1;
 
         // It will evaluate the full expression to false and increment s to 2
@@ -1723,7 +1709,7 @@ contract SemanticsTester {
 
         // It will evaluate the entire expression to true. So, s should be incremented twice.
         let m5 = s == 3 && s.increment() > 3 && s.increment() > 4;
-        
+
         result &&= s == 5;
 
         // It will evaluate the first and second conjuncts and short-circuit at the 
@@ -1741,7 +1727,6 @@ contract SemanticsTester {
 
     /*** Tests && short-circuiting with infinite loops ***/
     get fun andInfiniteLoopShortCircuit(): Bool {
-
         let s = 1;
 
         // Short-circuits to false, so no infinite loop happens.
@@ -1774,19 +1759,18 @@ contract SemanticsTester {
 
     /*** Tests && short-circuiting with exception throwing ***/
     get fun andExceptionShortCircuit(): Bool {
-
         let s = 1;
 
         // Short-circuits to false, so no exception thrown.
-        let t1 = false && throwException(s-1);
+        let t1 = false && throwException(s - 1);
 
         // Short-circuits to false, so no exception thrown.
-        let t2 = s > 1 && throwException(s-1);
+        let t2 = s > 1 && throwException(s - 1);
 
         // It will evaluate the first and second conjuncts and short-circuit at the 
         // second conjunct to false. So s will be incremented at the second conjunct to 2, 
         // And no exception happens in the third conjunct.
-        let t3 = s == 1 && s.increment() > 2 && throwException(s-2);
+        let t3 = s == 1 && s.increment() > 2 && throwException(s - 2);
 
         let result = s == 2;
 
@@ -1794,7 +1778,7 @@ contract SemanticsTester {
         // second conjunct to false. So s will be incremented at the second conjunct to 3, 
         // And no exception happens in the third conjunct and no increment happens at 
         // the fourth conjunct.
-        let t4 = s == 2 && s.increment() > 3 && throwException(s-3) && s.increment() > 3;
+        let t4 = s == 2 && s.increment() > 3 && throwException(s - 3) && s.increment() > 3;
 
         result &&= s == 3;
 
@@ -1805,7 +1789,6 @@ contract SemanticsTester {
 
     /*** Tests || short-circuiting with mutating functions ***/
     get fun orMutateShortCircuit(): Bool {
-
         let s = 1;
 
         // It will evaluate the full expression to true and increment s to 2
@@ -1832,7 +1815,7 @@ contract SemanticsTester {
 
         // It will evaluate the entire expression to false. So, s should be incremented twice.
         let m5 = s != 3 || s.increment() < 3 || s.increment() < 4;
-        
+
         result &&= s == 5;
 
         // It will evaluate the first and second disjuncts and short-circuit at the 
@@ -1850,7 +1833,6 @@ contract SemanticsTester {
 
     /*** Tests || short-circuiting with infinite loops ***/
     get fun orInfiniteLoopShortCircuit(): Bool {
-
         let s = 1;
 
         // Short-circuits to true, so no infinite loop happens.
@@ -1883,19 +1865,18 @@ contract SemanticsTester {
 
     /*** Tests || short-circuiting with exception throwing ***/
     get fun orExceptionShortCircuit(): Bool {
-
         let s = 1;
 
         // Short-circuits to true, so no exception thrown.
-        let t1 = true || throwException(s-1);
+        let t1 = true || throwException(s - 1);
 
         // Short-circuits to true, so no exception thrown.
-        let t2 = s >= 1 || throwException(s-1);
+        let t2 = s >= 1 || throwException(s - 1);
 
         // It will evaluate the first and second disjuncts and short-circuit at the 
         // second disjunct to true. So s will be incremented at the second disjunct to 2, 
         // And no exception happens in the third disjunct.
-        let t3 = s != 1 || s.increment() >= 2 || throwException(s-2);
+        let t3 = s != 1 || s.increment() >= 2 || throwException(s - 2);
 
         let result = s == 2;
 
@@ -1903,7 +1884,7 @@ contract SemanticsTester {
         // second disjunct to true. So s will be incremented at the second disjunct to 3, 
         // And no exception happens in the third disjunct and no increment happens at 
         // the fourth one.
-        let t4 = s != 2 || s.increment() >= 3 || throwException(s-3) || s.increment() > 3;
+        let t4 = s != 2 || s.increment() >= 3 || throwException(s - 3) || s.increment() > 3;
 
         result &&= s == 3;
 
@@ -1914,7 +1895,6 @@ contract SemanticsTester {
 
     /// Tests _ ? _ : _ short-circuiting with mutating functions
     get fun ternaryMutateShortCircuit(): Bool {
-
         let s = 1;
 
         // It will evaluate the full expression to false and increment s to 2. The false branch will not increment s again.
@@ -1943,8 +1923,8 @@ contract SemanticsTester {
         result &&= s == 4;
 
         // Condition will increment s to 5 and evaluate to false. True branch does not increment s again. m6 is false.
-        let m6 = s.increment() > 5 ? s.increment() > 3 : s > 5 ;
-        
+        let m6 = s.increment() > 5 ? s.increment() > 3 : s > 5;
+
         result &&= s == 5;
 
         // Condition will increment s to 6 and evaluate to true. True branch increments s again. m7 is true.
@@ -1954,7 +1934,7 @@ contract SemanticsTester {
 
         // Condition will increment s to 8 and evaluate to false. False branch increments s again. m8 is true.
         let m8 = s.increment() > 8 ? s == 8 : s.increment() == 9;
-        
+
         result &&= s == 9;
 
         result &&= !m1 && m2 && m3 && m4 && m5 && !m6 && m7 && m8;
@@ -1964,7 +1944,6 @@ contract SemanticsTester {
 
     /// Tests _ ? _ : _ short-circuiting with infinite loops
     get fun ternaryInfiniteLoopShortCircuit(): Bool {
-
         let s = 1;
 
         // It will evaluate the full expression to false. The false branch will not execute the loop.
@@ -1986,31 +1965,28 @@ contract SemanticsTester {
 
     /// Tests _ ? _ : _ short-circuiting with exception throwing
     get fun ternaryExceptionShortCircuit(): Bool {
-
         let s = 1;
 
         // It will evaluate the full expression to false. The false branch will not throw an exception.
-        let t1 = true ? s > 1 : throwException(s-1);
+        let t1 = true ? s > 1 : throwException(s - 1);
 
         // It will evaluate the full expression to false. The true branch will not throw an exception.
-        let t2 = false ? throwException(s-1) : s > 1;
+        let t2 = false ? throwException(s - 1) : s > 1;
 
         // It will evaluate the full expression to false. The false branch will not throw an exception.
-        let t3 = s >= 1 ? s > 1 : throwException(s-1);
+        let t3 = s >= 1 ? s > 1 : throwException(s - 1);
 
         // It will evaluate the full expression to false. The true branch will not throw an exception.
-        let t4 = s > 1 ? throwException(s-1) : s > 1;
+        let t4 = s > 1 ? throwException(s - 1) : s > 1;
 
         let result = !t1 && !t2 && !t3 && !t4;
 
         return result;
     }
 
-
     /*************** Addresses ********************/
 
     get fun testAddressEquality(): Bool {
-        
         // Addresses are immutable.
 
         let addr1 = myAddress();
@@ -2070,29 +2046,29 @@ contract SemanticsTester {
         // i1_s1 means "integer 1 of slice 1", 
         // i2_s1 means "integer 2 of slice 1",
         // i1_s2 means  "integer 1 of slice 2".... and so on.
-        let i1_s1 = slice1.loadInt(6);   // 10
+        let i1_s1 = slice1.loadInt(6); // 10
 
         // The slices are different so far, because slice2 still needs to read 3 integers, while slice1 only needs to read 2.
         result &&= slice1 != slice2 && i1_s1 == 10;
 
         // Now read the first integer in the second slice.
-        let i1_s2 = slice2.loadInt(6);   // 10
+        let i1_s2 = slice2.loadInt(6); // 10
 
         // So far, both slices are in the same state. Hence, they are equal.
         result &&= slice1 == slice2 && i1_s2 == 10;
 
         // Now read the remaining two integers in the first slice
-        let i2_s1 = slice1.loadInt(6);   // 5
-        let i3_s1 = slice1.loadInt(6);   // 2
+        let i2_s1 = slice1.loadInt(6); // 5
+        let i3_s1 = slice1.loadInt(6); // 2
 
         // But read only one integer in the second slice.
-        let i2_s2 = slice2.loadInt(6);   // 5
+        let i2_s2 = slice2.loadInt(6); // 5
 
         // The slices are different, because the first slice is currently empty, while the second slice still needs to read the third integer.
         result &&= slice1 != slice2 && i2_s1 == 5 && i3_s1 == 2 && i2_s2 == 5;
 
         // Read the third integer in the second slice. The slice is now also empty.
-        let i3_s2 = slice2.loadInt(6);   // 2
+        let i3_s2 = slice2.loadInt(6); // 2
 
         // Both slices are now equal.
         result &&= slice1 == slice2 && i3_s2 == 2;
@@ -2113,7 +2089,7 @@ contract SemanticsTester {
         let slice3 = cell.asSlice();
 
         // Load the first integer from the slice. There are still two to go.
-        let i1_s3 = slice3.loadInt(6);  // 10
+        let i1_s3 = slice3.loadInt(6); // 10
 
         result &&= i1_s3 == 10;
 
@@ -2125,25 +2101,25 @@ contract SemanticsTester {
         result &&= slice3 == slice4;
 
         // But now, read the second integer in slice3, but NOT in slice4.
-        let i2_s3 = slice3.loadInt(6);   // 5
+        let i2_s3 = slice3.loadInt(6); // 5
 
         // The slices are now different.
         result &&= slice3 != slice4 && i2_s3 == 5;
 
         // Read the last integer in slice3. The third slice is now empty, but slice4 still has two integers to read.
-        let i3_s3 = slice3.loadInt(6);  // 2
+        let i3_s3 = slice3.loadInt(6); // 2
 
         // Evidently, the slices are different.
         result &&= slice3 != slice4 && i3_s3 == 2;
 
         // Now read the second integer in the fourth slice.
-        let i2_s4 = slice4.loadInt(6);  // 5
+        let i2_s4 = slice4.loadInt(6); // 5
 
         // The slices are still different, because slice3 is empty, but slice4 still has one integer to read.
         result &&= slice3 != slice4 && i2_s4 == 5;
 
         // Read the third integer in the fourth slice. slice4 is now also empty.
-        let i3_s4 = slice4.loadInt(6);   // 2
+        let i3_s4 = slice4.loadInt(6); // 2
 
         // Both slices are now equal, and both are empty.
         result &&= slice3 == slice4 && i3_s4 == 2 && slice3.empty() && slice4.empty();
@@ -2152,7 +2128,7 @@ contract SemanticsTester {
         let slice5 = cell.asSlice();
 
         // Again, load the first integer from the slice. There are still two to go.
-        let i1_s5 = slice5.loadInt(6);  // 10
+        let i1_s5 = slice5.loadInt(6); // 10
 
         result &&= i1_s5 == 10;
 
@@ -2162,8 +2138,8 @@ contract SemanticsTester {
         result &&= fullyReadSlice(slice5);    // Returns true: meaning that the function read 5 and 2 from the copy and checked that the copy is empty
 
         // But we can still read the two integers in slice5.
-        let i2_s5 = slice5.loadInt(6);   // 5
-        let i3_s5 = slice5.loadInt(6);   // 2
+        let i2_s5 = slice5.loadInt(6); // 5
+        let i3_s5 = slice5.loadInt(6); // 2
 
         // And check that slice5 is now empty
         result &&= i2_s5 == 5 && i3_s5 == 2 && slice5.empty();
@@ -2172,7 +2148,7 @@ contract SemanticsTester {
         let slice6 = cell.asSlice();
 
         // Again, load the first integer from the slice. There are still two to go.
-        let i1_s6 = slice6.loadInt(6);  // 10
+        let i1_s6 = slice6.loadInt(6); // 10
 
         result &&= i1_s6 == 10;
 
@@ -2190,7 +2166,6 @@ contract SemanticsTester {
 
     // Test slices generated from cells having references to other cells.
     get fun testSliceEquality2(): Bool {
-        
         // Create two cells with exactly the same data
         let cell1 = beginCell().storeInt(10, 6).storeBool(true).storeUint(2, 6).endCell();
         let cell2 = beginCell().storeInt(10, 6).storeBool(true).storeUint(2, 6).endCell();
@@ -2214,7 +2189,7 @@ contract SemanticsTester {
         result &&= slice5 != slice3 && slice5 != slice4;
 
         // Read the integer in slice 3
-        let d1_s3 = slice3.loadInt(6);   // 5
+        let d1_s3 = slice3.loadInt(6); // 5
 
         result &&= d1_s3 == 5;
 
@@ -2222,7 +2197,7 @@ contract SemanticsTester {
         result &&= slice3 != slice4;
 
         // Read the integer in slice 4
-        let d1_s4 = slice4.loadInt(6);   // 5
+        let d1_s4 = slice4.loadInt(6); // 5
 
         result &&= d1_s3 == 5;
 
@@ -2231,7 +2206,7 @@ contract SemanticsTester {
         result &&= slice3 == slice4;
 
         // Read integer in slice 5
-        let d1_s5 = slice5.loadInt(6);   // 5
+        let d1_s5 = slice5.loadInt(6); // 5
 
         result &&= d1_s5 == 5;
 
@@ -2239,9 +2214,9 @@ contract SemanticsTester {
         result &&= slice5 != slice3 && slice5 != slice4;
 
         // Now read the references from the slices
-        let d2_s3 = slice3.loadRef();  // cell1
-        let d2_s4 = slice4.loadRef();  // cell2
-        let d2_s5 = slice5.loadRef();  // empty cell
+        let d2_s3 = slice3.loadRef(); // cell1
+        let d2_s4 = slice4.loadRef(); // cell2
+        let d2_s5 = slice5.loadRef(); // empty cell
 
         result &&= d2_s3 == cell1 && d2_s4 == cell2 && d2_s5 == emptyCell();
 
@@ -2255,17 +2230,16 @@ contract SemanticsTester {
 
     // Test cells generated by structs.
     get fun testCellEquality1(): Bool {
-        
         // Cells are immutable.
 
         // Create two cells from two structs
         // These are the same structs, but their fields are declared in different order.
-        let struct1 = SB {b1: true, b2: SC {c1: 10}, b3: 50};
-        let struct2 = SB {b2: SC {c1: 10}, b3: 50, b1: true};
+        let struct1 = SB { b1: true, b2: SC { c1: 10 }, b3: 50 };
+        let struct2 = SB { b2: SC { c1: 10 }, b3: 50, b1: true };
 
         let cell1 = struct1.toCell();
         let cell2 = struct2.toCell();
-        
+
         // The two cells are equal.
         let result = cell1 == cell2;
 
@@ -2307,7 +2281,6 @@ contract SemanticsTester {
 
     // Test cells generated by builders.
     get fun testCellEquality2(): Bool {
-
         // Cells are immutable.
 
         // Create 5 cells as follows:
@@ -2348,8 +2321,8 @@ contract SemanticsTester {
         // d2_s1 means "data 2 of slice 1", 
         // d1_s3 means "data 1 of slice 3",
         // and so on 
-        let d1_s1 = slice1.loadInt(6);   // 10
-        let d1_s3 = slice3.loadBool();   // true
+        let d1_s1 = slice1.loadInt(6); // 10
+        let d1_s3 = slice3.loadBool(); // true
 
         result &&= d1_s1 == 10 && d1_s3 == true;
 
@@ -2359,7 +2332,7 @@ contract SemanticsTester {
         result &&= slice1.asCell() != slice3.asCell();
 
         // Keep reading from slice1
-        let d2_s1 = slice1.loadBool();  // true
+        let d2_s1 = slice1.loadBool(); // true
 
         result &&= d2_s1 == true;
 
@@ -2367,7 +2340,7 @@ contract SemanticsTester {
         result &&= slice1.asCell() != slice3.asCell();
 
         // But now read the other slice
-        let d2_s3 = slice3.loadInt(6);  // 10
+        let d2_s3 = slice3.loadInt(6); // 10
 
         result &&= d2_s3 == 10;
 
@@ -2381,8 +2354,8 @@ contract SemanticsTester {
         // Indeed, we can read the unsigned integer from the cells
         let slice4 = cell6.asSlice();
         let slice5 = cell7.asSlice();
-        let d_s4 = slice4.loadUint(6);  // 2
-        let d_s5 = slice5.loadUint(6);  // 2
+        let d_s4 = slice4.loadUint(6); // 2
+        let d_s5 = slice5.loadUint(6); // 2
 
         result &&= d_s4 == 2 && d_s5 == 2;
 
@@ -2391,8 +2364,8 @@ contract SemanticsTester {
 
         // Observe that slices 1 and 3 did not get affected when they got transformed back to cells 6 and 7.
         // This means that we can still read the unsigned integer pending in slices 1 and 3.
-        let d3_s1 = slice1.loadUint(6);  // 2
-        let d3_s3 = slice3.loadUint(6);  // 2
+        let d3_s1 = slice1.loadUint(6); // 2
+        let d3_s3 = slice3.loadUint(6); // 2
 
         result &&= d3_s1 == 2 && d3_s3 == 2;
 
@@ -2401,13 +2374,12 @@ contract SemanticsTester {
         let cell9 = slice3.asCell();
 
         result &&= cell8 == cell9 && cell8 == emptyCell() && cell9 == emptyCell();
-        
+
         return result;
     }
 
     // Test cells generated by builders, having references to other cells.
     get fun testCellEquality3(): Bool {
-
         // Cells are immutable.
 
         // Two cells with exactly the same data
@@ -2436,9 +2408,9 @@ contract SemanticsTester {
         let slice5 = cell5.asSlice();
 
         // Load the first common integer on the three slices.
-        let d1_s3 = slice3.loadInt(6);  // 5
-        let d1_s4 = slice4.loadInt(6);  // 5
-        let d1_s5 = slice5.loadInt(6);  // 5
+        let d1_s3 = slice3.loadInt(6); // 5
+        let d1_s4 = slice4.loadInt(6); // 5
+        let d1_s5 = slice5.loadInt(6); // 5
 
         result &&= d1_s3 == 5 && d1_s4 == 5 && d1_s5 == 5;
 
@@ -2449,9 +2421,9 @@ contract SemanticsTester {
         result &&= slice3.asCell() == slice4.asCell() && slice3.asCell() != slice5.asCell() && slice4.asCell() != slice5.asCell();
 
         // Now read the references from the slices
-        let d2_s3 = slice3.loadRef();  // cell1
-        let d2_s4 = slice4.loadRef();  // cell2
-        let d2_s5 = slice5.loadRef();  // empty cell
+        let d2_s3 = slice3.loadRef(); // cell1
+        let d2_s4 = slice4.loadRef(); // cell2
+        let d2_s5 = slice5.loadRef(); // empty cell
 
         result &&= d2_s3 == cell1 && d2_s4 == cell2 && d2_s5 == emptyCell();
 
