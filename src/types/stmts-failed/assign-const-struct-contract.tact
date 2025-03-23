@@ -12,6 +12,6 @@ contract Test {
 
     fun bar() {
         self.baz.x = 1; // ok
-        self.foo.y = 42 // <-- trying to assign to a constant
+        self.foo.y = 42; // <-- trying to assign to a constant
     }
 }
