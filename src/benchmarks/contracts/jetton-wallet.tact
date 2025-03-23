@@ -67,7 +67,7 @@ contract JettonWallet(
                 value: msg.forwardTonAmount,
                 mode: SendPayGasSeparately,
                 bounce: false,
-                body: JettonNotification{ // 0x7362d09c -- Remind the new Owner
+                body: JettonNotification { // 0x7362d09c -- Remind the new Owner
                     queryId: msg.queryId,
                     amount: msg.amount,
                     sender: msg.sender,
