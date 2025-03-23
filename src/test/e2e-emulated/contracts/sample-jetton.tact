@@ -251,7 +251,7 @@ contract JettonDefaultWallet {
         let fwdFee: Int = ctx.readForwardFee();
         msgValue = msgValue - msg.forward_ton_amount - fwdFee;
         // msgValue = msgValue - msg.forward_ton_amount - min(fwdFee, ton("0.01"));
-        
+
         if (msg.response_destination != null) { // Cashback
             message(MessageParameters {
                 to: msg.response_destination!!,

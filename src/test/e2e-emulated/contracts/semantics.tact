@@ -369,7 +369,6 @@ contract SemanticsTester {
         self.mutateContractStateResult = self.mutateContractState();
     }
 
-
     // IMPORTANT: The operator == does not allow comparing two structs.
     // So, to compare if two structs are equal using ==, one needs to compare each
     // field of both structs manually.
@@ -533,7 +532,7 @@ contract SemanticsTester {
         let s = self.sA;
 
         // This should mutate some fields of s, but leave self.sA unchanged.
-        
+
         s.changeSomeFields();
 
         return self.checkAllContractFieldsAreUnchanged() &&
@@ -560,9 +559,9 @@ contract SemanticsTester {
         s.reflectStruct().changeSomeFields();
 
         // First, reflectStruct makes a copy of s. When reflectStruct finalizes, it assigns the copy back into
-        // s. Additionally, reflectStruct returns the copy of s, call it s'. 
+        // s. Additionally, reflectStruct returns the copy of s, call it s'.
         // s' is then passed to changeSomeFields, which makes again a copy of s', call it s''.
-        // changeSomeFields changes some fields of s'' and reassigns s' with this changed s''. 
+        // changeSomeFields changes some fields of s'' and reassigns s' with this changed s''.
         // Additionally changeSomeFields returns the changed s''.
         // Note that the only place where s is reassigned is after reflectStruct executes.
         // This means that the above expression does NOT change s.
@@ -939,7 +938,7 @@ contract SemanticsTester {
         let s = MapWrapper { m: self.mA };
 
         // This should mutate entry 1 in s.m, and delete entries 2 and 3, but leave self.mA unchanged.
-        
+
         s.changeSomeEntries();
 
         let result = 
@@ -1096,14 +1095,14 @@ contract SemanticsTester {
         let m = self.mC;
 
         // The map m has the single entry 100 -> MapWrap {m: 10 -> copy of self.sA}
-        
-        // Modify the internal struct in m 
+
+        // Modify the internal struct in m
         // This should not change self.mC.
 
         // Note that it is not possible to change the internal struct directly using:
 
         // m.get(100)!!.m.get(10)!!.a2.b2.c1 = XXX;
-        
+
         // because the left side of an assignment must be a path expression.
         // Hence, we need to assign the struct first into a variable:
 
@@ -1221,19 +1220,19 @@ contract SemanticsTester {
 
         let c = self;
 
-        // What does it mean that c is a copy? It does NOT mean that 
+        // What does it mean that c is a copy? It does NOT mean that
         // there is a new contract c deployed in the TON network. In fact, both c and self
         // have the same address. Why? An address is determined by the initial state and code
         // of the contract, and since c was created from the state of self AFTER self was deployed,
         // c must have the same address. Indeed, there is a test in "semantics.spec.ts" testing that
         // the address of "self" does not change after "self" is reassigned with a modified copy of itself.
-        
-        // Even though the states of c and self may diverge from this moment 
+
+        // Even though the states of c and self may diverge from this moment
         // (for example, by explicitly changing a field in c),
         // the state of c does not have existence beyond the execution of the TVM, i.e.,
-        // as long as "self = c" is never executed, the state of c will be lost as soon as 
-        // the TVM finishes executing the transaction, because the state of c will never 
-        // be persisted back into the network. So, in a sense, c is like a struct storing temporal values 
+        // as long as "self = c" is never executed, the state of c will be lost as soon as
+        // the TVM finishes executing the transaction, because the state of c will never
+        // be persisted back into the network. So, in a sense, c is like a struct storing temporal values
         // for the fields in self.
 
         // Nevertheless, it is possible to call declared contract functions on c.
@@ -1468,9 +1467,9 @@ contract SemanticsTester {
     fun mutateContractState(): Bool {
         // First, make a copy of the contract
         let c = self;
-        
+
         // In the copy, change the uB field and the sA.a2.b2.c1 field.
-        
+
         c.changeSomeContractFields();
 
         let result = 
@@ -1513,17 +1512,17 @@ contract SemanticsTester {
         // This means that the above expression will not modify c.
         // Note that since the return type of changeSomeContractFields is void,
         // we cannot use the trick:
-        // 
+        //
         // c = c.reflectContract().changeSomeContractFields();
         //
-        // to actually update c. Hence, the only ways are to directly call 
+        // to actually update c. Hence, the only ways are to directly call
         // changeSomeContractFields or divide the expression into steps:
-        // 
+        //
         // c.changeSomeContractFields();
-        // 
+        //
         // or:
-        // 
-        // c.reflectContract();  
+        //
+        // c.reflectContract();
         // c.changeSomeContractFields();
 
         // Nothing changed
@@ -1572,7 +1571,7 @@ contract SemanticsTester {
 
         let t = 2;
         t = t.multiplyBy2().increment().doNothing(); // t reassigned with the value returned by the last function.
-        
+
         // The less confusing solution is to simply break the chain.
         // This solution even works when the last function in the chain has void return type.
         // Each step changes z
@@ -2116,7 +2115,7 @@ contract SemanticsTester {
         // Give the slice to a global function. Since arguments are by value, the global function will make a copy of the slice.
         // The global function will read the remaining two integers in the slice copy. But slice5 will remain unchanged.
 
-        result &&= fullyReadSlice(slice5);    // Returns true: meaning that the function read 5 and 2 from the copy and checked that the copy is empty
+        result &&= fullyReadSlice(slice5); // Returns true: meaning that the function read 5 and 2 from the copy and checked that the copy is empty
 
         // But we can still read the two integers in slice5.
         let i2_s5 = slice5.loadInt(6); // 5
