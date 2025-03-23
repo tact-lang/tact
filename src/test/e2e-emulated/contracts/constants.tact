@@ -265,9 +265,7 @@ contract ConstantTester {
 
     const something39: Bool = 42 == 43 || "foo" == "bar" || true != true ||
                               3 < 1 || 3 <= 1 || 1 < 3 || 1 <= 3 ||
-                              newAddress(0, 0x606813c5f6a76175eae668630c6d8ffe229543610e3d204db245dd51f9ba0503)
-                              !=
-                              newAddress(0, 0x606813c5f6a76175eae668630c6d8ffe229543610e3d204db245dd51f9ba0503) ||
+                              newAddress(0, 0x606813c5f6a76175eae668630c6d8ffe229543610e3d204db245dd51f9ba0503) != newAddress(0, 0x606813c5f6a76175eae668630c6d8ffe229543610e3d204db245dd51f9ba0503) ||
                               !(true && false);
 
     const something40: Bool = T {
@@ -286,72 +284,72 @@ contract ConstantTester {
 
     receive() {}
 
-    get fun something1(): Int { return self.something1; }
-    get fun something2(): Int? { return self.something2; }
-    get fun something3(): Int { return self.something3; }
-    get fun something4(): Int { return self.something4; }
-    get fun something5(): String { return self.something5; }
-    get fun something6(): Int { return self.something6; }
-    get fun something7(): Int { return self.something7; }
-    get fun something8(): Int { return self.something8; }
-    get fun something9(): Address { return self.something9; }
-    get fun something10(): Address { return self.something10; }
-    get fun something11(): Int { return self.something11; }
-    get fun something12(): Int { return self.something12; }
-    get fun something13(): Int { return self.something13; }
-    get fun something14(): Int { return self.something14; }
-    get fun something15(): Int { return self.something15; }
-    get fun something16(): Int { return self.something16; }
-    get fun something17(): Int { return self.something17; }
-    get fun something18(): Int { return self.something18; }
-    get fun something19(): Int { return self.something19; }
-    get fun something20(): Int { return self.something20; }
-    get fun something21(): Int { return self.something21; }
-    get fun something22(): Int { return self.something22; }
-    get fun something23(): Int { return self.something23; }
-    get fun something24(): Int { return self.something24; }
-    get fun something25(): Int { return self.something25; }
-    get fun something26(): Int { return self.something26; }
-    get fun something27(): Int { return self.something27; }
-    get fun something28(): Int { return self.something28; }
-    get fun something29(): Int? { return self.something29; }
-    get fun something30(): Int? { return self.something30; }
-    get fun something31(): Int { return self.something31; }
-    get fun something32(): Int { return self.something32; }
-    get fun something33(): map<Int, Int> { return self.something33; }
-    get fun something34(): map<Int, Int> { return self.something34; }
-    get fun something35(): S { return self.something35; }
-    get fun something36(): S { return self.something36; }
-    get fun something37(): T { return self.something37; }
-    get fun something38(): Int { return self.something38; }
-    get fun something39(): Bool { return self.something39; }
-    get fun something40(): Bool { return self.something40; }
-    get fun something41(): Address { return self.something41; }
-    get fun something42(): Address { return self.something42; }
-    get fun something43(): Address { return self.something43; }
-    get fun something44(): Address { return self.something44; }
-    get fun something45(): Int { return self.something45; }
+    get fun something1(): Int { return self.something1 }
+    get fun something2(): Int? { return self.something2 }
+    get fun something3(): Int { return self.something3 }
+    get fun something4(): Int { return self.something4 }
+    get fun something5(): String { return self.something5 }
+    get fun something6(): Int { return self.something6 }
+    get fun something7(): Int { return self.something7 }
+    get fun something8(): Int { return self.something8 }
+    get fun something9(): Address { return self.something9 }
+    get fun something10(): Address { return self.something10 }
+    get fun something11(): Int { return self.something11 }
+    get fun something12(): Int { return self.something12 }
+    get fun something13(): Int { return self.something13 }
+    get fun something14(): Int { return self.something14 }
+    get fun something15(): Int { return self.something15 }
+    get fun something16(): Int { return self.something16 }
+    get fun something17(): Int { return self.something17 }
+    get fun something18(): Int { return self.something18 }
+    get fun something19(): Int { return self.something19 }
+    get fun something20(): Int { return self.something20 }
+    get fun something21(): Int { return self.something21 }
+    get fun something22(): Int { return self.something22 }
+    get fun something23(): Int { return self.something23 }
+    get fun something24(): Int { return self.something24 }
+    get fun something25(): Int { return self.something25 }
+    get fun something26(): Int { return self.something26 }
+    get fun something27(): Int { return self.something27 }
+    get fun something28(): Int { return self.something28 }
+    get fun something29(): Int? { return self.something29 }
+    get fun something30(): Int? { return self.something30 }
+    get fun something31(): Int { return self.something31 }
+    get fun something32(): Int { return self.something32 }
+    get fun something33(): map<Int, Int> { return self.something33 }
+    get fun something34(): map<Int, Int> { return self.something34 }
+    get fun something35(): S { return self.something35 }
+    get fun something36(): S { return self.something36 }
+    get fun something37(): T { return self.something37 }
+    get fun something38(): Int { return self.something38 }
+    get fun something39(): Bool { return self.something39 }
+    get fun something40(): Bool { return self.something40 }
+    get fun something41(): Address { return self.something41 }
+    get fun something42(): Address { return self.something42 }
+    get fun something43(): Address { return self.something43 }
+    get fun something44(): Address { return self.something44 }
+    get fun something45(): Int { return self.something45 }
 
-    get fun globalConst1(): Int { return globalConst1; }
-    get fun globalConst2(): Int { return globalConst2; }
-    get fun globalConst3(): Int { return globalConst3; }
-    get fun globalConst4(): Int { return globalConst4; }
-    get fun globalConst5(): Int { return globalConst5; }
-    get fun globalConst6(): Int { return globalConst6; }
-    get fun globalConst7(): Int { return globalConst7; }
-    get fun globalConst8(): Int { return globalConst8; }
-    get fun globalConst9(): Int { return globalConst9; }
-    get fun globalConst10(): Int { return globalConst10; }
-    get fun globalConst11(): Int { return globalConst11; }
-    get fun globalConst12(): Int { return globalConst12; }
-    get fun globalConst13(): Int { return globalConst13; }
+    get fun globalConst1(): Int { return globalConst1 }
+    get fun globalConst2(): Int { return globalConst2 }
+    get fun globalConst3(): Int { return globalConst3 }
+    get fun globalConst4(): Int { return globalConst4 }
+    get fun globalConst5(): Int { return globalConst5 }
+    get fun globalConst6(): Int { return globalConst6 }
+    get fun globalConst7(): Int { return globalConst7 }
+    get fun globalConst8(): Int { return globalConst8 }
+    get fun globalConst9(): Int { return globalConst9 }
+    get fun globalConst10(): Int { return globalConst10 }
+    get fun globalConst11(): Int { return globalConst11 }
+    get fun globalConst12(): Int { return globalConst12 }
+    get fun globalConst13(): Int { return globalConst13 }
 
-    get fun beforeDefinedA(): Int { return beforeDefinedA; }
-    get fun beforeDefinedC(): Int { return beforeDefinedC; }
+    get fun beforeDefinedA(): Int { return beforeDefinedA }
+    get fun beforeDefinedC(): Int { return beforeDefinedC }
 
-    get fun defaultFieldB(): Int { return A {}.b; }
+    get fun defaultFieldB(): Int { return A {}.b }
 
-    get fun noCircularA(): Int { return NoCircularA + NoCircularB; }
+    get fun noCircularA(): Int { return NoCircularA + NoCircularB }
 
     get fun minInt1(): Int {
         return -115792089237316195423570985008687907853269984665640564039457584007913129639936;
