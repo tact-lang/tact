@@ -1,4 +1,5 @@
-@interface("") trait B {}
+@interface("")
+trait B {}
 
 trait C {
     abstract get fun d(e: String): String;
@@ -22,7 +23,8 @@ trait Ownable with B {
     }
 }
 
-@interface("a") contract Treasure with Ownable {
+@interface("a")
+contract Treasure with Ownable {
     owner: Address;
     value: Int;
 

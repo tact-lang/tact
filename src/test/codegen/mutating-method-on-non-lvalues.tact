@@ -11,7 +11,7 @@ contract MutatingMethodOnNonLvalues {
         41.inc();
         GlobalConst.inc();
         self.ContractConst.inc();
-        Foo {x: 44}.x.inc();
+        Foo { x: 44 }.x.inc();
     }
 }
 

@@ -1,4 +1,5 @@
 import "./optionals-2.tact";
+
 struct SomeGenericStruct {
     value1: Int;
     value2: Int;
@@ -25,7 +26,6 @@ message Update {
 }
 
 contract ContractWithOptionals {
-
     a: Int?;
     b: Bool?;
     c: Cell?;
@@ -143,7 +143,7 @@ contract ContractWithOptionals {
     }
 
     get fun testVariables(): SomeGenericStruct {
-        let a: SomeGenericStruct? = SomeGenericStruct{value1: 1, value2: 2, value3: 3, value4: 4, value5: 5};
+        let a: SomeGenericStruct? = SomeGenericStruct { value1: 1, value2: 2, value3: 3, value4: 4, value5: 5 };
         return a!!;
     }
 }

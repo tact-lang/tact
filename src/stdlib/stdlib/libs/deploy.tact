@@ -54,7 +54,7 @@ message FactoryDeploy {
 ///
 trait Deployable with BaseTrait {
     receive(deploy: Deploy) {
-        self.notify(DeployOk{queryId: deploy.queryId}.toCell());
+        self.notify(DeployOk { queryId: deploy.queryId }.toCell());
     }
 }
 
@@ -72,7 +72,7 @@ trait Deployable with BaseTrait {
 ///
 /// See: https://docs.tact-lang.org/ref/stdlib-deploy#factorydeployable
 ///
-trait FactoryDeployable with BaseTrait  {
+trait FactoryDeployable with BaseTrait {
     receive(deploy: FactoryDeploy) {
         self.forward(deploy.cashback, DeployOk { queryId: deploy.queryId }.toCell(), false, null);
     }

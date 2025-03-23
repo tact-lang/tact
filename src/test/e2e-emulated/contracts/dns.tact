@@ -28,7 +28,7 @@ contract DNSTester with Deployable, DNSResolver {
     }
 
     override fun doResolveDNS(subdomain: Slice, category: Int): DNSResolveResult {
-        return DNSResolveResult{ prefix: subdomain.bits(), record: beginCell().storeSlice(subdomain).endCell() };
+        return DNSResolveResult { prefix: subdomain.bits(), record: beginCell().storeSlice(subdomain).endCell() };
     }
 
     receive("test dnsInternalNormalize throws") {

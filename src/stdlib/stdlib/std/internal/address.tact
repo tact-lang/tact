@@ -198,7 +198,7 @@ asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#sliceloadaddress
 ///
-asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
+asm(-> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 
 /// Extension mutation function for the `Slice` type. Available since Tact 1.6.2.
 ///

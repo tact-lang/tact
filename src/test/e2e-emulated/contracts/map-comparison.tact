@@ -18,7 +18,7 @@ contract MapComparisonTestContract {
     receive(msg: CompareDeep) {
         require(msg.m1.deepEquals(msg.m2), "Maps are not equal");
     }
-    
+
     get fun compareIntInt(m1: map<Int, Int>, m2: map<Int, Int>): Bool {
         return m1.deepEquals(m2);
     }
@@ -26,7 +26,7 @@ contract MapComparisonTestContract {
     get fun compareIntCell(m1: map<Int, Cell>, m2: map<Int, Cell>): Bool {
         return m1.deepEquals(m2);
     }
-    
+
     get fun compareIntAddress(m1: map<Int, Address>, m2: map<Int, Address>): Bool {
         return m1.deepEquals(m2);
     }
