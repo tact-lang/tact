@@ -6,4 +6,3 @@ fun bar(): Int {
     let foo = 43; // <-- local var `foo` shadows global const `foo`
     return foo;
 }
-
