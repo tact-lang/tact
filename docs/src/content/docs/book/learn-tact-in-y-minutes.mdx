@@ -672,7 +672,8 @@ Read more: [Statements](/book/statements).
 ```tact
 // Global, top-level constants.
 // Type ascription is mandatory.
-const MY_CONSTANT: Int = 42;
+const MY_CONSTANT: Int =
+    ascii("⚡"); // expressions are computed at compile-time
 
 // Trait-level constants.
 trait MyTrait {
@@ -717,8 +718,88 @@ Read more: [Constants](/book/constants).
 ## Functions
 
 ```tact
-// TODO: ... + get fun, receive() {}
-// (move notes here!)
+/// Global function with parameters and return type.
+///
+/// Usage example:
+///     add(1, 2); // 3
+///
+fun add(a: Int, b: Int): Int {
+    return a + b;
+}
+
+/// Global function have a set of optional attributes that can change their demeanor.
+/// For example, inline attribute will make the body of this
+/// function inlined in all places where this function is called,
+/// increasing the total code size and possibly reducing computational fees.
+///
+/// Usage example:
+///     reply("Viltrum Empire");
+///
+inline fun reply(with: String) {
+    message(MessageParameters{
+        to: sender(),
+        value: 0,
+        mode: SendRemainingValue | SendIgnoreErrors,
+        body: with.asComment(),
+    });
+}
+
+/// The extends attribute allows to implement extension functions for any type.
+/// Its first parameter in the signature must be named self,
+/// and its type is the type this function is extending.
+/// Think of extension functions as very flexible method definitions
+/// in popular programming languages.
+///
+/// Usage example:
+///     5.toCoinsString();
+///
+extends fun toCoinsString2(self: Int): String {
+    return self.toFloatString(9);
+}
+
+/// On top of the extends attribute, you may add the mutates attribute,
+/// which would allow mutating the value of the currently extended type.
+///
+///
+/// Usage example:
+///     let val = 10;
+///     hippityHoppity(val);
+///     val; // 11
+///
+extends mutates fun hippityHoppity(self: Int) {
+    // ...something that would mutate `self`
+    self += 1;
+}
+
+/// Tact allows you to import Tact and FunC files.
+/// To bind to or wrap the respective functions in FunC,
+/// the so-called native functions are used.
+///
+/// Usage example:
+///     import "./path/to/func/file.fc";
+///     fun example() {
+///         let val = 10;
+///         hippityHoppity(val);
+///         val; // 11
+///     }
+///
+@name(stack_overflow)
+native stackOverflow();
+
+/// Finally, there are advanced module-level functions that allow you
+/// to write Tat assembly. Unlike all other functions, their bodies consist
+/// only of TVM instructions and some other primitives as arguments to instructions.
+///
+/// Usage example:
+///     rawReserveExtra(ton("0.1"), emptyCell(), 0);
+///
+asm fun rawReserveExtra(amount: Int, extraAmount: Cell, mode: Int) { RAWRESERVEX }
+
+// The functions discussed above are helpful but not mandatory for
+// the contracts to operate, unlike the receiver functions,
+// which can only be defined at the contract and trait level.
+//
+// See the "Contracts and traits" section below for more info.
 ```
 
 Read more: [Functions](/book/functions).
@@ -774,6 +855,8 @@ Read more:
 ```tact
 // TODO: ... + deploy + initOf + seqno/id
 // (move notes here!)
+//
+// TODO: do we need that? on-chain, maybe.
 ```
 
 Read more: [Deployment](/book/deploy).

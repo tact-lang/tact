@@ -65,6 +65,8 @@ guarantor
 Héctor
 hehe
 heisenbugs
+hippity
+Hoppity
 idict
 Ikko
 infixl
@@ -204,6 +206,7 @@ varint
 varuint
 verytactical
 viiii
+Viltrum
 vogons
 Vsevolod
 workchain
