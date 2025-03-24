@@ -8,7 +8,6 @@ contract Foo {
             if b {
                 return 42;
             }
-        }
-        // ERROR: no return statement
+        } // ERROR: no return statement
     }
 }
