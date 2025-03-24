@@ -986,7 +986,7 @@ contract MapTestContract {
         keyUint8: Int,
         keyUint42: Int,
         keyUint256: Int,
-        keyAddress: Address
+        keyAddress: Address,
     ): GetAllMapsResult {
         return GetAllMapsResult {
             // Integer Key Maps
@@ -1263,7 +1263,7 @@ contract MapTestContract {
         keyUint8: Int,
         keyUint42: Int,
         keyUint256: Int,
-        keyAddress: Address
+        keyAddress: Address,
     ): ExistsAllMapsResult {
         return ExistsAllMapsResult {
             // Integer Key Maps

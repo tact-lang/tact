@@ -986,7 +986,7 @@ contract MapTestContract {
         keyUint8: Int,
         keyUint42: Int,
         keyUint256: Int,
-        keyAddress: Address
+        keyAddress: Address,
     ): GetAllMapsResult {
         return GetAllMapsResult {
             // Integer Key Maps
@@ -1061,7 +1061,7 @@ contract MapTestContract {
             address_bool: self.address_bool.get(keyAddress),
             address_cell: self.address_cell.get(keyAddress),
             address_address: self.address_address.get(keyAddress),
-            address_struct: self.address_struct.get(keyAddress)
+            address_struct: self.address_struct.get(keyAddress),
         };
     }
 
@@ -1081,7 +1081,7 @@ contract MapTestContract {
         valueBool: Bool,
         valueCell: Cell,
         valueAddress: Address,
-        valueStruct: SomeStruct
+        valueStruct: SomeStruct,
     ): ReplaceAllMapsResult {
         return ReplaceAllMapsResult {
             // Integer Key Maps
@@ -1156,7 +1156,7 @@ contract MapTestContract {
             address_bool: self.address_bool.replace(keyAddress, valueBool),
             address_cell: self.address_cell.replace(keyAddress, valueCell),
             address_address: self.address_address.replace(keyAddress, valueAddress),
-            address_struct: self.address_struct.replace(keyAddress, valueStruct)
+            address_struct: self.address_struct.replace(keyAddress, valueStruct),
         };
     }
 
@@ -1176,7 +1176,7 @@ contract MapTestContract {
         valueBool: Bool,
         valueCell: Cell,
         valueAddress: Address,
-        valueStruct: SomeStruct
+        valueStruct: SomeStruct,
     ): ReplaceGetAllMapsResult {
         return ReplaceGetAllMapsResult {
             // Integer Key Maps
@@ -1251,7 +1251,7 @@ contract MapTestContract {
             address_bool: self.address_bool.replaceGet(keyAddress, valueBool),
             address_cell: self.address_cell.replaceGet(keyAddress, valueCell),
             address_address: self.address_address.replaceGet(keyAddress, valueAddress),
-            address_struct: self.address_struct.replaceGet(keyAddress, valueStruct)
+            address_struct: self.address_struct.replaceGet(keyAddress, valueStruct),
         };
     }
 
@@ -1263,7 +1263,7 @@ contract MapTestContract {
         keyUint8: Int,
         keyUint42: Int,
         keyUint256: Int,
-        keyAddress: Address
+        keyAddress: Address,
     ): ExistsAllMapsResult {
         return ExistsAllMapsResult {
             // Integer Key Maps
@@ -1338,7 +1338,7 @@ contract MapTestContract {
             address_bool: self.address_bool.exists(keyAddress),
             address_cell: self.address_cell.exists(keyAddress),
             address_address: self.address_address.exists(keyAddress),
-            address_struct: self.address_struct.exists(keyAddress)
+            address_struct: self.address_struct.exists(keyAddress),
         };
     }
 
@@ -1416,7 +1416,7 @@ contract MapTestContract {
             address_bool: self.address_bool.isEmpty(),
             address_cell: self.address_cell.isEmpty(),
             address_address: self.address_address.isEmpty(),
-            address_struct: self.address_struct.isEmpty()
+            address_struct: self.address_struct.isEmpty(),
         };
     }
 
@@ -1494,7 +1494,7 @@ contract MapTestContract {
             address_bool: self.address_bool.asCell(),
             address_cell: self.address_cell.asCell(),
             address_address: self.address_address.asCell(),
-            address_struct: self.address_struct.asCell()
+            address_struct: self.address_struct.asCell(),
         };
     }
 
