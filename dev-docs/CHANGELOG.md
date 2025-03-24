@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
-- Fixed description of the `dump()` function, which does not support values of `StringBuilder` type: PR [#IDK](https://github.com/tact-lang/tact/pull/IDK)
+- Fixed description of the `dump()` function, which does not support values of `StringBuilder` type: PR [#2463](https://github.com/tact-lang/tact/pull/2463)
 
 ### Release contributors
 
