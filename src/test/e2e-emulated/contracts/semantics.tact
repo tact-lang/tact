@@ -303,7 +303,6 @@ contract SemanticsTester {
     mC: map<Int, MapWrapper>;   // Simulate nested maps by wrapping them in a struct,
                                // "Morally", mC has type map<Int,map<Int,SA>>.
 
-
     // Flag storing the result of calling method mutateContractState.
     // So that we can get the result using a getter method
 
@@ -426,13 +425,13 @@ contract SemanticsTester {
         foreach (k1, v1 in self.mC) {
             foreach (k2, v2 in v1.m) {
                 result &&= 
-                         k1 == 100 && 
-                         k2 == 10 &&
-                         
-                         v2.a1 == 20 && 
-                         v2.a2.b1 == true &&
-                         v2.a2.b2.c1 == 5 &&
-                         v2.a2.b3 == 10;
+                    k1 == 100 &&
+                    k2 == 10 &&
+
+                    v2.a1 == 20 &&
+                    v2.a2.b1 == true &&
+                    v2.a2.b2.c1 == 5 &&
+                    v2.a2.b3 == 10;
             }
         }
 
@@ -447,15 +446,16 @@ contract SemanticsTester {
         let s = self.sA;
 
         // The fields of s and self.sA are equal, and the values did not change
-        return s.a1 == self.sA.a1 &&
-               s.a2.b1 == self.sA.a2.b1 &&
-               s.a2.b2.c1 == self.sA.a2.b2.c1 &&
-               s.a2.b3 == self.sA.a2.b3 &&
-               s.a1 == 20 &&
-               s.a2.b1 == true &&
-               s.a2.b2.c1 == 5 &&
-               s.a2.b3 == 10 &&
-               self.checkAllContractFieldsAreUnchanged();
+        return 
+            s.a1 == self.sA.a1 &&
+            s.a2.b1 == self.sA.a2.b1 &&
+            s.a2.b2.c1 == self.sA.a2.b2.c1 &&
+            s.a2.b3 == self.sA.a2.b3 &&
+            s.a1 == 20 &&
+            s.a2.b1 == true &&
+            s.a2.b2.c1 == 5 &&
+            s.a2.b3 == 10 &&
+            self.checkAllContractFieldsAreUnchanged();
     }
 
     // Assignment of structs is done by value
@@ -477,14 +477,15 @@ contract SemanticsTester {
         // self.sA remains unchanged,
         // the copy t inherits the value b2.c1 = 70 modified by s,
         // the copy s does not change its b3 field.
-        return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 50 &&
-               s.a2.b1 == true &&
-               s.a2.b2.c1 == 70 &&
-               s.a2.b3 == 10 &&
-               t.b1 == true &&
-               t.b2.c1 == 70 &&
-               t.b3 == 100;
+        return 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.a1 == 50 &&
+            s.a2.b1 == true &&
+            s.a2.b2.c1 == 70 &&
+            s.a2.b3 == 10 &&
+            t.b1 == true &&
+            t.b2.c1 == 70 &&
+            t.b3 == 100;
     }
 
     get fun paramStruct1(): Bool {
@@ -492,11 +493,12 @@ contract SemanticsTester {
 
         let s = getNewStruct(self.sA);
 
-        return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 0 &&
-               s.a2.b1 == false &&
-               s.a2.b2.c1 == 0 &&
-               s.a2.b3 == 0;
+        return 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.a1 == 0 &&
+            s.a2.b1 == false &&
+            s.a2.b2.c1 == 0 &&
+            s.a2.b3 == 0;
     }
 
     get fun paramStruct2(): Bool {
@@ -504,11 +506,12 @@ contract SemanticsTester {
 
         let s = copyAndModifyStruct(self.sA);
 
-        return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 120 &&
-               s.a2.b1 == true &&
-               s.a2.b2.c1 == 6 &&
-               s.a2.b3 == 10;
+        return 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.a1 == 120 &&
+            s.a2.b1 == true &&
+            s.a2.b2.c1 == 6 &&
+            s.a2.b3 == 10;
     }
 
     get fun mutateParamStruct1(): Bool {
@@ -518,11 +521,12 @@ contract SemanticsTester {
 
         s.reassignStruct();
 
-        return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 0 &&
-               s.a2.b1 == false &&
-               s.a2.b2.c1 == 0 &&
-               s.a2.b3 == 0;
+        return 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.a1 == 0 &&
+            s.a2.b1 == false &&
+            s.a2.b2.c1 == 0 &&
+            s.a2.b3 == 0;
     }
 
     get fun mutateParamStruct2(): Bool {
@@ -532,11 +536,12 @@ contract SemanticsTester {
 
         s.changeSomeFields();
 
-        return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 120 &&
-               s.a2.b1 == true &&
-               s.a2.b2.c1 == 6 &&
-               s.a2.b3 == 10;
+        return 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.a1 == 120 &&
+            s.a2.b1 == true &&
+            s.a2.b2.c1 == 6 &&
+            s.a2.b3 == 10;
     }
 
     get fun testReturnedStructs(): Bool {
@@ -563,12 +568,12 @@ contract SemanticsTester {
         // Note that the only place where s is reassigned is after reflectStruct executes.
         // This means that the above expression does NOT change s.
 
-        result &&=
-               self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 20 &&    
-               s.a2.b1 == true &&
-               s.a2.b2.c1 == 5 && 
-               s.a2.b3 == 10;
+        result &&= 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.a1 == 20 &&
+            s.a2.b1 == true &&
+            s.a2.b2.c1 == 5 &&
+            s.a2.b3 == 10;
 
         // Therefore, if we actually want to change s using changeSomeFields, we
         // should split the chain steps:
@@ -583,12 +588,12 @@ contract SemanticsTester {
         // is not possible because changeSomeFields has void return type.
 
         // s is now changed by changeSomeFields, and the rest remains the same
-        result &&=
-               self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 120 &&   
-               s.a2.b1 == true &&
-               s.a2.b2.c1 == 6 &&   
-               s.a2.b3 == 10;
+        result &&= 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.a1 == 120 &&
+            s.a2.b1 == true &&
+            s.a2.b2.c1 == 6 &&
+            s.a2.b3 == 10;
 
         // For further examples of chaining of mutating functions, see the tests mutatesChainStruct
 
@@ -617,21 +622,22 @@ contract SemanticsTester {
         z.incrementIntFields();
         z.flipBooleanFields();
 
-        return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 20 &&
-               s.a2.b1 == true &&
-               s.a2.b2.c1 == 5 &&
-               s.a2.b3 == 10 &&
+        return 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.a1 == 20 &&
+            s.a2.b1 == true &&
+            s.a2.b2.c1 == 5 &&
+            s.a2.b3 == 10 &&
 
-               t.a1 == 21 &&
-               t.a2.b1 == false &&
-               t.a2.b2.c1 == 6 &&
-               t.a2.b3 == 11 &&
+            t.a1 == 21 &&
+            t.a2.b1 == false &&
+            t.a2.b2.c1 == 6 &&
+            t.a2.b3 == 11 &&
 
-               z.a1 == 21 &&
-               z.a2.b1 == false &&
-               z.a2.b2.c1 == 6 &&
-               z.a2.b3 == 11;
+            z.a1 == 21 &&
+            z.a2.b1 == false &&
+            z.a2.b2.c1 == 6 &&
+            z.a2.b3 == 11;
     }
 
     get fun mutatesChainStruct2(): Bool {
@@ -646,21 +652,22 @@ contract SemanticsTester {
         z.flipBooleanFields();
         z.incrementIntFields();
 
-        return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 20 &&
-               s.a2.b1 == true &&
-               s.a2.b2.c1 == 5 &&
-               s.a2.b3 == 10 &&
+        return 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.a1 == 20 &&
+            s.a2.b1 == true &&
+            s.a2.b2.c1 == 5 &&
+            s.a2.b3 == 10 &&
 
-               t.a1 == 21 &&
-               t.a2.b1 == false &&
-               t.a2.b2.c1 == 6 &&
-               t.a2.b3 == 11 &&
+            t.a1 == 21 &&
+            t.a2.b1 == false &&
+            t.a2.b2.c1 == 6 &&
+            t.a2.b3 == 11 &&
 
-               z.a1 == 21 &&
-               z.a2.b1 == false &&
-               z.a2.b2.c1 == 6 &&
-               z.a2.b3 == 11;
+            z.a1 == 21 &&
+            z.a2.b1 == false &&
+            z.a2.b2.c1 == 6 &&
+            z.a2.b3 == 11;
     }
 
     get fun mutatesChainStruct3(): Bool {
@@ -675,21 +682,22 @@ contract SemanticsTester {
         z.reflectStruct();
         z.flipBooleanFields();
 
-        return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 21 &&
-               s.a2.b1 == true &&
-               s.a2.b2.c1 == 6 &&
-               s.a2.b3 == 11 &&
+        return 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.a1 == 21 &&
+            s.a2.b1 == true &&
+            s.a2.b2.c1 == 6 &&
+            s.a2.b3 == 11 &&
 
-               t.a1 == 21 &&
-               t.a2.b1 == false &&
-               t.a2.b2.c1 == 6 &&
-               t.a2.b3 == 11 &&
+            t.a1 == 21 &&
+            t.a2.b1 == false &&
+            t.a2.b2.c1 == 6 &&
+            t.a2.b3 == 11 &&
 
-               z.a1 == 21 &&
-               z.a2.b1 == false &&
-               z.a2.b2.c1 == 6 &&
-               z.a2.b3 == 11;
+            z.a1 == 21 &&
+            z.a2.b1 == false &&
+            z.a2.b2.c1 == 6 &&
+            z.a2.b3 == 11;
     }
 
     get fun mutatesChainStruct4(): Bool {
@@ -704,21 +712,22 @@ contract SemanticsTester {
         z.flipBooleanFields();
         z.reflectStruct();
 
-        return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 21 &&
-               s.a2.b1 == true &&
-               s.a2.b2.c1 == 6 &&
-               s.a2.b3 == 11 &&
+        return 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.a1 == 21 &&
+            s.a2.b1 == true &&
+            s.a2.b2.c1 == 6 &&
+            s.a2.b3 == 11 &&
 
-               t.a1 == 21 &&
-               t.a2.b1 == false &&
-               t.a2.b2.c1 == 6 &&
-               t.a2.b3 == 11 &&
+            t.a1 == 21 &&
+            t.a2.b1 == false &&
+            t.a2.b2.c1 == 6 &&
+            t.a2.b3 == 11 &&
 
-               z.a1 == 21 &&
-               z.a2.b1 == false &&
-               z.a2.b2.c1 == 6 &&
-               z.a2.b3 == 11;
+            z.a1 == 21 &&
+            z.a2.b1 == false &&
+            z.a2.b2.c1 == 6 &&
+            z.a2.b3 == 11;
     }
 
     get fun mutatesChainStruct5(): Bool {
@@ -733,21 +742,22 @@ contract SemanticsTester {
         z.incrementIntFields();
         z.reflectStruct();
 
-        return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 20 &&
-               s.a2.b1 == false &&
-               s.a2.b2.c1 == 5 &&
-               s.a2.b3 == 10 &&
+        return 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.a1 == 20 &&
+            s.a2.b1 == false &&
+            s.a2.b2.c1 == 5 &&
+            s.a2.b3 == 10 &&
 
-               t.a1 == 21 &&
-               t.a2.b1 == false &&
-               t.a2.b2.c1 == 6 &&
-               t.a2.b3 == 11 &&
+            t.a1 == 21 &&
+            t.a2.b1 == false &&
+            t.a2.b2.c1 == 6 &&
+            t.a2.b3 == 11 &&
 
-               z.a1 == 21 &&
-               z.a2.b1 == false &&
-               z.a2.b2.c1 == 6 &&
-               z.a2.b3 == 11;
+            z.a1 == 21 &&
+            z.a2.b1 == false &&
+            z.a2.b2.c1 == 6 &&
+            z.a2.b3 == 11;
     }
 
     get fun mutatesChainStruct6(): Bool {
@@ -762,21 +772,22 @@ contract SemanticsTester {
         z.reflectStruct();
         z.incrementIntFields();
 
-        return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 20 &&
-               s.a2.b1 == false &&
-               s.a2.b2.c1 == 5 &&
-               s.a2.b3 == 10 &&
+        return 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.a1 == 20 &&
+            s.a2.b1 == false &&
+            s.a2.b2.c1 == 5 &&
+            s.a2.b3 == 10 &&
 
-               t.a1 == 21 &&
-               t.a2.b1 == false &&
-               t.a2.b2.c1 == 6 &&
-               t.a2.b3 == 11 &&
+            t.a1 == 21 &&
+            t.a2.b1 == false &&
+            t.a2.b2.c1 == 6 &&
+            t.a2.b3 == 11 &&
 
-               z.a1 == 21 &&
-               z.a2.b1 == false &&
-               z.a2.b2.c1 == 6 &&
-               z.a2.b3 == 11;
+            z.a1 == 21 &&
+            z.a2.b1 == false &&
+            z.a2.b2.c1 == 6 &&
+            z.a2.b3 == 11;
     }
 
     /*************** Maps ********************/
@@ -788,37 +799,37 @@ contract SemanticsTester {
 
         // The entries of s and self.mA are equal, and the values did not change
         let result = 
-               self.mA.get(1)!!.a1 == s.get(1)!!.a1 && 
-               self.mA.get(1)!!.a2.b1 == s.get(1)!!.a2.b1 &&
-               self.mA.get(1)!!.a2.b2.c1 == s.get(1)!!.a2.b2.c1 &&
-               self.mA.get(1)!!.a2.b3 == s.get(1)!!.a2.b3 &&
+            self.mA.get(1)!!.a1 == s.get(1)!!.a1 &&
+            self.mA.get(1)!!.a2.b1 == s.get(1)!!.a2.b1 &&
+            self.mA.get(1)!!.a2.b2.c1 == s.get(1)!!.a2.b2.c1 &&
+            self.mA.get(1)!!.a2.b3 == s.get(1)!!.a2.b3 &&
 
-               self.mA.get(2)!!.a1 == s.get(2)!!.a1 && 
-               self.mA.get(2)!!.a2.b1 == s.get(2)!!.a2.b1 &&
-               self.mA.get(2)!!.a2.b2.c1 == s.get(2)!!.a2.b2.c1 &&
-               self.mA.get(2)!!.a2.b3 == s.get(2)!!.a2.b3 &&
+            self.mA.get(2)!!.a1 == s.get(2)!!.a1 &&
+            self.mA.get(2)!!.a2.b1 == s.get(2)!!.a2.b1 &&
+            self.mA.get(2)!!.a2.b2.c1 == s.get(2)!!.a2.b2.c1 &&
+            self.mA.get(2)!!.a2.b3 == s.get(2)!!.a2.b3 &&
 
-               self.mA.get(3)!!.a1 == s.get(3)!!.a1 && 
-               self.mA.get(3)!!.a2.b1 == s.get(3)!!.a2.b1 &&
-               self.mA.get(3)!!.a2.b2.c1 == s.get(3)!!.a2.b2.c1 &&
-               self.mA.get(3)!!.a2.b3 == s.get(3)!!.a2.b3 &&
+            self.mA.get(3)!!.a1 == s.get(3)!!.a1 &&
+            self.mA.get(3)!!.a2.b1 == s.get(3)!!.a2.b1 &&
+            self.mA.get(3)!!.a2.b2.c1 == s.get(3)!!.a2.b2.c1 &&
+            self.mA.get(3)!!.a2.b3 == s.get(3)!!.a2.b3 &&
 
-               s.get(1)!!.a1 == 20 && 
-               s.get(1)!!.a2.b1 == true &&
-               s.get(1)!!.a2.b2.c1 == 5 &&
-               s.get(1)!!.a2.b3 == 10 &&
+            s.get(1)!!.a1 == 20 &&
+            s.get(1)!!.a2.b1 == true &&
+            s.get(1)!!.a2.b2.c1 == 5 &&
+            s.get(1)!!.a2.b3 == 10 &&
 
-               s.get(2)!!.a1 == 20 && 
-               s.get(2)!!.a2.b1 == true &&
-               s.get(2)!!.a2.b2.c1 == 100 &&
-               s.get(2)!!.a2.b3 == 0 &&
+            s.get(2)!!.a1 == 20 &&
+            s.get(2)!!.a2.b1 == true &&
+            s.get(2)!!.a2.b2.c1 == 100 &&
+            s.get(2)!!.a2.b3 == 0 &&
 
-               s.get(3)!!.a1 == 5 && 
-               s.get(3)!!.a2.b1 == false &&
-               s.get(3)!!.a2.b2.c1 == 150 &&
-               s.get(3)!!.a2.b3 == 0 &&
-               self.checkAllContractFieldsAreUnchanged();
-        
+            s.get(3)!!.a1 == 5 &&
+            s.get(3)!!.a2.b1 == false &&
+            s.get(3)!!.a2.b2.c1 == 150 &&
+            s.get(3)!!.a2.b3 == 0 &&
+            self.checkAllContractFieldsAreUnchanged();
+
         // And no other entries
         foreach (k, _ in s) {
             result &&= (k == 1 || k == 2 || k == 3);
@@ -843,22 +854,22 @@ contract SemanticsTester {
         // self.mA remains unchanged (including the rest of fields)
         // The rest of the entries in s remain identical to self.mA.
         let result = 
-               self.checkAllContractFieldsAreUnchanged() &&
-               
-               s.get(1)!!.a1 == 0 && 
-               s.get(1)!!.a2.b1 == false &&
-               s.get(1)!!.a2.b2.c1 == 5 &&
-               s.get(1)!!.a2.b3 == 2 &&
+            self.checkAllContractFieldsAreUnchanged() &&
 
-               s.get(2)!!.a1 == 20 && 
-               s.get(2)!!.a2.b1 == true &&
-               s.get(2)!!.a2.b2.c1 == 100 &&
-               s.get(2)!!.a2.b3 == 0 &&
+            s.get(1)!!.a1 == 0 &&
+            s.get(1)!!.a2.b1 == false &&
+            s.get(1)!!.a2.b2.c1 == 5 &&
+            s.get(1)!!.a2.b3 == 2 &&
 
-               s.get(3)!!.a1 == 5 && 
-               s.get(3)!!.a2.b1 == false &&
-               s.get(3)!!.a2.b2.c1 == 150 &&
-               s.get(3)!!.a2.b3 == 0;
+            s.get(2)!!.a1 == 20 &&
+            s.get(2)!!.a2.b1 == true &&
+            s.get(2)!!.a2.b2.c1 == 100 &&
+            s.get(2)!!.a2.b3 == 0 &&
+
+            s.get(3)!!.a1 == 5 &&
+            s.get(3)!!.a2.b1 == false &&
+            s.get(3)!!.a2.b2.c1 == 150 &&
+            s.get(3)!!.a2.b3 == 0;
 
         // And no other entries
         foreach (k, _ in s) {
@@ -874,13 +885,13 @@ contract SemanticsTester {
         let s = getNewMap(self.mA);
 
         let result = 
-               self.checkAllContractFieldsAreUnchanged() &&
-               s.get(1)!!.a1 == 0 && 
-               s.get(1)!!.a2.b1 == false &&
-               s.get(1)!!.a2.b2.c1 == 0 &&
-               s.get(1)!!.a2.b3 == 0;
-        
-        // And no other entries 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.get(1)!!.a1 == 0 &&
+            s.get(1)!!.a2.b1 == false &&
+            s.get(1)!!.a2.b2.c1 == 0 &&
+            s.get(1)!!.a2.b3 == 0;
+
+        // And no other entries
         foreach (k, _ in s) {
             result &&= k == 1;
         }
@@ -894,13 +905,13 @@ contract SemanticsTester {
         let s = copyAndModifyMap(self.mA);
 
         let result = 
-               self.checkAllContractFieldsAreUnchanged() &&
-               s.get(1)!!.a1 == 20 && 
-               s.get(1)!!.a2.b1 == true &&
-               s.get(1)!!.a2.b2.c1 == 45 &&
-               s.get(1)!!.a2.b3 == 10;
-        
-        // And no other entries 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.get(1)!!.a1 == 20 &&
+            s.get(1)!!.a2.b1 == true &&
+            s.get(1)!!.a2.b2.c1 == 45 &&
+            s.get(1)!!.a2.b3 == 10;
+
+        // And no other entries
         foreach (k, _ in s) {
             result &&= k == 1;
         }
@@ -916,13 +927,13 @@ contract SemanticsTester {
         s.reassignMap();
 
         let result = 
-               self.checkAllContractFieldsAreUnchanged() &&
-               s.m.get(1)!!.a1 == 0 && 
-               s.m.get(1)!!.a2.b1 == false &&
-               s.m.get(1)!!.a2.b2.c1 == 0 &&
-               s.m.get(1)!!.a2.b3 == 0;
-        
-        // And no other entries 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.m.get(1)!!.a1 == 0 &&
+            s.m.get(1)!!.a2.b1 == false &&
+            s.m.get(1)!!.a2.b2.c1 == 0 &&
+            s.m.get(1)!!.a2.b3 == 0;
+
+        // And no other entries
         foreach (k, _ in s.m) {
             result &&= k == 1;
         }
@@ -938,13 +949,13 @@ contract SemanticsTester {
         s.changeSomeEntries();
 
         let result = 
-               self.checkAllContractFieldsAreUnchanged() &&
-               s.m.get(1)!!.a1 == 20 && 
-               s.m.get(1)!!.a2.b1 == true &&
-               s.m.get(1)!!.a2.b2.c1 == 35 &&
-               s.m.get(1)!!.a2.b3 == 10;
-        
-        // And no other entries 
+            self.checkAllContractFieldsAreUnchanged() &&
+            s.m.get(1)!!.a1 == 20 &&
+            s.m.get(1)!!.a2.b1 == true &&
+            s.m.get(1)!!.a2.b2.c1 == 35 &&
+            s.m.get(1)!!.a2.b3 == 10;
+
+        // And no other entries
         foreach (k, _ in s.m) {
             result &&= k == 1;
         }
@@ -1111,22 +1122,23 @@ contract SemanticsTester {
 
         // Check that s does change
 
-        let result = s.a1 == 20 &&
-                     s.a2.b1 == true &&
-                     s.a2.b2.c1 == 1000 &&
-                     s.a2.b3 == 10;
+        let result = 
+            s.a1 == 20 &&
+            s.a2.b1 == true &&
+            s.a2.b2.c1 == 1000 &&
+            s.a2.b3 == 10;
 
         // But m does not change
         foreach (k1, v1 in m) {
             foreach (k2, v2 in v1.m) {
-                result &&=
-                         k1 == 100 && 
-                         k2 == 10 &&
-                         
-                         v2.a1 == 20 && 
-                         v2.a2.b1 == true &&
-                         v2.a2.b2.c1 == 5 &&
-                         v2.a2.b3 == 10;
+                result &&= 
+                    k1 == 100 &&
+                    k2 == 10 &&
+
+                    v2.a1 == 20 &&
+                    v2.a2.b1 == true &&
+                    v2.a2.b2.c1 == 5 &&
+                    v2.a2.b3 == 10;
             }
         }
 
@@ -1165,20 +1177,20 @@ contract SemanticsTester {
         // Indeed, wrappedNested1 and wrappedNested2 are equal
 
         foreach (k2, v2 in wrappedNested1.m) {
-                result &&=
+            result &&= 
                 k2 == 10 &&
-                         
-                v2.a1 == 20 && 
+
+                v2.a1 == 20 &&
                 v2.a2.b1 == true &&
                 v2.a2.b2.c1 == 1000 &&
                 v2.a2.b3 == 10;
         }
 
         foreach (k2, v2 in wrappedNested2.m) {
-                result &&=
+            result &&= 
                 k2 == 10 &&
-                         
-                v2.a1 == 20 && 
+
+                v2.a1 == 20 &&
                 v2.a2.b1 == true &&
                 v2.a2.b2.c1 == 1000 &&
                 v2.a2.b3 == 10;
@@ -1191,14 +1203,14 @@ contract SemanticsTester {
 
         foreach (k1, v1 in m) {
             foreach (k2, v2 in v1.m) {
-                result &&=
-                         k1 == 100 && 
-                         k2 == 10 &&
-                         
-                         v2.a1 == 20 && 
-                         v2.a2.b1 == true &&
-                         v2.a2.b2.c1 == 1000 &&
-                         v2.a2.b3 == 10;
+                result &&= 
+                    k1 == 100 &&
+                    k2 == 10 &&
+
+                    v2.a1 == 20 &&
+                    v2.a2.b1 == true &&
+                    v2.a2.b2.c1 == 1000 &&
+                    v2.a2.b3 == 10;
             }
         }
 
@@ -1236,10 +1248,10 @@ contract SemanticsTester {
         // and c below, which implies that both self and c have identical state so far.
 
         let result = 
-               self.checkAllContractFieldsAreUnchanged() &&
+            self.checkAllContractFieldsAreUnchanged() &&
 
-               // Note that this will check that the state of the copy is identical to self.
-               c.checkAllContractFieldsAreUnchanged();
+            // Note that this will check that the state of the copy is identical to self.
+            c.checkAllContractFieldsAreUnchanged();
 
         return result;
     }
@@ -1255,31 +1267,31 @@ contract SemanticsTester {
         c.mA.del(2);
 
         let result = 
-               self.checkAllContractFieldsAreUnchanged() &&
-               
-               c.uB.b1 == false &&
-               c.uB.b2.c1 == 0 &&
-               c.uB.b3 == 14 &&
-               
-               c.sA.a1 == 20 && 
-               c.sA.a2.b1 == true &&
-               c.sA.a2.b2.c1 == 5 &&
-               c.sA.a2.b3 == 10 &&
+            self.checkAllContractFieldsAreUnchanged() &&
 
-               c.sB.b1 == false &&
-               c.sB.b2.c1 == 3 &&
-               c.sB.b3 == 10 &&
+            c.uB.b1 == false &&
+            c.uB.b2.c1 == 0 &&
+            c.uB.b3 == 14 &&
 
-               c.sC.c1 == 5 &&
+            c.sA.a1 == 20 &&
+            c.sA.a2.b1 == true &&
+            c.sA.a2.b2.c1 == 5 &&
+            c.sA.a2.b3 == 10 &&
 
-               c.mB.isEmpty() && 
+            c.sB.b1 == false &&
+            c.sB.b2.c1 == 3 &&
+            c.sB.b3 == 10 &&
 
-               // the map c.mA has one key-value pair:
+            c.sC.c1 == 5 &&
 
-               c.mA.get(3)!!.a1 == 5 && 
-               c.mA.get(3)!!.a2.b1 == false &&
-               c.mA.get(3)!!.a2.b2.c1 == 150 &&
-               c.mA.get(3)!!.a2.b3 == 0;
+            c.mB.isEmpty() &&
+
+            // the map c.mA has one key-value pair:
+
+            c.mA.get(3)!!.a1 == 5 &&
+            c.mA.get(3)!!.a2.b1 == false &&
+            c.mA.get(3)!!.a2.b2.c1 == 150 &&
+            c.mA.get(3)!!.a2.b3 == 0;
 
         // And no other entries
         foreach (k, _ in c.mA) {
@@ -1297,36 +1309,36 @@ contract SemanticsTester {
         let c = copyAndModifyContract(self);
 
         let result = 
-               self.checkAllContractFieldsAreUnchanged() &&
-               
-               c.uB.b1 == true &&
-               c.uB.b2.c1 == 99 &&
-               c.uB.b3 == 98 &&
-               
-               c.sA.a1 == 20 && 
-               c.sA.a2.b1 == true &&
-               c.sA.a2.b2.c1 == 5 &&
-               c.sA.a2.b3 == 10 &&
+            self.checkAllContractFieldsAreUnchanged() &&
 
-               c.sB.b1 == false &&
-               c.sB.b2.c1 == 3 &&
-               c.sB.b3 == 10 &&
+            c.uB.b1 == true &&
+            c.uB.b2.c1 == 99 &&
+            c.uB.b3 == 98 &&
 
-               c.sC.c1 == 5 &&
+            c.sA.a1 == 20 &&
+            c.sA.a2.b1 == true &&
+            c.sA.a2.b2.c1 == 5 &&
+            c.sA.a2.b3 == 10 &&
 
-               c.mB.isEmpty() && 
+            c.sB.b1 == false &&
+            c.sB.b2.c1 == 3 &&
+            c.sB.b3 == 10 &&
 
-               // the map c.mA has two key-value pairs:
+            c.sC.c1 == 5 &&
 
-               c.mA.get(2)!!.a1 == 20 && 
-               c.mA.get(2)!!.a2.b1 == true &&
-               c.mA.get(2)!!.a2.b2.c1 == 100 &&
-               c.mA.get(2)!!.a2.b3 == 0 &&
+            c.mB.isEmpty() &&
 
-               c.mA.get(3)!!.a1 == 5 && 
-               c.mA.get(3)!!.a2.b1 == false &&
-               c.mA.get(3)!!.a2.b2.c1 == 150 &&
-               c.mA.get(3)!!.a2.b3 == 0;
+            // the map c.mA has two key-value pairs:
+
+            c.mA.get(2)!!.a1 == 20 &&
+            c.mA.get(2)!!.a2.b1 == true &&
+            c.mA.get(2)!!.a2.b2.c1 == 100 &&
+            c.mA.get(2)!!.a2.b3 == 0 &&
+
+            c.mA.get(3)!!.a1 == 5 &&
+            c.mA.get(3)!!.a2.b1 == false &&
+            c.mA.get(3)!!.a2.b2.c1 == 150 &&
+            c.mA.get(3)!!.a2.b3 == 0;
 
         // And no other entries
         foreach (k, _ in c.mA) {
@@ -1355,39 +1367,39 @@ contract SemanticsTester {
         */
 
         let result = 
-               self.checkAllContractFieldsAreUnchanged() &&
+            self.checkAllContractFieldsAreUnchanged() &&
 
-               c.uB.b1 == true &&
-               c.uB.b2.c1 == 77 &&
-               c.uB.b3 == 88 &&
+            c.uB.b1 == true &&
+            c.uB.b2.c1 == 77 &&
+            c.uB.b3 == 88 &&
 
-               c.sA.a1 == 20 && 
-               c.sA.a2.b1 == true &&
-               c.sA.a2.b2.c1 == 35 &&
-               c.sA.a2.b3 == 10 &&
+            c.sA.a1 == 20 &&
+            c.sA.a2.b1 == true &&
+            c.sA.a2.b2.c1 == 35 &&
+            c.sA.a2.b3 == 10 &&
 
-               c.sB.b1 == false &&
-               c.sB.b2.c1 == 3 &&
-               c.sB.b3 == 10 &&
+            c.sB.b1 == false &&
+            c.sB.b2.c1 == 3 &&
+            c.sB.b3 == 10 &&
 
-               c.sC.c1 == 5 &&
+            c.sC.c1 == 5 &&
 
-               c.mB.isEmpty() && 
+            c.mB.isEmpty() &&
 
-               c.mA.get(1)!!.a1 == 20 && 
-               c.mA.get(1)!!.a2.b1 == true &&
-               c.mA.get(1)!!.a2.b2.c1 == 5 &&
-               c.mA.get(1)!!.a2.b3 == 10 &&
+            c.mA.get(1)!!.a1 == 20 &&
+            c.mA.get(1)!!.a2.b1 == true &&
+            c.mA.get(1)!!.a2.b2.c1 == 5 &&
+            c.mA.get(1)!!.a2.b3 == 10 &&
 
-               c.mA.get(2)!!.a1 == 20 && 
-               c.mA.get(2)!!.a2.b1 == true &&
-               c.mA.get(2)!!.a2.b2.c1 == 100 &&
-               c.mA.get(2)!!.a2.b3 == 0 &&
+            c.mA.get(2)!!.a1 == 20 &&
+            c.mA.get(2)!!.a2.b1 == true &&
+            c.mA.get(2)!!.a2.b2.c1 == 100 &&
+            c.mA.get(2)!!.a2.b3 == 0 &&
 
-               c.mA.get(3)!!.a1 == 5 && 
-               c.mA.get(3)!!.a2.b1 == false &&
-               c.mA.get(3)!!.a2.b2.c1 == 150 &&
-               c.mA.get(3)!!.a2.b3 == 0;
+            c.mA.get(3)!!.a1 == 5 &&
+            c.mA.get(3)!!.a2.b1 == false &&
+            c.mA.get(3)!!.a2.b2.c1 == 150 &&
+            c.mA.get(3)!!.a2.b3 == 0;
 
         // And no other entries
         foreach (k, _ in c.mA) {
@@ -1406,37 +1418,37 @@ contract SemanticsTester {
 
     fun checkFieldsEqualTo(sB: SB, n: Int): Bool {
         let result = 
-               self.uB.b1 == sB.b1 &&
-               self.uB.b2.c1 == sB.b2.c1 &&
-               self.uB.b3 == sB.b3 &&
+            self.uB.b1 == sB.b1 &&
+            self.uB.b2.c1 == sB.b2.c1 &&
+            self.uB.b3 == sB.b3 &&
 
-               self.sA.a1 == 20 && 
-               self.sA.a2.b1 == true &&
-               self.sA.a2.b2.c1 == n &&
-               self.sA.a2.b3 == 10 &&
+            self.sA.a1 == 20 &&
+            self.sA.a2.b1 == true &&
+            self.sA.a2.b2.c1 == n &&
+            self.sA.a2.b3 == 10 &&
 
-               self.sB.b1 == false &&
-               self.sB.b2.c1 == 3 &&
-               self.sB.b3 == 10 &&
+            self.sB.b1 == false &&
+            self.sB.b2.c1 == 3 &&
+            self.sB.b3 == 10 &&
 
-               self.sC.c1 == 5 &&
+            self.sC.c1 == 5 &&
 
-               self.mB.isEmpty() && 
+            self.mB.isEmpty() &&
 
-               self.mA.get(1)!!.a1 == 20 && 
-               self.mA.get(1)!!.a2.b1 == true &&
-               self.mA.get(1)!!.a2.b2.c1 == 5 &&
-               self.mA.get(1)!!.a2.b3 == 10 &&
+            self.mA.get(1)!!.a1 == 20 &&
+            self.mA.get(1)!!.a2.b1 == true &&
+            self.mA.get(1)!!.a2.b2.c1 == 5 &&
+            self.mA.get(1)!!.a2.b3 == 10 &&
 
-               self.mA.get(2)!!.a1 == 20 && 
-               self.mA.get(2)!!.a2.b1 == true &&
-               self.mA.get(2)!!.a2.b2.c1 == 100 &&
-               self.mA.get(2)!!.a2.b3 == 0 &&
+            self.mA.get(2)!!.a1 == 20 &&
+            self.mA.get(2)!!.a2.b1 == true &&
+            self.mA.get(2)!!.a2.b2.c1 == 100 &&
+            self.mA.get(2)!!.a2.b3 == 0 &&
 
-               self.mA.get(3)!!.a1 == 5 && 
-               self.mA.get(3)!!.a2.b1 == false &&
-               self.mA.get(3)!!.a2.b2.c1 == 150 &&
-               self.mA.get(3)!!.a2.b3 == 0;
+            self.mA.get(3)!!.a1 == 5 &&
+            self.mA.get(3)!!.a2.b1 == false &&
+            self.mA.get(3)!!.a2.b2.c1 == 150 &&
+            self.mA.get(3)!!.a2.b3 == 0;
 
         // And no other entries
         foreach (k, _ in self.mA) {
@@ -1446,14 +1458,14 @@ contract SemanticsTester {
         // The map self.mC has a single entry 100 -> MapWrapper {m: 10 -> original self.sA}.
         foreach (k1, v1 in self.mC) {
             foreach (k2, v2 in v1.m) {
-                result &&=
-                         k1 == 100 && 
-                         k2 == 10 &&
-                         
-                         v2.a1 == 20 && 
-                         v2.a2.b1 == true &&
-                         v2.a2.b2.c1 == 5 &&
-                         v2.a2.b3 == 10;
+                result &&= 
+                    k1 == 100 &&
+                    k2 == 10 &&
+
+                    v2.a1 == 20 &&
+                    v2.a2.b1 == true &&
+                    v2.a2.b2.c1 == 5 &&
+                    v2.a2.b3 == 10;
             }
         }
 
@@ -1469,10 +1481,10 @@ contract SemanticsTester {
         c.changeSomeContractFields();
 
         let result = 
-               self.checkAllContractFieldsAreUnchanged() &&
+            self.checkAllContractFieldsAreUnchanged() &&
 
-               // This line tests that method calls on copies actually use the state of the copy.
-               c.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
+            // This line tests that method calls on copies actually use the state of the copy.
+            c.checkFieldsEqualTo(SB { b1: true, b2: SC { c1: 77 }, b3: 88 }, 35);
 
         // Persist the copy into self
 
@@ -1522,9 +1534,9 @@ contract SemanticsTester {
         // c.changeSomeContractFields();
 
         // Nothing changed
-        result &&=
-               self.checkAllContractFieldsAreUnchanged() &&
-               c.checkAllContractFieldsAreUnchanged();
+        result &&= 
+            self.checkAllContractFieldsAreUnchanged() &&
+            c.checkAllContractFieldsAreUnchanged();
 
         // When chaining mutating functions, one needs to reassign c in order to mutate it,
         // because the chain passes copies to the next mutating function,
@@ -1534,9 +1546,9 @@ contract SemanticsTester {
         c = c.reflectContract().incrementIntFieldsInUB().flipBooleanFieldsInUB();
 
         // c is now changed, the rest remains the same.
-        result &&=
-               self.checkAllContractFieldsAreUnchanged() &&
-               c.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 1}, b3: 15}, 5);
+        result &&= 
+            self.checkAllContractFieldsAreUnchanged() &&
+            c.checkFieldsEqualTo(SB { b1: true, b2: SC { c1: 1 }, b3: 15 }, 5);
 
         return result;
     }
