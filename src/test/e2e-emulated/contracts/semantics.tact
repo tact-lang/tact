@@ -373,35 +373,34 @@ contract SemanticsTester {
 
     get fun checkAllContractFieldsAreUnchanged(): Bool {
         let result = 
-               // self.uB is correctly initialized
+            // self.uB is correctly initialized
+            self.uB.b1 == false &&
+            self.uB.b2.c1 == 0 &&
+            self.uB.b3 == 14 &&
 
-               self.uB.b1 == false &&
-               self.uB.b2.c1 == 0 &&
-               self.uB.b3 == 14 &&
+            // init does not modify default value of self.sA
 
-               // init does not modify default value of self.sA
-               
-               self.sA.a1 == 20 && 
-               self.sA.a2.b1 == true &&
-               self.sA.a2.b2.c1 == 5 &&
-               self.sA.a2.b3 == 10 &&
+            self.sA.a1 == 20 &&
+            self.sA.a2.b1 == true &&
+            self.sA.a2.b2.c1 == 5 &&
+            self.sA.a2.b3 == 10 &&
 
-               // init modifies default value of self.sB
+            // init modifies default value of self.sB
 
-               self.sB.b1 == false &&
-               self.sB.b2.c1 == 3 &&
-               self.sB.b3 == 10 &&
+            self.sB.b1 == false &&
+            self.sB.b2.c1 == 3 &&
+            self.sB.b3 == 10 &&
 
-               // init does not change default value of self.sC.
+            // init does not change default value of self.sC.
 
-               self.sC.c1 == 5 &&
+            self.sC.c1 == 5 &&
 
-               // the map self.mB is empty
-               // (self.mB == emptyMap()) &&  // Commented out because it causes an internal compiler error (see issue #808)
-               self.mB == null &&    // Equivalent way of saying it is empty 
-               self.mB.isEmpty() &&   // Another equivalent way of saying it is empty
+            // the map self.mB is empty
+            // (self.mB == emptyMap()) &&  // Commented out because it causes an internal compiler error (see issue #808)
+            self.mB == null && // Equivalent way of saying it is empty 
+            self.mB.isEmpty() && // Another equivalent way of saying it is empty
 
-               // the map self.mA has these three key-value pairs:
+            // the map self.mA has these three key-value pairs:
 
             self.mA.get(1)!!.a1 == 20 &&
             self.mA.get(1)!!.a2.b1 == true &&
