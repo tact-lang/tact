@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 
-- Explicitly stated that structs cannot be empty, while message structs can: PR [#BATMAN](https://github.com/tact-lang/tact/pull/BATMAN)
+- Explicitly stated that structs cannot be empty, while message structs can: PR [#2464](https://github.com/tact-lang/tact/pull/2464)
 
 ### Release contributors
 
