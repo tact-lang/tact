@@ -4,7 +4,7 @@ import {
     throwCompilationError,
     throwInternalCompilerError,
 } from "../../error/errors";
-import type * as A from "../../ast/ast";
+import type * as Ast from "../../ast/ast";
 import { getExpType } from "../../types/resolveExpression";
 import {
     getStaticConstant,
@@ -14,6 +14,7 @@ import {
 } from "../../types/resolveDescriptors";
 import type { FieldDescription, TypeDescription } from "../../types/types";
 import { printTypeRef } from "../../types/types";
+import type { TypeRef } from "../../types/types";
 import type { WriterContext } from "../Writer";
 import { resolveFuncTypeUnpack } from "./resolveFuncTypeUnpack";
 import { MapFunctions } from "../../abi/map";
@@ -40,8 +41,28 @@ import {
 } from "../../ast/ast-helpers";
 import { enabledDebug, enabledNullChecks } from "../../config/features";
 
-function isNull(wCtx: WriterContext, expr: A.AstExpression): boolean {
+function isNull(wCtx: WriterContext, expr: Ast.Expression): boolean {
     return getExpType(wCtx.ctx, expr).kind === "null";
+}
+
+function handleStructNullTernary(
+    wCtx: WriterContext,
+    condition: Ast.Expression,
+    structExpr: Ast.Expression,
+    structType: TypeRef,
+    isStructInThenBranch: boolean,
+): string {
+    if (structType.kind === "ref") {
+        const type = getType(wCtx.ctx, structType.name);
+        if (type.kind === "struct" || type.kind === "contract") {
+            if (isStructInThenBranch) {
+                return `(${writeExpression(condition, wCtx)} ? ${ops.typeAsOptional(type.name, wCtx)}(${writeExpression(structExpr, wCtx)}) : null())`;
+            } else {
+                return `(${writeExpression(condition, wCtx)} ? null() : ${ops.typeAsOptional(type.name, wCtx)}(${writeExpression(structExpr, wCtx)}))`;
+            }
+        }
+    }
+    return "";
 }
 
 function writeStructConstructor(
@@ -94,7 +115,7 @@ function writeStructConstructor(
     return name;
 }
 
-export function writeValue(val: A.AstLiteral, wCtx: WriterContext): string {
+export function writeValue(val: Ast.Literal, wCtx: WriterContext): string {
     switch (val.kind) {
         case "number":
             return val.value.toString(10);
@@ -124,7 +145,7 @@ export function writeValue(val: A.AstLiteral, wCtx: WriterContext): string {
             return "null()";
         case "struct_value": {
             // Transform the struct fields into a map for lookup
-            const valMap: Map<string, A.AstLiteral> = new Map();
+            const valMap: Map<string, Ast.Literal> = new Map();
             for (const f of val.args) {
                 valMap.set(idText(f.field), f.initializer);
             }
@@ -157,12 +178,12 @@ export function writeValue(val: A.AstLiteral, wCtx: WriterContext): string {
     }
 }
 
-export function writePathExpression(path: A.AstId[]): string {
+export function writePathExpression(path: Ast.Id[]): string {
     return [funcIdOf(idText(path[0]!)), ...path.slice(1).map(idText)].join(`'`);
 }
 
 export function writeExpression(
-    f: A.AstExpression,
+    f: Ast.Expression,
     wCtx: WriterContext,
 ): string {
     // literals and constant expressions are covered here
@@ -741,6 +762,43 @@ export function writeExpression(
     //
 
     if (f.kind === "conditional") {
+        const thenType = getExpType(wCtx.ctx, f.thenBranch);
+        const elseType = getExpType(wCtx.ctx, f.elseBranch);
+
+        // Handle special case when one branch is null and the other is a struct
+        if (
+            isNull(wCtx, f.thenBranch) &&
+            thenType.kind === "null" &&
+            elseType.kind === "ref" &&
+            !elseType.optional
+        ) {
+            // When the "then" branch is null and "else" is a non-optional struct
+            const result = handleStructNullTernary(
+                wCtx,
+                f.condition,
+                f.elseBranch,
+                elseType,
+                false,
+            );
+            if (result) return result;
+        } else if (
+            isNull(wCtx, f.elseBranch) &&
+            elseType.kind === "null" &&
+            thenType.kind === "ref" &&
+            !thenType.optional
+        ) {
+            // When the "else" branch is null and "then" is a non-optional struct
+            const result = handleStructNullTernary(
+                wCtx,
+                f.condition,
+                f.thenBranch,
+                thenType,
+                true,
+            );
+            if (result) return result;
+        }
+
+        // Default case
         return `(${writeExpression(f.condition, wCtx)} ? ${writeExpression(f.thenBranch, wCtx)} : ${writeExpression(f.elseBranch, wCtx)})`;
     }
 
@@ -752,7 +810,7 @@ export function writeExpression(
 }
 
 export function writeTypescriptValue(
-    val: A.AstLiteral | undefined,
+    val: Ast.Literal | undefined,
 ): string | undefined {
     if (typeof val === "undefined") return undefined;
 

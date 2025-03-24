@@ -1,10 +1,10 @@
-import type { ImportPath } from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import type { VirtualFileSystem } from "../vfs/VirtualFileSystem";
 import { asString } from "./path";
 import type { ItemOrigin, Language, Source } from "./source";
 
 type ResolveLibraryArgs = {
-    readonly importPath: ImportPath;
+    readonly importPath: Ast.ImportPath;
     readonly sourceFrom: Source;
     readonly project: VirtualFileSystem;
     readonly stdlib: VirtualFileSystem;
