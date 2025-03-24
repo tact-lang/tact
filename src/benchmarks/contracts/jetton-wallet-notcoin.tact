@@ -24,10 +24,10 @@ inline fun checkAmountIsEnoughToTransfer(msgValue: Int, forwardTonAmount: Int, f
     throwUnless(
         705,
         msgValue > fwdCount * fwdFee +
-        getSimpleForwardFee(JETTON_WALLET_INIT_STATE_CELLS, JETTON_WALLET_INIT_STATE_BITS, false) +
-        getComputeFee(SEND_TRANSFER_GAS_CONSUMPTION, false) +
-        getComputeFee(RECEIVE_TRANSFER_GAS_CONSUMPTION, false) +
-        getStorageFee(JETTON_WALLET_CELLS, JETTON_WALLET_BITS, MIN_STORAGE_DURATION, false)
+                   getSimpleForwardFee(JETTON_WALLET_INIT_STATE_CELLS, JETTON_WALLET_INIT_STATE_BITS, false) +
+                   getComputeFee(SEND_TRANSFER_GAS_CONSUMPTION, false) +
+                   getComputeFee(RECEIVE_TRANSFER_GAS_CONSUMPTION, false) +
+                   getStorageFee(JETTON_WALLET_CELLS, JETTON_WALLET_BITS, MIN_STORAGE_DURATION, false),
     );
 }
 
@@ -37,7 +37,7 @@ inline fun checkAmountIsEnoughToBurn(msgValue: Int) {
         msgValue >
         getForwardFee(BURN_NOTIFICATION_CELLS, BURN_NOTIFICATION_BITS, false) +
         getComputeFee(SEND_BURN_GAS_CONSUMPTION, false) +
-        getComputeFee(RECEIVE_BURN_GAS_CONSUMPTION, false)
+        getComputeFee(RECEIVE_BURN_GAS_CONSUMPTION, false),
     );
 }
 

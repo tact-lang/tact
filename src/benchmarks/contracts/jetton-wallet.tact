@@ -23,10 +23,9 @@ contract JettonWallet(
         let fwdCount = 1 + sign(msg.forwardTonAmount); // msg.forwardTonAmount is coins, so it's not negative
 
         throwUnless(709, ctx.value >
-            msg.forwardTonAmount +
-            fwdCount * ctx.readForwardFee() +
-            (2 * self.gasConsumption + self.minTonsForStorage)
-        );
+                         msg.forwardTonAmount +
+                         fwdCount * ctx.readForwardFee() +
+                         (2 * self.gasConsumption + self.minTonsForStorage));
 
         deploy(DeployParameters {
             value: 0,
