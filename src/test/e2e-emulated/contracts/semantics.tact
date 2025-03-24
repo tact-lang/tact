@@ -296,7 +296,6 @@ contract SemanticsTester {
 
     // An alternative would be to assign them in the init() function, which allows the use of self.
 
-
     // Declare some maps
 
     mA: map<Int, SA>;
@@ -324,11 +323,10 @@ contract SemanticsTester {
                                   // this last assignment
 
         self.sB.b1 = false;
-        self.sB.b2 = SC {c1: 3};
+        self.sB.b2 = SC { c1: 3 };
 
-        
         /**** Maps *****/
-        
+
         // Initialize the mA map
         self.mA.set(1, self.sA);     // The compiler does not complain that self.mA is not initialized, because
                                      // map fields in contracts are implicitly initialized as empty.
@@ -352,7 +350,7 @@ contract SemanticsTester {
         let nestedMap = MapWrapper { m: emptyMap() };
         nestedMap.m.set(10, self.sA);
         self.mC.set(100, nestedMap);
-        
+
         /****** Contracts *****/
 
         /* I commented out the following code because 
@@ -405,20 +403,20 @@ contract SemanticsTester {
 
                // the map self.mA has these three key-value pairs:
 
-               self.mA.get(1)!!.a1 == 20 && 
-               self.mA.get(1)!!.a2.b1 == true &&
-               self.mA.get(1)!!.a2.b2.c1 == 5 &&
-               self.mA.get(1)!!.a2.b3 == 10 &&
+            self.mA.get(1)!!.a1 == 20 &&
+            self.mA.get(1)!!.a2.b1 == true &&
+            self.mA.get(1)!!.a2.b2.c1 == 5 &&
+            self.mA.get(1)!!.a2.b3 == 10 &&
 
-               self.mA.get(2)!!.a1 == 20 && 
-               self.mA.get(2)!!.a2.b1 == true &&
-               self.mA.get(2)!!.a2.b2.c1 == 100 &&
-               self.mA.get(2)!!.a2.b3 == 0 &&
+            self.mA.get(2)!!.a1 == 20 &&
+            self.mA.get(2)!!.a2.b1 == true &&
+            self.mA.get(2)!!.a2.b2.c1 == 100 &&
+            self.mA.get(2)!!.a2.b3 == 0 &&
 
-               self.mA.get(3)!!.a1 == 5 && 
-               self.mA.get(3)!!.a2.b1 == false &&
-               self.mA.get(3)!!.a2.b2.c1 == 150 &&
-               self.mA.get(3)!!.a2.b3 == 0;
+            self.mA.get(3)!!.a1 == 5 &&
+            self.mA.get(3)!!.a2.b1 == false &&
+            self.mA.get(3)!!.a2.b2.c1 == 150 &&
+            self.mA.get(3)!!.a2.b3 == 0;
 
         // And no other entries
         foreach (k, _ in self.mA) {
@@ -573,14 +571,14 @@ contract SemanticsTester {
                s.a2.b2.c1 == 5 && 
                s.a2.b3 == 10;
 
-        // Therefore, if we actually want to change s using changeSomeFields, we 
+        // Therefore, if we actually want to change s using changeSomeFields, we
         // should split the chain steps:
 
-        s.reflectStruct();   // Each step changes s
+        s.reflectStruct(); // Each step changes s
         s.changeSomeFields();
 
         // Note that doing the trick of assigning back s
-        // 
+        //
         // s = s.reflectStruct().changeSomeFields();
         //
         // is not possible because changeSomeFields has void return type.
@@ -842,7 +840,7 @@ contract SemanticsTester {
         // The compiler does not allow directly changing the contents of a struct inside an entry:
         // s.get(2)!!.a2.b2.c1 = 7;
         // Only path expressions are allowed on the left of the assignment operator =
-        
+
         // self.mA remains unchanged (including the rest of fields)
         // The rest of the entries in s remain identical to self.mA.
         let result = 
@@ -1112,9 +1110,9 @@ contract SemanticsTester {
 
         s.a2.b2.c1 = 1000;
 
-        // Check that s does change 
+        // Check that s does change
 
-        let result = s.a1 == 20 && 
+        let result = s.a1 == 20 &&
                      s.a2.b1 == true &&
                      s.a2.b2.c1 == 1000 &&
                      s.a2.b3 == 10;
@@ -1139,20 +1137,20 @@ contract SemanticsTester {
         // because the "get" function always makes a copy of "m" (see test "testReturnedMaps1" above).
         // m.get(100)!!.m.set(10, s);
 
-        // This means we are forced to update the entire entry for key 100. 
-        
-        // The fact that "get" always returns copies of nested structures has one big consequence: 
+        // This means we are forced to update the entire entry for key 100.
+
+        // The fact that "get" always returns copies of nested structures has one big consequence:
         // it is not possible to update a deeply nested map without rebuilding the map of the root
         // key that leads to the updated nested map, i.e.,
         // if the map is:
         // key1 -> [
-        //          key1.1 -> [key1.1.1 -> val1], 
+        //          key1.1 -> [key1.1.1 -> val1],
         //          key1.2 -> [key1.2.1 -> val2]
         //         ]
-        // Then, updating the entry key1.1.1 with value val3 would require 
-        // updating key1 with 
+        // Then, updating the entry key1.1.1 with value val3 would require
+        // updating key1 with
         //         [
-        //          key1.1 -> [key1.1.1 -> val3], 
+        //          key1.1 -> [key1.1.1 -> val3],
         //          key1.2 -> [key1.2.1 -> val2]
         //         ]
 
@@ -1342,10 +1340,10 @@ contract SemanticsTester {
     get fun mutateParamContract(): Bool {
         // First, make a copy of the contract
         let c = self;
-        
+
         // This should not modify self.
         // In the copy: it will change the uB field and the sA.a2.b2.c1 field.
-        
+
         c.changeSomeContractFields();
 
         /* If we were not in a getter function we could persist the changes in the copy 
@@ -1478,7 +1476,7 @@ contract SemanticsTester {
                c.checkFieldsEqualTo(SB {b1: true, b2: SC {c1: 77}, b3: 88}, 35);
 
         // Persist the copy into self
-        
+
         self = c;
 
         // Now, check that the changes in c are now in self.
@@ -1506,7 +1504,7 @@ contract SemanticsTester {
         c.reflectContract().changeSomeContractFields();
 
         // Again, passing "c" to the mutating function "reflectContract",
-        // will reassign back to c a copy of c, but it will also pass the copy of c to 
+        // will reassign back to c a copy of c, but it will also pass the copy of c to
         // changeSomeContractFields.
         // This means that the above expression will not modify c.
         // Note that since the return type of changeSomeContractFields is void,
@@ -1531,9 +1529,9 @@ contract SemanticsTester {
 
         // When chaining mutating functions, one needs to reassign c in order to mutate it,
         // because the chain passes copies to the next mutating function,
-        // and the copy returned by the last mutating function will be lost 
+        // and the copy returned by the last mutating function will be lost
         // if not reassigned back into c:
-        
+
         c = c.reflectContract().incrementIntFieldsInUB().flipBooleanFieldsInUB();
 
         // c is now changed, the rest remains the same.
@@ -2131,11 +2129,11 @@ contract SemanticsTester {
 
         result &&= i1_s6 == 10;
 
-        // Give the slice to a mutating function. 
-        // The mutating function will read the remaining two integers in the slice. 
+        // Give the slice to a mutating function.
+        // The mutating function will read the remaining two integers in the slice.
         // After the call, slice6 is now empty.
 
-        result &&= slice6.fullyReadAndModifySlice();    // Returns true: meaning that the function read 5 and 2 from the slice and checked that the slice is empty
+        result &&= slice6.fullyReadAndModifySlice(); // Returns true: meaning that the function read 5 and 2 from the slice and checked that the slice is empty
 
         // Check that slice6 is now empty
         result &&= slice6.empty();
