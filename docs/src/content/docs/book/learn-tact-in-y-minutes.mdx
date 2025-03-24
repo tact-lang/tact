@@ -73,7 +73,9 @@ fun showcase() {
 
     let one_plus_one: Int = 1 + 1; // 2
     let two_by_two: Int = 2 / 2;   // 1
-    let three_by_two: Int = 3 / 2; // 1, because division operator floors
+    let three_by_two: Int = 3 / 2; // 1, because the division operator rounds
+                                   // toward -∞, which is identical to // operator
+                                   // from Python
 
     let one_billion = 1_000_000_000; // decimal
     let binary_mask = 0b1_1111_1111; // binary
@@ -208,6 +210,9 @@ fun showcase() {
 //
 // Advanced users can introduce their own casts by using assembly functions.
 // See the "Functions" section below for more info.
+
+// An empty contract needed for the showcase above to work.
+contract MyContract() {}
 ```
 
 Read more: [Primitive types](/book/types#primitive-types).
@@ -231,9 +236,17 @@ fun showcase() {
     // use the non-null assertion operator !! to access it.
     dump(optionalVal!!);
 
+    // If you are not certain, then it is better to explicitly compare
+    // the value to null to avoid errors at runtime.
+    if (optionalVal != null) {
+        // here we go!
+    } else {
+        // not happening right now
+    }
+
     // Declared but not explicitly defined optional variables and fields
     // implicitly hold the null value by default.
-    let veryOptional: Bool?; // null
+    let veryOptional: Bool? = null; // null
     if (veryOptional != null) {
         // not happening
     } else {
@@ -287,16 +300,16 @@ fun showcase() {
     let _: map<Int, Bool> = emptyMap();    // Int keys to Bool values
     let _: map<Int, Cell> = emptyMap();    // Ints to Cells
     let _: map<Int, Address> = emptyMap(); // Ints to Addresses
-    let _: map<Int, Struct> = emptyMap();  // Ints to some structs
-    let _: map<Int, Message> = emptyMap(); // Ints to some message structs
+    let _: map<Int, AnyStruct> = emptyMap();  // Ints to some structs
+    let _: map<Int, AnyMessage> = emptyMap(); // Ints to some message structs
 
     // And all the same value types for maps with Address keys are also allowed.
     let _: map<Address, Int> = emptyMap();     // Address keys to Int values
     let _: map<Address, Bool> = emptyMap();    // Addresses to Bools
     let _: map<Address, Cell> = emptyMap();    // Addresses to Cells
     let _: map<Address, Address> = emptyMap(); // Addresses to Addresses
-    let _: map<Address, Struct> = emptyMap();  // Addresses to some structs
-    let _: map<Address, Message> = emptyMap(); // Addresses to some message structs
+    let _: map<Address, AnyStruct> = emptyMap();  // Addresses to some structs
+    let _: map<Address, AnyMessage> = emptyMap(); // Addresses to some message structs
 
     // Under the hood, empty maps are nulls, which is why it's important to provide a type ascription.
     let _: map<Int, Int> = null; // like emptyMap(), but less descriptive and generally discouraged
@@ -307,7 +320,8 @@ fun showcase() {
 
     // To ignore possible differences in serialization logic of maps,
     // there is a costly method that is guaranteed to compare correctly.
-    myMap.deepEquals(emptyMap()); // true, and for the explanation of it see the
+    let anotherMap: map<Int, Int> = emptyMap();
+    myMap.deepEquals(anotherMap); // true, and for the explanation of it see the
                                   // relevant section on the maps page in the Book.
 }
 
@@ -325,6 +339,10 @@ fun showcase() {
 //
 // See this approach in action for the Jetton (token)
 // contract system by the end of this tour.
+
+// The following are dummy structures needed for the showcase above to work.
+struct AnyStruct { _: Int }
+message AnyMessage { _: Int }
 ```
 
 Read more:
@@ -486,9 +504,11 @@ fun showcase() {
     false && five == 5; // false, because && is short-circuited
     true || five != 5;  // true, because || is also short-circuited
 
-    // Non-null assertion operator raises
-    // a compilation error if the value is null, but does nothing otherwise.
-    five!!; // 5
+    // The non-null assertion operator raises a compilation error if the value
+    // is null or if the type of the value is not optional,
+    // i.e., it can never be null.
+    let maybeFive: Int? = five;
+    maybeFive!!; // 5
 
     // Ternary operator ?: is right-associative.
     false ? 1 : (false ? 2 : 3); // 3
@@ -501,77 +521,79 @@ Read more: [Operators](/book/operators).
 ## Expressions
 
 ```tact /StdAddress/
-fun showcase() {
-    // Integer literals.
-    0; 42; 1_000; 020; // decimal, base 10
-    0xABC; 0xf; 0x001; // hexadecimal, base 16
-    0o777; 0o00000001; // octal, base 8
-    0b111010101111010; // binary, base 2
+contract MyContract() {
+    fun showcase() {
+        // Integer literals.
+        0; 42; 1_000; 020; // decimal, base 10
+        0xABC; 0xf; 0x001; // hexadecimal, base 16
+        0o777; 0o00000001; // octal, base 8
+        0b111010101111010; // binary, base 2
 
-    // Boolean literals.
-    true; false;
+        // Boolean literals.
+        true; false;
 
-    // String literals.
-    "foo"; "1234";
-    "\\ \" \n \r \t \v \b \f \x00 through \xFF";
-    "\u0000 through \uFFFF and \u{0} through \u{FFFFFF}";
+        // String literals.
+        "foo"; "1234";
+        "\\ \" \n \r \t \v \b \f \x00 through \xFF";
+        "\u0000 through \uFFFF and \u{0} through \u{FFFFFF}";
 
-    // `null` and `self` literals.
-    null; // not an instance of a primitive type, but
-          // a special value that represents the intentional absence
-          // of any other value
+        // `null` and `self` literals.
+        null; // not an instance of a primitive type, but
+              // a special value that represents the intentional absence
+              // of any other value
 
-    self; // used to reference the current contract from within
-          // and the value of the currently extended type inside
-          // the extension function. See the "Functions" section below for more.
+        self; // used to reference the current contract from within
+              // and the value of the currently extended type inside
+              // the extension function. See the "Functions" section below for more.
 
-    // Identifiers, with usual naming conventions:
-    // They may contain Latin lowercase letters `a-z`,
-    // Latin uppercase letters `A-Z`, underscores `_`,
-    // and digits 0 - 9, but may not start with a digit.
-    // No other symbols are allowed, and Unicode identifiers are prohibited.
-    // They also cannot start with __gen or __tact since those prefixes
-    // are reserved by the Tact compiler.
-    azAZ09_;
+        // Identifiers, with usual naming conventions:
+        // They may contain Latin lowercase letters `a-z`,
+        // Latin uppercase letters `A-Z`, underscores `_`,
+        // and digits 0 - 9, but may not start with a digit.
+        // No other symbols are allowed, and Unicode identifiers are prohibited.
+        // They also cannot start with __gen or __tact since those prefixes
+        // are reserved by the Tact compiler.
+        let azAZ09_ = 5; azAZ09_;
 
-    // Instantiations or instance expressions of structs and message structs.
-    let addr = BasechainAddress{ hash: null, };
+        // Instantiations or instance expressions of structs and message structs.
+        let addr = BasechainAddress{ hash: null, };
 
-    // Field access.
-    addr.hash; // null
-    self.storageReserve; // 0, a contract-level constant present in all contracts,
-                         // because they implicitly inherit the BaseTrait
-                         // that defines it.
+        // Field access.
+        addr.hash; // null
+        self.storageReserve; // 0, a contract-level constant present in all contracts,
+                             // because they implicitly inherit the BaseTrait
+                             // that defines it.
 
-    // Extension function calls (methods).
-    self.storageReserve.toString(); // "0"
-    self.notify("Cashback".asComment()); // rather expensive,
-                                         // use cashback() instead
-    "hey".asComment(); // allowed on literals
+        // Extension function calls (methods).
+        self.storageReserve.toString(); // "0"
+        self.notify("Cashback".asComment()); // rather expensive,
+                                             // use cashback() instead
+        "hey".asComment(); // allowed on literals
 
-    // Global function calls.
-    now(); // UNIX timestamp in seconds
-    cashback(sender());
+        // Global function calls.
+        now(); // UNIX timestamp in seconds
+        cashback(sender());
 
-    // Some of the functions can be computed at compile-time given enough data.
-    sha256("hey, I'll produce the SHA256 number at compile-time");
+        // Some of the functions can be computed at compile-time given enough data.
+        sha256("hey, I'll produce the SHA256 number at compile-time");
 
-    // But there are special, compile-time-only functions.
-    let _: Address = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
-    let _: Cell = cell("");
-    let _: Slice = slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw="); // a Slice with Hello world!
-    let _: Slice = rawSlice("000DEADBEEF000"); // CS{Cell{03f...430} bits: 588..644; refs: 1..1}
-    let _: Int = ascii("⚡"); // 14850721 or 0xE29AA1, 3 bytes in total
-    let _: Int = crc32("000DEADBEEF000"); // 1821923098
-    let _: Int = ton("1"); // 10^9 nanoToncoin, which is equivalent to one Toncoin,
-                           // the main currency of TON Blockchain
+        // But there are special, compile-time-only functions.
+        let _: Address = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
+        let _: Cell = cell("");
+        let _: Slice = slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw="); // a Slice with Hello world!
+        let _: Slice = rawSlice("000DEADBEEF000"); // CS{Cell{03f...430} bits: 588..644; refs: 1..1}
+        let _: Int = ascii("⚡"); // 14850721 or 0xE29AA1, 3 bytes in total
+        let _: Int = crc32("000DEADBEEF000"); // 1821923098
+        let _: Int = ton("1"); // 10^9 nanoToncoin = one Toncoin,
+                               // the main currency of TON Blockchain
 
-    // initOf, which obtains the initial code and initial data
-    // of the given contract, i.e., it's initial state.
-    initOf MyContract(); // StateInit{ code, data }
+        // initOf, which obtains the initial code and initial data
+        // of the given contract, i.e., it's initial state.
+        initOf MyContract(); // StateInit{ code, data }
 
-    // codeOf, which only obtains the code.
-    codeOf MyContract;
+        // codeOf, which only obtains the code.
+        codeOf MyContract;
+    }
 }
 ```
 
@@ -1140,22 +1162,27 @@ Read more:
 ## Deployment
 
 ```tact
-// Contract deployment is done by sending messages. For deployments,
-// one must send the new contract's initial state, i.e.,
-// its initial code and initial data, to its Address,
-// which is deterministically obtained from the initial state.
-deploy(DeployParameters{
-    // Use initOf expression to provide initial code and data
-    init: initOf MyContract(),
-    // Attaching 1 Toncoin, which will be used to pay various fees
-    value: ton("1"),
-    // Notice that we do not need to explicitly specify the Address.
-    // That's because it will be computed on the fly from the initial package.
-});
+fun showcase() {
+    // Contract deployment is done by sending messages. For deployments,
+    // one must send the new contract's initial state, i.e.,
+    // its initial code and initial data, to its Address,
+    // which is deterministically obtained from the initial state.
+    deploy(DeployParameters{
+        // Use initOf expression to provide initial code and data
+        init: initOf MyContract(),
+        // Attaching 1 Toncoin, which will be used to pay various fees
+        value: ton("1"),
+        // Notice that we do not need to explicitly specify the Address.
+        // That's because it will be computed on the fly from the initial package.
+    });
+}
 
 // However, before your contracts can start deploying other contracts on-chain,
 // it is common to first send an external message to your TON wallet from off-chain.
 // Then, your wallet will be the contract that deploys the target one.
+
+// An empty contract needed for the showcase above to work.
+contract MyContract() {}
 ```
 
 Read more: [Deployment](/book/deploy).
@@ -1242,7 +1269,7 @@ contract JettonWallet(
     /// Registers a binary receiver of the JettonTransfer message body.
     /// Transfers Jettons from the current owner to the target user's JettonWallet.
     /// If that wallet does not exist, it is deployed on-chain in the same transfer.
-    receive(msg: JettonTransfer) {.
+    receive(msg: JettonTransfer) {
         // Ensure the basechain (workchain ID = 0)
         require(parseStdAddress(msg.destination.asSlice()).workchain == 0, "Invalid destination workchain");
         // Ensure the owner.

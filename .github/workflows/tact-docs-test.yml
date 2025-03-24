@@ -52,7 +52,7 @@ jobs:
 
       - name: Perform syntax and type checking of the Cookbook
         working-directory: docs
-        run: node scripts/check-cookbook-examples.js
+        run: node scripts/typecheck-examples.js
 
       - name: Install dependencies
         working-directory: docs

@@ -51,7 +51,7 @@ export default function remarkLinksToWebIDE() {
       // Detect module-level items
       let hasModuleItems = false;
       for (let i = 0; i < lines.length; i += 1) {
-        // Same regex as in scripts/check-cookbook-examples.js
+        // Same regex as in scripts/typecheck-examples.js
         const matchRes = lines[i].match(/^\s*(?:import|primitive|const|asm|fun|extends|mutates|virtual|override|inline|abstract|@name|@interface|contract|trait|struct|message)\b/);
         // TODO: Unite the regexes when Tact 2.0 arrives (or if some new module-level item arrives, or via try/catch and re-using compiler's parser)
 
