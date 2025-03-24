@@ -40,12 +40,12 @@ contract HelloWorld {
 }
 
 // A helper inlined function to send text messages
-inline fun reply(with: String) {
+inline fun reply(str: String) {
     message(MessageParameters{
         to: sender(),
         value: 0,
         mode: SendRemainingValue | SendIgnoreErrors,
-        body: with.asComment(),
+        body: str.asComment(),
     });
 }
 ```
@@ -511,7 +511,7 @@ null; // not an instance of a primitive type, but
 
 self; // used to reference the current contract from within
       // and the value of the currently extended type inside
-      // the extension function. See "Functions" section below for more.
+      // the extension function. See the "Functions" section below for more.
 
 // Identifiers, with usual naming conventions:
 // They may contain Latin lowercase letters `a-z`,
@@ -681,7 +681,7 @@ trait MyTrait {
 
     // On the trait-level, you can make constants abstract,
     // which requires the contracts that inherit this trait
-    // to override those constants with some values
+    // to override those constants with some values.
     abstract const overrideMe: Int;
 
     // Virtual constants allow overrides, but do not require them.
@@ -708,9 +708,7 @@ contract MyContract() with MyTrait {
 //
 // The main difference is the scope — global can be referenced
 // from anywhere, while contract and trait-level constants are
-// only accessible within them via self references.
-//
-// See "Contracts and traits" section below for more.
+// only accessible within them via `self` references.
 ```
 
 Read more: [Constants](/book/constants).
@@ -735,12 +733,12 @@ fun add(a: Int, b: Int): Int {
 /// Usage example:
 ///     reply("Viltrum Empire");
 ///
-inline fun reply(with: String) {
+inline fun reply(str: String) {
     message(MessageParameters{
         to: sender(),
         value: 0,
         mode: SendRemainingValue | SendIgnoreErrors,
-        body: with.asComment(),
+        body: str.asComment(),
     });
 }
 
@@ -804,12 +802,152 @@ asm fun rawReserveExtra(amount: Int, extraAmount: Cell, mode: Int) { RAWRESERVEX
 
 Read more: [Functions](/book/functions).
 
+## Message exchange and communication {#messaging}
+
+```tact
+// TODO: ... + message sending + reserve + receiving messages + refunds + child-parent interactions (or earlier)
+// (move notes here!)
+
+// 1. internal
+// 2. external
+// 3. can bounce
+// 4. how to send them
+// 5. the receiving part is in Contracts and traits.
+```
+
+Read more:
+
+* [Receive messages](/book/receive).
+* [Send messages](/book/send).
+* [Message mode](/book/message-mode).
+
 ## Contracts and traits
 
 ```tact
-// TODO: move notes here
-// TODO: contract structure
-// TODO: traits
+// Tact allows you to import Tact and FunC code.
+// Additionally, there's a versatile set of standard libraries
+// which come bundled in with a compiler, but are not included
+// in projects right away.
+//
+// To import a standard library, instead of specifying a path to a file
+// start the import string with @stdlib/.
+import "@stdlib/ownable"; // for the Ownable trait
+
+// Traits have the same structure as contracts and are used
+// to provide some means of inheritance and common code reuse.
+//
+// Like contracts, traits can also inherit other traits.
+trait MyTrait with Ownable {
+    owner: Address; // required field from the Ownable trait
+
+    // Within traits and contracts, you can define scoped functions
+    // and only accessible from them or their successors. Those functions
+    // are often called internal functions.
+    //
+    // If you won't be using any contract fields, it's better to define
+    // such functions as global, i.e., on the top-level.
+    fun addIfOwner(a: Int, b: Int): Int {
+        self.requireOwner();
+        return a + b;
+    }
+
+    // Adding an abstract attribute to the internal function requires us
+    // to omit their body definitions and demand that from contracts that
+    // will inherit the trait.
+    abstract fun trust(msg: MyMsg);
+
+    // Adding a virtual attribute to the internal function allows their
+    // body definitions to be be overridden in the contracts that will
+    // inherit the trait.
+    virtual fun verify(msg: MyMsg) {
+        self.requireOwner();
+        require(msg.someVal > 42, "Too low!");
+    }
+}
+
+// Contract definitions in Tact conveniently represent smart contracts
+// on TON Blockchain. They hold all variables, functions, getters and receivers,
+// while providing accessible abstractions for working with them.
+contract MyContract(
+    // Persistent state variables of the contract:
+    owner: Address, // required field from the Ownable trait
+    accumulator: Int as uint8,
+    // Their default or initial values are supplied during deployment.
+) with MyTrait, Ownable {
+
+    // The internal message receiver is a function that handles messages received
+    // by this contract on-chain: from other contracts and never from outside.
+    receive(msg: MyMsg) {
+        self.requireOwner();
+        self.accumulator += msg.someVal;
+
+        // Send a message back to the sender() with MyMsg
+        message(MessageParameters{
+            to: sender(),
+            value: ton("0.04"),
+            body: MyMsg{ someVal: self.accumulator }.toCell(),
+        });
+    }
+
+    // For deployments, it is common to use the following receiver,
+    // which handles `null` (empty) message bodies of internal messages.
+    receive() {
+        // Forward the remaining value in the
+        // incoming message (surplus) back to the sender.
+        cashback(sender());
+    }
+
+    // The bounced message receiver is a function that handles messages sent
+    // from this contract and bounced back to it because of a malformed payload or
+    // some issues on the recipient side.
+    bounced(msg: bounced<MyMsg>) {
+        // Bounced message bodies are limited by their first 256 bits, which
+        // means that excluding their 32-bit opcode there are only 224 bits left
+        // for other contents of MyMsg.
+        //
+        // Thus, in message structs prefer to put small important fields first.
+        require(msg.someVal > 42, "Unexpected bounce!");
+        self.accumulator = msg.someVal;
+    }
+
+    // The external message receiver is a function that handles messages sent
+    // to this contract from outside the blockchain. That is often the case
+    // for user wallets, where apps that present some UI for them have to
+    // communicate with contracts on chain to perform transfers on their behalf.
+    external(msg: MyMsg) {
+        // There is no sender, i.e., calling sender() here won't work.
+        // Additionally, there are no guarantees that the received message
+        // is authentic and is not malicious. Therefore, when receiving
+        // such messages one has to first check the signature to validate the sender,
+        // and explicitly agree to accept the message and fund its processing
+        // in the current transaction with acceptMessage() function.
+        require(msg.someVal > 42, "Nothing short of 42 is allowed!");
+        self.accumulator = msg.someVal;
+        acceptMessage();
+    }
+
+    // Getter functions or get methods are special functions that can only
+    // be called from within this contract or off-chain, and never by other contracts.
+    // They cannot modify the contract's state and they do not affect its balance.
+    // The IO analogy would be that they can only "read", not "write".
+    get fun data(): MyContract {
+        // This getter returns the current state of the contract's variables,
+        // which is convenient for tests but not advised for production.
+        return self;
+    }
+
+    // Finally, for each inherited trait contract may override its virtual internal
+    // functions and it MUST override its abstract internal functions as to provide
+    // their defined bodies.
+    override fun trust(msg: MyMsg) {
+        require(msg.someVal == 42, "Always bring your towel with you");
+    }
+}
+
+// Message struct with 123 as its 32-bit opcode.
+message(123) MyMsg {
+    someVal: Int as uint8;
+}
 ```
 
 Read more: [Contracts](/book/contracts).
@@ -818,37 +956,39 @@ Read more: [Contracts](/book/contracts).
 
 ```tact
 // Contracts can define state variables that persist between contract calls,
-// and thus commonly referred to as _storage_ variables.
-// Contracts in TON pay rent in proportion to the amount of persistent space they consume,
-// so compact representations via serialization are encouraged.
+// and thus commonly referred to as storage variables.
+// Contracts in TON pay rent in proportion to the amount of persistent space
+// they consume, so compact representations via serialization are encouraged.
 
 contract StateActor(
     // Persistent state variables
-    // TODO: ...serialization options
+    oneByte: Int as uint8,  // ranges from -128 to 127
+    twoBytes: Int as int16, // ranges from -32,768 to 32,767
+    currency: Int as coins, // variable bit-width format, which occupies
+                            // between 4 and 124 bits
+                            // and ranges from 0 to 2^120 - 1
 ) {
 
-    // Contract constants, which do not consume space
-    // in the persistent state — their values are always inlined in expressions
-    // TODO: ...
+    receive() {
+        // Serialization to smaller values only applies for the state between
+        // transactions and incoming or outgoing message bodies.
+        // This is because at runtime everything is computed
+        // at their maximum capacity and all integers are assumed to
+        // be 257-bit signed ones.
+        //
+        // That is, the following would not cause any runtime overflows,
+        // but will throw an out of range error only after the execution of
+        // this receiver is completed.
+        self.oneByte = -1;  // this won't fail immediately
+        self.oneByte = 500; // and this won't fail right away either
 
-    // TODO: a major point about runtime -- Int 257, etc.
-    // Like, serialization formats only work for the state / incoming and outgoing messages,
-    // but does not apply to the runtime stuff.
+    } // only here, at the end of the compute phase,
+      // would an error be thrown with exit code 5:
+      // Integer out of expected range
 }
 ```
 
-## Message exchange and communication {#messaging}
-
-```tact
-// TODO: ... + message sending + reserve + receiving messages + refunds + child-parent interactions (or earlier)
-// (move notes here!)
-```
-
-Read more:
-
-* [Receive messages](/book/receive).
-* [Send messages](/book/send).
-* [Message mode](/book/message-mode).
+Read more: [Persistent state variables](/book/contracts#variables).
 
 ## Deployment
 
@@ -873,19 +1013,20 @@ deploy(DeployParameters{
 
 Read more: [Deployment](/book/deploy).
 
-## Test and debug {#debug}
+## Testing and debugging {#debug}
 
 ```tact
 // TODO: require, throw, emit, etc.
 // TODO: more on exit codes
+// TODO: something about gas usage.
 ```
-
-TODO something about gas usage.
 
 Read more:
 
 * [Debugging and testing](/book/debug).
 * [Exit codes](/book/exit-codes).
+* [Gas best practices](/book/gas-best-practices).
+* [Security best practices](/book/security-best-practices).
 
 ## Example contracts {#examples}
 
@@ -907,10 +1048,10 @@ contract SimpleCounter(
     counter: Int as uint32, // actual value of the counter
     id: Int as uint32, // a unique id to deploy multiple instances
                        // of this contract in a same workchain
-    // their default or initial values are supplied during deployment
+    // Their default or initial values are supplied during deployment.
 ) {
     // Registers a receiver of empty messages from other contracts.
-    // It handles all messages with `null` body
+    // It handles internal messages with `null` body
     // and is very handy and cheap for the deployments.
     receive() {
         // Forward the remaining value in the
