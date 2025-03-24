@@ -19,8 +19,8 @@ import { writeInterfaces } from "./writeInterfaces";
 import {
     groupContractReceivers,
     writeBouncedRouter,
-    writeLoadOpcode,
     writeNonBouncedRouter,
+    writeOpcodeCheckers,
 } from "./writeRouter";
 import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import { getAllocation } from "../../storage/resolveAllocation";
@@ -393,7 +393,7 @@ export function writeMainContract(
 
         const contractReceivers = groupContractReceivers(contract);
 
-        writeLoadOpcode(contractReceivers.internal, wCtx);
+        writeOpcodeCheckers(contractReceivers, contract, wCtx);
         wCtx.append();
 
         // Render internal receiver
@@ -435,9 +435,6 @@ export function writeMainContract(
             typeof contractReceivers.external.fallback === "undefined"
         );
         if (hasExternal) {
-            writeLoadOpcode(contractReceivers.external, wCtx);
-            wCtx.append();
-
             wCtx.inBlock("() recv_external(slice in_msg) impure", () => {
                 writeLoadContractVariables(contract, wCtx);
 
