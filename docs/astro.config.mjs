@@ -130,10 +130,6 @@ export default defineConfig({
 					items: [
 						{ slug: 'book' },
 						{
-							slug: 'book/learn-ton-in-y-minutes',
-							badge: { variant: 'tip', text: 'new' },
-						},
-						{
 							slug: 'book/learn-tact-in-y-minutes',
 							badge: { variant: 'tip', text: 'new' },
 						},
