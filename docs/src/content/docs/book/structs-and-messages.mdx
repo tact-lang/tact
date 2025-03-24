@@ -90,6 +90,8 @@ struct MoviesToWatch {
 
 The order of fields matters, as it corresponds to the resulting memory layout in [TL-B schemas](https://docs.ton.org/develop/data-formats/tl-b-language). However, unlike some languages with manual memory management, Tact does not have any padding between fields.
 
+Consequently, structs cannot be empty and must declare at least one field.
+
 ## Messages
 
 Messages can hold [Structs](#structs) in them:
@@ -108,6 +110,12 @@ message Add {
 ### Message opcodes
 
 Messages are almost the same as [Structs](#structs), with the only difference being that Messages have a 32-bit integer header in their serialization containing their unique numeric id, commonly referred to as an _opcode_ (operation code). This allows Messages to be used with [receivers](/book/receive), since the contract can distinguish different types of messages based on this id.
+
+Additionally and unlike regular [structs](#structs), this allows Messages to be declared empty:
+
+```tact
+message TotallyValid {}
+```
 
 Tact automatically generates these unique ids (opcodes) for every received Message, which can be observed in the [Structures section of the compilation report](/book/compile#structures).
 
@@ -272,7 +280,7 @@ Whenever one converts between [`Cell{:tact}`][cell]/[`Slice{:tact}`][slice] and 
 * For any instance of type [Struct](#structs)/[Message](#messages), calling `.toCell(){:tact}` on it and then applying `Struct.fromCell(){:tact}` (or `Message.fromCell(){:tact}`) to the result gives back a copy of the original instance:
 
 ```tact {8-9,13-14}
-struct ArbitraryStruct {}
+struct ArbitraryStruct { fieldNotFound: Int = 404 }
 message(0x2A) ArbitraryMessage {}
 
 fun lawOne() {
