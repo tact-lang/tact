@@ -621,21 +621,20 @@ contract SemanticsTester {
         z.flipBooleanFields();
 
         return self.checkAllContractFieldsAreUnchanged() &&
-               s.a1 == 20 &&    
-               s.a2.b1 == true &&   
-               s.a2.b2.c1 == 5 &&   
-               s.a2.b3 == 10 &&     
+               s.a1 == 20 &&
+               s.a2.b1 == true &&
+               s.a2.b2.c1 == 5 &&
+               s.a2.b3 == 10 &&
 
-               t.a1 == 21 &&    
-               t.a2.b1 == false &&   
-               t.a2.b2.c1 == 6 &&    
+               t.a1 == 21 &&
+               t.a2.b1 == false &&
+               t.a2.b2.c1 == 6 &&
                t.a2.b3 == 11 &&
 
-               z.a1 == 21 &&    
-               z.a2.b1 == false &&   
-               z.a2.b2.c1 == 6 &&    
-               z.a2.b3 == 11;                
-
+               z.a1 == 21 &&
+               z.a2.b1 == false &&
+               z.a2.b2.c1 == 6 &&
+               z.a2.b3 == 11;
     }
 
     get fun mutatesChainStruct2(): Bool {
