@@ -1,7 +1,7 @@
 // This module includes rules involving associative rewrites of expressions
 
 import type { SrcInfo } from "../grammar";
-import type * as A from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import { isLiteral } from "../ast/ast-helpers";
 import * as iM from "./interpreter";
 import type { ExpressionTransformer } from "./types";
@@ -15,14 +15,14 @@ import {
 import { abs, sign } from "./util";
 
 type TransformData = {
-    simplifiedExpression: A.AstExpression;
+    simplifiedExpression: Ast.Expression;
     safetyCondition: boolean;
 };
 
 type Transform = (
-    x1: A.AstExpression,
-    c1: A.AstLiteral,
-    c2: A.AstLiteral,
+    x1: Ast.Expression,
+    c1: Ast.Literal,
+    c2: Ast.Literal,
     util: AstUtil,
     s: SrcInfo,
 ) => TransformData;
@@ -30,25 +30,22 @@ type Transform = (
 abstract class AssociativeRewriteRule extends Rule {
     // An entry (op, S) in the map means "operator op associates with all operators in set S",
     // mathematically: all op2 \in S. (a op b) op2 c = a op (b op2 c)
-    private associativeOps: Map<
-        A.AstBinaryOperation,
-        Set<A.AstBinaryOperation>
-    >;
+    private associativeOps: Map<Ast.BinaryOperation, Set<Ast.BinaryOperation>>;
 
     // This set contains all operators that commute.
     // Mathematically:
     // all op \in commutativeOps. a op b = b op a
-    private commutativeOps: Set<A.AstBinaryOperation>;
+    private commutativeOps: Set<Ast.BinaryOperation>;
 
     constructor() {
         super();
 
         // + associates with these on the right:
         // i.e., all op \in additiveAssoc. (a + b) op c = a + (b op c)
-        const additiveAssoc: Set<A.AstBinaryOperation> = new Set(["+", "-"]);
+        const additiveAssoc: Set<Ast.BinaryOperation> = new Set(["+", "-"]);
 
         // * associates with these on the right:
-        const multiplicativeAssoc: Set<A.AstBinaryOperation> = new Set([
+        const multiplicativeAssoc: Set<Ast.BinaryOperation> = new Set([
             "*",
             "<<",
         ]);
@@ -70,8 +67,8 @@ abstract class AssociativeRewriteRule extends Rule {
     }
 
     public areAssociative(
-        op1: A.AstBinaryOperation,
-        op2: A.AstBinaryOperation,
+        op1: Ast.BinaryOperation,
+        op2: Ast.BinaryOperation,
     ): boolean {
         if (this.associativeOps.has(op1)) {
             const rightOperators = this.associativeOps.get(op1)!;
@@ -81,13 +78,13 @@ abstract class AssociativeRewriteRule extends Rule {
         }
     }
 
-    public isCommutative(op: A.AstBinaryOperation): boolean {
+    public isCommutative(op: Ast.BinaryOperation): boolean {
         return this.commutativeOps.has(op);
     }
 }
 
 abstract class AllowableOpRule extends AssociativeRewriteRule {
-    private allowedOps: Set<A.AstBinaryOperation>;
+    private allowedOps: Set<Ast.BinaryOperation>;
 
     constructor() {
         super();
@@ -98,11 +95,11 @@ abstract class AllowableOpRule extends AssociativeRewriteRule {
         //["&&", "||"], // TODO: check bitwise integer operators
     }
 
-    public isAllowedOp(op: A.AstBinaryOperation): boolean {
+    public isAllowedOp(op: Ast.BinaryOperation): boolean {
         return this.allowedOps.has(op);
     }
 
-    public areAllowedOps(op: A.AstBinaryOperation[]): boolean {
+    public areAllowedOps(op: Ast.BinaryOperation[]): boolean {
         return op.reduce(
             (prev, curr) => prev && this.allowedOps.has(curr),
             true,
@@ -116,26 +113,26 @@ abstract class AllowableOpRule extends AssociativeRewriteRule {
 // but I found out they cannot.
 export class AssociativeRule1 extends AllowableOpRule {
     public applyRule(
-        ast: A.AstExpression,
+        ast: Ast.Expression,
         { applyRules, util }: ExpressionTransformer,
-    ): A.AstExpression {
+    ): Ast.Expression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as A.AstOpBinary;
+            const topLevelNode = ast as Ast.OpBinary;
             if (
                 checkIsBinaryOp_With_RightValue(topLevelNode.left) &&
                 checkIsBinaryOp_With_RightValue(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (x1 op1 c1) op (x2 op2 c2)
-                const leftTree = topLevelNode.left as A.AstOpBinary;
-                const rightTree = topLevelNode.right as A.AstOpBinary;
+                const leftTree = topLevelNode.left as Ast.OpBinary;
+                const rightTree = topLevelNode.right as Ast.OpBinary;
 
                 const x1 = leftTree.left;
-                const c1 = leftTree.right as A.AstLiteral;
+                const c1 = leftTree.right as Ast.Literal;
                 const op1 = leftTree.op;
 
                 const x2 = rightTree.left;
-                const c2 = rightTree.right as A.AstLiteral;
+                const c2 = rightTree.right as Ast.Literal;
                 const op2 = rightTree.op;
 
                 const op = topLevelNode.op;
@@ -183,15 +180,15 @@ export class AssociativeRule1 extends AllowableOpRule {
             ) {
                 // The tree has this form:
                 // (x1 op1 c1) op (c2 op2 x2)
-                const leftTree = topLevelNode.left as A.AstOpBinary;
-                const rightTree = topLevelNode.right as A.AstOpBinary;
+                const leftTree = topLevelNode.left as Ast.OpBinary;
+                const rightTree = topLevelNode.right as Ast.OpBinary;
 
                 const x1 = leftTree.left;
-                const c1 = leftTree.right as A.AstLiteral;
+                const c1 = leftTree.right as Ast.Literal;
                 const op1 = leftTree.op;
 
                 const x2 = rightTree.right;
-                const c2 = rightTree.left as A.AstLiteral;
+                const c2 = rightTree.left as Ast.Literal;
                 const op2 = rightTree.op;
 
                 const op = topLevelNode.op;
@@ -239,15 +236,15 @@ export class AssociativeRule1 extends AllowableOpRule {
             ) {
                 // The tree has this form:
                 // (c1 op1 x1) op (x2 op2 c2)
-                const leftTree = topLevelNode.left as A.AstOpBinary;
-                const rightTree = topLevelNode.right as A.AstOpBinary;
+                const leftTree = topLevelNode.left as Ast.OpBinary;
+                const rightTree = topLevelNode.right as Ast.OpBinary;
 
                 const x1 = leftTree.right;
-                const c1 = leftTree.left as A.AstLiteral;
+                const c1 = leftTree.left as Ast.Literal;
                 const op1 = leftTree.op;
 
                 const x2 = rightTree.left;
-                const c2 = rightTree.right as A.AstLiteral;
+                const c2 = rightTree.right as Ast.Literal;
                 const op2 = rightTree.op;
 
                 const op = topLevelNode.op;
@@ -297,15 +294,15 @@ export class AssociativeRule1 extends AllowableOpRule {
             ) {
                 // The tree has this form:
                 // (c1 op1 x1) op (c2 op2 x2)
-                const leftTree = topLevelNode.left as A.AstOpBinary;
-                const rightTree = topLevelNode.right as A.AstOpBinary;
+                const leftTree = topLevelNode.left as Ast.OpBinary;
+                const rightTree = topLevelNode.right as Ast.OpBinary;
 
                 const x1 = leftTree.right;
-                const c1 = leftTree.left as A.AstLiteral;
+                const c1 = leftTree.left as Ast.Literal;
                 const op1 = leftTree.op;
 
                 const x2 = rightTree.right;
-                const c2 = rightTree.left as A.AstLiteral;
+                const c2 = rightTree.left as Ast.Literal;
                 const op2 = rightTree.op;
 
                 const op = topLevelNode.op;
@@ -362,22 +359,22 @@ export class AssociativeRule1 extends AllowableOpRule {
 // but I found out they cannot.
 export class AssociativeRule2 extends AllowableOpRule {
     public applyRule(
-        ast: A.AstExpression,
+        ast: Ast.Expression,
         { applyRules, util }: ExpressionTransformer,
-    ): A.AstExpression {
+    ): Ast.Expression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as A.AstOpBinary;
+            const topLevelNode = ast as Ast.OpBinary;
             if (
                 checkIsBinaryOp_With_RightValue(topLevelNode.left) &&
                 !isLiteral(topLevelNode.right)
             ) {
                 // The tree has this form:
                 // (x1 op1 c1) op x2
-                const leftTree = topLevelNode.left as A.AstOpBinary;
+                const leftTree = topLevelNode.left as Ast.OpBinary;
                 const rightTree = topLevelNode.right;
 
                 const x1 = leftTree.left;
-                const c1 = leftTree.right as A.AstLiteral;
+                const c1 = leftTree.right as Ast.Literal;
                 const op1 = leftTree.op;
 
                 const x2 = rightTree;
@@ -410,11 +407,11 @@ export class AssociativeRule2 extends AllowableOpRule {
             ) {
                 // The tree has this form:
                 // (c1 op1 x1) op x2
-                const leftTree = topLevelNode.left as A.AstOpBinary;
+                const leftTree = topLevelNode.left as Ast.OpBinary;
                 const rightTree = topLevelNode.right;
 
                 const x1 = leftTree.right;
-                const c1 = leftTree.left as A.AstLiteral;
+                const c1 = leftTree.left as Ast.Literal;
                 const op1 = leftTree.op;
 
                 const x2 = rightTree;
@@ -446,10 +443,10 @@ export class AssociativeRule2 extends AllowableOpRule {
                 // The tree has this form:
                 // x2 op (x1 op1 c1)
                 const leftTree = topLevelNode.left;
-                const rightTree = topLevelNode.right as A.AstOpBinary;
+                const rightTree = topLevelNode.right as Ast.OpBinary;
 
                 const x1 = rightTree.left;
-                const c1 = rightTree.right as A.AstLiteral;
+                const c1 = rightTree.right as Ast.Literal;
                 const op1 = rightTree.op;
 
                 const x2 = leftTree;
@@ -481,10 +478,10 @@ export class AssociativeRule2 extends AllowableOpRule {
                 // The tree has this form:
                 // x2 op (c1 op1 x1)
                 const leftTree = topLevelNode.left;
-                const rightTree = topLevelNode.right as A.AstOpBinary;
+                const rightTree = topLevelNode.right as Ast.OpBinary;
 
                 const x1 = rightTree.right;
-                const c1 = rightTree.left as A.AstLiteral;
+                const c1 = rightTree.left as Ast.Literal;
                 const op1 = rightTree.op;
 
                 const x2 = leftTree;
@@ -522,20 +519,20 @@ export class AssociativeRule2 extends AllowableOpRule {
 
 export class AssociativeRule3 extends Rule {
     private leftAssocTransforms: Map<
-        A.AstBinaryOperation,
-        Map<A.AstBinaryOperation, Transform>
+        Ast.BinaryOperation,
+        Map<Ast.BinaryOperation, Transform>
     >;
     private rightAssocTransforms: Map<
-        A.AstBinaryOperation,
-        Map<A.AstBinaryOperation, Transform>
+        Ast.BinaryOperation,
+        Map<Ast.BinaryOperation, Transform>
     >;
     private rightCommuteTransforms: Map<
-        A.AstBinaryOperation,
-        Map<A.AstBinaryOperation, Transform>
+        Ast.BinaryOperation,
+        Map<Ast.BinaryOperation, Transform>
     >;
     private leftCommuteTransforms: Map<
-        A.AstBinaryOperation,
-        Map<A.AstBinaryOperation, Transform>
+        Ast.BinaryOperation,
+        Map<Ast.BinaryOperation, Transform>
     >;
 
     // Safety conditions that repeat a lot.
@@ -620,7 +617,7 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = +
 
-        const plusLeftAssocOperators: Map<A.AstBinaryOperation, Transform> =
+        const plusLeftAssocOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "+",
@@ -673,7 +670,7 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = -
 
-        const minusLeftAssocOperators: Map<A.AstBinaryOperation, Transform> =
+        const minusLeftAssocOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "+",
@@ -726,7 +723,7 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = *
 
-        const multiplyLeftAssocOperators: Map<A.AstBinaryOperation, Transform> =
+        const multiplyLeftAssocOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "*",
@@ -755,7 +752,7 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = &&
 
-        const andLeftAssocOperators: Map<A.AstBinaryOperation, Transform> =
+        const andLeftAssocOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "&&",
@@ -783,7 +780,7 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = ||
 
-        const orLeftAssocOperators: Map<A.AstBinaryOperation, Transform> =
+        const orLeftAssocOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "||",
@@ -825,7 +822,7 @@ export class AssociativeRule3 extends Rule {
 
         // op = +
 
-        const plusRightAssocOperators: Map<A.AstBinaryOperation, Transform> =
+        const plusRightAssocOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "+",
@@ -878,7 +875,7 @@ export class AssociativeRule3 extends Rule {
 
         // op = -
 
-        const minusRightAssocOperators: Map<A.AstBinaryOperation, Transform> =
+        const minusRightAssocOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "+",
@@ -931,38 +928,37 @@ export class AssociativeRule3 extends Rule {
 
         // op = *
 
-        const multiplyRightAssocOperators: Map<
-            A.AstBinaryOperation,
-            Transform
-        > = new Map([
-            [
-                "*",
+        const multiplyRightAssocOperators: Map<Ast.BinaryOperation, Transform> =
+            new Map([
+                [
+                    "*",
 
-                // original expression: c2 * (c1 * x1)
-                (x1, c1, c2, util, s) => {
-                    // final expression (c2 * c1) * x1
-                    const val_ = iM.ensureInt(
-                        iM.evalBinaryOp("*", c2, () => c1, s, util),
-                    );
-                    const c1_ = iM.ensureInt(c1);
-                    return {
-                        simplifiedExpression: util.makeBinaryExpression(
-                            "*",
-                            val_,
-                            x1,
-                        ),
-                        safetyCondition: this.standardMultiplicativeCondition(
-                            c1_.value,
-                            val_.value,
-                        ),
-                    };
-                },
-            ],
-        ]);
+                    // original expression: c2 * (c1 * x1)
+                    (x1, c1, c2, util, s) => {
+                        // final expression (c2 * c1) * x1
+                        const val_ = iM.ensureInt(
+                            iM.evalBinaryOp("*", c2, () => c1, s, util),
+                        );
+                        const c1_ = iM.ensureInt(c1);
+                        return {
+                            simplifiedExpression: util.makeBinaryExpression(
+                                "*",
+                                val_,
+                                x1,
+                            ),
+                            safetyCondition:
+                                this.standardMultiplicativeCondition(
+                                    c1_.value,
+                                    val_.value,
+                                ),
+                        };
+                    },
+                ],
+            ]);
 
         // op = &&
 
-        const andRightAssocOperators: Map<A.AstBinaryOperation, Transform> =
+        const andRightAssocOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "&&",
@@ -991,7 +987,7 @@ export class AssociativeRule3 extends Rule {
 
         // op = ||
 
-        const orRightAssocOperators: Map<A.AstBinaryOperation, Transform> =
+        const orRightAssocOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "||",
@@ -1034,7 +1030,7 @@ export class AssociativeRule3 extends Rule {
 
         // op = +
 
-        const plusRightCommuteOperators: Map<A.AstBinaryOperation, Transform> =
+        const plusRightCommuteOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "+",
@@ -1087,7 +1083,7 @@ export class AssociativeRule3 extends Rule {
 
         // op = -
 
-        const minusRightCommuteOperators: Map<A.AstBinaryOperation, Transform> =
+        const minusRightCommuteOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "+",
@@ -1140,7 +1136,7 @@ export class AssociativeRule3 extends Rule {
         // op = *
 
         const multiplyRightCommuteOperators: Map<
-            A.AstBinaryOperation,
+            Ast.BinaryOperation,
             Transform
         > = new Map([
             [
@@ -1169,7 +1165,7 @@ export class AssociativeRule3 extends Rule {
 
         // op = &&
 
-        const andRightCommuteOperators: Map<A.AstBinaryOperation, Transform> =
+        const andRightCommuteOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "&&",
@@ -1213,7 +1209,7 @@ export class AssociativeRule3 extends Rule {
 
         // op = ||
 
-        const orRightCommuteOperators: Map<A.AstBinaryOperation, Transform> =
+        const orRightCommuteOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "||",
@@ -1270,7 +1266,7 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = +
 
-        const plusLeftCommuteOperators: Map<A.AstBinaryOperation, Transform> =
+        const plusLeftCommuteOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "+",
@@ -1323,7 +1319,7 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = -
 
-        const minusLeftCommuteOperators: Map<A.AstBinaryOperation, Transform> =
+        const minusLeftCommuteOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "+",
@@ -1377,7 +1373,7 @@ export class AssociativeRule3 extends Rule {
         // op1 = *
 
         const multiplyLeftCommuteOperators: Map<
-            A.AstBinaryOperation,
+            Ast.BinaryOperation,
             Transform
         > = new Map([
             [
@@ -1406,7 +1402,7 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = &&
 
-        const andLeftCommuteOperators: Map<A.AstBinaryOperation, Transform> =
+        const andLeftCommuteOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "&&",
@@ -1450,7 +1446,7 @@ export class AssociativeRule3 extends Rule {
 
         // op1 = ||
 
-        const orLeftCommuteOperators: Map<A.AstBinaryOperation, Transform> =
+        const orLeftCommuteOperators: Map<Ast.BinaryOperation, Transform> =
             new Map([
                 [
                     "||",
@@ -1502,11 +1498,11 @@ export class AssociativeRule3 extends Rule {
     }
 
     private lookupTransform(
-        keyOp1: A.AstBinaryOperation,
-        keyOp2: A.AstBinaryOperation,
+        keyOp1: Ast.BinaryOperation,
+        keyOp2: Ast.BinaryOperation,
         transforms: Map<
-            A.AstBinaryOperation,
-            Map<A.AstBinaryOperation, Transform>
+            Ast.BinaryOperation,
+            Map<Ast.BinaryOperation, Transform>
         >,
     ): Transform | undefined {
         if (transforms.has(keyOp1)) {
@@ -1519,29 +1515,29 @@ export class AssociativeRule3 extends Rule {
     }
 
     protected getLeftAssociativityTransform(
-        keyOp1: A.AstBinaryOperation,
-        keyOp2: A.AstBinaryOperation,
+        keyOp1: Ast.BinaryOperation,
+        keyOp2: Ast.BinaryOperation,
     ): Transform | undefined {
         return this.lookupTransform(keyOp1, keyOp2, this.leftAssocTransforms);
     }
 
     protected getRightAssociativityTransform(
-        keyOp1: A.AstBinaryOperation,
-        keyOp2: A.AstBinaryOperation,
+        keyOp1: Ast.BinaryOperation,
+        keyOp2: Ast.BinaryOperation,
     ): Transform | undefined {
         return this.lookupTransform(keyOp1, keyOp2, this.rightAssocTransforms);
     }
 
     protected getLeftCommutativityTransform(
-        keyOp1: A.AstBinaryOperation,
-        keyOp2: A.AstBinaryOperation,
+        keyOp1: Ast.BinaryOperation,
+        keyOp2: Ast.BinaryOperation,
     ): Transform | undefined {
         return this.lookupTransform(keyOp1, keyOp2, this.leftCommuteTransforms);
     }
 
     protected getRightCommutativityTransform(
-        keyOp1: A.AstBinaryOperation,
-        keyOp2: A.AstBinaryOperation,
+        keyOp1: Ast.BinaryOperation,
+        keyOp2: Ast.BinaryOperation,
     ): Transform | undefined {
         return this.lookupTransform(
             keyOp1,
@@ -1551,11 +1547,11 @@ export class AssociativeRule3 extends Rule {
     }
 
     public applyRule(
-        ast: A.AstExpression,
+        ast: Ast.Expression,
         { applyRules, util }: ExpressionTransformer,
-    ): A.AstExpression {
+    ): Ast.Expression {
         if (checkIsBinaryOpNode(ast)) {
-            const topLevelNode = ast as A.AstOpBinary;
+            const topLevelNode = ast as Ast.OpBinary;
             if (
                 checkIsBinaryOp_With_RightValue(topLevelNode.left) &&
                 isLiteral(topLevelNode.right)
@@ -1563,11 +1559,11 @@ export class AssociativeRule3 extends Rule {
                 // The tree has this form:
                 // (x1 op1 c1) op c2
 
-                const leftTree = topLevelNode.left as A.AstOpBinary;
-                const rightTree = topLevelNode.right as A.AstLiteral;
+                const leftTree = topLevelNode.left as Ast.OpBinary;
+                const rightTree = topLevelNode.right as Ast.Literal;
 
                 const x1 = leftTree.left;
-                const c1 = leftTree.right as A.AstLiteral;
+                const c1 = leftTree.right as Ast.Literal;
                 const op1 = leftTree.op;
 
                 const c2 = rightTree;
@@ -1598,11 +1594,11 @@ export class AssociativeRule3 extends Rule {
                 // The tree has this form:
                 // (c1 op1 x1) op c2
 
-                const leftTree = topLevelNode.left as A.AstOpBinary;
-                const rightTree = topLevelNode.right as A.AstLiteral;
+                const leftTree = topLevelNode.left as Ast.OpBinary;
+                const rightTree = topLevelNode.right as Ast.Literal;
 
                 const x1 = leftTree.right;
-                const c1 = leftTree.left as A.AstLiteral;
+                const c1 = leftTree.left as Ast.Literal;
                 const op1 = leftTree.op;
 
                 const c2 = rightTree;
@@ -1633,11 +1629,11 @@ export class AssociativeRule3 extends Rule {
                 // The tree has this form:
                 // c2 op (x1 op1 c1)
 
-                const leftTree = topLevelNode.left as A.AstLiteral;
-                const rightTree = topLevelNode.right as A.AstOpBinary;
+                const leftTree = topLevelNode.left as Ast.Literal;
+                const rightTree = topLevelNode.right as Ast.OpBinary;
 
                 const x1 = rightTree.left;
-                const c1 = rightTree.right as A.AstLiteral;
+                const c1 = rightTree.right as Ast.Literal;
                 const op1 = rightTree.op;
 
                 const c2 = leftTree;
@@ -1668,11 +1664,11 @@ export class AssociativeRule3 extends Rule {
                 // The tree has this form:
                 // c2 op (c1 op1 x1)
 
-                const leftTree = topLevelNode.left as A.AstLiteral;
-                const rightTree = topLevelNode.right as A.AstOpBinary;
+                const leftTree = topLevelNode.left as Ast.Literal;
+                const rightTree = topLevelNode.right as Ast.OpBinary;
 
                 const x1 = rightTree.right;
-                const c1 = rightTree.left as A.AstLiteral;
+                const c1 = rightTree.left as Ast.Literal;
                 const op1 = rightTree.op;
 
                 const c2 = leftTree;

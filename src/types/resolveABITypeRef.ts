@@ -1,5 +1,5 @@
 import type { ABITypeRef } from "@ton/core";
-import type * as A from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import {
     eqNames,
     idText,
@@ -76,8 +76,8 @@ const builderFormats: FormatDef = {
 };
 
 type ResolveTypeOptions = {
-    readonly type: A.AstType;
-    readonly as: A.AstId | undefined;
+    readonly type: Ast.Type;
+    readonly as: Ast.Id | undefined;
     readonly loc: SrcInfo;
 };
 
@@ -94,7 +94,7 @@ export function resolveABIType({
         // Primitive types
         //
 
-        const typeId: A.AstTypeId =
+        const typeId: Ast.TypeId =
             type.kind === "type_id"
                 ? type
                 : type.typeArg.kind === "type_id"

@@ -1,4 +1,4 @@
-import type * as A from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import type { FactoryAst } from "../ast/ast-helpers";
 import {
     eqNames,
@@ -53,8 +53,8 @@ const staticConstantsStore = createContextStore<ConstantDescription>();
 
 // this function does not handle the case of structs
 function verifyMapAsAnnotationsForPrimitiveTypes(
-    type: A.AstTypeId,
-    asAnnotation: A.AstId | undefined,
+    type: Ast.TypeId,
+    asAnnotation: Ast.Id | undefined,
     kind: "keyType" | "valType",
 ): void {
     switch (idText(type)) {
@@ -98,8 +98,8 @@ function verifyMapAsAnnotationsForPrimitiveTypes(
 }
 
 function verifyMapTypes(
-    typeId: A.AstTypeId,
-    asAnnotation: A.AstId | undefined,
+    typeId: Ast.TypeId,
+    asAnnotation: Ast.Id | undefined,
     allowedTypeNames: string[],
     kind: "keyType" | "valType",
 ): void {
@@ -112,7 +112,7 @@ function verifyMapTypes(
     verifyMapAsAnnotationsForPrimitiveTypes(typeId, asAnnotation, kind);
 }
 
-function verifyMapType(mapTy: A.AstMapType, isValTypeStruct: boolean) {
+function verifyMapType(mapTy: Ast.MapType, isValTypeStruct: boolean) {
     // optional and other compound key and value types are disallowed at the level of grammar
 
     // check allowed key types
@@ -138,7 +138,7 @@ function verifyMapType(mapTy: A.AstMapType, isValTypeStruct: boolean) {
 
 export const toBounced = (type: string) => `${type}%%BOUNCED%%`;
 
-export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
+export function resolveTypeRef(ctx: CompilerContext, type: Ast.Type): TypeRef {
     switch (type.kind) {
         case "type_id": {
             const t = getType(ctx, type);
@@ -191,7 +191,7 @@ export function resolveTypeRef(ctx: CompilerContext, type: A.AstType): TypeRef {
 }
 
 function buildTypeRef(
-    type: A.AstType,
+    type: Ast.Type,
     types: Map<string, TypeDescription>,
 ): TypeRef {
     switch (type.kind) {
@@ -394,7 +394,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     //
 
     function buildFieldDescription(
-        src: A.AstFieldDecl,
+        src: Ast.FieldDecl,
         index: number,
     ): FieldDescription {
         const fieldTy = buildTypeRef(src.type, types);
@@ -424,7 +424,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     }
 
     function buildConstantDescription(
-        src: A.AstConstantDef | A.AstConstantDecl,
+        src: Ast.ConstantDef | Ast.ConstantDecl,
     ): ConstantDescription {
         const constDeclTy = buildTypeRef(src.type, types);
         return {
@@ -449,8 +449,8 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             }
 
             const params: InitParameter[] = [];
-            const args: A.AstTypedParameter[] = [];
-            const statements: A.AstStatement[] = [];
+            const args: Ast.TypedParameter[] = [];
+            const statements: Ast.Statement[] = [];
             for (const r of a.params) {
                 const type = buildTypeRef(r.type, types);
                 params.push({
@@ -475,13 +475,13 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                                 kind: "id",
                                 text: "self",
                                 loc: r.loc,
-                            }) as A.AstExpression,
+                            }) as Ast.Expression,
                             field: Ast.cloneNode(r.name),
                             loc: r.loc,
-                        }) as A.AstExpression,
+                        }) as Ast.Expression,
                         expression: Ast.cloneNode(r.name),
                         loc: r.loc,
-                    }) as A.AstStatement,
+                    }) as Ast.Statement,
                 );
                 if (s.fields.find((v) => eqNames(v.name, r.name))) {
                     throwCompilationError(
@@ -500,7 +500,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     params: args,
                     statements,
                     loc: a.loc,
-                }) as A.AstContractInit,
+                }) as Ast.ContractInit,
                 contract: a,
             };
         }
@@ -686,10 +686,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
     function resolveFunctionDescriptor(
         optSelf: TypeRef | null,
         a:
-            | A.AstFunctionDef
-            | A.AstNativeFunctionDecl
-            | A.AstFunctionDecl
-            | A.AstAsmFunctionDef,
+            | Ast.FunctionDef
+            | Ast.NativeFunctionDecl
+            | Ast.FunctionDecl
+            | Ast.AsmFunctionDef,
         origin: ItemOrigin,
     ): FunctionDescription {
         let self = optSelf;
@@ -1079,7 +1079,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         };
     }
 
-    function resolveInitFunction(ast: A.AstContractInit): InitDescription {
+    function resolveInitFunction(ast: Ast.ContractInit): InitDescription {
         const params: InitParameter[] = [];
         for (const r of ast.params) {
             params.push({
@@ -1101,7 +1101,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             }
         }
 
-        function checkNode(node: A.AstNode): boolean {
+        function checkNode(node: Ast.AstNode): boolean {
             if (node.kind === "field_access" || node.kind === "method_call") {
                 // we don't need to check `self.a` or `self.foo()`
                 return false;
@@ -1557,7 +1557,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         params: [],
                         statements: [],
                         loc: t.ast.loc,
-                    }) as A.AstContractInit,
+                    }) as Ast.ContractInit,
                 };
             }
         }
@@ -2084,16 +2084,16 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
     for (const [k, t] of types) {
         const visited: Set<string> = new Set();
-        const queue: A.AstNode[] = [];
+        const queue: Ast.AstNode[] = [];
 
-        const queuePush = (name: string, element: A.AstNode) => {
+        const queuePush = (name: string, element: Ast.AstNode) => {
             if (visited.has(name)) return;
             visited.add(name);
             queue.push(element);
         };
 
         const dependsOn: Set<string> = new Set();
-        const handler = (src: A.AstNode) => {
+        const handler = (src: Ast.AstNode) => {
             if (src.kind === "init_of" || src.kind === "code_of") {
                 if (!types.has(idText(src.contract))) {
                     throwCompilationError(
@@ -2213,7 +2213,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
 export function getType(
     ctx: CompilerContext,
-    ident: A.AstId | A.AstTypeId | string,
+    ident: Ast.Id | Ast.TypeId | string,
 ): TypeDescription {
     const name = typeof ident === "string" ? ident : idText(ident);
     const r = store.get(ctx, name);
@@ -2340,7 +2340,7 @@ function checkInitializerType(
     name: string,
     kind: "Constant" | "Struct field",
     declTy: TypeRef,
-    initializer: A.AstExpression,
+    initializer: Ast.Expression,
     ctx: CompilerContext,
     selfTypeRef: TypeRef | undefined,
 ): CompilerContext {
@@ -2438,7 +2438,7 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
         (aggregate) => aggregate.kind === "struct",
     );
     let index = 0;
-    const stack: A.AstId[] = [];
+    const stack: Ast.Id[] = [];
     // `string` here means "struct name"
     const indices: Map<string, number> = new Map();
     const lowLinks: Map<string, number> = new Map();
@@ -2518,7 +2518,7 @@ function checkRecursiveTypes(ctx: CompilerContext): void {
         }
 
         if (lowLinks.get(struct.name) === indices.get(struct.name)) {
-            const cycle: A.AstId[] = [];
+            const cycle: Ast.Id[] = [];
             let e = "";
             do {
                 const last = stack.pop()!;
