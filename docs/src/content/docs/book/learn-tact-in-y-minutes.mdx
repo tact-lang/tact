@@ -61,141 +61,143 @@ inline fun reply(str: String) {
 ## Primitive types
 
 ```tact
-// There are two main groups of primitive types on TON: integers and cells.
-// All other primitive types are derivatives of those two.
+fun showcase() {
+    // There are two main groups of primitive types on TON: integers and cells.
+    // All other primitive types are derivatives of those two.
 
-// ---
-// Integers,
-// always 257-bit signed in runtime operations,
-// but may have different lengths in persistent contract's state (storage)
-// ---
+    // ---
+    // Integers,
+    // always 257-bit signed in runtime operations,
+    // but may have different lengths in persistent contract's state (storage)
+    // ---
 
-let one_plus_one: Int = 1 + 1; // 2
-let two_by_two: Int = 2 / 2;   // 1
-let three_by_two: Int = 3 / 2; // 1, because division operator floors
+    let one_plus_one: Int = 1 + 1; // 2
+    let two_by_two: Int = 2 / 2;   // 1
+    let three_by_two: Int = 3 / 2; // 1, because division operator floors
 
-let one_billion = 1_000_000_000; // decimal
-let binary_mask = 0b1_1111_1111; // binary
-let permissions = 0o7_5_5;       // octal
-let heHex = 0xFF80_0000_0000;    // hexadecimal
+    let one_billion = 1_000_000_000; // decimal
+    let binary_mask = 0b1_1111_1111; // binary
+    let permissions = 0o7_5_5;       // octal
+    let heHex = 0xFF80_0000_0000;    // hexadecimal
 
-let nanoToncoin: Int = 1;    // 1 nanoToncoin = 0.000,000,001 Toncoin
-let toncoin: Int = ton("1"); // 1 Toncoin = 1,000,000,000 nanoToncoin
-
-
-// ---
-// Booleans: true and false.
-// They take only 1 bit in persistent storage.
-// ---
-
-let factual: Bool = !!(true || false);
-let fax: Bool = true && factual;
+    let nanoToncoin: Int = 1;    // 1 nanoToncoin = 0.000,000,001 Toncoin
+    let toncoin: Int = ton("1"); // 1 Toncoin = 1,000,000,000 nanoToncoin
 
 
-// ---
-// Addresses of smart contracts,
-// deterministically obtained by combining the initial code and initial data.
-// ---
+    // ---
+    // Booleans: true and false.
+    // They take only 1 bit in persistent storage.
+    // ---
 
-// This is cheap:
-let myAddr: Address = myAddress();
-
-// This is very expensive on-chain, so prefer doing such calculations off-chain:
-let myAddr2: Address = contractAddress(initOf MyContract());
-
-// The results are the same:
-myAddr == myAddr2; // true
-
-// Now, let's convert the Address back to its components:
-// * a workchain ID: 8-bit signed Int
-// * and an account ID: 256-bit unsigned Int
-//
-// The workchain IDs in use on mainnet are 0 (basechain) and -1 (masterchain),
-// although its possible to have more in the future.
-//
-// Most contracts operate on the basechain (workchain ID 0).
-
-let addr: Address = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
-let addrComponents: StdAddress = parseStdAddress(addr.asSlice());
-
-addrComponents.workchain; // 0
-addrComponents.address;   // 107...lots of digits...287
-
-let addr2 = newAddress(addrComponents.workchain, addrComponents.address);
-addr2 == addr; // true
+    let factual: Bool = !!(true || false);
+    let fax: Bool = true && factual;
 
 
-// ---
-// Cells, Builders, Slices
-// ---
+    // ---
+    // Addresses of smart contracts,
+    // deterministically obtained by combining the initial code and initial data.
+    // ---
 
-// Cell is an immutable data structure that can contain up to 1023 bits
-// with up to 4 reference to other cells. Cyclic references are prohibited.
-let emptyC: Cell = emptyCell(); // well, cannot do much with that
+    // This is cheap:
+    let myAddr: Address = myAddress();
 
-// Builder is an immutable primitive to construct (compose) cells.
-let bb: Builder = beginCell()
-    .storeUint(42, 6)  // storing 42 using 6 bits
-    .storeInt(42, 7)   // storing 42 using 7 bits (signed Int)
-    .storeBool(true)   // writing 1 as a single bit
-    .storeBit(true)    // alias to storeBool()
-    .storeCoins(40)    // common way of storing nanoToncoins
-    .storeAddress(myAddress())
-    .storeRef(emptyC); // storing a reference
-let composed: Cell = bb.endCell();
+    // This is very expensive on-chain, do such calculations off-chain:
+    let myAddr2: Address = contractAddress(initOf MyContract());
 
-// Slice is a mutable primitive to deconstruct (parse) cells.
-let target: Slice = composed.asSlice(); // let's start parsing `composed` Cell
+    // The results are the same:
+    myAddr == myAddr2; // true
 
+    // Now, let's convert the Address back to its components:
+    // * a workchain ID: 8-bit signed Int
+    // * and an account ID: 256-bit unsigned Int
+    //
+    // The workchain IDs in use on mainnet are 0 (basechain) and -1 (masterchain),
+    // although its possible to have more in the future.
+    //
+    // Most contracts operate on the basechain (workchain ID 0).
 
-// The type ascription is optional for most cases except for maps and optional types,
-// but we'll discuss those in the "Composite types" section below.
-let fortyTwo = target.loadUint(6); // taking 6 bits out of the `target` Slice,
-                                   // mutating it in the process
+    let addr: Address = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
+    let addrComponents: StdAddress = parseStdAddress(addr.asSlice());
 
-// If you don't want the result, you can ignore it with a wildcard.
-let _ = target.loadInt(7);
+    addrComponents.workchain; // 0
+    addrComponents.address;   // 107...lots of digits...287
 
-// Finally, there are methods to skip the value, i.e., to discard it.
-target.skipBool();
-
-// Manual composition and parsing of Cells is tedious,
-// error-prone and is generally not recommended.
-// Instead, prefer using structures: struct and message struct types.
-// See the "Composite types" section below for more info.
+    let addr2 = newAddress(addrComponents.workchain, addrComponents.address);
+    addr2 == addr; // true
 
 
-// ---
-// Strings are immutable sequences of characters,
-// which are useful to store texts to be used as special message bodies.
-// ---
+    // ---
+    // Cells, Builders, Slices
+    // ---
 
-// String literals are wrapped in double-quotes and can have some escape sequences,
-// but they intentionally cannot be concatenated via any operators.
-let str: String = "I am a string literal, boo!";
-let escape1 = "\\ \" \n \r \t \v \b \f \x00 through \xFF";
-let escape2 = "\u0000 through \uFFFF and \u{0} through \u{FFFFFF}";
+    // Cell is an immutable data structure that can contain up to 1023 bits
+    // with up to 4 reference to other cells. Cyclic references are prohibited.
+    let emptyC: Cell = emptyCell(); // well, cannot do much with that
 
-// Strings are useful for storing text,
-// so they can be converted to a Cell type to be used as message bodies.
-let noComments: Cell = "yes comments".asComment(); // prefixes a string with 32 zero bits
+    // Builder is an immutable primitive to construct (compose) cells.
+    let bb: Builder = beginCell()
+        .storeUint(42, 6)  // storing 42 using 6 bits
+        .storeInt(42, 7)   // storing 42 using 7 bits (signed Int)
+        .storeBool(true)   // writing 1 as a single bit
+        .storeBit(true)    // alias to storeBool()
+        .storeCoins(40)    // common way of storing nanoToncoins
+        .storeAddress(myAddress())
+        .storeRef(emptyC); // storing a reference
+    let composed: Cell = bb.endCell();
+
+    // Slice is a mutable primitive to deconstruct (parse) cells.
+    let target: Slice = composed.asSlice(); // let's start parsing `composed` Cell
 
 
-// ---
-// It's cheaper to manipulate and prepare strings off-chain,
-// but there are StringBuilders for composing them on-chain.
-// ---
+    // The type ascription is optional for most cases except for maps
+    // and optional types, but we'll discuss those in the
+    // "Composite types" section below.
+    let fortyTwo = target.loadUint(6); // taking 6 bits out of the `target` Slice,
+                                       // mutating it in the process
 
-// The interfaces look similar to the Builders because, under the hood,
-// StringBuilders are just Builders with a different set of functions exposed by Tact.
-let sb: StringBuilder = beginString()
-    .concat("You can be The Good Guy or the guy who saves the world...")
-    .concat("You can't be both");
+    // If you don't want the result, you can ignore it with a wildcard.
+    let _ = target.loadInt(7);
 
-// You can append something to an existing StringBuilder too.
-sb.append(". — Radcliffe");
-let fullQuote: String = sb.toString();
+    // Finally, there are methods to skip the value, i.e., to discard it.
+    target.skipBool();
 
+    // Manual composition and parsing of Cells is tedious,
+    // error-prone and is generally not recommended.
+    // Instead, prefer using structures: struct and message struct types.
+    // See the "Composite types" section below for more info.
+
+
+    // ---
+    // Strings are immutable sequences of characters,
+    // which are useful to store texts to be used as special message bodies.
+    // ---
+
+    // String literals are wrapped in double-quotes and can contain escape sequences,
+    // but they intentionally cannot be concatenated via any operators.
+    let str: String = "I am a string literal, boo!";
+    let escape1 = "\\ \" \n \r \t \v \b \f \x00 through \xFF";
+    let escape2 = "\u0000 through \uFFFF and \u{0} through \u{FFFFFF}";
+
+    // Strings are useful for storing text,
+    // so they can be converted to a Cell type to be used as message bodies.
+    let noComments: Cell = "yes comments".asComment(); // prefixes a string with 32 zero bits
+
+
+    // ---
+    // It's cheaper to manipulate and prepare strings off-chain,
+    // but there are StringBuilders for composing them on-chain.
+    // ---
+
+    // The interfaces look similar to the Builders because, under the hood,
+    // StringBuilders are just Builders with a different set of functions exposed by Tact.
+    let sb: StringBuilder = beginString()
+        .concat("You can be The Good Guy or the guy who saves the world...")
+        .concat("You can't be both");
+
+    // You can append something to an existing StringBuilder too.
+    sb.append(". — Radcliffe");
+    let fullQuote: String = sb.toString();
+}
 
 // Finally, under the hood, Address and String types are a Slice,
 // although with a well-defined distinct data layout for each.
@@ -215,28 +217,33 @@ Read more: [Primitive types](/book/types#primitive-types).
 ### Optionals {#composite-optionals}
 
 ```tact
-// An optional is a value than can be of any type or null.
-// Null is a special value that represents the intentional absence of any other value.
+fun showcase() {
+    // An optional is a value than can be of any type or null.
+    // Null is a special value that represents the intentional
+    // absence of any other value.
 
-// Int keys to Int values.
-// Type ascription of optionals is mandatory.
-let optionalVal: Int? = null;
-optionalVal = 255;
+    // Int keys to Int values.
+    // Type ascription of optionals is mandatory.
+    let optionalVal: Int? = null;
+    optionalVal = 255;
 
-// If you're certain that the value isn't null at a given moment,
-// use the non-null assertion operator !! to access it.
-dump(optionalVal!!);
+    // If you're certain that the value isn't null at a given moment,
+    // use the non-null assertion operator !! to access it.
+    dump(optionalVal!!);
 
-// Declared but undefined optional variables and fields hold the null value by default.
-let veryOptional: Bool?; // null
-if (veryOptional != null) {
-    // not happening
-} else {
-    // here we go
+    // Declared but not explicitly defined optional variables and fields
+    // implicitly hold the null value by default.
+    let veryOptional: Bool?; // null
+    if (veryOptional != null) {
+        // not happening
+    } else {
+        // here we go
+    }
 }
 
-// You can make almost any variable or field optional by adding a question mark (?)
-// after its type declaration. The only exceptions are map<K, V> and bounced<Message>,
+// You can make almost any variable or field optional by adding
+// a question mark (?) after its type declaration.
+// The only exceptions are map<K, V> and bounced<Message>,
 // in which you cannot make the inner key/value type (in the case of a map)
 // or the inner message struct (in the case of a bounced) optional.
 ```
@@ -246,61 +253,63 @@ Read more: [Optionals](/book/optionals).
 ### Maps {#composite-maps}
 
 ```tact
-// The composite type map<K, V> is used to associate
-// keys of type K with corresponding values of type V.
+fun showcase() {
+    // The composite type map<K, V> is used to associate
+    // keys of type K with corresponding values of type V.
 
-// A map of Int keys to Int values.
-// Type ascription is mandatory.
-let myMap: map<Int, Int> = emptyMap();
+    // A map of Int keys to Int values.
+    // Type ascription is mandatory.
+    let myMap: map<Int, Int> = emptyMap();
 
-// Maps have a number of built-in methods.
-myMap.set(0, 10);        // key 0 now points to value 10
-myMap.set(0, 42);        // overriding the value under key 0 with 42
-myMap.get(0)!!;          // 42, because get can return null if the key doesn't exist
-myMap.replace(1, 55);    // false, because there was no key 1 and map didn't change
-myMap.replaceGet(0, 10); // 42, because the key 0 exists and the old value there was 42
-myMap.get(0)!!;          // 10, since we've just replaced the value with .replaceGet
-myMap.del(0);            // true, because the map contained an entry under key 0
-myMap.del(0);            // false and not an error, because deletion is idempotent
-myMap.exists(0);         // false, there is no entry under key 0
-myMap.isEmpty();         // true, there is no other entries
+    // Maps have a number of built-in methods.
+    myMap.set(0, 10);        // key 0 now points to value 10
+    myMap.set(0, 42);        // overriding the value under key 0 with 42
+    myMap.get(0)!!;          // 42, because get can return null if the key doesn't exist
+    myMap.replace(1, 55);    // false, because there was no key 1 and map didn't change
+    myMap.replaceGet(0, 10); // 42, because the key 0 exists and the old value there was 42
+    myMap.get(0)!!;          // 10, since we've just replaced the value with .replaceGet
+    myMap.del(0);            // true, because the map contained an entry under key 0
+    myMap.del(0);            // false and not an error, because deletion is idempotent
+    myMap.exists(0);         // false, there is no entry under key 0
+    myMap.isEmpty();         // true, there is no other entries
 
-// In most cases, to compare two maps it's sufficient to use the shallow
-// comparison via the equality == and inequality != operators.
-myMap == emptyMap(); // true
+    // In most cases, to compare two maps it's sufficient to use the shallow
+    // comparison via the equality == and inequality != operators.
+    myMap == emptyMap(); // true
 
-// To traverse maps, the foreach statement is used.
-// See the "Statements" section below for more info.
-foreach (k, v in myMap) {
-    // ...do something for each entry, if any
+    // To traverse maps, the foreach statement is used.
+    // See the "Statements" section below for more info.
+    foreach (k, v in myMap) {
+        // ...do something for each entry, if any
+    }
+
+    // There are many other allowed kinds of map value types for Int keys
+    let _: map<Int, Bool> = emptyMap();    // Int keys to Bool values
+    let _: map<Int, Cell> = emptyMap();    // Ints to Cells
+    let _: map<Int, Address> = emptyMap(); // Ints to Addresses
+    let _: map<Int, Struct> = emptyMap();  // Ints to some structs
+    let _: map<Int, Message> = emptyMap(); // Ints to some message structs
+
+    // And all the same value types for maps with Address keys are also allowed.
+    let _: map<Address, Int> = emptyMap();     // Address keys to Int values
+    let _: map<Address, Bool> = emptyMap();    // Addresses to Bools
+    let _: map<Address, Cell> = emptyMap();    // Addresses to Cells
+    let _: map<Address, Address> = emptyMap(); // Addresses to Addresses
+    let _: map<Address, Struct> = emptyMap();  // Addresses to some structs
+    let _: map<Address, Message> = emptyMap(); // Addresses to some message structs
+
+    // Under the hood, empty maps are nulls, which is why it's important to provide a type ascription.
+    let _: map<Int, Int> = null; // like emptyMap(), but less descriptive and generally discouraged
+
+    // Furthermore, as with many other types, maps are just Cells with a distinct data layout.
+    // Therefore, you can type cast any map back to its underlying Cell type.
+    myMap.asCell();
+
+    // To ignore possible differences in serialization logic of maps,
+    // there is a costly method that is guaranteed to compare correctly.
+    myMap.deepEquals(emptyMap()); // true, and for the explanation of it see the
+                                  // relevant section on the maps page in the Book.
 }
-
-// There are many other allowed kinds of map value types for Int keys
-let _: map<Int, Bool> = emptyMap();    // Int keys to Bool values
-let _: map<Int, Cell> = emptyMap();    // Ints to Cells
-let _: map<Int, Address> = emptyMap(); // Ints to Addresses
-let _: map<Int, Struct> = emptyMap();  // Ints to some structs
-let _: map<Int, Message> = emptyMap(); // Ints to some message structs
-
-// And all the same value types for maps with Address keys are also allowed.
-let _: map<Address, Int> = emptyMap();     // Address keys to Int values
-let _: map<Address, Bool> = emptyMap();    // Addresses to Bools
-let _: map<Address, Cell> = emptyMap();    // Addresses to Cells
-let _: map<Address, Address> = emptyMap(); // Addresses to Addresses
-let _: map<Address, Struct> = emptyMap();  // Addresses to some structs
-let _: map<Address, Message> = emptyMap(); // Addresses to some message structs
-
-// Under the hood, empty maps are nulls, which is why it's important to provide a type ascription.
-let _: map<Int, Int> = null; // like emptyMap(), but less descriptive and generally discouraged
-
-// Furthermore, as with many other types, maps are just Cells with a distinct data layout.
-// Therefore, you can type cast any map back to its underlying Cell type.
-myMap.asCell();
-
-// To ignore possible differences in serialization logic of maps,
-// there is a costly method that is guaranteed to compare correctly.
-myMap.deepEquals(emptyMap()); // true, and for the explanation of it see the
-                              // relevant section on the maps page in the Book.
 
 // Serialization of integer keys or values is possible but only meaningful
 // for maps as fields of structures and maps in the contract's persistent state.
@@ -427,62 +436,64 @@ Read more: [Structs and Messages](/book/structs-and-messages).
 ## Operators
 
 ```tact
-// Let's omit the type ascriptions and let the compiler infer the types.
-let five = 5; // = is an assignment operator,
-              // but it can be a part of the assignment statement only,
-              // because there is no assignment expression
-let four = 4;
+fun showcase() {
+    // Let's omit the type ascriptions and let the compiler infer the types.
+    let five = 5; // = is an assignment operator,
+                  // but it can be a part of the assignment statement only,
+                  // because there is no assignment expression
+    let four = 4;
 
-// Most operators below have augmented assignment versions, like +=, -=, etc.
-// See the "Statements" section below for more info.
+    // Most operators below have augmented assignment versions, like +=, -=, etc.
+    // See the "Statements" section below for more info.
 
-// Common arithmetic operators have predictable precedences.
-five + four - five * four / five % four; // 9
+    // Common arithmetic operators have predictable precedences.
+    five + four - five * four / five % four; // 9
 
-// You can change order of operations with parentheses.
-(five + (four - five)) * four / (five % four); // 16
+    // You can change order of operations with parentheses.
+    (five + (four - five)) * four / (five % four); // 16
 
-// The % is the modulo, not the remainder operator.
-1 % five;  // 1
-1 % -five; // -4
+    // The % is the modulo, not the remainder operator.
+    1 % five;  // 1
+    1 % -five; // -4
 
-// Negation and bitwise NOT.
--five;    // -5: negation of 5
-~five;    // -6: bitwise NOT of 5
--(~five); // 6: bitwise NOT, then negation
-~(-five); // 4: negation, then bitwise NOT
+    // Negation and bitwise NOT.
+    -five;    // -5: negation of 5
+    ~five;    // -6: bitwise NOT of 5
+    -(~five); // 6: bitwise NOT, then negation
+    ~(-five); // 4: negation, then bitwise NOT
 
-// Bitwise shifts.
-five << 2; // 20
-four >> 2; // 1
--four >> 2; // -1, because negation is applied first
-            // and >> performs arithmetic or sign-propagating right shift
+    // Bitwise shifts.
+    five << 2; // 20
+    four >> 2; // 1
+    -four >> 2; // -1, because negation is applied first
+                // and >> performs arithmetic or sign-propagating right shift
 
-// Other common bitwise operators.
-five & four; // 4, due to bitwise AND
-five | four; // 5, due to bitwise OR
-five ^ four; // 1, due to bitwise XOR
+    // Other common bitwise operators.
+    five & four; // 4, due to bitwise AND
+    five | four; // 5, due to bitwise OR
+    five ^ four; // 1, due to bitwise XOR
 
-// Relations.
-five == four;     // false
-five != four;     // true
-five > four;      // true
-five < four;      // false
-five - 1 >= four; // true
-five - 1 <= four; // true
+    // Relations.
+    five == four;     // false
+    five != four;     // true
+    five > four;      // true
+    five < four;      // false
+    five - 1 >= four; // true
+    five - 1 <= four; // true
 
-// Logical checks.
-!(five == 5);       // false, because of the inverse ! operator
-false && five == 5; // false, because && is short-circuited
-true || five != 5;  // true, because || is also short-circuited
+    // Logical checks.
+    !(five == 5);       // false, because of the inverse ! operator
+    false && five == 5; // false, because && is short-circuited
+    true || five != 5;  // true, because || is also short-circuited
 
-// Non-null assertion operator raises
-// a compilation error if the value is null, but does nothing otherwise.
-five!!; // 5
+    // Non-null assertion operator raises
+    // a compilation error if the value is null, but does nothing otherwise.
+    five!!; // 5
 
-// Ternary operator ?: is right-associative.
-false ? 1 : (false ? 2 : 3); // 3
-false ? 1 : true ? 2 : 3;    // 2
+    // Ternary operator ?: is right-associative.
+    false ? 1 : (false ? 2 : 3); // 3
+    false ? 1 : true ? 2 : 3;    // 2
+}
 ```
 
 Read more: [Operators](/book/operators).
@@ -490,76 +501,78 @@ Read more: [Operators](/book/operators).
 ## Expressions
 
 ```tact /StdAddress/
-// Integer literals.
-0; 42; 1_000; 020; // decimal, base 10
-0xABC; 0xf; 0x001; // hexadecimal, base 16
-0o777; 0o00000001; // octal, base 8
-0b111010101111010; // binary, base 2
+fun showcase() {
+    // Integer literals.
+    0; 42; 1_000; 020; // decimal, base 10
+    0xABC; 0xf; 0x001; // hexadecimal, base 16
+    0o777; 0o00000001; // octal, base 8
+    0b111010101111010; // binary, base 2
 
-// Boolean literals.
-true; false;
+    // Boolean literals.
+    true; false;
 
-// String literals.
-"foo"; "1234";
-"\\ \" \n \r \t \v \b \f \x00 through \xFF";
-"\u0000 through \uFFFF and \u{0} through \u{FFFFFF}";
+    // String literals.
+    "foo"; "1234";
+    "\\ \" \n \r \t \v \b \f \x00 through \xFF";
+    "\u0000 through \uFFFF and \u{0} through \u{FFFFFF}";
 
-// `null` and `self` literals.
-null; // not an instance of a primitive type, but
-      // a special value that represents the intentional absence
-      // of any other value
+    // `null` and `self` literals.
+    null; // not an instance of a primitive type, but
+          // a special value that represents the intentional absence
+          // of any other value
 
-self; // used to reference the current contract from within
-      // and the value of the currently extended type inside
-      // the extension function. See the "Functions" section below for more.
+    self; // used to reference the current contract from within
+          // and the value of the currently extended type inside
+          // the extension function. See the "Functions" section below for more.
 
-// Identifiers, with usual naming conventions:
-// They may contain Latin lowercase letters `a-z`,
-// Latin uppercase letters `A-Z`, underscores `_`,
-// and digits 0 - 9, but may not start with a digit.
-// No other symbols are allowed, and Unicode identifiers are prohibited.
-// They also cannot start with __gen or __tact since those prefixes
-// are reserved by the Tact compiler.
-azAZ09_;
+    // Identifiers, with usual naming conventions:
+    // They may contain Latin lowercase letters `a-z`,
+    // Latin uppercase letters `A-Z`, underscores `_`,
+    // and digits 0 - 9, but may not start with a digit.
+    // No other symbols are allowed, and Unicode identifiers are prohibited.
+    // They also cannot start with __gen or __tact since those prefixes
+    // are reserved by the Tact compiler.
+    azAZ09_;
 
-// Instantiations or instance expressions of structs and message structs.
-let addr = BasechainAddress{ hash: null, };
+    // Instantiations or instance expressions of structs and message structs.
+    let addr = BasechainAddress{ hash: null, };
 
-// Field access.
-addr.hash; // null
-self.storageReserve; // 0, a contract-level constant present in all contracts,
-                     // because they implicitly inherit the BaseTrait
-                     // that defines it.
+    // Field access.
+    addr.hash; // null
+    self.storageReserve; // 0, a contract-level constant present in all contracts,
+                         // because they implicitly inherit the BaseTrait
+                         // that defines it.
 
-// Extension function calls (methods).
-self.storageReserve.toString(); // "0"
-self.notify("Cashback".asComment()); // rather expensive,
-                                     // use cashback() instead
-"hey".asComment(); // allowed on literals
+    // Extension function calls (methods).
+    self.storageReserve.toString(); // "0"
+    self.notify("Cashback".asComment()); // rather expensive,
+                                         // use cashback() instead
+    "hey".asComment(); // allowed on literals
 
-// Global function calls.
-now(); // UNIX timestamp in seconds
-cashback(sender());
+    // Global function calls.
+    now(); // UNIX timestamp in seconds
+    cashback(sender());
 
-// Some of the functions can be computed at compile-time given enough data.
-sha256("hey, I'll produce the SHA256 number at compile-time");
+    // Some of the functions can be computed at compile-time given enough data.
+    sha256("hey, I'll produce the SHA256 number at compile-time");
 
-// But there are special, compile-time-only functions.
-let _: Address = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
-let _: Cell = cell("");
-let _: Slice = slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw="); // a Slice with Hello world!
-let _: Slice = rawSlice("000DEADBEEF000"); // CS{Cell{03f...430} bits: 588..644; refs: 1..1}
-let _: Int = ascii("⚡"); // 14850721 or 0xE29AA1, 3 bytes in total
-let _: Int = crc32("000DEADBEEF000"); // 1821923098
-let _: Int = ton("1"); // 10^9 nanoToncoin, which is equivalent to one Toncoin,
-                       // the main currency of TON Blockchain
+    // But there are special, compile-time-only functions.
+    let _: Address = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
+    let _: Cell = cell("");
+    let _: Slice = slice("te6cckEBAQEADgAAGEhlbGxvIHdvcmxkIXgtxbw="); // a Slice with Hello world!
+    let _: Slice = rawSlice("000DEADBEEF000"); // CS{Cell{03f...430} bits: 588..644; refs: 1..1}
+    let _: Int = ascii("⚡"); // 14850721 or 0xE29AA1, 3 bytes in total
+    let _: Int = crc32("000DEADBEEF000"); // 1821923098
+    let _: Int = ton("1"); // 10^9 nanoToncoin, which is equivalent to one Toncoin,
+                           // the main currency of TON Blockchain
 
-// initOf, which obtains the initial code and initial data
-// of the given contract, i.e., it's initial state.
-initOf MyContract(); // StateInit{ code, data }
+    // initOf, which obtains the initial code and initial data
+    // of the given contract, i.e., it's initial state.
+    initOf MyContract(); // StateInit{ code, data }
 
-// codeOf, which only obtains the code.
-codeOf MyContract;
+    // codeOf, which only obtains the code.
+    codeOf MyContract;
+}
 ```
 
 Read more: [Expressions](/book/expressions).
@@ -567,102 +580,104 @@ Read more: [Expressions](/book/expressions).
 ## Statements and control flow {#statements}
 
 ```tact
-// let statement to define new variables, as we've seen above.
-let theAnswer = 42;                // type ascription is optional for everything,
-let m: map<Int, Int> = emptyMap(); // except for optionals and maps
+fun showcase() {
+    // let statement to define new variables, as we've seen above.
+    let theAnswer = 42;                // type ascription is optional for everything,
+    let m: map<Int, Int> = emptyMap(); // except for optionals and maps
 
-// Block statement creates an enclosed scope.
-{
-    // theAnswer is accessible here
-    let privateVal = theAnswer + 27;
-    // but privateVal is no longer visible after this block ends.
+    // Block statement creates an enclosed scope.
+    {
+        // theAnswer is accessible here
+        let privateVal = theAnswer + 27;
+        // but privateVal is no longer visible after this block ends.
+    }
+
+    // Assignment statement allows reassigning variables.
+    theAnswer = -(~theAnswer + 1);
+
+    // Almost every binary operator can form an augmented assignment,
+    // except for relational and equality ones,
+    // and excluding the assignment operator itself.
+    theAnswer += 5; // equivalent to: theAnswer = theAnswer + 5;
+    theAnswer -= 5; // equivalent to: theAnswer = theAnswer - 5;
+    theAnswer *= 5; // and so on, see the Operators page for more.
+
+    // Destructuring assignment is a concise way to
+    // unpack structures into distinct variables.
+    let st = StdAddress{ workchain: 0, address: 0 }; // let statement
+    let StdAddress{ address, .. } = st;              // destructuring statement
+    //              -------  --
+    //              ↑        ↑
+    //              |        ignores all unspecified fields
+    //              Int as uint256,
+    //              a variable out of the second field of StdAddress struct
+    address; // 0
+
+    // You can also define new names for variables
+    // derived from the struct fields.
+    let StdAddress { address: someNewName, .. } = st;
+    someNewName; // 0
+
+    // Conditional branching with if...else.
+    if (false) { // curly brackets (code blocks) are required!
+        // ...then branch
+    } else if (false) {
+        // ...else branch
+    } else {
+        // ...last else
+    }
+
+    // Try and try...catch, with partial rollback.
+    try {
+        throw(777);
+    } catch (exitCode) { // 777
+        // An exit code is an integer that indicates whether the transaction
+        // was successful, and if not — holds the code of the exception that occurred.
+        //
+        // The catch block that can catch run-time (compute phase) exit codes
+        // will roll back almost all changes made in the try block,
+        // except for: codepage changes, gas usage counters, etc.
+        //
+        // See the "Testing and debugging" section below for more info.
+    }
+
+    // Repeat something N times.
+    repeat (2003) {
+        dump("mine"); // greet the Nemo
+    }
+
+    // Loop with a pre-condition: while.
+    while (theAnswer > 42) {
+        theAnswer /= 5;
+    }
+
+    // Loop with a post-condition: do...until.
+    do {
+        // This block will be executed at least once,
+        // because the condition in the until close
+        // is checked after each iteration.
+        m = emptyMap();
+    } until (false);
+
+    // Traverse over all map entries with foreach.
+    m.set(100, 456);
+    m.set(23, 500);
+    foreach (key, value in m) { // or just k, v: naming is up to you
+        // Goes from smaller to bigger keys:
+        // first iteration key = 23
+        // second iteration key = 100
+    }
+
+    // If you don't want key, value, or both, then use a wildcard.
+    let len = 0;
+    foreach (_, _ in m) {
+        len += 1; // don't mind me, just counting the size of the map
+    }
+
+    // Finally, return statement works as usual.
+    return; // implicitly produces nothing (named "void" in the compiler)
+    // return 5; // would explicitly produce 5
 }
-
-// Assignment statement allows reassigning variables.
-theAnswer = -(~theAnswer + 1);
-
-// Almost every binary operator can form an augmented assignment,
-// except for relational and equality ones,
-// and excluding the assignment operator itself.
-theAnswer += 5; // equivalent to: theAnswer = theAnswer + 5;
-theAnswer -= 5; // equivalent to: theAnswer = theAnswer - 5;
-theAnswer *= 5; // and so on, see the Operators page for more.
-
-// Destructuring assignment is a concise way to
-// unpack structures into distinct variables.
-let st = StdAddress{ workchain: 0, address: 0 }; // let statement
-let StdAddress{ address, .. } = st;              // destructuring statement
-//              -------  --
-//              ↑        ↑
-//              |        ignores all unspecified fields
-//              Int as uint256,
-//              a variable out of the second field of StdAddress struct
-address; // 0
-
-// You can also define new names for variables
-// derived from the struct fields.
-let StdAddress { address: someNewName, .. } = st;
-someNewName; // 0
-
-// Conditional branching with if...else.
-if (false) { // curly brackets (code blocks) are required!
-    // ...then branch
-} else if (false) {
-    // ...else branch
-} else {
-    // ...last else
-}
-
-// Try and try...catch, with partial rollback.
-try {
-    throw(777);
-} catch (exitCode) { // 777
-    // An exit code is an integer that indicates whether the transaction
-    // was successful, and if not — holds the code of the exception that occurred.
-    //
-    // The catch block that can catch run-time (compute phase) exit codes
-    // will roll back almost all changes made in the try block,
-    // except for: codepage changes, gas usage counters, etc.
-    //
-    // See the "Test and debug" section below for more info.
-}
-
-// Repeat something N times.
-repeat (2003) {
-    dump("mine"); // greet the Nemo
-}
-
-// Loop with a pre-condition: while.
-while (theAnswer > 42) {
-    theAnswer /= 5;
-}
-
-// Loop with a post-condition: do...until.
-do {
-    // This block will be executed at least once,
-    // because the condition in the until close
-    // is checked after each iteration.
-    m = emptyMap();
-} until (false);
-
-// Traverse over all map entries with foreach.
-m.set(100, 456);
-m.set(23, 500);
-foreach (key, value in m) { // or just k, v: naming is up to you
-    // Goes from smaller to bigger keys:
-    // first iteration key = 23
-    // second iteration key = 100
-}
-
-// If you don't want key, value, or both, then use a wildcard.
-let len = 0;
-foreach (_, _ in m) {
-    len += 1; // don't mind me, just counting the size of the map
-}
-
-// Finally, return statement works as usual.
-return; // implicitly produces nothing (named "void" in the compiler)
-// return 5; // would explicitly produce 5
 ```
 
 Read more: [Statements](/book/statements).
@@ -805,20 +820,93 @@ Read more: [Functions](/book/functions).
 ## Message exchange and communication {#messaging}
 
 ```tact
-// TODO: ... + message sending + reserve + receiving messages + refunds + child-parent interactions (or earlier)
-// (move notes here!)
+// On TON, contracts cannot read each other's states and cannot synchronously
+// call each other's functions. Instead, the actor model of communication is
+// applied — contracts send or receive asynchronous messages that may or may not
+// influence each other's state.
+//
+// Each message is a Cell with a well-defined, complex structure of serialization.
+// However, Tact provides you with simple abstractions to send, receive, and
+// (de)serialize messages to and from various structures.
+//
+// Each message has a so-called message body,
+// which can be represented by message structs with certain opcodes.
+message(123) MyMsg { someVal: Int as uint8 }
 
-// 1. internal
-// 2. external
-// 3. can bounce
-// 4. how to send them
-// 5. the receiving part is in Contracts and traits.
+// Messages can also omit their bodies, or have them be empty,
+// in which case they won't have any opcode and could only be handled
+// by the empty message body receiver or "empty receiver" for short.
+//
+// See the "Contracts and traits" section below for more info.
+
+// Finally, sending messages is not free and requires
+// some forward fees to be paid upfront.
+fun examples() {
+    // To keep some amount of nanoToncoins on the balance,
+    // use nativeReserve() prior to calling message-sending functions:
+    nativeReserve(ton("0.01"), ReserveAtMost);
+
+    // There are many message-sending functions for various cases.
+    // See the links given right after this code block.
+    //
+    // This is most general and simple function to send an internal message:
+    message(MessageParameters{
+        // Recipient address.
+        to: address("UQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p9dz"),
+
+        // Optional message body.
+        body: null, // empty body, no opcodes, nothing
+
+        // Some nanoToncoins to send, possibly none.
+        value: 0, // do not attach any nanoToncoins to the message
+
+        // Configure various modes of sending the message in regards to how
+        // the funds will be charged, how message will be processed, etc.
+        mode: SendPayGasSeparately | SendIgnoreErrors,
+
+        // Whether to allow this message to bounce back to this contract
+        // in case the recipient contract doesn't exist or wasn't able to
+        // process the message.
+        bounce: true, // to handle messages that bounced back, a special bounced
+                      // receiver function is used. See the "Contracts and traits"
+                      // section below for more info.
+    });
+
+    // To do refunds and forward excess values from the incoming message
+    // back to the original sender, use the cashback message-sending function:
+    cashback(sender());
+
+    // Note that all message-sending functions only queue the messages when called.
+    // The actual processing and sending will be done in the next, action phase
+    // of the transaction, where many messages can fail for various reasons.
+    //
+    // For example, if the remaining value from the incoming message was used by
+    // the first function, the subsequent functions that would try to do the same
+    // will fail. The optional SendIgnoreErrors flag seen above hides those failures
+    // and ignores the unprocessed messages. It's not a silver bullet, and you're
+    // advised to always double-check the message flow in your contracts.
+}
+
+// Already bounced messages cannot be sent by any contract and are guaranteed
+// to be received only by the current contract that did sent them as internal
+// messages first.
+//
+// Additionally, external messages cannot be sent by the contract,
+// only processed by it.
+//
+// To receive internal messages (bounced or sent directly) and external messages,
+// provide corresponding receiver functions. See the "Contracts and traits"
+// section below for more info.
+//
+// To organize child-parent contract message exchange, see the "Jetton contracts"
+// section below.
 ```
 
 Read more:
 
 * [Receive messages](/book/receive).
 * [Send messages](/book/send).
+* [Message-sending functions](/book/send#message-sending-functions).
 * [Message mode](/book/message-mode).
 
 ## Contracts and traits
@@ -889,8 +977,9 @@ contract MyContract(
         });
     }
 
-    // For deployments, it is common to use the following receiver,
-    // which handles `null` (empty) message bodies of internal messages.
+    // For deployments, it is common to use the following receiver
+    // often called an "empty receiver", which handles `null` (empty)
+    // message bodies of internal messages.
     receive() {
         // Forward the remaining value in the
         // incoming message (surplus) back to the sender.
@@ -990,6 +1079,64 @@ contract StateActor(
 
 Read more: [Persistent state variables](/book/contracts#variables).
 
+## Testing and debugging {#debug}
+
+```tact
+fun showcase() {
+    // An exit code is an integer that indicates whether the transaction
+    // was successful and, if not — holds the code of the exception that occurred.
+    //
+    // They are the simplest litmus tests for your contracts,
+    // indicating what happened and, if you are lucky, where, and why.
+    try {
+        dump(
+            beginCell()
+            .storeInt(0, 250)
+            .storeInt(0, 250)
+            .storeInt(0, 250)
+            .storeInt(0, 250)
+            .storeUint(0, 24) // oh no, we're trying to store 1024 bits,
+                              // while cells can only store up to 1023 bits
+        );
+    } catch (exitCode) {
+        // exitCode is 8, which means the cell overflow has happened somewhere.
+        // However, there is no clear indication there just from the code alone —
+        // you need to either view transaction logs or know many pitfalls in advance.
+        //
+        // Additionally, runtime computations aren't free and require gas to be spent.
+        // The catch block can revert the state before the try block,
+        // but it cannot revert the gas spent for computations in the try block.
+    }
+
+    // Contrary to this reactive approach, we can be proactive and state
+    // our expectations upfront with require() function.
+    // It will also throw an exit code, but this time we can map that exit code
+    // onto the error message and trace our way back to the this call to require().
+    require(now() >= 1000, "We're too early, now() is less than 1000");
+
+    // Sometimes, its also helpful to log the events as they unfold to view
+    // the data off-chain. Use the emit() message-sending function for this.
+    emit("Doing X, then Y, currently at R".asComment());
+}
+
+// Those tools are handy, but they are not enough.
+// To fully understand what went wrong, you might need to read the TON Virtual
+// Machine (TVM) execution logs when running contracts in the Sandbox.
+// And to ensure that encountered issues won't happen again, do write tests
+// in Tact and TypeScript using the Sandbox + Jest toolkit provided by
+// the Blueprint framework or tact-template.
+```
+
+Read more:
+
+* [Debugging and testing](/book/debug).
+* [Exit codes](/book/exit-codes).
+* [Gas best practices](/book/gas-best-practices).
+* [Security best practices](/book/security-best-practices).
+* [Transaction retracer on retracer.ton.org](https://retracer.ton.org/).
+* [Blueprint framework on GitHub](https://github.com/ton-org/blueprint).
+* [tact-template on GitHub](https://github.com/tact-lang/tact-template).
+
 ## Deployment
 
 ```tact
@@ -1012,21 +1159,6 @@ deploy(DeployParameters{
 ```
 
 Read more: [Deployment](/book/deploy).
-
-## Testing and debugging {#debug}
-
-```tact
-// TODO: require, throw, emit, etc.
-// TODO: more on exit codes
-// TODO: something about gas usage.
-```
-
-Read more:
-
-* [Debugging and testing](/book/debug).
-* [Exit codes](/book/exit-codes).
-* [Gas best practices](/book/gas-best-practices).
-* [Security best practices](/book/security-best-practices).
 
 ## Example contracts {#examples}
 
