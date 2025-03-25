@@ -123,7 +123,7 @@
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "ts-to-zod": "^3.15.0",
-    "typescript": "~5.6.2"
+    "typescript": "~5.8.2"
   },
   "publishConfig": {
     "access": "public",
