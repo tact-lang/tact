@@ -18,6 +18,7 @@ contract A {
 
 contract B {
     parent: Address;
+
     init(parent: Address) {
         self.parent = parent;
     }
@@ -45,6 +46,7 @@ contract B {
 
 contract C {
     parent: Address;
+
     init(parent: Address) {
         self.parent = parent;
     }

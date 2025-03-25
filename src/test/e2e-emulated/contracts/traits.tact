@@ -10,6 +10,7 @@ trait Animal with BaseTrait {
             .concat(self.getSound())
             .toString();
     }
+
     receive("make sound") {
         self.reply(self.say().asComment());
     }
@@ -28,6 +29,7 @@ trait Laika with Dog {
     override fun getType(): String {
         return "Laika";
     }
+
     receive() {
         // deploy
     }

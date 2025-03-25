@@ -9,6 +9,7 @@ trait AbstractTrait {
 
 contract Contract with AbstractTrait {
     value: Int;
+
     init(arg: Bool) {
         self.execute();
         self.value = 1;

@@ -9,6 +9,7 @@ message A {
 
 contract Test {
     init() {}
+
     receive(src: A) {}
 
     bounced(src: Slice) {}

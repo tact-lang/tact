@@ -10,6 +10,7 @@ fun valueOf(a: Int, b: Int): Int {
 
 contract SampleTactContract {
     init() {}
+
     get fun result(): Int {
         return valueOf(1, 10);
     }

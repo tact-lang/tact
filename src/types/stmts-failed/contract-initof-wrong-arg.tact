@@ -10,6 +10,7 @@ struct StateInit {
 
 contract A {
     owner: Int;
+
     init(owner: Int) {
         self.owner = owner;
     }

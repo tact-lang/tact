@@ -9,6 +9,7 @@ struct Point {
 
 contract Main {
     a: Int;
+
     init(a: Int) {
         self.a = a;
     }

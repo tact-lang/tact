@@ -11,6 +11,7 @@ struct A {
 contract Contract {
     value: Int;
     value2: A;
+
     init(arg: Bool) {
         self.value = self.value2.a + 1;
         self.value2 = A { a: 1, b: 2 };

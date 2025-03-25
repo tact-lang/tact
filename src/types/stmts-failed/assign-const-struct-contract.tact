@@ -8,6 +8,7 @@ struct Foo {
 
 contract Test {
     const foo: Foo = Foo { x: 42, y: 43 };
+
     baz: Foo = Foo { x: 42, y: 43 };
 
     fun bar() {

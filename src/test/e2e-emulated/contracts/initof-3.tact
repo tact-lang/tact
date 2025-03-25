@@ -1,5 +1,6 @@
 contract B {
     owner: Address;
+
     init(addr: Address) {
         self.owner = addr;
     }

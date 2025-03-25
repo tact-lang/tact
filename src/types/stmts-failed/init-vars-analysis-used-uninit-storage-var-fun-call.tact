@@ -10,6 +10,7 @@ struct A {
 
 contract Contract {
     value: Int;
+
     init(arg: Bool) {
         self.update();
         self.value = 1;

@@ -16,6 +16,7 @@ struct OptStruct {
 
 contract Opt2 {
     stateInit: StateInit;
+
     init() {
         self.stateInit = initOf Opt3(Struct2 { v: 1 });
     }

@@ -5,6 +5,7 @@ trait BaseTrait {}
 
 contract Contract {
     value: Int;
+
     init(arg: Bool) {
         if (arg) {
             // Nothing

@@ -2,6 +2,7 @@ contract NoDependencies {
     receive() {
         // This contract has no dependencies
     }
+
     get fun getState(): StateInit {
         return initOf NoDependencies();
     }
@@ -17,6 +18,7 @@ contract OneDependency {
     receive() {
         // This contract has one dependency
     }
+
     get fun getDep(): StateInit {
         return initOf NoDependencies();
     }

@@ -5,5 +5,6 @@ trait BaseTrait {}
 
 contract Contract {
     value: Int;
+
     init() {}
 }

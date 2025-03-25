@@ -1,6 +1,7 @@
 contract Test {
     flags: Int as uint256 = 0;
     oneMoreVar: Int = 239;
+
     receive() {
         self.checkImmediateReturn();
         require(self.flags == 42, "checkImmediateReturn() is mis-compiled");

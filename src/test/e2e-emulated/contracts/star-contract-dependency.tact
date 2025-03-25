@@ -1,6 +1,8 @@
 contract Parent {
     parentMark: Int = 2;
+
     receive() {}
+
     get fun getChild0(): StateInit {
         return initOf Child0();
     }
@@ -35,44 +37,55 @@ contract Parent {
 
 contract Child0 {
     childNum: Int as uint32 = 0;
+
     receive() {}
 }
 contract Child1 {
     childNum: Int as uint32 = 0;
+
     receive() {}
 }
 contract Child2 {
     childNum: Int as uint32 = 0;
+
     receive() {}
 }
 contract Child3 {
     childNum: Int as uint32 = 0;
+
     receive() {}
 }
 contract Child4 {
     childNum: Int as uint32 = 0;
+
     receive() {}
 }
 contract Child5 {
     childNum: Int as uint32 = 0;
+
     receive() {}
+
     get fun getParent(): StateInit {
         return initOf Parent();
     }
 }
 contract Child6 {
     childNum: Int as uint32 = 0;
+
     receive() {}
 }
 contract Child7 {
     childNum: Int as uint32 = 0;
+
     receive() {}
 }
 contract Child8 {
     childNum: Int as uint32 = 0;
+
     receive() {}
 }
 contract Child9 {
     childNum: Int as uint32 = 0;
+
     receive() {}
 }
