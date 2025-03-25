@@ -371,7 +371,7 @@ contract SemanticsTester {
     // field of both structs manually.
 
     get fun checkAllContractFieldsAreUnchanged(): Bool {
-        let result = 
+        let result =
             // self.uB is correctly initialized
             self.uB.b1 == false &&
             self.uB.b2.c1 == 0 &&
