@@ -396,9 +396,10 @@ contract StructsTester {
     }
 
     get fun structInitializerTest(): Bool {
-        return self.s1.a == self.s2.a && self.s1.b == self.s2.b &&
-               self.t1.a == self.t2.a &&
-               self.t1.s.a == self.t2.s.a && self.t1.s.b == self.t2.s.b;
+        return
+            self.s1.a == self.s2.a && self.s1.b == self.s2.b &&
+            self.t1.a == self.t2.a &&
+            self.t1.s.a == self.t2.s.a && self.t1.s.b == self.t2.s.b;
     }
 
     get fun toCell1(s: MyStruct1): Cell {
@@ -787,8 +788,9 @@ contract StructsTester {
     }
 
     get fun longContractTest(): Int {
-        return self.x1 + self.x2 + self.x3 + self.x4 + self.x5 + self.x6 + self.x7 + self.x8 + self.x9 + self.x10 +
-               self.x11 + self.x12 + self.x13 + self.x14 + self.x15 + self.x16 + self.x17 + self.x18 + self.x19 + self.x20;
+        return
+            self.x1 + self.x2 + self.x3 + self.x4 + self.x5 + self.x6 + self.x7 + self.x8 + self.x9 + self.x10 +
+            self.x11 + self.x12 + self.x13 + self.x14 + self.x15 + self.x16 + self.x17 + self.x18 + self.x19 + self.x20;
     }
 
     // https://github.com/tact-lang/tact/issues/690
