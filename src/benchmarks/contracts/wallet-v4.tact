@@ -51,6 +51,9 @@ contract WalletV4(
 
         throwUnless(80, myBalance() - context().value >= msg.amount);
 
+        // NOTE: Here and later we use RawMsg with nativeSendMessage because
+        // in v4 wallet implementation message bodies are stored as slices in the same cell
+        // instead of separate cell with ref. Our send built-ins (message, send) doesn't support such serialization
         nativeSendMessage(RawMsg {
                 queryId: msg.queryId,
                 op: 0x706c7567 | 0x80000000,
