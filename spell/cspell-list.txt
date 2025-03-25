@@ -196,6 +196,7 @@ uintptr
 uints
 unboc
 uncons
+undiscussed
 uninit
 Uninit
 unixfs
