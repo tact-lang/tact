@@ -167,7 +167,7 @@ If you can’t find the answer in the [docs](https://docs.tact-lang.org), or you
 
 Contributions are welcome! To help develop the compiler, see the [contributing guide](./dev-docs/CONTRIBUTING.md).
 
-In addition, we invite you to create new educational materials in any form, help foster the [community](#community), and write new Tact contracts. The best creations will be featured in [awesome-tact](https://github.com/tact-lang/awesome-tact) and on social media.
+In addition, we invite you to create new educational materials in any form, help foster the [community](#community), and build new [Tact contracts and projects](#tact-in-production). The best creations will be featured in [awesome-tact](https://github.com/tact-lang/awesome-tact) and on social media.
 
 Good luck on your coding adventure with ⚡ Tact!
 
