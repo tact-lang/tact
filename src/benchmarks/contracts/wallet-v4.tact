@@ -17,7 +17,7 @@ message ExternalRequest {
     payload: Slice as remaining;
 }
 
-struct NativeMsg {
+struct RawMsg {
     bits: Int as uint6 = 0x18;
     receiver: Address;
     amount: Int as coins;
@@ -27,7 +27,7 @@ struct NativeMsg {
     queryId: Int as uint64;
 }
 
-struct NativeMsgWithDeploy {
+struct RawMsgWithDeploy {
     bits: Int as uint6 = 0x18;
     receiver: Address;
     amount: Int as coins;
@@ -51,7 +51,7 @@ contract WalletV4(
 
         throwUnless(80, myBalance() - context().value >= msg.amount);
 
-        nativeSendMessage(NativeMsg {
+        nativeSendMessage(RawMsg {
                 queryId: msg.queryId,
                 op: 0x706c7567 | 0x80000000,
                 extra: msg.extra,
@@ -72,7 +72,7 @@ contract WalletV4(
         self.extensions.del(addr);
 
         if (context().bounceable) {
-            nativeSendMessage(NativeMsg {
+            nativeSendMessage(RawMsg {
                     queryId: msg.queryId,
                     op: 0x64737472 | 0x80000000,
                     extra: null,
@@ -122,7 +122,7 @@ contract WalletV4(
                         
             let addr = newAddress(wc, stateInit.hash());
             // cant use deploy here because of only basechain support
-            nativeSendMessage(NativeMsgWithDeploy {
+            nativeSendMessage(RawMsgWithDeploy {
                     stateInit,
                     body,
                     amount,
@@ -143,7 +143,7 @@ contract WalletV4(
 
             self.extensions.set(addr, true);
 
-            nativeSendMessage(NativeMsg {
+            nativeSendMessage(RawMsg {
                     queryId,
                     op: 0x6e6f7465,
                     extra: null,
@@ -163,7 +163,7 @@ contract WalletV4(
 
             throwUnless(39, self.extensions.del(addr));
 
-            nativeSendMessage(NativeMsg {
+            nativeSendMessage(RawMsg {
                     queryId,
                     op: 0x64737472,
                     extra: null,
