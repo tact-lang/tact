@@ -490,7 +490,7 @@ describe("itemNFT", () => {
                 deployList: beginCell().storeDictDirect(dct).endCell(),
             }
             
-            return await collectionNFT.send(sender.getSender(), {value: toNano("100") * (count + 10n) }, batchMintNFT);;
+            return await collectionNFT.send(sender.getSender(), {value: toNano("100") * (count + 10n) }, batchMintNFT);
         };
 
         const runBatchDeployTest = async (scopeCollectionNFT: SandboxContract<NFTCollection>) => {
