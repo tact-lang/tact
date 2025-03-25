@@ -20,7 +20,7 @@
     },
     {
       "label": "1.6.4 with save contract state on early return",
-      "pr": "https://github.com/tact-lang/tact/pull/TODO",
+      "pr": "https://github.com/tact-lang/tact/pull/2482",
       "gas": {
         "externalTransfer": "4972",
         "addPlugin": "7166",
