@@ -60,7 +60,7 @@ Can be applied to the following list of types and values:
 * [`Bool{:tact}`][bool]
 * [`Address{:tact}`][p]
 * [`Cell{:tact}`][cell], [`Builder{:tact}`][builder], or [`Slice{:tact}`][slice]
-* [`String{:tact}`][p] or [`StringBuilder{:tact}`][p]
+* [`String{:tact}`][p]
 * [`map<K, V>{:tact}`](/book/maps)
 * [Optionals and `null{:tact}` value](/book/optionals)
 * `void`, which is implicitly returned when a function doesn't have a return value defined
@@ -86,9 +86,8 @@ dump(emptyCell());  // Cell
 dump(beginCell());  // Builder
 dump(emptySlice()); // Slice
 
-// String or StringBuilder
-dump("Hello, my name is..."); // String
-dump(beginTailString());      // StringBuilder
+// String
+dump("Hello, my name is...");
 
 // Maps
 let m: map<Int, Int> = emptyMap();

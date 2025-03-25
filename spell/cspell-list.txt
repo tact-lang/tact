@@ -44,6 +44,7 @@ disasm
 divmod
 dnsresolve
 Domínguez
+dstr
 elseifnot
 Eltociear
 Epva
@@ -195,6 +196,7 @@ uintptr
 uints
 unboc
 uncons
+undiscussed
 uninit
 Uninit
 unixfs
