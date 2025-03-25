@@ -203,7 +203,7 @@ describe("itemNFT", () => {
         owner = await blockchain.treasury("owner");
         notOwner = await blockchain.treasury("notOwner");
 
-        defaultContent = Cell.fromBase64("te6ccgEBAQEAAgAAAA=="); // just some content ( doesn't matter )
+        defaultContent = beginCell().endCell(); // just some content ( doesn't matter )
 
         step = writeLog({
             path: join(__dirname, "output", "log.yaml"),
@@ -251,7 +251,7 @@ describe("itemNFT", () => {
                 .storeStringTail("common")
                 .endCell();
             defaultCollectionContent = beginCell()
-                .storeStringTail("collectioncontent")
+                .storeStringTail("collectionContent")
                 .endCell();
 
             defaultNFTContent = beginCell().storeStringTail("1.json").endCell();
