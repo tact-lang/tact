@@ -614,15 +614,11 @@ function writeFallbackReceiver(
         wCtx.append(`slice ${funcIdOf(fbRcv.selector.name)} = ${inMsg};`);
     }
     for (const stmt of fbRcv.ast.statements) {
-        writeStatement(stmt, null, null, wCtx);
+        writeRcvStatement(stmt, fbRcv.effects, contract, wCtx);
     }
-    if (
-        enabledAlwaysSaveContractData(wCtx.ctx) ||
-        contract.init?.kind !== "contract-params" ||
-        fbRcv.effects.has("contractStorageWrite")
-    ) {
-        writeStoreContractVariables(contract, wCtx);
-    }
+    wCtx.append(
+        storeContractVariablesConditionally(fbRcv.effects, contract, wCtx),
+    );
     if (
         fbRcv.selector.kind !== "internal-fallback" &&
         fbRcv.selector.kind !== "external-fallback"
@@ -673,16 +669,41 @@ function writeReceiverBody(
     wCtx: WriterContext,
 ): void {
     for (const stmt of rcv.ast.statements) {
-        writeStatement(stmt, null, null, wCtx);
+        writeRcvStatement(stmt, rcv.effects, contract, wCtx);
     }
-    if (
-        enabledAlwaysSaveContractData(wCtx.ctx) ||
-        contract.init?.kind !== "contract-params" ||
-        rcv.effects.has("contractStorageWrite")
-    ) {
-        writeStoreContractVariables(contract, wCtx);
-    }
+    wCtx.append(
+        storeContractVariablesConditionally(rcv.effects, contract, wCtx),
+    );
     wCtx.append("return ();");
+}
+
+function storeContractVariablesConditionally(
+    rcvEffects: ReadonlySet<Effect>,
+    contract: TypeDescription,
+    wCtx: WriterContext,
+): string {
+    return enabledAlwaysSaveContractData(wCtx.ctx) ||
+        contract.init?.kind !== "contract-params" ||
+        rcvEffects.has("contractStorageWrite")
+        ? writeStoreContractVariables(contract, wCtx)
+        : "";
+}
+
+function writeRcvStatement(
+    stmt: Ast.Statement,
+    rcvEffects: ReadonlySet<Effect>,
+    contract: TypeDescription,
+    wCtx: WriterContext,
+): void {
+    // XXX: if this is the last return statement in the receiver, the user will get contract storage updated twice,
+    // wasting gas, but this is a rare case and we don't want to complicate the code for this,
+    // nobody should write code like this, as it is not idiomatic
+    const returns = storeContractVariablesConditionally(
+        rcvEffects,
+        contract,
+        wCtx,
+    );
+    writeStatement(stmt, null, returns, wCtx);
 }
 
 function messageOpcode(n: Ast.Number): string {
@@ -700,16 +721,13 @@ function messageOpcode(n: Ast.Number): string {
 function writeStoreContractVariables(
     contract: TypeDescription,
     wCtx: WriterContext,
-): void {
+): string {
     const contractVariables = resolveFuncTypeFromAbiUnpack(
         "$self",
         getAllocation(wCtx.ctx, contract.name).ops,
         wCtx,
     );
-    wCtx.append(`;; Persist state`);
-    wCtx.append(
-        `${ops.contractStore(contract.name, wCtx)}(${contractVariables});`,
-    );
+    return `${ops.contractStore(contract.name, wCtx)}(${contractVariables});`;
 }
 
 export function commentPseudoOpcode(
