@@ -5,7 +5,10 @@ message(0x2D) Hexadecimal {}
 
 contract Example {
     receive(msg: Binary) {}
+
     receive(msg: Octal) {}
+
     receive(msg: Decimal) {}
+
     receive(msg: Hexadecimal) {}
 }

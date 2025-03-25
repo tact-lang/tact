@@ -3,5 +3,6 @@ message(1 + 0) Msg2 {}
 
 contract Test {
     receive(msg: Msg1) {}
+
     receive(msg: Msg2) {}
 }

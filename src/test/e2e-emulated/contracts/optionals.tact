@@ -72,18 +72,23 @@ contract ContractWithOptionals {
     get fun isNotNullA(): Bool {
         return self.a != null;
     }
+
     get fun isNotNullB(): Bool {
         return self.b != null;
     }
+
     get fun isNotNullC(): Bool {
         return self.c != null;
     }
+
     get fun isNotNullD(): Bool {
         return self.d != null;
     }
+
     get fun isNotNullE(): Bool {
         return self.e != null;
     }
+
     get fun isNotNullF(): Bool {
         return self.f != null;
     }

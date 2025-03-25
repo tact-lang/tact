@@ -13,10 +13,12 @@ contract Test {
     fun checkImmediateReturn(): Bool {
         return self.check();
     }
+
     fun checkReturnViaLocalVar(): Bool {
         let foo = self.check();
         return foo;
     }
+
     fun check(): Bool {
         self.flags = 42;
         return true;

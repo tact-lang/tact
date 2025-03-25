@@ -1,5 +1,6 @@
 trait Animal with BaseTrait {
     abstract fun getType(): String;
+
     abstract fun getSound(): String;
 
     get fun say(): String {
@@ -20,6 +21,7 @@ trait Dog with Animal {
     override fun getType(): String {
         return "Dog";
     }
+
     override fun getSound(): String {
         return "Woof";
     }

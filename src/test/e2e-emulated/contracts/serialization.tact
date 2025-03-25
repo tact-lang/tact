@@ -71,27 +71,35 @@ contract SerializationTester {
     get fun getA(): Int {
         return self.a;
     }
+
     get fun getB(): Int {
         return self.b;
     }
+
     get fun getC(): Int {
         return self.c;
     }
+
     get fun getD(): Int {
         return self.d;
     }
+
     get fun getE(): Int {
         return self.e;
     }
+
     get fun getF(): Int {
         return self.f;
     }
+
     get fun getG(): Int {
         return self.g;
     }
+
     get fun getH(): Int {
         return self.h;
     }
+
     get fun getI(): Int {
         return self.i;
     }

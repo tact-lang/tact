@@ -40,18 +40,23 @@ contract SerializationTester3 {
     get fun getA(): Int {
         return self.a;
     }
+
     get fun getB(): Bool {
         return self.b;
     }
+
     get fun getC(): Cell {
         return self.c;
     }
+
     get fun getD(): Slice {
         return self.d;
     }
+
     get fun getE(): Builder {
         return self.e;
     }
+
     get fun getF(): String {
         return self.f;
     }
