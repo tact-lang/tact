@@ -316,8 +316,8 @@ contract SemanticsTester {
                                   // Nevertheless, it is not possible to check if it is a partially initialized
                                   // struct because the compiler will not allow referencing self.uB in an expression
                                   // until self.uB is actually assigned.
-        self.uB.b2 = SC {c1: 40};
-        self.uB = SB {b1: false, b2: SC {c1: 0}, b3: 11};
+        self.uB.b2 = SC { c1: 40 };
+        self.uB = SB { b1: false, b2: SC { c1: 0 }, b3: 11 };
         self.uB.b3 = 14;          // Getter structInitCheck later checks that init respects 
                                   // this last assignment
 
