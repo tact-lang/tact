@@ -1,0 +1,24 @@
+{
+  "results": [
+    {
+      "label": "FunC",
+      "size": {
+        "collection cells": "36",
+        "collection bits": "7640",
+        "item cells": "16",
+        "item bits": "4044"
+      },
+      "pr": "1111"
+    },
+    {
+      "label": "Tact",
+      "size": {
+        "collection cells": "44",
+        "collection bits": "25642",
+        "item cells": "12",
+        "item bits": "7330"
+      },
+      "pr": "1111"
+    }
+  ]
+}

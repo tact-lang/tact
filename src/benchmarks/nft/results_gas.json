@@ -1,0 +1,24 @@
+{
+  "results": [
+    {
+      "label": "FunC",
+      "gas": {
+        "transfer": "7159",
+        "get static data": "4560",
+        "deploy nft": "10469",
+        "batch deploy nft": "1049281"
+      },
+      "pr": "1111"
+    },
+    {
+      "label": "Tact",
+      "gas": {
+        "transfer": "8412",
+        "get static data": "6288",
+        "deploy nft": "11881",
+        "batch deploy nft": "719416"
+      },
+      "pr": "1111"
+    }
+  ]
+}
