@@ -424,7 +424,7 @@ contract SemanticsTester {
         // The map self.mC has a single entry 100 -> MapWrapper {m: 10 -> self.sA}.
         foreach (k1, v1 in self.mC) {
             foreach (k2, v2 in v1.m) {
-                result &&= 
+                result &&=
                     k1 == 100 &&
                     k2 == 10 &&
 
@@ -446,7 +446,7 @@ contract SemanticsTester {
         let s = self.sA;
 
         // The fields of s and self.sA are equal, and the values did not change
-        return 
+        return
             s.a1 == self.sA.a1 &&
             s.a2.b1 == self.sA.a2.b1 &&
             s.a2.b2.c1 == self.sA.a2.b2.c1 &&
@@ -477,7 +477,7 @@ contract SemanticsTester {
         // self.sA remains unchanged,
         // the copy t inherits the value b2.c1 = 70 modified by s,
         // the copy s does not change its b3 field.
-        return 
+        return
             self.checkAllContractFieldsAreUnchanged() &&
             s.a1 == 50 &&
             s.a2.b1 == true &&
@@ -493,7 +493,7 @@ contract SemanticsTester {
 
         let s = getNewStruct(self.sA);
 
-        return 
+        return
             self.checkAllContractFieldsAreUnchanged() &&
             s.a1 == 0 &&
             s.a2.b1 == false &&
@@ -506,7 +506,7 @@ contract SemanticsTester {
 
         let s = copyAndModifyStruct(self.sA);
 
-        return 
+        return
             self.checkAllContractFieldsAreUnchanged() &&
             s.a1 == 120 &&
             s.a2.b1 == true &&
@@ -521,7 +521,7 @@ contract SemanticsTester {
 
         s.reassignStruct();
 
-        return 
+        return
             self.checkAllContractFieldsAreUnchanged() &&
             s.a1 == 0 &&
             s.a2.b1 == false &&
@@ -536,7 +536,7 @@ contract SemanticsTester {
 
         s.changeSomeFields();
 
-        return 
+        return
             self.checkAllContractFieldsAreUnchanged() &&
             s.a1 == 120 &&
             s.a2.b1 == true &&
@@ -568,7 +568,7 @@ contract SemanticsTester {
         // Note that the only place where s is reassigned is after reflectStruct executes.
         // This means that the above expression does NOT change s.
 
-        result &&= 
+        result &&=
             self.checkAllContractFieldsAreUnchanged() &&
             s.a1 == 20 &&
             s.a2.b1 == true &&
@@ -588,7 +588,7 @@ contract SemanticsTester {
         // is not possible because changeSomeFields has void return type.
 
         // s is now changed by changeSomeFields, and the rest remains the same
-        result &&= 
+        result &&=
             self.checkAllContractFieldsAreUnchanged() &&
             s.a1 == 120 &&
             s.a2.b1 == true &&
@@ -622,7 +622,7 @@ contract SemanticsTester {
         z.incrementIntFields();
         z.flipBooleanFields();
 
-        return 
+        return
             self.checkAllContractFieldsAreUnchanged() &&
             s.a1 == 20 &&
             s.a2.b1 == true &&
@@ -652,7 +652,7 @@ contract SemanticsTester {
         z.flipBooleanFields();
         z.incrementIntFields();
 
-        return 
+        return
             self.checkAllContractFieldsAreUnchanged() &&
             s.a1 == 20 &&
             s.a2.b1 == true &&
@@ -682,7 +682,7 @@ contract SemanticsTester {
         z.reflectStruct();
         z.flipBooleanFields();
 
-        return 
+        return
             self.checkAllContractFieldsAreUnchanged() &&
             s.a1 == 21 &&
             s.a2.b1 == true &&
@@ -712,7 +712,7 @@ contract SemanticsTester {
         z.flipBooleanFields();
         z.reflectStruct();
 
-        return 
+        return
             self.checkAllContractFieldsAreUnchanged() &&
             s.a1 == 21 &&
             s.a2.b1 == true &&
@@ -742,7 +742,7 @@ contract SemanticsTester {
         z.incrementIntFields();
         z.reflectStruct();
 
-        return 
+        return
             self.checkAllContractFieldsAreUnchanged() &&
             s.a1 == 20 &&
             s.a2.b1 == false &&
@@ -772,7 +772,7 @@ contract SemanticsTester {
         z.reflectStruct();
         z.incrementIntFields();
 
-        return 
+        return
             self.checkAllContractFieldsAreUnchanged() &&
             s.a1 == 20 &&
             s.a2.b1 == false &&
@@ -798,7 +798,7 @@ contract SemanticsTester {
         let s = self.mA;
 
         // The entries of s and self.mA are equal, and the values did not change
-        let result = 
+        let result =
             self.mA.get(1)!!.a1 == s.get(1)!!.a1 &&
             self.mA.get(1)!!.a2.b1 == s.get(1)!!.a2.b1 &&
             self.mA.get(1)!!.a2.b2.c1 == s.get(1)!!.a2.b2.c1 &&
@@ -853,7 +853,7 @@ contract SemanticsTester {
 
         // self.mA remains unchanged (including the rest of fields)
         // The rest of the entries in s remain identical to self.mA.
-        let result = 
+        let result =
             self.checkAllContractFieldsAreUnchanged() &&
 
             s.get(1)!!.a1 == 0 &&
@@ -884,7 +884,7 @@ contract SemanticsTester {
 
         let s = getNewMap(self.mA);
 
-        let result = 
+        let result =
             self.checkAllContractFieldsAreUnchanged() &&
             s.get(1)!!.a1 == 0 &&
             s.get(1)!!.a2.b1 == false &&
@@ -904,7 +904,7 @@ contract SemanticsTester {
         // In the copy: it will delete entries 2 and 3 and modify entry 1.
         let s = copyAndModifyMap(self.mA);
 
-        let result = 
+        let result =
             self.checkAllContractFieldsAreUnchanged() &&
             s.get(1)!!.a1 == 20 &&
             s.get(1)!!.a2.b1 == true &&
@@ -926,7 +926,7 @@ contract SemanticsTester {
 
         s.reassignMap();
 
-        let result = 
+        let result =
             self.checkAllContractFieldsAreUnchanged() &&
             s.m.get(1)!!.a1 == 0 &&
             s.m.get(1)!!.a2.b1 == false &&
@@ -948,7 +948,7 @@ contract SemanticsTester {
 
         s.changeSomeEntries();
 
-        let result = 
+        let result =
             self.checkAllContractFieldsAreUnchanged() &&
             s.m.get(1)!!.a1 == 20 &&
             s.m.get(1)!!.a2.b1 == true &&
@@ -1122,7 +1122,7 @@ contract SemanticsTester {
 
         // Check that s does change
 
-        let result = 
+        let result =
             s.a1 == 20 &&
             s.a2.b1 == true &&
             s.a2.b2.c1 == 1000 &&
@@ -1131,7 +1131,7 @@ contract SemanticsTester {
         // But m does not change
         foreach (k1, v1 in m) {
             foreach (k2, v2 in v1.m) {
-                result &&= 
+                result &&=
                     k1 == 100 &&
                     k2 == 10 &&
 
@@ -1177,7 +1177,7 @@ contract SemanticsTester {
         // Indeed, wrappedNested1 and wrappedNested2 are equal
 
         foreach (k2, v2 in wrappedNested1.m) {
-            result &&= 
+            result &&=
                 k2 == 10 &&
 
                 v2.a1 == 20 &&
@@ -1187,7 +1187,7 @@ contract SemanticsTester {
         }
 
         foreach (k2, v2 in wrappedNested2.m) {
-            result &&= 
+            result &&=
                 k2 == 10 &&
 
                 v2.a1 == 20 &&
@@ -1203,7 +1203,7 @@ contract SemanticsTester {
 
         foreach (k1, v1 in m) {
             foreach (k2, v2 in v1.m) {
-                result &&= 
+                result &&=
                     k1 == 100 &&
                     k2 == 10 &&
 
@@ -1247,7 +1247,7 @@ contract SemanticsTester {
         // For example, getter checkAllContractFieldsAreUnchanged is called both on self
         // and c below, which implies that both self and c have identical state so far.
 
-        let result = 
+        let result =
             self.checkAllContractFieldsAreUnchanged() &&
 
             // Note that this will check that the state of the copy is identical to self.
@@ -1266,7 +1266,7 @@ contract SemanticsTester {
         c.mA.del(1);
         c.mA.del(2);
 
-        let result = 
+        let result =
             self.checkAllContractFieldsAreUnchanged() &&
 
             c.uB.b1 == false &&
@@ -1308,7 +1308,7 @@ contract SemanticsTester {
 
         let c = copyAndModifyContract(self);
 
-        let result = 
+        let result =
             self.checkAllContractFieldsAreUnchanged() &&
 
             c.uB.b1 == true &&
@@ -1366,7 +1366,7 @@ contract SemanticsTester {
            function: see issue #818
         */
 
-        let result = 
+        let result =
             self.checkAllContractFieldsAreUnchanged() &&
 
             c.uB.b1 == true &&
@@ -1417,7 +1417,7 @@ contract SemanticsTester {
     // and that the rest of fields remained unchanged.
 
     fun checkFieldsEqualTo(sB: SB, n: Int): Bool {
-        let result = 
+        let result =
             self.uB.b1 == sB.b1 &&
             self.uB.b2.c1 == sB.b2.c1 &&
             self.uB.b3 == sB.b3 &&
@@ -1458,7 +1458,7 @@ contract SemanticsTester {
         // The map self.mC has a single entry 100 -> MapWrapper {m: 10 -> original self.sA}.
         foreach (k1, v1 in self.mC) {
             foreach (k2, v2 in v1.m) {
-                result &&= 
+                result &&=
                     k1 == 100 &&
                     k2 == 10 &&
 
@@ -1480,7 +1480,7 @@ contract SemanticsTester {
 
         c.changeSomeContractFields();
 
-        let result = 
+        let result =
             self.checkAllContractFieldsAreUnchanged() &&
 
             // This line tests that method calls on copies actually use the state of the copy.
@@ -1534,7 +1534,7 @@ contract SemanticsTester {
         // c.changeSomeContractFields();
 
         // Nothing changed
-        result &&= 
+        result &&=
             self.checkAllContractFieldsAreUnchanged() &&
             c.checkAllContractFieldsAreUnchanged();
 
@@ -1546,7 +1546,7 @@ contract SemanticsTester {
         c = c.reflectContract().incrementIntFieldsInUB().flipBooleanFieldsInUB();
 
         // c is now changed, the rest remains the same.
-        result &&= 
+        result &&=
             self.checkAllContractFieldsAreUnchanged() &&
             c.checkFieldsEqualTo(SB { b1: true, b2: SC { c1: 1 }, b3: 15 }, 5);
 
