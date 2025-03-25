@@ -32,7 +32,7 @@ const SendRemainingBalance: Int = 128;
 const SendOnlyEstimateFee: Int = 1024;
 
 /// **Deprecated** since Tact 1.6.5.
-/// 
+///
 /// Pay forward fees separately from the message value.
 ///
 /// See: https://docs.tact-lang.org/book/message-mode#optional-flags
