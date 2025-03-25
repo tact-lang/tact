@@ -59,7 +59,7 @@ asm extends mutates fun checkAndRemoveSetSignAllowedPrefix(self: Slice): Bool {x
 // as example
 asm fun typeCast(asd: InternalSignedRequest): ExternalSignedRequest {}
 
-contract Wallet(
+contract WalletV5(
     isSignatureAllowed: Bool,
     seqno: Int as uint32,
     walletId: Int as int32,
