@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Shvetc Andrei](https://github.com/Shvandre)
 - [Daniil Sedov](https://github.com/Gusarich)
 - [Novus Nota](https://github.com/novusnota)
+- [Anton Trunov](https://github.com/anton-trunov)
 
 ## [1.6.4] - 2025-03-18
 
