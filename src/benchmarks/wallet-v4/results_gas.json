@@ -1,0 +1,22 @@
+{
+  "results": [
+    {
+      "label": "FunC",
+      "gas": {
+        "externalTransfer": "3308",
+        "addPlugin": "5908",
+        "pluginTransfer": "4785"
+      },
+      "pr": "https://github.com/ton-blockchain/wallet-contract-v5"
+    },
+    {
+      "label": "1.6.4 initial",
+      "pr": "https://github.com/tact-lang/tact/pull/2396",
+      "gas": {
+        "externalTransfer": "4172",
+        "addPlugin": "7184",
+        "pluginTransfer": "4023"
+      }
+    }
+  ]
+}
