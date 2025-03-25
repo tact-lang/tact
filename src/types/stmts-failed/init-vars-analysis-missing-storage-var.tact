@@ -1,13 +1,9 @@
 primitive Int;
 primitive Cell;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 contract Contract {
     value: Int;
-    init() {
-
-    }
+    init() {}
 }

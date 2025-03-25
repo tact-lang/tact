@@ -1,8 +1,11 @@
 primitive Int;
 primitive Bool;
-trait BaseTrait { }
+trait BaseTrait {}
 
-struct Pair { x: Int; y: Int; }
+struct Pair {
+    x: Int;
+    y: Int;
+}
 
 extends mutates fun inc(self: Int) { self += 1 }
 
@@ -14,7 +17,9 @@ asm fun setStorage(): StorageAnalysis { 41 PUSHINT 43 PUSHINT }
 
 asm fun throw(code: Int) { THROWARG }
 
-fun throwUnless(code: Int, condition: Bool) { if (condition) { throw(code) } }   
+fun throwUnless(code: Int, condition: Bool) {
+    if (condition) { throw(code) }
+}
 
 extends mutates fun modifyingExternalContractMethod(self: StorageAnalysis) {
     self.map1.del(42);
@@ -41,7 +46,7 @@ contract StorageAnalysis {
     pair: Pair = Pair { x: 0, y: 0 };
     map1: map<Int, Int>;
 
-    receive() { } // Deploy
+    receive() {} // Deploy
 
     receive("direct regular assignment into storage var") {
         self.x1 = 42;
@@ -95,27 +100,19 @@ contract StorageAnalysis {
         if (true) { (self.x1 + self.pair.y).inc() }
     }
 
-    receive("rewrite in a contract method") {
-        self.modifyingContractMethod()
-    }
+    receive("rewrite in a contract method") { self.modifyingContractMethod() }
 
     fun modifyingContractMethod() { self.x1 = 42 }
 
-    receive("transitively modifying contract method") {
-        self.transitivelyModifyingContractMethod()
-    }
+    receive("transitively modifying contract method") { self.transitivelyModifyingContractMethod() }
 
     fun transitivelyModifyingContractMethod() { self.modifyingContractMethod() }
 
-    receive("read and modify in a contract method") {
-        self.readAndModify()
-    }
+    receive("read and modify in a contract method") { self.readAndModify() }
 
     fun readAndModify() { self.x1 += 1 }
 
-    receive("non-modifying contract method") {
-        self.nonModifyingContractMethod()
-    }
+    receive("non-modifying contract method") { self.nonModifyingContractMethod() }
 
     fun nonModifyingContractMethod() { throwUnless(710, self.x1 != 42) }
 
@@ -172,6 +169,7 @@ contract StorageAnalysis {
     }
 
     fun evenNonModifying(x: Int): Bool { return (x == 0) || self.oddNonModifying(x - 1) }
+
     fun oddNonModifying(x: Int): Bool { return (x == 1) || self.evenNonModifying(x - 1) }
 
     receive("modifying mutually recursive contract methods") {
@@ -179,7 +177,11 @@ contract StorageAnalysis {
     }
 
     fun evenModifying(x: Int): Bool { return (x == 0) || self.oddModifying(x - 1) }
-    fun oddModifying(x: Int): Bool { self.x1 = 41; return (x == 1) || self.evenModifying(x - 1) }
+
+    fun oddModifying(x: Int): Bool {
+        self.x1 = 41;
+        return (x == 1) || self.evenModifying(x - 1);
+    }
 
     receive("modifying getter as a contract method") {
         self.modifyingGetter();
@@ -201,7 +203,7 @@ contract StorageAnalysis {
     receive("complex control flow with deeply nested contract modification") {
         let x = blockConstEval(42);
         while (x > 0) {
-            repeat(x) {
+            repeat (x) {
                 self.complexControlFlow(x);
             }
         }

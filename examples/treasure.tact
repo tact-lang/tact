@@ -7,7 +7,7 @@ message Withdraw {
 
 contract Treasure with OwnableTransferable {
     owner: Address;
-    
+
     init(owner: Address) {
         self.owner = owner;
     }
@@ -17,11 +17,11 @@ contract Treasure with OwnableTransferable {
         self.requireOwner();
 
         // Perform withdraw
-        send(SendParameters{
+        send(SendParameters {
             value: amount,
             to: self.owner,
             mode,
-            body: emptyCell()
+            body: emptyCell(),
         });
     }
 

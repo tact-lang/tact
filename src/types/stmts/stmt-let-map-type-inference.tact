@@ -1,8 +1,6 @@
 primitive Int;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 fun test() {
     let a: map<Int, Int as uint32> = emptyMap();

@@ -2,7 +2,7 @@ primitive Bool;
 primitive Int;
 primitive String;
 
-trait BaseTrait { }
+trait BaseTrait {}
 
 extends fun foo(self: Int?): Bool {
     if (self == null) { return false }

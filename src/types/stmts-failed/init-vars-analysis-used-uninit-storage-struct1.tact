@@ -1,9 +1,7 @@
 primitive Int;
 primitive Bool;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 struct A {
     a: Int;
@@ -15,6 +13,6 @@ contract Contract {
     value2: A;
     init(arg: Bool) {
         self.value = self.value2.a + 1;
-        self.value2 = A{ a: 1, b: 2 };
+        self.value2 = A { a: 1, b: 2 };
     }
 }

@@ -1,17 +1,13 @@
 primitive Int;
 primitive Bool;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 contract Main {
-
     v: Int = 0;
 
-    init() {
+    init() {}
 
-    }
     fun f1(a: Int, b: Int): Int {
         return a + b;
     }

@@ -198,7 +198,7 @@ asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#sliceloadaddress
 ///
-asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
+asm(-> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 
 /// Extension mutation function for the `Slice` type. Available since Tact 1.6.2.
 ///
@@ -263,7 +263,7 @@ struct BasechainAddress {
 /// ```
 ///
 inline fun emptyBasechainAddress(): BasechainAddress {
-    return BasechainAddress { hash: null }
+    return BasechainAddress { hash: null };
 }
 
 /// Global function. Available since Tact 1.6.0.
@@ -277,7 +277,7 @@ inline fun emptyBasechainAddress(): BasechainAddress {
 /// ```
 ///
 inline fun newBasechainAddress(hash: Int): BasechainAddress {
-    return BasechainAddress { hash }
+    return BasechainAddress { hash };
 }
 
 /// Global function. Available since Tact 1.6.0.

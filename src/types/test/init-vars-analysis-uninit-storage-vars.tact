@@ -1,23 +1,15 @@
 primitive Int;
 primitive Bool;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 contract HelloWorld {
     a: Int;
     b: Bool;
 
-    init() {
-        
-    }
+    init() {}
 
-    fun hello() {
-        
-    }
+    fun hello() {}
 
-    fun hello2() {
-        
-    }
+    fun hello2() {}
 }

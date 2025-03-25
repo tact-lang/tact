@@ -1,1 +1,3 @@
-contract Test { const foo: Int = 42 }
+contract Test {
+    const foo: Int = 42;
+}

@@ -1,1 +1,3 @@
-contract Test { m: map<Int, Int> }
+contract Test {
+    m: map<Int, Int>;
+}

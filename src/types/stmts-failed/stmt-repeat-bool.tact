@@ -1,12 +1,10 @@
 primitive Int;
 primitive Bool;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 fun isZero(x: Int): Bool {
-    repeat(true) {
+    repeat (true) {
         x = x + 1;
     }
     return true;

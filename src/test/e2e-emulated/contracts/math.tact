@@ -1,9 +1,7 @@
 import "@stdlib/deploy";
 
 contract MathTester with Deployable {
-    init() {
-
-    }
+    init() {}
 
     get fun add(a: Int, b: Int): Int {
         return a + b;
@@ -44,7 +42,7 @@ contract MathTester with Deployable {
     get fun xor(a: Int, b: Int): Int {
         return a ^ b;
     }
-    
+
     get fun bitwise_not(a: Int): Int {
         return ~a;
     }

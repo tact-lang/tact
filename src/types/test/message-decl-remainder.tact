@@ -1,4 +1,4 @@
-trait BaseTrait { }
+trait BaseTrait {}
 
 primitive Int;
 primitive Cell;

@@ -12,6 +12,5 @@ contract Test {
 
     receive() {
         // deploy
-    } 
+    }
 }
-

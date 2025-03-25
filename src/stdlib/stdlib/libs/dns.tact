@@ -3,9 +3,9 @@ import "./dns.fc";
 /// A struct that contains the result of DNS resolution.
 struct DNSResolveResult {
     /// The prefix of the DNS resolution.
-    prefix: Int; 
+    prefix: Int;
     /// The record of the DNS resolution.
-    record: Cell?; 
+    record: Cell?;
 }
 
 /// Converts a DNS string to a `Slice` or `null` if conversion is impossible.
@@ -13,9 +13,9 @@ struct DNSResolveResult {
 native dnsStringToInternal(str: String): Slice?;
 
 /// Normalizes the internal DNS representation of the `Slice`.
-/// The provided `Slice` must not have any references; otherwise, an exception with 
+/// The provided `Slice` must not have any references; otherwise, an exception with
 /// [exit code 134] will be thrown: `Invalid argument`.
-/// 
+///
 /// [exit code 134]: https://docs.tact-lang.org/book/exit-codes#134
 @name(dns_internal_normalize)
 native dnsInternalNormalize(src: Slice): Slice;
@@ -63,22 +63,22 @@ fun dnsResolveWallet(address: Address): Cell {
 }
 
 /// Provides two helper functions for DNS resolution:
-/// 
+///
 /// 1. A getter function `dnsresolve()`, which corresponds to its FunC variant.
 /// 2. A virtual function `doResolveDNS()`, which creates a struct `DNSResolveResult` from subdomain `Slice` bits.
-/// 
+///
 /// ```tact
 /// import "@stdlib/dns";
-/// 
+///
 /// contract ExampleContract with DNSResolver {
 ///     // Now, this contract has:
 ///     // 1. A dnsresolve getter function.
 ///     // 2. A doResolveDNS virtual function.
 /// }
 /// ```
-/// 
+///
 /// See: https://docs.tact-lang.org/ref/stdlib-dns#dnsresolver
-/// 
+///
 trait DNSResolver {
     /// Creates a struct `DNSResolveResult` from subdomain `Slice` bits.
     get fun dnsresolve(subdomain: Slice, category: Int): DNSResolveResult {

@@ -6,8 +6,8 @@ struct Operation {
 
 message Execute {
     operation: Operation;
-    signature1: Slice; 
-    signature2: Slice; 
+    signature1: Slice;
+    signature2: Slice;
     signature3: Slice;
 }
 
@@ -36,7 +36,7 @@ contract MultisigContract {
         let ok1: Bool = checkSignature(operationHash, msg.signature1, self.user1Key);
         let ok2: Bool = checkSignature(operationHash, msg.signature2, self.user2Key);
         let ok3: Bool = checkSignature(operationHash, msg.signature3, self.user3Key);
-        
+
         require(msg.operation.seqno == self.seqno, "Invalid seqno");
         require(ok1 && ok2 && ok3, "Invalid signature");
 
@@ -48,7 +48,7 @@ contract MultisigContract {
     }
 
     fun execute(op: Operation) {
-        send(SendParameters{ to: op.target, value: op.amount });
+        send(SendParameters { to: op.target, value: op.amount });
     }
 
     get fun key1(): Int {

@@ -8,13 +8,12 @@ contract NoDependencies {
 }
 
 contract OneDependency {
-
     param: Int as uint32; // To make two different contracts
 
     init(initParam: Int) {
         self.param = initParam;
     }
-    
+
     receive() {
         // This contract has one dependency
     }
@@ -28,9 +27,8 @@ contract OneDependency {
 }
 
 contract TwoDependencies {
-
     param: Int as coins = 0; // This one is different from OneDependency
-    
+
     receive() {
         // This contract has two dependencies
     }

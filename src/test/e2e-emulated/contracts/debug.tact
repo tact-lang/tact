@@ -1,10 +1,7 @@
 import "@stdlib/deploy";
 
 contract Debug with Deployable {
-
-    init() {
-        
-    }
+    init() {}
 
     receive("Debug") {
         dumpStack();

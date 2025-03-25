@@ -11,13 +11,12 @@ message Replace {
 }
 
 contract Maps with Deployable {
-
     // maps with Int as key
     mi1: map<Int, TokenInfo>;
     mi2: map<Int, Bool>;
     mi3: map<Int, Int>;
     mi4: map<Int, Address>;
-    
+
     // maps with Address as key
     ma1: map<Address, TokenInfo>;
     ma2: map<Address, Bool>;
@@ -31,12 +30,12 @@ contract Maps with Deployable {
 
     receive("set keys") {
         // keys are Int
-        self.mi1.set(17, TokenInfo{ticker: "SHIB", decimals: 9});
+        self.mi1.set(17, TokenInfo { ticker: "SHIB", decimals: 9 });
         self.mi2.set(0x9377433ff21832, true);
-        self.mi3.set(pow(2,240), pow(2,230));
+        self.mi3.set(pow(2, 240), pow(2, 230));
         self.mi4.set(-900, address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"));
         // keys are Address
-        self.ma1.set(address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"), TokenInfo{ticker: "DOGE", decimals: 18});
+        self.ma1.set(address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"), TokenInfo { ticker: "DOGE", decimals: 18 });
         self.ma2.set(address("UQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqEBI"), true);
         self.ma3.set(address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"), ton("1.23"));
         self.ma4.set(address("UQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqEBI"), myAddress());
@@ -46,7 +45,7 @@ contract Maps with Deployable {
         // keys are Int
         self.mi1.set(17, null);
         self.mi2.set(0x9377433ff21832, null);
-        self.mi3.set(pow(2,240), null);
+        self.mi3.set(pow(2, 240), null);
         self.mi4.set(-900, null);
         // keys are Address
         self.ma1.set(address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"), null);

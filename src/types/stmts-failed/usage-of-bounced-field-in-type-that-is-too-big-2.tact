@@ -1,5 +1,5 @@
 primitive Int;
-trait BaseTrait { }
+trait BaseTrait {}
 
 message Withdraw {
     data128: Int as uint128; // 128
@@ -8,14 +8,13 @@ message Withdraw {
     data8: Int as uint8; // 216
     data4: Int as uint4; // 220
     data4_2: Int as uint4; // 224
-
     amount: Int as uint128;
 }
 
 contract Fund {
     balance: Int as uint256 = 0;
 
-    bounced(msg: bounced<Withdraw>){
+    bounced(msg: bounced<Withdraw>) {
         self.balance += msg.data128; // ok
         self.balance += msg.data64; // ok
         self.balance += msg.data16; // ok

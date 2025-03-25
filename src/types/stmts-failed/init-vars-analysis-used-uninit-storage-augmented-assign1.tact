@@ -1,6 +1,6 @@
 primitive Int;
 
-trait BaseTrait { }
+trait BaseTrait {}
 
 contract Contract {
     value: Int;

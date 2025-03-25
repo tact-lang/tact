@@ -5,7 +5,7 @@ fun notAlwaysReachableReturn(b: Bool): Int {
     while (b) {
         try {
             return 42;
-        } catch(e) {
+        } catch (e) {
             return 43;
         }
     }

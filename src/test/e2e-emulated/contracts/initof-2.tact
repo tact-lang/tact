@@ -1,6 +1,6 @@
 import "@stdlib/deploy";
 
-message(42) Foo { }
+message(42) Foo {}
 
 contract TestNested with Deployable {
     init() { dump("Nested----init@SUCCESS") }

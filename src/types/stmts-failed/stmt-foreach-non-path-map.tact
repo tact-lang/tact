@@ -1,8 +1,6 @@
 primitive Int;
 
-trait BaseTrait {
-    
-}
+trait BaseTrait {}
 
 fun mapFun(): map<Int, Int> {
     return emptyMap();

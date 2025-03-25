@@ -11,7 +11,6 @@ message Update {
 }
 
 contract SerializationTester {
-
     a: Int;
     b: Int;
     c: Int;

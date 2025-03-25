@@ -1,8 +1,6 @@
 primitive Int;
-trait BaseTrait { }
+trait BaseTrait {}
 
 contract Test {
-    get(true) fun test(): Int {
-        return 0
-    }
+    get(true) fun test(): Int { return 0 }
 }

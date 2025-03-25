@@ -1,5 +1,3 @@
 fun foo() { return }
 
-fun bar() {
-    foo()!!
-}
+fun bar() { foo() }

@@ -2,9 +2,7 @@ primitive Slice;
 primitive String;
 primitive Int;
 
-trait BaseTrait {
-
-}
+trait BaseTrait {}
 
 @name(__tact_str_to_slice)
 extends native asSlice(self: String): Slice;

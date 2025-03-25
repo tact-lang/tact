@@ -1,4 +1,4 @@
-trait BaseTrait { }
+trait BaseTrait {}
 
 trait T {
     get fun getter1() {

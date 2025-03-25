@@ -754,7 +754,7 @@ asm(-> 1 0) extends mutates fun loadBit(self: Slice): Bool { 1 LDI }
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#sliceloadcoins
 ///
-asm( -> 1 0) extends mutates fun loadCoins(self: Slice): Int { LDVARUINT16 }
+asm(-> 1 0) extends mutates fun loadCoins(self: Slice): Int { LDVARUINT16 }
 
 /// Extension mutation function for the `Slice` type. Available since Tact 1.6.2.
 ///
@@ -795,7 +795,7 @@ asm extends mutates fun skipCoins(self: Slice) { LDVARUINT16 NIP }
 /// * https://docs.tact-lang.org/ref/core-cells#sliceloadvaruint16
 /// * https://docs.tact-lang.org/ref/core-cells#sliceloadcoins
 ///
-asm( -> 1 0) extends mutates fun loadVarUint16(self: Slice): Int { LDVARUINT16 }
+asm(-> 1 0) extends mutates fun loadVarUint16(self: Slice): Int { LDVARUINT16 }
 
 /// Extension mutation function for the `Slice` type. Available since Tact 1.6.2.
 ///
@@ -817,7 +817,7 @@ asm( -> 1 0) extends mutates fun loadVarUint16(self: Slice): Int { LDVARUINT16 }
 /// * https://docs.tact-lang.org/ref/core-cells#sliceloadvaruint16
 /// * https://docs.tact-lang.org/ref/core-cells#sliceloadcoins
 ///
-asm extends mutates fun skipVarUint16(self: Slice){ LDVARUINT16 NIP }
+asm extends mutates fun skipVarUint16(self: Slice) { LDVARUINT16 NIP }
 
 /// Extension mutation function for the `Slice` type. Available since Tact 1.6.0.
 ///
@@ -836,7 +836,7 @@ asm extends mutates fun skipVarUint16(self: Slice){ LDVARUINT16 NIP }
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#sliceloadvarint16
 ///
-asm( -> 1 0) extends mutates fun loadVarInt16(self: Slice): Int { LDVARINT16 }
+asm(-> 1 0) extends mutates fun loadVarInt16(self: Slice): Int { LDVARINT16 }
 
 /// Extension mutation function for the `Slice` type. Available since Tact 1.6.2.
 ///
@@ -879,7 +879,7 @@ asm extends mutates fun skipVarInt16(self: Slice) { LDVARINT16 NIP }
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#sliceloadvaruint32
 ///
-asm( -> 1 0) extends mutates fun loadVarUint32(self: Slice): Int { LDVARUINT32 }
+asm(-> 1 0) extends mutates fun loadVarUint32(self: Slice): Int { LDVARUINT32 }
 
 /// Extension mutation function for the `Slice` type. Available since Tact 1.6.2.
 ///
@@ -922,7 +922,7 @@ asm extends mutates fun skipVarUint32(self: Slice) { LDVARUINT32 NIP }
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#sliceloadvarint32
 ///
-asm( -> 1 0) extends mutates fun loadVarInt32(self: Slice): Int { LDVARINT32 }
+asm(-> 1 0) extends mutates fun loadVarInt32(self: Slice): Int { LDVARINT32 }
 
 /// Extension mutation function for the `Slice` type. Available since Tact 1.6.2.
 ///

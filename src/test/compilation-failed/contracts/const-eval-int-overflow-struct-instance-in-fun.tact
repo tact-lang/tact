@@ -11,6 +11,6 @@ fun functionTest(i: Int): Int {
 
 contract ConstEvalNegativeTest {
     get fun test_struct(): Foo {
-        return Foo {y: false, x: functionTest(pow2(253))};
+        return Foo { y: false, x: functionTest(pow2(253)) };
     }
 }

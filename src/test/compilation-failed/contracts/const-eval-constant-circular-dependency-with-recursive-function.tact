@@ -2,9 +2,7 @@ const A: Int = foo(3);
 const C: Int = A;
 
 fun foo(value: Int): Int {
-    if (value > 1) {
-        return foo(value - 1)
-    }
+    if (value > 1) { return foo(value - 1) }
     return C;
 }
 

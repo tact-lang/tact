@@ -8,7 +8,6 @@
 // Contract C9g2 differs from C3f in that C9g2 has a getter for the second contract field.
 // Contract C10o differs from C3f in the declaration order of the contract fields.
 
-
 contract C1 {
     f1: Int;
 
@@ -127,7 +126,7 @@ contract C9g2 {
 contract C10o {
     f2: Int = 100;
     f1: Int;
-    
+
     init(v: Int) {
         self.f1 = v;
     }
@@ -141,13 +140,10 @@ contract C10o {
     }
 }
 
-
 contract Tester {
-
     receive() {}
 
     get fun checkAddressInjectivity(): Bool {
-        
         // Two contracts with the same code but with different initialization must have different addresses.
         let addr1: Address = contractAddress(initOf C1(5));
         let addr2: Address = contractAddress(initOf C1(10));
@@ -236,4 +232,3 @@ contract Tester {
         return result;
     }
 }
-

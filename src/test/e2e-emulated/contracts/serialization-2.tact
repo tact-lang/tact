@@ -17,14 +17,13 @@ message Update {
 }
 
 contract SerializationTester2 {
-
     a: Vars;
     b: Vars;
 
     init(a: Vars, b: Vars) {
         self.a = a;
         self.b = b;
-        
+
         // abi.dump(self.a.a);
         // abi.dump(self.a.b);
         // abi.dump(self.a.c);
@@ -73,15 +72,15 @@ contract SerializationTester2 {
         return self.b;
     }
 
-    get fun getBoth():Both {
-        return Both{a: self.a, b: self.b};
+    get fun getBoth(): Both {
+        return Both { a: self.a, b: self.b };
     }
 
-    get fun getBothOpt():Both? {
-        return Both{a: self.a, b: self.b};
+    get fun getBothOpt(): Both? {
+        return Both { a: self.a, b: self.b };
     }
 
     get fun process(src: Vars, both: Both, both2: Both?): Vars {
-        return Vars{a: src.a + 1, b: src.b + 2, c: src.c + 3, d: src.d + 4, e: src.e + 5};
+        return Vars { a: src.a + 1, b: src.b + 2, c: src.c + 3, d: src.d + 4, e: src.e + 5 };
     }
 }

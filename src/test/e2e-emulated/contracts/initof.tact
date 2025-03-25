@@ -1,8 +1,7 @@
 contract Self {
+    init() {}
 
-    init() { }
-
-    receive() { }
+    receive() {}
 
     get fun testInitOfAddress(): Address {
         return contractAddress(initOf Self());
@@ -18,7 +17,6 @@ message ChildAddress {
 }
 
 contract Child {
-
     owner: Address;
 
     init(owner: Address) {
@@ -30,18 +28,17 @@ contract Child {
             to: sender(),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            bounce: false, 
+            bounce: false,
             body: ChildAddress { address: myAddress() }.toCell(),
         });
     }
 }
 
 contract Parent {
-
     childMyAddress: Address;
 
     init() {
-      self.childMyAddress = myAddress();  // dummy value to be replaced by the child
+        self.childMyAddress = myAddress(); // dummy value to be replaced by the child
     }
 
     receive() {
@@ -50,7 +47,7 @@ contract Parent {
             to: contractAddress(ci),
             value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
-            bounce: false, 
+            bounce: false,
             body: beginCell().endCell(),
             code: ci.code,
             data: ci.data,

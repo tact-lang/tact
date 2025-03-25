@@ -8,7 +8,6 @@ message Update {
 }
 
 contract SerializationTester3 {
-
     a: Int;
     b: Bool;
     c: Cell;

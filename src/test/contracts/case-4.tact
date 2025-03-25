@@ -31,7 +31,7 @@ contract SampleContract {
     init() {
         self.a = 0;
         self.b = 0;
-        self.c = Source{a: 0, b: 0};
+        self.c = Source { a: 0, b: 0 };
     }
 
     fun addStake() {
@@ -41,7 +41,7 @@ contract SampleContract {
         let res: Bool = isZero(1, 2, false, self.c);
         let e = 42;
         self.b = a;
-        self.c = Source{a: 10, b: 20};
+        self.c = Source { a: 10, b: 20 };
     }
 
     get fun stake(): Int {

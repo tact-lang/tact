@@ -1,4 +1,7 @@
-struct SomeStruct { i: Int; b: Bool }
+struct SomeStruct {
+    i: Int;
+    b: Bool;
+}
 
 extends fun equal(self: SomeStruct?, other: SomeStruct?): Bool {
     if (self == null && other == null) { return true }
@@ -7,11 +10,11 @@ extends fun equal(self: SomeStruct?, other: SomeStruct?): Bool {
 }
 
 contract Tester {
-    receive() { }
+    receive() {}
 
     get fun test1(): Bool {
-        let s1 = SomeStruct {i: 42, b: true};
-        let s2 = SomeStruct {i: 42, b: false};
+        let s1 = SomeStruct { i: 42, b: true };
+        let s2 = SomeStruct { i: 42, b: false };
         let s3: SomeStruct? = null;
         return s1.equal(s1) && !s1.equal(s2) && !s3.equal(s2);
     }

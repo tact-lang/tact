@@ -16,13 +16,13 @@ contract SampleContract {
     init() {
         self.a = 0;
         self.b = 0;
-        self.c = Source{a: 0, b: 0};
+        self.c = Source { a: 0, b: 0 };
     }
 
     fun addStake() {
         self.a = 10;
         self.b = -20;
-        self.c = Source{a: 10, b: 20};
+        self.c = Source { a: 10, b: 20 };
     }
 
     get fun stake(): Int {

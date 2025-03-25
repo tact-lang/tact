@@ -78,12 +78,12 @@ contract LocalTypeInferenceTester with Deployable {
     }
 
     get fun test14(): MyStruct {
-        let x = MyStruct{ x: 1, y: 2 };
+        let x = MyStruct { x: 1, y: 2 };
         return x;
     }
 
     get fun test15(): MyStruct {
-        let x = MyStruct{ x: 1, y: 2 };
+        let x = MyStruct { x: 1, y: 2 };
         let y = x;
         return y;
     }

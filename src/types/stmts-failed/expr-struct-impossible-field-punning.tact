@@ -1,6 +1,5 @@
 primitive Int;
-trait BaseTrait {
-}
+trait BaseTrait {}
 
 struct A {
     x: Int;

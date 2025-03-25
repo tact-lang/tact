@@ -6,7 +6,6 @@ struct VarIntStruct {
 }
 
 contract StdlibTest {
-
     v: Int = 0;
 
     init() {
@@ -28,7 +27,7 @@ contract StdlibTest {
     get fun sliceRefs(sc: Slice): Int {
         return sc.refs();
     }
-    
+
     get fun storeBool(bl: Builder, b: Bool): Builder {
         return bl.storeBool(b);
     }
@@ -45,7 +44,6 @@ contract StdlibTest {
         return sc.loadBit();
     }
 
-    
     get fun tvm_2023_07_upgrade(): Int {
         return gasConsumed();
     }
@@ -78,7 +76,7 @@ contract StdlibTest {
         forceBasechain(addr);
         return true;
     }
-    
+
     get fun forceWorkchain(addr: Address, workchain: Int, exitCode: Int): Bool {
         forceWorkchain(addr, workchain, exitCode);
         return true;
@@ -112,11 +110,11 @@ contract StdlibTest {
     get fun parseOriginalFwdFee(msg: Slice): Int {
         msg.skipBits(4); //Skip tags
         msg.loadAddress(); // Skip source
-        let ctx: Context = Context{
+        let ctx: Context = Context {
             bounceable: false,
             sender: myAddress(),
             value: ton("1"),
-            raw: msg
+            raw: msg,
         };
         return ctx.readForwardFee();
     }
@@ -193,11 +191,11 @@ contract StdlibTest {
     }
 
     get fun varIntegers2(): Int {
-        let s = VarIntStruct{
+        let s = VarIntStruct {
             a: 1000,
             b: 200,
             d: 30,
-            e: 4
+            e: 4,
         };
         let c = s.toCell();
         let cs = c.beginParse();

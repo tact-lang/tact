@@ -1,4 +1,4 @@
-struct Foo { x : Int }
+struct Foo { x: Int }
 
 extends mutates fun inc(self: Int) { self += 1 }
 
@@ -11,7 +11,6 @@ contract MutatingMethodOnNonLvalues {
         41.inc();
         GlobalConst.inc();
         self.ContractConst.inc();
-        Foo {x: 44}.x.inc();
+        Foo { x: 44 }.x.inc();
     }
 }
-

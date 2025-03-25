@@ -1,5 +1,5 @@
 contract CodeOfVsInitOf {
-    receive() { }
+    receive() {}
 
     get fun withCodeOf(): Cell {
         return codeOf Child;

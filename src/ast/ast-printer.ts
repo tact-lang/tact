@@ -177,7 +177,10 @@ export const ppAstStructFieldValue = (param: Ast.StructFieldValue): string =>
     `${ppAstId(param.field)}: ${ppAstExpression(param.initializer)}`;
 
 export const ppAstStructInstance = ({ type, args }: Ast.StructInstance) =>
-    `${ppAstId(type)}{${args.map((x) => ppAstStructFieldInit(x)).join(", ")}}`;
+    args.length !== 0
+        ? `${ppAstId(type)} { ${args.map((x) => ppAstStructFieldInit(x)).join(", ")} }`
+        : `${ppAstId(type)} {}`;
+
 export const ppAstStructValue = ({ type, args }: Ast.StructValue) =>
     `${ppAstId(type)}{${args.map((x) => ppAstStructFieldValue(x)).join(", ")}}`;
 
@@ -384,7 +387,7 @@ const createContext = (spaces: number): Context<ContextModel> => {
         block(rows).map((f) => (level: number) => f(level + 1));
     const braced = (rows: readonly ContextModel[]) =>
         block(
-            rows.length > 0 ? [row(`{`), indent(rows), row(`}`)] : [row("{ }")],
+            rows.length > 0 ? [row(`{`), indent(rows), row(`}`)] : [row("{}")],
         );
     const list = <T>(items: readonly T[], print: Printer<T>) =>
         items.map((node) => print(node)(ctx));
@@ -452,7 +455,7 @@ export const ppAstContract: Printer<Ast.Contract> =
     ({ name, traits, declarations, attributes }) =>
     (c) => {
         const attrsCode = attributes
-            .map(({ name: { value } }) => `@interface("${value}") `)
+            .map(({ name: { value } }) => `@interface("${value}")\n`)
             .join("");
         const traitsCode = traits.map((trait) => trait.text).join(", ");
         const header = traitsCode
@@ -496,6 +499,9 @@ export const ppAsmShuffle = ({ args, ret }: Ast.AsmShuffle): string => {
         return `(${argsCode})`;
     }
     const retCode = ret.map(({ value }) => value.toString()).join(" ");
+    if (args.length === 0) {
+        return `(-> ${retCode})`;
+    }
     return `(${argsCode} -> ${retCode})`;
 };
 
@@ -525,7 +531,7 @@ export const ppAstTrait: Printer<Ast.Trait> =
     ({ name, traits, attributes, declarations }) =>
     (c) => {
         const attrsCode = attributes
-            .map((attr) => `@${attr.type}("${attr.name.value}") `)
+            .map((attr) => `@${attr.type}("${attr.name.value}")\n`)
             .join("");
         const traitsCode = traits.map((t) => ppAstId(t)).join(", ");
         const header = traitsCode
@@ -833,7 +839,7 @@ export const ppAstStatementDestruct: Printer<Ast.StatementDestruct> =
         }
         const restPattern = ignoreUnspecifiedFields ? ", .." : "";
         return c.row(
-            `let ${ppAstTypeId(type)} {${ids.join(", ")}${restPattern}} = ${ppAstExpression(expression)};`,
+            `let ${ppAstTypeId(type)} { ${ids.join(", ")}${restPattern} } = ${ppAstExpression(expression)};`,
         );
     };
 

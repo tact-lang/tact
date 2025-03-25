@@ -1,6 +1,6 @@
 // not reusing previously used 136 and 137 exit codes
 // because Tact reserves the codes from 128 to 255
-// and now this is user-land checks 
+// and now this is user-land checks
 const InvalidAddressExitCode: Int = 1136;
 const MasterchainNotEnabled: Int = 1137;
 
@@ -17,11 +17,8 @@ fun verifyAddress(addr: Address, enabledMasterChain: Bool) {
 }
 
 contract MasterchainTester {
+    init() {}
 
-    init() {
-        
-    }
-    
     receive("DeployToWorkchain") {
         verifyAddress(sender(), false);
     }

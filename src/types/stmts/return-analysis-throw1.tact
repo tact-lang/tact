@@ -1,6 +1,6 @@
 primitive Int;
 primitive Bool;
-trait BaseTrait { }
+trait BaseTrait {}
 
 @name(throw)
 native throw(code: Int);

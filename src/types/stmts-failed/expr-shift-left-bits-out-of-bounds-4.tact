@@ -1,9 +1,9 @@
 primitive Int;
-trait BaseTrait { }
+trait BaseTrait {}
 
 fun foo(): Int {
     let a = 0;
-    repeat(100) {
+    repeat (100) {
         a += 5;
     }
     return a;

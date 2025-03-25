@@ -1,7 +1,7 @@
 primitive Bool;
 primitive Int;
 
-trait BaseTrait { }
+trait BaseTrait {}
 
 // Div by zero when v = 0
 fun exception(v: Int): Bool {

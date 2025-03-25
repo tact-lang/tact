@@ -46,7 +46,7 @@ contract AsmFunctionsTester {
     }
 
     get fun testAsmSecondToLast(): Bool {
-        return asmSecondToLast(Two{ a: 1, b: 2 }, Two{ a: 3, b: 4 }) == 3;
+        return asmSecondToLast(Two { a: 1, b: 2 }, Two { a: 3, b: 4 }) == 3;
     }
 
     // asmSecondToLast(), but with data supplied at runtime
@@ -56,9 +56,9 @@ contract AsmFunctionsTester {
 
     get fun testAsmFirst(): Bool {
         return asmFirst(
-            TwoInTwo{ a: Two{ a: 1, b: 2}, b: Two{ a: 3, b: 4 } },
-            TwoInTwo{ a: Two{ a: 5, b: 6}, b: Two{ a: 7, b: 8 } },
-            TwoInTwo{ a: Two{ a: 9, b: 10}, b: Two{ a: 11, b: 12 } },
+            TwoInTwo { a: Two { a: 1, b: 2 }, b: Two { a: 3, b: 4 } },
+            TwoInTwo { a: Two { a: 5, b: 6 }, b: Two { a: 7, b: 8 } },
+            TwoInTwo { a: Two { a: 9, b: 10 }, b: Two { a: 11, b: 12 } },
         ) == 1;
     }
 

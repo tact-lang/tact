@@ -4,11 +4,11 @@ contract Echo {
     receive(msg: EchoMessage) {
         self.reply(msg.toCell());
     }
-    
+
     receive(msg: String) {
         self.reply(msg.asComment());
     }
-    
+
     receive(msg: Slice) {
         self.reply(msg.asCell());
     }

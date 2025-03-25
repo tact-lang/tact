@@ -1,5 +1,5 @@
 contract CellsCreation {
-    receive() { }
+    receive() {}
 
     get fun emptyCell(): Cell {
         return emptyCell();

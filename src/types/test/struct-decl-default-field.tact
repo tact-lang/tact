@@ -1,4 +1,4 @@
 primitive Int;
-trait BaseTrait { }
+trait BaseTrait {}
 
 struct S { a: Int = 42 }

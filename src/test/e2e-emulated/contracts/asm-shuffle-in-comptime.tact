@@ -20,7 +20,7 @@ contract Test {
     }
 
     get fun bar(): Int {
-         let s = beginCell()
+        let s = beginCell()
             .storeBool(true)
             .storeInt(0, 257)
             .asSlice();

@@ -3,4 +3,3 @@ contract Test {
         return 0;
     }
 }
-

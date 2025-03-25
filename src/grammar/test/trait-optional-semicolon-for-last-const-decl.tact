@@ -1,1 +1,3 @@
-trait Test { abstract const foo: Int }
+trait Test {
+    abstract const foo: Int;
+}

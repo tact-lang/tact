@@ -1,7 +1,7 @@
 primitive Int;
 primitive Bool;
 
-trait BaseTrait { }
+trait BaseTrait {}
 
 trait WildThing {
     virtual fun assure(_: Int, _: Int): Bool {

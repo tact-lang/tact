@@ -5,7 +5,7 @@ fun function(a: Int, b: Int): Int {
 fun anotherFunction(
     a: Int,
     b: Int,
-    ): Int {
+): Int {
     return (a >> b) || (a << (32 - b));
 }
 
@@ -28,7 +28,7 @@ fun coverage(a: Int, b: Int) {
 fun oneMoreFunction(
     a: Int,
     b: Int,
-    ): Int {
+): Int {
     return anotherFunction(
         a,
         b,

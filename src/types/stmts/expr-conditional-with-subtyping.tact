@@ -42,11 +42,13 @@ struct Bar {
     a: Cell?;
 }
 
-struct Baz { b: Int; }
+struct Baz {
+    b: Int;
+}
 
 fun baz(x: Cell?): Bar {
     let cond: Bool = true;
     return Bar {
-        a: cond ? Baz { b: 42 }.toCell() : x
+        a: cond ? Baz { b: 42 }.toCell() : x,
     };
 }

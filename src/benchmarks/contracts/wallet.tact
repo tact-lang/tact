@@ -24,7 +24,6 @@ message(0x7369676E) ExternalSignedRequest {
 }
 
 // leave as example for discussion
-
 // message(0x73696e74) InternalSignedRequest {
 //     data: Slice as remaining;
 // }
@@ -64,7 +63,7 @@ contract Wallet(
     seqno: Int as uint32,
     walletId: Int as int32,
     publicKey: Int as uint256,
-    extensions: map<Int as uint256, Bool>
+    extensions: map<Int as uint256, Bool>,
 ) {
     inline fun processSignedRequestExternal(msg: ExternalSignedRequest, isExternal: Bool) {
         let signature = msg.toSlice().lastBits(512);
@@ -148,7 +147,7 @@ contract Wallet(
         while (true) {
             // check tag, process action, try to load next ref while we can
             let isAddExt = actions.checkAndRemoveAddExtensionPrefix();
-            let isDeleteExt = isAddExt ? false :  actions.checkAndRemoveDeleteExtensionPrefix();
+            let isDeleteExt = isAddExt ? false : actions.checkAndRemoveDeleteExtensionPrefix();
 
             if (isAddExt || isDeleteExt) {
                 let addr = parseStdAddress(actions.loadAddress().asSlice());

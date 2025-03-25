@@ -1,5 +1,5 @@
 primitive Int;
-trait BaseTrait { }
+trait BaseTrait {}
 
 contract ManualMethodId {
     const methodId: Int = 16384 + 41;

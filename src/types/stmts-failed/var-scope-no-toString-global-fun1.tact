@@ -1,6 +1,6 @@
 import "@stdlib/deploy";
 
-trait BaseTrait { }
+trait BaseTrait {}
 
 contract SampleTactContract {
     init() {

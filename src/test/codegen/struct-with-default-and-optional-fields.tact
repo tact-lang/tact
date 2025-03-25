@@ -5,7 +5,7 @@ struct Position {
 
 contract Test {
     receive ("test") {
-         let p: Position = Position{ };
-         dump(p.tokenId);
+        let p: Position = Position {};
+        dump(p.tokenId);
     }
 }

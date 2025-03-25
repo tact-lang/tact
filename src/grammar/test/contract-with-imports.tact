@@ -1,3 +1,3 @@
 import "@stdlib/deploy";
 
-contract Test with Deploy { }
+contract Test with Deploy {}

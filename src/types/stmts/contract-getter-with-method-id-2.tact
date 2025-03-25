@@ -1,10 +1,8 @@
 primitive Int;
-trait BaseTrait { }
+trait BaseTrait {}
 
 const MethodId: Int = 16384;
 
 contract Test {
-    get(MethodId) fun test(): Int {
-        return MethodId
-    }
+    get(MethodId) fun test(): Int { return MethodId }
 }

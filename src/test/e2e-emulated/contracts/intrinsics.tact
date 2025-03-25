@@ -1,5 +1,4 @@
 contract IntrinsicsTester {
-
     a: Int = ton("10.1234");
     b: String = "Hello world";
     c: Address = address("EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N");
@@ -24,13 +23,9 @@ contract IntrinsicsTester {
     w: Slice = rawSlice("8_");
     v: Slice = rawSlice("00_");
 
-    init() {
+    init() {}
 
-    }
-
-    receive("Deploy") {
-
-    }
+    receive("Deploy") {}
 
     get fun getTons(): Int {
         return ton("10.1234");

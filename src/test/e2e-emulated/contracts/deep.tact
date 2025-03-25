@@ -1,16 +1,13 @@
 contract A {
-
-    init() {
-
-    }
+    init() {}
 
     receive("Message") {
-        deploy(DeployParameters{
+        deploy(DeployParameters {
             init: initOf B(myAddress()),
-            value: 0, 
+            value: 0,
             mode: SendRemainingValue | SendIgnoreErrors,
             bounce: true,
-            body: "Message".asComment()
+            body: "Message".asComment(),
         });
     }
 
@@ -30,14 +27,14 @@ contract B {
         // to also test this way of deploying contracts
         let init: StateInit = initOf C(myAddress());
         let address: Address = contractAddress(init);
-        send(SendParameters{
-            value: 0, 
-            to: address, 
+        send(SendParameters {
+            value: 0,
+            to: address,
             mode: SendRemainingValue | SendIgnoreErrors,
             bounce: true,
             code: init.code,
             data: init.data,
-            body: "Message".asComment()
+            body: "Message".asComment(),
         });
     }
 
@@ -55,14 +52,14 @@ contract C {
     receive("Message") {
         let init: StateInit = initOf C(self.parent);
         let address: Address = contractAddress(init);
-        send(SendParameters{
-            value: 0, 
-            to: address, 
+        send(SendParameters {
+            value: 0,
+            to: address,
             mode: SendRemainingValue | SendIgnoreErrors,
             bounce: true,
             code: init.code,
             data: init.data,
-            body: "Message2".asComment()
+            body: "Message2".asComment(),
         });
     }
 
