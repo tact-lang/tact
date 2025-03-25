@@ -56,7 +56,7 @@ fun dump(arg);
 - [`Bool{:tact}`][bool]
 - [`Address{:tact}`][p]
 - [`Cell{:tact}`][cell], [`Builder{:tact}`][builder] 或 [`Slice{:tact}`][slice]
-- [`String{:tact}`][p] 或 [`StringBuilder{:tact}`][p]
+- [`String{:tact}`][p]
 - [`map<K, V>{:tact}`](/zh-cn/book/maps)
 - [Optionals 和 `null{:tact}` value](/zh-cn/book/optionals)
 - `void`，当函数没有定义返回值时隐式返回
@@ -79,9 +79,8 @@ dump(emptyCell());  // Cell
 dump(beginCell());  // Builder
 dump(emptySlice()); // Slice
 
-// String or StringBuilder
-dump("Hello, my name is..."); // String
-dump(beginTailString());      // StringBuilder
+// String
+dump("Hello, my name is...");
 
 // Maps
 let m: map<Int, Int> = emptyMap();
