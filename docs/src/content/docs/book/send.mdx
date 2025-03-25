@@ -15,7 +15,7 @@ Field    | Type                   | Description
 `body`   | [`Cell?{:tact}`][cell] | [Optional][opt] message body as a [`Cell{:tact}`][cell].
 `code`   | [`Cell?{:tact}`][cell] | [Optional][opt] initial code of the contract (compiled bitcode).
 `data`   | [`Cell?{:tact}`][cell] | [Optional][opt] initial data of the contract (arguments of the [`init(){:tact}` function](/book/contracts#init-function) or values of [contract parameters](/book/contracts#parameters)).
-`value`  | [`Int{:tact}`][int]    | The amount of [nanoToncoins][nano] you want to send with the message. This value is used to cover [forward fees][fwdfee] unless the optional flag [`SendPayGasSeparately{:tact}`](/book/message-mode#optional-flags) is used.
+`value`  | [`Int{:tact}`][int]    | The amount of [nanoToncoins][nano] you want to send with the message. This value is used to cover [forward fees][fwdfee] unless the optional flag [`SendPayFwdFeesSeparately{:tact}`](/book/message-mode#optional-flags) is used.
 `to`     | [`Address{:tact}`][p]  | Recipient internal [`Address{:tact}`][p] on TON Blockchain.
 `bounce` | [`Bool{:tact}`][p]     | When set to `true` (default), the message bounces back to the sender if the recipient contract doesn't exist or wasn't able to process the message.
 
@@ -133,8 +133,8 @@ contract FailureIsNothingButAnotherStep {
         // 1st outbound message evaluated and queued (but not yet sent)
         send(SendParameters{
             to: sender(),
-            value: ton("0.042"), // plus forward fee due to SendPayGasSeparately
-            mode: SendIgnoreErrors | SendPayGasSeparately,
+            value: ton("0.042"), // plus forward fee due to SendPayFwdFeesSeparately
+            mode: SendIgnoreErrors | SendPayFwdFeesSeparately,
             // body is null by default
         });
 

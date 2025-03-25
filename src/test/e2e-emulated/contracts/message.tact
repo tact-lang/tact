@@ -37,7 +37,7 @@ contract MessageTester with Deployable {
         message(MessageParameters{
             to: myAddress(),
             value: 0,
-            mode: SendDefaultMode | SendPayGasSeparately,
+            mode: SendDefaultMode | SendPayFwdFeesSeparately,
             body: "topup".asComment(),
         });
 

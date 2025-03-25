@@ -31,11 +31,19 @@ const SendRemainingBalance: Int = 128;
 ///
 const SendOnlyEstimateFee: Int = 1024;
 
+/// **Deprecated** since Tact 1.6.5.
+/// 
 /// Pay forward fees separately from the message value.
 ///
 /// See: https://docs.tact-lang.org/book/message-mode#optional-flags
 ///
 const SendPayGasSeparately: Int = 1;
+
+/// Pay forward fees separately from the message value.
+///
+/// See: https://docs.tact-lang.org/book/message-mode#optional-flags
+///
+const SendPayFwdFeesSeparately: Int = 1;
 
 /// Ignore any errors arising while processing this message during the action phase.
 ///
@@ -77,7 +85,7 @@ struct SendParameters {
 
     /// The amount of nanoToncoins you want to send with
     /// the message. This value is used to cover forward fees,
-    /// unless the optional flag `SendPayGasSeparately` is used.
+    /// unless the optional flag `SendPayFwdFeesSeparately` is used.
     value: Int;
 
     /// Recipient internal `Address` on TON Blockchain.
@@ -102,7 +110,7 @@ struct MessageParameters {
 
     /// The amount of nanoToncoins you want to send with
     /// the message. This value is used to cover forward fees,
-    /// unless the optional flag `SendPayGasSeparately` is used.
+    /// unless the optional flag `SendPayFwdFeesSeparately` is used.
     value: Int;
 
     /// Recipient internal `Address` on TON Blockchain.
@@ -281,7 +289,7 @@ struct DeployParameters {
 
     /// The amount of nanoToncoins you want to send with
     /// the message. This value is used to cover forward fees,
-    /// unless the optional flag `SendPayGasSeparately` is used.
+    /// unless the optional flag `SendPayFwdFeesSeparately` is used.
     value: Int;
 
     /// When set to `true` (default) message bounces back to the sender if
@@ -301,7 +309,7 @@ struct DeployParameters {
 /// * `mode: Int`, an 8-bit value that configures how to send a message, defaults to 0.
 /// * `body: Cell?`, optional message body as a `Cell`.
 /// * `value: Int`, the amount of nanoToncoins you want to send with the message.
-///   This value is used to cover forward fees, unless the optional flag `SendPayGasSeparately` is used.
+///   This value is used to cover forward fees, unless the optional flag `SendPayFwdFeesSeparately` is used.
 /// * `bounce: Bool`, when set to `true` (default) message bounces back to the sender
 ///    if the recipient contract doesn't exist or wasn't able to process the message.
 /// * `init: StateInit`, init package of the contract (initial code and initial data).
