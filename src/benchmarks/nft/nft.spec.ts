@@ -23,8 +23,10 @@ import {
     getStateSizeForAccount,
     generateCodeSizeResults,
     getUsedGas,
-    printBenchmarkTable,
-    type RawBenchmarkResult,
+    printBenchmarkTable
+} from "../utils/gas";
+import type {
+    RawBenchmarkResult,
     RawCodeSizeResult
 } from "../utils/gas";
 import { join, resolve } from "path";
@@ -33,13 +35,15 @@ import { posixNormalize } from "../../utils/filePath";
 import { type Step, writeLog } from "../../test/utils/write-vm-log";
 import {
     NFTCollection,
-    type DeployNFT,
-    type GetRoyaltyParams,
-    type GetStaticData,
-    type BatchDeploy,
-    type RoyaltyParams,
-    type InitNFTBody,
     loadInitNFTBody,
+} from "../contracts/output/nft-collection_NFTCollection";
+import type {
+    DeployNFT,
+    GetRoyaltyParams,
+    GetStaticData,
+    BatchDeploy,
+    RoyaltyParams,
+    InitNFTBody,
 } from "../contracts/output/nft-collection_NFTCollection";
 import {
     NFTItem,
