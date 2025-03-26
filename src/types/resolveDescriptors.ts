@@ -853,20 +853,13 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         }
 
         // Check for common
-        if (a.kind === "function_def") {
+        if (a.kind === "function_def" || a.kind === "asm_function_def") {
             if (isGetter && !self) {
                 throwCompilationError(
                     "Getters must be defined within a contract",
                     isGetter.loc,
                 );
             }
-        }
-
-        if (a.kind === "asm_function_def" && isGetter) {
-            throwCompilationError(
-                "Assembly functions cannot be getters",
-                isGetter.loc,
-            );
         }
 
         // Check for getter
