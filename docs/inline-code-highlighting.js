@@ -16,7 +16,6 @@ import fs from 'node:fs';
 // Import custom grammars
 const grammar_tact = JSON.parse(fs.readFileSync(new URL('grammars/grammar-tact.json', import.meta.url), 'utf-8'));
 const grammar_func = JSON.parse(fs.readFileSync(new URL('grammars/grammar-func.json', import.meta.url), 'utf-8'));
-const grammar_ohm = JSON.parse(fs.readFileSync(new URL('grammars/grammar-ohm.json', import.meta.url), 'utf-8'));
 
 /**
  * Highlight inline code tags with Shiki
@@ -67,7 +66,6 @@ export default function rehypeInlineCodeHighlighting() {
         bundledLanguages.powershell,
         grammar_tact,
         grammar_func,
-        grammar_ohm,
       ],
       // TODO: Made the 'name' lowercase in the TextMate grammars
       langAlias: { fc: 'func' },

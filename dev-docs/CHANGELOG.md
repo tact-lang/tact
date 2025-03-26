@@ -7,6 +7,93 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Language features
+
+- Optimized `Context().sender` to use `sender()` function for better gas efficiency: PR [#2427](https://github.com/tact-lang/tact/pull/2427)
+- [fix] Ternary operator with struct and null: PR [#2432](https://github.com/tact-lang/tact/pull/2432)
+
+### Internal infrastructure
+
+- `internalExternalReceiversOutsideMethodsMap` have been reworked to ensure compatibility with explorers: PR [#2398](https://github.com/tact-lang/tact/pull/2398)
+
+### Docs
+
+- Fixed description of the `dump()` function, which does not support values of `StringBuilder` type: PR [#2463](https://github.com/tact-lang/tact/pull/2463)
+
+### Release contributors
+
+- [Shvetc Andrei](https://github.com/Shvandre)
+- [Daniil Sedov](https://github.com/Gusarich)
+- [Novus Nota](https://github.com/novusnota)
+
+## [1.6.4] - 2025-03-18
+
+### Language features
+
+- Applied parameters rearrangement only for ASM methods with a single parameter to avoid confusion: PR [#2410](https://github.com/tact-lang/tact/pull/2410)
+- Reduced gas usage for contracts with some special cases of binary and fallback receivers: PR [#2396](https://github.com/tact-lang/tact/pull/2396)
+
+### Standard Library
+
+- Added `forceWorkchain()` function: PR [#2387](https://github.com/tact-lang/tact/pull/2387)
+
+#### Compilation report
+
+- [fix] TL-B for `Address?` is not `Maybe Address`, but plain `Address`: PR [#2386](https://github.com/tact-lang/tact/pull/2386)
+
+### Internal infrastructure
+
+- Removed `postinstall` from `package.json` to not run scripts with dev dependencies on the user side: PR [#2382](https://github.com/tact-lang/tact/pull/2382)
+
+### Internal infrastructure
+
+- Removed `postinstall` from `package.json` to not run scripts with dev dependencies on the user side: PR [#2382](https://github.com/tact-lang/tact/pull/2382)
+
+### Docs
+
+- Removed the "gas-expensive" badge from `checkSignature()` and `checkDataSignature()` functions and added a caution note when they do become expensive (from 11th call): PR [#2380](https://github.com/tact-lang/tact/pull/2380)
+- Fixed descriptions of `Slice.asString()` and `String.asSlice()` functions: PR [#2391](https://github.com/tact-lang/tact/pull/2391)
+- Split Core libraries in the reference: `core-common` and `core-advanced` were removed, and their contents were distributed across other libraries; `core-crypto`, `core-contextstate`, `core-send`, `core-gas`, and `core-addresses` were introduced: PR [#2391](https://github.com/tact-lang/tact/pull/2391)
+- Added documentation for `BasechainAddress`, `emptyBasechainAddress`, `newBasechainAddress`, `contractBasechainAddress`, `Builder.storeBasechainAddress`: PR [#2411](https://github.com/tact-lang/tact/pull/2411)
+
+### Release contributors
+
+- [Novus Nota](https://github.com/novusnota)
+- [Anton Trunov](https://github.com/anton-trunov)
+- [Maksim Lagus](https://github.com/Kaladin13)
+- [Petr Makhnev](https://github.com/i582)
+- [verytactical](https://github.com/verytactical)
+
+## [1.6.3] - 2025-03-12
+
+### Compiler configuration
+
+- Added `internalExternalReceiversOutsideMethodsMap` config option as part of optimization options to protect potentially unwanted optimization: PR [#2370](https://github.com/tact-lang/tact/pull/2370)
+
+### Standard Library
+
+- Added `forceBasechain()` function: PR [#2330](https://github.com/tact-lang/tact/pull/2330)
+
+### Internal infrastructure
+
+- Removed old parser: PR [#2365](https://github.com/tact-lang/tact/pull/2365)
+
+### Docs
+
+- Added descriptions for `&&=`, `||=`, `>>=` and `<<=` augmented assignment operators: PR [#2328](https://github.com/tact-lang/tact/pull/2328)
+- Added gas best practices page: PR [#2342](https://github.com/tact-lang/tact/pull/2342)
+- Documented semantics of empty contract parameters: PR [#2346](https://github.com/tact-lang/tact/pull/2346)
+- Deprecated `Deployable` and `FactoryDeployable` traits in favor of `null` message body `receive()` and a `cashback()` function: PR [#2354](https://github.com/tact-lang/tact/pull/2354)
+- Documented new exit code and opcode records in TypeScript wrappers: PR [#2348](https://github.com/tact-lang/tact/pull/2348)
+
+### Release contributors
+
+- [Novus Nota](https://github.com/novusnota)
+- [Maksim Lagus](https://github.com/Kaladin13)
+- [verytactical](https://github.com/verytactical)
+- [Shvetc Andrei](https://github.com/Shvandre)
+- [Petr Makhnev](https://github.com/i582)
+
 ## [1.6.2] - 2025-03-06
 
 ### Language features
@@ -133,7 +220,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added new functions in stdlib: `Builder.depth`, `Slice.skipLastBits`, `Slice.firstBits`, `Slice.lastBits`, `Slice.depth`, `Cell.computeDataSize`, `Slice.computeDataSize`, `Cell.depth`, `curLt`, `blockLt`, `setGasLimit`, `getSeed`, `setSeed`, `myCode`, `sign`, `divc`, `muldivc`, `mulShiftRight`, `mulShiftRightRound`, `mulShiftRightCeil`, `sqrt`, `Slice.loadMaybeRef`, `Slice.preloadMaybeRef`: PR [#986](https://github.com/tact-lang/tact/pull/986), PR [#2040](https://github.com/tact-lang/tact/pull/2040)
 - Added new functions `Slice.asAddress`, `Slice.asAddressUnsafe` and `contractHash`: PR [#1766](https://github.com/tact-lang/tact/pull/1766)
 - Added new functions `throwIf` and `throwUnless` and deprecated their aliases `nativeThrowIf` and `nativeThrowUnless`: PR [#1974](https://github.com/tact-lang/tact/pull/1974)
-- Added the `BasechainAddress` type as a more optimized version of the `Address` type: PR [#2035](https://github.com/tact-lang/tact/pull/2035)
+- Added the `BasechainAddress` type as a more optimized version of the `Address` type. And also the `emptyBasechainAddress`, `newBasechainAddress`, `contractBasechainAddress`, `Builder.storeBasechainAddress` functions: PR [#2035](https://github.com/tact-lang/tact/pull/2035)
 - Added the `Slice.hashData()` and `String.hashData()` functions: PR [#2039](https://github.com/tact-lang/tact/pull/2039)
 - Optimized the `emptyCell()` and `emptySlice()` functions: PR [#1696](https://github.com/tact-lang/tact/pull/1696)
 - The `Int.toString` function now consumes up to 64% less gas: PR [#1837](https://github.com/tact-lang/tact/pull/1837)

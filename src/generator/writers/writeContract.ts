@@ -1,6 +1,7 @@
 import {
     enabledInline,
     enabledInterfacesGetter,
+    enabledInternalExternalReceiversOutsideMethodsMap,
     enabledIpfsAbiGetter,
     enabledLazyDeploymentCompletedGetter,
     enabledOptimizedChildCode,
@@ -18,11 +19,11 @@ import { writeInterfaces } from "./writeInterfaces";
 import {
     groupContractReceivers,
     writeBouncedRouter,
+    writeLoadOpcode,
     writeNonBouncedRouter,
 } from "./writeRouter";
 import { resolveFuncTypeFromAbiUnpack } from "./resolveFuncTypeFromAbiUnpack";
 import { getAllocation } from "../../storage/resolveAllocation";
-import { contractErrors } from "../../abi/errors";
 
 export type ContractsCodes = Record<
     string,
@@ -385,20 +386,15 @@ export function writeMainContract(
             wCtx.append();
         }
 
-        wCtx.append(";; message opcode reader utility");
-        wCtx.append(
-            `;; Returns 32 bit message opcode, otherwise throws the "Invalid incoming message" exit code`,
-        );
-        wCtx.append(
-            `(slice, int) ~load_opcode(slice s) asm( -> 1 0) "32 LDUQ ${contractErrors.invalidMessage.id} THROWIFNOT";`,
-        );
-
         wCtx.append(`;;`);
         wCtx.append(`;; Routing of a Contract ${contract.name}`);
         wCtx.append(`;;`);
         wCtx.append();
 
         const contractReceivers = groupContractReceivers(contract);
+
+        writeLoadOpcode(contractReceivers.internal, wCtx);
+        wCtx.append();
 
         // Render internal receiver
         wCtx.inBlock(
@@ -439,6 +435,9 @@ export function writeMainContract(
             typeof contractReceivers.external.fallback === "undefined"
         );
         if (hasExternal) {
+            writeLoadOpcode(contractReceivers.external, wCtx);
+            wCtx.append();
+
             wCtx.inBlock("() recv_external(slice in_msg) impure", () => {
                 writeLoadContractVariables(contract, wCtx);
 
@@ -450,39 +449,108 @@ export function writeMainContract(
             });
         }
 
-        wCtx.append(`() __tact_selector_hack_asm() impure asm """
+        // fift injection, protected by a feature flag
+        if (enabledInternalExternalReceiversOutsideMethodsMap(wCtx.ctx)) {
+            wCtx.append(`
+() __tact_selector_hack_asm() impure asm """
 @atend @ 1 {
-    execute current@ context@ current!
-    {
-        }END> b>
-        
-        <{
-            SETCP0 DUP
-            IFNOTJMP:<{
-                DROP over <s ref@ 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot @addop
-            }>`);
+        execute current@ context@ current!
+        {
+            // The core idea of this function is to save gas by avoiding unnecessary dict jump, when recv_internal/recv_external is called
+            // We want to extract recv_internal/recv_external from the dict and select needed function
+            // not by jumping to the needed function by it's index, but by using usual IF statements.
+            
+            }END> b> // Close previous builder, now we have a cell of previous code on top of the stack
+            
+            <{ // Start of the new code builder
+                SETCP0
+                // Swap the new code builder with the previous code, now we have previous code on top of the stack
+                swap
+                // Transform cell to slice and load first ref from the previous code, now we have the dict on top of the stack
+                <s ref@`);
+            if (hasExternal) {
+                wCtx.append(`
+                // Extract the recv_external from the dict
+                dup -1 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot 
+                swap`);
+            }
 
-        if (hasExternal) {
-            wCtx.append(`DUP -1 EQINT IFJMP:<{
-                DROP over <s ref@ -1 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot @addop
-            }>`);
-        }
+            wCtx.append(`
+                // Extract the recv_internal from the dict
+                dup 0 swap @procdictkeylen idict@ { "internal shortcut error" abort } ifnot 
+                swap
+                
+                // Delete the recv_internal from the dict
+                0 swap @procdictkeylen idict- drop 
+                // Delete the recv_external from the dict (it's okay if it's not there)
+                -1 swap @procdictkeylen idict- drop 
+                // Delete the __tact_selector_hack from the dict
+                65535 swap @procdictkeylen idict- drop 
 
-        wCtx.append(`swap <s ref@
-            0 swap @procdictkeylen idict- drop
-            -1 swap @procdictkeylen idict- drop
-            65535 swap @procdictkeylen idict- drop
+                // Bring the code builder from the bottom of the stack
+                // because if recv_external extraction is optional, and the number of elements on the stack is not fixed
+                depth 1- roll
+                // Swap with the dict from which we extracted recv_internal and (maybe) recv_external
+                swap
+                
+                // Check if the dict is empty
+                dup null?
+                // Store a copy of this flag in the bottom of the stack
+                dup depth 1- -roll 
+                {
+                    // If the dict is empty, just drop it (it will be null if it's empty)
+                    drop 
+                } 
+                {
+                    // If the dict is not empty, prepare continuation to be stored in c3
+                    <{
+                        // Save this dict as first ref in this continuation, it will be pushed in runtime by DICTPUSHCONST
+                        swap @procdictkeylen DICTPUSHCONST
+                        // Jump to the needed function by it's index
+                        DICTIGETJMPZ
+                        // If such key is not found, throw 11 along with the key as an argument
+                        11 THROWARG
+                    }> PUSHCONT
+                    // Store the continuation in c3
+                    c3 POP
+                } cond
+                
+                // Function id is on top of the (runtime) stack
+                DUP IFNOTJMP:<{
+                    // place recv_internal here
+                    DROP swap @addop
+                }>`);
 
-            @procdictkeylen DICTPUSHCONST DICTIGETJMPZ 11 THROWARG
-        }> b>
-    } : }END>c
-    current@ context! current!
-} does @atend !
+            if (hasExternal) {
+                wCtx.append(`
+                DUP INC IFNOTJMP:<{
+                    // place recv_external here
+                    DROP swap @addop
+                }>`);
+            }
+
+            wCtx.append(`
+                // Bring back the flag, indicating if the dict is empty or not from the bottom of the stack
+                depth 1- roll 
+                { 
+                    // If the dict is empty, throw 11
+                    11 THROWARG 
+                } 
+                { 
+                    // If the dict is not empty, jump to continuation from c3
+                    c3 PUSH JMPX 
+                } cond 
+            }> b>
+        } : }END>c
+        current@ context! current!
+    } does @atend !
 """;`);
 
-        wCtx.append(`() __tact_selector_hack() method_id(65535) {
+            wCtx.append(`
+() __tact_selector_hack() method_id(65535) {
     return __tact_selector_hack_asm();
 }`);
+        }
     });
 }
 

@@ -10,7 +10,7 @@ import type {
 } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import "@ton/test-utils";
-import { getUsedGas } from "../../benchmarks/util";
+import { getUsedGas } from "../../benchmarks/utils/gas";
 import type { Step } from "../utils/write-vm-log";
 import { writeLog } from "../utils/write-vm-log";
 import { join } from "path";

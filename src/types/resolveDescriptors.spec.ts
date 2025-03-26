@@ -12,7 +12,6 @@ import type { SrcInfo } from "../grammar";
 import { getParser } from "../grammar";
 import { getAstFactory } from "../ast/ast-helpers";
 import { isSrcInfo } from "../grammar/src-info";
-import { defaultParser } from "../grammar/grammar";
 import { resolveStatements } from "./resolveStatements";
 import { evalComptimeExpressions } from "./evalComptimeExpressions";
 
@@ -29,7 +28,7 @@ describe("resolveDescriptors", () => {
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
-                getParser(Ast, defaultParser),
+                getParser(Ast),
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
@@ -45,7 +44,7 @@ describe("resolveDescriptors", () => {
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
-                getParser(Ast, defaultParser),
+                getParser(Ast),
             );
             ctx = featureEnable(ctx, "external");
             expect(() => {

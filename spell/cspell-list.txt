@@ -44,6 +44,7 @@ disasm
 divmod
 dnsresolve
 Domínguez
+dstr
 elseifnot
 Eltociear
 Epva
@@ -104,9 +105,12 @@ masterchain
 Masterchain
 mathrm
 maxint
+memecoin
 Merkle
 minmax
 mintable
+misparse
+misparsed
 mktemp
 multiformats
 nanoton
@@ -121,6 +125,7 @@ nonterminal
 Nonterminal
 notcoin
 Novus
+Nowarp
 Offchain
 omelander
 Ovchinnikov
@@ -183,6 +188,7 @@ Toncoin
 Toncoins
 tonstudio
 Topup
+Tradoor
 Trunov
 typechecker
 udict
@@ -190,6 +196,7 @@ uintptr
 uints
 unboc
 uncons
+undiscussed
 uninit
 Uninit
 unixfs

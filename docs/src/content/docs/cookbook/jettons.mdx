@@ -76,11 +76,11 @@ Validation is performed using the Jetton address from the contract:
 3. After successfully accepting the transfer, the contract's Jetton wallet sends a transfer notification to its owner contract.
 4. The contract validates the Jetton message.
 
-You may obtain the contract's Jetton wallet address using the [`contractAddress(){:tact}`](/ref/core-common#contractaddress) function or calculating this address offchain.
+You may obtain the contract's Jetton wallet address using the [`contractAddress(){:tact}`](/ref/core-addresses#contractaddress) function or calculating this address offchain.
 
 To obtain the Jetton wallet's state init, you need the wallet's data and code. While there is a common structure for the initial data layout, it may differ in some cases, such as with [USDT](#usdt-jetton-operations).
 
-Since notifications originate from your contract's Jetton wallet, the function [`myAddress(){:tact}`](/ref/core-common#myaddress) should be used in the `ownerAddress` field.
+Since notifications originate from your contract's Jetton wallet, the function [`myAddress(){:tact}`](/ref/core-contextstate#myaddress) should be used in the `ownerAddress` field.
 
 :::caution
 
@@ -89,8 +89,6 @@ Since notifications originate from your contract's Jetton wallet, the function [
 :::
 
 ```tact
-import "@stdlib/deploy";
-
 struct JettonWalletData {
     balance: Int as coins;
     ownerAddress: Address;
@@ -124,7 +122,7 @@ message(0x7362d09c) JettonTransferNotification {
     forwardPayload: Slice as remaining;
 }
 
-contract Example with Deployable {
+contract Example {
     myJettonWalletAddress: Address;
     myJettonAmount: Int as coins = 0;
 
@@ -135,6 +133,10 @@ contract Example with Deployable {
             jettonWalletCode,
         );
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 
     receive(msg: JettonTransferNotification) {
         require(
@@ -157,8 +159,6 @@ A Jetton transfer is the process of sending a specified amount of Jettons from o
 To send a Jetton transfer, use the [`send(){:tact}`](/book/send) function.
 
 ```tact
-import "@stdlib/deploy";
-
 message(0xf8a7ea5) JettonTransfer {
     queryId: Int as uint64;
     amount: Int as coins;
@@ -201,7 +201,7 @@ message Withdraw {
     amount: Int as coins;
 }
 
-contract Example with Deployable {
+contract Example {
     myJettonWalletAddress: Address;
     myJettonAmount: Int as coins = 0;
 
@@ -212,6 +212,10 @@ contract Example with Deployable {
             jettonWalletCode,
         );
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 
     receive(msg: Withdraw) {
         require(
@@ -255,8 +259,6 @@ contract Example with Deployable {
 Jetton burning is the process of permanently removing a specified amount of Jettons from circulation, with no possibility of recovery.
 
 ```tact
-import "@stdlib/deploy";
-
 message(0x595f07bc) JettonBurn {
     queryId: Int as uint64;
     amount: Int as coins;
@@ -296,7 +298,7 @@ message ThrowAway {
     amount: Int as coins;
 }
 
-contract Example with Deployable {
+contract Example {
     myJettonWalletAddress: Address;
     myJettonAmount: Int as coins = 0;
 
@@ -307,6 +309,10 @@ contract Example with Deployable {
             jettonWalletCode,
         );
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 
     receive(msg: ThrowAway) {
         require(

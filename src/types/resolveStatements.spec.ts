@@ -7,7 +7,6 @@ import { CompilerContext } from "../context/context";
 import { featureEnable } from "../config/features";
 import { getParser } from "../grammar";
 import { getAstFactory } from "../ast/ast-helpers";
-import { defaultParser } from "../grammar/grammar";
 import { evalComptimeExpressions } from "./evalComptimeExpressions";
 
 describe("resolveStatements", () => {
@@ -18,7 +17,7 @@ describe("resolveStatements", () => {
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
-                getParser(Ast, defaultParser),
+                getParser(Ast),
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);
@@ -34,7 +33,7 @@ describe("resolveStatements", () => {
                 new CompilerContext(),
                 [{ code: r.code, path: "<unknown>", origin: "user" }],
                 [],
-                getParser(Ast, defaultParser),
+                getParser(Ast),
             );
             ctx = featureEnable(ctx, "external");
             ctx = resolveDescriptors(ctx, Ast);

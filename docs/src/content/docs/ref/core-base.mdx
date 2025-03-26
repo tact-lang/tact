@@ -6,7 +6,7 @@ prev:
   label: "OTP-006: Contract Package"
 ---
 
-Every [contract](/book/contracts) in Tact implicitly [inherits](/book/contracts#traits) the `BaseTrait{:tact}` trait, which contains a number of the most useful [internal functions](/book/contracts#internal-functions) for any kind of contract and a constant `self.storageReserve{:tact}` aimed at advanced users of Tact.
+Every [contract](/book/contracts) in Tact implicitly [inherits](/book/contracts#traits) the `BaseTrait{:tact}` trait, which contains a number of [internal functions](/book/contracts#internal-functions) for any contract and a constant `self.storageReserve{:tact}` aimed at advanced users of Tact.
 
 :::tip
 
@@ -98,7 +98,7 @@ In case the reservation attempt fails, or in the default case without the attemp
 :::note
 
   Note that `self.forward(){:tact}` never sends additional [nanoToncoins][nano] on top of what's available in the balance.\
-  To send more [nanoToncoins][nano] with a single message, use the [`send(){:tact}`](/ref/core-common#send) function.
+  To send more [nanoToncoins][nano] with a single message, use the [`send(){:tact}`](/ref/core-send#send) function.
 
 :::
 
