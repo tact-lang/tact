@@ -682,6 +682,10 @@ function storeContractVariablesConditionally(
     contract: TypeDescription,
     wCtx: WriterContext,
 ): string {
+    // we persist the contract state in the following three cases:
+    // - the user explicitly asks for it using tact.config.json
+    // - lazy initialization is used (in that case the lazy deployment bit is set and the contract storage needs to be updated)
+    // - the receiver has a side effect that writes to the contract storage
     return enabledAlwaysSaveContractData(wCtx.ctx) ||
         contract.init?.kind !== "contract-params" ||
         rcvEffects.has("contractStorageWrite")
