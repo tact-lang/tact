@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Optimized `Context().sender` to use `sender()` function for better gas efficiency: PR [#2427](https://github.com/tact-lang/tact/pull/2427)
 - [fix] Ternary operator with struct and null: PR [#2432](https://github.com/tact-lang/tact/pull/2432)
+- [fix] Show an error message for assembly functions with the `get` attribute: PR [#2484](https://github.com/tact-lang/tact/pull/2484)
+- [fix] The parser does not throw an internal compiler error if the error is reported after the end of the file: PR [#2485](https://github.com/tact-lang/tact/pull/2485)
+- [fix] Always show an error when calling the `dump()` function with an argument of the unsupported `StringBuilder` type: PR [#2491](https://github.com/tact-lang/tact/pull/2491)
+- [fix] The grammar now disallows the augmented assignment operators with whitespace between the operator and the equals sign: PR [#2492](https://github.com/tact-lang/tact/pull/2492)
+
+### Standard Library
+
+- Deprecated the `SendPayGasSeparately` constant in favor of `SendPayFwdFeesSeparately`: PR [#2483](https://github.com/tact-lang/tact/pull/2483)
+
+### Code generation
+
+- [fix] Save the contract state on early `return` from receivers: PR [#2482](https://github.com/tact-lang/tact/pull/2482)
 
 ### Internal infrastructure
 
@@ -19,12 +31,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Docs
 
 - Fixed description of the `dump()` function, which does not support values of `StringBuilder` type: PR [#2463](https://github.com/tact-lang/tact/pull/2463)
+- Explicitly stated that structs cannot be empty, while message structs can: PR [#2464](https://github.com/tact-lang/tact/pull/2464)
 
 ### Release contributors
 
 - [Shvetc Andrei](https://github.com/Shvandre)
 - [Daniil Sedov](https://github.com/Gusarich)
 - [Novus Nota](https://github.com/novusnota)
+- [Petr Makhnev](https://github.com/i582)
+- [skywardboundd](https://github.com/skywardboundd)
+- [Anton Trunov](https://github.com/anton-trunov)
 
 ## [1.6.4] - 2025-03-18
 

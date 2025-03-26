@@ -355,29 +355,29 @@ function processStatements(
                         );
                     }
 
-                    if (s.op === "&&" || s.op === "||") {
+                    if (s.op === "&&=" || s.op === "||=") {
                         if (tailType.name !== "Bool") {
                             throwCompilationError(
-                                `Type error: Augmented assignment ${s.op}= is only allowed for Bool type`,
+                                `Type error: Augmented assignment ${s.op} is only allowed for Bool type`,
                                 s.path.loc,
                             );
                         }
                         if (expressionType.name !== "Bool") {
                             throwCompilationError(
-                                `Type error: Augmented assignment ${s.op}= is only allowed for Bool type`,
+                                `Type error: Augmented assignment ${s.op} is only allowed for Bool type`,
                                 s.expression.loc,
                             );
                         }
                     } else {
                         if (tailType.name !== "Int") {
                             throwCompilationError(
-                                `Type error: Augmented assignment ${s.op}= is only allowed for Int type`,
+                                `Type error: Augmented assignment ${s.op} is only allowed for Int type`,
                                 s.path.loc,
                             );
                         }
                         if (expressionType.name !== "Int") {
                             throwCompilationError(
-                                `Type error: Augmented assignment ${s.op}= is only allowed for Int type`,
+                                `Type error: Augmented assignment ${s.op} is only allowed for Int type`,
                                 s.expression.loc,
                             );
                         }

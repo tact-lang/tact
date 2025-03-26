@@ -125,7 +125,7 @@ contract Escrow (
             message(MessageParameters{
                     to: self.sellerAddress,
                     value: self.dealAmount - royaltyAmount,
-                    mode: SendPayGasSeparately
+                    mode: SendPayFwdFeesSeparately
                 }
             );
             message(MessageParameters{
@@ -136,7 +136,7 @@ contract Escrow (
             );
         } else {
             throwUnless(404, ctx.value > (2 * self.JETTON_TRANSFER_GAS));
-            self.sendJettons(self.sellerAddress, self.dealAmount - royaltyAmount, SendPayGasSeparately);
+            self.sendJettons(self.sellerAddress, self.dealAmount - royaltyAmount, SendPayFwdFeesSeparately);
             self.sendJettons(self.guarantorAddress, royaltyAmount, SendRemainingBalance | SendDestroyIfZero);
         }
     }
