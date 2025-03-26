@@ -242,6 +242,26 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 if (args.length !== 1) {
                     throwCompilationError("dump expects 1 argument", ref);
                 }
+
+                const arg = args[0]!;
+
+                if (!SUPPORTED_TYPES_KIND_IN_DUMP.has(arg.kind)) {
+                    throwCompilationError(
+                        "dump() not supported for argument",
+                        ref,
+                    );
+                }
+
+                if (
+                    arg.kind === "ref" &&
+                    !SUPPORTED_PRIMITIVE_TYPES_IN_DUMP.has(arg.name)
+                ) {
+                    throwCompilationError(
+                        "dump() not supported for type: " + arg.name,
+                        ref,
+                    );
+                }
+
                 return { kind: "void" };
             },
             generate: (ctx, args, resolved, ref) => {
@@ -598,4 +618,16 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
             },
         },
     ],
+]);
+
+const SUPPORTED_TYPES_KIND_IN_DUMP = new Set(["ref", "void", "null", "map"]);
+
+const SUPPORTED_PRIMITIVE_TYPES_IN_DUMP = new Set([
+    "Cell",
+    "Slice",
+    "Builder",
+    "Address",
+    "String",
+    "Bool",
+    "Int",
 ]);
