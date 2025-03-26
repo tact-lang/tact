@@ -38,7 +38,7 @@ describe("receiver-early-return", () => {
             treasure.getSender(),
             { value: amount },
             {
-                $$type: "Msg",
+                $$type: "Msg1",
                 earlyReturn: true,
             },
         );
@@ -50,10 +50,34 @@ describe("receiver-early-return", () => {
             treasure.getSender(),
             { value: amount },
             {
-                $$type: "Msg",
+                $$type: "Msg1",
                 earlyReturn: false,
             },
         );
         expect(await contract.getGetX()).toStrictEqual(44n);
+    });
+
+    it("if-else with early returns in both branches: then branch", async () => {
+        await contract.send(
+            treasure.getSender(),
+            { value: amount },
+            {
+                $$type: "Msg2",
+                thenBranch: true,
+            },
+        );
+        expect(await contract.getGetX()).toStrictEqual(45n);
+    });
+
+    it("if-else with early returns in both branches: else branch", async () => {
+        await contract.send(
+            treasure.getSender(),
+            { value: amount },
+            {
+                $$type: "Msg2",
+                thenBranch: false,
+            },
+        );
+        expect(await contract.getGetX()).toStrictEqual(46n);
     });
 });
