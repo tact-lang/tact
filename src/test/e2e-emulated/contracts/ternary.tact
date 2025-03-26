@@ -18,7 +18,9 @@ contract TernaryTester {
     }
 
     get fun test4(a: Int, b: Int): Int {
-        return a == 123 ? (b == 456 ? 1 : 2) : (b == 789 ? 3 : 4);
+        return a == 123
+            ? (b == 456 ? 1 : 2)
+            : (b == 789 ? 3 : 4);
     }
 
     // ternary operator is right-associative (see the next test)
@@ -32,7 +34,9 @@ contract TernaryTester {
     // the following parentheses are actually not needed
     // returns 1
     get fun test6(): Int {
-        return true ? 1 : (false ? 2 : 3);
+        return true
+            ? 1
+            : (false ? 2 : 3);
     }
 
     // returns 2
