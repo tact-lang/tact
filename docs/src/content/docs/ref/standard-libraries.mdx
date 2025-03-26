@@ -1,12 +1,12 @@
 ---
 title: Standard libraries overview
-description: "Some libraries come bundled with Tact compiler, but aren't automatically included to your project until explicitly made to"
+description: "Some libraries come bundled with the Tact compiler but aren't automatically included in your project until explicitly imported."
 prev:
   link: /ref/core-advanced
   label: Advanced
 ---
 
-Some libraries (also referred to as standard libraries or stdlibs) come bundled with Tact compiler, but aren't automatically included to your project until explicitly made to.
+Some libraries (also referred to as standard libraries or stdlibs) come bundled with the Tact compiler but aren't automatically included in your project until explicitly imported.
 
 To import any standard library, use the [`import{:tact}` keyword](/book/import) followed by the name of that library in a [string][p], like so:
 
@@ -19,12 +19,12 @@ import "@stdlib/deploy";
 
 Library                  | Description                                                      | Commonly used APIs
 :----------------------- | :--------------------------------------------------------------- | :-----------------
-[`@stdlib/config`][1]    | Config and elector address retrieval.                            | [`getConfigAddress(){:tact}`][gca], [`getElectorAddress(){:tact}`][gea]
-[`@stdlib/content`][2]   | Encoding off-chain link [strings][p] to a [`Cell{:tact}`][cell]. | [`createOffchainContent(){:tact}`][coff]
-[`@stdlib/deploy`][3]    | Unified mechanism for deployments.                               | [`Deployable{:tact}`][dep], [`FactoryDeployable{:tact}`][fcd]
+[`@stdlib/config`][1]    | Retrieval of config and elector addresses.                       | [`getConfigAddress(){:tact}`][gca], [`getElectorAddress(){:tact}`][gea]
+[`@stdlib/content`][2]   | Encoding off-chain link [strings][p] into a [`Cell{:tact}`][cell]. | [`createOffchainContent(){:tact}`][coff]
+[`@stdlib/deploy`][3]    | Unified mechanism for deployments.                               | **Deprecated**: [`Deployable{:tact}`][dep], [`FactoryDeployable{:tact}`][fcd]
 [`@stdlib/dns`][4]       | Resolution of [DNS][dns] names.                                  | [`DNSResolver{:tact}`][dnsr], [`dnsInternalVerify(){:tact}`][dnsi]
 [`@stdlib/ownable`][5]   | Traits for ownership management.                                 | [`Ownable{:tact}`][own], [`OwnableTransferable{:tact}`][ownt]
-[`@stdlib/stoppable`][6] | Traits that allow contract stops. Requires [@stdlib/ownable][5]. | [`Stoppable{:tact}`][stp], [`Resumable{:tact}`][res]
+[`@stdlib/stoppable`][6] | Traits that allow contracts to be stopped. Requires [@stdlib/ownable][5]. | [`Stoppable{:tact}`][stp], [`Resumable{:tact}`][res]
 
 [1]: /ref/stdlib-config
 [gca]: /ref/stdlib-config#getconfigaddress

@@ -38,8 +38,8 @@ import type { TactErrorCollection } from "../error/errors";
 import { TactError } from "../error/errors";
 import type { Parser } from "../grammar";
 import { getParser } from "../grammar";
-import { defaultParser } from "../grammar/grammar";
 import { topSortContracts } from "./utils";
+import type { TypeDescription } from "../types/types";
 
 export function enableFeatures(
     ctx: CompilerContext,
@@ -63,6 +63,12 @@ export function enableFeatures(
             option:
                 config.options.optimizations?.alwaysSaveContractData ?? false,
             name: "alwaysSaveContractData",
+        },
+        {
+            option:
+                config.options.optimizations
+                    ?.internalExternalReceiversOutsideMethodsMap ?? true,
+            name: "internalExternalReceiversOutsideMethodsMap",
         },
         {
             option: config.options.enableLazyDeploymentCompletedGetter ?? false,
@@ -92,8 +98,7 @@ export async function build(args: {
             ? createVirtualFileSystem(args.stdlib, files)
             : args.stdlib;
     const ast: FactoryAst = args.ast ?? getAstFactory();
-    const parser: Parser =
-        args.parser ?? getParser(ast, config.options?.parser ?? defaultParser);
+    const parser: Parser = args.parser ?? getParser(ast);
     const logger: ILogger = args.logger ?? new Logger();
 
     // Configure context
@@ -137,6 +142,7 @@ export async function build(args: {
               codeBoc: Buffer;
               abi: string;
               constants: WrappersConstantDescription[];
+              contract: TypeDescription;
           }
         | undefined
     > = {};
@@ -278,6 +284,7 @@ export async function build(args: {
             codeBoc,
             abi,
             constants,
+            contract,
         };
 
         if (config.mode === "fullWithDecompilation") {
@@ -431,6 +438,7 @@ export async function build(args: {
                 JSON.parse(pkg.abi),
                 ctx,
                 built[pkg.name]?.constants ?? [],
+                built[pkg.name]?.contract,
                 {
                     code: pkg.code,
                     prefix: pkg.init.prefix,

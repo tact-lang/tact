@@ -10,8 +10,8 @@ This page shows examples of converting between [primitive types][p] and obtainin
 ### How to convert a `String` to an `Int`
 
 ```tact
-// Defining a new extension function for type String that returns value of type Int
-// Caution: produces unexpected results when String contains non-numeric characters!
+// Define a new extension function for type String that returns a value of type Int
+// Caution: produces unexpected results when the String contains non-numeric characters!
 extends fun toInt(self: String): Int {
     // Cast the String as a Slice for parsing
     let string: Slice = self.asSlice();
@@ -22,8 +22,8 @@ extends fun toInt(self: String): Int {
     // Loop until the String is empty
     while (!string.empty()) {
         let char: Int = string.loadUint(8); // load 8 bits (1 byte) from the Slice
-        acc = (acc * 10) + (char - 48);     // using ASCII table to get numeric value
-        // Note, that this approach would produce unexpected results
+        acc = (acc * 10) + (char - 48);     // use ASCII table to get numeric value
+        // Note that this approach would produce unexpected results
         //   when the starting String contains non-numeric characters!
     }
 
@@ -46,8 +46,8 @@ let number: Int = 261119911;
 let numberString: String = number.toString();
 
 // Converting the [number] to a float String,
-//   where passed argument 3 is the exponent of 10^(-3) of resulting float String,
-//   and it can be any integer between 0 and 76 including both ends
+//   where the passed argument 3 is the exponent of 10^{-3} in the resulting float String,
+//   and it can be any integer between 0 and 76, inclusive.
 let floatString: String = number.toFloatString(3);
 
 // Converting the [number] as coins to a human-readable String
@@ -144,7 +144,7 @@ fun convert() {
 
 :::tip[Hey there!]
 
-  Didn't find your favorite example of type conversion? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
+  Didn't find your favorite example of type conversion? Have a cool implementation in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
 
 :::
 

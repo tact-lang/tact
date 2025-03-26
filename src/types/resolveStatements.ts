@@ -1,4 +1,4 @@
-import type * as A from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import type { CompilerContext } from "../context/context";
 import { isAssignable } from "./subtyping";
 import {
@@ -52,7 +52,7 @@ export function emptyContext(
 function checkVariableExists(
     ctx: CompilerContext,
     sctx: StatementContext,
-    name: A.AstId,
+    name: Ast.Id,
 ): void {
     if (sctx.vars.has(idText(name))) {
         throwCompilationError(
@@ -111,7 +111,7 @@ function removeRequiredVariable(
 }
 
 export function addVariable(
-    name: A.AstId,
+    name: Ast.Id,
     ref: TypeRef,
     ctx: CompilerContext,
     sctx: StatementContext,
@@ -127,7 +127,7 @@ export function addVariable(
 }
 
 function processCondition(
-    condition: A.AstStatementCondition,
+    condition: Ast.StatementCondition,
     sctx: StatementContext,
     ctx: CompilerContext,
 ): {
@@ -140,7 +140,7 @@ function processCondition(
     let initialCtx = sctx;
 
     // Simple if
-    if (condition.falseStatements === null) {
+    if (condition.falseStatements === undefined) {
         const r = processStatements(condition.trueStatements, initialCtx, ctx);
         ctx = r.ctx;
         return { ctx, sctx: initialCtx, returnAlwaysReachable: false };
@@ -191,7 +191,7 @@ function processCondition(
 
 // Precondition: `self` here means a contract or a trait,
 // and not a `self` parameter of a mutating method
-export function isLvalue(path: A.AstId[], ctx: CompilerContext): boolean {
+export function isLvalue(path: Ast.Id[], ctx: CompilerContext): boolean {
     const headId = path[0]!;
     if (isSelfId(headId) && path.length > 1) {
         // we can be dealing with a contract/trait constant `self.constFoo`
@@ -213,7 +213,7 @@ export function isLvalue(path: A.AstId[], ctx: CompilerContext): boolean {
 }
 
 function processStatements(
-    statements: readonly A.AstStatement[],
+    statements: readonly Ast.Statement[],
     sctx: StatementContext,
     ctx: CompilerContext,
 ): {
@@ -242,7 +242,7 @@ function processStatements(
 
                     // Check type
                     const expressionType = getExpType(ctx, s.expression);
-                    if (s.type !== null) {
+                    if (s.type !== undefined) {
                         const variableType = resolveTypeRef(ctx, s.type);
                         if (!isAssignable(expressionType, variableType)) {
                             throwCompilationError(
@@ -751,7 +751,7 @@ function processStatements(
 }
 
 function processFunctionBody(
-    statements: readonly A.AstStatement[],
+    statements: readonly Ast.Statement[],
     sctx: StatementContext,
     ctx: CompilerContext,
 ): CompilerContext {
@@ -814,7 +814,7 @@ export function resolveStatements(ctx: CompilerContext) {
 
             // Required variables
             for (const f of t.fields) {
-                if (f.ast.initializer !== null) {
+                if (f.ast.initializer !== undefined) {
                     // If the field has an initializer, it is not a required variable.
                     continue;
                 }

@@ -1,0 +1,286 @@
+---
+title: Gas and fees
+description: "Storage fee, forward fee, compute fee and gas-management functions from the Core library of Tact"
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+List of the general fee and gas-management functions. For the context and state-related functions, see:
+
+* [`myStorageDue(){:tact}`](/ref/core-contextstate#mystoragedue)
+* [`gasConsumed(){:tact}`](/ref/core-contextstate#gasconsumed)
+
+## getStorageFee
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool): Int;
+```
+
+Calculates and returns the [storage fee][storage-fee] in [nanoToncoin][nano] [`Int{:tact}`][int] for storing a contract with a given number of `cells` and `bits` for a number of `seconds`. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from [config param 18 of TON Blockchain](https://docs.ton.org/develop/howto/blockchain-configs#param-18).
+
+Note that specifying values of `cells` and `bits` higher than their maximum values listed in [account state limits (`max_acc_state_cells` and `max_acc_state_bits`)](/book/exit-codes#50) will have the same result as specifying the exact limits. In addition, make sure you take into account the [deduplication of cells with the same hash][deduplication].
+
+Attempts to specify a negative number of `cells`, `bits`, or `seconds` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage example:
+
+```tact
+let fee: Int = getStorageFee(1_000, 1_000, 1_000, false);
+//                           -----  -----  -----  -----
+//                           ↑      ↑      ↑      ↑
+//                           |      |      |      Isn't on the masterchain,
+//                           |      |      |      but on the basechain
+//                           |      |      Number of seconds to calculate
+//                           |      |      the storage fee for
+//                           |      Number of bits in a contract
+//                           Number of cells in a contract
+```
+
+:::note[Useful links:]
+
+  [Storage fee in TON Docs][storage-fee]\
+  [Storage fee calculation in TON Docs][storage-fee-calc]
+
+:::
+
+## getComputeFee
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int;
+```
+
+Calculates and returns the [compute fee][compute-fee] in [nanoToncoin][nano] [`Int{:tact}`][int] for a transaction that consumed a `gasUsed` amount of [gas][gas]. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, otherwise the prices of the [basechain][basechain]. The current prices are obtained from [config param 20 for the masterchain and config param 21 for the basechain][param-20-21] of TON Blockchain.
+
+When `gasUsed` is less than a certain threshold called [`flat_gas_limit`][param-20-21], there's a minimum price to pay based on the value of [`flat_gas_price`][param-20-21]. The less gas used below this threshold, the higher the minimum price will be. See the example for [`getSimpleComputeFee(){:tact}`](#getsimplecomputefee) to derive that threshold.
+
+Attempts to specify a negative value of `gasUsed` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage example:
+
+```tact
+let fee: Int = getComputeFee(1_000, false);
+//                           -----  -----
+//                           ↑      ↑
+//                           |      Isn't on the masterchain,
+//                           |      but on the basechain
+//                           Number of gas units
+//                           consumed per transaction
+```
+
+:::note[Useful links:]
+
+  [Compute fee in TON Docs][compute-fee]\
+  [Compute fee calculation in TON Docs][compute-fee-calc]\
+  [`getSimpleComputeFee(){:tact}`](#getsimplecomputefee)
+
+:::
+
+## getSimpleComputeFee
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int;
+```
+
+Similar to [`getComputeFee(){:tact}`](#getcomputefee), but without the [`flat_gas_price`][param-20-21], i.e. without the minimum price to pay if `gasUsed` is less than a certain threshold called [`flat_gas_limit`][param-20-21]. Calculates and returns only the `gasUsed` multiplied by the current gas price.
+
+Attempts to specify a negative value for `gasUsed` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage example:
+
+```tact
+let fee = getComputeFee(0, false);
+let feeNoFlat = getSimpleComputeFee(0, false);
+let maxFlatPrice = fee - feeNoFlat;
+```
+
+:::note[Useful links:]
+
+  [Compute fee in TON Docs][compute-fee]\
+  [Compute fee calculation in TON Docs][compute-fee-calc]\
+  [`getComputeFee(){:tact}`](#getcomputefee)
+
+:::
+
+## getForwardFee
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int;
+```
+
+Calculates and returns the [forward fee][forward-fee] in [nanoToncoin][nano] as an [`Int{:tact}`][int] for an outgoing message consisting of a given number of `cells` and `bits`. Uses the prices of the [masterchain][masterchain] if `isMasterchain` is `true{:tact}`, or the prices of the [basechain][basechain] otherwise. The current prices are obtained from [config param 24 for the masterchain and config param 25 for the basechain][param-24-25] of TON Blockchain.
+
+If both the source and the destination addresses are on the [basechain][basechain], specify `isMasterchain` as `false{:tact}`. Otherwise, specify `true{:tact}`.
+
+Note that specifying values of `cells` and `bits` higher than their maximum values listed in [account state limits (`max_msg_cells` and `max_msg_bits`)](/book/exit-codes#50) will have the same result as specifying the exact limits.
+
+However, regardless of the values of `cells` and `bits`, this function always adds the minimum price based on the value of [`lump_price`][param-24-25]. See the example for [`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee) to derive it. In addition, make sure you account for the [deduplication of cells with the same hash][deduplication]; for example, the root cell and its data bits do not count toward the forward fee and are covered by the [`lump_price`][param-24-25].
+
+Attempts to specify a negative number of `cells` or `bits` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage example:
+
+```tact
+let fee: Int = getForwardFee(1_000, 1_000, false);
+//                           -----  -----  -----
+//                           ↑      ↑      ↑
+//                           |      |      Both source and destination
+//                           |      |      are not on the masterchain,
+//                           |      |      but on the basechain
+//                           |      Number of bits in a message
+//                           Number of cells in a message
+```
+
+:::note[Useful links:]
+
+  [Forward fee in TON Docs][forward-fee]\
+  [Forward fee calculation in TON Docs][forward-fee-calc]\
+  [`CDATASIZEQ` instruction for computing the number of distinct cells, data bits and refs in a `Cell{:tact}`](https://docs.ton.org/v3/documentation/tvm/instructions#F940)\
+  [`getSimpleForwardFee(){:tact}`](#getsimpleforwardfee)\
+  [`getOriginalFwdFee(){:tact}`](#getoriginalfwdfee)
+
+:::
+
+## getSimpleForwardFee
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun getSimpleForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int;
+```
+
+Similar to [`getForwardFee(){:tact}`](#getforwardfee), but without the [`lump_price`][param-24-25], i.e. without the minimum price to pay regardless of the amounts of `cells` or `bits`. Calculates and returns only the `cells` multiplied by the current cell price plus the `bits` multiplied by the current bit price.
+
+Attempts to specify a negative number of `cells` or `bits` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage example:
+
+```tact
+let fee = getForwardFee(1_000, 1_000, false);
+let feeNoLump = getSimpleForwardFee(1_000, 1_000, false);
+let lumpPrice = fee - feeNoLump;
+```
+
+:::note[Useful links:]
+
+  [Forward fee in TON Docs][forward-fee]\
+  [Forward fee calculation in TON Docs][forward-fee-calc]\
+  [`getForwardFee(){:tact}`](#getforwardfee)
+
+:::
+
+## getOriginalFwdFee
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int;
+```
+
+Calculates and returns the so-called _original_ [forward fee][forward-fee] in [nanoToncoin][nano] [`Int{:tact}`][int] for an outgoing message based on the `fwdFee` obtained from the incoming message. If both the source and the destination addresses are in the [basechain][basechain], specify `isMasterchain` as `false{:tact}`. Otherwise, specify `true{:tact}`.
+
+This function is useful when the outgoing message depends heavily on the structure of the incoming message, so much so that you cannot fully predict the fee using [`getForwardFee(){:tact}`](#getforwardfee) alone. Even if you could, calculating the exact fee with [nanoToncoin][nano]-level precision can be very expensive, so the approximation given by this function is often good enough.
+
+Attempts to specify a negative value of `fwdFee` throw an exception with [exit code 5](/book/exit-codes#5): `Integer out of expected range`.
+
+Usage example:
+
+```tact
+let fwdFee: Int = context().readForwardFee();
+let origFee: Int = getOriginalFwdFee(fwdFee, false);
+```
+
+:::note[Useful links:]
+
+  [Forward fee in TON Docs][forward-fee]\
+  [Forward fee calculation in TON Docs][forward-fee-calc]\
+  [`getForwardFee(){:tact}`](#getforwardfee)\
+  [`Context.readForwardFee(){:tact}`](/ref/core-contextstate#contextreadforwardfee)
+
+:::
+
+## setGasLimit
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun setGasLimit(limit: Int);
+```
+
+Sets the [`gas_limit`][param-20-21] to the [`Int{:tact}`][int] `limit` and resets the [`gas_credit`][param-20-21] to 0. Note that specifying a `limit` higher than the maximum allowed value of $2^{63} - 1$ will have the same result as specifying that exact maximum or calling [`acceptMessage(){:tact}`](#acceptmessage).
+
+Attempts to specify a negative or insufficient value of `limit` will cause an exception with [exit code -14](/book/exit-codes#-14): `Out of gas error`.
+
+Usage example:
+
+```tact
+setGasLimit(42000);
+```
+
+:::note
+
+  For more details, see: [Accept Message Effects in TON Docs](https://docs.ton.org/develop/smart-contracts/guidelines/accept).
+
+:::
+
+## acceptMessage
+
+```tact
+fun acceptMessage();
+```
+
+Agrees to buy some [gas][gas] to finish the current transaction by setting the [`gas_limit`][param-20-21] to its maximum allowed value of $2^{63}-1$ and resetting the [`gas_credit`][param-20-21] to 0. This action is required to process external messages, which bring no value (hence no gas) with them.
+
+Usage example:
+
+```tact {10}
+contract Timeout {
+    timeout: Int;
+
+    init() {
+        self.timeout = now() + 5 * 60; // 5 minutes from now
+    }
+
+    external("timeout") {
+        if (now() > self.timeout) {
+            acceptMessage(); // start accepting external messages once timeout has passed
+        }
+    }
+}
+```
+
+:::note
+
+  For more details, see: [Accept Message Effects in TON Docs](https://docs.ton.org/develop/smart-contracts/guidelines/accept).
+
+:::
+
+[p]: /book/types#primitive-types
+[int]: /book/integers
+[nano]: /book/integers#nanotoncoin
+[cell]: /book/cells#cells
+[slice]: /book/cells#slices
+[masterchain]: https://docs.ton.org/v3/documentation/smart-contracts/shards/shards-intro#masterchain
+
+[tvm]: https://docs.ton.org/learn/tvm-instructions/tvm-overview
+[basechain]: https://docs.ton.org/v3/documentation/smart-contracts/addresses#workchain-id
+[deduplication]: https://docs.ton.org/v3/documentation/data-formats/tlb/library-cells
+
+[storage-fee]: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees-low-level#storage-fee
+[storage-fee-calc]: https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation#storage-fee
+
+[gas]: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees#gas
+[compute-fee]: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/fees-low-level#computation-fees
+[compute-fee-calc]: https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation#computation-fee
+[param-20-21]: https://docs.ton.org/v3/documentation/network/configs/blockchain-configs#param-20-and-21
+
+[forward-fee]: https://docs.ton.org/v3/documentation/smart-contracts/transaction-fees/forward-fees
+[forward-fee-calc]: https://docs.ton.org/v3/guidelines/smart-contracts/fee-calculation#forward-fee
+[param-24-25]: https://docs.ton.org/v3/documentation/network/configs/blockchain-configs#param-24-and-25

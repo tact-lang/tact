@@ -15,7 +15,7 @@
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#nativerandomize
+/// * https://docs.tact-lang.org/ref/core-random#nativerandomize
 /// * https://docs.tact-lang.org/ref/core-random#randomint
 ///
 asm fun nativeRandomize(x: Int) { ADDRAND }
@@ -34,9 +34,9 @@ asm fun nativeRandomize(x: Int) { ADDRAND }
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#nativerandomizelt
-/// * https://docs.tact-lang.org/ref/core-advanced#nativerandomize
-/// * https://docs.tact-lang.org/ref/core-advanced#curlt
+/// * https://docs.tact-lang.org/ref/core-random#nativerandomizelt
+/// * https://docs.tact-lang.org/ref/core-random#nativerandomize
+/// * https://docs.tact-lang.org/ref/core-contextstate#curlt
 /// * https://docs.tact-lang.org/ref/core-random#randomint
 ///
 asm fun nativeRandomizeLt() { LTIME ADDRAND }
@@ -53,8 +53,8 @@ asm fun nativeRandomizeLt() { LTIME ADDRAND }
 /// ```
 ///
 /// See:
-/// * https://docs.tact-lang.org/ref/core-advanced#nativepreparerandom
-/// * https://docs.tact-lang.org/ref/core-advanced#nativerandomizelt
+/// * https://docs.tact-lang.org/ref/core-random#nativepreparerandom
+/// * https://docs.tact-lang.org/ref/core-random#nativerandomizelt
 /// * https://docs.tact-lang.org/ref/core-random#randomint
 /// * https://docs.tact-lang.org/ref/core-random#random
 ///
@@ -77,11 +77,40 @@ asm fun nativeRandom(): Int { RANDU256 }
 // then z := x * range / 2^256 is computed.
 asm fun nativeRandomInterval(max: Int): Int { RAND }
 
+/// Generates and returns a new pseudo-random unsigned 256-bit `Int` value `x`.
+/// 
+/// The algorithm works as follows: first, the `sha512(r)` is computed. There, `r` is an old 
+/// value of the random seed, which is taken as a 32-byte array constructed from the big-endian 
+/// representation of an unsigned 256-bit `Int`. The first 32 bytes of this hash are stored as the new 
+/// value `r'` of the random seed, and the remaining 32 bytes are returned as the next random value `x`.
+/// 
+/// ```tact
+/// fun example() {
+///     let allYourRandomBelongToUs: Int = randomInt(); // ???, it's random :)
+/// }
+/// ```
+/// 
+/// See: https://docs.tact-lang.org/ref/core-random#randomint
+/// 
 inline fun randomInt(): Int {
     nativePrepareRandom();
     return nativeRandom();
 }
 
+/// Generates and returns a new pseudo-random unsigned `Int` value `x` in the provided semi-closed 
+/// interval: `min` ≤ `x` < `max`, or `min` ≥ `x` > `max` if both `min` and `max` are negative. 
+/// 
+/// Note that the `max` value is never included in the interval.
+/// 
+/// ```tact
+/// fun example() {
+///     random(42, 43); // 42, always
+///     random(0, 42);  // 0-41, but never 42
+/// }
+/// ```
+/// 
+/// See: https://docs.tact-lang.org/ref/core-random#random
+/// 
 inline fun random(min: Int, max: Int): Int {
     nativePrepareRandom();
     return min + nativeRandomInterval(max - min);
@@ -153,7 +182,7 @@ asm fun abs(x: Int): Int { ABS }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-common#now
+/// See: https://docs.tact-lang.org/ref/core-contextstate#now
 ///
 asm fun now(): Int { NOW }
 

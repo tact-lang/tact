@@ -6,7 +6,7 @@ prev:
   label: "OTP-006: Contract Package"
 ---
 
-Every [contract](/book/contracts) in Tact implicitly [inherits](/book/contracts#traits) the `BaseTrait{:tact}` trait, which contains a number of the most useful [internal functions](/book/contracts#internal-functions) for any kind of contract, and a constant `self.storageReserve{:tact}` aimed at advanced users of Tact.
+Every [contract](/book/contracts) in Tact implicitly [inherits](/book/contracts#traits) the `BaseTrait{:tact}` trait, which contains a number of [internal functions](/book/contracts#internal-functions) for any contract and a constant `self.storageReserve{:tact}` aimed at advanced users of Tact.
 
 :::tip
 
@@ -26,7 +26,7 @@ Usage example:
 
 ```tact
 contract AllYourStorageBelongsToUs {
-    // This would change the behavior of self.forward() function,
+    // This would change the behavior of the self.forward() function,
     // causing it to try reserving this amount of nanoToncoins before
     // forwarding a message with SendRemainingBalance mode
     override const storageReserve: Int = ton("0.1");
@@ -89,16 +89,16 @@ self.notify("Beware, this is my reply to you!".asComment());
 virtual fun forward(to: Address, body: Cell?, bounce: Bool, init: StateInit?);
 ```
 
-[Queues the message](/book/send#outbound-message-processing) (bounceable or non-bounceable) to be sent to the specified address `to`. Optionally, you may provide a `body` of the message and the [`init` package](/book/expressions#initof).
+[Queues the message](/book/send#outbound-message-processing) (bounceable or non-bounceable) to be sent to the specified address `to`. Optionally, you may provide a `body` for the message and the [`init` package](/book/expressions#initof).
 
-When [`self.storageReserve{:tact}`](#self-storagereserve) constant is overwritten to be greater than $0$, before sending a message it also tries to reserve the `self.storageReserve{:tact}` amount of [nanoToncoins][nano] from the remaining balance before making the send in the [`SendRemainingBalance{:tact}`](/book/message-mode#base-modes) ($128$) mode.
+When the [`self.storageReserve{:tact}`](#self-storagereserve) constant is overridden to be greater than 0, it also attempts to reserve the `self.storageReserve{:tact}` amount of [nanoToncoins][nano] from the remaining balance before sending the message in the [`SendRemainingBalance{:tact}`](/book/message-mode#base-modes) ($128$) mode.
 
-In case reservation attempt fails and in the default case without the attempt, the message is sent with the [`SendRemainingValue{:tact}`](/book/message-mode#base-modes) ($64$) mode instead.
+In case the reservation attempt fails, or in the default case without the attempt, the message is sent with the [`SendRemainingValue{:tact}`](/book/message-mode#base-modes) ($64$) mode instead.
 
 :::note
 
-  Note, that `self.forward(){:tact}` never sends additional [nanoToncoins][nano] on top of what's available on the balance.\
-  To be able to send more [nanoToncoins][nano] with a single message, use the [`send(){:tact}`](/ref/core-common#send) function.
+  Note that `self.forward(){:tact}` never sends additional [nanoToncoins][nano] on top of what's available in the balance.\
+  To send more [nanoToncoins][nano] with a single message, use the [`send(){:tact}`](/ref/core-send#send) function.
 
 :::
 
@@ -121,14 +121,14 @@ contract Payout with Ownable {
         self.completed = false;
     }
 
-    // ... some actions there ...
+    // ... some actions here ...
 
     // Bounced receiver function, which is called when the specified outgoing message bounces back
     bounced(msg: bounced<PayoutOk>) {
         // Reset completed flag if our message bounced
         self.completed = false;
 
-        // Send a notification that the payout failed using the remaining funds for processing this send
+        // Send a notification that the payout failed, using the remaining funds to process this send
         self.forward(self.owner, "Payout failed".asComment(), false, null);
     }
 }

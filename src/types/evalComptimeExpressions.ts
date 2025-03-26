@@ -52,7 +52,7 @@ export function evalComptimeExpressions(
             case "struct": {
                 {
                     for (const field of aggregateTy.fields) {
-                        if (field.ast.initializer !== null) {
+                        if (field.ast.initializer !== undefined) {
                             field.default = evalConstantExpression(
                                 field.ast.initializer,
                                 ctx,

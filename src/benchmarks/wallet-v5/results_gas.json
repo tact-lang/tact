@@ -1,0 +1,54 @@
+{
+  "results": [
+    {
+      "label": "FunC",
+      "gas": {
+        "externalTransfer": "4939",
+        "addExtension": "6110",
+        "internalTransfer": "5645",
+        "extensionTransfer": "3854"
+      },
+      "pr": "https://github.com/ton-blockchain/wallet-contract-v5"
+    },
+    {
+      "label": "1.6.1",
+      "pr": "https://github.com/tact-lang/tact/pull/1859",
+      "gas": {
+        "externalTransfer": "7959",
+        "addExtension": "8282",
+        "internalTransfer": "8974",
+        "extensionTransfer": "5061"
+      }
+    },
+    {
+      "label": "1.6.3 with fallback special cases and compatible exit code for Jetton",
+      "pr": "https://github.com/tact-lang/tact/pull/2396",
+      "gas": {
+        "externalTransfer": "8059",
+        "addExtension": "8382",
+        "internalTransfer": "8711",
+        "extensionTransfer": "4780"
+      }
+    },
+    {
+      "label": "1.6.4 with no selector hack",
+      "pr": null,
+      "gas": {
+        "externalTransfer": "8069",
+        "addExtension": "8392",
+        "internalTransfer": "8991",
+        "extensionTransfer": "5060"
+      }
+    },
+    {
+      "label": "1.6.4 with the new selector hack",
+      "pr": "https://github.com/tact-lang/tact/pull/2398",
+      "gas": {
+        "externalTransfer": "8003",
+        "addExtension": "8326",
+        "internalTransfer": "8845",
+        "extensionTransfer": "4914"
+      }
+    }
+  ]
+}

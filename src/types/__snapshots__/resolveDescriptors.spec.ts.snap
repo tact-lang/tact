@@ -63,6 +63,15 @@ exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-ret-non-
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for asm-getter-outside-contract 1`] = `
+"<unknown>:6:5: Getters must be defined within a contract
+  5 | 
+> 6 | asm get fun illegalGetter(): Int {
+          ^~~
+  7 |     DEPTH
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for const-decl-default-field-wrong-initializer-type copy 1`] = `
 "<unknown>:4:17: Constant "C" has declared type "Bool", but its initializer has incompatible type "Int"
   3 | 
@@ -1504,7 +1513,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-ret-shuffl
           },
         },
       ],
-      "return": null,
+      "return": undefined,
       "shuffle": {
         "args": [
           {
@@ -1642,7 +1651,7 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-no-shuffle 2`
           },
         },
       ],
-      "return": null,
+      "return": undefined,
       "shuffle": {
         "args": [],
         "ret": [],
@@ -1716,9 +1725,9 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
     "ast": {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 6,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": fst: Int,
           "name": {
@@ -1735,9 +1744,9 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": snd: Int,
           "name": {
@@ -1779,9 +1788,9 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 6,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": fst: Int,
           "name": {
@@ -1819,9 +1828,9 @@ exports[`resolveDescriptors should resolve descriptors for asm-fun-shuffle-pair 
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": snd: Int,
           "name": {
@@ -2062,7 +2071,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
     "ast": {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 9,
           "initializer": {
             "base": 10,
@@ -2112,7 +2121,7 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 9,
           "initializer": {
             "base": 10,
@@ -2233,9 +2242,9 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
     "ast": {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": s: Int?,
           "name": {
@@ -2282,9 +2291,9 @@ exports[`resolveDescriptors should resolve descriptors for const-decl-struct-wit
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": s: Int?,
           "name": {
@@ -2440,7 +2449,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
             "text": "uint32",
           },
           "id": 11,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int as uint32,
           "name": {
@@ -2468,7 +2477,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
         "loc": A,
         "text": "A",
       },
-      "opcode": null,
+      "opcode": undefined,
     },
     "constants": [],
     "dependsOn": [],
@@ -2492,7 +2501,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-slic
             "text": "uint32",
           },
           "id": 11,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int as uint32,
           "name": {
@@ -2898,7 +2907,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             "text": "uint32",
           },
           "id": 11,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int as uint32,
           "name": {
@@ -2915,9 +2924,9 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 14,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Bool,
           "name": {
@@ -2941,7 +2950,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             "text": "uint256",
           },
           "id": 18,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": c: Int as uint256,
           "name": {
@@ -2971,7 +2980,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         "loc": A,
         "text": "A",
       },
-      "opcode": null,
+      "opcode": undefined,
     },
     "constants": [],
     "dependsOn": [],
@@ -2995,7 +3004,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             "text": "uint32",
           },
           "id": 11,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int as uint32,
           "name": {
@@ -3032,9 +3041,9 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 14,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Bool,
           "name": {
@@ -3079,7 +3088,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-bounced-too-
             "text": "uint256",
           },
           "id": 18,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": c: Int as uint256,
           "name": {
@@ -4409,7 +4418,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 11,
           "initializer": {
             "base": 10,
@@ -4434,7 +4443,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 15,
           "initializer": {
             "base": 10,
@@ -4466,7 +4475,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
             "text": "remaining",
           },
           "id": 19,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": s: Cell as remaining,
           "name": {
@@ -4574,7 +4583,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 11,
           "initializer": {
             "base": 10,
@@ -4620,7 +4629,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 15,
           "initializer": {
             "base": 10,
@@ -4673,7 +4682,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-decl-remaind
             "text": "remaining",
           },
           "id": 19,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": s: Cell as remaining,
           "name": {
@@ -4903,7 +4912,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
             "text": "uint32",
           },
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int as uint32,
           "name": {
@@ -4931,7 +4940,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
         "loc": A,
         "text": "A",
       },
-      "opcode": null,
+      "opcode": undefined,
     },
     "constants": [],
     "dependsOn": [],
@@ -4955,7 +4964,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-external-fal
             "text": "uint32",
           },
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int as uint32,
           "name": {
@@ -5353,7 +5362,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -5403,7 +5412,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -5473,7 +5482,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -5545,7 +5554,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -5671,7 +5680,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 {
                   "kind": "function_attribute",
                   "loc": get,
-                  "methodId": null,
+                  "methodId": undefined,
                   "type": "get",
                 },
               ],
@@ -5721,7 +5730,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 {
                   "kind": "function_attribute",
                   "loc": get,
-                  "methodId": null,
+                  "methodId": undefined,
                   "type": "get",
                 },
               ],
@@ -5862,7 +5871,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -5926,7 +5935,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -6010,7 +6019,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -6082,7 +6091,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -6208,7 +6217,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 {
                   "kind": "function_attribute",
                   "loc": get,
-                  "methodId": null,
+                  "methodId": undefined,
                   "type": "get",
                 },
               ],
@@ -6272,7 +6281,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-getter-overr
                 {
                   "kind": "function_attribute",
                   "loc": get,
-                  "methodId": null,
+                  "methodId": undefined,
                   "type": "get",
                 },
               ],
@@ -6425,7 +6434,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
             "text": "int32",
           },
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int as int32,
           "name": {
@@ -6477,7 +6486,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
             "text": "int32",
           },
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int as int32,
           "name": {
@@ -6530,7 +6539,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
             "text": "int32",
           },
           "id": 16,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int as int32,
           "name": {
@@ -6590,7 +6599,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
             "text": "int32",
           },
           "id": 16,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int as int32,
           "name": {
@@ -6685,7 +6694,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
                 "text": "int32",
               },
               "id": 9,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f: Int as int32,
               "name": {
@@ -6737,7 +6746,7 @@ exports[`resolveDescriptors should resolve descriptors for contract-with-as-type
                 "text": "int32",
               },
               "id": 9,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f: Int as int32,
               "name": {
@@ -7655,9 +7664,9 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 10,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -7674,9 +7683,9 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 13,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Bool,
           "name": {
@@ -7715,7 +7724,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
             "text": "hello",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         {
@@ -7732,7 +7741,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
             "text": "hello2",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -7778,9 +7787,9 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 10,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -7817,9 +7826,9 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 13,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Bool,
           "name": {
@@ -7862,7 +7871,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
             "text": "hello",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -7899,7 +7908,7 @@ exports[`resolveDescriptors should resolve descriptors for init-vars-analysis-un
             "text": "hello2",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -8154,7 +8163,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         "text": "testFunc2",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "expression": {
@@ -8235,7 +8244,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
           },
         },
       ],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "expression": {
@@ -8396,9 +8405,9 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
     "ast": {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 10,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": p: Int,
           "name": {
@@ -8442,9 +8451,9 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 10,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": p: Int,
           "name": {
@@ -8490,9 +8499,9 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 15,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -8569,7 +8578,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -8611,7 +8620,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -8688,9 +8697,9 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 15,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -8724,7 +8733,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -8788,7 +8797,7 @@ exports[`resolveDescriptors should resolve descriptors for item-funs-with-errors
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -9594,9 +9603,9 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 11,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m: map<Int, Int as coins>,
           "name": {
@@ -9607,7 +9616,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
           },
           "type": {
             "id": 10,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 7,
               "kind": "type_id",
@@ -9635,7 +9644,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -9685,7 +9694,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               },
               "type": {
                 "id": 18,
-                "keyStorageType": null,
+                "keyStorageType": undefined,
                 "keyType": {
                   "id": 15,
                   "kind": "type_id",
@@ -9909,9 +9918,9 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 11,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m: map<Int, Int as coins>,
           "name": {
@@ -9922,7 +9931,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
           },
           "type": {
             "id": 10,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 7,
               "kind": "type_id",
@@ -9965,7 +9974,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -10015,7 +10024,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-coins 1`
               },
               "type": {
                 "id": 18,
-                "keyStorageType": null,
+                "keyStorageType": undefined,
                 "keyType": {
                   "id": 15,
                   "kind": "type_id",
@@ -10365,9 +10374,9 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 11,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m1: map<Int, Int as varint16>,
           "name": {
@@ -10378,7 +10387,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
           },
           "type": {
             "id": 10,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 7,
               "kind": "type_id",
@@ -10402,9 +10411,9 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 17,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m2: map<Int, Int as varint32>,
           "name": {
@@ -10415,7 +10424,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
           },
           "type": {
             "id": 16,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 13,
               "kind": "type_id",
@@ -10443,7 +10452,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -10493,7 +10502,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
               },
               "type": {
                 "id": 24,
-                "keyStorageType": null,
+                "keyStorageType": undefined,
                 "keyType": {
                   "id": 21,
                   "kind": "type_id",
@@ -10684,7 +10693,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -10734,7 +10743,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
               },
               "type": {
                 "id": 65,
-                "keyStorageType": null,
+                "keyStorageType": undefined,
                 "keyType": {
                   "id": 62,
                   "kind": "type_id",
@@ -10966,9 +10975,9 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 11,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m1: map<Int, Int as varint16>,
           "name": {
@@ -10979,7 +10988,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
           },
           "type": {
             "id": 10,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 7,
               "kind": "type_id",
@@ -11027,9 +11036,9 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 17,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m2: map<Int, Int as varint32>,
           "name": {
@@ -11040,7 +11049,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
           },
           "type": {
             "id": 16,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 13,
               "kind": "type_id",
@@ -11083,7 +11092,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -11133,7 +11142,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
               },
               "type": {
                 "id": 24,
-                "keyStorageType": null,
+                "keyStorageType": undefined,
                 "keyType": {
                   "id": 21,
                   "kind": "type_id",
@@ -11346,7 +11355,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -11396,7 +11405,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varint 1
               },
               "type": {
                 "id": 65,
-                "keyStorageType": null,
+                "keyStorageType": undefined,
                 "keyType": {
                   "id": 62,
                   "kind": "type_id",
@@ -11754,9 +11763,9 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 11,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m1: map<Int, Int as varuint16>,
           "name": {
@@ -11767,7 +11776,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
           },
           "type": {
             "id": 10,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 7,
               "kind": "type_id",
@@ -11791,9 +11800,9 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 17,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m2: map<Int, Int as varuint32>,
           "name": {
@@ -11804,7 +11813,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
           },
           "type": {
             "id": 16,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 13,
               "kind": "type_id",
@@ -11832,7 +11841,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -11882,7 +11891,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
               },
               "type": {
                 "id": 24,
-                "keyStorageType": null,
+                "keyStorageType": undefined,
                 "keyType": {
                   "id": 21,
                   "kind": "type_id",
@@ -12073,7 +12082,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -12123,7 +12132,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
               },
               "type": {
                 "id": 65,
-                "keyStorageType": null,
+                "keyStorageType": undefined,
                 "keyType": {
                   "id": 62,
                   "kind": "type_id",
@@ -12355,9 +12364,9 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 11,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m1: map<Int, Int as varuint16>,
           "name": {
@@ -12368,7 +12377,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
           },
           "type": {
             "id": 10,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 7,
               "kind": "type_id",
@@ -12416,9 +12425,9 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 17,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m2: map<Int, Int as varuint32>,
           "name": {
@@ -12429,7 +12438,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
           },
           "type": {
             "id": 16,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 13,
               "kind": "type_id",
@@ -12472,7 +12481,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -12522,7 +12531,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
               },
               "type": {
                 "id": 24,
-                "keyStorageType": null,
+                "keyStorageType": undefined,
                 "keyType": {
                   "id": 21,
                   "kind": "type_id",
@@ -12735,7 +12744,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
             {
               "kind": "function_attribute",
               "loc": get,
-              "methodId": null,
+              "methodId": undefined,
               "type": "get",
             },
           ],
@@ -12785,7 +12794,7 @@ exports[`resolveDescriptors should resolve descriptors for map-value-as-varuint 
               },
               "type": {
                 "id": 65,
-                "keyStorageType": null,
+                "keyStorageType": undefined,
                 "keyType": {
                   "id": 62,
                   "kind": "type_id",
@@ -13169,9 +13178,9 @@ exports[`resolveDescriptors should resolve descriptors for message-decl-remainde
     "ast": {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 10,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -13188,9 +13197,9 @@ exports[`resolveDescriptors should resolve descriptors for message-decl-remainde
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 13,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
@@ -13214,7 +13223,7 @@ exports[`resolveDescriptors should resolve descriptors for message-decl-remainde
             "text": "remaining",
           },
           "id": 17,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": s: Cell as remaining,
           "name": {
@@ -13244,7 +13253,7 @@ exports[`resolveDescriptors should resolve descriptors for message-decl-remainde
         "loc": Test,
         "text": "Test",
       },
-      "opcode": null,
+      "opcode": undefined,
     },
     "constants": [],
     "dependsOn": [],
@@ -13261,9 +13270,9 @@ exports[`resolveDescriptors should resolve descriptors for message-decl-remainde
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 10,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -13301,9 +13310,9 @@ exports[`resolveDescriptors should resolve descriptors for message-decl-remainde
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 13,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
@@ -13348,7 +13357,7 @@ exports[`resolveDescriptors should resolve descriptors for message-decl-remainde
             "text": "remaining",
           },
           "id": 17,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": s: Cell as remaining,
           "name": {
@@ -13474,7 +13483,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
             "text": "uint4",
           },
           "id": 16,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": field: Int as uint4,
           "name": {
@@ -13570,7 +13579,7 @@ exports[`resolveDescriptors should resolve descriptors for message-opcode-expr 1
             "text": "uint4",
           },
           "id": 16,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": field: Int as uint4,
           "name": {
@@ -20452,7 +20461,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -20486,7 +20495,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -20544,7 +20553,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -20591,7 +20600,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -20641,7 +20650,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -20675,7 +20684,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -20737,7 +20746,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -20771,7 +20780,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -20829,7 +20838,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -20876,7 +20885,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -20926,7 +20935,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -20960,7 +20969,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -21086,7 +21095,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -21120,7 +21129,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -21178,7 +21187,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -21232,7 +21241,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -21358,7 +21367,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -21392,7 +21401,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -21454,7 +21463,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -21488,7 +21497,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -21540,7 +21549,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "bar",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -21574,7 +21583,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "bar",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -21626,7 +21635,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "baz",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -21660,7 +21669,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "baz",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -21718,7 +21727,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -21772,7 +21781,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -21807,7 +21816,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "bar",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -21842,7 +21851,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "baz",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -21904,7 +21913,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -21938,7 +21947,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -21990,7 +21999,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "bar",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -22024,7 +22033,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "bar",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -22076,7 +22085,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "baz",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -22110,7 +22119,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "baz",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -22204,7 +22213,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -22238,7 +22247,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -22296,7 +22305,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -22344,7 +22353,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -22438,7 +22447,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -22472,7 +22481,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -22534,7 +22543,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -22568,7 +22577,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -22626,7 +22635,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -22667,7 +22676,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -22729,7 +22738,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -22763,7 +22772,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -22857,7 +22866,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -22889,7 +22898,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -22964,7 +22973,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -23014,7 +23023,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -23046,7 +23055,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -23124,7 +23133,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -23197,7 +23206,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -23247,7 +23256,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "foo",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
               ],
@@ -23279,7 +23288,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "foo",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
                 "isAbstract": false,
@@ -23334,7 +23343,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -23366,7 +23375,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -23427,7 +23436,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -23475,7 +23484,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -23592,7 +23601,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -23665,7 +23674,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "foo",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
                 "isAbstract": false,
@@ -23715,7 +23724,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                         "text": "foo",
                       },
                       "params": [],
-                      "return": null,
+                      "return": undefined,
                       "statements": [],
                     },
                   ],
@@ -23747,7 +23756,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                         "text": "foo",
                       },
                       "params": [],
-                      "return": null,
+                      "return": undefined,
                       "statements": [],
                     },
                     "isAbstract": false,
@@ -23802,7 +23811,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "foo",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
               ],
@@ -23834,7 +23843,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "foo",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
                 "isAbstract": false,
@@ -23912,7 +23921,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -23962,7 +23971,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "foo",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
               ],
@@ -23994,7 +24003,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "foo",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
                 "isAbstract": false,
@@ -24049,7 +24058,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -24081,7 +24090,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -24207,7 +24216,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -24246,7 +24255,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -24354,7 +24363,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -24404,7 +24413,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -24443,7 +24452,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -24569,7 +24578,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -24617,7 +24626,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -24734,7 +24743,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -24784,7 +24793,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "foo",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
               ],
@@ -24823,7 +24832,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "foo",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
                 "isAbstract": false,
@@ -24943,7 +24952,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -24982,7 +24991,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -25141,7 +25150,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "bar",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -25175,7 +25184,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "bar",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -25227,7 +25236,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "baz",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -25268,7 +25277,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "baz",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -25303,7 +25312,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "bar",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -25353,7 +25362,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "bar",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -25387,7 +25396,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "bar",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -25442,7 +25451,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "ban",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -25483,7 +25492,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "ban",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -25518,7 +25527,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "bar",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -25568,7 +25577,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "bar",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -25602,7 +25611,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "bar",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -25663,7 +25672,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "bar",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -25716,7 +25725,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "bar",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -25751,7 +25760,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "baz",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -25786,7 +25795,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "ban",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -25836,7 +25845,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "baz",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -25877,7 +25886,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "baz",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -25912,7 +25921,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "bar",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -25962,7 +25971,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "bar",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
               ],
@@ -25996,7 +26005,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "bar",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
                 "isAbstract": false,
@@ -26051,7 +26060,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "bar",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -26085,7 +26094,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "bar",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -26137,7 +26146,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "ban",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -26178,7 +26187,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "ban",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -26213,7 +26222,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "bar",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -26263,7 +26272,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "bar",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
               ],
@@ -26297,7 +26306,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "bar",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
                 "isAbstract": false,
@@ -26426,7 +26435,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -26460,7 +26469,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -26518,7 +26527,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -26571,7 +26580,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -26653,7 +26662,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -26687,7 +26696,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -26749,7 +26758,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -26783,7 +26792,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -26835,7 +26844,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "bar",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -26876,7 +26885,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "bar",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -26911,7 +26920,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -26961,7 +26970,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -26995,7 +27004,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -27050,7 +27059,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "baz",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -27084,7 +27093,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "baz",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -27142,7 +27151,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
       ],
@@ -27195,7 +27204,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "foo",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -27230,7 +27239,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "bar",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -27265,7 +27274,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
             "text": "baz",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [],
         },
         "isAbstract": false,
@@ -27315,7 +27324,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "bar",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -27356,7 +27365,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "bar",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -27391,7 +27400,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -27441,7 +27450,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "foo",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
               ],
@@ -27475,7 +27484,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                     "text": "foo",
                   },
                   "params": [],
-                  "return": null,
+                  "return": undefined,
                   "statements": [],
                 },
                 "isAbstract": false,
@@ -27530,7 +27539,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -27564,7 +27573,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "foo",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -27616,7 +27625,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "baz",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
           ],
@@ -27650,7 +27659,7 @@ exports[`resolveDescriptors should resolve descriptors for override-for-existing
                 "text": "baz",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [],
             },
             "isAbstract": false,
@@ -27886,7 +27895,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         "text": "scopeUntil",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "condition": {
@@ -27985,7 +27994,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         "text": "scopeRepeat",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "id": 19,
@@ -28085,7 +28094,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         "text": "scopeWhile",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "condition": {
@@ -28184,7 +28193,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
         "text": "scopeIf",
       },
       "params": [],
-      "return": null,
+      "return": undefined,
       "statements": [
         {
           "condition": {
@@ -28193,7 +28202,7 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
             "loc": true,
             "value": true,
           },
-          "falseStatements": null,
+          "falseStatements": undefined,
           "id": 43,
           "kind": "statement_condition",
           "loc": if (true) {
@@ -28269,6 +28278,634 @@ exports[`resolveDescriptors should resolve descriptors for scope-loops 2`] = `
 ]
 `;
 
+exports[`resolveDescriptors should resolve descriptors for small-bounced-type 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Bool;,
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 6,
+      "kind": "trait",
+      "loc": trait BaseTrait {},
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "fields": [
+        {
+          "as": {
+            "id": 10,
+            "kind": "id",
+            "loc": uint8,
+            "text": "uint8",
+          },
+          "id": 11,
+          "initializer": undefined,
+          "kind": "field_decl",
+          "loc": queryId: Int as uint8,
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": queryId,
+            "text": "queryId",
+          },
+          "type": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "as": undefined,
+          "id": 14,
+          "initializer": undefined,
+          "kind": "field_decl",
+          "loc": amount: Int,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": amount,
+            "text": "amount",
+          },
+          "type": {
+            "id": 13,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+      ],
+      "id": 15,
+      "kind": "message_decl",
+      "loc": message Add {
+    queryId: Int as uint8;
+    amount: Int;
+},
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "loc": Add,
+        "text": "Add",
+      },
+      "opcode": undefined,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "queryId",
+          "type": {
+            "format": 8,
+            "kind": "simple",
+            "optional": false,
+            "type": "uint",
+          },
+        },
+        "as": "uint8",
+        "ast": {
+          "as": {
+            "id": 10,
+            "kind": "id",
+            "loc": uint8,
+            "text": "uint8",
+          },
+          "id": 11,
+          "initializer": undefined,
+          "kind": "field_decl",
+          "loc": queryId: Int as uint8,
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": queryId,
+            "text": "queryId",
+          },
+          "type": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": queryId: Int as uint8,
+        "name": "queryId",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "abi": {
+          "name": "amount",
+          "type": {
+            "format": 257,
+            "kind": "simple",
+            "optional": false,
+            "type": "int",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": undefined,
+          "id": 14,
+          "initializer": undefined,
+          "kind": "field_decl",
+          "loc": amount: Int,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": amount,
+            "text": "amount",
+          },
+          "type": {
+            "id": 13,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        "default": undefined,
+        "index": 1,
+        "loc": amount: Int,
+        "name": "amount",
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": {
+      "base": 10,
+      "id": 0,
+      "kind": "number",
+      "loc": ,
+      "value": 442638869n,
+    },
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "Add",
+    "origin": "user",
+    "partialFieldCount": 1,
+    "receivers": [],
+    "signature": "Add{queryId:uint8,amount:int257}",
+    "tlb": "add#1a622215 queryId:uint8 amount:int257 = Add",
+    "traits": [],
+    "uid": 49489,
+  },
+  {
+    "ast": {
+      "fields": [
+        {
+          "as": undefined,
+          "id": 19,
+          "initializer": undefined,
+          "kind": "field_decl",
+          "loc": val: Bool,
+          "name": {
+            "id": 17,
+            "kind": "id",
+            "loc": val,
+            "text": "val",
+          },
+          "type": {
+            "id": 18,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+        },
+      ],
+      "id": 20,
+      "kind": "message_decl",
+      "loc": message Is {
+    val: Bool;
+},
+      "name": {
+        "id": 16,
+        "kind": "id",
+        "loc": Is,
+        "text": "Is",
+      },
+      "opcode": undefined,
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [
+      {
+        "abi": {
+          "name": "val",
+          "type": {
+            "kind": "simple",
+            "optional": false,
+            "type": "bool",
+          },
+        },
+        "as": null,
+        "ast": {
+          "as": undefined,
+          "id": 19,
+          "initializer": undefined,
+          "kind": "field_decl",
+          "loc": val: Bool,
+          "name": {
+            "id": 17,
+            "kind": "id",
+            "loc": val,
+            "text": "val",
+          },
+          "type": {
+            "id": 18,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+        },
+        "default": undefined,
+        "index": 0,
+        "loc": val: Bool,
+        "name": "val",
+        "type": {
+          "kind": "ref",
+          "name": "Bool",
+          "optional": false,
+        },
+      },
+    ],
+    "functions": Map {},
+    "header": {
+      "base": 10,
+      "id": 0,
+      "kind": "number",
+      "loc": ,
+      "value": 2269302156n,
+    },
+    "init": null,
+    "interfaces": [],
+    "kind": "struct",
+    "name": "Is",
+    "origin": "user",
+    "partialFieldCount": 1,
+    "receivers": [],
+    "signature": "Is{val:bool}",
+    "tlb": "is#8742cd8c val:bool = Is",
+    "traits": [],
+    "uid": 63904,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "id": 27,
+          "kind": "receiver",
+          "loc": bounced(msg: bounced<Add>) {
+        // ...
+    },
+          "selector": {
+            "id": 26,
+            "kind": "bounce",
+            "loc": bounced,
+            "param": {
+              "id": 25,
+              "kind": "typed_parameter",
+              "loc": msg: bounced<Add>,
+              "name": {
+                "id": 22,
+                "kind": "id",
+                "loc": msg,
+                "text": "msg",
+              },
+              "type": {
+                "id": 24,
+                "kind": "bounced_message_type",
+                "loc": bounced<Add>,
+                "messageType": {
+                  "id": 23,
+                  "kind": "type_id",
+                  "loc": Add,
+                  "text": "Add",
+                },
+              },
+            },
+          },
+          "statements": [],
+        },
+        {
+          "id": 33,
+          "kind": "receiver",
+          "loc": bounced(msg: bounced<Is>) {
+        // ...
+    },
+          "selector": {
+            "id": 32,
+            "kind": "bounce",
+            "loc": bounced,
+            "param": {
+              "id": 31,
+              "kind": "typed_parameter",
+              "loc": msg: bounced<Is>,
+              "name": {
+                "id": 28,
+                "kind": "id",
+                "loc": msg,
+                "text": "msg",
+              },
+              "type": {
+                "id": 30,
+                "kind": "bounced_message_type",
+                "loc": bounced<Is>,
+                "messageType": {
+                  "id": 29,
+                  "kind": "type_id",
+                  "loc": Is,
+                  "text": "Is",
+                },
+              },
+            },
+          },
+          "statements": [],
+        },
+      ],
+      "id": 34,
+      "kind": "contract",
+      "loc": contract Test {
+    bounced(msg: bounced<Add>) {
+        // ...
+    }
+
+    bounced(msg: bounced<Is>) {
+        // ...
+    }
+},
+      "name": {
+        "id": 21,
+        "kind": "id",
+        "loc": Test,
+        "text": "Test",
+      },
+      "params": undefined,
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 36,
+        "kind": "contract_init",
+        "loc": contract Test {
+    bounced(msg: bounced<Add>) {
+        // ...
+    }
+
+    bounced(msg: bounced<Is>) {
+        // ...
+    }
+},
+        "params": [],
+        "statements": [],
+      },
+      "kind": "init-function",
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "Test",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [
+      {
+        "ast": {
+          "id": 27,
+          "kind": "receiver",
+          "loc": bounced(msg: bounced<Add>) {
+        // ...
+    },
+          "selector": {
+            "id": 26,
+            "kind": "bounce",
+            "loc": bounced,
+            "param": {
+              "id": 25,
+              "kind": "typed_parameter",
+              "loc": msg: bounced<Add>,
+              "name": {
+                "id": 22,
+                "kind": "id",
+                "loc": msg,
+                "text": "msg",
+              },
+              "type": {
+                "id": 24,
+                "kind": "bounced_message_type",
+                "loc": bounced<Add>,
+                "messageType": {
+                  "id": 23,
+                  "kind": "type_id",
+                  "loc": Add,
+                  "text": "Add",
+                },
+              },
+            },
+          },
+          "statements": [],
+        },
+        "effects": Set {},
+        "selector": {
+          "bounced": true,
+          "kind": "bounce-binary",
+          "name": {
+            "id": 22,
+            "kind": "id",
+            "loc": msg,
+            "text": "msg",
+          },
+          "type": "Add",
+        },
+      },
+      {
+        "ast": {
+          "id": 33,
+          "kind": "receiver",
+          "loc": bounced(msg: bounced<Is>) {
+        // ...
+    },
+          "selector": {
+            "id": 32,
+            "kind": "bounce",
+            "loc": bounced,
+            "param": {
+              "id": 31,
+              "kind": "typed_parameter",
+              "loc": msg: bounced<Is>,
+              "name": {
+                "id": 28,
+                "kind": "id",
+                "loc": msg,
+                "text": "msg",
+              },
+              "type": {
+                "id": 30,
+                "kind": "bounced_message_type",
+                "loc": bounced<Is>,
+                "messageType": {
+                  "id": 29,
+                  "kind": "type_id",
+                  "loc": Is,
+                  "text": "Is",
+                },
+              },
+            },
+          },
+          "statements": [],
+        },
+        "effects": Set {},
+        "selector": {
+          "bounced": true,
+          "kind": "bounce-binary",
+          "name": {
+            "id": 28,
+            "kind": "id",
+            "loc": msg,
+            "text": "msg",
+          },
+          "type": "Is",
+        },
+      },
+    ],
+    "signature": "Test{}",
+    "tlb": "_  = Test",
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 6,
+          "kind": "trait",
+          "loc": trait BaseTrait {},
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+    ],
+    "uid": 44104,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for small-bounced-type 2`] = `[]`;
+
 exports[`resolveDescriptors should resolve descriptors for struct-decl-default-field 1`] = `
 [
   {
@@ -28336,7 +28973,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
     "ast": {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 9,
           "initializer": {
             "base": 10,
@@ -28386,7 +29023,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-default-f
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 9,
           "initializer": {
             "base": 10,
@@ -28538,9 +29175,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
     "ast": {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 10,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -28557,9 +29194,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 13,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Bool,
           "name": {
@@ -28604,9 +29241,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 10,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -28643,9 +29280,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 13,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Bool,
           "name": {
@@ -28690,9 +29327,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
     "ast": {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 18,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Struct1,
           "name": {
@@ -28735,9 +29372,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-nested 1`
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 18,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Struct1,
           "name": {
@@ -28850,9 +29487,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
     "ast": {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 8,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": key: Int,
           "name": {
@@ -28869,9 +29506,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 12,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": value: SomeStruct?,
           "name": {
@@ -28905,7 +29542,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
         "loc": SetIntMap4,
         "text": "SetIntMap4",
       },
-      "opcode": null,
+      "opcode": undefined,
     },
     "constants": [],
     "dependsOn": [],
@@ -28922,9 +29559,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 8,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": key: Int,
           "name": {
@@ -28961,9 +29598,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 12,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": value: SomeStruct?,
           "name": {
@@ -29019,9 +29656,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
     "ast": {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 17,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": value: Int,
           "name": {
@@ -29063,9 +29700,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-non-rec-t
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 17,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": value: Int,
           "name": {
@@ -29207,9 +29844,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
     "ast": {
       "fields": [
         {
-          "as": null,
+          "as": undefined,
           "id": 10,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -29226,9 +29863,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
           },
         },
         {
-          "as": null,
+          "as": undefined,
           "id": 13,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
@@ -29252,7 +29889,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
             "text": "remaining",
           },
           "id": 17,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": s: Cell as remaining,
           "name": {
@@ -29298,9 +29935,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 10,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": a: Int,
           "name": {
@@ -29338,9 +29975,9 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 13,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": b: Int,
           "name": {
@@ -29385,7 +30022,7 @@ exports[`resolveDescriptors should resolve descriptors for struct-decl-remainder
             "text": "remaining",
           },
           "id": 17,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": s: Cell as remaining,
           "name": {
@@ -29598,9 +30235,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 10,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m: map<Int, Int>,
           "name": {
@@ -29611,7 +30248,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
           },
           "type": {
             "id": 9,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 7,
               "kind": "type_id",
@@ -29620,7 +30257,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
             },
             "kind": "map_type",
             "loc": map<Int, Int>,
-            "valueStorageType": null,
+            "valueStorageType": undefined,
             "valueType": {
               "id": 8,
               "kind": "type_id",
@@ -29641,7 +30278,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
             "text": "test",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [
             {
               "id": 17,
@@ -29712,9 +30349,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 10,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m: map<Int, Int>,
           "name": {
@@ -29725,7 +30362,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
           },
           "type": {
             "id": 9,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 7,
               "kind": "type_id",
@@ -29734,7 +30371,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
             },
             "kind": "map_type",
             "loc": map<Int, Int>,
-            "valueStorageType": null,
+            "valueStorageType": undefined,
             "valueType": {
               "id": 8,
               "kind": "type_id",
@@ -29770,7 +30407,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
             "text": "test",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [
             {
               "id": 17,
@@ -29847,9 +30484,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 26,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m: map<Int, Int>,
           "name": {
@@ -29860,7 +30497,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
           },
           "type": {
             "id": 25,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 23,
               "kind": "type_id",
@@ -29869,7 +30506,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
             },
             "kind": "map_type",
             "loc": map<Int, Int>,
-            "valueStorageType": null,
+            "valueStorageType": undefined,
             "valueType": {
               "id": 24,
               "kind": "type_id",
@@ -29916,9 +30553,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 26,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": m: map<Int, Int>,
           "name": {
@@ -29929,7 +30566,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
           },
           "type": {
             "id": 25,
-            "keyStorageType": null,
+            "keyStorageType": undefined,
             "keyType": {
               "id": 23,
               "kind": "type_id",
@@ -29938,7 +30575,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
             },
             "kind": "map_type",
             "loc": map<Int, Int>,
-            "valueStorageType": null,
+            "valueStorageType": undefined,
             "valueType": {
               "id": 24,
               "kind": "type_id",
@@ -29974,7 +30611,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
             "text": "test",
           },
           "params": [],
-          "return": null,
+          "return": undefined,
           "statements": [
             {
               "id": 32,
@@ -30093,9 +30730,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
           "attributes": [],
           "declarations": [
             {
-              "as": null,
+              "as": undefined,
               "id": 10,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": m: map<Int, Int>,
               "name": {
@@ -30106,7 +30743,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
               },
               "type": {
                 "id": 9,
-                "keyStorageType": null,
+                "keyStorageType": undefined,
                 "keyType": {
                   "id": 7,
                   "kind": "type_id",
@@ -30115,7 +30752,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
                 },
                 "kind": "map_type",
                 "loc": map<Int, Int>,
-                "valueStorageType": null,
+                "valueStorageType": undefined,
                 "valueType": {
                   "id": 8,
                   "kind": "type_id",
@@ -30136,7 +30773,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
                 "text": "test",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [
                 {
                   "id": 17,
@@ -30207,9 +30844,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
             },
             "as": null,
             "ast": {
-              "as": null,
+              "as": undefined,
               "id": 10,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": m: map<Int, Int>,
               "name": {
@@ -30220,7 +30857,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
               },
               "type": {
                 "id": 9,
-                "keyStorageType": null,
+                "keyStorageType": undefined,
                 "keyType": {
                   "id": 7,
                   "kind": "type_id",
@@ -30229,7 +30866,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
                 },
                 "kind": "map_type",
                 "loc": map<Int, Int>,
-                "valueStorageType": null,
+                "valueStorageType": undefined,
                 "valueType": {
                   "id": 8,
                   "kind": "type_id",
@@ -30265,7 +30902,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-foreach 1`] = `
                 "text": "test",
               },
               "params": [],
-              "return": null,
+              "return": undefined,
               "statements": [
                 {
                   "id": 17,
@@ -30413,9 +31050,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 8,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int,
           "name": {
@@ -30460,9 +31097,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 8,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int,
           "name": {
@@ -30515,7 +31152,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-
             "text": "int257",
           },
           "id": 15,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int as int257,
           "name": {
@@ -30574,7 +31211,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-
             "text": "int257",
           },
           "id": 15,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int as int257,
           "name": {
@@ -30618,9 +31255,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-
           "attributes": [],
           "declarations": [
             {
-              "as": null,
+              "as": undefined,
               "id": 8,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f: Int,
               "name": {
@@ -30665,9 +31302,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-int-field-with-
             },
             "as": null,
             "ast": {
-              "as": null,
+              "as": undefined,
               "id": 8,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f: Int,
               "name": {
@@ -30791,7 +31428,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int as int32,
           "name": {
@@ -30843,7 +31480,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int as int32,
           "name": {
@@ -30896,7 +31533,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 16,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int as int32,
           "name": {
@@ -30955,7 +31592,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 16,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int as int32,
           "name": {
@@ -31006,7 +31643,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 9,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f: Int as int32,
               "name": {
@@ -31058,7 +31695,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 9,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f: Int as int32,
               "name": {
@@ -31182,7 +31819,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f1: Int as int32,
           "name": {
@@ -31234,7 +31871,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f1: Int as int32,
           "name": {
@@ -31287,7 +31924,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 16,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f1: Int as int32,
           "name": {
@@ -31311,7 +31948,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 20,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f2: Int as int32,
           "name": {
@@ -31371,7 +32008,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 16,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f1: Int as int32,
           "name": {
@@ -31416,7 +32053,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 20,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f2: Int as int32,
           "name": {
@@ -31467,7 +32104,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 9,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f1: Int as int32,
               "name": {
@@ -31519,7 +32156,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 9,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f1: Int as int32,
               "name": {
@@ -31575,7 +32212,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 27,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f1: Int as int32,
           "name": {
@@ -31599,7 +32236,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 31,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f3: Int as int32,
           "name": {
@@ -31659,7 +32296,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 27,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f1: Int as int32,
           "name": {
@@ -31704,7 +32341,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 31,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f3: Int as int32,
           "name": {
@@ -31755,7 +32392,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 9,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f1: Int as int32,
               "name": {
@@ -31807,7 +32444,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 9,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f1: Int as int32,
               "name": {
@@ -31863,7 +32500,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 39,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f1: Int as int32,
           "name": {
@@ -31887,7 +32524,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 43,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f2: Int as int32,
           "name": {
@@ -31911,7 +32548,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 47,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f3: Int as int32,
           "name": {
@@ -31978,7 +32615,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 39,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f1: Int as int32,
           "name": {
@@ -32023,7 +32660,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 43,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f2: Int as int32,
           "name": {
@@ -32068,7 +32705,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
             "text": "int32",
           },
           "id": 47,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f3: Int as int32,
           "name": {
@@ -32119,7 +32756,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 16,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f1: Int as int32,
               "name": {
@@ -32143,7 +32780,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 20,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f2: Int as int32,
               "name": {
@@ -32203,7 +32840,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 16,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f1: Int as int32,
               "name": {
@@ -32248,7 +32885,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 20,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f2: Int as int32,
               "name": {
@@ -32299,7 +32936,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                     "text": "int32",
                   },
                   "id": 9,
-                  "initializer": null,
+                  "initializer": undefined,
                   "kind": "field_decl",
                   "loc": f1: Int as int32,
                   "name": {
@@ -32351,7 +32988,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                     "text": "int32",
                   },
                   "id": 9,
-                  "initializer": null,
+                  "initializer": undefined,
                   "kind": "field_decl",
                   "loc": f1: Int as int32,
                   "name": {
@@ -32407,7 +33044,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 9,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f1: Int as int32,
               "name": {
@@ -32459,7 +33096,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 9,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f1: Int as int32,
               "name": {
@@ -32512,7 +33149,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 27,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f1: Int as int32,
               "name": {
@@ -32536,7 +33173,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 31,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f3: Int as int32,
               "name": {
@@ -32596,7 +33233,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 27,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f1: Int as int32,
               "name": {
@@ -32641,7 +33278,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                 "text": "int32",
               },
               "id": 31,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f3: Int as int32,
               "name": {
@@ -32692,7 +33329,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                     "text": "int32",
                   },
                   "id": 9,
-                  "initializer": null,
+                  "initializer": undefined,
                   "kind": "field_decl",
                   "loc": f1: Int as int32,
                   "name": {
@@ -32744,7 +33381,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-f
                     "text": "int32",
                   },
                   "id": 9,
-                  "initializer": null,
+                  "initializer": undefined,
                   "kind": "field_decl",
                   "loc": f1: Int as int32,
                   "name": {
@@ -32871,7 +33508,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-i
             "text": "int257",
           },
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int as int257,
           "name": {
@@ -32923,7 +33560,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-i
             "text": "int257",
           },
           "id": 9,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int as int257,
           "name": {
@@ -32969,9 +33606,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-i
       "attributes": [],
       "declarations": [
         {
-          "as": null,
+          "as": undefined,
           "id": 15,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int,
           "name": {
@@ -33023,9 +33660,9 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-i
         },
         "as": null,
         "ast": {
-          "as": null,
+          "as": undefined,
           "id": 15,
-          "initializer": null,
+          "initializer": undefined,
           "kind": "field_decl",
           "loc": f: Int,
           "name": {
@@ -33076,7 +33713,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-i
                 "text": "int257",
               },
               "id": 9,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f: Int as int257,
               "name": {
@@ -33128,7 +33765,7 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-i
                 "text": "int257",
               },
               "id": 9,
-              "initializer": null,
+              "initializer": undefined,
               "kind": "field_decl",
               "loc": f: Int as int257,
               "name": {
@@ -33176,3 +33813,1232 @@ exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-i
 `;
 
 exports[`resolveDescriptors should resolve descriptors for trait-with-as-typed-int257-field-with-inheritance-without-typed-field 2`] = `[]`;
+
+exports[`resolveDescriptors should resolve descriptors for wildcard-function-param 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive String;,
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": String,
+        "text": "String",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "String",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 46199,
+  },
+  {
+    "ast": {
+      "id": 6,
+      "kind": "primitive_type_decl",
+      "loc": primitive Cell;,
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": Cell,
+        "text": "Cell",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Cell",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 26294,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for wildcard-function-param 2`] = `
+[
+  {
+    "ast": {
+      "attributes": [],
+      "id": 25,
+      "kind": "function_def",
+      "loc": fun test(a: Int, _: String, _: Int, _: Cell): Int {
+    return a * 2;
+},
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "loc": test,
+        "text": "test",
+      },
+      "params": [
+        {
+          "id": 11,
+          "kind": "typed_parameter",
+          "loc": a: Int,
+          "name": {
+            "id": 9,
+            "kind": "id",
+            "loc": a,
+            "text": "a",
+          },
+          "type": {
+            "id": 10,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "id": 14,
+          "kind": "typed_parameter",
+          "loc": _: String,
+          "name": {
+            "id": 12,
+            "kind": "id",
+            "loc": _,
+            "text": "_",
+          },
+          "type": {
+            "id": 13,
+            "kind": "type_id",
+            "loc": String,
+            "text": "String",
+          },
+        },
+        {
+          "id": 17,
+          "kind": "typed_parameter",
+          "loc": _: Int,
+          "name": {
+            "id": 15,
+            "kind": "id",
+            "loc": _,
+            "text": "_",
+          },
+          "type": {
+            "id": 16,
+            "kind": "type_id",
+            "loc": Int,
+            "text": "Int",
+          },
+        },
+        {
+          "id": 20,
+          "kind": "typed_parameter",
+          "loc": _: Cell,
+          "name": {
+            "id": 18,
+            "kind": "id",
+            "loc": _,
+            "text": "_",
+          },
+          "type": {
+            "id": 19,
+            "kind": "type_id",
+            "loc": Cell,
+            "text": "Cell",
+          },
+        },
+      ],
+      "return": {
+        "id": 8,
+        "kind": "type_id",
+        "loc": Int,
+        "text": "Int",
+      },
+      "statements": [
+        {
+          "expression": {
+            "id": 23,
+            "kind": "op_binary",
+            "left": {
+              "id": 21,
+              "kind": "id",
+              "loc": a,
+              "text": "a",
+            },
+            "loc": a * 2,
+            "op": "*",
+            "right": {
+              "base": 10,
+              "id": 22,
+              "kind": "number",
+              "loc": 2,
+              "value": 2n,
+            },
+          },
+          "id": 24,
+          "kind": "statement_return",
+          "loc": return a * 2;,
+        },
+      ],
+    },
+    "isAbstract": false,
+    "isGetter": false,
+    "isInline": false,
+    "isMutating": false,
+    "isOverride": false,
+    "isVirtual": false,
+    "methodId": null,
+    "name": "test",
+    "origin": "user",
+    "params": [
+      {
+        "loc": a: Int,
+        "name": {
+          "id": 9,
+          "kind": "id",
+          "loc": a,
+          "text": "a",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "loc": _: String,
+        "name": {
+          "id": 12,
+          "kind": "id",
+          "loc": _,
+          "text": "_",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "String",
+          "optional": false,
+        },
+      },
+      {
+        "loc": _: Int,
+        "name": {
+          "id": 15,
+          "kind": "id",
+          "loc": _,
+          "text": "_",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "Int",
+          "optional": false,
+        },
+      },
+      {
+        "loc": _: Cell,
+        "name": {
+          "id": 18,
+          "kind": "id",
+          "loc": _,
+          "text": "_",
+        },
+        "type": {
+          "kind": "ref",
+          "name": "Cell",
+          "optional": false,
+        },
+      },
+    ],
+    "returns": {
+      "kind": "ref",
+      "name": "Int",
+      "optional": false,
+    },
+    "self": null,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for wildcard-function-param2 1`] = `
+[
+  {
+    "ast": {
+      "id": 2,
+      "kind": "primitive_type_decl",
+      "loc": primitive Int;,
+      "name": {
+        "id": 1,
+        "kind": "id",
+        "loc": Int,
+        "text": "Int",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Int",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 38154,
+  },
+  {
+    "ast": {
+      "id": 4,
+      "kind": "primitive_type_decl",
+      "loc": primitive Bool;,
+      "name": {
+        "id": 3,
+        "kind": "id",
+        "loc": Bool,
+        "text": "Bool",
+      },
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "primitive_type_decl",
+    "name": "Bool",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 33424,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [],
+      "id": 6,
+      "kind": "trait",
+      "loc": trait BaseTrait { },
+      "name": {
+        "id": 5,
+        "kind": "id",
+        "loc": BaseTrait,
+        "text": "BaseTrait",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {},
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "BaseTrait",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 1020,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
+          "id": 18,
+          "kind": "function_def",
+          "loc": virtual fun assure(_: Int, _: Int): Bool {
+        return true;
+    },
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": assure,
+            "text": "assure",
+          },
+          "params": [
+            {
+              "id": 12,
+              "kind": "typed_parameter",
+              "loc": _: Int,
+              "name": {
+                "id": 10,
+                "kind": "id",
+                "loc": _,
+                "text": "_",
+              },
+              "type": {
+                "id": 11,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            {
+              "id": 15,
+              "kind": "typed_parameter",
+              "loc": _: Int,
+              "name": {
+                "id": 13,
+                "kind": "id",
+                "loc": _,
+                "text": "_",
+              },
+              "type": {
+                "id": 14,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "return": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 16,
+                "kind": "boolean",
+                "loc": true,
+                "value": true,
+              },
+              "id": 17,
+              "kind": "statement_return",
+              "loc": return true;,
+            },
+          ],
+        },
+      ],
+      "id": 19,
+      "kind": "trait",
+      "loc": trait WildThing {
+    virtual fun assure(_: Int, _: Int): Bool {
+        return true;
+    }
+},
+      "name": {
+        "id": 7,
+        "kind": "id",
+        "loc": WildThing,
+        "text": "WildThing",
+      },
+      "traits": [],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "assure" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": virtual,
+              "type": "virtual",
+            },
+          ],
+          "id": 18,
+          "kind": "function_def",
+          "loc": virtual fun assure(_: Int, _: Int): Bool {
+        return true;
+    },
+          "name": {
+            "id": 8,
+            "kind": "id",
+            "loc": assure,
+            "text": "assure",
+          },
+          "params": [
+            {
+              "id": 12,
+              "kind": "typed_parameter",
+              "loc": _: Int,
+              "name": {
+                "id": 10,
+                "kind": "id",
+                "loc": _,
+                "text": "_",
+              },
+              "type": {
+                "id": 11,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            {
+              "id": 15,
+              "kind": "typed_parameter",
+              "loc": _: Int,
+              "name": {
+                "id": 13,
+                "kind": "id",
+                "loc": _,
+                "text": "_",
+              },
+              "type": {
+                "id": 14,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "return": {
+            "id": 9,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 16,
+                "kind": "boolean",
+                "loc": true,
+                "value": true,
+              },
+              "id": 17,
+              "kind": "statement_return",
+              "loc": return true;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": false,
+        "isVirtual": true,
+        "methodId": null,
+        "name": "assure",
+        "origin": "user",
+        "params": [
+          {
+            "loc": _: Int,
+            "name": {
+              "id": 10,
+              "kind": "id",
+              "loc": _,
+              "text": "_",
+            },
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+          {
+            "loc": _: Int,
+            "name": {
+              "id": 13,
+              "kind": "id",
+              "loc": _,
+              "text": "_",
+            },
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "returns": {
+          "kind": "ref",
+          "name": "Bool",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "WildThing",
+          "optional": false,
+        },
+      },
+    },
+    "header": null,
+    "init": null,
+    "interfaces": [],
+    "kind": "trait",
+    "name": "WildThing",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": null,
+    "tlb": null,
+    "traits": [],
+    "uid": 41038,
+  },
+  {
+    "ast": {
+      "attributes": [],
+      "declarations": [
+        {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 38,
+          "kind": "function_def",
+          "loc": override fun assure(a: Int, b: Int): Bool {
+        return a + b == b + a;
+    },
+          "name": {
+            "id": 22,
+            "kind": "id",
+            "loc": assure,
+            "text": "assure",
+          },
+          "params": [
+            {
+              "id": 26,
+              "kind": "typed_parameter",
+              "loc": a: Int,
+              "name": {
+                "id": 24,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              "type": {
+                "id": 25,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            {
+              "id": 29,
+              "kind": "typed_parameter",
+              "loc": b: Int,
+              "name": {
+                "id": 27,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+              "type": {
+                "id": 28,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "return": {
+            "id": 23,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 36,
+                "kind": "op_binary",
+                "left": {
+                  "id": 32,
+                  "kind": "op_binary",
+                  "left": {
+                    "id": 30,
+                    "kind": "id",
+                    "loc": a,
+                    "text": "a",
+                  },
+                  "loc": a + b,
+                  "op": "+",
+                  "right": {
+                    "id": 31,
+                    "kind": "id",
+                    "loc": b,
+                    "text": "b",
+                  },
+                },
+                "loc": a + b == b + a,
+                "op": "==",
+                "right": {
+                  "id": 35,
+                  "kind": "op_binary",
+                  "left": {
+                    "id": 33,
+                    "kind": "id",
+                    "loc": b,
+                    "text": "b",
+                  },
+                  "loc": b + a,
+                  "op": "+",
+                  "right": {
+                    "id": 34,
+                    "kind": "id",
+                    "loc": a,
+                    "text": "a",
+                  },
+                },
+              },
+              "id": 37,
+              "kind": "statement_return",
+              "loc": return a + b == b + a;,
+            },
+          ],
+        },
+      ],
+      "id": 39,
+      "kind": "contract",
+      "loc": contract YouMakeMyHeartSing with WildThing {
+    override fun assure(a: Int, b: Int): Bool {
+        return a + b == b + a;
+    }
+},
+      "name": {
+        "id": 20,
+        "kind": "id",
+        "loc": YouMakeMyHeartSing,
+        "text": "YouMakeMyHeartSing",
+      },
+      "params": undefined,
+      "traits": [
+        {
+          "id": 21,
+          "kind": "id",
+          "loc": WildThing,
+          "text": "WildThing",
+        },
+      ],
+    },
+    "constants": [],
+    "dependsOn": [],
+    "fields": [],
+    "functions": Map {
+      "assure" => {
+        "ast": {
+          "attributes": [
+            {
+              "kind": "function_attribute",
+              "loc": override,
+              "type": "override",
+            },
+          ],
+          "id": 38,
+          "kind": "function_def",
+          "loc": override fun assure(a: Int, b: Int): Bool {
+        return a + b == b + a;
+    },
+          "name": {
+            "id": 22,
+            "kind": "id",
+            "loc": assure,
+            "text": "assure",
+          },
+          "params": [
+            {
+              "id": 26,
+              "kind": "typed_parameter",
+              "loc": a: Int,
+              "name": {
+                "id": 24,
+                "kind": "id",
+                "loc": a,
+                "text": "a",
+              },
+              "type": {
+                "id": 25,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+            {
+              "id": 29,
+              "kind": "typed_parameter",
+              "loc": b: Int,
+              "name": {
+                "id": 27,
+                "kind": "id",
+                "loc": b,
+                "text": "b",
+              },
+              "type": {
+                "id": 28,
+                "kind": "type_id",
+                "loc": Int,
+                "text": "Int",
+              },
+            },
+          ],
+          "return": {
+            "id": 23,
+            "kind": "type_id",
+            "loc": Bool,
+            "text": "Bool",
+          },
+          "statements": [
+            {
+              "expression": {
+                "id": 36,
+                "kind": "op_binary",
+                "left": {
+                  "id": 32,
+                  "kind": "op_binary",
+                  "left": {
+                    "id": 30,
+                    "kind": "id",
+                    "loc": a,
+                    "text": "a",
+                  },
+                  "loc": a + b,
+                  "op": "+",
+                  "right": {
+                    "id": 31,
+                    "kind": "id",
+                    "loc": b,
+                    "text": "b",
+                  },
+                },
+                "loc": a + b == b + a,
+                "op": "==",
+                "right": {
+                  "id": 35,
+                  "kind": "op_binary",
+                  "left": {
+                    "id": 33,
+                    "kind": "id",
+                    "loc": b,
+                    "text": "b",
+                  },
+                  "loc": b + a,
+                  "op": "+",
+                  "right": {
+                    "id": 34,
+                    "kind": "id",
+                    "loc": a,
+                    "text": "a",
+                  },
+                },
+              },
+              "id": 37,
+              "kind": "statement_return",
+              "loc": return a + b == b + a;,
+            },
+          ],
+        },
+        "isAbstract": false,
+        "isGetter": false,
+        "isInline": false,
+        "isMutating": true,
+        "isOverride": true,
+        "isVirtual": false,
+        "methodId": null,
+        "name": "assure",
+        "origin": "user",
+        "params": [
+          {
+            "loc": a: Int,
+            "name": {
+              "id": 24,
+              "kind": "id",
+              "loc": a,
+              "text": "a",
+            },
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+          {
+            "loc": b: Int,
+            "name": {
+              "id": 27,
+              "kind": "id",
+              "loc": b,
+              "text": "b",
+            },
+            "type": {
+              "kind": "ref",
+              "name": "Int",
+              "optional": false,
+            },
+          },
+        ],
+        "returns": {
+          "kind": "ref",
+          "name": "Bool",
+          "optional": false,
+        },
+        "self": {
+          "kind": "ref",
+          "name": "YouMakeMyHeartSing",
+          "optional": false,
+        },
+      },
+    },
+    "header": null,
+    "init": {
+      "ast": {
+        "id": 41,
+        "kind": "contract_init",
+        "loc": contract YouMakeMyHeartSing with WildThing {
+    override fun assure(a: Int, b: Int): Bool {
+        return a + b == b + a;
+    }
+},
+        "params": [],
+        "statements": [],
+      },
+      "kind": "init-function",
+      "params": [],
+    },
+    "interfaces": [],
+    "kind": "contract",
+    "name": "YouMakeMyHeartSing",
+    "origin": "user",
+    "partialFieldCount": 0,
+    "receivers": [],
+    "signature": "YouMakeMyHeartSing{}",
+    "tlb": "_  = YouMakeMyHeartSing",
+    "traits": [
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [],
+          "id": 6,
+          "kind": "trait",
+          "loc": trait BaseTrait { },
+          "name": {
+            "id": 5,
+            "kind": "id",
+            "loc": BaseTrait,
+            "text": "BaseTrait",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {},
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "BaseTrait",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 1020,
+      },
+      {
+        "ast": {
+          "attributes": [],
+          "declarations": [
+            {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
+              "id": 18,
+              "kind": "function_def",
+              "loc": virtual fun assure(_: Int, _: Int): Bool {
+        return true;
+    },
+              "name": {
+                "id": 8,
+                "kind": "id",
+                "loc": assure,
+                "text": "assure",
+              },
+              "params": [
+                {
+                  "id": 12,
+                  "kind": "typed_parameter",
+                  "loc": _: Int,
+                  "name": {
+                    "id": 10,
+                    "kind": "id",
+                    "loc": _,
+                    "text": "_",
+                  },
+                  "type": {
+                    "id": 11,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                },
+                {
+                  "id": 15,
+                  "kind": "typed_parameter",
+                  "loc": _: Int,
+                  "name": {
+                    "id": 13,
+                    "kind": "id",
+                    "loc": _,
+                    "text": "_",
+                  },
+                  "type": {
+                    "id": 14,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                },
+              ],
+              "return": {
+                "id": 9,
+                "kind": "type_id",
+                "loc": Bool,
+                "text": "Bool",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "id": 16,
+                    "kind": "boolean",
+                    "loc": true,
+                    "value": true,
+                  },
+                  "id": 17,
+                  "kind": "statement_return",
+                  "loc": return true;,
+                },
+              ],
+            },
+          ],
+          "id": 19,
+          "kind": "trait",
+          "loc": trait WildThing {
+    virtual fun assure(_: Int, _: Int): Bool {
+        return true;
+    }
+},
+          "name": {
+            "id": 7,
+            "kind": "id",
+            "loc": WildThing,
+            "text": "WildThing",
+          },
+          "traits": [],
+        },
+        "constants": [],
+        "dependsOn": [],
+        "fields": [],
+        "functions": Map {
+          "assure" => {
+            "ast": {
+              "attributes": [
+                {
+                  "kind": "function_attribute",
+                  "loc": virtual,
+                  "type": "virtual",
+                },
+              ],
+              "id": 18,
+              "kind": "function_def",
+              "loc": virtual fun assure(_: Int, _: Int): Bool {
+        return true;
+    },
+              "name": {
+                "id": 8,
+                "kind": "id",
+                "loc": assure,
+                "text": "assure",
+              },
+              "params": [
+                {
+                  "id": 12,
+                  "kind": "typed_parameter",
+                  "loc": _: Int,
+                  "name": {
+                    "id": 10,
+                    "kind": "id",
+                    "loc": _,
+                    "text": "_",
+                  },
+                  "type": {
+                    "id": 11,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                },
+                {
+                  "id": 15,
+                  "kind": "typed_parameter",
+                  "loc": _: Int,
+                  "name": {
+                    "id": 13,
+                    "kind": "id",
+                    "loc": _,
+                    "text": "_",
+                  },
+                  "type": {
+                    "id": 14,
+                    "kind": "type_id",
+                    "loc": Int,
+                    "text": "Int",
+                  },
+                },
+              ],
+              "return": {
+                "id": 9,
+                "kind": "type_id",
+                "loc": Bool,
+                "text": "Bool",
+              },
+              "statements": [
+                {
+                  "expression": {
+                    "id": 16,
+                    "kind": "boolean",
+                    "loc": true,
+                    "value": true,
+                  },
+                  "id": 17,
+                  "kind": "statement_return",
+                  "loc": return true;,
+                },
+              ],
+            },
+            "isAbstract": false,
+            "isGetter": false,
+            "isInline": false,
+            "isMutating": true,
+            "isOverride": false,
+            "isVirtual": true,
+            "methodId": null,
+            "name": "assure",
+            "origin": "user",
+            "params": [
+              {
+                "loc": _: Int,
+                "name": {
+                  "id": 10,
+                  "kind": "id",
+                  "loc": _,
+                  "text": "_",
+                },
+                "type": {
+                  "kind": "ref",
+                  "name": "Int",
+                  "optional": false,
+                },
+              },
+              {
+                "loc": _: Int,
+                "name": {
+                  "id": 13,
+                  "kind": "id",
+                  "loc": _,
+                  "text": "_",
+                },
+                "type": {
+                  "kind": "ref",
+                  "name": "Int",
+                  "optional": false,
+                },
+              },
+            ],
+            "returns": {
+              "kind": "ref",
+              "name": "Bool",
+              "optional": false,
+            },
+            "self": {
+              "kind": "ref",
+              "name": "WildThing",
+              "optional": false,
+            },
+          },
+        },
+        "header": null,
+        "init": null,
+        "interfaces": [],
+        "kind": "trait",
+        "name": "WildThing",
+        "origin": "user",
+        "partialFieldCount": 0,
+        "receivers": [],
+        "signature": null,
+        "tlb": null,
+        "traits": [],
+        "uid": 41038,
+      },
+    ],
+    "uid": 11255,
+  },
+]
+`;
+
+exports[`resolveDescriptors should resolve descriptors for wildcard-function-param2 2`] = `[]`;

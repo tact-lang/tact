@@ -74,6 +74,41 @@ contract StdlibTest {
         return parseVarAddress(slice);
     }
 
+    get fun forceBasechain(addr: Address): Bool {
+        forceBasechain(addr);
+        return true;
+    }
+    
+    get fun forceWorkchain(addr: Address, workchain: Int, exitCode: Int): Bool {
+        forceWorkchain(addr, workchain, exitCode);
+        return true;
+    }
+
+    get fun skipRef(c: Slice): Slice {
+        c.skipRef();
+        return c;
+    }
+
+    get fun skipMaybeRef(c: Slice): Slice {
+        c.skipMaybeRef();
+        return c;
+    }
+
+    get fun skipBool(c: Slice): Slice {
+        c.skipBool();
+        return c;
+    }
+
+    get fun skipCoins(c: Slice): Slice {
+        c.skipCoins();
+        return c;
+    }
+
+    get fun skipAddress(c: Slice): Slice {
+        c.skipAddress();
+        return c;
+    }
+
     get fun parseOriginalFwdFee(msg: Slice): Int {
         msg.skipBits(4); //Skip tags
         msg.loadAddress(); // Skip source

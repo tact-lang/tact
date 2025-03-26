@@ -7,7 +7,9 @@
 A next-gen smart contract programming language for TON Blockchain focused on efficiency and ease of development.
 Tact is a good fit for complex smart contracts, quick onboarding, and rapid prototyping.
 
-Developed by [TON Studio](https://tonstudio.io), powered by the community.
+Developed by [TON Studio](https://tonstudio.io), powered by the community — as of the beginning of 2025, the number of _unique code_[^1] contracts deployed on the mainnet reached almost 28 thousand, of which about 33% were written in Tact. You can view some selected projects here: [Tact in production](#tact-in-production).
+
+Tact has undergone a comprehensive security audit by [Trail of Bits](https://www.trailofbits.com), a leading Web3 security firm.
 
 **[Try online!] • [Features] • [Security] • [Key resources] • [Installation] • [Community] • [Contributing]**
 
@@ -21,6 +23,7 @@ Developed by [TON Studio](https://tonstudio.io), powered by the community.
 
 [![Website](https://img.shields.io/badge/Website-blue?style=flat)](https://tact-lang.org)
 [![Documentation](https://img.shields.io/badge/Documentation-blue?style=flat)](https://docs.tact-lang.org)
+[![Audited by Trail of Bits](https://img.shields.io/badge/Audited%20by-Trail%20of%20Bits-blue?style=flat-square)](https://github.com/trailofbits/publications/blob/master/reviews/2025-01-ton-studio-tact-compiler-securityreview.pdf)
 [![Twitter](https://img.shields.io/badge/X%2FTwitter-white?logo=x&style=flat&logoColor=gray)](https://x.com/tact_language)
 [![Telegram](https://img.shields.io/badge/Community_Chat-white?logo=telegram&style=flat)](https://t.me/tactlang)
 [![Telegram](https://img.shields.io/badge/Tact_Kitchen_🥣-white?logo=telegram&style=flat)](https://t.me/tact_kitchen)
@@ -59,8 +62,27 @@ The most prominent and distinctive features of Tact are:
 
 ## Security
 
-- [Security audit of Tact by the Trail of Bits (2025, PDF)](https://tact-lang.org/assets/pdfs/2025-01-ton-studio-tact-compiler-securityreview.pdf)
+- [Security audit of Tact by the Trail of Bits (2025, PDF)](https://github.com/trailofbits/publications/blob/master/reviews/2025-01-ton-studio-tact-compiler-securityreview.pdf)
   - Backup link: [PDF Report](https://github.com/tact-lang/website/blob/416073ed4056034639de257cb1e2815227f497cb/pdfs/2025-01-ton-studio-tact-compiler-securityreview.pdf)
+
+## Tact in production
+
+Some selected software and applications based on contracts written in Tact, deployed in production, and consumed by end users:
+
+###### Open source or source available
+
+- [Proof of Capital](https://github.com/proof-of-capital/TON) - [Proof of Capital](https://proofofcapital.org/) is a market-making smart contract that protects interests of all holders.
+  - See the [security audit report](https://raw.githubusercontent.com/nowarp/public-reports/master/2025-01-proof-of-capital.pdf) by [Nowarp](https://nowarp.io).
+
+###### Closed source
+
+- [Tradoor](https://tradoor.io) - Fast and social DEX on TON.
+  - See the [security audit report](https://www.tonbit.xyz/reports/Tradoor-Smart-Contract-Audit-Report-Summary.pdf) by TonBit.
+- [PixelSwap](https://www.pixelswap.io) - First modular and upgradeable DEX on TON.
+  - See the [security audit report](https://github.com/trailofbits/publications/blob/master/reviews/2024-12-pixelswap-dex-securityreview.pdf) by Trail of Bits.
+- [GasPump](https://gaspump.tg) - TON memecoin launchpad and trading platform.
+
+See [Tact in production](https://github.com/tact-lang/awesome-tact#tact-in-production-) on the Awesome Tact list.
 
 ## Key resources
 
@@ -75,7 +97,7 @@ The most prominent and distinctive features of Tact are:
 
 The Tact compiler is distributed as an [NPM package](https://www.npmjs.com/package/@tact-lang/compiler) bundled with the [Tact standard library](https://docs.tact-lang.org/ref/).
 
-The recommended Node.js version is 22 or higher, while the bare minimum Node.js version must be at least 18 or higher.
+The recommended Node.js version is 22 or higher, while the minimum version is 18.
 
 Use your favorite package manager to install it into a Node.js project:
 
@@ -99,7 +121,7 @@ Alternatively, you can install it globally as such:
 npm i -g @tact-lang/compiler
 ```
 
-This will make the `tact` compiler available on your PATH, as well as a convenient `unboc` disassembler of a contract's code compiled into a [Bag of Cells](https://docs.tact-lang.org/book/cells/#cells-boc) `.boc` format.
+It will make the `tact` compiler available on your PATH, as well as a convenient `unboc` disassembler of a contract's code compiled into a [Bag of Cells](https://docs.tact-lang.org/book/cells/#cells-boc) `.boc` format.
 
 ### Tooling
 
@@ -121,9 +143,9 @@ This will make the `tact` compiler available on your PATH, as well as a convenie
 
 ### Getting started
 
-For a quick start, read the ["Let's start!"](https://docs.tact-lang.org/#start) mini-guide in the Tact documentation, which uses the [Blueprint](https://github.com/ton-community/blueprint) development environment for writing, testing, and deploying smart contracts on TON Blockchain.
+For a quick start, read the ["Let's start!"](https://docs.tact-lang.org/#start) mini-guide in the Tact documentation. It uses the [Blueprint](https://github.com/ton-community/blueprint) development environment for writing, testing, and deploying smart contracts on TON Blockchain.
 
-If you want more manual control, use [tact-template](https://github.com/tact-lang/tact-template) — it's a ready-to-use template with the development environment set up, including the Tact compiler with TypeScript + Jest, a local TON emulator, AI-based editor support, and examples of how to run tests.
+If you want more manual control, use [tact-template](https://github.com/tact-lang/tact-template). It's a ready-to-use template with the development environment set up, including the Tact compiler with TypeScript + Jest, a local TON emulator, AI-based editor support, and examples of how to run tests.
 
 ```shell
 git clone https://github.com/tact-lang/tact-template
@@ -143,12 +165,14 @@ If you can’t find the answer in the [docs](https://docs.tact-lang.org), or you
 
 ## Contributing
 
-Contributions are welcome! To help with the development of the compiler, see the [contributing guide](./dev-docs/CONTRIBUTING.md).
+Contributions are welcome! To help develop the compiler, see the [contributing guide](./dev-docs/CONTRIBUTING.md).
 
-In addition, we invite you to create new educational materials in any form, help foster the [community](#community), and write new Tact contracts. The best creations will be featured in [awesome-tact](https://github.com/tact-lang/awesome-tact) and on social media.
+In addition, we invite you to create new educational materials in any form, help foster the [community](#community), and build new [Tact contracts and projects](#tact-in-production). The best creations will be featured in [awesome-tact](https://github.com/tact-lang/awesome-tact) and on social media.
 
 Good luck on your coding adventure with ⚡ Tact!
 
 ## License
 
 MIT © The Tact Authors: Steve Korshakov; [TON Studio](https://tonstudio.io).
+
+[^1]: The "unique code" means that each contract in the data sample has at least one TVM instruction that differs from the other contracts, excluding many preprocessed wallets with everything inlined — even seqno and a public key for signature verification!

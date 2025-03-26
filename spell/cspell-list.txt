@@ -16,6 +16,7 @@ blockstore
 bocchi
 bounceable
 bounceable
+bounceable
 Brujin
 CCITT
 cheatsheet
@@ -43,11 +44,13 @@ disasm
 divmod
 dnsresolve
 Domínguez
+dstr
 elseifnot
 Eltociear
 Epva
 errno
 Esorat
+extracurrency
 extracurrency
 forall
 formedness
@@ -58,6 +61,7 @@ funs
 Georgiy
 getsimpleforwardfee
 gettest
+guarantor
 guarantor
 Héctor
 hehe
@@ -81,6 +85,7 @@ jojo
 jsxdev
 Kaladin
 keccak
+keypair
 knip
 Komarov
 Korshakov
@@ -100,9 +105,12 @@ masterchain
 Masterchain
 mathrm
 maxint
+memecoin
 Merkle
 minmax
 mintable
+misparse
+misparsed
 mktemp
 multiformats
 nanoton
@@ -110,12 +118,14 @@ nanotons
 Neovim
 nextra
 nobounce
+nobounce
 nocheck
 noexcept
 nonterminal
 Nonterminal
 notcoin
 Novus
+Nowarp
 Offchain
 omelander
 Ovchinnikov
@@ -149,7 +159,8 @@ seti
 shardchains
 shiki
 Shvetc
-Stateinit
+skywardboundd
+Stateinit   
 statinit
 stdlib
 stdlibs
@@ -164,6 +175,7 @@ stry
 styleguide
 subfolders
 subtyping
+subwallet
 supertypes
 Tactina
 tactlang
@@ -177,6 +189,7 @@ Toncoin
 Toncoins
 tonstudio
 Topup
+Tradoor
 Trunov
 typechecker
 udict
@@ -184,6 +197,7 @@ uintptr
 uints
 unboc
 uncons
+undiscussed
 uninit
 Uninit
 unixfs

@@ -1,9 +1,9 @@
 ---
 title: "@stdlib/dns"
-description: "Provides means for resolution of DNS names on TON"
+description: "Provides means for resolving DNS names on TON"
 ---
 
-Provides means for resolution of [DNS](https://docs.ton.org/participate/web3/dns) names.
+Provides means for resolving [DNS](https://docs.ton.org/participate/web3/dns) names.
 
 To use this library, import `@stdlib/dns`:
 
@@ -31,7 +31,7 @@ struct DNSResolveResult {
 native dnsStringToInternal(str: String): Slice?;
 ```
 
-Converts a DNS string to a [`Slice{:tact}`][slice] or [`null{:tact}`](/book/optionals), if it's impossible.
+Converts a DNS string to a [`Slice{:tact}`][slice] or [`null{:tact}`](/book/optionals) if conversion is impossible.
 
 Source code (FunC): [dns.fc#L1](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc#L1)
 
@@ -42,7 +42,7 @@ Source code (FunC): [dns.fc#L1](https://github.com/tact-lang/tact/blob/e69c7fc99
 native dnsInternalNormalize(src: Slice): Slice;
 ```
 
-Normalizes the internal DNS representation of the [`Slice{:tact}`][slice]. The passed [`Slice{:tact}`][slice] must not have any references, otherwise an exception with [exit code 134](/book/exit-codes#134) will be thrown: `Invalid argument`.
+Normalizes the internal DNS representation of the [`Slice{:tact}`][slice]. The provided [`Slice{:tact}`][slice] must not have any references; otherwise, an exception with [exit code 134](/book/exit-codes#134) will be thrown: `Invalid argument`.
 
 Source code (FunC): [dns.fc#L125](https://github.com/tact-lang/tact/blob/e69c7fc99dc9be3fa5ff984456c03ffe8fed3677/stdlib/libs/dns.fc#L125)
 
@@ -63,7 +63,7 @@ Source code (FunC): [dns.fc#L81](https://github.com/tact-lang/tact/blob/e69c7fc9
 fun dnsExtractTopDomainLength(subdomain: Slice): Int;
 ```
 
-Calculates length of a top domain in the `subdomain` [`Slice{:tact}`][slice].
+Calculates the length of the top domain in the `subdomain` [`Slice{:tact}`][slice].
 
 Source code:
 
@@ -72,7 +72,7 @@ fun dnsExtractTopDomainLength(subdomain: Slice): Int {
     let i: Int = 0;
     let needBreak: Bool = false;
     do {
-        let char: Int = subdomain.loadUint(8); // we do not check domain.length because it MUST contain \0 character
+        let char: Int = subdomain.loadUint(8); // We do not check domain.length because it MUST contain a \0 character
         needBreak = char == 0;
         if (!needBreak) {
             i += 8;
@@ -89,7 +89,7 @@ fun dnsExtractTopDomainLength(subdomain: Slice): Int {
 fun dnsExtractTopDomain(subdomain: Slice): Slice;
 ```
 
-Extracts top domain from a `subdomain` [`Slice{:tact}`][slice].
+Extracts the top domain from a `subdomain` [`Slice{:tact}`][slice].
 
 Source code:
 
@@ -143,10 +143,10 @@ fun dnsResolveWallet(address: Address): Cell {
 
 ### DNSResolver
 
-Trait `DNSResolver` provides two helper functions for DNS resolution:
+The trait `DNSResolver` provides two helper functions for DNS resolution:
 
-1. [getter function](/book/functions#getter-functions) `dnsresolve(){:tact}`, which corresponds to its [FunC variant](https://docs.ton.org/develop/howto/subresolvers#dnsresolve-code).
-2. virtual function `doResolveDNS(){:tact}`, which creates a struct [DNSResolveResult](#dnsresolveresult) out of subdomain [`Slice{:tact}`][slice] bits.
+1. A [getter function](/book/functions#getter-functions) `dnsresolve(){:tact}`, which corresponds to its [FunC variant](https://docs.ton.org/develop/howto/subresolvers#dnsresolve-code).
+2. A virtual function `doResolveDNS(){:tact}`, which creates a struct [DNSResolveResult](#dnsresolveresult) from subdomain [`Slice{:tact}`][slice] bits.
 
 Source code:
 
@@ -160,7 +160,7 @@ trait DNSResolver {
             delta += 8;
         }
 
-        // Checks correctness
+        // Check correctness
         require(dnsInternalVerify(subdomain), "Invalid DNS name");
 
         // Resolve
@@ -179,9 +179,9 @@ Usage example:
 import "@stdlib/dns";
 
 contract ExampleContract with DNSResolver {
-    // Now, this contract has a:
-    // 1. dnsresolve getter function
-    // 2. doResolveDNS virtual function
+    // Now, this contract has:
+    // 1. A dnsresolve getter function.
+    // 2. A doResolveDNS virtual function.
 }
 ```
 

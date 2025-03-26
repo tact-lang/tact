@@ -1,0 +1,424 @@
+---
+title: Addresses
+description: "Various Address functions from the Core library of Tact"
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+`Address{:tact}` represents a standard [smart contract address](https://docs.ton.org/v3/concepts/dive-into-ton/ton-blockchain/smart-contract-addresses#address-of-smart-contract) on TON Blockchain.
+
+See also: [`myAddress(){:tact}` function in the context and state reference](/ref/core-contextstate#myaddress).
+
+## newAddress
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
+```tact
+fun newAddress(chain: Int, hash: Int): Address;
+```
+
+Creates a new [`Address{:tact}`][p] based on the [`chain` ID][workchain-id] and the [SHA-256](/ref/core-crypto#sha256) encoded [`hash` value (account ID)][account-id].
+
+This function tries to resolve constant values at [compile-time](/ref/core-comptime) whenever possible.
+
+Attempts to specify an invalid `chain` ID (not -1 or 0) detectable at [compile-time](/ref/core-comptime) will result in a compilation error.
+
+Usage example:
+
+```tact
+let oldTonFoundationAddr: Address =
+    newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+    //         ↑  ↑
+    //         |  SHA-256 hash of contract's init package (StateInit)
+    //         chain ID: 0 is a workchain, -1 is a masterchain
+```
+
+:::caution
+
+  Make sure you specify only supported workchain IDs: 0 for the basechain and -1 for the masterchain.
+
+:::
+
+:::note[Useful links:]
+
+  [`chain` (Workchain ID) in TON Docs][workchain-id]\
+  [`hash` (Account ID) in TON Docs][account-id]\
+  [Contract's init package (`StateInit{:tact}`)](/book/expressions#initof)
+
+:::
+
+## contractAddress
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
+```tact
+fun contractAddress(s: StateInit): Address;
+```
+
+Computes the smart contract's [`Address{:tact}`][p] in the workchain ID 0 (basechain) using the [`StateInit{:tact}`][initpkg] `s` of the contract. An alias to `contractAddressExt(0, s.code, s.data){:tact}`.
+
+Usage example:
+
+```tact
+let s: StateInit = initOf SomeContract();
+let foundMeSome: Address = contractAddress(s);
+let andSomeMore: Address = contractAddressExt(0, s.code, s.data);
+
+foundMeSome == andSomeMore; // true
+```
+
+## contractAddressExt
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
+```tact
+fun contractAddressExt(chain: Int, code: Cell, data: Cell): Address;
+```
+
+Computes the smart contract's [`Address{:tact}`][p] in the given `chain` ID using the contract's `code` and its initial state `data`. Use the [`initOf{:tact}`][initpkg] expression to obtain the initial `code` and initial `data` of a given contract.
+
+This function tries to resolve constant values at [compile-time](/ref/core-comptime) whenever possible.
+
+Attempts to specify an invalid `chain` ID (not -1 or 0) that can be detected at [compile-time](/ref/core-comptime) will result in a compilation error.
+
+Usage example:
+
+```tact
+let initPkg: StateInit = initOf SomeContract();
+let hereBeDragons: Address = contractAddressExt(0, initPkg.code, initPkg.data);
+```
+
+## contractHash
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+fun contractHash(code: Cell, data: Cell): Int;
+```
+
+Computes and returns an [`Int{:tact}`][int] value of the [SHA-256](/ref/core-crypto#sha256) hash of the `code` and `data` of the given contract. To assemble the `code` and `data` cells together for hashing, the [standard `Cell{:tact}` representation](/book/cells#cells-representation) is used.
+
+This hash is commonly called the [account ID][account-id]. Together with the [workchain ID][workchain-id], it deterministically forms the address of the contract on TON Blockchain.
+
+Usage example:
+
+```tact
+let initPkg: StateInit = initOf SomeContract();
+let accountId: Int = contractHash(initPkg.code, initPkg.data);
+let basechainAddr: Address = newAddress(0, accountId);
+let basechainAddr2: Address = contractAddressExt(0, initPkg.code, initPkg.data);
+
+basechainAddr == basechainAddr2; // true
+```
+
+:::note[Useful links:]
+
+  [`chain` (Workchain ID) in TON Docs][workchain-id]\
+  [`hash` (Account ID) in TON Docs][account-id]\
+  [Contract's init package (`StateInit{:tact}`)][initpkg]\
+  [Standard `Cell{:tact}` representation](/book/cells#cells-representation)
+
+:::
+
+## forceBasechain
+
+<Badge text="Available since Tact 1.6.3" variant="tip" size="medium"/><p/>
+
+```tact
+fun forceBasechain(address: Address);
+```
+
+Checks whether the `address` is in the basechain, i.e., its [chain ID](https://docs.ton.org/learn/overviews/addresses#workchain-id) is 0. If it is not, throws an exception with [exit code 138](/book/exit-codes#9): `Not a basechain address`.
+
+Usage examples:
+
+```tact
+let someBasechainAddress: Address =
+    newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+
+let someMasterchainAddress: Address =
+    newAddress(-1, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+
+// Does not throw because the chain ID is 0
+forceBasechain(someBasechainAddress);
+
+try {
+    // Throws because the chain ID is -1 (masterchain)
+    forceBasechain(someMasterchainAddress);
+} catch (exitCode) {
+    // exitCode is 138
+}
+```
+
+## forceWorkchain
+
+<Badge text="Available since Tact 1.6.4" variant="tip" size="medium"/><p/>
+
+```tact
+fun forceWorkchain(address: Address, workchain: Int, errorCode: Int);
+```
+
+Parameterized version of [`forceBasechain(){:tact}`](#forcebasechain).
+
+Checks whether the `address` is in the `workchain`, i.e., its [chain ID](https://docs.ton.org/learn/overviews/addresses#workchain-id) is equal to `workchain`. If it is not, throws an exception with exit code `errorCode`.
+
+Usage examples:
+
+```tact
+let someBasechainAddress: Address =
+    newAddress(0, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+
+let someMasterchainAddress: Address =
+    newAddress(-1, 0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+
+// Does not throw because the chain ID matches workchain parameter
+forceWorkchain(someBasechainAddress, 0, 593);
+forceWorkchain(someMasterchainAddress, -1, 593);
+
+try {
+    // Throws because the chain ID is 0 which doesn't match the workchain parameter, -1
+    forceWorkchain(someBasechainAddress, -1, 593);
+} catch (exitCode) {
+    // exitCode is 593
+}
+```
+
+## parseStdAddress
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun parseStdAddress(slice: Slice): StdAddress;
+```
+
+Converts a `slice` containing an address into the `StdAddress{:tact}` [struct][struct] and returns it.
+
+The `StdAddress{:tact}` is a built-in struct that consists of:
+
+Field       | Type                           | Description
+:---------- | :----------------------------- | :----------
+`workchain` | [`Int as int8{:tact}`][int]    | Workchain ID of the address, usually $0$ (basechain) or $-1$ (masterchain)
+`address`   | [`Int as uint256{:tact}`][int] | Address in the specified `workchain`
+
+Attempts to pass a [`Slice{:tact}`][slice] with a layout different from the `StdAddress{:tact}` or to load more data than the given [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let addr = address("EQDtFpEwcFAEcRe5mLVh2N6C0x-_hJEM7W61_JLnSF74p4q2");
+let parsedAddr = parseStdAddress(addr.asSlice());
+
+parsedAddr.workchain; // 0
+parsedAddr.address;   // 107...lots of digits...287
+
+// Using newAddress() function with the contents of StdAddress will yield the initial Address:
+let addr2: Address = newAddress(parsedAddr.workchain, parsedAddr.address);
+addr2 == addr; // true
+```
+
+:::note
+
+  For parsing addresses of variable length, see the [`parseVarAddress(){:tact}`](#parsevaraddress) function.
+
+:::
+
+## parseVarAddress
+
+<Badge text="Available since Tact 1.5" variant="tip" size="medium"/><p/>
+
+```tact
+fun parseVarAddress(slice: Slice): VarAddress;
+```
+
+Converts a `slice` containing an address of variable length into the `VarAddress{:tact}` [struct][struct] and returns it.
+
+The `VarAddress{:tact}` is a built-in struct consisting of:
+
+Field       | Type                         | Description
+:---------- | :--------------------------- | :----------
+`workchain` | [`Int as int32{:tact}`][int] | Workchain ID of the variable-length address
+`address`   | [`Slice{:tact}`][slice]      | Address in the specified `workchain`
+
+Attempts to pass a [`Slice{:tact}`][slice] with a layout different from the `VarAddress{:tact}` or to load more data than the given [`Slice{:tact}`][slice] contains throw an exception with [exit code 9](/book/exit-codes#9): `Cell underflow`.
+
+Usage example:
+
+```tact
+let varAddrSlice = beginCell()
+    .storeUint(6, 3)     // to recognize the following as a VarAddress
+    .storeUint(123, 9)   // make address occupy 123 bits
+    .storeUint(234, 32)  // specify workchain ID of 234
+    .storeUint(345, 123) // specify address of 345
+    .asSlice();
+let parsedVarAddr = parseVarAddress(varAddrSlice);
+
+parsedVarAddr.workchain;             // 234
+parsedVarAddr.address;               // CS{Cell{002...2b3} bits: 44..167; refs: 0..0}
+parsedVarAddr.address.loadUint(123); // 345
+```
+
+:::caution
+
+  Variable-length addresses are intended for future extensions, and while validators must be ready to accept them in inbound messages, the standard (non-variable) addresses are used whenever possible.
+
+:::
+
+## StateInit.hasSameBasechainAddress
+
+<Badge text="Available since Tact 1.6.1" variant="tip" size="medium"/><p/>
+
+```tact
+extends fun hasSameBasechainAddress(self: StateInit, sender: Address): Bool;
+```
+
+Extension function for the [`StateInit{:tact}`][initpkg] [struct][struct].
+
+Efficiently compares whether the given address matches the basechain address of the contract. Returns true if the addresses are the same; false otherwise.
+
+```tact
+fun example() {
+    let init = initOf SomeContract();
+    init.hasSameBasechainAddress(sender()); // returns true if sender matches contract's basechain address
+}
+```
+
+This function provides a gas-optimized implementation compared to direct address comparison:
+
+```tact
+fun example() {
+    let init = initOf SomeContract();
+    sender() == contractAddress(sender()); // less efficient approach
+}
+```
+
+:::note
+  This function works only for basechain addresses!
+:::
+
+## Address.asSlice
+
+```tact
+extends fun asSlice(self: Address): Slice;
+```
+
+Extension function for the [`Address{:tact}`][p] type.
+
+Casts the [`Address{:tact}`][p] back to the underlying [`Slice{:tact}`][slice] and returns it. The inverse of [`Slice.asAddressUnsafe(){:tact}`](/ref/core-cells#sliceasaddressunsafe).
+
+Usage example:
+
+```tact
+let a: Address = myAddress();
+let fizz: Slice = beginCell().storeAddress(a).asSlice();
+let buzz: Slice = a.asSlice(); // cheap, unlike the previous statement
+
+fizz == buzz; // true
+```
+
+## Address.toString
+
+<Badge text="Gas-expensive" title="Uses 500 gas units or more" variant="danger" size="medium"/><p/>
+
+```tact
+extends fun toString(self: Address): String;
+```
+
+Extension function for the [`Address{:tact}`][p] type.
+
+Returns a [`String{:tact}`][p] from an [`Address{:tact}`][p].
+
+Usage example:
+
+```tact
+let community: Address = address("UQDpXLZKrkHsOuE_C1aS69C697wE568vTnqSeRfBXZfvmVOo");
+let fizz: String = community.toString();
+```
+
+## BasechainAddress
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+struct BasechainAddress {
+    hash: Int?;
+}
+```
+
+Struct representing a basechain address.
+
+A basechain address (workchain $0$) can be either empty (null hash) or contain a 256-bit hash value.
+
+## emptyBasechainAddress
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+inline fun emptyBasechainAddress(): BasechainAddress;
+```
+
+Creates and returns an empty basechain address with a null hash.
+
+When serialized, an empty basechain address is represented as `addr_none`.
+
+Usage example:
+
+```tact
+fun example() {
+    let emptyAddr: BasechainAddress = emptyBasechainAddress();
+    emptyAddr.hash == null; // true
+}
+```
+
+## newBasechainAddress
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+inline fun newBasechainAddress(hash: Int): BasechainAddress;
+```
+
+Creates and returns a new basechain address with the specified hash value.
+
+Usage example:
+
+```tact
+fun example() {
+    let addr: BasechainAddress = newBasechainAddress(0x83dfd552e63729b472fcbcc8c45ebcc6691702558b68ec7527e1ba403a0f31a8);
+}
+```
+
+## contractBasechainAddress
+
+<Badge text="Available since Tact 1.6" variant="tip" size="medium"/><p/>
+
+```tact
+inline fun contractBasechainAddress(s: StateInit): BasechainAddress;
+```
+
+Creates and returns a basechain address derived from a contract's `StateInit` (code and data).
+
+Usage example:
+
+```tact
+fun example() {
+    let code: Cell = loadCell(); // load contract code
+    let data: Cell = loadCell(); // load contract data
+    let state: StateInit = StateInit { code, data };
+    let addr: BasechainAddress = contractBasechainAddress(state);
+}
+```
+
+[p]: /book/types#primitive-types
+[bool]: /book/types#booleans
+[int]: /book/integers
+[nano]: /book/integers#nanotoncoin
+[cell]: /book/cells#cells
+[slice]: /book/cells#slices
+[struct]: /book/structs-and-messages#structs
+[opt]: /book/optionals
+
+[initpkg]: /book/expressions#initof
+
+[fwdfee]: https://docs.ton.org/develop/howto/fees-low-level#forward-fees
+[workchain-id]: https://docs.ton.org/learn/overviews/addresses#workchain-id
+[account-id]: https://docs.ton.org/learn/overviews/addresses#account-id

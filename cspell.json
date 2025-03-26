@@ -21,7 +21,8 @@
     "\\b[xB]\\{[a-fA-F0-9]*_?\\}", // binary literals in Fift-asm
     "\\b0[xX][a-fA-F0-9_]*\\b", // hexadecimal numbers
     "\\b(?:address|crc32|cell|slice|rawSlice)\\(\".+?\"\\)", // some comptime functions
-    "ince Tact " // regex in RELEASE.md
+    "ince Tact ", // regex in RELEASE.md
+    "core-contextstate"
   ],
   "flagWords": [],
   "ignorePaths": [
@@ -34,13 +35,12 @@
     "grammar/sample.json",
     "src/generator/writers/writeStdlib.ts",
     "src/func/funcfiftlib.*",
-    "src/grammar/grammar.ohm-bundle.d.ts",
     "src/grammar/test/items-native-fun-funcid.tact",
     "src/grammar/test/items-asm-funs.tact",
     "src/grammar/test-asm/*.tact",
     "src/grammar/test-failed/funcid-*.tact",
-    "src/grammar/next/grammar.gg",
-    "src/grammar/next/grammar.ts",
+    "src/grammar/grammar.gg",
+    "src/grammar/grammar.ts",
     "src/stdlib/stdlib.ts",
     "src/stdlib/stdlib/std/stdlib.fc",
     "src/test/compilation-failed/const-eval-failed.spec.ts",
@@ -57,7 +57,7 @@
     "src/test/e2e-emulated/map-tests/build",
     "src/test/e2e-emulated/map-tests/map-properties-key-value-types.ts",
     "/docs",
-    "src/test/benchmarks/contracts/func/notcoin/stdlib-custom.fc",
-    "src/test/benchmarks/contracts/func/notcoin/gas.fc"
+    "src/benchmarks/contracts/func/notcoin/stdlib-custom.fc",
+    "src/benchmarks/contracts/func/notcoin/gas.fc"
   ]
 }

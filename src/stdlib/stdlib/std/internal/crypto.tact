@@ -1,5 +1,37 @@
+/// Calculates and returns an `Int` value of the [SHA-256] hash of the
+/// [standard `Cell` representation][std-representation] of the given `Cell`.
+///
+/// ```tact
+/// fun example() {
+///     let c: Cell = emptyCell();
+///     let fizz: Int = c.hash();
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#cellhash
+///
+/// [SHA-256]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
+/// [std-representation]: https://docs.tact-lang.org/book/cells#cells-representation
+///
 asm extends fun hash(self: Cell): Int { HASHCU }
 
+/// Calculates and returns an `Int` value of the [SHA-256] hash of the
+/// [standard `Slice` representation][std-representation] of the given `Slice`.
+///
+/// NOTE: **Gas expensive!** This function uses 500 gas units or more.
+///
+/// ```tact
+/// fun example() {
+///     let s: Slice = beginCell().asSlice();
+///     let fizz: Int = s.hash();
+/// }
+/// ```
+///
+/// See: https://docs.tact-lang.org/ref/core-cells#slicehash
+///
+/// [SHA-256]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
+/// [std-representation]: https://docs.tact-lang.org/book/cells#cells-representation
+///
 asm extends fun hash(self: Slice): Int { HASHSU }
 
 /// Extension function for the `Slice` type. Available since Tact 1.6.0.
@@ -31,7 +63,7 @@ asm extends fun hash(self: Slice): Int { HASHSU }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells/#slicehashdata
+/// See: https://docs.tact-lang.org/ref/core-cells#slicehashdata
 ///
 asm extends fun hashData(self: Slice): Int { ONE HASHEXT_SHA256 }
 
@@ -49,10 +81,78 @@ asm extends fun hashData(self: Slice): Int { ONE HASHEXT_SHA256 }
 /// }
 /// ```
 ///
-/// See: https://docs.tact-lang.org/ref/core-cells/#stringhashdata
+/// See: https://docs.tact-lang.org/ref/core-strings#stringhashdata
 ///
 asm extends fun hashData(self: String): Int { ONE HASHEXT_SHA256 }
 
-asm fun checkSignature(hash: Int, signature: Slice, public_key: Int): Bool { CHKSIGNU }
+/// Checks the [Ed25519] `signature` of the 256-bit unsigned `Int` `hash` using a `publicKey`,
+/// represented by a 256-bit unsigned `Int`. The signature must contain at least 512 bits of data, but
+/// only the first 512 bits are used.
+///
+/// Returns `true` if the signature is valid, `false` otherwise.
+///
+/// ```tact
+/// message ExtMsg {
+///     signature: Slice;
+///     data: Cell;
+/// }
+///
+/// contract Showcase {
+///     /// Persistent state variables
+///     pub: Int as uint256; // public key as a 256-bit unsigned Int
+///
+///     /// Constructor function init(), where all variables are initialized
+///     init(pub: Int) {
+///         self.pub = pub; // storing the public key upon contract initialization
+///     }
+///
+///     /// External message receiver, which accepts message ExtMsg
+///     external(msg: ExtMsg) {
+///         let hash: Int = beginCell().storeRef(msg.data).endCell().hash();
+///         let check: Bool = checkSignature(hash, msg.signature, self.pub);
+///         //                               ----  -------------  --------
+///         //                               ↑     ↑              ↑
+///         //                               |     |              publicKey stored in our contract
+///         //                               |     signature obtained from the received message
+///         //                               hash calculated using the data from the received message
+///         // ... follow-up logic ...
+///     }
+/// }
+/// ```
+///
+/// NOTE: The first 10 calls of this function are very cheap regarding gas usage. However,
+/// the 11th call and onward consume more than 4 thousand gas units.
+///
+/// See: https://docs.tact-lang.org/ref/core-crypto#checksignature
+///
+/// [Ed25519]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
+///
+asm fun checkSignature(hash: Int, signature: Slice, publicKey: Int): Bool { CHKSIGNU }
 
-asm fun checkDataSignature(data: Slice, signature: Slice, public_key: Int): Bool { CHKSIGNS }
+/// Checks the [Ed25519] `signature` of the `data` using a `publicKey`, similar to `checkSignature()`.
+/// If the bit length of `data` is not divisible by 8, this function throws an error with
+/// [exit code 9]: `Cell underflow`.
+/// Verification itself is done indirectly on a [SHA-256] hash of the `data`.
+///
+/// Returns `true` if the signature is valid, `false` otherwise.
+///
+/// ```tact
+/// fun example() {
+///     let data: Slice = someData;
+///     let signature: Slice = someSignature;
+///     let publicKey: Int = 42;
+///
+///     let check: Bool = checkDataSignature(data, signature, publicKey);
+/// }
+/// ```
+///
+/// NOTE: The first 10 calls of this function are very cheap regarding gas usage. However,
+/// the 11th call and onward consume more than 4 thousand gas units.
+///
+/// See: https://docs.tact-lang.org/ref/core-crypto#checkdatasignature
+///
+/// [exit code 9]: https://docs.tact-lang.org/book/exit-codes#9
+/// [Ed25519]: https://en.wikipedia.org/wiki/EdDSA#Ed25519
+/// [SHA-256]: https://en.wikipedia.org/wiki/SHA-2#Hash_standard
+///
+asm fun checkDataSignature(data: Slice, signature: Slice, publicKey: Int): Bool { CHKSIGNS }

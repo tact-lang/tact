@@ -9,7 +9,10 @@ const main = async () => {
         debug: true,
         experimental: { inline: false },
         safety: { nullChecks: false },
-        optimizations: { alwaysSaveContractData: false },
+        optimizations: {
+            alwaysSaveContractData: false,
+            internalExternalReceiversOutsideMethodsMap: true,
+        },
     };
 
     await allInFolder(
@@ -22,6 +25,16 @@ const main = async () => {
         ],
         options,
     );
+
+    await allInFolder(__dirname, ["gas-consumption/contracts/*.tact"], {
+        debug: false,
+        experimental: { inline: true },
+        safety: { nullChecks: false },
+        optimizations: {
+            alwaysSaveContractData: false,
+            internalExternalReceiversOutsideMethodsMap: true,
+        },
+    });
 };
 
 void main();

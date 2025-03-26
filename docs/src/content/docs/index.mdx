@@ -77,38 +77,43 @@ import { LinkCard, CardGrid, Tabs, TabItem, Steps } from '@astrojs/starlight/com
    Check it out by moving into the relevant directory — `cd simple-counter/contracts{:shell}`. Here's what it would look like:
 
 	 ```tact
-	 import "@stdlib/deploy";
+   message Add {
+       queryId: Int as uint64;
+       amount: Int as uint32;
+   }
 
-	 message Add {
-	     queryId: Int as uint64;
-	     amount: Int as uint32;
-	 }
+   contract SimpleCounter {
+       id: Int as uint32;
+       counter: Int as uint32;
 
-	 contract SimpleCounter with Deployable {
-	     id: Int as uint32;
-	     counter: Int as uint32;
+       init(id: Int) {
+           self.id = id;
+           self.counter = 0;
+       }
 
-	     init(id: Int) {
-	         self.id = id;
-	         self.counter = 0;
-	     }
+       // Empty receiver for the deployment
+       receive() {
+           // Forward the remaining value in the
+           // incoming message back to the sender
+           cashback(sender());
+       }
 
-	     receive(msg: Add) {
-	         self.counter += msg.amount;
+       receive(msg: Add) {
+           self.counter += msg.amount;
 
-	         // Notify the caller that the receiver was executed
-	         // and forward the remaining value back
-	         self.notify("Cashback".asComment());
-	     }
+           // Forward the remaining value in the
+           // incoming message back to the sender
+           cashback(sender());
+       }
 
-	     get fun counter(): Int {
-	         return self.counter;
-	     }
+       get fun counter(): Int {
+           return self.counter;
+       }
 
-	     get fun id(): Int {
-	         return self.id;
-	     }
-	 }
+       get fun id(): Int {
+           return self.id;
+       }
+   }
 	 ```
 
    To re-compile or deploy, refer to the commands in the scripts section of `package.json` in the root of this newly created project and to the documentation of [Blueprint](https://github.com/ton-org/blueprint) — this is the tool we've used to create and compile your first simple counter contract in Tact. Blueprint can do much more than that: including tests, customizations, and more.

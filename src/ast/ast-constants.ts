@@ -1,15 +1,8 @@
 import { keys } from "../utils/tricks";
-import type {
-    AstAugmentedAssignOperation,
-    AstBinaryOperation,
-    AstFunctionAttributeName,
-    AstNumberBase,
-    AstUnaryOperation,
-    ImportType,
-} from "./ast";
+import type * as Ast from "./ast";
 
 const augmentedAssignOperationsRecord: Record<
-    AstAugmentedAssignOperation,
+    Ast.AugmentedAssignOperation,
     true
 > = {
     "+": true,
@@ -30,7 +23,7 @@ export const astAugmentedAssignOperations = Object.freeze(
     keys(augmentedAssignOperationsRecord),
 );
 
-const binaryOperationsRecord: Record<AstBinaryOperation, true> = {
+const binaryOperationsRecord: Record<Ast.BinaryOperation, true> = {
     "+": true,
     "-": true,
     "*": true,
@@ -53,7 +46,7 @@ const binaryOperationsRecord: Record<AstBinaryOperation, true> = {
 
 export const astBinaryOperations = Object.freeze(keys(binaryOperationsRecord));
 
-const unaryOperationsRecord: Record<AstUnaryOperation, true> = {
+const unaryOperationsRecord: Record<Ast.UnaryOperation, true> = {
     "+": true,
     "-": true,
     "!": true,
@@ -63,7 +56,7 @@ const unaryOperationsRecord: Record<AstUnaryOperation, true> = {
 
 export const astUnaryOperations = Object.freeze(keys(unaryOperationsRecord));
 
-const numberBasesRecord: Record<AstNumberBase, true> = {
+const numberBasesRecord: Record<Ast.NumberBase, true> = {
     2: true,
     8: true,
     10: true,
@@ -74,7 +67,7 @@ export const astNumberBases = Object.freeze(
     keys(numberBasesRecord).map(Number),
 );
 
-const importTypesRecord: Record<ImportType, true> = {
+const importTypesRecord: Record<Ast.ImportType, true> = {
     stdlib: true,
     relative: true,
 };
@@ -93,7 +86,7 @@ export const astConstantAttributeNames = Object.freeze(
     keys(constantAttributeNamesRecord),
 );
 
-const functionAttributeNamesRecord: Record<AstFunctionAttributeName, true> = {
+const functionAttributeNamesRecord: Record<Ast.FunctionAttributeName, true> = {
     mutates: true,
     extends: true,
     virtual: true,

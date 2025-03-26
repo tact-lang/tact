@@ -5,7 +5,6 @@ import { resolveFuncType } from "./resolveFuncType";
 import { openContext } from "../../context/store";
 import { CompilerContext } from "../../context/context";
 import { getParser } from "../../grammar";
-import { defaultParser } from "../../grammar/grammar";
 
 const primitiveCode = `
 primitive Int;
@@ -53,7 +52,7 @@ describe("resolveFuncType", () => {
             new CompilerContext(),
             [{ code: primitiveCode, path: "<unknown>", origin: "user" }],
             [],
-            getParser(ast, defaultParser),
+            getParser(ast),
         );
         ctx = resolveDescriptors(ctx, ast);
         const wCtx = new WriterContext(ctx, "Contract1");
@@ -122,7 +121,7 @@ describe("resolveFuncType", () => {
             new CompilerContext(),
             [{ code: primitiveCode, path: "<unknown>", origin: "user" }],
             [],
-            getParser(ast, defaultParser),
+            getParser(ast),
         );
         ctx = resolveDescriptors(ctx, ast);
         const wCtx = new WriterContext(ctx, "Contract1");

@@ -3,6 +3,7 @@ import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { Blockchain } from "@ton/sandbox";
 import { StdlibTest } from "./contracts/output/stdlib_StdlibTest";
 import "@ton/test-utils";
+import { shouldThrowOnTvmGetMethod } from "../utils/throw";
 
 describe("stdlib", () => {
     let blockchain: Blockchain;
@@ -57,7 +58,9 @@ describe("stdlib", () => {
                 .toString(),
         ).toBe(beginCell().storeBit(true).endCell().toString());
 
-        expect(Number(await contract.getTvm_2023_07Upgrade())).toEqual(1243);
+        expect(Number(await contract.getTvm_2023_07Upgrade())).toMatchSnapshot(
+            "tvm_2023_07Upgrade",
+        );
         expect(await contract.getTvm_2024_04Upgrade()).toEqual(82009144n);
 
         expect(
@@ -122,6 +125,49 @@ describe("stdlib", () => {
             beginCell().storeUint(345, 123).endCell(),
         );
 
+        const forceBasechainGood = await contract.getForceBasechain(
+            Address.parse(
+                "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
+            ),
+        );
+        expect(forceBasechainGood).toBe(true);
+
+        await shouldThrowOnTvmGetMethod(async () => {
+            await contract.getForceBasechain(
+                Address.parse(
+                    "-1:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
+                ),
+            );
+        }, 138);
+
+        const forceWorkchainGoodBasechain = await contract.getForceWorkchain(
+            Address.parse(
+                "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
+            ),
+            0n,
+            123n,
+        );
+        expect(forceWorkchainGoodBasechain).toBe(true);
+
+        const forceWorkchainGoodMasterchain = await contract.getForceWorkchain(
+            Address.parse(
+                "-1:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
+            ),
+            -1n,
+            123n,
+        );
+        expect(forceWorkchainGoodMasterchain).toBe(true);
+
+        await shouldThrowOnTvmGetMethod(async () => {
+            await contract.getForceWorkchain(
+                Address.parse(
+                    "-1:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
+                ),
+                42n,
+                593n,
+            );
+        }, 593);
+
         expect(await contract.getBuilderDepth(beginCell())).toBe(0n);
         expect(
             await contract.getBuilderDepth(beginCell().storeRef(Cell.EMPTY)),
@@ -142,6 +188,45 @@ describe("stdlib", () => {
         expect(await contract.getLastBits(slice, 1n)).toEqualSlice(
             beginCell().storeBit(1).endCell().asSlice(),
         );
+
+        const emptyCell = beginCell().endCell();
+
+        expect(
+            await contract.getSkipRef(
+                beginCell().storeRef(emptyCell).storeUint(42, 32).asSlice(),
+            ),
+        ).toEqualSlice(beginCell().storeUint(42, 32).asSlice());
+
+        expect(
+            await contract.getSkipMaybeRef(
+                beginCell().storeMaybeRef(null).storeUint(42, 32).asSlice(),
+            ),
+        ).toEqualSlice(beginCell().storeUint(42, 32).asSlice());
+
+        expect(
+            await contract.getSkipBool(
+                beginCell().storeBit(true).storeUint(42, 32).asSlice(),
+            ),
+        ).toEqualSlice(beginCell().storeUint(42, 32).asSlice());
+
+        expect(
+            await contract.getSkipCoins(
+                beginCell().storeCoins(239).storeUint(42, 32).asSlice(),
+            ),
+        ).toEqualSlice(beginCell().storeUint(42, 32).asSlice());
+
+        expect(
+            await contract.getSkipAddress(
+                beginCell()
+                    .storeAddress(
+                        Address.parse(
+                            "0:4a81708d2cf7b15a1b362fbf64880451d698461f52f05f145b36c08517d76873",
+                        ),
+                    )
+                    .storeUint(42, 32)
+                    .asSlice(),
+            ),
+        ).toEqualSlice(beginCell().storeUint(42, 32).asSlice());
 
         expect(await contract.getSliceDepth(slice)).toBe(1n);
 
@@ -178,7 +263,9 @@ describe("stdlib", () => {
 
         expect(await contract.getBlockLt()).toBe(0n);
 
-        expect(Number(await contract.getSetGasLimit(5000n))).toBe(3785); // 5000 just to make sure it's enough, 3785 is how much it actually costs
+        expect(Number(await contract.getSetGasLimit(5000n))).toMatchSnapshot(
+            "Gas consumed in segGasLimit()",
+        ); // 5000 just to make sure it's enough, 3785 is how much it actually costs
         await expect(contract.getSetGasLimit(3784n)).rejects.toThrow("-14"); // 3784 gas is not enough for sure
 
         expect(await contract.getGetSeed()).toBe(0n);

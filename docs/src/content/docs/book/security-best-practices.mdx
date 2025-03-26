@@ -15,9 +15,9 @@ For a deeper understanding, refer to the following resources:
 
 In addition, consider reading the detailed article by CertiK, a Web3 smart contract auditor: [Secure Smart Contract Programming in Tact: Popular Mistakes in the TON Ecosystem](https://www.certik.com/resources/blog/secure-smart-contract-programming-in-tact-popular-mistakes-in-the-ton).
 
-## Send sensitive data on-chain
+## Sending sensitive data on-chain
 
-The entire smart contract computation is transparent, and if you had some confidential values at run-time, they could be retrieved with a simple emulation.
+The entire smart contract computation is transparent, and if you have confidential values at runtime, they can be retrieved through simple emulation.
 
 ##### Do's ✅
 
@@ -26,15 +26,17 @@ Do **not** send or store sensitive data on-chain.
 ##### Don'ts ❌
 
 ```tact
-import "@stdlib/deploy";
-
 message Login {
     privateKey: Int as uint256;
     signature: Slice;
     data: Slice;
 }
 
-contract Test with Deployable {
+contract Test {
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
+
     receive(msg: Login) {
         let publicKey = getPublicKey(msg.privateKey);
 
@@ -53,7 +55,7 @@ Prefer to use unsigned integers unless signed integers are required.
 
 ##### Don'ts ❌
 
-The following is an example of the incorrect use of a signed integer. In the `Vote{:tact}` [Message][message], the type of the `votes` field is `Int as int32{:tact}`, which is a $32$-bit singed integer. This can lead to spoofing if the attacker sends the negative number of votes instead of a positive one.
+The following is an example of the incorrect use of a signed integer. In the `Vote{:tact}` [Message][message], the type of the `votes` field is `Int as int32{:tact}`, which is a 32-bit signed integer. This can lead to spoofing if an attacker sends a negative number of votes instead of a positive one.
 
 ```tact
 message Vote { votes: Int as int32 }
@@ -90,11 +92,11 @@ throw(1);
 
 ## Insecure random numbers
 
-Generating truly secure random numbers in TON is challenging. The [`random()`](/ref/core-random#random) function is pseudo-random and depends on [logical time](https://docs.ton.org/develop/smart-contracts/guidelines/message-delivery-guarantees#what-is-a-logical-time). A hacker can predict the randomized number by [brute-forcing](https://en.wikipedia.org/wiki/Brute-force_attack) the logical time in the current block.
+Generating truly secure random numbers in TON is challenging. The [`random()`](/ref/core-random#random) function is pseudo-random and depends on [logical time](https://docs.ton.org/develop/smart-contracts/guidelines/message-delivery-guarantees#what-is-a-logical-time). An attacker can predict the randomized number by [brute-forcing](https://en.wikipedia.org/wiki/Brute-force_attack) the logical time in the current block.
 
 ##### Do's ✅
 
-* For critical applications **avoid relying solely on on-chain solutions**.
+* For critical applications, **avoid relying solely on on-chain solutions**.
 
 * Use [`random(){:tact}`](/ref/core-random#random) with randomized logical time to enhance security by making predictions harder for attackers without access to a validator node. Note, however, that it is still **not entirely foolproof**.
 
@@ -103,7 +105,7 @@ Generating truly secure random numbers in TON is challenging. The [`random()`](/
   2. Once all hashes are received, participants disclose their original numbers.
   3. Combine the disclosed numbers (e.g., summing them) to produce a secure random value.
 
-For more details, refer to the [Secure Random number generation page in TON Docs](https://docs.ton.org/v3/guidelines/smart-contracts/security/random-number-generation).
+For more details, refer to the [Secure Random Number Generation page in TON Docs](https://docs.ton.org/v3/guidelines/smart-contracts/security/random-number-generation).
 
 ##### Don'ts ❌
 
@@ -115,7 +117,7 @@ if (random(1, 10) == 7) {
 }
 ```
 
-Don't use randomization in `external_message` receivers, as it remains vulnerable even with randomizing logical time.
+Don't use randomization in `external_message` receivers, as it remains vulnerable even with randomized logical time.
 
 ## Optimized message handling
 
@@ -154,7 +156,7 @@ contract Example {
 
 ## Gas limitation
 
-Be careful with the `Out of gas error`. It cannot be handled, so try to pre-calculate the gas consumption for each receiver [using tests](/book/debug#tests) whenever possible. This will help to avoid wasting extra gas because the transaction will fail anyway.
+Be careful with the `Out of gas error`. It cannot be handled, so try to pre-calculate the gas consumption for each receiver [using tests](/book/debug#tests) whenever possible. This will help avoid wasting extra gas, as the transaction will fail anyway.
 
 ##### Do's ✅
 
@@ -199,10 +201,10 @@ contract Counter with Ownable {
 
 ##### Don'ts ❌
 
-Don't execute a message without validating the sender's identity!
+Do not execute a message without validating the sender's identity!
 
 ```tact
-contract Example with Deployable {
+contract Example {
     myJettonWalletAddress: Address;
     myJettonAmount: Int as coins = 0;
 
@@ -213,6 +215,10 @@ contract Example with Deployable {
             jettonWalletCode,
         );
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 
     receive(msg: JettonTransferNotification) {
         self.myJettonAmount += msg.amount;
@@ -228,7 +234,7 @@ Replay protection is a security mechanism that prevents an attacker from reusing
 
 To differentiate messages, always include and validate a unique identifier, such as `seqno`. Update the identifier after successful processing to avoid duplicates.
 
-Alternatively, you can implement a replay protection similar to the one in the [highload v3 wallet](https://github.com/ton-blockchain/highload-wallet-contract-v3/blob/main/contracts/highload-wallet-v3.func#L60), which is not based on `seqno`.
+Alternatively, you can implement replay protection similar to the one in the [highload v3 wallet](https://github.com/ton-blockchain/highload-wallet-contract-v3/blob/main/contracts/highload-wallet-v3.func#L60), which is not based on `seqno`.
 
 ```tact
 message Msg {
@@ -293,7 +299,7 @@ A message cascade can be processed over many blocks. Assume that while one messa
 
 ## Handle/Send bounced messages
 
-Send messages with the bounce flag set to `true{:tact}`, which is a default for the [`send(){:tact}`](/ref/core-common#send) function. Messages bounce when the execution of a contract has failed. You may want to deal with this by rolling back the state of the contract by wrapping code in [`try...catch{:tact}`](/book/statements#try-catch) statements and some additional processing depending on your logic.
+Send messages with the bounce flag set to `true{:tact}`, which is the default for the [`send(){:tact}`](/ref/core-send#send) function. Messages bounce when the execution of a contract fails. You may want to handle this by rolling back the state of the contract using [`try...catch{:tact}`](/book/statements#try-catch) statements and performing additional processing depending on your logic.
 
 ##### Do's ✅
 
@@ -346,19 +352,19 @@ contract JettonDefaultWallet {
 
 ## Transaction and phases
 
-From [Sending messages page](/book/send#outbound-message-processing) of the Book:
+From the [Sending messages page](/book/send#outbound-message-processing) of the Book:
 
-> Each transaction on TON Blockchain consists of multiple phases. Outbound messages are evaluated in compute phase, but are **not** sent in that phase. Instead, they're queued in order of appearance for the action phase, where all actions listed in compute phase, like outbound messages or reserve requests, are executed.
+> Each transaction on TON Blockchain consists of multiple phases. Outbound messages are evaluated in the compute phase but are **not** sent in that phase. Instead, they're queued in order of appearance for the action phase, where all actions listed in the compute phase, such as outbound messages or reserve requests, are executed.
 
-Hence, if the compute phase fails, [registers](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers) `c4` (persistent data) and `c5` (actions) won't be updated. However, it is possible to manually save their state using [`commit(){:tact}`](/ref/core-advanced/#commit) function.
+Hence, if the compute phase fails, [registers](https://docs.ton.org/v3/documentation/tvm/tvm-overview#control-registers) `c4` (persistent data) and `c5` (actions) won't be updated. However, it is possible to manually save their state using the [`commit(){:tact}`](/ref/core-contextstate#commit) function.
 
 ## Return gas excesses carefully
 
-If excess gas is not returned to the sender, the funds will accumulate in your contracts over time. Nothing terrible in principle, just a suboptimal practice. You can add a function to rake out excess, but popular contracts like TON Jetton still return to the sender with the [Message][message] with `0xd53276db` opcode.
+If excess gas is not returned to the sender, the funds will accumulate in your contracts over time. This isn't terrible in principle, just a suboptimal practice. You can add a function to rake out excess, but popular contracts like TON Jetton still return it to the sender with the [Message][message] using the `0xd53276db` opcode.
 
 ##### Do's ✅
 
-Return excesses using a [Message][message] with `0xd53276db` opcode.
+Return excesses using a [Message][message] with the `0xd53276db` opcode.
 
 ```tact
 message(0xd53276db) Excesses {}
@@ -380,7 +386,7 @@ contract Sample {
 }
 ```
 
-Also, you can leverage [`notify(){:tact}`](/ref/core-base/#self-notify) or [`forward(){:tact}`](/ref/core-base/#self-forward) standard functions.
+Alternatively, you can leverage the standard [`notify(){:tact}`](/ref/core-base/#self-notify) or [`forward(){:tact}`](/ref/core-base/#self-forward) functions.
 
 ```tact
 message(0xd53276db) Excesses {}
@@ -397,15 +403,15 @@ contract Sample {
 }
 ```
 
-## Pulling data from other contract
+## Pulling data from another contract
 
-Contracts in the blockchain can reside in separate shards, processed by other set of validators, meaning that one contract cannot pull data from other contracts. That is, no contract can call a [getter function](/book/functions#getter-functions)) from other contracts.
+Contracts in the blockchain can reside in separate shards processed by another set of validators. This means that one contract cannot pull data from another contract. Specifically, no contract can call a [getter function](/book/functions#getter-functions) from another contract.
 
 Thus, any on-chain communication is asynchronous and done by sending and receiving messages.
 
 ##### Do's ✅
 
-Exchange messages to pull data from other contract.
+Exchange messages to pull data from another contract.
 
 ```tact
 message ProvideMoney {}

@@ -1,47 +1,48 @@
 ---
 title: Message mode
-description: "Messages are sent with the mode param of a struct SendParameters. It's an Int value, which is combined from base modes and optional flags, which are also Int values"
+description: "Messages are sent with the mode param of the struct SendParameters. It's an Int value, which is combined from base modes and optional flags, which are also Int values"
 ---
 
 import { Badge } from '@astrojs/starlight/components';
 
-As it was previously mentioned, messages sent via [`send(){:tact}`](/ref/core-common#send) function utilize the `mode` param of the `SendParameters{:tact}` structure. The `mode` is an [`Int{:tact}`][int] value, which is combined from base modes and optional flags, which are also [`Int{:tact}`][int] values.
+As previously mentioned, messages sent via the [`send(){:tact}`](/ref/core-send#send) function utilize the `mode` parameter of the `SendParameters{:tact}` structure. The `mode` is an [`Int{:tact}`][int] value, which is combined from base modes and optional flags, which are also [`Int{:tact}`][int] values.
 
-It's possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience there's a set of constants which you may use to construct the compound `mode` with ease. Take a look at the following tables for more information on base modes and optional flags.
+It's possible to use raw [`Int{:tact}`][int] values and manually provide them for the `mode`, but for your convenience there is a set of constants you may use to easily construct the compound `mode`. Take a look at the following tables for more information on base modes and optional flags.
 
-Note that there are other [message-sending functions](/book/send#message-sending-functions) — they do not use the `SendParameters{:tact}` [Struct](/book/structs-and-messages#structs), but accept the `mode` as one of their parameters.
+Note that there are other [message-sending functions](/book/send#message-sending-functions) — they do not use the `SendParameters{:tact}` [struct](/book/structs-and-messages#structs), but accept the `mode` as one of their parameters.
 
 ## Base modes
 
 Mode value | Constant name                 | Description
 ---------: | :---------------------------- | -----------
 $0$        | <Badge text="Since Tact 1.6" variant="tip"/> `SendDefaultMode{:tact}` | Ordinary message (default).
-$64$       | `SendRemainingValue{:tact}`   | Carry all the remaining value of the inbound message in addition to the value initially indicated in the new message.
-$128$      | <Badge text="Use with caution" title="Careless use can result in a total balance loss" variant="danger"/> `SendRemainingBalance{:tact}` | Carry **all the remaining balance** of the current smart contract instead of the value originally indicated in the message.
-$1024$     | <Badge text="Since Tact 1.5" variant="tip"/> `SendOnlyEstimateFee{:tact}` | Doesn't send the message, only estimates the forward fees if the [message-sending function](/book/send#message-sending-functions) computes those.
+$64$       | `SendRemainingValue{:tact}`   | Carries all the remaining value of the inbound message in addition to the value initially indicated in the new message.
+$128$      | <Badge text="Use with caution" title="Careless use can result in a total balance loss" variant="danger"/> `SendRemainingBalance{:tact}` | Carries **all the remaining balance** of the current smart contract instead of the value originally indicated in the message.
+$1024$     | <Badge text="Since Tact 1.5" variant="tip"/> `SendOnlyEstimateFee{:tact}` | Doesn't send the message, only estimates the forward fees if the [message-sending function](/book/send#message-sending-functions) computes these.
 
-The base mode `SendRemainingValue{:tact}` does **not** take previous actions into account, i.e. it doesn't recalculate the remaining value of the incoming message based on previously sent messages or performed actions during [action phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases).
+The base mode `SendRemainingValue{:tact}` does **not** take previous actions into account, i.e., it doesn't recalculate the remaining value of the incoming message based on previously sent messages or actions performed during the [action phase](https://docs.ton.org/learn/tvm-instructions/tvm-overview#transactions-and-phases).
 
 Unlike `SendRemainingValue{:tact}`, the base mode `SendRemainingBalance{:tact}` always calculates the current value of the contract balance, which can help solve problems with [complex outbound message processing](/book/send#outbound-message-processing).
 
-However, be **very** careful when using `SendRemainingBalance{:tact}`, because it works with the balance of the whole contract and any mistake with it can lead to a total loss of funds.
+However, be **very** careful when using `SendRemainingBalance{:tact}`, because it works with the balance of the entire contract, and any mistake with it can lead to a total loss of funds.
 
 ## Optional flags
 
-Flag value | Constant name                   | Description
----------: | :------------------------------ | -----------
-$+1$       | `SendPayGasSeparately{:tact}`   | Pay [forward fees][fwdfee] separately from the message value.
-$+2$       | `SendIgnoreErrors{:tact}`       | Ignore any errors arising while processing this message during the action phase.
-$+16$      | `SendBounceIfActionFail{:tact}` | Bounce transaction in case of any errors during action phase. Has no effect if flag $+2$, `SendIgnoreErrors{:tact}` is used.
-$+32$      | `SendDestroyIfZero{:tact}`      | Current account (contract) will be destroyed if its resulting balance is zero. This flag is often used with mode $128$, `SendRemainingBalance{:tact}`.
+Flag value | Constant name                        | Description
+---------: | :----------------------------------- | -----------
+$+1$       | ~~`SendPayGasSeparately{:tact}`~~    | <Badge text="Deprecated since Tact 1.6.5" variant="tip"/><p/> Use `SendPayFwdFeesSeparately{:tact}` instead.
+$+1$       | `SendPayFwdFeesSeparately{:tact}`    | Pay [forward fees][fwdfee] separately from the message value.
+$+2$       | `SendIgnoreErrors{:tact}`            | Ignore any errors arising while processing this message during the action phase.
+$+16$      | `SendBounceIfActionFail{:tact}`      | Bounce the transaction in case of any errors during the action phase. Has no effect if flag $+2$, `SendIgnoreErrors{:tact}`, is used.
+$+32$      | `SendDestroyIfZero{:tact}`           | The current account (contract) will be destroyed if its resulting balance is zero. This flag is often used with mode $128$, `SendRemainingBalance{:tact}`.
 
 ## Combining modes with flags
 
-To make the [`Int{:tact}`][int] value for `mode` field of `SendParameters{:tact}`, you just have to combine base modes with optional flags by applying the [bitwise OR](/book/operators#binary-bitwise-or) operation.
+To create the [`Int{:tact}`][int] value for the `mode` field of `SendParameters{:tact}`, you simply combine a base mode with optional flags using the [bitwise OR](/book/operators#binary-bitwise-or) operation.
 
-For example, if you want to send a regular message and pay transfer fees separately, use the mode $0$ (default) and a flag $+1$ to get `mode` $= 1$, which is equal to using `SendPayGasSeparately{:tact}` constant.
+For example, if you want to send a regular message and pay transfer fees separately, use the default mode $0$ and add flag $+1$ to obtain `mode = 1`, which is equivalent to using the constant `SendPayFwdFeesSeparately{:tact}`.
 
-Alternatively, if you want to send the whole contract balance and destroy it immediately, use the mode $128$ and flag $+32$ to get `mode` $= 160$, which is equal to `SendRemainingBalance | SendDestroyIfZero{:tact}`.
+Alternatively, if you want to send the entire contract balance and destroy it immediately, use mode $128$ and add flag $+32$ to get `mode = 160`, which is equivalent to `SendRemainingBalance | SendDestroyIfZero{:tact}`.
 
 Here's how the latter example would look in code:
 
@@ -56,20 +57,20 @@ send(SendParameters{
 });
 ```
 
-Note that there can be only **one** [base mode](#base-modes), but number of [optional flags](#optional-flags) may vary: you can use them all, none or just some.
+Note that there can be only **one** [base mode](#base-modes), but the number of [optional flags](#optional-flags) may vary: you can use all, none, or only some of them.
 
 :::caution
 
-  While adding ([`+{:tact}`](/book/operators#binary-add)) base modes together with optional flags is possible, it is discouraged due to the possibility of excess values. Use the [bitwise OR `|{:tact}`](/book/operators#binary-bitwise-or) instead, as it's designed to work with such flag and bit manipulations of the `mode`.
+  While adding ([`+{:tact}`](/book/operators#binary-add)) base modes together with optional flags is possible, it is discouraged due to the possibility of obtaining incorrect values. Instead, use the [bitwise OR `|{:tact}`](/book/operators#binary-bitwise-or), as it is specifically designed for correctly combining flags and performing bit manipulations of the `mode`.
 
 :::
 
 ## Functions with implicit mode
 
-Some [message-sending functions](/book/send#message-sending-functions) do not allow to set a mode by passing an argument. That's because their internal logic requires specific fixed set of modes to be used instead:
+Some [message-sending functions](/book/send#message-sending-functions) do not allow setting a mode by passing an argument. This is because their internal logic requires a specific fixed set of modes to be used instead:
 
-* [`emit(){:tact}`](/ref/core-common#emit) sends a message with the `SendDefaultMode{:tact}` ($0$).
-* [`self.reply(){:tact}`](/ref/core-base#self-reply), [`self.notify(){:tact}`](/ref/core-base#self-notify), and [`self.forward(){:tact}`](/ref/core-base#self-forward) all use the `SendRemainingValue{:tact}` mode unless the [`self.storageReserve{:tact}`](/ref/core-base#self-storagereserve) constant is overwritten to be greater than $0$, in which case they attempt to use the `SendRemainingBalance{:tact}` mode.
+* [`emit(){:tact}`](/ref/core-send#emit) sends a message with the `SendDefaultMode{:tact}` ($0$).
+* [`self.reply(){:tact}`](/ref/core-base#self-reply), [`self.notify(){:tact}`](/ref/core-base#self-notify), and [`self.forward(){:tact}`](/ref/core-base#self-forward) all use the `SendRemainingValue{:tact}` mode unless the [`self.storageReserve{:tact}`](/ref/core-base#self-storagereserve) constant is overridden to be greater than $0$, in which case they attempt to use the `SendRemainingBalance{:tact}` mode.
 
 [int]: /book/integers
 

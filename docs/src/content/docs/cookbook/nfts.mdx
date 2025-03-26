@@ -7,21 +7,21 @@ This page lists common examples of working with [NFTs](https://docs.ton.org/deve
 
 ## Accepting NFT ownership assignment
 
-Notification message of assigned NFT ownership has the following structure:
+The notification message of assigned NFT ownership has the following structure:
 
 ```tact
 message(0x05138d91) NFTOwnershipAssigned {
     queryId: Int as uint64;
-    previousOwner:Address;
-    forwardPayload:Slice as remaining;
+    previousOwner: Address;
+    forwardPayload: Slice as remaining;
 }
 ```
 
-Use [receiver](/book/receive) function to accept notification message.
+Use the [receiver](/book/receive) function to accept the notification message.
 
 :::caution
 
-  Sender of notification must be validated!
+  The sender of the notification must be validated!
 
 :::
 
@@ -30,38 +30,38 @@ Validation can be done in two ways:
 1. Directly store the NFT item address and validate against it.
 
 ```tact
-import "@stdlib/deploy";
-
 message(0x05138d91) NFTOwnershipAssigned {
     queryId: Int as uint64;
-    previousOwner:Address;
-    forwardPayload:Slice as remaining;
+    previousOwner: Address;
+    forwardPayload: Slice as remaining;
 }
 
-contract SingleNft with Deployable {
+contract SingleNft {
     nftItemAddress: Address;
 
     init(nftItemAddress: Address) {
         self.nftItemAddress = nftItemAddress;
     }
 
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
+
     receive(msg: NFTOwnershipAssigned) {
         require(self.nftItemAddress == sender(), "NFT contract is not the sender");
 
-        // your logic of processing nft ownership assign notification
+        // your logic of processing NFT ownership assignment notification
     }
 }
 ```
 
-2. Use [`StateInit{:tact}`](/book/expressions#initof) and derived address of the NFT item.
+2. Use [`StateInit{:tact}`](/book/expressions#initof) and the derived address of the NFT item.
 
 ```tact
-import "@stdlib/deploy";
-
 message(0x05138d91) NFTOwnershipAssigned {
     queryId: Int as uint64;
-    previousOwner:Address;
-    forwardPayload:Slice as remaining;
+    previousOwner: Address;
+    forwardPayload: Slice as remaining;
 }
 
 struct NFTItemInitData {
@@ -78,7 +78,7 @@ inline fun calculateNFTAddress(index: Int, collectionAddress: Address, nftCode: 
     return contractAddress(StateInit{code: nftCode, data: initData.toCell()});
 }
 
-contract NftInCollection with Deployable {
+contract NftInCollection {
     nftCollectionAddress: Address;
     nftItemIndex: Int as uint64;
     nftCode: Cell;
@@ -89,39 +89,45 @@ contract NftInCollection with Deployable {
         self.nftCode = nftCode;
     }
 
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
+
     receive(msg: NFTOwnershipAssigned) {
         let expectedNftAddress = calculateNFTAddress(self.nftItemIndex, self.nftCollectionAddress, self.nftCode); // or you can even store expectedNftAddress
         require(expectedNftAddress == sender(), "NFT contract is not the sender");
 
-        // your logic of processing nft ownership assign notification
+        // your logic of processing NFT ownership assignment notification
     }
 }
 ```
 
 Since the initial data layout of the NFT item can vary, the first approach is often more suitable.
 
-## Transferring NFT item
+## Transferring an NFT item
 
-To send NFT item transfer use [`send(){:tact}`](/book/send) function.
+To send an NFT item transfer, use the [`send(){:tact}`](/book/send) function.
 
 ```tact
-import "@stdlib/deploy";
-
 message(0x5fcc3d14) NFTTransfer {
     queryId: Int as uint64;
-    newOwner: Address; // address of the new owner of the NFT item.
-    responseDestination: Address; // address where to send a response with confirmation of a successful transfer and the rest of the incoming message coins.
-    customPayload: Cell? = null; //  optional custom data. In most cases should be null
-    forwardAmount: Int as coins; // the amount of nanotons to be sent to the new owner.
-    forwardPayload: Slice as remaining; // optional custom data that should be sent to the new owner.
+    newOwner: Address; // Address of the new owner of the NFT item.
+    responseDestination: Address; // Address to send a response confirming a successful transfer and the remaining incoming message coins.
+    customPayload: Cell? = null; // Optional custom data. In most cases, this should be null.
+    forwardAmount: Int as coins; // The amount of nanotons to be sent to the new owner.
+    forwardPayload: Slice as remaining; // Optional custom data that should be sent to the new owner.
 }
 
-contract Example with Deployable {
+contract Example {
     nftItemAddress: Address;
 
     init(nftItemAddress: Address) {
         self.nftItemAddress = nftItemAddress;
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 
     // ... add more code from previous examples ...
 
@@ -131,12 +137,12 @@ contract Example with Deployable {
             value: ton("0.1"),
             body: NFTTransfer{
                 queryId: 42,
-                // FIXME: Change this according to your needs
+                // FIXME: Change this according to your needs.
                 newOwner: sender(),
                 responseDestination: myAddress(),
                 customPayload: null,
                 forwardAmount: 1,
-                forwardPayload: rawSlice("F"), // precomputed beginCell().storeUint(0xF, 4).endCell().beginParse()
+                forwardPayload: rawSlice("F"), // Precomputed beginCell().storeUint(0xF, 4).endCell().beginParse()
             }.toCell(),
         });
     }
@@ -145,12 +151,9 @@ contract Example with Deployable {
 
 ## Get NFT static info
 
-Note, that TON Blockchain does not allow contracts to call each other [getters](https://docs.tact-lang.org/book/contracts#getter-functions).
-In order to receive data from another contract, you must exchange messages.
+Note that TON Blockchain does not allow contracts to call each other's [getters](https://docs.tact-lang.org/book/contracts#getter-functions). To retrieve data from another contract, you must exchange messages.
 
 ```tact
-import "@stdlib/deploy";
-
 message(0x2fcb26a2) NFTGetStaticData {
     queryId: Int as uint64;
 }
@@ -175,7 +178,7 @@ inline fun calculateNFTAddress(index: Int, collectionAddress: Address, nftCode: 
     return contractAddress(StateInit{code: nftCode, data: initData.toCell()});
 }
 
-contract Example with Deployable {
+contract Example {
     nftCollectionAddress: Address;
     nftItemIndex: Int as uint64;
     nftCode: Cell;
@@ -185,6 +188,10 @@ contract Example with Deployable {
         self.nftItemIndex = nftItemIndex;
         self.nftCode = nftCode;
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 
     // ... add more code from previous examples ...
 
@@ -204,18 +211,16 @@ contract Example with Deployable {
         let expectedNftAddress = calculateNFTAddress(msg.index, msg.collection, self.nftCode);
         require(expectedNftAddress == sender(), "NFT contract is not the sender");
 
-        // Save nft static data or do something
+        // Save NFT static data or do something
     }
 }
 ```
 
 ## Get NFT royalty params
 
-NFT royalty params are described [here](https://github.com/ton-blockchain/TEPs/blob/master/text/0066-nft-royalty-standard.md).
+NFT royalty parameters are described [here](https://github.com/ton-blockchain/TEPs/blob/master/text/0066-nft-royalty-standard.md).
 
 ```tact
-import "@stdlib/deploy";
-
 message(0x693d3950) NFTGetRoyaltyParams {
     queryId: Int as uint64;
 }
@@ -227,12 +232,16 @@ message(0xa8cb00ad) NFTReportRoyaltyParams {
     destination: Address;
 }
 
-contract Example with Deployable {
+contract Example {
     nftCollectionAddress: Address;
 
     init(nftCollectionAddress: Address) {
         self.nftCollectionAddress = nftCollectionAddress;
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 
     // ... add more code from previous examples ...
 
@@ -268,21 +277,23 @@ Note that only NFT owners are allowed to use these methods.
 ### Deploy NFT
 
 ```tact
-import "@stdlib/deploy";
-
 message(0x1) NFTDeploy {
     queryId: Int as uint64;
     itemIndex: Int as uint64;
-    amount: Int as coins; // amount to sent when deploying nft
+    amount: Int as coins; // amount to send when deploying NFT
     nftContent: Cell;
 }
 
-contract Example with Deployable {
+contract Example {
     nftCollectionAddress: Address;
 
     init(nftCollectionAddress: Address) {
         self.nftCollectionAddress = nftCollectionAddress;
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value back to the sender
+    receive() { cashback(sender()) }
 
     // ... add more code from previous examples ...
 
@@ -294,7 +305,7 @@ contract Example with Deployable {
                 queryId: 42,
                 itemIndex: 42,
                 amount: ton("0.1"),
-                nftContent: beginCell().endCell() // FIXME: Should be your content, mostly generated offchain
+                nftContent: beginCell().endCell() // FIXME: Replace with your content, usually generated off-chain
             }.toCell(),
         });
     }
@@ -304,19 +315,21 @@ contract Example with Deployable {
 ### Change owner
 
 ```tact
-import "@stdlib/deploy";
-
 message(0x3) NFTChangeOwner {
     queryId: Int as uint64;
     newOwner: Address;
 }
 
-contract Example with Deployable {
+contract Example {
     nftCollectionAddress: Address;
 
     init(nftCollectionAddress: Address) {
         self.nftCollectionAddress = nftCollectionAddress;
     }
+
+    // Empty receiver for the deployment,
+    // which forwards the remaining value to the sender
+    receive() { cashback(sender()) }
 
     // ... add more code from previous examples ...
 
@@ -326,7 +339,7 @@ contract Example with Deployable {
             value: ton("0.05"),
             body: NFTChangeOwner{
                 queryId: 42,
-                // FIXME: Put proper address("NEW_OWNER_ADDRESS") here
+                // FIXME: Replace with the appropriate address("NEW_OWNER_ADDRESS")
                 newOwner: sender(),
             }.toCell(),
         });
@@ -334,7 +347,7 @@ contract Example with Deployable {
 }
 ```
 
-## Onchain metadata creation
+## On-chain metadata creation
 
 ### NFT Collection {#onchain-metadata-nft-collection}
 
@@ -363,12 +376,12 @@ fun poorMansLaunchPad() {
     let collectionMetadata = composeCollectionMetadata(
         "Best Collection",
         "A very descriptive description describing the collection descriptively",
-        "...link to ipfs or somewhere trusted...",
+        "...link to IPFS or somewhere trusted...",
     );
 }
 
-// Prefixes the String with a single null byte and converts it to a Cell
-// The null byte prefix is used to express metadata in various standards, like NFT or Jetton
+// Prefixes the String with a single null byte and converts it to a Cell.
+// The null byte prefix is used to express metadata in various standards, like NFT or Jetton.
 inline extends fun asMetadataCell(self: String): Cell {
     return beginTailString().concat(self).toCell();
 }
@@ -428,6 +441,6 @@ inline extends fun asMetadataCell(self: String): Cell {
 
 :::tip[Hey there!]
 
-  Didn't find your favorite example of a NFT communication? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
+  Didn't find your favorite example of NFT communication? Have cool implementations in mind? [Contributions are welcome!](https://github.com/tact-lang/tact/issues)
 
 :::

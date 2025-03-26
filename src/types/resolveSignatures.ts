@@ -15,7 +15,7 @@ import type {
     TypeDescription,
 } from "./types";
 import { throwCompilationError } from "../error/errors";
-import type { AstNumber, AstReceiver } from "../ast/ast";
+import type * as Ast from "../ast/ast";
 import type { FactoryAst } from "../ast/ast-helpers";
 import { commentPseudoOpcode } from "../generator/writers/writeRouter";
 import { dummySrcInfo } from "../grammar";
@@ -29,7 +29,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
 
     const signatures: Map<
         string,
-        { signature: string; tlb: string; id: AstNumber | null }
+        { signature: string; tlb: string; id: Ast.Number | null }
     > = new Map();
     function createTypeFormat(
         type: string,
@@ -144,7 +144,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
                     src.type.type,
                     src.type.format ?? null,
                 );
-                if (src.type.optional) {
+                if (src.type.optional && base !== "address") {
                     base = "Maybe " + base;
                 }
                 return src.name + ":" + base;
@@ -176,7 +176,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
     function createTupleSignature(name: string): {
         signature: string;
         tlb: string;
-        id: AstNumber | null;
+        id: Ast.Number | null;
     } {
         if (signatures.has(name)) {
             return signatures.get(name)!;
@@ -221,9 +221,9 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
 
         // Calculate signature and method id
         const signature = name + "{" + fields.join(",") + "}";
-        let id: AstNumber | null = null;
+        let id: Ast.Number | null = null;
         if (t.ast.kind === "message_decl") {
-            if (t.ast.opcode !== null) {
+            if (t.ast.opcode !== undefined) {
                 // Currently, message opcode expressions do not get typechecked, so
                 // ```
                 // message(true ? 42 : false) TypeError { }
@@ -299,7 +299,7 @@ export function resolveSignatures(ctx: CompilerContext, Ast: FactoryAst) {
     return ctx;
 }
 
-function newMessageOpcode(signature: string): AstNumber {
+function newMessageOpcode(signature: string): Ast.Number {
     return {
         kind: "number",
         base: 10,
@@ -314,7 +314,7 @@ type binOpcode = number;
 
 function checkBinaryMessageReceiver(
     rcv: BinaryReceiverSelector,
-    rcvAst: AstReceiver,
+    rcvAst: Ast.Receiver,
     usedOpcodes: Map<binOpcode, messageType>,
     ctx: CompilerContext,
 ) {
@@ -335,7 +335,7 @@ type commentOpcode = string;
 // "opcode" clashes are highly unlikely in this case, of course
 function checkCommentMessageReceiver(
     rcv: CommentReceiverSelector,
-    rcvAst: AstReceiver,
+    rcvAst: Ast.Receiver,
     usedOpcodes: Map<commentOpcode, messageType>,
 ) {
     const opcode1 = commentPseudoOpcode(rcv.comment, true, rcvAst.loc);
