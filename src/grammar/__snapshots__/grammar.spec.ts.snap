@@ -9,6 +9,15 @@ exports[`grammar should fail abstract-const-without-modifier 1`] = `
 "
 `;
 
+exports[`grammar should fail asm-getter 1`] = `
+"<unknown>:7:9: Expected ":"
+  6 | contract Foo {
+> 7 |     asm get fun illegalGetter(): Int {
+              ^
+  8 |         DEPTH
+"
+`;
+
 exports[`grammar should fail const-abstract-abstract 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 

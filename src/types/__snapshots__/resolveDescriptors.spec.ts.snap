@@ -63,6 +63,15 @@ exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-ret-non-
 "
 `;
 
+exports[`resolveDescriptors should fail descriptors for asm-getter-outside-contract 1`] = `
+"<unknown>:6:5: Getters must be defined within a contract
+  5 | 
+> 6 | asm get fun illegalGetter(): Int {
+          ^~~
+  7 |     DEPTH
+"
+`;
+
 exports[`resolveDescriptors should fail descriptors for const-decl-default-field-wrong-initializer-type copy 1`] = `
 "<unknown>:4:17: Constant "C" has declared type "Bool", but its initializer has incompatible type "Int"
   3 | 
