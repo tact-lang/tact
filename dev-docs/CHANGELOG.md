@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Standard Library
 
-- Added `SendPayFwdFeesSeparately` constant: PR [#2483](https://github.com/tact-lang/tact/pull/2483)
+- Deprecated the SendPayGasSeparately constant in favor of SendPayFwdFeesSeparatel: PR [#2483](https://github.com/tact-lang/tact/pull/2483)
 
 ### Internal infrastructure
 
