@@ -20,9 +20,8 @@ import {
     getUsedGas,
     printBenchmarkTable,
 } from "../utils/gas";
-import type { RawBenchmarkResult, RawCodeSizeResult } from "../utils/gas";
 import { join, resolve } from "path";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
 import { posixNormalize } from "../../utils/filePath";
 import { type Step, writeLog } from "../../test/utils/write-vm-log";
 import {
@@ -42,6 +41,9 @@ import {
     type Transfer,
     storeInitNFTBody,
 } from "../contracts/output/nft-collection_NFTItem";
+
+import benchmarkResults from "./results_gas.json";
+import benchmarkCodeSizeResults from "./results_code_size.json";
 
 export type dictDeployNFT = {
     amount: bigint;
@@ -156,28 +158,6 @@ const deployFuncNFTItem = async (
     };
 };
 
-type GasResults = {
-    transfer?: string;
-    "get static data"?: string;
-    "deploy nft"?: string;
-    "batch deploy nft"?: string;
-};
-
-const results: RawBenchmarkResult = {
-    results: [
-        {
-            label: "FunC",
-            gas: {} as GasResults,
-            pr: "1111",
-        },
-        {
-            label: "Tact",
-            gas: {} as GasResults,
-            pr: "1111",
-        },
-    ],
-};
-
 describe("itemNFT", () => {
     let blockchain: Blockchain;
 
@@ -197,6 +177,13 @@ describe("itemNFT", () => {
     let royaltyParams: RoyaltyParams;
 
     let step: Step;
+    const results = generateResults(benchmarkResults);
+    const codeSizeResults = generateCodeSizeResults(benchmarkCodeSizeResults);
+    const expectedCodeSize = codeSizeResults.at(-1)!;
+    const funcCodeSize = codeSizeResults.at(0)!;
+
+    const expectedResult = results.at(-1)!;
+    const funcResult = results.at(0)!;
 
     beforeAll(async () => {
         blockchain = await Blockchain.create();
@@ -306,60 +293,7 @@ describe("itemNFT", () => {
     });
 
     afterAll(async () => {
-        const collectionSize = await getStateSizeForAccount(
-            blockchain,
-            collectionNFT.address,
-        );
-        const funcCollectionSize = await getStateSizeForAccount(
-            blockchain,
-            funcCollectionNFT.address,
-        );
-        const itemSize = await getStateSizeForAccount(
-            blockchain,
-            itemNFT.address,
-        );
-        const funcItemSize = await getStateSizeForAccount(
-            blockchain,
-            funcItemNFT.address,
-        );
-
-        const codeSizeResults: RawCodeSizeResult = {
-            results: [
-                {
-                    label: "FunC",
-                    size: {
-                        "collection cells": funcCollectionSize.cells.toString(),
-                        "collection bits": funcCollectionSize.bits.toString(),
-                        "item cells": funcItemSize.cells.toString(),
-                        "item bits": funcItemSize.bits.toString(),
-                    },
-                    pr: "1111",
-                },
-                {
-                    label: "Tact",
-                    size: {
-                        "collection cells": collectionSize.cells.toString(),
-                        "collection bits": collectionSize.bits.toString(),
-                        "item cells": itemSize.cells.toString(),
-                        "item bits": itemSize.bits.toString(),
-                    },
-                    pr: "1111",
-                },
-            ],
-        };
-
-        writeFileSync(
-            join(__dirname, "results_gas.json"),
-            JSON.stringify(results, null, 2),
-        );
-        writeFileSync(
-            join(__dirname, "results_code_size.json"),
-            JSON.stringify(codeSizeResults, null, 2),
-        );
-
-        const benchmarkResults = generateResults(results);
-        const codeResults = generateCodeSizeResults(codeSizeResults);
-        printBenchmarkTable(benchmarkResults, codeResults, {
+        printBenchmarkTable(results, codeSizeResults, {
             implementationName: "FunC",
             printMode: "full",
         });
@@ -409,11 +343,12 @@ describe("itemNFT", () => {
         const transferGasUsedTact = await runTransferTest(itemNFT);
         const transferGasUsedFunC = await runTransferTest(funcItemNFT);
 
-        results.results[0]!.gas["transfer"] = transferGasUsedFunC.toString();
-        results.results[1]!.gas["transfer"] = transferGasUsedTact.toString();
+        expect(transferGasUsedTact).toEqual(expectedResult.gas["transfer"]);
+
+        expect(transferGasUsedFunC).toEqual(funcResult.gas["transfer"]);
     });
 
-    it("getStaticData", async () => {
+    it("get static data", async () => {
         const sendGetStaticData = async (
             itemNFT: SandboxContract<NFTItem>,
             from: Sender,
@@ -444,13 +379,11 @@ describe("itemNFT", () => {
         const getStaticGasUsedTact = await runGetStaticTest(itemNFT);
         const getStaticGasUsedFunC = await runGetStaticTest(funcItemNFT);
 
-        results.results[0]!.gas["get static data"] =
-            getStaticGasUsedFunC.toString();
-        results.results[1]!.gas["get static data"] =
-            getStaticGasUsedTact.toString();
+        expect(getStaticGasUsedTact).toEqual(expectedResult.gas["get static data"]);
+        expect(getStaticGasUsedFunC).toEqual(funcResult.gas["get static data"]);
     });
 
-    it("deployNFT", async () => {
+    it("deploy nft", async () => {
         const sendDeployNFT = async (
             collectionNFT: SandboxContract<NFTCollection>,
             from: Sender,
@@ -492,11 +425,12 @@ describe("itemNFT", () => {
         const deployNFTGasUsedTact = await runDeployTest(collectionNFT);
         const deployNFTGasUsedFunC = await runDeployTest(funcCollectionNFT);
 
-        results.results[0]!.gas["deploy nft"] = deployNFTGasUsedFunC.toString();
-        results.results[1]!.gas["deploy nft"] = deployNFTGasUsedTact.toString();
+        expect(deployNFTGasUsedTact).toEqual(expectedResult.gas["deploy nft"]);
+        expect(deployNFTGasUsedFunC).toEqual(funcResult.gas["deploy nft"]);
+        
     });
 
-    it("batchDeployNFT", async () => {
+    it("batch deploy nft", async () => {
         const batchMintNFTProcess = async (
             collectionNFT: SandboxContract<NFTCollection>,
             sender: SandboxContract<TreasuryContract>,
@@ -557,14 +491,30 @@ describe("itemNFT", () => {
             return getUsedGas(sendResult, "internal");
         };
 
-        const batchDeployNFTGasUsedTact =
-            await runBatchDeployTest(collectionNFT);
-        const batchDeployNFTGasUsedFunC =
-            await runBatchDeployTest(funcCollectionNFT);
+        const batchDeployNFTGasUsedTact = await runBatchDeployTest(collectionNFT);
+        const batchDeployNFTGasUsedFunC = await runBatchDeployTest(funcCollectionNFT);
+        
+        expect(batchDeployNFTGasUsedTact).toEqual(expectedResult.gas["batch deploy nft"]);
+        expect(batchDeployNFTGasUsedFunC).toEqual(funcResult.gas["batch deploy nft"]);
+    });
 
-        results.results[0]!.gas["batch deploy nft"] =
-            batchDeployNFTGasUsedFunC.toString();
-        results.results[1]!.gas["batch deploy nft"] =
-            batchDeployNFTGasUsedTact.toString();
+    it("collection cells", async () => {
+        expect((await getStateSizeForAccount(blockchain, collectionNFT.address)).cells).toEqual(expectedCodeSize.size["collection cells"]);
+        expect((await getStateSizeForAccount(blockchain, funcCollectionNFT.address)).cells).toEqual(funcCodeSize.size["collection cells"]);
+    });
+
+    it("collection bits", async () => {
+        expect((await getStateSizeForAccount(blockchain, collectionNFT.address)).bits).toEqual(expectedCodeSize.size["collection bits"]);
+        expect((await getStateSizeForAccount(blockchain, funcCollectionNFT.address)).bits).toEqual(funcCodeSize.size["collection bits"]);
+    });
+
+    it("item cells", async () => {
+        expect((await getStateSizeForAccount(blockchain, itemNFT.address)).cells).toEqual(expectedCodeSize.size["item cells"]);
+        expect((await getStateSizeForAccount(blockchain, funcItemNFT.address)).cells).toEqual(funcCodeSize.size["item cells"]);
+    });
+
+    it("item bits", async () => {
+        expect((await getStateSizeForAccount(blockchain, itemNFT.address)).bits).toEqual(expectedCodeSize.size["item bits"]);
+        expect((await getStateSizeForAccount(blockchain, funcItemNFT.address)).bits).toEqual(funcCodeSize.size["item bits"]);
     });
 });

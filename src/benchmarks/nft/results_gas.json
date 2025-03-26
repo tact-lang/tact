@@ -8,7 +8,7 @@
         "deploy nft": "10469",
         "batch deploy nft": "1049281"
       },
-      "pr": "1111"
+      "pr": null
     },
     {
       "label": "Tact",
@@ -18,7 +18,7 @@
         "deploy nft": "11881",
         "batch deploy nft": "719416"
       },
-      "pr": "1111"
+      "pr": "https://github.com/tact-lang/tact/pull/2479"
     }
   ]
 }

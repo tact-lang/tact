@@ -8,7 +8,7 @@
         "item cells": "16",
         "item bits": "4044"
       },
-      "pr": "1111"
+      "pr": null
     },
     {
       "label": "Tact",
@@ -18,7 +18,7 @@
         "item cells": "12",
         "item bits": "7330"
       },
-      "pr": "1111"
+      "pr": "https://github.com/tact-lang/tact/pull/2479"
     }
   ]
 }
