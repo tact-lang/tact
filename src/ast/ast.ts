@@ -243,18 +243,18 @@ export type StatementAssign = {
 };
 
 export type AugmentedAssignOperation =
-    | "+"
-    | "-"
-    | "*"
-    | "/"
-    | "&&"
-    | "||"
-    | "%"
-    | "|"
-    | "<<"
-    | ">>"
-    | "&"
-    | "^";
+    | "+="
+    | "-="
+    | "*="
+    | "/="
+    | "&&="
+    | "||="
+    | "%="
+    | "|="
+    | "<<="
+    | ">>="
+    | "&="
+    | "^=";
 
 export type StatementAugmentedAssign = {
     readonly kind: "statement_augmentedassign";

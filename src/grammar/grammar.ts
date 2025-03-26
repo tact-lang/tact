@@ -268,12 +268,12 @@ export namespace $ast {
   export type StatementAssign = $.Located<{
     readonly $: "StatementAssign";
     readonly left: expression;
-    readonly operator: augmentedOp | undefined;
+    readonly operator: augmentedOp | "=";
     readonly right: expression;
   }>;
   export type statement = StatementLet | StatementDestruct | StatementBlock | StatementReturn | StatementCondition | StatementWhile | StatementRepeat | StatementUntil | StatementTry | StatementForEach | StatementExpression | StatementAssign;
   export type statements = readonly statement[];
-  export type augmentedOp = "||" | "&&" | ">>" | "<<" | "-" | "+" | "*" | "/" | "%" | "|" | "&" | "^";
+  export type augmentedOp = "||=" | "&&=" | ">>=" | "<<=" | "-=" | "+=" | "*=" | "/=" | "%=" | "|=" | "&=" | "^=";
   export type FalseBranch = $.Located<{
     readonly $: "FalseBranch";
     readonly body: statements;
@@ -480,10 +480,10 @@ export const StatementUntil: $.Parser<$ast.StatementUntil> = $.loc($.field($.pur
 export const StatementTry: $.Parser<$ast.StatementTry> = $.loc($.field($.pure("StatementTry"), "$", $.right(keyword($.str("try")), $.field($.lazy(() => statements), "body", $.field($.opt($.right(keyword($.str("catch")), $.right($.str("("), $.field(Id, "name", $.right($.str(")"), $.field($.lazy(() => statements), "body", $.eps)))))), "handler", $.eps)))));
 export const StatementForEach: $.Parser<$ast.StatementForEach> = $.loc($.field($.pure("StatementForEach"), "$", $.right(keyword($.str("foreach")), $.right($.str("("), $.field(Id, "key", $.right($.str(","), $.field(Id, "value", $.right($.str("in"), $.field($.lazy(() => expression), "expression", $.right($.str(")"), $.field($.lazy(() => statements), "body", $.eps)))))))))));
 export const StatementExpression: $.Parser<$ast.StatementExpression> = $.loc($.field($.pure("StatementExpression"), "$", $.field($.lazy(() => expression), "expression", $.right(semicolon, $.eps))));
-export const StatementAssign: $.Parser<$ast.StatementAssign> = $.loc($.field($.pure("StatementAssign"), "$", $.field($.lazy(() => expression), "left", $.field($.opt($.lazy(() => augmentedOp)), "operator", $.right($.str("="), $.field($.lazy(() => expression), "right", $.right(semicolon, $.eps)))))));
+export const StatementAssign: $.Parser<$ast.StatementAssign> = $.loc($.field($.pure("StatementAssign"), "$", $.field($.lazy(() => expression), "left", $.field($.alt($.lazy(() => augmentedOp), $.str("=")), "operator", $.field($.lazy(() => expression), "right", $.right(semicolon, $.eps))))));
 export const statement: $.Parser<$ast.statement> = $.alt(StatementLet, $.alt(StatementDestruct, $.alt(StatementBlock, $.alt(StatementReturn, $.alt(StatementCondition, $.alt(StatementWhile, $.alt(StatementRepeat, $.alt(StatementUntil, $.alt(StatementTry, $.alt(StatementForEach, $.alt(StatementExpression, StatementAssign)))))))))));
 export const statements: $.Parser<$ast.statements> = $.right($.str("{"), $.left($.star(statement), $.str("}")));
-export const augmentedOp: $.Parser<$ast.augmentedOp> = $.alt($.str("||"), $.alt($.str("&&"), $.alt($.str(">>"), $.alt($.str("<<"), $.regex<"-" | "+" | "*" | "/" | "%" | "|" | "&" | "^">("-+*/%|&^", [$.ExpString("-"), $.ExpString("+"), $.ExpString("*"), $.ExpString("/"), $.ExpString("%"), $.ExpString("|"), $.ExpString("&"), $.ExpString("^")])))));
+export const augmentedOp: $.Parser<$ast.augmentedOp> = $.alt($.str("||="), $.alt($.str("&&="), $.alt($.str(">>="), $.alt($.str("<<="), $.alt($.str("-="), $.alt($.str("+="), $.alt($.str("*="), $.alt($.str("/="), $.alt($.str("%="), $.alt($.str("|="), $.alt($.str("&="), $.str("^="))))))))))));
 export const FalseBranch: $.Parser<$ast.FalseBranch> = $.loc($.field($.pure("FalseBranch"), "$", $.field(statements, "body", $.eps)));
 export const RegularField: $.Parser<$ast.RegularField> = $.loc($.field($.pure("RegularField"), "$", $.field(Id, "fieldName", $.right($.str(":"), $.field(Id, "varName", $.eps)))));
 export const PunnedField: $.Parser<$ast.PunnedField> = $.loc($.field($.pure("PunnedField"), "$", $.field(Id, "name", $.eps)));
