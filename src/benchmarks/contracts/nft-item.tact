@@ -1,105 +1,95 @@
 import "./constants";
 import "./messages-nft";
 
+inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, payload: Builder, sendMode: Int) {
+    let msgBody = beginCell().storeUint(op, 32).storeUint(queryId, 64);
 
-asm fun emptyAddress(): Address { b{00} PUSHSLICE }
-
-contract NFTItem with ExitCodes, GasConstants, OpCodes {
-    itemIndex: Int as uint64;
-    collectionAddress: Address;
-
-    // state init data don't have this parameters
-    owner: Address? = null;
-    content: Cell?  = null;
-
-    init(collectionAddress: Address, itemIndex: Int) {
-        self.itemIndex         = itemIndex;
-        self.collectionAddress = collectionAddress;
+    if (payload.bits() != 0) {
+        msgBody.storeBuilder(payload);
     }
 
-    inline fun forceChain(address: Address) {
-        throwUnless(self.InvalidDestinationWorkchain, parseStdAddress(address.asSlice()).workchain == 0);
-    }
+    message(MessageParameters {
+        bounce: false,
+        to: toAddress,
+        value: amount,
+        body: msgBody.endCell(),
+        mode: sendMode,
+    });
+}
 
-    inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, payload: Builder, sendMode: Int) {
-        let msgBody = beginCell().storeUint(op, 32).storeUint(queryId, 64);
-        
-        if (payload.bits() != 0 || payload.refs() != 0) {
-            msgBody.storeBuilder(payload);
-        }
-        
-        message(MessageParameters{
-            bounce: false,
-            to: toAddress,
-            value: amount,
-            body: msgBody.endCell(),
-            mode: sendMode 
-        });
-    }
-    
+inline fun forceChain(address: Address) {
+    throwUnless(InvalidDestinationWorkchain, parseStdAddress(address.asSlice()).workchain == 0);
+}
+
+contract NFTItem(
+    collectionAddress: Address,
+    itemIndex: Int,
+    owner: Address?, // state init data don't have this parameters
+    content: Cell?,
+) {
     receive() {} //to ignore empty messages 
 
-    // we need it to accept deploy body from NFTCollection
-    receive(msg: Slice){
-        // we need this message only in init, if (self.owner != null) ==> we are already init
-        throwUnless(self.InvalidData, self.owner == null);
+    receive(msg: Slice) {
+        // Check if owner == null, which means the contract hasn't been initialized yet
+        // owner is used as an initialization flag: if null - contract is not initialized,
+        // if not null - contract has been initialized before
+        // This prevents contract re-initialization since initialization should happen only once
+        // We use similar checks in other methods (e.g., Transfer, GetStaticData) with throwUnless(NotInit, self.owner != null)
+        // to ensure the contract is properly initialized before executing any operations
+        throwUnless(InvalidData, self.owner == null);
 
         let owner: Address = msg.loadAddress();
-        let content: Cell  = msg.loadRef();    
+        let content: Cell = msg.loadRef();
 
-        throwUnless(self.IncorrectDeployer, sender() == self.collectionAddress);
-        self.owner   = owner;
+        throwUnless(IncorrectDeployer, sender() == self.collectionAddress);
+        self.owner = owner;
         self.content = content;
     }
 
     receive(msg: Transfer) {
-        // not init 
-        throwUnless(self.NotInit, self.owner != null);
-        throwUnless(self.IncorrectSender, sender() == self.owner);
-        throwUnless(self.IncorrectForwardPayload, msg.forwardPayload.bits() >= 1);
-        self.forceChain(msg.newOwner);
+        throwUnless(NotInit, self.owner != null);
+        throwUnless(IncorrectSender, sender() == self.owner);
+        throwUnless(IncorrectForwardPayload, msg.forwardPayload.bits() >= 1);
+        forceChain(msg.newOwner);
 
         let fwdFees: Int = context().readForwardFee();
 
-
-        let restAmount: Int = myBalance() - self.minTonsForStorage;
+        let restAmount: Int = myBalance() - minTonsForStorage;
         if (msg.forwardAmount > 0) {
             restAmount -= (msg.forwardAmount + fwdFees);
         }
 
-        // when we load addr_none$00 in tact we got null 
+        // when we load addr_none$00 in tact we got null
         let needResponse: Bool = (msg.responseDestination != null);
         if (needResponse) {
             restAmount -= fwdFees;
         }
 
-        throwUnless(self.InvalidFees, restAmount >= 0);
+        throwUnless(InvalidFees, restAmount >= 0);
 
-        if(msg.forwardAmount > 0){
-            self.sendMsg(msg.newOwner, msg.forwardAmount, self.OwnershipAssigned, msg.queryId, beginCell().storeAddress(self.owner!!).storeSlice(msg.forwardPayload), SendPayGasSeparately);
+        if (msg.forwardAmount > 0) {
+            sendMsg(msg.newOwner, msg.forwardAmount, OwnershipAssigned, msg.queryId, beginCell().storeAddress(self.owner!!).storeSlice(msg.forwardPayload), SendPayFwdFeesSeparately);
         }
-        if(needResponse) { 
-            self.forceChain(msg.responseDestination!!);
-            self.sendMsg(msg.responseDestination!!, restAmount, self.Excesses, msg.queryId, beginCell(), SendPayGasSeparately);
+        if (needResponse) {
+            forceChain(msg.responseDestination!!);
+            sendMsg(msg.responseDestination!!, restAmount, Excesses, msg.queryId, beginCell(), SendPayFwdFeesSeparately);
         }
         self.owner = msg.newOwner;
     }
 
     receive(msg: GetStaticData) {
-        // uninit
-        throwUnless(self.NotInit, self.owner != null);
+        throwUnless(NotInit, self.owner != null);
 
-        self.sendMsg(sender(), 0, self.ReportStaticData, msg.queryId, beginCell().storeUint(self.itemIndex, 256).storeAddress(self.collectionAddress), SendRemainingValue);
+        sendMsg(sender(), 0, ReportStaticData, msg.queryId, beginCell().storeUint(self.itemIndex, 256).storeAddress(self.collectionAddress), SendRemainingValue);
     }
-   
+
     get fun get_nft_data(): NFTData {
-        return NFTData{
+        return NFTData {
             init: self.owner != null ? -1 : 0, // -1 is true
             itemIndex: self.itemIndex,
             collectionAddress: self.collectionAddress,
             owner: self.owner,
-            content: self.content
+            content: self.content,
         };
     }
 }
-
