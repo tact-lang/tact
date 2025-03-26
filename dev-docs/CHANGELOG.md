@@ -33,7 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Petr Makhnev](https://github.com/i582)
 - [skywardboundd](https://github.com/skywardboundd)
 
-
 ## [1.6.4] - 2025-03-18
 
 ### Language features
