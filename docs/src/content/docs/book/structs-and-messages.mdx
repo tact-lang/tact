@@ -90,6 +90,8 @@ struct MoviesToWatch {
 
 The order of fields matters, as it corresponds to the resulting memory layout in [TL-B schemas](https://docs.ton.org/develop/data-formats/tl-b-language). However, unlike some languages with manual memory management, Tact does not have any padding between fields.
 
+Consequently, structs cannot be empty and must declare at least one field.
+
 ## Messages
 
 Messages can hold [Structs](#structs) in them:
@@ -111,12 +113,34 @@ Messages are almost the same as [Structs](#structs), with the only difference be
 
 Tact automatically generates these unique ids (opcodes) for every received Message, which can be observed in the [Structures section of the compilation report](/book/compile#structures).
 
-Additionally, opcodes can be overridden manually:
+Additionally and unlike regular [structs](#structs), this allows Messages to be declared empty:
 
 ```tact
-// This Message overrides its unique id (opcode) with 0x7362d09c
+message TotallyValid {}
+```
+
+However, opcodes can be overridden manually:
+
+```tact
+// This Message overrides its unique id (opcode) with 411,
+// which allows it to be recognized in the receiver functions.
+message(411) InfoNotification {}
+
+// This Message overrides its opcode with 0x7362d09c
 message(0x7362d09c) TokenNotification {
     forwardPayload: Slice as remaining;
+}
+
+// Since those Messages have unique opcode prefixes,
+// incoming message bodies can be differentiated based on them.
+contract OpcodeRecognition {
+    receive(msg: InfoNotification) {
+        // ...
+    }
+
+    receive(msg: TokenNotification) {
+        // ...
+    }
 }
 ```
 
@@ -272,7 +296,7 @@ Whenever one converts between [`Cell{:tact}`][cell]/[`Slice{:tact}`][slice] and 
 * For any instance of type [Struct](#structs)/[Message](#messages), calling `.toCell(){:tact}` on it and then applying `Struct.fromCell(){:tact}` (or `Message.fromCell(){:tact}`) to the result gives back a copy of the original instance:
 
 ```tact {8-9,13-14}
-struct ArbitraryStruct {}
+struct ArbitraryStruct { fieldNotFound: Int = 404 }
 message(0x2A) ArbitraryMessage {}
 
 fun lawOne() {
