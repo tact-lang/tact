@@ -18,6 +18,15 @@ exports[`grammar should fail asm-getter 1`] = `
 "
 `;
 
+exports[`grammar should fail augmented-assign-with-space 1`] = `
+"<unknown>:7:14: Expected "!", "(", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+  6 |     fun foo() {
+> 7 |         a << = 10;
+                   ^
+  8 |     }
+"
+`;
+
 exports[`grammar should fail const-abstract-abstract 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
@@ -7795,7 +7804,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 13,
           "kind": "statement_augmentedassign",
           "loc": a += b;,
-          "op": "+",
+          "op": "+=",
           "path": {
             "id": 11,
             "kind": "id",
@@ -7813,7 +7822,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 16,
           "kind": "statement_augmentedassign",
           "loc": b += a;,
-          "op": "+",
+          "op": "+=",
           "path": {
             "id": 14,
             "kind": "id",
@@ -7832,7 +7841,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 19,
           "kind": "statement_augmentedassign",
           "loc": a += 3;,
-          "op": "+",
+          "op": "+=",
           "path": {
             "id": 17,
             "kind": "id",
@@ -7863,7 +7872,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 24,
           "kind": "statement_augmentedassign",
           "loc": a += b + 4;,
-          "op": "+",
+          "op": "+=",
           "path": {
             "id": 20,
             "kind": "id",
@@ -7882,7 +7891,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 27,
           "kind": "statement_augmentedassign",
           "loc": b -= 1;,
-          "op": "-",
+          "op": "-=",
           "path": {
             "id": 25,
             "kind": "id",
@@ -7900,7 +7909,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 30,
           "kind": "statement_augmentedassign",
           "loc": a -= b;,
-          "op": "-",
+          "op": "-=",
           "path": {
             "id": 28,
             "kind": "id",
@@ -7931,7 +7940,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 35,
           "kind": "statement_augmentedassign",
           "loc": a -= b - 1;,
-          "op": "-",
+          "op": "-=",
           "path": {
             "id": 31,
             "kind": "id",
@@ -7950,7 +7959,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 38,
           "kind": "statement_augmentedassign",
           "loc": b *= 2;,
-          "op": "*",
+          "op": "*=",
           "path": {
             "id": 36,
             "kind": "id",
@@ -7968,7 +7977,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 41,
           "kind": "statement_augmentedassign",
           "loc": a *= b;,
-          "op": "*",
+          "op": "*=",
           "path": {
             "id": 39,
             "kind": "id",
@@ -7999,7 +8008,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 46,
           "kind": "statement_augmentedassign",
           "loc": a *= b * 2;,
-          "op": "*",
+          "op": "*=",
           "path": {
             "id": 42,
             "kind": "id",
@@ -8018,7 +8027,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 49,
           "kind": "statement_augmentedassign",
           "loc": b /= 2;,
-          "op": "/",
+          "op": "/=",
           "path": {
             "id": 47,
             "kind": "id",
@@ -8036,7 +8045,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 52,
           "kind": "statement_augmentedassign",
           "loc": a /= b;,
-          "op": "/",
+          "op": "/=",
           "path": {
             "id": 50,
             "kind": "id",
@@ -8067,7 +8076,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 57,
           "kind": "statement_augmentedassign",
           "loc": a /= b / 2;,
-          "op": "/",
+          "op": "/=",
           "path": {
             "id": 53,
             "kind": "id",
@@ -8086,7 +8095,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 60,
           "kind": "statement_augmentedassign",
           "loc": a %= 2;,
-          "op": "%",
+          "op": "%=",
           "path": {
             "id": 58,
             "kind": "id",
@@ -8104,7 +8113,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 63,
           "kind": "statement_augmentedassign",
           "loc": a %= b;,
-          "op": "%",
+          "op": "%=",
           "path": {
             "id": 61,
             "kind": "id",
@@ -8135,7 +8144,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 68,
           "kind": "statement_augmentedassign",
           "loc": a %= b % 2;,
-          "op": "%",
+          "op": "%=",
           "path": {
             "id": 64,
             "kind": "id",
@@ -8154,7 +8163,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 71,
           "kind": "statement_augmentedassign",
           "loc": a <<= 2;,
-          "op": "<<",
+          "op": "<<=",
           "path": {
             "id": 69,
             "kind": "id",
@@ -8172,7 +8181,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 74,
           "kind": "statement_augmentedassign",
           "loc": a <<= b;,
-          "op": "<<",
+          "op": "<<=",
           "path": {
             "id": 72,
             "kind": "id",
@@ -8203,7 +8212,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 79,
           "kind": "statement_augmentedassign",
           "loc": a <<= b << 2;,
-          "op": "<<",
+          "op": "<<=",
           "path": {
             "id": 75,
             "kind": "id",
@@ -8222,7 +8231,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 82,
           "kind": "statement_augmentedassign",
           "loc": a >>= 2;,
-          "op": ">>",
+          "op": ">>=",
           "path": {
             "id": 80,
             "kind": "id",
@@ -8240,7 +8249,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 85,
           "kind": "statement_augmentedassign",
           "loc": a >>= b;,
-          "op": ">>",
+          "op": ">>=",
           "path": {
             "id": 83,
             "kind": "id",
@@ -8271,7 +8280,7 @@ exports[`grammar should parse stmt-augmented-assign-arith 1`] = `
           "id": 90,
           "kind": "statement_augmentedassign",
           "loc": a >>= b >> 2;,
-          "op": ">>",
+          "op": ">>=",
           "path": {
             "id": 86,
             "kind": "id",
@@ -8395,7 +8404,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 13,
           "kind": "statement_augmentedassign",
           "loc": a |= b;,
-          "op": "|",
+          "op": "|=",
           "path": {
             "id": 11,
             "kind": "id",
@@ -8413,7 +8422,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 16,
           "kind": "statement_augmentedassign",
           "loc": b |= a;,
-          "op": "|",
+          "op": "|=",
           "path": {
             "id": 14,
             "kind": "id",
@@ -8432,7 +8441,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 19,
           "kind": "statement_augmentedassign",
           "loc": a |= 3;,
-          "op": "|",
+          "op": "|=",
           "path": {
             "id": 17,
             "kind": "id",
@@ -8463,7 +8472,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 24,
           "kind": "statement_augmentedassign",
           "loc": a |= b | 4;,
-          "op": "|",
+          "op": "|=",
           "path": {
             "id": 20,
             "kind": "id",
@@ -8482,7 +8491,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 27,
           "kind": "statement_augmentedassign",
           "loc": b &= 1;,
-          "op": "&",
+          "op": "&=",
           "path": {
             "id": 25,
             "kind": "id",
@@ -8500,7 +8509,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 30,
           "kind": "statement_augmentedassign",
           "loc": a &= b;,
-          "op": "&",
+          "op": "&=",
           "path": {
             "id": 28,
             "kind": "id",
@@ -8518,7 +8527,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 33,
           "kind": "statement_augmentedassign",
           "loc": b &= a;,
-          "op": "&",
+          "op": "&=",
           "path": {
             "id": 31,
             "kind": "id",
@@ -8549,7 +8558,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 38,
           "kind": "statement_augmentedassign",
           "loc": a &= b & 1;,
-          "op": "&",
+          "op": "&=",
           "path": {
             "id": 34,
             "kind": "id",
@@ -8568,7 +8577,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 41,
           "kind": "statement_augmentedassign",
           "loc": b ^= 2;,
-          "op": "^",
+          "op": "^=",
           "path": {
             "id": 39,
             "kind": "id",
@@ -8586,7 +8595,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 44,
           "kind": "statement_augmentedassign",
           "loc": a ^= b;,
-          "op": "^",
+          "op": "^=",
           "path": {
             "id": 42,
             "kind": "id",
@@ -8604,7 +8613,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 47,
           "kind": "statement_augmentedassign",
           "loc": b ^= a;,
-          "op": "^",
+          "op": "^=",
           "path": {
             "id": 45,
             "kind": "id",
@@ -8635,7 +8644,7 @@ exports[`grammar should parse stmt-augmented-assign-bitwise 1`] = `
           "id": 52,
           "kind": "statement_augmentedassign",
           "loc": a ^= b ^ 2;,
-          "op": "^",
+          "op": "^=",
           "path": {
             "id": 48,
             "kind": "id",
@@ -8751,7 +8760,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
           "id": 13,
           "kind": "statement_augmentedassign",
           "loc": a ||= true;,
-          "op": "||",
+          "op": "||=",
           "path": {
             "id": 11,
             "kind": "id",
@@ -8769,7 +8778,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
           "id": 16,
           "kind": "statement_augmentedassign",
           "loc": a ||= b;,
-          "op": "||",
+          "op": "||=",
           "path": {
             "id": 14,
             "kind": "id",
@@ -8799,7 +8808,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
           "id": 21,
           "kind": "statement_augmentedassign",
           "loc": a ||= b || true;,
-          "op": "||",
+          "op": "||=",
           "path": {
             "id": 17,
             "kind": "id",
@@ -8817,7 +8826,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
           "id": 24,
           "kind": "statement_augmentedassign",
           "loc": a &&= true;,
-          "op": "&&",
+          "op": "&&=",
           "path": {
             "id": 22,
             "kind": "id",
@@ -8835,7 +8844,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
           "id": 27,
           "kind": "statement_augmentedassign",
           "loc": a &&= b;,
-          "op": "&&",
+          "op": "&&=",
           "path": {
             "id": 25,
             "kind": "id",
@@ -8865,7 +8874,7 @@ exports[`grammar should parse stmt-augmented-assign-logic 1`] = `
           "id": 32,
           "kind": "statement_augmentedassign",
           "loc": a &&= b && true;,
-          "op": "&&",
+          "op": "&&=",
           "path": {
             "id": 28,
             "kind": "id",
@@ -10057,7 +10066,7 @@ exports[`grammar should parse stmt-optional-semicolon-for-last-statement 1`] = `
               "id": 15,
               "kind": "statement_augmentedassign",
               "loc": i += 1,
-              "op": "+",
+              "op": "+=",
               "path": {
                 "id": 13,
                 "kind": "id",

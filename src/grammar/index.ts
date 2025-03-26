@@ -619,7 +619,7 @@ const parseStatementAssign =
         Ast.StatementAssign | Ast.StatementAugmentedAssign
     > =>
     (ctx) => {
-        if (typeof operator === "undefined") {
+        if (operator === "=") {
             return ctx.ast.StatementAssign(
                 parseExpression(left)(ctx),
                 parseExpression(right)(ctx),
