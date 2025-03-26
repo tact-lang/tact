@@ -745,9 +745,7 @@ export const ppAstStatementAugmentedAssign: Printer<
 > =
     ({ path, op, expression }) =>
     (c) =>
-        c.row(
-            `${ppAstExpression(path)} ${op}= ${ppAstExpression(expression)};`,
-        );
+        c.row(`${ppAstExpression(path)} ${op} ${ppAstExpression(expression)};`);
 
 export const ppAstStatementCondition: Printer<Ast.StatementCondition> =
     ({ condition, trueStatements, falseStatements }) =>

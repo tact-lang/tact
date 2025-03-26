@@ -184,3 +184,34 @@ export function checkIsName(ast: Ast.Expression): boolean {
 export function checkIsBoolean(ast: Ast.Expression, b: boolean): boolean {
     return ast.kind === "boolean" ? ast.value == b : false;
 }
+
+export function binaryOperationFromAugmentedAssignment(
+    op: Ast.AugmentedAssignOperation,
+): Ast.BinaryOperation {
+    switch (op) {
+        case "+=":
+            return "+";
+        case "-=":
+            return "-";
+        case "*=":
+            return "*";
+        case "/=":
+            return "/";
+        case "&&=":
+            return "&&";
+        case "||=":
+            return "||";
+        case "%=":
+            return "%";
+        case "|=":
+            return "|";
+        case "<<=":
+            return "<<";
+        case ">>=":
+            return ">>";
+        case "&=":
+            return "&";
+        case "^=":
+            return "^";
+    }
+}

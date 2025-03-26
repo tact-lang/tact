@@ -12,6 +12,7 @@ import {
     throwInternalCompilerError,
 } from "../error/errors";
 import type { AstUtil } from "../ast/util";
+import { binaryOperationFromAugmentedAssignment } from "../ast/util";
 import { getAstUtil } from "../ast/util";
 import {
     getStaticConstant,
@@ -1749,7 +1750,7 @@ export class Interpreter {
                 );
             }
             const newVal = evalBinaryOp(
-                ast.op,
+                binaryOperationFromAugmentedAssignment(ast.op),
                 currentPathValue,
                 updateVal,
                 ast.loc,
