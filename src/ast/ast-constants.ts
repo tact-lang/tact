@@ -5,18 +5,18 @@ const augmentedAssignOperationsRecord: Record<
     Ast.AugmentedAssignOperation,
     true
 > = {
-    "+": true,
-    "-": true,
-    "*": true,
-    "/": true,
-    "&&": true,
-    "||": true,
-    "%": true,
-    "|": true,
-    "<<": true,
-    ">>": true,
-    "&": true,
-    "^": true,
+    "+=": true,
+    "-=": true,
+    "*=": true,
+    "/=": true,
+    "&&=": true,
+    "||=": true,
+    "%=": true,
+    "|=": true,
+    "<<=": true,
+    ">>=": true,
+    "&=": true,
+    "^=": true,
 };
 
 export const astAugmentedAssignOperations = Object.freeze(
