@@ -240,13 +240,19 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
             name: "dump",
             resolve: (_ctx, args, ref) => {
                 if (args.length !== 1) {
-                    throwCompilationError("dump expects 1 argument", ref);
+                    throwCompilationError(
+                        "dump() expects 1 argument, see https://docs.tact-lang.org/ref/core-debug/#dump for more information",
+                        ref,
+                    );
                 }
 
                 const arg = args[0]!;
 
                 if (!SUPPORTED_TYPES_KIND_IN_DUMP.has(arg.kind)) {
-                    throwCompilationError("Cannot dump() this argument", ref);
+                    throwCompilationError(
+                        "Cannot dump() this argument, see https://docs.tact-lang.org/ref/core-debug/#dump for more information",
+                        ref,
+                    );
                 }
 
                 if (
@@ -254,7 +260,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                     !SUPPORTED_PRIMITIVE_TYPES_IN_DUMP.has(arg.name)
                 ) {
                     throwCompilationError(
-                        `Cannot dump() argument with ${idTextErr(arg.name)} type`,
+                        `Cannot dump() argument with ${idTextErr(arg.name)} type, see https://docs.tact-lang.org/ref/core-debug/#dump for more information`,
                         ref,
                     );
                 }

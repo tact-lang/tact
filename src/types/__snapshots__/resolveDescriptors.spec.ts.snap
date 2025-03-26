@@ -316,7 +316,7 @@ exports[`resolveDescriptors should fail descriptors for contract-without-as-type
 `;
 
 exports[`resolveDescriptors should fail descriptors for dump 1`] = `
-"<unknown>:11:9: Cannot dump() argument with "StringBuilder" type
+"<unknown>:11:9: Cannot dump() argument with "StringBuilder" type, see https://docs.tact-lang.org/ref/core-debug/#dump for more information
   10 |     get fun foo(): Int {
 > 11 |         dump(beginString());
                ^~~~~~~~~~~~~~~~~~~
