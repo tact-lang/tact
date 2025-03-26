@@ -862,6 +862,13 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             }
         }
 
+        if (a.kind === "asm_function_def" && isGetter) {
+            throwCompilationError(
+                "Assembly functions cannot be getters",
+                isGetter.loc,
+            );
+        }
+
         // Check for getter
         if (isInline && isGetter) {
             throwCompilationError("Getters cannot be inline", isInline.loc);
