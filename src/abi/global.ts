@@ -7,7 +7,7 @@ import {
     writeString,
 } from "../generator/writers/writeConstant";
 import { writeExpression } from "../generator/writers/writeExpression";
-import {idTextErr, throwCompilationError} from "../error/errors";
+import { idTextErr, throwCompilationError } from "../error/errors";
 import { getErrorId } from "../types/resolveErrors";
 import type { AbiFunction } from "./AbiFunction";
 import path from "path";
@@ -246,10 +246,7 @@ export const GlobalFunctions: Map<string, AbiFunction> = new Map([
                 const arg = args[0]!;
 
                 if (!SUPPORTED_TYPES_KIND_IN_DUMP.has(arg.kind)) {
-                    throwCompilationError(
-                        "Cannot dump() this argument",
-                        ref,
-                    );
+                    throwCompilationError("Cannot dump() this argument", ref);
                 }
 
                 if (
