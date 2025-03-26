@@ -177,7 +177,7 @@ function createMakeAndDummyFunctions(
             : t.objectProperty(id, t.identifier(`p_${id.name}`)),
     );
     const funReturnType = t.tsTypeReference(
-        t.tSQualifiedName(t.identifier(astNamespace), id),
+        t.tsQualifiedName(t.identifier(astNamespace), id),
     );
     // Function to create the function codes
     const createFun = (
@@ -238,7 +238,7 @@ function qualifyType(
             if (typ.typeName.type === "Identifier") {
                 if (decls.has(typ.typeName.name)) {
                     return t.tsTypeReference(
-                        t.tSQualifiedName(
+                        t.tsQualifiedName(
                             t.identifier(namespace),
                             typ.typeName,
                         ),
