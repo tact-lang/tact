@@ -111,20 +111,36 @@ message Add {
 
 Messages are almost the same as [Structs](#structs), with the only difference being that Messages have a 32-bit integer header in their serialization containing their unique numeric id, commonly referred to as an _opcode_ (operation code). This allows Messages to be used with [receivers](/book/receive), since the contract can distinguish different types of messages based on this id.
 
+Tact automatically generates these unique ids (opcodes) for every received Message, which can be observed in the [Structures section of the compilation report](/book/compile#structures).
+
 Additionally and unlike regular [structs](#structs), this allows Messages to be declared empty:
 
 ```tact
 message TotallyValid {}
 ```
 
-Tact automatically generates these unique ids (opcodes) for every received Message, which can be observed in the [Structures section of the compilation report](/book/compile#structures).
-
-Additionally, opcodes can be overridden manually:
+However, opcodes can be overridden manually:
 
 ```tact
-// This Message overrides its unique id (opcode) with 0x7362d09c
+// This Message overrides its unique id (opcode) with 411,
+// which allows it to be recognized in the receiver functions.
+message(411) InfoNotification {}
+
+// This Message overrides its opcode with 0x7362d09c
 message(0x7362d09c) TokenNotification {
     forwardPayload: Slice as remaining;
+}
+
+// Since those Messages have unique opcode prefixes,
+// incoming message bodies can be differentiated based on them.
+contract OpcodeRecognition {
+    receive(msg: InfoNotification) {
+        // ...
+    }
+
+    receive(msg: TokenNotification) {
+        // ...
+    }
 }
 ```
 
