@@ -200,7 +200,7 @@ describe("itemNFT", () => {
         // ITEM
         {
             itemNFT = blockchain.openContract(
-                await NFTItem.fromInit(owner.address, 0n),
+                await NFTItem.fromInit(owner.address, 0n, null, null),
             );
             const deployItemMsg: InitNFTBody = {
                 $$type: "InitNFTBody",
