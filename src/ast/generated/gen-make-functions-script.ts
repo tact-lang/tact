@@ -14,11 +14,12 @@ function main() {
     const astModule = fs
         .readFileSync(path.join(__dirname, "..", "ast.ts"))
         .toString();
+
     const astTypeDecls = parse(astModule, options);
     const decls = astTypeDecls.program.body
-        .filter((stmt) => stmt.type === "ExportNamedDeclaration")
+        .filter((stmt) => t.isExportNamedDeclaration(stmt))
         .map((stmt) => stmt.declaration)
-        .filter((stmt) => stmt?.type === "TSTypeAliasDeclaration");
+        .filter((stmt) => t.isTSTypeAliasDeclaration(stmt));
 
     const declNames = new Set(decls.map((decl) => decl.id.name));
 
@@ -27,13 +28,13 @@ function main() {
     // Extract from the declarations all the union types
     const unionTypes = decls
         .map((decl) => decl.typeAnnotation)
-        .filter((decl) => decl.type === "TSUnionType");
+        .filter((decl) => t.isTSUnionType(decl));
 
     for (const unionType of unionTypes) {
         const subtypes = unionType.types
-            .filter((typeDecl) => typeDecl.type === "TSTypeReference")
+            .filter((typeDecl) => t.isTSTypeReference(typeDecl))
             .map((typeDecl) => typeDecl.typeName)
-            .filter((typeDecl) => typeDecl.type === "Identifier");
+            .filter((typeDecl) => t.isIdentifier(typeDecl));
 
         for (const subtype of subtypes) {
             const subtypeDecl = decls.find(
@@ -43,10 +44,10 @@ function main() {
                 throw new Error(`${subtype.name} is not declared.`);
             }
 
-            const subtypeDeclType = subtypeDecl.typeAnnotation.type;
-            if (subtypeDeclType === "TSTypeLiteral") {
+            const subtypeDeclAnnotation = subtypeDecl.typeAnnotation;
+            if (t.isTSTypeLiteral(subtypeDeclAnnotation)) {
                 const genFunctions = createMakeAndDummyFunctions(
-                    subtypeDecl.typeAnnotation,
+                    subtypeDeclAnnotation,
                     subtypeDecl.id,
                     declNames,
                 );
@@ -61,7 +62,7 @@ function main() {
                 }
 
                 finalFunctions.push(...genFunctionsFiltered);
-            } else if (subtypeDeclType === "TSUnionType") {
+            } else if (t.isTSUnionType(subtypeDeclAnnotation)) {
                 // Do nothing, since it will be processed later.
             } else {
                 // Unexpected type
@@ -103,8 +104,8 @@ function createMakeAndDummyFunctions(
     const createNodeFunName = "createNode";
     const emptySrcInfo = "emptySrcInfo";
 
-    const rawFieldsArray = decl.members.filter(
-        (decl) => decl.type === "TSPropertySignature",
+    const rawFieldsArray = decl.members.filter((decl) =>
+        t.isTSPropertySignature(decl),
     );
     const generalParams: { id: t.Identifier; type: t.TSType }[] = [];
     const paramsWithLiteralTypes: {
@@ -115,11 +116,11 @@ function createMakeAndDummyFunctions(
     // If there is no loc field,
     // the makeDummy function cannot be created
     const makeDummy = rawFieldsArray.some(
-        (f) => f.key.type === "Identifier" && f.key.name === "loc",
+        (f) => t.isIdentifier(f.key) && f.key.name === "loc",
     );
 
     for (const field of rawFieldsArray) {
-        if (field.key.type !== "Identifier") {
+        if (!t.isIdentifier(field.key)) {
             throw new Error(
                 `Expected identifier in fields, but found ${field.key.type}`,
             );
@@ -132,7 +133,7 @@ function createMakeAndDummyFunctions(
         }
         if (field.typeAnnotation) {
             const typeAnnotation = field.typeAnnotation.typeAnnotation;
-            if (typeAnnotation.type === "TSLiteralType") {
+            if (t.isTSLiteralType(typeAnnotation)) {
                 paramsWithLiteralTypes.push({
                     id: field.key,
                     type: typeAnnotation,
@@ -235,7 +236,7 @@ function qualifyType(
 ): t.TSType {
     switch (typ.type) {
         case "TSTypeReference": {
-            if (typ.typeName.type === "Identifier") {
+            if (t.isIdentifier(typ.typeName)) {
                 if (decls.has(typ.typeName.name)) {
                     return t.tsTypeReference(
                         t.tsQualifiedName(
@@ -278,7 +279,9 @@ function qualifyType(
         }
         case "TSTupleType": {
             if (
-                typ.elementTypes.every((t) => t.type !== "TSNamedTupleMember")
+                // Cannot use guard function isTSNamedTupleMember, because compiler cannot deduce the type inside
+                // the condition if the guard function is used.
+                typ.elementTypes.every((ty) => ty.type !== "TSNamedTupleMember")
             ) {
                 return t.tsTupleType(
                     typ.elementTypes.map((t) =>
@@ -292,9 +295,13 @@ function qualifyType(
                 );
             }
         }
-
-        default:
+        case "TSUndefinedKeyword":
+        case "TSStringKeyword":
+        case "TSBooleanKeyword":
+        case "TSBigIntKeyword":
             return typ;
+        default:
+            throw new Error(`${typ.type} is not supported`);
     }
 }
 
