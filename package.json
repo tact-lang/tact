@@ -56,7 +56,7 @@
     "all": "yarn clean && yarn gen && yarn build && yarn coverage && yarn lint:all",
     "next-version": "ts-node version.build.ts",
     "random-ast": "ts-node ./src/ast/random-ast.ts",
-    "gen-make-functions": "ts-node ./src/ast/generated/gen-make-functions-script.ts && yarn prettier -w ./src/ast/generated/make-factory.ts",
+    "gen:make-funs": "ts-node ./src/ast/generated/gen-make-functions-script.ts && yarn prettier -w ./src/ast/generated/make-factory.ts",
     "top10": "find . -type f -exec du -h {} + | sort -rh | head -n 10"
   },
   "files": [
