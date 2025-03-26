@@ -18,6 +18,15 @@ exports[`grammar should fail asm-getter 1`] = `
 "
 `;
 
+exports[`grammar should fail augmented-assign-with-space 1`] = `
+"<unknown>:7:14: Expected "!", "(", "+", "-", "0", "\\"", "codeOf", "false", "initOf", "null", "true", "~", capitalized identifier, digit, or identifier
+  6 |     fun foo() {
+> 7 |         a << = 10;
+                   ^
+  8 |     }
+"
+`;
+
 exports[`grammar should fail const-abstract-abstract 1`] = `
 "<unknown>:4:1: Module-level constants do not support attributes
   3 | 
