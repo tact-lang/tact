@@ -459,6 +459,19 @@ export function writeExpression(
     //
 
     if (f.kind === "field_access") {
+        // Optimize Context().sender to sender()
+        // This is a special case to improve gas efficiency
+        if (
+            f.aggregate.kind === "static_call" &&
+            f.aggregate.function.text === "context" &&
+            f.aggregate.args.length === 0 &&
+            f.field.text === "sender"
+        ) {
+            // Use sender() directly instead of context().sender
+            wCtx.used("__tact_context_get_sender");
+            return `__tact_context_get_sender()`;
+        }
+
         // Resolve the type of the expression
         const src = getExpType(wCtx.ctx, f.aggregate);
         if (
