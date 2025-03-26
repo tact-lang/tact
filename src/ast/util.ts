@@ -185,7 +185,7 @@ export function checkIsBoolean(ast: Ast.Expression, b: boolean): boolean {
     return ast.kind === "boolean" ? ast.value == b : false;
 }
 
-export function binaryOperationFromAugmentedAssignment(
+export function binaryOperationFromAugmentedAssignOperation(
     op: Ast.AugmentedAssignOperation,
 ): Ast.BinaryOperation {
     switch (op) {
