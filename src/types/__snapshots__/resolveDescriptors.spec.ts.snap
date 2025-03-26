@@ -63,7 +63,7 @@ exports[`resolveDescriptors should fail descriptors for asm-fun-shuffle-ret-non-
 "
 `;
 
-exports[`resolveDescriptors should fail descriptors for asm-getter 1`] = `
+exports[`resolveDescriptors should fail descriptors for asm-getter-outside-contract 1`] = `
 "<unknown>:6:5: Getters must be defined within a contract
   5 | 
 > 6 | asm get fun illegalGetter(): Int {
