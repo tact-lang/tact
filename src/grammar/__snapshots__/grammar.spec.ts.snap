@@ -491,6 +491,14 @@ exports[`grammar should fail ident-struct-cannot-start-with-__gen 1`] = `
 "
 `;
 
+exports[`grammar should fail incomplete-return 1`] = `
+"<unknown>:3:1: Expected "!", "(", "+", "-", "0", ";", "\\"", "codeOf", "false", "initOf", "null", "true", "}", "~", capitalized identifier, digit, or identifier
+  2 |     return
+> 3 | 
+      ^
+"
+`;
+
 exports[`grammar should fail item-fun-non-void-trailing-comma-no-params 1`] = `
 "<unknown>:1:14: Expected ")" or identifier
 > 1 | fun function(,) : Int {
