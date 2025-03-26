@@ -292,7 +292,7 @@ describe("itemNFT", () => {
         }
     });
 
-    afterAll(async () => {
+    afterAll(() => {
         printBenchmarkTable(results, codeSizeResults, {
             implementationName: "FunC",
             printMode: "full",
@@ -379,7 +379,9 @@ describe("itemNFT", () => {
         const getStaticGasUsedTact = await runGetStaticTest(itemNFT);
         const getStaticGasUsedFunC = await runGetStaticTest(funcItemNFT);
 
-        expect(getStaticGasUsedTact).toEqual(expectedResult.gas["get static data"]);
+        expect(getStaticGasUsedTact).toEqual(
+            expectedResult.gas["get static data"],
+        );
         expect(getStaticGasUsedFunC).toEqual(funcResult.gas["get static data"]);
     });
 
@@ -427,7 +429,6 @@ describe("itemNFT", () => {
 
         expect(deployNFTGasUsedTact).toEqual(expectedResult.gas["deploy nft"]);
         expect(deployNFTGasUsedFunC).toEqual(funcResult.gas["deploy nft"]);
-        
     });
 
     it("batch deploy nft", async () => {
@@ -491,30 +492,66 @@ describe("itemNFT", () => {
             return getUsedGas(sendResult, "internal");
         };
 
-        const batchDeployNFTGasUsedTact = await runBatchDeployTest(collectionNFT);
-        const batchDeployNFTGasUsedFunC = await runBatchDeployTest(funcCollectionNFT);
-        
-        expect(batchDeployNFTGasUsedTact).toEqual(expectedResult.gas["batch deploy nft"]);
-        expect(batchDeployNFTGasUsedFunC).toEqual(funcResult.gas["batch deploy nft"]);
+        const batchDeployNFTGasUsedTact =
+            await runBatchDeployTest(collectionNFT);
+        const batchDeployNFTGasUsedFunC =
+            await runBatchDeployTest(funcCollectionNFT);
+
+        expect(batchDeployNFTGasUsedTact).toEqual(
+            expectedResult.gas["batch deploy nft"],
+        );
+        expect(batchDeployNFTGasUsedFunC).toEqual(
+            funcResult.gas["batch deploy nft"],
+        );
     });
 
     it("collection cells", async () => {
-        expect((await getStateSizeForAccount(blockchain, collectionNFT.address)).cells).toEqual(expectedCodeSize.size["collection cells"]);
-        expect((await getStateSizeForAccount(blockchain, funcCollectionNFT.address)).cells).toEqual(funcCodeSize.size["collection cells"]);
+        expect(
+            (await getStateSizeForAccount(blockchain, collectionNFT.address))
+                .cells,
+        ).toEqual(expectedCodeSize.size["collection cells"]);
+        expect(
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    funcCollectionNFT.address,
+                )
+            ).cells,
+        ).toEqual(funcCodeSize.size["collection cells"]);
     });
 
     it("collection bits", async () => {
-        expect((await getStateSizeForAccount(blockchain, collectionNFT.address)).bits).toEqual(expectedCodeSize.size["collection bits"]);
-        expect((await getStateSizeForAccount(blockchain, funcCollectionNFT.address)).bits).toEqual(funcCodeSize.size["collection bits"]);
+        expect(
+            (await getStateSizeForAccount(blockchain, collectionNFT.address))
+                .bits,
+        ).toEqual(expectedCodeSize.size["collection bits"]);
+        expect(
+            (
+                await getStateSizeForAccount(
+                    blockchain,
+                    funcCollectionNFT.address,
+                )
+            ).bits,
+        ).toEqual(funcCodeSize.size["collection bits"]);
     });
 
     it("item cells", async () => {
-        expect((await getStateSizeForAccount(blockchain, itemNFT.address)).cells).toEqual(expectedCodeSize.size["item cells"]);
-        expect((await getStateSizeForAccount(blockchain, funcItemNFT.address)).cells).toEqual(funcCodeSize.size["item cells"]);
+        expect(
+            (await getStateSizeForAccount(blockchain, itemNFT.address)).cells,
+        ).toEqual(expectedCodeSize.size["item cells"]);
+        expect(
+            (await getStateSizeForAccount(blockchain, funcItemNFT.address))
+                .cells,
+        ).toEqual(funcCodeSize.size["item cells"]);
     });
 
     it("item bits", async () => {
-        expect((await getStateSizeForAccount(blockchain, itemNFT.address)).bits).toEqual(expectedCodeSize.size["item bits"]);
-        expect((await getStateSizeForAccount(blockchain, funcItemNFT.address)).bits).toEqual(funcCodeSize.size["item bits"]);
+        expect(
+            (await getStateSizeForAccount(blockchain, itemNFT.address)).bits,
+        ).toEqual(expectedCodeSize.size["item bits"]);
+        expect(
+            (await getStateSizeForAccount(blockchain, funcItemNFT.address))
+                .bits,
+        ).toEqual(funcCodeSize.size["item bits"]);
     });
 });
