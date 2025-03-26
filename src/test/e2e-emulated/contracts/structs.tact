@@ -390,7 +390,7 @@ contract StructsTester {
             bounce: false,
             to: sender(),
             value: ton("0.01"),
-            mode: SendPayGasSeparately,
+            mode: SendPayFwdFeesSeparately,
             body: d.toCell()
         });
     }

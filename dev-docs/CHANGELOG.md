@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Optimized `Context().sender` to use `sender()` function for better gas efficiency: PR [#2427](https://github.com/tact-lang/tact/pull/2427)
 - [fix] Ternary operator with struct and null: PR [#2432](https://github.com/tact-lang/tact/pull/2432)
+- [fix] Show an error message for assembly functions with the `get` attribute: PR [#2484](https://github.com/tact-lang/tact/pull/2484)
+- [fix] The parser does not throw an internal compiler error if the error is reported after the end of the file: PR [#2485](https://github.com/tact-lang/tact/pull/2485)
+
+### Standard Library
+
+- Deprecated the `SendPayGasSeparately` constant in favor of `SendPayFwdFeesSeparately`: PR [#2483](https://github.com/tact-lang/tact/pull/2483)
 
 ### Code generation
 
@@ -29,6 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Shvetc Andrei](https://github.com/Shvandre)
 - [Daniil Sedov](https://github.com/Gusarich)
 - [Novus Nota](https://github.com/novusnota)
+- [Petr Makhnev](https://github.com/i582)
+- [skywardboundd](https://github.com/skywardboundd)
 - [Anton Trunov](https://github.com/anton-trunov)
 
 ## [1.6.4] - 2025-03-18
