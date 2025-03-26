@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Optimized `Context().sender` to use `sender()` function for better gas efficiency: PR [#2427](https://github.com/tact-lang/tact/pull/2427)
 - [fix] Ternary operator with struct and null: PR [#2432](https://github.com/tact-lang/tact/pull/2432)
+- [fix] Show error for assembly function with get attribute: PR [#2484](https://github.com/tact-lang/tact/pull/2484)
 
 ### Internal infrastructure
 
@@ -25,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Shvetc Andrei](https://github.com/Shvandre)
 - [Daniil Sedov](https://github.com/Gusarich)
 - [Novus Nota](https://github.com/novusnota)
+- [Petr Makhnev](https://github.com/i582)
 
 ## [1.6.4] - 2025-03-18
 
