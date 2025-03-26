@@ -65,10 +65,6 @@ asm fun contractHash(code: Cell, data: Cell): Int {
 ///
 /// Computes smart contract's `Address` in the `chain` ID using the contract's `code` and the contract's initial state `data`. Use the `initOf` expression to obtain the initial `code` and initial `data` of a given contract.
 ///
-/// This function tries to resolve constant values in compile-time whenever possible.
-///
-/// Attempts to specify an invalid `chain` ID (not -1 or 0) that can be detected in compile-time will result in a compilation error.
-///
 /// ```tact
 /// fun example() {
 ///     let initPkg: StateInit = initOf SomeContract();

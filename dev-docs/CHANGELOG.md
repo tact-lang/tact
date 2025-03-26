@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed description of the `dump()` function, which does not support values of `StringBuilder` type: PR [#2463](https://github.com/tact-lang/tact/pull/2463)
 - Explicitly stated that structs cannot be empty, while message structs can: PR [#2464](https://github.com/tact-lang/tact/pull/2464)
+- Fixed description of the `contractAddressExt()` function, which currently does not resolve constant values at compile-time and allows specifying arbitrary `chain` IDs: PR [#2497](https://github.com/tact-lang/tact/pull/2497)
 
 ### Release contributors
 
