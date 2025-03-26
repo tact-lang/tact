@@ -11,7 +11,7 @@ Tact 中的消息通常使用内置[Struct](/zh-cn/book/structs-and-messages#str
 | :------- | :--------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
 | `bounce` | [`Bool{:tact}`][p]     | 如果设置为`true`（默认），当接收合约不存在或无法处理消息时，消息会退回给发送者。                                                                                         |
 | `to`     | [`Address{:tact}`][p]  | TON 区块链中的内部接收器 [`Address{:tact}`][p]。                                                                                               |
-| `value`  | [`Int{:tact}`][int]    | 消息中要发送的[nanoToncoins][nano]的金额。 此值通常用于支付[转发费用][fwdfee]，除非使用了可选标志[`SendPayGasSeparately{:tact}`](/zh-cn/book/message-mode#optional-flags)。 |
+| `value`  | [`Int{:tact}`][int]    | 消息中要发送的[nanoToncoins][nano]的金额。 此值通常用于支付[转发费用][fwdfee]，除非使用了可选标志[`SendPayFwdFeesSeparately{:tact}`](/zh-cn/book/message-mode#optional-flags)。 |
 | `mode`   | [`Int{:tact}`][int]    | 一个 8 位值，用于配置发送消息的方式，默认值为 $0$。 参见：[消息`模式`](/zh-cn/book/message-mode)。 见：[消息`mode`](/zh-cn/book/message-mode).                                    |
 | `body`   | [`Cell?{:tact}`][cell] | [可选][opt]消息正文作为[`Cell{:tact}`][cell]                                                                                                |
 | `code`   | [`Cell?{:tact}`][cell] | [可选][opt] 合约的初始代码（编译后的字节码）                                                                                                          |
@@ -110,8 +110,8 @@ contract FailureIsNothingButAnotherStep {
         // 1st outbound message evaluated and queued (but not sent yet)
         send(SendParameters{
             to: sender(),
-            value: ton("0.042"), // plus forward fee due to SendPayGasSeparately
-            mode: SendIgnoreErrors | SendPayGasSeparately,
+            value: ton("0.042"), // plus forward fee due to SendPayFwdFeesSeparately
+            mode: SendIgnoreErrors | SendPayFwdFeesSeparately,
         });
 
         // 2nd outbound message evaluated and queued (but not sent yet, and never will be!)
