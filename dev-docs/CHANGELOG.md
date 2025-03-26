@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Deprecated the `SendPayGasSeparately` constant in favor of `SendPayFwdFeesSeparately`: PR [#2483](https://github.com/tact-lang/tact/pull/2483)
 
+### Code generation
+
+- [fix] Save the contract state on early `return` from receivers: PR [#2482](https://github.com/tact-lang/tact/pull/2482)
+
 ### Internal infrastructure
 
 - `internalExternalReceiversOutsideMethodsMap` have been reworked to ensure compatibility with explorers: PR [#2398](https://github.com/tact-lang/tact/pull/2398)
@@ -33,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Novus Nota](https://github.com/novusnota)
 - [Petr Makhnev](https://github.com/i582)
 - [skywardboundd](https://github.com/skywardboundd)
+- [Anton Trunov](https://github.com/anton-trunov)
 
 ## [1.6.4] - 2025-03-18
 
