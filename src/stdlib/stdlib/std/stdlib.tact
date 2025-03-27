@@ -11,3 +11,4 @@ import "./internal/send";
 import "./internal/config";
 import "./internal/base";
 import "./internal/address";
+import "./internal/time";

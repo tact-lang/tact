@@ -2288,5 +2288,6 @@ files["std/stdlib.tact"] =
     "aW1wb3J0ICIuL2ludGVybmFsL3ByaW1pdGl2ZXMiOwppbXBvcnQgIi4vaW50ZXJuYWwvY2VsbHMiOwppbXBvcnQgIi4vaW50ZXJuYWwvY3J5cHRvIjsKaW1wb3J0ICIu" +
     "L2ludGVybmFsL3RleHQiOwppbXBvcnQgIi4vaW50ZXJuYWwvbWF0aCI7CmltcG9ydCAiLi9pbnRlcm5hbC9jb250cmFjdCI7CmltcG9ydCAiLi9pbnRlcm5hbC9kZWJ1" +
     "ZyI7CmltcG9ydCAiLi9pbnRlcm5hbC9jb250ZXh0IjsKaW1wb3J0ICIuL2ludGVybmFsL3Jlc2VydmUiOwppbXBvcnQgIi4vaW50ZXJuYWwvc2VuZCI7CmltcG9ydCAi" +
-    "Li9pbnRlcm5hbC9jb25maWciOwppbXBvcnQgIi4vaW50ZXJuYWwvYmFzZSI7CmltcG9ydCAiLi9pbnRlcm5hbC9hZGRyZXNzIjsK";
+    "Li9pbnRlcm5hbC9jb25maWciOwppbXBvcnQgIi4vaW50ZXJuYWwvYmFzZSI7CmltcG9ydCAiLi9pbnRlcm5hbC9hZGRyZXNzIjsKaW1wb3J0ICIuL2ludGVybmFsL3Rp" +
+    "bWUiOwo=";
 export default files;
