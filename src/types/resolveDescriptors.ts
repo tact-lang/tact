@@ -6,7 +6,6 @@ import {
     isSelfId,
     isSlice,
     selfId,
-    isWildcard,
 } from "../ast/ast-helpers";
 import { traverse, traverseAndCheck } from "../ast/iterators";
 import {
@@ -867,7 +866,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
             throwCompilationError("Getters cannot be inline", isInline.loc);
         }
 
-        const exNames: Set<string> = new Set();
+        const parameterNameSet: Set<string> = new Set();
 
         // Validate mutating
         if (isExtends) {
@@ -884,7 +883,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                 );
             }
             const firstParam = params[0]!;
-            if (!isSelfId(firstParam.name)) {
+            if (firstParam.name.kind !== 'id' || firstParam.name.text !== "self") {
                 throwCompilationError(
                     'Extend function must have first parameter named "self"',
                     firstParam.loc,
@@ -905,7 +904,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
 
             // Update self and remove first parameter
             self = firstParam.type;
-            exNames.add(idText(firstParam.name));
+            parameterNameSet.add(idText(firstParam.name));
             params = params.slice(1);
         }
 
@@ -931,7 +930,10 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
         }
 
         for (const param of params) {
-            if (exNames.has(idText(param.name)) && !isWildcard(param.name)) {
+            if (param.name.kind !== 'id') {
+                continue;
+            }
+            if (parameterNameSet.has(param.name.text)) {
                 throwCompilationError(
                     `Parameter name ${idTextErr(param.name)} is already used`,
                     param.loc,
@@ -943,7 +945,7 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                     param.loc,
                 );
             }
-            exNames.add(idText(param.name));
+            parameterNameSet.add(idText(param.name));
         }
 
         // Check for runtime types in getters
@@ -979,9 +981,17 @@ export function resolveDescriptors(ctx: CompilerContext, Ast: FactoryAst) {
                         a.loc,
                     );
                 }
-                const paramSet = new Set(
-                    a.params.map((typedId) => idText(typedId.name)),
-                );
+                const paramsArray: string[] = [];
+                for (const typedId of a.params) {
+                    if (typedId.name.kind === 'wildcard') {
+                        throwCompilationError(
+                            "cannot use wildcards with argument rearrangement",
+                            a.loc,
+                        );
+                    }
+                    paramsArray.push(idText(typedId.name));
+                }
+                const paramSet = new Set(paramsArray);
                 if (!isSubsetOf(paramSet, shuffleArgSet)) {
                     throwCompilationError(
                         "asm argument rearrangement must mention all function parameters",

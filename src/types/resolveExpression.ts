@@ -1,5 +1,5 @@
 import type * as Ast from "../ast/ast";
-import { eqNames, idText, isWildcard } from "../ast/ast-helpers";
+import { eqNames, idText } from "../ast/ast-helpers";
 import {
     idTextErr,
     throwCompilationError,
@@ -510,8 +510,10 @@ function checkParameterType(
 ) {
     const t = getExpType(ctx, expression);
     if (!isAssignable(t, parameter.type)) {
+        // FIXME: this is non-descriptive of parameter name
+        const name = parameter.name.kind === 'id' ? parameter.name : '_';
         throwCompilationError(
-            `Cannot pass an expression of type "${printTypeRef(t)}" to the parameter ${idTextErr(parameter.name)} of type "${printTypeRef(parameter.type)}"`,
+            `Cannot pass an expression of type "${printTypeRef(t)}" to the parameter ${idTextErr(name)} of type "${printTypeRef(parameter.type)}"`,
             expression.loc,
         );
     }
@@ -874,13 +876,6 @@ export function resolveExpression(
             const v = sctx.vars.get(exp.text);
             if (!v) {
                 if (!hasStaticConstant(ctx, exp.text)) {
-                    if (isWildcard(exp)) {
-                        throwCompilationError(
-                            "Wildcard variable name '_' cannot be accessed",
-                            exp.loc,
-                        );
-                    }
-
                     // Handle static struct method calls
                     try {
                         const t = getType(ctx, exp.text);

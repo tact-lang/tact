@@ -101,7 +101,7 @@ export type ConstantDescription = {
 };
 
 export type FunctionParameter = {
-    name: Ast.Id;
+    name: Ast.OptionalId;
     type: TypeRef;
     loc: SrcInfo;
 };
@@ -130,18 +130,18 @@ export type BinaryReceiverSelector =
     | {
           kind: "internal-binary";
           type: string;
-          name: Ast.Id;
+          name: Ast.OptionalId;
       }
     | {
           kind: "bounce-binary";
-          name: Ast.Id;
+          name: Ast.OptionalId;
           type: string;
           bounced: boolean;
       }
     | {
           kind: "external-binary";
           type: string;
-          name: Ast.Id;
+          name: Ast.OptionalId;
       };
 
 export type CommentReceiverSelector =
@@ -165,23 +165,23 @@ type EmptyReceiverSelector =
 export type FallbackReceiverSelector =
     | {
           kind: "internal-comment-fallback";
-          name: Ast.Id;
+          name: Ast.OptionalId;
       }
     | {
           kind: "internal-fallback";
-          name: Ast.Id;
+          name: Ast.OptionalId;
       }
     | {
           kind: "bounce-fallback";
-          name: Ast.Id;
+          name: Ast.OptionalId;
       }
     | {
           kind: "external-comment-fallback";
-          name: Ast.Id;
+          name: Ast.OptionalId;
       }
     | {
           kind: "external-fallback";
-          name: Ast.Id;
+          name: Ast.OptionalId;
       };
 
 export type ReceiverSelector =
@@ -220,7 +220,7 @@ export type ReceiverDescription = {
 };
 
 export type InitParameter = {
-    name: Ast.Id;
+    name: Ast.OptionalId;
     type: TypeRef;
     as: string | null;
     loc: SrcInfo;

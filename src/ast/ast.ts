@@ -213,7 +213,7 @@ export type Statement =
 
 export type StatementLet = {
     readonly kind: "statement_let";
-    readonly name: Id;
+    readonly name: OptionalId;
     readonly type: Type | undefined;
     readonly expression: Expression;
     readonly id: number;
@@ -307,14 +307,14 @@ export type StatementTry = {
 };
 
 export type CatchBlock = {
-    readonly catchName: Id;
+    readonly catchName: OptionalId;
     readonly catchStatements: readonly Statement[];
 };
 
 export type StatementForEach = {
     readonly kind: "statement_foreach";
-    readonly keyName: Id;
-    readonly valueName: Id;
+    readonly keyName: OptionalId;
+    readonly valueName: OptionalId;
     readonly map: Expression;
     readonly statements: readonly Statement[];
     readonly id: number;
@@ -325,7 +325,7 @@ export type StatementDestruct = {
     readonly kind: "statement_destruct";
     readonly type: TypeId;
     /** field name -> [field id, local id] */
-    readonly identifiers: ReadonlyMap<string, readonly [Id, Id]>;
+    readonly identifiers: ReadonlyMap<string, readonly [Id, OptionalId]>;
     readonly ignoreUnspecifiedFields: boolean;
     readonly expression: Expression;
     readonly id: number;
@@ -509,9 +509,17 @@ export type Conditional = {
     readonly loc: SrcInfo;
 };
 
+export type OptionalId = Id | Wildcard
+
 export type Id = {
     readonly kind: "id";
     readonly text: string;
+    readonly id: number;
+    readonly loc: SrcInfo;
+};
+
+export type Wildcard = {
+    readonly kind: "wildcard";
     readonly id: number;
     readonly loc: SrcInfo;
 };
@@ -671,7 +679,7 @@ export type FunctionAttribute = FunctionAttributeGet | FunctionAttributeRest;
 
 export type TypedParameter = {
     readonly kind: "typed_parameter";
-    readonly name: Id;
+    readonly name: OptionalId;
     readonly type: Type;
     readonly id: number;
     readonly loc: SrcInfo;
@@ -724,6 +732,7 @@ export type ReceiverKind = ReceiverInternal | ReceiverExternal | ReceiverBounce;
 
 export type AstNode =
     | FuncId
+    | Wildcard
     | DestructMapping
     | DestructEnd
     | Expression

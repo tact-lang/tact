@@ -688,7 +688,12 @@ export function writeExpression(
                     const renderedSelfAndArguments = [s, ...renderedArguments];
                     const selfAndParameters = [
                         "self",
-                        ...methodDescr.params.map((p) => idText(p.name)),
+                        ...methodDescr.params.map((p) => {
+                            if (p.name.kind === 'wildcard') {
+                                throwInternalCompilerError("Wildcard parameters in asm shuffle must be discarded on earlier compilation stages")
+                            }
+                            return p.name.text;
+                        }),
                     ];
                     const shuffledArgs = methodDescr.ast.shuffle.args.map(
                         (shuffleArg) => {

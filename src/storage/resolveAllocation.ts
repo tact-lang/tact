@@ -161,7 +161,7 @@ export function resolveAllocations(ctx: CompilerContext): CompilerContext {
                         f.loc,
                     );
                     ops.push({
-                        name: idText(f.name),
+                        name: f.name,
                         type: abiType,
                         op: getAllocationOperationFromField(
                             abiType,
@@ -173,7 +173,7 @@ export function resolveAllocations(ctx: CompilerContext): CompilerContext {
                 for (const f of s.init.contract.params ?? []) {
                     const abiType = resolveABIType(f);
                     ops.push({
-                        name: idText(f.name),
+                        name: f.name,
                         type: abiType,
                         op: getAllocationOperationFromField(
                             abiType,
