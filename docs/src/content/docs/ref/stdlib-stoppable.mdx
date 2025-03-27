@@ -22,17 +22,30 @@ Source code:
 ```tact
 @interface("org.ton.stoppable")
 trait Stoppable with Ownable {
+    /// Whether the contract is stopped.
     stopped: Bool;
+
+    /// The owner of the contract.
     owner: Address;
 
+    /// Requires the contract to be not stopped.
+    ///
+    /// #### Error codes
+    ///
+    /// * 133 — if the contract is stopped
+    ///
     fun requireNotStopped() {
         throwUnless(133, !self.stopped);
     }
 
+    /// Requires the contract to be stopped.
     fun requireStopped() {
         require(self.stopped, "Contract not stopped");
     }
 
+    /// Receiver for the message `"Stop"` that stops the contract.
+    ///
+    /// Can only be called by the owner and if the contract is not stopped already.
     receive("Stop") {
         self.requireOwner();
         self.requireNotStopped();
@@ -40,6 +53,7 @@ trait Stoppable with Ownable {
         self.reply("Stopped".asComment());
     }
 
+    /// Returns `true` if the contract is stopped (or `false` otherwise).
     get fun stopped(): Bool {
         return self.stopped;
     }
@@ -72,9 +86,15 @@ Source code:
 ```tact
 @interface("org.ton.resumable")
 trait Resumable with Stoppable {
+    /// Whether the contract is stopped.
     stopped: Bool;
+
+    /// The owner of the contract.
     owner: Address;
 
+    /// Receiver for the message `"Resume"` that resumes the contract execution.
+    ///
+    /// Can only be called by the owner and if the contract is stopped.
     receive("Resume") {
         self.requireOwner();
         self.requireStopped();
@@ -103,4 +123,4 @@ contract MyContract with Resumable {
 
 ## Sources
 
-* [stoppable.tact](https://github.com/tact-lang/tact/blob/61541b7783098e1af669faccd7d2334c10981c72/stdlib/libs/stoppable.tact)
+* [stoppable.tact](https://github.com/tact-lang/tact/blob/dea253bf9f30c951d293ec10836dd293baf40ddf/stdlib/libs/stoppable.tact)
