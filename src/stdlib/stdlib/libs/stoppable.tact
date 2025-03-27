@@ -37,7 +37,9 @@ trait Stoppable with Ownable {
     /// 
     /// #### Error codes
     /// 
-    /// * 133 — if the contract is stopped
+    /// * 133 ([Contract stopped]) — if the contract is stopped.
+    /// 
+    /// [Contract stopped]: https://docs.tact-lang.org/book/exit-codes#133
     /// 
     fun requireNotStopped() {
         throwUnless(133, !self.stopped);
