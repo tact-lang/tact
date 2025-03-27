@@ -174,20 +174,6 @@ asm fun abs(x: Int): Int { ABS }
 
 /// Global function.
 ///
-/// Returns the current Unix time.
-///
-/// ```tact
-/// fun example() {
-///     let timeOffset: Int = now() + 1000; // thousand seconds from now()
-/// }
-/// ```
-///
-/// See: https://docs.tact-lang.org/ref/core-contextstate#now
-///
-asm fun now(): Int { NOW }
-
-/// Global function.
-///
 /// Computes and returns the logarithm of a number `num` > 0 to the base `base` ≥ 1. Results are rounded down.
 ///
 /// Attempts to specify a non-positive `num` value or a `base` less than 1 throw an error with exit code 5: `Integer out of expected range`.

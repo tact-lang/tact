@@ -333,38 +333,6 @@ asm fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int { GETORIGINALFW
 
 /// Global function. Available since Tact 1.6.0.
 ///
-/// Returns the `Int` value of the logical time of the current transaction.
-///
-/// ```tact
-/// fun example() {
-///     let lt: Int = curLt();
-///     nativeRandomize(lt); // equivalent to calling nativeRandomizeLt()
-/// }
-/// ```
-///
-/// See:
-/// * https://docs.tact-lang.org/ref/core-contextstate#curlt
-/// * https://docs.tact-lang.org/ref/core-random#nativerandomize
-/// * https://docs.tact-lang.org/ref/core-random#nativerandomizelt
-///
-asm fun curLt(): Int { LTIME }
-
-/// Global function. Available since Tact 1.6.0.
-///
-/// Returns the `Int` value of the starting logical time of the current block.
-///
-/// ```tact
-/// fun example() {
-///     let time: Int = blockLt();
-/// }
-/// ```
-///
-/// See: https://docs.tact-lang.org/ref/core-contextstate#blocklt
-///
-asm fun blockLt(): Int { BLOCKLT }
-
-/// Global function. Available since Tact 1.6.0.
-///
 /// Sets the `gas_limit` to the `Int` `limit` and resets the `gas_credit` to 0. Note that specifying the `limit` higher than the maximum allowed value of 2^63 - 1 will have the same result as with specifying that exact maximum or calling `acceptMessage()`.
 ///
 /// Attempts to specify a negative or insufficient value of `limit` will cause an exception with exit code -14: `Out of gas error`.
