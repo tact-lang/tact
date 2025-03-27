@@ -78,7 +78,7 @@ contract NFTCollection {
 
         while (currNFTItem.flag != 0) {
             counter += 1;
-            // we can check outside the loop but for benchmark place it here []
+            // we can check outside the loop, but for benchmark place it here
             throwIf(IncorrectAmount, counter >= 250);
 
             throwUnless(IncorrectIndexes + counter, currNFTItem.itemIndex!! <= self.nextItemIndex);
