@@ -2,7 +2,7 @@
 ///
 /// See: https://docs.tact-lang.org/ref/stdlib-ownable#changeowner
 ///
-message(2174598809) ChangeOwner {
+message(0x819dbe99) ChangeOwner {
     /// Query ID of the change owner request.
     queryId: Int as uint64;
     /// New owner.
@@ -13,7 +13,7 @@ message(2174598809) ChangeOwner {
 ///
 /// See: https://docs.tact-lang.org/ref/stdlib-ownable#changeownerok
 ///
-message(846932810) ChangeOwnerOk {
+message(0x327b2b4a) ChangeOwnerOk {
     /// Query ID of the change owner request.
     queryId: Int as uint64;
     /// New owner that was set.
