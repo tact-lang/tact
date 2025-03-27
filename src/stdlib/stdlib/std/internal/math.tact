@@ -14,7 +14,7 @@
 ///
 /// #### Exit codes
 ///
-/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify a negative value of `x`.
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify a negative value of `x`.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-random#nativerandomize
@@ -214,7 +214,7 @@ asm fun now(): Int { NOW }
 ///
 /// #### Exit codes
 /// 
-/// * 5 ([Integer out of expected range]) — Thrown when the given `num` value is non-positive
+/// * 5: [Integer out of expected range] — Thrown when the given `num` value is non-positive
 ///   or the given `base` value is less than 1.
 /// 
 /// See:
@@ -238,7 +238,7 @@ native log(num: Int, base: Int): Int;
 ///
 /// #### Exit codes
 /// 
-/// * 5 ([Integer out of expected range]) — Thrown when the given `num` value is non-positive.
+/// * 5: [Integer out of expected range] — Thrown when the given `num` value is non-positive.
 /// 
 /// See:
 /// * https://docs.tact-lang.org/ref/core-math#log2
@@ -273,7 +273,7 @@ asm fun log2(num: Int): Int { DUP 5 THROWIFNOT UBITSIZE DEC }
 ///
 /// #### Exit codes
 ///
-/// * 5 ([Integer out of expected range]) — Thrown when the given `exp` value is negative.
+/// * 5: [Integer out of expected range] — Thrown when the given `exp` value is negative.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-math#pow
@@ -315,7 +315,7 @@ inline fun pow(base: Int, exp: Int): Int {
 ///
 /// #### Exit codes
 ///
-/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify a negative value of `exp`.
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify a negative value of `exp`.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-math#pow2
@@ -358,7 +358,7 @@ asm fun sign(x: Int): Int { SGN }
 /// 
 /// #### Exit codes
 /// 
-/// * 4 ([Integer overflow]) — Thrown when the given `y` value is equal to 0.
+/// * 4: [Integer overflow] — Thrown when the given `y` value is equal to 0.
 /// 
 /// See: https://docs.tact-lang.org/ref/core-math#divc
 /// 
@@ -383,7 +383,7 @@ asm fun divc(x: Int, y: Int): Int { DIVC }
 /// 
 /// #### Exit codes
 /// 
-/// * 4 ([Integer overflow]) — Thrown when the value in calculation goes beyond 
+/// * 4: [Integer overflow] — Thrown when the value in calculation goes beyond
 ///   the range from -2^256 to 2^256 - 1 inclusive, or if there's an attempt to 
 ///   divide by `z` equal to 0.
 /// 
@@ -408,10 +408,10 @@ asm fun muldivc(x: Int, y: Int, z: Int): Int { MULDIVC }
 ///
 /// #### Exit codes
 /// 
-/// * 4 ([Integer overflow]) — Thrown when the value in calculation goes beyond 
+/// * 4: [Integer overflow] — Thrown when the value in calculation goes beyond
 ///   the range from -2^256 to 2^256 - 1 inclusive.
 /// 
-/// * 5 ([Integer out of expected range]) — Thrown when the given `z` value is 
+/// * 5: [Integer out of expected range] — Thrown when the given `z` value is
 ///   outside the inclusive range from 0 to 256.
 ///
 /// See: https://docs.tact-lang.org/ref/core-math#mulshiftright
@@ -436,10 +436,10 @@ asm fun mulShiftRight(x: Int, y: Int, z: Int): Int { MULRSHIFT }
 /// 
 /// #### Exit codes
 /// 
-/// * 4 ([Integer overflow]) — Thrown when the value in calculation goes beyond 
+/// * 4: [Integer overflow] — Thrown when the value in calculation goes beyond
 ///   the range from -2^256 to 2^256 - 1 inclusive.
 /// 
-/// * 5 ([Integer out of expected range]) — Thrown when the given `z` value is 
+/// * 5: [Integer out of expected range] — Thrown when the given `z` value is
 ///   outside the inclusive range from 0 to 256.
 /// 
 /// See: https://docs.tact-lang.org/ref/core-math#mulshiftrightround
@@ -464,10 +464,10 @@ asm fun mulShiftRightRound(x: Int, y: Int, z: Int): Int { MULRSHIFTR }
 ///
 /// #### Exit codes
 ///
-/// * 4 ([Integer overflow]) — Thrown when the value in calculation goes beyond 
+/// * 4: [Integer overflow] — Thrown when the value in calculation goes beyond
 ///   the range from -2^256 to 2^256 - 1 inclusive.
 /// 
-/// * 5 ([Integer out of expected range]) — Thrown when the given `z` value is 
+/// * 5: [Integer out of expected range] — Thrown when the given `z` value is
 ///   outside the inclusive range from 0 to 256.
 ///
 /// See: https://docs.tact-lang.org/ref/core-math#mulshiftrightceil
@@ -494,7 +494,7 @@ asm fun mulShiftRightCeil(x: Int, y: Int, z: Int): Int { MULRSHIFTC }
 ///
 /// #### Exit codes
 ///
-/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify a negative value of `num`.
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify a negative value of `num`.
 ///
 /// See: https://docs.tact-lang.org/ref/core-math#sqrt
 ///

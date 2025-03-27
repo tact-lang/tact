@@ -220,7 +220,7 @@ asm fun myStorageDue(): Int { DUEPAYMENT }
 ///
 /// #### Exit codes
 ///
-/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify negative number of `cells`, `bits` or `seconds`.
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative number of `cells`, `bits` or `seconds`.
 ///
 /// See: https://docs.tact-lang.org/ref/core-gas#getstoragefee
 ///
@@ -242,7 +242,7 @@ asm fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool):
 ///
 /// #### Exit codes
 ///
-/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify negative value of `gasUsed`.
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative value of `gasUsed`.
 ///
 /// See: https://docs.tact-lang.org/ref/core-gas#getcomputefee
 ///
@@ -264,7 +264,7 @@ asm fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEE }
 ///
 /// #### Exit codes
 ///
-/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify negative number of `cells`, `bits` or `seconds`.
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative number of `cells`, `bits` or `seconds`.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-gas#getsimplecomputefee
@@ -292,7 +292,7 @@ asm fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEES
 ///
 /// #### Exit codes
 ///
-/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify negative number of `cells` or `bits`.
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative number of `cells` or `bits`.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-gas#getforwardfee
@@ -317,7 +317,7 @@ asm fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { GETFORW
 ///
 /// #### Exit codes
 ///
-/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify negative number of `cells` or `bits`.
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative number of `cells` or `bits`.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-gas#getsimpleforwardfee
@@ -342,7 +342,7 @@ asm fun getSimpleForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { G
 ///
 /// #### Exit codes
 ///
-/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify a negative value of `fwdFee`.
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify a negative value of `fwdFee`.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-gas#getoriginalfwdfee
@@ -397,7 +397,7 @@ asm fun blockLt(): Int { BLOCKLT }
 ///
 /// #### Exit codes
 ///
-/// * -14 ([Out of gas error]) — Thrown when attempting to specify a negative or insufficient value of `limit`.
+/// * -14: [Out of gas error] — Thrown when attempting to specify a negative or insufficient value of `limit`.
 ///
 /// See: https://docs.tact-lang.org/ref/core-gas#setgaslimit
 ///
@@ -440,7 +440,7 @@ asm fun getSeed(): Int { RANDSEED }
 ///
 /// #### Exit codes
 ///
-/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify a negative value of `seed`.
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify a negative value of `seed`.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-random#setseed

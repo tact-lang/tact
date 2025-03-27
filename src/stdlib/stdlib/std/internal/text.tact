@@ -234,7 +234,7 @@ asm extends fun toString(self: Int): String {
 ///
 /// #### Exit codes
 ///
-/// * 134 ([Invalid argument]) — Thrown when the given `digits` value is out of range.
+/// * 134: [Invalid argument] — Thrown when the given `digits` value is out of range.
 ///
 /// See: https://docs.tact-lang.org/ref/core-strings#inttofloatstring
 ///
@@ -516,7 +516,7 @@ inline extends fun fromBase64(self: String): Slice {
 ///
 /// #### Exit codes
 ///
-/// * 134 ([Invalid argument]) — Thrown when the given `String` contains characters not from the base64 set.
+/// * 134: [Invalid argument] — Thrown when the given `String` contains characters not from the base64 set.
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#slicefrombase64
 ///

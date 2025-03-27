@@ -63,7 +63,7 @@ asm extends fun hash(self: Slice): Int { HASHSU }
 ///
 /// #### Exit codes
 ///
-/// * 9 ([Cell underflow]) — Thrown when attempting to specify a `Slice` with number of bits **not** divisible by 8.
+/// * 9: [Cell underflow] — Thrown when attempting to specify a `Slice` with number of bits **not** divisible by 8.
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#slicehashdata
 ///
@@ -85,7 +85,7 @@ asm extends fun hashData(self: Slice): Int { ONE HASHEXT_SHA256 }
 ///
 /// #### Exit codes
 ///
-/// * 9 ([Cell underflow]) — Thrown when attempting to specify a `String` with number of bits **not** divisible by 8.
+/// * 9: [Cell underflow] — Thrown when attempting to specify a `String` with number of bits **not** divisible by 8.
 ///
 /// See: https://docs.tact-lang.org/ref/core-strings#stringhashdata
 ///
@@ -157,7 +157,7 @@ asm fun checkSignature(hash: Int, signature: Slice, publicKey: Int): Bool { CHKS
 ///
 /// #### Exit codes
 ///
-/// * 9 ([Cell underflow]) — Thrown when the bit length of `data` is **not** divisible by 8.
+/// * 9: [Cell underflow] — Thrown when the bit length of `data` is **not** divisible by 8.
 ///
 /// See: https://docs.tact-lang.org/ref/core-crypto#checkdatasignature
 ///

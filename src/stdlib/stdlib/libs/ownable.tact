@@ -49,7 +49,7 @@ trait Ownable with BaseTrait {
     /// 
     /// #### Exit codes
     /// 
-    /// * 132 ([Access denied]) — Thrown when the sender is not the owner of the contract.
+    /// * 132: [Access denied] — Thrown when the sender is not the owner of the contract.
     /// 
     /// [Access denied]: https://docs.tact-lang.org/book/exit-codes#132
     ///
@@ -94,7 +94,7 @@ trait OwnableTransferable with Ownable {
     /// 
     /// #### Exit codes
     /// 
-    /// * 132 ([Access denied]) — Thrown when the sender is not the owner of the contract.
+    /// * 132: [Access denied] — Thrown when the sender is not the owner of the contract.
     /// 
     /// [Access denied]: https://docs.tact-lang.org/book/exit-codes#132
     ///

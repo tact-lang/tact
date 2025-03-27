@@ -13,7 +13,7 @@
 ///
 /// #### Exit codes
 ///
-/// * 136 ([Invalid standard address]) — Thrown when the given `Slice` contains an invalid 
+/// * 136: [Invalid standard address] — Thrown when the given `Slice` contains an invalid
 ///   tag prefix (not `0b100`) or an invalid account ID length (not 256 bits).
 ///
 /// See:
@@ -94,7 +94,7 @@ asm extends fun asSlice(self: Address): Slice {}
 ///
 /// This function tries to resolve constant values in compile-time whenever possible.
 ///
-/// Attempts to specify an uncommon `chain` ID (not -1 or 0) that can be detected in compile-time will result in a compilation error.
+/// Attempts to specify an invalid `chain` ID (not -1 or 0) that can be detected in compile-time will result in a compilation error.
 ///
 /// ```tact
 /// fun example() {
@@ -199,8 +199,8 @@ asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 ///
 /// #### Exit codes
 ///
-/// * 8 ([Cell overflow]) — Thrown when attempting to load an `Address` when `Slice` doesn't contain it.
-/// * 9 ([Cell underflow]) — Thrown when attempting to load more data than `Slice` contains.
+/// * 8: [Cell overflow] — Thrown when attempting to load an `Address` when `Slice` doesn't contain it.
+/// * 9: [Cell underflow] — Thrown when attempting to load more data than `Slice` contains.
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#sliceloadaddress
 ///
@@ -227,8 +227,8 @@ asm( -> 1 0) extends mutates fun loadAddress(self: Slice): Address { LDMSGADDR }
 ///
 /// #### Exit codes
 ///
-/// * 8 ([Cell overflow]) — Thrown when attempting to skip an `Address` when `Slice` doesn't contain it.
-/// * 9 ([Cell underflow]) — Thrown when attempting to skip more data than `Slice` contains.
+/// * 8: [Cell overflow] — Thrown when attempting to skip an `Address` when `Slice` doesn't contain it.
+/// * 9: [Cell underflow] — Thrown when attempting to skip more data than `Slice` contains.
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#sliceloadaddress
 ///
@@ -250,7 +250,7 @@ asm extends mutates fun skipAddress(self: Slice) { LDMSGADDR NIP }
 ///
 /// #### Exit codes
 ///
-/// * 8 ([Cell overflow]) — Thrown when attempting to store an `address` into the `Builder` when it cannot fit it.
+/// * 8: [Cell overflow] — Thrown when attempting to store an `address` into the `Builder` when it cannot fit it.
 ///
 /// See: https://docs.tact-lang.org/ref/core-cells#builderstoreaddress
 ///
@@ -366,7 +366,7 @@ extends fun storeBasechainAddress(self: Builder, address: BasechainAddress): Bui
 ///
 /// #### Exit codes
 ///
-/// * 138 ([Not a basechain address]) — Thrown when the given `address` is not in the basechain (chain ID is not 0).
+/// * 138: [Not a basechain address] — Thrown when the given `address` is not in the basechain (chain ID is not 0).
 ///
 /// See: https://docs.tact-lang.org/ref/core-addresses#forcebasechain
 /// 

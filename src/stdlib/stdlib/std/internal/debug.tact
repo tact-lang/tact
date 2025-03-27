@@ -23,7 +23,7 @@
 ///
 /// #### Exit codes
 ///
-/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify the `code` outside of 0-65535 range.
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify the `code` outside of 0-65535 range.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-debug#throw
@@ -56,7 +56,7 @@ native throw(code: Int);
 ///
 /// #### Exit codes
 ///
-/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify the `code` outside of 0-65535 range.
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify the `code` outside of 0-65535 range.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-debug#throwif
@@ -91,7 +91,7 @@ native throwIf(code: Int, condition: Bool);
 ///
 /// #### Exit codes
 ///
-/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify the `code` outside of 0-65535 range.
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify the `code` outside of 0-65535 range.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-debug#throwunless

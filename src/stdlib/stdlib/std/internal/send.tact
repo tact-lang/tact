@@ -139,7 +139,7 @@ struct MessageParameters {
 ///
 /// #### Exit codes
 ///
-/// * 33 ([Action list is too long]) — Thrown when attempting to queue more than 255 messages.
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-send#message
@@ -183,7 +183,7 @@ asm fun message(params: MessageParameters) {
 ///
 /// #### Exit codes
 ///
-/// * 33 ([Action list is too long]) — Thrown when attempting to queue more than 255 messages.
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
 ///
 /// See: https://docs.tact-lang.org/ref/core-send#send
 ///
@@ -335,7 +335,7 @@ struct DeployParameters {
 ///
 /// #### Exit codes
 ///
-/// * 33 ([Action list is too long]) — Thrown when attempting to queue more than 255 messages.
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-send#deploy
@@ -455,7 +455,7 @@ asm fun deploy(params: DeployParameters) {
 ///
 /// #### Exit codes
 ///
-/// * 33 ([Action list is too long]) — Thrown when attempting to queue more than 255 messages.
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
 ///
 /// See: https://docs.tact-lang.org/ref/core-send#cashback
 ///
@@ -482,7 +482,7 @@ asm fun cashback(to: Address) {
 ///
 /// #### Exit codes
 ///
-/// * 33 ([Action list is too long]) — Thrown when attempting to queue more than 255 messages.
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-send#nativesendmessage
@@ -498,7 +498,7 @@ asm fun nativeSendMessage(cell: Cell, mode: Int) { SENDRAWMSG }
 ///
 /// #### Exit codes
 ///
-/// * 33 ([Action list is too long]) — Thrown when attempting to queue more than 255 messages.
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
 ///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-send#nativesendmessagereturnforwardfee
@@ -522,7 +522,7 @@ asm fun nativeSendMessageReturnForwardFee(msg: Cell, mode: Int): Int { SENDMSG }
 ///
 /// #### Exit codes
 ///
-/// * 33 ([Action list is too long]) — Thrown when attempting to queue more than 255 messages.
+/// * 33: [Action list is too long] — Thrown when attempting to queue more than 255 messages.
 ///
 /// See: https://docs.tact-lang.org/ref/core-send#emit
 ///
