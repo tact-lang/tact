@@ -212,15 +212,19 @@ asm fun myStorageDue(): Int { DUEPAYMENT }
 ///
 /// Note, that specifying values of `cells` and `bits` higher than their maximum values listed in account state limits (`max_acc_state_cells` and `max_acc_state_bits`) will have the same result as with specifying the exact limits. In addition, make sure you take into account the deduplication of cells with the same hash.
 ///
-/// Attempts to specify negative number of `cells`, `bits` or `seconds` throw an exception with exit code 5: `Integer out of expected range`.
-///
 /// ```tact
 /// fun example() {
 ///     let fee: Int = getStorageFee(1_000, 1_000, 1_000, false);
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative number of `cells`, `bits` or `seconds`.
+///
 /// See: https://docs.tact-lang.org/ref/core-gas#getstoragefee
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 asm fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool): Int { GETSTORAGEFEE }
 
@@ -230,23 +234,25 @@ asm fun getStorageFee(cells: Int, bits: Int, seconds: Int, isMasterchain: Bool):
 ///
 /// When the `gasUsed` is less than a certain threshold called `flat_gas_limit`, there's a minimum price to pay based on the value of `flat_gas_price`. The less gas is used below this threshold, the higher the minimum price will be. See the example for `getSimpleComputeFee()` to derive that threshold.
 ///
-/// Attempts to specify negative value of `gasUsed` throw an exception with exit code 5: `Integer out of expected range`.
-///
 /// ```tact
 /// fun example() {
 ///     let fee: Int = getComputeFee(1_000, false);
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative value of `gasUsed`.
+///
 /// See: https://docs.tact-lang.org/ref/core-gas#getcomputefee
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 asm fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEE }
 
 /// Global function. Available since Tact 1.5.0.
 ///
 /// Similar to `getComputeFee()`, but without the `flat_gas_price`, i.e. without a minimum price to pay if the `gasUsed` is less than a certain threshold called `flat_gas_limit`. Calculates and returns only the `gasUsed` times the current gas price.
-///
-/// Attempts to specify negative number of `cells`, `bits` or `seconds` throw an exception with exit code 5: `Integer out of expected range`.
 ///
 /// ```tact
 /// fun example() {
@@ -256,9 +262,15 @@ asm fun getComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEE }
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative number of `cells`, `bits` or `seconds`.
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-gas#getsimplecomputefee
 /// * https://docs.tact-lang.org/ref/core-gas#getcomputefee
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 asm fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEESIMPLE }
 
@@ -272,26 +284,28 @@ asm fun getSimpleComputeFee(gasUsed: Int, isMasterchain: Bool): Int { GETGASFEES
 ///
 /// However, regardless of the values of `cells` and `bits`, this function always adds the minimum price based on the value of `lump_price`. See the example for `getSimpleForwardFee()` to derive it. In addition, make sure you take into account the deduplication of cells with the same hash, since for example the root cell and its data bits don't count towards the forward fee and are covered by the `lump_price`.
 ///
-/// Attempts to specify negative number of `cells` or `bits` throw an exception with exit code 5: `Integer out of expected range`.
-///
 /// ```tact
 /// fun example() {
 ///     let fee: Int = getForwardFee(1_000, 1_000, false);
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative number of `cells` or `bits`.
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-gas#getforwardfee
 /// * https://docs.tact-lang.org/ref/core-gas#getsimpleforwardfee
 /// * https://docs.tact-lang.org/ref/core-gas#getoriginalfwdfee
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 asm fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { GETFORWARDFEE }
 
 /// Global function. Available since Tact 1.5.0.
 ///
 /// Similar to `getForwardFee()`, but without the `lump_price`, i.e. without the minimum price to pay regardless of the amount of `cells` or `bits`. Calculates and returns only the `cells` times the current cell price plus `bits` times the current bit price.
-///
-/// Attempts to specify negative number of `cells` or `bits` throw an exception with exit code 5: `Integer out of expected range`.
 ///
 /// ```tact
 /// fun example() {
@@ -301,9 +315,15 @@ asm fun getForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { GETFORW
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify negative number of `cells` or `bits`.
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-gas#getsimpleforwardfee
 /// * https://docs.tact-lang.org/ref/core-gas#getforwardfee
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 asm fun getSimpleForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { GETFORWARDFEESIMPLE }
 
@@ -313,8 +333,6 @@ asm fun getSimpleForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { G
 ///
 /// This function is useful when the outgoing message depends heavily on the structure of the incoming message, so much so that you cannot fully predict the fee using `getForwardFee()` alone. Even if you could, calculating the exact fee with nanoToncoin-level precision can be very expensive, so the approximate value given by this function is often good enough.
 ///
-/// Attempts to specify a negative value of `fwdFee` throw an exception with exit code 5: `Integer out of expected range`.
-///
 /// ```tact
 /// fun example() {
 ///     let fwdFee: Int = context().readForwardFee();
@@ -322,10 +340,16 @@ asm fun getSimpleForwardFee(cells: Int, bits: Int, isMasterchain: Bool): Int { G
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify a negative value of `fwdFee`.
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-gas#getoriginalfwdfee
 /// * https://docs.tact-lang.org/ref/core-gas#getforwardfee
 /// * https://docs.tact-lang.org/ref/core-contextstate#contextreadforwardfee
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 asm fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int { GETORIGINALFWDFEE }
 
@@ -333,15 +357,19 @@ asm fun getOriginalFwdFee(fwdFee: Int, isMasterchain: Bool): Int { GETORIGINALFW
 ///
 /// Sets the `gas_limit` to the `Int` `limit` and resets the `gas_credit` to 0. Note that specifying the `limit` higher than the maximum allowed value of 2^63 - 1 will have the same result as with specifying that exact maximum or calling `acceptMessage()`.
 ///
-/// Attempts to specify a negative or insufficient value of `limit` will cause an exception with exit code -14: `Out of gas error`.
-///
 /// ```tact
 /// fun example() {
 ///     setGasLimit(42000);
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * -14: [Out of gas error] — Thrown when attempting to specify a negative or insufficient value of `limit`.
+///
 /// See: https://docs.tact-lang.org/ref/core-gas#setgaslimit
+///
+/// [Out of gas error]: https://docs.tact-lang.org/book/exit-codes#-14
 ///
 asm fun setGasLimit(limit: Int) { SETGASLIMIT }
 
@@ -369,8 +397,6 @@ asm fun getSeed(): Int { RANDSEED }
 ///
 /// Sets the seed of the random number generator to the unsigned 256-bit `Int` `seed` which can be obtained with the `getSeed()` function.
 ///
-/// Attempts to specify a negative value of `seed` throw an exception with exit code 5: `Integer out of expected range`.
-///
 /// ```tact
 /// fun example() {
 ///     let seed: Int = getSeed();
@@ -380,9 +406,15 @@ asm fun getSeed(): Int { RANDSEED }
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5: [Integer out of expected range] — Thrown when attempting to specify a negative value of `seed`.
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-random#setseed
 /// * https://docs.tact-lang.org/ref/core-random#getseed
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 asm fun setSeed(seed: Int) { SETRAND }
 
