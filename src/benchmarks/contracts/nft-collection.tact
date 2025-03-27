@@ -30,7 +30,7 @@ contract NFTCollection {
         self.royaltyParams = royaltyParams;
 
         self.commonCode = codeOf NFTItem;
-        self.commonData = beginCell().storeUint(0, 1).storeAddress(myAddress());
+        self.commonData = beginCell().storeBit(0).storeAddress(myAddress());
     }
 
     inline fun deployNFTItem(itemIndex: Int, amount: Int, initNFTBody: Cell) {
