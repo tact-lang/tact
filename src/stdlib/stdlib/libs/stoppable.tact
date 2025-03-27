@@ -35,7 +35,7 @@ trait Stoppable with Ownable {
 
     /// Requires the contract to be not stopped.
     /// 
-    /// #### Error codes
+    /// #### Exit codes
     /// 
     /// * 133 ([Contract stopped]) — if the contract is stopped.
     /// 
