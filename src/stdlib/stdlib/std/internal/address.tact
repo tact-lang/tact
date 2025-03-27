@@ -202,7 +202,7 @@ asm fun parseVarAddress(slice: Slice): VarAddress { REWRITEVARADDR }
 /// * 8 ([Cell overflow]) — Thrown when attempting to load an `Address` when `Slice` doesn't contain it.
 /// * 9 ([Cell underflow]) — Thrown when attempting to load more data than `Slice` contains.
 ///
-/// See: https://docs.tact-lang.org/ref/core-addresses#sliceaddress
+/// See: https://docs.tact-lang.org/ref/core-cells#sliceloadaddress
 ///
 /// [Cell overflow]: https://docs.tact-lang.org/book/exit-codes#8
 /// [Cell underflow]: https://docs.tact-lang.org/book/exit-codes#9
