@@ -21,12 +21,19 @@ inline fun forceChain(address: Address) {
     throwUnless(InvalidDestinationWorkchain, parseStdAddress(address.asSlice()).workchain == 0);
 }
 
-contract NFTItem(
-    collectionAddress: Address,
-    itemIndex: Int,
-    owner: Address?, // state init data don't have this parameters
-    content: Cell?,
-) {
+contract NFTItem {
+    itemIndex: Int as uint64;
+    collectionAddress: Address;
+
+    // state init data don't have this parameters
+    owner: Address? = null;
+    content: Cell? = null;
+
+    init(collectionAddress: Address, itemIndex: Int) {
+        self.itemIndex = itemIndex;
+        self.collectionAddress = collectionAddress;
+    }
+
     receive() {} //to ignore empty messages 
 
     receive(msg: Slice) {

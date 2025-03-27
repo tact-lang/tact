@@ -30,11 +30,11 @@ contract NFTCollection {
         self.royaltyParams = royaltyParams;
 
         self.commonCode = codeOf NFTItem;
-        self.commonData = beginCell().storeAddress(myAddress());
+        self.commonData = beginCell().storeUint(0, 1).storeAddress(myAddress());
     }
 
     inline fun deployNFTItem(itemIndex: Int, amount: Int, initNFTBody: Cell) {
-        let data: Cell = self.commonData.storeInt(itemIndex, 257).storeUint(0, 3).endCell();
+        let data: Cell = self.commonData.storeInt(itemIndex, 257).endCell();
 
         deploy(DeployParameters {
             value: amount,
@@ -107,7 +107,7 @@ contract NFTCollection {
     }
 
     get fun get_nft_address_by_index(index: Int): Address {
-        let stateInit = initOf NFTItem(myAddress(), index, null, null);
+        let stateInit = initOf NFTItem(myAddress(), index);
         return contractAddress(stateInit);
     }
 
