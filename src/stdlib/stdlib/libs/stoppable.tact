@@ -34,8 +34,13 @@ trait Stoppable with Ownable {
     owner: Address;
 
     /// Requires the contract to be not stopped.
+    /// 
+    /// #### Error codes
+    /// 
+    /// * 133 — if the contract is stopped
+    /// 
     fun requireNotStopped() {
-        require(!self.stopped, "Contract stopped");
+        throwUnless(133, !self.stopped);
     }
 
     /// Requires the contract to be stopped.
