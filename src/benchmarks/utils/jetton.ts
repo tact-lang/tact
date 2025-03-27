@@ -22,7 +22,7 @@ import { readFileSync } from "fs";
 import { posixNormalize } from "../../utils/filePath";
 import { resolve } from "path";
 
-export const loadFunCJettonsBoc = () => {
+const loadFunCJettonsBoc = () => {
     const bocMinter = readFileSync(
         posixNormalize(
             resolve(
