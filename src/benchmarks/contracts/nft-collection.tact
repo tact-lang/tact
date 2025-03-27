@@ -30,11 +30,11 @@ contract NFTCollection {
         self.royaltyParams = royaltyParams;
 
         self.commonCode = codeOf NFTItem;
-        self.commonData = beginCell().storeBit(0).storeAddress(myAddress());
+        self.commonData = beginCell().storeBit(false).storeAddress(myAddress()); // Use lazy bit 
     }
 
     inline fun deployNFTItem(itemIndex: Int, amount: Int, initNFTBody: Cell) {
-        let data: Cell = self.commonData.storeInt(itemIndex, 257).endCell();
+        let data: Cell = self.commonData.storeUint(itemIndex, 64).endCell(); // We use 64 bits for itemIndex
 
         deploy(DeployParameters {
             value: amount,
@@ -79,7 +79,7 @@ contract NFTCollection {
         while (currNFTItem.flag != 0) {
             counter += 1;
             // we can check outside the loop, but for benchmark place it here
-            throwIf(IncorrectAmount, counter >= 250);
+            throwIf(IncorrectAmount, counter >= 250); // implementation detail
 
             throwUnless(IncorrectIndexes + counter, currNFTItem.itemIndex!! <= self.nextItemIndex);
 
@@ -107,7 +107,7 @@ contract NFTCollection {
     }
 
     get fun get_nft_address_by_index(index: Int): Address {
-        let stateInit = initOf NFTItem(myAddress(), index);
+        let stateInit = initOf NFTItem(InitNFTData{itemIndex: index, collectionAddress: myAddress()});
         return contractAddress(stateInit);
     }
 
@@ -117,7 +117,7 @@ contract NFTCollection {
 
     get fun get_nft_content(index: Int, individualNFTContent: Cell): Cell {
         let cs = self.content.beginParse();
-        cs.loadRef();
+        cs.skipRef();
         let commonContent = cs.loadRef().beginParse();
         return beginCell()
             .storeUint(1, 8) // off-chain tag 

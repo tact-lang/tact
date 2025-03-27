@@ -12,7 +12,6 @@ import {
 import type { Slice, Sender, Builder } from "@ton/core";
 import { Blockchain } from "@ton/sandbox";
 import type { SandboxContract, TreasuryContract } from "@ton/sandbox";
-import "@ton/test-utils";
 import {
     generateResults,
     getStateSizeForAccount,
@@ -35,6 +34,7 @@ import type {
     BatchDeploy,
     RoyaltyParams,
     InitNFTBody,
+    InitNFTData,
 } from "../contracts/output/nft-collection_NFTCollection";
 import {
     NFTItem,
@@ -45,12 +45,12 @@ import {
 import benchmarkResults from "./results_gas.json";
 import benchmarkCodeSizeResults from "./results_code_size.json";
 
-export type dictDeployNFT = {
+type dictDeployNFT = {
     amount: bigint;
     initNFTBody: InitNFTBody;
 };
 // for correct work with dictionary
-export const dictDeployNFTItem = {
+const dictDeployNFTItem = {
     serialize: (src: dictDeployNFT, builder: Builder) => {
         builder
             .storeCoins(src.amount)
@@ -199,9 +199,16 @@ describe("itemNFT", () => {
 
         // ITEM
         {
+            const initNFTData: InitNFTData = { 
+                $$type: "InitNFTData",
+                itemIndex: 0n,
+                collectionAddress: owner.address,
+            };
+
             itemNFT = blockchain.openContract(
-                await NFTItem.fromInit(owner.address, 0n),
+                await NFTItem.fromInit(initNFTData),
             );
+
             const deployItemMsg: InitNFTBody = {
                 $$type: "InitNFTBody",
                 owner: owner.address,
@@ -420,6 +427,17 @@ describe("itemNFT", () => {
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
             });
+            
+            // at least 1 deploy
+            expect(sendResult.transactions).not.toHaveTransaction({
+                from: scopeCollectionNFT.address,
+                deploy: false,
+            });
+
+            expect(sendResult.transactions).toHaveTransaction({
+                from: scopeCollectionNFT.address,
+                deploy: true,
+            });
 
             return getUsedGas(sendResult, "internal");
         };
@@ -487,6 +505,17 @@ describe("itemNFT", () => {
 
             expect(sendResult.transactions).not.toHaveTransaction({
                 success: false,
+            });
+            
+            // at least 1 deploy
+            expect(sendResult.transactions).not.toHaveTransaction({
+                from: scopeCollectionNFT.address,
+                deploy: false,
+            });
+
+            expect(sendResult.transactions).toHaveTransaction({
+                from: scopeCollectionNFT.address,
+                deploy: true,
             });
 
             return getUsedGas(sendResult, "internal");

@@ -20,11 +20,18 @@ struct NFTData{
     content: Cell?;
 }
 
+struct InitNFTData {
+    collectionAddress: Address;
+    itemIndex: Int as uint64;
+}
+
 struct InitNFTBody {
     owner: Address;
     content: Cell;
 }
 
+
+// issue blocker for this is https://github.com/tact-lang/tact/issues/2275
 // struct InitNFTBodyDict {
 //     amount: Int as coins;
 //     initNFTBody: Cell; // ^InitNFTBody

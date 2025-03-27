@@ -17,10 +17,6 @@ inline fun sendMsg(toAddress: Address, amount: Int, op: Int, queryId: Int, paylo
     });
 }
 
-inline fun forceChain(address: Address) {
-    throwUnless(InvalidDestinationWorkchain, parseStdAddress(address.asSlice()).workchain == 0);
-}
-
 contract NFTItem {
     itemIndex: Int as uint64;
     collectionAddress: Address;
@@ -29,9 +25,9 @@ contract NFTItem {
     owner: Address? = null;
     content: Cell? = null;
 
-    init(collectionAddress: Address, itemIndex: Int) {
-        self.itemIndex = itemIndex;
-        self.collectionAddress = collectionAddress;
+    init(initNFTData: InitNFTData) {
+        self.itemIndex = initNFTData.itemIndex;
+        self.collectionAddress = initNFTData.collectionAddress;
     }
 
     receive() {} //to ignore empty messages 
@@ -57,7 +53,7 @@ contract NFTItem {
         throwUnless(NotInit, self.owner != null);
         throwUnless(IncorrectSender, sender() == self.owner);
         throwUnless(IncorrectForwardPayload, msg.forwardPayload.bits() >= 1);
-        forceChain(msg.newOwner);
+        forceBasechain(msg.newOwner);
 
         let fwdFees: Int = context().readForwardFee();
 
@@ -78,7 +74,7 @@ contract NFTItem {
             sendMsg(msg.newOwner, msg.forwardAmount, OwnershipAssigned, msg.queryId, beginCell().storeAddress(self.owner!!).storeSlice(msg.forwardPayload), SendPayFwdFeesSeparately);
         }
         if (needResponse) {
-            forceChain(msg.responseDestination!!);
+            forceBasechain(msg.responseDestination!!);
             sendMsg(msg.responseDestination!!, restAmount, Excesses, msg.queryId, beginCell(), SendPayFwdFeesSeparately);
         }
         self.owner = msg.newOwner;
@@ -87,7 +83,7 @@ contract NFTItem {
     receive(msg: GetStaticData) {
         throwUnless(NotInit, self.owner != null);
 
-        sendMsg(sender(), 0, ReportStaticData, msg.queryId, beginCell().storeUint(self.itemIndex, 256).storeAddress(self.collectionAddress), SendRemainingValue);
+        sendMsg(sender(), 0, ReportStaticData, msg.queryId, beginCell().storeUint(self.itemIndex, 256).storeAddress(self.collectionAddress), SendRemainingValue); // implementation detail
     }
 
     get fun get_nft_data(): NFTData {
