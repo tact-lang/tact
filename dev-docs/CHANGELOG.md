@@ -16,7 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Always show an error when calling the `dump()` function with an argument of the unsupported `StringBuilder` type: PR [#2491](https://github.com/tact-lang/tact/pull/2491)
 - [fix] The grammar now disallows the augmented assignment operators with whitespace between the operator and the equals sign: PR [#2492](https://github.com/tact-lang/tact/pull/2492)
 - [fix] Generated code now short-circuits `&&=` and `||=` operators: PR [#2494](https://github.com/tact-lang/tact/pull/2494)
-- [fix] The `Stopped` trait now uses `throwUnless` with exit code 133 instead of `require` with "Contract stopped" message: PR [#2503](https://github.com/tact-lang/tact/pull/2503)
 
 ### Standard Library
 
