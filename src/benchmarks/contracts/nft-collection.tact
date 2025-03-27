@@ -34,7 +34,7 @@ contract NFTCollection {
     }
 
     inline fun deployNFTItem(itemIndex: Int, amount: Int, initNFTBody: Cell) {
-        let data: Cell = self.commonData.storeUint(itemIndex, 64).endCell(); // We use 64 bits for itemIndex
+        let data: Cell = self.commonData.storeUint(itemIndex, 64).endCell(); // IndexSizeBits = 64
 
         deploy(DeployParameters {
             value: amount,
