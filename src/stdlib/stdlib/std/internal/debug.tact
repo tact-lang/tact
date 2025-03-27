@@ -7,8 +7,6 @@
 ///
 /// Execution of the current context stops, statements after `throw` are not executed, and control is passed to the first `try...catch` block on the call stack. If there is no `try` or `try...catch` block among the calling functions, TVM will terminate the transaction.
 ///
-/// Attempts to specify the `code` outside of 0-65535 range cause an exception with exit code 5: `Integer out of expected range`.
-///
 /// ```tact
 /// fun thisWillTerminateAbruptly() {
 ///     throw(1042); // throwing with exit code 1042
@@ -23,9 +21,15 @@
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify the `code` outside of 0-65535 range.
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-debug#throw
 /// * https://docs.tact-lang.org/book/statements#try-catch
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 @name(throw)
 native throw(code: Int);
@@ -33,8 +37,6 @@ native throw(code: Int);
 /// Global function. Available since Tact 1.6.0.
 ///
 /// Similar to `throw()`, but throws an error `code` only if `condition` holds, i.e. `condition` is equal to `true`. Doesn't throw otherwise.
-///
-/// Attempts to specify the `code` outside of 0-65535 range cause an exception with exit code 5: `Integer out of expected range`.
 ///
 /// ```tact
 /// contract Ownership {
@@ -52,9 +54,15 @@ native throw(code: Int);
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify the `code` outside of 0-65535 range.
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-debug#throwif
 /// * https://docs.tact-lang.org/book/statements#try-catch
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 @name(throw_if)
 native throwIf(code: Int, condition: Bool);
@@ -64,8 +72,6 @@ native throwIf(code: Int, condition: Bool);
 /// Similar to `throw()`, but throws an error `code` only if `condition` does **not** hold, i.e. `condition` is equal to `true{:tact}`. Doesn't throw otherwise.
 ///
 /// This function is also similar to `require()`, but uses the specified `code` directly instead of generating one based on the given error message `String`.
-///
-/// Attempts to specify the `code` outside of 0-65535 range cause an exception with exit code 5: `Integer out of expected range`.
 ///
 /// ```tact
 /// contract Ownership {
@@ -83,10 +89,16 @@ native throwIf(code: Int, condition: Bool);
 /// }
 /// ```
 ///
+/// #### Exit codes
+///
+/// * 5 ([Integer out of expected range]) — Thrown when attempting to specify the `code` outside of 0-65535 range.
+///
 /// See:
 /// * https://docs.tact-lang.org/ref/core-debug#throwunless
 /// * https://docs.tact-lang.org/ref/core-debug#require
 /// * https://docs.tact-lang.org/book/statements#try-catch
+///
+/// [Integer out of expected range]: https://docs.tact-lang.org/book/exit-codes#5
 ///
 @name(throw_unless)
 native throwUnless(code: Int, condition: Bool);
