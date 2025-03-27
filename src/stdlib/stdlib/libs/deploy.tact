@@ -2,7 +2,7 @@
 ///
 /// See: https://docs.tact-lang.org/ref/stdlib-deploy#deploy
 ///
-message Deploy {
+message(2490013878) Deploy {
     /// Unique identifier for tracking transactions across multiple contracts.
     queryId: Int as uint64;
 }
@@ -12,7 +12,7 @@ message Deploy {
 ///
 /// See: https://docs.tact-lang.org/ref/stdlib-deploy#deployok
 ///
-message DeployOk {
+message(2952335191) DeployOk {
     /// Unique identifier for tracking transactions across multiple contracts.
     queryId: Int as uint64;
 }
@@ -21,7 +21,7 @@ message DeployOk {
 ///
 /// See: https://docs.tact-lang.org/ref/stdlib-deploy#factorydeploy
 ///
-message FactoryDeploy {
+message(1829761339) FactoryDeploy {
     /// Unique identifier for tracking transactions across multiple contracts.
     queryId: Int as uint64;
 

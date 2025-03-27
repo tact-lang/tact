@@ -2,7 +2,7 @@
 ///
 /// See: https://docs.tact-lang.org/ref/stdlib-ownable#changeowner
 ///
-message ChangeOwner {
+message(2174598809) ChangeOwner {
     /// Query ID of the change owner request.
     queryId: Int as uint64;
     /// New owner.
@@ -13,7 +13,7 @@ message ChangeOwner {
 ///
 /// See: https://docs.tact-lang.org/ref/stdlib-ownable#changeownerok
 ///
-message ChangeOwnerOk {
+message(846932810) ChangeOwnerOk {
     /// Query ID of the change owner request.
     queryId: Int as uint64;
     /// New owner that was set.
@@ -46,11 +46,11 @@ trait Ownable with BaseTrait {
     owner: Address;
 
     /// Requires that the sender is the owner of the contract.
-    /// 
+    ///
     /// #### Exit codes
-    /// 
+    ///
     /// * 132: [Access denied] — Thrown when the sender is not the owner of the contract.
-    /// 
+    ///
     /// [Access denied]: https://docs.tact-lang.org/book/exit-codes#132
     ///
     fun requireOwner() {
@@ -91,11 +91,11 @@ trait OwnableTransferable with Ownable {
 
     /// Receiver for the `ChangeOwner` message body, which
     /// can only be processed when sent by the current owner.
-    /// 
+    ///
     /// #### Exit codes
-    /// 
+    ///
     /// * 132: [Access denied] — Thrown when the sender is not the owner of the contract.
-    /// 
+    ///
     /// [Access denied]: https://docs.tact-lang.org/book/exit-codes#132
     ///
     receive(msg: ChangeOwner) {
