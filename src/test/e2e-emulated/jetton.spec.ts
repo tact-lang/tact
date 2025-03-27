@@ -18,8 +18,8 @@ import {
     storeJettonNotification,
 } from "./contracts/output/jetton_JettonTester";
 import { JettonWallet } from "../../benchmarks/contracts/output/jetton-minter-discoverable_JettonWallet";
-import { JettonResolverOverridenTester } from "./contracts/output/jetton_JettonResolverOverridenTester";
 import { JettonSenderTester } from "./contracts/output/jetton_JettonSenderTester";
+import type { JettonResolverOverriddenTester } from "./contracts/output/jetton_JettonResolverOverriddenTester";
 
 describe("Jetton stdlib", () => {
     let blockchain: Blockchain;
@@ -27,7 +27,7 @@ describe("Jetton stdlib", () => {
     let jettonMinter: SandboxContract<JettonMinter>;
     let jettonMinterFuncAddress: Address;
     let jettonReceiverTester: SandboxContract<JettonTester>;
-    let jettonResolverOverridenTester: SandboxContract<JettonResolverOverridenTester>;
+    let jettonResolverOverriddenTester: SandboxContract<JettonResolverOverriddenTester>;
     let jettonSenderTester: SandboxContract<JettonSenderTester>;
 
     let deployer: SandboxContract<TreasuryContract>;
@@ -110,14 +110,14 @@ describe("Jetton stdlib", () => {
         jettonMinterFuncAddress = minterAddress;
 
         // since we want to test FunC resolve, we need FunC jetton wallet code
-        jettonResolverOverridenTester = blockchain.openContract(
+        jettonResolverOverriddenTester = blockchain.openContract(
             await JettonResolverOverridenTester.fromInit(
                 jettonMinterFuncAddress,
                 Cell.fromBoc(bocWallet)[0]!,
             ),
         );
 
-        const deployResolverResult = await jettonResolverOverridenTester.send(
+        const deployResolverResult = await jettonResolverOverriddenTester.send(
             deployer.getSender(),
             { value: toNano("0.1") },
             null,
@@ -125,7 +125,7 @@ describe("Jetton stdlib", () => {
 
         expect(deployResolverResult.transactions).toHaveTransaction({
             from: deployer.address,
-            to: jettonResolverOverridenTester.address,
+            to: jettonResolverOverriddenTester.address,
             deploy: true,
         });
 
@@ -217,7 +217,7 @@ describe("Jetton stdlib", () => {
             op: JettonWallet.opcodes.JettonNotification,
         });
 
-        // getters to ensure we successfully received notification and executed overriden fetch method
+        // getters to ensure we successfully received notification and executed overridden fetch method
         const getAmount = await jettonReceiverTester.getAmount();
         expect(getAmount).toEqual(jettonTransferAmount);
 
@@ -267,7 +267,7 @@ describe("Jetton stdlib", () => {
             );
 
         const deployerFunCJettonWalletAddressFromResolver =
-            await jettonResolverOverridenTester.getJettonWallet(
+            await jettonResolverOverriddenTester.getJettonWallet(
                 deployer.address,
             );
 

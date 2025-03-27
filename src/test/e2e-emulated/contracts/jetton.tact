@@ -19,7 +19,7 @@ struct FunCJettonWalletData {
     code: Cell;
 }
 
-contract JettonResolverOverridenTester(
+contract JettonResolverOverriddenTester(
     minterAddress: Address,
     jettonWalletCode: Cell,
 ) with JettonResolver {
