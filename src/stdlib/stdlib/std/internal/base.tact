@@ -38,7 +38,31 @@ trait BaseTrait {
     /// See: https://docs.tact-lang.org/ref/core-base#self-forward
     ///
     virtual inline fun reply(body: Cell?) {
-        self.forward(sender(), body, true, null);
+        if (self.storageReserve > 0) { // Optimized in compile-time
+            let ctx: Context = context();
+            let balance: Int = myBalance();
+            let balanceBeforeMessage: Int = balance - ctx.value;
+            if (balanceBeforeMessage < self.storageReserve) {
+                nativeReserve(self.storageReserve, ReserveExact);
+                message(MessageParameters{
+                    bounce: true,
+                    to: sender(),
+                    value: 0,
+                    mode: SendRemainingBalance | SendIgnoreErrors,
+                    body: body
+                });
+                return;
+            }
+        }
+
+        // Just send with remaining balance
+        message(MessageParameters{
+            bounce: true,
+            to: sender(),
+            value: 0,
+            mode: SendRemainingValue | SendIgnoreErrors,
+            body: body
+        });
     }
 
     /// Sends a non-bounceable message back to the sender of the current message.
@@ -57,7 +81,31 @@ trait BaseTrait {
     /// See: https://docs.tact-lang.org/ref/core-base#self-forward
     ///
     virtual inline fun notify(body: Cell?) {
-        self.forward(sender(), body, false, null);
+        if (self.storageReserve > 0) { // Optimized in compile-time
+            let ctx: Context = context();
+            let balance: Int = myBalance();
+            let balanceBeforeMessage: Int = balance - ctx.value;
+            if (balanceBeforeMessage < self.storageReserve) {
+                nativeReserve(self.storageReserve, ReserveExact);
+                message(MessageParameters{
+                    bounce: false,
+                    to: sender(),
+                    value: 0,
+                    mode: SendRemainingBalance | SendIgnoreErrors,
+                    body: body
+                });
+                return;
+            }
+        }
+
+        // Just send with remaining balance
+        message(MessageParameters{
+            bounce: false,
+            to: sender(),
+            value: 0,
+            mode: SendRemainingValue | SendIgnoreErrors,
+            body: body
+        });
     }
 
     /// Queues the message (bounceable or non-bounceable) to be sent to the specified address `to`.
@@ -76,12 +124,34 @@ trait BaseTrait {
     /// See: https://docs.tact-lang.org/ref/core-base#self-forward
     ///
     virtual fun forward(to: Address, body: Cell?, bounce: Bool, init: StateInit?) {
-        let code: Cell? = null;
-        let data: Cell? = null;
-        if (init != null) {
-            let init2: StateInit = init!!;
-            code = init2.code;
-            data = init2.data;
+        if (init == null) { 
+            // Lock storage if needed
+            if (self.storageReserve > 0) { // Optimized in compile-time
+                let ctx: Context = context();
+                let balance: Int = myBalance();
+                let balanceBeforeMessage: Int = balance - ctx.value;
+                if (balanceBeforeMessage < self.storageReserve) {
+                    nativeReserve(self.storageReserve, ReserveExact);
+                    message(MessageParameters{
+                        bounce: bounce,
+                        to: to,
+                        value: 0,
+                        mode: SendRemainingBalance | SendIgnoreErrors,
+                        body: body
+                    });
+                    return;
+                }
+            }
+
+            // Just send with remaining balance
+            message(MessageParameters{
+                bounce: bounce,
+                to: to,
+                value: 0,
+                mode: SendRemainingValue | SendIgnoreErrors,
+                body: body
+            });
+            return;
         }
 
         // Lock storage if needed
@@ -91,28 +161,24 @@ trait BaseTrait {
             let balanceBeforeMessage: Int = balance - ctx.value;
             if (balanceBeforeMessage < self.storageReserve) {
                 nativeReserve(self.storageReserve, ReserveExact);
-                send(SendParameters{
-                    bounce,
-                    to,
-                    value: 0,
+                deploy(DeployParameters{
                     mode: SendRemainingBalance | SendIgnoreErrors,
-                    body,
-                    code,
-                    data,
+                    body: body,
+                    value: 0,
+                    bounce: bounce,
+                    init: init!!,
                 });
                 return;
             }
         }
 
         // Just send with remaining balance
-        send(SendParameters{
-            bounce,
-            to,
-            value: 0,
+        deploy(DeployParameters{
             mode: SendRemainingValue | SendIgnoreErrors,
-            body,
-            code,
-            data,
+            body: body,
+            value: 0,
+            bounce: bounce,
+            init: init!!,
         });
     }
 }
