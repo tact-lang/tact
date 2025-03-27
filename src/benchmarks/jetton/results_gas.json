@@ -332,6 +332,15 @@
         "burn": "11943",
         "discovery": "6161"
       }
+    },
+    {
+      "label": "1.6.4 with With stdlib jetton",
+      "pr": "https://github.com/tact-lang/tact/pull/2509",
+      "gas": {
+        "transfer": "15146",
+        "burn": "12302",
+        "discovery": "6161"
+      }
     }
   ]
 }

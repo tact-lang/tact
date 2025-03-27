@@ -49,6 +49,16 @@
         "wallet cells": "15",
         "wallet bits": "8316"
       }
+    },
+    {
+      "label": "1.6.4 with With stdlib jetton",
+      "pr": "https://github.com/tact-lang/tact/pull/2509",
+      "size": {
+        "minter cells": "30",
+        "minter bits": "16798",
+        "wallet cells": "14",
+        "wallet bits": "8524"
+      }
     }
   ]
 }

@@ -1,9 +1,9 @@
-import "./messages";
+import "@stdlib/jetton";
 
 contract JettonWallet(
     balance: Int as coins,
     owner: Address,
-    master: Address,
+    minter: Address,
 ) {
     const minTonsForStorage: Int = ton("0.01");
     const gasConsumption: Int = ton("0.015");
@@ -40,17 +40,17 @@ contract JettonWallet(
                 forwardTonAmount: msg.forwardTonAmount,
                 forwardPayload: msg.forwardPayload
             }.toCell(),
-            init: initOf JettonWallet(0, msg.destination, self.master),
+            init: initOf JettonWallet(0, msg.destination, self.minter),
         });
     }
 
     receive(msg: JettonTransferInternal) {
         self.balance += msg.amount;
 
-        // This message should come only from master, or from other JettonWallet
-        let wallet: StateInit = initOf JettonWallet(0, msg.sender, self.master);
+        // This message should come only from minter, or from other JettonWallet
+        let wallet: StateInit = initOf JettonWallet(0, msg.sender, self.minter);
         if (!wallet.hasSameBasechainAddress(sender())) {
-            throwUnless(707, self.master == sender());
+            throwUnless(707, self.minter == sender());
         }
 
         let ctx: Context = context();
@@ -99,7 +99,7 @@ contract JettonWallet(
         throwUnless(707, ctx.value > (fwdFee + 2 * self.gasConsumption));
 
         message(MessageParameters{
-            to: self.master,
+            to: self.minter,
             value: 0,
             mode: SendRemainingValue,
             bounce: true,
@@ -126,7 +126,7 @@ contract JettonWallet(
         return JettonWalletData{
             balance: self.balance,
             owner: self.owner,
-            master: self.master,
+            minter: self.minter,
             code: myCode()
         };
     }
