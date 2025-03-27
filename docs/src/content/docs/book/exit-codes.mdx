@@ -607,7 +607,7 @@ contract Hal9k with Ownable {
 
 ### 133: Contract stopped {#133}
 
-A message has been sent to a stopped contract.
+A message has been sent to a "stopped" contract: a contract that inherits the [`Stoppable{:tact}`](/ref/stdlib-stoppable#stoppable) trait and has the `self.stopped{:tact}` flag set to `true{:tact}`.
 
 ### 134: Invalid argument {#134}
 
